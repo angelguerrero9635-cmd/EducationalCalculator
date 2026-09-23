@@ -2,9 +2,53 @@ import { holds, type System } from './solve';
 import type { Values, VariableDef } from './types';
 import { convert, getUnit, unitInSystem, unitsOf, type UnitSystem } from './units';
 
-/** Whole-module unit choice: one system for every variable, or "mixed" per variable. */
-export type UnitChoice =
-  { system: UnitSystem } | { system: 'mixed'; units: Record<string, string> };
+/**
+ * Unit choice: a system (metric, US customary, or mixed = any unit), plus optional per-variable
+ * units within it (e.g. metric with d in km). A per-variable unit that doesn't belong to the
+ * system is ignored, and the system's default unit is used.
+ */
+export interface UnitChoice {
+  system: UnitSystem | 'mixed';
+  units?: Record<string, string>;
+}
+
+/** The units a variable can be shown in under a system ("mixed" = all units of its kind). */
+export function unitChoices(variable: VariableDef, system: UnitChoice['system']): string[] {
+  const unit = getUnit(variable.unit);
+  if (!unit) return [];
+  return unitsOf(unit.dimension)
+    .filter((u) => system === 'mixed' || u.system === system || u.system === 'both')
+    .map((u) => u.id);
+}
+
+/** Lengths with their matching area and volume units (cm → cm², cm³). */
+const LENGTHS = ['mm', 'cm', 'm', 'km', 'in', 'ft', 'yd', 'mi'];
+
+/**
+ * For whole-number lessons, units change together: picking a length unit for one value sets
+ * every length, area and volume to match (m → m, m², m³), so a lesson never mixes feet with
+ * inches. Returns the per-variable units to apply, or just the one change otherwise.
+ */
+export function linkedUnits(
+  variables: readonly VariableDef[],
+  id: string,
+  unitId: string,
+): Record<string, string> {
+  const lesson = variables.some((v) => v.integer && getUnit(v.unit));
+  const picked = getUnit(unitId);
+  const family = ['length', 'area', 'volume'];
+  if (!lesson || !picked || !family.includes(picked.dimension)) return { [id]: unitId };
+  const length = LENGTHS.find((l) => l === unitId || `${l}²` === unitId || `${l}³` === unitId);
+  if (!length) return { [id]: unitId };
+  const out: Record<string, string> = {};
+  for (const v of variables) {
+    const d = getUnit(v.unit)?.dimension;
+    const candidate =
+      d === 'length' ? length : d === 'area' ? `${length}²` : d === 'volume' ? `${length}³` : null;
+    if (candidate && getUnit(candidate)) out[v.id] = candidate;
+  }
+  return out;
+}
 
 export interface UnitOptions {
   /** Systems that give a distinct set of units for this module ("metric" always first). */
@@ -12,10 +56,12 @@ export interface UnitOptions {
   /** True when the module's units are metric-specific (so "Metric" is the right label). */
   metricUnits: boolean;
   /**
-   * True when at least one variable can be shown in more than one unit, and no variable with a
-   * unit is a whole-number lesson value.
+   * True when some value has both metric and US units, and no value with a unit is a
+   * whole-number lesson value (mixing systems needs fractions those lessons avoid).
    */
   mixed: boolean;
+  /** True for whole-number lessons: length, area and volume units change together. */
+  linked: boolean;
 }
 
 /**
@@ -38,11 +84,15 @@ export function unitOptions(
         ? ['metric', 'us']
         : ['metric']
       : [],
-    // Whole-number lessons (e.g. Grade 3 area) don't offer Mixed: mixing units needs
-    // conversions and fractions those lessons deliberately avoid.
+    // Mixed (any unit, from either system) only adds something when a value has both metric
+    // and US units; whole-number lessons (e.g. Grade 3 area) don't offer it.
     mixed:
       !convertible.some((v) => v.integer) &&
-      convertible.some((v) => unitsOf(getUnit(v.unit)!.dimension).length > 1),
+      convertible.some((v) => {
+        const all = unitsOf(getUnit(v.unit)!.dimension);
+        return all.some((u) => u.system === 'metric') && all.some((u) => u.system === 'us');
+      }),
+    linked: convertible.some((v) => v.integer),
   };
 }
 
@@ -76,12 +126,13 @@ export function makeUnitContext(module: ModuleLike, choice: UnitChoice): UnitCon
     const unit = getUnit(v.unit);
     let shown = v.unit;
     if (unit) {
-      if (choice.system === 'mixed') {
-        const picked = getUnit(choice.units[v.id]);
-        shown = picked && picked.dimension === unit.dimension ? picked.id : v.unit;
-      } else {
-        shown = unitInSystem(v.unit!, choice.system);
-      }
+      const picked = choice.units?.[v.id];
+      shown =
+        picked && unitChoices(v, choice.system).includes(picked)
+          ? picked
+          : choice.system === 'mixed'
+            ? v.unit
+            : unitInSystem(v.unit!, choice.system);
     }
     display[v.id] = shown;
     factors[v.id] = unit && shown ? convert(1, shown, v.unit!) : 1;

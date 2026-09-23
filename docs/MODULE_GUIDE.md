@@ -65,13 +65,14 @@ forcing an existing one.
 
 - Give each variable its formula unit (`unit`) from the registry in `src/engine/units.ts`, e.g.
   `cm`, `g/cm³`, `m/s²`. Labels that aren't convertible (`%`, `per 1,000`, `years`) stay fixed.
-- Students can switch a module between Metric and US customary, or choose units value by value
-  (Mixed). The calculator converts. If the formulas hold directly in the chosen units, the steps
+- Students pick Metric or US customary for the module and any unit within that system for each
+  value (m, km, ft, mi, …), or Mixed to use both systems together. The calculator converts. If the formulas hold directly in the chosen units, the steps
   are worked in them; otherwise the step-by-step converts to the formula's units first and
   converts the answers back.
 - Ranges on physical quantities are physical limits and don't change with the unit.
 - Whole-number lesson values (`integer: true`, e.g. Grade 3 side lengths) keep their number when
-  the unit changes (4 cm → 4 in). Those modules offer Metric and US but not Mixed.
+  the unit changes (4 cm → 4 in). In those modules, length, area and volume units change together
+  (m → m²), and Mixed isn't offered.
 
 ## Topics without a natural formula
 

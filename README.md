@@ -150,11 +150,14 @@ Each skill and course topic ("module") can have three sections:
    substituted, and the result. It ends with a check that plugs every value back into every
    formula.
 
-**Units:** each module with units has a Units menu:
+**Units:** each module with units has a Units menu, plus a unit dropdown on every value:
 
-- **Metric** and **US customary** switch the whole module (middle-school science is metric-only,
-  following NGSS).
-- **Mixed** lets you choose a unit for each value.
+- **Metric** or **US customary** sets the system. Each value can then use any unit in it: mm,
+  cm, m or km; in, ft, yd or mi; g, kg or t; and so on. Middle-school science is metric-only,
+  following NGSS.
+- **Mixed** allows metric and US units together.
+- In whole-number lessons (Grade 3 area), lengths and the area change together (m → m²), so a
+  lesson never mixes feet with inches.
 
 The calculator converts everything, including inputs, charts, axes and tables. If the formulas
 hold directly in the chosen units (4 in × 3 in = 12 in²), the step-by-step works in them.

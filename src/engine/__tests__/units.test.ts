@@ -3,7 +3,7 @@ import { buildSteps } from '@/data/modules/buildSteps';
 
 import { solve } from '../solve';
 import { changeUnits, initialState, setValues } from '../state';
-import { makeUnitContext, unitOptions } from '../unitContext';
+import { linkedUnits, makeUnitContext, unitChoices, unitOptions } from '../unitContext';
 import { UNITS, convert, getUnit, unitInSystem } from '../units';
 
 const close = (a: number, b: number, rel = 1e-9) => Math.abs(a - b) <= rel * Math.abs(b);
@@ -68,17 +68,13 @@ describe('unit conversions (exact definitions)', () => {
 const mod = (id: string) => MODULES.find((m) => m.id === id)!;
 
 describe('unit context', () => {
-  it('offers US customary only where it differs, and Mixed where a unit can change', () => {
-    // Whole-number lesson: Metric or US, but no Mixed.
+  it('offers US customary only where it differs, and Mixed where both systems have units', () => {
+    // Whole-number lesson: Metric or US, no Mixed, and length/area units change together.
     expect(unitOptions(mod('m.3.area').variables)).toEqual({
       systems: ['metric', 'us'],
       metricUnits: true,
       mixed: false,
-    });
-    expect(unitOptions(mod('s.6.density').variables)).toEqual({
-      systems: ['metric', 'us'],
-      metricUnits: true,
-      mixed: true,
+      linked: true,
     });
     // Middle-school science is metric-only (Mixed still offered).
     const density = mod('s.6.density');
@@ -86,17 +82,58 @@ describe('unit context', () => {
       systems: ['metric'],
       metricUnits: true,
       mixed: true,
+      linked: false,
     });
+    // Electrical units are shared, so there is no US system and Mixed would add nothing.
     expect(unitOptions(mod('he.engineering.circuits-1#0').variables)).toEqual({
       systems: ['metric'],
       metricUnits: false,
-      mixed: true,
+      mixed: false,
+      linked: false,
     });
     expect(unitOptions(mod('m.8.linear-functions').variables)).toEqual({
       systems: [],
       metricUnits: false,
       mixed: false,
+      linked: false,
     });
+  });
+
+  it('lets each value pick a unit within the chosen system', () => {
+    const d = mod('he.physics.university-1#0').variables.find((v) => v.id === 'd')!;
+    expect(unitChoices(d, 'metric')).toEqual(['mm', 'cm', 'm', 'km']);
+    expect(unitChoices(d, 'us')).toEqual(['in', 'ft', 'yd', 'mi']);
+    expect(unitChoices(d, 'mixed')).toEqual(['mm', 'cm', 'm', 'km', 'in', 'ft', 'yd', 'mi']);
+    const k = mod('he.physics.university-1#0');
+    const ctx = makeUnitContext(k, { system: 'metric', units: { d: 'km' } });
+    expect(ctx.display.d).toBe('km');
+    expect(ctx.toDisplay('d', 36)).toBeCloseTo(0.036);
+    // d in km with v in m/s: the formulas need converting.
+    expect(ctx.coherent).toBe(false);
+    // A unit from the other system is ignored (falls back to the system default).
+    expect(makeUnitContext(k, { system: 'metric', units: { d: 'mi' } }).display.d).toBe('m');
+  });
+
+  it('links length, area and volume units in whole-number lessons', () => {
+    const area = mod('m.3.area');
+    expect(linkedUnits(area.variables, 'l', 'm')).toEqual({ l: 'm', w: 'm', A: 'm²' });
+    expect(linkedUnits(area.variables, 'A', 'ft²')).toEqual({ l: 'ft', w: 'ft', A: 'ft²' });
+    // Not a lesson: only the chosen value changes.
+    const k = mod('he.physics.university-1#0');
+    expect(linkedUnits(k.variables, 'd', 'km')).toEqual({ d: 'km' });
+    // 4 cm × 3 cm → 4 m × 3 m = 12 m², worked directly in meters.
+    const metric = makeUnitContext(area, { system: 'metric' });
+    const meters = makeUnitContext(area, { system: 'metric', units: { l: 'm', w: 'm', A: 'm²' } });
+    expect(meters.coherent).toBe(true);
+    const s = changeUnits(
+      meters.system,
+      initialState(metric.system, [
+        { id: 'l', value: 4 },
+        { id: 'w', value: 3 },
+      ]),
+      metric.system,
+    );
+    expect(meters.toDisplay('A', s.result.values.A!)).toBeCloseTo(12);
   });
 
   it('knows when formulas hold directly in the chosen units', () => {

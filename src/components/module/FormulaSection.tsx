@@ -6,8 +6,8 @@ import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
 import { formatNumber, parseNumber, renderTemplate } from '@/engine/format';
 import type { Values, VariableDef } from '@/engine/types';
-import type { UnitChoice } from '@/engine/unitContext';
-import { getUnit, unitsOf } from '@/engine/units';
+import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
+import { getUnit } from '@/engine/units';
 import { font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from './useCalculator';
@@ -20,36 +20,43 @@ function systemOptions(calc: Calculator): DropdownOption<SystemOption>[] {
   return [
     ...systems.map((s) =>
       s === 'us'
-        ? { value: 'us' as const, label: 'US customary', detail: 'in, ft, lb, lbf, …' }
+        ? { value: 'us' as const, label: 'US customary', detail: 'in, ft, yd, mi, lb, …' }
         : {
             value: 'metric' as const,
             label: metricUnits ? 'Metric' : 'Standard',
-            detail: metricUnits ? 'cm, m, kg, N, …' : undefined,
+            detail: metricUnits ? 'mm, cm, m, km, g, kg, …' : undefined,
           },
     ),
     ...(mixed
-      ? [{ value: 'mixed' as const, label: 'Mixed', detail: 'Choose a unit for each value' }]
+      ? [{ value: 'mixed' as const, label: 'Mixed', detail: 'Metric and US units together' }]
       : []),
   ];
 }
 
-/** Per-variable unit menu, shown in "Mixed" mode. */
+/**
+ * Per-value unit menu: the units of that kind in the current system (all units in Mixed).
+ * In whole-number lessons, lengths, areas and volumes change together.
+ */
 function UnitPicker({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
-  const unit = getUnit(variable.unit);
-  const current = calc.units.display[variable.id] ?? variable.unit ?? '';
-  if (!unit) return null;
-  const choice = calc.units.choice;
+  const { choice, display } = calc.units;
+  const options = unitChoices(variable, choice.system);
+  const current = display[variable.id] ?? variable.unit ?? '';
   return (
     <Dropdown
       compact
       testID={`unit-${variable.id}`}
       title={`${variable.name} in…`}
       value={current}
-      options={unitsOf(unit.dimension).map((u) => ({ value: u.id, label: u.id, detail: u.name }))}
+      options={options.map((id) => ({ value: id, label: id, detail: getUnit(id)?.name }))}
       onChange={(id) =>
         calc.setUnits({
-          system: 'mixed',
-          units: { ...(choice.system === 'mixed' ? choice.units : {}), [variable.id]: id },
+          system: choice.system,
+          units: {
+            ...choice.units,
+            ...(calc.unitOptions.linked
+              ? linkedUnits(calc.module.variables, variable.id, id)
+              : { [variable.id]: id }),
+          },
         })
       }
     />
@@ -62,7 +69,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   const [typo, setTypo] = useState(false);
   const value = calc.values[variable.id];
   const unit = calc.units.display[variable.id];
-  const mixed = calc.units.choice.system === 'mixed' && !!getUnit(variable.unit);
+  // A unit menu whenever this value has more than one unit in the current system.
+  const picker = unitChoices(variable, calc.units.choice.system).length > 1;
   const status = calc.status(variable.id);
   const error = typo ? 'Enter a number' : calc.errors[variable.id];
   const shown =
@@ -85,7 +93,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
           <Text style={[styles.meta, { color: error ? c.text : c.textMuted }]}>
             {error ??
               `${status === 'given' ? 'entered' : status === 'derived' ? 'calculated' : 'unknown'}${
-                unit && !mixed ? ` · ${unit}` : ''
+                unit && !picker ? ` · ${unit}` : ''
               }`}
           </Text>
         </View>
@@ -107,7 +115,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         selectTextOnFocus
         style={[
           styles.input,
-          mixed && styles.inputNarrow,
+          picker && styles.inputNarrow,
           {
             color: c.text,
             borderColor: error ? c.text : c.border,
@@ -116,7 +124,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
           },
         ]}
       />
-      {mixed ? <UnitPicker variable={variable} calc={calc} /> : null}
+      {picker ? <UnitPicker variable={variable} calc={calc} /> : null}
     </View>
   );
 }
@@ -143,6 +151,8 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
   ].join(', ');
 
   const onSystem = (s: SystemOption) => {
+    // Mixed starts from the units currently shown. Metric/US keep any per-value choices that
+    // belong to the new system; the rest fall back to that system's defaults.
     const next: UnitChoice =
       s === 'mixed'
         ? {
@@ -151,7 +161,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
               Object.entries(units.display).filter((e): e is [string, string] => !!e[1]),
             ),
           }
-        : { system: s };
+        : { system: s, units: units.choice.units };
     calc.setUnits(next);
   };
 
