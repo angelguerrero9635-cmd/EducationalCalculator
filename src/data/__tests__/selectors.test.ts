@@ -2,6 +2,7 @@ import {
   DIVISIONS,
   SUBJECTS,
   buildSearchIndex,
+  courseSummary,
   divisionView,
   fieldRoute,
   gradeSections,
@@ -220,6 +221,15 @@ describe('nodeContext', () => {
     expect(nodeContext(getNode('he.chemistry.organic-1')!)).toBe('Science · Chemistry');
     expect(nodeContext(getNode('he.engineering.statics')!)).toBe(
       'Engineering · Classical (Engineering Mechanics), Aerospace +3',
+    );
+  });
+});
+
+describe('courseSummary', () => {
+  it('counts topics and cross-listings', () => {
+    expect(courseSummary(getNode('he.math.calc-1') as never)).toBe('5 topics');
+    expect(courseSummary(getNode('he.engineering.statics') as never)).toBe(
+      '5 topics · cross-listed in 5 fields',
     );
   });
 });

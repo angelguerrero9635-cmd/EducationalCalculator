@@ -45,11 +45,17 @@ export function ListRow({
       ]}
     >
       <View style={styles.text}>
-        {overline ? <Text style={[styles.overline, { color: c.textMuted }]}>{overline}</Text> : null}
+        {overline ? (
+          <Text style={[styles.overline, { color: c.textMuted }]}>{overline}</Text>
+        ) : null}
         <Text style={[styles.title, { color: c.text }]}>{title}</Text>
-        {subtitle ? <Text style={[styles.subtitle, { color: c.textMuted }]}>{subtitle}</Text> : null}
+        {subtitle ? (
+          <Text style={[styles.subtitle, { color: c.textMuted }]}>{subtitle}</Text>
+        ) : null}
       </View>
-      {kind === 'chevron' ? <Text style={[styles.accessory, { color: c.textMuted }]}>›</Text> : null}
+      {kind === 'chevron' ? (
+        <Text style={[styles.accessory, { color: c.textMuted }]}>›</Text>
+      ) : null}
       {kind === 'check' ? (
         <Text style={[styles.accessory, { color: c.text }]}>{selected ? '✓' : ' '}</Text>
       ) : null}

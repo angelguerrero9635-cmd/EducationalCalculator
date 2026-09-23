@@ -108,6 +108,14 @@ export function nodeRoute(id: string): RouteTarget | undefined {
   return isSkill(node) ? skillRoute(node.id) : courseRoute(node.id);
 }
 
+/** Course list subtitle, e.g. "5 topics · cross-listed in 5 fields". */
+export function courseSummary(course: Course): string {
+  const topics = countLabel(course.topics.length, 'topic');
+  return course.fields.length > 1
+    ? `${topics} · cross-listed in ${course.fields.length} fields`
+    : topics;
+}
+
 // ─── Browse: K–12 ────────────────────────────────────────────────────────────
 
 export interface StrandSection {

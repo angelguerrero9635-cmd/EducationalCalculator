@@ -1,6 +1,8 @@
 export { Button } from './Button';
 export { Chip } from './Chip';
+export { CourseList } from './CourseList';
 export { EmptyState } from './EmptyState';
+export { LevelPicker } from './LevelPicker';
 export { ListRow } from './ListRow';
 export { PlaceholderCard } from './PlaceholderCard';
 export { RefreshLinkRow } from './RefreshLinkRow';
