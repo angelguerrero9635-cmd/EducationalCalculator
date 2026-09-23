@@ -65,12 +65,23 @@ export type Representation =
       maxAcceleration: number;
     };
 
+/** One rearrangement, explained: `expr` is the right-hand side as a display template. */
+export interface StepText {
+  expr: string;
+  how: string;
+}
+
 export interface ModuleDef {
   /** Taxonomy skill id, or a course topic key (`<courseId>#<topicIndex>`). */
   id: string;
   assumptions: string[];
   variables: VariableDef[];
   relations: Relation[];
+  /**
+   * Step-by-step text: for each relation id, for each variable it can be solved for, the
+   * rearranged expression and a plain-language explanation of the rearrangement.
+   */
+  steps: Record<string, Record<string, StepText>>;
   /** A consistent worked example (every variable). */
   example: Values;
   /** Variables pre-filled from the example when the module opens. */

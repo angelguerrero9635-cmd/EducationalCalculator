@@ -2,6 +2,7 @@ import { holds, solve } from '@/engine/solve';
 import { resolveItem } from '@/data/selectors';
 
 import { MODULES } from '..';
+import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 
 /** Every variable id a representation refers to. */
@@ -105,4 +106,69 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
 
 it('module ids are unique', () => {
   expect(new Set(MODULES.map((m) => m.id)).size).toBe(MODULES.length);
+});
+
+describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('steps for %s', (_, m) => {
+  it('explain every rearrangement, using only that relation’s variables', () => {
+    expect(Object.keys(m.steps).sort()).toEqual(m.relations.map((r) => r.id).sort());
+    for (const r of m.relations) {
+      const texts = m.steps[r.id]!;
+      expect(Object.keys(texts).sort()).toEqual(Object.keys(r.solve ?? {}).sort());
+      for (const { expr, how } of Object.values(texts)) {
+        expect(how.length).toBeGreaterThan(10);
+        const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);
+        expect(used.filter((id) => !r.vars.includes(id))).toEqual([]);
+      }
+    }
+  });
+
+  it('walk from the opening values to every other value, and the check balances', () => {
+    const result = solve(
+      m,
+      m.startWith.map((id) => ({ id, value: m.example[id]! })),
+    );
+    const w = buildSteps(m, result);
+    expect(w.given.map((q) => q.id)).toEqual(m.startWith);
+    expect([...w.steps.map((s) => s.id), ...m.startWith].sort()).toEqual(
+      m.variables.map((v) => v.id).sort(),
+    );
+    for (const s of w.steps) {
+      expect(s.rearranged).toBeDefined();
+      expect(s.substituted).not.toContain('?');
+    }
+    expect(w.missing).toEqual([]);
+    expect(w.check.length).toBe(m.relations.length);
+    expect(w.check.every((c) => c.ok)).toBe(true);
+  });
+});
+
+it('builds readable steps (area example)', () => {
+  const m = MODULES.find((x) => x.id === 'm.3.area')!;
+  const w = buildSteps(
+    m,
+    solve(m, [
+      { id: 'A', value: 12 },
+      { id: 'l', value: 4 },
+    ]),
+  );
+  expect(w.given.map((q) => `${q.symbol} = ${q.value}`)).toEqual(['A = 12 cm²', 'l = 4 cm']);
+  expect(w.steps).toEqual([
+    {
+      id: 'w',
+      title: 'Find width (w)',
+      formula: 'A = l × w',
+      how: 'Divide both sides by the length.',
+      rearranged: 'w = A ÷ l',
+      substituted: 'w = 12 ÷ 4',
+      result: 'w = 3 cm',
+    },
+  ]);
+  expect(w.check).toEqual([{ formula: '12 = 4 × 3', ok: true }]);
+});
+
+it('lists what is still missing', () => {
+  const m = MODULES.find((x) => x.id === 'm.3.area')!;
+  const w = buildSteps(m, solve(m, [{ id: 'l', value: 4 }]));
+  expect(w.steps).toEqual([]);
+  expect(w.missing.map((q) => q.symbol)).toEqual(['w', 'A']);
 });

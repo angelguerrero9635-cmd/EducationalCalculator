@@ -12,6 +12,8 @@ export interface SolveResult {
   given: Given[];
   /** Variable ids calculated from the givens. */
   derived: string[];
+  /** How each derived value was found, in solving order. */
+  trace: TraceStep[];
   /** Variables still unknown (more input needed). */
   unknown: string[];
   /** Older givens replaced because newer input already determines them or conflicts with them. */
@@ -20,6 +22,15 @@ export interface SolveResult {
   cleared: string[];
   /** The newest given, if it could not be accepted, with a reason to show the user. */
   rejected?: { id: string; reason: string };
+}
+
+export interface TraceStep {
+  /** The variable that was found. */
+  id: string;
+  /** The relation it was solved from. */
+  relation: string;
+  /** False when found by numeric root-finding rather than a rearrangement. */
+  exact: boolean;
 }
 
 export interface System {
@@ -119,12 +130,18 @@ function solveFor(
   return valid.reduce((best, x) => (Math.abs(x - prev) < Math.abs(best - prev) ? x : best));
 }
 
-type Propagation = { ok: true; values: Values } | { ok: false; reason: string };
+type Propagation = { ok: true; values: Values; trace: TraceStep[] } | { ok: false; reason: string };
 
 /** Repeatedly solves any relation with exactly one unknown until nothing changes. */
-function propagate(system: System, known: Values, previous: Values): Propagation {
+function propagate(
+  system: System,
+  known: Values,
+  previous: Values,
+  trace: readonly TraceStep[],
+): Propagation {
   const byId = new Map(system.variables.map((v) => [v.id, v]));
   const values = { ...known };
+  const steps = [...trace];
   let changed = true;
   while (changed) {
     changed = false;
@@ -150,11 +167,12 @@ function propagate(system: System, known: Values, previous: Values): Propagation
           continue;
         }
         values[id] = x;
+        steps.push({ id, relation: relation.id, exact: !!relation.solve?.[id] });
         changed = true;
       }
     }
   }
-  return { ok: true, values };
+  return { ok: true, values, trace: steps };
 }
 
 /**
@@ -164,6 +182,7 @@ function propagate(system: System, known: Values, previous: Values): Propagation
 export function solve(system: System, given: readonly Given[], previous: Values = {}): SolveResult {
   const byId = new Map(system.variables.map((v) => [v.id, v]));
   let known: Values = {};
+  let trace: TraceStep[] = [];
   const kept: Given[] = [];
   const dropped: string[] = [];
   const cleared: string[] = [];
@@ -192,9 +211,11 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       system,
       { ...known, [g.id]: normalizeValue(variable, g.value) },
       previous,
+      trace,
     );
     if (trial.ok) {
       known = trial.values;
+      trace = trial.trace;
       kept.unshift({ id: g.id, value: normalizeValue(variable, g.value) });
     } else if (isNewest) {
       rejected = { id: g.id, reason: trial.reason };
@@ -210,6 +231,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     values: known,
     given: kept,
     derived: ids.filter((id) => id in known && !givenIds.has(id)),
+    trace,
     unknown: ids.filter((id) => !(id in known)),
     dropped,
     cleared,

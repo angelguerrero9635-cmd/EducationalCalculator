@@ -141,6 +141,11 @@ Each skill and course topic ("module") can have three sections:
    it can't fit.
 3. **Table, chart or diagram:** shows the same values. Dragging a handle or tapping a row or
    square sets variables exactly like typing, so the formulas and the visual always match.
+4. **Step-by-step:** a live walkthrough of how the current values were found from the entered
+   ones. It lists what was given and what to find, then for each calculated value shows the
+   formula used, how it was rearranged (in words), the rearranged form, the numbers
+   substituted, and the result. It ends with a check that plugs every value back into every
+   formula.
 
 Content lives in `src/data/modules/` (`k12.ts`, `college.ts`), keyed by skill id or course topic
 key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for titles and structure.
@@ -154,6 +159,8 @@ key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for tit
    - **Relations:** give each equation a `residual` (left side − right side) and, where
      possible, a `solve` rearrangement for each variable. The solver falls back to numeric
      root-finding within `[min, max]`.
+   - **Steps:** for each relation and each variable it can be solved for, the rearranged
+     expression and a plain-language explanation (`steps`).
    - **Example:** a consistent worked `example`, plus the variables it opens with
      (`startWith`).
    - **Representation:** choose one of `numberLine`, `bars`, `rectangle`, `grid100`, `circle`,
@@ -161,14 +168,13 @@ key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for tit
 2. Run `pnpm test`. For every module, the tests check that:
    - it matches a taxonomy skill or topic;
    - the example satisfies every relation and range;
-   - every rearrangement agrees with its relation;
+   - every rearrangement agrees with its relation and has a step explanation;
    - solving from any combination of inputs reproduces the example.
 
 ## What's stubbed
 
-- **Module content:** 14 pilot modules are written. Other skills and topics show placeholder cards
-  for Assumptions, Formulas and the visual.
-- **Step-by-step example:** a grey placeholder card on every skill and topic screen.
+- **Module content:** 14 pilot modules are written, including step-by-step walkthroughs. Other
+  skills and topics show placeholder cards for all four sections.
 - **Paywall:** layout only. Continue is disabled, Restore Purchases does nothing, and prices are
   placeholders.
 - **`isLocked()`:** always returns `false`. Detail screens already route locked content to the

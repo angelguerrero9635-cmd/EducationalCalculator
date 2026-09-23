@@ -7,6 +7,7 @@ import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
 import { RepresentationView, representationTitle } from './reps';
+import { StepByStep } from './StepByStep';
 import { useCalculator } from './useCalculator';
 
 function ModuleView({ module }: { module: ModuleDef }) {
@@ -31,13 +32,17 @@ function ModuleView({ module }: { module: ModuleDef }) {
       <View style={styles.representation}>
         <RepresentationView spec={module.representation} calc={calc} />
       </View>
+
+      <SectionHeader title="Step-by-step" />
+      <StepByStep calc={calc} />
     </>
   );
 }
 
 /**
- * Assumptions, formulas (live calculator) and a linked table/chart/diagram for a skill or
- * topic. Modules whose content isn't written yet show labelled placeholders.
+ * Assumptions, formulas (live calculator), a linked table/chart/diagram and a live
+ * step-by-step walkthrough for a skill or topic. Modules whose content isn't written yet
+ * show labelled placeholders.
  */
 export function ModuleSections({ id }: { id: string }) {
   const module = getModule(id);
@@ -53,12 +58,10 @@ export function ModuleSections({ id }: { id: string }) {
             <PlaceholderCard label="Assumptions" />
             <PlaceholderCard label="Formulas" />
             <PlaceholderCard label="Table, chart or diagram" />
+            <PlaceholderCard label="Step-by-step example" />
           </View>
         </>
       )}
-      <View style={styles.cards}>
-        <PlaceholderCard label="Step-by-step example" />
-      </View>
     </>
   );
 }

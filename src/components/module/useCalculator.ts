@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import type { ModuleDef } from '@/data/modules';
+import type { SolveResult } from '@/engine/solve';
 import { initialState, setValues, type CalcState } from '@/engine/state';
 import type { Values } from '@/engine/types';
 
@@ -8,6 +9,8 @@ export interface Calculator {
   module: ModuleDef;
   /** Every value currently known (entered or calculated). */
   values: Values;
+  /** Full solver result, including how each value was found. */
+  result: SolveResult;
   status: (id: string) => 'given' | 'derived' | 'unknown';
   errors: Record<string, string>;
   unknownCount: number;
@@ -38,6 +41,7 @@ export function useCalculator(module: ModuleDef): Calculator {
     return {
       module,
       values,
+      result: state.result,
       status: (id) => (given.has(id) ? 'given' : id in values ? 'derived' : 'unknown'),
       errors: state.errors,
       unknownCount: unknown.length,

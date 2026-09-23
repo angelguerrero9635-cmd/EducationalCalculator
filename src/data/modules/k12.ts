@@ -45,6 +45,21 @@ export const K12_MODULES: ModuleDef[] = [
         solve: { a: (v) => v.c! - v.b!, c: (v) => v.a! + v.b!, b: (v) => v.c! - v.a! },
       },
     ],
+    steps: {
+      'a + b = c': {
+        c: {
+          expr: '{a} + {b}',
+          how: 'Put the two groups together: start at a and count on b more.',
+        },
+        a: { expr: '{c} − {b}', how: 'Take the second group away from the total.' },
+        b: { expr: '{c} − {a}', how: 'Take the first group away from the total.' },
+      },
+      'c − b = a': {
+        a: { expr: '{c} − {b}', how: 'Start at the total and count back b.' },
+        c: { expr: '{a} + {b}', how: 'Add back the group that was taken away.' },
+        b: { expr: '{c} − {a}', how: 'The group taken away is the total minus what is left.' },
+      },
+    },
     example: { a: 3, b: 4, c: 7 },
     startWith: ['a', 'b'],
     representation: { kind: 'numberLine', start: 'a', jump: 'b', end: 'c', min: 0, max: 10 },
@@ -77,6 +92,14 @@ export const K12_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'n = c + s + t': {
+        n: { expr: '{c} + {s} + {t}', how: 'Add the three groups together.' },
+        c: { expr: '{n} − {s} − {t}', how: 'Take the squares and triangles away from the total.' },
+        s: { expr: '{n} − {c} − {t}', how: 'Take the circles and triangles away from the total.' },
+        t: { expr: '{n} − {c} − {s}', how: 'Take the circles and squares away from the total.' },
+      },
+    },
     example: { c: 4, s: 3, t: 5, n: 12 },
     startWith: ['c', 's', 't'],
     representation: {
@@ -113,6 +136,16 @@ export const K12_MODULES: ModuleDef[] = [
         solve: { A: (v) => v.l! * v.w!, l: (v) => div(v.A!, v.w!), w: (v) => div(v.A!, v.l!) },
       },
     ],
+    steps: {
+      'A = l × w': {
+        A: {
+          expr: '{l} × {w}',
+          how: 'Multiply length by width: that many unit squares cover the rectangle.',
+        },
+        l: { expr: '{A} ÷ {w}', how: 'Divide both sides by the width.' },
+        w: { expr: '{A} ÷ {l}', how: 'Divide both sides by the length.' },
+      },
+    },
     example: { l: 4, w: 3, A: 12 },
     startWith: ['l', 'w'],
     representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', max: 7 },
@@ -143,6 +176,22 @@ export const K12_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'Part = p% of Whole': {
+        x: {
+          expr: '{p} ÷ 100 × {w}',
+          how: 'Write the percent as a fraction of 100, then take that fraction of the whole.',
+        },
+        w: {
+          expr: '100 × {x} ÷ {p}',
+          how: 'Multiply both sides by 100, then divide by the percent.',
+        },
+        p: {
+          expr: '100 × {x} ÷ {w}',
+          how: 'Divide the part by the whole to get a fraction, then multiply by 100.',
+        },
+      },
+    },
     example: { p: 25, w: 80, x: 20 },
     startWith: ['p', 'w'],
     representation: { kind: 'grid100', percent: 'p', caption: { part: 'x', whole: 'w' } },
@@ -184,6 +233,23 @@ export const K12_MODULES: ModuleDef[] = [
         solve: { A: (v) => Math.PI * v.r! ** 2, r: (v) => Math.sqrt(v.A! / Math.PI) },
       },
     ],
+    steps: {
+      'd = 2r': {
+        d: { expr: '2 × {r}', how: 'A diameter is two radii end to end through the center.' },
+        r: { expr: '{d} ÷ 2', how: 'The radius is half the diameter.' },
+      },
+      'C = 2πr': {
+        C: { expr: '2 × π × {r}', how: 'Multiply the radius by 2π.' },
+        r: { expr: '{C} ÷ (2 × π)', how: 'Divide both sides by 2π.' },
+      },
+      'A = πr²': {
+        A: { expr: 'π × {r}²', how: 'Square the radius, then multiply by π.' },
+        r: {
+          expr: '√({A} ÷ π)',
+          how: 'Divide both sides by π, then take the square root (a radius is never negative).',
+        },
+      },
+    },
     example: { r: 3, d: 6, C: 6 * Math.PI, A: 9 * Math.PI },
     startWith: ['r'],
     representation: {
@@ -222,6 +288,19 @@ export const K12_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'a² + b² = c²': {
+        c: { expr: '√({a}² + {b}²)', how: 'Square each leg, add them, then take the square root.' },
+        a: {
+          expr: '√({c}² − {b}²)',
+          how: 'Subtract b² from both sides, then take the square root.',
+        },
+        b: {
+          expr: '√({c}² − {a}²)',
+          how: 'Subtract a² from both sides, then take the square root.',
+        },
+      },
+    },
     example: { a: 3, b: 4, c: 5 },
     startWith: ['a', 'b'],
     representation: { kind: 'rightTriangle', a: 'a', b: 'b', c: 'c', max: 5 },
@@ -254,6 +333,17 @@ export const K12_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'y = mx + b': {
+        y: { expr: '{m} × {x} + {b}', how: 'Multiply x by the slope, then add the y-intercept.' },
+        b: { expr: '{y} − {m} × {x}', how: 'Subtract m·x from both sides.' },
+        m: { expr: '({y} − {b}) ÷ {x}', how: 'Subtract b from both sides, then divide by x.' },
+        x: {
+          expr: '({y} − {b}) ÷ {m}',
+          how: 'Subtract b from both sides, then divide by the slope.',
+        },
+      },
+    },
     example: { m: 2, b: 1, x: 3, y: 7 },
     startWith: ['m', 'b', 'x'],
     representation: {
@@ -301,6 +391,26 @@ export const K12_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'y = a(1 + r)^t': {
+        y: {
+          expr: '{a} × (1 + {r} ÷ 100)^{t}',
+          how: 'Turn the rate into a growth factor (1 + r/100), multiply it in once per period, then multiply by the start.',
+        },
+        a: {
+          expr: '{y} ÷ (1 + {r} ÷ 100)^{t}',
+          how: 'Divide both sides by the growth factor raised to t.',
+        },
+        t: {
+          expr: 'ln({y} ÷ {a}) ÷ ln(1 + {r} ÷ 100)',
+          how: 'Divide both sides by a, then take the logarithm of both sides to bring t down.',
+        },
+        r: {
+          expr: '100 × (({y} ÷ {a})^(1 ÷ {t}) − 1)',
+          how: 'Divide both sides by a, take the t-th root to get the growth factor, subtract 1, and write it as a percent.',
+        },
+      },
+    },
     example: { a: 100, r: 10, t: 3, y: 133.1 },
     startWith: ['a', 'r', 't'],
     representation: {
@@ -338,6 +448,13 @@ export const K12_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'ρ = m ÷ V': {
+        rho: { expr: '{m} ÷ {V}', how: 'Divide the mass by the volume.' },
+        m: { expr: '{rho} × {V}', how: 'Multiply both sides by the volume.' },
+        V: { expr: '{m} ÷ {rho}', how: 'Multiply both sides by V, then divide by the density.' },
+      },
+    },
     example: { rho: 2.7, V: 20, m: 54 },
     startWith: ['rho', 'V'],
     representation: {
@@ -374,6 +491,13 @@ export const K12_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'F = m × a': {
+        F: { expr: '{m} × {a}', how: 'Multiply the mass by the acceleration.' },
+        m: { expr: '{F} ÷ {a}', how: 'Divide both sides by the acceleration.' },
+        a: { expr: '{F} ÷ {m}', how: 'Divide both sides by the mass.' },
+      },
+    },
     example: { m: 10, a: 2, F: 20 },
     startWith: ['m', 'a'],
     representation: {

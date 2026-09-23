@@ -89,6 +89,77 @@ export const COLLEGE_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'v = v₀ + at': {
+        v: {
+          expr: '{v0} + {a} × {t}',
+          how: 'Velocity changes by a every second, so add a·t to the starting velocity.',
+        },
+        v0: { expr: '{v} − {a} × {t}', how: 'Subtract a·t from both sides.' },
+        a: {
+          expr: '({v} − {v0}) ÷ {t}',
+          how: 'Acceleration is the change in velocity divided by the time.',
+        },
+        t: {
+          expr: '({v} − {v0}) ÷ {a}',
+          how: 'Divide the change in velocity by the acceleration.',
+        },
+      },
+      'd = v₀t + ½at²': {
+        d: {
+          expr: '{v0} × {t} + ½ × {a} × {t}²',
+          how: 'Add the distance covered at the starting velocity to the extra distance from accelerating.',
+        },
+        v0: {
+          expr: '({d} − ½ × {a} × {t}²) ÷ {t}',
+          how: 'Subtract ½at² from both sides, then divide by t.',
+        },
+        a: {
+          expr: '2 × ({d} − {v0} × {t}) ÷ {t}²',
+          how: 'Subtract v₀t, multiply by 2, then divide by t².',
+        },
+        t: {
+          expr: '(−{v0} ± √({v0}² + 2 × {a} × {d})) ÷ {a}',
+          how: 'Rewrite as ½a·t² + v₀·t − d = 0 and use the quadratic formula. Time can’t be negative, so keep the root that is 0 or more.',
+        },
+      },
+      'v² = v₀² + 2ad': {
+        v: {
+          expr: '±√({v0}² + 2 × {a} × {d})',
+          how: 'Add 2ad to v₀², then take the square root. Both + and − solve the equation: the sign is the direction of motion, so keep the one that matches how the object is moving.',
+        },
+        v0: {
+          expr: '±√({v}² − 2 × {a} × {d})',
+          how: 'Subtract 2ad from v², then take the square root. Both + and − solve the equation: the sign is the direction of motion, so keep the one that matches how the object was moving at the start.',
+        },
+        a: {
+          expr: '({v}² − {v0}²) ÷ (2 × {d})',
+          how: 'Subtract v₀² from both sides, then divide by 2d.',
+        },
+        d: {
+          expr: '({v}² − {v0}²) ÷ (2 × {a})',
+          how: 'Subtract v₀² from both sides, then divide by 2a.',
+        },
+      },
+      'd = ½(v₀ + v)t': {
+        d: {
+          expr: '½ × ({v0} + {v}) × {t}',
+          how: 'With constant acceleration, the average velocity is halfway between v₀ and v. Multiply it by the time.',
+        },
+        v0: {
+          expr: '2 × {d} ÷ {t} − {v}',
+          how: 'Multiply both sides by 2, divide by t, then subtract v.',
+        },
+        v: {
+          expr: '2 × {d} ÷ {t} − {v0}',
+          how: 'Multiply both sides by 2, divide by t, then subtract v₀.',
+        },
+        t: {
+          expr: '2 × {d} ÷ ({v0} + {v})',
+          how: 'Divide the displacement by the average velocity, ½(v₀ + v).',
+        },
+      },
+    },
     example: { v0: 5, a: 2, t: 4, v: 13, d: 36 },
     startWith: ['v0', 'a', 't'],
     representation: {
@@ -161,6 +232,31 @@ export const COLLEGE_MODULES: ModuleDef[] = [
         },
       },
     ],
+    steps: {
+      'V = IR': {
+        V: { expr: '{I} × {R}', how: 'Multiply the current by the resistance.' },
+        I: { expr: '{V} ÷ {R}', how: 'Divide both sides by the resistance.' },
+        R: { expr: '{V} ÷ {I}', how: 'Divide both sides by the current.' },
+      },
+      'P = VI': {
+        P: { expr: '{V} × {I}', how: 'Power is the voltage times the current.' },
+        V: { expr: '{P} ÷ {I}', how: 'Divide both sides by the current.' },
+        I: { expr: '{P} ÷ {V}', how: 'Divide both sides by the voltage.' },
+      },
+      'P = I²R': {
+        P: { expr: '{I}² × {R}', how: 'Square the current, then multiply by the resistance.' },
+        I: {
+          expr: '√({P} ÷ {R})',
+          how: 'Divide both sides by R, then take the square root (current is positive here).',
+        },
+        R: { expr: '{P} ÷ {I}²', how: 'Divide both sides by the current squared.' },
+      },
+      'P = V²/R': {
+        P: { expr: '{V}² ÷ {R}', how: 'Square the voltage, then divide by the resistance.' },
+        V: { expr: '√({P} × {R})', how: 'Multiply both sides by R, then take the square root.' },
+        R: { expr: '{V}² ÷ {P}', how: 'Multiply both sides by R, then divide by the power.' },
+      },
+    },
     example: { V: 12, R: 6, I: 2, P: 24 },
     startWith: ['V', 'R'],
     representation: {
@@ -200,6 +296,22 @@ export const COLLEGE_MODULES: ModuleDef[] = [
         solve: { m: (v) => 2 * v.x!, x: (v) => v.m! / 2 },
       },
     ],
+    steps: {
+      'f(x) = x²': {
+        y: { expr: '{x}²', how: 'Square x: multiply x by itself.' },
+        x: {
+          expr: '±√({y})',
+          how: 'Take the square root. Both +√ and −√ give the same x², so pick the side of the curve you are looking at (the one nearest the current point is shown).',
+        },
+      },
+      'f′(x) = 2x': {
+        m: {
+          expr: '2 × {x}',
+          how: 'Power rule: bring the exponent 2 down in front and lower the power by 1, so x² becomes 2x.',
+        },
+        x: { expr: '{m} ÷ 2', how: 'Divide the slope by 2.' },
+      },
+    },
     example: { x: 1.5, y: 2.25, m: 3 },
     startWith: ['x'],
     representation: {
@@ -266,6 +378,23 @@ export const COLLEGE_MODULES: ModuleDef[] = [
         solve: { P: (v) => v.N! + v.M!, N: (v) => v.P! - v.M!, M: (v) => v.P! - v.N! },
       },
     ],
+    steps: {
+      'N = B − D': {
+        N: { expr: '{B} − {D}', how: 'Natural increase is births minus deaths.' },
+        B: { expr: '{N} + {D}', how: 'Add the deaths back to the natural increase.' },
+        D: { expr: '{B} − {N}', how: 'Subtract the natural increase from the births.' },
+      },
+      'M = I − E': {
+        M: { expr: '{I} − {E}', how: 'Net migration is people moving in minus people moving out.' },
+        I: { expr: '{M} + {E}', how: 'Add the emigrants back to the net migration.' },
+        E: { expr: '{I} − {M}', how: 'Subtract the net migration from the immigrants.' },
+      },
+      'ΔP = N + M': {
+        P: { expr: '{N} + {M}', how: 'Population change is natural increase plus net migration.' },
+        N: { expr: '{P} − {M}', how: 'Subtract the net migration from the population change.' },
+        M: { expr: '{P} − {N}', how: 'Subtract the natural increase from the population change.' },
+      },
+    },
     example: { B: 120, D: 80, I: 50, E: 30, N: 40, M: 20, P: 60 },
     startWith: ['B', 'D', 'I', 'E'],
     representation: {

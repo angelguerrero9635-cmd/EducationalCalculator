@@ -156,6 +156,11 @@ describe('solve', () => {
     const r = solve(chain, [{ id: 'C', value: 10 * Math.PI }]);
     expect(r.values.d).toBeCloseTo(10);
     expect(r.values.r).toBeCloseTo(5);
+    // The trace records the solving order and which relation each value came from.
+    expect(r.trace).toEqual([
+      { id: 'd', relation: 'C = πd', exact: true },
+      { id: 'r', relation: 'd = 2r', exact: true },
+    ]);
   });
 
   it('solves numerically when no rearrangement is given, picking the root nearest the previous value', () => {
