@@ -1,6 +1,6 @@
 /**
  * K–12 pilot modules. Keyed by taxonomy skill id; the skill itself (title, grade, strand)
- * still comes from taxonomy.ts.
+ * still comes from taxonomy.ts. Written and reviewed against docs/MODULE_GUIDE.md.
  */
 import type { ModuleDef } from './types';
 
@@ -19,10 +19,9 @@ export const K12_MODULES: ModuleDef[] = [
   {
     id: 'm.K.add-sub-10',
     assumptions: [
-      'We are counting whole objects, so every number is a whole number from 0 to 10.',
-      'Adding puts two groups together. Subtracting takes one group away.',
-      'The total is never more than 10 in this lesson.',
-      'Order doesn’t change a sum: 3 + 4 and 4 + 3 both make 7.',
+      'We count whole things, from 0 to 10.',
+      'Adding puts two groups together.',
+      'Taking away leaves fewer than before.',
     ],
     variables: [
       whole('a', 'a', 'First group', 10),
@@ -47,22 +46,19 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'a + b = c': {
-        c: {
-          expr: '{a} + {b}',
-          how: 'Put the two groups together: start at a and count on b more.',
-        },
+        c: { expr: '{a} + {b}', how: 'Put the two groups together and count them all.' },
         a: { expr: '{c} − {b}', how: 'Take the second group away from the total.' },
         b: { expr: '{c} − {a}', how: 'Take the first group away from the total.' },
       },
       'c − b = a': {
-        a: { expr: '{c} − {b}', how: 'Start at the total and count back b.' },
-        c: { expr: '{a} + {b}', how: 'Add back the group that was taken away.' },
+        a: { expr: '{c} − {b}', how: 'Take b away from the total. Count what is left.' },
+        c: { expr: '{a} + {b}', how: 'Put back the group that was taken away.' },
         b: { expr: '{c} − {a}', how: 'The group taken away is the total minus what is left.' },
       },
     },
     example: { a: 3, b: 4, c: 7 },
     startWith: ['a', 'b'],
-    representation: { kind: 'numberLine', start: 'a', jump: 'b', end: 'c', min: 0, max: 10 },
+    representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c' },
   },
 
   {
@@ -94,22 +90,30 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = c + s + t': {
-        n: { expr: '{c} + {s} + {t}', how: 'Add the three groups together.' },
-        c: { expr: '{n} − {s} − {t}', how: 'Take the squares and triangles away from the total.' },
-        s: { expr: '{n} − {c} − {t}', how: 'Take the circles and triangles away from the total.' },
-        t: { expr: '{n} − {c} − {s}', how: 'Take the circles and squares away from the total.' },
+        n: { expr: '{c} + {s} + {t}', how: 'Count every group, then add them together.' },
+        c: {
+          expr: '{n} − {s} − {t}',
+          how: 'Take the other groups away from the total. Count what is left.',
+        },
+        s: {
+          expr: '{n} − {c} − {t}',
+          how: 'Take the other groups away from the total. Count what is left.',
+        },
+        t: {
+          expr: '{n} − {c} − {s}',
+          how: 'Take the other groups away from the total. Count what is left.',
+        },
       },
     },
     example: { c: 4, s: 3, t: 5, n: 12 },
     startWith: ['c', 's', 't'],
     representation: {
-      kind: 'bars',
-      bars: [
-        { var: 'c', editable: true },
-        { var: 's', editable: true },
-        { var: 't', editable: true },
+      kind: 'pictureGraph',
+      columns: [
+        { var: 'c', icon: 'circle' },
+        { var: 's', icon: 'square' },
+        { var: 't', icon: 'triangle' },
       ],
-      min: 0,
       max: 10,
       total: 'n',
     },
@@ -123,9 +127,9 @@ export const K12_MODULES: ModuleDef[] = [
       'Area counts the unit squares that cover the inside with no gaps or overlaps.',
     ],
     variables: [
-      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 0, max: 20, step: 1 },
-      { id: 'w', symbol: 'w', name: 'Width', unit: 'cm', min: 0, max: 20, step: 1 },
-      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 400 },
+      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
+      { id: 'w', symbol: 'w', name: 'Width', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 100, integer: true },
     ],
     relations: [
       {
@@ -138,17 +142,17 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'A = l × w': {
-        A: {
-          expr: '{l} × {w}',
-          how: 'Multiply length by width: that many unit squares cover the rectangle.',
+        A: { expr: '{l} × {w}', how: 'There are w rows of l squares, so count l × w squares.' },
+        l: {
+          expr: '{A} ÷ {w}',
+          how: 'There are w rows. Share the squares equally among the rows.',
         },
-        l: { expr: '{A} ÷ {w}', how: 'Divide both sides by the width.' },
-        w: { expr: '{A} ÷ {l}', how: 'Divide both sides by the length.' },
+        w: { expr: '{A} ÷ {l}', how: 'Each row has l squares. Divide to find how many rows.' },
       },
     },
     example: { l: 4, w: 3, A: 12 },
     startWith: ['l', 'w'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', max: 7 },
+    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
   },
 
   {
@@ -180,7 +184,7 @@ export const K12_MODULES: ModuleDef[] = [
       'Part = p% of Whole': {
         x: {
           expr: '{p} ÷ 100 × {w}',
-          how: 'Write the percent as a fraction of 100, then take that fraction of the whole.',
+          how: 'p% means p out of 100, so take p hundredths of the whole.',
         },
         w: {
           expr: '100 × {x} ÷ {p}',
@@ -188,7 +192,7 @@ export const K12_MODULES: ModuleDef[] = [
         },
         p: {
           expr: '100 × {x} ÷ {w}',
-          how: 'Divide the part by the whole to get a fraction, then multiply by 100.',
+          how: 'Divide the part by the whole, then multiply by 100 to get “out of 100”.',
         },
       },
     },
@@ -205,10 +209,10 @@ export const K12_MODULES: ModuleDef[] = [
       'All lengths use the same unit; area is in square units.',
     ],
     variables: [
-      { id: 'r', symbol: 'r', name: 'Radius', unit: 'cm', min: 0, max: 10, step: 0.5 },
-      { id: 'd', symbol: 'd', name: 'Diameter', unit: 'cm', min: 0, max: 20 },
-      { id: 'C', symbol: 'C', name: 'Circumference', unit: 'cm', min: 0, max: 63 },
-      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 315 },
+      { id: 'r', symbol: 'r', name: 'Radius', unit: 'cm', min: 0, max: 1000, step: 0.5 },
+      { id: 'd', symbol: 'd', name: 'Diameter', unit: 'cm', min: 0, max: 2000 },
+      { id: 'C', symbol: 'C', name: 'Circumference', unit: 'cm', min: 0, max: 6300 },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 3200000 },
     ],
     relations: [
       {
@@ -217,6 +221,13 @@ export const K12_MODULES: ModuleDef[] = [
         vars: ['d', 'r'],
         residual: (v) => v.d! - 2 * v.r!,
         solve: { d: (v) => 2 * v.r!, r: (v) => v.d! / 2 },
+      },
+      {
+        id: 'C = πd',
+        display: '{C} = π × {d}',
+        vars: ['C', 'd'],
+        residual: (v) => v.C! - Math.PI * v.d!,
+        solve: { C: (v) => Math.PI * v.d!, d: (v) => v.C! / Math.PI },
       },
       {
         id: 'C = 2πr',
@@ -238,8 +249,15 @@ export const K12_MODULES: ModuleDef[] = [
         d: { expr: '2 × {r}', how: 'A diameter is two radii end to end through the center.' },
         r: { expr: '{d} ÷ 2', how: 'The radius is half the diameter.' },
       },
+      'C = πd': {
+        C: { expr: 'π × {d}', how: 'Circumference is π times the diameter.' },
+        d: { expr: '{C} ÷ π', how: 'Divide both sides by π.' },
+      },
       'C = 2πr': {
-        C: { expr: '2 × π × {r}', how: 'Multiply the radius by 2π.' },
+        C: {
+          expr: '2 × π × {r}',
+          how: 'The diameter is 2r, and circumference is π times the diameter.',
+        },
         r: { expr: '{C} ÷ (2 × π)', how: 'Divide both sides by 2π.' },
       },
       'A = πr²': {
@@ -255,7 +273,7 @@ export const K12_MODULES: ModuleDef[] = [
     representation: {
       kind: 'circle',
       radius: 'r',
-      max: 5,
+      extent: 5,
       diameter: 'd',
       circumference: 'C',
       area: 'A',
@@ -266,8 +284,8 @@ export const K12_MODULES: ModuleDef[] = [
     id: 'm.8.pythagorean',
     assumptions: [
       'The triangle has one right angle (90°).',
-      'a and b are the legs, the two sides that form the right angle.',
-      'c is the hypotenuse, opposite the right angle; it is always the longest side.',
+      'a and b are the legs, which form the right angle; c is the hypotenuse, the longest side.',
+      'Distance between two points: the horizontal and vertical differences are the legs a and b.',
       'All three sides use the same unit.',
     ],
     variables: [
@@ -281,6 +299,8 @@ export const K12_MODULES: ModuleDef[] = [
         display: '{a}² + {b}² = {c}²',
         vars: ['a', 'b', 'c'],
         residual: (v) => v.a! ** 2 + v.b! ** 2 - v.c! ** 2,
+        // √ of a negative is NaN on purpose: the solver reports it as a conflict
+        // (a hypotenuse shorter than a leg) instead of silently leaving the leg blank.
         solve: {
           c: (v) => Math.sqrt(v.a! ** 2 + v.b! ** 2),
           a: (v) => Math.sqrt(v.c! ** 2 - v.b! ** 2),
@@ -303,14 +323,14 @@ export const K12_MODULES: ModuleDef[] = [
     },
     example: { a: 3, b: 4, c: 5 },
     startWith: ['a', 'b'],
-    representation: { kind: 'rightTriangle', a: 'a', b: 'b', c: 'c', max: 5 },
+    representation: { kind: 'rightTriangle', a: 'a', b: 'b', c: 'c', extent: 5 },
   },
 
   {
     id: 'm.8.linear-functions',
     assumptions: [
       'The graph is a straight line, so y changes at a constant rate.',
-      'm is the slope: how much y changes when x increases by 1.',
+      'm is the slope: how much y changes when x increases by 1 (rise over run).',
       'b is the y-intercept: the value of y when x = 0.',
     ],
     variables: [
@@ -335,7 +355,10 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'y = mx + b': {
-        y: { expr: '{m} × {x} + {b}', how: 'Multiply x by the slope, then add the y-intercept.' },
+        y: {
+          expr: '{m} × {x} + {b}',
+          how: 'Start at b, then add the slope once for every step of x.',
+        },
         b: { expr: '{y} − {m} × {x}', how: 'Subtract m·x from both sides.' },
         m: { expr: '({y} − {b}) ÷ {x}', how: 'Subtract b from both sides, then divide by x.' },
         x: {
@@ -345,12 +368,14 @@ export const K12_MODULES: ModuleDef[] = [
       },
     },
     example: { m: 2, b: 1, x: 3, y: 7 },
-    startWith: ['m', 'b', 'x'],
+    startWith: ['x', 'm', 'b'],
     representation: {
       kind: 'plot',
       x: { var: 'x', min: -10, max: 10 },
-      y: { var: 'y', min: -10, max: 10 },
+      y: { var: 'y', min: -20, max: 20 },
       params: ['m', 'b'],
+      slopeTriangle: 'm',
+      intercept: 'b',
     },
   },
 
@@ -360,7 +385,6 @@ export const K12_MODULES: ModuleDef[] = [
       'The amount changes by the same percent every time period (it compounds).',
       'A positive rate means growth; a negative rate means decay.',
       'All time periods are the same length.',
-      'Nothing is added or removed except the percent change.',
     ],
     variables: [
       { id: 'a', symbol: 'a', name: 'Starting amount', min: 0, max: 1000000 },
@@ -370,7 +394,7 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     relations: [
       {
-        id: 'y = a(1 + r)^t',
+        id: 'y = a(1 + r/100)^t',
         display: '{y} = {a} × (1 + {r} ÷ 100)^{t}',
         vars: ['y', 'a', 'r', 't'],
         residual: (v) => v.y! - v.a! * (1 + v.r! / 100) ** v.t!,
@@ -392,10 +416,10 @@ export const K12_MODULES: ModuleDef[] = [
       },
     ],
     steps: {
-      'y = a(1 + r)^t': {
+      'y = a(1 + r/100)^t': {
         y: {
           expr: '{a} × (1 + {r} ÷ 100)^{t}',
-          how: 'Turn the rate into a growth factor (1 + r/100), multiply it in once per period, then multiply by the start.',
+          how: 'The growth factor is 1 + r/100. Multiply by it once per period, starting from a.',
         },
         a: {
           expr: '{y} ÷ (1 + {r} ÷ 100)^{t}',
@@ -403,16 +427,16 @@ export const K12_MODULES: ModuleDef[] = [
         },
         t: {
           expr: 'ln({y} ÷ {a}) ÷ ln(1 + {r} ÷ 100)',
-          how: 'Divide both sides by a, then take the logarithm of both sides to bring t down.',
+          how: 'Divide both sides by a. In Algebra 1, find t in the table where y is reached; with logarithms (Algebra 2), take the log of both sides to bring t down.',
         },
         r: {
           expr: '100 × (({y} ÷ {a})^(1 ÷ {t}) − 1)',
-          how: 'Divide both sides by a, take the t-th root to get the growth factor, subtract 1, and write it as a percent.',
+          how: 'Divide by a and take the t-th root to get the growth factor. Subtract 1 and write it as a percent.',
         },
       },
     },
     example: { a: 100, r: 10, t: 3, y: 133.1 },
-    startWith: ['a', 'r', 't'],
+    startWith: ['t', 'a', 'r'],
     representation: {
       kind: 'table',
       sweep: 't',
@@ -427,13 +451,12 @@ export const K12_MODULES: ModuleDef[] = [
     assumptions: [
       'The object is one uniform material, so its density is the same everywhere.',
       'Mass in grams and volume in cubic centimeters give density in g/cm³.',
-      'Temperature and pressure stay the same (density changes a little when they do).',
       'Water is about 1 g/cm³: denser objects sink in water, less dense ones float.',
     ],
     variables: [
       { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/cm³', min: 0, max: 25, step: 0.1 },
-      { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0, max: 25000 },
-      { id: 'V', symbol: 'V', name: 'Volume', unit: 'cm³', min: 0, max: 1000, step: 1 },
+      { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0, max: 2500000 },
+      { id: 'V', symbol: 'V', name: 'Volume', unit: 'cm³', min: 0, max: 100000, step: 1 },
     ],
     relations: [
       {
@@ -450,8 +473,11 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'ρ = m ÷ V': {
-        rho: { expr: '{m} ÷ {V}', how: 'Divide the mass by the volume.' },
-        m: { expr: '{rho} × {V}', how: 'Multiply both sides by the volume.' },
+        rho: {
+          expr: '{m} ÷ {V}',
+          how: 'Density is the mass in each 1 cm³: share the mass equally over the volume.',
+        },
+        m: { expr: '{rho} × {V}', how: 'Each cm³ has ρ grams, so multiply by the number of cm³.' },
         V: { expr: '{m} ÷ {rho}', how: 'Multiply both sides by V, then divide by the density.' },
       },
     },
@@ -459,9 +485,10 @@ export const K12_MODULES: ModuleDef[] = [
     startWith: ['rho', 'V'],
     representation: {
       kind: 'plot',
-      x: { var: 'V', min: 0, max: 100 },
-      y: { var: 'm', min: 0, max: 300 },
+      x: { var: 'V', min: 0, max: 100, label: 'V (cm³)' },
+      y: { var: 'm', min: 0, max: 300, label: 'm (g)' },
       params: ['rho'],
+      autoRange: true,
     },
   },
 
@@ -469,14 +496,14 @@ export const K12_MODULES: ModuleDef[] = [
     id: 's.8.newtons-laws',
     assumptions: [
       'F is the net force: all the forces on the object added together.',
-      'The mass does not change while the force acts.',
-      'Force and acceleration point in the same direction.',
-      'Units: newtons (N) = kilograms (kg) × meters per second squared (m/s²).',
+      '1st law: no net force means no acceleration (a = 0). 3rd law: forces come in equal, opposite pairs.',
+      'The mass stays the same, and the force and acceleration point the same way.',
+      '1 N = 1 kg × 1 m/s².',
     ],
     variables: [
-      { id: 'F', symbol: 'F', name: 'Net force', unit: 'N', min: 0, max: 2000, step: 1 },
-      { id: 'm', symbol: 'm', name: 'Mass', unit: 'kg', min: 0.1, max: 100, step: 0.5 },
-      { id: 'a', symbol: 'a', name: 'Acceleration', unit: 'm/s²', min: 0, max: 20, step: 0.5 },
+      { id: 'F', symbol: 'F', name: 'Net force', unit: 'N', min: 0, max: 100000, step: 1 },
+      { id: 'm', symbol: 'm', name: 'Mass', unit: 'kg', min: 0.5, max: 5000, step: 0.5 },
+      { id: 'a', symbol: 'a', name: 'Acceleration', unit: 'm/s²', min: 0, max: 1000, step: 0.5 },
     ],
     relations: [
       {
@@ -493,20 +520,26 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'F = m × a': {
-        F: { expr: '{m} × {a}', how: 'Multiply the mass by the acceleration.' },
+        F: {
+          expr: '{m} × {a}',
+          how: 'A bigger mass or a bigger acceleration needs more force: multiply them.',
+        },
         m: { expr: '{F} ÷ {a}', how: 'Divide both sides by the acceleration.' },
-        a: { expr: '{F} ÷ {m}', how: 'Divide both sides by the mass.' },
+        a: {
+          expr: '{F} ÷ {m}',
+          how: 'Divide both sides by the mass: the same force speeds up a heavier object less.',
+        },
       },
     },
     example: { m: 10, a: 2, F: 20 },
-    startWith: ['m', 'a'],
+    startWith: ['a', 'm'],
     representation: {
       kind: 'force',
       force: 'F',
       mass: 'm',
       acceleration: 'a',
-      maxForce: 50,
-      maxAcceleration: 5,
+      forceExtent: 50,
+      accelerationExtent: 5,
     },
   },
 ];

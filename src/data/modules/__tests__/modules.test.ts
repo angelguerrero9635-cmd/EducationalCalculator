@@ -1,4 +1,5 @@
 import { holds, solve } from '@/engine/solve';
+import { initialState, setValues } from '@/engine/state';
 import { resolveItem } from '@/data/selectors';
 
 import { MODULES } from '..';
@@ -10,8 +11,14 @@ function representationVars(r: Representation): string[] {
   switch (r.kind) {
     case 'numberLine':
       return [r.start, r.jump, r.end];
+    case 'tenFrame':
+      return [r.first, r.second, r.total];
     case 'bars':
       return [...r.bars.map((b) => b.var), ...(r.total ? [r.total] : [])];
+    case 'pictureGraph':
+      return [...r.columns.map((b) => b.var), ...(r.total ? [r.total] : [])];
+    case 'waterfall':
+      return [...r.items.map((b) => b.var), r.total, ...(r.caption ?? [])];
     case 'rectangle':
       return [r.length, r.width, ...(r.inside ? [r.inside] : [])];
     case 'grid100':
@@ -21,11 +28,18 @@ function representationVars(r: Representation): string[] {
     case 'rightTriangle':
       return [r.a, r.b, r.c];
     case 'plot':
-      return [r.x.var, r.y.var, ...r.params, ...(r.tangentSlope ? [r.tangentSlope] : [])];
+      return [
+        r.x.var,
+        r.y.var,
+        ...r.params,
+        ...[r.tangentSlope, r.slopeTriangle, r.intercept].filter((v): v is string => !!v),
+      ];
     case 'table':
       return [r.sweep, r.output, ...r.params];
     case 'force':
       return [r.force, r.mass, r.acceleration];
+    case 'seriesCircuit':
+      return [r.source, r.current, ...r.resistors.flatMap((x) => [x.r, x.v])];
   }
 }
 
@@ -157,7 +171,7 @@ it('builds readable steps (area example)', () => {
       id: 'w',
       title: 'Find width (w)',
       formula: 'A = l × w',
-      how: 'Divide both sides by the length.',
+      how: 'Each row has l squares. Divide to find how many rows.',
       rearranged: 'w = A ÷ l',
       substituted: 'w = 12 ÷ 4',
       result: 'w = 3 cm',
@@ -171,4 +185,41 @@ it('lists what is still missing', () => {
   const w = buildSteps(m, solve(m, [{ id: 'l', value: 4 }]));
   expect(w.steps).toEqual([]);
   expect(w.missing.map((q) => q.symbol)).toEqual(['w', 'A']);
+});
+
+describe('regressions found in review', () => {
+  const byId = (id: string) => MODULES.find((m) => m.id === id)!;
+  const open = (m: ModuleDef) =>
+    initialState(
+      m,
+      m.startWith.map((id) => ({ id, value: m.example[id]! })),
+    );
+
+  it('population: typing RNI recalculates the population instead of clearing it', () => {
+    const m = byId('he.geography.human-geography#0');
+    const s = setValues(m, open(m), { RNI: 1 });
+    expect(s.errors).toEqual({});
+    expect(s.result.values.Pop).toBeCloseTo(200000);
+    expect(s.result.values.CBR).toBeCloseTo(30);
+    expect(s.result.values.CDR).toBeCloseTo(20);
+  });
+
+  it('population: a tiny growth rate gives a long doubling time without clearing inputs', () => {
+    const m = byId('he.geography.human-geography#0');
+    const s = setValues(m, open(m), { D: 4000, B: 4001 });
+    expect(s.result.cleared).toEqual([]);
+    expect(s.result.values.Td).toBeCloseTo(350000);
+  });
+
+  it('derivatives: impossible slopes and values are reported, not silently accepted', () => {
+    const m = byId('he.math.calc-1#1');
+    // n = 1 makes f′ = c everywhere, so typing f′ = 5 must change c.
+    let s = setValues(m, open(m), { n: 1 });
+    s = setValues(m, s, { m: 5 });
+    expect(s.result.values.c).toBeCloseTo(5);
+    // n = 0 makes f = c everywhere, so typing f(x) = 4 must change c.
+    s = setValues(m, open(m), { n: 0 });
+    s = setValues(m, s, { y: 4 });
+    expect(s.result.values.c).toBeCloseTo(4);
+  });
 });

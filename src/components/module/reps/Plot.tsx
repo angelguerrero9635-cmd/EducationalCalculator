@@ -1,23 +1,15 @@
 import { useRef } from 'react';
-import { StyleSheet, Text } from 'react-native';
-import Svg, {
-  ClipPath,
-  Defs,
-  G,
-  Circle,
-  Line,
-  Path,
-  Rect,
-  Text as SvgText,
-} from 'react-native-svg';
+import { StyleSheet } from 'react-native';
+import Svg, { Circle, ClipPath, Defs, G, Line, Path, Rect } from 'react-native-svg';
 
+import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { solve } from '@/engine/solve';
-import { font, space, usePalette } from '@/theme';
+import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, DragHandle, useRep } from './common';
+import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'plot' }>;
 const SAMPLES = 120;
@@ -33,9 +25,20 @@ export function niceStep(range: number): number {
 const ticks = (min: number, max: number) => {
   const step = niceStep(max - min);
   const out: number[] = [];
-  for (let t = Math.ceil(min / step) * step; t <= max + 1e-9; t += step)
+  for (let t = Math.ceil(min / step) * step; t <= max + 1e-9; t += step) {
     out.push(Number(t.toFixed(10)));
+  }
   return out;
+};
+
+/** Grows [min, max] to a round range that includes every value (never shrinks it). */
+const grow = (min: number, max: number, values: number[]) => {
+  const lo = Math.min(min, ...values);
+  const hi = Math.max(max, ...values);
+  return {
+    min: lo < min ? -niceCeil(-lo * 1.1) : min,
+    max: hi > max ? niceCeil(hi * 1.1) : max,
+  };
 };
 
 export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
@@ -45,21 +48,36 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const { module, values } = calc;
   const pinned = rep.pin(spec.params);
   const paramsKnown = spec.params.every(rep.known);
+  const px = values[spec.x.var];
+  const py = values[spec.y.var];
 
-  // Curve: y at each sampled x, with the parameters held at their current values.
-  const curve = (() => {
+  const curveOver = (xMin: number, xMax: number) => {
     if (!paramsKnown) return [];
     const givens = Object.entries(pinned).map(([id, value]) => ({ id, value }));
     return Array.from({ length: SAMPLES + 1 }, (_, i) => {
-      const x = spec.x.min + ((spec.x.max - spec.x.min) * i) / SAMPLES;
+      const x = xMin + ((xMax - xMin) * i) / SAMPLES;
       const y = solve(module, [...givens, { id: spec.x.var, value: x }]).values[spec.y.var];
       return { x, y };
     });
-  })();
+  };
 
-  const px = values[spec.x.var];
-  const py = values[spec.y.var];
+  // Axis ranges: the spec's ranges, grown to keep the point and curve in view if autoRange.
+  const xr = spec.autoRange && px !== undefined ? grow(spec.x.min, spec.x.max, [px]) : spec.x;
+  const liveCurve = curveOver(xr.min, xr.max);
+  const yr = spec.autoRange
+    ? grow(spec.y.min, spec.y.max, [
+        ...liveCurve.flatMap((p) => (p.y === undefined || !Number.isFinite(p.y) ? [] : [p.y])),
+        ...(py === undefined ? [] : [py]),
+      ])
+    : spec.y;
+  const axes = useFrozen({ x: { min: xr.min, max: xr.max }, y: { min: yr.min, max: yr.max } });
+  const X = axes.value.x;
+  const Yr = axes.value.y;
+  const curve = X.min === xr.min && X.max === xr.max ? liveCurve : curveOver(X.min, X.max);
+
   const slope = spec.tangentSlope ? values[spec.tangentSlope] : undefined;
+  const riseRun = spec.slopeTriangle ? values[spec.slopeTriangle] : undefined;
+  const intercept = spec.intercept ? values[spec.intercept] : undefined;
   const xVar = rep.variable(spec.x.var);
   const yVar = rep.variable(spec.y.var);
 
@@ -71,12 +89,12 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const R = 12;
           const T = 24;
           const B = 34;
-          const xScale = (w - L - R) / (spec.x.max - spec.x.min);
-          const yScale = (h - T - B) / (spec.y.max - spec.y.min);
-          const sx = (x: number) => L + (x - spec.x.min) * xScale;
-          const sy = (y: number) => h - B - (y - spec.y.min) * yScale;
-          const axisY = sy(Math.min(spec.y.max, Math.max(spec.y.min, 0)));
-          const axisX = sx(Math.min(spec.x.max, Math.max(spec.x.min, 0)));
+          const xScale = (w - L - R) / (X.max - X.min);
+          const yScale = (h - T - B) / (Yr.max - Yr.min);
+          const sx = (x: number) => L + (x - X.min) * xScale;
+          const sy = (y: number) => h - B - (y - Yr.min) * yScale;
+          const axisY = sy(Math.min(Yr.max, Math.max(Yr.min, 0)));
+          const axisX = sx(Math.min(X.max, Math.max(X.min, 0)));
 
           let d = '';
           let pen = false;
@@ -100,6 +118,9 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
             }
           }
 
+          // Rise/run triangle: run of 1 to the right (or left if there is no room).
+          const run = px !== undefined && px + 1 > X.max ? -1 : 1;
+          const hasPoint = px !== undefined && py !== undefined;
           const hx = px === undefined ? undefined : Math.min(w - R, Math.max(L, sx(px)));
           const hy = py === undefined ? undefined : Math.min(h - B, Math.max(T, sy(py)));
 
@@ -117,77 +138,123 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   width={w - L - R}
                   height={h - T - B}
                   fill="none"
-                  stroke={c.border}
+                  stroke={c.chartGrid}
                 />
-                {ticks(spec.x.min, spec.x.max).map((t) => (
+                {ticks(X.min, X.max).map((t) => (
                   <G key={`x${t}`}>
-                    <Line x1={sx(t)} y1={T} x2={sx(t)} y2={h - B} stroke={c.surface} />
-                    <SvgText
+                    <Line x1={sx(t)} y1={T} x2={sx(t)} y2={h - B} stroke={c.chartSurface} />
+                    <ChartText
                       x={sx(t)}
                       y={h - B + 14}
-                      fontSize={10}
-                      fill={c.textMuted}
+                      fontSize={chart.tiny}
+                      fill={c.chartMuted}
                       textAnchor="middle"
                     >
                       {formatNumber(t)}
-                    </SvgText>
+                    </ChartText>
                   </G>
                 ))}
-                {ticks(spec.y.min, spec.y.max).map((t) => (
+                {ticks(Yr.min, Yr.max).map((t) => (
                   <G key={`y${t}`}>
-                    <Line x1={L} y1={sy(t)} x2={w - R} y2={sy(t)} stroke={c.surface} />
-                    <SvgText
+                    <Line x1={L} y1={sy(t)} x2={w - R} y2={sy(t)} stroke={c.chartSurface} />
+                    <ChartText
                       x={L - 6}
                       y={sy(t) + 3}
-                      fontSize={10}
-                      fill={c.textMuted}
+                      fontSize={chart.tiny}
+                      fill={c.chartMuted}
                       textAnchor="end"
                     >
                       {formatNumber(t)}
-                    </SvgText>
+                    </ChartText>
                   </G>
                 ))}
-                <Line x1={L} y1={axisY} x2={w - R} y2={axisY} stroke={c.textMuted} />
-                <Line x1={axisX} y1={T} x2={axisX} y2={h - B} stroke={c.textMuted} />
-                <SvgText x={w - R} y={h - 4} fontSize={11} fill={c.text} textAnchor="end">
+                <Line x1={L} y1={axisY} x2={w - R} y2={axisY} stroke={c.chartMuted} />
+                <Line x1={axisX} y1={T} x2={axisX} y2={h - B} stroke={c.chartMuted} />
+                <ChartText x={w - R} y={h - 4} fontSize={chart.small} textAnchor="end">
                   {spec.x.label ?? xVar.symbol}
-                </SvgText>
-                <SvgText x={4} y={12} fontSize={11} fill={c.text}>
+                </ChartText>
+                <ChartText x={4} y={12} fontSize={chart.small}>
                   {spec.y.label ?? yVar.symbol}
-                </SvgText>
+                </ChartText>
                 <G clipPath="url(#plot-area)">
-                  {shade ? <Path d={shade} fill={c.placeholder} /> : null}
-                  {d ? <Path d={d} stroke={c.text} strokeWidth={2} fill="none" /> : null}
-                  {slope !== undefined && px !== undefined && py !== undefined ? (
+                  {shade ? <Path d={shade} fill={c.chartFill} /> : null}
+                  {d ? (
+                    <Path d={d} stroke={c.chartInk} strokeWidth={chart.stroke} fill="none" />
+                  ) : null}
+                  {slope !== undefined && hasPoint ? (
                     <Line
-                      x1={sx(spec.x.min)}
-                      y1={sy(py + slope * (spec.x.min - px))}
-                      x2={sx(spec.x.max)}
-                      y2={sy(py + slope * (spec.x.max - px))}
-                      stroke={c.textMuted}
-                      strokeWidth={1.5}
-                      strokeDasharray="6 4"
+                      x1={sx(X.min)}
+                      y1={sy(py! + slope * (X.min - px!))}
+                      x2={sx(X.max)}
+                      y2={sy(py! + slope * (X.max - px!))}
+                      stroke={c.chartMuted}
+                      strokeWidth={chart.strokeLight}
+                      strokeDasharray={chart.dash}
                     />
                   ) : null}
-                  {px !== undefined && py !== undefined ? (
+                  {riseRun !== undefined && hasPoint ? (
+                    <>
+                      <Path
+                        d={`M ${sx(px!)} ${sy(py!)} L ${sx(px! + run)} ${sy(py!)} L ${sx(px! + run)} ${sy(py! + run * riseRun)}`}
+                        stroke={c.chartMuted}
+                        strokeWidth={chart.strokeLight}
+                        strokeDasharray={chart.dashFine}
+                        fill="none"
+                      />
+                      <ChartText
+                        x={sx(px! + run / 2)}
+                        y={sy(py!) + (riseRun * run >= 0 ? 14 : -6)}
+                        fontSize={chart.small}
+                        fill={c.chartMuted}
+                        textAnchor="middle"
+                      >
+                        run 1
+                      </ChartText>
+                      <ChartText
+                        x={sx(px! + run) + (run > 0 ? 4 : -4)}
+                        y={sy(py! + (run * riseRun) / 2) + 4}
+                        fontSize={chart.small}
+                        fill={c.chartMuted}
+                        textAnchor={run > 0 ? 'start' : 'end'}
+                      >
+                        {`rise ${formatNumber(riseRun)}`}
+                      </ChartText>
+                    </>
+                  ) : null}
+                  {intercept !== undefined ? (
+                    <>
+                      <Circle
+                        cx={sx(0)}
+                        cy={sy(intercept)}
+                        r={4}
+                        fill={c.background}
+                        stroke={c.chartInk}
+                        strokeWidth={chart.strokeLight}
+                      />
+                      <ChartText x={sx(0) + 7} y={sy(intercept) - 7} fontSize={chart.small}>
+                        {`(0, ${formatNumber(intercept)})`}
+                      </ChartText>
+                    </>
+                  ) : null}
+                  {hasPoint ? (
                     <>
                       <Line
-                        x1={sx(px)}
-                        y1={sy(py)}
-                        x2={sx(px)}
+                        x1={sx(px!)}
+                        y1={sy(py!)}
+                        x2={sx(px!)}
                         y2={axisY}
-                        stroke={c.textMuted}
-                        strokeDasharray="3 3"
+                        stroke={c.chartMuted}
+                        strokeDasharray={chart.dashFine}
                       />
                       <Line
-                        x1={sx(px)}
-                        y1={sy(py)}
+                        x1={sx(px!)}
+                        y1={sy(py!)}
                         x2={axisX}
-                        y2={sy(py)}
-                        stroke={c.textMuted}
-                        strokeDasharray="3 3"
+                        y2={sy(py!)}
+                        stroke={c.chartMuted}
+                        strokeDasharray={chart.dashFine}
                       />
-                      <Circle cx={sx(px)} cy={sy(py)} r={5} fill={c.text} />
+                      <Circle cx={sx(px!)} cy={sy(py!)} r={5} fill={c.chartInk} />
                     </>
                   ) : null}
                 </G>
@@ -198,7 +265,11 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   x={hx}
                   y={hy}
                   label={xVar.name}
-                  onStart={() => (start.current = px ?? 0)}
+                  onStart={() => {
+                    start.current = px ?? 0;
+                    axes.freeze();
+                  }}
+                  onEnd={axes.release}
                   onMove={(dx) =>
                     calc.set({
                       ...pinned,

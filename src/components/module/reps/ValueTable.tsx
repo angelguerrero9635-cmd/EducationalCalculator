@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/Text';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -33,10 +34,12 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const head = (v: typeof sweep) => `${v.symbol}${v.unit ? ` (${v.unit})` : ''}`;
 
   return (
-    <View style={[styles.table, { borderColor: c.border }]}>
-      <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
-        <Text style={[styles.cell, styles.head, { color: c.text }]}>{head(sweep)}</Text>
-        <Text style={[styles.cell, styles.head, { color: c.text }]}>{head(output)}</Text>
+    <View style={[styles.table, { borderColor: c.chartGrid }]}>
+      <View
+        style={[styles.row, { backgroundColor: c.chartSurface, borderBottomColor: c.chartGrid }]}
+      >
+        <Text style={[styles.cell, styles.head, { color: c.chartInk }]}>{head(sweep)}</Text>
+        <Text style={[styles.cell, styles.head, { color: c.chartInk }]}>{head(output)}</Text>
       </View>
       {rows.map(({ x, y }) => {
         const selected = current !== undefined && Math.abs(current - x) < 1e-9;
@@ -50,21 +53,23 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
             onPress={() => calc.set({ ...pinned, [spec.sweep]: x })}
             style={({ pressed }) => [
               styles.row,
-              { borderBottomColor: c.border },
-              (selected || pressed) && { backgroundColor: selected ? c.accent : c.surface },
+              { borderBottomColor: c.chartGrid },
+              (selected || pressed) && {
+                backgroundColor: selected ? c.chartHighlight : c.chartSurface,
+              },
             ]}
           >
-            <Text style={[styles.cell, { color: selected ? c.onAccent : c.text }]}>
+            <Text style={[styles.cell, { color: selected ? c.onChartHighlight : c.chartInk }]}>
               {formatNumber(x, sweep)}
             </Text>
-            <Text style={[styles.cell, { color: selected ? c.onAccent : c.text }]}>
+            <Text style={[styles.cell, { color: selected ? c.onChartHighlight : c.chartInk }]}>
               {y === undefined ? '?' : formatNumber(y, output)}
             </Text>
           </Pressable>
         );
       })}
       {!paramsKnown ? (
-        <Text style={[styles.note, { color: c.textMuted }]}>
+        <Text style={[styles.note, { color: c.chartMuted }]}>
           {`Enter ${spec.params.map((id) => rep.variable(id).symbol).join(' and ')} to fill the table.`}
         </Text>
       ) : null}

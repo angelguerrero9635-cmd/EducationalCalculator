@@ -1,11 +1,11 @@
 import { useRef } from 'react';
-import Svg, { Circle, Line, Path, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
-import { usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, DragHandle, useRep } from './common';
+import { Canvas, DragHandle, useRep, ChartText } from './common';
 
 type Spec = Extract<Representation, { kind: 'numberLine' }>;
 
@@ -31,41 +31,66 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
         return (
           <>
             <Svg width={w} height={h}>
-              <Line x1={pad - 8} y1={y} x2={w - pad + 8} y2={y} stroke={c.text} strokeWidth={2} />
+              <Line
+                x1={pad - 8}
+                y1={y}
+                x2={w - pad + 8}
+                y2={y}
+                stroke={c.chartInk}
+                strokeWidth={chart.stroke}
+              />
               {ticks.map((n) => (
-                <Line key={n} x1={sx(n)} y1={y - 6} x2={sx(n)} y2={y + 6} stroke={c.text} />
+                <Line key={n} x1={sx(n)} y1={y - 6} x2={sx(n)} y2={y + 6} stroke={c.chartInk} />
               ))}
               {ticks.map((n) => (
-                <SvgText
+                <ChartText
                   key={`t${n}`}
                   x={sx(n)}
                   y={y + 22}
-                  fontSize={12}
-                  fill={c.textMuted}
+                  fontSize={chart.label}
+                  fill={c.chartMuted}
                   textAnchor="middle"
                 >
                   {n}
-                </SvgText>
+                </ChartText>
               ))}
               <Path
                 d={`M ${sx(a)} ${y} Q ${mid} ${y - 2 * lift} ${sx(end)} ${y}`}
-                stroke={c.text}
-                strokeWidth={2}
-                strokeDasharray="5 4"
+                stroke={c.chartInk}
+                strokeWidth={chart.stroke}
+                strokeDasharray={chart.dash}
                 fill="none"
                 opacity={faded ? 0.35 : 1}
               />
-              <SvgText x={mid} y={y - lift - 8} fontSize={13} fill={c.text} textAnchor="middle">
+              <ChartText
+                x={mid}
+                y={y - lift - 8}
+                fontSize={chart.value}
+                fill={c.chartInk}
+                textAnchor="middle"
+              >
                 {`${b >= 0 ? '+' : ''}${rep.label(spec.jump).split(' = ')[1]}`}
-              </SvgText>
-              <Circle cx={sx(a)} cy={y} r={5} fill={c.textMuted} />
-              <Circle cx={sx(end)} cy={y} r={6} fill={c.text} />
-              <SvgText x={sx(a)} y={y + 40} fontSize={12} fill={c.text} textAnchor="middle">
+              </ChartText>
+              <Circle cx={sx(a)} cy={y} r={5} fill={c.chartMuted} />
+              <Circle cx={sx(end)} cy={y} r={6} fill={c.chartInk} />
+              <ChartText
+                x={sx(a)}
+                y={y + 40}
+                fontSize={chart.label}
+                fill={c.chartInk}
+                textAnchor="middle"
+              >
                 {rep.label(spec.start)}
-              </SvgText>
-              <SvgText x={sx(end)} y={y + 40} fontSize={12} fill={c.text} textAnchor="middle">
+              </ChartText>
+              <ChartText
+                x={sx(end)}
+                y={y + 40}
+                fontSize={chart.label}
+                fill={c.chartInk}
+                textAnchor="middle"
+              >
                 {rep.label(spec.end)}
-              </SvgText>
+              </ChartText>
             </Svg>
             <DragHandle
               testID="drag-start"

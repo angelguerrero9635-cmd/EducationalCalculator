@@ -9,11 +9,19 @@ import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
 import { RectangleDiagram } from './Rectangle';
 import { RightTriangle } from './RightTriangle';
+import { PictureGraph } from './PictureGraph';
+import { SeriesCircuit } from './SeriesCircuit';
+import { TenFrame } from './TenFrame';
 import { ValueTable } from './ValueTable';
+import { Waterfall } from './Waterfall';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
-  r.kind === 'table' ? 'Table' : r.kind === 'plot' || r.kind === 'bars' ? 'Chart' : 'Diagram';
+  r.kind === 'table'
+    ? 'Table'
+    : ['plot', 'bars', 'pictureGraph', 'waterfall'].includes(r.kind)
+      ? 'Chart'
+      : 'Diagram';
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
@@ -35,5 +43,13 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <ValueTable spec={spec} calc={calc} />;
     case 'force':
       return <ForceDiagram spec={spec} calc={calc} />;
+    case 'tenFrame':
+      return <TenFrame spec={spec} calc={calc} />;
+    case 'pictureGraph':
+      return <PictureGraph spec={spec} calc={calc} />;
+    case 'waterfall':
+      return <Waterfall spec={spec} calc={calc} />;
+    case 'seriesCircuit':
+      return <SeriesCircuit spec={spec} calc={calc} />;
   }
 }

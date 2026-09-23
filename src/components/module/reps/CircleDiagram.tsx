@@ -1,28 +1,30 @@
 import { useRef } from 'react';
-import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Line } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
-import { usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, DragHandle, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'circle' }>;
 
+/** Circle with its radius and diameter drawn; drag the radius end to resize. */
 export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const handleStart = useRef({ x: 0, y: 0 });
   const r = rep.val(spec.radius);
   const faded = !rep.known(spec.radius);
+  const fit = useFrozen(Math.max(spec.extent, r));
 
   return (
     <Canvas aspect={0.9}>
       {({ w, h }) => {
         const cx = w / 2;
-        const cy = h / 2;
-        const scale = (Math.min(w, h) / 2 - 36) / spec.max;
-        const R = Math.min(r, spec.max) * scale;
+        const cy = h / 2 + 8;
+        const scale = (Math.min(w, h) / 2 - 40) / fit.value;
+        const R = r * scale;
         const angle = -Math.PI / 4;
         const hx = cx + R * Math.cos(angle);
         const hy = cy + R * Math.sin(angle);
@@ -33,9 +35,9 @@ export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) 
                 cx={cx}
                 cy={cy}
                 r={R}
-                fill={c.placeholder}
-                stroke={c.text}
-                strokeWidth={2}
+                fill={c.chartFill}
+                stroke={c.chartInk}
+                strokeWidth={chart.stroke}
                 opacity={faded ? 0.35 : 1}
               />
               {spec.diameter ? (
@@ -44,42 +46,47 @@ export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) 
                   y1={cy}
                   x2={cx + R}
                   y2={cy}
-                  stroke={c.textMuted}
-                  strokeDasharray="5 4"
+                  stroke={c.chartMuted}
+                  strokeDasharray={chart.dash}
                 />
               ) : null}
-              <Line x1={cx} y1={cy} x2={hx} y2={hy} stroke={c.text} strokeWidth={2} />
-              <Circle cx={cx} cy={cy} r={3} fill={c.text} />
-              <SvgText x={hx + 14} y={hy - 8} fontSize={13} fill={c.text}>
+              <Line
+                x1={cx}
+                y1={cy}
+                x2={hx}
+                y2={hy}
+                stroke={c.chartInk}
+                strokeWidth={chart.stroke}
+              />
+              <Circle cx={cx} cy={cy} r={3} fill={c.chartInk} />
+              <ChartText x={hx + 14} y={hy - 8} fontSize={chart.value}>
                 {rep.label(spec.radius)}
-              </SvgText>
+              </ChartText>
               {spec.diameter ? (
-                <SvgText x={cx} y={cy + 18} fontSize={12} fill={c.textMuted} textAnchor="middle">
+                <ChartText x={cx} y={cy + 18} fill={c.chartMuted} textAnchor="middle">
                   {rep.label(spec.diameter)}
-                </SvgText>
+                </ChartText>
               ) : null}
               {spec.area ? (
-                <SvgText
+                <ChartText
                   x={cx}
                   y={cy + R / 2 + 10}
-                  fontSize={13}
+                  fontSize={chart.value}
                   fontWeight="700"
-                  fill={c.text}
                   textAnchor="middle"
                 >
                   {rep.label(spec.area)}
-                </SvgText>
+                </ChartText>
               ) : null}
               {spec.circumference ? (
-                <SvgText
+                <ChartText
                   x={cx}
-                  y={Math.max(14, cy - R - 10)}
-                  fontSize={13}
-                  fill={c.text}
+                  y={Math.max(16, cy - R - 12)}
+                  fontSize={chart.value}
                   textAnchor="middle"
                 >
                   {`${rep.label(spec.circumference)} (all the way around)`}
-                </SvgText>
+                </ChartText>
               ) : null}
             </Svg>
             <DragHandle
@@ -87,7 +94,11 @@ export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) 
               x={hx}
               y={hy}
               label={rep.variable(spec.radius).name}
-              onStart={() => (handleStart.current = { x: hx, y: hy })}
+              onStart={() => {
+                handleStart.current = { x: hx, y: hy };
+                fit.freeze();
+              }}
+              onEnd={fit.release}
               onMove={(dx, dy) => {
                 const d = Math.hypot(
                   handleStart.current.x + dx - cx,

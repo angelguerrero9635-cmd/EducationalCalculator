@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/Text';
 
 import type { Representation } from '@/data/modules';
 import { font, space, usePalette } from '@/theme';
@@ -43,8 +44,8 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     width: cell,
                     height: cell,
                     borderWidth: StyleSheet.hairlineWidth,
-                    borderColor: c.border,
-                    backgroundColor: i < shaded ? c.accent : c.surface,
+                    borderColor: c.chartGrid,
+                    backgroundColor: i < shaded ? c.chartHighlight : c.chartSurface,
                   }}
                 />
               ))}
@@ -52,11 +53,11 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Text style={[styles.caption, { color: c.chartInk }]}>
         {`${rep.label(spec.percent)} → ${shaded} of 100 squares`}
       </Text>
       {spec.caption ? (
-        <Text style={[styles.caption, { color: c.textMuted }]}>
+        <Text style={[styles.caption, { color: c.chartMuted }]}>
           {`${rep.label(spec.caption.part)} out of ${rep.label(spec.caption.whole)}`}
         </Text>
       ) : null}
