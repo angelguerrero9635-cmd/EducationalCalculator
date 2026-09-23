@@ -1,0 +1,7 @@
+# Source of truth for course content — kept byte-for-byte as provided. Never reformat.
+src/data/taxonomy.ts
+pnpm-lock.yaml
+node_modules
+.expo
+dist
+coverage
