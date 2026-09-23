@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/Text';
 
 import { EmptyState, ListRow, SectionHeader } from '@/components';
 import { myCourseCards, type CourseCard } from '@/data/selectors';

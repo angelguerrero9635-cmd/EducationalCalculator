@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { Text } from '@/components/Text';
 
 import type { RefreshRow } from '@/data/selectors';
 import { font, space, usePalette } from '@/theme';

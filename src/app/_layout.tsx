@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 
 import { useHydrated, useSelectedLevels } from '@/state';
-import { usePalette, useResolvedScheme } from '@/theme';
+import { font, usePalette, useResolvedScheme } from '@/theme';
 
 export default function RootLayout() {
   const hydrated = useHydrated();
@@ -24,6 +24,12 @@ export default function RootLayout() {
         text: c.text,
         border: c.border,
       },
+      // Navigation headers and tab labels use the theme font when one is set.
+      fonts: font.family
+        ? (Object.fromEntries(
+            Object.entries(base.fonts).map(([k, v]) => [k, { ...v, fontFamily: font.family! }]),
+          ) as Theme['fonts'])
+        : base.fonts,
     };
   }, [scheme, c]);
 

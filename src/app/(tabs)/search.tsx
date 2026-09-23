@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   bar: { padding: space.md, borderBottomWidth: StyleSheet.hairlineWidth },
   input: {
+    fontFamily: font.family,
     fontSize: font.body,
     paddingHorizontal: space.md,
     paddingVertical: space.sm + 2,

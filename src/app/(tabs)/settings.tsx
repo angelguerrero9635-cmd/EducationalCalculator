@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Text } from '@/components/Text';
 
 import { ListRow, SectionHeader } from '@/components';
 import { parseLevelKey } from '@/data/selectors';

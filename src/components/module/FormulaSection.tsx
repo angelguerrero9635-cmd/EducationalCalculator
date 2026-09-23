@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import { Text } from '@/components/Text';
 
 import { Button } from '@/components/Button';
 import { formatNumber, parseNumber, renderTemplate } from '@/engine/format';
@@ -132,6 +133,7 @@ const styles = StyleSheet.create({
   name: { fontSize: font.body },
   meta: { fontSize: font.caption },
   input: {
+    fontFamily: font.family,
     width: 120,
     minHeight: 40,
     borderWidth: 1,

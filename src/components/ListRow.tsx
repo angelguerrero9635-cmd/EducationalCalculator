@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/Text';
 
 import type { RouteTarget } from '@/data/selectors';
 import { push } from '@/navigation';
@@ -76,5 +77,5 @@ const styles = StyleSheet.create({
   overline: { fontSize: font.caption, textTransform: 'uppercase', letterSpacing: 0.5 },
   title: { fontSize: font.body },
   subtitle: { fontSize: font.caption + 1 },
-  accessory: { fontSize: 22, marginLeft: space.sm, width: 16, textAlign: 'center' },
+  accessory: { fontSize: font.title, marginLeft: space.sm, width: 16, textAlign: 'center' },
 });
