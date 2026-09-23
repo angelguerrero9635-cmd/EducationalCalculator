@@ -1,6 +1,10 @@
 import type { Relation, Values, VariableDef } from '@/engine/types';
+import type { UnitSystem } from '@/engine/units';
 
-/** Plot axis: which variable it shows and the visible range. */
+/**
+ * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
+ * The label defaults to the symbol and the current unit, e.g. "t (s)".
+ */
 export interface Axis {
   var: string;
   min: number;
@@ -135,4 +139,9 @@ export interface ModuleDef {
    */
   startWith: string[];
   representation: Representation;
+  /**
+   * Unit systems offered for the whole module (default: metric and US customary). Mixed units
+   * stay available either way.
+   */
+  unitSystems?: UnitSystem[];
 }

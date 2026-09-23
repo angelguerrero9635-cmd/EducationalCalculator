@@ -475,18 +475,23 @@ export const K12_MODULES: ModuleDef[] = [
       'ρ = m ÷ V': {
         rho: {
           expr: '{m} ÷ {V}',
-          how: 'Density is the mass in each 1 cm³: share the mass equally over the volume.',
+          how: 'Density is the mass in each unit of volume: share the mass equally over the volume.',
         },
-        m: { expr: '{rho} × {V}', how: 'Each cm³ has ρ grams, so multiply by the number of cm³.' },
+        m: {
+          expr: '{rho} × {V}',
+          how: 'Each unit of volume holds ρ of mass, so multiply by the volume.',
+        },
         V: { expr: '{m} ÷ {rho}', how: 'Multiply both sides by V, then divide by the density.' },
       },
     },
     example: { rho: 2.7, V: 20, m: 54 },
     startWith: ['rho', 'V'],
+    // Middle-school science (NGSS) works in SI; US units stay reachable through Mixed.
+    unitSystems: ['metric'],
     representation: {
       kind: 'plot',
-      x: { var: 'V', min: 0, max: 100, label: 'V (cm³)' },
-      y: { var: 'm', min: 0, max: 300, label: 'm (g)' },
+      x: { var: 'V', min: 0, max: 100 },
+      y: { var: 'm', min: 0, max: 300 },
       params: ['rho'],
       autoRange: true,
     },
@@ -533,6 +538,8 @@ export const K12_MODULES: ModuleDef[] = [
     },
     example: { m: 10, a: 2, F: 20 },
     startWith: ['a', 'm'],
+    // Middle-school science (NGSS) works in SI; US units stay reachable through Mixed.
+    unitSystems: ['metric'],
     representation: {
       kind: 'force',
       force: 'F',

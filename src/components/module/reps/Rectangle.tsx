@@ -17,7 +17,12 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
   const l = rep.val(spec.length);
   const wd = rep.val(spec.width);
   const faded = ![spec.length, spec.width].every(rep.known);
-  const fit = useFrozen(Math.max(spec.extent, Math.ceil(Math.max(l, wd))));
+  // Extent and unit squares are in the shown unit; geometry stays in formula units.
+  const f = rep.factor(spec.length);
+  const fit = useFrozen(Math.max(spec.extent, Math.ceil(Math.max(l, wd) / f)) * f);
+  const sl = rep.shown(spec.length);
+  const sw = rep.shown(spec.width);
+  const sameUnit = rep.unit(spec.length) === rep.unit(spec.width);
 
   return (
     <Canvas aspect={0.8}>
@@ -27,7 +32,8 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
         const unit = Math.min((w - left - 28) / fit.value, (h - top - 44) / fit.value);
         const rw = l * unit;
         const rh = wd * unit;
-        const showGrid = Number.isInteger(l) && Number.isInteger(wd) && unit >= 6;
+        const cellPx = unit * f;
+        const showGrid = sameUnit && Number.isInteger(sl) && Number.isInteger(sw) && cellPx >= 6;
         return (
           <>
             <Svg width={w} height={h}>
@@ -43,23 +49,23 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
               />
               {showGrid
                 ? [
-                    ...Array.from({ length: Math.max(0, l - 1) }, (_, i) => (
+                    ...Array.from({ length: Math.max(0, sl - 1) }, (_, i) => (
                       <Line
                         key={`x${i}`}
-                        x1={left + (i + 1) * unit}
+                        x1={left + (i + 1) * cellPx}
                         y1={top}
-                        x2={left + (i + 1) * unit}
+                        x2={left + (i + 1) * cellPx}
                         y2={top + rh}
                         stroke={c.chartGrid}
                       />
                     )),
-                    ...Array.from({ length: Math.max(0, wd - 1) }, (_, i) => (
+                    ...Array.from({ length: Math.max(0, sw - 1) }, (_, i) => (
                       <Line
                         key={`y${i}`}
                         x1={left}
-                        y1={top + (i + 1) * unit}
+                        y1={top + (i + 1) * cellPx}
                         x2={left + rw}
-                        y2={top + (i + 1) * unit}
+                        y2={top + (i + 1) * cellPx}
                         stroke={c.chartGrid}
                       />
                     )),

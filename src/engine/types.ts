@@ -15,6 +15,12 @@ export interface VariableDef {
   step?: number;
   /** Whole numbers only. */
   integer?: boolean;
+  /**
+   * Set by the unit context, not by content: how many formula units one shown unit equals, and
+   * the shown unit. Ranges and whole-number rules then apply to the shown number.
+   */
+  unitFactor?: number;
+  displayUnit?: string;
 }
 
 /**

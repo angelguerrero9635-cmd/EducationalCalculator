@@ -23,8 +23,11 @@ export function ForceDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const F = rep.val(spec.force);
   const a = rep.val(spec.acceleration);
   const fit = useFrozen({
-    force: Math.max(spec.forceExtent, niceCeil(F)),
-    accel: Math.max(spec.accelerationExtent, niceCeil(a)),
+    // Extents are in the shown units (e.g. 50 N or 50 lbf); drawing uses formula units.
+    force: Math.max(spec.forceExtent, niceCeil(rep.shown(spec.force))) * rep.factor(spec.force),
+    accel:
+      Math.max(spec.accelerationExtent, niceCeil(rep.shown(spec.acceleration))) *
+      rep.factor(spec.acceleration),
   });
 
   return (

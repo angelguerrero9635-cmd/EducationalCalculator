@@ -136,27 +136,49 @@ export function snap(x: number, step = 0.1, min = -Infinity, max = Infinity): nu
   return Math.min(max, Math.max(min, Number(snapped.toFixed(10))));
 }
 
-/** Helpers every representation needs. */
+/**
+ * Helpers every representation needs. Geometry uses formula-unit values (`val`), so shapes
+ * keep true proportions whatever units are shown; labels and snapping use the shown units.
+ */
 export function useRep(calc: Calculator) {
-  const { module, values } = calc;
+  const { module, values, units } = calc;
   const byId = new Map(module.variables.map((v) => [v.id, v]));
   return {
     variable: (id: string) => byId.get(id)!,
     known: (id: string) => values[id] !== undefined,
-    /** Current value, falling back to the example so shapes still draw (faded). */
+    /** Current value in formula units, falling back to the example so shapes still draw. */
     val: (id: string) => values[id] ?? module.example[id]!,
+    /** Current value in the shown unit (falls back to the example). */
+    shown: (id: string) => units.toDisplay(id, values[id] ?? module.example[id]!),
+    /** Shown unit (e.g. "in"), or undefined. */
+    unit: (id: string) => units.display[id],
+    /** Formula units per shown unit (e.g. 2.54 when showing inches for a cm variable). */
+    factor: (id: string) => units.factor(id),
     label: (id: string, withUnit = true) => {
       const v = byId.get(id)!;
       const x = values[id];
-      const shown = x === undefined ? '?' : formatNumber(x, v);
-      return `${v.symbol} = ${shown}${withUnit && v.unit && x !== undefined ? ` ${v.unit}` : ''}`;
+      const unit = units.display[id];
+      const shown = x === undefined ? '?' : formatNumber(units.toDisplay(id, x), v);
+      return `${v.symbol} = ${shown}${withUnit && unit && x !== undefined ? ` ${unit}` : ''}`;
     },
     /** Current values of `ids` that are known, for pinning them during a drag. */
     pin: (ids: string[]): Values =>
       Object.fromEntries(ids.flatMap((id) => (values[id] === undefined ? [] : [[id, values[id]]]))),
+    /**
+     * Snaps a formula-unit value to the variable's step in the shown unit, within its limits
+     * (taken from the unit context's system, which is always in formula units).
+     */
     snapTo: (id: string, x: number) => {
       const v = byId.get(id)!;
-      return snap(x, v.integer ? 1 : (v.step ?? 0.1), v.min, v.max);
+      const limits = units.system.variables.find((sv) => sv.id === id) ?? v;
+      const f = units.factor(id);
+      const shown = snap(
+        x / f,
+        v.integer ? 1 : (v.step ?? 0.1),
+        limits.min === undefined ? -Infinity : limits.min / f,
+        limits.max === undefined ? Infinity : limits.max / f,
+      );
+      return shown * f;
     },
   };
 }

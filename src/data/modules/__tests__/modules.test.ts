@@ -1,5 +1,6 @@
 import { holds, solve } from '@/engine/solve';
 import { initialState, setValues } from '@/engine/state';
+import { getUnit } from '@/engine/units';
 import { resolveItem } from '@/data/selectors';
 
 import { MODULES } from '..';
@@ -80,6 +81,13 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
     );
     expect(result.rejected).toBeUndefined();
     expect(result.dropped.length + result.given.length).toBe(ids.length);
+  });
+
+  it('has no zero example values for variables with units (keeps the unit check meaningful)', () => {
+    // The "formulas hold in these units" check uses the example; a 0 would pass any unit.
+    for (const v of m.variables) {
+      if (getUnit(v.unit)) expect([v.id, m.example[v.id]]).not.toEqual([v.id, 0]);
+    }
   });
 
   it('rearrangements agree with the relation', () => {

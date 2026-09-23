@@ -26,9 +26,9 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // Running total before and after each item.
   const steps = spec.items.reduce<Step[]>((acc, item) => {
     const from = acc.length ? acc[acc.length - 1]!.to : 0;
-    return [...acc, { ...item, from, to: from + item.sign * rep.val(item.var) }];
+    return [...acc, { ...item, from, to: from + item.sign * rep.shown(item.var) }];
   }, []);
-  const total = rep.val(spec.total);
+  const total = rep.shown(spec.total);
   const levels = [0, total, ...steps.flatMap((s) => [s.from, s.to])];
   const lo = Math.min(...levels);
   const hi = Math.max(...levels);
@@ -106,7 +106,7 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     textAnchor="middle"
                   >
                     {rep.known(s.var)
-                      ? `${s.sign > 0 ? '+' : '−'}${formatNumber(rep.val(s.var))}`
+                      ? `${s.sign > 0 ? '+' : '−'}${formatNumber(rep.shown(s.var))}`
                       : '?'}
                   </ChartText>,
                   <ChartText
@@ -156,14 +156,17 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     y={sy(s.to)}
                     label={rep.variable(s.var).name}
                     onStart={() => {
-                      start.current = rep.val(s.var);
+                      start.current = rep.shown(s.var);
                       range.freeze();
                     }}
                     onEnd={range.release}
                     onMove={(_, dy) =>
                       calc.set({
                         ...rep.pin(editable.filter((id) => id !== s.var)),
-                        [s.var]: rep.snapTo(s.var, start.current - (s.sign * dy) / scale),
+                        [s.var]: rep.snapTo(
+                          s.var,
+                          (start.current - (s.sign * dy) / scale) * rep.factor(s.var),
+                        ),
                       })
                     }
                   />

@@ -1,6 +1,7 @@
 export { Button } from './Button';
 export { Chip } from './Chip';
 export { CourseList } from './CourseList';
+export { Dropdown, type DropdownOption } from './Dropdown';
 export { EmptyState } from './EmptyState';
 export { LevelPicker } from './LevelPicker';
 export { ListRow } from './ListRow';

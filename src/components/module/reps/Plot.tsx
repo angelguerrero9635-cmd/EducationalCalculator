@@ -48,16 +48,19 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const { module, values } = calc;
   const pinned = rep.pin(spec.params);
   const paramsKnown = spec.params.every(rep.known);
-  const px = values[spec.x.var];
-  const py = values[spec.y.var];
+  // Everything on the graph is in the shown units (axis ranges in the spec are shown numbers).
+  const fx = rep.factor(spec.x.var);
+  const fy = rep.factor(spec.y.var);
+  const px = values[spec.x.var] === undefined ? undefined : values[spec.x.var]! / fx;
+  const py = values[spec.y.var] === undefined ? undefined : values[spec.y.var]! / fy;
 
   const curveOver = (xMin: number, xMax: number) => {
     if (!paramsKnown) return [];
     const givens = Object.entries(pinned).map(([id, value]) => ({ id, value }));
     return Array.from({ length: SAMPLES + 1 }, (_, i) => {
       const x = xMin + ((xMax - xMin) * i) / SAMPLES;
-      const y = solve(module, [...givens, { id: spec.x.var, value: x }]).values[spec.y.var];
-      return { x, y };
+      const y = solve(module, [...givens, { id: spec.x.var, value: x * fx }]).values[spec.y.var];
+      return { x, y: y === undefined ? undefined : y / fy };
     });
   };
 
@@ -75,11 +78,21 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const Yr = axes.value.y;
   const curve = X.min === xr.min && X.max === xr.max ? liveCurve : curveOver(X.min, X.max);
 
-  const slope = spec.tangentSlope ? values[spec.tangentSlope] : undefined;
-  const riseRun = spec.slopeTriangle ? values[spec.slopeTriangle] : undefined;
-  const intercept = spec.intercept ? values[spec.intercept] : undefined;
+  // Slopes are converted to shown-y per shown-x; the intercept to shown-y.
+  const slopeOf = (id: string | undefined) =>
+    id && values[id] !== undefined ? (values[id]! * fx) / fy : undefined;
+  const slope = slopeOf(spec.tangentSlope);
+  const riseRun = slopeOf(spec.slopeTriangle);
+  const intercept =
+    spec.intercept && values[spec.intercept] !== undefined
+      ? values[spec.intercept]! / fy
+      : undefined;
+  const axisLabel = (axis: Spec['x']) => {
+    const v = rep.variable(axis.var);
+    const unit = rep.unit(axis.var);
+    return axis.label ?? `${v.symbol}${unit ? ` (${unit})` : ''}`;
+  };
   const xVar = rep.variable(spec.x.var);
-  const yVar = rep.variable(spec.y.var);
 
   return (
     <>
@@ -171,10 +184,10 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Line x1={L} y1={axisY} x2={w - R} y2={axisY} stroke={c.chartMuted} />
                 <Line x1={axisX} y1={T} x2={axisX} y2={h - B} stroke={c.chartMuted} />
                 <ChartText x={w - R} y={h - 4} fontSize={chart.small} textAnchor="end">
-                  {spec.x.label ?? xVar.symbol}
+                  {axisLabel(spec.x)}
                 </ChartText>
                 <ChartText x={4} y={12} fontSize={chart.small}>
-                  {spec.y.label ?? yVar.symbol}
+                  {axisLabel(spec.y)}
                 </ChartText>
                 <G clipPath="url(#plot-area)">
                   {shade ? <Path d={shade} fill={c.chartFill} /> : null}
@@ -273,7 +286,7 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   onMove={(dx) =>
                     calc.set({
                       ...pinned,
-                      [spec.x.var]: rep.snapTo(spec.x.var, start.current + dx / xScale),
+                      [spec.x.var]: rep.snapTo(spec.x.var, (start.current + dx / xScale) * fx),
                     })
                   }
                 />

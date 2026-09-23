@@ -45,3 +45,25 @@ export function setValues(
 }
 
 export const clearAll = (system: System): CalcState => initialState(system);
+
+/**
+ * Re-solves after the units change. Physical values keep their meaning (so 10 kg shows as
+ * 22.05 lb). Whole-number lesson values keep their number in the new unit instead (a 4 × 3
+ * rectangle stays 4 × 3), with a note, because converting them would break the lesson's
+ * whole-number rule.
+ */
+export function changeUnits(system: System, state: CalcState, previous: System): CalcState {
+  const next = new Map(system.variables.map((v) => [v.id, v]));
+  const prev = new Map(previous.variables.map((v) => [v.id, v]));
+  const notes: Record<string, string> = {};
+  const given = state.given.map((g) => {
+    const v = next.get(g.id);
+    const oldF = prev.get(g.id)?.unitFactor ?? 1;
+    const newF = v?.unitFactor ?? 1;
+    if (!v?.integer || oldF === newF) return g;
+    notes[g.id] = 'Same number in the new unit (whole-number lesson)';
+    return { id: g.id, value: (g.value / oldF) * newF };
+  });
+  const result = run(system, given, state.result.values);
+  return { ...result, errors: { ...notes, ...result.errors } };
+}

@@ -27,7 +27,7 @@ export const COLLEGE_MODULES: ModuleDef[] = [
     assumptions: [
       'Acceleration is constant, and the clock starts (t = 0) when the velocity is v₀.',
       'Motion is along a straight line. Pick a positive direction; signs follow it.',
-      'Free fall: a = −9.8 m/s² if up is positive.',
+      'Free fall: a = −9.8 m/s² (−32.2 ft/s²) if up is positive.',
       'd is displacement (change in position), not total distance traveled.',
     ],
     variables: [
@@ -177,8 +177,8 @@ export const COLLEGE_MODULES: ModuleDef[] = [
     startWith: ['t', 'v0', 'a'],
     representation: {
       kind: 'plot',
-      x: { var: 't', min: 0, max: 10, label: 't (s)' },
-      y: { var: 'v', min: -10, max: 30, label: 'v (m/s)' },
+      x: { var: 't', min: 0, max: 10 },
+      y: { var: 'v', min: -10, max: 30 },
       params: ['v0', 'a'],
       shadeToPoint: true,
       autoRange: true,

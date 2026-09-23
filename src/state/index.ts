@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { applyAppearance, prefsStore } from './prefs';
 import { recentsStore } from './recents';
 
-export { useAppearancePref, useSelectedLevels, type AppearancePref } from './prefs';
+export { useAppearancePref, useSelectedLevels, useUnitsPref, type AppearancePref } from './prefs';
 export { clearRecents, useRecents, useTrackRecent } from './recents';
 
 /** Loads persisted state once at startup; returns true when ready. */

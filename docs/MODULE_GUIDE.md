@@ -61,6 +61,18 @@ visible, and every value it shows must be a module variable, so moving it update
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one.
 
+## Units
+
+- Give each variable its formula unit (`unit`) from the registry in `src/engine/units.ts`, e.g.
+  `cm`, `g/cm³`, `m/s²`. Labels that aren't convertible (`%`, `per 1,000`, `years`) stay fixed.
+- Students can switch a module between Metric and US customary, or choose units value by value
+  (Mixed). The calculator converts. If the formulas hold directly in the chosen units, the steps
+  are worked in them; otherwise the step-by-step converts to the formula's units first and
+  converts the answers back.
+- Ranges on physical quantities are physical limits and don't change with the unit.
+- Whole-number lesson values (`integer: true`, e.g. Grade 3 side lengths) keep their number when
+  the unit changes (4 cm → 4 in). Those modules offer Metric and US but not Mixed.
+
 ## Topics without a natural formula
 
 Use the simplest honest quantity model (counts, totals, rates, percentages) so the calculator

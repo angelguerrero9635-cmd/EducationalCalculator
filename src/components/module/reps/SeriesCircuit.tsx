@@ -34,13 +34,13 @@ export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) 
   const dragProps = (id: string, pin: string[]) => ({
     label: rep.variable(id).name,
     onStart: () => {
-      start.current = rep.val(id);
+      start.current = rep.shown(id);
     },
     onMove: (_: number, dy: number) => {
       const step = rep.variable(id).step ?? 0.5;
       calc.set({
         ...rep.pin(pin),
-        [id]: rep.snapTo(id, start.current - (dy / PX_PER_STEP) * step),
+        [id]: rep.snapTo(id, (start.current - (dy / PX_PER_STEP) * step) * rep.factor(id)),
       });
     },
   });

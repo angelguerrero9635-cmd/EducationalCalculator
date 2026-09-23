@@ -9,7 +9,9 @@ import type { Calculator } from './useCalculator';
 /** Live walkthrough of how the current values were found from the entered ones. */
 export function StepByStep({ calc }: { calc: Calculator }) {
   const c = usePalette();
-  const w = buildSteps(calc.module, calc.result);
+  const w = buildSteps(calc.module, calc.result, calc.units);
+  // Conversion steps (when needed) come first and last, numbered with the others.
+  const offset = w.convertIn.length ? 1 : 0;
   const card = [styles.card, { backgroundColor: c.surface, borderColor: c.border }];
   const list = (qs: typeof w.given) =>
     qs.map((q) => `${q.symbol} = ${q.value}`).join(',  ') || 'nothing yet';
@@ -29,9 +31,29 @@ export function StepByStep({ calc }: { calc: Calculator }) {
         ) : null}
       </View>
 
+      {w.convertIn.length ? (
+        <View style={card}>
+          <Text style={[styles.stepTitle, { color: c.text }]}>
+            Step 1 · Convert to the formula’s units
+          </Text>
+          <Text style={[styles.body, { color: c.textMuted }]}>
+            {`The formulas don’t work directly in the units you chose, so convert first (to ${w.workingUnits}).`}
+          </Text>
+          <View style={[styles.lines, { borderLeftColor: c.border }]}>
+            {w.convertIn.map((line) => (
+              <Text key={line} style={[styles.math, { color: c.text }]}>
+                {line}
+              </Text>
+            ))}
+          </View>
+        </View>
+      ) : null}
+
       {w.steps.map((s, i) => (
         <View key={s.id} style={card}>
-          <Text style={[styles.stepTitle, { color: c.text }]}>{`Step ${i + 1} · ${s.title}`}</Text>
+          <Text
+            style={[styles.stepTitle, { color: c.text }]}
+          >{`Step ${i + 1 + offset} · ${s.title}`}</Text>
           <Text style={[styles.body, { color: c.text }]}>
             Use <Text style={styles.bold}>{s.formula}</Text>
           </Text>
@@ -47,6 +69,24 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           </View>
         </View>
       ))}
+
+      {w.convertOut.length ? (
+        <View style={card}>
+          <Text style={[styles.stepTitle, { color: c.text }]}>
+            {`Step ${w.steps.length + offset + 1} · Convert the answers`}
+          </Text>
+          <Text style={[styles.body, { color: c.textMuted }]}>
+            Change each answer back to the unit you chose.
+          </Text>
+          <View style={[styles.lines, { borderLeftColor: c.border }]}>
+            {w.convertOut.map((line) => (
+              <Text key={line} style={[styles.math, styles.bold, { color: c.text }]}>
+                {line}
+              </Text>
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       {w.steps.length === 0 && w.missing.length === 0 ? (
         <Text style={[styles.body, styles.pad, { color: c.textMuted }]}>

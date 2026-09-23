@@ -16,7 +16,7 @@ export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) 
   const handleStart = useRef({ x: 0, y: 0 });
   const r = rep.val(spec.radius);
   const faded = !rep.known(spec.radius);
-  const fit = useFrozen(Math.max(spec.extent, r));
+  const fit = useFrozen(Math.max(spec.extent * rep.factor(spec.radius), r));
 
   return (
     <Canvas aspect={0.9}>

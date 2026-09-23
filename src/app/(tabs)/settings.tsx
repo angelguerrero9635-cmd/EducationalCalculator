@@ -6,7 +6,13 @@ import { Text } from '@/components/Text';
 import { ListRow, SectionHeader } from '@/components';
 import { parseLevelKey } from '@/data/selectors';
 import { gradeLabel } from '@/data/taxonomy';
-import { clearRecents, useAppearancePref, useRecents, useSelectedLevels } from '@/state';
+import {
+  clearRecents,
+  useAppearancePref,
+  useRecents,
+  useSelectedLevels,
+  useUnitsPref,
+} from '@/state';
 import type { AppearancePref } from '@/state';
 import { font, space, usePalette } from '@/theme';
 
@@ -32,6 +38,7 @@ export default function SettingsScreen() {
   const c = usePalette();
   const { levels } = useSelectedLevels();
   const [appearance, setAppearance] = useAppearancePref();
+  const [units, setUnits] = useUnitsPref();
   const recents = useRecents();
   const version = Constants.expoConfig?.version ?? '—';
 
@@ -56,6 +63,26 @@ export default function SettingsScreen() {
           onPress={() => setAppearance(a.value)}
         />
       ))}
+
+      <SectionHeader title="Units" />
+      {(
+        [
+          { value: 'metric', label: 'Metric', detail: 'cm, m, kg, N, …' },
+          { value: 'us', label: 'US customary', detail: 'in, ft, lb, lbf, …' },
+        ] as const
+      ).map((u) => (
+        <ListRow
+          key={u.value}
+          title={u.label}
+          subtitle={u.detail}
+          selected={units === u.value}
+          onPress={() => setUnits(u.value)}
+        />
+      ))}
+      <Text style={[styles.paragraph, { color: c.textMuted }]}>
+        The default for every module. Each module can also switch units, or mix units value by
+        value.
+      </Text>
 
       <SectionHeader title="Premium" />
       <ListRow

@@ -2,6 +2,7 @@ import { useCallback, useSyncExternalStore } from 'react';
 import { Appearance } from 'react-native';
 
 import { sanitizeLevels, type LevelKey } from '@/data/selectors';
+import type { UnitSystem } from '@/engine/units';
 
 import { createPersistedStore } from './persistedStore';
 
@@ -11,14 +12,27 @@ export interface Prefs {
   onboarded: boolean;
   levels: LevelKey[];
   appearance: AppearancePref;
+  /** Default units for modules (each module can still switch, or mix units). */
+  units: UnitSystem;
 }
 
-const DEFAULT_PREFS: Prefs = { onboarded: false, levels: [], appearance: 'system' };
+const DEFAULT_PREFS: Prefs = {
+  onboarded: false,
+  levels: [],
+  appearance: 'system',
+  units: 'metric',
+};
 
 function parsePrefs(raw: unknown): Prefs {
   const r = (raw ?? {}) as Partial<Record<keyof Prefs, unknown>>;
   const appearance = r.appearance === 'light' || r.appearance === 'dark' ? r.appearance : 'system';
-  return { onboarded: r.onboarded === true, levels: sanitizeLevels(r.levels), appearance };
+  const units = r.units === 'us' ? 'us' : 'metric';
+  return {
+    onboarded: r.onboarded === true,
+    levels: sanitizeLevels(r.levels),
+    appearance,
+    units,
+  };
 }
 
 export const prefsStore = createPersistedStore<Prefs>('prefs.v1', DEFAULT_PREFS, parsePrefs);
@@ -68,4 +82,14 @@ export function useAppearancePref() {
     applyAppearance(pref);
   }, []);
   return [appearance, setAppearance] as const;
+}
+
+/** Default unit system for modules. */
+export function useUnitsPref() {
+  const { units } = usePrefs();
+  const setUnits = useCallback(
+    (next: UnitSystem) => prefsStore.set((p) => ({ ...p, units: next })),
+    [],
+  );
+  return [units, setUnits] as const;
 }

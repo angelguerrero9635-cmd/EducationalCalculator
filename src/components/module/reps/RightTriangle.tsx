@@ -18,10 +18,13 @@ export function RightTriangle({ spec, calc }: { spec: Spec; calc: Calculator }) 
   const a = rep.val(spec.a);
   const b = rep.val(spec.b);
   const faded = ![spec.a, spec.b, spec.c].every(rep.known);
-  const fit = useFrozen(Math.max(spec.extent, Math.ceil(Math.max(a, b))));
+  const f = rep.factor(spec.a);
+  const fit = useFrozen(Math.max(spec.extent, Math.ceil(Math.max(a, b) / f)) * f);
   const sq = (id: string) => {
     const v = rep.variable(id);
-    return rep.known(id) ? `${v.symbol}² = ${formatNumber(rep.val(id) ** 2)}` : `${v.symbol}² = ?`;
+    return rep.known(id)
+      ? `${v.symbol}² = ${formatNumber(rep.shown(id) ** 2)}`
+      : `${v.symbol}² = ?`;
   };
 
   return (

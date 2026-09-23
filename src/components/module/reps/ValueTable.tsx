@@ -26,12 +26,19 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
     return spec.rows.map((x) => ({
       x,
       y: paramsKnown
-        ? solve(calc.module, [...givens, { id: spec.sweep, value: x }]).values[spec.output]
+        ? solve(calc.module, [
+            ...givens,
+            // Rows are numbers in the shown unit; the solver works in formula units.
+            { id: spec.sweep, value: x * rep.factor(spec.sweep) },
+          ]).values[spec.output]
         : undefined,
     }));
   })();
 
-  const head = (v: typeof sweep) => `${v.symbol}${v.unit ? ` (${v.unit})` : ''}`;
+  const head = (v: typeof sweep) => {
+    const unit = rep.unit(v.id);
+    return `${v.symbol}${unit ? ` (${unit})` : ''}`;
+  };
 
   return (
     <View style={[styles.table, { borderColor: c.chartGrid }]}>
@@ -42,7 +49,8 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
         <Text style={[styles.cell, styles.head, { color: c.chartInk }]}>{head(output)}</Text>
       </View>
       {rows.map(({ x, y }) => {
-        const selected = current !== undefined && Math.abs(current - x) < 1e-9;
+        const selected =
+          current !== undefined && Math.abs(current / rep.factor(spec.sweep) - x) < 1e-9;
         return (
           <Pressable
             key={x}
@@ -50,7 +58,7 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
             accessibilityRole="button"
             accessibilityState={{ selected }}
             accessibilityLabel={`Use ${sweep.name} ${x}`}
-            onPress={() => calc.set({ ...pinned, [spec.sweep]: x })}
+            onPress={() => calc.set({ ...pinned, [spec.sweep]: x * rep.factor(spec.sweep) })}
             style={({ pressed }) => [
               styles.row,
               { borderBottomColor: c.chartGrid },
@@ -63,7 +71,7 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {formatNumber(x, sweep)}
             </Text>
             <Text style={[styles.cell, { color: selected ? c.onChartHighlight : c.chartInk }]}>
-              {y === undefined ? '?' : formatNumber(y, output)}
+              {y === undefined ? '?' : formatNumber(y / rep.factor(spec.output), output)}
             </Text>
           </Pressable>
         );

@@ -1,3 +1,4 @@
+import { formatNumber } from './format';
 import type { Relation, Values, VariableDef } from './types';
 
 export interface Given {
@@ -40,21 +41,35 @@ export interface System {
 
 const TOLERANCE = 1e-6;
 
-/** Returns a reason string if `x` is not a valid value for `variable`. */
+/**
+ * Returns a reason string if `x` (in formula units) is not a valid value for `variable`.
+ * With a unit context, the whole-number rule and the numbers in the message refer to the
+ * value as shown to the user.
+ */
 export function checkValue(variable: VariableDef, x: number): string | undefined {
   if (!Number.isFinite(x)) return 'Not a number';
-  if (variable.integer && Math.abs(x - Math.round(x)) > 1e-9) return 'Must be a whole number';
-  if (variable.min !== undefined && x < variable.min - TOLERANCE) {
-    return `Must be at least ${variable.min}`;
+  const f = variable.unitFactor ?? 1;
+  const unit = variable.displayUnit ? ` ${variable.displayUnit}` : '';
+  if (variable.integer && Math.abs(x / f - Math.round(x / f)) > 1e-9) {
+    return 'Must be a whole number';
   }
-  if (variable.max !== undefined && x > variable.max + TOLERANCE) {
-    return `Must be at most ${variable.max}`;
+  // Limits converted to another unit are shown to 3 significant figures.
+  const limit = (bound: number) =>
+    formatNumber(f === 1 ? bound : Number((bound / f).toPrecision(3)));
+  if (variable.min !== undefined && x < variable.min - TOLERANCE * (1 + Math.abs(variable.min))) {
+    return `Must be at least ${limit(variable.min)}${unit}`;
+  }
+  if (variable.max !== undefined && x > variable.max + TOLERANCE * (1 + Math.abs(variable.max))) {
+    return `Must be at most ${limit(variable.max)}${unit}`;
   }
   return undefined;
 }
 
-const normalizeValue = (variable: VariableDef, x: number) =>
-  variable.integer ? Math.round(x) : Math.abs(x) < 1e-12 ? 0 : x;
+const normalizeValue = (variable: VariableDef, x: number) => {
+  const f = variable.unitFactor ?? 1;
+  if (variable.integer) return Math.round(x / f) * f;
+  return Math.abs(x) < 1e-12 ? 0 : x;
+};
 
 const closeTo = (x: number, target: number) =>
   Math.abs(x - target) <= TOLERANCE * (1 + Math.abs(target));

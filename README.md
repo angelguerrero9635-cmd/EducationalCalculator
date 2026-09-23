@@ -88,7 +88,7 @@ src/
   components/                 ListRow, SectionHeader, Chip, PlaceholderCard, RefreshLinkRow,
                               EmptyState, Button, SegmentedControl, LevelPicker, CourseList…
   state/                      AsyncStorage-backed hooks: useSelectedLevels, useRecents
-  engine/                     Formula solver (pure, unit-tested) and number formatting
+  engine/                     Formula solver, units and conversions, formatting (pure, tested)
   components/module/          Module UI: formula inputs + linked table/chart/diagram (reps/)
   config/access.ts            isLocked(nodeId) stub (always false; no purchase logic yet)
   theme.ts                    The entire look: palettes, font, type scale, spacing, chart styling
@@ -149,6 +149,18 @@ Each skill and course topic ("module") can have three sections:
    formula used, how it was rearranged (in words), the rearranged form, the numbers
    substituted, and the result. It ends with a check that plugs every value back into every
    formula.
+
+**Units:** each module with units has a Units menu:
+
+- **Metric** and **US customary** switch the whole module (middle-school science is metric-only,
+  following NGSS).
+- **Mixed** lets you choose a unit for each value.
+
+The calculator converts everything, including inputs, charts, axes and tables. If the formulas
+hold directly in the chosen units (4 in × 3 in = 12 in²), the step-by-step works in them.
+Otherwise it converts to the formula's units first and converts the answers back, showing each
+factor (1 kg = 2.20462 lb). A default unit system can be set in Settings. Units and exact
+conversion factors live in `src/engine/units.ts`.
 
 Content lives in `src/data/modules/` (`k12.ts`, `college.ts`), keyed by skill id or course topic
 key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for titles and structure.

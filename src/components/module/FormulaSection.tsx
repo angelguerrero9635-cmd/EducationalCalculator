@@ -1,28 +1,79 @@
 import { useState } from 'react';
 import { Platform, StyleSheet, TextInput, View } from 'react-native';
-import { Text } from '@/components/Text';
 
 import { Button } from '@/components/Button';
+import { Dropdown, type DropdownOption } from '@/components/Dropdown';
+import { Text } from '@/components/Text';
 import { formatNumber, parseNumber, renderTemplate } from '@/engine/format';
-import type { VariableDef } from '@/engine/types';
+import type { Values, VariableDef } from '@/engine/types';
+import type { UnitChoice } from '@/engine/unitContext';
+import { getUnit, unitsOf } from '@/engine/units';
 import { font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from './useCalculator';
+
+type SystemOption = 'metric' | 'us' | 'mixed';
+
+/** Unit menu choices this module offers ("Standard" when US units are the same as metric). */
+function systemOptions(calc: Calculator): DropdownOption<SystemOption>[] {
+  const { systems, mixed, metricUnits } = calc.unitOptions;
+  return [
+    ...systems.map((s) =>
+      s === 'us'
+        ? { value: 'us' as const, label: 'US customary', detail: 'in, ft, lb, lbf, …' }
+        : {
+            value: 'metric' as const,
+            label: metricUnits ? 'Metric' : 'Standard',
+            detail: metricUnits ? 'cm, m, kg, N, …' : undefined,
+          },
+    ),
+    ...(mixed
+      ? [{ value: 'mixed' as const, label: 'Mixed', detail: 'Choose a unit for each value' }]
+      : []),
+  ];
+}
+
+/** Per-variable unit menu, shown in "Mixed" mode. */
+function UnitPicker({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
+  const unit = getUnit(variable.unit);
+  const current = calc.units.display[variable.id] ?? variable.unit ?? '';
+  if (!unit) return null;
+  const choice = calc.units.choice;
+  return (
+    <Dropdown
+      compact
+      testID={`unit-${variable.id}`}
+      title={`${variable.name} in…`}
+      value={current}
+      options={unitsOf(unit.dimension).map((u) => ({ value: u.id, label: u.id, detail: u.name }))}
+      onChange={(id) =>
+        calc.setUnits({
+          system: 'mixed',
+          units: { ...(choice.system === 'mixed' ? choice.units : {}), [variable.id]: id },
+        })
+      }
+    />
+  );
+}
 
 function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
   const c = usePalette();
   const [draft, setDraft] = useState<string | null>(null);
   const [typo, setTypo] = useState(false);
   const value = calc.values[variable.id];
+  const unit = calc.units.display[variable.id];
+  const mixed = calc.units.choice.system === 'mixed' && !!getUnit(variable.unit);
   const status = calc.status(variable.id);
   const error = typo ? 'Enter a number' : calc.errors[variable.id];
-  const shown = draft ?? (value === undefined ? '' : formatNumber(value, variable));
+  const shown =
+    draft ??
+    (value === undefined ? '' : formatNumber(calc.units.toDisplay(variable.id, value), variable));
 
   const onChangeText = (text: string) => {
     setDraft(text);
     const parsed = parseNumber(text);
     setTypo(parsed === 'invalid');
-    if (parsed !== 'invalid') calc.set({ [variable.id]: parsed });
+    if (parsed !== 'invalid') calc.setShown(variable.id, parsed);
   };
 
   return (
@@ -34,14 +85,14 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
           <Text style={[styles.meta, { color: error ? c.text : c.textMuted }]}>
             {error ??
               `${status === 'given' ? 'entered' : status === 'derived' ? 'calculated' : 'unknown'}${
-                variable.unit ? ` · ${variable.unit}` : ''
+                unit && !mixed ? ` · ${unit}` : ''
               }`}
           </Text>
         </View>
       </View>
       <TextInput
         testID={`input-${variable.id}`}
-        accessibilityLabel={`${variable.name}${variable.unit ? ` in ${variable.unit}` : ''}`}
+        accessibilityLabel={`${variable.name}${unit ? ` in ${unit}` : ''}`}
         value={shown}
         placeholder="?"
         placeholderTextColor={c.textMuted}
@@ -56,6 +107,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         selectTextOnFocus
         style={[
           styles.input,
+          mixed && styles.inputNarrow,
           {
             color: c.text,
             borderColor: error ? c.text : c.border,
@@ -64,16 +116,59 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
           },
         ]}
       />
+      {mixed ? <UnitPicker variable={variable} calc={calc} /> : null}
     </View>
   );
 }
 
-/** Formulas shown symbolically and with current values, plus one input per variable. */
+/**
+ * Units menu, the formulas (shown symbolically and with current values) and one input per
+ * variable. Values are entered and shown in the chosen units.
+ */
 export function FormulaSection({ calc }: { calc: Calculator }) {
   const c = usePalette();
-  const { module, values } = calc;
+  const { module, values, units } = calc;
+  const options = systemOptions(calc);
+  // Formula lines use the chosen units when the formulas hold in them; otherwise the formula's
+  // own units (the step-by-step shows the conversions).
+  const working: Values = units.coherent
+    ? Object.fromEntries(Object.entries(values).map(([id, x]) => [id, units.toDisplay(id, x)]))
+    : values;
+  const formulaUnits = [
+    ...new Set(
+      module.variables
+        .filter((v) => (units.display[v.id] ?? '') !== (v.unit ?? ''))
+        .map((v) => v.unit),
+    ),
+  ].join(', ');
+
+  const onSystem = (s: SystemOption) => {
+    const next: UnitChoice =
+      s === 'mixed'
+        ? {
+            system: 'mixed',
+            units: Object.fromEntries(
+              Object.entries(units.display).filter((e): e is [string, string] => !!e[1]),
+            ),
+          }
+        : { system: s };
+    calc.setUnits(next);
+  };
+
   return (
     <View style={styles.container}>
+      {options.length > 1 ? (
+        <View style={styles.unitsRow}>
+          <Dropdown
+            testID="units"
+            label="Units"
+            title="Units"
+            value={units.choice.system}
+            options={options}
+            onChange={onSystem}
+          />
+        </View>
+      ) : null}
       <View style={styles.formulas}>
         {module.relations.map((r) => (
           <View
@@ -84,11 +179,22 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
               {renderTemplate(r.display, module.variables)}
             </Text>
             <Text style={[styles.substituted, { color: c.textMuted }]}>
-              {renderTemplate(r.display, module.variables, values)}
+              {renderTemplate(
+                r.display,
+                units.coherent
+                  ? module.variables
+                  : module.variables.map((v) => ({ ...v, integer: false })),
+                working,
+              )}
             </Text>
           </View>
         ))}
       </View>
+      {!units.coherent && formulaUnits ? (
+        <Text style={[styles.hint, { color: c.textMuted }]}>
+          {`Formulas are worked in ${formulaUnits}. The step-by-step shows the conversions.`}
+        </Text>
+      ) : null}
       <Text style={[styles.hint, { color: c.textMuted }]}>
         {calc.unknownCount
           ? 'Enter another value to fill in the rest.'
@@ -109,6 +215,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
 
 const styles = StyleSheet.create({
   container: { gap: space.md, paddingBottom: space.lg },
+  unitsRow: { paddingHorizontal: space.lg, paddingTop: space.md },
   formulas: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.md },
   formula: {
     borderWidth: StyleSheet.hairlineWidth,
@@ -125,7 +232,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     paddingVertical: space.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    gap: space.md,
+    gap: space.sm,
   },
   label: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: space.md },
   symbol: { fontSize: font.body + 2, fontWeight: '700', minWidth: 36 },
@@ -143,5 +250,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontVariant: ['tabular-nums'],
   },
+  inputNarrow: { width: 96 },
   buttons: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg },
 });

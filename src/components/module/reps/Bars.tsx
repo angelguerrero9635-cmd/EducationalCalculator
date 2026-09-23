@@ -17,7 +17,8 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const editable = spec.bars.filter((b) => b.editable).map((b) => b.var);
-  const shown = spec.bars.map((b) => rep.val(b.var));
+  // Bars are drawn and labeled in the shown unit.
+  const shown = spec.bars.map((b) => rep.shown(b.var));
   const lowest = Math.min(0, ...shown);
   const highest = Math.max(0, ...shown);
   // Range grows (to a round number) to fit the values; frozen while a bar is dragged.
@@ -51,7 +52,7 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   strokeWidth={chart.strokeLight}
                 />
                 {spec.bars.map((b, i) => {
-                  const v = rep.val(b.var);
+                  const v = rep.shown(b.var);
                   const y0 = sy(0);
                   const y1 = sy(v);
                   const known = rep.known(b.var);
@@ -70,7 +71,7 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   );
                 })}
                 {spec.bars.map((b, i) => {
-                  const v = rep.val(b.var);
+                  const v = rep.shown(b.var);
                   const variable = rep.variable(b.var);
                   return [
                     <ChartText
@@ -116,17 +117,20 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     key={b.var}
                     testID={`drag-${b.var}`}
                     x={cx(i)}
-                    y={sy(rep.val(b.var))}
+                    y={sy(rep.shown(b.var))}
                     label={rep.variable(b.var).name}
                     onStart={() => {
-                      start.current = rep.val(b.var);
+                      start.current = rep.shown(b.var);
                       range.freeze();
                     }}
                     onEnd={range.release}
                     onMove={(_, dy) =>
                       calc.set({
                         ...rep.pin(editable.filter((id) => id !== b.var)),
-                        [b.var]: rep.snapTo(b.var, start.current - dy / scale),
+                        [b.var]: rep.snapTo(
+                          b.var,
+                          (start.current - dy / scale) * rep.factor(b.var),
+                        ),
                       })
                     }
                   />
