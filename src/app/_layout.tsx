@@ -1,5 +1,55 @@
-import { Stack } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, type Theme } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useMemo } from 'react';
+import { View, useColorScheme } from 'react-native';
+
+import { useHydrated, useSelectedLevels } from '@/state';
+import { usePalette } from '@/theme';
 
 export default function RootLayout() {
-  return <Stack />;
+  const hydrated = useHydrated();
+  const { onboarded } = useSelectedLevels();
+  const scheme = useColorScheme();
+  const c = usePalette();
+
+  const theme = useMemo<Theme>(() => {
+    const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        primary: c.text,
+        background: c.background,
+        card: c.background,
+        text: c.text,
+        border: c.border,
+      },
+    };
+  }, [scheme, c]);
+
+  // Hold on a blank screen until saved selections load, so onboarding never flashes.
+  if (!hydrated) return <View style={{ flex: 1, backgroundColor: c.background }} />;
+
+  return (
+    <ThemeProvider value={theme}>
+      <StatusBar style="auto" />
+      <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}>
+        <Stack.Protected guard={onboarded}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="grade/[grade]" />
+          <Stack.Screen name="he/index" options={{ title: 'Higher Education' }} />
+          <Stack.Screen name="he/[division]/index" />
+          <Stack.Screen name="he/[division]/[field]" />
+          <Stack.Screen name="skill/[id]" options={{ title: 'Skill' }} />
+          <Stack.Screen name="course/[id]/index" options={{ title: 'Course' }} />
+          <Stack.Screen name="course/[id]/topic/[index]" options={{ title: 'Topic' }} />
+          <Stack.Screen name="levels" options={{ title: 'What You Study' }} />
+          <Stack.Screen name="paywall" options={{ presentation: 'modal', title: 'Premium' }} />
+        </Stack.Protected>
+        <Stack.Protected guard={!onboarded}>
+          <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
+        </Stack.Protected>
+      </Stack>
+    </ThemeProvider>
+  );
 }
