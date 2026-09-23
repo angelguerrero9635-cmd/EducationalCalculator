@@ -1,6 +1,7 @@
 # Educational Calculator (wireframe)
 
-An iOS study app covering every course in one place:
+A study app covering every course in one place. One codebase ships as an **iOS app** (Expo) and a
+**website** (Expo web, hosted on Vercel):
 
 - **K–12:** Math and Science for each grade, Kindergarten through Grade 12.
 - **Higher Ed:** Math, Science and Engineering → fields → college courses.
@@ -14,24 +15,53 @@ calls. Selections and recently viewed items are stored on the device only (Async
 
 ## Setup
 
-Requirements: Node 22+, pnpm 10 (`corepack enable` picks up the pinned version), and
-[Expo Go](https://expo.dev/go) on an iPhone.
+Requirements: Node 22+ and pnpm 10 (`corepack enable` picks up the pinned version).
 
 ```sh
 pnpm install
-pnpm start          # scan the QR code with the iPhone camera to open in Expo Go
 ```
 
-| Command             | What it does                          |
-| ------------------- | ------------------------------------- |
-| `pnpm start`        | Expo dev server (Expo SDK 57)         |
-| `pnpm test`         | Jest unit tests (ts-jest)             |
-| `pnpm typecheck`    | `tsc --noEmit` (strict)               |
-| `pnpm lint`         | ESLint (`eslint-config-expo`)         |
-| `pnpm format:check` | Prettier check (`pnpm format` to fix) |
+| Command             | What it does                                                     |
+| ------------------- | ---------------------------------------------------------------- |
+| `pnpm start`        | Expo dev server (Expo SDK 57); press `w` to open the web version |
+| `pnpm web`          | Dev server opened straight in the browser                        |
+| `pnpm build:web`    | Static website build into `dist/` (what Vercel deploys)          |
+| `pnpm test`         | Jest unit tests (ts-jest)                                        |
+| `pnpm typecheck`    | `tsc --noEmit` (strict)                                          |
+| `pnpm lint`         | ESLint (`eslint-config-expo`)                                    |
+| `pnpm format:check` | Prettier check (`pnpm format` to fix)                            |
 
-CI (`.github/workflows/ci.yml`) runs typecheck, lint, format check and tests on every push and pull
-request.
+CI (`.github/workflows/ci.yml`) runs typecheck, lint, format check, tests and the web build on every
+push and pull request.
+
+## Running on iOS (Expo Go)
+
+1. Install [Expo Go](https://expo.dev/go) from the App Store on an iPhone.
+2. Run `pnpm start` on a computer. The phone and computer need to be on the same Wi-Fi, or use
+   `pnpm start --tunnel`.
+3. Scan the QR code with the iPhone camera.
+
+The app uses no custom native code, so Expo Go runs it as-is. Expo Go on the App Store supports one
+Expo SDK at a time; this project targets SDK 57.
+
+## Deploying the website (Vercel)
+
+`vercel.json` has everything Vercel needs: the pnpm install command, the build command
+(`expo export --platform web`), the `dist` output folder, and a rewrite that sends every path to
+`index.html` so deep links like `/skill/m.8.slope` load the app.
+
+1. On [vercel.com](https://vercel.com), choose **Add New → Project** and import this GitHub repo.
+   Leave the framework preset as **Other**; `vercel.json` supplies the settings.
+2. Deploy. Every pushed branch gets its own preview URL, and the production branch gets the main
+   URL.
+
+Notes for the web version:
+
+- Navigation and controls look like a web page, not native iOS. Use Expo Go to judge iOS look and
+  feel.
+- Selections and Recently viewed are stored in that browser (localStorage) and never leave it.
+- Deployments are public by default. Turn on Vercel **Deployment Protection** to limit access, and
+  leave Vercel Web Analytics off to keep the no-tracking promise.
 
 ## Folder structure
 
@@ -60,6 +90,7 @@ src/
   config/access.ts            isLocked(nodeId) stub (always false; no purchase logic yet)
   theme.ts                    Grayscale light/dark palette
 TAXONOMY_ISSUES.md            Data problems found (taxonomy.ts is never patched directly)
+vercel.json                   Website build and hosting settings
 ```
 
 ### Rules the code follows

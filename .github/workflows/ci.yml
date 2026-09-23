@@ -34,3 +34,6 @@ jobs:
 
       - name: Test (includes validateTaxonomy)
         run: pnpm test --ci
+
+      - name: Web build
+        run: pnpm build:web
