@@ -91,7 +91,10 @@ src/
   engine/                     Formula solver (pure, unit-tested) and number formatting
   components/module/          Module UI: formula inputs + linked table/chart/diagram (reps/)
   config/access.ts            isLocked(nodeId) stub (always false; no purchase logic yet)
-  theme.ts                    Grayscale light/dark palette
+  theme.ts                    The entire look: palettes, font, type scale, spacing, chart styling
+docs/MODULE_GUIDE.md          Content standards and the review process for modules
+docs/MODULE_PLAN.md           Sections for writing the remaining modules, with status
+.claude/agents/module-reviewer.md  Independent AI reviewer for module content
 TAXONOMY_ISSUES.md            Data problems found (taxonomy.ts is never patched directly)
 vercel.json                   Website build and hosting settings
 ```
@@ -165,11 +168,26 @@ key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for tit
      (`startWith`).
    - **Representation:** choose one of `numberLine`, `bars`, `rectangle`, `grid100`, `circle`,
      `rightTriangle`, `plot`, `table` or `force`.
-2. Run `pnpm test`. For every module, the tests check that:
+2. Follow the standards and the review process in `docs/MODULE_GUIDE.md`: automated tests plus
+   an independent review by the `module-reviewer` agent. Run `pnpm test`. For every module, the
+   tests check that:
    - it matches a taxonomy skill or topic;
    - the example satisfies every relation and range;
    - every rearrangement agrees with its relation and has a step explanation;
    - solving from any combination of inputs reproduces the example.
+
+## Restyling
+
+The whole look lives in `src/theme.ts`. Components hardcode no colors, fonts or sizes:
+
+- **Palettes:** light and dark app colors, plus separate chart colors (`chartInk`, `chartFill`,
+  `chartHighlight`, …) so diagrams can be styled independently of the rest of the app.
+- **Font:** `font.family` applies to all app text (through `src/components/Text.tsx`), chart text
+  and navigation headers. Leave it `undefined` for the system font. Load custom fonts with
+  expo-font first.
+- **Type scale, spacing, corner radius:** `font`, `space` and `radius`.
+- **Charts:** label sizes, line widths, dash patterns, and drag-handle size and touch area
+  (`chart`).
 
 ## What's stubbed
 
