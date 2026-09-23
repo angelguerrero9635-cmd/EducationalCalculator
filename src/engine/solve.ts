@@ -56,8 +56,25 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
 const normalizeValue = (variable: VariableDef, x: number) =>
   variable.integer ? Math.round(x) : Math.abs(x) < 1e-12 ? 0 : x;
 
-/** True when a relation holds for `values` (relative tolerance). */
+const closeTo = (x: number, target: number) =>
+  Math.abs(x - target) <= TOLERANCE * (1 + Math.abs(target));
+
+/**
+ * True when a relation holds for `values`. Where the relation has an exact rearrangement, it
+ * re-solves for that variable and compares with a relative tolerance, so formulas that mix
+ * very different magnitudes (a rate of 12 and a population of 500,000) are checked precisely.
+ * Otherwise it falls back to the residual, scaled by the size of the values.
+ */
 export function holds(relation: Relation, values: Values): boolean {
+  for (const [id, fn] of Object.entries(relation.solve ?? {})) {
+    const others = { ...values };
+    delete others[id];
+    const out = fn!(others);
+    const candidates = (out === undefined ? [] : Array.isArray(out) ? out : [out]).filter(
+      Number.isFinite,
+    );
+    if (candidates.length > 0) return candidates.some((x) => closeTo(x, values[id]!));
+  }
   const r = relation.residual(values);
   if (!Number.isFinite(r)) return false;
   const scale = 1 + Math.max(...relation.vars.map((id) => Math.abs(values[id] ?? 0)));

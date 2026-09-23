@@ -1,5 +1,5 @@
 import { formatNumber, parseNumber, renderTemplate } from '../format';
-import { findRoots, solve, type System } from '../solve';
+import { findRoots, holds, solve, type System } from '../solve';
 import { initialState, setValues } from '../state';
 
 const area: System = {
@@ -175,6 +175,22 @@ describe('solve', () => {
     };
     expect(solve(square, [{ id: 'y', value: 9 }], { x: -2 }).values.x).toBeCloseTo(-3, 6);
     expect(solve(square, [{ id: 'y', value: 9 }], { x: 2 }).values.x).toBeCloseTo(3, 6);
+  });
+
+  it('checks consistency precisely in formulas that mix large and small values', () => {
+    const rate = {
+      id: 'CBR = B ÷ P × 1000',
+      display: '',
+      vars: ['CBR', 'B', 'P'],
+      residual: (v: Record<string, number>) => v.CBR! - (1000 * v.B!) / v.P!,
+      solve: {
+        CBR: (v: Record<string, number>) => (1000 * v.B!) / v.P!,
+        B: (v: Record<string, number>) => (v.CBR! * v.P!) / 1000,
+      },
+    };
+    expect(holds(rate, { CBR: 12, B: 6000, P: 500000 })).toBe(true);
+    // 12.3 per 1,000 is off by 150 births out of 6,000: must not pass as consistent.
+    expect(holds(rate, { CBR: 12.3, B: 6000, P: 500000 })).toBe(false);
   });
 
   it('findRoots brackets every sign change', () => {
