@@ -1,7 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 
-import { DetailHeader, EmptyState, LearnPlaceholders, ListRow, LockedState } from '@/components';
+import { DetailHeader, EmptyState, ModuleSections, ListRow, LockedState } from '@/components';
 import { isLocked } from '@/config/access';
 import { courseRoute, getTopic, topicKey } from '@/data/selectors';
 import { useTrackRecent } from '@/state';
@@ -20,11 +20,14 @@ export default function TopicScreen() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      automaticallyAdjustKeyboardInsets
       style={{ backgroundColor: c.background }}
     >
       <DetailHeader title={topic.title} lines={[]} />
       <ListRow overline="Course" title={topic.course.title} route={courseRoute(topic.course.id)} />
-      <LearnPlaceholders />
+      <ModuleSections id={topicKey(topic.course.id, topic.index)} />
     </ScrollView>
   );
 }

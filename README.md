@@ -81,12 +81,15 @@ src/
     levels.tsx                Edit onboarding selections (from Settings)
     paywall.tsx               Placeholder paywall (modal)
   data/
+    modules/                  Module content (assumptions, formulas, representation) by taxonomy id
     taxonomy.ts               SINGLE SOURCE OF TRUTH for all course content (do not edit casually)
     selectors.ts              Pure derived views: strand grouping, search, routes, labels
     __tests__/                validateTaxonomy() + selector tests
   components/                 ListRow, SectionHeader, Chip, PlaceholderCard, RefreshLinkRow,
                               EmptyState, Button, SegmentedControl, LevelPicker, CourseList…
   state/                      AsyncStorage-backed hooks: useSelectedLevels, useRecents
+  engine/                     Formula solver (pure, unit-tested) and number formatting
+  components/module/          Module UI: formula inputs + linked table/chart/diagram (reps/)
   config/access.ts            isLocked(nodeId) stub (always false; no purchase logic yet)
   theme.ts                    Grayscale light/dark palette
 TAXONOMY_ISSUES.md            Data problems found (taxonomy.ts is never patched directly)
@@ -127,10 +130,45 @@ vercel.json                   Website build and hosting settings
 3. That's it. Browse, Search, Home cards, onboarding choices and Refresh links pick up the change
    automatically.
 
+## Modules: assumptions, formulas and a linked visual
+
+Each skill and course topic ("module") can have three sections:
+
+1. **Assumptions:** bullet points stating what the formulas take for granted.
+2. **Formulas:** a live calculator. Enter any variable and every value the formulas can
+   determine fills in. You may need several inputs before everything is known. The newest entry
+   wins: if it contradicts an older one, the older one is recalculated, or cleared with a note if
+   it can't fit.
+3. **Table, chart or diagram:** shows the same values. Dragging a handle or tapping a row or
+   square sets variables exactly like typing, so the formulas and the visual always match.
+
+Content lives in `src/data/modules/` (`k12.ts`, `college.ts`), keyed by skill id or course topic
+key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for titles and structure.
+14 pilot modules are written. Every other module shows placeholders until its content is added.
+
+### How to add a module
+
+1. Add a `ModuleDef` to `k12.ts` or `college.ts`:
+   - **Variables:** give each one a symbol, name, unit, `min`/`max`, a drag `step`, and
+     `integer` if it must be a whole number.
+   - **Relations:** give each equation a `residual` (left side − right side) and, where
+     possible, a `solve` rearrangement for each variable. The solver falls back to numeric
+     root-finding within `[min, max]`.
+   - **Example:** a consistent worked `example`, plus the variables it opens with
+     (`startWith`).
+   - **Representation:** choose one of `numberLine`, `bars`, `rectangle`, `grid100`, `circle`,
+     `rightTriangle`, `plot`, `table` or `force`.
+2. Run `pnpm test`. For every module, the tests check that:
+   - it matches a taxonomy skill or topic;
+   - the example satisfies every relation and range;
+   - every rearrangement agrees with its relation;
+   - solving from any combination of inputs reproduces the example.
+
 ## What's stubbed
 
-- **Formula, Calculator and Step-by-step example:** grey placeholder cards on skill and topic
-  screens.
+- **Module content:** 14 pilot modules are written. Other skills and topics show placeholder cards
+  for Assumptions, Formulas and the visual.
+- **Step-by-step example:** a grey placeholder card on every skill and topic screen.
 - **Paywall:** layout only. Continue is disabled, Restore Purchases does nothing, and prices are
   placeholders.
 - **`isLocked()`:** always returns `false`. Detail screens already route locked content to the

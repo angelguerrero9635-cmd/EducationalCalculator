@@ -16,6 +16,8 @@ export interface SolveResult {
   unknown: string[];
   /** Older givens replaced because newer input already determines them or conflicts with them. */
   dropped: string[];
+  /** The subset of `dropped` removed because they conflicted with newer input (tell the user). */
+  cleared: string[];
   /** The newest given, if it could not be accepted, with a reason to show the user. */
   rejected?: { id: string; reason: string };
 }
@@ -164,6 +166,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
   let known: Values = {};
   const kept: Given[] = [];
   const dropped: string[] = [];
+  const cleared: string[] = [];
   let rejected: SolveResult['rejected'];
 
   for (let i = given.length - 1; i >= 0; i--) {
@@ -177,8 +180,12 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     }
     const invalid = checkValue(variable, g.value);
     if (invalid) {
-      if (isNewest) rejected = { id: g.id, reason: invalid };
-      else dropped.push(g.id);
+      if (isNewest) {
+        rejected = { id: g.id, reason: invalid };
+      } else {
+        dropped.push(g.id);
+        cleared.push(g.id);
+      }
       continue;
     }
     const trial = propagate(
@@ -193,6 +200,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       rejected = { id: g.id, reason: trial.reason };
     } else {
       dropped.push(g.id);
+      cleared.push(g.id);
     }
   }
 
@@ -204,6 +212,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     derived: ids.filter((id) => id in known && !givenIds.has(id)),
     unknown: ids.filter((id) => !(id in known)),
     dropped,
+    cleared,
     rejected,
   };
 }

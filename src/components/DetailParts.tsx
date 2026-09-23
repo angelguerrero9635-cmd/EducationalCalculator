@@ -5,7 +5,6 @@ import type { RefreshRow } from '@/data/selectors';
 import { font, space, usePalette } from '@/theme';
 
 import { EmptyState } from './EmptyState';
-import { PlaceholderCard } from './PlaceholderCard';
 import { RefreshLinkRow } from './RefreshLinkRow';
 import { SectionHeader } from './SectionHeader';
 
@@ -49,20 +48,6 @@ export function RefreshSection({
   );
 }
 
-/** Wireframe slots for the formula/calculator engine and step-by-step solutions (later phases). */
-export function LearnPlaceholders() {
-  return (
-    <>
-      <SectionHeader title="Learn" />
-      <View style={styles.cards}>
-        <PlaceholderCard label="Formula" />
-        <PlaceholderCard label="Calculator" />
-        <PlaceholderCard label="Step-by-step example" />
-      </View>
-    </>
-  );
-}
-
 /** Shown instead of content when config/access.ts reports the node as locked. */
 export function LockedState() {
   return (
@@ -80,5 +65,4 @@ const styles = StyleSheet.create({
   title: { fontSize: font.title, fontWeight: '700' },
   line: { fontSize: font.body - 1 },
   note: { fontSize: font.caption + 1, padding: space.lg },
-  cards: { padding: space.lg, gap: space.md },
 });

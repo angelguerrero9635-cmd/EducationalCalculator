@@ -115,7 +115,7 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     example: { l: 4, w: 3, A: 12 },
     startWith: ['l', 'w'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', max: 10 },
+    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', max: 7 },
   },
 
   {
@@ -189,7 +189,7 @@ export const K12_MODULES: ModuleDef[] = [
     representation: {
       kind: 'circle',
       radius: 'r',
-      max: 10,
+      max: 5,
       diameter: 'd',
       circumference: 'C',
       area: 'A',
@@ -205,9 +205,9 @@ export const K12_MODULES: ModuleDef[] = [
       'All three sides use the same unit.',
     ],
     variables: [
-      { id: 'a', symbol: 'a', name: 'Leg a', unit: 'cm', min: 0, max: 12, step: 0.5 },
-      { id: 'b', symbol: 'b', name: 'Leg b', unit: 'cm', min: 0, max: 12, step: 0.5 },
-      { id: 'c', symbol: 'c', name: 'Hypotenuse', unit: 'cm', min: 0, max: 17 },
+      { id: 'a', symbol: 'a', name: 'Leg a', unit: 'cm', min: 0, max: 100, step: 0.5 },
+      { id: 'b', symbol: 'b', name: 'Leg b', unit: 'cm', min: 0, max: 100, step: 0.5 },
+      { id: 'c', symbol: 'c', name: 'Hypotenuse', unit: 'cm', min: 0, max: 142 },
     ],
     relations: [
       {
@@ -224,7 +224,7 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     example: { a: 3, b: 4, c: 5 },
     startWith: ['a', 'b'],
-    representation: { kind: 'rightTriangle', a: 'a', b: 'b', c: 'c', max: 12 },
+    representation: { kind: 'rightTriangle', a: 'a', b: 'b', c: 'c', max: 5 },
   },
 
   {
@@ -381,8 +381,8 @@ export const K12_MODULES: ModuleDef[] = [
       force: 'F',
       mass: 'm',
       acceleration: 'a',
-      maxForce: 200,
-      maxAcceleration: 20,
+      maxForce: 50,
+      maxAcceleration: 5,
     },
   },
 ];

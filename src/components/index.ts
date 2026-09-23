@@ -8,4 +8,5 @@ export { PlaceholderCard } from './PlaceholderCard';
 export { RefreshLinkRow } from './RefreshLinkRow';
 export { SectionHeader } from './SectionHeader';
 export { SegmentedControl } from './SegmentedControl';
-export { DetailHeader, LearnPlaceholders, LockedState, RefreshSection } from './DetailParts';
+export { DetailHeader, LockedState, RefreshSection } from './DetailParts';
+export { ModuleSections } from './module/ModuleSections';

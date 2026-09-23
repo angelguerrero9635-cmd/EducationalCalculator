@@ -55,6 +55,7 @@ describe('solve', () => {
     // Oldest given (l) is dropped; A and w stay, so l is recalculated.
     expect(r.given.map((g) => g.id)).toEqual(['w', 'A']);
     expect(r.dropped).toEqual(['l']);
+    expect(r.cleared).toEqual([]); // l is recalculated, not lost
     expect(r.values.l).toBeCloseTo(20 / 3);
     expect(r.rejected).toBeUndefined();
   });
@@ -88,6 +89,7 @@ describe('solve', () => {
     // c = 3 with b = 5 would need a² = −16, so the older input (b) is cleared.
     expect(r.rejected).toBeUndefined();
     expect(r.dropped).toEqual(['b']);
+    expect(r.cleared).toEqual(['b']);
     expect(r.values).toEqual({ c: 3 });
   });
 
@@ -195,6 +197,23 @@ describe('calculator state', () => {
     s = setValues(area, s, { l: 5, w: 2 });
     expect(s.result.values).toEqual({ l: 5, w: 2, A: 10 });
     expect(s.given.map((g) => g.id)).toEqual(['l', 'w']);
+  });
+
+  it('tells the user when an older input is cleared by a conflict', () => {
+    const tri: System = {
+      variables: ['a', 'b', 'c'].map((id) => ({ id, symbol: id, name: id, min: 0 })),
+      relations: [
+        {
+          id: 'a² + b² = c²',
+          display: '',
+          vars: ['a', 'b', 'c'],
+          residual: (v) => v.a! ** 2 + v.b! ** 2 - v.c! ** 2,
+          solve: { a: (v) => Math.sqrt(v.c! ** 2 - v.b! ** 2) },
+        },
+      ],
+    };
+    const s = setValues(tri, initialState(tri, [{ id: 'b', value: 5 }]), { c: 3 });
+    expect(s.errors).toEqual({ b: 'Cleared: didn’t fit the newer value' });
   });
 
   it('reports why an input was rejected', () => {

@@ -11,6 +11,7 @@ export interface CalcState {
 function run(system: System, given: Given[], previous: Values): CalcState {
   const result = solve(system, given, previous);
   const errors: Record<string, string> = {};
+  for (const id of result.cleared) errors[id] = 'Cleared: didn’t fit the newer value';
   if (result.rejected) errors[result.rejected.id] = result.rejected.reason;
   return { given: result.given, result, errors };
 }

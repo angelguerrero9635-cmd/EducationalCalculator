@@ -4,7 +4,7 @@ import { ScrollView } from 'react-native';
 import {
   DetailHeader,
   EmptyState,
-  LearnPlaceholders,
+  ModuleSections,
   LockedState,
   RefreshSection,
 } from '@/components';
@@ -26,6 +26,9 @@ export default function SkillScreen() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      automaticallyAdjustKeyboardInsets
       style={{ backgroundColor: c.background }}
     >
       <DetailHeader
@@ -36,7 +39,7 @@ export default function SkillScreen() {
         ]}
       />
       <RefreshSection rows={refreshRows(skill.id)} />
-      <LearnPlaceholders />
+      <ModuleSections id={skill.id} />
     </ScrollView>
   );
 }
