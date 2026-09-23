@@ -1,0 +1,36 @@
+/** Values keyed by variable id. */
+export type Values = Record<string, number>;
+
+export interface VariableDef {
+  id: string;
+  /** Short symbol shown in formulas, e.g. "A", "v₀", "ρ". */
+  symbol: string;
+  /** Plain-language name, e.g. "Area". */
+  name: string;
+  unit?: string;
+  /** Allowed range. Values outside it are rejected (as input) or treated as a conflict (derived). */
+  min?: number;
+  max?: number;
+  /** Snap size used when dragging on a chart or diagram. */
+  step?: number;
+  /** Whole numbers only. */
+  integer?: boolean;
+}
+
+/**
+ * One equation linking some variables. `residual` is zero when the equation holds
+ * (write it as left side − right side).
+ */
+export interface Relation {
+  id: string;
+  /** Display template; `{id}` is replaced by the symbol or the current value. */
+  display: string;
+  vars: string[];
+  residual: (v: Values) => number;
+  /**
+   * Exact rearrangements, one per variable where possible. May return several candidates
+   * (e.g. ± square roots); the solver picks the valid one closest to the previous value.
+   * Variables without a rearrangement are solved numerically within their [min, max].
+   */
+  solve?: Partial<Record<string, (v: Values) => number | number[] | undefined>>;
+}
