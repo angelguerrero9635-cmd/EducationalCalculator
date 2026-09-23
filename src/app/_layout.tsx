@@ -1,15 +1,15 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, type Theme } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
-import { View, useColorScheme } from 'react-native';
+import { View } from 'react-native';
 
 import { useHydrated, useSelectedLevels } from '@/state';
-import { usePalette } from '@/theme';
+import { usePalette, useResolvedScheme } from '@/theme';
 
 export default function RootLayout() {
   const hydrated = useHydrated();
   const { onboarded } = useSelectedLevels();
-  const scheme = useColorScheme();
+  const scheme = useResolvedScheme();
   const c = usePalette();
 
   const theme = useMemo<Theme>(() => {
@@ -32,7 +32,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={theme}>
-      <StatusBar style="auto" />
+      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}>
         <Stack.Protected guard={onboarded}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

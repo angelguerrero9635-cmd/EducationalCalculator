@@ -1,4 +1,7 @@
+import { useSyncExternalStore } from 'react';
 import { useColorScheme } from 'react-native';
+
+import { prefsStore } from '@/state/prefs';
 
 /** Low-fidelity grayscale wireframe palette. */
 const light = {
@@ -27,8 +30,21 @@ const dark: Palette = {
 
 export const palettes = { light, dark };
 
+const getAppearance = () => prefsStore.get().appearance;
+
+/**
+ * The color scheme in effect: the Settings → Appearance choice, or the device setting for
+ * "System". Read from app state (not just Appearance) so the override also works on web.
+ */
+export function useResolvedScheme(): 'light' | 'dark' {
+  const system = useColorScheme();
+  const pref = useSyncExternalStore(prefsStore.subscribe, getAppearance);
+  if (pref !== 'system') return pref;
+  return system === 'dark' ? 'dark' : 'light';
+}
+
 export function usePalette(): Palette {
-  return useColorScheme() === 'dark' ? dark : light;
+  return useResolvedScheme() === 'dark' ? dark : light;
 }
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 };
