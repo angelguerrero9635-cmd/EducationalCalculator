@@ -11,10 +11,11 @@ export function useHydrated() {
   const [ready, setReady] = useState(false);
   useEffect(() => {
     let alive = true;
-    Promise.all([prefsStore.hydrate(), recentsStore.hydrate()]).then(() => {
-      applyAppearance(prefsStore.get().appearance);
-      if (alive) setReady(true);
-    });
+    Promise.all([prefsStore.hydrate(), recentsStore.hydrate()])
+      .then(() => applyAppearance(prefsStore.get().appearance))
+      .finally(() => {
+        if (alive) setReady(true);
+      });
     return () => {
       alive = false;
     };

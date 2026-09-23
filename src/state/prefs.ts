@@ -23,8 +23,14 @@ function parsePrefs(raw: unknown): Prefs {
 
 export const prefsStore = createPersistedStore<Prefs>('prefs.v1', DEFAULT_PREFS, parsePrefs);
 
-export const applyAppearance = (pref: AppearancePref) =>
-  Appearance.setColorScheme(pref === 'system' ? 'unspecified' : pref);
+/** Overrides the app's color scheme (no-op where unsupported, e.g. web). */
+export function applyAppearance(pref: AppearancePref) {
+  try {
+    Appearance.setColorScheme?.(pref === 'system' ? 'unspecified' : pref);
+  } catch {
+    // Unsupported platform: the app keeps following the system setting.
+  }
+}
 
 const usePrefs = () => useSyncExternalStore(prefsStore.subscribe, prefsStore.get);
 
