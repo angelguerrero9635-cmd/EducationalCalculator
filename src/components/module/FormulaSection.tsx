@@ -15,6 +15,17 @@ import type { Calculator } from './useCalculator';
 
 type SystemOption = 'metric' | 'us' | 'mixed';
 
+/** Solver messages in words for Kindergarten–Grade 2. */
+function kidMessage(message: string): string {
+  if (message === 'Enter a number') return 'Type a number';
+  if (message.startsWith('Cleared')) return 'Changed to match your new number';
+  if (message === 'Must be a whole number') return 'Use a whole number';
+  if (/^(Makes|No whole numbers|Doesn’t fit)/.test(message)) {
+    return 'That doesn’t fit. Try another number.';
+  }
+  return message;
+}
+
 /** Unit menu choices this module offers ("Standard" when US units are the same as metric). */
 function systemOptions(calc: Calculator): DropdownOption<SystemOption>[] {
   const { systems, mixed, metricUnits } = calc.unitOptions;
@@ -73,7 +84,15 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   // A unit menu whenever this value has more than one unit in the current system.
   const picker = unitChoices(variable, calc.units.choice.system).length > 1;
   const status = calc.status(variable.id);
-  const error = typo ? 'Enter a number' : calc.errors[variable.id];
+  const early = isEarlyGrade(calc.module.id);
+  const rawError = typo ? 'Enter a number' : calc.errors[variable.id];
+  const error = rawError && early ? kidMessage(rawError) : rawError;
+  const statusWord = {
+    given: early ? 'you typed' : 'entered',
+    example: 'example',
+    derived: early ? 'answer' : 'calculated',
+    unknown: early ? '?' : 'unknown',
+  }[status];
   const shown =
     draft ??
     (value === undefined ? '' : formatNumber(calc.units.toDisplay(variable.id, value), variable));
@@ -92,10 +111,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         <View style={styles.names}>
           <Text style={[styles.name, { color: c.text }]}>{variable.name}</Text>
           <Text style={[styles.meta, { color: error ? c.text : c.textMuted }]}>
-            {error ??
-              `${status === 'given' ? 'entered' : status === 'derived' ? 'calculated' : 'unknown'}${
-                unit && !picker ? ` · ${unit}` : ''
-              }`}
+            {error ?? `${statusWord}${unit && !picker ? ` · ${unit}` : ''}`}
           </Text>
         </View>
       </View>
@@ -120,7 +136,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
           {
             color: c.text,
             borderColor: error ? c.text : c.border,
-            backgroundColor: status === 'given' ? c.background : c.surface,
+            backgroundColor: status === 'given' || status === 'example' ? c.background : c.surface,
             fontWeight: status === 'given' ? '600' : '400',
           },
         ]}
@@ -183,13 +199,17 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
       ) : null}
       {/* Inputs first, then the number sentences they fill in. */}
       <Text style={[styles.hint, { color: c.textMuted }]}>
-        {calc.unknownCount
+        {calc.isExample
           ? early
-            ? 'Type another number to fill in the rest.'
-            : 'Enter another value to fill in the rest.'
-          : early
-            ? 'Change any number. The others change to match.'
-            : 'Change any value: the newest entry wins and the rest recalculate.'}
+            ? 'This is an example. Type the numbers from your problem to start.'
+            : 'This is an example. Type your own values to start a new problem.'
+          : calc.unknownCount
+            ? early
+              ? 'Type another number to fill in the rest.'
+              : 'Enter another value to fill in the rest.'
+            : early
+              ? 'Change any number. The others change to match.'
+              : 'Change any value: the newest entry wins and the rest recalculate.'}
       </Text>
       <View>
         {module.variables.map((v) => (

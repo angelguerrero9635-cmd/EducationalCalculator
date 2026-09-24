@@ -101,12 +101,15 @@ export function buildSteps(
     const base = {
       id: t.id,
       // Lowercase only the first letter, so names like “Pencil A” keep their capital.
-      title: `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)} (${v.symbol})`,
+      // “Find how many more (circles, squares)” would get two sets of brackets: use a colon.
+      title: v.name.endsWith(')')
+        ? `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)}: ${v.symbol}`
+        : `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)} (${v.symbol})`,
       formula: renderTemplate(relation.display, vars),
       result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
     if (!text || !t.exact) {
-      return { ...base, how: 'Tried numbers until both sides matched.' };
+      return { ...base, how: 'Tried numbers until both sides match.' };
     }
     // Text functions get the numbers the steps show (the working values), so every line matches.
     const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;

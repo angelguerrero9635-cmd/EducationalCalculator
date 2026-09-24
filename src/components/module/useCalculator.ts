@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import type { ModuleDef } from '@/data/modules';
 import type { SolveResult } from '@/engine/solve';
-import { changeUnits, initialState, setValues, type CalcState } from '@/engine/state';
+import { changeUnits, initialState, setValues, typeValue, type CalcState } from '@/engine/state';
 import type { Values } from '@/engine/types';
 import {
   makeUnitContext,
@@ -19,7 +19,10 @@ export interface Calculator {
   values: Values;
   /** Full solver result, including how each value was found. */
   result: SolveResult;
-  status: (id: string) => 'given' | 'derived' | 'unknown';
+  /** 'example' while the untouched example is showing (typing starts a fresh problem). */
+  status: (id: string) => 'given' | 'example' | 'derived' | 'unknown';
+  /** True while the module shows its untouched example. */
+  isExample: boolean;
   errors: Record<string, string>;
   unknownCount: number;
   /** Sets one or more variables (formula units) as the newest input; `undefined` clears. */
@@ -45,6 +48,10 @@ const exampleGivens = (m: ModuleDef, ctx: UnitContext) =>
     return { id, value: v.integer ? ctx.fromDisplay(id, x) : x };
   });
 
+/** Where "Clear all" starts: nothing, or the module's `clearTo` values (e.g. coins at 0). */
+const clearGivens = (m: ModuleDef) =>
+  Object.entries(m.clearTo ?? {}).map(([id, value]) => ({ id, value: value! }));
+
 /** Shared state for a module's formula inputs, units, table/chart/diagram and steps. */
 export function useCalculator(module: ModuleDef): Calculator {
   const [defaultSystem] = useUnitsPref();
@@ -55,7 +62,10 @@ export function useCalculator(module: ModuleDef): Calculator {
       system: options.systems.includes(defaultSystem) ? defaultSystem : 'metric',
     };
     const ctx = makeUnitContext(module, choice);
-    return { choice, calc: initialState(ctx.system, exampleGivens(module, ctx)) };
+    return {
+      choice,
+      calc: initialState(ctx.system, exampleGivens(module, ctx), { example: true }),
+    };
   });
 
   const units = useMemo(() => makeUnitContext(module, state.choice), [module, state.choice]);
@@ -90,15 +100,31 @@ export function useCalculator(module: ModuleDef): Calculator {
       module,
       values,
       result: calc.result,
-      status: (id) => (given.has(id) ? 'given' : id in values ? 'derived' : 'unknown'),
+      status: (id) =>
+        given.has(id) ? (calc.example ? 'example' : 'given') : id in values ? 'derived' : 'unknown',
+      isExample: !!calc.example,
       errors: calc.errors,
       unknownCount: unknown.length,
       set,
+      // Typing: on the untouched example this starts a fresh problem (see typeValue).
       setShown: (id, shown) =>
-        set({ [id]: shown === undefined ? undefined : units.fromDisplay(id, shown) }),
-      clear: () => setState((s) => ({ ...s, calc: initialState(units.system) })),
+        setState((s) => ({
+          ...s,
+          calc: typeValue(
+            makeUnitContext(module, s.choice).system,
+            s.calc,
+            id,
+            shown === undefined ? undefined : units.fromDisplay(id, shown),
+            clearGivens(module),
+          ),
+        })),
+      clear: () =>
+        setState((s) => ({ ...s, calc: initialState(units.system, clearGivens(module)) })),
       showExample: () =>
-        setState((s) => ({ ...s, calc: initialState(units.system, exampleGivens(module, units)) })),
+        setState((s) => ({
+          ...s,
+          calc: initialState(units.system, exampleGivens(module, units), { example: true }),
+        })),
       units,
       unitOptions: options,
       setUnits,

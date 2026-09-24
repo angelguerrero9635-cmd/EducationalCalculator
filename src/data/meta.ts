@@ -32,8 +32,23 @@ export interface Meta {
 const clip = (text: string, max = 160) =>
   text.length <= max ? text : `${text.slice(0, max - 1).replace(/\s+\S*$/, '')}…`;
 
-/** "tenFrame" → "ten frame" (the picture a module uses). */
-const pictureName = (kind: string) => kind.replace(/([A-Z])/g, ' $1').toLowerCase();
+/** The picture a module uses, in everyday words ("tape" → "bar model"). */
+const PICTURE_NAMES: Record<string, string> = {
+  tenFrame: 'ten frame',
+  tape: 'bar model',
+  waterfall: 'add-and-take-away chart',
+  bars: 'bar graph',
+  compareRows: 'counters in two rows',
+  unitTiles: 'cubes and paper clips',
+  cubeTrains: 'cube trains',
+  pairs: 'pairs of dots',
+  array: 'array of dots',
+  partition: 'shape cut into equal parts',
+  hops: 'number line with jumps',
+  numberBond: 'number bond',
+};
+const pictureName = (kind: string) =>
+  PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();
 
 /** What the lesson page offers, from its module, e.g. "Interactive ten frame, …". */
 function lessonSummary(id: string, early: boolean): string {

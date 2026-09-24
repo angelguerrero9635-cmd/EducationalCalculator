@@ -248,8 +248,13 @@ export interface ModuleDef {
    * have more modules for question types that need a different model: `<id>~<slug>`.
    */
   id: string;
-  /** Short name for the switcher when a skill has several modules, e.g. "Compare problems". */
+  /** Name of a problem-type module (`<skill id>~<slug>`), e.g. "Compare problems". */
   title?: string;
+  /**
+   * Values "Clear all" (and typing over the example) start from, e.g. every coin count at 0 so a
+   * student only types the coins they have.
+   */
+  clearTo?: Values;
   /**
    * Values that stand on their own, with no formula linking them to the rest (e.g. a clock's
    * hour). Every other value must connect to the others through the formulas; otherwise the

@@ -6,6 +6,11 @@ export interface CalcState {
   result: SolveResult;
   /** Reason the most recent input was not accepted, keyed by variable id. */
   errors: Record<string, string>;
+  /**
+   * True while the values are the module's example, untouched. The first number a student
+   * types then starts a fresh problem instead of mixing with the example's numbers.
+   */
+  example?: boolean;
 }
 
 function run(system: System, given: Given[], previous: Values): CalcState {
@@ -16,8 +21,28 @@ function run(system: System, given: Given[], previous: Values): CalcState {
   return { given: result.given, result, errors };
 }
 
-export function initialState(system: System, given: Given[] = []): CalcState {
-  return run(system, given, {});
+export function initialState(
+  system: System,
+  given: Given[] = [],
+  options: { example?: boolean } = {},
+): CalcState {
+  return { ...run(system, given, {}), example: options.example };
+}
+
+/**
+ * A number the student typed. On the untouched example it starts a fresh problem from
+ * `start` (e.g. coin counts at 0) plus this value; otherwise it's the newest input.
+ */
+export function typeValue(
+  system: System,
+  state: CalcState,
+  id: string,
+  value: number | undefined,
+  start: Given[] = [],
+): CalcState {
+  if (!state.example) return setValues(system, state, { [id]: value });
+  const fresh = start.filter((g) => g.id !== id);
+  return initialState(system, value === undefined ? fresh : [...fresh, { id, value }]);
 }
 
 /**

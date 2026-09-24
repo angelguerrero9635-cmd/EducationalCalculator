@@ -42,7 +42,7 @@ export function RefreshSection({
         rows.map((row) => <RefreshLinkRow key={row.id} link={row} />)
       ) : (
         <Text style={[styles.note, { color: c.textMuted }]}>
-          No prerequisites. This is a starting point.
+          Nothing to review first. This is a starting point.
         </Text>
       )}
     </>

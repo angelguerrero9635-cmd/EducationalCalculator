@@ -11,7 +11,8 @@ import type { Calculator } from './useCalculator';
 export function StepByStep({ calc }: { calc: Calculator }) {
   const c = usePalette();
   const w = buildSteps(calc.module, calc.result, calc.units);
-  const sentence = isEarlyGrade(calc.module.id) ? 'number sentence' : 'formula';
+  const early = isEarlyGrade(calc.module.id);
+  const sentence = early ? 'number sentence' : 'formula';
   // Conversion steps (when needed) come first and last, numbered with the others.
   const offset = w.convertIn.length ? 1 : 0;
   const card = [styles.card, { backgroundColor: c.surface, borderColor: c.border }];
@@ -36,10 +37,14 @@ export function StepByStep({ calc }: { calc: Calculator }) {
       {w.convertIn.length ? (
         <View style={card}>
           <Text style={[styles.stepTitle, { color: c.text }]}>
-            {`Step 1 · Convert to the ${sentence}’s units`}
+            {early
+              ? 'Step 1 · Change the units first'
+              : `Step 1 · Convert to the ${sentence}’s units`}
           </Text>
           <Text style={[styles.body, { color: c.textMuted }]}>
-            {`The ${sentence}s don’t work directly in the units you chose, so convert first (to ${w.workingUnits}).`}
+            {early
+              ? `Change to ${w.workingUnits} first.`
+              : `The ${sentence}s don’t work directly in the units you chose, so convert first (to ${w.workingUnits}).`}
           </Text>
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
             {w.convertIn.map((line) => (
@@ -80,7 +85,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
       {w.convertOut.length ? (
         <View style={card}>
           <Text style={[styles.stepTitle, { color: c.text }]}>
-            {`Step ${w.steps.length + offset + 1} · Convert the answers`}
+            {`Step ${w.steps.length + offset + 1} · ${early ? 'Change back to your units' : 'Convert the answers'}`}
           </Text>
           <Text style={[styles.body, { color: c.textMuted }]}>
             Change each answer back to the unit you chose.
@@ -97,7 +102,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
 
       {w.steps.length === 0 && w.missing.length === 0 ? (
         <Text style={[styles.body, styles.pad, { color: c.textMuted }]}>
-          You typed every number, so nothing is left to find. The check shows if they fit.
+          You typed every number. The check shows if they match.
         </Text>
       ) : null}
 
@@ -118,7 +123,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           </Text>
           {w.check.map((k) => (
             <Text key={k.formula} style={[styles.math, { color: c.text }]}>
-              {`${k.formula}   ${k.ok ? '✓' : '✗'}`}
+              {`${k.formula}   ${k.ok ? '✓' : early ? '≠  try another number' : '✗'}`}
             </Text>
           ))}
         </View>

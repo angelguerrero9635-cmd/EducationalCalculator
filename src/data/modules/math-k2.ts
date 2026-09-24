@@ -9,6 +9,7 @@ import type { Values, VariableDef } from '@/engine/types';
 import type { ModuleDef, StepText } from './types';
 import {
   addStrategy,
+  compareLine,
   countList,
   countUp,
   missingPart,
@@ -98,13 +99,17 @@ export function difference(
     second: [string, string];
     /** Show counting up from the smaller to the bigger number (for 2- and 3-digit numbers). */
     countUp?: boolean;
+    /** Start by saying which number is greater, place by place (compare-numbers lessons). */
+    compare?: boolean;
+    /** The formula as students read it, e.g. "{d} = how many more: {a} or {b}" (K–1). */
+    display?: string;
   },
 ) {
   const id = `${d} = difference of ${a} and ${b}`;
   const aMore = (v: Values) => v[a]! >= v[b]!;
   const relation = {
     id,
-    display: `{${d}} = difference of {${a}} and {${b}}`,
+    display: how.display ?? `{${d}} = difference of {${a}} and {${b}}`,
     vars: [d, a, b],
     residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),
     check: (v: Values) =>
@@ -120,17 +125,24 @@ export function difference(
       [d]: {
         expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
         how: how.diff,
-        ...(how.countUp
-          ? { work: (v: Values) => countUp(Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)) }
+        ...(how.countUp || how.compare
+          ? {
+              work: (v: Values) => [
+                ...(how.compare ? [compareLine(v[a]!, v[b]!)] : []),
+                ...(how.countUp ? countUp(Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)) : []),
+              ],
+            }
           : {}),
       },
       [a]: {
         expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`),
         how: (v) => how.first[aMore(v) ? 0 : 1],
+        work: (v) => (aMore(v) ? addStrategy(v[b]!, v[d]!) : subtractStrategy(v[b]!, v[d]!)),
       },
       [b]: {
         expr: (v) => (aMore(v) ? `{${a}} − {${d}}` : `{${a}} + {${d}}`),
         how: (v) => how.second[aMore(v) ? 0 : 1],
+        work: (v) => (aMore(v) ? subtractStrategy(v[a]!, v[d]!) : addStrategy(v[a]!, v[d]!)),
       },
     },
   };

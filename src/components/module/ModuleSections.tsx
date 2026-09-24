@@ -14,18 +14,20 @@ import { useCalculator } from './useCalculator';
 function ModuleView({ module }: { module: ModuleDef }) {
   const c = usePalette();
   const calc = useCalculator(module);
+  // Kindergarten–Grade 2 section names are plain words.
+  const early = isEarlyGrade(module.id);
   return (
     <>
       {/* Order: see the picture first, then work with the numbers, then read why. */}
-      <SectionHeader title={representationTitle(module.representation)} />
+      <SectionHeader title={early ? 'Picture' : representationTitle(module.representation)} />
       <View style={styles.representation}>
         <RepresentationView spec={module.representation} calc={calc} />
       </View>
 
-      <SectionHeader title={isEarlyGrade(module.id) ? 'Number sentences' : 'Formulas'} />
+      <SectionHeader title={early ? 'Number sentences' : 'Formulas'} />
       <FormulaSection calc={calc} />
 
-      <SectionHeader title="Assumptions" />
+      <SectionHeader title={early ? 'Good to know' : 'Assumptions'} />
       <View style={styles.bullets}>
         {module.assumptions.map((a) => (
           <View key={a} style={styles.bullet}>
