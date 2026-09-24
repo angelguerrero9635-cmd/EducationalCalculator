@@ -36,7 +36,13 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const ly = pivot - tilt;
           const ry = pivot + tilt;
           const pan = (x: number, y: number, ids: string[], key: string) => {
-            // Counters stacked in rows of 5 above the pan, one shade per value.
+            // Counters stacked in rows above the pan, one shade per value: rows of 5, or rows
+            // of 10 smaller counters when there are more than 20 (up to 40 per pan).
+            const n = ids.reduce((sum, id) => sum + count(id), 0);
+            const small = n > 20;
+            const per = small ? 10 : 5;
+            const dx = small ? 10.5 : 20;
+            const dy = small ? 10 : 18;
             let i = 0;
             const dots = ids.flatMap((id, g) =>
               Array.from({ length: count(id) }, () => {
@@ -44,9 +50,9 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 return (
                   <Circle
                     key={`${key}${id}${k}`}
-                    cx={x - 40 + (k % 5) * 20}
-                    cy={y + 34 - Math.floor(k / 5) * 18}
-                    r={7.5}
+                    cx={x - (dx * (per - 1)) / 2 + (k % per) * dx}
+                    cy={y + (small ? 38 : 34) - Math.floor(k / per) * dy}
+                    r={small ? 4.6 : 7.5}
                     fill={shades[g % 2]}
                     stroke={c.chartInk}
                     strokeWidth={chart.strokeLight}

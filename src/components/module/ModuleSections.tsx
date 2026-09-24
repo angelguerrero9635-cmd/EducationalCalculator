@@ -53,12 +53,14 @@ export function ModuleSections({ id }: { id: string }) {
   const [chosen, setChosen] = useState(id);
   const module = modules.find((m) => m.id === chosen) ?? modules[0];
   // A skill with several modules (different question types) gets a switcher.
-  const options = modules.map((m) => ({ value: m.id, label: m.title ?? 'Main' }));
+  const options = modules.map((m) => ({ value: m.id, label: m.title ?? 'Lesson' }));
+  // Segments for a few short names; a menu otherwise.
+  const segmented = options.length <= 3 && options.every((o) => o.label.length <= 16);
   return (
     <>
       {modules.length > 1 && module ? (
         <View style={styles.switcher}>
-          {modules.length <= 3 ? (
+          {segmented ? (
             <SegmentedControl segments={options} value={module.id} onChange={setChosen} />
           ) : (
             <Dropdown

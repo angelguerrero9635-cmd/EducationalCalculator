@@ -454,9 +454,9 @@ export const K12_MODULES: ModuleDef[] = [
       'Water is about 1 g/cm³: denser objects sink in water, less dense ones float.',
     ],
     variables: [
-      { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/cm³', min: 0, max: 25, step: 0.1 },
+      { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/cm³', min: 0.01, max: 25, step: 0.1 },
       { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0, max: 2500000 },
-      { id: 'V', symbol: 'V', name: 'Volume', unit: 'cm³', min: 0, max: 100000, step: 1 },
+      { id: 'V', symbol: 'V', name: 'Volume', unit: 'cm³', min: 0.001, max: 100000, step: 1 },
     ],
     relations: [
       {

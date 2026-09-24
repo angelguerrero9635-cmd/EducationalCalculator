@@ -5,6 +5,12 @@
 import type { ModuleDef } from './types';
 
 const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
+/**
+ * √x for a quantity computed as a sum of terms of size `scale`: a tiny negative from rounding
+ * (a double root, e.g. an object that just stops) counts as 0 instead of no answer.
+ */
+const rootOf = (x: number, scale: number) => (x < 0 && x > -1e-5 * scale ? 0 : Math.sqrt(x));
+
 const plusMinus = (x: number) => (x === 0 ? [0] : [x, -x]);
 
 /**
@@ -71,8 +77,8 @@ export const COLLEGE_MODULES: ModuleDef[] = [
             // ½a·t² + v₀·t − d = 0
             if (x.a === 0) return x.v0 === 0 ? undefined : [x.d! / x.v0!];
             const disc = x.v0! ** 2 + 2 * x.a! * x.d!;
-            if (disc < 0) return [];
-            const s = Math.sqrt(disc);
+            const s = rootOf(disc, x.v0! ** 2 + Math.abs(2 * x.a! * x.d!));
+            if (Number.isNaN(s)) return [];
             return [(-x.v0! + s) / x.a!, (-x.v0! - s) / x.a!];
           },
         },
@@ -83,8 +89,10 @@ export const COLLEGE_MODULES: ModuleDef[] = [
         vars: ['v', 'v0', 'a', 'd'],
         residual: (x) => x.v! ** 2 - x.v0! ** 2 - 2 * x.a! * x.d!,
         solve: {
-          v: (x) => plusMinus(Math.sqrt(x.v0! ** 2 + 2 * x.a! * x.d!)),
-          v0: (x) => plusMinus(Math.sqrt(x.v! ** 2 - 2 * x.a! * x.d!)),
+          v: (x) =>
+            plusMinus(rootOf(x.v0! ** 2 + 2 * x.a! * x.d!, x.v0! ** 2 + Math.abs(2 * x.a! * x.d!))),
+          v0: (x) =>
+            plusMinus(rootOf(x.v! ** 2 - 2 * x.a! * x.d!, x.v! ** 2 + Math.abs(2 * x.a! * x.d!))),
           a: (x) => div(x.v! ** 2 - x.v0! ** 2, 2 * x.d!),
           d: (x) => div(x.v! ** 2 - x.v0! ** 2, 2 * x.a!),
         },

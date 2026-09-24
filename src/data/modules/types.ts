@@ -89,7 +89,14 @@ export type Representation =
   /** Clock face: drag the minute hand (snaps to `minuteStep`); tap a number to set the hour. */
   | { kind: 'clock'; hour: string; minute: string; minuteStep: number }
   /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
-  | { kind: 'partition'; parts: string; shaded: string; shape: 'circle' | 'rectangle' }
+  | {
+      kind: 'partition';
+      parts: string;
+      shaded: string;
+      shape: 'circle' | 'rectangle';
+      /** The value the − / + buttons change (default `parts`), e.g. times cut in half. */
+      control?: string;
+    }
   /**
    * Number line from `start` (default 0) with `count` equal jumps of `step`, ending at `total`.
    * Drag the end.
@@ -222,7 +229,7 @@ export interface ModuleDef {
    * have more modules for question types that need a different model: `<id>~<slug>`.
    */
   id: string;
-  /** Short name shown when a skill has several modules, e.g. "Making change". */
+  /** Short name for the switcher when a skill has several modules, e.g. "Compare problems". */
   title?: string;
   assumptions: string[];
   variables: VariableDef[];

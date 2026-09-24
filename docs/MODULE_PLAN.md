@@ -33,9 +33,9 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 
 ## Section notes
 
-- **Section 1 (Math K–2).** Each module has one representation, so two combined taxonomy
-  skills show only their main half:
-  - `m.2.thirds-polygons` models partitioning into thirds. Naming polygons by sides and angles
-    is covered by the assumptions and by the polygon diagram in `m.K.shapes-2d-3d`.
-  - `m.2.graphs-line-plots` models bar graphs. A line-plot representation can be added with
-    Section 2 (`m.3.scaled-graphs` and measurement data).
+- **Section 1 (Math K–2).** 28 main modules plus 10 extra modules (`<skill>~<slug>`) for
+  common test question types found by the exam-coverage review: compare word problems,
+  comparing numbers with >, < and =, tape-diagram word problems, two-step problems, adding up to
+  four numbers, line plots, polygons by sides and angles, and rows and columns of squares.
+  Not modelled (no quantity to calculate): position words (K.G.1), a.m./p.m., and 3D solids
+  beyond the assumptions.

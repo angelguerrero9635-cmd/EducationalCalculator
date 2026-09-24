@@ -37,7 +37,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const describe = (n: number) => {
     const d = digits(n);
     return [
-      ...(hundreds ? [place(d.h, 'hundred', 'hundreds')] : []),
+      ...(d.h > 0 ? [place(d.h, 'hundred', 'hundreds')] : []),
       place(d.t, 'ten', 'tens'),
       place(d.o, 'one', 'ones'),
     ].join(', ');

@@ -29,7 +29,7 @@ function representationVars(r: Representation): string[] {
     case 'clock':
       return [r.hour, r.minute];
     case 'partition':
-      return [r.parts, r.shaded];
+      return [r.parts, r.shaded, ...(r.control ? [r.control] : [])];
     case 'skipCount':
       return [r.step, r.count, r.total, ...(r.start ? [r.start] : [])];
     case 'tape':
