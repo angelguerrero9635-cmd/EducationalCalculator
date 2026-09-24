@@ -15,6 +15,8 @@ export interface VariableDef {
   step?: number;
   /** Whole numbers only. */
   integer?: boolean;
+  /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
+  multipleOf?: number;
   /**
    * Set by the unit context, not by content: how many formula units one shown unit equals, and
    * the shown unit. Ranges and whole-number rules then apply to the shown number.

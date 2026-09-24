@@ -93,8 +93,8 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {`${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
       <Text style={[styles.legend, { color: c.textMuted }]}>
-        {`● ${typeof spec.first === 'string' ? rep.variable(spec.first).name : `${spec.first} ones make a ten`}   ○ ${
-          typeof spec.second === 'string' ? rep.variable(spec.second).name : `${spec.second} more`
+        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : `${spec.first} ones make a ten`}   ○ ${
+          typeof spec.second === 'string' ? rep.tag(spec.second) : `${spec.second} more`
         }`}
       </Text>
     </View>

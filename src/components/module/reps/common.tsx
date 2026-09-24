@@ -154,6 +154,11 @@ export function useRep(calc: Calculator) {
     unit: (id: string) => units.display[id],
     /** Formula units per shown unit (e.g. 2.54 when showing inches for a cm variable). */
     factor: (id: string) => units.factor(id),
+    /** A name with its formula symbol, e.g. "Bigger amount (B)", so pictures match formulas. */
+    tag: (id: string) => {
+      const v = byId.get(id)!;
+      return `${v.name} (${v.symbol})`;
+    },
     label: (id: string, withUnit = true) => {
       const v = byId.get(id)!;
       const x = values[id];

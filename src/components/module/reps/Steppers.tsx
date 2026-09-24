@@ -57,7 +57,7 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
         const known = rep.known(item.var);
         const label = (
           <Text style={[styles.label, { color: c.text }]} numberOfLines={1}>
-            {`${v.name}: ${known ? formatNumber(rep.shown(item.var), v) : '?'}`}
+            {`${v.name}: ${v.symbol} = ${known ? formatNumber(rep.shown(item.var), v) : '?'}`}
           </Text>
         );
         const minus = (

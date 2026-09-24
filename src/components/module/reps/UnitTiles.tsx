@@ -52,7 +52,7 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fill={c.chartHighlight}
                 />
                 <ChartText x={8} y={cubeY + cell / 2 + 4} fontSize={chart.small}>
-                  {rep.variable(spec.total).name}
+                  {rep.tag(spec.total)}
                 </ChartText>
                 {Array.from({ length: total }, (_, i) => (
                   <Rect
@@ -67,7 +67,7 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                 ))}
                 <ChartText x={8} y={clipY + cell / 2 + 4} fontSize={chart.small}>
-                  {rep.variable(spec.count).name}
+                  {rep.tag(spec.count)}
                 </ChartText>
                 {Array.from({ length: count }, (_, i) => (
                   <Rect
@@ -105,7 +105,7 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${total} cubes = ${count} ${rep.variable(spec.count).name.toLowerCase()}, each ${size} ${size === 1 ? 'cube' : 'cubes'} long`}
+        {`${rep.variable(spec.total).symbol} = ${total} cubes = ${rep.variable(spec.count).symbol} = ${count} ${rep.variable(spec.count).name.toLowerCase()}, each ${rep.variable(spec.size).symbol} = ${size} ${size === 1 ? 'cube' : 'cubes'} long`}
       </Text>
       <Steppers calc={calc} items={[{ var: spec.size, steps: [1], pin: [spec.count] }]} />
     </View>

@@ -115,11 +115,17 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
               ', ',
             ) + (k + 1 > 12 ? ', …' : '')}
       </Text>
+      <Text style={[styles.symbols, { color: c.textMuted }]}>
+        {[...(spec.start ? [spec.start] : []), spec.step, spec.count, spec.total]
+          .map((id) => rep.label(id))
+          .join('   ·   ')}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  symbols: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.xs },
   caption: {
     fontSize: font.body,
     fontWeight: '600',

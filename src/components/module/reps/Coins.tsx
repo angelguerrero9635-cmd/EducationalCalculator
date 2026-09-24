@@ -29,7 +29,9 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const money = bill ? `$${coin.cents / 100}` : `${coin.cents}¢`;
           return (
             <View key={coin.var} style={styles.row}>
-              <Text style={[styles.name, { color: c.text }]}>{`${coin.name} (${money})`}</Text>
+              <Text
+                style={[styles.name, { color: c.text }]}
+              >{`${coin.name} (${money} each): ${rep.label(coin.var)}`}</Text>
               <View style={styles.coins}>
                 {Array.from({ length: n }, (_, i) => (
                   <View
@@ -62,7 +64,9 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
         })}
       </View>
       <Text style={[styles.total, { color: c.text }]}>
-        {total === undefined ? 'Total: ?' : `Total: ${total}¢ = $${(total / 100).toFixed(2)}`}
+        {total === undefined
+          ? `Total: ${rep.variable(spec.total).symbol} = ?`
+          : `Total: ${rep.variable(spec.total).symbol} = ${total}¢ = $${(total / 100).toFixed(2)}`}
       </Text>
       <Steppers
         calc={calc}

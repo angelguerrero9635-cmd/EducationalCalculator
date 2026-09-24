@@ -124,7 +124,7 @@ function shownRange(v: VariableDef, example: number | undefined): [number, numbe
 /** Whole-number domain (formula units), or undefined when not enumerable. */
 function domain(v: VariableDef): number[] | undefined {
   if (!v.integer || v.min === undefined || v.max === undefined) return undefined;
-  const f = factorOf(v);
+  const f = factorOf(v) * (v.multipleOf ?? 1);
   const lo = Math.ceil(v.min / f - 1e-9);
   const hi = Math.floor(v.max / f + 1e-9);
   if (hi - lo > 25000) return undefined;
@@ -145,6 +145,7 @@ function sampleValue(r: Rng, v: VariableDef, example: number | undefined): numbe
     s = Math.min(hi, Math.max(lo, s));
   }
   if (v.integer) s = Math.round(s);
+  if (v.multipleOf) s = Math.round(s / v.multipleOf) * v.multipleOf;
   return s * f;
 }
 

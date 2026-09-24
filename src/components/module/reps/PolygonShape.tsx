@@ -53,7 +53,9 @@ export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.name, { color: c.text }]}>{`A ${name}: ${n} sides, ${n} corners`}</Text>
+      <Text
+        style={[styles.name, { color: c.text }]}
+      >{`A ${name}: ${rep.variable(spec.sides).symbol} = ${n} sides, ${n} corners`}</Text>
       <Steppers calc={calc} items={[{ var: spec.sides, steps: [1], pin: [] }]} />
     </View>
   );

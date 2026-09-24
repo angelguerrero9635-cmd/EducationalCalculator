@@ -60,6 +60,7 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           <View key={p.var} style={styles.tick}>
             <View style={[styles.tickMark, { backgroundColor: c.chartInk }]} />
             <Text style={[styles.label, { color: c.text }]}>{p.at}</Text>
+            <Text style={[styles.count, { color: c.textMuted }]}>{rep.label(p.var)}</Text>
           </View>
         ))}
       </View>
@@ -80,4 +81,5 @@ const styles = StyleSheet.create({
   tickMark: { width: 1.5, height: 8 },
   label: { fontSize: font.caption + 1, fontVariant: ['tabular-nums'] },
   unit: { fontSize: font.caption + 1, textAlign: 'center' },
+  count: { fontSize: font.caption, fontVariant: ['tabular-nums'] },
 });

@@ -94,9 +94,9 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     id: 'm.2.add-sub-100-fluency~tape',
     title: 'Word problems',
     assumptions: [
-      'Draw a bar for each part. Together they make the whole.',
+      'Draw one bar for the whole and cut it into the two parts.',
       'Whole unknown: add the parts. Part unknown: take the known part away from the whole.',
-      'The numbers are within 100.',
+      'Example: 63 stickers, 38 are stars. How many are not stars? 63 − 38 = 25.',
     ],
     variables: [
       whole('a', 'a', 'First part', 0, 100),
@@ -120,7 +120,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       },
     },
     example: { a: 38, b: 25, c: 63 },
-    startWith: ['a', 'b'],
+    startWith: ['c', 'a'],
     representation: { kind: 'tape', parts: ['a', 'b'], total: 'c' },
   },
 
@@ -379,5 +379,159 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       max: 6,
       cell: 'square',
     },
+  },
+
+  // Split from m.2.place-value-1000: expanded form (2.NBT.3).
+  {
+    id: 'm.2.place-value-1000~expanded',
+    title: 'Expanded form',
+    assumptions: [
+      'Expanded form adds the value of each digit: 347 = 300 + 40 + 7.',
+      'The hundreds part is a whole number of hundreds; the tens part, of tens.',
+    ],
+    variables: [
+      { ...whole('H', 'H', 'Hundreds part', 0, 900), multipleOf: 100, step: 100 },
+      { ...whole('T', 'T', 'Tens part', 0, 90), multipleOf: 10, step: 10 },
+      whole('O', 'O', 'Ones part', 0, 9),
+      whole('n', 'n', 'Number', 0, 999),
+    ],
+    relations: [
+      {
+        id: 'n = H + T + O',
+        display: '{n} = {H} + {T} + {O}',
+        vars: ['n', 'H', 'T', 'O'],
+        residual: (v) => v.n! - v.H! - v.T! - v.O!,
+        solve: {
+          n: (v) => v.H! + v.T! + v.O!,
+          H: (v) => v.n! - v.T! - v.O!,
+          T: (v) => v.n! - v.H! - v.O!,
+          O: (v) => v.n! - v.H! - v.T!,
+        },
+      },
+      {
+        id: 'H = hundreds in n',
+        display: '{H} = hundreds part of {n}',
+        vars: ['H', 'n'],
+        residual: (v) => v.H! - 100 * Math.floor(v.n! / 100),
+        solve: { H: (v) => 100 * Math.floor(v.n! / 100), n: () => undefined },
+      },
+      {
+        id: 'T = tens in n',
+        display: '{T} = tens part of {n}',
+        vars: ['T', 'n'],
+        residual: (v) => v.T! - 10 * (Math.floor(v.n! / 10) % 10),
+        solve: { T: (v) => 10 * (Math.floor(v.n! / 10) % 10), n: () => undefined },
+      },
+    ],
+    steps: {
+      'n = H + T + O': {
+        n: { expr: '{H} + {T} + {O}', how: 'Add the parts: hundreds, then tens, then ones.' },
+        H: { expr: '{n} − {T} − {O}', how: 'Take the tens and ones away. The rest is hundreds.' },
+        T: { expr: '{n} − {H} − {O}', how: 'Take the hundreds and ones away. The rest is tens.' },
+        O: { expr: '{n} − {H} − {T}', how: 'Take the hundreds and tens away. The rest is ones.' },
+      },
+      'H = hundreds in n': {
+        H: {
+          expr: 'hundreds part of {n}',
+          how: 'The first digit tells the hundreds: 3 hundreds is 300.',
+        },
+      },
+      'T = tens in n': {
+        T: { expr: 'tens part of {n}', how: 'The middle digit tells the tens: 4 tens is 40.' },
+      },
+    },
+    example: { H: 300, T: 40, O: 7, n: 347 },
+    startWith: ['H', 'T', 'O'],
+    representation: {
+      kind: 'baseTen',
+      groups: ['H', 'T', 'O'],
+      total: 'n',
+      controls: [
+        { var: 'H', steps: [100] },
+        { var: 'T', steps: [10] },
+        { var: 'O', steps: [1] },
+      ],
+    },
+  },
+
+  // Split from m.2.standard-length: adding lengths on a number line (2.MD.5, 2.MD.6).
+  {
+    id: 'm.2.standard-length~number-line',
+    title: 'Lengths on a number line',
+    assumptions: [
+      'Put two lengths end to end: the total length is their sum.',
+      'On a number line, start at 0, jump the first length, then jump the second.',
+      'Use the same unit for both lengths.',
+    ],
+    variables: [
+      { ...whole('a', 'a', 'First length', 0, 100), unit: 'cm' },
+      { ...whole('b', 'b', 'Second length', 0, 100), unit: 'cm' },
+      { ...whole('s', 's', 'Total length', 0, 100), unit: 'cm' },
+    ],
+    relations: [
+      {
+        id: 's = a + b',
+        display: '{s} = {a} + {b}',
+        vars: ['s', 'a', 'b'],
+        residual: (v) => v.s! - v.a! - v.b!,
+        solve: { s: (v) => v.a! + v.b!, a: (v) => v.s! - v.b!, b: (v) => v.s! - v.a! },
+      },
+    ],
+    steps: {
+      's = a + b': {
+        s: {
+          expr: '{a} + {b}',
+          how: 'Jump the first length, then the second. Read where you land.',
+        },
+        a: { expr: '{s} − {b}', how: 'Take the second length away from the total.' },
+        b: { expr: '{s} − {a}', how: 'Count on from the first length to the total.' },
+      },
+    },
+    example: { a: 35, b: 20, s: 55 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'numberLine',
+      start: 'a',
+      jump: 'b',
+      end: 's',
+      min: 0,
+      max: 100,
+      tick: 10,
+      jumps: 'tens',
+    },
+  },
+
+  // Split from m.2.money: making change (2.MD.8).
+  {
+    id: 'm.2.money~change',
+    title: 'Money left after buying',
+    assumptions: [
+      'Money you have = price + money left.',
+      'To find what is left, take the price away. Count up from the price to check.',
+    ],
+    variables: [
+      { ...whole('T', 'T', 'Money you have', 0, 100), unit: '¢' },
+      { ...whole('P', 'P', 'Price', 0, 100), unit: '¢' },
+      { ...whole('L', 'L', 'Money left', 0, 100), unit: '¢' },
+    ],
+    relations: [
+      {
+        id: 'T = P + L',
+        display: '{T} = {P} + {L}',
+        vars: ['T', 'P', 'L'],
+        residual: (v) => v.T! - v.P! - v.L!,
+        solve: { T: (v) => v.P! + v.L!, P: (v) => v.T! - v.L!, L: (v) => v.T! - v.P! },
+      },
+    ],
+    steps: {
+      'T = P + L': {
+        L: { expr: '{T} − {P}', how: 'Take the price away from the money you have.' },
+        P: { expr: '{T} − {L}', how: 'Take the money left away from the money you had.' },
+        T: { expr: '{P} + {L}', how: 'Add the price and the money left.' },
+      },
+    },
+    example: { T: 75, P: 50, L: 25 },
+    startWith: ['T', 'P'],
+    representation: { kind: 'tape', parts: ['P', 'L'], total: 'T' },
   },
 ];

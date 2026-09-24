@@ -73,16 +73,23 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       {marks.length ? (
         <Text style={[styles.caption, { color: c.textMuted }]}>
-          {(spec.marks ?? [])
-            .filter(rep.known)
-            .map((id) =>
-              Math.round(rep.shown(id)) > spec.max
-                ? `${rep.label(id)} (past the chart)`
-                : `${rep.label(id)} (outlined)`,
+          {[`${rep.label(spec.value)} (dark)`]
+            .concat(
+              (spec.marks ?? [])
+                .filter(rep.known)
+                .map((id) =>
+                  Math.round(rep.shown(id)) > spec.max
+                    ? `${rep.label(id)} (past the chart)`
+                    : `${rep.label(id)} (outlined)`,
+                ),
             )
             .join('   ·   ')}
         </Text>
-      ) : null}
+      ) : (
+        <Text
+          style={[styles.caption, { color: c.textMuted }]}
+        >{`${rep.label(spec.value)} (dark)`}</Text>
+      )}
     </View>
   );
 }

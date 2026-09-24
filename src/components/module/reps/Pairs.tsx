@@ -53,7 +53,7 @@ export function Pairs({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {odd ? <View style={styles.pair}>{dot('odd', true)}</View> : null}
       </View>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${n} is ${odd ? 'odd' : 'even'}: ${pairs} ${pairs === 1 ? 'pair' : 'pairs'}${odd ? ' and 1 left over' : ', none left over'}`}
+        {`${rep.variable(spec.value).symbol} = ${n} is ${odd ? 'odd' : 'even'}: ${pairs} ${pairs === 1 ? 'pair' : 'pairs'}${odd ? ' and 1 left over' : ', none left over'}`}
       </Text>
       <Steppers calc={calc} items={[{ var: spec.value, steps: [1], pin: [] }]} />
     </View>

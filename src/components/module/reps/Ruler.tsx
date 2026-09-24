@@ -70,7 +70,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontSize={chart.small}
                       fill={inside && i === 0 ? c.onChartHighlight : c.chartInk}
                     >
-                      {rep.variable(id).name}
+                      {rep.tag(id)}
                     </ChartText>
                   );
                 })}

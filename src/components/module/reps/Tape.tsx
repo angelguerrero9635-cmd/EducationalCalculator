@@ -106,7 +106,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontSize={chart.small}
                       fill={i === 0 ? c.onChartHighlight : c.chartInk}
                     >
-                      {`${name(id)}: ${fmt(id)}`}
+                      {`${name(id)}: ${rep.label(id)}`}
                     </ChartText>
                   ))}
                   {hi - lo > 2 ? (
@@ -163,7 +163,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fontSize={chart.small}
                   textAnchor="middle"
                 >
-                  {`${name(spec.total)}: ${fmt(spec.total)}`}
+                  {`${name(spec.total)}: ${rep.label(spec.total)}`}
                 </ChartText>
                 {spec.parts.map((id, i) => (
                   <Rect
@@ -187,7 +187,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     textAnchor="middle"
                     fill={i === 0 ? c.onChartHighlight : c.chartInk}
                   >
-                    {fmt(id)}
+                    {rep.label(id)}
                   </ChartText>
                 ))}
                 {spec.parts.map((id, i) => (
@@ -199,7 +199,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     textAnchor="middle"
                     fill={c.chartMuted}
                   >
-                    {name(id)}
+                    {rep.tag(id)}
                   </ChartText>
                 ))}
                 <Line x1={left} y1={y} x2={left} y2={y + barH} stroke={c.chartInk} />

@@ -120,6 +120,9 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.digital, { color: c.text }]}>{digital}</Text>
+      <Text style={[styles.hands, { color: c.textMuted }]}>
+        {`Short hand: ${rep.label(spec.hour)}   ·   Long hand: ${rep.label(spec.minute)} minutes`}
+      </Text>
       <Steppers
         calc={calc}
         items={[{ var: spec.hour, steps: [1], pin: [spec.minute], wrap: [1, 12] }]}
@@ -132,6 +135,7 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
+  hands: { fontSize: font.caption + 1, textAlign: 'center' },
   digital: {
     fontSize: font.title,
     fontWeight: '700',

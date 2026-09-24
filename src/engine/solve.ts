@@ -53,6 +53,10 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   if (variable.integer && Math.abs(x / f - Math.round(x / f)) > 1e-9) {
     return 'Must be a whole number';
   }
+  const m = variable.multipleOf;
+  if (m && Math.abs(x / f / m - Math.round(x / f / m)) > 1e-9) {
+    return `Must be 0, ${formatNumber(m)}, ${formatNumber(2 * m)}, ${formatNumber(3 * m)}, …`;
+  }
   // Limits converted to another unit are shown to 3 significant figures.
   const limit = (bound: number) =>
     formatNumber(f === 1 ? bound : Number((bound / f).toPrecision(3)));
@@ -241,7 +245,7 @@ function propagate(
 /** Whole-number values a variable can take, or undefined if not a finite whole-number range. */
 function wholeValues(v: VariableDef): number[] | undefined {
   if (!v.integer || v.min === undefined || v.max === undefined) return undefined;
-  const f = v.unitFactor ?? 1;
+  const f = (v.unitFactor ?? 1) * (v.multipleOf ?? 1);
   const lo = Math.ceil(v.min / f - 1e-9);
   const hi = Math.floor(v.max / f + 1e-9);
   if (hi - lo > 5000) return undefined;
@@ -361,7 +365,7 @@ function wholeSolutions(
     }
     const bounds: Bounds = new Map(
       whole.map((v) => {
-        const f = v.unitFactor ?? 1;
+        const f = (v.unitFactor ?? 1) * (v.multipleOf ?? 1);
         return [
           v.id,
           { lo: Math.ceil(v.min! / f - 1e-9) * f, hi: Math.floor(v.max! / f + 1e-9) * f, f },

@@ -101,7 +101,7 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${p} equal parts (${NAMES[p] ?? `${p} parts`}): ${k} shaded, ${p - k} not shaded`}
+        {`${rep.variable(spec.parts).symbol} = ${p} equal parts (${NAMES[p] ?? `${p} parts`}): ${rep.variable(spec.shaded).symbol} = ${k} shaded, ${p - k} not shaded`}
       </Text>
       <Steppers
         calc={calc}

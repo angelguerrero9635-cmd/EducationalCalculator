@@ -142,7 +142,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 return (
                   <G key={id} opacity={rep.known(id) ? 1 : 0.35}>
                     <ChartText x={8} y={rowTop + 12} fontSize={chart.small}>
-                      {`${rep.variable(id).name}: ${rep.known(id) ? `${value(id)}  =  ${describe(value(id))}` : '?'}`}
+                      {`${rep.variable(id).name}: ${rep.label(id)}${rep.known(id) ? `  =  ${describe(value(id))}` : ''}`}
                     </ChartText>
                     {blocks(id, rowTop, u, fill)}
                   </G>

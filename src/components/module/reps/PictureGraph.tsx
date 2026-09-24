@@ -86,9 +86,7 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         </Pressable>
                       ))}
                     </View>
-                    <Text style={[styles.label, { color: c.text }]}>
-                      {rep.variable(col.var).name}
-                    </Text>
+                    <Text style={[styles.label, { color: c.text }]}>{rep.tag(col.var)}</Text>
                     <Text style={[styles.count, { color: c.text }]}>{known ? n : '?'}</Text>
                   </View>
                 );

@@ -98,7 +98,8 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {left === right ? `Level: both sides are ${left}.` : `Not level: ${left} and ${right}.`}
+        {`${spec.left.map((id) => rep.variable(id).symbol).join(' + ')} = ${left}   ·   ${spec.right.map((id) => rep.variable(id).symbol).join(' + ')} = ${right}\n`}
+        {left === right ? 'Level: both sides are the same.' : 'Not level: the sides are different.'}
       </Text>
       <Steppers
         calc={calc}

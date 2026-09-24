@@ -39,6 +39,9 @@ calculator), a **table, chart or diagram**, and a **Step-by-step** walkthrough. 
 
 Pick the picture a teacher would draw on the board for _this_ lesson. It should make the key idea
 visible, and every value it shows must be a module variable, so moving it updates the formulas.
+Label every value in the picture with the same letter or symbol the formulas use (`B = 11`, or a
+name with its symbol, "Bigger amount (B)"), so students can match the picture to the formulas.
+Use `rep.label(id)` and `rep.tag(id)` in picture components.
 
 | Lesson idea                                | Representation                                                   |
 | ------------------------------------------ | ---------------------------------------------------------------- |
@@ -99,7 +102,15 @@ the assumptions and a table or diagram.
    unit choices through the real solver and step builder, and checks the math, ranges, step text
    and that the variables and formulas fit the lesson. Its harness is kept as
    `src/data/modules/__tests__/sampling.test.ts` (`MODULE_IDS=m.2. pnpm test sampling`).
-5. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
+5. **Split check:** run the `module-split-reviewer` agent
+   (`.claude/agents/module-split-reviewer.md`). It flags modules teaching two ideas, with too
+   many variables for the grade, or with a picture that shows only part of the formulas, and
+   proposes splits into `<skill>~<slug>` modules (or merges).
+6. **Language check:** run the `module-language-reviewer` agent
+   (`.claude/agents/module-language-reviewer.md`). It checks reading level, concreteness,
+   cognitive load, consistent terms and notation readiness for the grade, and gives exact
+   rewrites.
+7. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
    reason, in the pull request or commit message.
-6. **Visual check:** open each module and confirm the representation reads well at phone width, in
+8. **Visual check:** open each module and confirm the representation reads well at phone width, in
    light and dark mode.

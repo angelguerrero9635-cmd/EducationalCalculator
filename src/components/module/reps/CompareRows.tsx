@@ -49,7 +49,7 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {rows.map((id, r) => (
                 <View key={id} style={styles.row}>
                   <Text style={[styles.name, { color: c.text }]} numberOfLines={2}>
-                    {rep.variable(id).name}
+                    {rep.tag(id)}
                   </Text>
                   <View style={{ flexDirection: 'row' }}>
                     {Array.from({ length: max }, (_, i) => {
