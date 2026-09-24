@@ -42,3 +42,6 @@ yarn-error.*
 
 # test output
 coverage/
+
+# Temporary files AI reviewers create while printing walkthroughs (deleted when they finish)
+src/**/__tests__/zz-*.review.test.ts
