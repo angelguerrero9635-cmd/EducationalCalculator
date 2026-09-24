@@ -95,46 +95,36 @@ the assumptions and a table or diagram.
    example satisfies every formula and range, that every rearrangement agrees with its formula and
    has an explanation, that every input combination reproduces the example, and that the
    walkthrough balances.
-2. **Independent AI review:** run the `module-reviewer` agent (`.claude/agents/module-reviewer.md`)
-   on the new or changed modules. It rechecks the math independently and reviews every module
-   against the four standards above.
-3. **Exam coverage:** run the `exam-coverage-reviewer` agent
-   (`.claude/agents/exam-coverage-reviewer.md`). It collects the common test question types for
-   each skill or topic and checks the module can solve every one (unknowns in every position,
-   the quantities and ranges tests use), recommends diagrams borrowed from test items, and
-   proposes new modules when a common question type needs a different model.
-4. **Variable sampling:** run the `variable-sampling-reviewer` agent
-   (`.claude/agents/variable-sampling-reviewer.md`). It samples random inputs, edit orders and
-   unit choices through the real solver and step builder, and checks the math, ranges, step text
-   and that the variables and formulas fit the lesson. Its harness is kept as
-   `src/data/modules/__tests__/sampling.test.ts` (`MODULE_IDS=m.2. pnpm test sampling`).
-5. **Split check:** run the `module-split-reviewer` agent
-   (`.claude/agents/module-split-reviewer.md`). It flags modules teaching two ideas, with too
-   many variables for the grade, or with a picture that shows only part of the formulas, and
-   proposes splits into `<skill>~<slug>` modules (or merges).
-6. **Language check:** run the `module-language-reviewer` agent
-   (`.claude/agents/module-language-reviewer.md`). It checks reading level, concreteness,
-   cognitive load, consistent terms and notation readiness for the grade, and gives exact
-   rewrites.
-7. **Step clarity:** run the `step-clarity-reviewer` agent
-   (`.claude/agents/step-clarity-reviewer.md`). It reads the real step-by-step walkthroughs as a
-   student would and flags steps that jump to the answer (words standing for arithmetic, hidden
-   conversions, collapsed operations), proposing `work` lines that show the arithmetic.
-8. **Teacher:** run the `teacher-lesson-plan-reviewer` agent. It plans a short lesson around
-   each module and reports what helps or gets in the way in a classroom.
-9. **Tutor:** run the `tutor-walkthrough-reviewer` agent. It scripts a one-on-one session showing
-   a student how to use each module and flags anything hard to understand for either of them.
-10. **Textbook coverage:** run the `textbook-coverage-reviewer` agent. It maps the sections of
-    widely used textbooks for the grade or course to modules and lists sections with no module.
-11. **Layout and formatting:** run the `layout-format-reviewer` agent. It takes screenshots at
-    phone and desktop widths in light and dark mode (`scripts/review-shots.mjs`), checks
-    spacing, alignment, overlapping labels and number, symbol and punctuation formatting, and
-    fixes what is small and clear.
-12. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
-    reason, in the pull request or commit message.
-13. **Visual check:** open each module and confirm the representation reads well at phone width, in
-    light and dark mode.
+2. **AI review:** run the `section-reviewer` agent (`.claude/agents/section-reviewer.md`) on the
+   new or changed modules. It gathers the evidence once (a walkthrough dump, the sampling
+   harness, screenshots and one browser session) and checks every module from ten points of
+   view:
+   - **A. Accuracy:** re-derives the math, units, ranges and assumptions, and the four
+     standards above (accurate, helpful, concise, the best picture).
+   - **B. Sampled inputs:** runs and extends `src/data/modules/__tests__/sampling.test.ts`
+     (`MODULE_IDS=m.2. SAMPLING_REPORT=1 pnpm test sampling`): random inputs, edit orders and
+     unit choices through the real solver and step builder, and whether the values fit the
+     lesson.
+   - **C. Split or merge:** one idea, one model and one picture per module.
+   - **D. Step-by-step clarity:** no leaps, hidden conversions or answers before the work.
+   - **E. Language:** reading level, concreteness, consistent terms and notation for the grade,
+     including titles and fixed UI text.
+   - **F. Exam coverage:** common test question types, unknowns in every position, a diagram
+     that matches a real item, and pictures that are interactive both ways.
+   - **G. Textbook coverage:** every section of widely used curricula has a page.
+   - **H. Classroom use** and **I. Tutoring:** a short lesson plan and a one-on-one session,
+     and everything that would stall either.
+   - **J. Layout and formatting:** spacing, overlaps, tap targets, dark mode and number, unit
+     and punctuation formatting.
 
-Reviewers keep running notes in `.review/<agent name>.md` (git-ignored), so a review that is
-interrupted can continue. Reviewers that need the browser use `scripts/review-shots.mjs` and the
-Playwright installed in the dev container (`NODE_PATH=$(npm root -g)`), not a project dependency.
+   It fixes small layout, formatting and harness issues itself and reports the rest in one
+   report grouped by skill.
+
+3. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
+   reason, in the pull request or commit message.
+4. **Visual check:** open each module and confirm the representation reads well at phone width, in
+   light and dark mode.
+
+The reviewer keeps running notes in `.review/section-reviewer.md` (git-ignored), so a review
+that is interrupted can continue. It uses `scripts/review-shots.mjs` and the Playwright installed
+in the dev container (`NODE_PATH=$(npm root -g)`), not a project dependency.

@@ -46,5 +46,5 @@ coverage/
 # Temporary files AI reviewers create while printing walkthroughs (deleted when they finish)
 src/**/__tests__/zz-*.review.test.ts
 
-# AI reviewers' screenshots and running notes
+# The AI reviewer's screenshots, scripts and running notes
 .review/
