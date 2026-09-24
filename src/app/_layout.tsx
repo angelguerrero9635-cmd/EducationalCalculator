@@ -1,7 +1,6 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, type Theme } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
-import { View } from 'react-native';
 
 import { NavBar } from '@/components/NavBar';
 import { useHydrated, useSelectedLevels } from '@/state';
@@ -34,14 +33,15 @@ export default function RootLayout() {
     };
   }, [scheme, c]);
 
-  // Hold on a blank screen until saved selections load, so onboarding never flashes.
-  if (!hydrated) return <View style={{ flex: 1, backgroundColor: c.background }} />;
+  // Until saved selections load, show the pages (never a blank screen): pre-rendered web pages
+  // must contain their content, and first-time visitors are sent to onboarding once we know.
+  const showApp = !hydrated || onboarded;
 
   return (
     <ThemeProvider value={theme}>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ header: (props) => <NavBar {...props} /> }}>
-        <Stack.Protected guard={onboarded}>
+        <Stack.Protected guard={showApp}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="grade/[grade]" />
           <Stack.Screen name="he/index" options={{ title: 'Higher Education' }} />
@@ -53,7 +53,7 @@ export default function RootLayout() {
           <Stack.Screen name="levels" options={{ title: 'What You Study' }} />
           <Stack.Screen name="paywall" options={{ presentation: 'modal', title: 'Premium' }} />
         </Stack.Protected>
-        <Stack.Protected guard={!onboarded}>
+        <Stack.Protected guard={!showApp}>
           <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
         </Stack.Protected>
       </Stack>

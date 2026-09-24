@@ -2,12 +2,20 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import { DetailHeader, EmptyState, ModuleSections, ListRow, LockedState } from '@/components';
+import { PageMeta } from '@/components/PageMeta';
 import { isLocked } from '@/config/access';
+import { topicMeta } from '@/data/meta';
 import { courseRoute, getTopic, topicKey } from '@/data/selectors';
+import { COURSES } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { usePalette } from '@/theme';
 
 /** Placeholder topic screen: will host formulas, the calculator and worked examples. */
+/** Pre-render every course topic page (web static rendering). */
+export function generateStaticParams(): { id: string; index: string }[] {
+  return COURSES.flatMap((c) => c.topics.map((_, i) => ({ id: c.id, index: String(i) })));
+}
+
 export default function TopicScreen() {
   const c = usePalette();
   const params = useLocalSearchParams<{ id: string; index: string }>();
@@ -26,6 +34,7 @@ export default function TopicScreen() {
       style={{ backgroundColor: c.background }}
     >
       <Stack.Screen options={{ title: topic.title }} />
+      <PageMeta {...topicMeta(topic.course.id, topic.index)!} />
       <DetailHeader title={topic.title} lines={[]} />
       <ListRow overline="Course" title={topic.course.title} route={courseRoute(topic.course.id)} />
       <ModuleSections id={topicKey(topic.course.id, topic.index)} />

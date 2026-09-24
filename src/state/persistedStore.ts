@@ -2,6 +2,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface PersistedStore<T> {
   get(): T;
+  /**
+   * The default value. Pages pre-rendered to HTML (web static rendering) and the first render
+   * that hydrates them both use it, so they match; saved values load right after.
+   */
+  getInitial(): T;
   set(update: T | ((prev: T) => T)): void;
   subscribe(listener: () => void): () => void;
   /** Loads the saved value once; safe to call repeatedly. */
@@ -25,6 +30,7 @@ export function createPersistedStore<T>(
 
   return {
     get: () => value,
+    getInitial: () => initial,
     set(update) {
       value = typeof update === 'function' ? (update as (prev: T) => T)(value) : update;
       dirty = true;

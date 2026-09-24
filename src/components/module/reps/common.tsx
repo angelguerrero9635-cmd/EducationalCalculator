@@ -13,6 +13,9 @@ const WEB_DRAG_STYLE =
   Platform.OS === 'web' ? ({ touchAction: 'none', cursor: 'grab' } as unknown as ViewStyle) : null;
 
 /** Measures the available width and renders children at width × aspect. */
+/** Width a picture is drawn at in pre-rendered web HTML (a phone screen minus margins). */
+const WEB_START_WIDTH = 358;
+
 export function Canvas({
   aspect,
   children,
@@ -21,7 +24,9 @@ export function Canvas({
   aspect: number | ((w: number) => number);
   children: (size: { w: number; h: number }) => ReactNode;
 }) {
-  const [w, setW] = useState(0);
+  // Web pages are pre-rendered to HTML before any layout is measured: start at a phone width so
+  // the picture (and its labels) is in the HTML, then resize once the page is live.
+  const [w, setW] = useState(Platform.OS === 'web' ? WEB_START_WIDTH : 0);
   const h = w * (typeof aspect === 'function' ? aspect(w) : aspect);
   return (
     <View

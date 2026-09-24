@@ -453,3 +453,29 @@ export function parentOf(screen: string, params: Record<string, unknown>): Paren
       return HOME;
   }
 }
+
+/**
+ * The navigation bar title for a stack screen, from its route. Known before the page renders,
+ * so pre-rendered web pages show the real name (not a placeholder like "Skill").
+ */
+export function screenTitle(screen: string, params: Record<string, unknown>): string | undefined {
+  const p = (k: string) => (params[k] === undefined ? '' : String(params[k]));
+  switch (screen) {
+    case 'skill/[id]':
+      return getSkill(p('id'))?.title;
+    case 'course/[id]/index':
+      return getCourse(p('id'))?.title;
+    case 'course/[id]/topic/[index]':
+      return getTopic(p('id'), Number(p('index')))?.title;
+    case 'grade/[grade]':
+      return isGrade(p('grade')) ? gradeLabel(p('grade') as Grade) : undefined;
+    case 'he/[division]/index':
+      return isDivision(p('division')) ? divisionLabel(p('division') as Division) : undefined;
+    case 'he/[division]/[field]': {
+      const division = p('division');
+      return isDivision(division) ? getField(division, p('field'))?.title : undefined;
+    }
+    default:
+      return undefined;
+  }
+}

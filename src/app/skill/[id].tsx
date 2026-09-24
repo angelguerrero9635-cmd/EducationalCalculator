@@ -8,11 +8,18 @@ import {
   LockedState,
   RefreshSection,
 } from '@/components';
+import { PageMeta } from '@/components/PageMeta';
 import { isLocked } from '@/config/access';
+import { skillMeta } from '@/data/meta';
 import { getSkill, refreshRows, subjectLabel } from '@/data/selectors';
-import { gradeLabel } from '@/data/taxonomy';
+import { gradeLabel, SKILLS } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { usePalette } from '@/theme';
+
+/** Pre-render every skill page (web static rendering). */
+export function generateStaticParams(): { id: string }[] {
+  return SKILLS.map((s) => ({ id: s.id }));
+}
 
 export default function SkillScreen() {
   const c = usePalette();
@@ -32,6 +39,7 @@ export default function SkillScreen() {
       style={{ backgroundColor: c.background }}
     >
       <Stack.Screen options={{ title: skill.title }} />
+      <PageMeta {...skillMeta(skill)} />
       <DetailHeader
         title={skill.title}
         lines={[

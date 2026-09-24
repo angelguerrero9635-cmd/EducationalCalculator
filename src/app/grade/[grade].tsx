@@ -2,6 +2,9 @@ import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { SectionList, StyleSheet, View } from 'react-native';
 
 import { EmptyState, ListRow, SectionHeader, SegmentedControl } from '@/components';
+import { renderAllOnWeb } from '@/components/listProps';
+import { PageMeta } from '@/components/PageMeta';
+import { gradeMeta } from '@/data/meta';
 import {
   SUBJECTS,
   gradeSections,
@@ -10,10 +13,15 @@ import {
   skillRoute,
   subjectLabel,
 } from '@/data/selectors';
-import { gradeLabel, type K12Subject } from '@/data/taxonomy';
+import { gradeLabel, GRADES, type K12Subject } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
 const SEGMENTS = SUBJECTS.map((s) => ({ value: s, label: subjectLabel(s) }));
+
+/** Pre-render every grade page (web static rendering). */
+export function generateStaticParams(): { grade: string }[] {
+  return GRADES.map((grade) => ({ grade }));
+}
 
 export default function GradeScreen() {
   const c = usePalette();
@@ -29,7 +37,9 @@ export default function GradeScreen() {
   return (
     <>
       <Stack.Screen options={{ title: gradeLabel(grade) }} />
+      <PageMeta {...gradeMeta(grade)} />
       <SectionList
+        {...renderAllOnWeb}
         contentInsetAdjustmentBehavior="automatic"
         style={{ backgroundColor: c.background }}
         sections={gradeSections(grade, subject)}

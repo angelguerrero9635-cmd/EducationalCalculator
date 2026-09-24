@@ -5,6 +5,7 @@ import { Text } from '@/components/Text';
 
 import { Button, ListRow } from '@/components';
 import { font, space, usePalette } from '@/theme';
+import { PageMeta } from '@/components/PageMeta';
 
 type Plan = 'monthly' | 'annual';
 
@@ -19,35 +20,38 @@ export default function PaywallScreen() {
   const [plan, setPlan] = useState<Plan>('annual');
 
   return (
-    <ScrollView style={{ backgroundColor: c.background }} contentContainerStyle={styles.content}>
-      <View style={styles.hero}>
-        <View style={[styles.art, { backgroundColor: c.placeholder, borderColor: c.border }]} />
-        <Text accessibilityRole="header" style={[styles.headline, { color: c.text }]}>
-          7-day free trial
-        </Text>
-        <Text style={[styles.body, { color: c.textMuted }]}>
-          Formulas, calculators and step-by-step solutions for every course. [Copy placeholder]
-        </Text>
-      </View>
+    <>
+      <PageMeta title={'Premium'} description="Premium lessons and features (coming soon)." />
+      <ScrollView style={{ backgroundColor: c.background }} contentContainerStyle={styles.content}>
+        <View style={styles.hero}>
+          <View style={[styles.art, { backgroundColor: c.placeholder, borderColor: c.border }]} />
+          <Text accessibilityRole="header" style={[styles.headline, { color: c.text }]}>
+            7-day free trial
+          </Text>
+          <Text style={[styles.body, { color: c.textMuted }]}>
+            Formulas, calculators and step-by-step solutions for every course. [Copy placeholder]
+          </Text>
+        </View>
 
-      <View style={[styles.plans, { borderColor: c.border }]}>
-        {PLANS.map((p) => (
-          <ListRow
-            key={p.value}
-            title={p.title}
-            subtitle={p.price}
-            selected={plan === p.value}
-            onPress={() => setPlan(p.value)}
-          />
-        ))}
-      </View>
+        <View style={[styles.plans, { borderColor: c.border }]}>
+          {PLANS.map((p) => (
+            <ListRow
+              key={p.value}
+              title={p.title}
+              subtitle={p.price}
+              selected={plan === p.value}
+              onPress={() => setPlan(p.value)}
+            />
+          ))}
+        </View>
 
-      <View style={styles.actions}>
-        <Button testID="paywall-continue" label="Continue" disabled />
-        <Button label="Restore Purchases" variant="link" />
-        <Button label="Not now" variant="link" onPress={() => router.back()} />
-      </View>
-    </ScrollView>
+        <View style={styles.actions}>
+          <Button testID="paywall-continue" label="Continue" disabled />
+          <Button label="Restore Purchases" variant="link" />
+          <Button label="Not now" variant="link" onPress={() => router.back()} />
+        </View>
+      </ScrollView>
+    </>
   );
 }
 

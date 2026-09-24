@@ -4,7 +4,7 @@
  * chart styling. Components read these tokens and hardcode no colors, fonts or sizes.
  */
 import { useSyncExternalStore } from 'react';
-import { useColorScheme } from 'react-native';
+import { Platform, useColorScheme } from 'react-native';
 
 import { prefsStore } from '@/state/prefs';
 
@@ -64,6 +64,18 @@ const dark: Palette = {
 export const palettes = { light, dark };
 
 const getAppearance = () => prefsStore.get().appearance;
+const noSubscribe = () => () => {};
+
+/**
+ * False while rendering on the server (web static rendering) and while the browser hydrates
+ * that HTML; true once the page is live. Use it to hold back values the server can't know.
+ */
+export const useIsClient = () =>
+  useSyncExternalStore(
+    noSubscribe,
+    () => true,
+    () => false,
+  );
 
 /**
  * The color scheme in effect: the Settings → Appearance choice, or the device setting for
@@ -71,7 +83,11 @@ const getAppearance = () => prefsStore.get().appearance;
  */
 export function useResolvedScheme(): 'light' | 'dark' {
   const system = useColorScheme();
-  const pref = useSyncExternalStore(prefsStore.subscribe, getAppearance);
+  const pref = useSyncExternalStore(prefsStore.subscribe, getAppearance, () => 'system' as const);
+  const client = useIsClient();
+  // Pre-rendered web pages are light; the browser's dark setting applies once the page is live,
+  // so the first render matches the HTML.
+  if (Platform.OS === 'web' && !client) return 'light';
   if (pref !== 'system') return pref;
   return system === 'dark' ? 'dark' : 'light';
 }

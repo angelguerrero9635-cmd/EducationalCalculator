@@ -46,7 +46,8 @@ export function applyAppearance(pref: AppearancePref) {
   }
 }
 
-const usePrefs = () => useSyncExternalStore(prefsStore.subscribe, prefsStore.get);
+const usePrefs = () =>
+  useSyncExternalStore(prefsStore.subscribe, prefsStore.get, prefsStore.getInitial);
 
 /** Grade levels / Higher Ed fields picked in onboarding (editable in Settings). */
 export function useSelectedLevels() {

@@ -10,7 +10,9 @@ import {
   RefreshSection,
   SectionHeader,
 } from '@/components';
+import { PageMeta } from '@/components/PageMeta';
 import { isLocked } from '@/config/access';
+import { courseMeta } from '@/data/meta';
 import {
   divisionLabel,
   getCourse,
@@ -19,8 +21,14 @@ import {
   skipsFieldLevel,
   topicRoute,
 } from '@/data/selectors';
+import { COURSES } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { space, usePalette } from '@/theme';
+
+/** Pre-render every course page (web static rendering). */
+export function generateStaticParams(): { id: string }[] {
+  return COURSES.map((c) => ({ id: c.id }));
+}
 
 export default function CourseScreen() {
   const c = usePalette();
@@ -37,6 +45,7 @@ export default function CourseScreen() {
       style={{ backgroundColor: c.background }}
     >
       <Stack.Screen options={{ title: course.title }} />
+      <PageMeta {...courseMeta(course)} />
       <DetailHeader title={course.title} lines={[`Division: ${divisionLabel(course.division)}`]} />
       {skipsFieldLevel(course.division) ? null : (
         <View style={styles.chips} accessibilityLabel="Fields">

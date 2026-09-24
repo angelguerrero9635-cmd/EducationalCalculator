@@ -14,7 +14,11 @@ export const clearRecents = () => recentsStore.set([]);
 
 /** Last 10 viewed skills/courses/topics, newest first; entries no longer in the taxonomy are hidden. */
 export function useRecents(): ResolvedItem[] {
-  const keys = useSyncExternalStore(recentsStore.subscribe, recentsStore.get);
+  const keys = useSyncExternalStore(
+    recentsStore.subscribe,
+    recentsStore.get,
+    recentsStore.getInitial,
+  );
   return useMemo(() => keys.flatMap((k) => resolveItem(k) ?? []), [keys]);
 }
 

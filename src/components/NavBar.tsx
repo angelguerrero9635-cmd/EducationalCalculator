@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/Text';
-import { parentOf } from '@/data/selectors';
+import { parentOf, screenTitle } from '@/data/selectors';
 import { font, space, usePalette } from '@/theme';
 
 /**
@@ -15,10 +15,15 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
   const c = usePalette();
   const insets = useSafeAreaInsets();
   const modal = options.presentation === 'modal';
-  const parent = parentOf(route.name, (route.params ?? {}) as Record<string, unknown>);
   const hasHistory = !!back && navigation.canGoBack();
+  const params = (route.params ?? {}) as Record<string, unknown>;
+  // The route's own name first (known before the page renders, so it's right in pre-rendered
+  // HTML), then the screen's title option.
+  const title =
+    screenTitle(route.name, params) ??
+    (typeof options.title === 'string' ? options.title : route.name);
+  const parent = parentOf(route.name, params);
   const backLabel = modal ? 'Close' : hasHistory ? (back?.title ?? parent.label) : parent.label;
-  const title = typeof options.title === 'string' ? options.title : route.name;
 
   const goBack = () => {
     if (hasHistory) navigation.goBack();

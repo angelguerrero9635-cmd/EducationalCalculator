@@ -26,13 +26,14 @@ pnpm install
 | `pnpm start`        | Expo dev server (Expo SDK 57); press `w` to open the web version |
 | `pnpm web`          | Dev server opened straight in the browser                        |
 | `pnpm build:web`    | Static website build into `dist/` (what Vercel deploys)          |
+| `pnpm verify:ssr`   | Check the build: sample pages contain their content without JS   |
 | `pnpm test`         | Jest unit tests (ts-jest)                                        |
 | `pnpm typecheck`    | `tsc --noEmit` (strict)                                          |
 | `pnpm lint`         | ESLint (`eslint-config-expo`)                                    |
 | `pnpm format:check` | Prettier check (`pnpm format` to fix)                            |
 
-CI (`.github/workflows/ci.yml`) runs typecheck, lint, format check, tests and the web build on every
-push and pull request.
+CI (`.github/workflows/ci.yml`) runs typecheck, lint, format check, tests, the web build and
+`verify:ssr` on every push and pull request.
 
 ## Running on iOS (Expo Go)
 
@@ -46,9 +47,23 @@ Expo SDK at a time; this project targets SDK 57.
 
 ## Deploying the website (Vercel)
 
-`vercel.json` has everything Vercel needs: the pnpm install command, the build command
-(`expo export --platform web`), the `dist` output folder, and a rewrite that sends every path to
-`index.html` so deep links like `/skill/m.8.slope` load the app.
+`vercel.json` has everything Vercel needs: the pnpm install command, the build command, the
+`dist` output folder, clean URLs and rewrites for ids with dots.
+
+The website is **pre-rendered**: `expo export -p web` with `"output": "static"` writes one HTML
+file per page (every grade, skill, course, course topic and Higher Ed division and field, from
+`taxonomy.ts` via each route's `generateStaticParams`). Each page's HTML already contains its
+title, description and lesson text, so search engines, link previews and tools that don't run
+JavaScript can read it; the app then takes over in the browser. After the export,
+`scripts/postexport.mjs` writes `sitemap.xml` (every pre-rendered page), a `404.html`, and removes
+Expo's route templates. `public/robots.txt` allows all crawlers and points to the sitemap.
+
+- `/skill/m.K.make-10` is served from `dist/skill/m.K.make-10.html` (`cleanUrls`, plus rewrites so
+  ids with dots are never read as file extensions). Unknown pages get the 404 page.
+- `pnpm verify:ssr` serves `dist/` the same way and checks sample pages (in CI too).
+  `pnpm verify:ssr --serve` serves the build at http://localhost:8765 to try it in a browser.
+- Pages render with default settings; saved choices (onboarding, recents, appearance) load in the
+  browser right after, and first-time visitors are then sent to onboarding.
 
 1. On [vercel.com](https://vercel.com), choose **Add New → Project** and import this GitHub repo.
    Leave the framework preset as **Other**; `vercel.json` supplies the settings.

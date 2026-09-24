@@ -37,3 +37,7 @@ jobs:
 
       - name: Web build
         run: pnpm build:web
+
+      # Every page's content must be in the pre-rendered HTML (crawlers and no-JS readers).
+      - name: Verify pre-rendered pages
+        run: pnpm verify:ssr

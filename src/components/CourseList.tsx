@@ -5,12 +5,14 @@ import type { Course } from '@/data/taxonomy';
 import { usePalette } from '@/theme';
 
 import { EmptyState } from './EmptyState';
+import { renderAllOnWeb } from './listProps';
 import { ListRow } from './ListRow';
 
 export function CourseList({ courses }: { courses: readonly Course[] }) {
   const c = usePalette();
   return (
     <FlatList
+      {...renderAllOnWeb}
       contentInsetAdjustmentBehavior="automatic"
       style={{ backgroundColor: c.background }}
       data={courses}

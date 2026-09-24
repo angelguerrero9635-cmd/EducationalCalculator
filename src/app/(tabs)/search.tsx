@@ -6,6 +6,7 @@ import { EmptyState, ListRow } from '@/components';
 import { countLabel, search, type SearchKind } from '@/data/selectors';
 import { COURSES, SKILLS } from '@/data/taxonomy';
 import { font, radius, space, usePalette } from '@/theme';
+import { PageMeta } from '@/components/PageMeta';
 
 const KIND_LABEL: Record<SearchKind, string> = { skill: 'Skill', course: 'Course', topic: 'Topic' };
 const TOPIC_COUNT = COURSES.reduce((n, c) => n + c.topics.length, 0);
@@ -18,48 +19,54 @@ export default function SearchScreen() {
   const results = useMemo(() => search(deferred), [deferred]);
 
   return (
-    <View style={[styles.container, { backgroundColor: c.background }]}>
-      <View style={[styles.bar, { borderBottomColor: c.border }]}>
-        <TextInput
-          testID="search-input"
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Search skills, courses and topics"
-          placeholderTextColor={c.textMuted}
-          autoCorrect={false}
-          autoCapitalize="none"
-          clearButtonMode="while-editing"
-          returnKeyType="search"
-          accessibilityLabel="Search"
-          style={[styles.input, { backgroundColor: c.surface, color: c.text }]}
+    <>
+      <PageMeta
+        title={'Search'}
+        description="Search every math and science skill, university course and course topic."
+      />
+      <View style={[styles.container, { backgroundColor: c.background }]}>
+        <View style={[styles.bar, { borderBottomColor: c.border }]}>
+          <TextInput
+            testID="search-input"
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search skills, courses and topics"
+            placeholderTextColor={c.textMuted}
+            autoCorrect={false}
+            autoCapitalize="none"
+            clearButtonMode="while-editing"
+            returnKeyType="search"
+            accessibilityLabel="Search"
+            style={[styles.input, { backgroundColor: c.surface, color: c.text }]}
+          />
+        </View>
+        <FlatList
+          data={results}
+          keyExtractor={(r) => r.key}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: insets.bottom }}
+          renderItem={({ item }) => (
+            <ListRow
+              overline={KIND_LABEL[item.kind]}
+              title={item.title}
+              subtitle={item.label}
+              route={item.route}
+            />
+          )}
+          ListEmptyComponent={
+            query.trim() ? (
+              <EmptyState title="No matches" message={`Nothing found for “${query.trim()}”.`} />
+            ) : (
+              <EmptyState
+                title="Search everything"
+                message={`${countLabel(SKILLS.length, 'skill')}, ${countLabel(COURSES.length, 'course')} and ${countLabel(TOPIC_COUNT, 'topic')}.`}
+              />
+            )
+          }
         />
       </View>
-      <FlatList
-        data={results}
-        keyExtractor={(r) => r.key}
-        keyboardDismissMode="on-drag"
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: insets.bottom }}
-        renderItem={({ item }) => (
-          <ListRow
-            overline={KIND_LABEL[item.kind]}
-            title={item.title}
-            subtitle={item.label}
-            route={item.route}
-          />
-        )}
-        ListEmptyComponent={
-          query.trim() ? (
-            <EmptyState title="No matches" message={`Nothing found for “${query.trim()}”.`} />
-          ) : (
-            <EmptyState
-              title="Search everything"
-              message={`${countLabel(SKILLS.length, 'skill')}, ${countLabel(COURSES.length, 'course')} and ${countLabel(TOPIC_COUNT, 'topic')}.`}
-            />
-          )
-        }
-      />
-    </View>
+    </>
   );
 }
 
