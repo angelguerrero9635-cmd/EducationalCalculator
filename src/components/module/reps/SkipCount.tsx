@@ -12,13 +12,17 @@ import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './co
 
 type Spec = Extract<Representation, { kind: 'skipCount' }>;
 
-/** A number line from 0 with equal jumps of `step`. Drag the end to add or remove jumps. */
+/**
+ * A number line from the start number (0 unless `start` is set) with equal jumps of `step`.
+ * Drag the end to add or remove jumps.
+ */
 export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef(0);
   const s = Math.max(1, Math.round(rep.shown(spec.step)));
   const k = Math.max(0, Math.round(rep.shown(spec.count)));
+  const from = spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : 0;
   const fit = useFrozen(niceCeil(Math.max(s * 10, s * k)));
 
   return (
@@ -27,10 +31,10 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {({ w, h }) => {
           const pad = 24;
           const max = fit.value;
-          const px = (x: number) => pad + (x / max) * (w - 2 * pad);
+          const px = (x: number) => pad + ((x - from) / max) * (w - 2 * pad);
           const y = h * 0.72;
           const lift = Math.min(h * 0.4, Math.max(14, (px(s) - px(0)) * 0.6));
-          const labels = Array.from({ length: 11 }, (_, i) => (max / 10) * i);
+          const labels = Array.from({ length: 11 }, (_, i) => from + (max / 10) * i);
           return (
             <>
               <Svg width={w} height={h}>
@@ -67,19 +71,25 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {Array.from({ length: k }, (_, i) => (
                   <Path
                     key={`j${i}`}
-                    d={`M ${px(i * s)} ${y} Q ${(px(i * s) + px((i + 1) * s)) / 2} ${y - 2 * lift} ${px((i + 1) * s)} ${y}`}
+                    d={`M ${px(from + i * s)} ${y} Q ${(px(from + i * s) + px(from + (i + 1) * s)) / 2} ${y - 2 * lift} ${px(from + (i + 1) * s)} ${y}`}
                     stroke={c.chartInk}
                     strokeWidth={chart.strokeLight}
                     fill="none"
                   />
                 ))}
                 {Array.from({ length: k }, (_, i) => (
-                  <Circle key={`d${i}`} cx={px((i + 1) * s)} cy={y} r={4} fill={c.chartHighlight} />
+                  <Circle
+                    key={`d${i}`}
+                    cx={px(from + (i + 1) * s)}
+                    cy={y}
+                    r={4}
+                    fill={c.chartHighlight}
+                  />
                 ))}
               </Svg>
               <DragHandle
                 testID="drag-end"
-                x={px(k * s)}
+                x={px(from + k * s)}
                 y={y}
                 label={rep.variable(spec.count).name}
                 onStart={() => {
@@ -100,10 +110,10 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
         {k === 0
-          ? '0'
-          : Array.from({ length: Math.min(k, 12) }, (_, i) => formatNumber((i + 1) * s)).join(
+          ? formatNumber(from)
+          : Array.from({ length: Math.min(k + 1, 12) }, (_, i) => formatNumber(from + i * s)).join(
               ', ',
-            ) + (k > 12 ? ', …' : '')}
+            ) + (k + 1 > 12 ? ', …' : '')}
       </Text>
     </View>
   );

@@ -152,6 +152,14 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
+      {spec.compare && spec.groups.length === 2 && spec.groups.every(rep.known) ? (
+        <Text style={[styles.compare, { color: c.text }]}>
+          {(() => {
+            const [a, b] = spec.groups.map(value) as [number, number];
+            return `${a} ${a > b ? '>' : a < b ? '<' : '='} ${b}`;
+          })()}
+        </Text>
+      ) : null}
       <Steppers
         calc={calc}
         items={spec.controls.map((k) => ({
@@ -170,5 +178,6 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
+  compare: { fontSize: font.title, fontWeight: '700', textAlign: 'center', marginTop: space.sm },
   hint: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.sm },
 });

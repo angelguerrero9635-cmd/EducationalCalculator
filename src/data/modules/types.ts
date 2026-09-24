@@ -60,6 +60,14 @@ export type Representation =
       /** Words for the comparison, e.g. ['more', 'fewer'] or ['longer', 'shorter']. */
       words: [string, string];
     }
+  /**
+   * Tape diagram. Part-whole: one bar cut into `parts`, with a bracket for the `total`.
+   * Compare: two bars from the same start; the bracket is the `difference`. Drag bar ends.
+   */
+  | { kind: 'tape'; parts: string[]; total: string }
+  | { kind: 'tape'; compare: [string, string]; difference: string }
+  /** Line plot: an X for each object above its value on a number line; tap to set counts. */
+  | { kind: 'linePlot'; points: { var: string; at: number }[]; unit?: string }
   /** Regular polygon with `sides` sides (and as many corners); change it with − / +. */
   | { kind: 'polygon'; sides: string }
   /** Balance scale: the counters on each pan are the listed values. Level when equal. */
@@ -72,6 +80,8 @@ export type Representation =
       kind: 'baseTen';
       groups: string[];
       total?: string;
+      /** With two groups: show which is greater with >, < or =. */
+      compare?: boolean;
       controls: { var: string; steps: number[] }[];
     }
   /** An object measured two ways: in small units (`total`) and in bigger units of `size`. */
@@ -80,12 +90,22 @@ export type Representation =
   | { kind: 'clock'; hour: string; minute: string; minuteStep: number }
   /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
   | { kind: 'partition'; parts: string; shaded: string; shape: 'circle' | 'rectangle' }
-  /** Number line from 0 with `count` equal jumps of `step`, ending at `total`. Drag the end. */
-  | { kind: 'skipCount'; step: string; count: string; total: string }
+  /**
+   * Number line from `start` (default 0) with `count` equal jumps of `step`, ending at `total`.
+   * Drag the end.
+   */
+  | { kind: 'skipCount'; step: string; count: string; total: string; start?: string }
   /** Objects arranged in pairs; an odd one sticks out. */
   | { kind: 'pairs'; value: string; max: number }
-  /** Dot array with `rows` × `columns`. Drag the corner. */
-  | { kind: 'array'; rows: string; columns: string; total: string; max: number }
+  /** Array with `rows` × `columns` of dots (or unit squares that tile a rectangle). Drag the corner. */
+  | {
+      kind: 'array';
+      rows: string;
+      columns: string;
+      total: string;
+      max: number;
+      cell?: 'dot' | 'square';
+    }
   /** Objects measured against a ruler in the shown unit. Drag each object's end. */
   | { kind: 'ruler'; lengths: string[]; difference?: string; extent: number }
   /** Coins by type, each with its value in cents; − / + change the counts. */

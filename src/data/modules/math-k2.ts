@@ -7,10 +7,10 @@ import type { Values, VariableDef } from '@/engine/types';
 
 import type { ModuleDef, StepText } from './types';
 
-const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
+export const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
 
 /** A whole-number variable (counts, digits…). */
-const whole = (
+export const whole = (
   id: string,
   symbol: string,
   name: string,
@@ -71,7 +71,7 @@ function addSub(how: { c: string; a: string; b: string }) {
  * d = the difference between a and b, never negative (K–2 has no negative numbers). Knowing d
  * and one value leaves two answers (more or fewer); the solver keeps the one nearest before.
  */
-function difference(
+export function difference(
   d: string,
   a: string,
   b: string,

@@ -38,17 +38,30 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fill={c.chartSurface}
                   stroke={c.chartGrid}
                 />
-                {Array.from({ length: rows * cols }, (_, i) => (
-                  <Circle
-                    key={i}
-                    cx={x0 + (i % cols) * cell + cell / 2}
-                    cy={y0 + Math.floor(i / cols) * cell + cell / 2}
-                    r={cell * 0.3}
-                    fill={c.chartHighlight}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeLight}
-                  />
-                ))}
+                {Array.from({ length: rows * cols }, (_, i) =>
+                  spec.cell === 'square' ? (
+                    <Rect
+                      key={i}
+                      x={x0 + (i % cols) * cell}
+                      y={y0 + Math.floor(i / cols) * cell}
+                      width={cell}
+                      height={cell}
+                      fill={c.chartFill}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
+                    />
+                  ) : (
+                    <Circle
+                      key={i}
+                      cx={x0 + (i % cols) * cell + cell / 2}
+                      cy={y0 + Math.floor(i / cols) * cell + cell / 2}
+                      r={cell * 0.3}
+                      fill={c.chartHighlight}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
+                    />
+                  ),
+                )}
               </Svg>
               <DragHandle
                 testID="drag-corner"

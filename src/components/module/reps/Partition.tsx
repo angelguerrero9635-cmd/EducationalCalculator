@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 
+import { SegmentedControl } from '@/components/SegmentedControl';
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
@@ -13,10 +15,15 @@ type Spec = Extract<Representation, { kind: 'partition' }>;
 
 const NAMES: Record<number, string> = { 1: 'one whole', 2: 'halves', 3: 'thirds', 4: 'fourths' };
 
-/** A whole cut into equal parts; tap a part to shade or unshade it. − / + change the parts. */
+/**
+ * A whole (circle or rectangle) cut into equal parts; tap a part to shade or unshade it. − / +
+ * change the parts. More equal parts make each part smaller.
+ */
 export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
+  // Tests show both round and rectangular wholes; the student can switch.
+  const [shape, setShape] = useState(spec.shape);
   const p = Math.max(1, Math.round(rep.shown(spec.parts)));
   const k = Math.min(p, Math.max(0, Math.round(rep.shown(spec.shaded))));
   const tap = (i: number) =>
@@ -24,10 +31,20 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
+      <View style={styles.toggle}>
+        <SegmentedControl
+          segments={[
+            { value: 'circle', label: 'Circle' },
+            { value: 'rectangle', label: 'Rectangle' },
+          ]}
+          value={shape}
+          onChange={setShape}
+        />
+      </View>
       <Canvas aspect={0.62}>
         {({ w, h }) => {
           const size = Math.min(w - 32, h - 16);
-          if (spec.shape === 'rectangle') {
+          if (shape === 'rectangle') {
             const rw = Math.min(w - 32, size * 1.6);
             const x0 = (w - rw) / 2;
             const y0 = (h - size * 0.7) / 2;
@@ -93,6 +110,7 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
+  toggle: { paddingHorizontal: space.lg, marginBottom: space.sm },
   caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
   hint: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.xs },
 });

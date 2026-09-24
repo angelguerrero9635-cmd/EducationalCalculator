@@ -31,7 +31,11 @@ function representationVars(r: Representation): string[] {
     case 'partition':
       return [r.parts, r.shaded];
     case 'skipCount':
-      return [r.step, r.count, r.total];
+      return [r.step, r.count, r.total, ...(r.start ? [r.start] : [])];
+    case 'tape':
+      return 'compare' in r ? [...r.compare, r.difference] : [...r.parts, r.total];
+    case 'linePlot':
+      return r.points.map((p) => p.var);
     case 'pairs':
       return [r.value];
     case 'array':

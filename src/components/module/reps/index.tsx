@@ -13,7 +13,9 @@ import { Pairs } from './Pairs';
 import { Partition } from './Partition';
 import { PolygonShape } from './PolygonShape';
 import { Ruler } from './Ruler';
+import { LinePlot } from './LinePlot';
 import { SkipCount } from './SkipCount';
+import { Tape } from './Tape';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
 import { CircleDiagram } from './CircleDiagram';
@@ -33,12 +35,16 @@ import { Waterfall } from './Waterfall';
 export const representationTitle = (r: Representation) =>
   r.kind === 'table'
     ? 'Table'
-    : ['plot', 'bars', 'pictureGraph', 'waterfall', 'hundredChart'].includes(r.kind)
+    : ['plot', 'bars', 'pictureGraph', 'waterfall', 'hundredChart', 'linePlot'].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'tape':
+      return <Tape spec={spec} calc={calc} />;
+    case 'linePlot':
+      return <LinePlot spec={spec} calc={calc} />;
     case 'numberLine':
       return <NumberLine spec={spec} calc={calc} />;
     case 'bars':
