@@ -181,6 +181,25 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
           />
         </View>
       ) : null}
+      {/* Inputs first, then the number sentences they fill in. */}
+      <Text style={[styles.hint, { color: c.textMuted }]}>
+        {calc.unknownCount
+          ? early
+            ? 'Type another number to fill in the rest.'
+            : 'Enter another value to fill in the rest.'
+          : early
+            ? 'Change any number. The others change to match.'
+            : 'Change any value: the newest entry wins and the rest recalculate.'}
+      </Text>
+      <View>
+        {module.variables.map((v) => (
+          <VariableInput key={v.id} variable={v} calc={calc} />
+        ))}
+      </View>
+      <View style={styles.buttons}>
+        <Button label="Clear all" variant="secondary" onPress={calc.clear} />
+        <Button label="Show example" variant="secondary" onPress={calc.showExample} />
+      </View>
       <View style={styles.formulas}>
         {module.relations.map((r) => (
           <View
@@ -207,32 +226,14 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
           {`${early ? 'Number sentences' : 'Formulas'} are worked in ${formulaUnits}. The step-by-step shows the conversions.`}
         </Text>
       ) : null}
-      <Text style={[styles.hint, { color: c.textMuted }]}>
-        {calc.unknownCount
-          ? early
-            ? 'Type another number to fill in the rest.'
-            : 'Enter another value to fill in the rest.'
-          : early
-            ? 'Change any number. The others change to match.'
-            : 'Change any value: the newest entry wins and the rest recalculate.'}
-      </Text>
-      <View>
-        {module.variables.map((v) => (
-          <VariableInput key={v.id} variable={v} calc={calc} />
-        ))}
-      </View>
-      <View style={styles.buttons}>
-        <Button label="Clear all" variant="secondary" onPress={calc.clear} />
-        <Button label="Show example" variant="secondary" onPress={calc.showExample} />
-      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { gap: space.md, paddingBottom: space.lg },
-  unitsRow: { paddingHorizontal: space.lg, paddingTop: space.md },
-  formulas: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.md },
+  container: { gap: space.md, paddingTop: space.md, paddingBottom: space.lg },
+  unitsRow: { paddingHorizontal: space.lg },
+  formulas: { gap: space.sm, paddingHorizontal: space.lg },
   formula: {
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radius.md,
