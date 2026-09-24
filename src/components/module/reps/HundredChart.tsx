@@ -23,9 +23,14 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
     <View style={{ gap: space.sm }}>
       <Canvas aspect={spec.max / 100}>
         {({ w }) => {
-          const cell = Math.floor((w - 8) / 10);
+          const cell = Math.floor((w - 8 - 2 * chart.stroke) / 10);
           return (
-            <View style={[styles.grid, { width: cell * 10, borderColor: c.chartInk }]}>
+            <View
+              style={[
+                styles.grid,
+                { width: cell * 10 + 2 * chart.stroke, borderColor: c.chartInk },
+              ]}
+            >
               {Array.from({ length: spec.max }, (_, i) => {
                 const k = i + 1;
                 const on = k <= n;

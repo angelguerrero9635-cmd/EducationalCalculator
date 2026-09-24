@@ -29,12 +29,28 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const value = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
   const controlIds = spec.controls.map((k) => k.var);
 
+  // Up to 5 flats per line; more wrap onto a second line so 3-digit numbers fit a phone.
+  const flatCols = (h: number) => (h > 5 ? Math.ceil(h / 2) : h);
+  const flatLines = (h: number) => (h > 5 ? 2 : 1);
+  const hundreds = rows.some((id) => (rep.variable(id).max ?? 0) >= 100);
+  const place = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+  const describe = (n: number) => {
+    const d = digits(n);
+    return [
+      ...(hundreds ? [place(d.h, 'hundred', 'hundreds')] : []),
+      place(d.t, 'ten', 'tens'),
+      place(d.o, 'one', 'ones'),
+    ].join(', ');
+  };
+
   const blocks = (id: string, top: number, u: number, fill: string) => {
     const { h, t, o } = digits(value(id));
     const out: ReactNode[] = [];
-    const y = top + 18;
-    let x = 8;
-    for (let i = 0; i < h; i++, x += 10 * u + 6) {
+    const y0 = top + 18;
+    const cols = flatCols(h);
+    for (let i = 0; i < h; i++) {
+      const x = 8 + (i % Math.max(cols, 1)) * (10 * u + 6);
+      const y = y0 + Math.floor(i / Math.max(cols, 1)) * (10 * u + 4);
       out.push(
         <Rect
           key={`h${i}`}
@@ -58,6 +74,9 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
         )),
       );
     }
+    // Rods and ones sit beside the flats, on the flats' last line.
+    const y = y0 + (flatLines(h) - 1) * (10 * u + 4);
+    let x = 8 + cols * (10 * u + 6);
     for (let i = 0; i < t; i++, x += u + 4) {
       out.push(
         <Rect
@@ -90,25 +109,42 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     return out;
   };
 
+  const lines = rows.map((id) => flatLines(digits(value(id)).h));
+  const totalLines = lines.reduce((x, y) => x + y, 0);
+  // Block size from the width: room for every row's flats plus 9 rods and 5 ones, so stepping
+  // the ones or tens doesn't resize the picture. The height then follows.
+  const unitFor = (w: number) =>
+    Math.max(
+      2.5,
+      Math.min(
+        8,
+        ...rows.map((id) => {
+          const cols = flatCols(digits(value(id)).h);
+          return (w - 16 - 6 * cols - 36 - 6 - 15) / (10 * cols + 9 + 5);
+        }),
+      ),
+    );
+  const heightFor = (w: number) => 8 + 26 * rows.length + totalLines * (10 * unitFor(w) + 4);
+
   return (
     <View>
-      <Canvas aspect={0.3 * rows.length + 0.04}>
+      <Canvas aspect={(w) => heightFor(w) / w}>
         {({ w, h }) => {
-          const rowH = (h - 8) / rows.length;
-          const u = Math.max(3, Math.min(8, (rowH - 26) / 10));
+          const u = unitFor(w);
+          let top = 4;
           return (
             <Svg width={w} height={h}>
               {rows.map((id, r) => {
-                const top = 4 + r * rowH;
-                const d = digits(value(id));
+                const rowTop = top;
+                top += 26 + lines[r]! * (10 * u + 4);
                 const fill =
                   id === spec.total ? c.chartHighlight : r % 2 === 0 ? c.chartFill : c.chartSurface;
                 return (
                   <G key={id} opacity={rep.known(id) ? 1 : 0.35}>
-                    <ChartText x={8} y={top + 12} fontSize={chart.small}>
-                      {`${rep.variable(id).name}: ${rep.known(id) ? value(id) : '?'}  =  ${d.h} hundreds, ${d.t} tens, ${d.o} ones`}
+                    <ChartText x={8} y={rowTop + 12} fontSize={chart.small}>
+                      {`${rep.variable(id).name}: ${rep.known(id) ? `${value(id)}  =  ${describe(value(id))}` : '?'}`}
                     </ChartText>
-                    {blocks(id, top, u, fill)}
+                    {blocks(id, rowTop, u, fill)}
                   </G>
                 );
               })}
@@ -125,7 +161,9 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }))}
       />
       <Text style={[styles.hint, { color: c.textMuted }]}>
-        Flats are hundreds, rods are tens, small cubes are ones.
+        {hundreds
+          ? 'Flats are hundreds, rods are tens, small cubes are ones.'
+          : 'Rods are tens, small cubes are ones.'}
       </Text>
     </View>
   );

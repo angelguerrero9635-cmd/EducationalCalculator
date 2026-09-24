@@ -28,14 +28,16 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const secondIsVar = typeof spec.second === 'string';
 
   const tap = (k: number) => {
+    const firstPin = typeof spec.first === 'string' ? [spec.first] : [];
     if (k <= a) {
+      if (typeof spec.first !== 'string') return; // a fixed group can't change
       const pin = secondIsVar ? [spec.second as string] : [];
       calc.set({ ...rep.pin(pin), [spec.first]: k === a ? k - 1 : k });
     } else if (typeof spec.total === 'string') {
-      calc.set({ ...rep.pin([spec.first]), [spec.total]: k === a + b ? k - 1 : k });
+      calc.set({ ...rep.pin(firstPin), [spec.total]: k === a + b ? k - 1 : k });
     } else if (secondIsVar) {
       calc.set({
-        ...rep.pin([spec.first]),
+        ...rep.pin(firstPin),
         [spec.second as string]: k === a + b ? k - a - 1 : k - a,
       });
     }
@@ -91,7 +93,7 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {`${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
       <Text style={[styles.legend, { color: c.textMuted }]}>
-        {`● ${rep.variable(spec.first).name}   ○ ${
+        {`● ${typeof spec.first === 'string' ? rep.variable(spec.first).name : `${spec.first} ones make a ten`}   ○ ${
           typeof spec.second === 'string' ? rep.variable(spec.second).name : `${spec.second} more`
         }`}
       </Text>

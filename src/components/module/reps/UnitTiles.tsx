@@ -7,7 +7,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'unitTiles' }>;
@@ -24,14 +24,15 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const count = Math.max(0, Math.round(rep.shown(spec.count)));
   const size = Math.max(1, Math.round(rep.shown(spec.size)));
   const total = count * size;
-  const maxCubes = (rep.variable(spec.total).max ?? 24) as number;
+  // Room for at least 24 cubes; longer objects shrink the cubes (held steady while dragging).
+  const span = useFrozen(Math.max(24, total));
 
   return (
     <View>
-      <Canvas aspect={0.5}>
+      <Canvas aspect={(w) => (80 + 2 * Math.min(24, (w - 92) / span.value)) / w}>
         {({ w, h }) => {
           const left = 76;
-          const cell = Math.min(24, (w - left - 16) / Math.min(maxCubes, 24));
+          const cell = Math.min(24, (w - left - 16) / span.value);
           const objY = 16;
           const cubeY = objY + 38;
           const clipY = cubeY + cell + 16;
@@ -87,7 +88,11 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 x={end}
                 y={objY + 11}
                 label={rep.variable(spec.count).name}
-                onStart={() => (start.current = count)}
+                onStart={() => {
+                  start.current = count;
+                  span.freeze();
+                }}
+                onEnd={span.release}
                 onMove={(dx) =>
                   calc.set({
                     ...rep.pin([spec.size]),
@@ -100,7 +105,7 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.label(spec.total)} = ${rep.label(spec.count)}, each ${size} cubes long`}
+        {`${total} cubes = ${count} ${rep.variable(spec.count).name.toLowerCase()}, each ${size} ${size === 1 ? 'cube' : 'cubes'} long`}
       </Text>
       <Steppers calc={calc} items={[{ var: spec.size, steps: [1], pin: [spec.count] }]} />
     </View>

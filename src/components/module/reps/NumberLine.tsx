@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import Svg, { Circle, Line, Path } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
@@ -24,14 +24,20 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
         const pad = 24;
         const unit = (w - 2 * pad) / (spec.max - spec.min);
         const sx = (n: number) => pad + (n - spec.min) * unit;
-        const y = h * 0.7;
+        const y = h * 0.64;
         const tick = spec.tick ?? 1;
         const ticks = Array.from(
           { length: Math.floor((spec.max - spec.min) / tick) + 1 },
           (_, i) => spec.min + i * tick,
         );
-        const lift = Math.min(h * 0.45, 30 + Math.abs(end - a) * unit * 0.3);
-        const mid = (sx(a) + sx(end)) / 2;
+        // Arcs from start to end: one jump, or jumps of 10 and then the ones.
+        const d = end - a;
+        const sign = d < 0 ? -1 : 1;
+        const tens = spec.jumps === 'tens' ? Math.floor(Math.abs(d) / 10) : 0;
+        const stops = [a, ...Array.from({ length: tens }, (_, i) => a + sign * 10 * (i + 1))];
+        if (stops[stops.length - 1] !== end || stops.length === 1) stops.push(end);
+        const arcs = stops.slice(1).map((to, i) => ({ from: stops[i]!, to }));
+        const minor = tick > 1 && unit >= 2.5;
         return (
           <>
             <Svg width={w} height={h}>
@@ -43,6 +49,18 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 stroke={c.chartInk}
                 strokeWidth={chart.stroke}
               />
+              {minor
+                ? Array.from({ length: spec.max - spec.min + 1 }, (_, i) => (
+                    <Line
+                      key={`m${i}`}
+                      x1={sx(spec.min + i)}
+                      y1={y - 3}
+                      x2={sx(spec.min + i)}
+                      y2={y + 3}
+                      stroke={c.chartGrid}
+                    />
+                  ))
+                : null}
               {ticks.map((n) => (
                 <Line key={n} x1={sx(n)} y1={y - 6} x2={sx(n)} y2={y + 6} stroke={c.chartInk} />
               ))}
@@ -58,23 +76,34 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   {n}
                 </ChartText>
               ))}
-              <Path
-                d={`M ${sx(a)} ${y} Q ${mid} ${y - 2 * lift} ${sx(end)} ${y}`}
-                stroke={c.chartInk}
-                strokeWidth={chart.stroke}
-                strokeDasharray={chart.dash}
-                fill="none"
-                opacity={faded ? 0.35 : 1}
-              />
-              <ChartText
-                x={mid}
-                y={y - lift - 8}
-                fontSize={chart.value}
-                fill={c.chartInk}
-                textAnchor="middle"
-              >
-                {`${b >= 0 ? '+' : ''}${rep.label(spec.jump).split(' = ')[1]}`}
-              </ChartText>
+              {arcs.map(({ from, to }, i) => {
+                const lift = Math.min(h * 0.45, 30 + Math.abs(to - from) * unit * 0.3);
+                const mid = (sx(from) + sx(to)) / 2;
+                const label =
+                  arcs.length === 1
+                    ? `${b >= 0 ? '+' : ''}${rep.label(spec.jump).split(' = ')[1]}`
+                    : `${sign > 0 ? '+' : '−'}${Math.abs(to - from)}`;
+                return (
+                  <G key={i} opacity={faded ? 0.35 : 1}>
+                    <Path
+                      d={`M ${sx(from)} ${y} Q ${mid} ${y - 2 * lift} ${sx(to)} ${y}`}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.stroke}
+                      strokeDasharray={chart.dash}
+                      fill="none"
+                    />
+                    <ChartText
+                      x={mid}
+                      y={y - lift - 8}
+                      fontSize={arcs.length === 1 ? chart.value : chart.small}
+                      fill={c.chartInk}
+                      textAnchor="middle"
+                    >
+                      {label}
+                    </ChartText>
+                  </G>
+                );
+              })}
               <Circle cx={sx(a)} cy={y} r={5} fill={c.chartMuted} />
               <Circle cx={sx(end)} cy={y} r={6} fill={c.chartInk} />
               <ChartText
@@ -88,7 +117,7 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
               </ChartText>
               <ChartText
                 x={sx(end)}
-                y={y + 40}
+                y={Math.abs(sx(end) - sx(a)) < 90 ? y + 54 : y + 40}
                 fontSize={chart.label}
                 fill={c.chartInk}
                 textAnchor="middle"

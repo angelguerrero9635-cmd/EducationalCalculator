@@ -3,7 +3,7 @@
  * Written and reviewed against docs/MODULE_GUIDE.md. Two K modules (m.K.add-sub-10,
  * m.K.classify-count) are pilots in k12.ts.
  */
-import type { VariableDef } from '@/engine/types';
+import type { Values, VariableDef } from '@/engine/types';
 
 import type { ModuleDef, StepText } from './types';
 
@@ -67,6 +67,39 @@ function addSub(how: { c: string; a: string; b: string }) {
   return { relations, steps };
 }
 
+/**
+ * d = the difference between a and b, never negative (K–2 has no negative numbers). Knowing d
+ * and one value leaves two answers (more or fewer); the solver keeps the one nearest before.
+ */
+function difference(
+  d: string,
+  a: string,
+  b: string,
+  how: { diff: string; first: string; second: string },
+) {
+  const id = `${d} = difference of ${a} and ${b}`;
+  const aMore = (v: Values) => v[a]! >= v[b]!;
+  const relation = {
+    id,
+    display: `{${d}} = difference of {${a}} and {${b}}`,
+    vars: [d, a, b],
+    residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),
+    solve: {
+      [d]: (v: Values) => Math.abs(v[a]! - v[b]!),
+      [a]: (v: Values) => [v[b]! + v[d]!, v[b]! - v[d]!],
+      [b]: (v: Values) => [v[a]! - v[d]!, v[a]! + v[d]!],
+    },
+  };
+  const steps: Record<string, Record<string, StepText>> = {
+    [id]: {
+      [d]: { expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`), how: how.diff },
+      [a]: { expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`), how: how.first },
+      [b]: { expr: (v) => (aMore(v) ? `{${a}} − {${d}}` : `{${a}} + {${d}}`), how: how.second },
+    },
+  };
+  return { relation, steps };
+}
+
 /** Tens and ones of n (n = t tens + o ones), for counting and place value. */
 function tensOnes(maxTens: number) {
   return {
@@ -124,25 +157,78 @@ function tensOnes(maxTens: number) {
   };
 }
 
-const k100 = tensOnes(10);
 const g1count = tensOnes(12);
 const g1tens = tensOnes(9);
+
+const cmpK10 = difference('d', 'a', 'b', {
+  diff: 'Match each object in one group with one in the other. Count the ones left over.',
+  first: 'Add the difference to the second group if the first has more; take it away if fewer.',
+  second: 'Take the difference from the first group if it has more; add it if it has fewer.',
+});
+const cmpPencils = difference('d', 'a', 'b', {
+  diff: 'Line the pencils up at one end. Count the cubes that stick out past the shorter one.',
+  first: 'Add the extra cubes to pencil B if A is longer; take them away if A is shorter.',
+  second: 'Take the extra cubes from pencil A if A is longer; add them if A is shorter.',
+});
+const cmpShapes = difference('d', 'c', 's', {
+  diff: 'Line up the circles and squares. Count the extras in the longer row.',
+  first: 'Add the extras to the squares if there are more circles; take them away if fewer.',
+  second: 'Take the extras from the circles if there are more circles; add them if fewer.',
+});
+const cmpRibbons = difference('d', 'a', 'b', {
+  diff: 'Subtract the shorter length from the longer one.',
+  first: 'Add the difference to ribbon B if A is longer; subtract it if A is shorter.',
+  second: 'Subtract the difference from ribbon A if A is longer; add it if A is shorter.',
+});
+const cmpBars = difference('d', 'a', 'b', {
+  diff: 'Subtract the shorter bar from the taller bar.',
+  first: 'Add the difference to basketball if soccer is taller; subtract it if shorter.',
+  second: 'Subtract the difference from soccer if soccer is taller; add it if shorter.',
+});
 
 export const MATH_K2_MODULES: ModuleDef[] = [
   // ─── Kindergarten ──────────────────────────────────────────────────────────
   {
     id: 'm.K.count-100',
     assumptions: [
-      'Counting by ones adds 1 each time. Counting by tens adds 10: 10, 20, 30, … 100.',
-      'Each row of the chart is one ten.',
-      '37 means 3 tens and 7 ones.',
+      'Counting by ones: each next number is 1 more.',
+      'Counting by tens: 10, 20, 30, … 100. Each row of the chart ends at a ten.',
     ],
-    variables: [whole('n', 'n', 'Number', 0, 100), ...k100.variables],
-    relations: k100.relations,
-    steps: k100.steps,
-    example: { n: 37, t: 3, o: 7 },
-    startWith: ['n'],
-    representation: { kind: 'hundredChart', value: 'n', max: 100 },
+    variables: [
+      whole('n', 'n', 'Number', 0, 99),
+      whole('p', 'p', 'Next number', 1, 100),
+      whole('t', 't', 'Tens counted', 0, 10),
+      whole('m', 'm', 'Counting by tens reaches', 0, 100),
+    ],
+    relations: [
+      {
+        id: 'p = n + 1',
+        display: '{p} = {n} + 1',
+        vars: ['p', 'n'],
+        residual: (v) => v.p! - v.n! - 1,
+        solve: { p: (v) => v.n! + 1, n: (v) => v.p! - 1 },
+      },
+      {
+        id: 'm = t tens',
+        display: '{m} = {t} tens',
+        vars: ['m', 't'],
+        residual: (v) => v.m! - 10 * v.t!,
+        solve: { m: (v) => 10 * v.t!, t: (v) => v.m! / 10 },
+      },
+    ],
+    steps: {
+      'p = n + 1': {
+        p: { expr: '{n} + 1', how: 'Say the next number: it is the next box on the chart.' },
+        n: { expr: '{p} − 1', how: 'Say the number just before: the box before it.' },
+      },
+      'm = t tens': {
+        m: { expr: '{t} tens', how: 'Count by tens, one for each row: 10, 20, 30, …' },
+        t: { expr: 'tens in {m}', how: 'Count by tens up to m. Count how many tens you said.' },
+      },
+    },
+    example: { n: 37, p: 38, t: 4, m: 40 },
+    startWith: ['n', 't'],
+    representation: { kind: 'hundredChart', value: 'n', max: 100, marks: ['p', 'm'] },
   },
 
   {
@@ -183,26 +269,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     variables: [
       whole('a', 'a', 'First group', 0, 10),
       whole('b', 'b', 'Second group', 0, 10),
-      whole('d', 'd', 'How many more', -10, 10),
+      whole('d', 'd', 'How many more', 0, 10),
     ],
-    relations: [
-      {
-        id: 'd = a − b',
-        display: '{d} = {a} − {b}',
-        vars: ['d', 'a', 'b'],
-        residual: (v) => v.d! - (v.a! - v.b!),
-        solve: { d: (v) => v.a! - v.b!, a: (v) => v.d! + v.b!, b: (v) => v.a! - v.d! },
-      },
-    ],
+    relations: [cmpK10.relation],
     steps: {
-      'd = a − b': {
-        d: {
-          expr: '{a} − {b}',
-          how: 'Match each object in the second group with one in the first. Count the ones left over.',
-        },
-        a: { expr: '{b} + {d}', how: 'The first group is the second group plus the extras.' },
-        b: { expr: '{a} − {d}', how: 'Take the extras away from the first group.' },
-      },
+      ...cmpK10.steps,
     },
     example: { a: 7, b: 4, d: 3 },
     startWith: ['a', 'b'],
@@ -265,7 +336,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     },
     example: { n: 14, o: 4 },
     startWith: ['n'],
-    representation: { kind: 'baseTen', groups: ['n'], controls: [{ var: 'n', steps: [1] }] },
+    representation: { kind: 'tenFrame', first: 10, second: 'o', total: 'n', frames: 2 },
   },
 
   {
@@ -278,26 +349,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     variables: [
       { ...whole('a', 'a', 'Pencil A', 0, 12), unit: 'cubes' },
       { ...whole('b', 'b', 'Pencil B', 0, 12), unit: 'cubes' },
-      { ...whole('d', 'd', 'How much longer', -12, 12), unit: 'cubes' },
+      { ...whole('d', 'd', 'How much longer', 0, 12), unit: 'cubes' },
     ],
-    relations: [
-      {
-        id: 'd = a − b',
-        display: '{d} = {a} − {b}',
-        vars: ['d', 'a', 'b'],
-        residual: (v) => v.d! - (v.a! - v.b!),
-        solve: { d: (v) => v.a! - v.b!, a: (v) => v.d! + v.b!, b: (v) => v.a! - v.d! },
-      },
-    ],
+    relations: [cmpPencils.relation],
     steps: {
-      'd = a − b': {
-        d: {
-          expr: '{a} − {b}',
-          how: 'Line the pencils up. Count the cubes that stick out past pencil B.',
-        },
-        a: { expr: '{b} + {d}', how: 'Pencil A is pencil B plus the extra cubes.' },
-        b: { expr: '{a} − {d}', how: 'Take the extra cubes away from pencil A.' },
-      },
+      ...cmpPencils.steps,
     },
     example: { a: 9, b: 6, d: 3 },
     startWith: ['a', 'b'],
@@ -314,11 +370,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.K.shapes-2d-3d',
     assumptions: [
-      'Flat (2D) shapes like triangles and squares have straight sides and corners.',
+      'Some flat (2D) shapes, like triangles and squares, have straight sides and corners. A circle has none.',
       'Solid (3D) shapes like cubes, cones, cylinders and spheres are not flat.',
       'A shape keeps its name when it is turned or made bigger.',
     ],
-    variables: [whole('s', 's', 'Sides', 3, 8), whole('v', 'v', 'Corners', 3, 8)],
+    variables: [whole('s', 's', 'Sides', 3, 6), whole('v', 'v', 'Corners', 3, 6)],
     relations: [
       {
         id: 'corners = sides',
@@ -379,7 +435,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       whole('a', 'a', 'First number', 0, 10),
       whole('b', 'b', 'Second number', 0, 10),
       whole('c', 'c', 'Third number', 0, 10),
-      whole('s', 's', 'Sum', 0, 30),
+      whole('s', 's', 'Sum', 0, 20),
     ],
     relations: (
       [
@@ -423,7 +479,8 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     representation: {
       kind: 'cubeTrains',
       rows: [
-        ['a', 'b', 'c'],
+        [['a', 'b'], 'c'],
+        ['a', ['b', 'c']],
         ['c', 'b', 'a'],
       ],
       total: 's',
@@ -520,7 +577,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'q = n + 10': {
         q: {
           expr: '{n} + 10',
-          how: 'Ten more: the number just below on the chart (the tens digit goes up by 1).',
+          how: 'Ten more: the number just below on the chart.',
         },
         n: { expr: '{q} − 10', how: 'Ten less: the number just above on the chart.' },
       },
@@ -555,9 +612,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.1.add-within-100',
     assumptions: [
+      'Add a one-digit number or a multiple of 10 (like 20) to a two-digit number.',
       'Add tens with tens and ones with ones.',
-      'If there are 10 or more ones, trade 10 ones for a new ten.',
-      'The total is at most 100.',
+      'If there are 10 or more ones, trade 10 ones for a new ten. The total is at most 100.',
     ],
     variables: [
       whole('a', 'a', 'First number', 0, 100),
@@ -569,7 +626,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       a: 'Take the second number away from the total.',
       b: 'Count up from the first number to the total: tens first, then ones.',
     }),
-    example: { a: 36, b: 27, c: 63 },
+    example: { a: 36, b: 7, c: 43 },
     startWith: ['a', 'b'],
     representation: {
       kind: 'baseTen',
@@ -668,7 +725,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       whole('s', 's', 'Squares', 0, 10),
       whole('t', 't', 'Triangles', 0, 10),
       whole('n', 'n', 'Total', 0, 30),
-      whole('d', 'd', 'More circles than squares', -10, 10),
+      whole('d', 'd', 'Circles vs squares: difference', 0, 10),
     ],
     relations: [
       {
@@ -683,13 +740,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
           t: (v) => v.n! - v.c! - v.s!,
         },
       },
-      {
-        id: 'd = c − s',
-        display: '{d} = {c} − {s}',
-        vars: ['d', 'c', 's'],
-        residual: (v) => v.d! - (v.c! - v.s!),
-        solve: { d: (v) => v.c! - v.s!, c: (v) => v.d! + v.s!, s: (v) => v.c! - v.d! },
-      },
+      cmpShapes.relation,
     ],
     steps: {
       'n = c + s + t': {
@@ -698,11 +749,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         s: { expr: '{n} − {c} − {t}', how: 'Take the other categories away from the total.' },
         t: { expr: '{n} − {c} − {s}', how: 'Take the other categories away from the total.' },
       },
-      'd = c − s': {
-        d: { expr: '{c} − {s}', how: 'Line up the circles and squares. Count the extra circles.' },
-        c: { expr: '{s} + {d}', how: 'Circles are the squares plus the extras.' },
-        s: { expr: '{c} − {d}', how: 'Take the extras away from the circles.' },
-      },
+      ...cmpShapes.steps,
     },
     example: { c: 6, s: 3, t: 4, n: 13, d: 3 },
     startWith: ['c', 's', 't'],
@@ -779,6 +826,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       min: 0,
       max: 100,
       tick: 10,
+      jumps: 'tens',
     },
   },
 
@@ -852,7 +900,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'h = hundreds digit': {
         h: { expr: 'hundreds digit of {n}', how: 'Read the left digit of the three-digit number.' },
       },
-      't = tens digit': { t: { expr: 'tens digit of {n}', how: 'Read the middle digit.' } },
+      't = tens digit': {
+        t: { expr: 'tens digit of {n}', how: 'Read the tens digit (second from the right).' },
+      },
       'o = ones digit': { o: { expr: 'ones digit of {n}', how: 'Read the right digit.' } },
     },
     example: { n: 347, h: 3, t: 4, o: 7 },
@@ -881,7 +931,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       whole('c', 'c', 'Total', 0, 1000),
     ],
     ...addSub({
-      c: 'Add hundreds, tens and ones. Trade 10 of a place for 1 of the next place when you can.',
+      c: 'Add hundreds, tens and ones. When a place has 10 or more, trade 10 of them for 1 of the next place.',
       a: 'Take the second number away from the total.',
       b: 'Count up from the first number to the total by hundreds, tens and ones.',
     }),
@@ -907,7 +957,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     variables: [
       whole('s', 's', 'Count by', 1, 100),
       whole('k', 'k', 'Number of skips', 0, 20),
-      whole('n', 'n', 'Number reached', 0, 2000),
+      whole('n', 'n', 'Number reached', 0, 1000),
     ],
     relations: [
       {
@@ -999,7 +1049,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.arrays',
     assumptions: [
-      'An array has equal rows and equal columns.',
+      'Every row has the same number; every column has the same number.',
       'Add the same number once for each row: 3 rows of 4 is 4 + 4 + 4.',
       'Up to 5 rows and 5 columns.',
     ],
@@ -1039,23 +1089,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     variables: [
       { ...whole('a', 'a', 'Ribbon A', 0, 100), unit: 'cm' },
       { ...whole('b', 'b', 'Ribbon B', 0, 100), unit: 'cm' },
-      { ...whole('d', 'd', 'How much longer', -100, 100), unit: 'cm' },
+      { ...whole('d', 'd', 'Difference in length', 0, 100), unit: 'cm' },
     ],
-    relations: [
-      {
-        id: 'd = a − b',
-        display: '{d} = {a} − {b}',
-        vars: ['d', 'a', 'b'],
-        residual: (v) => v.d! - (v.a! - v.b!),
-        solve: { d: (v) => v.a! - v.b!, a: (v) => v.d! + v.b!, b: (v) => v.a! - v.d! },
-      },
-    ],
+    relations: [cmpRibbons.relation],
     steps: {
-      'd = a − b': {
-        d: { expr: '{a} − {b}', how: 'Subtract the shorter length from the longer one.' },
-        a: { expr: '{b} + {d}', how: 'Ribbon A is ribbon B plus the difference.' },
-        b: { expr: '{a} − {d}', how: 'Take the difference away from ribbon A.' },
-      },
+      ...cmpRibbons.steps,
     },
     example: { a: 12, b: 8, d: 4 },
     startWith: ['a', 'b'],
@@ -1065,11 +1103,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.money',
     assumptions: [
-      'Quarter = 25¢, dime = 10¢, nickel = 5¢, penny = 1¢.',
-      '100¢ = $1.00.',
-      'Count the biggest coins first.',
+      'Dollar bill = 100¢ = $1.00. Quarter = 25¢, dime = 10¢, nickel = 5¢, penny = 1¢.',
+      'Count the coins worth the most first.',
     ],
     variables: [
+      whole('db', 'b', 'Dollar bills', 0, 5),
       whole('q', 'q', 'Quarters', 0, 10),
       whole('dm', 'd', 'Dimes', 0, 10),
       whole('nk', 'n', 'Nickels', 0, 10),
@@ -1078,48 +1116,54 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     relations: [
       {
-        id: 'T = 25q + 10d + 5n + p',
-        display: '{T} = 25 × {q} + 10 × {dm} + 5 × {nk} + {pn}',
-        vars: ['T', 'q', 'dm', 'nk', 'pn'],
-        residual: (v) => v.T! - (25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!),
+        id: 'T = 100b + 25q + 10d + 5n + p',
+        display: '{T} = 100 × {db} + 25 × {q} + 10 × {dm} + 5 × {nk} + {pn}',
+        vars: ['T', 'db', 'q', 'dm', 'nk', 'pn'],
+        residual: (v) => v.T! - (100 * v.db! + 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!),
         solve: {
-          T: (v) => 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!,
-          q: (v) => (v.T! - 10 * v.dm! - 5 * v.nk! - v.pn!) / 25,
-          dm: (v) => (v.T! - 25 * v.q! - 5 * v.nk! - v.pn!) / 10,
-          nk: (v) => (v.T! - 25 * v.q! - 10 * v.dm! - v.pn!) / 5,
-          pn: (v) => v.T! - 25 * v.q! - 10 * v.dm! - 5 * v.nk!,
+          db: (v) => (v.T! - 25 * v.q! - 10 * v.dm! - 5 * v.nk! - v.pn!) / 100,
+          T: (v) => 100 * v.db! + 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!,
+          q: (v) => (v.T! - 100 * v.db! - 10 * v.dm! - 5 * v.nk! - v.pn!) / 25,
+          dm: (v) => (v.T! - 100 * v.db! - 25 * v.q! - 5 * v.nk! - v.pn!) / 10,
+          nk: (v) => (v.T! - 100 * v.db! - 25 * v.q! - 10 * v.dm! - v.pn!) / 5,
+          pn: (v) => v.T! - 100 * v.db! - 25 * v.q! - 10 * v.dm! - 5 * v.nk!,
         },
       },
     ],
     steps: {
-      'T = 25q + 10d + 5n + p': {
+      'T = 100b + 25q + 10d + 5n + p': {
         T: {
-          expr: '25 × {q} + 10 × {dm} + 5 × {nk} + {pn}',
-          how: 'Count on by 25s for quarters, 10s for dimes, 5s for nickels, then 1s for pennies.',
+          expr: '100 × {db} + 25 × {q} + 10 × {dm} + 5 × {nk} + {pn}',
+          how: 'Count dollars by 100s, then count on by 25s for quarters, 10s for dimes, 5s for nickels, then 1s for pennies.',
+        },
+        db: {
+          expr: '({T} − 25 × {q} − 10 × {dm} − 5 × {nk} − {pn}) ÷ 100',
+          how: 'Take away the coins’ value. Count the 100s (dollars) in what is left.',
         },
         q: {
-          expr: '({T} − 10 × {dm} − 5 × {nk} − {pn}) ÷ 25',
+          expr: '({T} − 100 × {db} − 10 × {dm} − 5 × {nk} − {pn}) ÷ 25',
           how: 'Take away the other coins’ value. Count the 25s in what is left.',
         },
         dm: {
-          expr: '({T} − 25 × {q} − 5 × {nk} − {pn}) ÷ 10',
+          expr: '({T} − 100 × {db} − 25 × {q} − 5 × {nk} − {pn}) ÷ 10',
           how: 'Take away the other coins’ value. Count the 10s in what is left.',
         },
         nk: {
-          expr: '({T} − 25 × {q} − 10 × {dm} − {pn}) ÷ 5',
+          expr: '({T} − 100 × {db} − 25 × {q} − 10 × {dm} − {pn}) ÷ 5',
           how: 'Take away the other coins’ value. Count the 5s in what is left.',
         },
         pn: {
-          expr: '{T} − 25 × {q} − 10 × {dm} − 5 × {nk}',
+          expr: '{T} − 100 × {db} − 25 × {q} − 10 × {dm} − 5 × {nk}',
           how: 'Take away the other coins’ value. The rest is pennies.',
         },
       },
     },
-    example: { q: 2, dm: 1, nk: 1, pn: 3, T: 68 },
-    startWith: ['q', 'dm', 'nk', 'pn'],
+    example: { db: 1, q: 2, dm: 1, nk: 1, pn: 3, T: 168 },
+    startWith: ['db', 'q', 'dm', 'nk', 'pn'],
     representation: {
       kind: 'coins',
       coins: [
+        { var: 'db', cents: 100, name: 'Dollar bills' },
         { var: 'q', cents: 25, name: 'Quarters' },
         { var: 'dm', cents: 10, name: 'Dimes' },
         { var: 'nk', cents: 5, name: 'Nickels' },
@@ -1139,7 +1183,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     variables: [
       whole('h', 'h', 'Hour', 1, 12),
       { ...whole('m', 'm', 'Minutes past', 0, 55), step: 5 },
-      whole('k', 'k', 'Long hand points at', 0, 11),
+      whole('k', 'k', 'Numbers past 12', 0, 11),
     ],
     relations: [
       {
@@ -1176,7 +1220,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       whole('c', 'c', 'Baseball', 0, 20),
       whole('e', 'e', 'Tennis', 0, 20),
       whole('n', 'n', 'Total', 0, 80),
-      whole('d', 'd', 'More soccer than basketball', -20, 20),
+      whole('d', 'd', 'Soccer vs basketball: difference', 0, 20),
     ],
     relations: [
       {
@@ -1192,13 +1236,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
           e: (v) => v.n! - v.a! - v.b! - v.c!,
         },
       },
-      {
-        id: 'd = a − b',
-        display: '{d} = {a} − {b}',
-        vars: ['d', 'a', 'b'],
-        residual: (v) => v.d! - (v.a! - v.b!),
-        solve: { d: (v) => v.a! - v.b!, a: (v) => v.d! + v.b!, b: (v) => v.a! - v.d! },
-      },
+      cmpBars.relation,
     ],
     steps: {
       'n = a + b + c + e': {
@@ -1208,11 +1246,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         c: { expr: '{n} − {a} − {b} − {e}', how: 'Take the other bars away from the total.' },
         e: { expr: '{n} − {a} − {b} − {c}', how: 'Take the other bars away from the total.' },
       },
-      'd = a − b': {
-        d: { expr: '{a} − {b}', how: 'Subtract the shorter bar from the taller bar.' },
-        a: { expr: '{b} + {d}', how: 'Soccer is basketball plus the difference.' },
-        b: { expr: '{a} − {d}', how: 'Take the difference away from soccer.' },
-      },
+      ...cmpBars.steps,
     },
     example: { a: 8, b: 5, c: 3, e: 6, n: 22, d: 3 },
     startWith: ['a', 'b', 'c', 'e'],

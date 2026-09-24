@@ -11,7 +11,7 @@ type Spec = Extract<Representation, { kind: 'compareRows' }>;
 
 /**
  * Two rows lined up one-to-one from the same starting edge. Objects without a partner are the
- * difference. Tap a spot in a row to set that row's count (tap the last one to remove it).
+ * difference (`spec.difference`, found by the formulas). Tap a spot in a row to set that row's count (tap the last one to remove it).
  */
 export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -20,16 +20,28 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const counts = rows.map((id) => (rep.known(id) ? Math.round(rep.shown(id)) : 0));
   const max = Math.max(10, ...rows.map((id) => rep.variable(id).max ?? 10));
   const [a, b] = counts as [number, number];
+  const more = a > b ? spec.a : spec.b;
+  const less = a > b ? spec.b : spec.a;
+  const n = Math.abs(a - b);
+  const amount = spec.icon === 'cube' ? `${n} ${n === 1 ? 'cube' : 'cubes'} ` : `${n} `;
+  const name = (id: string) => rep.variable(id).name;
+  // "A has 3 more than B." / "Pencil A is 3 cubes longer than pencil B."
   const verdict =
     !rep.known(spec.a) || !rep.known(spec.b)
       ? ''
       : a === b
-        ? 'They are equal.'
-        : `${rep.variable(a > b ? spec.a : spec.b).name} has ${Math.abs(a - b)} ${spec.words[0]}.`;
+        ? spec.icon === 'cube'
+          ? 'They are the same length.'
+          : 'They are equal.'
+        : spec.icon === 'cube'
+          ? `${name(more)} is ${amount}${spec.words[0]} than ${name(less)}. ${name(less)} is ${amount}${spec.words[1]}.`
+          : `${name(more)} has ${amount}${spec.words[0]}. ${name(less)} has ${amount}${spec.words[1]}.`;
+  // Cubes touch (a length); counters have space between them.
+  const inner = spec.icon === 'cube' ? 1 : 0.78;
 
   return (
     <View style={{ gap: space.sm }}>
-      <Canvas aspect={0.36}>
+      <Canvas aspect={(w) => (2 * Math.min(34, (w - 110) / max) + space.md) / w}>
         {({ w }) => {
           const cell = Math.min(34, (w - 110) / max);
           return (
@@ -63,9 +75,9 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         >
                           <View
                             style={{
-                              width: cell * 0.78,
-                              height: cell * 0.78,
-                              borderRadius: spec.icon === 'dot' ? cell : 2,
+                              width: cell * inner,
+                              height: cell * inner,
+                              borderRadius: spec.icon === 'dot' ? cell : 0,
                               borderWidth: filled ? chart.strokeLight : StyleSheet.hairlineWidth,
                               borderColor: filled ? c.chartInk : c.chartGrid,
                               backgroundColor: filled

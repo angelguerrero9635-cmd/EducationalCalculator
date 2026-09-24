@@ -120,7 +120,10 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.digital, { color: c.text }]}>{digital}</Text>
-      <Steppers calc={calc} items={[{ var: spec.hour, steps: [1], pin: [spec.minute] }]} />
+      <Steppers
+        calc={calc}
+        items={[{ var: spec.hour, steps: [1], pin: [spec.minute], wrap: [1, 12] }]}
+      />
       <Text style={[styles.hint, { color: c.textMuted }]}>
         Drag the long hand to change the minutes.
       </Text>

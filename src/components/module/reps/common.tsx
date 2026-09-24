@@ -17,18 +17,18 @@ export function Canvas({
   aspect,
   children,
 }: {
-  aspect: number;
+  /** Height ÷ width, or a function of the width for pictures whose height depends on it. */
+  aspect: number | ((w: number) => number);
   children: (size: { w: number; h: number }) => ReactNode;
 }) {
   const [w, setW] = useState(0);
+  const h = w * (typeof aspect === 'function' ? aspect(w) : aspect);
   return (
     <View
       style={{ width: '100%', alignItems: 'center' }}
       onLayout={(e) => setW(Math.min(Math.floor(e.nativeEvent.layout.width), chart.maxWidth))}
     >
-      {w > 0 ? (
-        <View style={{ width: w, height: w * aspect }}>{children({ w, h: w * aspect })}</View>
-      ) : null}
+      {w > 0 ? <View style={{ width: w, height: h }}>{children({ w, h })}</View> : null}
     </View>
   );
 }

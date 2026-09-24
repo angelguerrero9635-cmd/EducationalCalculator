@@ -105,11 +105,12 @@ export function buildSteps(
     if (!text || !t.exact) {
       return { ...base, how: 'Solved numerically: tried values until both sides matched.' };
     }
+    const expr = typeof text.expr === 'function' ? text.expr(result.values) : text.expr;
     return {
       ...base,
       how: text.how,
-      rearranged: `${v.symbol} = ${renderTemplate(text.expr, vars)}`,
-      substituted: `${v.symbol} = ${renderTemplate(text.expr, workVars, working)}`,
+      rearranged: `${v.symbol} = ${renderTemplate(expr, vars)}`,
+      substituted: `${v.symbol} = ${renderTemplate(expr, workVars, working)}`,
     };
   });
 

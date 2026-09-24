@@ -3,7 +3,7 @@ import { initialState, setValues } from '@/engine/state';
 import { getUnit } from '@/engine/units';
 import { resolveItem } from '@/data/selectors';
 
-import { MODULES } from '..';
+import { getModule, MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 
@@ -41,7 +41,7 @@ function representationVars(r: Representation): string[] {
     case 'coins':
       return [...r.coins.map((c) => c.var), r.total];
     case 'cubeTrains':
-      return [...r.rows.flat(), r.total];
+      return [...r.rows.flat(2), r.total];
     case 'bars':
       return [...r.bars.map((b) => b.var), ...(r.total ? [r.total] : [])];
     case 'pictureGraph':
@@ -167,7 +167,9 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('steps for %
       const texts = m.steps[r.id]!;
       const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
       expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
-      for (const { expr, how } of Object.values(texts)) {
+      for (const text of Object.values(texts)) {
+        const { how } = text;
+        const expr = typeof text.expr === 'function' ? text.expr(m.example) : text.expr;
         expect(how.length).toBeGreaterThan(10);
         const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);
         expect(used.filter((id) => !r.vars.includes(id))).toEqual([]);
@@ -260,5 +262,24 @@ describe('regressions found in review', () => {
     s = setValues(m, open(m), { n: 0 });
     s = setValues(m, s, { y: 4 });
     expect(s.result.values.c).toBeCloseTo(4);
+  });
+});
+
+describe('Math K–2', () => {
+  it('a difference is never negative, and the steps subtract the smaller from the larger', () => {
+    const m = getModule('m.K.compare-10')!;
+    const result = solve(m, [
+      { id: 'a', value: 4 },
+      { id: 'b', value: 7 },
+    ]);
+    expect(result.values.d).toBe(3);
+    const step = buildSteps(m, result).steps.find((s) => s.id === 'd')!;
+    expect(step.substituted).toBe('d = 7 − 4');
+  });
+
+  it('a digit alone leaves the number unknown instead of guessing', () => {
+    const m = getModule('m.1.tens-ones')!;
+    const result = solve(m, [{ id: 't', value: 6 }]);
+    expect(result.values.n).toBeUndefined();
   });
 });

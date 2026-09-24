@@ -29,7 +29,10 @@ export type Representation =
       end: string;
       min: number;
       max: number;
+      /** Labelled tick spacing; with tick > 1, unlabelled ticks still mark every 1. */
       tick?: number;
+      /** 'tens': draw the jump as jumps of 10, then one jump for the ones (38 → 48 → 58 → 63). */
+      jumps?: 'tens';
     }
   /**
    * Ten-frames with two colors of counters: `first` dark, then `second` light, `total` in all.
@@ -38,7 +41,8 @@ export type Representation =
    */
   | {
       kind: 'tenFrame';
-      first: string;
+      /** A number keeps the first group fixed (e.g. 10 for the full ten in 11–19). */
+      first: string | number;
       second: string | number;
       total: string | number;
       /** 1 frame (10) or 2 frames (20). */
@@ -91,7 +95,12 @@ export type Representation =
       total: string;
     }
   /** Cube trains built from the same parts in different orders (equal lengths). */
-  | { kind: 'cubeTrains'; rows: string[][]; total: string }
+  | {
+      kind: 'cubeTrains';
+      /** Each train's parts in order; an inner array is a group added first, e.g. (a + b) + c. */
+      rows: (string | string[])[][];
+      total: string;
+    }
   /** Bar chart. Bars marked `editable` can be dragged; the range grows to fit the values. */
   | {
       kind: 'bars';
@@ -182,7 +191,8 @@ export type Representation =
 
 /** One rearrangement, explained: `expr` is the right-hand side as a display template. */
 export interface StepText {
-  expr: string;
+  /** The rearranged right side; a function picks a template from the solved values. */
+  expr: string | ((v: Values) => string);
   how: string;
 }
 

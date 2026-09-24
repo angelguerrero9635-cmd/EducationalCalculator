@@ -25,11 +25,11 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {spec.coins.map((coin) => {
           const n = rep.known(coin.var) ? Math.round(rep.shown(coin.var)) : 0;
           const d = (sizes[coin.cents] ?? 20) * 1.5;
+          const bill = coin.cents >= 100;
+          const money = bill ? `$${coin.cents / 100}` : `${coin.cents}¢`;
           return (
             <View key={coin.var} style={styles.row}>
-              <Text
-                style={[styles.name, { color: c.text }]}
-              >{`${coin.name} (${coin.cents}¢)`}</Text>
+              <Text style={[styles.name, { color: c.text }]}>{`${coin.name} (${money})`}</Text>
               <View style={styles.coins}>
                 {Array.from({ length: n }, (_, i) => (
                   <View
@@ -37,9 +37,10 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     style={[
                       styles.coin,
                       {
-                        width: d,
-                        height: d,
-                        borderRadius: d,
+                        // A dollar bill is a green-paper rectangle, about 2.3 times as wide as tall.
+                        width: bill ? 64 : d,
+                        height: bill ? 28 : d,
+                        borderRadius: bill ? 3 : d,
                         borderColor: c.chartInk,
                         backgroundColor: coin.cents === 1 ? c.chartHighlight : c.chartFill,
                       },
@@ -51,7 +52,7 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         color: coin.cents === 1 ? c.onChartHighlight : c.chartInk,
                       }}
                     >
-                      {coin.cents}
+                      {bill ? money : coin.cents}
                     </Text>
                   </View>
                 ))}

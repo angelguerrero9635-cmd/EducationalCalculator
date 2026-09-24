@@ -13,6 +13,8 @@ export interface StepperItem {
   steps: number[];
   /** Values held fixed while this one changes (so the change flows to the total). */
   pin: string[];
+  /** Wrap around within [min, max] (a clock's hours: 12 + 1 → 1). */
+  wrap?: [number, number];
 }
 
 /** Rows of − / + buttons that change values by fixed steps; part of a diagram's controls. */
@@ -21,7 +23,11 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
   const rep = useRep(calc);
 
   const bump = (item: StepperItem, delta: number) => {
-    const next = rep.shown(item.var) + delta;
+    let next = rep.shown(item.var) + delta;
+    if (item.wrap) {
+      const [lo, hi] = item.wrap;
+      next = ((((next - lo) % (hi - lo + 1)) + (hi - lo + 1)) % (hi - lo + 1)) + lo;
+    }
     calc.set({
       ...rep.pin(item.pin),
       [item.var]: rep.snapTo(item.var, next * rep.factor(item.var)),
@@ -49,15 +55,31 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
       {items.map((item) => {
         const v = rep.variable(item.var);
         const known = rep.known(item.var);
-        return (
-          <View key={item.var} style={styles.row}>
-            <View style={styles.buttons}>
-              {[...item.steps].reverse().map((st) => button(item, -st))}
+        const label = (
+          <Text style={[styles.label, { color: c.text }]} numberOfLines={1}>
+            {`${v.name}: ${known ? formatNumber(rep.shown(item.var), v) : '?'}`}
+          </Text>
+        );
+        const minus = (
+          <View style={styles.buttons}>
+            {[...item.steps].reverse().map((st) => button(item, -st))}
+          </View>
+        );
+        const plus = <View style={styles.buttons}>{item.steps.map((st) => button(item, st))}</View>;
+        // One step size: − label +. Several: the label on its own line so it isn't squeezed.
+        return item.steps.length > 1 ? (
+          <View key={item.var} style={styles.stack}>
+            {label}
+            <View style={[styles.row, styles.spread]}>
+              {minus}
+              {plus}
             </View>
-            <Text style={[styles.label, { color: c.text }]} numberOfLines={1}>
-              {`${v.name}: ${known ? formatNumber(rep.shown(item.var), v) : '?'}`}
-            </Text>
-            <View style={styles.buttons}>{item.steps.map((st) => button(item, st))}</View>
+          </View>
+        ) : (
+          <View key={item.var} style={styles.row}>
+            {minus}
+            {label}
+            {plus}
           </View>
         );
       })}
@@ -68,6 +90,8 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
 const styles = StyleSheet.create({
   list: { gap: space.sm, paddingHorizontal: space.sm, marginTop: space.md },
   row: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  stack: { gap: space.xs },
+  spread: { justifyContent: 'space-between' },
   buttons: { flexDirection: 'row', gap: space.xs },
   button: {
     minWidth: 44,

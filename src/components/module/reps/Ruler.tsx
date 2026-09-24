@@ -24,9 +24,20 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const shown = spec.lengths.map((id) => rep.shown(id));
   const fit = useFrozen(Math.max(spec.extent, Math.ceil(Math.max(...shown))));
 
+  /** "Ribbon A is 4 cm longer than ribbon B." */
+  const compare = () => {
+    const [a, b] = spec.lengths as [string, string];
+    const [x, y] = [rep.shown(a), rep.shown(b)];
+    if (x === y) return 'They are the same length.';
+    const [long, short] = x > y ? [a, b] : [b, a];
+    const d = spec.difference!;
+    const unit = rep.unit(d);
+    return `${rep.variable(long).name} is ${formatNumber(rep.shown(d), rep.variable(d))}${unit ? ` ${unit}` : ''} longer than ${rep.variable(short).name}.`;
+  };
+
   return (
     <View>
-      <Canvas aspect={0.28 + 0.14 * spec.lengths.length}>
+      <Canvas aspect={(w) => (12 + 34 * spec.lengths.length + 60) / w}>
         {({ w, h }) => {
           const left = 16;
           const scale = (w - left - 24) / fit.value;
@@ -48,17 +59,21 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     opacity={rep.known(id) ? 1 : 0.35}
                   />
                 ))}
-                {spec.lengths.map((id, i) => (
-                  <ChartText
-                    key={`l${id}`}
-                    x={left + 6}
-                    y={12 + i * 34 + 15}
-                    fontSize={chart.small}
-                    fill={i === 0 ? c.onChartHighlight : c.chartInk}
-                  >
-                    {rep.variable(id).name}
-                  </ChartText>
-                ))}
+                {spec.lengths.map((id, i) => {
+                  // Short bars: put the name after the bar's end so it stays readable.
+                  const inside = shown[i]! * scale >= 64;
+                  return (
+                    <ChartText
+                      key={`l${id}`}
+                      x={inside ? left + 6 : left + Math.max(2, shown[i]! * scale) + 6}
+                      y={12 + i * 34 + 15}
+                      fontSize={chart.small}
+                      fill={inside && i === 0 ? c.onChartHighlight : c.chartInk}
+                    >
+                      {rep.variable(id).name}
+                    </ChartText>
+                  );
+                })}
                 <Rect
                   x={left}
                   y={rulerY}
@@ -122,7 +137,9 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      {spec.difference ? (
+      {spec.difference && spec.lengths.length === 2 && spec.lengths.every(rep.known) ? (
+        <Text style={[styles.caption, { color: c.text }]}>{compare()}</Text>
+      ) : spec.difference ? (
         <Text style={[styles.caption, { color: c.text }]}>{rep.label(spec.difference)}</Text>
       ) : null}
     </View>

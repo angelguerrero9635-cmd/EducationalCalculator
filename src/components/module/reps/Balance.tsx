@@ -31,7 +31,8 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {({ w, h }) => {
           const cx = w / 2;
           const pivot = h * 0.34;
-          const arm = w * 0.38;
+          // Keep each pan (about 112 px wide) inside the canvas.
+          const arm = Math.min(w * 0.38, w / 2 - 62);
           const ly = pivot - tilt;
           const ry = pivot + tilt;
           const pan = (x: number, y: number, ids: string[], key: string) => {
