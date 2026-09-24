@@ -18,6 +18,12 @@ const BY_ID = new Map(MODULES.map((m) => [m.id, m]));
 /** Module content for a skill id or topic key, if written yet. */
 export const getModule = (id: string): ModuleDef | undefined => BY_ID.get(id);
 
+/**
+ * Kindergarten–Grade 2 modules say “number sentence” instead of “formula” and use simpler
+ * prompts (CCSS wording for these grades).
+ */
+export const isEarlyGrade = (moduleId: string) => /^[ms]\.(K|1|2)\./.test(moduleId);
+
 /** The skill or topic a module belongs to (`m.2.money~making-change` → `m.2.money`). */
 export const moduleOwner = (moduleId: string) => moduleId.split('~')[0]!;
 

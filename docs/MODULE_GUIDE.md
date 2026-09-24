@@ -85,7 +85,9 @@ the assumptions and a table or diagram.
 
 ## Review process (required for every new or changed module)
 
-1. **Automated checks:** `pnpm test`. These check that each module matches the taxonomy, that the
+1. **Automated checks:** `pnpm test`. Every value must connect to the others through the
+   formulas; a separate group of values means two lessons (split it) unless the module lists it
+   in `standalone` with a reason. These check that each module matches the taxonomy, that the
    example satisfies every formula and range, that every rearrangement agrees with its formula and
    has an explanation, that every input combination reproduces the example, and that the
    walkthrough balances.

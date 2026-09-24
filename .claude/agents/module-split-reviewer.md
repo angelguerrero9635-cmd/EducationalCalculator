@@ -14,6 +14,19 @@ and the app shows a "Problem type" switcher between them.
 
 For each module, decide whether it should be split. Signs that it should:
 
+- **Values that don't tie back to the main value.** Draw the formulas as a graph: values are
+  dots, and each relation links the values it uses. The lesson's main value (usually the first
+  variable, or the one the picture is built around) should reach every other value through
+  relations that express the lesson's idea.
+  - A separate group of values means two lessons on one screen. The automated test catches a
+    fully disconnected group unless the module lists it in `standalone` with a reason; check
+    those reasons.
+  - Also flag a weak link: a relation that connects values only on paper, without expressing
+    the lesson. Example: "Count to 100 by ones and tens" had `m = t tens` tied to n only through
+    "t = row of n". The lesson idea is counting on by tens from n, so it should be
+    `m = n + t tens`.
+  - For each such case, give the relation that expresses the lesson (preferred) or the split.
+
 - **Two ideas at once.** The module teaches two separate ideas: two standards, two question
   types, or a skill title joined by "and" or ";". Watch for relation groups that share no
   variables, like two separate calculators on one screen.

@@ -3,6 +3,7 @@ import { Text } from '@/components/Text';
 
 import { buildSteps } from '@/data/modules/buildSteps';
 import { font, radius, space, usePalette } from '@/theme';
+import { isEarlyGrade } from '@/data/modules';
 
 import type { Calculator } from './useCalculator';
 
@@ -10,6 +11,7 @@ import type { Calculator } from './useCalculator';
 export function StepByStep({ calc }: { calc: Calculator }) {
   const c = usePalette();
   const w = buildSteps(calc.module, calc.result, calc.units);
+  const sentence = isEarlyGrade(calc.module.id) ? 'number sentence' : 'formula';
   // Conversion steps (when needed) come first and last, numbered with the others.
   const offset = w.convertIn.length ? 1 : 0;
   const card = [styles.card, { backgroundColor: c.surface, borderColor: c.border }];
@@ -34,10 +36,10 @@ export function StepByStep({ calc }: { calc: Calculator }) {
       {w.convertIn.length ? (
         <View style={card}>
           <Text style={[styles.stepTitle, { color: c.text }]}>
-            Step 1 · Convert to the formula’s units
+            {`Step 1 · Convert to the ${sentence}’s units`}
           </Text>
           <Text style={[styles.body, { color: c.textMuted }]}>
-            {`The formulas don’t work directly in the units you chose, so convert first (to ${w.workingUnits}).`}
+            {`The ${sentence}s don’t work directly in the units you chose, so convert first (to ${w.workingUnits}).`}
           </Text>
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
             {w.convertIn.map((line) => (

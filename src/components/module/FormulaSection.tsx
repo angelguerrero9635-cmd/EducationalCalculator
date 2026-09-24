@@ -4,6 +4,7 @@ import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
+import { isEarlyGrade } from '@/data/modules';
 import { formatNumber, parseNumber, renderTemplate } from '@/engine/format';
 import type { Values, VariableDef } from '@/engine/types';
 import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
@@ -137,6 +138,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
   const c = usePalette();
   const { module, values, units } = calc;
   const options = systemOptions(calc);
+  const early = isEarlyGrade(module.id);
   // Formula lines use the chosen units when the formulas hold in them; otherwise the formula's
   // own units (the step-by-step shows the conversions).
   const working: Values = units.coherent
@@ -202,13 +204,17 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
       </View>
       {!units.coherent && formulaUnits ? (
         <Text style={[styles.hint, { color: c.textMuted }]}>
-          {`Formulas are worked in ${formulaUnits}. The step-by-step shows the conversions.`}
+          {`${early ? 'Number sentences' : 'Formulas'} are worked in ${formulaUnits}. The step-by-step shows the conversions.`}
         </Text>
       ) : null}
       <Text style={[styles.hint, { color: c.textMuted }]}>
         {calc.unknownCount
-          ? 'Enter another value to fill in the rest.'
-          : 'Change any value: the newest entry wins and the rest recalculate.'}
+          ? early
+            ? 'Type another number to fill in the rest.'
+            : 'Enter another value to fill in the rest.'
+          : early
+            ? 'Change any number. The others change to match.'
+            : 'Change any value: the newest entry wins and the rest recalculate.'}
       </Text>
       <View>
         {module.variables.map((v) => (

@@ -6,7 +6,7 @@ import { PlaceholderCard } from '@/components/PlaceholderCard';
 import { SectionHeader } from '@/components/SectionHeader';
 import { Dropdown } from '@/components/Dropdown';
 import { SegmentedControl } from '@/components/SegmentedControl';
-import { getModules, type ModuleDef } from '@/data/modules';
+import { getModules, isEarlyGrade, type ModuleDef } from '@/data/modules';
 import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
@@ -29,7 +29,7 @@ function ModuleView({ module }: { module: ModuleDef }) {
         ))}
       </View>
 
-      <SectionHeader title="Formulas" />
+      <SectionHeader title={isEarlyGrade(module.id) ? 'Number sentences' : 'Formulas'} />
       <FormulaSection calc={calc} />
 
       <SectionHeader title={representationTitle(module.representation)} />

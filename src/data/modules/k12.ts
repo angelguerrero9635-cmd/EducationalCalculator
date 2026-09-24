@@ -51,9 +51,9 @@ export const K12_MODULES: ModuleDef[] = [
         b: { expr: '{c} − {a}', how: 'Take the first group away from the total.' },
       },
       'c − b = a': {
-        a: { expr: '{c} − {b}', how: 'Take b away from the total. Count what is left.' },
-        c: { expr: '{a} + {b}', how: 'Put back the group that was taken away.' },
-        b: { expr: '{c} − {a}', how: 'The group taken away is the total minus what is left.' },
+        a: { expr: '{c} − {b}', how: 'Take the second group away. Count what is left.' },
+        c: { expr: '{a} + {b}', how: 'Put the second group back.' },
+        b: { expr: '{c} − {a}', how: 'Take what is left away from the total.' },
       },
     },
     example: { a: 3, b: 4, c: 7 },

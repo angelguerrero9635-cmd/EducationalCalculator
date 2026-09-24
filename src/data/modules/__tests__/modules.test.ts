@@ -15,7 +15,7 @@ function representationVars(r: Representation): string[] {
     case 'tenFrame':
       return [r.first, r.second, r.total].filter((v): v is string => typeof v === 'string');
     case 'hundredChart':
-      return [r.value, ...(r.marks ?? [])];
+      return [r.value, ...(r.marks ?? []), ...(r.tens ? [r.tens.count] : [])];
     case 'compareRows':
       return [r.a, r.b, ...(r.difference ? [r.difference] : [])];
     case 'polygon':
@@ -104,6 +104,18 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
       expect([...new Set(inTemplate)].sort()).toEqual([...r.vars].sort());
     }
     expect(representationVars(m.representation).filter((v) => !ids.includes(v))).toEqual([]);
+  });
+
+  it('connects every value through the formulas (else it is two lessons: split it)', () => {
+    const free = new Set(m.standalone?.vars ?? []);
+    if (m.standalone) expect(m.standalone.why.length).toBeGreaterThan(10);
+    const parent = new Map(ids.map((id) => [id, id]));
+    const find = (x: string): string => (parent.get(x) === x ? x : find(parent.get(x)!));
+    for (const r of m.relations) {
+      for (const v of r.vars.slice(1)) parent.set(find(v), find(r.vars[0]!));
+    }
+    const groups = new Set(ids.filter((id) => !free.has(id)).map(find));
+    expect([...groups].map((g) => ids.filter((id) => find(id) === g))).toHaveLength(1);
   });
 
   it('has a worked example that satisfies every relation and range', () => {

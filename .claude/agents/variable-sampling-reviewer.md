@@ -66,6 +66,11 @@ For each module, sample at least a few hundred cases:
 Read each module as a teacher. Report variables or formulas that are allowed but don't make sense
 for the lesson:
 
+- A value that doesn't follow from the lesson's main value. Change the main value (e.g. the start
+  number) and check every other value moves the way the lesson says it should. A value that
+  stays put, or moves only through an indirect link, is a [logic] finding: give the relation
+  the lesson means (e.g. `m = n + t tens` for counting on by tens from n).
+
 - A range that allows values the lesson excludes.
 - A variable whose name doesn't match what it holds.
 - A relation that is true but isn't how the lesson thinks about it.

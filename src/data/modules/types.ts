@@ -49,7 +49,14 @@ export type Representation =
       frames?: 1 | 2;
     }
   /** Hundred chart (rows of ten). Tap a number to set `value`; `marks` are outlined. */
-  | { kind: 'hundredChart'; value: string; max: 100 | 120; marks?: string[] }
+  | {
+      kind: 'hundredChart';
+      value: string;
+      max: 100 | 120;
+      marks?: string[];
+      /** Counting by tens from `value`: dots on the numbers passed, one row down per ten. */
+      tens?: { count: string };
+    }
   /** Two rows of objects lined up one-to-one, showing which has more (or is longer). */
   | {
       kind: 'compareRows';
@@ -235,6 +242,12 @@ export interface ModuleDef {
   id: string;
   /** Short name for the switcher when a skill has several modules, e.g. "Compare problems". */
   title?: string;
+  /**
+   * Values that stand on their own, with no formula linking them to the rest (e.g. a clock's
+   * hour). Every other value must connect to the others through the formulas; otherwise the
+   * module is really two lessons and should be split.
+   */
+  standalone?: { vars: string[]; why: string };
   assumptions: string[];
   variables: VariableDef[];
   relations: Relation[];

@@ -232,15 +232,15 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.K.count-100',
     assumptions: [
-      'Counting by ones: each next number is 1 more.',
-      'Counting by tens: 10, 20, 30, … 100. Each row of the chart ends at a ten.',
-      'Look at the end of the row. 37 is in the row that ends at 40.',
+      'Count by ones: the next number is 1 more.',
+      'Count by tens: each ten more is one row down on the chart.',
+      'Start at 37. Count 4 tens: 47, 57, 67, 77.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 1, 99),
+      whole('n', 'n', 'Start number', 1, 99),
       whole('p', 'p', 'One more', 2, 100),
-      whole('t', 't', 'Row', 1, 10),
-      whole('m', 'm', 'Row ends at', 10, 100),
+      whole('t', 't', 'Tens to count', 1, 9),
+      whole('m', 'm', 'Number reached by tens', 11, 100),
     ],
     relations: [
       {
@@ -251,19 +251,15 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         solve: { p: (v) => v.n! + 1, n: (v) => v.p! - 1 },
       },
       {
-        id: 't = row of n',
-        display: '{t} = row of {n}',
-        vars: ['t', 'n'],
-        residual: (v) => v.t! - Math.ceil(v.n! / 10),
-        // A row holds ten numbers, so the row alone doesn't say which number.
-        solve: { t: (v) => Math.ceil(v.n! / 10), n: () => undefined },
-      },
-      {
-        id: 'm = t tens',
-        display: '{m} = {t} tens',
-        vars: ['m', 't'],
-        residual: (v) => v.m! - 10 * v.t!,
-        solve: { m: (v) => 10 * v.t!, t: (v) => v.m! / 10 },
+        id: 'm = n + t tens',
+        display: '{m} = {n} + {t} tens',
+        vars: ['m', 'n', 't'],
+        residual: (v) => v.m! - v.n! - 10 * v.t!,
+        solve: {
+          m: (v) => v.n! + 10 * v.t!,
+          n: (v) => v.m! - 10 * v.t!,
+          t: (v) => (v.m! - v.n!) / 10,
+        },
       },
     ],
     steps: {
@@ -271,29 +267,35 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         p: { expr: '{n} + 1', how: 'Say the next number. It is the next box on the chart.' },
         n: { expr: '{p} − 1', how: 'Say the number just before. It is the box before.' },
       },
-      't = row of n': {
-        t: { expr: 'row of {n}', how: 'Find the number on the chart. Count the rows down to it.' },
-      },
-      'm = t tens': {
-        m: { expr: '{t} tens', how: 'Count by tens, one ten for each row: 10, 20, 30, …' },
+      'm = n + t tens': {
+        m: {
+          expr: '{n} + {t} tens',
+          how: 'Start at the start number. Count by tens: go down one row for each ten.',
+        },
+        n: {
+          expr: '{m} − {t} tens',
+          how: 'Start at the number reached. Go up one row for each ten.',
+        },
         t: {
-          expr: 'tens in {m}',
-          how: 'Count by tens to the end of the row. How many tens did you say?',
+          expr: 'tens from {n} to {m}',
+          how: 'Go down the chart from the start number. Count the rows to the number reached.',
         },
       },
     },
-    example: { n: 37, p: 38, t: 4, m: 40 },
-    startWith: ['n'],
-    representation: { kind: 'hundredChart', value: 'n', max: 100, marks: ['p', 'm'] },
+    example: { n: 37, p: 38, t: 4, m: 77 },
+    startWith: ['n', 't'],
+    representation: {
+      kind: 'hundredChart',
+      value: 'n',
+      max: 100,
+      marks: ['p', 'm'],
+      tens: { count: 't' },
+    },
   },
 
   {
     id: 'm.K.count-objects',
-    assumptions: [
-      'Touch and count each object once.',
-      'The last number you say tells how many.',
-      'Each next number is one more.',
-    ],
+    assumptions: ['Touch and count each object once.', 'The last number you say tells how many.'],
     variables: [whole('n', 'n', 'Objects', 0, 19), whole('m', 'm', 'After one more', 1, 20)],
     relations: [
       {
@@ -738,6 +740,10 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.1.time-half-hour',
+    standalone: {
+      vars: ['h'],
+      why: 'The short hand shows the hour on its own; the formulas are about the minutes.',
+    },
     assumptions: [
       'The short hand shows the hour. The long hand shows the minutes.',
       'At “o’clock” the long hand points to 12. At “half past” it points to 6.',
@@ -778,6 +784,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     id: 'm.1.data-3-categories',
     assumptions: [
       'Each picture stands for one object.',
+      'Each category is one kind of shape.',
       'Take away to compare: how many more or fewer.',
       'Add every category to get the total.',
     ],
@@ -1285,6 +1292,10 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.time-5-min',
+    standalone: {
+      vars: ['h'],
+      why: 'The short hand shows the hour on its own; the formulas are about the minutes.',
+    },
     assumptions: [
       'The long hand moves 5 minutes from one number to the next: count by 5s.',
       'The short hand points at the hour, or just past it.',
