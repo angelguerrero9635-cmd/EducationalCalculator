@@ -24,6 +24,8 @@ export interface Step {
   rearranged?: string;
   /** "w = 12 ÷ 4" */
   substituted?: string;
+  /** Worked arithmetic between the substituted line and the result. */
+  work?: string[];
   /** "w = 3 cm" */
   result: string;
 }
@@ -70,7 +72,7 @@ export function buildSteps(
    * unit (lesson numbers), never to the same value converted into formula units.
    */
   const fmt = (id: string, x: number, unit: string | undefined, inShownUnit = true) =>
-    `${formatNumber(x, inShownUnit ? byId.get(id) : undefined)}${unit ? ` ${unit}` : ''}`;
+    `${formatNumber(x, inShownUnit ? byId.get(id) : undefined)}${unit ? (unit === '¢' ? unit : ` ${unit}`) : ''}`;
   /** Variables for filling formulas with working values (no whole-number rounding if converted). */
   const workVars = direct ? vars : vars.map((v) => ({ ...v, integer: false }));
 
@@ -107,11 +109,16 @@ export function buildSteps(
       return { ...base, how: 'Tried numbers until both sides matched.' };
     }
     const expr = typeof text.expr === 'function' ? text.expr(result.values) : text.expr;
+    const work = typeof text.work === 'function' ? text.work(result.values) : text.work;
     return {
       ...base,
+      ...(text.note && direct ? { result: `${base.result} ${text.note(result.values)}` } : {}),
       how: typeof text.how === 'function' ? text.how(result.values) : text.how,
       rearranged: `${v.symbol} = ${renderTemplate(expr, vars)}`,
       substituted: `${v.symbol} = ${renderTemplate(expr, workVars, working)}`,
+      ...(work?.length
+        ? { work: work.map((line) => renderTemplate(line, workVars, working)) }
+        : {}),
     };
   });
 
@@ -144,7 +151,8 @@ export function buildSteps(
     check: module.relations
       .filter((r) => r.vars.every((id) => id in result.values))
       .map((r) => ({
-        formula: renderTemplate(r.display, workVars, working),
+        formula:
+          r.check && direct ? r.check(result.values) : renderTemplate(r.display, workVars, working),
         ok: holds(r, result.values),
       })),
     missing: result.unknown.map(quantity),

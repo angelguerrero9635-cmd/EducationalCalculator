@@ -67,6 +67,11 @@ export function StepByStep({ calc }: { calc: Calculator }) {
             {s.substituted ? (
               <Text style={[styles.math, { color: c.text }]}>{s.substituted}</Text>
             ) : null}
+            {s.work?.map((line, k) => (
+              <Text key={k} style={[styles.math, { color: c.text }]}>
+                {line}
+              </Text>
+            ))}
             <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.result}</Text>
           </View>
         </View>

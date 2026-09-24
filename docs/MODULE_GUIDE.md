@@ -113,7 +113,11 @@ the assumptions and a table or diagram.
    (`.claude/agents/module-language-reviewer.md`). It checks reading level, concreteness,
    cognitive load, consistent terms and notation readiness for the grade, and gives exact
    rewrites.
-7. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
+7. **Step clarity:** run the `step-clarity-reviewer` agent
+   (`.claude/agents/step-clarity-reviewer.md`). It reads the real step-by-step walkthroughs as a
+   student would and flags steps that jump to the answer (words standing for arithmetic, hidden
+   conversions, collapsed operations), proposing `work` lines that show the arithmetic.
+8. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
    reason, in the pull request or commit message.
-8. **Visual check:** open each module and confirm the representation reads well at phone width, in
+9. **Visual check:** open each module and confirm the representation reads well at phone width, in
    light and dark mode.

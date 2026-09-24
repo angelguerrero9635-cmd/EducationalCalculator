@@ -286,7 +286,16 @@ const asValues = (gs: readonly Given[]): Values =>
 
 const NUM = String.raw`\(?-?\d+(?:\.\d+)?(?:e[-+]?\d+)?\)?`;
 const toNum = (s: string) => Number(s.replace(/[()]/g, ''));
-const COIN: Record<string, number> = { dollars: 100, quarters: 25, dimes: 10, nickels: 5 };
+const COIN: Record<string, number> = {
+  dollar: 100,
+  dollars: 100,
+  quarter: 25,
+  quarters: 25,
+  dime: 10,
+  dimes: 10,
+  nickel: 5,
+  nickels: 5,
+};
 const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`difference of (${NUM}) and (${NUM})`), (a, b) => Math.abs(a - b)],
   [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],
@@ -299,11 +308,11 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tens part of (${NUM})`), (a) => 10 * (Math.floor(a / 10) % 10)],
   [new RegExp(`row of (${NUM})`), (a) => Math.ceil(a / 10)],
   [new RegExp(`half hours in (${NUM})`), (a) => a / 30],
-  [new RegExp(`(${NUM}) half hours`), (a) => 30 * a],
+  [new RegExp(`(${NUM}) half hours?`), (a) => 30 * a],
   [new RegExp(`(${NUM}) cuts in half`), (a) => 2 ** a],
   [new RegExp(`cuts to make (${NUM})(?: parts)?`), (a) => Math.log2(a)],
   [new RegExp(`fives in (${NUM})`), (a) => a / 5],
-  [new RegExp(`(${NUM}) fives`), (a) => 5 * a],
+  [new RegExp(`(${NUM}) fives?`), (a) => 5 * a],
   [new RegExp(`hundreds in (${NUM})`), (a) => a / 100],
   [new RegExp(`hundreds digit of (${NUM})`), (a) => Math.floor(a / 100) % 10],
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],
@@ -344,7 +353,7 @@ function evaluate(text: string): number | undefined {
       }
     }
     // "3 quarters" → 75 first; "quarters in (75)" only once the bracket is one number.
-    const coins = /\(?(-?[\d.]+)\)? (dollars|quarters|dimes|nickels|pennies)/.exec(s);
+    const coins = /\(?(-?[\d.]+)\)? (dollars?|quarters?|dimes?|nickels?|penny|pennies)/.exec(s);
     const coinsIn =
       /(dollars|quarters|dimes|nickels) in (?:\((-?[\d.]+)\)|(-?[\d.]+)(?![\d.]))/.exec(s);
     if (coins || coinsIn) {
@@ -700,7 +709,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   }
   const allNonNegative = c.module.variables.every((v) => (v.min ?? -1) >= 0);
   for (const s of w.steps) {
-    const value = Number(s.result.split(' = ')[1]?.split(' ')[0]);
+    // The answer's leading number ("536¢ ($5.36)" → 536).
+    const value = Number(/^-?[\d.]+(?:e[-+]?\d+)?/.exec(s.result.split(' = ')[1] ?? '')?.[0]);
     if (!s.substituted) {
       c.f.add('harness', `${c.label}step for ${s.id} solved numerically (not evaluated)`, where);
       continue;
@@ -718,6 +728,18 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       );
     } else if (!shownClose(x, value, expr)) {
       c.f.add('error', `${c.label}step "${s.substituted}" ≠ "${s.result}"`, where);
+    }
+  }
+  // Worked-arithmetic lines ("100 + 50 + 10 + 5 + 3 = 168¢", "168¢ − 118¢ = 50¢ left"): each
+  // sum or difference must come out to the number after its "=".
+  for (const s of w.steps) {
+    for (const line of s.work ?? []) {
+      const m = /((?:\d+(?:\.\d+)?¢?\s*[+−-]\s*)+\d+(?:\.\d+)?¢?)\s*=\s*(\d+(?:\.\d+)?)/.exec(line);
+      if (!m) continue;
+      const x = evaluate(m[1]!.replace(/¢/g, ''));
+      if (x === undefined || !shownClose(x, Number(m[2]))) {
+        c.f.add('error', `${c.label}work line doesn't add up: "${line}"`, where);
+      }
     }
   }
   for (const chk of w.check) {

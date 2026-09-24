@@ -3,6 +3,7 @@
  * still comes from taxonomy.ts. Written and reviewed against docs/MODULE_GUIDE.md.
  */
 import type { ModuleDef } from './types';
+import { sumSteps } from './work';
 
 const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
 const whole = (id: string, symbol: string, name: string, max: number) => ({
@@ -90,16 +91,23 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = c + s + t': {
-        n: { expr: '{c} + {s} + {t}', how: 'Count every group, then add them together.' },
+        n: {
+          work: (v) => sumSteps([v.c!, v.s!, v.t!]),
+          expr: '{c} + {s} + {t}',
+          how: 'Count every group, then add them together.',
+        },
         c: {
+          work: (v) => [`${v.n} − ${v.s} = ${v.n! - v.s!}`, `${v.n! - v.s!} − ${v.t} = ${v.c}`],
           expr: '{n} − {s} − {t}',
           how: 'Take the other groups away from the total. Count what is left.',
         },
         s: {
+          work: (v) => [`${v.n} − ${v.c} = ${v.n! - v.c!}`, `${v.n! - v.c!} − ${v.t} = ${v.s}`],
           expr: '{n} − {c} − {t}',
           how: 'Take the other groups away from the total. Count what is left.',
         },
         t: {
+          work: (v) => [`${v.n} − ${v.c} = ${v.n! - v.c!}`, `${v.n! - v.c!} − ${v.s} = ${v.t}`],
           expr: '{n} − {c} − {s}',
           how: 'Take the other groups away from the total. Count what is left.',
         },

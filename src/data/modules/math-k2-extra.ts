@@ -3,7 +3,8 @@
  * from a skill's main module (found by the exam-coverage review). Ids are `<skill id>~<slug>`.
  */
 import type { ModuleDef } from './types';
-import { difference, div, whole } from './math-k2';
+import { addWork, countUpWork, difference, div, subtractWork, whole } from './math-k2';
+import { countList, countUp, missingPart, repeated, sumSteps } from './work';
 
 /** Difference of two numbers; Grade 1 counts up (1.NBT.6 doesn't subtract two-digit numbers). */
 const cmpNumbers = (grade1: boolean) =>
@@ -19,6 +20,7 @@ const cmpNumbers = (grade1: boolean) =>
       'The first number is greater. Take the difference away from the first number.',
       'The first number is less. Add the difference to the first number.',
     ],
+    countUp: true,
   });
 
 /** Compare two numbers with >, < or = using base-ten blocks. */
@@ -124,9 +126,17 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     ],
     steps: {
       'a + b = c': {
-        c: { expr: '{a} + {b}', how: 'The whole is both parts together: add.' },
-        a: { expr: '{c} − {b}', how: 'Take the known part away from the whole.' },
-        b: { expr: '{c} − {a}', how: 'Take the known part away from the whole.' },
+        c: { work: addWork, expr: '{a} + {b}', how: 'The whole is both parts together: add.' },
+        a: {
+          work: subtractWork,
+          expr: '{c} − {b}',
+          how: 'Take the known part away from the whole.',
+        },
+        b: {
+          work: countUpWork,
+          expr: '{c} − {a}',
+          how: 'Take the known part away from the whole.',
+        },
       },
     },
     example: { a: 38, b: 25, c: 63 },
@@ -164,16 +174,26 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     ],
     steps: {
       'e = s + a − t': {
-        e: { expr: '{s} + {a} − {t}', how: 'Step 1: add to the start. Step 2: take away.' },
+        e: {
+          work: (v) => [
+            `Step 1: ${v.s} + ${v.a} = ${v.s! + v.a!}`,
+            `Step 2: ${v.s! + v.a!} − ${v.t} = ${v.e}`,
+          ],
+          expr: '{s} + {a} − {t}',
+          how: 'Step 1: add to the start. Step 2: take away.',
+        },
         s: {
+          work: (v) => [`${v.e} + ${v.t} = ${v.e! + v.t!}`, `${v.e! + v.t!} − ${v.a} = ${v.s}`],
           expr: '{e} + {t} − {a}',
           how: 'Work backwards: put back what was taken away, then remove what was added.',
         },
         a: {
+          work: (v) => [`${v.e} + ${v.t} = ${v.e! + v.t!}`, `${v.e! + v.t!} − ${v.s} = ${v.a}`],
           expr: '{e} + {t} − {s}',
           how: 'Put back what was taken away. Then count up from the start.',
         },
         t: {
+          work: (v) => [`${v.s} + ${v.a} = ${v.s! + v.a!}`, `${v.s! + v.a!} − ${v.e} = ${v.t}`],
           expr: '{s} + {a} − {e}',
           how: 'Add first. Then count back to the end. That is how many were taken away.',
         },
@@ -221,13 +241,41 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     steps: {
       'n = a + b + c + e': {
         n: {
+          work: (v) => {
+            const xs = [v.a!, v.b!, v.c!, v.e!];
+            const tens = xs.map((x) => x - (x % 10));
+            const ones = xs.map((x) => x % 10);
+            const T = tens.reduce((p, q) => p + q, 0);
+            const O = ones.reduce((p, q) => p + q, 0);
+            return [
+              `Tens: ${tens.join(' + ')} = ${T}`,
+              `Ones: ${ones.join(' + ')} = ${O}`,
+              `${T} + ${O} = ${T + O}`,
+            ];
+          },
           expr: '{a} + {b} + {c} + {e}',
           how: 'Add all the tens, then all the ones. Trade 10 ones for a ten.',
         },
-        a: { expr: '{n} − {b} − {c} − {e}', how: 'Take the other numbers away from the sum.' },
-        b: { expr: '{n} − {a} − {c} − {e}', how: 'Take the other numbers away from the sum.' },
-        c: { expr: '{n} − {a} − {b} − {e}', how: 'Take the other numbers away from the sum.' },
-        e: { expr: '{n} − {a} − {b} − {c}', how: 'Take the other numbers away from the sum.' },
+        a: {
+          work: (v) => missingPart(v.n!, [v.b!, v.c!, v.e!]),
+          expr: '{n} − {b} − {c} − {e}',
+          how: 'Take the other numbers away from the sum.',
+        },
+        b: {
+          work: (v) => missingPart(v.n!, [v.a!, v.c!, v.e!]),
+          expr: '{n} − {a} − {c} − {e}',
+          how: 'Take the other numbers away from the sum.',
+        },
+        c: {
+          work: (v) => missingPart(v.n!, [v.a!, v.b!, v.e!]),
+          expr: '{n} − {a} − {b} − {e}',
+          how: 'Take the other numbers away from the sum.',
+        },
+        e: {
+          work: (v) => missingPart(v.n!, [v.a!, v.b!, v.c!]),
+          expr: '{n} − {a} − {b} − {c}',
+          how: 'Take the other numbers away from the sum.',
+        },
       },
     },
     example: { a: 23, b: 15, c: 32, e: 17, n: 87 },
@@ -285,18 +333,22 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       'N = all X’s': {
         N: { expr: '{x4} + {x5} + {x6} + {x7}', how: 'Count every X on the line plot.' },
         x4: {
+          work: (v) => missingPart(v.N!, [v.x5!, v.x6!, v.x7!]),
           expr: '{N} − {x5} − {x6} − {x7}',
           how: 'Take the other columns away from the total.',
         },
         x5: {
+          work: (v) => missingPart(v.N!, [v.x4!, v.x6!, v.x7!]),
           expr: '{N} − {x4} − {x6} − {x7}',
           how: 'Take the other columns away from the total.',
         },
         x6: {
+          work: (v) => missingPart(v.N!, [v.x4!, v.x5!, v.x7!]),
           expr: '{N} − {x4} − {x5} − {x7}',
           how: 'Take the other columns away from the total.',
         },
         x7: {
+          work: (v) => missingPart(v.N!, [v.x4!, v.x5!, v.x6!]),
           expr: '{N} − {x4} − {x5} − {x6}',
           how: 'Take the other columns away from the total.',
         },
@@ -372,6 +424,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = r rows of c',
+        check: (v) => repeated(v.c!, v.r!),
         display: '{n} = {r} rows of {c}',
         vars: ['n', 'r', 'c'],
         residual: (v) => v.n! - v.r! * v.c!,
@@ -380,12 +433,18 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = r rows of c': {
-        n: { expr: '{r} rows of {c}', how: 'Add the number in one row, once for each row.' },
+        n: {
+          work: (v) => [repeated(v.c!, v.r!)],
+          expr: '{r} rows of {c}',
+          how: 'Add the number in one row, once for each row.',
+        },
         r: {
+          work: (v) => [`Count by ${v.c}s to ${v.n}: ${countList(0, v.c!, v.r!)} → ${v.r} rows`],
           expr: 'rows of {c} in {n}',
           how: 'Make rows until all the squares are used. Count the rows.',
         },
         c: {
+          work: (v) => [`Try ${v.c} in each row: ${repeated(v.c!, v.r!)} ✓`],
           expr: '{n} shared into {r} rows',
           how: 'Share the squares equally into the rows. Count one row.',
         },
@@ -447,19 +506,44 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = H + T + O': {
-        n: { expr: '{H} + {T} + {O}', how: 'Add the parts: hundreds, then tens, then ones.' },
-        H: { expr: '{n} − {T} − {O}', how: 'Take the tens and ones away. The rest is hundreds.' },
-        T: { expr: '{n} − {H} − {O}', how: 'Take the hundreds and ones away. The rest is tens.' },
-        O: { expr: '{n} − {H} − {T}', how: 'Take the hundreds and tens away. The rest is ones.' },
+        n: {
+          work: (v) => sumSteps([v.H!, v.T!, v.O!]),
+          expr: '{H} + {T} + {O}',
+          how: 'Add the parts: hundreds, then tens, then ones.',
+        },
+        H: {
+          work: (v) => [`${v.n} − ${v.T} = ${v.n! - v.T!}`, `${v.n! - v.T!} − ${v.O} = ${v.H}`],
+          expr: '{n} − {T} − {O}',
+          how: 'Take the tens and ones away. The rest is hundreds.',
+        },
+        T: {
+          work: (v) => [`${v.n} − ${v.H} = ${v.n! - v.H!}`, `${v.n! - v.H!} − ${v.O} = ${v.T}`],
+          expr: '{n} − {H} − {O}',
+          how: 'Take the hundreds and ones away. The rest is tens.',
+        },
+        O: {
+          work: (v) => [`${v.n} − ${v.H} = ${v.n! - v.H!}`, `${v.n! - v.H!} − ${v.T} = ${v.O}`],
+          expr: '{n} − {H} − {T}',
+          how: 'Take the hundreds and tens away. The rest is ones.',
+        },
       },
       'H = hundreds in n': {
         H: {
+          work: (v) => [
+            `${v.n}: hundreds digit ${Math.floor(v.n! / 100)} → ${Math.floor(v.n! / 100)} hundreds = ${v.H}`,
+          ],
           expr: 'hundreds part of {n}',
-          how: 'The first digit tells the hundreds: 3 hundreds is 300.',
+          how: 'The first digit tells how many hundreds.',
         },
       },
       'T = tens in n': {
-        T: { expr: 'tens part of {n}', how: 'The middle digit tells the tens: 4 tens is 40.' },
+        T: {
+          work: (v) => [
+            `${v.n}: tens digit ${Math.floor(v.n! / 10) % 10} → ${Math.floor(v.n! / 10) % 10} tens = ${v.T}`,
+          ],
+          expr: 'tens part of {n}',
+          how: 'The middle digit tells how many tens.',
+        },
       },
     },
     example: { H: 300, T: 40, O: 7, n: 347 },
@@ -547,7 +631,11 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     ],
     steps: {
       'T = P + L': {
-        L: { expr: '{T} − {P}', how: 'Take the price away from the money you have.' },
+        L: {
+          work: (v) => countUp(v.P!, v.T!, '¢'),
+          expr: '{T} − {P}',
+          how: 'Take the price away from the money you have.',
+        },
         P: { expr: '{T} − {L}', how: 'Take the money left away from the money you had.' },
         T: { expr: '{P} + {L}', how: 'Add the price and the money left.' },
       },

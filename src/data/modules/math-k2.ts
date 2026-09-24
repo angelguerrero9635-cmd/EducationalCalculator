@@ -6,6 +6,15 @@
 import type { Values, VariableDef } from '@/engine/types';
 
 import type { ModuleDef, StepText } from './types';
+import {
+  addStrategy,
+  countList,
+  countUp,
+  missingPart,
+  repeated,
+  subtractStrategy,
+  sumSteps,
+} from './work';
 
 export const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
 
@@ -27,6 +36,11 @@ export const whole = (
 });
 
 /** a + b = c and c − b = a, with Grade-level step text. */
+/** Worked lines for a + b = c: add by place, subtract by jumping back, count up to a part. */
+export const addWork = (v: Values) => addStrategy(v.a!, v.b!);
+export const subtractWork = (v: Values) => subtractStrategy(v.c!, v.b!);
+export const countUpWork = (v: Values) => countUp(v.a!, v.c!);
+
 function addSub(how: { c: string; a: string; b: string }) {
   const relations = [
     {
@@ -54,14 +68,14 @@ function addSub(how: { c: string; a: string; b: string }) {
   ];
   const steps: Record<string, Record<string, StepText>> = {
     'a + b = c': {
-      c: { expr: '{a} + {b}', how: how.c },
-      a: { expr: '{c} − {b}', how: how.a },
-      b: { expr: '{c} − {a}', how: how.b },
+      c: { expr: '{a} + {b}', how: how.c, work: addWork },
+      a: { expr: '{c} − {b}', how: how.a, work: subtractWork },
+      b: { expr: '{c} − {a}', how: how.b, work: countUpWork },
     },
     'c − b = a': {
-      a: { expr: '{c} − {b}', how: how.a },
-      c: { expr: '{a} + {b}', how: 'Put back what was taken away: add.' },
-      b: { expr: '{c} − {a}', how: how.b },
+      a: { expr: '{c} − {b}', how: how.a, work: subtractWork },
+      c: { expr: '{a} + {b}', how: 'Put back what was taken away: add.', work: addWork },
+      b: { expr: '{c} − {a}', how: how.b, work: countUpWork },
     },
   };
   return { relations, steps };
@@ -81,6 +95,8 @@ export function difference(
     first: [string, string];
     /** How to find b: [when a is the bigger one, when a is the smaller one]. */
     second: [string, string];
+    /** Show counting up from the smaller to the bigger number (for 2- and 3-digit numbers). */
+    countUp?: boolean;
   },
 ) {
   const id = `${d} = difference of ${a} and ${b}`;
@@ -90,6 +106,8 @@ export function difference(
     display: `{${d}} = difference of {${a}} and {${b}}`,
     vars: [d, a, b],
     residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),
+    check: (v: Values) =>
+      `${Math.max(v[a]!, v[b]!)} − ${Math.min(v[a]!, v[b]!)} = ${Math.abs(v[a]! - v[b]!)}`,
     solve: {
       [d]: (v: Values) => Math.abs(v[a]! - v[b]!),
       [a]: (v: Values) => [v[b]! + v[d]!, v[b]! - v[d]!],
@@ -98,7 +116,13 @@ export function difference(
   };
   const steps: Record<string, Record<string, StepText>> = {
     [id]: {
-      [d]: { expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`), how: how.diff },
+      [d]: {
+        expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
+        how: how.diff,
+        ...(how.countUp
+          ? { work: (v: Values) => countUp(Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)) }
+          : {}),
+      },
       [a]: {
         expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`),
         how: (v) => how.first[aMore(v) ? 0 : 1],
@@ -111,6 +135,79 @@ export function difference(
   };
   return { relation, steps };
 }
+
+/** Money in the dollars-and-cents module: each coin's id, value in cents and names. */
+const MONEY = [
+  { id: 'db', cents: 100, one: 'dollar', many: 'dollars' },
+  { id: 'q', cents: 25, one: 'quarter', many: 'quarters' },
+  { id: 'dm', cents: 10, one: 'dime', many: 'dimes' },
+  { id: 'nk', cents: 5, one: 'nickel', many: 'nickels' },
+  { id: 'pn', cents: 1, one: 'penny', many: 'pennies' },
+] as const;
+type Coin = (typeof MONEY)[number];
+
+/** "2 quarters: 25, 50 → 50¢" (counting on), "1 dime = 10¢", "3 pennies = 3¢". */
+function coinLine(c: Coin, n: number): string {
+  const name = n === 1 ? c.one : c.many;
+  if (n === 1 || c.cents === 1) return `${n} ${name} = ${n * c.cents}¢`;
+  const counts = Array.from({ length: n }, (_, i) => (i + 1) * c.cents);
+  return `${n} ${name}: ${counts.join(', ')} → ${n * c.cents}¢`;
+}
+
+/** "{db} dollar + {q} quarters + …" with singular or plural names to match the counts. */
+const moneyWords = (v: Values, skip?: string) =>
+  MONEY.filter((c) => c.id !== skip)
+    .map((c) => `{${c.id}} ${v[c.id] === 1 ? c.one : c.many}`)
+    .join(skip ? ' − ' : ' + ');
+
+/** Each kind of money the student has, in cents (dollars first). */
+const moneyParts = (v: Values, skip?: string) =>
+  MONEY.filter((c) => c.id !== skip && (v[c.id] ?? 0) > 0).map((c) => ({
+    coin: c,
+    n: v[c.id]!,
+    cents: v[c.id]! * c.cents,
+  }));
+
+/** Counting-on lines only where there's more than one of a coin (2 quarters: 25, 50 → 50¢). */
+const countOnLines = (parts: ReturnType<typeof moneyParts>) =>
+  parts.filter((p) => p.n > 1 && p.coin.cents > 1).map((p) => coinLine(p.coin, p.n));
+
+/** Worked lines for the total: count on each kind of coin, then add the parts in cents. */
+function moneyTotalWork(v: Values): string[] {
+  const parts = moneyParts(v);
+  if (parts.length === 0) return [];
+  const total = parts.reduce((sum, p) => sum + p.cents, 0);
+  return [
+    ...countOnLines(parts),
+    ...(parts.length > 1 ? [`${parts.map((p) => `${p.cents}¢`).join(' + ')} = ${total}¢`] : []),
+  ];
+}
+
+/** Worked lines for one kind of coin: the other money, what is left, then count by its value. */
+function moneyCoinWork(coin: Coin) {
+  return (v: Values): string[] => {
+    const parts = moneyParts(v, coin.id);
+    const other = parts.reduce((sum, p) => sum + p.cents, 0);
+    const left = v.T! - other;
+    const n = left / coin.cents;
+    return [
+      ...countOnLines(parts),
+      parts.length === 0
+        ? 'No other money: 0¢'
+        : parts.length === 1
+          ? `Other money: ${other}¢`
+          : `Other money: ${parts.map((p) => `${p.cents}¢`).join(' + ')} = ${other}¢`,
+      `${v.T}¢ − ${other}¢ = ${left}¢ left`,
+      coin.cents === 1 || left === 0
+        ? `${left}¢ → ${n} ${n === 1 ? coin.one : coin.many}`
+        : `Count by ${coin.cents}s to ${left}: ${countList(0, coin.cents, n)} → ${n} ${n === 1 ? coin.one : coin.many}`,
+    ];
+  };
+}
+
+/** The total written in dollars and cents too, e.g. "($1.68)". */
+const inDollars = (v: Values) =>
+  `($${Math.floor(v.T! / 100)}.${String(v.T! % 100).padStart(2, '0')})`;
 
 /** Tens and ones of n (n = t tens + o ones), for counting and place value. */
 function tensOnes(maxTens: number) {
@@ -148,21 +245,41 @@ function tensOnes(maxTens: number) {
         n: {
           expr: '{t} tens + {o} ones',
           how: 'Count the rods by tens, then count on the small cubes.',
+          work: (v: Values) => [`${v.t} tens = ${10 * v.t!}`, `${10 * v.t!} + ${v.o} = ${v.n}`],
         },
         t: {
           expr: 'tens in ({n} − {o})',
           how: 'Take away the extra ones; the rest is groups of ten.',
+          work: (v: Values) => [
+            `${v.n} − ${v.o} = ${v.n! - v.o!}`,
+            `${v.n! - v.o!} is ${v.t} tens`,
+          ],
         },
-        o: { expr: '{n} − {t} tens', how: 'Take away the full tens; what is left are the ones.' },
+        o: {
+          expr: '{n} − {t} tens',
+          how: 'Take away the full tens; what is left are the ones.',
+          work: (v: Values) => [`${v.t} tens = ${10 * v.t!}`, `${v.n} − ${10 * v.t!} = ${v.o}`],
+        },
       },
       't = tens in n': {
         t: {
           expr: 'full tens in {n}',
           how: 'Count the rods. Each rod is a ten.',
+          work: (v: Values) => [
+            `${v.n} = ${v.n! - (v.n! % 10)} + ${v.n! % 10}`,
+            `${v.n! - (v.n! % 10)} is ${Math.floor(v.n! / 10)} tens`,
+          ],
         },
       },
       'o = ones left in n': {
-        o: { expr: 'ones left in {n}', how: 'Count what is left after the full tens.' },
+        o: {
+          expr: 'ones left in {n}',
+          how: 'Count what is left after the full tens.',
+          work: (v: Values) => [
+            `${v.n} = ${v.n! - (v.n! % 10)} + ${v.n! % 10}`,
+            `${v.n! % 10} ones are left`,
+          ],
+        },
       },
     } as Record<string, Record<string, StepText>>,
     variables: [whole('t', 't', 'Tens', 0, maxTens), whole('o', 'o', 'Ones', 0, 9)],
@@ -170,6 +287,19 @@ function tensOnes(maxTens: number) {
 }
 
 const g1tens = tensOnes(9);
+
+/** Adds three numbers in the order (or grouping) a relation shows: first pair, then the third. */
+function sumInOrder(id: string, v: Values): string[] {
+  const [x, y, z] =
+    id === 'a + (b + c) = s'
+      ? [v.b!, v.c!, v.a!]
+      : id === 'c + b + a = s'
+        ? [v.c!, v.b!, v.a!]
+        : [v.a!, v.b!, v.c!];
+  return id === 'a + (b + c) = s'
+    ? [`${x} + ${y} = ${x + y}`, `${z} + ${x + y} = ${x + y + z}`]
+    : [`${x} + ${y} = ${x + y}`, `${x + y} + ${z} = ${x + y + z}`];
+}
 
 const cmpK10 = difference('d', 'a', 'b', {
   diff: 'Match the counters in pairs. Count the dark ones left over.',
@@ -252,6 +382,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       },
       {
         id: 'm = n + t tens',
+        check: (v) => `${v.n} + ${10 * v.t!} = ${v.m}`,
         display: '{m} = {n} + {t} tens',
         vars: ['m', 'n', 't'],
         residual: (v) => v.m! - v.n! - 10 * v.t!,
@@ -269,14 +400,19 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       },
       'm = n + t tens': {
         m: {
+          work: (v) => [`Count by tens from ${v.n}: ${countList(v.n!, 10, v.t!)}`],
           expr: '{n} + {t} tens',
           how: 'Start at the start number. Count by tens: go down one row for each ten.',
         },
         n: {
+          work: (v) => [`Count back by tens from ${v.m}: ${countList(v.m!, -10, v.t!)}`],
           expr: '{m} − {t} tens',
           how: 'Start at the number reached. Go up one row for each ten.',
         },
         t: {
+          work: (v) => [
+            `${v.n} → ${countList(v.n!, 10, v.t!)}: ${v.t} ${v.t === 1 ? 'ten' : 'tens'}`,
+          ],
           expr: 'tens from {n} to {m}',
           how: 'Go down the chart from the start number. Count the rows to the number reached.',
         },
@@ -526,10 +662,31 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       ].map(([id, expr, how]) => [
         id!,
         {
-          s: { expr: expr!, how: how! },
-          a: { expr: '{s} − {b} − {c}', how: 'Take the other two numbers away from the sum.' },
-          b: { expr: '{s} − {a} − {c}', how: 'Take the other two numbers away from the sum.' },
-          c: { expr: '{s} − {a} − {b}', how: 'Take the other two numbers away from the sum.' },
+          s: { expr: expr!, how: how!, work: (v: Values) => sumInOrder(id!, v) },
+          a: {
+            expr: '{s} − {b} − {c}',
+            how: 'Take the other two numbers away from the total.',
+            work: (v: Values) => [
+              `${v.s} − ${v.b} = ${v.s! - v.b!}`,
+              `${v.s! - v.b!} − ${v.c} = ${v.a}`,
+            ],
+          },
+          b: {
+            expr: '{s} − {a} − {c}',
+            how: 'Take the other two numbers away from the total.',
+            work: (v: Values) => [
+              `${v.s} − ${v.a} = ${v.s! - v.a!}`,
+              `${v.s! - v.a!} − ${v.c} = ${v.b}`,
+            ],
+          },
+          c: {
+            expr: '{s} − {a} − {b}',
+            how: 'Take the other two numbers away from the total.',
+            work: (v: Values) => [
+              `${v.s} − ${v.a} = ${v.s! - v.a!}`,
+              `${v.s! - v.a!} − ${v.b} = ${v.c}`,
+            ],
+          },
         },
       ]),
     ),
@@ -575,18 +732,36 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'a + b = c + d': {
         d: {
+          work: (v) => [
+            `Left side: ${v.a} + ${v.b} = ${v.a! + v.b!}`,
+            v.d! > 0
+              ? `${v.c} + ? = ${v.a! + v.b!}: count on ${countList(v.c!, 1, v.d!)} → ${v.d}`
+              : `${v.c} + 0 = ${v.a! + v.b!}`,
+          ],
           expr: '{a} + {b} − {c}',
           how: 'Add the left side. Count on from the first number on the right up to that total.',
         },
         c: {
+          work: (v) => [
+            `Left side: ${v.a} + ${v.b} = ${v.a! + v.b!}`,
+            `${v.a! + v.b!} − ${v.d} = ${v.c}`,
+          ],
           expr: '{a} + {b} − {d}',
           how: 'Add the left side. Take away the second number on the right.',
         },
         b: {
+          work: (v) => [
+            `Right side: ${v.c} + ${v.d} = ${v.c! + v.d!}`,
+            `${v.c! + v.d!} − ${v.a} = ${v.b}`,
+          ],
           expr: '{c} + {d} − {a}',
           how: 'Add the right side. Take away the first number on the left.',
         },
         a: {
+          work: (v) => [
+            `Right side: ${v.c} + ${v.d} = ${v.c! + v.d!}`,
+            `${v.c! + v.d!} − ${v.b} = ${v.a}`,
+          ],
           expr: '{c} + {d} − {b}',
           how: 'Add the right side. Take away the second number on the left.',
         },
@@ -711,6 +886,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'c = p clips of r cubes',
+        check: (v) => repeated(v.r!, v.p!),
         display: '{c} cubes = {p} clips of {r} cubes',
         vars: ['c', 'p', 'r'],
         residual: (v) => v.c! - v.p! * v.r!,
@@ -720,14 +896,17 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'c = p clips of r cubes': {
         c: {
+          work: (v) => [repeated(v.r!, v.p!)],
           expr: '{p} clips of {r} cubes',
           how: 'Count all the cubes under the clips.',
         },
         p: {
+          work: (v) => [`Count by ${v.r}s to ${v.c}: ${countList(0, v.r!, v.p!)} → ${v.p} clips`],
           expr: 'groups of {r} in {c}',
           how: 'Put the cubes in groups the length of one clip. Count the groups.',
         },
         r: {
+          work: (v) => [`Try ${v.r} under each clip: ${repeated(v.r!, v.p!)} ✓`],
           expr: '{c} shared by {p} clips',
           how: 'Share the cubes equally, one group under each clip.',
         },
@@ -766,10 +945,22 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'm = k half hours': {
         m: {
-          expr: '{k} half hours',
+          work: (v) =>
+            v.k === 1
+              ? [
+                  'Long hand on 6: half past',
+                  `1 half hour = 30 minutes${v.h === undefined ? '' : ` → ${v.h}:30`}`,
+                ]
+              : ['Long hand on 12: o’clock', `0 minutes${v.h === undefined ? '' : ` → ${v.h}:00`}`],
+          expr: (v: Values) => (v.k === 1 ? '{k} half hour' : '{k} half hours'),
           how: 'At o’clock, it is 0 minutes past. At half past, it is 30.',
         },
         k: {
+          work: (v) => [
+            v.m === 30
+              ? '30 minutes: long hand on 6 → 1 half hour'
+              : '0 minutes: long hand on 12 → 0 half hours',
+          ],
           expr: 'half hours in {m}',
           how: 'Long hand on 12: 0 half hours. Long hand on 6: 1 half hour.',
         },
@@ -812,10 +1003,26 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = c + s + t': {
-        n: { expr: '{c} + {s} + {t}', how: 'Add the three categories.' },
-        c: { expr: '{n} − {s} − {t}', how: 'Take the other two shapes away from the total.' },
-        s: { expr: '{n} − {c} − {t}', how: 'Take the other two shapes away from the total.' },
-        t: { expr: '{n} − {c} − {s}', how: 'Take the other two shapes away from the total.' },
+        n: {
+          work: (v) => sumSteps([v.c!, v.s!, v.t!]),
+          expr: '{c} + {s} + {t}',
+          how: 'Add the three categories.',
+        },
+        c: {
+          work: (v) => missingPart(v.n!, [v.s!, v.t!]),
+          expr: '{n} − {s} − {t}',
+          how: 'Take the other two shapes away from the total.',
+        },
+        s: {
+          work: (v) => missingPart(v.n!, [v.c!, v.t!]),
+          expr: '{n} − {c} − {t}',
+          how: 'Take the other two shapes away from the total.',
+        },
+        t: {
+          work: (v) => missingPart(v.n!, [v.c!, v.s!]),
+          expr: '{n} − {c} − {s}',
+          how: 'Take the other two shapes away from the total.',
+        },
       },
       ...cmpShapes.steps,
     },
@@ -865,10 +1072,17 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'p = parts from h cuts': {
         p: {
+          work: (v) =>
+            v.h === 1
+              ? ['1 cut: 2 halves']
+              : ['1 cut: 2 halves', '2 cuts: cut each half again → 4 fourths'],
           expr: '{h} cuts in half',
           how: 'Cut in half once: 2 halves. Cut each half in half again: 4 fourths.',
         },
         h: {
+          work: (v) => [
+            v.p === 2 ? '2 parts: halves → 1 cut' : '4 parts: halves of halves → 2 cuts',
+          ],
           expr: 'cuts to make {p} parts',
           how: '2 parts: cut once. 4 parts: cut twice (halves of halves).',
         },
@@ -934,6 +1148,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = h hundreds + t tens + o ones',
+        check: (v) => `${100 * v.h!} + ${10 * v.t!} + ${v.o} = ${v.n}`,
         display: '{n} = {h} hundreds + {t} tens + {o} ones',
         vars: ['n', 'h', 't', 'o'],
         residual: (v) => v.n! - 100 * v.h! - 10 * v.t! - v.o!,
@@ -969,6 +1184,10 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'n = h hundreds + t tens + o ones': {
         n: {
+          work: (v) => [
+            `${v.h} hundreds = ${100 * v.h!}, ${v.t} tens = ${10 * v.t!}`,
+            `${100 * v.h!} + ${10 * v.t!} + ${v.o} = ${v.n}`,
+          ],
           expr: '{h} hundreds + {t} tens + {o} ones',
           how: 'Count the flats by hundreds, the rods by tens, then the small cubes.',
         },
@@ -986,12 +1205,32 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         },
       },
       'h = hundreds digit': {
-        h: { expr: 'hundreds digit of {n}', how: 'Read the left digit of the three-digit number.' },
+        h: {
+          work: (v) => [
+            `${v.n} = ${Math.floor(v.n! / 100) * 100} + ${Math.floor((v.n! % 100) / 10) * 10} + ${v.n! % 10}`,
+          ],
+          expr: 'hundreds digit of {n}',
+          how: 'Read the left digit of the three-digit number.',
+        },
       },
       't = tens digit': {
-        t: { expr: 'tens digit of {n}', how: 'Read the middle digit.' },
+        t: {
+          work: (v) => [
+            `${v.n} = ${Math.floor(v.n! / 100) * 100} + ${Math.floor((v.n! % 100) / 10) * 10} + ${v.n! % 10}`,
+          ],
+          expr: 'tens digit of {n}',
+          how: 'Read the middle digit.',
+        },
       },
-      'o = ones digit': { o: { expr: 'ones digit of {n}', how: 'Read the right digit.' } },
+      'o = ones digit': {
+        o: {
+          work: (v) => [
+            `${v.n} = ${Math.floor(v.n! / 100) * 100} + ${Math.floor((v.n! % 100) / 10) * 10} + ${v.n! % 10}`,
+          ],
+          expr: 'ones digit of {n}',
+          how: 'Read the right digit.',
+        },
+      },
     },
     example: { n: 347, h: 3, t: 4, o: 7 },
     startWith: ['n'],
@@ -1052,6 +1291,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = a + k jumps of s',
+        check: (v) => `${v.a} + ${v.k! * v.s!} = ${v.n}`,
         display: '{n} = {a} + {k} jumps of {s}',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! - v.k! * v.s!,
@@ -1066,18 +1306,25 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'n = a + k jumps of s': {
         n: {
+          work: (v) => [`Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)}`],
           expr: '{a} + {k} jumps of {s}',
           how: 'Start at the start number. Add the count-by number for each jump.',
         },
         a: {
+          work: (v) => [`Count back by ${v.s}s from ${v.n}: ${countList(v.n!, -v.s!, v.k!)}`],
           expr: '{n} − {k} jumps of {s}',
           how: 'Count back by the count-by number, once for each jump.',
         },
         k: {
+          work: (v) => [`${v.a} → ${countList(v.a!, v.s!, v.k!)}`, `That is ${v.k} jumps`],
           expr: 'jumps of {s} from {a} to {n}',
           how: 'Count the jumps it takes to get from the start to the number reached.',
         },
         s: {
+          work: (v) => [
+            `${v.n} − ${v.a} = ${v.n! - v.a!}`,
+            `${v.k} equal jumps make ${v.n! - v.a!}: ${repeated(v.s!, v.k!)}`,
+          ],
           expr: 'size of {k} equal jumps from {a} to {n}',
           how: 'Find the jump size that gets from the start to the number reached.',
         },
@@ -1140,10 +1387,29 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         r: { expr: '{n} − {p} − {p}', how: 'Take away both rows of the pairs; see what is left.' },
       },
       'p = pairs in n': {
-        p: { expr: 'pairs in {n}', how: 'Match objects two at a time and count the pairs.' },
+        p: {
+          work: (v) => {
+            const pairs = Math.floor(v.n! / 2);
+            const left = v.n! % 2;
+            return [
+              `Pair up ${v.n}: ${pairs ? countList(0, 2, pairs) : '0'} → ${pairs} pairs, ${left} left over`,
+              left ? `1 left over → ${v.n} is odd` : `0 left over → ${v.n} is even`,
+            ];
+          },
+          expr: 'pairs in {n}',
+          how: 'Match objects two at a time and count the pairs.',
+        },
       },
       'r = left over': {
         r: {
+          work: (v) => {
+            const pairs = Math.floor(v.n! / 2);
+            const left = v.n! % 2;
+            return [
+              `Pair up ${v.n}: ${pairs ? countList(0, 2, pairs) : '0'} → ${pairs} pairs, ${left} left over`,
+              left ? `1 left over → ${v.n} is odd` : `0 left over → ${v.n} is even`,
+            ];
+          },
           expr: 'left over from {n}',
           how: 'Make pairs. Is one left without a partner?',
         },
@@ -1169,6 +1435,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = r rows of c',
+        check: (v) => repeated(v.c!, v.r!),
         display: '{n} = {r} rows of {c}',
         vars: ['n', 'r', 'c'],
         residual: (v) => v.n! - v.r! * v.c!,
@@ -1177,12 +1444,18 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = r rows of c': {
-        n: { expr: '{r} rows of {c}', how: 'Add the number in one row, once for each row.' },
+        n: {
+          work: (v) => [repeated(v.c!, v.r!)],
+          expr: '{r} rows of {c}',
+          how: 'Add the number in one row, once for each row.',
+        },
         r: {
+          work: (v) => [`Count by ${v.c}s to ${v.n}: ${countList(0, v.c!, v.r!)} → ${v.r} rows`],
           expr: 'rows of {c} in {n}',
           how: 'Make rows of c until you use all n. Count the rows.',
         },
         c: {
+          work: (v) => [`Try ${v.c} in each row: ${repeated(v.c!, v.r!)} ✓`],
           expr: '{n} shared into {r} rows',
           how: 'Share all the dots equally into the rows. Count one row.',
         },
@@ -1234,6 +1507,12 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'T = 100b + 25q + 10d + 5n + p',
+        check: (v) =>
+          `${
+            MONEY.map((c) => v[c.id]! * c.cents)
+              .filter((x) => x > 0)
+              .join(' + ') || '0'
+          } = ${v.T}`,
         display: '{T} = {db} dollars + {q} quarters + {dm} dimes + {nk} nickels + {pn} pennies',
         vars: ['T', 'db', 'q', 'dm', 'nk', 'pn'],
         residual: (v) => v.T! - (100 * v.db! + 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!),
@@ -1250,28 +1529,35 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'T = 100b + 25q + 10d + 5n + p': {
         T: {
-          expr: '{db} dollars + {q} quarters + {dm} dimes + {nk} nickels + {pn} pennies',
+          expr: (v) => moneyWords(v),
           how: 'Count dollars by 100s. Count on quarters by 25s, dimes by 10s, nickels by 5s. Add the pennies.',
+          work: moneyTotalWork,
+          note: inDollars,
         },
         db: {
-          expr: 'dollars in ({T} − {q} quarters − {dm} dimes − {nk} nickels − {pn} pennies)',
+          expr: (v) => `dollars in ({T} − ${moneyWords(v, 'db')})`,
           how: 'Take away the coins’ value. Count the 100s (dollars) in what is left.',
+          work: moneyCoinWork(MONEY[0]),
         },
         q: {
-          expr: 'quarters in ({T} − {db} dollars − {dm} dimes − {nk} nickels − {pn} pennies)',
+          expr: (v) => `quarters in ({T} − ${moneyWords(v, 'q')})`,
           how: 'Take away the other coins’ value. Count the 25s in what is left.',
+          work: moneyCoinWork(MONEY[1]),
         },
         dm: {
-          expr: 'dimes in ({T} − {db} dollars − {q} quarters − {nk} nickels − {pn} pennies)',
+          expr: (v) => `dimes in ({T} − ${moneyWords(v, 'dm')})`,
           how: 'Take away the other coins’ value. Count the 10s in what is left.',
+          work: moneyCoinWork(MONEY[2]),
         },
         nk: {
-          expr: 'nickels in ({T} − {db} dollars − {q} quarters − {dm} dimes − {pn} pennies)',
+          expr: (v) => `nickels in ({T} − ${moneyWords(v, 'nk')})`,
           how: 'Take away the other coins’ value. Count the 5s in what is left.',
+          work: moneyCoinWork(MONEY[3]),
         },
         pn: {
-          expr: '{T} − {db} dollars − {q} quarters − {dm} dimes − {nk} nickels',
+          expr: (v) => `{T} − ${moneyWords(v, 'pn')}`,
           how: 'Take away the other coins’ value. The rest is pennies.',
+          work: moneyCoinWork(MONEY[4]),
         },
       },
     },
@@ -1309,6 +1595,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'm = 5 × k',
+        check: (v) => (v.k! > 0 ? repeated(5, v.k!) : '0 = 0'),
         display: '{m} = {k} fives',
         vars: ['m', 'k'],
         residual: (v) => v.m! - 5 * v.k!,
@@ -1318,10 +1605,22 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'm = 5 × k': {
         m: {
-          expr: '{k} fives',
+          work: (v) =>
+            v.k! > 0
+              ? [
+                  `Count by 5s: ${countList(0, 5, v.k!)} → ${v.m} minutes`,
+                  ...(v.h === undefined ? [] : [`${v.h}:${String(v.m).padStart(2, '0')}`]),
+                ]
+              : ['Long hand on 12: 0 minutes'],
+          expr: (v: Values) => (v.k === 1 ? '{k} five' : '{k} fives'),
           how: 'Count by 5s from 12 to the number the long hand points at.',
         },
         k: {
+          work: (v) => [
+            v.m! > 0
+              ? `Count by 5s to ${v.m}: ${countList(0, 5, v.k!)} → ${v.k} numbers past 12`
+              : 'Long hand on 12: 0 numbers past 12',
+          ],
           expr: 'fives in {m}',
           how: 'Count by 5s to the minutes. Count how many numbers you passed.',
         },
@@ -1365,11 +1664,31 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = a + b + c + e': {
-        n: { expr: '{a} + {b} + {c} + {e}', how: 'Add the heights of all four bars.' },
-        a: { expr: '{n} − {b} − {c} − {e}', how: 'Take the other bars away from the total.' },
-        b: { expr: '{n} − {a} − {c} − {e}', how: 'Take the other bars away from the total.' },
-        c: { expr: '{n} − {a} − {b} − {e}', how: 'Take the other bars away from the total.' },
-        e: { expr: '{n} − {a} − {b} − {c}', how: 'Take the other bars away from the total.' },
+        n: {
+          work: (v) => sumSteps([v.a!, v.b!, v.c!, v.e!]),
+          expr: '{a} + {b} + {c} + {e}',
+          how: 'Add the heights of all four bars.',
+        },
+        a: {
+          work: (v) => missingPart(v.n!, [v.b!, v.c!, v.e!]),
+          expr: '{n} − {b} − {c} − {e}',
+          how: 'Take the other bars away from the total.',
+        },
+        b: {
+          work: (v) => missingPart(v.n!, [v.a!, v.c!, v.e!]),
+          expr: '{n} − {a} − {c} − {e}',
+          how: 'Take the other bars away from the total.',
+        },
+        c: {
+          work: (v) => missingPart(v.n!, [v.a!, v.b!, v.e!]),
+          expr: '{n} − {a} − {b} − {e}',
+          how: 'Take the other bars away from the total.',
+        },
+        e: {
+          work: (v) => missingPart(v.n!, [v.a!, v.b!, v.c!]),
+          expr: '{n} − {a} − {b} − {c}',
+          how: 'Take the other bars away from the total.',
+        },
       },
       ...cmpBars.steps,
     },

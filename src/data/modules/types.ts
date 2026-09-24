@@ -232,6 +232,14 @@ export interface StepText {
   expr: string | ((v: Values) => string);
   /** A plain-language explanation; a function picks the sentence from the solved values. */
   how: string | ((v: Values) => string);
+  /**
+   * Worked arithmetic shown between the substituted line and the answer, so a student can
+   * follow each step with a pencil (e.g. "2 quarters = 25 + 25 = 50¢"). Lines are templates
+   * like `expr`, or a function of the solved values (in the formula's units).
+   */
+  work?: string[] | ((v: Values) => string[]);
+  /** Added after the answer, e.g. "($1.68)" or "→ 3:30". */
+  note?: (v: Values) => string;
 }
 
 export interface ModuleDef {
