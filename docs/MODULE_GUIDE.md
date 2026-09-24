@@ -1,7 +1,8 @@
 # Module content guide
 
-Every skill and course topic ("module") has four sections: **Assumptions**, **Formulas** (live
-calculator), a **table, chart or diagram**, and a **Step-by-step** walkthrough. Content lives in
+Every skill and course topic ("module") has four sections, shown in this order after Refresh: a
+**table, chart or diagram**, **Formulas** (live calculator; "Number sentences" in K–2),
+**Assumptions**, and a **Step-by-step** walkthrough. Content lives in
 `src/data/modules/`. This guide is the standard every module is written and reviewed against.
 
 ## Standards

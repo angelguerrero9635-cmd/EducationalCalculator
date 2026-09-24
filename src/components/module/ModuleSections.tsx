@@ -19,6 +19,15 @@ function ModuleView({ module }: { module: ModuleDef }) {
   const calc = useCalculator(module);
   return (
     <>
+      {/* Order: see the picture first, then work with the numbers, then read why. */}
+      <SectionHeader title={representationTitle(module.representation)} />
+      <View style={styles.representation}>
+        <RepresentationView spec={module.representation} calc={calc} />
+      </View>
+
+      <SectionHeader title={isEarlyGrade(module.id) ? 'Number sentences' : 'Formulas'} />
+      <FormulaSection calc={calc} />
+
       <SectionHeader title="Assumptions" />
       <View style={styles.bullets}>
         {module.assumptions.map((a) => (
@@ -27,14 +36,6 @@ function ModuleView({ module }: { module: ModuleDef }) {
             <Text style={[styles.bulletText, { color: c.text }]}>{a}</Text>
           </View>
         ))}
-      </View>
-
-      <SectionHeader title={isEarlyGrade(module.id) ? 'Number sentences' : 'Formulas'} />
-      <FormulaSection calc={calc} />
-
-      <SectionHeader title={representationTitle(module.representation)} />
-      <View style={styles.representation}>
-        <RepresentationView spec={module.representation} calc={calc} />
       </View>
 
       <SectionHeader title="Step-by-step" />
@@ -81,9 +82,9 @@ export function ModuleSections({ id }: { id: string }) {
         <>
           <SectionHeader title="Learn" />
           <View style={styles.cards}>
-            <PlaceholderCard label="Assumptions" />
-            <PlaceholderCard label="Formulas" />
             <PlaceholderCard label="Table, chart or diagram" />
+            <PlaceholderCard label="Formulas" />
+            <PlaceholderCard label="Assumptions" />
             <PlaceholderCard label="Step-by-step example" />
           </View>
         </>

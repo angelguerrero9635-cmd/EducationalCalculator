@@ -135,15 +135,15 @@ vercel.json                   Website build and hosting settings
 
 ## Modules: assumptions, formulas and a linked visual
 
-Each skill and course topic ("module") can have three sections:
+Each skill and course topic ("module") has four sections, in this order (after Refresh):
 
-1. **Assumptions:** bullet points stating what the formulas take for granted.
-2. **Formulas:** a live calculator. Enter any variable and every value the formulas can
-   determine fills in. You may need several inputs before everything is known. The newest entry
-   wins: if it contradicts an older one, the older one is recalculated, or cleared with a note if
-   it can't fit.
-3. **Table, chart or diagram:** shows the same values. Dragging a handle or tapping a row or
+1. **Table, chart or diagram:** shows the lesson's values. Dragging a handle or tapping a row or
    square sets variables exactly like typing, so the formulas and the visual always match.
+2. **Formulas** ("Number sentences" in K–2): a live calculator. Enter any variable and every
+   value the formulas can determine fills in. You may need several inputs before everything is
+   known. The newest entry wins: if it contradicts an older one, the older one is recalculated,
+   or cleared with a note if it can't fit.
+3. **Assumptions:** bullet points stating what the formulas take for granted.
 4. **Step-by-step:** a live walkthrough of how the current values were found from the entered
    ones. It lists what was given and what to find, then for each calculated value shows the
    formula used, how it was rearranged (in words), the rearranged form, the numbers
