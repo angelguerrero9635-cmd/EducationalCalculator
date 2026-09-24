@@ -104,6 +104,11 @@ export const font = {
    * (San Francisco on iOS). Custom fonts must be loaded first (e.g. with expo-font).
    */
   family: undefined as string | undefined,
+  /**
+   * The system font stack on the web (the one react-native-web uses for text). Chart text is SVG,
+   * which would otherwise fall back to the browser's serif default.
+   */
+  webSystem: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   caption: 12,
   body: 16,
   title: 22,

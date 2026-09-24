@@ -31,12 +31,18 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const secondIsVar = typeof spec.second === 'string';
   const onlyFirst =
     typeof spec.first === 'string' && !(secondIsVar && typeof spec.total === 'string');
-  const typed = (x: string | number) => typeof x === 'string' && calc.status(x) === 'given';
+  // Typed by the student, or given in the example (so a take-away page opens as take-away).
+  const typed = (x: string | number) =>
+    typeof x === 'string' && ['given', 'example'].includes(calc.status(x));
   const takeAway =
     typeof spec.first === 'string' &&
     calc.status(spec.first) === 'derived' &&
     typed(spec.second) &&
     typed(spec.total);
+
+  // "Take away (t)" already says it; other names get "(taken away)" in the legend.
+  const secondSaysTake =
+    typeof spec.second === 'string' && /take/i.test(rep.variable(spec.second).name);
 
   const tap = (k: number) => {
     const firstPin = typeof spec.first === 'string' ? [spec.first] : [];
@@ -58,9 +64,13 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View style={{ gap: space.md }}>
-      <Canvas aspect={frames === 2 ? 0.8 : 0.42}>
+      <Canvas
+        aspect={(w) =>
+          (frames * (2 * cellSize(w) + 2 * chart.stroke) + (frames - 1) * space.md) / w
+        }
+      >
         {({ w }) => {
-          const cell = Math.min(64, (w - 24) / 5);
+          const cell = cellSize(w);
           return (
             <View style={{ alignSelf: 'center', gap: space.md, opacity: faded ? 0.35 : 1 }}>
               {Array.from({ length: frames }, (_, f) => (
@@ -131,7 +141,7 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {
                   var: spec.second,
                   steps: [1],
-                  marker: '○',
+                  marker: takeAway ? '✕' : '○',
                   pin:
                     typeof spec.first === 'string' && typeof spec.total === 'string'
                       ? [spec.first]
@@ -147,13 +157,16 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
           : `${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
       <Text style={[styles.legend, { color: c.textMuted }]}>
-        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : `A ten (${spec.first} ones)`}   ${takeAway ? '✕' : '○'} ${
+        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : spec.first === 10 ? 'A ten (10 ones)' : `The first ${spec.first}`}   ${takeAway ? '✕' : '○'} ${
           typeof spec.second === 'string' ? rep.tag(spec.second) : `${spec.second} more`
-        }${takeAway ? ' (taken away)' : ''}`}
+        }${takeAway && !secondSaysTake ? ' (taken away)' : ''}`}
       </Text>
     </View>
   );
 }
+
+/** Side of one ten-frame cell at canvas width w. */
+const cellSize = (w: number) => Math.min(64, (w - 24) / 5);
 
 const styles = StyleSheet.create({
   frame: { borderWidth: chart.stroke, borderRadius: radius.sm, overflow: 'hidden' },

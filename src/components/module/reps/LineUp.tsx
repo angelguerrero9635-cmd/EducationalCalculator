@@ -5,7 +5,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, nowrap, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'lineUp' }>;
@@ -24,7 +24,8 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
   return (
     <View style={{ gap: space.sm }}>
       <Text style={[styles.front, { color: c.textMuted }]}>Front of the line ←</Text>
-      <Canvas aspect={(w) => (Math.min(56, (w - 16) / max) * 1.9) / w}>
+      {/* Head and body, then three lines of labels: number, "next to", and the picked place. */}
+      <Canvas aspect={(w) => (Math.min(56, (w - 16) / max) * 1.3 + 3 * LINE) / w}>
         {({ w }) => {
           const cell = Math.min(56, (w - 16) / max);
           return (
@@ -65,9 +66,10 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       }}
                     />
                     <Text style={[styles.num, { color: c.textMuted }]}>{i + 1}</Text>
+                    {/* One line lower than "next to", so the labels of neighbors never touch. */}
                     {me ? (
-                      <Text style={[styles.next, { color: c.text }]}>
-                        {`${rep.variable(spec.position).symbol} = ${p}`}
+                      <Text style={[styles.next, { color: c.text, marginTop: LINE }]}>
+                        {nowrap(`${rep.variable(spec.position).symbol} = ${p}`)}
                       </Text>
                     ) : null}
                     {next ? <Text style={[styles.next, { color: c.text }]}>next to</Text> : null}
@@ -79,7 +81,7 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.label(spec.before)} in front of the picked child   ·   ${rep.label(spec.after)} behind`}
+        {`${nowrap(rep.label(spec.before))} in front of the picked child   ·   ${nowrap(`${rep.label(spec.after)} behind`)}`}
       </Text>
       <Steppers calc={calc} items={[{ var: spec.count, steps: [1], pin: [spec.position] }]} />
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a child to pick them.</Text>
@@ -87,11 +89,14 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
+/** Height of one line of labels under the children. */
+const LINE = font.caption + space.xs;
+
 const styles = StyleSheet.create({
   front: { fontSize: font.caption + 1, paddingHorizontal: space.md },
   row: { flexDirection: 'row', paddingHorizontal: space.sm },
-  num: { fontSize: font.caption },
-  next: { fontSize: font.caption - 1, textAlign: 'center' },
+  num: { fontSize: font.caption, lineHeight: LINE },
+  next: { fontSize: font.caption - 1, lineHeight: LINE, textAlign: 'center' },
   caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
 });

@@ -6,7 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, useRep } from './common';
+import { Canvas, ChartText, nowrap, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'patternBlocks' }>;
@@ -94,7 +94,7 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {ids.map((id) => `${rep.variable(id).name}: ${rep.label(id)}`).join('   ·   ')}
+        {ids.map((id) => nowrap(`${rep.variable(id).name}: ${rep.label(id)}`)).join('   ·   ')}
       </Text>
       <Steppers
         calc={calc}

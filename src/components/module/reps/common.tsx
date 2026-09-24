@@ -132,8 +132,12 @@ export function niceCeil(x: number): number {
 /** Text inside charts: theme font family, chart ink color and label size by default. */
 export function ChartText(props: SvgTextProps) {
   const c = usePalette();
-  return <SvgText fontFamily={font.family} fill={c.chartInk} fontSize={chart.label} {...props} />;
+  const family = font.family ?? (Platform.OS === 'web' ? font.webSystem : undefined);
+  return <SvgText fontFamily={family} fill={c.chartInk} fontSize={chart.label} {...props} />;
 }
+
+/** Joins a short phrase with non-breaking spaces, so a caption never wraps inside "C = 8 corners". */
+export const nowrap = (s: string) => s.replace(/ /g, '\u00a0');
 
 /** Rounds to the variable's drag step and keeps it within [min, max]. */
 export function snap(x: number, step = 0.1, min = -Infinity, max = Infinity): number {
@@ -169,7 +173,10 @@ export function useRep(calc: Calculator) {
       const x = values[id];
       const unit = units.display[id];
       const shown = x === undefined ? '?' : formatNumber(units.toDisplay(id, x), v);
-      return `${v.symbol} = ${shown}${withUnit && unit && x !== undefined ? ` ${unit}` : ''}`;
+      if (!withUnit || !unit || x === undefined) return `${v.symbol} = ${shown}`;
+      // $ goes before the number; ¢, % and ° go right after it; other units after a space.
+      if (unit === '$') return `${v.symbol} = $${shown}`;
+      return `${v.symbol} = ${shown}${['¢', '%', '°'].includes(unit) ? '' : ' '}${unit}`;
     },
     /** Current values of `ids` that are known, for pinning them during a drag. */
     pin: (ids: string[]): Values =>

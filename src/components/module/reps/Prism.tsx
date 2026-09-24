@@ -6,7 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, nowrap, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'prism' }>;
@@ -91,7 +91,7 @@ export function Prism({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`A ${NAMES[n] ?? `prism with a ${n}-sided base`}: ${rep.label(spec.faces)} faces, ${rep.label(spec.edges)} edges, ${rep.label(spec.corners)} corners`}
+        {`A ${NAMES[n] ?? `prism with a ${n}-sided base`}: ${nowrap(`${rep.label(spec.faces)} faces`)}, ${nowrap(`${rep.label(spec.edges)} edges`)}, ${nowrap(`${rep.label(spec.corners)} corners`)}`}
       </Text>
       <Steppers calc={calc} items={[{ var: spec.sides, steps: [1], pin: [] }]} />
     </View>

@@ -72,7 +72,8 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </ChartText>,
                 ])}
                 <Line
-                  x1={4}
+                  // Starts at the scale so the 0 label isn't struck through.
+                  x1={axis || 4}
                   y1={sy(0)}
                   x2={w - 4}
                   y2={sy(0)}

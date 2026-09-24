@@ -8,7 +8,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, nowrap, useFrozen, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'ruler' }>;
@@ -86,10 +86,11 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                   );
                 })}
+                {/* A margin past 0 and the last mark, so the end numbers aren't cut by the edge. */}
                 <Rect
-                  x={left}
+                  x={left - space.sm}
                   y={rulerY}
-                  width={fit.value * scale}
+                  width={fit.value * scale + 2 * space.sm}
                   height={26}
                   fill={c.chartSurface}
                   stroke={c.chartInk}
@@ -152,7 +153,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
       {spec.from ? (
         <>
           <Text style={[styles.caption, { color: c.text }]}>
-            {`Starts at ${rep.label(spec.from)}${spec.to ? `, ends at ${rep.label(spec.to)}` : ''}. Length: ${rep.label(spec.lengths[0]!)}.`}
+            {`Starts at ${nowrap(rep.label(spec.from))}${spec.to ? `, ends at ${nowrap(rep.label(spec.to))}` : ''}. Length: ${nowrap(`${rep.label(spec.lengths[0]!)}.`)}`}
           </Text>
           <Steppers calc={calc} items={[{ var: spec.from, steps: [1], pin: [spec.lengths[0]!] }]} />
         </>
