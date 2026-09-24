@@ -1,6 +1,20 @@
 import type { Representation } from '@/data/modules';
 
 import type { Calculator } from '../useCalculator';
+import { Balance } from './Balance';
+import { BaseTen } from './BaseTen';
+import { Clock } from './Clock';
+import { Coins } from './Coins';
+import { CompareRows } from './CompareRows';
+import { CubeTrains } from './CubeTrains';
+import { DotArray } from './DotArray';
+import { HundredChart } from './HundredChart';
+import { Pairs } from './Pairs';
+import { Partition } from './Partition';
+import { PolygonShape } from './PolygonShape';
+import { Ruler } from './Ruler';
+import { SkipCount } from './SkipCount';
+import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
 import { CircleDiagram } from './CircleDiagram';
 import { ForceDiagram } from './ForceDiagram';
@@ -19,7 +33,7 @@ import { Waterfall } from './Waterfall';
 export const representationTitle = (r: Representation) =>
   r.kind === 'table'
     ? 'Table'
-    : ['plot', 'bars', 'pictureGraph', 'waterfall'].includes(r.kind)
+    : ['plot', 'bars', 'pictureGraph', 'waterfall', 'hundredChart'].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
 
@@ -49,6 +63,34 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PictureGraph spec={spec} calc={calc} />;
     case 'waterfall':
       return <Waterfall spec={spec} calc={calc} />;
+    case 'hundredChart':
+      return <HundredChart spec={spec} calc={calc} />;
+    case 'compareRows':
+      return <CompareRows spec={spec} calc={calc} />;
+    case 'polygon':
+      return <PolygonShape spec={spec} calc={calc} />;
+    case 'balance':
+      return <Balance spec={spec} calc={calc} />;
+    case 'baseTen':
+      return <BaseTen spec={spec} calc={calc} />;
+    case 'unitTiles':
+      return <UnitTiles spec={spec} calc={calc} />;
+    case 'clock':
+      return <Clock spec={spec} calc={calc} />;
+    case 'partition':
+      return <Partition spec={spec} calc={calc} />;
+    case 'skipCount':
+      return <SkipCount spec={spec} calc={calc} />;
+    case 'pairs':
+      return <Pairs spec={spec} calc={calc} />;
+    case 'array':
+      return <DotArray spec={spec} calc={calc} />;
+    case 'ruler':
+      return <Ruler spec={spec} calc={calc} />;
+    case 'coins':
+      return <Coins spec={spec} calc={calc} />;
+    case 'cubeTrains':
+      return <CubeTrains spec={spec} calc={calc} />;
     case 'seriesCircuit':
       return <SeriesCircuit spec={spec} calc={calc} />;
   }

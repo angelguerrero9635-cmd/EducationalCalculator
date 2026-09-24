@@ -18,13 +18,80 @@ export interface Axis {
  * sets those variables exactly like typing into the formula inputs.
  */
 export type Representation =
-  /** Number line: a point at `start`, a jump of `jump`, landing on `end`. Drag start or end. */
-  | { kind: 'numberLine'; start: string; jump: string; end: string; min: number; max: number }
   /**
-   * Ten-frame with two colors of counters: `first` dark, then `second` light, `total` in all.
-   * Tap a cell inside the dark counters to set `first`; beyond them to set `total`.
+   * Number line: a point at `start`, a jump of `jump`, landing on `end`. Drag start or end.
+   * `tick` sets the labeled tick spacing (default 1).
    */
-  | { kind: 'tenFrame'; first: string; second: string; total: string }
+  | {
+      kind: 'numberLine';
+      start: string;
+      jump: string;
+      end: string;
+      min: number;
+      max: number;
+      tick?: number;
+    }
+  /**
+   * Ten-frames with two colors of counters: `first` dark, then `second` light, `total` in all.
+   * `second` and `total` may be fixed numbers (e.g. "one more", "make 10"). Tap a cell inside
+   * the dark counters to set `first`; beyond them to set the total (or the second group).
+   */
+  | {
+      kind: 'tenFrame';
+      first: string;
+      second: string | number;
+      total: string | number;
+      /** 1 frame (10) or 2 frames (20). */
+      frames?: 1 | 2;
+    }
+  /** Hundred chart (rows of ten). Tap a number to set `value`; `marks` are outlined. */
+  | { kind: 'hundredChart'; value: string; max: 100 | 120; marks?: string[] }
+  /** Two rows of objects lined up one-to-one, showing which has more (or is longer). */
+  | {
+      kind: 'compareRows';
+      a: string;
+      b: string;
+      difference?: string;
+      icon: 'dot' | 'cube';
+      /** Words for the comparison, e.g. ['more', 'fewer'] or ['longer', 'shorter']. */
+      words: [string, string];
+    }
+  /** Regular polygon with `sides` sides (and as many corners); change it with − / +. */
+  | { kind: 'polygon'; sides: string }
+  /** Balance scale: the counters on each pan are the listed values. Level when equal. */
+  | { kind: 'balance'; left: string[]; right: string[] }
+  /**
+   * Base-ten blocks (hundreds flats, tens rods, ones cubes) for each group, and for the total.
+   * `controls` add − / + buttons (e.g. ±1, ±10) that change a value.
+   */
+  | {
+      kind: 'baseTen';
+      groups: string[];
+      total?: string;
+      controls: { var: string; steps: number[] }[];
+    }
+  /** An object measured two ways: in small units (`total`) and in bigger units of `size`. */
+  | { kind: 'unitTiles'; count: string; size: string; total: string }
+  /** Clock face: drag the minute hand (snaps to `minuteStep`); tap a number to set the hour. */
+  | { kind: 'clock'; hour: string; minute: string; minuteStep: number }
+  /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
+  | { kind: 'partition'; parts: string; shaded: string; shape: 'circle' | 'rectangle' }
+  /** Number line from 0 with `count` equal jumps of `step`, ending at `total`. Drag the end. */
+  | { kind: 'skipCount'; step: string; count: string; total: string }
+  /** Objects arranged in pairs; an odd one sticks out. */
+  | { kind: 'pairs'; value: string; max: number }
+  /** Dot array with `rows` × `columns`. Drag the corner. */
+  | { kind: 'array'; rows: string; columns: string; total: string; max: number }
+  /** Objects measured against a ruler in the shown unit. Drag each object's end. */
+  | { kind: 'ruler'; lengths: string[]; difference?: string; extent: number }
+  /** Coins by type, each with its value in cents; − / + change the counts. */
+  | {
+      kind: 'coins';
+      coins: { var: string; cents: number; name: string }[];
+      total: string;
+    }
+  /** Cube trains built from the same parts in different orders (equal lengths). */
+  | { kind: 'cubeTrains'; rows: string[][]; total: string }
   /** Bar chart. Bars marked `editable` can be dragged; the range grows to fit the values. */
   | {
       kind: 'bars';

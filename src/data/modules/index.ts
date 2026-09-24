@@ -1,10 +1,15 @@
 import { COLLEGE_MODULES } from './college';
 import { K12_MODULES } from './k12';
+import { MATH_K2_MODULES } from './math-k2';
 import type { ModuleDef } from './types';
 
 export type { ModuleDef, Representation } from './types';
 
-export const MODULES: readonly ModuleDef[] = [...K12_MODULES, ...COLLEGE_MODULES];
+export const MODULES: readonly ModuleDef[] = [
+  ...K12_MODULES,
+  ...MATH_K2_MODULES,
+  ...COLLEGE_MODULES,
+];
 
 const BY_ID = new Map(MODULES.map((m) => [m.id, m]));
 

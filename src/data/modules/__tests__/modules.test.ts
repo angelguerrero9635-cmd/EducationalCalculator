@@ -13,7 +13,35 @@ function representationVars(r: Representation): string[] {
     case 'numberLine':
       return [r.start, r.jump, r.end];
     case 'tenFrame':
-      return [r.first, r.second, r.total];
+      return [r.first, r.second, r.total].filter((v): v is string => typeof v === 'string');
+    case 'hundredChart':
+      return [r.value, ...(r.marks ?? [])];
+    case 'compareRows':
+      return [r.a, r.b, ...(r.difference ? [r.difference] : [])];
+    case 'polygon':
+      return [r.sides];
+    case 'balance':
+      return [...r.left, ...r.right];
+    case 'baseTen':
+      return [...r.groups, ...(r.total ? [r.total] : []), ...r.controls.map((c) => c.var)];
+    case 'unitTiles':
+      return [r.count, r.size, r.total];
+    case 'clock':
+      return [r.hour, r.minute];
+    case 'partition':
+      return [r.parts, r.shaded];
+    case 'skipCount':
+      return [r.step, r.count, r.total];
+    case 'pairs':
+      return [r.value];
+    case 'array':
+      return [r.rows, r.columns, r.total];
+    case 'ruler':
+      return [...r.lengths, ...(r.difference ? [r.difference] : [])];
+    case 'coins':
+      return [...r.coins.map((c) => c.var), r.total];
+    case 'cubeTrains':
+      return [...r.rows.flat(), r.total];
     case 'bars':
       return [...r.bars.map((b) => b.var), ...(r.total ? [r.total] : [])];
     case 'pictureGraph':
@@ -93,6 +121,8 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
   it('rearrangements agree with the relation', () => {
     for (const r of m.relations) {
       for (const [id, fn] of Object.entries(r.solve ?? {})) {
+        // `() => undefined` marks a value the relation can't determine (e.g. n from its tens).
+        if (fn!.length === 0) continue;
         const others = { ...m.example };
         delete others[id];
         const out = fn!(others);
@@ -135,7 +165,8 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('steps for %
     expect(Object.keys(m.steps).sort()).toEqual(m.relations.map((r) => r.id).sort());
     for (const r of m.relations) {
       const texts = m.steps[r.id]!;
-      expect(Object.keys(texts).sort()).toEqual(Object.keys(r.solve ?? {}).sort());
+      const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
+      expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
       for (const { expr, how } of Object.values(texts)) {
         expect(how.length).toBeGreaterThan(10);
         const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);

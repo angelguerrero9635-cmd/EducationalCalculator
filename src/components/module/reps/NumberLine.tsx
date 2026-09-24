@@ -25,7 +25,11 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
         const unit = (w - 2 * pad) / (spec.max - spec.min);
         const sx = (n: number) => pad + (n - spec.min) * unit;
         const y = h * 0.7;
-        const ticks = Array.from({ length: spec.max - spec.min + 1 }, (_, i) => spec.min + i);
+        const tick = spec.tick ?? 1;
+        const ticks = Array.from(
+          { length: Math.floor((spec.max - spec.min) / tick) + 1 },
+          (_, i) => spec.min + i * tick,
+        );
         const lift = Math.min(h * 0.45, 30 + Math.abs(end - a) * unit * 0.3);
         const mid = (sx(a) + sx(end)) / 2;
         return (

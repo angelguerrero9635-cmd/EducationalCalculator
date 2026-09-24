@@ -1,0 +1,111 @@
+import { StyleSheet, View } from 'react-native';
+import Svg, { Circle, Line, Polygon, Rect } from 'react-native-svg';
+
+import { Text } from '@/components/Text';
+import type { Representation } from '@/data/modules';
+import { chart, font, space, usePalette } from '@/theme';
+
+import type { Calculator } from '../useCalculator';
+import { Canvas, useRep } from './common';
+import { Steppers } from './Steppers';
+
+type Spec = Extract<Representation, { kind: 'balance' }>;
+
+/**
+ * A pan balance: each pan holds its values as groups of counters. It is level when both sides
+ * are the same amount, which is what the equal sign means.
+ */
+export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  const c = usePalette();
+  const rep = useRep(calc);
+  const count = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
+  const left = spec.left.reduce((s, id) => s + count(id), 0);
+  const right = spec.right.reduce((s, id) => s + count(id), 0);
+  const tilt = Math.max(-1, Math.min(1, (right - left) / 6)) * 14;
+  const all = [...spec.left, ...spec.right];
+  const shades = [c.chartHighlight, c.chartFill];
+
+  return (
+    <View>
+      <Canvas aspect={0.62}>
+        {({ w, h }) => {
+          const cx = w / 2;
+          const pivot = h * 0.34;
+          const arm = w * 0.38;
+          const ly = pivot - tilt;
+          const ry = pivot + tilt;
+          const pan = (x: number, y: number, ids: string[], key: string) => {
+            // Counters stacked in rows of 5 above the pan, one shade per value.
+            let i = 0;
+            const dots = ids.flatMap((id, g) =>
+              Array.from({ length: count(id) }, () => {
+                const k = i++;
+                return (
+                  <Circle
+                    key={`${key}${id}${k}`}
+                    cx={x - 40 + (k % 5) * 20}
+                    cy={y + 34 - Math.floor(k / 5) * 18}
+                    r={7.5}
+                    fill={shades[g % 2]}
+                    stroke={c.chartInk}
+                    strokeWidth={chart.strokeLight}
+                  />
+                );
+              }),
+            );
+            return [
+              <Line key={`${key}s1`} x1={x - 52} y1={y + 46} x2={x} y2={y} stroke={c.chartMuted} />,
+              <Line key={`${key}s2`} x1={x + 52} y1={y + 46} x2={x} y2={y} stroke={c.chartMuted} />,
+              <Rect
+                key={`${key}p`}
+                x={x - 56}
+                y={y + 46}
+                width={112}
+                height={6}
+                rx={3}
+                fill={c.chartInk}
+              />,
+              ...dots,
+            ];
+          };
+          return (
+            <Svg width={w} height={h}>
+              <Polygon
+                points={`${cx},${pivot} ${cx - 26},${h - 8} ${cx + 26},${h - 8}`}
+                fill={c.chartFill}
+                stroke={c.chartInk}
+              />
+              <Line
+                x1={cx - arm}
+                y1={ly}
+                x2={cx + arm}
+                y2={ry}
+                stroke={c.chartInk}
+                strokeWidth={chart.strokeHeavy}
+              />
+              <Circle cx={cx} cy={pivot} r={5} fill={c.chartInk} />
+              {pan(cx - arm, ly, spec.left, 'L')}
+              {pan(cx + arm, ry, spec.right, 'R')}
+            </Svg>
+          );
+        }}
+      </Canvas>
+      <Text style={[styles.caption, { color: c.text }]}>
+        {left === right ? `Level: both sides are ${left}.` : `Not level: ${left} and ${right}.`}
+      </Text>
+      <Steppers
+        calc={calc}
+        // The last value is the "missing" one that rebalances the scale; changing it moves the
+        // first value instead.
+        items={all.map((id) => {
+          const free = id === all[all.length - 1] ? all[0] : all[all.length - 1];
+          return { var: id, steps: [1], pin: all.filter((x) => x !== id && x !== free) };
+        })}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
+});
