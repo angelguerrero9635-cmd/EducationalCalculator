@@ -43,7 +43,7 @@ export interface Relation {
   solve?: Partial<Record<string, (v: Values) => number | number[] | undefined>>;
   /**
    * The check line as plain arithmetic (e.g. "4 + 4 + 4 = 12" for "12 = 3 rows of 4"), so the
-   * step-by-step check really checks. Given the solved values; only for unitless relations.
+   * step-by-step check really checks. Given the values in the units the steps show.
    */
   check?: (v: Values) => string;
 }

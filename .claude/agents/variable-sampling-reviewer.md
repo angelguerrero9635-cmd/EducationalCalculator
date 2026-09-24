@@ -50,6 +50,13 @@ For each module, sample at least a few hundred cases:
    substituted expression evaluates to the stated result. Parse the rendered numbers and compute
    them; allow for rounding in display. Check that `check` lines balance and that no text shows
    `NaN`, `undefined`, `Infinity`, `-0` or a negative count.
+   - **The check must match the rest of the walkthrough.** A check line that balances can still
+     be wrong: every number in it must also appear in the given values, a step (substituted,
+     work or result line), a unit-conversion line or the formula's own constants, in the units
+     the student chose. Run this under every unit choice. Example of the bug this catches: lengths
+     entered as 12 in and 8 in, steps showing 12 − 8 = 4, but the check showing
+     30.48 − 20.32 = 10.16 (centimeters).
+   - Work lines ("100¢ + 50¢ + 10¢ = 160¢") must add up.
 4. **Units.** For modules with units, repeat some samples under each unit choice from
    `unitOptions`, including Mixed and each per-variable unit. Check that converting back gives
    the same physical values and the step conversions are correct.

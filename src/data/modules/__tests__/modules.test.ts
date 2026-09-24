@@ -1,5 +1,6 @@
 import { holds, solve } from '@/engine/solve';
 import { initialState, setValues } from '@/engine/state';
+import { makeUnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 import { resolveItem } from '@/data/selectors';
 
@@ -300,4 +301,16 @@ describe('Math K–2', () => {
     const result = solve(m, [{ id: 't', value: 6 }]);
     expect(result.values.n).toBeUndefined();
   });
+});
+
+it('the check uses the same units and numbers as the steps (lengths in inches)', () => {
+  const m = getModule('m.2.standard-length')!;
+  const ctx = makeUnitContext(m, { system: 'us' });
+  const result = solve(
+    ctx.system,
+    m.startWith.map((id) => ({ id, value: ctx.fromDisplay(id, m.example[id]!) })),
+  );
+  const w = buildSteps(m, result, ctx);
+  expect(w.steps.map((s) => s.result)).toEqual(['d = 4 in']);
+  expect(w.check.map((c) => c.formula)).toEqual(['12 − 8 = 4']);
 });

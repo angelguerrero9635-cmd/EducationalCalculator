@@ -108,12 +108,13 @@ export function buildSteps(
     if (!text || !t.exact) {
       return { ...base, how: 'Tried numbers until both sides matched.' };
     }
-    const expr = typeof text.expr === 'function' ? text.expr(result.values) : text.expr;
-    const work = typeof text.work === 'function' ? text.work(result.values) : text.work;
+    // Text functions get the numbers the steps show (the working values), so every line matches.
+    const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;
+    const work = typeof text.work === 'function' ? text.work(working) : text.work;
     return {
       ...base,
-      ...(text.note && direct ? { result: `${base.result} ${text.note(result.values)}` } : {}),
-      how: typeof text.how === 'function' ? text.how(result.values) : text.how,
+      ...(text.note && direct ? { result: `${base.result} ${text.note(working)}` } : {}),
+      how: typeof text.how === 'function' ? text.how(working) : text.how,
       rearranged: `${v.symbol} = ${renderTemplate(expr, vars)}`,
       substituted: `${v.symbol} = ${renderTemplate(expr, workVars, working)}`,
       ...(work?.length
@@ -152,7 +153,7 @@ export function buildSteps(
       .filter((r) => r.vars.every((id) => id in result.values))
       .map((r) => ({
         formula:
-          r.check && direct ? r.check(result.values) : renderTemplate(r.display, workVars, working),
+          r.check && direct ? r.check(working) : renderTemplate(r.display, workVars, working),
         ok: holds(r, result.values),
       })),
     missing: result.unknown.map(quantity),

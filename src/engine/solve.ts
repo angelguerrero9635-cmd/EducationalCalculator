@@ -466,6 +466,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
 
   // Unknowns the formulas fix together (e.g. c + s = 20 with c = s): a value that is the same
   // in every whole-number solution, even with the ranges widened, is filled in.
+  const filled: string[] = [];
   if (Object.keys(known).length < system.variables.length) {
     const wide = widened(system);
     const r = wholeSolutions(wide, known, previous, 40);
@@ -478,10 +479,24 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         if (!r.solutions.every((sol) => closeTo(sol[v.id]!, x))) continue;
         if (checkValue(v, x) !== undefined) continue;
         known = { ...known, [v.id]: x };
-        const relation = system.relations.find((rel) => rel.vars.includes(v.id))!;
-        trace = [...trace, { id: v.id, relation: relation.id, exact: false }];
+        filled.push(v.id);
       }
     }
+  }
+  // Explain each filled value with a formula that gives it directly once everything is known,
+  // so its step shows the usual arithmetic; otherwise it reads as found by trying numbers.
+  for (const id of filled) {
+    const direct = system.relations.find((rel) => {
+      const fn = rel.solve?.[id];
+      if (!fn || fn.length === 0 || !rel.vars.every((v) => v in known)) return false;
+      const others = { ...known };
+      delete others[id];
+      const out = fn(others);
+      const xs = out === undefined ? [] : Array.isArray(out) ? out : [out];
+      return xs.some((x) => closeTo(x, known[id]!));
+    });
+    const relation = direct ?? system.relations.find((rel) => rel.vars.includes(id))!;
+    trace = [...trace, { id, relation: relation.id, exact: !!direct }];
   }
 
   const givenIds = new Set(kept.map((g) => g.id));

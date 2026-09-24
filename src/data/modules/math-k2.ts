@@ -3,6 +3,7 @@
  * Written and reviewed against docs/MODULE_GUIDE.md. Two K modules (m.K.add-sub-10,
  * m.K.classify-count) are pilots in k12.ts.
  */
+import { formatNumber } from '@/engine/format';
 import type { Values, VariableDef } from '@/engine/types';
 
 import type { ModuleDef, StepText } from './types';
@@ -107,7 +108,7 @@ export function difference(
     vars: [d, a, b],
     residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),
     check: (v: Values) =>
-      `${Math.max(v[a]!, v[b]!)} − ${Math.min(v[a]!, v[b]!)} = ${Math.abs(v[a]! - v[b]!)}`,
+      `${formatNumber(Math.max(v[a]!, v[b]!))} − ${formatNumber(Math.min(v[a]!, v[b]!))} = ${formatNumber(Math.abs(v[a]! - v[b]!))}`,
     solve: {
       [d]: (v: Values) => Math.abs(v[a]! - v[b]!),
       [a]: (v: Values) => [v[b]! + v[d]!, v[b]! - v[d]!],
@@ -400,18 +401,25 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       },
       'm = n + t tens': {
         m: {
-          work: (v) => [`Count by tens from ${v.n}: ${countList(v.n!, 10, v.t!)}`],
+          work: (v) => [
+            `${v.t} tens = ${10 * v.t!}`,
+            `Count by tens from ${v.n}: ${countList(v.n!, 10, v.t!)}`,
+          ],
           expr: '{n} + {t} tens',
           how: 'Start at the start number. Count by tens: go down one row for each ten.',
         },
         n: {
-          work: (v) => [`Count back by tens from ${v.m}: ${countList(v.m!, -10, v.t!)}`],
+          work: (v) => [
+            `${v.t} tens = ${10 * v.t!}`,
+            `Count back by tens from ${v.m}: ${countList(v.m!, -10, v.t!)}`,
+          ],
           expr: '{m} − {t} tens',
           how: 'Start at the number reached. Go up one row for each ten.',
         },
         t: {
           work: (v) => [
             `${v.n} → ${countList(v.n!, 10, v.t!)}: ${v.t} ${v.t === 1 ? 'ten' : 'tens'}`,
+            `${v.t} tens = ${10 * v.t!}`,
           ],
           expr: 'tens from {n} to {m}',
           how: 'Go down the chart from the start number. Count the rows to the number reached.',
@@ -1194,14 +1202,28 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         h: {
           expr: 'hundreds in ({n} − {t} tens − {o} ones)',
           how: 'Take away the tens and ones; count the hundreds left.',
+          work: (v) => [
+            `${v.t} tens = ${10 * v.t!}`,
+            `${v.n} − ${10 * v.t!} − ${v.o} = ${100 * v.h!}`,
+            `${100 * v.h!} is ${v.h} hundreds`,
+          ],
         },
         t: {
           expr: 'tens in ({n} − {h} hundreds − {o} ones)',
           how: 'Take away the hundreds and ones; count the tens left.',
+          work: (v) => [
+            `${v.h} hundreds = ${100 * v.h!}`,
+            `${v.n} − ${100 * v.h!} − ${v.o} = ${10 * v.t!}`,
+            `${10 * v.t!} is ${v.t} tens`,
+          ],
         },
         o: {
           expr: '{n} − {h} hundreds − {t} tens',
           how: 'Take away the hundreds and tens; the rest are ones.',
+          work: (v) => [
+            `${v.h} hundreds = ${100 * v.h!}, ${v.t} tens = ${10 * v.t!}`,
+            `${v.n} − ${100 * v.h!} − ${10 * v.t!} = ${v.o}`,
+          ],
         },
       },
       'h = hundreds digit': {
@@ -1306,17 +1328,26 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     steps: {
       'n = a + k jumps of s': {
         n: {
-          work: (v) => [`Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)}`],
+          work: (v) => [
+            `${v.k} jumps of ${v.s} = ${v.k! * v.s!}`,
+            `Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)}`,
+          ],
           expr: '{a} + {k} jumps of {s}',
           how: 'Start at the start number. Add the count-by number for each jump.',
         },
         a: {
-          work: (v) => [`Count back by ${v.s}s from ${v.n}: ${countList(v.n!, -v.s!, v.k!)}`],
+          work: (v) => [
+            `${v.k} jumps of ${v.s} = ${v.k! * v.s!}`,
+            `Count back by ${v.s}s from ${v.n}: ${countList(v.n!, -v.s!, v.k!)}`,
+          ],
           expr: '{n} − {k} jumps of {s}',
           how: 'Count back by the count-by number, once for each jump.',
         },
         k: {
-          work: (v) => [`${v.a} → ${countList(v.a!, v.s!, v.k!)}`, `That is ${v.k} jumps`],
+          work: (v) => [
+            `${v.a} → ${countList(v.a!, v.s!, v.k!)}`,
+            `That is ${v.k} jumps: ${v.n} − ${v.a} = ${v.n! - v.a!}`,
+          ],
           expr: 'jumps of {s} from {a} to {n}',
           how: 'Count the jumps it takes to get from the start to the number reached.',
         },

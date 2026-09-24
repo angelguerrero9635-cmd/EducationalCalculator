@@ -742,6 +742,37 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       }
     }
   }
+  // The check must use the same numbers as the rest of the walkthrough (in the units shown):
+  // every number in a check line has to appear in the given values, a step, a work line or the
+  // formula's own constants. Catches a check worked in other units or from other values.
+  const NUMBER = /\d+(?:\.\d+)?/g;
+  const numbersIn = (t: string) => (t.replace(/,(?=\d{3})/g, '').match(NUMBER) ?? []).map(Number);
+  const shown = new Set(
+    [
+      ...[...w.given, ...w.find].map((q) => q.value),
+      ...w.steps.flatMap((s) => [
+        s.formula,
+        s.rearranged ?? '',
+        s.substituted ?? '',
+        ...(s.work ?? []),
+        s.result,
+      ]),
+      ...c.module.relations.flatMap((r) => [r.id, r.display]),
+      // Unit conversions shown before and after the steps ("m = 500 g = 0.5 kg").
+      ...w.convertIn,
+      ...w.convertOut,
+    ].flatMap(numbersIn),
+  );
+  for (const chk of w.check) {
+    const strays = numbersIn(chk.formula).filter((x) => ![...shown].some((y) => shownClose(x, y)));
+    if (strays.length) {
+      c.f.add(
+        'error',
+        `${c.label}check uses numbers not shown elsewhere (${strays.join(', ')}): "${chk.formula}"`,
+        where,
+      );
+    }
+  }
   for (const chk of w.check) {
     if (!chk.ok) c.f.add('error', `${c.label}check line doesn't balance: "${chk.formula}"`, where);
     const sides = chk.formula.split(' = ');
