@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
 import { View } from 'react-native';
 
+import { NavBar } from '@/components/NavBar';
 import { useHydrated, useSelectedLevels } from '@/state';
 import { font, usePalette, useResolvedScheme } from '@/theme';
 
@@ -39,7 +40,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={theme}>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}>
+      <Stack screenOptions={{ header: (props) => <NavBar {...props} /> }}>
         <Stack.Protected guard={onboarded}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="grade/[grade]" />

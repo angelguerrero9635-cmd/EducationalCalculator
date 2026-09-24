@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
@@ -36,6 +36,7 @@ export default function CourseScreen() {
       contentInsetAdjustmentBehavior="automatic"
       style={{ backgroundColor: c.background }}
     >
+      <Stack.Screen options={{ title: course.title }} />
       <DetailHeader title={course.title} lines={[`Division: ${divisionLabel(course.division)}`]} />
       {skipsFieldLevel(course.division) ? null : (
         <View style={styles.chips} accessibilityLabel="Fields">

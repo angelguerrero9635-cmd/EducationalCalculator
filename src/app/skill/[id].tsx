@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import {
@@ -31,6 +31,7 @@ export default function SkillScreen() {
       automaticallyAdjustKeyboardInsets
       style={{ backgroundColor: c.background }}
     >
+      <Stack.Screen options={{ title: skill.title }} />
       <DetailHeader
         title={skill.title}
         lines={[

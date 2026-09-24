@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import { DetailHeader, EmptyState, ModuleSections, ListRow, LockedState } from '@/components';
@@ -25,6 +25,7 @@ export default function TopicScreen() {
       automaticallyAdjustKeyboardInsets
       style={{ backgroundColor: c.background }}
     >
+      <Stack.Screen options={{ title: topic.title }} />
       <DetailHeader title={topic.title} lines={[]} />
       <ListRow overline="Course" title={topic.course.title} route={courseRoute(topic.course.id)} />
       <ModuleSections id={topicKey(topic.course.id, topic.index)} />

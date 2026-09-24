@@ -402,3 +402,54 @@ export function resolveItem(key: string): ResolvedItem | undefined {
   if (!node || !route) return undefined;
   return { key, title: node.title, label: nodeContext(node), route };
 }
+
+// ─── Navigation bar ───────────────────────────────────────────────────────────
+
+export interface ParentLink {
+  /** Short label for the back button, e.g. "Grade 1". */
+  label: string;
+  /** Where back goes when there is no history (opened from a link or a reload). */
+  target: RouteTarget | { pathname: string; params?: undefined };
+}
+
+const HOME: ParentLink = { label: 'Home', target: { pathname: '/' } };
+
+/**
+ * The page one level up from a stack screen, for the navigation bar's back button:
+ * skill → its grade, topic → its course, course → its field, field → its division.
+ */
+export function parentOf(screen: string, params: Record<string, unknown>): ParentLink {
+  const p = (k: string) => (params[k] === undefined ? '' : String(params[k]));
+  switch (screen) {
+    case 'skill/[id]': {
+      const skill = getSkill(p('id'));
+      return skill
+        ? { label: gradeLabel(skill.grade), target: gradeRoute(skill.grade, skill.subject) }
+        : HOME;
+    }
+    case 'course/[id]/topic/[index]': {
+      const course = getCourse(p('id'));
+      return course ? { label: 'Course', target: courseRoute(course.id) } : HOME;
+    }
+    case 'course/[id]/index': {
+      const course = getCourse(p('id'));
+      if (!course) return HOME;
+      const field = getField(course.division, course.fields[0] ?? '');
+      return field && !skipsFieldLevel(course.division)
+        ? { label: field.title, target: fieldRoute(course.division, field.id) }
+        : { label: divisionLabel(course.division), target: divisionRoute(course.division) };
+    }
+    case 'he/[division]/[field]': {
+      const division = p('division');
+      return isDivision(division)
+        ? { label: divisionLabel(division), target: divisionRoute(division) }
+        : HOME;
+    }
+    case 'he/[division]/index':
+      return { label: 'Higher Ed', target: { pathname: '/he' } };
+    case 'levels':
+      return { label: 'Settings', target: { pathname: '/settings' } };
+    default:
+      return HOME;
+  }
+}
