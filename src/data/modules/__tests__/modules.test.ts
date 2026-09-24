@@ -3,7 +3,7 @@ import { initialState, setValues } from '@/engine/state';
 import { getUnit } from '@/engine/units';
 import { resolveItem } from '@/data/selectors';
 
-import { getModule, MODULES } from '..';
+import { getModule, moduleOwner, MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 
@@ -85,7 +85,9 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
   const ids = m.variables.map((v) => v.id);
 
   it('belongs to a skill or course topic in the taxonomy', () => {
-    expect(resolveItem(m.id)).toBeDefined();
+    expect(resolveItem(moduleOwner(m.id))).toBeDefined();
+    // Extra modules for a skill need a title for the switcher.
+    if (m.id.includes('~')) expect(m.title).toBeTruthy();
   });
 
   it('has assumptions, unique variables and relations over declared variables', () => {

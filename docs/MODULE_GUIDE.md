@@ -89,7 +89,17 @@ the assumptions and a table or diagram.
 2. **Independent AI review:** run the `module-reviewer` agent (`.claude/agents/module-reviewer.md`)
    on the new or changed modules. It rechecks the math independently and reviews every module
    against the four standards above.
-3. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
+3. **Exam coverage:** run the `exam-coverage-reviewer` agent
+   (`.claude/agents/exam-coverage-reviewer.md`). It collects the common test question types for
+   each skill or topic and checks the module can solve every one (unknowns in every position,
+   the quantities and ranges tests use), recommends diagrams borrowed from test items, and
+   proposes new modules when a common question type needs a different model.
+4. **Variable sampling:** run the `variable-sampling-reviewer` agent
+   (`.claude/agents/variable-sampling-reviewer.md`). It samples random inputs, edit orders and
+   unit choices through the real solver and step builder, and checks the math, ranges, step text
+   and that the variables and formulas fit the lesson. Its harness is kept as
+   `src/data/modules/__tests__/sampling.test.ts` (`MODULE_IDS=m.2. pnpm test sampling`).
+5. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
    reason, in the pull request or commit message.
-4. **Visual check:** open each module and confirm the representation reads well at phone width, in
+6. **Visual check:** open each module and confirm the representation reads well at phone width, in
    light and dark mode.

@@ -197,8 +197,13 @@ export interface StepText {
 }
 
 export interface ModuleDef {
-  /** Taxonomy skill id, or a course topic key (`<courseId>#<topicIndex>`). */
+  /**
+   * Taxonomy skill id, or a course topic key (`<courseId>#<topicIndex>`). A skill or topic can
+   * have more modules for question types that need a different model: `<id>~<slug>`.
+   */
   id: string;
+  /** Short name shown when a skill has several modules, e.g. "Making change". */
+  title?: string;
   assumptions: string[];
   variables: VariableDef[];
   relations: Relation[];

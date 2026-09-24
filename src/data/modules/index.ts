@@ -15,3 +15,12 @@ const BY_ID = new Map(MODULES.map((m) => [m.id, m]));
 
 /** Module content for a skill id or topic key, if written yet. */
 export const getModule = (id: string): ModuleDef | undefined => BY_ID.get(id);
+
+/** The skill or topic a module belongs to (`m.2.money~making-change` → `m.2.money`). */
+export const moduleOwner = (moduleId: string) => moduleId.split('~')[0]!;
+
+/** Every module for a skill or topic: the main one (id = the skill id) first. */
+export const getModules = (id: string): ModuleDef[] =>
+  MODULES.filter((m) => moduleOwner(m.id) === id).sort(
+    (a, b) => Number(a.id !== id) - Number(b.id !== id),
+  );
