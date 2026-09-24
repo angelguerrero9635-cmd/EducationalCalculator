@@ -50,6 +50,11 @@ blocks the wireframe.
     - Faces of cubes and other solids (2.G.1) is a problem type of `m.2.thirds-polygons`, now
       titled "Thirds, and naming shapes and solids by sides, angles and faces".
 
+11. **Grade 1 has no geometry skill besides halves and fourths** (textbook-coverage review,
+    third round). Illustrative Mathematics Grade 1 Unit 7 and Eureka Grade 1 Module 5 teach
+    shape attributes and composing flat and solid shapes (1.G.1, 1.G.2). Suggested skill:
+    "Shape attributes and building shapes", grade 1, Geometry.
+
 ## Suggested additions (would remove UI-side derivations)
 
 5. **No display titles for divisions or K–12 subjects.** `Division` and `K12Subject` are ids

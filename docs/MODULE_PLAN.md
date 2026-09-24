@@ -47,3 +47,15 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   - equal parts or not; shapes that look different; faces, edges and corners of solids
   - polygons by sides and angles; rows and columns of squares; equal groups
   - bills; money left after buying; a.m./p.m. on the clock
+
+  **Still open after the third review (for a later pass):**
+  - K: flat or solid (faces of cones, cylinders, spheres; needs a new picture); all the
+    ways to make a number; circles (0 sides) in the shapes picture; counting scattered or
+    circle arrangements.
+  - Grade 1: shape attributes and building with solids (no Grade 1 geometry skill yet,
+    see TAXONOMY_ISSUES.md); coin values before Grade 2 money.
+  - Grade 2: meters and centimeters; inches vs centimeters for the same object; number
+    names in words under the base-ten picture; skip counting backward; line plots with
+    other lengths; tally charts.
+  - All grades: pictures draw the example when a box shows "?" (they should show nothing
+    or a dashed outline), and a one-line "Use this for…" under each problem type.

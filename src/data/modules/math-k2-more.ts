@@ -1278,4 +1278,107 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     startWith: ['s', 't'],
     representation: { kind: 'tenFrame', first: 'l', second: 't', total: 's' },
   },
+
+  // ─── Added from the third review (textbook coverage) ─────────────────────────
+
+  // 5 and some more: numbers 5–10 on a five-group (K.CC.5, Eureka K Module 1).
+  {
+    id: 'm.K.count-objects~five-group',
+    title: '5 and some more',
+    assumptions: [
+      'The top row of the ten-frame holds 5.',
+      'Numbers from 6 to 10 are 5 and some more: 8 is 5 and 3.',
+    ],
+    variables: [whole('n', 'n', 'Number (5–10)', 5, 10), whole('e', 'e', 'More than 5', 0, 5)],
+    relations: [
+      {
+        id: 'n = 5 + e',
+        display: '{n} = 5 + {e}',
+        vars: ['n', 'e'],
+        residual: (v) => v.n! - 5 - v.e!,
+        solve: { n: (v) => 5 + v.e!, e: (v) => v.n! - 5 },
+      },
+    ],
+    steps: {
+      'n = 5 + e': {
+        n: {
+          expr: '5 + {e}',
+          how: 'Start at 5. Count on the ones in the bottom row.',
+          work: (v: Values) => startAt(5, v.e!),
+        },
+        e: {
+          expr: '{n} − 5',
+          how: 'Count the counters in the bottom row.',
+          work: (v: Values) => countOn(5, v.n!),
+        },
+      },
+    },
+    example: { n: 8, e: 3 },
+    startWith: ['n'],
+    representation: { kind: 'tenFrame', first: 5, second: 'e', total: 'n' },
+  },
+
+  // Take from ten: 14 − 8 = (10 − 8) + 4 (1.OA.6, Eureka Grade 1 Module 2).
+  {
+    id: 'm.1.add-sub-20~take-from-ten',
+    title: 'Take from ten',
+    assumptions: [
+      'Split the teen number into 10 and some ones: 14 is 10 and 4.',
+      'Take the number away from the 10. Then add the ones back.',
+      '14 − 8: 10 − 8 = 2, and 2 + 4 = 6.',
+    ],
+    variables: [
+      whole('c', 'c', 'Start (11–19)', 11, 19),
+      whole('b', 'b', 'Take away', 2, 9),
+      whole('o', 'o', 'Ones with the 10', 1, 9),
+      whole('r', 'r', 'Left from the 10', 1, 8),
+      whole('a', 'a', 'Answer', 2, 17),
+    ],
+    relations: [
+      {
+        id: 'o = c − 10',
+        display: '{c} = 10 + {o}',
+        vars: ['o', 'c'],
+        residual: (v) => v.o! - v.c! + 10,
+        solve: { o: (v) => v.c! - 10, c: (v) => v.o! + 10 },
+      },
+      {
+        id: 'r = 10 − b',
+        display: '10 − {b} = {r}',
+        vars: ['r', 'b'],
+        residual: (v) => v.r! - 10 + v.b!,
+        solve: { r: (v) => 10 - v.b!, b: (v) => 10 - v.r! },
+      },
+      {
+        id: 'a = r + o',
+        display: '{r} + {o} = {a}',
+        vars: ['a', 'r', 'o'],
+        residual: (v) => v.a! - v.r! - v.o!,
+        solve: { a: (v) => v.r! + v.o!, r: (v) => v.a! - v.o!, o: (v) => v.a! - v.r! },
+      },
+    ],
+    steps: {
+      'o = c − 10': {
+        o: { expr: '{c} − 10', how: 'Split the teen number: the 10 and the ones.' },
+        c: { expr: '10 + {o}', how: 'Put the 10 and the ones together.' },
+      },
+      'r = 10 − b': {
+        r: { expr: '10 − {b}', how: 'Take the number away from the 10.' },
+        b: { expr: '10 − {r}', how: 'The 10 minus what is left is what was taken.' },
+      },
+      'a = r + o': {
+        a: {
+          expr: '{r} + {o}',
+          how: 'Add what is left from the 10 and the ones.',
+          work: (v: Values) => addStrategy(v.r!, v.o!),
+        },
+        r: { expr: '{a} − {o}', how: 'Take the ones away from the answer.' },
+        o: { expr: '{a} − {r}', how: 'Take what is left from the 10 away from the answer.' },
+      },
+    },
+    example: { c: 14, b: 8, o: 4, r: 2, a: 6 },
+    startWith: ['c', 'b'],
+    representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c', frames: 2 },
+    pictureLabels: ['o', 'r'],
+  },
 ];
