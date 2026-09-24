@@ -14,6 +14,9 @@ import { Steppers } from './Steppers';
 type Spec = Extract<Representation, { kind: 'partition' }>;
 
 const NAMES: Record<number, string> = { 1: 'one whole', 2: 'halves', 3: 'thirds', 4: 'fourths' };
+/** "1 fourth shaded", "3 fourths shaded". */
+const ONE: Record<number, string> = { 1: 'whole', 2: 'half', 3: 'third', 4: 'fourth' };
+const MANY: Record<number, string> = { 1: 'wholes', 2: 'halves', 3: 'thirds', 4: 'fourths' };
 
 /**
  * A whole (circle or rectangle) cut into equal parts; tap a part to shade or unshade it. − / +
@@ -101,7 +104,7 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.variable(spec.parts).symbol} = ${p} equal parts (${NAMES[p] ?? `${p} parts`}): ${rep.variable(spec.shaded).symbol} = ${k} shaded, ${p - k} not shaded`}
+        {`${rep.variable(spec.parts).symbol} = ${p} equal parts (${NAMES[p] ?? `${p} parts`}): ${rep.variable(spec.shaded).symbol} = ${k} shaded, ${p - k} not shaded. ${k} ${(k === 1 ? ONE : MANY)[p] ?? 'parts'} shaded.`}
       </Text>
       <Steppers
         calc={calc}

@@ -25,7 +25,12 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
   const rep = useRep(calc);
 
   const bump = (item: StepperItem, delta: number) => {
-    let next = rep.shown(item.var) + delta;
+    // A "?" box starts from its smallest value (or 0), not from the example.
+    const v = rep.variable(item.var);
+    const from = rep.known(item.var)
+      ? rep.shown(item.var)
+      : Math.max(0, (v.min ?? 0) / rep.factor(item.var));
+    let next = from + delta;
     if (item.wrap) {
       const [lo, hi] = item.wrap;
       next = ((((next - lo) % (hi - lo + 1)) + (hi - lo + 1)) % (hi - lo + 1)) + lo;

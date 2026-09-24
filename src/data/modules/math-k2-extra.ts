@@ -39,6 +39,7 @@ function compareProblem(id: string, max: number, example: [number, number]) {
     assumptions: [
       'Compare problems ask: how many more? How many fewer?',
       '“Maya has 2 more than Kofi” means Maya has the bigger amount: Kofi’s amount + 2.',
+      '“More” in the question doesn’t always mean add. First find who has more.',
       '“How many more” and “how many fewer” have the same answer.',
     ],
     variables: [
@@ -134,6 +135,15 @@ const compareNumbers = (id: string, max: number, steps: number[], example: [numb
   },
 });
 
+/** "First: 25 + 18" then the strategy lines, or "First: 25 + 18 = 43" when there are none. */
+const stepLines = (label: string, x: number, sign: 1 | -1, y: number) => {
+  const op = sign > 0 ? '+' : '−';
+  const strategy = sign > 0 ? addStrategy(x, y) : subtractStrategy(x, y);
+  return strategy.length
+    ? [`${label}: ${x} ${op} ${y}`, ...strategy]
+    : [`${label}: ${x} ${op} ${y} = ${x + sign * y}`];
+};
+
 export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
   // Grade 1: compare word problems (1.OA.1, the hardest problem type in CCSS Table 1).
   compareProblem('m.1.add-sub-20~compare', 20, [11, 7]),
@@ -216,10 +226,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       'e = s + a − t': {
         e: {
           work: (v) => [
-            `First: ${v.s} + ${v.a} = ${v.s! + v.a!}`,
-            ...addStrategy(v.s!, v.a!),
-            `Then: ${v.s! + v.a!} − ${v.t} = ${v.e}`,
-            ...subtractStrategy(v.s! + v.a!, v.t!),
+            ...stepLines('First', v.s!, 1, v.a!),
+            ...stepLines('Then', v.s! + v.a!, -1, v.t!),
           ],
           expr: '{s} + {a} − {t}',
           how: 'First add to the start. Then take away.',
@@ -313,8 +321,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
             return [
               ...addAll(tens).map((l) => `Tens: ${l}`),
               ...addAll(ones).map((l) => `Ones: ${l}`),
-              `${T} + ${O} = ${T + O}`,
-              ...addStrategy(T, O),
+              ...(addStrategy(T, O).length ? addStrategy(T, O) : [`${T} + ${O} = ${T + O}`]),
             ];
           },
           expr: '{a} + {b} + {c} + {e}',

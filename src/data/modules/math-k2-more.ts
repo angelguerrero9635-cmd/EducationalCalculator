@@ -91,10 +91,9 @@ function twoStep(
   /** "x ± y = z" plus its strategy lines. */
   const line = (x: number, sign: number, y: number) => {
     const z = x + sign * y;
-    return [
-      `${x} ${sign > 0 ? '+' : '−'} ${y} = ${z}`,
-      ...(sign > 0 ? addStrategy(x, y) : subtractStrategy(x, y)),
-    ];
+    const strategy = sign > 0 ? addStrategy(x, y) : subtractStrategy(x, y);
+    // The strategy lines end at the answer; with none, one line says it.
+    return strategy.length ? strategy : [`${x} ${sign > 0 ? '+' : '−'} ${y} = ${z}`];
   };
   /** One step as a relation: out = inp ± by. */
   const stepRel = (out: string, inp: string, by: string, sign: 1 | -1) => ({
@@ -384,61 +383,43 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
 
   // ─── Grade 1 ───────────────────────────────────────────────────────────────
   // Order three lengths; compare two by using a third (1.MD.1).
-  {
-    id: 'm.1.measure-nonstandard~order',
-    title: 'Order three lengths',
-    assumptions: [
-      'Line up the ribbons at one end. Put them longest to shortest: A, B, C.',
-      'A is longer than B. B is longer than C. So A is longer than C.',
-    ],
-    variables: [
-      { ...whole('a', 'a', 'Ribbon A', 1, 15), unit: 'cubes' },
-      { ...whole('b', 'b', 'Ribbon B', 1, 15), unit: 'cubes' },
-      { ...whole('c', 'c', 'Ribbon C', 1, 15), unit: 'cubes' },
-      { ...whole('x', 'x', 'A longer than B', 0, 14), unit: 'cubes' },
-      { ...whole('y', 'y', 'B longer than C', 0, 14), unit: 'cubes' },
-    ],
-    relations: [
-      {
-        id: 'x = a − b',
-        display: '{x} = {a} − {b}',
-        vars: ['x', 'a', 'b'],
-        residual: (v) => v.x! - v.a! + v.b!,
-        solve: { x: (v) => v.a! - v.b!, a: (v) => v.b! + v.x!, b: (v) => v.a! - v.x! },
-      },
-      {
-        id: 'y = b − c',
-        display: '{y} = {b} − {c}',
-        vars: ['y', 'b', 'c'],
-        residual: (v) => v.y! - v.b! + v.c!,
-        solve: { y: (v) => v.b! - v.c!, b: (v) => v.c! + v.y!, c: (v) => v.b! - v.y! },
-      },
-    ],
-    steps: {
-      'x = a − b': {
-        x: {
-          expr: '{a} − {b}',
-          how: 'Count the cubes of ribbon A that stick out past ribbon B.',
-          work: (v: Values) => countOn(v.b!, v.a!),
-        },
-        a: { expr: '{b} + {x}', how: 'Ribbon A is ribbon B plus the part that sticks out.' },
-        b: { expr: '{a} − {x}', how: 'Ribbon B is ribbon A without the part that sticks out.' },
-      },
-      'y = b − c': {
-        y: {
-          expr: '{b} − {c}',
-          how: 'Count the cubes of ribbon B that stick out past ribbon C.',
-          work: (v: Values) => countOn(v.c!, v.b!),
-        },
-        b: { expr: '{c} + {y}', how: 'Ribbon B is ribbon C plus the part that sticks out.' },
-        c: { expr: '{b} − {y}', how: 'Ribbon C is ribbon B without the part that sticks out.' },
-      },
-    },
-    example: { a: 9, b: 6, c: 4, x: 3, y: 2 },
-    startWith: ['a', 'b', 'c'],
-    representation: { kind: 'ruler', lengths: ['a', 'b', 'c'], extent: 15 },
-    pictureLabels: ['x', 'y'],
-  },
+  (() => {
+    const ab = difference('x', 'a', 'b', {
+      diff: 'Line up A and B. Count the cubes that stick out past the shorter one.',
+      countOn: true,
+      first: ['A is longer. Add the extra to B.', 'A is shorter. Take the extra away from B.'],
+      second: ['A is longer. Take the extra away from A.', 'A is shorter. Add the extra to A.'],
+    });
+    const bc = difference('y', 'b', 'c', {
+      diff: 'Line up B and C. Count the cubes that stick out past the shorter one.',
+      countOn: true,
+      first: ['B is longer. Add the extra to C.', 'B is shorter. Take the extra away from C.'],
+      second: ['B is longer. Take the extra away from B.', 'B is shorter. Add the extra to B.'],
+    });
+    const mod: ModuleDef = {
+      id: 'm.1.measure-nonstandard~order',
+      title: 'Order three lengths',
+      assumptions: [
+        'Line up the ribbons at one end. The one that sticks out farthest is the longest.',
+        'If A is longer than B, and B is longer than C, then A is longer than C.',
+        'Type the lengths in any order. The picture puts them longest to shortest.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Ribbon A', 1, 15), unit: 'cubes' },
+        { ...whole('b', 'b', 'Ribbon B', 1, 15), unit: 'cubes' },
+        { ...whole('c', 'c', 'Ribbon C', 1, 15), unit: 'cubes' },
+        { ...whole('x', 'x', 'Difference of A and B', 0, 14), unit: 'cubes' },
+        { ...whole('y', 'y', 'Difference of B and C', 0, 14), unit: 'cubes' },
+      ],
+      relations: [ab.relation, bc.relation],
+      steps: { ...ab.steps, ...bc.steps },
+      example: { a: 9, b: 6, c: 4, x: 3, y: 2 },
+      startWith: ['a', 'b', 'c'],
+      representation: { kind: 'ruler', lengths: ['a', 'b', 'c'], extent: 15 },
+      pictureLabels: ['x', 'y'],
+    };
+    return mod;
+  })(),
 
   // Is it cut into halves? Equal and unequal parts (1.G.3).
   (() => {
@@ -741,7 +722,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       {
         id: 'D = 10t + 5f + o',
         check: (v) => `${10 * v.t!} + ${5 * v.f!} + ${v.o} = ${v.D}`,
-        display: '{D} = {t} $10 bills + {f} $5 bills + {o} $1 bills',
+        display: '{D} = $10 bills ({t}) + $5 bills ({f}) + $1 bills ({o})',
         vars: ['D', 't', 'f', 'o'],
         residual: (v) => v.D! - 10 * v.t! - 5 * v.f! - v.o!,
         solve: {
@@ -755,7 +736,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     steps: {
       'D = 10t + 5f + o': {
         D: {
-          expr: '{t} $10 bills + {f} $5 bills + {o} $1 bills',
+          expr: '$10 bills ({t}) + $5 bills ({f}) + $1 bills ({o})',
           how: 'Count the $10s by 10s. Count on the $5s by 5s, then the $1s by 1s.',
           work: (v: Values) => [
             ...billLines(v.t!, v.f!),
@@ -763,7 +744,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
           ],
         },
         t: {
-          expr: '$10 bills in ({D} − {f} $5 bills − {o} $1 bills)',
+          expr: '$10 bills in ({D} − $5 bills ({f}) − $1 bills ({o}))',
           how: 'Take away the $5s and $1s. Count the 10s in what is left.',
           work: (v: Values) => [
             ...billLines(0, v.f!),
@@ -775,7 +756,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
           ],
         },
         f: {
-          expr: '$5 bills in ({D} − {t} $10 bills − {o} $1 bills)',
+          expr: '$5 bills in ({D} − $10 bills ({t}) − $1 bills ({o}))',
           how: 'Take away the $10s and $1s. Count the 5s in what is left.',
           work: (v: Values) => [
             ...billLines(v.t!, 0),
@@ -787,7 +768,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
           ],
         },
         o: {
-          expr: '{D} − {t} $10 bills − {f} $5 bills',
+          expr: '{D} − $10 bills ({t}) − $5 bills ({f})',
           how: 'Take away the $10s and $5s. The rest is $1 bills.',
           work: (v: Values) => [
             ...billLines(v.t!, v.f!),
@@ -976,7 +957,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       assumptions: [
         'A number sentence is true when both sides are the same amount.',
         'Work out each side first: 7 − 1 = 6 and 4 + 2 = 6, so 7 − 1 = 4 + 2 is true.',
-        'A side can be one number: 8 = 10 − 2 is true.',
+        'A side can be one number: 8 = 10 − 2 is true. Type 0 for the empty box.',
       ],
       variables: [
         whole('a', 'a', 'Start on left', 0, 20),
@@ -1193,11 +1174,12 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     assumptions: [
       'Price = money you have + money you still need.',
       'Count up from the money you have to the price.',
+      'Type money in cents: $1.25 is 125¢.',
     ],
     variables: [
-      { ...whole('H', 'H', 'Money you have', 0, 1000), unit: '¢' },
-      { ...whole('M', 'M', 'Money you still need', 0, 1000), unit: '¢' },
       { ...whole('P', 'P', 'Price', 0, 1000), unit: '¢' },
+      { ...whole('H', 'H', 'Money you have', 0, 1000), unit: '¢' },
+      { ...whole('M', 'M', 'Still needed', 0, 1000), unit: '¢' },
     ],
     relations: [
       {
@@ -1238,4 +1220,53 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
   twoStep('take-add', 'Take away, then add', -1, 1, { s: 50, a: 15, m: 35, b: 20, e: 55 }),
   twoStep('take-take', 'Take away twice', -1, -1, { s: 60, a: 18, m: 42, b: 25, e: 17 }),
   twoStep('add-add', 'Add twice', 1, 1, { s: 24, a: 18, m: 42, b: 35, e: 77 }),
+
+  // Kindergarten take-away stories: start, take away, left (K.OA.2).
+  {
+    id: 'm.K.add-sub-10~take-away',
+    title: 'Take away',
+    assumptions: [
+      'Start with some. Take some away. Count how many are left.',
+      'Fewer are left than you started with.',
+    ],
+    variables: [
+      whole('s', 's', 'Start', 0, 10),
+      whole('t', 't', 'Take away', 0, 10),
+      whole('l', 'l', 'Left', 0, 10),
+    ],
+    relations: [
+      {
+        id: 'l = s − t',
+        display: '{s} − {t} = {l}',
+        vars: ['l', 's', 't'],
+        residual: (v) => v.l! - v.s! + v.t!,
+        solve: { l: (v) => v.s! - v.t!, s: (v) => v.l! + v.t!, t: (v) => v.s! - v.l! },
+      },
+    ],
+    steps: {
+      'l = s − t': {
+        l: {
+          expr: '{s} − {t}',
+          how: 'Cross out the ones taken away. Count the ones left.',
+          work: (v: Values) =>
+            v.t! > 0
+              ? [`Count back ${v.t} from ${v.s}: ${countList(v.s!, -1, v.t!)} → ${v.l}`]
+              : [],
+        },
+        s: {
+          expr: '{l} + {t}',
+          how: 'Put back the ones taken away. Count them all.',
+          work: (v: Values) => startAt(v.l!, v.t!),
+        },
+        t: {
+          expr: '{s} − {l}',
+          how: 'Count on from the ones left up to the start.',
+          work: (v: Values) => countOn(v.l!, v.s!),
+        },
+      },
+    },
+    example: { s: 7, t: 3, l: 4 },
+    startWith: ['s', 't'],
+    representation: { kind: 'tenFrame', first: 'l', second: 't', total: 's' },
+  },
 ];

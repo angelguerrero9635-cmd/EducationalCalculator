@@ -232,7 +232,7 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('steps for %
     );
     for (const s of w.steps) {
       expect(s.rearranged).toBeDefined();
-      expect(s.substituted).not.toContain('?');
+      expect(s.substituted ?? '').not.toContain('?');
     }
     expect(w.missing).toEqual([]);
     expect(w.check.length).toBe(m.relations.length);

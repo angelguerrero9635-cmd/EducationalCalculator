@@ -142,7 +142,9 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
         ]}
       />
       <Text style={[styles.sum, { color: c.text }]}>
-        {`${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
+        {takeAway
+          ? `${text(spec.total)} − ${text(spec.second)} = ${text(spec.first)}`
+          : `${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
       <Text style={[styles.legend, { color: c.textMuted }]}>
         {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : `A ten (${spec.first} ones)`}   ${takeAway ? '✕' : '○'} ${

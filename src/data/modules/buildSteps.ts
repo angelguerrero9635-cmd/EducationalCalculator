@@ -128,12 +128,16 @@ export function buildSteps(
     // Text functions get the numbers the steps show (the working values), so every line matches.
     const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;
     const work = typeof text.work === 'function' ? text.work(working) : text.work;
+    const rearranged = `${v.symbol} = ${renderTemplate(expr, vars)}`;
+    const substituted = `${v.symbol} = ${renderTemplate(expr, workVars, working)}`;
+    // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
+    const same = (x: string, y: string) => x === y.split(' (')[0];
     return {
       ...base,
       ...(text.note && direct ? { result: `${base.result} ${text.note(working)}` } : {}),
       how: typeof text.how === 'function' ? text.how(working) : text.how,
-      rearranged: `${v.symbol} = ${renderTemplate(expr, vars)}`,
-      substituted: `${v.symbol} = ${renderTemplate(expr, workVars, working)}`,
+      rearranged,
+      ...(same(substituted, base.result) || substituted === rearranged ? {} : { substituted }),
       ...(work?.length
         ? { work: work.map((line) => renderTemplate(line, workVars, working)) }
         : {}),

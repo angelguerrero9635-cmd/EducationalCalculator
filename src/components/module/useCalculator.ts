@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import type { ModuleDef } from '@/data/modules';
 import type { SolveResult } from '@/engine/solve';
@@ -27,6 +27,14 @@ export interface Calculator {
   unknownCount: number;
   /** Sets one or more variables (formula units) as the newest input; `undefined` clears. */
   set: (updates: Record<string, number | undefined>) => void;
+  /**
+   * Typing in a box: `startTyping` when it gets focus, `endTyping` when it loses it. While a
+   * box is being typed in, each keystroke is worked out from the values as they were at
+   * focus, so a half-typed number ("1" on the way to "12") can't clear the student's other
+   * numbers.
+   */
+  startTyping: () => void;
+  endTyping: () => void;
   /** Sets a variable from a number in its shown unit. */
   setShown: (id: string, shown: number | undefined) => void;
   clear: () => void;
@@ -69,6 +77,8 @@ export function useCalculator(module: ModuleDef): Calculator {
   });
 
   const units = useMemo(() => makeUnitContext(module, state.choice), [module, state.choice]);
+  /** The values when the box being typed in got focus (see `startTyping`). */
+  const typingFrom = useRef<CalcState | null>(null);
 
   const set = useCallback(
     (updates: Record<string, number | undefined>) =>
@@ -107,12 +117,18 @@ export function useCalculator(module: ModuleDef): Calculator {
       unknownCount: unknown.length,
       set,
       // Typing: on the untouched example this starts a fresh problem (see typeValue).
+      startTyping: () => {
+        typingFrom.current = state.calc;
+      },
+      endTyping: () => {
+        typingFrom.current = null;
+      },
       setShown: (id, shown) =>
         setState((s) => ({
           ...s,
           calc: typeValue(
             makeUnitContext(module, s.choice).system,
-            s.calc,
+            typingFrom.current ?? s.calc,
             id,
             shown === undefined ? undefined : units.fromDisplay(id, shown),
             clearGivens(module),

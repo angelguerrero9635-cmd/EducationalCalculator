@@ -114,8 +114,8 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Text style={[styles.caption, { color: c.text }]}>
         {`${spec.left.map((id) => rep.variable(id).symbol).join(' + ')}${spec.takeAway ? ` − ${rep.variable(spec.takeAway).symbol}` : ''} = ${left}   ·   ${spec.right.map((id) => rep.variable(id).symbol).join(' + ')} = ${right}\n`}
         {left === right
-          ? 'Level: both sides are the same.'
-          : `Not level: ${left} on the left, ${right} on the right.`}
+          ? 'Level: both sides are the same. The number sentence is true.'
+          : `Not level: ${left} on the left, ${right} on the right. The number sentence is false.`}
       </Text>
       <Steppers
         calc={calc}

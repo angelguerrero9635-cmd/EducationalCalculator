@@ -170,7 +170,7 @@ export function countUp(from: number, to: number, unit = ''): string[] {
     lines.push(`${at}${unit} + ${h}${unit} = ${at + h}${unit}`);
     at += h;
   }
-  lines.push(`${hops.map((h) => `${h}${unit}`).join(' + ')} = ${to - from}${unit}`);
+  lines.push(`Jumps: ${hops.map((h) => `${h}${unit}`).join(' + ')} = ${to - from}${unit}`);
   return lines;
 }
 

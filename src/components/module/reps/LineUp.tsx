@@ -65,6 +65,11 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       }}
                     />
                     <Text style={[styles.num, { color: c.textMuted }]}>{i + 1}</Text>
+                    {me ? (
+                      <Text style={[styles.next, { color: c.text }]}>
+                        {`${rep.variable(spec.position).symbol} = ${p}`}
+                      </Text>
+                    ) : null}
                     {next ? <Text style={[styles.next, { color: c.text }]}>next to</Text> : null}
                   </Pressable>
                 );

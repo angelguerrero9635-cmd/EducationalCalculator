@@ -127,8 +127,12 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         placeholder="?"
         placeholderTextColor={c.textMuted}
         // On the example, a box empties on focus, so typing the same number still counts as typed.
-        onFocus={() => setDraft(calc.isExample ? '' : shown)}
+        onFocus={() => {
+          calc.startTyping();
+          setDraft(calc.isExample ? '' : shown);
+        }}
         onBlur={() => {
+          calc.endTyping();
           setDraft(null);
           setTypo(false);
         }}

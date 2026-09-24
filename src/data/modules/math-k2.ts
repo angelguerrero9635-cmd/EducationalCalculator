@@ -164,7 +164,7 @@ export function difference(
       [a]: {
         expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`),
         how: (v) => (v[d] === 0 ? same : how.first[aMore(v) ? 0 : 1]),
-        note: (v) => otherWay(v[b]!, v[d]!, aMore(v)),
+        note: (v) => (how.countOn ? '' : otherWay(v[b]!, v[d]!, aMore(v))),
         work: (v) =>
           how.countOn
             ? counting(v[b]!, v[d]!, aMore(v))
@@ -175,7 +175,7 @@ export function difference(
       [b]: {
         expr: (v) => (aMore(v) ? `{${a}} − {${d}}` : `{${a}} + {${d}}`),
         how: (v) => (v[d] === 0 ? same : how.second[aMore(v) ? 0 : 1]),
-        note: (v) => otherWay(v[a]!, v[d]!, !aMore(v)),
+        note: (v) => (how.countOn ? '' : otherWay(v[a]!, v[d]!, !aMore(v))),
         work: (v) =>
           how.countOn
             ? counting(v[a]!, v[d]!, !aMore(v))
@@ -796,7 +796,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.1.equal-sign',
     assumptions: [
-      'The equal sign means both sides are the same amount.',
+      'The equal sign means both sides are the same amount, not “the answer comes next”.',
       'To find a missing number, make both sides the same: 8 + 2 = 5 + ?',
       'Subtraction works the same way: 8 = 10 − 2 is true, because 10 − 2 is 8.',
     ],
@@ -923,7 +923,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'A ten is a group of 10 ones.',
       'In 45, the 4 means 4 tens. The 5 means 5 ones.',
-      'Trade 10 ones for 1 ten.',
+      'Trade 10 ones for 1 ten. Type the tens and the ones to find the number.',
     ],
     variables: [whole('n', 'n', 'Number', 0, 99), ...g1tens.variables],
     relations: g1tens.relations,
@@ -1055,6 +1055,13 @@ export const MATH_K2_MODULES: ModuleDef[] = [
             v.m === 30
               ? '30 minutes: long hand on 6 → 1 half hour'
               : '0 minutes: long hand on 12 → 0 half hours',
+            ...(v.h === undefined
+              ? []
+              : [
+                  v.m === 30
+                    ? `Time: ${v.h}:30 (half past ${v.h})`
+                    : `Time: ${v.h}:00 (${v.h} o’clock)`,
+                ]),
           ],
           expr: 'half hours in {m}',
           how: 'Long hand on 12: 0 half hours. Long hand on 6: 1 half hour.',
@@ -1322,7 +1329,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'Add hundreds to hundreds, tens to tens and ones to ones.',
       'Trade 10 ones for a ten, and 10 tens for a hundred, when needed.',
-      'Subtraction undoes addition: 256 + 178 = 434, so 434 − 178 = 256.',
+      'Subtraction undoes addition: 245 + 138 = 383, so 383 − 138 = 245.',
     ],
     variables: [
       whole('a', 'a', 'First number', 0, 1000),
@@ -1334,7 +1341,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       a: 'Jump back by hundreds, then tens, then ones.',
       b: 'Count up from the first number to the total by hundreds, tens and ones.',
     }),
-    example: { a: 256, b: 178, c: 434 },
+    example: { a: 245, b: 138, c: 383 },
     startWith: ['a', 'b'],
     representation: {
       kind: 'baseTen',
@@ -1556,7 +1563,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.standard-length',
     assumptions: [
-      'Line up the end of each ribbon with the ruler’s 0.',
+      'Type the longer ribbon in L and the shorter one in S.',
       '“A is 8 cm shorter than B” means B is the longer ribbon.',
       'Measure both in the same unit: inches, feet, centimeters or meters.',
     ],
@@ -1695,13 +1702,13 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     },
     assumptions: [
       'The long hand moves 5 minutes from one number to the next: count by 5s.',
-      'The short hand points at the hour, or just past it.',
+      'The hour is the number the short hand has just passed. At 7:45 it is near 8, but the hour is 7.',
       '15 minutes past is quarter past. 30 is half past. 45 is quarter to the next hour.',
     ],
     variables: [
       whole('h', 'h', 'Hour', 1, 12),
       { ...whole('m', 'm', 'Minutes past', 0, 55), step: 5 },
-      whole('k', 'k', 'Numbers past 12', 0, 11),
+      whole('k', 'k', 'Long hand points at (12 is 0)', 0, 11),
     ],
     relations: [
       {
@@ -1729,8 +1736,8 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         k: {
           work: (v) => [
             v.m! > 0
-              ? `Count by 5s to ${v.m}: ${countList(0, 5, v.k!)} → ${v.k} numbers past 12`
-              : 'Long hand on 12: 0 numbers past 12',
+              ? `Count by 5s to ${v.m}: ${countList(0, 5, v.k!)} → the long hand points at ${v.k}`
+              : 'Long hand on 12: 0 minutes',
           ],
           expr: 'fives in {m}',
           how: 'Count by 5s to the minutes. Count how many numbers you passed.',
