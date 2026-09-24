@@ -46,7 +46,7 @@ configured, and `@/` maps to `src/`. Run it with
 - **Test the module's logic, not the harness.** Where the harness reports something the app
   handles correctly (for example, a conflict the UI shows as a message), fix the harness.
 
-For each module, sample at least a few hundred cases:
+For each module, sample about 100 cases and 15 edit sequences (the harness defaults). Raise them with `SAMPLES` and `SEQUENCES` only to chase a specific failure, and rerun only the modules you are investigating (`MODULE_IDS`), to keep usage low:
 
 1. **Random givens.** Pick a random subset of variables of size `startWith.length` (and also
    larger and smaller subsets). Give each a random valid value within its min/max, whole numbers
