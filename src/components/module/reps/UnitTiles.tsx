@@ -25,6 +25,10 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const sizeVar = typeof spec.size === 'string' ? spec.size : undefined;
   const size = Math.max(1, Math.round(sizeVar ? rep.shown(sizeVar) : (spec.size as number)));
   const total = count * size;
+  const smallName = (n: number) =>
+    spec.names ? spec.names.small[n === 1 ? 0 : 1] : n === 1 ? 'cube' : 'cubes';
+  const bigName = (n: number) =>
+    spec.names ? spec.names.big[n === 1 ? 0 : 1] : rep.variable(spec.count).name.toLowerCase();
   // Room for at least 24 cubes; longer objects shrink the cubes (held steady while dragging).
   const span = useFrozen(Math.max(24, total));
 
@@ -106,7 +110,7 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.variable(spec.count).symbol} = ${count} ${rep.variable(spec.count).name.toLowerCase()}, each ${sizeVar ? `${rep.variable(sizeVar).symbol} = ` : ''}${size} ${size === 1 ? 'cube' : 'cubes'} long. ${rep.variable(spec.total).symbol} = ${total} cubes.`}
+        {`${rep.variable(spec.count).symbol} = ${count} ${bigName(count)}, each ${sizeVar ? `${rep.variable(sizeVar).symbol} = ` : ''}${size} ${smallName(size)} long. ${rep.variable(spec.total).symbol} = ${total} ${smallName(total)}.`}
       </Text>
       <Steppers
         calc={calc}

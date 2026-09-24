@@ -37,12 +37,40 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const { min, max } = range.value;
           const scale = plotH / (max - min);
           const sy = (v: number) => top + (max - Math.min(max, Math.max(min, v))) * scale;
-          const slot = (w - 16) / spec.bars.length;
+          // Room on the left for the numbered scale, when there is one.
+          const axis = spec.scale ? 30 : 0;
+          const slot = (w - 16 - axis) / spec.bars.length;
           const barW = Math.min(56, slot * 0.6);
-          const cx = (i: number) => 8 + slot * (i + 0.5);
+          const cx = (i: number) => 8 + axis + slot * (i + 0.5);
+          // Every `scale`, or every 2 × scale when the range grows past 10 marks.
+          const every = spec.scale ? spec.scale * ((max - min) / spec.scale > 10 ? 2 : 1) : 0;
+          const marks = every
+            ? Array.from({ length: Math.floor((max - min) / every) + 1 }, (_, i) => min + i * every)
+            : [];
           return (
             <>
               <Svg width={w} height={h}>
+                {marks.map((m) => [
+                  <Line
+                    key={`g${m}`}
+                    x1={axis}
+                    y1={sy(m)}
+                    x2={w - 4}
+                    y2={sy(m)}
+                    stroke={c.chartGrid}
+                    strokeWidth={chart.strokeLight}
+                  />,
+                  <ChartText
+                    key={`s${m}`}
+                    x={axis - 6}
+                    y={sy(m) + 4}
+                    fontSize={chart.tiny}
+                    fill={c.chartMuted}
+                    textAnchor="end"
+                  >
+                    {formatNumber(m)}
+                  </ChartText>,
+                ])}
                 <Line
                   x1={4}
                   y1={sy(0)}

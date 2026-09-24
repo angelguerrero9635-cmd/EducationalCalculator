@@ -788,6 +788,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       ],
       min: 0,
       max: 10,
+      scale: 1,
     },
   },
 

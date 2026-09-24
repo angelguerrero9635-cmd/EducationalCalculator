@@ -17,6 +17,12 @@ Read `docs/MODULE_GUIDE.md` first. Here is where the pieces are:
 - **Step-by-step display:** `src/components/module/StepByStep.tsx`.
 - **Grades:** each skill's grade is in `src/data/taxonomy.ts`.
 
+## Working notes (survive interruptions)
+
+Write your findings to `.review/step-clarity-reviewer.md` (git-ignored) as you finish each module, then give
+the full report at the end. If you are interrupted (for example by a rate limit), the notes let
+the work continue where it stopped. Don't write anywhere else, except where this file says so.
+
 ## 1. Print the real walkthroughs
 
 1. Write a temporary Jest file,

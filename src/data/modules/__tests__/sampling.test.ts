@@ -303,7 +303,17 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) jumps of (${NUM})`), (a, b) => a * b],
   [new RegExp(`rows of (${NUM}) in (${NUM})`), (c, n) => n / c],
   [new RegExp(`groups of (${NUM}) in (${NUM})`), (r, c) => c / r],
-  [new RegExp(`(${NUM}) shared (?:by|into) (${NUM}) (?:clips|rows)`), (a, b) => a / b],
+  [new RegExp(`(${NUM}) shared (?:by|into) (${NUM}) (?:clips|rows|groups)`), (a, b) => a / b],
+  [new RegExp(`(${NUM}) groups of (${NUM})`), (a, b) => a * b],
+  [new RegExp(`half of (${NUM})`), (a) => a / 2],
+  [new RegExp(`a third of (${NUM})`), (a) => a / 3],
+  [new RegExp(`twelves in (${NUM})`), (a) => a / 12],
+  [new RegExp(`(${NUM}) feet of (${NUM}) inches`), (a, b) => a * b],
+  [new RegExp(`trapezoids in (${NUM})`), (a) => a / 3],
+  [new RegExp(`rhombuses in (${NUM})`), (a) => a / 2],
+  [new RegExp(`(${NUM}) trapezoids`), (a) => 3 * a],
+  [new RegExp(`(${NUM}) rhombuses`), (a) => 2 * a],
+  [new RegExp(`(${NUM}) triangles`), (a) => a],
   [new RegExp(`hundreds part of (${NUM})`), (a) => 100 * Math.floor(a / 100)],
   [new RegExp(`tens part of (${NUM})`), (a) => 10 * (Math.floor(a / 10) % 10)],
   [new RegExp(`row of (${NUM})`), (a) => Math.ceil(a / 10)],
@@ -542,8 +552,9 @@ function repIssues(
       const t = val(rep.total);
       const parts = rep.coins.map((c) => val(c.var));
       if (t !== undefined && parts.every((x) => x !== undefined)) {
-        const sum = rep.coins.reduce((s, c, i) => s + c.cents * parts[i]!, 0);
-        if (Math.abs(sum - t) > 1e-9) out.push(`coins add to ${sum}¢, total shows ${t}¢`);
+        const sum =
+          rep.coins.reduce((s, c, i) => s + c.cents * parts[i]!, 0) / (rep.dollars ? 100 : 1);
+        if (Math.abs(sum - t) > 1e-9) out.push(`coins add to ${sum}, total shows ${t}`);
       }
       break;
     }

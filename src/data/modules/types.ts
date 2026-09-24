@@ -63,7 +63,7 @@ export type Representation =
       a: string;
       b: string;
       difference?: string;
-      icon: 'dot' | 'cube';
+      icon: 'dot' | 'cube' | 'cup';
       /** Words for the comparison, e.g. ['more', 'fewer'] or ['longer', 'shorter']. */
       words: [string, string];
     }
@@ -79,7 +79,14 @@ export type Representation =
    * Regular polygon with `sides` sides (and as many corners); change it with − / +. `angle`
    * words (Grade 2) say “angles” and name any 4-sided shape a quadrilateral.
    */
-  | { kind: 'polygon'; sides: string; words?: 'corner' | 'angle'; corners?: string }
+  | {
+      kind: 'polygon';
+      sides: string;
+      words?: 'corner' | 'angle';
+      corners?: string;
+      /** Draw a shape with sides of different lengths (it has the same name). */
+      irregular?: boolean;
+    }
   /** Balance scale: the counters on each pan are the listed values. Level when equal. */
   | { kind: 'balance'; left: string[]; right: string[] }
   /**
@@ -98,9 +105,23 @@ export type Representation =
    * An object measured two ways: in small units (`total`) and in bigger units of `size`. A
    * number keeps the bigger unit's size fixed (e.g. a paper clip is 2 cubes long).
    */
-  | { kind: 'unitTiles'; count: string; size: string | number; total: string }
+  | {
+      kind: 'unitTiles';
+      count: string;
+      size: string | number;
+      total: string;
+      /** Unit names, singular (default cube and the count's name, e.g. paper clip). */
+      names?: { small: [string, string]; big: [string, string] };
+    }
   /** Clock face: drag the minute hand (snaps to `minuteStep`); tap a number to set the hour. */
-  | { kind: 'clock'; hour: string; minute: string; minuteStep: number }
+  | {
+      kind: 'clock';
+      hour: string;
+      minute: string;
+      minuteStep: number;
+      /** Show an a.m. / p.m. choice next to the digital time. */
+      ampm?: boolean;
+    }
   /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
   | {
       kind: 'partition';
@@ -130,6 +151,19 @@ export type Representation =
       max: number;
       tick?: number;
     }
+  /** Number bond: the whole in the top circle, its two parts below. − / + change the values. */
+  | { kind: 'numberBond'; whole: string | number; parts: [string, string] }
+  /**
+   * A hexagon filled with pattern blocks: `trapezoids` (3 triangles each), `rhombuses` (2 each)
+   * and `triangles`. − / + change the blocks.
+   */
+  | { kind: 'patternBlocks'; trapezoids: string; rhombuses: string; triangles: string }
+  /** Children in a line facing left; one is highlighted at `position`. Tap a child to pick. */
+  | { kind: 'lineUp'; count: string; position: string; before: string; after: string }
+  /** Equal groups: `groups` circles with `each` dots in each circle. − / + change both. */
+  | { kind: 'equalGroups'; groups: string; each: string; total: string }
+  /** A prism on a base with `sides` sides (a cube when the base is a square). − / + change it. */
+  | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }
   /** Objects arranged in pairs; an odd one sticks out. */
   | { kind: 'pairs'; value: string; max: number }
   /** Array with `rows` × `columns` of dots (or unit squares that tile a rectangle). Drag the corner. */
@@ -142,12 +176,23 @@ export type Representation =
       cell?: 'dot' | 'square';
     }
   /** Objects measured against a ruler in the shown unit. Drag each object's end. */
-  | { kind: 'ruler'; lengths: string[]; difference?: string; extent: number }
+  | {
+      kind: 'ruler';
+      lengths: string[];
+      difference?: string;
+      extent: number;
+      /** One object that starts at this mark instead of 0 (a “broken ruler”). */
+      from?: string;
+      /** The mark where that object ends. */
+      to?: string;
+    }
   /** Coins by type, each with its value in cents; − / + change the counts. */
   | {
       kind: 'coins';
       coins: { var: string; cents: number; name: string }[];
       total: string;
+      /** The total is in dollars (bills) instead of cents. */
+      dollars?: boolean;
     }
   /** Cube trains built from the same parts in different orders (equal lengths). */
   | {
@@ -164,11 +209,13 @@ export type Representation =
       min: number;
       max: number;
       total?: string;
+      /** A numbered scale on the left with a grid line every `scale` (bar graphs, Grade 2+). */
+      scale?: number;
     }
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {
       kind: 'pictureGraph';
-      columns: { var: string; icon: 'circle' | 'square' | 'triangle' }[];
+      columns: { var: string; icon: 'circle' | 'square' | 'triangle' | 'star' }[];
       max: number;
       total?: string;
     }

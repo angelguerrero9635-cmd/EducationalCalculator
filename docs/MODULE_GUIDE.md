@@ -126,7 +126,15 @@ the assumptions and a table or diagram.
    a student how to use each module and flags anything hard to understand for either of them.
 10. **Textbook coverage:** run the `textbook-coverage-reviewer` agent. It maps the sections of
     widely used textbooks for the grade or course to modules and lists sections with no module.
-11. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
+11. **Layout and formatting:** run the `layout-format-reviewer` agent. It takes screenshots at
+    phone and desktop widths in light and dark mode (`scripts/review-shots.mjs`), checks
+    spacing, alignment, overlapping labels and number, symbol and punctuation formatting, and
+    fixes what is small and clear.
+12. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
     reason, in the pull request or commit message.
-12. **Visual check:** open each module and confirm the representation reads well at phone width, in
+13. **Visual check:** open each module and confirm the representation reads well at phone width, in
     light and dark mode.
+
+Reviewers keep running notes in `.review/<agent name>.md` (git-ignored), so a review that is
+interrupted can continue. Reviewers that need the browser use `scripts/review-shots.mjs` and the
+Playwright installed in the dev container (`NODE_PATH=$(npm root -g)`), not a project dependency.

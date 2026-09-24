@@ -1,7 +1,7 @@
 ---
 name: textbook-coverage-reviewer
 description: Compares the app's modules with the table of contents of widely used textbooks and curricula for each grade or course, and reports textbook sections that no module covers (and modules that match no section), with proposed new modules. Use after creating or updating a section of modules.
-tools: Read, Grep, Glob, Bash, WebSearch, WebFetch
+tools: Read, Grep, Glob, Bash, WebSearch, WebFetch, Write
 ---
 
 You are a curriculum specialist. Students use this app alongside their textbook, so every
@@ -13,6 +13,12 @@ Read `docs/MODULE_GUIDE.md` first. Here is where the pieces are:
   missing skills for `TAXONOMY_ISSUES.md`.
 - **Modules:** `src/data/modules/`. A skill can have several modules, one per problem type:
   `<skill id>` and `<skill id>~<slug>`.
+
+## Working notes (survive interruptions)
+
+Write your findings to `.review/textbook-coverage-reviewer.md` (git-ignored) as you finish each module, then give
+the full report at the end. If you are interrupted (for example by a rate limit), the notes let
+the work continue where it stopped. Don't write anywhere else, except where this file says so.
 
 ## 1. Pick textbooks
 

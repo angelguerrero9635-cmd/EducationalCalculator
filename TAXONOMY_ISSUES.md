@@ -39,30 +39,16 @@ blocks the wireframe.
    entry points to. Consider stable topic ids once topics carry content (formulas, worked
    examples).
 
-## Section 1 review: skill titles and missing skills
+## Section 1 review: skill titles and missing skills (resolved)
 
-The language reviewer checked the K–2 skill titles that students read, and the
-textbook-coverage reviewer compared K–2 with Illustrative Mathematics and Eureka Math. These
-need changes to `taxonomy.ts`, so they are listed here.
-
-9. **Skill titles above the grade's reading level.** Suggested rewrites (same meaning):
-
-   | Skill                     | Now                                                          | Suggested                                     |
-   | ------------------------- | ------------------------------------------------------------ | --------------------------------------------- |
-   | `m.K.teens-place-value`   | Teen numbers as ten ones and some more ones                  | Teen numbers: 10 ones and some more ones      |
-   | `m.K.shapes-2d-3d`        | Identify 2D and 3D shapes                                    | Name flat and solid shapes                    |
-   | `m.1.addition-properties` | Commutative and associative properties of addition           | Add in any order or grouping                  |
-   | `m.1.equal-sign`          | Meaning of the equal sign and missing addends                | The equal sign and missing numbers            |
-   | `m.1.measure-nonstandard` | Measure length with non-standard units                       | Measure length with cubes or paper clips      |
-   | `m.1.data-3-categories`   | Organize and read data with up to three categories           | Sort and compare data in three groups         |
-   | `m.1.halves-fourths`      | Partition shapes into halves and fourths                     | Cut shapes into halves and fourths            |
-   | `m.2.thirds-polygons`     | Partition into thirds; identify polygons by sides and angles | Thirds, and naming shapes by sides and angles |
-
-10. **K–2 standards with no skill.** Textbooks give each of these at least one lesson:
-    - Position words: above, below, beside, in front of, behind, next to (K.G.1).
-    - Compose shapes: put shapes together to make larger shapes (K.G.6, 1.G.2).
-    - Capacity (compare how much containers hold), usually taught with K.MD.1–2.
-    - Faces of cubes and other solids (2.G.1 names "cubes" as well as polygons).
+9. **Skill titles above the grade's reading level.** Resolved: `taxonomy.ts` now uses the
+   language reviewer's titles for 8 K–2 skills (for example "Add in any order or grouping").
+10. **K–2 standards with no skill.** Resolved:
+    - Added `m.K.position-words` (K.G.1) and `m.K.compose-shapes` (K.G.6, 1.G.2).
+    - Capacity is a problem type of `m.K.measurable-attributes`, now titled "Compare length,
+      height, weight and capacity".
+    - Faces of cubes and other solids (2.G.1) is a problem type of `m.2.thirds-polygons`, now
+      titled "Thirds, and naming shapes and solids by sides, angles and faces".
 
 ## Suggested additions (would remove UI-side derivations)
 

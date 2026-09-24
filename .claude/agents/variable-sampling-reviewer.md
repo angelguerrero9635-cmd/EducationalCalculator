@@ -17,9 +17,26 @@ Read `docs/MODULE_GUIDE.md` first. The code you will use:
 - **Units:** `src/engine/unitContext.ts` (`makeUnitContext`, `unitOptions`).
 - **Step-by-step:** `src/data/modules/buildSteps.ts`.
 
-## 1. Write a sampling harness
+## Working notes (survive interruptions)
 
-Write it at `src/data/modules/__tests__/sampling.test.ts`, as a Jest test. ts-jest is already
+Write your findings to `.review/variable-sampling-reviewer.md` (git-ignored) as you finish each module, then give
+the full report at the end. If you are interrupted (for example by a rate limit), the notes let
+the work continue where it stopped. Don't write anywhere else, except where this file says so.
+
+## 1. Run and extend the sampling harness
+
+The harness already exists at `src/data/modules/__tests__/sampling.test.ts`. Run it first on
+the modules you were given:
+
+```
+MODULE_IDS=m.K.,m.1. SAMPLING_REPORT=1 pnpm -s test src/data/modules/__tests__/sampling.test.ts
+```
+
+Then extend it where it can't check something. Every `[harness] can't evaluate …` line is a gap:
+teach the harness that phrase (the `PHRASES` table) so the math is checked, rather than
+reporting it. Add checks for new picture kinds in the representation section.
+
+The harness is a Jest test. ts-jest is already
 configured, and `@/` maps to `src/`. Run it with
 `pnpm -s test src/data/modules/__tests__/sampling.test.ts`.
 

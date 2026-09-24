@@ -9,6 +9,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'ruler' }>;
 
@@ -22,7 +23,17 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const start = useRef(0);
   const unit = rep.unit(spec.lengths[0]!) ?? '';
   const shown = spec.lengths.map((id) => rep.shown(id));
-  const fit = useFrozen(Math.max(spec.extent, Math.ceil(Math.max(...shown))));
+  // A broken ruler: the object starts at a mark other than 0.
+  const offset = spec.from ? rep.shown(spec.from) : 0;
+  const fit = useFrozen(Math.max(spec.extent, Math.ceil(offset + Math.max(...shown))));
+
+  /** "Longest to shortest: Red (a) 9, Blue (b) 6, Green (c) 4." */
+  const order = () =>
+    `Longest to shortest: ${spec.lengths
+      .map((id, i) => ({ id, x: shown[i]! }))
+      .sort((p, q) => q.x - p.x)
+      .map((p) => `${rep.variable(p.id).name} ${formatNumber(p.x)}`)
+      .join(', ')}.`;
 
   /** "Ribbon A is 4 cm longer than ribbon B." */
   const compare = () => {
@@ -49,7 +60,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {spec.lengths.map((id, i) => (
                   <Rect
                     key={id}
-                    x={left}
+                    x={left + offset * scale}
                     y={12 + i * 34}
                     width={Math.max(2, shown[i]! * scale)}
                     height={20}
@@ -62,10 +73,11 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {spec.lengths.map((id, i) => {
                   // Short bars: put the name after the bar's end so it stays readable.
                   const inside = shown[i]! * scale >= 64;
+                  const x0 = left + offset * scale;
                   return (
                     <ChartText
                       key={`l${id}`}
-                      x={inside ? left + 6 : left + Math.max(2, shown[i]! * scale) + 6}
+                      x={inside ? x0 + 6 : x0 + Math.max(2, shown[i]! * scale) + 6}
                       y={12 + i * 34 + 15}
                       fontSize={chart.small}
                       fill={inside && i === 0 ? c.onChartHighlight : c.chartInk}
@@ -117,7 +129,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <DragHandle
                   key={id}
                   testID={`drag-${id}`}
-                  x={left + shown[i]! * scale}
+                  x={left + (offset + shown[i]!) * scale}
                   y={12 + i * 34 + 10}
                   label={rep.variable(id).name}
                   onStart={() => {
@@ -137,6 +149,17 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
+      {spec.from ? (
+        <>
+          <Text style={[styles.caption, { color: c.text }]}>
+            {`Starts at ${rep.label(spec.from)}${spec.to ? `, ends at ${rep.label(spec.to)}` : ''}. Length: ${rep.label(spec.lengths[0]!)}.`}
+          </Text>
+          <Steppers calc={calc} items={[{ var: spec.from, steps: [1], pin: [spec.lengths[0]!] }]} />
+        </>
+      ) : null}
+      {spec.lengths.length > 2 && spec.lengths.every(rep.known) ? (
+        <Text style={[styles.caption, { color: c.text }]}>{order()}</Text>
+      ) : null}
       {spec.difference && spec.lengths.length === 2 && spec.lengths.every(rep.known) ? (
         <Text style={[styles.caption, { color: c.text }]}>{compare()}</Text>
       ) : spec.difference ? (

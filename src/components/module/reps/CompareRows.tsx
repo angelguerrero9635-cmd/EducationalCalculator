@@ -23,7 +23,8 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const more = a > b ? spec.a : spec.b;
   const less = a > b ? spec.b : spec.a;
   const n = Math.abs(a - b);
-  const amount = spec.icon === 'cube' ? `${n} ${n === 1 ? 'cube' : 'cubes'} ` : `${n} `;
+  const unitWord = spec.icon === 'cube' ? 'cube' : spec.icon === 'cup' ? 'cup' : '';
+  const amount = unitWord ? `${n} ${n === 1 ? unitWord : `${unitWord}s`} ` : `${n} `;
   const name = (id: string) => rep.variable(id).name;
   // "A has 3 more than B." / "Pencil A is 3 cubes longer than pencil B."
   const verdict =
@@ -35,7 +36,9 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
           : 'They are equal.'
         : spec.icon === 'cube'
           ? `${name(more)} is ${amount}${spec.words[0]} than ${name(less)}. ${name(less)} is ${amount}${spec.words[1]}.`
-          : `${name(more)} has ${amount}${spec.words[0]}. ${name(less)} has ${amount}${spec.words[1]}.`;
+          : spec.icon === 'cup'
+            ? `${name(more)} holds ${amount}${spec.words[0]} than ${name(less)}.`
+            : `${name(more)} has ${amount}${spec.words[0]}. ${name(less)} has ${amount}${spec.words[1]}.`;
   // Cubes touch (a length); counters have space between them.
   const inner = spec.icon === 'cube' ? 1 : 0.78;
 
@@ -78,6 +81,14 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                               width: cell * inner,
                               height: cell * inner,
                               borderRadius: spec.icon === 'dot' ? cell : 0,
+                              // A cup: narrower at the bottom, rounded underneath.
+                              ...(spec.icon === 'cup'
+                                ? {
+                                    width: cell * 0.7,
+                                    borderBottomLeftRadius: cell * 0.3,
+                                    borderBottomRightRadius: cell * 0.3,
+                                  }
+                                : {}),
                               borderWidth: filled ? chart.strokeLight : StyleSheet.hairlineWidth,
                               borderColor: filled ? c.chartInk : c.chartGrid,
                               backgroundColor: filled
@@ -101,7 +112,9 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Text style={[styles.legend, { color: c.textMuted }]}>
         {spec.icon === 'dot'
           ? 'Dark counters have no partner in the other row.'
-          : 'Dark cubes stick out past the shorter one.'}
+          : spec.icon === 'cup'
+            ? 'Dark cups are the extra that only one container holds.'
+            : 'Dark cubes stick out past the shorter one.'}
       </Text>
     </View>
   );

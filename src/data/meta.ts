@@ -46,6 +46,10 @@ const PICTURE_NAMES: Record<string, string> = {
   partition: 'shape cut into equal parts',
   hops: 'number line with jumps',
   numberBond: 'number bond',
+  patternBlocks: 'pattern blocks',
+  lineUp: 'children in a line',
+  equalGroups: 'equal groups',
+  prism: 'solid shape',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

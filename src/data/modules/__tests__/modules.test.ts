@@ -41,10 +41,23 @@ function representationVars(r: Representation): string[] {
       return [r.value];
     case 'hops':
       return [r.start, ...r.hops.map((x) => x.var), r.end];
+    case 'numberBond':
+      return [r.whole, ...r.parts].filter((v): v is string => typeof v === 'string');
+    case 'patternBlocks':
+      return [r.trapezoids, r.rhombuses, r.triangles];
+    case 'lineUp':
+      return [r.count, r.position, r.before, r.after];
+    case 'equalGroups':
+      return [r.groups, r.each, r.total];
+    case 'prism':
+      return [r.sides, r.faces, r.edges, r.corners];
     case 'array':
       return [r.rows, r.columns, r.total];
     case 'ruler':
-      return [...r.lengths, ...(r.difference ? [r.difference] : [])];
+      return [
+        ...r.lengths,
+        ...[r.difference, r.from, r.to].filter((v): v is string => typeof v === 'string'),
+      ];
     case 'coins':
       return [...r.coins.map((c) => c.var), r.total];
     case 'cubeTrains':
@@ -95,6 +108,10 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
     expect(resolveItem(moduleOwner(m.id))).toBeDefined();
     // Extra modules for a skill need a title for the switcher.
     if (m.id.includes('~')) expect(m.title).toBeTruthy();
+  });
+
+  it('has a title only when it is a problem type (main lessons use the skill title)', () => {
+    expect(m.id.includes('~') ? !!m.title : m.title === undefined).toBe(true);
   });
 
   it('has assumptions, unique variables and relations over declared variables', () => {

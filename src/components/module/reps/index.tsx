@@ -10,6 +10,11 @@ import { CubeTrains } from './CubeTrains';
 import { DotArray } from './DotArray';
 import { HundredChart } from './HundredChart';
 import { Hops } from './Hops';
+import { EqualGroups } from './EqualGroups';
+import { LineUp } from './LineUp';
+import { NumberBond } from './NumberBond';
+import { PatternBlocks } from './PatternBlocks';
+import { Prism } from './Prism';
 import { Pairs } from './Pairs';
 import { Partition } from './Partition';
 import { PolygonShape } from './PolygonShape';
@@ -50,6 +55,16 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <NumberLine spec={spec} calc={calc} />;
     case 'hops':
       return <Hops spec={spec} calc={calc} />;
+    case 'numberBond':
+      return <NumberBond spec={spec} calc={calc} />;
+    case 'patternBlocks':
+      return <PatternBlocks spec={spec} calc={calc} />;
+    case 'lineUp':
+      return <LineUp spec={spec} calc={calc} />;
+    case 'equalGroups':
+      return <EqualGroups spec={spec} calc={calc} />;
+    case 'prism':
+      return <Prism spec={spec} calc={calc} />;
     case 'bars':
       return <Bars spec={spec} calc={calc} />;
     case 'rectangle':

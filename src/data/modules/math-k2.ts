@@ -638,7 +638,6 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   // ─── Grade 1 ───────────────────────────────────────────────────────────────
   {
     id: 'm.1.add-sub-20',
-    title: 'Add and subtract',
     assumptions: [
       'All numbers are 0 to 20.',
       'Make a ten: 8 + 5 = 8 + 2 + 3 = 10 + 3.',
@@ -859,7 +858,6 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.1.tens-ones',
-    title: 'Tens and ones',
     assumptions: [
       'A ten is a group of 10 ones.',
       'In 45, the 4 means 4 tens. The 5 means 5 ones.',
@@ -1107,7 +1105,6 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   // ─── Grade 2 ───────────────────────────────────────────────────────────────
   {
     id: 'm.2.add-sub-100-fluency',
-    title: 'Add and subtract',
     assumptions: [
       'Whole numbers up to 100.',
       'Jump by tens, then by ones: 38 + 25 = 38 + 20 + 5.',
@@ -1139,7 +1136,6 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.place-value-1000',
-    title: 'Place value',
     assumptions: [
       '10 ones make 1 ten; 10 tens make 1 hundred.',
       'A digit’s place tells its value: in 347, the 3 means 3 hundreds.',
@@ -1503,7 +1499,6 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.standard-length',
-    title: 'Compare lengths',
     assumptions: [
       'Line up the end of the object with the ruler’s 0.',
       'Measure both in the same unit: inches, feet, centimeters or meters.',
@@ -1525,7 +1520,6 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.money',
-    title: 'Count money',
     assumptions: [
       'A dollar is 100¢ ($1.00).',
       'Quarter 25¢, dime 10¢, nickel 5¢, penny 1¢.',
@@ -1664,12 +1658,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     },
     example: { h: 4, m: 25, k: 5 },
     startWith: ['h', 'm'],
-    representation: { kind: 'clock', hour: 'h', minute: 'm', minuteStep: 5 },
+    representation: { kind: 'clock', hour: 'h', minute: 'm', minuteStep: 5, ampm: true },
   },
 
   {
     id: 'm.2.graphs-line-plots',
-    title: 'Bar graph',
     assumptions: [
       'Each bar’s height is the count for that category. Read the scale starting at 0.',
       'Add the bars to find the total.',
@@ -1738,12 +1731,12 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       min: 0,
       max: 10,
       total: 'n',
+      scale: 1,
     },
   },
 
   {
     id: 'm.2.thirds-polygons',
-    title: 'Thirds',
     assumptions: [
       'Equal parts are the same size. 3 equal parts are thirds.',
       'Equal parts can have different shapes but the same size.',

@@ -31,6 +31,15 @@ function Shape({
         <Circle cx={s / 2} cy={s / 2} r={s / 2 - pad} {...common} />
       ) : icon === 'square' ? (
         <Rect x={pad} y={pad} width={s - 2 * pad} height={s - 2 * pad} {...common} />
+      ) : icon === 'star' ? (
+        <Polygon
+          points={Array.from({ length: 10 }, (_, i) => {
+            const r = i % 2 === 0 ? s / 2 - pad : (s / 2 - pad) * 0.45;
+            const t = -Math.PI / 2 + (Math.PI * i) / 5;
+            return `${s / 2 + r * Math.cos(t)},${s / 2 + r * Math.sin(t)}`;
+          }).join(' ')}
+          {...common}
+        />
       ) : (
         <Polygon points={`${s / 2},${pad} ${s - pad},${s - pad} ${pad},${s - pad}`} {...common} />
       )}

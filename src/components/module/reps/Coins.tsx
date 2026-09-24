@@ -16,6 +16,8 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const ids = spec.coins.map((k) => k.var);
   const total = rep.known(spec.total) ? Math.round(rep.shown(spec.total)) : undefined;
+  // In dollars (bills) or in cents (coins), with the other form after it.
+  const totalText = (t: number) => (spec.dollars ? `$${t}` : `${t}¢ = $${(t / 100).toFixed(2)}`);
   // US coin diameters (mm), so the drawings keep true relative sizes.
   const sizes: Record<number, number> = { 25: 24.3, 10: 17.9, 5: 21.2, 1: 19.1 };
 
@@ -31,7 +33,7 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
             <View key={coin.var} style={styles.row}>
               <Text
                 style={[styles.name, { color: c.text }]}
-              >{`${coin.name} (${money} each): ${rep.label(coin.var)}`}</Text>
+              >{`${coin.name}${coin.name.startsWith('$') ? '' : ` (${money} each)`}: ${rep.label(coin.var)}`}</Text>
               <View style={styles.coins}>
                 {Array.from({ length: n }, (_, i) => (
                   <View
@@ -66,7 +68,7 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Text style={[styles.total, { color: c.text }]}>
         {total === undefined
           ? `Total: ${rep.variable(spec.total).symbol} = ?`
-          : `Total: ${rep.variable(spec.total).symbol} = ${total}¢ = $${(total / 100).toFixed(2)}`}
+          : `Total: ${rep.variable(spec.total).symbol} = ${totalText(total)}`}
       </Text>
       <Steppers
         calc={calc}

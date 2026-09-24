@@ -37,6 +37,11 @@ const CHECKS = [
     ['Compare problems: Add and subtract within 20', 'Problem type · Add and subtract within 20'],
   ],
   [
+    '/skill/m.K.position-words',
+    200,
+    ['Position words: in front of, behind, next to', 'The front of the line is on the left.'],
+  ],
+  [
     '/skill/s.K.pushes-pulls',
     200,
     ['Pushes and pulls change motion – Kindergarten Science', 'Kindergarten · Science'],

@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line } from 'react-native-svg';
 
+import { SegmentedControl } from '@/components/SegmentedControl';
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
@@ -20,6 +21,8 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef({ x: 0, y: 0 });
+  // a.m. or p.m. doesn't change the hands, only what the time means (morning or afternoon).
+  const [half, setHalf] = useState<'am' | 'pm'>('am');
   const h = rep.known(spec.hour) ? Math.round(rep.shown(spec.hour)) : 12;
   const m = rep.known(spec.minute) ? Math.round(rep.shown(spec.minute)) : 0;
   const minuteAngle = (m / 60) * 2 * Math.PI;
@@ -131,8 +134,20 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.digital, { color: c.text }]}>
-        {words ? `${digital}  (${words})` : digital}
+        {`${digital}${spec.ampm ? (half === 'am' ? ' a.m.' : ' p.m.') : ''}${words ? `  (${words})` : ''}`}
       </Text>
+      {spec.ampm ? (
+        <View style={styles.toggle}>
+          <SegmentedControl
+            segments={[
+              { value: 'am', label: 'a.m. (midnight to noon)' },
+              { value: 'pm', label: 'p.m. (noon to midnight)' },
+            ]}
+            value={half}
+            onChange={setHalf}
+          />
+        </View>
+      ) : null}
       <Text style={[styles.hands, { color: c.textMuted }]}>
         {`Short hand: ${rep.label(spec.hour)}   ·   Long hand: ${rep.label(spec.minute)} minutes`}
       </Text>
@@ -149,6 +164,7 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   hands: { fontSize: font.caption + 1, textAlign: 'center' },
+  toggle: { paddingHorizontal: space.lg, marginVertical: space.sm },
   digital: {
     fontSize: font.title,
     fontWeight: '700',
