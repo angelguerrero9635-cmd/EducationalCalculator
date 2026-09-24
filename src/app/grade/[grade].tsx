@@ -55,7 +55,12 @@ export default function GradeScreen() {
         }
         renderSectionHeader={({ section }) => <SectionHeader title={section.title} />}
         renderItem={({ item }) => (
-          <ListRow testID={`skill-${item.id}`} title={item.title} route={skillRoute(item.id)} />
+          <ListRow
+            testID={`skill-${item.id}`}
+            title={item.title}
+            subtitle={item.subtitle}
+            route={skillRoute(item.id)}
+          />
         )}
         ListEmptyComponent={
           <EmptyState

@@ -5,7 +5,9 @@ import {
   courseSummary,
   divisionView,
   fieldRoute,
+  getSkill,
   gradeSections,
+  PROBLEM_TYPE_IDS,
   groupByStrand,
   levelGroups,
   myCourseCards,
@@ -60,13 +62,17 @@ describe('groupByStrand', () => {
       for (const subject of SUBJECTS) {
         const sections = gradeSections(grade, subject);
         const ids = sections.flatMap((s) => s.data.map((k) => k.id));
-        expect([...ids].sort()).toEqual(
+        // Every skill once, each followed by its problem types.
+        expect(ids.filter((id) => !id.includes('~')).sort()).toEqual(
           skillsFor(grade, subject)
             .map((k) => k.id)
             .sort(),
         );
         for (const section of sections) {
-          expect(section.data.every((k) => k.strand === section.title)).toBe(true);
+          for (const row of section.data) {
+            const skill = getSkill(row.id.split('~')[0]!)!;
+            expect(skill.strand).toBe(section.title);
+          }
         }
       }
     }
@@ -102,13 +108,13 @@ describe('Higher Ed browsing', () => {
 });
 
 describe('reachability through Browse', () => {
-  it('every skill is reachable from a grade screen', () => {
+  it('every skill and problem type is reachable from a grade screen', () => {
     const reached = new Set(
       GRADES.flatMap((g) =>
         SUBJECTS.flatMap((s) => gradeSections(g, s).flatMap((sec) => sec.data.map((k) => k.id))),
       ),
     );
-    expect([...reached].sort()).toEqual(SKILLS.map((s) => s.id).sort());
+    expect([...reached].sort()).toEqual([...SKILLS.map((s) => s.id), ...PROBLEM_TYPE_IDS].sort());
   });
 
   it('every course is reachable from a division or field screen', () => {
@@ -208,9 +214,11 @@ describe('search', () => {
     expect(search('   ')).toEqual([]);
   });
 
-  it('indexes every skill, course and topic', () => {
+  it('indexes every skill, problem type, course and topic', () => {
     const topics = COURSES.reduce((n, c) => n + c.topics.length, 0);
-    expect(buildSearchIndex()).toHaveLength(SKILLS.length + COURSES.length + topics);
+    expect(buildSearchIndex()).toHaveLength(
+      SKILLS.length + PROBLEM_TYPE_IDS.length + COURSES.length + topics,
+    );
   });
 });
 

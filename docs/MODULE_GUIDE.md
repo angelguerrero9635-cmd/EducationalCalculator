@@ -1,5 +1,8 @@
 # Module content guide
 
+Each problem type is its own module and page (`<skill id>~<slug>`, listed under its skill);
+there are no switchers between modules.
+
 Every skill and course topic ("module") has four sections, shown in this order after Refresh: a
 **table, chart or diagram**, **Formulas** (live calculator; "Number sentences" in K–2),
 **Assumptions**, and a **Step-by-step** walkthrough. Content lives in
@@ -117,7 +120,13 @@ the assumptions and a table or diagram.
    (`.claude/agents/step-clarity-reviewer.md`). It reads the real step-by-step walkthroughs as a
    student would and flags steps that jump to the answer (words standing for arithmetic, hidden
    conversions, collapsed operations), proposing `work` lines that show the arithmetic.
-8. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
-   reason, in the pull request or commit message.
-9. **Visual check:** open each module and confirm the representation reads well at phone width, in
-   light and dark mode.
+8. **Teacher:** run the `teacher-lesson-plan-reviewer` agent. It plans a short lesson around
+   each module and reports what helps or gets in the way in a classroom.
+9. **Tutor:** run the `tutor-walkthrough-reviewer` agent. It scripts a one-on-one session showing
+   a student how to use each module and flags anything hard to understand for either of them.
+10. **Textbook coverage:** run the `textbook-coverage-reviewer` agent. It maps the sections of
+    widely used textbooks for the grade or course to modules and lists sections with no module.
+11. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
+    reason, in the pull request or commit message.
+12. **Visual check:** open each module and confirm the representation reads well at phone width, in
+    light and dark mode.

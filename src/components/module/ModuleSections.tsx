@@ -1,12 +1,9 @@
-import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/Text';
 
 import { PlaceholderCard } from '@/components/PlaceholderCard';
 import { SectionHeader } from '@/components/SectionHeader';
-import { Dropdown } from '@/components/Dropdown';
-import { SegmentedControl } from '@/components/SegmentedControl';
-import { getModules, isEarlyGrade, type ModuleDef } from '@/data/modules';
+import { getModule, isEarlyGrade, type ModuleDef } from '@/data/modules';
 import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
@@ -50,45 +47,20 @@ function ModuleView({ module }: { module: ModuleDef }) {
  * show labelled placeholders.
  */
 export function ModuleSections({ id }: { id: string }) {
-  const modules = getModules(id);
-  const [chosen, setChosen] = useState(id);
-  const module = modules.find((m) => m.id === chosen) ?? modules[0];
-  // A skill with several modules (different question types) gets a switcher.
-  const options = modules.map((m) => ({ value: m.id, label: m.title ?? 'Lesson' }));
-  // Segments for a few short names; a menu otherwise.
-  const segmented = options.length <= 3 && options.every((o) => o.label.length <= 16);
-  return (
+  // One module per page: a skill's main lesson, or one of its problem types.
+  const module = getModule(id);
+  return module ? (
+    // Keyed so moving between modules starts from a fresh calculator.
+    <ModuleView key={module.id} module={module} />
+  ) : (
     <>
-      {modules.length > 1 && module ? (
-        <View style={styles.switcher}>
-          {segmented ? (
-            <SegmentedControl segments={options} value={module.id} onChange={setChosen} />
-          ) : (
-            <Dropdown
-              testID="module"
-              label="Problem type"
-              title="Problem type"
-              value={module.id}
-              options={options}
-              onChange={setChosen}
-            />
-          )}
-        </View>
-      ) : null}
-      {module ? (
-        // Keyed so moving between modules starts from a fresh calculator.
-        <ModuleView key={module.id} module={module} />
-      ) : (
-        <>
-          <SectionHeader title="Learn" />
-          <View style={styles.cards}>
-            <PlaceholderCard label="Table, chart or diagram" />
-            <PlaceholderCard label="Formulas" />
-            <PlaceholderCard label="Assumptions" />
-            <PlaceholderCard label="Step-by-step example" />
-          </View>
-        </>
-      )}
+      <SectionHeader title="Learn" />
+      <View style={styles.cards}>
+        <PlaceholderCard label="Table, chart or diagram" />
+        <PlaceholderCard label="Formulas" />
+        <PlaceholderCard label="Assumptions" />
+        <PlaceholderCard label="Step-by-step example" />
+      </View>
     </>
   );
 }
@@ -100,5 +72,4 @@ const styles = StyleSheet.create({
   bulletText: { flex: 1, fontSize: font.body, lineHeight: 22 },
   representation: { paddingVertical: space.lg, paddingHorizontal: space.sm },
   cards: { padding: space.lg, gap: space.md },
-  switcher: { paddingHorizontal: space.lg, paddingTop: space.md },
 });

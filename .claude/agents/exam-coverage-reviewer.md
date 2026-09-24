@@ -56,8 +56,14 @@ Check especially:
 - **Variables.** Are the variables the quantities the questions ask about, named the way the
   questions name them?
 - **Ranges.** Do the ranges cover the numbers used on tests?
-- **Pictures.** Does the picture match the diagram students see on tests, so the app builds that
-  reading skill?
+- **Pictures.** The module's diagram must match the diagram in at least one real exam item or
+  textbook example for this lesson. Name that item or example and its source. If none matches,
+  that is a [diagram] finding with the diagram to use instead.
+- **Interactive.** Every diagram must be interactive: the student changes values from the
+  picture itself (drag, tap, or − / + buttons next to it) and the formulas update. Read the
+  component in `src/components/module/reps/`. Flag any diagram that only displays values, and
+  any value shown in the picture that can't be changed from it (for example, one color of
+  counters that can be removed but not added back).
 
 ## 3. Recommend
 
@@ -87,6 +93,8 @@ Question types:
 - [gap] <what a common question needs that the module lacks> → <exact change>
 - [diagram] <diagram from test items> → <how to add it / which rep kind>
 - [new-module] <title> → <variables, relations, example, representation>
+Diagram: matches <exam or textbook example, source> | no match → <diagram to use>
+Interactive: yes | partly (<what can't be changed>) | no
 Coverage: Full | Most | Weak
 ```
 

@@ -13,8 +13,23 @@ Read `docs/MODULE_GUIDE.md` first. Module text lives in `src/data/modules/`:
 - `assumptions`
 - variable `name`s and `symbol`s
 - relation `display` templates
-- `steps` (`expr` and `how`)
-- `title`
+- `steps` (`expr`, `how`, `work` and `note`)
+- module `title` (problem-type modules, `<skill>~<slug>`)
+
+Also review the titles students read:
+
+- **Skill and topic titles** in `src/data/taxonomy.ts`. That file must not be edited; propose
+  rewrites for `TAXONOMY_ISSUES.md` instead.
+- **Section titles and fixed UI text** on the module page:
+  - Refresh, Diagram/Chart/Table, Formulas or Number sentences, Assumptions, Step-by-step
+  - We know, Find, Check, Next
+  - button labels and prompts
+
+  These are in `src/components/module/` (ModuleSections.tsx, FormulaSection.tsx,
+  StepByStep.tsx, reps/index.tsx `representationTitle`), `src/components/DetailParts.tsx` and
+  `src/app/`.
+
+- **Page titles and descriptions** in `src/data/meta.ts`.
 
 Picture labels and captions are in `src/components/module/reps/`. Shared step-by-step wording is
 in `src/data/modules/buildSteps.ts` and `src/components/module/StepByStep.tsx`. The grade of each

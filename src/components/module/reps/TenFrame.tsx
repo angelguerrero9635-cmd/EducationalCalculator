@@ -6,6 +6,7 @@ import { chart, font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep } from './common';
+import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'tenFrame' }>;
 
@@ -89,6 +90,38 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
+      {/* − / + for each color, so both kinds of counters can be added and taken away. */}
+      <Steppers
+        calc={calc}
+        items={[
+          ...(typeof spec.first === 'string'
+            ? [
+                {
+                  var: spec.first,
+                  steps: [1],
+                  marker: '●',
+                  pin:
+                    typeof spec.second === 'string' && typeof spec.total === 'string'
+                      ? [spec.second]
+                      : [],
+                },
+              ]
+            : []),
+          ...(typeof spec.second === 'string'
+            ? [
+                {
+                  var: spec.second,
+                  steps: [1],
+                  marker: '○',
+                  pin:
+                    typeof spec.first === 'string' && typeof spec.total === 'string'
+                      ? [spec.first]
+                      : [],
+                },
+              ]
+            : []),
+        ]}
+      />
       <Text style={[styles.sum, { color: c.text }]}>
         {`${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>

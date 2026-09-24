@@ -15,6 +15,8 @@ export interface StepperItem {
   pin: string[];
   /** Wrap around within [min, max] (a clock's hours: 12 + 1 → 1). */
   wrap?: [number, number];
+  /** Shown before the label to tie the buttons to the picture, e.g. "●" for dark counters. */
+  marker?: string;
 }
 
 /** Rows of − / + buttons that change values by fixed steps; part of a diagram's controls. */
@@ -57,7 +59,7 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
         const known = rep.known(item.var);
         const label = (
           <Text style={[styles.label, { color: c.text }]} numberOfLines={1}>
-            {`${v.name}: ${v.symbol} = ${known ? formatNumber(rep.shown(item.var), v) : '?'}`}
+            {`${item.marker ? `${item.marker} ` : ''}${v.name}: ${v.symbol} = ${known ? formatNumber(rep.shown(item.var), v) : '?'}`}
           </Text>
         );
         const minus = (

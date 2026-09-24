@@ -32,6 +32,11 @@ const CHECKS = [
     ],
   ],
   [
+    '/skill/m.1.add-sub-20~compare',
+    200,
+    ['Compare problems: Add and subtract within 20', 'Problem type · Add and subtract within 20'],
+  ],
+  [
     '/skill/s.K.pushes-pulls',
     200,
     ['Pushes and pulls change motion – Kindergarten Science', 'Kindergarten · Science'],

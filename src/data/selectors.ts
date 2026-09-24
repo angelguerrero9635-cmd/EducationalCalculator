@@ -19,6 +19,7 @@ import {
   type K12Subject,
   type Skill,
 } from './taxonomy';
+import { getModule, MODULES, moduleOwner } from './modules';
 
 export type TaxonomyNode = Skill | Course;
 
@@ -49,6 +50,39 @@ export const getSkill = (id: string): Skill | undefined => {
   const node = getNode(id);
   return node && isSkill(node) ? node : undefined;
 };
+
+// ─── Problem types ────────────────────────────────────────────────────────────
+// A skill can have extra modules for other question types ("<skill id>~<slug>"). Each is its
+// own page and its own row in lists, next to the skill it belongs to.
+
+export interface ProblemType {
+  /** Module id, e.g. "m.1.add-sub-20~compare". */
+  id: string;
+  title: string;
+  skill: Skill;
+}
+
+/** The extra problem-type modules of a skill, in content order. */
+export const problemTypes = (skillId: string): ProblemType[] => {
+  const skill = getSkill(skillId);
+  if (!skill) return [];
+  return MODULES.filter((m) => m.id !== skillId && moduleOwner(m.id) === skillId).map((m) => ({
+    id: m.id,
+    title: m.title ?? m.id,
+    skill,
+  }));
+};
+
+/** A problem-type page id ("m.1.add-sub-20~compare") → its module title and skill. */
+export const getProblemType = (id: string): ProblemType | undefined => {
+  if (!id.includes('~')) return undefined;
+  const skill = getSkill(moduleOwner(id));
+  const module = getModule(id);
+  return skill && module ? { id, title: module.title ?? id, skill } : undefined;
+};
+
+/** Every problem-type module id (for pre-rendering pages). */
+export const PROBLEM_TYPE_IDS = MODULES.map((m) => m.id).filter((id) => getProblemType(id));
 
 export const getCourse = (id: string): Course | undefined => {
   const node = getNode(id);
@@ -134,8 +168,26 @@ export function groupByStrand(skills: readonly Skill[]): StrandSection[] {
   return [...sections].map(([title, data]) => ({ title, data }));
 }
 
+/** A row on a grade page: a skill, or one of its problem types (listed right after it). */
+export interface GradeRow {
+  id: string;
+  title: string;
+  /** For problem types: the skill they belong to. */
+  subtitle?: string;
+}
+
 export const gradeSections = (grade: Grade, subject: K12Subject) =>
-  groupByStrand(skillsFor(grade, subject));
+  groupByStrand(skillsFor(grade, subject)).map(({ title, data }) => ({
+    title,
+    data: data.flatMap((skill): GradeRow[] => [
+      { id: skill.id, title: skill.title },
+      ...problemTypes(skill.id).map((t) => ({
+        id: t.id,
+        title: t.title,
+        subtitle: `Problem type · ${skill.title}`,
+      })),
+    ]),
+  }));
 
 // ─── Browse: Higher Ed ───────────────────────────────────────────────────────
 
@@ -215,6 +267,16 @@ export function buildSearchIndex(
       route: skillRoute(s.id),
       text: normalize(`${s.title} ${label} ${s.strand}`),
     });
+    for (const t of problemTypes(s.id)) {
+      entries.push({
+        key: t.id,
+        kind: 'skill',
+        title: t.title,
+        label: `${label} · ${s.title}`,
+        route: skillRoute(t.id),
+        text: normalize(`${t.title} ${s.title} ${label} ${s.strand}`),
+      });
+    }
   }
   for (const c of courses) {
     const label = nodeContext(c);
@@ -397,6 +459,15 @@ export function resolveItem(key: string): ResolvedItem | undefined {
       route: topicRoute(topic.course.id, topic.index),
     };
   }
+  const type = getProblemType(key);
+  if (type) {
+    return {
+      key,
+      title: type.title,
+      label: `${nodeContext(type.skill)} · ${type.skill.title}`,
+      route: skillRoute(key),
+    };
+  }
   const node = getNode(key);
   const route = nodeRoute(key);
   if (!node || !route) return undefined;
@@ -422,7 +493,7 @@ export function parentOf(screen: string, params: Record<string, unknown>): Paren
   const p = (k: string) => (params[k] === undefined ? '' : String(params[k]));
   switch (screen) {
     case 'skill/[id]': {
-      const skill = getSkill(p('id'));
+      const skill = getSkill(p('id')) ?? getProblemType(p('id'))?.skill;
       return skill
         ? { label: gradeLabel(skill.grade), target: gradeRoute(skill.grade, skill.subject) }
         : HOME;
@@ -462,7 +533,7 @@ export function screenTitle(screen: string, params: Record<string, unknown>): st
   const p = (k: string) => (params[k] === undefined ? '' : String(params[k]));
   switch (screen) {
     case 'skill/[id]':
-      return getSkill(p('id'))?.title;
+      return getSkill(p('id'))?.title ?? getProblemType(p('id'))?.title;
     case 'course/[id]/index':
       return getCourse(p('id'))?.title;
     case 'course/[id]/topic/[index]':

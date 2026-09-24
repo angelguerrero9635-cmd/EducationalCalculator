@@ -2,13 +2,14 @@
  * Page titles and descriptions (for <title>, meta description and link previews), built from
  * the taxonomy and module content so every pre-rendered page describes itself.
  */
-import { getModules } from './modules';
+import { getModule, getModules } from './modules';
 import {
   countLabel,
   divisionLabel,
   getField,
   getTopic,
   subjectLabel,
+  type ProblemType,
   type TaxonomyNode,
 } from './selectors';
 import {
@@ -34,9 +35,11 @@ const clip = (text: string, max = 160) =>
 /** "tenFrame" → "ten frame" (the picture a module uses). */
 const pictureName = (kind: string) => kind.replace(/([A-Z])/g, ' $1').toLowerCase();
 
-/** What the lesson page offers, from its module(s), e.g. "Interactive ten frame, …". */
+/** What the lesson page offers, from its module, e.g. "Interactive ten frame, …". */
 function lessonSummary(id: string, early: boolean): string {
-  const modules = getModules(id);
+  const modules = id.includes('~')
+    ? [getModule(id)].filter((m) => !!m)
+    : getModules(id).slice(0, 1);
   const main = modules[0];
   if (!main) return 'Lesson coming soon, with refresh links to earlier skills.';
   const pictures = [...new Set(modules.map((m) => pictureName(m.representation.kind)))];
@@ -52,6 +55,16 @@ export function skillMeta(skill: Skill): Meta {
   return {
     title: `${skill.title} – ${level}`,
     description: clip(`${level}: ${skill.title}. ${lessonSummary(skill.id, early)}`),
+  };
+}
+
+export function problemTypeMeta(type: ProblemType): Meta {
+  const { skill } = type;
+  const level = `${gradeLabel(skill.grade)} ${subjectLabel(skill.subject)}`;
+  const early = ['K', '1', '2'].includes(skill.grade);
+  return {
+    title: `${type.title}: ${skill.title} – ${level}`,
+    description: clip(`${level}: ${type.title} (${skill.title}). ${lessonSummary(type.id, early)}`),
   };
 }
 
