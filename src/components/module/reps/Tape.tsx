@@ -43,7 +43,8 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
         const [x, y] = shown as [number, number];
         if (!rep.known(a) || !rep.known(b)) return `${name(spec.difference)}: ?`;
         if (x === y) return 'The bars are the same length: no difference.';
-        return `${name(x > y ? a : b)} has ${fmt(spec.difference)} more than ${name(x > y ? b : a)}.`;
+        const lower = (id: string) => name(id).toLowerCase();
+        return `The ${lower(x > y ? a : b)} is ${fmt(spec.difference)} more than the ${lower(x > y ? b : a)}.`;
       })()
     : `${spec.parts.map(fmt).join(' + ')} = ${fmt(spec.total)}`;
 

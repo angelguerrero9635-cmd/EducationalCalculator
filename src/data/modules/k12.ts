@@ -19,9 +19,9 @@ export const K12_MODULES: ModuleDef[] = [
   {
     id: 'm.K.add-sub-10',
     assumptions: [
-      'We count whole things, from 0 to 10.',
+      'We count things from 0 to 10.',
       'Adding puts two groups together.',
-      'Taking away leaves fewer than before.',
+      'Take some away. Fewer are left.',
     ],
     variables: [
       whole('a', 'a', 'First group', 10),
@@ -64,9 +64,9 @@ export const K12_MODULES: ModuleDef[] = [
   {
     id: 'm.K.classify-count',
     assumptions: [
-      'Every object goes into exactly one group.',
+      'Put each shape in one group.',
       'Each object is counted once.',
-      'The total is all the groups added together.',
+      'Add all the groups to get the total.',
     ],
     variables: [
       whole('c', 'c', 'Circles', 10),

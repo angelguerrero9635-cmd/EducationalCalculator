@@ -19,7 +19,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
   return (
     <View style={styles.container} testID="step-by-step">
       <View style={card}>
-        <Text style={[styles.label, { color: c.textMuted }]}>GIVEN</Text>
+        <Text style={[styles.label, { color: c.textMuted }]}>WE KNOW</Text>
         <Text style={[styles.math, { color: c.text }]}>{list(w.given)}</Text>
         {w.find.length ? (
           <>
@@ -90,8 +90,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
 
       {w.steps.length === 0 && w.missing.length === 0 ? (
         <Text style={[styles.body, styles.pad, { color: c.textMuted }]}>
-          Every value was entered, so there is nothing to solve. The check below shows whether they
-          fit together.
+          You typed every number, so nothing is left to find. The check shows if they fit.
         </Text>
       ) : null}
 
@@ -99,9 +98,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
         <View style={card}>
           <Text style={[styles.stepTitle, { color: c.text }]}>Next</Text>
           <Text style={[styles.body, { color: c.textMuted }]}>
-            {`Not enough information yet. Enter another value (${w.missing
-              .map((q) => q.symbol)
-              .join(', ')}) to keep solving.`}
+            {`Type one more number (${w.missing.map((q) => q.symbol).join(', ')}) to keep going.`}
           </Text>
         </View>
       ) : null}
@@ -110,7 +107,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
         <View style={card}>
           <Text style={[styles.stepTitle, { color: c.text }]}>Check</Text>
           <Text style={[styles.body, { color: c.textMuted }]}>
-            Put the numbers back into each formula. Both sides should match.
+            Put the numbers back in. Both sides should match.
           </Text>
           {w.check.map((k) => (
             <Text key={k.formula} style={[styles.math, { color: c.text }]}>

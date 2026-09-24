@@ -80,7 +80,7 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 .map((id) =>
                   Math.round(rep.shown(id)) > spec.max
                     ? `${rep.label(id)} (past the chart)`
-                    : `${rep.label(id)} (outlined)`,
+                    : `${rep.label(id)} (in a box)`,
                 ),
             )
             .join('   ·   ')}

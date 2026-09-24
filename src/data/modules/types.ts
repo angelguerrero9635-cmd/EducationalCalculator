@@ -68,8 +68,11 @@ export type Representation =
   | { kind: 'tape'; compare: [string, string]; difference: string }
   /** Line plot: an X for each object above its value on a number line; tap to set counts. */
   | { kind: 'linePlot'; points: { var: string; at: number }[]; unit?: string }
-  /** Regular polygon with `sides` sides (and as many corners); change it with − / +. */
-  | { kind: 'polygon'; sides: string }
+  /**
+   * Regular polygon with `sides` sides (and as many corners); change it with − / +. `angle`
+   * words (Grade 2) say “angles” and name any 4-sided shape a quadrilateral.
+   */
+  | { kind: 'polygon'; sides: string; words?: 'corner' | 'angle' }
   /** Balance scale: the counters on each pan are the listed values. Level when equal. */
   | { kind: 'balance'; left: string[]; right: string[] }
   /**
@@ -220,7 +223,8 @@ export type Representation =
 export interface StepText {
   /** The rearranged right side; a function picks a template from the solved values. */
   expr: string | ((v: Values) => string);
-  how: string;
+  /** A plain-language explanation; a function picks the sentence from the solved values. */
+  how: string | ((v: Values) => string);
 }
 
 export interface ModuleDef {

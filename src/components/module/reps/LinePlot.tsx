@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/Text';
+import { getUnit } from '@/engine/units';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
@@ -65,7 +66,9 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         ))}
       </View>
       {spec.unit ? (
-        <Text style={[styles.unit, { color: c.textMuted }]}>{`Length (${spec.unit})`}</Text>
+        <Text
+          style={[styles.unit, { color: c.textMuted }]}
+        >{`Length in ${getUnit(spec.unit)?.name ?? spec.unit}`}</Text>
       ) : null}
     </View>
   );

@@ -99,7 +99,9 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       {verdict ? <Text style={[styles.verdict, { color: c.text }]}>{verdict}</Text> : null}
       <Text style={[styles.legend, { color: c.textMuted }]}>
-        {`Dark ${spec.icon === 'dot' ? 'counters' : 'cubes'} have no partner in the other row.`}
+        {spec.icon === 'dot'
+          ? 'Dark counters have no partner in the other row.'
+          : 'Dark cubes stick out past the shorter one.'}
       </Text>
     </View>
   );

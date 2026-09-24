@@ -93,7 +93,7 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {`${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
       <Text style={[styles.legend, { color: c.textMuted }]}>
-        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : `${spec.first} ones make a ten`}   ○ ${
+        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : `A ten (${spec.first} ones)`}   ○ ${
           typeof spec.second === 'string' ? rep.tag(spec.second) : `${spec.second} more`
         }`}
       </Text>

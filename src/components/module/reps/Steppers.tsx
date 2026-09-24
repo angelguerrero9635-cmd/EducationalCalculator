@@ -39,7 +39,7 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
       key={delta}
       testID={`step-${item.var}-${delta > 0 ? '+' : '-'}${Math.abs(delta)}`}
       accessibilityRole="button"
-      accessibilityLabel={`${delta > 0 ? 'Add' : 'Take away'} ${Math.abs(delta)} ${rep.variable(item.var).name}`}
+      accessibilityLabel={`${rep.variable(item.var).name}: ${delta > 0 ? 'add' : 'take away'} ${Math.abs(delta)}`}
       onPress={() => bump(item, delta)}
       style={({ pressed }) => [
         styles.button,

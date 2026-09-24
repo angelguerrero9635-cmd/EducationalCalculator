@@ -174,7 +174,7 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('steps for %
       const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
       expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
       for (const text of Object.values(texts)) {
-        const { how } = text;
+        const how = typeof text.how === 'function' ? text.how(m.example) : text.how;
         const expr = typeof text.expr === 'function' ? text.expr(m.example) : text.expr;
         expect(how.length).toBeGreaterThan(10);
         const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);

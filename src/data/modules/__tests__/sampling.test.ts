@@ -286,8 +286,25 @@ const asValues = (gs: readonly Given[]): Values =>
 
 const NUM = String.raw`\(?-?\d+(?:\.\d+)?(?:e[-+]?\d+)?\)?`;
 const toNum = (s: string) => Number(s.replace(/[()]/g, ''));
+const COIN: Record<string, number> = { dollars: 100, quarters: 25, dimes: 10, nickels: 5 };
 const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`difference of (${NUM}) and (${NUM})`), (a, b) => Math.abs(a - b)],
+  [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],
+  [new RegExp(`jumps of (${NUM}) from (${NUM}) to (${NUM})`), (s, a, n) => (n - a) / s],
+  [new RegExp(`(${NUM}) jumps of (${NUM})`), (a, b) => a * b],
+  [new RegExp(`rows of (${NUM}) in (${NUM})`), (c, n) => n / c],
+  [new RegExp(`groups of (${NUM}) in (${NUM})`), (r, c) => c / r],
+  [new RegExp(`(${NUM}) shared (?:by|into) (${NUM}) (?:clips|rows)`), (a, b) => a / b],
+  [new RegExp(`hundreds part of (${NUM})`), (a) => 100 * Math.floor(a / 100)],
+  [new RegExp(`tens part of (${NUM})`), (a) => 10 * (Math.floor(a / 10) % 10)],
+  [new RegExp(`row of (${NUM})`), (a) => Math.ceil(a / 10)],
+  [new RegExp(`half hours in (${NUM})`), (a) => a / 30],
+  [new RegExp(`(${NUM}) half hours`), (a) => 30 * a],
+  [new RegExp(`(${NUM}) cuts in half`), (a) => 2 ** a],
+  [new RegExp(`cuts to make (${NUM})(?: parts)?`), (a) => Math.log2(a)],
+  [new RegExp(`fives in (${NUM})`), (a) => a / 5],
+  [new RegExp(`(${NUM}) fives`), (a) => 5 * a],
+  [new RegExp(`hundreds in (${NUM})`), (a) => a / 100],
   [new RegExp(`hundreds digit of (${NUM})`), (a) => Math.floor(a / 100) % 10],
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],
   [new RegExp(`ones digit of (${NUM})`), (a) => a % 10],
@@ -301,7 +318,7 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) rows of (${NUM})`), (a, b) => a * b],
   [new RegExp(`(${NUM}) hundreds`), (a) => 100 * a],
   [new RegExp(`(${NUM}) tens`), (a) => 10 * a],
-  [new RegExp(`(${NUM}) (?:ones|corners|sides|cubes)`), (a) => a],
+  [new RegExp(`(${NUM}) (?:ones|corners|sides|cubes|parts|angles)`), (a) => a],
 ];
 
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
@@ -309,7 +326,41 @@ function evaluate(text: string): number | undefined {
   let s = text.replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/').replace(/·/g, '*');
   for (let guard = 0; guard < 50; guard++) {
     let replaced = false;
-    for (const [re, fn] of PHRASES) {
+    // Unwrap brackets around a single number, "(300)" → "300", so outer brackets can reduce.
+    s = s
+      .replace(/\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)/g, ' $1 ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // Work out bracketed arithmetic first, so phrases see one number: "tens in (45 - 5)".
+    // (an operator after a digit, so a lone negative like "(-5)" is left alone)
+    const inner = /\(([^()]*\d\s*[-+*/]\s*[^()]*)\)/.exec(s);
+    if (inner && /^[-\d\s.+*/e]+$/.test(inner[1]!)) {
+      try {
+        const x = new Function(`return (${inner[1]});`)() as number;
+        s = s.slice(0, inner.index) + `(${x})` + s.slice(inner.index + inner[0].length);
+        continue;
+      } catch {
+        // leave it for the final evaluation
+      }
+    }
+    // "3 quarters" → 75 first; "quarters in (75)" only once the bracket is one number.
+    const coins = /\(?(-?[\d.]+)\)? (dollars|quarters|dimes|nickels|pennies)/.exec(s);
+    const coinsIn =
+      /(dollars|quarters|dimes|nickels) in (?:\((-?[\d.]+)\)|(-?[\d.]+)(?![\d.]))/.exec(s);
+    if (coins || coinsIn) {
+      const m = (coins ?? coinsIn)!;
+      const x = coins
+        ? Number(coins[1]) * (COIN[coins[2]!] ?? 1)
+        : Number(coinsIn![2] ?? coinsIn![3]) / COIN[coinsIn![1]!]!;
+      s = s.slice(0, m.index) + `(${x})` + s.slice(m.index + m[0].length);
+      continue;
+    }
+    // Amounts with a leading number ("3 tens") before phrases that read a number ("tens in").
+    const ordered = [
+      ...PHRASES.filter(([re]) => re.source.startsWith('(')),
+      ...PHRASES.filter(([re]) => !re.source.startsWith('(')),
+    ];
+    for (const [re, fn] of ordered) {
       const m = re.exec(s);
       if (m) {
         const x = fn(...m.slice(1).map(toNum));

@@ -5,11 +5,21 @@
 import type { ModuleDef } from './types';
 import { difference, div, whole } from './math-k2';
 
-const cmpNumbers = difference('d', 'a', 'b', {
-  diff: 'Subtract the smaller number from the bigger one.',
-  first: 'Add the difference to b if a is bigger; take it away if a is smaller.',
-  second: 'Take the difference from a if a is bigger; add it if a is smaller.',
-});
+/** Difference of two numbers; Grade 1 counts up (1.NBT.6 doesn't subtract two-digit numbers). */
+const cmpNumbers = (grade1: boolean) =>
+  difference('d', 'a', 'b', {
+    diff: grade1
+      ? 'Count up from the smaller number to the greater one.'
+      : 'Subtract the smaller number from the greater one.',
+    first: [
+      'The first number is greater. Add the difference to the second number.',
+      'The first number is less. Take the difference away from the second number.',
+    ],
+    second: [
+      'The first number is greater. Take the difference away from the first number.',
+      'The first number is less. Add the difference to the first number.',
+    ],
+  });
 
 /** Compare two numbers with >, < or = using base-ten blocks. */
 const compareNumbers = (id: string, max: number, steps: number[], example: [number, number]) => ({
@@ -19,15 +29,15 @@ const compareNumbers = (id: string, max: number, steps: number[], example: [numb
     max > 99
       ? 'Compare the hundreds first. If they are the same, compare the tens, then the ones.'
       : 'Compare the tens first. If they are the same, compare the ones.',
-    '> means “is greater than”, < means “is less than”. The open side faces the bigger number.',
+    '> means “is greater than”, < means “is less than”. The open side faces the greater number.',
   ],
   variables: [
     whole('a', 'a', 'First number', 0, max),
     whole('b', 'b', 'Second number', 0, max),
-    whole('d', 'd', 'How far apart', 0, max),
+    whole('d', 'd', 'Difference', 0, max),
   ],
-  relations: [cmpNumbers.relation],
-  steps: cmpNumbers.steps,
+  relations: [cmpNumbers(max <= 99).relation],
+  steps: cmpNumbers(max <= 99).steps,
   example: { a: example[0], b: example[1], d: Math.abs(example[0] - example[1]) },
   startWith: ['a', 'b'],
   representation: {
@@ -47,8 +57,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     id: 'm.1.add-sub-20~compare',
     title: 'Compare problems',
     assumptions: [
-      'Compare problems ask how many more or fewer, or give the difference and one amount.',
-      '“Lucy has 2 more than Julie” means Lucy has the bigger amount: Julie’s amount + 2.',
+      'Compare problems ask: how many more? How many fewer?',
+      '“Maya has 2 more than Kofi” means Maya has the bigger amount: Kofi’s amount + 2.',
       '“How many more” and “how many fewer” are the same difference.',
     ],
     variables: [
@@ -95,7 +105,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     title: 'Word problems',
     assumptions: [
       'Draw one bar for the whole and cut it into the two parts.',
-      'Whole unknown: add the parts. Part unknown: take the known part away from the whole.',
+      'To find the whole, add the parts. To find a part, take the other part away.',
       'Example: 63 stickers, 38 are stars. How many are not stars? 63 − 38 = 25.',
     ],
     variables: [
@@ -128,7 +138,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     id: 'm.2.add-sub-100-fluency~two-step',
     title: 'Two-step problems',
     assumptions: [
-      'Some are added, then some are taken away (or the other way around).',
+      'First some are added. Then some are taken away.',
       'Do one step at a time: first add, then subtract.',
       'Every amount stays within 100.',
     ],
@@ -161,11 +171,11 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         },
         a: {
           expr: '{e} + {t} − {s}',
-          how: 'Put back what was taken away, then find how much more than the start that is.',
+          how: 'Put back what was taken away. Then count up from the start.',
         },
         t: {
           expr: '{s} + {a} − {e}',
-          how: 'Add first. The amount taken away is how far that is above the end.',
+          how: 'Add first. Then count back to the end. That is how many were taken away.',
         },
       },
     },
@@ -184,11 +194,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.add-sub-100-fluency~four-numbers',
-    title: 'Add up to four numbers',
-    assumptions: [
-      'Add the tens, then add the ones, then put them together.',
-      'Look for pairs that make a ten first: 23 + 17 → 3 + 7 = 10.',
-    ],
+    title: 'Adding four numbers',
+    assumptions: ['Look for ones that make a ten first. In 23 + 17, the 3 and the 7 make a ten.'],
     variables: [
       whole('a', 'a', 'First', 0, 99),
       whole('b', 'b', 'Second', 0, 99),
@@ -241,7 +248,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     title: 'Line plot',
     assumptions: [
       'Measure each object to the nearest whole inch.',
-      'Put one X above the number line at each length.',
+      'Put one X above the number line at each length. x₄ counts the X’s above 4.',
       'Count the X’s to answer questions: how many in all, how many longer than 5 inches.',
     ],
     variables: [
@@ -277,10 +284,22 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     steps: {
       'N = all X’s': {
         N: { expr: '{x4} + {x5} + {x6} + {x7}', how: 'Count every X on the line plot.' },
-        x4: { expr: '{N} − {x5} − {x6} − {x7}', how: 'Take the other columns away from all.' },
-        x5: { expr: '{N} − {x4} − {x6} − {x7}', how: 'Take the other columns away from all.' },
-        x6: { expr: '{N} − {x4} − {x5} − {x7}', how: 'Take the other columns away from all.' },
-        x7: { expr: '{N} − {x4} − {x5} − {x6}', how: 'Take the other columns away from all.' },
+        x4: {
+          expr: '{N} − {x5} − {x6} − {x7}',
+          how: 'Take the other columns away from the total.',
+        },
+        x5: {
+          expr: '{N} − {x4} − {x6} − {x7}',
+          how: 'Take the other columns away from the total.',
+        },
+        x6: {
+          expr: '{N} − {x4} − {x5} − {x7}',
+          how: 'Take the other columns away from the total.',
+        },
+        x7: {
+          expr: '{N} − {x4} − {x5} − {x6}',
+          how: 'Take the other columns away from the total.',
+        },
       },
       'L = X’s above 6 and 7': {
         L: { expr: '{x6} + {x7}', how: 'Longer than 5 inches means 6 or 7 inches: add them.' },
@@ -309,7 +328,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     assumptions: [
       'A polygon is a closed flat shape with straight sides.',
       'It has as many angles as sides: triangle 3, quadrilateral 4, pentagon 5, hexagon 6.',
-      'Name a shape by counting its sides or its angles, not by its size or how it is turned.',
+      'Count the sides or angles to name a shape. Size and turning keep the same name.',
     ],
     variables: [whole('s', 's', 'Sides', 3, 6), whole('a', 'a', 'Angles', 3, 6)],
     relations: [
@@ -325,29 +344,29 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       'angles = sides': {
         a: {
           expr: '{s}',
-          how: 'Each angle is where two sides meet, so there are as many angles as sides.',
+          how: 'Each angle is where two sides meet. There is one angle for each side.',
         },
         s: {
           expr: '{a}',
-          how: 'Between each angle and the next is one side, so there are as many sides as angles.',
+          how: 'There is one side between two angles. There is one side for each angle.',
         },
       },
     },
     example: { s: 5, a: 5 },
     startWith: ['s'],
-    representation: { kind: 'polygon', sides: 's' },
+    representation: { kind: 'polygon', sides: 's', words: 'angle' },
   },
 
   {
     id: 'm.2.thirds-polygons~rows-columns',
     title: 'Rows and columns of squares',
     assumptions: [
-      'Cut a rectangle into rows and columns of same-size squares, with no gaps or overlaps.',
+      'Cut a rectangle into rows and columns of same-size squares. Leave no gaps.',
       'Count the squares: add the number in a row once for each row.',
     ],
     variables: [
       whole('r', 'r', 'Rows', 1, 6),
-      whole('c', 'c', 'Columns', 1, 6),
+      whole('c', 'c', 'In each row', 1, 6),
       whole('n', 'n', 'Squares', 1, 36),
     ],
     relations: [
@@ -361,12 +380,15 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = r rows of c': {
-        n: { expr: '{r} rows of {c}', how: 'Add the squares in one row once for each row.' },
+        n: { expr: '{r} rows of {c}', how: 'Add the number in one row, once for each row.' },
         r: {
-          expr: '{n} ÷ {c}',
-          how: 'Make rows of c squares until all n are used. Count the rows.',
+          expr: 'rows of {c} in {n}',
+          how: 'Make rows until all the squares are used. Count the rows.',
         },
-        c: { expr: '{n} ÷ {r}', how: 'Share the n squares equally into r rows. Count one row.' },
+        c: {
+          expr: '{n} shared into {r} rows',
+          how: 'Share the squares equally into the rows. Count one row.',
+        },
       },
     },
     example: { r: 2, c: 3, n: 6 },

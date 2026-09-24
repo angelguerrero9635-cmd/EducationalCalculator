@@ -36,11 +36,13 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const place = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
   const describe = (n: number) => {
     const d = digits(n);
-    return [
+    // Name only the places in use ("3 hundreds", not "3 hundreds, 0 tens, 0 ones").
+    const parts = [
       ...(d.h > 0 ? [place(d.h, 'hundred', 'hundreds')] : []),
-      place(d.t, 'ten', 'tens'),
-      place(d.o, 'one', 'ones'),
-    ].join(', ');
+      ...(d.t > 0 ? [place(d.t, 'ten', 'tens')] : []),
+      ...(d.o > 0 ? [place(d.o, 'one', 'ones')] : []),
+    ];
+    return parts.length ? parts.join(', ') : '0';
   };
 
   const blocks = (id: string, top: number, u: number, fill: string) => {
@@ -97,7 +99,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
         <Rect
           key={`o${i}`}
           x={x + (i % 5) * (u + 3)}
-          y={y + 10 * u - (Math.floor(i / 5) + 1) * (u + 3)}
+          y={y + (h || t ? 10 * u : 2 * (u + 3)) - (Math.floor(i / 5) + 1) * (u + 3)}
           width={u}
           height={u}
           fill={fill}
@@ -110,7 +112,13 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   };
 
   const lines = rows.map((id) => flatLines(digits(value(id)).h));
-  const totalLines = lines.reduce((x, y) => x + y, 0);
+  // A row of only small cubes is short: two rows of cubes instead of a rod's height.
+  const onlyOnes = rows.map((id) => {
+    const d = digits(value(id));
+    return d.h === 0 && d.t === 0;
+  });
+  const blockHeight = (r: number, u: number) =>
+    onlyOnes[r] ? 2 * (u + 3) + 4 : lines[r]! * (10 * u + 4);
   // Block size from the width: room for every row's flats plus 9 rods and 5 ones, so stepping
   // the ones or tens doesn't resize the picture. The height then follows.
   const unitFor = (w: number) =>
@@ -124,7 +132,8 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }),
       ),
     );
-  const heightFor = (w: number) => 8 + 26 * rows.length + totalLines * (10 * unitFor(w) + 4);
+  const heightFor = (w: number) =>
+    8 + rows.reduce((sum, _, r) => sum + 26 + blockHeight(r, unitFor(w)), 0);
 
   return (
     <View>
@@ -136,7 +145,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
             <Svg width={w} height={h}>
               {rows.map((id, r) => {
                 const rowTop = top;
-                top += 26 + lines[r]! * (10 * u + 4);
+                top += 26 + blockHeight(r, u);
                 const fill =
                   id === spec.total ? c.chartHighlight : r % 2 === 0 ? c.chartFill : c.chartSurface;
                 return (

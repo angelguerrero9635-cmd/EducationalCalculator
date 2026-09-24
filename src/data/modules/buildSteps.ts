@@ -98,17 +98,18 @@ export function buildSteps(
     const text = module.steps[t.relation]?.[t.id];
     const base = {
       id: t.id,
-      title: `Find ${v.name.toLowerCase()} (${v.symbol})`,
+      // Lowercase only the first letter, so names like “Pencil A” keep their capital.
+      title: `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)} (${v.symbol})`,
       formula: renderTemplate(relation.display, vars),
       result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
     if (!text || !t.exact) {
-      return { ...base, how: 'Solved numerically: tried values until both sides matched.' };
+      return { ...base, how: 'Tried numbers until both sides matched.' };
     }
     const expr = typeof text.expr === 'function' ? text.expr(result.values) : text.expr;
     return {
       ...base,
-      how: text.how,
+      how: typeof text.how === 'function' ? text.how(result.values) : text.how,
       rearranged: `${v.symbol} = ${renderTemplate(expr, vars)}`,
       substituted: `${v.symbol} = ${renderTemplate(expr, workVars, working)}`,
     };
