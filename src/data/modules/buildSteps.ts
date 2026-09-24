@@ -61,6 +61,31 @@ const SINGULAR: Record<string, string> = {
   feet: 'foot',
 };
 
+/** Count words that take the singular after 1 ("1 ten", "1 row"), and never after "$1". */
+const COUNT_WORDS: Record<string, string> = {
+  tens: 'ten',
+  ones: 'one',
+  hundreds: 'hundred',
+  rows: 'row',
+  groups: 'group',
+  clips: 'clip',
+  jumps: 'jump',
+  feet: 'foot',
+  inches: 'inch',
+  cubes: 'cube',
+  cups: 'cup',
+  bills: 'bill',
+  fives: 'five',
+  triangles: 'triangle',
+  rounds: 'round',
+};
+/** "1 tens" → "1 ten" in rendered text (templates can't tell the count in advance). */
+export const agree = (text: string) =>
+  text.replace(
+    /(^|[^\d$.,])1 (tens|ones|hundreds|rows|groups|clips|jumps|feet|inches|cubes|cups|bills|fives|triangles|rounds)\b/g,
+    (_, pre: string, word: string) => `${pre}1 ${COUNT_WORDS[word]}`,
+  );
+
 export function buildSteps(
   module: ModuleDef,
   result: SolveResult,
@@ -91,7 +116,12 @@ export function buildSteps(
   const workVars = direct ? vars : vars.map((v) => ({ ...v, integer: false }));
 
   /** Values and units the steps are worked in. */
-  const workValue = (id: string) => (direct ? shownValue(id) : result.values[id]!);
+  // Whole-number lesson values stay whole in any unit (13 in, not 13.000000000000002 in).
+  const workValue = (id: string) => {
+    if (!direct) return result.values[id]!;
+    const x = shownValue(id);
+    return byId.get(id)?.integer ? Math.round(x) : x;
+  };
   const workUnit = (id: string) => (direct ? shownUnit(id) : formulaUnit(id));
   const working: Values = Object.fromEntries(
     Object.keys(result.values).map((id) => [id, workValue(id)]),
@@ -129,7 +159,7 @@ export function buildSteps(
     const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;
     const work = typeof text.work === 'function' ? text.work(working) : text.work;
     const rearranged = `${v.symbol} = ${renderTemplate(expr, vars)}`;
-    const substituted = `${v.symbol} = ${renderTemplate(expr, workVars, working)}`;
+    const substituted = agree(`${v.symbol} = ${renderTemplate(expr, workVars, working)}`);
     // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
     const same = (x: string, y: string) => x === y.split(' (')[0];
     return {
@@ -139,7 +169,7 @@ export function buildSteps(
       rearranged,
       ...(same(substituted, base.result) || substituted === rearranged ? {} : { substituted }),
       ...(work?.length
-        ? { work: work.map((line) => renderTemplate(line, workVars, working)) }
+        ? { work: work.map((line) => agree(renderTemplate(line, workVars, working))) }
         : {}),
     };
   });

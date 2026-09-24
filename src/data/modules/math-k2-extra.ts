@@ -108,6 +108,7 @@ const cmpNumbers = (grade1: boolean) =>
 /** Compare two numbers with >, < or = using base-ten blocks. */
 const compareNumbers = (id: string, max: number, steps: number[], example: [number, number]) => ({
   id: `${id}~compare`,
+  pictureLabels: ['d'],
   title: 'Compare numbers',
   assumptions: [
     max > 99
@@ -134,15 +135,6 @@ const compareNumbers = (id: string, max: number, steps: number[], example: [numb
     ],
   },
 });
-
-/** "First: 25 + 18" then the strategy lines, or "First: 25 + 18 = 43" when there are none. */
-const stepLines = (label: string, x: number, sign: 1 | -1, y: number) => {
-  const op = sign > 0 ? '+' : '−';
-  const strategy = sign > 0 ? addStrategy(x, y) : subtractStrategy(x, y);
-  return strategy.length
-    ? [`${label}: ${x} ${op} ${y}`, ...strategy]
-    : [`${label}: ${x} ${op} ${y} = ${x + sign * y}`];
-};
 
 export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
   // Grade 1: compare word problems (1.OA.1, the hardest problem type in CCSS Table 1).
@@ -192,92 +184,6 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     example: { a: 45, b: 27, c: 72 },
     startWith: ['c', 'a'],
     representation: { kind: 'tape', parts: ['a', 'b'], total: 'c' },
-  },
-
-  {
-    id: 'm.2.add-sub-100-fluency~two-step',
-    title: 'Two-step problems',
-    assumptions: [
-      'First some are added. Then some are taken away.',
-      'Do one step at a time: first add, then subtract.',
-      'Every amount stays within 100.',
-    ],
-    variables: [
-      whole('s', 's', 'Start', 0, 100),
-      whole('a', 'a', 'Added', 0, 100),
-      whole('t', 't', 'Taken away', 0, 100),
-      whole('e', 'e', 'End', 0, 100),
-    ],
-    relations: [
-      {
-        id: 'e = s + a − t',
-        display: '{e} = {s} + {a} − {t}',
-        vars: ['e', 's', 'a', 't'],
-        residual: (v) => v.e! - (v.s! + v.a! - v.t!),
-        solve: {
-          e: (v) => v.s! + v.a! - v.t!,
-          s: (v) => v.e! - v.a! + v.t!,
-          a: (v) => v.e! - v.s! + v.t!,
-          t: (v) => v.s! + v.a! - v.e!,
-        },
-      },
-    ],
-    steps: {
-      'e = s + a − t': {
-        e: {
-          work: (v) => [
-            ...stepLines('First', v.s!, 1, v.a!),
-            ...stepLines('Then', v.s! + v.a!, -1, v.t!),
-          ],
-          expr: '{s} + {a} − {t}',
-          how: 'First add to the start. Then take away.',
-        },
-        s: {
-          work: (v) => [
-            `First: ${v.e} + ${v.t} = ${v.e! + v.t!}`,
-            ...addStrategy(v.e!, v.t!),
-            `Then: ${v.e! + v.t!} − ${v.a} = ${v.s}`,
-            ...subtractStrategy(v.e! + v.t!, v.a!),
-          ],
-          expr: '{e} + {t} − {a}',
-          how: 'Work backwards. First put back what was taken away. Then take away what was added.',
-        },
-        a: {
-          work: (v) => [
-            `First: ${v.e} + ${v.t} = ${v.e! + v.t!}`,
-            ...addStrategy(v.e!, v.t!),
-            `Then: ${v.e! + v.t!} − ${v.s} = ${v.a}`,
-            ...subtractStrategy(v.e! + v.t!, v.s!),
-          ],
-          expr: '{e} + {t} − {s}',
-          how: 'Put back what was taken away. Then count up from the start.',
-        },
-        t: {
-          work: (v) => [
-            `First: ${v.s} + ${v.a} = ${v.s! + v.a!}`,
-            ...addStrategy(v.s!, v.a!),
-            `Then: ${v.s! + v.a!} − ${v.e} = ${v.t}`,
-            ...subtractStrategy(v.s! + v.a!, v.e!),
-          ],
-          expr: '{s} + {a} − {e}',
-          how: 'Add first. Then count back to the end. That is how many were taken away.',
-        },
-      },
-    },
-    example: { s: 25, a: 18, t: 9, e: 34 },
-    startWith: ['s', 'a', 't'],
-    representation: {
-      kind: 'hops',
-      start: 's',
-      hops: [
-        { var: 'a', sign: 1 },
-        { var: 't', sign: -1 },
-      ],
-      end: 'e',
-      min: 0,
-      max: 100,
-      tick: 10,
-    },
   },
 
   {
@@ -490,7 +396,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     },
     example: { s: 5, a: 5 },
     startWith: ['s'],
-    representation: { kind: 'polygon', sides: 's', words: 'angle' },
+    representation: { kind: 'polygon', sides: 's', words: 'angle', corners: 'a' },
   },
 
   {
@@ -786,6 +692,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
   // Grade 2: how many more in a bar graph (2.MD.10).
   {
     id: 'm.2.graphs-line-plots~compare',
+    pictureLabels: ['d'],
     title: 'How many more? (bar graph)',
     assumptions: [
       'Read each bar’s number on the scale, starting at 0.',
@@ -1099,11 +1006,11 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       'Example: 10 more than 356 is 366. 100 less than 356 is 256.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 100, 899),
-      whole('t', 't', '10 more', 110, 909),
-      whole('u', 'u', '10 less', 90, 889),
-      whole('H', 'H', '100 more', 200, 999),
-      whole('U', 'U', '100 less', 0, 799),
+      whole('n', 'n', 'Number', 100, 900),
+      whole('t', 't', '10 more', 110, 910),
+      whole('u', 'u', '10 less', 90, 890),
+      whole('H', 'H', '100 more', 200, 1000),
+      whole('U', 'U', '100 less', 0, 800),
     ],
     relations: (
       [

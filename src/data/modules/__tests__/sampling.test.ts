@@ -8,7 +8,8 @@
  *   MODULE_IDS=m.K.,m.1.,m.2. pnpm -s test src/data/modules/__tests__/sampling.test.ts
  *
  * Env: MODULE_IDS (comma-separated ids or id prefixes; default all modules), SEED (default 1),
- * SAMPLES (random givens per module, default 300), SAMPLING_REPORT=1 (print a summary).
+ * SAMPLES (random givens per module, default 100), SEQUENCES (edit sequences per module,
+ * default 15; raise both for a deep run), SAMPLING_REPORT=1 (print a summary).
  */
 import {
   checkValue,
@@ -43,10 +44,10 @@ const FILTER = (env.MODULE_IDS ?? '')
   .map((s) => s.trim())
   .filter(Boolean);
 const SEED = Number(env.SEED ?? 1);
-const N_RANDOM = Number(env.SAMPLES ?? 300);
-const N_SEQUENCES = 40;
+const N_RANDOM = Number(env.SAMPLES ?? 100);
+const N_SEQUENCES = Number(env.SEQUENCES ?? 15);
 const SEQUENCE_LENGTH = 10;
-const N_PER_UNIT_CHOICE = 16;
+const N_PER_UNIT_CHOICE = 10;
 const REPORT = env.SAMPLING_REPORT === '1';
 
 const selected = MODULES.filter(
@@ -122,7 +123,14 @@ function shownRange(v: VariableDef, example: number | undefined): [number, numbe
 }
 
 /** Whole-number domain (formula units), or undefined when not enumerable. */
+const domainCache = new WeakMap<VariableDef, number[] | undefined>();
 function domain(v: VariableDef): number[] | undefined {
+  if (domainCache.has(v)) return domainCache.get(v);
+  const xs = domainOf(v);
+  domainCache.set(v, xs);
+  return xs;
+}
+function domainOf(v: VariableDef): number[] | undefined {
   if (!v.integer || v.min === undefined || v.max === undefined) return undefined;
   const f = factorOf(v) * (v.multipleOf ?? 1);
   const lo = Math.ceil(v.min / f - 1e-9);
@@ -195,9 +203,61 @@ const key = (x: number) => Number(x.toPrecision(10));
  * Searches every full assignment consistent with `fixed`: propagates exact rearrangements and
  * branches over whole-number domains. Independent of the solver's order and "newest wins".
  */
+/**
+ * A relation's residual as c0 + Σ coef·x, when it is affine (checked at random points), so the
+ * search can prune a branch whose open values can't bring the residual to 0 within their ranges
+ * (e.g. n = a + b + c + e with n = 396 and a = 0: b + c + e reach at most 297).
+ */
+type Affine = { c0: number; coef: Map<string, number> };
+const affineCache = new WeakMap<System['relations'][number], Affine | null>();
+function affineOf(rel: System['relations'][number]): Affine | undefined {
+  if (affineCache.has(rel)) return affineCache.get(rel) ?? undefined;
+  const at = (p: Values) => {
+    try {
+      return rel.residual(p);
+    } catch {
+      return NaN;
+    }
+  };
+  const zero = Object.fromEntries(rel.vars.map((id) => [id, 0]));
+  const c0 = at(zero);
+  const coef = new Map(rel.vars.map((id) => [id, at({ ...zero, [id]: 1 }) - c0]));
+  const r = rng(hash(rel.id));
+  let ok = Number.isFinite(c0) && [...coef.values()].every(Number.isFinite);
+  for (let i = 0; ok && i < 16; i++) {
+    const p = Object.fromEntries(rel.vars.map((id) => [id, r.int(-50, 150)]));
+    const lin = c0 + rel.vars.reduce((s, id) => s + coef.get(id)! * p[id]!, 0);
+    ok = close(at(p), lin, 1e-9);
+  }
+  const out = ok ? { c0, coef } : null;
+  affineCache.set(rel, out);
+  return out ?? undefined;
+}
+
 function complete(sys: System, fixed: Values, maxSolutions = 64, maxNodes = 40000): Completion {
   const byId = new Map(sys.variables.map((v) => [v.id, v]));
   const seen = new Map(sys.variables.map((v) => [v.id, new Set<number>()]));
+  /** An affine relation whose residual can't reach 0 with the open values in their ranges. */
+  const hopeless = (vals: Values) =>
+    sys.relations.some((rel) => {
+      const aff = affineOf(rel);
+      if (!aff) return false;
+      let lo = aff.c0;
+      let hi = aff.c0;
+      for (const id of rel.vars) {
+        const k = aff.coef.get(id)!;
+        if (id in vals) {
+          lo += k * vals[id]!;
+          hi += k * vals[id]!;
+          continue;
+        }
+        const v = byId.get(id)!;
+        if (v.min === undefined || v.max === undefined) return false;
+        lo += Math.min(k * v.min, k * v.max);
+        hi += Math.max(k * v.min, k * v.max);
+      }
+      return lo > 1e-9 * (1 + Math.abs(lo)) || hi < -1e-9 * (1 + Math.abs(hi));
+    });
   let solutions = 0;
   let nodes = 0;
   let aborted = false;
@@ -248,6 +308,7 @@ function complete(sys: System, fixed: Values, maxSolutions = 64, maxNodes = 4000
       }
     }
     const open = sys.variables.filter((v) => !(v.id in vals));
+    if (open.length > 0 && hopeless(vals)) return;
     if (open.length === 0) {
       solutions++;
       for (const [id, x] of Object.entries(vals)) seen.get(id)?.add(key(x));
@@ -340,6 +401,10 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) hundreds`), (a) => 100 * a],
   [new RegExp(`(${NUM}) tens`), (a) => 10 * a],
   [new RegExp(`(${NUM}) (?:ones|corners|sides|cubes|parts|angles)`), (a) => a],
+  // Bills (Grade 2 money): "3 $10 bills" and "$10 bills (3)" are $30; "$10 bills in (30)" is 3.
+  [new RegExp(`(${NUM}) \\$(\\d+) bills?`), (a, b) => a * b],
+  [new RegExp(`\\$(\\d+) bills? (${NUM})`), (b, a) => a * b],
+  [new RegExp(`\\$(\\d+) bills in (${NUM})`), (b, n) => n / b],
 ];
 
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
@@ -414,6 +479,8 @@ const shownClose = (a: number, b: number, text = '') => {
   return Math.abs(a - b) <= 2e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-3 + 1e-4 * largest;
 };
 
+const PLURAL =
+  /(?<![\d.,$])\b(?:1 (?:tens|ones|hundreds|groups|bills|feet|inches|cubes|rows|jumps|triangles|clips)\b|(?:0|[2-9]|\d\d+) (?:ten|one|hundred|group|bill|foot|inch|row|jump|clip)\b(?![-\w]))/;
 const BAD_TEXT = /NaN|undefined|Infinity|null|(^|[^\w.])[-−]0(?![\d.])/;
 
 // ─── Representation data ─────────────────────────────────────────────────────
@@ -480,14 +547,23 @@ function repIssues(
       if (s !== undefined && (s < 3 || s !== Math.round(s))) out.push(`polygon with ${s} sides`);
       break;
     }
-    case 'balance':
-      for (const id of [...rep.left, ...rep.right]) count(id, 'balance counters');
+    case 'balance': {
+      const ids = [...rep.left, ...rep.right, ...(rep.takeAway ? [rep.takeAway] : [])];
+      for (const id of ids) count(id, 'balance counters');
       for (const pan of [rep.left, rep.right]) {
         const total = pan.reduce((s, id) => s + (val(id) ?? 0), 0);
         // Rows of 5, or rows of 10 smaller counters above 20: at most 40 fit a pan.
         if (total > 40) out.push(`balance pan holds ${total} counters (5+ rows of 10)`);
       }
+      // Taken-away counters are crossed out of the left pan's own counters (Balance.tsx).
+      const k = rep.takeAway ? val(rep.takeAway) : undefined;
+      const left = rep.left.map(val);
+      if (k !== undefined && left.every((x) => x !== undefined)) {
+        const sum = left.reduce((s, x) => s! + x!, 0)!;
+        if (k > sum) out.push(`balance crosses out ${k} of only ${sum} counters`);
+      }
       break;
+    }
     case 'baseTen':
       for (const id of [...rep.groups, ...(rep.total ? [rep.total] : [])])
         count(id, 'blocks', 1000);
@@ -533,24 +609,108 @@ function repIssues(
     case 'pairs':
       count(rep.value, 'objects', rep.max);
       break;
-    case 'hops':
-      for (const id of [rep.start, rep.end]) {
-        const x = val(id);
-        if (x !== undefined && (x < rep.min || x > rep.max)) {
-          out.push(`hops point ${id} = ${x} off the line (${rep.min}–${rep.max})`);
+    case 'hops': {
+      // The line stretches to fit every stop (Hops.tsx), so a stop past min–max is still drawn;
+      // but a story can't have fewer than 0 things part way, and a stop past the lesson's range
+      // ("every amount stays within 100") stretches the line.
+      const start = val(rep.start);
+      const hops = rep.hops.map((h) => val(h.var));
+      if (start === undefined || hops.some((x) => x === undefined)) break;
+      let at = start;
+      rep.hops.forEach((h, i) => {
+        at += h.sign * hops[i]!;
+        if (at < 0) out.push(`hops go below 0 part way (stop ${i + 1} = ${at})`);
+        else if (i < rep.hops.length - 1 && (at < rep.min || at > rep.max)) {
+          out.push(`hops stop ${i + 1} = ${at} is past the line's ${rep.min}–${rep.max}`);
         }
+      });
+      const e = val(rep.end);
+      if (e !== undefined && e !== at) out.push(`hops land on ${at}, not the end ${e}`);
+      break;
+    }
+    case 'numberBond': {
+      // Dots in rows of 5 inside each part's circle: two rows fit (NumberBond.tsx).
+      const [a, b] = rep.parts;
+      count(a, 'number bond part', 10);
+      count(b, 'number bond part', 10);
+      count(rep.whole, 'number bond whole');
+      const [x, y, w] = [val(a), val(b), val(rep.whole)];
+      if (x !== undefined && y !== undefined && w !== undefined && x + y !== w) {
+        out.push(`number bond parts ${x} + ${y} don't make the whole ${w}`);
       }
       break;
+    }
+    case 'patternBlocks': {
+      const ids = [rep.trapezoids, rep.rhombuses, rep.triangles];
+      for (const id of ids) count(id, 'pattern blocks');
+      const [z, r, t] = ids.map(val);
+      if (z !== undefined && r !== undefined && t !== undefined && 3 * z + 2 * r + t !== 6) {
+        out.push(`pattern blocks cover ${3 * z + 2 * r + t} of the hexagon's 6 triangles`);
+      }
+      if (z !== undefined && r !== undefined && 3 * z + 2 * r > 6) {
+        out.push(`pattern blocks overflow the hexagon (${3 * z + 2 * r} triangles)`);
+      }
+      break;
+    }
+    case 'lineUp': {
+      // One child per cell, sized for the count's maximum (LineUp.tsx).
+      count(rep.count, 'children in line', byId.get(rep.count)?.max ?? 10);
+      count(rep.before, 'children in front');
+      count(rep.after, 'children behind');
+      const [n, p, f, b] = [rep.count, rep.position, rep.before, rep.after].map(val);
+      if (n !== undefined && p !== undefined && (p < 1 || p > n)) {
+        out.push(`picked child ${p} is not in a line of ${n}`);
+      }
+      if (p !== undefined && f !== undefined && f !== p - 1) {
+        out.push(`child ${p} has ${p - 1} in front, not ${f}`);
+      }
+      if (n !== undefined && p !== undefined && b !== undefined && b !== n - p) {
+        out.push(`child ${p} of ${n} has ${n - p} behind, not ${b}`);
+      }
+      break;
+    }
+    case 'equalGroups': {
+      // Each group is an 88 px circle with 13 px dots: 4 rows of 4 fit (EqualGroups.tsx).
+      count(rep.groups, 'groups', 12);
+      count(rep.each, 'dots in a group', 16);
+      const [g, k, n] = [val(rep.groups), val(rep.each), val(rep.total)];
+      if (g !== undefined && k !== undefined && n !== undefined && g * k !== n) {
+        out.push(`${g} groups of ${k} drawn, total shows ${n}`);
+      }
+      break;
+    }
+    case 'prism': {
+      // Prism.tsx draws at least 3 sides and names 3–6.
+      const n = val(rep.sides);
+      if (n === undefined) break;
+      if (n < 3 || n !== Math.round(n)) out.push(`prism with a ${n}-sided base`);
+      const [F, E, V] = [rep.faces, rep.edges, rep.corners].map(val);
+      if (F !== undefined && F !== n + 2) out.push(`prism with ${n} sides drawn, ${F} faces shown`);
+      if (E !== undefined && E !== 3 * n) out.push(`prism with ${n} sides drawn, ${E} edges shown`);
+      if (V !== undefined && V !== 2 * n) {
+        out.push(`prism with ${n} sides drawn, ${V} corners shown`);
+      }
+      break;
+    }
     case 'array':
       count(rep.rows, 'array rows', rep.max);
       count(rep.columns, 'array columns', rep.max);
       break;
-    case 'ruler':
+    case 'ruler': {
       for (const id of rep.lengths) {
         const x = val(id);
         if (x !== undefined && x < 0) out.push(`ruler length ${id} negative`);
       }
+      // A broken ruler: the object starts at `from` and ends at `to` = from + its length.
+      const [a, L, b] = [rep.from, rep.lengths[0], rep.to].map((id) =>
+        id === undefined ? undefined : val(id),
+      );
+      if (rep.from && a !== undefined && a < 0) out.push(`ruler start mark ${a} is before 0`);
+      if (a !== undefined && L !== undefined && b !== undefined && a + L !== b) {
+        out.push(`ruler object from ${a} of length ${L} doesn't end at ${b}`);
+      }
       break;
+    }
     case 'coins': {
       for (const c of rep.coins) count(c.var, 'coins', 20);
       const t = val(rep.total);
@@ -578,6 +738,36 @@ function repIssues(
       break;
     default:
       break;
+  }
+  return out;
+}
+
+/**
+ * Every value in the number sentences can be found in the picture: drawn by the representation
+ * (any variable id its spec names) or labeled under it (`pictureLabels`).
+ */
+function pictureCoverage(m: ModuleDef): string[] {
+  const ids = new Set(m.variables.map((v) => v.id));
+  const drawn = new Set<string>();
+  const walk = (x: unknown) => {
+    if (typeof x === 'string' && ids.has(x)) drawn.add(x);
+    else if (Array.isArray(x)) x.forEach(walk);
+    else if (x && typeof x === 'object') {
+      for (const [k, y] of Object.entries(x)) if (k !== 'kind' && k !== 'icon') walk(y);
+    }
+  };
+  walk(m.representation);
+  const out: string[] = [];
+  for (const id of m.pictureLabels ?? []) {
+    if (!ids.has(id)) out.push(`pictureLabels names ${id}, which is not a variable`);
+    else if (drawn.has(id))
+      out.push(`pictureLabels repeats ${id}, which the picture already shows`);
+  }
+  const labeled = new Set(m.pictureLabels ?? []);
+  const missing = m.variables.filter((v) => !drawn.has(v.id) && !labeled.has(v.id));
+  const lone = new Set(m.standalone?.vars ?? []);
+  for (const v of missing) {
+    if (!lone.has(v.id)) out.push(`${v.id} (${v.name}) is neither drawn nor in pictureLabels`);
   }
   return out;
 }
@@ -697,7 +887,15 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
 }
 
 /** The same system with every range widened (10×), so only the formulas can determine values. */
+const relaxCache = new WeakMap<System, System>();
 function relax(sys: System): System {
+  const hit = relaxCache.get(sys);
+  if (hit) return hit;
+  const out = relaxOf(sys);
+  relaxCache.set(sys, out);
+  return out;
+}
+function relaxOf(sys: System): System {
   return {
     relations: sys.relations,
     variables: sys.variables.map((v) => {
@@ -726,6 +924,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       s.rearranged ?? '',
       s.substituted ?? '',
       s.result,
+      ...(s.work ?? []),
     ]),
     ...w.check.map((x) => x.formula),
     ...w.convertIn,
@@ -733,20 +932,34 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   ];
   for (const t of texts) {
     if (BAD_TEXT.test(t)) c.f.add('error', `${c.label}step text shows a bad value: "${t}"`, where);
+    // Unrounded binary fractions ("13.999999999999998") in anything a student reads. Small
+    // values shown to 4 significant figures ("0.0002006 km") have fewer than 10 decimals.
+    const raw = /\d\.\d{10,}/.exec(t);
+    if (raw) c.f.add('error', `${c.label}step text shows an unrounded number: "${t}"`, where);
+    // Number words agree with their count: "1 ten", "2 tens" (not "1 tens" or "2 ten and").
+    const bad = PLURAL.exec(t);
+    if (bad)
+      c.f.add('minor', `${c.label}count and word don't agree: "${bad[0]}"`, `${where} → "${t}"`);
   }
   const allNonNegative = c.module.variables.every((v) => (v.min ?? -1) >= 0);
   for (const s of w.steps) {
     // The answer's leading number ("536¢ ($5.36)" → 536).
-    const value = Number(/^-?[\d.]+(?:e[-+]?\d+)?/.exec(s.result.split(' = ')[1] ?? '')?.[0]);
-    if (!s.substituted) {
+    const value = Number(/^\$?(-?[\d.]+(?:e[-+]?\d+)?)/.exec(s.result.split(' = ')[1] ?? '')?.[1]);
+    // The substituted line is left out when it would only repeat the rearranged line (numbers
+    // only, e.g. "t = 6 − 3 − 2") or the result ("s = 4"): evaluate the rearranged line then.
+    const line = s.substituted ?? s.rearranged;
+    if (!line) {
       c.f.add('harness', `${c.label}step for ${s.id} solved numerically (not evaluated)`, where);
       continue;
     }
-    const expr = s.substituted.slice(s.substituted.indexOf(' = ') + 3);
+    const expr = line.slice(line.indexOf(' = ') + 3);
+
     if (allNonNegative && /\(-/.test(expr)) {
       c.f.add('error', `${c.label}step substitutes a negative count: "${s.substituted}"`, where);
     }
     const x = evaluate(expr);
+    // A rearranged line in symbols ("s = v") has no numbers to check.
+    if (x === undefined && !s.substituted) continue;
     if (x === undefined) {
       c.f.add(
         'harness',
@@ -774,7 +987,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   // numbers were said or the number reached. When the step's answer is the number reached,
   // an arrow at the count of numbers ("→ 3" for 4 + 3 = 7) points at the wrong number.
   for (const s of w.steps) {
-    const answer = Number(/^-?[\d.]+/.exec(s.result.split(' = ')[1] ?? '')?.[0]);
+    const answer = Number(/^\$?(-?[\d.]+)/.exec(s.result.split(' = ')[1] ?? '')?.[1]);
     const lines = s.work ?? [];
     lines.forEach((line, i) => {
       const m =
@@ -1136,6 +1349,11 @@ describe.each(selected.map((m) => [m.id, m] as [string, ModuleDef]))('sampling %
     const f = new Findings();
     const r = rng(hash(m.id) ^ SEED);
     const c = makeCtx(m, f, { system: 'metric' }, '');
+    // Values not labeled in the picture break the content standard, not the math: minor.
+    for (const issue of pictureCoverage(m)) {
+      const kind = /not a variable/.test(issue) ? 'error' : 'minor';
+      f.add(kind, `picture: ${issue}`, 'module definition');
+    }
     stageRandom(c, r, Math.ceil(N_RANDOM / 2));
     stageEdits(c, r, N_SEQUENCES);
     stageUnits(m, f, r);

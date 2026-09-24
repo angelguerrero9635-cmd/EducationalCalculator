@@ -390,6 +390,12 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       first: ['A is longer. Add the extra to B.', 'A is shorter. Take the extra away from B.'],
       second: ['A is longer. Take the extra away from A.', 'A is shorter. Add the extra to A.'],
     });
+    const ac = difference('z', 'a', 'c', {
+      diff: 'Line up A and C. Or use B: add the two differences when B is in the middle.',
+      countOn: true,
+      first: ['A is longer. Add the extra to C.', 'A is shorter. Take the extra away from C.'],
+      second: ['A is longer. Take the extra away from A.', 'A is shorter. Add the extra to A.'],
+    });
     const bc = difference('y', 'b', 'c', {
       diff: 'Line up B and C. Count the cubes that stick out past the shorter one.',
       countOn: true,
@@ -410,13 +416,14 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
         { ...whole('c', 'c', 'Ribbon C', 1, 15), unit: 'cubes' },
         { ...whole('x', 'x', 'Difference of A and B', 0, 14), unit: 'cubes' },
         { ...whole('y', 'y', 'Difference of B and C', 0, 14), unit: 'cubes' },
+        { ...whole('z', 'z', 'Difference of A and C', 0, 14), unit: 'cubes' },
       ],
-      relations: [ab.relation, bc.relation],
-      steps: { ...ab.steps, ...bc.steps },
-      example: { a: 9, b: 6, c: 4, x: 3, y: 2 },
+      relations: [ab.relation, bc.relation, ac.relation],
+      steps: { ...ab.steps, ...bc.steps, ...ac.steps },
+      example: { a: 9, b: 6, c: 4, x: 3, y: 2, z: 5 },
       startWith: ['a', 'b', 'c'],
       representation: { kind: 'ruler', lengths: ['a', 'b', 'c'], extent: 15 },
-      pictureLabels: ['x', 'y'],
+      pictureLabels: ['x', 'y', 'z'],
     };
     return mod;
   })(),
@@ -433,9 +440,9 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       ],
       variables: [
         whole('n', 'n', 'Whole strip', 2, 12),
-        whole('x', 'x', 'First part', 0, 12),
-        whole('y', 'y', 'Second part', 0, 12),
-        whole('D', 'D', 'Difference', 0, 12),
+        whole('x', 'x', 'First part', 1, 11),
+        whole('y', 'y', 'Second part', 1, 11),
+        whole('D', 'D', 'Difference', 0, 10),
       ],
       relations: [
         {
@@ -554,6 +561,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       difference: 'd',
       caption: 'Ben has {d} more than Ana. Total: {t}.',
     },
+    pictureLabels: ['t'],
   },
 
   // Equal groups: circles with the same number in each (2.OA.4, before arrays).
@@ -1056,9 +1064,9 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'Ten less is one row up on the chart. The ones digit stays the same.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 10, 120),
-      whole('u', 'u', 'One less', 9, 119),
-      whole('v', 'v', 'Ten less', 0, 110),
+      whole('n', 'n', 'Number', 11, 120),
+      whole('u', 'u', 'One less', 10, 119),
+      whole('v', 'v', 'Ten less', 1, 110),
     ],
     relations: [
       {
@@ -1133,7 +1141,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
           work: (v: Values) => [
             `${v.t} tens = ${10 * v.t!}`,
             ...(v.o! >= 10
-              ? [`${v.o} ones = ${Math.floor(v.o! / 10)} ten and ${v.o! % 10} ones`]
+              ? [`${v.o} ones = ${Math.floor(v.o! / 10)} tens and ${v.o! % 10} ones`]
               : []),
             ...(addStrategy(10 * v.t!, v.o!).length
               ? addStrategy(10 * v.t!, v.o!)
@@ -1217,6 +1225,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     representation: { kind: 'tape', parts: ['H', 'M'], total: 'P' },
   },
 
+  twoStep('two-step', 'Add, then take away', 1, -1, { s: 25, a: 18, m: 43, b: 9, e: 34 }),
   twoStep('take-add', 'Take away, then add', -1, 1, { s: 50, a: 15, m: 35, b: 20, e: 55 }),
   twoStep('take-take', 'Take away twice', -1, -1, { s: 60, a: 18, m: 42, b: 25, e: 17 }),
   twoStep('add-add', 'Add twice', 1, 1, { s: 24, a: 18, m: 42, b: 35, e: 77 }),
@@ -1227,7 +1236,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     title: 'Take away',
     assumptions: [
       'Start with some. Take some away. Count how many are left.',
-      'Fewer are left than you started with.',
+      'Fewer are left than you started with (the same, if you take away 0).',
     ],
     variables: [
       whole('s', 's', 'Start', 0, 10),

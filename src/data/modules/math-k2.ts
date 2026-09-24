@@ -945,7 +945,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'Add a small number like 7, or tens like 20, to a number like 36.',
       'Add tens with tens and ones with ones.',
-      'The total is 100 or less.',
+      'The total is 100 or less. Two 2-digit numbers, like 36 + 47, are Grade 2.',
     ],
     variables: [
       whole('a', 'a', 'First number', 0, 100),
@@ -1012,6 +1012,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.1.time-half-hour',
+    pictureLabels: ['k'],
     standalone: {
       vars: ['h'],
       why: 'The short hand shows the hour on its own; the formulas are about the minutes.',
@@ -1019,7 +1020,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'The short hand shows the hour. The long hand shows the minutes.',
       'At “o’clock” the long hand points to 12. At “half past” it points to 6.',
-      'At half past, the short hand is halfway between two numbers. The hour is the smaller one.',
+      'At half past, the short hand is halfway between two numbers. The hour is the one it just passed.',
       'An hour is 60 minutes, so half an hour is 30 minutes.',
     ],
     variables: [
@@ -1140,6 +1141,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.1.halves-fourths',
+    pictureLabels: ['u'],
     assumptions: [
       'The parts must be equal: the same size.',
       '2 equal parts are halves. 4 equal parts are fourths (quarters).',
@@ -1425,6 +1427,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.even-odd',
+    pictureLabels: ['p', 'r'],
     assumptions: [
       'Put the objects into pairs (groups of 2).',
       'Even: none left over. Odd: one left over.',
@@ -1696,6 +1699,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.time-5-min',
+    pictureLabels: ['k'],
     standalone: {
       vars: ['h'],
       why: 'The short hand shows the hour on its own; the formulas are about the minutes.',
@@ -1825,6 +1829,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.thirds-polygons',
+    pictureLabels: ['u'],
     assumptions: [
       'Equal parts are the same size. 3 equal parts are thirds.',
       'Equal parts can have different shapes but the same size.',
