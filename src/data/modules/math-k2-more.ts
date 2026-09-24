@@ -1542,4 +1542,228 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     startWith: ['m'],
     representation: { kind: 'skipCount', step: 100, count: 'm', total: 'c' },
   },
+
+  // Count objects in any arrangement: a line, rows, a circle or scattered (K.CC.5).
+  {
+    id: 'm.K.count-objects~arrangements',
+    title: 'Count dots in any arrangement',
+    assumptions: [
+      'Touch each dot once as you count. The last number you say is how many.',
+      'Moving the dots doesn’t change how many there are.',
+      'Scattered dots: count them in an order you can follow, like left to right.',
+    ],
+    variables: [whole('n', 'n', 'Dots', 0, 20), whole('m', 'm', 'After one more', 1, 21)],
+    relations: [
+      {
+        id: 'm = n + 1',
+        display: '{m} = {n} + 1',
+        vars: ['m', 'n'],
+        residual: (v) => v.m! - v.n! - 1,
+        solve: { m: (v) => v.n! + 1, n: (v) => v.m! - 1 },
+      },
+    ],
+    steps: {
+      'm = n + 1': {
+        m: {
+          expr: '{n} + 1',
+          how: 'Add one more dot. Say the next number.',
+          work: (v: Values) => (v.n! > 0 ? [`Count: ${countList(0, 1, v.n!)} → ${v.n}`] : []),
+        },
+        n: { expr: '{m} − 1', how: 'Take one away. Say the number just before.' },
+      },
+    },
+    example: { n: 7, m: 8 },
+    startWith: ['n'],
+    representation: { kind: 'dotSet', count: 'n' },
+    pictureLabels: ['m'],
+  },
+
+  // Tally charts: count marks in groups of 5 (1.MD.4).
+  {
+    id: 'm.1.data-3-categories~tally',
+    title: 'Tally chart',
+    assumptions: [
+      'Each mark stands for one vote.',
+      'The fifth mark crosses the other four, so you can count by 5s.',
+      'Add every row to get the total.',
+    ],
+    variables: [
+      whole('a', 'a', 'Apples', 0, 20),
+      whole('b', 'b', 'Bananas', 0, 20),
+      whole('g', 'g', 'Grapes', 0, 20),
+      whole('n', 'n', 'Total', 0, 60),
+    ],
+    relations: [
+      {
+        id: 'n = a + b + g',
+        display: '{n} = {a} + {b} + {g}',
+        vars: ['n', 'a', 'b', 'g'],
+        residual: (v) => v.n! - v.a! - v.b! - v.g!,
+        solve: {
+          n: (v) => v.a! + v.b! + v.g!,
+          a: (v) => v.n! - v.b! - v.g!,
+          b: (v) => v.n! - v.a! - v.g!,
+          g: (v) => v.n! - v.a! - v.b!,
+        },
+      },
+    ],
+    steps: {
+      'n = a + b + g': {
+        n: {
+          expr: '{a} + {b} + {g}',
+          how: 'Count each row by 5s, then the extra marks. Add the rows.',
+          work: (v: Values) => addAll([v.a!, v.b!, v.g!]),
+        },
+        a: {
+          expr: '{n} − {b} − {g}',
+          how: 'Add the other rows. Take them away from the total.',
+          work: (v: Values) => [...addAll([v.b!, v.g!]), `${v.n} − ${v.b! + v.g!} = ${v.a}`],
+        },
+        b: {
+          expr: '{n} − {a} − {g}',
+          how: 'Add the other rows. Take them away from the total.',
+          work: (v: Values) => [...addAll([v.a!, v.g!]), `${v.n} − ${v.a! + v.g!} = ${v.b}`],
+        },
+        g: {
+          expr: '{n} − {a} − {b}',
+          how: 'Add the other rows. Take them away from the total.',
+          work: (v: Values) => [...addAll([v.a!, v.b!]), `${v.n} − ${v.a! + v.b!} = ${v.g}`],
+        },
+      },
+    },
+    example: { a: 7, b: 4, g: 6, n: 17 },
+    startWith: ['a', 'b', 'g'],
+    representation: { kind: 'tally', rows: ['a', 'b', 'g'], total: 'n' },
+  },
+
+  // One kind of coin: count pennies by 1s, nickels by 5s, dimes by 10s, quarters by 25s.
+  {
+    id: 'm.2.money~one-coin',
+    title: 'Count one kind of coin',
+    assumptions: [
+      'Penny 1¢, nickel 5¢, dime 10¢, quarter 25¢.',
+      'Count by the coin’s value, once for each coin: 3 dimes is 10, 20, 30 → 30¢.',
+    ],
+    variables: [
+      { ...whole('v', 'v', 'Coin value', 1, 25), unit: '¢' },
+      whole('k', 'k', 'Coins', 0, 10),
+      { ...whole('T', 'T', 'Total', 0, 250), unit: '¢' },
+    ],
+    relations: [
+      {
+        id: 'T = k coins of v',
+        check: (v) => (v.k! > 0 ? repeated(v.v!, v.k!).replace(/(\d+)/g, '$1¢') : '0¢ = 0¢'),
+        display: '{T} = {k} coins of {v}',
+        vars: ['T', 'k', 'v'],
+        // Only real coin values: 1¢, 5¢, 10¢ or 25¢.
+        residual: (v) => ([1, 5, 10, 25].includes(v.v!) ? v.T! - v.k! * v.v! : 1),
+        solve: {
+          T: (v) => ([1, 5, 10, 25].includes(v.v!) ? v.k! * v.v! : undefined),
+          k: (v) => ([1, 5, 10, 25].includes(v.v!) ? v.T! / v.v! : undefined),
+          v: (v) => (v.k! > 0 && [1, 5, 10, 25].includes(v.T! / v.k!) ? v.T! / v.k! : undefined),
+        },
+      },
+    ],
+    steps: {
+      'T = k coins of v': {
+        T: {
+          expr: '{k} coins of {v}',
+          how: 'Count by the coin’s value, once for each coin.',
+          work: (v: Values) =>
+            v.k! > 0 ? [`Count by ${v.v}s: ${countList(0, v.v!, v.k!)} → ${v.T}¢`] : [],
+        },
+        k: {
+          expr: 'coins of {v} in {T}',
+          how: 'Count by the coin’s value up to the total. Count how many you said.',
+          work: (v: Values) =>
+            v.k! > 0 ? [`Count by ${v.v}s to ${v.T}: ${countList(0, v.v!, v.k!)} → ${v.k}`] : [],
+        },
+        v: {
+          expr: '{T} shared by {k} coins',
+          how: 'Try each coin value: which one counts to the total?',
+          work: (v: Values) => [`Try ${v.v}¢: ${countList(0, v.v!, v.k!)} ✓`],
+        },
+      },
+    },
+    example: { v: 10, k: 3, T: 30 },
+    startWith: ['v', 'k'],
+    representation: { kind: 'coinRow', value: 'v', count: 'k', total: 'T' },
+  },
+
+  // Skip count backward by 5s, 10s or 100s (2.NBT.2).
+  {
+    id: 'm.2.skip-count~back',
+    title: 'Skip count back',
+    assumptions: [
+      'Counting back takes away the same number each time.',
+      'Back by 10s from 560: 550, 540, 530. The ones digit stays the same.',
+    ],
+    variables: [
+      whole('a', 'a', 'Start', 0, 1000),
+      { ...whole('s', 's', 'Count back by', 5, 100), multipleOf: 5, step: 5 },
+      whole('k', 'k', 'Number of jumps', 1, 20),
+      whole('n', 'n', 'Number reached', 0, 1000),
+    ],
+    relations: [
+      {
+        id: 'n = a − k jumps of s',
+        check: (v) => `${v.a} − ${v.k! * v.s!} = ${v.n}`,
+        display: '{n} = {a} − {k} jumps of {s}',
+        vars: ['n', 'a', 'k', 's'],
+        residual: (v) => v.n! - v.a! + v.k! * v.s!,
+        solve: {
+          n: (v) => v.a! - v.k! * v.s!,
+          a: (v) => v.n! + v.k! * v.s!,
+          k: (v) => (v.s! > 0 ? (v.a! - v.n!) / v.s! : undefined),
+          s: (v) => (v.k! > 0 ? (v.a! - v.n!) / v.k! : undefined),
+        },
+      },
+    ],
+    steps: {
+      'n = a − k jumps of s': {
+        n: {
+          expr: '{a} − {k} jumps of {s}',
+          how: 'Start at the start number. Count back by the count-by number for each jump.',
+          work: (v: Values) => [
+            `Count back by ${v.s}s from ${v.a}: ${countList(v.a!, -v.s!, v.k!)} → ${v.n}`,
+            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
+          ],
+        },
+        a: {
+          expr: '{n} + {k} jumps of {s}',
+          how: 'Count up from the number reached, once for each jump.',
+          work: (v: Values) => [
+            `Count on by ${v.s}s from ${v.n}: ${countList(v.n!, v.s!, v.k!)} → ${v.a}`,
+            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
+          ],
+        },
+        k: {
+          expr: 'jumps of {s} from {n} to {a}',
+          how: 'Count the jumps back from the start to the number reached.',
+          work: (v: Values) => [
+            `${v.a} → ${countList(v.a!, -v.s!, v.k!)}`,
+            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.a! - v.n!} in all`,
+          ],
+        },
+        s: {
+          expr: 'size of {k} equal jumps from {n} to {a}',
+          how: 'Find the jump size that gets from the start back to the number reached.',
+          work: (v: Values) => [
+            `${v.a} − ${v.n} = ${v.a! - v.n!}`,
+            `Try jumps of ${v.s}: ${countList(0, v.s!, v.k!)} is ${v.k} ${v.k === 1 ? 'jump' : 'jumps'} ✓`,
+          ],
+        },
+      },
+    },
+    example: { a: 560, s: 10, k: 3, n: 530 },
+    startWith: ['a', 'k', 's'],
+    representation: {
+      kind: 'skipCount',
+      start: 'a',
+      step: 's',
+      count: 'k',
+      total: 'n',
+      back: true,
+    },
+  },
 ];

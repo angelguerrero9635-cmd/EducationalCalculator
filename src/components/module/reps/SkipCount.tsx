@@ -27,6 +27,8 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const k = Math.max(0, Math.round(rep.shown(spec.count)));
   const from = spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : 0;
   const fit = useFrozen(niceCeil(Math.max(s * 10, s * k)));
+  // Counting back: jumps go left from the start, so the line ends at the start.
+  const dir = spec.back ? -1 : 1;
 
   return (
     <View>
@@ -34,10 +36,11 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {({ w, h }) => {
           const pad = 24;
           const max = fit.value;
-          const px = (x: number) => pad + ((x - from) / max) * (w - 2 * pad);
+          const lo = spec.back ? from - max : from;
+          const px = (x: number) => pad + ((x - lo) / max) * (w - 2 * pad);
           const y = h * 0.72;
           const lift = Math.min(h * 0.4, Math.max(14, (px(s) - px(0)) * 0.6));
-          const labels = Array.from({ length: 11 }, (_, i) => from + (max / 10) * i);
+          const labels = Array.from({ length: 11 }, (_, i) => lo + (max / 10) * i);
           return (
             <>
               <Svg width={w} height={h}>
@@ -74,7 +77,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {Array.from({ length: k }, (_, i) => (
                   <Path
                     key={`j${i}`}
-                    d={`M ${px(from + i * s)} ${y} Q ${(px(from + i * s) + px(from + (i + 1) * s)) / 2} ${y - 2 * lift} ${px(from + (i + 1) * s)} ${y}`}
+                    d={`M ${px(from + dir * i * s)} ${y} Q ${(px(from + dir * i * s) + px(from + dir * (i + 1) * s)) / 2} ${y - 2 * lift} ${px(from + dir * (i + 1) * s)} ${y}`}
                     stroke={c.chartInk}
                     strokeWidth={chart.strokeLight}
                     fill="none"
@@ -83,7 +86,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {Array.from({ length: k }, (_, i) => (
                   <Circle
                     key={`d${i}`}
-                    cx={px(from + (i + 1) * s)}
+                    cx={px(from + dir * (i + 1) * s)}
                     cy={y}
                     r={4}
                     fill={c.chartHighlight}
@@ -92,7 +95,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
               </Svg>
               <DragHandle
                 testID="drag-end"
-                x={px(from + k * s)}
+                x={px(from + dir * k * s)}
                 y={y}
                 label={rep.variable(spec.count).name}
                 onStart={() => {
@@ -103,7 +106,10 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 onMove={(dx) =>
                   calc.set({
                     ...rep.pin(stepVar ? [stepVar] : []),
-                    [spec.count]: rep.snapTo(spec.count, start.current + dx / (px(s) - px(0))),
+                    [spec.count]: rep.snapTo(
+                      spec.count,
+                      start.current + (dir * dx) / (px(s) - px(0)),
+                    ),
                   })
                 }
               />
@@ -114,9 +120,9 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Text style={[styles.caption, { color: c.text }]}>
         {k === 0
           ? formatNumber(from)
-          : Array.from({ length: Math.min(k + 1, 12) }, (_, i) => formatNumber(from + i * s)).join(
-              ', ',
-            ) + (k + 1 > 12 ? ', …' : '')}
+          : Array.from({ length: Math.min(k + 1, 12) }, (_, i) =>
+              formatNumber(from + dir * i * s),
+            ).join(', ') + (k + 1 > 12 ? ', …' : '')}
       </Text>
       <Text style={[styles.symbols, { color: c.textMuted }]}>
         {[
@@ -144,7 +150,10 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ? [
                 {
                   var: stepVar,
-                  steps: [1, 5],
+                  // A jump size that must be a multiple (of 5) steps by that multiple.
+                  steps: rep.variable(stepVar).multipleOf
+                    ? [rep.variable(stepVar).multipleOf!]
+                    : [1, 5],
                   pin: [spec.count, ...(spec.start ? [spec.start] : [])],
                 },
               ]

@@ -80,7 +80,13 @@ export type Representation =
       caption?: string;
     }
   /** Line plot: an X for each object above its value on a number line; tap to set counts. */
-  | { kind: 'linePlot'; points: { var: string; at: number }[]; unit?: string }
+  | {
+      kind: 'linePlot';
+      points: { var: string; at: number }[];
+      unit?: string;
+      /** The first length on the line; the others follow by 1 (default: the points' `at`). */
+      start?: string;
+    }
   /**
    * Regular polygon with `sides` sides (and as many corners); change it with − / +. `angle`
    * words (Grade 2) say “angles” and name any 4-sided shape a quadrilateral.
@@ -154,7 +160,15 @@ export type Representation =
    * Number line from `start` (default 0) with `count` equal jumps of `step`, ending at `total`.
    * Drag the end.
    */
-  | { kind: 'skipCount'; step: string | number; count: string; total: string; start?: string }
+  | {
+      kind: 'skipCount';
+      step: string | number;
+      count: string;
+      total: string;
+      start?: string;
+      /** Count back: the jumps go left from the start. */
+      back?: boolean;
+    }
   /**
    * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)
    * or back (sign -1) by each hop's value, landing on `end`. − / + change the start and hops.
@@ -168,6 +182,12 @@ export type Representation =
       max: number;
       tick?: number;
     }
+  /** The same number of dots in a line, rows, a circle or scattered (a toggle picks). */
+  | { kind: 'dotSet'; count: string }
+  /** A tally chart: one row of tally marks per category. */
+  | { kind: 'tally'; rows: string[]; total?: string }
+  /** A row of one kind of coin, picked with buttons (`value` in cents), `count` of them. */
+  | { kind: 'coinRow'; value: string; count: string; total: string }
   /** A solid shape picked from sphere, cone, cylinder and cube, by its flat and curved faces. */
   | { kind: 'solid'; flat: string; curved: string }
   /** Every way to split `total` into two parts, one row each; `ways` counts the rows. */
@@ -346,6 +366,8 @@ export interface ModuleDef {
    * every value in the number sentences can be found in the picture.
    */
   pictureLabels?: string[];
+  /** Problem types: what the page is for, in one line ("Use this for …"). */
+  use?: string;
   /**
    * Values that stand on their own, with no formula linking them to the rest (e.g. a clock's
    * hour). Every other value must connect to the others through the formulas; otherwise the

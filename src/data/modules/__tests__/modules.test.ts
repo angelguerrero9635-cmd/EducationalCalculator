@@ -43,7 +43,7 @@ function representationVars(r: Representation): string[] {
     case 'tape':
       return 'compare' in r ? [...r.compare, r.difference] : [...r.parts, r.total];
     case 'linePlot':
-      return r.points.map((p) => p.var);
+      return [...r.points.map((p) => p.var), ...(r.start ? [r.start] : [])];
     case 'pairs':
       return [r.value];
     case 'hops':
@@ -60,6 +60,12 @@ function representationVars(r: Representation): string[] {
       return [r.sides, r.faces, r.edges, r.corners];
     case 'solid':
       return [r.flat, r.curved];
+    case 'dotSet':
+      return [r.count];
+    case 'tally':
+      return [...r.rows, ...(r.total ? [r.total] : [])];
+    case 'coinRow':
+      return [r.value, r.count, r.total];
     case 'partnerList':
       return [r.total, r.ways];
     case 'array':
@@ -124,6 +130,11 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
   it('labels only its own values under the picture', () => {
     const ids = new Set(m.variables.map((v) => v.id));
     for (const id of m.pictureLabels ?? []) expect([id, ids.has(id)]).toEqual([id, true]);
+  });
+
+  it('says what it is for, when it is a problem type', () => {
+    if (m.id.includes('~'))
+      expect([m.id, (m.use ?? '').startsWith('Use this')]).toEqual([m.id, true]);
   });
 
   it('has a title only when it is a problem type (main lessons use the skill title)', () => {

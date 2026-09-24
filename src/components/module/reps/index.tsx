@@ -17,6 +17,9 @@ import { PatternBlocks } from './PatternBlocks';
 import { Prism } from './Prism';
 import { PartnerList } from './PartnerList';
 import { Solid } from './Solid';
+import { CoinRow } from './CoinRow';
+import { DotSet } from './DotSet';
+import { Tally } from './Tally';
 import { Pairs } from './Pairs';
 import { Partition } from './Partition';
 import { PolygonShape } from './PolygonShape';
@@ -43,7 +46,9 @@ import { Waterfall } from './Waterfall';
 export const representationTitle = (r: Representation) =>
   r.kind === 'table'
     ? 'Table'
-    : ['plot', 'bars', 'pictureGraph', 'waterfall', 'hundredChart', 'linePlot'].includes(r.kind)
+    : ['plot', 'bars', 'pictureGraph', 'waterfall', 'hundredChart', 'linePlot', 'tally'].includes(
+          r.kind,
+        )
       ? 'Chart'
       : 'Diagram';
 
@@ -69,6 +74,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Prism spec={spec} calc={calc} />;
     case 'solid':
       return <Solid spec={spec} calc={calc} />;
+    case 'dotSet':
+      return <DotSet spec={spec} calc={calc} />;
+    case 'tally':
+      return <Tally spec={spec} calc={calc} />;
+    case 'coinRow':
+      return <CoinRow spec={spec} calc={calc} />;
     case 'partnerList':
       return <PartnerList spec={spec} calc={calc} />;
     case 'bars':

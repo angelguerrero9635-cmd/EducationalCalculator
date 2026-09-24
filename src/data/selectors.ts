@@ -60,6 +60,8 @@ export interface ProblemType {
   id: string;
   title: string;
   skill: Skill;
+  /** What the page is for, in one line ("Use this for …"). */
+  use?: string;
 }
 
 /** The extra problem-type modules of a skill, in content order. */
@@ -70,6 +72,7 @@ export const problemTypes = (skillId: string): ProblemType[] => {
     id: m.id,
     title: m.title ?? m.id,
     skill,
+    use: m.use,
   }));
 };
 
@@ -78,7 +81,7 @@ export const getProblemType = (id: string): ProblemType | undefined => {
   if (!id.includes('~')) return undefined;
   const skill = getSkill(moduleOwner(id));
   const module = getModule(id);
-  return skill && module ? { id, title: module.title ?? id, skill } : undefined;
+  return skill && module ? { id, title: module.title ?? id, skill, use: module.use } : undefined;
 };
 
 /** Every problem-type module id (for pre-rendering pages). */
@@ -184,7 +187,7 @@ export const gradeSections = (grade: Grade, subject: K12Subject) =>
       ...problemTypes(skill.id).map((t) => ({
         id: t.id,
         title: t.title,
-        subtitle: `Problem type · ${skill.title}`,
+        subtitle: t.use ?? `Problem type · ${skill.title}`,
       })),
     ]),
   }));

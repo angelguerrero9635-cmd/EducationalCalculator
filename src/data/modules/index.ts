@@ -4,6 +4,7 @@ import { MATH_K2_MODULES } from './math-k2';
 import { MATH_K2_EXTRA_MODULES } from './math-k2-extra';
 import { MATH_K2_MORE_MODULES } from './math-k2-more';
 import type { ModuleDef } from './types';
+import { PROBLEM_TYPE_USES } from './uses';
 
 export type { ModuleDef, Representation } from './types';
 
@@ -13,7 +14,7 @@ export const MODULES: readonly ModuleDef[] = [
   ...MATH_K2_EXTRA_MODULES,
   ...MATH_K2_MORE_MODULES,
   ...COLLEGE_MODULES,
-];
+].map((m) => (PROBLEM_TYPE_USES[m.id] ? { ...m, use: PROBLEM_TYPE_USES[m.id] } : m));
 
 const BY_ID = new Map(MODULES.map((m) => [m.id, m]));
 

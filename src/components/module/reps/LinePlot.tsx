@@ -7,6 +7,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { useRep } from './common';
+import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'linePlot' }>;
 
@@ -21,6 +22,10 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const ids = spec.points.map((p) => p.var);
+  // With a start value, the lengths are start, start + 1, …; otherwise the points' own values.
+  const first = spec.points[0]?.at ?? 0;
+  const at = (x: number) =>
+    spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) + x - first : x;
 
   return (
     <View style={{ gap: space.sm, paddingHorizontal: space.md }}>
@@ -33,7 +38,7 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Pressable
                   key={i}
                   testID={`x-${p.var}-${i + 1}`}
-                  accessibilityLabel={`${p.at}${spec.unit ? ` ${spec.unit}` : ''}: ${i + 1}`}
+                  accessibilityLabel={`${at(p.at)}${spec.unit ? ` ${spec.unit}` : ''}: ${i + 1}`}
                   onPress={() =>
                     calc.set({
                       ...rep.pin(ids.filter((id) => id !== p.var)),
@@ -60,11 +65,14 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {spec.points.map((p) => (
           <View key={p.var} style={styles.tick}>
             <View style={[styles.tickMark, { backgroundColor: c.chartInk }]} />
-            <Text style={[styles.label, { color: c.text }]}>{p.at}</Text>
+            <Text style={[styles.label, { color: c.text }]}>{at(p.at)}</Text>
             <Text style={[styles.count, { color: c.textMuted }]}>{rep.label(p.var)}</Text>
           </View>
         ))}
       </View>
+      {spec.start ? (
+        <Steppers calc={calc} items={[{ var: spec.start, steps: [1], pin: ids }]} />
+      ) : null}
       {spec.unit ? (
         <Text
           style={[styles.unit, { color: c.textMuted }]}

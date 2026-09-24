@@ -51,6 +51,9 @@ const PICTURE_NAMES: Record<string, string> = {
   equalGroups: 'equal groups',
   prism: 'solid shape',
   solid: 'solid shapes',
+  dotSet: 'dots to count',
+  tally: 'tally chart',
+  coinRow: 'coins',
   partnerList: 'number partners',
 };
 const pictureName = (kind: string) =>

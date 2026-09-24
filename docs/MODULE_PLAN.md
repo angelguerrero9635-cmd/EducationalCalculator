@@ -48,7 +48,6 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   - polygons by sides and angles; rows and columns of squares; equal groups
   - bills; money left after buying; a.m./p.m. on the clock
 
-  **Still open (proposed by reviewers, not built yet):** counting scattered or circle
-  arrangements (K); coin values before Grade 2 money (Grade 1); skip counting backward, line
-  plots with other lengths and tally charts (Grade 2); a one-line "Use this for…" under each
-  problem type.
+  Also built after the third review: counting dots in any arrangement (K), a tally chart
+  (Grade 1), one kind of coin, skip counting back and a line plot with any starting length
+  (Grade 2), and a one-line "Use this for…" under every problem type (`uses.ts`).

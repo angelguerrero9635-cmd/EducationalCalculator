@@ -292,16 +292,21 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
   {
     id: 'm.2.graphs-line-plots~line-plot',
     title: 'Line plot',
+    standalone: {
+      vars: ['f'],
+      why: 'The shortest length only labels the line; the counts don’t depend on it.',
+    },
     assumptions: [
-      'Measure each object to the nearest whole inch.',
+      'Measure each object to the nearest whole inch. Set the shortest length with − / +.',
       'Put one X above the number line for each object, at its length.',
       'Count the X’s to find how many objects in all.',
     ],
     variables: [
-      whole('x4', 'A', '4 inches long', 0, 10),
-      whole('x5', 'B', '5 inches long', 0, 10),
-      whole('x6', 'C', '6 inches long', 0, 10),
-      whole('x7', 'D', '7 inches long', 0, 10),
+      { ...whole('f', 'f', 'Shortest length', 1, 20), unit: 'inches' },
+      whole('x4', 'A', 'At the shortest length', 0, 10),
+      whole('x5', 'B', 'At the 2nd length', 0, 10),
+      whole('x6', 'C', 'At the 3rd length', 0, 10),
+      whole('x7', 'D', 'At the longest length', 0, 10),
       whole('N', 'N', 'Objects measured', 0, 40),
     ],
     relations: [
@@ -348,11 +353,12 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         },
       },
     },
-    example: { x4: 2, x5: 5, x6: 3, x7: 1, N: 11 },
-    startWith: ['x4', 'x5', 'x6', 'x7'],
+    example: { f: 4, x4: 2, x5: 5, x6: 3, x7: 1, N: 11 },
+    startWith: ['f', 'x4', 'x5', 'x6', 'x7'],
     representation: {
       kind: 'linePlot',
       unit: 'in',
+      start: 'f',
       points: [
         { var: 'x4', at: 4 },
         { var: 'x5', at: 5 },

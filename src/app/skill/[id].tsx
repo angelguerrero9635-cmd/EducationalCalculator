@@ -48,7 +48,7 @@ export default function SkillScreen() {
     ...(type ? [{ id: skill.id, title: skill.title, subtitle: 'Main lesson' }] : []),
     ...problemTypes(skill.id)
       .filter((t) => t.id !== id)
-      .map((t) => ({ id: t.id, title: t.title, subtitle: 'Problem type' })),
+      .map((t) => ({ id: t.id, title: t.title, subtitle: t.use ?? 'Problem type' })),
   ];
 
   return (
@@ -66,6 +66,7 @@ export default function SkillScreen() {
         lines={[
           `${gradeLabel(skill.grade)} · ${subjectLabel(skill.subject)}`,
           type ? `Problem type · ${skill.title}` : `Strand: ${skill.strand}`,
+          ...(type?.use ? [type.use] : []),
         ]}
       />
       <RefreshSection rows={refreshRows(skill.id)} />
