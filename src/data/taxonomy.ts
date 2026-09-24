@@ -82,7 +82,7 @@ const MATH: Record<Grade, Row[]> = {
     ["make-10", "Make 10 from any number 1–9", OA],
     ["teens-place-value", "Teen numbers: 10 ones and some more ones", NBT],
     ["measurable-attributes", "Compare length, height, weight and capacity", MD],
-    ["classify-count", "Sort objects into categories and count them", MD],
+    ["classify-count", "Sort things into groups and count them", MD],
     ["shapes-2d-3d", "Name flat and solid shapes", G],
     ["position-words", "Position words: in front of, behind, next to", G],
     ["compose-shapes", "Put shapes together to make bigger shapes", G],

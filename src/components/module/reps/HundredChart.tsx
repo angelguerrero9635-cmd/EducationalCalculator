@@ -83,7 +83,7 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.textMuted }]}>
-        {[`${rep.tag(spec.value)} ${rep.label(spec.value).split(' = ')[1]} (dark)`]
+        {[`${rep.tag(spec.value)} ${rep.label(spec.value).split(' = ')[1]} (shaded)`]
           .concat(
             (spec.marks ?? [])
               .filter(rep.known)

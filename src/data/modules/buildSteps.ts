@@ -53,6 +53,14 @@ export interface Walkthrough {
  * If the formulas hold in the chosen units, the steps are worked in those units; otherwise
  * values are converted to the formula's units first and the answers converted back.
  */
+/** Singular forms of word units, for a value of 1 ("1 cup", "1 cube"). */
+const SINGULAR: Record<string, string> = {
+  cups: 'cup',
+  cubes: 'cube',
+  inches: 'inch',
+  feet: 'foot',
+};
+
 export function buildSteps(
   module: ModuleDef,
   result: SolveResult,
@@ -71,8 +79,14 @@ export function buildSteps(
    * Formats a value with its unit. Whole-number rounding applies only to values in the shown
    * unit (lesson numbers), never to the same value converted into formula units.
    */
-  const fmt = (id: string, x: number, unit: string | undefined, inShownUnit = true) =>
-    `${formatNumber(x, inShownUnit ? byId.get(id) : undefined)}${unit ? (unit === '¢' ? unit : ` ${unit}`) : ''}`;
+  const fmt = (id: string, x: number, unit: string | undefined, inShownUnit = true) => {
+    const n = formatNumber(x, inShownUnit ? byId.get(id) : undefined);
+    if (!unit) return n;
+    // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
+    if (unit === '$') return `$${n}`;
+    if (unit === '¢') return `${n}${unit}`;
+    return `${n} ${x === 1 ? (SINGULAR[unit] ?? unit) : unit}`;
+  };
   /** Variables for filling formulas with working values (no whole-number rounding if converted). */
   const workVars = direct ? vars : vars.map((v) => ({ ...v, integer: false }));
 
@@ -109,7 +123,7 @@ export function buildSteps(
       result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
     if (!text || !t.exact) {
-      return { ...base, how: 'Tried numbers until both sides match.' };
+      return { ...base, how: 'Try numbers until both sides match.' };
     }
     // Text functions get the numbers the steps show (the working values), so every line matches.
     const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;

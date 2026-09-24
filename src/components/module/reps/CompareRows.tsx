@@ -91,11 +91,10 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                                 : {}),
                               borderWidth: filled ? chart.strokeLight : StyleSheet.hairlineWidth,
                               borderColor: filled ? c.chartInk : c.chartGrid,
-                              backgroundColor: filled
-                                ? extra
-                                  ? c.chartHighlight
-                                  : c.chartFill
-                                : 'transparent',
+                              opacity: filled ? 1 : 0.5,
+                              // Extras solid; matched ones open, so "solid" reads the same in
+                              // light and dark mode.
+                              backgroundColor: filled && extra ? c.chartHighlight : 'transparent',
                             }}
                           />
                         </Pressable>
@@ -111,10 +110,10 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
       {verdict ? <Text style={[styles.verdict, { color: c.text }]}>{verdict}</Text> : null}
       <Text style={[styles.legend, { color: c.textMuted }]}>
         {spec.icon === 'dot'
-          ? 'Dark counters have no partner in the other row.'
+          ? 'Solid counters have no partner in the other row.'
           : spec.icon === 'cup'
-            ? 'Dark cups are the extra that only one container holds.'
-            : 'Dark cubes stick out past the shorter one.'}
+            ? 'Solid cups are the extra that only one jar holds.'
+            : 'Solid cubes stick out past the shorter one.'}
       </Text>
     </View>
   );

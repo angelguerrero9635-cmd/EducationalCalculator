@@ -50,12 +50,16 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   if (!Number.isFinite(x)) return 'Not a number';
   const f = variable.unitFactor ?? 1;
   const unit = variable.displayUnit ? ` ${variable.displayUnit}` : '';
+  // Money in dollars reads "$84", not "84 $".
+  const withUnit = (n: string) => (variable.displayUnit === '$' ? `$${n}` : `${n}${unit}`);
   if (variable.integer && Math.abs(x / f - Math.round(x / f)) > 1e-9) {
     return 'Must be a whole number';
   }
   const m = variable.multipleOf;
   if (m && Math.abs(x / f / m - Math.round(x / f / m)) > 1e-9) {
-    return `Must be 0, ${formatNumber(m)}, ${formatNumber(2 * m)}, ${formatNumber(3 * m)}, …`;
+    // Start the list at the smallest allowed multiple (12, 24, 36, … when the minimum is 12).
+    const first = Math.max(0, Math.ceil((variable.min ?? 0) / f / m - 1e-9)) * m;
+    return `Must be ${[first, first + m, first + 2 * m].map((x) => formatNumber(x)).join(', ')}, …`;
   }
   // Limits converted to another unit are shown to 3 significant figures.
   const limit = (bound: number) =>
@@ -64,10 +68,10 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   const shown = variable.integer ? Math.round(x / f) * f : x;
   const slack = (bound: number) => (variable.integer ? 0 : TOLERANCE * (1 + Math.abs(bound)));
   if (variable.min !== undefined && shown < variable.min - slack(variable.min)) {
-    return `Must be at least ${limit(variable.min)}${unit}`;
+    return `Must be at least ${withUnit(limit(variable.min))}`;
   }
   if (variable.max !== undefined && shown > variable.max + slack(variable.max)) {
-    return `Must be at most ${limit(variable.max)}${unit}`;
+    return `Must be at most ${withUnit(limit(variable.max))}`;
   }
   return undefined;
 }

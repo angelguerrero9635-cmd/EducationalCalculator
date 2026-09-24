@@ -300,6 +300,8 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`difference of (${NUM}) and (${NUM})`), (a, b) => Math.abs(a - b)],
   [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],
   [new RegExp(`jumps of (${NUM}) from (${NUM}) to (${NUM})`), (s, a, n) => (n - a) / s],
+  [new RegExp(`tens from (${NUM}) to (${NUM})`), (a, b) => (b - a) / 10],
+  [new RegExp(`(${NUM}) minutes?`), (a) => a],
   [new RegExp(`(${NUM}) jumps of (${NUM})`), (a, b) => a * b],
   [new RegExp(`rows of (${NUM}) in (${NUM})`), (c, n) => n / c],
   [new RegExp(`groups of (${NUM}) in (${NUM})`), (r, c) => c / r],
@@ -343,6 +345,8 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
 function evaluate(text: string): number | undefined {
   let s = text.replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/').replace(/·/g, '*');
+  // Long repeated sums are shortened: "2 + 2 + … (12 times)" is 2 × 12.
+  s = s.replace(/(\d+(?:\.\d+)?) \+ \1 \+ … \((\d+) times\)/g, (_, a, n) => `(${a} * ${n})`);
   for (let guard = 0; guard < 50; guard++) {
     let replaced = false;
     // Unwrap brackets around a single number, "(300)" → "300", so outer brackets can reduce.
@@ -764,6 +768,55 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
         c.f.add('error', `${c.label}work line doesn't add up: "${line}"`, where);
       }
     }
+  }
+  // Counting lines ("Count on from 4: 5, 6, 7 → 3", "Count by 5s to 25: 5, 10, …, 25 → 5"):
+  // the list goes up (or back) by the step from the start, and the arrow is either how many
+  // numbers were said or the number reached. When the step's answer is the number reached,
+  // an arrow at the count of numbers ("→ 3" for 4 + 3 = 7) points at the wrong number.
+  for (const s of w.steps) {
+    const answer = Number(/^-?[\d.]+/.exec(s.result.split(' = ')[1] ?? '')?.[0]);
+    const lines = s.work ?? [];
+    lines.forEach((line, i) => {
+      const m =
+        /(?:\b[Cc]ount\b([^:→]*):|: count on)\s*((?:\d+|…)(?:,\s*(?:\d+|…))*)\s*(?:→\s*\$?(\d+)|$)/.exec(
+          line,
+        );
+      if (!m) return;
+      const head = m[1] ?? '';
+      const xs = m[2]!.split(',').map((x) => x.trim());
+      const nums = xs.filter((x) => x !== '…').map(Number);
+      const whole = !xs.includes('…');
+      const by = Number(/by (\d+)s/.exec(head)?.[1] ?? (/by tens/.test(head) ? 10 : 1));
+      const step = /back/.test(head) ? -by : by;
+      const from = /from (\d+)/.exec(head)?.[1];
+      const firstOk = from === undefined || nums[0] === Number(from) + step;
+      const stepsOk = nums.slice(1, whole ? undefined : 1).every((x, j) => x - nums[j]! === step);
+      if (!firstOk || !stepsOk) {
+        c.f.add('error', `${c.label}counting line skips or repeats: "${line}"`, where);
+        return;
+      }
+      if (m[3] === undefined || !whole) return;
+      const arrow = Number(m[3]);
+      const last = nums[nums.length - 1]!;
+      if (arrow !== nums.length && arrow !== last) {
+        c.f.add(
+          'error',
+          `${c.label}counting line's arrow is neither the count nor the end: "${line}"`,
+          where,
+        );
+      } else if (
+        i === lines.length - 1 &&
+        arrow === nums.length &&
+        arrow !== answer &&
+        last === answer
+      ) {
+        c.f.add(
+          'error',
+          `${c.label}counting line ends at how many were counted (${arrow}), not the answer ${s.id} = ${answer}`,
+          `${where} → "${line}"`,
+        );
+      }
+    });
   }
   // The check must use the same numbers as the rest of the walkthrough (in the units shown):
   // every number in a check line has to appear in the given values, a step, a work line or the

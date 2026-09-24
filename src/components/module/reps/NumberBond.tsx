@@ -35,7 +35,7 @@ export function NumberBond({ spec, calc }: { spec: Spec; calc: Calculator }) {
           // Dots for a part, in rows of 5, inside its circle.
           const dots = (id: string, at: { x: number; y: number }, fill: string) => {
             const n = count(id);
-            const d = Math.min(r / 3.2, 10);
+            const d = Math.min(r / 5.5, 8);
             return Array.from({ length: n }, (_, i) => (
               <Circle
                 key={`${id}${i}`}

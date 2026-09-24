@@ -11,9 +11,9 @@ import { Steppers } from './Steppers';
 type Spec = Extract<Representation, { kind: 'tenFrame' }>;
 
 /**
- * Ten-frames (2 rows of 5 each) with dark counters for the first group and light counters for
- * the second. When only the first group can change (make 10, one more), tapping cell k sets it
- * to k. Otherwise tapping inside the dark counters sets the first group; tapping beyond them
+ * Ten-frames (2 rows of 5 each) with solid counters (●) for the first group and open counters (○)
+ * for the second. When only the first group can change (make 10, one more), tapping cell k sets it
+ * to k. Otherwise tapping inside the solid counters sets the first group; tapping beyond them
  * sets the total (or the second group, when the total is fixed). Tapping a group's last
  * counter removes it, so a group can go down to 0. When the total and second group were typed
  * and the first is worked out (take away), the second group is crossed out.
@@ -88,7 +88,8 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
                                 borderRadius: cell,
                                 borderWidth: chart.stroke,
                                 borderColor: c.chartInk,
-                                backgroundColor: kind === 'first' ? c.chartHighlight : c.chartFill,
+                                backgroundColor:
+                                  kind === 'first' ? c.chartHighlight : 'transparent',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                               }}

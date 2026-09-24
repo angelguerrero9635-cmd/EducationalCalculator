@@ -4,12 +4,43 @@ import { Text } from '@/components/Text';
 import { PlaceholderCard } from '@/components/PlaceholderCard';
 import { SectionHeader } from '@/components/SectionHeader';
 import { getModule, isEarlyGrade, type ModuleDef } from '@/data/modules';
+import { formatNumber } from '@/engine/format';
 import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
 import { RepresentationView, representationTitle } from './reps';
 import { StepByStep } from './StepByStep';
-import { useCalculator } from './useCalculator';
+import { useCalculator, type Calculator } from './useCalculator';
+
+/** "How much heavier: d = 3 cubes" for values the picture doesn't draw. */
+function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
+  const c = usePalette();
+  const byId = new Map(calc.module.variables.map((v) => [v.id, v]));
+  return (
+    <View style={styles.labels}>
+      {ids.map((id) => {
+        const v = byId.get(id)!;
+        const x = calc.values[id];
+        const unit = calc.units.display[id] ?? v.unit;
+        const num = x === undefined ? '?' : formatNumber(calc.units.toDisplay(id, x), v);
+        // $ goes before the number; ¢, % and ° go right after it; other units after a space.
+        const shown =
+          x === undefined || !unit
+            ? num
+            : unit === '$'
+              ? `$${num}`
+              : ['¢', '%', '°'].includes(unit)
+                ? `${num}${unit}`
+                : `${num} ${unit}`;
+        return (
+          <Text key={id} style={[styles.label, { color: c.text }]}>
+            {`${v.name}: ${v.symbol} = ${shown}`}
+          </Text>
+        );
+      })}
+    </View>
+  );
+}
 
 function ModuleView({ module }: { module: ModuleDef }) {
   const c = usePalette();
@@ -22,6 +53,7 @@ function ModuleView({ module }: { module: ModuleDef }) {
       <SectionHeader title={early ? 'Picture' : representationTitle(module.representation)} />
       <View style={styles.representation}>
         <RepresentationView spec={module.representation} calc={calc} />
+        {module.pictureLabels ? <PictureLabels ids={module.pictureLabels} calc={calc} /> : null}
       </View>
 
       <SectionHeader title={early ? 'Number sentences' : 'Formulas'} />
@@ -73,5 +105,7 @@ const styles = StyleSheet.create({
   dot: { fontSize: font.body, lineHeight: 22 },
   bulletText: { flex: 1, fontSize: font.body, lineHeight: 22 },
   representation: { paddingVertical: space.lg, paddingHorizontal: space.sm },
+  labels: { marginTop: space.sm, gap: space.xs },
+  label: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
   cards: { padding: space.lg, gap: space.md },
 });

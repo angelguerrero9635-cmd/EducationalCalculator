@@ -19,8 +19,8 @@ export function repeated(each: number, times: number): string {
 }
 
 /** Adds left to right, one addition per line: [3, 5, 2] → "3 + 5 = 8", "8 + 2 = 10". */
-export function sumSteps(nums: number[], unit = ''): string[] {
-  if (nums.length <= 2) return [];
+export function sumSteps(nums: number[], unit = '', evenTwo = false): string[] {
+  if (nums.length < 2 || (nums.length === 2 && !evenTwo)) return [];
   const lines: string[] = [];
   let acc = nums[0]!;
   for (const n of nums.slice(1)) {
@@ -76,16 +76,27 @@ export function addStrategy(a: number, b: number, unit = ''): string[] {
     } else if (o > 0 && lines.length) {
       lines.push(`${at}${u} + ${o}${u} = ${c}${u}`);
     }
-    return lines;
+    // One line that only repeats the sum (35 + 20 = 55) shows nothing new.
+    return lines.length > 1 ? lines : [];
   }
   const [pa, pb] = [places(a), places(b)];
-  const parts = [pa.h + pb.h, pa.t + pb.t, pa.o + pb.o];
+  // Each place that has something to add, then the place totals one at a time.
+  const rows = (
+    [
+      ['Hundreds', pa.h, pb.h],
+      ['Tens', pa.t, pb.t],
+      ['Ones', pa.o, pb.o],
+    ] as const
+  ).filter(([, x, y]) => x + y > 0);
+  const parts = rows.map(([, x, y]) => x + y);
+  // Places that only one number has need no adding (300 + 5 = 305).
+  if (rows.filter(([, x, y]) => x > 0 && y > 0).length === 0) return [];
   return [
-    `Hundreds: ${pa.h} + ${pb.h} = ${parts[0]}`,
-    `Tens: ${pa.t} + ${pb.t} = ${parts[1]}`,
-    `Ones: ${pa.o} + ${pb.o} = ${parts[2]}`,
+    ...rows
+      .filter(([, x, y]) => x > 0 && y > 0)
+      .map(([name, x, y]) => `${name}: ${x} + ${y} = ${x + y}`),
     ...sumSteps(parts),
-    ...(parts.length && sumSteps(parts).length === 0 ? [`${parts.join(' + ')} = ${c}`] : []),
+    ...(parts.length === 2 ? [`${parts[0]} + ${parts[1]} = ${c}`] : []),
   ].map((l) => (u ? l.replace(/(\d+)(?![\d.])/g, `$1${u}`) : l));
 }
 
@@ -149,7 +160,9 @@ export function countUp(from: number, to: number, unit = ''): string[] {
     hops.push(nextHundred - at);
     at = nextHundred;
   }
-  hops.push(to - at);
+  // The rest by place: hundreds, then tens, then ones (300 + 100 = 400, 400 + 30 = 430, …).
+  const rest = places(to - at);
+  hops.push(...[rest.h, rest.t, rest.o].filter((x) => x > 0));
   if (hops.length <= 1) return [];
   const lines: string[] = [];
   at = from;
@@ -160,3 +173,26 @@ export function countUp(from: number, to: number, unit = ''): string[] {
   lines.push(`${hops.map((h) => `${h}${unit}`).join(' + ')} = ${to - from}${unit}`);
   return lines;
 }
+
+/**
+ * Adds several numbers one at a time, making a ten first when two of them do (6 + 4 = 10), and
+ * leaving out zeros: [1, 6, 4, 3] → "6 + 4 = 10", "10 + 1 = 11", "11 + 3 = 14".
+ */
+export function addAll(nums: number[], unit = ''): string[] {
+  const xs = nums.filter((x) => x !== 0);
+  for (let i = 0; i < xs.length; i++) {
+    for (let j = i + 1; j < xs.length; j++) {
+      if ((xs[i]! + xs[j]!) % 10 === 0 && (xs[i]! % 10) + (xs[j]! % 10) === 10) {
+        const pair = [xs[i]!, xs[j]!];
+        return sumSteps([...pair, ...xs.filter((_, k) => k !== i && k !== j)], unit, true);
+      }
+    }
+  }
+  return sumSteps(xs, unit, true);
+}
+
+/** Dealing one at a time: "Deal 1 to each group: 3, 6, 9, 12 used", "4 rounds → 4 in each group". */
+export const dealLines = (groups: number, each: number, name: string) => [
+  `Deal 1 to each ${name}: ${countList(0, groups, each)} used`,
+  `${each} ${each === 1 ? 'round' : 'rounds'} → ${each} in each ${name}`,
+];

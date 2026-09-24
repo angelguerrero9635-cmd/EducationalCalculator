@@ -13,7 +13,7 @@ type Spec = Extract<Representation, { kind: 'prism' }>;
 
 const NAMES: Record<number, string> = {
   3: 'triangular prism',
-  4: 'cube',
+  4: 'cube (or a box)',
   5: 'pentagonal prism',
   6: 'hexagonal prism',
 };
@@ -36,16 +36,18 @@ export function Prism({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const height = n === 4 ? rx * 1.25 : h * 0.45;
           const cx = w / 2;
           const topY = (h - height) / 2;
+          // Turned a little, so no edge points straight at the viewer (looks solid).
+          const angle = (i: number) => (2 * Math.PI * i) / n + Math.PI / 2 + 0.45;
           const base = (y: number) =>
-            Array.from({ length: n }, (_, i) => {
-              // Turned a little, so no edge points straight at the viewer (looks solid).
-              const t = (2 * Math.PI * i) / n + Math.PI / 2 + 0.45;
-              return {
-                x: cx + rx * Math.cos(t),
-                y: y + ry * Math.sin(t),
-                back: Math.sin(t) < -1e-9,
-              };
-            });
+            Array.from({ length: n }, (_, i) => ({
+              x: cx + rx * Math.cos(angle(i)),
+              y: y + ry * Math.sin(angle(i)),
+            }));
+          // Seen from above: side face i (from corner i to i + 1) faces us when its middle is
+          // on the near side. Hidden edges are dashed: a bottom edge of a hidden face, and an
+          // upright edge between two hidden faces.
+          const faces = (i: number) => Math.sin(angle(i) + Math.PI / n) > 1e-9;
+          const hiddenUpright = (i: number) => !faces(i) && !faces((i + n - 1) % n);
           const top = base(topY);
           const bottom = base(topY + height);
           const ink = { stroke: c.chartInk, strokeWidth: chart.stroke };
@@ -66,7 +68,7 @@ export function Prism({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     x2={q.x}
                     y2={q.y}
                     {...ink}
-                    strokeDasharray={p.back || q.back ? chart.dash : undefined}
+                    strokeDasharray={faces(i) ? undefined : chart.dash}
                   />
                 );
               })}
@@ -78,7 +80,7 @@ export function Prism({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   x2={bottom[i]!.x}
                   y2={bottom[i]!.y}
                   {...ink}
-                  strokeDasharray={p.back ? chart.dash : undefined}
+                  strokeDasharray={hiddenUpright(i) ? chart.dash : undefined}
                 />
               ))}
               {[...top, ...bottom].map((p, i) => (

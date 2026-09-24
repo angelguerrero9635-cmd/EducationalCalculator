@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Polygon } from 'react-native-svg';
 
+import { SegmentedControl } from '@/components/SegmentedControl';
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
@@ -26,16 +28,33 @@ export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const n = Math.max(3, Math.round(rep.shown(spec.sides)));
   const angles = spec.words === 'angle';
+  // 'toggle': the student switches between an even shape and a stretched one (same name).
+  const [look, setLook] = useState<'even' | 'any'>('even');
+  const irregular = spec.irregular === 'toggle' ? look === 'any' : !!spec.irregular;
   const name =
     n === 4
-      ? angles || spec.irregular
+      ? angles
         ? 'quadrilateral'
-        : 'square or rectangle'
+        : irregular
+          ? '4-sided shape'
+          : 'square or rectangle'
       : (NAMES[n] ?? `${n}-sided shape`);
   const cornerSym = spec.corners ? `${rep.variable(spec.corners).symbol} = ` : '';
 
   return (
     <View>
+      {spec.irregular === 'toggle' ? (
+        <View style={styles.toggle}>
+          <SegmentedControl
+            segments={[
+              { value: 'even', label: 'Even sides' },
+              { value: 'any', label: 'Stretched' },
+            ]}
+            value={look}
+            onChange={setLook}
+          />
+        </View>
+      ) : null}
       <Canvas aspect={0.7}>
         {({ w, h }) => {
           const r = Math.min(w, h) / 2 - 20;
@@ -47,8 +66,8 @@ export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const reach = [1, 0.78, 0.95, 0.7, 0.9, 0.82, 1, 0.75];
           const pts = Array.from({ length: n }, (_, i) => {
             const even = -Math.PI / 2 + (Math.PI * 2 * i) / n + (n % 2 === 0 ? Math.PI / n : 0);
-            const t = spec.irregular ? even + (wobble[i % 8]! * Math.PI) / n : even;
-            const rr = spec.irregular ? r * reach[i % 8]! : r;
+            const t = irregular ? even + (wobble[i % 8]! * Math.PI) / n : even;
+            const rr = irregular ? r * reach[i % 8]! : r;
             return [cx + rr * Math.cos(t), cy + rr * Math.sin(t)] as const;
           });
           return (
@@ -75,5 +94,6 @@ export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
+  toggle: { paddingHorizontal: space.lg, marginBottom: space.sm },
   name: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
 });

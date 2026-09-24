@@ -15,7 +15,7 @@ export interface StepperItem {
   pin: string[];
   /** Wrap around within [min, max] (a clock's hours: 12 + 1 → 1). */
   wrap?: [number, number];
-  /** Shown before the label to tie the buttons to the picture, e.g. "●" for dark counters. */
+  /** Shown before the label to tie the buttons to the picture, e.g. "●" for solid counters. */
   marker?: string;
 }
 

@@ -20,6 +20,11 @@ function kidMessage(message: string): string {
   if (message === 'Enter a number') return 'Type a number';
   if (message.startsWith('Cleared')) return 'Changed to match your new number';
   if (message === 'Must be a whole number') return 'Use a whole number';
+  const least = /^Must be at least (.+)$/.exec(message);
+  if (least) return `Use ${least[1]} or more`;
+  const most = /^Must be at most (.+)$/.exec(message);
+  if (most) return `Use ${most[1]} or less`;
+  if (/^Must be \d/.test(message)) return message.replace('Must be ', 'Use ');
   if (/^(Makes|No whole numbers|Doesn’t fit)/.test(message)) {
     return 'That doesn’t fit. Try another number.';
   }

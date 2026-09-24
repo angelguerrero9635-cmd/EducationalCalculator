@@ -52,7 +52,14 @@ export const K12_MODULES: ModuleDef[] = [
           how: 'Put the two groups together and count them all.',
           work: (v) => (v.b! > 0 ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.b!)}`] : []),
         },
-        a: { expr: '{c} − {b}', how: 'Take the second group away from the total.' },
+        a: {
+          expr: '{c} − {b}',
+          how: 'Take the second group away from the total.',
+          work: (v) =>
+            v.b! > 0
+              ? [`Count back ${v.b} from ${v.c}: ${countList(v.c!, -1, v.b!)} → ${v.a}`]
+              : [],
+        },
         b: {
           expr: '{c} − {a}',
           how: 'Count on from the first group up to the total.',
@@ -77,14 +84,14 @@ export const K12_MODULES: ModuleDef[] = [
     id: 'm.K.classify-count',
     assumptions: [
       'Put each shape in one group.',
-      'Each object is counted once.',
+      'Count each shape once.',
       'Add all the groups to get the total.',
     ],
     variables: [
-      whole('c', 'c', 'Circles', 5),
-      whole('s', 's', 'Squares', 5),
-      whole('t', 't', 'Triangles', 5),
-      whole('n', 'n', 'Total', 15),
+      whole('c', 'c', 'Circles', 10),
+      whole('s', 's', 'Squares', 10),
+      whole('t', 't', 'Triangles', 10),
+      whole('n', 'n', 'Total', 30),
     ],
     relations: [
       {
@@ -110,14 +117,32 @@ export const K12_MODULES: ModuleDef[] = [
         c: {
           expr: '{n} − {s} − {t}',
           how: 'Count on from the other shapes up to the total.',
+          work: (v) => [
+            `${v.s} + ${v.t} = ${v.s! + v.t!}`,
+            ...(v.c! > 0
+              ? [`Count on from ${v.s! + v.t!}: ${countList(v.s! + v.t!, 1, v.c!)} → ${v.c}`]
+              : []),
+          ],
         },
         s: {
           expr: '{n} − {c} − {t}',
           how: 'Count on from the other shapes up to the total.',
+          work: (v) => [
+            `${v.c} + ${v.t} = ${v.c! + v.t!}`,
+            ...(v.s! > 0
+              ? [`Count on from ${v.c! + v.t!}: ${countList(v.c! + v.t!, 1, v.s!)} → ${v.s}`]
+              : []),
+          ],
         },
         t: {
           expr: '{n} − {c} − {s}',
           how: 'Count on from the other shapes up to the total.',
+          work: (v) => [
+            `${v.c} + ${v.s} = ${v.c! + v.s!}`,
+            ...(v.t! > 0
+              ? [`Count on from ${v.c! + v.s!}: ${countList(v.c! + v.s!, 1, v.t!)} → ${v.t}`]
+              : []),
+          ],
         },
       },
     },
@@ -130,7 +155,7 @@ export const K12_MODULES: ModuleDef[] = [
         { var: 's', icon: 'square' },
         { var: 't', icon: 'triangle' },
       ],
-      max: 5,
+      max: 10,
       total: 'n',
     },
   },

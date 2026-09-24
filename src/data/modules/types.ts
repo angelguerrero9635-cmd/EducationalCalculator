@@ -35,9 +35,9 @@ export type Representation =
       jumps?: 'tens';
     }
   /**
-   * Ten-frames with two colors of counters: `first` dark, then `second` light, `total` in all.
+   * Ten-frames with two kinds of counters: `first` solid (●), then `second` open (○), `total` in all.
    * `second` and `total` may be fixed numbers (e.g. "one more", "make 10"). Tap a cell inside
-   * the dark counters to set `first`; beyond them to set the total (or the second group).
+   * the solid counters to set `first`; beyond them to set the total (or the second group).
    */
   | {
       kind: 'tenFrame';
@@ -72,7 +72,13 @@ export type Representation =
    * Compare: two bars from the same start; the bracket is the `difference`. Drag bar ends.
    */
   | { kind: 'tape'; parts: string[]; total: string }
-  | { kind: 'tape'; compare: [string, string]; difference: string }
+  | {
+      kind: 'tape';
+      compare: [string, string];
+      difference: string;
+      /** A sentence under the bars, with {id} for values, e.g. "Ben has {d} more than Ana." */
+      caption?: string;
+    }
   /** Line plot: an X for each object above its value on a number line; tap to set counts. */
   | { kind: 'linePlot'; points: { var: string; at: number }[]; unit?: string }
   /**
@@ -84,11 +90,20 @@ export type Representation =
       sides: string;
       words?: 'corner' | 'angle';
       corners?: string;
-      /** Draw a shape with sides of different lengths (it has the same name). */
-      irregular?: boolean;
+      /**
+       * Draw a shape with sides of different lengths (it has the same name); 'toggle' lets the
+       * student switch between an even shape and a stretched one.
+       */
+      irregular?: boolean | 'toggle';
     }
   /** Balance scale: the counters on each pan are the listed values. Level when equal. */
-  | { kind: 'balance'; left: string[]; right: string[] }
+  | {
+      kind: 'balance';
+      left: string[];
+      right: string[];
+      /** Taken away from the left pan: those counters are crossed out (10 − 2 on the left). */
+      takeAway?: string;
+    }
   /**
    * Base-ten blocks (hundreds flats, tens rods, ones cubes) for each group, and for the total.
    * `controls` add − / + buttons (e.g. ±1, ±10) that change a value.
@@ -320,6 +335,11 @@ export interface ModuleDef {
    * student only types the coins they have.
    */
   clearTo?: Values;
+  /**
+   * Values the picture doesn't draw, labeled under it ("How much heavier: d = 3 cubes"), so
+   * every value in the number sentences can be found in the picture.
+   */
+  pictureLabels?: string[];
   /**
    * Values that stand on their own, with no formula linking them to the rest (e.g. a clock's
    * hour). Every other value must connect to the others through the formulas; otherwise the

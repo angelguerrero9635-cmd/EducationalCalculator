@@ -31,7 +31,9 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
             <View style={styles.row}>
               {Array.from({ length: n }, (_, i) => {
                 const me = i + 1 === p;
-                const fill = me ? c.chartHighlight : i + 1 < p ? c.chartFill : c.chartSurface;
+                // The picked child is solid, children in front are shaded, children behind open.
+                const fill = me ? c.chartHighlight : i + 1 < p ? c.chartFill : 'transparent';
+                const next = Math.abs(i + 1 - p) === 1;
                 return (
                   <Pressable
                     key={i}
@@ -63,6 +65,7 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       }}
                     />
                     <Text style={[styles.num, { color: c.textMuted }]}>{i + 1}</Text>
+                    {next ? <Text style={[styles.next, { color: c.text }]}>next to</Text> : null}
                   </Pressable>
                 );
               })}
@@ -71,7 +74,7 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.label(spec.before)} in front of the dark child   ·   ${rep.label(spec.after)} behind`}
+        {`${rep.label(spec.before)} in front of the picked child   ·   ${rep.label(spec.after)} behind`}
       </Text>
       <Steppers calc={calc} items={[{ var: spec.count, steps: [1], pin: [spec.position] }]} />
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a child to pick them.</Text>
@@ -83,6 +86,7 @@ const styles = StyleSheet.create({
   front: { fontSize: font.caption + 1, paddingHorizontal: space.md },
   row: { flexDirection: 'row', paddingHorizontal: space.sm },
   num: { fontSize: font.caption },
+  next: { fontSize: font.caption - 1, textAlign: 'center' },
   caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
 });

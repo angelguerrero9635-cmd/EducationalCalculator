@@ -2,7 +2,7 @@
  * Section 1 extra modules: common test question types that need a different model or picture
  * from a skill's main module (found by the exam-coverage review). Ids are `<skill id>~<slug>`.
  */
-import type { ModuleDef } from './types';
+import type { ModuleDef, StepText } from './types';
 import type { Values } from '@/engine/types';
 
 import {
@@ -16,8 +16,10 @@ import {
   whole,
 } from './math-k2';
 import {
+  addAll,
   addStrategy,
   countList,
+  dealLines,
   countUp,
   missingPart,
   repeated,
@@ -37,7 +39,7 @@ function compareProblem(id: string, max: number, example: [number, number]) {
     assumptions: [
       'Compare problems ask: how many more? How many fewer?',
       '“Maya has 2 more than Kofi” means Maya has the bigger amount: Kofi’s amount + 2.',
-      '“How many more” and “how many fewer” are the same difference.',
+      '“How many more” and “how many fewer” have the same answer.',
     ],
     variables: [
       whole('B', 'B', 'Bigger amount', 0, max),
@@ -89,9 +91,7 @@ function compareProblem(id: string, max: number, example: [number, number]) {
 /** Difference of two numbers; Grade 1 counts up (1.NBT.6 doesn't subtract two-digit numbers). */
 const cmpNumbers = (grade1: boolean) =>
   difference('d', 'a', 'b', {
-    diff: grade1
-      ? 'Count up from the smaller number to the greater one.'
-      : 'Subtract the smaller number from the greater one.',
+    diff: 'Count up from the smaller number to the greater one.',
     first: [
       'The first number is greater. Add the difference to the second number.',
       'The first number is less. Take the difference away from the second number.',
@@ -227,7 +227,9 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         s: {
           work: (v) => [
             `First: ${v.e} + ${v.t} = ${v.e! + v.t!}`,
+            ...addStrategy(v.e!, v.t!),
             `Then: ${v.e! + v.t!} − ${v.a} = ${v.s}`,
+            ...subtractStrategy(v.e! + v.t!, v.a!),
           ],
           expr: '{e} + {t} − {a}',
           how: 'Work backwards. First put back what was taken away. Then take away what was added.',
@@ -235,7 +237,9 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         a: {
           work: (v) => [
             `First: ${v.e} + ${v.t} = ${v.e! + v.t!}`,
+            ...addStrategy(v.e!, v.t!),
             `Then: ${v.e! + v.t!} − ${v.s} = ${v.a}`,
+            ...subtractStrategy(v.e! + v.t!, v.s!),
           ],
           expr: '{e} + {t} − {s}',
           how: 'Put back what was taken away. Then count up from the start.',
@@ -243,7 +247,9 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         t: {
           work: (v) => [
             `First: ${v.s} + ${v.a} = ${v.s! + v.a!}`,
+            ...addStrategy(v.s!, v.a!),
             `Then: ${v.s! + v.a!} − ${v.e} = ${v.t}`,
+            ...subtractStrategy(v.s! + v.a!, v.e!),
           ],
           expr: '{s} + {a} − {e}',
           how: 'Add first. Then count back to the end. That is how many were taken away.',
@@ -268,7 +274,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
 
   {
     id: 'm.2.add-sub-100-fluency~four-numbers',
-    title: 'Adding four numbers',
+    title: 'Add four numbers',
     assumptions: [
       'Add all the tens. Then all the ones. Look for ones that make a ten.',
       'In 23 + 17, the 3 and the 7 make a ten.',
@@ -305,9 +311,10 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
             const T = tens.reduce((p, q) => p + q, 0);
             const O = ones.reduce((p, q) => p + q, 0);
             return [
-              `Tens: ${tens.join(' + ')} = ${T}`,
-              `Ones: ${ones.join(' + ')} = ${O}`,
+              ...addAll(tens).map((l) => `Tens: ${l}`),
+              ...addAll(ones).map((l) => `Ones: ${l}`),
               `${T} + ${O} = ${T + O}`,
+              ...addStrategy(T, O),
             ];
           },
           expr: '{a} + {b} + {c} + {e}',
@@ -317,6 +324,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
           work: (v) => [
             ...sumSteps([v.b!, v.c!, v.e!]),
             ...missingPart(v.n!, [v.b!, v.c!, v.e!]).slice(-1),
+            ...subtractStrategy(v.n!, v.b! + v.c! + v.e!),
           ],
           expr: '{n} − {b} − {c} − {e}',
           how: 'Take the other numbers away from the total.',
@@ -325,6 +333,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
           work: (v) => [
             ...sumSteps([v.a!, v.c!, v.e!]),
             ...missingPart(v.n!, [v.a!, v.c!, v.e!]).slice(-1),
+            ...subtractStrategy(v.n!, v.a! + v.c! + v.e!),
           ],
           expr: '{n} − {a} − {c} − {e}',
           how: 'Take the other numbers away from the total.',
@@ -333,6 +342,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
           work: (v) => [
             ...sumSteps([v.a!, v.b!, v.e!]),
             ...missingPart(v.n!, [v.a!, v.b!, v.e!]).slice(-1),
+            ...subtractStrategy(v.n!, v.a! + v.b! + v.e!),
           ],
           expr: '{n} − {a} − {b} − {e}',
           how: 'Take the other numbers away from the total.',
@@ -341,6 +351,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
           work: (v) => [
             ...sumSteps([v.a!, v.b!, v.c!]),
             ...missingPart(v.n!, [v.a!, v.b!, v.c!]).slice(-1),
+            ...subtractStrategy(v.n!, v.a! + v.b! + v.c!),
           ],
           expr: '{n} − {a} − {b} − {c}',
           how: 'Take the other numbers away from the total.',
@@ -436,6 +447,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         { var: 'x7', at: 7 },
       ],
     },
+    pictureLabels: ['N'],
   },
 
   // Grade 2: polygons by sides and angles (2.G.1), and rows and columns of squares (2.G.2).
@@ -445,7 +457,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     assumptions: [
       'A polygon is a closed flat shape with straight sides.',
       'It has as many angles as sides: triangle 3, quadrilateral 4, pentagon 5, hexagon 6.',
-      'Count the sides or angles to name a shape. Size and turning keep the same name.',
+      'Count the sides or angles to name a shape. A bigger or turned shape keeps its name.',
     ],
     variables: [whole('s', 's', 'Sides', 3, 6), whole('a', 'a', 'Angles', 3, 6)],
     relations: [
@@ -506,12 +518,12 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         r: {
           work: (v) => [`Count by ${v.c}s to ${v.n}: ${countList(0, v.c!, v.r!)} → ${v.r} rows`],
           expr: 'rows of {c} in {n}',
-          how: 'Make rows until all the squares are used. Count the rows.',
+          how: 'Make rows until you use all the squares. Count the rows.',
         },
         c: {
-          work: (v) => [`Try ${v.c} in each row: ${repeated(v.c!, v.r!)} ✓`],
+          work: (v) => dealLines(v.r!, v.c!, 'row'),
           expr: '{n} shared into {r} rows',
-          how: 'Deal 1 square to each row, again and again, until all are used. Count one row.',
+          how: 'Deal 1 square to each row. Keep going until the squares are gone. Count one row.',
         },
       },
     },
@@ -533,7 +545,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     title: 'Expanded form',
     assumptions: [
       'Expanded form adds the value of each digit: 347 = 300 + 40 + 7.',
-      'The hundreds part is a whole number of hundreds; the tens part, of tens.',
+      'The hundreds part is 100, 200, 300 and so on. The tens part is 10, 20, 30 and so on.',
       'A 0 digit adds nothing: 305 = 300 + 0 + 5.',
     ],
     variables: [
@@ -631,8 +643,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     id: 'm.2.standard-length~number-line',
     title: 'Lengths on a number line',
     assumptions: [
-      'Put two lengths end to end: the total length is their sum.',
-      'On a number line, start at 0, jump the first length, then jump the second.',
+      'Put two lengths end to end. Add them to find the total length.',
+      'On a number line, start at 0. Jump the first length. Then jump the second.',
       'Use the same unit for both lengths.',
     ],
     variables: [
@@ -715,7 +727,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         P: {
           work: (v) => subtractStrategy(v.T!, v.L!, '¢'),
           expr: '{T} − {L}',
-          how: 'Take the money left away from the money you had.',
+          how: 'Take the money left away from the money you have.',
           note: (v) => `(${dollars(v.P!)})`,
         },
         T: {
@@ -761,6 +773,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       ],
       max: 10,
     },
+    pictureLabels: ['d'],
   },
 
   // Grade 2: how many more in a bar graph (2.MD.10).
@@ -796,6 +809,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
   ((): ModuleDef => {
     const cmp = difference('d', 'a', 'b', {
       diff: 'Put the objects on the balance. Count the extra cubes on the lower side.',
+      countOn: true,
       display: '{d} = how much heavier: {a} or {b}',
       first: [
         'Object A is heavier. Add the extra cubes to object B.',
@@ -824,23 +838,42 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       example: { a: 7, b: 4, d: 3 },
       startWith: ['a', 'b'],
       representation: { kind: 'balance' as const, left: ['a'], right: ['b'] },
+      pictureLabels: ['d'],
     };
   })(),
 
   // Grade 1: is the number sentence true or false? (1.OA.7).
-  ((): ModuleDef => {
-    const cmp = difference('D', 'L', 'R', {
-      diff: 'Take the smaller side away from the bigger side. 0 means true.',
-      first: [
-        'The left side is bigger. Add the difference to the right side.',
-        'The left side is smaller. Take the difference away from the right side.',
-      ],
-      second: [
-        'The left side is bigger. Take the difference away from the left side.',
-        'The left side is smaller. Add the difference to the left side.',
-      ],
-    });
-    return {
+  (() => {
+    const L = (v: Values) => v.a! + v.b!;
+    const R = (v: Values) => v.c! + v.d!;
+    const leftMore = (v: Values) => L(v) >= R(v);
+    const sides = (v: Values) => [
+      `Left: ${v.a} + ${v.b} = ${L(v)}`,
+      `Right: ${v.c} + ${v.d} = ${R(v)}`,
+    ];
+    // A missing number on one side: the other side's total, plus or minus the difference.
+    const missing = (x: 'a' | 'b' | 'c' | 'd'): StepText => {
+      const left = x === 'a' || x === 'b';
+      const partner = { a: 'b', b: 'a', c: 'd', d: 'c' }[x];
+      const other = left ? '({c} + {d})' : '({a} + {b})';
+      // Which way: the side with x is the bigger one when the left is bigger and x is on the left.
+      const bigger = (v: Values) => leftMore(v) === left;
+      return {
+        expr: (v) => `${other} ${bigger(v) ? '+' : '−'} {D} − {${partner}}`,
+        how: (v) =>
+          `Add the ${left ? 'right' : 'left'} side. ${bigger(v) ? 'Add' : 'Take away'} the difference. Then take away the other number on this side.`,
+        work: (v) => {
+          const o = left ? R(v) : L(v);
+          const side = bigger(v) ? o + v.D! : o - v.D!;
+          return [
+            left ? `Right: ${v.c} + ${v.d} = ${o}` : `Left: ${v.a} + ${v.b} = ${o}`,
+            `${o} ${bigger(v) ? '+' : '−'} ${v.D} = ${side}`,
+            `${side} − ${v[partner]} = ${v[x]}`,
+          ];
+        },
+      };
+    };
+    const mod: ModuleDef = {
       id: 'm.1.equal-sign~true-false',
       title: 'True or false?',
       assumptions: [
@@ -853,68 +886,49 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         whole('b', 'b', 'Second on left', 0, 10),
         whole('c', 'c', 'First on right', 0, 10),
         whole('d', 'd', 'Second on right', 0, 10),
-        whole('L', 'L', 'Left side', 0, 20),
-        whole('R', 'R', 'Right side', 0, 20),
         whole('D', 'D', 'Difference', 0, 20),
       ],
       relations: [
         {
-          id: 'L = a + b',
-          display: '{L} = {a} + {b}',
-          vars: ['L', 'a', 'b'],
-          residual: (v: Values) => v.L! - v.a! - v.b!,
+          id: 'D = difference of the sides',
+          display: '{D} = difference of ({a} + {b}) and ({c} + {d})',
+          vars: ['D', 'a', 'b', 'c', 'd'],
+          residual: (v: Values) => v.D! - Math.abs(L(v) - R(v)),
+          check: (v: Values) =>
+            `${Math.max(L(v), R(v))} − ${Math.min(L(v), R(v))} = ${Math.abs(L(v) - R(v))}`,
           solve: {
-            L: (v: Values) => v.a! + v.b!,
-            a: (v: Values) => v.L! - v.b!,
-            b: (v: Values) => v.L! - v.a!,
+            D: (v: Values) => Math.abs(L(v) - R(v)),
+            a: (v: Values) => [R(v) - v.b! + v.D!, R(v) - v.b! - v.D!],
+            b: (v: Values) => [R(v) - v.a! + v.D!, R(v) - v.a! - v.D!],
+            c: (v: Values) => [L(v) - v.d! + v.D!, L(v) - v.d! - v.D!],
+            d: (v: Values) => [L(v) - v.c! + v.D!, L(v) - v.c! - v.D!],
           },
         },
-        {
-          id: 'R = c + d',
-          display: '{R} = {c} + {d}',
-          vars: ['R', 'c', 'd'],
-          residual: (v: Values) => v.R! - v.c! - v.d!,
-          solve: {
-            R: (v: Values) => v.c! + v.d!,
-            c: (v: Values) => v.R! - v.d!,
-            d: (v: Values) => v.R! - v.c!,
-          },
-        },
-        cmp.relation,
       ],
       steps: {
-        ...cmp.steps,
-        [cmp.relation.id]: {
-          ...cmp.steps[cmp.relation.id],
+        'D = difference of the sides': {
           D: {
-            ...cmp.steps[cmp.relation.id]!.D!,
+            expr: (v) => (leftMore(v) ? '({a} + {b}) − ({c} + {d})' : '({c} + {d}) − ({a} + {b})'),
+            how: 'Add each side. Take the smaller side away from the bigger side. 0 means true.',
+            work: (v) => [
+              ...sides(v),
+              `${Math.max(L(v), R(v))} − ${Math.min(L(v), R(v))} = ${v.D}`,
+            ],
             note: (v: Values) =>
-              v.D === 0 ? `(true: ${v.L} = ${v.R})` : `(false: ${v.L} ≠ ${v.R})`,
+              v.D === 0 ? `(true: ${L(v)} = ${R(v)})` : `(false: ${L(v)} ≠ ${R(v)})`,
           },
-        },
-        'L = a + b': {
-          L: {
-            expr: '{a} + {b}',
-            how: 'Add the left side.',
-            work: (v: Values) => addStrategy(v.a!, v.b!),
-          },
-          a: { expr: '{L} − {b}', how: 'Take the second number away from the left side.' },
-          b: { expr: '{L} − {a}', how: 'Count on from the first number to the left side.' },
-        },
-        'R = c + d': {
-          R: {
-            expr: '{c} + {d}',
-            how: 'Add the right side.',
-            work: (v: Values) => addStrategy(v.c!, v.d!),
-          },
-          c: { expr: '{R} − {d}', how: 'Take the second number away from the right side.' },
-          d: { expr: '{R} − {c}', how: 'Count on from the first number to the right side.' },
+          a: missing('a'),
+          b: missing('b'),
+          c: missing('c'),
+          d: missing('d'),
         },
       },
-      example: { a: 6, b: 1, c: 5, d: 2, L: 7, R: 7, D: 0 },
+      example: { a: 6, b: 1, c: 5, d: 2, D: 0 },
       startWith: ['a', 'b', 'c', 'd'],
       representation: { kind: 'balance' as const, left: ['a', 'b'], right: ['c', 'd'] },
+      pictureLabels: ['D'],
     };
+    return mod;
   })(),
 
   // Grade 2: the same number with extra tens or ones, e.g. 3 hundreds 14 tens 5 ones (2.NBT.1).
@@ -952,7 +966,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
           work: (v: Values) => [
             `${v.h} hundreds = ${100 * v.h!}`,
             `${v.t} tens = ${10 * v.t!}`,
-            `${100 * v.h!} + ${10 * v.t!} + ${v.o} = ${v.n}`,
+            `${100 * v.h!} + ${10 * v.t!} = ${100 * v.h! + 10 * v.t!}`,
+            `${100 * v.h! + 10 * v.t!} + ${v.o} = ${v.n}`,
           ],
           expr: '{h} hundreds + {t} tens + {o} ones',
           how: 'Find the value of the hundreds and the tens. Then add them with the ones.',
@@ -960,7 +975,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         h: {
           work: (v: Values) => [
             `${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${10 * v.t!} − ${v.o} = ${100 * v.h!}`,
+            `${v.n} − ${10 * v.t!} = ${v.n! - 10 * v.t!}`,
+            `${v.n! - 10 * v.t!} − ${v.o} = ${100 * v.h!}`,
             `${100 * v.h!} is ${v.h} hundreds`,
           ],
           expr: 'hundreds in ({n} − {t} tens − {o} ones)',
@@ -969,7 +985,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         t: {
           work: (v: Values) => [
             `${v.h} hundreds = ${100 * v.h!}`,
-            `${v.n} − ${100 * v.h!} − ${v.o} = ${10 * v.t!}`,
+            `${v.n} − ${100 * v.h!} = ${v.n! - 100 * v.h!}`,
+            `${v.n! - 100 * v.h!} − ${v.o} = ${10 * v.t!}`,
             `${10 * v.t!} is ${v.t} tens`,
           ],
           expr: 'tens in ({n} − {h} hundreds − {o} ones)',
@@ -978,7 +995,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         o: {
           work: (v: Values) => [
             `${v.h} hundreds = ${100 * v.h!}, ${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${100 * v.h!} − ${10 * v.t!} = ${v.o}`,
+            `${v.n} − ${100 * v.h!} = ${v.n! - 100 * v.h!}`,
+            `${v.n! - 100 * v.h!} − ${10 * v.t!} = ${v.o}`,
           ],
           expr: '{n} − {h} hundreds − {t} tens',
           how: 'Take away the hundreds and tens. The rest are ones.',
@@ -1054,14 +1072,13 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     example: { a: 70, b: 30, c: 40 },
     startWith: ['a', 'b'],
     representation: {
-      kind: 'numberLine',
-      start: 'c',
-      jump: 'b',
-      end: 'a',
+      kind: 'hops',
+      start: 'a',
+      hops: [{ var: 'b', sign: -1 }],
+      end: 'c',
       min: 0,
       max: 100,
       tick: 10,
-      jumps: 'tens',
     },
   },
 
@@ -1126,7 +1143,9 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
             n: {
               expr: `{${x}} ${inv} ${Math.abs(k)}`,
               how: `Go back: change the ${place} digit by 1 the other way.`,
-              work: (v: Values) => [`${v[x]} ${inv} ${Math.abs(k)} = ${v.n}`],
+              work: (v: Values) => [
+                `${place === 'tens' ? 'Tens' : 'Hundreds'} digit: ${digit(v[x]!)} → ${digit(v.n!)}`,
+              ],
             },
           },
         ];
@@ -1139,5 +1158,6 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       groups: ['n'],
       controls: [{ var: 'n', steps: [10, 100] }],
     },
+    pictureLabels: ['U', 'u', 't', 'H'],
   },
 ];

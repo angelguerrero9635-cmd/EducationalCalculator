@@ -1,12 +1,12 @@
 import { StyleSheet, View } from 'react-native';
-import Svg, { Polygon } from 'react-native-svg';
+import Svg, { G, Polygon } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'patternBlocks' }>;
@@ -25,7 +25,13 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
     ...Array<number>(n(spec.rhombuses)).fill(2),
     ...Array<number>(n(spec.triangles)).fill(1),
   ];
-  const fills: Record<number, string> = { 3: c.chartHighlight, 2: c.chartFill, 1: c.chartSurface };
+  // Trapezoids solid, rhombuses shaded, triangles open; each block is labeled with its letter.
+  const fills: Record<number, string> = { 3: c.chartHighlight, 2: c.chartFill, 1: 'transparent' };
+  const letters: Record<number, string> = {
+    3: rep.variable(spec.trapezoids).symbol,
+    2: rep.variable(spec.rhombuses).symbol,
+    1: rep.variable(spec.triangles).symbol,
+  };
   const ids = [spec.trapezoids, spec.rhombuses, spec.triangles];
 
   return (
@@ -42,18 +48,32 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
           let at = 0;
           const shapes = blocks.map((k, j) => {
             const pts = [`${cx},${cy}`, ...Array.from({ length: k + 1 }, (_, i) => v(at + i))];
+            // The label sits in the middle of the block's slices, 55% of the way out.
+            const mid = (Math.PI / 3) * (at + k / 2) - Math.PI / 2;
+            const lx = cx + r * 0.55 * Math.cos(mid);
+            const ly = cy + r * 0.55 * Math.sin(mid);
             at += k;
             // Past the whole hexagon: too many blocks (drawn faded, the formulas say why).
             const over = at > 6;
             return (
-              <Polygon
-                key={j}
-                points={pts.join(' ')}
-                fill={fills[k]}
-                stroke={c.chartInk}
-                strokeWidth={chart.stroke}
-                opacity={over ? 0.3 : 1}
-              />
+              <G key={j} opacity={over ? 0.3 : 1}>
+                <Polygon
+                  points={pts.join(' ')}
+                  fill={fills[k]}
+                  stroke={c.chartInk}
+                  strokeWidth={chart.stroke}
+                />
+                <ChartText
+                  x={lx}
+                  y={ly + 6}
+                  fontSize={chart.value}
+                  fontWeight="700"
+                  textAnchor="middle"
+                  fill={k === 3 ? c.onChartHighlight : c.chartInk}
+                >
+                  {letters[k]}
+                </ChartText>
+              </G>
             );
           });
           const empty = Array.from({ length: Math.max(0, 6 - at) }, (_, i) => (
@@ -78,7 +98,13 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
       </Text>
       <Steppers
         calc={calc}
-        items={ids.map((id) => ({ var: id, steps: [1], pin: ids.filter((x) => x !== id) }))}
+        // Changing a block lets the triangles take up the difference (the hexagon stays full);
+        // changing the triangles lets the trapezoids stay and the rhombuses change.
+        items={[
+          { var: spec.trapezoids, steps: [1], pin: [spec.rhombuses] },
+          { var: spec.rhombuses, steps: [1], pin: [spec.trapezoids] },
+          { var: spec.triangles, steps: [1], pin: [spec.trapezoids] },
+        ]}
       />
     </View>
   );

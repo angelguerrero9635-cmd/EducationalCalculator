@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Line, Polygon, Rect } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path, Polygon, Rect } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
@@ -19,10 +19,11 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const count = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
-  const left = spec.left.reduce((s, id) => s + count(id), 0);
+  const crossed = spec.takeAway ? count(spec.takeAway) : 0;
+  const left = spec.left.reduce((s, id) => s + count(id), 0) - crossed;
   const right = spec.right.reduce((s, id) => s + count(id), 0);
   const tilt = Math.max(-1, Math.min(1, (right - left) / 6)) * 14;
-  const all = [...spec.left, ...spec.right];
+  const all = [...spec.left, ...(spec.takeAway ? [spec.takeAway] : []), ...spec.right];
   const shades = [c.chartHighlight, c.chartFill];
 
   return (
@@ -47,16 +48,29 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
             const dots = ids.flatMap((id, g) =>
               Array.from({ length: count(id) }, () => {
                 const k = i++;
+                const cx = x - (dx * (per - 1)) / 2 + (k % per) * dx;
+                const cy = y + (small ? 38 : 34) - Math.floor(k / per) * dy;
+                const r = small ? 4.6 : 7.5;
+                // The last counters on the left pan are crossed out when some are taken away.
+                const out = key === 'L' && k >= n - crossed;
                 return (
-                  <Circle
-                    key={`${key}${id}${k}`}
-                    cx={x - (dx * (per - 1)) / 2 + (k % per) * dx}
-                    cy={y + (small ? 38 : 34) - Math.floor(k / per) * dy}
-                    r={small ? 4.6 : 7.5}
-                    fill={shades[g % 2]}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeLight}
-                  />
+                  <G key={`${key}${id}${k}`} opacity={out ? 0.6 : 1}>
+                    <Circle
+                      cx={cx}
+                      cy={cy}
+                      r={r}
+                      fill={out ? 'transparent' : shades[g % 2]}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
+                    />
+                    {out ? (
+                      <Path
+                        d={`M ${cx - r} ${cy - r} L ${cx + r} ${cy + r} M ${cx + r} ${cy - r} L ${cx - r} ${cy + r}`}
+                        stroke={c.chartInk}
+                        strokeWidth={chart.stroke}
+                      />
+                    ) : null}
+                  </G>
                 );
               }),
             );
@@ -98,7 +112,7 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${spec.left.map((id) => rep.variable(id).symbol).join(' + ')} = ${left}   ·   ${spec.right.map((id) => rep.variable(id).symbol).join(' + ')} = ${right}\n`}
+        {`${spec.left.map((id) => rep.variable(id).symbol).join(' + ')}${spec.takeAway ? ` − ${rep.variable(spec.takeAway).symbol}` : ''} = ${left}   ·   ${spec.right.map((id) => rep.variable(id).symbol).join(' + ')} = ${right}\n`}
         {left === right
           ? 'Level: both sides are the same.'
           : `Not level: ${left} on the left, ${right} on the right.`}

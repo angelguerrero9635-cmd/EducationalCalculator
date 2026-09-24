@@ -55,7 +55,7 @@ describe('unit conversions (exact definitions)', () => {
   });
 
   it('module content only uses registered units or fixed labels', () => {
-    const fixed = ['%', 'per 1,000', 'years', 'cubes', 'cups', '¢', '$'];
+    const fixed = ['%', 'per 1,000', 'years', 'cubes', 'cups', 'feet', 'inches', '¢', '$'];
     for (const m of MODULES) {
       for (const v of m.variables) {
         if (v.unit)

@@ -12,6 +12,7 @@ import {
   compareLine,
   countList,
   countUp,
+  dealLines,
   missingPart,
   repeated,
   subtractStrategy,
@@ -103,10 +104,30 @@ export function difference(
     compare?: boolean;
     /** The formula as students read it, e.g. "{d} = how many more: {a} or {b}" (K–1). */
     display?: string;
+    /** Count on and count back one at a time (Kindergarten, numbers to 10). */
+    countOn?: boolean;
+    /** How to find a or b when there is no difference (default: they are the same). */
+    same?: string;
   },
 ) {
   const id = `${d} = difference of ${a} and ${b}`;
   const aMore = (v: Values) => v[a]! >= v[b]!;
+  const same = how.same ?? 'There is no difference. Both are the same.';
+  /**
+   * Knowing one amount and the difference leaves two answers; the solver keeps one. Name the
+   * other ("or 12, the other way round") so a student with the opposite problem sees it.
+   */
+  const otherWay = (known: number, diff: number, wentUp: boolean) => {
+    const alt = wentUp ? known - diff : known + diff;
+    return diff > 0 && alt >= 0 ? `(or ${formatNumber(alt)}, the other way round)` : '';
+  };
+  /** "Start at 4. Count on 3: 5, 6, 7 → 7" or "Start at 7. Count back 3: 6, 5, 4 → 4". */
+  const counting = (from: number, by: number, up: boolean) =>
+    by > 0
+      ? [
+          `Start at ${from}. Count ${up ? 'on' : 'back'} ${by}: ${countList(from, up ? 1 : -1, by)} → ${up ? from + by : from - by}`,
+        ]
+      : [];
   const relation = {
     id,
     display: how.display ?? `{${d}} = difference of {${a}} and {${b}}`,
@@ -125,24 +146,42 @@ export function difference(
       [d]: {
         expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
         how: how.diff,
-        ...(how.countUp || how.compare
+        ...(how.countUp || how.compare || how.countOn
           ? {
-              work: (v: Values) => [
-                ...(how.compare ? [compareLine(v[a]!, v[b]!)] : []),
-                ...(how.countUp ? countUp(Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)) : []),
-              ],
+              work: (v: Values) => {
+                const [lo, hi] = [Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)];
+                return [
+                  ...(how.compare ? [compareLine(v[a]!, v[b]!)] : []),
+                  ...(how.countUp ? countUp(lo, hi) : []),
+                  ...(how.countOn && hi > lo
+                    ? [`Count on from ${lo}: ${countList(lo, 1, hi - lo)} → ${hi - lo}`]
+                    : []),
+                ];
+              },
             }
           : {}),
       },
       [a]: {
         expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`),
-        how: (v) => how.first[aMore(v) ? 0 : 1],
-        work: (v) => (aMore(v) ? addStrategy(v[b]!, v[d]!) : subtractStrategy(v[b]!, v[d]!)),
+        how: (v) => (v[d] === 0 ? same : how.first[aMore(v) ? 0 : 1]),
+        note: (v) => otherWay(v[b]!, v[d]!, aMore(v)),
+        work: (v) =>
+          how.countOn
+            ? counting(v[b]!, v[d]!, aMore(v))
+            : aMore(v)
+              ? addStrategy(v[b]!, v[d]!)
+              : subtractStrategy(v[b]!, v[d]!),
       },
       [b]: {
         expr: (v) => (aMore(v) ? `{${a}} − {${d}}` : `{${a}} + {${d}}`),
-        how: (v) => how.second[aMore(v) ? 0 : 1],
-        work: (v) => (aMore(v) ? subtractStrategy(v[a]!, v[d]!) : addStrategy(v[a]!, v[d]!)),
+        how: (v) => (v[d] === 0 ? same : how.second[aMore(v) ? 0 : 1]),
+        note: (v) => otherWay(v[a]!, v[d]!, !aMore(v)),
+        work: (v) =>
+          how.countOn
+            ? counting(v[a]!, v[d]!, !aMore(v))
+            : aMore(v)
+              ? subtractStrategy(v[a]!, v[d]!)
+              : addStrategy(v[a]!, v[d]!),
       },
     },
   };
@@ -200,10 +239,19 @@ function moneyTotalWork(v: Values): string[] {
   const parts = moneyParts(v);
   if (parts.length === 0) return [];
   const total = parts.reduce((sum, p) => sum + p.cents, 0);
+  const running = runningCount(parts);
+  // Count on coin by coin; with many coins, add each kind's value one at a time instead.
   return [
     ...countOnLines(parts),
-    ...(parts.length > 1 ? [`${parts.map((p) => `${p.cents}¢`).join(' + ')} = ${total}¢`] : []),
-    ...runningCount(parts),
+    ...(running.length
+      ? running
+      : sumSteps(
+          parts.map((p) => p.cents),
+          '¢',
+        )),
+    ...(running.length === 0 && parts.length === 2
+      ? [`${parts[0]!.cents}¢ + ${parts[1]!.cents}¢ = ${total}¢`]
+      : []),
   ];
 }
 
@@ -220,7 +268,9 @@ function moneyCoinWork(coin: Coin) {
         ? 'No other money: 0¢'
         : parts.length === 1
           ? `Other money: ${other}¢`
-          : `Other money: ${parts.map((p) => `${p.cents}¢`).join(' + ')} = ${other}¢`,
+          : runningCount(parts).length
+            ? `Other money: ${runningCount(parts)[0]!.replace('Count on: ', 'count on ')}`
+            : `Other money: ${parts.map((p) => `${p.cents}¢`).join(' + ')} = ${other}¢`,
       `${v.T}¢ − ${other}¢ = ${left}¢ left`,
       coin.cents === 1 || left === 0
         ? `${left}¢ → ${n} ${n === 1 ? coin.one : coin.many}`
@@ -232,6 +282,14 @@ function moneyCoinWork(coin: Coin) {
 /** The total written in dollars and cents too, e.g. "($1.68)". */
 const inDollars = (v: Values) =>
   `($${Math.floor(v.T! / 100)}.${String(v.T! % 100).padStart(2, '0')})`;
+
+/** "347 = 300 + 40 + 7", leaving out places that are 0 ("305 = 300 + 5"). */
+const placeLine = (n: number) => {
+  const parts = [Math.floor(n / 100) * 100, Math.floor((n % 100) / 10) * 10, n % 10].filter(
+    (x) => x > 0,
+  );
+  return parts.length > 1 ? [`${n} = ${parts.join(' + ')}`] : [];
+};
 
 /** Tens and ones of n (n = t tens + o ones), for counting and place value. */
 function tensOnes(maxTens: number) {
@@ -273,7 +331,7 @@ function tensOnes(maxTens: number) {
         },
         t: {
           expr: 'tens in ({n} − {o})',
-          how: 'Take away the extra ones; the rest is groups of ten.',
+          how: 'Take away the extra ones. The rest are groups of ten.',
           work: (v: Values) => [
             `${v.n} − ${v.o} = ${v.n! - v.o!}`,
             `${v.n! - v.o!} is ${v.t} tens`,
@@ -281,7 +339,7 @@ function tensOnes(maxTens: number) {
         },
         o: {
           expr: '{n} − {t} tens',
-          how: 'Take away the full tens; what is left are the ones.',
+          how: 'Take away the full tens. The ones are left.',
           work: (v: Values) => [`${v.t} tens = ${10 * v.t!}`, `${v.n} − ${10 * v.t!} = ${v.o}`],
         },
       },
@@ -326,8 +384,9 @@ function sumInOrder(id: string, v: Values): string[] {
 }
 
 const cmpK10 = difference('d', 'a', 'b', {
+  countOn: true,
   display: '{d} = how many more: {a} or {b}',
-  diff: 'Match the counters in pairs. Count the dark ones left over.',
+  diff: 'Match the counters in pairs. Count the solid ones left over.',
   first: [
     'The first row has more. Add the extra to the second row.',
     'The first row has fewer. Take the extra away from the second row.',
@@ -338,6 +397,7 @@ const cmpK10 = difference('d', 'a', 'b', {
   ],
 });
 const cmpPencils = difference('d', 'a', 'b', {
+  countOn: true,
   display: '{d} = how much longer: {a} or {b}',
   diff: 'Line up the pencils at one end. Count the cubes that stick out.',
   first: [
@@ -351,7 +411,7 @@ const cmpPencils = difference('d', 'a', 'b', {
 });
 export const cmpShapes = difference('d', 'c', 's', {
   display: '{d} = how many more: {c} or {s}',
-  diff: 'Line up the circles and squares. Count the extra ones in the longer row.',
+  diff: 'Line up the two columns. Count the extra pictures in the taller one.',
   first: [
     'There are more circles. Add the extra to the squares.',
     'There are fewer circles. Take the extra away from the squares.',
@@ -359,18 +419,6 @@ export const cmpShapes = difference('d', 'c', 's', {
   second: [
     'There are more circles. Take the extra away from the circles.',
     'There are fewer circles. Add the extra to the circles.',
-  ],
-});
-const cmpRibbons = difference('d', 'a', 'b', {
-  diff: 'Count up from the shorter length to the longer one.',
-  countUp: true,
-  first: [
-    'Ribbon A is longer. Add the difference to ribbon B.',
-    'Ribbon A is shorter. Subtract the difference from ribbon B.',
-  ],
-  second: [
-    'Ribbon A is longer. Subtract the difference from ribbon A.',
-    'Ribbon A is shorter. Add the difference to ribbon A.',
   ],
 });
 export const cmpBars = difference('d', 'a', 'b', {
@@ -398,7 +446,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       whole('n', 'n', 'Start number', 1, 99),
       whole('p', 'p', 'One more', 2, 100),
       whole('t', 't', 'Tens to count', 1, 9),
-      whole('m', 'm', 'Number reached by tens', 11, 100),
+      whole('m', 'm', 'End number', 11, 100),
     ],
     relations: [
       {
@@ -441,7 +489,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
             `Count back by tens from ${v.m}: ${countList(v.m!, -10, v.t!)}`,
           ],
           expr: '{m} − {t} tens',
-          how: 'Start at the number reached. Go up one row for each ten.',
+          how: 'Start at the end number. Go up one row for each ten.',
         },
         t: {
           work: (v) => [
@@ -449,7 +497,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
             `${v.t} tens = ${10 * v.t!}`,
           ],
           expr: 'tens from {n} to {m}',
-          how: 'Go down the chart from the start number. Count the rows to the number reached.',
+          how: 'Go down the chart from the start number. Count the rows to the end number.',
         },
       },
     },
@@ -518,8 +566,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
 
   {
     id: 'm.K.make-10',
-    assumptions: ['A ten-frame has 10 boxes.', 'Dark counters and light counters make 10.'],
-    variables: [whole('a', 'a', 'Dark counters', 0, 10), whole('b', 'b', 'More to make 10', 0, 10)],
+    assumptions: ['A ten-frame has 10 boxes.', 'Solid counters and open counters make 10.'],
+    variables: [
+      whole('a', 'a', 'Solid counters', 0, 10),
+      whole('b', 'b', 'More to make 10', 0, 10),
+    ],
     relations: [
       {
         id: 'a + b = 10',
@@ -533,11 +584,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'a + b = 10': {
         b: {
           expr: '10 − {a}',
-          how: 'Count the light counters. They fill the empty boxes.',
+          how: 'Count the open counters. They fill the empty boxes.',
           work: (v) =>
             v.b! > 0 ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.b!)} → ${v.b}`] : [],
         },
-        a: { expr: '10 − {b}', how: 'Count the dark counters.' },
+        a: { expr: '10 − {b}', how: 'Count the solid counters.' },
       },
     },
     example: { a: 6, b: 4 },
@@ -604,9 +655,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.K.shapes-2d-3d',
     assumptions: [
-      'Triangles and squares are flat. They have straight sides and corners. A circle has no corners.',
+      'Flat shapes like triangles and squares have straight sides and corners. A circle has none.',
+      'A long, thin or tipped shape keeps its name. Count the sides to name it.',
       'Cubes, cones, cylinders and spheres are solid shapes.',
-      'Turn a shape or make it bigger. It keeps its name.',
     ],
     variables: [whole('s', 's', 'Sides', 3, 6), whole('v', 'c', 'Corners', 3, 6)],
     relations: [
@@ -632,7 +683,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     },
     example: { s: 4, v: 4 },
     startWith: ['s'],
-    representation: { kind: 'polygon', sides: 's', corners: 'v' },
+    representation: { kind: 'polygon', sides: 's', corners: 'v', irregular: 'toggle' },
   },
 
   // ─── Grade 1 ───────────────────────────────────────────────────────────────
@@ -747,12 +798,13 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'The equal sign means both sides are the same amount.',
       'To find a missing number, make both sides the same: 8 + 2 = 5 + ?',
+      'Subtraction works the same way: 8 = 10 − 2 is true, because 10 − 2 is 8.',
     ],
     variables: [
-      whole('a', 'a', 'First on left', 0, 20),
-      whole('b', 'b', 'Second on left', 0, 20),
-      whole('c', 'c', 'First on right', 0, 20),
-      whole('d', 'd', 'Second on right', 0, 20),
+      whole('a', 'a', 'First on left', 0, 10),
+      whole('b', 'b', 'Second on left', 0, 10),
+      whole('c', 'c', 'First on right', 0, 10),
+      whole('d', 'd', 'Second on right', 0, 10),
     ],
     relations: [
       {
@@ -773,9 +825,13 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         d: {
           work: (v) => [
             `Left side: ${v.a} + ${v.b} = ${v.a! + v.b!}`,
-            v.d! > 0
-              ? `${v.c} + ? = ${v.a! + v.b!}: count on ${countList(v.c!, 1, v.d!)} → ${v.d}`
-              : `${v.c} + 0 = ${v.a! + v.b!}`,
+            ...addStrategy(v.a!, v.b!),
+            v.d! === 0
+              ? `${v.c} + 0 = ${v.a! + v.b!}`
+              : v.d! <= 5
+                ? `${v.c} + ? = ${v.a! + v.b!}: count on ${countList(v.c!, 1, v.d!)} → ${v.d}`
+                : `${v.a! + v.b!} − ${v.c} = ${v.d}`,
+            ...(v.d! > 5 ? subtractStrategy(v.a! + v.b!, v.c!) : []),
           ],
           expr: '{a} + {b} − {c}',
           how: 'Add the left side. Count on from the first number on the right up to that total.',
@@ -783,7 +839,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         c: {
           work: (v) => [
             `Left side: ${v.a} + ${v.b} = ${v.a! + v.b!}`,
+            ...addStrategy(v.a!, v.b!),
             `${v.a! + v.b!} − ${v.d} = ${v.c}`,
+            ...subtractStrategy(v.a! + v.b!, v.d!),
           ],
           expr: '{a} + {b} − {d}',
           how: 'Add the left side. Take away the second number on the right.',
@@ -791,7 +849,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         b: {
           work: (v) => [
             `Right side: ${v.c} + ${v.d} = ${v.c! + v.d!}`,
+            ...addStrategy(v.c!, v.d!),
             `${v.c! + v.d!} − ${v.a} = ${v.b}`,
+            ...subtractStrategy(v.c! + v.d!, v.a!),
           ],
           expr: '{c} + {d} − {a}',
           how: 'Add the right side. Take away the first number on the left.',
@@ -799,7 +859,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         a: {
           work: (v) => [
             `Right side: ${v.c} + ${v.d} = ${v.c! + v.d!}`,
+            ...addStrategy(v.c!, v.d!),
             `${v.c! + v.d!} − ${v.b} = ${v.a}`,
+            ...subtractStrategy(v.c! + v.d!, v.b!),
           ],
           expr: '{c} + {d} − {b}',
           how: 'Add the right side. Take away the second number on the left.',
@@ -881,7 +943,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.1.add-within-100',
     assumptions: [
-      'Add a one-digit number, or tens like 20, to a two-digit number.',
+      'Add a small number like 7, or tens like 20, to a number like 36.',
       'Add tens with tens and ones with ones.',
       'The total is 100 or less.',
     ],
@@ -1008,8 +1070,8 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     id: 'm.1.data-3-categories',
     assumptions: [
       'Each picture stands for one object.',
-      'Each category is one kind of shape.',
-      'Add every category to get the total.',
+      'Each column is one kind of shape (a category).',
+      'Add all three columns to get the total.',
     ],
     variables: [
       whole('c', 'c', 'Circles', 0, 10),
@@ -1036,7 +1098,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         n: {
           work: (v) => sumSteps([v.c!, v.s!, v.t!]),
           expr: '{c} + {s} + {t}',
-          how: 'Add the three categories.',
+          how: 'Add the three columns.',
         },
         c: {
           work: (v) => missingPart(v.n!, [v.s!, v.t!]),
@@ -1222,27 +1284,21 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       },
       'h = hundreds digit': {
         h: {
-          work: (v) => [
-            `${v.n} = ${Math.floor(v.n! / 100) * 100} + ${Math.floor((v.n! % 100) / 10) * 10} + ${v.n! % 10}`,
-          ],
+          work: (v) => [...placeLine(v.n!), `${100 * v.h!} is ${v.h} hundreds`],
           expr: 'hundreds digit of {n}',
           how: 'Read the digit in the hundreds place (count the flats).',
         },
       },
       't = tens digit': {
         t: {
-          work: (v) => [
-            `${v.n} = ${Math.floor(v.n! / 100) * 100} + ${Math.floor((v.n! % 100) / 10) * 10} + ${v.n! % 10}`,
-          ],
+          work: (v) => [...placeLine(v.n!), `${10 * v.t!} is ${v.t} tens`],
           expr: 'tens digit of {n}',
           how: 'Read the digit in the tens place (count the rods).',
         },
       },
       'o = ones digit': {
         o: {
-          work: (v) => [
-            `${v.n} = ${Math.floor(v.n! / 100) * 100} + ${Math.floor((v.n! % 100) / 10) * 10} + ${v.n! % 10}`,
-          ],
+          work: (v) => [...placeLine(v.n!), `${v.o} is ${v.o} ones`],
           expr: 'ones digit of {n}',
           how: 'Read the digit in the ones place (count the small cubes).',
         },
@@ -1264,7 +1320,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.add-sub-1000',
     assumptions: [
-      'Add hundreds, tens and ones separately.',
+      'Add hundreds to hundreds, tens to tens and ones to ones.',
       'Trade 10 ones for a ten, and 10 tens for a hundred, when needed.',
       'Subtraction undoes addition: 256 + 178 = 434, so 434 − 178 = 256.',
     ],
@@ -1300,7 +1356,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('a', 'a', 'Start', 0, 1000),
-      whole('s', 's', 'Count by', 1, 100),
+      { ...whole('s', 's', 'Count by', 5, 100), multipleOf: 5, step: 5 },
       whole('k', 'k', 'Number of jumps', 1, 20),
       whole('n', 'n', 'Number reached', 1, 1000),
     ],
@@ -1323,16 +1379,16 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'n = a + k jumps of s': {
         n: {
           work: (v) => [
-            `Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)}`,
-            `${v.k} jumps of ${v.s} = ${v.k! * v.s!}, and ${v.a} + ${v.k! * v.s!} = ${v.n}`,
+            `Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)} → ${v.n}`,
+            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
           ],
           expr: '{a} + {k} jumps of {s}',
           how: 'Start at the start number. Add the count-by number for each jump.',
         },
         a: {
           work: (v) => [
-            `Count back by ${v.s}s from ${v.n}: ${countList(v.n!, -v.s!, v.k!)}`,
-            `${v.k} jumps of ${v.s} = ${v.k! * v.s!}, and ${v.n} − ${v.k! * v.s!} = ${v.a}`,
+            `Count back by ${v.s}s from ${v.n}: ${countList(v.n!, -v.s!, v.k!)} → ${v.a}`,
+            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
           ],
           expr: '{n} − {k} jumps of {s}',
           how: 'Count back by the count-by number, once for each jump.',
@@ -1348,7 +1404,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
         s: {
           work: (v) => [
             `${v.n} − ${v.a} = ${v.n! - v.a!}`,
-            `Try ${v.s}: ${repeated(v.s!, v.k!)} ✓`,
+            `Try jumps of ${v.s}: ${countList(0, v.s!, v.k!)} is ${v.k} ${v.k === 1 ? 'jump' : 'jumps'} ✓`,
           ],
           expr: 'size of {k} equal jumps from {a} to {n}',
           how: 'Find the jump size that gets from the start to the number reached.',
@@ -1454,7 +1510,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.arrays',
     assumptions: [
-      'Every row has the same number; every column has the same number.',
+      'Each row has the same number of dots. So does each column.',
       'Add the same number once for each row: 3 rows of 4 is 4 + 4 + 4.',
       'Up to 5 rows and 5 columns.',
     ],
@@ -1486,9 +1542,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
           how: 'Make rows of the same size until you use them all. Count the rows.',
         },
         c: {
-          work: (v) => [`Try ${v.c} in each row: ${repeated(v.c!, v.r!)} ✓`],
+          work: (v) => dealLines(v.r!, v.c!, 'row'),
           expr: '{n} shared into {r} rows',
-          how: 'Deal 1 dot to each row, again and again, until all are used. Count one row.',
+          how: 'Deal 1 dot to each row. Keep going until the dots are gone. Count one row.',
         },
       },
     },
@@ -1500,22 +1556,47 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.standard-length',
     assumptions: [
-      'Line up the end of the object with the ruler’s 0.',
+      'Line up the end of each ribbon with the ruler’s 0.',
+      '“A is 8 cm shorter than B” means B is the longer ribbon.',
       'Measure both in the same unit: inches, feet, centimeters or meters.',
-      'Bigger units mean you need fewer: 1 foot is 12 inches; 1 meter is 100 centimeters.',
     ],
     variables: [
-      { ...whole('a', 'a', 'Ribbon A', 0, 100), unit: 'cm' },
-      { ...whole('b', 'b', 'Ribbon B', 0, 100), unit: 'cm' },
+      { ...whole('L', 'L', 'Longer ribbon', 0, 100), unit: 'cm' },
+      { ...whole('S', 'S', 'Shorter ribbon', 0, 100), unit: 'cm' },
       { ...whole('d', 'd', 'How much longer', 0, 100), unit: 'cm' },
     ],
-    relations: [cmpRibbons.relation],
+    relations: [
+      {
+        id: 'd = L − S',
+        check: (v) => `${formatNumber(v.L!)} − ${formatNumber(v.S!)} = ${formatNumber(v.d!)}`,
+        display: '{d} = {L} − {S}',
+        vars: ['d', 'L', 'S'],
+        residual: (v) => v.d! - v.L! + v.S!,
+        solve: { d: (v) => v.L! - v.S!, L: (v) => v.S! + v.d!, S: (v) => v.L! - v.d! },
+      },
+    ],
     steps: {
-      ...cmpRibbons.steps,
+      'd = L − S': {
+        d: {
+          expr: '{L} − {S}',
+          how: 'Count up from the shorter length to the longer one.',
+          work: (v) => countUp(v.S!, v.L!),
+        },
+        L: {
+          expr: '{S} + {d}',
+          how: 'The longer ribbon is the shorter one plus how much longer.',
+          work: (v) => addStrategy(v.S!, v.d!),
+        },
+        S: {
+          expr: '{L} − {d}',
+          how: 'The shorter ribbon is the longer one minus how much longer.',
+          work: (v) => subtractStrategy(v.L!, v.d!),
+        },
+      },
     },
-    example: { a: 12, b: 8, d: 4 },
-    startWith: ['a', 'b'],
-    representation: { kind: 'ruler', lengths: ['a', 'b'], difference: 'd', extent: 15 },
+    example: { L: 12, S: 8, d: 4 },
+    startWith: ['L', 'S'],
+    representation: { kind: 'ruler', lengths: ['L', 'S'], difference: 'd', extent: 15 },
   },
 
   {

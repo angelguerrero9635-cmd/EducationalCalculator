@@ -22,7 +22,7 @@ function representationVars(r: Representation): string[] {
     case 'polygon':
       return [r.sides, ...(r.corners ? [r.corners] : [])];
     case 'balance':
-      return [...r.left, ...r.right];
+      return [...r.left, ...r.right, ...(r.takeAway ? [r.takeAway] : [])];
     case 'baseTen':
       return [...r.groups, ...(r.total ? [r.total] : []), ...r.controls.map((c) => c.var)];
     case 'unitTiles':
@@ -108,6 +108,11 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
     expect(resolveItem(moduleOwner(m.id))).toBeDefined();
     // Extra modules for a skill need a title for the switcher.
     if (m.id.includes('~')) expect(m.title).toBeTruthy();
+  });
+
+  it('labels only its own values under the picture', () => {
+    const ids = new Set(m.variables.map((v) => v.id));
+    for (const id of m.pictureLabels ?? []) expect([id, ids.has(id)]).toEqual([id, true]);
   });
 
   it('has a title only when it is a problem type (main lessons use the skill title)', () => {

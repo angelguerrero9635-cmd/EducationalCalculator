@@ -41,6 +41,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
     ? (() => {
         const [a, b] = spec.compare;
         const [x, y] = shown as [number, number];
+        if (spec.caption) return spec.caption.replace(/\{(\w+)\}/g, (_, id: string) => fmt(id));
         if (!rep.known(a) || !rep.known(b)) return `${name(spec.difference)}: ?`;
         if (x === y) return 'The bars are the same length: no difference.';
         const lower = (id: string) => name(id).toLowerCase();
