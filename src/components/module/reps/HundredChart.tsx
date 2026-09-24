@@ -6,6 +6,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep } from './common';
+import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'hundredChart' }>;
 
@@ -82,19 +83,27 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.textMuted }]}>
-        {[`${rep.label(spec.value)} (dark)`]
+        {[`${rep.tag(spec.value)} ${rep.label(spec.value).split(' = ')[1]} (dark)`]
           .concat(
             (spec.marks ?? [])
               .filter(rep.known)
               .map((id) =>
                 Math.round(rep.shown(id)) > spec.max
-                  ? `${rep.label(id)} (past the chart)`
-                  : `${rep.label(id)} (in a box)`,
+                  ? `${rep.variable(id).name} ${rep.label(id)} (past the chart)`
+                  : `${rep.variable(id).name} ${rep.label(id)} (in a box)`,
               ),
-            spec.tens && rep.known(spec.tens.count) ? [`${rep.label(spec.tens.count)} (dots)`] : [],
+            spec.tens && rep.known(spec.tens.count)
+              ? [`${rep.variable(spec.tens.count).name} ${rep.label(spec.tens.count)} (dots)`]
+              : [],
           )
           .join('   ·   ')}
       </Text>
+      {spec.tens ? (
+        <Steppers
+          calc={calc}
+          items={[{ var: spec.tens.count, steps: [1], pin: [spec.value], marker: '•' }]}
+        />
+      ) : null}
     </View>
   );
 }

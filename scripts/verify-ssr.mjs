@@ -27,7 +27,7 @@ const CHECKS = [
       'Make 10 from any number 1–9 – Kindergarten Math | Educational Calculator',
       '<meta data-rh="true" name="description"',
       'A ten-frame has 10 boxes.',
-      'Count the empty boxes in the ten-frame.',
+      'Count the light counters. They fill the empty boxes.',
       'Number sentences',
     ],
   ],

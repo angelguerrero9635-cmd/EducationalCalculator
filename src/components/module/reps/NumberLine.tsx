@@ -17,6 +17,8 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const b = rep.val(spec.jump);
   const end = rep.val(spec.end);
   const faded = ![spec.start, spec.jump, spec.end].every(rep.known);
+  // Subtraction (the end and the jump typed, the start worked out): hop back from the end.
+  const back = calc.status(spec.start) === 'derived' && calc.status(spec.end) === 'given';
 
   return (
     <Canvas aspect={0.42}>
@@ -30,12 +32,17 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
           { length: Math.floor((spec.max - spec.min) / tick) + 1 },
           (_, i) => spec.min + i * tick,
         );
-        // Arcs from start to end: one jump, or jumps of 10 and then the ones.
-        const d = end - a;
+        // Arcs from start to end (or back from the end to the start when subtracting): one
+        // jump, or jumps of 10 and then the ones.
+        const [from0, to0] = back ? [end, a] : [a, end];
+        const d = to0 - from0;
         const sign = d < 0 ? -1 : 1;
         const tens = spec.jumps === 'tens' ? Math.floor(Math.abs(d) / 10) : 0;
-        const stops = [a, ...Array.from({ length: tens }, (_, i) => a + sign * 10 * (i + 1))];
-        if (stops[stops.length - 1] !== end || stops.length === 1) stops.push(end);
+        const stops = [
+          from0,
+          ...Array.from({ length: tens }, (_, i) => from0 + sign * 10 * (i + 1)),
+        ];
+        if (stops[stops.length - 1] !== to0 || stops.length === 1) stops.push(to0);
         const arcs = stops.slice(1).map((to, i) => ({ from: stops[i]!, to }));
         const minor = tick > 1 && unit >= 2.5;
         return (
@@ -81,7 +88,7 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const mid = (sx(from) + sx(to)) / 2;
                 const label =
                   arcs.length === 1
-                    ? `${b >= 0 ? '+' : ''}${rep.label(spec.jump).split(' = ')[1]}`
+                    ? `${back ? '−' : b >= 0 ? '+' : ''}${rep.label(spec.jump).split(' = ')[1]}`
                     : `${sign > 0 ? '+' : '−'}${Math.abs(to - from)}`;
                 return (
                   <G key={i} opacity={faded ? 0.35 : 1}>

@@ -9,6 +9,7 @@ import { CompareRows } from './CompareRows';
 import { CubeTrains } from './CubeTrains';
 import { DotArray } from './DotArray';
 import { HundredChart } from './HundredChart';
+import { Hops } from './Hops';
 import { Pairs } from './Pairs';
 import { Partition } from './Partition';
 import { PolygonShape } from './PolygonShape';
@@ -47,6 +48,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LinePlot spec={spec} calc={calc} />;
     case 'numberLine':
       return <NumberLine spec={spec} calc={calc} />;
+    case 'hops':
+      return <Hops spec={spec} calc={calc} />;
     case 'bars':
       return <Bars spec={spec} calc={calc} />;
     case 'rectangle':

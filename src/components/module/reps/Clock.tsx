@@ -25,6 +25,17 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const minuteAngle = (m / 60) * 2 * Math.PI;
   const hourAngle = (((h % 12) + m / 60) / 12) * 2 * Math.PI;
   const digital = `${h}:${String(m).padStart(2, '0')}`;
+  // Time words students hear: o’clock, quarter past, half past, quarter to.
+  const words =
+    m === 0
+      ? `${h} o’clock`
+      : m === 15
+        ? `quarter past ${h}`
+        : m === 30
+          ? `half past ${h}`
+          : m === 45
+            ? `quarter to ${(h % 12) + 1}`
+            : '';
 
   return (
     <View>
@@ -119,7 +130,9 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.digital, { color: c.text }]}>{digital}</Text>
+      <Text style={[styles.digital, { color: c.text }]}>
+        {words ? `${digital}  (${words})` : digital}
+      </Text>
       <Text style={[styles.hands, { color: c.textMuted }]}>
         {`Short hand: ${rep.label(spec.hour)}   ·   Long hand: ${rep.label(spec.minute)} minutes`}
       </Text>

@@ -26,7 +26,9 @@ export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const n = Math.max(3, Math.round(rep.shown(spec.sides)));
   const angles = spec.words === 'angle';
-  const name = angles && n === 4 ? 'quadrilateral' : (NAMES[n] ?? `${n}-sided shape`);
+  const name =
+    n === 4 ? (angles ? 'quadrilateral' : 'square or rectangle') : (NAMES[n] ?? `${n}-sided shape`);
+  const cornerSym = spec.corners ? `${rep.variable(spec.corners).symbol} = ` : '';
 
   return (
     <View>
@@ -56,7 +58,7 @@ export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Text
         style={[styles.name, { color: c.text }]}
-      >{`A ${name}: ${rep.variable(spec.sides).symbol} = ${n} sides, ${n} ${angles ? 'angles' : 'corners'}`}</Text>
+      >{`A ${name}: ${rep.variable(spec.sides).symbol} = ${n} sides, ${cornerSym}${n} ${angles ? 'angles' : 'corners'}`}</Text>
       <Steppers calc={calc} items={[{ var: spec.sides, steps: [1], pin: [] }]} />
     </View>
   );

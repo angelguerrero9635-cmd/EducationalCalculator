@@ -22,7 +22,8 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const count = Math.max(0, Math.round(rep.shown(spec.count)));
-  const size = Math.max(1, Math.round(rep.shown(spec.size)));
+  const sizeVar = typeof spec.size === 'string' ? spec.size : undefined;
+  const size = Math.max(1, Math.round(sizeVar ? rep.shown(sizeVar) : (spec.size as number)));
   const total = count * size;
   // Room for at least 24 cubes; longer objects shrink the cubes (held steady while dragging).
   const span = useFrozen(Math.max(24, total));
@@ -95,7 +96,7 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 onEnd={span.release}
                 onMove={(dx) =>
                   calc.set({
-                    ...rep.pin([spec.size]),
+                    ...rep.pin(sizeVar ? [sizeVar] : []),
                     [spec.count]: rep.snapTo(spec.count, start.current + dx / (size * cell)),
                   })
                 }
@@ -105,9 +106,15 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.variable(spec.total).symbol} = ${total} cubes = ${rep.variable(spec.count).symbol} = ${count} ${rep.variable(spec.count).name.toLowerCase()}, each ${rep.variable(spec.size).symbol} = ${size} ${size === 1 ? 'cube' : 'cubes'} long`}
+        {`${rep.variable(spec.count).symbol} = ${count} ${rep.variable(spec.count).name.toLowerCase()}, each ${sizeVar ? `${rep.variable(sizeVar).symbol} = ` : ''}${size} ${size === 1 ? 'cube' : 'cubes'} long. ${rep.variable(spec.total).symbol} = ${total} cubes.`}
       </Text>
-      <Steppers calc={calc} items={[{ var: spec.size, steps: [1], pin: [spec.count] }]} />
+      <Steppers
+        calc={calc}
+        items={[
+          { var: spec.count, steps: [1], pin: sizeVar ? [sizeVar] : [] },
+          ...(sizeVar ? [{ var: sizeVar, steps: [1], pin: [spec.count] }] : []),
+        ]}
+      />
     </View>
   );
 }

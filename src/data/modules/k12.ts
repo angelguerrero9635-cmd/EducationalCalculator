@@ -3,7 +3,7 @@
  * still comes from taxonomy.ts. Written and reviewed against docs/MODULE_GUIDE.md.
  */
 import type { ModuleDef } from './types';
-import { sumSteps } from './work';
+import { countList } from './work';
 
 const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
 const whole = (id: string, symbol: string, name: string, max: number) => ({
@@ -47,9 +47,20 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'a + b = c': {
-        c: { expr: '{a} + {b}', how: 'Put the two groups together and count them all.' },
+        c: {
+          expr: '{a} + {b}',
+          how: 'Put the two groups together and count them all.',
+          work: (v) => (v.b! > 0 ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.b!)}`] : []),
+        },
         a: { expr: '{c} − {b}', how: 'Take the second group away from the total.' },
-        b: { expr: '{c} − {a}', how: 'Take the first group away from the total.' },
+        b: {
+          expr: '{c} − {a}',
+          how: 'Count on from the first group up to the total.',
+          work: (v) =>
+            v.c! > v.a!
+              ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.c! - v.a!)} → ${v.b}`]
+              : [],
+        },
       },
       'c − b = a': {
         a: { expr: '{c} − {b}', how: 'Take the second group away. Count what is left.' },
@@ -70,10 +81,10 @@ export const K12_MODULES: ModuleDef[] = [
       'Add all the groups to get the total.',
     ],
     variables: [
-      whole('c', 'c', 'Circles', 10),
-      whole('s', 's', 'Squares', 10),
-      whole('t', 't', 'Triangles', 10),
-      whole('n', 'n', 'Total', 30),
+      whole('c', 'c', 'Circles', 5),
+      whole('s', 's', 'Squares', 5),
+      whole('t', 't', 'Triangles', 5),
+      whole('n', 'n', 'Total', 15),
     ],
     relations: [
       {
@@ -92,24 +103,21 @@ export const K12_MODULES: ModuleDef[] = [
     steps: {
       'n = c + s + t': {
         n: {
-          work: (v) => sumSteps([v.c!, v.s!, v.t!]),
+          work: (v) => (v.n! > 0 ? [`Count: ${countList(0, 1, v.n!)} → ${v.n}`] : []),
           expr: '{c} + {s} + {t}',
-          how: 'Count every group, then add them together.',
+          how: 'Count all the shapes, one at a time.',
         },
         c: {
-          work: (v) => [`${v.n} − ${v.s} = ${v.n! - v.s!}`, `${v.n! - v.s!} − ${v.t} = ${v.c}`],
           expr: '{n} − {s} − {t}',
-          how: 'Take the other groups away from the total. Count what is left.',
+          how: 'Count on from the other shapes up to the total.',
         },
         s: {
-          work: (v) => [`${v.n} − ${v.c} = ${v.n! - v.c!}`, `${v.n! - v.c!} − ${v.t} = ${v.s}`],
           expr: '{n} − {c} − {t}',
-          how: 'Take the other groups away from the total. Count what is left.',
+          how: 'Count on from the other shapes up to the total.',
         },
         t: {
-          work: (v) => [`${v.n} − ${v.c} = ${v.n! - v.c!}`, `${v.n! - v.c!} − ${v.s} = ${v.t}`],
           expr: '{n} − {c} − {s}',
-          how: 'Take the other groups away from the total. Count what is left.',
+          how: 'Count on from the other shapes up to the total.',
         },
       },
     },
@@ -122,7 +130,7 @@ export const K12_MODULES: ModuleDef[] = [
         { var: 's', icon: 'square' },
         { var: 't', icon: 'triangle' },
       ],
-      max: 10,
+      max: 5,
       total: 'n',
     },
   },

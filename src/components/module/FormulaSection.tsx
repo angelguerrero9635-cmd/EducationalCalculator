@@ -121,7 +121,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         value={shown}
         placeholder="?"
         placeholderTextColor={c.textMuted}
-        onFocus={() => setDraft(shown)}
+        // On the example, a box empties on focus, so typing the same number still counts as typed.
+        onFocus={() => setDraft(calc.isExample ? '' : shown)}
         onBlur={() => {
           setDraft(null);
           setTypo(false);

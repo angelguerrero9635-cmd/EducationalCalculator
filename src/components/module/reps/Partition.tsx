@@ -105,7 +105,7 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Text>
       <Steppers
         calc={calc}
-        items={[{ var: spec.control ?? spec.parts, steps: [1], pin: [spec.shaded] }]}
+        items={[{ var: spec.control ?? spec.parts, steps: [spec.step ?? 1], pin: [spec.shaded] }]}
       />
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a part to shade it.</Text>
     </View>

@@ -12,9 +12,11 @@ type Spec = Extract<Representation, { kind: 'tenFrame' }>;
 
 /**
  * Ten-frames (2 rows of 5 each) with dark counters for the first group and light counters for
- * the second. Tapping cell k inside the dark counters sets the first group to k; tapping
- * beyond them sets the total (or the second group, when the total is fixed). Tapping a group's
- * last counter removes it, so a group can go down to 0.
+ * the second. When only the first group can change (make 10, one more), tapping cell k sets it
+ * to k. Otherwise tapping inside the dark counters sets the first group; tapping beyond them
+ * sets the total (or the second group, when the total is fixed). Tapping a group's last
+ * counter removes it, so a group can go down to 0. When the total and second group were typed
+ * and the first is worked out (take away), the second group is crossed out.
  */
 export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -27,10 +29,20 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const faded = !known(spec.first) || !known(spec.second);
   const text = (x: string | number) => (known(x) ? String(num(x)) : '?');
   const secondIsVar = typeof spec.second === 'string';
+  const onlyFirst =
+    typeof spec.first === 'string' && !(secondIsVar && typeof spec.total === 'string');
+  const typed = (x: string | number) => typeof x === 'string' && calc.status(x) === 'given';
+  const takeAway =
+    typeof spec.first === 'string' &&
+    calc.status(spec.first) === 'derived' &&
+    typed(spec.second) &&
+    typed(spec.total);
 
   const tap = (k: number) => {
     const firstPin = typeof spec.first === 'string' ? [spec.first] : [];
-    if (k <= a) {
+    if (onlyFirst) {
+      calc.set({ [spec.first as string]: k === a ? k - 1 : k });
+    } else if (k <= a) {
       if (typeof spec.first !== 'string') return; // a fixed group can't change
       const pin = secondIsVar ? [spec.second as string] : [];
       calc.set({ ...rep.pin(pin), [spec.first]: k === a ? k - 1 : k });
@@ -77,8 +89,14 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
                                 borderWidth: chart.stroke,
                                 borderColor: c.chartInk,
                                 backgroundColor: kind === 'first' ? c.chartHighlight : c.chartFill,
+                                alignItems: 'center',
+                                justifyContent: 'center',
                               }}
-                            />
+                            >
+                              {takeAway && kind === 'second' ? (
+                                <Text style={[styles.cross, { color: c.chartInk }]}>✕</Text>
+                              ) : null}
+                            </View>
                           ) : null}
                         </Pressable>
                       );
@@ -126,9 +144,9 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {`${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
       <Text style={[styles.legend, { color: c.textMuted }]}>
-        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : `A ten (${spec.first} ones)`}   ○ ${
+        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : `A ten (${spec.first} ones)`}   ${takeAway ? '✕' : '○'} ${
           typeof spec.second === 'string' ? rep.tag(spec.second) : `${spec.second} more`
-        }`}
+        }${takeAway ? ' (taken away)' : ''}`}
       </Text>
     </View>
   );
@@ -139,4 +157,5 @@ const styles = StyleSheet.create({
   cell: { alignItems: 'center', justifyContent: 'center', borderWidth: StyleSheet.hairlineWidth },
   sum: { fontSize: font.title, fontWeight: '700', textAlign: 'center' },
   legend: { fontSize: font.caption + 1, textAlign: 'center' },
+  cross: { fontSize: font.body, fontWeight: '700' },
 });

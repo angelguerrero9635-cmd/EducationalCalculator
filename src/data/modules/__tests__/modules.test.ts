@@ -20,13 +20,13 @@ function representationVars(r: Representation): string[] {
     case 'compareRows':
       return [r.a, r.b, ...(r.difference ? [r.difference] : [])];
     case 'polygon':
-      return [r.sides];
+      return [r.sides, ...(r.corners ? [r.corners] : [])];
     case 'balance':
       return [...r.left, ...r.right];
     case 'baseTen':
       return [...r.groups, ...(r.total ? [r.total] : []), ...r.controls.map((c) => c.var)];
     case 'unitTiles':
-      return [r.count, r.size, r.total];
+      return [r.count, r.size, r.total].filter((v): v is string => typeof v === 'string');
     case 'clock':
       return [r.hour, r.minute];
     case 'partition':
@@ -39,6 +39,8 @@ function representationVars(r: Representation): string[] {
       return r.points.map((p) => p.var);
     case 'pairs':
       return [r.value];
+    case 'hops':
+      return [r.start, ...r.hops.map((x) => x.var), r.end];
     case 'array':
       return [r.rows, r.columns, r.total];
     case 'ruler':

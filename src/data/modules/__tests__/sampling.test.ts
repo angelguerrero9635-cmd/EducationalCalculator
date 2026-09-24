@@ -481,7 +481,11 @@ function repIssues(
     case 'unitTiles': {
       count(rep.count, 'units');
       count(rep.total, 'small units');
-      const [n, s, t] = [val(rep.count), val(rep.size), val(rep.total)];
+      const [n, s, t] = [
+        val(rep.count),
+        typeof rep.size === 'number' ? rep.size : val(rep.size),
+        val(rep.total),
+      ];
       if (s !== undefined && s < 1) out.push(`unit size ${s} < 1`);
       if (n !== undefined && s !== undefined && t !== undefined && n * s !== t) {
         out.push(`tiles ${n} × ${s} ≠ ${t}`);
@@ -514,6 +518,14 @@ function repIssues(
     }
     case 'pairs':
       count(rep.value, 'objects', rep.max);
+      break;
+    case 'hops':
+      for (const id of [rep.start, rep.end]) {
+        const x = val(id);
+        if (x !== undefined && (x < rep.min || x > rep.max)) {
+          out.push(`hops point ${id} = ${x} off the line (${rep.min}–${rep.max})`);
+        }
+      }
       break;
     case 'array':
       count(rep.rows, 'array rows', rep.max);

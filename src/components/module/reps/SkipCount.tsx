@@ -9,6 +9,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'skipCount' }>;
 
@@ -120,6 +121,15 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           .map((id) => rep.label(id))
           .join('   ·   ')}
       </Text>
+      <Steppers
+        calc={calc}
+        items={[
+          ...(spec.start
+            ? [{ var: spec.start, steps: [1, 10, 100], pin: [spec.step, spec.count] }]
+            : []),
+          { var: spec.step, steps: [1, 5], pin: [spec.count, ...(spec.start ? [spec.start] : [])] },
+        ]}
+      />
     </View>
   );
 }

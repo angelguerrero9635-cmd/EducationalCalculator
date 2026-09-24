@@ -79,7 +79,7 @@ export type Representation =
    * Regular polygon with `sides` sides (and as many corners); change it with − / +. `angle`
    * words (Grade 2) say “angles” and name any 4-sided shape a quadrilateral.
    */
-  | { kind: 'polygon'; sides: string; words?: 'corner' | 'angle' }
+  | { kind: 'polygon'; sides: string; words?: 'corner' | 'angle'; corners?: string }
   /** Balance scale: the counters on each pan are the listed values. Level when equal. */
   | { kind: 'balance'; left: string[]; right: string[] }
   /**
@@ -94,8 +94,11 @@ export type Representation =
       compare?: boolean;
       controls: { var: string; steps: number[] }[];
     }
-  /** An object measured two ways: in small units (`total`) and in bigger units of `size`. */
-  | { kind: 'unitTiles'; count: string; size: string; total: string }
+  /**
+   * An object measured two ways: in small units (`total`) and in bigger units of `size`. A
+   * number keeps the bigger unit's size fixed (e.g. a paper clip is 2 cubes long).
+   */
+  | { kind: 'unitTiles'; count: string; size: string | number; total: string }
   /** Clock face: drag the minute hand (snaps to `minuteStep`); tap a number to set the hour. */
   | { kind: 'clock'; hour: string; minute: string; minuteStep: number }
   /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
@@ -106,12 +109,27 @@ export type Representation =
       shape: 'circle' | 'rectangle';
       /** The value the − / + buttons change (default `parts`), e.g. times cut in half. */
       control?: string;
+      /** How much − / + change it (default 1), e.g. 2 for halves ↔ fourths. */
+      step?: number;
     }
   /**
    * Number line from `start` (default 0) with `count` equal jumps of `step`, ending at `total`.
    * Drag the end.
    */
   | { kind: 'skipCount'; step: string; count: string; total: string; start?: string }
+  /**
+   * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)
+   * or back (sign -1) by each hop's value, landing on `end`. − / + change the start and hops.
+   */
+  | {
+      kind: 'hops';
+      start: string;
+      hops: { var: string; sign: 1 | -1 }[];
+      end: string;
+      min: number;
+      max: number;
+      tick?: number;
+    }
   /** Objects arranged in pairs; an odd one sticks out. */
   | { kind: 'pairs'; value: string; max: number }
   /** Array with `rows` × `columns` of dots (or unit squares that tile a rectangle). Drag the corner. */
