@@ -114,6 +114,8 @@ export type Representation =
       total?: string;
       /** With two groups: show which is greater with >, < or =. */
       compare?: boolean;
+      /** Write this value in words under the blocks ("three hundred forty-seven"). */
+      words?: string;
       controls: { var: string; steps: number[] }[];
     }
   /**
@@ -152,7 +154,7 @@ export type Representation =
    * Number line from `start` (default 0) with `count` equal jumps of `step`, ending at `total`.
    * Drag the end.
    */
-  | { kind: 'skipCount'; step: string; count: string; total: string; start?: string }
+  | { kind: 'skipCount'; step: string | number; count: string; total: string; start?: string }
   /**
    * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)
    * or back (sign -1) by each hop's value, landing on `end`. − / + change the start and hops.
@@ -166,6 +168,10 @@ export type Representation =
       max: number;
       tick?: number;
     }
+  /** A solid shape picked from sphere, cone, cylinder and cube, by its flat and curved faces. */
+  | { kind: 'solid'; flat: string; curved: string }
+  /** Every way to split `total` into two parts, one row each; `ways` counts the rows. */
+  | { kind: 'partnerList'; total: string; ways: string }
   /** Number bond: the whole in the top circle, its two parts below. − / + change the values. */
   | { kind: 'numberBond'; whole: string | number; parts: [string, string] }
   /**

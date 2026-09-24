@@ -24,7 +24,12 @@ function representationVars(r: Representation): string[] {
     case 'balance':
       return [...r.left, ...r.right, ...(r.takeAway ? [r.takeAway] : [])];
     case 'baseTen':
-      return [...r.groups, ...(r.total ? [r.total] : []), ...r.controls.map((c) => c.var)];
+      return [
+        ...r.groups,
+        ...(r.total ? [r.total] : []),
+        ...(r.words ? [r.words] : []),
+        ...r.controls.map((c) => c.var),
+      ];
     case 'unitTiles':
       return [r.count, r.size, r.total].filter((v): v is string => typeof v === 'string');
     case 'clock':
@@ -32,7 +37,9 @@ function representationVars(r: Representation): string[] {
     case 'partition':
       return [r.parts, r.shaded, ...(r.control ? [r.control] : [])];
     case 'skipCount':
-      return [r.step, r.count, r.total, ...(r.start ? [r.start] : [])];
+      return [r.step, r.count, r.total, ...(r.start ? [r.start] : [])].filter(
+        (v): v is string => typeof v === 'string',
+      );
     case 'tape':
       return 'compare' in r ? [...r.compare, r.difference] : [...r.parts, r.total];
     case 'linePlot':
@@ -51,6 +58,10 @@ function representationVars(r: Representation): string[] {
       return [r.groups, r.each, r.total];
     case 'prism':
       return [r.sides, r.faces, r.edges, r.corners];
+    case 'solid':
+      return [r.flat, r.curved];
+    case 'partnerList':
+      return [r.total, r.ways];
     case 'array':
       return [r.rows, r.columns, r.total];
     case 'ruler':

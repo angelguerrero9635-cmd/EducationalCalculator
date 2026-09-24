@@ -25,9 +25,14 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
     <View style={{ gap: space.sm }}>
       <Text style={[styles.front, { color: c.textMuted }]}>Front of the line ←</Text>
       {/* Head and body, then three lines of labels: number, "next to", and the picked place. */}
-      <Canvas aspect={(w) => (Math.min(56, (w - 16) / max) * 1.3 + 3 * LINE) / w}>
+      <Canvas
+        aspect={(w) => {
+          const { cell, rows } = layout(w, max);
+          return (rows * (cell * 1.3 + 3 * LINE)) / w;
+        }}
+      >
         {({ w }) => {
-          const cell = Math.min(56, (w - 16) / max);
+          const { cell } = layout(w, max);
           return (
             <View style={styles.row}>
               {Array.from({ length: n }, (_, i) => {
@@ -92,9 +97,19 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
 /** Height of one line of labels under the children. */
 const LINE = font.caption + space.xs;
 
+/**
+ * Child width at canvas width w: at least 44 px so each child is easy to tap. A line longer
+ * than fits wraps to a second row.
+ */
+const layout = (w: number, max: number) => {
+  const cell = Math.max(44, Math.min(56, (w - 16) / max));
+  const perRow = Math.max(1, Math.floor((w - 16) / cell));
+  return { cell, rows: Math.ceil(max / perRow) };
+};
+
 const styles = StyleSheet.create({
   front: { fontSize: font.caption + 1, paddingHorizontal: space.md },
-  row: { flexDirection: 'row', paddingHorizontal: space.sm },
+  row: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: space.sm },
   num: { fontSize: font.caption, lineHeight: LINE },
   next: { fontSize: font.caption - 1, lineHeight: LINE, textAlign: 'center' },
   caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },

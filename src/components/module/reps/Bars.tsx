@@ -64,7 +64,7 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     key={`s${m}`}
                     x={axis - 6}
                     y={sy(m) + 4}
-                    fontSize={chart.tiny}
+                    fontSize={chart.small}
                     fill={c.chartMuted}
                     textAnchor="end"
                   >
@@ -130,7 +130,7 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         key={`n${b.var}`}
                         x={cx(i)}
                         y={h - bottom + 30}
-                        fontSize={chart.tiny}
+                        fontSize={chart.small}
                         fill={c.chartMuted}
                         textAnchor="middle"
                       >

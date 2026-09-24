@@ -21,7 +21,9 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef(0);
-  const s = Math.max(1, Math.round(rep.shown(spec.step)));
+  // A number keeps the jump size fixed (1 meter = 100 cm).
+  const stepVar = typeof spec.step === 'string' ? spec.step : undefined;
+  const s = Math.max(1, Math.round(stepVar ? rep.shown(stepVar) : (spec.step as number)));
   const k = Math.max(0, Math.round(rep.shown(spec.count)));
   const from = spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : 0;
   const fit = useFrozen(niceCeil(Math.max(s * 10, s * k)));
@@ -100,7 +102,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 onEnd={fit.release}
                 onMove={(dx) =>
                   calc.set({
-                    ...rep.pin([spec.step]),
+                    ...rep.pin(stepVar ? [stepVar] : []),
                     [spec.count]: rep.snapTo(spec.count, start.current + dx / (px(s) - px(0))),
                   })
                 }
@@ -117,7 +119,12 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ) + (k + 1 > 12 ? ', …' : '')}
       </Text>
       <Text style={[styles.symbols, { color: c.textMuted }]}>
-        {[...(spec.start ? [spec.start] : []), spec.step, spec.count, spec.total]
+        {[
+          ...(spec.start ? [spec.start] : []),
+          ...(stepVar ? [stepVar] : []),
+          spec.count,
+          spec.total,
+        ]
           .map((id) => rep.label(id))
           .join('   ·   ')}
       </Text>
@@ -125,9 +132,23 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
         calc={calc}
         items={[
           ...(spec.start
-            ? [{ var: spec.start, steps: [1, 10, 100], pin: [spec.step, spec.count] }]
+            ? [
+                {
+                  var: spec.start,
+                  steps: [1, 10, 100],
+                  pin: [...(stepVar ? [stepVar] : []), spec.count],
+                },
+              ]
             : []),
-          { var: spec.step, steps: [1, 5], pin: [spec.count, ...(spec.start ? [spec.start] : [])] },
+          ...(stepVar
+            ? [
+                {
+                  var: stepVar,
+                  steps: [1, 5],
+                  pin: [spec.count, ...(spec.start ? [spec.start] : [])],
+                },
+              ]
+            : [{ var: spec.count, steps: [1], pin: spec.start ? [spec.start] : [] }]),
         ]}
       />
     </View>

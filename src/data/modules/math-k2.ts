@@ -659,14 +659,18 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'A long, thin or tipped shape keeps its name. Count the sides to name it.',
       'Cubes, cones, cylinders and spheres are solid shapes.',
     ],
-    variables: [whole('s', 's', 'Sides', 3, 6), whole('v', 'c', 'Corners', 3, 6)],
+    // 0 sides is a circle; no flat shape has 1 or 2 sides.
+    variables: [whole('s', 's', 'Sides', 0, 6), whole('v', 'c', 'Corners', 0, 6)],
     relations: [
       {
         id: 'corners = sides',
         display: '{s} sides and {v} corners',
         vars: ['v', 's'],
-        residual: (x) => x.v! - x.s!,
-        solve: { v: (x) => x.s!, s: (x) => x.v! },
+        residual: (x) => (x.s === 1 || x.s === 2 ? 1 : x.v! - x.s!),
+        solve: {
+          v: (x) => (x.s === 1 || x.s === 2 ? undefined : x.s!),
+          s: (x) => (x.v === 1 || x.v === 2 ? undefined : x.v!),
+        },
       },
     ],
     steps: {
@@ -932,6 +936,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     startWith: ['n'],
     representation: {
       kind: 'baseTen',
+      words: 'n',
       groups: ['n'],
       controls: [
         { var: 't', steps: [1] },
@@ -1317,6 +1322,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     startWith: ['n'],
     representation: {
       kind: 'baseTen',
+      words: 'n',
       groups: ['n'],
       controls: [
         { var: 'h', steps: [1] },
@@ -1360,7 +1366,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     id: 'm.2.skip-count',
     assumptions: [
       'Skip counting adds the same number each time: by 5s, 10s or 100s.',
-      'You can start at any number: by 10s from 230 is 230, 240, 250, …',
+      'You can start at any number: by 10s from 230 is 230, 240, 250 and so on.',
       'By 10s, the ones digit stays the same. By 100s, the last two digits stay the same.',
     ],
     variables: [
@@ -1568,7 +1574,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'Type the longer ribbon in L and the shorter one in S.',
       '“A is 8 cm shorter than B” means B is the longer ribbon.',
-      'Measure both in the same unit: inches, feet, centimeters or meters.',
+      'Measure both in the same unit. Switch the units menu to inches: the numbers get smaller, because an inch is longer than a centimeter.',
     ],
     variables: [
       { ...whole('L', 'L', 'Longer ribbon', 0, 100), unit: 'cm' },

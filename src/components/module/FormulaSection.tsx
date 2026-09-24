@@ -5,7 +5,7 @@ import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
 import { isEarlyGrade } from '@/data/modules';
-import { formatNumber, parseNumber, renderTemplate } from '@/engine/format';
+import { formatNumber, parseCents, parseNumber, renderTemplate } from '@/engine/format';
 import type { Values, VariableDef } from '@/engine/types';
 import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
@@ -104,7 +104,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
 
   const onChangeText = (text: string) => {
     setDraft(text);
-    const parsed = parseNumber(text);
+    // Money boxes in cents also take dollars: "$1.25" or "1.25" is 125¢.
+    const parsed = unit === '¢' ? parseCents(text) : parseNumber(text);
     setTypo(parsed === 'invalid');
     if (parsed !== 'invalid') calc.setShown(variable.id, parsed);
   };

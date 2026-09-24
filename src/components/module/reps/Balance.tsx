@@ -25,13 +25,20 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const tilt = Math.max(-1, Math.min(1, (right - left) / 6)) * 14;
   const all = [...spec.left, ...(spec.takeAway ? [spec.takeAway] : []), ...spec.right];
   const shades = [c.chartHighlight, c.chartFill];
+  // Rows of counters on the fuller pan (5 per row, or 10 smaller ones above 20).
+  const most = Math.max(
+    spec.left.reduce((s, id) => s + count(id), 0),
+    spec.right.reduce((s, id) => s + count(id), 0),
+  );
+  const stackRoom = most > 20 ? Math.ceil(most / 10) * 10 : Math.ceil(most / 5) * 18;
 
   return (
     <View>
-      <Canvas aspect={0.62}>
+      <Canvas aspect={(w) => (stackRoom + 150) / w}>
         {({ w, h }) => {
           const cx = w / 2;
-          const pivot = h * 0.34;
+          // Room above the beam for the tallest stack and the tilt.
+          const pivot = stackRoom + 30;
           // Keep each pan (about 112 px wide) inside the canvas.
           const arm = Math.min(w * 0.38, w / 2 - 62);
           const ly = pivot - tilt;

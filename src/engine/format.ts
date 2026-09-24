@@ -18,6 +18,21 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
   return Number(cleaned);
 }
 
+/**
+ * A money amount typed into a box in cents: "$1.25", "1.25" or "$3" are dollars (125, 300);
+ * a plain whole number is already cents ("125" → 125).
+ */
+export function parseCents(text: string): number | undefined | 'invalid' {
+  const cleaned = text.trim().replace(/,/g, '').replace(/¢$/, '');
+  const dollars = /^\$\s*(\d*\.?\d{0,2})$/.exec(cleaned) ?? /^(\d*\.\d{0,2})$/.exec(cleaned);
+  if (dollars) {
+    if (dollars[1] === '' || dollars[1] === '.')
+      return cleaned.startsWith('$') ? undefined : 'invalid';
+    return Math.round(Number(dollars[1]) * 100);
+  }
+  return parseNumber(cleaned);
+}
+
 /** Fills a display template: `{id}` → the symbol (symbolic) or the formatted value / "?". */
 export function renderTemplate(
   template: string,
@@ -36,4 +51,39 @@ export function renderTemplate(
   });
   // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0.
   return values ? filled.replace(/(^|[(\s])−0(?![\d.])/g, '$10') : filled;
+}
+
+const ONES = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
+  'thirteen',
+  'fourteen',
+  'fifteen',
+  'sixteen',
+  'seventeen',
+  'eighteen',
+  'nineteen',
+];
+const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+/** A whole number from 0 to 1,000 in words: 347 → "three hundred forty-seven". */
+export function numberWords(n: number): string {
+  if (!Number.isInteger(n) || n < 0 || n > 1000) return formatNumber(n);
+  if (n === 1000) return 'one thousand';
+  const h = Math.floor(n / 100);
+  const r = n % 100;
+  const rest = r < 20 ? ONES[r]! : `${TENS[Math.floor(r / 10)]}${r % 10 ? `-${ONES[r % 10]}` : ''}`;
+  if (h === 0) return rest;
+  return `${ONES[h]} hundred${r ? ` ${rest}` : ''}`;
 }

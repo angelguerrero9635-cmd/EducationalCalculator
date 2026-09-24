@@ -15,6 +15,8 @@ export interface StepperItem {
   pin: string[];
   /** Wrap around within [min, max] (a clock's hours: 12 + 1 → 1). */
   wrap?: [number, number];
+  /** Values the buttons jump over (a shape can't have 1 or 2 sides: 0 → 3). */
+  skip?: number[];
   /** Shown before the label to tie the buttons to the picture, e.g. "●" for solid counters. */
   marker?: string;
 }
@@ -31,6 +33,7 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
       ? rep.shown(item.var)
       : Math.max(0, (v.min ?? 0) / rep.factor(item.var));
     let next = from + delta;
+    while (item.skip?.includes(next)) next += Math.sign(delta);
     if (item.wrap) {
       const [lo, hi] = item.wrap;
       next = ((((next - lo) % (hi - lo + 1)) + (hi - lo + 1)) % (hi - lo + 1)) + lo;

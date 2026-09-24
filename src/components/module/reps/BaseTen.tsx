@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { G, Line, Rect } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
+import { numberWords } from '@/engine/format';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
@@ -177,6 +178,11 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
           pin: controlIds.filter((x) => x !== k.var),
         }))}
       />
+      {spec.words && rep.known(spec.words) ? (
+        <Text style={[styles.words, { color: c.text }]}>
+          {`${rep.label(spec.words)}: ${numberWords(Math.round(rep.shown(spec.words)))}`}
+        </Text>
+      ) : null}
       <Text style={[styles.hint, { color: c.textMuted }]}>
         {hundreds
           ? 'Flats are hundreds, rods are tens, small cubes are ones.'
@@ -188,5 +194,6 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   compare: { fontSize: font.title, fontWeight: '700', textAlign: 'center', marginTop: space.sm },
+  words: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
   hint: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.sm },
 });

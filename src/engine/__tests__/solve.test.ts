@@ -1,4 +1,4 @@
-import { formatNumber, parseNumber, renderTemplate } from '../format';
+import { formatNumber, parseCents, parseNumber, renderTemplate } from '../format';
 import { findRoots, holds, solve, type System } from '../solve';
 import { initialState, setValues } from '../state';
 
@@ -264,5 +264,17 @@ describe('format', () => {
     const vars = area.variables;
     expect(renderTemplate('{A} = {l} × {w}', vars)).toBe('A = l × w');
     expect(renderTemplate('{A} = {l} × {w}', vars, { l: 4, w: -3 })).toBe('? = 4 × (-3)');
+  });
+});
+
+describe('parseCents', () => {
+  it('reads dollars and cents in a cents box', () => {
+    expect(parseCents('$1.25')).toBe(125);
+    expect(parseCents('1.25')).toBe(125);
+    expect(parseCents('$3')).toBe(300);
+    expect(parseCents('125')).toBe(125);
+    expect(parseCents('45¢')).toBe(45);
+    expect(parseCents('$')).toBeUndefined();
+    expect(parseCents('1.2.3')).toBe('invalid');
   });
 });

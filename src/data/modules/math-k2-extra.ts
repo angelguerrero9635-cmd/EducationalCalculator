@@ -541,6 +541,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     startWith: ['H', 'T', 'O'],
     representation: {
       kind: 'baseTen',
+      words: 'n',
       groups: ['H', 'T', 'O'],
       total: 'n',
       controls: [
@@ -614,6 +615,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     assumptions: [
       'Money you have = price + money left.',
       'To find what is left, take the price away. Count up from the price to check.',
+      'Type $1.25 or 125¢. Both mean the same amount.',
     ],
     variables: [
       { ...whole('T', 'T', 'Money you have', 0, 1000), unit: '¢' },
@@ -800,7 +802,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         whole('b', 'b', 'Second on left', 0, 10),
         whole('c', 'c', 'First on right', 0, 10),
         whole('d', 'd', 'Second on right', 0, 10),
-        whole('D', 'D', 'Difference', 0, 20),
+        whole('D', 'g', 'How far apart the sides are', 0, 20),
       ],
       relations: [
         {
@@ -921,6 +923,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     startWith: ['h', 't', 'o'],
     representation: {
       kind: 'baseTen',
+      words: 'n',
       groups: ['n'],
       controls: [
         { var: 'h', steps: [1] },

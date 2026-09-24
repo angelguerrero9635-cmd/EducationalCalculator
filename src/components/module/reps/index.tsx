@@ -15,6 +15,8 @@ import { LineUp } from './LineUp';
 import { NumberBond } from './NumberBond';
 import { PatternBlocks } from './PatternBlocks';
 import { Prism } from './Prism';
+import { PartnerList } from './PartnerList';
+import { Solid } from './Solid';
 import { Pairs } from './Pairs';
 import { Partition } from './Partition';
 import { PolygonShape } from './PolygonShape';
@@ -65,6 +67,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <EqualGroups spec={spec} calc={calc} />;
     case 'prism':
       return <Prism spec={spec} calc={calc} />;
+    case 'solid':
+      return <Solid spec={spec} calc={calc} />;
+    case 'partnerList':
+      return <PartnerList spec={spec} calc={calc} />;
     case 'bars':
       return <Bars spec={spec} calc={calc} />;
     case 'rectangle':

@@ -152,13 +152,24 @@ export function snap(x: number, step = 0.1, min = -Infinity, max = Infinity): nu
 export function useRep(calc: Calculator) {
   const { module, values, units } = calc;
   const byId = new Map(module.variables.map((v) => [v.id, v]));
+  /**
+   * A value to draw when the box shows "?". Counts and other whole numbers draw their smallest
+   * value (usually nothing), so the picture never shows a number the student didn't type.
+   * Measurements keep the example, faded, so shapes like circles and graphs still draw.
+   */
+  const fallback = (id: string) => {
+    const v = byId.get(id)!;
+    return v.integer && v.min !== undefined
+      ? Math.max(v.min, Math.min(0, v.max ?? 0))
+      : module.example[id]!;
+  };
   return {
     variable: (id: string) => byId.get(id)!,
     known: (id: string) => values[id] !== undefined,
-    /** Current value in formula units, falling back to the example so shapes still draw. */
-    val: (id: string) => values[id] ?? module.example[id]!,
-    /** Current value in the shown unit (falls back to the example). */
-    shown: (id: string) => units.toDisplay(id, values[id] ?? module.example[id]!),
+    /** Current value in formula units (a "?" box draws its fallback, see above). */
+    val: (id: string) => values[id] ?? fallback(id),
+    /** Current value in the shown unit. */
+    shown: (id: string) => units.toDisplay(id, values[id] ?? fallback(id)),
     /** Shown unit (e.g. "in"), or undefined. */
     unit: (id: string) => units.display[id],
     /** Formula units per shown unit (e.g. 2.54 when showing inches for a cm variable). */

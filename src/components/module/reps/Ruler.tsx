@@ -110,7 +110,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     key={`n${i}`}
                     x={left + i * tickEvery * scale}
                     y={rulerY + 24}
-                    fontSize={chart.tiny}
+                    fontSize={chart.small}
                     textAnchor="middle"
                   >
                     {formatNumber(i * tickEvery)}

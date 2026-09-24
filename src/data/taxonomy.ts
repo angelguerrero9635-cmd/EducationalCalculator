@@ -97,6 +97,7 @@ const MATH: Record<Grade, Row[]> = {
     ["measure-nonstandard", "Measure length with cubes or paper clips", MD, ["m.K.measurable-attributes"]],
     ["time-half-hour", "Tell time to the hour and half hour", MD],
     ["data-3-categories", "Sort and compare data in three groups", MD, ["m.K.classify-count"]],
+    ["shape-attributes", "Shape attributes: sides, corners and closed shapes", G, ["m.K.shapes-2d-3d"]],
     ["halves-fourths", "Cut shapes into halves and fourths", G, ["m.K.shapes-2d-3d"]],
   ],
   "2": [

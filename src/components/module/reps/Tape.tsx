@@ -8,9 +8,16 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'tape' }>;
+
+/** A scale just past `span`: 10% more, rounded up to a tenth of its power of ten (at least 10). */
+const fitScale = (span: number) => {
+  const x = Math.max(10, span * 1.1);
+  const step = 10 ** Math.floor(Math.log10(x)) / 10;
+  return Math.ceil(x / step) * step;
+};
 
 /** A bracket under (or over) [x1, x2] at height y, opening toward the bar. */
 const bracket = (x1: number, x2: number, y: number, dir: 1 | -1) => {
@@ -33,7 +40,8 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const ids = compare ? spec.compare : spec.parts;
   const shown = ids.map((id) => (rep.known(id) ? Math.max(0, rep.shown(id)) : 0));
   const span = compare ? Math.max(...shown) : shown.reduce((a, b) => a + b, 0);
-  const fit = useFrozen(niceCeil(Math.max(span * 1.1, 10)));
+  // Round the scale up a little past the values (100 → 110, 72 → 80), so bars fill the width.
+  const fit = useFrozen(fitScale(span));
   const fmt = (id: string) => (rep.known(id) ? formatNumber(rep.shown(id), rep.variable(id)) : '?');
   const name = (id: string) => rep.variable(id).name;
 

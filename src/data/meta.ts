@@ -50,6 +50,8 @@ const PICTURE_NAMES: Record<string, string> = {
   lineUp: 'children in a line',
   equalGroups: 'equal groups',
   prism: 'solid shape',
+  solid: 'solid shapes',
+  partnerList: 'number partners',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

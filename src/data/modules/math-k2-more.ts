@@ -730,7 +730,9 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       {
         id: 'D = 10t + 5f + o',
         check: (v) => `${10 * v.t!} + ${5 * v.f!} + ${v.o} = ${v.D}`,
-        display: '{D} = $10 bills ({t}) + $5 bills ({f}) + $1 bills ({o})',
+        // Non-breaking spaces keep each “$10 bills (t)” together when the formula wraps.
+        display:
+          '{D} = $10\u00a0bills\u00a0({t}) + $5\u00a0bills\u00a0({f}) + $1\u00a0bills\u00a0({o})',
         vars: ['D', 't', 'f', 'o'],
         residual: (v) => v.D! - 10 * v.t! - 5 * v.f! - v.o!,
         solve: {
@@ -972,7 +974,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
         whole('b', 'b', 'Taken away on left', 0, 10),
         whole('c', 'c', 'First on right', 0, 10),
         whole('d', 'd', 'Second on right', 0, 10),
-        whole('D', 'D', 'Difference', 0, 20),
+        whole('D', 'g', 'How far apart the sides are', 0, 20),
       ],
       relations: [
         {
@@ -1167,6 +1169,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     startWith: ['t', 'o'],
     representation: {
       kind: 'baseTen',
+      words: 'n',
       groups: ['n'],
       controls: [
         { var: 't', steps: [1] },
@@ -1182,7 +1185,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     assumptions: [
       'Price = money you have + money you still need.',
       'Count up from the money you have to the price.',
-      'Type money in cents: $1.25 is 125¢.',
+      'Type $1.25 or 125¢. Both mean the same amount.',
     ],
     variables: [
       { ...whole('P', 'P', 'Price', 0, 1000), unit: '¢' },
@@ -1380,5 +1383,163 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     startWith: ['c', 'b'],
     representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c', frames: 2 },
     pictureLabels: ['o', 'r'],
+  },
+
+  // Flat or solid: faces of spheres, cones, cylinders and cubes (K.G.3, K.G.4).
+  {
+    id: 'm.K.shapes-2d-3d~solids',
+    title: 'Flat or solid?',
+    assumptions: [
+      'Solid shapes are not flat. You can hold them.',
+      'A flat face lets a solid stack. A curved surface lets it roll.',
+      'A cylinder has 2 flat faces and 1 curved surface. It rolls and it stacks.',
+    ],
+    variables: [
+      whole('F', 'F', 'Flat faces', 0, 6),
+      whole('C', 'C', 'Curved surfaces', 0, 1),
+      whole('S', 'S', 'Surfaces in all', 1, 6),
+    ],
+    relations: [
+      {
+        id: 'S = F + C',
+        display: '{S} = {F} + {C}',
+        vars: ['S', 'F', 'C'],
+        residual: (v) => v.S! - v.F! - v.C!,
+        solve: { S: (v) => v.F! + v.C!, F: (v) => v.S! - v.C!, C: (v) => v.S! - v.F! },
+      },
+    ],
+    steps: {
+      'S = F + C': {
+        S: {
+          expr: '{F} + {C}',
+          how: 'Count the flat faces. Then count on the curved surface.',
+          work: (v: Values) => startAt(v.F!, v.C!),
+        },
+        F: { expr: '{S} − {C}', how: 'Take away the curved surface. The rest are flat faces.' },
+        C: { expr: '{S} − {F}', how: 'Take away the flat faces. The rest is curved.' },
+      },
+    },
+    example: { F: 2, C: 1, S: 3 },
+    startWith: ['F', 'C'],
+    representation: { kind: 'solid', flat: 'F', curved: 'C' },
+    pictureLabels: ['S'],
+  },
+
+  // All the ways to make a number: 0 + 5, 1 + 4, … 5 + 0 (K.OA.3).
+  {
+    id: 'm.K.add-sub-10~all-partners',
+    title: 'All the ways to make a number',
+    assumptions: [
+      'Split the counters into two parts, every way you can.',
+      'Start with 0 in the first part. Move one counter each time.',
+      'There is always one more way than the number: 5 has 6 ways.',
+    ],
+    variables: [whole('n', 'n', 'Number', 0, 10), whole('w', 'w', 'Ways to split it', 1, 11)],
+    relations: [
+      {
+        id: 'w = n + 1',
+        display: '{w} = {n} + 1',
+        vars: ['w', 'n'],
+        residual: (v) => v.w! - v.n! - 1,
+        solve: { w: (v) => v.n! + 1, n: (v) => v.w! - 1 },
+      },
+    ],
+    steps: {
+      'w = n + 1': {
+        w: {
+          expr: '{n} + 1',
+          how: 'Count the rows: 0 in the first part, then 1, 2 and so on up to the number.',
+          work: (v: Values) => [`Rows: ${countList(0, 1, v.w!)} → ${v.w} ways`],
+        },
+        n: { expr: '{w} − 1', how: 'The last row has all the counters in the first part.' },
+      },
+    },
+    example: { n: 5, w: 6 },
+    startWith: ['n'],
+    representation: { kind: 'partnerList', total: 'n', ways: 'w' },
+  },
+
+  // Grade 1: shape attributes (1.G.1).
+  {
+    id: 'm.1.shape-attributes',
+    assumptions: [
+      'Sides and corners decide a shape’s name. A triangle has 3 of each.',
+      'Color, size and which way it is turned don’t change the name.',
+      'A shape must be closed: its sides join up with no gaps.',
+    ],
+    variables: [whole('s', 's', 'Sides', 3, 8), whole('v', 'c', 'Corners', 3, 8)],
+    relations: [
+      {
+        id: 'corners = sides',
+        display: '{s} sides and {v} corners',
+        vars: ['v', 's'],
+        residual: (x) => x.v! - x.s!,
+        solve: { v: (x) => x.s!, s: (x) => x.v! },
+      },
+    ],
+    steps: {
+      'corners = sides': {
+        v: {
+          expr: '{s}',
+          how: 'Each side ends at a corner. Count the corners: there is one for each side.',
+        },
+        s: {
+          expr: '{v}',
+          how: 'There is one side between two corners. Count the sides: one for each corner.',
+        },
+      },
+    },
+    example: { s: 5, v: 5 },
+    startWith: ['s'],
+    representation: { kind: 'polygon', sides: 's', corners: 'v', irregular: 'toggle' },
+  },
+
+  // Meters and centimeters: 1 meter is 100 centimeters (2.MD.2).
+  {
+    id: 'm.2.standard-length~meters',
+    title: 'Meters and centimeters',
+    assumptions: [
+      '1 meter is 100 centimeters.',
+      'Meters are bigger, so you need fewer of them: 3 meters is 300 centimeters.',
+      'Use whole meters.',
+    ],
+    variables: [
+      { ...whole('m', 'm', 'Length in meters', 1, 5), unit: 'meters' },
+      {
+        ...whole('c', 'c', 'Length in centimeters', 100, 500),
+        multipleOf: 100,
+        step: 100,
+        unit: 'centimeters',
+      },
+    ],
+    relations: [
+      {
+        id: 'c = m meters of 100 cm',
+        check: (v) => repeated(100, v.m!),
+        display: '{c} = {m} meters of 100 centimeters',
+        vars: ['c', 'm'],
+        residual: (v) => v.c! - 100 * v.m!,
+        solve: { c: (v) => 100 * v.m!, m: (v) => v.c! / 100 },
+      },
+    ],
+    steps: {
+      'c = m meters of 100 cm': {
+        c: {
+          work: (v: Values) => [`Count by 100s: ${countList(0, 100, v.m!)} → ${v.c} centimeters`],
+          expr: '{m} meters of 100 centimeters',
+          how: 'Each meter is 100 centimeters. Count by 100s, once for each meter.',
+        },
+        m: {
+          work: (v: Values) => [
+            `Count by 100s to ${v.c}: ${countList(0, 100, v.m!)} → ${v.m} meters`,
+          ],
+          expr: 'hundreds in {c}',
+          how: 'Count by 100s up to the centimeters. Count how many 100s.',
+        },
+      },
+    },
+    example: { m: 3, c: 300 },
+    startWith: ['m'],
+    representation: { kind: 'skipCount', step: 100, count: 'm', total: 'c' },
   },
 ];

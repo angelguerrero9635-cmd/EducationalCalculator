@@ -372,6 +372,7 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`a third of (${NUM})`), (a) => a / 3],
   [new RegExp(`twelves in (${NUM})`), (a) => a / 12],
   [new RegExp(`(${NUM}) feet of (${NUM}) inches`), (a, b) => a * b],
+  [new RegExp(`(${NUM}) meters of (${NUM}) centimeters`), (a, b) => a * b],
   [new RegExp(`trapezoids in (${NUM})`), (a) => a / 3],
   [new RegExp(`rhombuses in (${NUM})`), (a) => a / 2],
   [new RegExp(`(${NUM}) trapezoids`), (a) => 3 * a],
@@ -544,7 +545,9 @@ function repIssues(
     }
     case 'polygon': {
       const s = val(rep.sides);
-      if (s !== undefined && (s < 3 || s !== Math.round(s))) out.push(`polygon with ${s} sides`);
+      // 0 sides draws a circle.
+      if (s !== undefined && s !== 0 && (s < 3 || s !== Math.round(s)))
+        out.push(`polygon with ${s} sides`);
       break;
     }
     case 'balance': {

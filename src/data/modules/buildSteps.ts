@@ -58,6 +58,8 @@ const SINGULAR: Record<string, string> = {
   cups: 'cup',
   cubes: 'cube',
   inches: 'inch',
+  meters: 'meter',
+  centimeters: 'centimeter',
   feet: 'foot',
 };
 
@@ -72,6 +74,8 @@ const COUNT_WORDS: Record<string, string> = {
   jumps: 'jump',
   feet: 'foot',
   inches: 'inch',
+  meters: 'meter',
+  centimeters: 'centimeter',
   cubes: 'cube',
   cups: 'cup',
   bills: 'bill',
@@ -82,7 +86,7 @@ const COUNT_WORDS: Record<string, string> = {
 /** "1 tens" → "1 ten" in rendered text (templates can't tell the count in advance). */
 export const agree = (text: string) =>
   text.replace(
-    /(^|[^\d$.,])1 (tens|ones|hundreds|rows|groups|clips|jumps|feet|inches|cubes|cups|bills|fives|triangles|rounds)\b/g,
+    /(^|[^\d$.,])1 (tens|ones|hundreds|rows|groups|clips|jumps|feet|inches|meters|centimeters|cubes|cups|bills|fives|triangles|rounds)\b/g,
     (_, pre: string, word: string) => `${pre}1 ${COUNT_WORDS[word]}`,
   );
 
