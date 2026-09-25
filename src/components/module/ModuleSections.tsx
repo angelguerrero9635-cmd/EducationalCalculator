@@ -3,7 +3,7 @@ import { Text } from '@/components/Text';
 
 import { PlaceholderCard } from '@/components/PlaceholderCard';
 import { SectionHeader } from '@/components/SectionHeader';
-import { getModule, isEarlyGrade, type ModuleDef } from '@/data/modules';
+import { getModule, isEarlyGrade, isElementary, type ModuleDef } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { font, space, usePalette } from '@/theme';
 
@@ -35,7 +35,11 @@ function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
                 : `${num} ${unit}`;
         return (
           <Text key={id} style={[styles.label, { color: c.text }]}>
-            {early ? `${v.name}: ${shown}` : `${v.name}: ${v.symbol} = ${shown}`}
+            {early
+              ? `${v.name}: ${shown}`
+              : isElementary(calc.module.id)
+                ? `${v.name} (${v.symbol}): ${shown}`
+                : `${v.name}: ${v.symbol} = ${shown}`}
           </Text>
         );
       })}

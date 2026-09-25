@@ -103,18 +103,20 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   const v = rep.shown(b.var);
                   const variable = rep.variable(b.var);
                   return [
-                    <ChartText
-                      key={`v${b.var}`}
-                      x={cx(i)}
-                      // Editable bars have a drag handle on top; keep the value clear of it.
-                      y={v >= 0 ? sy(v) - (b.editable ? 20 : 6) : sy(v) + (b.editable ? 28 : 14)}
-                      fontSize={chart.label}
-                      fontWeight="600"
-                      fill={c.chartInk}
-                      textAnchor="middle"
-                    >
-                      {rep.known(b.var) ? formatNumber(v, variable) : '?'}
-                    </ChartText>,
+                    !(spec.readScale && rep.known(b.var)) && (
+                      <ChartText
+                        key={`v${b.var}`}
+                        x={cx(i)}
+                        // Editable bars have a drag handle on top; keep the value clear of it.
+                        y={v >= 0 ? sy(v) - (b.editable ? 20 : 6) : sy(v) + (b.editable ? 28 : 14)}
+                        fontSize={chart.label}
+                        fontWeight="600"
+                        fill={c.chartInk}
+                        textAnchor="middle"
+                      >
+                        {rep.known(b.var) ? formatNumber(v, variable) : '?'}
+                      </ChartText>
+                    ),
                     <ChartText
                       key={`l${b.var}`}
                       x={cx(i)}

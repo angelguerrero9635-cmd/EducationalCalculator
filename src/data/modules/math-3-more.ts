@@ -602,9 +602,9 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         'Add or subtract masses only when they use the same unit.',
       ],
       variables: [
-        { ...whole('a', 'a', 'First object', 0, 1000), unit: 'g' },
-        { ...whole('b', 'b', 'Second object', 0, 1000), unit: 'g' },
-        { ...whole('t', 't', 'Total', 0, 1000), unit: 'g' },
+        { ...whole('a', 'a', 'First mass', 0, 1000), unit: 'g' },
+        { ...whole('b', 'b', 'Second mass', 0, 1000), unit: 'g' },
+        { ...whole('t', 't', 'Total mass', 0, 1000), unit: 'g' },
       ],
       relations: [total.relation],
       steps: { 't = a + b': total.steps },
@@ -744,6 +744,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       'Perimeter is the distance all the way around a shape.',
       'A rectangle’s opposite sides are equal: add length + width + length + width.',
       'Perimeter is a length (cm), not square units.',
+      'With whole-number sides the perimeter is always even: each side is counted twice.',
     ],
     variables: [
       { ...whole('l', 'l', 'Length', 0, 20), unit: 'cm' },
@@ -1047,6 +1048,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       max: 30,
       total: 't',
       scale: 5,
+      readScale: true,
     },
   },
   (() => {

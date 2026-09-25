@@ -55,7 +55,14 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
         const lower = (id: string) => name(id).toLowerCase();
         return `The ${lower(x > y ? a : b)} is ${fmt(spec.difference)} more than the ${lower(x > y ? b : a)}.`;
       })()
-    : `${spec.parts.map(fmt).join(' + ')} = ${fmt(spec.total)}`;
+    : spec.caption
+      ? spec.caption.replace(/\{(\w+)\}/g, (_, id: string) => fmt(id))
+      : `${spec.parts.map(fmt).join(' + ')} = ${fmt(spec.total)}`;
+  // Equal groups the whole bar is made of (e.g. 4 packs of 6), when known.
+  const groups =
+    !compare && spec.groups && rep.known(spec.groups)
+      ? Math.max(0, Math.min(20, Math.round(rep.shown(spec.groups))))
+      : 0;
 
   return (
     <>
@@ -217,6 +224,20 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {rep.tag(id)}
                   </ChartText>
                 ))}
+                {Array.from({ length: Math.max(0, groups - 1) }, (_, k) => {
+                  const gx = left + ((k + 1) * span * scale) / groups;
+                  return (
+                    <Line
+                      key={`g${k}`}
+                      x1={gx}
+                      y1={y - 6}
+                      x2={gx}
+                      y2={y + barH + 6}
+                      stroke={c.chartInk}
+                      strokeDasharray={chart.dash}
+                    />
+                  );
+                })}
                 <Line x1={left} y1={y} x2={left} y2={y + barH} stroke={c.chartInk} />
               </Svg>
               {spec.parts.map((id, i) => drag(id, i, x1(i), y + barH / 2))}

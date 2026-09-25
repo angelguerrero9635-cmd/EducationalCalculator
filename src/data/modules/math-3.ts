@@ -259,7 +259,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         columns: 'w',
         total: 'n',
         max: 10,
-        cell: 'square',
+        cell: 'dot',
         split: { first: 'b', second: 'c', firstTotal: 'p', secondTotal: 'q' },
       },
     } satisfies ModuleDef;
@@ -316,7 +316,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
       steps: { 'm = g × k': packs.steps, 'm = n + t': left.steps },
       example: { g: 4, k: 6, m: 24, t: 5, n: 19 },
       startWith: ['t', 'g', 'k'],
-      representation: { kind: 'tape', parts: ['n', 't'], total: 'm' },
+      representation: {
+        kind: 'tape',
+        parts: ['n', 't'],
+        total: 'm',
+        groups: 'g',
+        caption: '{g} × {k} = {m} in the packs. Take away {t}: {n} left.',
+      },
     } satisfies ModuleDef;
   })(),
   (() => {

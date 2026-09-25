@@ -9,7 +9,10 @@ import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'rectangle' }>;
 
-/** Rectangle drawn to scale with its unit squares. Drag the corner to change both sides. */
+/**
+ * Rectangle drawn to scale with its unit squares (or, for perimeter alone, a mark at each unit
+ * along the edge). Drag the corner to change both sides.
+ */
 export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
@@ -35,7 +38,21 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
         const rw = l * unit;
         const rh = wd * unit;
         const cellPx = unit * f;
-        const showGrid = sameUnit && Number.isInteger(sl) && Number.isInteger(sw) && cellPx >= 6;
+        const whole = sameUnit && Number.isInteger(sl) && Number.isInteger(sw) && cellPx >= 6;
+        // Perimeter alone: marks along the edge (a length to walk around), not squares inside.
+        const edgeOnly = !!spec.around && !spec.inside;
+        const showGrid = whole && !edgeOnly;
+        const tick = (x: number, y: number, dx: number, dy: number, key: string) => (
+          <Line
+            key={key}
+            x1={x - dx * 5}
+            y1={y - dy * 5}
+            x2={x + dx * 5}
+            y2={y + dy * 5}
+            stroke={c.chartInk}
+            strokeWidth={chart.strokeLight}
+          />
+        );
         return (
           <>
             <Svg width={w} height={h}>
@@ -71,6 +88,18 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
                         stroke={c.chartGrid}
                       />
                     )),
+                  ]
+                : null}
+              {whole && edgeOnly
+                ? [
+                    ...Array.from({ length: Math.max(0, sl - 1) }, (_, i) => [
+                      tick(left + (i + 1) * cellPx, top, 0, 1, `t${i}`),
+                      tick(left + (i + 1) * cellPx, top + rh, 0, 1, `b${i}`),
+                    ]).flat(),
+                    ...Array.from({ length: Math.max(0, sw - 1) }, (_, i) => [
+                      tick(left, top + (i + 1) * cellPx, 1, 0, `l${i}`),
+                      tick(left + rw, top + (i + 1) * cellPx, 1, 0, `r${i}`),
+                    ]).flat(),
                   ]
                 : null}
               <ChartText

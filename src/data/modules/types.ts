@@ -71,7 +71,15 @@ export type Representation =
    * Tape diagram. Part-whole: one bar cut into `parts`, with a bracket for the `total`.
    * Compare: two bars from the same start; the bracket is the `difference`. Drag bar ends.
    */
-  | { kind: 'tape'; parts: string[]; total: string }
+  | {
+      kind: 'tape';
+      parts: string[];
+      total: string;
+      /** The total is this many equal groups (a two-step problem): dashed lines mark them. */
+      groups?: string;
+      /** A sentence under the bar, with {id} for values. */
+      caption?: string;
+    }
   | {
       kind: 'tape';
       compare: [string, string];
@@ -261,6 +269,8 @@ export type Representation =
       total?: string;
       /** A numbered scale on the left with a grid line every `scale` (bar graphs, Grade 2+). */
       scale?: number;
+      /** No number on top of each bar: read its height against the scale (scaled graphs). */
+      readScale?: boolean;
     }
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {

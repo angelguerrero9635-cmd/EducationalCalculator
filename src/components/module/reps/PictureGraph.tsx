@@ -107,9 +107,22 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       {spec.key ? (
         <>
-          <Text style={[styles.total, { color: c.text }]}>
-            {`Key: each picture stands for ${rep.value(spec.key)} (${rep.variable(spec.key).symbol})`}
-          </Text>
+          {/* The key as it's drawn on a worksheet: the pictures, then what each stands for. */}
+          <View style={styles.key}>
+            <Text style={[styles.total, { color: c.text }]}>Key:</Text>
+            {spec.columns.map((col) => (
+              <Shape
+                key={col.var}
+                icon={col.icon}
+                size={22}
+                fill={c.chartFill}
+                stroke={c.chartInk}
+              />
+            ))}
+            <Text style={[styles.total, { color: c.text }]}>
+              {`each stands for ${rep.value(spec.key)}`}
+            </Text>
+          </View>
           <Steppers
             calc={calc}
             items={[{ var: spec.key, steps: [1], pin: spec.columns.map((x) => x.var) }]}
@@ -126,6 +139,13 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
+  key: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: space.xs,
+  },
   graph: { flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-end' },
   column: {
     flexDirection: 'column-reverse',

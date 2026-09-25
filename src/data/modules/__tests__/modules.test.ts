@@ -41,7 +41,9 @@ function representationVars(r: Representation): string[] {
         (v): v is string => typeof v === 'string',
       );
     case 'tape':
-      return 'compare' in r ? [...r.compare, r.difference] : [...r.parts, r.total];
+      return 'compare' in r
+        ? [...r.compare, r.difference]
+        : [...r.parts, r.total, ...(r.groups ? [r.groups] : [])];
     case 'linePlot':
       return [...r.points.map((p) => p.var), ...(r.start ? [r.start] : [])];
     case 'pairs':

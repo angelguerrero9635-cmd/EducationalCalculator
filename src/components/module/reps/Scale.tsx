@@ -29,12 +29,12 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.66}>
+      <Canvas aspect={0.8}>
         {({ w, h }) => {
           const cx = w / 2;
-          const panY = h * 0.34;
-          const dialY = h * 0.8;
-          const r = Math.min(w * 0.32, h * 0.36);
+          const panY = h * 0.22;
+          const dialY = h * 0.84;
+          const r = Math.min(w * 0.36, h * 0.42);
           const bw = Math.min(64, (w * 0.8) / Math.max(1, blocks.length) - 6);
           const angle = (x: number) => Math.PI * (1 - Math.min(1, x / max));
           const needle = angle(total);
@@ -101,10 +101,13 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       stroke={c.chartInk}
                       strokeWidth={chart.strokeLight}
                     />
-                    {i % 5 === 0 ? (
+                    {/* Every mark is numbered when the dial has room (0, 100, 200, …). */}
+                    {i % 5 === 0 || r >= 110 ? (
                       <ChartText
-                        x={cx + Math.cos(a) * (r - 26)}
-                        y={dialY - Math.sin(a) * (r - 26) - (i % 10 === 0 ? 10 : -4)}
+                        // The two ends (0 and the most) sit under the dial's flat edge, clear of
+                        // their neighbors.
+                        x={cx + Math.cos(a) * (r - (i % 10 === 0 ? 12 : 26))}
+                        y={i % 10 === 0 ? dialY + 16 : dialY - Math.sin(a) * (r - 26) + 4}
                         fontSize={chart.tiny}
                         fill={c.chartMuted}
                         textAnchor="middle"

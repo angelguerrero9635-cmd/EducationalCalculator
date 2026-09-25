@@ -19,6 +19,20 @@ function nameOf(right: boolean, equal: boolean) {
   return { name: 'parallelogram', why: 'opposite sides equal, no right angles' };
 }
 
+/** Quadrilaterals outside this page's family, drawn small for comparing. */
+const OTHERS = [
+  {
+    name: 'Trapezoid',
+    points: '26,8 70,8 92,52 4,52',
+    why: 'One pair of sides go the same way; the other two sides don’t.',
+  },
+  {
+    name: 'Kite',
+    points: '48,4 72,22 48,56 24,22',
+    why: 'Two pairs of equal sides next to each other, not opposite.',
+  },
+];
+
 /**
  * A quadrilateral with two pairs of equal sides: square corners or slanted, equal sides or
  * not. Its name updates as the sides and corners change.
@@ -130,7 +144,7 @@ export function Quadrilateral({ spec, calc }: { spec: Spec; calc: Calculator }) 
           ]}
         >
           <Text style={[styles.toggleText, { color: c.text }]}>
-            {right ? 'Square corners: on' : 'Square corners: off'}
+            {right ? 'Right angles: 4 (tap for 0)' : 'Right angles: 0 (tap for 4)'}
           </Text>
         </Pressable>
       </View>
@@ -141,6 +155,24 @@ export function Quadrilateral({ spec, calc }: { spec: Spec; calc: Calculator }) 
           { var: spec.second, steps: [1], pin: [spec.first, spec.rightAngles] },
         ]}
       />
+      {/* Quadrilaterals that don't have 2 pairs of equal opposite sides, for sorting. */}
+      <Text style={[styles.otherTitle, { color: c.textMuted }]}>Other quadrilaterals</Text>
+      <View style={styles.others}>
+        {OTHERS.map((o) => (
+          <View key={o.name} style={styles.other}>
+            <Svg width={96} height={60}>
+              <Polygon
+                points={o.points}
+                fill={c.chartSurface}
+                stroke={c.chartInk}
+                strokeWidth={chart.stroke}
+              />
+            </Svg>
+            <Text style={[styles.otherName, { color: c.text }]}>{o.name}</Text>
+            <Text style={[styles.otherWhy, { color: c.textMuted }]}>{o.why}</Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
@@ -163,4 +195,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   toggleText: { fontSize: font.body, fontWeight: '600' },
+  otherTitle: {
+    fontSize: font.caption,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: space.lg,
+  },
+  others: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: space.lg,
+    marginTop: space.sm,
+    paddingHorizontal: space.lg,
+  },
+  other: { flex: 1, maxWidth: 170, alignItems: 'center', gap: 2 },
+  otherName: { fontSize: font.body, fontWeight: '700' },
+  otherWhy: { fontSize: font.caption, textAlign: 'center' },
 });
