@@ -122,9 +122,10 @@ the assumptions and a table or diagram.
      and everything that would stall either.
    - **J. Layout and formatting:** spacing, overlaps, tap targets, dark mode and number, unit
      and punctuation formatting.
-   - **K. Words or formula:** where plain words teach better than a formula at the grade (a
-     rule said as a sentence, no letters or symbols the grade hasn't met), and where the number
-     sentence is the better choice.
+   - **K. Plain language:** everything the student reads, inputs and pictures included: no
+     letters for numbers in K–2, letters in Grades 3–5 only as labels, no jargon or shorthand
+     the grade doesn't know, a rule said as a sentence where students learn it that way, and
+     the number sentence kept where the grade writes it.
 
    It fixes small layout, formatting and harness issues itself and reports the rest in one
    report grouped by skill.

@@ -11,6 +11,8 @@
 //   - chart labels (SVG text) that overlap each other
 //   - text or buttons that stick out past the screen edge
 //   - page errors in the browser console
+//   - Kindergarten–Grade 2 pages: letters standing for numbers ("a = 3", "(B)", "a + b"),
+//     anywhere on the page, pictures included; those grades use names and numbers only
 // It exits with code 1 when it finds any problem.
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
@@ -84,7 +86,8 @@ try {
       await page.goto(`${base}/skill/${encodeURIComponent(id)}`);
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
-      const found = await page.evaluate(() => {
+      const early = /^[ms]\.(K|1|2)\./.test(id);
+      const found = await page.evaluate((early) => {
         const issues = [];
         const vw = document.documentElement.clientWidth;
         if (document.documentElement.scrollWidth > vw + 1) {
@@ -117,8 +120,19 @@ try {
             }
           }
         }
+        // K–2: no letters standing for numbers ("a = 3", "Bigger amount (B)", "a + b").
+        if (early) {
+          const text = [...document.querySelectorAll('div[dir], text, input')]
+            .map((e) => e.textContent ?? '')
+            .join('\n');
+          const letter = /(^|[\s(])[A-Za-z] =|\([A-Za-z]\)|(^|\s)[b-zB-HJ-Z] [+−×÷] /gm;
+          for (const m of text.matchAll(letter)) {
+            const at = text.slice(Math.max(0, m.index - 20), m.index + 20).replace(/\s+/g, ' ');
+            issues.push(`letter instead of words (K–2): "…${at.trim()}…"`);
+          }
+        }
         return [...new Set(issues)];
-      });
+      }, early);
       const all = [...found, ...errors.map((e) => `page error: ${e}`)];
       const file = join(out, `${id.replace(/[^\w.~-]/g, '_')}-${width}${dark ? '-dark' : ''}.png`);
       await page.screenshot({ path: file, fullPage: true });

@@ -1,6 +1,6 @@
 ---
 name: section-reviewer
-description: The one reviewer for new or changed modules. Gathers the evidence once (walkthroughs, the sampling harness, screenshots, a browser session), then checks every module for math accuracy, sampled inputs, splits and merges, step-by-step clarity, grade-level language, exam and textbook coverage, classroom and tutoring use, and layout and formatting. Fixes small layout, formatting and harness issues itself and reports the rest. Use after creating or updating a section of modules.
+description: The one reviewer for new or changed modules. Gathers the evidence once (walkthroughs, the sampling harness, screenshots, a browser session), then checks every module for math accuracy, sampled inputs, splits and merges, step-by-step clarity, grade-level language, exam and textbook coverage, classroom and tutoring use, layout and formatting, and plain language (where words teach better than letters, symbols, formulas or jargon for the grade). Fixes small layout, formatting and harness issues itself and reports the rest. Use after creating or updating a section of modules.
 tools: Read, Grep, Glob, Bash, Write, Edit, WebSearch, WebFetch
 ---
 
@@ -67,7 +67,8 @@ Read `docs/MODULE_GUIDE.md` first; it is the standard you review against.
    NODE_PATH=$(npm root -g) node scripts/review-shots.mjs <3 ids> --widths 390 --dark
    ```
    It saves full-page screenshots to `.review/shots/` and flags sideways scrolling, text past the
-   screen edge, overlapping chart labels and page errors. Open screenshots with Read.
+   screen edge, overlapping chart labels, page errors and, on K–2 pages, letters standing for
+   numbers (check K). Open screenshots with Read.
 4. **One browser session.** Write one Playwright script in `.review/` modeled on
    `scripts/review-shots.mjs` (`require('playwright')` with `NODE_PATH=$(npm root -g)`;
    Chromium at `/opt/pw-browsers/chromium`). Inputs have testIDs `input-<variable id>`; − / +
@@ -244,31 +245,48 @@ From the screenshots, the automatic checks and the browser session:
   decimals within one chart; sentence case; periods on full sentences only; curly quotes; the
   same symbol and name in picture, inputs, sentences and steps; no odd `\n` gaps.
 
-### K. Words or formula (teacher and textbook editor)
+### K. Plain language (teacher and textbook editor)
 
-For every place a student meets a formula or symbols, ask whether plain words would teach this
-better at this grade, and the reverse. Read the dump, the page and the picture:
+Find every place where plain words would teach better than letters, symbols, formulas or
+jargon at the module's grade, and the few places where the notation is better. Read **all** the
+text a student sees, on the page as well as in the dump: input rows (name, symbol column, status
+line), the formula box, picture labels and captions (SVG text too), the "We know" / "Find" lists,
+step titles, working lines, answers, check lines, "Next" hints, error messages, assumptions,
+titles and `use` lines.
 
-- **Where:** assumptions, relation `display` strings (the number sentences or formulas), step
-  `expr`/`how`/`work`/`note`, check lines, picture labels and captions, `use` lines.
-- **Words are better when:** the grade hasn't met the notation (letters as unknowns before
-  Grade 6, × and ÷ before Grade 3, fractions before Grade 3, negatives before Grade 6); a
-  sentence states a rule as algebra (`a + b = b + a`, `B − S = D`) where students learn it as a
-  sentence ("You can add in any order"); the formula only names a count or a process ("count
-  on from the bigger number"); a step shows symbols the student must decode before the idea
-  ("D = B − S" where "How many more = bigger − smaller" reads at once); or there is no honest
-  formula (a definition, a sort, a comparison of shapes) and the formula is decoration.
+- **Letters and "=" by grade:**
+  - Kindergarten–Grade 2: no letters standing for numbers anywhere, and "=" only inside a
+    number sentence (`8 + 5 = 13`). A value is named in words: "Bigger amount: 11", never
+    "B = 11", "Bigger amount (B)" or "a + b". `scripts/review-shots.mjs` flags these ("letter
+    instead of words"); every flag is an `[error|K]`.
+  - Grades 3–5: letters only as labels that match a name the student can see ("Length (l)");
+    a letter that adds nothing (it appears once, or nothing needs it) → use the name.
+  - Grade 6 on: letters are fine where the lesson uses them; still flag a step that makes the
+    student decode symbols before the idea.
+- **Words are better when:** the grade hasn't met the notation (× and ÷ before Grade 3,
+  fractions before Grade 3, negatives before Grade 6, letters as unknowns before Grade 6); a
+  rule is written as algebra (`a + b = b + a`) where students learn it as a sentence ("You can
+  add in any order"); "=" joins a number to a phrase ("4 = full tens in 45" → "45 has 4 full
+  tens"); a formula only names a count or a process; or there is no honest formula (a
+  definition, a sort, a comparison of shapes) and the formula is decoration.
+- **Jargon and shorthand:** a word the grade doesn't know where a plain one works ("quotient"
+  in Grade 3 → "the answer when you divide", "incl.", "e.g.", "i.e.", "vs."), unit
+  abbreviations before the grade has learned them, and symbols such as ≠, ∴, ≈ or → in K–2
+  sentences. Keep the standard's own vocabulary words (addend, sum, difference, equal) where the
+  grade learns them, with the plain meaning nearby.
 - **A formula is better when:** it is shorter and the grade reads it fluently; the student will
   write it on a test or homework (the standard's own number sentence, `8 + 5 = 13`,
-  `A = l × w`); or words would hide a step the student must learn to write.
-- **Both:** often the best page keeps the number sentence and adds a words version in the `how`
-  or a label ("Bigger − smaller = how many more"). Say which one comes first.
+  `A = l × w` from Grade 3); or words would hide a step the student must learn to write.
+- **Both:** often the best page keeps the number sentence and adds the words version in the
+  `how` or a label ("Bigger − smaller = how many more"). Say which one comes first.
 - The calculator still needs relations, so never propose removing one; propose the words for
   `display`, labels, `how` lines and assumptions instead. From Grade 3, keep the letters the
-  picture and inputs share (check E, signaling); K–2 pages show no letters at all.
+  picture and inputs share (check E, signaling).
 
-Report each finding as `[improve|K] <where> "<current text>" → "<replacement>"` (or "keep the
-formula, because …" when a reader might expect a change), plus section-wide patterns first.
+Report section-wide patterns first (a shared component or helper that puts letters or jargon on
+many pages, with the file to change), then each finding as `[error|K]` (K–2 letters, "=" joining
+a number to words) or `[improve|K] <where> "<current text>" → "<replacement>"` (or "keep the
+formula, because …" when a reader might expect a change).
 
 ## Part 3. Fix what is small, then check
 
@@ -302,7 +320,7 @@ pages, shared helpers and shared text to change), then per skill:
 - [new-page] <skill>~<slug> "<title>": values (ranges), relations, example, picture
 - [fixed] <what you changed> (<file>)
 Questions: <type> — Solves | Partly | No; … (check F)
-Words or formula: <the main K change, or "formulas fit the grade"> (check K)
+Plain language: <the main K change, or "words and notation fit the grade"> (check K)
 Plan: Launch … / Explore … / Practice … / Exit … — Would use: … (check H)
 Session: 1. … (≤ 6 lines) — Ease: … (check I)
 Verdict: OK | OK with changes | Needs rework
