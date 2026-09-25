@@ -81,3 +81,9 @@ blocks the wireframe.
      empty fields today)
 
    These are enforced in the test suite for now.
+
+9. **Grade 3 skill titles use shorthand a Grade 3 student may not read** (plain-language check
+   K). Suggested titles:
+   - `m.3.multiplication-properties` "Properties of multiplication (incl. distributive)" →
+     "Properties of multiplication: order, grouping and breaking apart"
+   - `m.3.area` "Area of rectangles (A = l × w)" → "Area of rectangles"

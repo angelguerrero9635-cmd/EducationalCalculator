@@ -58,4 +58,29 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
   'm.2.thirds-polygons~rows-columns':
     'Use this to cut a rectangle into rows and columns of squares.',
   'm.2.thirds-polygons~solids': 'Use this to count faces, edges and corners of a cube or prism.',
+  // Grade 3
+  'm.3.multiply-divide-100~array':
+    'Use this for rows and columns: “6 rows of 4 chairs. How many chairs?”',
+  'm.3.multiply-divide-100~jumps':
+    'Use this for equal jumps on a number line: “How many jumps of 5 to get to 30?”',
+  'm.3.multiplication-properties~order':
+    'Use this for 4 × 7 = 7 × 4: turn the array to use a fact you know.',
+  'm.3.two-step-problems~share':
+    'Use this for “18 red and 12 blue beads, shared equally on 5 strings. How many on each?”',
+  'm.3.rounding~hundred': 'Use this to round a 3-digit number to the nearest hundred.',
+  'm.3.fractions-number-line~shapes': 'Use this to name the shaded part of a shape, like 3/4.',
+  'm.3.compare-fractions~same-denominator': 'Use this for “Which is more, 3/8 or 5/8?”',
+  'm.3.elapsed-time~elapsed':
+    'Use this for “It starts at 3:45 and takes 35 minutes. When does it end?” and “How long?”',
+  'm.3.mass-liquid-volume~liquid':
+    'Use this for liters: “3 L in the jug, pour in 4 L. How much now?”',
+  'm.3.mass-liquid-volume~bags': 'Use this for “5 bags of 3 kg each. How heavy in all?”',
+  'm.3.area~tiling': 'Use this to find area by counting unit squares in rows.',
+  'm.3.area~split':
+    'Use this to split a rectangle into two and add the areas: 6 × 8 = 6 × 5 + 6 × 3.',
+  'm.3.perimeter~missing-side': 'Use this when you know the perimeter and every side but one.',
+  'm.3.perimeter~same-perimeter':
+    'Use this to compare rectangles with the same perimeter but different areas.',
+  'm.3.scaled-graphs~picture-graph':
+    'Use this for picture graphs where each picture stands for 2, 5 or 10.',
 };

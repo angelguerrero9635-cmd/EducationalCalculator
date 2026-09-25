@@ -7,6 +7,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep } from './common';
+import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'pictureGraph' }>;
 type Icon = Spec['columns'][number]['icon'];
@@ -104,6 +105,17 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
+      {spec.key ? (
+        <>
+          <Text style={[styles.total, { color: c.text }]}>
+            {`Key: each picture stands for ${rep.value(spec.key)} (${rep.variable(spec.key).symbol})`}
+          </Text>
+          <Steppers
+            calc={calc}
+            items={[{ var: spec.key, steps: [1], pin: spec.columns.map((x) => x.var) }]}
+          />
+        </>
+      ) : null}
       {spec.total ? (
         <Text style={[styles.total, { color: c.text }]}>
           {`${rep.variable(spec.total).name}: ${rep.label(spec.total)}`}

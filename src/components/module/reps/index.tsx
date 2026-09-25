@@ -41,6 +41,13 @@ import { SeriesCircuit } from './SeriesCircuit';
 import { TenFrame } from './TenFrame';
 import { ValueTable } from './ValueTable';
 import { Waterfall } from './Waterfall';
+import { Beaker } from './Beaker';
+import { FractionBars } from './FractionBars';
+import { FractionLine } from './FractionLine';
+import { Quadrilateral } from './Quadrilateral';
+import { Rounding } from './Rounding';
+import { Scale } from './Scale';
+import { Timeline } from './Timeline';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -56,6 +63,20 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
   switch (spec.kind) {
     case 'tape':
       return <Tape spec={spec} calc={calc} />;
+    case 'rounding':
+      return <Rounding spec={spec} calc={calc} />;
+    case 'fractionLine':
+      return <FractionLine spec={spec} calc={calc} />;
+    case 'fractionBars':
+      return <FractionBars spec={spec} calc={calc} />;
+    case 'timeline':
+      return <Timeline spec={spec} calc={calc} />;
+    case 'scale':
+      return <Scale spec={spec} calc={calc} />;
+    case 'beaker':
+      return <Beaker spec={spec} calc={calc} />;
+    case 'quadrilateral':
+      return <Quadrilateral spec={spec} calc={calc} />;
     case 'linePlot':
       return <LinePlot spec={spec} calc={calc} />;
     case 'numberLine':

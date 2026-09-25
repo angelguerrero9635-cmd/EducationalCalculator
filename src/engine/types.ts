@@ -15,6 +15,8 @@ export interface VariableDef {
   step?: number;
   /** Whole numbers only. */
   integer?: boolean;
+  /** Show at least this many digits, padding with zeros (minutes on a clock: 3:05). */
+  digits?: number;
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
   /**

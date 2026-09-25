@@ -155,6 +155,8 @@ export type Representation =
       control?: string;
       /** How much − / + change it (default 1), e.g. 2 for halves ↔ fourths. */
       step?: number;
+      /** Name the shaded amount as a fraction (3/4), Grade 3 on. */
+      fraction?: boolean;
     }
   /**
    * Number line from `start` (default 0) with `count` equal jumps of `step`, ending at `total`.
@@ -215,6 +217,13 @@ export type Representation =
       total: string;
       max: number;
       cell?: 'dot' | 'square';
+      /**
+       * Split the columns into two parts (break apart a factor): `first` + `second` columns,
+       * each part's product labeled under it (6 × 7 = 6 × 5 + 6 × 2).
+       */
+      split?: { first: string; second: string; firstTotal: string; secondTotal: string };
+      /** Also draw the array turned a quarter turn (rows become columns): 4 × 7 = 7 × 4. */
+      turned?: boolean;
     }
   /** Objects measured against a ruler in the shown unit. Drag each object's end. */
   | {
@@ -259,6 +268,8 @@ export type Representation =
       columns: { var: string; icon: 'circle' | 'square' | 'triangle' | 'star' }[];
       max: number;
       total?: string;
+      /** How many each picture stands for (a scaled picture graph's key). */
+      key?: string;
     }
   /**
    * Waterfall chart: each item adds (`sign: 1`) or subtracts (`sign: -1`) from a running total,
@@ -275,7 +286,15 @@ export type Representation =
    * Rectangle with side lengths and a value written inside. Drag the corner. `extent` is the
    * smallest side length the drawing fits; it grows for larger values.
    */
-  | { kind: 'rectangle'; length: string; width: string; inside?: string; extent: number }
+  | {
+      kind: 'rectangle';
+      length: string;
+      width: string;
+      inside?: string;
+      /** The perimeter: the outline is drawn heavy and labeled under the rectangle. */
+      around?: string;
+      extent: number;
+    }
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
   | { kind: 'grid100'; percent: string; caption?: { part: string; whole: string } }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
@@ -309,6 +328,64 @@ export type Representation =
       /** Shade the area between the curve and the x-axis from x.min to the point. */
       shadeToPoint?: boolean;
     }
+  /**
+   * Rounding: a number line from the multiple of `to` below `value` to the one above, the
+   * halfway point marked, and an arrow to the nearer one. Drag the point or use − / +.
+   */
+  | {
+      kind: 'rounding';
+      value: string;
+      lower: string;
+      upper: string;
+      rounded: string;
+      to: 10 | 100;
+    }
+  /**
+   * Fractions on a number line from 0 to `wholes`: each whole cut into `denominator` equal
+   * parts, with one jump per part from 0 to `numerator`. Drag the point or use − / +.
+   */
+  | { kind: 'fractionLine'; numerator: string; denominator: string; wholes: number }
+  /**
+   * Fraction bars of the same whole, one per row, with `num` of `den` parts shaded. `equal`
+   * notes that the rows are the same size (equivalent fractions).
+   */
+  | {
+      kind: 'fractionBars';
+      rows: { num: string; den: string }[];
+      controls: string[];
+      equal?: boolean;
+    }
+  /**
+   * Elapsed time on a number line: from the start time to the end time in jumps (to the next
+   * hour, whole hours, the minutes left), each labeled with its length.
+   */
+  | {
+      kind: 'timeline';
+      startHour: string;
+      startMinute: string;
+      minutes: string;
+      endHour: string;
+      endMinute: string;
+    }
+  /**
+   * A scale reading a total mass: the `items` on the pan (or `count` equal items of mass
+   * `each`), and a dial that points at the `total` (dial up to `max`).
+   */
+  | {
+      kind: 'scale';
+      items?: string[];
+      count?: string;
+      each?: string;
+      total: string;
+      max: number;
+    }
+  /** A measuring jug with liter marks up to `max`; the `parts` stack up to the `total`. */
+  | { kind: 'beaker'; parts: string[]; total: string; max: number }
+  /**
+   * A quadrilateral with 2 pairs of equal sides (`first`, `second`), square corners when
+   * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.
+   */
+  | { kind: 'quadrilateral'; first: string; second: string; rightAngles: string }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | { kind: 'table'; sweep: string; output: string; params: string[]; rows: number[] }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */

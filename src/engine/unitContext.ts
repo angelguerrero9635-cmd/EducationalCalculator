@@ -26,8 +26,8 @@ const LENGTHS = ['mm', 'cm', 'm', 'km', 'in', 'ft', 'yd', 'mi'];
 
 /**
  * For whole-number lessons, units change together: picking a length unit for one value sets
- * every length, area and volume to match (m → m, m², m³), so a lesson never mixes feet with
- * inches. Returns the per-variable units to apply, or just the one change otherwise.
+ * every length, area and volume to match (m → m, m², m³), and picking any other unit sets every
+ * value of the same kind (g → kg for every mass), so a lesson never mixes units. Returns the per-variable units to apply, or just the one change otherwise.
  */
 export function linkedUnits(
   variables: readonly VariableDef[],
@@ -37,9 +37,16 @@ export function linkedUnits(
   const lesson = variables.some((v) => v.integer && getUnit(v.unit));
   const picked = getUnit(unitId);
   const family = ['length', 'area', 'volume'];
-  if (!lesson || !picked || !family.includes(picked.dimension)) return { [id]: unitId };
+  if (!lesson || !picked) return { [id]: unitId };
   const length = LENGTHS.find((l) => l === unitId || `${l}²` === unitId || `${l}³` === unitId);
-  if (!length) return { [id]: unitId };
+  if (!family.includes(picked.dimension) || !length) {
+    // Masses, liters, …: every value of the same kind takes the picked unit (g → kg for all).
+    return Object.fromEntries(
+      variables
+        .filter((v) => v.id === id || getUnit(v.unit)?.dimension === picked.dimension)
+        .map((v) => [v.id, unitId]),
+    );
+  }
   const out: Record<string, string> = {};
   for (const v of variables) {
     const d = getUnit(v.unit)?.dimension;

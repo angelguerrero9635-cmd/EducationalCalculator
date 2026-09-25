@@ -69,7 +69,33 @@ function representationVars(r: Representation): string[] {
     case 'partnerList':
       return [r.total, r.ways];
     case 'array':
-      return [r.rows, r.columns, r.total];
+      return [
+        r.rows,
+        r.columns,
+        r.total,
+        ...(r.split
+          ? [r.split.first, r.split.second, r.split.firstTotal, r.split.secondTotal]
+          : []),
+      ];
+    case 'rounding':
+      return [r.value, r.lower, r.upper, r.rounded];
+    case 'fractionLine':
+      return [r.numerator, r.denominator];
+    case 'fractionBars':
+      return [...r.rows.flatMap((x) => [x.num, x.den]), ...r.controls];
+    case 'timeline':
+      return [r.startHour, r.startMinute, r.minutes, r.endHour, r.endMinute];
+    case 'scale':
+      return [
+        ...(r.items ?? []),
+        ...(r.count ? [r.count] : []),
+        ...(r.each ? [r.each] : []),
+        r.total,
+      ];
+    case 'beaker':
+      return [...r.parts, r.total];
+    case 'quadrilateral':
+      return [r.first, r.second, r.rightAngles];
     case 'ruler':
       return [
         ...r.lengths,
@@ -82,11 +108,15 @@ function representationVars(r: Representation): string[] {
     case 'bars':
       return [...r.bars.map((b) => b.var), ...(r.total ? [r.total] : [])];
     case 'pictureGraph':
-      return [...r.columns.map((b) => b.var), ...(r.total ? [r.total] : [])];
+      return [
+        ...r.columns.map((b) => b.var),
+        ...(r.total ? [r.total] : []),
+        ...(r.key ? [r.key] : []),
+      ];
     case 'waterfall':
       return [...r.items.map((b) => b.var), r.total, ...(r.caption ?? [])];
     case 'rectangle':
-      return [r.length, r.width, ...(r.inside ? [r.inside] : [])];
+      return [r.length, r.width, ...(r.inside ? [r.inside] : []), ...(r.around ? [r.around] : [])];
     case 'grid100':
       return [r.percent, ...(r.caption ? [r.caption.part, r.caption.whole] : [])];
     case 'circle':

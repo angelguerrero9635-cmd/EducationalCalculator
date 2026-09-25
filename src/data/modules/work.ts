@@ -196,3 +196,32 @@ export const dealLines = (groups: number, each: number, name: string) => [
   `Deal 1 to each ${name}: ${countList(0, groups, each)} used`,
   `${each} ${each === 1 ? 'round' : 'rounds'} → ${each} in each ${name}`,
 ];
+
+/**
+ * a × b the way Grade 3 learns it, one step per line: count by the bigger factor when a factor is
+ * 5 or less (or 10); otherwise break a factor into 5 and the rest (7 × 8 = 5 × 8 + 2 × 8).
+ */
+export function timesWork(a: number, b: number): string[] {
+  if (a === 0 || b === 0) return ['Any number times 0 is 0.'];
+  if (a === 1 || b === 1) return [`1 × a number is that number: ${a * b}`];
+  const [big, small] = a >= b ? [a, b] : [b, a];
+  if (small <= 5 || big === 10) {
+    return [`Count by ${big}s, ${small} times: ${countList(0, big, small)} → ${a * b}`];
+  }
+  const rest = small - 5;
+  return [
+    `${small} = 5 + ${rest}, so ${small} × ${big} = 5 × ${big} + ${rest} × ${big}`,
+    `5 × ${big} = ${5 * big}`,
+    `${rest} × ${big} = ${rest * big}`,
+    `${5 * big} + ${rest * big} = ${a * b}`,
+  ];
+}
+
+/** n ÷ d, thinking of the multiplication fact: count by d to n ("Count by 4s: 4, 8, 12 → 3"). */
+export function divideWork(n: number, d: number): string[] {
+  if (d === 0) return [];
+  const q = n / d;
+  if (!Number.isInteger(q) || q < 0) return [];
+  if (n === 0) return ['0 shared into any number of groups is 0.'];
+  return [`Think: ? × ${d} = ${n}`, `Count by ${d}s to ${n}: ${countList(0, d, q)} → ${q}`];
+}

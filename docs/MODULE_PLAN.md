@@ -9,7 +9,7 @@ independent AI review), and the next section starts only after the owner approve
 | --- | --------------------------------------------------------------------------------------------------- | ------- | -------------------- |
 | 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice |
 | 1   | Math K–2                                                                                            | 64      | Done, reviewed twice |
-| 2   | Math 3–5                                                                                            | 34      | Next                 |
+| 2   | Math 3–5 (one grade at a time)                                                                      | 34      | Grade 3 built        |
 | 3   | Math 6–8                                                                                            | 30      |                      |
 | 4   | Math 9–10                                                                                           | 21      |                      |
 | 5   | Math 11–12                                                                                          | 22      |                      |
@@ -32,6 +32,15 @@ independent AI review), and the next section starts only after the owner approve
 Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may be split further if it runs long.
 
 ## Section notes
+
+- **Section 2, Grade 3.** 11 skill modules (area was a pilot) plus 15 problem types:
+  arrays and equal jumps (multiply and divide), change the order, add then share equally,
+  round to the nearest hundred, fractions of a shape, compare with the same denominator,
+  elapsed time, liquid volume in liters, equal bags, count unit squares, split a rectangle,
+  a missing side, same perimeter with different area, and a picture graph with a key. New
+  pictures: rounding line, fraction line, fraction bars, elapsed-time line, scale, measuring
+  jug and quadrilateral; the array can split a factor or show the turned array, and the
+  rectangle can show its perimeter.
 
 - **Section 1 (Math K–2).** 32 skill modules (including the two new Kindergarten skills,
   position words and putting shapes together) plus 32 problem-type modules (`<skill>~<slug>`),

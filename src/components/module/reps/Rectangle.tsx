@@ -25,11 +25,13 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
   const sameUnit = rep.unit(spec.length) === rep.unit(spec.width);
 
   return (
-    <Canvas aspect={0.8}>
+    <Canvas aspect={spec.around ? 0.88 : 0.8}>
       {({ w, h }) => {
         const left = 72;
         const top = 16;
-        const unit = Math.min((w - left - 28) / fit.value, (h - top - 44) / fit.value);
+        // Room under the rectangle for the side label, and the perimeter line when shown.
+        const below = spec.around ? 68 : 44;
+        const unit = Math.min((w - left - 28) / fit.value, (h - top - below) / fit.value);
         const rw = l * unit;
         const rh = wd * unit;
         const cellPx = unit * f;
@@ -43,8 +45,8 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
                 width={rw}
                 height={rh}
                 fill={c.chartFill}
-                stroke={c.chartInk}
-                strokeWidth={chart.stroke}
+                stroke={spec.around ? c.chartHighlight : c.chartInk}
+                strokeWidth={spec.around ? chart.strokeHeavy + 1 : chart.stroke}
                 opacity={faded ? 0.35 : 1}
               />
               {showGrid
@@ -82,6 +84,18 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
               <ChartText x={left - 8} y={top + rh / 2 + 4} fontSize={chart.value} textAnchor="end">
                 {rep.label(spec.width)}
               </ChartText>
+              {spec.around ? (
+                <ChartText
+                  x={left + Math.max(rw, 160) / 2}
+                  y={top + rh + 46}
+                  fontSize={chart.value}
+                  fontWeight="700"
+                  fill={c.chartHighlight}
+                  textAnchor="middle"
+                >
+                  {`${rep.tag(spec.around)}: ${rep.value(spec.around)} all the way around`}
+                </ChartText>
+              ) : null}
               {spec.inside ? (
                 <ChartText
                   x={left + Math.max(rw, 100) / 2}

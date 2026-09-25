@@ -358,6 +358,16 @@ const COIN: Record<string, number> = {
   nickels: 5,
 };
 const PHRASES: [RegExp, (...xs: number[]) => number][] = [
+  // Grade 3
+  [new RegExp(`(${NUM}) without its tens and ones`), (a) => 100 * Math.floor(a / 100)],
+  [new RegExp(`(${NUM}) without its ones`), (a) => 10 * Math.floor(a / 10)],
+  [new RegExp(`wholes in (${NUM}) parts of (${NUM})`), (a, b) => Math.floor(a / b)],
+  [new RegExp(`last 5 before (${NUM})`), (a) => Math.floor(a / 5)],
+  [new RegExp(`(${NUM}) \\+ (${NUM}) past the hour`), (a, b) => (a + b) % 60],
+  [new RegExp(`(${NUM}) − (${NUM}) past the hour`), (a, b) => (((a - b) % 60) + 60) % 60],
+  [new RegExp(`(${NUM}) wholes? and (${NUM})/(${NUM})`), (w, a, b) => w + a / b],
+  [new RegExp(`(${NUM})/(${NUM})`), (a, b) => a / b],
+  [new RegExp(`(${NUM}) (?:not shaded|shaded|equal parts)`), (a) => a],
   [new RegExp(`difference of (${NUM}) and (${NUM})`), (a, b) => Math.abs(a - b)],
   [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],
   [new RegExp(`jumps of (${NUM}) from (${NUM}) to (${NUM})`), (s, a, n) => (n - a) / s],

@@ -1,8 +1,11 @@
 import type { Values, VariableDef } from './types';
 
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
-export function formatNumber(x: number, variable?: Pick<VariableDef, 'integer'>): string {
-  if (variable?.integer) return String(Math.round(x));
+export function formatNumber(
+  x: number,
+  variable?: Pick<VariableDef, 'integer' | 'digits'>,
+): string {
+  if (variable?.integer) return String(Math.round(x)).padStart(variable.digits ?? 0, '0');
   if (x === 0) return '0';
   const abs = Math.abs(x);
   if (abs >= 1e7 || abs < 1e-4) return x.toExponential(3).replace('e+', 'e');
