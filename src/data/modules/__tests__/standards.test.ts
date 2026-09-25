@@ -42,7 +42,7 @@ const LONE_CAPITAL = /(^|\s)[A-Z](\s|$)/;
 const BAD_VALUE = /NaN|undefined|Infinity|null|(^|[^\w.])[-−]0(?![\d.])/;
 /** "1 tens", "3 ten": number words that don't agree (check B). */
 const PLURAL =
-  /(?<![\d.,$/])\b(?:1 (?:tens|ones|hundreds|groups|bills|feet|inches|cubes|rows|jumps|triangles|clips)\b|(?:0|[2-9]|\d\d+) (?:ten|one|hundred|group|bill|foot|inch|row|jump|clip)\b(?![-\w]))/;
+  /(?<![\d.,$/])\b(?:1 (?:tens|ones|hundreds|groups|bills|feet|inches|cubes|rows|jumps|triangles|clips|wholes)\b|(?:0|[2-9]|\d\d+) (?:ten|one|hundred|group|bill|foot|inch|row|jump|clip|whole(?= and|[.,;:)]|$))\b(?![-\w]))/;
 
 /** Formatting the copy editor checks (check J). */
 const FORMAT: [RegExp, string][] = [

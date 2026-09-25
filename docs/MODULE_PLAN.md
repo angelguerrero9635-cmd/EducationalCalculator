@@ -50,7 +50,8 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   1,000,000 (a digit's value from its place, and ten times less one place right, as a table);
   multi-digit multiplication (2-digit × 1-digit as an area model: split, part products, sum);
   long division (partial quotients by place, the remainder as the leftover part of a tape);
-  comparing fractions with unlike bottoms (each rewritten over the common bottom, four bars).
+  comparing fractions with unlike bottoms (each rewritten over the common bottom, four bars);
+  adding like fractions (add the tops, the sum as wholes and parts on a fraction line).
   New picture: area model. New engine rule: a check-only relation (`constraint`).
 - **Section 2, Grade 3.** 14 skill modules (area was a pilot; patterns in the tables,
   multiplying by multiples of 10, and measuring with line plots were added to the taxonomy

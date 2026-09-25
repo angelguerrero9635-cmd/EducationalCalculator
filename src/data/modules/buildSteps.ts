@@ -98,6 +98,7 @@ const SINGULAR: Record<string, string> = {
 
 /** Count words that take the singular after 1 ("1 ten", "1 row"), and never after "$1". */
 const COUNT_WORDS: Record<string, string> = {
+  wholes: 'whole',
   tens: 'ten',
   ones: 'one',
   hundreds: 'hundred',

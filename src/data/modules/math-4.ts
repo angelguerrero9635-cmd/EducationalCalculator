@@ -9,7 +9,7 @@ import { formatNumber } from '@/engine/format';
 
 import { div, whole } from './math-k2';
 import type { ModuleDef } from './types';
-import { addStrategy, divideWork, timesWork } from './work';
+import { addStrategy, countList, divideWork, timesWork } from './work';
 
 /** The factors of n in order: 24 → [1, 2, 3, 4, 6, 8, 12, 24]. */
 const factorsOf = (n: number): number[] =>
@@ -569,4 +569,127 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+
+  // ── Adding fractions with like denominators; the sum as a mixed number (4.NF.3) ──
+  {
+    id: 'm.4.add-fractions-like',
+    assumptions: [
+      'Fractions with the same bottom are counted in the same-size parts: add the tops, keep the bottom.',
+      'A sum bigger than 1 can be written as wholes and parts: 7/4 = 1 whole and 3/4.',
+      'Each fraction is at most 1. Bottoms from 2 to 12.',
+    ],
+    variables: [
+      whole('b', 'b', 'Parts in one whole', 2, 12),
+      whole('a', 'a', 'First top', 0, 12),
+      whole('c', 'c', 'Second top', 0, 12),
+      whole('s', 's', 'Sum of the tops', 0, 24),
+      { ...whole('w', 'w', 'Wholes in the sum', 0, 2), derived: true },
+      { ...whole('r', 'r', 'Parts past the last whole', 0, 11), derived: true },
+    ],
+    relations: [
+      {
+        id: 'a ≤ b',
+        constraint: true,
+        display: '{a}/{b} is at most 1',
+        vars: ['a', 'b'],
+        residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'c ≤ b',
+        constraint: true,
+        display: '{c}/{b} is at most 1',
+        vars: ['c', 'b'],
+        residual: (v: Values) => (v.c! <= v.b! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 's = a + c',
+        display: '{a}/{b} + {c}/{b} = {s}/{b}',
+        check: (v: Values) => `${v.a} + ${v.c} = ${v.s}`,
+        // The bottom is in the number sentence but doesn't change the sum of the tops.
+        vars: ['s', 'a', 'c', 'b'],
+        residual: (v: Values) => v.s! - v.a! - v.c!,
+        solve: {
+          s: (v: Values) => v.a! + v.c!,
+          a: (v: Values) => v.s! - v.c!,
+          c: (v: Values) => v.s! - v.a!,
+          b: () => undefined,
+        },
+      },
+      {
+        id: 'w = wholes in s/b',
+        display: '{s}/{b} = {w} wholes and {r}/{b}',
+        check: (v: Values) => `${v.w} × ${v.b} + ${v.r} = ${v.s}`,
+        vars: ['w', 's', 'b', 'r'],
+        residual: (v: Values) => v.w! * v.b! + v.r! - v.s! + (v.r! >= v.b! ? 1 : 0),
+        solve: {
+          w: (v: Values) => (v.r === undefined ? undefined : (v.s! - v.r!) / v.b!),
+          r: (v: Values) => (v.w === undefined ? undefined : v.s! - v.w! * v.b!),
+          s: (v: Values) => v.w! * v.b! + v.r!,
+          b: () => undefined,
+        },
+      },
+      {
+        id: 'w = floor(s/b)',
+        display: 'whole numbers passed by {s}/{b}: {w}',
+        vars: ['w', 's', 'b'],
+        residual: (v: Values) => v.w! - Math.floor(v.s! / v.b!),
+        solve: {
+          w: (v: Values) => Math.floor(v.s! / v.b!),
+          s: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'a ≤ b': {},
+      'c ≤ b': {},
+      's = a + c': {
+        s: {
+          expr: '{a} + {c}',
+          how: 'Add the tops. The bottom stays the same: the parts are the same size.',
+          work: (v) => addStrategy(v.a!, v.c!),
+        },
+        a: { expr: '{s} − {c}', how: 'Take the second top away from the sum of the tops.' },
+        c: { expr: '{s} − {a}', how: 'Take the first top away from the sum of the tops.' },
+      },
+      'w = floor(s/b)': {
+        w: {
+          expr: 'wholes in {s} parts of {b}',
+          how: 'Every full set of parts makes 1 whole. Count the full sets in the sum.',
+          work: (v) =>
+            v.w! > 0
+              ? [
+                  `Count by ${v.b}s: ${countList(0, v.b!, v.w!)} → ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`,
+                ]
+              : [`${v.s} is less than ${v.b}, so the sum is less than 1 whole.`],
+        },
+      },
+      'w = wholes in s/b': {
+        r: {
+          expr: '{s} − {w} × {b}',
+          how: 'Take away the parts that make wholes. The rest are the parts past the last whole.',
+          work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.s} − ${v.w! * v.b!} = ${v.r}`],
+          note: (v) =>
+            v.w! > 0
+              ? `(${v.s}/${v.b} = ${v.w} ${v.w === 1 ? 'whole' : 'wholes'} and ${v.r}/${v.b})`
+              : '',
+        },
+        w: {
+          expr: '({s} − {r}) ÷ {b}',
+          how: 'Take away the parts left over. Share the rest into wholes.',
+          work: (v) => [`${v.s} − ${v.r} = ${v.s! - v.r!}`, ...divideWork(v.s! - v.r!, v.b!)],
+        },
+        s: {
+          expr: '{w} × {b} + {r}',
+          how: 'Each whole has the same number of parts. Add the parts left over.',
+          work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.w! * v.b!} + ${v.r} = ${v.s}`],
+        },
+      },
+    },
+    example: { b: 4, a: 3, c: 2, s: 5, w: 1, r: 1 },
+    startWith: ['b', 'a', 'c'],
+    representation: { kind: 'fractionLine', numerator: 's', denominator: 'b', wholes: 2 },
+  },
 ];
