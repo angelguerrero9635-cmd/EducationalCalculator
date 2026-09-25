@@ -30,7 +30,7 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Pressable
                   key={i}
                   testID={`cell-${i + 1}`}
-                  accessibilityLabel={`${i + 1} percent`}
+                  accessibilityLabel={`${i + 1} of 100`}
                   onPress={() =>
                     calc.set({
                       ...(spec.caption ? rep.pin([spec.caption.whole]) : {}),
@@ -54,7 +54,7 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.chartInk }]}>
-        {`${rep.label(spec.percent)} → ${shaded} of 100 squares`}
+        {`${rep.named(spec.percent)}: ${shaded} of 100 squares shaded`}
       </Text>
       {spec.caption ? (
         <Text style={[styles.caption, { color: c.chartMuted }]}>

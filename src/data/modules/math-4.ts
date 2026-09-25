@@ -817,4 +817,74 @@ export const MATH_4_MODULES: ModuleDef[] = [
     startWith: ['n', 'a', 'b'],
     representation: { kind: 'fractionLine', numerator: 'p', denominator: 'b', wholes: 3 },
   },
+
+  // ── Decimal notation for tenths and hundredths (4.NF.5, 4.NF.6) ──
+  {
+    id: 'm.4.decimals-intro',
+    assumptions: [
+      'A tenth is 10 hundredths: 3/10 = 30/100. The grid has 100 squares, so each square is a hundredth.',
+      'Hundredths are written as a decimal: 34/100 = 0.34. The first place after the point is tenths, the second is hundredths.',
+      'Tap a square on the grid to shade that many hundredths.',
+    ],
+    variables: [
+      whole('t', 't', 'Tenths', 0, 9),
+      whole('u', 'u', 'Extra hundredths', 0, 9),
+      whole('h', 'h', 'Hundredths in all', 0, 99),
+      { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 0.99, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'h = 10 × t + u',
+        display: '10 × {t} + {u} = {h}',
+        vars: ['h', 't', 'u'],
+        residual: (v: Values) => v.h! - 10 * v.t! - v.u!,
+        solve: {
+          h: (v: Values) => 10 * v.t! + v.u!,
+          t: (v: Values) => (v.h! - v.u!) / 10,
+          u: (v: Values) => v.h! - 10 * v.t!,
+        },
+      },
+      {
+        id: 'd = h ÷ 100',
+        display: '{h}/100 = {d}',
+        vars: ['d', 'h'],
+        residual: (v: Values) => v.d! - v.h! / 100,
+        solve: { d: (v: Values) => v.h! / 100, h: (v: Values) => v.d! * 100 },
+      },
+    ],
+    steps: {
+      'h = 10 × t + u': {
+        h: {
+          expr: '10 × {t} + {u}',
+          how: 'Each tenth is 10 hundredths. Add the extra hundredths.',
+          work: (v) => [`10 × ${v.t} = ${10 * v.t!}`, `${10 * v.t!} + ${v.u} = ${v.h}`],
+        },
+        t: {
+          expr: '({h} − {u}) ÷ 10',
+          how: 'Take away the extra hundredths. Every 10 hundredths left is a tenth.',
+          work: (v) => [`${v.h} − ${v.u} = ${v.h! - v.u!}`, `${v.h! - v.u!} ÷ 10 = ${v.t}`],
+        },
+        u: {
+          expr: '{h} − 10 × {t}',
+          how: 'Take away the hundredths that make full tenths.',
+          work: (v) => [`10 × ${v.t} = ${10 * v.t!}`, `${v.h} − ${10 * v.t!} = ${v.u}`],
+        },
+      },
+      'd = h ÷ 100': {
+        d: {
+          expr: '{h} ÷ 100',
+          how: 'Hundredths go two places after the point: the tenths digit, then the hundredths digit.',
+          work: (v) => [`${v.h} hundredths = 0.${String(v.h).padStart(2, '0')}`],
+        },
+        h: {
+          expr: '{d} × 100',
+          how: 'Read the two digits after the point as hundredths.',
+          work: (v) => [`${v.d} = ${v.h} hundredths`],
+        },
+      },
+    },
+    example: { t: 3, u: 4, h: 34, d: 0.34 },
+    startWith: ['t', 'u'],
+    representation: { kind: 'grid100', percent: 'h' },
+  },
 ];
