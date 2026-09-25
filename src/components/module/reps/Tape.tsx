@@ -1,10 +1,9 @@
 import { useRef } from 'react';
-import { StyleSheet } from 'react-native';
 import Svg, { Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
-import { chart, font, space, usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, useFrozen, useRep, Caption } from './common';
@@ -253,5 +252,3 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </>
   );
 }
-
-const styles = StyleSheet.create({});

@@ -1,8 +1,8 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Svg, { Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
-import { chart, font, space, usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, useRep, Caption } from './common';
@@ -136,5 +136,3 @@ export function Rectilinear({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({});

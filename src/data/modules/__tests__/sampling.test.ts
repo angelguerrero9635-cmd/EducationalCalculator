@@ -1,5 +1,5 @@
 /**
- * Variable-sampling harness (check B in .claude/agents/section-reviewer.md).
+ * Variable-sampling harness (the sampled-inputs evidence for .claude/agents/lesson-reviewer.md).
  *
  * Samples random givens, student-style edit sequences and unit choices through the real solver,
  * editing state and step builder, and checks every result against an independent brute-force

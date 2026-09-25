@@ -3,102 +3,10 @@
  * lesson, in Grade 3 math: adding within 1,000, multiplying within 100 and by tens, and
  * comparing by subtracting. Letters appear only as labels next to names.
  */
-import type { Values } from '@/engine/types';
+import { FAHRENHEIT, apart, sum2, sumAll, times, whole } from './helpers';
+import type { ModuleDef } from './types';
 
-import { div, whole } from './math-k2';
-import { sum2, sumAll } from './science-k2';
-import type { ModuleDef, StepText } from './types';
-import { divideWork, subtractStrategy, timesWork } from './work';
-
-/** c = a × b with its two divisions, in Grade 3 words. */
-function times(
-  id: string,
-  [a, b, c]: [string, string, string],
-  [an, bn, cn]: [string, string, string],
-  display = `{${a}} × {${b}} = {${c}}`,
-) {
-  const relation = {
-    id,
-    display,
-    vars: [c, a, b],
-    residual: (v: Values) => v[c]! - v[a]! * v[b]!,
-    solve: {
-      [c]: (v: Values) => v[a]! * v[b]!,
-      [a]: (v: Values) => div(v[c]!, v[b]!),
-      [b]: (v: Values) => div(v[c]!, v[a]!),
-    },
-  };
-  const steps: Record<string, StepText> = {
-    [c]: {
-      expr: `{${a}} × {${b}}`,
-      how: `Multiply the ${an} by the ${bn}.`,
-      work: (v) => timesWork(v[a]!, v[b]!),
-    },
-    [a]: {
-      expr: `{${c}} ÷ {${b}}`,
-      how: `Divide the ${cn} by the ${bn}.`,
-      work: (v) => divideWork(v[c]!, v[b]!),
-    },
-    [b]: {
-      expr: `{${c}} ÷ {${a}}`,
-      how: `Divide the ${cn} by the ${an}.`,
-      work: (v) => divideWork(v[c]!, v[a]!, 'second'),
-    },
-  };
-  return { relation, steps };
-}
-
-/**
- * d = how far apart a and b are (the bigger take away the smaller), whichever is bigger.
- * Knowing d and one value leaves two answers; the solver keeps the one nearest before.
- */
-function apart(
-  d: string,
-  a: string,
-  b: string,
-  [an, bn]: [string, string],
-  [moreWord, lessWord]: [string, string],
-  howDiff = 'Take the smaller number away from the bigger one.',
-) {
-  const relation = {
-    id: `${d} = ${a} and ${b} apart`,
-    display: `{${a}} and {${b}} are {${d}} apart`,
-    check: (v: Values) => `${Math.max(v[a]!, v[b]!)} − ${Math.min(v[a]!, v[b]!)} = ${v[d]}`,
-    vars: [d, a, b],
-    residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),
-    solve: {
-      [d]: (v: Values) => Math.abs(v[a]! - v[b]!),
-      [a]: (v: Values) => [v[b]! + v[d]!, v[b]! - v[d]!].filter((x) => x >= 0),
-      [b]: (v: Values) => [v[a]! - v[d]!, v[a]! + v[d]!].filter((x) => x >= 0),
-    },
-  };
-  const aMore = (v: Values) => v[a]! >= v[b]!;
-  const steps: Record<string, StepText> = {
-    [d]: {
-      expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
-      how: howDiff,
-      work: (v) => subtractStrategy(Math.max(v[a]!, v[b]!), Math.min(v[a]!, v[b]!)),
-      note: (v) => (v[a]! === v[b]! ? '(the same)' : `(the ${aMore(v) ? an : bn} is ${moreWord})`),
-    },
-    [a]: {
-      expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`),
-      how: (v) =>
-        aMore(v)
-          ? `The ${an} is ${moreWord}: add the difference to the ${bn}.`
-          : `The ${an} is ${lessWord}: take the difference away from the ${bn}.`,
-    },
-    [b]: {
-      expr: (v) => (aMore(v) ? `{${a}} − {${d}}` : `{${a}} + {${d}}`),
-      how: (v) =>
-        aMore(v)
-          ? `The ${bn} is ${lessWord}: take the difference away from the ${an}.`
-          : `The ${bn} is ${moreWord}: add the difference to the ${an}.`,
-    },
-  };
-  return { relation, steps };
-}
-
-const F = '°F';
+const F = FAHRENHEIT;
 
 export const SCIENCE_3_MODULES: ModuleDef[] = [
   // ── Balanced and unbalanced forces (3-PS2-1) ──

@@ -87,6 +87,27 @@ forcing an existing one.
   the unit changes (4 cm → 4 in). In those modules, length, area and volume units change together
   (m → m²), and Mixed isn't offered.
 
+## Module layouts
+
+Every module today uses the **calculator** layout: values, relations, a picture, a
+walkthrough. That fits a lesson whose idea is a quantity relationship. When the numbers are
+incidental to what the lesson teaches, forcing them into a calculator gives a page that is true
+but beside the point. The lesson reviewer's check L names the better layout from this catalog;
+the engine builds a layout when a section needs it (log it in `ENGINE_LOG.md`).
+
+| Layout     | Teaches                                                                                    | Page                                                                               | Status   |
+| ---------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | -------- |
+| calculator | a relationship between quantities                                                          | picture, numbers, formulas, walkthrough                                            | built    |
+| sort       | putting things into groups by a property (materials, shapes, changes you can undo)         | cards to drag into labelled bins, a count per bin, one sentence about the property | proposed |
+| sequence   | stages in order and how long each takes (life cycles, a day, a story problem's steps)      | stages as a strip the student orders, each with its span, the total under it       | proposed |
+| compare    | two things side by side and what differs (two habitats, two beaks, two shadows)            | the two pictures with the same scale, one difference line, which is more and why   | proposed |
+| observe    | a quantity recorded over time (plant height by week, temperature by hour, a weather chart) | a table the student fills in, its chart, the pattern in a sentence                 | proposed |
+| explore    | an idea with no honest quantity (what light does through a mirror, why shadows form)       | a picture with a few controls and the assumptions as captions; no numbers          | proposed |
+
+A proposal names the layout, why the calculator misses the lesson, and what the page keeps
+(values, picture) and drops. Until a layout is built, the calculator page stays, with the
+proposal in the review report.
+
 ## Topics without a natural formula
 
 Use the simplest honest quantity model (counts, totals, rates, percentages) so the calculator
@@ -100,7 +121,7 @@ the assumptions and a table or diagram.
    in `standalone` with a reason. These check that each module matches the taxonomy, that the
    example satisfies every formula and range, that every rearrangement agrees with its formula and
    has an explanation, that every input combination reproduces the example, and that the
-   walkthrough balances. Two tests carry the reviewer's own expectations, so a section meets
+   walkthrough balances. Two tests carry the reviewers' own expectations, so a section meets
    them before the review starts:
    - `standards.test.ts` reads everything a student sees (assumptions, names, number
      sentences, the walkthrough from the example, titles and `use` lines) and enforces the
@@ -113,40 +134,31 @@ the assumptions and a table or diagram.
      and the step builder, evaluates every step and check line, and fails on any line it can't
      read: when you write a new phrase or picture kind, teach the harness (`PHRASES`, the
      picture checks) as part of the module.
-2. **AI review:** run the `section-reviewer` agent (`.claude/agents/section-reviewer.md`) on the
-   new or changed modules. It gathers the evidence once (a walkthrough dump, the sampling
-   harness, screenshots and one browser session) and checks every module from eleven points of
-   view:
-   - **A. Accuracy:** re-derives the math, units, ranges and assumptions, and the four
-     standards above (accurate, helpful, concise, the best picture).
-   - **B. Sampled inputs:** runs and extends `src/data/modules/__tests__/sampling.test.ts`
-     (`MODULE_IDS=m.2. SAMPLING_REPORT=1 pnpm test sampling`): random inputs, edit orders and
-     unit choices through the real solver and step builder, and whether the values fit the
-     lesson.
-   - **C. Split or merge:** one idea, one model and one picture per module.
-   - **D. Step-by-step clarity:** no leaps, hidden conversions or answers before the work.
-   - **E. Language:** reading level, concreteness, consistent terms and notation for the grade,
-     including titles and fixed UI text.
-   - **F. Exam coverage:** common test question types, unknowns in every position, a diagram
-     that matches a real item, and pictures that are interactive both ways.
-   - **G. Textbook coverage:** every section of widely used curricula has a page.
-   - **H. Classroom use** and **I. Tutoring:** a short lesson plan and a one-on-one session,
-     and everything that would stall either.
-   - **J. Layout and formatting:** spacing, overlaps, tap targets, dark mode and number, unit
-     and punctuation formatting.
-   - **K. Plain language:** everything the student reads, inputs and pictures included: no
-     letters for numbers in K–2, letters in Grades 3–5 only as labels, no jargon or shorthand
-     the grade doesn't know, a rule said as a sentence where students learn it that way, and
-     the number sentence kept where the grade writes it.
-
-   It fixes small layout, formatting and harness issues itself and reports the rest in one
-   report grouped by skill.
-
-3. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
+2. **Evidence, gathered once with no model involved:**
+   `pnpm build:web && node scripts/review-evidence.mjs --prefix <ids or prefixes>`. It writes
+   `.review/dump.txt` (every module's definition and the walkthroughs a student reads),
+   `.review/harness.txt`, `.review/shots/` (screenshots with the layout checks) and
+   `.review/evidence.md` (the index and everything the scripts flagged).
+3. **Two reviewers, in parallel, each reading only its own evidence:**
+   - `lesson-reviewer` (`.claude/agents/lesson-reviewer.md`) reads the dump and the harness
+     report: accuracy, **layout fit** (is a calculator how this lesson is taught? if not, which
+     layout from the catalog above), split or merge, step clarity, language, plain language,
+     exam and curriculum coverage. It fixes harness gaps and text formatting itself.
+   - `page-reviewer` (`.claude/agents/page-reviewer.md`) reads the screenshots and runs one
+     browser session: classroom use, tutoring, layout, formatting and the picture's
+     interaction. It fixes small layout and formatting issues itself.
+     Each keeps resumable notes in `.review/` and ends its report with an **Engine** section and
+     a **Reviewer** section.
+4. **Fix or answer every finding.** Record findings you intentionally don't act on, with the
    reason, in the pull request or commit message.
-4. **Visual check:** open each module and confirm the representation reads well at phone width, in
-   light and dark mode.
+5. **Improve the engine.** Turn each finding the engine or its tests could have prevented into
+   a shared helper, a test, a harness check or a picture feature before the next section, and
+   log it in `docs/ENGINE_LOG.md`.
+6. **Improve the reviewers.** Take out of the reviewers' instructions what is now automated,
+   add what they missed or over-reported, add missing evidence to `review-evidence.mjs`, and
+   log it with the review's token cost in `docs/REVIEW_LOG.md`.
+7. **Visual check:** open each module and confirm the representation reads well at phone width,
+   in light and dark mode.
 
-The reviewer keeps running notes in `.review/section-reviewer.md` (git-ignored), so a review
-that is interrupted can continue. It uses `scripts/review-shots.mjs` and the Playwright installed
-in the dev container (`NODE_PATH=$(npm root -g)`), not a project dependency.
+The reviewers use `scripts/review-shots.mjs` and the Playwright installed in the dev container
+(`NODE_PATH=$(npm root -g)`), not a project dependency.

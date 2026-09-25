@@ -113,7 +113,9 @@ src/
   theme.ts                    The entire look: palettes, font, type scale, spacing, chart styling
 docs/MODULE_GUIDE.md          Content standards and the review process for modules
 docs/MODULE_PLAN.md           Sections for writing the remaining modules, with status
-.claude/agents/section-reviewer.md  AI reviewer for modules (accuracy, sampling, steps, language, coverage, layout)
+.claude/agents/                lesson-reviewer (text) and page-reviewer (screens): the AI reviewers for modules
+scripts/review-evidence.mjs   Gathers the review evidence (dump, harness, screenshots) with no model involved
+docs/ENGINE_LOG.md, REVIEW_LOG.md  What each review taught the engine and the reviewers
 TAXONOMY_ISSUES.md            Open and resolved taxonomy problems (update taxonomy.ts, then log the change)
 vercel.json                   Website build and hosting settings
 ```
@@ -203,7 +205,7 @@ key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for tit
    - **Representation:** choose one of `numberLine`, `bars`, `rectangle`, `grid100`, `circle`,
      `rightTriangle`, `plot`, `table` or `force`.
 2. Follow the standards and the review process in `docs/MODULE_GUIDE.md`: automated tests plus
-   a review by the `section-reviewer` agent. Run `pnpm test`. For every module, the
+   a review by the `lesson-reviewer` and `page-reviewer` agents. Run `pnpm test`. For every module, the
    tests check that:
    - it matches a taxonomy skill or topic;
    - the example satisfies every relation and range;

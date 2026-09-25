@@ -1,6 +1,6 @@
 /**
  * The reviewer's mechanical expectations, enforced on every module (checks D, E, J and K in
- * .claude/agents/section-reviewer.md): reading level, notation the grade has met, no
+ * .claude/agents/lesson-reviewer.md): reading level, notation the grade has met, no
  * shorthand or jargon, formatting, and a walkthrough that reads the way the grade reads.
  * Everything a student sees is checked: assumptions, names, number sentences, the
  * step-by-step from the example, titles and "use" lines.

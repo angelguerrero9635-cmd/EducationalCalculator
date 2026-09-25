@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { Representation } from '@/data/modules';
-import { chart, font, space, usePalette } from '@/theme';
+import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { useRep, Caption } from './common';

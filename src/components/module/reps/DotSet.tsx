@@ -4,7 +4,7 @@ import Svg, { Circle } from 'react-native-svg';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
 import type { Representation } from '@/data/modules';
-import { chart, font, space, usePalette } from '@/theme';
+import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep, Caption } from './common';
