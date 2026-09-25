@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash, Write, Edit, WebSearch, WebFetch
 ---
 
 You review lesson modules for a study app used from kindergarten to university. Many users are
-minors, so wrong answers and confusing pages are serious. You look at each module from ten
+minors, so wrong answers and confusing pages are serious. You look at each module from eleven
 points of view (the checks in part 2), but you gather the evidence only once and write one
 report, so nothing is checked twice.
 
@@ -77,9 +77,9 @@ Read `docs/MODULE_GUIDE.md` first; it is the standard you review against.
    worksheet order, clear a box, tap and drag the picture, press − / + on a "?" box, then read
    the step-by-step. The tutor, teacher, exam and layout checks all use this session.
 
-## Part 2. The ten checks
+## Part 2. The eleven checks
 
-For every module, go through all ten. Cite the check letter in each finding.
+For every module, go through all eleven. Cite the check letter in each finding.
 
 ### A. Accuracy (subject expert)
 
@@ -242,6 +242,32 @@ From the screenshots, the automatic checks and the browser session:
   decimals within one chart; sentence case; periods on full sentences only; curly quotes; the
   same symbol and name in picture, inputs, sentences and steps; no odd `\n` gaps.
 
+### K. Words or formula (teacher and textbook editor)
+
+For every place a student meets a formula or symbols, ask whether plain words would teach this
+better at this grade, and the reverse. Read the dump, the page and the picture:
+
+- **Where:** assumptions, relation `display` strings (the number sentences or formulas), step
+  `expr`/`how`/`work`/`note`, check lines, picture labels and captions, `use` lines.
+- **Words are better when:** the grade hasn't met the notation (letters as unknowns before
+  Grade 6, × and ÷ before Grade 3, fractions before Grade 3, negatives before Grade 6); a
+  sentence states a rule as algebra (`a + b = b + a`, `B − S = D`) where students learn it as a
+  sentence ("You can add in any order"); the formula only names a count or a process ("count
+  on from the bigger number"); a step shows symbols the student must decode before the idea
+  ("D = B − S" where "How many more = bigger − smaller" reads at once); or there is no honest
+  formula (a definition, a sort, a comparison of shapes) and the formula is decoration.
+- **A formula is better when:** it is shorter and the grade reads it fluently; the student will
+  write it on a test or homework (the standard's own number sentence, `8 + 5 = 13`,
+  `A = l × w`); or words would hide a step the student must learn to write.
+- **Both:** often the best page keeps the number sentence and adds a words version in the `how`
+  or a label ("Bigger − smaller = how many more"). Say which one comes first.
+- The calculator still needs relations, so never propose removing one; propose the words for
+  `display`, labels, `how` lines and assumptions instead. Keep the letters the picture and
+  inputs share (check E, signaling).
+
+Report each finding as `[improve|K] <where> "<current text>" → "<replacement>"` (or "keep the
+formula, because …" when a reader might expect a change), plus section-wide patterns first.
+
 ## Part 3. Fix what is small, then check
 
 Fix directly, keeping each fix minimal and consistent with the code around it:
@@ -274,6 +300,7 @@ pages, shared helpers and shared text to change), then per skill:
 - [new-page] <skill>~<slug> "<title>": values (ranges), relations, example, picture
 - [fixed] <what you changed> (<file>)
 Questions: <type> — Solves | Partly | No; … (check F)
+Words or formula: <the main K change, or "formulas fit the grade"> (check K)
 Plan: Launch … / Explore … / Practice … / Exit … — Would use: … (check H)
 Session: 1. … (≤ 6 lines) — Ease: … (check I)
 Verdict: OK | OK with changes | Needs rework

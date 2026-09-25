@@ -97,7 +97,7 @@ the assumptions and a table or diagram.
    walkthrough balances.
 2. **AI review:** run the `section-reviewer` agent (`.claude/agents/section-reviewer.md`) on the
    new or changed modules. It gathers the evidence once (a walkthrough dump, the sampling
-   harness, screenshots and one browser session) and checks every module from ten points of
+   harness, screenshots and one browser session) and checks every module from eleven points of
    view:
    - **A. Accuracy:** re-derives the math, units, ranges and assumptions, and the four
      standards above (accurate, helpful, concise, the best picture).
@@ -116,6 +116,9 @@ the assumptions and a table or diagram.
      and everything that would stall either.
    - **J. Layout and formatting:** spacing, overlaps, tap targets, dark mode and number, unit
      and punctuation formatting.
+   - **K. Words or formula:** where plain words teach better than a formula at the grade (a
+     rule said as a sentence, no letters or symbols the grade hasn't met), and where the number
+     sentence is the better choice.
 
    It fixes small layout, formatting and harness issues itself and reports the rest in one
    report grouped by skill.
