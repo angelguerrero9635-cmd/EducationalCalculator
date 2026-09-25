@@ -33,14 +33,18 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 
 ## Section notes
 
-- **Section 2, Grade 3.** 11 skill modules (area was a pilot) plus 15 problem types:
-  arrays and equal jumps (multiply and divide), change the order, add then share equally,
-  round to the nearest hundred, fractions of a shape, compare with the same denominator,
-  elapsed time, liquid volume in liters, equal bags, count unit squares, split a rectangle,
-  a missing side, same perimeter with different area, and a picture graph with a key. New
-  pictures: rounding line, fraction line, fraction bars, elapsed-time line, scale, measuring
-  jug and quadrilateral; the array can split a factor or show the turned array, and the
-  rectangle can show its perimeter.
+- **Section 2, Grade 3.** 14 skill modules (area was a pilot; patterns in the tables,
+  multiplying by multiples of 10, and measuring with line plots were added to the taxonomy
+  after the review) plus 22 problem types: arrays and equal jumps (multiply and divide),
+  change the order, group the factors, multiply then add, add then share equally, round to the
+  nearest hundred, estimate a sum, fractions of a shape, whole numbers as fractions, compare
+  with the same denominator or the same numerator, elapsed time, liquid volume in liters,
+  equal bags, count unit squares, split a rectangle, shapes made of rectangles, a missing side,
+  same perimeter with different area, a picture graph with a key, and reading a ruler to the
+  quarter inch. New pictures: rounding line, fraction line, fraction bars, elapsed-time line,
+  scale, measuring jug, quadrilateral and a two-rectangle shape; the array can split a factor
+  or show the turned array, the rectangle can show its perimeter, the tape can mark equal
+  groups, and the line plot can label quarter-inch marks.
 
 - **Section 1 (Math K–2).** 32 skill modules (including the two new Kindergarten skills,
   position words and putting shapes together) plus 32 problem-type modules (`<skill>~<slug>`),

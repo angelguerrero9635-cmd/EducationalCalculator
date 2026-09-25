@@ -7,7 +7,7 @@ import type { Values } from '@/engine/types';
 
 import { div, whole } from './math-k2';
 import type { ModuleDef, StepText } from './types';
-import { addStrategy, divideWork, subtractStrategy, timesWork } from './work';
+import { addStrategy, countList, divideWork, subtractStrategy, timesWork } from './work';
 
 // ─── Shared pieces ──────────────────────────────────────────────────────────
 
@@ -338,6 +338,64 @@ export const MATH_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  // ── Patterns in the addition and multiplication tables (3.OA.9) ──
+  (() => {
+    const cell = times('v = k × n', ['k', 'n', 'v'], ['row', 'column', 'number in the table']);
+    const next = plus('w = v + k', ['v', 'k', 'w'], ['number in the table', 'row', 'next number']);
+    return {
+      id: 'm.3.arithmetic-patterns',
+      pictureLabels: ['w', 'e'],
+      assumptions: [
+        'Each row of the times table counts by its row number: the 4s row is 4, 8, 12, 16, …',
+        'One step along the row adds the row number again.',
+        'An even row (2, 4, 6, 8, 10) has only even numbers. An odd row switches odd, even, odd, …',
+      ],
+      variables: [
+        whole('k', 'k', 'Row', 1, 10),
+        whole('n', 'n', 'Column', 1, 10),
+        whole('v', 'v', 'Number in the table', 1, 100),
+        whole('w', 'w', 'Next number in the row', 2, 110),
+        whole('e', 'e', 'Left over after pairs', 0, 1),
+      ],
+      relations: [
+        cell.relation,
+        { ...next.relation, display: '{v} + {k} = {w}' },
+        {
+          id: 'e = v even or odd',
+          display: '{v} in pairs leaves {e} over',
+          vars: ['e', 'v'],
+          residual: (v) => v.e! - (v.v! % 2),
+          // Every even number leaves 0: the number can't be found from it.
+          solve: { e: (v) => v.v! % 2, v: () => undefined },
+        },
+      ],
+      steps: {
+        'v = k × n': cell.steps,
+        'w = v + k': {
+          ...next.steps,
+          w: {
+            expr: '{v} + {k}',
+            how: 'The next number in the row is the row number more.',
+            work: (v) => addStrategy(v.v!, v.k!),
+          },
+        },
+        'e = v even or odd': {
+          e: {
+            expr: '{v} shared into pairs',
+            how: 'Even numbers make pairs with none left over; odd numbers leave 1.',
+            work: (v) => [
+              `${v.v} ends in ${v.v! % 10}: ${v.v! % 2 === 0 ? 'even' : 'odd'}`,
+              ...(v.k! % 2 === 0 ? [`${v.k} is even, so every number in its row is even.`] : []),
+            ],
+          },
+        },
+      },
+      example: { k: 4, n: 6, v: 24, w: 28, e: 0 },
+      startWith: ['k', 'n'],
+      representation: { kind: 'skipCount', step: 'k', count: 'n', total: 'v' },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Two-step word problems (3.OA.8) ──
   (() => {
     const packs = times('m = g × k', ['g', 'k', 'm'], ['packs', 'number in each pack', 'total']);
@@ -553,6 +611,65 @@ export const MATH_3_MODULES: ModuleDef[] = [
         total: 's',
         caption: 'Estimate: {x} + {y} = {e}. Exact: {a} + {b} = {s}.',
       },
+    } satisfies ModuleDef;
+  })(),
+
+  // ── Multiply by multiples of 10 (3.NBT.3) ──
+  (() => {
+    const tensTimes = times('p = a × t', ['a', 't', 'p'], ['number', 'tens', 'tens in the answer']);
+    return {
+      id: 'm.3.multiply-by-tens',
+      pictureLabels: ['t', 'p'],
+      assumptions: [
+        'A multiple of 10 is a number of tens: 80 is 8 tens.',
+        'Multiply by the tens, then write the tens as a number: 9 × 8 tens = 72 tens = 720.',
+      ],
+      variables: [
+        whole('a', 'a', 'One-digit number', 0, 9),
+        { ...whole('m', 'm', 'Multiple of 10', 10, 90), step: 10, multipleOf: 10 },
+        whole('t', 't', 'Tens in it', 1, 9),
+        whole('p', 'p', 'Tens in the answer', 0, 81),
+        { ...whole('n', 'n', 'Product', 0, 810), step: 10, multipleOf: 10 },
+      ],
+      relations: [
+        {
+          id: 'm = t tens',
+          display: '{m} is {t} tens',
+          vars: ['m', 't'],
+          residual: (v) => v.m! - 10 * v.t!,
+          solve: { m: (v) => 10 * v.t!, t: (v) => div(v.m!, 10) },
+        },
+        tensTimes.relation,
+        {
+          id: 'n = p tens',
+          display: '{p} tens = {n}',
+          vars: ['n', 'p'],
+          residual: (v) => v.n! - 10 * v.p!,
+          solve: { n: (v) => 10 * v.p!, p: (v) => div(v.n!, 10) },
+        },
+      ],
+      steps: {
+        'm = t tens': {
+          t: {
+            expr: '{m} ÷ 10',
+            how: 'Count the tens in the multiple of 10.',
+            work: (v) => [`Count by 10s: ${countList(0, 10, v.t!)} → ${v.t} tens`],
+          },
+          m: { expr: '{t} × 10', how: 'Write the tens as a number: put a 0 after it.' },
+        },
+        'p = a × t': tensTimes.steps,
+        'n = p tens': {
+          n: {
+            expr: '{p} × 10',
+            how: 'Write the tens as a number: put a 0 after the number of tens.',
+            work: (v) => [`${v.p} tens = ${v.n}`],
+          },
+          p: { expr: '{n} ÷ 10', how: 'Take the 0 off: that is the number of tens.' },
+        },
+      },
+      example: { a: 4, m: 60, t: 6, p: 24, n: 240 },
+      startWith: ['a', 'm'],
+      representation: { kind: 'skipCount', step: 'm', count: 'a', total: 'n' },
     } satisfies ModuleDef;
   })(),
 ];

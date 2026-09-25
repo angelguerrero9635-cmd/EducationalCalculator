@@ -114,7 +114,7 @@ src/
 docs/MODULE_GUIDE.md          Content standards and the review process for modules
 docs/MODULE_PLAN.md           Sections for writing the remaining modules, with status
 .claude/agents/section-reviewer.md  AI reviewer for modules (accuracy, sampling, steps, language, coverage, layout)
-TAXONOMY_ISSUES.md            Data problems found (taxonomy.ts is never patched directly)
+TAXONOMY_ISSUES.md            Open and resolved taxonomy problems (update taxonomy.ts, then log the change)
 vercel.json                   Website build and hosting settings
 ```
 

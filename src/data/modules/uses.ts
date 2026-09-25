@@ -90,6 +90,8 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
   'm.3.perimeter~missing-side': 'Use this when you know the perimeter and every side but one.',
   'm.3.perimeter~same-perimeter':
     'Use this to compare rectangles with the same perimeter but different areas.',
+  'm.3.measure-line-plots~quarter-inch':
+    'Use this to read a length on a ruler marked in halves or quarters of an inch.',
   'm.3.scaled-graphs~picture-graph':
     'Use this for picture graphs where each picture stands for 2, 5 or 10.',
 };

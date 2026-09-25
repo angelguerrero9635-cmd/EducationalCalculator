@@ -38,7 +38,7 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Pressable
                   key={i}
                   testID={`x-${p.var}-${i + 1}`}
-                  accessibilityLabel={`${at(p.at)}${spec.unit ? ` ${spec.unit}` : ''}: ${i + 1}`}
+                  accessibilityLabel={`${p.label ?? at(p.at)}${spec.unit ? ` ${spec.unit}` : ''}: ${i + 1}`}
                   onPress={() =>
                     calc.set({
                       ...rep.pin(ids.filter((id) => id !== p.var)),
@@ -65,7 +65,7 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {spec.points.map((p) => (
           <View key={p.var} style={styles.tick}>
             <View style={[styles.tickMark, { backgroundColor: c.chartInk }]} />
-            <Text style={[styles.label, { color: c.text }]}>{at(p.at)}</Text>
+            <Text style={[styles.label, { color: c.text }]}>{p.label ?? at(p.at)}</Text>
             <Text style={[styles.count, { color: c.textMuted }]}>{rep.label(p.var)}</Text>
           </View>
         ))}

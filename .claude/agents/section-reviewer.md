@@ -17,8 +17,9 @@ Read `docs/MODULE_GUIDE.md` first; it is the standard you review against.
   type `<skill id>~<slug>` (its own page, with a `title` and a `use` line in `uses.ts`), or
   `<courseId>#<topicIndex>` for a college topic. Relations have `solve` rearrangements; `steps`
   give each rearrangement an `expr`, a `how`, optional `work` lines and a `note`.
-- **Skills, grades, standards, course topics:** `src/data/taxonomy.ts`. Only edit it when the
-  owner asks; otherwise propose changes for `TAXONOMY_ISSUES.md`.
+- **Skills, grades, standards, course topics:** `src/data/taxonomy.ts`. Don't edit it yourself:
+  propose changes (missing skills, titles, order) for the main session to apply and log in
+  `TAXONOMY_ISSUES.md`.
 - **Solver and editing state:** `src/engine/solve.ts` (newest input wins) and
   `src/engine/state.ts` (what the UI calls when a student types). Units:
   `src/engine/unitContext.ts`.

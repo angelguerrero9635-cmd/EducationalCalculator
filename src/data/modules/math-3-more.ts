@@ -6,7 +6,16 @@ import type { Values } from '@/engine/types';
 
 import { div, whole } from './math-k2';
 import type { ModuleDef, StepText } from './types';
-import { addAll, addStrategy, countList, divideWork, subtractStrategy, timesWork } from './work';
+import {
+  addAll,
+  addStrategy,
+  countList,
+  divideWork,
+  missingPart,
+  subtractStrategy,
+  sumSteps,
+  timesWork,
+} from './work';
 
 const clock = (h: number, m: number) => `${h}:${String(m).padStart(2, '0')}`;
 
@@ -1251,6 +1260,158 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+
+  // ── Measure to the half and quarter inch; line plots (3.MD.4) ──
+  (() => {
+    const xs = ['x0', 'x1', 'x2', 'x3', 'x4'];
+    const marks = ['2', '2 1/4', '2 1/2', '2 3/4', '3'];
+    const long = ['x2', 'x3', 'x4'];
+    const rest = (ids: string[], id: string) => ids.filter((x) => x !== id);
+    const sumRelation = (id: string, total: string, parts: string[]) => ({
+      id,
+      display: `${parts.map((x) => `{${x}}`).join(' + ')} = {${total}}`,
+      vars: [total, ...parts],
+      residual: (v: Values) => v[total]! - parts.reduce((t, x) => t + v[x]!, 0),
+      solve: Object.fromEntries([
+        [total, (v: Values) => parts.reduce((t, x) => t + v[x]!, 0)],
+        ...parts.map((x) => [
+          x,
+          (v: Values) => v[total]! - rest(parts, x).reduce((t, y) => t + v[y]!, 0),
+        ]),
+      ]),
+    });
+    const sumSteps_ = (total: string, parts: string[], how: string) =>
+      Object.fromEntries([
+        [
+          total,
+          {
+            expr: parts.map((x) => `{${x}}`).join(' + '),
+            how,
+            work: (v: Values) => sumSteps(parts.map((x) => v[x]!)),
+          },
+        ],
+        ...parts.map((x) => [
+          x,
+          {
+            expr: `{${total}} − ${rest(parts, x)
+              .map((y) => `{${y}}`)
+              .join(' − ')}`,
+            how: 'Take the X’s at the other marks away from the total.',
+            work: (v: Values) =>
+              missingPart(
+                v[total]!,
+                rest(parts, x).map((y) => v[y]!),
+              ),
+          },
+        ]),
+      ]) as Record<string, StepText>;
+    return {
+      id: 'm.3.measure-line-plots',
+      pictureLabels: ['N', 'L'],
+      assumptions: [
+        'Each ribbon is measured to the nearest quarter inch, between 2 and 3 inches.',
+        'Put one X above the line plot for each ribbon, at its length.',
+        '2 1/2 inches or longer means the X’s at 2 1/2, 2 3/4 and 3.',
+      ],
+      variables: [
+        ...xs.map((id, i) => whole(id, `x${'₀₁₂₃₄'[i]}`, `At ${marks[i]} in`, 0, 10)),
+        whole('N', 'N', 'Ribbons measured', 0, 50),
+        whole('L', 'L', '2 1/2 in or longer', 0, 30),
+      ],
+      relations: [sumRelation('N = all X’s', 'N', xs), sumRelation('L = long X’s', 'L', long)],
+      steps: {
+        'N = all X’s': sumSteps_('N', xs, 'Count every X on the line plot.'),
+        'L = long X’s': sumSteps_('L', long, 'Count the X’s at 2 1/2 inches and past it.'),
+      },
+      example: { x0: 1, x1: 3, x2: 4, x3: 2, x4: 1, N: 11, L: 7 },
+      startWith: xs,
+      representation: {
+        kind: 'linePlot',
+        unit: 'in',
+        points: xs.map((id, i) => ({ var: id, at: 2 + i / 4, label: marks[i] })),
+      },
+    } satisfies ModuleDef;
+  })(),
+  {
+    id: 'm.3.measure-line-plots~quarter-inch',
+    title: 'Read a ruler to the quarter inch',
+    pictureLabels: ['w', 'r'],
+    assumptions: [
+      'Each inch on the ruler is split into equal marks: 2 for halves, 4 for quarters.',
+      'Count the marks from 0 to the end of the object.',
+      'Every full set of marks is 1 inch; the marks left over are the fraction of an inch.',
+    ],
+    variables: [
+      whole('a', 'a', 'Marks from 0', 0, 24),
+      { ...whole('b', 'b', 'Marks in one inch', 2, 4), step: 2, multipleOf: 2 },
+      whole('w', 'w', 'Whole inches', 0, 6),
+      whole('r', 'r', 'Marks past the last inch', 0, 3),
+    ],
+    relations: [
+      {
+        id: 'w = inches in a marks',
+        display: '{a} marks of 1/{b} inch pass {w} whole inches',
+        vars: ['w', 'a', 'b'],
+        residual: (v) => v.w! - Math.floor(v.a! / v.b!),
+        // Many lengths pass the same whole inches: the marks can't be found from it.
+        solve: { w: (v) => Math.floor(v.a! / v.b!), a: () => undefined, b: () => undefined },
+      },
+      {
+        id: 'a = w inches and r marks',
+        display: '{a}/{b} inch = {w} inches and {r}/{b} inch',
+        vars: ['a', 'w', 'b', 'r'],
+        residual: (v) => v.a! - v.w! * v.b! - v.r! + (v.r! >= v.b! ? 1 : 0),
+        solve: {
+          a: (v) => (v.r! < v.b! ? v.w! * v.b! + v.r! : undefined),
+          r: (v) => {
+            const r = v.a! - v.w! * v.b!;
+            return r >= 0 && r < v.b! ? r : undefined;
+          },
+          w: (v) => (v.r! < v.b! ? div(v.a! - v.r!, v.b!) : undefined),
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'w = inches in a marks': {
+        w: {
+          expr: 'whole inches in {a} marks of 1/{b}',
+          how: 'Every full set of marks makes 1 inch. Count the full sets.',
+          work: (v) =>
+            v.w! > 0
+              ? [`Count by ${v.b}s: ${countList(0, v.b!, v.w!)} → ${v.w} inches`]
+              : [`${v.a} marks is less than ${v.b}, so not a whole inch yet.`],
+        },
+      },
+      'a = w inches and r marks': {
+        a: {
+          expr: '{w} × {b} + {r}',
+          how: 'Each inch has the same number of marks. Add the marks left over.',
+          work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.w! * v.b!} + ${v.r} = ${v.a}`],
+        },
+        r: {
+          expr: '{a} − {w} × {b}',
+          how: 'Take away the marks that make whole inches. The rest are left over.',
+          work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.a} − ${v.w! * v.b!} = ${v.r}`],
+          note: (v) => (v.b === 4 && v.r === 2 ? '(2/4 inch is 1/2 inch)' : ''),
+        },
+        w: {
+          expr: '({a} − {r}) ÷ {b}',
+          how: 'Take away the marks left over. Share the rest into inches.',
+          work: (v) => [`${v.a} − ${v.r} = ${v.a! - v.r!}`, ...divideWork(v.a! - v.r!, v.b!)],
+        },
+      },
+    },
+    example: { a: 9, b: 4, w: 2, r: 1 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'a',
+      denominator: 'b',
+      wholes: 3,
+      unit: { one: 'inch', many: 'inches' },
+    },
+  },
 
   // ── Quadrilaterals (3.G.1) ──
   {

@@ -4,9 +4,11 @@
  */
 import {
   COURSES,
+  DIVISION_TITLES,
   GRADES,
   HE_FIELDS,
   SKILLS,
+  SUBJECT_TITLES,
   coursesFor,
   getNode,
   gradeLabel,
@@ -37,12 +39,10 @@ export const isSubject = (value: string): value is K12Subject =>
 export const isDivision = (value: string): value is Division =>
   (DIVISIONS as readonly string[]).includes(value);
 
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
 /** "math" → "Math", "science" → "Science". */
-export const subjectLabel = (subject: K12Subject) => capitalize(subject);
+export const subjectLabel = (subject: K12Subject) => SUBJECT_TITLES[subject];
 /** "engineering" → "Engineering". */
-export const divisionLabel = (division: Division) => capitalize(division);
+export const divisionLabel = (division: Division) => DIVISION_TITLES[division];
 
 export const getField = (division: Division, fieldId: string): Field | undefined =>
   HE_FIELDS[division].find((f) => f.id === fieldId);
@@ -283,7 +283,7 @@ export function divisionView(division: Division): DivisionView {
 export interface RefreshRow {
   id: string;
   title: string;
-  /** refreshLinks() label, plus the subject for skills (e.g. "Refresh: Grade 8 · Math"). */
+  /** refreshLinks() label, e.g. "Refresh: Grade 8 · Math". */
   label: string;
   route: RouteTarget;
 }
@@ -293,8 +293,7 @@ export function refreshRows(id: string): RefreshRow[] {
     const target = getNode(link.id);
     const route = nodeRoute(link.id);
     if (!target || !route) return [];
-    const label = isSkill(target) ? `${link.label} · ${subjectLabel(target.subject)}` : link.label;
-    return [{ id: link.id, title: link.title, label, route }];
+    return [{ id: link.id, title: link.title, label: link.label, route }];
   });
 }
 

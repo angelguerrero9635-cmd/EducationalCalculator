@@ -146,17 +146,24 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Text style={[styles.caption, { color: c.text }]}>
         {known
           ? `${a}/${b}: ${a} ${a === 1 ? 'jump' : 'jumps'} of 1/${b} from 0.` +
-            (wholes > 0
-              ? left > 0
-                ? ` That is ${wholes} ${wholes === 1 ? 'whole' : 'wholes'} and ${left}/${b} more.`
-                : ` That is exactly ${wholes}: ${a}/${b} = ${wholes}.`
-              : '')
+            (spec.unit
+              ? ` That is ${wholes > 0 ? `${wholes} ${wholes === 1 ? spec.unit.one : spec.unit.many}` : ''}${wholes > 0 && left > 0 ? ' and ' : ''}${left > 0 || wholes === 0 ? `${left}/${b} ${spec.unit.one}` : ''}.`
+              : wholes > 0
+                ? left > 0
+                  ? ` That is ${wholes} ${wholes === 1 ? 'whole' : 'wholes'} and ${left}/${b} more.`
+                  : ` That is exactly ${wholes}: ${a}/${b} = ${wholes}.`
+                : '')
           : 'Type the parts counted and the parts in one whole.'}
       </Text>
       <Steppers
         calc={calc}
         items={[
-          { var: spec.denominator, steps: [1], pin: [spec.numerator] },
+          {
+            var: spec.denominator,
+            // Halves and quarters of an inch step 2 ↔ 4; plain fractions step by 1.
+            steps: [rep.variable(spec.denominator).step ?? 1],
+            pin: [spec.numerator],
+          },
           { var: spec.numerator, steps: [1], pin: [spec.denominator] },
         ]}
       />

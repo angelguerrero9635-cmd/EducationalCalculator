@@ -19,6 +19,14 @@ export type Grade = (typeof GRADES)[number];
 export type K12Subject = "math" | "science";
 export type Division = "math" | "science" | "engineering";
 
+/** Display titles for K–12 subjects and higher-ed divisions. */
+export const SUBJECT_TITLES: Record<K12Subject, string> = { math: "Math", science: "Science" };
+export const DIVISION_TITLES: Record<Division, string> = {
+  math: "Math",
+  science: "Science",
+  engineering: "Engineering",
+};
+
 export interface Skill {
   id: string; // m.<grade>.<slug> | s.<grade>.<slug>
   title: string;
@@ -32,6 +40,7 @@ export interface Course {
   id: string; // he.<field|engineering>.<slug>
   title: string;
   division: Division;
+  /** Cross-listed fields; the first is the course's home field and leads in labels. */
   fields: string[];
   prereqs: string[];
   topics: string[];
@@ -115,23 +124,26 @@ const MATH: Record<Grade, Row[]> = {
   ],
   "3": [
     ["multiply-divide-100", "Multiply and divide within 100", OA, ["m.2.arrays", "m.2.skip-count"]],
-    ["multiplication-properties", "Properties of multiplication (incl. distributive)", OA, ["m.1.addition-properties"]],
+    ["multiplication-properties", "Properties of multiplication: order, grouping and breaking apart", OA, ["m.1.addition-properties"]],
     ["two-step-problems", "Two-step word problems with all four operations", OA],
+    ["arithmetic-patterns", "Patterns in addition and multiplication tables", OA, ["m.2.even-odd"]],
     ["rounding", "Round to the nearest 10 or 100", NBT, ["m.2.place-value-1000"]],
+    ["multiply-by-tens", "Multiply by multiples of 10 (like 9 × 80)", NBT, ["m.2.skip-count"]],
     ["fractions-number-line", "Unit fractions and fractions on a number line", NF, ["m.2.thirds-polygons"]],
     ["compare-fractions", "Equivalent fractions and comparing fractions", NF],
     ["elapsed-time", "Time to the minute and elapsed time", MD, ["m.2.time-5-min"]],
     ["mass-liquid-volume", "Mass and liquid volume (g, kg, L)", MD],
-    ["area", "Area of rectangles (A = l × w)", MD],
+    ["area", "Area of rectangles", MD],
     ["perimeter", "Perimeter of polygons", MD, ["m.2.standard-length"]],
     ["scaled-graphs", "Scaled picture and bar graphs", MD, ["m.2.graphs-line-plots"]],
+    ["measure-line-plots", "Measure to the half and quarter inch; line plots", MD, ["m.2.standard-length", "m.2.graphs-line-plots"]],
     ["quadrilaterals", "Classify quadrilaterals", G, ["m.2.thirds-polygons"]],
   ],
   "4": [
-    ["multi-digit-multiply", "Multiply up to 4-digit × 1-digit and 2-digit × 2-digit", NBT, ["m.3.multiply-divide-100", "m.3.multiplication-properties"]],
-    ["long-division", "Divide up to 4-digit numbers by 1-digit divisors", NBT, ["m.3.multiply-divide-100"]],
     ["factors-multiples", "Factors, multiples, primes and composites", OA],
     ["place-value-million", "Place value and rounding to 1,000,000", NBT, ["m.3.rounding"]],
+    ["multi-digit-multiply", "Multiply up to 4-digit × 1-digit and 2-digit × 2-digit", NBT, ["m.3.multiply-by-tens", "m.3.multiplication-properties"]],
+    ["long-division", "Divide up to 4-digit numbers by 1-digit divisors", NBT, ["m.3.multiply-divide-100"]],
     ["fraction-equivalence", "Fraction equivalence with unlike denominators", NF, ["m.3.compare-fractions"]],
     ["add-fractions-like", "Add and subtract fractions and mixed numbers (like denominators)", NF, ["m.3.fractions-number-line"]],
     ["fraction-times-whole", "Multiply a fraction by a whole number", NF, ["m.3.multiply-divide-100"]],
@@ -181,9 +193,9 @@ const MATH: Record<Grade, Row[]> = {
     ["probability", "Probability of simple and compound events", SP],
   ],
   "8": [
+    ["roots-irrationals", "Square roots, cube roots and irrational numbers", NS, ["m.7.rational-operations"]],
     ["exponent-rules", "Integer exponent rules", EE, ["m.6.expressions-variables"]],
     ["scientific-notation", "Scientific notation", EE, ["m.5.powers-of-ten"]],
-    ["roots-irrationals", "Square roots, cube roots and irrational numbers", NS, ["m.7.rational-operations"]],
     ["slope", "Slope and rate of change", EE, ["m.7.proportional-relationships"]],
     ["multi-step-equations", "Linear equations with variables on both sides", EE, ["m.7.two-step-equations"]],
     ["systems-linear", "Systems of two linear equations", EE],
@@ -648,7 +660,10 @@ export function refreshLinks(id: string) {
   return node.prereqs.flatMap((p) => {
     const target = NODES.get(p);
     if (!target) return [];
-    const where = "grade" in target ? gradeLabel(target.grade) : target.title;
+    // Skills name the subject too, since a prereq can be in another subject ("Grade 8 · Math").
+    const where = "grade" in target
+      ? `${gradeLabel(target.grade)} · ${SUBJECT_TITLES[target.subject]}`
+      : target.title;
     return [{ id: target.id, title: target.title, label: `Refresh: ${where}` }];
   });
 }
@@ -695,9 +710,34 @@ export function validateTaxonomy() {
   };
   for (const n of all) visit(n.id, []);
 
-  for (const division of ["science", "engineering"] as const) {
+  for (const division of ["math", "science", "engineering"] as const) {
     for (const f of HE_FIELDS[division]) {
       if (coursesFor(division, f.id).length === 0) warnings.push(`${division}/${f.id} has no courses`);
+    }
+  }
+
+  for (const c of COURSES) {
+    const known = new Set(HE_FIELDS[c.division].map((f) => f.id));
+    for (const f of c.fields) if (!known.has(f)) errors.push(`${c.id}: unknown field ${f}`);
+    if (c.topics.length === 0) errors.push(`${c.id}: no topics`);
+    const topics = new Set<string>();
+    for (const t of c.topics) {
+      if (topics.has(t.toLowerCase())) errors.push(`${c.id}: topic "${t}" listed twice`);
+      topics.add(t.toLowerCase());
+    }
+  }
+
+  // Skills of one strand sit together in each grade, so file order is teaching order.
+  for (const subject of ["math", "science"] as const) {
+    for (const grade of GRADES) {
+      const strands = skillsFor(grade, subject).map((s) => s.strand);
+      const done = new Set<string>();
+      strands.forEach((strand, i) => {
+        if (i > 0 && strands[i - 1] !== strand) {
+          if (done.has(strand)) warnings.push(`${gradeLabel(grade)} ${subject}: ${strand} is split up`);
+          done.add(strands[i - 1]!);
+        }
+      });
     }
   }
 

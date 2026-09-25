@@ -92,7 +92,8 @@ export type Representation =
   /** Line plot: an X for each object above its value on a number line; tap to set counts. */
   | {
       kind: 'linePlot';
-      points: { var: string; at: number }[];
+      /** `label` names the mark when it isn't a whole number ("2 1/4"). */
+      points: { var: string; at: number; label?: string }[];
       unit?: string;
       /** The first length on the line; the others follow by 1 (default: the points' `at`). */
       start?: string;
@@ -356,7 +357,14 @@ export type Representation =
    * Fractions on a number line from 0 to `wholes`: each whole cut into `denominator` equal
    * parts, with one jump per part from 0 to `numerator`. Drag the point or use − / +.
    */
-  | { kind: 'fractionLine'; numerator: string; denominator: string; wholes: number }
+  | {
+      kind: 'fractionLine';
+      numerator: string;
+      denominator: string;
+      wholes: number;
+      /** What one whole is, e.g. "inch" (a ruler); the caption says "2 inches and 1/4 inch". */
+      unit?: { one: string; many: string };
+    }
   /**
    * Fraction bars of the same whole, one per row, with `num` of `den` parts shaded. `equal`
    * notes that the rows are the same size (equivalent fractions).
