@@ -930,9 +930,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'One more is the next number. Ten more is one row down.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 1, 120),
-      whole('p', 'p', 'One more', 1, 121),
-      whole('q', 'q', 'Ten more', 10, 130),
+      whole('n', 'n', 'Number', 1, 110),
+      whole('p', 'p', 'One more', 2, 111),
+      whole('q', 'q', 'Ten more', 11, 120),
     ],
     relations: [
       {

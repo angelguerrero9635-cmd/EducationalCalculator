@@ -22,7 +22,33 @@ and each strand's skills sit together within a grade.
    a saved "Recently viewed" entry points to. Give topics stable ids when they get lessons, since
    that will be the first time reordering could lose a student's place.
 
+3. **Standards with no page yet (from the K–3 review).** K.CC.2 (count on from a number other
+   than 1) beyond "one more"; K.G.5 (build shapes from sticks and clay); 1.G.2 (compose
+   shapes); 2.MD.3 (estimate lengths); 3.G.2 (equal parts of an area); K-PS2-2 (change a
+   push's direction); 3-PS2-4 (electric forces). 3.NBT.2 is taught on the Grade 2 page
+   `m.2.add-sub-1000` by the one-definition rule.
+
+4. **Duplicate pairs across grades.** `m.K.classify-count` and `m.1.data-3-categories`;
+   `m.K.shapes-2d-3d`, `m.1.shape-attributes` and `m.2.thirds-polygons~polygons`;
+   `m.1.add-sub-20~compare` and `m.2.add-sub-100-fluency~compare`; `m.3.fractions-number-line`
+   and `m.3.measure-line-plots~quarter-inch`. Each keeps its own grade page and use line.
+
+5. **`m.2.thirds-polygons` bundles 2.G.1, 2.G.2 and 2.G.3.** Its main page is thirds and its
+   problem types the shapes, rows and columns, and solids; `~rows-columns` could sit under
+   `m.2.arrays`. Kept, because the title names all three.
+
+6. **Layout kinds are not a taxonomy field.** Sorts, sequences, explorations and observations
+   are marked by the page data (`src/data/modules/layouts/`), not the skill row.
+
 ## Resolved
+
+### K–3 math and science review
+
+- **Shadows vs. the materials test (Grade 1).** `s.1.light-shadows` keeps shadows on the main
+  page (1-PS4-2 and the daily-pattern investigation) and the materials sort as a problem type,
+  now a sort page.
+- **Grade 3 quadrilaterals** is a sort page (3.G.1 is classification); its perimeter relation
+  lives on `m.3.perimeter`.
 
 ### Grade 3 review
 

@@ -10,9 +10,8 @@
  */
 import { solve } from '@/engine/solve';
 
-import { MODULES } from '..';
+import { LAYOUTS, MODULES } from '..';
 import { buildSteps, type Walkthrough } from '../buildSteps';
-import type { ModuleDef } from '../types';
 
 // Jest runs in Node; the test tsconfig has no Node types, so the few Node calls are declared here.
 declare const require: (name: string) => {
@@ -24,7 +23,7 @@ const env: Record<string, string | undefined> =
   (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {};
 const OUT = env.REVIEW_DUMP;
 const PREFIXES = (env.MODULE_IDS ?? '').split(',').filter(Boolean);
-const inScope = (m: ModuleDef) =>
+const inScope = (m: { id: string }) =>
   PREFIXES.length === 0 || PREFIXES.some((p) => m.id === p || m.id.startsWith(p));
 
 function walkthroughText(w: Walkthrough): string[] {
@@ -72,10 +71,9 @@ describeOrSkip('review dump', () => {
         ['opening', m.startWith],
         ...m.variables
           .filter((v) => !m.startWith.includes(v.id) && !v.derived)
-          .slice(0, 3)
           .map((v): [string, string[]] => [
             `find ${v.id}`,
-            m.variables.map((x) => x.id).filter((id) => id !== v.id),
+            m.variables.filter((x) => x.id !== v.id && !x.derived).map((x) => x.id),
           ]),
       ];
       for (const [label, ids] of cases) {
@@ -86,6 +84,52 @@ describeOrSkip('review dump', () => {
         );
         lines.push(`-- ${label}: ${ids.join(', ')}`);
         lines.push(...walkthroughText(buildSteps(m, result)));
+      }
+      // Two boundary samples: the opening values with the first one at its smallest and at
+      // its largest allowed value, so the reviewer sees the edges without a browser.
+      const first = m.variables.find((v) => v.id === m.startWith[0]);
+      for (const edge of ['min', 'max'] as const) {
+        const x = first?.[edge];
+        if (first === undefined || x === undefined || x === m.example[first.id]) continue;
+        const result = solve(
+          m,
+          m.startWith.map((id) => ({ id, value: id === first.id ? x : m.example[id]! })),
+        );
+        lines.push(`-- edge ${first.id} = ${x}: ${m.startWith.join(', ')}`);
+        lines.push(
+          ...(result.rejected
+            ? [`  rejected: ${result.rejected.reason}`]
+            : walkthroughText(buildSteps(m, result))),
+        );
+      }
+      lines.push('');
+    }
+    // Layout pages: everything the student reads, so the lesson reviewer covers them too.
+    for (const l of LAYOUTS.filter((x) => inScope(x))) {
+      lines.push(`=== ${l.id}${l.title ? ` — ${l.title}` : ''} [layout: ${l.kind}]`);
+      if (l.use) lines.push(`use: ${l.use}`);
+      for (const a of l.assumptions) lines.push(`assume: ${a}`);
+      if (l.kind === 'sort') {
+        lines.push(`question: ${l.question}`);
+        for (const b of l.bins) {
+          lines.push(
+            `bin ${b.label}: ${l.cards
+              .filter((c) => c.bin === b.id)
+              .map((c) => c.label)
+              .join(', ')} — ${b.why}`,
+          );
+        }
+      } else if (l.kind === 'sequence') {
+        lines.push(`question: ${l.question}`);
+        lines.push(
+          `stages: ${l.stages.map((s) => (s.span === undefined ? s.label : `${s.label} (${s.span} ${l.unit ?? ''})`)).join(' → ')}`,
+        );
+      } else if (l.kind === 'explore') {
+        lines.push(`figure: ${JSON.stringify(l.figure)}`);
+        for (const s of l.scenes) lines.push(`scene ${s.label}: ${s.lines.join(' ')}`);
+      } else {
+        lines.push(`columns: ${l.columns.join(', ')} (${l.rowLabel}, ${l.unit}, 0..${l.max})`);
+        lines.push(`initial: ${l.initial.join(', ')} → ${l.pattern(l.initial)}`);
       }
       lines.push('');
     }

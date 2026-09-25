@@ -95,18 +95,23 @@ incidental to what the lesson teaches, forcing them into a calculator gives a pa
 but beside the point. The lesson reviewer's check L names the better layout from this catalog;
 the engine builds a layout when a section needs it (log it in `ENGINE_LOG.md`).
 
-| Layout     | Teaches                                                                                    | Page                                                                               | Status   |
-| ---------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | -------- |
-| calculator | a relationship between quantities                                                          | picture, numbers, formulas, walkthrough                                            | built    |
-| sort       | putting things into groups by a property (materials, shapes, changes you can undo)         | cards to drag into labelled bins, a count per bin, one sentence about the property | proposed |
-| sequence   | stages in order and how long each takes (life cycles, a day, a story problem's steps)      | stages as a strip the student orders, each with its span, the total under it       | proposed |
-| compare    | two things side by side and what differs (two habitats, two beaks, two shadows)            | the two pictures with the same scale, one difference line, which is more and why   | proposed |
-| observe    | a quantity recorded over time (plant height by week, temperature by hour, a weather chart) | a table the student fills in, its chart, the pattern in a sentence                 | proposed |
-| explore    | an idea with no honest quantity (what light does through a mirror, why shadows form)       | a picture with a few controls and the assumptions as captions; no numbers          | proposed |
+| Layout     | Teaches                                                                                    | Page                                                                                    | Status     |
+| ---------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ---------- |
+| calculator | a relationship between quantities                                                          | picture, numbers, formulas, walkthrough                                                 | built      |
+| sort       | putting things into groups by a property (materials, shapes, changes you can undo)         | cards tapped into labelled groups, a count per group, one sentence about the property   | built      |
+| sequence   | stages in order and how long each takes (life cycles, a day, a story problem's steps)      | stages tapped into order, each with its span, the spans added under the strip           | built      |
+| compare    | two things side by side and what differs (two habitats, two beaks, two shadows)            | the calculator's compare pictures (rows, bars, rulers, thermometers) with a result line | calculator |
+| observe    | a quantity recorded over time (plant height by week, temperature by hour, a weather chart) | a bar per column tapped to a height, the table, the pattern in a sentence               | built      |
+| explore    | an idea with no honest quantity (what light does through a mirror, why shadows form)       | a figure (parts, position, clock, dots, magnets, flashes) with scenes to switch         | built      |
 
-A proposal names the layout, why the calculator misses the lesson, and what the page keeps
-(values, picture) and drops. Until a layout is built, the calculator page stays, with the
-proposal in the review report.
+A layout page is data in `src/data/modules/layouts/` (`math.ts`, `science.ts`; types in
+`types.ts`): a sort lists its bins and cards, a sequence its stages and spans, an exploration
+its figure and scenes, an observation its columns and pattern sentence. The components in
+`src/components/module/layouts/` draw any of them; never put a lesson's words in a component.
+A skill id or problem-type id is either a calculator module or a layout page, never both
+(`getPage`). `layouts.test.ts` checks the page belongs to a skill, fits together (every card
+has a group, every scene fits the figure) and reads at the grade level. A review proposal
+names the layout and gives its data; a new figure kind is engine work (log it).
 
 ## Topics without a natural formula
 
@@ -132,13 +137,21 @@ the assumptions and a table or diagram.
      grade can hold.
    - `sampling.test.ts` runs random inputs, edit sequences and unit choices through the solver
      and the step builder, evaluates every step and check line, and fails on any line it can't
-     read: when you write a new phrase or picture kind, teach the harness (`PHRASES`, the
-     picture checks) as part of the module.
+     read or that two steps share: when you write a new phrase or picture kind, teach the
+     harness (`PHRASES`, the picture checks) as part of the module.
+   - Values that a lesson names (`allowed: [5, 10, 100]`) and working values nobody types
+     (`derived: true`) are declared on the variable; the solver, sliders, harness and dump
+     respect both.
+   - `layouts.test.ts` covers the sort, sequence, explore and observe pages.
 2. **Evidence, gathered once with no model involved:**
    `pnpm build:web && node scripts/review-evidence.mjs --prefix <ids or prefixes>`. It writes
-   `.review/dump.txt` (every module's definition and the walkthroughs a student reads),
-   `.review/harness.txt`, `.review/shots/` (screenshots with the layout checks) and
-   `.review/evidence.md` (the index and everything the scripts flagged).
+   `.review/dump.txt` (every module's definition and the walkthroughs a student reads, from the
+   opening values, from each other value as the unknown and at two range edges; layout pages'
+   text), `.review/harness.txt`, `.review/shots/` (screenshots with the layout checks:
+   sideways scroll, overlaps, K–2 letters, one-screen fit, cut-short slider text, small tap
+   targets), `.review/sheets/` (one page per picture kind, 9 per sheet) and
+   `.review/evidence.md` (the index, each page's picture kind and controls, and everything the
+   scripts flagged).
 3. **Two reviewers, in parallel, each reading only its own evidence:**
    - `lesson-reviewer` (`.claude/agents/lesson-reviewer.md`) reads the dump and the harness
      report: accuracy, **layout fit** (is a calculator how this lesson is taught? if not, which

@@ -137,8 +137,66 @@ try {
             issues.push(`letter instead of words (K–2): "…${at.trim()}…"`);
           }
         }
+        // Slider names or values cut short ("Layers above the ." / "100 th…").
+        for (const s of document.querySelectorAll('[data-testid^="slider-"]')) {
+          const col = s.parentElement;
+          for (const t of col?.querySelectorAll('div[dir]') ?? []) {
+            const text = (t.textContent ?? '').trim();
+            if (t.scrollWidth > t.clientWidth + 1 || /[…]$|\.\.$/.test(text)) {
+              issues.push(`slider text cut short: "${text.slice(0, 40)}"`);
+            }
+          }
+        }
+        // Tap targets inside the picture under 44 px (a K finger).
+        const picture = document.querySelector('[data-testid^="input-"]')?.closest('div');
+        for (const el of document.querySelectorAll(
+          '[role="button"], [data-testid^="pic-"], [data-testid^="frame-"], [data-testid^="num-"], [data-testid^="row-"]',
+        )) {
+          const r = el.getBoundingClientRect();
+          if (
+            r.width > 0 &&
+            r.height > 0 &&
+            (r.width < 36 || r.height < 36) &&
+            (!picture || !picture.contains(el))
+          ) {
+            const id = el.getAttribute('data-testid') ?? (el.textContent ?? '').trim().slice(0, 20);
+            if (/^(pic|frame|num|row)-/.test(id)) {
+              issues.push(
+                `tap target under 36 px: ${id.replace(/-\d+$/, '')} (${Math.round(r.width)}×${Math.round(r.height)})`,
+              );
+              break;
+            }
+          }
+        }
         return [...new Set(issues)];
       }, early);
+      // One-screen rule at phone width: the picture, its sliders and the first input row
+      // should fit 390 × 900 (the section header "Picture"/"Diagram" to the first input).
+      const fit = await page.evaluate(() => {
+        const first = document.querySelector('[data-testid^="input-"]');
+        if (!first) return null;
+        const top = [...document.querySelectorAll('div[dir]')].find((d) =>
+          /^(Picture|Diagram|Chart|Table|Sort|Put in order|Explore|Record and look)$/.test(
+            (d.textContent ?? '').trim(),
+          ),
+        );
+        const y0 = top ? top.getBoundingClientRect().top + window.scrollY : 0;
+        return Math.round(first.getBoundingClientRect().bottom + window.scrollY - y0);
+      });
+      if (width <= 400 && fit !== null && fit > 844) {
+        found.push(`picture, sliders and first input span ${fit} px (over one 844 px screen)`);
+      }
+      // The controls a student has on this page, for the reviewers' interaction check.
+      const controls = await page.evaluate(() =>
+        [...document.querySelectorAll('[data-testid]')]
+          .map((e) => e.getAttribute('data-testid') ?? '')
+          .filter((t) =>
+            /^(slider|drag|pic|frame|num|row|scene|card|bin|stage|bar|toggle)-/.test(t),
+          )
+          .map((t) => t.replace(/-\d+$/, '-n'))
+          .filter((t, i, all) => all.indexOf(t) === i)
+          .join(' '),
+      );
       const all = [...found, ...errors.map((e) => `page error: ${e}`)];
       const file = join(out, `${id.replace(/[^\w.~-]/g, '_')}-${width}${dark ? '-dark' : ''}.png`);
       await page.screenshot({ path: file, fullPage: true });
@@ -147,6 +205,7 @@ try {
         `${all.length ? 'PROBLEM' : 'ok     '} ${id} @${width}${dark ? ' dark' : ''} → ${file}`,
       );
       for (const issue of all) console.log(`        - ${issue}`);
+      console.log(`        controls: ${controls || '(none)'}`);
     }
     await page.close();
   }

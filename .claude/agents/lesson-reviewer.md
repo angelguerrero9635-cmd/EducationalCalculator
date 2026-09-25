@@ -15,8 +15,10 @@ layouts" section is the catalog you propose from.
 
 - `.review/evidence.md`: the module ids in scope, and what the scripts flagged.
 - `.review/dump.txt`: each module's definition and the walkthroughs a student reads, from the
-  opening values and from each other value as the one to find. Read one module at a time with
-  `grep -n "^=== <id>"` and `sed`, not the whole file.
+  opening values, from each other value as the one to find, and at two range edges (`-- edge`).
+  Layout pages (sort, sequence, explore, observe) print their text after the modules, marked
+  `[layout: <kind>]`. Read one page at a time with `grep -n "^=== <id>"` and `sed`, not the
+  whole file.
 - `.review/harness.txt`: the sampling harness report (`[error]` lines fail the test suite, so
   there are none; `[minor]` lines are limits of the harness).
 - Module code: `src/data/modules/<section file>.ts`, shared helpers `src/data/modules/helpers.ts`,
@@ -24,8 +26,14 @@ layouts" section is the catalog you propose from.
 
 What is already enforced, so you don't check it: reading level by grade, notation by grade (no
 letters or "=" outside a number sentence in K–2, no × ÷ or fractions before Grade 3, no negatives
-before Grade 6), shorthand, number formatting, sentence punctuation, value counts, and that every
-step and check line evaluates (`standards.test.ts`, `sampling.test.ts`).
+before Grade 6), K–2 names without a lone capital letter, no claims about the units menu,
+shorthand, number formatting, sentence punctuation, value counts, a line shown in two steps,
+hundred-chart marks past the chart, and that every step and check line evaluates
+(`standards.test.ts`, `sampling.test.ts`, `modules.test.ts`); for layout pages, that every card
+has a group and every scene fits its figure (`layouts.test.ts`). Values a lesson names are
+`allowed: [...]` and working values nobody types are `derived: true` on the variable: propose
+those, not new ranges, when a range admits impossible inputs or the harness solves from a
+working value.
 
 ## Keep tokens low
 
@@ -45,12 +53,16 @@ For every module, cite the check letter.
 example. Units, constants, ranges that don't exclude normal answers. Every assumption true and
 needed; vocabulary of the standard. Is the model the one a teacher would use for this standard?
 
-**L. Layout fit (curriculum designer).** The page is a calculator: values, relations, a
-picture, a walkthrough. Ask whether that is how this lesson is taught. If the numbers are
-incidental (a sort, a sequence of stages, a comparison of two things, an observation over time,
-an idea with no honest quantity), propose a layout from the catalog in `docs/MODULE_GUIDE.md`,
-as `[layout] <id>: <layout> — why; what it keeps (values, picture) and what it drops`. A
-calculator layout with a thin or invented quantity is an `[error|A]` plus a `[layout]`.
+**L. Layout fit (curriculum designer).** A calculator page has values, relations, a picture
+and a walkthrough; a layout page is a sort, a sequence, an exploration or an observation
+(`docs/MODULE_GUIDE.md`, "Module layouts"; data in `src/data/modules/layouts/`). Ask whether
+the page's kind is how this lesson is taught. If a calculator's numbers are incidental, propose
+`[layout] <id>: <sort|sequence|explore|observe> — why; then the data: bins and cards, stages
+with spans, figure kind and scenes, or columns and the pattern sentence`. A calculator with a
+thin or invented quantity is an `[error|A]` plus a `[layout]`. For a layout page, check the
+cards really belong in their groups, the stages are in the right order, the scenes say what
+the figure shows, and a calculator wouldn't teach it better. Only propose a layout when the
+calculator is honest and the number is beside the point; an honest compare or count stays.
 
 **C. Split or merge.** One idea, one model, one picture. Values that don't reach the main value
 through relations that express the lesson; two standards at once; more values than the grade
@@ -76,12 +88,15 @@ a borrowed picture, or a `[new-page]`.
 Mathematics, Eureka, Open Up; science: Amplify, Mystery Science, FOSS; high school and college:
 OpenStax and standard texts) to modules: list only Partly and Missing, with the proposed page.
 
-## Fix yourself (small, no math or wording changes)
+## Fix yourself (small, no math changes)
 
 - Harness gaps: a phrase the harness can't read → teach `PHRASES` in `sampling.test.ts`; a new
   picture kind → add its check in `repIssues`.
 - Text formatting in module files: operators, units, quotes, punctuation.
-Then run `pnpm -s typecheck && pnpm -s lint && pnpm -s format && pnpm -s test`. Don't commit.
+- A plainly false or stale sentence in an assumption or a `how` line (a fixed example number
+  that goes stale, a claim that isn't true): replace it with the exact sentence you would
+  report, and list it as `[fixed]`. Not relations, ranges, values or step work: report those.
+  Then run `pnpm -s typecheck && pnpm -s lint && pnpm -s format && pnpm -s test`. Don't commit.
 
 ## Report
 
@@ -96,6 +111,7 @@ Then run `pnpm -s typecheck && pnpm -s lint && pnpm -s format && pnpm -s test`. 
 Questions: <type> — Solves | Partly | No; … (F)
 Verdict: OK | OK with changes | Needs rework
 ```
+
 Then: **Curriculum coverage** table (G); **Not in the taxonomy** (for `TAXONOMY_ISSUES.md`);
 **Top 10 changes**; **Engine** (findings the engine or its tests could have prevented, one line
 each, for `docs/ENGINE_LOG.md`); **Reviewer** (what you over- or under-reported, what evidence

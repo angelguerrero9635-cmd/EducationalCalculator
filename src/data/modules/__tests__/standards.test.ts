@@ -36,6 +36,8 @@ const JARGON_K3 = /\bquotient\b/i;
 
 /** Letters standing for numbers: "a = 3", "(B)", "a + b" (K–2, check K). */
 const LETTERS = /(^|[\s(])[A-Za-z] =|\([A-Za-z]\)|(^|\s)[b-zB-HJ-Z] [+−×÷] /;
+/** A lone capital letter naming a thing ("Pencil A", "Jar B"): K–2 says first and second. */
+const LONE_CAPITAL = /(^|\s)[A-Z](\s|$)/;
 
 const BAD_VALUE = /NaN|undefined|Infinity|null|(^|[^\w.])[-−]0(?![\d.])/;
 /** "1 tens", "3 ten": number words that don't agree (check B). */
@@ -211,6 +213,22 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('standards f
                   ? '"=" outside a number sentence (K–2)'
                   : false,
       ),
+    ).toEqual([]);
+  });
+
+  it('names things in words, not letters, in K–2', () => {
+    if (band !== 'early') return;
+    expect(
+      failures(
+        text.labels.filter((l) => l.where !== 'title'),
+        (t) => (LONE_CAPITAL.test(t) ? 'a letter names a thing (say first, second)' : false),
+      ),
+    ).toEqual([]);
+  });
+
+  it('makes no claim about the units menu (whole-number lengths keep their number)', () => {
+    expect(
+      failures(text.prose, (t) => (/units menu/i.test(t) ? 'talks about the units menu' : false)),
     ).toEqual([]);
   });
 

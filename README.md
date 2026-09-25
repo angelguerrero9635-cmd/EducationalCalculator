@@ -98,7 +98,7 @@ src/
     levels.tsx                Edit onboarding selections (from Settings)
     paywall.tsx               Placeholder paywall (modal)
   data/
-    modules/                  Module content (assumptions, formulas, representation) by taxonomy id
+    modules/                  Module content by taxonomy id: calculators (assumptions, formulas, picture) and layouts/ (sort, sequence, explore, observe pages)
     taxonomy.ts               SINGLE SOURCE OF TRUTH for all course content (do not edit casually)
     selectors.ts              Pure derived views: strand grouping, search, routes, labels
     icons.ts                  Which icon each Browse box gets (never repeated on a page)

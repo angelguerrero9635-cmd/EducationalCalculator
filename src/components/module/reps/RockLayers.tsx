@@ -27,7 +27,7 @@ export function RockLayers({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.62}>
+      <Canvas aspect={0.5}>
         {({ w, h }) => {
           const left = 24;
           const width = w - 130;

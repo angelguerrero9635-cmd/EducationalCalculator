@@ -8,14 +8,21 @@ You review the pages of lesson modules for a study app used from kindergarten to
 You look at what is on screen and what happens when a student touches it; the lesson's math and
 wording are `lesson-reviewer`'s job, so don't re-read the module text beyond what the page shows.
 
-Read `docs/MODULE_GUIDE.md` first (the standard), then `.review/evidence.md` (the module ids in
-scope and what the scripts flagged).
+Read `docs/MODULE_GUIDE.md` first (the standard), then `.review/evidence.md` (the page ids in
+scope, what the scripts flagged, and each page's picture kind and controls).
 
 ## Evidence (read these; don't recreate them)
 
-- `.review/shots/<id>-390.png` for every module; `-1024.png` for a few; dark mode for a few.
-  The scripts already flagged sideways scrolling, text past the screen edge, overlapping chart
-  labels, page errors and K–2 letters; those are in `evidence.md`.
+- `.review/sheets/sheet<n>.png`: one 390 px page per picture kind, nine to a sheet. Open these
+  first; they cover every kind in a few image opens.
+- `.review/shots/<id>-390.png` for every page; `-1024.png` for a few; dark mode for a few. The
+  scripts already flagged sideways scrolling, text past the screen edge, overlapping chart
+  labels, page errors, K–2 letters, a picture-plus-sliders-plus-first-input span over one
+  844 px screen, slider text cut short and picture tap targets under 36 px; those are in
+  `evidence.md`, with each page's controls (sliders, handles, tappable cells, scenes, cards).
+- Layout pages (sort, sequence, explore, observe: `src/components/module/layouts/`) have no
+  inputs: judge the tap flow (card then group; stage in order; scene; bar height), the hint
+  when a tap is wrong, and that a class could use it on a projector.
 - One browser session you run yourself (below).
 - Pictures: `src/components/module/reps/` (shared parts `common.tsx`), sliders
   `src/components/module/Sliders.tsx`, the page `src/components/module/ModuleSections.tsx`,
@@ -23,15 +30,18 @@ scope and what the scripts flagged).
 
 ## Keep tokens low
 
-- Open at most about 12 screenshots for the whole section: every new or changed picture kind
-  once, anything `evidence.md` flags, and two or three typical pages. Crop with Python (PIL) to
-  the picture and inputs before opening when a page is tall.
+- Open the contact sheets, then at most about 8 single screenshots: anything `evidence.md`
+  flags and two or three typical pages. Don't build sheets or crop: the sheets are made for you.
+  1024 px and dark mode: the three or four provided are enough.
 - Use the browser on at most about 8 pages. Write one Playwright script in `.review/`
   (`require('playwright')` with `NODE_PATH=$(npm root -g)`; Chromium at
   `/opt/pw-browsers/chromium`; serve `dist/` with `node scripts/verify-ssr.mjs --serve <port>`;
-  skip onboarding by clicking "Skip" on `/`). Inputs have testIDs `input-<variable id>`;
-  sliders `slider-<id>`; picture handles `drag-<id>`. Wait for `networkidle` before typing.
-  Print short observations, not page dumps.
+  skip onboarding by clicking "Skip" on `/`). Locate by `[data-testid=...]`, not by role
+  (RN-web Pressables have no button role): inputs `input-<variable id>`, sliders
+  `slider-<id>`, picture handles `drag-<id>`, tappable cells `pic-`, `frame-`, `num-`,
+  `row-`; layout pages `card-<n>`, `bin-<id>`, `stage-<n>`, `scene-<n>`, `bar-<n>`. Wait for
+  `networkidle`, and `scrollIntoViewIfNeeded` before mouse events below the fold. Print short
+  observations, not page dumps.
 - Write findings to `.review/page-reviewer.md` as you finish each skill; on start, read it and
   continue from the last skill.
 
@@ -79,6 +89,7 @@ Plan: Launch … / Explore … / Practice … / Exit … — Would use: … (H)
 Session: 1. … (≤ 6 lines) — Ease: … (I)
 Verdict: OK | OK with changes | Needs rework
 ```
+
 Then: **Section-wide** (a shared component to change, with the file); **Top 10 changes**;
 **Engine** (what the page code or scripts could have prevented, for `docs/ENGINE_LOG.md`);
 **Reviewer** (what evidence you lacked or didn't need, for `docs/REVIEW_LOG.md`); **Checks run**

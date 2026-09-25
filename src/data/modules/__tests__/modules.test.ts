@@ -193,6 +193,15 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
     expect(representationVars(m.representation).filter((v) => !ids.includes(v))).toEqual([]);
   });
 
+  it('draws a hundred chart big enough for every mark on it', () => {
+    const r = m.representation;
+    if (r.kind !== 'hundredChart') return;
+    const vmax = (id: string) => m.variables.find((v) => v.id === id)?.max ?? 0;
+    for (const id of [r.value, ...(r.marks ?? [])]) {
+      expect([id, vmax(id) <= r.max]).toEqual([id, true]);
+    }
+  });
+
   it('connects every value through the formulas (else it is two lessons: split it)', () => {
     const free = new Set(m.standalone?.vars ?? []);
     if (m.standalone) expect(m.standalone.why.length).toBeGreaterThan(10);

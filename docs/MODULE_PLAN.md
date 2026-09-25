@@ -33,7 +33,8 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 
 ## Section notes
 
-- **Section 6, Science K–3.** 24 skill modules plus 30 problem types (after the section review), each with one honest
+- **Section 6, Science K–3.** 24 skill pages plus 31 problem types after two reviews (six of
+  them sort, sequence, explore or observe layouts rather than calculators), each with one honest
   counting or measuring model from the class investigation (NGSS K-PS2 to 3-ESS2): pushes
   forward and back on a number line, thermometers in the sun and shade, seeds that sprouted,
   a weather tally, trees planted and cut, vibrations per second as waves, shadow lengths on a
