@@ -234,6 +234,13 @@ function affineOf(rel: System['relations'][number]): Affine | undefined {
   return out ?? undefined;
 }
 
+/** True when no relation can solve for `id` (it can only be given). */
+const isRoot = (sys: System, id: string) =>
+  sys.relations.every((rel) => {
+    const fn = rel.solve?.[id];
+    return !rel.vars.includes(id) || !fn || fn.length === 0;
+  });
+
 function complete(sys: System, fixed: Values, maxSolutions = 64, maxNodes = 40000): Completion {
   const byId = new Map(sys.variables.map((v) => [v.id, v]));
   const seen = new Map(sys.variables.map((v) => [v.id, new Set<number>()]));
@@ -315,7 +322,10 @@ function complete(sys: System, fixed: Values, maxSolutions = 64, maxNodes = 4000
       return;
     }
     let best: { id: string; xs: number[] } | undefined;
-    for (const v of open) {
+    // Branch first on values that only the student can give (no rearrangement finds them,
+    // e.g. the number being rounded): everything else then follows by propagation.
+    const roots = open.filter((v) => isRoot(sys, v.id));
+    for (const v of roots.some((v) => domain(v)) ? roots : open) {
       const xs = domain(v);
       if (xs && (!best || xs.length < best.xs.length)) best = { id: v.id, xs };
     }
@@ -358,13 +368,29 @@ const COIN: Record<string, number> = {
   nickels: 5,
 };
 const PHRASES: [RegExp, (...xs: number[]) => number][] = [
+  // Grade 3 clock times ("3:45"), as minutes past 12:00 on a 12-hour clock. Phrases that start
+  // with a bracket are tried first, so these come before "35 minutes".
+  [
+    new RegExp(`(?:the hour) (${NUM}) minutes after (\\d+):(\\d\\d)`),
+    (d, h, m) => Math.floor(((h % 12) * 60 + m + d) / 60) % 12 || 12,
+  ],
+  [
+    new RegExp(`(?:the hour) (${NUM}) minutes before (\\d+):(\\d\\d)`),
+    (d, h, m) => Math.floor((((((h % 12) * 60 + m - d) % 720) + 720) % 720) / 60) || 12,
+  ],
+  [
+    /(\d+):(\d\d) to (\d+):(\d\d)/,
+    (h1, m1, h2, m2) => ((((h2 % 12) * 60 + m2 - (h1 % 12) * 60 - m1) % 720) + 720) % 720,
+  ],
+  [new RegExp(`(\\d+):(\\d\\d) \\+ (${NUM}) minutes`), (h, m, d) => ((h % 12) * 60 + m + d) % 720],
+  [/(\d+):(\d\d)/, (h, m) => (h % 12) * 60 + m],
   // Grade 3
   [new RegExp(`(${NUM}) without its tens and ones`), (a) => 100 * Math.floor(a / 100)],
   [new RegExp(`(${NUM}) without its ones`), (a) => 10 * Math.floor(a / 10)],
   [new RegExp(`wholes in (${NUM}) parts of (${NUM})`), (a, b) => Math.floor(a / b)],
   [new RegExp(`last 5 before (${NUM})`), (a) => Math.floor(a / 5)],
   [new RegExp(`(${NUM}) \\+ (${NUM}) past the hour`), (a, b) => (a + b) % 60],
-  [new RegExp(`(${NUM}) − (${NUM}) past the hour`), (a, b) => (((a - b) % 60) + 60) % 60],
+  [new RegExp(`(${NUM}) [-−] (${NUM}) past the hour`), (a, b) => (((a - b) % 60) + 60) % 60],
   [new RegExp(`(${NUM}) wholes? and (${NUM})/(${NUM})`), (w, a, b) => w + a / b],
   [new RegExp(`(${NUM})/(${NUM})`), (a, b) => a / b],
   [new RegExp(`(${NUM}) (?:not shaded|shaded|equal parts)`), (a) => a],
@@ -411,7 +437,11 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) rows of (${NUM})`), (a, b) => a * b],
   [new RegExp(`(${NUM}) hundreds`), (a) => 100 * a],
   [new RegExp(`(${NUM}) tens`), (a) => 10 * a],
-  [new RegExp(`(${NUM}) (?:ones|corners|sides|cubes|parts|angles)`), (a) => a],
+  // (not “wholes in 11 parts of 7”, which is a phrase of its own)
+  [
+    new RegExp(`(?<!wholes in |[\\d.])(${NUM}) (?:ones|corners|sides|cubes|parts|angles)`),
+    (a) => a,
+  ],
   // Bills (Grade 2 money): "3 $10 bills" and "$10 bills (3)" are $30; "$10 bills in (30)" is 3.
   [new RegExp(`(${NUM}) \\$(\\d+) bills?`), (a, b) => a * b],
   [new RegExp(`\\$(\\d+) bills? (${NUM})`), (b, a) => a * b],
@@ -749,6 +779,76 @@ function repIssues(
         }
       }
       break;
+    // Grade 3 pictures.
+    case 'rounding': {
+      const [n, lo, hi, r] = [rep.value, rep.lower, rep.upper, rep.rounded].map(val);
+      for (const [id, x] of [
+        [rep.lower, lo],
+        [rep.upper, hi],
+        [rep.rounded, r],
+      ] as const) {
+        if (x !== undefined && x % rep.to !== 0) out.push(`${id} = ${x} is not a ${rep.to}`);
+      }
+      if (n !== undefined && lo !== undefined && hi !== undefined && !(lo <= n && n <= hi)) {
+        out.push(`number ${n} is not between ${lo} and ${hi}`);
+      }
+      if (r !== undefined && lo !== undefined && hi !== undefined && r !== lo && r !== hi) {
+        out.push(`rounded ${r} is neither ${lo} nor ${hi}`);
+      }
+      break;
+    }
+    case 'fractionLine': {
+      const [a, b] = [val(rep.numerator), val(rep.denominator)];
+      count(rep.numerator, 'parts counted');
+      if (b !== undefined && b < 1) out.push(`${b} parts in a whole`);
+      // The line stretches to the fraction (FractionLine.tsx); more than 24 wholes won't fit.
+      if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 24) {
+        out.push(`${a}/${b} needs ${Math.ceil(a / b)} wholes on the line`);
+      }
+      break;
+    }
+    case 'fractionBars':
+      for (const row of rep.rows) {
+        const [a, b] = [val(row.num), val(row.den)];
+        count(row.num, 'shaded parts');
+        // One bar is one whole: more shaded parts than parts can't be drawn (the bar clamps).
+        if (a !== undefined && b !== undefined && a > b) out.push(`${a}/${b} shaded on one bar`);
+      }
+      break;
+    case 'timeline': {
+      const [sh, sm, d, eh, em] = [
+        rep.startHour,
+        rep.startMinute,
+        rep.minutes,
+        rep.endHour,
+        rep.endMinute,
+      ].map(val);
+      for (const h of [sh, eh]) if (h !== undefined && (h < 1 || h > 12)) out.push(`hour ${h}`);
+      for (const m of [sm, em]) if (m !== undefined && (m < 0 || m > 59)) out.push(`minute ${m}`);
+      if ([sh, sm, d, eh, em].every((x) => x !== undefined)) {
+        const at = (h: number, m: number) => (h % 12) * 60 + m;
+        if ((at(sh!, sm!) + d!) % 720 !== at(eh!, em!)) {
+          out.push(`${sh}:${sm} + ${d} minutes is not ${eh}:${em}`);
+        }
+      }
+      break;
+    }
+    case 'scale': {
+      const t = val(rep.total);
+      if (t !== undefined && t > rep.max) out.push(`total ${t} past the dial's ${rep.max}`);
+      if (rep.count) count(rep.count, 'items on the scale', 10);
+      break;
+    }
+    case 'beaker': {
+      const t = val(rep.total);
+      if (t !== undefined && t > rep.max) out.push(`total ${t} L past the jug's ${rep.max} L`);
+      break;
+    }
+    case 'quadrilateral': {
+      const r = val(rep.rightAngles);
+      if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
+      break;
+    }
     default:
       break;
   }
@@ -1077,9 +1177,18 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   }
   for (const chk of w.check) {
     if (!chk.ok) c.f.add('error', `${c.label}check line doesn't balance: "${chk.formula}"`, where);
-    const sides = chk.formula.split(' = ');
+    // Comparisons ("3/8 < 5/8, 2 parts apart"): the sign must match the two sides.
+    const formula = chk.formula.replace(/, (\d+) parts? apart$/, '');
+    const sign = / ([<>=]) /.exec(formula)?.[1];
+    const sides = formula.split(/ [<>=] /);
     if (sides.length !== 2) continue;
     const [l, r] = sides.map(evaluate);
+    if (sign !== '=' && l !== undefined && r !== undefined) {
+      if (sign === '<' ? !(l < r) : !(l > r)) {
+        c.f.add('error', `${c.label}check line compares the wrong way: "${chk.formula}"`, where);
+      }
+      continue;
+    }
     if (l === undefined || r === undefined) {
       c.f.add(
         'harness',

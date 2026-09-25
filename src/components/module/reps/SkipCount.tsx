@@ -26,7 +26,8 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const s = Math.max(1, Math.round(stepVar ? rep.shown(stepVar) : (spec.step as number)));
   const k = Math.max(0, Math.round(rep.shown(spec.count)));
   const from = spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : 0;
-  const fit = useFrozen(niceCeil(Math.max(s * 10, s * k)));
+  // Room for 10 jumps, so the 11 labeled ticks fall where the jumps land (0, 4, 8, … for 4s).
+  const fit = useFrozen(k <= 10 ? s * 10 : niceCeil(s * k));
   // Counting back: jumps go left from the start, so the line ends at the start.
   const dir = spec.back ? -1 : 1;
 

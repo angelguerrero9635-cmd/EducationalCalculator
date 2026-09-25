@@ -21,8 +21,10 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const b = Math.max(1, Math.round(rep.shown(spec.denominator)));
-  const W = spec.wholes;
-  const a = Math.min(W * b, Math.max(0, Math.round(rep.shown(spec.numerator))));
+  const raw = Math.max(0, Math.round(rep.shown(spec.numerator)));
+  // Enough wholes for the fraction (at least `wholes`), so 17/5 is drawn where it is.
+  const W = Math.max(spec.wholes, Math.ceil(raw / b));
+  const a = raw;
   const known = rep.known(spec.numerator) && rep.known(spec.denominator);
   const wholes = Math.floor(a / b);
   const left = a - wholes * b;
@@ -38,7 +40,7 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const step = unit / b;
           const lift = Math.min(h * 0.38, Math.max(10, step * 0.55));
           // Label every mark when there's room; otherwise only whole numbers.
-          const labelAll = step >= 26;
+          const labelAll = step >= 30;
           return (
             <>
               <Svg width={w} height={h}>
@@ -64,18 +66,21 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     />
                   );
                 })}
-                {Array.from({ length: W + 1 }, (_, i) => (
-                  <ChartText
-                    key={`w${i}`}
-                    x={px(i)}
-                    y={y + 28}
-                    fontSize={chart.value}
-                    fontWeight="700"
-                    textAnchor="middle"
-                  >
-                    {String(i)}
-                  </ChartText>
-                ))}
+                {Array.from({ length: W + 1 }, (_, i) => i)
+                  // Long lines label every 2nd or 5th whole so the numbers don't touch.
+                  .filter((i) => i % (unit >= 26 ? 1 : unit >= 13 ? 2 : 5) === 0 || i === W)
+                  .map((i) => (
+                    <ChartText
+                      key={`w${i}`}
+                      x={px(i)}
+                      y={y + 28}
+                      fontSize={chart.value}
+                      fontWeight="700"
+                      textAnchor="middle"
+                    >
+                      {String(i)}
+                    </ChartText>
+                  ))}
                 {labelAll
                   ? Array.from({ length: W * b + 1 }, (_, i) => (
                       <ChartText

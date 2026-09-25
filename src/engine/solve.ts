@@ -349,7 +349,8 @@ function wholeSolutions(
   previous: Values,
   limit: number,
 ): { solutions: Values[]; exhausted: boolean } {
-  const budget = { left: 3000 };
+  // Enough for two unknown minutes on a clock (60 × 60 tries).
+  const budget = { left: 4000 };
   const solutions: Values[] = [];
   let exhausted = false;
   const search = (vals: Values) => {

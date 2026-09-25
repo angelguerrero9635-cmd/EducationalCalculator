@@ -43,13 +43,15 @@ export function renderTemplate(
   values?: Values,
 ): string {
   const byId = new Map(variables.map((v) => [v.id, v]));
-  const filled = template.replace(/\{(\w+)\}/g, (_, id: string) => {
+  const filled = template.replace(/\{(\w+)\}/g, (_, id: string, at: number) => {
     const variable = byId.get(id);
     if (!variable) return id;
     if (!values) return variable.symbol;
     const x = values[id];
     if (x === undefined) return '?';
-    const s = formatNumber(x, variable);
+    // Zero padding is for clock times ("3:05"); in sums and words the minutes are plain (5 + 20).
+    const clockPart = template[at - 1] === ':';
+    const s = formatNumber(x, clockPart ? variable : { ...variable, digits: undefined });
     return x < 0 ? `(${s})` : s;
   });
   // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0.

@@ -198,30 +198,36 @@ export const dealLines = (groups: number, each: number, name: string) => [
 ];
 
 /**
- * a × b the way Grade 3 learns it, one step per line: count by the bigger factor when a factor is
- * 5 or less (or 10); otherwise break a factor into 5 and the rest (7 × 8 = 5 × 8 + 2 × 8).
+ * `times` groups of `each`, the way Grade 3 learns it, one step per line: count by the size of
+ * each group ("Count by 4s, 5 times"); for 6 to 9 groups, split the groups into 5 and the rest
+ * (7 × 3 = 5 × 3 + 2 × 3).
  */
-export function timesWork(a: number, b: number): string[] {
-  if (a === 0 || b === 0) return ['Any number times 0 is 0.'];
-  if (a === 1 || b === 1) return [`1 × a number is that number: ${a * b}`];
-  const [big, small] = a >= b ? [a, b] : [b, a];
-  if (small <= 5 || big === 10) {
-    return [`Count by ${big}s, ${small} times: ${countList(0, big, small)} → ${a * b}`];
+export function timesWork(times: number, each: number): string[] {
+  if (times === 0 || each === 0) return ['Any number times 0 is 0.'];
+  if (times === 1 || each === 1) return [`1 × a number is that number: ${times * each}`];
+  if (times <= 5 || times === 10) {
+    return [`Count by ${each}s, ${times} times: ${countList(0, each, times)} → ${times * each}`];
   }
-  const rest = small - 5;
+  const rest = times - 5;
   return [
-    `${small} = 5 + ${rest}, so ${small} × ${big} = 5 × ${big} + ${rest} × ${big}`,
-    `5 × ${big} = ${5 * big}`,
-    `${rest} × ${big} = ${rest * big}`,
-    `${5 * big} + ${rest * big} = ${a * b}`,
+    `${times} = 5 + ${rest}, so ${times} × ${each} = 5 × ${each} + ${rest} × ${each}`,
+    `5 × ${each} = ${5 * each}`,
+    `${rest} × ${each} = ${rest * each}`,
+    `${5 * each} + ${rest * each} = ${times * each}`,
   ];
 }
 
-/** n ÷ d, thinking of the multiplication fact: count by d to n ("Count by 4s: 4, 8, 12 → 3"). */
-export function divideWork(n: number, d: number): string[] {
+/**
+ * n ÷ d, thinking of the multiplication fact in the number sentence's order: "? × 4 = 24" when
+ * the first factor is missing, "4 × ? = 24" when the second is. Then count by d to n.
+ */
+export function divideWork(n: number, d: number, missing: 'first' | 'second' = 'first'): string[] {
   if (d === 0) return [];
   const q = n / d;
   if (!Number.isInteger(q) || q < 0) return [];
   if (n === 0) return ['0 shared into any number of groups is 0.'];
-  return [`Think: ? × ${d} = ${n}`, `Count by ${d}s to ${n}: ${countList(0, d, q)} → ${q}`];
+  return [
+    missing === 'first' ? `Think: ? × ${d} = ${n}` : `Think: ${d} × ? = ${n}`,
+    `Count by ${d}s to ${n}: ${countList(0, d, q)} → ${q}`,
+  ];
 }

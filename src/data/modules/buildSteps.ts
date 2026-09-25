@@ -125,7 +125,8 @@ export function buildSteps(
    * unit (lesson numbers), never to the same value converted into formula units.
    */
   const fmt = (id: string, x: number, unit: string | undefined, inShownUnit = true) => {
-    const n = formatNumber(x, inShownUnit ? byId.get(id) : undefined);
+    const v = byId.get(id);
+    const n = formatNumber(x, inShownUnit && v ? { ...v, digits: undefined } : undefined);
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return `$${n}`;

@@ -43,7 +43,7 @@ function times(
       [b]: {
         expr: `{${c}} ÷ {${a}}`,
         how: `Divide the ${cn} by the ${an}.`,
-        work: (v: Values) => divideWork(v[c]!, v[a]!),
+        work: (v: Values) => divideWork(v[c]!, v[a]!, 'second'),
       },
     } as Record<string, StepText>,
   };
@@ -116,6 +116,39 @@ function timeHops(h: number, m: number, d: number): string[] {
   return lines;
 }
 
+/** Counting back from an end time: to the hour, then whole hours, then the minutes left. */
+function timeHopsBack(h: number, m: number, d: number): string[] {
+  const lines: string[] = [];
+  const parts: number[] = [];
+  const prev = (hour: number) => (hour === 1 ? 12 : hour - 1);
+  let [hh, mm, left] = [h, m, d];
+  if (mm > 0 && left >= mm) {
+    lines.push(`${clock(hh, mm)} → ${clock(hh, 0)} is ${mm} minutes`);
+    parts.push(mm);
+    [mm, left] = [0, left - mm];
+  }
+  while (left >= 60) {
+    lines.push(`${clock(hh, mm)} → ${clock(prev(hh), mm)} is 60 minutes`);
+    parts.push(60);
+    [hh, left] = [prev(hh), left - 60];
+  }
+  if (left > 0) {
+    const [th, tm] = mm >= left ? [hh, mm - left] : [prev(hh), mm + 60 - left];
+    lines.push(`${clock(hh, mm)} → ${clock(th, tm)} is ${left} minutes`);
+    parts.push(left);
+  }
+  if (parts.length > 1) lines.push(`${parts.join(' + ')} = ${d} minutes`);
+  return lines;
+}
+
+/** Minutes after 12:00 on a 12-hour clock (12:30 is 30), and back to an hour (0 → 12). */
+const at = (h: number, m: number) => 60 * (h % 12) + m;
+const mod720 = (x: number) => ((x % 720) + 720) % 720;
+const toHour = (t: number) => {
+  const h = t / 60;
+  return Number.isInteger(h) ? h || 12 : undefined;
+};
+
 export const MATH_3_MORE_MODULES: ModuleDef[] = [
   // ── Fractions on a number line (3.NF.1, 3.NF.2, 3.NF.3c) ──
   {
@@ -129,13 +162,13 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     variables: [
       whole('a', 'a', 'Parts counted', 0, 24),
       whole('b', 'b', 'Parts in one whole', 1, 8),
-      whole('w', 'w', 'Wholes', 0, 3),
-      whole('r', 'r', 'Parts left over', 0, 7),
+      whole('w', 'w', 'Wholes', 0, 24),
+      whole('r', 'r', 'Parts past the last whole', 0, 7),
     ],
     relations: [
       {
         id: 'w = wholes in a/b',
-        display: 'Wholes in {a}/{b}: {w}',
+        display: '{a}/{b} passes {w} whole numbers',
         vars: ['w', 'a', 'b'],
         residual: (v) => v.w! - Math.floor(v.a! / v.b!),
         // Many fractions pass the same number of wholes: the parts can't be found from it.
@@ -241,6 +274,13 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       ['b', 'k', 'd'],
       ['parts in the whole', 'pieces per part', 'new parts in the whole'],
     );
+    // Shaded parts can't be more than the parts in the whole (these are fractions up to 1).
+    const notShaded = plus(
+      'b = a + u',
+      ['a', 'u', 'b'],
+      ['shaded parts', 'parts not shaded', 'parts in the whole'],
+      '{a} shaded + {u} not shaded = {b} parts',
+    );
     return {
       id: 'm.3.compare-fractions',
       assumptions: [
@@ -251,13 +291,15 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       variables: [
         whole('a', 'a', 'Shaded parts', 0, 8),
         whole('b', 'b', 'Parts in the whole', 1, 8),
-        whole('k', 'k', 'Cut each part into', 1, 4),
-        whole('c', 'c', 'New shaded parts', 0, 8),
-        whole('d', 'd', 'New parts in the whole', 1, 8),
+        whole('k', 'k', 'Pieces per part', 1, 4),
+        whole('c', 'c', 'New shaded parts', 0, 16),
+        whole('d', 'd', 'New parts in the whole', 1, 16),
+        whole('u', 'u', 'Not shaded', 0, 8),
       ],
-      relations: [top.relation, bottom.relation],
-      steps: { 'c = a × k': top.steps, 'd = b × k': bottom.steps },
-      example: { a: 1, b: 2, k: 2, c: 2, d: 4 },
+      relations: [top.relation, bottom.relation, notShaded.relation],
+      steps: { 'c = a × k': top.steps, 'd = b × k': bottom.steps, 'b = a + u': notShaded.steps },
+      example: { a: 1, b: 2, k: 2, c: 2, d: 4, u: 1 },
+      pictureLabels: ['u'],
       startWith: ['k', 'a', 'b'],
       representation: {
         kind: 'fractionBars',
@@ -270,75 +312,95 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-  {
-    id: 'm.3.compare-fractions~same-denominator',
-    pictureLabels: ['g'],
-    title: 'Compare: same denominator',
-    standalone: {
-      vars: ['b'],
-      why: 'Both fractions use the same equal parts, so only the shaded parts decide which is more.',
-    },
-    assumptions: [
-      'Same denominator: both wholes are cut into the same equal parts.',
-      'Then more shaded parts means the bigger fraction: 5/8 > 3/8.',
-      'Both fractions are parts of the same whole.',
-    ],
-    variables: [
-      whole('b', 'b', 'Parts in each whole', 1, 8),
-      whole('a', 'a', 'First shaded', 0, 8),
-      whole('c', 'c', 'Second shaded', 0, 8),
-      whole('g', 'g', 'Parts apart', 0, 8),
-    ],
-    relations: [
-      {
-        id: 'g = parts between a and c',
-        display: '{a} and {c} shaded parts are {g} apart',
-        // With the parts known: "3/8 < 5/8, 2 parts apart"; without: "3 parts < 5 parts".
-        check: (v) => {
-          const sign = v.a! > v.c! ? '>' : v.a! < v.c! ? '<' : '=';
-          const apart = `${v.g} ${v.g === 1 ? 'part' : 'parts'} apart`;
-          return v.b === undefined
-            ? `${v.a} shaded ${sign} ${v.c} shaded, ${apart}`
-            : `${v.a}/${v.b} ${sign} ${v.c}/${v.b}, ${apart}`;
-        },
-        vars: ['g', 'a', 'c'],
-        residual: (v) => v.g! - Math.abs(v.a! - v.c!),
-        solve: {
-          g: (v) => Math.abs(v.a! - v.c!),
-          a: (v) => [v.c! + v.g!, v.c! - v.g!],
-          c: (v) => [v.a! - v.g!, v.a! + v.g!],
-        },
-      },
-    ],
-    steps: {
-      'g = parts between a and c': {
-        g: {
-          expr: (v) => (v.a! >= v.c! ? '{a} − {c}' : '{c} − {a}'),
-          how: 'The parts are the same size, so compare the shaded parts. Take the smaller from the bigger.',
-        },
-        a: {
-          expr: (v) => (v.a! >= v.c! ? '{c} + {g}' : '{c} − {g}'),
-          how: 'Start from the second fraction’s shaded parts and move by the difference.',
-          note: (v) => (v.g! > 0 && v.c! - v.g! >= 0 && v.a! > v.c! ? `(or ${v.c! - v.g!})` : ''),
-        },
-        c: {
-          expr: (v) => (v.a! >= v.c! ? '{a} − {g}' : '{a} + {g}'),
-          how: 'Start from the first fraction’s shaded parts and move by the difference.',
-          note: (v) => (v.g! > 0 && v.a! + v.g! <= 8 && v.c! < v.a! ? `(or ${v.a! + v.g!})` : ''),
-        },
-      },
-    },
-    example: { b: 8, a: 3, c: 5, g: 2 },
-    startWith: ['b', 'a', 'c'],
-    representation: {
-      kind: 'fractionBars',
-      rows: [
-        { num: 'a', den: 'b' },
-        { num: 'c', den: 'b' },
+  (() => {
+    const firstLeft = plus(
+      'b = a + u',
+      ['a', 'u', 'b'],
+      ['first shaded', 'first not shaded', 'parts in each whole'],
+      '{a} shaded + {u} not shaded = {b} parts',
+    );
+    const secondLeft = plus(
+      'b = c + x',
+      ['c', 'x', 'b'],
+      ['second shaded', 'second not shaded', 'parts in each whole'],
+      '{c} shaded + {x} not shaded = {b} parts',
+    );
+    return {
+      id: 'm.3.compare-fractions~same-denominator',
+      pictureLabels: ['g', 'u', 'x'],
+      title: 'Compare: same denominator',
+      assumptions: [
+        'Same denominator: both wholes are cut into the same equal parts.',
+        'Then more shaded parts means the bigger fraction: 5/8 > 3/8.',
+        'Both fractions are parts of the same whole.',
       ],
-      controls: ['b', 'a', 'c'],
-    },
-  },
+      variables: [
+        whole('b', 'b', 'Parts in each whole', 1, 8),
+        whole('a', 'a', 'First shaded', 0, 8),
+        whole('c', 'c', 'Second shaded', 0, 8),
+        whole('g', 'g', 'Difference in shaded parts', 0, 8),
+        whole('u', 'u', 'First not shaded', 0, 8),
+        whole('x', 'x', 'Second not shaded', 0, 8),
+      ],
+      relations: [
+        firstLeft.relation,
+        secondLeft.relation,
+        {
+          id: 'g = parts between a and c',
+          display: '{a} and {c} shaded parts are {g} apart',
+          // With the parts known: "3/8 < 5/8, 2 parts apart"; without: "3 parts < 5 parts".
+          check: (v) => {
+            const sign = v.a! > v.c! ? '>' : v.a! < v.c! ? '<' : '=';
+            const apart = `${v.g} ${v.g === 1 ? 'part' : 'parts'} apart`;
+            return v.b === undefined
+              ? `${v.a} shaded ${sign} ${v.c} shaded, ${apart}`
+              : `${v.a}/${v.b} ${sign} ${v.c}/${v.b}, ${apart}`;
+          },
+          vars: ['g', 'a', 'c'],
+          residual: (v) => v.g! - Math.abs(v.a! - v.c!),
+          solve: {
+            g: (v) => Math.abs(v.a! - v.c!),
+            a: (v) => [v.c! + v.g!, v.c! - v.g!],
+            c: (v) => [v.a! - v.g!, v.a! + v.g!],
+          },
+        },
+      ],
+      steps: {
+        'b = a + u': firstLeft.steps,
+        'b = c + x': secondLeft.steps,
+        'g = parts between a and c': {
+          g: {
+            expr: (v) => (v.a! >= v.c! ? '{a} − {c}' : '{c} − {a}'),
+            how: 'The parts are the same size, so compare the shaded parts. Take the smaller from the bigger.',
+            note: (v) =>
+              v.b === undefined
+                ? ''
+                : `(${v.a}/${v.b} ${v.a! > v.c! ? '>' : v.a! < v.c! ? '<' : '='} ${v.c}/${v.b})`,
+          },
+          a: {
+            expr: (v) => (v.a! >= v.c! ? '{c} + {g}' : '{c} − {g}'),
+            how: 'Start from the second fraction’s shaded parts and move by the difference.',
+            note: (v) => (v.g! > 0 && v.c! - v.g! >= 0 && v.a! > v.c! ? `(or ${v.c! - v.g!})` : ''),
+          },
+          c: {
+            expr: (v) => (v.a! >= v.c! ? '{a} − {g}' : '{a} + {g}'),
+            how: 'Start from the first fraction’s shaded parts and move by the difference.',
+            note: (v) => (v.g! > 0 && v.a! + v.g! <= 8 && v.c! < v.a! ? `(or ${v.a! + v.g!})` : ''),
+          },
+        },
+      },
+      example: { b: 8, a: 3, c: 5, g: 2, u: 5, x: 3 },
+      startWith: ['b', 'a', 'c'],
+      representation: {
+        kind: 'fractionBars',
+        rows: [
+          { num: 'a', den: 'b' },
+          { num: 'c', den: 'b' },
+        ],
+        controls: ['b', 'a', 'c'],
+      },
+    } satisfies ModuleDef;
+  })(),
 
   // ── Time to the minute and elapsed time (3.MD.1) ──
   {
@@ -356,13 +418,13 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     variables: [
       whole('h', 'h', 'Hour', 1, 12),
       { ...whole('m', 'm', 'Minutes past', 0, 59), digits: 2 },
-      whole('k', 'k', 'Long hand passed', 0, 11),
+      whole('k', 'k', 'Long hand at or past', 0, 11),
       whole('e', 'e', 'Extra minutes', 0, 4),
     ],
     relations: [
       {
         id: 'k = fives in m',
-        display: '{m} minutes: the long hand has passed {k}',
+        display: 'At {m} minutes the long hand is at or past the {k}',
         vars: ['k', 'm'],
         residual: (v) => v.k! - Math.floor(v.m! / 5),
         solve: { k: (v) => Math.floor(v.m! / 5), m: () => undefined },
@@ -388,7 +450,9 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
           expr: 'last 5 before {m}',
           how: 'Count by 5s as far as you can without going past the minutes.',
           work: (v) =>
-            v.k! > 0 ? [`Count by 5s: ${countList(0, 5, v.k!)} → the long hand passed ${v.k}`] : [],
+            v.k! > 0
+              ? [`Count by 5s: ${countList(0, 5, v.k!)} → the long hand is at or past the ${v.k}`]
+              : [],
         },
       },
       'm = 5 × k + e': {
@@ -422,7 +486,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     title: 'How long? When does it end?',
     assumptions: [
       'Count on from the start: to the next hour, then whole hours, then the minutes left.',
-      'Start and end are in the same morning or the same afternoon.',
+      'After 12:59 the clock starts again at 1:00.',
       '60 minutes make 1 hour.',
     ],
     variables: [
@@ -435,7 +499,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'end minutes',
-        display: '{sm} + {d} minutes, less whole hours, ends at {em} minutes past',
+        display: '{sm} minutes + {d} minutes ends at {em} minutes past the hour',
         vars: ['em', 'sm', 'd'],
         residual: (v) => v.em! - ((v.sm! + v.d!) % 60),
         solve: {
@@ -449,13 +513,23 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         id: 'start + time = end',
         display: '{sh}:{sm} + {d} minutes = {eh}:{em}',
         vars: ['eh', 'em', 'sh', 'sm', 'd'],
-        residual: (v) => 60 * v.eh! + v.em! - 60 * v.sh! - v.sm! - v.d!,
+        // On a 12-hour clock: 12:30 + 45 minutes = 1:15.
+        residual: (v) => {
+          const r = mod720(at(v.eh!, v.em!) - at(v.sh!, v.sm!) - v.d!);
+          return r > 360 ? r - 720 : r;
+        },
         solve: {
-          eh: (v) => div(60 * v.sh! + v.sm! + v.d! - v.em!, 60),
-          d: (v) => 60 * (v.eh! - v.sh!) + v.em! - v.sm!,
-          sh: (v) => div(60 * v.eh! + v.em! - v.sm! - v.d!, 60),
-          sm: (v) => 60 * (v.eh! - v.sh!) + v.em! - v.d!,
-          em: (v) => 60 * (v.sh! - v.eh!) + v.sm! + v.d!,
+          eh: (v) => toHour(mod720(at(v.sh!, v.sm!) + v.d! - v.em!)),
+          d: (v) => mod720(at(v.eh!, v.em!) - at(v.sh!, v.sm!)),
+          sh: (v) => toHour(mod720(at(v.eh!, v.em!) - v.d! - v.sm!)),
+          sm: (v) => {
+            const x = mod720(at(v.eh!, v.em!) - v.d! - 60 * (v.sh! % 12));
+            return x < 60 ? x : undefined;
+          },
+          em: (v) => {
+            const x = mod720(at(v.sh!, v.sm!) + v.d! - 60 * (v.eh! % 12));
+            return x < 60 ? x : undefined;
+          },
         },
       },
     ],
@@ -463,18 +537,15 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       'end minutes': {
         em: {
           expr: '{sm} + {d} past the hour',
-          how: 'Add the minutes to the start minutes. Every 60 minutes is a new hour.',
-          work: (v) =>
-            v.sm! + v.d! >= 60
-              ? [
-                  `${v.sm} + ${v.d} = ${v.sm! + v.d!}`,
-                  `${v.sm! + v.d!} = ${Math.floor((v.sm! + v.d!) / 60) * 60} + ${v.em}: ${v.em} minutes past the hour`,
-                ]
-              : [`${v.sm} + ${v.d} = ${v.em}`],
+          how: 'Count on from the start time; the jumps are in the next step. Every 60 minutes is a new hour.',
         },
         sm: {
-          expr: '{em} − {d} past the hour',
-          how: 'Count back the minutes from the end minutes.',
+          expr: '{d} minutes before {em} past the hour',
+          how: 'Count back the minutes from the end minutes. Past the hour, go back into the hour before.',
+          work: (v) =>
+            v.d! % 60 <= v.em!
+              ? [`${v.em} − ${v.d! % 60} = ${v.sm}`]
+              : [`${v.em} + 60 − ${v.d! % 60} = ${v.sm}`],
         },
       },
       'start + time = end': {
@@ -491,12 +562,14 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         },
         sh: {
           expr: 'the hour {d} minutes before {eh}:{em}',
-          how: 'Count back from the end time: the minutes, then whole hours.',
+          how: 'Count back from the end time: to the hour, then whole hours, then the rest.',
+          work: (v) => timeHopsBack(v.eh!, v.em!, v.d!),
           note: (v) => `(${clock(v.sh!, v.sm!)})`,
         },
         sm: {
-          expr: 'minutes before {eh}:{em}',
+          expr: 'minutes past the hour, {d} minutes before {eh}:{em}',
           how: 'Count back from the end time.',
+          work: (v) => timeHopsBack(v.eh!, v.em!, v.d!),
         },
         em: {
           expr: 'minutes after {sh}:{sm}',
@@ -855,7 +928,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         w: {
           expr: '{A} ÷ {l}',
           how: 'Divide the area by the length.',
-          work: (v) => divideWork(v.A!, v.l!),
+          work: (v) => divideWork(v.A!, v.l!, 'second'),
         },
       },
     },
@@ -885,7 +958,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       whole('b', 'b', 'Cats', 0, 50),
       whole('c', 'c', 'Fish', 0, 50),
       whole('t', 't', 'Total', 0, 150),
-      whole('d', 'd', 'More dogs than cats', 0, 50),
+      whole('d', 'd', 'How many more', 0, 50),
     ],
     relations: [
       {
@@ -901,11 +974,16 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         },
       },
       {
+        // Either bar can be taller: the difference is the taller take away the shorter.
         id: 'd = a − b',
-        display: '{a} − {b} = {d}',
+        display: '{a} and {b} are {d} apart',
         vars: ['d', 'a', 'b'],
-        residual: (v) => v.d! - (v.a! - v.b!),
-        solve: { d: (v) => v.a! - v.b!, a: (v) => v.b! + v.d!, b: (v) => v.a! - v.d! },
+        residual: (v) => v.d! - Math.abs(v.a! - v.b!),
+        solve: {
+          d: (v) => Math.abs(v.a! - v.b!),
+          a: (v) => [v.b! + v.d!, v.b! - v.d!].filter((x) => x >= 0),
+          b: (v) => [v.a! - v.d!, v.a! + v.d!].filter((x) => x >= 0),
+        },
       },
     ],
     steps: {
@@ -933,19 +1011,26 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
       'd = a − b': {
         d: {
-          expr: '{a} − {b}',
-          how: 'Subtract the cats bar from the dogs bar.',
-          work: (v) => subtractStrategy(v.a!, v.b!),
+          expr: (v) => (v.a! >= v.b! ? '{a} − {b}' : '{b} − {a}'),
+          how: 'Subtract the shorter bar from the taller bar.',
+          work: (v) => subtractStrategy(Math.max(v.a!, v.b!), Math.min(v.a!, v.b!)),
+          note: (v) => (v.a! === v.b! ? '(the same)' : v.a! > v.b! ? '(more dogs)' : '(more cats)'),
         },
         a: {
-          expr: '{b} + {d}',
-          how: 'The dogs bar is the cats bar plus how many more.',
-          work: (v) => addStrategy(v.b!, v.d!),
+          expr: (v) => (v.a! >= v.b! ? '{b} + {d}' : '{b} − {d}'),
+          how: (v) =>
+            v.a! >= v.b!
+              ? 'More dogs: the dogs bar is the cats bar plus how many more.'
+              : 'More cats: the dogs bar is the cats bar minus how many more.',
+          work: (v) => (v.a! >= v.b! ? addStrategy(v.b!, v.d!) : subtractStrategy(v.b!, v.d!)),
         },
         b: {
-          expr: '{a} − {d}',
-          how: 'The cats bar is the dogs bar minus how many more.',
-          work: (v) => subtractStrategy(v.a!, v.d!),
+          expr: (v) => (v.a! >= v.b! ? '{a} − {d}' : '{a} + {d}'),
+          how: (v) =>
+            v.a! >= v.b!
+              ? 'More dogs: the cats bar is the dogs bar minus how many more.'
+              : 'More cats: the cats bar is the dogs bar plus how many more.',
+          work: (v) => (v.a! >= v.b! ? subtractStrategy(v.a!, v.d!) : addStrategy(v.a!, v.d!)),
         },
       },
     },

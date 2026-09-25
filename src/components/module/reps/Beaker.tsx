@@ -47,6 +47,9 @@ export function Beaker({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       width={jw}
                       height={py(from) - py(level)}
                       fill={fills[i % fills.length]}
+                      // An outline keeps the pale layers visible, in dark mode too.
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
                     />
                     {p.x > 0 ? (
                       <ChartText

@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/Text';
-import { formatNumber } from '@/engine/format';
 import { font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -64,10 +63,10 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
     <View style={styles.list}>
       {items.map((item) => {
         const v = rep.variable(item.var);
-        const known = rep.known(item.var);
+        // The value with its unit ("250 g"), as everywhere else on the page.
         const label = (
           <Text style={[styles.label, { color: c.text }]} numberOfLines={1}>
-            {`${item.marker ? `${item.marker} ` : ''}${v.name}: ${rep.early ? '' : `${v.symbol} = `}${known ? formatNumber(rep.shown(item.var), v) : '?'}`}
+            {`${item.marker ? `${item.marker} ` : ''}${v.name}: ${rep.early ? '' : `${v.symbol} = `}${rep.value(item.var)}`}
           </Text>
         );
         const minus = (
@@ -104,8 +103,9 @@ const styles = StyleSheet.create({
   spread: { justifyContent: 'space-between' },
   buttons: { flexDirection: 'row', gap: space.xs },
   button: {
+    // 44 × 44 points: the smallest comfortable tap target.
     minWidth: 44,
-    minHeight: 40,
+    minHeight: 44,
     borderWidth: 1,
     borderRadius: radius.sm,
     alignItems: 'center',

@@ -173,7 +173,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fontSize={chart.small}
                   textAnchor="middle"
                 >
-                  {`${name(spec.total)}: ${rep.label(spec.total)}`}
+                  {`${rep.tag(spec.total)}: ${rep.value(spec.total)}`}
                 </ChartText>
                 {spec.parts.map((id, i) => (
                   <Rect
@@ -195,9 +195,14 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     y={y + barH / 2 + 5}
                     fontSize={chart.small}
                     textAnchor="middle"
-                    fill={i === 0 ? c.onChartHighlight : c.chartInk}
+                    // Parts take turns with the fills: every part on the highlight gets light text.
+                    fill={i % fills.length === 0 ? c.onChartHighlight : c.chartInk}
                   >
-                    {rep.label(id)}
+                    {/* A narrow part shows only its value, clear of the drag handles; the name
+                        with its letter is under the bar. */}
+                    {rep.label(id).length * chart.small * 0.55 > x1(i) - x0(i) - chart.handle - 4
+                      ? rep.value(id)
+                      : rep.label(id)}
                   </ChartText>
                 ))}
                 {spec.parts.map((id, i) => (

@@ -46,7 +46,7 @@ function times(
     [b]: {
       expr: `{${c}} ÷ {${a}}`,
       how: `Divide the ${cn} by the ${an}.`,
-      work: (v) => divideWork(v[c]!, v[a]!),
+      work: (v) => divideWork(v[c]!, v[a]!, 'second'),
     },
   };
   return { relation, steps };
@@ -297,7 +297,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // ── Two-step word problems (3.OA.8) ──
   (() => {
     const packs = times('m = g × k', ['g', 'k', 'm'], ['packs', 'number in each pack', 'total']);
-    const left = plus('m = n + t', ['n', 't', 'm'], ['number left', 'number taken away', 'total']);
+    const left = plus('m = n + t', ['n', 't', 'm'], ['number left', 'number taken', 'total']);
     return {
       id: 'm.3.two-step-problems',
       pictureLabels: ['g', 'k'],
@@ -355,9 +355,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('n', 'n', 'Number', 0, 999),
-      whole('L', 'L', 'Ten below', 0, 990),
-      whole('U', 'U', 'Ten above', 10, 1000),
-      whole('r', 'r', 'Rounded', 0, 1000),
+      { ...whole('L', 'L', 'Ten below', 0, 990), step: 10, multipleOf: 10 },
+      { ...whole('U', 'U', 'Ten above', 10, 1000), step: 10, multipleOf: 10 },
+      { ...whole('r', 'r', 'Rounded', 0, 1000), step: 10, multipleOf: 10 },
     ],
     ...rounding(10),
     example: { n: 47, L: 40, U: 50, r: 50 },
@@ -373,9 +373,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('n', 'n', 'Number', 0, 999),
-      whole('L', 'L', 'Hundred below', 0, 900),
-      whole('U', 'U', 'Hundred above', 100, 1000),
-      whole('r', 'r', 'Rounded', 0, 1000),
+      { ...whole('L', 'L', 'Hundred below', 0, 900), step: 100, multipleOf: 100 },
+      { ...whole('U', 'U', 'Hundred above', 100, 1000), step: 100, multipleOf: 100 },
+      { ...whole('r', 'r', 'Rounded', 0, 1000), step: 100, multipleOf: 100 },
     ],
     ...rounding(100),
     example: { n: 362, L: 300, U: 400, r: 400 },
