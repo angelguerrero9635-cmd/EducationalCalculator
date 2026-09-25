@@ -9,7 +9,7 @@ import { formatNumber } from '@/engine/format';
 
 import { div, whole } from './math-k2';
 import type { ModuleDef } from './types';
-import { divideWork, timesWork } from './work';
+import { addStrategy, divideWork, timesWork } from './work';
 
 /** The factors of n in order: 24 → [1, 2, 3, 4, 6, 8, 12, 24]. */
 const factorsOf = (n: number): number[] =>
@@ -179,6 +179,151 @@ export const MATH_4_MODULES: ModuleDef[] = [
       example: { d: 7, p: 1000, v: 7000, r: 700 },
       startWith: ['d', 'p'],
       representation: { kind: 'table', sweep: 'p', output: 'v', params: ['d'], rows: PLACES },
+    } satisfies ModuleDef;
+  })(),
+
+  // ── Multi-digit multiplication: the area model, 2-digit × 1-digit (4.NBT.5) ──
+  (() => {
+    const fmt = (x: number) => formatNumber(x);
+    return {
+      id: 'm.4.multi-digit-multiply',
+      assumptions: [
+        'Break the first factor into tens and ones: 43 = 40 + 3.',
+        'Multiply each part by the second factor, then add the part products.',
+        'The area model draws each part product as a box: 40 × 6 and 3 × 6.',
+        'First factor to 99, second factor to 9.',
+      ],
+      variables: [
+        whole('a', 'a', 'First factor', 10, 99),
+        whole('b', 'b', 'Second factor', 1, 9),
+        {
+          ...whole('t', 't', 'Tens of the first factor', 10, 90),
+          step: 10,
+          multipleOf: 10,
+          derived: true,
+        },
+        { ...whole('o', 'o', 'Ones of the first factor', 0, 9), derived: true },
+        { ...whole('p', 'p', 'Tens part × second', 10, 810), derived: true },
+        { ...whole('q', 'q', 'Ones part × second', 0, 81), derived: true },
+        whole('n', 'n', 'Product', 10, 891),
+      ],
+      relations: [
+        {
+          id: 'a = t + o',
+          display: '{a} = {t} + {o}',
+          vars: ['a', 't', 'o'],
+          residual: (v: Values) => v.a! - v.t! - v.o!,
+          solve: {
+            t: (v: Values) => 10 * Math.floor(v.a! / 10),
+            o: (v: Values) => v.a! % 10,
+            a: (v: Values) => v.t! + v.o!,
+          },
+        },
+        {
+          id: 'p = t × b',
+          display: '{t} × {b} = {p}',
+          vars: ['p', 't', 'b'],
+          residual: (v: Values) => v.p! - v.t! * v.b!,
+          solve: {
+            p: (v: Values) => v.t! * v.b!,
+            t: (v: Values) => div(v.p!, v.b!),
+            b: (v: Values) => div(v.p!, v.t!),
+          },
+        },
+        {
+          id: 'q = o × b',
+          display: '{o} × {b} = {q}',
+          vars: ['q', 'o', 'b'],
+          residual: (v: Values) => v.q! - v.o! * v.b!,
+          solve: {
+            q: (v: Values) => v.o! * v.b!,
+            o: (v: Values) => div(v.q!, v.b!),
+            b: (v: Values) => div(v.q!, v.o!),
+          },
+        },
+        {
+          id: 'n = p + q',
+          display: '{p} + {q} = {n}',
+          vars: ['n', 'p', 'q'],
+          residual: (v: Values) => v.n! - v.p! - v.q!,
+          // The parts come from the factors, never from the product alone (many pairs add
+          // to one product).
+          solve: { n: (v: Values) => v.p! + v.q!, p: () => undefined, q: () => undefined },
+        },
+        {
+          id: 'n = a × b',
+          display: '{a} × {b} = {n}',
+          vars: ['n', 'a', 'b'],
+          residual: (v: Values) => v.n! - v.a! * v.b!,
+          // The product is built from the part products (the lesson), never in one jump.
+          solve: {
+            n: () => undefined,
+            a: (v: Values) => div(v.n!, v.b!),
+            b: (v: Values) => div(v.n!, v.a!),
+          },
+        },
+      ],
+      steps: {
+        'a = t + o': {
+          t: {
+            expr: '{a} without its ones',
+            how: 'The tens of the first factor: the number without its ones.',
+          },
+          o: {
+            expr: '{a} − {t}',
+            how: 'The ones of the first factor: what is left after the tens.',
+          },
+          a: { expr: '{t} + {o}', how: 'Put the tens and the ones back together.' },
+        },
+        'p = t × b': {
+          p: {
+            expr: '{t} × {b}',
+            how: 'Multiply the tens part by the second factor: a basic fact, then a zero.',
+            work: (v) => [
+              `${v.t! / 10} × ${v.b} = ${(v.t! / 10) * v.b!}, so ${v.t} × ${v.b} = ${fmt(v.t! * v.b!)}`,
+            ],
+          },
+          t: { expr: '{p} ÷ {b}', how: 'Divide the tens part product by the second factor.' },
+          b: { expr: '{p} ÷ {t}', how: 'Divide the tens part product by the tens part.' },
+        },
+        'q = o × b': {
+          q: {
+            expr: '{o} × {b}',
+            how: 'Multiply the ones part by the second factor: a basic fact.',
+            work: (v) => timesWork(v.o!, v.b!),
+          },
+          o: { expr: '{q} ÷ {b}', how: 'Divide the ones part product by the second factor.' },
+          b: { expr: '{q} ÷ {o}', how: 'Divide the ones part product by the ones part.' },
+        },
+        'n = p + q': {
+          n: {
+            expr: '{p} + {q}',
+            how: 'Add the two part products.',
+            work: (v) => addStrategy(v.p!, v.q!),
+          },
+        },
+        'n = a × b': {
+          a: {
+            expr: '{n} ÷ {b}',
+            how: 'Divide the product by the second factor.',
+            work: (v) => divideWork(v.n!, v.b!),
+          },
+          b: {
+            expr: '{n} ÷ {a}',
+            how: 'Divide the product by the first factor.',
+            work: (v) => divideWork(v.n!, v.a!, 'second'),
+          },
+        },
+      },
+      example: { a: 43, b: 6, t: 40, o: 3, p: 240, q: 18, n: 258 },
+      startWith: ['a', 'b'],
+      representation: {
+        kind: 'areaModel',
+        top: ['t', 'o'],
+        side: ['b'],
+        parts: [['p', 'q']],
+        total: 'n',
+      },
     } satisfies ModuleDef;
   })(),
 ];

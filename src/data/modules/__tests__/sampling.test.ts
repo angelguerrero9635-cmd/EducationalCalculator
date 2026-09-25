@@ -974,6 +974,30 @@ function repIssues(
         if (x !== undefined && (x < -40 || x > 250)) out.push(`temperature ${id} = ${x}`);
       }
       break;
+    case 'areaModel': {
+      // Every box's product is its top part times its side part, and the boxes add to the total.
+      const tops = rep.top.map(val);
+      const sides = rep.side.map(val);
+      let sum = 0;
+      rep.parts.forEach((row, j) =>
+        row.forEach((id, i) => {
+          const x = val(id);
+          if (x === undefined || tops[i] === undefined || sides[j] === undefined) return;
+          sum += x;
+          if (Math.abs(x - tops[i]! * sides[j]!) > 1e-9) {
+            out.push(`area model box ${id} = ${x}, not ${tops[i]} × ${sides[j]}`);
+          }
+        }),
+      );
+      const total = val(rep.total);
+      const allKnown = [...rep.parts.flat(), ...rep.top, ...rep.side].every(
+        (id) => val(id) !== undefined,
+      );
+      if (total !== undefined && allKnown && Math.abs(sum - total) > 1e-9) {
+        out.push(`area model boxes add to ${sum}, total shows ${total}`);
+      }
+      break;
+    }
     case 'rockLayers':
       count(rep.fossils[0], 'layers', 12);
       count(rep.fossils[1], 'layers', 12);

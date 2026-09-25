@@ -439,6 +439,11 @@ export type Representation =
   | { kind: 'rockLayers'; fossils: [string, string]; difference: string }
   /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */
   | { kind: 'pushes'; right: string; left: string; extra: string; max: number }
+  /**
+   * The area model for multiplication: `top` holds one factor's place-value parts, `side` the
+   * other's; `parts[j][i]` is the product of top[i] and side[j]; `total` their sum.
+   */
+  | { kind: 'areaModel'; top: string[]; side: string[]; parts: string[][]; total: string }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | { kind: 'table'; sweep: string; output: string; params: string[]; rows: number[] }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */
