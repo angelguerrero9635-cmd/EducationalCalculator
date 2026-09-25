@@ -8,6 +8,7 @@ import { formatNumber } from '@/engine/format';
 import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
+import { InputsSection } from './InputsSection';
 import { RepresentationView, representationTitle } from './reps';
 import { StepByStep } from './StepByStep';
 import { useCalculator, type Calculator } from './useCalculator';
@@ -57,6 +58,8 @@ function ModuleView({ module }: { module: ModuleDef }) {
         {module.pictureLabels ? <PictureLabels ids={module.pictureLabels} calc={calc} /> : null}
       </View>
 
+      {/* The numbers come right under the picture, then the sentences they fill in. */}
+      <InputsSection calc={calc} />
       <SectionHeader title={early ? 'Number sentences' : 'Formulas'} />
       <FormulaSection calc={calc} />
 
