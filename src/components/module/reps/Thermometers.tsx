@@ -7,7 +7,6 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
-import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'thermometers' }>;
 
@@ -130,15 +129,18 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   ];
                 })}
               </Svg>
-              {spec.items.map((id, i) =>
-                shown[i] === undefined ? null : (
+              {spec.items.map((id, i) => {
+                // A "?" thermometer's handle waits next to the other one (or at the bottom).
+                const from =
+                  shown[i] ?? shown.find((x, k) => k !== i && x !== undefined) ?? spec.min;
+                return (
                   <DragHandle
                     key={`d${id}`}
                     testID={`drag-${id}`}
                     x={slot * i + slot / 2 + 10}
-                    y={py(shown[i]!)}
+                    y={py(from)}
                     label={rep.variable(id).name}
-                    onStart={() => (start.current = shown[i]!)}
+                    onStart={() => (start.current = from)}
                     onMove={(_, dy) =>
                       calc.set({
                         ...rep.pin(spec.items.filter((x) => x !== id)),
@@ -149,8 +151,8 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       })
                     }
                   />
-                ),
-              )}
+                );
+              })}
             </>
           );
         }}
@@ -166,16 +168,6 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return `${names} ${warmer} is warmer by ${rep.value(spec.difference)}.`;
         })()}
       </Caption>
-      <Steppers
-        calc={calc}
-        items={spec.items.map((id, i) => ({
-          var: id,
-          steps: hi - lo > 60 ? [1, 10] : [1],
-          pin: spec.items.filter((x) => x !== id),
-          // A "?" thermometer starts next to the other one, or at the bottom of the scale.
-          from: shown.find((x, k) => k !== i && x !== undefined) ?? spec.min,
-        }))}
-      />
       {unit ? null : null}
     </View>
   );

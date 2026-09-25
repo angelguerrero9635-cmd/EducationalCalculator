@@ -265,8 +265,9 @@ const isNumberSentence = (line: string) =>
  */
 export function Caption({ children }: { children: string }) {
   const c = usePalette();
+  // Items joined with " · " read as one run-on on a phone: one line each.
   const sentences = children
-    .split(/(?<=[.!?])\s+(?=[A-Z0-9“(])/)
+    .split(/\s+·\s+|(?<=[.!?])\s+(?=[A-Z0-9“(])/)
     .map((x) => x.trim())
     .filter(Boolean);
   return (

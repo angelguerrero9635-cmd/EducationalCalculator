@@ -56,13 +56,20 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const ids = spec.columns.map((col) => col.var);
+  // Rows shown: the biggest count plus two to grow into, never more than the picture holds.
+  const biggest = Math.max(0, ...ids.map((id) => (rep.known(id) ? Math.round(rep.val(id)) : 0)));
+  const rows = Math.max(3, Math.min(spec.max, biggest + 2));
+  const colWidth = (w: number) => Math.min(88, (w - 16) / spec.columns.length);
+  // Each icon is a tap target: at least 44 pt when the columns leave room.
+  const cellFor = (w: number) =>
+    Math.max(Math.min(44, colWidth(w)), Math.min(52, colWidth(w) * 0.75));
 
   return (
     <View style={{ gap: space.md }}>
-      <Canvas aspect={1}>
-        {({ w, h }) => {
-          const colW = Math.min(88, (w - 16) / spec.columns.length);
-          const cell = Math.min(colW * 0.75, (h - 56) / spec.max);
+      <Canvas aspect={(w) => (rows * cellFor(w) + 56) / w}>
+        {({ w }) => {
+          const colW = colWidth(w);
+          const cell = cellFor(w);
           return (
             <View style={styles.graph}>
               {spec.columns.map((col) => {
@@ -74,7 +81,7 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     style={{ width: colW, alignItems: 'center', opacity: known ? 1 : 0.35 }}
                   >
                     <View style={[styles.column, { borderBottomColor: c.chartInk }]}>
-                      {Array.from({ length: spec.max }, (_, i) => (
+                      {Array.from({ length: rows }, (_, i) => (
                         <Pressable
                           key={i}
                           testID={`pic-${col.var}-${i + 1}`}

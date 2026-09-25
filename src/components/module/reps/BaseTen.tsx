@@ -35,6 +35,16 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const flatLines = (h: number) => (h > 5 ? 2 : 1);
   const hundreds = rows.some((id) => (rep.variable(id).max ?? 0) >= 100);
   const place = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+  const describeCounts = (id: string) => {
+    if (!spec.places || id === spec.total) return describe(value(id));
+    const d = counts(id);
+    const parts = [
+      ...(d.h > 0 ? [place(d.h, 'hundred', 'hundreds')] : []),
+      ...(d.t > 0 ? [place(d.t, 'ten', 'tens')] : []),
+      ...(d.o > 0 ? [place(d.o, 'one', 'ones')] : []),
+    ];
+    return parts.length ? parts.join(', ') : '0';
+  };
   const describe = (n: number) => {
     const d = digits(n);
     // Name only the places in use ("3 hundreds", not "3 hundreds, 0 tens, 0 ones").
@@ -46,8 +56,17 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     return parts.length ? parts.join(', ') : '0';
   };
 
+  // A regroup lesson draws the counts the student typed, not the number's digits.
+  const counts = (id: string) =>
+    spec.places && id !== spec.total
+      ? {
+          h: spec.places.hundreds ? value(spec.places.hundreds) : 0,
+          t: value(spec.places.tens),
+          o: value(spec.places.ones),
+        }
+      : digits(value(id));
   const blocks = (id: string, top: number, u: number, fill: string) => {
-    const { h, t, o } = digits(value(id));
+    const { h, t, o } = counts(id);
     const out: ReactNode[] = [];
     const y0 = top + 18;
     const cols = flatCols(h);
@@ -80,12 +99,13 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     // Rods and ones sit beside the flats, on the flats' last line.
     const y = y0 + (flatLines(h) - 1) * (10 * u + 4);
     let x = 8 + cols * (10 * u + 6);
-    for (let i = 0; i < t; i++, x += u + 4) {
+    // More than 9 rods (a regroup lesson) go on as many lines as they need, 10 to a line.
+    for (let i = 0; i < t; i++) {
       out.push(
         <Rect
           key={`t${i}`}
-          x={x}
-          y={y}
+          x={x + (i % 10) * (u + 4)}
+          y={y + Math.floor(i / 10) * (10 * u + 4)}
           width={u}
           height={10 * u}
           fill={fill}
@@ -94,13 +114,17 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
         />,
       );
     }
-    x += 6;
+    x += Math.min(t, 10) * (u + 4) + 6;
+    // Ones stack in fives; in a regroup lesson every full ten of them is boxed as a trade.
+    const onesTop = y + (h || t ? 10 * u : 2 * (u + 3));
     for (let i = 0; i < o; i++) {
+      const group = Math.floor(i / 10);
+      const k = i % 10;
       out.push(
         <Rect
           key={`o${i}`}
-          x={x + (i % 5) * (u + 3)}
-          y={y + (h || t ? 10 * u : 2 * (u + 3)) - (Math.floor(i / 5) + 1) * (u + 3)}
+          x={x + group * (5 * (u + 3) + 8) + (k % 5) * (u + 3)}
+          y={onesTop - (Math.floor(k / 5) + 1) * (u + 3)}
           width={u}
           height={u}
           fill={fill}
@@ -109,13 +133,33 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
         />,
       );
     }
+    if (spec.places && id !== spec.total) {
+      for (let g = 0; g < Math.floor(o / 10); g++) {
+        out.push(
+          <Rect
+            key={`g${g}`}
+            x={x + g * (5 * (u + 3) + 8) - 2}
+            y={onesTop - 2 * (u + 3) - 2}
+            width={5 * (u + 3) + 1}
+            height={2 * (u + 3) + 1}
+            fill="none"
+            stroke={c.chartInk}
+            strokeWidth={chart.strokeLight}
+            strokeDasharray={chart.dash}
+          />,
+        );
+      }
+    }
     return out;
   };
 
-  const lines = rows.map((id) => flatLines(digits(value(id)).h));
+  const lines = rows.map((id) => {
+    const d = counts(id);
+    return Math.max(flatLines(d.h), Math.ceil(d.t / 10));
+  });
   // A row of only small cubes is short: two rows of cubes instead of a rod's height.
   const onlyOnes = rows.map((id) => {
-    const d = digits(value(id));
+    const d = counts(id);
     return d.h === 0 && d.t === 0;
   });
   const blockHeight = (r: number, u: number) =>
@@ -128,8 +172,13 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
       Math.min(
         8,
         ...rows.map((id) => {
-          const cols = flatCols(digits(value(id)).h);
-          return (w - 16 - 6 * cols - 36 - 6 - 15) / (10 * cols + 9 + 5);
+          const d = counts(id);
+          const cols = flatCols(d.h);
+          const groups = spec.places ? Math.max(1, Math.ceil(Math.max(d.o, 1) / 10)) : 1;
+          return (
+            (w - 16 - 6 * cols - 4 * Math.min(9, d.t) - 6 - 3 * 5 * groups - 8 * (groups - 1)) /
+            (10 * cols + Math.max(9, Math.min(d.t, 10)) + 5 * groups)
+          );
         }),
       ),
     );
@@ -152,7 +201,13 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 return (
                   <G key={id} opacity={rep.known(id) ? 1 : 0.35}>
                     <ChartText x={8} y={rowTop + 12} fontSize={chart.small}>
-                      {`${rep.variable(id).name}: ${rep.label(id)}${rep.known(id) ? `  =  ${describe(value(id))}` : ''}`}
+                      {`${rep.variable(id).name}: ${rep.label(id)}${
+                        rep.known(id)
+                          ? rep.early
+                            ? ` (${describeCounts(id)})`
+                            : `  =  ${describeCounts(id)}`
+                          : ''
+                      }`}
                     </ChartText>
                     {blocks(id, rowTop, u, fill)}
                   </G>

@@ -139,7 +139,7 @@ function representationVars(r: Representation): string[] {
     case 'thermometers':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'rockLayers':
-      return [r.layers, r.years, r.total];
+      return [...r.fossils, r.difference];
     case 'pushes':
       return [r.right, r.left, r.extra];
     case 'force':

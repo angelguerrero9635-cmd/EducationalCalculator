@@ -1,11 +1,10 @@
 import { useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
-import { chart, font, space, usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
@@ -63,18 +62,23 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     stroke={c.chartInk}
                   />
                 ))}
-                {labels.map((x) => (
-                  <ChartText
-                    key={`l${x}`}
-                    x={px(x)}
-                    y={y + 20}
-                    fontSize={chart.tiny}
-                    fill={c.chartMuted}
-                    textAnchor="middle"
-                  >
-                    {formatNumber(x)}
-                  </ChartText>
-                ))}
+                {labels
+                  // Three-digit labels every 35 px overlap: show every other one.
+                  .filter(
+                    (x, i) => i % 2 === 0 || (w - 2 * pad) / 10 >= 4 + 7 * formatNumber(x).length,
+                  )
+                  .map((x) => (
+                    <ChartText
+                      key={`l${x}`}
+                      x={px(x)}
+                      y={y + 20}
+                      fontSize={chart.tiny}
+                      fill={c.chartMuted}
+                      textAnchor="middle"
+                    >
+                      {formatNumber(x)}
+                    </ChartText>
+                  ))}
                 {Array.from({ length: k }, (_, i) => (
                   <Path
                     key={`j${i}`}
@@ -125,16 +129,16 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
               formatNumber(from + dir * i * s),
             ).join(', ') + (k + 1 > 12 ? ', …' : '')}
       </Caption>
-      <Text style={[styles.symbols, { color: c.textMuted }]}>
+      <Caption>
         {[
           ...(spec.start ? [spec.start] : []),
           ...(stepVar ? [stepVar] : []),
           spec.count,
           spec.total,
         ]
-          .map((id) => rep.named(id))
-          .join('   ·   ')}
-      </Text>
+          .map((id) => `${rep.named(id)}.`)
+          .join(' ')}
+      </Caption>
       <Steppers
         calc={calc}
         items={[
@@ -158,13 +162,14 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   pin: [spec.count, ...(spec.start ? [spec.start] : [])],
                 },
               ]
-            : [{ var: spec.count, steps: [1], pin: spec.start ? [spec.start] : [] }]),
+            : []),
+          {
+            var: spec.count,
+            steps: [1],
+            pin: [...(stepVar ? [stepVar] : []), ...(spec.start ? [spec.start] : [])],
+          },
         ]}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  symbols: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.xs },
-});

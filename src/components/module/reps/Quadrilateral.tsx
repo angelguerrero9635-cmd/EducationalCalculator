@@ -24,12 +24,12 @@ const OTHERS = [
   {
     name: 'Trapezoid',
     points: '26,8 70,8 92,52 4,52',
-    why: 'One pair of sides go the same way; the other two sides don’t.',
+    why: 'Only one pair of sides go the same way.',
   },
   {
     name: 'Kite',
     points: '48,4 72,22 48,56 24,22',
-    why: 'Two pairs of equal sides next to each other, not opposite.',
+    why: 'Equal sides are next to each other.',
   },
 ];
 
@@ -50,7 +50,8 @@ export function Quadrilateral({ spec, calc }: { spec: Spec; calc: Calculator }) 
 
   return (
     <View>
-      <Canvas aspect={0.7}>
+      {/* Width-limited shape: a short canvas keeps the page under one phone screen. */}
+      <Canvas aspect={0.55}>
         {({ w, h }) => {
           const scale = Math.min((w - 110) / (a + b * 0.5), (h - 60) / b);
           const sa = a * scale;

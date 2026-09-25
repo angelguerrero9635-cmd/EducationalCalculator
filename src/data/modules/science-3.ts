@@ -4,6 +4,8 @@
  * comparing by subtracting. Letters appear only as labels next to names.
  */
 import { FAHRENHEIT, apart, sum2, sumAll, times, whole } from './helpers';
+import type { Values } from '@/engine/types';
+
 import type { ModuleDef } from './types';
 
 const F = FAHRENHEIT;
@@ -49,7 +51,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       title: 'Adding up a team’s pull',
       assumptions: [
         'In a tug of war, every child on a team pulls the same way.',
-        'The team’s pull is all the pulls added: children × pull of each child.',
+        'Use a spring scale to measure one child’s pull.',
       ],
       variables: [
         whole('k', 'k', 'Children', 0, 10),
@@ -71,23 +73,40 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       ['swings in 10 seconds', 'tens of seconds', 'swings'],
       '{p} × {k} = {s}',
     );
+    const tens = {
+      id: 'k = w ÷ 10',
+      display: '{w} ÷ 10 = {k}',
+      vars: ['k', 'w'],
+      residual: (v: Values) => v.k! - v.w! / 10,
+      solve: {
+        k: (v: Values) => v.w! / 10,
+        w: (v: Values) => v.k! * 10,
+      },
+    };
     return {
       id: 's.3.balanced-forces~swings',
       title: 'A pendulum’s pattern',
       assumptions: [
         'A pendulum is a weight on a string. Once it swings, it keeps a steady beat.',
         'It makes the same number of swings every 10 seconds, so you can predict the next 10.',
-        'Count the tens of seconds: 30 seconds is 3 tens.',
+        'Count the tens in the seconds: 30 seconds is 3 tens.',
       ],
       variables: [
         whole('p', 'p', 'Swings in 10 seconds', 1, 20),
+        { ...whole('w', 'w', 'Seconds', 10, 60), unit: 'seconds', step: 10, multipleOf: 10 },
         whole('k', 'k', 'Tens of seconds', 1, 6),
         whole('s', 's', 'Swings', 1, 120),
       ],
-      relations: [swings.relation],
-      steps: { 's = p × k': swings.steps },
-      example: { p: 8, k: 3, s: 24 },
-      startWith: ['p', 'k'],
+      relations: [tens, swings.relation],
+      steps: {
+        'k = w ÷ 10': {
+          k: { expr: '{w} ÷ 10', how: 'Count the tens in the seconds.' },
+          w: { expr: '{k} × 10', how: 'Each ten of seconds is 10 seconds.' },
+        },
+        's = p × k': swings.steps,
+      },
+      example: { p: 8, w: 30, k: 3, s: 24 },
+      startWith: ['p', 'w'],
       representation: { kind: 'skipCount', step: 'p', count: 'k', total: 's' },
     } satisfies ModuleDef;
   })(),
@@ -95,36 +114,36 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
   // ── Magnets: forces at a distance (3-PS2-3, 3-PS2-4) ──
   (() => {
     const lost = times(
-      'L = s × f',
-      ['s', 'f', 'L'],
+      'l = s × f',
+      ['s', 'f', 'l'],
       ['sheets', 'clips lost for each sheet', 'clips lost'],
-      '{s} × {f} = {L}',
+      '{s} × {f} = {l}',
     );
     const left = sum2(
-      'c = n − L',
-      ['c', 'L', 'n'],
+      'c = n − l',
+      ['c', 'l', 'n'],
       ['clips lifted', 'clips lost', 'clips with no paper'],
-      '{n} − {L} = {c}',
+      '{n} − {l} = {c}',
     );
     return {
       id: 's.3.magnets',
-      pictureLabels: ['L'],
+      pictureLabels: ['l'],
       assumptions: [
         'A magnet pulls on a paper clip without touching it.',
         'The pull gets weaker as the magnet gets farther away.',
-        'Each sheet of paper between them costs the same number of clips.',
+        'In this test, each sheet of paper costs about the same number of clips.',
         'Use fewer sheets than it takes to drop every clip.',
       ],
       variables: [
         whole('n', 'n', 'Clips with no paper', 0, 20),
         whole('f', 'f', 'Clips lost for each sheet', 1, 5),
         whole('s', 's', 'Sheets of paper', 0, 5),
-        whole('L', 'L', 'Clips lost', 0, 20),
+        whole('l', 'l', 'Clips lost', 0, 20),
         whole('c', 'c', 'Clips lifted', 0, 20),
       ],
       relations: [lost.relation, left.relation],
-      steps: { 'L = s × f': lost.steps, 'c = n − L': left.steps },
-      example: { n: 12, f: 2, s: 3, L: 6, c: 6 },
+      steps: { 'l = s × f': lost.steps, 'c = n − l': left.steps },
+      example: { n: 12, f: 2, s: 3, l: 6, c: 6 },
       startWith: ['n', 'f', 's'],
       representation: {
         kind: 'table',
@@ -136,7 +155,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
-    const more = apart('m', 'a', 'b', ['strong magnet', 'weak magnet'], ['stronger', 'weaker']);
+    const more = apart('m', 'a', 'b', ['first magnet', 'second magnet'], ['stronger', 'weaker']);
     return {
       id: 's.3.magnets~chain',
       pictureLabels: ['m'],
@@ -146,8 +165,8 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         'A stronger magnet holds a longer chain.',
       ],
       variables: [
-        whole('a', 'a', 'Strong magnet', 0, 30),
-        whole('b', 'b', 'Weak magnet', 0, 30),
+        whole('a', 'a', 'First magnet', 0, 30),
+        whole('b', 'b', 'Second magnet', 0, 30),
         whole('m', 'm', 'More clips', 0, 30),
       ],
       relations: [more.relation],
@@ -286,35 +305,33 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
 
   // ── Adaptations, survival and fossils (3-LS4-1 to 3-LS4-4) ──
   (() => {
-    const age = times(
-      't = n × y',
-      ['n', 'y', 't'],
-      ['layers', 'thousand years for each layer', 'age of the fossil'],
-      '{n} × {y} = {t}',
+    const deeper = apart(
+      'd',
+      'f',
+      's',
+      ['fish fossil', 'shell fossil'],
+      ['deeper, so older', 'higher, so younger'],
+      'Take the smaller number of layers away from the bigger one.',
     );
     return {
       id: 's.3.adaptation-fossils',
+      pictureLabels: ['d'],
       assumptions: [
         'A fossil is what is left of a living thing from long ago, kept in rock.',
-        'Rock forms in layers, one on top of another. The deepest layer is the oldest.',
-        'Here each layer took about the same number of thousand years to form.',
-        'Type the years in tens (10, 20, 30, …), so you can count by tens.',
+        'Rock forms in layers, one on top of another. A deeper layer is older.',
+        'A fossil with more layers above it is older than one with fewer.',
+        'A fish fossil on a mountain shows the place was once under water.',
       ],
       variables: [
-        whole('n', 'n', 'Layers above the fossil', 1, 9),
-        {
-          ...whole('y', 'y', 'Thousand years for each layer', 10, 100),
-          unit: 'thousand years',
-          step: 10,
-          multipleOf: 10,
-        },
-        { ...whole('t', 't', 'Age of the fossil', 10, 900), unit: 'thousand years' },
+        whole('f', 'f', 'Layers above the fish', 0, 9),
+        whole('s', 's', 'Layers above the shell', 0, 9),
+        whole('d', 'd', 'Layers apart', 0, 9),
       ],
-      relations: [age.relation],
-      steps: { 't = n × y': age.steps },
-      example: { n: 6, y: 100, t: 600 },
-      startWith: ['n', 'y'],
-      representation: { kind: 'rockLayers', layers: 'n', years: 'y', total: 't' },
+      relations: [deeper.relation],
+      steps: { 'd = f and s apart': deeper.steps },
+      example: { f: 2, s: 6, d: 4 },
+      startWith: ['f', 's'],
+      representation: { kind: 'rockLayers', fossils: ['f', 's'], difference: 'd' },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -324,6 +341,8 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       'b',
       ['number of big-beaked birds', 'number of small-beaked birds'],
       ['more', 'fewer'],
+      undefined,
+      (aMore) => `more ${aMore ? 'big' : 'small'}-beaked birds survived`,
     );
     return {
       id: 's.3.adaptation-fossils~survive',

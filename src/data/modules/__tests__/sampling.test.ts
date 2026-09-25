@@ -958,7 +958,8 @@ function repIssues(
       }
       break;
     case 'rockLayers':
-      count(rep.layers, 'layers', 12);
+      count(rep.fossils[0], 'layers', 12);
+      count(rep.fossils[1], 'layers', 12);
       break;
     case 'pushes':
       count(rep.right, 'push');

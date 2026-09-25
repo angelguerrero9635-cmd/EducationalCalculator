@@ -43,6 +43,8 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // "Take away (t)" already says it; other names get "(taken away)" in the legend.
   const secondSaysTake =
     typeof spec.second === 'string' && /take/i.test(rep.variable(spec.second).name);
+  // The sliders carry the markers and names, so the legend is only for fixed groups.
+  const sliders = typeof spec.first === 'string' || typeof spec.second === 'string';
 
   const tap = (k: number) => {
     const firstPin = typeof spec.first === 'string' ? [spec.first] : [];
@@ -66,13 +68,22 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
     <View style={{ gap: space.md }}>
       <Canvas
         aspect={(w) =>
-          (frames * (2 * cellSize(w) + 2 * chart.stroke) + (frames - 1) * space.md) / w
+          sideBySide(w, frames)
+            ? (2 * cellSize(w, frames) + 2 * chart.stroke) / w
+            : (frames * (2 * cellSize(w, frames) + 2 * chart.stroke) + (frames - 1) * space.md) / w
         }
       >
         {({ w }) => {
-          const cell = cellSize(w);
+          const cell = cellSize(w, frames);
           return (
-            <View style={{ alignSelf: 'center', gap: space.md, opacity: faded ? 0.35 : 1 }}>
+            <View
+              style={{
+                alignSelf: 'center',
+                gap: space.md,
+                opacity: faded ? 0.35 : 1,
+                flexDirection: sideBySide(w, frames) ? 'row' : 'column',
+              }}
+            >
               {Array.from({ length: frames }, (_, f) => (
                 <View key={f} style={[styles.frame, { borderColor: c.chartInk }]}>
                   <View style={{ width: cell * 5, flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -156,17 +167,24 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
           ? `${text(spec.total)} − ${text(spec.second)} = ${text(spec.first)}`
           : `${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
-      <Text style={[styles.legend, { color: c.textMuted }]}>
-        {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : spec.first === 10 ? 'A ten (10 ones)' : `The first ${spec.first}`}   ${takeAway ? '✕' : '○'} ${
-          typeof spec.second === 'string' ? rep.tag(spec.second) : `${spec.second} more`
-        }${takeAway && !secondSaysTake ? ' (taken away)' : ''}`}
-      </Text>
+      {sliders ? null : (
+        <Text style={[styles.legend, { color: c.textMuted }]}>
+          {`● ${typeof spec.first === 'string' ? rep.tag(spec.first) : spec.first === 10 ? 'A ten (10 ones)' : `The first ${spec.first}`}   ${takeAway ? '✕' : '○'} ${
+            typeof spec.second === 'string' ? rep.tag(spec.second) : `${spec.second} more`
+          }${takeAway && !secondSaysTake ? ' (taken away)' : ''}`}
+        </Text>
+      )}
     </View>
   );
 }
 
-/** Side of one ten-frame cell at canvas width w. */
-const cellSize = (w: number) => Math.min(64, (w - 24) / 5);
+/** Two frames sit side by side when each cell still has room for a finger (44 pt). */
+const sideBySide = (w: number, frames: number) => frames === 2 && (w - 24 - space.md) / 10 >= 44;
+/** Side of one ten-frame cell at canvas width w; two stacked frames are a little smaller. */
+const cellSize = (w: number, frames: number) =>
+  sideBySide(w, frames)
+    ? Math.min(64, (w - 24 - space.md) / 10)
+    : Math.min(frames > 1 ? 48 : 64, (w - 24) / 5);
 
 const styles = StyleSheet.create({
   frame: { borderWidth: chart.stroke, borderRadius: radius.sm, overflow: 'hidden' },

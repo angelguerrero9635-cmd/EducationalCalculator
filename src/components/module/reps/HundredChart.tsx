@@ -5,7 +5,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, Caption, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'hundredChart' }>;
@@ -35,7 +35,7 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
     <View style={{ gap: space.sm }}>
       <Canvas aspect={spec.max / 100}>
         {({ w }) => {
-          const cell = Math.floor((w - 8 - 2 * chart.stroke) / 10);
+          const cell = Math.floor((w - 2 * chart.stroke) / 10);
           return (
             <View
               style={[
@@ -85,7 +85,7 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.textMuted }]}>
+      <Caption>
         {[`${rep.tag(spec.value)} ${rep.value(spec.value)} (shaded)`]
           .concat(
             (spec.marks ?? [])
@@ -97,12 +97,23 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
               ),
             spec.tens && rep.known(spec.tens.count) ? [`${named(spec.tens.count)} (dots)`] : [],
           )
-          .join('   ·   ')}
-      </Text>
+          .map((line) => `${line}.`)
+          .join(' ')}
+      </Caption>
       {spec.tens ? (
         <Steppers
           calc={calc}
-          items={[{ var: spec.tens.count, steps: [1], pin: [spec.value], marker: '•' }]}
+          items={[
+            {
+              var: spec.tens.count,
+              steps: [1],
+              pin: [spec.value],
+              marker: '•',
+              // Only as many tens as fit on the chart from the start number, so the slider
+              // never asks for a number past the chart (which would drop the start number).
+              ...(n > 0 ? { wrap: [1, Math.max(1, Math.floor((spec.max - n) / 10))] } : {}),
+            },
+          ]}
         />
       ) : null}
     </View>
@@ -114,5 +125,4 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', alignSelf: 'center', borderWidth: chart.stroke },
   cell: { alignItems: 'center', justifyContent: 'center' },
   num: { fontVariant: ['tabular-nums'] },
-  caption: { fontSize: font.caption + 1, textAlign: 'center' },
 });

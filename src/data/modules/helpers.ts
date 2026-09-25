@@ -175,9 +175,11 @@ export const moreThan = (
   words: [string, string],
   /** Kindergarten–Grade 1 count on one at a time; Grade 2 counts up in jumps. */
   grade: 'K1' | '2' = 'K1',
+  /** The line for the difference, when "how much more" isn't what the value is called. */
+  howDiff = `Count on from the smaller number to the bigger one. That is how much ${words[0]}.`,
 ) =>
   difference(d, a, b, {
-    diff: `Count on from the smaller number to the bigger one. That is how much ${words[0]}.`,
+    diff: howDiff,
     first: [
       `The ${an} is ${words[0]}: add the difference to the ${bn}.`,
       `The ${an} is ${words[1]}: take the difference from the ${bn}.`,
@@ -239,6 +241,11 @@ export function apart(
   [an, bn]: [string, string],
   [moreWord, lessWord]: [string, string],
   howDiff = 'Take the smaller number away from the bigger one.',
+  /**
+   * The note after the difference: "(the first magnet is stronger)". Left out when a name
+   * already says the order ("the warmest month is warmer" says nothing), or give your own.
+   */
+  note?: false | ((aMore: boolean) => string),
 ) {
   const relation = {
     id: `${d} = ${a} and ${b} apart`,
@@ -253,12 +260,22 @@ export function apart(
     },
   };
   const aMore = (v: Values) => v[a]! >= v[b]!;
+  // "warmest month" already says it is warmer: the stem of the comparing word is in a name.
+  const stem = moreWord.replace(/(er|r)$/, '');
+  const presupposed = stem.length >= 3 && [an, bn].some((name) => name.includes(stem));
   const steps: Record<string, StepText> = {
     [d]: {
       expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
       how: howDiff,
       work: (v) => subtractStrategy(Math.max(v[a]!, v[b]!), Math.min(v[a]!, v[b]!)),
-      note: (v) => (v[a]! === v[b]! ? '(the same)' : `(the ${aMore(v) ? an : bn} is ${moreWord})`),
+      note: (v) =>
+        v[a]! === v[b]!
+          ? '(the same)'
+          : note === false || (note === undefined && presupposed)
+            ? ''
+            : note
+              ? `(${note(aMore(v))})`
+              : `(the ${aMore(v) ? an : bn} is ${moreWord})`,
     },
     [a]: {
       expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`),

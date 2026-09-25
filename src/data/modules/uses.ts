@@ -111,18 +111,21 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
   's.1.sky-patterns~moon':
     'Use this for “It is 6 days since the new moon. How long until it is full?”',
   's.2.material-properties~pieces':
-    'Use this to count the blocks in things built from small pieces.',
+    'Use this for “A 30-block tower is rebuilt as a house. How many blocks are left over?”',
   's.2.material-properties~sort': 'Use this to sort materials by a property and count each group.',
   's.2.heating-cooling~cooling': 'Use this for “Water at 68 °F cools 36 °F. How cold is it now?”',
   's.2.heating-cooling~warming': 'Use this for “Water at 40 °F warms 35 °F. How warm is it now?”',
+  's.2.plant-growth-investigation~water':
+    'Use this for “The watered plant is 22 cm, the dry one 8 cm. How much taller?”',
   's.2.plant-growth-investigation~week':
     'Use this for “The plant was 18 cm. Now it is 25 cm. How much did it grow?”',
-  's.2.pollination-dispersal~visits': 'Use this to add a bee’s morning and afternoon visits.',
+  's.2.pollination-dispersal~visits':
+    'Use this to count a bee’s visits in the morning and the afternoon.',
   's.2.habitats~pond-count': 'Use this to count the animals seen in one habitat, by kind.',
   's.2.erosion-landforms~wall': 'Use this to compare soil lost with and without a wall.',
   's.2.erosion-landforms~map': 'Use this to count the land and water places on a map.',
   's.2.water-on-earth~fresh':
-    'Use this to see where Earth’s fresh water is: ice, rivers or underground.',
+    'Use this to see where Earth’s fresh water is: ice, rivers and lakes, or under the ground.',
   's.3.balanced-forces~tug': 'Use this to add up a team’s pull in a tug of war.',
   's.3.balanced-forces~swings': 'Use this to predict a pendulum’s swings from its steady pattern.',
   's.3.magnets~chain': 'Use this to compare two magnets by the chain of clips each holds.',

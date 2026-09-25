@@ -21,7 +21,7 @@ export function Pushes({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.5}>
+      <Canvas aspect={0.36}>
         {({ w, h }) => {
           const cx = w / 2;
           const box = 56;
@@ -82,7 +82,7 @@ export function Pushes({ spec, calc }: { spec: Spec; calc: Calculator }) {
               <ChartText
                 x={cx - box / 2 - px(r) / 2}
                 y={y + box / 2 + 18}
-                fontSize={chart.tiny}
+                fontSize={chart.small}
                 fill={c.chartMuted}
                 textAnchor="middle"
               >
@@ -91,7 +91,7 @@ export function Pushes({ spec, calc }: { spec: Spec; calc: Calculator }) {
               <ChartText
                 x={cx + box / 2 + px(l) / 2}
                 y={y + box / 2 + 18}
-                fontSize={chart.tiny}
+                fontSize={chart.small}
                 fill={c.chartMuted}
                 textAnchor="middle"
               >

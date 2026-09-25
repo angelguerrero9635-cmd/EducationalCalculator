@@ -931,6 +931,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       kind: 'baseTen',
       words: 'n',
       groups: ['n'],
+      places: { hundreds: 'h', tens: 't', ones: 'o' },
       controls: [
         { var: 'h', steps: [1] },
         { var: 't', steps: [1] },

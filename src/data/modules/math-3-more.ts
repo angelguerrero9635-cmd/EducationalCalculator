@@ -899,7 +899,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         left: { width: 'a', height: 'b', area: 'p' },
         right: { width: 'c', height: 'd', area: 'q' },
         total: 'A',
-        extent: 10,
+        extent: 7,
       },
     } satisfies ModuleDef;
   })(),
@@ -958,7 +958,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     },
     example: { l: 6, w: 4, P: 20 },
     startWith: ['l', 'w'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', around: 'P', extent: 10 },
+    representation: { kind: 'rectangle', length: 'l', width: 'w', around: 'P', extent: 7 },
   },
   {
     id: 'm.3.perimeter~missing-side',
@@ -1108,7 +1108,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       width: 'w',
       inside: 'A',
       around: 'P',
-      extent: 10,
+      extent: 7,
     },
   },
 

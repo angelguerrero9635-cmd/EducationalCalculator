@@ -8,7 +8,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep } from './common';
+import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'clock' }>;
@@ -42,97 +42,100 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.9}>
-        {({ w, h: ht }) => {
-          const cx = w / 2;
-          const cy = ht / 2;
-          const r = Math.min(w, ht) / 2 - 12;
-          const at = (angle: number, len: number) =>
-            [cx + len * Math.sin(angle), cy - len * Math.cos(angle)] as const;
-          const [mx, my] = at(minuteAngle, r * 0.8);
-          const [hx, hy] = at(hourAngle, r * 0.5);
-          return (
-            <>
-              <Svg width={w} height={ht}>
-                <Circle
-                  cx={cx}
-                  cy={cy}
-                  r={r}
-                  fill={c.background}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.strokeHeavy}
+      {/* A smaller face, so the face, a.m./p.m., caption and Hour slider fit one phone screen. */}
+      <View style={styles.face}>
+        <Canvas aspect={0.9}>
+          {({ w, h: ht }) => {
+            const cx = w / 2;
+            const cy = ht / 2;
+            const r = Math.min(w, ht) / 2 - 12;
+            const at = (angle: number, len: number) =>
+              [cx + len * Math.sin(angle), cy - len * Math.cos(angle)] as const;
+            const [mx, my] = at(minuteAngle, r * 0.8);
+            const [hx, hy] = at(hourAngle, r * 0.5);
+            return (
+              <>
+                <Svg width={w} height={ht}>
+                  <Circle
+                    cx={cx}
+                    cy={cy}
+                    r={r}
+                    fill={c.background}
+                    stroke={c.chartInk}
+                    strokeWidth={chart.strokeHeavy}
+                  />
+                  {Array.from({ length: 60 }, (_, i) => {
+                    const [x1, y1] = at((i / 60) * 2 * Math.PI, r - (i % 5 === 0 ? 10 : 5));
+                    const [x2, y2] = at((i / 60) * 2 * Math.PI, r);
+                    return (
+                      <Line
+                        key={i}
+                        x1={x1}
+                        y1={y1}
+                        x2={x2}
+                        y2={y2}
+                        stroke={i % 5 === 0 ? c.chartInk : c.chartGrid}
+                        strokeWidth={i % 5 === 0 ? chart.stroke : 1}
+                      />
+                    );
+                  })}
+                  {Array.from({ length: 12 }, (_, i) => {
+                    const [x, y] = at(((i + 1) / 12) * 2 * Math.PI, r - 26);
+                    return (
+                      <ChartText
+                        key={`n${i}`}
+                        x={x}
+                        y={y + 5}
+                        fontSize={chart.emphasis}
+                        fontWeight="600"
+                        textAnchor="middle"
+                      >
+                        {i + 1}
+                      </ChartText>
+                    );
+                  })}
+                  <Line
+                    x1={cx}
+                    y1={cy}
+                    x2={hx}
+                    y2={hy}
+                    stroke={c.chartInk}
+                    strokeWidth={chart.strokeHeavy + 3}
+                    strokeLinecap="round"
+                  />
+                  <Line
+                    x1={cx}
+                    y1={cy}
+                    x2={mx}
+                    y2={my}
+                    stroke={c.chartMuted}
+                    strokeWidth={chart.strokeHeavy}
+                    strokeLinecap="round"
+                  />
+                  <Circle cx={cx} cy={cy} r={6} fill={c.chartInk} />
+                </Svg>
+                <DragHandle
+                  testID="drag-minute"
+                  x={mx}
+                  y={my}
+                  label={rep.variable(spec.minute).name}
+                  onStart={() => (start.current = { x: mx, y: my })}
+                  onMove={(dx, dy) => {
+                    const x = start.current.x + dx - cx;
+                    const y = start.current.y + dy - cy;
+                    let minutes = ((Math.atan2(x, -y) / (2 * Math.PI)) * 60 + 60) % 60;
+                    minutes = Math.round(minutes / spec.minuteStep) * spec.minuteStep;
+                    calc.set({
+                      ...rep.pin([spec.hour]),
+                      [spec.minute]: rep.snapTo(spec.minute, minutes % 60),
+                    });
+                  }}
                 />
-                {Array.from({ length: 60 }, (_, i) => {
-                  const [x1, y1] = at((i / 60) * 2 * Math.PI, r - (i % 5 === 0 ? 10 : 5));
-                  const [x2, y2] = at((i / 60) * 2 * Math.PI, r);
-                  return (
-                    <Line
-                      key={i}
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke={i % 5 === 0 ? c.chartInk : c.chartGrid}
-                      strokeWidth={i % 5 === 0 ? chart.stroke : 1}
-                    />
-                  );
-                })}
-                {Array.from({ length: 12 }, (_, i) => {
-                  const [x, y] = at(((i + 1) / 12) * 2 * Math.PI, r - 26);
-                  return (
-                    <ChartText
-                      key={`n${i}`}
-                      x={x}
-                      y={y + 5}
-                      fontSize={chart.emphasis}
-                      fontWeight="600"
-                      textAnchor="middle"
-                    >
-                      {i + 1}
-                    </ChartText>
-                  );
-                })}
-                <Line
-                  x1={cx}
-                  y1={cy}
-                  x2={hx}
-                  y2={hy}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.strokeHeavy + 3}
-                  strokeLinecap="round"
-                />
-                <Line
-                  x1={cx}
-                  y1={cy}
-                  x2={mx}
-                  y2={my}
-                  stroke={c.chartMuted}
-                  strokeWidth={chart.strokeHeavy}
-                  strokeLinecap="round"
-                />
-                <Circle cx={cx} cy={cy} r={6} fill={c.chartInk} />
-              </Svg>
-              <DragHandle
-                testID="drag-minute"
-                x={mx}
-                y={my}
-                label={rep.variable(spec.minute).name}
-                onStart={() => (start.current = { x: mx, y: my })}
-                onMove={(dx, dy) => {
-                  const x = start.current.x + dx - cx;
-                  const y = start.current.y + dy - cy;
-                  let minutes = ((Math.atan2(x, -y) / (2 * Math.PI)) * 60 + 60) % 60;
-                  minutes = Math.round(minutes / spec.minuteStep) * spec.minuteStep;
-                  calc.set({
-                    ...rep.pin([spec.hour]),
-                    [spec.minute]: rep.snapTo(spec.minute, minutes % 60),
-                  });
-                }}
-              />
-            </>
-          );
-        }}
-      </Canvas>
+              </>
+            );
+          }}
+        </Canvas>
+      </View>
       <Text style={[styles.digital, { color: c.text }]}>
         {`${digital}${spec.ampm ? (half === 'am' ? ' a.m.' : ' p.m.') : ''}${words ? `  (${words})` : ''}`}
       </Text>
@@ -148,9 +151,9 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
           />
         </View>
       ) : null}
-      <Text style={[styles.hands, { color: c.textMuted }]}>
-        {`Short hand: ${rep.label(spec.hour)}   ·   Long hand: ${rep.label(spec.minute)} minutes`}
-      </Text>
+      <Caption>
+        {`Short hand: ${rep.label(spec.hour)}. Long hand: ${rep.label(spec.minute)} minutes.`}
+      </Caption>
       <Steppers
         calc={calc}
         items={[{ var: spec.hour, steps: [1], pin: [spec.minute], wrap: [1, 12] }]}
@@ -163,7 +166,7 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
-  hands: { fontSize: font.caption + 1, textAlign: 'center' },
+  face: { width: '100%', maxWidth: 280, alignSelf: 'center' },
   toggle: { paddingHorizontal: space.lg, marginVertical: space.sm },
   digital: {
     fontSize: font.title,

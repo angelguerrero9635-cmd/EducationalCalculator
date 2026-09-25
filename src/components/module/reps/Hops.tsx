@@ -28,7 +28,7 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.46}>
+      <Canvas aspect={0.4}>
         {({ w, h }) => {
           const pad = 24;
           const unit = (w - 2 * pad) / (hi - lo);
@@ -90,7 +90,11 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fill={c.chartInk}
                       textAnchor="middle"
                     >
-                      {`${up ? '+' : '−'}${rep.label(hop.var, false)}`}
+                      {up
+                        ? `+${rep.label(hop.var, false)}`
+                        : rep.early
+                          ? `take away ${rep.label(hop.var, false)}`
+                          : `−${rep.label(hop.var, false)}`}
                     </ChartText>
                   </G>
                 );

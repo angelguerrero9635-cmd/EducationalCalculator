@@ -6,6 +6,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep } from './common';
+import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'compareRows' }>;
 
@@ -108,6 +109,10 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       {verdict ? <Text style={[styles.verdict, { color: c.text }]}>{verdict}</Text> : null}
+      <Steppers
+        calc={calc}
+        items={rows.map((id) => ({ var: id, steps: [1], pin: rows.filter((x) => x !== id) }))}
+      />
       <Text style={[styles.legend, { color: c.textMuted }]}>
         {spec.icon === 'dot'
           ? 'Solid counters have no partner in the other row.'

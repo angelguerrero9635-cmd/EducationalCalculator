@@ -133,6 +133,11 @@ export type Representation =
       compare?: boolean;
       /** Write this value in words under the blocks ("three hundred forty-seven"). */
       words?: string;
+      /**
+       * Draw the blocks from these counts instead of the number's digits (a regroup lesson:
+       * 2 rods and 17 cubes for 37, each full ten of cubes boxed).
+       */
+      places?: { hundreds?: string; tens: string; ones: string };
       controls: { var: string; steps: number[] }[];
     }
   /**
@@ -430,7 +435,8 @@ export type Representation =
       marks?: number[];
     }
   /** Rock layers stacked on a fossil, each `years` old; `total` is the fossil's age. */
-  | { kind: 'rockLayers'; layers: string; years: string; total: string }
+  /** Two fossils in a column of rock layers: `fossils` are the layers above each; deeper is older. */
+  | { kind: 'rockLayers'; fossils: [string, string]; difference: string }
   /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */
   | { kind: 'pushes'; right: string; left: string; extra: string; max: number }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */

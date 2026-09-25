@@ -85,6 +85,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   const c = usePalette();
   const [draft, setDraft] = useState<string | null>(null);
   const [typo, setTypo] = useState(false);
+  const [focused, setFocused] = useState(false);
   const value = calc.values[variable.id];
   const unit = calc.units.display[variable.id];
   // A unit menu whenever this value has more than one unit in the current system.
@@ -99,9 +100,11 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
     derived: early ? 'answer' : 'calculated',
     unknown: early ? '?' : 'unknown',
   }[status];
-  const shown =
-    draft ??
-    (value === undefined ? '' : formatNumber(calc.units.toDisplay(variable.id, value), variable));
+  const formatted =
+    value === undefined ? '' : formatNumber(calc.units.toDisplay(variable.id, value), variable);
+  // While typing, and after a number the range refused, the box keeps the typed text beside
+  // its message, so the student can fix it instead of retyping it.
+  const shown = draft !== null && (focused || calc.errors[variable.id]) ? draft : formatted;
 
   const onChangeText = (text: string) => {
     setDraft(text);
@@ -132,11 +135,13 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         // On the example, a box empties on focus, so typing the same number still counts as typed.
         onFocus={() => {
           calc.startTyping();
+          setFocused(true);
           setDraft(calc.isExample ? '' : shown);
         }}
         onBlur={() => {
           calc.endTyping();
-          setDraft(null);
+          setFocused(false);
+          if (typo) setDraft(null);
           setTypo(false);
         }}
         onChangeText={onChangeText}

@@ -36,13 +36,14 @@ function rangeOf(rep: ReturnType<typeof useRep>, item: StepperItem): [number, nu
 }
 
 /** One vertical slider: the name above, the value below, drag the knob or tap the track. */
-function Slider({ calc, item }: { calc: Calculator; item: StepperItem }) {
+function Slider({ calc, item, narrow }: { calc: Calculator; item: StepperItem; narrow: boolean }) {
   const c = usePalette();
   const rep = useRep(calc);
   const v = rep.variable(item.var);
   const [lo, hi] = rangeOf(rep, item);
   const known = rep.known(item.var);
   const shown = known ? rep.shown(item.var) : (item.from ?? lo);
+  const value = rep.value(item.var);
   const ratio = hi > lo ? Math.min(1, Math.max(0, (shown - lo) / (hi - lo))) : 0;
   const knobY = (1 - ratio) * (TRACK - HANDLE);
   const trackTop = useRef(0);
@@ -63,15 +64,15 @@ function Slider({ calc, item }: { calc: Calculator; item: StepperItem }) {
   const at = (e: GestureResponderEvent) => e.nativeEvent.pageY - trackTop.current;
 
   return (
-    <View style={styles.slider}>
-      <Text style={[styles.name, { color: c.text }]} numberOfLines={2}>
+    <View style={[styles.slider, narrow && styles.narrow]}>
+      <Text style={[styles.name, { color: c.text }]} numberOfLines={3}>
         {`${item.marker ? `${item.marker} ` : ''}${v.name}`}
       </Text>
       <View
         testID={`slider-${item.var}`}
         accessibilityRole="adjustable"
         accessibilityLabel={v.name}
-        accessibilityValue={{ min: lo, max: hi, now: shown, text: rep.value(item.var) }}
+        accessibilityValue={{ min: lo, max: hi, now: shown, text: value }}
         onStartShouldSetResponder={() => true}
         onMoveShouldSetResponder={() => true}
         onResponderTerminationRequest={() => false}
@@ -111,8 +112,15 @@ function Slider({ calc, item }: { calc: Calculator; item: StepperItem }) {
           ]}
         />
       </View>
-      <Text style={[styles.value, { color: c.text }]} numberOfLines={1}>
-        {rep.value(item.var)}
+      {/* Long values with unit words ("100 thousand years") go smaller on up to three lines. */}
+      <Text
+        style={[
+          styles.value,
+          { color: c.text, fontSize: value.length > 7 ? font.caption : font.body },
+        ]}
+        numberOfLines={3}
+      >
+        {value}
       </Text>
     </View>
   );
@@ -127,16 +135,26 @@ export function Sliders({ calc, items }: { calc: Calculator; items: StepperItem[
   return (
     <View style={styles.row}>
       {items.map((item) => (
-        <Slider key={item.var} calc={calc} item={item} />
+        <Slider key={item.var} calc={calc} item={item} narrow={items.length >= 5} />
       ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', justifyContent: 'center', gap: space.md, flexWrap: 'wrap' },
-  slider: { width: 72, alignItems: 'center', gap: space.xs },
-  name: { fontSize: font.caption, fontWeight: '600', textAlign: 'center', minHeight: 30 },
+  // Bottoms align so the tracks line up whatever length each name takes (up to three lines).
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    gap: space.sm,
+    flexWrap: 'wrap',
+  },
+  // Wide enough for names like "Thousand years for each layer" on two lines; four fit a phone.
+  slider: { width: 86, alignItems: 'center', gap: space.xs },
+  // Five (the coins) still fit a 358 px row: 5 × 64 + 4 × 8.
+  narrow: { width: 64 },
+  name: { fontSize: font.caption, fontWeight: '600', textAlign: 'center' },
   track: {
     width: 44,
     height: TRACK,
@@ -161,5 +179,10 @@ const styles = StyleSheet.create({
     borderRadius: HANDLE / 2,
     borderWidth: chart.stroke,
   },
-  value: { fontSize: font.body, fontWeight: '700', fontVariant: ['tabular-nums'] },
+  value: {
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+    textAlign: 'center',
+    minHeight: 22,
+  },
 });

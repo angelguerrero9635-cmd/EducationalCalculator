@@ -164,6 +164,10 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const x0 = (i: number) => left + (i === 0 ? 0 : ends[i - 1]!) * scale;
           const x1 = (i: number) => left + ends[i]! * scale;
           const fills = [c.chartHighlight, c.chartFill, c.chartSurface];
+          // Names under the parts sit on one row unless one is wider than its part.
+          const stagger = spec.parts.some(
+            (id, i) => rep.tag(id).length * chart.tiny * 0.6 > x1(i) - x0(i) - 4,
+          );
           return (
             <>
               <Svg width={w} height={128}>
@@ -216,7 +220,8 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   <ChartText
                     key={`n${id}`}
                     x={(x0(i) + x1(i)) / 2}
-                    y={y + barH + 18 + (i % 2) * 14}
+                    // Names take two rows only when a name is wider than its part.
+                    y={y + barH + 18 + (stagger ? (i % 2) * 14 : 0)}
                     fontSize={chart.tiny}
                     textAnchor="middle"
                     fill={c.chartMuted}

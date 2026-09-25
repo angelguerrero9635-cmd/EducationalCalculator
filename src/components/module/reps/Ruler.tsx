@@ -70,8 +70,11 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                 ))}
                 {spec.lengths.map((id, i) => {
-                  // Short bars: put the name after the bar's end so it stays readable.
-                  const inside = shown[i]! * scale >= 64;
+                  // The name goes inside the bar only when it clears the drag handle at the
+                  // bar's end; otherwise after the end so it stays readable.
+                  const inside =
+                    shown[i]! * scale >=
+                    6 + rep.tag(id).length * chart.small * 0.6 + chart.handle / 2 + 4;
                   const x0 = left + offset * scale;
                   return (
                     <ChartText
