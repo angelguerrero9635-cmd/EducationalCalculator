@@ -4,6 +4,7 @@
  */
 import type { Values } from '@/engine/types';
 
+import { sumAll } from './helpers';
 import { div, whole } from './math-k2';
 import type { ModuleDef, StepText } from './types';
 import {
@@ -171,8 +172,8 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     variables: [
       whole('a', 'a', 'Parts counted', 0, 24),
       whole('b', 'b', 'Parts in one whole', 1, 8),
-      whole('w', 'w', 'Wholes', 0, 24),
-      whole('r', 'r', 'Parts past the last whole', 0, 7),
+      { ...whole('w', 'w', 'Wholes', 0, 24), derived: true },
+      { ...whole('r', 'r', 'Parts past the last whole', 0, 7), derived: true },
     ],
     relations: [
       {
@@ -207,11 +208,17 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       'w = wholes in a/b': {
         w: {
           expr: 'wholes in {a} parts of {b}',
-          how: 'Every full set of equal parts makes 1 whole. Count the full sets.',
-          work: (v) =>
-            v.w! > 0
+          how: 'Count the jumps from 0. Every full set of equal parts makes 1 whole.',
+          work: (v) => [
+            ...(v.a! > 0 && v.a! <= 12
+              ? [
+                  `Count ${v.a} jumps of 1/${v.b} from 0: ${Array.from({ length: v.a! }, (_, i) => `${i + 1}/${v.b}`).join(', ')}`,
+                ]
+              : []),
+            ...(v.w! > 0
               ? [`Count by ${v.b}s: ${countList(0, v.b!, v.w!)} → ${v.w} wholes`]
-              : [`${v.a} is less than ${v.b}, so there is no whole yet.`],
+              : [`${v.a} is less than ${v.b}, so there is no whole yet.`]),
+          ],
         },
       },
       'a = w wholes and r parts': {
@@ -330,7 +337,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         whole('k', 'k', 'Pieces per part', 1, 4),
         whole('c', 'c', 'New shaded parts', 0, 16),
         whole('d', 'd', 'New parts in the whole', 1, 16),
-        whole('u', 'u', 'Not shaded', 0, 8),
+        { ...whole('u', 'u', 'Not shaded', 0, 8), derived: true },
       ],
       relations: [top.relation, bottom.relation, notShaded.relation],
       steps: { 'c = a × k': top.steps, 'd = b × k': bottom.steps, 'b = a + u': notShaded.steps },
@@ -375,8 +382,8 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         whole('a', 'a', 'First shaded', 0, 8),
         whole('c', 'c', 'Second shaded', 0, 8),
         whole('g', 'g', 'Difference in shaded parts', 0, 8),
-        whole('u', 'u', 'First not shaded', 0, 8),
-        whole('x', 'x', 'Second not shaded', 0, 8),
+        { ...whole('u', 'u', 'First not shaded', 0, 8), derived: true },
+        { ...whole('x', 'x', 'Second not shaded', 0, 8), derived: true },
       ],
       relations: [
         firstLeft.relation,
@@ -466,9 +473,9 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         whole('a', 'a', 'Shaded parts', 0, 8),
         whole('b', 'b', 'First parts in the whole', 1, 8),
         whole('d', 'd', 'Second parts in the whole', 1, 8),
-        whole('g', 'g', 'Difference in parts', 0, 7),
-        whole('u', 'u', 'First not shaded', 0, 8),
-        whole('x', 'x', 'Second not shaded', 0, 8),
+        { ...whole('g', 'g', 'Difference in parts', 0, 7), derived: true },
+        { ...whole('u', 'u', 'First not shaded', 0, 8), derived: true },
+        { ...whole('x', 'x', 'Second not shaded', 0, 8), derived: true },
       ],
       relations: [
         firstLeft.relation,
@@ -833,8 +840,8 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         whole('l', 'l', 'Length', 0, 10),
         whole('b', 'b', 'First length', 0, 10),
         whole('c', 'c', 'Second length', 0, 10),
-        whole('p', 'p', 'First area', 0, 100),
-        whole('q', 'q', 'Second area', 0, 100),
+        { ...whole('p', 'p', 'First area', 0, 100), derived: true },
+        { ...whole('q', 'q', 'Second area', 0, 100), derived: true },
         whole('A', 'A', 'Area', 0, 100),
       ],
       relations: [len.relation, left.relation, right.relation, sum.relation, all.relation],
@@ -911,7 +918,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       'Perimeter is the distance all the way around a shape.',
       'A rectangle’s opposite sides are equal: add length + width + length + width.',
       'Perimeter is a length (cm), not square units.',
-      'With whole-number sides the perimeter is always even: each side is counted twice.',
     ],
     variables: [
       { ...whole('l', 'l', 'Length', 0, 20), unit: 'cm' },
@@ -1122,11 +1128,11 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       'The total is all the bars added.',
     ],
     variables: [
-      whole('a', 'a', 'Dogs', 0, 50),
-      whole('b', 'b', 'Cats', 0, 50),
-      whole('c', 'c', 'Fish', 0, 50),
-      whole('t', 't', 'Total', 0, 150),
-      whole('d', 'd', 'How many more', 0, 50),
+      whole('a', 'a', 'Dogs', 0, 30),
+      whole('b', 'b', 'Cats', 0, 30),
+      whole('c', 'c', 'Fish', 0, 30),
+      whole('t', 't', 'Total', 0, 90),
+      whole('d', 'd', 'How many more', 0, 30),
     ],
     relations: [
       {
@@ -1143,7 +1149,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
       {
         // Either bar can be taller: the difference is the taller take away the shorter.
-        id: 'd = a − b',
+        id: 'd = difference of a and b',
         display: '{a} and {b} are {d} apart',
         vars: ['d', 'a', 'b'],
         residual: (v) => v.d! - Math.abs(v.a! - v.b!),
@@ -1177,7 +1183,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
           work: (v) => [`${v.a} + ${v.b} = ${v.a! + v.b!}`, `${v.t} − ${v.a! + v.b!} = ${v.c}`],
         },
       },
-      'd = a − b': {
+      'd = difference of a and b': {
         d: {
           expr: (v) => (v.a! >= v.b! ? '{a} − {b}' : '{b} − {a}'),
           how: 'Subtract the shorter bar from the taller bar.',
@@ -1226,6 +1232,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         ['pictures', 'number each picture stands for', 'count'],
       ),
     );
+    const total = sumAll('t = n₁ + n₂ + n₃', ['n1', 'n2', 'n3'], 't', 'kinds of fruit');
     return {
       id: 'm.3.scaled-graphs~picture-graph',
       title: 'Picture graph with a key',
@@ -1243,10 +1250,14 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         whole('n1', 'n₁', 'Apples', 0, 100),
         whole('n2', 'n₂', 'Pears', 0, 100),
         whole('n3', 'n₃', 'Plums', 0, 100),
+        whole('t', 't', 'Fruit in all', 0, 300),
       ],
-      relations: cols.map((c) => c.relation),
-      steps: Object.fromEntries(cols.map((c) => [c.relation.id, c.steps])),
-      example: { k: 2, p1: 6, p2: 3, p3: 5, n1: 12, n2: 6, n3: 10 },
+      relations: [...cols.map((c) => c.relation), total.relation],
+      steps: {
+        ...Object.fromEntries(cols.map((c) => [c.relation.id, c.steps])),
+        't = n₁ + n₂ + n₃': total.steps,
+      },
+      example: { k: 2, p1: 6, p2: 3, p3: 5, n1: 12, n2: 6, n3: 10, t: 28 },
       startWith: ['k', 'p1', 'p2', 'p3'],
       representation: {
         kind: 'pictureGraph',
@@ -1257,6 +1268,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         ],
         max: 10,
         key: 'k',
+        total: 't',
       },
     } satisfies ModuleDef;
   })(),
@@ -1430,7 +1442,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     variables: [
       { ...whole('a', 'a', 'First side', 1, 10), unit: 'cm' },
       { ...whole('b', 'b', 'Second side', 1, 10), unit: 'cm' },
-      { ...whole('r', 'r', 'Right angles', 0, 4), step: 4, multipleOf: 4 },
+      { ...whole('r', 'r', 'Right angles', 0, 4), step: 4, allowed: [0, 4] },
       { ...whole('P', 'P', 'Perimeter', 4, 40), unit: 'cm' },
     ],
     relations: [

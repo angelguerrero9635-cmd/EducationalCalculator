@@ -19,6 +19,13 @@ export interface VariableDef {
   digits?: number;
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
+  /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */
+  allowed?: number[];
+  /**
+   * Worked out, never typed: a working value the steps show (the ones with the ten, an
+   * estimate's parts). Its box is read-only and the walkthrough never starts from it.
+   */
+  derived?: boolean;
   /**
    * Set by the unit context, not by content: how many formula units one shown unit equals, and
    * the shown unit. Ranges and whole-number rules then apply to the shown number.

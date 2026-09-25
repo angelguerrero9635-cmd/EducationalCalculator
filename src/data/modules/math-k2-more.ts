@@ -49,12 +49,12 @@ const capacity = difference('d', 'a', 'b', {
   countOn: true,
   display: 'Match {a} and {b} cups: {d} extra cups',
   first: [
-    'Jar A holds more. Add the extra cups to jar B.',
-    'Jar A holds less. Take the extra cups away from jar B.',
+    'The first jar holds more. Add the extra cups to the second jar.',
+    'The first jar holds less. Take the extra cups away from the second jar.',
   ],
   second: [
-    'Jar A holds more. Take the extra cups away from jar A.',
-    'Jar A holds less. Add the extra cups to jar A.',
+    'The first jar holds more. Take the extra cups away from the first jar.',
+    'The first jar holds less. Add the extra cups to the first jar.',
   ],
 });
 
@@ -174,7 +174,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     assumptions: [
       'The whole is in the top circle. The two parts are below.',
       'The two parts together make the whole.',
-      '7 is 4 and 3. 7 is also 5 and 2.',
+      'A whole can be split into two parts in more than one way.',
     ],
     variables: [
       whole('w', 'w', 'Whole', 0, 10),
@@ -224,8 +224,8 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'Same number of cups? Then they hold the same.',
     ],
     variables: [
-      { ...whole('a', 'a', 'Jar A', 0, 10), unit: 'cups' },
-      { ...whole('b', 'b', 'Jar B', 0, 10), unit: 'cups' },
+      { ...whole('a', 'a', 'First jar', 0, 10), unit: 'cups' },
+      { ...whole('b', 'b', 'Second jar', 0, 10), unit: 'cups' },
       { ...whole('d', 'd', 'How many more cups', 0, 10), unit: 'cups' },
     ],
     relations: [capacity.relation],
@@ -266,7 +266,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       },
       {
         id: 'n = f + 1 + b',
-        display: '{f} in front, 1 picked, {b} behind: {n} in line',
+        display: '{f} in front, the child we chose, {b} behind: {n} in line',
         vars: ['n', 'f', 'b'],
         residual: (v) => v.n! - v.f! - 1 - v.b!,
         solve: {
@@ -280,10 +280,10 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'f = p − 1': {
         f: {
           expr: '{p} − 1',
-          how: 'Count the children in front of the picked child.',
+          how: 'Count the children in front of the child we chose.',
           work: (v: Values) => (v.f! > 0 ? [`Count: ${countList(0, 1, v.f!)} → ${v.f}`] : []),
         },
-        p: { expr: '{f} + 1', how: 'Count the children in front. The picked child is next.' },
+        p: { expr: '{f} + 1', how: 'Count the children in front. The child we chose is next.' },
       },
       'n = f + 1 + b': {
         n: {
@@ -293,14 +293,14 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
         },
         b: {
           expr: '{n} − 1 − {f}',
-          how: 'Count the children behind the picked child.',
+          how: 'Count the children behind the child we chose.',
           work: (v: Values) => (v.b! > 0 ? [`Count: ${countList(0, 1, v.b!)} → ${v.b}`] : []),
         },
         f: {
           expr: '{n} − 1 − {b}',
-          how: 'Count the children in front of the picked child.',
+          how: 'Count the children in front of the child we chose.',
           work: (v: Values) => [
-            `Take away the picked child: ${v.n} − 1 = ${v.n! - 1}`,
+            `Take away the child we chose: ${v.n} − 1 = ${v.n! - 1}`,
             `Take away the children behind: ${v.n! - 1} − ${v.b} = ${v.f}`,
           ],
         },
@@ -412,9 +412,9 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
         'Type the lengths in any order. The picture puts them longest to shortest.',
       ],
       variables: [
-        { ...whole('a', 'a', 'Ribbon A', 1, 15), unit: 'cubes' },
-        { ...whole('b', 'b', 'Ribbon B', 1, 15), unit: 'cubes' },
-        { ...whole('c', 'c', 'Ribbon C', 1, 15), unit: 'cubes' },
+        { ...whole('a', 'a', 'First ribbon', 1, 15), unit: 'cubes' },
+        { ...whole('b', 'b', 'Second ribbon', 1, 15), unit: 'cubes' },
+        { ...whole('c', 'c', 'Third ribbon', 1, 15), unit: 'cubes' },
         { ...whole('x', 'x', 'Difference of A and B', 0, 14), unit: 'cubes' },
         { ...whole('y', 'y', 'Difference of B and C', 0, 14), unit: 'cubes' },
         { ...whole('z', 'z', 'Difference of A and C', 0, 14), unit: 'cubes' },
@@ -624,13 +624,13 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     title: 'Broken ruler',
     assumptions: [
       'The object doesn’t start at 0. It starts at another mark.',
-      'Length = end mark − start mark.',
+      'Take the start mark away from the end mark.',
       'Count the spaces between marks, not the marks.',
     ],
     variables: [
       { ...whole('s', 's', 'Start mark', 0, 10), unit: 'cm' },
       { ...whole('L', 'L', 'Length', 1, 15), unit: 'cm' },
-      { ...whole('e', 'e', 'End mark', 1, 25), unit: 'cm' },
+      { ...whole('e', 'e', 'End mark', 1, 15), unit: 'cm' },
     ],
     relations: [
       {
@@ -891,9 +891,9 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('s', 's', 'Sides of the top', 3, 6),
-      whole('F', 'F', 'Faces', 5, 8),
-      whole('E', 'E', 'Edges', 9, 18),
-      whole('V', 'C', 'Corners', 6, 12),
+      { ...whole('F', 'F', 'Faces', 5, 8), derived: true },
+      { ...whole('E', 'E', 'Edges', 9, 18), derived: true },
+      { ...whole('V', 'C', 'Corners', 6, 12), derived: true },
     ],
     relations: [
       {
@@ -1184,7 +1184,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     id: 'm.2.money~more-needed',
     title: 'How much more money?',
     assumptions: [
-      'Price = money you have + money you still need.',
+      'The price is what you have plus what you still need.',
       'Count up from the money you have to the price.',
       'Type $1.25 or 125¢. Both mean the same amount.',
     ],
@@ -1291,7 +1291,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     title: '5 and some more',
     assumptions: [
       'The top row of the ten-frame holds 5.',
-      'Numbers from 6 to 10 are 5 and some more: 8 is 5 and 3.',
+      'Numbers from 6 to 10 are 5 and some more.',
     ],
     variables: [whole('n', 'n', 'Number (5–10)', 5, 10), whole('e', 'e', 'More than 5', 0, 5)],
     relations: [
@@ -1329,12 +1329,11 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     assumptions: [
       'Split the teen number into 10 and some ones: 14 is 10 and 4.',
       'Take the number away from the 10. Then add the ones back.',
-      '14 − 8: 10 − 8 = 2, and 2 + 4 = 6.',
     ],
     variables: [
       whole('c', 'c', 'Start (11–19)', 11, 19),
       whole('b', 'b', 'Take away', 2, 9),
-      whole('o', 'o', 'Ones with the 10', 1, 9),
+      whole('o', 'o', 'Extra ones', 1, 9),
       whole('r', 'r', 'Left from the 10', 1, 8),
       whole('a', 'a', 'Answer', 2, 17),
     ],
@@ -1567,7 +1566,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'm = n + 1': {
         m: {
           expr: '{n} + 1',
-          how: 'Add one more dot. Say the next number.',
+          how: 'Count the dots. Add one more and say the next number.',
           work: (v: Values) => (v.n! > 0 ? [`Count: ${countList(0, 1, v.n!)} → ${v.n}`] : []),
         },
         n: { expr: '{m} − 1', how: 'Take one away. Say the number just before.' },
@@ -1589,10 +1588,10 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'Add every row to get the total.',
     ],
     variables: [
-      whole('a', 'a', 'Apples', 0, 20),
-      whole('b', 'b', 'Bananas', 0, 20),
-      whole('g', 'g', 'Grapes', 0, 20),
-      whole('n', 'n', 'Total', 0, 60),
+      whole('a', 'a', 'Apples', 0, 10),
+      whole('b', 'b', 'Bananas', 0, 10),
+      whole('g', 'g', 'Grapes', 0, 10),
+      whole('n', 'n', 'Total', 0, 30),
     ],
     relations: [
       {
@@ -1612,7 +1611,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'n = a + b + g': {
         n: {
           expr: '{a} + {b} + {g}',
-          how: 'Count each row by 5s, then the extra marks. Add the rows.',
+          how: 'Count the marks in each row. Add the rows.',
           work: (v: Values) => addAll([v.a!, v.b!, v.g!]),
         },
         a: {
@@ -1646,7 +1645,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'Count by the coin’s value, once for each coin: 3 dimes is 10, 20, 30 → 30¢.',
     ],
     variables: [
-      { ...whole('v', 'v', 'Coin value', 1, 25), unit: '¢' },
+      { ...whole('v', 'v', 'Coin value', 1, 25), unit: '¢', allowed: [1, 5, 10, 25] },
       whole('k', 'k', 'Coins', 0, 10),
       { ...whole('T', 'T', 'Total', 0, 250), unit: '¢' },
     ],

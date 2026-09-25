@@ -22,7 +22,7 @@ export const K12_MODULES: ModuleDef[] = [
     assumptions: [
       'We count things from 0 to 10.',
       'Adding puts two groups together.',
-      'Take some away. Fewer are left.',
+      'Take some away. Count how many are left.',
     ],
     variables: [
       whole('a', 'a', 'First group', 10),
@@ -49,7 +49,7 @@ export const K12_MODULES: ModuleDef[] = [
       'a + b = c': {
         c: {
           expr: '{a} + {b}',
-          how: 'Put the two groups together and count them all.',
+          how: 'Start at the first group. Count on the second group.',
           work: (v) => (v.b! > 0 ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.b!)}`] : []),
         },
         a: {

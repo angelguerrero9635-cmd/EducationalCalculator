@@ -106,6 +106,8 @@ export function difference(
     display?: string;
     /** Count on and count back one at a time (Kindergarten, numbers to 10). */
     countOn?: boolean;
+    /** Say which is bigger first ("7 is more than 4"): the words for [more, fewer]. */
+    compareWords?: [string, string];
     /** How to find a or b when there is no difference (default: they are the same). */
     same?: string;
   },
@@ -155,6 +157,9 @@ export function difference(
                 const [lo, hi] = [Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)];
                 return [
                   ...(how.compare ? [compareLine(v[a]!, v[b]!)] : []),
+                  ...(how.compareWords && hi > lo
+                    ? [`${hi} is ${how.compareWords[0]} than ${lo}`]
+                    : []),
                   ...(how.countUp ? countUp(lo, hi) : []),
                   ...(how.countOn && hi > lo
                     ? [`Count on from ${lo}: ${countList(lo, 1, hi - lo)} → ${hi - lo}`]
@@ -244,8 +249,14 @@ function moneyTotalWork(v: Values): string[] {
   const total = parts.reduce((sum, p) => sum + p.cents, 0);
   const running = runningCount(parts);
   // Count on coin by coin; with many coins, add each kind's value one at a time instead.
+  // The coin-by-coin count already counts each kind, so with it the per-kind lines just give
+  // each kind's value ("2 quarters = 50¢").
   return [
-    ...countOnLines(parts),
+    ...(running.length
+      ? parts
+          .filter((p) => (p.n > 1 && p.coin.cents > 1) || p.coin.cents === 100)
+          .map((p) => `${p.n} ${p.n === 1 ? p.coin.one : p.coin.many} = ${p.cents}¢`)
+      : countOnLines(parts)),
     ...(running.length
       ? running
       : sumSteps(
@@ -381,13 +392,38 @@ function sumInOrder(id: string, v: Values): string[] {
       : id === 'c + b + a = s'
         ? [v.c!, v.b!, v.a!]
         : [v.a!, v.b!, v.c!];
+  // Two numbers that make a ten go first, whichever they are: "5 + 5 = 10, then 10 + 3 = 13".
+  const ten = [
+    [x, y, z],
+    [x, z, y],
+    [y, z, x],
+  ].find(([p, q]) => p! + q! === 10 && p! > 0 && q! > 0);
+  if (ten && x + y !== 10) {
+    const [p, q, r] = ten as [number, number, number];
+    return [`Make a ten first: ${p} + ${q} = 10`, `10 + ${r} = ${p + q + r}`];
+  }
   return id === 'a + (b + c) = s'
     ? [`${x} + ${y} = ${x + y}`, `${z} + ${x + y} = ${x + y + z}`]
     : [`${x} + ${y} = ${x + y}`, `${x + y} + ${z} = ${x + y + z}`];
 }
 
+/** "(one fourth of the whole; 4 fourths make the whole)". */
+export function fractionNote(k: number, p: number): string {
+  const names: Record<number, [string, string]> = {
+    2: ['half', 'halves'],
+    3: ['third', 'thirds'],
+    4: ['fourth', 'fourths'],
+  };
+  const name = names[p];
+  if (!name) return '';
+  if (k === 0) return `(0 ${name[1]} shaded)`;
+  if (k === p) return `(${p} ${name[1]} make the whole)`;
+  return `(${k === 1 ? `one ${name[0]}` : `${k} ${name[1]}`} of the whole; ${p} ${name[1]} make the whole)`;
+}
+
 const cmpK10 = difference('d', 'a', 'b', {
   countOn: true,
+  compareWords: ['more', 'fewer'],
   display: 'Match {a} and {b}: {d} left over',
   diff: 'Match the counters in pairs. Count the solid ones left over.',
   first: [
@@ -404,17 +440,19 @@ const cmpPencils = difference('d', 'a', 'b', {
   display: 'Line up {a} and {b}: {d} cubes stick out',
   diff: 'Line up the pencils at one end. Count the cubes that stick out.',
   first: [
-    'Pencil A is longer. Add the extra cubes to pencil B.',
-    'Pencil A is shorter. Take the extra cubes away from pencil B.',
+    'The first pencil is longer. Add the extra cubes to the second pencil.',
+    'The first pencil is shorter. Take the extra cubes away from the second pencil.',
   ],
   second: [
-    'Pencil A is longer. Take the extra cubes away from pencil A.',
-    'Pencil A is shorter. Add the extra cubes to pencil A.',
+    'The first pencil is longer. Take the extra cubes away from the first pencil.',
+    'The first pencil is shorter. Add the extra cubes to the first pencil.',
   ],
 });
 export const cmpShapes = difference('d', 'c', 's', {
   display: 'Line up {c} and {s}: {d} extra',
   diff: 'Line up the two columns. Count the extra pictures in the taller one.',
+  countOn: true,
+  compareWords: ['more', 'fewer'],
   first: [
     'There are more circles. Add the extra to the squares.',
     'There are fewer circles. Take the extra away from the squares.',
@@ -427,7 +465,8 @@ export const cmpShapes = difference('d', 'c', 's', {
 export const cmpBars = difference('d', 'a', 'b', {
   display: 'Bars {a} and {b} are {d} apart',
   diff: 'Count up from the shorter bar’s number to the taller bar’s number.',
-  countUp: true,
+  // Within 10, count on one at a time (the bars are 0–10).
+  countOn: true,
   first: [
     'Soccer is taller. Add the difference to basketball.',
     'Soccer is shorter. Subtract the difference from basketball.',
@@ -639,8 +678,8 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'Count the cubes that stick out. That is how much longer.',
     ],
     variables: [
-      { ...whole('a', 'a', 'Pencil A', 0, 12), unit: 'cubes' },
-      { ...whole('b', 'b', 'Pencil B', 0, 12), unit: 'cubes' },
+      { ...whole('a', 'a', 'First pencil', 0, 12), unit: 'cubes' },
+      { ...whole('b', 'b', 'Second pencil', 0, 12), unit: 'cubes' },
       { ...whole('d', 'd', 'How much longer', 0, 12), unit: 'cubes' },
     ],
     relations: [cmpPencils.relation],
@@ -667,7 +706,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'Cubes, cones, cylinders and spheres are solid shapes.',
     ],
     // 0 sides is a circle; no flat shape has 1 or 2 sides.
-    variables: [whole('s', 's', 'Sides', 0, 6), whole('v', 'c', 'Corners', 0, 6)],
+    variables: [whole('s', 's', 'Sides', 3, 6), whole('v', 'c', 'Corners', 3, 6)],
     relations: [
       {
         id: 'corners = sides',
@@ -711,7 +750,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       whole('c', 'c', 'Total', 0, 20),
     ],
     ...addSub({
-      c: 'Add. Make a ten first, or use a double you know.',
+      c: 'Make a ten first, then add the rest.',
       a: 'Take the second number away from the total.',
       b: 'Count on from the first number up to the total.',
     }),
@@ -919,7 +958,13 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'q = n + 10': {
         q: {
           expr: '{n} + 10',
-          how: 'Ten more: the number just below on the chart.',
+          how: 'Ten more: the number just below on the chart. The tens digit goes up by 1.',
+          work: (v) =>
+            v.n! % 100 < 90
+              ? [
+                  `Tens: ${Math.floor((v.n! % 100) / 10)} → ${Math.floor((v.n! % 100) / 10) + 1}, ones stay ${v.n! % 10}`,
+                ]
+              : [],
         },
         n: { expr: '{q} − 10', how: 'Ten less: the number just above on the chart.' },
       },
@@ -933,7 +978,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     id: 'm.1.tens-ones',
     assumptions: [
       'A ten is a group of 10 ones.',
-      'In 45, the 4 means 4 tens. The 5 means 5 ones.',
+      'The first digit tells the tens. The last digit tells the ones.',
       'Trade 10 ones for 1 ten. Type the tens and the ones to find the number.',
     ],
     variables: [whole('n', 'n', 'Number', 0, 99), ...g1tens.variables],
@@ -961,7 +1006,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('a', 'a', 'First number', 0, 100),
-      whole('b', 'b', 'Second number', 0, 100),
+      // Grade 1 adds a one-digit number or a multiple of ten (1.NBT.4).
+      {
+        ...whole('b', 'b', 'One-digit number or tens', 0, 90),
+        allowed: [...Array.from({ length: 10 }, (_, i) => i), 10, 20, 30, 40, 50, 60, 70, 80, 90],
+      },
       whole('c', 'c', 'Total', 0, 100),
     ],
     ...addSub({
@@ -990,8 +1039,8 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'A paper clip is as long as 2 cubes. Bigger units: you need fewer of them.',
     ],
     variables: [
-      whole('p', 'p', 'Paper clips', 1, 12),
-      { ...whole('c', 'c', 'Cubes', 2, 24), multipleOf: 2, step: 2 },
+      whole('p', 'p', 'Length in clips', 1, 12),
+      { ...whole('c', 'c', 'Length in cubes', 2, 24), multipleOf: 2, step: 2 },
     ],
     relations: [
       {
@@ -1160,7 +1209,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'More parts means smaller parts. A fourth is smaller than a half.',
     ],
     variables: [
-      { ...whole('p', 'p', 'Equal parts (2 or 4)', 2, 4), multipleOf: 2, step: 2 },
+      { ...whole('p', 'p', 'Equal parts (2 or 4)', 2, 4), allowed: [2, 4], step: 2 },
       whole('k', 'k', 'Shaded parts', 0, 4),
       whole('u', 'u', 'Not shaded', 0, 4),
     ],
@@ -1175,9 +1224,17 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     steps: {
       'u = p − k': {
-        u: { expr: '{p} − {k}', how: 'Take the shaded parts away from all the parts.' },
+        u: {
+          expr: '{p} − {k}',
+          how: 'Take the shaded parts away from all the parts.',
+          note: (v) => fractionNote(v.k!, v.p!),
+        },
         p: { expr: '{k} + {u}', how: 'Add the shaded and not shaded parts.' },
-        k: { expr: '{p} − {u}', how: 'Take the not shaded parts away from all the parts.' },
+        k: {
+          expr: '{p} − {u}',
+          how: 'Take the not shaded parts away from all the parts.',
+          note: (v) => fractionNote(v.k!, v.p!),
+        },
       },
     },
     example: { p: 4, k: 1, u: 3 },
@@ -1221,7 +1278,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     id: 'm.2.place-value-1000',
     assumptions: [
       '10 ones make 1 ten; 10 tens make 1 hundred.',
-      'A digit’s place tells its value: in 347, the 3 means 3 hundreds.',
+      'A digit’s place tells its value: the first digit of a 3-digit number is the hundreds.',
       'A 0 holds an empty place: 305 has no tens.',
     ],
     variables: [
@@ -1378,7 +1435,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('a', 'a', 'Start', 0, 1000),
-      { ...whole('s', 's', 'Count by', 5, 100), multipleOf: 5, step: 5 },
+      { ...whole('s', 's', 'Count by', 5, 100), allowed: [5, 10, 100], step: 5 },
       whole('k', 'k', 'Number of jumps', 1, 20),
       whole('n', 'n', 'Number reached', 1, 1000),
     ],
@@ -1581,12 +1638,12 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'Type how long each ribbon is: the longer one, then the shorter one.',
       '“A is 8 cm shorter than B” means B is the longer ribbon.',
-      'Measure both in the same unit. Switch the units menu to inches: the numbers get smaller, because an inch is longer than a centimeter.',
+      'Measure both ribbons in the same unit.',
     ],
     variables: [
-      { ...whole('L', 'L', 'Longer ribbon', 0, 100), unit: 'cm' },
-      { ...whole('S', 'S', 'Shorter ribbon', 0, 100), unit: 'cm' },
-      { ...whole('d', 'd', 'How much longer', 0, 100), unit: 'cm' },
+      { ...whole('L', 'L', 'Longer ribbon', 0, 30), unit: 'cm' },
+      { ...whole('S', 'S', 'Shorter ribbon', 0, 30), unit: 'cm' },
+      { ...whole('d', 'd', 'How much longer', 0, 30), unit: 'cm' },
     ],
     relations: [
       {
@@ -1602,7 +1659,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'd = L − S': {
         d: {
           expr: '{L} − {S}',
-          how: 'Longer − shorter = how much longer. Count up from the shorter length.',
+          how: 'Take the shorter length from the longer one, or count up from the shorter length.',
           work: (v) => countUp(v.S!, v.L!),
         },
         L: {
@@ -1619,7 +1676,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     },
     example: { L: 12, S: 8, d: 4 },
     startWith: ['L', 'S'],
-    representation: { kind: 'ruler', lengths: ['L', 'S'], difference: 'd', extent: 15 },
+    representation: { kind: 'ruler', lengths: ['L', 'S'], difference: 'd', extent: 30 },
   },
 
   {
@@ -1718,14 +1775,15 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       why: 'The short hand shows the hour on its own; the formulas are about the minutes.',
     },
     assumptions: [
-      'The long hand moves 5 minutes from one number to the next: count by 5s.',
+      'The long hand moves 5 minutes from one number to the next: count by 5s. The 12 counts as 0.',
       'The hour is the number the short hand has just passed. At 7:45 it is near 8, but the hour is 7.',
+      'a.m. is before noon. p.m. is after noon.',
       '15 minutes past is quarter past. 30 is half past. 45 is quarter to the next hour.',
     ],
     variables: [
       whole('h', 'h', 'Hour', 1, 12),
       { ...whole('m', 'm', 'Minutes past', 0, 55), step: 5 },
-      whole('k', 'k', 'Long hand points at (12 is 0)', 0, 11),
+      whole('k', 'k', 'Number the long hand points to', 0, 11),
     ],
     relations: [
       {
@@ -1773,11 +1831,11 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'Add the bars to find the total.',
     ],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 20),
-      whole('b', 'b', 'Basketball', 0, 20),
-      whole('c', 'c', 'Baseball', 0, 20),
-      whole('e', 'e', 'Tennis', 0, 20),
-      whole('n', 'n', 'Total', 0, 80),
+      whole('a', 'a', 'Soccer', 0, 10),
+      whole('b', 'b', 'Basketball', 0, 10),
+      whole('c', 'c', 'Baseball', 0, 10),
+      whole('e', 'e', 'Tennis', 0, 10),
+      whole('n', 'n', 'Total', 0, 40),
     ],
     relations: [
       {
@@ -1864,9 +1922,17 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     steps: {
       'u = p − k': {
-        u: { expr: '{p} − {k}', how: 'Take the shaded parts away from all the parts.' },
+        u: {
+          expr: '{p} − {k}',
+          how: 'Take the shaded parts away from all the parts.',
+          note: (v) => fractionNote(v.k!, v.p!),
+        },
         p: { expr: '{k} + {u}', how: 'Add the shaded and not shaded parts.' },
-        k: { expr: '{p} − {u}', how: 'Take the not shaded parts away from all the parts.' },
+        k: {
+          expr: '{p} − {u}',
+          how: 'Take the not shaded parts away from all the parts.',
+          note: (v) => fractionNote(v.k!, v.p!),
+        },
       },
     },
     example: { p: 3, k: 1, u: 2 },

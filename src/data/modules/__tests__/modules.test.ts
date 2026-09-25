@@ -247,7 +247,8 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
   });
 
   it('any combination of inputs gives values consistent with the example', () => {
-    for (const combo of subsets(ids, m.startWith.length)) {
+    const typable = ids.filter((id) => !m.variables.find((v) => v.id === id)?.derived);
+    for (const combo of subsets(typable, m.startWith.length)) {
       const result = solve(
         m,
         combo.map((id) => ({ id, value: m.example[id]! })),

@@ -242,6 +242,13 @@ export function useRep(calc: Calculator) {
       const v = byId.get(id)!;
       const limits = units.system.variables.find((sv) => sv.id === id) ?? v;
       const f = units.factor(id);
+      if (v.allowed) {
+        // The nearest value the lesson allows (count by 5s, 10s or 100s).
+        const nearest = v.allowed.reduce((best, a) =>
+          Math.abs(a - x / f) < Math.abs(best - x / f) ? a : best,
+        );
+        return nearest * f;
+      }
       const shown = snap(
         x / f,
         v.integer ? 1 : (v.step ?? 0.1),

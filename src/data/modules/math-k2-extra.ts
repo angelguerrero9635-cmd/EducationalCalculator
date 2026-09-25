@@ -16,7 +16,6 @@ import {
   whole,
 } from './math-k2';
 import {
-  addAll,
   addStrategy,
   countList,
   dealLines,
@@ -64,7 +63,7 @@ function compareProblem(id: string, max: number, example: [number, number]) {
       'd = B − S': {
         d: {
           expr: '{B} − {S}',
-          how: 'Bigger − smaller = how many more. Count up from the smaller bar to the bigger one.',
+          how: 'Take the smaller amount from the bigger one. Or count up from the smaller bar.',
           work: (v: Values) => countUp(v.S!, v.B!),
         },
         B: {
@@ -224,10 +223,19 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
             const ones = xs.map((x) => x % 10);
             const T = tens.reduce((p, q) => p + q, 0);
             const O = ones.reduce((p, q) => p + q, 0);
+            // Two ones that make a ten go first: "Ones: 3 + 7 = 10, then 10 + 5 + 2 = 17".
+            const tenPair = ones.flatMap((x, i) =>
+              ones.slice(i + 1).flatMap((y, j) => (x + y === 10 && x > 0 ? [[i, i + 1 + j]] : [])),
+            )[0];
+            const rest = ones.filter((_, i) => !tenPair?.includes(i) && ones[i]! > 0);
+            const onesLine = tenPair
+              ? `Ones: ${ones[tenPair[0]!]} + ${ones[tenPair[1]!]} = 10${rest.length ? `, then 10 + ${rest.join(' + ')} = ${O}` : ''}`
+              : `Ones: ${ones.filter((x) => x > 0).join(' + ') || '0'} = ${O}`;
             return [
-              ...addAll(tens).map((l) => `Tens: ${l}`),
-              ...addAll(ones).map((l) => `Ones: ${l}`),
-              ...(addStrategy(T, O).length ? addStrategy(T, O) : [`${T} + ${O} = ${T + O}`]),
+              `Tens: ${tens.filter((x) => x > 0).join(' + ') || '0'} = ${T}`,
+              onesLine,
+              ...(O >= 10 ? [`${O} ones = 1 ten and ${O - 10} ones`] : []),
+              `${T} + ${O} = ${T + O}`,
             ];
           },
           expr: '{a} + {b} + {c} + {e}',
@@ -304,8 +312,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     variables: [
       { ...whole('f', 'f', 'Shortest length', 1, 20), unit: 'inches' },
       whole('x4', 'A', 'At the shortest length', 0, 10),
-      whole('x5', 'B', 'At the 2nd length', 0, 10),
-      whole('x6', 'C', 'At the 3rd length', 0, 10),
+      whole('x5', 'B', 'One inch longer', 0, 10),
+      whole('x6', 'C', 'Two inches longer', 0, 10),
       whole('x7', 'D', 'At the longest length', 0, 10),
       whole('N', 'N', 'Objects measured', 0, 40),
     ],
@@ -619,7 +627,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     id: 'm.2.money~change',
     title: 'Money left after buying',
     assumptions: [
-      'Money you have = price + money left.',
+      'The money you have is the price plus what is left.',
       'To find what is left, take the price away. Count up from the price to check.',
       'Type $1.25 or 125¢. Both mean the same amount.',
     ],
@@ -707,9 +715,9 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       'To compare, count up from the shorter bar to the taller bar.',
     ],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 20),
-      whole('b', 'b', 'Basketball', 0, 20),
-      whole('d', 'd', 'How many more', 0, 20),
+      whole('a', 'a', 'Soccer', 0, 10),
+      whole('b', 'b', 'Basketball', 0, 10),
+      whole('d', 'd', 'How many more', 0, 10),
     ],
     relations: [cmpBars.relation],
     steps: { ...cmpBars.steps },
@@ -732,14 +740,14 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     const cmp = difference('d', 'a', 'b', {
       diff: 'Put the objects on the balance. Count the extra cubes on the lower side.',
       countOn: true,
-      display: '{a} and {b} cubes: {d} extra cubes on the low side',
+      display: '{a} and {b} cubes: {d} extra cubes on the lower side',
       first: [
-        'Object A is heavier. Add the extra cubes to object B.',
-        'Object A is lighter. Take the extra cubes away from object B.',
+        'The first object is heavier. Add the extra cubes to the second object.',
+        'The first object is lighter. Take the extra cubes away from the second object.',
       ],
       second: [
-        'Object A is heavier. Take the extra cubes away from object A.',
-        'Object A is lighter. Add the extra cubes to object A.',
+        'The first object is heavier. Take the extra cubes away from the first object.',
+        'The first object is lighter. Add the extra cubes to the first object.',
       ],
     });
     return {
@@ -751,8 +759,8 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
         'If the balance is level, they weigh the same.',
       ],
       variables: [
-        { ...whole('a', 'a', 'Object A', 0, 10), unit: 'cubes' },
-        { ...whole('b', 'b', 'Object B', 0, 10), unit: 'cubes' },
+        { ...whole('a', 'a', 'First object', 0, 10), unit: 'cubes' },
+        { ...whole('b', 'b', 'Second object', 0, 10), unit: 'cubes' },
         { ...whole('d', 'd', 'How much heavier', 0, 10), unit: 'cubes' },
       ],
       relations: [cmp.relation],
@@ -859,7 +867,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     title: 'Trade tens and ones',
     assumptions: [
       '10 ones make 1 ten. 10 tens make 1 hundred.',
-      'A number can have more than 9 tens or ones: 3 hundreds, 14 tens, 5 ones is 445.',
+      'A number can have more than 9 tens or ones. Trade every 10 ones for a ten.',
     ],
     variables: [
       whole('n', 'n', 'Number', 0, 999),
@@ -1011,7 +1019,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     id: 'm.2.add-sub-1000~ten-hundred-more',
     title: '10 or 100 more or less',
     assumptions: [
-      '10 more or 10 less changes the tens digit by 1.',
+      '10 more or 10 less changes the tens digit by 1. Past 9 or below 0, the hundreds digit changes too.',
       '100 more or 100 less changes the hundreds digit by 1.',
       'Example: 10 more than 356 is 366. 100 less than 356 is 256.',
     ],

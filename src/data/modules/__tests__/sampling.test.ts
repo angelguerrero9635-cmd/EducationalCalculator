@@ -132,6 +132,7 @@ function domain(v: VariableDef): number[] | undefined {
   return xs;
 }
 function domainOf(v: VariableDef): number[] | undefined {
+  if (v.allowed) return v.allowed.map((a) => a * factorOf(v));
   if (!v.integer || v.min === undefined || v.max === undefined) return undefined;
   const f = factorOf(v) * (v.multipleOf ?? 1);
   const lo = Math.ceil(v.min / f - 1e-9);
@@ -143,6 +144,7 @@ function domainOf(v: VariableDef): number[] | undefined {
 /** A random valid value (formula units), with the edges min, max, 0 and 1 over-sampled. */
 function sampleValue(r: Rng, v: VariableDef, example: number | undefined): number {
   const f = factorOf(v);
+  if (v.allowed) return r.pick(v.allowed) * f;
   const [lo, hi] = shownRange(v, example);
   const edges = [lo, hi, 0, 1].filter((x) => x >= lo && x <= hi);
   let s: number;
@@ -162,6 +164,15 @@ function sampleValue(r: Rng, v: VariableDef, example: number | undefined): numbe
 function invalidValue(r: Rng, v: VariableDef): number | undefined {
   const f = factorOf(v);
   const options: number[] = [];
+  if (v.allowed) {
+    // A whole number in range the lesson doesn't allow (7 when counting by 5s, 10s, 100s).
+    const lo = Math.min(...v.allowed);
+    const hi = Math.max(...v.allowed);
+    const between = Array.from({ length: hi - lo + 1 }, (_, i) => lo + i).filter(
+      (x) => !v.allowed!.includes(x),
+    );
+    if (between.length) options.push(r.pick(between) * f);
+  }
   if (v.min !== undefined) options.push(v.min - f * (v.integer ? 1 : 1 + Math.abs(v.min / f)));
   if (v.max !== undefined) options.push(v.max + f * (v.integer ? 1 : 1 + Math.abs(v.max / f)));
   if (v.integer && v.min !== undefined && v.max !== undefined && v.max - v.min >= f) {
@@ -820,9 +831,9 @@ function repIssues(
       break;
     }
     case 'equalGroups': {
-      // Each group is an 88 px circle with 13 px dots: 4 rows of 4 fit (EqualGroups.tsx).
+      // Each group is an 88 px circle; past 16 the dots shrink to fit up to 100 (EqualGroups.tsx).
       count(rep.groups, 'groups', 12);
-      count(rep.each, 'dots in a group', 16);
+      count(rep.each, 'dots in a group', 100);
       const [g, k, n] = [val(rep.groups), val(rep.each), val(rep.total)];
       if (g !== undefined && k !== undefined && n !== undefined && g * k !== n) {
         out.push(`${g} groups of ${k} drawn, total shows ${n}`);
@@ -1205,6 +1216,22 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       c.f.add('error', `${c.label}step "${s.substituted}" ≠ "${s.result}"`, where);
     }
   }
+  // A line shown twice in one walkthrough (the same pairing in two steps) is padding.
+  const seen = new Map<string, string>();
+  for (const s of w.steps) {
+    for (const line of s.lines) {
+      if (!/\d/.test(line) || line.length < 8) continue;
+      const first = seen.get(line);
+      if (first !== undefined && first !== s.id) {
+        c.f.add(
+          'error',
+          `${c.label}line "${line}" is shown in two steps (${first}, ${s.id})`,
+          where,
+        );
+      }
+      seen.set(line, s.id);
+    }
+  }
   // Worked-arithmetic lines ("100 + 50 + 10 + 5 + 3 = 168¢", "168¢ − 118¢ = 50¢ left"): each
   // sum or difference must come out to the number after its "=".
   for (const s of w.steps) {
@@ -1372,8 +1399,11 @@ function checkAll(c: Ctx, sent: readonly Given[], res: SolveResult) {
 
 // ─── Sampling stages ─────────────────────────────────────────────────────────
 
+/** Values a student can type: a derived value is only ever worked out. */
+const typable = (c: Ctx) => c.sys.variables.filter((v) => !v.derived);
+
 function randomGivens(c: Ctx, r: Rng): Given[] {
-  const vars = c.sys.variables;
+  const vars = typable(c);
   const k0 = c.module.startWith.length;
   const size = Math.max(
     1,
@@ -1395,7 +1425,7 @@ function stageRandom(c: Ctx, r: Rng, n: number) {
     checkAll(c, givens, res);
     if (res.unknown.length === 0 && !res.rejected) {
       // Every value from one consistent solution: any subset, in any order, must be accepted.
-      const ids = r.shuffle(c.sys.variables.map((v) => v.id));
+      const ids = r.shuffle(typable(c).map((v) => v.id));
       const size = Math.max(1, Math.min(ids.length, c.module.startWith.length + r.pick([0, 1, 2])));
       const subset = ids.slice(0, size).map((id) => ({ id, value: res.values[id]! }));
       const withPrevious = r.next() < 0.5;
@@ -1439,22 +1469,22 @@ function stageEdits(c: Ctx, r: Rng, sequences: number) {
         mode = 'clear';
         updates = { [r.pick(givenIds)]: undefined };
       } else if (roll < 0.3) {
-        const v = r.pick(c.sys.variables);
+        const v = r.pick(typable(c));
         const bad = invalidValue(r, v);
         if (bad === undefined) updates = { [v.id]: sampleValue(r, v, c.module.example[v.id]) };
         else {
           mode = 'invalid';
           updates = { [v.id]: bad };
         }
-      } else if (roll < 0.38 && c.sys.variables.length > 2) {
+      } else if (roll < 0.38 && typable(c).length > 2) {
         mode = 'multi';
-        const [a, b] = r.shuffle(c.sys.variables);
+        const [a, b] = r.shuffle(typable(c));
         updates = {
           [a!.id]: sampleValue(r, a!, c.module.example[a!.id]),
           [b!.id]: sampleValue(r, b!, c.module.example[b!.id]),
         };
       } else {
-        const v = r.pick(c.sys.variables);
+        const v = r.pick(typable(c));
         updates = { [v.id]: sampleValue(r, v, c.module.example[v.id]) };
       }
       history.push(

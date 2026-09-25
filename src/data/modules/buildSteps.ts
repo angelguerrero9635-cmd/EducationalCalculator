@@ -269,7 +269,17 @@ export function buildSteps(
     const workLines = work?.length
       ? work.map((line) => agree(renderTemplate(line, workVars, working)))
       : undefined;
-    const showSubstituted = !(same(substituted, base.result) || substituted === rearranged);
+    // "35 + 20" before "35 + 20 = 55" says nothing: the work line carries it.
+    const bare = substituted.slice(v.symbol.length + 3);
+    // A compare page's first work line ("Tens: 4 < 5, so 45 < 54") is the lesson; the bare
+    // "54 − 45" before it would put the subtraction first.
+    const repeatedByWork =
+      (workLines?.[0]?.startsWith(`${bare} =`) ?? false) ||
+      (early && (workLines?.some((l) => /^(Hundreds|Tens|Ones): .*, so /.test(l)) ?? false)) ||
+      // K–2: "8 + 2 − 5" in one go is more than the grade reads; the work lines take it apart.
+      (early && !!workLines?.length && (bare.match(/ [+−] /g)?.length ?? 0) >= 2);
+    const showSubstituted =
+      !(same(substituted, base.result) || substituted === rearranged) && !repeatedByWork;
     return {
       ...base,
       result,
@@ -284,7 +294,7 @@ export function buildSteps(
         ...(band === 'standard' ? [rearranged] : []),
         // K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped when the
         // work lines show the arithmetic.
-        ...(showSubstituted && !(early && workLines?.length && wordy(substituted))
+        ...(showSubstituted && !(band !== 'standard' && workLines?.length && wordy(substituted))
           ? [plain(substituted, t.id, false)]
           : []),
         ...(workLines ?? []),
@@ -316,6 +326,15 @@ export function buildSteps(
     : [...new Set(converted.map(formulaUnit).filter((u): u is string => !!u))].join(', ');
 
   const missing = result.unknown.map(quantity);
+  // A line the student has just read in an earlier step ("97 = 90 + 7" for both the tens and
+  // the ones) is shown once: later steps keep only what is new.
+  const seen = new Set<string>();
+  const repeated = (line: string) => /\d/.test(line) && line.length >= 8 && seen.has(line);
+  for (const s of steps) {
+    s.lines = s.lines.filter((line) => !repeated(line));
+    if (s.work) s.work = s.work.filter((line) => !repeated(line));
+    for (const line of s.lines) seen.add(line);
+  }
   return {
     band,
     given: givenIds.map(quantity),

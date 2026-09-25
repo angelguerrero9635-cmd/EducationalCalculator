@@ -94,12 +94,16 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   const early = isEarlyGrade(calc.module.id);
   const rawError = typo ? 'Enter a number' : calc.errors[variable.id];
   const error = rawError && early ? kidMessage(rawError) : rawError;
-  const statusWord = {
-    given: early ? 'you typed' : 'entered',
-    example: 'example',
-    derived: early ? 'answer' : 'calculated',
-    unknown: early ? '?' : 'unknown',
-  }[status];
+  const statusWord = variable.derived
+    ? early
+      ? 'worked out'
+      : 'worked out (not typed)'
+    : {
+        given: early ? 'you typed' : 'entered',
+        example: 'example',
+        derived: early ? 'answer' : 'calculated',
+        unknown: early ? '?' : 'unknown',
+      }[status];
   const formatted =
     value === undefined ? '' : formatNumber(calc.units.toDisplay(variable.id, value), variable);
   // While typing, and after a number the range refused, the box keeps the typed text beside
@@ -145,6 +149,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
           setTypo(false);
         }}
         onChangeText={onChangeText}
+        editable={!variable.derived}
         keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric'}
         returnKeyType="done"
         selectTextOnFocus

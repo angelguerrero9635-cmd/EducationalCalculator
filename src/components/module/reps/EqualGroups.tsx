@@ -24,7 +24,12 @@ export function EqualGroups({ spec, calc }: { spec: Spec; calc: Calculator }) {
             {Array.from({ length: k }, (_, j) => (
               <View
                 key={j}
-                style={[styles.dot, { borderColor: c.chartInk, backgroundColor: c.chartHighlight }]}
+                style={[
+                  styles.dot,
+                  // Past 16 dots, they shrink so a group of up to 100 still fits the circle.
+                  k > 16 && { width: dotSize(k), height: dotSize(k), borderRadius: dotSize(k) / 2 },
+                  { borderColor: c.chartInk, backgroundColor: c.chartHighlight },
+                ]}
               />
             ))}
           </View>
@@ -41,6 +46,9 @@ export function EqualGroups({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </View>
   );
 }
+
+/** Dot side for k dots in the 68 px inside of a group circle, with 2 px gaps. */
+const dotSize = (k: number) => Math.max(4, Math.floor(60 / Math.ceil(Math.sqrt(k))) - 2);
 
 const styles = StyleSheet.create({
   groups: {

@@ -71,7 +71,7 @@ describeOrSkip('review dump', () => {
       const cases: [string, string[]][] = [
         ['opening', m.startWith],
         ...m.variables
-          .filter((v) => !m.startWith.includes(v.id))
+          .filter((v) => !m.startWith.includes(v.id) && !v.derived)
           .slice(0, 3)
           .map((v): [string, string[]] => [
             `find ${v.id}`,

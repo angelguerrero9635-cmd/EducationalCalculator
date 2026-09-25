@@ -55,6 +55,10 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   if (variable.integer && Math.abs(x / f - Math.round(x / f)) > 1e-9) {
     return 'Must be a whole number';
   }
+  if (variable.allowed && !variable.allowed.some((a) => Math.abs(x / f - a) < 1e-9)) {
+    const list = variable.allowed.map((a) => formatNumber(a));
+    return `Must be ${list.length > 1 ? `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}` : list[0]}`;
+  }
   const m = variable.multipleOf;
   if (m && Math.abs(x / f / m - Math.round(x / f / m)) > 1e-9) {
     // Start the list at the smallest allowed multiple (12, 24, 36, … when the minimum is 12).
@@ -246,8 +250,11 @@ function propagate(
   return { ok: true, values, trace: steps };
 }
 
+const byIdOf = (system: System, id: string) => system.variables.find((v) => v.id === id)!;
+
 /** Whole-number values a variable can take, or undefined if not a finite whole-number range. */
 function wholeValues(v: VariableDef): number[] | undefined {
+  if (v.allowed) return v.allowed.map((a) => a * (v.unitFactor ?? 1));
   if (!v.integer || v.min === undefined || v.max === undefined) return undefined;
   const f = (v.unitFactor ?? 1) * (v.multipleOf ?? 1);
   const lo = Math.ceil(v.min / f - 1e-9);
@@ -379,7 +386,11 @@ function wholeSolutions(
     );
     if (!narrow(system, vals, bounds)) return;
     const [id, b] = [...bounds].reduce((x, y) => (y[1].hi - y[1].lo < x[1].hi - x[1].lo ? y : x));
-    for (let x = b.lo; x <= b.hi + 1e-9; x += b.f) {
+    // Only the values the variable can take (its allowed list, else every multiple in range).
+    const candidates = wholeValues(byIdOf(system, id))!.filter(
+      (x) => x >= b.lo - 1e-9 && x <= b.hi + 1e-9,
+    );
+    for (const x of candidates) {
       if (budget.left <= 0) {
         exhausted = true;
         return;

@@ -56,14 +56,22 @@ export function addStrategy(a: number, b: number, unit = ''): string[] {
   const u = unit;
   const c = a + b;
   const [big, small] = a >= b ? [a, b] : [b, a];
+  // Starting from the second addend is said, not done silently.
+  const swapped = a < b;
   if (c <= 20) {
     const need = 10 - big;
     if (big >= 10 || need <= 0 || small <= need) return [];
-    return [`${big}${u} + ${need}${u} = 10${u}`, `10${u} + ${small - need}${u} = ${c}${u}`];
+    return [
+      ...(swapped ? [`Start with the bigger number, ${big}${u}.`] : []),
+      `${big}${u} + ${need}${u} = 10${u}`,
+      `10${u} + ${small - need}${u} = ${c}${u}`,
+    ];
   }
   if (c <= 100) {
     const { t, o } = places(small);
-    const lines: string[] = [];
+    const lines: string[] = swapped
+      ? [`Start with the bigger number: ${big}${u} + ${small}${u}.`]
+      : [];
     let at = big;
     if (t > 0) {
       lines.push(`${at}${u} + ${t}${u} = ${at + t}${u}`);
@@ -77,7 +85,7 @@ export function addStrategy(a: number, b: number, unit = ''): string[] {
       lines.push(`${at}${u} + ${o}${u} = ${c}${u}`);
     }
     // One line that only repeats the sum (35 + 20 = 55) shows nothing new.
-    return lines.length > 1 ? lines : [];
+    return lines.length > (swapped ? 2 : 1) ? lines : [];
   }
   const [pa, pb] = [places(a), places(b)];
   // Each place that has something to add, then the place totals one at a time.
@@ -129,14 +137,21 @@ export function subtractStrategy(c: number, b: number, unit = ''): string[] {
 export function compareLine(a: number, b: number): string {
   if (a === b) return `${a} = ${b}`;
   const sign = a > b ? '>' : '<';
+  // Places that tie are said first ("Hundreds: 3 = 3."), then the place that decides.
+  const ties: string[] = [];
   for (const [name, size] of [
     ['Hundreds', 100],
     ['Tens', 10],
     ['Ones', 1],
   ] as const) {
     const [da, db] = [Math.floor(a / size) % 10, Math.floor(b / size) % 10];
-    if (da !== db && (size === 1 || Math.max(a, b) >= size)) {
-      return `${name}: ${da} ${da > db ? '>' : '<'} ${db}, so ${a} ${sign} ${b}`;
+    if (Math.max(a, b) < size) continue;
+    if (da === db && size > 1) {
+      ties.push(`${name}: ${da} = ${db}.`);
+      continue;
+    }
+    if (da !== db) {
+      return `${ties.join(' ')}${ties.length ? ' ' : ''}${name}: ${da} ${da > db ? '>' : '<'} ${db}, so ${a} ${sign} ${b}`;
     }
   }
   return `${a} ${sign} ${b}`;
@@ -205,7 +220,8 @@ export const dealLines = (groups: number, each: number, name: string) => [
 export function timesWork(times: number, each: number): string[] {
   if (times === 0 || each === 0) return ['Any number times 0 is 0.'];
   if (times === 1 || each === 1) return [`1 × a number is that number: ${times * each}`];
-  if (times <= 5 || times === 10) {
+  // A fact within 10 × 10 is counted by; break-apart is for the pages that teach it.
+  if (times <= 10) {
     return [`Count by ${each}s, ${times} times: ${countList(0, each, times)} → ${times * each}`];
   }
   const rest = times - 5;
@@ -226,8 +242,8 @@ export function divideWork(n: number, d: number, missing: 'first' | 'second' = '
   const q = n / d;
   if (!Number.isInteger(q) || q < 0) return [];
   if (n === 0) return ['0 shared into any number of groups is 0.'];
-  return [
-    missing === 'first' ? `Think: ? × ${d} = ${n}` : `Think: ${d} × ? = ${n}`,
-    `Count by ${d}s to ${n}: ${countList(0, d, q)} → ${q}`,
-  ];
+  const think = missing === 'first' ? `Think: ? × ${d} = ${n}` : `Think: ${d} × ? = ${n}`;
+  // Past ten counts, the fact is the shorter road.
+  if (q > 10) return [think, `${n} ÷ ${d} = ${q} because ${q} × ${d} = ${n}`];
+  return [think, `Count by ${d}s to ${n}: ${countList(0, d, q)} → ${q}`];
 }

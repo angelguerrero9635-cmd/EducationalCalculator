@@ -188,7 +188,7 @@ export const moreThan = (
       `The ${bn} is ${words[1]}: take the difference from the ${an}.`,
       `The ${bn} is ${words[0]}: add the difference to the ${an}.`,
     ],
-    ...(grade === 'K1' ? { countOn: true } : { countUp: true }),
+    ...(grade === 'K1' ? { countOn: true, compareWords: words } : { countUp: true }),
     same: `There is no difference. Both are the same.`,
   });
 
