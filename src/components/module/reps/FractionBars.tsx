@@ -19,11 +19,19 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const num = Math.min(den, Math.max(0, Math.round(rep.shown(r.num))));
     return { num, den, known: rep.known(r.num) && rep.known(r.den) };
   });
-  const [p, q] = rows;
+  const [pi, qi, ai, bi] = spec.compare ?? [0, 1];
+  const p = rows[pi];
+  const q = rows[qi];
   const both = p && q && p.known && q.known;
   // Compare without decimals: a/b vs c/d is a·d vs c·b.
-  const cmp = both ? Math.sign(p.num * q.den - q.num * p.den) : 0;
+  const cmp = both ? Math.sign(p!.num * q!.den - q!.num * p!.den) : 0;
   const sign = cmp > 0 ? '>' : cmp < 0 ? '<' : '=';
+  const frac = (r: { num: number; den: number } | undefined) => (r ? `${r.num}/${r.den}` : '?');
+  // "9/12 > 8/12, so 3/4 > 2/3" when the caption speaks for a second pair too.
+  const meaning =
+    ai !== undefined && bi !== undefined && rows[ai]?.known && rows[bi]?.known
+      ? `, so ${frac(rows[ai])} ${sign} ${frac(rows[bi])}`
+      : '';
 
   return (
     <View>
@@ -73,7 +81,7 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ? cmp === 0
               ? `${p.num}/${p.den} = ${q.num}/${q.den}: the shaded parts are the same size.`
               : `${p.num}/${p.den} ${sign} ${q.num}/${q.den}: not the same size.`
-            : `${p.num}/${p.den} ${sign} ${q.num}/${q.den}`}
+            : `${p.num}/${p.den} ${sign} ${q.num}/${q.den}${meaning}`}
         </Caption>
       ) : null}
       <Steppers

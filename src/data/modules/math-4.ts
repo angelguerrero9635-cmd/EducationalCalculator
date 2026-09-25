@@ -445,4 +445,128 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+
+  // ── Comparing fractions with unlike denominators: a common denominator (4.NF.1, 4.NF.2) ──
+  (() => {
+    const sign = (v: Values) => (v.p! > v.q! ? '>' : v.p! < v.q! ? '<' : '=');
+    const known = (v: Values) =>
+      ['a', 'b', 'c', 'd', 'm', 'p', 'q'].every((k) => v[k] !== undefined);
+    const scaled = (
+      id: string,
+      [top, other, out]: [string, string, string],
+      [topName, otherName]: [string, string],
+    ) => ({
+      relation: {
+        id,
+        display: `{${top}} × {${other}} = {${out}}`,
+        vars: [out, top, other],
+        residual: (v: Values) => v[out]! - v[top]! * v[other]!,
+        solve: {
+          [out]: (v: Values) => v[top]! * v[other]!,
+          [top]: (v: Values) => div(v[out]!, v[other]!),
+          [other]: (v: Values) => div(v[out]!, v[top]!),
+        },
+      },
+      steps: {
+        [out]: {
+          expr: `{${top}} × {${other}}`,
+          how: `Multiply the ${topName} by the ${otherName}: the same factor as its bottom got.`,
+          work: (v: Values) => timesWork(v[top]!, v[other]!),
+        },
+        [top]: {
+          expr: `{${out}} ÷ {${other}}`,
+          how: `Divide the new top by the ${otherName} to get the ${topName} back.`,
+          work: (v: Values) => divideWork(v[out]!, v[other]!),
+        },
+        [other]: {
+          expr: `{${out}} ÷ {${top}}`,
+          how: `Divide the new top by the ${topName}.`,
+          work: (v: Values) => divideWork(v[out]!, v[top]!, 'second'),
+        },
+      },
+    });
+    const first = scaled('p = a × d', ['a', 'd', 'p'], ['first top', 'second bottom']);
+    const second = scaled('q = c × b', ['c', 'b', 'q'], ['second top', 'first bottom']);
+    const common = scaled('m = b × d', ['b', 'd', 'm'], ['first bottom', 'second bottom']);
+    return {
+      id: 'm.4.fraction-equivalence',
+      assumptions: [
+        'Multiplying the top and the bottom of a fraction by the same number keeps its size.',
+        'To compare two fractions, give them the same bottom: multiply each by the other’s bottom.',
+        'With the same bottom, the bigger top is the bigger fraction.',
+        'Fractions up to 1, bottoms from 2 to 6.',
+      ],
+      variables: [
+        whole('a', 'a', 'First top', 0, 6),
+        whole('b', 'b', 'First bottom', 2, 6),
+        whole('c', 'c', 'Second top', 0, 6),
+        whole('d', 'd', 'Second bottom', 2, 6),
+        { ...whole('m', 'm', 'Common bottom', 4, 36), derived: true },
+        { ...whole('p', 'p', 'First new top', 0, 36), derived: true },
+        { ...whole('q', 'q', 'Second new top', 0, 36), derived: true },
+      ],
+      relations: [
+        {
+          id: 'a ≤ b',
+          constraint: true,
+          display: '{a}/{b} is at most 1',
+          vars: ['a', 'b'],
+          residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
+          solve: {},
+        },
+        {
+          id: 'c ≤ d',
+          constraint: true,
+          display: '{c}/{d} is at most 1',
+          vars: ['c', 'd'],
+          residual: (v: Values) => (v.c! <= v.d! ? 0 : 1),
+          solve: {},
+        },
+        common.relation,
+        first.relation,
+        {
+          ...second.relation,
+          check: (v: Values) =>
+            known(v)
+              ? `${v.c} × ${v.b} = ${v.q}, so ${v.a}/${v.b} ${sign(v)} ${v.c}/${v.d}`
+              : `${v.c} × ${v.b} = ${v.q}`,
+        },
+      ],
+      steps: {
+        'a ≤ b': {},
+        'c ≤ d': {},
+        'm = b × d': {
+          ...common.steps,
+          m: {
+            ...common.steps.m!,
+            how: 'Multiply the two bottoms. Both fractions can be written over that number.',
+          },
+        },
+        'p = a × d': first.steps,
+        'q = c × b': {
+          ...second.steps,
+          q: {
+            ...second.steps.q!,
+            note: (v) =>
+              known(v)
+                ? `(${v.p}/${v.m} ${sign(v)} ${v.q}/${v.m}, so ${v.a}/${v.b} ${sign(v)} ${v.c}/${v.d})`
+                : '',
+          },
+        },
+      },
+      example: { a: 3, b: 4, c: 2, d: 3, m: 12, p: 9, q: 8 },
+      startWith: ['a', 'b', 'c', 'd'],
+      representation: {
+        kind: 'fractionBars',
+        rows: [
+          { num: 'a', den: 'b' },
+          { num: 'p', den: 'm' },
+          { num: 'c', den: 'd' },
+          { num: 'q', den: 'm' },
+        ],
+        controls: ['a', 'b', 'c', 'd'],
+        compare: [1, 3, 0, 2],
+      },
+    } satisfies ModuleDef;
+  })(),
 ];

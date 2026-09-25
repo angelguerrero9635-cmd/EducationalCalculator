@@ -379,6 +379,11 @@ export type Representation =
       rows: { num: string; den: string }[];
       controls: string[];
       equal?: boolean;
+      /**
+       * Which rows the caption compares (default the first two). Four entries compare the
+       * first pair and say what it means for the second: "9/12 > 8/12, so 3/4 > 2/3".
+       */
+      compare?: [number, number] | [number, number, number, number];
     }
   /**
    * Elapsed time on a number line: from the start time to the end time in jumps (to the next
