@@ -91,6 +91,9 @@ const SINGULAR: Record<string, string> = {
   meters: 'meter',
   centimeters: 'centimeter',
   feet: 'foot',
+  days: 'day',
+  hours: 'hour',
+  years: 'year',
 };
 
 /** Count words that take the singular after 1 ("1 ten", "1 row"), and never after "$1". */
@@ -121,6 +124,20 @@ const COUNT_WORDS: Record<string, string> = {
   rhombuses: 'rhombus',
   coins: 'coin',
   'half hours': 'half hour',
+  days: 'day',
+  hours: 'hour',
+  years: 'year',
+  pushes: 'push',
+  spaces: 'space',
+  seconds: 'second',
+  vibrations: 'vibration',
+  carrots: 'carrot',
+  layers: 'layer',
+  sheets: 'sheet',
+  kinds: 'kind',
+  stages: 'stage',
+  weeks: 'week',
+  children: 'child',
 };
 /** "1 tens" → "1 ten" in rendered text (templates can't tell the count in advance). */
 export const agree = (text: string) =>

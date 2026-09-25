@@ -463,6 +463,13 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) \\$(\\d+) bills?`), (a, b) => a * b],
   [new RegExp(`\\$(\\d+) bills? (${NUM})`), (b, a) => a * b],
   [new RegExp(`\\$(\\d+) bills in (${NUM})`), (b, n) => n / b],
+  // Equal groups in K–2 science words: "3 pushes of 2 spaces", "pushes of 2 spaces in 6",
+  // "6 spaces shared by 3 pushes". After every specific phrase above.
+  [new RegExp(`[a-z]+ of (${NUM}) [a-z]+ in (${NUM})`), (e, t) => t / e],
+  [new RegExp(`(${NUM}) [a-z]+ shared by (${NUM}) [a-z]+`), (t, n) => t / n],
+  [new RegExp(`(${NUM}) [a-z]+ of (${NUM}) [a-z]+`), (n, e) => n * e],
+  // A count with its word at the end of a line: "6 spaces", "20 carrots".
+  [new RegExp(`^(${NUM}) [a-z]+$`), (a) => a],
   // Last, after "3 feet of 12 inches": a length in inches is its number.
   [new RegExp(`(${NUM}) inches? and (${NUM}) inch`), (a, b) => a + b],
   [new RegExp(`(${NUM}) inch(?:es)?`), (a) => a],
@@ -944,6 +951,22 @@ function repIssues(
       if (t !== undefined && t > rep.max) out.push(`total ${t} L past the jug's ${rep.max} L`);
       break;
     }
+    case 'thermometers':
+      for (const id of rep.items) {
+        const x = val(id);
+        if (x !== undefined && (x < -40 || x > 250)) out.push(`temperature ${id} = ${x}`);
+      }
+      break;
+    case 'waves':
+      for (const id of rep.rows) count(id, 'bumps', rep.max);
+      break;
+    case 'rockLayers':
+      count(rep.layers, 'layers', 12);
+      break;
+    case 'pushes':
+      count(rep.right, 'push');
+      count(rep.left, 'push');
+      break;
     case 'quadrilateral': {
       const r = val(rep.rightAngles);
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);

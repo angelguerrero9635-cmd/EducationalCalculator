@@ -136,6 +136,14 @@ function representationVars(r: Representation): string[] {
       ];
     case 'table':
       return [r.sweep, r.output, ...r.params];
+    case 'thermometers':
+      return [...r.items, ...(r.difference ? [r.difference] : [])];
+    case 'waves':
+      return r.rows;
+    case 'rockLayers':
+      return [r.layers, r.years, r.total];
+    case 'pushes':
+      return [r.right, r.left, r.extra];
     case 'force':
       return [r.force, r.mass, r.acceleration];
     case 'seriesCircuit':

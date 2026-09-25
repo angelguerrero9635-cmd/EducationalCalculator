@@ -49,6 +49,10 @@ import { Quadrilateral } from './Quadrilateral';
 import { Rounding } from './Rounding';
 import { Scale } from './Scale';
 import { Timeline } from './Timeline';
+import { Thermometers } from './Thermometers';
+import { Waves } from './Waves';
+import { RockLayers } from './RockLayers';
+import { Pushes } from './Pushes';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -80,6 +84,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Quadrilateral spec={spec} calc={calc} />;
     case 'rectilinear':
       return <Rectilinear spec={spec} calc={calc} />;
+    case 'thermometers':
+      return <Thermometers spec={spec} calc={calc} />;
+    case 'waves':
+      return <Waves spec={spec} calc={calc} />;
+    case 'rockLayers':
+      return <RockLayers spec={spec} calc={calc} />;
+    case 'pushes':
+      return <Pushes spec={spec} calc={calc} />;
     case 'linePlot':
       return <LinePlot spec={spec} calc={calc} />;
     case 'numberLine':

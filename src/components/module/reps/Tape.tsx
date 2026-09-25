@@ -207,9 +207,11 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   >
                     {/* A narrow part shows only its value, clear of the drag handles; the name
                         with its letter is under the bar. */}
-                    {rep.label(id).length * chart.small * 0.55 > x1(i) - x0(i) - chart.handle - 4
-                      ? rep.value(id)
-                      : rep.label(id)}
+                    {x1(i) - x0(i) < chart.handle + 12
+                      ? ''
+                      : rep.label(id).length * chart.small * 0.55 > x1(i) - x0(i) - chart.handle - 4
+                        ? rep.value(id)
+                        : rep.label(id)}
                   </ChartText>
                 ))}
                 {spec.parts.map((id, i) => (

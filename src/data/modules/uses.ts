@@ -93,4 +93,38 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
     'Use this to read a length on a ruler marked in halves or quarters of an inch.',
   'm.3.scaled-graphs~picture-graph':
     'Use this for picture graphs where each picture stands for 2, 5 or 10.',
+  // Science, Kindergarten–Grade 3
+  's.K.pushes-pulls~strength': 'Use this for “A bigger push moves the toy how many spaces?”',
+  's.K.sunlight-warms~warming': 'Use this for “The water was 70 °F. It warmed 6 °F. How warm now?”',
+  's.K.living-needs~sprouting': 'Use this to count sprouted seeds and seeds that stayed dry.',
+  's.K.weather-patterns~warmer':
+    'Use this for “Is today warmer or cooler than yesterday? By how much?”',
+  's.K.living-things-change-environment~litter': 'Use this to count the litter picked up, by kind.',
+  's.1.sound-vibration~seconds': 'Use this to add up vibrations over a few seconds.',
+  's.1.light-shadows~materials': 'Use this to sort materials by how much light gets through.',
+  's.1.structures-function~beaks': 'Use this to compare two beaks and say which food each fits.',
+  's.1.offspring~grow':
+    'Use this for “The young plant is 5 cubes. How much more to be like its parent?”',
+  's.1.sky-patterns~moon':
+    'Use this for “It is 6 days since the new moon. How long until it is full?”',
+  's.2.material-properties~sort': 'Use this to sort materials by a property and count each group.',
+  's.2.heating-cooling~cooling': 'Use this for “Water at 68 °F cools 36 °F. How cold is it now?”',
+  's.2.heating-cooling~undo':
+    'Use this to sort changes into ones you can undo and ones you cannot.',
+  's.2.plant-growth-investigation~week':
+    'Use this for “The plant was 18 cm. Now it is 25 cm. How much did it grow?”',
+  's.2.pollination-dispersal~seeds': 'Use this to count where a plant’s seeds went.',
+  's.2.habitats~pond-count': 'Use this to count the animals seen in one habitat, by kind.',
+  's.2.erosion-landforms~wall': 'Use this to compare soil lost with and without a wall.',
+  's.2.erosion-landforms~map': 'Use this to count the landforms on a map.',
+  's.2.water-on-earth~fresh':
+    'Use this to see where Earth’s fresh water is: ice, rivers or underground.',
+  's.3.balanced-forces~tug': 'Use this to add up a team’s pull in a tug of war.',
+  's.3.magnets~chain': 'Use this to compare two magnets by the chain of clips each holds.',
+  's.3.life-cycles~frog': 'Use this to add the stages from egg to frog.',
+  's.3.inherited-traits~environment':
+    'Use this to compare plants with the same traits grown with different water.',
+  's.3.adaptation-fossils~survive': 'Use this to compare how many birds of each beak survived.',
+  's.3.weather-climate~range':
+    'Use this for the difference between the warmest and coldest months.',
 };

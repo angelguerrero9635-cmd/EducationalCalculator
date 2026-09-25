@@ -55,6 +55,10 @@ const PICTURE_NAMES: Record<string, string> = {
   tally: 'tally chart',
   coinRow: 'coins',
   partnerList: 'number partners',
+  thermometers: 'thermometers',
+  waves: 'sound waves',
+  rockLayers: 'rock layers',
+  pushes: 'pushes on a box',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

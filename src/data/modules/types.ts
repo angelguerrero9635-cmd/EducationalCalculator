@@ -417,6 +417,22 @@ export type Representation =
       total: string;
       extent: number;
     }
+  /** Thermometers side by side, one per value, numbered every 10°; drag the liquid's top. */
+  | {
+      kind: 'thermometers';
+      items: string[];
+      /** How far apart the first two are (labeled under the picture). */
+      difference?: string;
+      /** The scale shown at least from `min` to `max` (grows to fit the values). */
+      min: number;
+      max: number;
+    }
+  /** One wavy line per value: that many bumps in one second (vibrations, Grade 1 sound). */
+  | { kind: 'waves'; rows: string[]; max: number }
+  /** Rock layers stacked on a fossil, each `years` old; `total` is the fossil's age. */
+  | { kind: 'rockLayers'; layers: string; years: string; total: string }
+  /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */
+  | { kind: 'pushes'; right: string; left: string; extra: string; max: number }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | { kind: 'table'; sweep: string; output: string; params: string[]; rows: number[] }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */
