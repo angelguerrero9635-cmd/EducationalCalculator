@@ -35,6 +35,7 @@ import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
 import { RectangleDiagram } from './Rectangle';
+import { Rectilinear } from './Rectilinear';
 import { RightTriangle } from './RightTriangle';
 import { PictureGraph } from './PictureGraph';
 import { SeriesCircuit } from './SeriesCircuit';
@@ -77,6 +78,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Beaker spec={spec} calc={calc} />;
     case 'quadrilateral':
       return <Quadrilateral spec={spec} calc={calc} />;
+    case 'rectilinear':
+      return <Rectilinear spec={spec} calc={calc} />;
     case 'linePlot':
       return <LinePlot spec={spec} calc={calc} />;
     case 'numberLine':

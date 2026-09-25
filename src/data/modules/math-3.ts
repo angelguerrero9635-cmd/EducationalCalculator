@@ -294,6 +294,50 @@ export const MATH_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  (() => {
+    const first = times(
+      'p = a × b',
+      ['a', 'b', 'p'],
+      ['first factor', 'second factor', 'first product'],
+    );
+    const second = times(
+      'q = b × c',
+      ['b', 'c', 'q'],
+      ['second factor', 'third factor', 'second product'],
+    );
+    const left = times('n = p × c', ['p', 'c', 'n'], ['first product', 'third factor', 'total']);
+    const right = times('n = a × q', ['a', 'q', 'n'], ['first factor', 'second product', 'total']);
+    return {
+      id: 'm.3.multiplication-properties~grouping',
+      title: 'Group the factors',
+      pictureLabels: ['a', 'b', 'q'],
+      assumptions: [
+        'With three factors, multiply any two first. The product is the same.',
+        'So 3 × 5 × 2 = 15 × 2 = 3 × 10: pick the pair that makes an easy fact.',
+        'The picture draws each group as first × second dots, up to 16.',
+      ],
+      variables: [
+        whole('a', 'a', 'First factor', 0, 10),
+        whole('b', 'b', 'Second factor', 0, 10),
+        whole('c', 'c', 'Third factor', 0, 10),
+        whole('p', 'p', 'First × second', 0, 16),
+        whole('q', 'q', 'Second × third', 0, 100),
+        whole('n', 'n', 'Product', 0, 100),
+      ],
+      relations: [first.relation, second.relation, left.relation, right.relation],
+      steps: {
+        'p = a × b': first.steps,
+        'q = b × c': second.steps,
+        'n = p × c': left.steps,
+        'n = a × q': right.steps,
+      },
+      example: { a: 3, b: 5, c: 2, p: 15, q: 10, n: 30 },
+      startWith: ['a', 'b', 'c'],
+      // c groups of (a × b): the first two factors make each group.
+      representation: { kind: 'equalGroups', groups: 'c', each: 'p', total: 'n' },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Two-step word problems (3.OA.8) ──
   (() => {
     const packs = times('m = g × k', ['g', 'k', 'm'], ['packs', 'number in each pack', 'total']);
@@ -351,6 +395,43 @@ export const MATH_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  (() => {
+    const boxes = times(
+      'm = g × k',
+      ['g', 'k', 'm'],
+      ['boxes', 'number in each box', 'number in the boxes'],
+    );
+    const all = plus('t = m + e', ['m', 'e', 't'], ['number in the boxes', 'extra', 'total']);
+    return {
+      id: 'm.3.two-step-problems~multiply-add',
+      title: 'Multiply, then add',
+      pictureLabels: ['g', 'k'],
+      assumptions: [
+        'First multiply to find how many are in the equal groups. Then add the extra.',
+        'Check that the answer makes sense: round the numbers and estimate.',
+      ],
+      variables: [
+        whole('g', 'g', 'Boxes', 0, 10),
+        whole('k', 'k', 'In each box', 0, 10),
+        whole('m', 'm', 'In the boxes', 0, 100),
+        whole('e', 'e', 'Extra', 0, 100),
+        whole('t', 't', 'Total', 0, 200),
+      ],
+      relations: [boxes.relation, all.relation],
+      steps: { 'm = g × k': boxes.steps, 't = m + e': all.steps },
+      example: { g: 3, k: 8, m: 24, e: 5, t: 29 },
+      startWith: ['e', 'g', 'k'],
+      representation: {
+        kind: 'tape',
+        parts: ['m', 'e'],
+        total: 't',
+        groups: 'g',
+        groupsPart: 'm',
+        caption: '{g} × {k} = {m} in the boxes. Add {e}: {t} in all.',
+      },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Rounding (3.NBT.1) ──
   {
     id: 'm.3.rounding',
@@ -388,4 +469,90 @@ export const MATH_3_MODULES: ModuleDef[] = [
     startWith: ['n'],
     representation: { kind: 'rounding', value: 'n', lower: 'L', upper: 'U', rounded: 'r', to: 100 },
   },
+  (() => {
+    const round10 = (x: number) => Math.floor((x + 5) / 10) * 10;
+    const rounded = (id: string, from: string, name: string) => ({
+      relation: {
+        id: `${id} = ${from} rounded`,
+        display: `{${from}} rounds to {${id}}`,
+        vars: [id, from],
+        residual: (v: Values) => v[id]! - round10(v[from]!),
+        // Every number from 45 to 54 rounds to 50: the number can't be found from it.
+        solve: { [id]: (v: Values) => round10(v[from]!), [from]: () => undefined },
+      },
+      steps: {
+        [id]: {
+          expr: `{${from}} to the nearest ten`,
+          how: `Round the ${name} to the nearer ten. 5 ones or more rounds up.`,
+          work: (v: Values) => {
+            const n = v[from]!;
+            const lo = Math.floor(n / 10) * 10;
+            return [
+              `${n} is between ${lo} and ${lo + 10}.`,
+              n - lo < 5
+                ? `${n - lo} ones is less than 5: round down to ${lo}.`
+                : `${n - lo} ones is 5 or more: round up to ${lo + 10}.`,
+            ];
+          },
+        },
+      } as Record<string, StepText>,
+    });
+    const ra = rounded('x', 'a', 'first number');
+    const rb = rounded('y', 'b', 'second number');
+    const est = plus('e = x + y', ['x', 'y', 'e'], ['first rounded', 'second rounded', 'estimate']);
+    const sum = plus('s = a + b', ['a', 'b', 's'], ['first number', 'second number', 'sum']);
+    const off: ModuleDef['relations'][number] = {
+      id: 'o = distance from e to s',
+      display: 'The estimate {e} is {o} away from the sum {s}',
+      vars: ['o', 'e', 's'],
+      residual: (v) => v.o! - Math.abs(v.e! - v.s!),
+      solve: {
+        // Each rounding moves a number at most 4 down or 5 up, so the estimate is at most 8
+        // below the sum or 10 above it. Any other distance can't happen: -1 is out of range.
+        o: (v) => (v.e! - v.s! >= -8 && v.e! - v.s! <= 10 ? Math.abs(v.e! - v.s!) : -1),
+        // The distance alone doesn't say whether the estimate is above or below the sum.
+        e: () => undefined,
+        s: () => undefined,
+      },
+    };
+    return {
+      id: 'm.3.rounding~estimate',
+      title: 'Estimate a sum',
+      pictureLabels: ['x', 'y', 'e', 'o'],
+      assumptions: [
+        'Round each number to the nearest ten, then add the rounded numbers.',
+        'The estimate is close to the real sum. Use it to check the answer makes sense.',
+      ],
+      variables: [
+        whole('a', 'a', 'First number', 0, 500),
+        whole('b', 'b', 'Second number', 0, 500),
+        { ...whole('x', 'x', 'First rounded', 0, 500), step: 10, multipleOf: 10 },
+        { ...whole('y', 'y', 'Second rounded', 0, 500), step: 10, multipleOf: 10 },
+        { ...whole('e', 'e', 'Estimate', 0, 1000), step: 10, multipleOf: 10 },
+        whole('s', 's', 'Sum', 0, 1000),
+        whole('o', 'o', 'Estimate is off by', 0, 10),
+      ],
+      relations: [ra.relation, rb.relation, est.relation, sum.relation, off],
+      steps: {
+        'x = a rounded': ra.steps,
+        'y = b rounded': rb.steps,
+        'e = x + y': est.steps,
+        's = a + b': sum.steps,
+        'o = distance from e to s': {
+          o: {
+            expr: (v) => (v.e! >= v.s! ? '{e} − {s}' : '{s} − {e}'),
+            how: 'Take the smaller from the bigger. A small distance means the estimate is close.',
+          },
+        },
+      },
+      example: { a: 238, b: 154, x: 240, y: 150, e: 390, s: 392, o: 2 },
+      startWith: ['a', 'b'],
+      representation: {
+        kind: 'tape',
+        parts: ['a', 'b'],
+        total: 's',
+        caption: 'Estimate: {x} + {y} = {e}. Exact: {a} + {b} = {s}.',
+      },
+    } satisfies ModuleDef;
+  })(),
 ];

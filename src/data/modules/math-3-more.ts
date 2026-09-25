@@ -262,6 +262,33 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  (() => {
+    const fill = times(
+      'a = w × b',
+      ['w', 'b', 'a'],
+      ['whole number', 'parts in one whole', 'parts counted'],
+      '{a}/{b} = {w}',
+    );
+    return {
+      id: 'm.3.fractions-number-line~wholes',
+      title: 'Whole numbers as fractions',
+      assumptions: [
+        'A fraction is a whole number when the parts counted fill whole numbers exactly.',
+        'Every whole has the same number of parts: 4/4 = 1, 8/4 = 2, 12/4 = 3.',
+      ],
+      variables: [
+        whole('a', 'a', 'Parts counted', 0, 32),
+        whole('b', 'b', 'Parts in one whole', 1, 8),
+        whole('w', 'w', 'Whole number', 0, 4),
+      ],
+      relations: [fill.relation],
+      steps: { 'a = w × b': fill.steps },
+      example: { a: 8, b: 4, w: 2 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'fractionLine', numerator: 'a', denominator: 'b', wholes: 3 },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Equivalent and comparing fractions (3.NF.3) ──
   (() => {
     const top = times(
@@ -398,6 +425,92 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
           { num: 'c', den: 'b' },
         ],
         controls: ['b', 'a', 'c'],
+      },
+    } satisfies ModuleDef;
+  })(),
+
+  (() => {
+    const firstLeft = plus(
+      'b = a + u',
+      ['a', 'u', 'b'],
+      ['shaded parts', 'first not shaded', 'first parts in the whole'],
+      '{a} shaded + {u} not shaded = {b} parts',
+    );
+    const secondLeft = plus(
+      'd = a + x',
+      ['a', 'x', 'd'],
+      ['shaded parts', 'second not shaded', 'second parts in the whole'],
+      '{a} shaded + {x} not shaded = {d} parts',
+    );
+    // Nothing shaded: both fractions are 0, so they are equal whatever the parts.
+    const sign = (v: Values) => (v.a === 0 || v.b === v.d ? '=' : v.b! < v.d! ? '>' : '<');
+    return {
+      id: 'm.3.compare-fractions~same-numerator',
+      pictureLabels: ['g', 'u', 'x'],
+      title: 'Compare: same numerator',
+      assumptions: [
+        'Same numerator: both fractions shade the same number of parts.',
+        'Fewer parts in the whole means bigger parts, so that fraction is bigger: 2/3 > 2/6.',
+        'Both fractions are parts of the same whole.',
+      ],
+      variables: [
+        whole('a', 'a', 'Shaded parts', 0, 8),
+        whole('b', 'b', 'First parts in the whole', 1, 8),
+        whole('d', 'd', 'Second parts in the whole', 1, 8),
+        whole('g', 'g', 'Difference in parts', 0, 7),
+        whole('u', 'u', 'First not shaded', 0, 8),
+        whole('x', 'x', 'Second not shaded', 0, 8),
+      ],
+      relations: [
+        firstLeft.relation,
+        secondLeft.relation,
+        {
+          id: 'g = parts between b and d',
+          display: '{b} parts and {d} parts are {g} apart',
+          // With the shaded parts known: "2/3 > 2/6, 3 parts apart".
+          check: (v) => {
+            const apart = `${v.g} ${v.g === 1 ? 'part' : 'parts'} apart`;
+            return v.a === undefined
+              ? `${v.b} parts and ${v.d} parts, ${apart}`
+              : `${v.a}/${v.b} ${sign(v)} ${v.a}/${v.d}, ${apart}`;
+          },
+          vars: ['g', 'b', 'd'],
+          residual: (v) => v.g! - Math.abs(v.b! - v.d!),
+          solve: {
+            g: (v) => Math.abs(v.b! - v.d!),
+            b: (v) => [v.d! + v.g!, v.d! - v.g!],
+            d: (v) => [v.b! - v.g!, v.b! + v.g!],
+          },
+        },
+      ],
+      steps: {
+        'b = a + u': firstLeft.steps,
+        'd = a + x': secondLeft.steps,
+        'g = parts between b and d': {
+          g: {
+            expr: (v) => (v.b! >= v.d! ? '{b} − {d}' : '{d} − {b}'),
+            how: 'The shaded parts are the same. The whole cut into fewer parts has bigger parts, so it is the bigger fraction.',
+            note: (v) => (v.a === undefined ? '' : `(${v.a}/${v.b} ${sign(v)} ${v.a}/${v.d})`),
+          },
+          b: {
+            expr: (v) => (v.b! >= v.d! ? '{d} + {g}' : '{d} − {g}'),
+            how: 'Start from the second whole’s parts and move by the difference.',
+          },
+          d: {
+            expr: (v) => (v.b! >= v.d! ? '{b} − {g}' : '{b} + {g}'),
+            how: 'Start from the first whole’s parts and move by the difference.',
+          },
+        },
+      },
+      example: { a: 2, b: 3, d: 6, g: 3, u: 1, x: 4 },
+      startWith: ['a', 'b', 'd'],
+      representation: {
+        kind: 'fractionBars',
+        rows: [
+          { num: 'a', den: 'b' },
+          { num: 'a', den: 'd' },
+        ],
+        controls: ['a', 'b', 'd'],
       },
     } satisfies ModuleDef;
   })(),
@@ -733,6 +846,51 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
         max: 10,
         cell: 'square',
         split: { first: 'b', second: 'c', firstTotal: 'p', secondTotal: 'q' },
+      },
+    } satisfies ModuleDef;
+  })(),
+
+  (() => {
+    const leftArea = times(
+      'p = a × b',
+      ['a', 'b', 'p'],
+      ['width', 'height', 'area'],
+      '{a} × {b} = {p}',
+    );
+    const rightArea = times(
+      'q = c × d',
+      ['c', 'd', 'q'],
+      ['width', 'height', 'area'],
+      '{c} × {d} = {q}',
+    );
+    const sum = plus('A = p + q', ['p', 'q', 'A'], ['left area', 'right area', 'total area']);
+    return {
+      id: 'm.3.area~rectilinear',
+      title: 'Shapes made of rectangles',
+      assumptions: [
+        'Cut the shape into two rectangles that don’t overlap.',
+        'Find each rectangle’s area, then add them.',
+        'Each square is 1 square unit.',
+      ],
+      variables: [
+        whole('a', 'a', 'Left width', 0, 10),
+        whole('b', 'b', 'Left height', 0, 10),
+        whole('c', 'c', 'Right width', 0, 10),
+        whole('d', 'd', 'Right height', 0, 10),
+        { ...whole('p', 'p', 'Left area', 0, 100), unit: 'square units' },
+        { ...whole('q', 'q', 'Right area', 0, 100), unit: 'square units' },
+        { ...whole('A', 'A', 'Total area', 0, 200), unit: 'square units' },
+      ],
+      relations: [leftArea.relation, rightArea.relation, sum.relation],
+      steps: { 'p = a × b': leftArea.steps, 'q = c × d': rightArea.steps, 'A = p + q': sum.steps },
+      example: { a: 3, b: 5, c: 4, d: 2, p: 15, q: 8, A: 23 },
+      startWith: ['a', 'b', 'c', 'd'],
+      representation: {
+        kind: 'rectilinear',
+        left: { width: 'a', height: 'b', area: 'p' },
+        right: { width: 'c', height: 'd', area: 'q' },
+        total: 'A',
+        extent: 10,
       },
     } satisfies ModuleDef;
   })(),

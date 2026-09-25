@@ -77,6 +77,8 @@ export type Representation =
       total: string;
       /** The total is this many equal groups (a two-step problem): dashed lines mark them. */
       groups?: string;
+      /** The part the groups make up, when it isn't the whole bar (3 boxes of 8, and 5 more). */
+      groupsPart?: string;
       /** A sentence under the bar, with {id} for values. */
       caption?: string;
     }
@@ -396,6 +398,17 @@ export type Representation =
    * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.
    */
   | { kind: 'quadrilateral'; first: string; second: string; rightAngles: string }
+  /**
+   * Two rectangles side by side on the same base (a rectilinear shape), in unit squares, each
+   * with its area inside; `extent` is the smallest width drawn.
+   */
+  | {
+      kind: 'rectilinear';
+      left: { width: string; height: string; area: string };
+      right: { width: string; height: string; area: string };
+      total: string;
+      extent: number;
+    }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | { kind: 'table'; sweep: string; output: string; params: string[]; rows: number[] }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */

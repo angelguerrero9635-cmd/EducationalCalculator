@@ -225,7 +225,10 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </ChartText>
                 ))}
                 {Array.from({ length: Math.max(0, groups - 1) }, (_, k) => {
-                  const gx = left + ((k + 1) * span * scale) / groups;
+                  // Across the whole bar, or across the one part the groups make up.
+                  const gi = spec.groupsPart ? spec.parts.indexOf(spec.groupsPart) : -1;
+                  const [g0, g1] = gi >= 0 ? [x0(gi), x1(gi)] : [left, left + span * scale];
+                  const gx = g0 + ((k + 1) * (g1 - g0)) / groups;
                   return (
                     <Line
                       key={`g${k}`}

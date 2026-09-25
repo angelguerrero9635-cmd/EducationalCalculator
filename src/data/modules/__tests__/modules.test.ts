@@ -98,6 +98,8 @@ function representationVars(r: Representation): string[] {
       return [...r.parts, r.total];
     case 'quadrilateral':
       return [r.first, r.second, r.rightAngles];
+    case 'rectilinear':
+      return [...[r.left, r.right].flatMap((p) => [p.width, p.height, p.area]), r.total];
     case 'ruler':
       return [
         ...r.lengths,
