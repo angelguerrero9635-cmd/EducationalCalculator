@@ -12,6 +12,7 @@ import {
   subjectLabel,
   SUBJECTS,
 } from '@/data/selectors';
+import { skillIcon } from '@/data/icons';
 import { gradeLabel, GRADES } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
@@ -53,7 +54,7 @@ export default function StrandScreen() {
             <Tile
               key={s.id}
               testID={`skill-${s.id}`}
-              badge={String(i + 1)}
+              icon={skillIcon(s)}
               tone={i}
               title={s.title}
               subtitle={skillBoxSubtitle(s.id)}

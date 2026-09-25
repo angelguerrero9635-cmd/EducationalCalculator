@@ -22,6 +22,7 @@ import {
   skipsFieldLevel,
   topicRoute,
 } from '@/data/selectors';
+import { topicIcon } from '@/data/icons';
 import { COURSES } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { space, usePalette } from '@/theme';
@@ -62,7 +63,7 @@ export default function CourseScreen() {
           <Tile
             key={index}
             testID={`topic-${index}`}
-            badge={String(index + 1)}
+            icon={topicIcon(topic, course)}
             tone={index}
             title={topic}
             route={topicRoute(course.id, index)}

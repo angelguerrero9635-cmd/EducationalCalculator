@@ -50,7 +50,7 @@ export default function GradeScreen() {
               <Tile
                 key={s.slug}
                 testID={`strand-${s.slug}`}
-                badge={s.badge}
+                icon={s.icon}
                 tone={i}
                 title={s.title}
                 subtitle={s.subtitle}

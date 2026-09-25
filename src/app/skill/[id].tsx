@@ -23,6 +23,7 @@ import {
   skillRoute,
   subjectLabel,
 } from '@/data/selectors';
+import { problemTypeIcon, skillIcon } from '@/data/icons';
 import { gradeLabel, SKILLS } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { space, usePalette } from '@/theme';
@@ -80,7 +81,7 @@ export default function SkillScreen() {
               <Tile
                 key={r.id}
                 testID={`related-${r.id}`}
-                badge={r.id === skill.id ? '★' : String(i + (type ? 0 : 1))}
+                icon={r.id === skill.id ? skillIcon(skill) : problemTypeIcon(r.title, skill)}
                 tone={i}
                 title={r.title}
                 subtitle={r.subtitle}

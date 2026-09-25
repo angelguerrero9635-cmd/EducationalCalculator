@@ -19,6 +19,7 @@ import {
   type K12Subject,
   type Skill,
 } from './taxonomy';
+import { fieldIcon, strandIcon, type TopicIconName } from './icons';
 import { getModule, MODULES, moduleOwner } from './modules';
 
 export type TaxonomyNode = Skill | Course;
@@ -201,36 +202,11 @@ export const strandSlug = (strand: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
 
-/** A short symbol for each strand's badge. */
-const STRAND_BADGES: Record<string, string> = {
-  'Counting & Cardinality': '123',
-  'Operations & Algebraic Thinking': '+−',
-  'Number & Base Ten': '10',
-  Fractions: '½',
-  'Measurement & Data': 'cm',
-  Geometry: '△',
-  'Ratios & Proportions': 'a:b',
-  'The Number System': '±',
-  'Expressions & Equations': 'x=',
-  Functions: 'f(x)',
-  'Statistics & Probability': '%',
-  'Algebra 1': 'x',
-  'Algebra 2': 'x²',
-  'Precalculus & Statistics': 'sin',
-  'Physical Science': '⚡',
-  'Life Science': '❀',
-  'Earth & Space Science': '◐',
-  Biology: '❀',
-  Chemistry: '⚗',
-  Physics: '⚛',
-};
-export const strandBadge = (strand: string) => STRAND_BADGES[strand] ?? strand[0]!;
-
 /** A strand box on a grade page. */
 export interface StrandCard {
   slug: string;
   title: string;
-  badge: string;
+  icon: TopicIconName;
   subtitle: string;
   route: RouteTarget;
 }
@@ -245,7 +221,7 @@ export const gradeStrands = (grade: Grade, subject: K12Subject): StrandCard[] =>
   groupByStrand(skillsFor(grade, subject)).map(({ title, data }) => ({
     slug: strandSlug(title),
     title,
-    badge: strandBadge(title),
+    icon: strandIcon(title),
     subtitle: countLabel(data.length, 'skill'),
     route: strandRoute(grade, title),
   }));
@@ -280,19 +256,6 @@ export const skillBoxSubtitle = (skillId: string) => {
 /** Skills that have problem types (each has a lessons page). */
 export const skillsWithTypes = () =>
   [...new Set(PROBLEM_TYPE_IDS.map((id) => moduleOwner(id)))].filter((id) => !!getSkill(id));
-
-/** A badge from a title's first letters: "Mechanical Engineering" → "ME". */
-export function initials(title: string): string {
-  const words = title.split(/[\s&,()-]+/);
-  // "Calculus II" → "C2", so numbered courses get different badges.
-  const roman = words.findIndex((w) => /^(I|II|III|IV)$/.test(w));
-  if (roman > 0) return `${words[0]![0]}${['I', 'II', 'III', 'IV'].indexOf(words[roman]!) + 1}`;
-  return words
-    .filter((w) => /^[A-Z]/.test(w))
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('');
-}
 
 // ─── Browse: Higher Ed ───────────────────────────────────────────────────────
 
@@ -505,8 +468,9 @@ export interface CourseCard {
   title: string;
   subtitle: string;
   route: RouteTarget;
-  /** Short text for the card's colored badge ("K", "5", "C"). */
-  badge: string;
+  /** Short text for the card's colored badge ("K", "5"), or an icon. */
+  badge?: string;
+  icon?: TopicIconName;
   /** Color tone index for the badge (see `useTone` in the theme). */
   tone: number;
 }
@@ -522,11 +486,9 @@ export const gradeTone = (grade: Grade) => {
 };
 /** Math and science cards have their own tones. */
 export const subjectTone = (subject: K12Subject) => (subject === 'math' ? 0 : 6);
-/** Each college division has its own tone and a symbol for its badge. */
+/** Each college division has its own color tone. */
 export const divisionTone = (division: Division) =>
   ({ math: 0, science: 6, engineering: 5 })[division];
-export const divisionBadge = (division: Division) =>
-  ({ math: 'π', science: '⚛', engineering: '⚙' })[division];
 
 /** Home "My Courses": Math + Science cards per selected grade, one card per selected field. */
 export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
@@ -550,7 +512,7 @@ export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
         title: level.field.title,
         subtitle: `${divisionLabel(level.division)} · ${countLabel(count, 'course')}`,
         route: fieldRoute(level.division, level.field.id),
-        badge: level.field.title[0]!,
+        icon: fieldIcon(level.division, level.field.title),
         tone: divisionTone(level.division),
       },
     ];

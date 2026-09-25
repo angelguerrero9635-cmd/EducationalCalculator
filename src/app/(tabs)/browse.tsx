@@ -2,10 +2,10 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 import { SectionHeader, Tile, TileGrid } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
+import { divisionIcon } from '@/data/icons';
 import {
   DIVISIONS,
   countLabel,
-  divisionBadge,
   divisionLabel,
   divisionRoute,
   divisionTone,
@@ -54,7 +54,7 @@ export default function BrowseScreen() {
               <Tile
                 key={d}
                 testID={`division-${d}`}
-                badge={divisionBadge(d)}
+                icon={divisionIcon(d)}
                 tone={divisionTone(d)}
                 title={divisionLabel(d)}
                 subtitle={

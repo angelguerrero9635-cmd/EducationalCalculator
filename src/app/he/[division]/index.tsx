@@ -10,9 +10,9 @@ import {
   divisionTone,
   divisionView,
   fieldRoute,
-  initials,
   isDivision,
 } from '@/data/selectors';
+import { fieldIcon } from '@/data/icons';
 import { coursesFor, HE_FIELDS } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
@@ -48,7 +48,7 @@ export default function DivisionScreen() {
               <Tile
                 key={f.id}
                 testID={`field-${f.id}`}
-                badge={initials(f.title)}
+                icon={fieldIcon(division, f.title)}
                 tone={divisionTone(division) + i}
                 title={f.title}
                 subtitle={countLabel(coursesFor(division, f.id).length, 'course')}

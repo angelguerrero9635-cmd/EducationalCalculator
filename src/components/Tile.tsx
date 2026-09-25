@@ -2,16 +2,20 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 import { StyleSheet, View, type DimensionValue } from 'react-native';
 
 import { Text } from '@/components/Text';
+import type { TopicIconName } from '@/data/icons';
 import type { RouteTarget } from '@/data/selectors';
 import { font, radius, space, usePalette, useTone } from '@/theme';
 
 import { Card } from './Card';
+import { TopicIcon } from './TopicIcon';
 
 export interface TileProps {
   title: string;
   subtitle?: string;
-  /** Short text in the colored badge, e.g. "K", "5" or "Σ". */
-  badge: string;
+  /** Short text in the colored badge, e.g. "K" or "5". */
+  badge?: string;
+  /** A picture for the badge instead of text (see `src/data/icons.ts`). */
+  icon?: TopicIconName;
   /** Color tone index (see `useTone`). */
   tone: number;
   route?: RouteTarget;
@@ -20,7 +24,7 @@ export interface TileProps {
 }
 
 /** A box in a grid: a colored badge, a title and a short line under it. */
-export function Tile({ title, subtitle, badge, tone, route, onPress, testID }: TileProps) {
+export function Tile({ title, subtitle, badge, icon, tone, route, onPress, testID }: TileProps) {
   const c = usePalette();
   const t = useTone(tone);
   const width = useContext(TileWidth);
@@ -32,9 +36,13 @@ export function Tile({ title, subtitle, badge, tone, route, onPress, testID }: T
       style={[styles.tile, width !== undefined && { width, flexBasis: width, flexGrow: 0 }]}
     >
       <View style={[styles.badge, { backgroundColor: t.bg }]}>
-        <Text style={[styles.badgeText, { color: t.fg }]} numberOfLines={1}>
-          {badge}
-        </Text>
+        {icon ? (
+          <TopicIcon name={icon} color={t.fg} />
+        ) : (
+          <Text style={[styles.badgeText, { color: t.fg }]} numberOfLines={1}>
+            {badge}
+          </Text>
+        )}
       </View>
       <View style={styles.text}>
         <Text style={[styles.title, { color: c.text }]} numberOfLines={3}>

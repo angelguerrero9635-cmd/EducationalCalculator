@@ -10,6 +10,7 @@ import {
   skillsWithTypes,
   subjectLabel,
 } from '@/data/selectors';
+import { problemTypeIcon, skillIcon } from '@/data/icons';
 import { gradeLabel } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
@@ -43,7 +44,7 @@ export default function LessonsScreen() {
         <TileGrid>
           <Tile
             testID={`lesson-${skill.id}`}
-            badge="★"
+            icon={skillIcon(skill)}
             tone={0}
             title="Main lesson"
             subtitle={skill.title}
@@ -53,7 +54,7 @@ export default function LessonsScreen() {
             <Tile
               key={t.id}
               testID={`lesson-${t.id}`}
-              badge={String(i + 1)}
+              icon={problemTypeIcon(t.title, skill)}
               tone={i + 1}
               title={t.title}
               subtitle={t.use}

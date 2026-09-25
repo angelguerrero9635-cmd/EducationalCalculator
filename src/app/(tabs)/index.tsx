@@ -101,6 +101,7 @@ export default function HomeScreen() {
                 title={card.title}
                 subtitle={card.subtitle}
                 badge={card.badge}
+                icon={card.icon}
                 tone={card.tone}
                 route={card.route}
               />
