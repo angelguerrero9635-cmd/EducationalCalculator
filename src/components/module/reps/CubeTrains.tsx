@@ -24,7 +24,8 @@ export function CubeTrains({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const shades = [c.chartHighlight, c.chartFill, c.chartSurface];
   const count = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
   const shade = (id: string) => shades[parts.indexOf(id) % shades.length]!;
-  const symbol = (id: string) => rep.variable(id).symbol;
+  // K–2 reads the numbers ("3 + 4"); later grades the letters ("a + b").
+  const symbol = (id: string) => (rep.early ? rep.value(id, false) : rep.variable(id).symbol);
   const label = (row: Spec['rows'][number]) =>
     row.map((p) => (Array.isArray(p) ? `(${p.map(symbol).join(' + ')})` : symbol(p))).join(' + ');
 

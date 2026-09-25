@@ -175,7 +175,9 @@ titles and descriptions in `meta.ts`. Cite the principle:
    messages.
 7. **Active voice, second person** where it helps.
 8. **Notation readiness:** × and ÷ and fractions from Grade 3, negatives from Grade 6, letters in
-   formulas from Grade 6 (before that, letters read as labels in the picture).
+   formulas from Grade 6 (Grades 3–5: letters only as labels in the picture). Kindergarten to
+   Grade 2: no letters anywhere (inputs, pictures, formulas, steps); values are named in words
+   ("Bigger amount: 11") and "=" appears only inside number sentences like 8 + 5 = 13.
 9. **Inclusive, culturally neutral** names and examples.
    Give exact replacement strings, and a short glossary of preferred terms per grade band.
 
@@ -262,8 +264,8 @@ better at this grade, and the reverse. Read the dump, the page and the picture:
 - **Both:** often the best page keeps the number sentence and adds a words version in the `how`
   or a label ("Bigger − smaller = how many more"). Say which one comes first.
 - The calculator still needs relations, so never propose removing one; propose the words for
-  `display`, labels, `how` lines and assumptions instead. Keep the letters the picture and
-  inputs share (check E, signaling).
+  `display`, labels, `how` lines and assumptions instead. From Grade 3, keep the letters the
+  picture and inputs share (check E, signaling); K–2 pages show no letters at all.
 
 Report each finding as `[improve|K] <where> "<current text>" → "<replacement>"` (or "keep the
 formula, because …" when a reader might expect a change), plus section-wide patterns first.

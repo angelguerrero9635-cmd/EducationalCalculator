@@ -1579,7 +1579,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.standard-length',
     assumptions: [
-      'Type the longer ribbon in L and the shorter one in S.',
+      'Type how long each ribbon is: the longer one, then the shorter one.',
       '“A is 8 cm shorter than B” means B is the longer ribbon.',
       'Measure both in the same unit. Switch the units menu to inches: the numbers get smaller, because an inch is longer than a centimeter.',
     ],

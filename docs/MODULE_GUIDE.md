@@ -47,6 +47,12 @@ Label every value in the picture with the same letter or symbol the formulas use
 name with its symbol, "Bigger amount (B)"), so students can match the picture to the formulas.
 Use `rep.label(id)` and `rep.tag(id)` in picture components.
 
+Kindergarten through Grade 2 pages show no letters anywhere (inputs, pictures, formulas, steps):
+values are named in words ("Bigger amount: 11"), and "=" appears only inside number sentences
+such as 8 + 5 = 13. The shared helpers do this for you: there `rep.label(id)` gives just the
+value, `rep.tag(id)` just the name, and `rep.named(id)` a standalone "Name: value"; write any
+other picture text with `rep.early` in mind.
+
 | Lesson idea                                | Representation                                                   |
 | ------------------------------------------ | ---------------------------------------------------------------- |
 | Counting, adding/subtracting small numbers | Counters or number line (jumps)                                  |

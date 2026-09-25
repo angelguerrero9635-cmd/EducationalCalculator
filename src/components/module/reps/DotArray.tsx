@@ -81,7 +81,9 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.variable(spec.rows).symbol} = ${rows} rows of ${rep.variable(spec.columns).symbol} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`}
+        {rep.early
+          ? `${rows} rows of ${cols}: ${sums || '0'} = ${rep.value(spec.total, false)}`
+          : `${rep.variable(spec.rows).symbol} = ${rows} rows of ${rep.variable(spec.columns).symbol} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`}
       </Text>
     </View>
   );

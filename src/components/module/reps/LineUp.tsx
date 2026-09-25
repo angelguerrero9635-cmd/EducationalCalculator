@@ -74,7 +74,9 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {/* One line lower than "next to", so the labels of neighbors never touch. */}
                     {me ? (
                       <Text style={[styles.next, { color: c.text, marginTop: LINE }]}>
-                        {nowrap(`${rep.variable(spec.position).symbol} = ${p}`)}
+                        {nowrap(
+                          rep.early ? `Place ${p}` : `${rep.variable(spec.position).symbol} = ${p}`,
+                        )}
                       </Text>
                     ) : null}
                     {next ? <Text style={[styles.next, { color: c.text }]}>next to</Text> : null}

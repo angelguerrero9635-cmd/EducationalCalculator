@@ -164,7 +164,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
       {spec.difference && spec.lengths.length === 2 && spec.lengths.every(rep.known) ? (
         <Text style={[styles.caption, { color: c.text }]}>{compare()}</Text>
       ) : spec.difference ? (
-        <Text style={[styles.caption, { color: c.text }]}>{rep.label(spec.difference)}</Text>
+        <Text style={[styles.caption, { color: c.text }]}>{rep.named(spec.difference)}</Text>
       ) : null}
     </View>
   );

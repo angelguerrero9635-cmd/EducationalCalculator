@@ -18,6 +18,8 @@ type Spec = Extract<Representation, { kind: 'balance' }>;
 export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
+  // K–2 reads the numbers ("6 + 1 = 7"); later grades the letters ("a + b = 7").
+  const term = (id: string) => (rep.early ? rep.value(id, false) : rep.variable(id).symbol);
   const count = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
   const crossed = spec.takeAway ? count(spec.takeAway) : 0;
   const left = spec.left.reduce((s, id) => s + count(id), 0) - crossed;
@@ -119,7 +121,7 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${spec.left.map((id) => rep.variable(id).symbol).join(' + ')}${spec.takeAway ? ` − ${rep.variable(spec.takeAway).symbol}` : ''} = ${left}   ·   ${spec.right.map((id) => rep.variable(id).symbol).join(' + ')} = ${right}\n`}
+        {`${spec.left.map(term).join(' + ')}${spec.takeAway ? ` − ${term(spec.takeAway)}` : ''} = ${left}   ·   ${spec.right.map(term).join(' + ')} = ${right}\n`}
         {left === right
           ? 'Level: both sides are the same. The number sentence is true.'
           : `Not level: ${left} on the left, ${right} on the right. The number sentence is false.`}

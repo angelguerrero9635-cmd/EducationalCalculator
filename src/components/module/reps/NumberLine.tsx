@@ -88,7 +88,7 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const mid = (sx(from) + sx(to)) / 2;
                 const label =
                   arcs.length === 1
-                    ? `${back ? '−' : b >= 0 ? '+' : ''}${rep.label(spec.jump).split(' = ')[1]}`
+                    ? `${back ? '−' : b >= 0 ? '+' : ''}${rep.value(spec.jump)}`
                     : `${sign > 0 ? '+' : '−'}${Math.abs(to - from)}`;
                 return (
                   <G key={i} opacity={faded ? 0.35 : 1}>

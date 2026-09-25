@@ -19,11 +19,23 @@ export function StepByStep({ calc }: { calc: Calculator }) {
   // Conversion steps (when needed) come first and last, numbered with the others.
   const offset = w.convertIn.length ? 1 : 0;
   const card = [styles.card, { backgroundColor: c.surface, borderColor: c.border }];
-  // K–2 students read names, not bare letters: "First group (a) = 3", one per line.
+  // K–2 students read names, never letters: "First group: 3", one per line.
   const list = (qs: typeof w.given) =>
     (early
-      ? qs.map((q) => `${q.name} (${q.symbol}) = ${q.value}`).join('\n')
+      ? qs.map((q) => `${q.name}: ${q.value}`).join('\n')
       : qs.map((q) => `${q.symbol} = ${q.value}`).join(',  ')) || 'nothing yet';
+  const byId = new Map(calc.module.variables.map((v) => [v.id, v]));
+  /** K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter). */
+  const plain = (line: string, id: string, keepName: boolean) => {
+    const v = byId.get(id);
+    if (!early || !v || !line.startsWith(`${v.symbol} = `)) return line;
+    const rest = line.slice(v.symbol.length + 3);
+    return keepName ? `${v.name}: ${rest}` : rest;
+  };
+  /** The variable a conversion line is about ("a = 12 in = 30.48 cm …"). */
+  const convertedId = (line: string) =>
+    calc.module.variables.find((v) => line.startsWith(`${v.symbol} = `))?.id ?? '';
+  const lowerFirst = (x: string) => `${x[0]!.toLowerCase()}${x.slice(1)}`;
 
   return (
     <View style={styles.container} testID="step-by-step">
@@ -34,7 +46,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           <>
             <Text style={[styles.label, { color: c.textMuted }]}>FIND</Text>
             <Text style={[styles.math, { color: c.text }]}>
-              {w.find.map((q) => `${q.name} (${q.symbol})`).join(', ')}
+              {w.find.map((q) => (early ? q.name : `${q.name} (${q.symbol})`)).join(', ')}
             </Text>
           </>
         ) : null}
@@ -55,7 +67,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
             {w.convertIn.map((line) => (
               <Text key={line} style={[styles.math, { color: c.text }]}>
-                {line}
+                {plain(line, convertedId(line), true)}
               </Text>
             ))}
           </View>
@@ -66,7 +78,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
         <View key={s.id} style={card}>
           <Text
             style={[styles.stepTitle, { color: c.text }]}
-          >{`Step ${i + 1 + offset} · ${s.title}`}</Text>
+          >{`Step ${i + 1 + offset} · ${early ? `Find ${lowerFirst(byId.get(s.id)?.name ?? '')}` : s.title}`}</Text>
           {early ? (
             // K–2: the number sentence with "?" for the number to find ("3 + ? = 7").
             <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.sentence}</Text>
@@ -84,14 +96,18 @@ export function StepByStep({ calc }: { calc: Calculator }) {
             {/* K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped
                 when the work lines show the arithmetic. */}
             {s.substituted && !(early && s.work?.length && wordy(s.substituted)) ? (
-              <Text style={[styles.math, { color: c.text }]}>{s.substituted}</Text>
+              <Text style={[styles.math, { color: c.text }]}>
+                {plain(s.substituted, s.id, false)}
+              </Text>
             ) : null}
             {s.work?.map((line, k) => (
               <Text key={k} style={[styles.math, { color: c.text }]}>
                 {line}
               </Text>
             ))}
-            <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.result}</Text>
+            <Text style={[styles.math, styles.bold, { color: c.text }]}>
+              {plain(s.result, s.id, true)}
+            </Text>
           </View>
         </View>
       ))}
@@ -107,7 +123,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
             {w.convertOut.map((line) => (
               <Text key={line} style={[styles.math, styles.bold, { color: c.text }]}>
-                {line}
+                {plain(line, convertedId(line), true)}
               </Text>
             ))}
           </View>

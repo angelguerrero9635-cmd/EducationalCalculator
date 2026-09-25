@@ -114,7 +114,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   return (
     <View style={[styles.row, { borderBottomColor: c.border }]}>
       <View style={styles.label}>
-        <Text style={[styles.symbol, { color: c.text }]}>{variable.symbol}</Text>
+        {/* K–2 names each value in words; letters start later. */}
+        {early ? null : <Text style={[styles.symbol, { color: c.text }]}>{variable.symbol}</Text>}
         <View style={styles.names}>
           <Text style={[styles.name, { color: c.text }]}>{variable.name}</Text>
           <Text style={[styles.meta, { color: error ? c.text : c.textMuted }]}>
@@ -244,15 +245,16 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
               working,
             ),
           );
-          // K–2: the number sentence first (what students write), the letters under it as labels.
-          const [first, second] = early ? [numbers, letters] : [letters, numbers];
+          // K–2: just the number sentence (what students write), no letters.
           return (
             <View
               key={r.id}
               style={[styles.formula, { backgroundColor: c.surface, borderColor: c.border }]}
             >
-              <Text style={[styles.symbolic, { color: c.text }]}>{first}</Text>
-              <Text style={[styles.substituted, { color: c.textMuted }]}>{second}</Text>
+              <Text style={[styles.symbolic, { color: c.text }]}>{early ? numbers : letters}</Text>
+              {early ? null : (
+                <Text style={[styles.substituted, { color: c.textMuted }]}>{numbers}</Text>
+              )}
             </View>
           );
         })}

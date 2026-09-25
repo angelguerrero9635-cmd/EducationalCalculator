@@ -131,7 +131,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           spec.count,
           spec.total,
         ]
-          .map((id) => rep.label(id))
+          .map((id) => rep.named(id))
           .join('   ·   ')}
       </Text>
       <Steppers

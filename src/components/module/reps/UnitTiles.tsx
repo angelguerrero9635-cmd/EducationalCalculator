@@ -110,7 +110,9 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.variable(spec.count).symbol} = ${count} ${bigName(count)}, each ${sizeVar ? `${rep.variable(sizeVar).symbol} = ` : ''}${size} ${smallName(size)} long. ${rep.variable(spec.total).symbol} = ${total} ${smallName(total)}.`}
+        {rep.early
+          ? `${count} ${bigName(count)}, each ${size} ${smallName(size)} long: ${total} ${smallName(total)} in all.`
+          : `${rep.variable(spec.count).symbol} = ${count} ${bigName(count)}, each ${sizeVar ? `${rep.variable(sizeVar).symbol} = ` : ''}${size} ${smallName(size)} long. ${rep.variable(spec.total).symbol} = ${total} ${smallName(total)}.`}
       </Text>
       <Steppers
         calc={calc}

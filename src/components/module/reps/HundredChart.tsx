@@ -17,6 +17,9 @@ type Spec = Extract<Representation, { kind: 'hundredChart' }>;
 export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
+  /** "One more p = 31"; K–2: "One more: 31". */
+  const named = (id: string) =>
+    rep.early ? rep.named(id) : `${rep.variable(id).name} ${rep.label(id)}`;
   const n = rep.known(spec.value) ? Math.round(rep.shown(spec.value)) : 0;
   const marks = (spec.marks ?? []).filter(rep.known).map((id) => Math.round(rep.shown(id)));
   // Counting by tens from n: a dot on each number passed (n + 10, n + 20, …).
@@ -83,18 +86,16 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.textMuted }]}>
-        {[`${rep.tag(spec.value)} ${rep.label(spec.value).split(' = ')[1]} (shaded)`]
+        {[`${rep.tag(spec.value)} ${rep.value(spec.value)} (shaded)`]
           .concat(
             (spec.marks ?? [])
               .filter(rep.known)
               .map((id) =>
                 Math.round(rep.shown(id)) > spec.max
-                  ? `${rep.variable(id).name} ${rep.label(id)} (past the chart)`
-                  : `${rep.variable(id).name} ${rep.label(id)} (in a box)`,
+                  ? `${named(id)} (past the chart)`
+                  : `${named(id)} (in a box)`,
               ),
-            spec.tens && rep.known(spec.tens.count)
-              ? [`${rep.variable(spec.tens.count).name} ${rep.label(spec.tens.count)} (dots)`]
-              : [],
+            spec.tens && rep.known(spec.tens.count) ? [`${named(spec.tens.count)} (dots)`] : [],
           )
           .join('   ·   ')}
       </Text>

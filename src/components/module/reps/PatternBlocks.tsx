@@ -25,13 +25,16 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
     ...Array<number>(n(spec.rhombuses)).fill(2),
     ...Array<number>(n(spec.triangles)).fill(1),
   ];
-  // Trapezoids solid, rhombuses shaded, triangles open; each block is labeled with its letter.
+  // Trapezoids solid, rhombuses shaded, triangles open; after Grade 2 each block also shows its letter.
   const fills: Record<number, string> = { 3: c.chartHighlight, 2: c.chartFill, 1: 'transparent' };
-  const letters: Record<number, string> = {
-    3: rep.variable(spec.trapezoids).symbol,
-    2: rep.variable(spec.rhombuses).symbol,
-    1: rep.variable(spec.triangles).symbol,
-  };
+  // K–2 blocks carry no letters: the fill shows the kind of block.
+  const letters: Record<number, string> = rep.early
+    ? { 3: '', 2: '', 1: '' }
+    : {
+        3: rep.variable(spec.trapezoids).symbol,
+        2: rep.variable(spec.rhombuses).symbol,
+        1: rep.variable(spec.triangles).symbol,
+      };
   const ids = [spec.trapezoids, spec.rhombuses, spec.triangles];
 
   return (

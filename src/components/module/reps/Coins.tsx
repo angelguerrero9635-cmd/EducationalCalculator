@@ -67,8 +67,8 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </View>
       <Text style={[styles.total, { color: c.text }]}>
         {total === undefined
-          ? `Total: ${rep.variable(spec.total).symbol} = ?`
-          : `Total: ${rep.variable(spec.total).symbol} = ${totalText(total)}`}
+          ? `Total: ${rep.early ? '' : `${rep.variable(spec.total).symbol} = `}?`
+          : `Total: ${rep.early ? '' : `${rep.variable(spec.total).symbol} = `}${totalText(total)}`}
       </Text>
       <Steppers
         calc={calc}

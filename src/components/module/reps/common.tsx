@@ -2,6 +2,7 @@ import { useState, useRef, type ReactNode } from 'react';
 import { Platform, View, type GestureResponderEvent, type ViewStyle } from 'react-native';
 import { Text as SvgText, type TextProps as SvgTextProps } from 'react-native-svg';
 
+import { isEarlyGrade } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { chart, font, usePalette } from '@/theme';
@@ -163,6 +164,17 @@ export function useRep(calc: Calculator) {
       ? Math.max(v.min, Math.min(0, v.max ?? 0))
       : module.example[id]!;
   };
+  const early = isEarlyGrade(module.id);
+  const valueText = (id: string, withUnit: boolean) => {
+    const v = byId.get(id)!;
+    const x = values[id];
+    const unit = units.display[id];
+    const shown = x === undefined ? '?' : formatNumber(units.toDisplay(id, x), v);
+    if (!withUnit || !unit || x === undefined) return shown;
+    // $ goes before the number; ¢, % and ° go right after it; other units after a space.
+    if (unit === '$') return `$${shown}`;
+    return `${shown}${['¢', '%', '°'].includes(unit) ? '' : ' '}${unit}`;
+  };
   return {
     variable: (id: string) => byId.get(id)!,
     known: (id: string) => values[id] !== undefined,
@@ -174,20 +186,27 @@ export function useRep(calc: Calculator) {
     unit: (id: string) => units.display[id],
     /** Formula units per shown unit (e.g. 2.54 when showing inches for a cm variable). */
     factor: (id: string) => units.factor(id),
-    /** A name with its formula symbol, e.g. "Bigger amount (B)", so pictures match formulas. */
+    /** Kindergarten–Grade 2: pictures use names and numbers, never letters. */
+    early,
+    /** A value as shown, with its unit: "12 cm", "$5", "35¢", or "?". */
+    value: (id: string, withUnit = true) => valueText(id, withUnit),
+    /**
+     * A name with its formula symbol, e.g. "Bigger amount (B)", so pictures match formulas.
+     * K–2: the name alone.
+     */
     tag: (id: string) => {
       const v = byId.get(id)!;
-      return `${v.name} (${v.symbol})`;
+      return early ? v.name : `${v.name} (${v.symbol})`;
     },
-    label: (id: string, withUnit = true) => {
+    /** "B = 11 cm" beside a named part of a picture. K–2: just the value, "11 cm". */
+    label: (id: string, withUnit = true) =>
+      early ? valueText(id, withUnit) : `${byId.get(id)!.symbol} = ${valueText(id, withUnit)}`,
+    /** A label that stands alone: "d = 4 cm". K–2: "How much longer: 4 cm". */
+    named: (id: string, withUnit = true) => {
       const v = byId.get(id)!;
-      const x = values[id];
-      const unit = units.display[id];
-      const shown = x === undefined ? '?' : formatNumber(units.toDisplay(id, x), v);
-      if (!withUnit || !unit || x === undefined) return `${v.symbol} = ${shown}`;
-      // $ goes before the number; ¢, % and ° go right after it; other units after a space.
-      if (unit === '$') return `${v.symbol} = $${shown}`;
-      return `${v.symbol} = ${shown}${['¢', '%', '°'].includes(unit) ? '' : ' '}${unit}`;
+      return early
+        ? `${v.name}: ${valueText(id, withUnit)}`
+        : `${v.symbol} = ${valueText(id, withUnit)}`;
     },
     /** Current values of `ids` that are known, for pinning them during a drag. */
     pin: (ids: string[]): Values =>
