@@ -83,7 +83,13 @@ try {
       .catch(() => {});
     for (const id of ids) {
       errors.length = 0;
-      await page.goto(`${base}/skill/${encodeURIComponent(id)}`);
+      // A college topic ("<courseId>#<index>") lives on the course's topic page.
+      const [courseId, topicIndex] = id.split('#');
+      await page.goto(
+        topicIndex === undefined
+          ? `${base}/skill/${encodeURIComponent(id)}`
+          : `${base}/course/${encodeURIComponent(courseId)}/topic/${topicIndex}`,
+      );
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);
       const early = /^[ms]\.(K|1|2)\./.test(id);
