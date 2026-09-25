@@ -5,6 +5,8 @@
  */
 import type { Values } from '@/engine/types';
 
+import { formatNumber } from '@/engine/format';
+
 import { div, whole } from './math-k2';
 import type { ModuleDef } from './types';
 import { divideWork, timesWork } from './work';
@@ -96,4 +98,87 @@ export const MATH_4_MODULES: ModuleDef[] = [
     startWith: ['a', 'b'],
     representation: { kind: 'array', rows: 'a', columns: 'b', total: 'n', max: 12 },
   },
+
+  // ── Place value to 1,000,000: a digit's value and the place to its right (4.NBT.1) ──
+  (() => {
+    const fmt = (x: number) => formatNumber(x);
+    const PLACES = [10, 100, 1000, 10000, 100000];
+    const PLACE_NAMES: Record<number, string> = {
+      10: 'tens',
+      100: 'hundreds',
+      1000: 'thousands',
+      10000: 'ten thousands',
+      100000: 'hundred thousands',
+    };
+    return {
+      id: 'm.4.place-value-million',
+      assumptions: [
+        'A digit’s value is the digit times its place: 7 in the thousands place is 7,000.',
+        'Each place is 10 times the place to its right. Moving a digit one place right divides its value by 10.',
+        'Places up to hundred thousands: numbers to 999,999.',
+        'Tap a row of the table to move the digit to that place.',
+      ],
+      variables: [
+        whole('d', 'd', 'Digit', 1, 9),
+        { ...whole('p', 'p', 'Its place', 10, 100000), allowed: PLACES },
+        whole('v', 'v', 'Value of the digit', 10, 900000),
+        whole('r', 'r', 'Same digit one place right', 1, 90000),
+      ],
+      relations: [
+        {
+          id: 'v = d × p',
+          display: '{d} × {p} = {v}',
+          vars: ['v', 'd', 'p'],
+          residual: (v: Values) => v.v! - v.d! * v.p!,
+          solve: {
+            v: (v: Values) => v.d! * v.p!,
+            d: (v: Values) => div(v.v!, v.p!),
+            p: (v: Values) => div(v.v!, v.d!),
+          },
+        },
+        {
+          id: 'r = v ÷ 10',
+          display: '{v} ÷ 10 = {r}',
+          vars: ['r', 'v'],
+          residual: (v: Values) => v.r! - v.v! / 10,
+          solve: { r: (v: Values) => v.v! / 10, v: (v: Values) => v.r! * 10 },
+        },
+      ],
+      steps: {
+        'v = d × p': {
+          v: {
+            expr: '{d} × {p}',
+            how: (v) =>
+              `The digit is in the ${PLACE_NAMES[v.p!] ?? 'ones'} place. Multiply it by that place.`,
+            work: (v) => [`${v.d} × ${fmt(v.p!)} = ${fmt(v.d! * v.p!)}`],
+          },
+          d: {
+            expr: '{v} ÷ {p}',
+            how: 'Divide the value by its place to get the digit.',
+            work: (v) => [`${fmt(v.v!)} ÷ ${fmt(v.p!)} = ${v.v! / v.p!}`],
+          },
+          p: {
+            expr: '{v} ÷ {d}',
+            how: 'Divide the value by the digit to get its place.',
+            work: (v) => [`${fmt(v.v!)} ÷ ${v.d} = ${fmt(v.v! / v.d!)}`],
+          },
+        },
+        'r = v ÷ 10': {
+          r: {
+            expr: '{v} ÷ 10',
+            how: 'One place to the right is worth ten times less: divide the value by 10.',
+            work: (v) => [`${fmt(v.v!)} ÷ 10 = ${fmt(v.v! / 10)}`],
+          },
+          v: {
+            expr: '{r} × 10',
+            how: 'One place to the left is worth ten times more: multiply by 10.',
+            work: (v) => [`${fmt(v.r!)} × 10 = ${fmt(v.r! * 10)}`],
+          },
+        },
+      },
+      example: { d: 7, p: 1000, v: 7000, r: 700 },
+      startWith: ['d', 'p'],
+      representation: { kind: 'table', sweep: 'p', output: 'v', params: ['d'], rows: PLACES },
+    } satisfies ModuleDef;
+  })(),
 ];
