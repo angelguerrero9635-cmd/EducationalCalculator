@@ -3,11 +3,12 @@ import { Text } from '@/components/Text';
 
 import { font, space, usePalette } from '@/theme';
 
+/** A heading between groups of content: bold text on the page, no band. */
 export function SectionHeader({ title }: { title: string }) {
   const c = usePalette();
   return (
-    <View style={[styles.header, { backgroundColor: c.surface }]}>
-      <Text accessibilityRole="header" style={[styles.title, { color: c.textMuted }]}>
+    <View style={styles.header}>
+      <Text accessibilityRole="header" style={[styles.title, { color: c.text }]}>
         {title}
       </Text>
     </View>
@@ -15,6 +16,6 @@ export function SectionHeader({ title }: { title: string }) {
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: space.lg, paddingTop: space.lg, paddingBottom: space.sm },
-  title: { fontSize: font.caption + 1, fontWeight: '600', textTransform: 'uppercase' },
+  header: { paddingHorizontal: space.lg, paddingTop: space.xl, paddingBottom: space.md },
+  title: { fontSize: font.body + 2, fontWeight: '800', letterSpacing: -0.2 },
 });

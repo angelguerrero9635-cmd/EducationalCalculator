@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/Text';
 
-import { font, radius, space, usePalette } from '@/theme';
+import { font, radius, space, useCardShadow, usePalette } from '@/theme';
 
 export interface Segment<T extends string> {
   value: T;
@@ -20,11 +20,9 @@ export function SegmentedControl<T extends string>({
   onChange,
 }: SegmentedControlProps<T>) {
   const c = usePalette();
+  const shadow = useCardShadow();
   return (
-    <View
-      accessibilityRole="tablist"
-      style={[styles.track, { backgroundColor: c.surface, borderColor: c.border }]}
-    >
+    <View accessibilityRole="tablist" style={[styles.track, { backgroundColor: c.surface }]}>
       {segments.map((s) => {
         const selected = s.value === value;
         return (
@@ -33,9 +31,15 @@ export function SegmentedControl<T extends string>({
             accessibilityRole="tab"
             accessibilityState={{ selected }}
             onPress={() => onChange(s.value)}
-            style={[styles.segment, selected && { backgroundColor: c.background }]}
+            style={[styles.segment, selected && [{ backgroundColor: c.thumb }, shadow]]}
           >
-            <Text style={[styles.label, { color: c.text }, selected && styles.selected]}>
+            <Text
+              style={[
+                styles.label,
+                { color: selected ? c.accent : c.text },
+                selected && styles.selected,
+              ]}
+            >
               {s.label}
             </Text>
           </Pressable>
@@ -48,16 +52,16 @@ export function SegmentedControl<T extends string>({
 const styles = StyleSheet.create({
   track: {
     flexDirection: 'row',
-    borderRadius: radius.sm + 2,
-    borderWidth: StyleSheet.hairlineWidth,
-    padding: 2,
+    borderRadius: radius.pill,
+    padding: 3,
   },
   segment: {
     flex: 1,
-    paddingVertical: space.sm - 2,
-    borderRadius: radius.sm,
+    paddingVertical: space.sm - 1,
+    paddingHorizontal: space.xs,
+    borderRadius: radius.pill,
     alignItems: 'center',
   },
-  label: { fontSize: font.caption + 1 },
-  selected: { fontWeight: '600' },
+  label: { fontSize: font.caption + 1, fontWeight: '500' },
+  selected: { fontWeight: '700' },
 });

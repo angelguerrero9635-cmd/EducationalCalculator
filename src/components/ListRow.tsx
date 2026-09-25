@@ -3,7 +3,10 @@ import { Text } from '@/components/Text';
 
 import type { RouteTarget } from '@/data/selectors';
 import { push } from '@/navigation';
-import { font, space, usePalette } from '@/theme';
+import { font, radius, space, useCardShadow, usePalette } from '@/theme';
+
+import { useInGroup } from './Group';
+import { Icon } from './Icon';
 
 export interface ListRowProps {
   title: string;
@@ -19,6 +22,10 @@ export interface ListRowProps {
   testID?: string;
 }
 
+/**
+ * One item in a list. On its own it is a rounded box (a card) with space around it; inside a
+ * `Group` it is a flat row, and the group draws the box and the lines between rows.
+ */
 export function ListRow({
   title,
   subtitle,
@@ -30,6 +37,8 @@ export function ListRow({
   testID,
 }: ListRowProps) {
   const c = usePalette();
+  const shadow = useCardShadow();
+  const inGroup = useInGroup();
   const handlePress = onPress ?? (route ? () => push(route) : undefined);
   const kind = accessory ?? (selected !== undefined ? 'check' : handlePress ? 'chevron' : 'none');
 
@@ -42,24 +51,21 @@ export function ListRow({
       accessibilityState={selected !== undefined ? { selected } : undefined}
       style={({ pressed }) => [
         styles.row,
-        { backgroundColor: pressed ? c.surface : c.background, borderBottomColor: c.border },
+        inGroup
+          ? { backgroundColor: pressed ? c.surface : c.card }
+          : [styles.card, { backgroundColor: pressed ? c.surface : c.card }, shadow],
       ]}
     >
       <View style={styles.text}>
-        {overline ? (
-          <Text style={[styles.overline, { color: c.textMuted }]}>{overline}</Text>
-        ) : null}
+        {overline ? <Text style={[styles.overline, { color: c.accent }]}>{overline}</Text> : null}
         <Text style={[styles.title, { color: c.text }]}>{title}</Text>
         {subtitle ? (
           <Text style={[styles.subtitle, { color: c.textMuted }]}>{subtitle}</Text>
         ) : null}
       </View>
-      {kind === 'chevron' ? (
-        <Text style={[styles.accessory, { color: c.textMuted }]}>›</Text>
-      ) : null}
-      {kind === 'check' ? (
-        <Text style={[styles.accessory, { color: c.text }]}>{selected ? '✓' : ' '}</Text>
-      ) : null}
+      {kind === 'chevron' ? <Icon name="chevron" size={18} color={c.textMuted} /> : null}
+      {kind === 'check' && selected ? <Icon name="check" size={20} color={c.accent} /> : null}
+      {kind === 'check' && !selected ? <View style={styles.empty} /> : null}
     </Pressable>
   );
 }
@@ -68,14 +74,20 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 48,
+    gap: space.sm,
+    minHeight: 52,
     paddingVertical: space.md,
     paddingHorizontal: space.lg,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  card: { marginHorizontal: space.lg, marginBottom: space.sm, borderRadius: radius.lg },
   text: { flex: 1, gap: 2 },
-  overline: { fontSize: font.caption, textTransform: 'uppercase', letterSpacing: 0.5 },
-  title: { fontSize: font.body },
-  subtitle: { fontSize: font.caption + 1 },
-  accessory: { fontSize: font.title, marginLeft: space.sm, width: 16, textAlign: 'center' },
+  overline: {
+    fontSize: font.caption - 1,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+  },
+  title: { fontSize: font.body, fontWeight: '600' },
+  subtitle: { fontSize: font.caption + 1, lineHeight: 18 },
+  empty: { width: 20 },
 });

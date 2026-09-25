@@ -26,7 +26,12 @@ export function EmptyState({ title, message, actionLabel, onAction }: EmptyState
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', padding: space.xl, gap: space.sm },
+  container: {
+    alignItems: 'center',
+    paddingVertical: space.xl,
+    paddingHorizontal: space.xl,
+    gap: space.sm,
+  },
   title: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
   message: { fontSize: font.caption + 1, textAlign: 'center' },
 });

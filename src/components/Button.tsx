@@ -14,8 +14,9 @@ export interface ButtonProps {
 export function Button({ label, onPress, variant = 'primary', disabled, testID }: ButtonProps) {
   const c = usePalette();
   const isDisabled = disabled || !onPress;
-  const bg = variant === 'primary' ? c.accent : variant === 'secondary' ? c.surface : 'transparent';
-  const fg = variant === 'primary' ? c.onAccent : c.text;
+  const bg =
+    variant === 'primary' ? c.accent : variant === 'secondary' ? c.accentSoft : 'transparent';
+  const fg = variant === 'primary' ? c.onAccent : c.accent;
 
   return (
     <Pressable
@@ -26,7 +27,6 @@ export function Button({ label, onPress, variant = 'primary', disabled, testID }
       accessibilityState={{ disabled: isDisabled }}
       style={({ pressed }) => [
         variant === 'link' ? styles.link : styles.button,
-        variant === 'secondary' && { borderColor: c.border, borderWidth: 1 },
         { backgroundColor: bg, opacity: isDisabled ? 0.4 : pressed ? 0.7 : 1 },
       ]}
     >
@@ -40,12 +40,12 @@ export function Button({ label, onPress, variant = 'primary', disabled, testID }
 const styles = StyleSheet.create({
   button: {
     minHeight: 48,
-    borderRadius: radius.md,
+    borderRadius: radius.pill,
     paddingHorizontal: space.xl,
     alignItems: 'center',
     justifyContent: 'center',
   },
   link: { padding: space.sm, alignItems: 'center' },
-  label: { fontSize: font.body, fontWeight: '600' },
+  label: { fontSize: font.body, fontWeight: '700' },
   linkLabel: { fontWeight: '400', textDecorationLine: 'underline' },
 });

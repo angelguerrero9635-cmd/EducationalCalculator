@@ -1,9 +1,10 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Text } from '@/components/Text';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { ListRow, SectionHeader } from '@/components';
+import { Group, ListRow, SectionHeader, SegmentedControl } from '@/components';
+import { PageMeta } from '@/components/PageMeta';
+import { Text } from '@/components/Text';
 import { parseLevelKey } from '@/data/selectors';
 import { gradeLabel } from '@/data/taxonomy';
 import {
@@ -13,14 +14,19 @@ import {
   useSelectedLevels,
   useUnitsPref,
 } from '@/state';
+import type { UnitSystem } from '@/engine/units';
 import type { AppearancePref } from '@/state';
 import { font, space, usePalette } from '@/theme';
-import { PageMeta } from '@/components/PageMeta';
 
 const APPEARANCES: { value: AppearancePref; label: string }[] = [
   { value: 'system', label: 'System' },
   { value: 'light', label: 'Light' },
   { value: 'dark', label: 'Dark' },
+];
+
+const UNITS: { value: UnitSystem; label: string }[] = [
+  { value: 'metric', label: 'Metric' },
+  { value: 'us', label: 'US customary' },
 ];
 
 function levelsSummary(levels: readonly string[]): string {
@@ -33,6 +39,12 @@ function levelsSummary(levels: readonly string[]): string {
   return names.length > 3
     ? `${names.slice(0, 3).join(', ')} +${names.length - 3}`
     : names.join(', ');
+}
+
+/** A note under a group, in small muted text. */
+function Note({ children }: { children: string }) {
+  const c = usePalette();
+  return <Text style={[styles.note, { color: c.textMuted }]}>{children}</Text>;
 }
 
 export default function SettingsScreen() {
@@ -52,78 +64,79 @@ export default function SettingsScreen() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={{ backgroundColor: c.background }}
+        contentContainerStyle={styles.page}
       >
         <SectionHeader title="What you study" />
-        <ListRow
-          title="Grade levels & fields"
-          subtitle={levelsSummary(levels)}
-          onPress={() => router.push('/levels')}
-        />
+        <Group>
+          <ListRow
+            title="Grade levels & fields"
+            subtitle={levelsSummary(levels)}
+            onPress={() => router.push('/levels')}
+          />
+        </Group>
 
         <SectionHeader title="Appearance" />
-        {APPEARANCES.map((a) => (
-          <ListRow
-            key={a.value}
-            title={a.label}
-            selected={appearance === a.value}
-            onPress={() => setAppearance(a.value)}
-          />
-        ))}
+        <Group>
+          <View style={styles.control}>
+            <SegmentedControl segments={APPEARANCES} value={appearance} onChange={setAppearance} />
+          </View>
+        </Group>
 
         <SectionHeader title="Units" />
-        {(
-          [
-            { value: 'metric', label: 'Metric', detail: 'cm, m, kg, N, …' },
-            { value: 'us', label: 'US customary', detail: 'in, ft, lb, lbf, …' },
-          ] as const
-        ).map((u) => (
-          <ListRow
-            key={u.value}
-            title={u.label}
-            subtitle={u.detail}
-            selected={units === u.value}
-            onPress={() => setUnits(u.value)}
-          />
-        ))}
-        <Text style={[styles.paragraph, { color: c.textMuted }]}>
-          The default for every module. Each module can also switch units, or mix units value by
-          value.
-        </Text>
+        <Group>
+          <View style={styles.control}>
+            <SegmentedControl segments={UNITS} value={units} onChange={setUnits} />
+          </View>
+        </Group>
+        <Note>
+          {`${units === 'metric' ? 'cm, m, kg, N, …' : 'in, ft, lb, lbf, …'} The default for every module. Each module can also switch units, or mix units value by value.`}
+        </Note>
 
         <SectionHeader title="Premium" />
-        <ListRow
-          title="Plans & free trial"
-          subtitle="Preview only. No purchases in this build."
-          onPress={() => router.push('/paywall')}
-        />
+        <Group>
+          <ListRow
+            title="Plans & free trial"
+            subtitle="Preview only. No purchases in this build."
+            onPress={() => router.push('/paywall')}
+          />
+        </Group>
 
         <SectionHeader title="Recently viewed" />
-        <ListRow
-          title="Clear recently viewed"
-          subtitle={recents.length ? `${recents.length} items` : 'Empty'}
-          accessory="none"
-          onPress={recents.length ? clearRecents : undefined}
-        />
+        <Group>
+          <ListRow
+            title="Clear recently viewed"
+            subtitle={recents.length ? `${recents.length} items` : 'Empty'}
+            accessory="none"
+            onPress={recents.length ? clearRecents : undefined}
+          />
+        </Group>
 
         <SectionHeader title="About" />
-        <ListRow title="Version" subtitle={version} />
-        <Text style={[styles.paragraph, { color: c.textMuted }]}>
+        <Group>
+          <ListRow title="Version" subtitle={version} />
+          <ListRow title="No data collected" subtitle="No accounts, analytics, ads or tracking." />
+        </Group>
+        <Note>
+          The app makes no network requests. Your selections, appearance and recently viewed items
+          are stored only on this device.
+        </Note>
+        <Note>
           [Disclaimer placeholder] This app is an independent study aid. It is not affiliated with,
           endorsed by, or sponsored by any school, school district, college, university, testing
           organization, or standards body. Course and skill names are generic descriptions.
-        </Text>
-
-        <SectionHeader title="Privacy" />
-        <ListRow title="No data collected" />
-        <Text style={[styles.paragraph, { color: c.textMuted }]}>
-          There are no accounts, analytics, ads, or tracking, and the app makes no network requests.
-          Your selections, appearance, and recently viewed items are stored only on this device.
-        </Text>
+        </Note>
       </ScrollView>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  paragraph: { fontSize: font.caption + 1, lineHeight: 18, padding: space.lg },
+  page: { paddingBottom: space.xxl },
+  control: { padding: space.md },
+  note: {
+    fontSize: font.caption + 1,
+    lineHeight: 18,
+    paddingHorizontal: space.xl,
+    paddingTop: space.sm,
+  },
 });

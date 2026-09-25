@@ -192,6 +192,31 @@ export const gradeSections = (grade: Grade, subject: K12Subject) =>
     ]),
   }));
 
+/** A skill with its problem types: one box on the grade page. */
+export interface SkillCard {
+  id: string;
+  skill: GradeRow;
+  types: GradeRow[];
+}
+
+/** The grade page: strands, each a list of skill boxes. */
+export const gradeSkillCards = (grade: Grade, subject: K12Subject) =>
+  groupByStrand(skillsFor(grade, subject)).map(({ title, data }) => ({
+    title,
+    data: data.map((skill): SkillCard => {
+      const types = problemTypes(skill.id);
+      return {
+        id: skill.id,
+        skill: {
+          id: skill.id,
+          title: skill.title,
+          subtitle: types.length ? countLabel(types.length, 'problem type') : undefined,
+        },
+        types: types.map((t) => ({ id: t.id, title: t.title, subtitle: t.use })),
+      };
+    }),
+  }));
+
 // ─── Browse: Higher Ed ───────────────────────────────────────────────────────
 
 /** A division with a single field (Math) skips the field level and lists courses directly. */
@@ -403,7 +428,28 @@ export interface CourseCard {
   title: string;
   subtitle: string;
   route: RouteTarget;
+  /** Short text for the card's colored badge ("K", "5", "C"). */
+  badge: string;
+  /** Color tone index for the badge (see `useTone` in the theme). */
+  tone: number;
 }
+
+// ─── Badges and color tones for cards ────────────────────────────────────────
+
+/** "K" or the grade number, for a grade's badge. */
+export const gradeBadge = (grade: Grade) => grade;
+/** Grade bands share a tone: K–2, 3–5, 6–8 and 9–12. */
+export const gradeTone = (grade: Grade) => {
+  const n = grade === 'K' ? 0 : Number(grade);
+  return n <= 2 ? 1 : n <= 5 ? 2 : n <= 8 ? 3 : 4;
+};
+/** Math and science cards have their own tones. */
+export const subjectTone = (subject: K12Subject) => (subject === 'math' ? 0 : 6);
+/** Each college division has its own tone and a symbol for its badge. */
+export const divisionTone = (division: Division) =>
+  ({ math: 0, science: 6, engineering: 5 })[division];
+export const divisionBadge = (division: Division) =>
+  ({ math: 'π', science: '⚛', engineering: '⚙' })[division];
 
 /** Home "My Courses": Math + Science cards per selected grade, one card per selected field. */
 export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
@@ -416,6 +462,8 @@ export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
         title: `${gradeLabel(level.grade)} · ${subjectLabel(subject)}`,
         subtitle: countLabel(skillsFor(level.grade, subject).length, 'skill'),
         route: gradeRoute(level.grade, subject),
+        badge: gradeBadge(level.grade),
+        tone: subjectTone(subject),
       }));
     }
     const count = coursesFor(level.division, level.field.id).length;
@@ -425,6 +473,8 @@ export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
         title: level.field.title,
         subtitle: `${divisionLabel(level.division)} · ${countLabel(count, 'course')}`,
         route: fieldRoute(level.division, level.field.id),
+        badge: level.field.title[0]!,
+        tone: divisionTone(level.division),
       },
     ];
   });

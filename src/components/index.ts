@@ -1,4 +1,8 @@
 export { Button } from './Button';
+export { Card } from './Card';
+export { Group } from './Group';
+export { Icon, type IconName } from './Icon';
+export { Tile, TileGrid } from './Tile';
 export { Chip } from './Chip';
 export { CourseList } from './CourseList';
 export { Dropdown, type DropdownOption } from './Dropdown';

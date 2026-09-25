@@ -1,11 +1,23 @@
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
-import { ListRow, SectionHeader } from '@/components';
-import { DIVISIONS, divisionLabel, gradeRoute } from '@/data/selectors';
-import { GRADES, gradeLabel, skillsFor } from '@/data/taxonomy';
-import { usePalette } from '@/theme';
+import { SectionHeader, Tile, TileGrid } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
+import {
+  DIVISIONS,
+  countLabel,
+  divisionBadge,
+  divisionLabel,
+  divisionRoute,
+  divisionTone,
+  divisionView,
+  gradeBadge,
+  gradeRoute,
+  gradeTone,
+} from '@/data/selectors';
+import { GRADES, gradeLabel, skillsFor } from '@/data/taxonomy';
+import { space, usePalette } from '@/theme';
 
+/** Browse: a box for every grade (K–12) and for every college division. */
 export default function BrowseScreen() {
   const c = usePalette();
   return (
@@ -17,25 +29,49 @@ export default function BrowseScreen() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={{ backgroundColor: c.background }}
+        contentContainerStyle={styles.page}
       >
-        <SectionHeader title="K–12" />
-        {GRADES.map((g) => (
-          <ListRow
-            key={g}
-            testID={`browse-grade-${g}`}
-            title={gradeLabel(g)}
-            subtitle={`${skillsFor(g, 'math').length} math · ${skillsFor(g, 'science').length} science skills`}
-            route={gradeRoute(g)}
-          />
-        ))}
+        <SectionHeader title="School · Kindergarten to Grade 12" />
+        <TileGrid>
+          {GRADES.map((g) => (
+            <Tile
+              key={g}
+              testID={`browse-grade-${g}`}
+              badge={gradeBadge(g)}
+              tone={gradeTone(g)}
+              title={gradeLabel(g)}
+              subtitle={`${skillsFor(g, 'math').length} math · ${skillsFor(g, 'science').length} science`}
+              route={gradeRoute(g)}
+            />
+          ))}
+        </TileGrid>
+
         <SectionHeader title="College" />
-        <ListRow
-          testID="browse-higher-ed"
-          title="Higher Education"
-          subtitle={DIVISIONS.map(divisionLabel).join(' · ')}
-          route={{ pathname: '/he', params: {} }}
-        />
+        <TileGrid>
+          {DIVISIONS.map((d) => {
+            const view = divisionView(d);
+            return (
+              <Tile
+                key={d}
+                testID={`division-${d}`}
+                badge={divisionBadge(d)}
+                tone={divisionTone(d)}
+                title={divisionLabel(d)}
+                subtitle={
+                  view.kind === 'courses'
+                    ? countLabel(view.courses.length, 'course')
+                    : countLabel(view.fields.length, 'field')
+                }
+                route={divisionRoute(d)}
+              />
+            );
+          })}
+        </TileGrid>
       </ScrollView>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  page: { paddingBottom: space.xxl },
+});

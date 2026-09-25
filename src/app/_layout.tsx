@@ -18,9 +18,9 @@ export default function RootLayout() {
       ...base,
       colors: {
         ...base.colors,
-        primary: c.text,
+        primary: c.accent,
         background: c.background,
-        card: c.background,
+        card: c.card,
         text: c.text,
         border: c.border,
       },

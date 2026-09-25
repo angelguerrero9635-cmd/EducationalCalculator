@@ -1,13 +1,28 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { FlatList } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
-import { CourseList, EmptyState, ListRow } from '@/components';
-import { renderAllOnWeb } from '@/components/listProps';
+import { CourseList, EmptyState, Tile, TileGrid } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { divisionMeta } from '@/data/meta';
-import { countLabel, divisionLabel, divisionView, fieldRoute, isDivision } from '@/data/selectors';
+import {
+  countLabel,
+  divisionLabel,
+  divisionTone,
+  divisionView,
+  fieldRoute,
+  isDivision,
+} from '@/data/selectors';
 import { coursesFor, HE_FIELDS } from '@/data/taxonomy';
-import { usePalette } from '@/theme';
+import { space, usePalette } from '@/theme';
+
+/** A field's badge: its initials, e.g. "Mechanical Engineering" → "ME". */
+function fieldBadge(title: string): string {
+  const words = title.split(/[\s&,-]+/).filter((w) => /^[A-Z]/.test(w));
+  return words
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('');
+}
 
 /** Division → fields. Single-field divisions (Math) skip straight to their course list. */
 /** Pre-render every division page (web static rendering). */
@@ -31,22 +46,30 @@ export default function DivisionScreen() {
       {view.kind === 'courses' ? (
         <CourseList courses={view.courses} />
       ) : (
-        <FlatList
-          {...renderAllOnWeb}
+        <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={{ backgroundColor: c.background }}
-          data={view.fields}
-          keyExtractor={(f) => f.id}
-          renderItem={({ item }) => (
-            <ListRow
-              testID={`field-${item.id}`}
-              title={item.title}
-              subtitle={countLabel(coursesFor(division, item.id).length, 'course')}
-              route={fieldRoute(division, item.id)}
-            />
-          )}
-        />
+          contentContainerStyle={styles.page}
+        >
+          <TileGrid>
+            {view.fields.map((f, i) => (
+              <Tile
+                key={f.id}
+                testID={`field-${f.id}`}
+                badge={fieldBadge(f.title)}
+                tone={divisionTone(division) + i}
+                title={f.title}
+                subtitle={countLabel(coursesFor(division, f.id).length, 'course')}
+                route={fieldRoute(division, f.id)}
+              />
+            ))}
+          </TileGrid>
+        </ScrollView>
       )}
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  page: { paddingVertical: space.lg },
+});

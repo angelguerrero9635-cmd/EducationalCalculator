@@ -1,16 +1,19 @@
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
-import { ListRow } from '@/components';
+import { Tile, TileGrid } from '@/components';
+import { PageMeta } from '@/components/PageMeta';
 import {
   DIVISIONS,
   countLabel,
+  divisionBadge,
   divisionLabel,
   divisionRoute,
+  divisionTone,
   divisionView,
 } from '@/data/selectors';
-import { usePalette } from '@/theme';
-import { PageMeta } from '@/components/PageMeta';
+import { space, usePalette } from '@/theme';
 
+/** Higher education: a box for every division. */
 export default function HigherEdScreen() {
   const c = usePalette();
   return (
@@ -22,24 +25,33 @@ export default function HigherEdScreen() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={{ backgroundColor: c.background }}
+        contentContainerStyle={styles.page}
       >
-        {DIVISIONS.map((d) => {
-          const view = divisionView(d);
-          const subtitle =
-            view.kind === 'courses'
-              ? countLabel(view.courses.length, 'course')
-              : countLabel(view.fields.length, 'field');
-          return (
-            <ListRow
-              key={d}
-              testID={`division-${d}`}
-              title={divisionLabel(d)}
-              subtitle={subtitle}
-              route={divisionRoute(d)}
-            />
-          );
-        })}
+        <TileGrid>
+          {DIVISIONS.map((d) => {
+            const view = divisionView(d);
+            return (
+              <Tile
+                key={d}
+                testID={`division-${d}`}
+                badge={divisionBadge(d)}
+                tone={divisionTone(d)}
+                title={divisionLabel(d)}
+                subtitle={
+                  view.kind === 'courses'
+                    ? countLabel(view.courses.length, 'course')
+                    : countLabel(view.fields.length, 'field')
+                }
+                route={divisionRoute(d)}
+              />
+            );
+          })}
+        </TileGrid>
       </ScrollView>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  page: { paddingVertical: space.lg },
+});

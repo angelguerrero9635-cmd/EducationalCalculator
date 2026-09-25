@@ -50,8 +50,8 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
           hitSlop={8}
           style={({ pressed }) => [styles.back, { opacity: pressed ? 0.5 : 1 }]}
         >
-          {modal ? null : <Text style={[styles.chevron, { color: c.text }]}>‹</Text>}
-          <Text style={[styles.backLabel, { color: c.text }]} numberOfLines={1}>
+          {modal ? null : <Text style={[styles.chevron, { color: c.accent }]}>‹</Text>}
+          <Text style={[styles.backLabel, { color: c.accent }]} numberOfLines={1}>
             {backLabel}
           </Text>
         </Pressable>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   chevron: { fontSize: 30, lineHeight: 32, marginTop: -3 },
-  backLabel: { flexShrink: 1, fontSize: font.body },
-  title: { flex: 1, textAlign: 'center', fontSize: font.body + 1, fontWeight: '600' },
+  backLabel: { flexShrink: 1, fontSize: font.body, fontWeight: '500' },
+  title: { flex: 1, textAlign: 'center', fontSize: font.body + 1, fontWeight: '700' },
   side: { width: SIDE },
 });

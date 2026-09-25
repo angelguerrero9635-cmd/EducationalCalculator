@@ -10,56 +10,97 @@ import { prefsStore } from '@/state/prefs';
 
 // ─── Colors ──────────────────────────────────────────────────────────────────
 
-/** Low-fidelity grayscale wireframe palette. */
+/** Light theme: a cool off-white page, white cards and an indigo accent. */
 const light = {
-  background: '#FFFFFF',
-  /** Secondary backgrounds: section headers, cards, pressed rows. */
-  surface: '#F2F2F2',
+  background: '#F5F6FA',
+  /** Secondary backgrounds: inputs, segmented-control tracks, pressed rows. */
+  surface: '#ECEEF4',
+  /** Cards and boxes that sit on the page. */
+  card: '#FFFFFF',
+  /** The selected part of a segmented control. */
+  thumb: '#FFFFFF',
   /** Placeholder boxes and the "not yet built" areas. */
-  placeholder: '#E0E0E0',
-  border: '#C7C7C7',
-  text: '#111111',
-  textMuted: '#6B6B6B',
-  /** Primary buttons, selected chips and segments. */
-  accent: '#333333',
+  placeholder: '#E3E6EE',
+  border: '#DDE1EA',
+  text: '#14161F',
+  textMuted: '#636A7A',
+  /** Primary buttons, selected chips and segments, links, the active tab. */
+  accent: '#4F46E5',
+  /** A tint of the accent for soft highlights (selected rows, badges). */
+  accentSoft: '#EEF0FF',
   onAccent: '#FFFFFF',
+  /** The hero banner's gradient, top-left to bottom-right. */
+  heroFrom: '#4F46E5',
+  heroTo: '#7C3AED',
+  onHero: '#FFFFFF',
 
   // Charts and diagrams (can be styled separately from the rest of the app).
   /** Main lines, shapes' outlines and labels. */
-  chartInk: '#111111',
+  chartInk: '#1B1E28',
   /** Secondary lines (guides, dashed helpers) and secondary labels. */
-  chartMuted: '#6B6B6B',
+  chartMuted: '#6B7280',
   /** Shape fills (rectangles, circles, bars you can drag). */
-  chartFill: '#E0E0E0',
+  chartFill: '#E4E7F0',
   /** Secondary fills (calculated bars, empty grid cells, table header). */
-  chartSurface: '#F2F2F2',
+  chartSurface: '#F1F3F8',
   /** Grid lines, cell borders and axis frames. */
-  chartGrid: '#C7C7C7',
-  /** Highlighted data (shaded squares, the selected table row). */
-  chartHighlight: '#333333',
+  chartGrid: '#D5D9E3',
+  /** Highlighted data (solid counters, shaded squares, the selected table row). */
+  chartHighlight: '#4F46E5',
   onChartHighlight: '#FFFFFF',
 };
 
 export type Palette = typeof light;
 
+/** Dark theme: a deep blue-black page with slightly lighter cards and a softer indigo. */
 const dark: Palette = {
-  background: '#000000',
-  surface: '#1C1C1E',
-  placeholder: '#2C2C2E',
-  border: '#3A3A3C',
-  text: '#F2F2F2',
-  textMuted: '#9A9A9A',
-  accent: '#D6D6D6',
-  onAccent: '#000000',
+  background: '#0D0F14',
+  surface: '#1D2029',
+  card: '#171A21',
+  thumb: '#323846',
+  placeholder: '#242833',
+  border: '#2A2F3A',
+  text: '#EEF0F6',
+  textMuted: '#9AA1B2',
+  accent: '#8B83FF',
+  accentSoft: '#23224A',
+  onAccent: '#0D0F14',
+  heroFrom: '#3730A3',
+  heroTo: '#6D28D9',
+  onHero: '#FFFFFF',
 
-  chartInk: '#F2F2F2',
-  chartMuted: '#9A9A9A',
-  chartFill: '#2C2C2E',
-  chartSurface: '#1C1C1E',
-  chartGrid: '#3A3A3C',
-  chartHighlight: '#D6D6D6',
-  onChartHighlight: '#000000',
+  chartInk: '#EEF0F6',
+  chartMuted: '#9AA1B2',
+  chartFill: '#262A35',
+  chartSurface: '#1D2029',
+  chartGrid: '#343947',
+  chartHighlight: '#8B83FF',
+  onChartHighlight: '#0D0F14',
 };
+
+/**
+ * Color tones for cards that group things (grade bands, subjects, divisions): a soft
+ * background and a strong foreground for the badge text. Picked by index.
+ */
+const tonesLight = [
+  { bg: '#EEF0FF', fg: '#4338CA' }, // indigo
+  { bg: '#FFF4DE', fg: '#B45309' }, // amber
+  { bg: '#E3F7F3', fg: '#0F766E' }, // teal
+  { bg: '#E6F4FF', fg: '#0369A1' }, // sky
+  { bg: '#F3E8FF', fg: '#7E22CE' }, // violet
+  { bg: '#FFE9EF', fg: '#BE123C' }, // rose
+  { bg: '#E8F7E6', fg: '#15803D' }, // green
+];
+const tonesDark: typeof tonesLight = [
+  { bg: '#23224A', fg: '#A5A0FF' },
+  { bg: '#3A2A12', fg: '#FBBF24' },
+  { bg: '#10302C', fg: '#5EEAD4' },
+  { bg: '#0F2A3D', fg: '#7DD3FC' },
+  { bg: '#2E1A45', fg: '#D8B4FE' },
+  { bg: '#3B1822', fg: '#FDA4AF' },
+  { bg: '#15301B', fg: '#86EFAC' },
+];
+export type Tone = (typeof tonesLight)[number];
 
 export const palettes = { light, dark };
 
@@ -96,6 +137,22 @@ export function usePalette(): Palette {
   return useResolvedScheme() === 'dark' ? dark : light;
 }
 
+/** Tone `i` (wraps around) for the current color scheme. */
+export function useTone(i: number): Tone {
+  const tones = useResolvedScheme() === 'dark' ? tonesDark : tonesLight;
+  return tones[((i % tones.length) + tones.length) % tones.length]!;
+}
+
+/**
+ * The soft shadow under cards (light mode); dark mode uses a border instead, since shadows
+ * don't show on a dark page.
+ */
+export function useCardShadow() {
+  return useResolvedScheme() === 'dark'
+    ? { borderWidth: 1, borderColor: dark.border }
+    : { boxShadow: '0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 14px rgba(16, 24, 40, 0.06)' };
+}
+
 // ─── Type, spacing, shape ────────────────────────────────────────────────────
 
 export const font = {
@@ -113,10 +170,13 @@ export const font = {
   body: 16,
   title: 22,
   headline: 28,
+  /** Big page titles (the Home banner). */
+  display: 32,
 };
 
-export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24 };
-export const radius = { sm: 6, md: 10, pill: 999 };
+export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
+/** Corner radius: small controls, inputs and buttons, cards, big banners. */
+export const radius = { sm: 8, md: 12, lg: 18, xl: 24, pill: 999 };
 
 // ─── Charts and diagrams ─────────────────────────────────────────────────────
 

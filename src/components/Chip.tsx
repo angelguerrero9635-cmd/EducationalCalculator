@@ -20,8 +20,8 @@ export function Chip({ label, selected = false, onPress }: ChipProps) {
       style={[
         styles.chip,
         {
-          borderColor: c.border,
-          backgroundColor: selected ? c.accent : c.surface,
+          borderColor: selected ? c.accent : c.border,
+          backgroundColor: selected ? c.accent : c.card,
         },
       ]}
     >
@@ -32,10 +32,10 @@ export function Chip({ label, selected = false, onPress }: ChipProps) {
 
 const styles = StyleSheet.create({
   chip: {
-    paddingHorizontal: space.md,
-    paddingVertical: space.xs + 2,
+    paddingHorizontal: space.md + 2,
+    paddingVertical: space.sm - 1,
     borderRadius: radius.pill,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
   },
-  label: { fontSize: font.caption + 1 },
+  label: { fontSize: font.caption + 1, fontWeight: '600' },
 });

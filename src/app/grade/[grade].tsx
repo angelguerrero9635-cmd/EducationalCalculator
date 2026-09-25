@@ -1,13 +1,13 @@
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { SectionList, StyleSheet, View } from 'react-native';
 
-import { EmptyState, ListRow, SectionHeader, SegmentedControl } from '@/components';
+import { EmptyState, Group, ListRow, SectionHeader, SegmentedControl } from '@/components';
 import { renderAllOnWeb } from '@/components/listProps';
 import { PageMeta } from '@/components/PageMeta';
 import { gradeMeta } from '@/data/meta';
 import {
   SUBJECTS,
-  gradeSections,
+  gradeSkillCards,
   isGrade,
   isSubject,
   skillRoute,
@@ -42,7 +42,8 @@ export default function GradeScreen() {
         {...renderAllOnWeb}
         contentInsetAdjustmentBehavior="automatic"
         style={{ backgroundColor: c.background }}
-        sections={gradeSections(grade, subject)}
+        sections={gradeSkillCards(grade, subject)}
+        contentContainerStyle={styles.page}
         keyExtractor={(s) => s.id}
         ListHeaderComponent={
           <View style={styles.segment}>
@@ -55,12 +56,27 @@ export default function GradeScreen() {
         }
         renderSectionHeader={({ section }) => <SectionHeader title={section.title} />}
         renderItem={({ item }) => (
-          <ListRow
-            testID={`skill-${item.id}`}
-            title={item.title}
-            subtitle={item.subtitle}
-            route={skillRoute(item.id)}
-          />
+          // One box per skill, with its problem types listed inside it.
+          <View style={styles.card}>
+            <Group>
+              <ListRow
+                testID={`skill-${item.id}`}
+                title={item.skill.title}
+                subtitle={item.skill.subtitle}
+                route={skillRoute(item.id)}
+              />
+              {item.types.map((t) => (
+                <ListRow
+                  key={t.id}
+                  testID={`skill-${t.id}`}
+                  overline="Problem type"
+                  title={t.title}
+                  subtitle={t.subtitle}
+                  route={skillRoute(t.id)}
+                />
+              ))}
+            </Group>
+          </View>
         )}
         ListEmptyComponent={
           <EmptyState
@@ -73,5 +89,7 @@ export default function GradeScreen() {
 }
 
 const styles = StyleSheet.create({
-  segment: { padding: space.lg },
+  page: { paddingBottom: space.xxl },
+  segment: { padding: space.lg, paddingBottom: 0 },
+  card: { marginBottom: space.md },
 });

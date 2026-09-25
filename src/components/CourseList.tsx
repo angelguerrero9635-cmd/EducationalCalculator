@@ -2,7 +2,7 @@ import { FlatList } from 'react-native';
 
 import { courseRoute, courseSummary } from '@/data/selectors';
 import type { Course } from '@/data/taxonomy';
-import { usePalette } from '@/theme';
+import { space, usePalette } from '@/theme';
 
 import { EmptyState } from './EmptyState';
 import { renderAllOnWeb } from './listProps';
@@ -15,6 +15,7 @@ export function CourseList({ courses }: { courses: readonly Course[] }) {
       {...renderAllOnWeb}
       contentInsetAdjustmentBehavior="automatic"
       style={{ backgroundColor: c.background }}
+      contentContainerStyle={{ paddingVertical: space.lg }}
       data={courses}
       keyExtractor={(course) => course.id}
       renderItem={({ item }) => (
