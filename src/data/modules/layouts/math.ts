@@ -272,4 +272,72 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: 'Kite', bin: 'neither' },
     ],
   },
+
+  // ── Grade 4 ──
+  {
+    kind: 'sort',
+    id: 'm.4.lines-symmetry',
+    assumptions: [
+      'Parallel lines go the same way and never meet, like railroad tracks.',
+      'Perpendicular lines meet at a right angle, like the corner of a page.',
+      'Lines that meet at any other angle are neither.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Are the two lines parallel, perpendicular, or neither?',
+    bins: [
+      {
+        id: 'parallel',
+        label: 'Parallel',
+        why: 'They stay the same distance apart and never meet.',
+      },
+      {
+        id: 'perpendicular',
+        label: 'Perpendicular',
+        why: 'They meet at a right angle, a square corner.',
+      },
+      { id: 'neither', label: 'Neither', why: 'They meet, but not at a right angle.' },
+    ],
+    cards: [
+      { label: 'Railroad tracks', bin: 'parallel' },
+      { label: 'The two long sides of a door', bin: 'parallel' },
+      { label: 'Lines on notebook paper', bin: 'parallel' },
+      { label: 'The corner of a page', bin: 'perpendicular' },
+      { label: 'A plus sign', bin: 'perpendicular' },
+      { label: 'A wall and the floor', bin: 'perpendicular' },
+      { label: 'The letter X', bin: 'neither' },
+      { label: 'Two sides of a triangle', bin: 'neither' },
+      { label: 'The hands of a clock at 1:00', bin: 'neither' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.4.lines-symmetry~symmetry',
+    title: 'Lines of symmetry',
+    use: 'Use this to sort shapes by how many lines of symmetry they have.',
+    assumptions: [
+      'A line of symmetry folds a shape onto itself: both halves match exactly.',
+      'Some shapes have no line of symmetry, some have one, some have several.',
+      'A square has 4 lines of symmetry. A circle has more than you can count.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'How many lines of symmetry does it have?',
+    bins: [
+      { id: 'none', label: 'No line of symmetry', why: 'No fold makes the halves match.' },
+      { id: 'one', label: 'Exactly 1', why: 'One fold works: the two halves are mirror images.' },
+      { id: 'many', label: '2 or more', why: 'More than one fold makes the halves match.' },
+    ],
+    cards: [
+      { label: 'Scalene triangle (all sides different)', bin: 'none' },
+      { label: 'The letter F', bin: 'none' },
+      { label: 'Parallelogram (no right angles)', bin: 'none' },
+      { label: 'Isosceles triangle', bin: 'one' },
+      { label: 'The letter A', bin: 'one' },
+      { label: 'Kite', bin: 'one' },
+      { label: 'Heart shape', bin: 'one' },
+      { label: 'Square', bin: 'many' },
+      { label: 'Rectangle', bin: 'many' },
+      { label: 'The letter H', bin: 'many' },
+      { label: 'Circle', bin: 'many' },
+    ],
+  },
 ];
