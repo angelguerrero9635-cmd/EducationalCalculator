@@ -5,10 +5,11 @@ import {
   Chip,
   DetailHeader,
   EmptyState,
-  ListRow,
   LockedState,
   RefreshSection,
   SectionHeader,
+  Tile,
+  TileGrid,
 } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { isLocked } from '@/config/access';
@@ -56,14 +57,25 @@ export default function CourseScreen() {
       )}
       <RefreshSection title="Prerequisites" rows={refreshRows(course.id)} />
       <SectionHeader title="Topics" />
-      {course.topics.map((topic, index) => (
-        <ListRow key={index} title={topic} route={topicRoute(course.id, index)} />
-      ))}
+      <TileGrid>
+        {course.topics.map((topic, index) => (
+          <Tile
+            key={index}
+            testID={`topic-${index}`}
+            badge={String(index + 1)}
+            tone={index}
+            title={topic}
+            route={topicRoute(course.id, index)}
+          />
+        ))}
+      </TileGrid>
+      <View style={styles.end} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  end: { height: space.xxl },
   chips: {
     flexDirection: 'row',
     flexWrap: 'wrap',

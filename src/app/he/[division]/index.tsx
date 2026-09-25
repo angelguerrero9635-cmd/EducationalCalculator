@@ -10,19 +10,11 @@ import {
   divisionTone,
   divisionView,
   fieldRoute,
+  initials,
   isDivision,
 } from '@/data/selectors';
 import { coursesFor, HE_FIELDS } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
-
-/** A field's badge: its initials, e.g. "Mechanical Engineering" → "ME". */
-function fieldBadge(title: string): string {
-  const words = title.split(/[\s&,-]+/).filter((w) => /^[A-Z]/.test(w));
-  return words
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('');
-}
 
 /** Division → fields. Single-field divisions (Math) skip straight to their course list. */
 /** Pre-render every division page (web static rendering). */
@@ -56,7 +48,7 @@ export default function DivisionScreen() {
               <Tile
                 key={f.id}
                 testID={`field-${f.id}`}
-                badge={fieldBadge(f.title)}
+                badge={initials(f.title)}
                 tone={divisionTone(division) + i}
                 title={f.title}
                 subtitle={countLabel(coursesFor(division, f.id).length, 'course')}

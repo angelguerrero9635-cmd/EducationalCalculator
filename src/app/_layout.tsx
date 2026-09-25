@@ -43,7 +43,9 @@ export default function RootLayout() {
       <Stack screenOptions={{ header: (props) => <NavBar {...props} /> }}>
         <Stack.Protected guard={showApp}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="grade/[grade]" />
+          <Stack.Screen name="grade/[grade]/index" />
+          <Stack.Screen name="grade/[grade]/[strand]" />
+          <Stack.Screen name="lessons/[id]" />
           <Stack.Screen name="he/index" options={{ title: 'Higher Education' }} />
           <Stack.Screen name="he/[division]/index" />
           <Stack.Screen name="he/[division]/[field]" />

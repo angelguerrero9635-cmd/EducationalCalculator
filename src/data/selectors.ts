@@ -192,30 +192,107 @@ export const gradeSections = (grade: Grade, subject: K12Subject) =>
     ]),
   }));
 
-/** A skill with its problem types: one box on the grade page. */
-export interface SkillCard {
-  id: string;
-  skill: GradeRow;
-  types: GradeRow[];
+// ─── Browse: drilling down from a grade ─────────────────────────────────────
+
+/** A strand's name in a URL: "Operations & Algebraic Thinking" → "operations-algebraic-thinking". */
+export const strandSlug = (strand: string) =>
+  strand
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+/** A short symbol for each strand's badge. */
+const STRAND_BADGES: Record<string, string> = {
+  'Counting & Cardinality': '123',
+  'Operations & Algebraic Thinking': '+−',
+  'Number & Base Ten': '10',
+  Fractions: '½',
+  'Measurement & Data': 'cm',
+  Geometry: '△',
+  'Ratios & Proportions': 'a:b',
+  'The Number System': '±',
+  'Expressions & Equations': 'x=',
+  Functions: 'f(x)',
+  'Statistics & Probability': '%',
+  'Algebra 1': 'x',
+  'Algebra 2': 'x²',
+  'Precalculus & Statistics': 'sin',
+  'Physical Science': '⚡',
+  'Life Science': '❀',
+  'Earth & Space Science': '◐',
+  Biology: '❀',
+  Chemistry: '⚗',
+  Physics: '⚛',
+};
+export const strandBadge = (strand: string) => STRAND_BADGES[strand] ?? strand[0]!;
+
+/** A strand box on a grade page. */
+export interface StrandCard {
+  slug: string;
+  title: string;
+  badge: string;
+  subtitle: string;
+  route: RouteTarget;
 }
 
-/** The grade page: strands, each a list of skill boxes. */
-export const gradeSkillCards = (grade: Grade, subject: K12Subject) =>
+export const strandRoute = (grade: Grade, strand: string): RouteTarget => ({
+  pathname: '/grade/[grade]/[strand]',
+  params: { grade, strand: strandSlug(strand) },
+});
+
+/** The grade page: a box for each strand of one subject. */
+export const gradeStrands = (grade: Grade, subject: K12Subject): StrandCard[] =>
   groupByStrand(skillsFor(grade, subject)).map(({ title, data }) => ({
+    slug: strandSlug(title),
     title,
-    data: data.map((skill): SkillCard => {
-      const types = problemTypes(skill.id);
-      return {
-        id: skill.id,
-        skill: {
-          id: skill.id,
-          title: skill.title,
-          subtitle: types.length ? countLabel(types.length, 'problem type') : undefined,
-        },
-        types: types.map((t) => ({ id: t.id, title: t.title, subtitle: t.use })),
-      };
-    }),
+    badge: strandBadge(title),
+    subtitle: countLabel(data.length, 'skill'),
+    route: strandRoute(grade, title),
   }));
+
+/** A strand page: its skills, found by grade and the strand's URL name. */
+export function strandView(grade: Grade, slug: string) {
+  for (const subject of SUBJECTS) {
+    const section = groupByStrand(skillsFor(grade, subject)).find(
+      (x) => strandSlug(x.title) === slug,
+    );
+    if (section) return { subject, title: section.title, skills: section.data };
+  }
+  return undefined;
+}
+
+/** A skill's lessons page (its main lesson and problem types), for skills that have types. */
+export const lessonsRoute = (skillId: string): RouteTarget => ({
+  pathname: '/lessons/[id]',
+  params: { id: skillId },
+});
+
+/** Where a skill's box goes: its lessons when it has problem types, else straight to the lesson. */
+export const skillBoxRoute = (skillId: string): RouteTarget =>
+  problemTypes(skillId).length ? lessonsRoute(skillId) : skillRoute(skillId);
+
+/** Under a skill's box: how many lessons it has. */
+export const skillBoxSubtitle = (skillId: string) => {
+  const n = problemTypes(skillId).length;
+  return n ? `${countLabel(n + 1, 'lesson')}` : 'Lesson';
+};
+
+/** Skills that have problem types (each has a lessons page). */
+export const skillsWithTypes = () =>
+  [...new Set(PROBLEM_TYPE_IDS.map((id) => moduleOwner(id)))].filter((id) => !!getSkill(id));
+
+/** A badge from a title's first letters: "Mechanical Engineering" → "ME". */
+export function initials(title: string): string {
+  const words = title.split(/[\s&,()-]+/);
+  // "Calculus II" → "C2", so numbered courses get different badges.
+  const roman = words.findIndex((w) => /^(I|II|III|IV)$/.test(w));
+  if (roman > 0) return `${words[0]![0]}${['I', 'II', 'III', 'IV'].indexOf(words[roman]!) + 1}`;
+  return words
+    .filter((w) => /^[A-Z]/.test(w))
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('');
+}
 
 // ─── Browse: Higher Ed ───────────────────────────────────────────────────────
 
@@ -546,11 +623,26 @@ export function parentOf(screen: string, params: Record<string, unknown>): Paren
   const p = (k: string) => (params[k] === undefined ? '' : String(params[k]));
   switch (screen) {
     case 'skill/[id]': {
+      // A problem type, or a main lesson with problem types → the skill's lessons page;
+      // any other lesson → its strand.
       const skill = getSkill(p('id')) ?? getProblemType(p('id'))?.skill;
-      return skill
-        ? { label: gradeLabel(skill.grade), target: gradeRoute(skill.grade, skill.subject) }
-        : HOME;
+      if (!skill) return HOME;
+      return problemTypes(skill.id).length
+        ? { label: skill.title, target: lessonsRoute(skill.id) }
+        : { label: skill.strand, target: strandRoute(skill.grade, skill.strand) };
     }
+    case 'lessons/[id]': {
+      const skill = getSkill(p('id'));
+      return skill ? { label: skill.strand, target: strandRoute(skill.grade, skill.strand) } : HOME;
+    }
+    case 'grade/[grade]/[strand]': {
+      const grade = p('grade');
+      if (!isGrade(grade)) return HOME;
+      const view = strandView(grade, p('strand'));
+      return { label: gradeLabel(grade), target: gradeRoute(grade, view?.subject) };
+    }
+    case 'grade/[grade]/index':
+      return { label: 'Browse', target: { pathname: '/browse' } };
     case 'course/[id]/topic/[index]': {
       const course = getCourse(p('id'));
       return course ? { label: 'Course', target: courseRoute(course.id) } : HOME;
@@ -591,8 +683,12 @@ export function screenTitle(screen: string, params: Record<string, unknown>): st
       return getCourse(p('id'))?.title;
     case 'course/[id]/topic/[index]':
       return getTopic(p('id'), Number(p('index')))?.title;
-    case 'grade/[grade]':
+    case 'grade/[grade]/index':
       return isGrade(p('grade')) ? gradeLabel(p('grade') as Grade) : undefined;
+    case 'grade/[grade]/[strand]':
+      return isGrade(p('grade')) ? strandView(p('grade') as Grade, p('strand'))?.title : undefined;
+    case 'lessons/[id]':
+      return getSkill(p('id'))?.title;
     case 'he/[division]/index':
       return isDivision(p('division')) ? divisionLabel(p('division') as Division) : undefined;
     case 'he/[division]/[field]': {

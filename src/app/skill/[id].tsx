@@ -1,14 +1,15 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   DetailHeader,
   EmptyState,
   ModuleSections,
-  ListRow,
   LockedState,
   RefreshSection,
   SectionHeader,
+  Tile,
+  TileGrid,
 } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { isLocked } from '@/config/access';
@@ -24,7 +25,7 @@ import {
 } from '@/data/selectors';
 import { gradeLabel, SKILLS } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
-import { usePalette } from '@/theme';
+import { space, usePalette } from '@/theme';
 
 /** Pre-render every skill page (web static rendering). */
 export function generateStaticParams(): { id: string }[] {
@@ -74,17 +75,26 @@ export default function SkillScreen() {
       {related.length ? (
         <>
           <SectionHeader title={type ? 'Related lessons' : 'More problem types'} />
-          {related.map((r) => (
-            <ListRow
-              key={r.id}
-              testID={`related-${r.id}`}
-              title={r.title}
-              subtitle={r.subtitle}
-              route={skillRoute(r.id)}
-            />
-          ))}
+          <TileGrid>
+            {related.map((r, i) => (
+              <Tile
+                key={r.id}
+                testID={`related-${r.id}`}
+                badge={r.id === skill.id ? '★' : String(i + (type ? 0 : 1))}
+                tone={i}
+                title={r.title}
+                subtitle={r.subtitle}
+                route={skillRoute(r.id)}
+              />
+            ))}
+          </TileGrid>
+          <View style={styles.end} />
         </>
       ) : null}
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  end: { height: space.xxl },
+});

@@ -37,7 +37,7 @@ export function Tile({ title, subtitle, badge, tone, route, onPress, testID }: T
         </Text>
       </View>
       <View style={styles.text}>
-        <Text style={[styles.title, { color: c.text }]} numberOfLines={2}>
+        <Text style={[styles.title, { color: c.text }]} numberOfLines={3}>
           {title}
         </Text>
         {subtitle ? (

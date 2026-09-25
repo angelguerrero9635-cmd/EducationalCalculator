@@ -18,8 +18,18 @@ const CHECKS = [
   [
     '/grade/K',
     200,
-    ['Kindergarten Math and Science', 'Count to 100 by ones and tens', 'Make 10 from any number'],
+    [
+      'Kindergarten Math and Science',
+      'Counting &amp; Cardinality',
+      'Operations &amp; Algebraic Thinking',
+    ],
   ],
+  [
+    '/grade/K/counting-cardinality',
+    200,
+    ['Count to 100 by ones and tens', 'Count objects and tell how many'],
+  ],
+  ['/lessons/m.1.add-sub-20', 200, ['Main lesson', 'Compare problems', 'Take from ten']],
   [
     '/skill/m.K.make-10',
     200,
