@@ -958,4 +958,110 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+
+  // ── Area and perimeter formulas, including a missing side (4.MD.3) ──
+  (() => {
+    const fmt = (x: number) => formatNumber(x);
+    return {
+      id: 'm.4.area-perimeter-formulas',
+      assumptions: [
+        'Area is the space inside: length × width, in square units.',
+        'Perimeter is the distance around: two lengths and two widths, so 2 × (length + width).',
+        'From the perimeter, half of it is length + width. Take away the side you know to find the other.',
+        'Sides to 30 meters.',
+      ],
+      variables: [
+        { ...whole('l', 'l', 'Length', 1, 30), unit: 'm' },
+        { ...whole('w', 'w', 'Width', 1, 30), unit: 'm' },
+        { ...whole('A', 'A', 'Area', 1, 900), unit: 'm²' },
+        { ...whole('h', 'h', 'Length + width', 2, 60), unit: 'm', derived: true },
+        { ...whole('P', 'P', 'Perimeter', 4, 120), unit: 'm' },
+      ],
+      relations: [
+        {
+          id: 'A = l × w',
+          display: '{l} × {w} = {A}',
+          vars: ['A', 'l', 'w'],
+          residual: (v: Values) => v.A! - v.l! * v.w!,
+          solve: {
+            A: (v: Values) => v.l! * v.w!,
+            l: (v: Values) => div(v.A!, v.w!),
+            w: (v: Values) => div(v.A!, v.l!),
+          },
+        },
+        {
+          id: 'h = l + w',
+          display: '{l} + {w} = {h}',
+          vars: ['h', 'l', 'w'],
+          residual: (v: Values) => v.h! - v.l! - v.w!,
+          solve: {
+            h: (v: Values) => v.l! + v.w!,
+            l: (v: Values) => v.h! - v.w!,
+            w: (v: Values) => v.h! - v.l!,
+          },
+        },
+        {
+          id: 'P = 2 × h',
+          display: '2 × {h} = {P}',
+          vars: ['P', 'h'],
+          residual: (v: Values) => v.P! - 2 * v.h!,
+          solve: { P: (v: Values) => 2 * v.h!, h: (v: Values) => v.P! / 2 },
+        },
+      ],
+      steps: {
+        'A = l × w': {
+          A: {
+            expr: '{l} × {w}',
+            how: 'Multiply the length by the width: rows of unit squares.',
+            work: (v) => timesWork(v.l!, v.w!),
+          },
+          l: {
+            expr: '{A} ÷ {w}',
+            how: 'Divide the area by the width to get the length.',
+            work: (v) => divideWork(v.A!, v.w!),
+          },
+          w: {
+            expr: '{A} ÷ {l}',
+            how: 'Divide the area by the length to get the width.',
+            work: (v) => divideWork(v.A!, v.l!, 'second'),
+          },
+        },
+        'h = l + w': {
+          h: { expr: '{l} + {w}', how: 'One length and one width: half of the way around.' },
+          l: {
+            expr: '{h} − {w}',
+            how: 'Take the width away from half the perimeter to get the length.',
+            work: (v) => [`${fmt(v.h!)} − ${fmt(v.w!)} = ${fmt(v.l!)}`],
+          },
+          w: {
+            expr: '{h} − {l}',
+            how: 'Take the length away from half the perimeter to get the width.',
+            work: (v) => [`${fmt(v.h!)} − ${fmt(v.l!)} = ${fmt(v.w!)}`],
+          },
+        },
+        'P = 2 × h': {
+          P: {
+            expr: '2 × {h}',
+            how: 'The perimeter is two lengths and two widths: double length + width.',
+            work: (v) => [`2 × ${fmt(v.h!)} = ${fmt(2 * v.h!)}`],
+          },
+          h: {
+            expr: '{P} ÷ 2',
+            how: 'Half the perimeter is one length and one width.',
+            work: (v) => [`${fmt(v.P!)} ÷ 2 = ${fmt(v.P! / 2)}`],
+          },
+        },
+      },
+      example: { l: 9, w: 4, A: 36, h: 13, P: 26 },
+      startWith: ['l', 'w'],
+      representation: {
+        kind: 'rectangle',
+        length: 'l',
+        width: 'w',
+        inside: 'A',
+        around: 'P',
+        extent: 10,
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
