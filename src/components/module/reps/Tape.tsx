@@ -2,13 +2,12 @@ import { useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import Svg, { Line, Path, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useFrozen, useRep, Caption } from './common';
 
 type Spec = Extract<Representation, { kind: 'tape' }>;
 
@@ -250,17 +249,9 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>{caption}</Text>
+      <Caption>{caption}</Caption>
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

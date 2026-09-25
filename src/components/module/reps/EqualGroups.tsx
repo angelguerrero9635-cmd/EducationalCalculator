@@ -1,11 +1,10 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { useRep } from './common';
+import { useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'equalGroups' }>;
@@ -31,9 +30,7 @@ export function EqualGroups({ spec, calc }: { spec: Spec; calc: Calculator }) {
           </View>
         ))}
       </View>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.label(spec.groups)} groups of ${rep.label(spec.each)}   ·   ${rep.label(spec.total)} in all`}
-      </Text>
+      <Caption>{`${rep.label(spec.groups)} groups of ${rep.label(spec.each)}   ·   ${rep.label(spec.total)} in all`}</Caption>
       <Steppers
         calc={calc}
         items={[
@@ -66,5 +63,4 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   dot: { width: 13, height: 13, borderRadius: 7, borderWidth: chart.strokeLight },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
 });

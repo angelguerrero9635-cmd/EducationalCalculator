@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/Text';
 
@@ -10,7 +11,9 @@ import { font, space, usePalette } from '@/theme';
 import { FormulaSection } from './FormulaSection';
 import { InputsSection } from './InputsSection';
 import { RepresentationView, representationTitle } from './reps';
+import { Sliders } from './Sliders';
 import { StepByStep } from './StepByStep';
+import { StepperProvider, useStepperRegistry } from './stepperContext';
 import { useCalculator, type Calculator } from './useCalculator';
 
 /** "How much heavier: d = 3 cubes" for values the picture doesn't draw (K–2: "How much heavier: 3 cubes"). */
@@ -44,19 +47,41 @@ function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
   );
 }
 
+/**
+ * The picture with its sliders: beside it when there is room (a wide screen), in a row under
+ * it on a phone. Width is measured, not read from the window, so the pre-rendered HTML (a
+ * phone width) matches the first live render.
+ */
+function PictureWithSliders({ module, calc }: { module: ModuleDef; calc: Calculator }) {
+  const items = useStepperRegistry()?.items ?? [];
+  const [width, setWidth] = useState(0);
+  const beside = items.length > 0 && width >= 640;
+  return (
+    <View
+      style={[styles.representation, beside && styles.beside]}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+    >
+      <View style={beside ? styles.pictureBeside : undefined}>
+        <RepresentationView spec={module.representation} calc={calc} />
+        {module.pictureLabels ? <PictureLabels ids={module.pictureLabels} calc={calc} /> : null}
+      </View>
+      <View style={beside ? styles.slidersBeside : styles.slidersBelow}>
+        <Sliders calc={calc} items={items} />
+      </View>
+    </View>
+  );
+}
+
 function ModuleView({ module }: { module: ModuleDef }) {
   const c = usePalette();
   const calc = useCalculator(module);
   // Kindergarten–Grade 2 section names are plain words.
   const early = isEarlyGrade(module.id);
   return (
-    <>
+    <StepperProvider>
       {/* Order: see the picture first, then work with the numbers, then read why. */}
       <SectionHeader title={early ? 'Picture' : representationTitle(module.representation)} />
-      <View style={styles.representation}>
-        <RepresentationView spec={module.representation} calc={calc} />
-        {module.pictureLabels ? <PictureLabels ids={module.pictureLabels} calc={calc} /> : null}
-      </View>
+      <PictureWithSliders module={module} calc={calc} />
 
       {/* The numbers come right under the picture, then the sentences they fill in. */}
       <InputsSection calc={calc} />
@@ -75,7 +100,7 @@ function ModuleView({ module }: { module: ModuleDef }) {
 
       <SectionHeader title="Step-by-step" />
       <StepByStep calc={calc} />
-    </>
+    </StepperProvider>
   );
 }
 
@@ -104,6 +129,10 @@ export function ModuleSections({ id }: { id: string }) {
 }
 
 const styles = StyleSheet.create({
+  beside: { flexDirection: 'row', alignItems: 'flex-start', gap: space.lg },
+  pictureBeside: { flex: 1, minWidth: 0 },
+  slidersBeside: { paddingTop: space.lg },
+  slidersBelow: { marginTop: space.md },
   bullets: { padding: space.lg, gap: space.sm },
   bullet: { flexDirection: 'row', gap: space.sm },
   dot: { fontSize: font.body, lineHeight: 22 },

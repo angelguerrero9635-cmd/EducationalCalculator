@@ -2,12 +2,11 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'thermometers' }>;
@@ -156,7 +155,7 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {(() => {
           const names = `${spec.items.map((id) => rep.named(id)).join('. ')}.`;
           const [a, b] = shown;
@@ -166,7 +165,7 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const warmer = rep.variable(spec.items[a > b ? 0 : 1]!).name;
           return `${names} ${warmer} is warmer by ${rep.value(spec.difference)}.`;
         })()}
-      </Text>
+      </Caption>
       <Steppers
         calc={calc}
         items={spec.items.map((id, i) => ({
@@ -182,12 +181,4 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

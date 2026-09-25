@@ -2,12 +2,11 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'fractionLine' }>;
@@ -143,7 +142,7 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {known
           ? `${a}/${b}: ${a} ${a === 1 ? 'jump' : 'jumps'} of 1/${b} from 0.` +
             (spec.unit
@@ -154,7 +153,7 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   : ` That is exactly ${wholes}: ${a}/${b} = ${wholes}.`
                 : '')
           : 'Type the parts counted and the parts in one whole.'}
-      </Text>
+      </Caption>
       <Steppers
         calc={calc}
         items={[
@@ -171,12 +170,4 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

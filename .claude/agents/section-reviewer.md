@@ -81,11 +81,11 @@ Read `docs/MODULE_GUIDE.md` first; it is the standard you review against.
    numbers (check K). Open screenshots with Read.
 4. **One browser session.** Write one Playwright script in `.review/` modeled on
    `scripts/review-shots.mjs` (`require('playwright')` with `NODE_PATH=$(npm root -g)`;
-   Chromium at `/opt/pw-browsers/chromium`). Inputs have testIDs `input-<variable id>`; − / +
-   buttons `step-<id>-+1` and `step-<id>--1`. Wait for `networkidle` after loading a page
+   Chromium at `/opt/pw-browsers/chromium`). Inputs have testIDs `input-<variable id>`; the
+   vertical sliders beside a picture `slider-<id>` (drag or tap along the track). Wait for `networkidle` after loading a page
    before typing. On each chosen page, do what a real student does: type their own numbers over
    the example (including one equal to the example's, and a multi-digit number), type in
-   worksheet order, clear a box, tap and drag the picture, press − / + on a "?" box, then read
+   worksheet order, clear a box, tap and drag the picture, move a slider for a "?" box, then read
    the step-by-step. The tutor, teacher, exam and layout checks all use this session.
 
 ## Part 2. The eleven checks
@@ -206,7 +206,7 @@ change, result; bigger or smaller unknown) and "which picture shows…". Try eac
   ranges cover test numbers?
 - **Diagram:** the picture must match the diagram in at least one real exam item or textbook
   example for this lesson; name it.
-- **Interactive:** every picture changes values from the picture itself (tap, drag or − / +),
+- **Interactive:** every picture changes values from the picture itself (tap, drag or a slider),
   both ways (anything that can be removed can be added back), and a "?" box doesn't draw the
   example's number.
 - Recommend: extend the module, borrow a diagram (existing picture kind or a new one), or a new

@@ -2,12 +2,11 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'array' }>;
@@ -155,7 +154,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>{caption}</Text>
+      <Caption>{caption}</Caption>
       {split ? (
         <Steppers
           calc={calc}
@@ -169,12 +168,4 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

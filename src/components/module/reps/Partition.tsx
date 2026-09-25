@@ -8,7 +8,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'partition' }>;
@@ -103,11 +103,11 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {spec.fraction
           ? `${rep.words ? '' : `${rep.variable(spec.parts).symbol} = `}${p} equal parts: ${k}/${p} shaded, ${p - k}/${p} not shaded.`
           : `${rep.words ? '' : `${rep.variable(spec.parts).symbol} = `}${p} equal parts (${NAMES[p] ?? `${p} parts`}): ${rep.words ? '' : `${rep.variable(spec.shaded).symbol} = `}${k} shaded, ${p - k} not shaded. ${k} ${(k === 1 ? ONE : MANY)[p] ?? 'parts'} shaded.`}
-      </Text>
+      </Caption>
       <Steppers
         calc={calc}
         items={[{ var: spec.control ?? spec.parts, steps: [spec.step ?? 1], pin: [spec.shaded] }]}
@@ -119,6 +119,5 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   toggle: { paddingHorizontal: space.lg, marginBottom: space.sm },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
   hint: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.xs },
 });

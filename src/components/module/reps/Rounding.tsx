@@ -2,13 +2,12 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'rounding' }>;
@@ -140,11 +139,11 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {known
           ? `${n} is ${n - lo} past ${lo} and ${hi - n} before ${hi}. ${up ? `${n - lo} is ${to / 2} or more, so it rounds up` : `${n - lo} is less than ${to / 2}, so it rounds down`} to ${r}.`
           : `Type a number to round.`}
-      </Text>
+      </Caption>
       <Steppers
         calc={calc}
         items={[{ var: spec.value, steps: to === 10 ? [1, 10] : [1, 10, 100], pin: [] }]}
@@ -153,12 +152,4 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

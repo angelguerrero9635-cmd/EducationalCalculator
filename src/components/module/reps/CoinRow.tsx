@@ -6,7 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { useRep } from './common';
+import { useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'coinRow' }>;
@@ -65,11 +65,11 @@ export function CoinRow({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ))
           : null}
       </View>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {coin
           ? `${rep.label(spec.count)} ${n === 1 ? coin.label.toLowerCase() : coin.many}: ${rep.label(spec.total)}`
           : 'Pick a coin above.'}
-      </Text>
+      </Caption>
       <Steppers calc={calc} items={[{ var: spec.count, steps: [1], pin: [spec.value] }]} />
     </View>
   );
@@ -86,5 +86,4 @@ const styles = StyleSheet.create({
     minHeight: 40,
   },
   coin: { borderWidth: chart.strokeLight, alignItems: 'center', justifyContent: 'center' },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
 });

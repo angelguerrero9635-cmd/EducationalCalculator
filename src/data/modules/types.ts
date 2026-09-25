@@ -99,7 +99,7 @@ export type Representation =
       start?: string;
     }
   /**
-   * Regular polygon with `sides` sides (and as many corners); change it with − / +. `angle`
+   * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
    * words (Grade 2) say “angles” and name any 4-sided shape a quadrilateral.
    */
   | {
@@ -123,7 +123,7 @@ export type Representation =
     }
   /**
    * Base-ten blocks (hundreds flats, tens rods, ones cubes) for each group, and for the total.
-   * `controls` add − / + buttons (e.g. ±1, ±10) that change a value.
+   * `controls` add the sliders buttons (e.g. ±1, ±10) that change a value.
    */
   | {
       kind: 'baseTen';
@@ -162,9 +162,9 @@ export type Representation =
       parts: string;
       shaded: string;
       shape: 'circle' | 'rectangle';
-      /** The value the − / + buttons change (default `parts`), e.g. times cut in half. */
+      /** The value the the sliders buttons change (default `parts`), e.g. times cut in half. */
       control?: string;
-      /** How much − / + change it (default 1), e.g. 2 for halves ↔ fourths. */
+      /** How much the sliders change it (default 1), e.g. 2 for halves ↔ fourths. */
       step?: number;
       /** Name the shaded amount as a fraction (3/4), Grade 3 on. */
       fraction?: boolean;
@@ -184,7 +184,7 @@ export type Representation =
     }
   /**
    * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)
-   * or back (sign -1) by each hop's value, landing on `end`. − / + change the start and hops.
+   * or back (sign -1) by each hop's value, landing on `end`. the sliders change the start and hops.
    */
   | {
       kind: 'hops';
@@ -205,18 +205,18 @@ export type Representation =
   | { kind: 'solid'; flat: string; curved: string }
   /** Every way to split `total` into two parts, one row each; `ways` counts the rows. */
   | { kind: 'partnerList'; total: string; ways: string }
-  /** Number bond: the whole in the top circle, its two parts below. − / + change the values. */
+  /** Number bond: the whole in the top circle, its two parts below. the sliders change the values. */
   | { kind: 'numberBond'; whole: string | number; parts: [string, string] }
   /**
    * A hexagon filled with pattern blocks: `trapezoids` (3 triangles each), `rhombuses` (2 each)
-   * and `triangles`. − / + change the blocks.
+   * and `triangles`. the sliders change the blocks.
    */
   | { kind: 'patternBlocks'; trapezoids: string; rhombuses: string; triangles: string }
   /** Children in a line facing left; one is highlighted at `position`. Tap a child to pick. */
   | { kind: 'lineUp'; count: string; position: string; before: string; after: string }
-  /** Equal groups: `groups` circles with `each` dots in each circle. − / + change both. */
+  /** Equal groups: `groups` circles with `each` dots in each circle. the sliders change both. */
   | { kind: 'equalGroups'; groups: string; each: string; total: string }
-  /** A prism on a base with `sides` sides (a cube when the base is a square). − / + change it. */
+  /** A prism on a base with `sides` sides (a cube when the base is a square). the sliders change it. */
   | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }
   /** Objects arranged in pairs; an odd one sticks out. */
   | { kind: 'pairs'; value: string; max: number }
@@ -247,7 +247,7 @@ export type Representation =
       /** The mark where that object ends. */
       to?: string;
     }
-  /** Coins by type, each with its value in cents; − / + change the counts. */
+  /** Coins by type, each with its value in cents; the sliders change the counts. */
   | {
       kind: 'coins';
       coins: { var: string; cents: number; name: string }[];
@@ -343,7 +343,7 @@ export type Representation =
     }
   /**
    * Rounding: a number line from the multiple of `to` below `value` to the one above, the
-   * halfway point marked, and an arrow to the nearer one. Drag the point or use − / +.
+   * halfway point marked, and an arrow to the nearer one. Drag the point or use the sliders.
    */
   | {
       kind: 'rounding';
@@ -355,7 +355,7 @@ export type Representation =
     }
   /**
    * Fractions on a number line from 0 to `wholes`: each whole cut into `denominator` equal
-   * parts, with one jump per part from 0 to `numerator`. Drag the point or use − / +.
+   * parts, with one jump per part from 0 to `numerator`. Drag the point or use the sliders.
    */
   | {
       kind: 'fractionLine';

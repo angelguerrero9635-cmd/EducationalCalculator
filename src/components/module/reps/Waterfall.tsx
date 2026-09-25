@@ -8,7 +8,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
 
 type Spec = Extract<Representation, { kind: 'waterfall' }>;
 type Step = Spec['items'][number] & { from: number; to: number };
@@ -183,9 +183,9 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
           .join(' · ')}
       </Text>
       {spec.caption ? (
-        <Text style={[styles.caption, { color: c.text }]}>
+        <Caption>
           {spec.caption.map((id) => `${rep.variable(id).name}: ${rep.label(id)}`).join('\n')}
-        </Text>
+        </Caption>
       ) : null}
     </>
   );
@@ -193,10 +193,10 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   caption: {
-    fontSize: font.caption + 1,
+    fontSize: font.body,
+    fontWeight: '600',
     textAlign: 'center',
     marginTop: space.sm,
-    lineHeight: 20,
     paddingHorizontal: space.lg,
   },
 });

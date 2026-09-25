@@ -2,12 +2,11 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Ellipse, Line, Path, Polygon, Rect } from 'react-native-svg';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, useRep, Caption } from './common';
 
 type Spec = Extract<Representation, { kind: 'solid' }>;
 
@@ -108,18 +107,17 @@ export function Solid({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {solid
           ? `A ${solid.label.toLowerCase()}: ${rep.label(spec.flat)} flat, ${rep.label(spec.curved)} curved. ${
               solid.curved ? 'It rolls.' : 'It doesn’t roll.'
             } ${solid.flat ? 'It stacks.' : 'It doesn’t stack.'}`
           : 'Pick a solid shape above.'}
-      </Text>
+      </Caption>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   toggle: { paddingHorizontal: space.md, marginBottom: space.sm },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
 });

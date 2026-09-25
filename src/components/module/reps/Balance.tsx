@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, G, Line, Path, Polygon, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'balance' }>;
@@ -120,12 +119,13 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`${spec.left.map(term).join(' + ')}${spec.takeAway ? ` − ${term(spec.takeAway)}` : ''} = ${left}   ·   ${spec.right.map(term).join(' + ')} = ${right}\n`}
-        {left === right
-          ? 'Level: both sides are the same. The number sentence is true.'
-          : `Not level: ${left} on the left, ${right} on the right. The number sentence is false.`}
-      </Text>
+      <Caption>
+        {`Left: ${spec.left.map(term).join(' + ')}${spec.takeAway ? ` − ${term(spec.takeAway)}` : ''} = ${left}. Right: ${spec.right.map(term).join(' + ')} = ${right}. ${
+          left === right
+            ? 'Level: both sides are the same. The number sentence is true.'
+            : `Not level: ${left} on the left, ${right} on the right. The number sentence is false.`
+        }`}
+      </Caption>
       <Steppers
         calc={calc}
         // The last value is the "missing" one that rebalances the scale; changing it moves the
@@ -139,6 +139,4 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
-});
+const styles = StyleSheet.create({});

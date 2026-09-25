@@ -6,7 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { useRep } from './common';
+import { useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'tally' }>;
@@ -69,9 +69,7 @@ export function Tally({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         })}
       </View>
-      {spec.total ? (
-        <Text style={[styles.caption, { color: c.text }]}>{`Total: ${rep.label(spec.total)}`}</Text>
-      ) : null}
+      {spec.total ? <Caption>{`Total: ${rep.label(spec.total)}`}</Caption> : null}
       {(() => {
         // The row with the most marks, when one stands out (a class chart's first question).
         const counts = ids.map((id) => (rep.known(id) ? Math.round(rep.shown(id)) : -1));
@@ -92,6 +90,13 @@ export function Tally({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
+  caption: {
+    fontSize: font.body,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: space.sm,
+    paddingHorizontal: space.lg,
+  },
   table: { marginHorizontal: space.md, borderWidth: chart.stroke },
   row: {
     flexDirection: 'row',
@@ -103,5 +108,4 @@ const styles = StyleSheet.create({
   name: { width: 110, fontSize: font.caption + 1 },
   marks: { flex: 1 },
   count: { width: 28, textAlign: 'right', fontSize: font.body, fontWeight: '600' },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
 });

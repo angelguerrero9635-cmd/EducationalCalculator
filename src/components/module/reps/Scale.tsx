@@ -1,13 +1,12 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, useRep } from './common';
+import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'scale' }>;
@@ -140,11 +139,11 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {spec.items
           ? `${spec.items.map((id) => rep.value(id)).join(' + ')} = ${rep.value(spec.total)}`
           : `${count} ${count === 1 ? 'bag' : 'bags'} of ${rep.value(spec.each!)} = ${rep.value(spec.total)}`}
-      </Text>
+      </Caption>
       <Steppers
         calc={calc}
         items={
@@ -164,12 +163,4 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

@@ -1,12 +1,19 @@
 import { useState, useRef, type ReactNode } from 'react';
-import { Platform, View, type GestureResponderEvent, type ViewStyle } from 'react-native';
+import {
+  Platform,
+  View,
+  type GestureResponderEvent,
+  type ViewStyle,
+  StyleSheet,
+} from 'react-native';
 import { Text as SvgText, type TextProps as SvgTextProps } from 'react-native-svg';
 
 import { isEarlyGrade, isElementary } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
-import { chart, font, usePalette } from '@/theme';
+import { chart, font, space, usePalette } from '@/theme';
 
+import { Text } from '@/components/Text';
 import type { Calculator } from '../useCalculator';
 
 // Web only: stop the browser from scrolling the page while a handle is dragged.
@@ -235,3 +242,63 @@ export function useRep(calc: Calculator) {
     },
   };
 }
+
+/** A line of a caption: prose, or a number sentence (only numbers, operators and units). */
+const isNumberSentence = (line: string) =>
+  /[=<>]/.test(line) &&
+  !/[A-Za-z]{4,}/.test(line.replace(/[a-z]+\b/g, (w) => (w.length <= 3 ? '' : w)));
+
+/**
+ * The text under a picture, laid out to read: each sentence on its own line, and a chained
+ * number sentence ("6 × 7 = 6 × 5 + 6 × 2 = 30 + 12 = 42") stacked one "=" per line, the way
+ * a textbook shows working. Number sentences are bold; the words stay regular.
+ */
+export function Caption({ children }: { children: string }) {
+  const c = usePalette();
+  const sentences = children
+    .split(/(?<=[.!?])\s+(?=[A-Z0-9“(])/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+  return (
+    <View style={captionStyles.block}>
+      {sentences.map((sentence, i) => {
+        const bare = sentence.replace(/[.]$/, '');
+        const parts = bare.split(' = ');
+        if (parts.length > 2 && isNumberSentence(bare)) {
+          return (
+            <View key={i} style={captionStyles.chain}>
+              {parts.map((part, k) => (
+                <Text key={k} style={[captionStyles.sentence, { color: c.text }]}>
+                  {k === 0 ? part : `= ${part}`}
+                </Text>
+              ))}
+            </View>
+          );
+        }
+        return (
+          <Text
+            key={i}
+            style={[
+              isNumberSentence(bare) ? captionStyles.sentence : captionStyles.prose,
+              { color: c.text },
+            ]}
+          >
+            {sentence}
+          </Text>
+        );
+      })}
+    </View>
+  );
+}
+
+const captionStyles = StyleSheet.create({
+  block: { alignItems: 'center', gap: 2, marginTop: space.sm, paddingHorizontal: space.lg },
+  chain: { alignItems: 'flex-start', gap: 1 },
+  sentence: {
+    fontSize: font.body + 1,
+    fontWeight: '700',
+    fontVariant: ['tabular-nums'],
+    textAlign: 'center',
+  },
+  prose: { fontSize: font.body, textAlign: 'center', lineHeight: 21 },
+});

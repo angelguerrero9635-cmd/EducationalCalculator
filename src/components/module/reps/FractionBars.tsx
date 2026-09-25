@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, useRep } from './common';
+import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'fractionBars' }>;
@@ -69,13 +68,13 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       {both ? (
-        <Text style={[styles.caption, { color: c.text }]}>
+        <Caption>
           {spec.equal
             ? cmp === 0
               ? `${p.num}/${p.den} = ${q.num}/${q.den}: the shaded parts are the same size.`
               : `${p.num}/${p.den} ${sign} ${q.num}/${q.den}: not the same size.`
             : `${p.num}/${p.den} ${sign} ${q.num}/${q.den}`}
-        </Text>
+        </Caption>
       ) : null}
       <Steppers
         calc={calc}
@@ -89,12 +88,4 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

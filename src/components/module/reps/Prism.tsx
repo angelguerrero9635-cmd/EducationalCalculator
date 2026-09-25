@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Line, Polygon } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, nowrap, useRep } from './common';
+import { Canvas, nowrap, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'prism' }>;
@@ -90,14 +89,10 @@ export function Prism({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`A ${NAMES[n] ?? `prism with a ${n}-sided base`}: ${nowrap(`${rep.label(spec.faces)} faces`)}, ${nowrap(`${rep.label(spec.edges)} edges`)}, ${nowrap(`${rep.label(spec.corners)} corners`)}`}
-      </Text>
+      <Caption>{`A ${NAMES[n] ?? `prism with a ${n}-sided base`}: ${nowrap(`${rep.label(spec.faces)} faces`)}, ${nowrap(`${rep.label(spec.edges)} edges`)}, ${nowrap(`${rep.label(spec.corners)} corners`)}`}</Caption>
       <Steppers calc={calc} items={[{ var: spec.sides, steps: [1], pin: [] }]} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
-});
+const styles = StyleSheet.create({});

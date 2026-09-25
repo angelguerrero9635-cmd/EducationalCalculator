@@ -2,13 +2,12 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Line, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, nowrap, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, nowrap, useFrozen, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'ruler' }>;
@@ -152,24 +151,20 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       {spec.from ? (
         <>
-          <Text style={[styles.caption, { color: c.text }]}>
-            {`Starts at ${nowrap(rep.label(spec.from))}${spec.to ? `, ends at ${nowrap(rep.label(spec.to))}` : ''}. Length: ${nowrap(`${rep.label(spec.lengths[0]!)}.`)}`}
-          </Text>
+          <Caption>{`Starts at ${nowrap(rep.label(spec.from))}${spec.to ? `, ends at ${nowrap(rep.label(spec.to))}` : ''}. Length: ${nowrap(`${rep.label(spec.lengths[0]!)}.`)}`}</Caption>
           <Steppers calc={calc} items={[{ var: spec.from, steps: [1], pin: [spec.lengths[0]!] }]} />
         </>
       ) : null}
       {spec.lengths.length > 2 && spec.lengths.every(rep.known) ? (
-        <Text style={[styles.caption, { color: c.text }]}>{order()}</Text>
+        <Caption>{order()}</Caption>
       ) : null}
       {spec.difference && spec.lengths.length === 2 && spec.lengths.every(rep.known) ? (
-        <Text style={[styles.caption, { color: c.text }]}>{compare()}</Text>
+        <Caption>{compare()}</Caption>
       ) : spec.difference ? (
-        <Text style={[styles.caption, { color: c.text }]}>{rep.named(spec.difference)}</Text>
+        <Caption>{rep.named(spec.difference)}</Caption>
       ) : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
-});
+const styles = StyleSheet.create({});

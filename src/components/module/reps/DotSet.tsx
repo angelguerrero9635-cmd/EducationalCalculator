@@ -3,12 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, useRep } from './common';
+import { Canvas, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'dotSet' }>;
@@ -108,9 +107,7 @@ export function DotSet({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.label(spec.count)} dots, however they are arranged`}
-      </Text>
+      <Caption>{`${rep.label(spec.count)} dots, however they are arranged`}</Caption>
       <Steppers calc={calc} items={[{ var: spec.count, steps: [1], pin: [] }]} />
     </View>
   );
@@ -118,5 +115,4 @@ export function DotSet({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   toggle: { paddingHorizontal: space.md, marginBottom: space.sm },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
 });

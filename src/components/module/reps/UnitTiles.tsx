@@ -2,12 +2,11 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, useFrozen, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'unitTiles' }>;
@@ -109,11 +108,11 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {rep.early
           ? `${count} ${bigName(count)}, each ${size} ${smallName(size)} long: ${total} ${smallName(total)} in all.`
           : `${rep.variable(spec.count).symbol} = ${count} ${bigName(count)}, each ${sizeVar ? `${rep.variable(sizeVar).symbol} = ` : ''}${size} ${smallName(size)} long. ${rep.variable(spec.total).symbol} = ${total} ${smallName(total)}.`}
-      </Text>
+      </Caption>
       <Steppers
         calc={calc}
         items={[
@@ -125,6 +124,4 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: { fontSize: font.body, textAlign: 'center', marginTop: space.sm },
-});
+const styles = StyleSheet.create({});

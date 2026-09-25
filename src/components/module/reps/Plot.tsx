@@ -9,7 +9,7 @@ import { solve } from '@/engine/solve';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
 
 type Spec = Extract<Representation, { kind: 'plot' }>;
 const SAMPLES = 120;
@@ -295,11 +295,11 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {[spec.x.var, spec.y.var, ...(spec.tangentSlope ? [spec.tangentSlope] : []), ...spec.params]
           .map((id) => rep.label(id))
           .join('   ·   ')}
-      </Text>
+      </Caption>
       {!paramsKnown ? (
         <Text style={[styles.caption, { color: c.textMuted }]}>
           {`Enter ${spec.params.map((id) => rep.variable(id).symbol).join(' and ')} to draw the graph.`}
@@ -311,7 +311,8 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   caption: {
-    fontSize: font.caption + 1,
+    fontSize: font.body,
+    fontWeight: '600',
     textAlign: 'center',
     marginTop: space.sm,
     paddingHorizontal: space.lg,

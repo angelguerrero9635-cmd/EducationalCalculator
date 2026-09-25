@@ -6,7 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, useRep } from './common';
+import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'quadrilateral' }>;
@@ -131,7 +131,7 @@ export function Quadrilateral({ spec, calc }: { spec: Spec; calc: Calculator }) 
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>{`A ${name}: ${why}.`}</Text>
+      <Caption>{`A ${name}: ${why}.`}</Caption>
       <View style={styles.toggleRow}>
         <Pressable
           testID="toggle-right-angles"
@@ -178,13 +178,6 @@ export function Quadrilateral({ spec, calc }: { spec: Spec; calc: Calculator }) 
 }
 
 const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
   toggleRow: { alignItems: 'center', marginTop: space.sm },
   toggle: {
     borderWidth: 1,

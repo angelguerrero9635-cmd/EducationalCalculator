@@ -5,7 +5,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, nowrap, useRep } from './common';
+import { Canvas, nowrap, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'lineUp' }>;
@@ -87,9 +87,7 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`${nowrap(rep.label(spec.before))} in front of the picked child   ·   ${nowrap(`${rep.label(spec.after)} behind`)}`}
-      </Text>
+      <Caption>{`${nowrap(rep.label(spec.before))} in front of the picked child   ·   ${nowrap(`${rep.label(spec.after)} behind`)}`}</Caption>
       <Steppers calc={calc} items={[{ var: spec.count, steps: [1], pin: [spec.position] }]} />
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a child to pick them.</Text>
     </View>
@@ -114,6 +112,5 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: space.sm },
   num: { fontSize: font.caption, lineHeight: LINE },
   next: { fontSize: font.caption - 1, lineHeight: LINE, textAlign: 'center' },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
 });

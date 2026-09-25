@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Line, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, useRep } from './common';
+import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'rectilinear' }>;
@@ -125,9 +124,7 @@ export function Rectilinear({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.value(spec.left.area, false)} + ${rep.value(spec.right.area, false)} = ${rep.value(spec.total)}`}
-      </Text>
+      <Caption>{`${rep.value(spec.left.area, false)} + ${rep.value(spec.right.area, false)} = ${rep.value(spec.total)}`}</Caption>
       <Steppers
         calc={calc}
         items={[lw, lh, rw, rh].map((id) => ({
@@ -140,12 +137,4 @@ export function Rectilinear({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});
+const styles = StyleSheet.create({});

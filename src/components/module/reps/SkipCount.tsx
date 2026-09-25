@@ -8,7 +8,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'skipCount' }>;
@@ -118,13 +118,13 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {k === 0
           ? formatNumber(from)
           : Array.from({ length: Math.min(k + 1, 12) }, (_, i) =>
               formatNumber(from + dir * i * s),
             ).join(', ') + (k + 1 > 12 ? ', …' : '')}
-      </Text>
+      </Caption>
       <Text style={[styles.symbols, { color: c.textMuted }]}>
         {[
           ...(spec.start ? [spec.start] : []),
@@ -167,11 +167,4 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   symbols: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.xs },
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
 });

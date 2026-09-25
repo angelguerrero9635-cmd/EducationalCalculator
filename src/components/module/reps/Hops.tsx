@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, useRep } from './common';
+import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'hops' }>;
@@ -109,11 +108,9 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`Start ${rep.label(spec.start, false)}, ${spec.hops
-          .map((hop) => `${hop.sign > 0 ? 'add' : 'take away'} ${rep.label(hop.var, false)}`)
-          .join(', then ')}. End ${rep.label(spec.end, false)}.`}
-      </Text>
+      <Caption>{`Start ${rep.label(spec.start, false)}, ${spec.hops
+        .map((hop) => `${hop.sign > 0 ? 'add' : 'take away'} ${rep.label(hop.var, false)}`)
+        .join(', then ')}. End ${rep.label(spec.end, false)}.`}</Caption>
       <Steppers
         calc={calc}
         items={[spec.start, ...spec.hops.map((x) => x.var)].map((id, _, all) => ({
@@ -126,6 +123,4 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 }
 
-const styles = StyleSheet.create({
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
-});
+const styles = StyleSheet.create({});

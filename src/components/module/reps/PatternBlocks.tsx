@@ -1,12 +1,11 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { G, Polygon } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, nowrap, useRep } from './common';
+import { Canvas, ChartText, nowrap, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'patternBlocks' }>;
@@ -96,9 +95,9 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
           );
         }}
       </Canvas>
-      <Text style={[styles.caption, { color: c.text }]}>
+      <Caption>
         {ids.map((id) => nowrap(`${rep.variable(id).name}: ${rep.label(id)}`)).join('   ·   ')}
-      </Text>
+      </Caption>
       <Steppers
         calc={calc}
         // Changing a block lets the triangles take up the difference (the hexagon stays full);
@@ -113,6 +112,4 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
   );
 }
 
-const styles = StyleSheet.create({
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center', marginTop: space.sm },
-});
+const styles = StyleSheet.create({});

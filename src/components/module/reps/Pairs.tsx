@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { useRep } from './common';
+import { useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'pairs' }>;
@@ -52,9 +51,7 @@ export function Pairs({ spec, calc }: { spec: Spec; calc: Calculator }) {
         ))}
         {odd ? <View style={styles.pair}>{dot('odd', true)}</View> : null}
       </View>
-      <Text style={[styles.caption, { color: c.text }]}>
-        {`${rep.early ? '' : `${rep.variable(spec.value).symbol} = `}${n} is ${odd ? 'odd' : 'even'}: ${pairs} ${pairs === 1 ? 'pair' : 'pairs'}${odd ? ' and 1 left over' : ', none left over'}`}
-      </Text>
+      <Caption>{`${rep.early ? '' : `${rep.variable(spec.value).symbol} = `}${n} is ${odd ? 'odd' : 'even'}: ${pairs} ${pairs === 1 ? 'pair' : 'pairs'}${odd ? ' and 1 left over' : ', none left over'}`}</Caption>
       <Steppers calc={calc} items={[{ var: spec.value, steps: [1], pin: [] }]} />
     </View>
   );
@@ -77,5 +74,4 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   dot: { borderWidth: chart.strokeLight },
-  caption: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
 });
