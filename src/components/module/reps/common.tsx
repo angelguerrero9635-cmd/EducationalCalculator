@@ -14,6 +14,7 @@ import type { Values } from '@/engine/types';
 import { chart, font, space, usePalette } from '@/theme';
 
 import { Text } from '@/components/Text';
+import { useScrollLock } from '../scrollLock';
 import type { Calculator } from '../useCalculator';
 
 // Web only: stop the browser from scrolling the page while a handle is dragged.
@@ -68,6 +69,7 @@ export function DragHandle({
   testID?: string;
 }) {
   const c = usePalette();
+  const { setLocked } = useScrollLock();
   // Page coordinates where the drag started; offsets are measured from here.
   const origin = useRef({ x: 0, y: 0 });
   const offset = (e: GestureResponderEvent) =>
@@ -83,11 +85,19 @@ export function DragHandle({
       onResponderTerminationRequest={() => false}
       onResponderGrant={(e) => {
         origin.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
+        // Hold the page still while the finger is on the handle.
+        setLocked(true);
         onStart();
       }}
       onResponderMove={(e) => onMove(...offset(e))}
-      onResponderRelease={() => onEnd?.()}
-      onResponderTerminate={() => onEnd?.()}
+      onResponderRelease={() => {
+        setLocked(false);
+        onEnd?.();
+      }}
+      onResponderTerminate={() => {
+        setLocked(false);
+        onEnd?.();
+      }}
       style={[
         {
           position: 'absolute',

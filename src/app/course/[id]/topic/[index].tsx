@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import { DetailHeader, EmptyState, ModuleSections, ListRow, LockedState } from '@/components';
+import { ScrollLockProvider } from '@/components/module/scrollLock';
 import { PageMeta } from '@/components/PageMeta';
 import { isLocked } from '@/config/access';
 import { topicMeta } from '@/data/meta';
@@ -26,18 +27,27 @@ export default function TopicScreen() {
   if (isLocked(topic.course.id)) return <LockedState />;
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-      automaticallyAdjustKeyboardInsets
-      style={{ backgroundColor: c.background }}
-    >
-      <Stack.Screen options={{ title: topic.title }} />
-      <PageMeta {...topicMeta(topic.course.id, topic.index)!} />
-      <DetailHeader title={topic.title} lines={[]} />
-      <ListRow overline="Course" title={topic.course.title} route={courseRoute(topic.course.id)} />
-      <ModuleSections id={topicKey(topic.course.id, topic.index)} />
-    </ScrollView>
+    <ScrollLockProvider>
+      {(locked) => (
+        <ScrollView
+          scrollEnabled={!locked}
+          contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets
+          style={{ backgroundColor: c.background }}
+        >
+          <Stack.Screen options={{ title: topic.title }} />
+          <PageMeta {...topicMeta(topic.course.id, topic.index)!} />
+          <DetailHeader title={topic.title} lines={[]} />
+          <ListRow
+            overline="Course"
+            title={topic.course.title}
+            route={courseRoute(topic.course.id)}
+          />
+          <ModuleSections id={topicKey(topic.course.id, topic.index)} />
+        </ScrollView>
+      )}
+    </ScrollLockProvider>
   );
 }

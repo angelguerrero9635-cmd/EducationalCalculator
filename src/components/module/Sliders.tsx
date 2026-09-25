@@ -1,14 +1,26 @@
 import { useRef } from 'react';
-import { StyleSheet, View, type GestureResponderEvent } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  View,
+  type GestureResponderEvent,
+  type ViewStyle,
+} from 'react-native';
 
 import { Text } from '@/components/Text';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
 import { useRep } from './reps/common';
+import { useScrollLock } from './scrollLock';
 import type { StepperItem } from './stepperContext';
 import type { Calculator } from './useCalculator';
 
 const TRACK = 150;
+/** The browser must not pan the page while a finger moves along the track. */
+const WEB_TRACK_STYLE =
+  Platform.OS === 'web'
+    ? ({ touchAction: 'none', userSelect: 'none' } as unknown as ViewStyle)
+    : null;
 const HANDLE = 26;
 
 /** The range a slider covers, in the shown unit. */
@@ -34,6 +46,7 @@ function Slider({ calc, item }: { calc: Calculator; item: StepperItem }) {
   const ratio = hi > lo ? Math.min(1, Math.max(0, (shown - lo) / (hi - lo))) : 0;
   const knobY = (1 - ratio) * (TRACK - HANDLE);
   const trackTop = useRef(0);
+  const { setLocked } = useScrollLock();
 
   const setFromY = (y: number) => {
     // The knob's center follows the finger; the value snaps to the slider's step.
@@ -63,11 +76,19 @@ function Slider({ calc, item }: { calc: Calculator; item: StepperItem }) {
         onMoveShouldSetResponder={() => true}
         onResponderTerminationRequest={() => false}
         onResponderGrant={(e) => {
+          // Hold the page still while the finger is on the slider.
+          setLocked(true);
           trackTop.current = e.nativeEvent.pageY - e.nativeEvent.locationY;
           setFromY(e.nativeEvent.locationY);
         }}
         onResponderMove={(e) => setFromY(at(e))}
-        style={[styles.track, { backgroundColor: c.chartSurface, borderColor: c.border }]}
+        onResponderRelease={() => setLocked(false)}
+        onResponderTerminate={() => setLocked(false)}
+        style={[
+          styles.track,
+          { backgroundColor: c.chartSurface, borderColor: c.border },
+          WEB_TRACK_STYLE,
+        ]}
       >
         {/* Children don't take touches, so the track's own coordinates are always used. */}
         <View pointerEvents="none" style={styles.fillWrap}>
