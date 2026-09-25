@@ -396,6 +396,12 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ],
   [new RegExp(`(\\d+):(\\d\\d) \\+ (${NUM}) minutes`), (h, m, d) => ((h % 12) * 60 + m + d) % 720],
   [/(\d+):(\d\d)/, (h, m) => (h % 12) * 60 + m],
+  // Grade 4
+  [
+    new RegExp(`factors of (${NUM})`),
+    (n) => Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0).length,
+  ],
+  [new RegExp(`(${NUM}) has (${NUM}) factors`), (_n, f) => f],
   // Grade 3
   [new RegExp(`(${NUM}) without its tens and ones`), (a) => 100 * Math.floor(a / 100)],
   [new RegExp(`(${NUM}) without its ones`), (a) => 10 * Math.floor(a / 10)],
@@ -1460,7 +1466,10 @@ function stageEdits(c: Ctx, r: Rng, sequences: number) {
       let updates: Record<string, number | undefined>;
       let mode: 'set' | 'same' | 'clear' | 'invalid' | 'multi' = 'set';
       const givenIds = state.given.map((g) => g.id);
-      const knownIds = Object.keys(state.result.values);
+      // A derived value has no box to retype into.
+      const knownIds = Object.keys(state.result.values).filter(
+        (id) => !c.sys.variables.find((v) => v.id === id)?.derived,
+      );
       if (roll < 0.12 && knownIds.length) {
         mode = 'same';
         const id = r.pick(knownIds);

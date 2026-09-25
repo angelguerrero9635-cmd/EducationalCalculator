@@ -5,6 +5,7 @@ import { MATH_K2_EXTRA_MODULES } from './math-k2-extra';
 import { MATH_K2_MORE_MODULES } from './math-k2-more';
 import { MATH_3_MODULES } from './math-3';
 import { MATH_3_MORE_MODULES } from './math-3-more';
+import { MATH_4_MODULES } from './math-4';
 import { SCIENCE_3_MODULES } from './science-3';
 import { SCIENCE_K2_MODULES } from './science-k2';
 import { LAYOUTS, getLayout, type LayoutDef } from './layouts';
@@ -20,6 +21,7 @@ export const MODULES: readonly ModuleDef[] = [
   ...MATH_K2_MORE_MODULES,
   ...MATH_3_MODULES,
   ...MATH_3_MORE_MODULES,
+  ...MATH_4_MODULES,
   ...SCIENCE_K2_MODULES,
   ...SCIENCE_3_MODULES,
   ...COLLEGE_MODULES,
