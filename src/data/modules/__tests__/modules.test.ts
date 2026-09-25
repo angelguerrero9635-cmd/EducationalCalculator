@@ -102,6 +102,8 @@ function representationVars(r: Representation): string[] {
       return [...[r.left, r.right].flatMap((p) => [p.width, p.height, p.area]), r.total];
     case 'areaModel':
       return [...r.top, ...r.side, ...r.parts.flat(), r.total];
+    case 'angles':
+      return [...r.parts, r.whole];
     case 'ruler':
       return [
         ...r.lengths,

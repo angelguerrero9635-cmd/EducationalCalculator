@@ -37,6 +37,7 @@ import { Plot } from './Plot';
 import { RectangleDiagram } from './Rectangle';
 import { Rectilinear } from './Rectilinear';
 import { AreaModel } from './AreaModel';
+import { Angles } from './Angles';
 import { RightTriangle } from './RightTriangle';
 import { PictureGraph } from './PictureGraph';
 import { SeriesCircuit } from './SeriesCircuit';
@@ -86,6 +87,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Rectilinear spec={spec} calc={calc} />;
     case 'areaModel':
       return <AreaModel spec={spec} calc={calc} />;
+    case 'angles':
+      return <Angles spec={spec} calc={calc} />;
     case 'thermometers':
       return <Thermometers spec={spec} calc={calc} />;
     case 'rockLayers':

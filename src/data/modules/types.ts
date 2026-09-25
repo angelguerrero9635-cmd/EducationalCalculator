@@ -449,6 +449,8 @@ export type Representation =
    * other's; `parts[j][i]` is the product of top[i] and side[j]; `total` their sum.
    */
   | { kind: 'areaModel'; top: string[]; side: string[]; parts: string[][]; total: string }
+  /** Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. */
+  | { kind: 'angles'; parts: [string, string]; whole: string }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | { kind: 'table'; sweep: string; output: string; params: string[]; rows: number[] }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */

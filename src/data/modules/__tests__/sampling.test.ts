@@ -1004,6 +1004,20 @@ function repIssues(
       }
       break;
     }
+    case 'angles': {
+      // Both parts fit in a turn, and they make the whole.
+      const [a, b, w] = [val(rep.parts[0]), val(rep.parts[1]), val(rep.whole)];
+      for (const [id, x] of [
+        [rep.parts[0], a],
+        [rep.parts[1], b],
+      ] as const) {
+        if (x !== undefined && (x < 0 || x > 360)) out.push(`angle ${id} = ${x} is outside a turn`);
+      }
+      if (a !== undefined && b !== undefined && w !== undefined && Math.abs(a + b - w) > 1e-9) {
+        out.push(`angles ${a} + ${b} drawn, whole shows ${w}`);
+      }
+      break;
+    }
     case 'rockLayers':
       count(rep.fossils[0], 'layers', 12);
       count(rep.fossils[1], 'layers', 12);

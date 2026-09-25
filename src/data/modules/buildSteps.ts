@@ -188,7 +188,7 @@ export function buildSteps(
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return `$${n}`;
-    if (unit === '¢') return `${n}${unit}`;
+    if (unit === '¢' || unit === '°' || unit === '%') return `${n}${unit}`;
     return `${n} ${x === 1 ? (SINGULAR[unit] ?? unit) : unit}`;
   };
   /** Variables for filling formulas with working values (no whole-number rounding if converted). */

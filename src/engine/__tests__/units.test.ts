@@ -65,6 +65,7 @@ describe('unit conversions (exact definitions)', () => {
       'days',
       'hours',
       'seconds',
+      '°',
       'drops',
       'cups',
       'feet',

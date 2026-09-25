@@ -9,7 +9,7 @@ import { formatNumber } from '@/engine/format';
 
 import { div, whole } from './math-k2';
 import type { ModuleDef } from './types';
-import { addStrategy, countList, divideWork, timesWork } from './work';
+import { addStrategy, countList, divideWork, subtractStrategy, timesWork } from './work';
 
 /** The factors of n in order: 24 → [1, 2, 3, 4, 6, 8, 12, 24]. */
 const factorsOf = (n: number): number[] =>
@@ -1064,4 +1064,65 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+
+  // ── Angles: degrees as parts of a turn, and angle addition (4.MD.5, 4.MD.7) ──
+  {
+    id: 'm.4.angles',
+    assumptions: [
+      'A full turn is 360 degrees. One degree is 1/360 of a turn.',
+      'A right angle is 90°: a quarter turn. A straight angle is 180°: a half turn.',
+      'Two angles that share a vertex and a ray add up: the whole angle is their sum.',
+      'Drag the middle ray, or use the sliders, to change the angles.',
+    ],
+    variables: [
+      { ...whole('a', 'a', 'First angle', 1, 179), unit: '°' },
+      { ...whole('b', 'b', 'Second angle', 1, 179), unit: '°' },
+      { ...whole('w', 'w', 'Whole angle', 2, 358), unit: '°' },
+    ],
+    relations: [
+      {
+        id: 'w = a + b',
+        display: '{a} + {b} = {w}',
+        vars: ['w', 'a', 'b'],
+        residual: (v: Values) => v.w! - v.a! - v.b!,
+        solve: {
+          w: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.w! - v.b!,
+          b: (v: Values) => v.w! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      'w = a + b': {
+        w: {
+          expr: '{a} + {b}',
+          how: 'Add the two angles: they share a ray, so together they make the whole angle.',
+          work: (v) => addStrategy(v.a!, v.b!, '°'),
+          note: (v) =>
+            v.w! === 90
+              ? '(a right angle)'
+              : v.w! === 180
+                ? '(a straight angle)'
+                : v.w! < 90
+                  ? '(acute: less than a right angle)'
+                  : v.w! < 180
+                    ? '(obtuse: more than a right angle, less than a straight one)'
+                    : '(more than a straight angle)',
+        },
+        a: {
+          expr: '{w} − {b}',
+          how: 'Take the second angle away from the whole angle.',
+          work: (v) => subtractStrategy(v.w!, v.b!, '°'),
+        },
+        b: {
+          expr: '{w} − {a}',
+          how: 'Take the first angle away from the whole angle.',
+          work: (v) => subtractStrategy(v.w!, v.a!, '°'),
+        },
+      },
+    },
+    example: { a: 35, b: 55, w: 90 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 'w' },
+  },
 ];
