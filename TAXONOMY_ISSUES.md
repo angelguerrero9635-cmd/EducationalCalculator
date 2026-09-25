@@ -87,3 +87,14 @@ blocks the wireframe.
    - `m.3.multiplication-properties` "Properties of multiplication (incl. distributive)" →
      "Properties of multiplication: order, grouping and breaking apart"
    - `m.3.area` "Area of rectangles (A = l × w)" → "Area of rectangles"
+
+10. **Grade 3 standards with no skill in the taxonomy.** The Grade 3 review found these CCSS
+    standards have nowhere to live, so no lessons were built for them:
+    - 3.NBT.2: add and subtract within 1000 (strategies by place value). Only rounding
+      (3.NBT.1) has a skill; the new "Estimate a sum" page covers part of this.
+    - 3.NBT.3: multiply a one-digit number by a multiple of 10 (9 × 80, 5 × 60).
+    - 3.OA.9: arithmetic patterns in the addition and multiplication tables.
+    - 3.MD.4: measure lengths to the nearest half and quarter inch, and show them on a line plot.
+
+    Suggested new skills: `m.3.add-sub-1000`, `m.3.multiply-by-tens`, `m.3.arithmetic-patterns`
+    and `m.3.measure-line-plots`.
