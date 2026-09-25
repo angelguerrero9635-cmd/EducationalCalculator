@@ -34,7 +34,8 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Canvas aspect={0.7}>
         {({ w, h }) => {
           const top = 22;
-          const bottom = h - 34;
+          // Leaves room under the bulb for the name label.
+          const bottom = h - 40;
           const py = (x: number) => bottom - ((x - lo) / (hi - lo)) * (bottom - top);
           const slot = w / spec.items.length;
           const tube = 18;
@@ -75,8 +76,14 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       stroke={c.chartInk}
                       strokeWidth={chart.stroke}
                     />,
-                    ...Array.from({ length: (hi - lo) / 10 + 1 }, (_, k) => {
-                      const v = lo + k * 10;
+                    ...[
+                      // A ten next to an extra mark (30 by 32) gives way to the mark.
+                      ...Array.from({ length: (hi - lo) / 10 + 1 }, (_, k) => lo + k * 10).filter(
+                        (v) => !(spec.marks ?? []).some((m) => m !== v && Math.abs(m - v) < 5),
+                      ),
+                      ...(spec.marks ?? []).filter((v) => v > lo && v < hi && v % 10 !== 0),
+                    ].map((v, k) => {
+                      const mark = v % 10 !== 0;
                       return [
                         <Line
                           key={`m${id}${k}`}
@@ -85,14 +92,15 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                           x2={cx - tube / 2}
                           y2={py(v)}
                           stroke={c.chartInk}
-                          strokeWidth={chart.strokeLight}
+                          strokeWidth={mark ? chart.stroke : chart.strokeLight}
                         />,
                         <ChartText
                           key={`l${id}${k}`}
                           x={cx - tube / 2 - 12}
                           y={py(v) + 4}
                           fontSize={chart.tiny}
-                          fill={c.chartMuted}
+                          fill={mark ? c.chartInk : c.chartMuted}
+                          fontWeight={mark ? '700' : undefined}
                           textAnchor="end"
                         >
                           {String(v)}
@@ -149,16 +157,24 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Text style={[styles.caption, { color: c.text }]}>
-        {spec.difference && rep.known(spec.difference)
-          ? `${spec.items.map((id) => rep.named(id)).join('. ')}. ${rep.named(spec.difference)}.`
-          : `${spec.items.map((id) => rep.named(id)).join('. ')}.`}
+        {(() => {
+          const names = `${spec.items.map((id) => rep.named(id)).join('. ')}.`;
+          const [a, b] = shown;
+          if (!spec.difference || a === undefined || b === undefined) return names;
+          // Say which one is warmer, so a shade warmer than the sun reads as what it is.
+          if (a === b) return `${names} Both the same.`;
+          const warmer = rep.variable(spec.items[a > b ? 0 : 1]!).name;
+          return `${names} ${warmer} is warmer by ${rep.value(spec.difference)}.`;
+        })()}
       </Text>
       <Steppers
         calc={calc}
-        items={spec.items.map((id) => ({
+        items={spec.items.map((id, i) => ({
           var: id,
           steps: hi - lo > 60 ? [1, 10] : [1],
           pin: spec.items.filter((x) => x !== id),
+          // A "?" thermometer starts next to the other one, or at the bottom of the scale.
+          from: shown.find((x, k) => k !== i && x !== undefined) ?? spec.min,
         }))}
       />
       {unit ? null : null}

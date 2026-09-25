@@ -13,7 +13,7 @@ independent AI review), and the next section starts only after the owner approve
 | 3   | Math 6–8                                                                                            | 30      |                      |
 | 4   | Math 9–10                                                                                           | 21      |                      |
 | 5   | Math 11–12                                                                                          | 22      |                      |
-| 6   | Science K–5                                                                                         | 39      | K–3 built            |
+| 6   | Science K–5                                                                                         | 39      | K–3 built, reviewed  |
 | 7   | Science 6–8                                                                                         | 21      |                      |
 | 8   | Science 9–12                                                                                        | 34      |                      |
 | 9   | College Math                                                                                        | 25      |                      |
@@ -33,7 +33,7 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 
 ## Section notes
 
-- **Section 6, Science K–3.** 23 skill modules plus 21 problem types, each with one honest
+- **Section 6, Science K–3.** 24 skill modules plus 30 problem types (after the section review), each with one honest
   counting or measuring model from the class investigation (NGSS K-PS2 to 3-ESS2): pushes
   forward and back on a number line, thermometers in the sun and shade, seeds that sprouted,
   a weather tally, trees planted and cut, vibrations per second as waves, shadow lengths on a
@@ -41,8 +41,8 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   soaks up, heating and cooling on a thermometer, plants in sun and shade, bee visits, kinds
   in a habitat, a river bank worn away year by year, Earth's water as 100 cups, pushes on a
   box (balanced and unbalanced), clips a magnet lifts through paper (a table), life-cycle
-  stages as a bar, fur colors in a litter, rock layers over a fossil, and rain by week. New
-  pictures: thermometers, sound waves, rock layers and a pushed box. Grade 3 keeps letters as
+  stages as a bar, fur colors in a litter, rock layers over a fossil, a herd's adults and
+  young, and rain by week. New pictures: thermometers, rock layers and a pushed box. Grade 3 keeps letters as
   labels only; K–2 keeps to names and number sentences.
 - **Section 2, Grade 3.** 14 skill modules (area was a pilot; patterns in the tables,
   multiplying by multiples of 10, and measuring with line plots were added to the taxonomy

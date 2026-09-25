@@ -72,6 +72,17 @@ export function Tally({ spec, calc }: { spec: Spec; calc: Calculator }) {
       {spec.total ? (
         <Text style={[styles.caption, { color: c.text }]}>{`Total: ${rep.label(spec.total)}`}</Text>
       ) : null}
+      {(() => {
+        // The row with the most marks, when one stands out (a class chart's first question).
+        const counts = ids.map((id) => (rep.known(id) ? Math.round(rep.shown(id)) : -1));
+        const top = Math.max(...counts);
+        const leaders = ids.filter((_, i) => counts[i] === top);
+        return top > 0 && leaders.length === 1 ? (
+          <Text style={[styles.caption, { color: c.textMuted }]}>
+            {`Most: ${rep.variable(leaders[0]!).name.toLowerCase()}`}
+          </Text>
+        ) : null;
+      })()}
       <Steppers
         calc={calc}
         items={ids.map((id) => ({ var: id, steps: [1], pin: ids.filter((x) => x !== id) }))}

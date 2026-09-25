@@ -471,7 +471,7 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // A count with its word at the end of a line: "6 spaces", "20 carrots".
   [new RegExp(`^(${NUM}) [a-z]+$`), (a) => a],
   // Last, after "3 feet of 12 inches": a length in inches is its number.
-  [new RegExp(`(${NUM}) inches? and (${NUM}) inch`), (a, b) => a + b],
+  [new RegExp(`(${NUM}) inch(?:es)? and (${NUM}) inch`), (a, b) => a + b],
   [new RegExp(`(${NUM}) inch(?:es)?`), (a) => a],
 ];
 
@@ -956,9 +956,6 @@ function repIssues(
         const x = val(id);
         if (x !== undefined && (x < -40 || x > 250)) out.push(`temperature ${id} = ${x}`);
       }
-      break;
-    case 'waves':
-      for (const id of rep.rows) count(id, 'bumps', rep.max);
       break;
     case 'rockLayers':
       count(rep.layers, 'layers', 12);

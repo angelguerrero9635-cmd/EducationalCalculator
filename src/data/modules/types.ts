@@ -426,9 +426,9 @@ export type Representation =
       /** The scale shown at least from `min` to `max` (grows to fit the values). */
       min: number;
       max: number;
+      /** Extra labeled marks, e.g. 32 where water freezes. */
+      marks?: number[];
     }
-  /** One wavy line per value: that many bumps in one second (vibrations, Grade 1 sound). */
-  | { kind: 'waves'; rows: string[]; max: number }
   /** Rock layers stacked on a fossil, each `years` old; `total` is the fossil's age. */
   | { kind: 'rockLayers'; layers: string; years: string; total: string }
   /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */

@@ -324,8 +324,9 @@ export function buildSteps(
     check: module.relations
       .filter((r) => r.vars.every((id) => id in result.values))
       .map((r) => ({
-        formula:
+        formula: agree(
           r.check && direct ? r.check(working) : renderTemplate(r.display, workVars, working),
+        ),
         ok: holds(r, result.values),
       })),
     missing,

@@ -39,6 +39,15 @@ and each strand's skills sit together within a grade.
   taxonomy's rule, a skill is defined once, in the grade where it is first taught, so no Grade 3
   copy was added. Grade 3's "Estimate a sum" page adds rounding to check answers.
 
+### Science K–3 review
+
+- **Standards with no skill.** Added `s.3.animal-groups` (3-LS2-1), "Animals living in groups",
+  with a lesson. 3-ESS3-1 (weather hazards) is a problem type of `s.3.weather-climate`, and
+  K-ESS3-2 (severe weather) one of `s.K.weather-patterns`; K-ESS3-1 (living things and where
+  they live) stays inside `s.K.living-needs` and `s.2.habitats`.
+- **Shorthand in a title:** `s.2.erosion-landforms` is now "Landforms and fast or slow Earth
+  changes" (was "fast vs. slow").
+
 ### Structure
 
 - **Strands split up in Grades 4 and 8.** The rows are reordered so each strand's skills sit

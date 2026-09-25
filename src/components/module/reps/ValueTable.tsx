@@ -37,7 +37,8 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   const head = (v: typeof sweep) => {
     const unit = rep.unit(v.id);
-    return `${v.symbol}${unit ? ` (${unit})` : ''}`;
+    // Grades 3–5 read the name with the letter as a label: "Sheets of paper (s)".
+    return `${v.name} (${v.symbol})${unit ? `, ${unit}` : ''}`;
   };
 
   return (

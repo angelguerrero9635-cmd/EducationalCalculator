@@ -58,6 +58,7 @@ function apart(
   b: string,
   [an, bn]: [string, string],
   [moreWord, lessWord]: [string, string],
+  howDiff = 'Take the smaller number away from the bigger one.',
 ) {
   const relation = {
     id: `${d} = ${a} and ${b} apart`,
@@ -75,7 +76,7 @@ function apart(
   const steps: Record<string, StepText> = {
     [d]: {
       expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
-      how: 'Take the smaller number away from the bigger one.',
+      how: howDiff,
       work: (v) => subtractStrategy(Math.max(v[a]!, v[b]!), Math.min(v[a]!, v[b]!)),
       note: (v) => (v[a]! === v[b]! ? '(the same)' : `(the ${aMore(v) ? an : bn} is ${moreWord})`),
     },
@@ -108,11 +109,12 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       'l',
       ['push to the right', 'push to the left'],
       ['bigger', 'smaller'],
+      'The bigger push wins. The extra push is the bigger push take away the smaller one.',
     );
     return {
       id: 's.3.balanced-forces',
       assumptions: [
-        'A force is a push or a pull, measured in newtons (N).',
+        'A force is a push or a pull. A spring scale measures it in newtons (N).',
         'Two pushes on opposite sides are balanced when they are equal: the box stays still.',
         'When one push is bigger, the box moves that way. The extra push is the difference.',
       ],
@@ -154,13 +156,41 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  (() => {
+    const swings = times(
+      's = p × k',
+      ['p', 'k', 's'],
+      ['swings in 10 seconds', 'tens of seconds', 'swings'],
+      '{p} × {k} = {s}',
+    );
+    return {
+      id: 's.3.balanced-forces~swings',
+      title: 'A pendulum’s pattern',
+      assumptions: [
+        'A pendulum is a weight on a string. Once it swings, it keeps a steady beat.',
+        'It makes the same number of swings every 10 seconds, so you can predict the next 10.',
+        'Count the tens of seconds: 30 seconds is 3 tens.',
+      ],
+      variables: [
+        whole('p', 'p', 'Swings in 10 seconds', 1, 20),
+        whole('k', 'k', 'Tens of seconds', 1, 6),
+        whole('s', 's', 'Swings', 1, 120),
+      ],
+      relations: [swings.relation],
+      steps: { 's = p × k': swings.steps },
+      example: { p: 8, k: 3, s: 24 },
+      startWith: ['p', 'k'],
+      representation: { kind: 'skipCount', step: 'p', count: 'k', total: 's' },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Magnets: forces at a distance (3-PS2-3, 3-PS2-4) ──
   (() => {
     const lost = times(
-      'L = f × s',
-      ['f', 's', 'L'],
-      ['clips lost for each sheet', 'sheets', 'clips lost'],
-      '{f} × {s} = {L}',
+      'L = s × f',
+      ['s', 'f', 'L'],
+      ['sheets', 'clips lost for each sheet', 'clips lost'],
+      '{s} × {f} = {L}',
     );
     const left = sum2(
       'c = n − L',
@@ -175,6 +205,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         'A magnet pulls on a paper clip without touching it.',
         'The pull gets weaker as the magnet gets farther away.',
         'Each sheet of paper between them costs the same number of clips.',
+        'Use fewer sheets than it takes to drop every clip.',
       ],
       variables: [
         whole('n', 'n', 'Clips with no paper', 0, 20),
@@ -184,7 +215,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         whole('c', 'c', 'Clips lifted', 0, 20),
       ],
       relations: [lost.relation, left.relation],
-      steps: { 'L = f × s': lost.steps, 'c = n − L': left.steps },
+      steps: { 'L = s × f': lost.steps, 'c = n − L': left.steps },
       example: { n: 12, f: 2, s: 3, L: 6, c: 6 },
       startWith: ['n', 'f', 's'],
       representation: {
@@ -200,6 +231,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     const more = apart('m', 'a', 'b', ['strong magnet', 'weak magnet'], ['stronger', 'weaker']);
     return {
       id: 's.3.magnets~chain',
+      pictureLabels: ['m'],
       title: 'Which magnet is stronger?',
       assumptions: [
         'Hang paper clips from a magnet in a chain until one drops.',
@@ -247,7 +279,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         { ...whole('c', 'c', 'Caterpillar', 1, 60), unit: 'days' },
         { ...whole('h', 'h', 'Chrysalis', 1, 60), unit: 'days' },
         { ...whole('b', 'b', 'Butterfly', 1, 60), unit: 'days' },
-        { ...whole('d', 'd', 'Life cycle', 4, 210), unit: 'days' },
+        { ...whole('d', 'd', 'Whole cycle', 4, 210), unit: 'days' },
       ],
       relations: [cycle.relation],
       steps: { 'd = egg + caterpillar + chrysalis + butterfly': cycle.steps },
@@ -315,6 +347,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     const taller = apart('t', 'w', 'd', ['watered plant', 'dry plant'], ['taller', 'shorter']);
     return {
       id: 's.3.inherited-traits~environment',
+      pictureLabels: ['t'],
       title: 'Traits the environment changes',
       assumptions: [
         'Two plants from the same seeds inherit the same traits.',
@@ -348,7 +381,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     const age = times(
       't = n × y',
       ['n', 'y', 't'],
-      ['layers', 'years for each layer', 'years'],
+      ['layers', 'thousand years for each layer', 'age of the fossil'],
       '{n} × {y} = {t}',
     );
     return {
@@ -356,17 +389,18 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       assumptions: [
         'A fossil is what is left of a living thing from long ago, kept in rock.',
         'Rock forms in layers, one on top of another. The deepest layer is the oldest.',
-        'Here each layer took about the same number of years to form.',
+        'Here each layer took about the same number of thousand years to form.',
+        'Type the years in tens (10, 20, 30, …), so you can count by tens.',
       ],
       variables: [
         whole('n', 'n', 'Layers above the fossil', 1, 9),
         {
-          ...whole('y', 'y', 'Years for each layer', 10, 100),
-          unit: 'years',
+          ...whole('y', 'y', 'Thousand years for each layer', 10, 100),
+          unit: 'thousand years',
           step: 10,
           multipleOf: 10,
         },
-        { ...whole('t', 't', 'Years since the fossil formed', 10, 900), unit: 'years' },
+        { ...whole('t', 't', 'Age of the fossil', 10, 900), unit: 'thousand years' },
       ],
       relations: [age.relation],
       steps: { 't = n × y': age.steps },
@@ -380,11 +414,12 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       'm',
       'a',
       'b',
-      ['long-beaked birds', 'short-beaked birds'],
+      ['number of big-beaked birds', 'number of small-beaked birds'],
       ['more', 'fewer'],
     );
     return {
       id: 's.3.adaptation-fossils~survive',
+      pictureLabels: ['m'],
       title: 'Which birds survived the dry year?',
       assumptions: [
         'In a dry year only hard seeds are left. Birds with big strong beaks can crack them.',
@@ -412,7 +447,30 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
-  // ── Weather data and climate (3-ESS2-1, 3-ESS2-2) ──
+  // ── Animals living in groups (3-LS2-1) ──
+  (() => {
+    const herd = sum2('h = a + y', ['a', 'y', 'h'], ['adults', 'young', 'animals in the herd']);
+    return {
+      id: 's.3.animal-groups',
+      assumptions: [
+        'Some animals live in groups: a herd of elephants, a pack of wolves, a hive of bees.',
+        'A group helps them find food, keep the young safe and stay warm.',
+        'Count the adults and the young to find the size of the group.',
+      ],
+      variables: [
+        whole('a', 'a', 'Adults', 0, 50),
+        whole('y', 'y', 'Young', 0, 50),
+        whole('h', 'h', 'Animals in the herd', 0, 100),
+      ],
+      relations: [herd.relation],
+      steps: { 'h = a + y': herd.steps },
+      example: { a: 12, y: 7, h: 19 },
+      startWith: ['a', 'y'],
+      representation: { kind: 'tape', parts: ['a', 'y'], total: 'h' },
+    } satisfies ModuleDef;
+  })(),
+
+  // ── Weather data and climate (3-ESS2-1, 3-ESS2-2, 3-ESS3-1) ──
   (() => {
     const month = sumAll(
       'm = week 1 + week 2 + week 3 + week 4',
@@ -424,7 +482,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       id: 's.3.weather-climate',
       assumptions: [
         'Weather is what the air is doing today: rain, wind, temperature.',
-        'A rain gauge measures rain in millimeters (mm).',
+        'A rain gauge measures rain in millimeters (mm) or inches.',
         'Add the rain of each week to find the rain for the month.',
       ],
       variables: [
@@ -477,6 +535,40 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         difference: 'r',
         min: 0,
         max: 100,
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const bags = times(
+      'b = r × e',
+      ['r', 'e', 'b'],
+      ['rows', 'sandbags in each row', 'sandbags'],
+      '{r} × {e} = {b}',
+    );
+    return {
+      id: 's.3.weather-climate~flood',
+      title: 'A sandbag wall against a flood',
+      assumptions: [
+        'Weather can be dangerous: floods, high winds, lightning.',
+        'People build to stay safe. A wall of sandbags holds back flood water.',
+        'Stack the bags in rows with the same number in each row.',
+      ],
+      variables: [
+        whole('r', 'r', 'Rows', 1, 10),
+        whole('e', 'e', 'Sandbags in each row', 1, 10),
+        whole('b', 'b', 'Sandbags', 1, 100),
+      ],
+      relations: [bags.relation],
+      steps: { 'b = r × e': bags.steps },
+      example: { r: 4, e: 6, b: 24 },
+      startWith: ['r', 'e'],
+      representation: {
+        kind: 'array',
+        rows: 'r',
+        columns: 'e',
+        total: 'b',
+        max: 10,
+        cell: 'square',
       },
     } satisfies ModuleDef;
   })(),

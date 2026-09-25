@@ -109,6 +109,8 @@ function groupsOf(
   [n, e, t]: [string, string, string],
   noun: [string, string],
   thing: [string, string],
+  /** Kindergarten–Grade 1: add one group at a time (skip counting and sharing are Grade 2). */
+  plain = false,
 ) {
   const relation = {
     id,
@@ -129,14 +131,31 @@ function groupsOf(
     },
     [n]: {
       expr: `${noun[1]} of {${e}} ${thing[1]} in {${t}}`,
-      how: `Count by ${thing[1]} of one ${noun[0]} up to the total.`,
+      how: plain
+        ? `Add the ${thing[1]} one ${noun[0]} at a time, up to the total.`
+        : `Count by ${thing[1]} of one ${noun[0]} up to the total.`,
       work: (v) =>
-        v[n]! > 0 ? [`Count by ${v[e]}s: ${countList(0, v[e]!, v[n]!)} → ${v[n]} ${noun[1]}`] : [],
+        v[n]! <= 0
+          ? []
+          : plain
+            ? Array.from({ length: v[n]! }, (_, k) =>
+                k === 0
+                  ? `1 ${noun[0]}: ${v[e]}`
+                  : `${k + 1} ${noun[1]}: ${v[e]! * k} + ${v[e]} = ${v[e]! * (k + 1)}`,
+              )
+            : [`Count by ${v[e]}s: ${countList(0, v[e]!, v[n]!)} → ${v[n]} ${noun[1]}`],
     },
     [e]: {
       expr: `{${t}} ${thing[1]} shared by {${n}} ${noun[1]}`,
-      how: `Share the ${thing[1]} equally, one ${noun[0]} at a time.`,
-      work: (v) => (v[n]! > 0 ? dealLines(v[n]!, v[e]!, noun[0]) : []),
+      how: plain
+        ? `Give each ${noun[0]} 1, then 1 more, until all the ${thing[1]} are used.`
+        : `Share the ${thing[1]} equally, one ${noun[0]} at a time.`,
+      work: (v) =>
+        v[n]! <= 0
+          ? []
+          : plain
+            ? Array.from({ length: v[e]! }, (_, k) => `${k + 1} each: ${v[n]! * (k + 1)} used`)
+            : dealLines(v[n]!, v[e]!, noun[0]),
     },
   };
   return { relation, steps };
@@ -150,6 +169,8 @@ const moreThan = (
   an: string,
   bn: string,
   words: [string, string],
+  /** Kindergarten–Grade 1 count on one at a time; Grade 2 counts up in jumps. */
+  grade: 'K1' | '2' = 'K1',
 ) =>
   difference(d, a, b, {
     diff: `Count on from the smaller number to the bigger one. That is how much ${words[0]}.`,
@@ -161,7 +182,7 @@ const moreThan = (
       `The ${bn} is ${words[1]}: take the difference from the ${an}.`,
       `The ${bn} is ${words[0]}: add the difference to the ${an}.`,
     ],
-    countOn: true,
+    ...(grade === 'K1' ? { countOn: true } : { countUp: true }),
     same: `There is no difference. Both are the same.`,
   });
 
@@ -171,12 +192,32 @@ const F = '°F';
 
 export const SCIENCE_K2_MODULES: ModuleDef[] = [
   // ── Kindergarten: pushes and pulls (K-PS2-1, K-PS2-2) ──
+  (() => {
+    const farther = moreThan('d', 'a', 'b', 'big push', 'small push', ['farther', 'shorter']);
+    return {
+      id: 's.K.pushes-pulls',
+      assumptions: [
+        'A push or a pull makes a toy car move.',
+        'A big push moves it farther than a small push.',
+        'Measure how far the car rolled with cubes.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Big push', 0, 20), unit: 'cubes' },
+        { ...whole('b', 'b', 'Small push', 0, 20), unit: 'cubes' },
+        { ...whole('d', 'd', 'Farther by', 0, 20), unit: 'cubes' },
+      ],
+      relations: [farther.relation],
+      steps: farther.steps,
+      example: { a: 9, b: 4, d: 5 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'ruler', lengths: ['a', 'b'], difference: 'd', extent: 20 },
+    } satisfies ModuleDef;
+  })(),
   {
-    id: 's.K.pushes-pulls',
-    pictureLabels: [],
+    id: 's.K.pushes-pulls~forward',
+    title: 'Pushes forward and pushes back',
     assumptions: [
-      'A push or a pull makes a box move. Each push moves it 1 space.',
-      'Pushes forward and pushes back work against each other.',
+      'Each push moves the box 1 space. A push back undoes a push forward.',
       'Here there are more pushes forward, so the box ends up forward.',
     ],
     variables: [
@@ -223,32 +264,57 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       max: 10,
     },
   },
-  (() => {
-    const g = groupsOf(
-      't = p pushes of e',
-      ['p', 'e', 't'],
-      ['push', 'pushes'],
-      ['space', 'spaces'],
-    );
-    return {
-      id: 's.K.pushes-pulls~strength',
-      title: 'A bigger push moves it farther',
-      assumptions: [
-        'A big push moves the toy more spaces than a small push.',
-        'The same push again moves it the same number of spaces.',
-      ],
-      variables: [
-        whole('p', 'p', 'Pushes', 1, 5),
-        whole('e', 'e', 'Spaces each push', 1, 2),
-        whole('t', 't', 'Spaces in all', 0, 10),
-      ],
-      relations: [g.relation],
-      steps: { 't = p pushes of e': g.steps },
-      example: { p: 3, e: 2, t: 6 },
-      startWith: ['p', 'e'],
-      representation: { kind: 'skipCount', step: 'e', count: 'p', total: 't' },
-    } satisfies ModuleDef;
-  })(),
+  {
+    id: 's.K.pushes-pulls~back',
+    title: 'More pushes back: the box moves back',
+    assumptions: [
+      'Each push moves the box 1 space. A push forward undoes a push back.',
+      'Here there are more pushes back, so the box ends up back.',
+    ],
+    variables: [
+      whole('b', 'b', 'Pushes back', 0, 10),
+      whole('f', 'f', 'Pushes forward', 0, 10),
+      whole('s', 's', 'Spaces back', 0, 10),
+    ],
+    relations: [
+      {
+        id: 'b − f = s',
+        display: '{b} − {f} = {s}',
+        vars: ['s', 'b', 'f'],
+        residual: (v) => v.s! - (v.b! - v.f!),
+        solve: { s: (v) => v.b! - v.f!, b: (v) => v.s! + v.f!, f: (v) => v.b! - v.s! },
+      },
+    ],
+    steps: {
+      'b − f = s': {
+        s: {
+          expr: '{b} − {f}',
+          how: 'Each push forward undoes one push back. Take them away.',
+          work: (v) => subtractStrategy(v.b!, v.f!),
+        },
+        b: {
+          expr: '{s} + {f}',
+          how: 'The pushes back made the spaces and undid the pushes forward.',
+          work: (v) => addStrategy(v.s!, v.f!),
+        },
+        f: {
+          expr: '{b} − {s}',
+          how: 'Count up from the spaces back to the pushes back.',
+          work: (v) => countUp(v.s!, v.b!),
+        },
+      },
+    },
+    example: { b: 6, f: 2, s: 4 },
+    startWith: ['b', 'f'],
+    representation: {
+      kind: 'hops',
+      start: 'b',
+      hops: [{ var: 'f', sign: -1 }],
+      end: 's',
+      min: 0,
+      max: 10,
+    },
+  },
 
   // ── Kindergarten: sunlight warms Earth's surface (K-PS3-1, K-PS3-2) ──
   (() => {
@@ -258,7 +324,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       assumptions: [
         'Sunlight warms the ground, sand and water it shines on.',
         'A spot in the shade stays cooler.',
-        'The thermometer number goes up as it gets warmer.',
+        'Put one thermometer in the sun and one in the shade. Wait 10 minutes.',
       ],
       variables: [
         { ...whole('u', 'u', 'Sun spot', 0, 120), unit: F },
@@ -312,35 +378,15 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
 
   // ── Kindergarten: what plants and animals need (K-LS1-1) ──
   (() => {
-    const g = groupsOf('t = d days of e', ['d', 'e', 't'], ['day', 'days'], ['carrot', 'carrots']);
-    return {
-      id: 's.K.living-needs',
-      assumptions: [
-        'Animals need food and water every day. Plants need water and light.',
-        'A rabbit eats the same number of carrots each day.',
-      ],
-      variables: [
-        whole('d', 'd', 'Days', 1, 5),
-        whole('e', 'e', 'Carrots each day', 1, 2),
-        whole('t', 't', 'Carrots in all', 0, 10),
-      ],
-      relations: [g.relation],
-      steps: { 't = d days of e': g.steps },
-      example: { d: 3, e: 2, t: 6 },
-      startWith: ['d', 'e'],
-      representation: { kind: 'skipCount', step: 'e', count: 'd', total: 't' },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
     const s = sum2(
       'n = s + u',
       ['s', 'u', 'n'],
       ['seeds that sprouted', 'seeds that did not', 'seeds planted'],
     );
     return {
-      id: 's.K.living-needs~sprouting',
-      title: 'Seeds with and without water',
+      id: 's.K.living-needs',
       assumptions: [
+        'Plants need water and light. Animals need food and water.',
         'Seeds need water to sprout. Dry seeds stay seeds.',
         'Count the seeds that sprouted and the seeds that did not.',
       ],
@@ -356,6 +402,33 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       representation: { kind: 'tenFrame', first: 's', second: 'u', total: 'n' },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const g = groupsOf(
+      't = d days of e',
+      ['d', 'e', 't'],
+      ['day', 'days'],
+      ['carrot', 'carrots'],
+      true,
+    );
+    return {
+      id: 's.K.living-needs~food',
+      title: 'Food for a few days',
+      assumptions: [
+        'Animals need food every day.',
+        'A rabbit eats the same number of carrots each day.',
+      ],
+      variables: [
+        whole('d', 'd', 'Days', 1, 5),
+        whole('e', 'e', 'Carrots each day', 1, 2),
+        whole('t', 't', 'Carrots in all', 0, 10),
+      ],
+      relations: [g.relation],
+      steps: { 't = d days of e': g.steps },
+      example: { d: 3, e: 2, t: 6 },
+      startWith: ['d', 'e'],
+      representation: { kind: 'skipCount', step: 'e', count: 'd', total: 't' },
+    } satisfies ModuleDef;
+  })(),
 
   // ── Kindergarten: local weather patterns (K-ESS2-1) ──
   (() => {
@@ -367,20 +440,23 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
         'Count the marks to see which weather came most.',
       ],
       variables: [
-        whole('s', 's', 'Sunny days', 0, 10),
-        whole('c', 'c', 'Cloudy days', 0, 10),
-        whole('r', 'r', 'Rainy days', 0, 10),
-        whole('d', 'd', 'Days counted', 0, 10),
+        whole('s', 's', 'Sunny days', 0, 31),
+        whole('c', 'c', 'Cloudy days', 0, 31),
+        whole('r', 'r', 'Rainy days', 0, 31),
+        whole('d', 'd', 'Days counted', 0, 31),
       ],
       relations: [all.relation],
       steps: { 'days = sunny + cloudy + rainy': all.steps },
-      example: { s: 5, c: 3, r: 2, d: 10 },
+      example: { s: 12, c: 6, r: 4, d: 22 },
       startWith: ['s', 'c', 'r'],
       representation: { kind: 'tally', rows: ['s', 'c', 'r'], total: 'd' },
     } satisfies ModuleDef;
   })(),
   (() => {
-    const warmer = moreThan('w', 't', 'y', 'today', 'yesterday', ['warmer', 'cooler']);
+    const warmer = moreThan('w', 't', 'y', 'temperature today', 'temperature yesterday', [
+      'warmer',
+      'cooler',
+    ]);
     return {
       id: 's.K.weather-patterns~warmer',
       title: 'Warmer or cooler than yesterday',
@@ -407,6 +483,29 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  (() => {
+    const list = sum2('n = a + b', ['a', 'b', 'n'], ['things done', 'things to do', 'list']);
+    return {
+      id: 's.K.weather-patterns~storm',
+      title: 'Getting ready for a storm',
+      assumptions: [
+        'A forecast warns that a storm is coming.',
+        'Make a list to get ready. Bring toys in. Close the windows.',
+        'Check off each thing you do.',
+      ],
+      variables: [
+        whole('a', 'a', 'Done', 0, 10),
+        whole('b', 'b', 'Still to do', 0, 10),
+        whole('n', 'n', 'Things on the list', 0, 10),
+      ],
+      relations: [list.relation],
+      steps: { 'n = a + b': list.steps },
+      example: { a: 4, b: 2, n: 6 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'n' },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Kindergarten: living things change their environment (K-ESS2-2, K-ESS3-3) ──
   (() => {
     const planted = sum2(
@@ -424,7 +523,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       id: 's.K.living-things-change-environment',
       pictureLabels: ['m'],
       assumptions: [
-        'People change the land. Planting trees adds; cutting trees takes away.',
+        'Living things change the land. A beaver cuts trees. People plant trees.',
         'Count the trees before, then add and take away.',
       ],
       variables: [
@@ -474,52 +573,83 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
-  // ── Grade 1: sound comes from vibrating materials (1-PS4-1) ──
+  // ── Grade 1: sound comes from vibrating materials (1-PS4-1, 1-PS4-4) ──
   (() => {
-    const more = moreThan('m', 'f', 's', 'tight band', 'loose band', ['more', 'fewer']);
+    const longer = moreThan('d', 'a', 'b', 'long part', 'short part', ['longer', 'shorter']);
     return {
       id: 's.1.sound-vibration',
       assumptions: [
-        'A sound comes from something moving back and forth: vibrating.',
-        'Count how many times a rubber band vibrates in one second.',
-        'More vibrations each second make a higher sound.',
+        'A sound comes from something wiggling back and forth: vibrating.',
+        'Hold a ruler on the desk with part sticking out. Twang it.',
+        'A long part wiggles slowly and sounds low. A short part wiggles fast and sounds high.',
       ],
       variables: [
-        whole('f', 'f', 'Tight band', 0, 20),
-        whole('s', 's', 'Loose band', 0, 20),
-        whole('m', 'm', 'More each second', 0, 20),
+        { ...whole('a', 'a', 'Long part', 0, 30), unit: 'cm' },
+        { ...whole('b', 'b', 'Short part', 0, 30), unit: 'cm' },
+        { ...whole('d', 'd', 'Longer by', 0, 30), unit: 'cm' },
       ],
-      relations: [more.relation],
-      steps: more.steps,
-      example: { f: 12, s: 8, m: 4 },
-      startWith: ['f', 's'],
-      representation: { kind: 'waves', rows: ['f', 's'], max: 20 },
+      relations: [longer.relation],
+      steps: longer.steps,
+      example: { a: 20, b: 8, d: 12 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'ruler', lengths: ['a', 'b'], difference: 'd', extent: 30 },
     } satisfies ModuleDef;
   })(),
   (() => {
-    const g = groupsOf(
-      't = n seconds of e',
-      ['n', 'e', 't'],
-      ['second', 'seconds'],
-      ['vibration', 'vibrations'],
-    );
+    const more = moreThan('m', 'a', 'b', 'loud hit', 'soft hit', ['more', 'fewer']);
     return {
-      id: 's.1.sound-vibration~seconds',
-      title: 'Vibrations in a few seconds',
+      id: 's.1.sound-vibration~drum',
+      title: 'Sound makes things move',
       assumptions: [
-        'The band vibrates the same number of times each second.',
-        'Add the vibrations of each second together.',
+        'Put rice on a drum. Hit the drum and the rice jumps.',
+        'A loud sound makes the drum vibrate more, so more rice jumps.',
+        'Count the grains that jumped off.',
       ],
       variables: [
-        whole('n', 'n', 'Seconds', 1, 2),
-        whole('e', 'e', 'Vibrations each second', 1, 10),
-        whole('t', 't', 'Vibrations in all', 0, 20),
+        whole('a', 'a', 'Loud hit', 0, 20),
+        whole('b', 'b', 'Soft hit', 0, 20),
+        whole('m', 'm', 'More grains', 0, 20),
       ],
-      relations: [g.relation],
-      steps: { 't = n seconds of e': g.steps },
-      example: { n: 2, e: 8, t: 16 },
-      startWith: ['n', 'e'],
-      representation: { kind: 'skipCount', step: 'e', count: 'n', total: 't' },
+      relations: [more.relation],
+      steps: more.steps,
+      example: { a: 14, b: 5, m: 9 },
+      startWith: ['a', 'b'],
+      pictureLabels: ['m'],
+      representation: {
+        kind: 'bars',
+        bars: [
+          { var: 'a', editable: true },
+          { var: 'b', editable: true },
+        ],
+        min: 0,
+        max: 20,
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const flashes = sum2(
+      'n = a + b',
+      ['a', 'b', 'n'],
+      ['flashes for yes', 'flashes for no', 'flashes sent'],
+    );
+    return {
+      id: 's.1.sound-vibration~signals',
+      title: 'Sending a message with flashes',
+      assumptions: [
+        'Light and sound can carry a message far away.',
+        'Agree on a code: 2 flashes for yes, 3 flashes for no.',
+        'Count all the flashes you sent.',
+      ],
+      variables: [
+        whole('a', 'a', 'Flashes for yes', 0, 10),
+        whole('b', 'b', 'Flashes for no', 0, 10),
+        whole('n', 'n', 'Flashes sent', 0, 10),
+      ],
+      relations: [flashes.relation],
+      steps: { 'n = a + b': flashes.steps },
+      example: { a: 4, b: 3, n: 7 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'n' },
     } satisfies ModuleDef;
   })(),
 
@@ -531,7 +661,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       assumptions: [
         'A shadow forms where an object blocks the light.',
         'When the sun is low, shadows are long. At noon they are short.',
-        'Measure each shadow with cubes.',
+        'Try it: a low flashlight makes a long shadow. A high one makes a short shadow.',
       ],
       variables: [
         { ...whole('m', 'm', 'Morning shadow', 0, 15), unit: 'cubes' },
@@ -547,8 +677,8 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
   })(),
   (() => {
     const all = sumAll(
-      'tested = clear + cloudy + blocks',
-      ['c', 'd', 'b'],
+      'tested = clear + cloudy + blocks + shiny',
+      ['c', 'd', 'b', 's'],
       't',
       'kinds of material',
     );
@@ -558,18 +688,20 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       assumptions: [
         'Shine a flashlight at each material.',
         'Clear things let light through. Cloudy things let some through. Others block it.',
+        'Shiny things like a mirror bounce the light back.',
       ],
       variables: [
         whole('c', 'c', 'Let light through', 0, 10),
         whole('d', 'd', 'Let some through', 0, 10),
         whole('b', 'b', 'Blocked the light', 0, 10),
+        whole('s', 's', 'Bounced the light', 0, 10),
         whole('t', 't', 'Materials tested', 0, 20),
       ],
       relations: [all.relation],
-      steps: { 'tested = clear + cloudy + blocks': all.steps },
-      example: { c: 3, d: 2, b: 5, t: 10 },
-      startWith: ['c', 'd', 'b'],
-      representation: { kind: 'tally', rows: ['c', 'd', 'b'], total: 't' },
+      steps: { 'tested = clear + cloudy + blocks + shiny': all.steps },
+      example: { c: 3, d: 2, b: 4, s: 1, t: 10 },
+      startWith: ['c', 'd', 'b', 's'],
+      representation: { kind: 'tally', rows: ['c', 'd', 'b', 's'], total: 't' },
     } satisfies ModuleDef;
   })(),
 
@@ -579,8 +711,8 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     return {
       id: 's.1.structures-function',
       assumptions: [
-        'Roots hold the plant and take in water. The stem holds up the leaves.',
-        'Roots grow down under the ground. The stem grows up.',
+        'Roots hold the plant and take in water. Long roots reach deep water.',
+        'The stem holds the leaves up to the light. Roots grow down, the stem grows up.',
         'Measure each part with cubes, root tip to leaf tip.',
       ],
       variables: [
@@ -681,6 +813,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     const more = moreThan('m', 's', 'w', 'summer day', 'winter day', ['more', 'fewer']);
     return {
       id: 's.1.sky-patterns',
+      pictureLabels: ['m'],
       assumptions: [
         'The sun rises, crosses the sky and sets. That is a pattern.',
         'Summer days have more hours of daylight than winter days.',
@@ -703,6 +836,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
         ],
         min: 0,
         max: 20,
+        scale: 5,
       },
     } satisfies ModuleDef;
   })(),
@@ -711,13 +845,12 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     title: 'Days until the full moon',
     assumptions: [
       'The moon’s shape changes in a pattern that repeats.',
-      'From a thin new moon to a full moon takes about 15 days.',
+      'After a new moon it looks a little bigger each night. In about 15 days it is full.',
     ],
     variables: [
       whole('p', 'p', 'Days since new moon', 0, 15),
       whole('l', 'l', 'Days to full moon', 0, 15),
     ],
-    pictureLabels: ['p', 'l'],
     relations: [
       {
         id: 'p + l = 15',
@@ -748,9 +881,10 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
 
   // ── Grade 2: properties of materials (2-PS1-1, 2-PS1-2) ──
   (() => {
-    const more = moreThan('m', 'a', 'b', 'paper towel', 'plastic sheet', ['more', 'fewer']);
+    const more = moreThan('m', 'a', 'b', 'paper towel', 'plastic sheet', ['more', 'fewer'], '2');
     return {
       id: 's.2.material-properties',
+      pictureLabels: ['m'],
       assumptions: [
         'Test each material the same way: drop water on it one drop at a time.',
         'Count the drops it soaks up before water runs off.',
@@ -800,6 +934,33 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  (() => {
+    const used = sum2(
+      'n = a + b',
+      ['a', 'b', 'n'],
+      ['blocks in the tower', 'blocks in the wall', 'blocks used'],
+    );
+    return {
+      id: 's.2.material-properties~pieces',
+      title: 'Building with small pieces',
+      assumptions: [
+        'Small pieces can be put together to make a bigger object.',
+        'Take it apart and the same pieces can make something new.',
+        'Count the blocks in each thing you built.',
+      ],
+      variables: [
+        whole('a', 'a', 'Blocks in the tower', 0, 50),
+        whole('b', 'b', 'Blocks in the wall', 0, 50),
+        whole('n', 'n', 'Blocks used', 0, 100),
+      ],
+      relations: [used.relation],
+      steps: { 'n = a + b': used.steps },
+      example: { a: 18, b: 24, n: 42 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'tape', parts: ['a', 'b'], total: 'n' },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Grade 2: heating and cooling (2-PS1-4) ──
   (() => {
     const warms = sum2(
@@ -808,7 +969,8 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       ['start temperature', 'degrees warmer', 'temperature now'],
     );
     return {
-      id: 's.2.heating-cooling',
+      id: 's.2.heating-cooling~warming',
+      title: 'Warming up',
       assumptions: [
         'Heating makes the thermometer number go up. Cooling makes it go down.',
         'Ice melts at 32 °F. Water boils at 212 °F.',
@@ -829,6 +991,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
         difference: 'r',
         min: 0,
         max: 100,
+        marks: [32],
       },
     } satisfies ModuleDef;
   })(),
@@ -861,6 +1024,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
         difference: 'c',
         min: 0,
         max: 100,
+        marks: [32],
       },
     } satisfies ModuleDef;
   })(),
@@ -871,9 +1035,9 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       ['changes that can be undone', 'changes that cannot', 'changes tested'],
     );
     return {
-      id: 's.2.heating-cooling~undo',
-      title: 'Changes you can and cannot undo',
+      id: 's.2.heating-cooling',
       assumptions: [
+        'Heating and cooling change things: ice melts, water freezes, an egg cooks.',
         'Melting ice and freezing water can be undone.',
         'Cooking an egg or burning paper cannot be undone.',
         'Sort each change, then count the two groups.',
@@ -901,7 +1065,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       id: 's.2.plant-growth-investigation',
       assumptions: [
         'Grow two plants the same way, except one gets sunlight and one does not.',
-        'Water both the same. Measure them after two weeks.',
+        'Water both the same. Measure them after two weeks. Or give one water and one none.',
         'The difference shows what sunlight does.',
       ],
       variables: [
@@ -958,7 +1122,8 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       ['morning visits', 'afternoon visits', 'flowers visited'],
     );
     return {
-      id: 's.2.pollination-dispersal',
+      id: 's.2.pollination-dispersal~visits',
+      title: 'A bee’s visits',
       assumptions: [
         'A bee carries pollen from flower to flower. That is pollination.',
         'Each visit can pollinate one flower.',
@@ -979,9 +1144,9 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
   (() => {
     const all = sumAll('seeds = fur + wind + fell', ['a', 'b', 'c'], 's', 'ways the seeds went');
     return {
-      id: 's.2.pollination-dispersal~seeds',
-      title: 'Where the seeds went',
+      id: 's.2.pollination-dispersal',
       assumptions: [
+        'Animals and wind move seeds and pollen. Plants need that to grow in new places.',
         'Seeds travel: some stick to fur, some blow away, some just fall.',
         'Seeds that travel can grow in new places.',
       ],
@@ -1004,6 +1169,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     const more = moreThan('m', 'p', 'd', 'pond', 'desert', ['more', 'fewer']);
     return {
       id: 's.2.habitats',
+      pictureLabels: ['m'],
       assumptions: [
         'A habitat is where living things get what they need.',
         'Different habitats have different kinds of plants and animals.',
@@ -1101,6 +1267,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     ]);
     return {
       id: 's.2.erosion-landforms~wall',
+      pictureLabels: ['d'],
       title: 'Slowing erosion with a wall',
       assumptions: [
         'People build walls and plant grass to slow down erosion.',
@@ -1130,26 +1297,26 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
   })(),
   (() => {
     const all = sumAll(
-      'landforms = mountains + lakes + rivers',
+      'places = mountains + lakes + rivers',
       ['m', 'l', 'r'],
       'n',
-      'kinds of landforms',
+      'kinds of places',
     );
     return {
       id: 's.2.erosion-landforms~map',
-      title: 'Landforms on a map',
+      title: 'Land and water on a map',
       assumptions: [
-        'A map shows the shape of the land: mountains, lakes and rivers.',
+        'A map shows land, like mountains and hills, and water, like lakes and rivers.',
         'Count each kind on the map, then add them.',
       ],
       variables: [
         whole('m', 'm', 'Mountains', 0, 20),
         whole('l', 'l', 'Lakes', 0, 20),
         whole('r', 'r', 'Rivers', 0, 20),
-        whole('n', 'n', 'Landforms', 0, 60),
+        whole('n', 'n', 'Places on the map', 0, 60),
       ],
       relations: [all.relation],
-      steps: { 'landforms = mountains + lakes + rivers': all.steps },
+      steps: { 'places = mountains + lakes + rivers': all.steps },
       example: { m: 5, l: 3, r: 4, n: 12 },
       startWith: ['m', 'l', 'r'],
       representation: { kind: 'tally', rows: ['m', 'l', 'r'], total: 'n' },

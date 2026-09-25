@@ -64,6 +64,7 @@ describe('unit conversions (exact definitions)', () => {
       '°F',
       'days',
       'hours',
+      'thousand years',
       'cups',
       'feet',
       'inches',

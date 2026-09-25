@@ -281,7 +281,7 @@ const SCIENCE: Record<Grade, Row[]> = {
     ["plant-growth-investigation", "Investigating what plants need to grow", LS, ["s.K.living-needs"]],
     ["pollination-dispersal", "Pollination and seed dispersal", LS, ["s.1.structures-function"]],
     ["habitats", "Biodiversity in habitats", LS],
-    ["erosion-landforms", "Landforms and fast vs. slow Earth changes", ESS],
+    ["erosion-landforms", "Landforms and fast or slow Earth changes", ESS],
     ["water-on-earth", "Where water is found on Earth", ESS],
   ],
   "3": [
@@ -290,6 +290,7 @@ const SCIENCE: Record<Grade, Row[]> = {
     ["life-cycles", "Life cycles of organisms", LS, ["s.1.offspring"]],
     ["inherited-traits", "Inherited traits and environmental influence", LS, ["s.1.offspring"]],
     ["adaptation-fossils", "Adaptations, survival and fossils", LS, ["s.2.habitats"]],
+    ["animal-groups", "Animals living in groups", LS, ["s.2.habitats"]],
     ["weather-climate", "Weather data and climate regions", ESS, ["s.K.weather-patterns"]],
   ],
   "4": [

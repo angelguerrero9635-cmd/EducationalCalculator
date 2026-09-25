@@ -56,7 +56,6 @@ const PICTURE_NAMES: Record<string, string> = {
   coinRow: 'coins',
   partnerList: 'number partners',
   thermometers: 'thermometers',
-  waves: 'sound waves',
   rockLayers: 'rock layers',
   pushes: 'pushes on a box',
 };

@@ -12,6 +12,8 @@ export interface StepperItem {
   steps: number[];
   /** Values held fixed while this one changes (so the change flows to the total). */
   pin: string[];
+  /** Where a "?" box starts when − / + is pressed (shown units); default its smallest value. */
+  from?: number;
   /** Wrap around within [min, max] (a clock's hours: 12 + 1 → 1). */
   wrap?: [number, number];
   /** Values the buttons jump over (a shape can't have 1 or 2 sides: 0 → 3). */
@@ -30,7 +32,7 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
     const v = rep.variable(item.var);
     const from = rep.known(item.var)
       ? rep.shown(item.var)
-      : Math.max(0, (v.min ?? 0) / rep.factor(item.var));
+      : (item.from ?? Math.max(0, (v.min ?? 0) / rep.factor(item.var)));
     let next = from + delta;
     while (item.skip?.includes(next)) next += Math.sign(delta);
     if (item.wrap) {

@@ -50,7 +50,6 @@ import { Rounding } from './Rounding';
 import { Scale } from './Scale';
 import { Timeline } from './Timeline';
 import { Thermometers } from './Thermometers';
-import { Waves } from './Waves';
 import { RockLayers } from './RockLayers';
 import { Pushes } from './Pushes';
 
@@ -86,8 +85,6 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Rectilinear spec={spec} calc={calc} />;
     case 'thermometers':
       return <Thermometers spec={spec} calc={calc} />;
-    case 'waves':
-      return <Waves spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':
