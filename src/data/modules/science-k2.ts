@@ -880,10 +880,15 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
 
   // ── Grade 2: what plants need to grow (2-LS2-1) ──
   (() => {
-    const taller = moreThan('d', 's', 'h', 'plant in the sun', 'plant in the shade', [
-      'taller',
-      'shorter',
-    ]);
+    const taller = moreThan(
+      'd',
+      's',
+      'h',
+      'plant in the sun',
+      'plant in the shade',
+      ['taller', 'shorter'],
+      '2',
+    );
     return {
       id: 's.2.plant-growth-investigation',
       assumptions: [
@@ -989,7 +994,7 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
 
   // ── Grade 2: biodiversity in habitats (2-LS4-1) ──
   (() => {
-    const more = moreThan('m', 'p', 'd', 'pond', 'desert', ['more', 'fewer']);
+    const more = moreThan('m', 'p', 'd', 'pond', 'desert', ['more', 'fewer'], '2');
     return {
       id: 's.2.habitats',
       pictureLabels: ['m'],
@@ -1084,10 +1089,15 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
-    const saved = moreThan('d', 'a', 'b', 'bank with no wall', 'bank with a wall', [
-      'more',
-      'less',
-    ]);
+    const saved = moreThan(
+      'd',
+      'a',
+      'b',
+      'bank with no wall',
+      'bank with a wall',
+      ['more', 'less'],
+      '2',
+    );
     return {
       id: 's.2.erosion-landforms~wall',
       pictureLabels: ['d'],
