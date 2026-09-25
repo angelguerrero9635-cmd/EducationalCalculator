@@ -4,7 +4,7 @@ import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
-import { isEarlyGrade } from '@/data/modules';
+import { isEarlyGrade, isElementary } from '@/data/modules';
 import { agree } from '@/data/modules/buildSteps';
 import { formatNumber, parseCents, parseNumber, renderTemplate } from '@/engine/format';
 import type { Values, VariableDef } from '@/engine/types';
@@ -168,6 +168,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
   const { module, values, units } = calc;
   const options = systemOptions(calc);
   const early = isEarlyGrade(module.id);
+  const elementary = isElementary(module.id);
   // Formula lines use the chosen units when the formulas hold in them; otherwise the formula's
   // own units (the step-by-step shows the conversions).
   const working: Values = units.coherent
@@ -245,15 +246,21 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
               working,
             ),
           );
-          // K–2: just the number sentence (what students write), no letters.
+          // K–2: just the number sentence (what students write), no letters. Grades 3–5: the
+          // number sentence first, the letters under it as labels.
+          const [first, second] = early
+            ? [numbers, null]
+            : elementary
+              ? [numbers, letters]
+              : [letters, numbers];
           return (
             <View
               key={r.id}
               style={[styles.formula, { backgroundColor: c.surface, borderColor: c.border }]}
             >
-              <Text style={[styles.symbolic, { color: c.text }]}>{early ? numbers : letters}</Text>
-              {early ? null : (
-                <Text style={[styles.substituted, { color: c.textMuted }]}>{numbers}</Text>
+              <Text style={[styles.symbolic, { color: c.text }]}>{first}</Text>
+              {second === null ? null : (
+                <Text style={[styles.substituted, { color: c.textMuted }]}>{second}</Text>
               )}
             </View>
           );

@@ -3,7 +3,7 @@
  * still comes from taxonomy.ts. Written and reviewed against docs/MODULE_GUIDE.md.
  */
 import type { ModuleDef } from './types';
-import { countList } from './work';
+import { countList, divideWork, timesWork } from './work';
 
 const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
 const whole = (id: string, symbol: string, name: string, max: number) => ({
@@ -175,7 +175,7 @@ export const K12_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'A = l × w',
-        display: '{A} = {l} × {w}',
+        display: '{l} × {w} = {A}',
         vars: ['A', 'l', 'w'],
         residual: (v) => v.A! - v.l! * v.w!,
         solve: { A: (v) => v.l! * v.w!, l: (v) => div(v.A!, v.w!), w: (v) => div(v.A!, v.l!) },
@@ -183,12 +183,21 @@ export const K12_MODULES: ModuleDef[] = [
     ],
     steps: {
       'A = l × w': {
-        A: { expr: '{l} × {w}', how: 'There are w rows of l squares, so count l × w squares.' },
+        A: {
+          expr: '{l} × {w}',
+          how: 'The width is the number of rows; the length is the squares in each row. Multiply.',
+          work: (v) => timesWork(v.w!, v.l!),
+        },
         l: {
           expr: '{A} ÷ {w}',
-          how: 'There are w rows. Share the squares equally among the rows.',
+          how: 'Share the squares equally among the rows: that is the squares in each row.',
+          work: (v) => divideWork(v.A!, v.w!),
         },
-        w: { expr: '{A} ÷ {l}', how: 'Each row has l squares. Divide to find how many rows.' },
+        w: {
+          expr: '{A} ÷ {l}',
+          how: 'Each row has as many squares as the length. Divide to find how many rows.',
+          work: (v) => divideWork(v.A!, v.l!, 'second'),
+        },
       },
     },
     example: { l: 4, w: 3, A: 12 },

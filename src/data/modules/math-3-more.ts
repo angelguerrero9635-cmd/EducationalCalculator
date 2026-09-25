@@ -677,7 +677,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       variables: [
         whole('r', 'r', 'Rows', 0, 10),
         whole('c', 'c', 'Squares in each row', 0, 10),
-        whole('A', 'A', 'Area (square units)', 0, 100),
+        { ...whole('A', 'A', 'Area', 0, 100), unit: 'square units' },
       ],
       relations: [tiles.relation],
       steps: { 'A = r × c': tiles.steps },

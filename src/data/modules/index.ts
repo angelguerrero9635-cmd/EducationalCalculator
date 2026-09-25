@@ -31,6 +31,9 @@ export const getModule = (id: string): ModuleDef | undefined => BY_ID.get(id);
  */
 export const isEarlyGrade = (moduleId: string) => /^[ms]\.(K|1|2)\./.test(moduleId);
 
+/** Grades 3–5: letters appear only as labels next to names; number sentences come first. */
+export const isElementary = (moduleId: string) => /^[ms]\.(3|4|5)\./.test(moduleId);
+
 /** The skill or topic a module belongs to (`m.2.money~making-change` → `m.2.money`). */
 export const moduleOwner = (moduleId: string) => moduleId.split('~')[0]!;
 

@@ -320,15 +320,16 @@ it('builds readable steps (area example)', () => {
     {
       id: 'w',
       title: 'Find width (w)',
-      formula: 'A = l × w',
-      sentence: '12 = 4 × ?',
-      how: 'Each row has l squares. Divide to find how many rows.',
+      formula: 'l × w = A',
+      sentence: '4 × ? = 12',
+      how: 'Each row has as many squares as the length. Divide to find how many rows.',
       rearranged: 'w = A ÷ l',
       substituted: 'w = 12 ÷ 4',
+      work: ['Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
       result: 'w = 3 cm',
     },
   ]);
-  expect(w.check).toEqual([{ formula: '12 = 4 × 3', ok: true }]);
+  expect(w.check).toEqual([{ formula: '4 × 3 = 12', ok: true }]);
 });
 
 it('lists what is still missing', () => {

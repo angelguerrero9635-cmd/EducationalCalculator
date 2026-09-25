@@ -2,7 +2,7 @@ import { useState, useRef, type ReactNode } from 'react';
 import { Platform, View, type GestureResponderEvent, type ViewStyle } from 'react-native';
 import { Text as SvgText, type TextProps as SvgTextProps } from 'react-native-svg';
 
-import { isEarlyGrade } from '@/data/modules';
+import { isEarlyGrade, isElementary } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { chart, font, usePalette } from '@/theme';
@@ -165,6 +165,8 @@ export function useRep(calc: Calculator) {
       : module.example[id]!;
   };
   const early = isEarlyGrade(module.id);
+  // K–5 captions name values in words ("Rows: 3"), never "r = 3".
+  const words = early || isElementary(module.id);
   const valueText = (id: string, withUnit: boolean) => {
     const v = byId.get(id)!;
     const x = values[id];
@@ -188,6 +190,10 @@ export function useRep(calc: Calculator) {
     factor: (id: string) => units.factor(id),
     /** Kindergarten–Grade 2: pictures use names and numbers, never letters. */
     early,
+    /** Kindergarten–Grade 5: captions say names and numbers, not "letter = number". */
+    words,
+    /** Grades 3–5: letters appear only as labels, e.g. "Rows (r): 3". */
+    elementary: !early && words,
     /** A value as shown, with its unit: "12 cm", "$5", "35¢", or "?". */
     value: (id: string, withUnit = true) => valueText(id, withUnit),
     /**
@@ -198,13 +204,13 @@ export function useRep(calc: Calculator) {
       const v = byId.get(id)!;
       return early ? v.name : `${v.name} (${v.symbol})`;
     },
-    /** "B = 11 cm" beside a named part of a picture. K–2: just the value, "11 cm". */
+    /** "B = 11 cm" beside a named part of a picture. K–5: just the value, "11 cm". */
     label: (id: string, withUnit = true) =>
-      early ? valueText(id, withUnit) : `${byId.get(id)!.symbol} = ${valueText(id, withUnit)}`,
-    /** A label that stands alone: "d = 4 cm". K–2: "How much longer: 4 cm". */
+      words ? valueText(id, withUnit) : `${byId.get(id)!.symbol} = ${valueText(id, withUnit)}`,
+    /** A label that stands alone: "d = 4 cm". K–5: "How much longer: 4 cm". */
     named: (id: string, withUnit = true) => {
       const v = byId.get(id)!;
-      return early
+      return words
         ? `${v.name}: ${valueText(id, withUnit)}`
         : `${v.symbol} = ${valueText(id, withUnit)}`;
     },

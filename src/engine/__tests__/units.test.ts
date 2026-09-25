@@ -60,6 +60,7 @@ describe('unit conversions (exact definitions)', () => {
       'per 1,000',
       'years',
       'cubes',
+      'square units',
       'cups',
       'feet',
       'inches',
@@ -246,7 +247,7 @@ describe('step-by-step with units', () => {
     expect(w.convertIn).toEqual([]);
     expect(w.given.map((q) => q.value)).toEqual(['4 in', '3 in']);
     expect(w.steps[0]).toMatchObject({ substituted: 'A = 4 × 3', result: 'A = 12 in²' });
-    expect(w.check).toEqual([{ formula: '12 = 4 × 3', ok: true }]);
+    expect(w.check).toEqual([{ formula: '4 × 3 = 12', ok: true }]);
   });
 
   it('converts to formula units first, then converts the answers back', () => {

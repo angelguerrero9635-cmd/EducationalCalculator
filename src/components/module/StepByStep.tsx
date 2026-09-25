@@ -3,7 +3,7 @@ import { Text } from '@/components/Text';
 
 import { buildSteps } from '@/data/modules/buildSteps';
 import { font, radius, space, usePalette } from '@/theme';
-import { isEarlyGrade } from '@/data/modules';
+import { isEarlyGrade, isElementary } from '@/data/modules';
 
 import type { Calculator } from './useCalculator';
 
@@ -15,6 +15,8 @@ export function StepByStep({ calc }: { calc: Calculator }) {
   const c = usePalette();
   const w = buildSteps(calc.module, calc.result, calc.units);
   const early = isEarlyGrade(calc.module.id);
+  // Grades 3–5: names with the letter in brackets, and number sentences rather than letter rules.
+  const elementary = isElementary(calc.module.id);
   const sentence = early ? 'number sentence' : 'formula';
   // Conversion steps (when needed) come first and last, numbered with the others.
   const offset = w.convertIn.length ? 1 : 0;
@@ -23,7 +25,9 @@ export function StepByStep({ calc }: { calc: Calculator }) {
   const list = (qs: typeof w.given) =>
     (early
       ? qs.map((q) => `${q.name}: ${q.value}`).join('\n')
-      : qs.map((q) => `${q.symbol} = ${q.value}`).join(',  ')) || 'nothing yet';
+      : elementary
+        ? qs.map((q) => `${q.name} (${q.symbol}): ${q.value}`).join('\n')
+        : qs.map((q) => `${q.symbol} = ${q.value}`).join(',  ')) || 'nothing yet';
   const byId = new Map(calc.module.variables.map((v) => [v.id, v]));
   /** K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter). */
   const plain = (line: string, id: string, keepName: boolean) => {
@@ -82,6 +86,12 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           {early ? (
             // K–2: the number sentence with "?" for the number to find ("3 + ? = 7").
             <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.sentence}</Text>
+          ) : elementary ? (
+            // Grades 3–5: the number sentence with "?", then the same rule with letters.
+            <>
+              <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.sentence}</Text>
+              <Text style={[styles.body, { color: c.textMuted }]}>{s.formula}</Text>
+            </>
           ) : (
             <Text style={[styles.body, { color: c.text }]}>
               Use <Text style={styles.bold}>{s.formula}</Text>
@@ -89,8 +99,8 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           )}
           <Text style={[styles.body, { color: c.textMuted }]}>{s.how}</Text>
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
-            {/* K–2 skips the letter rearrangement ("a = c − b"): the numbers carry the idea. */}
-            {s.rearranged && !early ? (
+            {/* K–5 skip the letter rearrangement ("a = c − b"): the numbers carry the idea. */}
+            {s.rearranged && !early && !elementary ? (
               <Text style={[styles.math, { color: c.text }]}>{s.rearranged}</Text>
             ) : null}
             {/* K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped

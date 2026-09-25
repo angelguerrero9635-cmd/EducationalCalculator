@@ -66,7 +66,7 @@ export function Steppers({ calc, items }: { calc: Calculator; items: StepperItem
         // The value with its unit ("250 g"), as everywhere else on the page.
         const label = (
           <Text style={[styles.label, { color: c.text }]} numberOfLines={1}>
-            {`${item.marker ? `${item.marker} ` : ''}${v.name}: ${rep.early ? '' : `${v.symbol} = `}${rep.value(item.var)}`}
+            {`${item.marker ? `${item.marker} ` : ''}${v.name}${rep.elementary ? ` (${v.symbol})` : ''}: ${rep.words ? '' : `${v.symbol} = `}${rep.value(item.var)}`}
           </Text>
         );
         const minus = (

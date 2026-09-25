@@ -60,16 +60,33 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
       ? `${rows} × ${cols} = ${rows} × ${firstCols} + ${rows} × ${cols - firstCols} = ${rows * firstCols} + ${rows * (cols - firstCols)} = ${rows * cols}`
       : spec.turned
         ? `${rows} rows of ${cols} = ${cols} rows of ${rows}: ${rows} × ${cols} = ${cols} × ${rows} = ${rows * cols}`
-        : `${sym(spec.rows)} = ${rows} rows of ${sym(spec.columns)} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`;
+        : rep.words
+          ? `${rows} rows of ${cols}: ${rows} × ${cols} = ${rep.value(spec.total, false)}`
+          : `${sym(spec.rows)} = ${rows} rows of ${sym(spec.columns)} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`;
+
+  /**
+   * Cell size from the width; the height fits the rows drawn (at least 6, and one spare row to
+   * drag into), so a small array doesn't sit in a big empty square. The two split labels go
+   * on one line unless they would touch.
+   */
+  const layout = (w: number) => {
+    const room = spec.turned ? (w - 60) / 2 : w - 40;
+    const cell = Math.min(room / spec.max, 40);
+    const shownRows = Math.min(spec.max, Math.max(6, rows + 1, spec.turned ? cols + 1 : 0));
+    const labelWidth = (text: string) => text.length * chart.small * 0.6;
+    const left = `${rows} × ${firstCols} = ${rows * firstCols}`;
+    const right = `${rows} × ${cols - firstCols} = ${rows * (cols - firstCols)}`;
+    const gap = (cols * cell) / 2 - (labelWidth(left) + labelWidth(right)) / 2;
+    const stagger = !!split && gap < 8;
+    const below = split ? (stagger ? 48 : 30) : 0;
+    return { cell, below, stagger, height: 20 + shownRows * cell + below };
+  };
 
   return (
     <View>
-      <Canvas aspect={spec.turned ? 0.47 : split ? 0.9 : 0.8}>
+      <Canvas aspect={(w) => layout(w).height / w}>
         {({ w, h }) => {
-          // Turned: the array and its quarter turn side by side.
-          const room = spec.turned ? (w - 60) / 2 : w - 40;
-          const below = split ? 44 : 0;
-          const cell = Math.min(room / spec.max, (h - 20 - below) / spec.max);
+          const { cell, stagger } = layout(w);
           const x0 = spec.turned ? 20 : (w - cell * spec.max) / 2;
           const y0 = 10;
           const x1 = x0 + cell * spec.max + 20;
@@ -110,7 +127,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {cols > firstCols ? (
                       <ChartText
                         x={divider + ((cols - firstCols) * cell) / 2}
-                        y={y0 + rows * cell + 40}
+                        y={y0 + rows * cell + (stagger ? 40 : 22)}
                         fontSize={chart.small}
                         textAnchor="middle"
                       >
