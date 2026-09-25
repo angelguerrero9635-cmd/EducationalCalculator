@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Platform, StyleSheet, TextInput, View } from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
@@ -81,7 +88,15 @@ function UnitPicker({ variable, calc }: { variable: VariableDef; calc: Calculato
 }
 
 /** One compact card: the value's name (with its letter from Grade 3), a box, and its status. */
-function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
+function VariableInput({
+  variable,
+  calc,
+  width,
+}: {
+  variable: VariableDef;
+  calc: Calculator;
+  width: number;
+}) {
   const c = usePalette();
   const [draft, setDraft] = useState<string | null>(null);
   const [typo, setTypo] = useState(false);
@@ -112,9 +127,9 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   };
 
   return (
-    <View style={[styles.card, { backgroundColor: c.surface, borderColor: c.border }]}>
+    <View style={[styles.card, { width, backgroundColor: c.surface, borderColor: c.border }]}>
       <View style={styles.cardHead}>
-        <Text style={[styles.name, { color: c.text }]} numberOfLines={2}>
+        <Text style={[styles.name, { color: c.text }]} numberOfLines={1}>
           {variable.name}
         </Text>
         {/* K–2 names each value in words; letters start later. */}
@@ -177,6 +192,11 @@ export function InputsSection({ calc }: { calc: Calculator }) {
   const { module, units } = calc;
   const options = systemOptions(calc);
   const early = isEarlyGrade(module.id);
+  // Every value on one row: the cards share the width, and a card never gets narrower than
+  // a name plus a 4-digit number; past that the row scrolls sideways.
+  const { width: screen } = useWindowDimensions();
+  const n = Math.max(1, module.variables.length);
+  const cardWidth = Math.max(112, Math.floor((screen - 2 * space.lg - (n - 1) * space.sm) / n));
 
   const onSystem = (s: SystemOption) => {
     // Mixed starts from the units currently shown. Metric/US keep any per-value choices that
@@ -220,11 +240,19 @@ export function InputsSection({ calc }: { calc: Calculator }) {
           />
         ) : null}
       </View>
-      <View style={styles.grid}>
+      {/* One row: the cards share the width, and scroll sideways when many won't fit. */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        testID="inputs-row"
+        style={styles.rowScroll}
+        contentContainerStyle={styles.row}
+      >
         {module.variables.map((v) => (
-          <VariableInput key={v.id} variable={v} calc={calc} />
+          <VariableInput key={v.id} variable={v} calc={calc} width={cardWidth} />
         ))}
-      </View>
+      </ScrollView>
       <View style={styles.buttons}>
         <Button label="Clear all" variant="secondary" onPress={calc.clear} />
         <Button label="Show example" variant="secondary" onPress={calc.showExample} />
@@ -237,11 +265,9 @@ const styles = StyleSheet.create({
   container: { gap: space.sm, paddingHorizontal: space.lg, paddingTop: space.md },
   topRow: { flexDirection: 'row', alignItems: 'center', gap: space.md },
   hint: { flex: 1, fontSize: font.caption + 1 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  // Two cards per row on a phone, more on a wide screen.
+  rowScroll: { marginHorizontal: -space.lg },
+  row: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.lg },
   card: {
-    flexGrow: 1,
-    flexBasis: 150,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: radius.md,
     padding: space.sm,
@@ -254,7 +280,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontFamily: font.family,
-    minWidth: 64,
+    minWidth: 56,
     minHeight: 40,
     borderWidth: 1,
     borderRadius: radius.sm,
