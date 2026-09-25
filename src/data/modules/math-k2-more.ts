@@ -47,7 +47,7 @@ const billLines = (t: number, f: number) => [
 const capacity = difference('d', 'a', 'b', {
   diff: 'Match the cups one to one. Count the extra cups.',
   countOn: true,
-  display: '{d} = how many more cups: {a} or {b}',
+  display: 'Match {a} and {b} cups: {d} extra cups',
   first: [
     'Jar A holds more. Add the extra cups to jar B.',
     'Jar A holds less. Take the extra cups away from jar B.',
@@ -59,6 +59,7 @@ const capacity = difference('d', 'a', 'b', {
 });
 
 const equalParts = difference('D', 'x', 'y', {
+  display: 'Parts {x} and {y} are {D} apart',
   diff: 'Take the smaller part away from the bigger part. 0 means the parts are equal.',
   first: [
     'The first part is bigger. Add the difference to the second part.',
@@ -183,7 +184,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'a + b = w',
-        display: '{a} + {b} = {w}',
+        display: '{w} = {a} + {b}',
         vars: ['a', 'b', 'w'],
         residual: (v) => v.a! + v.b! - v.w!,
         solve: { w: (v) => v.a! + v.b!, a: (v) => v.w! - v.b!, b: (v) => v.w! - v.a! },
@@ -258,14 +259,14 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'f = p − 1',
-        display: '{f} = {p} − 1',
+        display: 'Place {p}: {f} in front',
         vars: ['f', 'p'],
         residual: (v) => v.f! - v.p! + 1,
         solve: { f: (v) => v.p! - 1, p: (v) => v.f! + 1 },
       },
       {
         id: 'n = f + 1 + b',
-        display: '{n} = {f} + 1 + {b}',
+        display: '{f} in front, 1 picked, {b} behind: {n} in line',
         vars: ['n', 'f', 'b'],
         residual: (v) => v.n! - v.f! - 1 - v.b!,
         solve: {
@@ -582,7 +583,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       {
         id: 'n = g groups of k',
         check: (v) => repeated(v.k!, v.g!),
-        display: '{n} = {g} groups of {k}',
+        display: '{g} groups of {k} = {n}',
         vars: ['n', 'g', 'k'],
         residual: (v) => v.n! - v.g! * v.k!,
         solve: { n: (v) => v.g! * v.k!, g: (v) => v.n! / v.k!, k: (v) => v.n! / v.g! },
@@ -731,8 +732,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
         id: 'D = 10t + 5f + o',
         check: (v) => `${10 * v.t!} + ${5 * v.f!} + ${v.o} = ${v.D}`,
         // Non-breaking spaces keep each “$10 bills (t)” together when the formula wraps.
-        display:
-          '{D} = $10\u00a0bills\u00a0({t}) + $5\u00a0bills\u00a0({f}) + $1\u00a0bills\u00a0({o})',
+        display: '{t} $10\u00a0bills + {f} $5\u00a0bills + {o} $1\u00a0bills = ${D}',
         vars: ['D', 't', 'f', 'o'],
         residual: (v) => v.D! - 10 * v.t! - 5 * v.f! - v.o!,
         solve: {
@@ -898,21 +898,21 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'F = s + 2',
-        display: '{F} = {s} + 2',
+        display: 'Faces: {s} + 2 = {F}',
         vars: ['F', 's'],
         residual: (v) => v.F! - v.s! - 2,
         solve: { F: (v) => v.s! + 2, s: (v) => v.F! - 2 },
       },
       {
         id: 'V = s + s',
-        display: '{V} = {s} + {s}',
+        display: 'Corners: {s} + {s} = {V}',
         vars: ['V', 's'],
         residual: (v) => v.V! - 2 * v.s!,
         solve: { V: (v) => 2 * v.s!, s: (v) => v.V! / 2 },
       },
       {
         id: 'E = s + s + s',
-        display: '{E} = {s} + {s} + {s}',
+        display: 'Edges: {s} + {s} + {s} = {E}',
         vars: ['E', 's'],
         residual: (v) => v.E! - 3 * v.s!,
         solve: { E: (v) => 3 * v.s!, s: (v) => v.E! / 3 },
@@ -979,7 +979,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       relations: [
         {
           id: 'D = difference of the sides',
-          display: '{D} = difference of ({a} − {b}) and ({c} + {d})',
+          display: 'Is {a} − {b} = {c} + {d}? The sides are {D} apart.',
           vars: ['D', 'a', 'b', 'c', 'd'],
           // The left side can't be below 0 (no negative numbers before Grade 6).
           residual: (v: Values) => (v.a! < v.b! ? v.b! - v.a! + 1 : v.D! - Math.abs(L(v) - R(v))),
@@ -1073,14 +1073,14 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'u = n − 1',
-        display: '{u} = {n} − 1',
+        display: '{n} − 1 = {u}',
         vars: ['u', 'n'],
         residual: (v) => v.u! - v.n! + 1,
         solve: { u: (v) => v.n! - 1, n: (v) => v.u! + 1 },
       },
       {
         id: 'v = n − 10',
-        display: '{v} = {n} − 10',
+        display: '{n} − 10 = {v}',
         vars: ['v', 'n'],
         residual: (v) => v.v! - v.n! + 10,
         solve: { v: (v) => v.n! - 10, n: (v) => v.v! + 10 },
@@ -1402,7 +1402,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'S = F + C',
-        display: '{S} = {F} + {C}',
+        display: '{F} flat + {C} curved = {S} in all',
         vars: ['S', 'F', 'C'],
         residual: (v) => v.S! - v.F! - v.C!,
         solve: { S: (v) => v.F! + v.C!, F: (v) => v.S! - v.C!, C: (v) => v.S! - v.F! },
@@ -1438,7 +1438,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'w = n + 1',
-        display: '{w} = {n} + 1',
+        display: '{n} can be split {w} ways',
         vars: ['w', 'n'],
         residual: (v) => v.w! - v.n! - 1,
         solve: { w: (v) => v.n! + 1, n: (v) => v.w! - 1 },
@@ -1556,7 +1556,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'm = n + 1',
-        display: '{m} = {n} + 1',
+        display: '1 more than {n} is {m}',
         vars: ['m', 'n'],
         residual: (v) => v.m! - v.n! - 1,
         solve: { m: (v) => v.n! + 1, n: (v) => v.m! - 1 },
@@ -1653,7 +1653,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       {
         id: 'T = k coins of v',
         check: (v) => (v.k! > 0 ? repeated(v.v!, v.k!).replace(/(\d+)/g, '$1¢') : '0¢ = 0¢'),
-        display: '{T} = {k} coins of {v}',
+        display: '{k} coins of {v}¢ = {T}¢',
         vars: ['T', 'k', 'v'],
         // Only real coin values: 1¢, 5¢, 10¢ or 25¢.
         residual: (v) => ([1, 5, 10, 25].includes(v.v!) ? v.T! - v.k! * v.v! : 1),
@@ -1679,7 +1679,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
             v.k! > 0 ? [`Count by ${v.v}s to ${v.T}: ${countList(0, v.v!, v.k!)} → ${v.k}`] : [],
         },
         v: {
-          expr: '{T} shared by {k} coins',
+          expr: 'the coin that makes {T}¢ with {k} coins',
           how: 'Try each coin value: which one counts to the total?',
           work: (v: Values) => [`Try ${v.v}¢: ${countList(0, v.v!, v.k!)} ✓`],
         },
@@ -1708,7 +1708,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       {
         id: 'n = a − k jumps of s',
         check: (v) => `${v.a} − ${v.k! * v.s!} = ${v.n}`,
-        display: '{n} = {a} − {k} jumps of {s}',
+        display: 'Start at {a}. {k} jumps back by {s} land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! + v.k! * v.s!,
         solve: {

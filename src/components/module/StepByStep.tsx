@@ -7,6 +7,9 @@ import { isEarlyGrade } from '@/data/modules';
 
 import type { Calculator } from './useCalculator';
 
+/** A line with brackets or words after "x =": the work lines say it better for K–2. */
+const wordy = (line: string) => /[(]|[a-z]{3,}/i.test(line.replace(/^\S+ = /, ''));
+
 /** Live walkthrough of how the current values were found from the entered ones. */
 export function StepByStep({ calc }: { calc: Calculator }) {
   const c = usePalette();
@@ -16,8 +19,11 @@ export function StepByStep({ calc }: { calc: Calculator }) {
   // Conversion steps (when needed) come first and last, numbered with the others.
   const offset = w.convertIn.length ? 1 : 0;
   const card = [styles.card, { backgroundColor: c.surface, borderColor: c.border }];
+  // K–2 students read names, not bare letters: "First group (a) = 3", one per line.
   const list = (qs: typeof w.given) =>
-    qs.map((q) => `${q.symbol} = ${q.value}`).join(',  ') || 'nothing yet';
+    (early
+      ? qs.map((q) => `${q.name} (${q.symbol}) = ${q.value}`).join('\n')
+      : qs.map((q) => `${q.symbol} = ${q.value}`).join(',  ')) || 'nothing yet';
 
   return (
     <View style={styles.container} testID="step-by-step">
@@ -61,15 +67,23 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           <Text
             style={[styles.stepTitle, { color: c.text }]}
           >{`Step ${i + 1 + offset} · ${s.title}`}</Text>
-          <Text style={[styles.body, { color: c.text }]}>
-            Use <Text style={styles.bold}>{s.formula}</Text>
-          </Text>
+          {early ? (
+            // K–2: the number sentence with "?" for the number to find ("3 + ? = 7").
+            <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.sentence}</Text>
+          ) : (
+            <Text style={[styles.body, { color: c.text }]}>
+              Use <Text style={styles.bold}>{s.formula}</Text>
+            </Text>
+          )}
           <Text style={[styles.body, { color: c.textMuted }]}>{s.how}</Text>
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
-            {s.rearranged ? (
+            {/* K–2 skips the letter rearrangement ("a = c − b"): the numbers carry the idea. */}
+            {s.rearranged && !early ? (
               <Text style={[styles.math, { color: c.text }]}>{s.rearranged}</Text>
             ) : null}
-            {s.substituted ? (
+            {/* K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped
+                when the work lines show the arithmetic. */}
+            {s.substituted && !(early && s.work?.length && wordy(s.substituted)) ? (
               <Text style={[styles.math, { color: c.text }]}>{s.substituted}</Text>
             ) : null}
             {s.work?.map((line, k) => (
@@ -110,7 +124,9 @@ export function StepByStep({ calc }: { calc: Calculator }) {
         <View style={card}>
           <Text style={[styles.stepTitle, { color: c.text }]}>Next</Text>
           <Text style={[styles.body, { color: c.textMuted }]}>
-            {`Type one more number (${w.missing.map((q) => q.symbol).join(', ')}) to keep going.`}
+            {early
+              ? `Type one more number: ${w.missing.map((q) => q.name[0]!.toLowerCase() + q.name.slice(1)).join(', ')}.`
+              : `Type one more number (${w.missing.map((q) => q.symbol).join(', ')}) to keep going.`}
           </Text>
         </View>
       ) : null}

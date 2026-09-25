@@ -19,6 +19,8 @@ export interface Step {
   title: string;
   /** The relation used, symbolically: "A = l × w" */
   formula: string;
+  /** The relation with the numbers known at this step and "?" for the one found: "3 + ? = 7". */
+  sentence: string;
   how: string;
   /** "w = A ÷ l" (omitted when solved numerically) */
   rearranged?: string;
@@ -82,13 +84,27 @@ const COUNT_WORDS: Record<string, string> = {
   fives: 'five',
   triangles: 'triangle',
   rounds: 'round',
+  dollars: 'dollar',
+  quarters: 'quarter',
+  dimes: 'dime',
+  nickels: 'nickel',
+  pennies: 'penny',
+  trapezoids: 'trapezoid',
+  rhombuses: 'rhombus',
+  coins: 'coin',
+  'half hours': 'half hour',
 };
 /** "1 tens" → "1 ten" in rendered text (templates can't tell the count in advance). */
 export const agree = (text: string) =>
-  text.replace(
-    /(^|[^\d$.,])1 (tens|ones|hundreds|rows|groups|clips|jumps|feet|inches|meters|centimeters|cubes|cups|bills|fives|triangles|rounds)\b/g,
-    (_, pre: string, word: string) => `${pre}1 ${COUNT_WORDS[word]}`,
-  );
+  text
+    .replace(
+      new RegExp(`(^|[^\\d$.,])1 (${Object.keys(COUNT_WORDS).join('|')})\\b`, 'g'),
+      (_, pre: string, word: string) => `${pre}1 ${COUNT_WORDS[word]}`,
+    )
+    // "1 $10 bills" → "1 $10 bill"
+    .replace(/(^|[^\d$.,])1 (\$\d+[\s\u00a0])bills\b/g, '$11 $2bill');
+
+const givenIdsOf = (result: SolveResult) => result.given.map((g) => g.id);
 
 export function buildSteps(
   module: ModuleDef,
@@ -142,7 +158,11 @@ export function buildSteps(
     };
   };
 
+  // Values known before each step: the entered ones, then each answer as it is found.
+  const known: Values = Object.fromEntries(givenIdsOf(result).map((id) => [id, working[id]!]));
   const steps = result.trace.map((t): Step => {
+    const knownHere = { ...known };
+    known[t.id] = working[t.id]!;
     const v = byId.get(t.id)!;
     const relation = relations.get(t.relation)!;
     const text = module.steps[t.relation]?.[t.id];
@@ -154,6 +174,7 @@ export function buildSteps(
         ? `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)}: ${v.symbol}`
         : `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)} (${v.symbol})`,
       formula: renderTemplate(relation.display, vars),
+      sentence: agree(renderTemplate(relation.display, workVars, knownHere)),
       result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
     if (!text || !t.exact) {

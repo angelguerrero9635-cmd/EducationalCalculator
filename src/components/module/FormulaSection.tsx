@@ -5,6 +5,7 @@ import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
 import { isEarlyGrade } from '@/data/modules';
+import { agree } from '@/data/modules/buildSteps';
 import { formatNumber, parseCents, parseNumber, renderTemplate } from '@/engine/format';
 import type { Values, VariableDef } from '@/engine/types';
 import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
@@ -232,25 +233,29 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
         <Button label="Show example" variant="secondary" onPress={calc.showExample} />
       </View>
       <View style={styles.formulas}>
-        {module.relations.map((r) => (
-          <View
-            key={r.id}
-            style={[styles.formula, { backgroundColor: c.surface, borderColor: c.border }]}
-          >
-            <Text style={[styles.symbolic, { color: c.text }]}>
-              {renderTemplate(r.display, module.variables)}
-            </Text>
-            <Text style={[styles.substituted, { color: c.textMuted }]}>
-              {renderTemplate(
-                r.display,
-                units.coherent
-                  ? module.variables
-                  : module.variables.map((v) => ({ ...v, integer: false })),
-                working,
-              )}
-            </Text>
-          </View>
-        ))}
+        {module.relations.map((r) => {
+          const letters = renderTemplate(r.display, module.variables);
+          const numbers = agree(
+            renderTemplate(
+              r.display,
+              units.coherent
+                ? module.variables
+                : module.variables.map((v) => ({ ...v, integer: false })),
+              working,
+            ),
+          );
+          // K–2: the number sentence first (what students write), the letters under it as labels.
+          const [first, second] = early ? [numbers, letters] : [letters, numbers];
+          return (
+            <View
+              key={r.id}
+              style={[styles.formula, { backgroundColor: c.surface, borderColor: c.border }]}
+            >
+              <Text style={[styles.symbolic, { color: c.text }]}>{first}</Text>
+              <Text style={[styles.substituted, { color: c.textMuted }]}>{second}</Text>
+            </View>
+          );
+        })}
       </View>
       {!units.coherent && formulaUnits ? (
         <Text style={[styles.hint, { color: c.textMuted }]}>

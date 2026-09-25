@@ -262,6 +262,20 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('steps for %
   });
 });
 
+it('writes the number sentence with ? for the number found (K–2 steps)', () => {
+  const m = MODULES.find((x) => x.id === 'm.K.add-sub-10')!;
+  const w = buildSteps(
+    m,
+    solve(m, [
+      { id: 'b', value: 4 },
+      { id: 'c', value: 7 },
+    ]),
+  );
+  expect(w.steps[0]!.sentence).toMatch(/\?/);
+  expect(w.steps[0]!.sentence).toContain('4');
+  expect(w.steps[0]!.sentence).toContain('7');
+});
+
 it('builds readable steps (area example)', () => {
   const m = MODULES.find((x) => x.id === 'm.3.area')!;
   const w = buildSteps(
@@ -277,6 +291,7 @@ it('builds readable steps (area example)', () => {
       id: 'w',
       title: 'Find width (w)',
       formula: 'A = l × w',
+      sentence: '12 = 4 × ?',
       how: 'Each row has l squares. Divide to find how many rows.',
       rearranged: 'w = A ÷ l',
       substituted: 'w = 12 ÷ 4',

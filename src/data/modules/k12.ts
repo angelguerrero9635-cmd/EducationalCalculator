@@ -96,7 +96,7 @@ export const K12_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = c + s + t',
-        display: '{n} = {c} + {s} + {t}',
+        display: '{c} circles, {s} squares, {t} triangles: {n} in all',
         vars: ['n', 'c', 's', 't'],
         residual: (v) => v.n! - v.c! - v.s! - v.t!,
         solve: {

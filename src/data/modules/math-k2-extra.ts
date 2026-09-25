@@ -64,7 +64,7 @@ function compareProblem(id: string, max: number, example: [number, number]) {
       'd = B − S': {
         d: {
           expr: '{B} − {S}',
-          how: 'Line up the two bars. Count up from the smaller amount to the bigger one.',
+          how: 'Bigger − smaller = how many more. Count up from the smaller bar to the bigger one.',
           work: (v: Values) => countUp(v.S!, v.B!),
         },
         B: {
@@ -382,7 +382,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'angles = sides',
-        display: '{a} angles = {s} sides',
+        display: '{s} sides and {a} angles',
         vars: ['a', 's'],
         residual: (v) => v.a! - v.s!,
         solve: { a: (v) => v.s!, s: (v) => v.a! },
@@ -421,7 +421,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       {
         id: 'n = r rows of c',
         check: (v) => repeated(v.c!, v.r!),
-        display: '{n} = {r} rows of {c}',
+        display: '{r} rows of {c} = {n}',
         vars: ['n', 'r', 'c'],
         residual: (v) => v.n! - v.r! * v.c!,
         solve: { n: (v) => v.r! * v.c!, r: (v) => div(v.n!, v.c!), c: (v) => div(v.n!, v.r!) },
@@ -488,14 +488,14 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       },
       {
         id: 'H = hundreds in n',
-        display: '{H} = hundreds part of {n}',
+        display: 'The hundreds part of {n} is {H}',
         vars: ['H', 'n'],
         residual: (v) => v.H! - 100 * Math.floor(v.n! / 100),
         solve: { H: (v) => 100 * Math.floor(v.n! / 100), n: () => undefined },
       },
       {
         id: 'T = tens in n',
-        display: '{T} = tens part of {n}',
+        display: 'The tens part of {n} is {T}',
         vars: ['T', 'n'],
         residual: (v) => v.T! - 10 * (Math.floor(v.n! / 10) % 10),
         solve: { T: (v) => 10 * (Math.floor(v.n! / 10) % 10), n: () => undefined },
@@ -732,7 +732,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
     const cmp = difference('d', 'a', 'b', {
       diff: 'Put the objects on the balance. Count the extra cubes on the lower side.',
       countOn: true,
-      display: '{d} = how much heavier: {a} or {b}',
+      display: '{a} and {b} cubes: {d} extra cubes on the low side',
       first: [
         'Object A is heavier. Add the extra cubes to object B.',
         'Object A is lighter. Take the extra cubes away from object B.',
@@ -813,7 +813,7 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
       relations: [
         {
           id: 'D = difference of the sides',
-          display: '{D} = difference of ({a} + {b}) and ({c} + {d})',
+          display: 'Is {a} + {b} = {c} + {d}? The sides are {D} apart.',
           vars: ['D', 'a', 'b', 'c', 'd'],
           residual: (v: Values) => v.D! - Math.abs(L(v) - R(v)),
           check: (v: Values) =>

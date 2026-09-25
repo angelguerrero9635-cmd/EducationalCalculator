@@ -130,11 +130,14 @@ export function difference(
       : [];
   const relation = {
     id,
-    display: how.display ?? `{${d}} = difference of {${a}} and {${b}}`,
+    display: how.display ?? `{${a}} and {${b}} are {${d}} apart`,
     vars: [d, a, b],
     residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),
+    // Compare lessons end with the sign students write ("45 < 54, 9 apart").
     check: (v: Values) =>
-      `${formatNumber(Math.max(v[a]!, v[b]!))} − ${formatNumber(Math.min(v[a]!, v[b]!))} = ${formatNumber(Math.abs(v[a]! - v[b]!))}`,
+      how.compare
+        ? `${formatNumber(v[a]!)} ${v[a]! < v[b]! ? '<' : v[a]! > v[b]! ? '>' : '='} ${formatNumber(v[b]!)}, ${formatNumber(Math.abs(v[a]! - v[b]!))} apart`
+        : `${formatNumber(Math.max(v[a]!, v[b]!))} − ${formatNumber(Math.min(v[a]!, v[b]!))} = ${formatNumber(Math.abs(v[a]! - v[b]!))}`,
     solve: {
       [d]: (v: Values) => Math.abs(v[a]! - v[b]!),
       [a]: (v: Values) => [v[b]! + v[d]!, v[b]! - v[d]!],
@@ -308,7 +311,7 @@ function tensOnes(maxTens: number) {
       },
       {
         id: 't = tens in n',
-        display: '{t} = full tens in {n}',
+        display: '{n} has {t} full tens',
         vars: ['t', 'n'],
         residual: (v: Record<string, number>) => v.t! - Math.floor(v.n! / 10),
         // The tens alone don't say which number: n stays unknown (no numeric guess).
@@ -316,7 +319,7 @@ function tensOnes(maxTens: number) {
       },
       {
         id: 'o = ones left in n',
-        display: '{o} = ones left in {n}',
+        display: '{n} has {o} ones left over',
         vars: ['o', 'n'],
         residual: (v: Record<string, number>) => v.o! - (v.n! % 10),
         solve: { o: (v: Record<string, number>) => v.n! % 10, n: () => undefined },
@@ -385,7 +388,7 @@ function sumInOrder(id: string, v: Values): string[] {
 
 const cmpK10 = difference('d', 'a', 'b', {
   countOn: true,
-  display: '{d} = how many more: {a} or {b}',
+  display: 'Match {a} and {b}: {d} left over',
   diff: 'Match the counters in pairs. Count the solid ones left over.',
   first: [
     'The first row has more. Add the extra to the second row.',
@@ -398,7 +401,7 @@ const cmpK10 = difference('d', 'a', 'b', {
 });
 const cmpPencils = difference('d', 'a', 'b', {
   countOn: true,
-  display: '{d} = how much longer: {a} or {b}',
+  display: 'Line up {a} and {b}: {d} cubes stick out',
   diff: 'Line up the pencils at one end. Count the cubes that stick out.',
   first: [
     'Pencil A is longer. Add the extra cubes to pencil B.',
@@ -410,7 +413,7 @@ const cmpPencils = difference('d', 'a', 'b', {
   ],
 });
 export const cmpShapes = difference('d', 'c', 's', {
-  display: '{d} = how many more: {c} or {s}',
+  display: 'Line up {c} and {s}: {d} extra',
   diff: 'Line up the two columns. Count the extra pictures in the taller one.',
   first: [
     'There are more circles. Add the extra to the squares.',
@@ -422,6 +425,7 @@ export const cmpShapes = difference('d', 'c', 's', {
   ],
 });
 export const cmpBars = difference('d', 'a', 'b', {
+  display: 'Bars {a} and {b} are {d} apart',
   diff: 'Count up from the shorter bar’s number to the taller bar’s number.',
   countUp: true,
   first: [
@@ -451,15 +455,18 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'p = n + 1',
-        display: '{p} = {n} + 1',
+        display: '1 more than {n} is {p}',
         vars: ['p', 'n'],
         residual: (v) => v.p! - v.n! - 1,
         solve: { p: (v) => v.n! + 1, n: (v) => v.p! - 1 },
       },
       {
         id: 'm = n + t tens',
-        check: (v) => `${v.n} + ${10 * v.t!} = ${v.m}`,
-        display: '{m} = {n} + {t} tens',
+        check: (v) =>
+          v.t! > 0
+            ? `Count ${v.t} tens from ${v.n}: ${countList(v.n!, 10, v.t!)} → ${v.m}`
+            : `${v.n} = ${v.m}`,
+        display: 'Count {t} tens from {n}: {m}',
         vars: ['m', 'n', 't'],
         residual: (v) => v.m! - v.n! - 10 * v.t!,
         solve: {
@@ -519,7 +526,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'm = n + 1',
-        display: '{m} = {n} + 1',
+        display: '1 more than {n} is {m}',
         vars: ['m', 'n'],
         residual: (v) => v.m! - v.n! - 1,
         solve: { m: (v) => v.n! + 1, n: (v) => v.m! - 1 },
@@ -728,9 +735,9 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ],
     relations: (
       [
-        ['(a + b) + c = s', '({a} + {b}) + {c} = {s}'],
-        ['a + (b + c) = s', '{a} + ({b} + {c}) = {s}'],
-        ['c + b + a = s', '{c} + {b} + {a} = {s}'],
+        ['(a + b) + c = s', 'Add the first two first: {a} + {b} + {c} = {s}'],
+        ['a + (b + c) = s', 'Add the last two first: {a} + {b} + {c} = {s}'],
+        ['c + b + a = s', 'Change the order: {c} + {b} + {a} = {s}'],
       ] as const
     ).map(([id, display]) => ({
       id,
@@ -891,14 +898,14 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'p = n + 1',
-        display: '{p} = {n} + 1',
+        display: '{n} + 1 = {p}',
         vars: ['p', 'n'],
         residual: (v) => v.p! - v.n! - 1,
         solve: { p: (v) => v.n! + 1, n: (v) => v.p! - 1 },
       },
       {
         id: 'q = n + 10',
-        display: '{q} = {n} + 10',
+        display: '{n} + 10 = {q}',
         vars: ['q', 'n'],
         residual: (v) => v.q! - v.n! - 10,
         solve: { q: (v) => v.n! + 10, n: (v) => v.q! - 10 },
@@ -990,7 +997,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       {
         id: 'c = p clips of 2 cubes',
         check: (v) => repeated(2, v.p!),
-        display: '{c} cubes = {p} clips of 2 cubes',
+        display: '{p} clips, 2 cubes each: {c} cubes',
         vars: ['c', 'p'],
         residual: (v) => v.c! - 2 * v.p!,
         solve: { c: (v) => 2 * v.p!, p: (v) => v.c! / 2 },
@@ -1037,7 +1044,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       {
         id: 'm = k half hours',
         check: (v) => (v.k === 1 ? '1 half hour = 30 minutes' : '0 half hours = 0 minutes'),
-        display: '{m} = {k} half hours',
+        display: '{k} half hours = {m} minutes',
         vars: ['m', 'k'],
         residual: (v) => v.m! - 30 * v.k!,
         solve: { m: (v) => 30 * v.k!, k: (v) => v.m! / 30 },
@@ -1095,7 +1102,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = c + s + t',
-        display: '{n} = {c} + {s} + {t}',
+        display: '{c} + {s} + {t} = {n}',
         vars: ['n', 'c', 's', 't'],
         residual: (v) => v.n! - v.c! - v.s! - v.t!,
         solve: {
@@ -1160,7 +1167,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'u = p − k',
-        display: '{u} = {p} − {k}',
+        display: '{k} of {p} equal parts shaded, {u} not shaded',
         vars: ['u', 'p', 'k'],
         residual: (v) => v.u! - (v.p! - v.k!),
         solve: { u: (v) => v.p! - v.k!, p: (v) => v.k! + v.u!, k: (v) => v.p! - v.u! },
@@ -1239,21 +1246,21 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       },
       {
         id: 'h = hundreds digit',
-        display: '{h} = hundreds digit of {n}',
+        display: 'The hundreds digit of {n} is {h}',
         vars: ['h', 'n'],
         residual: (v) => v.h! - Math.floor(v.n! / 100),
         solve: { h: (v) => Math.floor(v.n! / 100), n: () => undefined },
       },
       {
         id: 't = tens digit',
-        display: '{t} = tens digit of {n}',
+        display: 'The tens digit of {n} is {t}',
         vars: ['t', 'n'],
         residual: (v) => v.t! - (Math.floor(v.n! / 10) % 10),
         solve: { t: (v) => Math.floor(v.n! / 10) % 10, n: () => undefined },
       },
       {
         id: 'o = ones digit',
-        display: '{o} = ones digit of {n}',
+        display: 'The ones digit of {n} is {o}',
         vars: ['o', 'n'],
         residual: (v) => v.o! - (v.n! % 10),
         solve: { o: (v) => v.n! % 10, n: () => undefined },
@@ -1379,7 +1386,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       {
         id: 'n = a + k jumps of s',
         check: (v) => `${v.a} + ${v.k! * v.s!} = ${v.n}`,
-        display: '{n} = {a} + {k} jumps of {s}',
+        display: 'Start at {a}. {k} jumps of {s} land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! - v.k! * v.s!,
         solve: {
@@ -1458,14 +1465,14 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       },
       {
         id: 'p = pairs in n',
-        display: '{p} = pairs in {n}',
+        display: '{n} makes {p} pairs',
         vars: ['p', 'n'],
         residual: (v) => v.p! - Math.floor(v.n! / 2),
         solve: { p: (v) => Math.floor(v.n! / 2), n: () => undefined },
       },
       {
         id: 'r = left over',
-        display: '{r} = left over from {n}',
+        display: '{n} has {r} left over',
         vars: ['r', 'n'],
         residual: (v) => v.r! - (v.n! % 2),
         solve: { r: (v) => v.n! % 2, n: () => undefined },
@@ -1539,7 +1546,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       {
         id: 'n = r rows of c',
         check: (v) => repeated(v.c!, v.r!),
-        display: '{n} = {r} rows of {c}',
+        display: '{r} rows of {c} = {n}',
         vars: ['n', 'r', 'c'],
         residual: (v) => v.n! - v.r! * v.c!,
         solve: { n: (v) => v.r! * v.c!, r: (v) => div(v.n!, v.c!), c: (v) => div(v.n!, v.r!) },
@@ -1595,7 +1602,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       'd = L − S': {
         d: {
           expr: '{L} − {S}',
-          how: 'Count up from the shorter length to the longer one.',
+          how: 'Longer − shorter = how much longer. Count up from the shorter length.',
           work: (v) => countUp(v.S!, v.L!),
         },
         L: {
@@ -1639,7 +1646,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
               .filter((x) => x > 0)
               .join(' + ') || '0'
           } = ${v.T}`,
-        display: '{T} = {db} dollars + {q} quarters + {dm} dimes + {nk} nickels + {pn} pennies',
+        display: '{db} dollars + {q} quarters + {dm} dimes + {nk} nickels + {pn} pennies = {T}¢',
         vars: ['T', 'db', 'q', 'dm', 'nk', 'pn'],
         residual: (v) => v.T! - (100 * v.db! + 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!),
         solve: {
@@ -1724,7 +1731,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
       {
         id: 'm = 5 × k',
         check: (v) => (v.k! > 0 ? repeated(5, v.k!) : '0 = 0'),
-        display: '{m} = {k} fives',
+        display: '{k} fives = {m} minutes',
         vars: ['m', 'k'],
         residual: (v) => v.m! - 5 * v.k!,
         solve: { m: (v) => 5 * v.k!, k: (v) => v.m! / 5 },
@@ -1849,7 +1856,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'u = p − k',
-        display: '{u} = {p} − {k}',
+        display: '{k} of {p} equal parts shaded, {u} not shaded',
         vars: ['u', 'p', 'k'],
         residual: (v) => v.u! - (v.p! - v.k!),
         solve: { u: (v) => v.p! - v.k!, p: (v) => v.k! + v.u!, k: (v) => v.p! - v.u! },
