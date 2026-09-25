@@ -103,8 +103,6 @@ try {
         }
         // Visible text and buttons past the right or left edge.
         for (const el of document.querySelectorAll('div[dir], [role="button"], input, svg')) {
-          // The inputs row scrolls sideways on purpose when many values don't fit.
-          if (el.closest('[data-testid="inputs-row"]')) continue;
           const r = el.getBoundingClientRect();
           if (r.width > 0 && (r.right > vw + 1 || r.left < -1)) {
             const text = (el.textContent ?? '').trim().slice(0, 40);
