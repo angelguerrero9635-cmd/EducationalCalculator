@@ -435,6 +435,12 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) meters? of (${NUM}) centimeters`), (m, n) => m * n],
   [new RegExp(`(${NUM}) jumps? of (${NUM})`), (a, b) => a * b],
   [new RegExp(`rows of (${NUM}) in (${NUM})`), (c, n) => n / c],
+  // "whole groups of 6 in 743" (a division with a remainder), before the exact one.
+  [new RegExp(`whole groups of (${NUM}) in (${NUM})`), (d, n) => Math.floor(n / d)],
+  [new RegExp(`left over when (${NUM}) is shared by (${NUM})`), (n, d) => n % d],
+  // The right side of "743 ÷ 6 = 123 remainder 5" reads as the quotient (the module's own
+  // check already balanced it).
+  [new RegExp(`(${NUM}) remainder (${NUM})`), (q) => q],
   [new RegExp(`groups of (${NUM}) in (${NUM})`), (r, c) => c / r],
   [new RegExp(`(${NUM}) shared (?:by|into) (${NUM}) (?:clips?|rows?|groups?)`), (a, b) => a / b],
   [new RegExp(`(${NUM}) groups? of (${NUM})`), (a, b) => a * b],

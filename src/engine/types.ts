@@ -40,6 +40,11 @@ export interface VariableDef {
  */
 export interface Relation {
   id: string;
+  /**
+   * A rule that only checks (a remainder is less than the divisor): never solved for a value,
+   * only used to reject values that break it once every variable in it is known.
+   */
+  constraint?: boolean;
   /** Display template; `{id}` is replaced by the symbol or the current value. */
   display: string;
   vars: string[];

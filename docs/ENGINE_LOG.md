@@ -5,6 +5,19 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grade 4 build (Section 2, while writing)
+
+- A remainder must be smaller than the divisor, but a relation with nothing to solve was
+  root-found numerically (picked any divisor above the remainder). → `Relation.constraint`:
+  a check-only rule the solver never works a value out of, only rejects with once every
+  variable in it is known; `narrow` and the search skip it.
+- A product could be found in one jump before its part products, so the area-model
+  walkthrough started at the answer. → The lesson's `n = a × b` relation solves only the
+  factors (`n: () => undefined`); the product comes from the parts.
+- The harness retyped a derived value ("same" edits) and read new phrases. → Derived values
+  are left out of retype edits; phrases for factor counts, whole groups, leftovers and
+  "q remainder r".
+
 ## K–3 math and science (Sections 1, 2 and 6, second review)
 
 Four reviewers (lesson and page, math and science) on 173 pages. What the engine now does:

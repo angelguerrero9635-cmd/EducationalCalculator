@@ -209,6 +209,9 @@ function propagate(
         if (!holds(relation, values)) {
           return { ok: false, reason: `Doesn’t fit ${relation.id}` };
         }
+      } else if (relation.constraint) {
+        // A rule that only checks: nothing is worked out from it.
+        continue;
       } else if (unknowns.length === 1) {
         const id = unknowns[0]!;
         const variable = byId.get(id)!;
@@ -274,6 +277,7 @@ function narrow(system: System, vals: Values, bounds: Bounds): boolean {
   for (let pass = 0; pass < 12; pass++) {
     let changed = false;
     for (const relation of system.relations) {
+      if (relation.constraint) continue;
       const open = relation.vars.filter((id) => !(id in vals));
       if (open.length === 0 || open.some((id) => !bounds.has(id))) continue;
       // Residual as c0 + Σ aᵢ·xᵢ, measured at the middle of the ranges.

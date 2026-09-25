@@ -229,7 +229,8 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {rep.tag(id)}
                   </ChartText>
                 ))}
-                {Array.from({ length: Math.max(0, groups - 1) }, (_, k) => {
+                {/* Past 24 groups the dashes would blur into a comb: the caption carries it. */}
+                {Array.from({ length: groups > 24 ? 0 : Math.max(0, groups - 1) }, (_, k) => {
                   // Across the whole bar, or across the one part the groups make up.
                   const gi = spec.groupsPart ? spec.parts.indexOf(spec.groupsPart) : -1;
                   const [g0, g1] = gi >= 0 ? [x0(gi), x1(gi)] : [left, left + span * scale];

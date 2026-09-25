@@ -326,4 +326,123 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+
+  // ── Long division: partial quotients with a remainder (4.NBT.6) ──
+  (() => {
+    const fmt = (x: number) => formatNumber(x);
+    /** Partial quotients by place: 743 ÷ 6 → 100 groups (600), 20 groups (120), 3 groups (18). */
+    const partial = (n: number, d: number): string[] => {
+      const lines: string[] = [];
+      const chunks: number[] = [];
+      let left = n;
+      for (const place of [1000, 100, 10, 1]) {
+        const k = Math.floor(left / (d * place)) * place;
+        if (k === 0) continue;
+        chunks.push(k);
+        lines.push(
+          `${d} × ${fmt(k)} = ${fmt(d * k)}, so ${fmt(k)} groups fit: ${fmt(left)} − ${fmt(d * k)} = ${fmt(left - d * k)}`,
+        );
+        left -= d * k;
+      }
+      if (chunks.length > 1)
+        lines.push(
+          `Groups: ${chunks.map(fmt).join(' + ')} = ${fmt(chunks.reduce((a, b) => a + b, 0))}`,
+        );
+      lines.push(`${fmt(left)} left over: less than ${d}, so it is the remainder`);
+      return lines;
+    };
+    return {
+      id: 'm.4.long-division',
+      assumptions: [
+        'Share the dividend into equal groups of the divisor. The number of groups is the quotient.',
+        'Take out big chunks first: hundreds of groups, then tens, then ones. Add the chunks.',
+        'What is left is the remainder. It is always less than the divisor.',
+        'Check: quotient × divisor + remainder = dividend.',
+      ],
+      variables: [
+        whole('n', 'n', 'Dividend', 10, 9999),
+        whole('d', 'd', 'Divisor', 2, 9),
+        whole('q', 'q', 'Quotient', 1, 4999),
+        whole('r', 'r', 'Remainder', 0, 8),
+        { ...whole('m', 'm', 'Shared out', 2, 9999), derived: true },
+      ],
+      relations: [
+        {
+          id: 'm = q × d',
+          display: '{q} × {d} = {m}',
+          vars: ['m', 'q', 'd'],
+          residual: (v: Values) => v.m! - v.q! * v.d!,
+          solve: {
+            m: (v: Values) => v.q! * v.d!,
+            q: (v: Values) => div(v.m!, v.d!),
+            d: (v: Values) => div(v.m!, v.q!),
+          },
+        },
+        {
+          id: 'n = m + r',
+          display: '{m} + {r} = {n}',
+          vars: ['n', 'm', 'r'],
+          residual: (v: Values) => v.n! - v.m! - v.r!,
+          solve: {
+            n: (v: Values) => v.m! + v.r!,
+            m: (v: Values) => v.n! - v.r!,
+            r: (v: Values) => v.n! - v.m!,
+          },
+        },
+        {
+          // A remainder is always smaller than the divisor; nothing is solved from this.
+          id: 'r < d',
+          constraint: true,
+          display: '{r} is less than {d}',
+          vars: ['r', 'd'],
+          residual: (v: Values) => (v.r! < v.d! ? 0 : 1),
+          solve: {},
+        },
+        {
+          id: 'q = whole groups of d in n',
+          display: '{n} ÷ {d} → {q} whole groups',
+          check: (v: Values) => `${fmt(v.n!)} ÷ ${v.d} = ${fmt(v.q!)} remainder ${v.n! % v.d!}`,
+          vars: ['q', 'n', 'd'],
+          residual: (v: Values) => v.q! - Math.floor(v.n! / v.d!),
+          // The dividend and divisor can't be found from the number of whole groups alone.
+          solve: {
+            q: (v: Values) => Math.floor(v.n! / v.d!),
+            n: () => undefined,
+            d: () => undefined,
+          },
+        },
+      ],
+      steps: {
+        'r < d': {},
+        'm = q × d': {
+          m: { expr: '{q} × {d}', how: 'The groups times the divisor: what was shared out.' },
+          q: { expr: '{m} ÷ {d}', how: 'Divide what was shared out by the divisor.' },
+          d: { expr: '{m} ÷ {q}', how: 'Divide what was shared out by the quotient.' },
+        },
+        'n = m + r': {
+          n: { expr: '{m} + {r}', how: 'The dividend is what was shared out plus the remainder.' },
+          m: { expr: '{n} − {r}', how: 'Take the remainder away from the dividend.' },
+          r: { expr: '{n} − {m}', how: 'The remainder is what is left after sharing out.' },
+        },
+        'q = whole groups of d in n': {
+          q: {
+            expr: 'whole groups of {d} in {n}',
+            how: 'Take out chunks of groups by place, biggest first. Add the chunks.',
+            work: (v) => partial(v.n!, v.d!),
+          },
+        },
+      },
+      example: { n: 743, d: 6, q: 123, r: 5, m: 738 },
+      startWith: ['n', 'd'],
+      pictureLabels: ['q'],
+      representation: {
+        kind: 'tape',
+        parts: ['m', 'r'],
+        total: 'n',
+        groups: 'q',
+        groupsPart: 'm',
+        caption: '{q} groups of {d} make {m}, and {r} left over.',
+      },
+    } satisfies ModuleDef;
+  })(),
 ];

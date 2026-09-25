@@ -48,8 +48,9 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 - **Section 2, Grade 4.** Built so far: factors, multiples, primes and composites (a factor
   pair as an array, the factor list counted, prime or composite named); place value to
   1,000,000 (a digit's value from its place, and ten times less one place right, as a table);
-  multi-digit multiplication (2-digit × 1-digit as an area model: split, part products, sum).
-  New picture: area model.
+  multi-digit multiplication (2-digit × 1-digit as an area model: split, part products, sum);
+  long division (partial quotients by place, the remainder as the leftover part of a tape).
+  New picture: area model. New engine rule: a check-only relation (`constraint`).
 - **Section 2, Grade 3.** 14 skill modules (area was a pilot; patterns in the tables,
   multiplying by multiples of 10, and measuring with line plots were added to the taxonomy
   after the review) plus 22 problem types: arrays and equal jumps (multiply and divide),
