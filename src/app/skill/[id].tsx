@@ -23,7 +23,7 @@ import {
   skillRoute,
   subjectLabel,
 } from '@/data/selectors';
-import { problemTypeIcon, skillIcon } from '@/data/icons';
+import { lessonIcons } from '@/data/icons';
 import { gradeLabel, SKILLS } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { space, usePalette } from '@/theme';
@@ -53,6 +53,15 @@ export default function SkillScreen() {
       .map((t) => ({ id: t.id, title: t.title, subtitle: t.use ?? 'Problem type' })),
   ];
 
+  // The same icons as on the skill's lessons page.
+  const types = problemTypes(skill.id);
+  const icons = lessonIcons(
+    skill,
+    types.map((t) => t.title),
+  );
+  const iconOf = (lessonId: string) =>
+    icons[lessonId === skill.id ? 0 : types.findIndex((t) => t.id === lessonId) + 1];
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
@@ -81,7 +90,7 @@ export default function SkillScreen() {
               <Tile
                 key={r.id}
                 testID={`related-${r.id}`}
-                icon={r.id === skill.id ? skillIcon(skill) : problemTypeIcon(r.title, skill)}
+                icon={iconOf(r.id)}
                 tone={i}
                 title={r.title}
                 subtitle={r.subtitle}

@@ -86,7 +86,9 @@ src/
     _layout.tsx               Root stack; gates first launch on onboarding
     onboarding.tsx            "What are you studying?" (first launch only, skippable)
     (tabs)/                   Home · Browse · Search · Settings
-    grade/[grade].tsx         Math | Science segmented control, skills grouped by strand
+    grade/[grade]/index.tsx   Math | Science segmented control, a box per strand
+    grade/[grade]/[strand].tsx  A box per skill in the strand
+    lessons/[id].tsx          A skill's main lesson and problem types, as boxes
     he/index.tsx              Higher Ed divisions
     he/[division]/index.tsx   Fields (or courses directly for single-field Math)
     he/[division]/[field].tsx Course list
@@ -99,6 +101,7 @@ src/
     modules/                  Module content (assumptions, formulas, representation) by taxonomy id
     taxonomy.ts               SINGLE SOURCE OF TRUTH for all course content (do not edit casually)
     selectors.ts              Pure derived views: strand grouping, search, routes, labels
+    icons.ts                  Which icon each Browse box gets (never repeated on a page)
     __tests__/                validateTaxonomy() + selector tests
   components/                 ListRow, SectionHeader, Chip, PlaceholderCard, RefreshLinkRow,
                               EmptyState, Button, SegmentedControl, LevelPicker, CourseList…
@@ -106,6 +109,7 @@ src/
   engine/                     Formula solver, units and conversions, formatting (pure, tested)
   components/module/          Module UI: formula inputs + linked table/chart/diagram (reps/)
   config/access.ts            isLocked(nodeId) stub (always false; no purchase logic yet)
+  icons/                      Icon drawings: our own (custom.ts) and Tabler's (tabler.ts, generated)
   theme.ts                    The entire look: palettes, font, type scale, spacing, chart styling
 docs/MODULE_GUIDE.md          Content standards and the review process for modules
 docs/MODULE_PLAN.md           Sections for writing the remaining modules, with status
@@ -218,6 +222,11 @@ The whole look lives in `src/theme.ts`. Components hardcode no colors, fonts or 
 - **Type scale, spacing, corner radius:** `font`, `space` and `radius`.
 - **Charts:** label sizes, line widths, dash patterns, and drag-handle size and touch area
   (`chart`).
+- **Box icons:** `src/data/icons.ts` matches each box's title to icons; boxes on the same page
+  never share one. Icons are our own drawings (`src/icons/custom.ts`) or
+  [Tabler Icons](https://tabler.io/icons) (MIT, `src/icons/TABLER_LICENSE`). To use another Tabler
+  icon, add its name to `icons.ts`, then run `node scripts/vendor-icons.mjs <folder>` with the
+  `icons/outline` folder from `npm pack @tabler/icons` (no package is installed).
 
 ## What's stubbed
 

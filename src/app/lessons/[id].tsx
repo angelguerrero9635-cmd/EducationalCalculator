@@ -10,7 +10,7 @@ import {
   skillsWithTypes,
   subjectLabel,
 } from '@/data/selectors';
-import { problemTypeIcon, skillIcon } from '@/data/icons';
+import { lessonIcons } from '@/data/icons';
 import { gradeLabel } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
@@ -28,6 +28,10 @@ export default function LessonsScreen() {
   if (!skill) return <EmptyState title="Skill not found" message={id} />;
   const types = problemTypes(skill.id);
   const where = `${gradeLabel(skill.grade)} ${subjectLabel(skill.subject)}`;
+  const icons = lessonIcons(
+    skill,
+    types.map((t) => t.title),
+  );
 
   return (
     <>
@@ -44,7 +48,7 @@ export default function LessonsScreen() {
         <TileGrid>
           <Tile
             testID={`lesson-${skill.id}`}
-            icon={skillIcon(skill)}
+            icon={icons[0]}
             tone={0}
             title="Main lesson"
             subtitle={skill.title}
@@ -54,7 +58,7 @@ export default function LessonsScreen() {
             <Tile
               key={t.id}
               testID={`lesson-${t.id}`}
-              icon={problemTypeIcon(t.title, skill)}
+              icon={icons[i + 1]}
               tone={i + 1}
               title={t.title}
               subtitle={t.use}

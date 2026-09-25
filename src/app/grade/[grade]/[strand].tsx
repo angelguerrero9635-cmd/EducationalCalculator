@@ -12,7 +12,7 @@ import {
   subjectLabel,
   SUBJECTS,
 } from '@/data/selectors';
-import { skillIcon } from '@/data/icons';
+import { skillIcons } from '@/data/icons';
 import { gradeLabel, GRADES } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
@@ -36,6 +36,7 @@ export default function StrandScreen() {
     return <EmptyState title="Not found" message="There is no such topic in this grade." />;
   }
   const where = `${gradeLabel(grade)} ${subjectLabel(view.subject)}`;
+  const icons = skillIcons(view.skills);
 
   return (
     <>
@@ -54,7 +55,7 @@ export default function StrandScreen() {
             <Tile
               key={s.id}
               testID={`skill-${s.id}`}
-              icon={skillIcon(s)}
+              icon={icons[i]}
               tone={i}
               title={s.title}
               subtitle={skillBoxSubtitle(s.id)}

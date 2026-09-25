@@ -19,7 +19,7 @@ import {
   type K12Subject,
   type Skill,
 } from './taxonomy';
-import { fieldIcon, strandIcon, type TopicIconName } from './icons';
+import { assignIcons, divisionIcon, strandIcons, type TopicIconName } from './icons';
 import { getModule, MODULES, moduleOwner } from './modules';
 
 export type TaxonomyNode = Skill | Course;
@@ -217,14 +217,17 @@ export const strandRoute = (grade: Grade, strand: string): RouteTarget => ({
 });
 
 /** The grade page: a box for each strand of one subject. */
-export const gradeStrands = (grade: Grade, subject: K12Subject): StrandCard[] =>
-  groupByStrand(skillsFor(grade, subject)).map(({ title, data }) => ({
+export function gradeStrands(grade: Grade, subject: K12Subject): StrandCard[] {
+  const strands = groupByStrand(skillsFor(grade, subject));
+  const icons = strandIcons(strands.map((x) => x.title));
+  return strands.map(({ title, data }, i) => ({
     slug: strandSlug(title),
     title,
-    icon: strandIcon(title),
+    icon: icons[i]!,
     subtitle: countLabel(data.length, 'skill'),
     route: strandRoute(grade, title),
   }));
+}
 
 /** A strand page: its skills, found by grade and the strand's URL name. */
 export function strandView(grade: Grade, slug: string) {
@@ -492,7 +495,7 @@ export const divisionTone = (division: Division) =>
 
 /** Home "My Courses": Math + Science cards per selected grade, one card per selected field. */
 export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
-  return levels.flatMap((key): CourseCard[] => {
+  const cards = levels.flatMap((key): (CourseCard & { context: TopicIconName })[] => {
     const level = parseLevelKey(key);
     if (!level) return [];
     if (level.kind === 'grade') {
@@ -501,7 +504,7 @@ export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
         title: `${gradeLabel(level.grade)} · ${subjectLabel(subject)}`,
         subtitle: countLabel(skillsFor(level.grade, subject).length, 'skill'),
         route: gradeRoute(level.grade, subject),
-        badge: gradeBadge(level.grade),
+        context: subject === 'math' ? 'math-pi' : 'atom',
         tone: subjectTone(subject),
       }));
     }
@@ -512,11 +515,16 @@ export function myCourseCards(levels: readonly LevelKey[]): CourseCard[] {
         title: level.field.title,
         subtitle: `${divisionLabel(level.division)} · ${countLabel(count, 'course')}`,
         route: fieldRoute(level.division, level.field.id),
-        icon: fieldIcon(level.division, level.field.title),
+        context: divisionIcon(level.division),
         tone: divisionTone(level.division),
       },
     ];
   });
+  // Every card gets its own icon: the field's, or one for the subject.
+  const icons = assignIcons(
+    cards.map((c) => ({ title: c.title.split(' · ').pop()!, context: [c.context] })),
+  );
+  return cards.map(({ context: _, ...card }, i) => ({ ...card, icon: icons[i] }));
 }
 
 export const countLabel = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`;

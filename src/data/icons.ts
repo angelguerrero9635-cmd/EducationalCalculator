@@ -1,395 +1,1039 @@
 /**
- * The icon on each Browse box, chosen from its title. Rules are tried in order and the first
- * match wins; a box with no match uses the icon of what it belongs to (a problem type its
- * skill's, a topic its course's, a course its field's).
+ * The icon on each Browse box. A box's title gives a ranked list of icons that fit it (every
+ * rule that matches adds its icons, most specific rules first). Boxes shown together (the
+ * strands of a grade, the skills of a strand, a skill's lessons, a field's courses, a course's
+ * topics, …) never share an icon: `assignIcons` gives each box its best icon not already taken,
+ * then icons related to it, then any other icon.
+ *
+ * Icons are our own drawings (`src/icons/custom.ts`) or Tabler icons (`src/icons/tabler.ts`,
+ * copied in by `scripts/vendor-icons.mjs`: add a Tabler name here, then run the script).
  */
+import { CUSTOM } from '@/icons/custom';
+import { TABLER } from '@/icons/tabler';
+
 import type { Course, Division, Skill } from './taxonomy';
 
-export type TopicIconName =
-  // Numbers and operations
-  | 'count'
-  | 'tally'
-  | 'plus'
-  | 'minus'
-  | 'steps'
-  | 'book'
-  | 'addsub'
-  | 'times'
-  | 'divide'
-  | 'equals'
-  | 'compare'
-  | 'tenframe'
-  | 'blocks'
-  | 'numberline'
-  | 'hops'
-  | 'evenodd'
-  | 'array'
-  | 'fraction'
-  | 'decimal'
-  | 'percent'
-  | 'ratio'
-  | 'coin'
-  | 'sqrt'
-  | 'power'
-  | 'xeq'
-  | 'ineq'
-  | 'sequence'
-  | 'pi'
-  | 'sigma'
-  | 'integral'
-  | 'infinity'
-  | 'matrix'
-  | 'vector'
-  | 'proof'
-  // Measurement
-  | 'clock'
-  | 'ruler'
-  | 'balance'
-  | 'cup'
-  | 'thermometer'
-  // Data and chance
-  | 'bars'
-  | 'lineplot'
-  | 'scatter'
-  | 'bell'
-  | 'dice'
-  // Geometry and graphs
-  | 'shapes'
-  | 'cube'
-  | 'angle'
-  | 'lines'
-  | 'area'
-  | 'perimeter'
-  | 'coords'
-  | 'curve'
-  | 'linear'
-  | 'parabola'
-  | 'expo'
-  | 'sine'
-  | 'righttri'
-  | 'circle'
-  | 'compass'
-  | 'mirror'
-  | 'tangent'
-  | 'polar'
-  // Life, Earth and space
-  | 'sun'
-  | 'sprout'
-  | 'leaf'
-  | 'paw'
-  | 'cloud'
-  | 'moon'
-  | 'star'
-  | 'planet'
-  | 'globe'
-  | 'mountain'
-  | 'layers'
-  | 'drop'
-  | 'flame'
-  | 'cycle'
-  | 'dna'
-  | 'fossil'
-  | 'cell'
-  | 'heart'
-  | 'people'
-  | 'map'
-  | 'satellite'
-  // Physical science
-  | 'push'
-  | 'speaker'
-  | 'bulb'
-  | 'eye'
-  | 'wave'
-  | 'magnet'
-  | 'bolt'
-  | 'atom'
-  | 'molecule'
-  | 'flask'
-  | 'periodic'
-  | 'balloon'
-  | 'speed'
-  | 'rocket'
-  | 'circuit'
-  // Engineering and computing
-  | 'gear'
-  | 'bridge'
-  | 'plane'
-  | 'chip'
-  | 'code'
-  | 'network'
-  | 'spring'
-  | 'building'
-  | 'wrench'
-  | 'factory'
-  | 'antenna'
-  | 'road'
-  | 'pencil';
+export type TopicIconName = keyof typeof CUSTOM | keyof typeof TABLER;
 
-/** [pattern, icon], most specific first. Matched against the lower-case title. */
-const RULES: [RegExp, TopicIconName][] = [
-  // ── Exact topics a general rule would get wrong ──
-  [/series solution|fourier/, 'sigma'],
-  [/volume, arc length/, 'integral'],
-  [/parametric and polar/, 'polar'],
-  [/substitution and elimination|rate law/, 'flask'],
-  [/molecular orbital/, 'molecule'],
-  [/molecular genetics|linkage|hooke/, 'dna'],
-  [/schr[öo]dinger|interference|diffraction/, 'wave'],
-  [/maxwell|magnetostatic/, 'magnet'],
-  [/electrostatic/, 'circuit'],
-  [/bernoulli|fluid statics|pipe (flow|network)/, 'drop'],
-  [/equations of state/, 'balloon'],
-  [/torque/, 'gear'],
-  [/force vector/, 'push'],
-  [/surface processes/, 'mountain'],
-  [/stratigraph|consolidation|bearing capacity|^composites/, 'layers'],
-  [/crystal|isometric|orthographic|solid modeling/, 'cube'],
-  [/circulation/, 'wave'],
-  [/image processing/, 'satellite'],
-  [/geoprocess/, 'map'],
-  [/transduction/, 'cell'],
-  [/population dynamics|conservation biology/, 'leaf'],
-  [/material balance/, 'factory'],
-  [/capacity analysis/, 'road'],
-  [/graph theory|trees and graphs/, 'network'],
-  [/sorting and searching|threads|control flow/, 'code'],
-  [/datapath|combinational|sequential logic|flip-flop/, 'chip'],
-  [/root locus/, 'curve'],
-  [/degree-of-freedom/, 'spring'],
-  // ── Engineering and computing ──
-  [/propulsion|rocket/, 'rocket'],
-  [/aero|flight|aircraft|compressible flow/, 'plane'],
-  [/orbit|gravit|planet|solar system|kepler/, 'planet'],
-  [/digital logic|computer organi|architecture|embedded|electronics|computer$|vlsi/, 'chip'],
-  [/network/, 'network'],
-  [/programming|algorithms|data structure|operating system|software|numerical method/, 'code'],
-  [/communication|antenna|signal/, 'antenna'],
-  [/vibration|oscillat|spring/, 'spring'],
-  [/manufactur|machining/, 'wrench'],
-  [/machine design|mechanical$|control system|robot/, 'gear'],
-  [/process|separation|energy balance|transport phenomena|reactor/, 'factory'],
-  [/transportation|traffic|highway/, 'road'],
-  [/surveying/, 'map'],
-  [/concrete|steel design|building/, 'building'],
-  [/structural|bridge|civil|statics|truss|beam/, 'bridge'],
-  [/finite element/, 'area'],
-  [/cad\b|graphics|drafting/, 'pencil'],
-  [/compass/, 'compass'],
-  [/unit rates/, 'ratio'],
-  // ── Chemistry ──
-  [/periodic/, 'periodic'],
-  [/biomolecule/, 'molecule'],
-  [/stellar|big bang|cosmolog|galax/, 'star'],
-  [/\batoms?\b|atomic|isotope|electron config|quantum|element/, 'atom'],
-  [/gas law|pressure|ideal gas/, 'balloon'],
+type Rule = [RegExp, TopicIconName[]];
+
+/** Matched against the lower-case title; most specific first. */
+const RULES: Rule[] = [
+  // ── K–2 problem types and lessons ──
+  [/5 and some more/, ['ten-frame', 'hand-stop']],
+  [/count dots in any arrangement/, ['grid-dots', 'dot-count']],
+  [/number partners/, ['add-sub', 'arrows-split']],
+  [/all the ways/, ['list-numbers', 'arrows-shuffle']],
+  [/^take away$/, ['minus']],
+  [/heavier and lighter/, ['scale', 'weight']],
+  [/which holds more/, ['cup', 'bottle']],
+  [/flat or solid/, ['cube-unfolded', 'cube']],
+  [/name flat and solid/, ['triangle-square-circle', 'cube']],
+  [/add in any order/, ['arrows-shuffle', 'arrows-exchange']],
+  [/true or false with take away/, ['equal-not', 'minus']],
+  [/true or false/, ['equal-not', 'check']],
+  [/one less, ten less/, ['arrow-down-bar', 'minus']],
+  [/trade (ones|tens)/, ['arrows-exchange', 'base-ten']],
+  [/^subtract tens/, ['arrow-left-bar', 'minus']],
+  [/order three lengths/, ['sort-ascending', 'ruler']],
+  [/cut shapes into halves/, ['scissors', 'fraction-pie']],
+  [/are the parts equal/, ['equal', 'fraction-pie']],
+  [/add four numbers/, ['plus', 'sum']],
+  [/compare, then add/, ['two-step', 'compare-signs']],
+  [/add, then take away/, ['arrows-up-down', 'two-step']],
+  [/take away, then add/, ['arrows-down-up', 'two-step']],
+  [/take away twice/, ['chevrons-down', 'two-step']],
+  [/add twice/, ['chevrons-up', 'two-step']],
+  [/expanded form/, ['brackets-contain', 'base-ten']],
+  [/10 or 100 more/, ['arrow-bar-up', 'base-ten']],
+  [/skip count back/, ['arrow-back-up', 'number-hops']],
+  [/broken ruler/, ['ruler-3', 'ruler']],
+  [/feet and inches/, ['ruler-2', 'ruler']],
+  [/meters and centimeters/, ['ruler-measure', 'ruler']],
+  [/money left after buying/, ['receipt', 'shopping-cart']],
+  [/count bills/, ['cash-banknote', 'cash']],
+  [/how much more money/, ['pig-money', 'coins']],
+  [/count one kind of coin/, ['coin', 'coins']],
+  [/picture graph/, ['chart-infographic', 'chart-bar']],
+  [/how many more\? \(bar graph\)/, ['chart-bar', 'chart-arrows-vertical']],
+  [/rows and columns of squares/, ['grid-4x4', 'area-grid']],
+  [/faces, edges and corners/, ['cube', 'box']],
+  [/^polygons$/, ['hexagon', 'polygon']],
+  [/tally chart/, ['tally-marks']],
+  [/position words/, ['users', 'arrows-horizontal']],
+  [/put shapes together/, ['puzzle', 'hexagon']],
+  [/sort things into groups/, ['category', 'sort-ascending-shapes']],
+  [/shape attributes/, ['pentagon', 'polygon']],
+  [/measure length with cubes/, ['ruler-measure', 'ruler']],
+  [/lengths on a number line/, ['number-line']],
+  // ── K–12 math (skills whose general rule would collide with a neighbor) ──
+  [/count to 100/, ['sort-ascending-numbers', 'numbers']],
+  [/count objects/, ['dot-count', 'grid-dots']],
+  [/numbers to 120/, ['numbers', 'sort-ascending-numbers']],
+  [/add within 100 using place value/, ['base-ten', 'plus']],
+  [/add and subtract within 1,000/, ['math-symbols', 'add-sub']],
+  [/properties of multiplication/, ['arrows-exchange', 'brackets']],
+  [/unit fractions and fractions on a number line/, ['math-1-divide-3', 'number-line']],
+  [/equivalent fractions/, ['equal', 'fraction-pie']],
+  [/fraction equivalence/, ['equal', 'fraction-pie']],
+  [/add and subtract fractions/, ['math-x-plus-y', 'fraction-pie']],
+  [/multiply a fraction by a whole/, ['math-x-divide-2', 'times-sign']],
+  [/multiply fractions/, ['times-sign', 'fraction-pie']],
+  [/divide unit fractions/, ['divide', 'fraction-pie']],
+  [/divide fractions by fractions/, ['math-x-divide-y', 'divide']],
+  [/greatest common factor/, ['circles-relation', 'times-sign']],
+  [/factors, multiples, primes/, ['list-numbers', 'times-sign']],
+  [/integer exponent rules/, ['superscript', 'x-squared']],
+  [/scientific notation/, ['x-squared', 'superscript']],
+  [/powers of 10/, ['superscript', 'x-squared']],
+  [/one-step equations/, ['x-equals', 'variable']],
+  [/two-step equations/, ['two-step', 'x-equals']],
+  [/linear equations with variables on both sides/, ['scale', 'x-equals']],
+  [/systems of two linear/, ['arrows-cross', 'line-graph']],
+  [/linear models/, ['trending-up', 'line-graph']],
+  [/linear inequalities/, ['less-equal', 'line-graph']],
+  [/factoring quadratics/, ['parentheses', 'parabola']],
+  [/quadratic formula/, ['square-root', 'parabola']],
+  [/logarithms and log properties/, ['math-function', 'exp-curve']],
+  [/exponential and logarithmic equations/, ['letter-e', 'exp-curve']],
+  [/polynomial functions/, ['function-graph', 'math-function-y']],
+  [/rational expressions/, ['math-x-divide-y', 'function-graph']],
+  [/function composition/, ['arrows-join', 'function-graph']],
+  [/graphs of sine/, ['wave-sine', 'math-sin']],
+  [/trigonometric identities/, ['math-cos', 'equal']],
+  [/law of sines/, ['vector-triangle', 'math-sin']],
+  [/double-angle/, ['math-tg', 'wave-sine']],
+  [/polar coordinates/, ['polar-grid', 'circle-dot']],
+  [/parametric equations/, ['vector-spline', 'polar-grid']],
+  [/binomial theorem/, ['math-symbols', 'dice']],
+  [/discrete probability distributions/, ['chart-histogram', 'dice']],
+  [/conditional probability/, ['circles-relation', 'dice']],
+  [/random sampling/, ['users-group', 'dice']],
+  [/distance, midpoint and slope proofs/, ['coordinate-point', 'therefore']],
+  [/triangle congruence/, ['triangles', 'equal']],
+  [/similar triangles/, ['vector-triangle', 'ratio-tape']],
+  [/special right triangles/, ['triangle', 'right-triangle']],
+  [/arc length, sector area/, ['chart-pie', 'circle-radius']],
+  [/area of triangles, parallelograms/, ['triangle', 'area-grid']],
+  [/surface area using nets/, ['cube-unfolded', 'area-grid']],
+  [/unit rates/, ['gauge', 'ratio-tape']],
+  [/two-step word problems/, ['two-step', 'book']],
+  // ── Science (K–12) ──
+  [/investigating what plants need/, ['seedling', 'plant']],
+  [/pollination and seed/, ['flower', 'seedling']],
+  [/energy and speed/, ['car', 'bolt']],
+  [/energy conversion/, ['bulb', 'bolt']],
+  [/conservation of mass/, ['scale', 'flask']],
+  [/mixing substances/, ['test-pipe', 'flask']],
+  [/the sun as a star/, ['sun-high', 'star']],
+  [/shadows, day and night/, ['sun-moon', 'moon-stars']],
+  [/cell parts/, ['microscope', 'cell-body']],
+  [/water cycle/, ['cloud-rain', 'cycle-arrows']],
+  [/rock cycle/, ['volcano', 'cycle-arrows']],
+  [/cell membranes/, ['cell-body', 'droplets']],
+  [/mitosis and meiosis/, ['arrows-split', 'cell-body']],
+  [/dna replication/, ['dna-2', 'dna']],
+  [/mendelian/, ['git-fork', 'dna']],
+  [/the mole and molar mass/, ['scale', 'flask']],
+  [/stoichiometry/, ['math-x-divide-y', 'flask']],
+  [/solutions and molarity/, ['test-pipe', 'droplet-half']],
+  [/acids, bases and ph/, ['droplet', 'test-pipe-2']],
+  [/thermochemistry/, ['flame', 'temperature']],
+  [/reaction rates and chemical equilibrium/, ['arrows-exchange', 'hourglass']],
+  [/kinematics in 1d/, ['ball-basketball', 'gauge']],
+  [/momentum, impulse/, ['ball-bowling', 'push-box']],
+  [/stellar evolution/, ['stars', 'star']],
+  [/big bang/, ['galaxy', 'sparkles']],
+  // ── College: calculus and linear algebra ──
+  [/^calculus i$/, ['tangent-line', 'math-function']],
+  [/^calculus ii$/, ['math-integral', 'sum']],
+  [/multivariable/, ['cube-3d-sphere', 'math-integrals']],
+  [/related rates and optimization/, ['trending-up', 'target']],
+  [/definite integrals/, ['math-integral', 'chart-area-line']],
+  [/u-substitution/, ['replace', 'math-integral-x']],
+  [/integration by parts/, ['math-integral-x', 'puzzle']],
+  [/improper integrals/, ['infinity', 'math-integral']],
+  [/volume, arc length/, ['cylinder', 'math-integral']],
+  [/sequences, series and convergence/, ['sum', 'growing-dots']],
+  [/taylor and power series/, ['wave-sine', 'sum']],
+  [/parametric and polar/, ['polar-grid', 'spiral']],
+  [/vectors and 3d geometry/, ['vector-arrow', 'axis-x']],
+  [/partial derivatives/, ['tangent-line', 'mountain']],
+  [/multiple integrals/, ['math-integrals', 'cube']],
+  [/line and surface integrals/, ['route', 'math-integral-x']],
+  [/green's, stokes'/, ['whirl', 'rotate-clockwise']],
+  [/first-order odes/, ['exp-curve', 'tangent-line']],
+  [/second-order linear odes/, ['wave-sine', 'coil-spring']],
+  [/laplace transforms/, ['transform', 'arrows-right-left']],
+  [/systems of odes/, ['matrix', 'arrows-cross']],
+  [/series solutions/, ['sum']],
+  [/row reduction/, ['stairs-down', 'matrix']],
+  [/vector spaces/, ['axis-x', 'vector-arrow']],
+  [/determinants/, ['square-rotated', 'matrix']],
+  [/eigenvalues/, ['arrow-up-right', 'matrix']],
+  [/orthogonality and least squares/, ['right-triangle', 'scatter-fit']],
+  // ── College: chemistry ──
+  [/^general chemistry i$/, ['flask', 'atom']],
+  [/^general chemistry ii$/, ['flask-2', 'test-pipe']],
+  [/^organic chemistry i$/, ['hexagon', 'molecule']],
+  [/^organic chemistry ii$/, ['hexagons', 'molecule']],
+  [/^analytical chemistry$/, ['test-pipe-2', 'microscope']],
+  [/^physical chemistry i:/, ['temperature', 'flame']],
+  [/^physical chemistry ii:/, ['prism-light', 'atom-2']],
+  [/^biochemistry$/, ['dna-2', 'molecule']],
+  [/^inorganic chemistry$/, ['periodic-table', 'diamond']],
+  [/atomic structure and periodicity/, ['periodic-table', 'atom']],
+  [/^gases$/, ['balloon', 'wind']],
+  [/bonding and molecular geometry/, ['molecule', 'hexagon']],
+  [/^kinetics$/, ['hourglass', 'stopwatch']],
+  [/^equilibrium$/, ['arrows-exchange', 'scale']],
+  [/acid–base equilibria/, ['droplet', 'arrows-exchange']],
+  [/entropy and gibbs/, ['arrows-shuffle', 'bolt']],
+  [/electrochemistry/, ['battery-charging', 'bolt']],
+  [/structure and nomenclature/, ['tag', 'molecule']],
+  [/stereochemistry/, ['flip-horizontal', 'reflect']],
+  [/substitution and elimination/, ['replace', 'arrows-exchange']],
+  [/alkenes and alkynes/, ['equal', 'molecule']],
+  [/ir and nmr/, ['wave-square', 'wave-sine']],
+  [/aromatic chemistry/, ['hexagon', 'flower']],
+  [/carbonyl chemistry/, ['molecule', 'letter-o']],
+  [/carboxylic acid/, ['droplet', 'test-pipe']],
+  [/^amines$/, ['letter-n', 'molecule']],
+  [/multistep synthesis/, ['stairs-up', 'route']],
+  [/error analysis and statistics/, ['bell-curve', 'target']],
+  [/^titrations$/, ['droplet', 'test-pipe']],
+  [/spectrophotometry/, ['prism-light', 'rainbow']],
+  [/chromatography/, ['rock-layers', 'filter']],
+  [/electroanalytical/, ['battery', 'circuit-voltmeter']],
+  [/laws of thermodynamics/, ['temperature', 'flame']],
+  [/phase equilibria/, ['snowflake', 'droplet']],
+  [/chemical equilibrium/, ['arrows-exchange', 'scale']],
+  [/rate laws and mechanisms/, ['stopwatch', 'route']],
+  [/schr[öo]dinger equation/, ['wave-sine', 'atom']],
+  [/particle in a box/, ['box', 'coil-spring']],
+  [/hydrogen atom/, ['atom-2', 'atom']],
+  [/molecular orbital/, ['atom', 'molecule']],
+  [/^spectroscopy$/, ['prism-light', 'rainbow']],
+  [/protein structure/, ['vector-spline', 'molecule']],
+  [/enzyme kinetics/, ['key', 'hourglass']],
+  [/metabolic pathways/, ['route', 'sitemap']],
+  [/bioenergetics/, ['battery-charging', 'bolt']],
+  [/symmetry and group theory/, ['reflect', 'hexagon']],
+  [/coordination chemistry/, ['topology-star-3', 'atom']],
+  [/crystal field theory/, ['diamond', 'prism']],
+  [/solid-state structures/, ['cube', 'grid-3x3']],
+  // ── College: physics ──
+  [/^university physics i:/, ['ball-baseball', 'push-box']],
+  [/^university physics ii:/, ['magnet', 'bolt']],
+  [/^university physics iii:/, ['prism-light', 'wave-sine']],
+  [/^classical mechanics$/, ['planet', 'coil-spring']],
+  [/^electromagnetic theory$/, ['antenna', 'magnet']],
+  [/^quantum mechanics$/, ['atom-2', 'wave-sine']],
+  [/^thermal & statistical/, ['temperature', 'dice']],
+  [/^kinematics$/, ['gauge', 'run']],
+  [/^newton's laws$/, ['push-box', 'apple']],
+  [/^work and energy$/, ['bolt', 'barbell']],
+  [/^momentum$/, ['ball-bowling', 'arrows-right']],
+  [/rotation and torque/, ['rotate-clockwise', 'settings']],
+  [/^oscillations$/, ['coil-spring', 'wave-sine']],
+  [/electric fields and gauss/, ['circle-dot', 'bolt']],
+  [/potential and capacitance/, ['circuit-capacitor', 'battery']],
+  [/^dc circuits$/, ['circuit-battery', 'circuit-resistor']],
+  [/magnetic fields and induction/, ['magnet', 'circuit-inductor']],
+  [/^ac circuits$/, ['wave-sine', 'plug']],
+  [/^waves$/, ['double-wave', 'ripple']],
+  [/interference and diffraction/, ['ripple', 'double-wave']],
+  [/special relativity/, ['clock-bolt', 'rocket']],
+  [/photons and quantum/, ['bulb', 'atom-2']],
+  [/nuclear physics/, ['radioactive', 'atom']],
+  [/lagrangian mechanics/, ['route', 'letter-l']],
+  [/hamiltonian mechanics/, ['letter-h', 'infinity']],
+  [/central forces/, ['planet', 'target']],
+  [/rigid-body motion/, ['rotate-3d', 'cube']],
+  [/coupled oscillations/, ['coil-spring', 'arrows-exchange']],
+  [/^electrostatics$/, ['bolt', 'circle-dot']],
+  [/^magnetostatics$/, ['magnet', 'compass']],
+  [/maxwell's equations/, ['math-symbols', 'magnet']],
+  [/electromagnetic waves/, ['antenna', 'wave-sine']],
+  [/wavefunctions and operators/, ['wave-sine', 'math-function']],
+  [/solving the schr/, ['x-equals', 'atom']],
+  [/angular momentum and spin/, ['rotate-360', 'atom']],
+  [/perturbation theory/, ['wave-saw-tool', 'adjustments']],
+  [/entropy and ensembles/, ['arrows-shuffle', 'dice']],
+  [/partition functions/, ['sum', 'function-graph']],
+  [/quantum statistics/, ['dice', 'atom-2']],
+  // ── College: Earth science and geography ──
+  [/^physical geology$/, ['mountain', 'volcano']],
+  [/^historical geology$/, ['spiral-shell', 'hourglass']],
+  [/^mineralogy$/, ['diamond', 'prism']],
+  [/^meteorology$/, ['cloud-storm', 'cloud-rain']],
+  [/^oceanography$/, ['ripple', 'anchor']],
+  [/^hydrology$/, ['droplets', 'droplet']],
+  [/^geophysics$/, ['radar', 'magnet']],
+  [/^physical geography$/, ['mountain', 'map-2']],
+  [/^human geography$/, ['users-group', 'map']],
+  [/^cartography$/, ['map', 'compass']],
+  [/geographic information systems/, ['stack-2', 'map-pin']],
+  [/^climatology$/, ['temperature-sun', 'cloud']],
+  [/^remote sensing$/, ['satellite', 'radar']],
+  [/minerals and rocks/, ['diamond', 'mountain']],
+  [/plate tectonics/, ['world', 'mountain']],
+  [/earthquakes and volcanoes/, ['volcano', 'activity']],
+  [/surface processes/, ['wind', 'droplets']],
+  [/^stratigraphy$/, ['rock-layers', 'stack-3']],
+  [/radiometric dating/, ['radioactive', 'hourglass']],
+  [/the fossil record/, ['spiral-shell', 'fish-bone']],
+  [/^earth history$/, ['history', 'timeline']],
+  [/^crystallography$/, ['diamond', 'cube']],
+  [/mineral chemistry/, ['periodic-table', 'flask']],
+  [/optical mineralogy/, ['microscope', 'prism-light']],
+  [/atmospheric structure/, ['stack-3', 'cloud']],
+  [/atmospheric thermodynamics/, ['temperature', 'cloud']],
+  [/clouds and precipitation/, ['cloud-rain', 'cloud']],
+  [/weather systems and forecasting/, ['cloud-storm', 'sun-wind']],
+  [/ocean basins/, ['anchor', 'world']],
+  [/currents and circulation/, ['ripple', 'rotate-clockwise']],
+  [/waves and tides/, ['double-wave', 'moon']],
+  [/seawater chemistry/, ['droplet', 'flask']],
+  [/water budgets/, ['bucket-droplet', 'droplets']],
+  [/surface runoff/, ['cloud-rain', 'droplets']],
+  [/groundwater flow/, ['rock-layers', 'droplet']],
+  [/flood frequency/, ['chart-histogram', 'ripple']],
+  [/^seismology$/, ['activity', 'wave-saw-tool']],
+  [/gravity and magnetics/, ['magnet', 'planet']],
+  [/^heat flow$/, ['flame', 'temperature']],
+  [/geophysical imaging/, ['scan', 'radar']],
+  [/earth–sun relationships/, ['sun', 'world']],
+  [/climate classification/, ['category', 'temperature-sun']],
+  [/^landforms$/, ['mountain']],
+  [/^biogeography$/, ['trees', 'map']],
+  [/population and migration/, ['users-group', 'route']],
+  [/^urbanization$/, ['building-skyscraper', 'building-community']],
+  [/economic geography/, ['building-store', 'coins']],
+  [/cultural landscapes/, ['building-arch', 'map']],
+  [/map projections/, ['world-longitude', 'map']],
+  [/scale and coordinate systems/, ['world-latitude', 'coordinate-point']],
+  [/thematic mapping/, ['map-2', 'chart-pie']],
+  [/map design/, ['map', 'pencil']],
+  [/vector and raster/, ['vector-triangle', 'grid-4x4']],
+  [/spatial analysis/, ['map-pin', 'scatter-fit']],
+  [/^geoprocessing$/, ['layers-intersect', 'stack-2']],
+  [/spatial statistics/, ['chart-dots-3', 'bell-curve']],
+  [/^energy balance$/, ['sun', 'scale']],
+  [/general circulation/, ['wind', 'world']],
+  [/climate variability/, ['chart-line', 'temperature']],
+  [/climate models/, ['world', 'cpu']],
+  [/electromagnetic radiation and sensors/, ['antenna', 'sun-high']],
+  [/image processing/, ['photo', 'adjustments']],
+  [/^classification$/, ['category', 'sort-ascending-shapes']],
+  [/change detection/, ['arrows-diff', 'eye']],
+  // ── College: biology ──
+  [/^principles of biology i$/, ['cell-body', 'microscope']],
+  [/^principles of biology ii$/, ['paw', 'plant']],
+  [/^genetics$/, ['dna', 'git-fork']],
+  [/cell & molecular/, ['microscope', 'molecule']],
+  [/^microbiology$/, ['virus', 'microscope']],
+  [/^ecology$/, ['trees', 'leaf']],
+  [/evolutionary biology/, ['fish', 'git-fork']],
+  [/human anatomy/, ['heartbeat', 'lungs']],
+  [/chemistry of life/, ['molecule', 'flask']],
+  [/cell structure/, ['cell-body', 'microscope']],
+  [/^metabolism$/, ['flame', 'cycle-arrows']],
+  [/cell division/, ['arrows-split', 'cell-body']],
+  [/^evolution$/, ['fish', 'git-fork']],
+  [/^biodiversity$/, ['butterfly', 'paw']],
+  [/plant form and function/, ['plant-2', 'leaf']],
+  [/animal form and function/, ['paw', 'fish']],
+  [/pedigrees/, ['hierarchy', 'dna']],
+  [/linkage and mapping/, ['link', 'dna']],
+  [/molecular genetics/, ['dna-2', 'molecule']],
+  [/population genetics/, ['users-group', 'dna']],
+  [/membrane biology/, ['cell-body', 'droplets']],
+  [/signal transduction/, ['antenna-bars-5', 'arrows-right']],
+  [/gene regulation/, ['adjustments', 'dna']],
+  [/cell-cycle control/, ['cycle-arrows', 'cell-body']],
+  [/microbial structure/, ['virus', 'microscope']],
+  [/microbial growth/, ['chart-line', 'trending-up']],
+  [/microbial genetics/, ['dna', 'virus']],
+  [/immunology/, ['shield-check', 'vaccine']],
+  [/population dynamics/, ['chart-line', 'users-group']],
+  [/community interactions/, ['paw', 'bug']],
+  [/ecosystem energetics/, ['sun', 'leaf']],
+  [/conservation biology/, ['leaf', 'trees']],
+  [/natural selection/, ['filter', 'fish']],
+  [/genetic drift/, ['dice', 'dna']],
+  [/phylogenetics/, ['binary-tree', 'hierarchy']],
+  [/^speciation$/, ['git-fork', 'butterfly']],
+  [/^tissues$/, ['grid-dots', 'cell-body']],
+  [/musculoskeletal/, ['bone', 'run']],
+  [/nervous system/, ['brain']],
+  [/cardiovascular and respiratory/, ['lungs', 'heartbeat']],
+  // ── College: engineering courses ──
+  [/^statics$/, ['building-bridge', 'scale']],
+  [/^dynamics$/, ['ball-baseball', 'gauge']],
+  [/mechanics of materials/, ['arrows-diagonal-minimize', 'push-box']],
+  [/advanced solid mechanics/, ['arrows-maximize', 'cube']],
+  [/materials science/, ['diamond', 'cube']],
+  [/^engineering thermodynamics$/, ['engine', 'temperature']],
+  [/^fluid mechanics$/, ['droplet', 'ripple']],
+  [/^heat transfer$/, ['flame', 'temperature']],
+  [/^control systems$/, ['adjustments', 'settings']],
+  [/circuit analysis i$/, ['circuit-resistor', 'circuit-battery']],
+  [/circuit analysis ii$/, ['circuit-inductor', 'wave-sine']],
+  [/digital logic design/, ['binary', 'cpu']],
+  [/signals & systems/, ['wave-square', 'wave-sine']],
+  [/^aerodynamics$/, ['plane', 'wind']],
+  [/compressible flow/, ['windsock', 'wind']],
+  [/flight mechanics/, ['plane-tilt', 'plane']],
+  [/aerospace structures/, ['plane-inflight', 'building-bridge']],
+  [/^propulsion$/, ['rocket', 'engine']],
+  [/orbital mechanics/, ['planet', 'satellite']],
+  [/machine design/, ['settings', 'tool']],
+  [/mechanical vibrations/, ['coil-spring', 'activity']],
+  [/manufacturing processes/, ['tool', 'hammer']],
+  [/^electronics$/, ['circuit-diode', 'cpu']],
+  [/engineering electromagnetics/, ['antenna', 'magnet']],
+  [/^power systems$/, ['building-wind-turbine', 'bolt']],
+  [/communication systems/, ['broadcast', 'antenna']],
+  [/^biomechanics$/, ['walk', 'bone']],
+  [/^biomaterials$/, ['bone', 'dental']],
+  [/^biotransport$/, ['droplet', 'heartbeat']],
+  [/^bioinstrumentation$/, ['heart-rate-monitor', 'stethoscope']],
+  [/^tissue engineering$/, ['cell-body', 'microscope']],
+  [/material & energy balances/, ['scale', 'building-factory-2']],
+  [/chemical engineering thermodynamics/, ['temperature', 'flask']],
+  [/transport phenomena/, ['transfer', 'arrows-right']],
+  [/separation processes/, ['filter', 'arrows-split']],
+  [/chemical reaction engineering/, ['flask', 'building-factory-2']],
+  [/process dynamics & control/, ['adjustments', 'activity']],
+  [/^process design$/, ['building-factory-2', 'sitemap']],
+  [/structural analysis/, ['building-bridge-2', 'building-bridge']],
+  [/soil mechanics/, ['rock-layers', 'shovel']],
+  [/hydraulics & hydrology/, ['droplets', 'ripple']],
+  [/transportation engineering/, ['road', 'traffic-lights']],
+  [/steel design/, ['building-skyscraper', 'building']],
+  [/reinforced concrete/, ['wall', 'building']],
+  [/environmental engineering/, ['recycle', 'leaf']],
+  [/^surveying$/, ['map-pin', 'current-location']],
+  [/discrete mathematics/, ['therefore', 'binary']],
+  [/data structures & algorithms/, ['binary-tree-2', 'code']],
+  [/computer organization/, ['cpu', 'cpu-2']],
+  [/embedded systems/, ['cpu-2', 'device-sd-card']],
+  [/operating systems/, ['terminal-2', 'device-desktop']],
+  [/computer networks/, ['topology-star-3', 'router']],
+  [/engineering programming/, ['code', 'terminal']],
+  [/engineering graphics/, ['drafting-compass', 'pencil']],
+  [/numerical methods/, ['calculator', 'chart-dots-2']],
+  [/finite element/, ['vector-triangle', 'grid-4x4']],
+  // ── College: engineering topics ──
+  [/force vectors and equilibrium/, ['vector-arrow', 'scale']],
+  [/trusses and frames/, ['building-bridge', 'triangles']],
+  [/^centroids$/, ['crosshair', 'target']],
+  [/moments of inertia/, ['rotate-clockwise', 'rotate-360']],
+  [/^friction$/, ['push-box', 'hand-stop']],
+  [/particle kinematics/, ['gauge', 'route']],
+  [/kinetics of particles/, ['ball-bowling', 'push-box']],
+  [/work–energy and impulse/, ['bolt', 'arrows-right']],
+  [/rigid-body dynamics/, ['rotate-3d', 'cube']],
+  [/stress and strain$/, ['arrows-maximize', 'coil-spring']],
+  [/axial loading/, ['arrows-vertical', 'arrow-bar-to-down']],
+  [/^torsion$/, ['rotate', 'rotate-clockwise']],
+  [/bending and shear/, ['vector-bezier', 'scissors']],
+  [/beam deflection/, ['vector-bezier-arc', 'building-bridge']],
+  [/column buckling/, ['arrows-diagonal-minimize', 'building']],
+  [/crystal structures/, ['cube', 'grid-3x3']],
+  [/defects and diffusion/, ['grid-dots', 'arrows-shuffle']],
+  [/phase diagrams/, ['chart-area-line', 'snowflake']],
+  [/mechanical properties/, ['barbell', 'arrows-maximize']],
+  [/properties of pure substances/, ['droplet', 'flask']],
+  [/^first law$/, ['bolt', 'scale']],
+  [/second law and entropy/, ['arrows-shuffle', 'temperature']],
+  [/power and refrigeration cycles/, ['snowflake', 'cycle-arrows']],
+  [/fluid statics/, ['droplet-half', 'arrows-down']],
+  [/bernoulli equation/, ['wind', 'droplet']],
+  [/control-volume analysis/, ['box', 'arrows-right']],
+  [/dimensional analysis/, ['dimensions', 'ruler']],
+  [/pipe flow/, ['droplets', 'arrows-right']],
+  [/boundary layers/, ['rock-layers', 'wind']],
+  [/^conduction$/, ['flame', 'arrows-right']],
+  [/^convection$/, ['wind', 'rotate-clockwise']],
+  [/^radiation$/, ['sun-high', 'radioactive']],
+  [/heat exchangers/, ['arrows-exchange', 'temperature']],
+  [/laplace-domain modeling/, ['transform', 'math-function']],
+  [/transfer functions/, ['arrows-right', 'math-function']],
+  [/stability and root locus/, ['chart-dots', 'scale']],
+  [/frequency response/, ['chart-line', 'wave-sine']],
+  [/pid control/, ['adjustments', 'target']],
+  [/ohm's and kirchhoff/, ['circuit-resistor', 'circuit-ammeter']],
+  [/node and mesh/, ['topology-star-3', 'grid-3x3']],
+  [/thévenin and norton/, ['circuit-battery', 'arrows-exchange']],
+  [/^op-amps$/, ['triangle', 'circuit-ground']],
+  [/rc and rl transients/, ['circuit-capacitor', 'exp-curve']],
+  [/number systems and boolean/, ['binary', 'toggle-right']],
+  [/combinational logic/, ['circuit-switch-open', 'cpu']],
+  [/sequential logic/, ['clock', 'circuit-switch-closed']],
+  [/state machines/, ['topology-ring-3', 'route']],
+  [/continuous and discrete signals/, ['wave-sine', 'chart-bar']],
+  [/^convolution$/, ['arrows-join', 'wave-square']],
+  [/laplace and z-transforms/, ['transform', 'letter-z']],
+  [/^sampling$/, ['chart-bar', 'wave-sine']],
+  [/airfoil theory/, ['plane', 'vector-bezier']],
+  [/lift and drag/, ['arrows-up', 'wind']],
+  [/finite wings/, ['plane-tilt', 'plane']],
+  [/intro to compressibility/, ['arrows-diagonal-minimize', 'wind']],
+  [/isentropic flow/, ['wind', 'arrows-right']],
+  [/normal and oblique shocks/, ['bolt', 'arrows-diagonal']],
+  [/nozzle flow/, ['filter', 'wind']],
+  [/supersonic aerodynamics/, ['rocket', 'plane']],
+  [/aircraft performance/, ['plane-departure', 'gauge']],
+  [/static stability/, ['scale', 'plane']],
+  [/dynamic stability/, ['activity', 'plane-tilt']],
+  [/flight control/, ['adjustments', 'plane']],
+  [/thin-walled structures/, ['cylinder', 'box']],
+  [/^buckling$/, ['arrows-diagonal-minimize', 'building']],
+  [/^fatigue$/, ['battery-1', 'repeat']],
+  [/gas turbine cycles/, ['engine', 'cycle-arrows']],
+  [/rocket propulsion/, ['rocket']],
+  [/nozzle performance/, ['filter', 'gauge']],
+  [/^combustion$/, ['flame', 'flask']],
+  [/two-body problem/, ['planet', 'circles']],
+  [/orbital elements/, ['satellite', 'circle-dot']],
+  [/orbital maneuvers/, ['rocket', 'route']],
+  [/interplanetary transfers/, ['planet', 'route-2']],
+  [/failure theories/, ['alert-triangle', 'bolt']],
+  [/shafts and bearings/, ['cylinder', 'settings']],
+  [/gears and fasteners/, ['settings', 'nut']],
+  [/free vibration/, ['coil-spring', 'wave-sine']],
+  [/forced vibration and resonance/, ['activity', 'wave-sine']],
+  [/^damping$/, ['exp-curve', 'coil-spring']],
+  [/multi-degree-of-freedom/, ['coil-spring', 'arrows-move']],
+  [/casting and forming/, ['hammer', 'bucket']],
+  [/^machining$/, ['tool', 'settings']],
+  [/additive manufacturing/, ['stack-3', 'printer']],
+  [/^tolerances$/, ['ruler-measure', 'dimensions']],
+  [/phasors and ac/, ['rotate-clockwise', 'wave-sine']],
+  [/^ac power$/, ['plug', 'bolt']],
+  [/frequency response and filters/, ['filter', 'wave-sine']],
+  [/^transformers$/, ['circuit-inductor', 'bolt']],
+  [/three-phase circuits/, ['wave-sine', 'circuit-motor']],
+  [/^diodes$/, ['circuit-diode']],
+  [/bjts and mosfets/, ['cpu', 'toggle-right']],
+  [/^amplifiers$/, ['volume', 'triangle']],
+  [/op-amp circuits/, ['triangle', 'circuit-resistor']],
+  [/transmission lines/, ['building-broadcast-tower', 'arrows-right']],
+  [/wave propagation/, ['ripple', 'wave-sine']],
+  [/^antennas$/, ['antenna']],
+  [/^power flow$/, ['arrows-right', 'bolt']],
+  [/transformers and machines/, ['circuit-motor', 'circuit-inductor']],
+  [/fault analysis/, ['alert-triangle', 'bolt']],
+  [/grid stability/, ['topology-star-3', 'scale']],
+  [/am and fm/, ['radio', 'antenna']],
+  [/digital modulation/, ['wave-square', 'binary']],
+  [/^noise$/, ['wave-saw-tool', 'volume']],
+  [/information theory/, ['binary', 'message']],
+  [/tissue mechanics/, ['cell-body', 'arrows-maximize']],
+  [/joint forces/, ['bone', 'push-box']],
+  [/gait analysis/, ['walk', 'run']],
+  [/^viscoelasticity$/, ['coil-spring', 'droplet']],
+  [/^biocompatibility$/, ['shield-check', 'heart']],
+  [/metals, polymers and ceramics/, ['diamond', 'molecule']],
+  [/^degradation$/, ['hourglass', 'trending-down']],
+  [/implant design/, ['dental', 'bone']],
+  [/diffusion in tissue/, ['arrows-shuffle', 'cell-body']],
+  [/blood flow/, ['heartbeat', 'droplet']],
+  [/mass transfer/, ['transfer', 'arrows-right']],
+  [/pharmacokinetics/, ['pill', 'exp-curve']],
+  [/^biosensors$/, ['heart-rate-monitor', 'antenna']],
+  [/biopotential amplifiers/, ['activity', 'volume']],
+  [/medical imaging/, ['scan', 'photo']],
+  [/signal filtering/, ['filter', 'wave-sine']],
+  [/^scaffolds$/, ['grid-3x3', 'building']],
+  [/cell–material interactions/, ['cell-body', 'arrows-exchange']],
+  [/^bioreactors$/, ['flask-2', 'building-factory-2']],
+  [/process flow diagrams/, ['sitemap', 'arrows-right']],
+  [/^material balances$/, ['scale', 'packages']],
+  [/reactive systems/, ['flame', 'flask']],
+  [/^energy balances$/, ['bolt', 'scale']],
+  [/equations of state/, ['balloon', 'x-equals']],
+  [/^fugacity$/, ['wind', 'droplet']],
+  [/vapor–liquid equilibrium/, ['droplets', 'arrows-exchange']],
+  [/reaction equilibria/, ['arrows-exchange', 'flask']],
+  [/momentum transport/, ['arrows-right', 'wind']],
+  [/heat transport/, ['flame', 'arrows-right']],
+  [/mass transport/, ['transfer', 'droplets']],
+  [/transport analogies/, ['equal', 'arrows-right']],
+  [/^distillation$/, ['flask-2', 'temperature']],
+  [/^absorption$/, ['droplets', 'arrow-bar-to-down']],
+  [/^extraction$/, ['arrows-split', 'test-pipe']],
+  [/^membranes$/, ['filter', 'grid-dots']],
+  [/^rate laws$/, ['stopwatch', 'flask']],
+  [/batch, cstr and pfr/, ['cylinder', 'bucket']],
+  [/multiple reactions/, ['arrows-split', 'flask']],
+  [/^catalysis$/, ['bolt', 'key']],
+  [/^process dynamics$/, ['activity', 'chart-line']],
+  [/feedback control/, ['cycle-arrows', 'adjustments']],
+  [/controller tuning/, ['adjustments-horizontal', 'adjustments']],
+  [/control-loop design/, ['repeat', 'sitemap']],
+  [/flowsheet synthesis/, ['sitemap', 'building-factory-2']],
+  [/equipment sizing/, ['dimensions', 'ruler']],
+  [/process economics/, ['coins', 'chart-line']],
+  [/process safety/, ['shield-check', 'alert-triangle']],
+  [/determinate structures/, ['building-bridge', 'triangles']],
+  [/influence lines/, ['chart-line', 'building-bridge']],
+  [/indeterminate structures/, ['building-bridge-2', 'question-mark']],
+  [/matrix methods/, ['matrix', 'grid-3x3']],
+  [/soil classification/, ['category', 'rock-layers']],
+  [/^compaction$/, ['arrows-diagonal-minimize', 'arrow-bar-to-down']],
+  [/^consolidation$/, ['arrow-bar-to-down', 'rock-layers']],
+  [/shear strength/, ['scissors', 'arrows-horizontal']],
+  [/bearing capacity/, ['weight', 'building']],
+  [/open-channel flow/, ['ripple', 'droplets']],
+  [/pipe networks/, ['topology-ring-3', 'droplets']],
+  [/rainfall–runoff/, ['cloud-rain', 'droplets']],
+  [/stormwater design/, ['umbrella', 'cloud-storm']],
+  [/traffic flow/, ['car', 'traffic-lights']],
+  [/geometric design/, ['road', 'drafting-compass']],
+  [/pavement design/, ['road', 'rock-layers']],
+  [/capacity analysis/, ['bus', 'traffic-lights']],
+  [/^lrfd$/, ['weight', 'scale']],
+  [/tension and compression members/, ['arrows-horizontal', 'arrows-diagonal-minimize']],
+  [/^beams$/, ['building-bridge', 'minus']],
+  [/^connections$/, ['nut', 'link']],
+  [/^flexure$/, ['vector-bezier', 'arrows-maximize']],
+  [/^shear$/, ['scissors']],
+  [/^columns$/, ['building-arch', 'building']],
+  [/slabs and footings/, ['rock-layers', 'building']],
+  [/^water treatment$/, ['droplet', 'filter']],
+  [/wastewater treatment/, ['recycle', 'droplets']],
+  [/air pollution/, ['wind', 'cloud-fog']],
+  [/solid waste/, ['trash', 'recycle']],
+  [/distance and angle measurement/, ['angle', 'ruler']],
+  [/^leveling$/, ['ruler-2', 'arrows-horizontal']],
+  [/traverse computations/, ['route', 'calculator']],
+  [/^gnss$/, ['satellite', 'gps']],
+  [/logic and proofs/, ['therefore', 'check']],
+  [/sets and functions/, ['circles-relation', 'math-function']],
+  [/^combinatorics$/, ['arrows-shuffle', 'dice']],
+  [/graph theory/, ['topology-star-3', 'affiliate']],
+  [/^recurrences$/, ['repeat', 'growing-dots']],
+  [/lists, stacks and queues/, ['stack-push', 'list']],
+  [/sorting and searching/, ['sort-ascending', 'search']],
+  [/big-o analysis/, ['chart-line', 'stopwatch']],
+  [/trees and graphs/, ['binary-tree', 'affiliate']],
+  [/instruction sets/, ['list-numbers', 'terminal']],
+  [/datapath and control/, ['route', 'cpu']],
+  [/^pipelining$/, ['stairs', 'arrows-right']],
+  [/memory hierarchy/, ['stack-3', 'device-sd-card']],
+  [/^microcontrollers$/, ['cpu-2', 'cpu']],
+  [/interrupts and timers/, ['alarm', 'stopwatch']],
+  [/serial protocols/, ['arrows-right', 'plug-connected']],
+  [/real-time constraints/, ['clock-bolt', 'stopwatch']],
+  [/processes and threads/, ['git-branch', 'arrows-split']],
+  [/^scheduling$/, ['calendar-time', 'list-numbers']],
+  [/memory management/, ['device-sd-card', 'stack-2']],
+  [/file systems/, ['folders', 'folder']],
+  [/^tcp\/ip$/, ['world', 'arrows-exchange']],
+  [/^routing$/, ['router', 'route']],
+  [/layered models/, ['stack-3', 'rock-layers']],
+  [/network performance/, ['gauge', 'wifi']],
+  [/variables, arrays and control flow/, ['code', 'variable']],
+  [/vectorized computation/, ['vector-arrow', 'matrix']],
+  [/plotting and data import/, ['chart-line', 'file-text']],
+  [/scripting engineering calculations/, ['terminal-2', 'calculator']],
+  [/orthographic and isometric/, ['perspective', 'cube']],
+  [/dimensioning and gd&t/, ['dimensions', 'ruler-measure']],
+  [/parametric solid modeling/, ['cube', 'adjustments']],
+  [/assemblies and drawings/, ['puzzle', 'pencil']],
+  [/root finding/, ['target', 'square-root']],
+  [/solving linear systems/, ['matrix', 'x-equals']],
+  [/interpolation and curve fitting/, ['scatter-fit', 'vector-spline']],
+  [/numerical integration/, ['chart-bar', 'math-integral']],
+  [/numerical ode solvers/, ['stairs-up', 'tangent-line']],
+  [/stress and strain tensors/, ['matrix', 'arrows-maximize']],
+  [/generalized hooke/, ['coil-spring', 'equal']],
+  [/energy methods/, ['bolt', 'battery']],
+  [/plasticity and failure/, ['alert-triangle', 'arrows-maximize']],
+  [/plates and shells/, ['square-rotated', 'spiral-shell']],
+  [/direct stiffness method/, ['matrix', 'coil-spring']],
+  [/shape functions/, ['function-graph', 'vector-triangle']],
+  [/truss, beam and 2d elements/, ['triangles', 'building-bridge']],
+  [/meshing and convergence/, ['grid-4x4', 'target']],
+  [/interpreting fea results/, ['chart-area-line', 'eye']],
+  // ── College fields ──
+  [/^mathematics$/, ['math-pi']],
+  [/^chemistry$/, ['flask']],
+  [/^physics$/, ['atom']],
+  [/^earth science$/, ['mountain']],
+  [/^geography$/, ['map']],
+  [/^biology$/, ['dna']],
+  [/^aerospace$/, ['plane']],
+  [/^mechanical$/, ['settings']],
+  [/^classical \(engineering mechanics\)$/, ['push-box']],
+  [/^electrical$/, ['bolt']],
+  [/^bioengineering$/, ['heartbeat']],
+  [/^chemical$/, ['flask-2']],
+  [/^civil$/, ['building-bridge-2']],
+  [/^computer$/, ['cpu']],
+  // ── General: engineering and computing ──
+  [/propulsion|rocket/, ['rocket']],
+  [/aero|flight|aircraft/, ['plane']],
+  [/orbit|gravit|planet|solar system/, ['planet', 'satellite']],
+  [/digital|computer|embedded|electronics/, ['cpu', 'cpu-2']],
+  [/network/, ['topology-star-3', 'router']],
+  [/programming|algorithm|software|operating system|numerical method/, ['code', 'terminal']],
+  [/communication|antenna|signal/, ['antenna', 'broadcast']],
+  [/vibration|oscillat/, ['coil-spring', 'activity']],
+  [/manufactur|machining/, ['tool', 'hammer']],
+  [/machine|mechanical|control system/, ['settings', 'adjustments']],
+  [/process|separation|reactor/, ['building-factory-2', 'sitemap']],
+  [/transportation|traffic/, ['road', 'car']],
+  [/concrete|steel|building/, ['building', 'wall']],
+  [/structural|bridge|civil|statics|truss|beam/, ['building-bridge', 'building-bridge-2']],
+  // ── General: chemistry ──
+  [/periodic/, ['periodic-table']],
+  [/biomolecule/, ['molecule', 'dna-2']],
+  [/stellar|big bang|cosmolog|galax/, ['stars', 'galaxy']],
+  [/\batoms?\b|atomic|isotope|electron config|quantum|element/, ['atom', 'atom-2']],
+  [/gas law|pressure|ideal gas/, ['balloon', 'gauge']],
   [
-    /molecul|bond|biomolecule|organic|polymer|states of matter|phase change|particles too small/,
-    'molecule',
+    /molecul|bond|organic|polymer|states of matter|phase change|particles too small/,
+    ['molecule', 'hexagon'],
   ],
   [
-    /chemi|acid|\bph\b|solution|molarity|titration|reaction|stoichiometr|\bmole\b|molar|equilibrium|spectroscop|analytical|mixing substances|conservation of mass|thermochem/,
-    'flask',
+    /chemi|acid|\bph\b|solution|molarity|titration|reaction|stoichiometr|\bmole\b|molar|equilibrium|spectroscop|analytical/,
+    ['flask', 'test-pipe', 'flask-2'],
   ],
-  // ── Life science ──
-  [/life cycle|water cycle|rock cycle|cycling|feedback|homeostasis/, 'cycle'],
+  // ── General: life science ──
+  [/life cycle/, ['butterfly', 'cycle-arrows']],
+  [/cycle|cycling|feedback|homeostasis/, ['cycle-arrows', 'recycle']],
   [
-    /\bdna\b|\bgenes?\b|genetic|allele|punnett|inherit|trait|mendel|replication|resemble their parents/,
-    'dna',
+    /\bdna\b|\bgenes?\b|genetic|allele|punnett|inherit|trait|mendel|resemble their parents/,
+    ['dna', 'dna-2'],
   ],
   [
-    /evolution|natural selection|speciation|adaptation|fossil|geologic time|radiometric|historical geology/,
-    'fossil',
+    /evolution|natural selection|speciation|adaptation|fossil|geologic time|radiometric/,
+    ['spiral-shell', 'fish-bone'],
   ],
-  [/cell|mitosis|meiosis|membrane|osmosis|microbio|tissue/, 'cell'],
+  [/cell|mitosis|meiosis|membrane|osmosis|microbio|tissue/, ['cell-body', 'microscope']],
+  [/heart|body system|anatomy|physiolog|structures of organisms|bio/, ['heartbeat', 'lungs']],
+  [/photosynth|\bplants?\b|seed|pollinat/, ['plant', 'seedling', 'leaf']],
+  [/animal|habitat|biodiversity|survive|living things/, ['paw', 'butterfly', 'fish']],
   [
-    /heart|body system|anatomy|physiolog|biomechanic|bioinstrument|biotransport|biomaterial|structures of organisms|bioengineering/,
-    'heart',
+    /food web|ecosystem|ecolog|environment|carrying capacity|resource|human impact/,
+    ['leaf', 'trees'],
   ],
-  [/photosynth|\bplants?\b|seed|pollinat|sunlight to make food/, 'sprout'],
-  [/biology/, 'cell'],
-  [/animal|habitat|biodiversity|survive|living things/, 'paw'],
-  [/food web|ecosystem|ecolog|environment|carrying capacity|resource|human impact/, 'leaf'],
-  // ── Earth and space ──
-  [/remote sensing|satellite/, 'satellite'],
-  [/earth system|globe/, 'globe'],
-  [/\bweather\b|climat|meteorolog|air mass|atmospher/, 'cloud'],
-  [/ocean/, 'wave'],
-  [/water|hydrolog|hydraul|fluid|hydrosphere/, 'drop'],
-  [/soil|layer/, 'layers'],
+  // ── General: Earth and space ──
+  [/remote sensing|satellite/, ['satellite']],
+  [/earth system|globe/, ['world', 'globe']],
+  [/\bweather\b|climat|meteorolog|air mass|atmospher/, ['cloud-rain', 'cloud', 'sun-wind']],
+  [/ocean/, ['ripple', 'anchor']],
+  [/water|hydrolog|hydraul|fluid/, ['droplet', 'droplets']],
+  [/soil|layer/, ['rock-layers', 'stack-3']],
   [
-    /rock|landform|erosion|weathering|tecton|seismic|earth'?s interior|geolog|mineral|earth changes|geophys|earth science|hazard/,
-    'mountain',
+    /rock|landform|erosion|weathering|tecton|seismic|earth'?s interior|geolog|mineral|earth changes|hazard/,
+    ['mountain', 'volcano'],
   ],
-  [/map|cartograph|\bgis\b|geograph/, 'map'],
-  [/moon/, 'moon'],
-  [/sunlight|\bsun\b|daylight|day and night|season/, 'sun'],
-  [/star\b/, 'star'],
-  // ── Physics ──
-  [/electromagnetic spectrum/, 'wave'],
-  [/energy|power system/, 'bolt'],
-  [/sound|doppler|acoustic|vibrating/, 'speaker'],
-  [/lets us see|seeing|\bvision\b/, 'eye'],
-  [/\blight\b|shadow|optic|lens|refract/, 'bulb'],
-  [/magnet|induction/, 'magnet'],
-  [/circuit|ohm|current|voltage|electric|charge/, 'circuit'],
-  [/wave|spectrum/, 'wave'],
-  [/heat|thermo|thermal|temperature|warm|enthalpy/, 'flame'],
-  [/force|push|newton|friction|incline|tension|mechanics of materials|solid mechanics/, 'push'],
+  [/map|cartograph|\bgis\b|geograph|surveying/, ['map', 'map-2', 'compass']],
+  [/moon/, ['moon', 'moon-stars']],
+  [/sunlight|\bsun\b|daylight|day and night|season/, ['sun', 'sunrise']],
+  [/star\b/, ['star', 'stars']],
+  // ── General: physics ──
+  [/electromagnetic spectrum/, ['rainbow', 'wave-sine']],
+  [/energy|power system/, ['bolt', 'battery']],
+  [/sound|doppler|acoustic|vibrating/, ['volume', 'speakerphone', 'ear']],
+  [/lets us see|seeing|\bvision\b/, ['eye']],
+  [/\blight\b|shadow|optic|lens|refract/, ['bulb', 'prism-light', 'sun']],
+  [/magnet|induction/, ['magnet', 'magnetic']],
+  [/circuit|ohm|current|voltage|electric|charge/, ['circuit-resistor', 'circuit-battery', 'plug']],
+  [/wave|spectrum/, ['double-wave', 'ripple', 'wave-sine']],
+  [/heat|thermo|thermal|temperature|warm|enthalpy/, ['flame', 'temperature']],
+  [/force|push|newton|friction|incline|tension|solid mechanics/, ['push-box', 'arrows-right']],
   [
     /speed|velocity|acceleration|kinematic|motion|projectile|momentum|collision|dynamics|mechanics/,
-    'speed',
+    ['gauge', 'run', 'car'],
   ],
-  [/density/, 'balance'],
-  [/material/, 'cube'],
-  [/physics/, 'atom'],
-  // ── Math: calculus and advanced ──
-  [/limit|continuity/, 'infinity'],
+  [/density/, ['scale', 'cube']],
+  [/material/, ['cube', 'diamond']],
+  // ── General: calculus and advanced math ──
+  [/limit|continuity/, ['infinity']],
+  [/derivative|differentiat|optimization|differential equation/, ['tangent-line', 'math-function']],
+  [/integra|calculus/, ['math-integral', 'math-integrals']],
+  [/sigma|series/, ['sum']],
+  [/linear algebra|matri|eigen/, ['matrix']],
+  [/vector/, ['vector-arrow']],
+  [/polar|complex number|parametric/, ['polar-grid', 'letter-i']],
+  [/discrete math|logic|proof/, ['therefore', 'check']],
   [
-    /derivative|differentiat|related rates|optimization|differential equation|tangent line/,
-    'tangent',
+    /conic|circumference|\barcs?\b|chord|sector|circles?\b|unit circle/,
+    ['circle-radius', 'circle-dot'],
   ],
-  [/integra|substitution|calculus/, 'integral'],
-  [/sigma|series/, 'sigma'],
-  [/linear algebra|matri|eigen/, 'matrix'],
-  [/vector/, 'vector'],
-  [/polar|complex number|parametric/, 'polar'],
-  [/discrete math|logic|proof/, 'proof'],
-  [/conic|circumference|\barcs?\b|chord|sector|circles?\b|unit circle/, 'circle'],
-  [/identit/, 'sine'],
-  [/right[- ]triangle|pythag|special right|distance between|distance, midpoint/, 'righttri'],
-  [/trig|sine|cosine|tangent|radian|identit/, 'sine'],
-  [/quadratic/, 'parabola'],
-  [/exponential|growth and decay|logarithm/, 'expo'],
-  [/scatter|correlation|regression|lines? of fit|residual/, 'scatter'],
-  [/slope|linear|y = mx|rate of change/, 'linear'],
-  [/polynomials\b/, 'xeq'],
-  [/function|composition|inverse|rational expression|polynomial/, 'curve'],
-  // ── Math: data and chance ──
-  [/tally/, 'tally'],
-  [/probab|chance|combinator|binomial|expected value|sampling|random/, 'dice'],
+  [/identit/, ['math-cos']],
+  [/right[- ]triangle|pythag|distance between/, ['right-triangle', 'triangle']],
+  [/trig|sine|cosine|tangent|radian/, ['math-sin', 'wave-sine']],
+  [/quadratic/, ['parabola']],
+  [/exponential|growth and decay|logarithm/, ['exp-curve', 'trending-up']],
+  [/scatter|correlation|regression|lines? of fit|residual/, ['scatter-fit', 'chart-dots']],
+  [/slope|linear|y = mx|rate of change/, ['line-graph', 'trending-up']],
+  [/polynomials\b/, ['x-squared', 'variable']],
+  [/function|composition|inverse|polynomial/, ['function-graph', 'math-function']],
+  // ── General: data and chance ──
+  [/tally/, ['tally-marks']],
+  [/probab|chance|combinator|expected value|sampling|random/, ['dice', 'dice-5']],
   [
     /normal distribution|z-score|standard deviation|mean|median|hypothesis|margin of error|statistic|distribution/,
-    'bell',
+    ['bell-curve', 'math-avg'],
   ],
-  [/line plot/, 'lineplot'],
-  [/coordinate|quadrant|graph points/, 'coords'],
-  [/\bgraphs?\b|data|chart/, 'bars'],
-  // ── Math: geometry ──
-  [/naming shapes/, 'shapes'],
-  [/compass|construction/, 'compass'],
-  [/translation|rotation|reflection|dilation|transformation/, 'mirror'],
-  [/\bparallel\b|perpendicular|symmetr/, 'lines'],
-  [/\bangles?\b|degree/, 'angle'],
-  [/congruen|similar triangle/, 'shapes'],
-  [/liquid volume/, 'cup'],
-  [/volume|prism|cylinder|cone|sphere|solid|cavalieri|faces, edges/, 'cube'],
-  [/area|nets\b|rows and columns of squares/, 'area'],
-  [/perimeter/, 'perimeter'],
-  [/shape|polygon|quadrilateral|2d figure|flat/, 'shapes'],
-  [/position word|in front of/, 'people'],
-  // ── Math: measurement ──
-  [/percent/, 'percent'],
+  [/line plot/, ['line-plot']],
+  [/coordinate|quadrant|graph points/, ['coordinate-point', 'axis-x']],
+  [/\bgraphs?\b|data|chart/, ['chart-bar', 'chart-histogram']],
+  // ── General: geometry ──
+  [/naming shapes/, ['triangle-square-circle']],
+  [/compass|construction/, ['drafting-compass']],
+  [/translation|rotation|reflection|dilation|transformation/, ['reflect', 'flip-horizontal']],
+  [/\bparallel\b|perpendicular|symmetr/, ['parallel-lines', 'flip-horizontal']],
+  [/\bangles?\b|degree/, ['angle']],
+  [/congruen|similar triangle/, ['triangles']],
+  [/volume|prism|cylinder|cone|sphere|solid|cavalieri/, ['cube', 'cylinder', 'cone', 'sphere']],
+  [/area|nets\b/, ['area-grid', 'grid-4x4']],
+  [/perimeter/, ['perimeter-box', 'rectangle']],
+  [/scale drawing/, ['dimensions', 'ratio-tape']],
+  [
+    /shape|polygon|quadrilateral|2d figure|flat/,
+    ['triangle-square-circle', 'square-rotated', 'hexagon'],
+  ],
+  // ── General: measurement ──
+  [/percent/, ['percentage', 'discount']],
   [
     /money|dollar|\bcents?\b|coin|\bbills?\b|price|\btax\b|\btip\b|markup|discount|interest/,
-    'coin',
+    ['coin', 'coins', 'cash'],
   ],
-  [/lengths on a number line/, 'numberline'],
-  [/elapsed time|\btime\b|clock|minute|hour|a\.m\./, 'clock'],
-  [/measure and draw/, 'angle'],
-  [/heavier|weight|\bmass\b/, 'balance'],
-  [/capacity|holds more|liquid volume/, 'cup'],
-  [/length|ruler|inches|feet|centimeter|meters|convert units|measure/, 'ruler'],
-  // ── Math: numbers and operations ──
-  [/\bratios?\b|proportion|\brates?\b|scale drawing|similar/, 'ratio'],
-  [/skip[- ]count|jumps/, 'hops'],
-  [/fraction/, 'fraction'],
-  [/number line|absolute value|negative|rational numbers/, 'numberline'],
-  [/ten.?frame|make 10|5 and some more|take from ten/, 'tenframe'],
-  [/even and odd|\beven\b|\bodd\b/, 'evenodd'],
-  [/array|equal groups/, 'array'],
+  [/elapsed time|\btime\b|clock|minute|hour|a\.m\./, ['clock', 'hourglass', 'stopwatch']],
+  [/measure and draw/, ['angle']],
+  [/liquid volume|capacity|holds more/, ['cup', 'bottle']],
+  [/heavier|weight|\bmass\b/, ['scale', 'weight']],
   [
-    /fraction|halves|fourths|thirds|parts equal|parts are equal|equal parts|mixed number|denominator/,
-    'fraction',
+    /length|ruler|inches|feet|centimeter|meters|convert units|measure/,
+    ['ruler', 'ruler-2', 'ruler-measure'],
   ],
-  [/decimal|tenths|hundredths/, 'decimal'],
-  [/equation|expression|variable|order of operations/, 'xeq'],
-  [/exponent|powers? of 10|scientific notation/, 'power'],
-  [/integer/, 'numberline'],
-  [/\broots?\b|radical|irrational/, 'sqrt'],
-  [
-    /place value|tens and ones|hundreds|expanded form|trade|teen number|round|10 or 100 more|ten less|to 1,000/,
-    'blocks',
-  ],
-  [/sequence|pattern/, 'sequence'],
-  [/factor|multiple|prime|composite|greatest common/, 'times'],
-  [/multipl|product/, 'times'],
-  [/divid|division|quotient/, 'divide'],
-  [/equal sign|true or false/, 'equals'],
-  [/inequalit/, 'ineq'],
-  [/equation|expression|variable|order of operations/, 'xeq'],
-  [/compar|greater|how many more|how much more|order three|which holds/, 'compare'],
-  [/two-step|, then |twice/, 'steps'],
-  [/word problems/, 'book'],
-  [/^add (four|three|several) numbers|^add within/, 'plus'],
-  [/^take away$|^subtract tens/, 'minus'],
-  [
-    /partner|all the ways|number bond|add|subtract|take away|sum\b|operations|word problems/,
-    'addsub',
-  ],
-  [/sort|classify/, 'shapes'],
-  [/count|how many|numbers to 120/, 'count'],
-  [/mathematics/, 'pi'],
+  // ── General: numbers and operations ──
+  [/\bratios?\b|proportion|\brates?\b|similar/, ['ratio-tape', 'math-x-divide-y']],
+  [/skip[- ]count|jumps/, ['number-hops']],
+  [/number line|absolute value|negative|rational numbers/, ['number-line', 'plus-minus']],
+  [/ten.?frame|make 10|take from ten/, ['ten-frame']],
+  [/even and odd|\beven\b|\bodd\b/, ['even-odd']],
+  [/array|equal groups/, ['dot-array', 'grid-dots']],
+  [/fraction|halves|fourths|thirds|mixed number|denominator/, ['fraction-pie', 'chart-pie']],
+  [/decimal|tenths|hundredths/, ['decimal-grid']],
+  [/equation|expression|variable|order of operations/, ['x-equals', 'variable', 'parentheses']],
+  [/exponent|powers? of 10/, ['x-squared', 'superscript']],
+  [/integer/, ['plus-minus', 'number-line']],
+  [/\broots?\b|radical|irrational/, ['square-root', 'square-root-2']],
+  [/place value|tens and ones|hundreds|teen number|round|to 1,000/, ['base-ten', 'abacus']],
+  [/sequence|pattern/, ['growing-dots', 'trending-up']],
+  [/factor|multiple|prime|composite/, ['times-sign', 'list-numbers']],
+  [/multipl|product/, ['times-sign', 'x']],
+  [/divid|division|quotient/, ['divide']],
+  [/equal sign/, ['equals-sign', 'equal']],
+  [/inequalit/, ['less-equal', 'math-lower']],
+  [/compar|greater|how many more|how much more/, ['compare-signs', 'math-greater']],
+  [/two-step|, then |twice/, ['two-step']],
+  [/word problems/, ['book', 'notebook']],
+  [/partner|add|subtract|take away|sum\b|operations/, ['add-sub', 'math-symbols', 'plus']],
+  [/sort|classify/, ['category', 'sort-ascending-shapes']],
+  [/count|how many/, ['dot-count', 'numbers']],
 ];
 
-/** The first rule that matches, if any. */
-export function iconFromTitle(title: string): TopicIconName | undefined {
+/**
+ * Related icons, tried after a box's own icons are taken (e.g. the other chemistry icons for a
+ * chemistry topic whose flask is already used on the page).
+ */
+const FAMILIES: TopicIconName[][] = [
+  ['dot-count', 'grid-dots', 'numbers', 'abacus', 'sort-ascending-numbers', 'list-numbers'],
+  ['add-sub', 'plus', 'minus', 'math-symbols', 'plus-minus', 'sum', 'two-step', 'equal'],
+  ['times-sign', 'x', 'divide', 'dot-array', 'grid-3x3', 'math-x-divide-y'],
+  ['fraction-pie', 'chart-pie', 'math-1-divide-2', 'math-1-divide-3', 'decimal-grid', 'percentage'],
+  ['base-ten', 'abacus', 'ten-frame', 'numbers'],
+  ['compare-signs', 'math-greater', 'math-lower', 'less-equal', 'equal-not', 'scale'],
+  [
+    ...['ruler', 'ruler-2', 'ruler-3', 'ruler-measure', 'dimensions', 'scale', 'weight'],
+    ...['cup', 'bottle', 'clock', 'hourglass', 'stopwatch'],
+  ] as TopicIconName[],
+  [
+    ...['coin', 'coins', 'cash', 'cash-banknote', 'pig-money', 'receipt', 'wallet'],
+    ...['shopping-cart', 'discount', 'percentage'],
+  ] as TopicIconName[],
+  [
+    ...['chart-bar', 'chart-histogram', 'chart-line', 'chart-pie', 'chart-dots'],
+    ...['chart-infographic', 'line-plot', 'scatter-fit', 'bell-curve', 'dice', 'dice-5'],
+  ] as TopicIconName[],
+  [
+    ...['triangle-square-circle', 'triangle', 'square-rotated', 'hexagon', 'pentagon'],
+    ...['polygon', 'circle-radius', 'cube', 'cylinder', 'cone', 'sphere', 'pyramid', 'angle'],
+    ...['parallel-lines', 'area-grid', 'perimeter-box', 'reflect', 'drafting-compass'],
+    'right-triangle',
+  ] as TopicIconName[],
+  [
+    ...['x-equals', 'variable', 'parentheses', 'brackets', 'x-squared', 'superscript'],
+    ...['square-root', 'less-equal'],
+  ] as TopicIconName[],
+  [
+    ...['function-graph', 'line-graph', 'parabola', 'exp-curve', 'math-function'],
+    ...['math-function-y', 'coordinate-point', 'trending-up', 'wave-sine', 'math-sin'],
+    ...['math-cos', 'math-tg', 'polar-grid', 'tangent-line'],
+  ] as TopicIconName[],
+  [
+    ...['math-integral', 'math-integrals', 'math-integral-x', 'sum', 'infinity'],
+    ...['tangent-line', 'matrix', 'vector-arrow', 'therefore', 'math-pi'],
+  ] as TopicIconName[],
+  [
+    ...['flask', 'flask-2', 'test-pipe', 'test-pipe-2', 'molecule', 'atom', 'atom-2'],
+    ...['periodic-table', 'droplet', 'flame', 'temperature', 'balloon', 'diamond', 'prism-light'],
+  ] as TopicIconName[],
+  [
+    ...['cell-body', 'microscope', 'dna', 'dna-2', 'virus', 'heartbeat', 'lungs', 'brain'],
+    ...['bone', 'pill', 'stethoscope'],
+  ] as TopicIconName[],
+  [
+    ...['leaf', 'plant', 'plant-2', 'seedling', 'flower', 'trees', 'paw', 'butterfly', 'fish'],
+    ...['bug', 'spiral-shell', 'fish-bone', 'cycle-arrows', 'recycle'],
+  ] as TopicIconName[],
+  [
+    ...['sun', 'moon', 'moon-stars', 'star', 'stars', 'planet', 'galaxy', 'world', 'globe'],
+    ...['satellite', 'telescope', 'rocket'],
+  ] as TopicIconName[],
+  [
+    ...['mountain', 'volcano', 'rock-layers', 'diamond', 'cloud', 'cloud-rain', 'cloud-storm'],
+    ...['snowflake', 'wind', 'droplet', 'droplets', 'ripple', 'double-wave', 'map', 'map-2'],
+    ...['compass', 'world-longitude'],
+  ] as TopicIconName[],
+  [
+    ...['push-box', 'gauge', 'bolt', 'battery', 'magnet', 'bulb', 'eye', 'volume', 'wave-sine'],
+    ...['double-wave', 'coil-spring', 'rotate-clockwise', 'circuit-resistor', 'circuit-battery'],
+    ...['plug', 'antenna'],
+  ] as TopicIconName[],
+  [
+    ...['settings', 'tool', 'hammer', 'nut', 'adjustments', 'building-factory-2'],
+    ...['building-bridge', 'building-bridge-2', 'building', 'wall', 'road', 'car', 'plane'],
+    ...['rocket', 'engine', 'cpu', 'cpu-2', 'code', 'terminal', 'binary', 'topology-star-3'],
+    ...['router', 'device-desktop'],
+  ] as TopicIconName[],
+];
+
+const ALL = [...Object.keys(CUSTOM), ...Object.keys(TABLER)] as TopicIconName[];
+const unique = <T>(xs: T[]) => [...new Set(xs)];
+
+/** Every icon that fits a title, best first. */
+export function iconsFromTitle(title: string): TopicIconName[] {
   const t = title.toLowerCase();
-  return RULES.find(([re]) => re.test(t))?.[1];
+  return unique(RULES.filter(([re]) => re.test(t)).flatMap(([, icons]) => icons));
 }
 
-/** Each strand's icon (the grade page, and skills no rule matches). */
+/** The best icon for a title on its own, if any rule matches. */
+export const iconFromTitle = (title: string): TopicIconName | undefined => iconsFromTitle(title)[0];
+
+const related = (icon: TopicIconName) => FAMILIES.filter((f) => f.includes(icon)).flat();
+
+/** A box to give an icon: its title, then icons from what it belongs to. */
+export interface IconRequest {
+  title: string;
+  context?: TopicIconName[];
+}
+
+/**
+ * Icons for boxes shown together, all different. Each box gets the first of its candidates
+ * (its title's icons, its context, icons related to those, then any icon) not used by another
+ * box; when an earlier box holds a later box's choice, the earlier box moves to another of its
+ * choices if it can (a matching that keeps boxes on their best icons).
+ */
+export function assignIcons(requests: IconRequest[]): TopicIconName[] {
+  const lists = requests.map((r) => {
+    const own = unique([...iconsFromTitle(r.title), ...(r.context ?? [])]);
+    return unique([...own, ...own.flatMap(related), ...ALL]);
+  });
+  const owner = new Map<TopicIconName, number>();
+  const chosen: TopicIconName[] = [];
+  /** Gives box `i` one of its first `depth` choices, moving other boxes if needed. */
+  const place = (i: number, depth: number, seen: Set<TopicIconName>): boolean => {
+    for (const icon of lists[i]!.slice(0, depth)) {
+      if (seen.has(icon)) continue;
+      seen.add(icon);
+      const j = owner.get(icon);
+      if (j === undefined || place(j, depth, seen)) {
+        owner.set(icon, i);
+        chosen[i] = icon;
+        return true;
+      }
+    }
+    return false;
+  };
+  requests.forEach((_, i) => {
+    // Widen step by step, so every box stays as close to its best icon as it can.
+    for (let depth = 1; !place(i, depth, new Set()); depth++);
+  });
+  return chosen;
+}
+
+// ─── Icons for each group of boxes ──────────────────────────────────────────
+
+/** Each strand's own icon (its box on a grade page, and the fallback for its skills). */
 const STRANDS: Record<string, TopicIconName> = {
-  'Counting & Cardinality': 'count',
-  'Operations & Algebraic Thinking': 'addsub',
-  'Number & Base Ten': 'blocks',
-  Fractions: 'fraction',
+  'Counting & Cardinality': 'dot-count',
+  'Operations & Algebraic Thinking': 'add-sub',
+  'Number & Base Ten': 'base-ten',
+  Fractions: 'fraction-pie',
   'Measurement & Data': 'ruler',
-  Geometry: 'shapes',
-  'Ratios & Proportions': 'ratio',
-  'The Number System': 'numberline',
-  'Expressions & Equations': 'xeq',
-  Functions: 'curve',
-  'Statistics & Probability': 'bell',
-  'Algebra 1': 'xeq',
-  'Algebra 2': 'curve',
-  'Precalculus & Statistics': 'sine',
+  Geometry: 'triangle-square-circle',
+  'Ratios & Proportions': 'ratio-tape',
+  'The Number System': 'number-line',
+  'Expressions & Equations': 'x-equals',
+  Functions: 'function-graph',
+  'Statistics & Probability': 'bell-curve',
+  'Algebra 1': 'variable',
+  'Algebra 2': 'exp-curve',
+  'Precalculus & Statistics': 'math-sin',
   'Physical Science': 'bolt',
   'Life Science': 'leaf',
-  'Earth & Space Science': 'globe',
-  Biology: 'cell',
+  'Earth & Space Science': 'world',
+  Biology: 'dna',
   Chemistry: 'flask',
   Physics: 'atom',
 };
-export const strandIcon = (strand: string): TopicIconName => STRANDS[strand] ?? 'count';
+export const strandIcon = (strand: string): TopicIconName => STRANDS[strand] ?? 'dot-count';
 
 const DIVISIONS: Record<Division, TopicIconName> = {
-  math: 'pi',
+  math: 'math-pi',
   science: 'atom',
-  engineering: 'gear',
+  engineering: 'settings',
 };
 export const divisionIcon = (division: Division): TopicIconName => DIVISIONS[division];
 
-export const skillIcon = (skill: Skill): TopicIconName =>
-  iconFromTitle(skill.title) ?? strandIcon(skill.strand);
+/** The strands on a grade page. */
+export const strandIcons = (strands: string[]) =>
+  assignIcons(strands.map((s) => ({ title: '', context: [strandIcon(s)] })));
 
-export const problemTypeIcon = (title: string, skill: Skill): TopicIconName =>
-  iconFromTitle(title) ?? skillIcon(skill);
+/** The skills in one strand. */
+export const skillIcons = (skills: readonly Skill[]) =>
+  assignIcons(skills.map((s) => ({ title: s.title, context: [strandIcon(s.strand)] })));
 
-export const fieldIcon = (division: Division, title: string): TopicIconName =>
-  iconFromTitle(title) ?? divisionIcon(division);
+/** A skill's lessons: the main lesson, then each problem type. */
+export function lessonIcons(skill: Skill, typeTitles: string[]): TopicIconName[] {
+  const [main] = skillIcons([skill]);
+  return assignIcons([
+    { title: skill.title, context: [main!] },
+    ...typeTitles.map((title) => ({ title, context: [main!] })),
+  ]);
+}
 
-export const courseIcon = (course: Course): TopicIconName =>
-  iconFromTitle(course.title) ?? divisionIcon(course.division);
+/** The fields of a college division. */
+export const fieldIcons = (division: Division, titles: string[]) =>
+  assignIcons(titles.map((title) => ({ title, context: [divisionIcon(division)] })));
 
-export const topicIcon = (topic: string, course: Course): TopicIconName =>
-  iconFromTitle(topic) ?? courseIcon(course);
+/** A list of courses (a field's, or a division's). */
+export const courseIcons = (courses: readonly Course[]) =>
+  assignIcons(courses.map((c) => ({ title: c.title, context: [divisionIcon(c.division)] })));
+
+/** A course's topics. */
+export function topicIcons(course: Course): TopicIconName[] {
+  const [own] = courseIcons([course]);
+  return assignIcons(course.topics.map((title) => ({ title, context: [own!] })));
+}

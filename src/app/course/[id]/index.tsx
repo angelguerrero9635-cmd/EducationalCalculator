@@ -22,7 +22,7 @@ import {
   skipsFieldLevel,
   topicRoute,
 } from '@/data/selectors';
-import { topicIcon } from '@/data/icons';
+import { topicIcons } from '@/data/icons';
 import { COURSES } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { space, usePalette } from '@/theme';
@@ -40,6 +40,7 @@ export default function CourseScreen() {
 
   if (!course) return <EmptyState title="Course not found" message={id} />;
   if (isLocked(course.id)) return <LockedState />;
+  const icons = topicIcons(course);
 
   return (
     <ScrollView
@@ -63,7 +64,7 @@ export default function CourseScreen() {
           <Tile
             key={index}
             testID={`topic-${index}`}
-            icon={topicIcon(topic, course)}
+            icon={icons[index]}
             tone={index}
             title={topic}
             route={topicRoute(course.id, index)}

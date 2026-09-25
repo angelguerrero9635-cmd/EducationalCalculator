@@ -12,7 +12,7 @@ import {
   fieldRoute,
   isDivision,
 } from '@/data/selectors';
-import { fieldIcon } from '@/data/icons';
+import { fieldIcons } from '@/data/icons';
 import { coursesFor, HE_FIELDS } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
@@ -31,6 +31,13 @@ export default function DivisionScreen() {
   }
 
   const view = divisionView(division);
+  const icons =
+    view.kind === 'fields'
+      ? fieldIcons(
+          division,
+          view.fields.map((f) => f.title),
+        )
+      : [];
   return (
     <>
       <Stack.Screen options={{ title: divisionLabel(division) }} />
@@ -48,7 +55,7 @@ export default function DivisionScreen() {
               <Tile
                 key={f.id}
                 testID={`field-${f.id}`}
-                icon={fieldIcon(division, f.title)}
+                icon={icons[i]}
                 tone={divisionTone(division) + i}
                 title={f.title}
                 subtitle={countLabel(coursesFor(division, f.id).length, 'course')}
