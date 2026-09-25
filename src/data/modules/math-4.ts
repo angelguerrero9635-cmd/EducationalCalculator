@@ -692,4 +692,129 @@ export const MATH_4_MODULES: ModuleDef[] = [
     startWith: ['b', 'a', 'c'],
     representation: { kind: 'fractionLine', numerator: 's', denominator: 'b', wholes: 2 },
   },
+
+  // ── Multiplying a fraction by a whole number (4.NF.4) ──
+  {
+    id: 'm.4.fraction-times-whole',
+    assumptions: [
+      'A whole number times a fraction is that many copies of the fraction: 5 × 2/3 is 2/3 five times.',
+      'Multiply the whole number by the top. The bottom stays: the parts are the same size.',
+      'A product past 1 can be written as wholes and parts: 10/3 = 3 wholes and 1/3.',
+      'The fraction is at most 1. Whole numbers to 10, bottoms from 2 to 12.',
+    ],
+    variables: [
+      whole('n', 'n', 'Whole number', 1, 10),
+      whole('a', 'a', 'Top', 1, 12),
+      whole('b', 'b', 'Bottom', 2, 12),
+      whole('p', 'p', 'Top of the product', 1, 120),
+      { ...whole('w', 'w', 'Wholes in the product', 0, 10), derived: true },
+      { ...whole('r', 'r', 'Parts past the last whole', 0, 11), derived: true },
+    ],
+    relations: [
+      {
+        id: 'a ≤ b',
+        constraint: true,
+        display: '{a}/{b} is at most 1',
+        vars: ['a', 'b'],
+        residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'p = n × a',
+        display: '{n} × {a}/{b} = {p}/{b}',
+        check: (v: Values) => `${v.n} × ${v.a} = ${v.p}`,
+        vars: ['p', 'n', 'a', 'b'],
+        residual: (v: Values) => v.p! - v.n! * v.a!,
+        solve: {
+          p: (v: Values) => v.n! * v.a!,
+          n: (v: Values) => div(v.p!, v.a!),
+          a: (v: Values) => div(v.p!, v.n!),
+          b: () => undefined,
+        },
+      },
+      {
+        id: 'w = wholes in p/b',
+        display: '{p}/{b} = {w} wholes and {r}/{b}',
+        check: (v: Values) => `${v.w} × ${v.b} + ${v.r} = ${v.p}`,
+        vars: ['w', 'p', 'b', 'r'],
+        residual: (v: Values) => v.w! * v.b! + v.r! - v.p! + (v.r! >= v.b! ? 1 : 0),
+        solve: {
+          w: (v: Values) => (v.r === undefined ? undefined : (v.p! - v.r!) / v.b!),
+          r: (v: Values) => (v.w === undefined ? undefined : v.p! - v.w! * v.b!),
+          p: (v: Values) => v.w! * v.b! + v.r!,
+          b: () => undefined,
+        },
+      },
+      {
+        id: 'w = floor(p/b)',
+        display: 'whole numbers passed by {p}/{b}: {w}',
+        vars: ['w', 'p', 'b'],
+        residual: (v: Values) => v.w! - Math.floor(v.p! / v.b!),
+        solve: {
+          w: (v: Values) => Math.floor(v.p! / v.b!),
+          p: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'a ≤ b': {},
+      'p = n × a': {
+        p: {
+          expr: '{n} × {a}',
+          how: 'Add the top that many times, or multiply the whole number by the top.',
+          work: (v) =>
+            v.n! <= 6
+              ? [`${Array(v.n!).fill(`${v.a}/${v.b}`).join(' + ')} = ${v.p}/${v.b}`]
+              : timesWork(v.n!, v.a!),
+        },
+        n: {
+          expr: '{p} ÷ {a}',
+          how: 'Divide the top of the product by the top of the fraction: how many copies.',
+          work: (v) => divideWork(v.p!, v.a!),
+        },
+        a: {
+          expr: '{p} ÷ {n}',
+          how: 'Divide the top of the product by the whole number.',
+          work: (v) => divideWork(v.p!, v.n!, 'second'),
+        },
+      },
+      'w = floor(p/b)': {
+        w: {
+          expr: 'wholes in {p} parts of {b}',
+          how: 'Every full set of parts makes 1 whole. Count the full sets in the product.',
+          work: (v) =>
+            v.w! > 0
+              ? [
+                  `Count by ${v.b}s: ${countList(0, v.b!, v.w!)} → ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`,
+                ]
+              : [`${v.p} is less than ${v.b}, so the product is less than 1 whole.`],
+        },
+      },
+      'w = wholes in p/b': {
+        r: {
+          expr: '{p} − {w} × {b}',
+          how: 'Take away the parts that make wholes. The rest are the parts past the last whole.',
+          work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.p} − ${v.w! * v.b!} = ${v.r}`],
+          note: (v) =>
+            v.w! > 0
+              ? `(${v.p}/${v.b} = ${v.w} ${v.w === 1 ? 'whole' : 'wholes'} and ${v.r}/${v.b})`
+              : '',
+        },
+        w: {
+          expr: '({p} − {r}) ÷ {b}',
+          how: 'Take away the parts left over. Share the rest into wholes.',
+          work: (v) => [`${v.p} − ${v.r} = ${v.p! - v.r!}`, ...divideWork(v.p! - v.r!, v.b!)],
+        },
+        p: {
+          expr: '{w} × {b} + {r}',
+          how: 'Each whole has the same number of parts. Add the parts left over.',
+          work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.w! * v.b!} + ${v.r} = ${v.p}`],
+        },
+      },
+    },
+    example: { n: 5, a: 2, b: 3, p: 10, w: 3, r: 1 },
+    startWith: ['n', 'a', 'b'],
+    representation: { kind: 'fractionLine', numerator: 'p', denominator: 'b', wholes: 3 },
+  },
 ];
