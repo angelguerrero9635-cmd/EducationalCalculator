@@ -109,7 +109,7 @@ src/
   engine/                     Formula solver, units and conversions, formatting (pure, tested)
   components/module/          Module UI: formula inputs + linked table/chart/diagram (reps/)
   config/access.ts            isLocked(nodeId) stub (always false; no purchase logic yet)
-  icons/                      Icon drawings: our own (custom.ts) and Tabler's (tabler.ts, generated)
+  icons/custom.ts             Icon drawings for Browse boxes (all drawn for this app)
   theme.ts                    The entire look: palettes, font, type scale, spacing, chart styling
 docs/MODULE_GUIDE.md          Content standards and the review process for modules
 docs/MODULE_PLAN.md           Sections for writing the remaining modules, with status
@@ -223,10 +223,8 @@ The whole look lives in `src/theme.ts`. Components hardcode no colors, fonts or 
 - **Charts:** label sizes, line widths, dash patterns, and drag-handle size and touch area
   (`chart`).
 - **Box icons:** `src/data/icons.ts` matches each box's title to icons; boxes on the same page
-  never share one. Icons are our own drawings (`src/icons/custom.ts`) or
-  [Tabler Icons](https://tabler.io/icons) (MIT, `src/icons/TABLER_LICENSE`). To use another Tabler
-  icon, add its name to `icons.ts`, then run `node scripts/vendor-icons.mjs <folder>` with the
-  `icons/outline` folder from `npm pack @tabler/icons` (no package is installed).
+  never share one. Every icon is drawn for this app in `src/icons/custom.ts` (no icon sets or
+  other licensed artwork).
 
 ## What's stubbed
 

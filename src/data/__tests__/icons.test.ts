@@ -1,5 +1,4 @@
 import { CUSTOM } from '@/icons/custom';
-import { TABLER } from '@/icons/tabler';
 
 import {
   courseIcons,
@@ -64,14 +63,14 @@ describe('Browse box icons', () => {
     expect(iconFromTitle('Tell time to the hour and half hour')).toBe('clock');
     expect(iconFromTitle('Multiply and divide within 100')).toBe('times-sign');
     expect(iconFromTitle('Area of rectangles (A = l × w)')).toBe('area-grid');
-    expect(iconFromTitle('Heavier and lighter')).toBe('scale');
+    expect(iconFromTitle('Heavier and lighter')).toBe('pan-balance');
     expect(iconFromTitle('Human Anatomy & Physiology')).toBe('heartbeat');
     expect(iconFromTitle('Interference and diffraction')).toBe('ripple');
     expect(iconFromTitle('Word problems')).toBe('book');
   });
 
   it('never repeats an icon among boxes shown together, and draws every icon', () => {
-    const drawn = new Set([...Object.keys(CUSTOM), ...Object.keys(TABLER)]);
+    const drawn = new Set(Object.keys(CUSTOM));
     for (const [name, icons] of groups()) {
       for (const icon of icons) expect([name, icon && drawn.has(icon)]).toEqual([name, true]);
       const repeated = icons.filter((x, i) => icons.indexOf(x) !== i);

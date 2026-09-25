@@ -2,9 +2,8 @@ import Svg, { Circle, G, Path } from 'react-native-svg';
 
 import type { TopicIconName } from '@/data/icons';
 import { CUSTOM } from '@/icons/custom';
-import { TABLER } from '@/icons/tabler';
 
-const DRAWINGS: Record<string, string> = { ...TABLER, ...CUSTOM };
+const DRAWINGS: Record<string, string> = CUSTOM;
 
 const num = (s: string) => s.split(',').map(Number) as [number, number, number];
 
