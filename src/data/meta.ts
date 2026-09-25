@@ -2,7 +2,7 @@
  * Page titles and descriptions (for <title>, meta description and link previews), built from
  * the taxonomy and module content so every pre-rendered page describes itself.
  */
-import { getModule, getModules } from './modules';
+import { getLayout, getModule, getModules, layoutSummary } from './modules';
 import {
   countLabel,
   divisionLabel,
@@ -64,6 +64,8 @@ const pictureName = (kind: string) =>
 
 /** What the lesson page offers, from its module, e.g. "Interactive ten frame, …". */
 function lessonSummary(id: string, early: boolean): string {
+  const layout = getLayout(id);
+  if (layout) return `${layoutSummary(layout)} ${layout.assumptions[0] ?? ''}`.trim();
   const modules = id.includes('~')
     ? [getModule(id)].filter((m) => !!m)
     : getModules(id).slice(0, 1);

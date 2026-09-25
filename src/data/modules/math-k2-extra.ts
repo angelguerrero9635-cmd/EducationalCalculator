@@ -2,7 +2,7 @@
  * Section 1 extra modules: common test question types that need a different model or picture
  * from a skill's main module (found by the exam-coverage review). Ids are `<skill id>~<slug>`.
  */
-import type { ModuleDef, StepText } from './types';
+import type { ModuleDef } from './types';
 import type { Values } from '@/engine/types';
 
 import {
@@ -773,95 +773,6 @@ export const MATH_K2_EXTRA_MODULES: ModuleDef[] = [
   })(),
 
   // Grade 1: is the number sentence true or false? (1.OA.7).
-  (() => {
-    const L = (v: Values) => v.a! + v.b!;
-    const R = (v: Values) => v.c! + v.d!;
-    const leftMore = (v: Values) => L(v) >= R(v);
-    const sides = (v: Values) => [
-      `Left: ${v.a} + ${v.b} = ${L(v)}`,
-      `Right: ${v.c} + ${v.d} = ${R(v)}`,
-    ];
-    // A missing number on one side: the other side's total, plus or minus the difference.
-    const missing = (x: 'a' | 'b' | 'c' | 'd'): StepText => {
-      const left = x === 'a' || x === 'b';
-      const partner = { a: 'b', b: 'a', c: 'd', d: 'c' }[x];
-      const other = left ? '({c} + {d})' : '({a} + {b})';
-      // Which way: the side with x is the bigger one when the left is bigger and x is on the left.
-      const bigger = (v: Values) => leftMore(v) === left;
-      return {
-        expr: (v) => `${other} ${bigger(v) ? '+' : '−'} {D} − {${partner}}`,
-        how: (v) =>
-          `Add the ${left ? 'right' : 'left'} side. ${bigger(v) ? 'Add' : 'Take away'} the difference. Then take away the other number on this side.`,
-        work: (v) => {
-          const o = left ? R(v) : L(v);
-          const side = bigger(v) ? o + v.D! : o - v.D!;
-          return [
-            left ? `Right: ${v.c} + ${v.d} = ${o}` : `Left: ${v.a} + ${v.b} = ${o}`,
-            `${o} ${bigger(v) ? '+' : '−'} ${v.D} = ${side}`,
-            `${side} − ${v[partner]} = ${v[x]}`,
-          ];
-        },
-      };
-    };
-    const mod: ModuleDef = {
-      id: 'm.1.equal-sign~true-false',
-      title: 'True or false?',
-      assumptions: [
-        'A number sentence is true when both sides are the same amount.',
-        'Add each side. Then compare: 6 + 1 = 5 + 2 is true, because 7 and 7 are the same.',
-        'If the sides are not the same, the sentence is false. The balance tips.',
-      ],
-      variables: [
-        whole('a', 'a', 'First on left', 0, 10),
-        whole('b', 'b', 'Second on left', 0, 10),
-        whole('c', 'c', 'First on right', 0, 10),
-        whole('d', 'd', 'Second on right', 0, 10),
-        whole('D', 'g', 'How far apart the sides are', 0, 20),
-      ],
-      relations: [
-        {
-          id: 'D = difference of the sides',
-          display: 'Is {a} + {b} = {c} + {d}? The sides are {D} apart.',
-          vars: ['D', 'a', 'b', 'c', 'd'],
-          residual: (v: Values) => v.D! - Math.abs(L(v) - R(v)),
-          check: (v: Values) =>
-            `${Math.max(L(v), R(v))} − ${Math.min(L(v), R(v))} = ${Math.abs(L(v) - R(v))}`,
-          solve: {
-            D: (v: Values) => Math.abs(L(v) - R(v)),
-            a: (v: Values) => [R(v) - v.b! + v.D!, R(v) - v.b! - v.D!],
-            b: (v: Values) => [R(v) - v.a! + v.D!, R(v) - v.a! - v.D!],
-            c: (v: Values) => [L(v) - v.d! + v.D!, L(v) - v.d! - v.D!],
-            d: (v: Values) => [L(v) - v.c! + v.D!, L(v) - v.c! - v.D!],
-          },
-        },
-      ],
-      steps: {
-        'D = difference of the sides': {
-          D: {
-            expr: (v) => (leftMore(v) ? '({a} + {b}) − ({c} + {d})' : '({c} + {d}) − ({a} + {b})'),
-            how: 'Add each side. Take the smaller side away from the bigger side. 0 means true.',
-            work: (v) => [
-              ...sides(v),
-              `${Math.max(L(v), R(v))} − ${Math.min(L(v), R(v))} = ${v.D}`,
-            ],
-            note: (v: Values) =>
-              v.D === 0 ? `(true: ${L(v)} = ${R(v)})` : `(false: ${L(v)} ≠ ${R(v)})`,
-          },
-          a: missing('a'),
-          b: missing('b'),
-          c: missing('c'),
-          d: missing('d'),
-        },
-      },
-      example: { a: 6, b: 1, c: 5, d: 2, D: 0 },
-      startWith: ['a', 'b', 'c', 'd'],
-      representation: { kind: 'balance' as const, left: ['a', 'b'], right: ['c', 'd'] },
-      pictureLabels: ['D'],
-    };
-    return mod;
-  })(),
-
-  // Grade 2: the same number with extra tens or ones, e.g. 3 hundreds 14 tens 5 ones (2.NBT.1).
   {
     id: 'm.2.place-value-1000~regroup',
     title: 'Trade tens and ones',

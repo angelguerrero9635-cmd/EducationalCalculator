@@ -22,7 +22,7 @@ import {
   type Skill,
 } from './taxonomy';
 import { assignIcons, divisionIcon, strandIcons, type TopicIconName } from './icons';
-import { getModule, MODULES, moduleOwner } from './modules';
+import { LAYOUTS, MODULES, getPage, getPageIds, moduleOwner } from './modules';
 
 export type TaxonomyNode = Skill | Course;
 
@@ -69,24 +69,24 @@ export interface ProblemType {
 export const problemTypes = (skillId: string): ProblemType[] => {
   const skill = getSkill(skillId);
   if (!skill) return [];
-  return MODULES.filter((m) => m.id !== skillId && moduleOwner(m.id) === skillId).map((m) => ({
-    id: m.id,
-    title: m.title ?? m.id,
-    skill,
-    use: m.use,
-  }));
+  return getPageIds(skillId)
+    .filter((id) => id !== skillId)
+    .map((id) => getPage(id)!)
+    .map((m) => ({ id: m.id, title: m.title ?? m.id, skill, use: m.use }));
 };
 
 /** A problem-type page id ("m.1.add-sub-20~compare") → its module title and skill. */
 export const getProblemType = (id: string): ProblemType | undefined => {
   if (!id.includes('~')) return undefined;
   const skill = getSkill(moduleOwner(id));
-  const module = getModule(id);
+  const module = getPage(id);
   return skill && module ? { id, title: module.title ?? id, skill, use: module.use } : undefined;
 };
 
-/** Every problem-type module id (for pre-rendering pages). */
-export const PROBLEM_TYPE_IDS = MODULES.map((m) => m.id).filter((id) => getProblemType(id));
+const ALL_SKILLS_PAGE_IDS = [...MODULES.map((m) => m.id), ...LAYOUTS.map((l) => l.id)];
+
+/** Every problem-type page id (for pre-rendering pages). */
+export const PROBLEM_TYPE_IDS = ALL_SKILLS_PAGE_IDS.filter((id) => getProblemType(id));
 
 export const getCourse = (id: string): Course | undefined => {
   const node = getNode(id);

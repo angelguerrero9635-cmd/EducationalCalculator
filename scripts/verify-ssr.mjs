@@ -49,7 +49,7 @@ const CHECKS = [
   [
     '/skill/m.K.position-words',
     200,
-    ['Position words: in front of, behind, next to', 'The front of the line is on the left.'],
+    ['Position words: in front of, behind, next to', 'The ball is above the box.'],
   ],
   [
     '/skill/s.K.pushes-pulls',

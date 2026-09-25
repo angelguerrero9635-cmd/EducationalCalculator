@@ -4,12 +4,20 @@ import { Text } from '@/components/Text';
 
 import { PlaceholderCard } from '@/components/PlaceholderCard';
 import { SectionHeader } from '@/components/SectionHeader';
-import { getModule, gradeBand, isEarlyGrade, quantityLabel, type ModuleDef } from '@/data/modules';
+import {
+  getLayout,
+  getModule,
+  gradeBand,
+  isEarlyGrade,
+  quantityLabel,
+  type ModuleDef,
+} from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
 import { InputsSection } from './InputsSection';
+import { LayoutView } from './layouts/LayoutView';
 import { RepresentationView, representationTitle } from './reps';
 import { Sliders } from './Sliders';
 import { StepByStep } from './StepByStep';
@@ -111,6 +119,8 @@ function ModuleView({ module }: { module: ModuleDef }) {
  */
 export function ModuleSections({ id }: { id: string }) {
   // One module per page: a skill's main lesson, or one of its problem types.
+  const layout = getLayout(id);
+  if (layout) return <LayoutView key={layout.id} layout={layout} />;
   const module = getModule(id);
   return module ? (
     // Keyed so moving between modules starts from a fresh calculator.

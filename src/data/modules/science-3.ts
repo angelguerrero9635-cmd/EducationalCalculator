@@ -376,29 +376,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
 
   // ── Animals living in groups (3-LS2-1) ──
   (() => {
-    const herd = sum2('h = a + y', ['a', 'y', 'h'], ['adults', 'young', 'animals in the herd']);
-    return {
-      id: 's.3.animal-groups',
-      assumptions: [
-        'Some animals live in groups: a herd of elephants, a pack of wolves, a hive of bees.',
-        'A group helps them find food, keep the young safe and stay warm.',
-        'Count the adults and the young to find the size of the group.',
-      ],
-      variables: [
-        whole('a', 'a', 'Adults', 0, 50),
-        whole('y', 'y', 'Young', 0, 50),
-        whole('h', 'h', 'Animals in the herd', 0, 100),
-      ],
-      relations: [herd.relation],
-      steps: { 'h = a + y': herd.steps },
-      example: { a: 12, y: 7, h: 19 },
-      startWith: ['a', 'y'],
-      representation: { kind: 'tape', parts: ['a', 'y'], total: 'h' },
-    } satisfies ModuleDef;
-  })(),
-
-  // ── Weather data and climate (3-ESS2-1, 3-ESS2-2, 3-ESS3-1) ──
-  (() => {
     const month = sumAll(
       'm = week 1 + week 2 + week 3 + week 4',
       ['a', 'b', 'c', 'd'],

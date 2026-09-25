@@ -317,30 +317,6 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
   })(),
 
   (() => {
-    const list = sum2('n = a + b', ['a', 'b', 'n'], ['things done', 'things to do', 'list']);
-    return {
-      id: 's.K.weather-patterns~storm',
-      title: 'Getting ready for a storm',
-      assumptions: [
-        'A forecast warns that a storm is coming.',
-        'Make a list to get ready. Bring toys in. Close the windows.',
-        'Check off each thing you do.',
-      ],
-      variables: [
-        whole('a', 'a', 'Done', 0, 10),
-        whole('b', 'b', 'Still to do', 0, 10),
-        whole('n', 'n', 'Things on the list', 0, 10),
-      ],
-      relations: [list.relation],
-      steps: { 'n = a + b': list.steps },
-      example: { a: 4, b: 2, n: 6 },
-      startWith: ['a', 'b'],
-      representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'n' },
-    } satisfies ModuleDef;
-  })(),
-
-  // ── Kindergarten: living things change their environment (K-ESS2-2, K-ESS3-3) ──
-  (() => {
     const planted = sum2(
       'm = b + p',
       ['b', 'p', 'm'],
@@ -460,34 +436,6 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
-    const flashes = sum2(
-      'n = a + b',
-      ['a', 'b', 'n'],
-      ['flashes for yes', 'flashes for no', 'flashes sent'],
-    );
-    return {
-      id: 's.1.sound-vibration~signals',
-      title: 'Sending a message with flashes',
-      assumptions: [
-        'Light and sound can carry a message far away.',
-        'Agree on a code: some flashes mean yes, some mean no.',
-        'Count all the flashes you sent.',
-      ],
-      variables: [
-        whole('a', 'a', 'Flashes for yes', 0, 10),
-        whole('b', 'b', 'Flashes for no', 0, 10),
-        whole('n', 'n', 'Flashes sent', 0, 10),
-      ],
-      relations: [flashes.relation],
-      steps: { 'n = a + b': flashes.steps },
-      example: { a: 4, b: 3, n: 7 },
-      startWith: ['a', 'b'],
-      representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'n' },
-    } satisfies ModuleDef;
-  })(),
-
-  // ── Grade 1: light and shadows (1-PS4-2, 1-PS4-3) ──
-  (() => {
     const shorter = moreThan('d', 'm', 'n', 'morning shadow', 'noon shadow', ['longer', 'shorter']);
     return {
       id: 's.1.light-shadows',
@@ -506,58 +454,6 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       example: { m: 12, n: 4, d: 8 },
       startWith: ['m', 'n'],
       representation: { kind: 'ruler', lengths: ['m', 'n'], difference: 'd', extent: 15 },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const all = sumAll(
-      'tested = clear + cloudy + blocks + shiny',
-      ['c', 'd', 'b', 's'],
-      't',
-      'kinds of material',
-    );
-    return {
-      id: 's.1.light-shadows~materials',
-      title: 'What light shines through',
-      assumptions: [
-        'Shine a flashlight at each material.',
-        'Clear things let light through. Cloudy things let some through. Others block it.',
-        'Shiny things like a mirror bounce the light back.',
-      ],
-      variables: [
-        whole('c', 'c', 'Let light through', 0, 10),
-        whole('d', 'd', 'Let some through', 0, 10),
-        whole('b', 'b', 'Blocked the light', 0, 10),
-        whole('s', 's', 'Bounced the light', 0, 10),
-        whole('t', 't', 'Materials tested', 0, 20),
-      ],
-      relations: [all.relation],
-      steps: { 'tested = clear + cloudy + blocks + shiny': all.steps },
-      example: { c: 3, d: 2, b: 4, s: 1, t: 10 },
-      startWith: ['c', 'd', 'b', 's'],
-      representation: { kind: 'tally', rows: ['c', 'd', 'b', 's'], total: 't' },
-    } satisfies ModuleDef;
-  })(),
-
-  // ── Grade 1: plant and animal parts and what they do (1-LS1-1) ──
-  (() => {
-    const plant = sum2('t = r + s', ['r', 's', 't'], ['roots', 'stem and leaves', 'whole plant']);
-    return {
-      id: 's.1.structures-function',
-      assumptions: [
-        'Roots hold the plant and take in water. Long roots reach deep water.',
-        'The stem holds the leaves up to the light. Roots grow down, the stem grows up.',
-        'Measure each part with cubes, root tip to leaf tip.',
-      ],
-      variables: [
-        { ...whole('r', 'r', 'Roots', 0, 10), unit: 'cubes' },
-        { ...whole('s', 's', 'Stem and leaves', 0, 10), unit: 'cubes' },
-        { ...whole('t', 't', 'Whole plant', 0, 20), unit: 'cubes' },
-      ],
-      relations: [plant.relation],
-      steps: { 't = r + s': plant.steps },
-      example: { r: 6, s: 9, t: 15 },
-      startWith: ['r', 's'],
-      representation: { kind: 'tape', parts: ['r', 's'], total: 't' },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -744,30 +640,6 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-  (() => {
-    const all = sumAll('tested = bends + bends a little + stiff', ['h', 's', 'b'], 't', 'groups');
-    return {
-      id: 's.2.material-properties~sort',
-      title: 'Sort materials by a property',
-      assumptions: [
-        'A property is something you can observe: hard, soft, bendy, shiny.',
-        'Sort by one property at a time. Here it is: does it bend?',
-        'Put each material in one group, then count the groups.',
-      ],
-      variables: [
-        whole('h', 'h', 'Bends easily', 0, 20),
-        whole('s', 's', 'Bends a little', 0, 20),
-        whole('b', 'b', 'Does not bend', 0, 20),
-        whole('t', 't', 'Materials tested', 0, 30),
-      ],
-      relations: [all.relation],
-      steps: { 'tested = bends + bends a little + stiff': all.steps },
-      example: { h: 7, s: 5, b: 4, t: 16 },
-      startWith: ['h', 's', 'b'],
-      representation: { kind: 'tally', rows: ['h', 's', 'b'], total: 't' },
-    } satisfies ModuleDef;
-  })(),
-
   (() => {
     const used = sum2(
       'a = b + c',
@@ -1167,35 +1039,6 @@ export const SCIENCE_K2_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-  (() => {
-    const all = sumAll(
-      'places = mountains + lakes + rivers',
-      ['m', 'l', 'r'],
-      'n',
-      'kinds of places',
-    );
-    return {
-      id: 's.2.erosion-landforms~map',
-      title: 'Land and water on a map',
-      assumptions: [
-        'A map shows land, like mountains and hills, and water, like lakes and rivers.',
-        'Count each kind on the map, then add them.',
-      ],
-      variables: [
-        whole('m', 'm', 'Mountains', 0, 20),
-        whole('l', 'l', 'Lakes', 0, 20),
-        whole('r', 'r', 'Rivers', 0, 20),
-        whole('n', 'n', 'Places on the map', 0, 60),
-      ],
-      relations: [all.relation],
-      steps: { 'places = mountains + lakes + rivers': all.steps },
-      example: { m: 5, l: 3, r: 4, n: 12 },
-      startWith: ['m', 'l', 'r'],
-      representation: { kind: 'tally', rows: ['m', 'l', 'r'], total: 'n' },
-    } satisfies ModuleDef;
-  })(),
-
-  // ── Grade 2: where water is found on Earth (2-ESS2-3) ──
   (() => {
     const water = sum2('w = s + f', ['s', 'f', 'w'], ['salty cups', 'fresh cups', 'cups of water']);
     return {

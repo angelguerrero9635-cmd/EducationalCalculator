@@ -1,0 +1,102 @@
+/**
+ * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
+ * lesson whose idea isn't a quantity relationship gets one of these: the page keeps the
+ * grade's words and the review process, but there are no values, formulas or walkthrough.
+ * Everything a student reads is content here, never in a component.
+ */
+
+interface LayoutBase {
+  /** Skill id, or `<skill id>~<slug>` for a problem type. */
+  id: string;
+  /** Name of a problem-type page. */
+  title?: string;
+  /** Problem types: what the page is for, in one line ("Use this for …"). */
+  use?: string;
+  /** "Good to know" bullets, in the grade's words. */
+  assumptions: string[];
+}
+
+/** Cards to put into labelled groups by one property, with a count per group. */
+export interface SortLayout extends LayoutBase {
+  kind: 'sort';
+  /** The question the sort answers: "Does it bend?" */
+  question: string;
+  bins: {
+    id: string;
+    label: string;
+    /** One sentence about the property, shown when the group is full. */
+    why: string;
+  }[];
+  cards: { label: string; bin: string }[];
+}
+
+/** Stages to put in order, each with how long it takes; the total under the strip. */
+export interface SequenceLayout extends LayoutBase {
+  kind: 'sequence';
+  /** "Put the stages in order." */
+  question: string;
+  /** In the right order. */
+  stages: { label: string; span?: number }[];
+  /** The unit of the spans ("days"). */
+  unit?: string;
+  /** Label of the sum of the spans ("Whole cycle"). */
+  totalLabel?: string;
+}
+
+/** What an explore figure can show; a scene sets one of these. */
+export type Figure =
+  /** A thing made of named parts, each with its job; a scene highlights one part. */
+  | { kind: 'parts'; parts: { name: string; job: string }[] }
+  /** A ball and a box; a scene puts the ball above, below, beside, in front of or behind. */
+  | { kind: 'position' }
+  /** A clock face; a scene sets the time. */
+  | { kind: 'clock' }
+  /** Animals as dots: alone, or together in a group. */
+  | { kind: 'dots' }
+  /** Two bar magnets facing each other; a scene turns one round. */
+  | { kind: 'magnets' }
+  /** A flashlight code: a pattern of flashes. */
+  | { kind: 'flashes' };
+
+export interface Scene {
+  label: string;
+  /** What to read about this scene, one sentence per line. */
+  lines: string[];
+  /** The part to highlight (a `parts` figure). */
+  part?: string;
+  /** Where the ball is (a `position` figure). */
+  position?: 'above' | 'below' | 'beside' | 'in front of' | 'behind';
+  /** [hour, minutes] (a `clock` figure). */
+  time?: [number, number];
+  /** [groups, animals in each] (a `dots` figure). */
+  dots?: [number, number];
+  /** Which poles face each other (a `magnets` figure). */
+  poles?: 'N–S' | 'N–N' | 'S–S';
+  /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
+  flashes?: string;
+}
+
+/** An idea with no honest quantity: a picture with a few scenes to switch between. */
+export interface ExploreLayout extends LayoutBase {
+  kind: 'explore';
+  figure: Figure;
+  scenes: Scene[];
+}
+
+/** A quantity recorded over time: a table the student changes, its chart, the pattern. */
+export interface ObserveLayout extends LayoutBase {
+  kind: 'observe';
+  /** Column headings ("Week 1", …). */
+  columns: string[];
+  /** What the row measures ("Rain"). */
+  rowLabel: string;
+  unit: string;
+  max: number;
+  step: number;
+  /** The opening values, one per column. */
+  initial: number[];
+  /** The pattern in a sentence, from the current values. */
+  pattern: (values: number[]) => string;
+}
+
+export type LayoutDef = SortLayout | SequenceLayout | ExploreLayout | ObserveLayout;

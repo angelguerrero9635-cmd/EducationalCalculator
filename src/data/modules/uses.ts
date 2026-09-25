@@ -5,14 +5,11 @@
 export const PROBLEM_TYPE_USES: Record<string, string> = {
   // Kindergarten
   'm.K.add-sub-10~number-bond': 'Use this for “7 is 4 and ___” and other ways to split a number.',
-  'm.K.add-sub-10~all-partners':
-    'Use this to find every way to make a number, like 0 + 5 to 5 + 0.',
   'm.K.add-sub-10~take-away': 'Use this for “7 birds, 3 fly away. How many are left?”',
   'm.K.count-objects~five-group': 'Use this to see 6 to 10 as 5 and some more.',
   'm.K.count-objects~arrangements': 'Use this to count dots in a line, in rows or scattered.',
   'm.K.measurable-attributes~weight': 'Use this for “Which is heavier? How much heavier?”',
   'm.K.measurable-attributes~capacity': 'Use this for “Which jar holds more cups?”',
-  'm.K.shapes-2d-3d~solids': 'Use this to tell flat shapes from solids, and which solids roll.',
   // Grade 1
   'm.1.add-sub-20~compare': 'Use this for “how many more?” and “how many fewer?” word problems.',
   'm.1.add-sub-20~take-from-ten': 'Use this for 14 − 8 by taking 8 from the 10.',
@@ -20,12 +17,9 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
   'm.1.tens-ones~regroup': 'Use this for “2 tens and 17 ones is ___.”',
   'm.1.count-120~less': 'Use this for one less and ten less on the 120 chart.',
   'm.1.add-within-100~subtract-tens': 'Use this for 70 − 30 and other tens take away tens.',
-  'm.1.equal-sign~true-false': 'Use this for “Is 6 + 1 = 5 + 2 true or false?”',
   'm.1.equal-sign~take-away': 'Use this for “Is 7 − 1 = 4 + 2 true or false?”',
-  'm.1.measure-nonstandard~order': 'Use this to order three things from longest to shortest.',
   'm.1.data-3-categories~compare': 'Use this for “how many more?” in a picture graph.',
   'm.1.data-3-categories~tally': 'Use this to read and add up a tally chart.',
-  'm.1.halves-fourths~equal-parts': 'Use this for “Is this shape cut into halves?”',
   // Grade 2
   'm.2.add-sub-100-fluency~tape': 'Use this for part-and-whole word problems with a bar model.',
   'm.2.add-sub-100-fluency~compare': 'Use this for “how many more?” word problems up to 100.',
@@ -100,11 +94,8 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
   's.K.living-needs~food': 'Use this for “A rabbit eats 2 carrots a day. How many in 3 days?”',
   's.K.weather-patterns~warmer':
     'Use this for “Is today warmer or cooler than yesterday? By how much?”',
-  's.K.weather-patterns~storm': 'Use this to count storm jobs done and storm jobs left.',
   's.K.living-things-change-environment~litter': 'Use this to count the litter picked up, by kind.',
   's.1.sound-vibration~drum': 'Use this for “Which hit made more rice jump? How many more?”',
-  's.1.sound-vibration~signals': 'Use this to count the flashes in a message sent with light.',
-  's.1.light-shadows~materials': 'Use this to sort materials by how much light gets through.',
   's.1.structures-function~beaks': 'Use this to compare two beaks and say which food each fits.',
   's.1.offspring~grow':
     'Use this for “The young plant is 5 cubes. How much more to be like its parent?”',
@@ -112,7 +103,6 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
     'Use this for “It is 6 days since the new moon. How long until it is full?”',
   's.2.material-properties~pieces':
     'Use this for “A 30-block tower is rebuilt as a house. How many blocks are left over?”',
-  's.2.material-properties~sort': 'Use this to sort materials by a property and count each group.',
   's.2.heating-cooling~cooling': 'Use this for “Water at 68 °F cools 36 °F. How cold is it now?”',
   's.2.heating-cooling~warming': 'Use this for “Water at 40 °F warms 35 °F. How warm is it now?”',
   's.2.plant-growth-investigation~water':
@@ -123,7 +113,6 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
     'Use this to count a bee’s visits in the morning and the afternoon.',
   's.2.habitats~pond-count': 'Use this to count the animals seen in one habitat, by kind.',
   's.2.erosion-landforms~wall': 'Use this to compare soil lost with and without a wall.',
-  's.2.erosion-landforms~map': 'Use this to count the land and water places on a map.',
   's.2.water-on-earth~fresh':
     'Use this to see where Earth’s fresh water is: ice, rivers and lakes, or under the ground.',
   's.3.balanced-forces~tug': 'Use this to add up a team’s pull in a tug of war.',
