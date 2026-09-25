@@ -1239,7 +1239,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     title: 'Take away',
     assumptions: [
       'Start with some. Take some away. Count how many are left.',
-      'Fewer are left than you started with (the same, if you take away 0).',
+      'Fewer are left than you started with. Take away 0: the same are left.',
     ],
     variables: [
       whole('s', 's', 'Start', 0, 10),
@@ -1448,7 +1448,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
       'w = n + 1': {
         w: {
           expr: '{n} + 1',
-          how: 'Count the rows: 0 in the first part, then 1, 2 and so on up to the number.',
+          how: 'Count the rows: 0 in the first part, then 1, 2, up to the number.',
           work: (v: Values) => [`Rows: ${countList(0, 1, v.w!)} → ${v.w} ways`],
         },
         n: { expr: '{w} − 1', how: 'The last row has all the counters in the first part.' },
@@ -1550,7 +1550,7 @@ export const MATH_K2_MORE_MODULES: ModuleDef[] = [
     assumptions: [
       'Touch each dot once as you count. The last number you say is how many.',
       'Moving the dots doesn’t change how many there are.',
-      'Scattered dots: count them in an order you can follow, like left to right.',
+      'Scattered dots: count left to right, one row at a time.',
     ],
     variables: [whole('n', 'n', 'Dots', 0, 20), whole('m', 'm', 'After one more', 1, 21)],
     relations: [

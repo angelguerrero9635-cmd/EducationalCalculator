@@ -9,8 +9,7 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
     'Use this to find every way to make a number, like 0 + 5 to 5 + 0.',
   'm.K.add-sub-10~take-away': 'Use this for “7 birds, 3 fly away. How many are left?”',
   'm.K.count-objects~five-group': 'Use this to see 6 to 10 as 5 and some more.',
-  'm.K.count-objects~arrangements':
-    'Use this to count dots in a line, in rows, in a circle or scattered.',
+  'm.K.count-objects~arrangements': 'Use this to count dots in a line, in rows or scattered.',
   'm.K.measurable-attributes~weight': 'Use this for “Which is heavier? How much heavier?”',
   'm.K.measurable-attributes~capacity': 'Use this for “Which jar holds more cups?”',
   'm.K.shapes-2d-3d~solids': 'Use this to tell flat shapes from solids, and which solids roll.',

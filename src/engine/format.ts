@@ -5,13 +5,27 @@ export function formatNumber(
   x: number,
   variable?: Pick<VariableDef, 'integer' | 'digits'>,
 ): string {
-  if (variable?.integer) return String(Math.round(x)).padStart(variable.digits ?? 0, '0');
+  // Padded numbers are clock minutes ("05"): no separators there.
+  if (variable?.integer && variable.digits) {
+    return String(Math.round(x)).padStart(variable.digits, '0');
+  }
+  if (variable?.integer) return withSeparators(String(Math.round(x)));
   if (x === 0) return '0';
   const abs = Math.abs(x);
   if (abs >= 1e7 || abs < 1e-4) return x.toExponential(3).replace('e+', 'e');
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals.
-  return String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4)));
+  return withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4))));
 }
+
+/** Thousands separators from 1,000 ("12,500.5"), the way students read numbers in class. */
+const withSeparators = (s: string) =>
+  s.replace(
+    /^(-?)(\d+)/,
+    (_, sign: string, digits: string) => sign + digits.replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+  );
+
+/** Drops thousands separators so text can be evaluated: "1,000 + 250" → "1000 + 250". */
+export const plainDigits = (s: string) => s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1');
 
 /** Parses user input; accepts "1,000", "−3" (Unicode minus) and "1e3". Undefined when blank. */
 export function parseNumber(text: string): number | undefined | 'invalid' {

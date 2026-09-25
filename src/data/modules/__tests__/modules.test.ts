@@ -308,6 +308,12 @@ it('writes the number sentence with ? for the number found (K–2 steps)', () =>
   expect(w.steps[0]!.sentence).toMatch(/\?/);
   expect(w.steps[0]!.sentence).toContain('4');
   expect(w.steps[0]!.sentence).toContain('7');
+  // K–2: names, never letters, in what the student reads.
+  expect(w.band).toBe('early');
+  expect(w.steps[0]!.lead).toEqual({ sentence: w.steps[0]!.sentence });
+  expect(w.steps[0]!.heading).toBe('Find first group');
+  expect(w.steps[0]!.answer).toBe('First group: 3');
+  expect(w.given.map((q) => q.label)).toEqual(['Second group: 4', 'Total: 7']);
 });
 
 it('builds readable steps (area example)', () => {
@@ -331,8 +337,14 @@ it('builds readable steps (area example)', () => {
       substituted: 'w = 12 ÷ 4',
       work: ['Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
       result: 'w = 3 cm',
+      // Grade 3: the number sentence first, then the rule; no letter-only rearrangement line.
+      heading: 'Find width (w)',
+      lead: { sentence: '4 × ? = 12', formula: 'l × w = A' },
+      lines: ['w = 12 ÷ 4', 'Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
+      answer: 'w = 3 cm',
     },
   ]);
+  expect(w.given.map((q) => q.label)).toEqual(['Area (A): 12 cm²', 'Length (l): 4 cm']);
   expect(w.check).toEqual([{ formula: '4 × 3 = 12', ok: true }]);
 });
 

@@ -209,7 +209,7 @@ describe('unit context', () => {
     ]);
     expect(ctx.toDisplay('I', r.values.I!)).toBeCloseTo(2000);
     const tooBig = solve(ctx.system, [{ id: 'I', value: 2000 }]);
-    expect(tooBig.rejected?.reason).toBe('Must be at most 1000000 mA');
+    expect(tooBig.rejected?.reason).toBe('Must be at most 1,000,000 mA');
   });
 
   it('typing in the shown unit converts to formula units', () => {

@@ -38,7 +38,7 @@ function compareProblem(id: string, max: number, example: [number, number]) {
     title: 'Compare problems',
     assumptions: [
       'Compare problems ask: how many more? How many fewer?',
-      '“Maya has 2 more than Kofi” means Maya has the bigger amount: Kofi’s amount + 2.',
+      '“Maya has 2 more than Kofi”: Maya has the bigger amount, Kofi’s amount + 2.',
       '“More” in the question doesn’t always mean add. First find who has more.',
       '“How many more” and “how many fewer” have the same answer.',
     ],

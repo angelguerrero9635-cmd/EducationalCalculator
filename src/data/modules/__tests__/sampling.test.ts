@@ -19,6 +19,7 @@ import {
   type SolveResult,
   type System,
 } from '@/engine/solve';
+import { plainDigits } from '@/engine/format';
 import { changeUnits, initialState, setValues, type CalcState } from '@/engine/state';
 import type { Values, VariableDef } from '@/engine/types';
 import {
@@ -32,7 +33,7 @@ import {
 import { convert, getUnit } from '@/engine/units';
 
 import { MODULES } from '..';
-import { buildSteps } from '../buildSteps';
+import { buildSteps, type Walkthrough } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 
 // ─── Configuration ───────────────────────────────────────────────────────────
@@ -398,12 +399,28 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],
   [new RegExp(`jumps of (${NUM}) from (${NUM}) to (${NUM})`), (s, a, n) => (n - a) / s],
   [new RegExp(`tens from (${NUM}) to (${NUM})`), (a, b) => (b - a) / 10],
+  // Elapsed time: the start minutes, counting back from the end minutes past the hour.
+  [
+    new RegExp(`(${NUM}) minutes before (${NUM}) past the hour`),
+    (d, m) => (((m - d) % 60) + 60) % 60,
+  ],
   [new RegExp(`(${NUM}) minutes?`), (a) => a],
-  [new RegExp(`(${NUM}) jumps of (${NUM})`), (a, b) => a * b],
+  [new RegExp(`(${NUM}) to the nearest ten`), (a) => Math.floor((a + 5) / 10) * 10],
+  // "24 shared into pairs" is what is left over: 0 for even, 1 for odd.
+  [new RegExp(`(${NUM}) shared into pairs`), (a) => a % 2],
+  // "whole inches in 9 marks of 1/4" (the fraction is already 0.25 by the time this runs).
+  [new RegExp(`whole inches in (${NUM}) marks of (${NUM})`), (a, b) => Math.floor(a * b)],
+  [new RegExp(`(${NUM}) (?:flat|curved)`), (a) => a],
+  [new RegExp(`the coin that makes (${NUM})¢? with (${NUM}) coins?`), (t, k) => t / k],
+  [new RegExp(`coins of (${NUM})¢? in (${NUM})`), (v, t) => t / v],
+  [new RegExp(`(${NUM}) coins? of (${NUM})`), (k, v) => k * v],
+  [new RegExp(`(${NUM}) (?:feet|foot) of (${NUM}) inches`), (f, n) => f * n],
+  [new RegExp(`(${NUM}) meters? of (${NUM}) centimeters`), (m, n) => m * n],
+  [new RegExp(`(${NUM}) jumps? of (${NUM})`), (a, b) => a * b],
   [new RegExp(`rows of (${NUM}) in (${NUM})`), (c, n) => n / c],
   [new RegExp(`groups of (${NUM}) in (${NUM})`), (r, c) => c / r],
-  [new RegExp(`(${NUM}) shared (?:by|into) (${NUM}) (?:clips|rows|groups)`), (a, b) => a / b],
-  [new RegExp(`(${NUM}) groups of (${NUM})`), (a, b) => a * b],
+  [new RegExp(`(${NUM}) shared (?:by|into) (${NUM}) (?:clips?|rows?|groups?)`), (a, b) => a / b],
+  [new RegExp(`(${NUM}) groups? of (${NUM})`), (a, b) => a * b],
   [new RegExp(`half of (${NUM})`), (a) => a / 2],
   [new RegExp(`a third of (${NUM})`), (a) => a / 3],
   [new RegExp(`twelves in (${NUM})`), (a) => a / 12],
@@ -432,32 +449,50 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tens in (${NUM})`), (a) => a / 10],
   [new RegExp(`pairs in (${NUM})`), (a) => Math.floor(a / 2)],
   [new RegExp(`left over from (${NUM})`), (a) => a % 2],
-  [new RegExp(`(${NUM}) clips of (${NUM}) cubes`), (a, b) => a * b],
+  [new RegExp(`(${NUM}) clips? of (${NUM}) cubes`), (a, b) => a * b],
   [new RegExp(`(${NUM}) skips of (${NUM})`), (a, b) => a * b],
-  [new RegExp(`(${NUM}) rows of (${NUM})`), (a, b) => a * b],
-  [new RegExp(`(${NUM}) hundreds`), (a) => 100 * a],
-  [new RegExp(`(${NUM}) tens`), (a) => 10 * a],
+  [new RegExp(`(${NUM}) rows? of (${NUM})`), (a, b) => a * b],
+  [new RegExp(`(${NUM}) hundreds?`), (a) => 100 * a],
+  [new RegExp(`(${NUM}) tens?`), (a) => 10 * a],
   // (not “wholes in 11 parts of 7”, which is a phrase of its own)
   [
-    new RegExp(`(?<!wholes in |[\\d.])(${NUM}) (?:ones|corners|sides|cubes|parts|angles)`),
+    new RegExp(`(?<!wholes in |[\\d.])(${NUM}) (?:ones?|corners?|sides?|cubes?|parts?|angles?)`),
     (a) => a,
   ],
   // Bills (Grade 2 money): "3 $10 bills" and "$10 bills (3)" are $30; "$10 bills in (30)" is 3.
   [new RegExp(`(${NUM}) \\$(\\d+) bills?`), (a, b) => a * b],
   [new RegExp(`\\$(\\d+) bills? (${NUM})`), (b, a) => a * b],
   [new RegExp(`\\$(\\d+) bills in (${NUM})`), (b, n) => n / b],
+  // Last, after "3 feet of 12 inches": a length in inches is its number.
+  [new RegExp(`(${NUM}) inches? and (${NUM}) inch`), (a, b) => a + b],
+  [new RegExp(`(${NUM}) inch(?:es)?`), (a) => a],
 ];
 
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
-function evaluate(text: string): number | undefined {
-  let s = text.replace(/−/g, '-').replace(/×/g, '*').replace(/÷/g, '/').replace(/·/g, '*');
+function evaluate(text: string, clampRoots = false): number | undefined {
+  let s = text
+    .replace(/−/g, '-')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/·/g, '*')
+    // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
+    .replace(/π/g, `(${Math.PI})`)
+    .replace(/½/g, '(0.5)')
+    .replace(/²/g, '**2')
+    .replace(/³/g, '**3')
+    .replace(/\^/g, '**')
+    .replace(/√\(/g, 'sqrt(')
+    // Natural logs from the exponential lessons: ln(x) and ln|x|.
+    .replace(/ln\|([^|]*)\|/g, 'log(abs($1))')
+    .replace(/ln\(/g, 'log(');
   // Long repeated sums are shortened: "2 + 2 + … (12 times)" is 2 × 12.
   s = s.replace(/(\d+(?:\.\d+)?) \+ \1 \+ … \((\d+) times\)/g, (_, a, n) => `(${a} * ${n})`);
   for (let guard = 0; guard < 50; guard++) {
     let replaced = false;
     // Unwrap brackets around a single number, "(300)" → "300", so outer brackets can reduce.
+    // (not the argument of a function, and not a base about to be raised: (-3)**2)
     s = s
-      .replace(/\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)/g, ' $1 ')
+      .replace(/(?<!sqrt|log|abs)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g, ' $1 ')
       .replace(/\s+/g, ' ')
       .trim();
     // Work out bracketed arithmetic first, so phrases see one number: "tens in (45 - 5)".
@@ -500,13 +535,58 @@ function evaluate(text: string): number | undefined {
     }
     if (!replaced) break;
   }
-  if (!/^[\d\s.+\-*/()e]+$/.test(s)) return undefined;
+  const bare = s.replace(/(?:sqrt|log|abs)\(/g, '(').replace(/\*\*/g, '*');
+  if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
-    const x = new Function(`return (${s});`)() as unknown;
+    const x = new Function(
+      'clampRoots',
+      `const { log, abs } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
+    )(clampRoots) as unknown;
     return typeof x === 'number' ? x : undefined;
   } catch {
     return undefined;
   }
+}
+
+/**
+ * The range an expression can take when each number in it is off by half a unit of its last
+ * shown decimal: the numbers in a step line are display-rounded, so a subtraction of
+ * near-equal squares (√(75.0608² − 75.0607²)) can't be recomputed exactly from them. A root
+ * of "about zero" counts as 0.
+ */
+function roundingRange(text: string): [number, number] | undefined {
+  const nums = [...text.matchAll(/\d+(?:\.\d+)?/g)];
+  if (nums.length === 0 || nums.length > 6) return undefined;
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (let mask = 0; mask < 1 << nums.length; mask++) {
+    let at = 0;
+    let out = '';
+    nums.forEach((m, i) => {
+      const decimals = m[0].split('.')[1]?.length ?? 0;
+      const nudged = Number(m[0]) + ((mask >> i) & 1 ? 0.5 : -0.5) * 10 ** -decimals;
+      out += text.slice(at, m.index) + String(Math.max(0, nudged));
+      at = m.index! + m[0].length;
+    });
+    const x = evaluate(out + text.slice(at), true);
+    if (x !== undefined && Number.isFinite(x)) [lo, hi] = [Math.min(lo, x), Math.max(hi, x)];
+  }
+  return lo <= hi ? [lo, hi] : undefined;
+}
+
+/** Whether `value` is what `text` could mean once display rounding is allowed for. */
+function withinRounding(value: number, text: string): boolean {
+  const texts = text.includes('±') ? [text.replace(/±/g, '+'), text.replace(/±/g, '-')] : [text];
+  return texts.some((t) => {
+    const r = roundingRange(t);
+    return r !== undefined && value >= r[0] - 1e-9 && value <= r[1] + 1e-9;
+  });
+}
+
+/** Every value a rendered expression can mean: "±√(…)" is two, everything else one or none. */
+function evaluateAll(text: string): number[] {
+  const texts = text.includes('±') ? [text.replace(/±/g, '+'), text.replace(/±/g, '-')] : [text];
+  return texts.map((t) => evaluate(t)).filter((x): x is number => x !== undefined);
 }
 
 /** Display rounding: 4 decimals or 4 significant figures in scientific notation. */
@@ -521,7 +601,27 @@ const shownClose = (a: number, b: number, text = '') => {
 };
 
 const PLURAL =
-  /(?<![\d.,$])\b(?:1 (?:tens|ones|hundreds|groups|bills|feet|inches|cubes|rows|jumps|triangles|clips)\b|(?:0|[2-9]|\d\d+) (?:ten|one|hundred|group|bill|foot|inch|row|jump|clip)\b(?![-\w]))/;
+  /(?<![\d.,$/])\b(?:1 (?:tens|ones|hundreds|groups|bills|feet|inches|cubes|rows|jumps|triangles|clips)\b|(?:0|[2-9]|\d\d+) (?:ten|one|hundred|group|bill|foot|inch|row|jump|clip)\b(?![-\w]))/;
+/** The walkthrough with thousands separators removed from every line, for evaluating. */
+function plainWalkthrough(w: Walkthrough): Walkthrough {
+  const p = (x: string) => plainDigits(x);
+  return {
+    ...w,
+    steps: w.steps.map((s) => ({
+      ...s,
+      sentence: p(s.sentence),
+      result: p(s.result),
+      answer: p(s.answer),
+      lines: s.lines.map(p),
+      ...(s.substituted ? { substituted: p(s.substituted) } : {}),
+      ...(s.work ? { work: s.work.map(p) } : {}),
+    })),
+    check: w.check.map((k) => ({ ...k, formula: p(k.formula) })),
+    convertIn: w.convertIn.map(p),
+    convertOut: w.convertOut.map(p),
+  };
+}
+
 const BAD_TEXT = /NaN|undefined|Infinity|null|(^|[^\w.])[-−]0(?![\d.])/;
 
 // ─── Representation data ─────────────────────────────────────────────────────
@@ -932,7 +1032,7 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
     return;
   }
   if (search.feasible === undefined) {
-    c.f.add('harness', `${c.label}brute-force search gave up (continuous or large domain)`, '');
+    c.f.add('minor', `${c.label}brute-force search gave up (continuous or large domain)`, '');
   }
   const determined = (s: Completion, id: string) => {
     const xs = s.seen.get(id)!;
@@ -1023,7 +1123,8 @@ function relaxOf(sys: System): System {
 function checkSteps(c: Ctx, res: SolveResult, where: string) {
   let w;
   try {
-    w = buildSteps(c.module, res, c.units);
+    // The steps show 1,000; the arithmetic checks read 1000.
+    w = plainWalkthrough(buildSteps(c.module, res, c.units));
   } catch (e) {
     c.f.add('error', `${c.label}buildSteps throws: ${(e as Error).message}`, where);
     return;
@@ -1062,7 +1163,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     // only, e.g. "t = 6 − 3 − 2") or the result ("s = 4"): evaluate the rearranged line then.
     const line = s.substituted ?? s.rearranged;
     if (!line) {
-      c.f.add('harness', `${c.label}step for ${s.id} solved numerically (not evaluated)`, where);
+      c.f.add('minor', `${c.label}step for ${s.id} solved numerically (not evaluated)`, where);
       continue;
     }
     const expr = line.slice(line.indexOf(' = ') + 3);
@@ -1070,16 +1171,16 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     if (allNonNegative && /\(-/.test(expr)) {
       c.f.add('error', `${c.label}step substitutes a negative count: "${s.substituted}"`, where);
     }
-    const x = evaluate(expr);
+    const xs = evaluateAll(expr);
     // A rearranged line in symbols ("s = v") has no numbers to check.
-    if (x === undefined && !s.substituted) continue;
-    if (x === undefined) {
+    if (xs.length === 0 && !s.substituted) continue;
+    if (xs.length === 0) {
       c.f.add(
         'harness',
         `${c.label}can't evaluate step text "${expr.replace(/[\d.]+/g, 'N')}"`,
         where,
       );
-    } else if (!shownClose(x, value, expr)) {
+    } else if (!xs.some((x) => shownClose(x, value, expr)) && !withinRounding(value, expr)) {
       c.f.add('error', `${c.label}step "${s.substituted}" ≠ "${s.result}"`, where);
     }
   }
@@ -1178,11 +1279,16 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   for (const chk of w.check) {
     if (!chk.ok) c.f.add('error', `${c.label}check line doesn't balance: "${chk.formula}"`, where);
     // Comparisons ("3/8 < 5/8, 2 parts apart"): the sign must match the two sides.
-    const formula = chk.formula.replace(/, (\d+) parts? apart$/, '');
+    const formula = chk.formula
+      .replace(/, (\d+) (?:parts? )?apart$/, '')
+      // "Faces: 2 + 4 = 6", "3 + 4 = 7 in all", "5¢ + 10¢ = 15¢"
+      .replace(/^[A-Za-z][^:=]*: /, '')
+      .replace(/ in all$/, '')
+      .replace(/¢/g, '');
     const sign = / ([<>=]) /.exec(formula)?.[1];
     const sides = formula.split(/ [<>=] /);
     if (sides.length !== 2) continue;
-    const [l, r] = sides.map(evaluate);
+    const [l, r] = sides.map((side) => evaluate(side));
     if (sign !== '=' && l !== undefined && r !== undefined) {
       if (sign === '<' ? !(l < r) : !(l > r)) {
         c.f.add('error', `${c.label}check line compares the wrong way: "${chk.formula}"`, where);
@@ -1195,7 +1301,11 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
         `${c.label}can't evaluate check "${chk.formula.replace(/[\d.]+/g, 'N')}"`,
         where,
       );
-    } else if (!shownClose(l, r, chk.formula)) {
+    } else if (
+      !shownClose(l, r, chk.formula) &&
+      !withinRounding(l, sides[1]!) &&
+      !withinRounding(r, sides[0]!)
+    ) {
       c.f.add('error', `${c.label}check line shows unequal sides: "${chk.formula}"`, where);
     }
   }
@@ -1479,7 +1589,9 @@ describe.each(selected.map((m) => [m.id, m] as [string, ModuleDef]))('sampling %
     stageRandom(c, r, Math.ceil(N_RANDOM / 2));
     stageEdits(c, r, N_SEQUENCES);
     stageUnits(m, f, r);
-    const errors = f.lines('error');
+    // A line the harness can't read is a gap to close (teach PHRASES a new phrase, or add a
+    // check for a new picture kind), so it fails like an error (check B).
+    const errors = [...f.lines('error'), ...f.lines('harness').map((x) => `[harness] ${x}`)];
     if (REPORT) {
       const n = f.counts;
       console.log(

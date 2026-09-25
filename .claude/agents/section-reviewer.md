@@ -23,8 +23,17 @@ Read `docs/MODULE_GUIDE.md` first; it is the standard you review against.
 - **Solver and editing state:** `src/engine/solve.ts` (newest input wins) and
   `src/engine/state.ts` (what the UI calls when a student types). Units:
   `src/engine/unitContext.ts`.
-- **Walkthroughs:** `src/data/modules/buildSteps.ts`; shown by
-  `src/components/module/StepByStep.tsx`.
+- **Walkthroughs:** `src/data/modules/buildSteps.ts` builds the text the student reads,
+  already worded for the grade band (`grade.ts`: K–2 names and number sentences only, Grades
+  3–5 names with the letter in brackets, Grade 6 on letters): `given[].label`, `find[].ask`,
+  each step's `heading`, `lead`, `lines` and `answer`, `nextHint` and `checkFail`.
+  `src/components/module/StepByStep.tsx` only lays that out, so the dump shows exactly what
+  the page shows.
+- **Standards test:** `src/data/modules/__tests__/standards.test.ts` enforces the mechanical
+  parts of checks D, E, J and K on every module (reading level by grade, notation the grade has
+  met, shorthand and jargon, formatting, sentence punctuation, value counts, broken numbers in
+  the walkthrough). Anything it checks is already passing when you start; look for what it
+  can't judge (meaning, order, leaps, whether a formula or words teach better).
 - **Page:** `src/components/module/ModuleSections.tsx` (section order),
   `FormulaSection.tsx` (inputs and number sentences), `DetailParts.tsx`, `src/app/`.
 - **Pictures:** `src/components/module/reps/` (shared parts in `common.tsx` and
@@ -114,9 +123,11 @@ From the harness report, and by extending the harness:
   check). Run under every unit choice.
 - Picture data: non-negative counts, within the picture's limits, parts at most the whole, and
   so on (read each component's assumptions).
-- Every `[harness] can't evaluate …` line is a gap: teach the harness the phrase (`PHRASES`) or
-  add a check for a new picture kind, rather than reporting it. Fix the harness when it flags
-  something the app handles correctly.
+- A `[harness] can't evaluate …` line fails the test, so the author has already taught the
+  harness every phrase (`PHRASES`) and picture kind in the section. If a phrase still can't be
+  read, teach the harness rather than reporting it, and fix the harness when it flags something
+  the app handles correctly. `[minor]` lines (a brute-force search that gave up, a step solved
+  numerically) are limits of the harness, not findings.
 - Logic: change the main value and check every other value moves the way the lesson says; a
   range that allows values the lesson excludes; a name that doesn't match what it holds; a true
   relation that isn't how the lesson thinks; two values that can contradict unnoticed; a value

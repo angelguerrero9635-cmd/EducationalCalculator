@@ -444,7 +444,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     id: 'm.K.count-100',
     assumptions: [
       'Count by ones: the next number is 1 more.',
-      'Count by tens: go one row down on the chart for each ten.',
+      'Count by tens: each ten is one row down on the chart.',
     ],
     variables: [
       whole('n', 'n', 'Start number', 1, 99),
@@ -725,7 +725,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     assumptions: [
       'Changing the order doesn’t change the total: 3 + 5 = 5 + 3.',
       'Add any two first. The total is the same: 3 + 5 + 2 = 3 + 7.',
-      'Pick two that are easy to add, like two that make a ten.',
+      'Pick two that are easy to add, like a ten.',
     ],
     variables: [
       whole('a', 'a', 'First number', 0, 10),
@@ -807,7 +807,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
   {
     id: 'm.1.equal-sign',
     assumptions: [
-      'The equal sign means both sides are the same amount, not “the answer comes next”.',
+      'The equal sign means both sides are the same amount. It does not mean “the answer comes next”.',
       'To find a missing number, make both sides the same: 8 + 2 = 5 + ?',
       'Subtraction works the same way: 8 = 10 − 2 is true, because 10 − 2 is 8.',
     ],
@@ -845,7 +845,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
             ...(v.d! > 5 ? subtractStrategy(v.a! + v.b!, v.c!) : []),
           ],
           expr: '{a} + {b} − {c}',
-          how: 'Add the left side. Count on from the first number on the right up to that total.',
+          how: 'Add the left side. Then count on from the right’s first number to that total.',
         },
         c: {
           work: (v) => [
@@ -967,7 +967,7 @@ export const MATH_K2_MODULES: ModuleDef[] = [
     ...addSub({
       c: 'Add the rods, then the small cubes. Trade 10 small cubes for a rod.',
       a: 'Take the second number away from the total.',
-      b: 'Count up from the first number to the total: tens first, then ones.',
+      b: 'Count up to the total: tens first, then ones.',
     }),
     example: { a: 36, b: 7, c: 43 },
     startWith: ['a', 'b'],

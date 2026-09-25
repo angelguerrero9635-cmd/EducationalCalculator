@@ -100,7 +100,19 @@ the assumptions and a table or diagram.
    in `standalone` with a reason. These check that each module matches the taxonomy, that the
    example satisfies every formula and range, that every rearrangement agrees with its formula and
    has an explanation, that every input combination reproduces the example, and that the
-   walkthrough balances.
+   walkthrough balances. Two tests carry the reviewer's own expectations, so a section meets
+   them before the review starts:
+   - `standards.test.ts` reads everything a student sees (assumptions, names, number
+     sentences, the walkthrough from the example, titles and `use` lines) and enforces the
+     reading level for the grade, notation the grade has met (no letters or "=" outside a
+     number sentence in K–2, no × and ÷ or fractions before Grade 3, no negatives before
+     Grade 6), no shorthand ("incl.", "e.g.") or jargon, formatting (true minus, curly
+     quotes, no "1 tens", thousands separators), sentence punctuation and how many values a
+     grade can hold.
+   - `sampling.test.ts` runs random inputs, edit sequences and unit choices through the solver
+     and the step builder, evaluates every step and check line, and fails on any line it can't
+     read: when you write a new phrase or picture kind, teach the harness (`PHRASES`, the
+     picture checks) as part of the module.
 2. **AI review:** run the `section-reviewer` agent (`.claude/agents/section-reviewer.md`) on the
    new or changed modules. It gathers the evidence once (a walkthrough dump, the sampling
    harness, screenshots and one browser session) and checks every module from eleven points of

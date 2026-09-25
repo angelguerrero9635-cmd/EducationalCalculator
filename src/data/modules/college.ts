@@ -2,6 +2,8 @@
  * College pilot modules, keyed by course topic (`<courseId>#<topicIndex>`). The course and
  * topic titles still come from taxonomy.ts. Written and reviewed against docs/MODULE_GUIDE.md.
  */
+import { formatNumber } from '@/engine/format';
+
 import type { ModuleDef } from './types';
 
 const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
@@ -415,6 +417,13 @@ export const COLLEGE_MODULES: ModuleDef[] = [
       {
         id: 'f′(x) = n·c·xⁿ⁻¹',
         display: '{m} = {n} × {c} × {x}^({n} − 1)',
+        // A constant (n = 0) has slope 0 everywhere; "0 × c × 0^(−1)" would read as 0 × ∞.
+        check: (v) => {
+          const num = (x: number) => (x < 0 ? `(${formatNumber(x)})` : formatNumber(x));
+          return v.n === 0
+            ? `${num(v.m!)} = 0 × ${num(v.c!)}`
+            : `${num(v.m!)} = ${v.n} × ${num(v.c!)} × ${num(v.x!)}^(${v.n} − 1)`;
+        },
         vars: ['m', 'n', 'c', 'x'],
         residual: (v) => v.m! - powerRule(v.c!, v.n!, v.x!),
         solve: {
@@ -448,8 +457,12 @@ export const COLLEGE_MODULES: ModuleDef[] = [
       },
       'f′(x) = n·c·xⁿ⁻¹': {
         m: {
-          expr: '{n} × {c} × {x}^({n} − 1)',
-          how: 'Power rule: bring n down in front and lower the power by 1. Constant-multiple rule: keep c.',
+          // A constant (n = 0) has slope 0: "0 × c × x^(−1)" would read as 0 × ∞ at x = 0.
+          expr: (v) => (v.n === 0 ? '0 × {c}' : '{n} × {c} × {x}^({n} − 1)'),
+          how: (v) =>
+            v.n === 0
+              ? 'The function is the constant c, so its slope is 0 everywhere.'
+              : 'Power rule: bring n down in front and lower the power by 1. Constant-multiple rule: keep c.',
         },
         c: { expr: '{m} ÷ ({n} × {x}^({n} − 1))', how: 'Divide both sides by n·xⁿ⁻¹.' },
         x: {

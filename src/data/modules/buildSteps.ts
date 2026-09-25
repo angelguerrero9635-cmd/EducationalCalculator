@@ -3,6 +3,7 @@ import { holds, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 
+import { gradeBand, quantityLabel, type GradeBand } from './grade';
 import type { ModuleDef } from './types';
 
 export interface Quantity {
@@ -11,6 +12,10 @@ export interface Quantity {
   name: string;
   /** e.g. "12 cm²" or "?" */
   value: string;
+  /** As listed for the grade: "First group: 3" (K–2), "Rows (r): 3" (3–5) or "r = 3". */
+  label: string;
+  /** As named in "Find": "first group" (K–2) or "rows (r)". */
+  ask: string;
 }
 
 export interface Step {
@@ -30,9 +35,22 @@ export interface Step {
   work?: string[];
   /** "w = 3 cm" */
   result: string;
+  /** "Find width (w)"; K–2: "Find width". */
+  heading: string;
+  /**
+   * What the box opens with: the number sentence with "?" (K–5, first) and the rule in letters
+   * (Grade 3 on). K–2 sees no letters.
+   */
+  lead: { sentence?: string; formula?: string };
+  /** The lines shown in the box, in order, before the answer (grade-appropriate wording). */
+  lines: string[];
+  /** The answer line as shown: "First group: 3" (K–2) or "w = 3 cm". */
+  answer: string;
 }
 
 export interface Walkthrough {
+  /** How the text talks to the student (see grade.ts). */
+  band: GradeBand;
   given: Quantity[];
   find: Quantity[];
   steps: Step[];
@@ -48,7 +66,16 @@ export interface Walkthrough {
   convertOut: string[];
   /** The formula units the steps are worked in, when conversion was needed ("cm, cm²"). */
   workingUnits?: string;
+  /** "Type one more number: first group, second group." when values are still missing. */
+  nextHint?: string;
+  /** What a failed check line says: "✗", or for K–2 "≠  try another number". */
+  checkFail: string;
 }
+
+/** A line with brackets or words after "x =": the work lines say it better for K–2. */
+const wordy = (line: string) => /[(]|[a-z]{3,}/i.test(line.replace(/^\S+ = /, ''));
+
+const lowerFirst = (x: string) => `${x[0]!.toLowerCase()}${x.slice(1)}`;
 
 /**
  * Builds the step-by-step explanation of how `result` was reached from the entered values.
@@ -114,6 +141,18 @@ export function buildSteps(
 ): Walkthrough {
   const vars = module.variables;
   const byId = new Map(vars.map((v) => [v.id, v]));
+  const band = gradeBand(module.id);
+  const early = band === 'early';
+  /** K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter). */
+  const plain = (line: string, id: string, keepName: boolean) => {
+    const v = byId.get(id);
+    if (!early || !v || !line.startsWith(`${v.symbol} = `)) return line;
+    const rest = line.slice(v.symbol.length + 3);
+    return keepName ? `${v.name}: ${rest}` : rest;
+  };
+  /** The variable a conversion line is about ("a = 12 in = 30.48 cm …"). */
+  const convertedId = (line: string) =>
+    vars.find((v) => line.startsWith(`${v.symbol} = `))?.id ?? '';
   const relations = new Map(module.relations.map((r) => [r.id, r]));
   const direct = units.coherent;
 
@@ -152,11 +191,14 @@ export function buildSteps(
   const quantity = (id: string): Quantity => {
     const v = byId.get(id)!;
     const known = result.values[id] !== undefined;
+    const value = known ? fmt(id, shownValue(id), shownUnit(id)) : '?';
     return {
       id,
       symbol: v.symbol,
       name: v.name,
-      value: known ? fmt(id, shownValue(id), shownUnit(id)) : '?',
+      value,
+      label: quantityLabel(band, v.name, v.symbol, value),
+      ask: early ? lowerFirst(v.name) : `${lowerFirst(v.name)} (${v.symbol})`,
     };
   };
 
@@ -179,8 +221,24 @@ export function buildSteps(
       sentence: agree(renderTemplate(relation.display, workVars, knownHere)),
       result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
+    // Grade 3–5 boxes open with the number sentence, then the rule; K–2 with the sentence only.
+    const lead =
+      band === 'early'
+        ? { sentence: base.sentence }
+        : band === 'elementary'
+          ? { sentence: base.sentence, formula: base.formula }
+          : { formula: base.formula };
+    const heading = early ? `Find ${lowerFirst(v.name)}` : base.title;
+    const answer = plain(base.result, t.id, true);
     if (!text || !t.exact) {
-      return { ...base, how: 'Try numbers until both sides match.' };
+      return {
+        ...base,
+        how: 'Try numbers until both sides match.',
+        heading,
+        lead,
+        lines: [],
+        answer,
+      };
     }
     // Text functions get the numbers the steps show (the working values), so every line matches.
     const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;
@@ -189,15 +247,32 @@ export function buildSteps(
     const substituted = agree(`${v.symbol} = ${renderTemplate(expr, workVars, working)}`);
     // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
     const same = (x: string, y: string) => x === y.split(' (')[0];
+    const result =
+      text.note && direct ? `${base.result} ${text.note(working)}`.trimEnd() : base.result;
+    const workLines = work?.length
+      ? work.map((line) => agree(renderTemplate(line, workVars, working)))
+      : undefined;
+    const showSubstituted = !(same(substituted, base.result) || substituted === rearranged);
     return {
       ...base,
-      ...(text.note && direct ? { result: `${base.result} ${text.note(working)}` } : {}),
+      result,
       how: typeof text.how === 'function' ? text.how(working) : text.how,
       rearranged,
-      ...(same(substituted, base.result) || substituted === rearranged ? {} : { substituted }),
-      ...(work?.length
-        ? { work: work.map((line) => agree(renderTemplate(line, workVars, working))) }
-        : {}),
+      ...(showSubstituted ? { substituted } : {}),
+      ...(workLines ? { work: workLines } : {}),
+      heading,
+      lead,
+      lines: [
+        // K–5 skip the letter rearrangement ("a = c − b"): the numbers carry the idea.
+        ...(band === 'standard' ? [rearranged] : []),
+        // K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped when the
+        // work lines show the arithmetic.
+        ...(showSubstituted && !(early && workLines?.length && wordy(substituted))
+          ? [plain(substituted, t.id, false)]
+          : []),
+        ...(workLines ?? []),
+      ],
+      answer: plain(result, t.id, true),
     };
   });
 
@@ -223,7 +298,9 @@ export function buildSteps(
     ? undefined
     : [...new Set(converted.map(formulaUnit).filter((u): u is string => !!u))].join(', ');
 
+  const missing = result.unknown.map(quantity);
   return {
+    band,
     given: givenIds.map(quantity),
     find: result.trace.map((t) => quantity(t.id)),
     steps,
@@ -234,14 +311,25 @@ export function buildSteps(
           r.check && direct ? r.check(working) : renderTemplate(r.display, workVars, working),
         ok: holds(r, result.values),
       })),
-    missing: result.unknown.map(quantity),
+    missing,
     convertIn: givenIds
       .filter((id) => converted.includes(id))
-      .map((id) => conversion(id, 'formula')),
+      .map((id) => conversion(id, 'formula'))
+      .map((line) => plain(line, convertedId(line), true)),
     convertOut: result.trace
       .map((t) => t.id)
       .filter((id) => converted.includes(id))
-      .map((id) => conversion(id, 'shown')),
+      .map((id) => conversion(id, 'shown'))
+      .map((line) => plain(line, convertedId(line), true)),
     workingUnits: workingUnits || undefined,
+    ...(missing.length
+      ? {
+          nextHint:
+            band === 'standard'
+              ? `Type one more number (${missing.map((q) => q.symbol).join(', ')}) to keep going.`
+              : `Type one more number: ${missing.map((q) => q.ask).join(', ')}.`,
+        }
+      : {}),
+    checkFail: early ? '≠  try another number' : '✗',
   };
 }
