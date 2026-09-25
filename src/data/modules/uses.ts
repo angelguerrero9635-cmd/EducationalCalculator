@@ -102,7 +102,7 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
     'Use this for “Is today warmer or cooler than yesterday? By how much?”',
   's.K.weather-patterns~storm': 'Use this to count storm jobs done and storm jobs left.',
   's.K.living-things-change-environment~litter': 'Use this to count the litter picked up, by kind.',
-  's.1.sound-vibration~drum': 'Use this for “Which hit made more rice jump, and by how many?”',
+  's.1.sound-vibration~drum': 'Use this for “Which hit made more rice jump? How many more?”',
   's.1.sound-vibration~signals': 'Use this to count the flashes in a message sent with light.',
   's.1.light-shadows~materials': 'Use this to sort materials by how much light gets through.',
   's.1.structures-function~beaks': 'Use this to compare two beaks and say which food each fits.',
