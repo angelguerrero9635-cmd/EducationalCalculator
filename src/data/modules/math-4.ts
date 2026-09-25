@@ -887,4 +887,75 @@ export const MATH_4_MODULES: ModuleDef[] = [
     startWith: ['t', 'u'],
     representation: { kind: 'grid100', percent: 'h' },
   },
+
+  // ── Converting units within one system: a conversion table (4.MD.1) ──
+  (() => {
+    const fmt = (x: number) => formatNumber(x);
+    const PAIRS: Record<number, string> = {
+      12: '1 foot = 12 inches',
+      16: '1 pound = 16 ounces',
+      60: '1 hour = 60 minutes',
+      100: '1 meter = 100 centimeters',
+      1000: '1 kilometer = 1,000 meters (or 1 kilogram = 1,000 grams, 1 liter = 1,000 milliliters)',
+    };
+    return {
+      id: 'm.4.unit-conversion',
+      assumptions: [
+        'A bigger unit is a fixed number of smaller units: 1 foot = 12 inches, 1 hour = 60 minutes.',
+        'Also 1 pound = 16 ounces, 1 meter = 100 centimeters, and 1 kilometer, 1 kilogram or 1 liter = 1,000 of the smaller unit.',
+        'To change bigger units into smaller ones, multiply by that number. A table shows the pattern.',
+        'Tap a row of the table to pick how many bigger units.',
+      ],
+      variables: [
+        whole('b', 'b', 'Bigger units', 1, 12),
+        {
+          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 12, 1000),
+          allowed: [12, 16, 60, 100, 1000],
+        },
+        whole('s', 's', 'Smaller units', 12, 12000),
+      ],
+      relations: [
+        {
+          id: 's = b × k',
+          display: '{b} × {k} = {s}',
+          vars: ['s', 'b', 'k'],
+          residual: (v: Values) => v.s! - v.b! * v.k!,
+          solve: {
+            s: (v: Values) => v.b! * v.k!,
+            b: (v: Values) => div(v.s!, v.k!),
+            k: (v: Values) => div(v.s!, v.b!),
+          },
+        },
+      ],
+      steps: {
+        's = b × k': {
+          s: {
+            expr: '{b} × {k}',
+            how: (v) =>
+              `${PAIRS[v.k!] ?? 'Each bigger unit is the same number of smaller units'}. Multiply by that number.`,
+            work: (v) => [`${v.b} × ${fmt(v.k!)} = ${fmt(v.b! * v.k!)}`],
+          },
+          b: {
+            expr: '{s} ÷ {k}',
+            how: 'Divide the smaller units by how many make one bigger unit.',
+            work: (v) => [`${fmt(v.s!)} ÷ ${fmt(v.k!)} = ${v.b}`],
+          },
+          k: {
+            expr: '{s} ÷ {b}',
+            how: 'Divide the smaller units by the bigger units: how many smaller units in one.',
+            work: (v) => [`${fmt(v.s!)} ÷ ${v.b} = ${fmt(v.k!)}`],
+          },
+        },
+      },
+      example: { b: 3, k: 12, s: 36 },
+      startWith: ['b', 'k'],
+      representation: {
+        kind: 'table',
+        sweep: 'b',
+        output: 's',
+        params: ['k'],
+        rows: [1, 2, 3, 4, 5, 6],
+      },
+    } satisfies ModuleDef;
+  })(),
 ];

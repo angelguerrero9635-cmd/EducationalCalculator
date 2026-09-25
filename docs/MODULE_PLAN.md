@@ -53,7 +53,8 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   comparing fractions with unlike bottoms (each rewritten over the common bottom, four bars);
   adding like fractions (add the tops, the sum as wholes and parts on a fraction line);
   a whole number times a fraction (copies of the fraction added, the product as a mixed number);
-  decimals for tenths and hundredths (a hundred grid, 10 × tenths + extra hundredths, as 0.34).
+  decimals for tenths and hundredths (a hundred grid, 10 × tenths + extra hundredths, as 0.34);
+  unit conversion (bigger units × the number in one, as a two-column table).
   New picture: area model. New engine rule: a check-only relation (`constraint`).
 - **Section 2, Grade 3.** 14 skill modules (area was a pilot; patterns in the tables,
   multiplying by multiples of 10, and measuring with line plots were added to the taxonomy
