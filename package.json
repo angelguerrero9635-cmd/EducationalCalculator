@@ -13,7 +13,14 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "jest"
+    "test": "jest",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
+    "check:fast": "pnpm typecheck && pnpm lint && pnpm format:check",
+    "review": "node scripts/review-evidence.mjs",
+    "shots": "node scripts/review-shots.mjs",
+    "sliders": "node scripts/test-sliders.mjs",
+    "new-module": "node scripts/new-module.mjs",
+    "docs:sliders": "WRITE_DOCS=1 jest src/data/modules/__tests__/docs.review.test.ts"
   },
   "dependencies": {
     "@expo/metro-runtime": "~57.0.16",

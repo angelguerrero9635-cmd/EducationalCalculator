@@ -91,8 +91,14 @@ search or the sitemap, but the module tests and the harness run over it):
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
-a name in `meta.ts`, its variables in `modules.test.ts`, a check in the harness's `repIssues`,
+a name in `meta.ts`, its variables in `modules.test.ts`, a check in `harness/pictures.ts`,
 and a lesson that uses it, or a gallery module until one exists.
+
+**Sliders.** Not every picture needs them. A slider row appears only for kinds where sweeping a
+value teaches something the input boxes can't and the picture has no handle or tap of its own
+(`src/components/module/sliderPolicy.ts`: fraction bars, the fraction and whole-number area
+models, partitions, rectilinear shapes, the pie chart and unit cubes). Everything else has the input boxes and the picture's own touch controls. A module
+can set `sliders: true | false` to override its kind; `docs/SLIDERS.md` lists every page.
 
 ## Units
 
@@ -158,7 +164,8 @@ the assumptions and a table or diagram.
    - `sampling.test.ts` runs random inputs, edit sequences and unit choices through the solver
      and the step builder, evaluates every step and check line, and fails on any line it can't
      read or that two steps share: when you write a new phrase or picture kind, teach the
-     harness (`PHRASES`, the picture checks) as part of the module.
+     harness (`PHRASES` in `harness/evaluate.ts`, the picture checks in `harness/pictures.ts`)
+     as part of the module.
    - Values that a lesson names (`allowed: [5, 10, 100]`) and working values nobody types
      (`derived: true`) are declared on the variable; the solver, sliders, harness and dump
      respect both.

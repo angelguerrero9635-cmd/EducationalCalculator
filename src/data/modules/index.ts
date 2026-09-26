@@ -1,34 +1,33 @@
 import { COLLEGE_MODULES } from './college';
+import { MATH_K_MODULES } from './math/k';
+import { MATH_1_MODULES } from './math/1';
+import { MATH_2_MODULES } from './math/2';
+import { MATH_3_MODULES } from './math/3';
+import { MATH_4_MODULES } from './math/4';
+import { SCIENCE_K_MODULES } from './science/k';
+import { SCIENCE_1_MODULES } from './science/1';
+import { SCIENCE_2_MODULES } from './science/2';
+import { SCIENCE_3_MODULES } from './science/3';
+import { PILOT_MODULES } from './pilots';
 import { GALLERY_MODULES } from './gallery';
-import { K12_MODULES } from './k12';
-import { MATH_K2_MODULES } from './math-k2';
-import { MATH_K2_EXTRA_MODULES } from './math-k2-extra';
-import { MATH_K2_MORE_MODULES } from './math-k2-more';
-import { MATH_3_MODULES } from './math-3';
-import { MATH_3_MORE_MODULES } from './math-3-more';
-import { MATH_4_MORE_MODULES } from './math-4-more';
-import { MATH_4_MODULES } from './math-4';
-import { SCIENCE_3_MODULES } from './science-3';
-import { SCIENCE_K2_MODULES } from './science-k2';
 import { LAYOUTS, getLayout, type LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
-import { PROBLEM_TYPE_USES } from './uses';
 
 export type { ModuleDef, Representation } from './types';
 
 export const MODULES: readonly ModuleDef[] = [
-  ...K12_MODULES,
-  ...MATH_K2_MODULES,
-  ...MATH_K2_EXTRA_MODULES,
-  ...MATH_K2_MORE_MODULES,
+  ...MATH_K_MODULES,
+  ...MATH_1_MODULES,
+  ...MATH_2_MODULES,
   ...MATH_3_MODULES,
-  ...MATH_3_MORE_MODULES,
   ...MATH_4_MODULES,
-  ...MATH_4_MORE_MODULES,
-  ...SCIENCE_K2_MODULES,
+  ...SCIENCE_K_MODULES,
+  ...SCIENCE_1_MODULES,
+  ...SCIENCE_2_MODULES,
   ...SCIENCE_3_MODULES,
+  ...PILOT_MODULES,
   ...COLLEGE_MODULES,
-].map((m) => (PROBLEM_TYPE_USES[m.id] ? { ...m, use: PROBLEM_TYPE_USES[m.id] } : m));
+];
 
 const BY_ID = new Map(MODULES.map((m) => [m.id, m]));
 const GALLERY_BY_ID = new Map(GALLERY_MODULES.map((m) => [m.id, m]));

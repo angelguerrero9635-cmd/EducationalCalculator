@@ -1,12 +1,11 @@
 /**
- * Science, Grade 3 (NGSS 3-PS2, 3-LS1, 3-LS3, 3-LS4, 3-ESS2). One honest quantity model per
- * lesson, in Grade 3 math: adding within 1,000, multiplying within 100 and by tens, and
- * comparing by subtracting. Letters appear only as labels next to names.
+ * Grade 3 science: every calculator module for the grade, the skill's main page first
+ * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
+ * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import { FAHRENHEIT, apart, sum2, sumAll, times, whole } from './helpers';
 import type { Values } from '@/engine/types';
-
-import type { ModuleDef } from './types';
+import { FAHRENHEIT, apart, sum2, sumAll, times, whole } from '../helpers';
+import type { ModuleDef } from '../types';
 
 const F = FAHRENHEIT;
 
@@ -49,6 +48,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     return {
       id: 's.3.balanced-forces~tug',
       title: 'Adding up a team’s pull',
+      use: 'Use this to add up a team’s pull in a tug of war.',
       assumptions: [
         'In a tug of war, every child on a team pulls the same way.',
         'Use a spring scale to measure one child’s pull.',
@@ -65,7 +65,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       representation: { kind: 'skipCount', step: 'p', count: 'k', total: 't' },
     } satisfies ModuleDef;
   })(),
-
   (() => {
     const swings = times(
       's = p × k',
@@ -86,6 +85,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     return {
       id: 's.3.balanced-forces~swings',
       title: 'A pendulum’s pattern',
+      use: 'Use this to predict a pendulum’s swings from its steady pattern.',
       assumptions: [
         'A pendulum is a weight on a string. Once it swings, it keeps a steady beat.',
         'It makes the same number of swings every 10 seconds, so you can predict the next 10.',
@@ -110,7 +110,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       representation: { kind: 'skipCount', step: 'p', count: 'k', total: 's' },
     } satisfies ModuleDef;
   })(),
-
   // ── Magnets: forces at a distance (3-PS2-3, 3-PS2-4) ──
   (() => {
     const lost = times(
@@ -160,6 +159,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       id: 's.3.magnets~chain',
       pictureLabels: ['m'],
       title: 'Which magnet is stronger?',
+      use: 'Use this to compare two magnets by the chain of clips each holds.',
       assumptions: [
         'Hang paper clips from a magnet in a chain until one drops.',
         'A stronger magnet holds a longer chain.',
@@ -185,7 +185,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-
   // ── Life cycles (3-LS1-1) ──
   (() => {
     const cycle = sumAll(
@@ -220,6 +219,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     return {
       id: 's.3.life-cycles~frog',
       title: 'From egg to frog',
+      use: 'Use this to add the stages from egg to frog.',
       assumptions: [
         'A frog starts as an egg in the water, hatches as a tadpole, then grows legs as a froglet.',
         'Add the days of each stage to find how long it takes to become a frog.',
@@ -237,7 +237,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       representation: { kind: 'tape', parts: ['e', 't', 'f'], total: 'd' },
     } satisfies ModuleDef;
   })(),
-
   // ── Inherited traits and the environment (3-LS3-1, 3-LS3-2) ──
   (() => {
     const litter = sumAll('p = brown + black + spotted', ['b', 'k', 's'], 'p', 'fur colors');
@@ -276,6 +275,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       id: 's.3.inherited-traits~environment',
       pictureLabels: ['t'],
       title: 'Traits the environment changes',
+      use: 'Use this to compare plants with the same traits grown with different water.',
       assumptions: [
         'Two plants from the same seeds inherit the same traits.',
         'The environment still matters: the plant that gets more water grows taller.',
@@ -302,7 +302,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-
   // ── Adaptations, survival and fossils (3-LS4-1 to 3-LS4-4) ──
   (() => {
     const deeper = apart(
@@ -348,6 +347,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       id: 's.3.adaptation-fossils~survive',
       pictureLabels: ['m'],
       title: 'Which birds survived the dry year?',
+      use: 'Use this to compare how many birds of each beak survived.',
       assumptions: [
         'In a dry year only hard seeds are left. Birds with big strong beaks can crack them.',
         'Count the birds of each kind that survived.',
@@ -373,7 +373,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-
   // ── Animals living in groups (3-LS2-1) ──
   (() => {
     const month = sumAll(
@@ -420,6 +419,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     return {
       id: 's.3.weather-climate~range',
       title: 'Warmest and coldest months',
+      use: 'Use this for the difference between the warmest and coldest months.',
       assumptions: [
         'Climate is the usual weather of a place over many years.',
         'A place with hot summers and cold winters has a big difference between its months.',
@@ -452,6 +452,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     return {
       id: 's.3.weather-climate~flood',
       title: 'A sandbag wall against a flood',
+      use: 'Use this to count the sandbags in a wall built in equal rows.',
       assumptions: [
         'Weather can be dangerous: floods, high winds, lightning.',
         'People build to stay safe. A wall of sandbags holds back flood water.',

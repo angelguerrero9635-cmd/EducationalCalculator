@@ -19,6 +19,7 @@ import { FormulaSection } from './FormulaSection';
 import { InputsSection } from './InputsSection';
 import { LayoutView } from './layouts/LayoutView';
 import { RepresentationView, representationTitle } from './reps';
+import { showsSliders } from './sliderPolicy';
 import { Sliders } from './Sliders';
 import { StepByStep } from './StepByStep';
 import { StepperProvider, useStepperRegistry } from './stepperContext';
@@ -61,7 +62,9 @@ function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
  * phone width) matches the first live render.
  */
 function PictureWithSliders({ module, calc }: { module: ModuleDef; calc: Calculator }) {
-  const items = useStepperRegistry()?.items ?? [];
+  // Pictures declare what a slider could change; the policy decides whether to show any.
+  const registered = useStepperRegistry()?.items ?? [];
+  const items = showsSliders(module) ? registered : [];
   const [width, setWidth] = useState(0);
   const beside = items.length > 0 && width >= 640;
   return (

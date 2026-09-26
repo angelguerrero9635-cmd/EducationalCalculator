@@ -1,15 +1,9 @@
-/**
- * Shared lesson pieces: relations with their step text, written once so every section builds
- * on the same wording and the same worked lines. K–2 helpers speak in names and number
- * sentences; Grade 3 helpers use × and ÷ and letters as labels. Add to this file, not to a
- * section file, when a second section needs the same shape (docs/ENGINE_LOG.md).
- */
-import type { Values } from '@/engine/types';
-
-import { difference, div, whole } from './math-k2';
+import { formatNumber } from '@/engine/format';
+import type { Values, VariableDef } from '@/engine/types';
 import type { StepText } from './types';
 import {
   addStrategy,
+  compareLine,
   countList,
   countUp,
   dealLines,
@@ -20,8 +14,12 @@ import {
   sumSteps,
   timesWork,
 } from './work';
-
-export { div, whole };
+/**
+ * Shared lesson pieces: relations with their step text, written once so every section builds
+ * on the same wording and the same worked lines. K–2 helpers speak in names and number
+ * sentences; Grade 3 helpers use × and ÷ and letters as labels. Add to this file, not to a
+ * section file, when a second section needs the same shape (docs/ENGINE_LOG.md).
+ */
 
 /** Whether n is prime (2 or more, no factor but 1 and itself). */
 export const isPrime = (n: number) => {
@@ -315,3 +313,180 @@ export function apart(
   };
   return { relation, steps };
 }
+
+// ─── Kindergarten–Grade 2 helpers (from the former math-k2.ts) ───────────────
+
+export const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
+/** A whole-number variable (counts, digits…). */
+export const whole = (
+  id: string,
+  symbol: string,
+  name: string,
+  min: number,
+  max: number,
+): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min,
+  max,
+  step: 1,
+  integer: true,
+});
+/** a + b = c and c − b = a, with Grade-level step text. */
+/** Worked lines for a + b = c: add by place, subtract by jumping back, count up to a part. */
+export const addWork = (v: Values) => addStrategy(v.a!, v.b!);
+export const subtractWork = (v: Values) => subtractStrategy(v.c!, v.b!);
+export const countUpWork = (v: Values) => countUp(v.a!, v.c!);
+/**
+ * d = the difference between a and b, never negative (K–2 has no negative numbers). Knowing d
+ * and one value leaves two answers (more or fewer); the solver keeps the one nearest before.
+ */
+export function difference(
+  d: string,
+  a: string,
+  b: string,
+  how: {
+    diff: string;
+    /** How to find a: [when a is the bigger one, when a is the smaller one]. */
+    first: [string, string];
+    /** How to find b: [when a is the bigger one, when a is the smaller one]. */
+    second: [string, string];
+    /** Show counting up from the smaller to the bigger number (for 2- and 3-digit numbers). */
+    countUp?: boolean;
+    /** Start by saying which number is greater, place by place (compare-numbers lessons). */
+    compare?: boolean;
+    /** The formula as students read it, e.g. "{d} = how many more: {a} or {b}" (K–1). */
+    display?: string;
+    /** Count on and count back one at a time (Kindergarten, numbers to 10). */
+    countOn?: boolean;
+    /** Say which is bigger first ("7 is more than 4"): the words for [more, fewer]. */
+    compareWords?: [string, string];
+    /** How to find a or b when there is no difference (default: they are the same). */
+    same?: string;
+  },
+) {
+  const id = `${d} = difference of ${a} and ${b}`;
+  const aMore = (v: Values) => v[a]! >= v[b]!;
+  const same = how.same ?? 'There is no difference. Both are the same.';
+  /**
+   * Knowing one amount and the difference leaves two answers; the solver keeps one. Name the
+   * other ("or 12, the other way round") so a student with the opposite problem sees it.
+   */
+  const otherWay = (known: number, diff: number, wentUp: boolean) => {
+    const alt = wentUp ? known - diff : known + diff;
+    return diff > 0 && alt >= 0 ? `(or ${formatNumber(alt)}, the other way round)` : '';
+  };
+  /** "Start at 4. Count on 3: 5, 6, 7 → 7" or "Start at 7. Count back 3: 6, 5, 4 → 4". */
+  const counting = (from: number, by: number, up: boolean) =>
+    by > 0
+      ? [
+          `Start at ${from}. Count ${up ? 'on' : 'back'} ${by}: ${countList(from, up ? 1 : -1, by)} → ${up ? from + by : from - by}`,
+        ]
+      : [];
+  const relation = {
+    id,
+    display: how.display ?? `{${a}} and {${b}} are {${d}} apart`,
+    vars: [d, a, b],
+    residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),
+    // Compare lessons end with the sign students write ("45 < 54, 9 apart").
+    check: (v: Values) =>
+      how.compare
+        ? `${formatNumber(v[a]!)} ${v[a]! < v[b]! ? '<' : v[a]! > v[b]! ? '>' : '='} ${formatNumber(v[b]!)}, ${formatNumber(Math.abs(v[a]! - v[b]!))} apart`
+        : `${formatNumber(Math.max(v[a]!, v[b]!))} − ${formatNumber(Math.min(v[a]!, v[b]!))} = ${formatNumber(Math.abs(v[a]! - v[b]!))}`,
+    solve: {
+      [d]: (v: Values) => Math.abs(v[a]! - v[b]!),
+      [a]: (v: Values) => [v[b]! + v[d]!, v[b]! - v[d]!],
+      [b]: (v: Values) => [v[a]! - v[d]!, v[a]! + v[d]!],
+    },
+  };
+  const steps: Record<string, Record<string, StepText>> = {
+    [id]: {
+      [d]: {
+        expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
+        how: how.diff,
+        ...(how.countUp || how.compare || how.countOn
+          ? {
+              work: (v: Values) => {
+                const [lo, hi] = [Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)];
+                return [
+                  ...(how.compare ? [compareLine(v[a]!, v[b]!)] : []),
+                  ...(how.compareWords && hi > lo
+                    ? [`${hi} is ${how.compareWords[0]} than ${lo}`]
+                    : []),
+                  ...(how.countUp ? countUp(lo, hi) : []),
+                  ...(how.countOn && hi > lo
+                    ? [`Count on from ${lo}: ${countList(lo, 1, hi - lo)} → ${hi - lo}`]
+                    : []),
+                ];
+              },
+            }
+          : {}),
+      },
+      [a]: {
+        expr: (v) => (aMore(v) ? `{${b}} + {${d}}` : `{${b}} − {${d}}`),
+        how: (v) => (v[d] === 0 ? same : how.first[aMore(v) ? 0 : 1]),
+        note: (v) => (how.countOn ? '' : otherWay(v[b]!, v[d]!, aMore(v))),
+        work: (v) =>
+          how.countOn
+            ? counting(v[b]!, v[d]!, aMore(v))
+            : aMore(v)
+              ? addStrategy(v[b]!, v[d]!)
+              : subtractStrategy(v[b]!, v[d]!),
+      },
+      [b]: {
+        expr: (v) => (aMore(v) ? `{${a}} − {${d}}` : `{${a}} + {${d}}`),
+        how: (v) => (v[d] === 0 ? same : how.second[aMore(v) ? 0 : 1]),
+        note: (v) => (how.countOn ? '' : otherWay(v[a]!, v[d]!, !aMore(v))),
+        work: (v) =>
+          how.countOn
+            ? counting(v[a]!, v[d]!, !aMore(v))
+            : aMore(v)
+              ? subtractStrategy(v[a]!, v[d]!)
+              : addStrategy(v[a]!, v[d]!),
+      },
+    },
+  };
+  return { relation, steps };
+}
+/** "(one fourth of the whole; 4 fourths make the whole)". */
+export function fractionNote(k: number, p: number): string {
+  const names: Record<number, [string, string]> = {
+    2: ['half', 'halves'],
+    3: ['third', 'thirds'],
+    4: ['fourth', 'fourths'],
+  };
+  const name = names[p];
+  if (!name) return '';
+  if (k === 0) return `(0 ${name[1]} shaded)`;
+  if (k === p) return `(${p} ${name[1]} make the whole)`;
+  return `(${k === 1 ? `one ${name[0]}` : `${k} ${name[1]}`} of the whole; ${p} ${name[1]} make the whole)`;
+}
+export const cmpShapes = difference('d', 'c', 's', {
+  display: 'Line up {c} and {s}: {d} extra',
+  diff: 'Line up the two columns. Count the extra pictures in the taller one.',
+  countOn: true,
+  compareWords: ['more', 'fewer'],
+  first: [
+    'There are more circles. Add the extra to the squares.',
+    'There are fewer circles. Take the extra away from the squares.',
+  ],
+  second: [
+    'There are more circles. Take the extra away from the circles.',
+    'There are fewer circles. Add the extra to the circles.',
+  ],
+});
+export const cmpBars = difference('d', 'a', 'b', {
+  display: 'Bars {a} and {b} are {d} apart',
+  diff: 'Count up from the shorter bar’s number to the taller bar’s number.',
+  // Within 10, count on one at a time (the bars are 0–10).
+  countOn: true,
+  first: [
+    'Soccer is taller. Add the difference to basketball.',
+    'Soccer is shorter. Subtract the difference from basketball.',
+  ],
+  second: [
+    'Soccer is taller. Subtract the difference from soccer.',
+    'Soccer is shorter. Add the difference to soccer.',
+  ],
+});

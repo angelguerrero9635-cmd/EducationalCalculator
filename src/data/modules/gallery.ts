@@ -6,7 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
-import { div, whole } from './math-k2';
+import { div, whole } from './helpers';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
 

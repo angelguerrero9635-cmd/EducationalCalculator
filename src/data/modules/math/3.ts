@@ -1,12 +1,11 @@
 /**
- * Grade 3 math, part 2: fractions, time, mass and liquid volume, area, perimeter, scaled
- * graphs and quadrilaterals. Same conventions as `math-3.ts`.
+ * Grade 3 math: every calculator module for the grade, the skill's main page first
+ * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
+ * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
 import type { Values } from '@/engine/types';
-
-import { sumAll } from './helpers';
-import { div, whole } from './math-k2';
-import type { ModuleDef, StepText } from './types';
+import { div, sumAll, whole } from '../helpers';
+import type { ModuleDef, StepText } from '../types';
 import {
   addAll,
   addStrategy,
@@ -16,88 +15,156 @@ import {
   subtractStrategy,
   sumSteps,
   timesWork,
-} from './work';
+} from '../work';
 
-const clock = (h: number, m: number) => `${h}:${String(m).padStart(2, '0')}`;
+// ─── Shared pieces ──────────────────────────────────────────────────────────
 
-/** c = a × b and its two divisions (see `math-3.ts`). */
+/**
+ * c = a × b with its two divisions. `names` are how the step text says the three values, e.g.
+ * ['groups', 'number in each group', 'total'].
+ */
 function times(
   id: string,
   [a, b, c]: [string, string, string],
   [an, bn, cn]: [string, string, string],
   display = `{${a}} × {${b}} = {${c}}`,
 ) {
-  return {
-    relation: {
-      id,
-      display,
-      vars: [c, a, b],
-      residual: (v: Values) => v[c]! - v[a]! * v[b]!,
-      solve: {
-        [c]: (v: Values) => v[a]! * v[b]!,
-        [a]: (v: Values) => div(v[c]!, v[b]!),
-        [b]: (v: Values) => div(v[c]!, v[a]!),
-      },
+  const relation = {
+    id,
+    display,
+    vars: [c, a, b],
+    residual: (v: Values) => v[c]! - v[a]! * v[b]!,
+    solve: {
+      [c]: (v: Values) => v[a]! * v[b]!,
+      [a]: (v: Values) => div(v[c]!, v[b]!),
+      [b]: (v: Values) => div(v[c]!, v[a]!),
     },
-    steps: {
-      [c]: {
-        expr: `{${a}} × {${b}}`,
-        how: `Multiply the ${an} by the ${bn}.`,
-        work: (v: Values) => timesWork(v[a]!, v[b]!),
-      },
-      [a]: {
-        expr: `{${c}} ÷ {${b}}`,
-        how: `Divide the ${cn} by the ${bn}.`,
-        work: (v: Values) => divideWork(v[c]!, v[b]!),
-      },
-      [b]: {
-        expr: `{${c}} ÷ {${a}}`,
-        how: `Divide the ${cn} by the ${an}.`,
-        work: (v: Values) => divideWork(v[c]!, v[a]!, 'second'),
-      },
-    } as Record<string, StepText>,
   };
+  const steps: Record<string, StepText> = {
+    [c]: {
+      expr: `{${a}} × {${b}}`,
+      how: `Multiply the ${an} by the ${bn}.`,
+      work: (v) => timesWork(v[a]!, v[b]!),
+    },
+    [a]: {
+      expr: `{${c}} ÷ {${b}}`,
+      how: `Divide the ${cn} by the ${bn}.`,
+      work: (v) => divideWork(v[c]!, v[b]!),
+    },
+    [b]: {
+      expr: `{${c}} ÷ {${a}}`,
+      how: `Divide the ${cn} by the ${an}.`,
+      work: (v) => divideWork(v[c]!, v[a]!, 'second'),
+    },
+  };
+  return { relation, steps };
 }
-
-/** c = a + b and its two subtractions (see `math-3.ts`). */
+/** c = a + b with its two subtractions, worked the Grade 3 way (by place). */
 function plus(
   id: string,
   [a, b, c]: [string, string, string],
   [an, bn, cn]: [string, string, string],
   display = `{${a}} + {${b}} = {${c}}`,
+  unit = '',
 ) {
+  const relation = {
+    id,
+    display,
+    vars: [c, a, b],
+    residual: (v: Values) => v[c]! - v[a]! - v[b]!,
+    solve: {
+      [c]: (v: Values) => v[a]! + v[b]!,
+      [a]: (v: Values) => v[c]! - v[b]!,
+      [b]: (v: Values) => v[c]! - v[a]!,
+    },
+  };
+  const steps: Record<string, StepText> = {
+    [c]: {
+      expr: `{${a}} + {${b}}`,
+      how: `Add the ${an} and the ${bn}.`,
+      work: (v) => addStrategy(v[a]!, v[b]!, unit),
+    },
+    [a]: {
+      expr: `{${c}} − {${b}}`,
+      how: `Take the ${bn} away from the ${cn}.`,
+      work: (v) => subtractStrategy(v[c]!, v[b]!, unit),
+    },
+    [b]: {
+      expr: `{${c}} − {${a}}`,
+      how: `Take the ${an} away from the ${cn}.`,
+      work: (v) => subtractStrategy(v[c]!, v[a]!, unit),
+    },
+  };
+  return { relation, steps };
+}
+/** Rounding to the nearest `to` (10 or 100): the multiple below, the one above, the nearer one. */
+function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
+  const place = to === 10 ? 'ten' : 'hundred';
+  const half = to / 2;
+  const below = (n: number) => Math.floor(n / to) * to;
   return {
-    relation: {
-      id,
-      display,
-      vars: [c, a, b],
-      residual: (v: Values) => v[c]! - v[a]! - v[b]!,
-      solve: {
-        [c]: (v: Values) => v[a]! + v[b]!,
-        [a]: (v: Values) => v[c]! - v[b]!,
-        [b]: (v: Values) => v[c]! - v[a]!,
+    relations: [
+      {
+        id: `L = ${place} below n`,
+        display: `The ${place} at or below {n} is {L}`,
+        vars: ['L', 'n'],
+        residual: (v) => v.L! - below(v.n!),
+        // Every number from 40 to 49 has the ten 40 below it: the number can't be found from it.
+        solve: { L: (v) => below(v.n!), n: () => undefined },
+      },
+      {
+        id: `U = L + ${to}`,
+        display: `{L} + ${to} = {U}`,
+        vars: ['U', 'L'],
+        residual: (v) => v.U! - v.L! - to,
+        solve: { U: (v) => v.L! + to, L: (v) => v.U! - to },
+      },
+      {
+        id: `r = nearer ${place}`,
+        display: '{n} is between {L} and {U}, so it rounds to {r}',
+        vars: ['r', 'n', 'L', 'U'],
+        residual: (v) => v.r! - (v.n! - v.L! < half ? v.L! : v.U!),
+        solve: {
+          r: (v) => (v.n! - v.L! < half ? v.L! : v.U!),
+          n: () => undefined,
+          L: () => undefined,
+          U: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      [`L = ${place} below n`]: {
+        L: {
+          expr: to === 10 ? '{n} without its ones' : '{n} without its tens and ones',
+          how: `Keep the ${to === 10 ? 'hundreds and tens' : 'hundreds'}. Make the other digits 0.`,
+          work: (v) => [`${v.n} = ${below(v.n!)} + ${v.n! - below(v.n!)}`],
+        },
+      },
+      [`U = L + ${to}`]: {
+        U: { expr: `{L} + ${to}`, how: `The next ${place} up is ${to} more.` },
+        L: { expr: `{U} − ${to}`, how: `The ${place} below is ${to} less.` },
+      },
+      [`r = nearer ${place}`]: {
+        r: {
+          expr: (v) => (v.n! - v.L! < half ? '{L}' : '{U}'),
+          how: `Round to the nearer ${place}. Halfway (${half} past) or more rounds up.`,
+          work: (v) => [
+            `From ${v.L} to ${v.n} is ${v.n! - v.L!}. From ${v.n} to ${v.U} is ${v.U! - v.n!}.`,
+            v.n! - v.L! < half
+              ? `${v.n! - v.L!} is less than ${half}: round down to ${v.L}.`
+              : `${v.n! - v.L!} is ${half} or more: round up to ${v.U}.`,
+          ],
+        },
       },
     },
-    steps: {
-      [c]: {
-        expr: `{${a}} + {${b}}`,
-        how: `Add the ${an} and the ${bn}.`,
-        work: (v: Values) => addStrategy(v[a]!, v[b]!),
-      },
-      [a]: {
-        expr: `{${c}} − {${b}}`,
-        how: `Take the ${bn} away from the ${cn}.`,
-        work: (v: Values) => subtractStrategy(v[c]!, v[b]!),
-      },
-      [b]: {
-        expr: `{${c}} − {${a}}`,
-        how: `Take the ${an} away from the ${cn}.`,
-        work: (v: Values) => subtractStrategy(v[c]!, v[a]!),
-      },
-    } as Record<string, StepText>,
   };
 }
+// ─── Modules ────────────────────────────────────────────────────────────────
 
+const groups = times('n = g × k', ['g', 'k', 'n'], ['groups', 'number in each group', 'total']);
+const arrayTimes = times('n = r × c', ['r', 'c', 'n'], ['rows', 'number in each row', 'total']);
+const jumps = times('n = k × s', ['k', 's', 'n'], ['jumps', 'size of each jump', 'end number']);
+const clock = (h: number, m: number) => `${h}:${String(m).padStart(2, '0')}`;
 /**
  * Counting on from a start time, the way Grade 3 uses a number line: to the next hour, then
  * whole hours, then the minutes left ("3:45 → 4:00 is 15 minutes").
@@ -125,7 +192,6 @@ function timeHops(h: number, m: number, d: number): string[] {
   if (parts.length > 1) lines.push(`${parts.join(' + ')} = ${d} minutes`);
   return lines;
 }
-
 /** Counting back from an end time: to the hour, then whole hours, then the minutes left. */
 function timeHopsBack(h: number, m: number, d: number): string[] {
   const lines: string[] = [];
@@ -150,7 +216,6 @@ function timeHopsBack(h: number, m: number, d: number): string[] {
   if (parts.length > 1) lines.push(`${parts.join(' + ')} = ${d} minutes`);
   return lines;
 }
-
 /** Minutes after 12:00 on a 12-hour clock (12:30 is 30), and back to an hour (0 → 12). */
 const at = (h: number, m: number) => 60 * (h % 12) + m;
 const mod720 = (x: number) => ((x % 720) + 720) % 720;
@@ -159,7 +224,682 @@ const toHour = (t: number) => {
   return Number.isInteger(h) ? h || 12 : undefined;
 };
 
-export const MATH_3_MORE_MODULES: ModuleDef[] = [
+export const MATH_3_MODULES: ModuleDef[] = [
+  {
+    id: 'm.3.area',
+    assumptions: [
+      'The shape is a rectangle: four right angles, and opposite sides are equal.',
+      'Length and width use the same unit, so area is in square units.',
+      'Area counts the unit squares that cover the inside with no gaps or overlaps.',
+    ],
+    variables: [
+      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
+      { id: 'w', symbol: 'w', name: 'Width', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 100, integer: true },
+    ],
+    relations: [
+      {
+        id: 'A = l × w',
+        display: '{l} × {w} = {A}',
+        vars: ['A', 'l', 'w'],
+        residual: (v) => v.A! - v.l! * v.w!,
+        solve: { A: (v) => v.l! * v.w!, l: (v) => div(v.A!, v.w!), w: (v) => div(v.A!, v.l!) },
+      },
+    ],
+    steps: {
+      'A = l × w': {
+        A: {
+          expr: '{l} × {w}',
+          how: 'The width is the number of rows; the length is the squares in each row. Multiply.',
+          work: (v) => timesWork(v.w!, v.l!),
+        },
+        l: {
+          expr: '{A} ÷ {w}',
+          how: 'Share the squares equally among the rows: that is the squares in each row.',
+          work: (v) => divideWork(v.A!, v.w!),
+        },
+        w: {
+          expr: '{A} ÷ {l}',
+          how: 'Each row has as many squares as the length. Divide to find how many rows.',
+          work: (v) => divideWork(v.A!, v.l!, 'second'),
+        },
+      },
+    },
+    example: { l: 4, w: 3, A: 12 },
+    startWith: ['l', 'w'],
+    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
+  },
+  // ── Area (3.MD.5–7): problem types ──
+  (() => {
+    const tiles = times('A = r × c', ['r', 'c', 'A'], ['rows', 'squares in each row', 'area']);
+    return {
+      id: 'm.3.area~tiling',
+      title: 'Count unit squares',
+      use: 'Use this to find area by counting unit squares in rows.',
+      assumptions: [
+        'Each square is 1 square unit. They cover the shape with no gaps or overlaps.',
+        'Rows × squares in each row = area.',
+      ],
+      variables: [
+        whole('r', 'r', 'Rows', 0, 10),
+        whole('c', 'c', 'Squares in each row', 0, 10),
+        { ...whole('A', 'A', 'Area', 0, 100), unit: 'square units' },
+      ],
+      relations: [tiles.relation],
+      steps: { 'A = r × c': tiles.steps },
+      example: { r: 4, c: 5, A: 20 },
+      startWith: ['r', 'c'],
+      representation: {
+        kind: 'array',
+        rows: 'r',
+        columns: 'c',
+        total: 'A',
+        max: 10,
+        cell: 'square',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const left = times('p = a × b', ['a', 'b', 'p'], ['width', 'first length', 'first area']);
+    const right = times('q = a × c', ['a', 'c', 'q'], ['width', 'second length', 'second area']);
+    const len = plus('l = b + c', ['b', 'c', 'l'], ['first length', 'second length', 'length']);
+    const sum = plus('A = p + q', ['p', 'q', 'A'], ['first area', 'second area', 'area']);
+    const all = times('A = a × l', ['a', 'l', 'A'], ['width', 'length', 'area']);
+    return {
+      id: 'm.3.area~split',
+      title: 'Split a rectangle into two',
+      use: 'Use this to split a rectangle into two and add the areas: 6 × 8 = 6 × 5 + 6 × 3.',
+      assumptions: [
+        'Cut the rectangle into two rectangles. The area is the two areas added.',
+        'So 6 × 8 = 6 × 5 + 6 × 3: use facts you know.',
+      ],
+      variables: [
+        whole('a', 'a', 'Width', 0, 10),
+        whole('l', 'l', 'Length', 0, 10),
+        whole('b', 'b', 'First length', 0, 10),
+        whole('c', 'c', 'Second length', 0, 10),
+        { ...whole('p', 'p', 'First area', 0, 100), derived: true },
+        { ...whole('q', 'q', 'Second area', 0, 100), derived: true },
+        whole('A', 'A', 'Area', 0, 100),
+      ],
+      relations: [len.relation, left.relation, right.relation, sum.relation, all.relation],
+      steps: {
+        'l = b + c': len.steps,
+        'p = a × b': left.steps,
+        'q = a × c': right.steps,
+        'A = p + q': sum.steps,
+        'A = a × l': all.steps,
+      },
+      example: { a: 6, l: 8, b: 5, c: 3, p: 30, q: 18, A: 48 },
+      startWith: ['c', 'a', 'b'],
+      representation: {
+        kind: 'array',
+        rows: 'a',
+        columns: 'l',
+        total: 'A',
+        max: 10,
+        cell: 'square',
+        split: { first: 'b', second: 'c', firstTotal: 'p', secondTotal: 'q' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const leftArea = times(
+      'p = a × b',
+      ['a', 'b', 'p'],
+      ['width', 'height', 'area'],
+      '{a} × {b} = {p}',
+    );
+    const rightArea = times(
+      'q = c × d',
+      ['c', 'd', 'q'],
+      ['width', 'height', 'area'],
+      '{c} × {d} = {q}',
+    );
+    const sum = plus('A = p + q', ['p', 'q', 'A'], ['left area', 'right area', 'total area']);
+    return {
+      id: 'm.3.area~rectilinear',
+      title: 'Shapes made of rectangles',
+      use: 'Use this to find the area of an L-shape made of two rectangles.',
+      assumptions: [
+        'Cut the shape into two rectangles that don’t overlap.',
+        'Find each rectangle’s area, then add them.',
+        'Each square is 1 square unit.',
+      ],
+      variables: [
+        whole('a', 'a', 'Left width', 0, 10),
+        whole('b', 'b', 'Left height', 0, 10),
+        whole('c', 'c', 'Right width', 0, 10),
+        whole('d', 'd', 'Right height', 0, 10),
+        { ...whole('p', 'p', 'Left area', 0, 100), unit: 'square units' },
+        { ...whole('q', 'q', 'Right area', 0, 100), unit: 'square units' },
+        { ...whole('A', 'A', 'Total area', 0, 200), unit: 'square units' },
+      ],
+      relations: [leftArea.relation, rightArea.relation, sum.relation],
+      steps: { 'p = a × b': leftArea.steps, 'q = c × d': rightArea.steps, 'A = p + q': sum.steps },
+      example: { a: 3, b: 5, c: 4, d: 2, p: 15, q: 8, A: 23 },
+      startWith: ['a', 'b', 'c', 'd'],
+      representation: {
+        kind: 'rectilinear',
+        left: { width: 'a', height: 'b', area: 'p' },
+        right: { width: 'c', height: 'd', area: 'q' },
+        total: 'A',
+        extent: 7,
+      },
+    } satisfies ModuleDef;
+  })(),
+  // ── Multiply and divide within 100 (3.OA.1–4, 3.OA.7) ──
+  {
+    id: 'm.3.multiply-divide-100',
+    assumptions: [
+      'Every group has the same number.',
+      'Multiply to find the total: groups × number in each group.',
+      'Divide to find the number of groups, or how many are in each group.',
+      'Up to 10 groups of up to 10.',
+    ],
+    variables: [
+      whole('g', 'g', 'Groups', 0, 10),
+      whole('k', 'k', 'In each group', 0, 10),
+      whole('n', 'n', 'Total', 0, 100),
+    ],
+    relations: [groups.relation],
+    steps: { 'n = g × k': groups.steps },
+    example: { g: 4, k: 6, n: 24 },
+    startWith: ['g', 'k'],
+    representation: { kind: 'equalGroups', groups: 'g', each: 'k', total: 'n' },
+  },
+  {
+    id: 'm.3.multiply-divide-100~array',
+    title: 'Arrays',
+    use: 'Use this for rows and columns: “6 rows of 4 chairs. How many chairs?”',
+    assumptions: [
+      'Every row has the same number, and so does every column.',
+      'Rows × number in each row = total.',
+      'Turn the array and the total stays the same: 4 × 6 = 6 × 4.',
+    ],
+    variables: [
+      whole('r', 'r', 'Rows', 0, 10),
+      whole('c', 'c', 'In each row', 0, 10),
+      whole('n', 'n', 'Total', 0, 100),
+    ],
+    relations: [arrayTimes.relation],
+    steps: { 'n = r × c': arrayTimes.steps },
+    example: { r: 3, c: 7, n: 21 },
+    startWith: ['r', 'c'],
+    representation: { kind: 'array', rows: 'r', columns: 'c', total: 'n', max: 10 },
+  },
+  {
+    id: 'm.3.multiply-divide-100~jumps',
+    title: 'Equal jumps on a number line',
+    use: 'Use this for equal jumps on a number line: “How many jumps of 5 to get to 30?”',
+    assumptions: [
+      'Every jump is the same size, and the jumps start at 0.',
+      'Jumps × size of each jump = where you land.',
+      'To divide, count how many jumps it takes to reach the number.',
+    ],
+    variables: [
+      whole('k', 'k', 'Jumps', 0, 10),
+      whole('s', 's', 'Size of each jump', 1, 10),
+      whole('n', 'n', 'End number', 0, 100),
+    ],
+    relations: [jumps.relation],
+    steps: { 'n = k × s': jumps.steps },
+    example: { k: 5, s: 4, n: 20 },
+    startWith: ['k', 's'],
+    representation: { kind: 'skipCount', step: 's', count: 'k', total: 'n' },
+  },
+  // ── Properties of multiplication (3.OA.5) ──
+  (() => {
+    const left = times('p = a × b', ['a', 'b', 'p'], ['rows', 'first part', 'first product']);
+    const right = times('q = a × c', ['a', 'c', 'q'], ['rows', 'second part', 'second product']);
+    const cols = plus('w = b + c', ['b', 'c', 'w'], ['first part', 'second part', 'columns']);
+    const sum = plus('n = p + q', ['p', 'q', 'n'], ['first product', 'second product', 'total']);
+    const all = times('n = a × w', ['a', 'w', 'n'], ['rows', 'columns', 'total']);
+    return {
+      id: 'm.3.multiplication-properties',
+      assumptions: [
+        'Break one factor into two parts you know: 7 = 5 + 2.',
+        'Multiply each part, then add: 6 × 7 = 6 × 5 + 6 × 2.',
+        'Parts of 5 or 10 are easiest.',
+      ],
+      variables: [
+        whole('a', 'a', 'Rows', 0, 10),
+        whole('w', 'w', 'Columns', 0, 10),
+        whole('b', 'b', 'First part', 0, 10),
+        whole('c', 'c', 'Second part', 0, 10),
+        { ...whole('p', 'p', 'First product', 0, 100), derived: true },
+        { ...whole('q', 'q', 'Second product', 0, 100), derived: true },
+        whole('n', 'n', 'Total', 0, 100),
+      ],
+      relations: [cols.relation, left.relation, right.relation, sum.relation, all.relation],
+      steps: {
+        'w = b + c': cols.steps,
+        'p = a × b': left.steps,
+        'q = a × c': right.steps,
+        'n = p + q': sum.steps,
+        'n = a × w': all.steps,
+      },
+      example: { a: 6, w: 7, b: 5, c: 2, p: 30, q: 12, n: 42 },
+      startWith: ['c', 'a', 'b'],
+      representation: {
+        kind: 'array',
+        rows: 'a',
+        columns: 'w',
+        total: 'n',
+        max: 10,
+        cell: 'dot',
+        split: { first: 'b', second: 'c', firstTotal: 'p', secondTotal: 'q' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const ab = times('n = a × b', ['a', 'b', 'n'], ['rows', 'number in each row', 'total']);
+    const ba = times('n = b × a', ['b', 'a', 'n'], ['columns', 'number in each column', 'total']);
+    return {
+      id: 'm.3.multiplication-properties~order',
+      title: 'Change the order',
+      use: 'Use this for 4 × 7 = 7 × 4: turn the array to use a fact you know.',
+      assumptions: [
+        'Turning an array changes rows into columns, not the total.',
+        'So 4 × 7 = 7 × 4: use the fact you know.',
+      ],
+      variables: [
+        whole('a', 'a', 'Rows', 0, 10),
+        whole('b', 'b', 'Columns', 0, 10),
+        whole('n', 'n', 'Total', 0, 100),
+      ],
+      relations: [ab.relation, ba.relation],
+      steps: { 'n = a × b': ab.steps, 'n = b × a': ba.steps },
+      example: { a: 4, b: 7, n: 28 },
+      startWith: ['a', 'b'],
+      representation: {
+        kind: 'array',
+        rows: 'a',
+        columns: 'b',
+        total: 'n',
+        max: 10,
+        turned: true,
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const first = times(
+      'p = a × b',
+      ['a', 'b', 'p'],
+      ['first factor', 'second factor', 'first product'],
+    );
+    const second = times(
+      'q = b × c',
+      ['b', 'c', 'q'],
+      ['second factor', 'third factor', 'second product'],
+    );
+    const left = times('n = p × c', ['p', 'c', 'n'], ['first product', 'third factor', 'total']);
+    const right = times('n = a × q', ['a', 'q', 'n'], ['first factor', 'second product', 'total']);
+    return {
+      id: 'm.3.multiplication-properties~grouping',
+      title: 'Group the factors',
+      use: 'Use this to multiply three numbers, like 3 × 5 × 2, by picking an easy pair first.',
+      pictureLabels: ['a', 'b', 'q'],
+      assumptions: [
+        'With three factors, multiply any two first. The product is the same.',
+        'So 3 × 5 × 2 = 15 × 2 = 3 × 10: pick the pair that makes an easy fact.',
+        'The picture draws each group as first × second dots.',
+      ],
+      variables: [
+        whole('a', 'a', 'First factor', 0, 10),
+        whole('b', 'b', 'Second factor', 0, 10),
+        whole('c', 'c', 'Third factor', 0, 10),
+        whole('p', 'p', 'First × second', 0, 100),
+        whole('q', 'q', 'Second × third', 0, 100),
+        whole('n', 'n', 'Product', 0, 100),
+      ],
+      relations: [first.relation, second.relation, left.relation, right.relation],
+      steps: {
+        'p = a × b': first.steps,
+        'q = b × c': second.steps,
+        'n = p × c': left.steps,
+        'n = a × q': right.steps,
+      },
+      example: { a: 3, b: 5, c: 2, p: 15, q: 10, n: 30 },
+      startWith: ['a', 'b', 'c'],
+      // c groups of (a × b): the first two factors make each group.
+      representation: { kind: 'equalGroups', groups: 'c', each: 'p', total: 'n' },
+    } satisfies ModuleDef;
+  })(),
+  // ── Patterns in the addition and multiplication tables (3.OA.9) ──
+  (() => {
+    const cell = times('v = k × n', ['k', 'n', 'v'], ['row', 'column', 'number in the table']);
+    const next = plus('w = v + k', ['v', 'k', 'w'], ['number in the table', 'row', 'next number']);
+    return {
+      id: 'm.3.arithmetic-patterns',
+      pictureLabels: ['w', 'e'],
+      assumptions: [
+        'Each row of the times table counts by its row number: the 4s row is 4, 8, 12, 16, …',
+        'One step along the row adds the row number again.',
+        'An even row (2, 4, 6, 8, 10) has only even numbers. An odd row switches odd, even, odd, …',
+      ],
+      variables: [
+        whole('k', 'k', 'Row', 1, 10),
+        whole('n', 'n', 'Column', 1, 10),
+        whole('v', 'v', 'Number in the table', 1, 100),
+        whole('w', 'w', 'Next number in the row', 2, 110),
+        whole('e', 'e', 'Left over after pairs', 0, 1),
+      ],
+      relations: [
+        cell.relation,
+        { ...next.relation, display: '{v} + {k} = {w}' },
+        {
+          id: 'e = v even or odd',
+          display: '{v} in pairs leaves {e} over',
+          vars: ['e', 'v'],
+          residual: (v) => v.e! - (v.v! % 2),
+          // Every even number leaves 0: the number can't be found from it.
+          solve: { e: (v) => v.v! % 2, v: () => undefined },
+        },
+      ],
+      steps: {
+        'v = k × n': cell.steps,
+        'w = v + k': {
+          ...next.steps,
+          w: {
+            expr: '{v} + {k}',
+            how: 'The next number in the row is the row number more.',
+            work: (v) => addStrategy(v.v!, v.k!),
+          },
+        },
+        'e = v even or odd': {
+          e: {
+            expr: '{v} shared into pairs',
+            how: 'Even numbers make pairs with none left over; odd numbers leave 1.',
+            work: (v) => [
+              `${v.v} ends in ${v.v! % 10}: ${v.v! % 2 === 0 ? 'even' : 'odd'}`,
+              ...(v.k! % 2 === 0 ? [`${v.k} is even, so every number in its row is even.`] : []),
+            ],
+          },
+        },
+      },
+      example: { k: 4, n: 6, v: 24, w: 28, e: 0 },
+      startWith: ['k', 'n'],
+      representation: { kind: 'skipCount', step: 'k', count: 'n', total: 'v' },
+    } satisfies ModuleDef;
+  })(),
+  // ── Two-step word problems (3.OA.8) ──
+  (() => {
+    const packs = times('m = g × k', ['g', 'k', 'm'], ['packs', 'number in each pack', 'total']);
+    const left = plus('m = n + t', ['n', 't', 'm'], ['number left', 'number taken', 'total']);
+    return {
+      id: 'm.3.two-step-problems',
+      pictureLabels: ['g', 'k'],
+      assumptions: [
+        'Do one step at a time: first find the total, then what is left.',
+        'Check that the answer makes sense: round the numbers and estimate.',
+      ],
+      variables: [
+        whole('g', 'g', 'Packs', 0, 10),
+        whole('k', 'k', 'In each pack', 0, 10),
+        whole('m', 'm', 'Total', 0, 100),
+        whole('t', 't', 'Taken away', 0, 100),
+        whole('n', 'n', 'Left', 0, 100),
+      ],
+      relations: [packs.relation, { ...left.relation, display: '{m} − {t} = {n}' }],
+      steps: { 'm = g × k': packs.steps, 'm = n + t': left.steps },
+      example: { g: 4, k: 6, m: 24, t: 5, n: 19 },
+      startWith: ['t', 'g', 'k'],
+      representation: {
+        kind: 'tape',
+        parts: ['n', 't'],
+        total: 'm',
+        groups: 'g',
+        caption: '{g} × {k} = {m} in the packs. Take away {t}: {n} left.',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const both = plus('t = a + b', ['a', 'b', 't'], ['first amount', 'second amount', 'total']);
+    const share = times('t = g × e', ['g', 'e', 't'], ['groups', 'number in each group', 'total']);
+    return {
+      id: 'm.3.two-step-problems~share',
+      title: 'Add, then share equally',
+      use: 'Use this for “18 red and 12 blue beads, shared equally on 5 strings. How many on each?”',
+      pictureLabels: ['a', 'b'],
+      assumptions: [
+        'First add to find the total. Then share the total equally.',
+        'Every group gets the same number, with none left over.',
+      ],
+      variables: [
+        whole('a', 'a', 'First amount', 0, 100),
+        whole('b', 'b', 'Second amount', 0, 100),
+        whole('t', 't', 'Total', 0, 100),
+        whole('g', 'g', 'Groups', 1, 10),
+        whole('e', 'e', 'In each group', 0, 10),
+      ],
+      relations: [both.relation, share.relation],
+      steps: { 't = a + b': both.steps, 't = g × e': share.steps },
+      example: { a: 18, b: 12, t: 30, g: 5, e: 6 },
+      startWith: ['g', 'a', 'b'],
+      representation: { kind: 'equalGroups', groups: 'g', each: 'e', total: 't' },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const boxes = times(
+      'm = g × k',
+      ['g', 'k', 'm'],
+      ['boxes', 'number in each box', 'number in the boxes'],
+    );
+    const all = plus('t = m + e', ['m', 'e', 't'], ['number in the boxes', 'extra', 'total']);
+    return {
+      id: 'm.3.two-step-problems~multiply-add',
+      title: 'Multiply, then add',
+      use: 'Use this for “3 boxes of 8 crayons and 5 more. How many in all?”',
+      pictureLabels: ['g', 'k'],
+      assumptions: [
+        'First multiply to find how many are in the equal groups. Then add the extra.',
+        'Check that the answer makes sense: round the numbers and estimate.',
+      ],
+      variables: [
+        whole('g', 'g', 'Boxes', 0, 10),
+        whole('k', 'k', 'In each box', 0, 10),
+        whole('m', 'm', 'In the boxes', 0, 100),
+        whole('e', 'e', 'Extra', 0, 100),
+        whole('t', 't', 'Total', 0, 200),
+      ],
+      relations: [boxes.relation, all.relation],
+      steps: { 'm = g × k': boxes.steps, 't = m + e': all.steps },
+      example: { g: 3, k: 8, m: 24, e: 5, t: 29 },
+      startWith: ['e', 'g', 'k'],
+      representation: {
+        kind: 'tape',
+        parts: ['m', 'e'],
+        total: 't',
+        groups: 'g',
+        groupsPart: 'm',
+        caption: '{g} × {k} = {m} in the boxes. Add {e}: {t} in all.',
+      },
+    } satisfies ModuleDef;
+  })(),
+  // ── Rounding (3.NBT.1) ──
+  {
+    id: 'm.3.rounding',
+    assumptions: [
+      'Find the tens just below and just above the number.',
+      'Round to the nearer one. 5 ones or more rounds up.',
+      'Rounded numbers are for estimating, like checking an answer.',
+    ],
+    variables: [
+      whole('n', 'n', 'Number', 0, 999),
+      { ...whole('L', 'L', 'Ten below', 0, 990), step: 10, multipleOf: 10 },
+      { ...whole('U', 'U', 'Ten above', 10, 1000), step: 10, multipleOf: 10 },
+      { ...whole('r', 'r', 'Rounded', 0, 1000), step: 10, multipleOf: 10 },
+    ],
+    ...rounding(10),
+    example: { n: 47, L: 40, U: 50, r: 50 },
+    startWith: ['n'],
+    representation: { kind: 'rounding', value: 'n', lower: 'L', upper: 'U', rounded: 'r', to: 10 },
+  },
+  {
+    id: 'm.3.rounding~hundred',
+    title: 'Round to the nearest hundred',
+    use: 'Use this to round a 3-digit number to the nearest hundred.',
+    assumptions: [
+      'Find the hundreds just below and just above the number.',
+      'Round to the nearer one. 50 or more past the hundred rounds up.',
+    ],
+    variables: [
+      whole('n', 'n', 'Number', 0, 999),
+      { ...whole('L', 'L', 'Hundred below', 0, 900), step: 100, multipleOf: 100 },
+      { ...whole('U', 'U', 'Hundred above', 100, 1000), step: 100, multipleOf: 100 },
+      { ...whole('r', 'r', 'Rounded', 0, 1000), step: 100, multipleOf: 100 },
+    ],
+    ...rounding(100),
+    example: { n: 362, L: 300, U: 400, r: 400 },
+    startWith: ['n'],
+    representation: { kind: 'rounding', value: 'n', lower: 'L', upper: 'U', rounded: 'r', to: 100 },
+  },
+  (() => {
+    const round10 = (x: number) => Math.floor((x + 5) / 10) * 10;
+    const rounded = (id: string, from: string, name: string) => ({
+      relation: {
+        id: `${id} = ${from} rounded`,
+        display: `{${from}} rounds to {${id}}`,
+        vars: [id, from],
+        residual: (v: Values) => v[id]! - round10(v[from]!),
+        // Every number from 45 to 54 rounds to 50: the number can't be found from it.
+        solve: { [id]: (v: Values) => round10(v[from]!), [from]: () => undefined },
+      },
+      steps: {
+        [id]: {
+          expr: `{${from}} to the nearest ten`,
+          how: `Round the ${name} to the nearer ten. 5 ones or more rounds up.`,
+          work: (v: Values) => {
+            const n = v[from]!;
+            const lo = Math.floor(n / 10) * 10;
+            return [
+              `${n} is between ${lo} and ${lo + 10}.`,
+              n - lo < 5
+                ? `${n - lo} ones is less than 5: round down to ${lo}.`
+                : `${n - lo} ones is 5 or more: round up to ${lo + 10}.`,
+            ];
+          },
+        },
+      } as Record<string, StepText>,
+    });
+    const ra = rounded('x', 'a', 'first number');
+    const rb = rounded('y', 'b', 'second number');
+    const est = plus('e = x + y', ['x', 'y', 'e'], ['first rounded', 'second rounded', 'estimate']);
+    const sum = plus('s = a + b', ['a', 'b', 's'], ['first number', 'second number', 'sum']);
+    const off: ModuleDef['relations'][number] = {
+      id: 'o = distance from e to s',
+      display: 'The estimate {e} is {o} away from the sum {s}',
+      vars: ['o', 'e', 's'],
+      residual: (v) => v.o! - Math.abs(v.e! - v.s!),
+      solve: {
+        // Each rounding moves a number at most 4 down or 5 up, so the estimate is at most 8
+        // below the sum or 10 above it. Any other distance can't happen: -1 is out of range.
+        o: (v) => (v.e! - v.s! >= -8 && v.e! - v.s! <= 10 ? Math.abs(v.e! - v.s!) : -1),
+        // The distance alone doesn't say whether the estimate is above or below the sum.
+        e: () => undefined,
+        s: () => undefined,
+      },
+    };
+    return {
+      id: 'm.3.rounding~estimate',
+      title: 'Estimate a sum',
+      use: 'Use this to estimate a sum by rounding, and check an answer.',
+      pictureLabels: ['x', 'y', 'e', 'o'],
+      assumptions: [
+        'Round each number to the nearest ten, then add the rounded numbers.',
+        'The estimate is close to the real sum. Use it to check the answer makes sense.',
+      ],
+      variables: [
+        whole('a', 'a', 'First number', 0, 500),
+        whole('b', 'b', 'Second number', 0, 500),
+        { ...whole('x', 'x', 'First rounded', 0, 500), step: 10, multipleOf: 10, derived: true },
+        { ...whole('y', 'y', 'Second rounded', 0, 500), step: 10, multipleOf: 10, derived: true },
+        { ...whole('e', 'e', 'Estimate', 0, 1000), step: 10, multipleOf: 10, derived: true },
+        { ...whole('s', 's', 'Sum', 0, 1000), derived: true },
+        { ...whole('o', 'o', 'How far off the estimate is', 0, 10), derived: true },
+      ],
+      relations: [ra.relation, rb.relation, est.relation, sum.relation, off],
+      steps: {
+        'x = a rounded': ra.steps,
+        'y = b rounded': rb.steps,
+        'e = x + y': est.steps,
+        's = a + b': sum.steps,
+        'o = distance from e to s': {
+          o: {
+            expr: (v) => (v.e! >= v.s! ? '{e} − {s}' : '{s} − {e}'),
+            how: 'Take the smaller from the bigger. A small distance means the estimate is close.',
+          },
+        },
+      },
+      example: { a: 238, b: 154, x: 240, y: 150, e: 390, s: 392, o: 2 },
+      startWith: ['a', 'b'],
+      representation: {
+        kind: 'tape',
+        parts: ['a', 'b'],
+        total: 's',
+        caption: 'Estimate: {x} + {y} = {e}. Exact: {a} + {b} = {s}.',
+      },
+    } satisfies ModuleDef;
+  })(),
+  // ── Multiply by multiples of 10 (3.NBT.3) ──
+  (() => {
+    const tensTimes = times('p = a × t', ['a', 't', 'p'], ['number', 'tens', 'tens in the answer']);
+    return {
+      id: 'm.3.multiply-by-tens',
+      pictureLabels: ['t', 'p'],
+      assumptions: [
+        'A multiple of 10 is a number of tens: 80 is 8 tens.',
+        'Multiply by the tens, then write the tens as a number: 9 × 8 tens = 72 tens = 720.',
+      ],
+      variables: [
+        whole('a', 'a', 'One-digit number', 0, 9),
+        { ...whole('m', 'm', 'Multiple of 10', 10, 90), step: 10, multipleOf: 10 },
+        whole('t', 't', 'Tens in it', 1, 9),
+        whole('p', 'p', 'Tens in the answer', 0, 81),
+        { ...whole('n', 'n', 'Product', 0, 810), step: 10, multipleOf: 10 },
+      ],
+      relations: [
+        {
+          id: 'm = t tens',
+          display: '{m} is {t} tens',
+          vars: ['m', 't'],
+          residual: (v) => v.m! - 10 * v.t!,
+          solve: { m: (v) => 10 * v.t!, t: (v) => div(v.m!, 10) },
+        },
+        tensTimes.relation,
+        {
+          id: 'n = p tens',
+          display: '{p} tens = {n}',
+          vars: ['n', 'p'],
+          residual: (v) => v.n! - 10 * v.p!,
+          solve: { n: (v) => 10 * v.p!, p: (v) => div(v.n!, 10) },
+        },
+      ],
+      steps: {
+        'm = t tens': {
+          t: {
+            expr: '{m} ÷ 10',
+            how: 'Count the tens in the multiple of 10.',
+            work: (v) => [`Count by 10s: ${countList(0, 10, v.t!)} → ${v.t} tens`],
+          },
+          m: { expr: '{t} × 10', how: 'Write the tens as a number: put a 0 after it.' },
+        },
+        'p = a × t': tensTimes.steps,
+        'n = p tens': {
+          n: {
+            expr: '{p} × 10',
+            how: 'Write the tens as a number: put a 0 after the number of tens.',
+            work: (v) => [`${v.p} tens = ${v.n}`],
+          },
+          p: { expr: '{n} ÷ 10', how: 'Take the 0 off: that is the number of tens.' },
+        },
+      },
+      example: { a: 4, m: 60, t: 6, p: 24, n: 240 },
+      startWith: ['a', 'm'],
+      representation: { kind: 'skipCount', step: 'm', count: 'a', total: 'n' },
+    } satisfies ModuleDef;
+  })(),
   // ── Fractions on a number line (3.NF.1, 3.NF.2, 3.NF.3c) ──
   {
     id: 'm.3.fractions-number-line',
@@ -253,6 +993,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.fractions-number-line~shapes',
       title: 'Fractions of a shape',
+      use: 'Use this to name the shaded part of a shape, like 3/4.',
       pictureLabels: ['u'],
       assumptions: [
         'The parts must be equal, or it is not a fraction.',
@@ -277,7 +1018,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-
   (() => {
     const fill = times(
       'a = w × b',
@@ -288,6 +1028,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.fractions-number-line~wholes',
       title: 'Whole numbers as fractions',
+      use: 'Use this to write a whole number as a fraction, like 2 = 8/4.',
       assumptions: [
         'A fraction is a whole number when the parts counted fill whole numbers exactly.',
         'Every whole has the same number of parts: 4/4 = 1, 8/4 = 2, 12/4 = 3.',
@@ -304,7 +1045,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       representation: { kind: 'fractionLine', numerator: 'a', denominator: 'b', wholes: 3 },
     } satisfies ModuleDef;
   })(),
-
   // ── Equivalent and comparing fractions (3.NF.3) ──
   (() => {
     const top = times(
@@ -372,6 +1112,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       id: 'm.3.compare-fractions~same-denominator',
       pictureLabels: ['g', 'u', 'x'],
       title: 'Compare: same denominator',
+      use: 'Use this for “Which is more, 3/8 or 5/8?”',
       assumptions: [
         'Same denominator: both wholes are cut into the same equal parts.',
         'Then more shaded parts means the bigger fraction: 5/8 > 3/8.',
@@ -444,7 +1185,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-
   (() => {
     const firstLeft = plus(
       'b = a + u',
@@ -464,6 +1204,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       id: 'm.3.compare-fractions~same-numerator',
       pictureLabels: ['g', 'u', 'x'],
       title: 'Compare: same numerator',
+      use: 'Use this for “Which is more, 2/3 or 2/6?”',
       assumptions: [
         'Same numerator: both fractions shade the same number of parts.',
         'Fewer parts in the whole means bigger parts, so that fraction is bigger: 2/3 > 2/6.',
@@ -530,7 +1271,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-
   // ── Time to the minute and elapsed time (3.MD.1) ──
   {
     id: 'm.3.elapsed-time',
@@ -613,6 +1353,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
   {
     id: 'm.3.elapsed-time~elapsed',
     title: 'How long? When does it end?',
+    use: 'Use this for “It starts at 3:45 and takes 35 minutes. When does it end?” and “How long?”',
     assumptions: [
       'Count on from the start: to the next hour, then whole hours, then the minutes left.',
       'After 12:59 the clock starts again at 1:00.',
@@ -718,7 +1459,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       endMinute: 'em',
     },
   },
-
   // ── Mass and liquid volume (3.MD.2) ──
   (() => {
     const total = plus('t = a + b', ['a', 'b', 't'], ['first mass', 'second mass', 'total mass']);
@@ -751,6 +1491,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.mass-liquid-volume~liquid',
       title: 'Liquid volume in liters',
+      use: 'Use this for liters: “3 L in the jug, pour in 4 L. How much now?”',
       unitSystems: ['metric'],
       assumptions: [
         'Liquid volume is how much a container holds. Liters (L) measure it.',
@@ -774,6 +1515,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.mass-liquid-volume~bags',
       title: 'Equal bags',
+      use: 'Use this for “5 bags of 3 kg each. How heavy in all?”',
       unitSystems: ['metric'],
       assumptions: [
         'Every bag has the same mass.',
@@ -792,125 +1534,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       representation: { kind: 'scale', count: 'g', each: 'm', total: 't', max: 100 },
     } satisfies ModuleDef;
   })(),
-
-  // ── Area (3.MD.5–7): problem types ──
-  (() => {
-    const tiles = times('A = r × c', ['r', 'c', 'A'], ['rows', 'squares in each row', 'area']);
-    return {
-      id: 'm.3.area~tiling',
-      title: 'Count unit squares',
-      assumptions: [
-        'Each square is 1 square unit. They cover the shape with no gaps or overlaps.',
-        'Rows × squares in each row = area.',
-      ],
-      variables: [
-        whole('r', 'r', 'Rows', 0, 10),
-        whole('c', 'c', 'Squares in each row', 0, 10),
-        { ...whole('A', 'A', 'Area', 0, 100), unit: 'square units' },
-      ],
-      relations: [tiles.relation],
-      steps: { 'A = r × c': tiles.steps },
-      example: { r: 4, c: 5, A: 20 },
-      startWith: ['r', 'c'],
-      representation: {
-        kind: 'array',
-        rows: 'r',
-        columns: 'c',
-        total: 'A',
-        max: 10,
-        cell: 'square',
-      },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const left = times('p = a × b', ['a', 'b', 'p'], ['width', 'first length', 'first area']);
-    const right = times('q = a × c', ['a', 'c', 'q'], ['width', 'second length', 'second area']);
-    const len = plus('l = b + c', ['b', 'c', 'l'], ['first length', 'second length', 'length']);
-    const sum = plus('A = p + q', ['p', 'q', 'A'], ['first area', 'second area', 'area']);
-    const all = times('A = a × l', ['a', 'l', 'A'], ['width', 'length', 'area']);
-    return {
-      id: 'm.3.area~split',
-      title: 'Split a rectangle into two',
-      assumptions: [
-        'Cut the rectangle into two rectangles. The area is the two areas added.',
-        'So 6 × 8 = 6 × 5 + 6 × 3: use facts you know.',
-      ],
-      variables: [
-        whole('a', 'a', 'Width', 0, 10),
-        whole('l', 'l', 'Length', 0, 10),
-        whole('b', 'b', 'First length', 0, 10),
-        whole('c', 'c', 'Second length', 0, 10),
-        { ...whole('p', 'p', 'First area', 0, 100), derived: true },
-        { ...whole('q', 'q', 'Second area', 0, 100), derived: true },
-        whole('A', 'A', 'Area', 0, 100),
-      ],
-      relations: [len.relation, left.relation, right.relation, sum.relation, all.relation],
-      steps: {
-        'l = b + c': len.steps,
-        'p = a × b': left.steps,
-        'q = a × c': right.steps,
-        'A = p + q': sum.steps,
-        'A = a × l': all.steps,
-      },
-      example: { a: 6, l: 8, b: 5, c: 3, p: 30, q: 18, A: 48 },
-      startWith: ['c', 'a', 'b'],
-      representation: {
-        kind: 'array',
-        rows: 'a',
-        columns: 'l',
-        total: 'A',
-        max: 10,
-        cell: 'square',
-        split: { first: 'b', second: 'c', firstTotal: 'p', secondTotal: 'q' },
-      },
-    } satisfies ModuleDef;
-  })(),
-
-  (() => {
-    const leftArea = times(
-      'p = a × b',
-      ['a', 'b', 'p'],
-      ['width', 'height', 'area'],
-      '{a} × {b} = {p}',
-    );
-    const rightArea = times(
-      'q = c × d',
-      ['c', 'd', 'q'],
-      ['width', 'height', 'area'],
-      '{c} × {d} = {q}',
-    );
-    const sum = plus('A = p + q', ['p', 'q', 'A'], ['left area', 'right area', 'total area']);
-    return {
-      id: 'm.3.area~rectilinear',
-      title: 'Shapes made of rectangles',
-      assumptions: [
-        'Cut the shape into two rectangles that don’t overlap.',
-        'Find each rectangle’s area, then add them.',
-        'Each square is 1 square unit.',
-      ],
-      variables: [
-        whole('a', 'a', 'Left width', 0, 10),
-        whole('b', 'b', 'Left height', 0, 10),
-        whole('c', 'c', 'Right width', 0, 10),
-        whole('d', 'd', 'Right height', 0, 10),
-        { ...whole('p', 'p', 'Left area', 0, 100), unit: 'square units' },
-        { ...whole('q', 'q', 'Right area', 0, 100), unit: 'square units' },
-        { ...whole('A', 'A', 'Total area', 0, 200), unit: 'square units' },
-      ],
-      relations: [leftArea.relation, rightArea.relation, sum.relation],
-      steps: { 'p = a × b': leftArea.steps, 'q = c × d': rightArea.steps, 'A = p + q': sum.steps },
-      example: { a: 3, b: 5, c: 4, d: 2, p: 15, q: 8, A: 23 },
-      startWith: ['a', 'b', 'c', 'd'],
-      representation: {
-        kind: 'rectilinear',
-        left: { width: 'a', height: 'b', area: 'p' },
-        right: { width: 'c', height: 'd', area: 'q' },
-        total: 'A',
-        extent: 7,
-      },
-    } satisfies ModuleDef;
-  })(),
-
   // ── Perimeter (3.MD.8) ──
   {
     id: 'm.3.perimeter',
@@ -969,6 +1592,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
   {
     id: 'm.3.perimeter~missing-side',
     title: 'Find a missing side',
+    use: 'Use this when you know the perimeter and every side but one.',
     assumptions: [
       'Add all the sides to get the perimeter.',
       'To find one side, take the other sides away from the perimeter.',
@@ -1033,6 +1657,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
   {
     id: 'm.3.perimeter~same-perimeter',
     title: 'Same perimeter, different area',
+    use: 'Use this to compare rectangles with the same perimeter but different areas.',
     assumptions: [
       'Rectangles with the same perimeter can have different areas.',
       'Perimeter goes around the edge (cm). Area covers the inside (square cm).',
@@ -1117,7 +1742,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       extent: 7,
     },
   },
-
   // ── Scaled graphs (3.MD.3) ──
   {
     id: 'm.3.scaled-graphs',
@@ -1236,6 +1860,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.scaled-graphs~picture-graph',
       title: 'Picture graph with a key',
+      use: 'Use this for picture graphs where each picture stands for 2, 5 or 10.',
       pictureLabels: ['n1', 'n2', 'n3'],
       assumptions: [
         'The key says how many each picture stands for.',
@@ -1272,7 +1897,6 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-
   // ── Measure to the half and quarter inch; line plots (3.MD.4) ──
   (() => {
     const xs = ['x0', 'x1', 'x2', 'x3', 'x4'];
@@ -1347,6 +1971,7 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
   {
     id: 'm.3.measure-line-plots~quarter-inch',
     title: 'Read a ruler to the quarter inch',
+    use: 'Use this to read a length on a ruler marked in halves or quarters of an inch.',
     pictureLabels: ['w', 'r'],
     assumptions: [
       'Each inch on the ruler is split into equal marks: 2 for halves, 4 for quarters.',
@@ -1424,6 +2049,4 @@ export const MATH_3_MORE_MODULES: ModuleDef[] = [
       unit: { one: 'inch', many: 'inches' },
     },
   },
-
-  // ── Quadrilaterals (3.G.1) ──
 ];

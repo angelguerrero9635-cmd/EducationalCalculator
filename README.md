@@ -98,7 +98,12 @@ src/
     levels.tsx                Edit onboarding selections (from Settings)
     paywall.tsx               Placeholder paywall (modal)
   data/
-    modules/                  Module content by taxonomy id: calculators (assumptions, formulas, picture) and layouts/ (sort, sequence, explore, observe pages)
+    modules/                  Lesson content by taxonomy id (see CLAUDE.md for the map)
+      math/<grade>.ts, science/<grade>.ts   Calculator modules, one file per grade
+      layouts/                Sort, sequence, explore and observe pages (data only)
+      helpers.ts, work.ts, shared/   Relations, step text and worked lines modules share
+      harness/                The sampling harness's phrase reader, picture checks and search
+      pilots.ts, college.ts, gallery.ts   Pilots for unbuilt grades, college topics, picture demos
     taxonomy.ts               SINGLE SOURCE OF TRUTH for all course content (do not edit casually)
     selectors.ts              Pure derived views: strand grouping, search, routes, labels
     icons.ts                  Which icon each Browse box gets (never repeated on a page)
@@ -114,7 +119,8 @@ src/
 docs/MODULE_GUIDE.md          Content standards and the review process for modules
 docs/MODULE_PLAN.md           Sections for writing the remaining modules, with status
 .claude/agents/                lesson-reviewer (text) and page-reviewer (screens): the AI reviewers for modules
-scripts/review-evidence.mjs   Gathers the review evidence (dump, harness, screenshots) with no model involved
+scripts/                      review-evidence (dump, harness, screenshots), review-shots, test-sliders, new-module
+CLAUDE.md                     The map and the commands for building, reviewing and editing
 docs/ENGINE_LOG.md, REVIEW_LOG.md  What each review taught the engine and the reviewers
 TAXONOMY_ISSUES.md            Open and resolved taxonomy problems (update taxonomy.ts, then log the change)
 vercel.json                   Website build and hosting settings
@@ -186,13 +192,13 @@ Otherwise it converts to the formula's units first and converts the answers back
 factor (1 kg = 2.20462 lb). A default unit system can be set in Settings. Units and exact
 conversion factors live in `src/engine/units.ts`.
 
-Content lives in `src/data/modules/` (`k12.ts`, `college.ts`), keyed by skill id or course topic
-key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for titles and structure.
-14 pilot modules are written. Every other module shows placeholders until its content is added.
+Content lives in `src/data/modules/` (`math/<grade>.ts`, `science/<grade>.ts`, `college.ts`),
+keyed by skill id or course topic key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the
+source of truth for titles and structure. A skill without a module shows placeholders.
 
 ### How to add a module
 
-1. Add a `ModuleDef` to `k12.ts` or `college.ts`:
+1. `pnpm new-module <id> ["Title"]` appends a `ModuleDef` skeleton to the grade file:
    - **Variables:** give each one a symbol, name, unit, `min`/`max`, a drag `step`, and
      `integer` if it must be a whole number.
    - **Relations:** give each equation a `residual` (left side − right side) and, where
@@ -202,8 +208,8 @@ key (`<courseId>#<topicIndex>`). `taxonomy.ts` stays the source of truth for tit
      expression and a plain-language explanation (`steps`).
    - **Example:** a consistent worked `example`, plus the variables it opens with
      (`startWith`).
-   - **Representation:** choose one of `numberLine`, `bars`, `rectangle`, `grid100`, `circle`,
-     `rightTriangle`, `plot`, `table` or `force`.
+   - **Representation:** a picture kind from the catalog in `docs/MODULE_GUIDE.md`; problem
+     types also carry a `use` line ("Use this for …").
 2. Follow the standards and the review process in `docs/MODULE_GUIDE.md`: automated tests plus
    a review by the `lesson-reviewer` and `page-reviewer` agents. Run `pnpm test`. For every module, the
    tests check that:

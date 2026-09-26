@@ -5,6 +5,22 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Repository layout (before Grade 5)
+
+- Module data was in ten files named by section and review round (`math-k2-extra.ts`,
+  `math-3-more.ts` …), and a problem type's "use" line lived in a separate map. → One file
+  per subject and grade (`math/4.ts`, `science/2.ts`), the skill's main page followed by its
+  problem types, `use` on the module, K–2 helpers in `helpers.ts`, the few helpers two grade
+  files share in `shared/`, pilots for unbuilt grades in `pilots.ts`. `pnpm new-module`
+  scaffolds a module in the right file; `CLAUDE.md` maps the repository and the commands.
+- The sampling harness was one 1,800-line test. → Its three libraries (`harness/evaluate.ts`
+  for the phrases step text uses, `harness/pictures.ts` for the check per picture kind,
+  `harness/search.ts` for the brute-force search) are the files a module writer touches.
+- Every picture registered sliders, so pages with their own handles or taps carried a second
+  set of controls. → `sliderPolicy.ts`: sliders only for kinds where sweeping teaches and the
+  picture has no touch control of its own; `sliders` on a module overrides; `pnpm docs:sliders`
+  writes `docs/SLIDERS.md`.
+
 ## Picture kinds built ahead (before Grade 5 and Sections 3–8)
 
 Eleven diagram kinds written before the lessons that need them, each with its spec, harness

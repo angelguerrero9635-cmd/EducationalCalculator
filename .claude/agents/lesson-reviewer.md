@@ -22,8 +22,9 @@ layouts" section is the catalog you propose from.
 - `.review/harness.txt`: the sampling harness report (`[error]` lines fail the test suite, so
   there are none; `[minor]` lines are limits of the harness: a range or fixed-number remark
   that repeats across modules is one finding with the rule, not one per module).
-- Module code: `src/data/modules/<section file>.ts`, shared helpers `src/data/modules/helpers.ts`,
-  types `src/data/modules/types.ts`, `uses.ts` for problem-type "use" lines.
+- Module code: `src/data/modules/<math|science>/<grade>.ts` (a problem type's "use" line is on
+  the module), shared helpers `src/data/modules/helpers.ts`, types `src/data/modules/types.ts`,
+  the harness's phrases `src/data/modules/harness/evaluate.ts`.
 
 What is already enforced, so you don't check it: reading level by grade, notation by grade (no
 letters or "=" outside a number sentence in K–2, no × ÷ or fractions before Grade 3, no negatives

@@ -246,16 +246,6 @@ export const lessonsRoute = (skillId: string): RouteTarget => ({
   params: { id: skillId },
 });
 
-/** Where a skill's box goes: its lessons when it has problem types, else straight to the lesson. */
-export const skillBoxRoute = (skillId: string): RouteTarget =>
-  problemTypes(skillId).length ? lessonsRoute(skillId) : skillRoute(skillId);
-
-/** Under a skill's box: how many lessons it has. */
-export const skillBoxSubtitle = (skillId: string) => {
-  const n = problemTypes(skillId).length;
-  return n ? `${countLabel(n + 1, 'lesson')}` : 'Lesson';
-};
-
 /** Skills that have problem types (each has a lessons page). */
 export const skillsWithTypes = () =>
   [...new Set(PROBLEM_TYPE_IDS.map((id) => moduleOwner(id)))].filter((id) => !!getSkill(id));

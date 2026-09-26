@@ -640,6 +640,12 @@ export interface ModuleDef {
   startWith: string[];
   representation: Representation;
   /**
+   * Show the slider row for this picture. The default depends on the picture kind
+   * (`src/components/module/sliderPolicy.ts`): sliders only where sweeping a value teaches
+   * something and the picture has no handle or tap of its own. Set it to override.
+   */
+  sliders?: boolean;
+  /**
    * Unit systems offered for the whole module (default: metric and US customary). Mixed units
    * stay available either way.
    */

@@ -1,210 +1,11 @@
 /**
- * K–12 pilot modules. Keyed by taxonomy skill id; the skill itself (title, grade, strand)
- * still comes from taxonomy.ts. Written and reviewed against docs/MODULE_GUIDE.md.
+ * Pilot modules for grades not built yet (Section 0). Each moves to its grade file when that
+ * grade is written. Keyed by taxonomy skill id.
  */
+import { div } from './helpers';
 import type { ModuleDef } from './types';
-import { countList, divideWork, timesWork } from './work';
 
-const div = (a: number, b: number) => (b === 0 ? undefined : a / b);
-const whole = (id: string, symbol: string, name: string, max: number) => ({
-  id,
-  symbol,
-  name,
-  min: 0,
-  max,
-  step: 1,
-  integer: true,
-});
-
-export const K12_MODULES: ModuleDef[] = [
-  {
-    id: 'm.K.add-sub-10',
-    assumptions: [
-      'We count things from 0 to 10.',
-      'Adding puts two groups together.',
-      'Take some away. Count how many are left.',
-    ],
-    variables: [
-      whole('a', 'a', 'First group', 10),
-      whole('b', 'b', 'Second group', 10),
-      whole('c', 'c', 'Total', 10),
-    ],
-    relations: [
-      {
-        id: 'a + b = c',
-        display: '{a} + {b} = {c}',
-        vars: ['a', 'b', 'c'],
-        residual: (v) => v.a! + v.b! - v.c!,
-        solve: { c: (v) => v.a! + v.b!, a: (v) => v.c! - v.b!, b: (v) => v.c! - v.a! },
-      },
-      {
-        id: 'c − b = a',
-        display: '{c} − {b} = {a}',
-        vars: ['a', 'b', 'c'],
-        residual: (v) => v.c! - v.b! - v.a!,
-        solve: { a: (v) => v.c! - v.b!, c: (v) => v.a! + v.b!, b: (v) => v.c! - v.a! },
-      },
-    ],
-    steps: {
-      'a + b = c': {
-        c: {
-          expr: '{a} + {b}',
-          how: 'Start at the first group. Count on the second group.',
-          work: (v) => (v.b! > 0 ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.b!)}`] : []),
-        },
-        a: {
-          expr: '{c} − {b}',
-          how: 'Take the second group away from the total.',
-          work: (v) =>
-            v.b! > 0
-              ? [`Count back ${v.b} from ${v.c}: ${countList(v.c!, -1, v.b!)} → ${v.a}`]
-              : [],
-        },
-        b: {
-          expr: '{c} − {a}',
-          how: 'Count on from the first group up to the total.',
-          work: (v) =>
-            v.c! > v.a!
-              ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.c! - v.a!)} → ${v.b}`]
-              : [],
-        },
-      },
-      'c − b = a': {
-        a: { expr: '{c} − {b}', how: 'Take the second group away. Count what is left.' },
-        c: { expr: '{a} + {b}', how: 'Put the second group back.' },
-        b: { expr: '{c} − {a}', how: 'Take what is left away from the total.' },
-      },
-    },
-    example: { a: 3, b: 4, c: 7 },
-    startWith: ['a', 'b'],
-    representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c' },
-  },
-
-  {
-    id: 'm.K.classify-count',
-    assumptions: [
-      'Put each shape in one group.',
-      'Count each shape once.',
-      'Add all the groups to get the total.',
-    ],
-    variables: [
-      whole('c', 'c', 'Circles', 10),
-      whole('s', 's', 'Squares', 10),
-      whole('t', 't', 'Triangles', 10),
-      whole('n', 'n', 'Total', 30),
-    ],
-    relations: [
-      {
-        id: 'n = c + s + t',
-        display: '{c} circles, {s} squares, {t} triangles: {n} in all',
-        vars: ['n', 'c', 's', 't'],
-        residual: (v) => v.n! - v.c! - v.s! - v.t!,
-        solve: {
-          n: (v) => v.c! + v.s! + v.t!,
-          c: (v) => v.n! - v.s! - v.t!,
-          s: (v) => v.n! - v.c! - v.t!,
-          t: (v) => v.n! - v.c! - v.s!,
-        },
-      },
-    ],
-    steps: {
-      'n = c + s + t': {
-        n: {
-          work: (v) => (v.n! > 0 ? [`Count: ${countList(0, 1, v.n!)} → ${v.n}`] : []),
-          expr: '{c} + {s} + {t}',
-          how: 'Count all the shapes, one at a time.',
-        },
-        c: {
-          expr: '{n} − {s} − {t}',
-          how: 'Count on from the other shapes up to the total.',
-          work: (v) => [
-            `${v.s} + ${v.t} = ${v.s! + v.t!}`,
-            ...(v.c! > 0
-              ? [`Count on from ${v.s! + v.t!}: ${countList(v.s! + v.t!, 1, v.c!)} → ${v.c}`]
-              : []),
-          ],
-        },
-        s: {
-          expr: '{n} − {c} − {t}',
-          how: 'Count on from the other shapes up to the total.',
-          work: (v) => [
-            `${v.c} + ${v.t} = ${v.c! + v.t!}`,
-            ...(v.s! > 0
-              ? [`Count on from ${v.c! + v.t!}: ${countList(v.c! + v.t!, 1, v.s!)} → ${v.s}`]
-              : []),
-          ],
-        },
-        t: {
-          expr: '{n} − {c} − {s}',
-          how: 'Count on from the other shapes up to the total.',
-          work: (v) => [
-            `${v.c} + ${v.s} = ${v.c! + v.s!}`,
-            ...(v.t! > 0
-              ? [`Count on from ${v.c! + v.s!}: ${countList(v.c! + v.s!, 1, v.t!)} → ${v.t}`]
-              : []),
-          ],
-        },
-      },
-    },
-    example: { c: 4, s: 3, t: 5, n: 12 },
-    startWith: ['c', 's', 't'],
-    representation: {
-      kind: 'pictureGraph',
-      columns: [
-        { var: 'c', icon: 'circle' },
-        { var: 's', icon: 'square' },
-        { var: 't', icon: 'triangle' },
-      ],
-      max: 10,
-      total: 'n',
-    },
-  },
-
-  {
-    id: 'm.3.area',
-    assumptions: [
-      'The shape is a rectangle: four right angles, and opposite sides are equal.',
-      'Length and width use the same unit, so area is in square units.',
-      'Area counts the unit squares that cover the inside with no gaps or overlaps.',
-    ],
-    variables: [
-      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
-      { id: 'w', symbol: 'w', name: 'Width', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
-      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 100, integer: true },
-    ],
-    relations: [
-      {
-        id: 'A = l × w',
-        display: '{l} × {w} = {A}',
-        vars: ['A', 'l', 'w'],
-        residual: (v) => v.A! - v.l! * v.w!,
-        solve: { A: (v) => v.l! * v.w!, l: (v) => div(v.A!, v.w!), w: (v) => div(v.A!, v.l!) },
-      },
-    ],
-    steps: {
-      'A = l × w': {
-        A: {
-          expr: '{l} × {w}',
-          how: 'The width is the number of rows; the length is the squares in each row. Multiply.',
-          work: (v) => timesWork(v.w!, v.l!),
-        },
-        l: {
-          expr: '{A} ÷ {w}',
-          how: 'Share the squares equally among the rows: that is the squares in each row.',
-          work: (v) => divideWork(v.A!, v.w!),
-        },
-        w: {
-          expr: '{A} ÷ {l}',
-          how: 'Each row has as many squares as the length. Divide to find how many rows.',
-          work: (v) => divideWork(v.A!, v.l!, 'second'),
-        },
-      },
-    },
-    example: { l: 4, w: 3, A: 12 },
-    startWith: ['l', 'w'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
-  },
-
+export const PILOT_MODULES: ModuleDef[] = [
   {
     id: 'm.6.percent',
     assumptions: [
@@ -250,7 +51,6 @@ export const K12_MODULES: ModuleDef[] = [
     startWith: ['p', 'w'],
     representation: { kind: 'grid100', percent: 'p', caption: { part: 'x', whole: 'w' } },
   },
-
   {
     id: 'm.7.circles',
     assumptions: [
@@ -329,7 +129,6 @@ export const K12_MODULES: ModuleDef[] = [
       area: 'A',
     },
   },
-
   {
     id: 'm.8.pythagorean',
     assumptions: [
@@ -375,7 +174,6 @@ export const K12_MODULES: ModuleDef[] = [
     startWith: ['a', 'b'],
     representation: { kind: 'rightTriangle', a: 'a', b: 'b', c: 'c', extent: 5 },
   },
-
   {
     id: 'm.8.linear-functions',
     assumptions: [
@@ -428,7 +226,6 @@ export const K12_MODULES: ModuleDef[] = [
       intercept: 'b',
     },
   },
-
   {
     id: 'm.9.exponential-functions',
     assumptions: [
@@ -495,7 +292,6 @@ export const K12_MODULES: ModuleDef[] = [
       rows: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     },
   },
-
   {
     id: 's.6.density',
     assumptions: [
@@ -546,7 +342,6 @@ export const K12_MODULES: ModuleDef[] = [
       autoRange: true,
     },
   },
-
   {
     id: 's.8.newtons-laws',
     assumptions: [

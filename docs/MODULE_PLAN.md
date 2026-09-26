@@ -100,4 +100,4 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 
   Also built after the third review: counting dots in any arrangement (K), a tally chart
   (Grade 1), one kind of coin, skip counting back and a line plot with any starting length
-  (Grade 2), and a one-line "Use this for…" under every problem type (`uses.ts`).
+  (Grade 2), and a one-line "Use this for…" on every problem type (its `use` field).
