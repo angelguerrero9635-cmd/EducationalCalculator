@@ -772,13 +772,13 @@ export function FrontFigure({ front, c }: { front: NonNullable<Scene['front']>; 
         const fx = w * 0.5;
         const boundary =
           type === 'cold'
-            ? `M ${fx} ${ground} Q ${fx + 20} ${h * 0.45} ${fx + 70} ${h * 0.25}`
+            ? `M ${fx + 30} ${ground} C ${fx - 20} ${ground - 6}, ${fx - 16} ${ground - 40}, ${fx + 20} ${h * 0.5} S ${fx + 70} ${h * 0.28}, ${fx + 90} ${h * 0.22}`
             : type === 'warm'
               ? `M ${fx - 120} ${ground} L ${fx + 110} ${h * 0.35}`
               : `M ${fx} ${ground} L ${fx + 6} ${h * 0.25}`;
         const cold =
           type === 'cold'
-            ? `${boundary} L ${w} ${h * 0.25} L ${w} ${ground} Z`
+            ? `${boundary} L ${w} ${h * 0.22} L ${w} ${ground} Z`
             : type === 'warm'
               ? `${boundary} L ${w} ${h * 0.35} L ${w} ${ground} Z`
               : `${boundary} L ${w} ${h * 0.25} L ${w} ${ground} Z`;
@@ -814,29 +814,44 @@ export function FrontFigure({ front, c }: { front: NonNullable<Scene['front']>; 
             </ChartText>
             {type === 'cold' ? (
               <G>
+                {/* The cold air pushes forward along the ground, under the warm air. */}
                 <Arrow
                   x1={w - 30}
-                  y1={ground - 40}
-                  x2={fx + 40}
-                  y2={ground - 40}
+                  y1={ground - 34}
+                  x2={fx + 50}
+                  y2={ground - 34}
                   c={c}
                   color={c.chartInk}
                 />
-                <Arrow
-                  x1={fx - 10}
-                  y1={ground - 30}
-                  x2={fx + 10}
-                  y2={h * 0.3}
-                  c={c}
-                  color={c.chartHighlight}
-                  heavy
+                {/* Warm air ahead of the front is lifted up the steep boundary. */}
+                <Path
+                  d={`M ${fx - 110} ${ground - 14} L ${fx - 30} ${ground - 14} Q ${fx - 8} ${ground - 18} ${fx - 8} ${h * 0.5} L ${fx - 8} ${h * 0.34}`}
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.strokeHeavy}
+                  fill="none"
                 />
                 <Path
-                  d={`M ${fx - 40} ${h * 0.28} l 0 -${h * 0.18} q 30 -20 60 0 l 0 ${h * 0.18} z`}
+                  d={`M ${fx - 16} ${h * 0.36} L ${fx - 8} ${h * 0.3} L ${fx} ${h * 0.36} Z`}
+                  fill={c.chartHighlight}
+                />
+                {/* A tall storm cloud with a flat, spreading top, and rain under it. */}
+                <Path
+                  d={`M ${fx - 44} ${h * 0.3} q -6 -18 12 -22 l 2 -${h * 0.1} l -34 -6 q 40 -14 110 0 l -34 6 l 2 ${h * 0.1} q 18 4 12 22 z`}
                   fill={c.chartSurface}
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight}
                 />
+                {[-34, -22, -10, 2, 14].map((dx) => (
+                  <Line
+                    key={`rain${dx}`}
+                    x1={fx + dx}
+                    y1={h * 0.33}
+                    x2={fx + dx - 6}
+                    y2={h * 0.33 + 18}
+                    stroke={c.chartMuted}
+                    strokeWidth={1.5}
+                  />
+                ))}
               </G>
             ) : type === 'warm' ? (
               <G>
@@ -1256,43 +1271,67 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
 
 // ── Continents over time ──
 
-/** Continent outlines in a 0–100 box (drawn in-house, simplified), and where each sits by age. */
-const LANDS: Record<string, string> = {
-  na: 'M 0 0 L 16 -2 L 22 6 L 16 16 L 10 24 L 4 18 L -2 8 Z',
-  sa: 'M 4 0 L 12 2 L 14 10 L 10 22 L 6 26 L 4 16 L 0 6 Z',
-  af: 'M 0 0 L 12 -2 L 18 6 L 16 16 L 10 24 L 6 16 L 0 8 Z',
-  eu: 'M 0 0 L 30 -4 L 40 4 L 34 14 L 18 16 L 6 10 Z',
-  in: 'M 0 0 L 6 0 L 4 8 Z',
-  au: 'M 0 0 L 10 -1 L 12 6 L 4 8 L -1 4 Z',
-  an: 'M 0 0 L 30 0 L 26 6 L 4 6 Z',
+/**
+ * Continent outlines (drawn in-house, simplified) in their own small boxes, and where each sits
+ * by age in a 0–100 map. South America's eastern bulge fits Africa's western gulf.
+ */
+const LANDS: Record<string, { d: string; name: string; at: [number, number] }> = {
+  na: {
+    d: 'M 0 4 L 8 0 L 22 -2 L 30 2 L 26 8 L 20 12 L 16 18 L 12 24 L 10 22 L 8 14 L 2 10 Z',
+    name: 'North America',
+    at: [14, 9],
+  },
+  sa: {
+    d: 'M 2 0 L 10 -2 L 16 2 L 20 6 L 18 12 L 14 18 L 10 26 L 7 30 L 6 22 L 4 14 L 0 8 Z',
+    name: 'South America',
+    at: [6, 13],
+  },
+  af: {
+    d: 'M 4 0 L 16 -1 L 20 4 L 24 8 L 22 14 L 18 20 L 14 28 L 11 30 L 9 24 L 8 16 L 3 13 L 0 10 L 0 4 Z',
+    name: 'Africa',
+    at: [13, 9],
+  },
+  eu: {
+    d: 'M 0 4 L 10 -2 L 30 -4 L 46 0 L 50 8 L 42 14 L 34 16 L 26 12 L 14 14 L 4 12 Z',
+    name: 'Europe and Asia',
+    at: [26, 6],
+  },
+  in: { d: 'M 0 0 L 8 0 L 6 8 L 4 12 L 2 8 Z', name: 'India', at: [4, -2] },
+  au: { d: 'M 0 2 L 6 -2 L 14 0 L 16 6 L 10 10 L 2 8 Z', name: 'Australia', at: [8, 4] },
+  an: { d: 'M 0 2 L 12 -2 L 28 0 L 34 4 L 22 8 L 6 8 Z', name: 'Antarctica', at: [17, 4] },
+};
+/** South America's east coast and Africa's west coast, in their own boxes (the shape clue). */
+const COASTS = {
+  sa: 'M 16 2 L 20 6 L 18 12 L 14 18',
+  af: 'M 4 0 L 0 4 L 0 10 L 3 13 L 8 16',
 };
 const PLACES: Record<number, Record<string, [number, number]>> = {
   250: {
-    na: [30, 22],
-    sa: [36, 46],
-    af: [46, 38],
-    eu: [48, 12],
-    in: [56, 56],
-    au: [58, 64],
-    an: [42, 70],
+    na: [18, 16],
+    sa: [30, 41],
+    af: [46, 34],
+    eu: [44, 6],
+    in: [70, 40],
+    au: [62, 62],
+    an: [40, 70],
   },
   150: {
-    na: [24, 20],
-    sa: [34, 48],
-    af: [46, 38],
-    eu: [50, 12],
-    in: [60, 54],
-    au: [62, 70],
-    an: [44, 80],
+    na: [10, 12],
+    sa: [27, 44],
+    af: [47, 34],
+    eu: [46, 6],
+    in: [74, 44],
+    au: [66, 68],
+    an: [40, 80],
   },
   0: {
-    na: [8, 16],
-    sa: [24, 52],
-    af: [48, 40],
-    eu: [50, 12],
-    in: [74, 34],
-    au: [82, 62],
-    an: [36, 88],
+    na: [2, 8],
+    sa: [18, 48],
+    af: [48, 36],
+    eu: [48, 4],
+    in: [76, 22],
+    au: [80, 60],
+    an: [34, 88],
   },
 };
 
@@ -1305,57 +1344,106 @@ export function ContinentsFigure({
 }) {
   const places = PLACES[continents.age]!;
   return (
-    <Canvas aspect={0.6}>
+    <Canvas aspect={0.66}>
       {({ w, h }) => {
         const k = Math.min(w, h - 22) / 100;
         const ox = (w - 100 * k) / 2;
-        const oy = 4;
-        const at = (id: string) => places[id]!;
+        const oy = 6;
+        const X = (id: string, x: number) => ox + (places[id]![0] + x) * k;
+        const Y = (id: string, y: number) => oy + (places[id]![1] + y) * k;
         const clue = continents.clue;
         return (
           <Svg width={w} height={h}>
             <Rect x={0} y={0} width={w} height={h} fill={c.chartHighlight} fillOpacity={0.08} />
-            {Object.entries(LANDS).map(([id, d]) => {
-              const [x, y] = at(id);
+            {Object.entries(LANDS).map(([id, land]) => {
               const lit =
                 (clue === 'fossils' && (id === 'sa' || id === 'af')) ||
                 (clue === 'rocks' && (id === 'na' || id === 'eu')) ||
                 (clue === 'shapes' && (id === 'sa' || id === 'af'));
               return (
                 <Path
-                  key={id}
-                  d={d}
-                  transform={`translate(${ox + x * k} ${oy + y * k}) scale(${k})`}
+                  key={`land-${id}`}
+                  d={land.d}
+                  transform={`translate(${X(id, 0)} ${Y(id, 0)}) scale(${k})`}
                   fill={lit ? c.chartHighlight : c.chartFill}
-                  fillOpacity={lit ? 0.4 : 1}
+                  fillOpacity={lit ? 0.35 : 1}
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight / k}
                 />
               );
             })}
+            {Object.entries(LANDS).map(([id, land]) => (
+              <ChartText
+                key={`name-${id}`}
+                x={X(id, land.at[0])}
+                y={Y(id, land.at[1])}
+                fontSize={chart.tiny}
+                fontWeight="700"
+                fill={c.chartInk}
+                textAnchor="middle"
+              >
+                {land.name}
+              </ChartText>
+            ))}
             {clue === 'fossils' ? (
-              <Ellipse
-                cx={ox + (at('sa')[0] + 12) * k}
-                cy={oy + (at('sa')[1] + 6) * k}
-                rx={10 * k}
-                ry={4 * k}
-                fill="none"
-                stroke={c.chartHighlight}
-                strokeWidth={chart.stroke}
-                strokeDasharray={chart.dash}
-              />
+              <G>
+                <Ellipse
+                  cx={(X('sa', 18) + X('af', 3)) / 2}
+                  cy={(Y('sa', 12) + Y('af', 12)) / 2}
+                  rx={14 * k}
+                  ry={7 * k}
+                  fill="none"
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.stroke}
+                  strokeDasharray={chart.dash}
+                />
+                <ChartText
+                  x={(X('sa', 18) + X('af', 3)) / 2}
+                  y={(Y('sa', 12) + Y('af', 12)) / 2 + 9 * k + 16}
+                  fontSize={chart.small}
+                  fontWeight="700"
+                  fill={c.chartHighlight}
+                  textAnchor="middle"
+                >
+                  Mesosaurus fossils
+                </ChartText>
+              </G>
             ) : null}
             {clue === 'rocks' ? (
-              <Line
-                x1={ox + (at('na')[0] + 14) * k}
-                y1={oy + (at('na')[1] + 6) * k}
-                x2={ox + (at('eu')[0] + 8) * k}
-                y2={oy + (at('eu')[1] + 6) * k}
-                stroke={c.chartHighlight}
-                strokeWidth={chart.strokeHeavy}
-                strokeDasharray={chart.dash}
-              />
+              <G>
+                <Line
+                  x1={X('na', 22)}
+                  y1={Y('na', 4)}
+                  x2={X('eu', 8)}
+                  y2={Y('eu', 8)}
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.strokeHeavy}
+                  strokeDasharray={chart.dash}
+                />
+                <ChartText
+                  x={X('eu', 0)}
+                  y={Y('eu', 20)}
+                  fontSize={chart.small}
+                  fontWeight="700"
+                  fill={c.chartHighlight}
+                  textAnchor="middle"
+                >
+                  same mountain rocks
+                </ChartText>
+              </G>
             ) : null}
+            {clue === 'shapes'
+              ? (['sa', 'af'] as const).map((id) => (
+                  <Path
+                    key={`coast-${id}`}
+                    d={COASTS[id]}
+                    transform={`translate(${X(id, 0)} ${Y(id, 0)}) scale(${k})`}
+                    fill="none"
+                    stroke={c.chartHighlight}
+                    strokeWidth={(chart.strokeHeavy + 1) / k}
+                  />
+                ))
+              : null}
             <ChartText
               x={w - 8}
               y={h - 8}
@@ -1378,7 +1466,8 @@ export function ContinentsFigure({
 const ROCK_BOXES = {
   magma: { x: 0.5, y: 0.86, text: 'Magma' },
   igneous: { x: 0.16, y: 0.5, text: 'Igneous rock' },
-  sediment: { x: 0.5, y: 0.13, text: 'Sediment' },
+  surface: { x: 0.16, y: 0.13, text: 'Rock at the surface' },
+  sediment: { x: 0.6, y: 0.13, text: 'Sediment' },
   sedimentary: { x: 0.84, y: 0.36, text: 'Sedimentary rock' },
   metamorphic: { x: 0.84, y: 0.66, text: 'Metamorphic rock' },
 } as const;
@@ -1386,18 +1475,16 @@ type RockBox = keyof typeof ROCK_BOXES;
 const ROCK_STEPS: Record<string, { from: RockBox; to: RockBox; heat: boolean }[]> = {
   melting: [{ from: 'metamorphic', to: 'magma', heat: true }],
   cooling: [{ from: 'magma', to: 'igneous', heat: true }],
-  weathering: [
-    { from: 'igneous', to: 'sediment', heat: false },
-    { from: 'metamorphic', to: 'sediment', heat: false },
-  ],
+  // Rock at the surface breaks down; uplift is its own step that brings buried rock up.
+  weathering: [{ from: 'surface', to: 'sediment', heat: false }],
   deposition: [{ from: 'sediment', to: 'sedimentary', heat: false }],
   metamorphism: [
     { from: 'sedimentary', to: 'metamorphic', heat: true },
     { from: 'igneous', to: 'metamorphic', heat: true },
   ],
   uplift: [
-    { from: 'metamorphic', to: 'sediment', heat: true },
-    { from: 'igneous', to: 'sediment', heat: true },
+    { from: 'igneous', to: 'surface', heat: true },
+    { from: 'metamorphic', to: 'surface', heat: true },
   ],
 };
 
@@ -1487,17 +1574,11 @@ export function RockCycleFigure({ rock, c }: { rock: NonNullable<Scene['rock']>;
             })}
             {lit.length ? (
               <G>
-                <Rect
-                  x={w / 2 - 70}
-                  y={h / 2 - 12}
-                  width={140}
-                  height={24}
-                  rx={12}
-                  fill={c.chartHighlight}
-                />
+                {/* The driver sits in a corner, not among the boxes. */}
+                <Rect x={6} y={h - 30} width={140} height={24} rx={12} fill={c.chartHighlight} />
                 <ChartText
-                  x={w / 2}
-                  y={h / 2 + 4}
+                  x={76}
+                  y={h - 14}
                   fontSize={chart.small}
                   fontWeight="700"
                   fill={c.onChartHighlight}
