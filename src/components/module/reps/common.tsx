@@ -14,6 +14,7 @@ import type { Values } from '@/engine/types';
 import { chart, font, space, usePalette } from '@/theme';
 
 import { Text } from '@/components/Text';
+import { RESPONDER, useWebPointerDrag } from '../pointerDrag';
 import type { Calculator } from '../useCalculator';
 
 // Web only: stop the browser from scrolling the page while a handle is dragged.
@@ -70,6 +71,16 @@ export function DragHandle({
   const c = usePalette();
   // Page coordinates where the drag started; offsets are measured from here.
   const origin = useRef({ x: 0, y: 0 });
+  // Web: pointer events with capture (see pointerDrag.ts).
+  const ref = useRef<View>(null);
+  useWebPointerDrag(ref, {
+    start: (x0, y0) => {
+      origin.current = { x: x0, y: y0 };
+      onStart();
+    },
+    move: (x1, y1) => onMove(x1 - origin.current.x, y1 - origin.current.y),
+    end: () => onEnd?.(),
+  });
   const offset = (e: GestureResponderEvent) =>
     [e.nativeEvent.pageX - origin.current.x, e.nativeEvent.pageY - origin.current.y] as const;
 
@@ -77,17 +88,22 @@ export function DragHandle({
     <View
       testID={testID}
       accessibilityLabel={`Drag to change ${label}`}
-      onStartShouldSetResponder={() => true}
-      onStartShouldSetResponderCapture={() => true}
-      onMoveShouldSetResponder={() => true}
-      onResponderTerminationRequest={() => false}
-      onResponderGrant={(e) => {
-        origin.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
-        onStart();
-      }}
-      onResponderMove={(e) => onMove(...offset(e))}
-      onResponderRelease={() => onEnd?.()}
-      onResponderTerminate={() => onEnd?.()}
+      ref={ref}
+      onStartShouldSetResponder={RESPONDER ? () => true : undefined}
+      onStartShouldSetResponderCapture={RESPONDER ? () => true : undefined}
+      onMoveShouldSetResponder={RESPONDER ? () => true : undefined}
+      onResponderTerminationRequest={RESPONDER ? () => false : undefined}
+      onResponderGrant={
+        RESPONDER
+          ? (e) => {
+              origin.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
+              onStart();
+            }
+          : undefined
+      }
+      onResponderMove={RESPONDER ? (e) => onMove(...offset(e)) : undefined}
+      onResponderRelease={RESPONDER ? () => onEnd?.() : undefined}
+      onResponderTerminate={RESPONDER ? () => onEnd?.() : undefined}
       style={[
         {
           position: 'absolute',

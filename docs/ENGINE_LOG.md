@@ -31,6 +31,11 @@ under the slider and the input box). What it found and what the engine now does:
   container mid-gesture cancels the touch on iOS. → The lock is gone. On the web the track
   and the handles carry `touch-action: none`, and on native they hold the responder and
   refuse to give it up, which is all that is needed to keep the page still.
+- On the web a slider let go snapped back to (or near) its old value: after a touch that
+  has moved, the browser's emulated mouse events on lift reach the responder system as a
+  fresh press. → On the web, sliders and drag handles use pointer events with pointer
+  capture (`pointerDrag.ts`); the responder props stay for native. The track's top is
+  measured once at the press, so a page shift mid-drag can't move the value.
 - A page whose whole is fixed (a full turn of 360°) had two part sliders that could never
   move: each pinned the other, so the whole always changed. → `angles.sliders` names the
   values that get sliders instead (parts of the turn, parts in the angle); the rays are not

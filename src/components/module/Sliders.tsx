@@ -10,6 +10,7 @@ import {
 import { Text } from '@/components/Text';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
+import { RESPONDER, useWebPointerDrag } from './pointerDrag';
 import { useRep } from './reps/common';
 import type { StepperItem } from './stepperContext';
 import type { Calculator } from './useCalculator';
@@ -120,6 +121,16 @@ function Slider({
     );
   };
   const at = (e: GestureResponderEvent) => e.nativeEvent.pageY - trackTop.current;
+  // Web: pointer events with capture (see pointerDrag.ts). The track's top is measured
+  // once, at the press: the finger's travel is what counts, not where the page has moved.
+  const trackRef = useRef<View>(null);
+  useWebPointerDrag(trackRef, {
+    start: (_x, y, el) => {
+      trackTop.current = el.getBoundingClientRect().top;
+      setFromY(y - trackTop.current);
+    },
+    move: (_x, y) => setFromY(y - trackTop.current),
+  });
 
   return (
     <View style={[styles.slider, narrow && styles.narrow]}>
@@ -137,14 +148,19 @@ function Slider({
         aria-valuemax={hi}
         aria-valuenow={known ? shown : undefined}
         aria-valuetext={value}
-        onStartShouldSetResponder={() => true}
-        onMoveShouldSetResponder={() => true}
-        onResponderTerminationRequest={() => false}
-        onResponderGrant={(e) => {
-          trackTop.current = e.nativeEvent.pageY - e.nativeEvent.locationY;
-          setFromY(e.nativeEvent.locationY);
-        }}
-        onResponderMove={(e) => setFromY(at(e))}
+        ref={trackRef}
+        onStartShouldSetResponder={RESPONDER ? () => true : undefined}
+        onMoveShouldSetResponder={RESPONDER ? () => true : undefined}
+        onResponderTerminationRequest={RESPONDER ? () => false : undefined}
+        onResponderGrant={
+          RESPONDER
+            ? (e) => {
+                trackTop.current = e.nativeEvent.pageY - e.nativeEvent.locationY;
+                setFromY(e.nativeEvent.locationY);
+              }
+            : undefined
+        }
+        onResponderMove={RESPONDER ? (e) => setFromY(at(e)) : undefined}
         style={[
           styles.track,
           { height: track, backgroundColor: c.chartSurface, borderColor: c.border },
