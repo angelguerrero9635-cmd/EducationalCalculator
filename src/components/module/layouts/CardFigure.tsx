@@ -927,6 +927,9 @@ function CellFigure({
           strokeWidth={2.5}
         />
       ) : null}
+      {wall && shape === 'round' ? (
+        <Circle cx={24} cy={24} r={20.5} fill="none" stroke={ink} strokeWidth={2.5} />
+      ) : null}
       {wall && shape === 'rod' ? (
         <Rect
           x={7}

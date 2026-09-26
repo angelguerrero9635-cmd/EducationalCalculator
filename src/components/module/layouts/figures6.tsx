@@ -14,6 +14,37 @@ import { Arrow } from './figures';
  * drawn in the text color with the scene's part in the highlight, so nothing depends on color.
  */
 
+/** The sun: a disc with short rays, so it reads as the sun and not a ball or the moon. */
+function Sun({ x, y, c }: { x: number; y: number; c: Palette }) {
+  return (
+    <G>
+      {Array.from({ length: 8 }, (_, i) => {
+        const a = (i * Math.PI) / 4;
+        return (
+          <Line
+            key={i}
+            x1={x + 20 * Math.cos(a)}
+            y1={y + 20 * Math.sin(a)}
+            x2={x + 26 * Math.cos(a)}
+            y2={y + 26 * Math.sin(a)}
+            stroke={c.chartInk}
+            strokeWidth={chart.stroke}
+            strokeLinecap="round"
+          />
+        );
+      })}
+      <Circle
+        cx={x}
+        cy={y}
+        r={15}
+        fill={c.chartDay}
+        stroke={c.chartInk}
+        strokeWidth={chart.stroke}
+      />
+    </G>
+  );
+}
+
 /** A label with a leader line from (x, y) to the text at (tx, ty). */
 function Tag({
   x,
@@ -274,17 +305,23 @@ export function CellFigure6({ cell, c }: { cell: NonNullable<Scene['cell']>; c: 
             plant ? y0 + ch * 0.28 : cy - ch * 0.05,
             2,
           );
-          tag('cytoplasm', 'cytoplasm', plant ? x0 + cw * 0.7 : cx + cw * 0.3, cy, 3);
+          tag(
+            'cytoplasm',
+            'cytoplasm',
+            plant ? x0 + cw * 0.76 : cx + cw * 0.3,
+            plant ? y0 + ch * 0.68 : cy,
+            plant ? 5 : 3,
+          );
           tag(
             'mitochondria',
             'mitochondria',
             plant ? x0 + cw * 0.86 : cx + cw * 0.28,
             plant ? y0 + ch * 0.8 : cy + ch * 0.2,
-            4,
+            plant ? 6 : 4,
           );
           if (plant) {
-            tag('vacuole', 'vacuole', cx + cw * 0.2, y0 + ch * 0.5, 5);
-            tag('chloroplasts', 'chloroplasts', x0 + cw * 0.9, y0 + ch * 0.55, 6);
+            tag('vacuole', 'vacuole', cx + cw * 0.2, y0 + ch * 0.45, 3);
+            tag('chloroplasts', 'chloroplasts', x0 + cw * 0.9, y0 + ch * 0.55, 4);
           }
         }
         return (
@@ -315,7 +352,7 @@ export function BodyFigure({ body, c }: { body: NonNullable<Scene['body']>; c: P
   const stroke = (s: string) => (lit(s) ? c.chartHighlight : c.chartMuted);
   const op = (s: string) => (lit(s) ? 1 : 0.25);
   return (
-    <Canvas aspect={0.9}>
+    <Canvas aspect={0.8}>
       {({ w, h }) => {
         const cx = w * 0.4;
         const u = Math.min(w * 0.8, h) / 100;
@@ -426,7 +463,7 @@ export function BodyFigure({ body, c }: { body: NonNullable<Scene['body']>; c: P
                 strokeWidth={chart.stroke}
               />
               <Path
-                d={`M ${X(2)} ${Y(28)} C ${X(22)} ${Y(30)} ${X(22)} ${Y(70)} ${X(6)} ${Y(86)} M ${X(0)} ${Y(30)} C ${X(-20)} ${Y(32)} ${X(-22)} ${Y(70)} ${X(-6)} ${Y(86)}`}
+                d={`M ${X(4)} ${Y(29)} C ${X(10)} ${Y(34)} ${X(10)} ${Y(56)} ${X(7.5)} ${Y(88)} M ${X(0)} ${Y(30)} C ${X(-9)} ${Y(34)} ${X(-9)} ${Y(56)} ${X(-7.5)} ${Y(88)}`}
                 stroke={stroke('circulatory')}
                 strokeWidth={1.25}
                 strokeDasharray="4 2"
@@ -524,11 +561,20 @@ export function WaterCycleFigure({ water, c }: { water: NonNullable<Scene['water
             />
             {on(p) ? (
               <ChartText
-                x={(x1 + x2) / 2 + 6}
-                y={(y1 + y2) / 2}
+                x={
+                  Math.abs(y2 - y1) < 4
+                    ? (x1 + x2) / 2
+                    : p === 'condensation'
+                      ? x1 - 4
+                      : (x1 + x2) / 2 + 10
+                }
+                y={Math.abs(y2 - y1) < 4 ? y1 + 24 : p === 'condensation' ? y1 + 14 : (y1 + y2) / 2}
                 fontSize={chart.label}
                 fontWeight="700"
                 fill={c.chartHighlight}
+                textAnchor={
+                  Math.abs(y2 - y1) < 4 ? 'middle' : p === 'condensation' ? 'middle' : 'start'
+                }
               >
                 {label}
               </ChartText>
@@ -539,14 +585,7 @@ export function WaterCycleFigure({ water, c }: { water: NonNullable<Scene['water
           <Svg width={w} height={h}>
             <Rect x={0} y={0} width={w} height={ground} fill={c.chartDay} />
             {/* Sun, cloud, ocean, mountain with snow, tree, soil and groundwater. */}
-            <Circle
-              cx={w * 0.1}
-              cy={h * 0.12}
-              r={16}
-              fill={c.chartSurface}
-              stroke={c.chartInk}
-              strokeWidth={chart.stroke}
-            />
+            <Sun x={Math.max(30, w * 0.1)} y={Math.max(30, h * 0.12)} c={c} />
             <Path
               d={`M ${cloud.x - 40} ${cloud.y + 10} q 0 -18 18 -16 q 8 -16 26 -8 q 20 -6 22 12 q 14 2 10 12 z`}
               fill={c.chartSurface}
@@ -713,14 +752,7 @@ export function FrontFigure({ front, c }: { front: NonNullable<Scene['front']>; 
                   strokeWidth={chart.strokeLight}
                 />
               ) : (
-                <Circle
-                  cx={w - 40}
-                  cy={36}
-                  r={16}
-                  fill={c.chartSurface}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.stroke}
-                />
+                <Sun x={w - 40} y={36} c={c} />
               )}
               <ChartText
                 x={cx}
@@ -1014,7 +1046,18 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
                 </ChartText>,
                 <ChartText
                   key="new"
-                  x={mid}
+                  x={mid - gap - 17}
+                  y={top + crust + 14}
+                  fontSize={chart.tiny}
+                  fontWeight="700"
+                  fill={c.chartHighlight}
+                  textAnchor="middle"
+                >
+                  new
+                </ChartText>,
+                <ChartText
+                  key="new2"
+                  x={mid + gap + 17}
                   y={top + crust + 14}
                   fontSize={chart.tiny}
                   fontWeight="700"
@@ -1064,7 +1107,7 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
                 c={c}
                 color={c.chartInk}
               />,
-              <ChartText key="o" x={20} y={top + crust + 8} fontSize={chart.tiny} fill={c.chartInk}>
+              <ChartText key="o" x={8} y={top + 2} fontSize={chart.tiny} fill={c.chartInk}>
                 ocean plate
               </ChartText>,
               <ChartText
@@ -1091,7 +1134,7 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
                 strokeWidth={chart.strokeLight}
               />,
               <Arrow
-                key="l"
+                key="pushL"
                 x1={20}
                 y1={top - 24}
                 x2={mid - 80}
@@ -1100,7 +1143,7 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
                 color={c.chartInk}
               />,
               <Arrow
-                key="r"
+                key="pushR"
                 x1={w - 20}
                 y1={top - 24}
                 x2={mid + 80}
@@ -1119,16 +1162,16 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
                 x={20}
                 y={20}
                 width={w - 40}
-                height={h / 2 - 24}
+                height={h / 2 - 28}
                 fill={c.chartFill}
                 stroke={c.chartInk}
               />,
               <Rect
                 key="b"
                 x={20}
-                y={h / 2 + 4}
+                y={h / 2 + 8}
                 width={w - 40}
-                height={h / 2 - 24}
+                height={h / 2 - 28}
                 fill={c.chartSurface}
                 stroke={c.chartInk}
               />,
@@ -1137,14 +1180,14 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
                 x1={mid - 20}
                 y1={30}
                 x2={mid - 20}
-                y2={h / 2 - 4}
+                y2={h / 2 - 8}
                 stroke={c.chartHighlight}
                 strokeWidth={3}
               />,
               <Line
                 key="f2"
                 x1={mid + 20}
-                y1={h / 2 + 4}
+                y1={h / 2 + 8}
                 x2={mid + 20}
                 y2={h - 30}
                 stroke={c.chartHighlight}
@@ -1170,8 +1213,8 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
               />,
               <ChartText
                 key="t"
-                x={mid}
-                y={h / 2 + 2}
+                x={mid + 80}
+                y={h / 2 + 4}
                 fontSize={chart.tiny}
                 fill={c.chartMuted}
                 textAnchor="middle"
@@ -1264,7 +1307,7 @@ export function ContinentsFigure({
   return (
     <Canvas aspect={0.6}>
       {({ w, h }) => {
-        const k = Math.min(w, h / 0.6) / 100;
+        const k = Math.min(w, h - 22) / 100;
         const ox = (w - 100 * k) / 2;
         const oy = 4;
         const at = (id: string) => places[id]!;

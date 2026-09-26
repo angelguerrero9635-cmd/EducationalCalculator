@@ -105,7 +105,7 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             fontWeight={mark ? '700' : undefined}
                             textAnchor="end"
                           >
-                            {String(v)}
+                            {String(v).replace(/^-/, '\u2212')}
                           </ChartText>
                         ) : null,
                       ];
