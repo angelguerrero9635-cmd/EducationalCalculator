@@ -9,6 +9,127 @@ const F = '°F';
 export const SCIENCE_LAYOUTS: LayoutDef[] = [
   // ── Kindergarten ──
   {
+    kind: 'explore',
+    id: 's.K.pushes-pulls~direction',
+    title: 'Which way a push sends it',
+    use: 'Use this to see what a push from each side does.',
+    assumptions: [
+      'A push or a pull can start, stop or turn a ball.',
+      'The ball moves the way the push points.',
+      'Opening a door can be a push or a pull.',
+    ],
+    figure: { kind: 'push' },
+    scenes: [
+      {
+        label: 'Push from behind',
+        push: { from: 'behind', strength: 'gentle' },
+        lines: ['The ball goes forward.'],
+      },
+      {
+        label: 'Hard push',
+        push: { from: 'behind', strength: 'hard' },
+        lines: ['The ball goes faster and farther.'],
+      },
+      {
+        label: 'Push from the front',
+        push: { from: 'front', strength: 'gentle' },
+        lines: ['The ball slows down and stops.'],
+      },
+      {
+        label: 'Push from the side',
+        push: { from: 'side', strength: 'gentle' },
+        lines: ['The ball turns.'],
+      },
+      {
+        label: 'Pull the string',
+        push: { from: 'behind', strength: 'gentle', pull: true },
+        lines: ['The ball comes toward you.'],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.K.sunlight-warms~shade',
+    title: 'What makes shade',
+    use: 'Use this to sort things by whether they make shade.',
+    assumptions: ['Shade keeps a spot cool.', 'Something that blocks the sun makes shade.'],
+    question: 'Does it block the sun?',
+    bins: [
+      {
+        id: 'shade',
+        label: 'Makes shade',
+        why: 'It blocks the sunlight. The spot under it stays cool.',
+      },
+      {
+        id: 'through',
+        label: 'Lets sun through',
+        why: 'Sunlight shines through. The spot under it gets warm.',
+      },
+    ],
+    cards: [
+      { label: 'Umbrella', bin: 'shade' },
+      { label: 'Tree', bin: 'shade' },
+      { label: 'Tent', bin: 'shade' },
+      { label: 'Sun hat', bin: 'shade' },
+      { label: 'Roof', bin: 'shade' },
+      { label: 'Clear plastic', bin: 'through' },
+      { label: 'Window glass', bin: 'through' },
+      { label: 'Net with big holes', bin: 'through' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.K.living-needs~who-needs',
+    title: 'What plants and animals need',
+    use: 'Use this to sort what plants need and what animals need.',
+    assumptions: [
+      'All living things need water and air.',
+      'Plants make food. Animals must find food.',
+    ],
+    question: 'Who needs it?',
+    bins: [
+      { id: 'plants', label: 'Plants', why: 'Plants make their own food with sunlight.' },
+      { id: 'animals', label: 'Animals', why: 'Animals must eat plants or other animals.' },
+      { id: 'both', label: 'Both', why: 'Every living thing needs these.' },
+    ],
+    cards: [
+      { label: 'Sunlight', bin: 'plants' },
+      { label: 'Soil for roots', bin: 'plants' },
+      { label: 'Food to eat', bin: 'animals' },
+      { label: 'A den or nest', bin: 'animals' },
+      { label: 'Water', bin: 'both' },
+      { label: 'Air', bin: 'both' },
+      { label: 'Space to grow', bin: 'both' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.K.living-needs~homes',
+    title: 'Where animals live',
+    use: 'Use this to match each animal to a place it can live.',
+    assumptions: [
+      'An animal lives where it finds food, water and shelter.',
+      'Each place has what its animals need.',
+    ],
+    question: 'Where can it get what it needs?',
+    bins: [
+      { id: 'pond', label: 'Pond', why: 'Pond animals need lots of water.' },
+      { id: 'forest', label: 'Forest', why: 'Trees give food and places to hide.' },
+      { id: 'desert', label: 'Desert', why: 'Desert animals need little water.' },
+    ],
+    cards: [
+      { label: 'Fish', bin: 'pond' },
+      { label: 'Frog', bin: 'pond' },
+      { label: 'Duck', bin: 'pond' },
+      { label: 'Deer', bin: 'forest' },
+      { label: 'Owl', bin: 'forest' },
+      { label: 'Squirrel', bin: 'forest' },
+      { label: 'Camel', bin: 'desert' },
+      { label: 'Lizard', bin: 'desert' },
+      { label: 'Roadrunner', bin: 'desert' },
+    ],
+  },
+  {
     kind: 'sequence',
     id: 's.K.weather-patterns~storm',
     title: 'Getting ready for a storm',
@@ -16,15 +137,84 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A forecast warns that a storm is coming.',
       'Get ready before the storm, not during it.',
-      'Do the jobs in order. Then stay inside.',
+      'Bring toys in and close windows, in any order.',
     ],
     question: 'Put the jobs in order. Tap the first one, then the next.',
     stages: [
       { label: 'Hear the forecast' },
-      { label: 'Bring the toys inside' },
-      { label: 'Close the windows' },
-      { label: 'Stay inside' },
-      { label: 'Wait for the storm to pass' },
+      { label: 'Get ready: bring toys in, close windows' },
+      { label: 'Stay inside while it storms' },
+      { label: 'Go out when it has passed' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.K.weather-patterns~morning-afternoon',
+    title: 'Warmer as the day goes on',
+    use: 'Use this to record the temperature at three times of day.',
+    assumptions: [
+      'Read the same thermometer three times in one day.',
+      'Tap a bar to change a reading.',
+    ],
+    columns: ['Morning', 'Noon', 'Afternoon'],
+    rowLabel: 'Temperature',
+    unit: F,
+    max: 100,
+    step: 5,
+    initial: [55, 65, 70],
+    pattern: (v) => {
+      const [a, , c] = v as [number, number, number];
+      if (c > a) return 'It got warmer as the sun climbed.';
+      if (c < a) return 'It got cooler as the day went on.';
+      return 'It stayed the same all day.';
+    },
+  },
+  {
+    kind: 'sort',
+    id: 's.K.living-things-change-environment',
+    assumptions: [
+      'Living things change the place where they live.',
+      'They change it to get what they need.',
+    ],
+    question: 'Who made the change?',
+    bins: [
+      {
+        id: 'animals',
+        label: 'Animals',
+        why: 'Animals dig, build and chew to get what they need.',
+      },
+      { id: 'plants', label: 'Plants', why: 'Roots and stems push rocks and soil.' },
+      { id: 'people', label: 'People', why: 'People build, plant and dig to meet their needs.' },
+    ],
+    cards: [
+      { label: 'Beaver builds a dam', bin: 'animals' },
+      { label: 'Squirrel digs a hole', bin: 'animals' },
+      { label: 'Bird builds a nest', bin: 'animals' },
+      { label: 'Tree roots crack the sidewalk', bin: 'plants' },
+      { label: 'Weeds grow through a crack', bin: 'plants' },
+      { label: 'People build a road', bin: 'people' },
+      { label: 'People plant a garden', bin: 'people' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.K.living-things-change-environment~helps',
+    title: 'Choices that help the land',
+    use: 'Use this to sort choices that help or hurt the land.',
+    assumptions: ['People can choose to keep a place clean.', 'Small choices add up.'],
+    question: 'Does it help or hurt?',
+    bins: [
+      { id: 'helps', label: 'Helps', why: 'It keeps the land, water and air clean.' },
+      { id: 'hurts', label: 'Hurts', why: 'It makes a mess or wastes.' },
+    ],
+    cards: [
+      { label: 'Pick up litter', bin: 'helps' },
+      { label: 'Reuse a bag', bin: 'helps' },
+      { label: 'Turn off the water', bin: 'helps' },
+      { label: 'Plant a tree', bin: 'helps' },
+      { label: 'Drop a wrapper', bin: 'hurts' },
+      { label: 'Leave the water running', bin: 'hurts' },
+      { label: 'Pick all the flowers', bin: 'hurts' },
     ],
   },
 

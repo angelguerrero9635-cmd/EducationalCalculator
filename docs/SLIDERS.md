@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-22 of 237 pages show sliders.
+22 of 235 pages show sliders.
 
 ## By picture kind
 
@@ -30,13 +30,14 @@ its kind with `sliders: true | false`.
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | equalGroups | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorPairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fractionArea | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionBars | 9 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| hops | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | linePlot | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -61,7 +62,8 @@ its kind with `sliders: true | false`.
 | ruler | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| shareWholes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 12 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | tape | 26 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -219,15 +221,11 @@ its kind with `sliders: true | false`.
 | m.4.angles~protractor | protractor | no |
 | m.4.angles~turns | angles | no |
 | s.K.pushes-pulls | ruler | no |
-| s.K.pushes-pulls~forward | hops | no |
-| s.K.pushes-pulls~back | hops | no |
 | s.K.sunlight-warms | thermometers | no |
 | s.K.sunlight-warms~warming | thermometers | no |
 | s.K.living-needs | compareRows | no |
-| s.K.living-needs~food | skipCount | no |
 | s.K.weather-patterns | tally | no |
 | s.K.weather-patterns~warmer | thermometers | no |
-| s.K.living-things-change-environment | hops | no |
 | s.K.living-things-change-environment~litter | tally | no |
 | s.1.sound-vibration | ruler | no |
 | s.1.sound-vibration~drum | bars | no |
@@ -316,5 +314,7 @@ its kind with `sliders: true | false`.
 | g.fraction-area | fractionArea | yes |
 | g.unit-cubes | unitCubes | yes |
 | g.place-value-chart | placeValueChart | no |
+| g.factor-pairs | factorPairs | no |
+| g.share-wholes | shareWholes | no |
 | g.wave | wave | no |
 | g.punnett-square | punnettSquare | no |

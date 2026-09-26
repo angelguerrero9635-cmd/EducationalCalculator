@@ -539,3 +539,16 @@ export function placeParts(x: number): number[] {
   });
   return out.length ? out : [0];
 }
+
+/**
+ * A named order the story fixes (the hard push rolls at least as far as the gentle one): the
+ * solver rejects values that break it, so a note never calls the smaller one bigger.
+ */
+export const atLeast = (big: string, small: string) => ({
+  id: `${big} ≥ ${small}`,
+  constraint: true as const,
+  display: `{${big}} is at least {${small}}`,
+  vars: [big, small],
+  residual: (v: Values) => (v[big]! >= v[small]! ? 0 : 1),
+  solve: {},
+});
