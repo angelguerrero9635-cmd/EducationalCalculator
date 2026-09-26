@@ -188,17 +188,23 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     opacity={pt.known ? 1 : 0.35}
                   />
                 ))}
-                {pts.map((pt) => (
-                  <ChartText
-                    key={`t${pt.testID}`}
-                    x={sx(pt.px) + 9}
-                    y={sy(pt.py) - 8}
-                    fontSize={chart.label}
-                    fontWeight="700"
-                  >
-                    {`(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`}
-                  </ChartText>
-                ))}
+                {pts.map((pt) => {
+                  // The label goes above the point, on the side the line does not cross: the
+                  // upper-left when the line rises (and there is room), else the upper-right.
+                  const upLeft = both && dx * dy > 0 && sx(pt.px) - x0 > 60;
+                  return (
+                    <ChartText
+                      key={`t${pt.testID}`}
+                      x={sx(pt.px) + (upLeft ? -9 : 9)}
+                      y={sy(pt.py) - 8}
+                      fontSize={chart.label}
+                      fontWeight="700"
+                      textAnchor={upLeft ? 'end' : 'start'}
+                    >
+                      {`(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`}
+                    </ChartText>
+                  );
+                })}
               </Svg>
               {pts
                 .filter((pt) => pt.known)

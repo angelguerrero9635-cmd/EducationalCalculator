@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-22 of 221 pages show sliders.
+22 of 225 pages show sliders.
 
 ## By picture kind
 
@@ -29,12 +29,12 @@ its kind with `sliders: true | false`.
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| equalGroups | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| equalGroups | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fractionArea | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionBars | 9 | yes | sweeping the value shows the picture change; no touch control of its own |
-| fractionLine | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| fractionLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 10 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -62,9 +62,9 @@ its kind with `sliders: true | false`.
 | scale | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skipCount | 11 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 25 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 26 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 10 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -268,6 +268,7 @@ its kind with `sliders: true | false`.
 | s.3.weather-climate~range | thermometers | no |
 | s.3.weather-climate~flood | array | no |
 | m.5.order-of-operations | tape | no |
+| m.5.order-of-operations~divide | equalGroups | no |
 | m.5.powers-of-ten | placeValueChart | no |
 | m.5.powers-of-ten~decimals | placeValueChart | no |
 | m.5.standard-algorithm | areaModel | yes |
@@ -275,9 +276,12 @@ its kind with `sliders: true | false`.
 | m.5.decimal-operations | tape | no |
 | m.5.decimal-operations~multiply | table | no |
 | m.5.decimal-operations~divide | table | no |
+| m.5.decimal-operations~subtract | tape | no |
+| m.5.decimal-operations~times-decimal | table | no |
 | m.5.add-fractions-unlike | fractionBars | yes |
 | m.5.add-fractions-unlike~subtract | fractionBars | yes |
 | m.5.multiply-fractions | fractionArea | yes |
+| m.5.multiply-fractions~of-a-whole | fractionLine | no |
 | m.5.divide-unit-fractions | fractionLine | no |
 | m.5.divide-unit-fractions~unit-by-whole | fractionBars | yes |
 | m.5.volume-rectangular | unitCubes | yes |

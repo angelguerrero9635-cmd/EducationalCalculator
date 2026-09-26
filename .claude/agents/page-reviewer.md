@@ -99,3 +99,5 @@ Then: **Section-wide** (a shared component to change, with the file); **Top 10 c
 **Engine** (what the page code or scripts could have prevented, for `docs/ENGINE_LOG.md`);
 **Reviewer** (what evidence you lacked or didn't need, for `docs/REVIEW_LOG.md`); **Checks run**
 and files changed.
+
+A dimmed slider (aria-disabled) is one the other values hold to a single value: not a finding.

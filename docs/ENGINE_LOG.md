@@ -5,6 +5,26 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grade 5 (Section 2, first review)
+
+- Step text used skip-count lines ("Count by 4s, 8 times") for facts a Grade 5 student
+  knows. → Grade 5 modules give no work lines for a fact; the substituted line is the work.
+- The decimal grid left a place blank ("0 . _ 5" for 0.05). → Every empty place after the
+  point is a 0; the harness checks it.
+- A number taken from itself got a column grid (1,978 − 1,978). → No grid when the two are equal.
+- The common denominator was the product of the denominators (144 parts for twelfths and
+  twelfths). → The least common multiple, with the multiples counted in a work line; the
+  harness reads "smallest common multiple of 4 and 6".
+- A product of fractions was left unsimplified (6/12). → A note gives the simplest form.
+- A whole-number volume lesson's base area was named "cubes in one layer" with a square unit.
+  → "Base area".
+- Pictures (page reviewer): the place-value chart wrapped past five columns (tight cells);
+  point labels sat on a rising line (label on the free side); fraction bars past 24 parts
+  merged into a band (unlined parts, one outline); tables show values to the variable's step.
+- A slider the other values hold to one value looked movable. → Dimmed and marked disabled;
+  the sweep accepts it.
+- Open: exponents show a caret (10^2) everywhere; no superscript rendering yet.
+
 ## Grade 5 build (Section 2, while writing)
 
 - The written-work grids stopped at Grade 4's layouts. → `columnMultiply(a, b, true)` sets

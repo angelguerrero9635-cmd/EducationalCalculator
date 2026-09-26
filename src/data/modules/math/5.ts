@@ -8,7 +8,6 @@ import type { Values } from '@/engine/types';
 
 import { div, sum2, times, whole } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
-import { divideWork, timesWork } from '../work';
 import { longDivision } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
@@ -34,6 +33,13 @@ const atMostOne = (top: string, bottom: string) => ({
   solve: {},
 });
 const BOTTOMS = [2, 3, 4, 5, 6, 8, 10, 12];
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+const lcm = (a: number, b: number) => (a * b) / gcd(a, b);
+/** "(6/12 = 1/2)" when a fraction simplifies, else nothing. */
+const simplerNote = (top: number, bottom: number) => {
+  const g = gcd(top, bottom);
+  return g > 1 ? `(${top}/${bottom} = ${top / g}/${bottom / g})` : '';
+};
 /** "5/4 = 1 whole and 1/4" for a top past the bottom, else nothing. */
 const wholesNote = (top: number, bottom: number) => {
   if (top < bottom) return '';
@@ -63,74 +69,123 @@ const quotientLines = (n: number, d: number): string[] => {
 };
 
 const modules: (ModuleDef | ModuleDef[])[] = [
-  // ── Order of operations with brackets (5.OA.1) ──
+  // ── Order of operations with parentheses (5.OA.1) ──
   (() => {
-    const bracket = sum2(
+    const inside = sum2(
       's = a + b',
       ['a', 'b', 's'],
-      ['first number in the bracket', 'second number in the bracket', 'bracket total'],
+      ['first number in the parentheses', 'second number in the parentheses', 'value inside'],
     );
-    const product = times('p = s × c', ['s', 'c', 'p'], ['bracket total', 'multiplier', 'product']);
-    return {
-      id: 'm.5.order-of-operations',
-      assumptions: [
-        'Work inside the brackets first. Then multiply or divide. Then add or take away.',
-        'The tape shows the bracket total as equal groups, with the last number taken off the end.',
-        'Numbers in the bracket to 20, the multiplier to 10.',
-      ],
-      variables: [
-        whole('a', 'a', 'First number in the bracket', 0, 20),
-        whole('b', 'b', 'Second number in the bracket', 0, 20),
-        { ...whole('s', 's', 'Bracket total', 0, 40), derived: true },
-        whole('c', 'c', 'Multiplier', 1, 10),
-        { ...whole('p', 'p', 'Product', 0, 400), derived: true },
-        whole('d', 'd', 'Taken away', 0, 400),
-        whole('r', 'r', 'Result', 0, 400),
-      ],
-      relations: [
-        bracket.relation,
-        product.relation,
-        {
-          id: 'r = p − d',
-          display: '{p} − {d} = {r}',
-          vars: ['r', 'p', 'd'],
-          residual: (v: Values) => v.r! - v.p! + v.d!,
-          solve: {
-            r: (v: Values) => v.p! - v.d!,
-            p: (v: Values) => v.r! + v.d!,
-            d: (v: Values) => v.p! - v.r!,
+    const product = times('p = s × c', ['s', 'c', 'p'], ['value inside', 'multiplier', 'product']);
+    const pages: ModuleDef[] = [
+      {
+        id: 'm.5.order-of-operations',
+        assumptions: [
+          'Work inside the parentheses first. Then multiply or divide. Then add or subtract.',
+          'The tape shows the value inside as equal groups, with the last number taken off the end.',
+          'Numbers inside the parentheses to 20, the multiplier to 10.',
+        ],
+        variables: [
+          whole('a', 'a', 'First number inside', 0, 20),
+          whole('b', 'b', 'Second number inside', 0, 20),
+          { ...whole('s', 's', 'Value inside the parentheses', 0, 40), derived: true },
+          whole('c', 'c', 'Multiplier', 1, 10),
+          { ...whole('p', 'p', 'Product', 0, 400), derived: true },
+          whole('d', 'd', 'Subtracted', 0, 400),
+          whole('r', 'r', 'Result', 0, 400),
+        ],
+        relations: [
+          inside.relation,
+          product.relation,
+          {
+            id: 'r = p − d',
+            display: '{p} − {d} = {r}',
+            vars: ['r', 'p', 'd'],
+            residual: (v: Values) => v.r! - v.p! + v.d!,
+            solve: {
+              r: (v: Values) => v.p! - v.d!,
+              p: (v: Values) => v.r! + v.d!,
+              d: (v: Values) => v.p! - v.r!,
+            },
+          },
+        ],
+        steps: {
+          's = a + b': {
+            ...inside.steps,
+            s: { ...inside.steps.s!, how: 'Parentheses first: add the two numbers inside.' },
+          },
+          'p = s × c': {
+            ...product.steps,
+            p: {
+              ...product.steps.p!,
+              how: 'Multiply next: the value inside times the multiplier.',
+            },
+          },
+          'r = p − d': {
+            r: { expr: '{p} − {d}', how: 'Subtract last: the product minus the last number.' },
+            p: { expr: '{r} + {d}', how: 'Add back what was subtracted to get the product.' },
+            d: { expr: '{p} − {r}', how: 'The product minus the result is what was subtracted.' },
           },
         },
-      ],
-      steps: {
-        's = a + b': {
-          ...bracket.steps,
-          s: { ...bracket.steps.s!, how: 'Brackets first: add the two numbers inside.' },
+        example: { a: 3, b: 5, s: 8, c: 4, p: 32, d: 7, r: 25 },
+        startWith: ['a', 'b', 'c', 'd'],
+        pictureLabels: ['r'],
+        representation: {
+          kind: 'tape',
+          parts: ['r', 'd'],
+          total: 'p',
+          groups: 's',
+          caption: '({a} + {b}) × {c} = {p}. Subtract {d}: {r}.',
         },
-        'p = s × c': {
-          ...product.steps,
-          p: {
-            ...product.steps.p!,
-            how: 'Multiply next: the bracket total times the multiplier.',
+      },
+      {
+        id: 'm.5.order-of-operations~divide',
+        title: 'Add inside, then divide',
+        use: 'Use this for (18 + 6) ÷ 4 and other expressions with parentheses and division.',
+        assumptions: [
+          'Work inside the parentheses first. Then divide.',
+          'Without the parentheses, 18 + 6 ÷ 4 would divide first: only the 6 would be shared.',
+          'Numbers inside to 50, dividing by 2 to 10.',
+        ],
+        variables: [
+          whole('a', 'a', 'First number inside', 0, 50),
+          whole('b', 'b', 'Second number inside', 0, 50),
+          { ...whole('s', 's', 'Value inside the parentheses', 0, 100), derived: true },
+          whole('c', 'c', 'Divided by', 2, 10),
+          whole('q', 'q', 'Result', 0, 50),
+        ],
+        relations: [
+          inside.relation,
+          {
+            id: 's = q × c',
+            display: '{s} ÷ {c} = {q}',
+            check: (v: Values) => `${v.q} × ${v.c} = ${v.s}`,
+            vars: ['s', 'q', 'c'],
+            residual: (v: Values) => v.s! - v.q! * v.c!,
+            solve: {
+              s: (v: Values) => v.q! * v.c!,
+              q: (v: Values) => div(v.s!, v.c!),
+              c: (v: Values) => div(v.s!, v.q!),
+            },
+          },
+        ],
+        steps: {
+          's = a + b': {
+            ...inside.steps,
+            s: { ...inside.steps.s!, how: 'Parentheses first: add the two numbers inside.' },
+          },
+          's = q × c': {
+            q: { expr: '{s} ÷ {c}', how: 'Divide next: the value inside shared into equal parts.' },
+            s: { expr: '{q} × {c}', how: 'The result times the divisor gives the value inside.' },
+            c: { expr: '{s} ÷ {q}', how: 'The value inside divided by the result.' },
           },
         },
-        'r = p − d': {
-          r: { expr: '{p} − {d}', how: 'Take away last: the product minus the last number.' },
-          p: { expr: '{r} + {d}', how: 'Add back what was taken away to get the product.' },
-          d: { expr: '{p} − {r}', how: 'The product minus the result is what was taken away.' },
-        },
+        example: { a: 18, b: 6, s: 24, c: 4, q: 6 },
+        startWith: ['a', 'b', 'c'],
+        representation: { kind: 'equalGroups', groups: 'c', each: 'q', total: 's' },
       },
-      example: { a: 3, b: 5, s: 8, c: 4, p: 32, d: 7, r: 25 },
-      startWith: ['a', 'b', 'c', 'd'],
-      pictureLabels: ['r'],
-      representation: {
-        kind: 'tape',
-        parts: ['r', 'd'],
-        total: 'p',
-        groups: 's',
-        caption: '({a} + {b}) × {c} = {p}. Take away {d}: {r}.',
-      },
-    } satisfies ModuleDef;
+    ];
+    return pages;
   })(),
   // ── Powers of 10 and exponents (5.NBT.2) ──
   {
@@ -298,16 +353,16 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Multiply by the ones digit of the second factor, then by its tens digit (a zero first).',
       'Add the two rows. The area model shows the same two parts as boxes.',
-      'First factor from 100 to 999, second factor from 10 to 99.',
+      'First factor from 10 to 999, second factor from 10 to 99.',
     ],
     variables: [
-      whole('a', 'a', 'First factor', 100, 999),
+      whole('a', 'a', 'First factor', 10, 999),
       whole('b', 'b', 'Second factor', 10, 99),
       { ...whole('t', 't', 'Tens of the second factor', 10, 90), derived: true },
       { ...whole('o', 'o', 'Ones of the second factor', 0, 9), derived: true },
       { ...whole('x', 'x', 'First factor × ones', 0, 8991), derived: true },
-      { ...whole('y', 'y', 'First factor × tens', 1000, 89910), derived: true },
-      whole('p', 'p', 'Product', 1000, 98901),
+      { ...whole('y', 'y', 'First factor × tens', 100, 89910), derived: true },
+      whole('p', 'p', 'Product', 100, 98901),
     ],
     relations: [
       placePart('t', 'b', 10, 'tens'),
@@ -513,7 +568,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         },
       },
     },
-    example: { n: 1978, d: 23, q: 86, r: 0, m: 1978 },
+    example: { n: 1987, d: 23, q: 86, r: 9, m: 1978 },
     startWith: ['n', 'd'],
     pictureLabels: ['q'],
     representation: {
@@ -677,7 +732,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             }
             const hundredths = tenths * 10;
             return [
-              `${fmt(v.n!)} = ${hundredths} hundredths`,
+              `${fmt(v.n!)} = ${fmt(hundredths)} hundredths`,
               `${hundredths} ÷ ${v.d} = ${fmt(hundredths / v.d!)} hundredths = ${fmt(v.q!)}`,
             ];
           },
@@ -696,56 +751,149 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       rows: [2, 3, 4, 5, 6, 7, 8, 9],
     },
   },
-  // ── Adding fractions with unlike bottoms (5.NF.1) ──
+  {
+    id: 'm.5.decimal-operations~subtract',
+    title: 'Subtract decimals',
+    use: 'Use this for 12.5 − 3.75 and other differences of decimals.',
+    assumptions: [
+      'Line up the decimal points. Write a 0 in any empty place: 12.5 is 12.50.',
+      'Subtract each place from the right, regrouping like whole numbers.',
+      'The point in the answer goes under the other points. Numbers to 99.99.',
+    ],
+    variables: [
+      { id: 'c', symbol: 'c', name: 'Start', min: 0, max: 99.99, step: 0.01 },
+      { id: 'b', symbol: 'b', name: 'Subtracted', min: 0, max: 99.99, step: 0.01 },
+      { id: 'a', symbol: 'a', name: 'Difference', min: 0, max: 99.99, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'a = c − b',
+        display: '{c} − {b} = {a}',
+        vars: ['a', 'c', 'b'],
+        residual: (v: Values) => v.a! - v.c! + v.b!,
+        solve: {
+          a: (v: Values) => v.c! - v.b!,
+          c: (v: Values) => v.a! + v.b!,
+          b: (v: Values) => v.c! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      'a = c − b': {
+        a: {
+          expr: '{c} − {b}',
+          how: 'Line up the points, fill empty places with 0, then subtract place by place.',
+        },
+        c: { expr: '{a} + {b}', how: 'Add back what was subtracted, points lined up.' },
+        b: { expr: '{c} − {a}', how: 'Start minus the difference, points lined up.' },
+      },
+    },
+    example: { c: 12.5, b: 3.75, a: 8.75 },
+    startWith: ['c', 'b'],
+    representation: { kind: 'tape', parts: ['a', 'b'], total: 'c' },
+  },
+  {
+    id: 'm.5.decimal-operations~times-decimal',
+    title: 'Multiply two decimals',
+    use: 'Use this for 0.4 × 0.3 and other tenths times tenths.',
+    assumptions: [
+      'Multiply the digits as whole numbers: 4 × 3 = 12.',
+      'Tenths times tenths are hundredths, so the product has two decimal places: 0.12.',
+      'Both numbers are tenths, from 0.1 to 9.9.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'First decimal', min: 0.1, max: 9.9, step: 0.1 },
+      { id: 'b', symbol: 'b', name: 'Second decimal', min: 0.1, max: 9.9, step: 0.1 },
+      { id: 'p', symbol: 'p', name: 'Product', min: 0.01, max: 98.01, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'p = a × b',
+        display: '{a} × {b} = {p}',
+        vars: ['p', 'a', 'b'],
+        residual: (v: Values) => v.p! - v.a! * v.b!,
+        solve: {
+          p: (v: Values) => v.a! * v.b!,
+          a: (v: Values) => div(v.p!, v.b!),
+          b: (v: Values) => div(v.p!, v.a!),
+        },
+      },
+    ],
+    steps: {
+      'p = a × b': {
+        p: {
+          expr: '{a} × {b}',
+          how: 'Multiply the tenths as whole numbers. Tenths times tenths are hundredths: two places.',
+          work: (v: Values) => {
+            if (places(v.a!) > 1 || places(v.b!) > 1) return [];
+            const [x, y] = [Math.round(v.a! * 10), Math.round(v.b! * 10)];
+            return [
+              `${x} tenths × ${y} tenths = ${fmt(x * y)} hundredths`,
+              `${fmt(x * y)} hundredths = ${fmt(v.p!)}`,
+            ];
+          },
+        },
+        a: { expr: '{p} ÷ {b}', how: 'Divide the product by the other decimal.' },
+        b: { expr: '{p} ÷ {a}', how: 'Divide the product by the other decimal.' },
+      },
+    },
+    example: { a: 0.4, b: 0.3, p: 0.12 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'table',
+      sweep: 'b',
+      output: 'p',
+      params: ['a'],
+      rows: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+    },
+  },
+  // ── Adding fractions with unlike denominators (5.NF.1) ──
   (() => {
-    const scaled = (
-      id: string,
-      [top, other, out]: [string, string, string],
-      [topName, otherName]: [string, string],
-    ) => ({
+    const scaled = (id: string, [top, out]: [string, string], bottom: string, which: string) => ({
       relation: {
         id,
-        display: `{${top}} × {${other}} = {${out}}`,
-        vars: [out, top, other],
-        residual: (v: Values) => v[out]! - v[top]! * v[other]!,
+        display: `{${top}} × ({m} ÷ {${bottom}}) = {${out}}`,
+        vars: [out, top, 'm', bottom],
+        residual: (v: Values) => v[out]! - (v[top]! * v.m!) / v[bottom]!,
         solve: {
-          [out]: (v: Values) => v[top]! * v[other]!,
-          [top]: (v: Values) => div(v[out]!, v[other]!),
-          [other]: (v: Values) => div(v[out]!, v[top]!),
+          [out]: (v: Values) => (v[top]! * v.m!) / v[bottom]!,
+          [top]: (v: Values) => div(v[out]! * v[bottom]!, v.m!),
+          m: () => undefined,
+          [bottom]: () => undefined,
         },
       },
       steps: {
         [out]: {
-          expr: `{${top}} × {${other}}`,
-          how: `Multiply the ${topName} by the ${otherName}: the same factor as its bottom got.`,
-          work: (v: Values) => timesWork(v[top]!, v[other]!),
+          expr: `{${top}} × ({m} ÷ {${bottom}})`,
+          how: `Multiply the ${which} numerator by the same number its denominator was multiplied by.`,
         },
         [top]: {
-          expr: `{${out}} ÷ {${other}}`,
-          how: `Divide the new top by the ${otherName} to get the ${topName} back.`,
-          work: (v: Values) => divideWork(v[out]!, v[other]!),
-        },
-        [other]: {
-          expr: `{${out}} ÷ {${top}}`,
-          how: `Divide the new top by the ${topName}.`,
-          work: (v: Values) => divideWork(v[out]!, v[top]!, 'second'),
+          expr: `{${out}} ÷ ({m} ÷ {${bottom}})`,
+          how: `Divide the new numerator by that number to get the ${which} numerator back.`,
         },
       },
     });
-    const common = scaled('m = b × d', ['b', 'd', 'm'], ['first bottom', 'second bottom']);
-    const first = scaled('p = a × d', ['a', 'd', 'p'], ['first top', 'second bottom']);
-    const second = scaled('q = c × b', ['c', 'b', 'q'], ['second top', 'first bottom']);
+    const common = {
+      id: 'm = lcm of b and d',
+      display: '{b} and {d} both go into {m}',
+      vars: ['m', 'b', 'd'],
+      residual: (v: Values) => v.m! - lcm(v.b!, v.d!),
+      // Many pairs share a common denominator: the denominators can't be found from it.
+      solve: { m: (v: Values) => lcm(v.b!, v.d!), b: () => undefined, d: () => undefined },
+    };
+    const first = scaled('p = a × m ÷ b', ['a', 'p'], 'b', 'first');
+    const second = scaled('q = c × m ÷ d', ['c', 'q'], 'd', 'second');
     const fractions = (op: '+' | '−') => [
-      whole('a', 'a', 'First top', 1, 12),
-      { ...whole('b', 'b', 'First bottom', 2, 12), allowed: BOTTOMS },
-      whole('c', 'c', 'Second top', 1, 12),
-      { ...whole('d', 'd', 'Second bottom', 2, 12), allowed: BOTTOMS },
-      { ...whole('m', 'm', 'Common bottom', 4, 144), derived: true },
-      { ...whole('p', 'p', 'First new top', 1, 144), derived: true },
-      { ...whole('q', 'q', 'Second new top', 1, 144), derived: true },
+      whole('a', 'a', 'First numerator', 1, 12),
+      { ...whole('b', 'b', 'First denominator', 2, 12), allowed: BOTTOMS },
+      whole('c', 'c', 'Second numerator', 1, 12),
+      { ...whole('d', 'd', 'Second denominator', 2, 12), allowed: BOTTOMS },
+      { ...whole('m', 'm', 'Common denominator', 2, 120), derived: true },
+      { ...whole('p', 'p', 'First new numerator', 1, 120), derived: true },
+      { ...whole('q', 'q', 'Second new numerator', 1, 120), derived: true },
       op === '+'
-        ? whole('s', 's', 'Top of the sum', 2, 288)
-        : whole('s', 's', 'Top of the difference', 0, 143),
+        ? whole('s', 's', 'Numerator of the sum', 2, 240)
+        : whole('s', 's', 'Numerator of the difference', 0, 119),
     ];
     const bars = (op: '+' | '−'): Representation => ({
       kind: 'fractionBars',
@@ -759,29 +907,35 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       caption: `{p}/{m} ${op} {q}/{m} = {s}/{m}`,
     });
     const commonSteps = {
-      'm = b × d': {
-        ...common.steps,
+      'm = lcm of b and d': {
         m: {
-          ...common.steps.m!,
-          how: 'Multiply the two bottoms. Both fractions can be written over that number.',
+          expr: 'smallest common multiple of {b} and {d}',
+          how: 'Count by the bigger denominator until you reach a multiple of the smaller one.',
+          work: (v: Values) => {
+            const [big, small] = v.b! >= v.d! ? [v.b!, v.d!] : [v.d!, v.b!];
+            const steps = Array.from({ length: v.m! / big }, (_, i) => big * (i + 1));
+            return [
+              `Multiples of ${big}: ${steps.join(', ')} → ${v.m} is also a multiple of ${small}`,
+            ];
+          },
         },
       },
-      'p = a × d': first.steps,
-      'q = c × b': second.steps,
+      'p = a × m ÷ b': first.steps,
+      'q = c × m ÷ d': second.steps,
     };
     return [
       {
         id: 'm.5.add-fractions-unlike',
         assumptions: [
-          'Fractions can only be added when the parts are the same size: give them the same bottom.',
-          'Multiply each fraction’s top and bottom by the other’s bottom. Then add the tops.',
-          'Each fraction is at most 1. Bottoms 2, 3, 4, 5, 6, 8, 10 and 12.',
+          'Fractions can only be added when the parts are the same size: give them a common denominator.',
+          'Use the smallest number both denominators go into. Rewrite each fraction over it, then add the numerators.',
+          'Each fraction is at most 1. Denominators 2, 3, 4, 5, 6, 8, 10 and 12.',
         ],
         variables: fractions('+'),
         relations: [
           atMostOne('a', 'b'),
           atMostOne('c', 'd'),
-          common.relation,
+          common,
           first.relation,
           second.relation,
           {
@@ -805,11 +959,11 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           's = p + q': {
             s: {
               expr: '{p} + {q}',
-              how: 'Same bottom now: add the tops and keep the bottom.',
-              note: (v: Values) => wholesNote(v.s!, v.m!),
+              how: 'Same denominator now: add the numerators and keep the denominator.',
+              note: (v: Values) => wholesNote(v.s!, v.m!) || simplerNote(v.s!, v.m!),
             },
-            p: { expr: '{s} − {q}', how: 'Take the second new top from the top of the sum.' },
-            q: { expr: '{s} − {p}', how: 'Take the first new top from the top of the sum.' },
+            p: { expr: '{s} − {q}', how: 'Subtract the second new numerator from the sum’s.' },
+            q: { expr: '{s} − {p}', how: 'Subtract the first new numerator from the sum’s.' },
           },
         },
         example: { a: 1, b: 2, c: 1, d: 3, m: 6, p: 3, q: 2, s: 5 },
@@ -818,18 +972,18 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.5.add-fractions-unlike~subtract',
-        title: 'Subtract fractions with unlike bottoms',
-        use: 'Use this for 3/4 − 1/3 and other differences with different bottoms.',
+        title: 'Subtract fractions with unlike denominators',
+        use: 'Use this for 3/4 − 1/3 and other differences with different denominators.',
         assumptions: [
-          'Give both fractions the same bottom: multiply each top and bottom by the other’s bottom.',
-          'Then take the smaller new top from the bigger one and keep the bottom.',
-          'The first fraction is the bigger one. Bottoms 2, 3, 4, 5, 6, 8, 10 and 12.',
+          'Give both fractions a common denominator: the smallest number both denominators go into.',
+          'Then subtract the smaller new numerator from the bigger one and keep the denominator.',
+          'The first fraction is the bigger one. Denominators 2, 3, 4, 5, 6, 8, 10 and 12.',
         ],
         variables: fractions('−'),
         relations: [
           atMostOne('a', 'b'),
           atMostOne('c', 'd'),
-          common.relation,
+          common,
           first.relation,
           second.relation,
           {
@@ -853,10 +1007,11 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           's = p − q': {
             s: {
               expr: '{p} − {q}',
-              how: 'Same bottom now: take the second new top from the first and keep the bottom.',
+              how: 'Same denominator now: subtract the numerators and keep the denominator.',
+              note: (v: Values) => simplerNote(v.s!, v.m!),
             },
-            p: { expr: '{s} + {q}', how: 'Add the second new top back to the difference.' },
-            q: { expr: '{p} − {s}', how: 'Take the difference from the first new top.' },
+            p: { expr: '{s} + {q}', how: 'Add the second new numerator back to the difference.' },
+            q: { expr: '{p} − {s}', how: 'Subtract the difference from the first new numerator.' },
           },
         },
         example: { a: 3, b: 4, c: 1, d: 3, m: 12, p: 9, q: 4, s: 5 },
@@ -869,17 +1024,17 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.multiply-fractions',
     assumptions: [
-      'A fraction of a fraction: multiply the tops and multiply the bottoms.',
+      'A fraction of a fraction: multiply the numerators and multiply the denominators.',
       'The square shows why: columns for one fraction, rows for the other, and the overlap.',
-      'Each fraction is at most 1. Bottoms from 2 to 12.',
+      'Each fraction is at most 1. Denominators from 2 to 12.',
     ],
     variables: [
-      whole('a', 'a', 'First top', 1, 12),
-      whole('b', 'b', 'First bottom', 2, 12),
-      whole('c', 'c', 'Second top', 1, 12),
-      whole('d', 'd', 'Second bottom', 2, 12),
-      { ...whole('p', 'p', 'Product top', 1, 144), derived: true },
-      { ...whole('q', 'q', 'Product bottom', 4, 144), derived: true },
+      whole('a', 'a', 'First numerator', 1, 12),
+      whole('b', 'b', 'First denominator', 2, 12),
+      whole('c', 'c', 'Second numerator', 1, 12),
+      whole('d', 'd', 'Second denominator', 2, 12),
+      { ...whole('p', 'p', 'Product numerator', 1, 144), derived: true },
+      { ...whole('q', 'q', 'Product denominator', 4, 144), derived: true },
     ],
     relations: [
       atMostOne('a', 'b'),
@@ -917,20 +1072,20 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'p = a × c': {
         p: {
           expr: '{a} × {c}',
-          how: 'Multiply the tops: the shaded columns times the shaded rows.',
-          work: (v: Values) => timesWork(v.a!, v.c!),
+          how: 'Multiply the numerators: the shaded columns times the shaded rows.',
         },
-        a: { expr: '{p} ÷ {c}', how: 'Divide the product top by the second top.' },
-        c: { expr: '{p} ÷ {a}', how: 'Divide the product top by the first top.' },
+        a: { expr: '{p} ÷ {c}', how: 'Divide the product numerator by the second numerator.' },
+        c: { expr: '{p} ÷ {a}', how: 'Divide the product numerator by the first numerator.' },
       },
       'q = b × d': {
         q: {
           expr: '{b} × {d}',
-          how: 'Multiply the bottoms: all the columns times all the rows.',
-          work: (v: Values) => timesWork(v.b!, v.d!),
+          how: 'Multiply the denominators: all the columns times all the rows.',
+          note: (v: Values) =>
+            v.p === undefined || v.q === undefined ? '' : simplerNote(v.p, v.q),
         },
-        b: { expr: '{q} ÷ {d}', how: 'Divide the product bottom by the second bottom.' },
-        d: { expr: '{q} ÷ {b}', how: 'Divide the product bottom by the first bottom.' },
+        b: { expr: '{q} ÷ {d}', how: 'Divide the product denominator by the second denominator.' },
+        d: { expr: '{q} ÷ {b}', how: 'Divide the product denominator by the first denominator.' },
       },
     },
     example: { a: 2, b: 3, c: 3, d: 4, p: 6, q: 12 },
@@ -942,18 +1097,75 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       product: { num: 'p', den: 'q' },
     },
   },
+  {
+    id: 'm.5.multiply-fractions~of-a-whole',
+    title: 'A fraction of a whole number',
+    use: 'Use this for 3/4 of 8 and other fractions times a whole number.',
+    assumptions: [
+      'A fraction of a number: multiply the numerator by the number, keep the denominator.',
+      'The product can be more than 1: write it as wholes and parts.',
+      'The fraction is at most 1. Whole numbers to 12, denominators to 12.',
+    ],
+    variables: [
+      whole('a', 'a', 'Numerator', 1, 12),
+      whole('b', 'b', 'Denominator', 2, 12),
+      whole('n', 'n', 'Whole number', 1, 12),
+      whole('p', 'p', 'Numerator of the product', 1, 144),
+    ],
+    relations: [
+      atMostOne('a', 'b'),
+      {
+        id: 'p = a × n',
+        display: '{a}/{b} × {n} = {p}/{b}',
+        check: (v: Values) => `${v.a} × ${v.n} = ${v.p}`,
+        vars: ['p', 'a', 'n'],
+        shows: ['b'],
+        residual: (v: Values) => v.p! - v.a! * v.n!,
+        solve: {
+          p: (v: Values) => v.a! * v.n!,
+          a: (v: Values) => div(v.p!, v.n!),
+          n: (v: Values) => div(v.p!, v.a!),
+        },
+      },
+    ],
+    steps: {
+      'a ≤ b': {},
+      'p = a × n': {
+        p: {
+          expr: '{a} × {n}',
+          how: 'Multiply the numerator by the whole number. The denominator stays.',
+          note: (v: Values) =>
+            v.b === undefined ? '' : wholesNote(v.p!, v.b) || simplerNote(v.p!, v.b),
+        },
+        a: { expr: '{p} ÷ {n}', how: 'Divide the product’s numerator by the whole number.' },
+        n: {
+          expr: '{p} ÷ {a}',
+          how: 'Divide the product’s numerator by the fraction’s numerator.',
+        },
+      },
+    },
+    example: { a: 3, b: 4, n: 8, p: 24 },
+    startWith: ['a', 'b', 'n'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'p',
+      denominator: 'b',
+      wholes: 2,
+      copies: 'n',
+    },
+  },
   // ── Dividing with unit fractions (5.NF.7) ──
   {
     id: 'm.5.divide-unit-fractions',
     assumptions: [
       'Dividing by a unit fraction asks how many of those pieces fit: how many fourths in 3?',
-      'Each whole holds as many pieces as the bottom says. Multiply the whole number by the bottom.',
-      'Whole numbers to 4, bottoms from 2 to 8.',
+      'Each whole holds as many pieces as the denominator says. Multiply the whole number by the denominator.',
+      'Whole numbers to 6, denominators from 2 to 8.',
     ],
     variables: [
-      whole('n', 'n', 'Whole number', 1, 4),
-      whole('b', 'b', 'Bottom of the unit fraction', 2, 8),
-      whole('q', 'q', 'Pieces', 2, 32),
+      whole('n', 'n', 'Whole number', 1, 6),
+      whole('b', 'b', 'Denominator of the unit fraction', 2, 8),
+      whole('q', 'q', 'Pieces', 2, 48),
     ],
     relations: [
       {
@@ -974,17 +1186,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         q: {
           expr: '{n} × {b}',
           how: 'Each whole is cut into that many pieces. Count the pieces in all the wholes.',
-          work: (v: Values) => timesWork(v.n!, v.b!),
         },
         n: {
           expr: '{q} ÷ {b}',
-          how: 'Every full set of pieces makes one whole. Divide the pieces by the bottom.',
-          work: (v: Values) => divideWork(v.q!, v.b!),
+          how: 'Every full set of pieces makes one whole. Divide the pieces by the denominator.',
         },
         b: {
           expr: '{q} ÷ {n}',
-          how: 'Share the pieces among the wholes: that many pieces in each whole is the bottom.',
-          work: (v: Values) => divideWork(v.q!, v.n!, 'second'),
+          how: 'Share the pieces among the wholes: that many pieces in each whole is the denominator.',
         },
       },
     },
@@ -998,13 +1207,13 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     use: 'Use this for 1/3 ÷ 4: one piece shared among 4.',
     assumptions: [
       'Sharing one piece among more people makes smaller pieces.',
-      'Cut the piece into that many parts: the new bottom is the old bottom times the number sharing.',
-      'Bottoms from 2 to 6, shared among 2 to 6.',
+      'Cut the piece into that many parts: the new bottom is the old denominator times the number sharing.',
+      'Denominators from 2 to 6, shared among 2 to 6.',
     ],
     variables: [
-      whole('b', 'b', 'Bottom', 2, 6),
+      whole('b', 'b', 'Denominator', 2, 6),
       whole('n', 'n', 'Shared among', 2, 6),
-      whole('m', 'm', 'New bottom', 4, 36),
+      whole('m', 'm', 'New denominator', 4, 36),
     ],
     relations: [
       {
@@ -1024,18 +1233,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'm = b × n': {
         m: {
           expr: '{b} × {n}',
-          how: 'Each of the bottom’s pieces is cut into that many parts: multiply.',
-          work: (v: Values) => timesWork(v.b!, v.n!),
+          how: 'Each of the denominator’s pieces is cut into that many parts: multiply.',
         },
         b: {
           expr: '{m} ÷ {n}',
           how: 'Undo the cutting: divide the new bottom by the number sharing.',
-          work: (v: Values) => divideWork(v.m!, v.n!),
         },
         n: {
           expr: '{m} ÷ {b}',
           how: 'How many parts each old piece was cut into.',
-          work: (v: Values) => divideWork(v.m!, v.b!, 'second'),
         },
       },
     },
@@ -1053,15 +1259,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.5.volume-rectangular',
     assumptions: [
       'Volume counts the unit cubes that fill the box.',
-      'One layer holds length × width cubes. The box has a layer for every unit of height.',
-      'Volume = length × width × height, in cubic units. Sides to 8.',
+      'The base area is length × width: the cubes in one layer. The box has a layer for every unit of height.',
+      'Volume = length × width × height, in cubic units. Sides to 10.',
     ],
     variables: [
-      { ...whole('l', 'l', 'Length', 1, 8), unit: 'cm' },
-      { ...whole('w', 'w', 'Width', 1, 8), unit: 'cm' },
-      { ...whole('h', 'h', 'Height', 1, 8), unit: 'cm' },
-      { ...whole('B', 'B', 'Cubes in one layer', 1, 64), unit: 'cm²', derived: true },
-      { ...whole('V', 'V', 'Volume', 1, 512), unit: 'cm³' },
+      { ...whole('l', 'l', 'Length', 1, 10), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 10), unit: 'cm' },
+      { ...whole('h', 'h', 'Height', 1, 10), unit: 'cm' },
+      { ...whole('B', 'B', 'Base area', 1, 100), unit: 'cm²', derived: true },
+      { ...whole('V', 'V', 'Volume', 1, 1000), unit: 'cm³' },
     ],
     relations: [
       {
@@ -1091,20 +1297,18 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'B = l × w': {
         B: {
           expr: '{l} × {w}',
-          how: 'Count one layer: rows of cubes along the length, one row for each unit of width.',
-          work: (v: Values) => timesWork(v.l!, v.w!),
+          how: 'The base area: rows of cubes along the length, one row for each unit of width.',
         },
-        l: { expr: '{B} ÷ {w}', how: 'Divide the cubes in a layer by the width.' },
-        w: { expr: '{B} ÷ {l}', how: 'Divide the cubes in a layer by the length.' },
+        l: { expr: '{B} ÷ {w}', how: 'Divide the base area by the width.' },
+        w: { expr: '{B} ÷ {l}', how: 'Divide the base area by the length.' },
       },
       'V = B × h': {
         V: {
           expr: '{B} × {h}',
-          how: 'A layer for every unit of height: multiply the layer by the height.',
-          work: (v: Values) => timesWork(v.h!, v.B!),
+          how: 'A layer for every unit of height: multiply the base area by the height.',
         },
-        B: { expr: '{V} ÷ {h}', how: 'Divide the volume by the height to get one layer.' },
-        h: { expr: '{V} ÷ {B}', how: 'Divide the volume by one layer: how many layers.' },
+        B: { expr: '{V} ÷ {h}', how: 'Divide the volume by the height to get the base area.' },
+        h: { expr: '{V} ÷ {B}', how: 'Divide the volume by the base area: how many layers.' },
       },
     },
     example: { l: 4, w: 3, h: 2, B: 12, V: 24 },
@@ -1115,7 +1319,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       width: 'w',
       height: 'h',
       volume: 'V',
-      max: 8,
+      max: 10,
     },
   },
   // ── Graphing points in the first quadrant (5.G.1, 5.OA.3) ──
@@ -1169,7 +1373,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         y: {
           expr: '{k} × {x}',
           how: 'The rule: multiply the across number by the multiplier to get the up number.',
-          work: (v: Values) => timesWork(v.k!, v.x!),
         },
         k: { expr: '{y} ÷ {x}', how: 'Divide the up number by the across number.' },
         x: { expr: '{y} ÷ {k}', how: 'Divide the up number by the multiplier.' },
@@ -1182,7 +1385,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         y2: {
           expr: '{k} × {x2}',
           how: 'The same rule for the next point: multiplier times its across number.',
-          work: (v: Values) => timesWork(v.k!, v.x2!),
         },
         k: { expr: '{y2} ÷ {x2}', how: 'Divide the next up number by the next across number.' },
         x2: { expr: '{y2} ÷ {k}', how: 'Divide the next up number by the multiplier.' },
@@ -1205,17 +1407,20 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     use: 'Use this for “Start at (2, 3). Go right 4 and up 2. Where are you?”',
     assumptions: [
       'Going right adds to the across number. Going up adds to the up number.',
-      'Along the grid lines, the walk is the steps right plus the steps up.',
+      'The two moves are separate: right changes only across, up changes only up.',
       'Numbers to 10.',
     ],
+    standalone: {
+      vars: ['y1', 'u', 'y2'],
+      why: 'The move right and the move up are separate steps to the same end point.',
+    },
     variables: [
       whole('x1', 'x₁', 'Start across', 0, 10),
       whole('y1', 'y₁', 'Start up', 0, 10),
       whole('r', 'r', 'Steps right', 0, 10),
       whole('u', 'u', 'Steps up', 0, 10),
-      { ...whole('x2', 'x₂', 'End across', 0, 20), derived: true },
-      { ...whole('y2', 'y₂', 'End up', 0, 20), derived: true },
-      whole('t', 't', 'Steps in all', 0, 20),
+      whole('x2', 'x₂', 'End across', 0, 20),
+      whole('y2', 'y₂', 'End up', 0, 20),
     ],
     relations: [
       {
@@ -1240,17 +1445,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           u: (v: Values) => v.y2! - v.y1!,
         },
       },
-      {
-        id: 't = r + u',
-        display: '{r} + {u} = {t}',
-        vars: ['t', 'r', 'u'],
-        residual: (v: Values) => v.t! - v.r! - v.u!,
-        solve: {
-          t: (v: Values) => v.r! + v.u!,
-          r: (v: Values) => v.t! - v.u!,
-          u: (v: Values) => v.t! - v.r!,
-        },
-      },
     ],
     steps: {
       'x₂ = x₁ + r': {
@@ -1263,13 +1457,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         y1: { expr: '{y2} − {u}', how: 'Go back down to find where you started.' },
         u: { expr: '{y2} − {y1}', how: 'End up minus start up: the steps up.' },
       },
-      't = r + u': {
-        t: { expr: '{r} + {u}', how: 'Along the grid lines: the steps right plus the steps up.' },
-        r: { expr: '{t} − {u}', how: 'Take the steps up from all the steps.' },
-        u: { expr: '{t} − {r}', how: 'Take the steps right from all the steps.' },
-      },
     },
-    example: { x1: 2, y1: 3, r: 4, u: 2, x2: 6, y2: 5, t: 6 },
+    example: { x1: 2, y1: 3, r: 4, u: 2, x2: 6, y2: 5 },
     startWith: ['x1', 'y1', 'r', 'u'],
     representation: {
       kind: 'coordinatePlane',

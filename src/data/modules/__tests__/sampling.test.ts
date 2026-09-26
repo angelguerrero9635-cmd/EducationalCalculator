@@ -382,6 +382,16 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     else if (ends !== answer) {
       c.f.add('error', `${c.label}written work "${says}" doesn't end at ${s.result}`, where);
     }
+    // A decimal grid writes every place after the point (0.05, not "0. 5"): a digit row must
+    // have no blank cell after its point.
+    for (const row of s.written.rows) {
+      const at = row.findIndex((cell) => cell.text === '.');
+      const digitRow = row.some((cell) => /\d/.test(cell.text) && !cell.small);
+      if (at >= 0 && digitRow && row.slice(at + 1).some((cell) => cell.text === '')) {
+        c.f.add('minor', `${c.label}written work leaves a blank place after the point`, where);
+        break;
+      }
+    }
   }
   // Worked-arithmetic lines ("100 + 50 + 10 + 5 + 3 = 168¢", "168¢ − 118¢ = 50¢ left"): each
   // sum or difference must come out to the number after its "=".

@@ -11,6 +11,13 @@ import { useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'table' }>;
 
+/** A value rounded to the variable's step (1.0286 → 1.03 when the step is 0.01). */
+function toStep(x: number, step: number | undefined): number {
+  if (!step || step <= 0) return x;
+  const decimals = Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
+  return Number((Math.round(x / step) * step).toFixed(decimals));
+}
+
 /** Rows of `sweep` → `output` with the parameters held. Tap a row to use that input. */
 export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -82,7 +89,9 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {formatNumber(x, sweep)}
             </Text>
             <Text style={[styles.cell, { color: selected ? c.onChartHighlight : c.chartInk }]}>
-              {y === undefined ? '?' : formatNumber(y / rep.factor(spec.output), output)}
+              {y === undefined
+                ? '?'
+                : formatNumber(toStep(y / rep.factor(spec.output), output.step), output)}
             </Text>
           </Pressable>
         );

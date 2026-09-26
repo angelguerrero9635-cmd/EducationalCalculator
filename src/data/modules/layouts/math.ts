@@ -693,10 +693,10 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         figure: {
           kind: 'polygon',
           points: [
-            [50, 5],
-            [90, 50],
-            [50, 95],
-            [10, 50],
+            [35, 24],
+            [95, 24],
+            [65, 76],
+            [5, 76],
           ],
         },
       },
@@ -866,6 +866,110 @@ export const MATH_LAYOUTS: LayoutDef[] = [
             [15, 85],
             [85, 85],
             [15, 15],
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.5.classify-2d~by-angles',
+    title: 'Sort triangles by their angles',
+    use: 'Use this to name a triangle as acute, right or obtuse.',
+    assumptions: [
+      'A right angle is a square corner. An acute angle is smaller, an obtuse angle is bigger.',
+      'A right triangle has one right angle. An obtuse triangle has one obtuse angle.',
+      'An acute triangle has three acute angles. A triangle can have only one angle that is not acute.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'What is its biggest angle: smaller than, equal to, or bigger than a square corner?',
+    bins: [
+      {
+        id: 'acute',
+        label: 'Acute: all angles small',
+        why: 'Every corner is smaller than a square corner.',
+      },
+      {
+        id: 'right',
+        label: 'Right: one square corner',
+        why: 'One corner is exactly a square corner.',
+      },
+      {
+        id: 'obtuse',
+        label: 'Obtuse: one wide angle',
+        why: 'One corner is wider than a square corner.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Angles 60°, 60°, 60°',
+        bin: 'acute',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 85],
+            [90, 85],
+            [50, 15],
+          ],
+        },
+      },
+      {
+        label: 'Angles 90°, 45°, 45°',
+        bin: 'right',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 85],
+            [85, 85],
+            [15, 15],
+          ],
+        },
+      },
+      {
+        label: 'Angles 120°, 30°, 30°',
+        bin: 'obtuse',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 80],
+            [95, 80],
+            [50, 55],
+          ],
+        },
+      },
+      {
+        label: 'Angles 90°, 60°, 30°',
+        bin: 'right',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 85],
+            [90, 85],
+            [10, 40],
+          ],
+        },
+      },
+      {
+        label: 'Angles 80°, 60°, 40°',
+        bin: 'acute',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 85],
+            [95, 85],
+            [40, 20],
+          ],
+        },
+      },
+      {
+        label: 'Angles 100°, 50°, 30°',
+        bin: 'obtuse',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 80],
+            [95, 80],
+            [25, 45],
           ],
         },
       },

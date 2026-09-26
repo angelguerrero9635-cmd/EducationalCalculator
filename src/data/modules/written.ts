@@ -262,7 +262,13 @@ export function decimalColumns(op: '+' | '−', nums: number[]): Written | undef
       cell(digitRow ? '.' : '', { underline: under }),
       ...cells.slice(at),
     ];
-    if (digitRow && out[at - 1]!.text === '') out[at - 1] = cell('0', { underline: under });
+    if (digitRow) {
+      // A 0 before the point (0.40) and in every empty place after it (0.05, 3.70).
+      if (out[at - 1]!.text === '') out[at - 1] = cell('0', { underline: under });
+      for (let k = at + 1; k < out.length; k++) {
+        if (out[k]!.text === '') out[k] = cell('0', { underline: under });
+      }
+    }
     return out;
   });
   const text = (x: number) => (x / scale).toFixed(decimals);
@@ -330,7 +336,8 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
   }
   if (/^\d+ − \d+$/.test(text)) {
     const [c, b] = nums(text) as [number, number];
-    if (b < 10 || c < b) return undefined;
+    // Nothing to set out for a number taken from itself.
+    if (b < 10 || c < b || c === b) return undefined;
     const borrows = String(b)
       .split('')
       .reverse()

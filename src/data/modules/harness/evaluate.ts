@@ -126,6 +126,17 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],
   [new RegExp(`ones digit of (${NUM})`), (a) => a % 10],
   [new RegExp(`full tens in (${NUM})`), (a) => Math.floor(a / 10)],
+  // Grade 5 fractions: the least common denominator.
+  [
+    new RegExp(`smallest common multiple of (${NUM}) and (${NUM})`),
+    (a, b) => {
+      const gcd = (x: number, y: number): number => (y === 0 ? x : gcd(y, x % y));
+      return (a * b) / gcd(a, b);
+    },
+  ],
+  // Grade 5 decimals: "4 tenths × 3 tenths = 12 hundredths".
+  [new RegExp(`(${NUM}) tenths × (${NUM}) tenths`), (a, b) => (a * b) / 100],
+  [new RegExp(`(${NUM}) hundredths`), (a) => a / 100],
   // Powers of ten (Grade 5): "zeros in 1000" is the exponent.
   [new RegExp(`zeros in (${NUM})`), (a) => Math.round(Math.log10(a))],
   [new RegExp(`ones left in (${NUM})`), (a) => a % 10],

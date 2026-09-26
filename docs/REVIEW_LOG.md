@@ -5,6 +5,32 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Grade 5 math: one lesson-reviewer and one page-reviewer, 18 pages
+
+- Cost: both reviewers were cut off by the session's rate limit before writing their
+  reports (about 30 minutes each); their resumable notes in `.review/` carried every
+  finding, and the fixes were applied from the notes. The notes format (done list, findings
+  by skill, fixed list, remaining) is what saved the review: keep it.
+- Missed: nothing found afterwards. Over-reported: the slider sweep flagged a slider the
+  other values hold to one value; the page now shows it held.
+- Right calls the checks didn't ask for: "bracket" for "parentheses" (the US word);
+  numerator and denominator by Grade 5; the least common denominator instead of the
+  product; skip-count lines below the grade; a decimal grid leaving a place blank; the
+  place-value chart wrapping past five columns; point labels sitting on a rising line;
+  a rhombus card drawn as a turned square; a table showing 1.0286 for a hundredths value.
+- Changes made:
+  - Pages the lesson reviewer asked for: add inside then divide, subtract decimals,
+    multiply two decimals, a fraction of a whole number, triangles by their angles.
+  - Engine lines in `docs/ENGINE_LOG.md`; the harness reads the least common multiple and
+    "4 tenths × 3 tenths"; a check that a decimal grid writes every place.
+  - `lesson-reviewer`: the grade's vocabulary (parentheses, numerator, denominator from
+    Grade 5) and facts a grade knows (no skip-count lines from Grade 5) are checks.
+  - `page-reviewer`: a held slider (dimmed, one value) is not a finding.
+- Not done, recorded: a superscript rendering for exponents (10^2 shows the caret);
+  typing a value that conflicts with two others blanks a derived box with no message;
+  sort-card figures are small on a projector; the ~divide decimal page can show a
+  non-terminating share to four decimals.
+
 ## Grade 4 math: one lesson-reviewer and one page-reviewer, 13 pages
 
 - Cost: lesson-reviewer 74k tokens (15 tool calls, 8 min); page-reviewer 125k (66 calls,

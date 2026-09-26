@@ -118,3 +118,5 @@ Then: **Curriculum coverage** table (G); **Not in the taxonomy** (for `TAXONOMY_
 **Top 10 changes**; **Engine** (findings the engine or its tests could have prevented, one line
 each, for `docs/ENGINE_LOG.md`); **Reviewer** (what you over- or under-reported, what evidence
 you lacked, for `docs/REVIEW_LOG.md`); **Checks run** and files changed.
+
+Grade 5 on: the grade's vocabulary is a check (parentheses, numerator, denominator, quotient); the facts a grade knows need no counting lines (no "Count by 4s" from Grade 5); a common denominator is the least common multiple, not the product.

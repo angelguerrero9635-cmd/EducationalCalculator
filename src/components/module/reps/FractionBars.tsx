@@ -46,6 +46,9 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {rows.map((r, i) => {
                 const y = 8 + i * (bh + gap);
                 const part = bw / r.den;
+                // Many thin parts outlined one by one merge into a dark band: past 24 parts
+                // the parts are unlined and the bar keeps a single outline.
+                const lined = r.den <= 24;
                 return [
                   <ChartText
                     key={`l${i}`}
@@ -65,10 +68,22 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       width={part}
                       height={bh}
                       fill={r.known && k < r.num ? c.chartHighlight : c.chartSurface}
+                      stroke={lined ? c.chartInk : 'none'}
+                      strokeWidth={lined ? chart.strokeLight : 0}
+                    />
+                  )),
+                  lined ? null : (
+                    <Rect
+                      key={`o${i}`}
+                      x={left}
+                      y={y}
+                      width={bw}
+                      height={bh}
+                      fill="none"
                       stroke={c.chartInk}
                       strokeWidth={chart.strokeLight}
                     />
-                  )),
+                  ),
                 ];
               })}
             </Svg>

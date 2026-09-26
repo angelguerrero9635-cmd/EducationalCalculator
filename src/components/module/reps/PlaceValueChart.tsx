@@ -44,26 +44,36 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
     })),
   ];
   const firstPart = columns.findIndex((col) => col.place < 1);
+  // Past five columns the row would wrap at phone width: narrower cells keep it on one line.
+  const tight = columns.length > 5;
 
   return (
     <View>
-      <View style={styles.row}>
+      <View style={[styles.row, tight && styles.rowTight]}>
         {columns.map((col, i) => (
           <View key={col.name} style={styles.cellWrap}>
             <View
               style={[
                 styles.cell,
+                tight && styles.cellTight,
                 { borderColor: c.chartGrid, backgroundColor: c.chartSurface },
                 col.digit !== '0' && known && { backgroundColor: c.chartFill },
               ]}
             >
-              <Text style={[styles.head, { color: c.chartMuted }]} numberOfLines={2}>
+              <Text
+                style={[styles.head, tight && styles.headTight, { color: c.chartMuted }]}
+                numberOfLines={2}
+              >
                 {col.name}
               </Text>
-              <Text style={[styles.digit, { color: c.chartInk }]}>{known ? col.digit : '?'}</Text>
+              <Text style={[styles.digit, tight && styles.digitTight, { color: c.chartInk }]}>
+                {known ? col.digit : '?'}
+              </Text>
             </View>
             {i === firstPart - 1 ? (
-              <Text style={[styles.point, { color: c.chartInk }]}>.</Text>
+              <Text style={[styles.point, tight && styles.pointTight, { color: c.chartInk }]}>
+                .
+              </Text>
             ) : null}
           </View>
         ))}
@@ -98,7 +108,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.md,
     flexWrap: 'wrap',
   },
+  rowTight: { paddingHorizontal: 0 },
   cellWrap: { flexDirection: 'row', alignItems: 'flex-end' },
+  cellTight: { width: 47, margin: 1 },
+  headTight: { fontSize: font.caption - 3, letterSpacing: -0.3 },
+  digitTight: { fontSize: font.title },
+  pointTight: { fontSize: font.title + 2 },
   cell: {
     width: 62,
     borderWidth: 1,
