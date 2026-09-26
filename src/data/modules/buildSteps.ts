@@ -6,6 +6,7 @@ import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 import { gradeBand, gradeOf, quantityLabel, wordRule, type GradeBand } from './grade';
 import { simplifyChain } from './simplify';
 import type { ModuleDef } from './types';
+import { factWork } from './work';
 import { autoWritten, type Written } from './written';
 
 export interface Quantity {
@@ -257,7 +258,7 @@ export function buildSteps(
       band === 'early'
         ? { sentence: base.sentence }
         : band === 'elementary'
-          ? { sentence: base.sentence, formula: wordRule(relation.display, vars) }
+          ? { sentence: base.sentence, formula: wordRule(relation.display, vars, relation.words) }
           : { formula: base.formula };
     const heading = band === 'standard' ? base.title : `Find ${lowerFirst(v.name)}`;
     const answer = plain(base.result, t.id, true);
@@ -282,7 +283,10 @@ export function buildSteps(
     const result =
       text.note && direct ? `${base.result} ${text.note(working)}`.trimEnd() : base.result;
     const workLines = work?.length
-      ? work.map((line) => agree(renderTemplate(line, workVars, working)))
+      ? byGrade(
+          work.map((line) => agree(renderTemplate(line, workVars, working))),
+          grade,
+        )
       : undefined;
     // "35 + 20" before "35 + 20 = 55" says nothing: the work line carries it.
     const bare = substituted.slice(v.symbol.length + 3);
@@ -414,4 +418,53 @@ export function buildSteps(
       : {}),
     checkFail: early ? '≠  try another number' : '✗',
   };
+}
+
+/** The number of the grade ("K" is 0), or undefined for college topics. */
+const gradeNumber = (grade: string | undefined) =>
+  grade === undefined ? undefined : grade === 'K' ? 0 : Number(grade);
+
+/**
+ * Work lines fitted to what the grade already knows. From Grade 3 a long count of equal groups
+ * ("Count by 7s, 9 times: …") becomes the fact strategy a teacher shows; from Grade 4 a basic
+ * fact needs no line at all, nor does a chain of make-ten jumps (the column grid or the
+ * substituted line carries it).
+ */
+function byGrade(lines: string[], grade: string | undefined): string[] {
+  const g = gradeNumber(grade);
+  if (g === undefined || g < 3) return lines;
+  const countTimes = /^Count by (\d+)s, (\d+) times: .* → (\d+)$/;
+  const countTo = /^Count by (\d+)s to (\d+): .* → (\d+)$/;
+  const out: string[] = [];
+  for (const line of lines) {
+    const t = countTimes.exec(line);
+    const d = countTo.exec(line);
+    if (g >= 4 && (t || d)) continue;
+    if (t && Number(t[2]) > 3) {
+      const strategy = factWork(Number(t[2]), Number(t[1]));
+      out.push(...(strategy.length ? strategy : [line]));
+      continue;
+    }
+    if (d && Number(d[3]) > 3) {
+      const [each, n, q] = [Number(d[1]), Number(d[2]), Number(d[3])];
+      const strategy = factWork(q, each);
+      out.push(...(strategy.length ? [...strategy, `${q} groups of ${each} make ${n}`] : [line]));
+      continue;
+    }
+    out.push(line);
+  }
+  if (g < 4) return out;
+  // A chain of jumps (38 + 20 = 58, 58 + 2 = 60, 60 + 3 = 63): each line starts at the last
+  // line's answer. From Grade 4 the sum is done in columns or in the head.
+  const sum = /^([\d,]+) [+−] [\d,]+ = ([\d,]+)$/;
+  const chained = new Set<number>();
+  for (let i = 0; i + 1 < out.length; i++) {
+    const a = sum.exec(out[i]!);
+    const b = sum.exec(out[i + 1]!);
+    if (a && b && b[1] === a[2]) {
+      chained.add(i);
+      chained.add(i + 1);
+    }
+  }
+  return out.filter((_, i) => !chained.has(i));
 }

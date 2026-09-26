@@ -269,6 +269,7 @@ export function apart(
   const relation = {
     id: `${d} = ${a} and ${b} apart`,
     display: `{${a}} and {${b}} are {${d}} apart`,
+    words: `Difference between {${a}} and {${b}} = {${d}}`,
     check: (v: Values) => `${Math.max(v[a]!, v[b]!)} − ${Math.min(v[a]!, v[b]!)} = ${v[d]}`,
     vars: [d, a, b],
     residual: (v: Values) => v[d]! - Math.abs(v[a]! - v[b]!),

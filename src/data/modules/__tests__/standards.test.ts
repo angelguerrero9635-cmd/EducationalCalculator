@@ -112,7 +112,7 @@ function studentText(m: ModuleDef) {
           : agree(renderTemplate(r.display, m.variables, example)),
     },
     ...(band === 'elementary'
-      ? [{ where: `rule ${r.id}`, text: wordRule(r.display, m.variables) }]
+      ? [{ where: `rule ${r.id}`, text: wordRule(r.display, m.variables, r.words) }]
       : []),
   ]);
   // The walkthrough from the opening values, as the student reads it.
@@ -227,6 +227,36 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
                     ? '"=" outside a number sentence (K–2)'
                     : false,
         ),
+      ).toEqual([]);
+    });
+
+    it('reads each Grade 3–5 rule as a sentence (no "apart" rule, no doubled word)', () => {
+      if (band !== 'elementary') return;
+      expect(
+        failures(
+          text.box.filter((b) => b.where.startsWith('rule')),
+          (t) =>
+            /\bare .+ apart$/.test(t)
+              ? 'an "are … apart" rule: give the relation `words`'
+              : /\b(\w+) \1\b/i.test(t)
+                ? 'a doubled word'
+                : false,
+        ),
+      ).toEqual([]);
+    });
+
+    it('counts only where the grade still counts (no counting lines for facts from Grade 4)', () => {
+      const g = grade === undefined ? undefined : grade === 'K' ? 0 : Number(grade);
+      if (g === undefined || g < 3) return;
+      expect(
+        failures(text.walk, (t) => {
+          const list = /Count by (\d+)s[^:]*: ([^→]*)/.exec(t);
+          if (!list) return false;
+          // Counting by 5s round a clock and by 10s for tens is how Grade 3 still works.
+          if (g === 3 && ['5', '10'].includes(list[1]!)) return false;
+          if (g >= 4) return 'a counting line for a basic fact from Grade 4';
+          return list[2]!.split(',').length > 4 ? 'a count of more than 4 jumps in Grade 3' : false;
+        }),
       ).toEqual([]);
     });
 

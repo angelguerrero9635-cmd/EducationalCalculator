@@ -790,6 +790,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const off: ModuleDef['relations'][number] = {
       id: 'o = distance from e to s',
       display: 'The estimate {e} is {o} away from the sum {s}',
+      words: 'Difference between {e} and {s} = {o}',
       vars: ['o', 'e', 's'],
       residual: (v) => v.o! - Math.abs(v.e! - v.s!),
       solve: {
@@ -863,6 +864,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         {
           id: 'm = t tens',
           display: '{m} is {t} tens',
+          words: '{m} = {t} tens',
           vars: ['m', 't'],
           residual: (v) => v.m! - 10 * v.t!,
           solve: { m: (v) => 10 * v.t!, t: (v) => div(v.m!, 10) },
@@ -919,6 +921,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       {
         id: 'w = wholes in a/b',
         display: '{a}/{b} passes {w} whole numbers',
+        words: 'Whole numbers passed by {a}/{b} = {w}',
         vars: ['w', 'a', 'b'],
         residual: (v) => v.w! - Math.floor(v.a! / v.b!),
         // Many fractions pass the same number of wholes: the parts can't be found from it.
@@ -1132,6 +1135,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         {
           id: 'g = parts between a and c',
           display: '{a} and {c} shaded parts are {g} apart',
+          words: 'Difference between {a} and {c} = {g}',
           // With the parts known: "3/8 < 5/8, 2 parts apart"; without: "3 parts < 5 parts".
           check: (v) => {
             const sign = v.a! > v.c! ? '>' : v.a! < v.c! ? '<' : '=';
@@ -1224,6 +1228,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         {
           id: 'g = parts between b and d',
           display: '{b} parts and {d} parts are {g} apart',
+          words: 'Difference between {b} and {d} = {g}',
           // With the shaded parts known: "2/3 > 2/6, 3 parts apart".
           check: (v) => {
             const apart = `${v.g} ${v.g === 1 ? 'part' : 'parts'} apart`;
@@ -1294,6 +1299,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       {
         id: 'k = fives in m',
         display: 'At {m} minutes the long hand is at or past the {k}',
+        words: 'Fives in {m} = {k}',
         vars: ['k', 'm'],
         residual: (v) => v.k! - Math.floor(v.m! / 5),
         solve: { k: (v) => Math.floor(v.m! / 5), m: () => undefined },
@@ -1370,6 +1376,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       {
         id: 'end minutes',
         display: '{sm} minutes + {d} minutes ends at {em} minutes past the hour',
+        words: '{sm} + {d} = {em}, past the hour',
         vars: ['em', 'sm', 'd'],
         residual: (v) => v.em! - ((v.sm! + v.d!) % 60),
         solve: {
@@ -1382,6 +1389,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       {
         id: 'start + time = end',
         display: '{sh}:{sm} + {d} minutes = {eh}:{em}',
+        words: '{sh}:{sm} + {d} = {eh}:{em}',
         vars: ['eh', 'em', 'sh', 'sm', 'd'],
         // On a 12-hour clock: 12:30 + 45 minutes = 1:15.
         residual: (v) => {
@@ -1775,6 +1783,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         // Either bar can be taller: the difference is the taller take away the shorter.
         id: 'd = difference of a and b',
         display: '{a} and {b} are {d} apart',
+        words: 'Difference between {a} and {b} = {d}',
         vars: ['d', 'a', 'b'],
         residual: (v) => v.d! - Math.abs(v.a! - v.b!),
         solve: {
@@ -1988,6 +1997,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       {
         id: 'w = inches in a marks',
         display: '{a} marks of 1/{b} inch pass {w} whole inches',
+        words: 'Whole inches passed by {a} marks = {w}',
         vars: ['w', 'a', 'b'],
         residual: (v) => v.w! - Math.floor(v.a! / v.b!),
         // Many lengths pass the same whole inches: the marks can't be found from it.

@@ -151,7 +151,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           whole('a', 'a', 'First number inside', 0, 50),
           whole('b', 'b', 'Second number inside', 0, 50),
           { ...whole('s', 's', 'Value inside the parentheses', 0, 100), derived: true },
-          whole('c', 'c', 'Divided by', 2, 10),
+          whole('c', 'c', 'Divisor', 2, 10),
           whole('q', 'q', 'Result', 0, 50),
         ],
         relations: [

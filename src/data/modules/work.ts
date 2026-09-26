@@ -273,3 +273,36 @@ export function divideWork(n: number, d: number, missing: 'first' | 'second' = '
   if (q > 10) return [think, `${n} ÷ ${d} = ${q} because ${q} × ${d} = ${n}`];
   return [think, `Count by ${d}s to ${n}: ${countList(0, d, q)} → ${q}`];
 }
+
+/**
+ * A basic fact the way Grade 3 is taught to find it without counting every group: known
+ * facts (× 2, × 10) in one line, the rest built from them (× 4 is double double, × 6 is five
+ * groups and one more, × 9 is ten groups less one, × 7 and × 8 split into five groups and
+ * the rest). `times` is the number of groups, `each` the size of each.
+ */
+export function factWork(times: number, each: number): string[] {
+  const p = (k: number) => k * each;
+  switch (times) {
+    case 2:
+      return [`Double ${each}: ${each} + ${each} = ${p(2)}`];
+    case 4:
+      return [
+        `Double ${each}: ${each} + ${each} = ${p(2)}`,
+        `Double again: ${p(2)} + ${p(2)} = ${p(4)}`,
+      ];
+    case 5:
+      return [`10 × ${each} = ${p(10)}. Five groups are half of that: ${p(5)}`];
+    case 6:
+      return [`5 × ${each} = ${p(5)}`, `One more group: ${p(5)} + ${each} = ${p(6)}`];
+    case 7:
+      return [`5 × ${each} = ${p(5)} and 2 × ${each} = ${p(2)}`, `${p(5)} + ${p(2)} = ${p(7)}`];
+    case 8:
+      return [`5 × ${each} = ${p(5)} and 3 × ${each} = ${p(3)}`, `${p(5)} + ${p(3)} = ${p(8)}`];
+    case 9:
+      return [`10 × ${each} = ${p(10)}`, `One group less: ${p(10)} − ${each} = ${p(9)}`];
+    case 10:
+      return [`10 groups of ${each} is ${each} tens: ${p(10)}`];
+    default:
+      return [];
+  }
+}

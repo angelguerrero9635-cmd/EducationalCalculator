@@ -50,7 +50,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
           const [first, second] = early
             ? [numbers, null]
             : elementary
-              ? [numbers, wordRule(r.display, module.variables)]
+              ? [numbers, wordRule(r.display, module.variables, r.words)]
               : [letters, numbers];
           return (
             <View

@@ -5,6 +5,22 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Direction plans for K–5 (before the rebuild)
+
+- Four lesson reviewers planned K–2 math, Grade 3 math, Grades 4–5 math and K–3 science from
+  scratch (`.review/plan/plan-*.md`): what each skill's pages should be, a verdict per page
+  (keep, update, replace, add, remove), new graphics and engine needs.
+- Rules in words came out garbled when a name met its own word ("Shaded shaded", "full groups
+  full groups", "are layers apart apart"). → A repeated run of one to three words collapses;
+  `apart` reads "Difference between … and … = …"; a relation can carry its own `words`
+  sentence; `standards.test.ts` fails an "are … apart" rule or a doubled word. The Grade 4
+  perimeter rule read "2 × length + width"; it now reads "2 × (length + width) = perimeter".
+- Grades 3–5 still counted facts ("Count by 7s, 10 times"). → `byGrade` in the walkthrough:
+  Grade 3 turns a count of more than 3 groups into the fact strategy (`factWork`: double,
+  double again, five and one more, ten less one, five and two or three); Grade 4 on drops
+  counting lines and chains of make-ten jumps. The standards test fails a counting line from
+  Grade 4 and a count of more than 4 jumps in Grade 3 (counting by 5s and 10s aside).
+
 ## Science Grades 4–5 (Section 6, first review)
 
 - `apart` (no direction) was used for a rise, a loss and how much farther, so a drop from

@@ -50,6 +50,7 @@ export const namedVariables = <V extends { symbol: string; name: string }>(vars:
 export function wordRule(
   display: string,
   vars: readonly { id: string; symbol: string; name: string }[],
+  words?: string,
 ): string {
   const byId = new Map(vars.map((v) => [v.id, v.name]));
   const lower = (t: string) => `${t[0]!.toLowerCase()}${t.slice(1)}`;
@@ -58,11 +59,26 @@ export function wordRule(
     const name = t.startsWith('{') ? byId.get(t.slice(1, -1)) : undefined;
     return name === undefined ? t : at === 0 ? name : lower(name);
   };
-  return display
-    .replace(/(\{\w+\}|\d+)\/(\{\w+\}|\d+)/g, (m, top: string, bottom: string, at: number) =>
-      top.startsWith('{') || bottom.startsWith('{')
-        ? `${word(top, at)} over ${word(bottom, 1)}`
-        : m,
-    )
-    .replace(/\{(\w+)\}/g, (m, id: string, at: number) => word(`{${id}}`, at));
+  return dedupe(
+    (words ?? display)
+      .replace(/(\{\w+\}|\d+)\/(\{\w+\}|\d+)/g, (m, top: string, bottom: string, at: number) =>
+        top.startsWith('{') || bottom.startsWith('{')
+          ? `${word(top, at)} over ${word(bottom, 1)}`
+          : m,
+      )
+      .replace(/\{(\w+)\}/g, (m, id: string, at: number) => word(`{${id}}`, at)),
+  );
+}
+
+/**
+ * A name dropped next to its own word reads twice ("Shaded shaded", "full groups full
+ * groups", "inch inch"): keep one copy of a repeated run of one to three words.
+ */
+function dedupe(text: string): string {
+  let out = text;
+  for (let n = 3; n >= 1; n--) {
+    const re = new RegExp(`\\b((?:[A-Za-z’']+\\s+){${n - 1}}[A-Za-z’']+)\\s+\\1\\b`, 'gi');
+    out = out.replace(re, '$1');
+  }
+  return out;
 }

@@ -11,7 +11,6 @@ import { autoWritten, longDivision } from '../written';
 import {
   addAll,
   addStrategy,
-  countList,
   divideWork,
   placeTimesWork,
   subtractStrategy,
@@ -214,7 +213,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
           ...mult.steps,
           n: {
             ...mult.steps.n!,
-            how: 'Count by the number that many times. The last count is the multiple.',
+            how: 'Multiply the number by which multiple it is.',
           },
           j: {
             ...mult.steps.j!,
@@ -1416,12 +1415,10 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'w = floor(s/b)': {
         w: {
           expr: 'wholes in {s} parts of {b}',
-          how: 'Every full set of parts makes 1 whole. Count the full sets in the sum.',
+          how: 'Every full set of parts makes 1 whole. Find how many full sets fit in the sum.',
           work: (v) =>
             v.w! > 0
-              ? [
-                  `Count by ${v.b}s: ${countList(0, v.b!, v.w!)} → ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`,
-                ]
+              ? [`${v.w} × ${v.b} = ${v.w! * v.b!}: ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`]
               : [`${v.s} is less than ${v.b}, so the sum is less than 1 whole.`],
         },
       },
@@ -1697,9 +1694,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
           how: 'Every full set of parts makes 1 whole. Count the full sets in the product.',
           work: (v) =>
             v.w! > 0
-              ? [
-                  `Count by ${v.b}s: ${countList(0, v.b!, v.w!)} → ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`,
-                ]
+              ? [`${v.w} × ${v.b} = ${v.w! * v.b!}: ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`]
               : [`${v.p} is less than ${v.b}, so the product is less than 1 whole.`],
         },
       },
@@ -2162,6 +2157,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         {
           id: 'P = 2 × h',
           display: '2 × {h} = {P}',
+          words: '2 × ({l} + {w}) = {P}',
           vars: ['P', 'h'],
           residual: (v: Values) => v.P! - 2 * v.h!,
           solve: { P: (v: Values) => 2 * v.h!, h: (v: Values) => v.P! / 2 },

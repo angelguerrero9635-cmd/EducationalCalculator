@@ -52,6 +52,11 @@ export interface Relation {
   shows?: string[];
   /** Display template; `{id}` is replaced by the symbol or the current value. */
   display: string;
+  /**
+   * The rule in words for Grades 3–5, when names dropped into `display` don't read as a
+   * sentence: a template with {id} for each value's name ("The ten at or below {n} is {L}").
+   */
+  words?: string;
   vars: string[];
   residual: (v: Values) => number;
   /**
