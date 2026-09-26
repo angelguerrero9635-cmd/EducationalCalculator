@@ -57,7 +57,7 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const ids = spec.columns.map((col) => col.var);
   // Rows shown: the biggest count plus two to grow into, never more than the picture holds.
-  const biggest = Math.max(0, ...ids.map((id) => (rep.known(id) ? Math.round(rep.val(id)) : 0)));
+  const biggest = Math.max(0, ...ids.map((id) => (rep.known(id) ? Math.ceil(rep.val(id)) : 0)));
   const rows = Math.max(3, Math.min(spec.max, biggest + 2));
   const colWidth = (w: number) => Math.min(88, (w - 16) / spec.columns.length);
   // Each icon is a tap target: at least 44 pt when the columns leave room.
@@ -74,7 +74,10 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
             <View style={styles.graph}>
               {spec.columns.map((col) => {
                 const known = rep.known(col.var);
-                const n = Math.round(rep.val(col.var));
+                // A scaled graph can end a column in half a picture (half the key).
+                const value = rep.val(col.var);
+                const n = spec.key ? Math.floor(value + 1e-9) : Math.round(value);
+                const half = spec.key !== undefined && value - n >= 0.5 - 1e-9;
                 return (
                   <View
                     key={col.var}
@@ -92,19 +95,37 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
                               [col.var]: i + 1 === n ? n - 1 : i + 1,
                             })
                           }
-                          style={{ width: cell, height: cell, opacity: i < n ? 1 : 0.12 }}
+                          style={{
+                            width: cell,
+                            height: cell,
+                            opacity: i < n || (half && i === n) ? 1 : 0.12,
+                          }}
                         >
-                          <Shape
-                            icon={col.icon}
-                            size={cell}
-                            fill={i < n ? c.chartFill : 'none'}
-                            stroke={c.chartInk}
-                          />
+                          {half && i === n ? (
+                            // Half a picture: the left half, cut down the middle.
+                            <View style={{ width: cell / 2, height: cell, overflow: 'hidden' }}>
+                              <Shape
+                                icon={col.icon}
+                                size={cell}
+                                fill={c.chartFill}
+                                stroke={c.chartInk}
+                              />
+                            </View>
+                          ) : (
+                            <Shape
+                              icon={col.icon}
+                              size={cell}
+                              fill={i < n ? c.chartFill : 'none'}
+                              stroke={c.chartInk}
+                            />
+                          )}
                         </Pressable>
                       ))}
                     </View>
                     <Text style={[styles.label, { color: c.text }]}>{rep.tag(col.var)}</Text>
-                    <Text style={[styles.count, { color: c.text }]}>{known ? n : '?'}</Text>
+                    <Text style={[styles.count, { color: c.text }]}>
+                      {known ? (half ? `${n} and a half` : n) : '?'}
+                    </Text>
                   </View>
                 );
               })}

@@ -44,7 +44,7 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
         const cellPx = unit * f;
         const whole = sameUnit && Number.isInteger(sl) && Number.isInteger(sw) && cellPx >= 6;
         // Perimeter alone: marks along the edge (a length to walk around), not squares inside.
-        const edgeOnly = !!spec.around && !spec.inside;
+        const edgeOnly = !!spec.around && !spec.inside && !spec.grid;
         const showGrid = whole && !edgeOnly;
         const tick = (x: number, y: number, dx: number, dy: number, key: string) => (
           <Line

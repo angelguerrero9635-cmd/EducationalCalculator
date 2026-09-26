@@ -83,7 +83,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
    * on one line unless they would touch.
    */
   const layout = (w: number) => {
-    const room = spec.turned ? (w - 60) / 2 : w - 40;
+    const room = spec.turned ? (w - 60) / 2 : w - (spec.sides ? 72 : 40);
     const cell = Math.min(room / spec.max, 40);
     const shownRows = Math.min(spec.max, Math.max(6, dr + 1, spec.turned ? dc + 1 : 0));
     const labelWidth = (text: string) => text.length * chart.small * 0.6;
@@ -91,7 +91,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
     const right = `${rows} × ${cols - firstCols} = ${rows * (cols - firstCols)}`;
     const gap = (cols * cell) / 2 - (labelWidth(left) + labelWidth(right)) / 2;
     const stagger = !!split && gap < 8;
-    const below = split ? (stagger ? 48 : 30) : 0;
+    const below = split ? (stagger ? 48 : 30) : spec.sides ? 26 : 0;
     return { cell, below, stagger, height: 20 + shownRows * cell + below };
   };
 
@@ -147,6 +147,30 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         {`${rows} × ${cols - firstCols} = ${rows * (cols - firstCols)}`}
                       </ChartText>
                     ) : null}
+                  </>
+                ) : null}
+                {spec.sides && !split ? (
+                  <>
+                    <ChartText
+                      x={x0 - 8}
+                      y={y0 + (dr * cell) / 2 + 5}
+                      fontSize={chart.value}
+                      fontWeight={rep.known(spec.rows) ? '400' : '700'}
+                      fill={rep.known(spec.rows) ? c.chartInk : c.chartHighlight}
+                      textAnchor="end"
+                    >
+                      {rep.known(spec.rows) ? String(rows) : '?'}
+                    </ChartText>
+                    <ChartText
+                      x={x0 + (dc * cell) / 2}
+                      y={y0 + dr * cell + 20}
+                      fontSize={chart.value}
+                      fontWeight={rep.known(spec.columns) ? '400' : '700'}
+                      fill={rep.known(spec.columns) ? c.chartInk : c.chartHighlight}
+                      textAnchor="middle"
+                    >
+                      {rep.known(spec.columns) ? String(cols) : '?'}
+                    </ChartText>
                   </>
                 ) : null}
               </Svg>

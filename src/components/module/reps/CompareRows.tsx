@@ -1,5 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import Svg, { G, Line, Path, Rect } from 'react-native-svg';
+
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
@@ -45,7 +47,11 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View style={{ gap: space.sm }}>
-      <Canvas aspect={(w) => (2 * Math.min(34, (w - 110) / max) + space.md) / w}>
+      <Canvas
+        aspect={(w) =>
+          (2 * (Math.min(34, (w - 110) / max) + (spec.object ? OBJECT_H + 4 : 0)) + space.md) / w
+        }
+      >
         {({ w }) => {
           const cell = Math.min(34, (w - 110) / max);
           return (
@@ -55,52 +61,62 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   <Text style={[styles.name, { color: c.text }]} numberOfLines={2}>
                     {rep.tag(id)}
                   </Text>
-                  <View style={{ flexDirection: 'row' }}>
-                    {Array.from({ length: max }, (_, i) => {
-                      const filled = i < counts[r]!;
-                      const extra = filled && i >= Math.min(a, b);
-                      return (
-                        <Pressable
-                          key={i}
-                          testID={`row-${id}-${i + 1}`}
-                          accessibilityLabel={`${rep.variable(id).name}: ${i + 1}`}
-                          onPress={() =>
-                            calc.set({
-                              ...rep.pin(rows.filter((x) => x !== id)),
-                              [id]: i + 1 === counts[r] ? i : i + 1,
-                            })
-                          }
-                          style={{
-                            width: cell,
-                            height: cell,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <View
+                  <View>
+                    {spec.object ? (
+                      <MeasuredObject
+                        kind={spec.object}
+                        length={counts[r]! * cell}
+                        ink={c.chartInk}
+                        fill={c.chartFill}
+                      />
+                    ) : null}
+                    <View style={{ flexDirection: 'row' }}>
+                      {Array.from({ length: max }, (_, i) => {
+                        const filled = i < counts[r]!;
+                        const extra = filled && i >= Math.min(a, b);
+                        return (
+                          <Pressable
+                            key={i}
+                            testID={`row-${id}-${i + 1}`}
+                            accessibilityLabel={`${rep.variable(id).name}: ${i + 1}`}
+                            onPress={() =>
+                              calc.set({
+                                ...rep.pin(rows.filter((x) => x !== id)),
+                                [id]: i + 1 === counts[r] ? i : i + 1,
+                              })
+                            }
                             style={{
-                              width: cell * inner,
-                              height: cell * inner,
-                              borderRadius: spec.icon === 'dot' ? cell : 0,
-                              // A cup: narrower at the bottom, rounded underneath.
-                              ...(spec.icon === 'cup'
-                                ? {
-                                    width: cell * 0.7,
-                                    borderBottomLeftRadius: cell * 0.3,
-                                    borderBottomRightRadius: cell * 0.3,
-                                  }
-                                : {}),
-                              borderWidth: filled ? chart.strokeLight : StyleSheet.hairlineWidth,
-                              borderColor: filled ? c.chartInk : c.chartGrid,
-                              opacity: filled ? 1 : 0.5,
-                              // Extras solid; matched ones open, so "solid" reads the same in
-                              // light and dark mode.
-                              backgroundColor: filled && extra ? c.chartHighlight : 'transparent',
+                              width: cell,
+                              height: cell,
+                              alignItems: 'center',
+                              justifyContent: 'center',
                             }}
-                          />
-                        </Pressable>
-                      );
-                    })}
+                          >
+                            <View
+                              style={{
+                                width: cell * inner,
+                                height: cell * inner,
+                                borderRadius: spec.icon === 'dot' ? cell : 0,
+                                // A cup: narrower at the bottom, rounded underneath.
+                                ...(spec.icon === 'cup'
+                                  ? {
+                                      width: cell * 0.7,
+                                      borderBottomLeftRadius: cell * 0.3,
+                                      borderBottomRightRadius: cell * 0.3,
+                                    }
+                                  : {}),
+                                borderWidth: filled ? chart.strokeLight : StyleSheet.hairlineWidth,
+                                borderColor: filled ? c.chartInk : c.chartGrid,
+                                opacity: filled ? 1 : 0.5,
+                                // Extras solid; matched ones open, so "solid" reads the same in
+                                // light and dark mode.
+                                backgroundColor: filled && extra ? c.chartHighlight : 'transparent',
+                              }}
+                            />
+                          </Pressable>
+                        );
+                      })}
+                    </View>
                   </View>
                 </View>
               ))}
@@ -121,6 +137,64 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
             : 'Solid cubes stick out past the shorter one.'}
       </Text>
     </View>
+  );
+}
+
+/** Height of the object drawn above a row. */
+const OBJECT_H = 14;
+
+/**
+ * The thing being measured, as long as the cubes under it and starting at the same edge: a
+ * pencil with its point, a crayon with its wrapper, or a ribbon.
+ */
+function MeasuredObject({
+  kind,
+  length,
+  ink,
+  fill,
+}: {
+  kind: 'pencil' | 'ribbon' | 'crayon';
+  length: number;
+  ink: string;
+  fill: string;
+}) {
+  const h = OBJECT_H;
+  const L = Math.max(0, length);
+  const tip = Math.min(h, L / 3);
+  return (
+    <Svg width={Math.max(1, L + 1)} height={h + 4}>
+      {L === 0 ? null : kind === 'ribbon' ? (
+        <Rect
+          x={0.5}
+          y={3}
+          width={L}
+          height={h - 4}
+          rx={2}
+          fill={fill}
+          stroke={ink}
+          strokeWidth={1.25}
+        />
+      ) : (
+        <G>
+          <Path
+            d={`M 0.5 2 H ${L - tip} L ${L} ${h / 2 + 2} L ${L - tip} ${h + 2} H 0.5 Z`}
+            fill={fill}
+            stroke={ink}
+            strokeWidth={1.25}
+            strokeLinejoin="round"
+          />
+          {kind === 'pencil' ? (
+            <Line x1={L - tip} y1={2} x2={L - tip} y2={h + 2} stroke={ink} strokeWidth={1} />
+          ) : (
+            <Path
+              d={`M ${L * 0.15} 2 V ${h + 2} M ${L * 0.8 - tip} 2 V ${h + 2}`}
+              stroke={ink}
+              strokeWidth={1}
+            />
+          )}
+        </G>
+      )}
+    </Svg>
   );
 }
 

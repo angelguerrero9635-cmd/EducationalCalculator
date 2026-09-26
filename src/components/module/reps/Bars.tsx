@@ -19,6 +19,12 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const editable = spec.bars.filter((b) => b.editable).map((b) => b.var);
   // Bars are drawn and labeled in the shown unit.
   const shown = spec.bars.map((b) => rep.shown(b.var));
+  const step =
+    typeof spec.scale === 'string'
+      ? rep.known(spec.scale)
+        ? Math.max(1, rep.shown(spec.scale))
+        : 1
+      : spec.scale;
   const lowest = Math.min(0, ...shown);
   const highest = Math.max(0, ...shown);
   // Range grows (to a round number) to fit the values; frozen while a bar is dragged.
@@ -38,12 +44,12 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const scale = plotH / (max - min);
           const sy = (v: number) => top + (max - Math.min(max, Math.max(min, v))) * scale;
           // Room on the left for the numbered scale, when there is one.
-          const axis = spec.scale ? 30 : 0;
+          const axis = step ? 30 : 0;
           const slot = (w - 16 - axis) / spec.bars.length;
           const barW = Math.min(56, slot * 0.6);
           const cx = (i: number) => 8 + axis + slot * (i + 0.5);
           // Every `scale`, or every 2 × scale when the range grows past 10 marks.
-          const every = spec.scale ? spec.scale * ((max - min) / spec.scale > 10 ? 2 : 1) : 0;
+          const every = step ? step * Math.max(1, Math.ceil((max - min) / step / 10)) : 0;
           const marks = every
             ? Array.from({ length: Math.floor((max - min) / every) + 1 }, (_, i) => min + i * every)
             : [];

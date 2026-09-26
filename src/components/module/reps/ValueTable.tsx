@@ -30,7 +30,8 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   const rows = (() => {
     const givens = Object.entries(pinned).map(([id, value]) => ({ id, value }));
-    return spec.rows.map((x) => ({
+    const inputs = typeof spec.rows === 'function' ? spec.rows(calc.values) : spec.rows;
+    return inputs.map((x) => ({
       x,
       y: paramsKnown
         ? solve(calc.module, [

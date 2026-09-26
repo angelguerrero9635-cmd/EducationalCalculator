@@ -21,15 +21,17 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const unit = rep.unit(spec.lengths[0]!) ?? '';
-  const shown = spec.lengths.map((id) => rep.shown(id));
+  // Lengths counted in half or quarter marks are drawn in whole units (numbers on the ruler).
+  const per = spec.marks ?? 1;
+  const shown = spec.lengths.map((id) => rep.shown(id) / per);
   // A broken ruler: the object starts at a mark other than 0.
-  const offset = spec.from ? rep.shown(spec.from) : 0;
+  const offset = spec.from ? rep.shown(spec.from) / per : 0;
   const fit = useFrozen(Math.max(spec.extent, Math.ceil(offset + Math.max(...shown))));
 
   /** "Longest to shortest: Red (a) 9, Blue (b) 6, Green (c) 4." */
   const order = () =>
     `Longest to shortest: ${spec.lengths
-      .map((id, i) => ({ id, x: shown[i]! }))
+      .map((id, i) => ({ id, x: shown[i]! * per }))
       .sort((p, q) => q.x - p.x)
       .map((p) => `${rep.variable(p.id).name} ${formatNumber(p.x)}`)
       .join(', ')}.`;
@@ -52,7 +54,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const left = 16;
           const scale = (w - left - 24) / fit.value;
           const rulerY = h - 44;
-          const tickEvery = fit.value > 40 ? 10 : fit.value > 20 ? 5 : 1;
+          const tickEvery = per > 1 ? 1 : fit.value > 40 ? 10 : fit.value > 20 ? 5 : 1;
           return (
             <>
               <Svg width={w} height={h}>
@@ -97,16 +99,27 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fill={c.chartSurface}
                   stroke={c.chartInk}
                 />
-                {Array.from({ length: fit.value + 1 }, (_, t) => (
-                  <Line
-                    key={`t${t}`}
-                    x1={left + t * scale}
-                    y1={rulerY}
-                    x2={left + t * scale}
-                    y2={rulerY + (t % tickEvery === 0 ? 12 : 6)}
-                    stroke={c.chartInk}
-                  />
-                ))}
+                {per > 1
+                  ? Array.from({ length: fit.value * per + 1 }, (_, t) => (
+                      <Line
+                        key={`t${t}`}
+                        x1={left + (t / per) * scale}
+                        y1={rulerY}
+                        x2={left + (t / per) * scale}
+                        y2={rulerY + (t % per === 0 ? 12 : (2 * t) % per === 0 ? 9 : 5)}
+                        stroke={c.chartInk}
+                      />
+                    ))
+                  : Array.from({ length: fit.value + 1 }, (_, t) => (
+                      <Line
+                        key={`t${t}`}
+                        x1={left + t * scale}
+                        y1={rulerY}
+                        x2={left + t * scale}
+                        y2={rulerY + (t % tickEvery === 0 ? 12 : 6)}
+                        stroke={c.chartInk}
+                      />
+                    ))}
                 {Array.from({ length: Math.floor(fit.value / tickEvery) + 1 }, (_, i) => (
                   <ChartText
                     key={`n${i}`}
@@ -143,7 +156,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   onMove={(dx) =>
                     calc.set({
                       ...rep.pin(spec.lengths.filter((x) => x !== id)),
-                      [id]: rep.snapTo(id, (start.current + dx / scale) * rep.factor(id)),
+                      [id]: rep.snapTo(id, (start.current + dx / scale) * per * rep.factor(id)),
                     })
                   }
                 />

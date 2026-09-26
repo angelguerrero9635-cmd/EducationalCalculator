@@ -64,7 +64,33 @@ export function repIssues(
       }
       break;
     }
+    case 'rectilinear': {
+      if (!rep.right === !rep.cut) out.push('rectilinear needs a right part or a cut, not both');
+      if (rep.cut) {
+        const [bw, bh, cw, ch] = [
+          rep.left.width,
+          rep.left.height,
+          rep.cut.width,
+          rep.cut.height,
+        ].map(val);
+        if (bw !== undefined && cw !== undefined && cw >= bw)
+          out.push(`cut ${cw} wide is not inside the ${bw} wide rectangle`);
+        if (bh !== undefined && ch !== undefined && ch >= bh)
+          out.push(`cut ${ch} tall is not inside the ${bh} tall rectangle`);
+      }
+      break;
+    }
     case 'polygon': {
+      if (rep.sideValues) {
+        if (rep.sideValues.length < 3 || rep.sideValues.length > 6)
+          out.push(`polygon with ${rep.sideValues.length} labeled sides`);
+        rep.sideValues.forEach((id) => {
+          const x = val(id);
+          if (x !== undefined && x <= 0) out.push(`side ${id} = ${x}`);
+        });
+        break;
+      }
+      if (!rep.sides) break;
       const s = val(rep.sides);
       // 0 sides draws a circle.
       if (s !== undefined && s !== 0 && (s < 3 || s !== Math.round(s)))
@@ -142,7 +168,11 @@ export function repIssues(
       if (start === undefined || hops.some((x) => x === undefined)) break;
       let at = start;
       rep.hops.forEach((h, i) => {
-        at += h.sign * hops[i]!;
+        const sign = typeof h.sign === 'number' ? h.sign : (val(h.sign) ?? 1) < 0 ? -1 : 1;
+        if (typeof h.sign === 'string' && ![1, -1].includes(val(h.sign) ?? 1)) {
+          out.push(`hop switch ${h.sign} = ${val(h.sign)} is not 1 or −1`);
+        }
+        at += sign * hops[i]!;
         if (at < 0) out.push(`hops go below 0 part way (stop ${i + 1} = ${at})`);
         else if (i < rep.hops.length - 1 && (at < rep.min || at > rep.max)) {
           out.push(`hops stop ${i + 1} = ${at} is past the line's ${rep.min}–${rep.max}`);
@@ -196,9 +226,15 @@ export function repIssues(
     case 'equalGroups': {
       // Each group is an 88 px circle; past 16 the dots shrink to fit up to 100 (EqualGroups.tsx).
       count(rep.groups, 'groups', 12);
-      count(rep.each, 'dots in a group', 100);
+      count(
+        rep.each,
+        rep.unit === 10 ? 'ten-rods in a group' : 'dots in a group',
+        rep.unit === 10 ? 10 : 100,
+      );
       const [g, k, n] = [val(rep.groups), val(rep.each), val(rep.total)];
-      if (g !== undefined && k !== undefined && n !== undefined && g * k !== n) {
+      // Ten-rods: the total is the tens (g × k) or the number itself (g × k × 10).
+      const ok = (x: number) => x === g! * k! || (rep.unit === 10 && x === g! * k! * 10);
+      if (g !== undefined && k !== undefined && n !== undefined && !ok(n)) {
         out.push(`${g} groups of ${k} drawn, total shows ${n}`);
       }
       break;
@@ -251,7 +287,15 @@ export function repIssues(
       for (const id of new Set(rep.rows.flat(2))) count(id, 'cubes', 40);
       break;
     case 'pictureGraph':
-      for (const c of rep.columns) count(c.var, 'pictures', rep.max);
+      // With a key, a column can end in half a picture (PictureGraph.tsx): count halves.
+      for (const c of rep.columns) {
+        const x = val(c.var);
+        if (rep.key && x !== undefined) {
+          if (Math.abs(x * 2 - Math.round(x * 2)) > 1e-9)
+            out.push(`pictures ${c.var} = ${x} is not a whole or half picture`);
+          if (x < 0 || x > rep.max) out.push(`pictures ${c.var} = ${x} past 0–${rep.max}`);
+        } else count(c.var, 'pictures', rep.max);
+      }
       break;
     case 'numberLine':
       for (const id of [rep.start, rep.end]) {
@@ -288,6 +332,15 @@ export function repIssues(
       // The line stretches to the fraction (FractionLine.tsx); more than 24 wholes won't fit.
       if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 24) {
         out.push(`${a}/${b} needs ${Math.ceil(a / b)} wholes on the line`);
+      }
+      if (rep.second) {
+        count(rep.second.numerator, 'second line parts counted');
+        const d = val(rep.second.denominator);
+        if (d !== undefined && d < 1) out.push(`${d} parts in a whole on the second line`);
+      }
+      // Decimal labels read tenths: the parts in a whole must be 10 or 100.
+      if (rep.decimal && b !== undefined && b !== 10 && b !== 100) {
+        out.push(`decimal line with ${b} parts in a whole`);
       }
       break;
     }

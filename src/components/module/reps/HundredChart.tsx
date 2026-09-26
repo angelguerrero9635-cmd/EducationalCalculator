@@ -21,6 +21,17 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const named = (id: string) =>
     rep.early ? rep.named(id) : `${rep.variable(id).name} ${rep.label(id)}`;
   const n = rep.known(spec.value) ? Math.round(rep.shown(spec.value)) : 0;
+  const step =
+    spec.multiplesOf && rep.known(spec.multiplesOf) ? Math.round(rep.shown(spec.multiplesOf)) : 0;
+  // A puzzle piece: the number and its neighbors before, after, above and below.
+  const piece = spec.piece
+    ? [n, n - 1, n + 1, n - 10, n + 10].filter(
+        (k) =>
+          k >= 1 &&
+          k <= spec.max &&
+          (Math.abs(k - n) !== 1 || Math.ceil(k / 10) === Math.ceil(n / 10)),
+      )
+    : undefined;
   const marks = (spec.marks ?? []).filter(rep.known).map((id) => Math.round(rep.shown(id)));
   // Counting by tens from n: a dot on each number passed (n + 10, n + 20, …).
   const tens =
@@ -45,7 +56,8 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
             >
               {Array.from({ length: spec.max }, (_, i) => {
                 const k = i + 1;
-                const on = k <= n;
+                const on = spec.multiplesOf ? step > 0 && k % step === 0 : k <= n;
+                const blank = piece !== undefined && !piece.includes(k);
                 const marked = marks.includes(k);
                 const passed = tens.includes(k);
                 return (
@@ -59,10 +71,23 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       {
                         width: cell,
                         height: cell,
-                        borderColor: marked ? c.chartInk : c.chartGrid,
-                        borderWidth: marked ? chart.stroke : StyleSheet.hairlineWidth,
-                        backgroundColor:
-                          k === n ? c.chartHighlight : on ? c.chartFill : c.background,
+                        borderColor:
+                          marked || (spec.multiplesOf && k === n) ? c.chartInk : c.chartGrid,
+                        borderWidth:
+                          marked || (spec.multiplesOf && k === n)
+                            ? chart.stroke
+                            : StyleSheet.hairlineWidth,
+                        backgroundColor: blank
+                          ? c.chartSurface
+                          : spec.multiplesOf
+                            ? on
+                              ? c.chartHighlight
+                              : c.background
+                            : k === n
+                              ? c.chartHighlight
+                              : on && !piece
+                                ? c.chartFill
+                                : c.background,
                       },
                     ]}
                   >
@@ -70,7 +95,11 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       style={[
                         styles.num,
                         {
-                          color: k === n ? c.onChartHighlight : c.chartInk,
+                          color: blank
+                            ? 'transparent'
+                            : (spec.multiplesOf ? on : k === n)
+                              ? c.onChartHighlight
+                              : c.chartInk,
                           fontSize: Math.min(font.caption + 1, cell / 2.6),
                         },
                       ]}
@@ -86,7 +115,11 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {[`${rep.tag(spec.value)} ${rep.value(spec.value)} (shaded)`]
+        {[
+          spec.multiplesOf
+            ? `${rep.tag(spec.value)} ${rep.value(spec.value)} (in a box). Multiples of ${rep.value(spec.multiplesOf)} (shaded)`
+            : `${rep.tag(spec.value)} ${rep.value(spec.value)} (shaded)`,
+        ]
           .concat(
             (spec.marks ?? [])
               .filter(rep.known)

@@ -1,8 +1,9 @@
-import { View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
-import { chart, usePalette } from '@/theme';
+import { Text } from '@/components/Text';
+import { chart, font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, useRep, Caption } from './common';
@@ -18,9 +19,13 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const ids = [spec.start, ...spec.hops.map((x) => x.var), spec.end];
+  /** A hop's direction: fixed, or read from its switch variable. */
+  const signOf = (hop: Spec['hops'][number]): number =>
+    typeof hop.sign === 'number' ? hop.sign : rep.val(hop.sign) < 0 ? -1 : 1;
+  const switches = spec.hops.filter((hop) => typeof hop.sign === 'string');
   const faded = !ids.every(rep.known);
   const stops = spec.hops.reduce(
-    (acc, hop) => [...acc, acc[acc.length - 1]! + hop.sign * rep.val(hop.var)],
+    (acc, hop) => [...acc, acc[acc.length - 1]! + signOf(hop) * rep.val(hop.var)],
     [rep.val(spec.start)],
   );
   const lo = Math.min(spec.min, ...stops);
@@ -68,7 +73,7 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const to = stops[i + 1]!;
                 // Every hop arcs above the line; later hops are lower so they don't overlap.
                 // Backward hops are dashed.
-                const up = hop.sign > 0;
+                const up = signOf(hop) > 0;
                 const lift =
                   Math.min(h * 0.4, 24 + Math.abs(to - from) * unit * 0.25) * (i === 0 ? 1 : 0.6);
                 const mid = (sx(from) + sx(to)) / 2;
@@ -113,8 +118,33 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>{`Start ${rep.label(spec.start, false)}, ${spec.hops
-        .map((hop) => `${hop.sign > 0 ? 'add' : 'take away'} ${rep.label(hop.var, false)}`)
+        .map((hop) => `${signOf(hop) > 0 ? 'add' : 'take away'} ${rep.label(hop.var, false)}`)
         .join(', then ')}. End ${rep.label(spec.end, false)}.`}</Caption>
+      {switches.length > 0 ? (
+        <View style={styles.switches}>
+          {switches.map((hop, i) => {
+            const id = hop.sign as string;
+            const up = signOf(hop) > 0;
+            return (
+              <Pressable
+                key={id}
+                testID={`hop-sign-${i}`}
+                accessibilityRole="switch"
+                accessibilityState={{ checked: up }}
+                accessibilityLabel={`${rep.variable(hop.var).name}: ${up ? 'add' : 'take away'}`}
+                onPress={() =>
+                  calc.set({ ...rep.pin(ids.filter((x) => x !== spec.end)), [id]: up ? -1 : 1 })
+                }
+                style={[styles.switch, { borderColor: c.border, backgroundColor: c.card }]}
+              >
+                <Text style={[styles.switchText, { color: c.text }]}>
+                  {`${rep.variable(hop.var).name}: ${up ? '+ add' : '− take away'}`}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      ) : null}
       <Steppers
         calc={calc}
         items={[spec.start, ...spec.hops.map((x) => x.var)].map((id, _, all) => ({
@@ -126,3 +156,22 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  switches: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.lg,
+    marginBottom: space.sm,
+  },
+  switch: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: space.md,
+    borderWidth: 1.5,
+    borderRadius: radius.pill,
+  },
+  switchText: { fontSize: font.body, fontWeight: '600' },
+});

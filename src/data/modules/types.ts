@@ -57,6 +57,13 @@ export type Representation =
       marks?: string[];
       /** Counting by tens from `value`: dots on the numbers passed, one row down per ten. */
       tens?: { count: string };
+      /**
+       * Only a piece of the chart: `value` and the numbers before, after, above and below it
+       * (a hundred-chart puzzle); the other squares are blank.
+       */
+      piece?: boolean;
+      /** Shade every multiple of this value instead of every number up to `value`. */
+      multiplesOf?: string;
     }
   /** Two rows of objects lined up one-to-one, showing which has more (or is longer). */
   | {
@@ -67,6 +74,8 @@ export type Representation =
       icon: 'dot' | 'cube' | 'cup';
       /** Words for the comparison, e.g. ['more', 'fewer'] or ['longer', 'shorter']. */
       words: [string, string];
+      /** The thing measured, drawn above each row of cubes from the same left edge. */
+      object?: 'pencil' | 'ribbon' | 'crayon';
     }
   /**
    * Tape diagram. Part-whole: one bar cut into `parts`, with a bracket for the `total`.
@@ -105,7 +114,14 @@ export type Representation =
    */
   | {
       kind: 'polygon';
-      sides: string;
+      /** The number of sides (a stepper changes it). Not used with `sideValues`. */
+      sides?: string;
+      /**
+       * A shape with one side per value (3–6), each side labeled with its length and an
+       * unknown one as “?”; `around` is the perimeter, labeled under it.
+       */
+      sideValues?: string[];
+      around?: string;
       words?: 'corner' | 'angle';
       corners?: string;
       /**
@@ -196,7 +212,11 @@ export type Representation =
   | {
       kind: 'hops';
       start: string;
-      hops: { var: string; sign: 1 | -1 }[];
+      /**
+       * Each hop forward (1) or back (−1). A sign can name a variable holding 1 or −1: the hop
+       * then has a +/− switch that flips it.
+       */
+      hops: { var: string; sign: 1 | -1 | string }[];
       end: string;
       min: number;
       max: number;
@@ -222,7 +242,14 @@ export type Representation =
   /** Children in a line facing left; one is highlighted at `position`. Tap a child to pick. */
   | { kind: 'lineUp'; count: string; position: string; before: string; after: string }
   /** Equal groups: `groups` circles with `each` dots in each circle. the sliders change both. */
-  | { kind: 'equalGroups'; groups: string; each: string; total: string }
+  | {
+      kind: 'equalGroups';
+      groups: string;
+      each: string;
+      total: string;
+      /** 10: each item is a ten-rod, and `each` counts tens (4 groups of 6 tens). */
+      unit?: 10;
+    }
   /** A prism on a base with `sides` sides (a cube when the base is a square). the sliders change it. */
   | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }
   /** Objects arranged in pairs; an odd one sticks out. */
@@ -242,6 +269,8 @@ export type Representation =
       split?: { first: string; second: string; firstTotal: string; secondTotal: string };
       /** Also draw the array turned a quarter turn (rows become columns): 4 × 7 = 7 × 4. */
       turned?: boolean;
+      /** Label the sides: the rows at the left, the columns under; an unknown side reads “?”. */
+      sides?: boolean;
     }
   /** Objects measured against a ruler in the shown unit. Drag each object's end. */
   | {
@@ -253,6 +282,11 @@ export type Representation =
       from?: string;
       /** The mark where that object ends. */
       to?: string;
+      /**
+       * Half-inch (2) or quarter-inch (4) marks between the numbers: the lengths are then
+       * counted in those marks (9 quarter marks = 2 and 1/4 inches).
+       */
+      marks?: 2 | 4;
     }
   /** Coins by type, each with its value in cents; the sliders change the counts. */
   | {
@@ -277,8 +311,11 @@ export type Representation =
       min: number;
       max: number;
       total?: string;
-      /** A numbered scale on the left with a grid line every `scale` (bar graphs, Grade 2+). */
-      scale?: number;
+      /**
+       * A numbered scale on the left with a grid line every `scale` (bar graphs, Grade 2+); a
+       * variable id reads the spacing from that value (a scaled graph whose scale changes).
+       */
+      scale?: number | string;
       /** No number on top of each bar: read its height against the scale (scaled graphs). */
       readScale?: boolean;
     }
@@ -313,6 +350,8 @@ export type Representation =
       inside?: string;
       /** The perimeter: the outline is drawn heavy and labeled under the rectangle. */
       around?: string;
+      /** Draw the unit squares even with only a perimeter (to count the area too). */
+      grid?: boolean;
       extent: number;
     }
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
@@ -379,6 +418,13 @@ export type Representation =
       parts?: string[];
       /** The numerator as this many copies of one fraction (4 × 2/3): the runs alternate shade. */
       copies?: string;
+      /**
+       * A second line under the first, cut by another denominator, with its own point; a
+       * dashed line joins the two points when they are the same distance from 0.
+       */
+      second?: { numerator: string; denominator: string };
+      /** Tenths and hundredths as decimals: the tenths are labeled 0.1, 0.2 … and the point too. */
+      decimal?: boolean;
     }
   /**
    * Fraction bars of the same whole, one per row, with `num` of `den` parts shaded. `equal`
@@ -435,7 +481,13 @@ export type Representation =
   | {
       kind: 'rectilinear';
       left: { width: string; height: string; area: string };
-      right: { width: string; height: string; area: string };
+      /** A second rectangle standing beside the first on the same base (an L or a step). */
+      right?: { width: string; height: string; area: string };
+      /**
+       * Or a rectangle cut out of the first one's top right corner: the shape is the first
+       * rectangle take away this one (`total` = the first area − the cut area).
+       */
+      cut?: { width: string; height: string; area: string };
       total: string;
       extent: number;
     }
@@ -566,7 +618,8 @@ export type Representation =
       sweep: string;
       output: string;
       params: string[];
-      rows: number[];
+      /** The inputs, one per row; or worked out from the values (lengths 1 to half the perimeter − 1). */
+      rows: number[] | ((v: Values) => number[]);
       /** A sentence naming what a parameter's value means ("1 foot = 12 inches"), over the table. */
       named?: { param: string; names: Record<number, string> };
     }

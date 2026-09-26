@@ -16,11 +16,21 @@ function representationVars(r: Representation): string[] {
     case 'tenFrame':
       return [r.first, r.second, r.total].filter((v): v is string => typeof v === 'string');
     case 'hundredChart':
-      return [r.value, ...(r.marks ?? []), ...(r.tens ? [r.tens.count] : [])];
+      return [
+        r.value,
+        ...(r.marks ?? []),
+        ...(r.tens ? [r.tens.count] : []),
+        ...(r.multiplesOf ? [r.multiplesOf] : []),
+      ];
     case 'compareRows':
       return [r.a, r.b, ...(r.difference ? [r.difference] : [])];
     case 'polygon':
-      return [r.sides, ...(r.corners ? [r.corners] : [])];
+      return [
+        ...(r.sides ? [r.sides] : []),
+        ...(r.corners ? [r.corners] : []),
+        ...(r.sideValues ?? []),
+        ...(r.around ? [r.around] : []),
+      ];
     case 'balance':
       return [...r.left, ...r.right, ...(r.takeAway ? [r.takeAway] : [])];
     case 'baseTen':
@@ -49,7 +59,11 @@ function representationVars(r: Representation): string[] {
     case 'pairs':
       return [r.value];
     case 'hops':
-      return [r.start, ...r.hops.map((x) => x.var), r.end];
+      return [
+        r.start,
+        ...r.hops.flatMap((x) => (typeof x.sign === 'string' ? [x.var, x.sign] : [x.var])),
+        r.end,
+      ];
     case 'numberBond':
       return [r.whole, ...r.parts].filter((v): v is string => typeof v === 'string');
     case 'patternBlocks':
@@ -82,7 +96,13 @@ function representationVars(r: Representation): string[] {
     case 'rounding':
       return [r.value, r.lower, r.upper, r.rounded, ...(typeof r.to === 'string' ? [r.to] : [])];
     case 'fractionLine':
-      return [r.numerator, r.denominator, ...(r.parts ?? []), ...(r.copies ? [r.copies] : [])];
+      return [
+        r.numerator,
+        r.denominator,
+        ...(r.parts ?? []),
+        ...(r.copies ? [r.copies] : []),
+        ...(r.second ? [r.second.numerator, r.second.denominator] : []),
+      ];
     case 'fractionBars':
       return [...r.rows.flatMap((x) => [x.num, x.den]), ...r.controls];
     case 'timeline':
@@ -99,7 +119,10 @@ function representationVars(r: Representation): string[] {
     case 'quadrilateral':
       return [r.first, r.second, r.rightAngles];
     case 'rectilinear':
-      return [...[r.left, r.right].flatMap((p) => [p.width, p.height, p.area]), r.total];
+      return [
+        ...[r.left, r.right, r.cut].flatMap((p) => (p ? [p.width, p.height, p.area] : [])),
+        r.total,
+      ];
     case 'areaModel':
       return [...r.top, ...r.side, ...r.parts.flat(), r.total];
     case 'angles':
@@ -152,7 +175,11 @@ function representationVars(r: Representation): string[] {
     case 'cubeTrains':
       return [...r.rows.flat(2), r.total];
     case 'bars':
-      return [...r.bars.map((b) => b.var), ...(r.total ? [r.total] : [])];
+      return [
+        ...r.bars.map((b) => b.var),
+        ...(r.total ? [r.total] : []),
+        ...(typeof r.scale === 'string' ? [r.scale] : []),
+      ];
     case 'pictureGraph':
       return [
         ...r.columns.map((b) => b.var),

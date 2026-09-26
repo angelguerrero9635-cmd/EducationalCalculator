@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Circle, Line, Path } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
@@ -10,6 +10,100 @@ import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'fractionLine' }>;
+
+/** Decimal places for a denominator of 10 or 100. */
+const places = (b: number) => (b <= 10 ? 1 : 2);
+/** A decimal with its places, and a 0 before the point: 0.35. */
+const decimal = (x: number, p: number) => x.toFixed(p);
+
+/**
+ * The second line of a two-line comparison: its own marks and point, and a dashed line up to
+ * the first point when the two are equal (2/4 and 1/2 land on the same spot).
+ */
+function SecondLine({
+  spec,
+  rep,
+  c,
+  W,
+  px,
+  y,
+  first,
+  firstY,
+}: {
+  spec: NonNullable<Spec['second']>;
+  rep: ReturnType<typeof useRep>;
+  c: ReturnType<typeof usePalette>;
+  W: number;
+  px: (x: number) => number;
+  y: number;
+  first: number | undefined;
+  firstY: number;
+}) {
+  const known = rep.known(spec.numerator) && rep.known(spec.denominator);
+  const b = Math.max(1, Math.round(rep.shown(spec.denominator)));
+  const a = Math.max(0, Math.round(rep.shown(spec.numerator)));
+  const same = known && first !== undefined && Math.abs(a / b - first) < 1e-9;
+  return (
+    <G>
+      <Line
+        x1={px(0) - 6}
+        y1={y}
+        x2={px(W) + 6}
+        y2={y}
+        stroke={c.chartInk}
+        strokeWidth={chart.stroke}
+      />
+      {Array.from({ length: W * b + 1 }, (_, i) => (
+        <Line
+          key={`s${i}`}
+          x1={px(i / b)}
+          y1={y - (i % b === 0 ? 10 : 6)}
+          x2={px(i / b)}
+          y2={y + (i % b === 0 ? 10 : 6)}
+          stroke={c.chartInk}
+          strokeWidth={i % b === 0 ? chart.stroke : chart.strokeLight}
+        />
+      ))}
+      {Array.from({ length: W + 1 }, (_, i) => (
+        <ChartText
+          key={`sw${i}`}
+          x={px(i)}
+          y={y + 26}
+          fontSize={chart.value}
+          fontWeight="700"
+          textAnchor="middle"
+        >
+          {String(i)}
+        </ChartText>
+      ))}
+      {same ? (
+        <Line
+          x1={px(first!)}
+          y1={firstY}
+          x2={px(first!)}
+          y2={y}
+          stroke={c.chartHighlight}
+          strokeWidth={chart.strokeLight}
+          strokeDasharray={chart.dash}
+        />
+      ) : null}
+      {known ? (
+        <G>
+          <Circle cx={px(a / b)} cy={y} r={6} fill={c.chartInk} />
+          <ChartText
+            x={px(a / b)}
+            y={y - 14}
+            fontSize={chart.emphasis}
+            fontWeight="700"
+            textAnchor="middle"
+          >
+            {`${a}/${b}`}
+          </ChartText>
+        </G>
+      ) : null}
+    </G>
+  );
+}
 
 /** The jumps 0..a cut into runs by `runOf`: [from, to) of each run with at least one jump. */
 function runLabels(a: number, runOf: (i: number) => number): [number, number][] {
@@ -33,7 +127,13 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const b = Math.max(1, Math.round(rep.shown(spec.denominator)));
   const raw = Math.max(0, Math.round(rep.shown(spec.numerator)));
   // Enough wholes for the fraction (at least `wholes`), so 17/5 is drawn where it is.
-  const W = Math.max(spec.wholes, Math.ceil(raw / b));
+  const second = spec.second
+    ? Math.ceil(
+        Math.max(0, Math.round(rep.shown(spec.second.numerator))) /
+          Math.max(1, Math.round(rep.shown(spec.second.denominator))),
+      )
+    : 0;
+  const W = Math.max(spec.wholes, Math.ceil(raw / b), second);
   const a = raw;
   const known = rep.known(spec.numerator) && rep.known(spec.denominator);
   const wholes = Math.floor(a / b);
@@ -61,8 +161,9 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.5}>
-        {({ w, h }) => {
+      <Canvas aspect={spec.second ? 0.74 : 0.5}>
+        {({ w, h: full }) => {
+          const h = spec.second ? full * (0.5 / 0.74) : full;
           const pad = 22;
           const unit = (w - 2 * pad) / W;
           const px = (x: number) => pad + x * unit;
@@ -111,7 +212,32 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       {String(i)}
                     </ChartText>
                   ))}
-                {labelAll
+                {spec.decimal && b % 10 === 0
+                  ? Array.from({ length: W * 10 + 1 }, (_, i) => i)
+                      .filter((i) => i % 10 !== 0)
+                      .map((i) => (
+                        <G key={`d${i}`}>
+                          <Line
+                            x1={px(i / 10)}
+                            y1={y - 9}
+                            x2={px(i / 10)}
+                            y2={y + 9}
+                            stroke={c.chartInk}
+                            strokeWidth={chart.strokeLight}
+                          />
+                          <ChartText
+                            x={px(i / 10)}
+                            y={y + 24}
+                            fontSize={chart.tiny}
+                            fill={c.chartMuted}
+                            textAnchor="middle"
+                          >
+                            {decimal(i / 10, 1)}
+                          </ChartText>
+                        </G>
+                      ))
+                  : null}
+                {labelAll && !spec.decimal
                   ? Array.from({ length: W * b + 1 }, (_, i) => (
                       <ChartText
                         key={`f${i}`}
@@ -161,9 +287,21 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontWeight="700"
                       textAnchor="middle"
                     >
-                      {`${a}/${b}`}
+                      {spec.decimal ? decimal(a / b, places(b)) : `${a}/${b}`}
                     </ChartText>
                   </>
+                ) : null}
+                {spec.second ? (
+                  <SecondLine
+                    spec={spec.second}
+                    rep={rep}
+                    c={c}
+                    W={W}
+                    px={px}
+                    y={y + (full - h) + 4}
+                    first={known ? a / b : undefined}
+                    firstY={y}
+                  />
                 ) : null}
               </Svg>
               {known ? (
@@ -192,16 +330,18 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {known
-          ? `${a}/${b}: ${a} ${a === 1 ? 'jump' : 'jumps'} of 1/${b} from 0.` +
-            (spec.unit
-              ? ` That is ${wholes > 0 ? `${wholes} ${wholes === 1 ? spec.unit.one : spec.unit.many}` : ''}${wholes > 0 && left > 0 ? ' and ' : ''}${left > 0 || wholes === 0 ? `${left}/${b} ${spec.unit.one}` : ''}.`
-              : wholes > 0
-                ? left > 0
-                  ? ` That is ${wholes} ${wholes === 1 ? 'whole' : 'wholes'} and ${left}/${b} more.`
-                  : ` That is exactly ${wholes}: ${a}/${b} = ${wholes}.`
-                : '')
-          : 'Type the parts counted and the parts in one whole.'}
+        {known && spec.decimal
+          ? `${decimal(a / b, places(b))}: ${a} ${b === 10 ? 'tenths' : 'hundredths'} from 0.`
+          : known
+            ? `${a}/${b}: ${a} ${a === 1 ? 'jump' : 'jumps'} of 1/${b} from 0.` +
+              (spec.unit
+                ? ` That is ${wholes > 0 ? `${wholes} ${wholes === 1 ? spec.unit.one : spec.unit.many}` : ''}${wholes > 0 && left > 0 ? ' and ' : ''}${left > 0 || wholes === 0 ? `${left}/${b} ${spec.unit.one}` : ''}.`
+                : wholes > 0
+                  ? left > 0
+                    ? ` That is ${wholes} ${wholes === 1 ? 'whole' : 'wholes'} and ${left}/${b} more.`
+                    : ` That is exactly ${wholes}: ${a}/${b} = ${wholes}.`
+                  : '')
+            : 'Type the parts counted and the parts in one whole.'}
       </Caption>
       <Steppers
         calc={calc}
