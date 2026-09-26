@@ -107,6 +107,20 @@ with a gallery page (`/gallery`, now showing layout demos too) and a harness che
   inches) instead of "bigger" and "smaller" units. Names like "x-coordinate" stay out before
   Grade 6: the pages say across and up.
 
+## Grade 6 (Sections 3 and 7, first review)
+
+- Metric-only pages still offered Mixed (US) units. → `unitOptions` honors `unitSystems` for
+  Mixed too.
+- A Grade 6 words page could not show "3x + 5" without every value becoming a letter. → A page
+  can list the letters it teaches (`letters: ['x']`); the standards test allows only those.
+- Explore figures reused React keys between scenes and left stale shapes; a map was scaled by
+  width only and cut off. → Unique keys per figure part; figures fit both dimensions. Still
+  wanted: a check that every shape fits inside its picture, and one for a label drawn over an
+  arrow of its own color.
+- A drag moved a point off the line it stands for. → The two-quantities page uses the plot
+  (the point moves along the line with its rate held). Still wanted: a test that drags every
+  handle and checks the relations still hold.
+
 ## Grade 6 build (Sections 3 and 7, from the reviewer's plans)
 
 - Grade 6 is where letters arrive, but a student can open ratios before expressions. → A

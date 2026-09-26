@@ -5,6 +5,31 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Grade 6 math and science: two lesson-reviewers and two page-reviewers, 92 pages
+
+- Cost: math lesson 219k tokens (57 calls, 11 min), science lesson 144k (32 calls, 8 min),
+  math page 91k (58 calls, 9 min), science page 134k (111 calls, 14 min). About 588k for 92
+  pages, 6k per page. The lesson reviewers had planned these pages first, so they checked the
+  build against their own plans.
+- Found and fixed: letters the plan did not allow (the coefficient and constant on the
+  expressions pages; a page can now name the one letter it teaches); dividing fractions never
+  wrote the division or checked by multiplying back; a two-quantities point that left its line;
+  metric-only science pages still offering US units; rock types sorted by texture; a layer
+  older than Earth; cards that named their own group; three figures that did not show their
+  scene (cold front, continents, uplift).
+- Reviewers: check Q (count or amount) was added mid-review after the owner's line-plot
+  finding; both lesson reviewers ran it. The page reviewers asked for drag results and every
+  explore scene in the evidence: the science page reviewer shot all 47 scenes itself, and the
+  two-quantities error showed only in a browser drag. → Next: `review-evidence.mjs` should
+  shoot every explore scene and drag every handle, printing the values after.
+- Evidence gaps the lesson reviewers named: no walkthrough where a starting value is the
+  unknown (find the whole, find the base); they read those from code.
+- Left for later (logged, not blocking): decimal standard-algorithm grids (the grid must end
+  at the decimal answer), registry units on the speed page (the double number line needs
+  unit-aware labels), net edge labels, histogram bars that touch, a vertical density column,
+  dragging the graduated cylinder, named organs on the body figure, front symbols, a climate
+  clue on Pangaea.
+
 ## Owner finding: a count read as an amount (line plots, Grades 2–5)
 
 - Missed by every review: the Grade 5 line plot of beakers labelled each count "At 1/8 L: 2"
