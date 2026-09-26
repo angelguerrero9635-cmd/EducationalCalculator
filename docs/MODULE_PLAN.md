@@ -50,18 +50,25 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   New explore figures: a light path (lamp, apple, eye, hand or mirror), particles (solid,
   liquid, gas, mixed, squeezed) and Earth (the pull toward the center, and the sunlit half
   through a day).
-- **Section 6, Science K–3.** 24 skill pages plus 31 problem types after two reviews (six of
-  them sort, sequence, explore or observe layouts rather than calculators), each with one honest
-  counting or measuring model from the class investigation (NGSS K-PS2 to 3-ESS2): pushes
-  forward and back on a number line, thermometers in the sun and shade, seeds that sprouted,
-  a weather tally, trees planted and cut, vibrations per second as waves, shadow lengths on a
-  ruler, plant parts end to end, puppies like the parent, hours of daylight, drops a material
-  soaks up, heating and cooling on a thermometer, plants in sun and shade, bee visits, kinds
-  in a habitat, a river bank worn away year by year, Earth's water as 100 cups, pushes on a
-  box (balanced and unbalanced), clips a magnet lifts through paper (a table), life-cycle
-  stages as a bar, fur colors in a litter, rock layers over a fossil, a herd's adults and
-  young, and rain by week. New pictures: thermometers, rock layers and a pushed box. Grade 3 keeps letters as
-  labels only; K–2 keeps to names and number sentences.
+- **Section 6, Science K–3.** Rebuilt from the reviewer's direction plan
+  (`.review/plan/plan-science-k3.md`, NGSS K-PS2 to 3-ESS3). A calculator stays only where the
+  class measures or counts something honest: how far a car rolls after a hard and a gentle
+  push, sun and shade thermometers, seeds that sprouted, a two-week weather tally, litter by
+  kind, rice that jumped, hours of daylight, morning and noon shadows, drops soaked up,
+  heating and cooling readings, plants in sun and shade, seeds on a fuzzy sock, kinds in two
+  habitats, a stream table with and without a wall, Earth's water as parts of a fixed 100
+  cups, pushes on a box, a chain of clips, fur colors in a litter, rock layers over two
+  fossils, finches after a dry year and rain by week. Every other idea is a layout: sorts
+  (shade, needs, homes, who changed the land, choices that help, beaks with drawn shapes,
+  copied tools, same or different, parent care, best material, fair test, which habitat,
+  slowing wind and water, solid or liquid water, balanced forces, magnetic or not, traits,
+  fossil clues, desert survival, group jobs, weather hazards, climates), sequences (storm,
+  cup phone, moon shapes, pollination, butterfly, frog, bean), explorations (which way a push
+  sends a ball, sound as shaking, light and shadows with a wall, the sun across the sky,
+  static electricity, plant and animal parts, herds) and observations (temperature through
+  the day, plant height, pendulum swings, clips through paper, seasons). K stays within 10
+  and Grade 1 within 20; a story's order (hard push ≥ gentle push) is a constraint, so a note
+  never calls the smaller one bigger.
 - **Section 2, Grade 5.** Reviewed once. Order of operations with parentheses (the value
   inside as equal groups on a tape, the last number taken off the end; a divide page); powers of 10
   and exponents (the product on a place-value chart, plus a decimal times a power of 10 with

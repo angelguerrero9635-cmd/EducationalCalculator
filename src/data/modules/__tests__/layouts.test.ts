@@ -125,7 +125,10 @@ describe.each(LAYOUTS.map((l) => [l.id, l] as [string, LayoutDef]))('layout %s',
       case 'sequence':
         expect(l.stages.length).toBeGreaterThanOrEqual(3);
         expect(new Set(l.stages.map((s) => s.label)).size).toBe(l.stages.length);
-        if (l.totalLabel) expect(l.stages.every((s) => s.span !== undefined)).toBe(true);
+        // Every stage has a span, except that the last may be the end point (a frog).
+        if (l.totalLabel) {
+          expect(l.stages.slice(0, -1).every((s) => s.span !== undefined)).toBe(true);
+        }
         break;
       case 'explore':
         expect(l.scenes.length).toBeGreaterThanOrEqual(2);

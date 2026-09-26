@@ -1026,12 +1026,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sequence',
-    id: 's.3.life-cycles~order',
-    title: 'Stages of a butterfly in order',
-    use: 'Use this to put the butterfly’s stages in order and add up the days.',
+    id: 's.3.life-cycles',
     assumptions: [
       'A life cycle goes round: egg, caterpillar, chrysalis, butterfly, then eggs again.',
-      'Each stage takes about the same number of days for one kind of butterfly.',
+      'One kind of butterfly takes about the same days each time.',
       'Tap the stages in order. The days add up under the strip.',
     ],
     question: 'Put the stages in order, starting with the egg.',
@@ -1099,6 +1097,358 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       return `Warmest: ${seasons[hi]} (${v[hi]} ${F}). Coldest: ${seasons[lo]} (${v[lo]} ${F}). ${seasons[hi]![0]!.toUpperCase()}${seasons[hi]!.slice(1)} is ${v[hi]! - v[lo]!} ${F} warmer than ${seasons[lo]}.`;
     },
   },
+  {
+    kind: 'sort',
+    id: 's.3.balanced-forces~balanced',
+    title: 'Balanced or unbalanced?',
+    use: 'Use this to sort pushes and pulls into balanced and unbalanced.',
+    assumptions: [
+      'Every object has forces on it, even when it is still.',
+      'Balanced forces do not change the motion.',
+    ],
+    question: 'Do the forces balance?',
+    bins: [
+      {
+        id: 'balanced',
+        label: 'Balanced',
+        why: 'Equal forces, opposite ways. Nothing starts or stops.',
+      },
+      { id: 'unbalanced', label: 'Unbalanced', why: 'One force is bigger. The motion changes.' },
+    ],
+    cards: [
+      { label: 'Book resting on a table', bin: 'balanced' },
+      { label: 'Tug of war with no one moving', bin: 'balanced' },
+      { label: 'A swing hanging still', bin: 'balanced' },
+      { label: 'Kicked ball starts to roll', bin: 'unbalanced' },
+      { label: 'Bike braking to a stop', bin: 'unbalanced' },
+      { label: 'Apple falling', bin: 'unbalanced' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.3.balanced-forces~swings',
+    title: 'A pendulum’s pattern',
+    use: 'Use this to record a pendulum’s swings and predict the next.',
+    assumptions: [
+      'A pendulum is a weight on a string. It keeps a steady beat.',
+      'Count its swings every 10 seconds. Tap a bar to change a count.',
+    ],
+    columns: ['10 seconds', '20 seconds', '30 seconds', '40 seconds', '50 seconds', '60 seconds'],
+    rowLabel: 'Swings so far',
+    unit: 'swings',
+    max: 60,
+    step: 1,
+    initial: [8, 16, 24, 32, 40, 48],
+    pattern: (v) => {
+      const first = v[0]!;
+      const last = v[v.length - 1]!;
+      const steps = v.slice(1).map((x, i) => x - v[i]!);
+      const steady = steps.every((d) => d === first);
+      if (last === 0) return 'No swings yet. Start the pendulum and count.';
+      return steady
+        ? `It adds ${first} swings every 10 seconds. In 70 seconds: ${last + first}.`
+        : `It adds about ${Math.round(last / v.length)} swings every 10 seconds. In 60 seconds: ${last}.`;
+    },
+  },
+  {
+    kind: 'observe',
+    id: 's.3.magnets',
+    assumptions: [
+      'A magnet pulls on iron without touching it.',
+      'Paper does not block the pull. It only adds distance.',
+      'Put sheets of paper between the magnet and the clips. Count the clips lifted.',
+    ],
+    columns: ['0 sheets', '1 sheet', '2 sheets', '3 sheets', '4 sheets', '5 sheets'],
+    rowLabel: 'Clips lifted',
+    unit: 'clips',
+    max: 20,
+    step: 1,
+    initial: [12, 9, 6, 4, 3, 2],
+    pattern: (v) => {
+      const first = v[0]!;
+      const last = v[v.length - 1]!;
+      if (last < first)
+        return 'The more paper between, the fewer clips it lifts. The pull is weaker farther away.';
+      if (last > first) return 'More clips with more paper? Check the magnet and try again.';
+      return 'The same clips every time. Try a weaker magnet or thicker paper.';
+    },
+  },
+  {
+    kind: 'sort',
+    id: 's.3.magnets~magnetic',
+    title: 'What a magnet pulls',
+    use: 'Use this to sort things a magnet pulls.',
+    assumptions: ['Magnets pull on iron and steel.', 'Not every metal is pulled.'],
+    question: 'Does a magnet pull it?',
+    bins: [
+      { id: 'pulled', label: 'Pulled', why: 'It has iron or steel in it.' },
+      { id: 'not', label: 'Not pulled', why: 'Magnets do not pull on these.' },
+    ],
+    cards: [
+      { label: 'Paper clip', bin: 'pulled' },
+      { label: 'Iron nail', bin: 'pulled' },
+      { label: 'Steel spoon', bin: 'pulled' },
+      { label: 'Fridge door', bin: 'pulled' },
+      { label: 'Aluminum can', bin: 'not' },
+      { label: 'Penny', bin: 'not' },
+      { label: 'Wooden block', bin: 'not' },
+      { label: 'Rubber band', bin: 'not' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.3.magnets~static',
+    title: 'Static electricity',
+    use: 'Use this to see electric pulls and pushes.',
+    assumptions: [
+      'Rubbing a balloon on hair gives it an electric charge.',
+      'A charged balloon pulls or pushes without touching.',
+    ],
+    figure: { kind: 'static' },
+    scenes: [
+      {
+        label: 'Not rubbed',
+        charge: { rubbed: false, near: 'paper' },
+        lines: ['Nothing happens.'],
+      },
+      {
+        label: 'Rubbed, near paper bits',
+        charge: { rubbed: true, near: 'paper' },
+        lines: ['The bits jump up to the balloon.'],
+      },
+      {
+        label: 'Rubbed, near your hair',
+        charge: { rubbed: true, near: 'hair' },
+        lines: ['Your hair lifts toward it.'],
+      },
+      {
+        label: 'Rubbed, on a wall',
+        charge: { rubbed: true, near: 'wall' },
+        lines: ['The balloon sticks to the wall.'],
+      },
+      {
+        label: 'Two rubbed balloons',
+        charge: { rubbed: true, near: 'balloon' },
+        lines: ['They push each other apart.'],
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.3.life-cycles~frog',
+    title: 'From egg to frog',
+    use: 'Use this to put a frog’s stages in order and add up the days.',
+    assumptions: [
+      'A frog starts as an egg in the water.',
+      'It hatches as a tadpole, then grows legs as a froglet.',
+    ],
+    question: 'Put the stages in order, starting with the egg.',
+    stages: [
+      { label: 'Egg', span: 10 },
+      { label: 'Tadpole', span: 84 },
+      { label: 'Froglet', span: 28 },
+      { label: 'Frog' },
+    ],
+    unit: 'days',
+    totalLabel: 'Egg to frog',
+  },
+  {
+    kind: 'sequence',
+    id: 's.3.life-cycles~bean',
+    title: 'A bean plant’s life cycle',
+    use: 'Use this to put a bean plant’s stages in order.',
+    assumptions: ['Plants have life cycles too.', 'The new seeds can start the cycle again.'],
+    question: 'Put the stages in order, starting with the seed.',
+    stages: [
+      { label: 'Seed', span: 7 },
+      { label: 'Sprout', span: 14 },
+      { label: 'Young plant', span: 28 },
+      { label: 'Plant with flowers', span: 14 },
+      { label: 'Pods with new seeds' },
+    ],
+    unit: 'days',
+    totalLabel: 'Seed to new seeds',
+  },
+  {
+    kind: 'sort',
+    id: 's.3.life-cycles~changes',
+    title: 'Change shape or grow bigger?',
+    use: 'Use this to sort animals by how they grow.',
+    assumptions: [
+      'Every life cycle has birth, growth, young and death.',
+      'Some animals change shape as they grow.',
+    ],
+    question: 'How does it grow up?',
+    bins: [
+      {
+        id: 'shape',
+        label: 'Changes shape',
+        why: 'The young look very different from the adult.',
+      },
+      { id: 'bigger', label: 'Grows bigger', why: 'The young look like a small adult.' },
+    ],
+    cards: [
+      { label: 'Butterfly', bin: 'shape' },
+      { label: 'Frog', bin: 'shape' },
+      { label: 'Ladybug', bin: 'shape' },
+      { label: 'Mosquito', bin: 'shape' },
+      { label: 'Dog', bin: 'bigger' },
+      { label: 'Turtle', bin: 'bigger' },
+      { label: 'Chicken', bin: 'bigger' },
+      { label: 'Human', bin: 'bigger' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.3.inherited-traits',
+    assumptions: [
+      'A trait is something about a living thing you can observe.',
+      'Some traits come from parents. Some come from where it lives.',
+    ],
+    question: 'Where does this trait come from?',
+    bins: [
+      { id: 'inherited', label: 'Inherited', why: 'Passed from parents to young.' },
+      {
+        id: 'environment',
+        label: 'Environment',
+        why: 'Caused by where it lives or what happens to it.',
+      },
+      { id: 'learned', label: 'Learned', why: 'The animal or person learned it.' },
+    ],
+    cards: [
+      { label: 'Eye color', bin: 'inherited' },
+      { label: 'Flower color', bin: 'inherited' },
+      { label: 'Number of legs', bin: 'inherited' },
+      { label: 'A scar', bin: 'environment' },
+      { label: 'A plant bent by wind', bin: 'environment' },
+      { label: 'A pale plant grown in the dark', bin: 'environment' },
+      { label: 'A dog sits on command', bin: 'learned' },
+      { label: 'Riding a bike', bin: 'learned' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.3.adaptation-fossils',
+    assumptions: [
+      'A fossil is what is left of a living thing from long ago, kept in rock.',
+      'A fossil tells what the place was like when it lived.',
+    ],
+    question: 'What was this place like long ago?',
+    bins: [
+      {
+        id: 'water',
+        label: 'Under water',
+        why: 'Water animals lived here, so it was sea or lake.',
+      },
+      { id: 'wet', label: 'Warm and wet land', why: 'Ferns and swamp plants grew here.' },
+      { id: 'cold', label: 'Cold', why: 'Animals with thick fur lived here.' },
+    ],
+    cards: [
+      { label: 'Fish', bin: 'water' },
+      { label: 'Shell', bin: 'water' },
+      { label: 'Coral', bin: 'water' },
+      { label: 'Shark tooth', bin: 'water' },
+      { label: 'Fern leaf', bin: 'wet' },
+      { label: 'Dragonfly', bin: 'wet' },
+      { label: 'Woolly mammoth hair', bin: 'cold' },
+      { label: 'Musk ox', bin: 'cold' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.3.adaptation-fossils~survive-where',
+    title: 'Who lives well in the desert?',
+    use: 'Use this to sort how well each lives in the desert.',
+    assumptions: [
+      'In any habitat, some living things survive well.',
+      'Some survive less well. Some cannot survive at all.',
+    ],
+    question: 'How well does it live in the desert?',
+    bins: [
+      { id: 'well', label: 'Well', why: 'Its body saves water and handles heat.' },
+      { id: 'less', label: 'Less well', why: 'It can live there, but it is hard.' },
+      { id: 'not', label: 'Not at all', why: 'It needs water, shade or cold the desert lacks.' },
+    ],
+    cards: [
+      { label: 'Camel', bin: 'well' },
+      { label: 'Cactus', bin: 'well' },
+      { label: 'Rabbit', bin: 'less' },
+      { label: 'Coyote', bin: 'less' },
+      { label: 'Frog', bin: 'not' },
+      { label: 'Polar bear', bin: 'not' },
+      { label: 'Fern', bin: 'not' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.3.animal-groups~group-jobs',
+    title: 'How a group helps',
+    use: 'Use this to sort how living in a group helps.',
+    assumptions: ['Some animals live in groups.', 'The group helps each member survive.'],
+    question: 'How does the group help?',
+    bins: [
+      { id: 'food', label: 'Find food', why: 'Many hunters catch bigger prey.' },
+      { id: 'safe', label: 'Stay safe', why: 'Many eyes spot danger.' },
+      { id: 'warm', label: 'Stay warm', why: 'Close bodies share heat.' },
+    ],
+    cards: [
+      { label: 'Wolf pack hunting', bin: 'food' },
+      { label: 'Ants carrying food', bin: 'food' },
+      { label: 'Zebra herd', bin: 'safe' },
+      { label: 'School of fish', bin: 'safe' },
+      { label: 'Meerkat lookout', bin: 'safe' },
+      { label: 'Penguin huddle', bin: 'warm' },
+      { label: 'Bees in a winter ball', bin: 'warm' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.3.weather-climate~hazards',
+    title: 'Designs against bad weather',
+    use: 'Use this to match each design to the weather it protects against.',
+    assumptions: ['Some weather is dangerous.', 'People design ways to stay safe.'],
+    question: 'Which weather does it protect against?',
+    bins: [
+      { id: 'flood', label: 'Flood', why: 'It keeps water out or lifts things above it.' },
+      { id: 'wind', label: 'Strong wind', why: 'It holds things down or keeps them shut.' },
+      { id: 'lightning', label: 'Lightning', why: 'It keeps the strike away from people.' },
+    ],
+    cards: [
+      { label: 'Sandbag wall', bin: 'flood' },
+      { label: 'House on stilts', bin: 'flood' },
+      { label: 'Levee', bin: 'flood' },
+      { label: 'Storm shutters', bin: 'wind' },
+      { label: 'Tied-down roof', bin: 'wind' },
+      { label: 'Storm shelter', bin: 'wind' },
+      { label: 'Lightning rod', bin: 'lightning' },
+      { label: 'Going indoors', bin: 'lightning' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.3.weather-climate~regions',
+    title: 'Climates around the world',
+    use: 'Use this to sort places by their climate.',
+    assumptions: [
+      'Climate is the usual weather of a place over many years.',
+      'Different regions have different climates.',
+    ],
+    question: 'What is the climate like?',
+    bins: [
+      { id: 'wet', label: 'Hot and wet', why: 'Warm all year with lots of rain.' },
+      { id: 'dry', label: 'Hot and dry', why: 'Hot days and very little rain.' },
+      { id: 'cold', label: 'Cold', why: 'Cold most of the year, with snow and ice.' },
+    ],
+    cards: [
+      { label: 'Amazon rainforest', bin: 'wet' },
+      { label: 'Hawaii', bin: 'wet' },
+      { label: 'Sahara', bin: 'dry' },
+      { label: 'Arizona desert', bin: 'dry' },
+      { label: 'Alaska', bin: 'cold' },
+      { label: 'Antarctica', bin: 'cold' },
+    ],
+  },
+
   // ── Grade 4 ──
   {
     kind: 'observe',

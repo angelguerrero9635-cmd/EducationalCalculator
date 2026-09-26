@@ -113,6 +113,7 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
           {`${spec.stages
             .slice(0, placed)
             .map((s) => s.span)
+            .filter((x) => x !== undefined)
             .join(' + ')} = ${total} ${spec.unit ?? ''}`.trim()}
           {done ? `. ${spec.totalLabel}: ${total} ${spec.unit ?? ''}`.trimEnd() : ''}
         </Text>

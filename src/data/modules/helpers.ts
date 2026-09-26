@@ -265,6 +265,8 @@ export function apart(
    * already says the order ("the warmest month is warmer" says nothing), or give your own.
    */
   note?: false | ((aMore: boolean) => string),
+  /** The note when the two are equal ("balanced: the box stays still"). */
+  sameNote = 'the same',
 ) {
   const relation = {
     id: `${d} = ${a} and ${b} apart`,
@@ -290,7 +292,7 @@ export function apart(
       work: (v) => subtractStrategy(Math.max(v[a]!, v[b]!), Math.min(v[a]!, v[b]!)),
       note: (v) =>
         v[a]! === v[b]!
-          ? '(the same)'
+          ? `(${sameNote})`
           : note === false || (note === undefined && presupposed)
             ? ''
             : note

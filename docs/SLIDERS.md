@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-22 of 228 pages show sliders.
+22 of 222 pages show sliders.
 
 ## By picture kind
 
@@ -14,7 +14,7 @@ its kind with `sliders: true | false`.
 | --- | ---: | :---: | --- |
 | angles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | areaModel | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
-| array | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| array | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | bars | 16 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseTen | 11 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -63,10 +63,10 @@ its kind with `sliders: true | false`.
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 11 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 24 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 22 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -245,19 +245,13 @@ its kind with `sliders: true | false`.
 | s.2.water-on-earth~salty | tape | no |
 | s.2.water-on-earth~fresh | tape | no |
 | s.3.balanced-forces | pushes | no |
-| s.3.balanced-forces~tug | skipCount | no |
-| s.3.balanced-forces~swings | skipCount | no |
-| s.3.magnets | table | no |
 | s.3.magnets~chain | bars | no |
-| s.3.life-cycles | tape | no |
-| s.3.life-cycles~frog | tape | no |
-| s.3.inherited-traits | pictureGraph | no |
+| s.3.inherited-traits~litter | pictureGraph | no |
 | s.3.inherited-traits~environment | bars | no |
-| s.3.adaptation-fossils | rockLayers | no |
+| s.3.adaptation-fossils~layers | rockLayers | no |
 | s.3.adaptation-fossils~survive | bars | no |
 | s.3.weather-climate | bars | no |
 | s.3.weather-climate~range | thermometers | no |
-| s.3.weather-climate~flood | array | no |
 | m.5.order-of-operations | tape | no |
 | m.5.order-of-operations~divide | equalGroups | no |
 | m.5.powers-of-ten | placeValueChart | no |

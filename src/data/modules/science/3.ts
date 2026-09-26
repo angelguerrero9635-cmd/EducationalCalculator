@@ -3,8 +3,7 @@
  * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import type { Values } from '@/engine/types';
-import { FAHRENHEIT, apart, sum2, sumAll, times, whole } from '../helpers';
+import { FAHRENHEIT, apart, sumAll, whole } from '../helpers';
 import type { ModuleDef } from '../types';
 
 const F = FAHRENHEIT;
@@ -19,6 +18,8 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       ['push to the right', 'push to the left'],
       ['bigger', 'smaller'],
       'The bigger push wins. The extra push is the bigger push take away the smaller one.',
+      undefined,
+      'balanced: the box stays still',
     );
     return {
       id: 's.3.balanced-forces',
@@ -28,9 +29,9 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         'When one push is bigger, the box moves that way. The extra push is the difference.',
       ],
       variables: [
-        { ...whole('r', 'r', 'Push to the right', 0, 100), unit: 'N' },
-        { ...whole('l', 'l', 'Push to the left', 0, 100), unit: 'N' },
-        { ...whole('e', 'e', 'Extra push', 0, 100), unit: 'N' },
+        { ...whole('r', 'r', 'Push to the right', 0, 50), unit: 'N' },
+        { ...whole('l', 'l', 'Push to the left', 0, 50), unit: 'N' },
+        { ...whole('e', 'e', 'Extra push', 0, 50), unit: 'N' },
       ],
       relations: [extra.relation],
       steps: { 'e = r and l apart': extra.steps },
@@ -39,120 +40,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       representation: { kind: 'pushes', right: 'r', left: 'l', extra: 'e', max: 40 },
     } satisfies ModuleDef;
   })(),
-  (() => {
-    const team = times(
-      't = k × p',
-      ['k', 'p', 't'],
-      ['children', 'pull of each child', 'team pull'],
-    );
-    return {
-      id: 's.3.balanced-forces~tug',
-      title: 'Adding up a team’s pull',
-      use: 'Use this to add up a team’s pull in a tug of war.',
-      assumptions: [
-        'In a tug of war, every child on a team pulls the same way.',
-        'Use a spring scale to measure one child’s pull.',
-      ],
-      variables: [
-        whole('k', 'k', 'Children', 0, 10),
-        { ...whole('p', 'p', 'Pull of each child', 1, 50), unit: 'N' },
-        { ...whole('t', 't', 'Team pull', 0, 500), unit: 'N' },
-      ],
-      relations: [team.relation],
-      steps: { 't = k × p': team.steps },
-      example: { k: 4, p: 30, t: 120 },
-      startWith: ['k', 'p'],
-      representation: { kind: 'skipCount', step: 'p', count: 'k', total: 't' },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const swings = times(
-      's = p × k',
-      ['p', 'k', 's'],
-      ['swings in 10 seconds', 'tens of seconds', 'swings'],
-      '{p} × {k} = {s}',
-    );
-    const tens = {
-      id: 'k = w ÷ 10',
-      display: '{w} ÷ 10 = {k}',
-      vars: ['k', 'w'],
-      residual: (v: Values) => v.k! - v.w! / 10,
-      solve: {
-        k: (v: Values) => v.w! / 10,
-        w: (v: Values) => v.k! * 10,
-      },
-    };
-    return {
-      id: 's.3.balanced-forces~swings',
-      title: 'A pendulum’s pattern',
-      use: 'Use this to predict a pendulum’s swings from its steady pattern.',
-      assumptions: [
-        'A pendulum is a weight on a string. Once it swings, it keeps a steady beat.',
-        'It makes the same number of swings every 10 seconds, so you can predict the next 10.',
-        'Count the tens in the seconds: 30 seconds is 3 tens.',
-      ],
-      variables: [
-        whole('p', 'p', 'Swings in 10 seconds', 1, 20),
-        { ...whole('w', 'w', 'Seconds', 10, 60), unit: 'seconds', step: 10, multipleOf: 10 },
-        whole('k', 'k', 'Tens of seconds', 1, 6),
-        whole('s', 's', 'Swings', 1, 120),
-      ],
-      relations: [tens, swings.relation],
-      steps: {
-        'k = w ÷ 10': {
-          k: { expr: '{w} ÷ 10', how: 'Count the tens in the seconds.' },
-          w: { expr: '{k} × 10', how: 'Each ten of seconds is 10 seconds.' },
-        },
-        's = p × k': swings.steps,
-      },
-      example: { p: 8, w: 30, k: 3, s: 24 },
-      startWith: ['p', 'w'],
-      representation: { kind: 'skipCount', step: 'p', count: 'k', total: 's' },
-    } satisfies ModuleDef;
-  })(),
   // ── Magnets: forces at a distance (3-PS2-3, 3-PS2-4) ──
-  (() => {
-    const lost = times(
-      'l = s × f',
-      ['s', 'f', 'l'],
-      ['sheets', 'clips lost for each sheet', 'clips lost'],
-      '{s} × {f} = {l}',
-    );
-    const left = sum2(
-      'c = n − l',
-      ['c', 'l', 'n'],
-      ['clips lifted', 'clips lost', 'clips with no paper'],
-      '{n} − {l} = {c}',
-    );
-    return {
-      id: 's.3.magnets',
-      pictureLabels: ['l'],
-      assumptions: [
-        'A magnet pulls on a paper clip without touching it.',
-        'The pull gets weaker as the magnet gets farther away.',
-        'In this test, each sheet of paper costs about the same number of clips.',
-        'Use fewer sheets than it takes to drop every clip.',
-      ],
-      variables: [
-        whole('n', 'n', 'Clips with no paper', 0, 20),
-        whole('f', 'f', 'Clips lost for each sheet', 1, 5),
-        whole('s', 's', 'Sheets of paper', 0, 5),
-        whole('l', 'l', 'Clips lost', 0, 20),
-        whole('c', 'c', 'Clips lifted', 0, 20),
-      ],
-      relations: [lost.relation, left.relation],
-      steps: { 'l = s × f': lost.steps, 'c = n − l': left.steps },
-      example: { n: 12, f: 2, s: 3, l: 6, c: 6 },
-      startWith: ['n', 'f', 's'],
-      representation: {
-        kind: 'table',
-        sweep: 's',
-        output: 'c',
-        params: ['n', 'f'],
-        rows: [0, 1, 2, 3, 4, 5],
-      },
-    } satisfies ModuleDef;
-  })(),
   (() => {
     const more = apart('m', 'a', 'b', ['first magnet', 'second magnet'], ['stronger', 'weaker']);
     return {
@@ -185,67 +73,17 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-  // ── Life cycles (3-LS1-1) ──
-  (() => {
-    const cycle = sumAll(
-      'd = egg + caterpillar + chrysalis + butterfly',
-      ['e', 'c', 'h', 'b'],
-      'd',
-      'stages',
-    );
-    return {
-      id: 's.3.life-cycles',
-      assumptions: [
-        'Every animal is born, grows, has young and dies. The stages repeat: a life cycle.',
-        'A butterfly is an egg, then a caterpillar, then a chrysalis, then a butterfly.',
-        'Add the days of every stage to find the whole life cycle.',
-      ],
-      variables: [
-        { ...whole('e', 'e', 'Egg', 1, 30), unit: 'days' },
-        { ...whole('c', 'c', 'Caterpillar', 1, 60), unit: 'days' },
-        { ...whole('h', 'h', 'Chrysalis', 1, 60), unit: 'days' },
-        { ...whole('b', 'b', 'Butterfly', 1, 60), unit: 'days' },
-        { ...whole('d', 'd', 'Whole cycle', 4, 210), unit: 'days' },
-      ],
-      relations: [cycle.relation],
-      steps: { 'd = egg + caterpillar + chrysalis + butterfly': cycle.steps },
-      example: { e: 4, c: 14, h: 10, b: 14, d: 42 },
-      startWith: ['e', 'c', 'h', 'b'],
-      representation: { kind: 'tape', parts: ['e', 'c', 'h', 'b'], total: 'd' },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const cycle = sumAll('d = egg + tadpole + froglet', ['e', 't', 'f'], 'd', 'stages');
-    return {
-      id: 's.3.life-cycles~frog',
-      title: 'From egg to frog',
-      use: 'Use this to add the stages from egg to frog.',
-      assumptions: [
-        'A frog starts as an egg in the water, hatches as a tadpole, then grows legs as a froglet.',
-        'Add the days of each stage to find how long it takes to become a frog.',
-      ],
-      variables: [
-        { ...whole('e', 'e', 'Egg', 1, 30), unit: 'days' },
-        { ...whole('t', 't', 'Tadpole', 1, 120), unit: 'days' },
-        { ...whole('f', 'f', 'Froglet', 1, 60), unit: 'days' },
-        { ...whole('d', 'd', 'Days to become a frog', 3, 210), unit: 'days' },
-      ],
-      relations: [cycle.relation],
-      steps: { 'd = egg + tadpole + froglet': cycle.steps },
-      example: { e: 10, t: 84, f: 28, d: 122 },
-      startWith: ['e', 't', 'f'],
-      representation: { kind: 'tape', parts: ['e', 't', 'f'], total: 'd' },
-    } satisfies ModuleDef;
-  })(),
   // ── Inherited traits and the environment (3-LS3-1, 3-LS3-2) ──
   (() => {
     const litter = sumAll('p = brown + black + spotted', ['b', 'k', 's'], 'p', 'fur colors');
     return {
-      id: 's.3.inherited-traits',
+      id: 's.3.inherited-traits~litter',
+      title: 'Fur colors in a litter',
+      use: 'Use this to graph a litter’s fur colors and see the variation.',
       assumptions: [
         'A trait is something about a living thing you can observe, like fur color.',
-        'Young inherit traits from their parents, but not all the young are the same.',
-        'Count the puppies with each fur color.',
+        'Young inherit traits from their parents.',
+        'Puppies from the same parents are not all the same.',
       ],
       variables: [
         whole('b', 'b', 'Brown', 0, 10),
@@ -313,7 +151,9 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       'Take the smaller number of layers away from the bigger one.',
     );
     return {
-      id: 's.3.adaptation-fossils',
+      id: 's.3.adaptation-fossils~layers',
+      title: 'Which fossil is older?',
+      use: 'Use this to tell which of two fossils is older from the rock layers.',
       pictureLabels: ['d'],
       assumptions: [
         'A fossil is what is left of a living thing from long ago, kept in rock.',
@@ -439,41 +279,6 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         difference: 'r',
         min: 0,
         max: 100,
-      },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const bags = times(
-      'b = r × e',
-      ['r', 'e', 'b'],
-      ['rows', 'sandbags in each row', 'sandbags'],
-      '{r} × {e} = {b}',
-    );
-    return {
-      id: 's.3.weather-climate~flood',
-      title: 'A sandbag wall against a flood',
-      use: 'Use this to count the sandbags in a wall built in equal rows.',
-      assumptions: [
-        'Weather can be dangerous: floods, high winds, lightning.',
-        'People build to stay safe. A wall of sandbags holds back flood water.',
-        'Stack the bags in rows with the same number in each row.',
-      ],
-      variables: [
-        whole('r', 'r', 'Rows', 1, 10),
-        whole('e', 'e', 'Sandbags in each row', 1, 10),
-        whole('b', 'b', 'Sandbags', 1, 100),
-      ],
-      relations: [bags.relation],
-      steps: { 'b = r × e': bags.steps },
-      example: { r: 4, e: 6, b: 24 },
-      startWith: ['r', 'e'],
-      representation: {
-        kind: 'array',
-        rows: 'r',
-        columns: 'e',
-        total: 'b',
-        max: 10,
-        cell: 'square',
       },
     } satisfies ModuleDef;
   })(),

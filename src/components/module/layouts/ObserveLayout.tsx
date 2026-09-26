@@ -14,6 +14,7 @@ const CHART_HEIGHT = 180;
  * table of readings under it, and the pattern in a sentence.
  */
 export function ObserveLayout({ spec }: { spec: Spec }) {
+  const tight = spec.columns.length > 5;
   const c = usePalette();
   const [values, setValues] = useState(spec.initial);
   const setAt = (i: number, y: number, height: number) => {
@@ -63,17 +64,24 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       {/* The table of readings. */}
       <View style={[styles.table, { borderColor: c.border }]}>
         <View style={[styles.row, { backgroundColor: c.surface, borderBottomColor: c.border }]}>
-          <Text style={[styles.cellHead, { color: c.text }]}>{spec.rowLabel}</Text>
+          <Text style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
+            {spec.rowLabel}
+          </Text>
           {spec.columns.map((col) => (
-            <Text key={col} style={[styles.cellHead, { color: c.text }]}>
+            <Text key={col} style={[styles.cellHead, tight && styles.tight, { color: c.text }]}>
               {col}
             </Text>
           ))}
         </View>
         <View style={styles.row}>
-          <Text style={[styles.cell, { color: c.textMuted }]}>{spec.unit}</Text>
+          <Text style={[styles.cell, tight && styles.tight, { color: c.textMuted }]}>
+            {spec.unit}
+          </Text>
           {values.map((x, i) => (
-            <Text key={spec.columns[i]} style={[styles.cell, { color: c.text }]}>
+            <Text
+              key={spec.columns[i]}
+              style={[styles.cell, tight && styles.tight, { color: c.text }]}
+            >
               {x}
             </Text>
           ))}
@@ -126,4 +134,6 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
+  // Six columns and the row label share a phone's width: less padding, smaller type.
+  tight: { paddingHorizontal: 1, fontSize: font.caption - 1 },
 });
