@@ -292,7 +292,11 @@ export function buildSteps(
     const bare = substituted.slice(v.symbol.length + 3);
     // A compare page's first work line ("Tens: 4 < 5, so 45 < 54") is the lesson; the bare
     // "54 − 45" before it would put the subtraction first.
+    // "3 + 4" under the question "3 + 4 = ?" only echoes it (K–5 open with the sentence).
+    const echo =
+      band !== 'standard' && (base.sentence === `${bare} = ?` || base.sentence === `? = ${bare}`);
     const repeatedByWork =
+      echo ||
       (workLines?.[0]?.startsWith(`${bare} =`) ?? false) ||
       (early && (workLines?.some((l) => /^(Hundreds|Tens|Ones): .*, so /.test(l)) ?? false)) ||
       // K–2: "8 + 2 − 5" in one go is more than the grade reads; the work lines take it apart.

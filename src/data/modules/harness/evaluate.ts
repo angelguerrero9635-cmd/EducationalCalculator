@@ -49,6 +49,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ],
   [new RegExp(`(\\d+):(\\d\\d) \\+ (${NUM}) minutes`), (h, m, d) => ((h % 12) * 60 + m + d) % 720],
   [/(\d+):(\d\d)/, (h, m) => (h % 12) * 60 + m],
+  // Kindergarten counting by tens: "jumps to 40" is how many tens reach 40.
+  [new RegExp(`jumps to (${NUM})`), (n) => n / 10],
   // Grade 4 (the primes with repeats come before the factor count, which would match first)
   [new RegExp(`prime factors of (${NUM})`), (n) => primeFactorCount(n)],
   [

@@ -24,6 +24,7 @@ const cmpK10 = difference('d', 'a', 'b', {
 });
 const cmpPencils = difference('d', 'a', 'b', {
   countOn: true,
+  compareWords: ['longer', 'shorter'],
   display: 'Line up {a} and {b}: {d} cubes stick out',
   diff: 'Line up the pencils at one end. Count the cubes that stick out.',
   first: [
@@ -43,13 +44,13 @@ const startAt = (from: number, by: number) =>
 /** "Count on from 4: 5, 6, 7 → 3" (how many to count on from one amount to another). */
 const countOn = (from: number, to: number) =>
   to > from ? [`Count on from ${from}: ${countList(from, 1, to - from)} → ${to - from}`] : [];
-/** "1 trapezoid: 3 → 3 triangles", "2 rhombuses: 2, 4 → 4 triangles" (blocks already placed). */
+/** "1 trapezoid covers 3 triangles", "2 rhombuses cover 4 triangles" (blocks already placed). */
 const blockLines = (z: number, r: number) => [
   ...(z > 0
-    ? [`${plural(z, 'trapezoid', 'trapezoids')}: ${countList(0, 3, z)} → ${3 * z} triangles`]
+    ? [`${plural(z, 'trapezoid', 'trapezoids')} ${z === 1 ? 'covers' : 'cover'} ${3 * z} triangles`]
     : []),
   ...(r > 0
-    ? [`${plural(r, 'rhombus', 'rhombuses')}: ${countList(0, 2, r)} → ${2 * r} triangles`]
+    ? [`${plural(r, 'rhombus', 'rhombuses')} ${r === 1 ? 'covers' : 'cover'} ${2 * r} triangles`]
     : []),
 ];
 const capacity = difference('d', 'a', 'b', {
@@ -70,14 +71,14 @@ export const MATH_K_MODULES: ModuleDef[] = [
   {
     id: 'm.K.add-sub-10',
     assumptions: [
-      'We count things from 0 to 10.',
+      'Put the two groups together. Count them all.',
       'Adding puts two groups together.',
       'Take some away. Count how many are left.',
     ],
     variables: [
       whole('a', 'a', 'First group', 0, 10),
       whole('b', 'b', 'Second group', 0, 10),
-      whole('c', 'c', 'Total', 0, 10),
+      whole('c', 'c', 'In all', 0, 10),
     ],
     relations: [
       {
@@ -104,7 +105,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
         },
         a: {
           expr: '{c} − {b}',
-          how: 'Take the second group away from the total.',
+          how: 'Take the second group away from all of them.',
           work: (v) =>
             v.b! > 0
               ? [`Count back ${v.b} from ${v.c}: ${countList(v.c!, -1, v.b!)} → ${v.a}`]
@@ -112,7 +113,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
         },
         b: {
           expr: '{c} − {a}',
-          how: 'Count on from the first group up to the total.',
+          how: 'Count on from the first group up to all of them.',
           work: (v) =>
             v.c! > v.a!
               ? [`Count on from ${v.a}: ${countList(v.a!, 1, v.c! - v.a!)} → ${v.b}`]
@@ -122,7 +123,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
       'c − b = a': {
         a: { expr: '{c} − {b}', how: 'Take the second group away. Count what is left.' },
         c: { expr: '{a} + {b}', how: 'Put the second group back.' },
-        b: { expr: '{c} − {a}', how: 'Take what is left away from the total.' },
+        b: { expr: '{c} − {a}', how: 'Take what is left away from all of them.' },
       },
     },
     example: { a: 3, b: 4, c: 7 },
@@ -226,168 +227,92 @@ export const MATH_K_MODULES: ModuleDef[] = [
     startWith: ['s', 't'],
     representation: { kind: 'tenFrame', first: 'l', second: 't', total: 's' },
   },
-  {
-    id: 'm.K.classify-count',
-    assumptions: [
-      'Put each shape in one group.',
-      'Count each shape once.',
-      'Add all the groups to get the total.',
-    ],
-    variables: [
-      whole('c', 'c', 'Circles', 0, 10),
-      whole('s', 's', 'Squares', 0, 10),
-      whole('t', 't', 'Triangles', 0, 10),
-      whole('n', 'n', 'Total', 0, 30),
-    ],
-    relations: [
-      {
-        id: 'n = c + s + t',
-        display: '{c} circles, {s} squares, {t} triangles: {n} in all',
-        vars: ['n', 'c', 's', 't'],
-        residual: (v) => v.n! - v.c! - v.s! - v.t!,
-        solve: {
-          n: (v) => v.c! + v.s! + v.t!,
-          c: (v) => v.n! - v.s! - v.t!,
-          s: (v) => v.n! - v.c! - v.t!,
-          t: (v) => v.n! - v.c! - v.s!,
-        },
-      },
-    ],
-    steps: {
-      'n = c + s + t': {
-        n: {
-          work: (v) => (v.n! > 0 ? [`Count: ${countList(0, 1, v.n!)} → ${v.n}`] : []),
-          expr: '{c} + {s} + {t}',
-          how: 'Count all the shapes, one at a time.',
-        },
-        c: {
-          expr: '{n} − {s} − {t}',
-          how: 'Count on from the other shapes up to the total.',
-          work: (v) => [
-            `${v.s} + ${v.t} = ${v.s! + v.t!}`,
-            ...(v.c! > 0
-              ? [`Count on from ${v.s! + v.t!}: ${countList(v.s! + v.t!, 1, v.c!)} → ${v.c}`]
-              : []),
-          ],
-        },
-        s: {
-          expr: '{n} − {c} − {t}',
-          how: 'Count on from the other shapes up to the total.',
-          work: (v) => [
-            `${v.c} + ${v.t} = ${v.c! + v.t!}`,
-            ...(v.s! > 0
-              ? [`Count on from ${v.c! + v.t!}: ${countList(v.c! + v.t!, 1, v.s!)} → ${v.s}`]
-              : []),
-          ],
-        },
-        t: {
-          expr: '{n} − {c} − {s}',
-          how: 'Count on from the other shapes up to the total.',
-          work: (v) => [
-            `${v.c} + ${v.s} = ${v.c! + v.s!}`,
-            ...(v.t! > 0
-              ? [`Count on from ${v.c! + v.s!}: ${countList(v.c! + v.s!, 1, v.t!)} → ${v.t}`]
-              : []),
-          ],
-        },
-      },
-    },
-    example: { c: 4, s: 3, t: 5, n: 12 },
-    startWith: ['c', 's', 't'],
-    representation: {
-      kind: 'pictureGraph',
-      columns: [
-        { var: 'c', icon: 'circle' },
-        { var: 's', icon: 'square' },
-        { var: 't', icon: 'triangle' },
-      ],
-      max: 10,
-      total: 'n',
-    },
-  },
   // ─── Kindergarten ──────────────────────────────────────────────────────────
   {
     id: 'm.K.count-100',
     assumptions: [
-      'Count by ones: the next number is 1 more.',
-      'Count by tens: each ten is one row down on the chart.',
+      'Count on: say the next number each time.',
+      'After 49 comes 50: a new row starts.',
+      'Stop at 100.',
     ],
     variables: [
-      whole('n', 'n', 'Start number', 1, 99),
-      whole('p', 'p', 'One more', 2, 100),
-      whole('t', 't', 'Tens to count', 1, 9),
-      whole('m', 'm', 'End number', 11, 100),
+      whole('s', 's', 'Start number', 1, 99),
+      whole('c', 'c', 'Count on', 1, 10),
+      whole('e', 'e', 'End number', 2, 100),
     ],
     relations: [
       {
-        id: 'p = n + 1',
-        display: '1 more than {n} is {p}',
-        vars: ['p', 'n'],
-        residual: (v) => v.p! - v.n! - 1,
-        solve: { p: (v) => v.n! + 1, n: (v) => v.p! - 1 },
-      },
-      {
-        id: 'm = n + t tens',
-        check: (v) =>
-          v.t! > 0
-            ? `Count ${v.t} tens from ${v.n}: ${countList(v.n!, 10, v.t!)} → ${v.m}`
-            : `${v.n} = ${v.m}`,
-        display: 'Count {t} tens from {n}: {m}',
-        vars: ['m', 'n', 't'],
-        residual: (v) => v.m! - v.n! - 10 * v.t!,
-        solve: {
-          m: (v) => v.n! + 10 * v.t!,
-          n: (v) => v.m! - 10 * v.t!,
-          t: (v) => (v.m! - v.n!) / 10,
-        },
+        id: 'e = s + c',
+        display: 'Start at {s}. Count on {c}: {e}',
+        vars: ['e', 's', 'c'],
+        residual: (v) => v.e! - v.s! - v.c!,
+        solve: { e: (v) => v.s! + v.c!, s: (v) => v.e! - v.c!, c: (v) => v.e! - v.s! },
       },
     ],
     steps: {
-      'p = n + 1': {
-        p: { expr: '{n} + 1', how: 'Say the next number. It is the next box on the chart.' },
-        n: { expr: '{p} − 1', how: 'Say the number just before. It is the box before.' },
-      },
-      'm = n + t tens': {
-        m: {
-          work: (v) => [
-            `${v.t} tens = ${10 * v.t!}`,
-            `Count by tens from ${v.n}: ${countList(v.n!, 10, v.t!)}`,
-          ],
-          expr: '{n} + {t} tens',
-          how: 'Start at the start number. Count by tens: go down one row for each ten.',
+      'e = s + c': {
+        e: {
+          expr: '{s} + {c}',
+          how: 'Start at the start number. Say the next number for each one you count on.',
+          work: (v) => [`Count on from ${v.s}: ${countList(v.s!, 1, v.c!)} → ${v.e}`],
         },
+        s: {
+          expr: '{e} − {c}',
+          how: 'Start at the end number. Count back.',
+          work: (v) => [`Count back from ${v.e}: ${countList(v.e!, -1, v.c!)} → ${v.s}`],
+        },
+        c: {
+          expr: '{e} − {s}',
+          how: 'Count on from the start number to the end number.',
+          work: (v) => countOn(v.s!, v.e!),
+        },
+      },
+    },
+    example: { s: 47, c: 3, e: 50 },
+    startWith: ['s', 'c'],
+    representation: { kind: 'hundredChart', value: 's', max: 100, marks: ['e'] },
+  },
+  {
+    id: 'm.K.count-100~tens',
+    title: 'Count by tens',
+    use: 'Use this to count by tens to 100.',
+    assumptions: ['Count by tens: 10, 20, 30 …', 'Each jump is 10 more.'],
+    variables: [whole('t', 't', 'Tens', 1, 10), whole('n', 'n', 'Number reached', 10, 100)],
+    relations: [
+      {
+        id: 'n = t tens',
+        display: 'Count by tens {t} times: {n}',
+        vars: ['n', 't'],
+        residual: (v) => v.n! - 10 * v.t!,
+        solve: { n: (v) => 10 * v.t!, t: (v) => v.n! / 10 },
+      },
+    ],
+    steps: {
+      'n = t tens': {
         n: {
-          work: (v) => [
-            `${v.t} tens = ${10 * v.t!}`,
-            `Count back by tens from ${v.m}: ${countList(v.m!, -10, v.t!)}`,
-          ],
-          expr: '{m} − {t} tens',
-          how: 'Start at the end number. Go up one row for each ten.',
+          expr: '{t} tens',
+          how: 'Say the tens, one for each jump.',
+          work: (v) => [`Count by tens: ${countList(0, 10, v.t!)} → ${v.n}`],
         },
         t: {
-          work: (v) => [
-            `${v.n} → ${countList(v.n!, 10, v.t!)}: ${v.t} ${v.t === 1 ? 'ten' : 'tens'}`,
-            `${v.t} tens = ${10 * v.t!}`,
-          ],
-          expr: 'tens from {n} to {m}',
-          how: 'Go down the chart from the start number. Count the rows to the end number.',
+          expr: 'jumps to {n}',
+          how: 'Count by tens to the number. Count the jumps.',
+          work: (v) => [`Count by tens: ${countList(0, 10, v.t!)} → ${v.t} jumps`],
         },
       },
     },
-    example: { n: 30, p: 31, t: 4, m: 70 },
-    startWith: ['n', 't'],
-    representation: {
-      kind: 'hundredChart',
-      value: 'n',
-      max: 100,
-      marks: ['p', 'm'],
-      tens: { count: 't' },
-    },
+    example: { t: 4, n: 40 },
+    startWith: ['t'],
+    representation: { kind: 'skipCount', step: 10, count: 't', total: 'n' },
   },
   {
     id: 'm.K.count-objects',
-    assumptions: ['Touch and count each object once.', 'The last number you say tells how many.'],
-    variables: [whole('n', 'n', 'Objects', 0, 19), whole('m', 'm', 'After one more', 1, 20)],
+    assumptions: [
+      'Touch and count each object once.',
+      'The last number you say tells how many.',
+      'Moving the dots doesn’t change how many there are.',
+    ],
+    variables: [whole('n', 'n', 'Dots', 0, 19), whole('m', 'm', 'After one more', 1, 20)],
     relations: [
       {
         id: 'm = n + 1',
@@ -399,13 +324,19 @@ export const MATH_K_MODULES: ModuleDef[] = [
     ],
     steps: {
       'm = n + 1': {
-        m: { expr: '{n} + 1', how: 'Add one more counter. Say the next number.' },
+        m: {
+          expr: '{n} + 1',
+          how: 'Count the dots. Add one more and say the next number.',
+          work: (v: Values) =>
+            v.n! > 0 ? [`Count: ${countList(0, 1, v.n!)} → ${v.n}`, `One more: ${v.m}`] : [],
+        },
         n: { expr: '{m} − 1', how: 'Take one away. Say the number just before.' },
       },
     },
     example: { n: 7, m: 8 },
     startWith: ['n'],
-    representation: { kind: 'tenFrame', first: 'n', second: 1, total: 'm', frames: 2 },
+    representation: { kind: 'dotSet', count: 'n' },
+    pictureLabels: ['m'],
   },
   // ─── Added from the third review (textbook coverage) ─────────────────────────
 
@@ -446,41 +377,6 @@ export const MATH_K_MODULES: ModuleDef[] = [
     startWith: ['n'],
     representation: { kind: 'tenFrame', first: 5, second: 'e', total: 'n' },
   },
-  // Count objects in any arrangement: a line, rows, a circle or scattered (K.CC.5).
-  {
-    id: 'm.K.count-objects~arrangements',
-    title: 'Count dots in any arrangement',
-    use: 'Use this to count dots in a line, in rows or scattered.',
-    assumptions: [
-      'Touch each dot once as you count. The last number you say is how many.',
-      'Moving the dots doesn’t change how many there are.',
-      'Scattered dots: count left to right, one row at a time.',
-    ],
-    variables: [whole('n', 'n', 'Dots', 0, 20), whole('m', 'm', 'After one more', 1, 21)],
-    relations: [
-      {
-        id: 'm = n + 1',
-        display: '1 more than {n} is {m}',
-        vars: ['m', 'n'],
-        residual: (v) => v.m! - v.n! - 1,
-        solve: { m: (v) => v.n! + 1, n: (v) => v.m! - 1 },
-      },
-    ],
-    steps: {
-      'm = n + 1': {
-        m: {
-          expr: '{n} + 1',
-          how: 'Count the dots. Add one more and say the next number.',
-          work: (v: Values) => (v.n! > 0 ? [`Count: ${countList(0, 1, v.n!)} → ${v.n}`] : []),
-        },
-        n: { expr: '{m} − 1', how: 'Take one away. Say the number just before.' },
-      },
-    },
-    example: { n: 7, m: 8 },
-    startWith: ['n'],
-    representation: { kind: 'dotSet', count: 'n' },
-    pictureLabels: ['m'],
-  },
   {
     id: 'm.K.compare-10',
     assumptions: [
@@ -491,7 +387,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
     variables: [
       whole('a', 'a', 'First row', 0, 10),
       whole('b', 'b', 'Second row', 0, 10),
-      whole('d', 'd', 'How many more', 0, 10),
+      whole('d', 'd', 'Left over', 0, 10),
     ],
     relations: [cmpK10.relation],
     steps: {
@@ -508,13 +404,51 @@ export const MATH_K_MODULES: ModuleDef[] = [
       words: ['more', 'fewer'],
     },
   },
+  // Two numerals 1–10 (K.CC.7): the greater one comes later when we count.
+  ((): ModuleDef => {
+    const cmp = difference('d', 'a', 'b', {
+      countOn: true,
+      compareWords: ['greater', 'less'],
+      display: '{a} and {b}: {d} apart',
+      diff: 'Say the numbers in counting order. The one that comes later is greater.',
+      first: [
+        'The first number is greater. Count on from the second number.',
+        'The first number is less. Count back from the second number.',
+      ],
+      second: [
+        'The first number is greater. Count back from the first number.',
+        'The first number is less. Count on from the first number.',
+      ],
+    });
+    return {
+      id: 'm.K.compare-10~numerals',
+      title: 'Which number is greater?',
+      use: 'Use this to tell which number is greater, like 6 or 9.',
+      assumptions: ['When we count, a greater number comes later.', 'Match counters to check.'],
+      variables: [
+        whole('a', 'a', 'First number', 1, 10),
+        whole('b', 'b', 'Second number', 1, 10),
+        whole('d', 'd', 'Apart', 0, 9),
+      ],
+      relations: [cmp.relation],
+      steps: { ...cmp.steps },
+      example: { a: 6, b: 9, d: 3 },
+      startWith: ['a', 'b'],
+      pictureLabels: ['d'],
+      representation: {
+        kind: 'compareRows',
+        a: 'a',
+        b: 'b',
+        difference: 'd',
+        icon: 'dot',
+        words: ['more', 'fewer'],
+      },
+    };
+  })(),
   {
     id: 'm.K.make-10',
-    assumptions: ['A ten-frame has 10 boxes.', 'Solid counters and open counters make 10.'],
-    variables: [
-      whole('a', 'a', 'Solid counters', 0, 10),
-      whole('b', 'b', 'More to make 10', 0, 10),
-    ],
+    assumptions: ['A ten-frame has 10 boxes.', 'The counters and the empty boxes make 10.'],
+    variables: [whole('a', 'a', 'Counters', 0, 10), whole('b', 'b', 'More to make 10', 0, 10)],
     relations: [
       {
         id: 'a + b = 10',
@@ -542,11 +476,11 @@ export const MATH_K_MODULES: ModuleDef[] = [
   {
     id: 'm.K.teens-place-value',
     assumptions: [
-      'The first ten-frame is full. That is 1 ten.',
-      'The numbers 11 to 19 are 1 ten and some more ones.',
-      '10 is 1 ten and 0 ones.',
+      'The first ten-frame is full: 10 ones.',
+      'The numbers 11 to 19 are 10 ones and some more ones.',
+      'Count the second frame to find the more ones.',
     ],
-    variables: [whole('n', 'n', 'Number (10–19)', 10, 19), whole('o', 'o', 'Extra ones', 0, 9)],
+    variables: [whole('n', 'n', 'Number (10–19)', 10, 19), whole('o', 'o', 'More ones', 0, 9)],
     relations: [
       {
         id: 'n = 10 + o',
@@ -558,8 +492,16 @@ export const MATH_K_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = 10 + o': {
-        n: { expr: '10 + {o}', how: 'Start at 10 and count on the extra ones.' },
-        o: { expr: '{n} − 10', how: 'Take away the ten. The rest are the extra ones.' },
+        n: {
+          expr: '10 + {o}',
+          how: 'Start at 10 and count on the more ones.',
+          work: (v: Values) => startAt(10, v.o!),
+        },
+        o: {
+          expr: '{n} − 10',
+          how: 'The first frame is 10 ones. Count the ones in the second frame.',
+          work: (v: Values) => [`${v.n} is 10 ones and ${v.o} more ones`],
+        },
       },
     },
     example: { n: 14, o: 4 },
@@ -576,7 +518,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
     variables: [
       { ...whole('a', 'a', 'First pencil', 0, 12), unit: 'cubes' },
       { ...whole('b', 'b', 'Second pencil', 0, 12), unit: 'cubes' },
-      { ...whole('d', 'd', 'How much longer', 0, 12), unit: 'cubes' },
+      { ...whole('d', 'd', 'Cubes that stick out', 0, 12), unit: 'cubes' },
     ],
     relations: [cmpPencils.relation],
     steps: {
@@ -591,45 +533,9 @@ export const MATH_K_MODULES: ModuleDef[] = [
       difference: 'd',
       icon: 'cube',
       words: ['longer', 'shorter'],
+      object: 'pencil',
     },
   },
-  // Kindergarten: heavier and lighter on a pan balance (K.MD.2).
-  ((): ModuleDef => {
-    const cmp = difference('d', 'a', 'b', {
-      diff: 'Put the objects on the balance. Count the extra cubes on the lower side.',
-      countOn: true,
-      display: '{a} and {b} cubes: {d} extra cubes on the lower side',
-      first: [
-        'The first object is heavier. Add the extra cubes to the second object.',
-        'The first object is lighter. Take the extra cubes away from the second object.',
-      ],
-      second: [
-        'The first object is heavier. Take the extra cubes away from the first object.',
-        'The first object is lighter. Add the extra cubes to the first object.',
-      ],
-    });
-    return {
-      id: 'm.K.measurable-attributes~weight',
-      title: 'Heavier and lighter',
-      use: 'Use this for “Which is heavier? How much heavier?”',
-      assumptions: [
-        'Put one object on each side of the balance.',
-        'The heavier side goes down.',
-        'If the balance is level, they weigh the same.',
-      ],
-      variables: [
-        { ...whole('a', 'a', 'First object', 0, 10), unit: 'cubes' },
-        { ...whole('b', 'b', 'Second object', 0, 10), unit: 'cubes' },
-        { ...whole('d', 'd', 'How much heavier', 0, 10), unit: 'cubes' },
-      ],
-      relations: [cmp.relation],
-      steps: { ...cmp.steps },
-      example: { a: 7, b: 4, d: 3 },
-      startWith: ['a', 'b'],
-      representation: { kind: 'balance' as const, left: ['a'], right: ['b'] },
-      pictureLabels: ['d'],
-    };
-  })(),
   // Capacity: which container holds more (K.MD.2).
   {
     id: 'm.K.measurable-attributes~capacity',
@@ -658,44 +564,6 @@ export const MATH_K_MODULES: ModuleDef[] = [
       words: ['more', 'less'],
     },
   },
-  {
-    id: 'm.K.shapes-2d-3d',
-    assumptions: [
-      'Flat shapes like triangles and squares have straight sides and corners. A circle has none.',
-      'A long, thin or tipped shape keeps its name. Count the sides to name it.',
-      'Cubes, cones, cylinders and spheres are solid shapes.',
-    ],
-    // 0 sides is a circle; no flat shape has 1 or 2 sides.
-    variables: [whole('s', 's', 'Sides', 3, 6), whole('v', 'c', 'Corners', 3, 6)],
-    relations: [
-      {
-        id: 'corners = sides',
-        display: '{s} sides and {v} corners',
-        vars: ['v', 's'],
-        residual: (x) => (x.s === 1 || x.s === 2 ? 1 : x.v! - x.s!),
-        solve: {
-          v: (x) => (x.s === 1 || x.s === 2 ? undefined : x.s!),
-          s: (x) => (x.v === 1 || x.v === 2 ? undefined : x.v!),
-        },
-      },
-    ],
-    steps: {
-      'corners = sides': {
-        v: {
-          expr: '{s}',
-          how: 'Each side ends at a corner. There is one corner for each side.',
-        },
-        s: {
-          expr: '{v}',
-          how: 'There is one side between two corners. There is one side for each corner.',
-        },
-      },
-    },
-    example: { s: 4, v: 4 },
-    startWith: ['s'],
-    representation: { kind: 'polygon', sides: 's', corners: 'v', irregular: 'toggle' },
-  },
-  // Position words in a line (K.G.1).
   {
     id: 'm.K.compose-shapes',
     assumptions: [

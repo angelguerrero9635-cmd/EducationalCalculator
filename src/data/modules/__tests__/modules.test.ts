@@ -446,7 +446,7 @@ it('writes the number sentence with ? for the number found (K–2 steps)', () =>
   expect(w.steps[0]!.lead).toEqual({ sentence: w.steps[0]!.sentence });
   expect(w.steps[0]!.heading).toBe('Find first group');
   expect(w.steps[0]!.answer).toBe('First group: 3');
-  expect(w.given.map((q) => q.label)).toEqual(['Second group: 4', 'Total: 7']);
+  expect(w.given.map((q) => q.label)).toEqual(['Second group: 4', 'In all: 7']);
 });
 
 it('builds readable steps (area example)', () => {
@@ -495,11 +495,12 @@ describe('written work and simplifying, by grade', () => {
     ).steps;
   };
 
-  it('Grade 2: the column sum sits under the substituted line, the jumps stay', () => {
+  it('Grade 2: the column sum sits under the question, the jumps stay', () => {
     const [s] = steps('m.2.add-sub-100-fluency', { a: 38, b: 25 });
     expect(s!.written?.says).toBe('38 + 25 = 63');
-    expect(s!.lines).toEqual(['38 + 25', '38 + 20 = 58', '58 + 2 = 60', '60 + 3 = 63']);
-    expect(s!.writtenAfter).toBe(1);
+    // "38 + 25" under "38 + 25 = ?" only echoed the question.
+    expect(s!.lines).toEqual(['38 + 20 = 58', '58 + 2 = 60', '60 + 3 = 63']);
+    expect(s!.writtenAfter).toBe(0);
   });
 
   it('Grade 4: the long-division bracket, partial products, and no running totals', () => {
@@ -511,8 +512,8 @@ describe('written work and simplifying, by grade', () => {
     expect(r!.written).toBeUndefined();
     const [n] = steps('m.4.multi-digit-multiply~three-digit', { a: 234, b: 6 }).slice(-1);
     expect(n!.written?.says).toBe('1200 + 180 + 24 = 1404');
-    // Grades 3–5 name the value in words: letters stand for numbers from Grade 6.
-    expect(n!.lines).toEqual(['Product = 1,200 + 180 + 24']);
+    // The sentence "1,200 + 180 + 24 = ?" already says it: no echo line under it.
+    expect(n!.lines).toEqual([]);
   });
 
   it('Grade 8 and college: one stage per line under the formula, no grids', () => {
