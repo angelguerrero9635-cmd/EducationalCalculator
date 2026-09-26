@@ -103,7 +103,7 @@ function representationVars(r: Representation): string[] {
     case 'areaModel':
       return [...r.top, ...r.side, ...r.parts.flat(), r.total];
     case 'angles':
-      return [...r.parts, r.whole];
+      return [...r.parts, r.whole, ...(r.sliders ?? [])];
     case 'ruler':
       return [
         ...r.lengths,

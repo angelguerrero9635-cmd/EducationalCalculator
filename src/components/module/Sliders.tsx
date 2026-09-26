@@ -69,10 +69,14 @@ function Slider({
     const step = item.steps[0] ?? 1;
     next = Math.round(next / step) * step;
     while (item.skip?.includes(next)) next += step;
-    calc.set({
-      ...rep.pin(item.pin),
-      [item.var]: rep.snapTo(item.var, next * rep.factor(item.var)),
-    });
+    calc.set(
+      {
+        ...rep.pin(item.pin),
+        [item.var]: rep.snapTo(item.var, next * rep.factor(item.var)),
+      },
+      // Past what the other values allow, the slider stops at the last value that fits.
+      { slide: { id: item.var, step: step * rep.factor(item.var) } },
+    );
   };
   const at = (e: GestureResponderEvent) => e.nativeEvent.pageY - trackTop.current;
 
@@ -86,6 +90,12 @@ function Slider({
         accessibilityRole="adjustable"
         accessibilityLabel={v.name}
         accessibilityValue={{ min: lo, max: hi, now: shown, text: value }}
+        // React Native Web doesn't write accessibilityValue to the DOM: screen readers (and
+        // scripts/test-sliders.mjs) read these.
+        aria-valuemin={lo}
+        aria-valuemax={hi}
+        aria-valuenow={known ? shown : undefined}
+        aria-valuetext={value}
         onStartShouldSetResponder={() => true}
         onMoveShouldSetResponder={() => true}
         onResponderTerminationRequest={() => false}

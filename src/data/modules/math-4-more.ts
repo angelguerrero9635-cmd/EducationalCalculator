@@ -1129,6 +1129,6 @@ export const MATH_4_MORE_MODULES: ModuleDef[] = [
     },
     example: { k: 4, n: 3, e: 90, a: 270, r: 90, w: 360 },
     startWith: ['k', 'n'],
-    representation: { kind: 'angles', parts: ['a', 'r'], whole: 'w' },
+    representation: { kind: 'angles', parts: ['a', 'r'], whole: 'w', sliders: ['k', 'n'] },
   },
 ];

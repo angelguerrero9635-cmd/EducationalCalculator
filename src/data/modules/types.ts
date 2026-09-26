@@ -458,7 +458,16 @@ export type Representation =
    */
   | { kind: 'areaModel'; top: string[]; side: string[]; parts: string[][]; total: string }
   /** Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. */
-  | { kind: 'angles'; parts: [string, string]; whole: string }
+  | {
+      kind: 'angles';
+      parts: [string, string];
+      whole: string;
+      /**
+       * Values with sliders instead of the two parts (a turn cut into k parts, n of them in
+       * the angle): the rays are then not dragged, since a part can't take any degree.
+       */
+      sliders?: string[];
+    }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | {
       kind: 'table';

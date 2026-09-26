@@ -44,6 +44,8 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
     return [cx + r * Math.cos(t), cy + r * Math.sin(t)] as const;
   };
 
+  // With sliders on other values (parts of a turn) the rays are not dragged.
+  const draggable = !spec.sliders;
   // Past a straight angle the second ray goes below the first: the vertex moves to the middle.
   const reflex = whole > 180;
 
@@ -133,41 +135,45 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   ? label(wholeAt, wholeAt, r * 0.86, `${rep.value(spec.whole)}`, 'lw')
                   : null}
               </Svg>
-              <DragHandle
-                testID={`drag-${first}`}
-                x={hx}
-                y={hy}
-                label={rep.variable(first).name}
-                onStart={() => {
-                  start.current = { a, cx, cy, r };
-                }}
-                onMove={(dx, dy) => {
-                  const next = angleAt(start.current, start.current.a, dx, dy);
-                  calc.set({
-                    ...rep.pin([second]),
-                    [first]: rep.snapTo(first, next * rep.factor(first)),
-                  });
-                }}
-              />
+              {draggable ? (
+                <DragHandle
+                  testID={`drag-${first}`}
+                  x={hx}
+                  y={hy}
+                  label={rep.variable(first).name}
+                  onStart={() => {
+                    start.current = { a, cx, cy, r };
+                  }}
+                  onMove={(dx, dy) => {
+                    const next = angleAt(start.current, start.current.a, dx, dy);
+                    calc.set({
+                      ...rep.pin([second]),
+                      [first]: rep.snapTo(first, next * rep.factor(first)),
+                    });
+                  }}
+                />
+              ) : null}
               {/* The outer ray moves the second angle; the first stays where it is. */}
-              <DragHandle
-                testID={`drag-${spec.whole}`}
-                x={wx}
-                y={wy}
-                label={rep.variable(second).name}
-                onStart={() => {
-                  startW.current = { b, cx, cy, r };
-                }}
-                onMove={(dx, dy) => {
-                  const next = angleAt(startW.current, a + startW.current.b, dx, dy);
-                  // The whole ray's angle, less the first angle, is the second (never below 0).
-                  const deg = (((next - a) % 360) + 360) % 360;
-                  calc.set({
-                    ...rep.pin([first]),
-                    [second]: rep.snapTo(second, deg * rep.factor(second)),
-                  });
-                }}
-              />
+              {draggable ? (
+                <DragHandle
+                  testID={`drag-${spec.whole}`}
+                  x={wx}
+                  y={wy}
+                  label={rep.variable(second).name}
+                  onStart={() => {
+                    startW.current = { b, cx, cy, r };
+                  }}
+                  onMove={(dx, dy) => {
+                    const next = angleAt(startW.current, a + startW.current.b, dx, dy);
+                    // The whole ray's angle, less the first angle, is the second (never below 0).
+                    const deg = (((next - a) % 360) + 360) % 360;
+                    calc.set({
+                      ...rep.pin([first]),
+                      [second]: rep.snapTo(second, deg * rep.factor(second)),
+                    });
+                  }}
+                />
+              ) : null}
             </>
           );
         }}
@@ -179,11 +185,19 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Caption>
       <Steppers
         calc={calc}
-        items={spec.parts.map((id) => ({
-          var: id,
-          steps: [1, 10],
-          pin: spec.parts.filter((x) => x !== id),
-        }))}
+        items={
+          spec.sliders
+            ? spec.sliders.map((id, _, all) => ({
+                var: id,
+                steps: [rep.variable(id).step ?? 1],
+                pin: all.filter((x) => x !== id),
+              }))
+            : spec.parts.map((id) => ({
+                var: id,
+                steps: [1, 10],
+                pin: spec.parts.filter((x) => x !== id),
+              }))
+        }
       />
     </View>
   );

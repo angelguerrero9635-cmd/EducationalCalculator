@@ -172,6 +172,10 @@ the assumptions and a table or diagram.
    log it with the review's token cost in `docs/REVIEW_LOG.md`.
 7. **Visual check:** open each module and confirm the representation reads well at phone width,
    in light and dark mode.
+8. **Slider check:** `NODE_PATH=$(npm root -g) node scripts/test-sliders.mjs [--prefix m.4.]`
+   after `pnpm build:web` taps and drags every slider on every module page and fails on one
+   that doesn't move, goes blank, leaves its range, disagrees with its input box, or throws.
+   The report is `.review/sliders.md`.
 
 The reviewers use `scripts/review-shots.mjs` and the Playwright installed in the dev container
 (`NODE_PATH=$(npm root -g)`), not a project dependency.

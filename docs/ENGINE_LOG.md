@@ -5,6 +5,31 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Slider sweep (all sections)
+
+`scripts/test-sliders.mjs` drove all 235 sliders on the 110 module pages that have them
+(tap the top, tap the bottom, drag to the middle, three taps down the track; read the value
+under the slider and the input box). What it found and what the engine now does:
+
+- A slider tap whose value didn't fit with the values it holds still (start 10 with 30 to
+  take away; a start of 1,000 with four jumps of 10; a product no top and bottom can make)
+  was rejected by the solver, and the rejection dropped the slider's own old value: the box
+  went blank with a message far below the picture. Seven pages, both directions. →
+  `Calculator.set` treats a picture update as one move: if the newest value is rejected, or
+  a value it holds still would be cleared, nothing changes and the reason shows under the
+  box. With `slide` (every slider), the value walks back toward where it was one step at a
+  time and stops at the last value that fits, so a slider goes as far as the other values
+  allow instead of sticking. The harness's model (`setValues`, newest wins, an invalid
+  typed value drops the old one) is unchanged: typing keeps its text in the box.
+- A page whose whole is fixed (a full turn of 360°) had two part sliders that could never
+  move: each pinned the other, so the whole always changed. → `angles.sliders` names the
+  values that get sliders instead (parts of the turn, parts in the angle); the rays are not
+  dragged there.
+- Sliders' `accessibilityValue` never reached the DOM on web. → `aria-valuemin/max/now/text`
+  are written too (screen readers and the sweep read them).
+- Sweep lesson: a slider's range is the variable's, not what the other values allow; a check
+  that a slider reaches its range's ends is wrong, a check that it moves and stops is right.
+
 ## Grade 4 (Section 2, first review)
 
 One lesson-reviewer and one page-reviewer on 13 pages. What the engine now does:

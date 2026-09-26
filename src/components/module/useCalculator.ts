@@ -25,8 +25,16 @@ export interface Calculator {
   isExample: boolean;
   errors: Record<string, string>;
   unknownCount: number;
-  /** Sets one or more variables (formula units) as the newest input; `undefined` clears. */
-  set: (updates: Record<string, number | undefined>) => void;
+  /**
+   * Sets one or more variables (formula units) as the newest input; `undefined` clears.
+   * With `slide`, a value that doesn't fit with the others held still moves back toward
+   * where it was, one step at a time, and stops at the last value that fits (a slider or a
+   * handle goes as far as it can).
+   */
+  set: (
+    updates: Record<string, number | undefined>,
+    options?: { slide?: { id: string; step: number } },
+  ) => void;
   /**
    * Typing in a box: `startTyping` when it gets focus, `endTyping` when it loses it. While a
    * box is being typed in, each keystroke is worked out from the values as they were at
@@ -81,11 +89,47 @@ export function useCalculator(module: ModuleDef): Calculator {
   const typingFrom = useRef<CalcState | null>(null);
 
   const set = useCallback(
-    (updates: Record<string, number | undefined>) =>
-      setState((s) => ({
-        ...s,
-        calc: setValues(makeUnitContext(module, s.choice).system, s.calc, updates),
-      })),
+    (
+      updates: Record<string, number | undefined>,
+      options?: { slide?: { id: string; step: number } },
+    ) =>
+      setState((s) => {
+        const system = makeUnitContext(module, s.choice).system;
+        const ids = Object.keys(updates);
+        // A slider or a drag sends a value with the others it holds still. If that doesn't
+        // fit (10 − 30 left; a product no top and bottom can make), the value is not
+        // taken and nothing goes blank.
+        const misfit = (c: CalcState) =>
+          (c.result.rejected && ids.includes(c.result.rejected.id)) ||
+          c.result.cleared.some((id) => ids.includes(id));
+        let next = setValues(system, s.calc, updates);
+        const slide = options?.slide;
+        const target = slide ? updates[slide.id] : undefined;
+        const from = slide ? s.calc.result.values[slide.id] : undefined;
+        if (misfit(next) && slide && target !== undefined && from !== undefined && slide.step > 0) {
+          // Walk back toward the old value one step at a time; keep the first that fits.
+          const dir = target > from ? -1 : 1;
+          for (let k = 1; k <= 400; k++) {
+            const x = target + dir * k * slide.step;
+            if (dir === -1 ? x <= from : x >= from) break;
+            const trial = setValues(system, s.calc, { ...updates, [slide.id]: x });
+            if (!misfit(trial)) return { ...s, calc: trial };
+          }
+        }
+        if (misfit(next)) {
+          const lost = next.result.cleared.filter((id) => ids.includes(id));
+          const names = lost.map(
+            (id) => system.variables.find((v) => v.id === id)?.name.toLowerCase() ?? id,
+          );
+          const reason =
+            next.result.rejected?.reason ?? `Doesn’t fit with ${names.join(' and ')} as it is`;
+          next = {
+            ...s.calc,
+            errors: { ...s.calc.errors, ...Object.fromEntries(ids.map((id) => [id, reason])) },
+          };
+        }
+        return { ...s, calc: next };
+      }),
     [module],
   );
 
