@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, useFrozen, useRep, Caption } from './common';
 
-type Spec = Extract<Representation, { kind: 'tape' }>;
+type Spec = Exclude<Extract<Representation, { kind: 'tape' }>, { ratio: [string, string] }>;
 
 /** A scale just past `span`: 10% more, rounded up to a tenth of its power of ten (at least 10). */
 const fitScale = (span: number) => {

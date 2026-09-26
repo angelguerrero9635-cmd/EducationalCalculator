@@ -2,6 +2,17 @@ import type { Representation } from '@/data/modules';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
+import { RatioTape } from './RatioTape';
+import { IntegerLine } from './IntegerLine';
+import { PercentBar } from './PercentBar';
+import { RatioTable } from './RatioTable';
+import { FractionFit } from './FractionFit';
+import { Venn } from './Venn';
+import { BaseHeight } from './BaseHeight';
+import { Net } from './Net';
+import { DotPlot } from './DotPlot';
+import { FieldOfView } from './FieldOfView';
+import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
 import { Clock } from './Clock';
 import { Coins } from './Coins';
@@ -91,7 +102,11 @@ export const representationTitle = (r: Representation) =>
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
     case 'tape':
-      return <Tape spec={spec} calc={calc} />;
+      return 'ratio' in spec ? (
+        <RatioTape spec={spec} calc={calc} />
+      ) : (
+        <Tape spec={spec} calc={calc} />
+      );
     case 'rounding':
       return <Rounding spec={spec} calc={calc} />;
     case 'fractionLine':
@@ -222,5 +237,25 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Wave spec={spec} calc={calc} />;
     case 'punnettSquare':
       return <PunnettSquare spec={spec} calc={calc} />;
+    case 'integerLine':
+      return <IntegerLine spec={spec} calc={calc} />;
+    case 'percentBar':
+      return <PercentBar spec={spec} calc={calc} />;
+    case 'ratioTable':
+      return <RatioTable spec={spec} calc={calc} />;
+    case 'fractionFit':
+      return <FractionFit spec={spec} calc={calc} />;
+    case 'venn':
+      return <Venn spec={spec} calc={calc} />;
+    case 'baseHeight':
+      return <BaseHeight spec={spec} calc={calc} />;
+    case 'net':
+      return <Net spec={spec} calc={calc} />;
+    case 'dotPlot':
+      return <DotPlot spec={spec} calc={calc} />;
+    case 'fieldOfView':
+      return <FieldOfView spec={spec} calc={calc} />;
+    case 'gradCylinder':
+      return <GradCylinder spec={spec} calc={calc} />;
   }
 }

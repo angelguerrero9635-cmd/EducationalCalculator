@@ -24,6 +24,14 @@ export function factorTree(n: number): Node {
   return { n, kids: [factorTree(p), factorTree(n / p)] };
 }
 
+/** Prime factors with exponents: [2, 2, 2, 3] → "2³ × 3". */
+export function powers(primes: number[]): string {
+  const sup = (k: number) => [...String(k)].map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]).join('');
+  const counts = new Map<number, number>();
+  for (const p of primes) counts.set(p, (counts.get(p) ?? 0) + 1);
+  return [...counts].map(([p, k]) => (k > 1 ? `${p}${sup(k)}` : String(p))).join(' × ');
+}
+
 const depthOf = (t: Node): number => 1 + Math.max(0, ...t.kids.map(depthOf));
 const leavesOf = (t: Node): number =>
   t.kids.length ? t.kids.reduce((s, k) => s + leavesOf(k), 0) : 1;
@@ -35,11 +43,24 @@ const leavesOf = (t: Node): number =>
 export function FactorTree({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  const known = rep.known(spec.value);
+  const known = rep.known(spec.value) && (!spec.second || rep.known(spec.second));
   const n = Math.max(1, Math.round(rep.shown(spec.value)));
-  const tree = factorTree(n);
-  const depth = depthOf(tree);
+  const m = spec.second ? Math.max(1, Math.round(rep.shown(spec.second))) : undefined;
+  const trees = [factorTree(n), ...(m === undefined ? [] : [factorTree(m)])];
+  const depth = Math.max(...trees.map(depthOf));
   const primes = primeFactors(n);
+  // Two numbers: the primes they share (with repeats) make the GCF.
+  const shared: number[] = [];
+  if (m !== undefined) {
+    const rest = primeFactors(m);
+    for (const p of primes) {
+      const i = rest.indexOf(p);
+      if (i >= 0) {
+        shared.push(p);
+        rest.splice(i, 1);
+      }
+    }
+  }
 
   return (
     <View>
@@ -95,7 +116,10 @@ export function FactorTree({ spec, calc }: { spec: Spec; calc: Calculator }) {
               </ChartText>,
             );
           };
-          place(tree, 16, w - 16, 0, 'r');
+          trees.forEach((t, i) => {
+            const width = (w - 32) / trees.length;
+            place(t, 16 + i * width, 16 + (i + 1) * width, 0, `r${i}`);
+          });
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
               {nodes}
@@ -104,15 +128,23 @@ export function FactorTree({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {known
-          ? n < 2
-            ? `${n} is neither prime nor composite.`
-            : isPrime(n)
-              ? `${n} is prime: its only factors are 1 and ${n}.`
-              : `${n} = ${primes.join(' × ')}: ${primes.length} prime factors.${spec.count ? ` ${rep.named(spec.count)}.` : ''}`
-          : 'Type a number to grow its tree.'}
+        {known && m !== undefined
+          ? `${n} = ${powers(primes)}. ${m} = ${powers(primeFactors(m))}. Shared primes: ${shared.length ? `${shared.join(' × ')} = ${shared.reduce((a, b) => a * b, 1)}` : 'none (the GCF is 1)'}.`
+          : known
+            ? n < 2
+              ? `${n} is neither prime nor composite.`
+              : isPrime(n)
+                ? `${n} is prime: its only factors are 1 and ${n}.`
+                : `${n} = ${primes.join(' × ')}: ${primes.length} prime factors.${spec.count ? ` ${rep.named(spec.count)}.` : ''}`
+            : 'Type a number to grow its tree.'}
       </Caption>
-      <Steppers calc={calc} items={[{ var: spec.value, steps: [1, 10], pin: [] }]} />
+      <Steppers
+        calc={calc}
+        items={[
+          { var: spec.value, steps: [1, 10], pin: spec.second ? [spec.second] : [] },
+          ...(spec.second ? [{ var: spec.second, steps: [1, 10], pin: [spec.value] }] : []),
+        ]}
+      />
     </View>
   );
 }

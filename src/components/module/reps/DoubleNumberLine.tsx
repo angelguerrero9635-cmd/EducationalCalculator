@@ -97,7 +97,11 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
                       fontSize={chart.label}
                       textAnchor="middle"
                     >
-                      {per ? formatNumber(i * per) : '?'}
+                      {per
+                        ? spec.prefix === '$'
+                          ? `$${(i * per).toFixed(2)}`
+                          : formatNumber(Number((i * per).toFixed(4)))
+                        : '?'}
                     </ChartText>
                   ) : null,
                 ])}

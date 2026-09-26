@@ -8,6 +8,15 @@ import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 
 import { Canvas, Caption, ChartText } from '../reps/common';
 import { Arrow, Push, Sky, Static, TimesTable, Vibration } from './figures';
+import {
+  BodyFigure,
+  CellFigure6,
+  ContinentsFigure,
+  FrontFigure,
+  PlatesFigure,
+  RockCycleFigure,
+  WaterCycleFigure,
+} from './figures6';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -100,6 +109,20 @@ function FigureView({
       return <Static charge={scene.charge ?? { rubbed: false, near: 'paper' }} c={c} />;
     case 'timesTable':
       return <TimesTable table={scene.table ?? { op: '×' }} c={c} />;
+    case 'cell':
+      return <CellFigure6 cell={scene.cell ?? { type: 'animal' }} c={c} />;
+    case 'bodySystems':
+      return <BodyFigure body={scene.body ?? { systems: [] }} c={c} />;
+    case 'waterCycle':
+      return <WaterCycleFigure water={scene.water ?? { process: 'evaporation' }} c={c} />;
+    case 'front':
+      return <FrontFigure front={scene.front ?? { type: 'cold' }} c={c} />;
+    case 'plates':
+      return <PlatesFigure plates={scene.plates ?? { boundary: 'divergent' }} c={c} />;
+    case 'continents':
+      return <ContinentsFigure continents={scene.continents ?? { age: 0 }} c={c} />;
+    case 'rockCycle':
+      return <RockCycleFigure rock={scene.rock ?? { process: 'melting' }} c={c} />;
   }
 }
 

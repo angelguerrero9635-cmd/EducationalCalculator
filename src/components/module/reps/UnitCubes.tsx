@@ -18,13 +18,15 @@ type Spec = Extract<Representation, { kind: 'unitCubes' }>;
 export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  const dim = (id: string) => Math.min(spec.max, Math.max(0, Math.round(rep.shown(id))));
+  // Cubes of edge 1/k (k = 2: half-unit cubes, 6.G.2): each unit of length holds k cubes.
+  const k = spec.cube ?? 1;
+  const dim = (id: string) => Math.min(spec.max, Math.max(0, Math.round(rep.shown(id) * k)));
   const L = dim(spec.length);
   const W = dim(spec.width);
   const H = dim(spec.height);
   const known = [spec.length, spec.width, spec.height].every(rep.known);
   // The caption counts the real box; the drawing stops at `max` cubes a side.
-  const real = (id: string) => Math.max(0, Math.round(rep.shown(id)));
+  const real = (id: string) => Math.max(0, Math.round(rep.shown(id) * k));
   const [rl, rw, rh] = [real(spec.length), real(spec.width), real(spec.height)];
   const layer = rl * rw;
   const two = spec.second;
@@ -145,11 +147,13 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {two && known && known2
-          ? `First box: ${rl} × ${rw} × ${rh} = ${rep.value(spec.volume, false)} cubes. Second box: ${real(two.length)} × ${real(two.width)} × ${real(two.height)} = ${rep.value(two.volume, false)} cubes. Together: ${rep.value(spec.volume, false)} + ${rep.value(two.volume, false)} = ${spec.total ? rep.value(spec.total, false) : '?'} cubes.`
-          : known
-            ? `One layer is ${rl} × ${rw} = ${layer} cubes. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${layer} × ${rh} = ${rep.value(spec.volume, false)} cubes.`
-            : 'Type the length, width and height to fill the box.'}
+        {k > 1 && known
+          ? `${rl} × ${rw} × ${rh} = ${rl * rw * rh} cubes with edge 1/${k}. ${k ** 3} of them make one unit cube, so the volume is ${rl * rw * rh} ÷ ${k ** 3} = ${rep.value(spec.volume, false)} cubic units.`
+          : two && known && known2
+            ? `First box: ${rl} × ${rw} × ${rh} = ${rep.value(spec.volume, false)} cubes. Second box: ${real(two.length)} × ${real(two.width)} × ${real(two.height)} = ${rep.value(two.volume, false)} cubes. Together: ${rep.value(spec.volume, false)} + ${rep.value(two.volume, false)} = ${spec.total ? rep.value(spec.total, false) : '?'} cubes.`
+            : known
+              ? `One layer is ${rl} × ${rw} = ${layer} cubes. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${layer} × ${rh} = ${rep.value(spec.volume, false)} cubes.`
+              : 'Type the length, width and height to fill the box.'}
       </Caption>
       <Steppers
         calc={calc}

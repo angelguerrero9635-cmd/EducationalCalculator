@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Line, Rect } from 'react-native-svg';
+import Svg, { G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -137,6 +137,34 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {rep.value(id, false)}
                   </ChartText>
                 ))}
+                {spec.brackets
+                  ? (
+                      [
+                        [mn, mx, spec.brackets.range, 'range', yMid - boxH / 2 - 30],
+                        [q1, q3, spec.brackets.iqr, 'IQR', yMid - boxH / 2 - 10],
+                      ] as const
+                    )
+                      .filter(([, , id]) => id !== undefined)
+                      .map(([a, b, id, label, y]) => (
+                        <G key={label}>
+                          <Path
+                            d={`M ${sx(a)} ${y + 5} L ${sx(a)} ${y} L ${sx(b)} ${y} L ${sx(b)} ${y + 5}`}
+                            stroke={label === 'IQR' ? c.chartHighlight : c.chartMuted}
+                            strokeWidth={chart.strokeLight}
+                            fill="none"
+                          />
+                          <ChartText
+                            x={(sx(a) + sx(b)) / 2}
+                            y={y - 3}
+                            fontSize={chart.tiny}
+                            fill={label === 'IQR' ? c.chartHighlight : c.chartMuted}
+                            textAnchor="middle"
+                          >
+                            {`${label} ${rep.value(id!, false)}`}
+                          </ChartText>
+                        </G>
+                      ))
+                  : null}
               </Svg>
               {known
                 ? ids.map((id, i) => (

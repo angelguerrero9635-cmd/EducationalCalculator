@@ -29,6 +29,12 @@ export function figureWidth(f: Spec): number {
       return 96;
     case 'ray':
       return 80;
+    case 'inequality':
+      return 96;
+    case 'net': {
+      const cols = Math.max(...f.cells.map(([x]) => x)) + 1;
+      return Math.max(S, cols * 12 + 8);
+    }
     case 'dots':
       return Math.max(S, Math.ceil(f.count / 2) * 11 + 10);
     case 'polygon':
@@ -110,7 +116,7 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
         </SvgText>
       );
     case 'polygon':
-      return <PolygonFigure f={f} ink={ink} />;
+      return <PolygonFigure f={f} ink={ink} shade={shade} />;
     case 'circle':
       return <Circle cx={S / 2} cy={S / 2} r={S / 2 - M} fill="none" {...line} />;
     case 'heart':
@@ -174,6 +180,64 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
         </G>
       );
     }
+    case 'net': {
+      // Six squares on a grid: does it fold into a cube?
+      const rows = Math.max(...f.cells.map(([, y]) => y)) + 1;
+      const cell = Math.min(12, (S - 8) / rows);
+      return (
+        <G>
+          {f.cells.map(([x, y], i) => (
+            <Rect
+              key={i}
+              x={4 + x * cell}
+              y={4 + y * cell}
+              width={cell}
+              height={cell}
+              fill={shade}
+              fillOpacity={0.25}
+              stroke={ink}
+              strokeWidth={1.25}
+            />
+          ))}
+        </G>
+      );
+    }
+    case 'inequality': {
+      // A number line with the number marked (a filled dot includes it) and an arrow one way.
+      const y = S / 2 + 4;
+      const x = w / 2;
+      const end = f.dir === 'right' ? w - 6 : 6;
+      return (
+        <G>
+          <Line x1={4} y1={y} x2={w - 4} y2={y} stroke={ink} strokeWidth={1.25} />
+          {[-2, -1, 0, 1, 2].map((t) => (
+            <Line key={t} x1={x + t * 16} y1={y - 3} x2={x + t * 16} y2={y + 3} stroke={ink} />
+          ))}
+          <SvgText x={x} y={y + 14} fontSize={10} fill={ink} textAnchor="middle">
+            {String(f.at)}
+          </SvgText>
+          <Line x1={x} y1={y - 8} x2={end} y2={y - 8} stroke={shade} strokeWidth={3} />
+          <Path
+            d={`M ${end - (f.dir === 'right' ? 6 : -6)} ${y - 13} L ${end} ${y - 8} L ${end - (f.dir === 'right' ? 6 : -6)} ${y - 3}`}
+            fill="none"
+            stroke={shade}
+            strokeWidth={2.5}
+          />
+          <Circle
+            cx={x}
+            cy={y - 8}
+            r={4.5}
+            fill={f.closed ? shade : 'none'}
+            stroke={shade}
+            strokeWidth={2}
+          />
+        </G>
+      );
+    }
+    case 'cell':
+      return <CellFigure f={f} ink={ink} shade={shade} />;
+    case 'rock':
+      return <RockFigure texture={f.texture} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;
@@ -201,13 +265,88 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
  * A polygon from corners in a 0–100 box. A curved side bulges out from the middle of the
  * shape; marks are a small square in each square corner and matching ticks on equal sides.
  */
-function PolygonFigure({ f, ink }: { f: Extract<Spec, { kind: 'polygon' }>; ink: string }) {
+function PolygonFigure({
+  f,
+  ink,
+  shade,
+}: {
+  f: Extract<Spec, { kind: 'polygon' }>;
+  ink: string;
+  shade: string;
+}) {
   const size = f.marks ? MARKED : S;
   const k = (size - 2 * M) / 100;
   const pts = f.points.map(([x, y]) => [M + x * k, M + y * k] as [number, number]);
   const line = { stroke: ink, strokeWidth: chart.stroke, strokeLinejoin: 'round' as const };
   if (f.open) {
     return <Polyline points={pts.map((p) => p.join(',')).join(' ')} fill="none" {...line} />;
+  }
+  // Grade 6 heights: one side drawn thick (the base), its line extended dotted when the
+  // height falls outside, and a dashed segment with a square corner where it meets the base.
+  const extra: ReactNode[] = [];
+  if (f.base !== undefined) {
+    const a = pts[f.base]!;
+    const b = pts[(f.base + 1) % pts.length]!;
+    if (f.extend) {
+      const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+      const [ux, uy] = [(b[0] - a[0]) / l, (b[1] - a[1]) / l];
+      extra.push(
+        <Line
+          key="ext"
+          x1={a[0] - ux * 18}
+          y1={a[1] - uy * 18}
+          x2={b[0] + ux * 18}
+          y2={b[1] + uy * 18}
+          stroke={ink}
+          strokeWidth={1}
+          strokeDasharray="2 2"
+        />,
+      );
+    }
+    extra.push(
+      <Line key="base" x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} stroke={shade} strokeWidth={4} />,
+    );
+  }
+  if (f.dashed) {
+    const [[x1, y1], [x2, y2]] = f.dashed.map(([x, y]) => [M + x * k, M + y * k]) as [
+      [number, number],
+      [number, number],
+    ];
+    extra.push(
+      <Line
+        key="h"
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke={ink}
+        strokeWidth={1.5}
+        strokeDasharray="3 2"
+      />,
+    );
+    // A square corner at the foot when the segment is perpendicular to the base.
+    if (f.base !== undefined) {
+      const a = pts[f.base]!;
+      const b = pts[(f.base + 1) % pts.length]!;
+      const [bx, by] = [b[0] - a[0], b[1] - a[1]];
+      const [hx, hy] = [x1 - x2, y1 - y2];
+      const lb = Math.hypot(bx, by) || 1;
+      const lh = Math.hypot(hx, hy) || 1;
+      if (Math.abs((bx * hx + by * hy) / (lb * lh)) < 0.03) {
+        const q = 4;
+        const [ux, uy] = [(bx / lb) * q, (by / lb) * q];
+        const [vx, vy] = [(hx / lh) * q, (hy / lh) * q];
+        extra.push(
+          <Path
+            key="sq"
+            d={`M ${x2 + ux} ${y2 + uy} L ${x2 + ux + vx} ${y2 + uy + vy} L ${x2 + vx} ${y2 + vy}`}
+            fill="none"
+            stroke={ink}
+            strokeWidth={1}
+          />,
+        );
+      }
+    }
   }
   const n = pts.length;
   const cx = pts.reduce((s, p) => s + p[0], 0) / n;
@@ -280,6 +419,7 @@ function PolygonFigure({ f, ink }: { f: Extract<Spec, { kind: 'polygon' }>; ink:
       <G>
         <Polygon points={pts.map((p) => p.join(',')).join(' ')} fill="none" {...line} />
         {marks}
+        {extra}
       </G>
     );
   }
@@ -301,6 +441,7 @@ function PolygonFigure({ f, ink }: { f: Extract<Spec, { kind: 'polygon' }>; ink:
     <G>
       <Path d={`M ${pts[0]![0]} ${pts[0]![1]} ${d} Z`} fill="none" {...line} />
       {marks}
+      {extra}
     </G>
   );
 }
@@ -727,4 +868,240 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
         </G>
       );
   }
+}
+
+/** A small cell: plant (box with a thick wall), animal (round, long or branched), bacterium (rod). */
+function CellFigure({
+  f,
+  ink,
+  shade,
+}: {
+  f: Extract<Spec, { kind: 'cell' }>;
+  ink: string;
+  shade: string;
+}) {
+  const shape = f.shape ?? (f.type === 'plant' ? 'box' : f.type === 'bacterium' ? 'rod' : 'round');
+  const wall = f.type !== 'animal';
+  const outline =
+    shape === 'box' ? (
+      <Rect x={6} y={10} width={36} height={28} rx={2} fill="none" stroke={ink} strokeWidth={1.5} />
+    ) : shape === 'long' ? (
+      <Ellipse cx={24} cy={24} rx={21} ry={8} fill="none" stroke={ink} strokeWidth={1.5} />
+    ) : shape === 'branched' ? (
+      <Path
+        d="M 18 24 L 4 14 M 18 24 L 4 34 M 30 24 L 46 24 M 30 24 L 44 12"
+        stroke={ink}
+        strokeWidth={1.5}
+        fill="none"
+      />
+    ) : shape === 'rod' ? (
+      <Rect
+        x={10}
+        y={17}
+        width={28}
+        height={14}
+        rx={7}
+        fill="none"
+        stroke={ink}
+        strokeWidth={1.5}
+      />
+    ) : (
+      <Circle cx={24} cy={24} r={17} fill="none" stroke={ink} strokeWidth={1.5} />
+    );
+  return (
+    <G>
+      {shape === 'branched' ? (
+        <Circle cx={24} cy={24} r={9} fill="none" stroke={ink} strokeWidth={1.5} />
+      ) : null}
+      {outline}
+      {/* A wall: a second line just outside the membrane. */}
+      {wall && shape === 'box' ? (
+        <Rect
+          x={3}
+          y={7}
+          width={42}
+          height={34}
+          rx={3}
+          fill="none"
+          stroke={ink}
+          strokeWidth={2.5}
+        />
+      ) : null}
+      {wall && shape === 'rod' ? (
+        <Rect
+          x={7}
+          y={14}
+          width={34}
+          height={20}
+          rx={10}
+          fill="none"
+          stroke={ink}
+          strokeWidth={2.5}
+        />
+      ) : null}
+      {f.type === 'bacterium' ? (
+        // Loose DNA, no nucleus.
+        <Path d="M 16 24 q 4 -5 8 0 t 8 0" fill="none" stroke={ink} strokeWidth={1} />
+      ) : (
+        <Circle cx={shape === 'box' ? 32 : 24} cy={24} r={4.5} fill={ink} />
+      )}
+      {f.chloroplasts
+        ? [
+            [13, 16],
+            [13, 31],
+            [22, 34],
+            [24, 14],
+          ].map(([x, y], i) => (
+            <Ellipse
+              key={i}
+              cx={x}
+              cy={y}
+              rx={3.5}
+              ry={2}
+              fill={shade}
+              stroke={ink}
+              strokeWidth={0.75}
+            />
+          ))
+        : null}
+    </G>
+  );
+}
+
+/** A rock's outline filled with its texture: crystals, grains, layers, bands, holes … */
+function RockFigure({
+  texture,
+  ink,
+  shade,
+}: {
+  texture: Extract<Spec, { kind: 'rock' }>['texture'];
+  ink: string;
+  shade: string;
+}) {
+  const outline = 'M 6 30 L 10 14 L 24 7 L 38 11 L 43 26 L 36 40 L 16 42 Z';
+  const dots = (n: number, r: number, seed: number) =>
+    Array.from({ length: n }, (_, i) => {
+      const t = (i * 7919 + seed * 104729) % 997;
+      return [12 + (t % 26), 13 + ((t * 31) % 26)] as [number, number];
+    }).map(([x, y], i) => <Circle key={i} cx={x} cy={y} r={r} fill={ink} />);
+  let inside: ReactNode = null;
+  switch (texture) {
+    case 'crystals':
+      inside = (
+        <Path
+          d="M 12 18 L 20 14 L 26 20 L 20 26 Z M 26 20 L 34 16 L 38 24 L 30 28 Z M 16 30 L 24 28 L 28 36 L 18 38 Z M 30 28 L 38 30 L 34 38 Z"
+          fill={shade}
+          fillOpacity={0.3}
+          stroke={ink}
+          strokeWidth={1}
+        />
+      );
+      break;
+    case 'fine':
+      inside = <G>{dots(40, 0.6, 1)}</G>;
+      break;
+    case 'glassy':
+      inside = (
+        <G>
+          <Path d={outline} fill={ink} fillOpacity={0.8} />
+          <Path d="M 14 16 Q 20 12 26 14" stroke={shade} strokeWidth={2} fill="none" />
+        </G>
+      );
+      break;
+    case 'holes':
+      inside = (
+        <G>
+          {[
+            [16, 18, 2.5],
+            [26, 15, 1.8],
+            [33, 22, 2.8],
+            [20, 28, 2],
+            [29, 33, 2.4],
+            [14, 33, 1.6],
+          ].map(([x, y, r], i) => (
+            <Circle key={i} cx={x} cy={y} r={r} fill="none" stroke={ink} strokeWidth={1} />
+          ))}
+        </G>
+      );
+      break;
+    case 'grains':
+      inside = <G>{dots(28, 1.3, 2)}</G>;
+      break;
+    case 'pebbles':
+      inside = (
+        <G>
+          {[
+            [16, 19, 4, 3],
+            [28, 16, 5, 3.5],
+            [34, 27, 4, 3],
+            [21, 30, 5, 3.5],
+            [30, 36, 3, 2.5],
+          ].map(([x, y, rx, ry], i) => (
+            <Ellipse
+              key={i}
+              cx={x}
+              cy={y}
+              rx={rx}
+              ry={ry}
+              fill={shade}
+              fillOpacity={0.3}
+              stroke={ink}
+              strokeWidth={1}
+            />
+          ))}
+        </G>
+      );
+      break;
+    case 'shells':
+      inside = (
+        <G>
+          {(
+            [
+              [18, 20],
+              [30, 18],
+              [24, 31],
+            ] as const
+          ).map(([x, y], i) => (
+            <Path
+              key={i}
+              d={`M ${x - 5} ${y} A 5 5 0 0 1 ${x + 5} ${y} Z M ${x} ${y} L ${x - 3} ${y - 4} M ${x} ${y} L ${x + 3} ${y - 4}`}
+              fill="none"
+              stroke={ink}
+              strokeWidth={1}
+            />
+          ))}
+        </G>
+      );
+      break;
+    case 'layers':
+      inside = (
+        <G>
+          {[16, 21, 26, 31, 36].map((y) => (
+            <Line key={y} x1={9} y1={y} x2={41} y2={y - 2} stroke={ink} strokeWidth={1} />
+          ))}
+        </G>
+      );
+      break;
+    case 'bands':
+      inside = (
+        <G>
+          {[18, 26, 34].map((y) => (
+            <Path
+              key={y}
+              d={`M 8 ${y} Q 18 ${y - 5} 26 ${y} T 42 ${y}`}
+              stroke={ink}
+              strokeWidth={2.5}
+              fill="none"
+            />
+          ))}
+        </G>
+      );
+      break;
+  }
+  return (
+    <G>
+      <Path d={outline} fill="none" stroke={ink} strokeWidth={1.75} strokeLinejoin="round" />
+      {inside}
+    </G>
+  );
 }

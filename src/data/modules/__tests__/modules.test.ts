@@ -47,10 +47,21 @@ function representationVars(r: Representation): string[] {
     case 'partition':
       return [r.parts, r.shaded, ...(r.control ? [r.control] : [])];
     case 'skipCount':
-      return [r.step, r.count, r.total, ...(r.start ? [r.start] : [])].filter(
-        (v): v is string => typeof v === 'string',
-      );
+      return [
+        r.step,
+        r.count,
+        r.total,
+        ...(r.start ? [r.start] : []),
+        ...(r.second ? [r.second.step] : []),
+      ].filter((v): v is string => typeof v === 'string');
     case 'tape':
+      if ('ratio' in r)
+        return [
+          ...r.ratio,
+          r.unit,
+          ...(r.amounts ?? []),
+          ...[r.total, r.difference].filter((x): x is string => !!x),
+        ];
       return 'compare' in r
         ? [...r.compare, r.difference, ...(r.times ? [r.times] : [])]
         : [
@@ -146,12 +157,21 @@ function representationVars(r: Representation): string[] {
         r.y,
         ...(r.second ? [r.second.x, r.second.y] : []),
         ...(r.slope ? [r.slope] : []),
+        ...(r.distance ? [r.distance] : []),
+        ...(r.rect ? [r.rect.left, r.rect.right, r.rect.bottom, r.rect.top] : []),
         ...(r.trail
           ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
           : []),
       ];
     case 'boxPlot':
-      return [r.min, r.q1, r.median, r.q3, r.max];
+      return [
+        r.min,
+        r.q1,
+        r.median,
+        r.q3,
+        r.max,
+        ...[r.brackets?.range, r.brackets?.iqr].filter((x): x is string => !!x),
+      ];
     case 'pieChart':
       return [...r.parts, ...(r.total ? [r.total] : [])];
     case 'fractionArea':
@@ -178,7 +198,7 @@ function representationVars(r: Representation): string[] {
     case 'shareWholes':
       return [r.wholes, r.people, ...(r.each ? [r.each] : [])];
     case 'factorTree':
-      return [r.value, ...(r.count ? [r.count] : [])];
+      return [r.value, ...[r.count, r.second, r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'protractor':
       return [r.angle, ...(r.other ? [r.other] : [])];
     case 'wave':
@@ -190,6 +210,35 @@ function representationVars(r: Representation): string[] {
       ];
     case 'punnettSquare':
       return [r.first, r.second, r.dominant, ...(r.recessive ? [r.recessive] : [])];
+    case 'integerLine':
+      return [
+        r.value,
+        ...[r.opposite, r.absolute, r.second, r.change].filter((x): x is string => !!x),
+      ];
+    case 'percentBar':
+      return [r.percent, r.part, r.whole, ...(r.onePercent ? [r.onePercent] : [])];
+    case 'ratioTable':
+      return [r.first, r.second, r.times, ...r.amounts];
+    case 'fractionFit':
+      return [
+        r.dividend.num,
+        r.dividend.den,
+        r.divisor.num,
+        r.divisor.den,
+        ...(r.quotient ? [r.quotient] : []),
+      ];
+    case 'venn':
+      return [r.first, r.second, ...[r.gcf, r.lcm].filter((x): x is string => !!x)];
+    case 'baseHeight':
+      return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
+    case 'net':
+      return [r.length, ...[r.width, r.height, r.slant, r.total].filter((x): x is string => !!x)];
+    case 'dotPlot':
+      return [...r.data, ...[r.mean, r.median, r.range].filter((x): x is string => !!x)];
+    case 'fieldOfView':
+      return [r.field, r.across, ...(r.size ? [r.size] : [])];
+    case 'gradCylinder':
+      return [r.before, r.after, ...(r.volume ? [r.volume] : [])];
     case 'ruler':
       return [
         ...r.lengths,

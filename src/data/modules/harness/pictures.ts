@@ -528,9 +528,20 @@ export function repIssues(
     }
     case 'unitCubes': {
       const [l, w, h, v] = [rep.length, rep.width, rep.height, rep.volume].map(val);
-      count(rep.length, 'cubes across', rep.max);
-      count(rep.width, 'cubes back', rep.max);
-      count(rep.height, 'layers', rep.max);
+      // Cubes of edge 1/k: each side holds a whole number of them.
+      const k = rep.cube ?? 1;
+      for (const [id, what] of [
+        [rep.length, 'cubes across'],
+        [rep.width, 'cubes back'],
+        [rep.height, 'layers'],
+      ] as const) {
+        const x = val(id);
+        if (x === undefined) continue;
+        if (x < 0) out.push(`${what} ${id} is negative (${x})`);
+        if (Math.abs(x * k - Math.round(x * k)) > 1e-9)
+          out.push(`${what} ${id} is not whole cubes (${x})`);
+        if (x * k > rep.max) out.push(`${what} ${id} = ${x} exceeds the drawing's ${rep.max}`);
+      }
       if ([l, w, h, v].every((x) => x !== undefined) && Math.abs(l! * w! * h! - v!) > 1e-9)
         out.push(`${l} × ${w} × ${h} cubes drawn, volume shows ${v}`);
       if (rep.second) {
@@ -572,6 +583,26 @@ export function repIssues(
       count(rep.value, 'number');
       break;
     case 'tape': {
+      if ('ratio' in rep) {
+        // Ratio boxes: whole counts, each bar's amount its boxes times the unit.
+        count(rep.ratio[0], 'ratio boxes', 40);
+        count(rep.ratio[1], 'ratio boxes', 40);
+        const [p, q, u] = [val(rep.ratio[0]), val(rep.ratio[1]), val(rep.unit)];
+        for (const [n, id] of [
+          [p, rep.amounts?.[0]],
+          [q, rep.amounts?.[1]],
+        ] as const) {
+          const x = id ? val(id) : undefined;
+          if (
+            n !== undefined &&
+            u !== undefined &&
+            x !== undefined &&
+            Math.abs(n * u - x) > 1e-6 * Math.max(1, x)
+          )
+            out.push(`tape: ${n} boxes of ${u} shows ${x}`);
+        }
+        break;
+      }
       if (!('compare' in rep) || !rep.times) break;
       const [a, b, k] = [val(rep.compare[0]), val(rep.compare[1]), val(rep.times)];
       if (
@@ -634,6 +665,149 @@ export function repIssues(
       }
       if (p !== undefined && q !== undefined && d !== undefined && 4 - (2 - p) * (2 - q) !== d)
         out.push(`Punnett square shows ${4 - (2 - p) * (2 - q)} of 4 with the trait, not ${d}`);
+      break;
+    }
+    case 'integerLine': {
+      const [a, o, abs, b, d] = [rep.value, rep.opposite, rep.absolute, rep.second, rep.change].map(
+        (id) => (id ? val(id) : undefined),
+      );
+      if (a !== undefined && o !== undefined && Math.abs(o + a) > 1e-9)
+        out.push(`opposite of ${a} shows ${o}`);
+      if (a !== undefined && abs !== undefined && Math.abs(abs - Math.abs(a)) > 1e-9)
+        out.push(`absolute value of ${a} shows ${abs}`);
+      if (
+        a !== undefined &&
+        b !== undefined &&
+        d !== undefined &&
+        Math.abs(Math.abs(b - a) - d) > 1e-9
+      )
+        out.push(`jump from ${a} to ${b} shows ${d}`);
+      break;
+    }
+    case 'percentBar': {
+      const [p, part, whole] = [rep.percent, rep.part, rep.whole].map(val);
+      if (p !== undefined && p < 0) out.push(`percent ${p} below 0`);
+      if (
+        p !== undefined &&
+        part !== undefined &&
+        whole !== undefined &&
+        Math.abs((p / 100) * whole - part) > 1e-6 * Math.max(1, part)
+      )
+        out.push(`bar shades ${p}% of ${whole}, part shows ${part}`);
+      break;
+    }
+    case 'ratioTable': {
+      const [p, q, k, x, y] = [rep.first, rep.second, rep.times, ...rep.amounts].map(val);
+      if (
+        p !== undefined &&
+        k !== undefined &&
+        x !== undefined &&
+        Math.abs(p * k - x) > 1e-6 * Math.max(1, x)
+      )
+        out.push(`row ${k} × ${p} shows ${x}`);
+      if (
+        q !== undefined &&
+        k !== undefined &&
+        y !== undefined &&
+        Math.abs(q * k - y) > 1e-6 * Math.max(1, y)
+      )
+        out.push(`row ${k} × ${q} shows ${y}`);
+      break;
+    }
+    case 'fractionFit': {
+      for (const id of [rep.dividend.num, rep.dividend.den, rep.divisor.num, rep.divisor.den])
+        count(id, 'fraction part');
+      const [a, b, p, q] = [
+        rep.dividend.num,
+        rep.dividend.den,
+        rep.divisor.num,
+        rep.divisor.den,
+      ].map(val);
+      if (b === 0 || q === 0) out.push('a fraction with denominator 0');
+      if (a !== undefined && b && p !== undefined && q && p > 0 && a / b / (p / q) > 40)
+        out.push(`more than 40 groups (${a / b / (p / q)})`);
+      break;
+    }
+    case 'venn':
+      count(rep.first, 'Venn number', 1000);
+      count(rep.second, 'Venn number', 1000);
+      break;
+    case 'baseHeight': {
+      const [b, h, t, A] = [rep.base, rep.height, rep.top, rep.area].map((id) =>
+        id ? val(id) : undefined,
+      );
+      const area =
+        b === undefined || h === undefined
+          ? undefined
+          : rep.shape === 'parallelogram'
+            ? b * h
+            : rep.shape === 'triangle'
+              ? 0.5 * b * h
+              : rep.shape === 'trapezoid'
+                ? t === undefined
+                  ? undefined
+                  : 0.5 * (b + t) * h
+                : t === undefined
+                  ? undefined
+                  : b * h + 0.5 * b * t;
+      if (area !== undefined && A !== undefined && Math.abs(area - A) > 1e-6 * Math.max(1, A))
+        out.push(`${rep.shape} ${b} by ${h} has area ${area}, shows ${A}`);
+      break;
+    }
+    case 'net': {
+      const [L, W, H, sl, T] = [rep.length, rep.width, rep.height, rep.slant, rep.total].map(
+        (id) => (id ? val(id) : undefined),
+      );
+      const w = W ?? L;
+      const h = H ?? L;
+      const total =
+        L === undefined
+          ? undefined
+          : rep.solid === 'squarePyramid'
+            ? sl === undefined
+              ? undefined
+              : L * L + 2 * L * sl
+            : w === undefined || h === undefined
+              ? undefined
+              : 2 * (L * w + L * h + w * h);
+      if (total !== undefined && T !== undefined && Math.abs(total - T) > 1e-6 * Math.max(1, T))
+        out.push(`net faces add to ${total}, total shows ${T}`);
+      break;
+    }
+    case 'dotPlot': {
+      const data = rep.data.map(val).filter((x): x is number => x !== undefined);
+      const m = rep.mean ? val(rep.mean) : undefined;
+      if (m !== undefined && data.length === rep.data.length) {
+        const mean = data.reduce((s, x) => s + x, 0) / data.length;
+        if (Math.abs(mean - m) > 1e-6 * Math.max(1, Math.abs(m)))
+          out.push(`dots balance at ${mean}, mean shows ${m}`);
+      }
+      break;
+    }
+    case 'fieldOfView': {
+      count(rep.across, 'cells across');
+      const [f, n, s] = [rep.field, rep.across, rep.size].map((id) => (id ? val(id) : undefined));
+      if (
+        f !== undefined &&
+        n !== undefined &&
+        s !== undefined &&
+        Math.abs(n * s - f) > 1e-6 * Math.max(1, f)
+      )
+        out.push(`${n} cells of ${s} don't fill ${f}`);
+      break;
+    }
+    case 'gradCylinder': {
+      const [a, b, v] = [rep.before, rep.after, rep.volume].map((id) => (id ? val(id) : undefined));
+      if (a !== undefined && a < 0) out.push(`level before ${a} below 0`);
+      if (a !== undefined && b !== undefined && b < a)
+        out.push(`level after ${b} below before ${a}`);
+      if (
+        a !== undefined &&
+        b !== undefined &&
+        v !== undefined &&
+        Math.abs(b - a - v) > 1e-6 * Math.max(1, v)
+      )
+        out.push(`rise ${b - a} shows volume ${v}`);
       break;
     }
     case 'rockLayers':

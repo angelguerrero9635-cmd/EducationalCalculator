@@ -47,6 +47,12 @@ export type CardFigure =
       open?: boolean;
       curved?: number;
       marks?: boolean;
+      /** The side (from corner i to the next) drawn thick: the base. */
+      base?: number;
+      /** A dashed segment [from, to] in the 0–100 box: a height (square corner at its foot). */
+      dashed?: [[number, number], [number, number]];
+      /** The base's line extended dotted (a height outside an obtuse triangle). */
+      extend?: boolean;
     }
   | { kind: 'circle' }
   | { kind: 'heart' }
@@ -77,7 +83,32 @@ export type CardFigure =
   /** Fraction bars of the same whole, one under the other: [shaded parts, parts]. */
   | { kind: 'fractionBars'; bars: [number, number][] }
   /** A line with no arrowheads (a segment, with its endpoints), one (a ray) or two (a line); or one point. */
-  | { kind: 'ray'; arrows: 0 | 1 | 2; point?: boolean };
+  | { kind: 'ray'; arrows: 0 | 1 | 2; point?: boolean }
+  /** Six squares on a grid (a cube's possible net): [column, row] of each square. */
+  | { kind: 'net'; cells: [number, number][] }
+  /** A number line with a dot at `at` (filled when included) and an arrow left or right. */
+  | { kind: 'inequality'; at: number; dir: 'left' | 'right'; closed: boolean }
+  /** A small cell drawing: a wall or not, a nucleus or loose DNA, chloroplasts. */
+  | {
+      kind: 'cell';
+      type: 'plant' | 'animal' | 'bacterium';
+      shape?: 'box' | 'round' | 'long' | 'branched' | 'rod';
+      chloroplasts?: boolean;
+    }
+  /** A rock's outline filled with its texture. */
+  | {
+      kind: 'rock';
+      texture:
+        | 'crystals'
+        | 'fine'
+        | 'glassy'
+        | 'holes'
+        | 'grains'
+        | 'pebbles'
+        | 'shells'
+        | 'layers'
+        | 'bands';
+    };
 
 /** The everyday things a card can show. */
 export type CardIcon =
@@ -142,7 +173,21 @@ export type Figure =
   /** A balloon, plain or rubbed, near paper bits, hair, a wall or a second balloon. */
   | { kind: 'static' }
   /** An addition or times table from 0 to 10; a scene lights rows, columns, cells or the mirror line. */
-  | { kind: 'timesTable' };
+  | { kind: 'timesTable' }
+  /** A plant, animal or bacterium cell with its parts labeled (Grade 6). */
+  | { kind: 'cell' }
+  /** A body outline with one or more systems drawn in (Grade 6). */
+  | { kind: 'bodySystems' }
+  /** Sea, cloud, mountain and ground, with one process of the water cycle lit (Grade 6). */
+  | { kind: 'waterCycle' }
+  /** Two air masses meeting at a front, or a high or low with its winds (Grade 6). */
+  | { kind: 'front' }
+  /** A slice through two plates at their boundary (Grade 6). */
+  | { kind: 'plates' }
+  /** The continents at a time in the past, with a clue that they were joined (Grade 6). */
+  | { kind: 'continents' }
+  /** The rock cycle: three kinds of rock and the processes between them (Grade 6). */
+  | { kind: 'rockCycle' };
 
 export interface Scene {
   label: string;
@@ -194,6 +239,57 @@ export interface Scene {
     columns?: number[];
     cells?: 'even' | 'odd';
     mirror?: boolean;
+  };
+  /** The cell and the part lit (a `cell` figure). */
+  cell?: {
+    type: 'plant' | 'animal' | 'bacterium';
+    part?:
+      | 'membrane'
+      | 'cytoplasm'
+      | 'nucleus'
+      | 'mitochondria'
+      | 'chloroplasts'
+      | 'wall'
+      | 'vacuole'
+      | 'dna';
+  };
+  /** The systems drawn (a `bodySystems` figure). */
+  body?: {
+    systems: (
+      | 'circulatory'
+      | 'respiratory'
+      | 'digestive'
+      | 'nervous'
+      | 'muscular'
+      | 'skeletal'
+      | 'excretory'
+    )[];
+  };
+  /** The process lit and what drives it (a `waterCycle` figure). */
+  water?: {
+    process:
+      | 'evaporation'
+      | 'transpiration'
+      | 'condensation'
+      | 'precipitation'
+      | 'runoff'
+      | 'infiltration'
+      | 'melting';
+    driver?: 'sun' | 'gravity';
+  };
+  /** The front, or a high or low (a `front` figure). */
+  front?: { type?: 'cold' | 'warm' | 'stationary'; air?: 'high' | 'low' };
+  /** The boundary, with rock ages or the mantle's flow (a `plates` figure). */
+  plates?: {
+    boundary: 'divergent' | 'rift' | 'subduction' | 'collision' | 'transform';
+    ages?: boolean;
+    mantle?: boolean;
+  };
+  /** Millions of years ago, and the clue shown (a `continents` figure). */
+  continents?: { age: 250 | 150 | 0; clue?: 'fossils' | 'rocks' | 'shapes' };
+  /** The process lit (a `rockCycle` figure). */
+  rock?: {
+    process: 'melting' | 'cooling' | 'weathering' | 'deposition' | 'metamorphism' | 'uplift';
   };
 }
 

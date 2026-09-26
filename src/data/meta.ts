@@ -73,6 +73,16 @@ const PICTURE_NAMES: Record<string, string> = {
   protractor: 'protractor',
   wave: 'wave',
   punnettSquare: 'Punnett square',
+  integerLine: 'number line with negatives',
+  percentBar: 'percent bar',
+  ratioTable: 'ratio table',
+  fractionFit: 'fraction groups',
+  venn: 'Venn diagram',
+  baseHeight: 'base and height',
+  net: 'net',
+  dotPlot: 'dot plot',
+  fieldOfView: 'microscope field of view',
+  gradCylinder: 'graduated cylinder',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

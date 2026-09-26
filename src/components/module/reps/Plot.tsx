@@ -90,7 +90,8 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const axisLabel = (axis: Spec['x']) => {
     const v = rep.variable(axis.var);
     const unit = rep.unit(axis.var);
-    return axis.label ?? `${v.symbol}${unit ? ` (${unit})` : ''}`;
+    // K–6 words pages name the axis ("Mass (g)"), never "m (g)".
+    return axis.label ?? `${rep.words ? v.name : v.symbol}${unit ? ` (${unit})` : ''}`;
   };
   const xVar = rep.variable(spec.x.var);
 
@@ -191,6 +192,28 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 </ChartText>
                 <G clipPath="url(#plot-area)">
                   {shade ? <Path d={shade} fill={c.chartFill} /> : null}
+                  {(spec.reference ?? []).map((r) => (
+                    <G key={r.label}>
+                      <Line
+                        x1={sx(X.min)}
+                        y1={sy(r.slope * X.min)}
+                        x2={sx(X.max)}
+                        y2={sy(r.slope * X.max)}
+                        stroke={c.chartMuted}
+                        strokeWidth={chart.strokeLight}
+                        strokeDasharray={chart.dash}
+                      />
+                      <ChartText
+                        x={sx(Math.min(X.max, (Yr.max * 0.9) / r.slope)) - 4}
+                        y={sy(Math.min(Yr.max * 0.9, r.slope * X.max)) - 6}
+                        fontSize={chart.small}
+                        fill={c.chartMuted}
+                        textAnchor="end"
+                      >
+                        {r.label}
+                      </ChartText>
+                    </G>
+                  ))}
                   {d ? (
                     <Path d={d} stroke={c.chartInk} strokeWidth={chart.stroke} fill="none" />
                   ) : null}
@@ -302,7 +325,7 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Caption>
       {!paramsKnown ? (
         <Text style={[styles.caption, { color: c.textMuted }]}>
-          {`Enter ${spec.params.map((id) => rep.variable(id).symbol).join(' and ')} to draw the graph.`}
+          {`Enter ${spec.params.map((id) => (rep.words ? rep.variable(id).name.toLowerCase() : rep.variable(id).symbol)).join(' and ')} to draw the graph.`}
         </Text>
       ) : null}
     </>

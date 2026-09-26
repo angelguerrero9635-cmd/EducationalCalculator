@@ -96,6 +96,18 @@ export type Representation =
       /** A sentence under the bar, with {id} for values. */
       caption?: string;
     }
+  /**
+   * A ratio as two bars of equal boxes (3 boxes and 5 boxes), every box worth `unit`; the bars'
+   * amounts, the total and how many more the longer bar has.
+   */
+  | {
+      kind: 'tape';
+      ratio: [string, string];
+      unit: string;
+      amounts?: [string, string];
+      total?: string;
+      difference?: string;
+    }
   | {
       kind: 'tape';
       compare: [string, string];
@@ -204,12 +216,20 @@ export type Representation =
   | {
       kind: 'skipCount';
       step: string | number;
-      /** A value, or a fixed number of jumps (4 quarters in a minute). */
-      count: string | number;
+      /**
+       * A value, or a fixed number of jumps (4 quarters in a minute); left out, the jumps run
+       * to the total.
+       */
+      count?: string | number;
       total: string;
       start?: string;
       /** Count back: the jumps go left from the start. */
       back?: boolean;
+      /**
+       * A second row of jumps from 0 under the line (the multiples of another number): both
+       * rows run to `total`, the first landing they share (the least common multiple), circled.
+       */
+      second?: { step: string };
     }
   /**
    * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)
@@ -401,6 +421,8 @@ export type Representation =
       intercept?: string;
       /** Shade the area between the curve and the x-axis from x.min to the point. */
       shadeToPoint?: boolean;
+      /** Dashed lines through 0 to compare with (y = slope × x), labelled ("Water"). */
+      reference?: { slope: number; label: string }[];
     }
   /**
    * Rounding: a number line from the multiple of `to` below `value` to the one above, the
@@ -565,6 +587,8 @@ export type Representation =
       per: string;
       /** Whole top units drawn (grows to fit the value). */
       ticks: number;
+      /** "$" before the bottom numbers (unit prices), written to the cent. */
+      prefix?: '$';
     }
   /**
    * Coordinate plane with a point (x, y) to drag; optionally a second point, with the line
@@ -581,6 +605,15 @@ export type Representation =
        * than the next (numbers or variables), drawn as small dots and listed in a table.
        */
       trail?: { across: number | string; up: number | string };
+      /** The segment between the two points (no line or slope), labelled with `distance`. */
+      segment?: boolean;
+      distance?: string;
+      /** The point's images across the x-axis, the y-axis and both, drawn hollow. */
+      reflect?: boolean;
+      /** A rectangle from its left and right x-coordinates and bottom and top y-coordinates. */
+      rect?: { left: string; right: string; bottom: string; top: string };
+      /** Numerals I–IV in the quadrants. */
+      quadrantLabels?: boolean;
       /** Largest |coordinate| drawn (grows to fit). */
       extent: number;
       quadrants: 1 | 4;
@@ -594,6 +627,8 @@ export type Representation =
       q3: string;
       max: string;
       range: [number, number];
+      /** Brackets over the plot for the range and the interquartile range. */
+      brackets?: { range?: string; iqr?: string };
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
   | { kind: 'pieChart'; parts: string[]; total?: string }
@@ -622,6 +657,8 @@ export type Representation =
        */
       second?: { length: string; width: string; height: string; volume: string };
       total?: string;
+      /** Cubes of edge 1/cube (2: half-unit cubes) fill the box; `volume` stays in unit cubes. */
+      cube?: 2 | 3 | 4;
     }
   /**
    * Place-value chart: the digits of `value` in labelled columns, `decimals` places (0–3) past
@@ -639,7 +676,15 @@ export type Representation =
       compare?: string;
     }
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
-  | { kind: 'factorTree'; value: string; count?: string }
+  | {
+      kind: 'factorTree';
+      value: string;
+      count?: string;
+      /** A second number's tree beside it; the caption names the primes they share. */
+      second?: string;
+      gcf?: string;
+      lcm?: string;
+    }
   /**
    * Every rectangle with `value` unit squares, one under another (1 × 12, 2 × 6, 3 × 4); the
    * typed pair (`first` × `second`) is outlined. A prime has only one.
@@ -650,6 +695,108 @@ export type Representation =
    * part shaded in every bar (3 wholes shared by 4 is 3 × 1/4 = 3/4 each).
    */
   | { kind: 'shareWholes'; wholes: string; people: string; each?: string }
+  /**
+   * A number line through 0 (across, or up and down with `vertical`): `value` as a point to
+   * drag, its `opposite` mirrored through 0, its distance from 0 (`absolute`) bracketed, or a
+   * `second` point with the jump between the two (`change`). Shown from `min` to `max`, growing
+   * to fit.
+   */
+  | {
+      kind: 'integerLine';
+      value: string;
+      opposite?: string;
+      absolute?: string;
+      second?: string;
+      change?: string;
+      min: number;
+      max: number;
+      vertical?: boolean;
+      /** A fixed unit written after the numbers ("°C"). */
+      unit?: string;
+    }
+  /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
+  | {
+      kind: 'percentBar';
+      percent: string;
+      part: string;
+      whole: string;
+      onePercent?: string;
+      ticks?: 4 | 10;
+    }
+  /**
+   * A table of equivalent ratios: the parts `first` : `second`, rows 1–4 times them (or `rows`)
+   * with the row `times` slotted in and outlined; `graph` plots the pairs beside it.
+   */
+  | {
+      kind: 'ratioTable';
+      first: string;
+      second: string;
+      times: string;
+      amounts: [string, string];
+      rows?: number[];
+      graph?: boolean;
+    }
+  /**
+   * Dividing fractions: `groups` lays groups the size of the divisor along the dividend;
+   * `share` shows the dividend filling the divisor's part of one whole group.
+   */
+  | {
+      kind: 'fractionFit';
+      dividend: { num: string; den: string };
+      divisor: { num: string; den: string };
+      quotient?: string;
+      mode: 'groups' | 'share';
+      /** Wholes on the ruler (grows to fit the dividend). */
+      wholes: number;
+    }
+  /** Two overlapping circles of factors (or prime factors); the shared ones in the overlap. */
+  | {
+      kind: 'venn';
+      first: string;
+      second: string;
+      list: 'factors' | 'primes';
+      gcf?: string;
+      lcm?: string;
+    }
+  /**
+   * A parallelogram, triangle, trapezoid or house with its base thick and its height dashed
+   * (drag the top to lean it). `top` is the trapezoid's top base or the house's roof height.
+   */
+  | {
+      kind: 'baseHeight';
+      shape: 'parallelogram' | 'triangle' | 'trapezoid' | 'house';
+      base: string;
+      height: string;
+      top?: string;
+      area: string;
+      show?: 'rearrange' | 'double';
+    }
+  /** A box, cube or square pyramid unfolded, each face labelled with its area; Fold/Unfold. */
+  | {
+      kind: 'net';
+      solid: 'box' | 'cube' | 'squarePyramid';
+      length: string;
+      width?: string;
+      height?: string;
+      /** The height of each triangle on a pyramid's faces. */
+      slant?: string;
+      total?: string;
+    }
+  /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
+  | {
+      kind: 'dotPlot';
+      data: string[];
+      min: number;
+      max: number;
+      mean?: string;
+      median?: string;
+      range?: string;
+      deviations?: boolean;
+    }
+  /** A microscope's field of view with `across` cells end to end along its middle. */
+  | { kind: 'fieldOfView'; field: string; across: string; size?: string }
+  /** A graduated cylinder: the level before (dashed), after, and the rise (the object's volume). */
+  | { kind: 'gradCylinder'; before: string; after: string; volume?: string; max: number }
   /** Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale. */
   | { kind: 'protractor'; angle: string; other?: string }
   /**

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/Text';
-import Svg, { Circle, Line, Path } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -56,6 +56,25 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
     }
   }
   const both = p && q && p.known && q.known;
+  // Reflections of the point across the x-axis, the y-axis and both (drawn hollow).
+  const images: [number, number, string][] =
+    spec.reflect && p?.known
+      ? ([
+          [p.px, -p.py, 'x'],
+          [-p.px, p.py, 'y'],
+          [-p.px, -p.py, 'both'],
+        ].filter(([ix, iy]) => ix !== p.px || iy !== p.py) as [number, number, string][])
+      : [];
+  const corner = (id: string) => (rep.known(id) ? rep.shown(id) : undefined);
+  const rect =
+    spec.rect && [spec.rect.left, spec.rect.right, spec.rect.bottom, spec.rect.top].every(rep.known)
+      ? {
+          l: corner(spec.rect.left)!,
+          r: corner(spec.rect.right)!,
+          b: corner(spec.rect.bottom)!,
+          t: corner(spec.rect.top)!,
+        }
+      : undefined;
   const dx = both ? q.px - p.px : 0;
   const dy = both ? q.py - p.py : 0;
   // Before slope (Grade 8) the move is said in words: "7 right, 0 up".
@@ -169,8 +188,110 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                 <ChartText x={sx(0) + 6} y={sy(E) - 4} fontSize={chart.label} fontWeight="700">
                   y
                 </ChartText>
-                {lineThrough()}
-                {both && dx !== 0 && dy !== 0 ? (
+                {spec.quadrantLabels
+                  ? (
+                      [
+                        ['I', E / 2, E / 2],
+                        ['II', -E / 2, E / 2],
+                        ['III', -E / 2, -E / 2],
+                        ['IV', E / 2, -E / 2],
+                      ] as const
+                    ).map(([t, qx, qy]) => (
+                      <ChartText
+                        key={`q${t}`}
+                        x={sx(qx)}
+                        y={sy(qy)}
+                        fontSize={chart.emphasis}
+                        fontWeight="700"
+                        fill={c.chartMuted}
+                        opacity={0.6}
+                        textAnchor="middle"
+                      >
+                        {t}
+                      </ChartText>
+                    ))
+                  : null}
+                {rect ? (
+                  <Path
+                    d={`M ${sx(rect.l)} ${sy(rect.b)} L ${sx(rect.r)} ${sy(rect.b)} L ${sx(rect.r)} ${sy(rect.t)} L ${sx(rect.l)} ${sy(rect.t)} Z`}
+                    fill={c.chartHighlight}
+                    fillOpacity={0.15}
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.stroke}
+                  />
+                ) : null}
+                {rect
+                  ? (
+                      [
+                        [rect.l, rect.b],
+                        [rect.r, rect.b],
+                        [rect.r, rect.t],
+                        [rect.l, rect.t],
+                      ] as const
+                    ).map(([cx, cy], i) => (
+                      <G key={`rc${i}`}>
+                        <Circle cx={sx(cx)} cy={sy(cy)} r={4} fill={c.chartHighlight} />
+                        <ChartText
+                          x={sx(cx) + (cx === rect.l ? -6 : 6)}
+                          y={sy(cy) + (cy === rect.b ? 14 : -6)}
+                          fontSize={chart.small}
+                          fontWeight="700"
+                          textAnchor={cx === rect.l ? 'end' : 'start'}
+                        >
+                          {`(${formatNumber(cx)}, ${formatNumber(cy)})`}
+                        </ChartText>
+                      </G>
+                    ))
+                  : null}
+                {images.map(([ix, iy, name]) => (
+                  <G key={`im${name}`}>
+                    <Circle
+                      cx={sx(ix)}
+                      cy={sy(iy)}
+                      r={6}
+                      fill={c.chartSurface}
+                      stroke={c.chartHighlight}
+                      strokeWidth={chart.stroke}
+                    />
+                    <ChartText
+                      x={sx(ix) + 9}
+                      y={sy(iy) - 8}
+                      fontSize={chart.small}
+                      fill={c.chartInk}
+                    >
+                      {`(${formatNumber(ix)}, ${formatNumber(iy)})`}
+                    </ChartText>
+                  </G>
+                ))}
+                {spec.segment ? (
+                  both ? (
+                    <>
+                      <Line
+                        x1={sx(p.px)}
+                        y1={sy(p.py)}
+                        x2={sx(q.px)}
+                        y2={sy(q.py)}
+                        stroke={c.chartHighlight}
+                        strokeWidth={chart.strokeHeavy}
+                      />
+                      {spec.distance && rep.known(spec.distance) ? (
+                        <ChartText
+                          x={sx((p.px + q.px) / 2) + (dx === 0 ? 8 : 0)}
+                          y={sy((p.py + q.py) / 2) + (dx === 0 ? 4 : 18)}
+                          fontSize={chart.label}
+                          fontWeight="700"
+                          fill={c.chartHighlight}
+                          textAnchor={dx === 0 ? 'start' : 'middle'}
+                        >
+                          {`${rep.value(spec.distance, false)} units`}
+                        </ChartText>
+                      ) : null}
+                    </>
+                  ) : null
+                ) : (
+                  lineThrough()
+                )}
+                {!spec.segment && both && dx !== 0 && dy !== 0 ? (
                   <>
                     <Path
                       d={`M ${sx(p.px)} ${sy(p.py)} L ${sx(q.px)} ${sy(p.py)} L ${sx(q.px)} ${sy(q.py)}`}
@@ -276,11 +397,17 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
         </View>
       ) : null}
       <Caption>
-        {p?.known
-          ? both
-            ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
-            : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
-          : 'Type both coordinates to place the point.'}
+        {rect
+          ? `A rectangle ${formatNumber(Math.abs(rect.r - rect.l))} units wide and ${formatNumber(Math.abs(rect.t - rect.b))} units tall.`
+          : spec.reflect && p?.known
+            ? `(${formatNumber(p.px)}, ${formatNumber(p.py)}) reflected across the x-axis is (${formatNumber(p.px)}, ${formatNumber(-p.py)}); across the y-axis (${formatNumber(-p.px)}, ${formatNumber(p.py)}); across both (${formatNumber(-p.px)}, ${formatNumber(-p.py)}).`
+            : spec.segment && both
+              ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
+              : p?.known
+                ? both
+                  ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
+                  : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
+                : 'Type both coordinates to place the point.'}
       </Caption>
       <Steppers
         calc={calc}

@@ -28,8 +28,22 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const s = raw >= 1 ? fix(raw) : Math.max(0.01, fix(raw));
   // A number keeps the count fixed too (4 quarters in a minute): nothing to drag or type.
   const countVar = typeof spec.count === 'string' ? spec.count : undefined;
-  const k = Math.max(0, Math.round(countVar ? rep.shown(countVar) : (spec.count as number)));
+  const k = Math.max(
+    0,
+    Math.round(
+      countVar
+        ? rep.shown(countVar)
+        : spec.count === undefined
+          ? rep.shown(spec.total) / (stepVar ? rep.shown(stepVar) : (spec.step as number))
+          : (spec.count as number),
+    ),
+  );
   const from = spec.start && rep.known(spec.start) ? fix(rep.shown(spec.start)) : 0;
+  // A second row (the other number's multiples) runs to the total, the first shared landing.
+  const second = spec.second;
+  const s2 = second ? Math.max(0.01, fix(rep.shown(second.step))) : 1;
+  const end = second ? rep.shown(spec.total) : 0;
+  const k2 = second ? Math.max(0, Math.min(40, Math.round(end / s2))) : 0;
   // Room for 10 jumps, so the 11 labeled ticks fall where the jumps land (0, 4, 8, … for 4s).
   const fit = useFrozen(k <= 10 ? s * 10 : niceCeil(s * k));
   // Counting back: jumps go left from the start, so the line ends at the start.
@@ -43,8 +57,9 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const max = fit.value;
           const lo = spec.back ? from - max : from;
           const px = (x: number) => pad + ((x - lo) / max) * (w - 2 * pad);
-          const y = h * 0.72;
+          const y = second ? h * 0.55 : h * 0.72;
           const lift = Math.min(h * 0.4, Math.max(14, (px(s) - px(0)) * 0.6));
+          const lift2 = Math.min(h * 0.12, Math.max(8, (px(s2) - px(0)) * 0.3));
           const labels = Array.from({ length: 11 }, (_, i) => fix(lo + (max / 10) * i));
           return (
             <>
@@ -93,6 +108,28 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fill="none"
                   />
                 ))}
+                {second
+                  ? Array.from({ length: k2 }, (_, i) => (
+                      <Path
+                        key={`s${i}`}
+                        d={`M ${px(i * s2)} ${y} Q ${(px(i * s2) + px((i + 1) * s2)) / 2} ${y + 2 * lift2} ${px((i + 1) * s2)} ${y}`}
+                        stroke={c.chartMuted}
+                        strokeWidth={chart.strokeLight}
+                        strokeDasharray={chart.dashFine}
+                        fill="none"
+                      />
+                    ))
+                  : null}
+                {second && rep.known(spec.total) ? (
+                  <Circle
+                    cx={px(end)}
+                    cy={y}
+                    r={11}
+                    fill="none"
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.stroke}
+                  />
+                ) : null}
                 {Array.from({ length: k }, (_, i) => (
                   <Circle
                     key={`d${i}`}
@@ -129,6 +166,11 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
+      {second && rep.known(spec.total) ? (
+        <Caption>
+          {`Multiples of ${formatNumber(s)}: ${Array.from({ length: Math.min(k, 12) }, (_, i) => formatNumber(fix((i + 1) * s))).join(', ')}. Multiples of ${formatNumber(s2)}: ${Array.from({ length: Math.min(k2, 12) }, (_, i) => formatNumber(fix((i + 1) * s2))).join(', ')}. Both reach ${formatNumber(end)} first.`}
+        </Caption>
+      ) : null}
       <Caption>
         {k === 0
           ? formatNumber(from)

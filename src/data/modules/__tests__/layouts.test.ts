@@ -24,6 +24,13 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   sky: 'sky',
   static: 'charge',
   timesTable: 'table',
+  cell: 'cell',
+  bodySystems: 'body',
+  waterCycle: 'water',
+  front: 'front',
+  plates: 'plates',
+  continents: 'continents',
+  rockCycle: 'rock',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */
