@@ -116,6 +116,8 @@ function Slider({
   const shown = known ? rep.shown(item.var) : (item.from ?? lo);
   const value = rep.value(item.var);
   const ratio = hi > lo ? Math.min(1, Math.max(0, (shown - lo) / (hi - lo))) : 0;
+  // Only one value fits with the others held still: the slider is shown held, not movable.
+  const held = known && !(hi > lo);
   const track = wide ? SHORT_TRACK : TRACK;
   const knobY = (1 - ratio) * (track - HANDLE);
   const trackTop = useRef(0);
@@ -164,6 +166,8 @@ function Slider({
         aria-valuemax={hi}
         aria-valuenow={known ? shown : undefined}
         aria-valuetext={value}
+        aria-disabled={held || undefined}
+        accessibilityState={{ disabled: held }}
         ref={trackRef}
         onStartShouldSetResponder={RESPONDER ? () => true : undefined}
         onMoveShouldSetResponder={RESPONDER ? () => true : undefined}
@@ -180,6 +184,7 @@ function Slider({
         style={[
           styles.track,
           { height: track, backgroundColor: c.chartSurface, borderColor: c.border },
+          held && { opacity: 0.45 },
           WEB_TRACK_STYLE,
         ]}
       >

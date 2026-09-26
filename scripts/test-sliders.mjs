@@ -134,6 +134,8 @@ try {
       const before = await state(h);
       const tag = `${varId} (${before.name})`;
       if (!(before.max > before.min)) {
+        // Held: the other values leave this one only its current value, and the page says so.
+        if ((await h.getAttribute('aria-disabled')) === 'true') continue;
         issues.push(`${tag}: empty range ${before.min}–${before.max}`);
         continue;
       }
