@@ -112,13 +112,22 @@ export function useCalculator(module: ModuleDef): Calculator {
         const target = slide ? updates[slide.id] : undefined;
         const from = slide ? s.calc.result.values[slide.id] : undefined;
         if (misfit(next) && slide && target !== undefined && from !== undefined && slide.step > 0) {
-          // Walk back toward the old value one step at a time; keep the first that fits.
-          const dir = target > from ? -1 : 1;
+          // The nearest value that fits, one step out at a time on both sides of the
+          // target (the side toward the old value first), within the variable's range: a
+          // count of parts lands on the next divisor, a product on the next product.
+          const v = system.variables.find((x) => x.id === slide.id);
+          const inRange = (x: number) =>
+            (v?.min === undefined || x >= v.min - 1e-9) &&
+            (v?.max === undefined || x <= v.max + 1e-9);
+          const first = target > from ? -1 : 1;
           for (let k = 1; k <= 400; k++) {
-            const x = target + dir * k * slide.step;
-            if (dir === -1 ? x <= from : x >= from) break;
-            const trial = setValues(system, s.calc, { ...updates, [slide.id]: x });
-            if (!misfit(trial)) return { ...s, calc: trial };
+            for (const dir of [first, -first]) {
+              const x = target + dir * k * slide.step;
+              if (!inRange(x)) continue;
+              const trial = setValues(system, s.calc, { ...updates, [slide.id]: x });
+              if (!misfit(trial)) return { ...s, calc: trial };
+            }
+            if (!inRange(target - k * slide.step) && !inRange(target + k * slide.step)) break;
           }
         }
         if (misfit(next)) {

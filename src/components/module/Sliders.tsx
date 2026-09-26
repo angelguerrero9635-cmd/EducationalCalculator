@@ -61,14 +61,30 @@ function reachable(
   const fits = (x: number) => calc.fits({ ...pins, [item.var]: rep.snapTo(item.var, x * f) });
   const edge = (end: number) => {
     if (fits(end)) return end;
-    // Last fitting value between `now` (fits) and `end` (doesn't), to one step.
+    // The values that fit usually sit in one run around `now`: halve toward `end` for its
+    // last one. A count of parts fits only at divisors (4 and 8, not 5 to 7), so after
+    // the halving, look a few steps past the run for another fit and go on from there.
     let good = now;
-    let bad = end;
-    for (let i = 0; i < 14 && Math.abs(bad - good) > step; i++) {
-      const mid = snap(good + (bad - good) / 2);
-      if (mid === good || mid === bad || (mid - good) * (bad - good) <= 0) break;
-      if (fits(mid)) good = mid;
-      else bad = mid;
+    for (let round = 0; round < 4; round++) {
+      let bad = end;
+      for (let i = 0; i < 14 && Math.abs(bad - good) > step; i++) {
+        const mid = snap(good + (bad - good) / 2);
+        if (mid === good || mid === bad || (mid - good) * (bad - good) <= 0) break;
+        if (fits(mid)) good = mid;
+        else bad = mid;
+      }
+      const dir = end > good ? 1 : -1;
+      let further: number | undefined;
+      for (let k = 1; k <= 24; k++) {
+        const x = good + dir * k * step;
+        if ((end - x) * dir < 0) break;
+        if (fits(x)) {
+          further = x;
+          break;
+        }
+      }
+      if (further === undefined) break;
+      good = further;
     }
     return good;
   };
