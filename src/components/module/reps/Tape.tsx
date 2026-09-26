@@ -146,7 +146,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         fontSize={chart.small}
                         textAnchor="middle"
                       >
-                        {`${rep.early ? `${rep.variable(spec.difference).name}:` : `${rep.variable(spec.difference).symbol} =`} ${fmt(spec.difference)}`}
+                        {`${rep.words ? `${rep.variable(spec.difference).name}:` : `${rep.variable(spec.difference).symbol} =`} ${fmt(spec.difference)}`}
                       </ChartText>
                     </>
                   ) : null}

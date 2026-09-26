@@ -5,6 +5,16 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## No letters before Grade 6 (after the Grade 5 review)
+
+- Grades 3–5 showed letters as labels ("Rows (r): 3"), rules in letters under the number
+  sentence ("l × w = A") and lines like "A = 4 × 3", though variables are introduced in Grade
+  6 (6.EE.2). → K–5 name every value in words: the formula box reads the rule in words
+  ("Length × Width = Area", `namedVariables`), the walkthrough writes "Area = 4 × 3" and
+  "Area = 12 cm²", the input rows drop the symbol column, pictures use `rep.words` for
+  names and captions, and `standards.test.ts` fails a letter standing for a number in any
+  grade below 6 (a unit's abbreviation after its name, "grams (g)", is allowed).
+
 ## Grade 5 (Section 2, first review)
 
 - Step text used skip-count lines ("Count by 4s, 8 times") for facts a Grade 5 student

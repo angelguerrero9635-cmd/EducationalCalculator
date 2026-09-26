@@ -4,7 +4,7 @@ import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
-import { isEarlyGrade } from '@/data/modules';
+import { gradeBand, isEarlyGrade } from '@/data/modules';
 import { formatNumber, parseCents, parseNumber } from '@/engine/format';
 import type { VariableDef } from '@/engine/types';
 import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
@@ -92,6 +92,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   const picker = unitChoices(variable, calc.units.choice.system, calc.module.variables).length > 1;
   const status = calc.status(variable.id);
   const early = isEarlyGrade(calc.module.id);
+  // Letters stand for numbers from Grade 6: K–5 rows name each value in words alone.
+  const letters = gradeBand(calc.module.id) === 'standard';
   const rawError = typo ? 'Enter a number' : calc.errors[variable.id];
   const error = rawError && early ? kidMessage(rawError) : rawError;
   const statusWord = variable.derived
@@ -121,8 +123,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   return (
     <View style={[styles.row, { borderBottomColor: c.border }]}>
       <View style={styles.label}>
-        {/* K–2 names each value in words; letters start later. */}
-        {early ? null : <Text style={[styles.symbol, { color: c.text }]}>{variable.symbol}</Text>}
+        {letters ? <Text style={[styles.symbol, { color: c.text }]}>{variable.symbol}</Text> : null}
         <View style={styles.names}>
           <Text style={[styles.name, { color: c.text }]}>{variable.name}</Text>
           <Text style={[styles.meta, { color: error ? c.text : c.textMuted }]}>

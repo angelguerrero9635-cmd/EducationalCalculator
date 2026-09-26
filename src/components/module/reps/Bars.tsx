@@ -125,9 +125,9 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fill={c.chartMuted}
                       textAnchor="middle"
                     >
-                      {rep.early ? variable.name : variable.symbol}
+                      {rep.words ? variable.name : variable.symbol}
                     </ChartText>,
-                    !rep.early && spec.bars.length <= 5 && (
+                    !rep.words && spec.bars.length <= 5 && (
                       <ChartText
                         key={`n${b.var}`}
                         x={cx(i)}

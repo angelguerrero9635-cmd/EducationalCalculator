@@ -238,7 +238,8 @@ describe('step-by-step with units', () => {
       { id: 'w', value: 7.62 },
     ]);
     const w = buildSteps(m, r, ctx);
-    expect(w.convertIn[0]).toBe('l = 1 ft = 30.48 cm   (1 ft = 30.48 cm)');
+    // Grade 3 names the value in words (letters stand for numbers from Grade 6).
+    expect(w.convertIn[0]).toBe('Length = 1 ft = 30.48 cm   (1 ft = 30.48 cm)');
     expect(w.steps[0]!.substituted).toBe('A = 30.48 × 7.62');
   });
 

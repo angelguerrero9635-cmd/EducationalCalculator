@@ -54,6 +54,7 @@ export {
   gradeOf,
   isEarlyGrade,
   isElementary,
+  namedVariables,
   quantityLabel,
   type GradeBand,
 } from './grade';

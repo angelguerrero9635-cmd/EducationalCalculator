@@ -403,15 +403,15 @@ it('builds readable steps (area example)', () => {
       substituted: 'w = 12 ÷ 4',
       work: ['Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
       result: 'w = 3 cm',
-      // Grade 3: the number sentence first, then the rule; no letter-only rearrangement line.
-      heading: 'Find width (w)',
-      lead: { sentence: '4 × ? = 12', formula: 'l × w = A' },
-      lines: ['w = 12 ÷ 4', 'Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
+      // Grade 3: the number sentence first, then the rule in words; no letters before Grade 6.
+      heading: 'Find width',
+      lead: { sentence: '4 × ? = 12', formula: 'Length × Width = Area' },
+      lines: ['Width = 12 ÷ 4', 'Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
       writtenAfter: 1,
-      answer: 'w = 3 cm',
+      answer: 'Width = 3 cm',
     },
   ]);
-  expect(w.given.map((q) => q.label)).toEqual(['Area (A): 12 cm²', 'Length (l): 4 cm']);
+  expect(w.given.map((q) => q.label)).toEqual(['Area: 12 cm²', 'Length: 4 cm']);
   expect(w.check).toEqual([{ formula: '4 × 3 = 12', ok: true }]);
 });
 
@@ -443,7 +443,8 @@ describe('written work and simplifying, by grade', () => {
     expect(r!.written?.says).toBe('743 − 738 = 5');
     const [n] = steps('m.4.multi-digit-multiply~three-digit', { a: 234, b: 6 }).slice(-1);
     expect(n!.written?.says).toBe('1200 + 180 + 24 = 1404');
-    expect(n!.lines).toEqual(['n = 1,200 + 180 + 24']);
+    // Grades 3–5 name the value in words: letters stand for numbers from Grade 6.
+    expect(n!.lines).toEqual(['Product = 1,200 + 180 + 24']);
   });
 
   it('Grade 8 and college: one stage per line under the formula, no grids', () => {

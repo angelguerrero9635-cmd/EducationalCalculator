@@ -75,7 +75,7 @@ export function LineUp({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {me ? (
                       <Text style={[styles.next, { color: c.text, marginTop: LINE }]}>
                         {nowrap(
-                          rep.early ? `Place ${p}` : `${rep.variable(spec.position).symbol} = ${p}`,
+                          rep.words ? `Place ${p}` : `${rep.variable(spec.position).symbol} = ${p}`,
                         )}
                       </Text>
                     ) : null}

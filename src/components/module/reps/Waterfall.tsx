@@ -117,7 +117,7 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fill={c.chartMuted}
                     textAnchor="middle"
                   >
-                    {rep.variable(s.var).symbol}
+                    {rep.words ? '' : rep.variable(s.var).symbol}
                   </ChartText>,
                 ])}
                 {bar(
@@ -179,7 +179,11 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
       {/* Symbol key, then the subtotals the lesson is about. */}
       <Text style={[styles.caption, { color: c.textMuted }]}>
         {[...spec.items.map((i) => i.var), spec.total]
-          .map((id) => `${rep.variable(id).symbol} ${rep.variable(id).name}`)
+          .map((id) =>
+            rep.words
+              ? rep.variable(id).name
+              : `${rep.variable(id).symbol} ${rep.variable(id).name}`,
+          )
           .join(' · ')}
       </Text>
       {spec.caption ? (

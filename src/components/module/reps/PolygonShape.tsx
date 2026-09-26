@@ -43,8 +43,8 @@ export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ? '4-sided shape'
             : 'square or rectangle'
         : (NAMES[n] ?? `${n}-sided shape`);
-  const cornerSym = spec.corners && !rep.early ? `${rep.variable(spec.corners).symbol} = ` : '';
-  const sidesSym = rep.early ? '' : `${rep.variable(spec.sides).symbol} = `;
+  const cornerSym = spec.corners && !rep.words ? `${rep.variable(spec.corners).symbol} = ` : '';
+  const sidesSym = rep.words ? '' : `${rep.variable(spec.sides).symbol} = `;
 
   return (
     <View>

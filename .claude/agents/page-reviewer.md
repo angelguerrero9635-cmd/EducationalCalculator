@@ -17,7 +17,7 @@ scope, what the scripts flagged, and each page's picture kind and controls).
   first; they cover every kind in a few image opens.
 - `.review/shots/<id>-390.png` for every page; `-1024.png` for a few; dark mode for a few. The
   scripts already flagged sideways scrolling, text past the screen edge, overlapping chart
-  labels, page errors, K–2 letters, a picture-plus-sliders-plus-first-input span over one
+  labels, page errors, K–5 letters, a picture-plus-sliders-plus-first-input span over one
   844 px screen, slider text cut short and picture tap targets under 36 px; those are in
   `evidence.md`, with each page's controls (sliders, handles, tappable cells, scenes, cards)
   and where its height goes (picture → sliders → first input, in px from the section header),
@@ -101,3 +101,5 @@ Then: **Section-wide** (a shared component to change, with the file); **Top 10 c
 and files changed.
 
 A dimmed slider (aria-disabled) is one the other values hold to a single value: not a finding.
+
+K–5 pages show no letters standing for numbers (inputs, pictures, formula box, steps): a symbol on a Grade 3–5 page is a finding.

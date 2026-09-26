@@ -45,8 +45,10 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
 ## Building a grade
 
 1. One module at a time: `pnpm new-module`, fill it in, run the module tests for its id.
-2. Word rules by grade are enforced by `standards.test.ts` (K–2: no letters or "=" outside a
-   number sentence; Grades 3–5: letters only as labels, sentences of at most 22 words).
+2. Word rules by grade are enforced by `standards.test.ts` (no letters standing for numbers
+   before Grade 6: K–5 name values in words and Grades 3–5 read rules in words, "Length ×
+   Width = Area"; K–2: no "=" outside a number sentence; Grades 3–5: sentences of at most 22
+   words).
 3. A new phrase in step text is taught to the harness in `harness/evaluate.ts` (PHRASES); a new
    picture kind gets a check in `harness/pictures.ts`.
 4. Problem types carry their `use` line ("Use this for …") in the module itself.

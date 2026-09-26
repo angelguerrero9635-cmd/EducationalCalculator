@@ -214,7 +214,7 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     testID={pt.testID}
                     x={sx(pt.px)}
                     y={sy(pt.py)}
-                    label={`the point (${rep.variable(pt.x).symbol}, ${rep.variable(pt.y).symbol})`}
+                    label={`the point (${rep.words ? rep.variable(pt.x).name : rep.variable(pt.x).symbol}, ${rep.words ? rep.variable(pt.y).name : rep.variable(pt.y).symbol})`}
                     onStart={() => {
                       start.current = { x: pt.px, y: pt.py };
                       ext.freeze();

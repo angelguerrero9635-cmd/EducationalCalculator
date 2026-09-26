@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/Text';
-import { isEarlyGrade, isElementary } from '@/data/modules';
+import { isEarlyGrade, isElementary, namedVariables } from '@/data/modules';
 import { agree } from '@/data/modules/buildSteps';
 import { renderTemplate } from '@/engine/format';
 import type { Values } from '@/engine/types';
@@ -46,11 +46,11 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
             ),
           );
           // K–2: just the number sentence (what students write), no letters. Grades 3–5: the
-          // number sentence first, the letters under it as labels.
+          // number sentence first, the rule in words under it (letters start in Grade 6).
           const [first, second] = early
             ? [numbers, null]
             : elementary
-              ? [numbers, letters]
+              ? [numbers, renderTemplate(r.display, namedVariables(module.variables))]
               : [letters, numbers];
           return (
             <View

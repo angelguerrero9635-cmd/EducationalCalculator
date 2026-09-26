@@ -47,9 +47,11 @@ Label every value in the picture with the same letter or symbol the formulas use
 name with its symbol, "Bigger amount (B)"), so students can match the picture to the formulas.
 Use `rep.label(id)` and `rep.tag(id)` in picture components.
 
-Kindergarten through Grade 2 pages show no letters anywhere (inputs, pictures, formulas, steps):
-values are named in words ("Bigger amount: 11"), and "=" appears only inside number sentences
-such as 8 + 5 = 13. The shared helpers do this for you: there `rep.label(id)` gives just the
+Letters standing for numbers start in Grade 6 (6.EE.2). Kindergarten through Grade 5 pages
+show no letters anywhere (inputs, pictures, formulas, steps): values are named in words
+("Bigger amount: 11"), and Grades 3–5 read each rule in words under its number sentence
+("Length × Width = Area") and write equations with the name ("Area = 4 × 3"). In K–2, "="
+appears only inside number sentences such as 8 + 5 = 13. The shared helpers do this for you: there `rep.label(id)` gives just the
 value, `rep.tag(id)` just the name, and `rep.named(id)` a standalone "Name: value"; write any
 other picture text with `rep.early` in mind.
 
@@ -107,7 +109,8 @@ The walkthrough shows the work a student at that grade writes, the way a teacher
 - **K–2**: number sentences and counting lines ("Count on from 3: 4, 5, 6, 7"); from Grade 2,
   a column sum or difference with the carries and regrouped digits marked, beside the jumps
   the number line shows.
-- **Grades 3–5**: the number sentence, then the rule, then the work on paper: column addition
+- **Grades 3–5**: the number sentence, then the rule in words ("Length × Width = Area"), then
+  the work on paper with the value named in words ("Area = 4 × 3"): column addition
   and subtraction, partial products and the long-division bracket (Grade 4 on). Running totals
   ("300 + 70 = 370") are left out when the columns show them; lines with words ("Tens: 40 + 30
   = 70") stay as the thinking behind the columns.
@@ -180,9 +183,9 @@ the assumptions and a table or diagram.
    them before the review starts:
    - `standards.test.ts` reads everything a student sees (assumptions, names, number
      sentences, the walkthrough from the example, titles and `use` lines) and enforces the
-     reading level for the grade, notation the grade has met (no letters or "=" outside a
-     number sentence in K–2, no × and ÷ or fractions before Grade 3, no negatives before
-     Grade 6), no shorthand ("incl.", "e.g.") or jargon, formatting (true minus, curly
+     reading level for the grade, notation the grade has met (no letters standing for
+     numbers before Grade 6, no "=" outside a number sentence in K–2, no × and ÷ or
+     fractions before Grade 3, no negatives before Grade 6), no shorthand ("incl.", "e.g.") or jargon, formatting (true minus, curly
      quotes, no "1 tens", thousands separators), sentence punctuation and how many values a
      grade can hold.
    - `sampling.test.ts` runs random inputs, edit sequences and unit choices through the solver

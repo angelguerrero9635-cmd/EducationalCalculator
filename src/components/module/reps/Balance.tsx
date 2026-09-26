@@ -18,7 +18,7 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   // K–2 reads the numbers ("6 + 1 = 7"); later grades the letters ("a + b = 7").
-  const term = (id: string) => (rep.early ? rep.value(id, false) : rep.variable(id).symbol);
+  const term = (id: string) => (rep.words ? rep.value(id, false) : rep.variable(id).symbol);
   const count = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
   const crossed = spec.takeAway ? count(spec.takeAway) : 0;
   const left = spec.left.reduce((s, id) => s + count(id), 0) - crossed;

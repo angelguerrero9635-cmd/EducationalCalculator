@@ -3,7 +3,7 @@ import { holds, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 
-import { gradeBand, gradeOf, quantityLabel, type GradeBand } from './grade';
+import { gradeBand, gradeOf, namedVariables, quantityLabel, type GradeBand } from './grade';
 import { simplifyChain } from './simplify';
 import type { ModuleDef } from './types';
 import { autoWritten, type Written } from './written';
@@ -14,9 +14,9 @@ export interface Quantity {
   name: string;
   /** e.g. "12 cm²" or "?" */
   value: string;
-  /** As listed for the grade: "First group: 3" (K–2), "Rows (r): 3" (3–5) or "r = 3". */
+  /** As listed for the grade: "First group: 3" (K–5) or "r = 3". */
   label: string;
-  /** As named in "Find": "first group" (K–2) or "rows (r)". */
+  /** As named in "Find": "first group" (K–5) or "rows (r)". */
   ask: string;
 }
 
@@ -37,11 +37,11 @@ export interface Step {
   work?: string[];
   /** "w = 3 cm" */
   result: string;
-  /** "Find width (w)"; K–2: "Find width". */
+  /** "Find width (w)"; K–5: "Find width". */
   heading: string;
   /**
-   * What the box opens with: the number sentence with "?" (K–5, first) and the rule in letters
-   * (Grade 3 on). K–2 sees no letters.
+   * What the box opens with: the number sentence with "?" (K–5, first) and the rule, in words
+   * for Grades 3–5 ("Length × Width = Area") and in letters from Grade 6. K–2 sees no rule.
    */
   lead: { sentence?: string; formula?: string };
   /** The lines shown in the box, in order, before the answer (grade-appropriate wording). */
@@ -50,7 +50,7 @@ export interface Step {
   written?: Written;
   /** How many of `lines` come before the written work (the substituted line, when shown). */
   writtenAfter: number;
-  /** The answer line as shown: "First group: 3" (K–2) or "w = 3 cm". */
+  /** The answer line as shown: "First group: 3" (K–2), "Width = 3 cm" (3–5) or "w = 3 cm". */
   answer: string;
 }
 
@@ -169,11 +169,17 @@ export function buildSteps(
   const band = gradeBand(module.id);
   const grade = gradeOf(module.id);
   const early = band === 'early';
-  /** K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter). */
+  /** Grades 3–5 read the rule in words: "Length × Width = Area". */
+  const wordVars = namedVariables(vars);
+  /**
+   * K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter).
+   * Grades 3–5: "A = 4 × 3" → "Area = 4 × 3" (words in the equation, no letters yet).
+   */
   const plain = (line: string, id: string, keepName: boolean) => {
     const v = byId.get(id);
-    if (!early || !v || !line.startsWith(`${v.symbol} = `)) return line;
+    if (band === 'standard' || !v || !line.startsWith(`${v.symbol} = `)) return line;
     const rest = line.slice(v.symbol.length + 3);
+    if (band === 'elementary') return `${v.name} = ${rest}`;
     return keepName ? `${v.name}: ${rest}` : rest;
   };
   /** The variable a conversion line is about ("a = 12 in = 30.48 cm …"). */
@@ -224,7 +230,7 @@ export function buildSteps(
       name: v.name,
       value,
       label: quantityLabel(band, v.name, v.symbol, value),
-      ask: early ? lowerFirst(v.name) : `${lowerFirst(v.name)} (${v.symbol})`,
+      ask: band === 'standard' ? `${lowerFirst(v.name)} (${v.symbol})` : lowerFirst(v.name),
     };
   };
 
@@ -247,14 +253,15 @@ export function buildSteps(
       sentence: agree(renderTemplate(relation.display, workVars, knownHere)),
       result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
-    // Grade 3–5 boxes open with the number sentence, then the rule; K–2 with the sentence only.
+    // Grade 3–5 boxes open with the number sentence, then the rule in words; K–2 with the
+    // sentence only; Grade 6 on with the rule in letters.
     const lead =
       band === 'early'
         ? { sentence: base.sentence }
         : band === 'elementary'
-          ? { sentence: base.sentence, formula: base.formula }
+          ? { sentence: base.sentence, formula: renderTemplate(relation.display, wordVars) }
           : { formula: base.formula };
-    const heading = early ? `Find ${lowerFirst(v.name)}` : base.title;
+    const heading = band === 'standard' ? base.title : `Find ${lowerFirst(v.name)}`;
     const answer = plain(base.result, t.id, true);
     if (!text || !t.exact) {
       return {

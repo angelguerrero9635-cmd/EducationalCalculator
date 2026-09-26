@@ -215,17 +215,17 @@ export function useRep(calc: Calculator) {
     early,
     /** Kindergarten–Grade 5: captions say names and numbers, not "letter = number". */
     words,
-    /** Grades 3–5: letters appear only as labels, e.g. "Rows (r): 3". */
+    /** Grades 3–5: names and word rules, no letters yet (variables start in Grade 6). */
     elementary: !early && words,
     /** A value as shown, with its unit: "12 cm", "$5", "35¢", or "?". */
     value: (id: string, withUnit = true) => valueText(id, withUnit),
     /**
      * A name with its formula symbol, e.g. "Bigger amount (B)", so pictures match formulas.
-     * K–2: the name alone.
+     * K–5: the name alone (no letters before Grade 6).
      */
     tag: (id: string) => {
       const v = byId.get(id)!;
-      return early ? v.name : `${v.name} (${v.symbol})`;
+      return words ? v.name : `${v.name} (${v.symbol})`;
     },
     /** "B = 11 cm" beside a named part of a picture. K–5: just the value, "11 cm". */
     label: (id: string, withUnit = true) =>

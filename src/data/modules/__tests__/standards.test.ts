@@ -8,7 +8,7 @@
 import { renderTemplate } from '@/engine/format';
 import { solve } from '@/engine/solve';
 
-import { TESTED_MODULES, gradeBand, gradeOf } from '..';
+import { TESTED_MODULES, gradeBand, gradeOf, namedVariables } from '..';
 import { agree, buildSteps } from '../buildSteps';
 import type { ModuleDef } from '../types';
 
@@ -34,8 +34,11 @@ function valueLimit(grade: string | undefined): number | undefined {
 const SHORTHAND = /\b(?:incl|e\.g|i\.e|vs|etc|approx)\.|\bw\/(?=\w)/;
 const JARGON_K3 = /\bquotient\b/i;
 
-/** Letters standing for numbers: "a = 3", "(B)", "a + b" (K–2, check K). */
-const LETTERS = /(^|[\s(])[A-Za-z] =|\([A-Za-z]\)|(^|\s)[b-zB-HJ-Z] [+−×÷] /;
+/** Letters standing for numbers: "a = 3", "(B)", "a + b" (before Grade 6, check K). */
+const LETTERS =
+  /(^|[\s(])(?<!\d[ \u00a0])[A-Za-z] =|\((?![gLNSms]\))[A-Za-z]\)|(^|\s)(?<!\d[ \u00a0])[b-zB-HJ-Z] [+−×÷] /;
+// (a unit's abbreviation after its name, "grams (g)", "liters (L)", "newtons (N)", is not a letter
+// standing for a number)
 /** A lone capital letter naming a thing ("Pencil A", "Jar B"): K–2 says first and second. */
 const LONE_CAPITAL = /(^|\s)[A-Z](\s|$)/;
 
@@ -97,15 +100,21 @@ function studentText(m: ModuleDef) {
     ...(m.title ? [{ where: 'title', text: m.title }] : []),
     ...m.variables.map((v) => ({ where: `name ${v.id}`, text: v.name })),
   ];
-  // The formula box: numbers for K–5 (letters under them from Grade 3), letters from Grade 6.
+  // The formula box: numbers for K–5 (the rule in words under them from Grade 3), letters
+  // from Grade 6.
   const band = gradeBand(m.id);
-  const box = m.relations.map((r) => ({
-    where: `number sentence ${r.id}`,
-    text:
-      band === 'standard'
-        ? renderTemplate(r.display, m.variables)
-        : agree(renderTemplate(r.display, m.variables, example)),
-  }));
+  const box = m.relations.flatMap((r) => [
+    {
+      where: `number sentence ${r.id}`,
+      text:
+        band === 'standard'
+          ? renderTemplate(r.display, m.variables)
+          : agree(renderTemplate(r.display, m.variables, example)),
+    },
+    ...(band === 'elementary'
+      ? [{ where: `rule ${r.id}`, text: renderTemplate(r.display, namedVariables(m.variables)) }]
+      : []),
+  ]);
   // The walkthrough from the opening values, as the student reads it.
   const w = buildSteps(
     m,
@@ -212,8 +221,8 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
               ? '× or ÷ before Grade 3'
               : early && /\d\/\d/.test(t)
                 ? 'a fraction before Grade 3'
-                : early && LETTERS.test(t)
-                  ? 'a letter standing for a number (K–2)'
+                : LETTERS.test(t)
+                  ? 'a letter standing for a number before Grade 6'
                   : early && equalsJoinsWords(t)
                     ? '"=" outside a number sentence (K–2)'
                     : false,

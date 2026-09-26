@@ -44,8 +44,8 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   const head = (v: typeof sweep) => {
     const unit = rep.unit(v.id);
-    // Grades 3–5 read the name with the letter as a label: "Sheets of paper (s)".
-    return `${v.name} (${v.symbol})${unit ? `, ${unit}` : ''}`;
+    // K–5 read the name alone (letters stand for numbers from Grade 6): "Sheets of paper".
+    return `${rep.tag(v.id)}${unit ? `, ${unit}` : ''}`;
   };
 
   const named =
@@ -98,7 +98,7 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
       })}
       {!paramsKnown ? (
         <Text style={[styles.note, { color: c.chartMuted }]}>
-          {`Enter ${spec.params.map((id) => rep.variable(id).symbol).join(' and ')} to fill the table.`}
+          {`Enter ${spec.params.map((id) => (rep.words ? rep.variable(id).name.toLowerCase() : rep.variable(id).symbol)).join(' and ')} to fill the table.`}
         </Text>
       ) : null}
     </View>
