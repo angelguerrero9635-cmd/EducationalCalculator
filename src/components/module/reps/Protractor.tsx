@@ -86,9 +86,24 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
               <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
                 <Path
                   d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy} Z`}
-                  fill={c.chartSurface}
-                  stroke={c.chartInk}
+                  fill={c.shadow}
+                  transform="translate(2 3)"
+                />
+                {/* Clear blue plastic, with its straight edge a little thicker. */}
+                <Path
+                  d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy} Z`}
+                  fill={c.plastic}
+                  fillOpacity={0.9}
+                  stroke={c.glassEdge}
                   strokeWidth={chart.stroke}
+                />
+                <Path
+                  d={`M ${cx - R * 0.93} ${cy - R * 0.12} A ${R * 0.94} ${R * 0.94} 0 0 1 ${cx - R * 0.35} ${cy - R * 0.87}`}
+                  stroke={c.shine}
+                  strokeOpacity={0.5}
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  fill="none"
                 />
                 <Path
                   d={`M ${cx - R * 0.55} ${cy} A ${R * 0.55} ${R * 0.55} 0 0 1 ${cx + R * 0.55} ${cy}`}

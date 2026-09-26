@@ -7,6 +7,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { CounterDot, raised } from './paint';
 import { Canvas, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -92,27 +93,35 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                               justifyContent: 'center',
                             }}
                           >
-                            <View
-                              style={{
-                                width: cell * inner,
-                                height: cell * inner,
-                                borderRadius: spec.icon === 'dot' ? cell : 0,
-                                // A cup: narrower at the bottom, rounded underneath.
-                                ...(spec.icon === 'cup'
-                                  ? {
-                                      width: cell * 0.7,
-                                      borderBottomLeftRadius: cell * 0.3,
-                                      borderBottomRightRadius: cell * 0.3,
-                                    }
-                                  : {}),
-                                borderWidth: filled ? chart.strokeLight : StyleSheet.hairlineWidth,
-                                borderColor: filled ? c.chartInk : c.chartGrid,
-                                opacity: filled ? 1 : 0.5,
-                                // Extras solid; matched ones open, so "solid" reads the same in
-                                // light and dark mode.
-                                backgroundColor: filled && extra ? c.chartHighlight : 'transparent',
-                              }}
-                            />
+                            {filled && extra && spec.icon === 'dot' ? (
+                              <CounterDot size={cell * inner} color={c.chartHighlight} />
+                            ) : (
+                              <View
+                                style={{
+                                  width: cell * inner,
+                                  height: cell * inner,
+                                  borderRadius: spec.icon === 'dot' ? cell : 0,
+                                  // A cup: narrower at the bottom, rounded underneath.
+                                  ...(spec.icon === 'cup'
+                                    ? {
+                                        width: cell * 0.7,
+                                        borderBottomLeftRadius: cell * 0.3,
+                                        borderBottomRightRadius: cell * 0.3,
+                                      }
+                                    : {}),
+                                  borderWidth: filled
+                                    ? chart.strokeLight
+                                    : StyleSheet.hairlineWidth,
+                                  borderColor: filled ? c.chartInk : c.chartGrid,
+                                  opacity: filled ? 1 : 0.5,
+                                  // Extras solid; matched ones open, so "solid" reads the same in
+                                  // light and dark mode.
+                                  backgroundColor:
+                                    filled && extra ? c.chartHighlight : 'transparent',
+                                  ...(filled && extra ? raised(c, cell * inner) : null),
+                                }}
+                              />
+                            )}
                           </Pressable>
                         );
                       })}

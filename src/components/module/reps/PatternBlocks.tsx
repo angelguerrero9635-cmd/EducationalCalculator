@@ -1,10 +1,11 @@
 import { View } from 'react-native';
-import Svg, { G, Polygon } from 'react-native-svg';
+import Svg, { Defs, G, Polygon } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { TopLight, url, usePaintIds } from './paint';
 import { Canvas, ChartText, nowrap, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -24,8 +25,10 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
     ...Array<number>(n(spec.rhombuses)).fill(2),
     ...Array<number>(n(spec.triangles)).fill(1),
   ];
-  // Trapezoids solid, rhombuses shaded, triangles open; after Grade 2 each block also shows its letter.
-  const fills: Record<number, string> = { 3: c.chartHighlight, 2: c.chartFill, 1: 'transparent' };
+  // Classroom colors: red trapezoids, blue rhombuses, green triangles; after Grade 2 each
+  // block also shows its letter.
+  const fills: Record<number, string> = { 3: c.blockRed, 2: c.blockBlue, 1: c.blockGreen };
+  const paint = usePaintIds('light');
   // K–2 blocks carry no letters: the fill shows the kind of block.
   const letters: Record<number, string> = rep.early
     ? { 3: '', 2: '', 1: '' }
@@ -64,14 +67,16 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
                   fill={fills[k]}
                   stroke={c.chartInk}
                   strokeWidth={chart.stroke}
+                  strokeLinejoin="round"
                 />
+                <Polygon points={pts.join(' ')} fill={url(paint.light)} />
                 <ChartText
                   x={lx}
                   y={ly + 6}
                   fontSize={chart.value}
                   fontWeight="700"
                   textAnchor="middle"
-                  fill={k === 3 ? c.onChartHighlight : c.chartInk}
+                  fill={c.onBlock}
                 >
                   {letters[k]}
                 </ChartText>
@@ -89,6 +94,9 @@ export function PatternBlocks({ spec, calc }: { spec: Spec; calc: Calculator }) 
           ));
           return (
             <Svg width={w} height={h}>
+              <Defs>
+                <TopLight id={paint.light} />
+              </Defs>
               {empty}
               {shapes}
             </Svg>

@@ -5,6 +5,7 @@ import type { Representation } from '@/data/modules';
 import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { CounterDot } from './paint';
 import { useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -22,19 +23,8 @@ export function Pairs({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const cols = Math.max(1, pairs + (odd ? 1 : 0));
   const size = width ? Math.max(10, Math.min(22, (width - 32) / cols - 14)) : 22;
   const dot = (key: string, lonely = false) => (
-    <View
-      key={key}
-      style={[
-        styles.dot,
-        {
-          width: size,
-          height: size,
-          borderRadius: size,
-          borderColor: c.chartInk,
-          backgroundColor: lonely ? c.chartHighlight : c.chartFill,
-        },
-      ]}
-    />
+    // Partners in the second color; the one left over (odd) in the highlight.
+    <CounterDot key={key} size={size} color={lonely ? c.chartHighlight : c.chartSecond} />
   );
 
   return (

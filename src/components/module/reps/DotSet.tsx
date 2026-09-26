@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Defs } from 'react-native-svg';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
 import type { Representation } from '@/data/modules';
 import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { Ball, url, usePaintIds } from './paint';
 import { Canvas, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -43,6 +44,7 @@ const SCATTER = [
  */
 export function DotSet({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('a', 'b');
   const rep = useRep(calc);
   const [layout, setLayout] = useState<Layout>('scattered');
   const n = rep.known(spec.count) ? Math.max(0, Math.round(rep.shown(spec.count))) : 0;
@@ -89,6 +91,10 @@ export function DotSet({ spec, calc }: { spec: Spec; calc: Calculator }) {
           };
           return (
             <Svg width={w} height={h}>
+              <Defs>
+                <Ball id={paint.a} color={c.chartHighlight} />
+                <Ball id={paint.b} color={c.chartSecond} />
+              </Defs>
               {Array.from({ length: n }, (_, i) => {
                 const [x, y] = pos(i);
                 return (
@@ -97,7 +103,7 @@ export function DotSet({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     cx={x}
                     cy={y}
                     r={r}
-                    fill={c.chartHighlight}
+                    fill={url(paint.a)}
                     stroke={c.chartInk}
                     strokeWidth={chart.strokeLight}
                   />

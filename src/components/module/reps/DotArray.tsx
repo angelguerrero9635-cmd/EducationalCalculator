@@ -1,11 +1,12 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Circle, Line, Rect } from 'react-native-svg';
+import Svg, { Circle, Defs, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { Ball, url, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -14,6 +15,7 @@ type Spec = Extract<Representation, { kind: 'array' }>;
 /** A rectangular array of dots: equal rows and equal columns. Drag the corner to resize. */
 export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('a', 'b');
   const rep = useRep(calc);
   const start = useRef({ r: 0, c: 0 });
   const rows = Math.max(0, Math.round(rep.shown(spec.rows)));
@@ -50,7 +52,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
           cx={x0 + col * cell + cell / 2}
           cy={y0 + Math.floor(i / k) * cell + cell / 2}
           r={cell * 0.3}
-          fill={second ? c.chartSurface : c.chartHighlight}
+          fill={second ? url(paint.b) : url(paint.a)}
           stroke={c.chartInk}
           strokeWidth={chart.strokeLight}
         />
@@ -107,6 +109,10 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={h}>
+                <Defs>
+                  <Ball id={paint.a} color={c.chartHighlight} />
+                  <Ball id={paint.b} color={c.chartSecond} />
+                </Defs>
                 <Rect
                   x={x0}
                   y={y0}

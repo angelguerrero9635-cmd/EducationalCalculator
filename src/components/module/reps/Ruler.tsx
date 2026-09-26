@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Line, Rect } from 'react-native-svg';
+import Svg, { Defs, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { Sheen, TopLight, url, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, nowrap, useFrozen, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -51,6 +52,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
     return `${rep.variable(long).name} is ${formatNumber(rep.shown(d), rep.variable(d))}${unit ? ` ${unit}` : ''} longer than ${rep.variable(short).name}.`;
   };
 
+  const paint = usePaintIds('ribbon', 'wood');
   return (
     <View>
       <Canvas aspect={(w) => (12 + 34 * spec.lengths.length + 60) / w}>
@@ -62,7 +64,12 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={h}>
-                {spec.lengths.map((id, i) => (
+                <Defs>
+                  <Sheen id={paint.ribbon} vertical strength={0.8} />
+                  <TopLight id={paint.wood} />
+                </Defs>
+                {/* Ribbons: satin in two colors, shiny across their width. */}
+                {spec.lengths.map((id, i) => [
                   <Rect
                     key={id}
                     x={left + offset * scale}
@@ -70,11 +77,22 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     width={Math.max(2, shown[i]! * scale)}
                     height={20}
                     rx={4}
-                    fill={i === 0 ? c.chartHighlight : c.chartFill}
+                    fill={i === 0 ? c.chartHighlight : c.chartSecond}
                     stroke={c.chartInk}
+                    strokeOpacity={0.5}
                     opacity={rep.known(id) ? 1 : 0.35}
-                  />
-                ))}
+                  />,
+                  <Rect
+                    key={`s${id}`}
+                    x={left + offset * scale}
+                    y={12 + i * 34}
+                    width={Math.max(2, shown[i]! * scale)}
+                    height={20}
+                    rx={4}
+                    fill={url(paint.ribbon)}
+                    opacity={rep.known(id) ? 1 : 0.35}
+                  />,
+                ])}
                 {spec.lengths.map((id, i) => {
                   // The name goes inside the bar only when it clears the drag handle at the
                   // bar's end; otherwise after the end so it stays readable.
@@ -88,7 +106,7 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       x={inside ? x0 + 6 : x0 + Math.max(2, shown[i]! * scale) + 6}
                       y={12 + i * 34 + 15}
                       fontSize={chart.small}
-                      fill={inside && i === 0 ? c.onChartHighlight : c.chartInk}
+                      fill={inside ? (i === 0 ? c.onChartHighlight : c.coinInk) : c.chartInk}
                     >
                       {rep.tag(id)}
                     </ChartText>
@@ -100,8 +118,26 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   y={rulerY}
                   width={fit.value * scale + 2 * space.sm}
                   height={26}
-                  fill={c.chartSurface}
-                  stroke={c.chartInk}
+                  fill={c.shadow}
+                  transform="translate(1 3)"
+                />
+                {/* A wooden ruler. */}
+                <Rect
+                  x={left - space.sm}
+                  y={rulerY}
+                  width={fit.value * scale + 2 * space.sm}
+                  height={26}
+                  rx={2}
+                  fill={c.wood}
+                  stroke={c.woodDark}
+                />
+                <Rect
+                  x={left - space.sm}
+                  y={rulerY}
+                  width={fit.value * scale + 2 * space.sm}
+                  height={26}
+                  rx={2}
+                  fill={url(paint.wood)}
                 />
                 {per > 1
                   ? Array.from({ length: fit.value * per + 1 }, (_, t) => (

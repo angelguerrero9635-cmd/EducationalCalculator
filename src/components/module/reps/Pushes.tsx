@@ -1,10 +1,11 @@
 import { View } from 'react-native';
-import Svg, { Line, Path, Rect } from 'react-native-svg';
+import Svg, { Defs, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { Crate, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -13,6 +14,7 @@ type Spec = Extract<Representation, { kind: 'pushes' }>;
 /** A box pushed from both sides; each arrow's length is the size of its push. */
 export function Pushes({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const r = rep.known(spec.right) ? Math.max(0, rep.shown(spec.right)) : 0;
   const l = rep.known(spec.left) ? Math.max(0, rep.shown(spec.left)) : 0;
@@ -48,16 +50,10 @@ export function Pushes({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 stroke={c.chartInk}
                 strokeWidth={chart.stroke}
               />
-              <Rect
-                x={cx - box / 2}
-                y={y - box / 2}
-                width={box}
-                height={box}
-                rx={6}
-                fill={c.chartFill}
-                stroke={c.chartInk}
-                strokeWidth={chart.stroke}
-              />
+              <Defs>
+                <TopLight id={paint.light} />
+              </Defs>
+              <Crate x={cx - box / 2} y={y - box / 2} size={box} lightId={paint.light} />
               {/* The push to the right comes from the left side; the push to the left from the right. */}
               {arrow(cx - box / 2 - px(r), cx - box / 2, 'r')}
               {arrow(cx + box / 2 + px(l), cx + box / 2, 'l')}

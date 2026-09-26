@@ -4,6 +4,7 @@ import type { Representation } from '@/data/modules';
 import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { CounterDot, raised } from './paint';
 import { useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -33,26 +34,19 @@ export function EqualGroups({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         key={q}
                         style={[
                           styles.rodCube,
-                          { backgroundColor: c.chartHighlight, borderColor: c.chartInk },
+                          {
+                            backgroundColor: c.chartHighlight,
+                            borderColor: c.chartInk,
+                            ...raised(c, 10),
+                          },
                         ]}
                       />
                     ))}
                   </View>
                 ))
               : Array.from({ length: k }, (_, j) => (
-                  <View
-                    key={j}
-                    style={[
-                      styles.dot,
-                      // Past 16 dots, they shrink so a group of up to 100 still fits the circle.
-                      k > 16 && {
-                        width: dotSize(k),
-                        height: dotSize(k),
-                        borderRadius: dotSize(k) / 2,
-                      },
-                      { borderColor: c.chartInk, backgroundColor: c.chartHighlight },
-                    ]}
-                  />
+                  // Past 16 dots, they shrink so a group of up to 100 still fits the circle.
+                  <CounterDot key={j} size={k > 16 ? dotSize(k) : 13} color={c.chartHighlight} />
                 ))}
           </View>
         ))}

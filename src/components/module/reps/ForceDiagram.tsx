@@ -1,10 +1,11 @@
 import { useRef } from 'react';
-import Svg, { Line, Path, Rect } from 'react-native-svg';
+import Svg, { Defs, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { Crate, Tag, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'force' }>;
@@ -18,6 +19,7 @@ const arrow = (x1: number, y: number, x2: number) => {
 /** A block pushed by the net force, with its acceleration drawn above. Drag the force tip. */
 export function ForceDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
   const F = rep.val(spec.force);
@@ -54,14 +56,17 @@ export function ForceDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 stroke={c.chartInk}
                 strokeWidth={chart.stroke}
               />
-              <Rect
+              <Defs>
+                <TopLight id={paint.light} />
+              </Defs>
+              <Crate
                 x={bx}
                 y={by}
-                width={size}
-                height={size}
-                fill={c.chartFill}
-                stroke={c.chartInk}
-                strokeWidth={chart.stroke}
+                size={size}
+                lightId={paint.light}
+                label={
+                  <Tag cx={bx + size / 2} cy={by + size / 2} chars={rep.label(spec.mass).length} />
+                }
               />
               <ChartText
                 x={bx + size / 2}

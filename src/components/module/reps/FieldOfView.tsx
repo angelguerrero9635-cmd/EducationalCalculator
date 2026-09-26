@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import Svg, { Circle, Ellipse, G, Line } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, G, Line, RadialGradient, Stop } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -7,6 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
+import { url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'fieldOfView' }>;
@@ -19,6 +20,7 @@ type Spec = Extract<Representation, { kind: 'fieldOfView' }>;
 export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
+  const paint = usePaintIds('light', 'cell');
   const n = Math.max(1, Math.round(rep.shown(spec.across)));
   const drawn = Math.min(n, 30);
   const known = rep.known(spec.field) && rep.known(spec.across);
@@ -34,13 +36,27 @@ export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const cell = (2 * r) / drawn;
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
+              <Defs>
+                {/* Lamp light through the slide: bright in the middle, dimmer at the edge. */}
+                <RadialGradient id={paint.light} cx="0.5" cy="0.5" r="0.5">
+                  <Stop offset="0" stopColor={c.paper} />
+                  <Stop offset="0.75" stopColor={c.paper} />
+                  <Stop offset="1" stopColor={c.shade} stopOpacity={0.3} />
+                </RadialGradient>
+                <RadialGradient id={paint.cell} cx="0.45" cy="0.4" r="0.6">
+                  <Stop offset="0" stopColor={c.life} stopOpacity={0.35} />
+                  <Stop offset="1" stopColor={c.life} stopOpacity={0.85} />
+                </RadialGradient>
+              </Defs>
+              {/* The eyepiece: a dark ring around the lit circle. */}
+              <Circle cx={cx} cy={cy} r={r + 8} fill={c.shade} fillOpacity={0.85} />
               <Circle
                 cx={cx}
                 cy={cy}
                 r={r}
-                fill={c.chartSurface}
+                fill={url(paint.light)}
                 stroke={c.chartInk}
-                strokeWidth={chart.strokeHeavy}
+                strokeWidth={chart.stroke}
               />
               {Array.from({ length: drawn }, (_, i) => {
                 const x = cx - r + i * cell;
@@ -52,9 +68,9 @@ export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       cy={cy}
                       rx={cell / 2 - 0.5}
                       ry={hh / 2}
-                      fill={i === 0 ? c.chartHighlight : c.chartFill}
+                      fill={i === 0 ? c.chartHighlight : url(paint.cell)}
                       fillOpacity={i === 0 ? 0.35 : 1}
-                      stroke={c.chartInk}
+                      stroke={c.lifeDeep}
                       strokeWidth={1}
                     />
                     {cell > 10 ? (
@@ -62,7 +78,7 @@ export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         cx={x + cell / 2}
                         cy={cy}
                         r={Math.min(3, cell / 6)}
-                        fill={c.chartMuted}
+                        fill={c.lifeDeep}
                       />
                     ) : null}
                   </G>

@@ -95,6 +95,11 @@ const light = {
   rock4: '#C9A57E',
   rock5: '#9C8A77',
   rock6: '#D4B7A0',
+  /** Pattern blocks in their classroom colors: red trapezoid, blue rhombus, green triangle. */
+  blockRed: '#E5484D',
+  blockBlue: '#3E7BD6',
+  blockGreen: '#3DA35D',
+  onBlock: '#FFFFFF',
   /** Plastic tools (protractors, counters' tray). */
   plastic: '#DCEBFF',
   /** Living things: cells, leaves. */
@@ -165,6 +170,10 @@ const dark: Palette = {
   rock4: '#7F6448',
   rock5: '#5B4E42',
   rock6: '#806856',
+  blockRed: '#D8474C',
+  blockBlue: '#3C74C8',
+  blockGreen: '#3A9656',
+  onBlock: '#FFFFFF',
   plastic: '#22324A',
   life: '#4F8A4B',
   lifeDeep: '#2F6230',

@@ -5,6 +5,7 @@ import type { Representation } from '@/data/modules';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { CounterDot } from './paint';
 import { Canvas, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -101,7 +102,9 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             { width: cell, height: cell, borderColor: c.chartGrid },
                           ]}
                         >
-                          {kind !== 'empty' ? (
+                          {kind === 'first' ? (
+                            <CounterDot size={cell * 0.62} color={c.chartHighlight} />
+                          ) : kind !== 'empty' ? (
                             <View
                               style={{
                                 width: cell * 0.62,
@@ -109,8 +112,6 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
                                 borderRadius: cell,
                                 borderWidth: chart.stroke,
                                 borderColor: c.chartInk,
-                                backgroundColor:
-                                  kind === 'first' ? c.chartHighlight : 'transparent',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                               }}

@@ -6,8 +6,18 @@
  * Gradient ids must be unique on the page (a page can show one picture twice), so pictures
  * get them from `usePaintIds` and refer to them with `url(id)`.
  */
-import { useId } from 'react';
-import { Ellipse, LinearGradient, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { useId, type ReactNode } from 'react';
+import Svg, {
+  Circle,
+  Defs,
+  Ellipse,
+  G,
+  Line,
+  LinearGradient,
+  RadialGradient,
+  Rect,
+  Stop,
+} from 'react-native-svg';
 
 import { usePalette } from '@/theme';
 
@@ -151,5 +161,125 @@ export function BoxShadow({
       rx={r}
       fill={c.shadow}
     />
+  );
+}
+
+/**
+ * For counters and cubes drawn as views: an inset glint at the top left and shade at the bottom
+ * right, so a solid counter looks like a rounded chip. Size is the counter's diameter.
+ */
+export const raised = (c: { edgeLight: string; edgeShade: string }, size: number) => {
+  const k = Math.max(1, Math.round(size / 8));
+  return {
+    boxShadow: `inset ${k}px ${k}px 0 ${c.edgeLight}, inset -${k}px -${k}px 0 ${c.edgeShade}`,
+  };
+};
+
+/**
+ * A wooden crate: planks with a frame and a cross brace, lit from above, with a shadow on the
+ * floor. `label` goes on a paper tag in the middle so it stays readable on wood.
+ */
+export function Crate({
+  x,
+  y,
+  size,
+  lightId,
+  label,
+}: {
+  x: number;
+  y: number;
+  size: number;
+  /** Id of a TopLight gradient defined in the picture's Defs. */
+  lightId: string;
+  label?: ReactNode;
+}) {
+  const c = usePalette();
+  const f = Math.max(4, size * 0.12);
+  const planks = 3;
+  return (
+    <G>
+      <Ellipse cx={x + size / 2 + 3} cy={y + size} rx={size * 0.6} ry={4} fill={c.shadow} />
+      <Rect
+        x={x}
+        y={y}
+        width={size}
+        height={size}
+        rx={3}
+        fill={c.wood}
+        stroke={c.woodDark}
+        strokeWidth={1.5}
+      />
+      {Array.from({ length: planks - 1 }, (_, i) => (
+        <Line
+          key={i}
+          x1={x + f}
+          y1={y + f + ((i + 1) * (size - 2 * f)) / planks}
+          x2={x + size - f}
+          y2={y + f + ((i + 1) * (size - 2 * f)) / planks}
+          stroke={c.woodDark}
+          strokeOpacity={0.6}
+        />
+      ))}
+      <Line
+        x1={x + f}
+        y1={y + size - f}
+        x2={x + size - f}
+        y2={y + f}
+        stroke={c.woodDark}
+        strokeWidth={f * 0.8}
+        strokeOpacity={0.55}
+      />
+      <Rect
+        x={x + f / 2}
+        y={y + f / 2}
+        width={size - f}
+        height={size - f}
+        rx={2}
+        fill="none"
+        stroke={c.woodDark}
+        strokeWidth={f}
+        strokeOpacity={0.45}
+      />
+      <Rect x={x} y={y} width={size} height={size} rx={3} fill={url(lightId)} />
+      {label}
+    </G>
+  );
+}
+
+/** A small paper tag centered at (cx, cy), wide enough for `chars` characters, for text on wood. */
+export function Tag({ cx, cy, chars }: { cx: number; cy: number; chars: number }) {
+  const c = usePalette();
+  const w = chars * 7 + 10;
+  return (
+    <Rect
+      x={cx - w / 2}
+      y={cy - 10}
+      width={w}
+      height={20}
+      rx={4}
+      fill={c.paper}
+      stroke={c.woodDark}
+    />
+  );
+}
+
+/** A round counter as its own little picture (for counters laid out as views): a lit ball. */
+export function CounterDot({ size, color }: { size: number; color: string }) {
+  const c = usePalette();
+  const ids = usePaintIds('ball');
+  return (
+    <Svg width={size} height={size}>
+      <Defs>
+        <Ball id={ids.ball} color={color} />
+      </Defs>
+      <Circle
+        cx={size / 2}
+        cy={size / 2}
+        r={size / 2 - 0.75}
+        fill={url(ids.ball)}
+        stroke={c.chartInk}
+        strokeWidth={1.5}
+      />
+    </Svg>
   );
 }

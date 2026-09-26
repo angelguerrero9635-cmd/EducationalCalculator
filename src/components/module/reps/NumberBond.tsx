@@ -1,10 +1,11 @@
 import { View } from 'react-native';
-import Svg, { Circle, Line } from 'react-native-svg';
+import Svg, { Circle, Defs, Line } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { Ball, url, usePaintIds } from './paint';
 import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -16,6 +17,7 @@ type Spec = Extract<Representation, { kind: 'numberBond' }>;
  */
 export function NumberBond({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('a', 'b');
   const rep = useRep(calc);
   const [a, b] = spec.parts;
   const text = (x: string | number) =>
@@ -49,6 +51,10 @@ export function NumberBond({ spec, calc }: { spec: Spec; calc: Calculator }) {
           };
           return (
             <Svg width={w} height={h}>
+              <Defs>
+                <Ball id={paint.a} color={c.chartHighlight} />
+                <Ball id={paint.b} color={c.chartSecond} />
+              </Defs>
               <Line
                 x1={top.x}
                 y1={top.y}
@@ -103,8 +109,8 @@ export function NumberBond({ spec, calc }: { spec: Spec; calc: Calculator }) {
               >
                 {text(b)}
               </ChartText>
-              {dots(a, left, c.chartHighlight)}
-              {dots(b, right, c.chartFill)}
+              {dots(a, left, url(paint.a))}
+              {dots(b, right, url(paint.b))}
             </Svg>
           );
         }}
