@@ -452,7 +452,7 @@ export function difference(
   };
   return { relation, steps };
 }
-/** "(one fourth of the whole; 4 fourths make the whole)". */
+/** "(1 fourth is shaded, 3 fourths are not: 4 fourths make the whole)". */
 export function fractionNote(k: number, p: number): string {
   const names: Record<number, [string, string]> = {
     2: ['half', 'halves'],
@@ -461,9 +461,9 @@ export function fractionNote(k: number, p: number): string {
   };
   const name = names[p];
   if (!name) return '';
-  if (k === 0) return `(0 ${name[1]} shaded)`;
-  if (k === p) return `(${p} ${name[1]} make the whole)`;
-  return `(${k === 1 ? `one ${name[0]}` : `${k} ${name[1]}`} of the whole; ${p} ${name[1]} make the whole)`;
+  const say = (n: number) => `${n} ${n === 1 ? name[0] : name[1]}`;
+  const is = (n: number) => (n === 1 ? 'is' : 'are');
+  return `(${say(k)} ${is(k)} shaded, ${say(p - k)} ${is(p - k)} not: ${p} ${name[1]} make the whole)`;
 }
 export const cmpShapes = difference('d', 'c', 's', {
   display: 'Line up {c} and {s}: {d} extra',

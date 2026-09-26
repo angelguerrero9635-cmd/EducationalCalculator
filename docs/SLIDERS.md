@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-22 of 220 pages show sliders.
+22 of 221 pages show sliders.
 
 ## By picture kind
 
@@ -15,16 +15,16 @@ its kind with `sliders: true | false`.
 | angles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | areaModel | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
 | array | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| balance | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| balance | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | bars | 16 | no | the picture has its own handles or taps, or the inputs are enough |
-| baseTen | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| baseTen | 12 | no | the picture has its own handles or taps, or the inputs are enough |
 | beaker | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | boxPlot | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | circle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | clock | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| compareRows | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | coordinatePlane | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -38,7 +38,7 @@ its kind with `sliders: true | false`.
 | fractionLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| hundredChart | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| hundredChart | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | linePlot | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberLine | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -49,7 +49,7 @@ its kind with `sliders: true | false`.
 | pieChart | 2 | no | set on the module (hidden) |
 | placeValueChart | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | plot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| polygon | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | protractor | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -67,11 +67,11 @@ its kind with `sliders: true | false`.
 | table | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | tape | 22 | no | the picture has its own handles or taps, or the inputs are enough |
-| tenFrame | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| tenFrame | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | unitCubes | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
-| unitTiles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 
@@ -100,22 +100,23 @@ its kind with `sliders: true | false`.
 | m.1.add-sub-20 | tenFrame | no |
 | m.1.add-sub-20~compare | tape | no |
 | m.1.add-sub-20~take-from-ten | tenFrame | no |
+| m.1.add-sub-20~doubles | tenFrame | no |
 | m.1.addition-properties | cubeTrains | no |
 | m.1.equal-sign | balance | no |
-| m.1.equal-sign~take-away | balance | no |
 | m.1.count-120 | hundredChart | no |
 | m.1.count-120~less | hundredChart | no |
+| m.1.count-120~puzzle | hundredChart | no |
 | m.1.tens-ones | baseTen | no |
 | m.1.tens-ones~regroup | baseTen | no |
 | m.1.add-within-100 | baseTen | no |
+| m.1.add-within-100~two-digits | baseTen | no |
 | m.1.add-within-100~subtract-tens | hops | no |
-| m.1.measure-nonstandard | unitTiles | no |
+| m.1.measure-nonstandard | compareRows | no |
 | m.1.data-3-categories | pictureGraph | no |
 | m.1.data-3-categories~compare | pictureGraph | no |
 | m.1.data-3-categories~tally | tally | no |
 | m.1.halves-fourths | partition | yes |
 | m.1.tens-ones~compare | baseTen | no |
-| m.1.shape-attributes | polygon | no |
 | m.2.add-sub-100-fluency | numberLine | no |
 | m.2.add-sub-100-fluency~tape | tape | no |
 | m.2.add-sub-100-fluency~four-numbers | baseTen | no |

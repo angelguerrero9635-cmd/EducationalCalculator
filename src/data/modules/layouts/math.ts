@@ -519,6 +519,9 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: '3 + 4 = 8', bin: 'false' },
       { label: '4 + 4 = 4 + 5', bin: 'false' },
       { label: '10 − 3 = 6', bin: 'false' },
+      { label: '7 − 1 = 4 + 2', bin: 'true' },
+      { label: '9 − 4 = 5', bin: 'true' },
+      { label: '8 = 10 − 3', bin: 'false' },
     ],
   },
   {
@@ -527,17 +530,62 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     title: 'Order three ribbons',
     use: 'Use this to order three things from longest to shortest.',
     assumptions: [
-      'Measure each ribbon in cubes.',
-      'The ribbon with the most cubes is the longest.',
+      'Line up the ribbons at one end to compare them.',
+      'Red is longer than blue. Blue is longer than green. So red is longer than green.',
       'Tap the ribbons in order, longest first.',
     ],
     question: 'Put the ribbons in order, longest first.',
     stages: [
-      { label: 'Red ribbon', span: 9 },
-      { label: 'Blue ribbon', span: 6 },
-      { label: 'Green ribbon', span: 4 },
+      { label: 'Red ribbon', figure: { kind: 'bar', length: 9 } },
+      { label: 'Blue ribbon', figure: { kind: 'bar', length: 6 } },
+      { label: 'Green ribbon', figure: { kind: 'bar', length: 4 } },
     ],
-    unit: 'cubes',
+  },
+  {
+    kind: 'sort',
+    id: 'm.1.measure-nonstandard~right-way',
+    title: 'Measured the right way?',
+    use: 'Use this to spot a length measured the wrong way.',
+    assumptions: [
+      'Start at the end of the object.',
+      'Lay the cubes end to end, with no gaps and no overlaps.',
+    ],
+    question: 'Was the ribbon measured the right way?',
+    bins: [
+      { id: 'right', label: 'Measured right', why: 'Same cubes, end to end, from the very end.' },
+      {
+        id: 'wrong',
+        label: 'Not right',
+        why: 'A gap, an overlap or a wrong start changes the count.',
+      },
+    ],
+    cards: [
+      {
+        label: 'End to end from the end',
+        bin: 'right',
+        figure: { kind: 'bar', length: 6, units: 'cubes' },
+      },
+      {
+        label: 'Short ribbon, end to end',
+        bin: 'right',
+        figure: { kind: 'bar', length: 3, units: 'cubes' },
+      },
+      {
+        label: 'Gaps between cubes',
+        bin: 'wrong',
+        figure: { kind: 'bar', length: 6, units: 'gap' },
+      },
+      {
+        label: 'Cubes overlapping',
+        bin: 'wrong',
+        figure: { kind: 'bar', length: 6, units: 'overlap' },
+      },
+      {
+        label: 'Starting past the end',
+        bin: 'wrong',
+        figure: { kind: 'bar', length: 5, units: 'offset' },
+      },
+    ],
   },
   {
     kind: 'explore',
@@ -561,6 +609,20 @@ export const MATH_LAYOUTS: LayoutDef[] = [
           'The long hand points to 6.',
           'The short hand is halfway between 3 and 4.',
           'It is 3:30.',
+        ],
+      },
+      {
+        label: '12 o’clock',
+        time: [12, 0],
+        lines: ['Both hands point to 12.', 'It is 12:00.'],
+      },
+      {
+        label: 'Half past 12',
+        time: [12, 30],
+        lines: [
+          'The long hand points to 6.',
+          'The short hand is halfway between 12 and 1.',
+          'It is 12:30.',
         ],
       },
       {
@@ -595,15 +657,300 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { id: 'unequal', label: 'Not equal parts', why: 'One part is bigger than another.' },
     ],
     cards: [
-      { label: 'Cut in 2 parts the same size', bin: 'equal' },
-      { label: 'Cut in 4 parts the same size', bin: 'equal' },
-      { label: 'Folded in half', bin: 'equal' },
-      { label: 'Folded in half, then in half again', bin: 'equal' },
-      { label: 'Cut in 2, one part bigger', bin: 'unequal' },
-      { label: 'Cut in 3, all different sizes', bin: 'unequal' },
-      { label: 'One big piece and one small piece', bin: 'unequal' },
+      {
+        label: 'Circle in 2 same parts',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'circle', parts: 2, equal: true, shaded: 1 },
+      },
+      {
+        label: 'Square in 4 same parts',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'square', parts: 4, equal: true, shaded: 1 },
+      },
+      {
+        label: 'Rectangle folded in half',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: true, shaded: 1 },
+      },
+      {
+        label: 'Square cut corner to corner',
+        bin: 'equal',
+        figure: {
+          kind: 'cut',
+          shape: 'square',
+          parts: 2,
+          equal: true,
+          cuts: 'diagonal',
+          shaded: 1,
+        },
+      },
+      {
+        label: 'Cut in 2, one part bigger',
+        bin: 'unequal',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: false, shaded: 1 },
+      },
+      {
+        label: 'Cut in 3, all different sizes',
+        bin: 'unequal',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 3, equal: false },
+      },
+      {
+        label: 'Circle, one big piece',
+        bin: 'unequal',
+        figure: { kind: 'cut', shape: 'circle', parts: 2, equal: false, shaded: 1 },
+      },
     ],
   },
+
+  {
+    kind: 'sort',
+    id: 'm.1.shape-attributes',
+    assumptions: [
+      'Sides, corners and being closed decide the name.',
+      'Color, size and turning do not change the name.',
+    ],
+    question: 'Is it a triangle?',
+    bins: [
+      { id: 'yes', label: 'Triangle', why: '3 straight sides, 3 corners, closed.' },
+      {
+        id: 'no',
+        label: 'Not a triangle',
+        why: 'Something is missing: a side, a corner, or it is open.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Big triangle',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 95],
+            [95, 95],
+            [50, 5],
+          ],
+        },
+      },
+      {
+        label: 'Small triangle',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [30, 75],
+            [70, 75],
+            [50, 40],
+          ],
+        },
+      },
+      {
+        label: 'Triangle point down',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 8],
+            [95, 8],
+            [50, 95],
+          ],
+        },
+      },
+      {
+        label: 'Long thin triangle',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [40, 98],
+            [60, 98],
+            [50, 2],
+          ],
+        },
+      },
+      {
+        label: 'Triangle on its side',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 20],
+            [5, 80],
+            [95, 50],
+          ],
+        },
+      },
+      {
+        label: 'Three lines not joined',
+        bin: 'no',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [20, 95],
+            [50, 5],
+            [80, 95],
+            [30, 95],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: '4-sided shape',
+        bin: 'no',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 20],
+            [90, 10],
+            [95, 85],
+            [15, 90],
+          ],
+        },
+      },
+      {
+        label: 'One curved side',
+        bin: 'no',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 95],
+            [95, 95],
+            [50, 5],
+          ],
+          curved: 0,
+        },
+      },
+      { label: 'Circle', bin: 'no', figure: { kind: 'circle' } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.1.shape-attributes~name-changes',
+    title: 'What changes the name?',
+    use: 'Use this to tell what changes a shape’s name.',
+    assumptions: [
+      'Some things decide a shape’s name.',
+      'Other things can change and the name stays.',
+    ],
+    question: 'Does it change the shape’s name?',
+    bins: [
+      {
+        id: 'changes',
+        label: 'Changes the name',
+        why: 'It changes the sides, the corners or the outline.',
+      },
+      {
+        id: 'stays',
+        label: 'Doesn’t change the name',
+        why: 'The shape looks different but keeps its name.',
+      },
+    ],
+    cards: [
+      { label: 'Number of sides', bin: 'changes' },
+      { label: 'Number of corners', bin: 'changes' },
+      { label: 'Open or closed', bin: 'changes' },
+      { label: 'Straight or curved sides', bin: 'changes' },
+      { label: 'Color', bin: 'stays' },
+      { label: 'Size', bin: 'stays' },
+      { label: 'Turned over', bin: 'stays' },
+      { label: 'Turned around', bin: 'stays' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.1.halves-fourths~bigger-share',
+    title: 'Which share is bigger?',
+    use: 'Use this to tell whether a half or a fourth is bigger.',
+    assumptions: [
+      'Cut the same shape into more parts: each part is smaller.',
+      'Half a pizza is bigger than a fourth of that pizza.',
+    ],
+    question: 'Is the shaded share a half or a fourth?',
+    bins: [
+      {
+        id: 'half',
+        label: 'Half: the bigger share',
+        why: '2 equal parts. Each is bigger than a fourth.',
+      },
+      {
+        id: 'fourth',
+        label: 'Fourth: the smaller share',
+        why: '4 equal parts. Each is smaller than a half.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Half a pizza',
+        bin: 'half',
+        figure: { kind: 'cut', shape: 'circle', parts: 2, equal: true, shaded: 1 },
+      },
+      {
+        label: 'A fourth of a pizza',
+        bin: 'fourth',
+        figure: { kind: 'cut', shape: 'circle', parts: 4, equal: true, shaded: 1 },
+      },
+      {
+        label: 'Half a sandwich',
+        bin: 'half',
+        figure: {
+          kind: 'cut',
+          shape: 'square',
+          parts: 2,
+          equal: true,
+          cuts: 'diagonal',
+          shaded: 1,
+        },
+      },
+      {
+        label: 'A fourth of a sandwich',
+        bin: 'fourth',
+        figure: { kind: 'cut', shape: 'square', parts: 4, equal: true, shaded: 1 },
+      },
+      {
+        label: 'Half a bar',
+        bin: 'half',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: true, shaded: 1 },
+      },
+      {
+        label: 'A fourth of a bar',
+        bin: 'fourth',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 4, equal: true, shaded: 1 },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.1.tens-ones~compare-sort',
+    title: 'Greater, less or equal?',
+    use: 'Use this to pick >, < or = for two numbers.',
+    assumptions: [
+      'Compare the tens first. If they are the same, compare the ones.',
+      'The open side of > or < faces the greater number.',
+    ],
+    question: 'Which sign goes in the blank?',
+    bins: [
+      {
+        id: 'gt',
+        label: 'is greater than (>)',
+        why: 'The first number has more tens, or more ones.',
+      },
+      {
+        id: 'lt',
+        label: 'is less than (<)',
+        why: 'The first number has fewer tens, or fewer ones.',
+      },
+      { id: 'eq', label: 'is equal to (=)', why: 'Same tens and same ones.' },
+    ],
+    cards: [
+      { label: '45 __ 54', bin: 'lt' },
+      { label: '70 __ 17', bin: 'gt' },
+      { label: '38 __ 38', bin: 'eq' },
+      { label: '61 __ 16', bin: 'gt' },
+      { label: '29 __ 92', bin: 'lt' },
+      { label: '50 __ 5 tens', bin: 'eq' },
+    ],
+  },
+
+  // ── Grade 2 ──
 
   // ── Grade 3 ──
   {

@@ -97,7 +97,7 @@ export const compareNumbers = (
   variables: [
     whole('a', 'a', 'First number', 0, max),
     whole('b', 'b', 'Second number', 0, max),
-    whole('d', 'd', 'Difference', 0, max),
+    whole('d', 'd', 'How far apart', 0, max),
   ],
   relations: [cmpNumbers(max <= 99).relation],
   steps: cmpNumbers(max <= 99).steps,

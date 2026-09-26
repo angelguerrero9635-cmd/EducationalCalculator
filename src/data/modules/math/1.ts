@@ -4,7 +4,7 @@
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
 import type { Values } from '@/engine/types';
-import { cmpShapes, fractionNote, whole } from '../helpers';
+import { cmpShapes, difference, fractionNote, whole } from '../helpers';
 import { addSub } from '../shared/add-sub';
 import { compareNumbers, compareProblem } from '../shared/compare';
 import type { ModuleDef, StepText } from '../types';
@@ -12,8 +12,8 @@ import {
   addAll,
   addStrategy,
   countList,
+  countUp,
   missingPart,
-  repeated,
   subtractStrategy,
   sumSteps,
 } from '../work';
@@ -160,9 +160,9 @@ export const MATH_1_MODULES: ModuleDef[] = [
     variables: [
       whole('c', 'c', 'Start (11–19)', 11, 19),
       whole('b', 'b', 'Take away', 2, 9),
-      whole('o', 'o', 'Extra ones', 1, 9),
-      whole('r', 'r', 'Left from the 10', 1, 8),
-      whole('a', 'a', 'Answer', 2, 17),
+      { ...whole('o', 'o', 'Ones', 1, 9), derived: true },
+      { ...whole('r', 'r', 'Left from the 10', 1, 8), derived: true },
+      whole('a', 'a', 'Left', 2, 17),
     ],
     relations: [
       {
@@ -202,8 +202,8 @@ export const MATH_1_MODULES: ModuleDef[] = [
           how: 'Add what is left from the 10 and the ones.',
           work: (v: Values) => addStrategy(v.r!, v.o!),
         },
-        r: { expr: '{a} − {o}', how: 'Take the ones away from the answer.' },
-        o: { expr: '{a} − {r}', how: 'Take what is left from the 10 away from the answer.' },
+        r: { expr: '{a} − {o}', how: 'Take the ones away from what is left.' },
+        o: { expr: '{a} − {r}', how: 'Take what is left from the 10 away from what is left.' },
       },
     },
     example: { c: 14, b: 8, o: 4, r: 2, a: 6 },
@@ -211,11 +211,60 @@ export const MATH_1_MODULES: ModuleDef[] = [
     representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c', frames: 2 },
     pictureLabels: ['o', 'r'],
   },
+  // Doubles and near doubles: 6 + 7 is 6 + 6 and 1 more (1.OA.6).
+  {
+    id: 'm.1.add-sub-20~doubles',
+    title: 'Doubles and near doubles',
+    use: 'Use this for doubles and near doubles, like 6 + 7.',
+    assumptions: [
+      'A double adds a number to itself: 6 + 6 = 12.',
+      'A near double is one more: 6 + 7 is 6 + 6 and 1 more.',
+    ],
+    variables: [
+      whole('a', 'a', 'Smaller number', 0, 9),
+      { ...whole('b', 'b', 'Bigger number', 1, 10), derived: true },
+      whole('c', 'c', 'In all', 1, 19),
+    ],
+    relations: [
+      {
+        id: 'b = a + 1',
+        display: '{a} + 1 = {b}',
+        vars: ['b', 'a'],
+        residual: (v) => v.b! - v.a! - 1,
+        solve: { b: (v) => v.a! + 1, a: (v) => v.b! - 1 },
+      },
+      {
+        id: 'c = a + b',
+        display: '{a} + {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v) => v.c! - v.a! - v.b!,
+        solve: { c: (v) => v.a! + v.b!, a: (v) => v.c! - v.b!, b: (v) => v.c! - v.a! },
+      },
+    ],
+    steps: {
+      'b = a + 1': {
+        b: { expr: '{a} + 1', how: 'The bigger number is one more.' },
+        a: { expr: '{b} − 1', how: 'The smaller number is one less.' },
+      },
+      'c = a + b': {
+        c: {
+          expr: '{a} + {b}',
+          how: 'Use the double you know. Then add 1 more.',
+          work: (v: Values) => [`${v.a} + ${v.a} = ${2 * v.a!}`, `${2 * v.a!} + 1 = ${v.c}`],
+        },
+        a: { expr: '{c} − {b}', how: 'Take the bigger number away from all of them.' },
+        b: { expr: '{c} − {a}', how: 'Take the smaller number away from all of them.' },
+      },
+    },
+    example: { a: 6, b: 7, c: 13 },
+    startWith: ['a'],
+    representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c', frames: 2 },
+  },
   {
     id: 'm.1.addition-properties',
     assumptions: [
       'Changing the order doesn’t change the total: 3 + 5 = 5 + 3.',
-      'Add any two first. The total is the same: 3 + 5 + 2 = 3 + 7.',
+      'Add any two first. The total is the same: 3 + 8 + 2 = 3 + 10.',
       'Pick two that are easy to add, like a ten.',
     ],
     variables: [
@@ -282,7 +331,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
         },
       ]),
     ),
-    example: { a: 3, b: 5, c: 2, s: 10 },
+    example: { a: 3, b: 8, c: 2, s: 13 },
     startWith: ['a', 'b', 'c'],
     representation: {
       kind: 'cubeTrains',
@@ -329,10 +378,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
             ...addStrategy(v.a!, v.b!),
             v.d! === 0
               ? `${v.c} + 0 = ${v.a! + v.b!}`
-              : v.d! <= 5
-                ? `${v.c} + ? = ${v.a! + v.b!}: count on ${countList(v.c!, 1, v.d!)} → ${v.d}`
-                : `${v.a! + v.b!} − ${v.c} = ${v.d}`,
-            ...(v.d! > 5 ? subtractStrategy(v.a! + v.b!, v.c!) : []),
+              : `${v.c} + ? = ${v.a! + v.b!}: count on ${countList(v.c!, 1, v.d!)} → ${v.d}`,
           ],
           expr: '{a} + {b} − {c}',
           how: 'Add the left side. Then count on from the right’s first number to that total.',
@@ -373,109 +419,6 @@ export const MATH_1_MODULES: ModuleDef[] = [
     startWith: ['a', 'b', 'c'],
     representation: { kind: 'balance', left: ['a', 'b'], right: ['c', 'd'] },
   },
-  // ─── Added from the third review (exam coverage) ────────────────────────────
-
-  // True or false with take-away: 7 − 1 = 4 + 2 (1.OA.7).
-  (() => {
-    const L = (v: Values) => v.a! - v.b!;
-    const R = (v: Values) => v.c! + v.d!;
-    const leftMore = (v: Values) => L(v) >= R(v);
-    const mod: ModuleDef = {
-      id: 'm.1.equal-sign~take-away',
-      title: 'True or false with take away',
-      use: 'Use this for “Is 7 − 1 = 4 + 2 true or false?”',
-      assumptions: [
-        'A number sentence is true when both sides are the same amount.',
-        'Work out each side first: 7 − 1 = 6 and 4 + 2 = 6, so 7 − 1 = 4 + 2 is true.',
-        'A side can be one number: 8 = 10 − 2 is true. Type 0 for the empty box.',
-      ],
-      variables: [
-        whole('a', 'a', 'Start on left', 0, 20),
-        whole('b', 'b', 'Taken away on left', 0, 10),
-        whole('c', 'c', 'First on right', 0, 10),
-        whole('d', 'd', 'Second on right', 0, 10),
-        whole('D', 'g', 'How far apart the sides are', 0, 20),
-      ],
-      relations: [
-        {
-          id: 'D = difference of the sides',
-          display: 'Is {a} − {b} = {c} + {d}? The sides are {D} apart.',
-          vars: ['D', 'a', 'b', 'c', 'd'],
-          // The left side can't be below 0 (no negative numbers before Grade 6).
-          residual: (v: Values) => (v.a! < v.b! ? v.b! - v.a! + 1 : v.D! - Math.abs(L(v) - R(v))),
-          check: (v: Values) =>
-            `${Math.max(L(v), R(v))} − ${Math.min(L(v), R(v))} = ${Math.abs(L(v) - R(v))}`,
-          solve: {
-            D: (v: Values) => (v.a! < v.b! ? undefined : Math.abs(L(v) - R(v))),
-            // Only answers that keep the left side at 0 or more (a − b can't go below 0).
-            a: (v: Values) => [R(v) + v.b! + v.D!, R(v) + v.b! - v.D!].filter((x) => x >= v.b!),
-            b: (v: Values) =>
-              [v.a! - R(v) - v.D!, v.a! - R(v) + v.D!].filter((x) => x >= 0 && x <= v.a!),
-            c: (v: Values) => (v.a! < v.b! ? undefined : [L(v) - v.d! + v.D!, L(v) - v.d! - v.D!]),
-            d: (v: Values) => (v.a! < v.b! ? undefined : [L(v) - v.c! + v.D!, L(v) - v.c! - v.D!]),
-          },
-        },
-      ],
-      steps: {
-        'D = difference of the sides': {
-          D: {
-            expr: (v) => (leftMore(v) ? '({a} − {b}) − ({c} + {d})' : '({c} + {d}) − ({a} − {b})'),
-            how: 'Work out each side. Take the smaller side away from the bigger side. 0 means true.',
-            work: (v) => [
-              `Left: ${v.a} − ${v.b} = ${L(v)}`,
-              ...subtractStrategy(v.a!, v.b!),
-              `Right: ${v.c} + ${v.d} = ${R(v)}`,
-              ...addStrategy(v.c!, v.d!),
-              `${Math.max(L(v), R(v))} − ${Math.min(L(v), R(v))} = ${v.D}`,
-            ],
-            note: (v: Values) =>
-              v.D === 0 ? `(true: ${L(v)} = ${R(v)})` : `(false: ${L(v)} ≠ ${R(v)})`,
-          },
-          a: {
-            expr: (v) => (leftMore(v) ? '({c} + {d}) + {D} + {b}' : '({c} + {d}) − {D} + {b}'),
-            how: 'Find the left side from the right side and the difference. Then put back what was taken away.',
-            work: (v) => [
-              `Right: ${v.c} + ${v.d} = ${R(v)}`,
-              `Left side: ${L(v)}`,
-              `${L(v)} + ${v.b} = ${v.a}`,
-            ],
-          },
-          b: {
-            expr: (v) => (leftMore(v) ? '{a} − (({c} + {d}) + {D})' : '{a} − (({c} + {d}) − {D})'),
-            how: 'Find the left side from the right side and the difference. Take it away from the start.',
-            work: (v) => [
-              `Right: ${v.c} + ${v.d} = ${R(v)}`,
-              `Left side: ${L(v)}`,
-              `${v.a} − ${L(v)} = ${v.b}`,
-            ],
-          },
-          c: {
-            expr: (v) => (leftMore(v) ? '({a} − {b}) − {D} − {d}' : '({a} − {b}) + {D} − {d}'),
-            how: 'Find the right side from the left side and the difference. Take away the other number.',
-            work: (v) => [
-              `Left: ${v.a} − ${v.b} = ${L(v)}`,
-              `Right side: ${R(v)}`,
-              `${R(v)} − ${v.d} = ${v.c}`,
-            ],
-          },
-          d: {
-            expr: (v) => (leftMore(v) ? '({a} − {b}) − {D} − {c}' : '({a} − {b}) + {D} − {c}'),
-            how: 'Find the right side from the left side and the difference. Take away the other number.',
-            work: (v) => [
-              `Left: ${v.a} − ${v.b} = ${L(v)}`,
-              `Right side: ${R(v)}`,
-              `${R(v)} − ${v.c} = ${v.d}`,
-            ],
-          },
-        },
-      },
-      example: { a: 7, b: 1, c: 4, d: 2, D: 0 },
-      startWith: ['a', 'b', 'c', 'd'],
-      representation: { kind: 'balance', left: ['a'], takeAway: 'b', right: ['c', 'd'] },
-      pictureLabels: ['D'],
-    };
-    return mod;
-  })(),
   {
     id: 'm.1.count-120',
     assumptions: [
@@ -576,11 +519,82 @@ export const MATH_1_MODULES: ModuleDef[] = [
     startWith: ['n'],
     representation: { kind: 'hundredChart', value: 'n', max: 120, marks: ['u', 'v'] },
   },
+  // A piece of the 120 chart: the number and its four neighbors (1.NBT.1, 1.NBT.5).
+  {
+    id: 'm.1.count-120~puzzle',
+    title: 'Chart puzzle',
+    use: 'Use this for a piece of the 120 chart with numbers missing.',
+    assumptions: ['Across a row, each number is 1 more.', 'Down a column, each number is 10 more.'],
+    variables: [
+      whole('n', 'n', 'Number', 11, 110),
+      { ...whole('u', 'u', 'Above', 1, 100), derived: true },
+      { ...whole('w', 'w', 'Below', 21, 120), derived: true },
+      { ...whole('l', 'l', 'Before', 10, 109), derived: true },
+      { ...whole('r', 'r', 'After', 12, 111), derived: true },
+    ],
+    relations: [
+      {
+        id: 'u = n − 10',
+        display: '{n} − 10 = {u}',
+        vars: ['u', 'n'],
+        residual: (v) => v.u! - v.n! + 10,
+        solve: { u: (v) => v.n! - 10, n: (v) => v.u! + 10 },
+      },
+      {
+        id: 'w = n + 10',
+        display: '{n} + 10 = {w}',
+        vars: ['w', 'n'],
+        residual: (v) => v.w! - v.n! - 10,
+        solve: { w: (v) => v.n! + 10, n: (v) => v.w! - 10 },
+      },
+      {
+        id: 'l = n − 1',
+        display: '{n} − 1 = {l}',
+        vars: ['l', 'n'],
+        residual: (v) => v.l! - v.n! + 1,
+        solve: { l: (v) => v.n! - 1, n: (v) => v.l! + 1 },
+      },
+      {
+        id: 'r = n + 1',
+        display: '{n} + 1 = {r}',
+        vars: ['r', 'n'],
+        residual: (v) => v.r! - v.n! - 1,
+        solve: { r: (v) => v.n! + 1, n: (v) => v.r! - 1 },
+      },
+    ],
+    steps: {
+      'u = n − 10': {
+        u: { expr: '{n} − 10', how: 'Above is 10 less. The tens digit goes down by 1.' },
+        n: { expr: '{u} + 10', how: 'The number is 10 more than the one above.' },
+      },
+      'w = n + 10': {
+        w: { expr: '{n} + 10', how: 'Below is 10 more. The tens digit goes up by 1.' },
+        n: { expr: '{w} − 10', how: 'The number is 10 less than the one below.' },
+      },
+      'l = n − 1': {
+        l: { expr: '{n} − 1', how: 'Before is 1 less.' },
+        n: { expr: '{l} + 1', how: 'The number is 1 more than the one before.' },
+      },
+      'r = n + 1': {
+        r: { expr: '{n} + 1', how: 'After is 1 more.' },
+        n: { expr: '{r} − 1', how: 'The number is 1 less than the one after.' },
+      },
+    },
+    example: { n: 45, u: 35, w: 55, l: 44, r: 46 },
+    startWith: ['n'],
+    representation: {
+      kind: 'hundredChart',
+      value: 'n',
+      max: 120,
+      marks: ['u', 'w', 'l', 'r'],
+      piece: true,
+    },
+  },
   {
     id: 'm.1.tens-ones',
     assumptions: [
       'A ten is a group of 10 ones.',
-      'The first digit tells the tens. The last digit tells the ones.',
+      'In a 2-digit number, the left digit tells the tens. The right digit tells the ones.',
       'Trade 10 ones for 1 ten. Type the tens and the ones to find the number.',
     ],
     variables: [whole('n', 'n', 'Number', 0, 99), ...g1tens.variables],
@@ -675,23 +689,85 @@ export const MATH_1_MODULES: ModuleDef[] = [
     assumptions: [
       'Add a small number like 7, or tens like 20, to a number like 36.',
       'Add tens with tens and ones with ones.',
-      'The total is 100 or less. Two 2-digit numbers, like 36 + 47, are Grade 2.',
+      'Add tens to tens and ones to ones. Make a ten when the ones reach 10.',
     ],
     variables: [
       whole('a', 'a', 'First number', 0, 100),
       // Grade 1 adds a one-digit number or a multiple of ten (1.NBT.4).
       {
-        ...whole('b', 'b', 'One-digit number or tens', 0, 90),
+        ...whole('b', 'b', 'Number to add', 0, 90),
         allowed: [...Array.from({ length: 10 }, (_, i) => i), 10, 20, 30, 40, 50, 60, 70, 80, 90],
       },
       whole('c', 'c', 'Total', 0, 100),
     ],
     ...addSub({
-      c: 'Add the rods, then the small cubes. Trade 10 small cubes for a rod.',
+      c: 'Make the next ten. Then add the rest.',
       a: 'Take the second number away from the total.',
       b: 'Count up to the total: tens first, then ones.',
     }),
     example: { a: 36, b: 7, c: 43 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'baseTen',
+      groups: ['a', 'b'],
+      total: 'c',
+      controls: [
+        { var: 'a', steps: [1, 10] },
+        { var: 'b', steps: [1, 10] },
+      ],
+    },
+  },
+  // Two 2-digit numbers within 100 (1.NBT.4; Eureka and IM Grade 1 both teach it).
+  {
+    id: 'm.1.add-within-100~two-digits',
+    title: 'Add two 2-digit numbers',
+    use: 'Use this for two 2-digit numbers, like 36 + 47.',
+    assumptions: ['Add tens to tens and ones to ones.', 'Then put the tens and the ones together.'],
+    variables: [
+      whole('a', 'a', 'First number', 10, 90),
+      whole('b', 'b', 'Second number', 10, 90),
+      whole('c', 'c', 'In all', 20, 100),
+    ],
+    relations: [
+      {
+        id: 'c = a + b',
+        display: '{a} + {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.c! - v.a! - v.b!,
+        solve: {
+          c: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.c! - v.b!,
+          b: (v: Values) => v.c! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      'c = a + b': {
+        c: {
+          expr: '{a} + {b}',
+          how: 'Add the tens. Add the ones. Then put them together.',
+          work: (v: Values) => {
+            const [ta, tb, oa, ob] = [v.a! - (v.a! % 10), v.b! - (v.b! % 10), v.a! % 10, v.b! % 10];
+            return [
+              `Tens: ${ta} + ${tb} = ${ta + tb}`,
+              `Ones: ${oa} + ${ob} = ${oa + ob}`,
+              `${ta + tb} + ${oa + ob} = ${v.c}`,
+            ];
+          },
+        },
+        a: {
+          expr: '{c} − {b}',
+          how: 'Count up from the second number to all of them.',
+          work: (v: Values) => countUp(v.b!, v.c!),
+        },
+        b: {
+          expr: '{c} − {a}',
+          how: 'Count up from the first number to all of them.',
+          work: (v: Values) => countUp(v.a!, v.c!),
+        },
+      },
+    },
+    example: { a: 36, b: 47, c: 83 },
     startWith: ['a', 'b'],
     representation: {
       kind: 'baseTen',
@@ -769,56 +845,58 @@ export const MATH_1_MODULES: ModuleDef[] = [
       tick: 10,
     },
   },
-  {
-    id: 'm.1.measure-nonstandard',
-    assumptions: [
-      'Lay the units end to end, with no gaps and no overlaps.',
-      'Use units that are all the same size.',
-      'A paper clip is as long as 2 cubes. Bigger units: you need fewer of them.',
-    ],
-    variables: [
-      whole('p', 'p', 'Length in clips', 1, 12),
-      { ...whole('c', 'c', 'Length in cubes', 2, 24), multipleOf: 2, step: 2 },
-    ],
-    relations: [
-      {
-        id: 'c = p clips of 2 cubes',
-        check: (v) => repeated(2, v.p!),
-        display: '{p} clips, 2 cubes each: {c} cubes',
-        vars: ['c', 'p'],
-        residual: (v) => v.c! - 2 * v.p!,
-        solve: { c: (v) => 2 * v.p!, p: (v) => v.c! / 2 },
+  (() => {
+    const longer = difference('d', 'a', 'b', {
+      countOn: true,
+      compareWords: ['longer', 'shorter'],
+      display: 'Line up {a} and {b}: {d} cubes longer',
+      diff: 'Line up the ends. Count on from the shorter one.',
+      first: [
+        'The pencil is longer. Add the extra cubes to the crayon.',
+        'The pencil is shorter. Take the extra cubes away from the crayon.',
+      ],
+      second: [
+        'The pencil is longer. Take the extra cubes away from the pencil.',
+        'The pencil is shorter. Add the extra cubes to the pencil.',
+      ],
+    });
+    return {
+      id: 'm.1.measure-nonstandard',
+      assumptions: [
+        'Lay the cubes end to end. No gaps. No overlaps.',
+        'Start at the end of the object.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Pencil', 1, 20), unit: 'cubes' },
+        { ...whole('b', 'b', 'Crayon', 1, 20), unit: 'cubes' },
+        { ...whole('d', 'd', 'How much longer', 0, 19), unit: 'cubes' },
+      ],
+      relations: [longer.relation],
+      steps: { ...longer.steps },
+      example: { a: 9, b: 6, d: 3 },
+      startWith: ['a', 'b'],
+      representation: {
+        kind: 'compareRows',
+        a: 'a',
+        b: 'b',
+        difference: 'd',
+        icon: 'cube',
+        words: ['longer', 'shorter'],
+        object: 'pencil',
       },
-    ],
-    steps: {
-      'c = p clips of 2 cubes': {
-        c: {
-          work: (v) => [`Count by 2s: ${countList(0, 2, v.p!)} → ${v.c} cubes`],
-          expr: '{p} clips of 2 cubes',
-          how: 'Count the cubes by 2s, one clip at a time.',
-        },
-        p: {
-          work: (v) => [`Count by 2s to ${v.c}: ${countList(0, 2, v.p!)} → ${v.p} clips`],
-          expr: 'groups of 2 in {c}',
-          how: 'Put the cubes in groups of 2, one group for each clip. Count the groups.',
-        },
-      },
-    },
-    example: { p: 4, c: 8 },
-    startWith: ['p'],
-    representation: { kind: 'unitTiles', count: 'p', size: 2, total: 'c' },
-  },
+    } satisfies ModuleDef;
+  })(),
   {
     id: 'm.1.data-3-categories',
     assumptions: [
       'Each picture stands for one object.',
-      'Each column is one kind of shape (a category).',
+      'The class chose a favorite fruit. Each column is one fruit.',
       'Add all three columns to get the total.',
     ],
     variables: [
-      whole('c', 'c', 'Circles', 0, 10),
-      whole('s', 's', 'Squares', 0, 10),
-      whole('t', 't', 'Triangles', 0, 10),
+      whole('c', 'c', 'Apple', 0, 10),
+      whole('s', 's', 'Banana', 0, 10),
+      whole('t', 't', 'Grapes', 0, 10),
       whole('n', 'n', 'Total', 0, 30),
     ],
     relations: [
@@ -845,17 +923,17 @@ export const MATH_1_MODULES: ModuleDef[] = [
         c: {
           work: (v) => missingPart(v.n!, [v.s!, v.t!]),
           expr: '{n} − {s} − {t}',
-          how: 'Take the other two shapes away from the total.',
+          how: 'Take the other two fruits away from the total.',
         },
         s: {
           work: (v) => missingPart(v.n!, [v.c!, v.t!]),
           expr: '{n} − {c} − {t}',
-          how: 'Take the other two shapes away from the total.',
+          how: 'Take the other two fruits away from the total.',
         },
         t: {
           work: (v) => missingPart(v.n!, [v.c!, v.s!]),
           expr: '{n} − {c} − {s}',
-          how: 'Take the other two shapes away from the total.',
+          how: 'Take the other two fruits away from the total.',
         },
       },
     },
@@ -1006,38 +1084,4 @@ export const MATH_1_MODULES: ModuleDef[] = [
     [45, 54],
     'Use this to compare two numbers with >, < or =.',
   ),
-  // Flat or solid: faces of spheres, cones, cylinders and cubes (K.G.3, K.G.4).
-  {
-    id: 'm.1.shape-attributes',
-    assumptions: [
-      'Sides and corners decide a shape’s name. A triangle has 3 of each.',
-      'Color, size and which way it is turned don’t change the name.',
-      'A shape must be closed: its sides join up with no gaps.',
-    ],
-    variables: [whole('s', 's', 'Sides', 3, 8), whole('v', 'c', 'Corners', 3, 8)],
-    relations: [
-      {
-        id: 'corners = sides',
-        display: '{s} sides and {v} corners',
-        vars: ['v', 's'],
-        residual: (x) => x.v! - x.s!,
-        solve: { v: (x) => x.s!, s: (x) => x.v! },
-      },
-    ],
-    steps: {
-      'corners = sides': {
-        v: {
-          expr: '{s}',
-          how: 'Each side ends at a corner. Count the corners: there is one for each side.',
-        },
-        s: {
-          expr: '{v}',
-          how: 'There is one side between two corners. Count the sides: one for each corner.',
-        },
-      },
-    },
-    example: { s: 5, v: 5 },
-    startWith: ['s'],
-    representation: { kind: 'polygon', sides: 's', corners: 'v', irregular: 'toggle' },
-  },
 ];

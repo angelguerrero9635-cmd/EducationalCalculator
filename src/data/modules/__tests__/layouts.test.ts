@@ -120,6 +120,8 @@ describe.each(LAYOUTS.map((l) => [l.id, l] as [string, LayoutDef]))('layout %s',
         for (const card of l.cards) expect(binIds).toContain(card.bin);
         for (const bin of l.bins) expect(l.cards.some((c) => c.bin === bin.id)).toBe(true);
         expect(new Set(l.cards.map((c) => c.label)).size).toBe(l.cards.length);
+        // Kindergarten children mostly cannot read yet: every math card is drawn.
+        if (l.id.startsWith('m.K.')) expect(l.cards.filter((c) => !c.figure)).toEqual([]);
         break;
       }
       case 'sequence':
