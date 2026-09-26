@@ -197,7 +197,7 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       {formatNumber(v)}
                     </ChartText>,
                   ])}
-                <ChartText x={sx(E) + 4} y={sy(0) + 4} fontSize={chart.label} fontWeight="700">
+                <ChartText x={sx(E) + 4} y={sy(0) - 5} fontSize={chart.label} fontWeight="700">
                   x
                 </ChartText>
                 <ChartText x={sx(0) + 6} y={sy(E) - 4} fontSize={chart.label} fontWeight="700">
@@ -269,10 +269,11 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       strokeWidth={chart.stroke}
                     />
                     <ChartText
-                      x={sx(ix) + 9}
-                      y={sy(iy) - 8}
+                      x={sx(ix) + (ix < 0 ? -9 : 9)}
+                      y={sy(iy) + (iy < 0 ? 18 : -8)}
                       fontSize={chart.small}
                       fill={c.chartInk}
+                      textAnchor={ix < 0 ? 'end' : 'start'}
                     >
                       {`(${formatNumber(ix)}, ${formatNumber(iy)})`}
                     </ChartText>
@@ -349,14 +350,21 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   />
                 ))}
                 {pts.map((pt) => {
+                  // A point on a rectangle's corner already has the corner's label.
+                  if (rect && [rect.l, rect.r].includes(pt.px) && [rect.b, rect.t].includes(pt.py))
+                    return null;
                   // The label goes above the point, on the side the line does not cross: the
                   // upper-left when the line rises (and there is room), else the upper-right.
-                  const upLeft = both && dx * dy > 0 && sx(pt.px) - x0 > 60;
+                  // A lone point in four quadrants (reflections) labels away from both axes,
+                  // where their numbers are.
+                  const out = !both && spec.quadrants === 4;
+                  const upLeft = out ? pt.px < 0 : both && dx * dy > 0 && sx(pt.px) - x0 > 60;
+                  const below = out && pt.py < 0;
                   return (
                     <ChartText
                       key={`t${pt.testID}`}
                       x={sx(pt.px) + (upLeft ? -9 : 9)}
-                      y={sy(pt.py) - 8}
+                      y={sy(pt.py) + (below ? 20 : -8)}
                       fontSize={chart.label}
                       fontWeight="700"
                       textAnchor={upLeft ? 'end' : 'start'}

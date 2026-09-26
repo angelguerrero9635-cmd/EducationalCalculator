@@ -57,7 +57,7 @@ export function RatioTape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     textAnchor="end"
                   >
                     {r.name.replace(/ of the ratio$/, '').replace(/^(First|Second) part:? ?/, '') ||
-                      r.name}
+                      r.name.replace(/ of the ratio$/, '')}
                   </ChartText>
                   {Array.from({ length: r.n }, (_, i) => (
                     <G key={i}>

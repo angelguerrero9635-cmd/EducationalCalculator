@@ -35,7 +35,8 @@ export const nearestMaterial = (d: number) =>
   MATERIALS.find(([, x]) => Math.abs(d - x) <= 0.03 * x)?.[0];
 const materialNote = (d: number) => {
   const m = nearestMaterial(d);
-  const sinks = d > 1 ? 'sinks in water' : d < 1 ? 'floats on water' : 'the same as water';
+  const sinks =
+    d > 1 ? 'sinks in water' : d < 1 ? 'floats on water' : 'has the same density as water';
   return m && m !== 'water' ? `(about the density of ${m}: it ${sinks})` : `(it ${sinks})`;
 };
 

@@ -28,10 +28,13 @@ const places = (x: number) => (String(exact(x)).split('.')[1] ?? '').length;
 const money = (x: number) => `$${x.toFixed(2)}`;
 const factorsOf = (n: number) =>
   Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0);
-/** "8/12 = 2/3" when a fraction simplifies (by the GCF), else nothing. */
+/** "8/12 = 2/3" (or "0/9 = 0", "12/4 = 3") when a fraction simplifies by the GCF, else nothing. */
 const simplest = (top: number, bottom: number) => {
   const g = gcd(top, bottom);
-  return g > 1 ? `${top}/${bottom} = ${top / g}/${bottom / g}` : '';
+  if (g <= 1) return '';
+  return bottom / g === 1
+    ? `${top}/${bottom} = ${top / g}`
+    : `${top}/${bottom} = ${top / g}/${bottom / g}`;
 };
 /** A fraction as a mixed number when it is more than 1: 9/4 → "2 1/4". */
 const mixed = (top: number, bottom: number) => {
@@ -780,7 +783,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     use: 'Use this for 2.35 × 1.4: multiply as whole numbers, then place the point.',
     assumptions: [
       'Multiply without the points, then count the decimal places in both factors.',
-      'The product has that many decimal places.',
+      'The product has that many decimal places, before end zeros are dropped: 3.290 = 3.29.',
       'Factors to two decimal places.',
     ],
     variables: [
@@ -1104,7 +1107,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
               how: 'The least common multiple of the two denominators.',
               work: (v) =>
                 v.b === v.d
-                  ? [`Both are in ${v.b}ths already`]
+                  ? [`Both denominators are already ${v.b}`]
                   : [
                       `Multiples of ${v.b}: ${Array.from({ length: v.m! / v.b! }, (_, i) => (i + 1) * v.b!).join(', ')}`,
                       `Multiples of ${v.d}: ${Array.from({ length: v.m! / v.d! }, (_, i) => (i + 1) * v.d!).join(', ')}`,

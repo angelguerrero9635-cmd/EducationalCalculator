@@ -148,6 +148,20 @@ export function FractionFit({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const partial = to - from < divisor - 1e-9;
                 return (
                   <G key={`g${i}`}>
+                    {partial ? (
+                      // The whole group the last part belongs to, dashed, so "8/9 of a group"
+                      // reads against the group's size.
+                      <Rect
+                        x={X(from)}
+                        y={barY}
+                        width={X(Math.min(wholes, from + divisor)) - X(from)}
+                        height={barH}
+                        fill="none"
+                        stroke={c.chartMuted}
+                        strokeWidth={chart.strokeLight}
+                        strokeDasharray={chart.dashFine}
+                      />
+                    ) : null}
                     <Rect
                       x={X(from)}
                       y={barY}

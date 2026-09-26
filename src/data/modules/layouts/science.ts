@@ -2463,7 +2463,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         label: 'Cell theory says it',
         why: 'Microscope observations have supported this for almost 200 years.',
       },
-      { id: 'no', label: 'Not true', why: 'Scientists have found cells that show this is false.' },
+      { id: 'no', label: 'Not true', why: 'Observations and experiments show this is false.' },
     ],
     cards: [
       { label: 'All living things are made of one or more cells', bin: 'yes' },
