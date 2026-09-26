@@ -393,6 +393,8 @@ export type Representation =
        * first pair and say what it means for the second: "9/12 > 8/12, so 3/4 > 2/3".
        */
       compare?: [number, number] | [number, number, number, number];
+      /** A sentence under the bars instead of the comparison, with {id} for values. */
+      caption?: string;
     }
   /**
    * Elapsed time on a number line: from the start time to the end time in jumps (to the next

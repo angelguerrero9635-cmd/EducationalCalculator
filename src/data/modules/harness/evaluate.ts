@@ -126,6 +126,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],
   [new RegExp(`ones digit of (${NUM})`), (a) => a % 10],
   [new RegExp(`full tens in (${NUM})`), (a) => Math.floor(a / 10)],
+  // Powers of ten (Grade 5): "zeros in 1000" is the exponent.
+  [new RegExp(`zeros in (${NUM})`), (a) => Math.round(Math.log10(a))],
   [new RegExp(`ones left in (${NUM})`), (a) => a % 10],
   [new RegExp(`tens in (${NUM})`), (a) => a / 10],
   [new RegExp(`pairs in (${NUM})`), (a) => Math.floor(a / 2)],

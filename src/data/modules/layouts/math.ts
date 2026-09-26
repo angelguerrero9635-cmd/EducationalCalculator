@@ -626,4 +626,249 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       },
     ],
   },
+  // ── Grade 5: classify two-dimensional figures in a hierarchy (5.G.3, 5.G.4) ──
+  {
+    kind: 'sort',
+    id: 'm.5.classify-2d',
+    assumptions: [
+      'A parallelogram has two pairs of parallel sides. A trapezoid has exactly one pair.',
+      'A rectangle is a parallelogram with four right angles. A rhombus has four equal sides.',
+      'A square is both: four right angles and four equal sides. Give the most exact name.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'What is the most exact name for the four-sided shape?',
+    bins: [
+      { id: 'square', label: 'Square', why: 'Four right angles and four equal sides.' },
+      {
+        id: 'rectangle',
+        label: 'Rectangle, not a square',
+        why: 'Four right angles, but the sides are not all equal.',
+      },
+      {
+        id: 'rhombus',
+        label: 'Rhombus, not a square',
+        why: 'Four equal sides, but the corners are not right angles.',
+      },
+      {
+        id: 'parallelogram',
+        label: 'Parallelogram only',
+        why: 'Two pairs of parallel sides, no right angles, sides not all equal.',
+      },
+      {
+        id: 'trapezoid',
+        label: 'Trapezoid',
+        why: 'Exactly one pair of parallel sides.',
+      },
+    ],
+    cards: [
+      {
+        label: 'All sides 4, all corners square',
+        bin: 'square',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [20, 20],
+            [80, 20],
+            [80, 80],
+            [20, 80],
+          ],
+        },
+      },
+      {
+        label: 'Sides 6 and 3, all corners square',
+        bin: 'rectangle',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 30],
+            [95, 30],
+            [95, 70],
+            [5, 70],
+          ],
+        },
+      },
+      {
+        label: 'All sides 5, corners leaning',
+        bin: 'rhombus',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 5],
+            [90, 50],
+            [50, 95],
+            [10, 50],
+          ],
+        },
+      },
+      {
+        label: 'Sides 7 and 4, corners leaning',
+        bin: 'parallelogram',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [25, 25],
+            [95, 25],
+            [75, 75],
+            [5, 75],
+          ],
+        },
+      },
+      {
+        label: 'Top and bottom parallel, sides slanting in',
+        bin: 'trapezoid',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [30, 25],
+            [70, 25],
+            [95, 75],
+            [5, 75],
+          ],
+        },
+      },
+      {
+        label: 'One square corner, top and bottom parallel',
+        bin: 'trapezoid',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 25],
+            [60, 25],
+            [90, 75],
+            [10, 75],
+          ],
+        },
+      },
+      {
+        label: 'A square turned on its corner',
+        bin: 'square',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 8],
+            [92, 50],
+            [50, 92],
+            [8, 50],
+          ],
+        },
+      },
+      {
+        label: 'Sides 8 and 2, all corners square',
+        bin: 'rectangle',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 40],
+            [95, 40],
+            [95, 60],
+            [5, 60],
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.5.classify-2d~triangles',
+    title: 'Sort triangles by their sides',
+    use: 'Use this to name a triangle by how many of its sides are equal.',
+    assumptions: [
+      'An equilateral triangle has three equal sides. Its three angles are equal too.',
+      'An isosceles triangle has two equal sides. A scalene triangle has no equal sides.',
+      'A right triangle can be isosceles or scalene, never equilateral.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'How many sides are equal?',
+    bins: [
+      { id: 'equilateral', label: 'Equilateral: 3 equal sides', why: 'All three sides match.' },
+      { id: 'isosceles', label: 'Isosceles: 2 equal sides', why: 'Two sides match, one differs.' },
+      { id: 'scalene', label: 'Scalene: no equal sides', why: 'All three sides are different.' },
+    ],
+    cards: [
+      {
+        label: 'Sides 6, 6, 6',
+        bin: 'equilateral',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 85],
+            [90, 85],
+            [50, 15],
+          ],
+        },
+      },
+      {
+        label: 'Sides 5, 5, 8',
+        bin: 'isosceles',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 80],
+            [95, 80],
+            [50, 40],
+          ],
+        },
+      },
+      {
+        label: 'Sides 3, 4, 5, with a right angle',
+        bin: 'scalene',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 85],
+            [90, 85],
+            [10, 25],
+          ],
+        },
+      },
+      {
+        label: 'Sides 7, 7, 4',
+        bin: 'isosceles',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [30, 90],
+            [70, 90],
+            [50, 10],
+          ],
+        },
+      },
+      {
+        label: 'Sides 4, 6, 8',
+        bin: 'scalene',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 85],
+            [95, 85],
+            [30, 30],
+          ],
+        },
+      },
+      {
+        label: 'Sides 5, 5, 5, turned',
+        bin: 'equilateral',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 20],
+            [85, 35],
+            [35, 90],
+          ],
+        },
+      },
+      {
+        label: 'Two equal sides meeting at a right angle',
+        bin: 'isosceles',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 85],
+            [85, 85],
+            [15, 15],
+          ],
+        },
+      },
+    ],
+  },
 ];

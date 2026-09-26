@@ -5,29 +5,29 @@ courses count once). They are written in sections.
 Each section goes through the review process in [MODULE_GUIDE.md](MODULE_GUIDE.md) (tests plus an
 independent AI review), and the next section starts only after the owner approves it.
 
-| #   | Section                                                                                             | Modules | Status                     |
-| --- | --------------------------------------------------------------------------------------------------- | ------- | -------------------------- |
-| 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice       |
-| 1   | Math K–2                                                                                            | 64      | Done, reviewed twice       |
-| 2   | Math 3–5 (one grade at a time)                                                                      | 34      | Grades 3–4 built, reviewed |
-| 3   | Math 6–8                                                                                            | 30      |                            |
-| 4   | Math 9–10                                                                                           | 21      |                            |
-| 5   | Math 11–12                                                                                          | 22      |                            |
-| 6   | Science K–5                                                                                         | 39      | K–3 built, reviewed        |
-| 7   | Science 6–8                                                                                         | 21      |                            |
-| 8   | Science 9–12                                                                                        | 34      |                            |
-| 9   | College Math                                                                                        | 25      |                            |
-| 10  | Chemistry                                                                                           | 42      |                            |
-| 11  | Physics                                                                                             | 32      |                            |
-| 12  | Earth Science                                                                                       | 27      |                            |
-| 13  | Geography                                                                                           | 23      |                            |
-| 14  | Biology                                                                                             | 34      |                            |
-| 15  | Engineering core 1: statics, dynamics, solid mechanics, materials, FEA                              | 29      |                            |
-| 16  | Engineering core 2: thermal-fluids, controls, circuits, logic, signals, programming, CAD, numerical | 45      |                            |
-| 17  | Aerospace + Mechanical                                                                              | 36      |                            |
-| 18  | Electrical + Computer                                                                               | 46      |                            |
-| 19  | Bioengineering + Chemical                                                                           | 47      |                            |
-| 20  | Civil                                                                                               | 33      |                            |
+| #   | Section                                                                                             | Modules | Status                       |
+| --- | --------------------------------------------------------------------------------------------------- | ------- | ---------------------------- |
+| 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice         |
+| 1   | Math K–2                                                                                            | 64      | Done, reviewed twice         |
+| 2   | Math 3–5 (one grade at a time)                                                                      | 34      | Grades 3–4 reviewed; 5 built |
+| 3   | Math 6–8                                                                                            | 30      |                              |
+| 4   | Math 9–10                                                                                           | 21      |                              |
+| 5   | Math 11–12                                                                                          | 22      |                              |
+| 6   | Science K–5                                                                                         | 39      | K–3 built, reviewed          |
+| 7   | Science 6–8                                                                                         | 21      |                              |
+| 8   | Science 9–12                                                                                        | 34      |                              |
+| 9   | College Math                                                                                        | 25      |                              |
+| 10  | Chemistry                                                                                           | 42      |                              |
+| 11  | Physics                                                                                             | 32      |                              |
+| 12  | Earth Science                                                                                       | 27      |                              |
+| 13  | Geography                                                                                           | 23      |                              |
+| 14  | Biology                                                                                             | 34      |                              |
+| 15  | Engineering core 1: statics, dynamics, solid mechanics, materials, FEA                              | 29      |                              |
+| 16  | Engineering core 2: thermal-fluids, controls, circuits, logic, signals, programming, CAD, numerical | 45      |                              |
+| 17  | Aerospace + Mechanical                                                                              | 36      |                              |
+| 18  | Electrical + Computer                                                                               | 46      |                              |
+| 19  | Bioengineering + Chemical                                                                           | 47      |                              |
+| 20  | Civil                                                                                               | 33      |                              |
 
 Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may be split further if it runs long.
 
@@ -45,6 +45,24 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   stages as a bar, fur colors in a litter, rock layers over a fossil, a herd's adults and
   young, and rain by week. New pictures: thermometers, rock layers and a pushed box. Grade 3 keeps letters as
   labels only; K–2 keeps to names and number sentences.
+- **Section 2, Grade 5.** Built, not yet reviewed: order of operations with brackets (the
+  bracket total as equal groups on a tape, the last number taken off the end); powers of 10
+  and exponents (the product on a place-value chart, plus a decimal times a power of 10 with
+  the point moving); the standard algorithm for multiplication (a row for the ones, a row for
+  the tens, the area model beside it, the work set out in columns by digit); division by a
+  2-digit divisor (the long-division bracket, the remainder as the leftover part of a tape);
+  decimals to hundredths (add and subtract in columns with the points lined up, multiply by a
+  whole number, divide by a whole number as tenths, tables for the last two); adding and
+  subtracting fractions with unlike bottoms (both rewritten over the common bottom, four
+  bars); multiplying fractions (the fraction-of-a-fraction square); dividing with unit
+  fractions (pieces in the wholes on a fraction line, a unit fraction shared among a whole
+  number as bars); volume of a rectangular prism (unit cubes in layers, sides to 8); points
+  in the first quadrant (a rule's two points on the plane, and moving right and up from a
+  point); classifying 2D figures (two sort pages: the most exact name for a four-sided
+  shape, triangles by their sides). New engine work: Grade 5 written work (multiplication
+  by digit of the second factor, decimal columns), a caption on fraction bars, cubic units
+  for every length, and squares and cubes only for a whole-number length lesson's areas and
+  volumes.
 - **Section 2, Grade 4.** Built so far: factors, multiples, primes and composites (a factor
   pair as an array, the factor list counted, prime or composite named); place value to
   1,000,000 (a digit's value from its place, and ten times less one place right, as a table);

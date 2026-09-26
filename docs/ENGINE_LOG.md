@@ -5,6 +5,20 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grade 5 build (Section 2, while writing)
+
+- The written-work grids stopped at Grade 4's layouts. → `columnMultiply(a, b, true)` sets
+  out one row per digit of the second factor (the standard algorithm) and `autoWritten` uses
+  it from Grade 5; `decimalColumns` lines up the points for decimal sums and differences.
+- Fraction bars could only caption a comparison. → `caption` on the picture, for a sum or a
+  sharing ("{p}/{m} + {q}/{m} = {s}/{m}").
+- A whole-number volume lesson offered liters for its cubic centimeters, and mm, km, yd and
+  mi had no cubic unit. → Cubic units for every length in the registry; `unitChoices` with
+  the module's variables offers only squares and cubes of lengths for a length lesson's
+  areas and volumes.
+- The unit-cubes caption counted the clipped drawing, not the box. → It counts the real box.
+- "zeros in 1,000" is a phrase the harness reads (the exponent).
+
 ## Written work (before Grade 5)
 
 - The steps read as prose lines ("6 × 100 = 600, so 100 groups fit: 743 − 600 = 143") where a

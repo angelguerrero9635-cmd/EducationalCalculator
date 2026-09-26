@@ -4,6 +4,7 @@ import {
   columnAdd,
   columnMultiply,
   columnSubtract,
+  decimalColumns,
   longDivision,
   writtenText,
 } from '../written';
@@ -128,5 +129,32 @@ describe('simplify chain', () => {
       '3',
     ]);
     expect(simplifyChain('3 × (2 + 4)²')).toEqual(['3 × 6²', '3 × 36', '108']);
+  });
+});
+
+describe('Grade 5 written work', () => {
+  it('multiplies one row per digit of the second factor', () => {
+    const w = columnMultiply(234, 56, true)!;
+    expect(w.says).toBe('234 × 56 = 13104');
+    const notes = w.rows.flatMap((r) => r.filter((c) => c.wide).map((c) => c.text));
+    expect(notes).toEqual(['234 × 6', '234 × 50']);
+    expect(autoWritten('5', '234 × 56')?.rows.length).toBe(2 + 2 + 1);
+    expect(autoWritten('4', '234 × 56')?.rows.length).toBe(2 + 6 + 1);
+    // A one-digit multiplier still goes by the digits of the first factor.
+    expect(columnMultiply(234, 6, true)!.rows.length).toBe(2 + 3 + 1);
+  });
+
+  it('adds and takes away decimals with the points lined up', () => {
+    const w = decimalColumns('+', [0.4, 0.35])!;
+    expect(w.says).toBe('0.40 + 0.35 = 0.75');
+    expect(text(w)).toBe(['  0 . 4 0', '+ 0 . 3 5', '─────────', '  0 . 7 5'].join('\n'));
+    const s = decimalColumns('−', [12.5, 3.75])!;
+    expect(s.says).toBe('12.50 − 3.75 = 8.75');
+    // (regrouping marks like "10" widen their columns in the text dump)
+    expect(text(s).split('\n').slice(-1)[0]?.replace(/\s+/g, ' ').trim()).toBe('8 . 7 5');
+    expect(autoWritten('5', '2.5 + 1.25')?.says).toBe('2.50 + 1.25 = 3.75');
+    expect(autoWritten('5', '3 + 1.25')?.says).toBe('3.00 + 1.25 = 4.25');
+    expect(autoWritten('4', '2.5 + 1.25')).toBeUndefined();
+    expect(autoWritten('5', '1.25 − 2.5')).toBeUndefined();
   });
 });

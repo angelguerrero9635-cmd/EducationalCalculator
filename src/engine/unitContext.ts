@@ -12,12 +12,25 @@ export interface UnitChoice {
   units?: Record<string, string>;
 }
 
-/** The units a variable can be shown in under a system ("mixed" = all units of its kind). */
-export function unitChoices(variable: VariableDef, system: UnitChoice['system']): string[] {
+/**
+ * The units a variable can be shown in under a system ("mixed" = all units of its kind). With
+ * the module's `variables`, a whole-number lesson that measures lengths offers only the
+ * matching squares and cubes for its areas and volumes (cm² and cm³, never liters).
+ */
+export function unitChoices(
+  variable: VariableDef,
+  system: UnitChoice['system'],
+  variables?: readonly VariableDef[],
+): string[] {
   const unit = getUnit(variable.unit);
   if (!unit) return [];
+  const cubes =
+    (unit.dimension === 'area' || unit.dimension === 'volume') &&
+    variables?.some((v) => v.integer && getUnit(v.unit)) &&
+    variables.some((v) => getUnit(v.unit)?.dimension === 'length');
   return unitsOf(unit.dimension)
     .filter((u) => system === 'mixed' || u.system === system || u.system === 'both')
+    .filter((u) => !cubes || LENGTHS.some((l) => u.id === `${l}²` || u.id === `${l}³`))
     .map((u) => u.id);
 }
 
@@ -135,7 +148,7 @@ export function makeUnitContext(module: ModuleLike, choice: UnitChoice): UnitCon
     if (unit) {
       const picked = choice.units?.[v.id];
       shown =
-        picked && unitChoices(v, choice.system).includes(picked)
+        picked && unitChoices(v, choice.system, module.variables).includes(picked)
           ? picked
           : choice.system === 'mixed'
             ? v.unit

@@ -75,7 +75,13 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      {both ? (
+      {spec.caption ? (
+        <Caption>
+          {spec.caption.replace(/\{(\w+)\}/g, (_, id: string) =>
+            rep.known(id) ? String(Math.round(rep.shown(id))) : '?',
+          )}
+        </Caption>
+      ) : both ? (
         <Caption>
           {spec.equal
             ? cmp === 0

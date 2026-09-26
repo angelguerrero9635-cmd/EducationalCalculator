@@ -8,6 +8,7 @@ import { SCIENCE_K_MODULES } from './science/k';
 import { SCIENCE_1_MODULES } from './science/1';
 import { SCIENCE_2_MODULES } from './science/2';
 import { SCIENCE_3_MODULES } from './science/3';
+import { MATH_5_MODULES } from './math/5';
 import { PILOT_MODULES } from './pilots';
 import { GALLERY_MODULES } from './gallery';
 import { LAYOUTS, getLayout, type LayoutDef } from './layouts';
@@ -25,6 +26,7 @@ export const MODULES: readonly ModuleDef[] = [
   ...SCIENCE_1_MODULES,
   ...SCIENCE_2_MODULES,
   ...SCIENCE_3_MODULES,
+  ...MATH_5_MODULES,
   ...PILOT_MODULES,
   ...COLLEGE_MODULES,
 ];

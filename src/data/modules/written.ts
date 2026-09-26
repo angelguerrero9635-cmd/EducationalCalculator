@@ -130,17 +130,26 @@ export function columnSubtract(c: number, b: number): Written | undefined {
  * a × b by partial products, the first factor on top: each digit of the second factor times
  * each digit of the first, ones first, with the fact noted beside each row ("3 × 6").
  */
-export function columnMultiply(a: number, b: number): Written | undefined {
+export function columnMultiply(
+  a: number,
+  b: number,
+  /** Grade 5: one row per digit of the second factor (234 × 6, then 234 × 50), the standard algorithm. */
+  byDigit = false,
+): Written | undefined {
   if (!Number.isInteger(a) || !Number.isInteger(b) || a < 0 || b < 0) return undefined;
   const parts: { value: number; note: string }[] = [];
   digitsOf(b)
     .reverse()
     .forEach((db, j) => {
+      const y = db * 10 ** j;
+      if (byDigit && b >= 10) {
+        if (y > 0) parts.push({ value: a * y, note: `${a} × ${y}` });
+        return;
+      }
       digitsOf(a)
         .reverse()
         .forEach((da, i) => {
           const x = da * 10 ** i;
-          const y = db * 10 ** j;
           if (x * y > 0) parts.push({ value: x * y, note: `${x} × ${y}` });
         });
     });
@@ -227,6 +236,45 @@ export function longDivision(n: number, d: number): Written | undefined {
   };
 }
 
+/**
+ * Column addition or subtraction of decimals: the numbers scaled to whole hundredths (or
+ * tenths), worked in columns, and the point put back in every row (Grade 5, 5.NBT.7).
+ */
+export function decimalColumns(op: '+' | '−', nums: number[]): Written | undefined {
+  const decimals = Math.max(...nums.map((x) => (String(x).split('.')[1] ?? '').length));
+  if (decimals === 0 || decimals > 3 || nums.some((x) => x < 0)) return undefined;
+  const scale = 10 ** decimals;
+  const whole = nums.map((x) => Math.round(x * scale));
+  const grid = op === '+' ? columnAdd(whole) : columnSubtract(whole[0]!, whole[1]!);
+  if (!grid) return undefined;
+  // Room for a 0 before the point (0.40), then the point column before the last `decimals`.
+  const cols = Math.max(grid.width - 1, decimals + 1);
+  const pad = cols - (grid.width - 1);
+  const width = cols + 2;
+  const rows = grid.rows.map((row) => {
+    const cells = [row[0]!, ...Array<WrittenCell>(pad).fill(blank), ...row.slice(1, grid.width)];
+    const at = cells.length - decimals;
+    // Every digit row gets its point (and a 0 before it for 0.40); carry rows stay blank.
+    const digitRow = cells.some((c) => /\d/.test(c.text) && !c.small);
+    const under = cells[at]?.underline;
+    const out = [
+      ...cells.slice(0, at),
+      cell(digitRow ? '.' : '', { underline: under }),
+      ...cells.slice(at),
+    ];
+    if (digitRow && out[at - 1]!.text === '') out[at - 1] = cell('0', { underline: under });
+    return out;
+  });
+  const text = (x: number) => (x / scale).toFixed(decimals);
+  const result = op === '+' ? whole.reduce((x, y) => x + y, 0) : whole[0]! - whole[1]!;
+  return {
+    kind: 'grid',
+    rows,
+    width,
+    says: `${nums.map((x) => x.toFixed(decimals)).join(` ${op} `)} = ${text(result)}`,
+  };
+}
+
 /** The grid as text lines for the review dump, columns right-aligned. */
 export function writtenText(w: Written): string[] {
   const widths = Array<number>(w.width).fill(1);
@@ -297,7 +345,15 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     const mental = (x: number, y: number) => y < 10 && /^[1-9]0+$/.test(String(x));
     // Times-table facts and products under 100 are done in the head.
     if (Math.max(a, b) <= 12 || a * b < 100 || mental(a, b) || mental(b, a)) return undefined;
-    return columnMultiply(a, b);
+    return columnMultiply(a, b, g >= 5);
+  }
+  // Decimals (Grade 5): line up the points and add or take away in columns.
+  if (g >= 5 && /^\d+\.\d+( \+ \d+(\.\d+)?)+$|^\d+ \+ \d+\.\d+/.test(text)) {
+    return decimalColumns('+', nums(text));
+  }
+  if (g >= 5 && /^\d+(\.\d+)? − \d+(\.\d+)?$/.test(text) && text.includes('.')) {
+    const [c, b] = nums(text) as [number, number];
+    return c >= b ? decimalColumns('−', [c, b]) : undefined;
   }
   if (g >= 4 && /^\d+ ÷ \d+$/.test(text)) {
     const [n, d] = nums(text) as [number, number];

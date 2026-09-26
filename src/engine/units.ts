@@ -89,12 +89,16 @@ export const UNITS: readonly UnitDef[] = [
   usu('yd²', 'square yards', 'area', YD ** 2, 'm²'),
   usu('mi²', 'square miles', 'area', MI ** 2, 'km²'),
   // Volume (m³)
+  u('mm³', 'cubic millimeters', 'volume', 1e-9, 'metric', 'in³'),
   u('cm³', 'cubic centimeters', 'volume', 1e-6, 'metric', 'in³'),
   u('mL', 'milliliters', 'volume', 1e-6, 'metric', 'fl oz'),
   u('L', 'liters', 'volume', 1e-3, 'metric', 'gal'),
   u('m³', 'cubic meters', 'volume', 1, 'metric', 'ft³'),
   usu('in³', 'cubic inches', 'volume', IN ** 3, 'cm³'),
+  u('km³', 'cubic kilometers', 'volume', 1e9, 'metric', 'mi³'),
   usu('ft³', 'cubic feet', 'volume', FT ** 3, 'm³'),
+  usu('yd³', 'cubic yards', 'volume', YD ** 3, 'm³'),
+  usu('mi³', 'cubic miles', 'volume', MI ** 3, 'km³'),
   usu('fl oz', 'US fluid ounces', 'volume', 29.5735295625e-6, 'mL'),
   usu('gal', 'US gallons', 'volume', 3.785411784e-3, 'L'),
   // Mass (kg)

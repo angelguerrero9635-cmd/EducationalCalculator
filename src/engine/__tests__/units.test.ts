@@ -274,3 +274,12 @@ describe('step-by-step with units', () => {
     expect(w.convertOut).toEqual(['F = 444.8215 N = 99.9998 lbf   (1 lbf = 4.44822 N)']);
   });
 });
+
+it('offers only squares and cubes of lengths for areas and volumes in whole-number lessons', () => {
+  const l = { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', integer: true };
+  const V = { id: 'V', symbol: 'V', name: 'Volume', unit: 'cm³', integer: true };
+  expect(unitChoices(V, 'metric', [l, V])).toEqual(['mm³', 'cm³', 'm³', 'km³']);
+  expect(unitChoices(V, 'us', [l, V])).toEqual(['in³', 'ft³', 'yd³', 'mi³']);
+  // A liquid-volume lesson (no lengths) keeps its liters.
+  expect(unitChoices(V, 'metric', [V])).toContain('L');
+});

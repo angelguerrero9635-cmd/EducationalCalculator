@@ -371,7 +371,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     const says = s.written.says;
     const answer = Number(/^\$?(-?[\d.]+)/.exec(s.result.split(' = ')[1] ?? '')?.[1]);
     const long = /^(\d+) ÷ (\d+) = (\d+) remainder (\d+)$/.exec(says);
-    const plain = /^(.*) = (\d+)$/.exec(says);
+    const plain = /^(.*) = (\d+(?:\.\d+)?)$/.exec(says);
     const x = plain ? evaluate(plain[1]!) : undefined;
     const ok = long
       ? Number(long[3]) * Number(long[2]) + Number(long[4]) === Number(long[1]) &&
@@ -715,7 +715,7 @@ function unitChoiceList(m: ModuleDef): UnitChoice[] {
     out.set(JSON.stringify({ system }), { system });
     for (const v of m.variables) {
       if (!getUnit(v.unit)) continue;
-      for (const u of unitChoices(v, system)) {
+      for (const u of unitChoices(v, system, m.variables)) {
         const units = opts.linked ? linkedUnits(m.variables, v.id, u) : { [v.id]: u };
         out.set(JSON.stringify({ system, units }), { system, units });
       }

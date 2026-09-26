@@ -23,7 +23,10 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const W = dim(spec.width);
   const H = dim(spec.height);
   const known = [spec.length, spec.width, spec.height].every(rep.known);
-  const layer = L * W;
+  // The caption counts the real box; the drawing stops at `max` cubes a side.
+  const real = (id: string) => Math.max(0, Math.round(rep.shown(id)));
+  const [rl, rw, rh] = [real(spec.length), real(spec.width), real(spec.height)];
+  const layer = rl * rw;
 
   return (
     <View>
@@ -119,7 +122,7 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `One layer is ${L} × ${W} = ${layer} cubes. ${H} ${H === 1 ? 'layer' : 'layers'}: ${layer} × ${H} = ${rep.value(spec.volume, false)} cubes.`
+          ? `One layer is ${rl} × ${rw} = ${layer} cubes. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${layer} × ${rh} = ${rep.value(spec.volume, false)} cubes.`
           : 'Type the length, width and height to fill the box.'}
       </Caption>
       <Steppers

@@ -56,7 +56,7 @@ function systemOptions(calc: Calculator): DropdownOption<SystemOption>[] {
  */
 function UnitPicker({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
   const { choice, display } = calc.units;
-  const options = unitChoices(variable, choice.system);
+  const options = unitChoices(variable, choice.system, calc.module.variables);
   const current = display[variable.id] ?? variable.unit ?? '';
   return (
     <Dropdown
@@ -89,7 +89,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   const value = calc.values[variable.id];
   const unit = calc.units.display[variable.id];
   // A unit menu whenever this value has more than one unit in the current system.
-  const picker = unitChoices(variable, calc.units.choice.system).length > 1;
+  const picker = unitChoices(variable, calc.units.choice.system, calc.module.variables).length > 1;
   const status = calc.status(variable.id);
   const early = isEarlyGrade(calc.module.id);
   const rawError = typo ? 'Enter a number' : calc.errors[variable.id];
