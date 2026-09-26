@@ -2820,6 +2820,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'The densest liquid sinks to the bottom. The least dense one floats on top.',
     ],
     question: 'Put the liquids in order from the bottom of the jar to the top.',
+    stack: true,
     stages: [
       { label: 'Honey: 1.4 g/cm³' },
       { label: 'Dish soap: 1.06 g/cm³' },
@@ -2969,10 +2970,26 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     question: 'Which kind of air mass is it?',
     bins: [
-      { id: 'cP', label: 'Continental polar', why: 'Forms over cold land: cold and dry.' },
-      { id: 'mP', label: 'Maritime polar', why: 'Forms over cold ocean: cool and humid.' },
-      { id: 'mT', label: 'Maritime tropical', why: 'Forms over warm ocean: warm and humid.' },
-      { id: 'cT', label: 'Continental tropical', why: 'Forms over hot desert: hot and dry.' },
+      {
+        id: 'cP',
+        label: 'Continental polar (land, cold)',
+        why: 'Forms over cold land: cold and dry.',
+      },
+      {
+        id: 'mP',
+        label: 'Maritime polar (ocean, cold)',
+        why: 'Forms over cold ocean: cool and humid.',
+      },
+      {
+        id: 'mT',
+        label: 'Maritime tropical (ocean, warm)',
+        why: 'Forms over warm ocean: warm and humid.',
+      },
+      {
+        id: 'cT',
+        label: 'Continental tropical (land, warm)',
+        why: 'Forms over hot desert: hot and dry.',
+      },
     ],
     cards: [
       { label: 'Air from northern Canada in winter', bin: 'cP' },
@@ -3146,6 +3163,14 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         continents: { age: 250, clue: 'rocks' },
         lines: [
           'Mountains of the same age and rock type line up across North America, Greenland and northern Europe.',
+        ],
+      },
+      {
+        label: 'Climate clue',
+        continents: { age: 250, clue: 'climate' },
+        lines: [
+          'Scratches left by one ice sheet are found in South America, Africa, India and Australia.',
+          'Coal, made from warm swamp plants, is found in Antarctica: it was once far from the pole.',
         ],
       },
       {

@@ -465,16 +465,13 @@ export function repIssues(
     }
     case 'doubleNumberLine': {
       // The bottom reading is the top reading times the smaller units per bigger unit.
-      const [t, b, k] = [val(rep.top), val(rep.bottom), val(rep.per)];
+      const [t, b] = [val(rep.top), val(rep.bottom)];
       // The top reading can be a decimal (2.5 m): it sits between two ticks.
       if (t !== undefined && t < 0) out.push(`top units ${rep.top} below 0 (${t})`);
-      if (
-        t !== undefined &&
-        b !== undefined &&
-        k !== undefined &&
-        Math.abs(t * k - b) > 1e-6 * Math.max(1, b)
-      )
-        out.push(`double number line: ${t} × ${k} ≠ ${b}`);
+      // With both readings known the picture spaces the lines from them, so the rate may be
+      // shown in other units (mph over km and hours); the readings must agree in sign.
+      if (t !== undefined && b !== undefined && t > 0 && b < 0)
+        out.push(`double number line bottom ${b} below 0`);
       break;
     }
     case 'coordinatePlane': {

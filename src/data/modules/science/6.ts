@@ -341,7 +341,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'V = c − a',
       ['V', 'c', 'a'],
       [
-        'The object pushes aside its own volume of water, so the rise is its volume.',
+        'The object pushes aside its own volume of water, so the rise in mL is its volume in cm³ (1 mL = 1 cm³).',
         'The level rises by the object’s volume.',
         'Take the object’s volume from the level after.',
       ],
@@ -368,9 +368,9 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
           step: 1,
         },
         { id: 'c', symbol: 'c', name: 'Water level after', unit: 'mL', min: 0, max: 1000, step: 1 },
-        { id: 'V', symbol: 'V', name: 'Object volume', unit: 'mL', min: 0.1, max: 1000 },
+        { id: 'V', symbol: 'V', name: 'Object volume', unit: 'cm³', min: 0.1, max: 1000 },
         { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0.1, max: 10000 },
-        { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/mL', min: 0.01, max: 25 },
+        { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/cm³', min: 0.01, max: 25 },
       ],
       relations: [
         {
@@ -401,10 +401,13 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         'ρ = m ÷ V': {
           rho: {
             expr: '{m} ÷ {V}',
-            how: 'Share the mass over the milliliters (cubic centimeters) of the object.',
+            how: 'Share the mass over the cubic centimeters of the object.',
             note: (v: Values) => materialNote(v.rho!),
           },
-          m: { expr: '{rho} × {V}', how: 'Each milliliter holds the density’s mass: multiply.' },
+          m: {
+            expr: '{rho} × {V}',
+            how: 'Each cubic centimeter holds the density’s mass: multiply.',
+          },
           V: { expr: '{m} ÷ {rho}', how: 'How many of the density’s mass fit in the mass?' },
         },
       },

@@ -11,7 +11,7 @@ import type { Values } from '@/engine/types';
 
 import { div, primeFactors, whole } from '../helpers';
 import type { ModuleDef } from '../types';
-import { decimalLongDivision } from '../written';
+import { decimalLongDivision, decimalMultiply } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
 /** A number as the steps show it (rounded like `fmt`), to do arithmetic on what is written. */
@@ -24,8 +24,6 @@ const gcd = (a: number, b: number): number =>
 const lcm = (a: number, b: number) => (a * b) / gcd(a, b);
 /** How many digits after the point a decimal has (2.35 → 2, 3 → 0). */
 const places = (x: number) => (String(exact(x)).split('.')[1] ?? '').length;
-/** "$7.50": money to the cent. */
-const money = (x: number) => `$${x.toFixed(2)}`;
 const factorsOf = (n: number) =>
   Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0);
 /** "8/12 = 2/3" (or "0/9 = 0", "12/4 = 3") when a fraction simplifies by the GCF, else nothing. */
@@ -116,7 +114,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     variables: [
       whole('a', 'a', 'First part of the ratio', 1, 50),
       whole('b', 'b', 'Second part of the ratio', 1, 50),
-      { id: 'k', symbol: 'k', name: 'Multiply both by', min: 0.1, max: 100, step: 0.1 },
+      { id: 'k', symbol: 'k', name: 'Multiplier', min: 0.1, max: 100, step: 0.1 },
       { id: 'x', symbol: 'x', name: 'First amount', min: 0, max: 5000 },
       { id: 'y', symbol: 'y', name: 'Second amount', min: 0, max: 5000 },
     ],
@@ -124,7 +122,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'x = a × k',
         display: '{a} × {k} = {x}',
-        words: 'First part × multiply both by = first amount',
+        words: 'First part × multiplier = first amount',
         vars: ['x', 'a', 'k'],
         residual: (v: Values) => v.x! - v.a! * v.k!,
         solve: {
@@ -136,7 +134,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'y = b × k',
         display: '{b} × {k} = {y}',
-        words: 'Second part × multiply both by = second amount',
+        words: 'Second part × multiplier = second amount',
         vars: ['y', 'b', 'k'],
         residual: (v: Values) => v.y! - v.b! * v.k!,
         solve: {
@@ -368,7 +366,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         c: {
           expr: '{t} ÷ {n}',
           how: 'The unit rate is the price of 1. Share the total cost equally among the items.',
-          note: (v) => `(${money(v.c!)} for each item)`,
         },
         t: { expr: '{c} × {n}', how: 'Every item costs the same: multiply the price of 1.' },
         n: {
@@ -521,12 +518,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'The speed stays the same the whole way.',
       'Speed is the distance in 1 hour.',
-      'Times to 100 hours, in hours (half an hour is 0.5).',
+      'Times to 100 hours (half an hour is 0.5); distances and speeds in kilometers or miles.',
     ],
     variables: [
-      { id: 'd', symbol: 'd', name: 'Distance in kilometers', min: 0, max: 100000, step: 0.1 },
-      { id: 't', symbol: 't', name: 'Time in hours', min: 0.1, max: 100, step: 0.1 },
-      { id: 's', symbol: 's', name: 'Speed in kilometers per hour', min: 0, max: 1000, step: 0.1 },
+      { id: 'd', symbol: 'd', name: 'Distance', unit: 'km', min: 0.1, max: 10000, step: 0.1 },
+      { id: 't', symbol: 't', name: 'Time', unit: 'h', min: 0.1, max: 100, step: 0.1 },
+      { id: 's', symbol: 's', name: 'Speed', unit: 'km/h', min: 0.1, max: 1000, step: 0.1 },
     ],
     relations: [
       {
@@ -622,6 +619,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         p: {
           expr: '{x} ÷ {o}',
           how: 'How many of the one percent fit in the part? That many percent.',
+          work: (v) =>
+            v.w === undefined || v.w === 0
+              ? []
+              : [
+                  `${fmt(v.x!)} ÷ ${fmt(v.w)} = ${fmt(v.x! / v.w)}`,
+                  `${fmt(v.x! / v.w)} × 100 = ${fmt(v.p!)}`,
+                ],
+          written: false,
         },
       },
     },
@@ -836,7 +841,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
               `${pa} + ${pb} = ${pa + pb} decimal places: ${fmt(A * B)} ÷ ${fmt(10 ** (pa + pb))} = ${fmt(v.p!)}`,
             ];
           },
-          written: false,
+          written: (v) => decimalMultiply(v.a!, v.b!),
         },
         a: {
           expr: '{p} ÷ {b}',
@@ -1259,7 +1264,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'g = GCF of a and b',
         display: 'greatest common factor of {a} and {b}: {g}',
-        words: 'Greatest factor of both numbers = greatest common factor',
+        words: 'The greatest number that divides both = greatest common factor',
         vars: ['g', 'a', 'b'],
         residual: (v: Values) => v.g! - gcd(v.a!, v.b!),
         solve: { g: (v: Values) => gcd(v.a!, v.b!), a: () => undefined, b: () => undefined },
@@ -1562,7 +1567,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'a = |n|': {
         a: {
           expr: '|{n}|',
-          how: 'Absolute value is the distance from 0. Count from 0 to the number.',
+          how: 'Absolute value is the distance from 0: the number without its sign.',
         },
         n: {
           expr: (v) => (v.n! < 0 ? '−{a}' : '{a}'),
@@ -1723,7 +1728,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           {
             id: 'd = distance',
             display: 'Distance from ({x1}, {y1}) to ({x2}, {y2}): {d}',
-            words: 'Distance between the two points = {d}',
+            words: 'Add or subtract the distances from 0 = {d}',
             check: (v: Values) =>
               v.y1 === v.y2 ? apartLine(v.x1!, v.x2!) : apartLine(v.y1!, v.y2!),
             vars: ['d', 'x1', 'y1', 'x2', 'y2'],
@@ -2371,12 +2376,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         h: {
           expr: '{e} ÷ {r}',
           how: 'Divide both sides by the pay per hour.',
-          work: (v) => [`${fmt(v.e!)} ÷ ${fmt(v.r!)} = h`],
+          work: (v) => [`h = ${fmt(v.e!)} ÷ ${fmt(v.r!)}`],
         },
         r: {
           expr: '{e} ÷ {h}',
           how: 'Divide both sides by the hours.',
-          work: (v) => [`${fmt(v.e!)} ÷ ${fmt(v.h!)} = r`],
+          work: (v) => [`r = ${fmt(v.e!)} ÷ ${fmt(v.h!)}`],
         },
       },
     },
@@ -2397,7 +2402,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.6.one-step-equations',
     notation: 'letters',
     assumptions: [
-      'An equation is a balance: do the same to both sides.',
+      'Do the same to both sides, and the two sides stay equal.',
       'Subtracting undoes adding.',
       'Check by putting the answer back in.',
     ],
@@ -2631,7 +2636,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'A diagonal cuts the trapezoid into two triangles with the same height.',
       'One triangle has the bottom base, the other the top base.',
-      'The two bases are the parallel sides.',
+      'The two bases are the parallel sides. It is the same area as ½ × (b₁ + b₂) × h.',
     ],
     variables: [
       { id: 'a', symbol: 'b₁', name: 'Bottom base', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
@@ -2755,7 +2760,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'T = ½ × w × r',
         display: '½ × {w} × {r} = {T}',
-        words: 'Half of width × roof height = triangle area',
+        words: 'Width × roof height ÷ 2 = triangle area',
         vars: ['T', 'w', 'r'],
         residual: (v: Values) => v.T! - 0.5 * v.w! * v.r!,
         solve: { T: (v: Values) => 0.5 * v.w! * v.r!, w: () => undefined, r: () => undefined },
@@ -2911,7 +2916,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           how: 'The front and back are length by height: two of them.',
         },
       },
-      'E = 2wh': { E: { expr: '2 × ({w} × {h})', how: 'The two ends are width by height.' } },
+      'E = 2wh': {
+        E: { expr: '2 × ({w} × {h})', how: 'The two ends are width by height: two of them.' },
+      },
       'S = T + F + E': {
         S: { expr: '{T} + {F} + {E}', how: 'Add the areas of all six faces.', written: false },
       },
@@ -3072,7 +3079,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'S = B + 4T': {
         S: {
           expr: '{B} + 4 × {T}',
-          how: 'The square and four matching triangles.',
+          how: 'Add the square base and the four matching triangles.',
           work: (v) => [
             `4 × ${fmt(v.T!)} = ${fmt(4 * v.T!)}`,
             `${fmt(v.B!)} + ${fmt(4 * v.T!)} = ${fmt(v.S!)}`,
@@ -3416,15 +3423,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     use: 'Use this for the range and the interquartile range from a box plot.',
     assumptions: [
       'The five numbers are in order: minimum, lower quartile, median, upper quartile, maximum.',
-      'Each of the four parts holds about a quarter of the data.',
+      'Each of the four parts holds about a quarter of the data: half the data is below the median.',
       'The interquartile range is the width of the box: the middle half of the data.',
     ],
     variables: [
-      { id: 'a', symbol: 'a', name: 'Minimum', min: 0, max: 100 },
-      { id: 'b', symbol: 'b', name: 'Lower quartile', min: 0, max: 100 },
-      { id: 'c', symbol: 'c', name: 'Median', min: 0, max: 100 },
-      { id: 'd', symbol: 'd', name: 'Upper quartile', min: 0, max: 100 },
-      { id: 'e', symbol: 'e', name: 'Maximum', min: 0, max: 100 },
+      { id: 'a', symbol: 'a', name: 'Minimum', min: 0, max: 100, step: 0.5 },
+      { id: 'b', symbol: 'b', name: 'Lower quartile', min: 0, max: 100, step: 0.5 },
+      { id: 'c', symbol: 'c', name: 'Median', min: 0, max: 100, step: 0.5 },
+      { id: 'd', symbol: 'd', name: 'Upper quartile', min: 0, max: 100, step: 0.5 },
+      { id: 'e', symbol: 'e', name: 'Maximum', min: 0, max: 100, step: 0.5 },
       { id: 'R', symbol: 'R', name: 'Range', min: 0, max: 100 },
       { id: 'I', symbol: 'I', name: 'Interquartile range', min: 0, max: 100 },
     ],

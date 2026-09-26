@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Svg, { G, Polygon, Rect } from 'react-native-svg';
+import Svg, { G, Line, Polygon, Rect } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
@@ -31,6 +31,8 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const known = rep.known(spec.length);
   const n = (x: number) => formatNumber(Number(x.toFixed(3)));
   const pyramid = spec.solid === 'squarePyramid';
+  const lengthUnit = rep.unit(spec.length);
+  const unit = lengthUnit ? ` ${lengthUnit}` : '';
 
   // Faces in net units: a box as a cross (back, top, front, bottom down the middle; the two
   // ends beside the top); a pyramid as its square base with a triangle on each side.
@@ -58,7 +60,8 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
       >
         <Canvas aspect={0.8}>
           {({ w, h }) => {
-            const pad = 16;
+            // Room around the net for the edge lengths.
+            const pad = 28;
             const s = Math.min((w - 2 * pad) / netW, (h - 2 * pad) / netH);
             const ox = (w - netW * s) / 2;
             const oy = (h - netH * s) / 2;
@@ -143,7 +146,15 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       stroke={c.chartInk}
                       strokeWidth={chart.strokeLight}
                     />
-                    {f.w * s > 34 && f.h * s > 18 ? label(f, n(f.area)) : null}
+                    {f.w * s > 34 && f.h * s > 18
+                      ? label(
+                          f,
+                          // "5 × 3 = 15" where it fits: the face's two edges times each other.
+                          f.w * s > 22 + 7 * `${n(f.w)} × ${n(f.h)} = ${n(f.area)}`.length
+                            ? `${n(f.w)} × ${n(f.h)} = ${n(f.area)}`
+                            : n(f.area),
+                        )
+                      : null}
                   </G>
                 ))}
                 {pyramid
@@ -168,6 +179,70 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {pyramid
                   ? label({ x: slant, y: slant * 0.35, w: L, h: slant * 0.6 }, n(triangle))
                   : null}
+                {pyramid ? (
+                  <G>
+                    {/* The triangle's height on its face, and the base side. */}
+                    <Line
+                      x1={X(slant + L / 2)}
+                      y1={Y(slant)}
+                      x2={X(slant + L / 2)}
+                      y2={Y(0)}
+                      stroke={c.chartInk}
+                      strokeDasharray={chart.dash}
+                    />
+                    <ChartText
+                      x={X(slant + L / 2) + 4}
+                      y={Y(slant * 0.2) + 4}
+                      fontSize={chart.tiny}
+                      fill={c.chartInk}
+                    >
+                      {`${n(slant)}${unit}`}
+                    </ChartText>
+                    <ChartText
+                      x={X(slant) + 4}
+                      y={Y(slant + L) - 6}
+                      fontSize={chart.tiny}
+                      fontWeight="700"
+                      fill={c.chartInk}
+                    >
+                      {`side ${n(L)}${unit}`}
+                    </ChartText>
+                  </G>
+                ) : (
+                  <G>
+                    {/* Edge lengths outside the net: length on the back, height beside it,
+                        width beside the end. */}
+                    <ChartText
+                      x={X(H + L / 2)}
+                      y={Y(0) - 6}
+                      fontSize={chart.tiny}
+                      fontWeight="700"
+                      fill={c.chartInk}
+                      textAnchor="middle"
+                    >
+                      {`length ${n(L)}${unit}`}
+                    </ChartText>
+                    <ChartText
+                      x={X(H) - 4}
+                      y={Y(H / 2) + 4}
+                      fontSize={chart.tiny}
+                      fontWeight="700"
+                      fill={c.chartInk}
+                      textAnchor="end"
+                    >
+                      {`height ${n(H)}${unit}`}
+                    </ChartText>
+                    <ChartText
+                      x={X(0)}
+                      y={Y(H + W) + 12}
+                      fontSize={chart.tiny}
+                      fontWeight="700"
+                      fill={c.chartInk}
+                    >
+                      {`width ${n(W)}${unit}`}
+                    </ChartText>
+                  </G>
+                )}
               </Svg>
             );
           }}

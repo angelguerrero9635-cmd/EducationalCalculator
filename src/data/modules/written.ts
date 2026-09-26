@@ -296,6 +296,46 @@ export function standardMultiply(a: number, b: number): Written | undefined {
 }
 
 /**
+ * Decimals by the standard algorithm (6.NS.3): multiply as whole numbers (235 × 14 = 3,290),
+ * then place the point by counting the decimal places in both factors (2 + 1 = 3: 3.290). The
+ * factors are written right-aligned with their points, as on paper.
+ */
+export function decimalMultiply(a: number, b: number): Written | undefined {
+  const places = (x: number) => (String(Number(x.toFixed(9))).split('.')[1] ?? '').length;
+  const [pa, pb] = [places(a), places(b)];
+  if (pa + pb === 0) return undefined;
+  const [A, B] = [Math.round(a * 10 ** pa), Math.round(b * 10 ** pb)];
+  // The factor with more digits goes on top; the other has at most two digits.
+  const swap = String(B).length > String(A).length;
+  const [top, bottom, pTop, pBottom] = swap ? [B, A, pb, pa] : [A, B, pa, pb];
+  const grid = standardMultiply(top, bottom);
+  const product = A * B;
+  if (!grid || String(product).length <= pa + pb || String(top).length <= pTop) return undefined;
+  if (pBottom > 0 && String(bottom).length <= pBottom) return undefined;
+  const isDigit = (x: WrittenCell) => /^\d$/.test(x.text) && !x.small;
+  /** Writes the point after the digit `k` places from the right ("2." "3" "5"). */
+  const point = (row: WrittenCell[], k: number) => {
+    if (k === 0) return row;
+    const at = row.map((x, i) => (isDigit(x) ? i : -1)).filter((i) => i >= 0);
+    const i = at[at.length - 1 - k];
+    return i === undefined ? row : row.map((x, j) => (j === i ? { ...x, text: `${x.text}.` } : x));
+  };
+  const rows = grid.rows.map((r) => r.slice());
+  const first = rows.findIndex((r) => r.some(isDigit) && !r.some((x) => x.small));
+  rows[first] = point(rows[first]!, pTop);
+  rows[first + 1] = point(rows[first + 1]!, pBottom);
+  // The last row is the product: its point goes pa + pb places from the right.
+  rows[rows.length - 1] = point(rows[rows.length - 1]!, pa + pb);
+  const fmt = (x: number) => String(Number(x.toFixed(9)));
+  return {
+    kind: 'grid',
+    rows,
+    width: grid.width,
+    says: `${fmt(a)} × ${fmt(b)} = ${fmt(Number((product / 10 ** (pa + pb)).toFixed(9)))}`,
+  };
+}
+
+/**
  * n ÷ d by partial quotients (Grade 4, 4.NBT.6): take away a place's worth of groups at a
  * time (600 is 100 sixes), each partial quotient written beside, and add them at the end.
  */

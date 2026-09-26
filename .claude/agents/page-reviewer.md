@@ -66,6 +66,11 @@ unclear what to type first; a control that surprises; typed numbers lost; pictur
 that don't match; no way to undo; can't tell the problem is solved. Rate: easy / OK with help /
 confusing.
 
+**Scenes and drags.** The evidence folder has `scenes/<id>-<n>.png` (every scene of every
+exploration) and `drags.md` (every handle dragged, the values before and after). Read them
+before opening a browser: check each scene shows what its lines say, and each drag keeps the
+relations true (a point stays on its line, a total still adds up).
+
 **Q. What each number means (student).** Read every label on the page, the picture's too, as
 a sentence: "Beakers with 1/8 L: 2" says two beakers; "At 1/8 L: 2" reads as two liters. Report
 a count labelled like an amount, an amount with a count's name, or an answer in pieces where

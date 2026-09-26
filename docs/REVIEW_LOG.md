@@ -24,11 +24,18 @@ script. One entry per review, with the token cost, so the next review is cheaper
   shoot every explore scene and drag every handle, printing the values after.
 - Evidence gaps the lesson reviewers named: no walkthrough where a starting value is the
   unknown (find the whole, find the base); they read those from code.
-- Left for later (logged, not blocking): decimal standard-algorithm grids (the grid must end
-  at the decimal answer), registry units on the speed page (the double number line needs
-  unit-aware labels), net edge labels, histogram bars that touch, a vertical density column,
-  dragging the graduated cylinder, named organs on the body figure, front symbols, a climate
-  clue on Pangaea.
+- Left for later, now done: decimal multiplication set out by the standard algorithm with the
+  points placed (2.35 × 1.4 → 3.290); the speed page in km or miles (the double number line
+  spaces its lines from the two readings); net edges and face products (5 × 3 = 15); histogram
+  bars that touch, with a count scale; the density column stacked in a jar from the bottom up;
+  the graduated cylinder's levels dragged; each lit organ named on the body; weather-map front
+  symbols and rain under a low; rain, droplets and a muted river in the water cycle; flow
+  arrows in the mantle, "seen from above" and "continent" labels on the plates; every buried
+  rock melting and rising in the rock cycle; a climate clue on Pangaea; and the smaller wording
+  suggestions of both lesson reviewers.
+- Evidence: `scripts/review-interact.mjs` (run by `review-evidence.mjs`) saves every scene of
+  every exploration and drags every handle, writing the values before and after to
+  `drags.md`.
 
 ## Owner finding: a count read as an amount (line plots, Grades 2–5)
 

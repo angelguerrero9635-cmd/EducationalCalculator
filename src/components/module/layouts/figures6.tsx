@@ -347,6 +347,17 @@ const SYSTEM_NAMES: Record<string, string> = {
   excretory: 'excretory',
 };
 
+/** Where each system's organ is drawn (body units), for its label's leader line. */
+const ORGAN_AT: Record<string, [number, number]> = {
+  nervous: [4, 6],
+  respiratory: [9, 28],
+  circulatory: [4, 32],
+  digestive: [4, 40],
+  excretory: [7, 44],
+  muscular: [8, 66],
+  skeletal: [8, 82],
+};
+
 export function BodyFigure({ body, c }: { body: NonNullable<Scene['body']>; c: Palette }) {
   const lit = (s: string) => body.systems.includes(s as never);
   const stroke = (s: string) => (lit(s) ? c.chartHighlight : c.chartMuted);
@@ -390,6 +401,26 @@ export function BodyFigure({ body, c }: { body: NonNullable<Scene['body']>; c: P
                 stroke={stroke('skeletal')}
                 strokeWidth={lit('skeletal') ? 3 : 2}
                 strokeDasharray="6 2"
+                fill="none"
+              />
+              {/* The skull and the ribs. */}
+              <Circle
+                cx={X(0)}
+                cy={Y(9)}
+                r={6 * u}
+                fill="none"
+                stroke={stroke('skeletal')}
+                strokeWidth={lit('skeletal') ? 2.5 : 1.5}
+              />
+              <Path
+                d={[0, 1, 2, 3, 4]
+                  .map(
+                    (i) =>
+                      `M ${X(-9)} ${Y(24 + i * 4)} Q ${X(0)} ${Y(20 + i * 4)} ${X(9)} ${Y(24 + i * 4)}`,
+                  )
+                  .join(' ')}
+                stroke={stroke('skeletal')}
+                strokeWidth={lit('skeletal') ? 2 : 1.25}
                 fill="none"
               />
             </G>
@@ -509,19 +540,29 @@ export function BodyFigure({ body, c }: { body: NonNullable<Scene['body']>; c: P
                 strokeWidth={chart.stroke}
               />
             </G>
-            {listed.map((s, i) => (
-              <ChartText
-                key={s}
-                x={w - 10}
-                y={20 + i * 18}
-                fontSize={chart.label}
-                fontWeight="700"
-                fill={c.chartHighlight}
-                textAnchor="end"
-              >
-                {SYSTEM_NAMES[s]!}
-              </ChartText>
-            ))}
+            {/* Each lit system named beside its own organ, with a leader line. */}
+            {listed
+              .map((sys) => ({ sys, at: ORGAN_AT[sys]! }))
+              .sort((a, b) => a.at[1] - b.at[1])
+              .reduce<{ sys: string; at: [number, number]; y: number }[]>((out, t) => {
+                const last = out[out.length - 1];
+                const y = Math.max(Y(t.at[1]) + 4, last ? last.y + 16 : 0);
+                return [...out, { ...t, y }];
+              }, [])
+              .map((t) => (
+                <Tag
+                  key={t.sys}
+                  x={X(t.at[0])}
+                  y={Y(t.at[1])}
+                  // The name ends at the right edge; the line reaches its first letter.
+                  tx={w - 8 - SYSTEM_NAMES[t.sys]!.length * chart.small * 0.56}
+                  ty={t.y}
+                  text={SYSTEM_NAMES[t.sys]!}
+                  on
+                  c={c}
+                  anchor="start"
+                />
+              ))}
           </Svg>
         );
       }}
@@ -633,12 +674,55 @@ export function WaterCycleFigure({ water, c }: { water: NonNullable<Scene['water
               stroke={c.chartInk}
               strokeWidth={1}
             />
+            {/* The river: lit only when runoff is the step shown. */}
             <Path
               d={`M ${w * 0.66} ${ground} Q ${w * 0.5} ${ground - 4} ${sea} ${ground}`}
-              stroke={c.chartHighlight}
+              stroke={on('runoff') ? c.chartHighlight : c.chartMuted}
               strokeWidth={3}
               fill="none"
             />
+            {on('precipitation') ? (
+              // Rain falling from the cloud.
+              <G>
+                {[-30, -18, -6, 6, 18].map((dx) => (
+                  <Line
+                    key={`rain${dx}`}
+                    x1={cloud.x + dx}
+                    y1={cloud.y + 16}
+                    x2={cloud.x + dx - 5}
+                    y2={cloud.y + 34}
+                    stroke={c.chartHighlight}
+                    strokeWidth={1.5}
+                  />
+                ))}
+              </G>
+            ) : null}
+            {on('condensation') ? (
+              // Droplets forming on dust in the cooling air, and the cloud outlined heavy.
+              <G>
+                <Path
+                  d={`M ${cloud.x - 40} ${cloud.y + 10} q 0 -18 18 -16 q 8 -16 26 -8 q 20 -6 22 12 q 14 2 10 12 z`}
+                  fill="none"
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.strokeHeavy}
+                />
+                {[
+                  [-24, 2],
+                  [-10, -6],
+                  [4, 0],
+                  [18, 4],
+                  [-2, 8],
+                ].map(([dx, dy]) => (
+                  <Circle
+                    key={`drop${dx}`}
+                    cx={cloud.x + dx!}
+                    cy={cloud.y + dy!}
+                    r={2}
+                    fill={c.chartHighlight}
+                  />
+                ))}
+              </G>
+            ) : null}
             <Line
               x1={w * 0.46}
               y1={ground}
@@ -745,12 +829,25 @@ export function FrontFigure({ front, c }: { front: NonNullable<Scene['front']>; 
                 />
               ))}
               {low ? (
-                <Path
-                  d={`M ${cx - 80} 56 q 0 -26 26 -22 q 14 -22 40 -10 q 30 -10 34 16 q 22 4 14 22 z`}
-                  fill={c.chartSurface}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.strokeLight}
-                />
+                <G>
+                  <Path
+                    d={`M ${cx - 80} 56 q 0 -26 26 -22 q 14 -22 40 -10 q 30 -10 34 16 q 22 4 14 22 z`}
+                    fill={c.chartSurface}
+                    stroke={c.chartInk}
+                    strokeWidth={chart.strokeLight}
+                  />
+                  {[-70, -56, -42, 14, 28].map((dx) => (
+                    <Line
+                      key={`r${dx}`}
+                      x1={cx + dx}
+                      y1={64}
+                      x2={cx + dx - 6}
+                      y2={84}
+                      stroke={c.chartMuted}
+                      strokeWidth={1.5}
+                    />
+                  ))}
+                </G>
               ) : (
                 <Sun x={w - 40} y={36} c={c} />
               )}
@@ -908,6 +1005,39 @@ export function FrontFigure({ front, c }: { front: NonNullable<Scene['front']>; 
                 />
               </G>
             )}
+            {/* How the front is drawn on a weather map: triangles (cold), half circles
+                (warm) or both, on the side the front moves toward. */}
+            <G>
+              <ChartText x={10} y={16} fontSize={chart.tiny} fill={c.chartInk}>
+                on a weather map:
+              </ChartText>
+              <Line
+                x1={10}
+                y1={34}
+                x2={110}
+                y2={34}
+                stroke={c.chartInk}
+                strokeWidth={chart.stroke}
+              />
+              {[0, 1, 2, 3].map((i) => {
+                const x = 22 + i * 26;
+                const tri = type === 'cold' || (type === 'stationary' && i % 2 === 0);
+                const up = type !== 'stationary' || i % 2 === 0;
+                return tri ? (
+                  <Path
+                    key={`sym${i}`}
+                    d={`M ${x - 6} 34 L ${x + 6} 34 L ${x} ${up ? 25 : 43} Z`}
+                    fill={c.chartInk}
+                  />
+                ) : (
+                  <Path
+                    key={`sym${i}`}
+                    d={`M ${x - 6} 34 A 6 6 0 0 ${up ? 1 : 0} ${x + 6} 34 Z`}
+                    fill={c.chartInk}
+                  />
+                );
+              })}
+            </G>
             <Line
               x1={0}
               y1={ground}
@@ -1166,6 +1296,19 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
                 c={c}
                 color={c.chartInk}
               />,
+              <ChartText key="cl" x={10} y={top + 20} fontSize={chart.tiny} fill={c.chartInk}>
+                continent
+              </ChartText>,
+              <ChartText
+                key="cr"
+                x={w - 10}
+                y={top + 20}
+                fontSize={chart.tiny}
+                fill={c.chartInk}
+                textAnchor="end"
+              >
+                continent
+              </ChartText>,
             );
             break;
           case 'transform':
@@ -1236,6 +1379,18 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
               >
                 fault
               </ChartText>,
+              // The only view from above among the side views: say so.
+              <ChartText
+                key="above"
+                x={w - 22}
+                y={14}
+                fontSize={chart.tiny}
+                fontWeight="700"
+                fill={c.chartInk}
+                textAnchor="end"
+              >
+                seen from above
+              </ChartText>,
             );
             break;
         }
@@ -1256,6 +1411,34 @@ export function PlatesFigure({ plates, c }: { plates: NonNullable<Scene['plates'
               strokeWidth={chart.strokeLight}
               strokeDasharray={chart.dash}
               fill="none"
+            />,
+            // Which way the rock flows: hot rock rises under the ridge, cooler rock sinks.
+            <Arrow
+              key="rise"
+              x1={mid}
+              y1={h - 16}
+              x2={mid}
+              y2={top + crust + 14}
+              c={c}
+              color={c.chartHighlight}
+            />,
+            <Arrow
+              key="sinkL"
+              x1={mid - 140}
+              y1={top + crust + 26}
+              x2={mid - 140}
+              y2={h - 22}
+              c={c}
+              color={c.chartHighlight}
+            />,
+            <Arrow
+              key="sinkR"
+              x1={mid + 140}
+              y1={top + crust + 26}
+              x2={mid + 140}
+              y2={h - 22}
+              c={c}
+              color={c.chartHighlight}
             />,
           );
         }
@@ -1359,7 +1542,8 @@ export function ContinentsFigure({
               const lit =
                 (clue === 'fossils' && (id === 'sa' || id === 'af')) ||
                 (clue === 'rocks' && (id === 'na' || id === 'eu')) ||
-                (clue === 'shapes' && (id === 'sa' || id === 'af'));
+                (clue === 'shapes' && (id === 'sa' || id === 'af')) ||
+                (clue === 'climate' && ['sa', 'af', 'in', 'au', 'an'].includes(id));
               return (
                 <Path
                   key={`land-${id}`}
@@ -1432,6 +1616,30 @@ export function ContinentsFigure({
                 </ChartText>
               </G>
             ) : null}
+            {clue === 'climate' ? (
+              <G>
+                <Ellipse
+                  cx={(X('af', 10) + X('an', 14)) / 2}
+                  cy={(Y('af', 28) + Y('an', 2)) / 2}
+                  rx={24 * k}
+                  ry={10 * k}
+                  fill="none"
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.stroke}
+                  strokeDasharray={chart.dash}
+                />
+                <ChartText
+                  x={X('an', 17)}
+                  y={Y('an', 8) + 14}
+                  fontSize={chart.small}
+                  fontWeight="700"
+                  fill={c.chartHighlight}
+                  textAnchor="middle"
+                >
+                  one ice sheet; coal in Antarctica
+                </ChartText>
+              </G>
+            ) : null}
             {clue === 'shapes'
               ? (['sa', 'af'] as const).map((id) => (
                   <Path
@@ -1473,7 +1681,12 @@ const ROCK_BOXES = {
 } as const;
 type RockBox = keyof typeof ROCK_BOXES;
 const ROCK_STEPS: Record<string, { from: RockBox; to: RockBox; heat: boolean }[]> = {
-  melting: [{ from: 'metamorphic', to: 'magma', heat: true }],
+  // Any rock buried deep enough melts.
+  melting: [
+    { from: 'metamorphic', to: 'magma', heat: true },
+    { from: 'sedimentary', to: 'magma', heat: true },
+    { from: 'igneous', to: 'magma', heat: true },
+  ],
   cooling: [{ from: 'magma', to: 'igneous', heat: true }],
   // Rock at the surface breaks down; uplift is its own step that brings buried rock up.
   weathering: [{ from: 'surface', to: 'sediment', heat: false }],
@@ -1485,6 +1698,7 @@ const ROCK_STEPS: Record<string, { from: RockBox; to: RockBox; heat: boolean }[]
   uplift: [
     { from: 'igneous', to: 'surface', heat: true },
     { from: 'metamorphic', to: 'surface', heat: true },
+    { from: 'sedimentary', to: 'surface', heat: true },
   ],
 };
 

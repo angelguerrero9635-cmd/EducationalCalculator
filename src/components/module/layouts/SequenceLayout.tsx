@@ -80,12 +80,13 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
       </View>
       {hint ? <Text style={[styles.hint, { color: c.textMuted }]}>{hint}</Text> : null}
       {/* The strip so far. */}
-      <View style={styles.strip}>
+      <View style={[styles.strip, spec.stack && [styles.jar, { borderColor: c.chartInk }]]}>
         {spec.stages.map((stage, i) => (
           <View
             key={stage.label}
             style={[
               styles.slot,
+              spec.stack && styles.layer,
               {
                 borderColor: i < placed ? c.chartInk : c.chartGrid,
                 backgroundColor: i < placed ? c.chartFill : c.surface,
@@ -171,6 +172,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 2,
   },
+  // A jar: the first stage at the bottom, each one above the last.
+  jar: {
+    flexDirection: 'column-reverse',
+    flexWrap: 'nowrap',
+    alignSelf: 'center',
+    width: 240,
+    padding: space.sm,
+    borderWidth: 2,
+    borderTopWidth: 0,
+    borderBottomLeftRadius: radius.md,
+    borderBottomRightRadius: radius.md,
+    gap: 4,
+  },
+  layer: { maxWidth: '100%', minHeight: 48, flexBasis: 'auto', flexGrow: 0 },
   slotNumber: { fontSize: font.caption, fontWeight: '600' },
   slotText: { fontSize: font.body - 1, fontWeight: '600', textAlign: 'center' },
   span: { fontSize: font.caption + 1, fontVariant: ['tabular-nums'] },

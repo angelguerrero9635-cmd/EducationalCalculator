@@ -139,6 +139,8 @@ export interface SequenceLayout extends LayoutBase {
   unit?: string;
   /** Label of the sum of the spans ("Whole cycle"). */
   totalLabel?: string;
+  /** The stages stack from the bottom up, in a jar (liquids by density), not left to right. */
+  stack?: boolean;
 }
 
 /** What an explore figure can show; a scene sets one of these. */
@@ -286,7 +288,7 @@ export interface Scene {
     mantle?: boolean;
   };
   /** Millions of years ago, and the clue shown (a `continents` figure). */
-  continents?: { age: 250 | 150 | 0; clue?: 'fossils' | 'rocks' | 'shapes' };
+  continents?: { age: 250 | 150 | 0; clue?: 'fossils' | 'rocks' | 'shapes' | 'climate' };
   /** The process lit (a `rockCycle` figure). */
   rock?: {
     process: 'melting' | 'cooling' | 'weathering' | 'deposition' | 'metamorphism' | 'uplift';
@@ -314,6 +316,8 @@ export interface ObserveLayout extends LayoutBase {
   initial: number[];
   /** The pattern in a sentence, from the current values. */
   pattern: (values: number[]) => string;
+  /** Columns are intervals of one number line: the bars touch, with a count scale beside. */
+  histogram?: boolean;
 }
 
 export type LayoutDef = SortLayout | SequenceLayout | ExploreLayout | ObserveLayout;

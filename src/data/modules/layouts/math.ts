@@ -3682,6 +3682,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'The intervals are the same width and don’t overlap.',
       'Change the bars to see where most of the data is.',
     ],
+    histogram: true,
     columns: ['0–9', '10–19', '20–29', '30–39', '40–49'],
     rowLabel: 'Students',
     unit: 'students',

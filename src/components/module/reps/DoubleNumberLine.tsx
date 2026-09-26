@@ -21,8 +21,15 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef(0);
-  const per = rep.known(spec.per) ? rep.shown(spec.per) : 0;
   const top = Math.max(0, rep.shown(spec.top));
+  // Bottom units for each top unit, in the units shown: read from the two readings when both
+  // are known, so kilometers over hours still line up when the speed is shown in mph.
+  const per =
+    rep.known(spec.top) && rep.known(spec.bottom) && top > 0
+      ? rep.shown(spec.bottom) / top
+      : rep.known(spec.per)
+        ? rep.shown(spec.per)
+        : 0;
   const known = rep.known(spec.top) && rep.known(spec.per);
   // Whole top units drawn: the spec's count, or enough for the value.
   const N = Math.max(spec.ticks, Math.ceil(top));

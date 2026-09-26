@@ -8,6 +8,8 @@
 //   harness.txt     the sampling harness report for the section (SAMPLING_REPORT=1)
 //   shots/          full-page screenshots at 390 px for every module, plus a few at 1024 px
 //                   and a few in dark mode, with the layout checks (review-shots.mjs)
+//   scenes/         every scene of every exploration; drags.md: every handle dragged, with
+//                   the values before and after (review-interact.mjs)
 //   evidence.md     an index: module ids, the files, and any problems the scripts flagged
 // Needs a web build (pnpm build:web) and the globally installed Playwright (NODE_PATH).
 import { spawnSync } from 'node:child_process';
@@ -106,6 +108,14 @@ const blocks = new Map();
   }
 }
 
+// 3a. Every exploration scene and every drag handle (review-interact.mjs).
+const interact = run('scenes and drags', 'node', [
+  'scripts/review-interact.mjs',
+  '--out',
+  out,
+  ...ids,
+]);
+
 // 3b. Picture kinds: one line per module, and contact sheets with one page per kind (9 per
 // sheet) so the page reviewer sees every kind in a few image opens.
 const dump = readFileSync(join(out, 'dump.txt'), 'utf8');
@@ -173,6 +183,7 @@ writeFileSync(
     `- Walkthroughs: ${join(out, 'dump.txt')} (grep "=== <id>" for one module)`,
     `- Harness: ${join(out, 'harness.txt')} — ${failures.length} error lines`,
     `- Screenshots: ${join(out, 'shots')}/<id>-390.png (all), -1024.png (first ${wide}), dark for the first ${dark}`,
+    `- Scenes and drags: ${join(out, 'scenes')}/<id>-<n>.png, ${join(out, 'drags.md')} (${interact.trim().split('\n').pop()})`,
     `- Contact sheets: ${join(out, 'sheets')}/sheet<n>.png, one page per picture kind (${sheets.trim().split('\n').pop()})`,
     '',
     '## Flagged by the scripts',

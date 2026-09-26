@@ -24,7 +24,23 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
   };
   return (
     <View style={styles.wrap}>
-      <View style={styles.chart}>
+      <View style={[styles.chart, spec.histogram && styles.touching]}>
+        {spec.histogram ? (
+          // The count scale: 0, half and the top, level with the bars.
+          <View style={styles.scale}>
+            {[0, spec.max / 2, spec.max].map((v) => (
+              <Text
+                key={v}
+                style={[
+                  styles.scaleText,
+                  { color: c.textMuted, bottom: (v / spec.max) * (CHART_HEIGHT - 24) - 6 },
+                ]}
+              >
+                {v}
+              </Text>
+            ))}
+          </View>
+        ) : null}
         {values.map((x, i) => (
           <View
             key={spec.columns[i]}
@@ -35,7 +51,11 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
             // The column takes the touch itself, so the tap's height is measured in it.
             onStartShouldSetResponder={() => true}
             onResponderGrant={(e) => setAt(i, e.nativeEvent.locationY, CHART_HEIGHT)}
-            style={[styles.column, { borderBottomColor: c.chartInk }]}
+            style={[
+              styles.column,
+              spec.histogram && styles.wideColumn,
+              { borderBottomColor: c.chartInk },
+            ]}
           >
             <Text pointerEvents="none" style={[styles.value, { color: c.text }]}>
               {x}
@@ -44,6 +64,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
               pointerEvents="none"
               style={[
                 styles.bar,
+                spec.histogram && styles.histogramBar,
                 {
                   height: Math.max(2, (x / spec.max) * (CHART_HEIGHT - 24)),
                   backgroundColor: c.chartHighlight,
@@ -54,7 +75,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
           </View>
         ))}
       </View>
-      <View style={styles.labels}>
+      <View style={[styles.labels, spec.histogram && styles.touchingLabels]}>
         {spec.columns.map((col) => (
           <Text key={col} style={[styles.label, { color: c.text }]}>
             {col}
@@ -134,6 +155,18 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
+  // A histogram's intervals meet: no gaps between the bars.
+  touching: { gap: 0, paddingLeft: 28 },
+  touchingLabels: { gap: 0, paddingLeft: 28 },
+  wideColumn: { maxWidth: 64 },
+  histogramBar: { width: '100%', borderRadius: 0 },
+  scale: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 24 },
+  scaleText: {
+    position: 'absolute',
+    right: 2,
+    fontSize: font.caption,
+    fontVariant: ['tabular-nums'],
+  },
   // Six columns and the row label share a phone's width: less padding, smaller type.
   tight: { paddingHorizontal: 1, fontSize: font.caption - 1 },
 });
