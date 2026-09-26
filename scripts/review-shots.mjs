@@ -86,9 +86,11 @@ try {
       // A college topic ("<courseId>#<index>") lives on the course's topic page.
       const [courseId, topicIndex] = id.split('#');
       await page.goto(
-        topicIndex === undefined
-          ? `${base}/skill/${encodeURIComponent(id)}`
-          : `${base}/course/${encodeURIComponent(courseId)}/topic/${topicIndex}`,
+        id.startsWith('g.')
+          ? `${base}/gallery/${encodeURIComponent(id)}`
+          : topicIndex === undefined
+            ? `${base}/skill/${encodeURIComponent(id)}`
+            : `${base}/course/${encodeURIComponent(courseId)}/topic/${topicIndex}`,
       );
       await page.waitForLoadState('networkidle');
       await page.waitForTimeout(300);

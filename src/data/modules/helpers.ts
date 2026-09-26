@@ -23,6 +23,27 @@ import {
 
 export { div, whole };
 
+/** Whether n is prime (2 or more, no factor but 1 and itself). */
+export const isPrime = (n: number) => {
+  if (n < 2 || !Number.isInteger(n)) return false;
+  for (let k = 2; k * k <= n; k++) if (n % k === 0) return false;
+  return true;
+};
+
+/** The prime factors of n with repeats, smallest first: 24 → [2, 2, 2, 3]. */
+export function primeFactors(n: number): number[] {
+  const out: number[] = [];
+  let m = Math.round(n);
+  for (let p = 2; p * p <= m; p++) {
+    while (m % p === 0) {
+      out.push(p);
+      m /= p;
+    }
+  }
+  if (m > 1) out.push(m);
+  return out;
+}
+
 /** Temperature label for K–3 (a fixed label: the unit system doesn't convert it). */
 export const FAHRENHEIT = '°F';
 

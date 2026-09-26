@@ -71,8 +71,28 @@ other picture text with `rep.early` in mind.
 | Circuits                                   | Circuit diagram or I–V graph                                     |
 | Processes with no formula                  | Labeled diagram or table, with a counting model if one is honest |
 
+Kinds built ahead of the sections that need them (see them at `/gallery`, one page per kind,
+with a demo module each in `src/data/modules/gallery.ts`; the gallery is not in the taxonomy,
+search or the sitemap, but the module tests and the harness run over it):
+
+| Kind               | Shows                                                                 | For                                 |
+| ------------------ | --------------------------------------------------------------------- | ----------------------------------- |
+| `doubleNumberLine` | two lined-up number lines, a mark joining a reading on each           | conversions, ratios, rates, percent |
+| `coordinatePlane`  | a point to drag; a second point with the line and a rise/run triangle | Grade 5 points, Grade 6–8 slope     |
+| `boxPlot`          | the five-number summary on a number line, each mark draggable         | Grade 6 statistics                  |
+| `pieChart`         | wedges by percent (or counts of a total)                              | percent, data in science            |
+| `fractionArea`     | a square cut in columns and rows, the overlap of two fractions        | Grade 5 fraction × fraction         |
+| `unitCubes`        | a box of unit cubes drawn in layers                                   | Grade 5 volume                      |
+| `placeValueChart`  | digits in labelled columns, the point between ones and tenths         | Grade 5 decimals and powers of ten  |
+| `factorTree`       | a number split down to circled primes                                 | Grade 4 primes, Grade 6 GCF and LCM |
+| `protractor`       | both scales, an arm to drag                                           | Grade 4 measuring angles            |
+| `wave`             | crests and troughs with wavelength (and amplitude) marked             | Grade 4 and 8 waves, physics        |
+| `punnettSquare`    | two parents' alleles and the four offspring boxes                     | Grade 7 heredity, biology           |
+
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
-forcing an existing one.
+forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
+a name in `meta.ts`, its variables in `modules.test.ts`, a check in the harness's `repIssues`,
+and a lesson that uses it, or a gallery module until one exists.
 
 ## Units
 

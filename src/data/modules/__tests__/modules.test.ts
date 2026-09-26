@@ -4,7 +4,7 @@ import { makeUnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 import { resolveItem } from '@/data/selectors';
 
-import { getModule, moduleOwner, MODULES } from '..';
+import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 
@@ -104,6 +104,43 @@ function representationVars(r: Representation): string[] {
       return [...r.top, ...r.side, ...r.parts.flat(), r.total];
     case 'angles':
       return [...r.parts, r.whole, ...(r.sliders ?? [])];
+    case 'doubleNumberLine':
+      return [r.top, r.bottom, r.per];
+    case 'coordinatePlane':
+      return [
+        r.x,
+        r.y,
+        ...(r.second ? [r.second.x, r.second.y] : []),
+        ...(r.slope ? [r.slope] : []),
+      ];
+    case 'boxPlot':
+      return [r.min, r.q1, r.median, r.q3, r.max];
+    case 'pieChart':
+      return [...r.parts, ...(r.total ? [r.total] : [])];
+    case 'fractionArea':
+      return [
+        r.first.num,
+        r.first.den,
+        r.second.num,
+        r.second.den,
+        ...(r.product ? [r.product.num, r.product.den] : []),
+      ];
+    case 'unitCubes':
+      return [r.length, r.width, r.height, r.volume];
+    case 'placeValueChart':
+      return [r.value];
+    case 'factorTree':
+      return [r.value, ...(r.count ? [r.count] : [])];
+    case 'protractor':
+      return [r.angle, ...(r.other ? [r.other] : [])];
+    case 'wave':
+      return [
+        ...(r.amplitude ? [r.amplitude] : []),
+        r.wavelength,
+        ...(r.frequency ? [r.frequency] : []),
+      ];
+    case 'punnettSquare':
+      return [r.first, r.second, r.dominant, ...(r.recessive ? [r.recessive] : [])];
     case 'ruler':
       return [
         ...r.lengths,
@@ -162,10 +199,14 @@ function subsets<T>(items: readonly T[], k: number): T[][] {
 
 const close = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * (1 + Math.abs(b));
 
-describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s', (_, m) => {
+describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s', (_, m) => {
   const ids = m.variables.map((v) => v.id);
 
+  // The picture gallery's demonstrations (g.*) have no skill and carry their own title.
+  const gallery = m.id.startsWith('g.');
+
   it('belongs to a skill or course topic in the taxonomy', () => {
+    if (gallery) return;
     expect(resolveItem(moduleOwner(m.id))).toBeDefined();
     // Extra modules for a skill need a title for the switcher.
     if (m.id.includes('~')) expect(m.title).toBeTruthy();
@@ -182,6 +223,7 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
   });
 
   it('has a title only when it is a problem type (main lessons use the skill title)', () => {
+    if (gallery) return;
     expect(m.id.includes('~') ? !!m.title : m.title === undefined).toBe(true);
   });
 
@@ -280,42 +322,45 @@ it('module ids are unique', () => {
   expect(new Set(MODULES.map((m) => m.id)).size).toBe(MODULES.length);
 });
 
-describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('steps for %s', (_, m) => {
-  it('explain every rearrangement, using only that relation’s variables', () => {
-    expect(Object.keys(m.steps).sort()).toEqual(m.relations.map((r) => r.id).sort());
-    for (const r of m.relations) {
-      const texts = m.steps[r.id]!;
-      const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
-      expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
-      for (const text of Object.values(texts)) {
-        const how = typeof text.how === 'function' ? text.how(m.example) : text.how;
-        const expr = typeof text.expr === 'function' ? text.expr(m.example) : text.expr;
-        expect(how.length).toBeGreaterThan(10);
-        const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);
-        expect(used.filter((id) => !r.vars.includes(id))).toEqual([]);
+describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
+  'steps for %s',
+  (_, m) => {
+    it('explain every rearrangement, using only that relation’s variables', () => {
+      expect(Object.keys(m.steps).sort()).toEqual(m.relations.map((r) => r.id).sort());
+      for (const r of m.relations) {
+        const texts = m.steps[r.id]!;
+        const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
+        expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
+        for (const text of Object.values(texts)) {
+          const how = typeof text.how === 'function' ? text.how(m.example) : text.how;
+          const expr = typeof text.expr === 'function' ? text.expr(m.example) : text.expr;
+          expect(how.length).toBeGreaterThan(10);
+          const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);
+          expect(used.filter((id) => !r.vars.includes(id))).toEqual([]);
+        }
       }
-    }
-  });
+    });
 
-  it('walk from the opening values to every other value, and the check balances', () => {
-    const result = solve(
-      m,
-      m.startWith.map((id) => ({ id, value: m.example[id]! })),
-    );
-    const w = buildSteps(m, result);
-    expect(w.given.map((q) => q.id)).toEqual(m.startWith);
-    expect([...w.steps.map((s) => s.id), ...m.startWith].sort()).toEqual(
-      m.variables.map((v) => v.id).sort(),
-    );
-    for (const s of w.steps) {
-      expect(s.rearranged).toBeDefined();
-      expect(s.substituted ?? '').not.toContain('?');
-    }
-    expect(w.missing).toEqual([]);
-    expect(w.check.length).toBe(m.relations.length);
-    expect(w.check.every((c) => c.ok)).toBe(true);
-  });
-});
+    it('walk from the opening values to every other value, and the check balances', () => {
+      const result = solve(
+        m,
+        m.startWith.map((id) => ({ id, value: m.example[id]! })),
+      );
+      const w = buildSteps(m, result);
+      expect(w.given.map((q) => q.id)).toEqual(m.startWith);
+      expect([...w.steps.map((s) => s.id), ...m.startWith].sort()).toEqual(
+        m.variables.map((v) => v.id).sort(),
+      );
+      for (const s of w.steps) {
+        expect(s.rearranged).toBeDefined();
+        expect(s.substituted ?? '').not.toContain('?');
+      }
+      expect(w.missing).toEqual([]);
+      expect(w.check.length).toBe(m.relations.length);
+      expect(w.check.every((c) => c.ok)).toBe(true);
+    });
+  },
+);
 
 it('writes the number sentence with ? for the number found (K–2 steps)', () => {
   const m = MODULES.find((x) => x.id === 'm.K.add-sub-10')!;

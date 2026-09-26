@@ -43,7 +43,7 @@ const urls = walk(DIST)
   .filter((rel) => rel.endsWith('.html'))
   .map((rel) => '/' + rel.replace(/(^|\/)index\.html$/, '').replace(/\.html$/, ''))
   .map((path) => (path.length > 1 ? path.replace(/\/$/, '') : path))
-  .filter((path) => !UNLISTED.has(path))
+  .filter((path) => !UNLISTED.has(path) && !path.startsWith('/gallery'))
   .sort();
 
 const xmlEscape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

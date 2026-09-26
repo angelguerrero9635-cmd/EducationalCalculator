@@ -5,6 +5,22 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Picture kinds built ahead (before Grade 5 and Sections 3–8)
+
+Eleven diagram kinds written before the lessons that need them, each with its spec, harness
+check and test coverage: double number line, coordinate plane (point, second point, line and
+rise/run), box plot, pie chart, fraction × fraction area, unit cubes in layers, place-value
+chart, factor tree, protractor, wave, Punnett square. Three are on Grade 4 pages now (factor
+tree, double number line, protractor); the rest live in a picture gallery (`/gallery`, one
+demo module per kind in `gallery.ts`) that the module tests, the harness, the shots script
+and the slider test all cover, so a kind is reviewed before its first lesson. Lessons from
+building them: a kind whose variables don't connect through a formula (a wave's amplitude
+beside speed = frequency × wavelength) makes the demo two lessons, so the amplitude is
+optional on the picture; a phrase in the harness ("prime factors of") must come before a
+shorter phrase it contains ("factors of"); a product with a zero factor (a Punnett parent
+with no dominant allele) is determined but not solvable pairwise, so parents take `allowed`
+values.
+
 ## Slider sweep (all sections)
 
 `scripts/test-sliders.mjs` drove all 235 sliders on the 110 module pages that have them

@@ -60,6 +60,17 @@ const PICTURE_NAMES: Record<string, string> = {
   pushes: 'pushes on a box',
   areaModel: 'area model',
   angles: 'angles',
+  doubleNumberLine: 'double number line',
+  coordinatePlane: 'coordinate plane',
+  boxPlot: 'box plot',
+  pieChart: 'pie chart',
+  fractionArea: 'fraction area model',
+  unitCubes: 'box of unit cubes',
+  placeValueChart: 'place-value chart',
+  factorTree: 'factor tree',
+  protractor: 'protractor',
+  wave: 'wave',
+  punnettSquare: 'Punnett square',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

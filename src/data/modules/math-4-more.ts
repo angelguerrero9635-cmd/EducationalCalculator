@@ -8,7 +8,7 @@ import type { Values } from '@/engine/types';
 
 import { formatNumber } from '@/engine/format';
 
-import { apart, times } from './helpers';
+import { apart, primeFactors, times } from './helpers';
 import { div, whole } from './math-k2';
 import type { ModuleDef } from './types';
 import { addAll, addStrategy, divideWork, placeTimesWork, timesWork } from './work';
@@ -53,6 +53,50 @@ const partProduct = (p: string, a: string, b: string, [an, bn]: [string, string]
 });
 
 export const MATH_4_MORE_MODULES: ModuleDef[] = [
+  // ── Prime factors on a factor tree (4.OA.4) ──
+  {
+    id: 'm.4.factors-multiples~factor-tree',
+    title: 'Factor tree',
+    assumptions: [
+      'Split a number into two factors. Split each factor again until every branch is prime.',
+      'The primes at the ends multiply back to the number: 24 = 2 × 2 × 2 × 3.',
+      'A prime number has no split: its tree is just itself.',
+    ],
+    variables: [
+      whole('n', 'n', 'Number', 2, 100),
+      { ...whole('c', 'c', 'Prime factors', 1, 7), derived: true },
+    ],
+    relations: [
+      {
+        id: 'c = prime factors of n',
+        display: '{n} has {c} prime factors, with repeats',
+        vars: ['c', 'n'],
+        residual: (v: Values) => v.c! - primeFactors(v.n!).length,
+        // Many numbers have the same count: the number can't be found from it.
+        solve: { c: (v: Values) => primeFactors(v.n!).length, n: () => undefined },
+      },
+    ],
+    steps: {
+      'c = prime factors of n': {
+        c: {
+          expr: 'prime factors of {n}',
+          how: 'Split until every branch is prime. Count the primes at the ends.',
+          work: (v) => {
+            const primes = primeFactors(v.n!);
+            return primes.length === 1
+              ? [`${v.n} is prime: no split`]
+              : [`${v.n} = ${primes.join(' × ')}`, `${primes.length} primes at the ends`];
+          },
+          note: (v) =>
+            primeFactors(v.n!).length === 1 ? `(${v.n} is prime)` : `(${v.n} is composite)`,
+        },
+      },
+    },
+    example: { n: 24, c: 4 },
+    startWith: ['n'],
+    representation: { kind: 'factorTree', value: 'n', count: 'c' },
+  },
+
   // ── Multiples: is n a multiple of k? (4.OA.4) ──
   (() => {
     const mult = times('n = k × j', ['k', 'j', 'n'], ['number', 'count', 'multiple']);
@@ -949,6 +993,47 @@ export const MATH_4_MORE_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
 
+  // ── Converting on a double number line (4.MD.1) ──
+  (() => {
+    const conv = times(
+      's = b × k',
+      ['b', 'k', 's'],
+      ['bigger units', 'smaller units in one', 'smaller units'],
+    );
+    return {
+      id: 'm.4.unit-conversion~double-line',
+      title: 'Convert on a double number line',
+      assumptions: [
+        'The top line counts bigger units. The bottom line counts smaller units.',
+        'Each 1 on the top sits over the number of smaller units in one bigger unit.',
+        'Read straight down from the bigger units to find the smaller units.',
+      ],
+      variables: [
+        whole('b', 'b', 'Bigger units', 1, 12),
+        {
+          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 3, 100),
+          allowed: [3, 7, 10, 12, 16, 24, 60, 100],
+        },
+        whole('s', 's', 'Smaller units', 3, 1200),
+      ],
+      relations: [conv.relation],
+      steps: {
+        's = b × k': {
+          ...conv.steps,
+          s: { ...conv.steps.s!, how: 'Each bigger unit is that many smaller units. Multiply.' },
+          b: {
+            ...conv.steps.b!,
+            how: 'Divide the smaller units by the number in one bigger unit.',
+          },
+          k: { ...conv.steps.k!, how: 'Divide the smaller units by the bigger units.' },
+        },
+      },
+      example: { b: 3, k: 12, s: 36 },
+      startWith: ['k', 'b'],
+      representation: { kind: 'doubleNumberLine', top: 'b', bottom: 's', per: 'k', ticks: 6 },
+    } satisfies ModuleDef;
+  })(),
+
   // ── Two units together: 3 feet 5 inches as inches (4.MD.1, 4.MD.2) ──
   (() => {
     const PAIRS: Record<number, string> = {
@@ -1044,6 +1129,45 @@ export const MATH_4_MORE_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+
+  // ── Reading a protractor (4.MD.6) ──
+  {
+    id: 'm.4.angles~protractor',
+    title: 'Read a protractor',
+    assumptions: [
+      'Put the centre of the protractor on the corner and one arm along the 0° line.',
+      'Read the scale that starts at 0 on that arm. The other scale reads 180° minus the angle.',
+      'Angles from 0° to 180°.',
+    ],
+    variables: [
+      { ...whole('a', 'a', 'Angle', 0, 180), unit: '°' },
+      { ...whole('r', 'r', 'Outer scale reading', 0, 180), unit: '°' },
+    ],
+    relations: [
+      {
+        id: 'r = 180 − a',
+        display: '180 − {a} = {r}',
+        vars: ['r', 'a'],
+        residual: (v: Values) => v.r! - 180 + v.a!,
+        solve: { r: (v: Values) => 180 - v.a!, a: (v: Values) => 180 - v.r! },
+      },
+    ],
+    steps: {
+      'r = 180 − a': {
+        r: {
+          expr: '180 − {a}',
+          how: 'The outer scale counts from the other end of the protractor.',
+        },
+        a: {
+          expr: '180 − {r}',
+          how: 'The inner scale counts from the flat arm: take the outer reading from 180.',
+        },
+      },
+    },
+    example: { a: 35, r: 145 },
+    startWith: ['a'],
+    representation: { kind: 'protractor', angle: 'a', other: 'r' },
+  },
 
   // ── Angles as fractions of a turn (4.MD.5) ──
   {

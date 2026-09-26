@@ -32,7 +32,7 @@ import {
 } from '@/engine/unitContext';
 import { convert, getUnit } from '@/engine/units';
 
-import { MODULES } from '..';
+import { TESTED_MODULES } from '..';
 import { buildSteps, type Walkthrough } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 
@@ -51,7 +51,7 @@ const SEQUENCE_LENGTH = 10;
 const N_PER_UNIT_CHOICE = 10;
 const REPORT = env.SAMPLING_REPORT === '1';
 
-const selected = MODULES.filter(
+const selected = TESTED_MODULES.filter(
   (m) => FILTER.length === 0 || FILTER.some((f) => m.id === f || m.id.startsWith(f)),
 );
 
@@ -367,6 +367,19 @@ const asValues = (gs: readonly Given[]): Values =>
 
 // ─── Evaluating rendered step text ───────────────────────────────────────────
 
+/** How many prime factors (with repeats) a whole number has: 24 → 4, 7 → 1. */
+const primeFactorCount = (n: number) => {
+  let m = Math.round(n);
+  let count = 0;
+  for (let p = 2; p * p <= m; p++) {
+    while (m % p === 0) {
+      count++;
+      m /= p;
+    }
+  }
+  return m > 1 ? count + 1 : count;
+};
+
 const NUM = String.raw`\(?-?\d+(?:\.\d+)?(?:e[-+]?\d+)?\)?`;
 const toNum = (s: string) => Number(s.replace(/[()]/g, ''));
 const COIN: Record<string, number> = {
@@ -396,7 +409,8 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ],
   [new RegExp(`(\\d+):(\\d\\d) \\+ (${NUM}) minutes`), (h, m, d) => ((h % 12) * 60 + m + d) % 720],
   [/(\d+):(\d\d)/, (h, m) => (h % 12) * 60 + m],
-  // Grade 4
+  // Grade 4 (the primes with repeats come before the factor count, which would match first)
+  [new RegExp(`prime factors of (${NUM})`), (n) => primeFactorCount(n)],
   [
     new RegExp(`factors of (${NUM})`),
     (n) => Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0).length,
@@ -1023,6 +1037,107 @@ function repIssues(
       if (a !== undefined && b !== undefined && w !== undefined && Math.abs(a + b - w) > 1e-9) {
         out.push(`angles ${a} + ${b} drawn, whole shows ${w}`);
       }
+      break;
+    }
+    case 'doubleNumberLine': {
+      // The bottom reading is the top reading times the smaller units per bigger unit.
+      const [t, b, k] = [val(rep.top), val(rep.bottom), val(rep.per)];
+      count(rep.top, 'top units');
+      if (t !== undefined && b !== undefined && k !== undefined && Math.abs(t * k - b) > 1e-6)
+        out.push(`double number line: ${t} × ${k} ≠ ${b}`);
+      break;
+    }
+    case 'coordinatePlane': {
+      if (rep.quadrants === 1) {
+        for (const id of [rep.x, rep.y, rep.second?.x, rep.second?.y]) {
+          const x = id === undefined ? undefined : val(id);
+          if (x !== undefined && x < 0) out.push(`${id} = ${x} is off the first quadrant`);
+        }
+      }
+      if (rep.second && rep.slope) {
+        const [x1, y1, x2, y2, m] = [rep.x, rep.y, rep.second.x, rep.second.y, rep.slope].map(val);
+        if ([x1, y1, x2, y2, m].every((v) => v !== undefined) && x2! !== x1!) {
+          const rise = (y2! - y1!) / (x2! - x1!);
+          if (Math.abs(rise - m!) > 1e-6) out.push(`slope ${m} drawn, rise over run is ${rise}`);
+        }
+      }
+      break;
+    }
+    case 'boxPlot': {
+      const five = [rep.min, rep.q1, rep.median, rep.q3, rep.max].map(val);
+      for (let i = 1; i < five.length; i++) {
+        const a = five[i - 1];
+        const b = five[i];
+        if (a !== undefined && b !== undefined && b < a - 1e-9)
+          out.push(`box plot out of order: ${a} then ${b}`);
+      }
+      break;
+    }
+    case 'pieChart': {
+      const parts = rep.parts.map(val);
+      const whole = rep.total ? val(rep.total) : 100;
+      for (const [i, x] of parts.entries()) {
+        if (x !== undefined && x < 0) out.push(`pie part ${rep.parts[i]} is negative (${x})`);
+      }
+      if (whole !== undefined && parts.every((x) => x !== undefined)) {
+        const sum = parts.reduce((a, b) => a! + b!, 0)!;
+        if (sum > whole + 1e-6) out.push(`pie parts add to ${sum}, more than the whole ${whole}`);
+      }
+      break;
+    }
+    case 'fractionArea': {
+      for (const f of [rep.first, rep.second, rep.product].filter((x) => !!x)) {
+        const n = val(f!.num);
+        const d = val(f!.den);
+        count(f!.num, 'top');
+        if (d !== undefined && d < 1) out.push(`bottom ${f!.den} = ${d}`);
+        if (n !== undefined && d !== undefined && n > d)
+          out.push(`${n}/${d} is more than one whole`);
+      }
+      break;
+    }
+    case 'unitCubes': {
+      const [l, w, h, v] = [rep.length, rep.width, rep.height, rep.volume].map(val);
+      count(rep.length, 'cubes across', rep.max);
+      count(rep.width, 'cubes back', rep.max);
+      count(rep.height, 'layers', rep.max);
+      if ([l, w, h, v].every((x) => x !== undefined) && Math.abs(l! * w! * h! - v!) > 1e-9)
+        out.push(`${l} × ${w} × ${h} cubes drawn, volume shows ${v}`);
+      break;
+    }
+    case 'placeValueChart': {
+      const x = val(rep.value);
+      if (x !== undefined && x < 0) out.push(`place-value chart of a negative number ${x}`);
+      break;
+    }
+    case 'factorTree':
+      count(rep.value, 'number');
+      break;
+    case 'protractor': {
+      const a = val(rep.angle);
+      if (a !== undefined && (a < 0 || a > 180)) out.push(`protractor angle ${a} is off the scale`);
+      const o = rep.other ? val(rep.other) : undefined;
+      if (a !== undefined && o !== undefined && Math.abs(a + o - 180) > 1e-9)
+        out.push(`protractor scales ${a} and ${o} don't add to 180`);
+      break;
+    }
+    case 'wave': {
+      const [A, L] = [rep.amplitude ? val(rep.amplitude) : undefined, val(rep.wavelength)];
+      if (A !== undefined && A < 0) out.push(`negative amplitude ${A}`);
+      if (L !== undefined && L <= 0) out.push(`wavelength ${L} is not positive`);
+      break;
+    }
+    case 'punnettSquare': {
+      const [p, q, d] = [rep.first, rep.second, rep.dominant].map(val);
+      for (const [id, x] of [
+        [rep.first, p],
+        [rep.second, q],
+      ] as const) {
+        if (x !== undefined && (x < 0 || x > 2 || !Number.isInteger(x)))
+          out.push(`parent ${id} has ${x} dominant alleles`);
+      }
+      if (p !== undefined && q !== undefined && d !== undefined && 4 - (2 - p) * (2 - q) !== d)
+        out.push(`Punnett square shows ${4 - (2 - p) * (2 - q)} of 4 with the trait, not ${d}`);
       break;
     }
     case 'rockLayers':

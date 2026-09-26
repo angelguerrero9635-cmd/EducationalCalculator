@@ -8,7 +8,7 @@
 import { renderTemplate } from '@/engine/format';
 import { solve } from '@/engine/solve';
 
-import { MODULES, gradeBand, gradeOf } from '..';
+import { TESTED_MODULES, gradeBand, gradeOf } from '..';
 import { agree, buildSteps } from '../buildSteps';
 import type { ModuleDef } from '../types';
 
@@ -130,124 +130,129 @@ function studentText(m: ModuleDef) {
   return { prose, labels, box, walk, all: [...prose, ...labels, ...box, ...walk] };
 }
 
-describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('standards for %s', (_, m) => {
-  const grade = gradeOf(m.id);
-  const band = gradeBand(m.id);
-  const text = studentText(m);
-  const example = m.example;
-  const failures = (
-    items: { where: string; text: string }[],
-    test: (t: string) => string | false | undefined,
-  ) =>
-    items.flatMap(({ where, text: t }) => {
-      const why = test(t);
-      return why ? [`${where}: ${why} — "${t}"`] : [];
+describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
+  'standards for %s',
+  (_, m) => {
+    const grade = gradeOf(m.id);
+    const band = gradeBand(m.id);
+    const text = studentText(m);
+    const example = m.example;
+    const failures = (
+      items: { where: string; text: string }[],
+      test: (t: string) => string | false | undefined,
+    ) =>
+      items.flatMap(({ where, text: t }) => {
+        const why = test(t);
+        return why ? [`${where}: ${why} — "${t}"`] : [];
+      });
+
+    it('shows no broken numbers or number words', () => {
+      expect(
+        failures(text.all, (t) =>
+          BAD_VALUE.test(t) ? 'broken value' : PLURAL.test(t) ? 'number and word disagree' : false,
+        ),
+      ).toEqual([]);
     });
 
-  it('shows no broken numbers or number words', () => {
-    expect(
-      failures(text.all, (t) =>
-        BAD_VALUE.test(t) ? 'broken value' : PLURAL.test(t) ? 'number and word disagree' : false,
-      ),
-    ).toEqual([]);
-  });
+    it('is formatted the way the copy editor expects', () => {
+      expect(failures(text.all, (t) => FORMAT.find(([re]) => re.test(t))?.[1] ?? false)).toEqual(
+        [],
+      );
+    });
 
-  it('is formatted the way the copy editor expects', () => {
-    expect(failures(text.all, (t) => FORMAT.find(([re]) => re.test(t))?.[1] ?? false)).toEqual([]);
-  });
+    it('ends sentences and labels the right way', () => {
+      expect(
+        failures(text.prose, (t) => (/[.!?”…]$/.test(t) ? false : 'sentence needs a period')),
+      ).toEqual([]);
+      expect(
+        failures(text.labels, (t) => (/\.$/.test(t) ? 'no period on a label' : false)),
+      ).toEqual([]);
+      expect(
+        failures(
+          text.labels.filter((l) => l.where !== 'title'),
+          (t) => (words(t) > 7 ? 'name too long' : false),
+        ),
+      ).toEqual([]);
+    });
 
-  it('ends sentences and labels the right way', () => {
-    expect(
-      failures(text.prose, (t) => (/[.!?”…]$/.test(t) ? false : 'sentence needs a period')),
-    ).toEqual([]);
-    expect(failures(text.labels, (t) => (/\.$/.test(t) ? 'no period on a label' : false))).toEqual(
-      [],
-    );
-    expect(
-      failures(
-        text.labels.filter((l) => l.where !== 'title'),
-        (t) => (words(t) > 7 ? 'name too long' : false),
-      ),
-    ).toEqual([]);
-  });
+    it('reads at the grade level (sentence length)', () => {
+      const limit = wordLimit(grade);
+      if (limit === undefined) return;
+      expect(
+        failures(text.prose, (t) => {
+          const long = sentences(t).find((s) => words(s) > limit);
+          return long ? `${words(long)} words, limit ${limit}` : false;
+        }),
+      ).toEqual([]);
+    });
 
-  it('reads at the grade level (sentence length)', () => {
-    const limit = wordLimit(grade);
-    if (limit === undefined) return;
-    expect(
-      failures(text.prose, (t) => {
-        const long = sentences(t).find((s) => words(s) > limit);
-        return long ? `${words(long)} words, limit ${limit}` : false;
-      }),
-    ).toEqual([]);
-  });
+    it('uses no shorthand or jargon the grade has not met', () => {
+      if (band === 'standard' && grade === undefined) return;
+      expect(
+        failures(text.all, (t) =>
+          SHORTHAND.test(t)
+            ? 'shorthand'
+            : grade !== undefined && grade !== 'K' && Number(grade) > 3
+              ? false
+              : JARGON_K3.test(t)
+                ? 'jargon'
+                : false,
+        ),
+      ).toEqual([]);
+    });
 
-  it('uses no shorthand or jargon the grade has not met', () => {
-    if (band === 'standard' && grade === undefined) return;
-    expect(
-      failures(text.all, (t) =>
-        SHORTHAND.test(t)
-          ? 'shorthand'
-          : grade !== undefined && grade !== 'K' && Number(grade) > 3
-            ? false
-            : JARGON_K3.test(t)
-              ? 'jargon'
-              : false,
-      ),
-    ).toEqual([]);
-  });
+    it('uses only notation the grade has met', () => {
+      if (band === 'standard') return;
+      const early = band === 'early';
+      expect(
+        failures(text.all, (t) =>
+          /(^|[\s(])−\d|\(-\d/.test(t)
+            ? 'negative number before Grade 6'
+            : early && /[×÷]/.test(t)
+              ? '× or ÷ before Grade 3'
+              : early && /\d\/\d/.test(t)
+                ? 'a fraction before Grade 3'
+                : early && LETTERS.test(t)
+                  ? 'a letter standing for a number (K–2)'
+                  : early && equalsJoinsWords(t)
+                    ? '"=" outside a number sentence (K–2)'
+                    : false,
+        ),
+      ).toEqual([]);
+    });
 
-  it('uses only notation the grade has met', () => {
-    if (band === 'standard') return;
-    const early = band === 'early';
-    expect(
-      failures(text.all, (t) =>
-        /(^|[\s(])−\d|\(-\d/.test(t)
-          ? 'negative number before Grade 6'
-          : early && /[×÷]/.test(t)
-            ? '× or ÷ before Grade 3'
-            : early && /\d\/\d/.test(t)
-              ? 'a fraction before Grade 3'
-              : early && LETTERS.test(t)
-                ? 'a letter standing for a number (K–2)'
-                : early && equalsJoinsWords(t)
-                  ? '"=" outside a number sentence (K–2)'
-                  : false,
-      ),
-    ).toEqual([]);
-  });
+    it('names things in words, not letters, in K–2', () => {
+      if (band !== 'early') return;
+      expect(
+        failures(
+          text.labels.filter((l) => l.where !== 'title'),
+          (t) => (LONE_CAPITAL.test(t) ? 'a letter names a thing (say first, second)' : false),
+        ),
+      ).toEqual([]);
+    });
 
-  it('names things in words, not letters, in K–2', () => {
-    if (band !== 'early') return;
-    expect(
-      failures(
-        text.labels.filter((l) => l.where !== 'title'),
-        (t) => (LONE_CAPITAL.test(t) ? 'a letter names a thing (say first, second)' : false),
-      ),
-    ).toEqual([]);
-  });
+    it('makes no claim about the units menu (whole-number lengths keep their number)', () => {
+      expect(
+        failures(text.prose, (t) => (/units menu/i.test(t) ? 'talks about the units menu' : false)),
+      ).toEqual([]);
+    });
 
-  it('makes no claim about the units menu (whole-number lengths keep their number)', () => {
-    expect(
-      failures(text.prose, (t) => (/units menu/i.test(t) ? 'talks about the units menu' : false)),
-    ).toEqual([]);
-  });
-
-  it('works every step out from a rule, never by trying numbers', () => {
-    const w = buildSteps(
-      m,
-      solve(
+    it('works every step out from a rule, never by trying numbers', () => {
+      const w = buildSteps(
         m,
-        m.startWith.map((id) => ({ id, value: example[id]! })),
-      ),
-    );
-    expect(w.steps.filter((s) => /Try numbers/.test(s.how)).map((s) => s.id)).toEqual([]);
-  });
+        solve(
+          m,
+          m.startWith.map((id) => ({ id, value: example[id]! })),
+        ),
+      );
+      expect(w.steps.filter((s) => /Try numbers/.test(s.how)).map((s) => s.id)).toEqual([]);
+    });
 
-  it('has about as many values as the grade can hold', () => {
-    const limit = valueLimit(grade);
-    // Derived values are read-only boxes the lesson fills in, not values the student holds.
-    if (limit !== undefined)
-      expect(m.variables.filter((v) => !v.derived).length).toBeLessThanOrEqual(limit);
-  });
-});
+    it('has about as many values as the grade can hold', () => {
+      const limit = valueLimit(grade);
+      // Derived values are read-only boxes the lesson fills in, not values the student holds.
+      if (limit !== undefined)
+        expect(m.variables.filter((v) => !v.derived).length).toBeLessThanOrEqual(limit);
+    });
+  },
+);

@@ -65,7 +65,11 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   and some more, angles as parts of a turn; and a third sort page, shapes by angles and sides
   (cards now carry figures). New pictures: area model, angles; the fraction line shows addends
   or copies; the rounding line takes any place. New engine rules: a check-only relation
-  (`constraint`), display-only values (`shows`), place-part relations.
+  (`constraint`), display-only values (`shows`), place-part relations. Three more pages use
+  new pictures: a factor tree, a double number line for conversions and a protractor. Eight
+  further picture kinds wait in the gallery (`/gallery`) for Grade 5 and later: coordinate
+  plane, box plot, pie chart, fraction × fraction area, unit cubes, place-value chart, wave,
+  Punnett square.
 - **Section 2, Grade 3.** 14 skill modules (area was a pilot; patterns in the tables,
   multiplying by multiples of 10, and measuring with line plots were added to the taxonomy
   after the review) plus 22 problem types: arrays and equal jumps (multiply and divide),

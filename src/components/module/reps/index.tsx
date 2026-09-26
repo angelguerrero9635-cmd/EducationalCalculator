@@ -54,14 +54,35 @@ import { Timeline } from './Timeline';
 import { Thermometers } from './Thermometers';
 import { RockLayers } from './RockLayers';
 import { Pushes } from './Pushes';
+import { DoubleNumberLine } from './DoubleNumberLine';
+import { CoordinatePlane } from './CoordinatePlane';
+import { BoxPlot } from './BoxPlot';
+import { PieChart } from './PieChart';
+import { FractionArea } from './FractionArea';
+import { UnitCubes } from './UnitCubes';
+import { PlaceValueChart } from './PlaceValueChart';
+import { FactorTree } from './FactorTree';
+import { Protractor } from './Protractor';
+import { Wave } from './Wave';
+import { PunnettSquare } from './PunnettSquare';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
   r.kind === 'table'
     ? 'Table'
-    : ['plot', 'bars', 'pictureGraph', 'waterfall', 'hundredChart', 'linePlot', 'tally'].includes(
-          r.kind,
-        )
+    : [
+          'plot',
+          'bars',
+          'pictureGraph',
+          'waterfall',
+          'hundredChart',
+          'linePlot',
+          'tally',
+          'boxPlot',
+          'pieChart',
+          'coordinatePlane',
+          'placeValueChart',
+        ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
 
@@ -173,5 +194,27 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <CubeTrains spec={spec} calc={calc} />;
     case 'seriesCircuit':
       return <SeriesCircuit spec={spec} calc={calc} />;
+    case 'doubleNumberLine':
+      return <DoubleNumberLine spec={spec} calc={calc} />;
+    case 'coordinatePlane':
+      return <CoordinatePlane spec={spec} calc={calc} />;
+    case 'boxPlot':
+      return <BoxPlot spec={spec} calc={calc} />;
+    case 'pieChart':
+      return <PieChart spec={spec} calc={calc} />;
+    case 'fractionArea':
+      return <FractionArea spec={spec} calc={calc} />;
+    case 'unitCubes':
+      return <UnitCubes spec={spec} calc={calc} />;
+    case 'placeValueChart':
+      return <PlaceValueChart spec={spec} calc={calc} />;
+    case 'factorTree':
+      return <FactorTree spec={spec} calc={calc} />;
+    case 'protractor':
+      return <Protractor spec={spec} calc={calc} />;
+    case 'wave':
+      return <Wave spec={spec} calc={calc} />;
+    case 'punnettSquare':
+      return <PunnettSquare spec={spec} calc={calc} />;
   }
 }

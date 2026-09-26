@@ -143,6 +143,9 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
   'm.4.unit-conversion~two-units':
     'Use this for 3 feet 5 inches as inches, or 2 hours 15 minutes as minutes.',
   'm.4.angles~turns': 'Use this for “a quarter turn is how many degrees?”',
+  'm.4.angles~protractor': 'Use this to read an angle on a protractor, either scale.',
+  'm.4.factors-multiples~factor-tree': 'Use this to break a number into its prime factors.',
+  'm.4.unit-conversion~double-line': 'Use this to convert units by reading a double number line.',
   'm.4.lines-symmetry~classify-shapes':
     'Use this to sort triangles and four-sided shapes by their angles and sides.',
 };

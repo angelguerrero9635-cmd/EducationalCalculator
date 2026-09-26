@@ -468,6 +468,87 @@ export type Representation =
        */
       sliders?: string[];
     }
+  /**
+   * Two number lines that line up: the top counted in one unit (bigger units), the bottom in
+   * another, `per` bottom units for each top unit. A mark joins the two readings; drag it.
+   */
+  | {
+      kind: 'doubleNumberLine';
+      top: string;
+      bottom: string;
+      per: string;
+      /** Whole top units drawn (grows to fit the value). */
+      ticks: number;
+    }
+  /**
+   * Coordinate plane with a point (x, y) to drag; optionally a second point, with the line
+   * through both and a rise-over-run triangle labelled with `slope`.
+   */
+  | {
+      kind: 'coordinatePlane';
+      x: string;
+      y: string;
+      second?: { x: string; y: string };
+      slope?: string;
+      /** Largest |coordinate| drawn (grows to fit). */
+      extent: number;
+      quadrants: 1 | 4;
+    }
+  /** Box plot: the five-number summary on a number line, each mark draggable. */
+  | {
+      kind: 'boxPlot';
+      min: string;
+      q1: string;
+      median: string;
+      q3: string;
+      max: string;
+      range: [number, number];
+    }
+  /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
+  | { kind: 'pieChart'; parts: string[]; total?: string }
+  /**
+   * Fraction × fraction as an area model: a unit square cut into `first.den` columns and
+   * `second.den` rows, `first.num` columns and `second.num` rows shaded; the overlap is the
+   * product.
+   */
+  | {
+      kind: 'fractionArea';
+      first: { num: string; den: string };
+      second: { num: string; den: string };
+      product?: { num: string; den: string };
+    }
+  /** Unit cubes filling a box `length` × `width` × `height`, drawn layer by layer. */
+  | {
+      kind: 'unitCubes';
+      length: string;
+      width: string;
+      height: string;
+      volume: string;
+      max: number;
+    }
+  /** Place-value chart: the digits of `value` in labelled columns, `decimals` places past the point. */
+  | { kind: 'placeValueChart'; value: string; decimals: number }
+  /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
+  | { kind: 'factorTree'; value: string; count?: string }
+  /** Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale. */
+  | { kind: 'protractor'; angle: string; other?: string }
+  /**
+   * A wave drawn with its `wavelength` (and `amplitude`, when the lesson has one; else a
+   * fixed height); `extent` is the width shown in wavelength units.
+   */
+  | { kind: 'wave'; amplitude?: string; wavelength: string; extent: number; frequency?: string }
+  /**
+   * Punnett square: each parent's count of dominant alleles (0–2) sets its two alleles; the
+   * four offspring boxes are shaded by genotype, `dominant` counts those showing the trait.
+   */
+  | {
+      kind: 'punnettSquare';
+      first: string;
+      second: string;
+      dominant: string;
+      recessive?: string;
+      letter: string;
+    }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | {
       kind: 'table';

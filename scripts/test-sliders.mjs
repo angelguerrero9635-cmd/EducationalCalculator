@@ -118,7 +118,9 @@ async function inputValue(id) {
 
 try {
   for (const id of ids) {
-    await page.goto(`${base}/skill/${encodeURIComponent(id)}`);
+    await page.goto(
+      `${base}/${id.startsWith('g.') ? 'gallery' : 'skill'}/${encodeURIComponent(id)}`,
+    );
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(200);
     const handles = await page.locator('[data-testid^="slider-"]').all();

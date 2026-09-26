@@ -1,4 +1,5 @@
 import { COLLEGE_MODULES } from './college';
+import { GALLERY_MODULES } from './gallery';
 import { K12_MODULES } from './k12';
 import { MATH_K2_MODULES } from './math-k2';
 import { MATH_K2_EXTRA_MODULES } from './math-k2-extra';
@@ -30,9 +31,15 @@ export const MODULES: readonly ModuleDef[] = [
 ].map((m) => (PROBLEM_TYPE_USES[m.id] ? { ...m, use: PROBLEM_TYPE_USES[m.id] } : m));
 
 const BY_ID = new Map(MODULES.map((m) => [m.id, m]));
+const GALLERY_BY_ID = new Map(GALLERY_MODULES.map((m) => [m.id, m]));
 
-/** Module content for a skill id or topic key, if written yet. */
-export const getModule = (id: string): ModuleDef | undefined => BY_ID.get(id);
+/** Module content for a skill id or topic key, if written yet (and the gallery's demos). */
+export const getModule = (id: string): ModuleDef | undefined =>
+  BY_ID.get(id) ?? GALLERY_BY_ID.get(id);
+
+/** Every module the tests and the harness run over: the lessons and the gallery's demos. */
+export const TESTED_MODULES: readonly ModuleDef[] = [...MODULES, ...GALLERY_MODULES];
+export { GALLERY_MODULES };
 
 export { getLayout, LAYOUTS, type LayoutDef } from './layouts';
 export { layoutSummary } from './layouts';
