@@ -524,9 +524,18 @@ export const minus = (
 
 /**
  * A number split into its places, biggest first, zeros left out: 347 → [300, 40, 7];
- * 2.35 → [2, 0.3, 0.05]; 0 → [0]. For the area model's boxes.
+ * 2.35 → [2, 0.3, 0.05]; 0 → [0]. For the area model's boxes. Past `most` parts the smallest
+ * places stay together in the last one (5,430.76 in 4: [5000, 400, 30, 0.76]).
  */
-export function placeParts(x: number): number[] {
+export function placeParts(x: number, most = Infinity): number[] {
+  const all = placeDigits(x);
+  if (all.length <= most) return all;
+  const head = all.slice(0, most - 1);
+  const rest = all.slice(most - 1).reduce((s, y) => s + y, 0);
+  return [...head, Number(rest.toFixed(6))];
+}
+
+function placeDigits(x: number): number[] {
   const [whole, frac = ''] = Math.abs(x)
     .toFixed(6)
     .replace(/0+$/, '')

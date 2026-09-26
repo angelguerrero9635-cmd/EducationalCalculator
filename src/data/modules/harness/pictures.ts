@@ -399,10 +399,10 @@ export function repIssues(
         const [a, b, t] = [val(rep.factors[0]), val(rep.factors[1]), val(rep.total)];
         if (a !== undefined && b !== undefined && t !== undefined && Math.abs(a * b - t) > 1e-6)
           out.push(`area model ${a} × ${b} drawn, total shows ${t}`);
-        // Up to 4 places on each side fit across a phone (AreaModel.tsx).
+        // Up to 4 places on each side fit across a phone (AreaModel.tsx keeps the rest in the last).
         for (const x of [a, b]) {
-          if (x !== undefined && placeParts(x).length > 4)
-            out.push(`area model factor ${x} has ${placeParts(x).length} parts`);
+          if (x !== undefined && placeParts(x, 4).length > 4)
+            out.push(`area model factor ${x} has ${placeParts(x, 4).length} parts`);
         }
         break;
       }
@@ -418,8 +418,8 @@ export function repIssues(
           Math.abs(s * q + (r ?? 0) - n) > 1e-9
         )
           out.push(`area model ${s} × ${q} + ${r ?? 0} is not ${n}`);
-        if (q !== undefined && placeParts(q).length > 4)
-          out.push(`area model quotient ${q} has ${placeParts(q).length} parts`);
+        if (q !== undefined && placeParts(q, 4).length > 4)
+          out.push(`area model quotient ${q} has ${placeParts(q, 4).length} parts`);
         break;
       }
       // Every box's product is its top part times its side part, and the boxes add to the total.

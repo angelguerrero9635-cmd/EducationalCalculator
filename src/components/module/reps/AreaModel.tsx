@@ -35,8 +35,8 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
   const val = (id: string) => (rep.known(id) ? Math.max(0, rep.shown(id)) : 0);
   if ('factors' in spec) {
     const [a, b] = spec.factors.map(val) as [number, number];
-    const tops = placeParts(a);
-    const sides = placeParts(b);
+    const tops = placeParts(a, 4);
+    const sides = placeParts(b, 4);
     const products = sides.flatMap((s) => tops.map((t) => t * s));
     return {
       top: tops.map(fmt),
@@ -53,7 +53,7 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
     const d = spec.divide;
     const [n, s, q] = [val(d.dividend), val(d.divisor), val(d.quotient)];
     const r = d.remainder ? val(d.remainder) : 0;
-    const parts = placeParts(q);
+    const parts = placeParts(q, 4);
     const amounts = parts.map((p) => p * s);
     return {
       top: parts.map(fmt),

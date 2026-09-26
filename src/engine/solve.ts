@@ -1,4 +1,4 @@
-import { formatNumber } from './format';
+import { dollars, formatNumber } from './format';
 import type { Relation, Values, VariableDef } from './types';
 
 export interface Given {
@@ -51,7 +51,7 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
   const f = variable.unitFactor ?? 1;
   const unit = variable.displayUnit ? ` ${variable.displayUnit}` : '';
   // Money in dollars reads "$84", not "84 $".
-  const withUnit = (n: string) => (variable.displayUnit === '$' ? `$${n}` : `${n}${unit}`);
+  const withUnit = (n: string) => (variable.displayUnit === '$' ? dollars(n) : `${n}${unit}`);
   if (variable.integer && Math.abs(x / f - Math.round(x / f)) > 1e-9) {
     return 'Must be a whole number';
   }

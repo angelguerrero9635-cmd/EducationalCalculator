@@ -164,6 +164,21 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],
   [new RegExp(`ones digit of (${NUM})`), (a) => a % 10],
   [new RegExp(`full tens in (${NUM})`), (a) => Math.floor(a / 10)],
+  // Grade 6 factors and multiples (6.NS.4).
+  [
+    new RegExp(`(?:greatest common factor|shared prime factors) of (${NUM}) and (${NUM})`),
+    (a, b) => {
+      const gcd = (x: number, y: number): number => (y === 0 ? x : gcd(y, x % y));
+      return gcd(a, b);
+    },
+  ],
+  [
+    new RegExp(`least common multiple of (${NUM}) and (${NUM})`),
+    (a, b) => {
+      const gcd = (x: number, y: number): number => (y === 0 ? x : gcd(y, x % y));
+      return (a * b) / gcd(a, b);
+    },
+  ],
   // Grade 5 fractions: the least common denominator.
   [
     new RegExp(`smallest common multiple of (${NUM}) and (${NUM})`),

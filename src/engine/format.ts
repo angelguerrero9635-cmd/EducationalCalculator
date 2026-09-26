@@ -17,6 +17,9 @@ export function formatNumber(
   return withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4))));
 }
 
+/** A shown number as dollars: cents are two digits ("$7.50", not "$7.5"). */
+export const dollars = (num: string) => `$${num.replace(/(\.\d)$/, '$10')}`;
+
 /** Thousands separators from 1,000 ("12,500.5"), the way students read numbers in class. */
 const withSeparators = (s: string) =>
   s.replace(

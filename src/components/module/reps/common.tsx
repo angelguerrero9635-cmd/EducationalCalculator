@@ -9,7 +9,7 @@ import {
 import { Text as SvgText, type TextProps as SvgTextProps } from 'react-native-svg';
 
 import { isEarlyGrade, isElementary } from '@/data/modules';
-import { formatNumber } from '@/engine/format';
+import { dollars, formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { chart, font, space, usePalette } from '@/theme';
 
@@ -197,7 +197,7 @@ export function useRep(calc: Calculator) {
     const shown = x === undefined ? '?' : formatNumber(units.toDisplay(id, x), v);
     if (!withUnit || !unit || x === undefined) return shown;
     // $ goes before the number; ¢, % and ° go right after it; other units after a space.
-    if (unit === '$') return `$${shown}`;
+    if (unit === '$') return dollars(shown);
     return `${shown}${['¢', '%', '°'].includes(unit) ? '' : ' '}${unit}`;
   };
   return {
