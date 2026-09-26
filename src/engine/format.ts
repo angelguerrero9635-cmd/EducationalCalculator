@@ -9,13 +9,16 @@ export function formatNumber(
   if (variable?.integer && variable.digits) {
     return String(Math.round(x)).padStart(variable.digits, '0');
   }
-  if (variable?.integer) return withSeparators(String(Math.round(x)));
+  // Negatives with a true minus sign (−4), as printed in class.
+  if (variable?.integer) return minus(withSeparators(String(Math.round(x) || 0)));
   if (x === 0) return '0';
   const abs = Math.abs(x);
-  if (abs >= 1e7 || abs < 1e-4) return x.toExponential(3).replace('e+', 'e');
+  if (abs >= 1e7 || abs < 1e-4) return minus(x.toExponential(3).replace('e+', 'e'));
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals.
-  return withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4))));
+  return minus(withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4)))));
 }
+
+const minus = (s: string) => s.replace(/^-/, '−');
 
 /** A shown number as dollars: cents are two digits ("$7.50", not "$7.5"). */
 export const dollars = (num: string) => `$${num.replace(/(\.\d)$/, '$10')}`;

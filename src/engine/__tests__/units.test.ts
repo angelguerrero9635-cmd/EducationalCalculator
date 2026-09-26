@@ -62,6 +62,7 @@ describe('unit conversions (exact definitions)', () => {
       'cubes',
       'square units',
       '°F',
+      '°C',
       'days',
       'hours',
       'seconds',

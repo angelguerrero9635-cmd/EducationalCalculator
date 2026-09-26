@@ -397,7 +397,11 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   // sum or difference must come out to the number after its "=".
   for (const s of w.steps) {
     for (const line of s.work ?? []) {
-      const m = /((?:\d+(?:\.\d+)?¢?\s*[+−-]\s*)+\d+(?:\.\d+)?¢?)\s*=\s*(\d+(?:\.\d+)?)/.exec(line);
+      // Not the tail of a letter term: "x + 7 − 7 = 12 − 7" undoes a step, it doesn't add 7 − 7.
+      const m =
+        /(?<![\d.]|[A-Za-z]\s*[+−×÷-]\s*)((?:\d+(?:\.\d+)?¢?\s*[+−-]\s*)+\d+(?:\.\d+)?¢?)\s*=\s*(\d+(?:\.\d+)?)/.exec(
+          line,
+        );
       if (!m) continue;
       const x = evaluate(m[1]!.replace(/¢/g, ''));
       if (x === undefined || !shownClose(x, Number(m[2]))) {

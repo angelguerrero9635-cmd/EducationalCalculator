@@ -164,6 +164,19 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],
   [new RegExp(`ones digit of (${NUM})`), (a) => a % 10],
   [new RegExp(`full tens in (${NUM})`), (a) => Math.floor(a / 10)],
+  // Grade 6 signed numbers (6.NS.8): the distance along a line or between two points.
+  [
+    /[Ff]rom (-?\d+(?:\.\d+)?) (?:up |across |down )?to (-?\d+(?:\.\d+)?)/,
+    (a, b) => Math.abs(b - a),
+  ],
+  [
+    /[Dd]istance from \((-?\d+(?:\.\d+)?), (-?\d+(?:\.\d+)?)\) to \((-?\d+(?:\.\d+)?), (-?\d+(?:\.\d+)?)\)/,
+    (a, b, c, d) => Math.abs(c - a) + Math.abs(d - b),
+  ],
+  [
+    /[Qq]uadrant of \((-?\d+(?:\.\d+)?), (-?\d+(?:\.\d+)?)\)/,
+    (x, y) => (x === 0 || y === 0 ? 0 : x > 0 ? (y > 0 ? 1 : 4) : y > 0 ? 2 : 3),
+  ],
   // Grade 6 factors and multiples (6.NS.4).
   [
     new RegExp(`(?:greatest common factor|shared prime factors) of (${NUM}) and (${NUM})`),
@@ -361,7 +374,8 @@ export const PLURAL =
   /(?<![\d.,$/])\b(?:1 (?:tens|ones|hundreds|groups|bills|feet|inches|cubes|rows|jumps|triangles|clips)\b|(?:0|[2-9]|\d\d+) (?:ten|one|hundred|group|bill|foot|inch|row|jump|clip)\b(?![-\w]))/;
 /** The walkthrough with thousands separators removed from every line, for evaluating. */
 export function plainWalkthrough(w: Walkthrough): Walkthrough {
-  const p = (x: string) => plainDigits(x);
+  // Numbers show a true minus (−4); the arithmetic checks read -4.
+  const p = (x: string) => plainDigits(x).replace(/−(?=\d)/g, '-');
   return {
     ...w,
     steps: w.steps.map((s) => ({

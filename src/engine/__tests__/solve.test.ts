@@ -263,7 +263,7 @@ describe('format', () => {
   it('renders formula templates symbolically and with values', () => {
     const vars = area.variables;
     expect(renderTemplate('{A} = {l} × {w}', vars)).toBe('A = l × w');
-    expect(renderTemplate('{A} = {l} × {w}', vars, { l: 4, w: -3 })).toBe('? = 4 × (-3)');
+    expect(renderTemplate('{A} = {l} × {w}', vars, { l: 4, w: -3 })).toBe('? = 4 × (−3)');
   });
 });
 
