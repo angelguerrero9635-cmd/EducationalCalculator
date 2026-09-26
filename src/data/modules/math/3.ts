@@ -2697,9 +2697,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
         '2 1/2 inches or longer means the X’s at 2 1/2, 2 3/4 and 3.',
       ],
       variables: [
-        ...xs.map((id, i) => whole(id, `x${'₀₁₂₃₄'[i]}`, `At ${marks[i]} in`, 0, 10)),
+        ...xs.map((id, i) => whole(id, `x${'₀₁₂₃₄'[i]}`, `Ribbons at ${marks[i]} in`, 0, 10)),
         whole('N', 'N', 'Ribbons measured', 0, 50),
-        whole('L', 'L', '2 1/2 in or longer', 0, 30),
+        whole('L', 'L', 'Ribbons 2 1/2 in or longer', 0, 30),
       ],
       relations: [sumRelation('N = all X’s', 'N', xs), sumRelation('L = long X’s', 'L', long)],
       steps: {

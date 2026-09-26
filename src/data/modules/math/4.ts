@@ -1538,6 +1538,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
       return u.length ? Math.max(...u) - Math.min(...u) : 0;
     };
     const total = (v: Values) => xs.reduce((t, id) => t + at(id) * v[id]!, 0);
+    /** Eighths of an inch as inches: 32 → "4 inches", 12 → "1 inch and 4/8 inch", 3 → "3/8 inch". */
+    const inches = (e: number) => {
+      const w = Math.floor(e / 8);
+      const r = e % 8;
+      const whole = w === 1 ? '1 inch' : `${w} inches`;
+      return w === 0 ? `${r}/8 inch` : r ? `${whole} and ${r}/8 inch` : whole;
+    };
     return {
       id: 'm.4.add-fractions-like~line-plot',
       title: 'Line plots in eighths',
@@ -1548,9 +1555,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'The total length adds every object: count × length at each mark.',
       ],
       variables: [
-        ...xs.map((id) => whole(id, id, `At ${at(id)}/8 in`, 0, 6)),
-        { ...whole('D', 'D', 'Longest − shortest, in eighths', 0, 4), derived: true },
-        { ...whole('T', 'T', 'Total length, in eighths', 0, 90), derived: true },
+        ...xs.map((id) => whole(id, id, `Objects at ${at(id)}/8 in`, 0, 6)),
+        {
+          ...whole('D', 'D', 'Difference in length', 0, 4),
+          unit: 'eighths of an inch',
+          derived: true,
+        },
+        { ...whole('T', 'T', 'Total length', 0, 90), unit: 'eighths of an inch', derived: true },
       ],
       relations: [
         {
@@ -1567,7 +1578,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         {
           id: 'T = count × length, added',
           display: `${xs.map((id) => `{${id}} × ${at(id)}/8`).join(' + ')} = {T}/8`,
-          words: 'Count × length at each mark, added = {T}',
+          words: 'Objects × length at each mark, added = {T}',
           vars: ['T', ...xs],
           residual: (v: Values) => v.T! - total(v),
           solve: {
@@ -1596,6 +1607,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
                 ? [`${Math.max(...u)}/8 − ${Math.min(...u)}/8 = ${spread(v)}/8`]
                 : ['No X’s yet: 0'];
             },
+            note: (v) => `(${inches(spread(v))})`,
           },
         },
         'T = count × length, added': {
@@ -1611,6 +1623,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
                 .map((id) => v[id]! * at(id))
                 .join(' + ')} = ${total(v)}, so ${total(v)}/8 inch`,
             ],
+            note: (v) => `(${inches(total(v))})`,
           },
           ...Object.fromEntries(
             xs.map((id) => [

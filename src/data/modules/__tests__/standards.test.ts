@@ -293,6 +293,16 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
       expect(w.steps.filter((s) => /Try numbers/.test(s.how)).map((s) => s.id)).toEqual([]);
     });
 
+    it('names a count after what it counts, not after a measurement', () => {
+      // "At 1/8 L: 2" reads as 2 liters; a count of beakers is "Beakers with 1/8 L". A count
+      // named only by a length or an amount ("One inch longer", "In eighths") is the same slip.
+      const MEASURE =
+        /^(?:At|One|Two|Three)\b.*\b(?:in|inch(?:es)?|cm|m|L|mL|liters?|g|kg|lb|oz|feet|foot)$|^(?:At|One|Two|Three) .*\b(?:length|longer|shorter)$/;
+      expect(
+        m.variables.filter((v) => v.integer && !v.unit && MEASURE.test(v.name)).map((v) => v.name),
+      ).toEqual([]);
+    });
+
     it('has about as many values as the grade can hold', () => {
       const limit = valueLimit(grade);
       // Derived values are read-only boxes the lesson fills in, not values the student holds.

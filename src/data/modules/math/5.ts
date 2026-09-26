@@ -24,6 +24,16 @@ const atMostOne = (top: string, bottom: string) => ({
 const BOTTOMS = [2, 3, 4, 5, 6, 8, 10, 12];
 const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
 const lcm = (a: number, b: number) => (a * b) / gcd(a, b);
+/** 19 eighths of a liter as liters: "19/8 = 2 3/8 liters" (whole liters when it comes out even). */
+const litersLine = (eighths: number) => {
+  const w = Math.floor(eighths / 8);
+  const r = eighths % 8;
+  const g = gcd(r, 8) || 1;
+  if (eighths < 8) return [];
+  return [
+    `${eighths}/8 = ${w}${r ? ` and ${r / g}/${8 / g}` : ''} ${w === 1 && !r ? 'liter' : 'liters'}`,
+  ];
+};
 /** "(6/12 = 1/2)" when a fraction simplifies, else nothing. */
 const simplerNote = (top: number, bottom: number) => {
   const g = gcd(top, bottom);
@@ -1429,22 +1439,34 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       use: 'Use this for a line plot of beakers holding 1/8, 1/4, 3/8 or 1/2 liter.',
       assumptions: [
         'Each X is one beaker. Write every amount in eighths: 1/4 = 2/8 and 1/2 = 4/8.',
-        'The total adds count × amount at each mark.',
+        'The total adds beakers × liters at each mark: an amount of water in liters, not a count.',
         'Shared equally, each beaker gets the total ÷ the number of beakers.',
       ],
       variables: [
-        ...xs.map((id, i) => whole(id, id, `At ${label[i]} L`, 0, 6)),
-        { ...whole('T', 'T', 'Total, in eighths of a liter', 0, 60), derived: true },
+        ...xs.map((id, i) => whole(id, id, `Beakers with ${label[i]} L`, 0, 6)),
+        {
+          id: 'T',
+          symbol: 'T',
+          name: 'Total water',
+          unit: 'liters',
+          min: 0,
+          max: 7.5,
+          step: 0.125,
+          derived: true,
+        },
         { ...whole('N', 'N', 'Number of beakers', 0, 24), derived: true },
       ],
       relations: [
         {
           id: 'T = count × amount, added',
-          display: `${xs.map((id) => `{${id}} × ${at(id)}/8`).join(' + ')} = {T}/8`,
-          words: 'Count × amount at each mark, added = {T}',
+          display: `${xs.map((id) => `{${id}} × ${at(id)}/8`).join(' + ')} = {T}`,
+          words: 'Beakers × liters at each mark, added = {T}',
           vars: ['T', ...xs],
-          residual: (v: Values) => v.T! - total(v),
-          solve: { T: total, ...Object.fromEntries(xs.map((id) => [id, () => undefined])) },
+          residual: (v: Values) => v.T! * 8 - total(v),
+          solve: {
+            T: (v: Values) => total(v) / 8,
+            ...Object.fromEntries(xs.map((id) => [id, () => undefined])),
+          },
         },
         {
           id: 'N = all the X’s',
@@ -1458,12 +1480,23 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       steps: {
         'T = count × amount, added': {
           T: {
-            expr: xs.map((id) => `{${id}} × ${at(id)}`).join(' + '),
-            how: 'Write each amount in eighths. Multiply by the count at each mark, then add.',
+            expr: xs.map((id) => `{${id}} × ${at(id)}/8`).join(' + '),
+            how: 'Write each amount in eighths of a liter. Multiply by the beakers at each mark, then add.',
             work: (v: Values) =>
               xs
                 .filter((id) => v[id]! > 0)
-                .map((id) => `${v[id]} × ${at(id)}/8 = ${v[id]! * at(id)}/8`),
+                .map((id) => `${v[id]} × ${at(id)}/8 = ${v[id]! * at(id)}/8`)
+                .concat(
+                  xs.filter((id) => v[id]! > 0).length > 1
+                    ? [
+                        `${xs
+                          .filter((id) => v[id]! > 0)
+                          .map((id) => `${v[id]! * at(id)}/8`)
+                          .join(' + ')} = ${total(v)}/8`,
+                      ]
+                    : [],
+                )
+                .concat(litersLine(total(v))),
             note: (v: Values) => {
               const n = count(v);
               if (n === 0) return '';
@@ -1476,7 +1509,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           N: { expr: xs.map((id) => `{${id}}`).join(' + '), how: 'Count every X.' },
         },
       },
-      example: { x1: 2, x2: 3, x3: 1, x4: 2, T: 19, N: 8 },
+      example: { x1: 2, x2: 3, x3: 1, x4: 2, T: 2.375, N: 8 },
       startWith: xs,
       representation: {
         kind: 'linePlot',

@@ -5,6 +5,21 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Owner finding: a count read as an amount (line plots, Grades 2–5)
+
+- Missed by every review: the Grade 5 line plot of beakers labelled each count "At 1/8 L: 2"
+  (it reads as 2 liters, not 2 beakers) and gave the total as "19" eighths of a liter where the
+  question asks how many liters. The Grade 2, 3 and 4 line plots named their counts the same way
+  ("One inch longer", "At 2 1/4 in") and Grade 4 reported its total and spread as bare eighths.
+- Fixed: counts name what they count ("Beakers with 1/8 L", "Ribbons at 2 1/4 in", "Objects 1
+  inch longer"); the Grade 5 total is in liters ("19/8 = 2 and 3/8 liters"); the Grade 4 total
+  and spread read "32 eighths of an inch (4 inches)".
+- Reviewers: a new check Q in both reviewers (what each value counts or measures; read the "we
+  know" line, each answer and the picture labels as sentences). Automated: `standards.test.ts`
+  fails a whole-number count named after a measurement ("At 1/8 L", "One inch longer").
+- Sweep of every K–8 module's values (names, units, whole or not): no other count named like a
+  measure or answer in pieces where a measure is asked.
+
 ## Science Grades 4–5: one lesson-reviewer and one page-reviewer, 39 pages
 
 - Cost: lesson-reviewer 136k tokens (39 tool calls, 7 min); page-reviewer 95k (60 calls,

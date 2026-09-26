@@ -2122,10 +2122,10 @@ export const MATH_2_MODULES: ModuleDef[] = [
     ],
     variables: [
       { ...whole('f', 'f', 'Shortest length', 1, 20), unit: 'inches' },
-      whole('x4', 'A', 'At the shortest length', 0, 10),
-      whole('x5', 'B', 'One inch longer', 0, 10),
-      whole('x6', 'C', 'Two inches longer', 0, 10),
-      whole('x7', 'D', 'At the longest length', 0, 10),
+      whole('x4', 'A', 'Objects at the shortest length', 0, 10),
+      whole('x5', 'B', 'Objects 1 inch longer', 0, 10),
+      whole('x6', 'C', 'Objects 2 inches longer', 0, 10),
+      whole('x7', 'D', 'Objects at the longest length', 0, 10),
       whole('N', 'N', 'Objects measured', 0, 40),
     ],
     relations: [

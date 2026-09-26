@@ -63,6 +63,7 @@ describe('unit conversions (exact definitions)', () => {
       'square units',
       '°F',
       '°C',
+      'eighths of an inch',
       '×',
       'µm',
       'g/mL',

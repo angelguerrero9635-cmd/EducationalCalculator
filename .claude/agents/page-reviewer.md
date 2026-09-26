@@ -66,6 +66,11 @@ unclear what to type first; a control that surprises; typed numbers lost; pictur
 that don't match; no way to undo; can't tell the problem is solved. Rate: easy / OK with help /
 confusing.
 
+**Q. What each number means (student).** Read every label on the page, the picture's too, as
+a sentence: "Beakers with 1/8 L: 2" says two beakers; "At 1/8 L: 2" reads as two liters. Report
+a count labelled like an amount, an amount with a count's name, or an answer in pieces where
+the question asks for the measure (19 eighths when it asks for liters).
+
 **J. Layout and formatting (UI designer, copy editor).** Overlaps, cut-off labels, crowded or
 empty space, captions that wrap badly, unreadable labels at 390 px, tap targets under 44 pt,
 dark mode. Formatting on screen: operators and units, true minus, thousands separators,

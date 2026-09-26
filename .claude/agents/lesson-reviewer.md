@@ -55,6 +55,18 @@ For every module, cite the check letter.
 example. Units, constants, ranges that don't exclude normal answers. Every assumption true and
 needed; vocabulary of the standard. Is the model the one a teacher would use for this standard?
 
+**Q. What each value counts (subject expert).** For every value, say in words what it is: a
+count of things (beakers, ribbons, objects) or an amount of a measure (liters, inches, grams).
+Its name must name the thing counted or the measure, and its unit must be the unit of what it
+is. Error signs: a count named after a measurement ("At 1/8 L: 2" reads as 2 liters; name it
+"Beakers with 1/8 L"); a "how much" answer reported as a count or in pieces ("Total, in eighths
+of a liter = 19" when the question is how many liters: give 2 3/8 liters); a count carrying the
+measure's unit, or a measure with none; "Number of …" asked where the question is "How much …".
+Read the "we know" line, each step's answer line and the picture labels aloud as a sentence and
+ask whether a student would read the number as the right kind of thing. Line plots, tallies,
+picture graphs and bar charts (counts at each value) and totals in parts (eighths, tenths,
+groups) are where this hides. `standards.test.ts` catches a count named like a measurement.
+
 **L. Layout fit (curriculum designer).** A calculator page has values, relations, a picture
 and a walkthrough; a layout page is a sort, a sequence, an exploration or an observation
 (`docs/MODULE_GUIDE.md`, "Module layouts"; data in `src/data/modules/layouts/`). Ask whether
