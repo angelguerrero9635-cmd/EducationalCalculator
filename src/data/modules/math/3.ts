@@ -4,7 +4,7 @@
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
 import type { Values } from '@/engine/types';
-import { div, sumAll, whole } from '../helpers';
+import { atLeast, div, sumAll, whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 import {
   addAll,
@@ -18,6 +18,9 @@ import {
 } from '../work';
 
 // ─── Shared pieces ──────────────────────────────────────────────────────────
+
+/** Grade 3 fractions have these denominators (3.NF). */
+const DENOMS_3 = [2, 3, 4, 6, 8] as const;
 
 /**
  * c = a × b with its two divisions. `names` are how the step text says the three values, e.g.
@@ -107,6 +110,7 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
       {
         id: `L = ${place} below n`,
         display: `The ${place} at or below {n} is {L}`,
+        words: `The ${place} below {n} = {L}`,
         vars: ['L', 'n'],
         residual: (v) => v.L! - below(v.n!),
         // Every number from 40 to 49 has the ten 40 below it: the number can't be found from it.
@@ -122,6 +126,7 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
       {
         id: `r = nearer ${place}`,
         display: '{n} is between {L} and {U}, so it rounds to {r}',
+        words: `The nearer ${place} = {r}`,
         vars: ['r', 'n', 'L', 'U'],
         residual: (v) => v.r! - (v.n! - v.L! < half ? v.L! : v.U!),
         solve: {
@@ -633,10 +638,11 @@ export const MATH_3_MODULES: ModuleDef[] = [
       assumptions: [
         'Turning an array changes rows into columns, not the total.',
         'So 4 × 7 = 7 × 4: use the fact you know.',
+        'Any number times 1 is that number. Any number times 0 is 0.',
       ],
       variables: [
         whole('a', 'a', 'Rows', 0, 10),
-        whole('b', 'b', 'Columns', 0, 10),
+        whole('b', 'b', 'In each row', 0, 10),
         whole('n', 'n', 'Total', 0, 100),
       ],
       relations: [ab.relation, ba.relation],
@@ -680,8 +686,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
         whole('a', 'a', 'First factor', 0, 10),
         whole('b', 'b', 'Second factor', 0, 10),
         whole('c', 'c', 'Third factor', 0, 10),
-        whole('p', 'p', 'First × second', 0, 100),
-        whole('q', 'q', 'Second × third', 0, 100),
+        whole('p', 'p', 'First two multiplied', 0, 100),
+        whole('q', 'q', 'Last two multiplied', 0, 100),
         whole('n', 'n', 'Product', 0, 100),
       ],
       relations: [first.relation, second.relation, left.relation, right.relation],
@@ -697,63 +703,6 @@ export const MATH_3_MODULES: ModuleDef[] = [
       representation: { kind: 'equalGroups', groups: 'c', each: 'p', total: 'n' },
     } satisfies ModuleDef;
   })(),
-  // ── Patterns in the addition and multiplication tables (3.OA.9) ──
-  (() => {
-    const cell = times('v = k × n', ['k', 'n', 'v'], ['row', 'column', 'number in the table']);
-    const next = plus('w = v + k', ['v', 'k', 'w'], ['number in the table', 'row', 'next number']);
-    return {
-      id: 'm.3.arithmetic-patterns',
-      pictureLabels: ['w', 'e'],
-      assumptions: [
-        'Each row of the times table counts by its row number: the 4s row is 4, 8, 12, 16, …',
-        'One step along the row adds the row number again.',
-        'An even row (2, 4, 6, 8, 10) has only even numbers. An odd row switches odd, even, odd, …',
-      ],
-      variables: [
-        whole('k', 'k', 'Row', 1, 10),
-        whole('n', 'n', 'Column', 1, 10),
-        whole('v', 'v', 'Number in the table', 1, 100),
-        whole('w', 'w', 'Next number in the row', 2, 110),
-        whole('e', 'e', 'Left over after pairs', 0, 1),
-      ],
-      relations: [
-        cell.relation,
-        { ...next.relation, display: '{v} + {k} = {w}' },
-        {
-          id: 'e = v even or odd',
-          display: '{v} in pairs leaves {e} over',
-          vars: ['e', 'v'],
-          residual: (v) => v.e! - (v.v! % 2),
-          // Every even number leaves 0: the number can't be found from it.
-          solve: { e: (v) => v.v! % 2, v: () => undefined },
-        },
-      ],
-      steps: {
-        'v = k × n': cell.steps,
-        'w = v + k': {
-          ...next.steps,
-          w: {
-            expr: '{v} + {k}',
-            how: 'The next number in the row is the row number more.',
-            work: (v) => addStrategy(v.v!, v.k!),
-          },
-        },
-        'e = v even or odd': {
-          e: {
-            expr: '{v} shared into pairs',
-            how: 'Even numbers make pairs with none left over; odd numbers leave 1.',
-            work: (v) => [
-              `${v.v} ends in ${v.v! % 10}: ${v.v! % 2 === 0 ? 'even' : 'odd'}`,
-              ...(v.k! % 2 === 0 ? [`${v.k} is even, so every number in its row is even.`] : []),
-            ],
-          },
-        },
-      },
-      example: { k: 4, n: 6, v: 24, w: 28, e: 0 },
-      startWith: ['k', 'n'],
-      representation: { kind: 'skipCount', step: 'k', count: 'n', total: 'v' },
-    } satisfies ModuleDef;
-  })(),
   // ── Two-step word problems (3.OA.8) ──
   (() => {
     const packs = times('m = g × k', ['g', 'k', 'm'], ['packs', 'number in each pack', 'total']);
@@ -763,11 +712,11 @@ export const MATH_3_MODULES: ModuleDef[] = [
       pictureLabels: ['g', 'k'],
       assumptions: [
         'Do one step at a time: first find the total, then what is left.',
-        'Check that the answer makes sense: round the numbers and estimate.',
+        'Check: put the answer back in the story. Does each step still fit?',
       ],
       variables: [
-        whole('g', 'g', 'Packs', 0, 10),
-        whole('k', 'k', 'In each pack', 0, 10),
+        whole('g', 'g', 'Packs', 1, 10),
+        whole('k', 'k', 'In each pack', 1, 10),
         whole('m', 'm', 'Total', 0, 100),
         whole('t', 't', 'Taken away', 0, 100),
         whole('n', 'n', 'Left', 0, 100),
@@ -825,11 +774,11 @@ export const MATH_3_MODULES: ModuleDef[] = [
       pictureLabels: ['g', 'k'],
       assumptions: [
         'First multiply to find how many are in the equal groups. Then add the extra.',
-        'Check that the answer makes sense: round the numbers and estimate.',
+        'Check: put the answer back in the story. Does each step still fit?',
       ],
       variables: [
-        whole('g', 'g', 'Boxes', 0, 10),
-        whole('k', 'k', 'In each box', 0, 10),
+        whole('g', 'g', 'Boxes', 1, 10),
+        whole('k', 'k', 'In each box', 1, 10),
         whole('m', 'm', 'In the boxes', 0, 100),
         whole('e', 'e', 'Extra', 0, 100),
         whole('t', 't', 'Total', 0, 200),
@@ -848,6 +797,82 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const given = plus('s = l + a', ['l', 'a', 's'], ['number left', 'number given away', 'start']);
+    const share = times(
+      'l = g × e',
+      ['g', 'e', 'l'],
+      ['groups', 'number in each group', 'number left'],
+    );
+    return {
+      id: 'm.3.two-step-problems~subtract-share',
+      title: 'Take away, then share equally',
+      use: 'Use this for “45 stickers, 5 given away, the rest shared on 8 pages. How many on each?”',
+      pictureLabels: ['g', 'e'],
+      assumptions: [
+        'First take away to find what is left. Then share what is left equally.',
+        'Every group gets the same number, with none left over.',
+      ],
+      variables: [
+        whole('s', 's', 'Start', 1, 100),
+        whole('a', 'a', 'Given away', 0, 100),
+        whole('l', 'l', 'Left', 1, 100),
+        whole('g', 'g', 'Groups', 1, 10),
+        whole('e', 'e', 'In each group', 1, 10),
+      ],
+      relations: [{ ...given.relation, display: '{s} − {a} = {l}' }, share.relation],
+      steps: { 's = l + a': given.steps, 'l = g × e': share.steps },
+      example: { s: 45, a: 5, l: 40, g: 8, e: 5 },
+      startWith: ['s', 'a', 'g'],
+      representation: {
+        kind: 'tape',
+        parts: ['l', 'a'],
+        total: 's',
+        groups: 'g',
+        groupsPart: 'l',
+        caption: '{s} − {a} = {l} left. {l} shared into {g} groups: {e} in each.',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const boxes = times(
+      'm = g × k',
+      ['g', 'k', 'm'],
+      ['boxes', 'number in each box', 'number in the boxes'],
+    );
+    const more = plus(
+      'b = m + d',
+      ['m', 'd', 'b'],
+      ['number in the boxes', 'how many more', 'Ben’s number'],
+    );
+    return {
+      id: 'm.3.two-step-problems~compare',
+      title: 'Multiply, then compare',
+      use: 'Use this for “3 boxes of 8 crayons. Ben has 30. How many more does Ben have?”',
+      pictureLabels: ['g', 'k'],
+      assumptions: [
+        'First multiply to find how many are in the boxes.',
+        'Then compare: take the smaller number away from the bigger one.',
+      ],
+      variables: [
+        whole('g', 'g', 'Boxes', 1, 10),
+        whole('k', 'k', 'In each box', 1, 10),
+        whole('m', 'm', 'In the boxes', 1, 100),
+        whole('b', 'b', 'Ben has', 1, 100),
+        whole('d', 'd', 'How many more Ben has', 0, 100),
+      ],
+      relations: [boxes.relation, { ...more.relation, display: '{b} − {m} = {d}' }],
+      steps: { 'm = g × k': boxes.steps, 'b = m + d': more.steps },
+      example: { g: 3, k: 8, m: 24, b: 30, d: 6 },
+      startWith: ['g', 'k', 'b'],
+      representation: {
+        kind: 'tape',
+        compare: ['b', 'm'],
+        difference: 'd',
+        caption: 'Ben has {d} more than the {m} in the boxes.',
+      },
+    } satisfies ModuleDef;
+  })(),
   // ── Rounding (3.NBT.1) ──
   {
     id: 'm.3.rounding',
@@ -855,11 +880,12 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Find the tens just below and just above the number.',
       'Round to the nearer one. 5 ones or more rounds up.',
       'Rounded numbers are for estimating, like checking an answer.',
+      'Drag the point: every number from 35 to 44 rounds to 40.',
     ],
     variables: [
       whole('n', 'n', 'Number', 0, 999),
-      { ...whole('L', 'L', 'Ten below', 0, 990), step: 10, multipleOf: 10 },
-      { ...whole('U', 'U', 'Ten above', 10, 1000), step: 10, multipleOf: 10 },
+      { ...whole('L', 'L', 'Ten below', 0, 990), step: 10, multipleOf: 10, derived: true },
+      { ...whole('U', 'U', 'Ten above', 10, 1000), step: 10, multipleOf: 10, derived: true },
       { ...whole('r', 'r', 'Rounded', 0, 1000), step: 10, multipleOf: 10 },
     ],
     ...rounding(10),
@@ -877,8 +903,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('n', 'n', 'Number', 0, 999),
-      { ...whole('L', 'L', 'Hundred below', 0, 900), step: 100, multipleOf: 100 },
-      { ...whole('U', 'U', 'Hundred above', 100, 1000), step: 100, multipleOf: 100 },
+      { ...whole('L', 'L', 'Hundred below', 0, 900), step: 100, multipleOf: 100, derived: true },
+      { ...whole('U', 'U', 'Hundred above', 100, 1000), step: 100, multipleOf: 100, derived: true },
       { ...whole('r', 'r', 'Rounded', 0, 1000), step: 100, multipleOf: 100 },
     ],
     ...rounding(100),
@@ -921,7 +947,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const off: ModuleDef['relations'][number] = {
       id: 'o = distance from e to s',
       display: 'The estimate {e} is {o} away from the sum {s}',
-      words: 'Difference between {e} and {s} = {o}',
+      words: 'Sum − estimate = {o} (or the other way round)',
       vars: ['o', 'e', 's'],
       residual: (v) => v.o! - Math.abs(v.e! - v.s!),
       solve: {
@@ -974,6 +1000,104 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const round10 = (x: number) => Math.floor((x + 5) / 10) * 10;
+    const rounded = (id: string, from: string, name: string) => ({
+      relation: {
+        id: `${id} = ${from} rounded`,
+        display: `{${from}} rounds to {${id}}`,
+        vars: [id, from],
+        residual: (v: Values) => v[id]! - round10(v[from]!),
+        // Every number from 45 to 54 rounds to 50: the number can't be found from it.
+        solve: { [id]: (v: Values) => round10(v[from]!), [from]: () => undefined },
+      },
+      steps: {
+        [id]: {
+          expr: `{${from}} to the nearest ten`,
+          how: `Round the ${name} to the nearer ten. 5 ones or more rounds up.`,
+          work: (v: Values) => {
+            const n = v[from]!;
+            const lo = Math.floor(n / 10) * 10;
+            return [
+              `${n} is between ${lo} and ${lo + 10}.`,
+              n - lo < 5
+                ? `${n - lo} ones is less than 5: round down to ${lo}.`
+                : `${n - lo} ones is 5 or more: round up to ${lo + 10}.`,
+            ];
+          },
+        },
+      } as Record<string, StepText>,
+    });
+    const ra = rounded('x', 'a', 'first number');
+    const rb = rounded('y', 'b', 'second number');
+    const est = plus(
+      'x = e + y',
+      ['e', 'y', 'x'],
+      ['estimate', 'second rounded', 'first rounded'],
+      '{x} − {y} = {e}',
+    );
+    const sum = plus(
+      'a = s + b',
+      ['s', 'b', 'a'],
+      ['difference', 'second number', 'first number'],
+      '{a} − {b} = {s}',
+    );
+    const off: ModuleDef['relations'][number] = {
+      id: 'o = distance from e to s',
+      display: 'The estimate {e} is {o} away from the difference {s}',
+      words: 'Difference − estimate = {o} (or the other way round)',
+      vars: ['o', 'e', 's'],
+      residual: (v) => v.o! - Math.abs(v.e! - v.s!),
+      solve: {
+        // Each rounding moves a number at most 4 down or 5 up: the estimate is at most 9 from
+        // the difference either way. Any other distance can't happen: -1 is out of range.
+        o: (v) => (Math.abs(v.e! - v.s!) <= 9 ? Math.abs(v.e! - v.s!) : -1),
+        // The distance alone doesn't say whether the estimate is above or below the sum.
+        e: () => undefined,
+        s: () => undefined,
+      },
+    };
+    return {
+      id: 'm.3.rounding~estimate-difference',
+      title: 'Estimate a difference',
+      use: 'Use this to estimate a difference by rounding, then check.',
+      pictureLabels: ['x', 'y', 'e', 'o'],
+      assumptions: [
+        'Round each number to the nearest ten, then subtract the rounded numbers.',
+        'The estimate is close to the real difference. Use it to check the answer.',
+      ],
+      variables: [
+        whole('a', 'a', 'First number', 0, 999),
+        whole('b', 'b', 'Second number', 0, 500),
+        { ...whole('x', 'x', 'First rounded', 0, 1000), step: 10, multipleOf: 10, derived: true },
+        { ...whole('y', 'y', 'Second rounded', 0, 500), step: 10, multipleOf: 10, derived: true },
+        { ...whole('e', 'e', 'Estimate', 0, 1000), step: 10, multipleOf: 10, derived: true },
+        { ...whole('s', 's', 'Difference', 0, 999), derived: true },
+        { ...whole('o', 'o', 'How far off the estimate is', 0, 10), derived: true },
+      ],
+      relations: [ra.relation, rb.relation, est.relation, sum.relation, off],
+      steps: {
+        'x = a rounded': ra.steps,
+        'y = b rounded': rb.steps,
+        'x = e + y': est.steps,
+        'a = s + b': sum.steps,
+        'o = distance from e to s': {
+          o: {
+            expr: (v) => (v.e! >= v.s! ? '{e} − {s}' : '{s} − {e}'),
+            how: 'Take the smaller from the bigger. A small distance means the estimate is close.',
+          },
+        },
+      },
+      example: { a: 512, b: 287, x: 510, y: 290, e: 220, s: 225, o: 5 },
+      startWith: ['a', 'b'],
+      representation: {
+        kind: 'tape',
+        parts: ['s', 'b'],
+        total: 'a',
+        caption: 'Estimate: {x} − {y} = {e}. Exact: {a} − {b} = {s}.',
+      },
+    } satisfies ModuleDef;
+  })(),
   // ── Multiply by multiples of 10 (3.NBT.3) ──
   (() => {
     const tensTimes = times('p = a × t', ['a', 't', 'p'], ['number', 'tens', 'tens in the answer']);
@@ -982,14 +1106,15 @@ export const MATH_3_MODULES: ModuleDef[] = [
       pictureLabels: ['t', 'p'],
       assumptions: [
         'A multiple of 10 is a number of tens: 80 is 8 tens.',
-        'Multiply by the tens, then write the tens as a number: 9 × 8 tens = 72 tens = 720.',
+        'Multiply by the tens: 4 × 6 tens = 24 tens.',
+        '24 tens is 240.',
       ],
       variables: [
-        whole('a', 'a', 'One-digit number', 0, 9),
+        whole('a', 'a', 'One-digit number', 1, 9),
         { ...whole('m', 'm', 'Multiple of 10', 10, 90), step: 10, multipleOf: 10 },
-        whole('t', 't', 'Tens in it', 1, 9),
-        whole('p', 'p', 'Tens in the answer', 0, 81),
-        { ...whole('n', 'n', 'Product', 0, 810), step: 10, multipleOf: 10 },
+        { ...whole('t', 't', 'Tens in it', 1, 9), derived: true },
+        { ...whole('p', 'p', 'Tens in the answer', 1, 81), derived: true },
+        { ...whole('n', 'n', 'Product', 10, 810), step: 10, multipleOf: 10 },
       ],
       relations: [
         {
@@ -1013,24 +1138,90 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'm = t tens': {
           t: {
             expr: '{m} ÷ 10',
-            how: 'Count the tens in the multiple of 10.',
-            work: (v) => [`Count by 10s: ${countList(0, 10, v.t!)} → ${v.t} tens`],
+            how: 'Say the multiple of 10 as tens.',
+            work: (v) => [`${v.m} is ${v.t} tens`],
           },
-          m: { expr: '{t} × 10', how: 'Write the tens as a number: put a 0 after it.' },
+          m: { expr: '{t} × 10', how: 'Say the tens as a number: 6 tens is 60.' },
         },
         'p = a × t': tensTimes.steps,
         'n = p tens': {
           n: {
             expr: '{p} × 10',
-            how: 'Write the tens as a number: put a 0 after the number of tens.',
+            how: 'Say the tens as a number.',
             work: (v) => [`${v.p} tens = ${v.n}`],
           },
-          p: { expr: '{n} ÷ 10', how: 'Take the 0 off: that is the number of tens.' },
+          p: { expr: '{n} ÷ 10', how: 'Say the product as tens: 240 is 24 tens.' },
         },
       },
       example: { a: 4, m: 60, t: 6, p: 24, n: 240 },
       startWith: ['a', 'm'],
-      representation: { kind: 'skipCount', step: 'm', count: 'a', total: 'n' },
+      // a groups of t ten-rods (4 groups of 6 tens).
+      representation: { kind: 'equalGroups', groups: 'a', each: 't', total: 'n', unit: 10 },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const tensTimes = times(
+      'p = a × t',
+      ['a', 't', 'p'],
+      ['boxes', 'tens in each box', 'tens in all'],
+    );
+    return {
+      id: 'm.3.multiply-by-tens~word',
+      title: 'Boxes of tens',
+      use: 'Use this for “8 boxes of 40 pencils. How many pencils?”',
+      pictureLabels: ['t', 'p'],
+      assumptions: [
+        'Each box holds a number of tens: 40 is 4 tens.',
+        'Multiply by the tens: 8 × 4 tens = 32 tens, and 32 tens is 320.',
+      ],
+      variables: [
+        whole('a', 'a', 'Boxes', 1, 9),
+        { ...whole('m', 'm', 'Pencils in each box', 10, 90), step: 10, multipleOf: 10 },
+        { ...whole('t', 't', 'Tens in it', 1, 9), derived: true },
+        { ...whole('p', 'p', 'Tens in the answer', 1, 81), derived: true },
+        { ...whole('n', 'n', 'Pencils', 10, 810), step: 10, multipleOf: 10 },
+      ],
+      relations: [
+        {
+          id: 'm = t tens',
+          display: '{m} is {t} tens',
+          words: '{m} = {t} tens',
+          vars: ['m', 't'],
+          residual: (v) => v.m! - 10 * v.t!,
+          solve: { m: (v) => 10 * v.t!, t: (v) => div(v.m!, 10) },
+        },
+        tensTimes.relation,
+        {
+          id: 'n = p tens',
+          display: '{p} tens = {n}',
+          vars: ['n', 'p'],
+          residual: (v) => v.n! - 10 * v.p!,
+          solve: { n: (v) => 10 * v.p!, p: (v) => div(v.n!, 10) },
+        },
+      ],
+      steps: {
+        'm = t tens': {
+          t: {
+            expr: '{m} ÷ 10',
+            how: 'Say the multiple of 10 as tens.',
+            work: (v) => [`${v.m} is ${v.t} tens`],
+          },
+          m: { expr: '{t} × 10', how: 'Say the tens as a number: 6 tens is 60.' },
+        },
+        'p = a × t': tensTimes.steps,
+        'n = p tens': {
+          n: {
+            expr: '{p} × 10',
+            how: 'Say the tens as a number.',
+            work: (v) => [`${v.p} tens = ${v.n}`],
+          },
+          p: { expr: '{n} ÷ 10', how: 'Say the product as tens: 240 is 24 tens.' },
+        },
+      },
+      example: { a: 8, m: 40, t: 4, p: 32, n: 320 },
+      startWith: ['a', 'm'],
+      // a groups of t ten-rods (4 groups of 6 tens).
+      representation: { kind: 'equalGroups', groups: 'a', each: 't', total: 'n', unit: 10 },
     } satisfies ModuleDef;
   })(),
   // ── Fractions on a number line (3.NF.1, 3.NF.2, 3.NF.3c) ──
@@ -1038,13 +1229,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
     id: 'm.3.fractions-number-line',
     pictureLabels: ['w', 'r'],
     assumptions: [
-      'Split each whole into equal parts. The bottom number says how many parts.',
-      'The top number says how many parts to count from 0.',
-      'When the parts make a whole, the fraction is a whole number: 4/4 = 1.',
+      'Cut 0 to 1 into equal parts. The bottom number says how many.',
+      'The top number counts the jumps from 0.',
+      '4/4 lands on 1, the same point as the whole number.',
     ],
     variables: [
-      whole('a', 'a', 'Parts counted', 0, 24),
-      whole('b', 'b', 'Parts in one whole', 1, 8),
+      whole('a', 'a', 'Parts counted', 0, 16),
+      { ...whole('b', 'b', 'Parts in one whole', 2, 8), allowed: [...DENOMS_3] },
       { ...whole('w', 'w', 'Wholes', 0, 24), derived: true },
       { ...whole('r', 'r', 'Parts past the last whole', 0, 7), derived: true },
     ],
@@ -1090,7 +1281,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
                 ]
               : []),
             ...(v.w! > 0
-              ? [`Count by ${v.b}s: ${countList(0, v.b!, v.w!)} → ${v.w} wholes`]
+              ? [
+                  `${v.w} × ${v.b} = ${v.w! * v.b!} parts make ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`,
+                ]
               : [`${v.a} is less than ${v.b}, so there is no whole yet.`]),
           ],
         },
@@ -1113,9 +1306,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
         },
       },
     },
-    example: { a: 3, b: 4, w: 0, r: 3 },
+    example: { a: 5, b: 4, w: 1, r: 1 },
     startWith: ['a', 'b'],
-    representation: { kind: 'fractionLine', numerator: 'a', denominator: 'b', wholes: 3 },
+    representation: { kind: 'fractionLine', numerator: 'a', denominator: 'b', wholes: 2 },
   },
   (() => {
     const parts = plus(
@@ -1133,13 +1326,14 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'The parts must be equal, or it is not a fraction.',
         'The bottom number is how many equal parts; the top is how many are shaded.',
         '1/4 is one of 4 equal parts. 3/4 is three of them.',
+        'Each part is 1/4 of the whole shape’s area.',
       ],
       variables: [
-        whole('b', 'b', 'Equal parts', 1, 8),
+        { ...whole('b', 'b', 'Equal parts', 2, 8), allowed: [...DENOMS_3] },
         whole('a', 'a', 'Shaded', 0, 8),
         whole('u', 'u', 'Not shaded', 0, 8),
       ],
-      relations: [parts.relation],
+      relations: [{ ...parts.relation, words: 'Shaded parts + not shaded parts = equal parts' }],
       steps: { 'b = a + u': parts.steps },
       example: { b: 4, a: 3, u: 1 },
       startWith: ['b', 'a'],
@@ -1168,9 +1362,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'Every whole has the same number of parts: 4/4 = 1, 8/4 = 2, 12/4 = 3.',
       ],
       variables: [
-        whole('a', 'a', 'Parts counted', 0, 32),
-        whole('b', 'b', 'Parts in one whole', 1, 8),
-        whole('w', 'w', 'Whole number', 0, 4),
+        whole('a', 'a', 'Parts counted', 0, 24),
+        { ...whole('b', 'b', 'Parts in one whole', 1, 8), allowed: [1, ...DENOMS_3] },
+        whole('w', 'w', 'Whole number', 0, 3),
       ],
       relations: [fill.relation],
       steps: { 'a = w × b': fill.steps },
@@ -1179,44 +1373,67 @@ export const MATH_3_MODULES: ModuleDef[] = [
       representation: { kind: 'fractionLine', numerator: 'a', denominator: 'b', wholes: 3 },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const whole_ = times(
+      'L = b × o',
+      ['b', 'o', 'L'],
+      ['parts in one whole', 'length of one part', 'length of the whole'],
+    );
+    return {
+      id: 'm.3.fractions-number-line~unit-fraction',
+      title: 'The whole from one part',
+      use: 'Use this to find the whole from one part: “This bar is 1/3. Draw the whole.”',
+      assumptions: [
+        '1/3 is one of 3 equal parts of the whole.',
+        'Put 3 parts the same size end to end to make the whole.',
+      ],
+      variables: [
+        { ...whole('o', 'o', 'Length of one part', 1, 10), unit: 'cm' },
+        { ...whole('b', 'b', 'Parts in one whole', 2, 8), allowed: [...DENOMS_3] },
+        { ...whole('L', 'L', 'Length of the whole', 2, 80), unit: 'cm' },
+      ],
+      relations: [whole_.relation],
+      steps: { 'L = b × o': whole_.steps },
+      example: { o: 4, b: 3, L: 12 },
+      startWith: ['o', 'b'],
+      representation: {
+        kind: 'tape',
+        parts: ['L'],
+        total: 'L',
+        groups: 'b',
+        caption: 'One part is {o}. {b} parts make the whole: {L}.',
+      },
+    } satisfies ModuleDef;
+  })(),
   // ── Equivalent and comparing fractions (3.NF.3) ──
   (() => {
     const top = times(
       'c = a × k',
       ['a', 'k', 'c'],
-      ['shaded parts', 'pieces per part', 'new shaded parts'],
+      ['shaded parts', 'pieces in each part', 'new shaded parts'],
     );
     const bottom = times(
       'd = b × k',
       ['b', 'k', 'd'],
-      ['parts in the whole', 'pieces per part', 'new parts in the whole'],
-    );
-    // Shaded parts can't be more than the parts in the whole (these are fractions up to 1).
-    const notShaded = plus(
-      'b = a + u',
-      ['a', 'u', 'b'],
-      ['shaded parts', 'parts not shaded', 'parts in the whole'],
-      '{a} shaded + {u} not shaded = {b} parts',
+      ['parts in the whole', 'pieces in each part', 'new parts in the whole'],
     );
     return {
       id: 'm.3.compare-fractions',
       assumptions: [
         'Equivalent fractions are the same size: they cover the same part of the whole.',
-        'Cut every part into the same number of pieces: 1/2 = 2/4.',
+        'Cutting each part into pieces changes the count, not the amount shaded.',
         'Both bars are the same whole.',
       ],
       variables: [
-        whole('a', 'a', 'Shaded parts', 0, 8),
-        whole('b', 'b', 'Parts in the whole', 1, 8),
-        whole('k', 'k', 'Pieces per part', 1, 4),
-        whole('c', 'c', 'New shaded parts', 0, 16),
-        whole('d', 'd', 'New parts in the whole', 1, 16),
-        { ...whole('u', 'u', 'Not shaded', 0, 8), derived: true },
+        whole('a', 'a', 'Shaded parts', 0, 4),
+        { ...whole('b', 'b', 'Parts in the whole', 2, 4), allowed: [2, 3, 4] },
+        { ...whole('k', 'k', 'Pieces in each part', 2, 4), allowed: [2, 3, 4] },
+        whole('c', 'c', 'New shaded parts', 0, 8),
+        { ...whole('d', 'd', 'New parts in the whole', 4, 8), allowed: [4, 6, 8] },
       ],
-      relations: [top.relation, bottom.relation, notShaded.relation],
-      steps: { 'c = a × k': top.steps, 'd = b × k': bottom.steps, 'b = a + u': notShaded.steps },
-      example: { a: 1, b: 2, k: 2, c: 2, d: 4, u: 1 },
-      pictureLabels: ['u'],
+      relations: [top.relation, bottom.relation, atLeast('b', 'a')],
+      steps: { 'c = a × k': top.steps, 'd = b × k': bottom.steps, 'b ≥ a': {} },
+      example: { a: 1, b: 2, k: 2, c: 2, d: 4 },
       startWith: ['k', 'a', 'b'],
       representation: {
         kind: 'fractionBars',
@@ -1226,184 +1443,6 @@ export const MATH_3_MODULES: ModuleDef[] = [
         ],
         controls: ['a', 'b', 'k'],
         equal: true,
-      },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const firstLeft = plus(
-      'b = a + u',
-      ['a', 'u', 'b'],
-      ['first shaded', 'first not shaded', 'parts in each whole'],
-      '{a} shaded + {u} not shaded = {b} parts',
-    );
-    const secondLeft = plus(
-      'b = c + x',
-      ['c', 'x', 'b'],
-      ['second shaded', 'second not shaded', 'parts in each whole'],
-      '{c} shaded + {x} not shaded = {b} parts',
-    );
-    return {
-      id: 'm.3.compare-fractions~same-denominator',
-      pictureLabels: ['g', 'u', 'x'],
-      title: 'Compare: same denominator',
-      use: 'Use this for “Which is more, 3/8 or 5/8?”',
-      assumptions: [
-        'Same denominator: both wholes are cut into the same equal parts.',
-        'Then more shaded parts means the bigger fraction: 5/8 > 3/8.',
-        'Both fractions are parts of the same whole.',
-      ],
-      variables: [
-        whole('b', 'b', 'Parts in each whole', 1, 8),
-        whole('a', 'a', 'First shaded', 0, 8),
-        whole('c', 'c', 'Second shaded', 0, 8),
-        whole('g', 'g', 'Difference in shaded parts', 0, 8),
-        { ...whole('u', 'u', 'First not shaded', 0, 8), derived: true },
-        { ...whole('x', 'x', 'Second not shaded', 0, 8), derived: true },
-      ],
-      relations: [
-        firstLeft.relation,
-        secondLeft.relation,
-        {
-          id: 'g = parts between a and c',
-          display: '{a} and {c} shaded parts are {g} apart',
-          words: 'Difference between {a} and {c} = {g}',
-          // With the parts known: "3/8 < 5/8, 2 parts apart"; without: "3 parts < 5 parts".
-          check: (v) => {
-            const sign = v.a! > v.c! ? '>' : v.a! < v.c! ? '<' : '=';
-            const apart = `${v.g} ${v.g === 1 ? 'part' : 'parts'} apart`;
-            return v.b === undefined
-              ? `${v.a} shaded ${sign} ${v.c} shaded, ${apart}`
-              : `${v.a}/${v.b} ${sign} ${v.c}/${v.b}, ${apart}`;
-          },
-          vars: ['g', 'a', 'c'],
-          residual: (v) => v.g! - Math.abs(v.a! - v.c!),
-          solve: {
-            g: (v) => Math.abs(v.a! - v.c!),
-            a: (v) => [v.c! + v.g!, v.c! - v.g!],
-            c: (v) => [v.a! - v.g!, v.a! + v.g!],
-          },
-        },
-      ],
-      steps: {
-        'b = a + u': firstLeft.steps,
-        'b = c + x': secondLeft.steps,
-        'g = parts between a and c': {
-          g: {
-            expr: (v) => (v.a! >= v.c! ? '{a} − {c}' : '{c} − {a}'),
-            how: 'The parts are the same size, so compare the shaded parts. Take the smaller from the bigger.',
-            note: (v) =>
-              v.b === undefined
-                ? ''
-                : `(${v.a}/${v.b} ${v.a! > v.c! ? '>' : v.a! < v.c! ? '<' : '='} ${v.c}/${v.b})`,
-          },
-          a: {
-            expr: (v) => (v.a! >= v.c! ? '{c} + {g}' : '{c} − {g}'),
-            how: 'Start from the second fraction’s shaded parts and move by the difference.',
-            note: (v) => (v.g! > 0 && v.c! - v.g! >= 0 && v.a! > v.c! ? `(or ${v.c! - v.g!})` : ''),
-          },
-          c: {
-            expr: (v) => (v.a! >= v.c! ? '{a} − {g}' : '{a} + {g}'),
-            how: 'Start from the first fraction’s shaded parts and move by the difference.',
-            note: (v) => (v.g! > 0 && v.a! + v.g! <= 8 && v.c! < v.a! ? `(or ${v.a! + v.g!})` : ''),
-          },
-        },
-      },
-      example: { b: 8, a: 3, c: 5, g: 2, u: 5, x: 3 },
-      startWith: ['b', 'a', 'c'],
-      representation: {
-        kind: 'fractionBars',
-        rows: [
-          { num: 'a', den: 'b' },
-          { num: 'c', den: 'b' },
-        ],
-        controls: ['b', 'a', 'c'],
-      },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const firstLeft = plus(
-      'b = a + u',
-      ['a', 'u', 'b'],
-      ['shaded parts', 'first not shaded', 'first parts in the whole'],
-      '{a} shaded + {u} not shaded = {b} parts',
-    );
-    const secondLeft = plus(
-      'd = a + x',
-      ['a', 'x', 'd'],
-      ['shaded parts', 'second not shaded', 'second parts in the whole'],
-      '{a} shaded + {x} not shaded = {d} parts',
-    );
-    // Nothing shaded: both fractions are 0, so they are equal whatever the parts.
-    const sign = (v: Values) => (v.a === 0 || v.b === v.d ? '=' : v.b! < v.d! ? '>' : '<');
-    return {
-      id: 'm.3.compare-fractions~same-numerator',
-      pictureLabels: ['g', 'u', 'x'],
-      title: 'Compare: same numerator',
-      use: 'Use this for “Which is more, 2/3 or 2/6?”',
-      assumptions: [
-        'Same numerator: both fractions shade the same number of parts.',
-        'Fewer parts in the whole means bigger parts, so that fraction is bigger: 2/3 > 2/6.',
-        'Both fractions are parts of the same whole.',
-      ],
-      variables: [
-        whole('a', 'a', 'Shaded parts', 0, 8),
-        whole('b', 'b', 'First parts in the whole', 1, 8),
-        whole('d', 'd', 'Second parts in the whole', 1, 8),
-        { ...whole('g', 'g', 'Difference in parts', 0, 7), derived: true },
-        { ...whole('u', 'u', 'First not shaded', 0, 8), derived: true },
-        { ...whole('x', 'x', 'Second not shaded', 0, 8), derived: true },
-      ],
-      relations: [
-        firstLeft.relation,
-        secondLeft.relation,
-        {
-          id: 'g = parts between b and d',
-          display: '{b} parts and {d} parts are {g} apart',
-          words: 'Difference between {b} and {d} = {g}',
-          // With the shaded parts known: "2/3 > 2/6, 3 parts apart".
-          check: (v) => {
-            const apart = `${v.g} ${v.g === 1 ? 'part' : 'parts'} apart`;
-            return v.a === undefined
-              ? `${v.b} parts and ${v.d} parts, ${apart}`
-              : `${v.a}/${v.b} ${sign(v)} ${v.a}/${v.d}, ${apart}`;
-          },
-          vars: ['g', 'b', 'd'],
-          residual: (v) => v.g! - Math.abs(v.b! - v.d!),
-          solve: {
-            g: (v) => Math.abs(v.b! - v.d!),
-            b: (v) => [v.d! + v.g!, v.d! - v.g!],
-            d: (v) => [v.b! - v.g!, v.b! + v.g!],
-          },
-        },
-      ],
-      steps: {
-        'b = a + u': firstLeft.steps,
-        'd = a + x': secondLeft.steps,
-        'g = parts between b and d': {
-          g: {
-            expr: (v) => (v.b! >= v.d! ? '{b} − {d}' : '{d} − {b}'),
-            how: 'The shaded parts are the same. The whole cut into fewer parts has bigger parts, so it is the bigger fraction.',
-            note: (v) => (v.a === undefined ? '' : `(${v.a}/${v.b} ${sign(v)} ${v.a}/${v.d})`),
-          },
-          b: {
-            expr: (v) => (v.b! >= v.d! ? '{d} + {g}' : '{d} − {g}'),
-            how: 'Start from the second whole’s parts and move by the difference.',
-          },
-          d: {
-            expr: (v) => (v.b! >= v.d! ? '{b} − {g}' : '{b} + {g}'),
-            how: 'Start from the first whole’s parts and move by the difference.',
-          },
-        },
-      },
-      example: { a: 2, b: 3, d: 6, g: 3, u: 1, x: 4 },
-      startWith: ['a', 'b', 'd'],
-      representation: {
-        kind: 'fractionBars',
-        rows: [
-          { num: 'a', den: 'b' },
-          { num: 'a', den: 'd' },
-        ],
-        controls: ['a', 'b', 'd'],
       },
     } satisfies ModuleDef;
   })(),

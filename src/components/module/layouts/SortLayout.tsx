@@ -59,6 +59,7 @@ export function SortLayout({ spec }: { spec: Spec }) {
   return (
     <View style={styles.wrap}>
       <Text style={[styles.question, { color: c.text }]}>{spec.question}</Text>
+      <Text style={[styles.how, { color: c.textMuted }]}>Tap a card, then tap its group.</Text>
       {/* The cards still to sort. */}
       <View style={styles.cards}>
         {done ? (
@@ -147,6 +148,7 @@ export function SortLayout({ spec }: { spec: Spec }) {
 const styles = StyleSheet.create({
   wrap: { paddingHorizontal: space.lg, gap: space.md },
   question: { fontSize: font.body, fontWeight: '600', textAlign: 'center' },
+  how: { fontSize: font.caption + 1, textAlign: 'center', marginTop: -space.sm },
   cards: {
     flexDirection: 'row',
     flexWrap: 'wrap',

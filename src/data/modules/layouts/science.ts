@@ -675,7 +675,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Shine a flashlight at each material.',
       'Some let the light through. Some block it. Shiny ones bounce it.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What does light do when it hits it?',
     bins: [
@@ -705,7 +704,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A property is something you can observe: hard, soft, bendy, shiny.',
       'Sort by one property at a time. Here it is: does it bend?',
-      'Tap a card, then tap its group.',
     ],
     question: 'Does it bend?',
     bins: [
@@ -731,7 +729,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Heating and cooling change things.',
       'Melted ice can freeze again. A cooked egg stays cooked.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Can the change be undone?',
     bins: [
@@ -784,7 +781,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Seeds travel away from the parent plant.',
       'Light seeds fly. Sticky seeds ride on fur. Tasty seeds go with animals.',
-      'Tap a card, then tap its group.',
     ],
     question: 'How does the seed travel?',
     bins: [
@@ -808,11 +804,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     id: 's.2.erosion-landforms~map',
     title: 'Land and water on a map',
     use: 'Use this to sort the places on a map into land and water.',
-    assumptions: [
-      'A map shows where the land and the water are.',
-      'Blue on a map is water.',
-      'Tap a card, then tap its group.',
-    ],
+    assumptions: ['A map shows where the land and the water are.', 'Blue on a map is water.'],
     question: 'Is it land or water?',
     bins: [
       { id: 'land', label: 'Land', why: 'Mountains, hills and valleys are shapes of the land.' },
@@ -835,7 +827,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Some changes to the land happen in a day. Some take many years.',
       'Wind and water wear the land away slowly.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Does it change the land fast or slowly?',
     bins: [
@@ -1482,7 +1473,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Every device takes energy in and gives energy out in another form.',
       'Most of these take in electric current from a battery or a plug.',
       'Some give out two kinds: a toaster glows and heats. Sort each by its main job.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What does the device mainly give out when it is switched on?',
     bins: [
@@ -1530,7 +1520,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Put the object in a circuit with a battery and a bulb.',
       'If the bulb lights, current flows through the object.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Does the bulb light when it is in the circuit?',
     bins: [
@@ -1601,7 +1590,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A message can travel as a pattern: flashes, colors, beats or beeps.',
       'Light patterns are seen. Sound patterns are heard.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What carries the pattern?',
     bins: [
@@ -1714,7 +1702,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Every part helps a plant or animal survive, grow or make young.',
       'Some parts are on the outside, like thorns and shells.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What does this part help with?',
     bins: [
@@ -1793,7 +1780,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Most volcanoes and earthquakes happen in lines along the edges of oceans.',
       'Those lines are where pieces of Earth’s crust meet.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Where is it on a map of volcanoes and earthquakes?',
     bins: [
@@ -1821,7 +1807,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Energy for heat, light and electric current comes from natural resources.',
       'Burning coal, oil and gas puts smoke and gases into the air.',
       'Renewable does not mean harmless: a dam changes a river.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Will this energy source run out?',
     bins: [
@@ -1856,7 +1841,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'People cannot stop floods, earthquakes, wildfires or hurricanes.',
       'They can build and plan to lessen the harm.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Which hazard does this protect against?',
     bins: [
@@ -1956,7 +1940,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Stir a spoonful into a cup of water and wait a minute.',
       'A material that dissolves seems to disappear, but its particles are still there.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Does it dissolve in water?',
     bins: [
@@ -1989,7 +1972,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Hold a magnet close to the object and see if it is pulled.',
       'Not every metal is pulled by a magnet.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Does a magnet pull it?',
     bins: [
@@ -2012,7 +1994,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Signs of a new substance: bubbles of gas, a new color, heat or light, a solid forming.',
       'A mixture can be separated again: with a filter, a magnet or by letting the water evaporate.',
       'Dissolving does not make a new substance.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Did mixing make a new substance?',
     bins: [
@@ -2123,7 +2104,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Every food web starts with the sun.',
       'Arrows in a food web point the way matter and energy move: from the eaten to the eater.',
       'Decomposers return matter to the soil for plants to use again.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What is its role in the food web?',
     bins: [
@@ -2239,7 +2219,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Earth has four spheres: rock, water, air and living things.',
       'The spheres touch and change each other: rain wears rock, roots split it, wind moves sand.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Which sphere is it part of?',
     bins: [
@@ -2393,7 +2372,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'As Earth goes around the sun, the night side faces different stars.',
       'Some star patterns near the North Star are seen all year.',
       'These are for the evening sky in the northern United States.',
-      'Tap a card, then tap its group.',
     ],
     question: 'When is it seen in the evening sky?',
     bins: [
@@ -2416,7 +2394,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'People use Earth’s air, water, land and living things every day.',
       'Communities can change what they do to protect them.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What does this action protect most?',
     bins: [

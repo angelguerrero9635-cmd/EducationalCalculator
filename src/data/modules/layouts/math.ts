@@ -357,7 +357,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A flat shape lies on the paper. A solid shape takes up space.',
       'A ball is a sphere. A box is a cube. A can is a cylinder.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Is it flat or solid?',
     bins: [
@@ -417,11 +416,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     id: 'm.K.shapes-2d-3d~rolls',
     title: 'Does it roll or stack?',
     use: 'Use this to find which solids roll and which stack.',
-    assumptions: [
-      'A solid with a curved side rolls.',
-      'A solid with flat sides stacks.',
-      'Tap a card, then tap its group.',
-    ],
+    assumptions: ['A solid with a curved side rolls.', 'A solid with flat sides stacks.'],
     question: 'Does it roll, stack, or both?',
     bins: [
       { id: 'rolls', label: 'Rolls', why: 'It has a curved side, so it rolls. It will not stack.' },
@@ -649,7 +644,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Halves are 2 equal parts. Fourths are 4 equal parts.',
       'If one part is bigger, the parts are not equal.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Are the parts equal?',
     bins: [
@@ -1191,13 +1185,94 @@ export const MATH_LAYOUTS: LayoutDef[] = [
 
   // ── Grade 3 ──
   {
+    kind: 'explore',
+    id: 'm.3.arithmetic-patterns',
+    assumptions: [
+      'A row of the times table counts by its row number.',
+      'A pattern you can explain always works, not only on this table.',
+      'Even numbers split into two equal groups.',
+    ],
+    figure: { kind: 'timesTable' },
+    scenes: [
+      {
+        label: 'The 4s row',
+        table: { op: '×', rows: [4] },
+        lines: ['Each step along the row adds 4 more.', '4, 8, 12, 16: the 4s row counts by 4s.'],
+      },
+      {
+        label: 'Even rows',
+        table: { op: '×', rows: [2, 4, 6, 8, 10] },
+        lines: [
+          'Every number in an even row is even.',
+          'Even × any number splits into two equal groups.',
+        ],
+      },
+      {
+        label: 'Odd times odd',
+        table: { op: '×', cells: 'odd' },
+        lines: ['Odd × odd is the only way to get an odd product.'],
+      },
+      {
+        label: 'Turn-around facts',
+        table: { op: '×', mirror: true },
+        lines: ['4 × 7 and 7 × 4 sit across the diagonal. They are equal.'],
+      },
+      {
+        label: 'Doubles',
+        table: { op: '×', rows: [2, 4] },
+        lines: ['Each number in the 4s row is double the one in the 2s row.'],
+      },
+      {
+        label: 'The 9s row',
+        table: { op: '×', rows: [9] },
+        lines: ['The tens digit goes up 1 and the ones digit goes down 1.'],
+      },
+      {
+        label: 'The 5s row',
+        table: { op: '×', rows: [5] },
+        lines: ['Every number ends in 0 or 5.'],
+      },
+      {
+        label: 'Addition table',
+        table: { op: '+', cells: 'even' },
+        lines: ['Even + even and odd + odd are even. Even + odd is odd.'],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.3.arithmetic-patterns~even-odd',
+    title: 'Even or odd answer?',
+    use: 'Use this to tell if an answer is even or odd without working it out.',
+    assumptions: [
+      'An even number times any number is even.',
+      'Odd + odd is even. Even + odd is odd.',
+    ],
+    question: 'Is the answer even or odd?',
+    bins: [
+      { id: 'even', label: 'Even', why: 'It splits into two equal groups with none left over.' },
+      { id: 'odd', label: 'Odd', why: 'One is left over after pairs.' },
+    ],
+    cards: [
+      { label: '4 × 7', bin: 'even' },
+      { label: '6 × 9', bin: 'even' },
+      { label: '2 × 5', bin: 'even' },
+      { label: '3 × 5', bin: 'odd' },
+      { label: '7 × 7', bin: 'odd' },
+      { label: '9 × 1', bin: 'odd' },
+      { label: '8 + 6', bin: 'even' },
+      { label: '5 + 9', bin: 'even' },
+      { label: '3 + 4', bin: 'odd' },
+      { label: '10 + 7', bin: 'odd' },
+    ],
+  },
+  {
     kind: 'sort',
     id: 'm.3.quadrilaterals',
     assumptions: [
       'A quadrilateral is a shape with 4 straight sides.',
       'A rectangle has 4 right angles. A rhombus has 4 equal sides.',
       'A square is both: it is a rectangle and a rhombus.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Which does it have: 4 right angles, 4 equal sides, both, or neither?',
     bins: [
@@ -1207,13 +1282,441 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { id: 'neither', label: 'Neither', why: 'Still a quadrilateral: 4 straight sides.' },
     ],
     cards: [
-      { label: 'Square', bin: 'both' },
-      { label: 'Rectangle (long)', bin: 'angles' },
-      { label: 'Rectangle (tall)', bin: 'angles' },
-      { label: 'Rhombus (leaning)', bin: 'sides' },
-      { label: 'Parallelogram', bin: 'neither' },
-      { label: 'Trapezoid', bin: 'neither' },
-      { label: 'Kite', bin: 'neither' },
+      {
+        label: 'Shape A',
+        bin: 'both',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 15],
+            [85, 15],
+            [85, 85],
+            [15, 85],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape B',
+        bin: 'both',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 5],
+            [95, 50],
+            [50, 95],
+            [5, 50],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape C',
+        bin: 'angles',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 30],
+            [95, 30],
+            [95, 70],
+            [5, 70],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape D',
+        bin: 'angles',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [30, 5],
+            [70, 5],
+            [70, 95],
+            [30, 95],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape E',
+        bin: 'sides',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 80],
+            [60, 80],
+            [90, 40],
+            [40, 40],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape F',
+        bin: 'sides',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 2],
+            [80, 50],
+            [50, 98],
+            [20, 50],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape G',
+        bin: 'neither',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 80],
+            [65, 80],
+            [95, 25],
+            [35, 25],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape H',
+        bin: 'neither',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [20, 25],
+            [80, 25],
+            [95, 80],
+            [5, 80],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape I',
+        bin: 'neither',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 5],
+            [80, 35],
+            [50, 95],
+            [20, 35],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Shape J',
+        bin: 'neither',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 20],
+            [60, 20],
+            [90, 80],
+            [10, 80],
+          ],
+          marks: true,
+        },
+      },
+    ],
+  },
+
+  {
+    kind: 'sort',
+    id: 'm.3.quadrilaterals~is-quadrilateral',
+    title: 'Quadrilateral or not?',
+    use: 'Use this to tell a quadrilateral from other shapes.',
+    assumptions: [
+      'A quadrilateral has 4 straight sides and 4 corners.',
+      'Its sides join up: the shape is closed.',
+    ],
+    question: 'Is it a quadrilateral?',
+    bins: [
+      { id: 'yes', label: 'Quadrilateral', why: '4 straight sides and 4 corners, closed.' },
+      {
+        id: 'no',
+        label: 'Not a quadrilateral',
+        why: 'Wrong number of sides, a curved side, or not closed.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Trapezoid',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [20, 25],
+            [80, 25],
+            [95, 80],
+            [5, 80],
+          ],
+        },
+      },
+      {
+        label: 'Kite',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 5],
+            [80, 35],
+            [50, 95],
+            [20, 35],
+          ],
+        },
+      },
+      {
+        label: 'Rhombus',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 80],
+            [60, 80],
+            [90, 40],
+            [40, 40],
+          ],
+        },
+      },
+      {
+        label: 'Rectangle',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 30],
+            [95, 30],
+            [95, 70],
+            [5, 70],
+          ],
+        },
+      },
+      {
+        label: 'Arrowhead',
+        bin: 'yes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 10],
+            [90, 50],
+            [10, 90],
+            [35, 50],
+          ],
+        },
+      },
+      {
+        label: 'Triangle',
+        bin: 'no',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 90],
+            [95, 90],
+            [50, 10],
+          ],
+        },
+      },
+      {
+        label: 'Pentagon',
+        bin: 'no',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 5],
+            [95, 40],
+            [78, 95],
+            [22, 95],
+            [5, 40],
+          ],
+        },
+      },
+      { label: 'Circle', bin: 'no', figure: { kind: 'circle' } },
+      {
+        label: 'Open 4-sided shape',
+        bin: 'no',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 90],
+            [10, 10],
+            [90, 10],
+            [90, 90],
+          ],
+          open: true,
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.3.compare-fractions~which-greater',
+    title: 'Which fraction is greater?',
+    use: 'Use this to compare two fractions of the same whole.',
+    assumptions: [
+      'Same bottom number: the parts are the same size. More parts is more.',
+      'Same top number: fewer, bigger parts is more.',
+      'Compare only fractions of the same whole.',
+    ],
+    question: 'Which fraction is greater?',
+    bins: [
+      { id: 'first', label: 'First', why: 'It covers more of the same whole.' },
+      { id: 'second', label: 'Second', why: 'It covers more of the same whole.' },
+      { id: 'equal', label: 'Equal', why: 'They cover the same amount.' },
+    ],
+    cards: [
+      {
+        label: '3/8 or 5/8',
+        bin: 'second',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [3, 8],
+            [5, 8],
+          ],
+        },
+      },
+      {
+        label: '2/3 or 2/6',
+        bin: 'first',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [2, 3],
+            [2, 6],
+          ],
+        },
+      },
+      {
+        label: '1/4 or 1/2',
+        bin: 'second',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [1, 4],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '5/6 or 3/6',
+        bin: 'first',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [5, 6],
+            [3, 6],
+          ],
+        },
+      },
+      {
+        label: '3/4 or 3/8',
+        bin: 'first',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [3, 4],
+            [3, 8],
+          ],
+        },
+      },
+      {
+        label: '2/4 or 1/2',
+        bin: 'equal',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [2, 4],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '4/8 or 1/2',
+        bin: 'equal',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [4, 8],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '1/3 or 1/6',
+        bin: 'first',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [1, 3],
+            [1, 6],
+          ],
+        },
+      },
+      {
+        label: '2/8 or 2/3',
+        bin: 'second',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [2, 8],
+            [2, 3],
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.3.mass-liquid-volume~which-unit',
+    title: 'Grams or kilograms?',
+    use: 'Use this to pick grams or kilograms for an object.',
+    assumptions: ['A paper clip is about 1 gram.', 'A textbook is about 1 kilogram.'],
+    question: 'Would you weigh it in grams or kilograms?',
+    bins: [
+      { id: 'g', label: 'Grams', why: 'Light things: a paper clip is about 1 gram.' },
+      { id: 'kg', label: 'Kilograms', why: 'Heavy things: a textbook is about 1 kilogram.' },
+    ],
+    cards: [
+      { label: 'Paper clip', bin: 'g' },
+      { label: 'Grape', bin: 'g' },
+      { label: 'Pencil', bin: 'g' },
+      { label: 'Apple', bin: 'g' },
+      { label: 'Letter', bin: 'g' },
+      { label: 'Bicycle', bin: 'kg' },
+      { label: 'Dog', bin: 'kg' },
+      { label: 'Watermelon', bin: 'kg' },
+      { label: 'Bag of potatoes', bin: 'kg' },
+      { label: 'Child', bin: 'kg' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.3.mass-liquid-volume~about-a-liter',
+    title: 'More or less than a liter?',
+    use: 'Use this to estimate whether a container holds more or less than 1 liter.',
+    assumptions: [
+      'A big water bottle holds about 1 liter.',
+      'Compare each container with that bottle.',
+    ],
+    question: 'Does it hold more or less than 1 liter?',
+    bins: [
+      { id: 'less', label: 'Less than 1 liter', why: 'It holds less than a big water bottle.' },
+      { id: 'more', label: 'More than 1 liter', why: 'It holds more than a big water bottle.' },
+    ],
+    cards: [
+      { label: 'Spoon', bin: 'less' },
+      { label: 'Cup', bin: 'less' },
+      { label: 'Juice box', bin: 'less' },
+      { label: 'Eyedropper', bin: 'less' },
+      { label: 'Bathtub', bin: 'more' },
+      { label: 'Bucket', bin: 'more' },
+      { label: 'Fish tank', bin: 'more' },
+      { label: 'Kitchen sink', bin: 'more' },
     ],
   },
 
@@ -1225,7 +1728,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'Parallel lines go the same way and never meet, like railroad tracks.',
       'Perpendicular lines meet at a right angle, like the corner of a page.',
       'Lines that meet at any other angle are neither.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Are the two lines parallel, perpendicular, or neither?',
     bins: [
@@ -1310,7 +1812,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'A line of symmetry folds a shape onto itself: both halves match exactly.',
       'Some shapes have no line of symmetry, some have one, some have several.',
       'A square has 4 lines of symmetry. A circle has more than you can count.',
-      'Tap a card, then tap its group.',
     ],
     question: 'How many lines of symmetry does it have?',
     bins: [
@@ -1399,7 +1900,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'A right triangle has one right angle, a square corner.',
       'Parallel sides go the same way and never meet.',
       'A four-sided shape can have two pairs of parallel sides, one pair, or none.',
-      'Tap a card, then tap its group.',
     ],
     question: 'Does it have a right angle? Does it have parallel sides?',
     bins: [
@@ -1578,7 +2078,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'A parallelogram has two pairs of parallel sides. A trapezoid has exactly one pair.',
       'A rectangle is a parallelogram with four right angles. A rhombus has four equal sides.',
       'A square is both: four right angles and four equal sides. Give the most exact name.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What is the most exact name for the four-sided shape?',
     bins: [
@@ -1720,7 +2219,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'An equilateral triangle has three equal sides. Its three angles are equal too.',
       'An isosceles triangle has two equal sides. A scalene triangle has no equal sides.',
       'A right triangle can be isosceles or scalene, never equilateral.',
-      'Tap a card, then tap its group.',
     ],
     question: 'How many sides are equal?',
     bins: [
@@ -1824,7 +2322,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'A right angle is a square corner. An acute angle is smaller, an obtuse angle is bigger.',
       'A right triangle has one right angle. An obtuse triangle has one obtuse angle.',
       'An acute triangle has three acute angles. A triangle can have only one angle that is not acute.',
-      'Tap a card, then tap its group.',
     ],
     question: 'What is its biggest angle: smaller than, equal to, or bigger than a square corner?',
     bins: [
