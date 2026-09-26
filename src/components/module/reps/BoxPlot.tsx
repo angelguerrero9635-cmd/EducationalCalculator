@@ -195,7 +195,7 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `The middle half of the data runs from ${formatNumber(vals[1]!)} to ${formatNumber(vals[3]!)}: ${formatNumber(iqr)} wide. Half the values are at or below the median, ${formatNumber(vals[2]!)}.`
+          ? `The middle half of the data runs from ${formatNumber(vals[1]!)} to ${formatNumber(vals[3]!)}, a width of ${formatNumber(iqr)}. Half the values are at or below the median, ${formatNumber(vals[2]!)}.`
           : `Type the five numbers: ${names.join(', ')}.`}
       </Caption>
       <Steppers

@@ -186,6 +186,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.ratios~tape',
+    sliders: true,
     title: 'Part-part-whole ratios',
     use: 'Use this when you know the ratio and the total, or how many more.',
     assumptions: [
@@ -968,6 +969,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     const pages: ModuleDef[] = [
       {
         id: 'm.6.divide-fractions',
+        sliders: true,
         assumptions: [
           'Dividing by a fraction is multiplying by its reciprocal: flip its numerator and denominator.',
           'The divisor is never 0, and the quotient is at most 40.',
@@ -1053,11 +1055,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           divisor: { num: 'c', den: 'd' },
           quotient: 'e',
           mode: 'groups',
-          wholes: 2,
+          wholes: 1,
         },
       },
       {
         id: 'm.6.divide-fractions~how-many-fit',
+        sliders: true,
         title: 'How many groups?',
         use: 'Use this for how many 3/4-cup servings are in 2 1/4 cups.',
         assumptions: [
@@ -1150,6 +1153,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.6.divide-fractions~how-much-in-one',
+        sliders: true,
         title: 'How much in one group?',
         use: 'Use this when 2/3 gallon fills 3/4 of a tank: how much fills the whole tank?',
         assumptions: [
@@ -1228,6 +1232,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Greatest common factor and least common multiple (6.NS.4) ──
   {
     id: 'm.6.gcf-lcm',
+    sliders: true,
     assumptions: [
       'A common factor divides both numbers with nothing left over.',
       '1 is a common factor of any two numbers.',
@@ -2357,13 +2362,13 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { r: 12, h: 5, e: 60 },
     startWith: ['r', 'h'],
+    // The line e = rh through 0: dragging moves along it with the pay per hour held.
     representation: {
-      kind: 'coordinatePlane',
-      x: 'h',
-      y: 'e',
-      trail: { across: 1, up: 'r' },
-      extent: 10,
-      quadrants: 1,
+      kind: 'plot',
+      x: { var: 'h', min: 0, max: 10 },
+      y: { var: 'e', min: 0, max: 150 },
+      params: ['r'],
+      autoRange: true,
     },
   },
 

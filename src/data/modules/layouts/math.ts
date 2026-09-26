@@ -2927,7 +2927,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'The order of the words is the order of the numbers: cats to dogs is 2:3.',
       'A ratio can compare a part with the whole: cats to all the animals is 2:5.',
     ],
-    question: 'Which ratio does it describe?',
+    question: 'A shelter has 2 cats and 3 dogs. Which ratio does it describe?',
     bins: [
       { id: '2:3', label: '2:3', why: 'Cats to dogs: 2 cats for every 3 dogs.' },
       { id: '3:2', label: '3:2', why: 'Dogs to cats: 3 dogs for every 2 cats.' },
@@ -3678,12 +3678,12 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     title: 'Histograms',
     use: 'Use this to read how data spreads across equal intervals.',
     assumptions: [
-      'Each bar counts the students whose time falls in that interval.',
+      'Each bar counts the students whose time to get to school, in minutes, falls in that interval.',
       'The intervals are the same width and don’t overlap.',
       'Change the bars to see where most of the data is.',
     ],
     columns: ['0–9', '10–19', '20–29', '30–39', '40–49'],
-    rowLabel: 'Students (minutes to get to school)',
+    rowLabel: 'Students',
     unit: 'students',
     max: 12,
     step: 1,

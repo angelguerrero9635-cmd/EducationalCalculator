@@ -96,12 +96,20 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     use: 'Use this to estimate a cell’s length from how many fit across the field of view.',
     unitSystems: ['metric'],
     assumptions: [
-      'A micrometer (µm) is a thousandth of a millimeter. Most cells are 10 to 100 µm long.',
+      'A micrometer (µm) is a thousandth of a millimeter. Most cells are 10 to 100 µm long; onion skin cells are bigger, about 200 to 400 µm.',
       'With a 10× eyepiece the circle is about 4,500 µm across at 40×, 1,800 µm at 100× and 450 µm at 400×.',
       'Count the cells end to end across the middle of the circle.',
     ],
     variables: [
-      { id: 'f', symbol: 'f', name: 'Field of view', unit: 'µm', min: 100, max: 5000, step: 10 },
+      {
+        id: 'f',
+        symbol: 'f',
+        name: 'Width of the field of view',
+        unit: 'µm',
+        min: 100,
+        max: 5000,
+        step: 10,
+      },
       whole('n', 'n', 'Cells across', 1, 100),
       { id: 's', symbol: 's', name: 'Cell length', unit: 'µm', min: 1, max: 5000 },
     ],
@@ -109,7 +117,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'f = n × s',
         display: '{f} ÷ {n} = {s}',
-        words: 'Field of view ÷ cells across = cell length',
+        words: 'Width of the field of view ÷ cells across = cell length',
         check: (v: Values) => `${v.n} × ${fmt(v.s!)} = ${fmt(v.f!)}`,
         vars: ['f', 'n', 's'],
         residual: (v: Values) => v.f! - v.n! * v.s!,
@@ -151,7 +159,14 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       whole('a', 'a', 'Side in cm', 1, 10),
       { id: 'S', symbol: 'S', name: 'Surface area in cm²', min: 6, max: 600, derived: true },
       { id: 'V', symbol: 'V', name: 'Volume in cm³', min: 1, max: 1000, derived: true },
-      { id: 'r', symbol: 'r', name: 'Surface for each cm³', min: 0.6, max: 6, derived: true },
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Surface in cm² for each cm³',
+        min: 0.6,
+        max: 6,
+        derived: true,
+      },
     ],
     relations: [
       {
@@ -173,7 +188,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'r = S ÷ V',
         display: '{S} ÷ {V} = {r}',
-        words: 'Surface area ÷ volume = surface for each cm³',
+        words: 'Surface area ÷ volume = surface in cm² for each cm³',
         check: (v: Values) => `${fmt(v.r!)} × ${fmt(v.V!)} = ${fmt(v.S!)}`,
         vars: ['r', 'S', 'V'],
         residual: (v: Values) => v.r! * v.V! - v.S!,
@@ -187,7 +202,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'V = a × a × a': {
         V: {
           expr: '{a} × {a} × {a}',
-          how: 'Side × side for one layer, times the side for the layers.',
+          how: 'Side × side cubes fill one layer, and there are as many layers as the side.',
         },
       },
       'r = S ÷ V': {
@@ -200,6 +215,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     },
     example: { a: 2, S: 24, V: 8, r: 3 },
     startWith: ['a'],
+    pictureLabels: ['S', 'V'],
     representation: {
       kind: 'table',
       sweep: 'a',
@@ -273,7 +289,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'g/cm³ means grams in each cubic centimeter. 1 mL is 1 cm³, so g/mL is the same.',
     ],
     variables: [
-      { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0, max: 10000 },
+      { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0.1, max: 10000 },
       { id: 'V', symbol: 'V', name: 'Volume', unit: 'cm³', min: 0.1, max: 10000, step: 0.1 },
       { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/cm³', min: 0.01, max: 25, step: 0.01 },
     ],
@@ -481,7 +497,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       assumptions: [
         'The dew point is the temperature at which water vapor starts to condense into droplets.',
         'Rising air cools, and clouds form where it has cooled to its dew point.',
-        'Each 1 °C between the air temperature and the dew point puts the cloud base about 125 m higher.',
+        'Each 1 °C between the air temperature and the dew point puts the cloud base about 125 m higher above the ground.',
         'The air temperature is at least the dew point.',
       ],
       variables: [
@@ -508,25 +524,25 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         {
           id: 'd',
           symbol: 'd',
-          name: 'Difference',
+          name: 'Temperature difference',
           unit: '°C',
           min: 0,
           max: 50,
           step: 0.5,
           multipleOf: 0.5,
         },
-        { id: 'h', symbol: 'h', name: 'Cloud base', unit: 'm', min: 0, max: 6250 },
+        { id: 'h', symbol: 'h', name: 'Height of the cloud base', unit: 'm', min: 0, max: 6250 },
       ],
       relations: [
         {
           ...gap.relation,
           display: 'From {p} up to {t}: {d}',
-          words: 'From the dew point up to the air temperature = difference',
+          words: 'How far the air temperature is above the dew point = temperature difference',
         },
         {
           id: 'h = d × 125',
           display: '{d} × 125 = {h}',
-          words: 'Difference × 125 = cloud base',
+          words: 'Temperature difference × 125 = height of the cloud base',
           vars: ['h', 'd'],
           residual: (v: Values) => v.h! - v.d! * 125,
           solve: { h: (v: Values) => v.d! * 125, d: (v: Values) => v.h! / 125 },
@@ -583,7 +599,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     assumptions: [
       'Cold fronts often move about 25 to 50 km each hour; warm fronts about half as fast.',
       'A front can speed up, slow down or stall, so the answer is an estimate.',
-      'Distances to 3,000 km.',
+      'Weather maps and radar show how far away a front is.',
     ],
     variables: [
       { id: 'd', symbol: 'd', name: 'Distance to the front in km', min: 0, max: 3000 },
@@ -609,7 +625,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'd = s × t': {
         t: {
           expr: '{d} ÷ {s}',
-          how: 'Each hour the front covers its speed: how many hours fit in the distance?',
+          how: 'Each hour the front moves its speed in km, so count how many of those fit in the distance.',
         },
         d: { expr: '{s} × {t}', how: 'Each hour covers the speed: multiply by the hours.' },
         s: { expr: '{d} ÷ {t}', how: 'Share the distance over the hours.' },
@@ -627,6 +643,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     use: 'Use this to find a plate’s speed in centimeters a year from distance and time.',
     assumptions: [
       'A hot spot under Hawaii makes volcanoes, and the Pacific Plate carries each island away from it.',
+      'Kauai is about 500 km from the hot spot, and its oldest rock is about 5 million years old.',
       'Plates move a few centimeters a year, about as fast as fingernails grow.',
       'The speed is an average: plates creep, and faults can slip suddenly in earthquakes.',
     ],
@@ -636,18 +653,18 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'k',
         symbol: 'k',
-        name: 'Kilometers each million years',
+        name: 'Speed in km each million years',
         min: 0,
         max: 2000,
         derived: true,
       },
-      { id: 'c', symbol: 'c', name: 'Centimeters each year', min: 0.1, max: 20, step: 0.1 },
+      { id: 'c', symbol: 'c', name: 'Speed in cm each year', min: 0.1, max: 20, step: 0.1 },
     ],
     relations: [
       {
         id: 'd = k × t',
         display: '{d} ÷ {t} = {k}',
-        words: 'Distance ÷ time = kilometers each million years',
+        words: 'Distance ÷ time = speed in km each million years',
         check: (v: Values) => `${fmt(v.k!)} × ${fmt(v.t!)} = ${fmt(v.d!)}`,
         vars: ['d', 'k', 't'],
         residual: (v: Values) => v.d! - v.k! * v.t!,
@@ -660,7 +677,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'c = k ÷ 10',
         display: '{k} ÷ 10 = {c}',
-        words: 'Kilometers each million years ÷ 10 = centimeters each year',
+        words: 'Speed in km each million years ÷ 10 = speed in cm each year',
         check: (v: Values) => `${fmt(v.c!)} × 10 = ${fmt(v.k!)}`,
         vars: ['c', 'k'],
         residual: (v: Values) => v.c! * 10 - v.k!,
@@ -676,7 +693,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'c = k ÷ 10': {
         c: {
           expr: '{k} ÷ 10',
-          how: 'A kilometer is 100,000 cm and a million years is 1,000,000 years, so divide by 10.',
+          how: '1 km in a million years is 100,000 cm in 1,000,000 years: 0.1 cm a year. So divide by 10.',
         },
         k: { expr: '{c} × 10', how: 'Each centimeter a year is 10 km each million years.' },
       },
@@ -698,15 +715,15 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'Layers squeeze thinner as they harden into rock, so the answer is an estimate.',
     ],
     variables: [
-      { id: 'd', symbol: 'd', name: 'Layer thickness in cm', min: 0.1, max: 100000 },
-      { id: 'r', symbol: 'r', name: 'Centimeters each 1,000 years', min: 0.01, max: 100 },
-      { id: 't', symbol: 't', name: 'Time in thousands of years', min: 0, max: 10000000 },
+      { id: 'd', symbol: 'd', name: 'Layer thickness in cm', min: 0.1, max: 10000 },
+      { id: 'r', symbol: 'r', name: 'Rate in cm each 1,000 years', min: 0.1, max: 100 },
+      { id: 't', symbol: 't', name: 'Time in thousands of years', min: 0, max: 100000 },
     ],
     relations: [
       {
         id: 'd = r × t',
         display: '{d} ÷ {r} = {t}',
-        words: 'Layer thickness ÷ centimeters each 1,000 years = time in thousands of years',
+        words: 'Layer thickness ÷ rate = time in thousands of years',
         check: (v: Values) => `${fmt(v.r!)} × ${fmt(v.t!)} = ${fmt(v.d!)}`,
         vars: ['d', 'r', 't'],
         residual: (v: Values) => v.d! - v.r! * v.t!,
@@ -722,6 +739,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         t: {
           expr: '{d} ÷ {r}',
           how: 'Each 1,000 years adds one rate’s worth, so divide the thickness by the rate.',
+          note: (v) => `(${fmt(v.t! * 1000)} years)`,
         },
         d: { expr: '{r} × {t}', how: 'Multiply the rate by the thousands of years.' },
         r: { expr: '{d} ÷ {t}', how: 'Divide the thickness by the thousands of years.' },

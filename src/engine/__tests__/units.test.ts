@@ -102,12 +102,12 @@ describe('unit context', () => {
       mixed: false,
       linked: true,
     });
-    // Middle-school science is metric-only (Mixed still offered).
+    // Middle-school science is metric-only: no US system and no Mixed.
     const density = mod('s.6.density');
     expect(unitOptions(density.variables, density.unitSystems)).toEqual({
       systems: ['metric'],
       metricUnits: true,
-      mixed: true,
+      mixed: false,
       linked: false,
     });
     // Electrical units are shared, so there is no US system and Mixed would add nothing; the

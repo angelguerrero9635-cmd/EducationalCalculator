@@ -117,7 +117,9 @@ export function unitOptions(
       : [],
     // Mixed (any unit, from either system) only adds something when a value has both metric
     // and US units; whole-number lessons (e.g. Grade 3 area) don't offer it.
+    // Metric-only pages (middle-school science) offer no US units, Mixed included.
     mixed:
+      allowed.includes('us') &&
       !convertible.some((v) => v.integer) &&
       convertible.some((v) => {
         const all = unitsOf(getUnit(v.unit)!.dimension);

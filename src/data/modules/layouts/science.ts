@@ -2461,7 +2461,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         id: 'yes',
         label: 'Cell theory says it',
-        why: 'Microscope observations have supported this for almost 200 years.',
+        why: 'Microscope observations have supported this for more than 150 years.',
       },
       { id: 'no', label: 'Not true', why: 'Observations and experiments show this is false.' },
     ],
@@ -2561,7 +2561,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         id: 'both',
         label: 'Plant and animal cells',
-        why: 'Every plant and animal cell needs these to live.',
+        why: 'Both plant and animal cells have these.',
       },
     ],
     cards: [
@@ -2572,7 +2572,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Cell membrane', bin: 'both' },
       { label: 'Cytoplasm', bin: 'both' },
       { label: 'Mitochondria', bin: 'both' },
-      { label: 'Ribosomes', bin: 'both' },
     ],
   },
   {
@@ -2625,12 +2624,12 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         figure: { kind: 'cell', type: 'animal', shape: 'branched' },
       },
       {
-        label: 'Bacterium from yogurt',
+        label: 'Cell from yogurt',
         bin: 'bacterium',
         figure: { kind: 'cell', type: 'bacterium', shape: 'rod' },
       },
       {
-        label: 'Bacterium from soil',
+        label: 'Cell from soil',
         bin: 'bacterium',
         figure: { kind: 'cell', type: 'bacterium', shape: 'round' },
       },
@@ -2717,7 +2716,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     use: 'Use this to put the levels of the body in order, from smallest to largest.',
     assumptions: [
       'Each level is made of the one before it.',
-      'A heart is one organ in one system.',
+      'The heart is one organ of the circulatory system.',
     ],
     question: 'Put the levels in order, smallest first.',
     stages: [
@@ -2753,7 +2752,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         return 'The heart rate did not rise. Exercise for two full minutes, then count again.';
       if (Math.abs(last - rest) <= 10)
         return `Exercise raised the heart rate from ${rest} to ${peak} beats per minute. It fell back to ${last} as you rested.`;
-      return `Exercise raised the heart rate from ${rest} to ${peak}. It has not yet fallen back to the resting rate.`;
+      return `Exercise raised the heart rate from ${rest} to ${peak} beats per minute. It has not yet fallen back to the resting rate.`;
     },
   },
   {
@@ -2780,6 +2779,8 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         return `The catch distance fell from ${first} cm to ${last} cm. Your brain stored what it learned, so you responded sooner.`;
       if (Math.max(...values) - Math.min(...values) <= 2)
         return 'The distance stayed about the same. Signals take time to travel from eye to brain to hand.';
+      if (last > first && values.every((x, i) => i === 0 || x >= values[i - 1]!))
+        return `The catch distance rose from ${first} cm to ${last} cm. Rest your eyes and hand, then try again.`;
       return 'The distances go up and down. Rest, then try again with the same start.';
     },
   },
@@ -2887,8 +2888,8 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     title: 'Sun or gravity?',
     use: 'Use this to sort water cycle steps by what drives them.',
     assumptions: [
-      'Energy from the sun turns liquid water and ice into vapor, and melts ice.',
-      'Gravity pulls water down and downhill.',
+      'Ask what moves the water: heat from the sun lifts it as vapor or melts ice; gravity pulls it down.',
+      'Condensation is left out: cooling drives it, not the sun or gravity.',
     ],
     question: 'What drives this step?',
     bins: [
@@ -3252,9 +3253,9 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     title: 'Igneous, sedimentary or metamorphic?',
     use: 'Use this to sort rocks by how they formed.',
     assumptions: [
-      'Crystals, glass or gas holes mean the rock cooled from melted rock.',
-      'Grains, pebbles, shells or thin layers mean the rock formed from sediment.',
-      'Bands or flattened grains mean heat and pressure changed an older rock.',
+      'Crystals, glass or gas holes in a rock that cooled from magma or lava make it igneous.',
+      'Grains, pebbles or shells cemented in layers make a rock sedimentary.',
+      'A rock made from an older rock by heat and pressure is metamorphic, even with crystals or layers.',
     ],
     question: 'How did this rock form?',
     bins: [
@@ -3320,7 +3321,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Rain and rivers carry the sand downhill' },
       { label: 'The sand settles in layers on a lake or sea floor' },
       { label: 'New layers pile on top and squeeze the sand' },
-      { label: 'Minerals in the water glue the grains together into sandstone' },
+      { label: 'Minerals glue the grains into sandstone' },
     ],
   },
 ];
