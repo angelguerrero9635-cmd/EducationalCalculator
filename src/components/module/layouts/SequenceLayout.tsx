@@ -145,6 +145,9 @@ const styles = StyleSheet.create({
   },
   chip: {
     minHeight: 44,
+    // A long stage wraps inside the screen instead of running off it.
+    maxWidth: '100%',
+    flexShrink: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: space.sm,
@@ -152,7 +155,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: radius.md,
   },
-  chipText: { fontSize: font.body },
+  chipText: { fontSize: font.body, textAlign: 'center', flexShrink: 1 },
   done: { fontSize: font.title, fontWeight: '700' },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
   strip: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, justifyContent: 'center' },
