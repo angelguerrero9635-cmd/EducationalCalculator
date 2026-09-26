@@ -82,6 +82,18 @@ dark mode. Formatting on screen: operators and units, true minus, thousands sepa
 sentence case, curly quotes. The picture and the sliders should fit one phone screen with the
 first input row.
 
+**R. Art (graphic designer).** Follow `docs/MODULE_GUIDE.md`, "Art direction". A real
+object should look like the thing: a jug of water, a copper penny, a wooden ruler, rock layers.
+Report one drawn as a grey box. Report shading on an abstract diagram (number line, grid, graph,
+measured shape). Check both themes:
+
+- dark mode: text on a colored fill stays readable (on amber, wood or copper);
+- a highlight or gloss doesn't wash out a value or hide a label;
+- the drag handle stays visible on every fill.
+
+Report a color that seems to mean something the text never says. Report a hardcoded color in a
+picture, or a gradient id not from `usePaintIds`.
+
 **F2. Interaction (assessment specialist).** Every value the picture shows can be changed from
 the picture or its slider, both ways; a "?" value doesn't draw the example's number; the
 picture matches a diagram from a real exam item or textbook for the lesson (name it).

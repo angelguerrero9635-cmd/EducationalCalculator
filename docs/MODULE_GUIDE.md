@@ -143,6 +143,36 @@ forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `rep
 a name in `meta.ts`, its variables in `modules.test.ts`, a check in `harness/pictures.ts`,
 and a lesson that uses it, or a gallery module until one exists.
 
+**Art direction.** Real things look real; ideas stay flat.
+
+- **Objects are drawn in their materials**, with the theme's material colors (`src/theme.ts`,
+  "Materials") and the shading helpers in `reps/paint.tsx`. For example:
+  - water in glass jugs and cylinders, with a surface and a meniscus;
+  - a red-liquid thermometer on a board;
+  - copper pennies and silver coins with ridged edges, and green bills;
+  - a clock with a metal rim;
+  - a scale and balance in metal, with two-color counters;
+  - rock layers in rock colors, with grains and a fossil fish and shell;
+  - wooden base-ten blocks, rulers, crates and solids;
+  - pattern blocks in their classroom colors;
+  - a lit microscope field with green cells;
+  - copper circuit wires.
+- **Shading is light from the top left:**
+  - `TopLight` over flat faces and bars;
+  - `Sheen` across round things (tubes, ribbons, cylinders);
+  - `Ball` for counters and spheres;
+  - a soft `FloorShadow` or `BoxShadow` under objects that stand on something.
+  - Dark mode takes less shine (`sheen` in the palette), so dark fills don't turn grey.
+- **Abstract diagrams stay flat:** number lines, grids, graphs, measured shapes, tables and trees.
+  Shading there would add noise to what is read exactly.
+- **Color never carries a meaning the text doesn't state.** Where a lesson says "solid" and
+  "open" counters (ten frames, compare rows), that encoding stays. A second amount uses
+  `chartSecond` (the yellow of two-color counters) beside the highlight.
+- **Every color is a token.** Components hardcode no colors. Gradient ids come from
+  `usePaintIds`, so two pictures on one page never share an id.
+- **No outside images.** The app bundles no photos and makes no network calls, and licensed
+  material is never used. Pictures are drawn in code.
+
 **Sliders.** Not every picture needs them. A slider row appears only for kinds where sweeping a
 value teaches something the input boxes can't and the picture has no handle or tap of its own
 (`src/components/module/sliderPolicy.ts`: fraction bars, the fraction and whole-number area

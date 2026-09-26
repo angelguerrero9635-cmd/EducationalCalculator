@@ -12,7 +12,7 @@ import Svg, {
 } from 'react-native-svg';
 
 import type { CardFigure as Spec, CardIcon } from '@/data/modules/layouts';
-import { chart } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -455,13 +455,16 @@ function Solid({
   ink: string;
   shade: string;
 }) {
+  // Wooden classroom solids: faces in wood, the side turned away in darker wood.
+  const c = usePalette();
   const line = { stroke: ink, strokeWidth: chart.stroke, strokeLinejoin: 'round' as const };
   const hidden = { stroke: ink, strokeWidth: 1, strokeDasharray: '3 2' };
   switch (shape) {
     case 'sphere':
       return (
         <G>
-          <Circle cx={24} cy={24} r={18} fill={shade} fillOpacity={0.25} {...line} />
+          <Circle cx={24} cy={24} r={18} fill={c.wood} {...line} />
+          <Circle cx={18} cy={17} r={5} fill={c.shine} fillOpacity={0.35 * c.sheen} />
           <Path d="M 6 24 A 18 6 0 0 0 42 24" fill="none" stroke={ink} strokeWidth={1} />
           <Path d="M 6 24 A 18 6 0 0 1 42 24" fill="none" {...hidden} />
         </G>
@@ -476,39 +479,28 @@ function Solid({
       const dy = 9;
       return (
         <G>
-          <Path
-            d={`M ${x} ${y} l ${dx} ${-dy} h ${fw} l ${-dx} ${dy} Z`}
-            fill={shade}
-            fillOpacity={0.15}
-            {...line}
-          />
+          <Path d={`M ${x} ${y} l ${dx} ${-dy} h ${fw} l ${-dx} ${dy} Z`} fill={c.wood} {...line} />
           <Path
             d={`M ${x + fw} ${y} l ${dx} ${-dy} v ${fh} l ${-dx} ${dy} Z`}
-            fill={shade}
-            fillOpacity={0.4}
+            fill={c.woodDark}
             {...line}
           />
-          <Rect x={x} y={y} width={fw} height={fh} fill="none" {...line} />
+          <Rect x={x} y={y} width={fw} height={fh} fill={c.wood} {...line} />
         </G>
       );
     }
     case 'cylinder':
       return (
         <G>
-          <Path
-            d="M 10 12 L 10 38 A 14 5 0 0 0 38 38 L 38 12"
-            fill={shade}
-            fillOpacity={0.25}
-            {...line}
-          />
+          <Path d="M 10 12 L 10 38 A 14 5 0 0 0 38 38 L 38 12" fill={c.wood} {...line} />
           <Path d="M 10 38 A 14 5 0 0 1 38 38" fill="none" {...hidden} />
-          <Ellipse cx={24} cy={12} rx={14} ry={5} fill={shade} fillOpacity={0.15} {...line} />
+          <Ellipse cx={24} cy={12} rx={14} ry={5} fill={c.rock1} {...line} />
         </G>
       );
     case 'cone':
       return (
         <G>
-          <Path d="M 24 5 L 10 38 A 14 5 0 0 0 38 38 Z" fill={shade} fillOpacity={0.25} {...line} />
+          <Path d="M 24 5 L 10 38 A 14 5 0 0 0 38 38 Z" fill={c.wood} {...line} />
           <Path d="M 10 38 A 14 5 0 0 1 38 38" fill="none" {...hidden} />
         </G>
       );
@@ -665,8 +657,26 @@ function Bar({ f, ink, shade }: { f: Extract<Spec, { kind: 'bar' }>; ink: string
   );
 }
 
-/** Small drawings of everyday things, in outline with one shaded part. */
+/** Small drawings of everyday things, in outline, each in its own color (a green leaf, a red crayon). */
 function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string }) {
+  const c = usePalette();
+  const colors: Partial<Record<CardIcon, string>> = {
+    sun: c.chartSecond,
+    moon: c.paper,
+    feather: c.paper,
+    leaf: c.life,
+    crayon: c.blockRed,
+    sock: c.blockBlue,
+    brick: c.copper,
+    watermelon: c.life,
+    backpack: c.blockBlue,
+    'bowling ball': c.blockBlue,
+    door: c.wood,
+    eraser: c.blockRed,
+    bed: c.blockBlue,
+    bus: c.chartSecond,
+  };
+  const tint = colors[icon] ?? shade;
   const line = {
     stroke: ink,
     strokeWidth: chart.stroke,
@@ -677,7 +687,7 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
     case 'sun':
       return (
         <G>
-          <Circle cx={24} cy={24} r={9} fill={shade} {...line} />
+          <Circle cx={24} cy={24} r={9} fill={tint} {...line} />
           {Array.from({ length: 8 }, (_, i) => {
             const a = (i * Math.PI) / 4;
             return (
@@ -694,35 +704,25 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
         </G>
       );
     case 'moon':
-      return <Path d="M 30 8 A 16 16 0 1 0 30 40 A 12 16 0 1 1 30 8 Z" fill={shade} {...line} />;
+      return <Path d="M 30 8 A 16 16 0 1 0 30 40 A 12 16 0 1 1 30 8 Z" fill={tint} {...line} />;
     case 'feather':
       return (
         <G>
-          <Path
-            d="M 10 40 C 14 20 26 8 40 6 C 38 20 28 34 12 38 Z"
-            fill={shade}
-            fillOpacity={0.4}
-            {...line}
-          />
+          <Path d="M 10 40 C 14 20 26 8 40 6 C 38 20 28 34 12 38 Z" fill={tint} {...line} />
           <Line x1={8} y1={42} x2={34} y2={14} {...line} />
         </G>
       );
     case 'leaf':
       return (
         <G>
-          <Path
-            d="M 8 40 C 8 18 22 8 40 8 C 40 28 28 40 8 40 Z"
-            fill={shade}
-            fillOpacity={0.4}
-            {...line}
-          />
+          <Path d="M 8 40 C 8 18 22 8 40 8 C 40 28 28 40 8 40 Z" fill={tint} {...line} />
           <Line x1={8} y1={40} x2={32} y2={16} {...line} />
         </G>
       );
     case 'crayon':
       return (
         <G transform="rotate(-30 24 24)">
-          <Rect x={8} y={19} width={26} height={10} fill={shade} {...line} />
+          <Rect x={8} y={19} width={26} height={10} fill={tint} {...line} />
           <Path d="M 34 19 L 42 24 L 34 29 Z" fill="none" {...line} />
         </G>
       );
@@ -730,15 +730,14 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
       return (
         <Path
           d="M 16 6 H 28 V 26 L 38 32 A 6 6 0 0 1 34 42 L 18 38 A 6 6 0 0 1 16 34 Z"
-          fill={shade}
-          fillOpacity={0.4}
+          fill={tint}
           {...line}
         />
       );
     case 'brick':
       return (
         <G>
-          <Rect x={5} y={14} width={38} height={20} fill={shade} fillOpacity={0.5} {...line} />
+          <Rect x={5} y={14} width={38} height={20} fill={tint} {...line} />
           <Line x1={5} y1={24} x2={43} y2={24} stroke={ink} strokeWidth={1} />
           <Line x1={24} y1={14} x2={24} y2={24} stroke={ink} strokeWidth={1} />
           <Line x1={14} y1={24} x2={14} y2={34} stroke={ink} strokeWidth={1} />
@@ -748,7 +747,7 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
     case 'watermelon':
       return (
         <G>
-          <Ellipse cx={24} cy={24} rx={19} ry={14} fill={shade} fillOpacity={0.4} {...line} />
+          <Ellipse cx={24} cy={24} rx={19} ry={14} fill={tint} {...line} />
           {[-8, 0, 8].map((dx) => (
             <Path
               key={dx}
@@ -764,16 +763,7 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
       return (
         <G>
           <Path d="M 18 10 A 6 6 0 0 1 30 10" fill="none" {...line} />
-          <Rect
-            x={11}
-            y={10}
-            width={26}
-            height={32}
-            rx={7}
-            fill={shade}
-            fillOpacity={0.4}
-            {...line}
-          />
+          <Rect x={11} y={10} width={26} height={32} rx={7} fill={tint} {...line} />
           <Rect
             x={16}
             y={26}
@@ -789,7 +779,7 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
     case 'bowling ball':
       return (
         <G>
-          <Circle cx={24} cy={24} r={18} fill={shade} {...line} />
+          <Circle cx={24} cy={24} r={18} fill={tint} {...line} />
           {[
             [19, 16],
             [27, 15],
@@ -797,6 +787,13 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
           ].map(([x, y]) => (
             <Circle key={x} cx={x} cy={y} r={2.2} fill={ink} />
           ))}
+          <Path
+            d="M 12 28 A 13 13 0 0 0 22 38"
+            stroke={c.shine}
+            strokeOpacity={0.5}
+            strokeWidth={2}
+            fill="none"
+          />
         </G>
       );
     case 'paper clip':
@@ -810,7 +807,7 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
     case 'door':
       return (
         <G>
-          <Rect x={13} y={4} width={22} height={40} fill={shade} fillOpacity={0.3} {...line} />
+          <Rect x={13} y={4} width={22} height={40} fill={tint} {...line} />
           <Circle cx={30} cy={25} r={1.8} fill={ink} />
         </G>
       );
@@ -818,14 +815,14 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
       return (
         <G transform="rotate(-20 24 24)">
           <Rect x={8} y={17} width={32} height={14} rx={3} fill="none" {...line} />
-          <Rect x={8} y={17} width={12} height={14} rx={3} fill={shade} {...line} />
+          <Rect x={8} y={17} width={12} height={14} rx={3} fill={tint} {...line} />
         </G>
       );
     case 'bed':
       return (
         <G>
           <Path d="M 6 14 V 40 M 42 26 V 40 M 6 30 H 42" fill="none" {...line} />
-          <Rect x={6} y={24} width={36} height={6} fill={shade} fillOpacity={0.5} {...line} />
+          <Rect x={6} y={24} width={36} height={6} fill={tint} {...line} />
           <Rect
             x={9}
             y={19}
@@ -841,16 +838,7 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
     case 'bus':
       return (
         <G>
-          <Rect
-            x={4}
-            y={12}
-            width={40}
-            height={22}
-            rx={4}
-            fill={shade}
-            fillOpacity={0.4}
-            {...line}
-          />
+          <Rect x={4} y={12} width={40} height={22} rx={4} fill={tint} {...line} />
           {[8, 18, 28].map((x) => (
             <Rect
               key={x}
@@ -882,17 +870,40 @@ function CellFigure({
 }) {
   const shape = f.shape ?? (f.type === 'plant' ? 'box' : f.type === 'bacterium' ? 'rod' : 'round');
   const wall = f.type !== 'animal';
+  // Cytoplasm tinted as a stained slide shows it: green plant cells, pink animal cells.
+  const c = usePalette();
+  const cyto = f.type === 'plant' ? c.life : f.type === 'animal' ? c.rock6 : c.chartSecond;
   const outline =
     shape === 'box' ? (
-      <Rect x={6} y={10} width={36} height={28} rx={2} fill="none" stroke={ink} strokeWidth={1.5} />
+      <Rect
+        x={6}
+        y={10}
+        width={36}
+        height={28}
+        rx={2}
+        fill={cyto}
+        fillOpacity={0.45}
+        stroke={ink}
+        strokeWidth={1.5}
+      />
     ) : shape === 'long' ? (
-      <Ellipse cx={24} cy={24} rx={21} ry={8} fill="none" stroke={ink} strokeWidth={1.5} />
+      <Ellipse
+        cx={24}
+        cy={24}
+        rx={21}
+        ry={8}
+        fill={cyto}
+        fillOpacity={0.45}
+        stroke={ink}
+        strokeWidth={1.5}
+      />
     ) : shape === 'branched' ? (
       <Path
         d="M 18 24 L 4 14 M 18 24 L 4 34 M 30 24 L 46 24 M 30 24 L 44 12"
         stroke={ink}
         strokeWidth={1.5}
-        fill="none"
+        fill={cyto}
+        fillOpacity={0.45}
       />
     ) : shape === 'rod' ? (
       <Rect
@@ -901,17 +912,34 @@ function CellFigure({
         width={28}
         height={14}
         rx={7}
-        fill="none"
+        fill={cyto}
+        fillOpacity={0.45}
         stroke={ink}
         strokeWidth={1.5}
       />
     ) : (
-      <Circle cx={24} cy={24} r={17} fill="none" stroke={ink} strokeWidth={1.5} />
+      <Circle
+        cx={24}
+        cy={24}
+        r={17}
+        fill={cyto}
+        fillOpacity={0.45}
+        stroke={ink}
+        strokeWidth={1.5}
+      />
     );
   return (
     <G>
       {shape === 'branched' ? (
-        <Circle cx={24} cy={24} r={9} fill="none" stroke={ink} strokeWidth={1.5} />
+        <Circle
+          cx={24}
+          cy={24}
+          r={9}
+          fill={cyto}
+          fillOpacity={0.45}
+          stroke={ink}
+          strokeWidth={1.5}
+        />
       ) : null}
       {outline}
       {/* A wall: a second line just outside the membrane. */}
@@ -961,7 +989,7 @@ function CellFigure({
               cy={y}
               rx={3.5}
               ry={2}
-              fill={shade}
+              fill={c.lifeDeep}
               stroke={ink}
               strokeWidth={0.75}
             />
@@ -981,6 +1009,7 @@ function RockFigure({
   ink: string;
   shade: string;
 }) {
+  const c = usePalette();
   const outline = 'M 6 30 L 10 14 L 24 7 L 38 11 L 43 26 L 36 40 L 16 42 Z';
   const dots = (n: number, r: number, seed: number) =>
     Array.from({ length: n }, (_, i) => {
@@ -1101,9 +1130,27 @@ function RockFigure({
       );
       break;
   }
+  // Each rock in a color like its own: pale granite, gray basalt, tan sandstone …
+  const base: Record<typeof texture, string> = {
+    crystals: c.rock3,
+    fine: c.rock2,
+    glassy: c.rock2,
+    holes: c.rock5,
+    grains: c.rock1,
+    pebbles: c.rock4,
+    shells: c.rock3,
+    layers: c.rock6,
+    bands: c.rock2,
+  };
   return (
     <G>
-      <Path d={outline} fill="none" stroke={ink} strokeWidth={1.75} strokeLinejoin="round" />
+      <Path
+        d={outline}
+        fill={base[texture] ?? c.rock3}
+        stroke={ink}
+        strokeWidth={1.75}
+        strokeLinejoin="round"
+      />
       {inside}
     </G>
   );

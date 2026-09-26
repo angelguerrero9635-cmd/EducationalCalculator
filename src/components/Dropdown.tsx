@@ -63,7 +63,7 @@ export function Dropdown<T extends string>({
       </Pressable>
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable
-          style={[styles.backdrop, { backgroundColor: 'rgba(0,0,0,0.35)' }]}
+          style={[styles.backdrop, { backgroundColor: c.scrim }]}
           accessibilityLabel="Close menu"
           onPress={() => setOpen(false)}
         >

@@ -33,6 +33,8 @@ const light = {
   heroFrom: '#4F46E5',
   heroTo: '#7C3AED',
   onHero: '#FFFFFF',
+  /** The dimmed page behind a menu or sheet. */
+  scrim: 'rgba(0, 0, 0, 0.35)',
 
   // Charts and diagrams (can be styled separately from the rest of the app).
   /** Main lines, shapes' outlines and labels. */
@@ -134,6 +136,7 @@ const dark: Palette = {
   heroFrom: '#3730A3',
   heroTo: '#6D28D9',
   onHero: '#FFFFFF',
+  scrim: 'rgba(0, 0, 0, 0.55)',
 
   chartInk: '#EEF0F6',
   chartMuted: '#9AA1B2',

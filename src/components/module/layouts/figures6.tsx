@@ -93,6 +93,9 @@ function Tag({
 
 export function CellFigure6({ cell, c }: { cell: NonNullable<Scene['cell']>; c: Palette }) {
   const on = (part: string) => cell.part === part;
+  // Cytoplasm tinted as a stained slide shows it (green plant, pink animal, tan bacterium);
+  // the part being read about still turns the highlight.
+  const cyto = cell.type === 'plant' ? c.life : cell.type === 'animal' ? c.rock6 : c.chartSecond;
   const ink = (part: string) => (on(part) ? c.chartHighlight : c.chartInk);
   const width = (part: string) => (on(part) ? chart.strokeHeavy : chart.strokeLight);
   return (
@@ -163,8 +166,8 @@ export function CellFigure6({ cell, c }: { cell: NonNullable<Scene['cell']>; c: 
               width={bw}
               height={bh}
               rx={bh / 2}
-              fill={on('cytoplasm') ? c.chartHighlight : c.chartFill}
-              fillOpacity={on('cytoplasm') ? 0.25 : 1}
+              fill={on('cytoplasm') ? c.chartHighlight : cyto}
+              fillOpacity={on('cytoplasm') ? 0.25 : 0.35}
               stroke={ink('membrane')}
               strokeWidth={width('membrane')}
             />,
@@ -204,8 +207,8 @@ export function CellFigure6({ cell, c }: { cell: NonNullable<Scene['cell']>; c: 
                 width={cw - 14}
                 height={ch - 14}
                 rx={4}
-                fill={on('cytoplasm') ? c.chartHighlight : c.chartFill}
-                fillOpacity={on('cytoplasm') ? 0.25 : 1}
+                fill={on('cytoplasm') ? c.chartHighlight : cyto}
+                fillOpacity={on('cytoplasm') ? 0.25 : 0.35}
                 stroke={ink('membrane')}
                 strokeWidth={width('membrane')}
               />
@@ -216,8 +219,8 @@ export function CellFigure6({ cell, c }: { cell: NonNullable<Scene['cell']>; c: 
                 cy={cy}
                 rx={cw / 2 - 4}
                 ry={ch / 2 - 4}
-                fill={on('cytoplasm') ? c.chartHighlight : c.chartFill}
-                fillOpacity={on('cytoplasm') ? 0.25 : 1}
+                fill={on('cytoplasm') ? c.chartHighlight : cyto}
+                fillOpacity={on('cytoplasm') ? 0.25 : 0.35}
                 stroke={ink('membrane')}
                 strokeWidth={width('membrane')}
               />
@@ -270,8 +273,8 @@ export function CellFigure6({ cell, c }: { cell: NonNullable<Scene['cell']>; c: 
                     cy={y0 + ch * fy}
                     rx={10}
                     ry={6}
-                    fill={on('chloroplasts') ? c.chartHighlight : c.chartSurface}
-                    fillOpacity={on('chloroplasts') ? 0.45 : 1}
+                    fill={on('chloroplasts') ? c.chartHighlight : c.lifeDeep}
+                    fillOpacity={on('chloroplasts') ? 0.45 : 0.8}
                     stroke={ink('chloroplasts')}
                     strokeWidth={width('chloroplasts')}
                   />

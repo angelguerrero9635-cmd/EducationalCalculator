@@ -5,6 +5,22 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Owner request: better-quality images for every diagram type
+
+- Before and after contact sheets were made for 70 picture kinds, in light and dark mode (one
+  page per kind, the picture only).
+- Two contrast problems came up and were fixed:
+  - silver coins' numbers in dark mode (`coinInk` and `pennyInk` tokens);
+  - the second tape color under light text (a darker `chartSecond` in dark mode).
+- The page-reviewer gets check **R. Art (graphic designer)**, which points to "Art direction"
+  in `MODULE_GUIDE.md`. It covers:
+  - objects drawn as grey boxes;
+  - shading on abstract diagrams;
+  - text contrast on colored fills in dark mode;
+  - handles lost on a fill;
+  - colors that carry meanings the text never states;
+  - hardcoded colors and gradient ids.
+
 ## Grade 6 math and science: two lesson-reviewers and two page-reviewers, 92 pages
 
 - Cost: math lesson 219k tokens (57 calls, 11 min), science lesson 144k (32 calls, 8 min),

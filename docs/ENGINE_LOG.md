@@ -5,6 +5,47 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Picture art pass (owner request: better-quality images for every diagram type)
+
+- Photos could not be used:
+  - Every image host (Wikimedia Commons, NASA, USGS, Unsplash, Pixabay, Openclipart) was
+    blocked from the build environment.
+  - The app makes no network calls, so images would have to be bundled.
+  - Licensed material is never used.
+    → Pictures are drawn in code in the style of photographs and classroom materials.
+- Diagrams were grey outlines with one indigo accent, so a jug of water, a penny and a crate
+  looked alike. Fixes:
+  - The palette has **materials**: water, glass, mercury, copper, silver, bills, wood, metal,
+    paper, six rock colors, plastic, life greens, pattern-block colors, a second counter color
+    (`chartSecond`), shadow, shade and shine. Each has light and dark values.
+  - `reps/paint.tsx` has the shading and object helpers:
+    - gradients: `Sheen`, `TopLight`, `Deepen`, `Glass`, `Metal`, `Ball`;
+    - shadows: `FloorShadow`, `BoxShadow`;
+    - objects: `LitRect`, `Crate`, `Tag`, `CounterDot`, `raised`;
+    - `usePaintIds`, which makes gradient ids unique on the page.
+- Redrawn:
+  - water and glass: the jug, the graduated cylinder (with meniscus and foot);
+  - instruments: thermometers on boards, the clock (metal rim, tapered hands), the scale, the
+    balance (metal dishes, two-color counters), the protractor (clear plastic), the wooden ruler
+    with satin ribbons;
+  - coins and bills (copper, silver, ridged edges);
+  - rock layers (strata colors, grains, fossils);
+  - classroom materials: base-ten blocks (wood with unit lines and depth), unit cubes (lit
+    faces), cube trains, pattern blocks (red, blue, green);
+  - the microscope field (eyepiece, lamp light, green cells);
+  - crates for forces;
+  - counters (ball-lit) in ten frames, arrays, dot sets, number bonds, pairs and compare rows;
+  - bars, tapes, fraction bars, shared wholes and percent bars (lit fills);
+  - the pie (depth), the wave (glow), the circuit (copper wires), the prism (see-through
+    faces), the wooden solids;
+  - the card icons and rocks in their colors, and cells tinted like a stained slide.
+- The drag handle was a hollow ring. → A white knob with an accent ring, a center dot and a
+  shadow.
+- Dark mode turned lit empty cells grey. → The palette's `sheen` scales every highlight; dark
+  uses 0.4.
+- Guard: `src/components/__tests__/colors.test.ts` fails on any hex or rgb literal in
+  components or screens. Dropdown's backdrop moved to a `scrim` token.
+
 ## Direction plans for K–5 (before the rebuild)
 
 - Four lesson reviewers planned K–2 math, Grade 3 math, Grades 4–5 math and K–3 science from
