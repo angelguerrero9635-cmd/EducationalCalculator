@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Line } from 'react-native-svg';
+import Svg, { Circle, Defs, Line, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { Text } from '@/components/Text';
@@ -9,6 +9,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
+import { Metal, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'clock' }>;
@@ -27,6 +28,7 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const m = rep.known(spec.minute) ? Math.round(rep.shown(spec.minute)) : 0;
   const minuteAngle = (m / 60) * 2 * Math.PI;
   const hourAngle = (((h % 12) + m / 60) / 12) * 2 * Math.PI;
+  const ids = usePaintIds('bezel', 'face');
   const digital = `${h}:${String(m).padStart(2, '0')}`;
   // Time words students hear: o’clock, quarter past, half past, quarter to.
   const words =
@@ -52,17 +54,37 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
             const at = (angle: number, len: number) =>
               [cx + len * Math.sin(angle), cy - len * Math.cos(angle)] as const;
             const [mx, my] = at(minuteAngle, r * 0.8);
-            const [hx, hy] = at(hourAngle, r * 0.5);
+            // A hand as a long thin diamond: wide near the middle, pointed at the tip, with a
+            // short tail past the center. Drawn again offset for its shadow.
+            const hand = (angle: number, len: number, width: number, dx = 0, dy = 0) => {
+              const [tx, ty] = at(angle, len);
+              const [bx, by] = at(angle + Math.PI, len * 0.14);
+              const [lx, ly] = at(angle - Math.PI / 2, width / 2);
+              const [rx, ry] = at(angle + Math.PI / 2, width / 2);
+              const [mx2, my2] = at(angle, len * 0.18);
+              const o = (x: number, y: number) => `${x + dx} ${y + dy}`;
+              return `M ${o(bx, by)} L ${o(lx - cx + mx2, ly - cy + my2)} L ${o(tx, ty)} L ${o(rx - cx + mx2, ry - cy + my2)} Z`;
+            };
             return (
               <>
                 <Svg width={w} height={ht}>
+                  <Defs>
+                    <Metal id={ids.bezel} light={c.metal} dark={c.metalDark} />
+                    <RadialGradient id={ids.face} cx="0.5" cy="0.5" r="0.5">
+                      <Stop offset="0.75" stopColor={c.paper} />
+                      <Stop offset="1" stopColor={c.chartSurface} />
+                    </RadialGradient>
+                  </Defs>
+                  {/* Shadow on the wall, the metal rim, then the face. */}
+                  <Circle cx={cx + 2} cy={cy + 4} r={r + 7} fill={c.shadow} />
+                  <Circle cx={cx} cy={cy} r={r + 7} fill={url(ids.bezel)} />
                   <Circle
                     cx={cx}
                     cy={cy}
                     r={r}
-                    fill={c.background}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeHeavy}
+                    fill={url(ids.face)}
+                    stroke={c.metalDark}
+                    strokeWidth={1}
                   />
                   {Array.from({ length: 60 }, (_, i) => {
                     const [x1, y1] = at((i / 60) * 2 * Math.PI, r - (i % 5 === 0 ? 10 : 5));
@@ -94,25 +116,11 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       </ChartText>
                     );
                   })}
-                  <Line
-                    x1={cx}
-                    y1={cy}
-                    x2={hx}
-                    y2={hy}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeHeavy + 3}
-                    strokeLinecap="round"
-                  />
-                  <Line
-                    x1={cx}
-                    y1={cy}
-                    x2={mx}
-                    y2={my}
-                    stroke={c.chartMuted}
-                    strokeWidth={chart.strokeHeavy}
-                    strokeLinecap="round"
-                  />
-                  <Circle cx={cx} cy={cy} r={6} fill={c.chartInk} />
+                  <Path d={hand(hourAngle, r * 0.5, 9, 2, 3)} fill={c.shadow} />
+                  <Path d={hand(minuteAngle, r * 0.8, 6, 2, 3)} fill={c.shadow} />
+                  <Path d={hand(hourAngle, r * 0.5, 9)} fill={c.chartInk} />
+                  <Path d={hand(minuteAngle, r * 0.8, 6)} fill={c.chartMuted} />
+                  <Circle cx={cx} cy={cy} r={6} fill={c.chartInk} stroke={c.metal} strokeWidth={2} />
                 </Svg>
                 <DragHandle
                   testID="drag-minute"

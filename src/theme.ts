@@ -52,6 +52,56 @@ const light = {
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
   chartNight: '#8A8E99',
+
+  // Materials: real objects in pictures (jugs of water, coins, wood, rock) drawn in their own
+  // colors, so a picture reads like the thing it shows. Shading is layered on with the sheen.
+  /** Water and other clear liquids. */
+  water: '#4FA3E3',
+  waterDeep: '#2677BD',
+  /** The lighter band at a liquid's surface. */
+  waterTop: '#A9D5F6',
+  /** A glass wall's tint, its outline and its shine. */
+  glass: '#EEF5FB',
+  glassEdge: '#8FA6BD',
+  glassShine: '#FFFFFF',
+  /** Thermometer liquid. */
+  mercury: '#E0453A',
+  /** Pennies. */
+  copper: '#D08A52',
+  copperDark: '#8E4F24',
+  /** Nickels, dimes and quarters. */
+  silver: '#DCE1E7',
+  silverDark: '#8A95A2',
+  /** Numbers stamped on silver coins and on pennies. */
+  coinInk: '#232833',
+  pennyInk: '#FFF7EE',
+  /** Dollar bills: paper and ink. */
+  bill: '#D5E8CB',
+  billInk: '#35613A',
+  /** Rulers, crates, meter sticks, the base of a balance. */
+  wood: '#E8C08A',
+  woodDark: '#B07F45',
+  /** Metal parts: scale bodies, pans, dials. */
+  metal: '#CDD3DB',
+  metalDark: '#7D8795',
+  /** A clock face, a dial or a card. */
+  paper: '#FFFDF8',
+  /** Rock layers, top to bottom: sandstone, shale, limestone, siltstone, mudstone, clay. */
+  rock1: '#EACB92',
+  rock2: '#A7B0BA',
+  rock3: '#DDD7C6',
+  rock4: '#C9A57E',
+  rock5: '#9C8A77',
+  rock6: '#D4B7A0',
+  /** Plastic tools (protractors, counters' tray). */
+  plastic: '#DCEBFF',
+  /** Living things: cells, leaves. */
+  life: '#8FCB8A',
+  lifeDeep: '#4E9A4E',
+  /** A soft shadow under objects, and the dark and light sides of the sheen. */
+  shadow: 'rgba(16, 24, 40, 0.16)',
+  shade: '#0B1020',
+  shine: '#FFFFFF',
 };
 
 export type Palette = typeof light;
@@ -82,6 +132,39 @@ const dark: Palette = {
   onChartHighlight: '#0D0F14',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
+
+  water: '#3C8BD0',
+  waterDeep: '#1F5E99',
+  waterTop: '#6FB2EA',
+  glass: '#1B2531',
+  glassEdge: '#6B8199',
+  glassShine: '#4A5E75',
+  mercury: '#F0645A',
+  copper: '#B8733F',
+  copperDark: '#6E3A1A',
+  silver: '#A7B0BB',
+  silverDark: '#5E6874',
+  coinInk: '#14171D',
+  pennyInk: '#FFF1E2',
+  bill: '#35503A',
+  billInk: '#BFE0B4',
+  wood: '#A67C4C',
+  woodDark: '#6E4F2E',
+  metal: '#4B5360',
+  metalDark: '#2B313B',
+  paper: '#20242E',
+  rock1: '#9C8453',
+  rock2: '#5D6570',
+  rock3: '#8A8676',
+  rock4: '#7F6448',
+  rock5: '#5B4E42',
+  rock6: '#806856',
+  plastic: '#22324A',
+  life: '#4F8A4B',
+  lifeDeep: '#2F6230',
+  shadow: 'rgba(0, 0, 0, 0.45)',
+  shade: '#000000',
+  shine: '#FFFFFF',
 };
 
 /**

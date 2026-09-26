@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Circle, Line, Rect } from 'react-native-svg';
+import Svg, { Circle, Defs, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, nowrap, useRep, Caption } from './common';
+import { Ball, BoxShadow, Glass, Sheen, url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'thermometers' }>;
 
@@ -26,6 +27,7 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
     ...shown.map((x) => (x === undefined ? spec.max : Math.ceil(x / 10) * 10)),
   );
   const unit = rep.unit(spec.items[0]!) ?? '';
+  const ids = usePaintIds('glass', 'sheen', 'bulb');
 
   return (
     <View>
@@ -43,10 +45,36 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={h}>
+                <Defs>
+                  <Glass id={ids.glass} />
+                  <Sheen id={ids.sheen} />
+                  <Ball id={ids.bulb} color={c.mercury} />
+                </Defs>
                 {spec.items.map((id, i) => {
                   const cx = slot * i + slot / 2 + 10;
                   const x = shown[i];
+                  // The board the thermometer is mounted on, wide enough for its numbers.
+                  const bx = cx - tube / 2 - 40;
+                  const bw = tube + 52;
                   return [
+                    <BoxShadow
+                      key={`s${id}`}
+                      x={bx}
+                      y={top - 14}
+                      width={bw}
+                      height={bottom - top + 40}
+                      r={10}
+                    />,
+                    <Rect
+                      key={`p${id}`}
+                      x={bx}
+                      y={top - 14}
+                      width={bw}
+                      height={bottom - top + 40}
+                      rx={10}
+                      fill={c.paper}
+                      stroke={c.chartGrid}
+                    />,
                     <Rect
                       key={`t${id}`}
                       x={cx - tube / 2}
@@ -54,18 +82,29 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       width={tube}
                       height={bottom - top + 6}
                       rx={tube / 2}
-                      fill={c.chartSurface}
-                      stroke={c.chartInk}
+                      fill={url(ids.glass)}
+                      stroke={c.glassEdge}
                       strokeWidth={chart.stroke}
                     />,
                     x === undefined ? null : (
                       <Rect
                         key={`f${id}`}
-                        x={cx - tube / 2 + 4}
+                        x={cx - tube / 2 + 5}
                         y={py(x)}
-                        width={tube - 8}
+                        width={tube - 10}
                         height={bottom - py(x) + 6}
-                        fill={c.chartHighlight}
+                        rx={(tube - 10) / 2}
+                        fill={c.mercury}
+                      />
+                    ),
+                    x === undefined ? null : (
+                      <Rect
+                        key={`h${id}`}
+                        x={cx - tube / 2 + 5}
+                        y={py(x)}
+                        width={tube - 10}
+                        height={bottom - py(x) + 6}
+                        fill={url(ids.sheen)}
                       />
                     ),
                     <Circle
@@ -73,8 +112,8 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       cx={cx}
                       cy={bottom + 12}
                       r={13}
-                      fill={x === undefined ? c.chartSurface : c.chartHighlight}
-                      stroke={c.chartInk}
+                      fill={x === undefined ? url(ids.glass) : url(ids.bulb)}
+                      stroke={c.glassEdge}
                       strokeWidth={chart.stroke}
                     />,
                     ...[

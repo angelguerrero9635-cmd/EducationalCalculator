@@ -72,7 +72,7 @@ function PictureWithSliders({ module, calc }: { module: ModuleDef; calc: Calcula
       style={[styles.representation, beside && styles.beside]}
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
     >
-      <View style={beside ? styles.pictureBeside : undefined}>
+      <View style={beside ? styles.pictureBeside : undefined} testID="picture">
         <RepresentationView spec={module.representation} calc={calc} />
         {module.pictureLabels ? <PictureLabels ids={module.pictureLabels} calc={calc} /> : null}
       </View>

@@ -117,16 +117,29 @@ export function DragHandle({
         WEB_DRAG_STYLE,
       ]}
     >
+      {/* A white knob with an accent ring and dot, lifted by a soft shadow: reads as "grab me". */}
       <View
         style={{
           width: chart.handle,
           height: chart.handle,
           borderRadius: chart.handle / 2,
           borderWidth: chart.handleRing,
-          borderColor: c.chartInk,
-          backgroundColor: c.background,
+          borderColor: c.chartHighlight,
+          backgroundColor: c.card,
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: `0 1px 3px ${c.shadow}, 0 0 0 1px ${c.shadow}`,
         }}
-      />
+      >
+        <View
+          style={{
+            width: chart.handle * 0.3,
+            height: chart.handle * 0.3,
+            borderRadius: chart.handle,
+            backgroundColor: c.chartHighlight,
+          }}
+        />
+      </View>
     </View>
   );
 }

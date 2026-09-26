@@ -1,12 +1,12 @@
 import { StyleSheet, View } from 'react-native';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
-import { chart, font, space, usePalette } from '@/theme';
+import { space } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { useRep, Caption } from './common';
+import { Coin } from './MoneyArt';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'coinRow' }>;
@@ -22,7 +22,6 @@ type CoinValue = (typeof COINS)[number]['value'];
 
 /** A row of one kind of coin, picked with the buttons; − / + change how many. */
 export function CoinRow({ spec, calc }: { spec: Spec; calc: Calculator }) {
-  const c = usePalette();
   const rep = useRep(calc);
   const cents = rep.known(spec.value) ? Math.round(rep.shown(spec.value)) : undefined;
   const coin = COINS.find((x) => x.cents === cents);
@@ -40,28 +39,7 @@ export function CoinRow({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <View style={styles.coins}>
         {coin
           ? Array.from({ length: n }, (_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.coin,
-                  {
-                    width: coin.mm * 1.5,
-                    height: coin.mm * 1.5,
-                    borderRadius: coin.mm,
-                    borderColor: c.chartInk,
-                    backgroundColor: coin.cents === 1 ? c.chartHighlight : c.chartFill,
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    fontSize: font.caption,
-                    color: coin.cents === 1 ? c.onChartHighlight : c.chartInk,
-                  }}
-                >
-                  {`${coin.cents}¢`}
-                </Text>
-              </View>
+              <Coin key={i} cents={coin.cents} d={coin.mm * 1.6} label={`${coin.cents}¢`} />
             ))
           : null}
       </View>
@@ -84,6 +62,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: space.md,
     minHeight: 40,
+    alignItems: 'center',
   },
-  coin: { borderWidth: chart.strokeLight, alignItems: 'center', justifyContent: 'center' },
 });

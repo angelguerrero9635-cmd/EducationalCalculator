@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Line, Path, Rect } from 'react-native-svg';
+import Svg, { Defs, Ellipse, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import { Ball, Deepen, Glass, Sheen, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'gradCylinder' }>;
@@ -27,6 +28,7 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const fit = useFrozen(Math.max(spec.max, niceCeil(after * 1.1)));
   const top = fit.value;
   const start = useRef({ before: 0, after: 0 });
+  const ids = usePaintIds('glass', 'sheen', 'water', 'rock');
   const step = top <= 100 ? 10 : top <= 250 ? 25 : top <= 500 ? 50 : 100;
 
   return (
@@ -67,24 +69,52 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
+                <Defs>
+                  <Glass id={ids.glass} />
+                  <Sheen id={ids.sheen} strength={0.8} />
+                  <Deepen id={ids.water} from={c.waterTop} to={c.water} />
+                  <Ball id={ids.rock} color={c.metalDark} />
+                </Defs>
+                {/* The foot the cylinder stands on, with its shadow. */}
+                <Ellipse cx={w / 2} cy={y0 + 12} rx={tubeW * 0.95} ry={5} fill={c.shadow} />
+                <Path
+                  d={`M ${x0 - tubeW * 0.35} ${y0 + 10} L ${x0 - tubeW * 0.2} ${y0} L ${x0 + tubeW * 1.2} ${y0} L ${x0 + tubeW * 1.35} ${y0 + 10} Z`}
+                  fill={c.glass}
+                  stroke={c.glassEdge}
+                  strokeWidth={chart.strokeLight}
+                  strokeLinejoin="round"
+                />
+                <Rect x={x0} y={y1 - 8} width={tubeW} height={y0 - y1 + 8} fill={url(ids.glass)} />
                 <Rect
                   x={x0}
                   y={Y(after)}
                   width={tubeW}
                   height={y0 - Y(after)}
-                  fill={c.chartHighlight}
-                  fillOpacity={0.18}
+                  fill={url(ids.water)}
+                  fillOpacity={0.85}
                 />
                 {/* The object at the bottom, under the water. */}
                 <Path
                   d={`M ${x0 + tubeW / 2 - rock} ${y0} q ${rock * 0.2} ${-rock} ${rock} ${-rock} q ${rock * 0.9} 0 ${rock} ${rock} z`}
-                  fill={c.chartMuted}
+                  fill={url(ids.rock)}
                   stroke={c.chartInk}
+                  strokeWidth={1}
                 />
+                {/* The water's surface curves down in the middle (the meniscus); read its bottom. */}
                 <Path
-                  d={`M ${x0} ${y1 - 8} L ${x0} ${y0} L ${x0 + tubeW} ${y0} L ${x0 + tubeW} ${y1 - 8}`}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.stroke}
+                  d={`M ${x0} ${Y(after) - 3} Q ${x0 + tubeW / 2} ${Y(after) + 3} ${x0 + tubeW} ${Y(after) - 3}`}
+                  stroke={c.waterDeep}
+                  strokeWidth={1}
+                  fill={c.waterTop}
+                  fillOpacity={0.6}
+                />
+                <Rect x={x0} y={y1 - 8} width={tubeW} height={y0 - y1 + 8} fill={url(ids.sheen)} />
+                <Path
+                  d={`M ${x0 - 5} ${y1 - 12} Q ${x0} ${y1 - 10} ${x0} ${y1 - 4} L ${x0} ${y0} L ${x0 + tubeW} ${y0} L ${x0 + tubeW} ${y1 - 8}`}
+                  stroke={c.glassEdge}
+                  strokeWidth={chart.strokeHeavy}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
                   fill="none"
                 />
                 {marks.map((m) => (
@@ -130,7 +160,7 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   strokeWidth={chart.stroke}
                 />
                 <ChartText
-                  x={x0 + tubeW + 8}
+                  x={x0 + tubeW + 18}
                   y={Y(before) + 4}
                   fontSize={chart.small}
                   fill={c.chartInk}
@@ -138,7 +168,7 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   {`before ${formatNumber(before)} mL`}
                 </ChartText>
                 <ChartText
-                  x={x0 + tubeW + 8}
+                  x={x0 + tubeW + 18}
                   y={Y(after) - 4}
                   fontSize={chart.small}
                   fill={c.chartHighlight}
