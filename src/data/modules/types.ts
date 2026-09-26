@@ -85,7 +85,10 @@ export type Representation =
       kind: 'tape';
       parts: string[];
       total: string;
-      /** The total is this many equal groups (a two-step problem): dashed lines mark them. */
+      /**
+       * The total is this many equal groups (a two-step problem): dashed lines mark them, up
+       * to 12; past that a label names them (86 groups of 23).
+       */
       groups?: string;
       /** The part the groups make up, when it isn't the whole bar (3 boxes of 8, and 5 more). */
       groupsPart?: string;
@@ -96,6 +99,8 @@ export type Representation =
       kind: 'tape';
       compare: [string, string];
       difference: string;
+      /** The bigger bar drawn as this many copies of the smaller one (3 times as many). */
+      times?: string;
       /** A sentence under the bars, with {id} for values, e.g. "Ben has {d} more than Ana." */
       caption?: string;
     }
@@ -355,7 +360,15 @@ export type Representation =
       extent: number;
     }
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
-  | { kind: 'grid100'; percent: string; caption?: { part: string; whole: string } }
+  | {
+      kind: 'grid100';
+      percent: string;
+      caption?: { part: string; whole: string };
+      /** A second grid beside the first, `second` squares shaded (compare 0.4 and 0.35). */
+      second?: string;
+      /** Whole grids, fully shaded, before the first: the ones of a decimal (1.35). */
+      wholes?: string;
+    }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
   | {
       kind: 'circle';
@@ -397,8 +410,8 @@ export type Representation =
       lower: string;
       upper: string;
       rounded: string;
-      /** The place rounded to, or the variable that holds it (10, 100, 1,000, …). */
-      to: 10 | 100 | string;
+      /** The place rounded to, or the variable that holds it (10, 100, 1,000, … or 1, 0.1, 0.01). */
+      to: number | string;
     }
   /**
    * Fractions on a number line from 0 to `wholes`: each whole cut into `denominator` equal
@@ -513,6 +526,19 @@ export type Representation =
    * other's; `parts[j][i]` is the product of top[i] and side[j]; `total` their sum.
    */
   | { kind: 'areaModel'; top: string[]; side: string[]; parts: string[][]; total: string }
+  /**
+   * The same, from the two factors: the picture splits each into its places (347 → 300, 40, 7;
+   * 2.35 → 2, 0.3, 0.05) and works out every box, so the module holds no part values.
+   */
+  | { kind: 'areaModel'; factors: [string, string]; total: string }
+  /**
+   * Division as an area model: the divisor down the side, the quotient split by place along
+   * the top (partial quotients), the amount each takes inside, and the remainder beside.
+   */
+  | {
+      kind: 'areaModel';
+      divide: { dividend: string; divisor: string; quotient: string; remainder?: string };
+    }
   /** Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. */
   | {
       kind: 'angles';
@@ -546,6 +572,11 @@ export type Representation =
       y: string;
       second?: { x: string; y: string };
       slope?: string;
+      /**
+       * The pattern's earlier points, back to the start: each one `across` less and `up` less
+       * than the next (numbers or variables), drawn as small dots and listed in a table.
+       */
+      trail?: { across: number | string; up: number | string };
       /** Largest |coordinate| drawn (grows to fit). */
       extent: number;
       quadrants: 1 | 4;
@@ -581,11 +612,40 @@ export type Representation =
       height: string;
       volume: string;
       max: number;
+      /**
+       * A second box joined to the first's right side (an L or a step), its bottom layer
+       * shaded apart; `total` is the two volumes together.
+       */
+      second?: { length: string; width: string; height: string; volume: string };
+      total?: string;
     }
-  /** Place-value chart: the digits of `value` in labelled columns, `decimals` places past the point. */
-  | { kind: 'placeValueChart'; value: string; decimals: number }
+  /**
+   * Place-value chart: the digits of `value` in labelled columns, `decimals` places (0–3) past
+   * the point. `highlight` outlines the column of that place value (100) with “× 10” and “÷ 10”
+   * to its neighbors; `from` draws the number before a × or ÷ by 10 in a row above, so the
+   * digits are seen moving; `compare` draws a second number under it and outlines the first
+   * place where the two differ.
+   */
+  | {
+      kind: 'placeValueChart';
+      value: string;
+      decimals: number;
+      highlight?: string;
+      from?: string;
+      compare?: string;
+    }
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
   | { kind: 'factorTree'; value: string; count?: string }
+  /**
+   * Every rectangle with `value` unit squares, one under another (1 × 12, 2 × 6, 3 × 4); the
+   * typed pair (`first` × `second`) is outlined. A prime has only one.
+   */
+  | { kind: 'factorPairs'; value: string; first?: string; second?: string; count?: string }
+  /**
+   * `wholes` bars shared by `people`: each bar cut into as many parts as people, one person’s
+   * part shaded in every bar (3 wholes shared by 4 is 3 × 1/4 = 3/4 each).
+   */
+  | { kind: 'shareWholes'; wholes: string; people: string; each?: string }
   /** Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale. */
   | { kind: 'protractor'; angle: string; other?: string }
   /**

@@ -68,6 +68,8 @@ const PICTURE_NAMES: Record<string, string> = {
   unitCubes: 'box of unit cubes',
   placeValueChart: 'place-value chart',
   factorTree: 'factor tree',
+  factorPairs: 'factor-pair rectangles',
+  shareWholes: 'shared wholes',
   protractor: 'protractor',
   wave: 'wave',
   punnettSquare: 'Punnett square',

@@ -1,10 +1,12 @@
 import { useRef } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import { Text } from '@/components/Text';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
-import { chart, usePalette } from '@/theme';
+import { chart, font, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
@@ -37,6 +39,22 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
   const lo = spec.quadrants === 4 ? -E : 0;
   const step = E <= 10 ? 1 : E <= 20 ? 2 : E <= 50 ? 5 : niceCeil(E / 10);
   const [p, q] = pts;
+  // A pattern's earlier points: step back from the point until a coordinate would go below 0.
+  const trail: [number, number][] = [];
+  if (spec.trail && p?.known) {
+    const step = (v: number | string) =>
+      typeof v === 'number' ? v : rep.known(v) ? rep.shown(v) : 0;
+    const [ax, uy] = [step(spec.trail.across), step(spec.trail.up)];
+    if (ax > 0 || uy > 0) {
+      for (
+        let x = p.px - ax, y = p.py - uy;
+        x >= -1e-9 && y >= -1e-9 && trail.length < 10;
+        x -= ax, y -= uy
+      ) {
+        trail.unshift([Number(x.toFixed(6)), Number(y.toFixed(6))]);
+      }
+    }
+  }
   const both = p && q && p.known && q.known;
   const dx = both ? q.px - p.px : 0;
   const dy = both ? q.py - p.py : 0;
@@ -178,6 +196,9 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     </ChartText>
                   </>
                 ) : null}
+                {trail.map(([tx, ty], i) => (
+                  <Circle key={`trail${i}`} cx={sx(tx)} cy={sy(ty)} r={4} fill={c.chartMuted} />
+                ))}
                 {pts.map((pt) => (
                   <Circle
                     key={pt.testID}
@@ -233,6 +254,24 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
           );
         }}
       </Canvas>
+      {trail.length > 0 && p?.known ? (
+        <View style={styles.table}>
+          <View style={[styles.col, { borderColor: c.chartGrid }]}>
+            <Text style={[styles.cellText, styles.head, { color: c.textMuted }]}>
+              {rep.variable(spec.x).name}
+            </Text>
+            <Text style={[styles.cellText, styles.head, { color: c.textMuted }]}>
+              {rep.variable(spec.y).name}
+            </Text>
+          </View>
+          {[...trail, [p.px, p.py] as [number, number]].map(([tx, ty], i) => (
+            <View key={i} style={[styles.col, { borderColor: c.chartGrid }]}>
+              <Text style={[styles.cellText, { color: c.text }]}>{formatNumber(tx)}</Text>
+              <Text style={[styles.cellText, { color: c.text }]}>{formatNumber(ty)}</Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
       <Caption>
         {p?.known
           ? both
@@ -253,3 +292,15 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  table: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 4 },
+  col: {
+    borderWidth: StyleSheet.hairlineWidth,
+    minWidth: 34,
+    alignItems: 'center',
+    paddingVertical: 2,
+  },
+  head: { paddingHorizontal: 4, fontWeight: '600' },
+  cellText: { fontSize: font.caption + 1, fontVariant: ['tabular-nums'] },
+});

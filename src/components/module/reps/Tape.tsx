@@ -56,11 +56,18 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
     : spec.caption
       ? spec.caption.replace(/\{(\w+)\}/g, (_, id: string) => fmt(id))
       : `${spec.parts.map(fmt).join(' + ')} = ${fmt(spec.total)}`;
+  // Compare by times: the bigger bar is this many copies of the smaller.
+  const times =
+    compare && spec.times && rep.known(spec.times)
+      ? Math.max(0, Math.round(rep.shown(spec.times)))
+      : 0;
   // Equal groups the whole bar is made of (e.g. 4 packs of 6), when known.
   const groups =
     !compare && spec.groups && rep.known(spec.groups)
-      ? Math.max(0, Math.min(20, Math.round(rep.shown(spec.groups))))
+      ? Math.max(0, Math.round(rep.shown(spec.groups)))
       : 0;
+  // Past 12 the dashes would blur into a comb: a label over the bar names the groups instead.
+  const dashed = groups <= 12;
 
   return (
     <>
@@ -124,7 +131,35 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       {`${name(id)}: ${rep.label(id)}`}
                     </ChartText>
                   ))}
-                  {hi - lo > 2 ? (
+                  {times > 1 && Math.min(x, y) > 0
+                    ? Array.from({ length: times - 1 }, (_, k) => {
+                        const gx = left + (k + 1) * Math.min(x, y) * scale;
+                        return gx < hi - 1 ? (
+                          <Line
+                            key={`c${k}`}
+                            x1={gx}
+                            y1={ys[1 - shortRow]! - 4}
+                            x2={gx}
+                            y2={ys[1 - shortRow]! + barH + 4}
+                            stroke={c.chartInk}
+                            strokeWidth={chart.stroke}
+                            strokeDasharray={chart.dash}
+                          />
+                        ) : null;
+                      })
+                    : null}
+                  {times > 1 ? (
+                    <ChartText
+                      x={left + (hi - left) / 2}
+                      y={ys[1]! + barH + 26}
+                      fontSize={chart.small}
+                      fontWeight="700"
+                      textAnchor="middle"
+                    >
+                      {`${times} copies of the shorter bar`}
+                    </ChartText>
+                  ) : null}
+                  {hi - lo > 2 && times <= 1 ? (
                     <>
                       <Rect
                         x={lo}
@@ -229,8 +264,17 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {rep.tag(id)}
                   </ChartText>
                 ))}
-                {/* Past 24 groups the dashes would blur into a comb: the caption carries it. */}
-                {Array.from({ length: groups > 24 ? 0 : Math.max(0, groups - 1) }, (_, k) => {
+                {!dashed && spec.groups ? (
+                  <ChartText
+                    x={left + (span * scale) / 2}
+                    y={y - 10}
+                    fontSize={chart.small}
+                    textAnchor="middle"
+                  >
+                    {`${formatNumber(groups)} equal groups`}
+                  </ChartText>
+                ) : null}
+                {Array.from({ length: dashed ? Math.max(0, groups - 1) : 0 }, (_, k) => {
                   // Across the whole bar, or across the one part the groups make up.
                   const gi = spec.groupsPart ? spec.parts.indexOf(spec.groupsPart) : -1;
                   const [g0, g1] = gi >= 0 ? [x0(gi), x1(gi)] : [left, left + span * scale];

@@ -5,6 +5,7 @@
  */
 import type { VariableDef } from '@/engine/types';
 
+import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -153,7 +154,8 @@ export function repIssues(
     case 'skipCount': {
       if (typeof rep.count === 'string') count(rep.count, 'skips', 30);
       const s = val(rep.step);
-      if (s !== undefined && s < 1) out.push(`skip size ${s} < 1 (drawn as 1)`);
+      // Decimal jumps are drawn to the hundredth (SkipCount.tsx).
+      if (s !== undefined && s < 0.01) out.push(`skip size ${s} < 0.01 (drawn as 0.01)`);
       break;
     }
     case 'pairs':
@@ -314,7 +316,7 @@ export function repIssues(
         [rep.upper, hi],
         [rep.rounded, r],
       ] as const) {
-        if (x !== undefined && to !== undefined && x % to !== 0)
+        if (x !== undefined && to !== undefined && Math.abs(x / to - Math.round(x / to)) > 1e-9)
           out.push(`${id} = ${x} is not a ${to}`);
       }
       if (n !== undefined && lo !== undefined && hi !== undefined && !(lo <= n && n <= hi)) {
@@ -388,6 +390,33 @@ export function repIssues(
       }
       break;
     case 'areaModel': {
+      if ('factors' in rep) {
+        const [a, b, t] = [val(rep.factors[0]), val(rep.factors[1]), val(rep.total)];
+        if (a !== undefined && b !== undefined && t !== undefined && Math.abs(a * b - t) > 1e-6)
+          out.push(`area model ${a} × ${b} drawn, total shows ${t}`);
+        // Up to 4 places on each side fit across a phone (AreaModel.tsx).
+        for (const x of [a, b]) {
+          if (x !== undefined && placeParts(x).length > 4)
+            out.push(`area model factor ${x} has ${placeParts(x).length} parts`);
+        }
+        break;
+      }
+      if ('divide' in rep) {
+        const d = rep.divide;
+        const [n, s, q, r] = [d.dividend, d.divisor, d.quotient, d.remainder].map((id) =>
+          id ? val(id) : undefined,
+        );
+        if (
+          n !== undefined &&
+          s !== undefined &&
+          q !== undefined &&
+          Math.abs(s * q + (r ?? 0) - n) > 1e-9
+        )
+          out.push(`area model ${s} × ${q} + ${r ?? 0} is not ${n}`);
+        if (q !== undefined && placeParts(q).length > 4)
+          out.push(`area model quotient ${q} has ${placeParts(q).length} parts`);
+        break;
+      }
       // Every box's product is its top part times its side part, and the boxes add to the total.
       const tops = rep.top.map(val);
       const sides = rep.side.map(val);
@@ -489,15 +518,75 @@ export function repIssues(
       count(rep.height, 'layers', rep.max);
       if ([l, w, h, v].every((x) => x !== undefined) && Math.abs(l! * w! * h! - v!) > 1e-9)
         out.push(`${l} × ${w} × ${h} cubes drawn, volume shows ${v}`);
+      if (rep.second) {
+        const b = rep.second;
+        const [l2, w2, h2, v2] = [b.length, b.width, b.height, b.volume].map(val);
+        if (
+          [l2, w2, h2, v2].every((x) => x !== undefined) &&
+          Math.abs(l2! * w2! * h2! - v2!) > 1e-9
+        )
+          out.push(`second box ${l2} × ${w2} × ${h2} drawn, volume shows ${v2}`);
+        const t = rep.total ? val(rep.total) : undefined;
+        if (t !== undefined && v !== undefined && v2 !== undefined && Math.abs(v + v2 - t) > 1e-9)
+          out.push(`boxes ${v} + ${v2} drawn, total shows ${t}`);
+        if (l !== undefined && l2 !== undefined && l + l2 > rep.max)
+          out.push(`two boxes ${l + l2} cubes across, past ${rep.max}`);
+      }
       break;
     }
     case 'placeValueChart': {
       const x = val(rep.value);
       if (x !== undefined && x < 0) out.push(`place-value chart of a negative number ${x}`);
+      // Seven whole places (millions) are drawn (PlaceValueChart.tsx).
+      for (const id of [rep.value, rep.from, rep.compare]) {
+        const n = id ? val(id) : undefined;
+        if (n !== undefined && n >= 1e7) out.push(`place-value chart of ${n}: past the millions`);
+      }
+      const lit = rep.highlight ? val(rep.highlight) : undefined;
+      if (lit !== undefined && Math.abs(Math.log10(lit) - Math.round(Math.log10(lit))) > 1e-9)
+        out.push(`highlighted place ${lit} is not a place value`);
+      const before = rep.from ? val(rep.from) : undefined;
+      if (x !== undefined && before !== undefined && before > 0) {
+        const k = Math.log10(x / before);
+        if (Math.abs(k - Math.round(k)) > 1e-9)
+          out.push(`${before} to ${x} is not × or ÷ a power of 10`);
+      }
       break;
     }
     case 'factorTree':
       count(rep.value, 'number');
+      break;
+    case 'tape': {
+      if (!('compare' in rep) || !rep.times) break;
+      const [a, b, k] = [val(rep.compare[0]), val(rep.compare[1]), val(rep.times)];
+      if (
+        a !== undefined &&
+        b !== undefined &&
+        k !== undefined &&
+        Math.abs(Math.max(a, b) - k * Math.min(a, b)) > 1e-9
+      )
+        out.push(`tape: ${Math.max(a, b)} is not ${k} copies of ${Math.min(a, b)}`);
+      break;
+    }
+    case 'grid100':
+      count(rep.percent, 'squares shaded', 100);
+      if (rep.second) count(rep.second, 'squares shaded', 100);
+      // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx).
+      if (rep.wholes) count(rep.wholes, 'whole grids', 3);
+      break;
+    case 'factorPairs': {
+      // The 1-row rectangle is drawn to the width: past 100 squares a square is under 3 px.
+      count(rep.value, 'number', 100);
+      const [n, a, b] = [rep.value, rep.first, rep.second].map((id) => (id ? val(id) : undefined));
+      if (n !== undefined && n < 1) out.push(`factor pairs of ${n}`);
+      if (n !== undefined && a !== undefined && b !== undefined && a * b !== n)
+        out.push(`pair ${a} × ${b} is not ${n}`);
+      break;
+    }
+    case 'shareWholes':
+      // Bars are drawn for 1–12 wholes, cut into 1–12 parts (ShareWholes.tsx).
+      count(rep.wholes, 'wholes', 12);
+      count(rep.people, 'people', 12);
       break;
     case 'protractor': {
       const a = val(rep.angle);

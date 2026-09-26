@@ -21,13 +21,16 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const to =
-    typeof spec.to === 'number' ? spec.to : Math.max(10, Math.round(rep.shown(spec.to)) || 10);
+    typeof spec.to === 'number' ? spec.to : rep.shown(spec.to) > 0 ? rep.shown(spec.to) : 10;
+  // Decimal places of a tick (a tenth of the place): 2 for rounding to 0.1.
+  const dp = Math.max(0, Math.round(-Math.log10(to)) + 1);
+  const fix = (x: number) => Number(x.toFixed(dp));
   const known = rep.known(spec.value);
-  const n = Math.round(rep.shown(spec.value));
+  const n = fix(rep.shown(spec.value));
   // The ends come from the number itself, so the line is right even before they are solved.
-  const lo = Math.floor(n / to) * to;
-  const hi = lo + to;
-  const half = lo + to / 2;
+  const lo = fix(Math.floor(n / to + 1e-9) * to);
+  const hi = fix(lo + to);
+  const half = fix(lo + to / 2);
   const up = n >= half;
   const r = up ? hi : lo;
 
@@ -38,7 +41,7 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const pad = 30;
           const px = (x: number) => pad + ((x - lo) / to) * (w - 2 * pad);
           const y = h * 0.62;
-          const ticks = Array.from({ length: 11 }, (_, i) => lo + (to / 10) * i);
+          const ticks = Array.from({ length: 11 }, (_, i) => fix(lo + (to / 10) * i));
           const arc = `M ${px(n)} ${y - 10} Q ${(px(n) + px(r)) / 2} ${y - 48} ${px(r)} ${y - 10}`;
           return (
             <>
@@ -65,15 +68,16 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {ticks
                   // Six-figure labels ("347,100") would touch: past thousands, label the
                   // ends and the halfway mark only.
-                  .filter((_, i) => to <= 100 || i % 5 === 0)
-                  .map((x) => (
+                  .map((x, i) => [x, i] as const)
+                  .filter(([, i]) => (to <= 100 && to >= 1) || i % 5 === 0)
+                  .map(([x, i]) => (
                     <ChartText
                       key={`l${x}`}
                       x={px(x)}
                       y={y + 24}
-                      fontSize={(x - lo) % (to / 2) === 0 ? chart.label : chart.tiny}
+                      fontSize={i % 5 === 0 ? chart.label : chart.tiny}
                       fontWeight={x === lo || x === hi ? '700' : undefined}
-                      fill={(x - lo) % (to / 2) === 0 ? c.chartInk : c.chartMuted}
+                      fill={i % 5 === 0 ? c.chartInk : c.chartMuted}
                       textAnchor="middle"
                     >
                       {formatNumber(x)}
@@ -146,7 +150,7 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `${formatNumber(n)} is ${formatNumber(n - lo)} past ${formatNumber(lo)} and ${formatNumber(hi - n)} before ${formatNumber(hi)}. ${up ? `${formatNumber(n - lo)} is ${formatNumber(to / 2)} or more, so it rounds up` : `${formatNumber(n - lo)} is less than ${formatNumber(to / 2)}, so it rounds down`} to ${formatNumber(r)}.`
+          ? `${formatNumber(n)} is ${formatNumber(fix(n - lo))} past ${formatNumber(lo)} and ${formatNumber(fix(hi - n))} before ${formatNumber(hi)}. ${up ? `${formatNumber(fix(n - lo))} is ${formatNumber(fix(to / 2))} or more, so it rounds up` : `${formatNumber(fix(n - lo))} is less than ${formatNumber(fix(to / 2))}, so it rounds down`} to ${formatNumber(r)}.`
           : `Type a number to round.`}
       </Caption>
       <Steppers
@@ -154,7 +158,14 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
         items={[
           {
             var: spec.value,
-            steps: to === 10 ? [1, 10] : to === 100 ? [1, 10, 100] : [1, to / 10, to],
+            steps:
+              to === 10
+                ? [1, 10]
+                : to === 100
+                  ? [1, 10, 100]
+                  : to < 1
+                    ? [fix(to / 10), to]
+                    : [1, to / 10, to],
             pin: [],
           },
         ]}

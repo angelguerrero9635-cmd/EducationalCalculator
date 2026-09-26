@@ -22,11 +22,14 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const start = useRef(0);
   // A number keeps the jump size fixed (1 meter = 100 cm).
   const stepVar = typeof spec.step === 'string' ? spec.step : undefined;
-  const s = Math.max(1, Math.round(stepVar ? rep.shown(stepVar) : (spec.step as number)));
+  // Whole jumps, or decimal ones (2.5, 0.3) kept to their tenths and hundredths.
+  const fix = (x: number) => Number(x.toFixed(6));
+  const raw = stepVar ? rep.shown(stepVar) : (spec.step as number);
+  const s = raw >= 1 ? fix(raw) : Math.max(0.01, fix(raw));
   // A number keeps the count fixed too (4 quarters in a minute): nothing to drag or type.
   const countVar = typeof spec.count === 'string' ? spec.count : undefined;
   const k = Math.max(0, Math.round(countVar ? rep.shown(countVar) : (spec.count as number)));
-  const from = spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : 0;
+  const from = spec.start && rep.known(spec.start) ? fix(rep.shown(spec.start)) : 0;
   // Room for 10 jumps, so the 11 labeled ticks fall where the jumps land (0, 4, 8, … for 4s).
   const fit = useFrozen(k <= 10 ? s * 10 : niceCeil(s * k));
   // Counting back: jumps go left from the start, so the line ends at the start.
@@ -42,7 +45,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const px = (x: number) => pad + ((x - lo) / max) * (w - 2 * pad);
           const y = h * 0.72;
           const lift = Math.min(h * 0.4, Math.max(14, (px(s) - px(0)) * 0.6));
-          const labels = Array.from({ length: 11 }, (_, i) => lo + (max / 10) * i);
+          const labels = Array.from({ length: 11 }, (_, i) => fix(lo + (max / 10) * i));
           return (
             <>
               <Svg width={w} height={h}>
@@ -130,7 +133,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {k === 0
           ? formatNumber(from)
           : Array.from({ length: Math.min(k + 1, 12) }, (_, i) =>
-              formatNumber(from + dir * i * s),
+              formatNumber(fix(from + dir * i * s)),
             ).join(', ') + (k + 1 > 12 ? ', …' : '')}
       </Caption>
       <Caption>

@@ -21,6 +21,27 @@ per review; each line names the finding and what the engine now does about it.
   counting lines and chains of make-ten jumps. The standards test fails a counting line from
   Grade 4 and a count of more than 4 jumps in Grade 3 (counting by 5s and 10s aside).
 
+## Graphics for the K–5 rebuild (before any module changes)
+
+The four direction plans named the pictures their pages need; all were built first, each
+with a gallery page (`/gallery`, now showing layout demos too) and a harness check.
+
+- Explore figures: `push`, `vibration`, `sky`, `static`, `timesTable`; `lightPath` traces a
+  shadow from the lamp over the object (a low lamp's shadow runs up the wall). Figures moved
+  to `layouts/figures.tsx`; `layouts.test.ts` now checks each figure's scene field from one
+  table instead of a line per figure.
+- Card figures moved to `layouts/CardFigure.tsx` (also used by sequence stages): solids, cut
+  shapes (unequal parts sized 1, 2, 3 so the difference is plain), ribbons measured right or
+  wrong, dots in pairs, fraction bars, segment/ray/line/point, curved sides, and polygon
+  marks worked out from the corners (square corners, equal-side ticks).
+- New kinds `factorPairs` and `shareWholes`. `areaModel` splits typed factors by place
+  (`placeParts` in `helpers.ts`, decimals too) and has a division mode, so modules stop
+  holding one variable per box.
+- Options on 20 existing kinds (listed in MODULE_GUIDE). Two were bugs found on the way: the
+  tape clamped groups to 20 before its "past 24" check, so 86 groups drew 20 parts (dashes
+  now stop at 12 and a label names the groups); the skip count rounded its step to a whole
+  number, so jumps of 2.5 were drawn as 3.
+
 ## Science Grades 4–5 (Section 6, first review)
 
 - `apart` (no direction) was used for a rise, a loss and how much farther, so a drop from

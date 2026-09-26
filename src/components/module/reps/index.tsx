@@ -49,6 +49,7 @@ import { FractionBars } from './FractionBars';
 import { FractionLine } from './FractionLine';
 import { Quadrilateral } from './Quadrilateral';
 import { Rounding } from './Rounding';
+import { ShareWholes } from './ShareWholes';
 import { Scale } from './Scale';
 import { Timeline } from './Timeline';
 import { Thermometers } from './Thermometers';
@@ -61,6 +62,7 @@ import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
 import { PlaceValueChart } from './PlaceValueChart';
+import { FactorPairs } from './FactorPairs';
 import { FactorTree } from './FactorTree';
 import { Protractor } from './Protractor';
 import { Wave } from './Wave';
@@ -210,6 +212,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PlaceValueChart spec={spec} calc={calc} />;
     case 'factorTree':
       return <FactorTree spec={spec} calc={calc} />;
+    case 'factorPairs':
+      return <FactorPairs spec={spec} calc={calc} />;
+    case 'shareWholes':
+      return <ShareWholes spec={spec} calc={calc} />;
     case 'protractor':
       return <Protractor spec={spec} calc={calc} />;
     case 'wave':

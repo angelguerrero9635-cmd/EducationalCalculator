@@ -52,7 +52,7 @@ function representationVars(r: Representation): string[] {
       );
     case 'tape':
       return 'compare' in r
-        ? [...r.compare, r.difference]
+        ? [...r.compare, r.difference, ...(r.times ? [r.times] : [])]
         : [...r.parts, r.total, ...(r.groups ? [r.groups] : [])];
     case 'linePlot':
       return [...r.points.map((p) => p.var), ...(r.start ? [r.start] : [])];
@@ -124,6 +124,11 @@ function representationVars(r: Representation): string[] {
         r.total,
       ];
     case 'areaModel':
+      if ('factors' in r) return [...r.factors, r.total];
+      if ('divide' in r) {
+        const d = r.divide;
+        return [d.dividend, d.divisor, d.quotient, ...(d.remainder ? [d.remainder] : [])];
+      }
       return [...r.top, ...r.side, ...r.parts.flat(), r.total];
     case 'angles':
       return [...r.parts, r.whole, ...(r.sliders ?? [])];
@@ -135,6 +140,9 @@ function representationVars(r: Representation): string[] {
         r.y,
         ...(r.second ? [r.second.x, r.second.y] : []),
         ...(r.slope ? [r.slope] : []),
+        ...(r.trail
+          ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
+          : []),
       ];
     case 'boxPlot':
       return [r.min, r.q1, r.median, r.q3, r.max];
@@ -149,9 +157,20 @@ function representationVars(r: Representation): string[] {
         ...(r.product ? [r.product.num, r.product.den] : []),
       ];
     case 'unitCubes':
-      return [r.length, r.width, r.height, r.volume];
+      return [
+        r.length,
+        r.width,
+        r.height,
+        r.volume,
+        ...(r.second ? [r.second.length, r.second.width, r.second.height, r.second.volume] : []),
+        ...(r.total ? [r.total] : []),
+      ];
     case 'placeValueChart':
-      return [r.value];
+      return [r.value, ...[r.highlight, r.from, r.compare].filter((v): v is string => !!v)];
+    case 'factorPairs':
+      return [r.value, ...[r.first, r.second, r.count].filter((v): v is string => !!v)];
+    case 'shareWholes':
+      return [r.wholes, r.people, ...(r.each ? [r.each] : [])];
     case 'factorTree':
       return [r.value, ...(r.count ? [r.count] : [])];
     case 'protractor':
@@ -191,7 +210,12 @@ function representationVars(r: Representation): string[] {
     case 'rectangle':
       return [r.length, r.width, ...(r.inside ? [r.inside] : []), ...(r.around ? [r.around] : [])];
     case 'grid100':
-      return [r.percent, ...(r.caption ? [r.caption.part, r.caption.whole] : [])];
+      return [
+        r.percent,
+        ...(r.caption ? [r.caption.part, r.caption.whole] : []),
+        ...(r.second ? [r.second] : []),
+        ...(r.wholes ? [r.wholes] : []),
+      ];
     case 'circle':
       return [r.radius, r.diameter, r.circumference, r.area].filter((v): v is string => !!v);
     case 'rightTriangle':

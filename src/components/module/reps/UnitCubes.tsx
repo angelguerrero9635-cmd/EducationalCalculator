@@ -27,14 +27,20 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const real = (id: string) => Math.max(0, Math.round(rep.shown(id)));
   const [rl, rw, rh] = [real(spec.length), real(spec.width), real(spec.height)];
   const layer = rl * rw;
+  const two = spec.second;
+  const [L2, W2, H2] = two ? [dim(two.length), dim(two.width), dim(two.height)] : [0, 0, 0];
+  const known2 = two ? [two.length, two.width, two.height].every(rep.known) : true;
+  const across = L + L2;
+  const deep = Math.max(W, W2);
+  const tall = Math.max(H, H2);
 
   return (
     <View>
       {/* The canvas is as tall as the box it draws (plus its labels), never a fixed square. */}
       <Canvas
         aspect={(w) => {
-          const unit = Math.min((w - 90) / (Math.max(L + W * 0.5, 2) || 1), 44);
-          return (Math.max(H + W * 0.28, 1.5) * unit + 44) / w;
+          const unit = Math.min((w - 90) / (Math.max(across + deep * 0.5, 2) || 1), 44);
+          return (Math.max(tall + deep * 0.28, 1.5) * unit + 44) / w;
         }}
       >
         {({ w, h }) => {
@@ -42,8 +48,8 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const dx = 0.5;
           const dy = 0.28;
           const unit = Math.min(
-            (w - 90) / (Math.max(L + W * dx, 2) || 1),
-            (h - 44) / (Math.max(H + W * dy, 1.5) || 1),
+            (w - 90) / (Math.max(across + deep * dx, 2) || 1),
+            (h - 44) / (Math.max(tall + deep * dy, 1.5) || 1),
             44,
           );
           const x0 = 44;
@@ -52,12 +58,19 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const py = (j: number, k: number) => yBase - k * unit - j * unit * dy;
           const faces: React.ReactNode[] = [];
           // Draw back to front, bottom to top, so nearer cubes cover farther ones.
-          for (let j = W - 1; j >= 0; j--) {
-            for (let k = 0; k < H; k++) {
-              for (let i = 0; i < L; i++) {
+          for (let j = deep - 1; j >= 0; j--) {
+            for (let k = 0; k < tall; k++) {
+              for (let i = 0; i < across; i++) {
+                // A cube of the first box, or of the second box beside it.
+                const inSecond = i >= L;
+                if (inSecond ? j >= W2 || k >= H2 : j >= W || k >= H) continue;
                 const bottomLayer = k === 0;
-                const fill = bottomLayer ? c.chartHighlight : c.chartFill;
-                const opacity = bottomLayer ? 0.55 : 1;
+                const fill = bottomLayer
+                  ? c.chartHighlight
+                  : inSecond
+                    ? c.chartSurface
+                    : c.chartFill;
+                const opacity = bottomLayer ? (inSecond ? 0.3 : 0.55) : 1;
                 const X = px(i, j);
                 const Y = py(j, k);
                 faces.push(
@@ -88,7 +101,7 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
             }
           }
           return (
-            <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
+            <Svg width={w} height={h} opacity={known && known2 ? 1 : 0.4}>
               {faces}
               <ChartText
                 x={x0 + (L * unit) / 2}
@@ -99,8 +112,19 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
               >
                 {rep.label(spec.length)}
               </ChartText>
+              {two ? (
+                <ChartText
+                  x={x0 + (L + L2 / 2) * unit}
+                  y={yBase + 14}
+                  fontSize={chart.label}
+                  fontWeight="700"
+                  textAnchor="middle"
+                >
+                  {rep.label(two.length)}
+                </ChartText>
+              ) : null}
               <ChartText
-                x={x0 + L * unit + (W * unit * dx) / 2 + 10}
+                x={x0 + across * unit + (W * unit * dx) / 2 + 10}
                 y={yBase - (W * unit * dy) / 2 + 4}
                 fontSize={chart.label}
                 fontWeight="700"
@@ -121,13 +145,20 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {known
-          ? `One layer is ${rl} × ${rw} = ${layer} cubes. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${layer} × ${rh} = ${rep.value(spec.volume, false)} cubes.`
-          : 'Type the length, width and height to fill the box.'}
+        {two && known && known2
+          ? `First box: ${rl} × ${rw} × ${rh} = ${rep.value(spec.volume, false)} cubes. Second box: ${real(two.length)} × ${real(two.width)} × ${real(two.height)} = ${rep.value(two.volume, false)} cubes. Together: ${rep.value(spec.volume, false)} + ${rep.value(two.volume, false)} = ${spec.total ? rep.value(spec.total, false) : '?'} cubes.`
+          : known
+            ? `One layer is ${rl} × ${rw} = ${layer} cubes. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${layer} × ${rh} = ${rep.value(spec.volume, false)} cubes.`
+            : 'Type the length, width and height to fill the box.'}
       </Caption>
       <Steppers
         calc={calc}
-        items={[spec.length, spec.width, spec.height].map((id, _, all) => ({
+        items={[
+          spec.length,
+          spec.width,
+          spec.height,
+          ...(two ? [two.length, two.width, two.height] : []),
+        ].map((id, _, all) => ({
           var: id,
           steps: [1],
           pin: all.filter((x) => x !== id),

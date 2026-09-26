@@ -6,7 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
-import { div, whole } from './helpers';
+import { div, times, whole } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
@@ -396,7 +396,56 @@ export const GALLERY_MODULES: ModuleDef[] = [
     },
     example: { n: 347.25, t: 3472.5 },
     startWith: ['n'],
-    representation: { kind: 'placeValueChart', value: 'n', decimals: 2 },
+    representation: { kind: 'placeValueChart', value: 't', from: 'n', decimals: 2 },
+  },
+  (() => {
+    const pair = times('n = a × b', ['a', 'b', 'n'], ['first factor', 'second factor', 'number']);
+    return {
+      id: 'g.factor-pairs',
+      title: 'Factor pairs',
+      assumptions: [
+        'A factor pair is two whole numbers that multiply to the number.',
+        'Each pair makes one rectangle of unit squares.',
+      ],
+      variables: [
+        whole('a', 'a', 'First factor', 1, 100),
+        whole('b', 'b', 'Second factor', 1, 100),
+        whole('n', 'n', 'Number', 1, 100),
+      ],
+      relations: [pair.relation],
+      steps: { [pair.relation.id]: pair.steps },
+      example: { a: 3, b: 4, n: 12 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'factorPairs', value: 'n', first: 'a', second: 'b' },
+    } satisfies ModuleDef;
+  })(),
+  {
+    id: 'g.share-wholes',
+    title: 'Sharing wholes',
+    assumptions: ['Every whole is the same size.', 'Each person gets one part of every whole.'],
+    variables: [
+      whole('w', 'w', 'Wholes', 1, 12),
+      whole('p', 'p', 'People', 1, 12),
+      { id: 'e', symbol: 'e', name: 'Each person gets', min: 0, max: 12, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'e = w ÷ p',
+        display: '{w} ÷ {p} = {e}',
+        vars: ['e', 'w', 'p'],
+        residual: (v: Values) => v.e! - v.w! / v.p!,
+        solve: { e: (v: Values) => div(v.w!, v.p!), w: (v: Values) => v.e! * v.p! },
+      },
+    ],
+    steps: {
+      'e = w ÷ p': {
+        e: { expr: '{w} ÷ {p}', how: 'Share the wholes among the people.' },
+        w: { expr: '{e} × {p}', how: 'Put the shares back together.' },
+      },
+    },
+    example: { w: 3, p: 4, e: 0.75 },
+    startWith: ['w', 'p'],
+    representation: { kind: 'shareWholes', wholes: 'w', people: 'p', each: 'e' },
   },
   {
     id: 'g.wave',

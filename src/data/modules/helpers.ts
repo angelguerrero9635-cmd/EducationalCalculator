@@ -519,3 +519,23 @@ export const minus = (
     [small]: { expr: `{${big}} − {${out}}`, how: smallHow },
   },
 });
+
+/**
+ * A number split into its places, biggest first, zeros left out: 347 → [300, 40, 7];
+ * 2.35 → [2, 0.3, 0.05]; 0 → [0]. For the area model's boxes.
+ */
+export function placeParts(x: number): number[] {
+  const [whole, frac = ''] = Math.abs(x)
+    .toFixed(6)
+    .replace(/0+$/, '')
+    .replace(/\.$/, '')
+    .split('.');
+  const out: number[] = [];
+  [...whole!].forEach((d, i) => {
+    if (d !== '0') out.push(Number(d) * 10 ** (whole!.length - 1 - i));
+  });
+  [...frac].forEach((d, i) => {
+    if (d !== '0') out.push(Number((Number(d) / 10 ** (i + 1)).toFixed(i + 1)));
+  });
+  return out.length ? out : [0];
+}

@@ -91,6 +91,34 @@ search or the sitemap, but the module tests and the harness run over it):
 | `protractor`       | both scales, an arm to drag                                           | Grade 4 measuring angles            |
 | `wave`             | crests and troughs with wavelength (and amplitude) marked             | Grade 4 and 8 waves, physics        |
 | `punnettSquare`    | two parents' alleles and the four offspring boxes                     | Grade 7 heredity, biology           |
+| `factorPairs`      | every rectangle of a number's unit squares, the typed pair outlined   | Grade 4 factors, primes, composites |
+| `shareWholes`      | wholes cut into as many parts as people, one share shaded in each     | Grade 5 fractions as division       |
+
+Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
+
+| Kind              | Option                                   | Draws                                                                         |
+| ----------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
+| `compareRows`     | `object`                                 | the pencil, crayon or ribbon measured, above its row of cubes                 |
+| `hundredChart`    | `piece`, `multiplesOf`                   | only the number and its four neighbors; or every multiple shaded              |
+| `hops`            | a hop `sign` naming a variable (1 or −1) | a + / − switch that flips that hop                                            |
+| `rectangle`       | `grid`                                   | unit squares on a perimeter page                                              |
+| `polygon`         | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |
+| `rectilinear`     | `cut` instead of `right`                 | a rectangle with a corner cut out, both areas labeled                         |
+| `ruler`           | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |
+| `equalGroups`     | `unit: 10`                               | ten-rods, `each` counted in tens                                              |
+| `bars`            | `scale` as a variable                    | the grid spacing read from a value                                            |
+| `pictureGraph`    | (with a key)                             | half a picture for a half count                                               |
+| `fractionLine`    | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |
+| `table`           | `rows` as a function of the values       | rows that follow a parameter                                                  |
+| `array`           | `sides`                                  | the rows and columns labeled, “?” until solved                                |
+| `areaModel`       | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
+| `placeValueChart` | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
+| `tape`            | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
+| `grid100`         | `second`, `wholes`                       | a second grid to compare; whole grids for the ones                            |
+| `rounding`        | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
+| `coordinatePlane` | `trail`                                  | a pattern's earlier points and their table                                    |
+| `unitCubes`       | `second`, `total`                        | two boxes joined into an L                                                    |
+| `skipCount`       | a decimal `step`                         | jumps of 2.5 or 0.3                                                           |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
@@ -149,14 +177,14 @@ incidental to what the lesson teaches, forcing them into a calculator gives a pa
 but beside the point. The lesson reviewer's check L names the better layout from this catalog;
 the engine builds a layout when a section needs it (log it in `ENGINE_LOG.md`).
 
-| Layout     | Teaches                                                                                    | Page                                                                                                | Status     |
-| ---------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ---------- |
-| calculator | a relationship between quantities                                                          | picture, numbers, formulas, walkthrough                                                             | built      |
-| sort       | putting things into groups by a property (materials, shapes, changes you can undo)         | cards tapped into labelled groups, a count per group, one sentence about the property               | built      |
-| sequence   | stages in order and how long each takes (life cycles, a day, a story problem's steps)      | stages tapped into order, each with its span, the spans added under the strip                       | built      |
-| compare    | two things side by side and what differs (two habitats, two beaks, two shadows)            | the calculator's compare pictures (rows, bars, rulers, thermometers) with a result line             | calculator |
-| observe    | a quantity recorded over time (plant height by week, temperature by hour, a weather chart) | a bar per column tapped to a height, the table, the pattern in a sentence                           | built      |
-| explore    | an idea with no honest quantity (what light does through a mirror, why shadows form)       | a figure (parts, position, clock, dots, magnets, flashes, light path, particles, earth) with scenes | built      |
+| Layout     | Teaches                                                                                    | Page                                                                                    | Status     |
+| ---------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ---------- |
+| calculator | a relationship between quantities                                                          | picture, numbers, formulas, walkthrough                                                 | built      |
+| sort       | putting things into groups by a property (materials, shapes, changes you can undo)         | cards tapped into labelled groups, a count per group, one sentence about the property   | built      |
+| sequence   | stages in order and how long each takes (life cycles, a day, a story problem's steps)      | stages tapped into order, each with its span, the spans added under the strip           | built      |
+| compare    | two things side by side and what differs (two habitats, two beaks, two shadows)            | the calculator's compare pictures (rows, bars, rulers, thermometers) with a result line | calculator |
+| observe    | a quantity recorded over time (plant height by week, temperature by hour, a weather chart) | a bar per column tapped to a height, the table, the pattern in a sentence               | built      |
+| explore    | an idea with no honest quantity (what light does through a mirror, why shadows form)       | a figure with scenes (the figures are listed below)                                     | built      |
 
 A layout page is data in `src/data/modules/layouts/` (`math.ts`, `science.ts`; types in
 `types.ts`): a sort lists its bins and cards, a sequence its stages and spans, an exploration
@@ -166,6 +194,20 @@ A skill id or problem-type id is either a calculator module or a layout page, ne
 (`getPage`). `layouts.test.ts` checks the page belongs to a skill, fits together (every card
 has a group, every scene fits the figure) and reads at the grade level. A review proposal
 names the layout and gives its data; a new figure kind is engine work (log it).
+
+Explore figures: `parts` (tap a part), `position`, `clock`, `dots`, `magnets`, `flashes`,
+`lightPath` (lamp, object, eye, hand or mirror; with `wall`, a `height` and clear, cloudy or
+solid blockers it traces the shadow), `particles`, `earth`, `push` (a ball pushed from
+behind, the front or the side, gently or hard, or pulled), `vibration` (a band, drum, bell or
+voice, still or shaking), `sky` (the sun east, high or west; the night sky), `static` (a
+balloon, rubbed or not, near paper, hair, a wall or a balloon) and `timesTable` (a 0–10
+addition or times table lighting rows, columns, even or odd cells or the mirror line).
+
+Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
+side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
+(equal or unequal parts, some shaded), `bar` (a ribbon with cubes laid right or wrong),
+`dots` (pairs), `icon` (a fixed set of everyday things), `fractionBars` and `ray` (segment,
+ray, line or point). Every figure and card figure has a page at `/gallery`.
 
 ## Topics without a natural formula
 
