@@ -202,7 +202,7 @@ export function buildSteps(
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollars(n);
-    if (unit === '¢' || unit === '°' || unit === '%') return `${n}${unit}`;
+    if (unit === '¢' || unit === '°' || unit === '%' || unit === '×') return `${n}${unit}`;
     return `${n} ${x === 1 ? (SINGULAR[unit] ?? unit) : unit}`;
   };
   /** Variables for filling formulas with working values (no whole-number rounding if converted). */
@@ -337,8 +337,9 @@ export function buildSteps(
         ? undefined
         : text.written
           ? text.written(working)
-          : direct
-            ? autoWritten(grade, bare)
+          : direct && !(module.id.startsWith('s.') && grade === '6')
+            ? // Grade 6 science leaves the written grids to math (6.NS.2–3).
+              autoWritten(grade, bare)
             : undefined;
     // Grades 3–5: a column sum or difference makes running totals ("300 + 70 = 370") padding;
     // lines with words ("Tens: 40 + 30 = 70") stay as the thinking behind the columns. K–2

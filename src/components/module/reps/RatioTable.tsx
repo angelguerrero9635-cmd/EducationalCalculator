@@ -52,19 +52,29 @@ export function RatioTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const gy = (y: number) => h - 26 - (y / maxY) * (h - 44);
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
-              {[nameA ?? '', nameB ?? ''].map((name, col) => (
-                <ChartText
-                  key={`h${col}`}
-                  x={cell(0, col).x + colW / 2}
-                  y={cell(0, col).y + rowH * 0.66}
-                  fontSize={chart.small}
-                  fontWeight="700"
-                  fill={c.chartInk}
-                  textAnchor="middle"
-                >
-                  {header(name).length > 18 ? `${header(name).slice(0, 17)}…` : header(name)}
-                </ChartText>
-              ))}
+              {[nameA ?? '', nameB ?? ''].map((name, col) => {
+                // A header wider than its column goes on two lines ("First / amount").
+                const text = header(name);
+                const words = text.split(' ');
+                const fits = text.length * chart.small * 0.56 <= colW - 6 || words.length < 2;
+                const cut = Math.ceil(words.length / 2);
+                const lines = fits
+                  ? [text]
+                  : [words.slice(0, cut).join(' '), words.slice(cut).join(' ')];
+                return lines.map((line, i) => (
+                  <ChartText
+                    key={`h${col}-${i}`}
+                    x={cell(0, col).x + colW / 2}
+                    y={cell(0, col).y + rowH * 0.66 + (i - (lines.length - 1)) * (chart.small + 1)}
+                    fontSize={chart.small}
+                    fontWeight="700"
+                    fill={c.chartInk}
+                    textAnchor="middle"
+                  >
+                    {line.length > 18 ? `${line.slice(0, 17)}…` : line}
+                  </ChartText>
+                ));
+              })}
               {multipliers.map((m, i) => {
                 const on = m === current;
                 const row = i + 1;

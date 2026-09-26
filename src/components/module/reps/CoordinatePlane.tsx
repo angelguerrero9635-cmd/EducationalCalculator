@@ -56,6 +56,16 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
     }
   }
   const both = p && q && p.known && q.known;
+  /**
+   * Where along a segment its label goes: the middle, unless that is on an axis (its numbers
+   * are there); then the middle of the longer part on one side of 0.
+   */
+  const clear = (a: number, b: number) => {
+    const mid = (a + b) / 2;
+    const [lo, hi] = [Math.min(a, b), Math.max(a, b)];
+    if (lo >= 0 || hi <= 0 || Math.abs(mid) > (hi - lo) / 6) return mid;
+    return hi >= -lo ? hi / 2 : lo / 2;
+  };
   // Reflections of the point across the x-axis, the y-axis and both (drawn hollow).
   const images: [number, number, string][] =
     spec.reflect && p?.known
@@ -159,7 +169,12 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   strokeWidth={chart.stroke}
                 />
                 {gridLines
-                  .filter((v) => v !== 0)
+                  // A tight grid (four quadrants on a phone) numbers every other line.
+                  .filter((v, _, all) => {
+                    const unit = Math.abs((all[1] ?? 1) - (all[0] ?? 0)) || 1;
+                    const every = Math.abs(sx(unit) - sx(0)) < 22 ? 2 : 1;
+                    return v !== 0 && Math.round(v / unit) % every === 0;
+                  })
                   .map((v) => [
                     <ChartText
                       key={`lx${v}`}
@@ -276,8 +291,8 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       />
                       {spec.distance && rep.known(spec.distance) ? (
                         <ChartText
-                          x={sx((p.px + q.px) / 2) + (dx === 0 ? 8 : 0)}
-                          y={sy((p.py + q.py) / 2) + (dx === 0 ? 4 : 18)}
+                          x={sx(clear(p.px, q.px)) + (dx === 0 ? 8 : 0)}
+                          y={sy(clear(p.py, q.py)) + (dx === 0 ? 4 : 18)}
                           fontSize={chart.label}
                           fontWeight="700"
                           fill={c.chartHighlight}

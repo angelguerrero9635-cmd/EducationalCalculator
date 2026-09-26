@@ -35,14 +35,15 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={0.42}>
+      <Canvas aspect={spec.brackets ? 0.56 : 0.42}>
         {({ w, h }) => {
           const pad = 24;
           const unit = (w - 2 * pad) / (hi - lo || 1);
           const sx = (x: number) => pad + (x - lo) * unit;
           const yLine = h - 30;
-          const yMid = h * 0.42;
-          const boxH = h * 0.36;
+          // Brackets go above the value labels, so the box sits lower.
+          const yMid = spec.brackets ? h * 0.52 : h * 0.42;
+          const boxH = spec.brackets ? h * 0.28 : h * 0.36;
           const step = niceCeil((hi - lo) / 8);
           const ticks: number[] = [];
           for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) ticks.push(t);
@@ -140,8 +141,8 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {spec.brackets
                   ? (
                       [
-                        [mn, mx, spec.brackets.range, 'range', yMid - boxH / 2 - 30],
-                        [q1, q3, spec.brackets.iqr, 'IQR', yMid - boxH / 2 - 10],
+                        [mn, mx, spec.brackets.range, 'range', yMid - boxH / 2 - 44],
+                        [q1, q3, spec.brackets.iqr, 'IQR', yMid - boxH / 2 - 24],
                       ] as const
                     )
                       .filter(([, , id]) => id !== undefined)

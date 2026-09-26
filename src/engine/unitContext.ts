@@ -38,7 +38,18 @@ export function unitChoices(
 const LENGTHS = ['mm', 'cm', 'm', 'km', 'in', 'ft', 'yd', 'mi'];
 
 /**
- * For whole-number lessons, units change together: picking a length unit for one value sets
+ * A shape's lengths with its area or volume (a parallelogram, a box's net): the picture draws
+ * them together, so they share one length unit.
+ */
+const isShape = (variables: readonly VariableDef[]) => {
+  const dims = variables.map((v) => getUnit(v.unit)?.dimension).filter(Boolean);
+  const set = new Set(dims);
+  // Two values of one kind (water levels before and after) are read in the same unit too.
+  return (set.has('length') && (set.has('area') || set.has('volume'))) || dims.length > set.size;
+};
+
+/**
+ * For whole-number lessons and shapes, units change together: picking a length unit for one value sets
  * every length, area and volume to match (m → m, m², m³), and picking any other unit sets every
  * value of the same kind (g → kg for every mass), so a lesson never mixes units. Returns the per-variable units to apply, or just the one change otherwise.
  */
@@ -47,7 +58,7 @@ export function linkedUnits(
   id: string,
   unitId: string,
 ): Record<string, string> {
-  const lesson = variables.some((v) => v.integer && getUnit(v.unit));
+  const lesson = variables.some((v) => v.integer && getUnit(v.unit)) || isShape(variables);
   const picked = getUnit(unitId);
   const family = ['length', 'area', 'volume'];
   if (!lesson || !picked) return { [id]: unitId };
@@ -112,7 +123,7 @@ export function unitOptions(
         const all = unitsOf(getUnit(v.unit)!.dimension);
         return all.some((u) => u.system === 'metric') && all.some((u) => u.system === 'us');
       }),
-    linked: convertible.some((v) => v.integer),
+    linked: convertible.some((v) => v.integer) || isShape(variables),
   };
 }
 

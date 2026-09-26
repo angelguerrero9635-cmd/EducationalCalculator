@@ -107,6 +107,35 @@ with a gallery page (`/gallery`, now showing layout demos too) and a harness che
   inches) instead of "bigger" and "smaller" units. Names like "x-coordinate" stay out before
   Grade 6: the pages say across and up.
 
+## Grade 6 build (Sections 3 and 7, from the reviewer's plans)
+
+- Grade 6 is where letters arrive, but a student can open ratios before expressions. → A
+  `middle` band: pages set `notation: 'letters'` only where the standard is about letters
+  (6.EE, the area and cube formulas); every other Grade 6 page (and all of Grade 6 science)
+  reads like Grades 3–5. A letter page gives the rule glossed ("A = b × h (area = base ×
+  height)"), puts the numbers in with the unknown kept as its letter ("40 = b × 5"), then
+  undoes one step per line, with no college rearrangement line.
+- Negatives were bracketed everywhere ("((−4), 3)") and printed with a hyphen. → Numbers print
+  a true minus (−4) and a negative is bracketed only after an operation sign or before an
+  exponent; a relation can set its own number `sentence` so a signed difference never reads
+  "3 − (−5)" (Grade 7). Distances across 0 are worked by distances from 0 ("|−4| + |5|").
+- No written work past Grade 5. → Grade 6 long division carries the point up and writes zeros
+  until the division ends; facts with zeros (300 ÷ 30, 1,800 ÷ 6) and multiplying by 10, 100
+  or 1,000 stay in the head; Grade 6 science leaves the grids to math.
+- Money showed "$7.5". → Dollars always show their cents.
+- The solver accepted inputs no value could complete (a sum of five values of 0, with three
+  already typed). → Before keeping an input, the solver checks that every straight-line
+  relation can still reach its value with the unknowns inside their ranges, and says why not.
+- A parallelogram's base in millimeters and its height in centimeters drew the wrong shape. →
+  A shape's lengths, areas and volumes change unit together, and so do two values of one kind
+  (water levels before and after).
+- The area model ran off the screen past four places. → It keeps the smallest places together
+  in the last box (5,430.76 as 5,000 + 400 + 30 + 0.76).
+- The harness read "x + 7 − 7 = 12 − 7" as the sum 7 − 7 = 12. → A sum after a letter term is
+  not checked as arithmetic. It now reads the greatest common factor, least common multiple,
+  shared prime factors, signed distances, quadrants, medians, ranges, mean absolute deviations
+  and cube roots.
+
 ## Science Grades 4–5 (Section 6, first review)
 
 - `apart` (no direction) was used for a rise, a loss and how much farther, so a drop from

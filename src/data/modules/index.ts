@@ -12,6 +12,7 @@ import { MATH_5_MODULES } from './math/5';
 import { SCIENCE_4_MODULES } from './science/4';
 import { SCIENCE_5_MODULES } from './science/5';
 import { MATH_6_MODULES } from './math/6';
+import { SCIENCE_6_MODULES } from './science/6';
 import { PILOT_MODULES } from './pilots';
 import { GALLERY_MODULES } from './gallery';
 import { LAYOUTS, getLayout, type LayoutDef } from './layouts';
@@ -34,6 +35,7 @@ export const MODULES: readonly ModuleDef[] = [
   ...SCIENCE_4_MODULES,
   ...SCIENCE_5_MODULES,
   ...MATH_6_MODULES,
+  ...SCIENCE_6_MODULES,
   ...PILOT_MODULES,
   ...COLLEGE_MODULES,
 ];

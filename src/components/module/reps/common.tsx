@@ -198,7 +198,7 @@ export function useRep(calc: Calculator) {
     if (!withUnit || !unit || x === undefined) return shown;
     // $ goes before the number; ¢, % and ° go right after it; other units after a space.
     if (unit === '$') return dollars(shown);
-    return `${shown}${['¢', '%', '°'].includes(unit) ? '' : ' '}${unit}`;
+    return `${shown}${['¢', '%', '°', '×'].includes(unit) ? '' : ' '}${unit}`;
   };
   return {
     variable: (id: string) => byId.get(id)!,

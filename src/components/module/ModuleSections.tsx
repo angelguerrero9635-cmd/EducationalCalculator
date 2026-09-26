@@ -43,7 +43,7 @@ function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
             ? num
             : unit === '$'
               ? dollars(num)
-              : ['¢', '%', '°'].includes(unit)
+              : ['¢', '%', '°', '×'].includes(unit)
                 ? `${num}${unit}`
                 : `${num} ${unit}`;
         return (

@@ -10,11 +10,11 @@ independent AI review), and the next section starts only after the owner approve
 | 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice       |
 | 1   | Math K–2                                                                                            | 64      | Done, reviewed twice       |
 | 2   | Math 3–5 (one grade at a time)                                                                      | 34      | Grades 3–5 built, reviewed |
-| 3   | Math 6–8                                                                                            | 30      |                            |
+| 3   | Math 6–8                                                                                            | 30      | Grade 6 built              |
 | 4   | Math 9–10                                                                                           | 21      |                            |
 | 5   | Math 11–12                                                                                          | 22      |                            |
 | 6   | Science K–5                                                                                         | 39      | K–5 built, reviewed        |
-| 7   | Science 6–8                                                                                         | 21      |                            |
+| 7   | Science 6–8                                                                                         | 21      | Grade 6 built              |
 | 8   | Science 9–12                                                                                        | 34      |                            |
 | 9   | College Math                                                                                        | 25      |                            |
 | 10  | Chemistry                                                                                           | 42      |                            |
@@ -32,6 +32,31 @@ independent AI review), and the next section starts only after the owner approve
 Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may be split further if it runs long.
 
 ## Section notes
+
+- **Section 3, Grade 6 (math), from the reviewer's direction plan.** Words pages for ratios
+  (a ratio table with its graph, part-part-whole tapes), unit rates (double number lines in
+  dollars, the better buy, constant speed), percent (one percent of the whole on a percent
+  bar; fractions, decimals and percents), long division and decimals (the point carried up,
+  multiplying by counting places, dividing by a decimal), dividing fractions (by the
+  reciprocal, how many groups, how much in one group), GCF and LCM (Venn diagram, two rows of
+  multiples, two factor trees, factoring out the GCF), negatives (opposites and absolute value
+  on a number line, the rise through 0 on a thermometer), the four-quadrant plane (distance,
+  reflections, rectangles), nets and surface area, volume with half-unit cubes, and statistics
+  (mean as a balance point, median and range, MAD, box plots). Letter pages where the standard
+  is about letters: evaluating expressions, equivalent expressions, two quantities (e = 12h),
+  one-step equations, the area formulas (parallelogram, triangle, trapezoid) and the cube
+  formulas. Sixteen sorts, a sequence and an observe page (histogram). Left out for now: unit
+  conversions with unit pairs and a fraction value type (dividing fractions uses numerators
+  and denominators).
+- **Section 7, Grade 6 (science), from the reviewer's direction plan.** Words throughout (no
+  letters). Calculators: density (the pilot rebuilt, with the nearest material), water
+  displacement in a graduated cylinder, total magnification, cell size from the field of view,
+  why cells stay small, blood pumped each minute, rain from a roof, cloud base, a front's
+  arrival, plate speed from Hawaii and a layer's age. Explorations: a cell's parts, body
+  systems, the water cycle, fronts, plate boundaries, continents over time and the rock cycle.
+  Sorts, sequences and observations for cells, cell theory, plant and animal cells, levels of
+  organization, heart rate and reaction time, sink or float, a density column, sun or
+  gravity, air masses, forecasts, a front passing, plate boundaries, rock types and sandstone.
 
 - **Section 6, Science Grades 4–5.** Built from the lesson reviewer's plan
   (`.review/science-4-5-plan.md`) and reviewed once. 17 skill pages (5-ESS3-1 was added to the

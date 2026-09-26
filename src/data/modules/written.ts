@@ -532,8 +532,11 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     const [a, b] = nums(text) as [number, number];
     // A multiple of ten times a digit (40 × 6) is a fact and a zero, not column work.
     const mental = (x: number, y: number) => y < 10 && /^[1-9]0+$/.test(String(x));
-    // Times-table facts and products under 100 are done in the head.
+    // Times-table facts and products under 100 are done in the head, and so is multiplying
+    // by 10, 100 or 1,000 (Grade 6: 40 × 10).
+    const tenPower = (x: number) => g >= 6 && /^10+$/.test(String(x));
     if (Math.max(a, b) <= 12 || a * b < 100 || mental(a, b) || mental(b, a)) return undefined;
+    if (tenPower(a) || tenPower(b)) return undefined;
     // Grade 5: the standard algorithm (bigger factor on top) when the second has 1 or 2 digits.
     if (g >= 5) {
       const [top, bottom] = a >= b ? [a, b] : [b, a];
@@ -556,6 +559,11 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     const places = (String(n).split('.')[1] ?? '').length;
     const scaled = Math.round(n * 10 ** places);
     if (d < 2 || (scaled % d === 0 && scaled / d < 10)) return undefined;
+    // A fact with zeros (300 ÷ 30 = 10, 1,800 ÷ 6 = 300) is done in the head.
+    let [n0, d0] = [n, d];
+    while (n0 % 10 === 0 && d0 % 10 === 0) [n0, d0] = [n0 / 10, d0 / 10];
+    if (Number.isInteger(n0 / d0) && d0 <= 12 && /^[1-9]0*$/.test(String(n0 / d0)))
+      return undefined;
     return decimalLongDivision(n, d);
   }
   if (g >= 4 && /^\d+ ÷ \d+$/.test(text)) {

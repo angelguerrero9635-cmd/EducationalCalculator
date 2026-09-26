@@ -177,6 +177,28 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
     /[Qq]uadrant of \((-?\d+(?:\.\d+)?), (-?\d+(?:\.\d+)?)\)/,
     (x, y) => (x === 0 || y === 0 ? 0 : x > 0 ? (y > 0 ? 1 : 4) : y > 0 ? 2 : 3),
   ],
+  // Grade 6 statistics (6.SP.5): the median, range and mean absolute deviation of a list.
+  [
+    new RegExp(`median of ((?:${NUM}, )+${NUM})`),
+    (...xs) => {
+      const s = xs.filter((x) => !Number.isNaN(x)).sort((a, b) => a - b);
+      const n = s.length;
+      return n % 2 ? s[(n - 1) / 2]! : (s[n / 2 - 1]! + s[n / 2]!) / 2;
+    },
+  ],
+  [
+    new RegExp(`range of ((?:${NUM}, )+${NUM})`),
+    (...xs) =>
+      Math.max(...xs.filter((x) => !Number.isNaN(x))) -
+      Math.min(...xs.filter((x) => !Number.isNaN(x))),
+  ],
+  [
+    new RegExp(`mean distance from (${NUM}) of ((?:${NUM}, )+${NUM})`),
+    (m, ...xs) => {
+      const ys = xs.filter((x) => !Number.isNaN(x));
+      return ys.reduce((t, x) => t + Math.abs(x - m), 0) / ys.length;
+    },
+  ],
   // Grade 6 factors and multiples (6.NS.4).
   [
     new RegExp(`(?:greatest common factor|shared prime factors) of (${NUM}) and (${NUM})`),
@@ -248,6 +270,8 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     // Any exponent written as superscript digits (10³, 10⁴).
     .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (m) => `**${[...m].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c)).join('')}`)
     .replace(/\^/g, '**')
+    .replace(/∛\(/g, 'cbrt(')
+    .replace(/∛(\d+(?:\.\d+)?)/g, 'cbrt($1)')
     .replace(/√\(/g, 'sqrt(')
     .replace(/√(\d+(?:\.\d+)?)/g, 'sqrt($1)')
     // Natural logs from the exponential lessons: ln(x) and ln|x|.
@@ -262,7 +286,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     // Unwrap brackets around a single number, "(300)" → "300", so outer brackets can reduce.
     // (not the argument of a function, and not a base about to be raised: (-3)**2)
     s = s
-      .replace(/(?<!sqrt|log|abs)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g, ' $1 ')
+      .replace(/(?<!sqrt|cbrt|log|abs)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g, ' $1 ')
       .replace(/\s+/g, ' ')
       .trim();
     // Work out bracketed arithmetic first, so phrases see one number: "tens in (45 - 5)".
@@ -297,7 +321,10 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     for (const [re, fn] of ordered) {
       const m = re.exec(s);
       if (m) {
-        const x = fn(...m.slice(1).map(toNum));
+        // A captured list ("3, 5, 7") passes each of its numbers.
+        const x = fn(
+          ...m.slice(1).flatMap((g) => (g === undefined ? [NaN] : g.split(', ').map(toNum))),
+        );
         s = s.slice(0, m.index) + `(${x})` + s.slice(m.index + m[0].length);
         replaced = true;
         break;
@@ -305,12 +332,12 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     }
     if (!replaced) break;
   }
-  const bare = s.replace(/(?:sqrt|log|abs)\(/g, '(').replace(/\*\*/g, '*');
+  const bare = s.replace(/(?:sqrt|cbrt|log|abs)\(/g, '(').replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
-      `const { log, abs } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
+      `const { log, abs, cbrt } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
     )(clampRoots) as unknown;
     return typeof x === 'number' ? x : undefined;
   } catch {

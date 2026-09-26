@@ -111,6 +111,63 @@ export function holds(relation: Relation, values: Values): boolean {
   return Math.abs(r) <= TOLERANCE * scale * scale;
 }
 
+/** A relation that is a straight-line sum of its values: the constant and each coefficient. */
+type Affine = { c0: number; coef: Map<string, number> };
+const affineCache = new WeakMap<Relation, Affine | null>();
+function affineOf(rel: Relation): Affine | undefined {
+  if (affineCache.has(rel)) return affineCache.get(rel) ?? undefined;
+  const at = (p: Values) => {
+    try {
+      return rel.residual(p);
+    } catch {
+      return NaN;
+    }
+  };
+  const zero = Object.fromEntries(rel.vars.map((id) => [id, 0]));
+  const c0 = at(zero);
+  const coef = new Map(rel.vars.map((id) => [id, at({ ...zero, [id]: 1 }) - c0]));
+  let ok = Number.isFinite(c0) && [...coef.values()].every(Number.isFinite);
+  // Probe a few fixed points: a product or a ratio shows up as a miss.
+  for (let i = 1; ok && i <= 6; i++) {
+    const p = Object.fromEntries(rel.vars.map((id, k) => [id, ((i * 37 + k * 53) % 200) - 50]));
+    const lin = c0 + rel.vars.reduce((t, id) => t + coef.get(id)! * p[id]!, 0);
+    const x = at(p);
+    ok = Math.abs(x - lin) <= 1e-9 * (1 + Math.abs(lin));
+  }
+  const out = ok ? { c0, coef } : null;
+  affineCache.set(rel, out);
+  return out ?? undefined;
+}
+
+/**
+ * A sum the unknown values can't reach, whatever they are within their ranges (a total of 10
+ * with 12 already typed and the rest at least 0): the inputs can never be completed.
+ */
+function outOfReach(system: System, values: Values): boolean {
+  const byId = new Map(system.variables.map((v) => [v.id, v]));
+  return system.relations.some((rel) => {
+    if (rel.constraint || rel.vars.every((id) => id in values)) return false;
+    const aff = affineOf(rel);
+    if (!aff) return false;
+    let lo = aff.c0;
+    let hi = aff.c0;
+    for (const id of rel.vars) {
+      const k = aff.coef.get(id)!;
+      if (id in values) {
+        lo += k * values[id]!;
+        hi += k * values[id]!;
+        continue;
+      }
+      const v = byId.get(id);
+      if (v?.min === undefined || v.max === undefined) return false;
+      lo += Math.min(k * v.min, k * v.max);
+      hi += Math.max(k * v.min, k * v.max);
+    }
+    const tol = 1e-9 * (1 + Math.max(Math.abs(lo), Math.abs(hi)));
+    return lo > tol || hi < -tol;
+  });
+}
+
 /** Finds roots of `f` in [lo, hi] by scanning for sign changes and bisecting. */
 export function findRoots(
   f: (x: number) => number,
@@ -461,17 +518,22 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       { ...givens, [g.id]: normalizeValue(variable, g.value) },
       previous,
     );
-    // With values still unknown, check some whole numbers can still fill them in.
+    // With values still unknown, check they can still be filled in: a sum within reach of
+    // the unknowns' ranges, and some whole numbers that fit.
+    const open = propagated.ok && Object.keys(propagated.values).length < system.variables.length;
+    const unreachable = open && outOfReach(system, propagated.values);
     const none =
-      propagated.ok &&
-      Object.keys(propagated.values).length < system.variables.length &&
+      open &&
+      !unreachable &&
       (() => {
         const r = wholeSolutions(system, propagated.values, previous, 1);
         return !r.exhausted && r.solutions.length === 0;
       })();
-    const trial: Propagation = none
-      ? { ok: false, reason: 'No whole numbers fit these values' }
-      : propagated;
+    const trial: Propagation = unreachable
+      ? { ok: false, reason: 'The other values can’t reach this within their ranges' }
+      : none
+        ? { ok: false, reason: 'No whole numbers fit these values' }
+        : propagated;
     if (trial.ok) {
       known = trial.values;
       trace = trial.trace;

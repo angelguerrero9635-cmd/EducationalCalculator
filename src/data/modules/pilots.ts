@@ -248,56 +248,6 @@ export const PILOT_MODULES: ModuleDef[] = [
     },
   },
   {
-    id: 's.6.density',
-    assumptions: [
-      'The object is one uniform material, so its density is the same everywhere.',
-      'Mass in grams and volume in cubic centimeters give density in g/cm³.',
-      'Water is about 1 g/cm³: denser objects sink in water, less dense ones float.',
-    ],
-    variables: [
-      { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'g/cm³', min: 0.01, max: 25, step: 0.1 },
-      { id: 'm', symbol: 'm', name: 'Mass', unit: 'g', min: 0, max: 2500000 },
-      { id: 'V', symbol: 'V', name: 'Volume', unit: 'cm³', min: 0.001, max: 100000, step: 1 },
-    ],
-    relations: [
-      {
-        id: 'ρ = m ÷ V',
-        display: '{rho} = {m} ÷ {V}',
-        vars: ['rho', 'm', 'V'],
-        residual: (v) => v.rho! * v.V! - v.m!,
-        solve: {
-          rho: (v) => div(v.m!, v.V!),
-          m: (v) => v.rho! * v.V!,
-          V: (v) => div(v.m!, v.rho!),
-        },
-      },
-    ],
-    steps: {
-      'ρ = m ÷ V': {
-        rho: {
-          expr: '{m} ÷ {V}',
-          how: 'Density is the mass in each unit of volume: share the mass equally over the volume.',
-        },
-        m: {
-          expr: '{rho} × {V}',
-          how: 'Each unit of volume holds ρ of mass, so multiply by the volume.',
-        },
-        V: { expr: '{m} ÷ {rho}', how: 'Multiply both sides by V, then divide by the density.' },
-      },
-    },
-    example: { rho: 2.7, V: 20, m: 54 },
-    startWith: ['rho', 'V'],
-    // Middle-school science (NGSS) works in SI; US units stay reachable through Mixed.
-    unitSystems: ['metric'],
-    representation: {
-      kind: 'plot',
-      x: { var: 'V', min: 0, max: 100 },
-      y: { var: 'm', min: 0, max: 300 },
-      params: ['rho'],
-      autoRange: true,
-    },
-  },
-  {
     id: 's.8.newtons-laws',
     assumptions: [
       'F is the net force: all the forces on the object added together.',

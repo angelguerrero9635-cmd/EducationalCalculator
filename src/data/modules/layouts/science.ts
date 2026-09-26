@@ -2413,4 +2413,914 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Building a bridge for animals over a highway', bin: 'life' },
     ],
   },
+  // ── Grade 6 ──
+  {
+    kind: 'sort',
+    id: 's.6.cells',
+    assumptions: [
+      'Every living thing is made of one or more cells.',
+      'Most cells are too small to see without a microscope.',
+      'Some living things are a single cell. Others, like you, have trillions of cells of many kinds.',
+    ],
+    question: 'What is it made of?',
+    bins: [
+      {
+        id: 'one',
+        label: 'One cell',
+        why: 'The whole living thing is one cell that takes in food, grows and reproduces.',
+      },
+      { id: 'many', label: 'Many cells', why: 'Many cells of different kinds work together.' },
+      { id: 'none', label: 'No cells', why: 'It is not alive and never was, so it has no cells.' },
+    ],
+    cards: [
+      { label: 'Bacterium in yogurt', bin: 'one' },
+      { label: 'Amoeba from a pond', bin: 'one' },
+      { label: 'Paramecium', bin: 'one' },
+      { label: 'Yeast that raises bread', bin: 'one' },
+      { label: 'Oak tree', bin: 'many' },
+      { label: 'Mushroom', bin: 'many' },
+      { label: 'Human', bin: 'many' },
+      { label: 'Elodea water plant', bin: 'many' },
+      { label: 'Grain of quartz sand', bin: 'none' },
+      { label: 'Air bubble on a slide', bin: 'none' },
+      { label: 'Salt crystal', bin: 'none' },
+      { label: 'Glass bead', bin: 'none' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.cells~cell-theory',
+    title: 'What cell theory says',
+    use: 'Use this to sort statements that cell theory makes from ones that are not true.',
+    assumptions: [
+      'Robert Hooke named cells in 1665 after looking at thin slices of cork.',
+      'In the 1830s–1850s scientists showed that plants and animals are made of cells, and that cells come from cells.',
+    ],
+    question: 'Does cell theory say this?',
+    bins: [
+      {
+        id: 'yes',
+        label: 'Cell theory says it',
+        why: 'Microscope observations have supported this for almost 200 years.',
+      },
+      { id: 'no', label: 'Not true', why: 'Scientists have found cells that show this is false.' },
+    ],
+    cards: [
+      { label: 'All living things are made of one or more cells', bin: 'yes' },
+      { label: 'The cell is the smallest unit that is alive', bin: 'yes' },
+      { label: 'New cells come only from cells that already exist', bin: 'yes' },
+      { label: 'Every cell has a nucleus', bin: 'no' },
+      { label: 'Every cell has a cell wall', bin: 'no' },
+      { label: 'Bigger animals have bigger cells', bin: 'no' },
+      { label: 'Living things can form from mud or rotting meat', bin: 'no' },
+      { label: 'All cells are the same shape', bin: 'no' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.6.cell-organelles',
+    assumptions: [
+      'A cell is a tiny system: each part has a job, and the cell lives only when they work together.',
+      'Plant and animal cells share most parts. Plant cells add a wall, chloroplasts and a large vacuole.',
+      'Choose a part to read its job.',
+    ],
+    figure: { kind: 'cell' },
+    scenes: [
+      {
+        label: 'Cell membrane',
+        cell: { type: 'animal', part: 'membrane' },
+        lines: [
+          'A thin, flexible layer around the cell.',
+          'It lets water, food and oxygen in and wastes out.',
+        ],
+      },
+      {
+        label: 'Cytoplasm',
+        cell: { type: 'animal', part: 'cytoplasm' },
+        lines: ['The jelly-like fluid that fills the cell and holds its parts.'],
+      },
+      {
+        label: 'Nucleus',
+        cell: { type: 'animal', part: 'nucleus' },
+        lines: [
+          'Holds the DNA, the instructions that control what the cell does and how it grows.',
+        ],
+      },
+      {
+        label: 'Mitochondria',
+        cell: { type: 'animal', part: 'mitochondria' },
+        lines: ['Break down sugar with oxygen to release the energy the cell uses.'],
+      },
+      {
+        label: 'Cell wall',
+        cell: { type: 'plant', part: 'wall' },
+        lines: [
+          'A stiff layer outside the membrane that supports and protects the cell.',
+          'Plants, fungi and most bacteria have a wall. Animal cells do not.',
+        ],
+      },
+      {
+        label: 'Chloroplasts',
+        cell: { type: 'plant', part: 'chloroplasts' },
+        lines: [
+          'Use energy from sunlight to make sugar from water and carbon dioxide.',
+          'Only plants and algae have them. They make leaves green.',
+        ],
+      },
+      {
+        label: 'Vacuole',
+        cell: { type: 'plant', part: 'vacuole' },
+        lines: ['Stores water. A full vacuole presses on the wall and keeps a plant stiff.'],
+      },
+      {
+        label: 'Bacterium',
+        cell: { type: 'bacterium', part: 'dna' },
+        lines: [
+          'A bacterium has a membrane, a wall and cytoplasm.',
+          'It has no nucleus: its DNA lies loose in the cytoplasm.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.cell-organelles~plant-animal',
+    title: 'Plant cells and animal cells',
+    use: 'Use this to sort cell parts by which cells have them.',
+    assumptions: [
+      'Only plant cells have some parts, but not every plant cell has them all: root cells have no chloroplasts.',
+      'Every living cell has a membrane and cytoplasm.',
+    ],
+    question: 'Which cells have it?',
+    bins: [
+      {
+        id: 'plant',
+        label: 'Plant cells only',
+        why: 'Plants make their own food and stand up without bones.',
+      },
+      {
+        id: 'both',
+        label: 'Plant and animal cells',
+        why: 'Every plant and animal cell needs these to live.',
+      },
+    ],
+    cards: [
+      { label: 'Cell wall', bin: 'plant' },
+      { label: 'Chloroplasts', bin: 'plant' },
+      { label: 'One large central vacuole', bin: 'plant' },
+      { label: 'Nucleus', bin: 'both' },
+      { label: 'Cell membrane', bin: 'both' },
+      { label: 'Cytoplasm', bin: 'both' },
+      { label: 'Mitochondria', bin: 'both' },
+      { label: 'Ribosomes', bin: 'both' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.cell-organelles~which-cell',
+    title: 'Plant, animal or bacterium?',
+    use: 'Use this to tell plant, animal and bacterial cells apart by their parts.',
+    assumptions: [
+      'Look for a wall, a nucleus and chloroplasts.',
+      'An onion bulb grows underground, so its cells have no chloroplasts. They are still plant cells.',
+    ],
+    question: 'What kind of cell is it?',
+    bins: [
+      {
+        id: 'plant',
+        label: 'Plant cell',
+        why: 'It has a wall and a large vacuole; many have chloroplasts.',
+      },
+      {
+        id: 'animal',
+        label: 'Animal cell',
+        why: 'It has a nucleus and a flexible membrane but no wall.',
+      },
+      { id: 'bacterium', label: 'Bacterium', why: 'It is tiny, with a wall but no nucleus.' },
+    ],
+    cards: [
+      {
+        label: 'Elodea leaf cell',
+        bin: 'plant',
+        figure: { kind: 'cell', type: 'plant', shape: 'box', chloroplasts: true },
+      },
+      {
+        label: 'Onion skin cell',
+        bin: 'plant',
+        figure: { kind: 'cell', type: 'plant', shape: 'box' },
+      },
+      {
+        label: 'Cheek cell',
+        bin: 'animal',
+        figure: { kind: 'cell', type: 'animal', shape: 'round' },
+      },
+      {
+        label: 'Muscle cell',
+        bin: 'animal',
+        figure: { kind: 'cell', type: 'animal', shape: 'long' },
+      },
+      {
+        label: 'Nerve cell',
+        bin: 'animal',
+        figure: { kind: 'cell', type: 'animal', shape: 'branched' },
+      },
+      {
+        label: 'Bacterium from yogurt',
+        bin: 'bacterium',
+        figure: { kind: 'cell', type: 'bacterium', shape: 'rod' },
+      },
+      {
+        label: 'Bacterium from soil',
+        bin: 'bacterium',
+        figure: { kind: 'cell', type: 'bacterium', shape: 'round' },
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.6.body-systems',
+    assumptions: [
+      'Cells make tissues, tissues make organs, and organs work together as organ systems.',
+      'No system works alone: moving, eating and sensing all need several at once.',
+    ],
+    figure: { kind: 'bodySystems' },
+    scenes: [
+      {
+        label: 'Circulatory',
+        body: { systems: ['circulatory'] },
+        lines: [
+          'The heart pumps blood through blood vessels.',
+          'Blood carries oxygen and food to every cell and takes wastes away.',
+        ],
+      },
+      {
+        label: 'Respiratory',
+        body: { systems: ['respiratory'] },
+        lines: ['The lungs take in oxygen and give off carbon dioxide.'],
+      },
+      {
+        label: 'Digestive',
+        body: { systems: ['digestive'] },
+        lines: ['The stomach and intestines break food into small pieces the blood can carry.'],
+      },
+      {
+        label: 'Nervous',
+        body: { systems: ['nervous'] },
+        lines: [
+          'Sense organs detect changes.',
+          'Nerves carry messages to the brain and spinal cord, which send signals to muscles.',
+        ],
+      },
+      {
+        label: 'Muscles and bones',
+        body: { systems: ['muscular', 'skeletal'] },
+        lines: [
+          'Muscles pull on bones to move the body.',
+          'Bones hold it up and protect soft organs.',
+        ],
+      },
+      {
+        label: 'Excretory',
+        body: { systems: ['excretory'] },
+        lines: ['The kidneys filter wastes out of the blood.'],
+      },
+      {
+        label: 'Running',
+        body: { systems: ['respiratory', 'circulatory', 'muscular', 'nervous'] },
+        lines: [
+          'Working muscles need more oxygen.',
+          'You breathe faster and the heart beats faster to deliver it.',
+        ],
+      },
+      {
+        label: 'Eating lunch',
+        body: { systems: ['digestive', 'circulatory'] },
+        lines: [
+          'Digested food passes into the blood in the small intestine.',
+          'The blood carries it to every cell.',
+        ],
+      },
+      {
+        label: 'Touching a hot pan',
+        body: { systems: ['nervous', 'muscular'] },
+        lines: [
+          'Nerves in the skin signal the spinal cord.',
+          'It tells arm muscles to pull your hand away before you feel pain.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.6.body-systems~levels',
+    title: 'From cell to organism',
+    use: 'Use this to put the levels of the body in order, from smallest to largest.',
+    assumptions: [
+      'Each level is made of the one before it.',
+      'A heart is one organ in one system.',
+    ],
+    question: 'Put the levels in order, smallest first.',
+    stages: [
+      { label: 'Cell: one heart muscle cell' },
+      { label: 'Tissue: a sheet of heart muscle cells' },
+      { label: 'Organ: the heart' },
+      { label: 'Organ system: the heart, blood vessels and blood' },
+      { label: 'Organism: a whole person' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.6.body-systems~exercise',
+    title: 'Heart rate after exercise',
+    use: 'Use this to record your heart rate before and after exercise.',
+    assumptions: [
+      'Count your pulse for 15 seconds and multiply by 4.',
+      'Do jumping jacks for two minutes, then count right away and again as you rest.',
+      'Muscles use more oxygen, so the heart and lungs work harder together.',
+      'Stop and rest if you feel dizzy or unwell.',
+    ],
+    columns: ['At rest', 'Right after', '1 min later', '3 min later', '5 min later'],
+    rowLabel: 'Heart rate',
+    unit: 'beats per minute',
+    max: 200,
+    step: 5,
+    initial: [75, 140, 115, 95, 80],
+    pattern: (values) => {
+      const [rest, ...after] = values as [number, ...number[]];
+      const peak = Math.max(...after);
+      const last = after[after.length - 1]!;
+      if (peak <= rest)
+        return 'The heart rate did not rise. Exercise for two full minutes, then count again.';
+      if (Math.abs(last - rest) <= 10)
+        return `Exercise raised the heart rate from ${rest} to ${peak} beats per minute. It fell back to ${last} as you rested.`;
+      return `Exercise raised the heart rate from ${rest} to ${peak}. It has not yet fallen back to the resting rate.`;
+    },
+  },
+  {
+    kind: 'observe',
+    id: 's.6.body-systems~reaction',
+    title: 'Catching a falling ruler',
+    use: 'Use this to record how far a ruler falls before you catch it.',
+    assumptions: [
+      'A partner holds a ruler above your open hand and drops it without warning.',
+      'Your eyes sense the drop. Nerves carry the message to the brain, and the brain signals your hand.',
+      'A shorter catch distance means a faster reaction.',
+    ],
+    columns: ['Try 1', 'Try 2', 'Try 3', 'Try 4', 'Try 5'],
+    rowLabel: 'Catch distance',
+    unit: 'cm',
+    max: 30,
+    step: 1,
+    initial: [19, 17, 15, 14, 12],
+    pattern: (values) => {
+      const first = values[0]!;
+      const last = values[values.length - 1]!;
+      const falling = values.every((x, i) => i === 0 || x <= values[i - 1]!) && last < first;
+      if (falling)
+        return `The catch distance fell from ${first} cm to ${last} cm. Your brain stored what it learned, so you responded sooner.`;
+      if (Math.max(...values) - Math.min(...values) <= 2)
+        return 'The distance stayed about the same. Signals take time to travel from eye to brain to hand.';
+      return 'The distances go up and down. Rest, then try again with the same start.';
+    },
+  },
+  {
+    kind: 'sort',
+    id: 's.6.density~sink-float',
+    title: 'Sink or float?',
+    use: 'Use this to sort materials by whether they sink or float in water.',
+    assumptions: [
+      'Compare each density with water’s: 1 g/cm³.',
+      'A steel ship floats because the hull and the air inside it together are less dense than water.',
+      'Sea water is about 1.03 g/cm³, so things float a little higher in the ocean.',
+    ],
+    question: 'Will it sink or float in fresh water?',
+    bins: [
+      { id: 'float', label: 'Floats', why: 'Its density is less than water’s 1 g/cm³.' },
+      { id: 'sink', label: 'Sinks', why: 'Its density is more than water’s 1 g/cm³.' },
+    ],
+    cards: [
+      { label: 'Cork: 0.24 g/cm³', bin: 'float' },
+      { label: 'Pine wood: 0.5 g/cm³', bin: 'float' },
+      { label: 'Candle wax: 0.9 g/cm³', bin: 'float' },
+      { label: 'Ice: 0.92 g/cm³', bin: 'float' },
+      { label: 'Glass marble: 2.5 g/cm³', bin: 'sink' },
+      { label: 'Aluminum: 2.7 g/cm³', bin: 'sink' },
+      { label: 'Steel: 7.9 g/cm³', bin: 'sink' },
+      { label: 'Gold: 19.3 g/cm³', bin: 'sink' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.6.density~layers',
+    title: 'A density column',
+    use: 'Use this to order liquids in a jar from bottom to top.',
+    assumptions: [
+      'Pour each liquid slowly down the side of the jar.',
+      'The densest liquid sinks to the bottom. The least dense one floats on top.',
+    ],
+    question: 'Put the liquids in order from the bottom of the jar to the top.',
+    stages: [
+      { label: 'Honey: 1.4 g/cm³' },
+      { label: 'Dish soap: 1.06 g/cm³' },
+      { label: 'Water: 1.00 g/cm³' },
+      { label: 'Vegetable oil: 0.92 g/cm³' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.6.water-cycle',
+    assumptions: [
+      'The same water keeps moving between the ocean, air, land and living things.',
+      'Energy from the sun lifts water into the air as vapor. Gravity brings it back down.',
+      'Water changes state as it moves: liquid water, water vapor and ice.',
+    ],
+    figure: { kind: 'waterCycle' },
+    scenes: [
+      {
+        label: 'Evaporation',
+        water: { process: 'evaporation', driver: 'sun' },
+        lines: ['The sun warms the ocean. Liquid water turns into water vapor and rises.'],
+      },
+      {
+        label: 'Transpiration',
+        water: { process: 'transpiration', driver: 'sun' },
+        lines: [
+          'Plants pull water up from the soil.',
+          'It evaporates from tiny holes in their leaves.',
+        ],
+      },
+      {
+        label: 'Condensation',
+        water: { process: 'condensation' },
+        lines: ['Rising air cools. Water vapor condenses on specks of dust into cloud droplets.'],
+      },
+      {
+        label: 'Precipitation',
+        water: { process: 'precipitation', driver: 'gravity' },
+        lines: [
+          'Droplets join until they are too heavy to stay up.',
+          'Gravity pulls them down as rain, snow or hail.',
+        ],
+      },
+      {
+        label: 'Runoff',
+        water: { process: 'runoff', driver: 'gravity' },
+        lines: [
+          'Water flows downhill over the land into streams and rivers, and back to the ocean.',
+        ],
+      },
+      {
+        label: 'Infiltration',
+        water: { process: 'infiltration', driver: 'gravity' },
+        lines: ['Water soaks into the soil and fills spaces in rock underground: groundwater.'],
+      },
+      {
+        label: 'Melting',
+        water: { process: 'melting', driver: 'sun' },
+        lines: ['Spring sunshine melts snow on the mountains, and the meltwater runs downhill.'],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.water-cycle~sun-or-gravity',
+    title: 'Sun or gravity?',
+    use: 'Use this to sort water cycle steps by what drives them.',
+    assumptions: [
+      'Energy from the sun turns liquid water and ice into vapor, and melts ice.',
+      'Gravity pulls water down and downhill.',
+    ],
+    question: 'What drives this step?',
+    bins: [
+      {
+        id: 'sun',
+        label: 'Energy from the sun',
+        why: 'Heat turns liquid or ice into vapor, or melts ice.',
+      },
+      { id: 'gravity', label: 'Gravity', why: 'Gravity pulls water down and downhill.' },
+    ],
+    cards: [
+      { label: 'Water evaporates from a lake', bin: 'sun' },
+      { label: 'Leaves give off water vapor', bin: 'sun' },
+      { label: 'Snow on a mountain melts in spring', bin: 'sun' },
+      { label: 'Ice turns straight to vapor on a cold, sunny day', bin: 'sun' },
+      { label: 'Rain falls from a cloud', bin: 'gravity' },
+      { label: 'A river flows to the sea', bin: 'gravity' },
+      { label: 'Rainwater soaks into the soil', bin: 'gravity' },
+      { label: 'A glacier creeps downhill', bin: 'gravity' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.6.weather-fronts',
+    assumptions: [
+      'An air mass is a huge body of air with about the same temperature and humidity throughout.',
+      'A front is the boundary where two air masses meet.',
+      'Cold air is denser than warm air, so it stays low and pushes the warm air up.',
+    ],
+    figure: { kind: 'front' },
+    scenes: [
+      {
+        label: 'Cold front',
+        front: { type: 'cold' },
+        lines: [
+          'Cold air wedges under warm air and lifts it fast.',
+          'Tall clouds build: heavy rain or thunderstorms, then cooler, drier air.',
+        ],
+      },
+      {
+        label: 'Warm front',
+        front: { type: 'warm' },
+        lines: [
+          'Warm air slides slowly up over a long slope of cold air.',
+          'Flat layers of cloud spread ahead: long, light rain, then warmer air.',
+        ],
+      },
+      {
+        label: 'Stationary front',
+        front: { type: 'stationary' },
+        lines: [
+          'Neither air mass pushes the other away.',
+          'Clouds and rain can stay over one place for days.',
+        ],
+      },
+      {
+        label: 'Low pressure',
+        front: { air: 'low' },
+        lines: ['Air rises over a low. As it cools, clouds and rain form.'],
+      },
+      {
+        label: 'High pressure',
+        front: { air: 'high' },
+        lines: ['Air sinks over a high. It warms and dries, so skies are usually clear.'],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.weather-fronts~air-masses',
+    title: 'Where an air mass formed',
+    use: 'Use this to name air masses by where they formed.',
+    assumptions: [
+      'An air mass takes on the temperature and humidity of the land or ocean it sits over.',
+      'Continental means over land (dry); maritime means over ocean (humid).',
+      'Polar means cold; tropical means warm.',
+    ],
+    question: 'Which kind of air mass is it?',
+    bins: [
+      { id: 'cP', label: 'Continental polar', why: 'Forms over cold land: cold and dry.' },
+      { id: 'mP', label: 'Maritime polar', why: 'Forms over cold ocean: cool and humid.' },
+      { id: 'mT', label: 'Maritime tropical', why: 'Forms over warm ocean: warm and humid.' },
+      { id: 'cT', label: 'Continental tropical', why: 'Forms over hot desert: hot and dry.' },
+    ],
+    cards: [
+      { label: 'Air from northern Canada in winter', bin: 'cP' },
+      { label: 'Frigid, dry air from the Arctic lands', bin: 'cP' },
+      { label: 'Air from the North Pacific near Alaska', bin: 'mP' },
+      { label: 'Cool, damp air over the North Atlantic', bin: 'mP' },
+      { label: 'Air from the Gulf of Mexico', bin: 'mT' },
+      { label: 'Warm, muggy air from the Caribbean Sea', bin: 'mT' },
+      { label: 'Air from the deserts of northern Mexico', bin: 'cT' },
+      { label: 'Hot, dry air over the desert Southwest', bin: 'cT' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.weather-fronts~forecast',
+    title: 'Stormy or fair?',
+    use: 'Use this to predict the weather from pressure, fronts and rising or sinking air.',
+    assumptions: [
+      'Rising air cools, and its water vapor condenses into clouds.',
+      'Sinking air warms, and clouds dry up.',
+      'A falling barometer means low pressure is coming; a rising one means high pressure.',
+    ],
+    question: 'What weather is likely next?',
+    bins: [
+      {
+        id: 'wet',
+        label: 'Clouds and rain likely',
+        why: 'Air is rising, so it cools and its water vapor condenses.',
+      },
+      {
+        id: 'fair',
+        label: 'Clear and dry likely',
+        why: 'Air is sinking, so it warms and clouds dry up.',
+      },
+    ],
+    cards: [
+      { label: 'The barometer is falling fast', bin: 'wet' },
+      { label: 'A low-pressure center is moving in', bin: 'wet' },
+      { label: 'A cold front is a few hours away', bin: 'wet' },
+      { label: 'Warm, humid air is rising up a mountainside', bin: 'wet' },
+      { label: 'The barometer is rising', bin: 'fair' },
+      { label: 'A high-pressure center is overhead', bin: 'fair' },
+      { label: 'A cold front passed last night and the wind is from the northwest', bin: 'fair' },
+      { label: 'Dry air is sinking over the area', bin: 'fair' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.6.weather-fronts~front-passing',
+    title: 'A front passing through',
+    use: 'Use this to record hourly temperatures and spot when a front passed.',
+    assumptions: [
+      'Read a thermometer in the shade, or the school weather station, every hour.',
+      'A cold front brings a sudden drop in temperature, a change in wind and often a burst of rain.',
+    ],
+    columns: ['2 pm', '3 pm', '4 pm', '5 pm', '6 pm'],
+    rowLabel: 'Temperature',
+    unit: '°C',
+    max: 40,
+    step: 1,
+    initial: [27, 28, 26, 18, 16],
+    pattern: (values) => {
+      const hours = ['2 pm', '3 pm', '4 pm', '5 pm', '6 pm'];
+      let drop = 0;
+      let at = 0;
+      values.forEach((x, i) => {
+        if (i > 0 && values[i - 1]! - x > drop) [drop, at] = [values[i - 1]! - x, i];
+      });
+      if (drop >= 5)
+        return `The temperature fell ${drop} °C between ${hours[at - 1]} and ${hours[at]}. A cold front probably passed then.`;
+      if (values.every((x, i) => i === 0 || x > values[i - 1]!))
+        return 'The air warmed all afternoon. No cold front passed.';
+      return 'No sudden change. The same air mass probably stayed all afternoon.';
+    },
+  },
+  {
+    kind: 'explore',
+    id: 's.6.plate-tectonics',
+    assumptions: [
+      'Earth’s outer shell is broken into large pieces called plates, which move a few centimeters a year.',
+      'Most earthquakes and volcanoes happen where plates meet.',
+    ],
+    figure: { kind: 'plates' },
+    scenes: [
+      {
+        label: 'Ocean ridge',
+        plates: { boundary: 'divergent', ages: true },
+        lines: [
+          'Two plates pull apart. Magma rises and cools into new seafloor.',
+          'The rock is older the farther it is from the ridge, the same on both sides.',
+        ],
+      },
+      {
+        label: 'Rift valley',
+        plates: { boundary: 'rift' },
+        lines: ['A continent stretches and cracks apart, as in East Africa today.'],
+      },
+      {
+        label: 'Ocean plate under a continent',
+        plates: { boundary: 'subduction' },
+        lines: [
+          'The denser ocean plate sinks under the continent.',
+          'Deep down, rock melts and rises to feed volcanoes such as the Andes.',
+        ],
+      },
+      {
+        label: 'Two continents collide',
+        plates: { boundary: 'collision' },
+        lines: [
+          'Neither plate sinks easily, so the crust crumples and piles up.',
+          'That is how the Himalayas formed.',
+        ],
+      },
+      {
+        label: 'Plates slide past',
+        plates: { boundary: 'transform' },
+        lines: [
+          'The plates grind past each other sideways.',
+          'They lock, then slip suddenly in earthquakes, as on the San Andreas Fault.',
+        ],
+      },
+      {
+        label: 'What moves the plates',
+        plates: { boundary: 'divergent', mantle: true },
+        lines: [
+          'Hot rock in the mantle rises slowly and cooler rock sinks.',
+          'This slow flow, and the pull of sinking plates, moves the plates.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.6.plate-tectonics~pangaea',
+    title: 'Evidence that continents moved',
+    use: 'Use this to see the evidence that the continents were once joined.',
+    assumptions: [
+      'The maps are simplified drawings, not exact coastlines.',
+      'Scientists put the clues together: fossils, rocks and the shapes of the coasts.',
+    ],
+    figure: { kind: 'continents' },
+    scenes: [
+      {
+        label: '250 million years ago',
+        continents: { age: 250 },
+        lines: ['The continents were joined in one supercontinent, Pangaea.'],
+      },
+      {
+        label: '150 million years ago',
+        continents: { age: 150 },
+        lines: [
+          'North America had pulled away from Africa.',
+          'South America and Africa were still joined.',
+        ],
+      },
+      {
+        label: 'Today',
+        continents: { age: 0 },
+        lines: ['The Atlantic Ocean is still widening, a few centimeters a year.'],
+      },
+      {
+        label: 'Fossil clue',
+        continents: { age: 250, clue: 'fossils' },
+        lines: [
+          'Fossils of Mesosaurus, a small freshwater reptile, are found in both South America and Africa.',
+          'It could not have swum across an ocean.',
+        ],
+      },
+      {
+        label: 'Rock clue',
+        continents: { age: 250, clue: 'rocks' },
+        lines: [
+          'Mountains of the same age and rock type line up across North America, Greenland and northern Europe.',
+        ],
+      },
+      {
+        label: 'Shape clue',
+        continents: { age: 0, clue: 'shapes' },
+        lines: [
+          'The east coast of South America fits the west coast of Africa like puzzle pieces.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.plate-tectonics~boundaries',
+    title: 'What the plates are doing',
+    use: 'Use this to sort places by the kind of plate boundary there.',
+    assumptions: [
+      'Plates move apart, push together or slide past each other.',
+      'Each kind of boundary makes its own landforms and hazards.',
+    ],
+    question: 'What are the plates doing here?',
+    bins: [
+      {
+        id: 'apart',
+        label: 'Moving apart (divergent)',
+        why: 'New crust forms as magma fills the gap.',
+      },
+      {
+        id: 'together',
+        label: 'Pushing together (convergent)',
+        why: 'One plate sinks under the other, or the crust crumples into mountains.',
+      },
+      {
+        id: 'past',
+        label: 'Sliding past (transform)',
+        why: 'The plates grind sideways; crust is neither made nor destroyed.',
+      },
+    ],
+    cards: [
+      { label: 'Mid-Atlantic Ridge', bin: 'apart' },
+      { label: 'Iceland', bin: 'apart' },
+      { label: 'East African Rift', bin: 'apart' },
+      { label: 'Himalayas', bin: 'together' },
+      { label: 'Andes Mountains', bin: 'together' },
+      { label: 'Mariana Trench', bin: 'together' },
+      { label: 'Mount St. Helens', bin: 'together' },
+      { label: 'San Andreas Fault', bin: 'past' },
+      { label: 'North Anatolian Fault in Turkey', bin: 'past' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.6.rock-cycle',
+    assumptions: [
+      'Any kind of rock can become any other kind; there is no single path.',
+      'Sunlight and gravity drive the steps at the surface. Earth’s inner heat drives melting and metamorphism.',
+      'Most steps take thousands to millions of years.',
+    ],
+    figure: { kind: 'rockCycle' },
+    scenes: [
+      {
+        label: 'Melting',
+        rock: { process: 'melting' },
+        lines: ['Deep underground, heat melts rock into magma.'],
+      },
+      {
+        label: 'Cooling',
+        rock: { process: 'cooling' },
+        lines: [
+          'Magma cools into igneous rock. Underground it cools slowly into big crystals, like granite.',
+          'At the surface lava cools fast into tiny crystals, like basalt.',
+        ],
+      },
+      {
+        label: 'Weathering and erosion',
+        rock: { process: 'weathering' },
+        lines: ['Water, ice and wind break rock into sediment and carry it away.'],
+      },
+      {
+        label: 'Deposition and cementing',
+        rock: { process: 'deposition' },
+        lines: [
+          'Sediment settles in layers.',
+          'Buried layers are squeezed and cemented into sedimentary rock.',
+        ],
+      },
+      {
+        label: 'Heat and pressure',
+        rock: { process: 'metamorphism' },
+        lines: [
+          'Buried rock is heated and squeezed without melting.',
+          'Its minerals change, making metamorphic rock.',
+        ],
+      },
+      {
+        label: 'Uplift',
+        rock: { process: 'uplift' },
+        lines: ['Moving plates push buried rock up to the surface, where weathering starts again.'],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.6.rock-cycle~rock-types',
+    title: 'Igneous, sedimentary or metamorphic?',
+    use: 'Use this to sort rocks by how they formed.',
+    assumptions: [
+      'Crystals, glass or gas holes mean the rock cooled from melted rock.',
+      'Grains, pebbles, shells or thin layers mean the rock formed from sediment.',
+      'Bands or flattened grains mean heat and pressure changed an older rock.',
+    ],
+    question: 'How did this rock form?',
+    bins: [
+      {
+        id: 'igneous',
+        label: 'Igneous',
+        why: 'It cooled from melted rock: crystals, glass or gas holes.',
+      },
+      {
+        id: 'sedimentary',
+        label: 'Sedimentary',
+        why: 'Grains or shells were pressed and cemented in layers.',
+      },
+      {
+        id: 'metamorphic',
+        label: 'Metamorphic',
+        why: 'Heat and pressure changed an older rock: bands or flattened grains.',
+      },
+    ],
+    cards: [
+      { label: 'Granite', bin: 'igneous', figure: { kind: 'rock', texture: 'crystals' } },
+      { label: 'Basalt', bin: 'igneous', figure: { kind: 'rock', texture: 'fine' } },
+      { label: 'Obsidian', bin: 'igneous', figure: { kind: 'rock', texture: 'glassy' } },
+      { label: 'Pumice', bin: 'igneous', figure: { kind: 'rock', texture: 'holes' } },
+      { label: 'Sandstone', bin: 'sedimentary', figure: { kind: 'rock', texture: 'grains' } },
+      { label: 'Conglomerate', bin: 'sedimentary', figure: { kind: 'rock', texture: 'pebbles' } },
+      {
+        label: 'Limestone with shells',
+        bin: 'sedimentary',
+        figure: { kind: 'rock', texture: 'shells' },
+      },
+      { label: 'Shale', bin: 'sedimentary', figure: { kind: 'rock', texture: 'layers' } },
+      {
+        label: 'Marble, from limestone',
+        bin: 'metamorphic',
+        figure: { kind: 'rock', texture: 'crystals' },
+      },
+      {
+        label: 'Slate, from shale',
+        bin: 'metamorphic',
+        figure: { kind: 'rock', texture: 'layers' },
+      },
+      { label: 'Gneiss', bin: 'metamorphic', figure: { kind: 'rock', texture: 'bands' } },
+      {
+        label: 'Quartzite, from sandstone',
+        bin: 'metamorphic',
+        figure: { kind: 'rock', texture: 'crystals' },
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.6.rock-cycle~sandstone',
+    title: 'From mountain to sandstone',
+    use: 'Use this to put the steps that turn granite into sandstone in order.',
+    assumptions: [
+      'Each step takes a long time: years to millions of years.',
+      'The sand grains are bits of the old granite.',
+    ],
+    question: 'Put the steps in order.',
+    stages: [
+      { label: 'Granite on a mountain weathers into sand grains' },
+      { label: 'Rain and rivers carry the sand downhill' },
+      { label: 'The sand settles in layers on a lake or sea floor' },
+      { label: 'New layers pile on top and squeeze the sand' },
+      { label: 'Minerals in the water glue the grains together into sandstone' },
+    ],
+  },
 ];

@@ -14,6 +14,8 @@ import type { ModuleDef } from '../types';
 import { decimalLongDivision } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
+/** A number as the steps show it (rounded like `fmt`), to do arithmetic on what is written. */
+const shownNum = (x: number) => Number(fmt(x).replace(/,/g, '').replace('−', '-'));
 /** Exact to 9 places: 7.5 ÷ 6 is 1.25, not 1.2499999999. */
 const exact = (x: number) => Number(x.toFixed(9));
 const q = (a: number, b: number) => (b === 0 ? undefined : exact(a / b));
@@ -79,6 +81,23 @@ const sidesLine = (a: number, b: number) =>
 /** The quadrant of a point, 1–4; 0 on an axis. */
 const quadrant = (x: number, y: number) =>
   x === 0 || y === 0 ? 0 : x > 0 ? (y > 0 ? 1 : 4) : y > 0 ? 2 : 3;
+/** The six data values of a median page. */
+const six = (v: Values) => ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => v[id]!);
+/** The middle value in order, or halfway between the middle two. */
+const median = (xs: number[]) => {
+  const s = [...xs].sort((x, y) => x - y);
+  const n = s.length;
+  return n % 2 ? s[(n - 1) / 2]! : exact((s[n / 2 - 1]! + s[n / 2]!) / 2);
+};
+/** "mode: 5", "modes: 3 and 7" or "no mode" (every value once). */
+const modeText = (xs: number[]) => {
+  const counts = new Map<number, number>();
+  for (const x of xs) counts.set(x, (counts.get(x) ?? 0) + 1);
+  const most = Math.max(...counts.values());
+  if (most === 1) return 'no mode: every value appears once';
+  const modes = [...counts].filter(([, k]) => k === most).map(([x]) => fmt(x));
+  return modes.length === 1 ? `mode: ${modes[0]}` : `modes: ${modes.join(' and ')}`;
+};
 const DENOMS = [1, 2, 3, 4, 5, 6, 8, 10, 12];
 
 const modules: (ModuleDef | ModuleDef[])[] = [
@@ -2465,6 +2484,1004 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { c: 4, x: 7.5, q: 30 },
     startWith: ['c', 'q'],
     representation: { kind: 'tape', parts: ['x'], total: 'q', groups: 'c' },
+  },
+
+  // ── Area of triangles, parallelograms and trapezoids (6.G.1) ──
+  {
+    id: 'm.6.area-polygons',
+    notation: 'letters',
+    assumptions: [
+      'The height meets the base at a square corner: it is not the slanted side.',
+      'Cut a triangle off one end and move it to the other: the parallelogram becomes a rectangle.',
+      'Any side can be the base, with the height that meets it.',
+    ],
+    variables: [
+      { id: 'b', symbol: 'b', name: 'Base', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'h', symbol: 'h', name: 'Height', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 10000 },
+    ],
+    relations: [
+      {
+        id: 'A = b × h',
+        display: '{A} = {b} × {h}',
+        words: 'Area = base × height',
+        vars: ['A', 'b', 'h'],
+        residual: (v: Values) => v.A! - v.b! * v.h!,
+        solve: {
+          A: (v: Values) => v.b! * v.h!,
+          b: (v: Values) => div(v.A!, v.h!),
+          h: (v: Values) => div(v.A!, v.b!),
+        },
+      },
+    ],
+    steps: {
+      'A = b × h': {
+        A: { expr: '{b} × {h}', how: 'Put the numbers in and multiply: the rectangle it makes.' },
+        b: {
+          expr: '{A} ÷ {h}',
+          how: 'Divide both sides by the height to leave b alone.',
+          work: (v) => [`b = ${fmt(v.A!)} ÷ ${fmt(v.h!)}`],
+        },
+        h: {
+          expr: '{A} ÷ {b}',
+          how: 'Divide both sides by the base to leave h alone.',
+          work: (v) => [`h = ${fmt(v.A!)} ÷ ${fmt(v.b!)}`],
+        },
+      },
+    },
+    example: { b: 8, h: 5, A: 40 },
+    startWith: ['b', 'h'],
+    representation: {
+      kind: 'baseHeight',
+      shape: 'parallelogram',
+      base: 'b',
+      height: 'h',
+      area: 'A',
+      show: 'rearrange',
+    },
+  },
+  {
+    id: 'm.6.area-polygons~triangle',
+    title: 'Triangles',
+    use: 'Use this for the area of a triangle, or a missing base or height.',
+    notation: 'letters',
+    assumptions: [
+      'Two copies of a triangle make a parallelogram, so a triangle is half of base × height.',
+      'In an obtuse triangle the height can fall outside the triangle.',
+      'The height meets the base (or its line) at a square corner.',
+    ],
+    variables: [
+      { id: 'b', symbol: 'b', name: 'Base', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'h', symbol: 'h', name: 'Height', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 5000 },
+    ],
+    relations: [
+      {
+        id: 'A = ½ × b × h',
+        display: '{A} = ½ × {b} × {h}',
+        words: 'Area = half of base × height',
+        vars: ['A', 'b', 'h'],
+        residual: (v: Values) => v.A! - 0.5 * v.b! * v.h!,
+        solve: {
+          A: (v: Values) => 0.5 * v.b! * v.h!,
+          b: (v: Values) => div(2 * v.A!, v.h!),
+          h: (v: Values) => div(2 * v.A!, v.b!),
+        },
+      },
+    ],
+    steps: {
+      'A = ½ × b × h': {
+        A: { expr: '½ × {b} × {h}', how: 'Half of the parallelogram two copies would make.' },
+        b: {
+          expr: '{A} ÷ ({h} ÷ 2)',
+          how: 'Half of the height times b is the area. Divide both sides by half the height.',
+          work: (v) => [
+            `${fmt(v.A!)} = ${fmt(v.h! / 2)} × b`,
+            `b = ${fmt(v.A!)} ÷ ${fmt(v.h! / 2)}`,
+          ],
+        },
+        h: {
+          expr: '{A} ÷ ({b} ÷ 2)',
+          how: 'Half of the base times h is the area. Divide both sides by half the base.',
+          work: (v) => [
+            `${fmt(v.A!)} = ${fmt(v.b! / 2)} × h`,
+            `h = ${fmt(v.A!)} ÷ ${fmt(v.b! / 2)}`,
+          ],
+        },
+      },
+    },
+    example: { b: 10, h: 6, A: 30 },
+    startWith: ['b', 'h'],
+    representation: {
+      kind: 'baseHeight',
+      shape: 'triangle',
+      base: 'b',
+      height: 'h',
+      area: 'A',
+      show: 'double',
+    },
+  },
+  {
+    id: 'm.6.area-polygons~trapezoid',
+    title: 'Trapezoids',
+    use: 'Use this for the area of a trapezoid, cut into two triangles.',
+    notation: 'letters',
+    assumptions: [
+      'A diagonal cuts the trapezoid into two triangles with the same height.',
+      'One triangle has the bottom base, the other the top base.',
+      'The two bases are the parallel sides.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'b₁', name: 'Bottom base', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'c', symbol: 'b₂', name: 'Top base', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'h', symbol: 'h', name: 'Height', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 10000 },
+    ],
+    relations: [
+      {
+        id: 'A = ½ × b₁ × h + ½ × b₂ × h',
+        display: '{A} = ½ × {a} × {h} + ½ × {c} × {h}',
+        words: 'Area = one triangle + the other triangle',
+        vars: ['A', 'a', 'c', 'h'],
+        residual: (v: Values) => v.A! - 0.5 * (v.a! + v.c!) * v.h!,
+        solve: {
+          A: (v: Values) => 0.5 * (v.a! + v.c!) * v.h!,
+          a: (v: Values) =>
+            div(2 * v.A!, v.h!) === undefined ? undefined : (2 * v.A!) / v.h! - v.c!,
+          c: (v: Values) =>
+            div(2 * v.A!, v.h!) === undefined ? undefined : (2 * v.A!) / v.h! - v.a!,
+          h: (v: Values) => div(2 * v.A!, v.a! + v.c!),
+        },
+      },
+    ],
+    steps: {
+      'A = ½ × b₁ × h + ½ × b₂ × h': {
+        A: {
+          expr: '½ × {a} × {h} + ½ × {c} × {h}',
+          how: 'Find each triangle’s area, then add them.',
+          work: (v) => [
+            `½ × ${fmt(v.a!)} × ${fmt(v.h!)} = ${fmt((v.a! * v.h!) / 2)}`,
+            `½ × ${fmt(v.c!)} × ${fmt(v.h!)} = ${fmt((v.c! * v.h!) / 2)}`,
+            `${fmt((v.a! * v.h!) / 2)} + ${fmt((v.c! * v.h!) / 2)} = ${fmt(v.A!)}`,
+          ],
+        },
+        c: {
+          expr: '({A} − {a} × {h} ÷ 2) ÷ ({h} ÷ 2)',
+          how: 'Work out the bottom triangle, take it from both sides, then divide by half the height.',
+          work: (v) => {
+            // The difference of the numbers as shown, so each line adds up as written.
+            const t = shownNum((v.a! * v.h!) / 2);
+            const A = shownNum(v.A!);
+            return [
+              `${fmt(A)} = ${fmt(t)} + ${fmt(v.h! / 2)} × b₂`,
+              `${fmt(A)} − ${fmt(t)} = ${fmt(exact(A - t))}`,
+              `${fmt(exact(A - t))} = ${fmt(v.h! / 2)} × b₂`,
+              `b₂ = ${fmt(exact(A - t))} ÷ ${fmt(v.h! / 2)}`,
+            ];
+          },
+        },
+        a: {
+          expr: '({A} − {c} × {h} ÷ 2) ÷ ({h} ÷ 2)',
+          how: 'Work out the top triangle, take it from both sides, then divide by half the height.',
+          work: (v) => {
+            // The difference of the numbers as shown, so each line adds up as written.
+            const t = shownNum((v.c! * v.h!) / 2);
+            const A = shownNum(v.A!);
+            return [
+              `${fmt(A)} = ${fmt(v.h! / 2)} × b₁ + ${fmt(t)}`,
+              `${fmt(A)} − ${fmt(t)} = ${fmt(exact(A - t))}`,
+              `${fmt(exact(A - t))} = ${fmt(v.h! / 2)} × b₁`,
+              `b₁ = ${fmt(exact(A - t))} ÷ ${fmt(v.h! / 2)}`,
+            ];
+          },
+        },
+        h: {
+          expr: '{A} ÷ (({a} + {c}) ÷ 2)',
+          how: 'Both triangles have height h: half of each base times h. Add the halves, then divide.',
+          work: (v) => [
+            `${fmt(v.A!)} = ${fmt(v.a! / 2)} × h + ${fmt(v.c! / 2)} × h = ${fmt((v.a! + v.c!) / 2)} × h`,
+            `h = ${fmt(v.A!)} ÷ ${fmt((v.a! + v.c!) / 2)}`,
+          ],
+        },
+      },
+    },
+    example: { a: 4, c: 8, h: 5, A: 30 },
+    startWith: ['a', 'c', 'h'],
+    representation: {
+      kind: 'baseHeight',
+      shape: 'trapezoid',
+      base: 'a',
+      top: 'c',
+      height: 'h',
+      area: 'A',
+    },
+  },
+  {
+    id: 'm.6.area-polygons~composite',
+    title: 'House shapes',
+    use: 'Use this for a shape made of a rectangle with a triangle on top.',
+    assumptions: [
+      'Split the shape into a rectangle and a triangle, find each area, then add.',
+      'The triangle’s base is the rectangle’s width.',
+      'Lengths in meters to 20, areas in square meters.',
+    ],
+    variables: [
+      { id: 'w', symbol: 'w', name: 'Width', unit: 'm', min: 0.1, max: 20, step: 0.1 },
+      { id: 'H', symbol: 'H', name: 'Wall height', unit: 'm', min: 0.1, max: 20, step: 0.1 },
+      { id: 'r', symbol: 'r', name: 'Roof height', unit: 'm', min: 0.1, max: 20, step: 0.1 },
+      {
+        id: 'R',
+        symbol: 'R',
+        name: 'Rectangle area',
+        unit: 'm²',
+        min: 0,
+        max: 10000,
+        derived: true,
+      },
+      { id: 'T', symbol: 'T', name: 'Triangle area', unit: 'm²', min: 0, max: 200, derived: true },
+      { id: 'S', symbol: 'S', name: 'Total area', unit: 'm²', min: 0, max: 600, derived: true },
+    ],
+    relations: [
+      {
+        id: 'R = w × H',
+        display: '{w} × {H} = {R}',
+        words: 'Width × wall height = rectangle area',
+        vars: ['R', 'w', 'H'],
+        residual: (v: Values) => v.R! - v.w! * v.H!,
+        solve: { R: (v: Values) => v.w! * v.H!, w: () => undefined, H: () => undefined },
+      },
+      {
+        id: 'T = ½ × w × r',
+        display: '½ × {w} × {r} = {T}',
+        words: 'Half of width × roof height = triangle area',
+        vars: ['T', 'w', 'r'],
+        residual: (v: Values) => v.T! - 0.5 * v.w! * v.r!,
+        solve: { T: (v: Values) => 0.5 * v.w! * v.r!, w: () => undefined, r: () => undefined },
+      },
+      {
+        id: 'S = R + T',
+        display: '{R} + {T} = {S}',
+        words: 'Rectangle area + triangle area = total area',
+        vars: ['S', 'R', 'T'],
+        residual: (v: Values) => v.S! - v.R! - v.T!,
+        solve: { S: (v: Values) => v.R! + v.T!, R: () => undefined, T: () => undefined },
+      },
+    ],
+    steps: {
+      'R = w × H': {
+        R: {
+          expr: '{w} × {H}',
+          how: 'The walls are a rectangle: width times height.',
+          written: false,
+        },
+      },
+      'T = ½ × w × r': {
+        T: {
+          expr: '½ × {w} × {r}',
+          how: 'The roof is a triangle on the same width: half of base × height.',
+        },
+      },
+      'S = R + T': { S: { expr: '{R} + {T}', how: 'Add the two areas.', written: false } },
+    },
+    example: { w: 6, H: 4, r: 3, R: 24, T: 9, S: 33 },
+    startWith: ['w', 'H', 'r'],
+    representation: {
+      kind: 'baseHeight',
+      shape: 'house',
+      base: 'w',
+      height: 'H',
+      top: 'r',
+      area: 'S',
+    },
+  },
+
+  // ── Surface area using nets (6.G.4, 6.EE.2c, 6.G.2) ──
+  {
+    id: 'm.6.surface-area-nets',
+    assumptions: [
+      'Surface area is the area of every face added together.',
+      'A box has three pairs of matching faces.',
+      'Area is in square units.',
+    ],
+    variables: [
+      {
+        id: 'l',
+        symbol: 'l',
+        name: 'Length',
+        unit: 'cm',
+        min: 0.1,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 'w',
+        symbol: 'w',
+        name: 'Width',
+        unit: 'cm',
+        min: 0.1,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 'h',
+        symbol: 'h',
+        name: 'Height',
+        unit: 'cm',
+        min: 0.1,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 'T',
+        symbol: 'T',
+        name: 'Top and bottom',
+        unit: 'cm²',
+        min: 0,
+        max: 20000,
+        derived: true,
+      },
+      {
+        id: 'F',
+        symbol: 'F',
+        name: 'Front and back',
+        unit: 'cm²',
+        min: 0,
+        max: 20000,
+        derived: true,
+      },
+      { id: 'E', symbol: 'E', name: 'Two ends', unit: 'cm²', min: 0, max: 20000, derived: true },
+      {
+        id: 'S',
+        symbol: 'S',
+        name: 'Surface area',
+        unit: 'cm²',
+        min: 0,
+        max: 60000,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'T = 2lw',
+        display: '2 × ({l} × {w}) = {T}',
+        words: '2 × (length × width) = top and bottom',
+        vars: ['T', 'l', 'w'],
+        residual: (v: Values) => v.T! - 2 * v.l! * v.w!,
+        solve: { T: (v: Values) => 2 * v.l! * v.w!, l: () => undefined, w: () => undefined },
+      },
+      {
+        id: 'F = 2lh',
+        display: '2 × ({l} × {h}) = {F}',
+        words: '2 × (length × height) = front and back',
+        vars: ['F', 'l', 'h'],
+        residual: (v: Values) => v.F! - 2 * v.l! * v.h!,
+        solve: { F: (v: Values) => 2 * v.l! * v.h!, l: () => undefined, h: () => undefined },
+      },
+      {
+        id: 'E = 2wh',
+        display: '2 × ({w} × {h}) = {E}',
+        words: '2 × (width × height) = two ends',
+        vars: ['E', 'w', 'h'],
+        residual: (v: Values) => v.E! - 2 * v.w! * v.h!,
+        solve: { E: (v: Values) => 2 * v.w! * v.h!, w: () => undefined, h: () => undefined },
+      },
+      {
+        id: 'S = T + F + E',
+        display: '{T} + {F} + {E} = {S}',
+        words: 'Top and bottom + front and back + two ends = surface area',
+        vars: ['S', 'T', 'F', 'E'],
+        residual: (v: Values) => v.S! - v.T! - v.F! - v.E!,
+        solve: {
+          S: (v: Values) => v.T! + v.F! + v.E!,
+          T: () => undefined,
+          F: () => undefined,
+          E: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'T = 2lw': {
+        T: { expr: '2 × ({l} × {w})', how: 'The top and bottom are length by width: two of them.' },
+      },
+      'F = 2lh': {
+        F: {
+          expr: '2 × ({l} × {h})',
+          how: 'The front and back are length by height: two of them.',
+        },
+      },
+      'E = 2wh': { E: { expr: '2 × ({w} × {h})', how: 'The two ends are width by height.' } },
+      'S = T + F + E': {
+        S: { expr: '{T} + {F} + {E}', how: 'Add the areas of all six faces.', written: false },
+      },
+    },
+    example: { l: 5, w: 3, h: 2, T: 30, F: 20, E: 12, S: 62 },
+    startWith: ['l', 'w', 'h'],
+    representation: { kind: 'net', solid: 'box', length: 'l', width: 'w', height: 'h', total: 'S' },
+  },
+  {
+    id: 'm.6.surface-area-nets~cube',
+    title: 'Cube formulas',
+    use: 'Use this for V = s³ and SA = 6s²: the volume and surface area of a cube.',
+    notation: 'letters',
+    assumptions: [
+      's³ means s × s × s; s² means s × s.',
+      'A cube has 6 square faces, each s × s.',
+      'Edges are whole numbers to 20 units; volume is in cubic units, surface area in square units.',
+    ],
+    variables: [
+      whole('s', 's', 'Edge', 1, 20),
+      { id: 'V', symbol: 'V', name: 'Volume', min: 1, max: 8000 },
+      { id: 'A', symbol: 'SA', name: 'Surface area', min: 6, max: 2400 },
+    ],
+    relations: [
+      {
+        id: 'V = s³',
+        display: '{V} = {s}³',
+        words: 'Volume = edge × edge × edge',
+        vars: ['V', 's'],
+        residual: (v: Values) => v.V! - v.s! ** 3,
+        solve: {
+          V: (v: Values) => v.s! ** 3,
+          s: (v: Values) => Math.round(Math.cbrt(v.V!) * 1e9) / 1e9,
+        },
+      },
+      {
+        id: 'SA = 6s²',
+        display: '{A} = 6 × {s}²',
+        words: 'Surface area = 6 faces × edge × edge',
+        vars: ['A', 's'],
+        residual: (v: Values) => v.A! - 6 * v.s! ** 2,
+        solve: {
+          A: (v: Values) => 6 * v.s! ** 2,
+          s: (v: Values) => Math.round(Math.sqrt(v.A! / 6) * 1e9) / 1e9,
+        },
+      },
+    ],
+    steps: {
+      'V = s³': {
+        V: {
+          expr: '{s}³',
+          how: 'Multiply the edge by itself three times.',
+          work: (v) => [`${fmt(v.s!)}³ = ${fmt(v.s!)} × ${fmt(v.s!)} × ${fmt(v.s!)}`],
+        },
+        s: {
+          expr: '∛{V}',
+          how: 'Which number times itself three times makes the volume?',
+          work: (v) => [
+            `${fmt(v.V!)} = s³`,
+            `${fmt(v.s!)} × ${fmt(v.s!)} × ${fmt(v.s!)} = ${fmt(v.V!)}`,
+          ],
+        },
+      },
+      'SA = 6s²': {
+        A: {
+          expr: '6 × {s}²',
+          how: 'Square the edge for one face, then multiply by 6 faces.',
+          work: (v) => [
+            `${fmt(v.s!)}² = ${fmt(v.s! ** 2)}`,
+            `6 × ${fmt(v.s! ** 2)} = ${fmt(v.A!)}`,
+          ],
+        },
+        s: {
+          expr: '√({A} ÷ 6)',
+          how: 'Divide both sides by 6 for one face. Then find the number times itself that makes it.',
+          work: (v) => [
+            `${fmt(v.A!)} = 6 × s²`,
+            `s² = ${fmt(v.A!)} ÷ 6 = ${fmt(v.A! / 6)}`,
+            `${fmt(v.s!)} × ${fmt(v.s!)} = ${fmt(v.A! / 6)}`,
+          ],
+        },
+      },
+    },
+    example: { s: 3, V: 27, A: 54 },
+    startWith: ['s'],
+    representation: { kind: 'net', solid: 'cube', length: 's', total: 'A' },
+  },
+  {
+    id: 'm.6.surface-area-nets~pyramid',
+    title: 'Square pyramid',
+    use: 'Use this for the surface area of a square pyramid from its net.',
+    assumptions: [
+      'The net is a square base and 4 matching triangles.',
+      'Each triangle’s height is measured on its face, from the base edge to the top.',
+      'Area is in square units.',
+    ],
+    variables: [
+      {
+        id: 'a',
+        symbol: 'a',
+        name: 'Base side',
+        unit: 'cm',
+        min: 0.1,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Triangle height',
+        unit: 'cm',
+        min: 0.1,
+        max: 100,
+        step: 0.1,
+      },
+      { id: 'B', symbol: 'B', name: 'Base area', unit: 'cm²', min: 0, max: 10000, derived: true },
+      { id: 'T', symbol: 'T', name: 'One triangle', unit: 'cm²', min: 0, max: 5000, derived: true },
+      {
+        id: 'S',
+        symbol: 'S',
+        name: 'Surface area',
+        unit: 'cm²',
+        min: 0,
+        max: 30000,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'B = a × a',
+        display: '{a} × {a} = {B}',
+        words: 'Base side × base side = base area',
+        vars: ['B', 'a'],
+        residual: (v: Values) => v.B! - v.a! * v.a!,
+        solve: { B: (v: Values) => v.a! * v.a!, a: () => undefined },
+      },
+      {
+        id: 'T = ½ × a × t',
+        display: '½ × {a} × {t} = {T}',
+        words: 'Half of base side × triangle height = one triangle',
+        vars: ['T', 'a', 't'],
+        residual: (v: Values) => v.T! - 0.5 * v.a! * v.t!,
+        solve: { T: (v: Values) => 0.5 * v.a! * v.t!, a: () => undefined, t: () => undefined },
+      },
+      {
+        id: 'S = B + 4T',
+        display: '{B} + 4 × {T} = {S}',
+        words: 'Base area + 4 × one triangle = surface area',
+        vars: ['S', 'B', 'T'],
+        residual: (v: Values) => v.S! - v.B! - 4 * v.T!,
+        solve: { S: (v: Values) => v.B! + 4 * v.T!, B: () => undefined, T: () => undefined },
+      },
+    ],
+    steps: {
+      'B = a × a': { B: { expr: '{a} × {a}', how: 'The base is a square.' } },
+      'T = ½ × a × t': {
+        T: {
+          expr: '½ × {a} × {t}',
+          how: 'Each face is a triangle on a base side: half of base × height.',
+        },
+      },
+      'S = B + 4T': {
+        S: {
+          expr: '{B} + 4 × {T}',
+          how: 'The square and four matching triangles.',
+          work: (v) => [
+            `4 × ${fmt(v.T!)} = ${fmt(4 * v.T!)}`,
+            `${fmt(v.B!)} + ${fmt(4 * v.T!)} = ${fmt(v.S!)}`,
+          ],
+        },
+      },
+    },
+    example: { a: 6, t: 5, B: 36, T: 15, S: 96 },
+    startWith: ['a', 't'],
+    representation: { kind: 'net', solid: 'squarePyramid', length: 'a', slant: 't', total: 'S' },
+  },
+  {
+    id: 'm.6.surface-area-nets~volume-fractions',
+    title: 'Volume with fraction edges',
+    use: 'Use this for a box with edges like 2 1/2, packed with half-unit cubes.',
+    assumptions: [
+      'A half-unit cube has edges of 1/2, so 8 of them make one unit cube.',
+      'Count the half-unit cubes along each edge: twice the length.',
+      'Edges in halves, up to 5 units.',
+    ],
+    variables: [
+      { id: 'l', symbol: 'l', name: 'Length', min: 0.5, max: 5, step: 0.5, multipleOf: 0.5 },
+      { id: 'w', symbol: 'w', name: 'Width', min: 0.5, max: 5, step: 0.5, multipleOf: 0.5 },
+      { id: 'h', symbol: 'h', name: 'Height', min: 0.5, max: 5, step: 0.5, multipleOf: 0.5 },
+      { ...whole('n', 'n', 'Half-unit cubes', 1, 1000), derived: true },
+      { id: 'V', symbol: 'V', name: 'Volume in cubic units', min: 0, max: 125, derived: true },
+    ],
+    relations: [
+      {
+        id: 'n = 2l × 2w × 2h',
+        display: '(2 × {l}) × (2 × {w}) × (2 × {h}) = {n}',
+        words: 'Half-units along the length × along the width × along the height = half-unit cubes',
+        vars: ['n', 'l', 'w', 'h'],
+        residual: (v: Values) => v.n! - 8 * v.l! * v.w! * v.h!,
+        solve: {
+          n: (v: Values) => 8 * v.l! * v.w! * v.h!,
+          l: () => undefined,
+          w: () => undefined,
+          h: () => undefined,
+        },
+      },
+      {
+        id: 'V = n ÷ 8',
+        display: '{n} ÷ 8 = {V}',
+        words: 'Half-unit cubes ÷ 8 = volume',
+        check: (v: Values) => `${fmt(v.V!)} × 8 = ${fmt(v.n!)}`,
+        vars: ['V', 'n'],
+        residual: (v: Values) => v.V! * 8 - v.n!,
+        solve: { V: (v: Values) => v.n! / 8, n: () => undefined },
+      },
+    ],
+    steps: {
+      'n = 2l × 2w × 2h': {
+        n: {
+          expr: '(2 × {l}) × (2 × {w}) × (2 × {h})',
+          how: 'Count the half-unit cubes along each edge, then multiply.',
+          work: (v) => [`${fmt(2 * v.l!)} × ${fmt(2 * v.w!)} × ${fmt(2 * v.h!)} = ${fmt(v.n!)}`],
+        },
+      },
+      'V = n ÷ 8': {
+        V: {
+          expr: '{n} ÷ 8',
+          how: '8 half-unit cubes fill one unit cube.',
+          note: (v) =>
+            v.l === undefined
+              ? ''
+              : `(the same as ${fmt(v.l)} × ${fmt(v.w!)} × ${fmt(v.h!)} = ${fmt(v.V!)})`,
+        },
+      },
+    },
+    example: { l: 2.5, w: 1.5, h: 2, n: 60, V: 7.5 },
+    startWith: ['l', 'w', 'h'],
+    representation: {
+      kind: 'unitCubes',
+      length: 'l',
+      width: 'w',
+      height: 'h',
+      volume: 'V',
+      max: 10,
+      cube: 2,
+    },
+  },
+
+  // ── Mean, median, mode, range and MAD (6.SP.1–5) ──
+  {
+    id: 'm.6.center-spread',
+    assumptions: [
+      'The mean shares the total equally among the values.',
+      'It is the balance point of the dot plot.',
+      'One very large or very small value moves the mean a lot.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'First value', min: 0, max: 1000 },
+      { id: 'b', symbol: 'b', name: 'Second value', min: 0, max: 1000 },
+      { id: 'c', symbol: 'c', name: 'Third value', min: 0, max: 1000 },
+      { id: 'd', symbol: 'd', name: 'Fourth value', min: 0, max: 1000 },
+      { id: 'e', symbol: 'e', name: 'Fifth value', min: 0, max: 1000 },
+      { id: 's', symbol: 's', name: 'Sum', min: 0, max: 5000 },
+      { id: 'm', symbol: 'm', name: 'Mean', min: 0, max: 1000 },
+    ],
+    relations: [
+      {
+        id: 's = a + b + c + d + e',
+        display: '{a} + {b} + {c} + {d} + {e} = {s}',
+        words: 'First + second + third + fourth + fifth = sum',
+        vars: ['s', 'a', 'b', 'c', 'd', 'e'],
+        residual: (v: Values) => v.s! - v.a! - v.b! - v.c! - v.d! - v.e!,
+        solve: {
+          s: (v: Values) => exact(v.a! + v.b! + v.c! + v.d! + v.e!),
+          a: (v: Values) => exact(v.s! - v.b! - v.c! - v.d! - v.e!),
+          b: (v: Values) => exact(v.s! - v.a! - v.c! - v.d! - v.e!),
+          c: (v: Values) => exact(v.s! - v.a! - v.b! - v.d! - v.e!),
+          d: (v: Values) => exact(v.s! - v.a! - v.b! - v.c! - v.e!),
+          e: (v: Values) => exact(v.s! - v.a! - v.b! - v.c! - v.d!),
+        },
+      },
+      {
+        id: 'm = s ÷ 5',
+        display: '{s} ÷ 5 = {m}',
+        words: 'Sum ÷ 5 = mean',
+        check: (v: Values) => `${fmt(v.m!)} × 5 = ${fmt(v.s!)}`,
+        vars: ['m', 's'],
+        residual: (v: Values) => v.m! * 5 - v.s!,
+        solve: { m: (v: Values) => v.s! / 5, s: (v: Values) => exact(v.m! * 5) },
+      },
+    ],
+    steps: {
+      's = a + b + c + d + e': {
+        s: { expr: '{a} + {b} + {c} + {d} + {e}', how: 'Add all five values.' },
+        ...Object.fromEntries(
+          (['a', 'b', 'c', 'd', 'e'] as const).map((id) => {
+            const others = ['a', 'b', 'c', 'd', 'e'].filter((x) => x !== id);
+            return [
+              id,
+              {
+                expr: `{s} − ({${others.join('} + {')}})`,
+                how: 'The sum less the four values you know is the missing one.',
+                work: (v: Values) => {
+                  const known = others.reduce((t, x) => t + v[x]!, 0);
+                  return [
+                    `${others.map((x) => fmt(v[x]!)).join(' + ')} = ${fmt(known)}`,
+                    `${fmt(v.s!)} − ${fmt(known)} = ${fmt(v[id]!)}`,
+                  ];
+                },
+                written: false as const,
+              },
+            ];
+          }),
+        ),
+      },
+      'm = s ÷ 5': {
+        m: { expr: '{s} ÷ 5', how: 'Share the sum equally among the 5 values.' },
+        s: { expr: '{m} × 5', how: 'Five values of the mean make the sum.' },
+      },
+    },
+    example: { a: 4, b: 7, c: 9, d: 5, e: 10, s: 35, m: 7 },
+    startWith: ['a', 'b', 'c', 'd', 'e'],
+    representation: {
+      kind: 'dotPlot',
+      data: ['a', 'b', 'c', 'd', 'e'],
+      min: 0,
+      max: 12,
+      mean: 'm',
+    },
+  },
+  {
+    id: 'm.6.center-spread~median',
+    title: 'Median, range and mode',
+    use: 'Use this for the median and range of six values, and the mode if there is one.',
+    assumptions: [
+      'Put the values in order first.',
+      'With six values the median is halfway between the middle two.',
+      'The range is the greatest minus the least; the mode is the value that appears most often.',
+    ],
+    variables: [
+      ...(['a', 'b', 'c', 'd', 'e', 'f'] as const).map((id, i) => ({
+        id,
+        symbol: id,
+        name: `${['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth'][i]} value`,
+        min: 0,
+        max: 1000,
+      })),
+      { id: 'M', symbol: 'M', name: 'Median', min: 0, max: 1000, derived: true },
+      { id: 'R', symbol: 'R', name: 'Range', min: 0, max: 1000, derived: true },
+    ],
+    relations: [
+      {
+        id: 'M = median',
+        display: 'median of {a}, {b}, {c}, {d}, {e}, {f}: {M}',
+        words: 'The middle of the values in order = median',
+        vars: ['M', 'a', 'b', 'c', 'd', 'e', 'f'],
+        residual: (v: Values) => v.M! - median(six(v)),
+        solve: {
+          M: (v: Values) => median(six(v)),
+          ...Object.fromEntries(['a', 'b', 'c', 'd', 'e', 'f'].map((id) => [id, () => undefined])),
+        },
+      },
+      {
+        id: 'R = range',
+        display: 'range of {a}, {b}, {c}, {d}, {e}, {f}: {R}',
+        words: 'Greatest value − least value = range',
+        check: (v: Values) =>
+          `${fmt(Math.max(...six(v)))} − ${fmt(Math.min(...six(v)))} = ${fmt(v.R!)}`,
+        vars: ['R', 'a', 'b', 'c', 'd', 'e', 'f'],
+        residual: (v: Values) => v.R! - (Math.max(...six(v)) - Math.min(...six(v))),
+        solve: {
+          R: (v: Values) => exact(Math.max(...six(v)) - Math.min(...six(v))),
+          ...Object.fromEntries(['a', 'b', 'c', 'd', 'e', 'f'].map((id) => [id, () => undefined])),
+        },
+      },
+    ],
+    steps: {
+      'M = median': {
+        M: {
+          expr: 'median of {a}, {b}, {c}, {d}, {e}, {f}',
+          how: 'Put the values in order. Find the number halfway between the middle two.',
+          work: (v) => {
+            const xs = [...six(v)].sort((x, y) => x - y);
+            return [
+              `In order: ${xs.map(fmt).join(', ')}`,
+              `The middle two are ${fmt(xs[2]!)} and ${fmt(xs[3]!)}.`,
+              `(${fmt(xs[2]!)} + ${fmt(xs[3]!)}) ÷ 2 = ${fmt(v.M!)}`,
+            ];
+          },
+          note: (v) => `(${modeText(six(v))})`,
+          written: false,
+        },
+      },
+      'R = range': {
+        R: {
+          expr: 'range of {a}, {b}, {c}, {d}, {e}, {f}',
+          how: 'Take the least value from the greatest.',
+          work: (v) => [`${fmt(Math.max(...six(v)))} − ${fmt(Math.min(...six(v)))} = ${fmt(v.R!)}`],
+          written: false,
+        },
+      },
+    },
+    example: { a: 8, b: 3, c: 12, d: 7, e: 5, f: 9, M: 7.5, R: 9 },
+    startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
+    representation: {
+      kind: 'dotPlot',
+      data: ['a', 'b', 'c', 'd', 'e', 'f'],
+      min: 0,
+      max: 15,
+      median: 'M',
+      range: 'R',
+    },
+  },
+  {
+    id: 'm.6.center-spread~mad',
+    title: 'Mean absolute deviation',
+    use: 'Use this for the MAD: how far the values are from the mean, on average.',
+    assumptions: [
+      'Find the mean first.',
+      'The distance of each value from the mean is never negative.',
+      'The MAD is the mean of those distances: a bigger MAD means the data is more spread out.',
+    ],
+    variables: [
+      ...(['a', 'b', 'c', 'd', 'e'] as const).map((id, i) => ({
+        id,
+        symbol: id,
+        name: `${['First', 'Second', 'Third', 'Fourth', 'Fifth'][i]} value`,
+        min: 0,
+        max: 1000,
+      })),
+      { id: 'm', symbol: 'm', name: 'Mean', min: 0, max: 1000, derived: true },
+      { id: 'D', symbol: 'D', name: 'Mean absolute deviation', min: 0, max: 1000, derived: true },
+    ],
+    relations: [
+      {
+        id: 'm = mean',
+        display: '({a} + {b} + {c} + {d} + {e}) ÷ 5 = {m}',
+        words: 'Sum of the values ÷ 5 = mean',
+        vars: ['m', 'a', 'b', 'c', 'd', 'e'],
+        residual: (v: Values) => v.m! * 5 - v.a! - v.b! - v.c! - v.d! - v.e!,
+        solve: {
+          m: (v: Values) => (v.a! + v.b! + v.c! + v.d! + v.e!) / 5,
+          ...Object.fromEntries(['a', 'b', 'c', 'd', 'e'].map((id) => [id, () => undefined])),
+        },
+      },
+      {
+        id: 'D = MAD',
+        display: 'mean distance from {m} of {a}, {b}, {c}, {d}, {e}: {D}',
+        words: 'Mean of the distances from the mean = mean absolute deviation',
+        vars: ['D', 'm', 'a', 'b', 'c', 'd', 'e'],
+        residual: (v: Values) =>
+          v.D! - ['a', 'b', 'c', 'd', 'e'].reduce((t, id) => t + Math.abs(v[id]! - v.m!), 0) / 5,
+        solve: {
+          D: (v: Values) =>
+            ['a', 'b', 'c', 'd', 'e'].reduce((t, id) => t + Math.abs(v[id]! - v.m!), 0) / 5,
+          ...Object.fromEntries(['m', 'a', 'b', 'c', 'd', 'e'].map((id) => [id, () => undefined])),
+        },
+      },
+    ],
+    steps: {
+      'm = mean': {
+        m: {
+          expr: '({a} + {b} + {c} + {d} + {e}) ÷ 5',
+          how: 'Add the values and share the sum equally among the 5.',
+          work: (v) => {
+            const s = v.a! + v.b! + v.c! + v.d! + v.e!;
+            return [
+              `${fmt(v.a!)} + ${fmt(v.b!)} + ${fmt(v.c!)} + ${fmt(v.d!)} + ${fmt(v.e!)} = ${fmt(s)}`,
+              `${fmt(s)} ÷ 5 = ${fmt(v.m!)}`,
+            ];
+          },
+          written: false,
+        },
+      },
+      'D = MAD': {
+        D: {
+          expr: 'mean distance from {m} of {a}, {b}, {c}, {d}, {e}',
+          how: 'Find how far each value is from the mean. Then find the mean of those distances.',
+          work: (v) => {
+            const ds = ['a', 'b', 'c', 'd', 'e'].map((id) => Math.abs(v[id]! - v.m!));
+            const s = ds.reduce((t, x) => t + x, 0);
+            return [
+              `Distances from ${fmt(v.m!)}: ${ds.map(fmt).join(', ')}`,
+              `${ds.map(fmt).join(' + ')} = ${fmt(s)}`,
+              `${fmt(s)} ÷ 5 = ${fmt(v.D!)}`,
+            ];
+          },
+          written: false,
+        },
+      },
+    },
+    example: { a: 4, b: 7, c: 9, d: 5, e: 10, m: 7, D: 2 },
+    startWith: ['a', 'b', 'c', 'd', 'e'],
+    representation: {
+      kind: 'dotPlot',
+      data: ['a', 'b', 'c', 'd', 'e'],
+      min: 0,
+      max: 12,
+      mean: 'm',
+      deviations: true,
+    },
+  },
+  {
+    id: 'm.6.center-spread~box-plot',
+    title: 'Box plots',
+    use: 'Use this for the range and the interquartile range from a box plot.',
+    assumptions: [
+      'The five numbers are in order: minimum, lower quartile, median, upper quartile, maximum.',
+      'Each of the four parts holds about a quarter of the data.',
+      'The interquartile range is the width of the box: the middle half of the data.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'Minimum', min: 0, max: 100 },
+      { id: 'b', symbol: 'b', name: 'Lower quartile', min: 0, max: 100 },
+      { id: 'c', symbol: 'c', name: 'Median', min: 0, max: 100 },
+      { id: 'd', symbol: 'd', name: 'Upper quartile', min: 0, max: 100 },
+      { id: 'e', symbol: 'e', name: 'Maximum', min: 0, max: 100 },
+      { id: 'R', symbol: 'R', name: 'Range', min: 0, max: 100 },
+      { id: 'I', symbol: 'I', name: 'Interquartile range', min: 0, max: 100 },
+    ],
+    relations: [
+      ...(
+        [
+          ['b', 'a'],
+          ['c', 'b'],
+          ['d', 'c'],
+          ['e', 'd'],
+        ] as const
+      ).map(([big, small]) => ({
+        id: `${big} ≥ ${small}`,
+        constraint: true as const,
+        display: `{${big}} is at least {${small}}`,
+        vars: [big, small],
+        residual: (v: Values) => (v[big]! >= v[small]! ? 0 : 1),
+        solve: {},
+      })),
+      {
+        id: 'R = e − a',
+        display: '{e} − {a} = {R}',
+        words: 'Maximum − minimum = range',
+        vars: ['R', 'e', 'a'],
+        residual: (v: Values) => v.R! - v.e! + v.a!,
+        solve: {
+          R: (v: Values) => exact(v.e! - v.a!),
+          e: (v: Values) => exact(v.a! + v.R!),
+          a: (v: Values) => exact(v.e! - v.R!),
+        },
+      },
+      {
+        id: 'I = d − b',
+        display: '{d} − {b} = {I}',
+        words: 'Upper quartile − lower quartile = interquartile range',
+        vars: ['I', 'd', 'b'],
+        residual: (v: Values) => v.I! - v.d! + v.b!,
+        solve: {
+          I: (v: Values) => exact(v.d! - v.b!),
+          d: (v: Values) => exact(v.b! + v.I!),
+          b: (v: Values) => exact(v.d! - v.I!),
+        },
+      },
+    ],
+    steps: {
+      'b ≥ a': {},
+      'c ≥ b': {},
+      'd ≥ c': {},
+      'e ≥ d': {},
+      'R = e − a': {
+        R: { expr: '{e} − {a}', how: 'The range runs from the minimum to the maximum.' },
+        e: { expr: '{a} + {R}', how: 'Add the range to the minimum.' },
+        a: { expr: '{e} − {R}', how: 'Take the range from the maximum.' },
+      },
+      'I = d − b': {
+        I: {
+          expr: '{d} − {b}',
+          how: 'The box runs from the lower quartile to the upper quartile.',
+        },
+        d: { expr: '{b} + {I}', how: 'Add the interquartile range to the lower quartile.' },
+        b: { expr: '{d} − {I}', how: 'Take the interquartile range from the upper quartile.' },
+      },
+    },
+    example: { a: 2, b: 5, c: 8, d: 11, e: 15, R: 13, I: 6 },
+    startWith: ['a', 'b', 'c', 'd', 'e'],
+    representation: {
+      kind: 'boxPlot',
+      min: 'a',
+      q1: 'b',
+      median: 'c',
+      q3: 'd',
+      max: 'e',
+      range: [0, 20],
+      brackets: { range: 'R', iqr: 'I' },
+    },
   },
 ];
 

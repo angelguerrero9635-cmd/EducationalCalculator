@@ -63,6 +63,10 @@ describe('unit conversions (exact definitions)', () => {
       'square units',
       '°F',
       '°C',
+      '×',
+      'µm',
+      'g/mL',
+      'beats per minute',
       'days',
       'hours',
       'seconds',
@@ -105,12 +109,13 @@ describe('unit context', () => {
       mixed: true,
       linked: false,
     });
-    // Electrical units are shared, so there is no US system and Mixed would add nothing.
+    // Electrical units are shared, so there is no US system and Mixed would add nothing; the
+    // resistances (and voltages) are read in one unit together.
     expect(unitOptions(mod('he.engineering.circuits-1#0').variables)).toEqual({
       systems: ['metric'],
       metricUnits: false,
       mixed: false,
-      linked: false,
+      linked: true,
     });
     expect(unitOptions(mod('m.8.linear-functions').variables)).toEqual({
       systems: [],

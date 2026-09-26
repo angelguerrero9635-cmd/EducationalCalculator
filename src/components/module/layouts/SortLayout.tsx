@@ -158,6 +158,9 @@ const styles = StyleSheet.create({
   },
   card: {
     minHeight: 44,
+    // A long card (a word problem) wraps inside the screen instead of running off it.
+    maxWidth: '100%',
+    flexShrink: 1,
     justifyContent: 'center',
     alignItems: 'center',
     gap: space.xs,
@@ -166,7 +169,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: radius.md,
   },
-  cardText: { fontSize: font.body },
+  cardText: { fontSize: font.body, textAlign: 'center', flexShrink: 1 },
   done: { fontSize: font.title, fontWeight: '700' },
   hint: { fontSize: font.caption + 1, textAlign: 'center' },
   bins: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },

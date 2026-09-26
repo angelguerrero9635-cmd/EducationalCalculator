@@ -93,32 +93,50 @@ search or the sitemap, but the module tests and the harness run over it):
 | `punnettSquare`    | two parents' alleles and the four offspring boxes                     | Grade 7 heredity, biology           |
 | `factorPairs`      | every rectangle of a number's unit squares, the typed pair outlined   | Grade 4 factors, primes, composites |
 | `shareWholes`      | wholes cut into as many parts as people, one share shaded in each     | Grade 5 fractions as division       |
+| `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump  | Grade 6 negatives, temperature      |
+| `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                      | Grade 6 percent                     |
+| `ratioTable`       | equivalent ratios in rows, the current row outlined, its graph        | Grade 6 ratios                      |
+| `fractionFit`      | groups of the divisor laid along the dividend, or one group filled    | Grade 6 dividing fractions          |
+| `venn`             | two circles of factors, the shared ones in the overlap, GCF circled   | Grade 6 GCF                         |
+| `baseHeight`       | a parallelogram, triangle, trapezoid or house; lean it by the top     | Grade 6 area                        |
+| `net`              | a box, cube or square pyramid unfolded, faces labelled; Fold          | Grade 6 surface area                |
+| `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations  | Grade 6 statistics                  |
+| `fieldOfView`      | the microscope circle with cells end to end across it                 | Grade 6 cells                       |
+| `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume | Grade 6 density                     |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
-| Kind              | Option                                   | Draws                                                                         |
-| ----------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
-| `compareRows`     | `object`                                 | the pencil, crayon or ribbon measured, above its row of cubes                 |
-| `hundredChart`    | `piece`, `multiplesOf`                   | only the number and its four neighbors; or every multiple shaded              |
-| `hops`            | a hop `sign` naming a variable (1 or −1) | a + / − switch that flips that hop                                            |
-| `rectangle`       | `grid`                                   | unit squares on a perimeter page                                              |
-| `polygon`         | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |
-| `rectilinear`     | `cut` instead of `right`                 | a rectangle with a corner cut out, both areas labeled                         |
-| `ruler`           | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |
-| `equalGroups`     | `unit: 10`                               | ten-rods, `each` counted in tens                                              |
-| `bars`            | `scale` as a variable                    | the grid spacing read from a value                                            |
-| `pictureGraph`    | (with a key)                             | half a picture for a half count                                               |
-| `fractionLine`    | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |
-| `table`           | `rows` as a function of the values       | rows that follow a parameter                                                  |
-| `array`           | `sides`                                  | the rows and columns labeled, “?” until solved                                |
-| `areaModel`       | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
-| `placeValueChart` | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
-| `tape`            | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
-| `grid100`         | `second`, `wholes`                       | a second grid to compare; whole grids for the ones                            |
-| `rounding`        | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
-| `coordinatePlane` | `trail`                                  | a pattern's earlier points and their table                                    |
-| `unitCubes`       | `second`, `total`                        | two boxes joined into an L                                                    |
-| `skipCount`       | a decimal `step`                         | jumps of 2.5 or 0.3                                                           |
+| Kind               | Option                                   | Draws                                                                         |
+| ------------------ | ---------------------------------------- | ----------------------------------------------------------------------------- |
+| `compareRows`      | `object`                                 | the pencil, crayon or ribbon measured, above its row of cubes                 |
+| `hundredChart`     | `piece`, `multiplesOf`                   | only the number and its four neighbors; or every multiple shaded              |
+| `hops`             | a hop `sign` naming a variable (1 or −1) | a + / − switch that flips that hop                                            |
+| `rectangle`        | `grid`                                   | unit squares on a perimeter page                                              |
+| `polygon`          | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |
+| `rectilinear`      | `cut` instead of `right`                 | a rectangle with a corner cut out, both areas labeled                         |
+| `ruler`            | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |
+| `equalGroups`      | `unit: 10`                               | ten-rods, `each` counted in tens                                              |
+| `bars`             | `scale` as a variable                    | the grid spacing read from a value                                            |
+| `pictureGraph`     | (with a key)                             | half a picture for a half count                                               |
+| `fractionLine`     | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |
+| `table`            | `rows` as a function of the values       | rows that follow a parameter                                                  |
+| `array`            | `sides`                                  | the rows and columns labeled, “?” until solved                                |
+| `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
+| `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
+| `tape`             | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
+| `grid100`          | `second`, `wholes`                       | a second grid to compare; whole grids for the ones                            |
+| `rounding`         | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
+| `coordinatePlane`  | `trail`                                  | a pattern's earlier points and their table                                    |
+| `unitCubes`        | `second`, `total`                        | two boxes joined into an L                                                    |
+| `skipCount`        | a decimal `step`                         | jumps of 2.5 or 0.3                                                           |
+| `tape`             | `ratio`                                  | two bars of equal boxes for a ratio, each box's worth, total and difference   |
+| `skipCount`        | `second`                                 | a second row of multiples; the first landing both reach circled (LCM)         |
+| `factorTree`       | `second`, `gcf`, `lcm`                   | two trees and the primes they share                                           |
+| `coordinatePlane`  | `segment`, `reflect`, `rect`             | a labelled distance; images across the axes; a rectangle from its sides       |
+| `unitCubes`        | `cube: 2 \| 3 \| 4`                      | fraction-edge cubes filling the box                                           |
+| `boxPlot`          | `brackets`                               | the range and the interquartile range bracketed                               |
+| `doubleNumberLine` | `prefix: '$'`                            | dollars to the cent                                                           |
+| `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
@@ -202,12 +220,19 @@ behind, the front or the side, gently or hard, or pulled), `vibration` (a band, 
 voice, still or shaking), `sky` (the sun east, high or west; the night sky), `static` (a
 balloon, rubbed or not, near paper, hair, a wall or a balloon) and `timesTable` (a 0–10
 addition or times table lighting rows, columns, even or odd cells or the mirror line).
+Grade 6 science adds `cell` (a plant, animal or bacterial cell with one part lit),
+`bodySystems`, `waterCycle` (one process lit, with its driver), `front` (cold, warm or
+stationary; or a high or low), `plates` (five boundaries, with rock ages or the mantle's
+flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or shape clue)
+and `rockCycle`, in `layouts/figures6.tsx`.
 
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
 (equal or unequal parts, some shaded), `bar` (a ribbon with cubes laid right or wrong),
-`dots` (pairs), `icon` (a fixed set of everyday things), `fractionBars` and `ray` (segment,
-ray, line or point). Every figure and card figure has a page at `/gallery`.
+`dots` (pairs), `icon` (a fixed set of everyday things), `fractionBars`, `ray` (segment,
+ray, line or point), `net` (six squares), `inequality` (an open or closed circle and an
+arrow), `cell` (a small cell) and `rock` (a texture); a `polygon` can mark its `base`, a
+`dashed` height and the base `extend`ed. Every figure and card figure has a page at `/gallery`.
 
 ## Topics without a natural formula
 
