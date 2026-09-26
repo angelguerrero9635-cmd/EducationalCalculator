@@ -952,6 +952,243 @@ export const MATH_LAYOUTS: LayoutDef[] = [
 
   // ── Grade 2 ──
 
+  {
+    kind: 'sort',
+    id: 'm.2.even-odd~sort',
+    title: 'Even or odd?',
+    use: 'Use this to sort numbers to 20 as even or odd.',
+    assumptions: [
+      'Put the dots in pairs.',
+      'Even: every dot has a partner. Odd: one is left over.',
+    ],
+    question: 'Is the number even or odd?',
+    bins: [
+      { id: 'even', label: 'Even', why: 'Pairs with none left over.' },
+      { id: 'odd', label: 'Odd', why: 'One is left without a partner.' },
+    ],
+    cards: [
+      { label: '3', bin: 'odd', figure: { kind: 'dots', count: 3 } },
+      { label: '8', bin: 'even', figure: { kind: 'dots', count: 8 } },
+      { label: '11', bin: 'odd', figure: { kind: 'dots', count: 11 } },
+      { label: '14', bin: 'even', figure: { kind: 'dots', count: 14 } },
+      { label: '17', bin: 'odd', figure: { kind: 'dots', count: 17 } },
+      { label: '20', bin: 'even', figure: { kind: 'dots', count: 20 } },
+      { label: '0', bin: 'even' },
+      { label: '9', bin: 'odd', figure: { kind: 'dots', count: 9 } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.2.standard-length~which-unit',
+    title: 'Which unit?',
+    use: 'Use this to pick the best unit.',
+    assumptions: [
+      'Small things: centimeters. Big things: meters.',
+      'A bigger unit means you need fewer of them.',
+    ],
+    question: 'Would you measure it in centimeters or meters?',
+    bins: [
+      { id: 'cm', label: 'Centimeters', why: 'It is small. It fits on a ruler.' },
+      { id: 'm', label: 'Meters', why: 'It is big. Use a meter stick.' },
+    ],
+    cards: [
+      { label: 'Paper clip', bin: 'cm', figure: { kind: 'icon', icon: 'paper clip' } },
+      { label: 'Crayon', bin: 'cm', figure: { kind: 'icon', icon: 'crayon' } },
+      { label: 'Eraser', bin: 'cm', figure: { kind: 'icon', icon: 'eraser' } },
+      { label: 'Door', bin: 'm', figure: { kind: 'icon', icon: 'door' } },
+      { label: 'School bus', bin: 'm', figure: { kind: 'icon', icon: 'bus' } },
+      { label: 'Hallway', bin: 'm' },
+      { label: 'Classroom', bin: 'm' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.2.time-5-min~am-pm',
+    title: 'a.m. or p.m.?',
+    use: 'Use this to tell a.m. from p.m.',
+    assumptions: ['a.m. is from midnight to noon.', 'p.m. is from noon to midnight.'],
+    question: 'Does it happen in the a.m. or the p.m.?',
+    bins: [
+      { id: 'am', label: 'a.m.', why: 'Midnight to noon: the morning.' },
+      { id: 'pm', label: 'p.m.', why: 'Noon to midnight: afternoon and evening.' },
+    ],
+    cards: [
+      { label: 'Eat breakfast', bin: 'am' },
+      { label: 'Walk to school', bin: 'am', figure: { kind: 'icon', icon: 'backpack' } },
+      { label: 'See the sunrise', bin: 'am', figure: { kind: 'icon', icon: 'sun' } },
+      { label: 'Eat dinner', bin: 'pm' },
+      { label: 'Go to bed', bin: 'pm', figure: { kind: 'icon', icon: 'bed' } },
+      { label: 'See the moon come up', bin: 'pm', figure: { kind: 'icon', icon: 'moon' } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.2.thirds-polygons~polygons',
+    title: 'Name the shape',
+    use: 'Use this to name shapes by their sides and angles.',
+    assumptions: [
+      'Count the sides. Count the angles. They match.',
+      'Turned or stretched, the name stays the same.',
+    ],
+    question: 'What is its name?',
+    bins: [
+      { id: 'tri', label: 'Triangle', why: 'A triangle has 3 sides and 3 angles.' },
+      { id: 'quad', label: 'Quadrilateral', why: 'A quadrilateral has 4 sides and 4 angles.' },
+      { id: 'pent', label: 'Pentagon', why: 'A pentagon has 5 sides and 5 angles.' },
+      { id: 'hex', label: 'Hexagon', why: 'A hexagon has 6 sides and 6 angles.' },
+    ],
+    cards: [
+      {
+        label: 'Leaning triangle',
+        bin: 'tri',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 90],
+            [95, 90],
+            [30, 10],
+          ],
+        },
+      },
+      {
+        label: 'Kite',
+        bin: 'quad',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 2],
+            [85, 35],
+            [50, 98],
+            [15, 35],
+          ],
+        },
+      },
+      {
+        label: 'Trapezoid',
+        bin: 'quad',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [25, 20],
+            [75, 20],
+            [95, 80],
+            [5, 80],
+          ],
+        },
+      },
+      {
+        label: 'Rectangle',
+        bin: 'quad',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 25],
+            [95, 25],
+            [95, 75],
+            [5, 75],
+          ],
+        },
+      },
+      {
+        label: 'Pentagon',
+        bin: 'pent',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 5],
+            [95, 40],
+            [78, 95],
+            [22, 95],
+            [5, 40],
+          ],
+        },
+      },
+      {
+        label: 'Long pentagon',
+        bin: 'pent',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 30],
+            [60, 10],
+            [95, 45],
+            [70, 90],
+            [10, 80],
+          ],
+        },
+      },
+      {
+        label: 'Hexagon',
+        bin: 'hex',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [96, 50],
+            [73, 90],
+            [27, 90],
+            [4, 50],
+            [27, 10],
+            [73, 10],
+          ],
+        },
+      },
+      {
+        label: 'Hexagon with a dent',
+        bin: 'hex',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 20],
+            [70, 20],
+            [95, 50],
+            [70, 80],
+            [5, 80],
+            [30, 50],
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.2.thirds-polygons~same-share',
+    title: 'Equal shares, different shapes',
+    use: 'Use this to see equal shares that are not the same shape.',
+    assumptions: [
+      'Equal shares are the same amount of the whole.',
+      'They do not have to be the same shape.',
+    ],
+    question: 'Are the shares halves of the square?',
+    bins: [
+      { id: 'yes', label: 'Halves', why: 'Two shares, each the same amount of the square.' },
+      { id: 'no', label: 'Not halves', why: 'One share is bigger than the other.' },
+    ],
+    cards: [
+      {
+        label: 'Two rectangles',
+        bin: 'yes',
+        figure: { kind: 'cut', shape: 'square', parts: 2, equal: true, shaded: 1 },
+      },
+      {
+        label: 'Two triangles',
+        bin: 'yes',
+        figure: {
+          kind: 'cut',
+          shape: 'square',
+          parts: 2,
+          equal: true,
+          cuts: 'diagonal',
+          shaded: 1,
+        },
+      },
+      {
+        label: 'One thin, one wide',
+        bin: 'no',
+        figure: { kind: 'cut', shape: 'square', parts: 2, equal: false, shaded: 1 },
+      },
+    ],
+  },
+
   // ── Grade 3 ──
   {
     kind: 'sort',

@@ -17,7 +17,9 @@ export function Coins({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const ids = spec.coins.map((k) => k.var);
   const total = rep.known(spec.total) ? Math.round(rep.shown(spec.total)) : undefined;
   // In dollars (bills) or in cents (coins), with the other form after it.
-  const totalText = (t: number) => (spec.dollars ? `$${t}` : `${t}¢ = $${(t / 100).toFixed(2)}`);
+  // K–2 write cents (68¢); a dollar sign only once a dollar is made ($1.68).
+  const totalText = (t: number) =>
+    spec.dollars ? `$${t}` : rep.early && t < 100 ? `${t}¢` : `${t}¢ = $${(t / 100).toFixed(2)}`;
   // US coin diameters (mm), so the drawings keep true relative sizes.
   const sizes: Record<number, number> = { 25: 24.3, 10: 17.9, 5: 21.2, 1: 19.1 };
 

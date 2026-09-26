@@ -320,7 +320,12 @@ export function buildSteps(
     // keep their jumps, which the number line shows.
     const running = (l: string) => /^[\d,]+\S* [+−] [\d,]+\S* = [\d,]+\S*$/.test(l);
     const shownWork =
-      band === 'elementary' && written && /^\d+ [+−]/.test(written.says) && workLines?.some(running)
+      // Grade 2 too, when place lines ("Hundreds: 200 + 100 = 300") say the thinking.
+      (band === 'elementary' ||
+        (band === 'early' && !!workLines?.some((l) => /^(Hundreds|Tens|Ones): /.test(l)))) &&
+      written &&
+      /^\d+ [+−]/.test(written.says) &&
+      workLines?.some(running)
         ? // A sentence that only led into the jumps ("Start with the bigger number.") goes too.
           workLines.filter((l) => !running(l) && (l.includes('=') || !l.endsWith('.')))
         : workLines;

@@ -73,6 +73,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`difference of (${NUM}) and (${NUM})`), (a, b) => Math.abs(a - b)],
   [new RegExp(`size of (${NUM}) equal jumps from (${NUM}) to (${NUM})`), (k, a, n) => (n - a) / k],
   [new RegExp(`jumps of (${NUM}) from (${NUM}) to (${NUM})`), (s, a, n) => (n - a) / s],
+  // Grade 2 skip counting: "4 jumps of 10" is 40.
+  [new RegExp(`(${NUM}) jumps of (${NUM})`), (k, s) => k * s],
   [new RegExp(`tens from (${NUM}) to (${NUM})`), (a, b) => (b - a) / 10],
   // Elapsed time: the start minutes, counting back from the end minutes past the hour.
   [
@@ -123,6 +125,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`cuts to make (${NUM})(?: parts)?`), (a) => Math.log2(a)],
   [new RegExp(`fives in (${NUM})`), (a) => a / 5],
   [new RegExp(`(${NUM}) fives?`), (a) => 5 * a],
+  [new RegExp(`whole hundreds in (${NUM})`), (a) => Math.floor(a / 100)],
   [new RegExp(`hundreds in (${NUM})`), (a) => a / 100],
   [new RegExp(`hundreds digit of (${NUM})`), (a) => Math.floor(a / 100) % 10],
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],

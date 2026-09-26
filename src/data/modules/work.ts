@@ -306,3 +306,10 @@ export function factWork(times: number, each: number): string[] {
       return [];
   }
 }
+
+/** "23 ones = 2 tens and 3 ones", "13 ones = 1 ten and 3 ones": trading ones for tens. */
+export function regroupLine(ones: number): string {
+  const t = Math.floor(ones / 10);
+  const o = ones % 10;
+  return `${ones} ones = ${t} ${t === 1 ? 'ten' : 'tens'} and ${o} ${o === 1 ? 'one' : 'ones'}`;
+}

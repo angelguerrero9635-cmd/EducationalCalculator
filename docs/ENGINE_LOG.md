@@ -42,6 +42,29 @@ with a gallery page (`/gallery`, now showing layout demos too) and a harness che
   now stop at 12 and a label names the groups); the skip count rounded its step to a whole
   number, so jumps of 2.5 were drawn as 3.
 
+## K–2 rebuild (science K–3 and math K–2 plans)
+
+- **A story's order is a constraint** (`atLeast` in `helpers.ts`): a hard push rolls at least
+  as far as a gentle one, the sunny spot is at least as warm. The solver rejects the other
+  order, so a note never calls the smaller one bigger; with the order fixed, K–2 pages read
+  the sentence as a take-away (9 − 4 = 5) instead of "9 and 4 are 5 apart".
+- **Echo lines** are gone: a K–5 step no longer prints "3 + 4" under its question "3 + 4 = ?".
+  Grade 2 column sums also drop running totals ("300 + 70 = 370") when the place lines
+  ("Hundreds: 200 + 100 = 300") are there.
+- **A fixed whole on the tape** (`total: { value, label }`): Earth's water is 100 cups, and
+  the page asks for the fresh cups.
+- `regroupLine` in `work.ts` ("23 ones = 2 tens and 3 ones") replaces a hard-coded "1 ten
+  and N − 10 ones" that read "23 ones = 1 ten and 13 ones".
+- `apart` takes the note for equal values ("balanced: the box stays still").
+- Harness phrases: "jumps to 40" (tens counted), "4 jumps of 10", "whole hundreds in 347".
+- Layout test: every Kindergarten math sort card carries a drawing (non-readers).
+- **Still open.** A compare answer (a result that is a word or sign: more, fewer, the same;
+  > , <, =) needs an input that is not a number. Until then the compare pages name the count
+  > left over ("Left over", "How far apart") and put the compare sentence ("7 is more than 4")
+  > first, as the plan's interim says. The four Grade 2 two-step pages stay separate: merged,
+  > the direction of each step would be a value a Grade 2 student reads as −1 (the hop switch
+  > is built for when a page can hide that value).
+
 ## Science Grades 4–5 (Section 6, first review)
 
 - `apart` (no direction) was used for a rise, a loss and how much farther, so a drop from

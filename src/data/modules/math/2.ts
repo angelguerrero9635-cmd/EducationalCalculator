@@ -16,6 +16,7 @@ import {
   countUp,
   dealLines,
   missingPart,
+  regroupLine,
   repeated,
   subtractStrategy,
   sumSteps,
@@ -39,7 +40,8 @@ function coinLine(c: Coin, n: number): string {
 }
 /** "{db} dollar + {q} quarters + …" with singular or plural names to match the counts. */
 const moneyWords = (v: Values, skip?: string) =>
-  MONEY.filter((c) => c.id !== skip)
+  // Only the kinds this page has (the coins page has no dollar bills).
+  MONEY.filter((c) => c.id !== skip && c.id in v)
     .map((c) => `{${c.id}} ${v[c.id] === 1 ? c.one : c.many}`)
     .join(skip ? ' − ' : ' + ');
 /** Each kind of money the student has, in cents (dollars first). */
@@ -111,8 +113,9 @@ function moneyCoinWork(coin: Coin) {
   };
 }
 /** The total written in dollars and cents too, e.g. "($1.68)". */
+/** Grade 2 writes cents (68¢); "$1.68" only once a dollar is made. */
 const inDollars = (v: Values) =>
-  `($${Math.floor(v.T! / 100)}.${String(v.T! % 100).padStart(2, '0')})`;
+  v.T! >= 100 ? `($${Math.floor(v.T! / 100)}.${String(v.T! % 100).padStart(2, '0')})` : '';
 /** "347 = 300 + 40 + 7", leaving out places that are 0 ("305 = 300 + 5"). */
 const placeLine = (n: number) => {
   const parts = [Math.floor(n / 100) * 100, Math.floor((n % 100) / 10) * 10, n % 10].filter(
@@ -120,6 +123,37 @@ const placeLine = (n: number) => {
   );
   return parts.length > 1 ? [`${n} = ${parts.join(' + ')}`] : [];
 };
+/**
+ * Subtracting by place with the trades a student writes: "0 tens: trade 1 hundred for 10
+ * tens", "3 ones < 8 ones: trade 1 ten for 10 ones", then each place taken away.
+ */
+function tradeLines(a: number, b: number): string[] {
+  if (b > a) return [];
+  let [h, t, o] = [Math.floor(a / 100), Math.floor(a / 10) % 10, a % 10];
+  const [bh, bt, bo] = [Math.floor(b / 100), Math.floor(b / 10) % 10, b % 10];
+  const lines: string[] = [];
+  if (o < bo) {
+    if (t === 0) {
+      h -= 1;
+      t = 10;
+      lines.push('No tens to trade: trade 1 hundred for 10 tens');
+    }
+    t -= 1;
+    o += 10;
+    lines.push(`Trade 1 ten for 10 ones: ${o} ones`);
+  }
+  if (t < bt) {
+    h -= 1;
+    t += 10;
+    lines.push(`Trade 1 hundred for 10 tens: ${t} tens`);
+  }
+  lines.push(
+    `Ones: ${o} − ${bo} = ${o - bo}`,
+    `Tens: ${t} − ${bt} = ${t - bt}`,
+    `Hundreds: ${h} − ${bh} = ${h - bh}`,
+  );
+  return lines;
+}
 /** Cents written as dollars and cents, e.g. "$1.35". */
 const dollars = (cents: number) =>
   `$${Math.floor(cents / 100)}.${String(Math.round(cents % 100)).padStart(2, '0')}`;
@@ -198,7 +232,7 @@ function twoStep(
     variables: [
       whole('s', 's', 'Start', 0, 100),
       whole('a', 'a', `${word(first)} first`, 0, 100),
-      whole('m', 'm', 'After the first step', 0, 100),
+      { ...whole('m', 'm', 'After the first step', 0, 100), derived: true },
       whole('b', 'b', `${word(then)} next`, 0, 100),
       whole('e', 'e', 'End', 0, 100),
     ],
@@ -259,6 +293,29 @@ export const MATH_2_MODULES: ModuleDef[] = [
   },
   // Grade 2: word problems with a tape diagram, one and two steps (2.OA.1), and adding up to
   // four numbers (2.NBT.6).
+  // Facts within 20 from memory (2.OA.2): the make-ten line once, no counting.
+  {
+    id: 'm.2.add-sub-100-fluency~within-20',
+    title: 'Facts within 20',
+    use: 'Use this for facts within 20 from memory, like 9 + 6.',
+    assumptions: [
+      'Know these facts by heart by the end of Grade 2.',
+      'Stuck? Make a ten: 9 + 6 is 9 + 1 + 5.',
+    ],
+    variables: [
+      whole('a', 'a', 'First number', 0, 10),
+      whole('b', 'b', 'Second number', 0, 10),
+      whole('c', 'c', 'In all', 0, 20),
+    ],
+    ...addSub({
+      c: 'Say the fact. If you need to, make a ten first.',
+      a: 'Think of the addition fact with the second number.',
+      b: 'Think of the addition fact with the first number.',
+    }),
+    example: { a: 9, b: 6, c: 15 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c', frames: 2 },
+  },
   {
     id: 'm.2.add-sub-100-fluency~tape',
     title: 'Word problems',
@@ -351,7 +408,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
             return [
               `Tens: ${tens.filter((x) => x > 0).join(' + ') || '0'} = ${T}`,
               onesLine,
-              ...(O >= 10 ? [`${O} ones = 1 ten and ${O - 10} ones`] : []),
+              ...(O >= 10 ? [regroupLine(O)] : []),
               `${T} + ${O} = ${T + O}`,
             ];
           },
@@ -431,7 +488,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Every amount stays within 100.',
     ],
     variables: [
-      whole('a', 'a', 'How many Ana has', 0, 50),
+      whole('a', 'a', 'How many Ana has', 1, 50),
       whole('d', 'd', 'How many more Ben has', 0, 50),
       whole('b', 'b', 'How many Ben has', 0, 100),
       whole('t', 't', 'Total', 0, 100),
@@ -533,12 +590,13 @@ export const MATH_2_MODULES: ModuleDef[] = [
     id: 'm.2.place-value-1000',
     assumptions: [
       '10 ones make 1 ten; 10 tens make 1 hundred.',
-      'A digit’s place tells its value: the first digit of a 3-digit number is the hundreds.',
+      'A digit’s place tells its value: the left digit of a 3-digit number is the hundreds.',
+      '10 hundreds make 1,000.',
       'A 0 holds an empty place: 305 has no tens.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 0, 999),
-      whole('h', 'h', 'Hundreds', 0, 9),
+      whole('n', 'n', 'Number', 0, 1000),
+      whole('h', 'h', 'Hundreds', 0, 10),
       whole('t', 't', 'Tens', 0, 9),
       whole('o', 'o', 'Ones', 0, 9),
     ],
@@ -558,7 +616,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       },
       {
         id: 'h = hundreds digit',
-        display: 'The hundreds digit of {n} is {h}',
+        display: '{n} has {h} hundreds',
         vars: ['h', 'n'],
         residual: (v) => v.h! - Math.floor(v.n! / 100),
         solve: { h: (v) => Math.floor(v.n! / 100), n: () => undefined },
@@ -618,7 +676,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'h = hundreds digit': {
         h: {
           work: (v) => [...placeLine(v.n!), `${100 * v.h!} is ${v.h} hundreds`],
-          expr: 'hundreds digit of {n}',
+          expr: 'whole hundreds in {n}',
           how: 'Read the digit in the hundreds place (count the flats).',
         },
       },
@@ -760,8 +818,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'A number can have more than 9 tens or ones. Trade every 10 ones for a ten.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 0, 999),
-      whole('h', 'h', 'Hundreds', 0, 9),
+      whole('n', 'n', 'Number', 0, 1000),
+      whole('h', 'h', 'Hundreds', 0, 10),
       whole('t', 't', 'Tens', 0, 30),
       whole('o', 'o', 'Ones', 0, 30),
     ],
@@ -867,83 +925,122 @@ export const MATH_2_MODULES: ModuleDef[] = [
     },
   },
   // Grade 2: 10 more, 10 less, 100 more, 100 less (2.NBT.8).
+  (() => {
+    const place = (k: number) => (k === 10 ? 'tens' : 'hundreds');
+    const digit = (n: number, k: number) =>
+      k === 10 ? Math.floor(n / 10) % 10 : Math.floor(n / 100) % 10;
+    const rel = (x: string, sign: 1 | -1) => ({
+      id: `${x} = n ${sign > 0 ? '+' : '−'} k`,
+      display: `{n} ${sign > 0 ? '+' : '−'} {k} = {${x}}`,
+      vars: [x, 'n', 'k'],
+      residual: (v: Values) => v[x]! - v.n! - sign * v.k!,
+      solve: {
+        [x]: (v: Values) => v.n! + sign * v.k!,
+        n: (v: Values) => v[x]! - sign * v.k!,
+      },
+    });
+    const text = (x: string, sign: 1 | -1) => ({
+      [x]: {
+        expr: `{n} ${sign > 0 ? '+' : '−'} {k}`,
+        how: (v: Values) =>
+          `Change the ${place(v.k!)} digit by 1: ${sign > 0 ? 'up' : 'down'}. ${
+            Math.floor(v[x]! / (v.k! * 10)) === Math.floor(v.n! / (v.k! * 10))
+              ? 'The other digits stay the same.'
+              : `It goes past ${sign > 0 ? 9 : 0}, so the next place changes too.`
+          }`,
+        work: (v: Values) => [
+          `${place(v.k!) === 'tens' ? 'Tens' : 'Hundreds'} digit: ${digit(v.n!, v.k!)} → ${digit(v[x]!, v.k!)}`,
+        ],
+      },
+      n: {
+        expr: `{${x}} ${sign > 0 ? '−' : '+'} {k}`,
+        how: 'Go back: change the digit by 1 the other way.',
+      },
+    });
+    return {
+      id: 'm.2.add-sub-1000~ten-hundred-more',
+      title: '10 or 100 more or less',
+      use: 'Use this for 10 more, 10 less, 100 more and 100 less.',
+      assumptions: [
+        '10 more or 10 less changes the tens digit by 1.',
+        '100 more or 100 less changes the hundreds digit by 1.',
+        'Past 9 or below 0, the next place changes too.',
+      ],
+      variables: [
+        whole('n', 'n', 'Number', 100, 900),
+        { ...whole('k', 'k', 'Change', 10, 100), allowed: [10, 100] },
+        whole('p', 'p', 'More', 110, 1000),
+        whole('q', 'q', 'Less', 0, 890),
+      ],
+      relations: [rel('p', 1), rel('q', -1)],
+      steps: { 'p = n + k': text('p', 1), 'q = n − k': text('q', -1) },
+      example: { n: 356, k: 10, p: 366, q: 346 },
+      startWith: ['n', 'k'],
+      representation: {
+        kind: 'baseTen',
+        groups: ['n'],
+        controls: [{ var: 'n', steps: [10, 100] }],
+      },
+      pictureLabels: ['p', 'q', 'k'],
+    } satisfies ModuleDef;
+  })(),
+  // Subtract within 1,000, trading across a zero: 403 − 178 (2.NBT.7).
   {
-    id: 'm.2.add-sub-1000~ten-hundred-more',
-    title: '10 or 100 more or less',
-    use: 'Use this for 10 more, 10 less, 100 more and 100 less.',
+    id: 'm.2.add-sub-1000~subtract',
+    title: 'Take away within 1,000',
+    use: 'Use this to take away within 1,000, like 403 − 178.',
     assumptions: [
-      '10 more or 10 less changes the tens digit by 1. Past 9 or below 0, the hundreds digit changes too.',
-      '100 more or 100 less changes the hundreds digit by 1.',
-      'Example: 10 more than 356 is 366. 100 less than 356 is 256.',
+      'Take ones from ones, tens from tens, hundreds from hundreds.',
+      'Not enough ones? Trade 1 ten for 10 ones. No tens? Trade 1 hundred for 10 tens first.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 100, 900),
-      whole('t', 't', '10 more', 110, 910),
-      whole('u', 'u', '10 less', 90, 890),
-      whole('H', 'H', '100 more', 200, 1000),
-      whole('U', 'U', '100 less', 0, 800),
+      whole('a', 'a', 'Start', 0, 1000),
+      whole('b', 'b', 'Take away', 0, 1000),
+      whole('c', 'c', 'Left', 0, 1000),
     ],
-    relations: (
-      [
-        ['t', 10, 'the tens digit goes up by 1'],
-        ['u', -10, 'the tens digit goes down by 1'],
-        ['H', 100, 'the hundreds digit goes up by 1'],
-        ['U', -100, 'the hundreds digit goes down by 1'],
-      ] as const
-    ).map(([x, k]) => ({
-      id: `${x} = n ${k > 0 ? '+' : '−'} ${Math.abs(k)}`,
-      display: `{${x}} = {n} ${k > 0 ? '+' : '−'} ${Math.abs(k)}`,
-      vars: [x, 'n'],
-      residual: (v: Values) => v[x]! - v.n! - k,
-      solve: { [x]: (v: Values) => v.n! + k, n: (v: Values) => v[x]! - k },
-    })),
-    steps: Object.fromEntries(
-      (
-        [
-          ['t', 10, 'tens', 1],
-          ['u', -10, 'tens', -1],
-          ['H', 100, 'hundreds', 1],
-          ['U', -100, 'hundreds', -1],
-        ] as const
-      ).map(([x, k, place, dir]) => {
-        const op = k > 0 ? '+' : '−';
-        const inv = k > 0 ? '−' : '+';
-        const digit = (n: number) =>
-          place === 'tens' ? Math.floor(n / 10) % 10 : Math.floor(n / 100);
-        return [
-          `${x} = n ${op} ${Math.abs(k)}`,
-          {
-            [x]: {
-              expr: `{n} ${op} ${Math.abs(k)}`,
-              how: (v: Values) =>
-                Math.floor(v[x]! / (place === 'tens' ? 100 : 1000)) ===
-                Math.floor(v.n! / (place === 'tens' ? 100 : 1000))
-                  ? `Change the ${place} digit by 1: ${dir > 0 ? 'up' : 'down'}. The other digits stay the same.`
-                  : `Change the ${place} digit by 1: ${dir > 0 ? 'up' : 'down'}. It goes past ${dir > 0 ? 9 : 0}, so the hundreds change too.`,
-              work: (v: Values) => [
-                `${place === 'tens' ? 'Tens' : 'Hundreds'} digit: ${digit(v.n!)} → ${digit(v[x]!)}`,
-                `${v.n} ${op} ${Math.abs(k)} = ${v[x]}`,
-              ],
-            },
-            n: {
-              expr: `{${x}} ${inv} ${Math.abs(k)}`,
-              how: `Go back: change the ${place} digit by 1 the other way.`,
-              work: (v: Values) => [
-                `${place === 'tens' ? 'Tens' : 'Hundreds'} digit: ${digit(v[x]!)} → ${digit(v.n!)}`,
-              ],
-            },
-          },
-        ];
-      }),
-    ),
-    example: { n: 356, t: 366, u: 346, H: 456, U: 256 },
-    startWith: ['n'],
+    relations: [
+      {
+        id: 'a − b = c',
+        display: '{a} − {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.a! - v.b! - v.c!,
+        solve: {
+          c: (v: Values) => (v.b! > v.a! ? undefined : v.a! - v.b!),
+          a: (v: Values) => v.c! + v.b!,
+          b: (v: Values) => v.a! - v.c!,
+        },
+      },
+    ],
+    steps: {
+      'a − b = c': {
+        c: {
+          expr: '{a} − {b}',
+          how: 'Line up the places. Trade when a place has too few, then take away.',
+          work: (v: Values) => tradeLines(v.a!, v.b!),
+        },
+        a: {
+          expr: '{c} + {b}',
+          how: 'Put back what was taken away.',
+          work: (v: Values) => addStrategy(v.c!, v.b!),
+        },
+        b: {
+          expr: '{a} − {c}',
+          how: 'Count up from what is left to the start.',
+          work: (v: Values) => countUp(v.c!, v.a!),
+        },
+      },
+    },
+    example: { a: 403, b: 178, c: 225 },
+    startWith: ['a', 'b'],
     representation: {
       kind: 'baseTen',
-      groups: ['n'],
-      controls: [{ var: 'n', steps: [10, 100] }],
+      groups: ['a'],
+      controls: [
+        { var: 'a', steps: [1, 10, 100] },
+        { var: 'b', steps: [1, 10, 100] },
+      ],
     },
-    pictureLabels: ['U', 'u', 't', 'H'],
+    pictureLabels: ['b', 'c'],
   },
   {
     id: 'm.2.skip-count',
@@ -961,7 +1058,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = a + k jumps of s',
-        check: (v) => `${v.a} + ${v.k! * v.s!} = ${v.n}`,
+        check: (v) => `${v.a} + ${v.k} jumps of ${v.s} = ${v.n}`,
         display: 'Start at {a}. {k} jumps of {s} land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! - v.k! * v.s!,
@@ -976,17 +1073,13 @@ export const MATH_2_MODULES: ModuleDef[] = [
     steps: {
       'n = a + k jumps of s': {
         n: {
-          work: (v) => [
-            `Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)} → ${v.n}`,
-            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
-          ],
+          work: (v) => [`Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)} → ${v.n}`],
           expr: '{a} + {k} jumps of {s}',
           how: 'Start at the start number. Add the count-by number for each jump.',
         },
         a: {
           work: (v) => [
             `Count back by ${v.s}s from ${v.n}: ${countList(v.n!, -v.s!, v.k!)} → ${v.a}`,
-            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
           ],
           expr: '{n} − {k} jumps of {s}',
           how: 'Count back by the count-by number, once for each jump.',
@@ -1031,7 +1124,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = a − k jumps of s',
-        check: (v) => `${v.a} − ${v.k! * v.s!} = ${v.n}`,
+        check: (v) => `${v.a} − ${v.k} jumps of ${v.s} = ${v.n}`,
         display: 'Start at {a}. {k} jumps back by {s} land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! + v.k! * v.s!,
@@ -1049,23 +1142,21 @@ export const MATH_2_MODULES: ModuleDef[] = [
           expr: '{a} − {k} jumps of {s}',
           how: 'Start at the start number. Count back by the count-by number for each jump.',
           work: (v: Values) => [
-            `Count back by ${v.s}s from ${v.a}: ${countList(v.a!, -v.s!, v.k!)} → ${v.n}`,
-            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
+            `Count back by ${v.s}s from ${formatNumber(v.a!)}: ${countList(v.a!, -v.s!, v.k!)} → ${v.n}`,
           ],
         },
         a: {
           expr: '{n} + {k} jumps of {s}',
           how: 'Count up from the number reached, once for each jump.',
           work: (v: Values) => [
-            `Count on by ${v.s}s from ${v.n}: ${countList(v.n!, v.s!, v.k!)} → ${v.a}`,
-            `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.k! * v.s!} in all`,
+            `Count on by ${v.s}s from ${v.n}: ${countList(v.n!, v.s!, v.k!)} → ${formatNumber(v.a!)}`,
           ],
         },
         k: {
           expr: 'jumps of {s} from {n} to {a}',
           how: 'Count the jumps back from the start to the number reached.',
           work: (v: Values) => [
-            `${v.a} → ${countList(v.a!, -v.s!, v.k!)}`,
+            `${formatNumber(v.a!)} → ${countList(v.a!, -v.s!, v.k!)}`,
             `The ${v.k} jumps are ${countList(0, v.s!, v.k!)} → ${v.a! - v.n!} in all`,
           ],
         },
@@ -1206,12 +1297,12 @@ export const MATH_2_MODULES: ModuleDef[] = [
     steps: {
       'n = r rows of c': {
         n: {
-          work: (v) => [repeated(v.c!, v.r!)],
+          work: (v) => [`By rows: ${repeated(v.c!, v.r!)}`, `By columns: ${repeated(v.r!, v.c!)}`],
           expr: '{r} rows of {c}',
           how: 'Add the number in one row, once for each row.',
         },
         r: {
-          work: (v) => [`Count by ${v.c}s to ${v.n}: ${countList(0, v.c!, v.r!)} → ${v.r} rows`],
+          work: (v) => [`${repeated(v.c!, v.r!)} → ${v.r} rows`],
           expr: 'rows of {c} in {n}',
           how: 'Make rows of the same size until you use them all. Count the rows.',
         },
@@ -1255,16 +1346,14 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'n = g groups of k': {
         n: {
           work: (v: Values) => [
-            `Count by ${v.k}s: ${countList(0, v.k!, v.g!)}`,
+            ...(v.k === 5 || v.k === 10 ? [`Count by ${v.k}s: ${countList(0, v.k!, v.g!)}`] : []),
             repeated(v.k!, v.g!),
           ],
           expr: '{g} groups of {k}',
-          how: 'Skip count by the number in one group, once for each group.',
+          how: 'Add the number in one group, once for each group.',
         },
         g: {
-          work: (v: Values) => [
-            `Count by ${v.k}s to ${v.n}: ${countList(0, v.k!, v.g!)} → ${v.g} groups`,
-          ],
+          work: (v: Values) => [`${repeated(v.k!, v.g!)} → ${v.g} groups`],
           expr: 'groups of {k} in {n}',
           how: 'Make groups of the same size until you use them all. Count the groups.',
         },
@@ -1435,11 +1524,11 @@ export const MATH_2_MODULES: ModuleDef[] = [
     assumptions: [
       '1 foot is 12 inches.',
       'Feet are bigger, so you need fewer of them: 3 feet is 36 inches.',
-      'Use whole feet.',
+      'Use whole feet, up to a yardstick: 3 feet.',
     ],
     variables: [
-      { ...whole('f', 'f', 'Length in feet', 1, 5), unit: 'feet' },
-      { ...whole('n', 'n', 'Length in inches', 12, 60), multipleOf: 12, step: 12, unit: 'inches' },
+      { ...whole('f', 'f', 'Length in feet', 1, 3), unit: 'feet' },
+      { ...whole('n', 'n', 'Length in inches', 12, 36), multipleOf: 12, step: 12, unit: 'inches' },
     ],
     relations: [
       {
@@ -1454,14 +1543,14 @@ export const MATH_2_MODULES: ModuleDef[] = [
     steps: {
       'n = f feet of 12 inches': {
         n: {
-          work: (v: Values) => [`Count by 12s: ${countList(0, 12, v.f!)} → ${v.n} inches`],
+          work: (v: Values) => [`${repeated(12, v.f!)} inches`],
           expr: '{f} feet of 12 inches',
-          how: 'Each foot is 12 inches. Count by 12s, once for each foot.',
+          how: 'Each foot is 12 inches. Add 12 once for each foot.',
         },
         f: {
-          work: (v: Values) => [`Count by 12s to ${v.n}: ${countList(0, 12, v.f!)} → ${v.f} feet`],
+          work: (v: Values) => [`${repeated(12, v.f!)} → ${v.f} feet`],
           expr: 'twelves in {n}',
-          how: 'Count by 12s up to the inches. Count how many 12s.',
+          how: 'Add 12s until you reach the inches. Count how many 12s.',
         },
       },
     },
@@ -1527,52 +1616,45 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.money',
     assumptions: [
-      'A dollar is 100¢ ($1.00).',
+      'A dollar is 100¢.',
       'Quarter 25¢, dime 10¢, nickel 5¢, penny 1¢.',
       'Count the coins worth the most first.',
     ],
     variables: [
-      whole('db', 'b', 'Dollar bills', 0, 5),
       whole('q', 'q', 'Quarters', 0, 10),
       whole('dm', 'd', 'Dimes', 0, 10),
       whole('nk', 'n', 'Nickels', 0, 10),
       whole('pn', 'p', 'Pennies', 0, 10),
-      { ...whole('T', 'T', 'Total', 0, 910), unit: '¢' },
+      { ...whole('T', 'T', 'In all', 0, 410), unit: '¢' },
     ],
     relations: [
       {
-        id: 'T = 100b + 25q + 10d + 5n + p',
+        id: 'T = 25q + 10d + 5n + p',
         check: (v) =>
           `${
             MONEY.map((c) => v[c.id]! * c.cents)
               .filter((x) => x > 0)
               .join(' + ') || '0'
           } = ${v.T}`,
-        display: '{db} dollars + {q} quarters + {dm} dimes + {nk} nickels + {pn} pennies = {T}¢',
-        vars: ['T', 'db', 'q', 'dm', 'nk', 'pn'],
-        residual: (v) => v.T! - (100 * v.db! + 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!),
+        display: '{q} quarters + {dm} dimes + {nk} nickels + {pn} pennies = {T}¢',
+        vars: ['T', 'q', 'dm', 'nk', 'pn'],
+        residual: (v) => v.T! - (25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!),
         solve: {
-          db: (v) => (v.T! - 25 * v.q! - 10 * v.dm! - 5 * v.nk! - v.pn!) / 100,
-          T: (v) => 100 * v.db! + 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!,
-          q: (v) => (v.T! - 100 * v.db! - 10 * v.dm! - 5 * v.nk! - v.pn!) / 25,
-          dm: (v) => (v.T! - 100 * v.db! - 25 * v.q! - 5 * v.nk! - v.pn!) / 10,
-          nk: (v) => (v.T! - 100 * v.db! - 25 * v.q! - 10 * v.dm! - v.pn!) / 5,
-          pn: (v) => v.T! - 100 * v.db! - 25 * v.q! - 10 * v.dm! - 5 * v.nk!,
+          T: (v) => 25 * v.q! + 10 * v.dm! + 5 * v.nk! + v.pn!,
+          q: (v) => (v.T! - 10 * v.dm! - 5 * v.nk! - v.pn!) / 25,
+          dm: (v) => (v.T! - 25 * v.q! - 5 * v.nk! - v.pn!) / 10,
+          nk: (v) => (v.T! - 25 * v.q! - 10 * v.dm! - v.pn!) / 5,
+          pn: (v) => v.T! - 25 * v.q! - 10 * v.dm! - 5 * v.nk!,
         },
       },
     ],
     steps: {
-      'T = 100b + 25q + 10d + 5n + p': {
+      'T = 25q + 10d + 5n + p': {
         T: {
           expr: (v) => moneyWords(v),
-          how: 'Count dollars by 100s. Count on quarters by 25s, dimes by 10s, nickels by 5s. Add the pennies.',
+          how: 'Count on quarters by 25s, dimes by 10s, nickels by 5s. Add the pennies.',
           work: moneyTotalWork,
           note: inDollars,
-        },
-        db: {
-          expr: (v) => `dollars in ({T} − ${moneyWords(v, 'db')})`,
-          how: 'Take away the coins’ value. Count the 100s (dollars) in what is left.',
-          work: moneyCoinWork(MONEY[0]),
         },
         q: {
           expr: (v) => `quarters in ({T} − ${moneyWords(v, 'q')})`,
@@ -1596,13 +1678,12 @@ export const MATH_2_MODULES: ModuleDef[] = [
         },
       },
     },
-    example: { db: 1, q: 2, dm: 1, nk: 1, pn: 3, T: 168 },
-    clearTo: { db: 0, q: 0, dm: 0, nk: 0, pn: 0 },
-    startWith: ['db', 'q', 'dm', 'nk', 'pn'],
+    example: { q: 2, dm: 1, nk: 1, pn: 3, T: 68 },
+    clearTo: { q: 0, dm: 0, nk: 0, pn: 0 },
+    startWith: ['q', 'dm', 'nk', 'pn'],
     representation: {
       kind: 'coins',
       coins: [
-        { var: 'db', cents: 100, name: 'Dollar bills' },
         { var: 'q', cents: 25, name: 'Quarters' },
         { var: 'dm', cents: 10, name: 'Dimes' },
         { var: 'nk', cents: 5, name: 'Nickels' },
@@ -1619,7 +1700,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     assumptions: [
       'The money you have is the price plus what is left.',
       'To find what is left, take the price away. Count up from the price to check.',
-      'Type $1.25 or 125¢. Both mean the same amount.',
+      'Type the amount in cents: 125¢ is 1 dollar and 25 cents.',
     ],
     variables: [
       { ...whole('T', 'T', 'Money you have', 0, 1000), unit: '¢' },
@@ -1760,7 +1841,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     assumptions: [
       'The price is what you have plus what you still need.',
       'Count up from the money you have to the price.',
-      'Type $1.25 or 125¢. Both mean the same amount.',
+      'Type the amount in cents: 125¢ is 1 dollar and 25 cents.',
     ],
     variables: [
       { ...whole('P', 'P', 'Price', 0, 1000), unit: '¢' },
@@ -1892,7 +1973,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
             v.k! > 0
               ? [
                   `Count by 5s: ${countList(0, 5, v.k!)} → ${v.m} minutes`,
-                  ...(v.h === undefined ? [] : [`Time: ${v.h}:${String(v.m).padStart(2, '0')}`]),
+                  ...(v.h === undefined ? [] : [`It is ${v.h}:${String(v.m).padStart(2, '0')}`]),
                 ]
               : ['Long hand on 12: 0 minutes'],
           expr: (v: Values) => (v.k === 1 ? '{k} five' : '{k} fives'),
@@ -1910,7 +1991,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
       },
     },
     example: { h: 4, m: 25, k: 5 },
-    startWith: ['h', 'm'],
+    // A child reads the clock: the hour, and the number the long hand points to.
+    startWith: ['h', 'k'],
     representation: { kind: 'clock', hour: 'h', minute: 'm', minuteStep: 5, ampm: true },
   },
   {
@@ -1985,6 +2067,74 @@ export const MATH_2_MODULES: ModuleDef[] = [
       total: 'n',
       scale: 1,
     },
+  },
+  // Two-step bar-graph questions: put two bars together, then compare (2.MD.10).
+  {
+    id: 'm.2.graphs-line-plots~two-bars',
+    title: 'Two bars against one',
+    use: 'Use this for “how many more chose soccer and tennis than baseball?”',
+    assumptions: ['First put the two bars together.', 'Then compare with the third bar.'],
+    variables: [
+      whole('a', 'a', 'Soccer', 0, 10),
+      whole('e', 'e', 'Tennis', 0, 10),
+      whole('c', 'c', 'Baseball', 0, 10),
+      { ...whole('t', 't', 'Soccer and tennis', 0, 20), derived: true },
+      whole('d', 'd', 'How many more', 0, 20),
+    ],
+    relations: [
+      {
+        id: 't = a + e',
+        display: '{a} + {e} = {t}',
+        vars: ['t', 'a', 'e'],
+        residual: (v) => v.t! - v.a! - v.e!,
+        solve: { t: (v) => v.a! + v.e!, a: (v) => v.t! - v.e!, e: (v) => v.t! - v.a! },
+      },
+      {
+        id: 'd = t − c',
+        display: '{t} − {c} = {d}',
+        vars: ['d', 't', 'c'],
+        residual: (v) => v.d! - v.t! + v.c!,
+        solve: {
+          d: (v) => (v.t! < v.c! ? undefined : v.t! - v.c!),
+          t: (v) => v.d! + v.c!,
+          c: (v) => v.t! - v.d!,
+        },
+      },
+    ],
+    steps: {
+      't = a + e': {
+        t: {
+          expr: '{a} + {e}',
+          how: 'Put the two bars together.',
+          work: (v: Values) => addStrategy(v.a!, v.e!),
+        },
+        a: { expr: '{t} − {e}', how: 'Take tennis away from the two together.' },
+        e: { expr: '{t} − {a}', how: 'Take soccer away from the two together.' },
+      },
+      'd = t − c': {
+        d: {
+          expr: '{t} − {c}',
+          how: 'Compare: count up from baseball to the two together.',
+          work: (v: Values) => countUp(v.c!, v.t!),
+        },
+        t: { expr: '{d} + {c}', how: 'Add the extra to baseball.' },
+        c: { expr: '{t} − {d}', how: 'Take the extra away from the two together.' },
+      },
+    },
+    example: { a: 8, e: 6, c: 3, t: 14, d: 11 },
+    startWith: ['a', 'e', 'c'],
+    representation: {
+      kind: 'bars',
+      bars: [
+        { var: 'a', editable: true },
+        { var: 'e', editable: true },
+        { var: 'c', editable: true },
+      ],
+      min: 0,
+      max: 10,
+      scale: 1,
+    },
+    pictureLabels: ['t', 'd'],
   },
   // Grade 2: line plot of measurements (2.MD.9).
   {
@@ -2217,41 +2367,6 @@ export const MATH_2_MODULES: ModuleDef[] = [
   },
   // Grade 2: polygons by sides and angles (2.G.1), and rows and columns of squares (2.G.2).
   {
-    id: 'm.2.thirds-polygons~polygons',
-    title: 'Polygons',
-    use: 'Use this to name a shape by its sides and angles.',
-    assumptions: [
-      'A polygon is a closed flat shape with straight sides.',
-      'It has as many angles as sides: triangle 3, quadrilateral 4, pentagon 5, hexagon 6.',
-      'Count the sides or angles to name a shape. A bigger or turned shape keeps its name.',
-    ],
-    variables: [whole('s', 's', 'Sides', 3, 6), whole('a', 'a', 'Angles', 3, 6)],
-    relations: [
-      {
-        id: 'angles = sides',
-        display: '{s} sides and {a} angles',
-        vars: ['a', 's'],
-        residual: (v) => v.a! - v.s!,
-        solve: { a: (v) => v.s!, s: (v) => v.a! },
-      },
-    ],
-    steps: {
-      'angles = sides': {
-        a: {
-          expr: '{s}',
-          how: 'Each angle is where two sides meet. There is one angle for each side.',
-        },
-        s: {
-          expr: '{a}',
-          how: 'There is one side between two angles. There is one side for each angle.',
-        },
-      },
-    },
-    example: { s: 5, a: 5 },
-    startWith: ['s'],
-    representation: { kind: 'polygon', sides: 's', words: 'angle', corners: 'a' },
-  },
-  {
     id: 'm.2.thirds-polygons~rows-columns',
     title: 'Rows and columns of squares',
     use: 'Use this to cut a rectangle into rows and columns of squares.',
@@ -2277,12 +2392,12 @@ export const MATH_2_MODULES: ModuleDef[] = [
     steps: {
       'n = r rows of c': {
         n: {
-          work: (v) => [repeated(v.c!, v.r!)],
+          work: (v) => [`By rows: ${repeated(v.c!, v.r!)}`, `By columns: ${repeated(v.r!, v.c!)}`],
           expr: '{r} rows of {c}',
           how: 'Add the number in one row, once for each row.',
         },
         r: {
-          work: (v) => [`Count by ${v.c}s to ${v.n}: ${countList(0, v.c!, v.r!)} → ${v.r} rows`],
+          work: (v) => [`${repeated(v.c!, v.r!)} → ${v.r} rows`],
           expr: 'rows of {c} in {n}',
           how: 'Make rows until you use all the squares. Count the rows.',
         },
