@@ -27,7 +27,10 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const L = Math.max(0.001, rep.shown(spec.wavelength));
   // The drawing's scale: `extent` wavelengths across, held while dragging.
   const scale = useFrozen({ L, A: Math.max(A, 0.001) });
-  const cycles = spec.extent;
+  const cycles =
+    typeof spec.extent === 'string'
+      ? Math.min(12, Math.max(1, Math.round(rep.known(spec.extent) ? rep.shown(spec.extent) : 1)))
+      : spec.extent;
 
   return (
     <View>

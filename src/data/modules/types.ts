@@ -182,7 +182,8 @@ export type Representation =
   | {
       kind: 'skipCount';
       step: string | number;
-      count: string;
+      /** A value, or a fixed number of jumps (4 quarters in a minute). */
+      count: string | number;
       total: string;
       start?: string;
       /** Count back: the jumps go left from the start. */
@@ -539,7 +540,14 @@ export type Representation =
    * A wave drawn with its `wavelength` (and `amplitude`, when the lesson has one; else a
    * fixed height); `extent` is the width shown in wavelength units.
    */
-  | { kind: 'wave'; amplitude?: string; wavelength: string; extent: number; frequency?: string }
+  | {
+      kind: 'wave';
+      amplitude?: string;
+      wavelength: string;
+      /** Wavelengths drawn across: a number, or a value (the waves counted along a rope). */
+      extent: number | string;
+      frequency?: string;
+    }
   /**
    * Punnett square: each parent's count of dominant alleles (0–2) sets its two alleles; the
    * four offspring boxes are shaded by genotype, `dominant` counts those showing the trait.

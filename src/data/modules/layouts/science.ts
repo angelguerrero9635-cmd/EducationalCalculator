@@ -431,6 +431,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Let a marble roll down a ramp and hit a paper cup at the bottom.',
       'Start the marble higher each time. Measure how far the cup slides.',
       'The marble’s energy passes to the cup when they hit.',
+      'When they hit, some energy also becomes sound and heat.',
     ],
     columns: ['5 cm', '10 cm', '15 cm', '20 cm', '25 cm'],
     rowLabel: 'Cup slid',
@@ -473,6 +474,54 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Doorbell', bin: 'sound' },
       { label: 'Fan', bin: 'motion' },
       { label: 'Electric car', bin: 'motion' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.4.energy-conversion~trace',
+    title: 'Follow the energy in a flashlight',
+    use: 'Use this to follow the energy from a flashlight’s battery to its light.',
+    assumptions: [
+      'Energy moves from place to place. It changes form but is not used up.',
+      'Electric current carries energy along a wire.',
+      'Tap the steps in order, starting with the battery.',
+    ],
+    question: 'Put the steps in order, starting with the battery.',
+    stages: [
+      { label: 'The battery stores energy' },
+      { label: 'Electric current carries it along the wire' },
+      { label: 'The thin wire in the bulb gets very hot' },
+      { label: 'The bulb gives out light and heat' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.4.energy-conversion~conductors',
+    title: 'Does electric current flow through it?',
+    use: 'Use this to sort materials into conductors and insulators.',
+    assumptions: [
+      'Put the object in a circuit with a battery and a bulb.',
+      'If the bulb lights, current flows through the object.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Does the bulb light when it is in the circuit?',
+    bins: [
+      { id: 'conductor', label: 'Conductor', why: 'Current flows through it: the bulb lights.' },
+      {
+        id: 'insulator',
+        label: 'Insulator',
+        why: 'Current cannot get through: the bulb stays dark.',
+      },
+    ],
+    cards: [
+      { label: 'Copper wire', bin: 'conductor' },
+      { label: 'Paper clip', bin: 'conductor' },
+      { label: 'Aluminum foil', bin: 'conductor' },
+      { label: 'Coin', bin: 'conductor' },
+      { label: 'Plastic spoon', bin: 'insulator' },
+      { label: 'Rubber band', bin: 'insulator' },
+      { label: 'Wood stick', bin: 'insulator' },
+      { label: 'Glass marble', bin: 'insulator' },
     ],
   },
   {
@@ -548,6 +597,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Some parts are outside, like skin and eyes. Some are inside, like the heart and lungs.',
       'Each part has a job that helps the animal live and grow.',
+      'Plants have parts with jobs too: roots, stems, leaves and thorns.',
       'Tap a part to read its job.',
     ],
     figure: {
@@ -629,6 +679,42 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
   },
   {
+    kind: 'sort',
+    id: 's.4.internal-structures~jobs',
+    title: 'What does this part help with?',
+    use: 'Use this to sort plant and animal parts by what they help with.',
+    assumptions: [
+      'Every part helps a plant or animal survive, grow or make young.',
+      'Some parts are on the outside, like thorns and shells.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'What does this part help with?',
+    bins: [
+      { id: 'protect', label: 'Protection', why: 'It keeps the plant or animal safe.' },
+      {
+        id: 'food',
+        label: 'Getting food and water',
+        why: 'It takes in what the living thing needs.',
+      },
+      {
+        id: 'sense',
+        label: 'Sensing and moving',
+        why: 'It finds out what is around, or moves the body.',
+      },
+      { id: 'young', label: 'Making young', why: 'It helps make the next plants or animals.' },
+    ],
+    cards: [
+      { label: 'Rose thorns', bin: 'protect' },
+      { label: 'Turtle shell', bin: 'protect' },
+      { label: 'Tree roots', bin: 'food' },
+      { label: 'Bird’s beak', bin: 'food' },
+      { label: 'Owl’s eyes', bin: 'sense' },
+      { label: 'Bird’s wings', bin: 'sense' },
+      { label: 'Flower', bin: 'young' },
+      { label: 'Seeds', bin: 'young' },
+    ],
+  },
+  {
     kind: 'observe',
     id: 's.4.weathering~stream-table',
     title: 'Water poured and sand moved',
@@ -648,7 +734,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       if (v.every((x) => x === v[0])) return 'The sand moved the same distance each time.';
       const up = v.slice(1).every((x, i) => x >= v[i]!);
       return up
-        ? `More water moved the sand farther: from ${v[0]} cm to ${v[v.length - 1]} cm. More water means faster erosion.`
+        ? `More water moved the sand farther: from ${v[0]} cm to ${v[v.length - 1]} cm. More water means more erosion.`
         : 'The distances go up and down. Pour the same way each time and measure again.';
     },
   },
@@ -665,10 +751,39 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     question: 'Put the events in order, oldest first.',
     stages: [
       { label: 'Sand settles: the bottom layer forms' },
-      { label: 'Mud settles on top' },
-      { label: 'Shells settle: a layer with fossils forms' },
+      { label: 'Mud settles on top of the sand' },
+      { label: 'Shells settle on the mud: a layer with fossils forms' },
       { label: 'The land is pushed up' },
       { label: 'A river cuts down through the layers' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.4.weathering~map-patterns',
+    title: 'Where volcanoes and earthquakes happen',
+    use: 'Use this to sort places by the pattern of volcanoes and earthquakes on a map.',
+    assumptions: [
+      'Most volcanoes and earthquakes happen in lines along the edges of oceans.',
+      'Those lines are where pieces of Earth’s crust meet.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Where is it on a map of volcanoes and earthquakes?',
+    bins: [
+      {
+        id: 'edge',
+        label: 'Along the edges of oceans',
+        why: 'Many volcanoes and earthquakes, in long lines.',
+      },
+      { id: 'middle', label: 'Middle of a continent', why: 'Few volcanoes or earthquakes.' },
+    ],
+    cards: [
+      { label: 'Volcanoes around the Pacific Ocean', bin: 'edge' },
+      { label: 'Earthquakes in Japan', bin: 'edge' },
+      { label: 'The Andes mountains', bin: 'edge' },
+      { label: 'Volcanoes in Alaska', bin: 'edge' },
+      { label: 'The Great Plains', bin: 'middle' },
+      { label: 'Central Australia', bin: 'middle' },
+      { label: 'The Sahara', bin: 'middle' },
     ],
   },
   {
@@ -682,7 +797,11 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     question: 'Will this energy source run out?',
     bins: [
-      { id: 'renewable', label: 'Renewable', why: 'Nature makes more of it as we use it.' },
+      {
+        id: 'renewable',
+        label: 'Renewable',
+        why: 'Nature makes more of it in a lifetime, or it never runs out.',
+      },
       {
         id: 'nonrenewable',
         label: 'Nonrenewable',
@@ -716,7 +835,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'flood', label: 'Flood', why: 'Keep water out, or keep homes above it.' },
       { id: 'earthquake', label: 'Earthquake', why: 'Keep buildings and shelves from falling.' },
       { id: 'wildfire', label: 'Wildfire', why: 'Leave nothing near homes for the fire to burn.' },
-      { id: 'hurricane', label: 'Hurricane', why: 'Guard against strong wind and leave in time.' },
+      { id: 'hurricane', label: 'Hurricane', why: 'Hold roofs and windows against strong wind.' },
     ],
     cards: [
       { label: 'Levee along a river', bin: 'flood' },
@@ -727,7 +846,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Brush cleared near houses', bin: 'wildfire' },
       { label: 'Fire break', bin: 'wildfire' },
       { label: 'Storm shutters', bin: 'hurricane' },
-      { label: 'Evacuation route', bin: 'hurricane' },
+      { label: 'Roof strapped to the walls', bin: 'hurricane' },
     ],
   },
   // ── Grade 5 ──
@@ -836,6 +955,30 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sort',
+    id: 's.5.particles-matter~magnet',
+    title: 'Does a magnet pull it?',
+    use: 'Use this to sort materials by whether a magnet pulls them.',
+    assumptions: [
+      'Hold a magnet close to the object and see if it is pulled.',
+      'Not every metal is pulled by a magnet.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Does a magnet pull it?',
+    bins: [
+      { id: 'pulled', label: 'Pulled', why: 'It has iron or steel in it.' },
+      { id: 'not', label: 'Not pulled', why: 'No iron or steel: the magnet does nothing.' },
+    ],
+    cards: [
+      { label: 'Iron nail', bin: 'pulled' },
+      { label: 'Steel paper clip', bin: 'pulled' },
+      { label: 'Aluminum can', bin: 'not' },
+      { label: 'Copper coin', bin: 'not' },
+      { label: 'Plastic spoon', bin: 'not' },
+      { label: 'Wood block', bin: 'not' },
+    ],
+  },
+  {
+    kind: 'sort',
     id: 's.5.mixtures',
     assumptions: [
       'Signs of a new substance: bubbles of gas, a new color, heat or light, a solid forming.',
@@ -874,17 +1017,41 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     title: 'Separate sand, salt and iron filings',
     use: 'Use this to put the steps for separating sand, salt and iron filings in order.',
     assumptions: [
-      'Each step uses one property of one substance.',
+      'Each step uses one property of one substance. Take the iron out first, while the mix is still dry.',
       'Iron is pulled by a magnet. Salt dissolves. Sand does not.',
       'Tap the steps in order.',
     ],
     question: 'Put the steps in order. Tap the first one, then the next.',
     stages: [
-      { label: 'Pass a magnet over the mix: the iron filings stick' },
+      { label: 'Pass a magnet over the dry mix: the iron filings stick' },
       { label: 'Stir the rest into water: the salt dissolves' },
       { label: 'Pour it through a filter: the sand stays behind' },
       { label: 'Let the salt water evaporate: the salt is left' },
     ],
+  },
+  {
+    kind: 'observe',
+    id: 's.5.mixtures~dissolve-warm',
+    title: 'Salt that dissolves in cool and warm water',
+    use: 'Use this to record how many spoons of salt dissolve at each water temperature.',
+    assumptions: [
+      'Stir in one spoon of salt at a time until no more disappears.',
+      'Use the same amount of water each time.',
+      'Tap a bar to change the spoons for that temperature.',
+    ],
+    columns: ['50 °F', '70 °F', '90 °F', '110 °F'],
+    rowLabel: 'Spoons dissolved',
+    unit: 'spoons',
+    max: 12,
+    step: 1,
+    initial: [6, 7, 8, 9],
+    pattern: (v) => {
+      if (v.every((x) => x === v[0])) return 'The same amount dissolved at every temperature.';
+      const up = v.slice(1).every((x, i) => x >= v[i]!);
+      return up
+        ? `Warmer water dissolved more: ${v[0]} spoons when cool, ${v[v.length - 1]} spoons when warm.`
+        : 'The spoons go up and down. Stir the same way each time and try again.';
+    },
   },
   {
     kind: 'explore',
@@ -965,7 +1132,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Each arrow in a food chain means: is eaten by.',
       'Energy from the sun passes along the chain.',
-      'Tap the living things in order, starting with the sun.',
+      'Tap each one in order, starting with the sun.',
     ],
     question: 'Put the food chain in order, starting with the sun.',
     stages: [
@@ -978,30 +1145,42 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
   },
   {
-    kind: 'sort',
+    kind: 'explore',
     id: 's.5.plants-sunlight-energy~needs',
     title: 'What a plant takes in',
-    use: 'Use this to sort what a plant takes in by where it comes from.',
+    use: 'Use this to see where each thing a plant takes in comes from.',
     assumptions: [
       'A plant makes its food from air and water, using the energy of sunlight.',
       'Soil gives only a little: some minerals.',
-      'Tap a card, then tap its group.',
+      'Tap a part to see what it takes in.',
     ],
-    question: 'Where does the plant get it?',
-    bins: [
+    figure: {
+      kind: 'parts',
+      parts: [
+        { name: 'Leaves', job: 'Take in carbon dioxide from the air and catch sunlight.' },
+        { name: 'Stem', job: 'Carries water up from the roots to the leaves.' },
+        { name: 'Roots', job: 'Take in water and a few minerals from the soil.' },
+      ],
+    },
+    scenes: [
       {
-        id: 'air',
-        label: 'From the air',
-        why: 'Leaves take in carbon dioxide through tiny holes.',
+        label: 'Leaves',
+        part: 'Leaves',
+        lines: [
+          'Leaves take in carbon dioxide from the air.',
+          'They catch the energy in sunlight to make food.',
+        ],
       },
-      { id: 'water', label: 'From water and soil', why: 'Roots take in water and a few minerals.' },
-      { id: 'sun', label: 'From the sun', why: 'Leaves catch the energy in sunlight.' },
-    ],
-    cards: [
-      { label: 'Carbon dioxide', bin: 'air' },
-      { label: 'Water', bin: 'water' },
-      { label: 'Minerals', bin: 'water' },
-      { label: 'Light energy', bin: 'sun' },
+      {
+        label: 'Stem',
+        part: 'Stem',
+        lines: ['The stem carries water up to the leaves.'],
+      },
+      {
+        label: 'Roots',
+        part: 'Roots',
+        lines: ['Roots take in water and a few minerals.', 'The soil itself is hardly used up.'],
+      },
     ],
   },
   {
@@ -1011,7 +1190,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     use: 'Use this to record a seedling’s mass each week when it grows in water with no soil.',
     assumptions: [
       'Grow a seedling in a jar of water, with no soil at all.',
-      'Weigh it each week.',
+      'Weigh it each week. Add a few drops of plant food: the minerals soil would give.',
       'Tap a bar to change that week’s mass.',
     ],
     columns: ['Week 0', 'Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
@@ -1067,10 +1246,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     question: 'Put the steps in order, starting at the ocean.',
     stages: [
-      { label: 'Water evaporates from the ocean into the air' },
-      { label: 'Clouds form and rain falls on a mountain' },
-      { label: 'Rain soaks into the soil and roots take it in' },
-      { label: 'The rest runs in a river back to the sea' },
+      { label: 'Water evaporates from the ocean into the air: hydrosphere to atmosphere' },
+      { label: 'Clouds form and rain falls on a mountain: atmosphere to geosphere' },
+      { label: 'Rain soaks into the soil and roots take it in: geosphere to biosphere' },
+      { label: 'The rest runs in a river back to the sea: back to the hydrosphere' },
     ],
   },
   {
@@ -1102,6 +1281,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Earth turns once a day, so the sun seems to move across the sky.',
       'Measure the shadow of a meter stick at the same spot every two hours.',
+      'Morning shadows point west. Afternoon shadows point east.',
       'Tap a bar to change that hour’s shadow.',
     ],
     columns: ['8 a.m.', '10 a.m.', 'Noon', '2 p.m.', '4 p.m.'],
@@ -1200,6 +1380,32 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Cygnus', bin: 'summer' },
       { label: 'Big Dipper', bin: 'all' },
       { label: 'Cassiopeia', bin: 'all' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.5.protect-resources',
+    assumptions: [
+      'People use Earth’s air, water, land and living things every day.',
+      'Communities can change what they do to protect them.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'What does this action protect most?',
+    bins: [
+      { id: 'air', label: 'Air', why: 'Less smoke and fumes in the air we breathe.' },
+      { id: 'water', label: 'Water', why: 'Cleaner rivers and less water wasted.' },
+      { id: 'land', label: 'Land', why: 'Less trash and healthier soil.' },
+      { id: 'life', label: 'Living things', why: 'Safe homes for plants and animals.' },
+    ],
+    cards: [
+      { label: 'Riding a bike instead of driving', bin: 'air' },
+      { label: 'Planting trees along a busy road', bin: 'air' },
+      { label: 'Fixing a dripping tap', bin: 'water' },
+      { label: 'Keeping oil out of storm drains', bin: 'water' },
+      { label: 'Recycling cans and paper', bin: 'land' },
+      { label: 'Composting food scraps', bin: 'land' },
+      { label: 'Protecting a wetland as a park', bin: 'life' },
+      { label: 'Building a bridge for animals over a highway', bin: 'life' },
     ],
   },
 ];

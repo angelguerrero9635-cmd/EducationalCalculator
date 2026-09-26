@@ -149,7 +149,7 @@ export function SortLayout({ spec }: { spec: Spec }) {
       setPlaced({ ...placed, [picked]: binId });
       setHint('');
     } else {
-      setHint(`Look again at ${card.label.toLowerCase()}. ${spec.question}`);
+      setHint(`Look again at “${card.label}”. ${spec.question}`);
     }
     setPicked(undefined);
   };

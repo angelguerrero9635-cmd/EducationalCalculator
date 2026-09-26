@@ -125,7 +125,7 @@ export function repIssues(
       break;
     }
     case 'skipCount': {
-      count(rep.count, 'skips', 30);
+      if (typeof rep.count === 'string') count(rep.count, 'skips', 30);
       const s = val(rep.step);
       if (s !== undefined && s < 1) out.push(`skip size ${s} < 1 (drawn as 1)`);
       break;
@@ -455,6 +455,7 @@ export function repIssues(
       break;
     }
     case 'wave': {
+      if (typeof rep.extent === 'string') count(rep.extent, 'waves drawn', 12);
       const [A, L] = [rep.amplitude ? val(rep.amplitude) : undefined, val(rep.wavelength)];
       if (A !== undefined && A < 0) out.push(`negative amplitude ${A}`);
       if (L !== undefined && L <= 0) out.push(`wavelength ${L} is not positive`);

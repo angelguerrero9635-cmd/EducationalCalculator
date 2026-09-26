@@ -332,12 +332,15 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
       xs.reduce((a, x) => a + (Math.floor(x / 10 ** i) % 10), 0),
     ).some((t) => t >= 10);
     const columns = xs.filter((x) => figures(x) >= 2).length >= 2;
+    // Tens that add to 100 or less (50 + 20 + 30) are added in the head.
+    if (xs.every((x) => x % 10 === 0) && sum <= 100) return undefined;
     return twoDigit && (carries || (sum >= 100 && columns)) ? columnAdd(xs) : undefined;
   }
   if (/^\d+ − \d+$/.test(text)) {
     const [c, b] = nums(text) as [number, number];
     // Nothing to set out for a number taken from itself.
-    if (b < 10 || c < b || c === b) return undefined;
+    // A difference under 10 (1,000 − 998) is found by counting up, not in columns.
+    if (b < 10 || c < b || c - b < 10) return undefined;
     const borrows = String(b)
       .split('')
       .reverse()

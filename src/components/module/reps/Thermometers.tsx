@@ -6,7 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
+import { Canvas, ChartText, DragHandle, nowrap, useRep, Caption } from './common';
 
 type Spec = Extract<Representation, { kind: 'thermometers' }>;
 
@@ -37,6 +37,9 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const py = (x: number) => bottom - ((x - lo) / (hi - lo)) * (bottom - top);
           const slot = w / spec.items.length;
           const tube = 18;
+          // A tick every 10; a number every 10, 20, 50 or 100, whichever leaves 14 px between.
+          const per10 = ((bottom - top) * 10) / (hi - lo);
+          const every = [10, 20, 50, 100].find((e) => (per10 * e) / 10 >= 14) ?? 100;
           return (
             <>
               <Svg width={w} height={h}>
@@ -92,17 +95,19 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                           stroke={c.chartInk}
                           strokeWidth={mark ? chart.stroke : chart.strokeLight}
                         />,
-                        <ChartText
-                          key={`l${id}${k}`}
-                          x={cx - tube / 2 - 12}
-                          y={py(v) + 4}
-                          fontSize={chart.tiny}
-                          fill={mark ? c.chartInk : c.chartMuted}
-                          fontWeight={mark ? '700' : undefined}
-                          textAnchor="end"
-                        >
-                          {String(v)}
-                        </ChartText>,
+                        mark || (v - lo) % every === 0 ? (
+                          <ChartText
+                            key={`l${id}${k}`}
+                            x={cx - tube / 2 - 12}
+                            y={py(v) + 4}
+                            fontSize={chart.tiny}
+                            fill={mark ? c.chartInk : c.chartMuted}
+                            fontWeight={mark ? '700' : undefined}
+                            textAnchor="end"
+                          >
+                            {String(v)}
+                          </ChartText>
+                        ) : null,
                       ];
                     }),
                     x === undefined ? null : (
@@ -165,7 +170,7 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
           // Say which one is warmer, so a shade warmer than the sun reads as what it is.
           if (a === b) return `${names} Both the same.`;
           const warmer = rep.variable(spec.items[a > b ? 0 : 1]!).name;
-          return `${names} ${warmer} is warmer by ${rep.value(spec.difference)}.`;
+          return `${names} ${warmer} is warmer by ${nowrap(rep.value(spec.difference))}.`;
         })()}
       </Caption>
       {unit ? null : null}

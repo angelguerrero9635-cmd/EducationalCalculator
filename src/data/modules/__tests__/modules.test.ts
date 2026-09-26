@@ -136,6 +136,7 @@ function representationVars(r: Representation): string[] {
     case 'wave':
       return [
         ...(r.amplitude ? [r.amplitude] : []),
+        ...(typeof r.extent === 'string' ? [r.extent] : []),
         r.wavelength,
         ...(r.frequency ? [r.frequency] : []),
       ];
@@ -247,6 +248,17 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('modu
     for (const id of [r.value, ...(r.marks ?? [])]) {
       expect([id, vmax(id) <= r.max]).toEqual([id, true]);
     }
+  });
+
+  it('uses a directional difference for a rise, a loss or how much farther (not "apart")', () => {
+    // "apart" has no direction: a rise from 120 to 50 would come out as 70. Use `minus`.
+    const directional = /\b(rise|lost|loss|worn|escaped|gain|farther|dropped)\b/i;
+    const wrong = m.relations
+      .filter((r) => r.id.endsWith(' apart'))
+      .map((r) => m.variables.find((v) => v.id === r.vars[0]))
+      .filter((v) => v && directional.test(v.name))
+      .map((v) => v!.name);
+    expect(wrong).toEqual([]);
   });
 
   it('connects every value through the formulas (else it is two lessons: split it)', () => {
@@ -440,7 +452,8 @@ describe('written work and simplifying, by grade', () => {
     expect(q!.written?.says).toBe('743 ÷ 6 = 123 remainder 5');
     expect(q!.written?.rows[0]!.map((c) => c.text)).toEqual(['', '', '1', '2', '3']);
     expect(m!.written?.says).toBe('123 × 6 = 738');
-    expect(r!.written?.says).toBe('743 − 738 = 5');
+    // A difference under 10 is counted up, not set out in columns.
+    expect(r!.written).toBeUndefined();
     const [n] = steps('m.4.multi-digit-multiply~three-digit', { a: 234, b: 6 }).slice(-1);
     expect(n!.written?.says).toBe('1200 + 180 + 24 = 1404');
     // Grades 3–5 name the value in words: letters stand for numbers from Grade 6.

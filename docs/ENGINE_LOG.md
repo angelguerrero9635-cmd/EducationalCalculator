@@ -5,6 +5,28 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Science Grades 4–5 (Section 6, first review)
+
+- `apart` (no direction) was used for a rise, a loss and how much farther, so a drop from
+  120 °F to 50 °F showed a rise of 70 °F. → `minus` in `helpers.ts` for after − before, and a
+  module test fails a relation built with `apart` whose value is named a rise, loss, gain,
+  escaped, worn or farther.
+- The wave picture drew a fixed number of waves whatever was typed. → `wave.extent` takes a
+  value; the harness checks it is drawn.
+- A fixed count ("4 quarters in a minute") had to be a fake input. → `skipCount.count` takes a
+  number; no handle or stepper for it.
+- Grids for 50 + 20 + 30 and for 1,000 − 998. → No grid for tens that add to 100 or less, and
+  none for a difference under 10 (counted up).
+- A rule that two values are equal printed as a step plus a check that repeated it. → The
+  conservation page names one total "before and after stirring" instead.
+- Pictures (page reviewer): Earth's night half was lighter than its day half in dark mode (new
+  `chartDay` and `chartNight` tokens); gas particles sat on one line (fixed scatter); observe
+  columns overflowed at six (they share the row); the sort hint quotes a card as written; the
+  waterfall showed a letter on a Grade 5 page and now names its bars; a pie keys wedges under
+  12°; thermometer numbers space themselves; a parts figure picks its scene by tapping a part.
+- Open: `unitSystems: ['metric']` still offers kN on a newton page; no food-web figure yet;
+  the waterfall's scale leaves room above the bars.
+
 ## Word rules read as sentences (Grades 3–5)
 
 - A fraction in a word rule read "First numerator/First denominator", and names kept their

@@ -5,6 +5,27 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Science Grades 4–5: one lesson-reviewer and one page-reviewer, 39 pages
+
+- Cost: lesson-reviewer 136k tokens (39 tool calls, 7 min); page-reviewer 95k (60 calls,
+  11 min). About 231k tokens for 39 pages, 6k per page. The reviewer had planned these pages
+  first (66k), so the review checked the build against its own plan.
+- Missed: nothing found afterwards. Over-reported: an apple-sized newton note and an optional
+  summer-time noon line (both small).
+- Right calls the checks didn't ask for: `apart` on directional differences (found at the
+  range edges); a fizz and a salt range past what chemistry allows; a sequence with two right
+  orders; a card that fits three bins; a sort whose `why` lines give the answer; a Grade 5
+  standard (5-ESS3-1) with no skill. Page side: dark-mode colour order on the Earth figure,
+  particles on a line, a letter inside an SVG on a Grade 5 page.
+- Changes made:
+  - Six pages the reviewer asked for, and `s.5.protect-resources` in the taxonomy with a sort.
+  - `page-reviewer`: shoot every explore scene in light and dark; a figure with day and night
+    halves keeps night darker in both modes.
+  - `lesson-reviewer`: check a build against its plan field by field; a directional difference
+    uses `minus`; a sequence must have one right order and a card one right bin.
+- Not done, recorded: a food-web figure for removing one species; a plan-versus-build report
+  in the evidence; one grouped line for the harness's range-limit notes.
+
 ## Grade 5 math: one lesson-reviewer and one page-reviewer, 18 pages
 
 - Cost: both reviewers were cut off by the session's rate limit before writing their

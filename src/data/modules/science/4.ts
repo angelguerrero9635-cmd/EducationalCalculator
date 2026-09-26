@@ -6,7 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
-import { FAHRENHEIT, apart, times, whole } from '../helpers';
+import { FAHRENHEIT, minus, times, whole } from '../helpers';
 import type { ModuleDef } from '../types';
 
 const F = FAHRENHEIT;
@@ -37,30 +37,31 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
           ...track.steps,
           v: {
             expr: '{L} ÷ {t}',
-            how: 'Share the track length over the seconds: how far the ball went each second.',
+            how: 'Divide the track length by the seconds: the distance the ball rolls each second.',
           },
-          t: { expr: '{L} ÷ {v}', how: 'How many seconds of that distance make the track.' },
+          t: { expr: '{L} ÷ {v}', how: 'Divide the track length by the distance each second.' },
           L: {
             expr: '{v} × {t}',
-            how: 'That distance every second, for that many seconds.',
+            how: 'Multiply the distance each second by the seconds.',
           },
         },
       },
       example: { L: 200, t: 4, v: 50 },
       startWith: ['L', 't'],
+      unitSystems: ['metric'],
       representation: { kind: 'skipCount', step: 'v', count: 't', total: 'L' },
     } satisfies ModuleDef;
   })(),
   // ── Energy conversion: a solar oven (4-PS3-2, 4-PS3-4) ──
   (() => {
-    const rise = apart(
-      'r',
-      'e',
-      's',
-      ['temperature after 30 minutes', 'temperature at the start'],
-      ['warmer', 'cooler'],
-      'Take the start temperature away from the temperature after 30 minutes.',
-      false,
+    const rise = minus(
+      'r = e − s',
+      ['r', 'e', 's'],
+      [
+        'Take the start temperature away from the temperature after 30 minutes.',
+        'Add the rise to the start temperature.',
+        'Take the rise away from the temperature after 30 minutes.',
+      ],
     );
     return {
       id: 's.4.energy-conversion~solar-oven',
@@ -102,6 +103,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
         'A wave is a repeating pattern: crest, trough, crest.',
         'Wavelength is the distance from one crest to the next.',
         'Shake the rope faster: more waves fit along it, and each one is shorter.',
+        'A cork on a wave bobs up and down. The wave moves on; the cork stays.',
       ],
       variables: [
         { ...whole('R', 'R', 'Rope length', 10, 600), unit: 'cm' },
@@ -114,15 +116,16 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
           ...rope.steps,
           w: {
             expr: '{R} ÷ {n}',
-            how: 'Share the rope length over the waves: the length of one wave.',
+            how: 'Divide the rope length by the waves: the length of one wave.',
           },
-          n: { expr: '{R} ÷ {w}', how: 'How many wavelengths fit along the rope.' },
-          R: { expr: '{n} × {w}', how: 'That many waves, each one wavelength long.' },
+          n: { expr: '{R} ÷ {w}', how: 'Divide the rope length by the wavelength.' },
+          R: { expr: '{n} × {w}', how: 'Multiply the waves by the length of each one.' },
         },
       },
       example: { R: 200, n: 4, w: 50 },
       startWith: ['R', 'n'],
-      representation: { kind: 'wave', wavelength: 'w', extent: 4 },
+      unitSystems: ['metric'],
+      representation: { kind: 'wave', wavelength: 'w', extent: 'n' },
     } satisfies ModuleDef;
   })(),
   {
@@ -163,58 +166,58 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
     },
     example: { h: 12, a: 6, w: 40 },
     startWith: ['h', 'w'],
+    unitSystems: ['metric'],
+    pictureLabels: ['h'],
     representation: { kind: 'wave', amplitude: 'a', wavelength: 'w', extent: 2 },
   },
   // ── Internal structures: the pulse (4-LS1-1) ──
-  (() => {
-    const minute = times(
-      'm = b × q',
-      ['b', 'q', 'm'],
-      ['beats in 15 seconds', 'quarters of a minute', 'beats in a minute'],
-    );
-    return {
-      id: 's.4.internal-structures~pulse',
-      title: 'Beats per minute from a 15-second count',
-      use: 'Use this to find beats per minute from a 15-second pulse count.',
-      assumptions: [
-        'The heart pumps blood to every part. Each pump is a beat you can feel at the wrist.',
-        'A minute has four 15-second parts. Count for 15 seconds, then multiply by 4.',
-        'The heart beats faster after running.',
-      ],
-      variables: [
-        whole('b', 'b', 'Beats in 15 seconds', 5, 50),
-        { ...whole('q', 'q', 'Quarters of a minute', 4, 4), allowed: [4] },
-        whole('m', 'm', 'Beats in a minute', 20, 200),
-      ],
-      relations: [minute.relation],
-      steps: {
-        'm = b × q': {
-          ...minute.steps,
-          m: { expr: '{b} × {q}', how: 'Four 15-second counts make a minute: multiply by 4.' },
-          b: { expr: '{m} ÷ {q}', how: 'A quarter of the beats in a minute.' },
-          q: { expr: '{m} ÷ {b}', how: 'How many 15-second counts fit in a minute.' },
-        },
+  {
+    id: 's.4.internal-structures~pulse',
+    title: 'Beats per minute from a 15-second count',
+    use: 'Use this to find beats per minute from a 15-second pulse count.',
+    assumptions: [
+      'The heart pumps blood to every part. Each pump is a beat you can feel at the wrist.',
+      'A minute has four 15-second parts. Count for 15 seconds, then multiply by 4.',
+      'The heart beats faster after running.',
+    ],
+    variables: [
+      whole('b', 'b', 'Beats in 15 seconds', 12, 50),
+      { ...whole('m', 'm', 'Beats in a minute', 48, 200), multipleOf: 4, step: 4 },
+    ],
+    relations: [
+      {
+        id: 'm = b × 4',
+        display: '{b} × 4 = {m}',
+        vars: ['m', 'b'],
+        residual: (v: Values) => v.m! - 4 * v.b!,
+        solve: { m: (v: Values) => 4 * v.b!, b: (v: Values) => v.m! / 4 },
       },
-      example: { b: 18, q: 4, m: 72 },
-      startWith: ['b', 'q'],
-      representation: { kind: 'skipCount', step: 'b', count: 'q', total: 'm' },
-    } satisfies ModuleDef;
-  })(),
+    ],
+    steps: {
+      'm = b × 4': {
+        m: { expr: '{b} × 4', how: 'Four 15-second counts make a minute: multiply by 4.' },
+        b: { expr: '{m} ÷ 4', how: 'A quarter of the beats in a minute: divide by 4.' },
+      },
+    },
+    example: { b: 18, m: 72 },
+    startWith: ['b'],
+    representation: { kind: 'skipCount', step: 'b', count: 4, total: 'm' },
+  },
   // ── Weathering: the shake test (4-ESS2-1) ──
   (() => {
-    const worn = apart(
-      'w',
-      'b',
-      'a',
-      ['mass before shaking', 'mass after shaking'],
-      ['heavier', 'lighter'],
-      'Take the mass after shaking away from the mass before.',
-      false,
+    const worn = minus(
+      'w = b − a',
+      ['w', 'b', 'a'],
+      [
+        'Take the mass after shaking away from the mass before.',
+        'Add the mass worn away to the mass after.',
+        'Take the mass worn away from the mass before.',
+      ],
     );
     return {
       id: 's.4.weathering',
       assumptions: [
-        'Weathering breaks rock into smaller pieces. Shaking rocks in a jar copies it fast.',
+        'Weathering breaks rock into smaller pieces. Shaking rocks in a jar is a fast model of it.',
         'Weigh the rocks before and after. The pieces knocked off are the mass lost.',
         'Erosion moves the pieces away: water, ice, wind and roots.',
       ],

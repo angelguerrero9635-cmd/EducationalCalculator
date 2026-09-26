@@ -94,8 +94,11 @@ const styles = StyleSheet.create({
     gap: space.md,
     height: CHART_HEIGHT,
   },
+  // Columns share the row (at most 56 wide), so 6 or more still fit a phone and line up
+  // with their labels.
   column: {
-    width: 56,
+    flex: 1,
+    maxWidth: 56,
     height: CHART_HEIGHT,
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -105,7 +108,7 @@ const styles = StyleSheet.create({
   value: { fontSize: font.caption + 1, fontWeight: '700', fontVariant: ['tabular-nums'] },
   bar: { width: 36, borderWidth: chart.strokeLight, borderRadius: 3 },
   labels: { flexDirection: 'row', justifyContent: 'center', gap: space.md },
-  label: { width: 56, textAlign: 'center', fontSize: font.caption + 1 },
+  label: { flex: 1, maxWidth: 56, textAlign: 'center', fontSize: font.caption + 1 },
   table: { borderWidth: StyleSheet.hairlineWidth, borderRadius: radius.sm, overflow: 'hidden' },
   row: { flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth },
   cellHead: {

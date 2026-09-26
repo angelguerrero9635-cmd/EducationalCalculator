@@ -13,7 +13,7 @@ independent AI review), and the next section starts only after the owner approve
 | 3   | Math 6–8                                                                                            | 30      |                            |
 | 4   | Math 9–10                                                                                           | 21      |                            |
 | 5   | Math 11–12                                                                                          | 22      |                            |
-| 6   | Science K–5                                                                                         | 39      | K–3 reviewed; 4–5 built    |
+| 6   | Science K–5                                                                                         | 39      | K–5 built, reviewed        |
 | 7   | Science 6–8                                                                                         | 21      |                            |
 | 8   | Science 9–12                                                                                        | 34      |                            |
 | 9   | College Math                                                                                        | 25      |                            |
@@ -34,7 +34,8 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 ## Section notes
 
 - **Section 6, Science Grades 4–5.** Built from the lesson reviewer's plan
-  (`.review/science-4-5-plan.md`), not yet reviewed. 16 skill pages plus 23 problem types.
+  (`.review/science-4-5-plan.md`) and reviewed once. 17 skill pages (5-ESS3-1 was added to the
+  taxonomy in review) plus 29 problem types.
   Calculators where the class measures something honest: a ball timed over a track, a solar
   oven's temperature rise, rope length and waves for wavelength, crest-to-trough for
   amplitude, a 15-second pulse count, rocks weighed before and after shaking, mass kept when

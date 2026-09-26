@@ -48,6 +48,10 @@ const light = {
   /** Highlighted data (solid counters, shaded squares, the selected table row). */
   chartHighlight: '#4F46E5',
   onChartHighlight: '#FFFFFF',
+  /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
+  chartDay: '#E4E7F0',
+  /** The night half of a globe or moon. */
+  chartNight: '#8A8E99',
 };
 
 export type Palette = typeof light;
@@ -76,6 +80,8 @@ const dark: Palette = {
   chartGrid: '#343947',
   chartHighlight: '#8B83FF',
   onChartHighlight: '#0D0F14',
+  chartDay: '#4A5068',
+  chartNight: '#0B0C10',
 };
 
 /**

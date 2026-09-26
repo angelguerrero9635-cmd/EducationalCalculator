@@ -23,7 +23,9 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // A number keeps the jump size fixed (1 meter = 100 cm).
   const stepVar = typeof spec.step === 'string' ? spec.step : undefined;
   const s = Math.max(1, Math.round(stepVar ? rep.shown(stepVar) : (spec.step as number)));
-  const k = Math.max(0, Math.round(rep.shown(spec.count)));
+  // A number keeps the count fixed too (4 quarters in a minute): nothing to drag or type.
+  const countVar = typeof spec.count === 'string' ? spec.count : undefined;
+  const k = Math.max(0, Math.round(countVar ? rep.shown(countVar) : (spec.count as number)));
   const from = spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : 0;
   // Room for 10 jumps, so the 11 labeled ticks fall where the jumps land (0, 4, 8, … for 4s).
   const fit = useFrozen(k <= 10 ? s * 10 : niceCeil(s * k));
@@ -98,26 +100,28 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                 ))}
               </Svg>
-              <DragHandle
-                testID="drag-end"
-                x={px(from + dir * k * s)}
-                y={y}
-                label={rep.variable(spec.count).name}
-                onStart={() => {
-                  start.current = k;
-                  fit.freeze();
-                }}
-                onEnd={fit.release}
-                onMove={(dx) =>
-                  calc.set({
-                    ...rep.pin(stepVar ? [stepVar] : []),
-                    [spec.count]: rep.snapTo(
-                      spec.count,
-                      start.current + (dir * dx) / (px(s) - px(0)),
-                    ),
-                  })
-                }
-              />
+              {countVar ? (
+                <DragHandle
+                  testID="drag-end"
+                  x={px(from + dir * k * s)}
+                  y={y}
+                  label={rep.variable(countVar).name}
+                  onStart={() => {
+                    start.current = k;
+                    fit.freeze();
+                  }}
+                  onEnd={fit.release}
+                  onMove={(dx) =>
+                    calc.set({
+                      ...rep.pin(stepVar ? [stepVar] : []),
+                      [countVar]: rep.snapTo(
+                        countVar,
+                        start.current + (dir * dx) / (px(s) - px(0)),
+                      ),
+                    })
+                  }
+                />
+              ) : null}
             </>
           );
         }}
@@ -133,7 +137,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {[
           ...(spec.start ? [spec.start] : []),
           ...(stepVar ? [stepVar] : []),
-          spec.count,
+          ...(countVar ? [countVar] : []),
           spec.total,
         ]
           .map((id) => `${rep.named(id)}.`)
@@ -147,7 +151,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {
                   var: spec.start,
                   steps: [1, 10, 100],
-                  pin: [...(stepVar ? [stepVar] : []), spec.count],
+                  pin: [...(stepVar ? [stepVar] : []), ...(countVar ? [countVar] : [])],
                 },
               ]
             : []),
@@ -159,15 +163,19 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   steps: rep.variable(stepVar).multipleOf
                     ? [rep.variable(stepVar).multipleOf!]
                     : [1, 5],
-                  pin: [spec.count, ...(spec.start ? [spec.start] : [])],
+                  pin: [...(countVar ? [countVar] : []), ...(spec.start ? [spec.start] : [])],
                 },
               ]
             : []),
-          {
-            var: spec.count,
-            steps: [1],
-            pin: [...(stepVar ? [stepVar] : []), ...(spec.start ? [spec.start] : [])],
-          },
+          ...(countVar
+            ? [
+                {
+                  var: countVar,
+                  steps: [1],
+                  pin: [...(stepVar ? [stepVar] : []), ...(spec.start ? [spec.start] : [])],
+                },
+              ]
+            : []),
         ]}
       />
     </View>

@@ -4,80 +4,38 @@
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  * The sort, sequence, explore and observe pages of the grade are in `../layouts/science.ts`.
  */
+import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 
-import { apart, sumAll, times, whole } from '../helpers';
+import { minus, sumAll, times, whole } from '../helpers';
 import type { ModuleDef } from '../types';
 
-/** A plain difference: `out` = `big` − `small`, with one sentence for each way round. */
-const minus = (
-  id: string,
-  [out, big, small]: [string, string, string],
-  [outHow, bigHow, smallHow]: [string, string, string],
-) => ({
-  relation: {
-    id,
-    display: `{${big}} − {${small}} = {${out}}`,
-    vars: [out, big, small],
-    residual: (v: Values) => v[out]! - v[big]! + v[small]!,
-    solve: {
-      [out]: (v: Values) => v[big]! - v[small]!,
-      [big]: (v: Values) => v[out]! + v[small]!,
-      [small]: (v: Values) => v[big]! - v[out]!,
-    },
-  },
-  steps: {
-    [out]: { expr: `{${big}} − {${small}}`, how: outHow },
-    [big]: { expr: `{${out}} + {${small}}`, how: bigHow },
-    [small]: { expr: `{${big}} − {${out}}`, how: smallHow },
-  },
-});
+const fmt = (x: number) => formatNumber(x);
 
 export const SCIENCE_5_MODULES: ModuleDef[] = [
   // ── Conservation of mass (5-PS1-2) ──
   (() => {
-    const before = sumAll('B = w + s + c', ['w', 's', 'c'], 'B', 'masses on the scale');
+    const total = sumAll('B = w + s + c', ['w', 's', 'c'], 'B', 'masses on the scale');
     return {
       id: 's.5.conservation-mass',
       assumptions: [
-        'Weigh the cup, the water and the salt together before stirring.',
-        'Stir until the salt disappears, then weigh again on the same scale.',
-        'Dissolving hides the salt but does not remove it: the total mass stays the same.',
+        'Weigh the cup, the water and the salt together, then stir until the salt disappears.',
+        'The scale reads the same after stirring. Dissolving hides the salt but does not remove it.',
+        'Melting, freezing or heating in a closed container also keeps the total mass the same.',
       ],
       variables: [
-        { ...whole('w', 'w', 'Water', 50, 500), unit: 'g' },
-        { ...whole('s', 's', 'Salt', 1, 100), unit: 'g' },
+        { ...whole('w', 'w', 'Water', 100, 500), unit: 'g' },
+        { ...whole('s', 's', 'Salt', 1, 30), unit: 'g' },
         { ...whole('c', 'c', 'Cup', 5, 100), unit: 'g' },
-        { ...whole('B', 'B', 'Total before stirring', 56, 700), unit: 'g' },
-        { ...whole('A', 'A', 'Total after stirring', 56, 700), unit: 'g' },
+        { ...whole('B', 'B', 'Total on the scale', 106, 630), unit: 'g' },
       ],
-      relations: [
-        before.relation,
-        {
-          id: 'A = B',
-          display: '{A} = {B}',
-          vars: ['A', 'B'],
-          residual: (v: Values) => v.A! - v.B!,
-          solve: { A: (v: Values) => v.B!, B: (v: Values) => v.A! },
-        },
-      ],
-      steps: {
-        'B = w + s + c': before.steps,
-        'A = B': {
-          A: {
-            expr: '{B}',
-            how: 'Nothing was added or taken away, so the scale reads the same after stirring.',
-          },
-          B: {
-            expr: '{A}',
-            how: 'The total mass did not change, so it was the same before stirring.',
-          },
-        },
-      },
-      example: { w: 200, s: 20, c: 30, B: 250, A: 250 },
+      relations: [total.relation],
+      steps: { 'B = w + s + c': total.steps },
+      example: { w: 200, s: 20, c: 30, B: 250 },
       startWith: ['w', 's', 'c'],
       unitSystems: ['metric'],
-      representation: { kind: 'scale', items: ['w', 's', 'c'], total: 'A', max: 800 },
+      pictureLabels: ['B'],
+      representation: { kind: 'scale', items: ['w', 's', 'c'], total: 'B', max: 800 },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -101,18 +59,19 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
         'In a sealed bag the gas stays, and the mass does not change.',
       ],
       variables: [
-        { ...whole('d', 'd', 'Baking soda', 1, 50), unit: 'g' },
+        { ...whole('d', 'd', 'Baking soda', 1, 20), unit: 'g' },
         { ...whole('v', 'v', 'Vinegar', 20, 300), unit: 'g' },
         { ...whole('c', 'c', 'Cup', 5, 100), unit: 'g' },
-        { ...whole('B', 'B', 'Total before', 26, 450), unit: 'g', derived: true },
+        { ...whole('B', 'B', 'Total before', 26, 420), unit: 'g', derived: true },
         { ...whole('A', 'A', 'Total after', 1, 450), unit: 'g' },
-        { ...whole('g', 'g', 'Gas that escaped', 0, 50), unit: 'g' },
+        { ...whole('g', 'g', 'Gas that escaped', 0, 10), unit: 'g' },
       ],
       relations: [before.relation, gas.relation],
       steps: { 'B = d + v + c': before.steps, 'g = B − A': gas.steps },
       example: { d: 10, v: 100, c: 30, B: 140, A: 137, g: 3 },
       startWith: ['d', 'v', 'c', 'A'],
       unitSystems: ['metric'],
+      pictureLabels: ['B'],
       representation: {
         kind: 'waterfall',
         items: [
@@ -139,7 +98,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       assumptions: [
         'Gravity pulls every washer down. A spring scale measures the pull in newtons (N).',
         'Each washer is pulled the same. More washers, more pull.',
-        'Washers to 20, the pull on one washer from 0.1 to 2 newtons.',
+        'One newton is about the pull of gravity on a small apple.',
       ],
       variables: [
         whole('n', 'n', 'Washers', 1, 20),
@@ -165,9 +124,31 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       relations: [stack.relation],
       steps: {
         'p = n × e': {
-          p: { expr: '{n} × {e}', how: 'The same pull for every washer: multiply by the washers.' },
-          n: { expr: '{p} ÷ {e}', how: 'How many single pulls make the pull on the stack.' },
-          e: { expr: '{p} ÷ {n}', how: 'Share the pull on the stack over the washers.' },
+          p: {
+            expr: '{n} × {e}',
+            how: 'The same pull for every washer: multiply by the washers.',
+            work: (v: Values) => {
+              const tenths = Math.round(v.e! * 10);
+              return [
+                `${v.n} × ${tenths} tenths = ${v.n! * tenths} tenths`,
+                `${v.n! * tenths} tenths = ${fmt(v.p!)}`,
+              ];
+            },
+          },
+          n: { expr: '{p} ÷ {e}', how: 'Divide the pull on the stack by the pull on one washer.' },
+          e: {
+            expr: '{p} ÷ {n}',
+            how: 'Divide the pull on the stack by the number of washers.',
+            work: (v: Values) => {
+              const tenths = Math.round(v.p! * 10);
+              return Number.isInteger(tenths / v.n!)
+                ? [
+                    `${fmt(v.p!)} = ${tenths} tenths`,
+                    `${tenths} ÷ ${v.n} = ${tenths / v.n!} tenths = ${fmt(v.e!)}`,
+                  ]
+                : [];
+            },
+          },
         },
       },
       example: { n: 6, e: 0.5, p: 3 },
@@ -249,7 +230,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     assumptions: [
       'About 97 of every 100 liters of Earth’s water are salty ocean water.',
       'About 2 of every 3 liters of fresh water are frozen in ice at the poles and on mountains.',
-      'Pick 100, 1,000 or 10,000 liters to stand for all of Earth’s water.',
+      'Most liquid fresh water is under the ground. Lakes and rivers hold very little.',
     ],
     variables: [
       {
@@ -302,8 +283,24 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     ],
     steps: {
       's = w × 97 ÷ 100': {
-        s: { expr: '{w} × 97 ÷ 100', how: '97 of every 100 liters are salt water.' },
-        w: { expr: '{s} × 100 ÷ 97', how: 'Salt water is 97 of every 100 liters: undo that.' },
+        s: {
+          expr: '{w} × 97 ÷ 100',
+          how: 'Find how many hundreds, then take 97 for each hundred.',
+          work: (v: Values) => [
+            `${fmt(v.w!)} ÷ 100 = ${fmt(v.w! / 100)}`,
+            `${fmt(v.w! / 100)} × 97 = ${fmt(v.s!)}`,
+          ],
+          written: false,
+        },
+        w: {
+          expr: '{s} × 100 ÷ 97',
+          how: 'Salt water is 97 for each hundred: find how many hundreds.',
+          work: (v: Values) => [
+            `${fmt(v.s!)} ÷ 97 = ${fmt(v.s! / 97)} hundreds`,
+            `${fmt(v.s! / 97)} × 100 = ${fmt(v.w!)}`,
+          ],
+          written: false,
+        },
       },
       'f = w − s': {
         f: { expr: '{w} − {s}', how: 'The water that is not salty is fresh.' },
@@ -324,37 +321,41 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     startWith: ['w'],
     unitSystems: ['metric'],
     sliders: false,
+    pictureLabels: ['f'],
     representation: { kind: 'pieChart', parts: ['s', 'i', 'l'], total: 'w' },
   },
   // ── The sun as a star: two flashlights (5-ESS1-1) ──
   (() => {
-    const farther = apart(
-      'd',
-      'f',
-      'n',
-      ['farther flashlight', 'nearer flashlight'],
-      ['farther', 'nearer'],
-      'Take the nearer distance away from the farther one.',
-      false,
+    const far = times(
+      'f = n × k',
+      ['n', 'k', 'f'],
+      ['nearer flashlight', 'times as far', 'farther flashlight'],
     );
     return {
       id: 's.5.sun-star-brightness~two-flashlights',
       title: 'Two flashlights at different distances',
-      use: 'Use this to compare two of the same flashlight at different distances.',
+      use: 'Use this to compare two of the same flashlight when one is several times as far away.',
       assumptions: [
         'Two of the same flashlight give the same light.',
-        'The farther one looks dimmer only because it is farther away.',
+        'Twice as far, the lit circle is twice as wide, so the flashlight looks dimmer.',
         'Stars work the same way: the sun is a star that is very close to us.',
       ],
       variables: [
-        { ...whole('n', 'n', 'Nearer flashlight', 10, 500), unit: 'cm' },
-        { ...whole('f', 'f', 'Farther flashlight', 10, 500), unit: 'cm' },
-        { ...whole('d', 'd', 'How much farther', 0, 490), unit: 'cm' },
+        { ...whole('n', 'n', 'Nearer flashlight', 10, 100), unit: 'cm' },
+        whole('k', 'k', 'Times as far', 1, 10),
+        { ...whole('f', 'f', 'Farther flashlight', 10, 1000), unit: 'cm' },
       ],
-      relations: [farther.relation],
-      steps: { [farther.relation.id]: farther.steps },
-      example: { n: 50, f: 200, d: 150 },
-      startWith: ['n', 'f'],
+      relations: [far.relation],
+      steps: {
+        'f = n × k': {
+          f: { expr: '{n} × {k}', how: 'That many times the nearer distance.' },
+          k: { expr: '{f} ÷ {n}', how: 'Divide the farther distance by the nearer one.' },
+          n: { expr: '{f} ÷ {k}', how: 'Divide the farther distance by how many times as far.' },
+        },
+      },
+      example: { n: 50, k: 4, f: 200 },
+      startWith: ['n', 'k'],
+      unitSystems: ['metric'],
       representation: {
         kind: 'bars',
         bars: [{ var: 'n' }, { var: 'f' }],

@@ -490,3 +490,31 @@ export const cmpBars = difference('d', 'a', 'b', {
     'Soccer is shorter. Add the difference to soccer.',
   ],
 });
+
+/**
+ * A difference with a direction: `out` = `big` − `small` (after − before, before − after).
+ * Use it for a rise, a loss or how much farther; `apart` is for "how far apart", which has
+ * no direction.
+ */
+export const minus = (
+  id: string,
+  [out, big, small]: [string, string, string],
+  [outHow, bigHow, smallHow]: [string, string, string],
+) => ({
+  relation: {
+    id,
+    display: `{${big}} − {${small}} = {${out}}`,
+    vars: [out, big, small],
+    residual: (v: Values) => v[out]! - v[big]! + v[small]!,
+    solve: {
+      [out]: (v: Values) => v[big]! - v[small]!,
+      [big]: (v: Values) => v[out]! + v[small]!,
+      [small]: (v: Values) => v[big]! - v[out]!,
+    },
+  },
+  steps: {
+    [out]: { expr: `{${big}} − {${small}}`, how: outHow },
+    [big]: { expr: `{${out}} + {${small}}`, how: bigHow },
+    [small]: { expr: `{${big}} − {${out}}`, how: smallHow },
+  },
+});

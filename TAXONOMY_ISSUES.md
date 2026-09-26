@@ -118,3 +118,9 @@ and each strand's skills sit together within a grade.
     height, weight and capacity".
   - Faces of solids (2.G.1) is a problem type of `m.2.thirds-polygons`, now titled "Thirds, and
     naming shapes and solids by sides, angles and faces".
+
+### Science Grades 4–5 review
+
+- **Standard with no skill:** 5-ESS3-1 (communities use science ideas to protect Earth's
+  resources and environment) had no Grade 5 row. Added `s.5.protect-resources`, "Protecting
+  Earth's resources and environment", with `s.4.natural-resources` to refresh first.

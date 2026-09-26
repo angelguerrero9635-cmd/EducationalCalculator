@@ -1,9 +1,10 @@
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
+import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
-import { chart, usePalette, useTone } from '@/theme';
+import { chart, font, space, usePalette, useTone } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
@@ -53,6 +54,21 @@ function ToneWedge(props: { tone: number } & Omit<Parameters<typeof Wedge>[0], '
   return <Wedge {...props} fill={t.bg} />;
 }
 
+/** Minimum wedge (degrees) that holds its own label; thinner ones are named in the key. */
+const LABEL_MIN = 12;
+
+/** A key entry for a wedge too thin to label: its colour, name and value. */
+function KeyItem({ tone, text }: { tone: number; text: string }) {
+  const c = usePalette();
+  const t = useTone(tone);
+  return (
+    <View style={styles.keyItem}>
+      <View style={[styles.swatch, { backgroundColor: t.bg, borderColor: c.chartInk }]} />
+      <Text style={[styles.keyText, { color: c.text }]}>{text}</Text>
+    </View>
+  );
+}
+
 /**
  * A pie chart: each part is a wedge sized by its share of the whole (percents, or counts
  * with a total). The sliders change the parts.
@@ -98,7 +114,7 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 ) : null,
               )}
               {wedges.map(({ a0, a1, i }) => {
-                if (a1 - a0 < 12) return null;
+                if (a1 - a0 < LABEL_MIN) return null;
                 const mid = ((a0 + a1) / 2 - 90) * (Math.PI / 180);
                 const rr = r * 0.62;
                 return (
@@ -118,6 +134,18 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
+      {/* Wedges too thin to hold a label are named here, with their colour. */}
+      <View style={styles.key}>
+        {parts.map((v, i) =>
+          v > 0 && (v / whole) * 360 < LABEL_MIN ? (
+            <KeyItem
+              key={i}
+              tone={i}
+              text={`${rep.variable(spec.parts[i]!).name}: ${formatNumber(v)}${unit}`}
+            />
+          ) : null,
+        )}
+      </View>
       <Caption>
         {known
           ? spec.total
@@ -136,3 +164,16 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  key: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    columnGap: space.md,
+    rowGap: space.xs,
+  },
+  keyItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  swatch: { width: 12, height: 12, borderRadius: 2, borderWidth: StyleSheet.hairlineWidth },
+  keyText: { fontSize: font.caption + 1, fontWeight: '600' },
+});

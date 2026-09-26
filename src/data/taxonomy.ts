@@ -312,6 +312,7 @@ const SCIENCE: Record<Grade, Row[]> = {
     ["earth-spheres", "Earth systems: geosphere, hydrosphere, atmosphere, biosphere", ESS, ["s.2.water-on-earth"]],
     ["sun-star-brightness", "The sun as a star; brightness and distance", ESS, ["s.1.sky-patterns"]],
     ["shadows-day-night", "Shadows, day and night, and seasonal star patterns", ESS, ["s.1.sky-patterns"]],
+    ["protect-resources", "Protecting Earth's resources and environment", ESS, ["s.4.natural-resources"]],
   ],
   "6": [
     ["cells", "Cells as the basic unit of life", LS, ["s.4.internal-structures"]],

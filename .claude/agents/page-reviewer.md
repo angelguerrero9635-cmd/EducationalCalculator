@@ -103,3 +103,5 @@ and files changed.
 A dimmed slider (aria-disabled) is one the other values hold to a single value: not a finding.
 
 K–5 pages show no letters standing for numbers (inputs, pictures, formula box, steps): a symbol on a Grade 3–5 page is a finding.
+
+For explore pages, look at every scene in light and dark, not just the first. In a figure with day and night halves, night stays darker than day in both modes.

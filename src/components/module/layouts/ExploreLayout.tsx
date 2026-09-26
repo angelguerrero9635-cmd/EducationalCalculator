@@ -16,40 +16,63 @@ export function ExploreLayout({ spec }: { spec: Spec }) {
   const c = usePalette();
   const [index, setIndex] = useState(0);
   const scene = spec.scenes[index]!;
+  const partsOnly =
+    spec.figure.kind === 'parts' && spec.scenes.every((sc) => sc.part !== undefined);
   return (
     <View style={styles.wrap}>
-      <FigureView figure={spec.figure} scene={scene} c={c} />
+      <FigureView
+        figure={spec.figure}
+        scene={scene}
+        c={c}
+        onPart={(name) => {
+          const i = spec.scenes.findIndex((s) => s.part === name);
+          if (i >= 0) setIndex(i);
+        }}
+      />
       <Caption>{scene.lines.join(' ')}</Caption>
-      <View style={styles.scenes}>
-        {spec.scenes.map((s, i) => (
-          <Pressable
-            key={s.label}
-            testID={`scene-${i}`}
-            accessibilityRole="button"
-            accessibilityState={{ selected: i === index }}
-            onPress={() => setIndex(i)}
-            style={[
-              styles.scene,
-              {
-                borderColor: i === index ? c.accent : c.border,
-                backgroundColor: i === index ? c.accent : c.card,
-              },
-            ]}
-          >
-            <Text style={[styles.sceneText, { color: i === index ? c.onAccent : c.text }]}>
-              {s.label}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
+      {/* A parts figure whose scenes are its parts is picked by tapping a part: no chips. */}
+      {partsOnly ? null : (
+        <View style={styles.scenes}>
+          {spec.scenes.map((s, i) => (
+            <Pressable
+              key={s.label}
+              testID={`scene-${i}`}
+              accessibilityRole="button"
+              accessibilityState={{ selected: i === index }}
+              onPress={() => setIndex(i)}
+              style={[
+                styles.scene,
+                {
+                  borderColor: i === index ? c.accent : c.border,
+                  backgroundColor: i === index ? c.accent : c.card,
+                },
+              ]}
+            >
+              <Text style={[styles.sceneText, { color: i === index ? c.onAccent : c.text }]}>
+                {s.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
     </View>
   );
 }
 
-function FigureView({ figure, scene, c }: { figure: Figure; scene: Scene; c: Palette }) {
+function FigureView({
+  figure,
+  scene,
+  c,
+  onPart,
+}: {
+  figure: Figure;
+  scene: Scene;
+  c: Palette;
+  onPart: (name: string) => void;
+}) {
   switch (figure.kind) {
     case 'parts':
-      return <Parts parts={figure.parts} highlight={scene.part} c={c} />;
+      return <Parts parts={figure.parts} highlight={scene.part} c={c} onPart={onPart} />;
     case 'position':
       return <Position where={scene.position ?? 'above'} c={c} />;
     case 'clock':
@@ -248,6 +271,20 @@ const JITTER = [
   0.3, -0.4, 0.1, 0.45, -0.2, 0.35, -0.45, 0.05, 0.25, -0.3, 0.4, -0.1, 0.15, -0.35, 0.2, -0.25,
 ];
 
+/** Where the ten gas particles sit, as fractions of the box (scattered, no row or line). */
+const GAS_SPOTS: readonly (readonly [number, number])[] = [
+  [0.08, 0.15],
+  [0.55, 0.05],
+  [0.9, 0.3],
+  [0.3, 0.4],
+  [0.7, 0.55],
+  [0.12, 0.7],
+  [0.45, 0.8],
+  [0.95, 0.85],
+  [0.25, 0.98],
+  [0.62, 0.28],
+];
+
 /** Particles in a box: packed rows for a solid, a crowd for a liquid, a few far apart for a gas. */
 function Particles({ state, c }: { state: NonNullable<Scene['particles']>; c: Palette }) {
   return (
@@ -287,19 +324,15 @@ function Particles({ state, c }: { state: NonNullable<Scene['particles']>; c: Pa
             }
           }
         } else {
-          const n = 10;
-          for (let k = 0; k < n; k++) {
+          // Fixed spots spread over the whole box (fractions of its inside), so a gas never
+          // lines up in a row.
+          GAS_SPOTS.forEach(([fx, fy], k) => {
             dots.push({
-              x: x0 + r + 4 + ((boxW - 2 * r - 8) * ((k * 7) % n)) / (n - 1) + JITTER[k]! * 8,
-              y:
-                y0 +
-                r +
-                4 +
-                ((boxH - 2 * r - 8) * ((k * 3) % n)) / (n - 1) +
-                JITTER[(k + 8) % 16]! * 8,
+              x: x0 + r + 4 + (boxW - 2 * r - 8) * fx,
+              y: y0 + r + 14 + (boxH - 2 * r - 18) * fy,
               other: state.mixed ? k % 3 === 0 : false,
             });
-          }
+          });
         }
         return (
           <Svg width={w} height={h}>
@@ -385,7 +418,7 @@ function Earth({ earth, c }: { earth: NonNullable<Scene['earth']>; c: Palette })
         const ballDist = earth.thrown ? 56 : 32;
         const ball = { x: px + ox * ballDist + tx * 20, y: py + oy * ballDist + ty * 20 };
         // A turning arrow over the top of the globe, pointing the way Earth turns.
-        const ar = R + 22;
+        const ar = R + 34;
         const a0 = -Math.PI / 2 + 0.55;
         const a1 = -Math.PI / 2 - 0.55;
         const end = { x: cx + ar * Math.cos(a1), y: cy + ar * Math.sin(a1) };
@@ -410,16 +443,38 @@ function Earth({ earth, c }: { earth: NonNullable<Scene['earth']>; c: Palette })
               cx={cx}
               cy={cy}
               r={R}
-              fill={c.chartFill}
+              fill={earth.sunlit ? c.chartDay : c.chartFill}
               stroke={c.chartInk}
               strokeWidth={chart.stroke}
             />
             {earth.sunlit ? (
-              <Path
-                d={`M ${cx} ${cy - R} A ${R} ${R} 0 0 1 ${cx} ${cy + R} Z`}
-                fill={c.chartInk}
-                opacity={0.45}
-              />
+              <G>
+                {/* The night half: darker than the day half in light and dark mode. */}
+                <Path
+                  d={`M ${cx} ${cy - R} A ${R} ${R} 0 0 1 ${cx} ${cy + R} Z`}
+                  fill={c.chartNight}
+                  stroke={c.chartInk}
+                  strokeWidth={chart.strokeLight}
+                />
+                <ChartText
+                  x={cx - R / 2}
+                  y={cy - R / 2}
+                  fontSize={chart.tiny}
+                  fill={c.chartInk}
+                  textAnchor="middle"
+                >
+                  day
+                </ChartText>
+                <ChartText
+                  x={cx + R / 2}
+                  y={cy - R / 2}
+                  fontSize={chart.tiny}
+                  fill={c.chartInk}
+                  textAnchor="middle"
+                >
+                  night
+                </ChartText>
+              </G>
             ) : null}
             <Circle cx={cx} cy={cy} r={4} fill={c.chartInk} />
             <ChartText x={cx} y={cy + 18} fontSize={chart.tiny} textAnchor="middle">
@@ -450,13 +505,22 @@ function Earth({ earth, c }: { earth: NonNullable<Scene['earth']>; c: Palette })
                   strokeWidth={chart.stroke}
                   fill="none"
                 />
+                {/* Arrowhead: two barbs 30° either side of the way back along the arc. */}
                 <Path
-                  d={`M ${end.x} ${end.y} l 9 -6 M ${end.x} ${end.y} l 10 5`}
+                  d={[0.5, -0.5]
+                    .map((t) => {
+                      const bx = -Math.sin(a1);
+                      const by = Math.cos(a1);
+                      const dx = 10 * (bx * Math.cos(t) - by * Math.sin(t));
+                      const dy = 10 * (bx * Math.sin(t) + by * Math.cos(t));
+                      return `M ${end.x} ${end.y} l ${dx} ${dy}`;
+                    })
+                    .join(' ')}
                   stroke={c.chartMuted}
                   strokeWidth={chart.stroke}
                   fill="none"
                 />
-                <ChartText x={w - 8} y={18} fontSize={chart.tiny} textAnchor="end">
+                <ChartText x={end.x - 8} y={end.y - 8} fontSize={chart.tiny} textAnchor="end">
                   Earth turns this way
                 </ChartText>
               </G>
@@ -485,8 +549,8 @@ function Earth({ earth, c }: { earth: NonNullable<Scene['earth']>; c: Palette })
               {earth.sunlit
                 ? `${earth.sunlit[0]!.toUpperCase()}${earth.sunlit.slice(1)} at the marked town`
                 : earth.thrown
-                  ? 'thrown up: the pull is still toward the center'
-                  : 'the pull is toward the center: that is down'}
+                  ? 'Thrown up: the pull is still toward the center'
+                  : 'The pull is toward the center: that is down'}
             </ChartText>
           </Svg>
         );
@@ -500,19 +564,24 @@ function Parts({
   parts,
   highlight,
   c,
+  onPart,
 }: {
   parts: { name: string; job: string }[];
   highlight: string | undefined;
   c: Palette;
+  onPart: (name: string) => void;
 }) {
   return (
     <View style={styles.parts}>
       {parts.map((p) => {
         const on = p.name === highlight;
         return (
-          <View
+          <Pressable
             key={p.name}
             testID={`part-${p.name}`}
+            accessibilityRole="button"
+            accessibilityState={{ selected: on }}
+            onPress={() => onPart(p.name)}
             style={[
               styles.part,
               {
@@ -527,7 +596,7 @@ function Parts({
             <Text style={[styles.partJob, { color: on ? c.onChartHighlight : c.textMuted }]}>
               {p.job}
             </Text>
-          </View>
+          </Pressable>
         );
       })}
     </View>

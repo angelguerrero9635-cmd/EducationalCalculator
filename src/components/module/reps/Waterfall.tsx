@@ -39,7 +39,8 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Canvas aspect={0.65}>
         {({ w, h }) => {
           const top = 24;
-          const bottom = 28;
+          // K–5 pages name each bar under it (two short lines); later ones use the symbol.
+          const bottom = rep.words ? 40 : 28;
           const { min, max } = range.value;
           const scale = (h - top - bottom) / (max - min);
           const sy = (v: number) => top + (max - v) * scale;
@@ -67,6 +68,22 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
               opacity={faded ? 0.35 : 1}
             />
           );
+          // Under each bar: its symbol, or on K–5 pages its name on at most two lines.
+          const barName = (id: string, x: number, y: number, key: string) =>
+            (rep.words ? twoLines(rep.variable(id).name) : [rep.variable(id).symbol]).map(
+              (line, k) => (
+                <ChartText
+                  key={`${key}-${k}`}
+                  x={x}
+                  y={y + k * 13}
+                  fontSize={chart.small}
+                  fill={c.chartMuted}
+                  textAnchor="middle"
+                >
+                  {line}
+                </ChartText>
+              ),
+            );
           return (
             <>
               <Svg width={w} height={h}>
@@ -109,16 +126,7 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       ? `${s.sign > 0 ? '+' : '−'}${formatNumber(rep.shown(s.var))}`
                       : '?'}
                   </ChartText>,
-                  <ChartText
-                    key={`s${i}`}
-                    x={cx(i)}
-                    y={h - bottom + 18}
-                    fontSize={chart.small}
-                    fill={c.chartMuted}
-                    textAnchor="middle"
-                  >
-                    {rep.words ? '' : rep.variable(s.var).symbol}
-                  </ChartText>,
+                  ...barName(s.var, cx(i), h - bottom + 18, `s${i}`),
                 ])}
                 {bar(
                   'total',
@@ -137,15 +145,7 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 >
                   {rep.known(spec.total) ? formatNumber(total) : '?'}
                 </ChartText>
-                <ChartText
-                  x={cx(steps.length)}
-                  y={h - bottom + 18}
-                  fontSize={chart.small}
-                  fill={c.chartMuted}
-                  textAnchor="middle"
-                >
-                  {rep.variable(spec.total).symbol}
-                </ChartText>
+                {barName(spec.total, cx(steps.length), h - bottom + 18, 'total')}
               </Svg>
               {steps.map((s, i) =>
                 s.editable ? (
@@ -176,16 +176,14 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      {/* Symbol key, then the subtotals the lesson is about. */}
-      <Text style={[styles.caption, { color: c.textMuted }]}>
-        {[...spec.items.map((i) => i.var), spec.total]
-          .map((id) =>
-            rep.words
-              ? rep.variable(id).name
-              : `${rep.variable(id).symbol} ${rep.variable(id).name}`,
-          )
-          .join(' · ')}
-      </Text>
+      {/* Symbol key (K–5 bars carry their names), then the subtotals the lesson is about. */}
+      {rep.words ? null : (
+        <Text style={[styles.caption, { color: c.textMuted }]}>
+          {[...spec.items.map((i) => i.var), spec.total]
+            .map((id) => `${rep.variable(id).symbol} ${rep.variable(id).name}`)
+            .join(' · ')}
+        </Text>
+      )}
       {spec.caption ? (
         <Caption>
           {spec.caption.map((id) => `${rep.variable(id).name}: ${rep.label(id)}`).join('\n')}
@@ -193,6 +191,16 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
       ) : null}
     </>
   );
+}
+
+/** A name on one line if short, else split at the space nearest its middle. */
+function twoLines(name: string): string[] {
+  if (name.length <= 9 || !name.includes(' ')) return [name];
+  const spaces = [...name.matchAll(/ /g)].map((m) => m.index);
+  const cut = spaces.reduce((a, b) =>
+    Math.abs(b - name.length / 2) < Math.abs(a - name.length / 2) ? b : a,
+  );
+  return [name.slice(0, cut), name.slice(cut + 1)];
 }
 
 const styles = StyleSheet.create({

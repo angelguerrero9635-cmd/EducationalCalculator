@@ -77,6 +77,8 @@ describe('written work grids', () => {
   it('picks the layout by grade and by what the numbers need', () => {
     expect(autoWritten('2', '38 + 25')?.says).toBe('38 + 25 = 63');
     expect(autoWritten('2', '30 + 20')).toBeUndefined();
+    expect(autoWritten('5', '50 + 20 + 30')).toBeUndefined();
+    expect(autoWritten('5', '1,000 − 998')).toBeUndefined();
     expect(autoWritten('1', '38 + 25')).toBeUndefined();
     expect(autoWritten('4', '1,200 + 180 + 24')?.says).toBe('1200 + 180 + 24 = 1404');
     expect(autoWritten('2', '63 − 25')?.says).toBe('63 − 25 = 38');
