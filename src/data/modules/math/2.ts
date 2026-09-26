@@ -1639,6 +1639,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'T = P + L': {
         L: {
           work: (v) => countUp(v.P!, v.T!, '¢'),
+          written: false,
           expr: '{T} − {P}',
           how: 'Count up from the price to the money you have.',
           note: (v) => `(${dollars(v.L!)})`,
@@ -1781,6 +1782,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
           expr: '{P} − {H}',
           how: 'Count up from the money you have to the price.',
           work: (v: Values) => countUp(v.H!, v.P!, '¢'),
+          written: false,
           note: (v: Values) => `(${dollars(v.M!)})`,
         },
         H: {

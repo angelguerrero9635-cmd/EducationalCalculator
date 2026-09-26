@@ -100,6 +100,30 @@ value teaches something the input boxes can't and the picture has no handle or t
 models, partitions, rectilinear shapes, the pie chart and unit cubes). Everything else has the input boxes and the picture's own touch controls. A module
 can set `sliders: true | false` to override its kind; `docs/SLIDERS.md` lists every page.
 
+## Written work in the step-by-step
+
+The walkthrough shows the work a student at that grade writes, the way a teacher sets it out:
+
+- **K–2**: number sentences and counting lines ("Count on from 3: 4, 5, 6, 7"); from Grade 2,
+  a column sum or difference with the carries and regrouped digits marked, beside the jumps
+  the number line shows.
+- **Grades 3–5**: the number sentence, then the rule, then the work on paper: column addition
+  and subtraction, partial products and the long-division bracket (Grade 4 on). Running totals
+  ("300 + 70 = 370") are left out when the columns show them; lines with words ("Tens: 40 + 30
+  = 70") stay as the thinking behind the columns.
+- **Grade 6 on and college**: the rule in letters, the rearrangement, the numbers put in, then
+  one line per stage of simplifying in the order of operations (`c = √(3² + 4²)`,
+  `c = √(9 + 16)`, `c = √25`), and the answer with its unit.
+
+The grids and chains come from the engine (`src/data/modules/written.ts`, `simplify.ts`), so a
+module only writes its `expr`, `how` and any `work` lines of its own. `autoWritten` picks a grid
+for a plain arithmetic line by grade and by whether a student would do it in their head (no grid
+for 30 + 20, 40 × 6 or 360 ÷ 4); a step can name its own grid (`written: (v) => longDivision(v.n,
+v.d)`) or refuse one (`written: false`, as on the change-making pages, where counting up coins
+is the lesson). The simplifying chain appears only where a step has no work lines or grid and
+its expression has two or more operations. The dump prints each grid boxed under its step, and
+the harness checks the equation a grid says against the step's answer.
+
 ## Units
 
 - Give each variable its formula unit (`unit`) from the registry in `src/engine/units.ts`, e.g.

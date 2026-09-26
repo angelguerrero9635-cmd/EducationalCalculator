@@ -407,11 +407,57 @@ it('builds readable steps (area example)', () => {
       heading: 'Find width (w)',
       lead: { sentence: '4 × ? = 12', formula: 'l × w = A' },
       lines: ['w = 12 ÷ 4', 'Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
+      writtenAfter: 1,
       answer: 'w = 3 cm',
     },
   ]);
   expect(w.given.map((q) => q.label)).toEqual(['Area (A): 12 cm²', 'Length (l): 4 cm']);
   expect(w.check).toEqual([{ formula: '4 × 3 = 12', ok: true }]);
+});
+
+describe('written work and simplifying, by grade', () => {
+  const byId = (id: string) => MODULES.find((m) => m.id === id)!;
+  const steps = (id: string, given: Record<string, number>) => {
+    const m = byId(id);
+    return buildSteps(
+      m,
+      solve(
+        m,
+        Object.entries(given).map(([k, value]) => ({ id: k, value })),
+      ),
+    ).steps;
+  };
+
+  it('Grade 2: the column sum sits under the substituted line, the jumps stay', () => {
+    const [s] = steps('m.2.add-sub-100-fluency', { a: 38, b: 25 });
+    expect(s!.written?.says).toBe('38 + 25 = 63');
+    expect(s!.lines).toEqual(['38 + 25', '38 + 20 = 58', '58 + 2 = 60', '60 + 3 = 63']);
+    expect(s!.writtenAfter).toBe(1);
+  });
+
+  it('Grade 4: the long-division bracket, partial products, and no running totals', () => {
+    const [q, m, r] = steps('m.4.long-division', { n: 743, d: 6 });
+    expect(q!.written?.says).toBe('743 ÷ 6 = 123 remainder 5');
+    expect(q!.written?.rows[0]!.map((c) => c.text)).toEqual(['', '', '1', '2', '3']);
+    expect(m!.written?.says).toBe('123 × 6 = 738');
+    expect(r!.written?.says).toBe('743 − 738 = 5');
+    const [n] = steps('m.4.multi-digit-multiply~three-digit', { a: 234, b: 6 }).slice(-1);
+    expect(n!.written?.says).toBe('1200 + 180 + 24 = 1404');
+    expect(n!.lines).toEqual(['n = 1,200 + 180 + 24']);
+  });
+
+  it('Grade 8 and college: one stage per line under the formula, no grids', () => {
+    const [c] = steps('m.8.pythagorean', { a: 3, b: 4 });
+    expect(c!.written).toBeUndefined();
+    expect(c!.lines).toEqual(['c = √(a² + b²)', 'c = √(3² + 4²)', 'c = √(9 + 16)', 'c = √25']);
+  });
+
+  it('a step with its own work lines is left alone; a module can refuse a grid', () => {
+    const [L] = steps('m.2.money~change', { T: 100, P: 65 });
+    expect(L!.written).toBeUndefined();
+    const [w] = steps('m.3.area', { A: 12, l: 4 });
+    expect(w!.lines.some((l) => l.startsWith('w = 3'))).toBe(false);
+  });
 });
 
 it('lists what is still missing', () => {

@@ -5,6 +5,7 @@ import { buildSteps } from '@/data/modules/buildSteps';
 import { font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from './useCalculator';
+import { WrittenWork } from './WrittenWork';
 
 /**
  * Live walkthrough of how the current values were found from the entered ones. The wording
@@ -81,7 +82,13 @@ export function StepByStep({ calc }: { calc: Calculator }) {
           ) : null}
           <Text style={[styles.body, { color: c.textMuted }]}>{s.how}</Text>
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
-            {s.lines.map((line, k) => (
+            {s.lines.slice(0, s.writtenAfter).map((line, k) => (
+              <Text key={k} style={[styles.math, { color: c.text }]}>
+                {line}
+              </Text>
+            ))}
+            {s.written ? <WrittenWork work={s.written} /> : null}
+            {s.lines.slice(s.writtenAfter).map((line, k) => (
               <Text key={k} style={[styles.math, { color: c.text }]}>
                 {line}
               </Text>

@@ -1,4 +1,5 @@
 import type { Relation, Values, VariableDef } from '@/engine/types';
+import type { Written } from './written';
 import type { UnitSystem } from '@/engine/units';
 
 /**
@@ -594,6 +595,12 @@ export interface StepText {
   work?: string[] | ((v: Values) => string[]);
   /** Added after the answer, e.g. "($1.68)" or "→ 3:30". */
   note?: (v: Values) => string;
+  /**
+   * The work set out on paper under this step (a column sum, a long-division bracket; see
+   * `written.ts`). Left out, a plain arithmetic line gets the grid a student at the grade
+   * would write (`autoWritten`) when the step has no `work` lines; `false` refuses one.
+   */
+  written?: false | ((v: Values) => Written | undefined);
 }
 
 export interface ModuleDef {

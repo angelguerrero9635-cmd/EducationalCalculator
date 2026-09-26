@@ -7,23 +7,24 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 
 ## Where things are
 
-| Path                                      | What                                                                                                                        |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `src/data/modules/math/<grade>.ts`        | Calculator modules for a math grade (`k`, `1`, `2`, …), main page then its problem types                                    |
-| `src/data/modules/science/<grade>.ts`     | The same for science                                                                                                        |
-| `src/data/modules/layouts/`               | Sort, sequence, explore and observe pages (data only)                                                                       |
-| `src/data/modules/helpers.ts`, `work.ts`  | Shared relations and step text; worked arithmetic lines                                                                     |
-| `src/data/modules/shared/`                | Helpers two grade files share (add-sub, compare)                                                                            |
-| `src/data/modules/pilots.ts`              | Pilot modules for grades not built yet; move each to its grade file                                                         |
-| `src/data/modules/gallery.ts`, `/gallery` | Demo modules for picture kinds no lesson uses yet                                                                           |
-| `src/data/modules/harness/`               | The sampling harness: `evaluate.ts` (PHRASES the step text uses), `pictures.ts` (checks per picture kind), `search.ts`      |
-| `src/components/module/reps/`             | One component per picture kind; register new kinds in `reps/index.tsx`, `meta.ts`, `modules.test.ts`, `harness/pictures.ts` |
-| `src/components/module/sliderPolicy.ts`   | Which picture kinds show sliders (a module can set `sliders`)                                                               |
-| `src/engine/`                             | Solver, calculator state, units, formatting                                                                                 |
-| `docs/MODULE_GUIDE.md`                    | Content standards, picture catalog, layouts, the review process                                                             |
-| `docs/MODULE_PLAN.md`                     | Sections and what is built                                                                                                  |
-| `docs/ENGINE_LOG.md`, `REVIEW_LOG.md`     | What each review taught the engine and the reviewers                                                                        |
-| `.claude/agents/`                         | `lesson-reviewer` and `page-reviewer`                                                                                       |
+| Path                                         | What                                                                                                                        |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `src/data/modules/math/<grade>.ts`           | Calculator modules for a math grade (`k`, `1`, `2`, …), main page then its problem types                                    |
+| `src/data/modules/science/<grade>.ts`        | The same for science                                                                                                        |
+| `src/data/modules/layouts/`                  | Sort, sequence, explore and observe pages (data only)                                                                       |
+| `src/data/modules/helpers.ts`, `work.ts`     | Shared relations and step text; worked arithmetic lines                                                                     |
+| `src/data/modules/written.ts`, `simplify.ts` | Written work by grade (column sums, partial products, long division) and the one-stage-per-line simplifying                 |
+| `src/data/modules/shared/`                   | Helpers two grade files share (add-sub, compare)                                                                            |
+| `src/data/modules/pilots.ts`                 | Pilot modules for grades not built yet; move each to its grade file                                                         |
+| `src/data/modules/gallery.ts`, `/gallery`    | Demo modules for picture kinds no lesson uses yet                                                                           |
+| `src/data/modules/harness/`                  | The sampling harness: `evaluate.ts` (PHRASES the step text uses), `pictures.ts` (checks per picture kind), `search.ts`      |
+| `src/components/module/reps/`                | One component per picture kind; register new kinds in `reps/index.tsx`, `meta.ts`, `modules.test.ts`, `harness/pictures.ts` |
+| `src/components/module/sliderPolicy.ts`      | Which picture kinds show sliders (a module can set `sliders`)                                                               |
+| `src/engine/`                                | Solver, calculator state, units, formatting                                                                                 |
+| `docs/MODULE_GUIDE.md`                       | Content standards, picture catalog, layouts, the review process                                                             |
+| `docs/MODULE_PLAN.md`                        | Sections and what is built                                                                                                  |
+| `docs/ENGINE_LOG.md`, `REVIEW_LOG.md`        | What each review taught the engine and the reviewers                                                                        |
+| `.claude/agents/`                            | `lesson-reviewer` and `page-reviewer`                                                                                       |
 
 ## Commands
 

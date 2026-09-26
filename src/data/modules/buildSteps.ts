@@ -3,8 +3,10 @@ import { holds, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 
-import { gradeBand, quantityLabel, type GradeBand } from './grade';
+import { gradeBand, gradeOf, quantityLabel, type GradeBand } from './grade';
+import { simplifyChain } from './simplify';
 import type { ModuleDef } from './types';
+import { autoWritten, type Written } from './written';
 
 export interface Quantity {
   id: string;
@@ -44,6 +46,10 @@ export interface Step {
   lead: { sentence?: string; formula?: string };
   /** The lines shown in the box, in order, before the answer (grade-appropriate wording). */
   lines: string[];
+  /** The work set out on paper (a column sum, a long-division bracket), when the grade writes one. */
+  written?: Written;
+  /** How many of `lines` come before the written work (the substituted line, when shown). */
+  writtenAfter: number;
   /** The answer line as shown: "First group: 3" (K–2) or "w = 3 cm". */
   answer: string;
 }
@@ -102,6 +108,7 @@ const COUNT_WORDS: Record<string, string> = {
   tens: 'ten',
   ones: 'one',
   hundreds: 'hundred',
+  thousands: 'thousand',
   rows: 'row',
   groups: 'group',
   clips: 'clip',
@@ -160,6 +167,7 @@ export function buildSteps(
   const vars = module.variables;
   const byId = new Map(vars.map((v) => [v.id, v]));
   const band = gradeBand(module.id);
+  const grade = gradeOf(module.id);
   const early = band === 'early';
   /** K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter). */
   const plain = (line: string, id: string, keepName: boolean) => {
@@ -255,6 +263,7 @@ export function buildSteps(
         heading,
         lead,
         lines: [],
+        writtenAfter: 0,
         answer,
       };
     }
@@ -281,13 +290,42 @@ export function buildSteps(
       (early && !!workLines?.length && (bare.match(/ [+−] /g)?.length ?? 0) >= 2);
     const showSubstituted =
       !(same(substituted, base.result) || substituted === rearranged) && !repeatedByWork;
+    const substitutedShown =
+      showSubstituted && !(band !== 'standard' && workLines?.length && wordy(substituted));
+    // The work on paper: the module's choice, else the grid a student at this grade writes for
+    // a plain arithmetic line (beside any work lines, which say the thinking behind it).
+    const written =
+      text.written === false
+        ? undefined
+        : text.written
+          ? text.written(working)
+          : direct
+            ? autoWritten(grade, bare)
+            : undefined;
+    // Grades 3–5: a column sum or difference makes running totals ("300 + 70 = 370") padding;
+    // lines with words ("Tens: 40 + 30 = 70") stay as the thinking behind the columns. K–2
+    // keep their jumps, which the number line shows.
+    const running = (l: string) => /^[\d,]+\S* [+−] [\d,]+\S* = [\d,]+\S*$/.test(l);
+    const shownWork =
+      band === 'elementary' && written && /^\d+ [+−]/.test(written.says) && workLines?.some(running)
+        ? // A sentence that only led into the jumps ("Start with the bigger number.") goes too.
+          workLines.filter((l) => !running(l) && (l.includes('=') || !l.endsWith('.')))
+        : workLines;
+    // With no work lines or grid, an expression of two or more operations is simplified one
+    // stage per line, the way it is written under a formula in class (c = √(9 + 16), c = √25).
+    const chain =
+      shownWork?.length || written || !showSubstituted
+        ? []
+        : simplifyChain(bare)
+            .slice(0, -1)
+            .map((line) => plain(`${v.symbol} = ${line}`, t.id, false));
     return {
       ...base,
       result,
       how: typeof text.how === 'function' ? text.how(working) : text.how,
       rearranged,
       ...(showSubstituted ? { substituted } : {}),
-      ...(workLines ? { work: workLines } : {}),
+      ...(shownWork ? { work: shownWork } : {}),
       heading,
       lead,
       lines: [
@@ -295,11 +333,12 @@ export function buildSteps(
         ...(band === 'standard' ? [rearranged] : []),
         // K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped when the
         // work lines show the arithmetic.
-        ...(showSubstituted && !(band !== 'standard' && workLines?.length && wordy(substituted))
-          ? [plain(substituted, t.id, false)]
-          : []),
-        ...(workLines ?? []),
+        ...(substitutedShown ? [plain(substituted, t.id, false)] : []),
+        ...chain,
+        ...(shownWork ?? []),
       ],
+      ...(written ? { written } : {}),
+      writtenAfter: (band === 'standard' ? 1 : 0) + (substitutedShown ? 1 : 0),
       answer: plain(result, t.id, true),
     };
   });

@@ -170,6 +170,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/³/g, '**3')
     .replace(/\^/g, '**')
     .replace(/√\(/g, 'sqrt(')
+    .replace(/√(\d+(?:\.\d+)?)/g, 'sqrt($1)')
     // Natural logs from the exponential lessons: ln(x) and ln|x|.
     .replace(/ln\|([^|]*)\|/g, 'log(abs($1))')
     .replace(/ln\(/g, 'log(');
@@ -303,6 +304,7 @@ export function plainWalkthrough(w: Walkthrough): Walkthrough {
       lines: s.lines.map(p),
       ...(s.substituted ? { substituted: p(s.substituted) } : {}),
       ...(s.work ? { work: s.work.map(p) } : {}),
+      ...(s.written ? { written: { ...s.written, says: p(s.written.says) } } : {}),
     })),
     check: w.check.map((k) => ({ ...k, formula: p(k.formula) })),
     convertIn: w.convertIn.map(p),

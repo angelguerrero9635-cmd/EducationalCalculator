@@ -301,6 +301,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       s.substituted ?? '',
       s.result,
       ...(s.work ?? []),
+      ...s.lines,
+      ...(s.written ? [s.written.says] : []),
     ]),
     ...w.check.map((x) => x.formula),
     ...w.convertIn,
@@ -360,6 +362,25 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
         );
       }
       seen.set(line, s.id);
+    }
+  }
+  // Written work (a column sum, a long-division bracket) says one equation; it must be true
+  // and end at the step's answer (a division with a remainder ends at the quotient).
+  for (const s of w.steps) {
+    if (!s.written) continue;
+    const says = s.written.says;
+    const answer = Number(/^\$?(-?[\d.]+)/.exec(s.result.split(' = ')[1] ?? '')?.[1]);
+    const long = /^(\d+) ÷ (\d+) = (\d+) remainder (\d+)$/.exec(says);
+    const plain = /^(.*) = (\d+)$/.exec(says);
+    const x = plain ? evaluate(plain[1]!) : undefined;
+    const ok = long
+      ? Number(long[3]) * Number(long[2]) + Number(long[4]) === Number(long[1]) &&
+        Number(long[4]) < Number(long[2])
+      : x !== undefined && shownClose(x, Number(plain![2]));
+    const ends = Number(long ? long[3] : plain?.[2]);
+    if (!ok) c.f.add('error', `${c.label}written work is wrong: "${says}"`, where);
+    else if (ends !== answer) {
+      c.f.add('error', `${c.label}written work "${says}" doesn't end at ${s.result}`, where);
     }
   }
   // Worked-arithmetic lines ("100 + 50 + 10 + 5 + 3 = 168¢", "168¢ − 118¢ = 50¢ left"): each

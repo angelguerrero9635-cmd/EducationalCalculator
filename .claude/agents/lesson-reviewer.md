@@ -73,7 +73,7 @@ holds; two modules that are the same idea (merge).
 **D. Step clarity (teacher grading work).** Leaps (words standing for arithmetic), hidden
 conversions, order not shown, `how` that names a method the lines don't show, the answer before
 the work, repeated lines, a check that only repeats the leap. At most about 3 lines per step;
-use the helpers in `work.ts` and `helpers.ts`.
+use the helpers in `work.ts` and `helpers.ts`. The boxed `written work` under a step is the grid the page draws (column sum, partial products, long-division bracket; `written.ts`) and `autoWritten` chooses it by grade: report a grid that a student at the grade would not write, or one missing where they would, rather than adding work lines that repeat it.
 
 **E. Language.** Concreteness in K–2, one step per sentence, consistent terms (CCSS/NGSS words),
 positive framing, signaling (labels use the same words as the steps; never depend on color),

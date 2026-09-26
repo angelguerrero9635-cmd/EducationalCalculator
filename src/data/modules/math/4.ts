@@ -7,6 +7,7 @@ import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { apart, div, primeFactors, times, whole } from '../helpers';
 import type { ModuleDef } from '../types';
+import { autoWritten, longDivision } from '../written';
 import {
   addAll,
   addStrategy,
@@ -56,7 +57,9 @@ const partProduct = (p: string, a: string, b: string, [an, bn]: [string, string]
     [p]: {
       expr: `{${a}} × {${b}}`,
       how: `Multiply the ${an} by the ${bn}: a basic fact, then the zeros.`,
-      work: (v: Values) => placeTimesWork(v[a]!, v[b]!),
+      // Two multi-digit factors get the partial products grid; a fact with zeros, one line.
+      work: (v: Values) =>
+        autoWritten('4', `${v[a]} × ${v[b]}`) ? [] : placeTimesWork(v[a]!, v[b]!),
     },
     [a]: { expr: `{${p}} ÷ {${b}}`, how: `Divide this part product by the ${bn}.` },
     [b]: { expr: `{${p}} ÷ {${a}}`, how: `Divide this part product by the ${an}.` },
@@ -904,31 +907,23 @@ export const MATH_4_MODULES: ModuleDef[] = [
   (() => {
     const fmt = (x: number) => formatNumber(x);
     /** Partial quotients by place: 743 ÷ 6 → 100 groups (600), 20 groups (120), 3 groups (18). */
+    // Under the bracket: the quotient digit by digit, then what is left over.
     const partial = (n: number, d: number): string[] => {
-      const lines: string[] = [];
-      const chunks: number[] = [];
-      let left = n;
-      for (const place of [1000, 100, 10, 1]) {
-        const k = Math.floor(left / (d * place)) * place;
-        if (k === 0) continue;
-        chunks.push(k);
-        lines.push(
-          `${d} × ${fmt(k)} = ${fmt(d * k)}, so ${fmt(k)} ${k === 1 ? 'group fits' : 'groups fit'}: ${fmt(left)} − ${fmt(d * k)} = ${fmt(left - d * k)}`,
-        );
-        left -= d * k;
-      }
-      if (chunks.length > 1)
-        lines.push(
-          `Groups: ${chunks.map(fmt).join(' + ')} = ${fmt(chunks.reduce((a, b) => a + b, 0))}`,
-        );
-      lines.push(`${fmt(left)} left over: less than ${d}, so it is the remainder`);
-      return lines;
+      const q = Math.floor(n / d);
+      const r = n - q * d;
+      const digits = String(q).split('');
+      const names = ['ones', 'tens', 'hundreds', 'thousands'];
+      const places = digits.map((x, i) => `${x} ${names[digits.length - 1 - i]}`).join(', ');
+      return [
+        `Quotient: ${places}${digits.length > 1 ? ` → ${fmt(q)}` : ''}`,
+        `${fmt(r)} left over: less than ${d}, so it is the remainder`,
+      ];
     };
     return {
       id: 'm.4.long-division',
       assumptions: [
         'Share the dividend into equal groups of the divisor. The number of groups is the quotient.',
-        'Take out big chunks first: the biggest place that fits, then the next. Add the chunks.',
+        'Work one place at a time, biggest first: how many fit, multiply, take away, bring down the next digit.',
         'What is left is the remainder. It is always less than the divisor.',
         'Check: quotient × divisor + remainder = dividend.',
       ],
@@ -990,8 +985,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'm = q × d': {
           m: {
             expr: '{q} × {d}',
-            how: 'The groups times the divisor, by place: what was shared out.',
-            work: (v) => placeTimesWork(v.q!, v.d!),
+            how: 'The groups times the divisor: what was shared out.',
           },
           q: { expr: '{m} ÷ {d}', how: 'Divide what was shared out by the divisor.' },
           d: { expr: '{m} ÷ {q}', how: 'Divide what was shared out by the quotient.' },
@@ -1004,8 +998,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'q = whole groups of d in n': {
           q: {
             expr: 'whole groups of {d} in {n}',
-            how: 'Take out chunks of groups by place, biggest first. Add the chunks.',
+            how: 'Divide one place at a time: how many fit, multiply, take away, bring the next digit down.',
             work: (v) => partial(v.n!, v.d!),
+            written: (v) => longDivision(v.n!, v.d!),
           },
         },
       },

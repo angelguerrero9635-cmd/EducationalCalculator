@@ -5,6 +5,22 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Written work (before Grade 5)
+
+- The steps read as prose lines ("6 × 100 = 600, so 100 groups fit: 743 − 600 = 143") where a
+  student writes columns and a bracket, and Grade 6+ jumped from the substituted line to the
+  answer (`c = √(3² + 4²)`, then `c = 5 cm`). → `written.ts`: column addition and subtraction
+  with carries and regrouping marks, partial products with the fact beside each row, the
+  long-division bracket with each product taken away and the next digit brought down;
+  `autoWritten` picks one by grade for a plain arithmetic line, a step can name or refuse one.
+  `simplify.ts`: one line per stage of the order of operations under a substituted formula
+  (brackets, roots and exponents first). `WrittenWork.tsx` draws a grid; the dump boxes it;
+  the harness checks the equation each grid says and its answer. Grades 3–5 drop running
+  totals a column sum already shows.
+- The long-division page's partial-quotient chunks were the only "written" layout, and were
+  data in the module. → The page names the bracket (`written: longDivision`), and its work lines
+  read the quotient's places and the remainder.
+
 ## Repository layout (before Grade 5)
 
 - Module data was in ten files named by section and review round (`math-k2-extra.ts`,
