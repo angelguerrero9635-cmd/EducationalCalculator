@@ -233,9 +233,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Area counts the unit squares that cover the inside with no gaps or overlaps.',
     ],
     variables: [
-      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
-      { id: 'w', symbol: 'w', name: 'Width', unit: 'cm', min: 0, max: 10, step: 1, integer: true },
-      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 100, integer: true },
+      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 1, max: 10, step: 1, integer: true },
+      { id: 'w', symbol: 'w', name: 'Width', unit: 'cm', min: 1, max: 10, step: 1, integer: true },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 1, max: 100, integer: true },
     ],
     relations: [
       {
@@ -267,35 +267,43 @@ export const MATH_3_MODULES: ModuleDef[] = [
     },
     example: { l: 4, w: 3, A: 12 },
     startWith: ['l', 'w'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 10 },
+    representation: {
+      kind: 'rectangle',
+      length: 'l',
+      width: 'w',
+      inside: 'A',
+      grid: true,
+      extent: 10,
+    },
   },
   // ── Area (3.MD.5–7): problem types ──
+  // The area and one side: the other side (3.MD.7b).
   (() => {
-    const tiles = times('A = r × c', ['r', 'c', 'A'], ['rows', 'squares in each row', 'area']);
+    const area = times('A = l × w', ['l', 'w', 'A'], ['length', 'width', 'area']);
     return {
-      id: 'm.3.area~tiling',
-      title: 'Count unit squares',
-      use: 'Use this to find area by counting unit squares in rows.',
+      id: 'm.3.area~missing-side',
+      title: 'A missing side from the area',
+      use: 'Use this when you know the area and one side: “24 cm², 6 cm long. How wide?”',
       assumptions: [
-        'Each square is 1 square unit. They cover the shape with no gaps or overlaps.',
-        'Rows × squares in each row = area.',
+        'The shape is a rectangle.',
+        'Area = length × width, so width = area ÷ length.',
       ],
       variables: [
-        whole('r', 'r', 'Rows', 0, 10),
-        whole('c', 'c', 'Squares in each row', 0, 10),
-        { ...whole('A', 'A', 'Area', 0, 100), unit: 'square units' },
+        { ...whole('l', 'l', 'Length', 1, 10), unit: 'cm' },
+        { ...whole('w', 'w', 'Width', 1, 10), unit: 'cm' },
+        { ...whole('A', 'A', 'Area', 1, 100), unit: 'cm²' },
       ],
-      relations: [tiles.relation],
-      steps: { 'A = r × c': tiles.steps },
-      example: { r: 4, c: 5, A: 20 },
-      startWith: ['r', 'c'],
+      relations: [area.relation],
+      steps: { 'A = l × w': area.steps },
+      example: { l: 6, w: 4, A: 24 },
+      startWith: ['A', 'l'],
       representation: {
-        kind: 'array',
-        rows: 'r',
-        columns: 'c',
-        total: 'A',
-        max: 10,
-        cell: 'square',
+        kind: 'rectangle',
+        length: 'l',
+        width: 'w',
+        inside: 'A',
+        grid: true,
+        extent: 10,
       },
     } satisfies ModuleDef;
   })(),
@@ -314,13 +322,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'So 6 × 8 = 6 × 5 + 6 × 3: use facts you know.',
       ],
       variables: [
-        whole('a', 'a', 'Width', 0, 10),
-        whole('l', 'l', 'Length', 0, 10),
-        whole('b', 'b', 'First length', 0, 10),
-        whole('c', 'c', 'Second length', 0, 10),
-        { ...whole('p', 'p', 'First area', 0, 100), derived: true },
-        { ...whole('q', 'q', 'Second area', 0, 100), derived: true },
-        whole('A', 'A', 'Area', 0, 100),
+        { ...whole('a', 'a', 'Width', 1, 10), unit: 'cm' },
+        { ...whole('l', 'l', 'Length', 2, 10), unit: 'cm' },
+        { ...whole('b', 'b', 'First length', 1, 9), unit: 'cm' },
+        { ...whole('c', 'c', 'Second length', 1, 9), unit: 'cm' },
+        { ...whole('p', 'p', 'First area', 1, 90), unit: 'cm²', derived: true },
+        { ...whole('q', 'q', 'Second area', 1, 90), unit: 'cm²', derived: true },
+        { ...whole('A', 'A', 'Area', 2, 100), unit: 'cm²' },
       ],
       relations: [len.relation, left.relation, right.relation, sum.relation, all.relation],
       steps: {
@@ -364,16 +372,16 @@ export const MATH_3_MODULES: ModuleDef[] = [
       assumptions: [
         'Cut the shape into two rectangles that don’t overlap.',
         'Find each rectangle’s area, then add them.',
-        'Each square is 1 square unit.',
+        'Each square is 1 square centimeter.',
       ],
       variables: [
-        whole('a', 'a', 'Left width', 0, 10),
-        whole('b', 'b', 'Left height', 0, 10),
-        whole('c', 'c', 'Right width', 0, 10),
-        whole('d', 'd', 'Right height', 0, 10),
-        { ...whole('p', 'p', 'Left area', 0, 100), unit: 'square units' },
-        { ...whole('q', 'q', 'Right area', 0, 100), unit: 'square units' },
-        { ...whole('A', 'A', 'Total area', 0, 200), unit: 'square units' },
+        { ...whole('a', 'a', 'Left width', 1, 10), unit: 'cm' },
+        { ...whole('b', 'b', 'Left height', 1, 10), unit: 'cm' },
+        { ...whole('c', 'c', 'Right width', 1, 10), unit: 'cm' },
+        { ...whole('d', 'd', 'Right height', 1, 10), unit: 'cm' },
+        { ...whole('p', 'p', 'Left area', 1, 100), unit: 'cm²' },
+        { ...whole('q', 'q', 'Right area', 1, 100), unit: 'cm²' },
+        { ...whole('A', 'A', 'Total area', 2, 200), unit: 'cm²' },
       ],
       relations: [leftArea.relation, rightArea.relation, sum.relation],
       steps: { 'p = a × b': leftArea.steps, 'q = c × d': rightArea.steps, 'A = p + q': sum.steps },
@@ -388,19 +396,82 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  // An L-shape as a rectangle with a corner cut out: whole area − cut area (3.MD.7d).
+  (() => {
+    const wide = plus('x = u + p', ['u', 'p', 'x'], ['cut-out width', 'width left', 'whole width']);
+    const tall = plus(
+      'y = z + q',
+      ['z', 'q', 'y'],
+      ['cut-out height', 'height left', 'whole height'],
+    );
+    return {
+      id: 'm.3.area~cut-out',
+      title: 'A rectangle with a corner cut out',
+      use: 'Use this for an L-shape: the whole rectangle take away the corner cut out.',
+      assumptions: [
+        'Find the area of the whole rectangle.',
+        'Take away the area of the corner that is cut out.',
+      ],
+      variables: [
+        { ...whole('x', 'x', 'Whole width', 2, 10), unit: 'cm' },
+        { ...whole('y', 'y', 'Whole height', 2, 10), unit: 'cm' },
+        { ...whole('u', 'u', 'Cut-out width', 1, 9), unit: 'cm' },
+        { ...whole('z', 'z', 'Cut-out height', 1, 9), unit: 'cm' },
+        // What is left beside and under the cut: at least 1, so the cut fits inside.
+        { ...whole('p', 'p', 'Width left', 1, 9), unit: 'cm', derived: true },
+        { ...whole('q', 'q', 'Height left', 1, 9), unit: 'cm', derived: true },
+        { ...whole('A', 'A', 'Area of the shape', 1, 99), unit: 'cm²' },
+      ],
+      relations: [
+        wide.relation,
+        tall.relation,
+        {
+          id: 'A = x × y − u × z',
+          display: '{x} × {y} − {u} × {z} = {A}',
+          words: 'Whole area − cut-out area = {A}',
+          vars: ['A', 'x', 'y', 'u', 'z'],
+          residual: (v: Values) => v.A! - (v.x! * v.y! - v.u! * v.z!),
+          solve: { A: (v: Values) => v.x! * v.y! - v.u! * v.z! },
+        },
+      ],
+      steps: {
+        'x = u + p': wide.steps,
+        'y = z + q': tall.steps,
+        'A = x × y − u × z': {
+          A: {
+            expr: '{x} × {y} − {u} × {z}',
+            how: 'Find the whole area and the cut-out area. Take the cut-out away.',
+            work: (v: Values) => [
+              `Whole area: ${v.x} × ${v.y} = ${v.x! * v.y!}`,
+              `Cut-out area: ${v.u} × ${v.z} = ${v.u! * v.z!}`,
+              `${v.x! * v.y!} − ${v.u! * v.z!} = ${v.A}`,
+            ],
+          },
+        },
+      },
+      example: { x: 6, y: 5, u: 2, z: 3, p: 4, q: 2, A: 24 },
+      startWith: ['x', 'y', 'u', 'z'],
+      representation: {
+        kind: 'rectilinear',
+        left: { width: 'x', height: 'y' },
+        cut: { width: 'u', height: 'z' },
+        total: 'A',
+        extent: 7,
+      },
+    } satisfies ModuleDef;
+  })(),
   // ── Multiply and divide within 100 (3.OA.1–4, 3.OA.7) ──
   {
     id: 'm.3.multiply-divide-100',
     assumptions: [
       'Every group has the same number.',
-      'Multiply to find the total: groups × number in each group.',
-      'Divide to find the number of groups, or how many are in each group.',
-      'Up to 10 groups of up to 10.',
+      'Multiply to find the total. Divide to find the groups or how many in each.',
+      'A division fact hides a multiplication fact: 24 ÷ 6 = 4 because 4 × 6 = 24.',
     ],
     variables: [
-      whole('g', 'g', 'Groups', 0, 10),
-      whole('k', 'k', 'In each group', 0, 10),
-      whole('n', 'n', 'Total', 0, 100),
+      whole('g', 'g', 'Groups', 1, 10),
+      whole('k', 'k', 'In each group', 1, 10),
+      whole('n', 'n', 'Total', 1, 100),
     ],
     relations: [groups.relation],
     steps: { 'n = g × k': groups.steps },
@@ -418,9 +489,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Turn the array and the total stays the same: 4 × 6 = 6 × 4.',
     ],
     variables: [
-      whole('r', 'r', 'Rows', 0, 10),
-      whole('c', 'c', 'In each row', 0, 10),
-      whole('n', 'n', 'Total', 0, 100),
+      whole('r', 'r', 'Rows', 1, 10),
+      whole('c', 'c', 'In each row', 1, 10),
+      whole('n', 'n', 'Total', 1, 100),
     ],
     relations: [arrayTimes.relation],
     steps: { 'n = r × c': arrayTimes.steps },
@@ -438,15 +509,75 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'To divide, count how many jumps it takes to reach the number.',
     ],
     variables: [
-      whole('k', 'k', 'Jumps', 0, 10),
+      whole('k', 'k', 'Jumps', 1, 10),
       whole('s', 's', 'Size of each jump', 1, 10),
-      whole('n', 'n', 'End number', 0, 100),
+      whole('n', 'n', 'End number', 1, 100),
     ],
     relations: [jumps.relation],
     steps: { 'n = k × s': jumps.steps },
     example: { k: 5, s: 4, n: 20 },
     startWith: ['k', 's'],
     representation: { kind: 'skipCount', step: 's', count: 'k', total: 'n' },
+  },
+  // Sharing: the total and the groups give how many in each (3.OA.2).
+  {
+    id: 'm.3.multiply-divide-100~share',
+    title: 'Share equally',
+    use: 'Use this to share equally: “24 stickers shared by 4 friends. How many each?”',
+    assumptions: [
+      'Deal the things out one at a time, so every group gets the same.',
+      'Think of the multiplication: 4 × ? = 24.',
+    ],
+    variables: [
+      whole('g', 'g', 'Groups', 1, 10),
+      whole('k', 'k', 'In each group', 1, 10),
+      whole('n', 'n', 'Total', 1, 100),
+    ],
+    relations: [groups.relation],
+    steps: { 'n = g × k': groups.steps },
+    example: { g: 4, k: 6, n: 24 },
+    startWith: ['n', 'g'],
+    representation: { kind: 'equalGroups', groups: 'g', each: 'k', total: 'n' },
+  },
+  // Grouping: the total and the size of each group give how many groups (3.OA.2).
+  {
+    id: 'm.3.multiply-divide-100~how-many-groups',
+    title: 'How many groups?',
+    use: 'Use this for “24 stickers, 6 on each page. How many pages?”',
+    assumptions: [
+      'Take away a full group at a time until none are left.',
+      'Count the groups: ? × 6 = 24.',
+    ],
+    variables: [
+      whole('k', 'k', 'Groups', 1, 10),
+      whole('s', 's', 'In each group', 1, 10),
+      whole('n', 'n', 'Total', 1, 100),
+    ],
+    relations: [jumps.relation],
+    steps: { 'n = k × s': jumps.steps },
+    example: { k: 4, s: 6, n: 24 },
+    startWith: ['n', 's'],
+    representation: { kind: 'skipCount', step: 's', count: 'k', total: 'n' },
+  },
+  // A number sentence with a box: 8 × ? = 48 (3.OA.4).
+  {
+    id: 'm.3.multiply-divide-100~missing-factor',
+    title: 'The missing number',
+    use: 'Use this for a number sentence with a box: 8 × ? = 48.',
+    assumptions: [
+      'The box stands for a number that makes the sentence true.',
+      'Use the division fact: 48 ÷ 8 = 6.',
+    ],
+    variables: [
+      whole('r', 'r', 'First factor', 1, 10),
+      whole('c', 'c', 'Second factor', 1, 10),
+      whole('n', 'n', 'Product', 1, 100),
+    ],
+    relations: [arrayTimes.relation],
+    steps: { 'n = r × c': arrayTimes.steps },
+    example: { r: 8, c: 6, n: 48 },
+    startWith: ['n', 'r'],
+    representation: { kind: 'array', rows: 'r', columns: 'c', total: 'n', max: 10, sides: true },
   },
   // ── Properties of multiplication (3.OA.5) ──
   (() => {

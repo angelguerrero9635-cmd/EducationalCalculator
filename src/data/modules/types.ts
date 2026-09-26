@@ -494,14 +494,15 @@ export type Representation =
    */
   | {
       kind: 'rectilinear';
-      left: { width: string; height: string; area: string };
+      /** The first rectangle; with a `cut`, the whole rectangle (its area may be left to the picture). */
+      left: { width: string; height: string; area?: string };
       /** A second rectangle standing beside the first on the same base (an L or a step). */
       right?: { width: string; height: string; area: string };
       /**
        * Or a rectangle cut out of the first one's top right corner: the shape is the first
        * rectangle take away this one (`total` = the first area − the cut area).
        */
-      cut?: { width: string; height: string; area: string };
+      cut?: { width: string; height: string; area?: string };
       total: string;
       extent: number;
     }

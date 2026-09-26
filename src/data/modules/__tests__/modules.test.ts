@@ -124,7 +124,9 @@ function representationVars(r: Representation): string[] {
       return [r.first, r.second, r.rightAngles];
     case 'rectilinear':
       return [
-        ...[r.left, r.right, r.cut].flatMap((p) => (p ? [p.width, p.height, p.area] : [])),
+        ...[r.left, r.right, r.cut].flatMap((p) =>
+          p ? [p.width, p.height, ...(p.area ? [p.area] : [])] : [],
+        ),
         r.total,
       ];
     case 'areaModel':

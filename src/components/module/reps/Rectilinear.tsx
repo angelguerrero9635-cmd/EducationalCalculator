@@ -89,7 +89,7 @@ function CutOut({
                   fill={c.chartMuted}
                   textAnchor="middle"
                 >
-                  {`cut ${rep.value(cut.area, false)}`}
+                  {`cut ${cut.area ? rep.value(cut.area, false) : cw * ch}`}
                 </ChartText>
               ) : null}
               <ChartText
@@ -129,7 +129,7 @@ function CutOut({
           );
         }}
       </Canvas>
-      <Caption>{`${rep.value(spec.left.area, false)} − ${rep.value(cut.area, false)} = ${rep.value(spec.total)}`}</Caption>
+      <Caption>{`${spec.left.area ? rep.value(spec.left.area, false) : a * b} − ${cut.area ? rep.value(cut.area, false) : cw * ch} = ${rep.value(spec.total)}`}</Caption>
       <Steppers
         calc={calc}
         items={ids.map((id) => ({ var: id, steps: [1], pin: ids.filter((x) => x !== id) }))}
@@ -207,7 +207,7 @@ function SideBySide({
                   fontWeight="700"
                   textAnchor="middle"
                 >
-                  {rep.value(spec.left.area, false)}
+                  {rep.value(spec.left.area!, false)}
                 </ChartText>
               ) : null}
               {cc > 0 && d > 0 ? (
@@ -256,7 +256,7 @@ function SideBySide({
           );
         }}
       </Canvas>
-      <Caption>{`${rep.value(spec.left.area, false)} + ${rep.value(right.area, false)} = ${rep.value(spec.total)}`}</Caption>
+      <Caption>{`${rep.value(spec.left.area!, false)} + ${rep.value(right.area, false)} = ${rep.value(spec.total)}`}</Caption>
       <Steppers
         calc={calc}
         items={[lw, lh, rw, rh].map((id) => ({
