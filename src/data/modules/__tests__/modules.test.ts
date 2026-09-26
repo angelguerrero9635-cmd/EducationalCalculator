@@ -405,7 +405,7 @@ it('builds readable steps (area example)', () => {
       result: 'w = 3 cm',
       // Grade 3: the number sentence first, then the rule in words; no letters before Grade 6.
       heading: 'Find width',
-      lead: { sentence: '4 × ? = 12', formula: 'Length × Width = Area' },
+      lead: { sentence: '4 × ? = 12', formula: 'Length × width = area' },
       lines: ['Width = 12 ÷ 4', 'Think: 4 × ? = 12', 'Count by 4s to 12: 4, 8, 12 → 3'],
       writtenAfter: 1,
       answer: 'Width = 3 cm',

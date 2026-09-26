@@ -8,7 +8,7 @@
 import { renderTemplate } from '@/engine/format';
 import { solve } from '@/engine/solve';
 
-import { TESTED_MODULES, gradeBand, gradeOf, namedVariables } from '..';
+import { TESTED_MODULES, gradeBand, gradeOf, wordRule } from '..';
 import { agree, buildSteps } from '../buildSteps';
 import type { ModuleDef } from '../types';
 
@@ -112,7 +112,7 @@ function studentText(m: ModuleDef) {
           : agree(renderTemplate(r.display, m.variables, example)),
     },
     ...(band === 'elementary'
-      ? [{ where: `rule ${r.id}`, text: renderTemplate(r.display, namedVariables(m.variables)) }]
+      ? [{ where: `rule ${r.id}`, text: wordRule(r.display, m.variables) }]
       : []),
   ]);
   // The walkthrough from the opening values, as the student reads it.

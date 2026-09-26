@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/Text';
-import { isEarlyGrade, isElementary, namedVariables } from '@/data/modules';
+import { isEarlyGrade, isElementary, wordRule } from '@/data/modules';
 import { agree } from '@/data/modules/buildSteps';
 import { renderTemplate } from '@/engine/format';
 import type { Values } from '@/engine/types';
@@ -50,7 +50,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
           const [first, second] = early
             ? [numbers, null]
             : elementary
-              ? [numbers, renderTemplate(r.display, namedVariables(module.variables))]
+              ? [numbers, wordRule(r.display, module.variables)]
               : [letters, numbers];
           return (
             <View

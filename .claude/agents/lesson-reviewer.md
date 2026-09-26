@@ -121,4 +121,4 @@ you lacked, for `docs/REVIEW_LOG.md`); **Checks run** and files changed.
 
 Grade 5 on: the grade's vocabulary is a check (parentheses, numerator, denominator, quotient); the facts a grade knows need no counting lines (no "Count by 4s" from Grade 5); a common denominator is the least common multiple, not the product.
 
-No letters standing for numbers before Grade 6: K–5 walkthroughs name values in words and Grades 3–5 read rules in words ("Length × Width = Area"). A letter in a Grade 3–5 dump is a finding.
+No letters standing for numbers before Grade 6: K–5 walkthroughs name values in words and Grades 3–5 read rules in words ("Length × width = area"). A letter in a Grade 3–5 dump is a finding.

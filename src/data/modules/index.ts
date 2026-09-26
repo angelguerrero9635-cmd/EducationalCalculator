@@ -59,6 +59,7 @@ export {
   isEarlyGrade,
   isElementary,
   namedVariables,
+  wordRule,
   quantityLabel,
   type GradeBand,
 } from './grade';

@@ -3,7 +3,7 @@ import { holds, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 
-import { gradeBand, gradeOf, namedVariables, quantityLabel, type GradeBand } from './grade';
+import { gradeBand, gradeOf, quantityLabel, wordRule, type GradeBand } from './grade';
 import { simplifyChain } from './simplify';
 import type { ModuleDef } from './types';
 import { autoWritten, type Written } from './written';
@@ -41,7 +41,7 @@ export interface Step {
   heading: string;
   /**
    * What the box opens with: the number sentence with "?" (K–5, first) and the rule, in words
-   * for Grades 3–5 ("Length × Width = Area") and in letters from Grade 6. K–2 sees no rule.
+   * for Grades 3–5 ("Length × width = area") and in letters from Grade 6. K–2 sees no rule.
    */
   lead: { sentence?: string; formula?: string };
   /** The lines shown in the box, in order, before the answer (grade-appropriate wording). */
@@ -169,8 +169,6 @@ export function buildSteps(
   const band = gradeBand(module.id);
   const grade = gradeOf(module.id);
   const early = band === 'early';
-  /** Grades 3–5 read the rule in words: "Length × Width = Area". */
-  const wordVars = namedVariables(vars);
   /**
    * K–2: "a = 7 − 4" → "7 − 4", "a = 3" → "First group: 3" (the name, not the letter).
    * Grades 3–5: "A = 4 × 3" → "Area = 4 × 3" (words in the equation, no letters yet).
@@ -259,7 +257,7 @@ export function buildSteps(
       band === 'early'
         ? { sentence: base.sentence }
         : band === 'elementary'
-          ? { sentence: base.sentence, formula: renderTemplate(relation.display, wordVars) }
+          ? { sentence: base.sentence, formula: wordRule(relation.display, vars) }
           : { formula: base.formula };
     const heading = band === 'standard' ? base.title : `Find ${lowerFirst(v.name)}`;
     const answer = plain(base.result, t.id, true);
