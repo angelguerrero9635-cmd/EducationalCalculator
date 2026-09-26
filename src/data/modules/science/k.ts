@@ -24,7 +24,8 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         { ...whole('b', 'b', 'Gentle push', 0, 20), unit: 'cubes' },
         { ...whole('d', 'd', 'Farther by', 0, 10), unit: 'cubes' },
       ],
-      relations: [farther.relation, atLeast('a', 'b')],
+      // The story fixes the order, so the sentence reads as a take-away.
+      relations: [{ ...farther.relation, display: '{a} − {b} = {d}' }, atLeast('a', 'b')],
       steps: { ...farther.steps, 'a ≥ b': {} },
       example: { a: 9, b: 4, d: 5 },
       startWith: ['a', 'b'],
@@ -46,7 +47,8 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         { ...whole('h', 'h', 'Shady spot', 40, 110), unit: F },
         { ...whole('w', 'w', 'Warmer by', 0, 10), unit: F },
       ],
-      relations: [warmer.relation, atLeast('u', 'h')],
+      // The story fixes the order, so the sentence reads as a take-away.
+      relations: [{ ...warmer.relation, display: '{u} − {h} = {w}' }, atLeast('u', 'h')],
       steps: { ...warmer.steps, 'u ≥ h': {} },
       example: { u: 78, h: 72, w: 6 },
       startWith: ['u', 'h'],

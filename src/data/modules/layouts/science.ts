@@ -284,7 +284,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         label: 'Ears',
         part: 'Ears',
-        lines: ['Ears hear sounds from far away. Big ears hear more.'],
+        lines: ['Ears hear sounds from far away. Big ears catch soft sounds.'],
       },
       {
         label: 'Fur',
@@ -296,6 +296,97 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         label: 'Shell',
         part: 'Shell',
         lines: ['A shell keeps the animal safe. A helmet works the same way.'],
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.1.sound-vibration',
+    assumptions: [
+      'Sound comes from something shaking back and forth.',
+      'That shaking is called vibrating.',
+      'When the shaking stops, the sound stops.',
+    ],
+    figure: { kind: 'vibration' },
+    scenes: [
+      {
+        label: 'Pluck a rubber band',
+        vibrate: { thing: 'band', shaking: true },
+        lines: ['It shakes fast. You hear a twang.'],
+      },
+      {
+        label: 'Stop the band',
+        vibrate: { thing: 'band', shaking: false },
+        lines: ['It stops shaking. The sound stops.'],
+      },
+      {
+        label: 'Hum',
+        vibrate: { thing: 'voice', shaking: true },
+        lines: ['Touch your throat. You feel it shake.'],
+      },
+      {
+        label: 'Tap a drum with rice',
+        vibrate: { thing: 'drum', shaking: true },
+        lines: ['The drum shakes. The rice jumps.'],
+      },
+      {
+        label: 'Ring a bell',
+        vibrate: { thing: 'bell', shaking: true },
+        lines: ['The bell shakes. Touch it and it goes quiet.'],
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.1.sound-vibration~cup-phone',
+    title: 'A cup phone',
+    use: 'Use this to put the steps of a cup phone in order.',
+    assumptions: [
+      'Two cups are joined by a tight string.',
+      'The shaking travels along the string.',
+    ],
+    question: 'How does your voice get to your friend?',
+    stages: [
+      { label: 'Your voice shakes the cup' },
+      { label: 'The string shakes' },
+      { label: 'The other cup shakes' },
+      { label: 'Your friend hears you' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.1.light-shadows',
+    assumptions: [
+      'You see things when light shines on them.',
+      'A shadow forms where something blocks the light.',
+    ],
+    figure: { kind: 'lightPath' },
+    scenes: [
+      {
+        label: 'Lamp on',
+        light: { lamp: true },
+        lines: ['Light bounces off the apple into your eye. You see it.'],
+      },
+      { label: 'Dark room', light: { lamp: false }, lines: ['No light, so you see nothing.'] },
+      {
+        label: 'Block the light',
+        light: { lamp: true, blocker: 'solid', height: 'high' },
+        lines: ['The block stops the light. It makes a shadow.'],
+      },
+      {
+        label: 'Low lamp',
+        light: { lamp: true, wall: true, height: 'low' },
+        lines: ['A low light makes a long shadow.'],
+      },
+      {
+        label: 'High lamp',
+        light: { lamp: true, wall: true, height: 'high' },
+        lines: ['A high light makes a short shadow.'],
+      },
+      {
+        label: 'Mirror',
+        light: { lamp: true, blocker: 'mirror' },
+        lines: ['The mirror bounces the light to a new place.'],
       },
     ],
   },
@@ -314,8 +405,267 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Yes', flashes: '●', lines: ['One flash means yes.'] },
       { label: 'No', flashes: '● ●', lines: ['Two flashes mean no.'] },
       { label: 'Come here', flashes: '● ● ●', lines: ['Three flashes mean come here.'] },
-      { label: 'Help', flashes: '● — ●', lines: ['A short, a long and a short flash mean help.'] },
+      {
+        label: 'Help',
+        flashes: '● ● ● — — — ● ● ●',
+        lines: ['Three short, three long, three short means help.'],
+      },
     ],
+  },
+  {
+    kind: 'sort',
+    id: 's.1.structures-function~beaks',
+    title: 'Beaks shaped for their food',
+    use: 'Use this to match a beak to the food it fits.',
+    assumptions: [
+      'A bird’s beak is a tool for its food.',
+      'Look at the shape: thick, thin, long or hooked.',
+    ],
+    question: 'What food does this beak fit?',
+    bins: [
+      { id: 'seeds', label: 'Seeds', why: 'A short thick beak cracks seeds.' },
+      { id: 'nectar', label: 'Nectar', why: 'A long thin beak reaches deep into flowers.' },
+      { id: 'fish', label: 'Fish', why: 'A long beak spears or scoops fish.' },
+      { id: 'meat', label: 'Meat', why: 'A hooked beak tears meat.' },
+    ],
+    cards: [
+      {
+        label: 'Finch',
+        bin: 'seeds',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 25],
+            [80, 50],
+            [10, 75],
+          ],
+        },
+      },
+      {
+        label: 'Cardinal',
+        bin: 'seeds',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 28],
+            [75, 50],
+            [15, 72],
+          ],
+        },
+      },
+      {
+        label: 'Hummingbird',
+        bin: 'nectar',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 46],
+            [98, 50],
+            [5, 54],
+          ],
+        },
+      },
+      {
+        label: 'Heron',
+        bin: 'fish',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 38],
+            [95, 50],
+            [5, 62],
+          ],
+        },
+      },
+      {
+        label: 'Pelican',
+        bin: 'fish',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 30],
+            [95, 36],
+            [88, 44],
+            [45, 85],
+            [10, 72],
+            [5, 50],
+          ],
+        },
+      },
+      {
+        label: 'Hawk',
+        bin: 'meat',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [8, 28],
+            [55, 28],
+            [82, 45],
+            [76, 72],
+            [66, 52],
+            [8, 66],
+          ],
+        },
+      },
+      {
+        label: 'Owl',
+        bin: 'meat',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 30],
+            [55, 32],
+            [72, 50],
+            [66, 72],
+            [58, 56],
+            [15, 64],
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.1.structures-function~copy',
+    title: 'Tools copied from animals',
+    use: 'Use this to match an animal part to a tool like it.',
+    assumptions: [
+      'People copy animal parts to solve problems.',
+      'A part and its tool do the same job.',
+    ],
+    question: 'What job does it do?',
+    bins: [
+      { id: 'safe', label: 'Keeps safe', why: 'A hard cover keeps soft bodies safe.' },
+      { id: 'warm', label: 'Keeps warm', why: 'Thick fur and feathers hold in heat.' },
+      { id: 'swim', label: 'Helps swim', why: 'Wide flat feet push the water.' },
+      { id: 'hold', label: 'Holds on', why: 'Tiny hooks grab and hold.' },
+    ],
+    cards: [
+      { label: 'Turtle shell', bin: 'safe' },
+      { label: 'Bike helmet', bin: 'safe' },
+      { label: 'Bear fur', bin: 'warm' },
+      { label: 'Winter coat', bin: 'warm' },
+      { label: 'Duck feet', bin: 'swim' },
+      { label: 'Swim fins', bin: 'swim' },
+      { label: 'Burrs', bin: 'hold' },
+      { label: 'Hook-and-loop strap', bin: 'hold' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.1.offspring',
+    assumptions: [
+      'Young animals and plants look like their parents.',
+      'They are not exactly the same.',
+    ],
+    question: 'Is the kitten like its mother here?',
+    bins: [
+      { id: 'same', label: 'Same', why: 'Young animals look like their parents.' },
+      { id: 'different', label: 'Different', why: 'They are not exactly the same.' },
+    ],
+    cards: [
+      { label: 'Has whiskers', bin: 'same' },
+      { label: 'Has four legs', bin: 'same' },
+      { label: 'Has a tail', bin: 'same' },
+      { label: 'Has pointy ears', bin: 'same' },
+      { label: 'Much smaller', bin: 'different' },
+      { label: 'White patch on its nose', bin: 'different' },
+      { label: 'Blue eyes, not green', bin: 'different' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.1.offspring~care',
+    title: 'How parents help their young',
+    use: 'Use this to sort how parents help their young.',
+    assumptions: [
+      'Many parents take care of their young.',
+      'Their care helps the young stay alive.',
+    ],
+    question: 'How does the parent help?',
+    bins: [
+      { id: 'food', label: 'Food', why: 'Parents bring food or feed their young.' },
+      { id: 'safety', label: 'Safety', why: 'Parents keep their young away from danger.' },
+      { id: 'warmth', label: 'Warmth', why: 'Parents keep eggs and young warm.' },
+    ],
+    cards: [
+      { label: 'Bird brings worms', bin: 'food' },
+      { label: 'Cow feeds her calf', bin: 'food' },
+      { label: 'Kangaroo pouch', bin: 'safety' },
+      { label: 'Lion carries her cub', bin: 'safety' },
+      { label: 'Hen sits on her eggs', bin: 'warmth' },
+      { label: 'Penguin keeps its chick on its feet', bin: 'warmth' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.1.offspring~match',
+    title: 'Who will it grow up to be?',
+    use: 'Use this to match young ones to the grown-up they become.',
+    assumptions: [
+      'Some young ones look very different from their parents.',
+      'They still grow up to be like them.',
+    ],
+    question: 'Who will it grow up to be?',
+    bins: [
+      { id: 'frog', label: 'Frog', why: 'Frog eggs hatch into tadpoles. Tadpoles become frogs.' },
+      {
+        id: 'butterfly',
+        label: 'Butterfly',
+        why: 'A caterpillar makes a chrysalis. A butterfly comes out.',
+      },
+      { id: 'oak', label: 'Oak tree', why: 'An acorn is an oak seed. It grows into a tree.' },
+    ],
+    cards: [
+      { label: 'Tadpole', bin: 'frog' },
+      { label: 'Frog eggs', bin: 'frog' },
+      { label: 'Caterpillar', bin: 'butterfly' },
+      { label: 'Chrysalis', bin: 'butterfly' },
+      { label: 'Acorn', bin: 'oak' },
+      { label: 'Oak seedling', bin: 'oak' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.1.sky-patterns~sun-path',
+    title: 'The sun across the sky',
+    use: 'Use this to see where the sun is during the day.',
+    assumptions: [
+      'The sun seems to move across the sky each day.',
+      'It rises in the east and sets in the west.',
+    ],
+    figure: { kind: 'sky' },
+    scenes: [
+      {
+        label: 'Morning',
+        sky: { body: 'sun', at: 'east' },
+        lines: ['The sun comes up in the east. It is low.'],
+      },
+      { label: 'Noon', sky: { body: 'sun', at: 'high' }, lines: ['The sun is high in the sky.'] },
+      {
+        label: 'Evening',
+        sky: { body: 'sun', at: 'west' },
+        lines: ['The sun goes down in the west.'],
+      },
+      { label: 'Night', sky: { body: 'night', at: 'high' }, lines: ['We see the moon and stars.'] },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.1.sky-patterns~moon',
+    title: 'The moon’s shapes in order',
+    use: 'Use this to put the moon’s shapes in order.',
+    assumptions: ['The moon’s shape changes in a pattern.', 'Then it shrinks back the same way.'],
+    question: 'Put the shapes in order, from new moon to full moon.',
+    stages: [
+      { label: 'New moon', span: 1 },
+      { label: 'Thin crescent', span: 6 },
+      { label: 'Half moon', span: 1 },
+      { label: 'Almost full', span: 6 },
+      { label: 'Full moon', span: 1 },
+    ],
+    unit: 'days',
+    totalLabel: 'New moon to full moon',
   },
   {
     kind: 'sort',

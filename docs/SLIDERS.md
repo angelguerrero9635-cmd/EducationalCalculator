@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-22 of 235 pages show sliders.
+22 of 231 pages show sliders.
 
 ## By picture kind
 
@@ -59,7 +59,7 @@ its kind with `sliders: true | false`.
 | rightTriangle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| ruler | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| ruler | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -67,7 +67,7 @@ its kind with `sliders: true | false`.
 | table | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | tape | 26 | no | the picture has its own handles or taps, or the inputs are enough |
-| tenFrame | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| tenFrame | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | unitCubes | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
@@ -227,14 +227,10 @@ its kind with `sliders: true | false`.
 | s.K.weather-patterns | tally | no |
 | s.K.weather-patterns~warmer | thermometers | no |
 | s.K.living-things-change-environment~litter | tally | no |
-| s.1.sound-vibration | ruler | no |
 | s.1.sound-vibration~drum | bars | no |
-| s.1.light-shadows | ruler | no |
-| s.1.offspring | tenFrame | no |
 | s.1.offspring~grow | hops | no |
 | s.1.sky-patterns | bars | no |
-| s.1.sky-patterns~moon | tenFrame | no |
-| s.1.structures-function~beaks | ruler | no |
+| s.1.sky-patterns~shadow | ruler | no |
 | s.2.material-properties | bars | no |
 | s.2.material-properties~pieces | tape | no |
 | s.2.heating-cooling | tally | no |
