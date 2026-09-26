@@ -4,6 +4,7 @@ import type { LayoutDef } from './types';
 
 export type {
   CardFigure,
+  CardIcon,
   ExploreLayout,
   Figure,
   LayoutDef,

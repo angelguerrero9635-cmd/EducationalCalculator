@@ -7,6 +7,7 @@
 import type { Values } from '@/engine/types';
 
 import { div, whole } from './helpers';
+import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
 
@@ -495,5 +496,292 @@ export const GALLERY_MODULES: ModuleDef[] = [
       recessive: 'r',
       letter: 'B',
     },
+  },
+];
+
+/**
+ * Demonstrations of the explore figures and card figures, one page each, for the same
+ * reason: every drawing can be seen and screenshotted before a lesson uses it.
+ */
+export const GALLERY_LAYOUTS: LayoutDef[] = [
+  {
+    id: 'g.push',
+    title: 'Push and pull',
+    kind: 'explore',
+    assumptions: ['Seen from above.', 'A thick arrow is a hard push.'],
+    figure: { kind: 'push' },
+    scenes: [
+      {
+        label: 'Gentle, behind',
+        lines: ['A gentle push from behind.'],
+        push: { from: 'behind', strength: 'gentle' },
+      },
+      {
+        label: 'Hard, behind',
+        lines: ['A hard push from behind.'],
+        push: { from: 'behind', strength: 'hard' },
+      },
+      {
+        label: 'Gentle, front',
+        lines: ['A gentle push from the front.'],
+        push: { from: 'front', strength: 'gentle' },
+      },
+      {
+        label: 'Hard, front',
+        lines: ['A hard push from the front.'],
+        push: { from: 'front', strength: 'hard' },
+      },
+      {
+        label: 'Side',
+        lines: ['A push from the side.'],
+        push: { from: 'side', strength: 'gentle' },
+      },
+      {
+        label: 'Hard side',
+        lines: ['A hard push from the side.'],
+        push: { from: 'side', strength: 'hard' },
+      },
+      {
+        label: 'Pull',
+        lines: ['A pull on a string.'],
+        push: { from: 'behind', strength: 'gentle', pull: true },
+      },
+    ],
+  },
+  {
+    id: 'g.vibration',
+    title: 'Vibration',
+    kind: 'explore',
+    assumptions: ['One sound maker at a time.', 'Wiggle marks mean it is shaking.'],
+    figure: { kind: 'vibration' },
+    scenes: (['band', 'drum', 'bell', 'voice'] as const).flatMap((thing) => [
+      { label: `${thing} still`, lines: ['Still.'], vibrate: { thing, shaking: false } },
+      { label: `${thing} shaking`, lines: ['Shaking.'], vibrate: { thing, shaking: true } },
+    ]),
+  },
+  {
+    id: 'g.sky',
+    title: 'Sky',
+    kind: 'explore',
+    assumptions: ['Facing south: East is on the left.', 'The dotted arc is the sun’s path.'],
+    figure: { kind: 'sky' },
+    scenes: [
+      { label: 'East', lines: ['Morning.'], sky: { body: 'sun', at: 'east' } },
+      { label: 'High', lines: ['Midday.'], sky: { body: 'sun', at: 'high' } },
+      { label: 'West', lines: ['Evening.'], sky: { body: 'sun', at: 'west' } },
+      { label: 'Night', lines: ['Night.'], sky: { body: 'night', at: 'high' } },
+    ],
+  },
+  {
+    id: 'g.static',
+    title: 'Static',
+    kind: 'explore',
+    assumptions: ['Rubbing gives the balloon a charge.', 'The small marks are the charge.'],
+    figure: { kind: 'static' },
+    scenes: (['paper', 'hair', 'wall', 'balloon'] as const).flatMap((near) => [
+      { label: `${near}, plain`, lines: ['Not rubbed.'], charge: { rubbed: false, near } },
+      { label: `${near}, rubbed`, lines: ['Rubbed.'], charge: { rubbed: true, near } },
+    ]),
+  },
+  {
+    id: 'g.shadows',
+    title: 'Light and shadows',
+    kind: 'explore',
+    assumptions: ['The lamp is the only light.', 'The dashed line is the edge of the light.'],
+    figure: { kind: 'lightPath' },
+    scenes: [
+      {
+        label: 'High lamp',
+        lines: ['High lamp.'],
+        light: { lamp: true, wall: true, height: 'high' },
+      },
+      { label: 'Low lamp', lines: ['Low lamp.'], light: { lamp: true, wall: true, height: 'low' } },
+      { label: 'Clear', lines: ['Clear.'], light: { lamp: true, blocker: 'clear', height: 'low' } },
+      {
+        label: 'Cloudy',
+        lines: ['Cloudy.'],
+        light: { lamp: true, blocker: 'cloudy', height: 'low' },
+      },
+      { label: 'Solid', lines: ['Solid.'], light: { lamp: true, blocker: 'solid', height: 'low' } },
+      { label: 'Off', lines: ['Lamp off.'], light: { lamp: false, wall: true } },
+    ],
+  },
+  {
+    id: 'g.times-table',
+    title: 'Times table',
+    kind: 'explore',
+    assumptions: ['Rows and columns go from 0 to 10.', 'Lit cells show the pattern.'],
+    figure: { kind: 'timesTable' },
+    scenes: [
+      { label: 'Row of 4', lines: ['The 4 row.'], table: { op: '×', rows: [4] } },
+      { label: 'Even', lines: ['Even answers.'], table: { op: '×', cells: 'even' } },
+      { label: 'Mirror', lines: ['The mirror line.'], table: { op: '×', mirror: true } },
+      { label: 'Addition', lines: ['Odd sums.'], table: { op: '+', cells: 'odd' } },
+    ],
+  },
+  {
+    id: 'g.card-figures',
+    title: 'Card figures',
+    kind: 'sort',
+    question: 'Every card figure, in two groups.',
+    assumptions: ['Tap a card, then a group.', 'The drawings are what matter here.'],
+    bins: [
+      { id: 'shapes', label: 'Shapes', why: 'Shapes, solids and cut shapes.' },
+      { id: 'things', label: 'Things', why: 'Bars, dots, lines and everyday things.' },
+    ],
+    cards: [
+      ...(['sphere', 'cube', 'cylinder', 'cone', 'box'] as const).map((shape) => ({
+        label: shape,
+        bin: 'shapes',
+        figure: { kind: 'solid' as const, shape },
+      })),
+      {
+        label: 'Circle in 4',
+        bin: 'shapes',
+        figure: { kind: 'cut', shape: 'circle', parts: 4, equal: true, shaded: 1 },
+      },
+      {
+        label: 'Circle, unequal',
+        bin: 'shapes',
+        figure: { kind: 'cut', shape: 'circle', parts: 2, equal: false, shaded: 1 },
+      },
+      {
+        label: 'Square in 4',
+        bin: 'shapes',
+        figure: { kind: 'cut', shape: 'square', parts: 4, equal: true, shaded: 3 },
+      },
+      {
+        label: 'Square, diagonal',
+        bin: 'shapes',
+        figure: {
+          kind: 'cut',
+          shape: 'square',
+          parts: 4,
+          equal: true,
+          cuts: 'diagonal',
+          shaded: 1,
+        },
+      },
+      {
+        label: 'Strips in 3',
+        bin: 'shapes',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 3, equal: true, shaded: 2 },
+      },
+      {
+        label: 'Strips, unequal',
+        bin: 'shapes',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 3, equal: false },
+      },
+      {
+        label: 'Curved side',
+        bin: 'shapes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 90],
+            [90, 90],
+            [90, 30],
+            [10, 30],
+          ],
+          curved: 2,
+        },
+      },
+      {
+        label: 'Rectangle, marks',
+        bin: 'shapes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 25],
+            [95, 25],
+            [95, 75],
+            [5, 75],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Rhombus, marks',
+        bin: 'shapes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 0],
+            [85, 50],
+            [50, 100],
+            [15, 50],
+          ],
+          marks: true,
+        },
+      },
+      {
+        label: 'Kite, marks',
+        bin: 'shapes',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 0],
+            [80, 30],
+            [50, 100],
+            [20, 30],
+          ],
+          marks: true,
+        },
+      },
+      { label: 'Bar, cubes', bin: 'things', figure: { kind: 'bar', length: 6, units: 'cubes' } },
+      { label: 'Bar, gaps', bin: 'things', figure: { kind: 'bar', length: 6, units: 'gap' } },
+      {
+        label: 'Bar, overlap',
+        bin: 'things',
+        figure: { kind: 'bar', length: 6, units: 'overlap' },
+      },
+      { label: 'Bar, offset', bin: 'things', figure: { kind: 'bar', length: 6, units: 'offset' } },
+      { label: '7 dots', bin: 'things', figure: { kind: 'dots', count: 7 } },
+      {
+        label: 'Two fifths and one half',
+        bin: 'things',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [2, 5],
+            [1, 2],
+          ],
+        },
+      },
+      { label: 'Segment', bin: 'things', figure: { kind: 'ray', arrows: 0 } },
+      { label: 'Ray', bin: 'things', figure: { kind: 'ray', arrows: 1 } },
+      { label: 'Line', bin: 'things', figure: { kind: 'ray', arrows: 2 } },
+      { label: 'Point', bin: 'things', figure: { kind: 'ray', arrows: 0, point: true } },
+      ...(
+        [
+          'sun',
+          'moon',
+          'feather',
+          'leaf',
+          'crayon',
+          'sock',
+          'brick',
+          'watermelon',
+          'backpack',
+          'bowling ball',
+          'paper clip',
+          'door',
+          'eraser',
+          'bed',
+          'bus',
+        ] as const
+      ).map((icon) => ({ label: icon, bin: 'things', figure: { kind: 'icon' as const, icon } })),
+    ],
+  },
+  {
+    id: 'g.bar-order',
+    title: 'Ribbons in order',
+    kind: 'sequence',
+    question: 'Put the ribbons from shortest to longest.',
+    assumptions: ['Each ribbon is measured in cubes.', 'The figure shows each ribbon.'],
+    stages: [3, 5, 8, 11].map((n) => ({
+      label: `${n} cubes`,
+      figure: { kind: 'bar' as const, length: n, units: 'cubes' as const },
+    })),
   },
 ];

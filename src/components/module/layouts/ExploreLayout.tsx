@@ -7,6 +7,7 @@ import type { ExploreLayout as Spec, Figure, Scene } from '@/data/modules/layout
 import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 
 import { Canvas, Caption, ChartText } from '../reps/common';
+import { Arrow, Push, Sky, Static, TimesTable, Vibration } from './figures';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -89,35 +90,17 @@ function FigureView({
       return <Particles state={scene.particles ?? { state: 'solid' }} c={c} />;
     case 'earth':
       return <Earth earth={scene.earth ?? { spot: 'top' }} c={c} />;
+    case 'push':
+      return <Push push={scene.push ?? { from: 'behind', strength: 'gentle' }} c={c} />;
+    case 'vibration':
+      return <Vibration vibrate={scene.vibrate ?? { thing: 'band', shaking: false }} c={c} />;
+    case 'sky':
+      return <Sky sky={scene.sky ?? { body: 'sun', at: 'high' }} c={c} />;
+    case 'static':
+      return <Static charge={scene.charge ?? { rubbed: false, near: 'paper' }} c={c} />;
+    case 'timesTable':
+      return <TimesTable table={scene.table ?? { op: '×' }} c={c} />;
   }
-}
-
-/** An arrow from (x1, y1) to (x2, y2) with a small head at the end. */
-function Arrow({
-  x1,
-  y1,
-  x2,
-  y2,
-  c,
-}: {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  c: Palette;
-}) {
-  const a = Math.atan2(y2 - y1, x2 - x1);
-  const head = 9;
-  const hx = (t: number) => x2 - head * Math.cos(a + t);
-  const hy = (t: number) => y2 - head * Math.sin(a + t);
-  return (
-    <Path
-      d={`M ${x1} ${y1} L ${x2} ${y2} M ${hx(0.45)} ${hy(0.45)} L ${x2} ${y2} L ${hx(-0.45)} ${hy(-0.45)}`}
-      stroke={c.chartHighlight}
-      strokeWidth={chart.stroke}
-      fill="none"
-    />
-  );
 }
 
 /**
@@ -126,6 +109,14 @@ function Arrow({
  * more before it reaches the eye.
  */
 function LightPath({ light, c }: { light: NonNullable<Scene['light']>; c: Palette }) {
+  if (
+    light.wall ||
+    light.blocker === 'clear' ||
+    light.blocker === 'cloudy' ||
+    light.blocker === 'solid'
+  ) {
+    return <Shadow light={light} c={c} />;
+  }
   return (
     <Canvas aspect={0.58}>
       {({ w, h }) => {
@@ -258,6 +249,147 @@ function LightPath({ light, c }: { light: NonNullable<Scene['light']>; c: Palett
                   : light.blocker === 'mirror'
                     ? 'lamp → apple → mirror → eye'
                     : 'lamp → apple → eye'}
+            </ChartText>
+          </Svg>
+        );
+      }}
+    </Canvas>
+  );
+}
+
+/**
+ * A lamp, a thing on the floor and a wall. Light that the thing stops leaves a shadow on the
+ * far side, traced from the lamp over the thing's top: a low lamp throws a long shadow (up
+ * the wall when it reaches it), a high lamp a short one. A clear thing lets the light
+ * through (no shadow), a cloudy one lets some through (a pale shadow), a solid one none.
+ */
+function Shadow({ light, c }: { light: NonNullable<Scene['light']>; c: Palette }) {
+  const material =
+    light.blocker === 'clear' || light.blocker === 'cloudy' ? light.blocker : 'solid';
+  return (
+    <Canvas aspect={0.58}>
+      {({ w, h }) => {
+        const floor = h - 34;
+        const wallX = w - 36;
+        const thing = { x: w * 0.42, w: 22, h: 60 };
+        const lamp = { x: 36, y: light.height === 'low' ? floor - 80 : 34 };
+        const corner = { x: thing.x + thing.w, y: floor - thing.h };
+        // Where the line from the lamp over the thing's top meets the floor, or the wall.
+        const floorX = lamp.x + ((corner.x - lamp.x) * (floor - lamp.y)) / (corner.y - lamp.y);
+        const reachesWall = floorX >= wallX;
+        const wallY = lamp.y + ((wallX - lamp.x) * (corner.y - lamp.y)) / (corner.x - lamp.x);
+        const shadow = reachesWall
+          ? `M ${corner.x} ${floor} L ${wallX} ${floor} L ${wallX} ${wallY} Z`
+          : `M ${corner.x} ${floor} L ${floorX} ${floor} L ${corner.x} ${floor} Z`;
+        const tipX = reachesWall ? wallX : floorX;
+        const tipY = reachesWall ? wallY : floor;
+        const lit = light.lamp;
+        return (
+          <Svg width={w} height={h}>
+            <Rect
+              x={wallX}
+              y={4}
+              width={30}
+              height={floor - 4}
+              fill={c.chartFill}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            <Line
+              x1={0}
+              y1={floor}
+              x2={w}
+              y2={floor}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            {lit && material !== 'clear' ? (
+              <G opacity={material === 'cloudy' ? 0.35 : 1}>
+                {reachesWall ? (
+                  <Path d={shadow} fill={c.chartNight} />
+                ) : (
+                  <Rect
+                    x={corner.x}
+                    y={floor - 5}
+                    width={Math.max(0, floorX - corner.x)}
+                    height={10}
+                    rx={5}
+                    fill={c.chartNight}
+                  />
+                )}
+              </G>
+            ) : null}
+            {lit ? (
+              <Path
+                d={`M ${lamp.x} ${lamp.y} L ${tipX} ${tipY}`}
+                stroke={c.chartHighlight}
+                strokeWidth={chart.strokeLight}
+                strokeDasharray={chart.dash}
+              />
+            ) : null}
+            <Rect
+              x={thing.x}
+              y={floor - thing.h}
+              width={thing.w}
+              height={thing.h}
+              fill={
+                material === 'solid' ? c.chartInk : material === 'cloudy' ? c.chartGrid : 'none'
+              }
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            {material === 'clear' ? (
+              <Line
+                x1={thing.x + 6}
+                y1={floor - thing.h + 10}
+                x2={thing.x + 6}
+                y2={floor - thing.h + 30}
+                stroke={c.chartMuted}
+                strokeWidth={chart.strokeLight}
+              />
+            ) : null}
+            <Circle
+              cx={lamp.x}
+              cy={lamp.y}
+              r={12}
+              fill={lit ? c.chartHighlight : c.chartSurface}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            <Line
+              x1={lamp.x}
+              y1={lamp.y + 12}
+              x2={lamp.x}
+              y2={floor}
+              stroke={c.chartInk}
+              strokeWidth={chart.strokeLight}
+            />
+            <ChartText x={lamp.x} y={floor + 16} fontSize={chart.tiny} textAnchor="middle">
+              lamp
+            </ChartText>
+            <ChartText
+              x={thing.x + thing.w / 2}
+              y={floor + 16}
+              fontSize={chart.tiny}
+              textAnchor="middle"
+            >
+              {light.blocker === 'clear' || light.blocker === 'cloudy' || light.blocker === 'solid'
+                ? light.blocker
+                : 'block'}
+            </ChartText>
+            <ChartText x={wallX + 15} y={floor + 16} fontSize={chart.tiny} textAnchor="middle">
+              wall
+            </ChartText>
+            <ChartText x={w / 2} y={h - 4} fontSize={chart.label} textAnchor="middle">
+              {!lit
+                ? 'lamp off: no shadow'
+                : material === 'clear'
+                  ? 'the light goes through: no shadow'
+                  : material === 'cloudy'
+                    ? 'some light goes through: a pale shadow'
+                    : reachesWall
+                      ? 'a long shadow, up the wall'
+                      : 'a short shadow'}
             </ChartText>
           </Svg>
         );

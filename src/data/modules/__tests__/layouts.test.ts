@@ -6,7 +6,25 @@
 import { getSkill } from '@/data/selectors';
 
 import { LAYOUTS, gradeOf, moduleOwner } from '..';
-import type { LayoutDef } from '../layouts';
+import type { Figure, LayoutDef, Scene } from '../layouts';
+
+/** The scene field each explore figure draws from. */
+const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
+  parts: 'part',
+  position: 'position',
+  clock: 'time',
+  dots: 'dots',
+  magnets: 'poles',
+  flashes: 'flashes',
+  lightPath: 'light',
+  particles: 'particles',
+  earth: 'earth',
+  push: 'push',
+  vibration: 'vibrate',
+  sky: 'sky',
+  static: 'charge',
+  timesTable: 'table',
+};
 
 /** Longest sentence per grade (as in standards.test.ts). */
 function wordLimit(grade: string | undefined): number | undefined {
@@ -116,14 +134,14 @@ describe.each(LAYOUTS.map((l) => [l.id, l] as [string, LayoutDef]))('layout %s',
           if (l.figure.kind === 'parts') {
             expect(l.figure.parts.map((p) => p.name)).toContain(s.part);
           }
-          if (l.figure.kind === 'position') expect(s.position).toBeDefined();
-          if (l.figure.kind === 'clock') expect(s.time).toBeDefined();
-          if (l.figure.kind === 'dots') expect(s.dots).toBeDefined();
-          if (l.figure.kind === 'magnets') expect(s.poles).toBeDefined();
-          if (l.figure.kind === 'flashes') expect(s.flashes).toBeDefined();
-          if (l.figure.kind === 'lightPath') expect(s.light).toBeDefined();
-          if (l.figure.kind === 'particles') expect(s.particles).toBeDefined();
-          if (l.figure.kind === 'earth') expect(s.earth).toBeDefined();
+          // Every figure but `parts` reads its scene from one field.
+          const field = SCENE_FIELD[l.figure.kind];
+          if (field) expect(s[field]).toBeDefined();
+          if (s.table) {
+            for (const n of [...(s.table.rows ?? []), ...(s.table.columns ?? [])]) {
+              expect(n >= 0 && n <= 10).toBe(true);
+            }
+          }
         }
         break;
       case 'observe':

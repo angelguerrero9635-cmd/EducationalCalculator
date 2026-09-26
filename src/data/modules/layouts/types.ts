@@ -36,10 +36,66 @@ export type CardFigure =
   | { kind: 'lines'; angle: number; parallel?: boolean }
   /** A big letter. */
   | { kind: 'letter'; text: string }
-  /** A shape from corners in a 0–100 box (y down), closed unless `open` (a corner, clock hands). */
-  | { kind: 'polygon'; points: [number, number][]; open?: boolean }
+  /**
+   * A shape from corners in a 0–100 box (y down), closed unless `open` (a corner, clock hands).
+   * `curved` draws that side (from corner i to the next) as an arc; `marks` adds the square
+   * corner marks and equal-side ticks, worked out from the corners.
+   */
+  | {
+      kind: 'polygon';
+      points: [number, number][];
+      open?: boolean;
+      curved?: number;
+      marks?: boolean;
+    }
   | { kind: 'circle' }
-  | { kind: 'heart' };
+  | { kind: 'heart' }
+  /** A solid shape in outline. */
+  | { kind: 'solid'; shape: 'sphere' | 'cube' | 'cylinder' | 'cone' | 'box' }
+  /**
+   * A circle, square or rectangle cut into `parts`, equal or not, with the first `shaded`
+   * parts shaded. Straight cuts are strips (a square in fourths is a 2 × 2 grid); diagonal
+   * cuts go corner to corner (2 or 4 parts).
+   */
+  | {
+      kind: 'cut';
+      shape: 'circle' | 'square' | 'rectangle';
+      parts: number;
+      equal: boolean;
+      cuts?: 'straight' | 'diagonal';
+      shaded?: number;
+    }
+  /**
+   * A ribbon `length` cubes long, with cubes under it laid end to end (`cubes`), with gaps,
+   * overlapping, or not lined up with the ribbon's start (`offset`).
+   */
+  | { kind: 'bar'; length: number; units?: 'cubes' | 'gap' | 'overlap' | 'offset' }
+  /** Dots in pairs, two rows; an odd count leaves one without a partner. */
+  | { kind: 'dots'; count: number }
+  /** A small drawing of an everyday thing. */
+  | { kind: 'icon'; icon: CardIcon }
+  /** Fraction bars of the same whole, one under the other: [shaded parts, parts]. */
+  | { kind: 'fractionBars'; bars: [number, number][] }
+  /** A line with no arrowheads (a segment, with its endpoints), one (a ray) or two (a line); or one point. */
+  | { kind: 'ray'; arrows: 0 | 1 | 2; point?: boolean };
+
+/** The everyday things a card can show. */
+export type CardIcon =
+  | 'sun'
+  | 'moon'
+  | 'feather'
+  | 'leaf'
+  | 'crayon'
+  | 'sock'
+  | 'brick'
+  | 'watermelon'
+  | 'backpack'
+  | 'bowling ball'
+  | 'paper clip'
+  | 'door'
+  | 'eraser'
+  | 'bed'
+  | 'bus';
 
 /** Stages to put in order, each with how long it takes; the total under the strip. */
 export interface SequenceLayout extends LayoutBase {
@@ -47,7 +103,7 @@ export interface SequenceLayout extends LayoutBase {
   /** "Put the stages in order." */
   question: string;
   /** In the right order. */
-  stages: { label: string; span?: number }[];
+  stages: { label: string; span?: number; figure?: CardFigure }[];
   /** The unit of the spans ("days"). */
   unit?: string;
   /** Label of the sum of the spans ("Whole cycle"). */
@@ -76,7 +132,17 @@ export type Figure =
    * A globe with a person and a dropped ball at a spot, the pull arrow toward the center; a
    * scene can throw the ball up, or light one half from a sun and mark the time of day.
    */
-  | { kind: 'earth' };
+  | { kind: 'earth' }
+  /** A ball on the floor seen from above, a hand pushing (or a string pulling) and the path after. */
+  | { kind: 'push' }
+  /** One sound maker, still or shaking, with sound marks when it shakes. */
+  | { kind: 'vibration' }
+  /** The sky over a house from East to West: the sun on its path, or the night sky. */
+  | { kind: 'sky' }
+  /** A balloon, plain or rubbed, near paper bits, hair, a wall or a second balloon. */
+  | { kind: 'static' }
+  /** An addition or times table from 0 to 10; a scene lights rows, columns, cells or the mirror line. */
+  | { kind: 'timesTable' };
 
 export interface Scene {
   label: string;
@@ -94,8 +160,17 @@ export interface Scene {
   poles?: 'N–S' | 'N–N' | 'S–S';
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
-  /** Whether the lamp is on, and what sits in the light's way (a `lightPath` figure). */
-  light?: { lamp: boolean; blocker?: 'hand' | 'mirror' };
+  /**
+   * Whether the lamp is on and what sits in the light's way (a `lightPath` figure). With a
+   * `wall`, or a blocker made of a material (clear, cloudy, solid), the figure is a lamp, the
+   * thing and a wall with its shadow; `height` puts the lamp low (a long shadow) or high.
+   */
+  light?: {
+    lamp: boolean;
+    blocker?: 'hand' | 'mirror' | 'clear' | 'cloudy' | 'solid';
+    height?: 'low' | 'high';
+    wall?: boolean;
+  };
   /** How the particles are packed (a `particles` figure). */
   particles?: { state: 'solid' | 'liquid' | 'gas'; mixed?: boolean; squeezed?: boolean };
   /** Where the person stands, whether the ball is thrown, and the time of day when lit (an `earth` figure). */
@@ -103,6 +178,22 @@ export interface Scene {
     spot: 'top' | 'side' | 'bottom';
     thrown?: boolean;
     sunlit?: 'morning' | 'noon' | 'evening' | 'midnight';
+  };
+  /** Where the push comes from, how hard, and whether it is a pull on a string (a `push` figure). */
+  push?: { from: 'behind' | 'front' | 'side'; strength: 'gentle' | 'hard'; pull?: boolean };
+  /** The sound maker and whether it is shaking (a `vibration` figure). */
+  vibrate?: { thing: 'band' | 'drum' | 'bell' | 'voice'; shaking: boolean };
+  /** The sun at a spot on its path, or the night sky (a `sky` figure). */
+  sky?: { body: 'sun' | 'night'; at?: 'east' | 'high' | 'west' };
+  /** Whether the balloon was rubbed, and what it is near (a `static` figure). */
+  charge?: { rubbed: boolean; near: 'paper' | 'hair' | 'wall' | 'balloon' };
+  /** What the table shows and lights (a `timesTable` figure). Rows and columns are 0–10. */
+  table?: {
+    op: '×' | '+';
+    rows?: number[];
+    columns?: number[];
+    cells?: 'even' | 'odd';
+    mirror?: boolean;
   };
 }
 

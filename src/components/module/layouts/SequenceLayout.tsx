@@ -6,6 +6,8 @@ import { Text } from '@/components/Text';
 import type { SequenceLayout as Spec } from '@/data/modules/layouts';
 import { font, radius, space, usePalette } from '@/theme';
 
+import { CardFigureView } from './CardFigure';
+
 /** The stages in a fixed mixed-up order (never the right one), from the page id. */
 function mixed(n: number, seedText: string): number[] {
   let seed = [...seedText].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) % 100003, 3);
@@ -64,6 +66,13 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
                 onPress={() => tap(i)}
                 style={[styles.chip, { borderColor: c.border, backgroundColor: c.card }]}
               >
+                {spec.stages[i]!.figure ? (
+                  <CardFigureView
+                    figure={spec.stages[i]!.figure!}
+                    ink={c.text}
+                    shade={c.chartHighlight}
+                  />
+                ) : null}
                 <Text style={[styles.chipText, { color: c.text }]}>{spec.stages[i]!.label}</Text>
               </Pressable>
             ))
@@ -85,6 +94,9 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
             ]}
           >
             <Text style={[styles.slotNumber, { color: c.textMuted }]}>{i + 1}</Text>
+            {i < placed && stage.figure ? (
+              <CardFigureView figure={stage.figure} ink={c.text} shade={c.chartHighlight} />
+            ) : null}
             <Text style={[styles.slotText, { color: c.text }]}>
               {i < placed ? stage.label : '?'}
             </Text>
@@ -133,6 +145,7 @@ const styles = StyleSheet.create({
   chip: {
     minHeight: 44,
     justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: space.sm,
     paddingHorizontal: space.md,
     borderWidth: 1.5,

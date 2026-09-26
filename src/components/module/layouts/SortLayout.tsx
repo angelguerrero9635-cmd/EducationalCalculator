@@ -1,109 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import Svg, { Circle, Line, Path, Polygon, Polyline, Text as SvgText } from 'react-native-svg';
-
 import { Button } from '@/components/Button';
 import { Text } from '@/components/Text';
-import type { CardFigure, SortLayout as Spec } from '@/data/modules/layouts';
-import { chart, font, radius, space, usePalette } from '@/theme';
-
-/** The drawing on a card, 48 px square. */
-function Figure({ figure, ink }: { figure: CardFigure; ink: string }) {
-  const S = 48;
-  const m = 6;
-  switch (figure.kind) {
-    case 'lines': {
-      const t = (figure.angle * Math.PI) / 180;
-      const L = (S - 2 * m) / 2;
-      const along = (cx: number, cy: number, a: number) => (
-        <Line
-          key={`${cx}${cy}`}
-          x1={cx - L * Math.cos(a)}
-          y1={cy + L * Math.sin(a)}
-          x2={cx + L * Math.cos(a)}
-          y2={cy - L * Math.sin(a)}
-          stroke={ink}
-          strokeWidth={chart.stroke}
-        />
-      );
-      if (figure.parallel) {
-        // Two lines the same way, offset across their direction.
-        const ox = 8 * Math.sin(t);
-        const oy = 8 * Math.cos(t);
-        return (
-          <Svg width={S} height={S}>
-            {along(S / 2 - ox, S / 2 - oy, t)}
-            {along(S / 2 + ox, S / 2 + oy, t)}
-          </Svg>
-        );
-      }
-      // One flat line and one at the angle, crossing in the middle.
-      return (
-        <Svg width={S} height={S}>
-          {along(S / 2, S / 2, 0)}
-          {along(S / 2, S / 2, t)}
-        </Svg>
-      );
-    }
-    case 'letter':
-      return (
-        <Svg width={S} height={S}>
-          <SvgText
-            x={S / 2}
-            y={S / 2 + 12}
-            fontSize={34}
-            fontWeight="700"
-            fontFamily="sans-serif"
-            textAnchor="middle"
-            fill={ink}
-          >
-            {figure.text}
-          </SvgText>
-        </Svg>
-      );
-    case 'polygon': {
-      const k = (S - 2 * m) / 100;
-      const Shape = figure.open ? Polyline : Polygon;
-      return (
-        <Svg width={S} height={S}>
-          <Shape
-            points={figure.points.map(([x, y]) => `${m + x * k},${m + y * k}`).join(' ')}
-            fill="none"
-            stroke={ink}
-            strokeWidth={chart.stroke}
-            strokeLinejoin="round"
-          />
-        </Svg>
-      );
-    }
-    case 'circle':
-      return (
-        <Svg width={S} height={S}>
-          <Circle
-            cx={S / 2}
-            cy={S / 2}
-            r={S / 2 - m}
-            fill="none"
-            stroke={ink}
-            strokeWidth={chart.stroke}
-          />
-        </Svg>
-      );
-    case 'heart':
-      return (
-        <Svg width={S} height={S}>
-          <Path
-            d={`M ${S / 2} ${S - m} L ${m} ${S / 2 - 4} A 9.5 9.5 0 0 1 ${S / 2} ${S / 2 - 12} A 9.5 9.5 0 0 1 ${S - m} ${S / 2 - 4} Z`}
-            fill="none"
-            stroke={ink}
-            strokeWidth={chart.stroke}
-            strokeLinejoin="round"
-          />
-        </Svg>
-      );
-  }
-}
+import type { SortLayout as Spec } from '@/data/modules/layouts';
+import { CardFigureView } from './CardFigure';
+import { font, radius, space, usePalette } from '@/theme';
 
 /** A stable shuffle from the card labels, so the page opens the same way every time. */
 function shuffled<T>(items: T[], seedText: string): T[] {
@@ -180,7 +82,9 @@ export function SortLayout({ spec }: { spec: Spec }) {
                 },
               ]}
             >
-              {card.figure ? <Figure figure={card.figure} ink={c.text} /> : null}
+              {card.figure ? (
+                <CardFigureView figure={card.figure} ink={c.text} shade={c.chartHighlight} />
+              ) : null}
               <Text style={[styles.cardText, { color: c.text }]}>{card.label}</Text>
             </Pressable>
           ))
