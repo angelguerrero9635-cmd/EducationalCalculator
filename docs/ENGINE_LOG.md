@@ -65,6 +65,25 @@ with a gallery page (`/gallery`, now showing layout demos too) and a harness che
   > the direction of each step would be a value a Grade 2 student reads as −1 (the hop switch
   > is built for when a page can hide that value).
 
+## Grade 3 rebuild (math 3 plan)
+
+- **A choice of scale or key** (`allowed: [2, 5, 10]`): the bar graph reads its line spacing
+  from a value (`bars.scale` names it; `standalone` because no rule uses it), and the picture
+  graph's key is 2, 5 or 10 with half pictures (`step: 0.5`); the work counts the whole
+  pictures and then adds half the key.
+- **The ruler reads its marks per inch from a value** (`ruler.marks` takes an id), so one
+  page reads halves or quarters; the harness checks it is 2 or 4. The page no longer writes
+  "9/4 inch" but "2 inches of 4 marks and 1 mark".
+- **A range can enforce an order**: the cut-out page uses "width left" and "height left" (at
+  least 1) instead of a constraint the brute-force search could not reject well.
+- **Unreachable values.** A picture graph's total with a key of 5 or 10 must be a multiple of
+  5 past 60; the solver can't see that, so the total stays on the bar graph page only. A
+  perimeter `multipleOf: 2` failed in miles (the check runs in centimeters); the same-area
+  page keeps to metric.
+- `tradeLines` (the trades a student writes, "No tens to trade: trade 1 hundred for 10 tens")
+  moved to `work.ts` for Grades 2 and 3.
+- Harness phrases: "N inches of 4 marks and 1 mark", "N marks".
+
 ## Science Grades 4–5 (Section 6, first review)
 
 - `apart` (no direction) was used for a rise, a loss and how much farther, so a drop from

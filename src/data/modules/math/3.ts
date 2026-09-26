@@ -4,7 +4,7 @@
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
 import type { Values } from '@/engine/types';
-import { atLeast, div, sumAll, whole } from '../helpers';
+import { apart, atLeast, div, whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 import {
   addAll,
@@ -15,6 +15,7 @@ import {
   subtractStrategy,
   sumSteps,
   timesWork,
+  tradeLines,
 } from '../work';
 
 // ─── Shared pieces ──────────────────────────────────────────────────────────
@@ -228,6 +229,54 @@ const toHour = (t: number) => {
   const h = t / 60;
   return Number.isInteger(h) ? h || 12 : undefined;
 };
+
+/**
+ * One column of a scaled picture graph: count = pictures × key. A column can end in half a
+ * picture (half the key), so the work counts the whole pictures and then adds the half.
+ */
+function pictureColumn(i: string, fruit: string) {
+  const [p, n] = [`p${i}`, `n${i}`];
+  const { relation } = times(
+    `${n} = ${p} × k`,
+    [p, 'k', n],
+    ['pictures', 'number each picture stands for', 'count'],
+  );
+  const halfOf = (v: Values) => v[p]! % 1 !== 0;
+  const steps: Record<string, StepText> = {
+    [n]: {
+      expr: `{${p}} × {k}`,
+      how: 'Count by the key once for each picture. Half a picture is half the key.',
+      work: (v) => {
+        const whole = Math.floor(v[p]!);
+        if (!halfOf(v)) return timesWork(whole, v.k!);
+        return [
+          ...(whole > 0 ? [`${whole} × ${v.k} = ${whole * v.k!}`] : []),
+          `Half a picture: ${v.k} ÷ 2 = ${v.k! / 2}`,
+          ...(whole > 0 ? [`${whole * v.k!} + ${v.k! / 2} = ${v[n]}`] : []),
+        ];
+      },
+    },
+    [p]: {
+      expr: `{${n}} ÷ {k}`,
+      how: `Divide the ${fruit} by the key. Half the key left over is half a picture.`,
+      work: (v) => {
+        if (!halfOf(v)) return divideWork(v[n]!, v.k!);
+        const whole = Math.floor(v[p]!);
+        return [
+          `${v[n]} − ${v.k! / 2} = ${v[n]! - v.k! / 2} (take away half a picture)`,
+          `${v[n]! - v.k! / 2} ÷ ${v.k} = ${whole}`,
+        ];
+      },
+      note: (v) => (halfOf(v) ? `(${Math.floor(v[p]!)} pictures and a half)` : ''),
+    },
+    k: {
+      expr: `{${n}} ÷ {${p}}`,
+      how: 'Divide the count by the pictures.',
+      work: (v) => (halfOf(v) ? [] : divideWork(v[n]!, v[p]!, 'second')),
+    },
+  };
+  return { relation, steps };
+}
 
 export const MATH_3_MODULES: ModuleDef[] = [
   {
@@ -1098,6 +1147,170 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  // ── Add and subtract within 1,000 (3.NBT.2) ──
+  {
+    id: 'm.3.add-sub-1000',
+    assumptions: [
+      'Line up hundreds, tens and ones. Add or take away one place at a time, starting with the ones.',
+      'Trade 10 ones for 1 ten, or 10 tens for 1 hundred, when a place gets past 9.',
+      'Check a take-away by adding back: 383 − 138 = 245, and 245 + 138 = 383.',
+    ],
+    variables: [
+      whole('a', 'a', 'First number', 0, 1000),
+      whole('b', 'b', 'Second number', 0, 1000),
+      whole('c', 'c', 'Total', 0, 1000),
+    ],
+    relations: [
+      {
+        id: 'c = a + b',
+        display: '{a} + {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.c! - v.a! - v.b!,
+        solve: {
+          c: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.c! - v.b!,
+          b: (v: Values) => v.c! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      'c = a + b': {
+        c: {
+          expr: '{a} + {b}',
+          how: 'Add the ones, then the tens, then the hundreds. Trade 10 for 1 of the next place.',
+          work: (v) => addStrategy(v.a!, v.b!),
+        },
+        a: {
+          expr: '{c} − {b}',
+          how: 'Take the second number away from the total. Trade when a place has too few.',
+          work: (v) => tradeLines(v.c!, v.b!),
+        },
+        b: {
+          expr: '{c} − {a}',
+          how: 'Take the first number away from the total. Trade when a place has too few.',
+          work: (v) => tradeLines(v.c!, v.a!),
+        },
+      },
+    },
+    example: { a: 245, b: 138, c: 383 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'baseTen',
+      groups: ['a', 'b'],
+      total: 'c',
+      controls: [
+        { var: 'a', steps: [1, 10, 100] },
+        { var: 'b', steps: [1, 10, 100] },
+      ],
+    },
+  },
+  {
+    id: 'm.3.add-sub-1000~subtract-zeros',
+    title: 'Take away across zeros',
+    use: 'Use this to take away from a number with zeros, like 400 − 162.',
+    assumptions: [
+      'No ones and no tens to trade? Trade 1 hundred for 10 tens first.',
+      'Then trade 1 of those tens for 10 ones. Now every place has enough.',
+      'Check by adding back what you took away.',
+    ],
+    variables: [
+      { ...whole('a', 'a', 'Start', 100, 1000), step: 100, multipleOf: 100 },
+      whole('b', 'b', 'Take away', 1, 999),
+      whole('c', 'c', 'Left', 0, 999),
+    ],
+    relations: [
+      {
+        id: 'a − b = c',
+        display: '{a} − {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.a! - v.b! - v.c!,
+        solve: {
+          c: (v: Values) => (v.b! > v.a! ? undefined : v.a! - v.b!),
+          a: (v: Values) => v.c! + v.b!,
+          b: (v: Values) => v.a! - v.c!,
+        },
+      },
+    ],
+    steps: {
+      'a − b = c': {
+        c: {
+          expr: '{a} − {b}',
+          how: 'Trade across the zeros, then take away each place.',
+          work: (v) => tradeLines(v.a!, v.b!),
+        },
+        a: {
+          expr: '{c} + {b}',
+          how: 'Put back what was taken away.',
+          work: (v) => addStrategy(v.c!, v.b!),
+        },
+        b: {
+          expr: '{a} − {c}',
+          how: 'Take what is left away from the start.',
+          work: (v) => tradeLines(v.a!, v.c!),
+        },
+      },
+    },
+    example: { a: 400, b: 162, c: 238 },
+    startWith: ['a', 'b'],
+    pictureLabels: ['b', 'c'],
+    representation: {
+      kind: 'baseTen',
+      groups: ['a'],
+      controls: [
+        { var: 'a', steps: [100] },
+        { var: 'b', steps: [1, 10, 100] },
+      ],
+    },
+  },
+  {
+    id: 'm.3.add-sub-1000~word',
+    title: 'Word problems within 1,000',
+    use: 'Use this for “The library had 526 books. It lent out 248. How many are left?”',
+    assumptions: [
+      'Find the whole and the parts. The whole is the books at the start.',
+      'Missing the whole? Add the parts. Missing a part? Take the other part from the whole.',
+    ],
+    variables: [
+      whole('w', 'w', 'Books at the start', 1, 1000),
+      whole('l', 'l', 'Books lent out', 0, 1000),
+      whole('r', 'r', 'Books left', 0, 1000),
+    ],
+    relations: [
+      {
+        id: 'w = l + r',
+        display: '{l} + {r} = {w}',
+        vars: ['w', 'l', 'r'],
+        residual: (v: Values) => v.w! - v.l! - v.r!,
+        solve: {
+          w: (v: Values) => v.l! + v.r!,
+          l: (v: Values) => v.w! - v.r!,
+          r: (v: Values) => v.w! - v.l!,
+        },
+      },
+    ],
+    steps: {
+      'w = l + r': {
+        r: {
+          expr: '{w} − {l}',
+          how: 'Take the books lent out away from the books at the start.',
+          work: (v) => tradeLines(v.w!, v.l!),
+        },
+        l: {
+          expr: '{w} − {r}',
+          how: 'Take the books left away from the books at the start.',
+          work: (v) => tradeLines(v.w!, v.r!),
+        },
+        w: {
+          expr: '{l} + {r}',
+          how: 'Add the books lent out and the books left.',
+          work: (v) => addStrategy(v.l!, v.r!),
+        },
+      },
+    },
+    example: { w: 526, l: 248, r: 278 },
+    startWith: ['w', 'l'],
+    representation: { kind: 'tape', parts: ['l', 'r'], total: 'w' },
+  },
   // ── Multiply by multiples of 10 (3.NBT.3) ──
   (() => {
     const tensTimes = times('p = a × t', ['a', 't', 'p'], ['number', 'tens', 'tens in the answer']);
@@ -1462,14 +1675,14 @@ export const MATH_3_MODULES: ModuleDef[] = [
     variables: [
       whole('h', 'h', 'Hour', 1, 12),
       { ...whole('m', 'm', 'Minutes past', 0, 59), digits: 2 },
-      whole('k', 'k', 'Long hand at or past', 0, 11),
+      whole('k', 'k', 'Last number the long hand passed', 0, 11),
       whole('e', 'e', 'Extra minutes', 0, 4),
     ],
     relations: [
       {
         id: 'k = fives in m',
-        display: 'At {m} minutes the long hand is at or past the {k}',
-        words: 'Fives in {m} = {k}',
+        display: 'At {m} minutes the long hand has passed the {k}',
+        words: 'Count by 5s to the last number the long hand passed: {k}',
         vars: ['k', 'm'],
         residual: (v) => v.k! - Math.floor(v.m! / 5),
         solve: { k: (v) => Math.floor(v.m! / 5), m: () => undefined },
@@ -1496,7 +1709,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
           how: 'Count by 5s as far as you can without going past the minutes.',
           work: (v) =>
             v.k! > 0
-              ? [`Count by 5s: ${countList(0, 5, v.k!)} → the long hand is at or past the ${v.k}`]
+              ? [`Count by 5s: ${countList(0, 5, v.k!)} → the long hand has passed the ${v.k}`]
               : [],
         },
       },
@@ -1538,7 +1751,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     variables: [
       whole('sh', 'h₁', 'Start hour', 1, 12),
       { ...whole('sm', 'm₁', 'Start minutes', 0, 59), digits: 2 },
-      whole('d', 'd', 'Minutes it takes', 0, 300),
+      whole('d', 'd', 'Minutes it takes', 1, 120),
       whole('eh', 'h₂', 'End hour', 1, 12),
       { ...whole('em', 'm₂', 'End minutes', 0, 59), digits: 2 },
     ],
@@ -1585,7 +1798,19 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'end minutes': {
         em: {
           expr: '{sm} + {d} past the hour',
-          how: 'Count on from the start time; the jumps are in the next step. Every 60 minutes is a new hour.',
+          how: 'Count on from the start time: to the next hour, then whole hours, then the rest.',
+          // With the start hour unknown, the minutes alone: every 60 is a new hour.
+          work: (v) =>
+            v.sh === undefined
+              ? [
+                  `${v.sm} + ${v.d} = ${v.sm! + v.d!} minutes`,
+                  ...(v.sm! + v.d! >= 60
+                    ? [
+                        `${v.sm! + v.d!} − ${60 * Math.floor((v.sm! + v.d!) / 60)} = ${v.em} past the hour`,
+                      ]
+                    : []),
+                ]
+              : timeHops(v.sh!, v.sm!, v.d!),
         },
         sm: {
           expr: '{d} minutes before {em} past the hour',
@@ -1599,8 +1824,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'start + time = end': {
         eh: {
           expr: 'the hour {d} minutes after {sh}:{sm}',
-          how: 'Count on from the start time: to the next hour, then whole hours, then the rest.',
-          work: (v) => timeHops(v.sh!, v.sm!, v.d!),
+          how: 'The jumps pass the hours. The last one lands in the end hour.',
           note: (v) => `(${clock(v.eh!, v.em!)})`,
         },
         d: {
@@ -1637,6 +1861,128 @@ export const MATH_3_MODULES: ModuleDef[] = [
       endMinute: 'em',
     },
   },
+  {
+    id: 'm.3.elapsed-time~start-time',
+    title: 'When did it start?',
+    use: 'Use this for “It ended at 4:20 after 35 minutes. When did it start?”',
+    assumptions: [
+      'Count back from the end: to the hour, then whole hours, then the minutes left.',
+      'After 12:59 the clock starts again at 1:00.',
+      '60 minutes make 1 hour.',
+    ],
+    variables: [
+      whole('sh', 'h₁', 'Start hour', 1, 12),
+      { ...whole('sm', 'm₁', 'Start minutes', 0, 59), digits: 2 },
+      whole('d', 'd', 'Minutes it takes', 1, 120),
+      whole('eh', 'h₂', 'End hour', 1, 12),
+      { ...whole('em', 'm₂', 'End minutes', 0, 59), digits: 2 },
+    ],
+    relations: [
+      {
+        id: 'end minutes',
+        display: '{sm} minutes + {d} minutes ends at {em} minutes past the hour',
+        words: '{sm} + {d} = {em}, past the hour',
+        vars: ['em', 'sm', 'd'],
+        residual: (v) => v.em! - ((v.sm! + v.d!) % 60),
+        solve: {
+          em: (v) => (v.sm! + v.d!) % 60,
+          sm: (v) => (((v.em! - v.d!) % 60) + 60) % 60,
+          // 20 minutes past could follow 35 minutes or 1 hour 35: the time taken needs the hours.
+          d: () => undefined,
+        },
+      },
+      {
+        id: 'start + time = end',
+        display: '{sh}:{sm} + {d} minutes = {eh}:{em}',
+        words: '{sh}:{sm} + {d} = {eh}:{em}',
+        vars: ['eh', 'em', 'sh', 'sm', 'd'],
+        // On a 12-hour clock: 12:30 + 45 minutes = 1:15.
+        residual: (v) => {
+          const r = mod720(at(v.eh!, v.em!) - at(v.sh!, v.sm!) - v.d!);
+          return r > 360 ? r - 720 : r;
+        },
+        solve: {
+          eh: (v) => toHour(mod720(at(v.sh!, v.sm!) + v.d! - v.em!)),
+          d: (v) => mod720(at(v.eh!, v.em!) - at(v.sh!, v.sm!)),
+          sh: (v) => toHour(mod720(at(v.eh!, v.em!) - v.d! - v.sm!)),
+          sm: (v) => {
+            const x = mod720(at(v.eh!, v.em!) - v.d! - 60 * (v.sh! % 12));
+            return x < 60 ? x : undefined;
+          },
+          em: (v) => {
+            const x = mod720(at(v.sh!, v.sm!) + v.d! - 60 * (v.eh! % 12));
+            return x < 60 ? x : undefined;
+          },
+        },
+      },
+    ],
+    steps: {
+      'end minutes': {
+        em: {
+          expr: '{sm} + {d} past the hour',
+          how: 'Count on from the start time: to the next hour, then whole hours, then the rest.',
+          // With the start hour unknown, the minutes alone: every 60 is a new hour.
+          work: (v) =>
+            v.sh === undefined
+              ? [
+                  `${v.sm} + ${v.d} = ${v.sm! + v.d!} minutes`,
+                  ...(v.sm! + v.d! >= 60
+                    ? [
+                        `${v.sm! + v.d!} − ${60 * Math.floor((v.sm! + v.d!) / 60)} = ${v.em} past the hour`,
+                      ]
+                    : []),
+                ]
+              : timeHops(v.sh!, v.sm!, v.d!),
+        },
+        sm: {
+          expr: '{d} minutes before {em} past the hour',
+          how: 'Count back the minutes from the end minutes. Past the hour, go back into the hour before.',
+          work: (v) =>
+            v.d! % 60 <= v.em!
+              ? [`${v.em} − ${v.d! % 60} = ${v.sm}`]
+              : [`${v.em} + 60 − ${v.d! % 60} = ${v.sm}`],
+        },
+      },
+      'start + time = end': {
+        eh: {
+          expr: 'the hour {d} minutes after {sh}:{sm}',
+          how: 'The jumps pass the hours. The last one lands in the end hour.',
+          note: (v) => `(${clock(v.eh!, v.em!)})`,
+        },
+        d: {
+          expr: '{sh}:{sm} to {eh}:{em}',
+          how: 'Count on from the start time to the end time. Add up the jumps.',
+          work: (v) => timeHops(v.sh!, v.sm!, v.d!),
+        },
+        sh: {
+          expr: 'the hour {d} minutes before {eh}:{em}',
+          how: 'Count back from the end time: to the hour, then whole hours, then the rest.',
+          work: (v) => timeHopsBack(v.eh!, v.em!, v.d!),
+          note: (v) => `(${clock(v.sh!, v.sm!)})`,
+        },
+        sm: {
+          expr: 'minutes past the hour, {d} minutes before {eh}:{em}',
+          how: 'Count back from the end time.',
+          work: (v) => timeHopsBack(v.eh!, v.em!, v.d!),
+        },
+        em: {
+          expr: 'minutes after {sh}:{sm}',
+          how: 'Count on from the start time.',
+          work: (v) => timeHops(v.sh!, v.sm!, v.d!),
+        },
+      },
+    },
+    example: { sh: 3, sm: 45, d: 35, eh: 4, em: 20 },
+    startWith: ['eh', 'em', 'd'],
+    representation: {
+      kind: 'timeline',
+      startHour: 'sh',
+      startMinute: 'sm',
+      minutes: 'd',
+      endHour: 'eh',
+      endMinute: 'em',
+    },
+  },
   // ── Mass and liquid volume (3.MD.2) ──
   (() => {
     const total = plus('t = a + b', ['a', 'b', 't'], ['first mass', 'second mass', 'total mass']);
@@ -1649,12 +1995,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'Add or subtract masses only when they use the same unit.',
       ],
       variables: [
-        { ...whole('a', 'a', 'First mass', 0, 1000), unit: 'g' },
-        { ...whole('b', 'b', 'Second mass', 0, 1000), unit: 'g' },
-        { ...whole('t', 't', 'Total mass', 0, 1000), unit: 'g' },
+        { ...whole('a', 'a', 'First mass', 1, 1000), unit: 'g' },
+        { ...whole('b', 'b', 'Second mass', 1, 1000), unit: 'g' },
+        { ...whole('t', 't', 'Total mass', 2, 1000), unit: 'g' },
       ],
       relations: [total.relation],
-      steps: { 't = a + b': total.steps },
+      // The column sum shows the carry; place-by-place lines without the last one would stop short.
+      steps: { 't = a + b': { ...total.steps, t: { ...total.steps.t!, work: undefined } } },
       example: { a: 250, b: 480, t: 730 },
       startWith: ['a', 'b'],
       representation: { kind: 'scale', items: ['a', 'b'], total: 't', max: 1000 },
@@ -1701,15 +2048,48 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'To share a mass equally, divide.',
       ],
       variables: [
-        whole('g', 'g', 'Bags', 0, 10),
-        { ...whole('m', 'm', 'Each bag', 0, 10), unit: 'kg' },
-        { ...whole('t', 't', 'Total', 0, 100), unit: 'kg' },
+        whole('g', 'g', 'Bags', 1, 10),
+        { ...whole('m', 'm', 'Each bag', 1, 10), unit: 'kg' },
+        { ...whole('t', 't', 'Total', 1, 100), unit: 'kg' },
       ],
       relations: [bags.relation],
       steps: { 't = g × m': bags.steps },
       example: { g: 5, m: 3, t: 15 },
       startWith: ['g', 'm'],
       representation: { kind: 'scale', count: 'g', each: 'm', total: 't', max: 100 },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const heavier = plus(
+      'a = b + d',
+      ['b', 'd', 'a'],
+      ['lighter mass', 'difference', 'heavier mass'],
+      '{a} − {b} = {d}',
+    );
+    return {
+      id: 'm.3.mass-liquid-volume~heavier',
+      title: 'How much heavier?',
+      use: 'Use this for “The dog is 23 kg and the cat 5 kg. How much heavier is the dog?”',
+      unitSystems: ['metric'],
+      assumptions: [
+        'Both masses must use the same unit.',
+        'Take the lighter mass away from the heavier one.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Heavier mass', 1, 100), unit: 'kg' },
+        { ...whole('b', 'b', 'Lighter mass', 1, 100), unit: 'kg' },
+        { ...whole('d', 'd', 'Difference', 0, 99), unit: 'kg' },
+      ],
+      relations: [heavier.relation],
+      steps: { 'a = b + d': heavier.steps },
+      example: { a: 23, b: 5, d: 18 },
+      startWith: ['a', 'b'],
+      representation: {
+        kind: 'tape',
+        compare: ['a', 'b'],
+        difference: 'd',
+        caption: 'The heavier one is {d} more.',
+      },
     } satisfies ModuleDef;
   })(),
   // ── Perimeter (3.MD.8) ──
@@ -1721,9 +2101,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Perimeter is a length (cm), not square units.',
     ],
     variables: [
-      { ...whole('l', 'l', 'Length', 0, 20), unit: 'cm' },
-      { ...whole('w', 'w', 'Width', 0, 20), unit: 'cm' },
-      { ...whole('P', 'P', 'Perimeter', 0, 80), unit: 'cm' },
+      { ...whole('l', 'l', 'Length', 1, 20), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 20), unit: 'cm' },
+      { ...whole('P', 'P', 'Perimeter', 4, 80), unit: 'cm' },
     ],
     relations: [
       {
@@ -1774,14 +2154,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
     assumptions: [
       'Add all the sides to get the perimeter.',
       'To find one side, take the other sides away from the perimeter.',
-      'The tape shows the sides laid end to end.',
     ],
     variables: [
-      { ...whole('a', 'a', 'Side 1', 0, 50), unit: 'cm' },
-      { ...whole('b', 'b', 'Side 2', 0, 50), unit: 'cm' },
-      { ...whole('c', 'c', 'Side 3', 0, 50), unit: 'cm' },
-      { ...whole('d', 'd', 'Side 4', 0, 50), unit: 'cm' },
-      { ...whole('P', 'P', 'Perimeter', 0, 200), unit: 'cm' },
+      { ...whole('a', 'a', 'Side 1', 1, 50), unit: 'cm' },
+      { ...whole('b', 'b', 'Side 2', 1, 50), unit: 'cm' },
+      { ...whole('c', 'c', 'Side 3', 1, 50), unit: 'cm' },
+      { ...whole('d', 'd', 'Side 4', 1, 50), unit: 'cm' },
+      { ...whole('P', 'P', 'Perimeter', 4, 200), unit: 'cm' },
     ],
     relations: [
       {
@@ -1830,7 +2209,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     },
     example: { a: 8, b: 5, c: 6, d: 7, P: 26 },
     startWith: ['P', 'a', 'b', 'c'],
-    representation: { kind: 'tape', parts: ['a', 'b', 'c', 'd'], total: 'P' },
+    representation: { kind: 'polygon', sideValues: ['a', 'b', 'c', 'd'], around: 'P' },
   },
   {
     id: 'm.3.perimeter~same-perimeter',
@@ -1842,10 +2221,10 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Keep the perimeter and change the length to compare.',
     ],
     variables: [
-      { ...whole('l', 'l', 'Length', 0, 20), unit: 'cm' },
-      { ...whole('w', 'w', 'Width', 0, 20), unit: 'cm' },
-      { ...whole('P', 'P', 'Perimeter', 0, 80), unit: 'cm' },
-      { ...whole('A', 'A', 'Area', 0, 400), unit: 'cm²' },
+      { ...whole('l', 'l', 'Length', 1, 19), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 19), unit: 'cm' },
+      { ...whole('P', 'P', 'Perimeter', 4, 40), step: 2, multipleOf: 2, unit: 'cm' },
+      { ...whole('A', 'A', 'Area', 1, 100), unit: 'cm²' },
     ],
     relations: [
       {
@@ -1911,30 +2290,152 @@ export const MATH_3_MODULES: ModuleDef[] = [
     },
     example: { l: 6, w: 4, P: 20, A: 24 },
     startWith: ['l', 'P'],
+    // Every rectangle with this perimeter: lengths 1 to half the perimeter − 1.
     representation: {
-      kind: 'rectangle',
-      length: 'l',
-      width: 'w',
-      inside: 'A',
-      around: 'P',
-      extent: 7,
+      kind: 'table',
+      sweep: 'l',
+      output: 'A',
+      params: ['P'],
+      rows: (v) =>
+        v.P !== undefined && v.P >= 4
+          ? Array.from({ length: Math.min(12, v.P / 2 - 1) }, (_, i) => i + 1)
+          : [1, 2, 3, 4, 5, 6, 7, 8, 9],
     },
   },
+  {
+    id: 'm.3.perimeter~same-area',
+    title: 'Same area, different perimeter',
+    use: 'Use this to compare rectangles with the same area but different perimeters.',
+    assumptions: [
+      'Rectangles with the same area can have different perimeters.',
+      'A long thin rectangle has a bigger perimeter than a square one.',
+      'Keep the area and change the length to compare.',
+    ],
+    variables: [
+      { ...whole('l', 'l', 'Length', 1, 19), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 19), unit: 'cm' },
+      { ...whole('P', 'P', 'Perimeter', 4, 74), step: 2, unit: 'cm' },
+      { ...whole('A', 'A', 'Area', 1, 36), unit: 'cm²' },
+    ],
+    relations: [
+      {
+        id: 'P = l + w + l + w',
+        display: '{l} + {w} + {l} + {w} = {P}',
+        vars: ['P', 'l', 'w'],
+        residual: (v) => v.P! - 2 * v.l! - 2 * v.w!,
+        solve: {
+          P: (v) => 2 * v.l! + 2 * v.w!,
+          l: (v) => (v.P! - 2 * v.w!) / 2,
+          w: (v) => (v.P! - 2 * v.l!) / 2,
+        },
+      },
+      {
+        id: 'A = l × w',
+        display: '{l} × {w} = {A}',
+        vars: ['A', 'l', 'w'],
+        residual: (v) => v.A! - v.l! * v.w!,
+        solve: { A: (v) => v.l! * v.w!, l: (v) => div(v.A!, v.w!), w: (v) => div(v.A!, v.l!) },
+      },
+    ],
+    steps: {
+      'P = l + w + l + w': {
+        P: {
+          expr: '{l} + {w} + {l} + {w}',
+          how: 'Add all four sides.',
+          work: (v) => addAll([v.l!, v.w!, v.l!, v.w!]),
+        },
+        l: {
+          expr: '({P} − {w} − {w}) ÷ 2',
+          how: 'Take away the two widths. The two lengths share what is left.',
+          work: (v) => [
+            `${v.P} − ${v.w} − ${v.w} = ${v.P! - 2 * v.w!}`,
+            `${v.P! - 2 * v.w!} ÷ 2 = ${v.l}`,
+          ],
+        },
+        w: {
+          expr: '({P} − {l} − {l}) ÷ 2',
+          how: 'Take away the two lengths. The two widths share what is left.',
+          work: (v) => [
+            `${v.P} − ${v.l} − ${v.l} = ${v.P! - 2 * v.l!}`,
+            `${v.P! - 2 * v.l!} ÷ 2 = ${v.w}`,
+          ],
+        },
+      },
+      'A = l × w': {
+        A: {
+          expr: '{l} × {w}',
+          how: 'Rows of squares: multiply the length by the width.',
+          work: (v) => timesWork(v.l!, v.w!),
+        },
+        l: {
+          expr: '{A} ÷ {w}',
+          how: 'Divide the area by the width.',
+          work: (v) => divideWork(v.A!, v.w!),
+        },
+        w: {
+          expr: '{A} ÷ {l}',
+          how: 'Divide the area by the length.',
+          work: (v) => divideWork(v.A!, v.l!, 'second'),
+        },
+      },
+    },
+    example: { l: 6, w: 4, P: 20, A: 24 },
+    startWith: ['A', 'l'],
+    // Miles and square miles lose the whole-number check; keep to centimeters.
+    unitSystems: ['metric'],
+    // Every rectangle with this area: the lengths that divide it.
+    representation: {
+      kind: 'table',
+      sweep: 'l',
+      output: 'P',
+      params: ['A'],
+      rows: (v) =>
+        v.A !== undefined && v.A >= 1
+          ? Array.from({ length: Math.min(19, v.A) }, (_, i) => i + 1).filter(
+              (x) => v.A! % x === 0 && v.A! / x <= 19,
+            )
+          : [1, 2, 3, 4, 6, 8, 12, 24],
+    },
+  },
+  (() => {
+    const all = times('P = n × s', ['n', 's', 'P'], ['sides', 'side length', 'perimeter']);
+    return {
+      id: 'm.3.perimeter~equal-sides',
+      title: 'Shapes with equal sides',
+      use: 'Use this for a shape with equal sides: “A hexagon with 5 cm sides. What is its perimeter?”',
+      assumptions: [
+        'Every side is the same length.',
+        'Add the side once for each side: that is sides × side length.',
+      ],
+      variables: [
+        whole('n', 'n', 'Sides', 3, 8),
+        { ...whole('s', 's', 'Side length', 1, 20), unit: 'cm' },
+        { ...whole('P', 'P', 'Perimeter', 3, 160), unit: 'cm' },
+      ],
+      relations: [all.relation],
+      steps: { 'P = n × s': all.steps },
+      example: { n: 6, s: 5, P: 30 },
+      startWith: ['n', 's'],
+      pictureLabels: ['s', 'P'],
+      representation: { kind: 'polygon', sides: 'n' },
+    } satisfies ModuleDef;
+  })(),
   // ── Scaled graphs (3.MD.3) ──
   {
     id: 'm.3.scaled-graphs',
     pictureLabels: ['d'],
     assumptions: [
-      'Read the scale: here each line is 5 more. A bar between two lines is between those numbers.',
+      'Read the scale: each line is that many more. A bar between two lines is between those numbers.',
       'To compare, subtract the shorter bar from the taller one.',
       'The total is all the bars added.',
     ],
     variables: [
-      whole('a', 'a', 'Dogs', 0, 30),
-      whole('b', 'b', 'Cats', 0, 30),
-      whole('c', 'c', 'Fish', 0, 30),
-      whole('t', 't', 'Total', 0, 90),
-      whole('d', 'd', 'How many more', 0, 30),
+      { ...whole('s', 's', 'Each line stands for', 2, 10), allowed: [2, 5, 10] },
+      whole('a', 'a', 'Dogs', 0, 50),
+      whole('b', 'b', 'Cats', 0, 50),
+      whole('c', 'c', 'Fish', 0, 50),
+      whole('t', 't', 'Total', 0, 150),
+      whole('d', 'd', 'How many more', 0, 50),
     ],
     relations: [
       {
@@ -1953,7 +2454,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         // Either bar can be taller: the difference is the taller take away the shorter.
         id: 'd = difference of a and b',
         display: '{a} and {b} are {d} apart',
-        words: 'Difference between {a} and {b} = {d}',
+        words: 'Dogs − cats = how many more (or the other way round)',
         vars: ['d', 'a', 'b'],
         residual: (v) => v.d! - Math.abs(v.a! - v.b!),
         solve: {
@@ -2011,8 +2512,10 @@ export const MATH_3_MODULES: ModuleDef[] = [
         },
       },
     },
-    example: { a: 25, b: 15, c: 10, t: 50, d: 10 },
-    startWith: ['a', 'b', 'c'],
+    example: { s: 5, a: 25, b: 15, c: 10, t: 50, d: 10 },
+    startWith: ['s', 'a', 'b', 'c'],
+    // The scale only sets where the lines fall; the counts never depend on it.
+    standalone: { vars: ['s'], why: 'Each line stands for 2, 5 or 10: it sets the scale only.' },
     representation: {
       kind: 'bars',
       bars: [
@@ -2021,21 +2524,18 @@ export const MATH_3_MODULES: ModuleDef[] = [
         { var: 'c', editable: true },
       ],
       min: 0,
-      max: 30,
+      max: 50,
       total: 't',
-      scale: 5,
+      scale: 's',
       readScale: true,
     },
   },
   (() => {
-    const cols = (['1', '2', '3'] as const).map((i) =>
-      times(
-        `n${i} = p${i} × k`,
-        [`p${i}`, 'k', `n${i}`],
-        ['pictures', 'number each picture stands for', 'count'],
-      ),
-    );
-    const total = sumAll('t = n₁ + n₂ + n₃', ['n1', 'n2', 'n3'], 't', 'kinds of fruit');
+    const cols = [
+      pictureColumn('1', 'apples'),
+      pictureColumn('2', 'pears'),
+      pictureColumn('3', 'plums'),
+    ];
     return {
       id: 'm.3.scaled-graphs~picture-graph',
       title: 'Picture graph with a key',
@@ -2044,24 +2544,37 @@ export const MATH_3_MODULES: ModuleDef[] = [
       assumptions: [
         'The key says how many each picture stands for.',
         'Count the pictures, then multiply by the key.',
-        'To find the pictures, divide the count by the key.',
+        'Half a picture stands for half the key: with a key of 2, half a picture is 1.',
       ],
       variables: [
-        whole('k', 'k', 'Each picture stands for', 1, 10),
-        whole('p1', 'p₁', 'Apple pictures', 0, 10),
-        whole('p2', 'p₂', 'Pear pictures', 0, 10),
-        whole('p3', 'p₃', 'Plum pictures', 0, 10),
+        { ...whole('k', 'k', 'Each picture stands for', 2, 10), allowed: [2, 5, 10] },
+        {
+          ...whole('p1', 'p₁', 'Apple pictures', 0, 10),
+          step: 0.5,
+          multipleOf: 0.5,
+          integer: false,
+        },
+        {
+          ...whole('p2', 'p₂', 'Pear pictures', 0, 10),
+          step: 0.5,
+          multipleOf: 0.5,
+          integer: false,
+        },
+        {
+          ...whole('p3', 'p₃', 'Plum pictures', 0, 10),
+          step: 0.5,
+          multipleOf: 0.5,
+          integer: false,
+        },
         whole('n1', 'n₁', 'Apples', 0, 100),
         whole('n2', 'n₂', 'Pears', 0, 100),
         whole('n3', 'n₃', 'Plums', 0, 100),
-        whole('t', 't', 'Fruit in all', 0, 300),
       ],
-      relations: [...cols.map((c) => c.relation), total.relation],
+      relations: cols.map((c) => c.relation),
       steps: {
         ...Object.fromEntries(cols.map((c) => [c.relation.id, c.steps])),
-        't = n₁ + n₂ + n₃': total.steps,
       },
-      example: { k: 2, p1: 6, p2: 3, p3: 5, n1: 12, n2: 6, n3: 10, t: 28 },
+      example: { k: 2, p1: 6, p2: 3, p3: 5, n1: 12, n2: 6, n3: 10 },
       startWith: ['k', 'p1', 'p2', 'p3'],
       representation: {
         kind: 'pictureGraph',
@@ -2072,7 +2585,62 @@ export const MATH_3_MODULES: ModuleDef[] = [
         ],
         max: 10,
         key: 'k',
-        total: 't',
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const cols = [pictureColumn('1', 'apples'), pictureColumn('2', 'pears')];
+    const more = apart(
+      'd',
+      'n1',
+      'n2',
+      ['apples', 'pears'],
+      ['more', 'fewer'],
+      'Subtract the smaller count from the bigger one.',
+      (aMore) => (aMore ? 'more apples' : 'more pears'),
+    );
+    return {
+      id: 'm.3.scaled-graphs~picture-more',
+      title: 'How many more on a picture graph',
+      use: 'Use this for “How many more apples than pears?” on a picture graph with a key.',
+      pictureLabels: ['n1', 'n2'],
+      assumptions: [
+        'Find each count first: pictures × the key.',
+        'Then subtract the smaller count from the bigger one.',
+      ],
+      variables: [
+        { ...whole('k', 'k', 'Each picture stands for', 2, 10), allowed: [2, 5, 10] },
+        {
+          ...whole('p1', 'p₁', 'Apple pictures', 0, 10),
+          step: 0.5,
+          multipleOf: 0.5,
+          integer: false,
+        },
+        {
+          ...whole('p2', 'p₂', 'Pear pictures', 0, 10),
+          step: 0.5,
+          multipleOf: 0.5,
+          integer: false,
+        },
+        whole('n1', 'n₁', 'Apples', 0, 100),
+        whole('n2', 'n₂', 'Pears', 0, 100),
+        whole('d', 'd', 'How many more', 0, 100),
+      ],
+      relations: [...cols.map((c) => c.relation), more.relation],
+      steps: {
+        ...Object.fromEntries(cols.map((c) => [c.relation.id, c.steps])),
+        [more.relation.id]: more.steps,
+      },
+      example: { k: 2, p1: 6, p2: 3.5, n1: 12, n2: 7, d: 5 },
+      startWith: ['k', 'p1', 'p2'],
+      representation: {
+        kind: 'pictureGraph',
+        columns: [
+          { var: 'p1', icon: 'circle' },
+          { var: 'p2', icon: 'square' },
+        ],
+        max: 10,
+        key: 'k',
       },
     } satisfies ModuleDef;
   })(),
@@ -2158,9 +2726,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Every full set of marks is 1 inch; the marks left over are the fraction of an inch.',
     ],
     variables: [
-      whole('a', 'a', 'Marks from 0', 0, 24),
-      { ...whole('b', 'b', 'Marks in one inch', 2, 4), step: 2, multipleOf: 2 },
-      whole('w', 'w', 'Whole inches', 0, 6),
+      whole('a', 'a', 'Marks from 0', 0, 12),
+      { ...whole('b', 'b', 'Marks in one inch', 2, 4), allowed: [2, 4] },
+      whole('w', 'w', 'Whole inches', 0, 3),
       whole('r', 'r', 'Marks past the last inch', 0, 3),
     ],
     relations: [
@@ -2175,7 +2743,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
       {
         id: 'a = w inches and r marks',
-        display: '{a}/{b} inch = {w} inches and {r}/{b} inch',
+        display: '{a} marks = {w} inches of {b} marks and {r} marks',
+        words: 'Marks from 0 = whole inches × marks in one inch + marks past the last inch',
         vars: ['a', 'w', 'b', 'r'],
         residual: (v) => v.a! - v.w! * v.b! - v.r! + (v.r! >= v.b! ? 1 : 0),
         solve: {
@@ -2221,12 +2790,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     },
     example: { a: 9, b: 4, w: 2, r: 1 },
     startWith: ['a', 'b'],
-    representation: {
-      kind: 'fractionLine',
-      numerator: 'a',
-      denominator: 'b',
-      wholes: 3,
-      unit: { one: 'inch', many: 'inches' },
-    },
+    // The object from 0 on an inch ruler with half or quarter marks.
+    representation: { kind: 'ruler', lengths: ['a'], extent: 3, marks: 'b' },
   },
 ];

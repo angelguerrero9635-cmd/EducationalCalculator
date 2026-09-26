@@ -125,6 +125,13 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   scale, measuring jug, quadrilateral and a two-rectangle shape; the array can split a factor
   or show the turned array, the rectangle can show its perimeter, the tape can mark equal
   groups, and the line plot can label quarter-inch marks.
+  Rebuilt from the reviewer's direction plan: a new skill, add and subtract within 1,000
+  (3.NBT.2, with across-zeros and word-problem pages); division pages (share, how many groups,
+  missing factor); a times-table explore page and an even-or-odd sort replace the patterns
+  calculator; sorts for quadrilaterals, which fraction is greater, which unit and about a
+  liter; start time, heavier by, equal sides, same area; the bar graph's scale and the picture
+  graph's key are chosen (2, 5 or 10) with half pictures and a how-many-more page; the ruler
+  reads halves or quarters.
 
 - **Section 1 (Math K–2).** 32 skill modules (including the two new Kindergarten skills,
   position words and putting shapes together) plus 32 problem-type modules (`<skill>~<slug>`),

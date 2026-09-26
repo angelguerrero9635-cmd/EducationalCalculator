@@ -272,6 +272,11 @@ export function repIssues(
       if (a !== undefined && L !== undefined && b !== undefined && a + L !== b) {
         out.push(`ruler object from ${a} of length ${L} doesn't end at ${b}`);
       }
+      // Marks per unit read from a value: halves or quarters only.
+      if (typeof rep.marks === 'string') {
+        const m = val(rep.marks);
+        if (m !== undefined && m !== 2 && m !== 4) out.push(`ruler marks per unit ${m}`);
+      }
       break;
     }
     case 'coins': {

@@ -128,6 +128,7 @@ const MATH: Record<Grade, Row[]> = {
     ["two-step-problems", "Two-step word problems with all four operations", OA],
     ["arithmetic-patterns", "Patterns in addition and multiplication tables", OA, ["m.2.even-odd"]],
     ["rounding", "Round to the nearest 10 or 100", NBT, ["m.2.place-value-1000"]],
+    ["add-sub-1000", "Add and subtract within 1,000", NBT, ["m.2.add-sub-1000"]],
     ["multiply-by-tens", "Multiply by multiples of 10 (like 9 × 80)", NBT, ["m.2.skip-count"]],
     ["fractions-number-line", "Unit fractions and fractions on a number line", NF, ["m.2.thirds-polygons"]],
     ["compare-fractions", "Equivalent fractions and comparing fractions", NF],

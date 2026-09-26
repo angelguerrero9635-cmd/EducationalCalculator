@@ -124,3 +124,14 @@ and each strand's skills sit together within a grade.
 - **Standard with no skill:** 5-ESS3-1 (communities use science ideas to protect Earth's
   resources and environment) had no Grade 5 row. Added `s.5.protect-resources`, "Protecting
   Earth's resources and environment", with `s.4.natural-resources` to refresh first.
+
+### Math K–3 alignment (reviewer direction plans)
+
+- **Standard with no skill:** 3.NBT.2 (fluently add and subtract within 1,000 with strategies
+  and algorithms) had no Grade 3 row; only `m.2.add-sub-1000` (2.NBT.7) existed. Added
+  `m.3.add-sub-1000`, "Add and subtract within 1,000", with `m.2.add-sub-1000` to refresh
+  first. Pages: the main page (column addition), `~subtract-zeros` and `~word`.
+- **3.G.2** (partition shapes into equal areas) has no row of its own; it is covered by
+  `m.3.fractions-number-line~shapes`. No new row.
+- **3.OA.8** writes "a letter standing for the unknown"; the app writes "?" before Grade 6, on
+  purpose (no letters for numbers before the grade that teaches variables).

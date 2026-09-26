@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-22 of 223 pages show sliders.
+21 of 237 pages show sliders.
 
 ## By picture kind
 
@@ -17,7 +17,7 @@ its kind with `sliders: true | false`.
 | array | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | bars | 17 | no | the picture has its own handles or taps, or the inputs are enough |
-| baseTen | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| baseTen | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | beaker | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | boxPlot | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | circle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -29,13 +29,13 @@ its kind with `sliders: true | false`.
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| equalGroups | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| equalGroups | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorPairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fractionArea | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
-| fractionBars | 9 | yes | sweeping the value shows the picture change; no touch control of its own |
-| fractionLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| fractionBars | 7 | yes | sweeping the value shows the picture change; no touch control of its own |
+| fractionLine | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 4 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -45,30 +45,31 @@ its kind with `sliders: true | false`.
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | partition | 3 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| pictureGraph | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
 | placeValueChart | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | plot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | protractor | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectangle | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| rectilinear | 1 | yes | sweeping the value shows the picture change; no touch control of its own |
+| rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | rightTriangle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| ruler | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| ruler | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 10 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 22 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 27 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| timeline | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | unitCubes | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -158,41 +159,55 @@ its kind with `sliders: true | false`.
 | m.2.thirds-polygons~solids | prism | no |
 | m.2.place-value-1000~compare | baseTen | no |
 | m.3.area | rectangle | no |
-| m.3.area~tiling | array | no |
+| m.3.area~missing-side | rectangle | no |
 | m.3.area~split | array | no |
 | m.3.area~rectilinear | rectilinear | yes |
+| m.3.area~cut-out | rectilinear | yes |
 | m.3.multiply-divide-100 | equalGroups | no |
 | m.3.multiply-divide-100~array | array | no |
 | m.3.multiply-divide-100~jumps | skipCount | no |
+| m.3.multiply-divide-100~share | equalGroups | no |
+| m.3.multiply-divide-100~how-many-groups | skipCount | no |
+| m.3.multiply-divide-100~missing-factor | array | no |
 | m.3.multiplication-properties | array | no |
 | m.3.multiplication-properties~order | array | no |
 | m.3.multiplication-properties~grouping | equalGroups | no |
-| m.3.arithmetic-patterns | skipCount | no |
 | m.3.two-step-problems | tape | no |
 | m.3.two-step-problems~share | equalGroups | no |
 | m.3.two-step-problems~multiply-add | tape | no |
+| m.3.two-step-problems~subtract-share | tape | no |
+| m.3.two-step-problems~compare | tape | no |
 | m.3.rounding | rounding | no |
 | m.3.rounding~hundred | rounding | no |
 | m.3.rounding~estimate | tape | no |
-| m.3.multiply-by-tens | skipCount | no |
+| m.3.rounding~estimate-difference | tape | no |
+| m.3.add-sub-1000 | baseTen | no |
+| m.3.add-sub-1000~subtract-zeros | baseTen | no |
+| m.3.add-sub-1000~word | tape | no |
+| m.3.multiply-by-tens | equalGroups | no |
+| m.3.multiply-by-tens~word | equalGroups | no |
 | m.3.fractions-number-line | fractionLine | no |
 | m.3.fractions-number-line~shapes | partition | yes |
 | m.3.fractions-number-line~wholes | fractionLine | no |
+| m.3.fractions-number-line~unit-fraction | tape | no |
 | m.3.compare-fractions | fractionBars | yes |
-| m.3.compare-fractions~same-denominator | fractionBars | yes |
-| m.3.compare-fractions~same-numerator | fractionBars | yes |
 | m.3.elapsed-time | clock | no |
 | m.3.elapsed-time~elapsed | timeline | no |
+| m.3.elapsed-time~start-time | timeline | no |
 | m.3.mass-liquid-volume | scale | no |
 | m.3.mass-liquid-volume~liquid | beaker | no |
 | m.3.mass-liquid-volume~bags | scale | no |
+| m.3.mass-liquid-volume~heavier | tape | no |
 | m.3.perimeter | rectangle | no |
-| m.3.perimeter~missing-side | tape | no |
-| m.3.perimeter~same-perimeter | rectangle | no |
+| m.3.perimeter~missing-side | polygon | no |
+| m.3.perimeter~same-perimeter | table | no |
+| m.3.perimeter~same-area | table | no |
+| m.3.perimeter~equal-sides | polygon | no |
 | m.3.scaled-graphs | bars | no |
 | m.3.scaled-graphs~picture-graph | pictureGraph | no |
+| m.3.scaled-graphs~picture-more | pictureGraph | no |
 | m.3.measure-line-plots | linePlot | no |
-| m.3.measure-line-plots~quarter-inch | fractionLine | no |
+| m.3.measure-line-plots~quarter-inch | ruler | no |
 | m.4.factors-multiples | array | no |
 | m.4.factors-multiples~factor-tree | factorTree | no |
 | m.4.factors-multiples~multiples | skipCount | no |

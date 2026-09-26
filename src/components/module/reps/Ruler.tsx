@@ -22,7 +22,11 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const start = useRef(0);
   const unit = rep.unit(spec.lengths[0]!) ?? '';
   // Lengths counted in half or quarter marks are drawn in whole units (numbers on the ruler).
-  const per = spec.marks ?? 1;
+  // A variable id reads the marks per unit from that value (halves or quarters, chosen).
+  const per =
+    typeof spec.marks === 'string'
+      ? Math.max(1, Math.round(rep.shown(spec.marks)) || 1)
+      : (spec.marks ?? 1);
   const shown = spec.lengths.map((id) => rep.shown(id) / per);
   // A broken ruler: the object starts at a mark other than 0.
   const offset = spec.from ? rep.shown(spec.from) / per : 0;

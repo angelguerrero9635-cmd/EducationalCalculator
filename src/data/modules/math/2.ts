@@ -20,6 +20,7 @@ import {
   repeated,
   subtractStrategy,
   sumSteps,
+  tradeLines,
 } from '../work';
 
 /** Money in the dollars-and-cents module: each coin's id, value in cents and names. */
@@ -123,37 +124,6 @@ const placeLine = (n: number) => {
   );
   return parts.length > 1 ? [`${n} = ${parts.join(' + ')}`] : [];
 };
-/**
- * Subtracting by place with the trades a student writes: "0 tens: trade 1 hundred for 10
- * tens", "3 ones < 8 ones: trade 1 ten for 10 ones", then each place taken away.
- */
-function tradeLines(a: number, b: number): string[] {
-  if (b > a) return [];
-  let [h, t, o] = [Math.floor(a / 100), Math.floor(a / 10) % 10, a % 10];
-  const [bh, bt, bo] = [Math.floor(b / 100), Math.floor(b / 10) % 10, b % 10];
-  const lines: string[] = [];
-  if (o < bo) {
-    if (t === 0) {
-      h -= 1;
-      t = 10;
-      lines.push('No tens to trade: trade 1 hundred for 10 tens');
-    }
-    t -= 1;
-    o += 10;
-    lines.push(`Trade 1 ten for 10 ones: ${o} ones`);
-  }
-  if (t < bt) {
-    h -= 1;
-    t += 10;
-    lines.push(`Trade 1 hundred for 10 tens: ${t} tens`);
-  }
-  lines.push(
-    `Ones: ${o} − ${bo} = ${o - bo}`,
-    `Tens: ${t} − ${bt} = ${t - bt}`,
-    `Hundreds: ${h} − ${bh} = ${h - bh}`,
-  );
-  return lines;
-}
 /** Cents written as dollars and cents, e.g. "$1.35". */
 const dollars = (cents: number) =>
   `$${Math.floor(cents / 100)}.${String(Math.round(cents % 100)).padStart(2, '0')}`;

@@ -290,9 +290,10 @@ export type Representation =
       to?: string;
       /**
        * Half-inch (2) or quarter-inch (4) marks between the numbers: the lengths are then
-       * counted in those marks (9 quarter marks = 2 and 1/4 inches).
+       * counted in those marks (9 quarter marks = 2 and 1/4 inches). A variable id reads the
+       * marks per unit from that value (2 or 4).
        */
-      marks?: 2 | 4;
+      marks?: 2 | 4 | string;
     }
   /** Coins by type, each with its value in cents; the sliders change the counts. */
   | {
