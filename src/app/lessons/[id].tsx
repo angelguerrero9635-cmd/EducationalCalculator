@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { EmptyState, Tile, TileGrid } from '@/components';
+import { EmptyState, ListRow, SkillBox } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import {
   getSkill,
@@ -10,7 +10,7 @@ import {
   skillsWithTypes,
   subjectLabel,
 } from '@/data/selectors';
-import { lessonIcons } from '@/data/icons';
+import { skillIcons } from '@/data/icons';
 import { gradeLabel } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
 
@@ -19,7 +19,7 @@ export function generateStaticParams(): { id: string }[] {
   return skillsWithTypes().map((id) => ({ id }));
 }
 
-/** A skill's lessons: a box for the main lesson and one for each problem type. */
+/** A skill's lessons: the main lesson and one row for each problem type, in the skill's box. */
 export default function LessonsScreen() {
   const c = usePalette();
   const id = String(useLocalSearchParams<{ id: string }>().id);
@@ -28,10 +28,7 @@ export default function LessonsScreen() {
   if (!skill) return <EmptyState title="Skill not found" message={id} />;
   const types = problemTypes(skill.id);
   const where = `${gradeLabel(skill.grade)} ${subjectLabel(skill.subject)}`;
-  const icons = lessonIcons(
-    skill,
-    types.map((t) => t.title),
-  );
+  const [icon] = skillIcons([skill]);
 
   return (
     <>
@@ -45,27 +42,24 @@ export default function LessonsScreen() {
         style={{ backgroundColor: c.background }}
         contentContainerStyle={styles.page}
       >
-        <TileGrid>
-          <Tile
+        <SkillBox testID={`skill-${skill.id}`} icon={icon} tone={0} title={skill.title}>
+          <ListRow
+            flush
             testID={`lesson-${skill.id}`}
-            icon={icons[0]}
-            tone={0}
             title="Main lesson"
-            subtitle={skill.title}
             route={skillRoute(skill.id)}
           />
-          {types.map((t, i) => (
-            <Tile
+          {types.map((t) => (
+            <ListRow
               key={t.id}
+              flush
               testID={`lesson-${t.id}`}
-              icon={icons[i + 1]}
-              tone={i + 1}
               title={t.title}
               subtitle={t.use}
               route={skillRoute(t.id)}
             />
           ))}
-        </TileGrid>
+        </SkillBox>
       </ScrollView>
     </>
   );

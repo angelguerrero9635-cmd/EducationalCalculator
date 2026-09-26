@@ -19,6 +19,8 @@ export interface ListRowProps {
   /** Shows a checkmark instead of a chevron. */
   selected?: boolean;
   accessory?: 'chevron' | 'check' | 'none';
+  /** A card with no space around it (inside a box that has its own). */
+  flush?: boolean;
   testID?: string;
 }
 
@@ -34,6 +36,7 @@ export function ListRow({
   onPress,
   selected,
   accessory,
+  flush,
   testID,
 }: ListRowProps) {
   const c = usePalette();
@@ -53,7 +56,12 @@ export function ListRow({
         styles.row,
         inGroup
           ? { backgroundColor: pressed ? c.surface : c.card }
-          : [styles.card, { backgroundColor: pressed ? c.surface : c.card }, shadow],
+          : [
+              styles.card,
+              flush && styles.flush,
+              { backgroundColor: pressed ? c.surface : c.card },
+              shadow,
+            ],
       ]}
     >
       <View style={styles.text}>
@@ -80,6 +88,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
   },
   card: { marginHorizontal: space.lg, marginBottom: space.sm, borderRadius: radius.lg },
+  flush: { marginHorizontal: 0, marginBottom: 0, borderRadius: radius.md },
   text: { flex: 1, gap: 2 },
   overline: {
     fontSize: font.caption - 1,

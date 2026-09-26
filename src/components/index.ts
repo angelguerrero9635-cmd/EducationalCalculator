@@ -11,6 +11,7 @@ export { LevelPicker } from './LevelPicker';
 export { ListRow } from './ListRow';
 export { PlaceholderCard } from './PlaceholderCard';
 export { SectionHeader } from './SectionHeader';
+export { SkillBox } from './SkillBox';
 export { SegmentedControl } from './SegmentedControl';
 export { DetailHeader, LockedState, RefreshSection } from './DetailParts';
 export { ModuleSections } from './module/ModuleSections';

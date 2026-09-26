@@ -1,13 +1,13 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { EmptyState, Tile, TileGrid } from '@/components';
+import { EmptyState, ListRow, SkillBox } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import {
   gradeStrands,
   isGrade,
-  skillBoxRoute,
-  skillBoxSubtitle,
+  problemTypes,
+  skillRoute,
   strandView,
   subjectLabel,
   SUBJECTS,
@@ -25,7 +25,10 @@ export function generateStaticParams(): { grade: string; strand: string }[] {
   );
 }
 
-/** A strand (topic) in a grade: a box for each skill. */
+/**
+ * A strand (topic) in a grade: a bordered box per skill, its title at the top and its lessons
+ * (the main lesson, then each problem type) as rows inside.
+ */
 export default function StrandScreen() {
   const c = usePalette();
   const params = useLocalSearchParams<{ grade: string; strand: string }>();
@@ -50,19 +53,29 @@ export default function StrandScreen() {
         style={{ backgroundColor: c.background }}
         contentContainerStyle={styles.page}
       >
-        <TileGrid>
-          {view.skills.map((s, i) => (
-            <Tile
-              key={s.id}
-              testID={`skill-${s.id}`}
-              icon={icons[i]}
-              tone={i}
-              title={s.title}
-              subtitle={skillBoxSubtitle(s.id)}
-              route={skillBoxRoute(s.id)}
-            />
-          ))}
-        </TileGrid>
+        {view.skills.map((s, i) => {
+          const types = problemTypes(s.id);
+          return (
+            <SkillBox key={s.id} testID={`skill-${s.id}`} icon={icons[i]} tone={i} title={s.title}>
+              <ListRow
+                flush
+                testID={`lesson-${s.id}`}
+                title="Main lesson"
+                route={skillRoute(s.id)}
+              />
+              {types.map((t) => (
+                <ListRow
+                  key={t.id}
+                  flush
+                  testID={`lesson-${t.id}`}
+                  title={t.title}
+                  subtitle={t.use}
+                  route={skillRoute(t.id)}
+                />
+              ))}
+            </SkillBox>
+          );
+        })}
       </ScrollView>
     </>
   );
