@@ -40,7 +40,7 @@ export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {/* Lamp light through the slide: bright in the middle, dimmer at the edge. */}
                 <RadialGradient id={paint.light} cx="0.5" cy="0.5" r="0.5">
                   <Stop offset="0" stopColor={c.paper} />
-                  <Stop offset="0.75" stopColor={c.paper} />
+                  <Stop offset="0.85" stopColor={c.paper} />
                   <Stop offset="1" stopColor={c.shade} stopOpacity={0.3} />
                 </RadialGradient>
                 <RadialGradient id={paint.cell} cx="0.45" cy="0.4" r="0.6">

@@ -52,9 +52,28 @@ export function Prism({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const ink = { stroke: c.chartInk, strokeWidth: chart.stroke };
           return (
             <Svg width={w} height={h} opacity={rep.known(spec.sides) ? 1 : 0.35}>
+              {/* A see-through solid lit from the front left: each visible side a little
+                  darker the more it turns away, so the shape reads as solid while the dashed
+                  hidden edges still show through. */}
+              {top.map((p, i) => {
+                if (!faces(i)) return null;
+                const j = (i + 1) % n;
+                const turn = Math.cos(angle(i) + Math.PI / n - Math.PI * 0.7);
+                return (
+                  <Polygon
+                    key={`f${i}`}
+                    points={[p, top[j]!, bottom[j]!, bottom[i]!]
+                      .map((q) => `${q.x},${q.y}`)
+                      .join(' ')}
+                    fill={c.chartHighlight}
+                    fillOpacity={0.1 + (0.18 * (1 - turn)) / 2}
+                  />
+                );
+              })}
               <Polygon
                 points={top.map((p) => `${p.x},${p.y}`).join(' ')}
-                fill={c.chartFill}
+                fill={c.chartHighlight}
+                fillOpacity={0.06}
                 {...ink}
               />
               {bottom.map((p, i) => {

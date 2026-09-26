@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { StyleSheet } from 'react-native';
-import Svg, { Line, Rect } from 'react-native-svg';
+import Svg, { Defs, Line } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
@@ -8,6 +8,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
 
 type Spec = Extract<Representation, { kind: 'waterfall' }>;
@@ -19,6 +20,7 @@ type Step = Spec['items'][number] & { from: number; to: number };
  */
 export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
   const editable = spec.items.filter((i) => i.editable).map((i) => i.var);
@@ -56,8 +58,10 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
             dashed: boolean,
             faded: boolean,
           ) => (
-            <Rect
+            <LitRect
+              lightId={paint.light}
               key={key}
+              rx={2}
               x={cx(i) - barW / 2}
               y={Math.min(sy(from), sy(to))}
               width={barW}
@@ -87,6 +91,9 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={h}>
+                <Defs>
+                  <TopLight id={paint.light} />
+                </Defs>
                 <Line
                   x1={4}
                   y1={sy(0)}

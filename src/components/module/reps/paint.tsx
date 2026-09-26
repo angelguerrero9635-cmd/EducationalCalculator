@@ -17,6 +17,7 @@ import Svg, {
   RadialGradient,
   Rect,
   Stop,
+  type RectProps,
 } from 'react-native-svg';
 
 import { usePalette } from '@/theme';
@@ -44,7 +45,7 @@ export function Sheen({
   strength?: number;
 }) {
   const c = usePalette();
-  const k = strength;
+  const k = strength * (0.5 + c.sheen / 2);
   return (
     <LinearGradient id={id} x1="0" y1="0" x2={vertical ? '0' : '1'} y2={vertical ? '1' : '0'}>
       <Stop offset="0" stopColor={c.shade} stopOpacity={0.22 * k} />
@@ -60,6 +61,7 @@ export function Sheen({
 /** Light from above: a flat face a little brighter at the top, for bars and blocks. */
 export function TopLight({ id, strength = 1 }: { id: string; strength?: number }) {
   const c = usePalette();
+  strength *= c.sheen;
   return (
     <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
       <Stop offset="0" stopColor={c.shine} stopOpacity={0.35 * strength} />
@@ -281,5 +283,28 @@ export function CounterDot({ size, color }: { size: number; color: string }) {
         strokeWidth={1.5}
       />
     </Svg>
+  );
+}
+
+/**
+ * A Rect with light from above laid over its fill (bars, tapes, fraction pieces). Takes the
+ * Rect's props, plus the id of a TopLight gradient in the picture's Defs.
+ */
+export function LitRect({ lightId, ...props }: RectProps & { lightId: string }) {
+  const { x, y, width, height, rx, ry, opacity } = props;
+  return (
+    <>
+      <Rect {...props} />
+      <Rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        rx={rx}
+        ry={ry}
+        opacity={opacity}
+        fill={url(lightId)}
+      />
+    </>
   );
 }

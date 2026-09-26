@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Line, Rect } from 'react-native-svg';
+import Svg, { Defs, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -19,6 +20,7 @@ type Spec = Extract<Representation, { kind: 'percentBar' }>;
  */
 export function PercentBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
   const pct = Math.max(0, rep.shown(spec.percent));
@@ -42,6 +44,9 @@ export function PercentBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={h}>
+                <Defs>
+                  <TopLight id={paint.light} />
+                </Defs>
                 <Rect
                   x={x(0)}
                   y={barY}
@@ -63,7 +68,8 @@ export function PercentBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     strokeDasharray={chart.dash}
                   />
                 ) : null}
-                <Rect
+                <LitRect
+                  lightId={paint.light}
                   x={x(0)}
                   y={barY}
                   width={Math.max(0, x(pct) - x(0))}

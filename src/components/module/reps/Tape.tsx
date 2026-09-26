@@ -1,11 +1,12 @@
 import { useRef } from 'react';
-import Svg, { Line, Path, Rect } from 'react-native-svg';
+import Svg, { Defs, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, useFrozen, useRep, Caption } from './common';
 
 type Spec = Exclude<Extract<Representation, { kind: 'tape' }>, { ratio: [string, string] }>;
@@ -32,6 +33,7 @@ const bracket = (x1: number, x2: number, y: number, dir: 1 | -1) => {
  */
 export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
   const compare = 'compare' in spec;
@@ -112,14 +114,19 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
             return (
               <>
                 <Svg width={w} height={150}>
+                  <Defs>
+                    <TopLight id={paint.light} />
+                  </Defs>
                   {[a, b].map((id, i) => (
-                    <Rect
+                    <LitRect
+                      lightId={paint.light}
+                      rx={3}
                       key={id}
                       x={left}
                       y={ys[i]}
                       width={Math.max(2, shown[i]! * scale)}
                       height={barH}
-                      fill={i === 0 ? c.chartHighlight : c.chartFill}
+                      fill={i === 0 ? c.chartHighlight : c.chartSecond}
                       stroke={c.chartInk}
                       strokeWidth={chart.strokeLight}
                       opacity={rep.known(id) ? 1 : 0.35}
@@ -203,7 +210,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
           const x0 = (i: number) => left + (i === 0 ? 0 : ends[i - 1]!) * scale;
           const x1 = (i: number) => left + ends[i]! * scale;
-          const fills = [c.chartHighlight, c.chartFill, c.chartSurface];
+          const fills = [c.chartHighlight, c.chartSecond, c.life];
           // Names under the parts sit on one row unless one is wider than its part.
           const stagger = spec.parts.some(
             (id, i) => rep.tag(id).length * chart.tiny * 0.6 > x1(i) - x0(i) - 4,
@@ -211,6 +218,9 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={128}>
+                <Defs>
+                  <TopLight id={paint.light} />
+                </Defs>
                 <Path
                   d={bracket(left, left + span * scale, 28, -1)}
                   stroke={c.chartInk}
@@ -227,7 +237,8 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     : `${rep.tag(spec.total)}: ${rep.value(spec.total)}`}
                 </ChartText>
                 {spec.parts.map((id, i) => (
-                  <Rect
+                  <LitRect
+                    lightId={paint.light}
                     key={id}
                     x={x0(i)}
                     y={y}
@@ -247,7 +258,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fontSize={chart.label}
                     textAnchor="middle"
                     // Parts take turns with the fills: every part on the highlight gets light text.
-                    fill={i % fills.length === 0 ? c.onChartHighlight : c.chartInk}
+                    fill={i % fills.length === 0 ? c.onChartHighlight : c.coinInk}
                   >
                     {/* A narrow part shows only its value, clear of the drag handles; the name
                         with its letter is under the bar. */}

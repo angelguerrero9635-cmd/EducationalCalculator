@@ -62,7 +62,28 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   strokeWidth={chart.strokeLight}
                   strokeDasharray={chart.dashFine}
                 />
-                <Path d={d} fill="none" stroke={c.chartHighlight} strokeWidth={chart.stroke} />
+                {/* A soft band between the wave and its middle line, a glow under the line, then
+                    the wave itself, so crests and troughs read as a moving surface. */}
+                <Path
+                  d={`${d} L ${w - pad} ${mid} L ${pad} ${mid} Z`}
+                  fill={c.chartHighlight}
+                  fillOpacity={0.1}
+                />
+                <Path
+                  d={d}
+                  fill="none"
+                  stroke={c.chartHighlight}
+                  strokeOpacity={0.2}
+                  strokeWidth={chart.stroke * 4}
+                  strokeLinecap="round"
+                />
+                <Path
+                  d={d}
+                  fill="none"
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.stroke + 0.5}
+                  strokeLinecap="round"
+                />
                 {/* Amplitude: from the middle line up to the crest. */}
                 <Line
                   x1={crestX}

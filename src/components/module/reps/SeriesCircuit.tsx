@@ -59,15 +59,22 @@ export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) 
           const rLen = Math.min(70, span * 0.55);
           const rx = (i: number) => left + span * (i + 0.5) - rLen / 2;
           const stroke = { stroke: c.chartInk, strokeWidth: chart.stroke, fill: 'none' as const };
+          // Copper wires; the parts (battery plates, resistors) keep their ink symbols.
+          const wire = {
+            stroke: c.copper,
+            strokeWidth: chart.strokeHeavy,
+            strokeLinecap: 'round' as const,
+            fill: 'none' as const,
+          };
           const arrowX = (left + right) / 2;
           return (
             <>
               <Svg width={w} height={h}>
                 {/* Loop wires; the left wire meets the battery plates. */}
-                <Line x1={left} y1={topY} x2={left} y2={midY - 6} {...stroke} />
-                <Line x1={left} y1={midY + 6} x2={left} y2={botY} {...stroke} />
-                <Line x1={left} y1={botY} x2={right} y2={botY} {...stroke} />
-                <Line x1={right} y1={botY} x2={right} y2={topY} {...stroke} />
+                <Line x1={left} y1={topY} x2={left} y2={midY - 6} {...wire} />
+                <Line x1={left} y1={midY + 6} x2={left} y2={botY} {...wire} />
+                <Line x1={left} y1={botY} x2={right} y2={botY} {...wire} />
+                <Line x1={right} y1={botY} x2={right} y2={topY} {...wire} />
                 {spec.resistors.map((_, i) => (
                   <Line
                     key={`w${i}`}
@@ -75,10 +82,10 @@ export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) 
                     y1={topY}
                     x2={rx(i)}
                     y2={topY}
-                    {...stroke}
+                    {...wire}
                   />
                 ))}
-                <Line x1={rx(n - 1) + rLen} y1={topY} x2={right} y2={topY} {...stroke} />
+                <Line x1={rx(n - 1) + rLen} y1={topY} x2={right} y2={topY} {...wire} />
 
                 {/* Battery: long plate (+) on top, short plate (−) below, with polarity marks. */}
                 <Line x1={left - 16} y1={midY - 6} x2={left + 16} y2={midY - 6} {...stroke} />

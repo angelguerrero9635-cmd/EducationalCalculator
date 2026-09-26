@@ -109,6 +109,8 @@ const light = {
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
   shine: '#FFFFFF',
+  /** How strong highlights are: dark pictures take less, or dark fills turn grey. */
+  sheen: 1,
   /** Edge light and edge shade for flat pieces drawn as views (cubes in a train). */
   edgeLight: 'rgba(255, 255, 255, 0.4)',
   edgeShade: 'rgba(0, 0, 0, 0.2)',
@@ -140,7 +142,7 @@ const dark: Palette = {
   chartGrid: '#343947',
   chartHighlight: '#8B83FF',
   onChartHighlight: '#0D0F14',
-  chartSecond: '#D9A441',
+  chartSecond: '#B8862E',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
 
@@ -180,6 +182,7 @@ const dark: Palette = {
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',
+  sheen: 0.4,
   edgeLight: 'rgba(255, 255, 255, 0.3)',
   edgeShade: 'rgba(0, 0, 0, 0.35)',
 };

@@ -1,19 +1,21 @@
 import { useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from '@/components/Text';
-import Svg, { Line, Rect } from 'react-native-svg';
+import Svg, { Defs, Line } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'bars' }>;
 
 export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
   const editable = spec.bars.filter((b) => b.editable).map((b) => b.var);
@@ -56,6 +58,9 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <>
               <Svg width={w} height={h}>
+                <Defs>
+                  <TopLight id={paint.light} />
+                </Defs>
                 {marks.map((m) => [
                   <Line
                     key={`g${m}`}
@@ -92,13 +97,15 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   const y1 = sy(v);
                   const known = rep.known(b.var);
                   return (
-                    <Rect
+                    <LitRect
+                      lightId={paint.light}
                       key={b.var}
+                      rx={3}
                       x={cx(i) - barW / 2}
                       y={Math.min(y0, y1)}
                       width={barW}
                       height={Math.max(1, Math.abs(y1 - y0))}
-                      fill={b.editable ? c.chartFill : c.chartSurface}
+                      fill={b.editable ? c.water : c.chartSurface}
                       stroke={c.chartInk}
                       strokeDasharray={b.editable ? undefined : chart.dash}
                       opacity={known ? 1 : 0.35}

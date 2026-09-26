@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
@@ -7,6 +7,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette, useTone } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { url, usePaintIds } from './paint';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -75,6 +76,7 @@ function KeyItem({ tone, text }: { tone: number; text: string }) {
  */
 export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('dome');
   const rep = useRep(calc);
   const parts = spec.parts.map((id) => Math.max(0, rep.shown(id)));
   const total = spec.total ? Math.max(0, rep.shown(spec.total)) : 100;
@@ -98,6 +100,14 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
           });
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
+              <Defs>
+                <RadialGradient id={paint.dome} cx="0.4" cy="0.35" r="0.7">
+                  <Stop offset="0" stopColor={c.shine} stopOpacity={0.35 * c.sheen} />
+                  <Stop offset="0.6" stopColor={c.shine} stopOpacity={0} />
+                  <Stop offset="1" stopColor={c.shade} stopOpacity={0.12} />
+                </RadialGradient>
+              </Defs>
+              <Circle cx={cx + 2} cy={cy + 4} r={r} fill={c.shadow} />
               <Circle cx={cx} cy={cy} r={r} fill={c.chartSurface} stroke={c.chartInk} />
               {wedges.map(({ a0, a1, i }) =>
                 a1 > a0 ? (
@@ -113,6 +123,8 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                 ) : null,
               )}
+              {/* Light across the whole pie, so it reads as one round thing cut in parts. */}
+              <Circle cx={cx} cy={cy} r={r} fill={url(paint.dome)} />
               {wedges.map(({ a0, a1, i }) => {
                 if (a1 - a0 < LABEL_MIN) return null;
                 const mid = ((a0 + a1) / 2 - 90) * (Math.PI / 180);

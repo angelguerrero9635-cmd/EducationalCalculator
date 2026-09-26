@@ -1,10 +1,11 @@
 import { View } from 'react-native';
-import Svg, { Rect } from 'react-native-svg';
+import Svg, { Defs, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
@@ -13,6 +14,7 @@ type Spec = Extract<Representation, { kind: 'fractionBars' }>;
 /** Fraction bars of the same whole, one under another, so their sizes compare at a glance. */
 export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const rows = spec.rows.map((r) => {
     const den = Math.max(1, Math.round(rep.shown(r.den)));
@@ -43,6 +45,9 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const gap = 18;
           return (
             <Svg width={w} height={rows.length * (bh + gap) + 8}>
+              <Defs>
+                <TopLight id={paint.light} />
+              </Defs>
               {rows.map((r, i) => {
                 const y = 8 + i * (bh + gap);
                 const part = bw / r.den;
@@ -61,7 +66,8 @@ export function FractionBars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {r.known ? `${r.num}/${r.den}` : '?'}
                   </ChartText>,
                   ...Array.from({ length: r.den }, (_, k) => (
-                    <Rect
+                    <LitRect
+                      lightId={paint.light}
                       key={`p${i}-${k}`}
                       x={left + k * part}
                       y={y}

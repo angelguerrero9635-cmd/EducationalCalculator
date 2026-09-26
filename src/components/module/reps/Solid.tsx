@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import Svg, { Ellipse, Line, Path, Polygon, Rect } from 'react-native-svg';
+import Svg, { Defs, Ellipse, Line, Path, Polygon, Rect } from 'react-native-svg';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
 import type { Representation } from '@/data/modules';
@@ -7,6 +7,7 @@ import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep, Caption } from './common';
+import { Ball, Sheen, url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'solid' }>;
 
@@ -25,6 +26,7 @@ type SolidName = (typeof SOLIDS)[number]['value'];
  */
 export function Solid({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('ball', 'sheen');
   const rep = useRep(calc);
   const known = rep.known(spec.flat) && rep.known(spec.curved);
   const f = Math.round(rep.shown(spec.flat));
@@ -52,9 +54,15 @@ export function Solid({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const e = r * 0.3;
           return (
             <Svg width={w} height={h} opacity={solid ? 1 : 0.35}>
+              {/* Wooden classroom solids: curved sides shaded round, flat faces lit evenly. */}
+              <Defs>
+                <Ball id={paint.ball} color={c.wood} />
+                <Sheen id={paint.sheen} />
+              </Defs>
+              <Ellipse cx={cx + 4} cy={cy + r + 6} rx={r * 0.9} ry={5} fill={c.shadow} />
               {solid?.value === 'sphere' ? (
                 <>
-                  <Ellipse cx={cx} cy={cy} rx={r} ry={r} fill="transparent" {...ink} />
+                  <Ellipse cx={cx} cy={cy} rx={r} ry={r} fill={url(paint.ball)} {...ink} />
                   <Ellipse
                     cx={cx}
                     cy={cy}
@@ -67,19 +75,53 @@ export function Solid({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 </>
               ) : solid?.value === 'cone' ? (
                 <>
+                  {[c.wood, url(paint.sheen)].map((fill) => (
+                    <Path
+                      key={fill}
+                      d={`M ${cx - r} ${cy + r * 0.8} L ${cx} ${cy - r} L ${cx + r} ${cy + r * 0.8} A ${r} ${e} 0 0 1 ${cx - r} ${cy + r * 0.8} Z`}
+                      fill={fill}
+                    />
+                  ))}
                   <Path
                     d={`M ${cx - r} ${cy + r * 0.8} L ${cx} ${cy - r} L ${cx + r} ${cy + r * 0.8}`}
                     fill="none"
                     {...ink}
                   />
-                  <Ellipse cx={cx} cy={cy + r * 0.8} rx={r} ry={e} fill={c.chartFill} {...ink} />
+                  <Path
+                    d={`M ${cx - r} ${cy + r * 0.8} A ${r} ${e} 0 0 0 ${cx + r} ${cy + r * 0.8}`}
+                    fill="none"
+                    {...ink}
+                  />
+                  <Path
+                    d={`M ${cx - r} ${cy + r * 0.8} A ${r} ${e} 0 0 1 ${cx + r} ${cy + r * 0.8}`}
+                    fill="none"
+                    stroke={c.chartMuted}
+                    strokeDasharray={chart.dash}
+                  />
                 </>
               ) : solid?.value === 'cylinder' ? (
                 <>
+                  {[c.wood, url(paint.sheen)].map((fill) => (
+                    <Path
+                      key={fill}
+                      d={`M ${cx - r} ${cy - r * 0.7} L ${cx - r} ${cy + r * 0.7} A ${r} ${e} 0 0 0 ${cx + r} ${cy + r * 0.7} L ${cx + r} ${cy - r * 0.7} Z`}
+                      fill={fill}
+                    />
+                  ))}
                   <Line x1={cx - r} y1={cy - r * 0.7} x2={cx - r} y2={cy + r * 0.7} {...ink} />
                   <Line x1={cx + r} y1={cy - r * 0.7} x2={cx + r} y2={cy + r * 0.7} {...ink} />
-                  <Ellipse cx={cx} cy={cy + r * 0.7} rx={r} ry={e} fill={c.chartFill} {...ink} />
-                  <Ellipse cx={cx} cy={cy - r * 0.7} rx={r} ry={e} fill={c.chartFill} {...ink} />
+                  <Path
+                    d={`M ${cx - r} ${cy + r * 0.7} A ${r} ${e} 0 0 0 ${cx + r} ${cy + r * 0.7}`}
+                    fill="none"
+                    {...ink}
+                  />
+                  <Path
+                    d={`M ${cx - r} ${cy + r * 0.7} A ${r} ${e} 0 0 1 ${cx + r} ${cy + r * 0.7}`}
+                    fill="none"
+                    stroke={c.chartMuted}
+                    strokeDasharray={chart.dash}
+                  />
+                  <Ellipse cx={cx} cy={cy - r * 0.7} rx={r} ry={e} fill={c.wood} {...ink} />
                 </>
               ) : solid?.value === 'cube' ? (
                 <>
@@ -88,18 +130,28 @@ export function Solid({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     y={cy - r * 0.55}
                     width={r * 1.3}
                     height={r * 1.3}
-                    fill={c.chartFill}
+                    fill={c.wood}
                     {...ink}
                   />
                   <Polygon
                     points={`${cx - r * 0.85},${cy - r * 0.55} ${cx - r * 0.45},${cy - r * 0.95} ${cx + r * 0.85},${cy - r * 0.95} ${cx + r * 0.45},${cy - r * 0.55}`}
-                    fill={c.chartFill}
+                    fill={c.wood}
+                    {...ink}
+                  />
+                  <Polygon
+                    points={`${cx - r * 0.85},${cy - r * 0.55} ${cx - r * 0.45},${cy - r * 0.95} ${cx + r * 0.85},${cy - r * 0.95} ${cx + r * 0.45},${cy - r * 0.55}`}
+                    fill={c.shine}
+                    fillOpacity={0.35 * c.sheen}
+                  />
+                  <Polygon
+                    points={`${cx + r * 0.45},${cy - r * 0.55} ${cx + r * 0.85},${cy - r * 0.95} ${cx + r * 0.85},${cy + r * 0.35} ${cx + r * 0.45},${cy + r * 0.75}`}
+                    fill={c.wood}
                     {...ink}
                   />
                   <Polygon
                     points={`${cx + r * 0.45},${cy - r * 0.55} ${cx + r * 0.85},${cy - r * 0.95} ${cx + r * 0.85},${cy + r * 0.35} ${cx + r * 0.45},${cy + r * 0.75}`}
-                    fill={c.chartFill}
-                    {...ink}
+                    fill={c.shade}
+                    fillOpacity={0.2}
                   />
                 </>
               ) : null}

@@ -1,10 +1,11 @@
 import { View } from 'react-native';
-import Svg, { G, Rect } from 'react-native-svg';
+import Svg, { Defs, G } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -16,6 +17,7 @@ type Spec = Extract<Representation, { kind: 'shareWholes' }>;
  */
 export function ShareWholes({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const known = rep.known(spec.wholes) && rep.known(spec.people);
   const W = Math.max(1, Math.min(12, Math.round(rep.shown(spec.wholes))));
@@ -30,6 +32,9 @@ export function ShareWholes({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const bw = w - left - 16;
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.35}>
+              <Defs>
+                <TopLight id={paint.light} />
+              </Defs>
               {Array.from({ length: W }, (_, i) => {
                 const y = gap + i * (barH + gap);
                 return (
@@ -43,7 +48,8 @@ export function ShareWholes({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       {`Whole ${i + 1}`}
                     </ChartText>
                     {Array.from({ length: P }, (_, j) => (
-                      <Rect
+                      <LitRect
+                        lightId={paint.light}
                         key={j}
                         x={left + (j * bw) / P}
                         y={y}
