@@ -5,9 +5,20 @@
  * - elementary (Grades 3–5): still no letters (variables start in Grade 6, 6.EE.2); the rule
  *   is written in words ("Length × width = area") under the number sentence, and equations
  *   name the value ("Area = 4 × 3").
- * - standard (Grade 6 and up, college): formulas in letters.
+ * - Grade 6 is where letters arrive (6.EE.2). Pages that teach them (expressions, equations,
+ *   area and cube formulas, `notation: 'letters'`) are `middle`: the formula in letters with
+ *   its meaning, the numbers put in with the unknown kept as its letter, then one undo step
+ *   per line (never a rearranged letter line). Every other Grade 6 page reads like Grades 3–5
+ *   (`elementary`), with Grade 6 content (negatives, written work).
+ * - standard (Grade 7 and up, college): formulas in letters.
  */
-export type GradeBand = 'early' | 'elementary' | 'standard';
+export type GradeBand = 'early' | 'elementary' | 'middle' | 'standard';
+
+/** Grade 6 pages written with letters (registered from each module's `notation`). */
+const LETTER_PAGES = new Set<string>();
+export function registerLetterPages(ids: Iterable<string>) {
+  for (const id of ids) LETTER_PAGES.add(id);
+}
 
 /** The grade of a K–12 module id ("m.3.area~split" → "3"), or undefined for college topics. */
 export const gradeOf = (moduleId: string): string | undefined =>
@@ -17,6 +28,7 @@ export function gradeBand(moduleId: string): GradeBand {
   const g = gradeOf(moduleId);
   if (g === undefined) return 'standard';
   if (g === 'K' || Number(g) <= 2) return 'early';
+  if (Number(g) === 6) return LETTER_PAGES.has(moduleId) ? 'middle' : 'elementary';
   return Number(g) <= 5 ? 'elementary' : 'standard';
 }
 
@@ -33,7 +45,10 @@ export const isElementary = (moduleId: string) => gradeBand(moduleId) === 'eleme
  * A named value the way the grade reads it: "Bigger amount: 11" (K–5) or "r = 3" (Grade 6
  * on). Used for the lists in the step-by-step and the labels under a picture.
  */
+const lowerName = (t: string) => `${t[0]!.toLowerCase()}${t.slice(1)}`;
+
 export function quantityLabel(band: GradeBand, name: string, symbol: string, value: string) {
+  if (band === 'middle') return `${symbol} = ${value} (${lowerName(name)})`;
   if (band !== 'standard') return `${name}: ${value}`;
   return `${symbol} = ${value}`;
 }

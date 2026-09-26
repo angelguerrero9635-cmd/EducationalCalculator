@@ -14,6 +14,7 @@ import { SCIENCE_5_MODULES } from './science/5';
 import { PILOT_MODULES } from './pilots';
 import { GALLERY_MODULES } from './gallery';
 import { LAYOUTS, getLayout, type LayoutDef } from './layouts';
+import { registerLetterPages } from './grade';
 import type { ModuleDef } from './types';
 
 export type { ModuleDef, Representation } from './types';
@@ -34,6 +35,11 @@ export const MODULES: readonly ModuleDef[] = [
   ...PILOT_MODULES,
   ...COLLEGE_MODULES,
 ];
+
+// Grade 6 pages that teach letters read with them (grade.ts, the `middle` band).
+registerLetterPages(
+  [...MODULES, ...GALLERY_MODULES].filter((m) => m.notation === 'letters').map((m) => m.id),
+);
 
 const BY_ID = new Map(MODULES.map((m) => [m.id, m]));
 const GALLERY_BY_ID = new Map(GALLERY_MODULES.map((m) => [m.id, m]));

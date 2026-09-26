@@ -66,7 +66,12 @@ export function renderTemplate(
     // Zero padding is for clock times ("3:05"); in sums and words the minutes are plain (5 + 20).
     const clockPart = template[at - 1] === ':';
     const s = formatNumber(x, clockPart ? variable : { ...variable, digits: undefined });
-    return x < 0 ? `(${s})` : s;
+    // A negative is bracketed only where its sign would meet another one ("3 × (−4)") or a
+    // power; alone, first in a line or in an ordered pair it reads as itself: (−4, 3), |−4|.
+    const before = template.slice(0, at).trimEnd();
+    const after = template.slice(at + id.length + 2);
+    const needs = /[+−×÷·\-*/]$/.test(before) || /^[\^²³⁰¹⁴-⁹]/.test(after);
+    return x < 0 && needs ? `(${s})` : s;
   });
   if (!values) return filled;
   // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0; a

@@ -176,7 +176,8 @@ export function buildSteps(
    */
   const plain = (line: string, id: string, keepName: boolean) => {
     const v = byId.get(id);
-    if (band === 'standard' || !v || !line.startsWith(`${v.symbol} = `)) return line;
+    if (band === 'standard' || band === 'middle' || !v || !line.startsWith(`${v.symbol} = `))
+      return line;
     const rest = line.slice(v.symbol.length + 3);
     if (band === 'elementary') return `${v.name} = ${rest}`;
     return keepName ? `${v.name}: ${rest}` : rest;
@@ -229,7 +230,10 @@ export function buildSteps(
       name: v.name,
       value,
       label: quantityLabel(band, v.name, v.symbol, value),
-      ask: band === 'standard' ? `${lowerFirst(v.name)} (${v.symbol})` : lowerFirst(v.name),
+      ask:
+        band === 'standard' || band === 'middle'
+          ? `${lowerFirst(v.name)} (${v.symbol})`
+          : lowerFirst(v.name),
     };
   };
 
@@ -249,7 +253,11 @@ export function buildSteps(
         ? `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)}: ${v.symbol}`
         : `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)} (${v.symbol})`,
       formula: renderTemplate(relation.display, vars),
-      sentence: agree(renderTemplate(relation.display, workVars, knownHere)),
+      sentence: agree(
+        relation.sentence
+          ? relation.sentence(knownHere)
+          : renderTemplate(relation.display, workVars, knownHere),
+      ),
       result: `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct)}`,
     };
     // Grade 3–5 boxes open with the number sentence, then the rule in words; K–2 with the
@@ -259,8 +267,19 @@ export function buildSteps(
         ? { sentence: base.sentence }
         : band === 'elementary'
           ? { sentence: base.sentence, formula: wordRule(relation.display, vars, relation.words) }
-          : { formula: base.formula };
-    const heading = band === 'standard' ? base.title : `Find ${lowerFirst(v.name)}`;
+          : band === 'middle'
+            ? // Grade 6 letters: the formula with what its letters mean.
+              {
+                formula: `${base.formula} (${lowerFirst(wordRule(relation.display, vars, relation.words))})`,
+              }
+            : { formula: base.formula };
+    const heading =
+      band === 'standard' || band === 'middle' ? base.title : `Find ${lowerFirst(v.name)}`;
+    // Grade 6 letters: the numbers put in with the unknown kept as its letter ("40 = b × 5"),
+    // unless the formula already has the unknown alone on one side.
+    const isolated =
+      relation.display.startsWith(`{${t.id}} =`) || relation.display.endsWith(`= {${t.id}}`);
+    const letterSentence = base.sentence.replace('?', v.symbol);
     const answer = plain(base.result, t.id, true);
     if (!text || !t.exact) {
       return {
@@ -294,7 +313,8 @@ export function buildSteps(
     // "54 − 45" before it would put the subtraction first.
     // "3 + 4" under the question "3 + 4 = ?" only echoes it (K–5 open with the sentence).
     const echo =
-      band !== 'standard' && (base.sentence === `${bare} = ?` || base.sentence === `? = ${bare}`);
+      (band === 'early' || band === 'elementary') &&
+      (base.sentence === `${bare} = ?` || base.sentence === `? = ${bare}`);
     const repeatedByWork =
       echo ||
       (workLines?.[0]?.startsWith(`${bare} =`) ?? false) ||
@@ -303,8 +323,13 @@ export function buildSteps(
       (early && !!workLines?.length && (bare.match(/ [+−] /g)?.length ?? 0) >= 2);
     const showSubstituted =
       !(same(substituted, base.result) || substituted === rearranged) && !repeatedByWork;
+    // Grade 6 letters, unknown not alone: the work lines are the undo steps ("b = 40 ÷ 5").
+    const undoByWork = band === 'middle' && !isolated && !!workLines?.length;
     const substitutedShown =
-      showSubstituted && !(band !== 'standard' && workLines?.length && wordy(substituted));
+      showSubstituted &&
+      !undoByWork &&
+      !(band !== 'standard' && band !== 'middle' && workLines?.length && wordy(substituted));
+    const letterShown = band === 'middle' && !isolated && letterSentence !== base.sentence;
     // The work on paper: the module's choice, else the grid a student at this grade writes for
     // a plain arithmetic line (beside any work lines, which say the thinking behind it).
     const written =
@@ -349,6 +374,7 @@ export function buildSteps(
       lines: [
         // K–5 skip the letter rearrangement ("a = c − b"): the numbers carry the idea.
         ...(band === 'standard' ? [rearranged] : []),
+        ...(letterShown ? [letterSentence] : []),
         // K–2: a line with brackets or words ("h = hundreds digit of 347") is skipped when the
         // work lines show the arithmetic.
         ...(substitutedShown ? [plain(substituted, t.id, false)] : []),
@@ -358,6 +384,7 @@ export function buildSteps(
       ...(written ? { written } : {}),
       writtenAfter:
         (band === 'standard' ? 1 : 0) +
+        (letterShown ? 1 : 0) +
         (substitutedShown ? 1 : 0) +
         (text.writtenLast ? chain.length + (shownWork?.length ?? 0) : 0),
       answer: plain(result, t.id, true),

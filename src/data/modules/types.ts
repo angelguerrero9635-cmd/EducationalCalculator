@@ -734,6 +734,11 @@ export interface StepText {
 
 export interface ModuleDef {
   /**
+   * Grade 6 only: `letters` for a page that teaches letters (6.EE, the area and cube
+   * formulas); every other Grade 6 page names its values in words, as Grades 3–5 do.
+   */
+  notation?: 'words' | 'letters';
+  /**
    * Taxonomy skill id, or a course topic key (`<courseId>#<topicIndex>`). A skill or topic can
    * have more modules for question types that need a different model: `<id>~<slug>`.
    */

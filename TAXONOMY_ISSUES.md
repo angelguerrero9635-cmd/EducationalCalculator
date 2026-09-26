@@ -151,3 +151,13 @@ and each strand's skills sit together within a grade.
   (a Grade 6 pilot until Grade 6 is built).
 - **The Grade 4 skill "long-division"** names a method CCSS gives to Grade 6 (6.NBT.2); the
   title stays, and Grade 4's written work is partial quotients.
+
+### Grade 6 build (reviewer direction plans)
+
+- **Standard with no skill:** 6.NBT.2–3 (divide multi-digit numbers; the standard algorithms
+  for decimals) had no Grade 6 row. Added `m.6.multi-digit-decimals`, "Divide multi-digit
+  numbers; add, subtract, multiply and divide decimals", with `m.5.decimal-operations` and
+  `m.5.divide-2-digit` to refresh first.
+- **Letters in a Grade 6 title:** "Density (ρ = m / V)" showed a Greek letter on a page that
+  names values in words (Grade 6 science runs beside the math that introduces letters). Now
+  "Density: mass in each unit of volume".

@@ -107,7 +107,7 @@ function studentText(m: ModuleDef) {
     {
       where: `number sentence ${r.id}`,
       text:
-        band === 'standard'
+        band === 'standard' || band === 'middle'
           ? renderTemplate(r.display, m.variables)
           : agree(renderTemplate(r.display, m.variables, example)),
     },
@@ -211,21 +211,27 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
     });
 
     it('uses only notation the grade has met', () => {
-      if (band === 'standard') return;
+      // Grade 6 letter pages teach letters (grade.ts, the middle band).
+      if (band === 'standard' || band === 'middle') return;
       const early = band === 'early';
+      const sixth = grade === '6';
       expect(
         failures(text.all, (t) =>
-          /(^|[\s(])−\d|\(-\d/.test(t)
+          !sixth && /(^|[\s(])−\d|\(-\d/.test(t)
             ? 'negative number before Grade 6'
-            : early && /[×÷]/.test(t)
-              ? '× or ÷ before Grade 3'
-              : early && /\d\/\d/.test(t)
-                ? 'a fraction before Grade 3'
-                : LETTERS.test(t)
-                  ? 'a letter standing for a number before Grade 6'
-                  : early && equalsJoinsWords(t)
-                    ? '"=" outside a number sentence (K–2)'
-                    : false,
+            : sixth && /[ρλΔμσ]/.test(t)
+              ? 'a Greek letter on a Grade 6 page that names values in words'
+              : early && /[×÷]/.test(t)
+                ? '× or ÷ before Grade 3'
+                : early && /\d\/\d/.test(t)
+                  ? 'a fraction before Grade 3'
+                  : LETTERS.test(t)
+                    ? sixth
+                      ? 'a letter standing for a number on a Grade 6 words page'
+                      : 'a letter standing for a number before Grade 6'
+                    : early && equalsJoinsWords(t)
+                      ? '"=" outside a number sentence (K–2)'
+                      : false,
         ),
       ).toEqual([]);
     });

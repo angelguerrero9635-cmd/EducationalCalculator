@@ -93,7 +93,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   const status = calc.status(variable.id);
   const early = isEarlyGrade(calc.module.id);
   // Letters stand for numbers from Grade 6: K–5 rows name each value in words alone.
-  const letters = gradeBand(calc.module.id) === 'standard';
+  const band = gradeBand(calc.module.id);
+  const letters = band === 'standard' || band === 'middle';
   const rawError = typo ? 'Enter a number' : calc.errors[variable.id];
   const error = rawError && early ? kidMessage(rawError) : rawError;
   const statusWord = variable.derived

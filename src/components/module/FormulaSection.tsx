@@ -1,13 +1,16 @@
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/Text';
-import { isEarlyGrade, isElementary, wordRule } from '@/data/modules';
+import { gradeBand, isEarlyGrade, isElementary, wordRule } from '@/data/modules';
+
 import { agree } from '@/data/modules/buildSteps';
 import { renderTemplate } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from './useCalculator';
+
+const lowerFirst = (t: string) => `${t[0]!.toLowerCase()}${t.slice(1)}`;
 
 /**
  * The formulas, shown symbolically and with the current values (in the chosen units). The
@@ -18,6 +21,7 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
   const { module, values, units } = calc;
   const early = isEarlyGrade(module.id);
   const elementary = isElementary(module.id);
+  const middle = gradeBand(module.id) === 'middle';
   // Formula lines use the chosen units when the formulas hold in them; otherwise the formula's
   // own units (the step-by-step shows the conversions).
   const working: Values = units.coherent
@@ -51,7 +55,13 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
             ? [numbers, null]
             : elementary
               ? [numbers, wordRule(r.display, module.variables, r.words)]
-              : [letters, numbers];
+              : middle
+                ? // Grade 6 letters: the formula with what its letters mean, then the numbers.
+                  [
+                    `${letters} (${lowerFirst(wordRule(r.display, module.variables, r.words))})`,
+                    numbers,
+                  ]
+                : [letters, numbers];
           return (
             <View
               key={r.id}

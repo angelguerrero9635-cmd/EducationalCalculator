@@ -22,7 +22,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
   const card = [styles.card, { backgroundColor: c.surface, borderColor: c.border }];
   // Letters go on one line; names (K–5) one per line.
   const list = (qs: typeof w.given) =>
-    (w.band === 'standard'
+    (w.band === 'standard' || w.band === 'middle'
       ? qs.map((q) => q.label).join(',  ')
       : qs.map((q) => q.label).join('\n')) || 'nothing yet';
 

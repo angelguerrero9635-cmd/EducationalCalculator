@@ -337,6 +337,82 @@ export function partialQuotients(n: number, d: number): Written | undefined {
 }
 
 /**
+ * n ÷ d in the long-division bracket with a decimal dividend or quotient (Grade 6, 6.NS.2–3):
+ * the point written in the dividend and carried straight up into the quotient, and zeros
+ * written after the point until the division ends. Undefined when it would not end within
+ * `maxPlaces` decimal places, or the divisor is not a whole number from 2 to 99.
+ */
+export function decimalLongDivision(n: number, d: number, maxPlaces = 3): Written | undefined {
+  if (!Number.isInteger(d) || d < 2 || d > 99 || n <= 0) return undefined;
+  const [intText, fracText = ''] = String(n).split('.');
+  if (fracText.length > maxPlaces) return undefined;
+  const digits = `${intText}${fracText}`.split('').map(Number);
+  let fraction = fracText.length;
+  // Zeros after the point until the division ends (or the places run out).
+  let rem = 0;
+  for (const x of digits) rem = (rem * 10 + x) % d;
+  while (rem !== 0 && fraction < maxPlaces) {
+    digits.push(0);
+    fraction++;
+    rem = (rem * 10) % d;
+  }
+  if (rem !== 0) return undefined;
+  const ints = intText!.length;
+  const point = fraction > 0;
+  // Columns: divisor, bracket, then the dividend's digits with the point in its own column.
+  const col = (i: number) => 2 + i + (point && i >= ints ? 1 : 0);
+  const width = 2 + digits.length + (point ? 1 : 0);
+  const quotientRow = Array<WrittenCell>(width).fill(blank);
+  for (let i = 2; i < width; i++) quotientRow[i] = cell('', { underline: true });
+  const dividendRow: WrittenCell[] = [cell(String(d)), cell(')')];
+  digits.forEach((x, i) => {
+    if (point && i === ints) dividendRow.push(cell('.'));
+    dividendRow.push(cell(String(x)));
+  });
+  if (point) quotientRow[2 + ints] = cell('.', { underline: true });
+  const rows: WrittenCell[][] = [quotientRow, dividendRow];
+  let cur = 0;
+  let started = false;
+  let bottom: WrittenCell[] | undefined;
+  digits.forEach((digit, i) => {
+    cur = cur * 10 + digit;
+    if (started && bottom) bottom[col(i)] = cell(String(digit));
+    const qd = Math.floor(cur / d);
+    // Before the first digit that fits, nothing is written, except a 0 before the point.
+    if (qd === 0 && !started) {
+      if (point && i === ints - 1) quotientRow[col(i)] = cell('0', { underline: true });
+      return;
+    }
+    started = true;
+    quotientRow[col(i)] = cell(String(qd), { underline: true });
+    if (qd === 0) return;
+    const product = digitsOf(qd * d);
+    const take = Array<WrittenCell>(width).fill(blank);
+    product.forEach((x, k) => {
+      take[col(i - product.length + 1 + k)] = cell(String(x), { underline: true });
+    });
+    const sign = Math.max(1, col(i - product.length + 1) - 1);
+    // The rule runs unbroken under the product, across the point's column too.
+    for (let k = sign + 1; k <= col(i); k++) {
+      if (take[k] === blank) take[k] = cell('', { underline: true });
+    }
+    take[sign] = cell('−', { underline: true });
+    rows.push(take);
+    cur -= qd * d;
+    bottom = Array<WrittenCell>(width).fill(blank);
+    const diff = digitsOf(cur);
+    if (cur > 0 || i === digits.length - 1) {
+      diff.forEach((x, k) => {
+        bottom![col(i - diff.length + 1 + k)] = cell(String(x));
+      });
+    }
+    rows.push(bottom);
+  });
+  const q = Number((n / d).toFixed(fraction));
+  return { kind: 'grid', rows, width, says: `${n} ÷ ${d} = ${q}` };
+}
+
+/**
  * Column addition or subtraction of decimals: the numbers scaled to whole hundredths (or
  * tenths), worked in columns, and the point put back in every row (Grade 5, 5.NBT.7).
  */
@@ -419,7 +495,7 @@ export function writtenText(w: Written): string[] {
  */
 export function autoWritten(grade: string | undefined, expr: string): Written | undefined {
   const g = grade === undefined ? Infinity : grade === 'K' ? 0 : Number(grade);
-  if (g < 2 || g > 5) return undefined;
+  if (g < 2 || g > 6) return undefined;
   const text = expr.replace(/,(?=\d{3}(?!\d))/g, '');
   const nums = (s: string) => s.split(/ [+−×÷] /).map(Number);
   /** Digits that matter: 240 has two, 1000 one. A number with one is added in the head. */
@@ -472,6 +548,15 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
   if (g >= 5 && /^\d+(\.\d+)? − \d+(\.\d+)?$/.test(text) && text.includes('.')) {
     const [c, b] = nums(text) as [number, number];
     return c >= b ? decimalColumns('−', [c, b]) : undefined;
+  }
+  // Grade 6: a decimal dividend or quotient, and two-digit divisors (6.NS.2–3).
+  if (g >= 6 && /^\d+(\.\d+)? ÷ \d+$/.test(text)) {
+    const [n, d] = nums(text) as [number, number];
+    // A fact or a one-digit answer is done in the head (0.8 ÷ 4, 45 ÷ 9).
+    const places = (String(n).split('.')[1] ?? '').length;
+    const scaled = Math.round(n * 10 ** places);
+    if (d < 2 || (scaled % d === 0 && scaled / d < 10)) return undefined;
+    return decimalLongDivision(n, d);
   }
   if (g >= 4 && /^\d+ ÷ \d+$/.test(text)) {
     const [n, d] = nums(text) as [number, number];

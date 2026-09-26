@@ -224,7 +224,9 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/√(\d+(?:\.\d+)?)/g, 'sqrt($1)')
     // Natural logs from the exponential lessons: ln(x) and ln|x|.
     .replace(/ln\|([^|]*)\|/g, 'log(abs($1))')
-    .replace(/ln\(/g, 'log(');
+    .replace(/ln\(/g, 'log(')
+    // Absolute value bars (Grade 6): |−4| is 4.
+    .replace(/\|([^|]+)\|/g, 'abs($1)');
   // Long repeated sums are shortened: "2 + 2 + … (12 times)" is 2 × 12.
   s = s.replace(/(\d+(?:\.\d+)?) \+ \1 \+ … \((\d+) times\)/g, (_, a, n) => `(${a} * ${n})`);
   for (let guard = 0; guard < 50; guard++) {

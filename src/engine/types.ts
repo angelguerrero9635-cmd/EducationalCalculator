@@ -70,4 +70,10 @@ export interface Relation {
    * step-by-step check really checks. Given the values in the units the steps show.
    */
   check?: (v: Values) => string;
+  /**
+   * The number sentence shown for a step, from the values known so far (the unknown is
+   * undefined: print "?"). For a relation whose display would read wrong with signed numbers
+   * ("3 − (−5)" is Grade 7): "How far from −5 up to 3? ?".
+   */
+  sentence?: (v: Values) => string;
 }
