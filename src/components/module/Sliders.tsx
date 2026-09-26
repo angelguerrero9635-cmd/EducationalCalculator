@@ -11,7 +11,6 @@ import { Text } from '@/components/Text';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
 import { useRep } from './reps/common';
-import { useScrollLock } from './scrollLock';
 import type { StepperItem } from './stepperContext';
 import type { Calculator } from './useCalculator';
 
@@ -103,7 +102,6 @@ function Slider({
   const track = wide ? SHORT_TRACK : TRACK;
   const knobY = (1 - ratio) * (track - HANDLE);
   const trackTop = useRef(0);
-  const { setLocked } = useScrollLock();
 
   const setFromY = (y: number) => {
     // The knob's center follows the finger; the value snaps to the slider's step.
@@ -143,14 +141,10 @@ function Slider({
         onMoveShouldSetResponder={() => true}
         onResponderTerminationRequest={() => false}
         onResponderGrant={(e) => {
-          // Hold the page still while the finger is on the slider.
-          setLocked(true);
           trackTop.current = e.nativeEvent.pageY - e.nativeEvent.locationY;
           setFromY(e.nativeEvent.locationY);
         }}
         onResponderMove={(e) => setFromY(at(e))}
-        onResponderRelease={() => setLocked(false)}
-        onResponderTerminate={() => setLocked(false)}
         style={[
           styles.track,
           { height: track, backgroundColor: c.chartSurface, borderColor: c.border },

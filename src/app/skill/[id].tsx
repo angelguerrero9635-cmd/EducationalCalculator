@@ -11,7 +11,6 @@ import {
   Tile,
   TileGrid,
 } from '@/components';
-import { ScrollLockProvider } from '@/components/module/scrollLock';
 import { PageMeta } from '@/components/PageMeta';
 import { isLocked } from '@/config/access';
 import { problemTypeMeta, skillMeta } from '@/data/meta';
@@ -64,50 +63,45 @@ export default function SkillScreen() {
     icons[lessonId === skill.id ? 0 : types.findIndex((t) => t.id === lessonId) + 1];
 
   return (
-    <ScrollLockProvider>
-      {(locked) => (
-        <ScrollView
-          scrollEnabled={!locked}
-          contentInsetAdjustmentBehavior="automatic"
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          automaticallyAdjustKeyboardInsets
-          style={{ backgroundColor: c.background }}
-        >
-          <Stack.Screen options={{ title }} />
-          <PageMeta {...(type ? problemTypeMeta(type) : skillMeta(skill))} />
-          <DetailHeader
-            title={title}
-            lines={[
-              `${gradeLabel(skill.grade)} · ${subjectLabel(skill.subject)}`,
-              type ? `Problem type · ${skill.title}` : `Strand: ${skill.strand}`,
-              ...(type?.use ? [type.use] : []),
-            ]}
-          />
-          <RefreshSection rows={refreshRows(skill.id)} />
-          <ModuleSections id={id} />
-          {related.length ? (
-            <>
-              <SectionHeader title={type ? 'Related lessons' : 'More problem types'} />
-              <TileGrid>
-                {related.map((r, i) => (
-                  <Tile
-                    key={r.id}
-                    testID={`related-${r.id}`}
-                    icon={iconOf(r.id)}
-                    tone={i}
-                    title={r.title}
-                    subtitle={r.subtitle}
-                    route={skillRoute(r.id)}
-                  />
-                ))}
-              </TileGrid>
-              <View style={styles.end} />
-            </>
-          ) : null}
-        </ScrollView>
-      )}
-    </ScrollLockProvider>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      automaticallyAdjustKeyboardInsets
+      style={{ backgroundColor: c.background }}
+    >
+      <Stack.Screen options={{ title }} />
+      <PageMeta {...(type ? problemTypeMeta(type) : skillMeta(skill))} />
+      <DetailHeader
+        title={title}
+        lines={[
+          `${gradeLabel(skill.grade)} · ${subjectLabel(skill.subject)}`,
+          type ? `Problem type · ${skill.title}` : `Strand: ${skill.strand}`,
+          ...(type?.use ? [type.use] : []),
+        ]}
+      />
+      <RefreshSection rows={refreshRows(skill.id)} />
+      <ModuleSections id={id} />
+      {related.length ? (
+        <>
+          <SectionHeader title={type ? 'Related lessons' : 'More problem types'} />
+          <TileGrid>
+            {related.map((r, i) => (
+              <Tile
+                key={r.id}
+                testID={`related-${r.id}`}
+                icon={iconOf(r.id)}
+                tone={i}
+                title={r.title}
+                subtitle={r.subtitle}
+                route={skillRoute(r.id)}
+              />
+            ))}
+          </TileGrid>
+          <View style={styles.end} />
+        </>
+      ) : null}
+    </ScrollView>
   );
 }
 

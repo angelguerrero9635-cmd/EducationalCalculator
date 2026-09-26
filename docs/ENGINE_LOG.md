@@ -26,6 +26,11 @@ under the slider and the input box). What it found and what the engine now does:
   showed was not the value it kept. → Each slider's track covers only the values that fit
   with the others held still (`Calculator.fits`, probed by halving from the current value
   toward each end, on the variable's own steps), so the knob stays under the finger.
+- On a phone a slider moved one step and then snapped back to (or near) its old value: the
+  page's scroll lock turned `scrollEnabled` off on the first move, and changing a scroll
+  container mid-gesture cancels the touch on iOS. → The lock is gone. On the web the track
+  and the handles carry `touch-action: none`, and on native they hold the responder and
+  refuse to give it up, which is all that is needed to keep the page still.
 - A page whose whole is fixed (a full turn of 360°) had two part sliders that could never
   move: each pinned the other, so the whole always changed. → `angles.sliders` names the
   values that get sliders instead (parts of the turn, parts in the angle); the rays are not
