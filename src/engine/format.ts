@@ -68,8 +68,17 @@ export function renderTemplate(
     const s = formatNumber(x, clockPart ? variable : { ...variable, digits: undefined });
     return x < 0 ? `(${s})` : s;
   });
-  // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0.
-  return values ? filled.replace(/(^|[(\s])−0(?![\d.])/g, '$10') : filled;
+  if (!values) return filled;
+  // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0; a
+  // whole-number power is written raised (10^3 → 10³), the way it is written on paper.
+  return superscript(filled.replace(/(^|[(\s])−0(?![\d.])/g, '$10'));
+}
+
+/** Whole-number exponents after a caret written as superscript digits: "10^3" → "10³". */
+export function superscript(text: string): string {
+  return text.replace(/\^(\d+)(?![\d.])/g, (_, d: string) =>
+    [...d].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)]).join(''),
+  );
 }
 
 const ONES = [

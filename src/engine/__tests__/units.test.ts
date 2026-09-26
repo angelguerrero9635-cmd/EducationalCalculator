@@ -241,7 +241,8 @@ describe('step-by-step with units', () => {
     const w = buildSteps(m, r, ctx);
     // Grade 3 names the value in words (letters stand for numbers from Grade 6).
     expect(w.convertIn[0]).toBe('Length = 1 ft = 30.48 cm   (1 ft = 30.48 cm)');
-    expect(w.steps[0]!.substituted).toBe('A = 30.48 × 7.62');
+    // Grade 3: the sentence carries the numbers (no echo line "A = 30.48 × 7.62" under it).
+    expect(w.steps[0]!.sentence).toBe('30.48 × 7.62 = ?');
   });
 
   it('works directly in the chosen units when the formulas hold in them', () => {
@@ -254,7 +255,7 @@ describe('step-by-step with units', () => {
     const w = buildSteps(m, r, ctx);
     expect(w.convertIn).toEqual([]);
     expect(w.given.map((q) => q.value)).toEqual(['4 in', '3 in']);
-    expect(w.steps[0]).toMatchObject({ substituted: 'A = 4 × 3', result: 'A = 12 in²' });
+    expect(w.steps[0]).toMatchObject({ sentence: '4 × 3 = ?', result: 'A = 12 in²' });
     expect(w.check).toEqual([{ formula: '4 × 3 = 12', ok: true }]);
   });
 

@@ -217,8 +217,8 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
     .replace(/π/g, `(${Math.PI})`)
     .replace(/½/g, '(0.5)')
-    .replace(/²/g, '**2')
-    .replace(/³/g, '**3')
+    // Any exponent written as superscript digits (10³, 10⁴).
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (m) => `**${[...m].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c)).join('')}`)
     .replace(/\^/g, '**')
     .replace(/√\(/g, 'sqrt(')
     .replace(/√(\d+(?:\.\d+)?)/g, 'sqrt($1)')

@@ -3,26 +3,15 @@
  * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import { formatNumber } from '@/engine/format';
+import { formatNumber, superscript } from '@/engine/format';
 import type { Values } from '@/engine/types';
 
 import { div, sum2, times, whole } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
+import { placeCompareLines } from '../work';
 import { longDivision } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
-/** t = the `place` part of a: 't = tens of b' solves t = 10 × ⌊b ÷ 10⌋ from b alone. */
-const placePart = (out: string, of: string, place: number, name: string) => ({
-  id: `${out} = ${name} of ${of}`,
-  display: `{${of}} has {${out}} in its ${name}`,
-  vars: [out, of],
-  residual: (v: Values) => v[out]! - place * Math.floor((v[of]! % (place * 10)) / place),
-  // Every number from 50 to 59 has 50 in its tens: the number can't be found from it.
-  solve: {
-    [out]: (v: Values) => place * Math.floor((v[of]! % (place * 10)) / place),
-    [of]: () => undefined,
-  },
-});
 /** A fraction is at most 1 (a check-only relation). */
 const atMostOne = (top: string, bottom: string) => ({
   id: `${top} ≤ ${bottom}`,
@@ -50,22 +39,42 @@ const wholesNote = (top: number, bottom: number) => {
 };
 /** How many digits after the point a decimal has (2.5 → 1, 3 → 0). */
 const places = (x: number) => (String(x).split('.')[1] ?? '').length;
-/** A power of ten, the way it is unfolded: "10^3 = 10 × 10 × 10 = 1,000". */
+/** A power of ten, the way it is unfolded: "10³ = 10 × 10 × 10 = 1,000". */
 const unfold = (k: number) =>
-  k === 0
-    ? '10^0 = 1: no tens multiplied'
-    : `10^${k} = ${Array(k).fill(10).join(' × ')} = ${fmt(10 ** k)}`;
-/** Under the long-division bracket: the quotient's places and what is left over. */
-const quotientLines = (n: number, d: number): string[] => {
-  const q = Math.floor(n / d);
-  const r = n - q * d;
-  const digits = String(q).split('');
-  const names = ['ones', 'tens', 'hundreds', 'thousands'];
-  const placesRead = digits.map((x, i) => `${x} ${names[digits.length - 1 - i]}`).join(', ');
-  return [
-    `Quotient: ${placesRead}${digits.length > 1 ? ` → ${fmt(q)}` : ''}`,
-    `${fmt(r)} left over: less than ${d}, so it is the remainder`,
-  ];
+  superscript(
+    k === 0
+      ? '10^0 = 1: no tens multiplied'
+      : `10^${k} = ${Array(k).fill(10).join(' × ')} = ${fmt(10 ** k)}`,
+  );
+
+/**
+ * Each quotient digit estimated with the divisor rounded to tens, then checked (5.NBT.6):
+ * "23 is about 20", "198 ÷ 20 is about 9", "Try 9: 9 × 23 = 207", "207 is more than 198: use 8".
+ */
+const estimateLines = (n: number, d: number): string[] => {
+  const rd = Math.max(10, Math.round(d / 10) * 10);
+  const lines = rd !== d ? [`${d} is about ${rd}`] : [];
+  let cur = 0;
+  let started = false;
+  for (const digit of String(n)) {
+    cur = cur * 10 + Number(digit);
+    if (!started && cur < d) continue;
+    started = true;
+    const q = Math.floor(cur / d);
+    const guess = Math.min(9, Math.floor(cur / rd));
+    if (q > 0) {
+      lines.push(`${fmt(cur)} ÷ ${rd} is about ${guess}`);
+      if (guess > q) {
+        lines.push(`Try ${guess}: ${guess} × ${d} = ${fmt(guess * d)}`);
+        lines.push(`${fmt(guess * d)} is more than ${fmt(cur)}: use ${q}`);
+      } else if (guess < q) {
+        lines.push(`Try ${guess + 1}: ${guess + 1} × ${d} = ${fmt((guess + 1) * d)}`);
+        lines.push(`${fmt((guess + 1) * d)} still fits in ${fmt(cur)}: use ${q}`);
+      }
+    }
+    cur -= q * d;
+  }
+  return lines;
 };
 
 const modules: (ModuleDef | ModuleDef[])[] = [
@@ -81,7 +90,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'm.5.order-of-operations',
         assumptions: [
-          'Work inside the parentheses first. Then multiply or divide. Then add or subtract.',
+          'Parentheses first, then brackets [ ], then braces { }: work from the inside out.',
+          'Then multiply or divide, then add or subtract.',
           'The tape shows the value inside as equal groups, with the last number taken off the end.',
           'Numbers inside the parentheses to 20, the multiplier to 10.',
         ],
@@ -91,7 +101,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           { ...whole('s', 's', 'Value inside the parentheses', 0, 40), derived: true },
           whole('c', 'c', 'Multiplier', 1, 10),
           { ...whole('p', 'p', 'Product', 0, 400), derived: true },
-          whole('d', 'd', 'Subtracted', 0, 400),
+          whole('d', 'd', 'Number taken away', 0, 400),
           whole('r', 'r', 'Result', 0, 400),
         ],
         relations: [
@@ -172,7 +182,11 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         steps: {
           's = a + b': {
             ...inside.steps,
-            s: { ...inside.steps.s!, how: 'Parentheses first: add the two numbers inside.' },
+            s: {
+              ...inside.steps.s!,
+              how: 'Parentheses first: add the two numbers inside.',
+              work: (v: Values) => [`${v.a} + ${v.b} = ${v.s}`],
+            },
           },
           's = q × c': {
             q: { expr: '{s} ÷ {c}', how: 'Divide next: the value inside shared into equal parts.' },
@@ -184,6 +198,98 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         startWith: ['a', 'b', 'c'],
         representation: { kind: 'equalGroups', groups: 'c', each: 'q', total: 's' },
       },
+      {
+        id: 'm.5.order-of-operations~where-parentheses',
+        title: 'Where the parentheses go',
+        use: 'Use this to see how parentheses change (3 + 5) × 4 and 3 + 5 × 4.',
+        assumptions: [
+          'With parentheses, add first: (3 + 5) × 4 = 8 × 4 = 32.',
+          'Without them, multiply first: 3 + 5 × 4 = 3 + 20 = 23.',
+          'Numbers to 20, the multiplier to 10.',
+        ],
+        variables: [
+          whole('a', 'a', 'First number', 0, 20),
+          whole('b', 'b', 'Second number', 0, 20),
+          whole('c', 'c', 'Multiplier', 1, 10),
+          { ...whole('w', 'w', 'With parentheses', 0, 400), derived: true },
+          { ...whole('o', 'o', 'Without parentheses', 0, 220), derived: true },
+          { ...whole('d', 'd', 'Difference', 0, 400), derived: true },
+        ],
+        relations: [
+          {
+            id: 'w = (a + b) × c',
+            display: '({a} + {b}) × {c} = {w}',
+            words: '(First number + second number) × multiplier = {w}',
+            vars: ['w', 'a', 'b', 'c'],
+            residual: (v: Values) => v.w! - (v.a! + v.b!) * v.c!,
+            solve: {
+              w: (v: Values) => (v.a! + v.b!) * v.c!,
+              a: () => undefined,
+              b: () => undefined,
+              c: () => undefined,
+            },
+          },
+          {
+            id: 'o = a + b × c',
+            display: '{a} + {b} × {c} = {o}',
+            words: 'First number + second number × multiplier = {o}',
+            vars: ['o', 'a', 'b', 'c'],
+            residual: (v: Values) => v.o! - v.a! - v.b! * v.c!,
+            solve: {
+              o: (v: Values) => v.a! + v.b! * v.c!,
+              a: () => undefined,
+              b: () => undefined,
+              c: () => undefined,
+            },
+          },
+          {
+            id: 'd = w − o',
+            display: '{w} − {o} = {d}',
+            words: 'With parentheses − without parentheses = {d}',
+            vars: ['d', 'w', 'o'],
+            residual: (v: Values) => v.d! - v.w! + v.o!,
+            solve: { d: (v: Values) => v.w! - v.o!, w: () => undefined, o: () => undefined },
+          },
+        ],
+        steps: {
+          'w = (a + b) × c': {
+            w: {
+              expr: '({a} + {b}) × {c}',
+              how: 'Parentheses first: add, then multiply.',
+              work: (v: Values) => [
+                `${v.a} + ${v.b} = ${v.a! + v.b!}`,
+                `${v.a! + v.b!} × ${v.c} = ${v.w}`,
+              ],
+            },
+          },
+          'o = a + b × c': {
+            o: {
+              expr: '{a} + {b} × {c}',
+              how: 'No parentheses: multiply first, then add.',
+              work: (v: Values) => [
+                `${v.b} × ${v.c} = ${v.b! * v.c!}`,
+                `${v.a} + ${v.b! * v.c!} = ${v.o}`,
+              ],
+            },
+          },
+          'd = w − o': {
+            d: {
+              expr: '{w} − {o}',
+              how: 'Compare the two answers.',
+              note: (v: Values) =>
+                v.d === 0 ? '(the same: here the parentheses change nothing)' : '',
+            },
+          },
+        },
+        example: { a: 3, b: 5, c: 4, w: 32, o: 23, d: 9 },
+        startWith: ['a', 'b', 'c'],
+        representation: {
+          kind: 'tape',
+          compare: ['w', 'o'],
+          difference: 'd',
+          caption: 'With parentheses {w}, without {o}: {d} apart.',
+        },
+      },
     ];
     return pages;
   })(),
@@ -191,9 +297,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.powers-of-ten',
     assumptions: [
-      'The exponent counts how many tens are multiplied: 10^3 = 10 × 10 × 10 = 1,000.',
+      'The exponent counts how many tens are multiplied: 10³ = 10 × 10 × 10 = 1,000.',
       'Multiplying by 10 moves every digit one place to the left. The chart shows the places.',
-      'Multiplying by 10^3 moves the digits three places: write three zeros after the number.',
+      'Multiplying by 10³ moves the digits three places: write three zeros after the number.',
       'Numbers to 999, exponents to 4.',
     ],
     variables: [
@@ -264,22 +370,22 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 34, k: 3, e: 1000, p: 34000 },
     startWith: ['n', 'k'],
-    representation: { kind: 'placeValueChart', value: 'p', decimals: 0 },
+    representation: { kind: 'placeValueChart', value: 'p', decimals: 0, from: 'n' },
   },
   {
     id: 'm.5.powers-of-ten~decimals',
     title: 'Move the decimal point',
-    use: 'Use this for 3.45 × 10^2 = 345 and other decimals times a power of 10.',
+    use: 'Use this for 3.45 × 10² = 345, or 345 ÷ 10³ = 0.345.',
     assumptions: [
-      'Multiplying a decimal by 10 moves every digit one place left: the point moves one place right.',
-      'Multiplying by 10^2 moves the point two places right. Dividing moves it left.',
-      'Decimals to hundredths, exponents to 3.',
+      'Multiplying by 10 moves every digit one place left. The point stays where it is.',
+      'Times 10² moves every digit 2 places left. Dividing moves every digit right.',
+      'Decimals to thousandths, exponents to 3.',
     ],
     variables: [
-      { id: 'n', symbol: 'n', name: 'Decimal', min: 0.01, max: 99.99, step: 0.01 },
+      { id: 'n', symbol: 'n', name: 'Decimal', min: 0.001, max: 99.999, step: 0.001 },
       whole('k', 'k', 'Exponent', 0, 3),
       { ...whole('e', 'e', 'Power of 10', 1, 1000), allowed: [1, 10, 100, 1000] },
-      { id: 'p', symbol: 'p', name: 'Product', min: 0.01, max: 99990, step: 0.01 },
+      { id: 'p', symbol: 'p', name: 'Product', min: 0.001, max: 99999, step: 0.001 },
     ],
     relations: [
       {
@@ -322,18 +428,24 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'p = n × e': {
         p: {
           expr: '{n} × {e}',
-          how: 'Move the point right one place for each ten. Fill any empty places with zeros.',
+          how: 'Every digit moves one place left for each ten. Fill any empty places with zeros.',
           work: (v: Values) =>
             v.k
               ? [
-                  `Point moves ${v.k} ${v.k === 1 ? 'place' : 'places'} right: ${fmt(v.n!)} → ${fmt(v.p!)}`,
+                  `Every digit moves ${v.k} ${v.k === 1 ? 'place' : 'places'} left: ${fmt(v.n!)} → ${fmt(v.p!)}`,
                 ]
               : ['Times 1 changes nothing.'],
           written: false,
         },
         n: {
           expr: '{p} ÷ {e}',
-          how: 'Dividing by a power of 10 moves the point left, one place for each ten.',
+          how: 'Dividing by a power of 10 moves every digit right, one place for each ten.',
+          work: (v: Values) =>
+            v.k
+              ? [
+                  `Every digit moves ${v.k} ${v.k === 1 ? 'place' : 'places'} right: ${fmt(v.p!)} → ${fmt(v.n!)}`,
+                ]
+              : ['Divided by 1 changes nothing.'],
           written: false,
         },
         e: {
@@ -345,154 +457,373 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 3.45, k: 2, e: 100, p: 345 },
     startWith: ['n', 'k'],
-    representation: { kind: 'placeValueChart', value: 'p', decimals: 2 },
+    representation: { kind: 'placeValueChart', value: 'p', decimals: 3, from: 'n' },
   },
-  // ── The standard algorithm for multiplication (5.NBT.5) ──
+  // ── Thousandths: a digit's value (5.NBT.3) ──
+  (() => {
+    const PLACE_NAMES: Record<number, string> = {
+      100: 'hundreds',
+      10: 'tens',
+      1: 'ones',
+      0.1: 'tenths',
+      0.01: 'hundredths',
+      0.001: 'thousandths',
+    };
+    const fraction: Record<number, string> = { 0.1: '1/10', 0.01: '1/100', 0.001: '1/1,000' };
+    const exact = (x: number) => Number(x.toFixed(3));
+    return {
+      id: 'm.5.powers-of-ten~thousandths',
+      title: 'Tenths, hundredths and thousandths',
+      use: 'Use this for the value of a digit, like the 3 in 4.263 (3 thousandths).',
+      assumptions: [
+        'A digit’s value is the digit times its place.',
+        'After the point: tenths (1/10), hundredths (1/100), thousandths (1/1,000).',
+        'Each place is 10 times the place to its right.',
+      ],
+      variables: [
+        whole('d', 'd', 'Digit', 0, 9),
+        {
+          id: 'p',
+          symbol: 'p',
+          name: 'Its place',
+          min: 0.001,
+          max: 100,
+          allowed: [100, 10, 1, 0.1, 0.01, 0.001],
+        },
+        { id: 'v', symbol: 'v', name: 'Value of the digit', min: 0, max: 900, step: 0.001 },
+      ],
+      relations: [
+        {
+          id: 'v = d × p',
+          display: '{d} × {p} = {v}',
+          words: 'Digit × its place = value of the digit',
+          vars: ['v', 'd', 'p'],
+          residual: (v: Values) => v.v! - v.d! * v.p!,
+          solve: {
+            v: (v: Values) => exact(v.d! * v.p!),
+            d: (v: Values) => div(v.v!, v.p!),
+            p: (v: Values) => div(v.v!, v.d!),
+          },
+        },
+      ],
+      steps: {
+        'v = d × p': {
+          v: {
+            expr: '{d} × {p}',
+            how: (v: Values) => `The digit is in the ${PLACE_NAMES[v.p!] ?? 'ones'} place.`,
+            work: (v: Values) =>
+              v.p! < 1
+                ? [`${v.d} ${PLACE_NAMES[v.p!]} = ${v.d} × ${fraction[v.p!]} = ${fmt(v.v!)}`]
+                : [`${v.d} × ${fmt(v.p!)} = ${fmt(v.v!)}`],
+          },
+          d: { expr: '{v} ÷ {p}', how: 'Divide the value by its place.' },
+          p: { expr: '{v} ÷ {d}', how: 'Divide the value by the digit: its place.' },
+        },
+      },
+      example: { d: 3, p: 0.001, v: 0.003 },
+      startWith: ['d', 'p'],
+      representation: { kind: 'placeValueChart', value: 'v', decimals: 3, highlight: 'p' },
+    } satisfies ModuleDef;
+  })(),
+  // ── Comparing decimals to thousandths (5.NBT.3b) ──
   {
-    id: 'm.5.standard-algorithm',
+    id: 'm.5.powers-of-ten~compare-decimals',
+    title: 'Compare decimals',
+    use: 'Use this to compare decimals like 0.307 and 0.37 with >, < or =.',
     assumptions: [
-      'Multiply by the ones digit of the second factor, then by its tens digit (a zero first).',
-      'Add the two rows. The area model shows the same two parts as boxes.',
-      'First factor from 10 to 999, second factor from 10 to 99.',
+      'Line up the points. Compare the biggest place first.',
+      'The same digit: move one place right and compare again.',
+      'A longer decimal is not always bigger: 0.37 > 0.307.',
     ],
     variables: [
-      whole('a', 'a', 'First factor', 10, 999),
-      whole('b', 'b', 'Second factor', 10, 99),
-      { ...whole('t', 't', 'Tens of the second factor', 10, 90), derived: true },
-      { ...whole('o', 'o', 'Ones of the second factor', 0, 9), derived: true },
-      { ...whole('x', 'x', 'First factor × ones', 0, 8991), derived: true },
-      { ...whole('y', 'y', 'First factor × tens', 100, 89910), derived: true },
-      whole('p', 'p', 'Product', 100, 98901),
+      { id: 'a', symbol: 'a', name: 'First decimal', min: 0, max: 99.999, step: 0.001 },
+      { id: 'b', symbol: 'b', name: 'Second decimal', min: 0, max: 99.999, step: 0.001 },
+      { id: 'g', symbol: 'g', name: 'How far apart', min: 0, max: 99.999, step: 0.001 },
     ],
     relations: [
-      placePart('t', 'b', 10, 'tens'),
       {
-        id: 'b = t + o',
-        display: '{b} = {t} + {o}',
-        vars: ['b', 't', 'o'],
-        residual: (v: Values) => v.b! - v.t! - v.o!,
+        id: 'g = a and b apart',
+        display: '{a} and {b} are {g} apart',
+        words: 'Bigger decimal − smaller decimal = {g}',
+        check: (v: Values) =>
+          `${fmt(v.a!)} ${v.a! < v.b! ? '<' : v.a! > v.b! ? '>' : '='} ${fmt(v.b!)}`,
+        vars: ['g', 'a', 'b'],
+        residual: (v: Values) => v.g! - Math.abs(v.a! - v.b!),
         solve: {
-          b: (v: Values) => v.t! + v.o!,
-          t: (v: Values) => v.b! - v.o!,
-          o: (v: Values) => v.b! - v.t!,
-        },
-      },
-      {
-        id: 'x = a × o',
-        display: '{a} × {o} = {x}',
-        vars: ['x', 'a', 'o'],
-        residual: (v: Values) => v.x! - v.a! * v.o!,
-        solve: {
-          x: (v: Values) => v.a! * v.o!,
-          a: (v: Values) => div(v.x!, v.o!),
-          o: (v: Values) => div(v.x!, v.a!),
-        },
-      },
-      {
-        id: 'y = a × t',
-        display: '{a} × {t} = {y}',
-        vars: ['y', 'a', 't'],
-        residual: (v: Values) => v.y! - v.a! * v.t!,
-        solve: {
-          y: (v: Values) => v.a! * v.t!,
-          a: (v: Values) => div(v.y!, v.t!),
-          t: (v: Values) => div(v.y!, v.a!),
-        },
-      },
-      {
-        id: 'p = x + y',
-        display: '{x} + {y} = {p}',
-        vars: ['p', 'x', 'y'],
-        residual: (v: Values) => v.p! - v.x! - v.y!,
-        solve: {
-          p: (v: Values) => v.x! + v.y!,
-          x: (v: Values) => v.p! - v.y!,
-          y: (v: Values) => v.p! - v.x!,
-        },
-      },
-      {
-        id: 'p = a × b',
-        display: '{a} × {b} = {p}',
-        vars: ['p', 'a', 'b'],
-        residual: (v: Values) => v.p! - v.a! * v.b!,
-        solve: {
-          p: (v: Values) => v.a! * v.b!,
-          a: (v: Values) => div(v.p!, v.b!),
-          b: (v: Values) => div(v.p!, v.a!),
+          g: (v: Values) => Number(Math.abs(v.a! - v.b!).toFixed(3)),
+          a: (v: Values) =>
+            [v.b! + v.g!, v.b! - v.g!].filter((x) => x >= 0).map((x) => Number(x.toFixed(3))),
+          b: (v: Values) =>
+            [v.a! - v.g!, v.a! + v.g!].filter((x) => x >= 0).map((x) => Number(x.toFixed(3))),
         },
       },
     ],
     steps: {
-      't = tens of b': {
-        t: { expr: '{b} without its ones', how: 'The tens of the second factor.' },
-      },
-      'b = t + o': {
-        o: {
-          expr: '{b} − {t}',
-          how: 'The ones of the second factor: what is left after the tens.',
-        },
-        t: { expr: '{b} − {o}', how: 'The tens: the second factor without its ones.' },
-        b: { expr: '{t} + {o}', how: 'Tens and ones together make the second factor.' },
-      },
-      'x = a × o': {
-        x: {
-          expr: '{a} × {o}',
-          how: 'First row: the first factor times the ones digit.',
-        },
-        a: { expr: '{x} ÷ {o}', how: 'Divide the first row by the ones digit.' },
-        o: { expr: '{x} ÷ {a}', how: 'Divide the first row by the first factor.' },
-      },
-      'y = a × t': {
-        y: {
-          expr: '{a} × {t}',
-          how: 'Second row: a zero in the ones place, then the first factor times the tens digit.',
-          work: (v: Values) => [
-            `${v.a} × ${v.t! / 10} = ${fmt((v.a! * v.t!) / 10)}`,
-            `${v.a} × ${v.t} = ${fmt(v.y!)}`,
-          ],
-          written: false,
-        },
-        a: { expr: '{y} ÷ {t}', how: 'Divide the second row by the tens.', written: false },
-        t: { expr: '{y} ÷ {a}', how: 'Divide the second row by the first factor.', written: false },
-      },
-      'p = x + y': {
-        p: { expr: '{x} + {y}', how: 'Add the two rows.' },
-        x: { expr: '{p} − {y}', how: 'Take the tens row from the product.' },
-        y: { expr: '{p} − {x}', how: 'Take the ones row from the product.' },
-      },
-      'p = a × b': {
-        p: {
-          expr: '{a} × {b}',
-          how: 'The standard algorithm: a row for the ones, a row for the tens, then add.',
+      'g = a and b apart': {
+        g: {
+          expr: (v: Values) => (v.a! >= v.b! ? '{a} − {b}' : '{b} − {a}'),
+          how: 'Compare place by place, biggest first. Then take the smaller from the bigger.',
+          work: (v: Values) => placeCompareLines(v.a!, v.b!),
+          writtenLast: true,
         },
         a: {
-          expr: '{p} ÷ {b}',
-          how: 'Divide the product by the second factor.',
-          work: (v: Values) => quotientLines(v.p!, v.b!).slice(0, 1),
+          expr: (v: Values) => (v.a! >= v.b! ? '{b} + {g}' : '{b} − {g}'),
+          how: 'Add the gap to the second decimal, or take it away.',
         },
         b: {
-          expr: '{p} ÷ {a}',
-          how: 'Divide the product by the first factor.',
-          written: false,
+          expr: (v: Values) => (v.a! >= v.b! ? '{a} − {g}' : '{a} + {g}'),
+          how: 'Take the gap from the first decimal, or add it.',
         },
       },
     },
-    example: { a: 234, b: 56, t: 50, o: 6, x: 1404, y: 11700, p: 13104 },
+    example: { a: 0.37, b: 0.307, g: 0.063 },
     startWith: ['a', 'b'],
-    representation: {
-      kind: 'areaModel',
-      top: ['a'],
-      side: ['t', 'o'],
-      parts: [['y'], ['x']],
-      total: 'p',
-    },
+    pictureLabels: ['g'],
+    representation: { kind: 'placeValueChart', value: 'a', decimals: 3, compare: 'b' },
   },
+  // ── Rounding decimals (5.NBT.4) ──
+  (() => {
+    const r3 = (x: number) => Number(x.toFixed(3));
+    const below = (n: number, p: number) => r3(Math.floor(r3(n / p) + 1e-9) * p);
+    const NAMES: Record<number, string> = { 1: 'ones', 0.1: 'tenths', 0.01: 'hundredths' };
+    return {
+      id: 'm.5.powers-of-ten~round-decimals',
+      title: 'Round decimals',
+      use: 'Use this to round a decimal to the nearest whole, tenth or hundredth.',
+      assumptions: [
+        'Find the numbers below and above in that place. Round to the nearer one.',
+        'Look at the digit one place to the right: 5 or more rounds up.',
+        'Numbers to 99.999; round to ones, tenths or hundredths.',
+      ],
+      variables: [
+        { id: 'n', symbol: 'n', name: 'Number', min: 0, max: 99.999, step: 0.001 },
+        { id: 'p', symbol: 'p', name: 'Place', min: 0.01, max: 1, allowed: [1, 0.1, 0.01] },
+        {
+          id: 'L',
+          symbol: 'L',
+          name: 'Number below',
+          min: 0,
+          max: 99.99,
+          step: 0.01,
+          derived: true,
+        },
+        {
+          id: 'U',
+          symbol: 'U',
+          name: 'Number above',
+          min: 0.01,
+          max: 100,
+          step: 0.01,
+          derived: true,
+        },
+        { id: 'r', symbol: 'r', name: 'Rounded', min: 0, max: 100, step: 0.01, derived: true },
+      ],
+      relations: [
+        {
+          id: 'L = place below n',
+          display: '{n} rounded down to the {p}s: {L}',
+          words: 'The number rounded down to the place = {L}',
+          vars: ['L', 'n', 'p'],
+          residual: (v: Values) => v.L! - below(v.n!, v.p!),
+          solve: { L: (v: Values) => below(v.n!, v.p!), n: () => undefined, p: () => undefined },
+        },
+        {
+          id: 'U = L + p',
+          display: '{L} + {p} = {U}',
+          words: 'Number below + one of the place = {U}',
+          vars: ['U', 'L', 'p'],
+          residual: (v: Values) => v.U! - v.L! - v.p!,
+          solve: {
+            U: (v: Values) => r3(v.L! + v.p!),
+            L: (v: Values) => r3(v.U! - v.p!),
+            p: (v: Values) => r3(v.U! - v.L!),
+          },
+        },
+        {
+          id: 'r = nearer of L and U',
+          display: '{n} is between {L} and {U}, so it rounds to {r}',
+          words: 'The nearer of the two = {r}',
+          vars: ['r', 'n', 'L', 'U'],
+          residual: (v: Values) => v.r! - (v.n! - v.L! < (v.U! - v.L!) / 2 - 1e-9 ? v.L! : v.U!),
+          solve: {
+            r: (v: Values) => (v.n! - v.L! < (v.U! - v.L!) / 2 - 1e-9 ? v.L! : v.U!),
+            n: () => undefined,
+            L: () => undefined,
+            U: () => undefined,
+          },
+        },
+      ],
+      steps: {
+        'L = place below n': {
+          L: {
+            expr: '{n} rounded down to the {p}s',
+            how: (v: Values) => `Keep the digits to the ${NAMES[v.p!] ?? 'place'}; drop the rest.`,
+          },
+        },
+        'U = L + p': {
+          U: { expr: '{L} + {p}', how: 'The next number in that place is one more of it.' },
+          L: { expr: '{U} − {p}', how: 'One of the place less than the number above.' },
+          p: { expr: '{U} − {L}', how: 'The two numbers are one of the place apart.' },
+        },
+        'r = nearer of L and U': {
+          r: {
+            expr: (v: Values) => (v.n! - v.L! < (v.U! - v.L!) / 2 - 1e-9 ? '{L}' : '{U}'),
+            how: 'Halfway is half of the place past the number below. Below halfway rounds down.',
+            work: (v: Values) => [
+              `Halfway is ${fmt(r3(v.L! + v.p! / 2))}. ${fmt(v.n!)} is ${v.r === v.L ? 'below' : 'at or past'} it → ${fmt(v.r!)}`,
+            ],
+          },
+        },
+      },
+      example: { n: 4.268, p: 0.01, L: 4.26, U: 4.27, r: 4.27 },
+      startWith: ['n', 'p'],
+      representation: {
+        kind: 'rounding',
+        value: 'n',
+        lower: 'L',
+        upper: 'U',
+        rounded: 'r',
+        to: 'p',
+      },
+    } satisfies ModuleDef;
+  })(),
+  // ── Metric conversions (5.MD.1) ──
+  (() => {
+    const PAIRS: Record<number, string> = {
+      10: '1 centimeter = 10 millimeters',
+      100: '1 meter = 100 centimeters',
+      1000: '1 kilometer = 1,000 meters (1 kilogram = 1,000 grams, 1 liter = 1,000 milliliters)',
+    };
+    return {
+      id: 'm.5.powers-of-ten~metric',
+      title: 'Metric conversions',
+      use: 'Use this for 2.5 m = 250 cm, or 1,500 g = 1.5 kg.',
+      assumptions: [
+        'Metric units go by powers of 10: 10, 100 or 1,000 of the smaller unit.',
+        'Bigger to smaller: multiply, and every digit moves left.',
+        'Smaller to bigger: divide, and every digit moves right.',
+      ],
+      variables: [
+        {
+          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 10, 1000),
+          allowed: [10, 100, 1000],
+        },
+        { id: 'a', symbol: 'a', name: 'Bigger units', min: 0.001, max: 20, step: 0.001 },
+        { id: 'c', symbol: 'c', name: 'Smaller units', min: 0.01, max: 20000, step: 0.01 },
+      ],
+      relations: [
+        {
+          id: 'c = a × k',
+          display: '{a} × {k} = {c}',
+          words: 'Bigger units × smaller units in 1 bigger unit = smaller units',
+          vars: ['c', 'a', 'k'],
+          residual: (v: Values) => v.c! - v.a! * v.k!,
+          solve: {
+            c: (v: Values) => v.a! * v.k!,
+            a: (v: Values) => div(v.c!, v.k!),
+            k: (v: Values) => div(v.c!, v.a!),
+          },
+        },
+      ],
+      steps: {
+        'c = a × k': {
+          c: {
+            expr: '{a} × {k}',
+            how: (v: Values) =>
+              `${PAIRS[v.k!] ?? 'Each bigger unit is the same number'}. Multiply.`,
+            work: (v: Values) => [
+              `Every digit moves ${Math.log10(v.k!)} places left: ${fmt(v.a!)} → ${fmt(v.c!)}`,
+            ],
+            written: false,
+          },
+          a: {
+            expr: '{c} ÷ {k}',
+            how: 'Divide by the smaller units in one bigger unit.',
+            work: (v: Values) => [
+              `Every digit moves ${Math.log10(v.k!)} places right: ${fmt(v.c!)} → ${fmt(v.a!)}`,
+            ],
+            written: false,
+          },
+          k: {
+            expr: '{c} ÷ {a}',
+            how: 'Divide the smaller units by the bigger units.',
+            written: false,
+          },
+        },
+      },
+      example: { k: 100, a: 2.5, c: 250 },
+      startWith: ['k', 'a'],
+      representation: { kind: 'doubleNumberLine', top: 'a', bottom: 'c', per: 'k', ticks: 4 },
+    } satisfies ModuleDef;
+  })(),
+  // ── The standard algorithm for multiplication (5.NBT.5) ──
+  (() => {
+    const roughly = (x: number) => {
+      const p = 10 ** (String(x).length - 1);
+      return Math.round(x / p) * p;
+    };
+    return {
+      id: 'm.5.standard-algorithm',
+      assumptions: [
+        'Multiply by the ones digit of the second factor. Carries go above.',
+        'Then by the tens digit: write a 0 in the ones place first.',
+        'Add the two rows. Check with an estimate.',
+        'First factor to 9,999, second factor from 10 to 99.',
+      ],
+      variables: [
+        whole('a', 'a', 'First factor', 10, 9999),
+        whole('b', 'b', 'Second factor', 10, 99),
+        whole('p', 'p', 'Product', 100, 989901),
+      ],
+      relations: [
+        {
+          id: 'p = a × b',
+          display: '{a} × {b} = {p}',
+          vars: ['p', 'a', 'b'],
+          residual: (v: Values) => v.p! - v.a! * v.b!,
+          solve: {
+            p: (v: Values) => v.a! * v.b!,
+            a: (v: Values) => div(v.p!, v.b!),
+            b: (v: Values) => div(v.p!, v.a!),
+          },
+        },
+      ],
+      steps: {
+        'p = a × b': {
+          p: {
+            expr: '{a} × {b}',
+            how: 'A row for the ones digit, a row for the tens digit (a 0 first), then add the rows.',
+            work: (v: Values) => {
+              const [o, t] = [v.b! % 10, Math.floor(v.b! / 10)];
+              return [
+                ...(o > 0 ? [`Ones digit: ${fmt(v.a!)} × ${o} = ${fmt(v.a! * o)}`] : []),
+                `Tens digit: ${fmt(v.a!)} × ${t * 10} = ${fmt(v.a! * t * 10)}`,
+                ...(o > 0
+                  ? [`Add the rows: ${fmt(v.a! * o)} + ${fmt(v.a! * t * 10)} = ${fmt(v.p!)}`]
+                  : []),
+              ];
+            },
+            writtenLast: true,
+            note: (v: Values) => {
+              const [ra, rb] = [roughly(v.a!), roughly(v.b!)];
+              return `(about ${fmt(ra)} × ${fmt(rb)} = ${fmt(ra * rb)}, so ${fmt(v.p!)} is reasonable)`;
+            },
+          },
+          a: { expr: '{p} ÷ {b}', how: 'Divide the product by the second factor.' },
+          b: { expr: '{p} ÷ {a}', how: 'Divide the product by the first factor.', written: false },
+        },
+      },
+      example: { a: 234, b: 56, p: 13104 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'areaModel', factors: ['a', 'b'], total: 'p' },
+    } satisfies ModuleDef;
+  })(),
   // ── Division by a 2-digit divisor (5.NBT.6) ──
   {
     id: 'm.5.divide-2-digit',
     assumptions: [
-      'Share the dividend into equal groups of the divisor. The number of groups is the quotient.',
-      'Work one place at a time, biggest first: estimate how many fit, multiply, take away, bring down.',
+      'Make groups the size of the divisor. The number of groups is the quotient.',
+      'Estimate each digit with the divisor rounded to tens, then check: multiply, take away, bring down.',
       'What is left is the remainder. It is always less than the divisor.',
       'Dividends to 9,999, divisors from 10 to 99.',
     ],
@@ -562,8 +893,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'q = whole groups of d in n': {
         q: {
           expr: 'whole groups of {d} in {n}',
-          how: 'Estimate each digit with a rounded divisor, multiply, take away, bring the next digit down.',
-          work: (v: Values) => quotientLines(v.n!, v.d!),
+          how: 'Estimate each digit with the divisor rounded to tens. Too big? Try one less.',
+          work: (v: Values) => estimateLines(v.n!, v.d!),
           written: (v: Values) => longDivision(v.n!, v.d!),
         },
       },
@@ -572,12 +903,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     startWith: ['n', 'd'],
     pictureLabels: ['q'],
     representation: {
-      kind: 'tape',
-      parts: ['m', 'r'],
-      total: 'n',
-      groups: 'q',
-      groupsPart: 'm',
-      caption: '{q} groups of {d} make {m}, and {r} left over.',
+      kind: 'areaModel',
+      divide: { dividend: 'n', divisor: 'd', quotient: 'q', remainder: 'r' },
     },
   },
   // ── Decimals to hundredths: add and subtract (5.NBT.7) ──
