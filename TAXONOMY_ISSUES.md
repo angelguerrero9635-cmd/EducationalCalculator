@@ -22,7 +22,9 @@ and each strand's skills sit together within a grade.
    a saved "Recently viewed" entry points to. Give topics stable ids when they get lessons, since
    that will be the first time reordering could lose a student's place.
 
-3. **Standards with no page yet (from the K–3 review).** K.CC.2 (count on from a number other
+3. **Standards with no page yet (from the K–3 and Grade 4 reviews).** 4.OA.5 (patterns),
+   4.MD.4 (line plots with fractions), 4.NF.6 (decimals past 1 on a number line), 4.MD.6
+   (a protractor, as an explore figure); K.CC.2 (count on from a number other
    than 1) beyond "one more"; K.G.5 (build shapes from sticks and clay); 1.G.2 (compose
    shapes); 2.MD.3 (estimate lengths); 3.G.2 (equal parts of an area); K-PS2-2 (change a
    push's direction); 3-PS2-4 (electric forces). 3.NBT.2 is taught on the Grade 2 page
@@ -41,6 +43,18 @@ and each strand's skills sit together within a grade.
    are marked by the page data (`src/data/modules/layouts/`), not the skill row.
 
 ## Resolved
+
+### Grade 4 review
+
+- **Standards taught as problem types, not skills.** 4.OA.1–2 (times as many) and 4.OA.3
+  (interpret a remainder) are problem types of `m.4.multi-digit-multiply` and
+  `m.4.long-division`; 4.NBT.2–3 (compare and round) of `m.4.place-value-million`; 4.NF.3b–c
+  (mixed numbers, subtraction) of `m.4.add-fractions-like`; 4.NF.7 of `m.4.decimals-intro`;
+  4.MD.5 (a turn) of `m.4.angles`; 4.G.2 (classify by sides and angles) is a sort page under
+  `m.4.lines-symmetry`. No new skill rows: each fits the skill's title.
+- **Standards with no page yet:** 4.OA.5 (number and shape patterns) and 4.MD.4 (line plots
+  with fractions); 4.NF.6 for decimals past 1 on a number line; 4.MD.6 (a protractor) needs
+  an explore figure. Added to the open list.
 
 ### K–3 math and science review
 

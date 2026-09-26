@@ -27,8 +27,19 @@ export interface SortLayout extends LayoutBase {
     /** One sentence about the property, shown when the group is full. */
     why: string;
   }[];
-  cards: { label: string; bin: string }[];
+  cards: { label: string; bin: string; figure?: CardFigure }[];
 }
+
+/** A small drawing on a sort card, so the property is seen, not remembered. */
+export type CardFigure =
+  /** Two lines: parallel at `angle` degrees, or crossing at that angle (90 = perpendicular). */
+  | { kind: 'lines'; angle: number; parallel?: boolean }
+  /** A big letter. */
+  | { kind: 'letter'; text: string }
+  /** A shape from corners in a 0–100 box (y down), closed unless `open` (a corner, clock hands). */
+  | { kind: 'polygon'; points: [number, number][]; open?: boolean }
+  | { kind: 'circle' }
+  | { kind: 'heart' };
 
 /** Stages to put in order, each with how long it takes; the total under the strip. */
 export interface SequenceLayout extends LayoutBase {

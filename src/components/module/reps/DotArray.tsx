@@ -18,6 +18,10 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const start = useRef({ r: 0, c: 0 });
   const rows = Math.max(0, Math.round(rep.shown(spec.rows)));
   const cols = Math.max(0, Math.round(rep.shown(spec.columns)));
+  // A factor past `max` (1 × 97) is drawn cut off at `max` dots; the caption says so.
+  const dr = Math.min(spec.max, rows);
+  const dc = Math.min(spec.max, cols);
+  const cut = rows > spec.max || cols > spec.max;
   const sums = Array.from({ length: rows }, () => cols).join(' + ');
   // Break apart a factor: the first `first` columns, then the rest.
   const split = spec.split;
@@ -53,15 +57,25 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
       );
     });
 
-  const caption = rep.early
-    ? `${rows} rows of ${cols}: ${sums || '0'} = ${rep.value(spec.total, false)}`
-    : split
-      ? `${rows} × ${cols} = ${rows} × ${firstCols} + ${rows} × ${cols - firstCols} = ${rows * firstCols} + ${rows * (cols - firstCols)} = ${rows * cols}`
-      : spec.turned
-        ? `${rows} rows of ${cols} = ${cols} rows of ${rows}: ${rows} × ${cols} = ${cols} × ${rows} = ${rows * cols}`
-        : rep.words
-          ? `${rows} rows of ${cols}: ${rows} × ${cols} = ${rep.value(spec.total, false)}`
-          : `${sym(spec.rows)} = ${rows} rows of ${sym(spec.columns)} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`;
+  // A "?" factor draws one row or column, but the caption says "?" rather than counting it.
+  const known = rep.known(spec.rows) && rep.known(spec.columns);
+  const rv = rep.value(spec.rows, false);
+  const cv = rep.value(spec.columns, false);
+  const caption = !known
+    ? rep.early
+      ? `${rv} rows of ${cv}: ${rep.value(spec.total, false)}`
+      : rep.words
+        ? `${rv} rows of ${cv}: ${rv} × ${cv} = ${rep.value(spec.total, false)}`
+        : `${sym(spec.rows)} = ${rv} rows of ${sym(spec.columns)} = ${cv}: ${rv} × ${cv} = ${rep.label(spec.total, false)}`
+    : rep.early
+      ? `${rows} rows of ${cols}: ${sums || '0'} = ${rep.value(spec.total, false)}`
+      : split
+        ? `${rows} × ${cols} = ${rows} × ${firstCols} + ${rows} × ${cols - firstCols} = ${rows * firstCols} + ${rows * (cols - firstCols)} = ${rows * cols}`
+        : spec.turned
+          ? `${rows} rows of ${cols} = ${cols} rows of ${rows}: ${rows} × ${cols} = ${cols} × ${rows} = ${rows * cols}`
+          : rep.words
+            ? `${rows} rows of ${cols}: ${rows} × ${cols} = ${rep.value(spec.total, false)}`
+            : `${sym(spec.rows)} = ${rows} rows of ${sym(spec.columns)} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`;
 
   /**
    * Cell size from the width; the height fits the rows drawn (at least 6, and one spare row to
@@ -71,7 +85,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const layout = (w: number) => {
     const room = spec.turned ? (w - 60) / 2 : w - 40;
     const cell = Math.min(room / spec.max, 40);
-    const shownRows = Math.min(spec.max, Math.max(6, rows + 1, spec.turned ? cols + 1 : 0));
+    const shownRows = Math.min(spec.max, Math.max(6, dr + 1, spec.turned ? dc + 1 : 0));
     const labelWidth = (text: string) => text.length * chart.small * 0.6;
     const left = `${rows} × ${firstCols} = ${rows * firstCols}`;
     const right = `${rows} × ${cols - firstCols} = ${rows * (cols - firstCols)}`;
@@ -96,19 +110,19 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Rect
                   x={x0}
                   y={y0}
-                  width={cols * cell}
-                  height={rows * cell}
+                  width={dc * cell}
+                  height={dr * cell}
                   fill={c.chartSurface}
                   stroke={c.chartGrid}
                 />
-                {grid('a', rows, cols, x0, y0, cell)}
-                {spec.turned ? grid('t', cols, rows, x1, y0, cell) : null}
+                {grid('a', dr, dc, x0, y0, cell)}
+                {spec.turned ? grid('t', dc, dr, x1, y0, cell) : null}
                 {split && firstCols > 0 && firstCols < cols ? (
                   <Line
                     x1={divider}
                     y1={y0 - 4}
                     x2={divider}
-                    y2={y0 + rows * cell + 4}
+                    y2={y0 + dr * cell + 4}
                     stroke={c.chartInk}
                     strokeWidth={chart.strokeHeavy}
                   />
@@ -117,7 +131,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   <>
                     <ChartText
                       x={x0 + (firstCols * cell) / 2}
-                      y={y0 + rows * cell + 22}
+                      y={y0 + dr * cell + 22}
                       fontSize={chart.small}
                       textAnchor="middle"
                     >
@@ -126,7 +140,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {cols > firstCols ? (
                       <ChartText
                         x={divider + ((cols - firstCols) * cell) / 2}
-                        y={y0 + rows * cell + (stagger ? 40 : 22)}
+                        y={y0 + dr * cell + (stagger ? 40 : 22)}
                         fontSize={chart.small}
                         textAnchor="middle"
                       >
@@ -138,10 +152,10 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
               </Svg>
               <DragHandle
                 testID="drag-corner"
-                x={x0 + cols * cell}
-                y={y0 + rows * cell}
+                x={x0 + dc * cell}
+                y={y0 + dr * cell}
                 label={`${rep.variable(spec.rows).name} and ${rep.variable(spec.columns).name}`}
-                onStart={() => (start.current = { r: rows, c: cols })}
+                onStart={() => (start.current = { r: dr, c: dc })}
                 onMove={(dx, dy) =>
                   calc.set({
                     ...(split ? rep.pin([split.first]) : {}),
@@ -154,7 +168,7 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Caption>{caption}</Caption>
+      <Caption>{cut ? `${caption} (the first ${spec.max} shown)` : caption}</Caption>
       {split ? (
         <Steppers
           calc={calc}

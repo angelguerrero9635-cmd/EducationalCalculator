@@ -9,7 +9,14 @@ import { formatNumber } from '@/engine/format';
 
 import { div, whole } from './math-k2';
 import type { ModuleDef } from './types';
-import { addStrategy, countList, divideWork, subtractStrategy, timesWork } from './work';
+import {
+  addStrategy,
+  countList,
+  divideWork,
+  placeTimesWork,
+  subtractStrategy,
+  timesWork,
+} from './work';
 
 /** The factors of n in order: 24 → [1, 2, 3, 4, 6, 8, 12, 24]. */
 const factorsOf = (n: number): number[] =>
@@ -30,12 +37,12 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'A factor pair is two whole numbers that multiply to make the number.',
       'Find every pair by trying 1, 2, 3, … until the factors would swap places.',
       'A prime number has exactly 2 factors: 1 and itself. A composite number has more.',
-      'The picture shows one factor pair as an array: rows × columns.',
+      'The picture shows one factor pair as an array: rows × columns, up to 20 of each.',
     ],
     variables: [
       whole('n', 'n', 'Number', 1, 100),
-      whole('a', 'a', 'One factor', 1, 12),
-      whole('b', 'b', 'Its partner', 1, 12),
+      whole('a', 'a', 'One factor', 1, 100),
+      whole('b', 'b', 'Its partner', 1, 100),
       { ...whole('f', 'f', 'Number of factors', 1, 12), derived: true },
     ],
     relations: [
@@ -96,7 +103,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { n: 24, a: 4, b: 6, f: 8 },
     startWith: ['a', 'b'],
-    representation: { kind: 'array', rows: 'a', columns: 'b', total: 'n', max: 12 },
+    representation: { kind: 'array', rows: 'a', columns: 'b', total: 'n', max: 20 },
   },
 
   // ── Place value to 1,000,000: a digit's value and the place to its right (4.NBT.1) ──
@@ -209,6 +216,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
       ],
       relations: [
         {
+          id: 't = tens of a',
+          display: '{a} has {t} in its tens',
+          vars: ['t', 'a'],
+          residual: (v: Values) => v.t! - 10 * Math.floor(v.a! / 10),
+          // Every number from 50 to 59 has 50 in its tens: the number can't be found from it.
+          solve: { t: (v: Values) => 10 * Math.floor(v.a! / 10), a: () => undefined },
+        },
+        {
           id: 'a = t + o',
           display: '{a} = {t} + {o}',
           vars: ['a', 't', 'o'],
@@ -264,10 +279,19 @@ export const MATH_4_MODULES: ModuleDef[] = [
         },
       ],
       steps: {
-        'a = t + o': {
+        't = tens of a': {
           t: {
             expr: '{a} without its ones',
             how: 'The tens of the first factor: the number without its ones.',
+            work: (v) => [
+              `${v.a} is ${v.t! / 10} tens and ${v.a! % 10} ones; ${v.t! / 10} tens = ${v.t}`,
+            ],
+          },
+        },
+        'a = t + o': {
+          t: {
+            expr: '{a} − {o}',
+            how: 'The tens of the first factor: take the ones away.',
           },
           o: {
             expr: '{a} − {t}',
@@ -340,7 +364,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         if (k === 0) continue;
         chunks.push(k);
         lines.push(
-          `${d} × ${fmt(k)} = ${fmt(d * k)}, so ${fmt(k)} groups fit: ${fmt(left)} − ${fmt(d * k)} = ${fmt(left - d * k)}`,
+          `${d} × ${fmt(k)} = ${fmt(d * k)}, so ${fmt(k)} ${k === 1 ? 'group fits' : 'groups fit'}: ${fmt(left)} − ${fmt(d * k)} = ${fmt(left - d * k)}`,
         );
         left -= d * k;
       }
@@ -355,7 +379,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       id: 'm.4.long-division',
       assumptions: [
         'Share the dividend into equal groups of the divisor. The number of groups is the quotient.',
-        'Take out big chunks first: hundreds of groups, then tens, then ones. Add the chunks.',
+        'Take out big chunks first: the biggest place that fits, then the next. Add the chunks.',
         'What is left is the remainder. It is always less than the divisor.',
         'Check: quotient × divisor + remainder = dividend.',
       ],
@@ -415,7 +439,11 @@ export const MATH_4_MODULES: ModuleDef[] = [
       steps: {
         'r < d': {},
         'm = q × d': {
-          m: { expr: '{q} × {d}', how: 'The groups times the divisor: what was shared out.' },
+          m: {
+            expr: '{q} × {d}',
+            how: 'The groups times the divisor, by place: what was shared out.',
+            work: (v) => placeTimesWork(v.q!, v.d!),
+          },
           q: { expr: '{m} ÷ {d}', how: 'Divide what was shared out by the divisor.' },
           d: { expr: '{m} ÷ {q}', how: 'Divide what was shared out by the quotient.' },
         },
@@ -494,16 +522,16 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'Multiplying the top and the bottom of a fraction by the same number keeps its size.',
         'To compare two fractions, give them the same bottom: multiply each by the other’s bottom.',
         'With the same bottom, the bigger top is the bigger fraction.',
-        'Fractions up to 1, bottoms from 2 to 6.',
+        'Fractions up to 1, with the bottoms Grade 4 uses: 2, 3, 4, 5, 6, 8, 10 and 12.',
       ],
       variables: [
-        whole('a', 'a', 'First top', 0, 6),
-        whole('b', 'b', 'First bottom', 2, 6),
-        whole('c', 'c', 'Second top', 0, 6),
-        whole('d', 'd', 'Second bottom', 2, 6),
-        { ...whole('m', 'm', 'Common bottom', 4, 36), derived: true },
-        { ...whole('p', 'p', 'First new top', 0, 36), derived: true },
-        { ...whole('q', 'q', 'Second new top', 0, 36), derived: true },
+        whole('a', 'a', 'First top', 1, 12),
+        { ...whole('b', 'b', 'First bottom', 2, 12), allowed: [2, 3, 4, 5, 6, 8, 10, 12] },
+        whole('c', 'c', 'Second top', 1, 12),
+        { ...whole('d', 'd', 'Second bottom', 2, 12), allowed: [2, 3, 4, 5, 6, 8, 10, 12] },
+        { ...whole('m', 'm', 'Common bottom', 4, 144), derived: true },
+        { ...whole('p', 'p', 'First new top', 1, 144), derived: true },
+        { ...whole('q', 'q', 'Second new top', 1, 144), derived: true },
       ],
       relations: [
         {
@@ -608,13 +636,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
         display: '{a}/{b} + {c}/{b} = {s}/{b}',
         check: (v: Values) => `${v.a} + ${v.c} = ${v.s}`,
         // The bottom is in the number sentence but doesn't change the sum of the tops.
-        vars: ['s', 'a', 'c', 'b'],
+        vars: ['s', 'a', 'c'],
+        shows: ['b'],
         residual: (v: Values) => v.s! - v.a! - v.c!,
         solve: {
           s: (v: Values) => v.a! + v.c!,
           a: (v: Values) => v.s! - v.c!,
           c: (v: Values) => v.s! - v.a!,
-          b: () => undefined,
         },
       },
       {
@@ -632,7 +660,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
       {
         id: 'w = floor(s/b)',
-        display: 'whole numbers passed by {s}/{b}: {w}',
+        display: 'full wholes in {s}/{b}: {w}',
         vars: ['w', 's', 'b'],
         residual: (v: Values) => v.w! - Math.floor(v.s! / v.b!),
         solve: {
@@ -690,7 +718,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { b: 4, a: 3, c: 2, s: 5, w: 1, r: 1 },
     startWith: ['b', 'a', 'c'],
-    representation: { kind: 'fractionLine', numerator: 's', denominator: 'b', wholes: 2 },
+    representation: {
+      kind: 'fractionLine',
+      numerator: 's',
+      denominator: 'b',
+      wholes: 2,
+      parts: ['a', 'c'],
+    },
   },
 
   // ── Multiplying a fraction by a whole number (4.NF.4) ──
@@ -723,13 +757,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
         id: 'p = n × a',
         display: '{n} × {a}/{b} = {p}/{b}',
         check: (v: Values) => `${v.n} × ${v.a} = ${v.p}`,
-        vars: ['p', 'n', 'a', 'b'],
+        vars: ['p', 'n', 'a'],
+        shows: ['b'],
         residual: (v: Values) => v.p! - v.n! * v.a!,
         solve: {
           p: (v: Values) => v.n! * v.a!,
           n: (v: Values) => div(v.p!, v.a!),
           a: (v: Values) => div(v.p!, v.n!),
-          b: () => undefined,
         },
       },
       {
@@ -747,7 +781,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
       {
         id: 'w = floor(p/b)',
-        display: 'whole numbers passed by {p}/{b}: {w}',
+        display: 'full wholes in {p}/{b}: {w}',
         vars: ['w', 'p', 'b'],
         residual: (v: Values) => v.w! - Math.floor(v.p! / v.b!),
         solve: {
@@ -764,7 +798,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
           expr: '{n} × {a}',
           how: 'Add the top that many times, or multiply the whole number by the top.',
           work: (v) =>
-            v.n! <= 6
+            v.n! >= 2 && v.n! <= 6 && v.b !== undefined
               ? [`${Array(v.n!).fill(`${v.a}/${v.b}`).join(' + ')} = ${v.p}/${v.b}`]
               : timesWork(v.n!, v.a!),
         },
@@ -815,7 +849,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { n: 5, a: 2, b: 3, p: 10, w: 3, r: 1 },
     startWith: ['n', 'a', 'b'],
-    representation: { kind: 'fractionLine', numerator: 'p', denominator: 'b', wholes: 3 },
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'p',
+      denominator: 'b',
+      wholes: 3,
+      copies: 'n',
+    },
   },
 
   // ── Decimal notation for tenths and hundredths (4.NF.5, 4.NF.6) ──
@@ -827,15 +867,16 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'Tap a square on the grid to shade that many hundredths.',
     ],
     variables: [
-      whole('t', 't', 'Tenths', 0, 9),
-      whole('u', 'u', 'Extra hundredths', 0, 9),
+      whole('t', 't', 'Tenths digit', 0, 9),
+      whole('u', 'u', 'Hundredths digit', 0, 9),
       whole('h', 'h', 'Hundredths in all', 0, 99),
       { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 0.99, step: 0.01 },
     ],
     relations: [
       {
         id: 'h = 10 × t + u',
-        display: '10 × {t} + {u} = {h}',
+        display: '{t}/10 + {u}/100 = {h}/100',
+        check: (v: Values) => `10 × ${v.t} + ${v.u} = ${v.h}`,
         vars: ['h', 't', 'u'],
         residual: (v: Values) => v.h! - 10 * v.t! - v.u!,
         solve: {
@@ -843,6 +884,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
           t: (v: Values) => (v.h! - v.u!) / 10,
           u: (v: Values) => v.h! - 10 * v.t!,
         },
+      },
+      {
+        id: 't = tenths in h',
+        display: '{h} hundredths has {t} full tenths',
+        vars: ['t', 'h'],
+        residual: (v: Values) => v.t! - Math.floor(v.h! / 10),
+        // Every count from 30 to 39 has 3 full tenths: the hundredths can't be found from it.
+        solve: { t: (v: Values) => Math.floor(v.h! / 10), h: () => undefined },
       },
       {
         id: 'd = h ÷ 100',
@@ -870,6 +919,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
           work: (v) => [`10 × ${v.t} = ${10 * v.t!}`, `${v.h} − ${10 * v.t!} = ${v.u}`],
         },
       },
+      't = tenths in h': {
+        t: {
+          expr: 'full tenths in {h}',
+          how: 'Every 10 hundredths is a tenth. The tens digit of the hundredths counts them.',
+          work: (v) => [`${v.h} = ${10 * v.t!} + ${v.h! - 10 * v.t!}: ${v.t} full tenths`],
+        },
+      },
       'd = h ÷ 100': {
         d: {
           expr: '{h} ÷ 100',
@@ -877,7 +933,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
           work: (v) => [`${v.h} hundredths = 0.${String(v.h).padStart(2, '0')}`],
         },
         h: {
-          expr: '{d} × 100',
+          expr: 'hundredths in {d}',
           how: 'Read the two digits after the point as hundredths.',
           work: (v) => [`${v.d} = ${v.h} hundredths`],
         },
@@ -892,8 +948,12 @@ export const MATH_4_MODULES: ModuleDef[] = [
   (() => {
     const fmt = (x: number) => formatNumber(x);
     const PAIRS: Record<number, string> = {
+      3: '1 yard = 3 feet',
+      7: '1 week = 7 days',
+      10: '1 centimeter = 10 millimeters',
       12: '1 foot = 12 inches',
       16: '1 pound = 16 ounces',
+      24: '1 day = 24 hours',
       60: '1 hour = 60 minutes',
       100: '1 meter = 100 centimeters',
       1000: '1 kilometer = 1,000 meters (or 1 kilogram = 1,000 grams, 1 liter = 1,000 milliliters)',
@@ -902,17 +962,18 @@ export const MATH_4_MODULES: ModuleDef[] = [
       id: 'm.4.unit-conversion',
       assumptions: [
         'A bigger unit is a fixed number of smaller units: 1 foot = 12 inches, 1 hour = 60 minutes.',
-        'Also 1 pound = 16 ounces, 1 meter = 100 centimeters, and 1 kilometer, 1 kilogram or 1 liter = 1,000 of the smaller unit.',
+        'Also 1 yard = 3 feet, 1 week = 7 days, 1 day = 24 hours, 1 pound = 16 ounces, 1 centimeter = 10 millimeters, 1 meter = 100 centimeters.',
+        '1 kilometer, 1 kilogram or 1 liter is 1,000 of the smaller unit.',
         'To change bigger units into smaller ones, multiply by that number. A table shows the pattern.',
         'Tap a row of the table to pick how many bigger units.',
       ],
       variables: [
         whole('b', 'b', 'Bigger units', 1, 12),
         {
-          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 12, 1000),
-          allowed: [12, 16, 60, 100, 1000],
+          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 3, 1000),
+          allowed: [3, 7, 10, 12, 16, 24, 60, 100, 1000],
         },
-        whole('s', 's', 'Smaller units', 12, 12000),
+        whole('s', 's', 'Smaller units', 3, 12000),
       ],
       relations: [
         {
@@ -955,6 +1016,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         output: 's',
         params: ['k'],
         rows: [1, 2, 3, 4, 5, 6],
+        named: { param: 'k', names: PAIRS },
       },
     } satisfies ModuleDef;
   })(),
@@ -968,7 +1030,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'Area is the space inside: length × width, in square units.',
         'Perimeter is the distance around: two lengths and two widths, so 2 × (length + width).',
         'From the perimeter, half of it is length + width. Take away the side you know to find the other.',
-        'Sides to 30 meters.',
+        'Whole-number sides up to 30.',
       ],
       variables: [
         { ...whole('l', 'l', 'Length', 1, 30), unit: 'm' },

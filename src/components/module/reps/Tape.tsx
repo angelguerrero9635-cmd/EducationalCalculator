@@ -179,7 +179,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <ChartText
                   x={left + (span * scale) / 2}
                   y={14}
-                  fontSize={chart.small}
+                  fontSize={chart.label}
                   textAnchor="middle"
                 >
                   {`${rep.tag(spec.total)}: ${rep.value(spec.total)}`}
@@ -202,7 +202,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     key={`v${id}`}
                     x={(x0(i) + x1(i)) / 2}
                     y={y + barH / 2 + 5}
-                    fontSize={chart.small}
+                    fontSize={chart.label}
                     textAnchor="middle"
                     // Parts take turns with the fills: every part on the highlight gets light text.
                     fill={i % fills.length === 0 ? c.onChartHighlight : c.chartInk}

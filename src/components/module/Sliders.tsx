@@ -16,6 +16,8 @@ import type { StepperItem } from './stepperContext';
 import type { Calculator } from './useCalculator';
 
 const TRACK = 150;
+/** With at most four sliders the row is the page's tallest block: a shorter track. */
+const SHORT_TRACK = 120;
 /** The browser must not pan the page while a finger moves along the track. */
 const WEB_TRACK_STYLE =
   Platform.OS === 'web'
@@ -36,7 +38,17 @@ function rangeOf(rep: ReturnType<typeof useRep>, item: StepperItem): [number, nu
 }
 
 /** One vertical slider: the name above, the value below, drag the knob or tap the track. */
-function Slider({ calc, item, narrow }: { calc: Calculator; item: StepperItem; narrow: boolean }) {
+function Slider({
+  calc,
+  item,
+  narrow,
+  wide,
+}: {
+  calc: Calculator;
+  item: StepperItem;
+  narrow: boolean;
+  wide: boolean;
+}) {
   const c = usePalette();
   const rep = useRep(calc);
   const v = rep.variable(item.var);
@@ -45,13 +57,14 @@ function Slider({ calc, item, narrow }: { calc: Calculator; item: StepperItem; n
   const shown = known ? rep.shown(item.var) : (item.from ?? lo);
   const value = rep.value(item.var);
   const ratio = hi > lo ? Math.min(1, Math.max(0, (shown - lo) / (hi - lo))) : 0;
-  const knobY = (1 - ratio) * (TRACK - HANDLE);
+  const track = wide ? SHORT_TRACK : TRACK;
+  const knobY = (1 - ratio) * (track - HANDLE);
   const trackTop = useRef(0);
   const { setLocked } = useScrollLock();
 
   const setFromY = (y: number) => {
     // The knob's center follows the finger; the value snaps to the slider's step.
-    const r = 1 - Math.min(1, Math.max(0, (y - HANDLE / 2) / (TRACK - HANDLE)));
+    const r = 1 - Math.min(1, Math.max(0, (y - HANDLE / 2) / (track - HANDLE)));
     let next = lo + r * (hi - lo);
     const step = item.steps[0] ?? 1;
     next = Math.round(next / step) * step;
@@ -87,7 +100,7 @@ function Slider({ calc, item, narrow }: { calc: Calculator; item: StepperItem; n
         onResponderTerminate={() => setLocked(false)}
         style={[
           styles.track,
-          { backgroundColor: c.chartSurface, borderColor: c.border },
+          { height: track, backgroundColor: c.chartSurface, borderColor: c.border },
           WEB_TRACK_STYLE,
         ]}
       >
@@ -96,7 +109,7 @@ function Slider({ calc, item, narrow }: { calc: Calculator; item: StepperItem; n
           <View
             style={[
               styles.fill,
-              { height: ratio * (TRACK - HANDLE) + HANDLE / 2, backgroundColor: c.chartHighlight },
+              { height: ratio * (track - HANDLE) + HANDLE / 2, backgroundColor: c.chartHighlight },
             ]}
           />
         </View>
@@ -135,7 +148,13 @@ export function Sliders({ calc, items }: { calc: Calculator; items: StepperItem[
   return (
     <View style={styles.row}>
       {items.map((item) => (
-        <Slider key={item.var} calc={calc} item={item} narrow={items.length >= 5} />
+        <Slider
+          key={item.var}
+          calc={calc}
+          item={item}
+          narrow={items.length >= 5}
+          wide={items.length <= 4}
+        />
       ))}
     </View>
   );

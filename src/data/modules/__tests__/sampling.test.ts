@@ -402,6 +402,8 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
     (n) => Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0).length,
   ],
   [new RegExp(`(${NUM}) has (${NUM}) factors`), (_n, f) => f],
+  [new RegExp(`full tenths in (${NUM})`), (h) => Math.floor(h / 10)],
+  [new RegExp(`hundredths in (${NUM})`), (d) => Math.round(d * 100)],
   // Grade 3
   [new RegExp(`(${NUM}) without its tens and ones`), (a) => 100 * Math.floor(a / 100)],
   [new RegExp(`(${NUM}) without its ones`), (a) => 10 * Math.floor(a / 10)],
@@ -436,7 +438,9 @@ const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) jumps? of (${NUM})`), (a, b) => a * b],
   [new RegExp(`rows of (${NUM}) in (${NUM})`), (c, n) => n / c],
   // "whole groups of 6 in 743" (a division with a remainder), before the exact one.
-  [new RegExp(`whole groups of (${NUM}) in (${NUM})`), (d, n) => Math.floor(n / d)],
+  [new RegExp(`(?:whole|full) groups of (${NUM}) in (${NUM})`), (d, n) => Math.floor(n / d)],
+  [new RegExp(`the tens in (${NUM})`), (n) => 10 * Math.floor((n % 100) / 10)],
+  [new RegExp(`(${NUM}) with the places under (${NUM}) made 0`), (n, p) => Math.floor(n / p) * p],
   [new RegExp(`left over when (${NUM}) is shared by (${NUM})`), (n, d) => n % d],
   // The right side of "743 ÷ 6 = 123 remainder 5" reads as the quotient (the module's own
   // check already balanced it).
@@ -866,8 +870,9 @@ function repIssues(
       break;
     }
     case 'array':
-      count(rep.rows, 'array rows', rep.max);
-      count(rep.columns, 'array columns', rep.max);
+      // Past `max` the array is drawn cut off and the caption says so (DotArray.tsx).
+      count(rep.rows, 'array rows');
+      count(rep.columns, 'array columns');
       break;
     case 'ruler': {
       for (const id of rep.lengths) {
@@ -912,12 +917,14 @@ function repIssues(
     // Grade 3 pictures.
     case 'rounding': {
       const [n, lo, hi, r] = [rep.value, rep.lower, rep.upper, rep.rounded].map(val);
+      const to = typeof rep.to === 'number' ? rep.to : val(rep.to);
       for (const [id, x] of [
         [rep.lower, lo],
         [rep.upper, hi],
         [rep.rounded, r],
       ] as const) {
-        if (x !== undefined && x % rep.to !== 0) out.push(`${id} = ${x} is not a ${rep.to}`);
+        if (x !== undefined && to !== undefined && x % to !== 0)
+          out.push(`${id} = ${x} is not a ${to}`);
       }
       if (n !== undefined && lo !== undefined && hi !== undefined && !(lo <= n && n <= hi)) {
         out.push(`number ${n} is not between ${lo} and ${hi}`);
@@ -1382,7 +1389,11 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       // "Faces: 2 + 4 = 6", "3 + 4 = 7 in all", "5¢ + 10¢ = 15¢"
       .replace(/^[A-Za-z][^:=]*: /, '')
       .replace(/ in all$/, '')
-      .replace(/¢/g, '');
+      .replace(/¢/g, '')
+      // "8 × 5 = 40, so 40 is a multiple of 8": the sentence after the number sentence is words.
+      .replace(/, so .*$/, '')
+      // "50 ÷ 9 = 5 remainder 5" balances as 5 × 9 + 5 = 50.
+      .replace(/^([\d,]+) ÷ ([\d,]+) = ([\d,]+) remainder ([\d,]+)$/, '$3 × $2 + $4 = $1');
     const sign = / ([<>=]) /.exec(formula)?.[1];
     const sides = formula.split(/ [<>=] /);
     if (sides.length !== 2) continue;

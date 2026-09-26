@@ -20,7 +20,8 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef(0);
-  const to = spec.to;
+  const to =
+    typeof spec.to === 'number' ? spec.to : Math.max(10, Math.round(rep.shown(spec.to)) || 10);
   const known = rep.known(spec.value);
   const n = Math.round(rep.shown(spec.value));
   // The ends come from the number itself, so the line is right even before they are solved.
@@ -61,19 +62,23 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     strokeWidth={i === 5 || i % 10 === 0 ? chart.stroke : chart.strokeLight}
                   />
                 ))}
-                {ticks.map((x, i) => (
-                  <ChartText
-                    key={`l${x}`}
-                    x={px(x)}
-                    y={y + 24}
-                    fontSize={i % 5 === 0 ? chart.label : chart.tiny}
-                    fontWeight={i % 10 === 0 ? '700' : undefined}
-                    fill={i % 5 === 0 ? c.chartInk : c.chartMuted}
-                    textAnchor="middle"
-                  >
-                    {formatNumber(x)}
-                  </ChartText>
-                ))}
+                {ticks
+                  // Six-figure labels ("347,100") would touch: past thousands, label the
+                  // ends and the halfway mark only.
+                  .filter((_, i) => to <= 100 || i % 5 === 0)
+                  .map((x) => (
+                    <ChartText
+                      key={`l${x}`}
+                      x={px(x)}
+                      y={y + 24}
+                      fontSize={(x - lo) % (to / 2) === 0 ? chart.label : chart.tiny}
+                      fontWeight={x === lo || x === hi ? '700' : undefined}
+                      fill={(x - lo) % (to / 2) === 0 ? c.chartInk : c.chartMuted}
+                      textAnchor="middle"
+                    >
+                      {formatNumber(x)}
+                    </ChartText>
+                  ))}
                 <ChartText
                   x={px(half)}
                   y={y + 42}
@@ -141,12 +146,18 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `${n} is ${n - lo} past ${lo} and ${hi - n} before ${hi}. ${up ? `${n - lo} is ${to / 2} or more, so it rounds up` : `${n - lo} is less than ${to / 2}, so it rounds down`} to ${r}.`
+          ? `${formatNumber(n)} is ${formatNumber(n - lo)} past ${formatNumber(lo)} and ${formatNumber(hi - n)} before ${formatNumber(hi)}. ${up ? `${formatNumber(n - lo)} is ${formatNumber(to / 2)} or more, so it rounds up` : `${formatNumber(n - lo)} is less than ${formatNumber(to / 2)}, so it rounds down`} to ${formatNumber(r)}.`
           : `Type a number to round.`}
       </Caption>
       <Steppers
         calc={calc}
-        items={[{ var: spec.value, steps: to === 10 ? [1, 10] : [1, 10, 100], pin: [] }]}
+        items={[
+          {
+            var: spec.value,
+            steps: to === 10 ? [1, 10] : to === 100 ? [1, 10, 100] : [1, to / 10, to],
+            pin: [],
+          },
+        ]}
       />
     </View>
   );

@@ -18,7 +18,8 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View style={{ gap: space.sm }}>
-      <Canvas aspect={1}>
+      {/* The grid is at most 320 px square: no blank strip under it on a wider phone. */}
+      <Canvas aspect={(w) => Math.min(w, 320) / w}>
         {({ w }) => {
           const size = Math.min(w, 320);
           const cell = size / 10;

@@ -172,19 +172,48 @@ try {
       }, early);
       // One-screen rule at phone width: the picture, its sliders and the first input row
       // should fit 390 × 900 (the section header "Picture"/"Diagram" to the first input).
+      let blocks = '';
       const fit = await page.evaluate(() => {
         const first = document.querySelector('[data-testid^="input-"]');
         if (!first) return null;
-        const top = [...document.querySelectorAll('div[dir]')].find((d) =>
+        // Section headers render as <h1 role="heading">, not <div dir>.
+        const top = [...document.querySelectorAll('[role="heading"], div[dir]')].find((d) =>
           /^(Picture|Diagram|Chart|Table|Sort|Put in order|Explore|Record and look)$/.test(
             (d.textContent ?? '').trim(),
           ),
         );
-        const y0 = top ? top.getBoundingClientRect().top + window.scrollY : 0;
-        return Math.round(first.getBoundingClientRect().bottom + window.scrollY - y0);
+        if (!top) return { missing: true };
+        const y0 = top.getBoundingClientRect().top + window.scrollY;
+        const bottom = (el) => Math.round(el.getBoundingClientRect().bottom + window.scrollY - y0);
+        // Where the height goes: header → picture → sliders → first input, so a reviewer sees
+        // which block to shorten without measuring.
+        // The picture: the first drawing below the section header (the header's own icon and
+        // the page's icons sit above it).
+        const pic = [
+          ...document.querySelectorAll(
+            'svg, [data-testid^="pic-"], [data-testid^="cell-"], [data-testid^="row-"], [data-testid^="drag-"]',
+          ),
+        ]
+          .map((el) => el.closest('div'))
+          .find((el) => el && el.getBoundingClientRect().top + window.scrollY > y0 + 10);
+        const slider = [...document.querySelectorAll('[data-testid^="slider-"]')].pop();
+        const parts = [
+          pic ? `picture ${bottom(pic)}` : '',
+          slider ? `sliders ${bottom(slider)}` : '',
+          `first input ${bottom(first)}`,
+        ].filter(Boolean);
+        return { span: bottom(first), parts: parts.join(' → ') };
       });
-      if (width <= 400 && fit !== null && fit > 844) {
-        found.push(`picture, sliders and first input span ${fit} px (over one 844 px screen)`);
+      if (fit?.missing) {
+        // Never measure from the page top silently: a missing anchor is itself a finding.
+        found.push('one-screen check: no section header found (Picture/Diagram/Chart/Table)');
+      } else if (fit !== null) {
+        blocks = fit.parts;
+        if (width <= 400 && fit.span > 844) {
+          found.push(
+            `picture, sliders and first input span ${fit.span} px (over one 844 px screen): ${fit.parts}`,
+          );
+        }
       }
       // The controls a student has on this page, for the reviewers' interaction check.
       const controls = await page.evaluate(() =>
@@ -206,6 +235,7 @@ try {
       );
       for (const issue of all) console.log(`        - ${issue}`);
       console.log(`        controls: ${controls || '(none)'}`);
+      if (blocks) console.log(`        blocks: ${blocks}`);
     }
     await page.close();
   }

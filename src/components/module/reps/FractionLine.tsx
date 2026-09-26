@@ -11,6 +11,17 @@ import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'fractionLine' }>;
 
+/** The jumps 0..a cut into runs by `runOf`: [from, to) of each run with at least one jump. */
+function runLabels(a: number, runOf: (i: number) => number): [number, number][] {
+  const out: [number, number][] = [];
+  for (let i = 0; i < a; i++) {
+    const last = out[out.length - 1];
+    if (last && runOf(i) === runOf(last[0])) last[1] = i + 1;
+    else out.push([i, i + 1]);
+  }
+  return out;
+}
+
 /**
  * Fractions on a number line: each whole from 0 to `wholes` cut into equal parts, one jump per
  * part from 0 to the fraction. Drag the point to another mark.
@@ -27,6 +38,26 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const known = rep.known(spec.numerator) && rep.known(spec.denominator);
   const wholes = Math.floor(a / b);
   const left = a - wholes * b;
+  // Where each run of jumps ends: the addends' tops in turn, or every `each` jumps for copies.
+  const partVals = (spec.parts ?? []).map((id) => Math.max(0, Math.round(rep.shown(id))));
+  const copies = spec.copies ? Math.max(1, Math.round(rep.shown(spec.copies))) : 0;
+  const each = copies > 0 && a % copies === 0 ? a / copies : 0;
+  const runOf = (i: number) => {
+    if (spec.parts && spec.parts.every(rep.known)) {
+      let end = 0;
+      for (let k = 0; k < partVals.length; k++) {
+        end += partVals[k]!;
+        if (i < end) return k;
+      }
+      return partVals.length;
+    }
+    return each > 0 ? Math.floor(i / each) : 0;
+  };
+  // The point moves the last addend (the others stay), else the numerator itself.
+  const dragVar =
+    spec.parts && spec.parts.every(rep.known) ? spec.parts[spec.parts.length - 1]! : spec.numerator;
+  const dragOthers =
+    dragVar === spec.numerator ? 0 : partVals.slice(0, -1).reduce((x, y) => x + y, 0);
 
   return (
     <View>
@@ -99,10 +130,25 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       <Path
                         key={`j${i}`}
                         d={`M ${px(i / b)} ${y} Q ${px((i + 0.5) / b)} ${y - 2 * lift} ${px((i + 1) / b)} ${y}`}
-                        stroke={c.chartHighlight}
-                        strokeWidth={chart.strokeLight}
+                        stroke={runOf(i) % 2 === 0 ? c.chartHighlight : c.chartInk}
+                        strokeWidth={runOf(i) % 2 === 0 ? chart.strokeLight : chart.stroke}
                         fill="none"
                       />
+                    ))
+                  : null}
+                {/* One label per run: "3/8" over its jumps, so the addends (or copies) are seen. */}
+                {known && (spec.parts || each > 0) && a > 0
+                  ? runLabels(a, runOf).map(([from, to], k) => (
+                      <ChartText
+                        key={`p${k}`}
+                        x={px((from + to) / 2 / b)}
+                        y={y - 2 * lift * 0.55 - 4}
+                        fontSize={chart.tiny}
+                        fill={c.chartMuted}
+                        textAnchor="middle"
+                      >
+                        {`${to - from}/${b}`}
+                      </ChartText>
                     ))
                   : null}
                 {known ? (
@@ -125,14 +171,17 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   testID="drag-fraction"
                   x={px(a / b)}
                   y={y}
-                  label={rep.variable(spec.numerator).name}
+                  label={rep.variable(dragVar).name}
                   onStart={() => (start.current = a)}
                   onMove={(dx) =>
                     calc.set({
-                      ...rep.pin([spec.denominator]),
-                      [spec.numerator]: rep.snapTo(
-                        spec.numerator,
-                        Math.min(W * b, Math.max(0, start.current + dx / step)),
+                      ...rep.pin([
+                        spec.denominator,
+                        ...(spec.parts ?? []).filter((id) => id !== dragVar),
+                      ]),
+                      [dragVar]: rep.snapTo(
+                        dragVar,
+                        Math.min(W * b, Math.max(0, start.current + dx / step)) - dragOthers,
                       ),
                     })
                   }

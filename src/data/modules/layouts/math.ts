@@ -298,15 +298,63 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { id: 'neither', label: 'Neither', why: 'They meet, but not at a right angle.' },
     ],
     cards: [
-      { label: 'Railroad tracks', bin: 'parallel' },
-      { label: 'The two long sides of a door', bin: 'parallel' },
-      { label: 'Lines on notebook paper', bin: 'parallel' },
-      { label: 'The corner of a page', bin: 'perpendicular' },
-      { label: 'A plus sign', bin: 'perpendicular' },
-      { label: 'A wall and the floor', bin: 'perpendicular' },
-      { label: 'The letter X', bin: 'neither' },
-      { label: 'Two sides of a triangle', bin: 'neither' },
-      { label: 'The hands of a clock at 1:00', bin: 'neither' },
+      {
+        label: 'Railroad tracks',
+        bin: 'parallel',
+        figure: { kind: 'lines', angle: 70, parallel: true },
+      },
+      {
+        label: 'The two long sides of a door',
+        bin: 'parallel',
+        figure: { kind: 'lines', angle: 90, parallel: true },
+      },
+      {
+        label: 'Lines on notebook paper',
+        bin: 'parallel',
+        figure: { kind: 'lines', angle: 0, parallel: true },
+      },
+      {
+        label: 'The corner of a page',
+        bin: 'perpendicular',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 95],
+            [15, 15],
+            [95, 15],
+          ],
+          open: true,
+        },
+      },
+      { label: 'A plus sign', bin: 'perpendicular', figure: { kind: 'lines', angle: 90 } },
+      {
+        label: 'A wall and the floor',
+        bin: 'perpendicular',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [15, 5],
+            [15, 95],
+            [95, 95],
+          ],
+          open: true,
+        },
+      },
+      { label: 'The letter X', bin: 'neither', figure: { kind: 'lines', angle: 60 } },
+      { label: 'The letter V', bin: 'neither', figure: { kind: 'letter', text: 'V' } },
+      {
+        label: 'The hands of a clock at 1:00',
+        bin: 'neither',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 10],
+            [50, 50],
+            [72, 12],
+          ],
+          open: true,
+        },
+      },
     ],
   },
   {
@@ -327,17 +375,255 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { id: 'many', label: '2 or more', why: 'More than one fold makes the halves match.' },
     ],
     cards: [
-      { label: 'Scalene triangle (all sides different)', bin: 'none' },
-      { label: 'The letter F', bin: 'none' },
-      { label: 'Parallelogram (no right angles)', bin: 'none' },
-      { label: 'Isosceles triangle', bin: 'one' },
-      { label: 'The letter A', bin: 'one' },
-      { label: 'Kite', bin: 'one' },
-      { label: 'Heart shape', bin: 'one' },
-      { label: 'Square', bin: 'many' },
-      { label: 'Rectangle', bin: 'many' },
-      { label: 'The letter H', bin: 'many' },
-      { label: 'Circle', bin: 'many' },
+      {
+        label: 'Scalene triangle (all sides different)',
+        bin: 'none',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 90],
+            [95, 75],
+            [35, 10],
+          ],
+        },
+      },
+      { label: 'The letter F', bin: 'none', figure: { kind: 'letter', text: 'F' } },
+      { label: 'The letter Z', bin: 'none', figure: { kind: 'letter', text: 'Z' } },
+      {
+        label: 'Isosceles triangle (two equal sides)',
+        bin: 'one',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 90],
+            [90, 90],
+            [50, 5],
+          ],
+        },
+      },
+      { label: 'The letter A', bin: 'one', figure: { kind: 'letter', text: 'A' } },
+      {
+        label: 'Kite',
+        bin: 'one',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 0],
+            [90, 35],
+            [50, 100],
+            [10, 35],
+          ],
+        },
+      },
+      { label: 'Heart shape', bin: 'one', figure: { kind: 'heart' } },
+      {
+        label: 'Square',
+        bin: 'many',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 10],
+            [90, 10],
+            [90, 90],
+            [10, 90],
+          ],
+        },
+      },
+      {
+        label: 'Rectangle',
+        bin: 'many',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 25],
+            [95, 25],
+            [95, 75],
+            [5, 75],
+          ],
+        },
+      },
+      { label: 'The letter H', bin: 'many', figure: { kind: 'letter', text: 'H' } },
+      { label: 'Circle', bin: 'many', figure: { kind: 'circle' } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.4.lines-symmetry~classify-shapes',
+    title: 'Sort shapes by angles and sides',
+    use: 'Use this to sort triangles and four-sided shapes by their angles and sides.',
+    assumptions: [
+      'A right triangle has one right angle, a square corner.',
+      'Parallel sides go the same way and never meet.',
+      'A four-sided shape can have two pairs of parallel sides, one pair, or none.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Does it have a right angle? Does it have parallel sides?',
+    bins: [
+      { id: 'right', label: 'Triangle with a right angle', why: 'One corner is a square corner.' },
+      {
+        id: 'triangle',
+        label: 'Triangle, no right angle',
+        why: 'Every corner is smaller or bigger than a square corner.',
+      },
+      {
+        id: 'parallel',
+        label: 'Four sides, some parallel',
+        why: 'At least one pair of sides goes the same way.',
+      },
+      { id: 'none', label: 'Four sides, none parallel', why: 'No two sides go the same way.' },
+    ],
+    cards: [
+      {
+        label: 'Right triangle',
+        bin: 'right',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 90],
+            [90, 90],
+            [10, 10],
+          ],
+        },
+      },
+      {
+        label: 'Right triangle, two equal sides',
+        bin: 'right',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 90],
+            [90, 90],
+            [90, 10],
+          ],
+        },
+      },
+      {
+        label: 'Acute triangle (all angles small)',
+        bin: 'triangle',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 90],
+            [90, 90],
+            [50, 10],
+          ],
+        },
+      },
+      {
+        label: 'Obtuse triangle (one wide angle)',
+        bin: 'triangle',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 90],
+            [70, 90],
+            [95, 40],
+          ],
+        },
+      },
+      {
+        label: 'Equilateral triangle',
+        bin: 'triangle',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 85],
+            [90, 85],
+            [50, 15],
+          ],
+        },
+      },
+      {
+        label: 'Square',
+        bin: 'parallel',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 10],
+            [90, 10],
+            [90, 90],
+            [10, 90],
+          ],
+        },
+      },
+      {
+        label: 'Rectangle',
+        bin: 'parallel',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [5, 25],
+            [95, 25],
+            [95, 75],
+            [5, 75],
+          ],
+        },
+      },
+      {
+        label: 'Parallelogram',
+        bin: 'parallel',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [25, 25],
+            [95, 25],
+            [75, 75],
+            [5, 75],
+          ],
+        },
+      },
+      {
+        label: 'Rhombus',
+        bin: 'parallel',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 5],
+            [90, 50],
+            [50, 95],
+            [10, 50],
+          ],
+        },
+      },
+      {
+        label: 'Trapezoid (one pair of parallel sides)',
+        bin: 'parallel',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [30, 25],
+            [70, 25],
+            [95, 75],
+            [5, 75],
+          ],
+        },
+      },
+      {
+        label: 'Kite',
+        bin: 'none',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 0],
+            [90, 35],
+            [50, 100],
+            [10, 35],
+          ],
+        },
+      },
+      {
+        label: 'Four sides, all different',
+        bin: 'none',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [10, 80],
+            [45, 95],
+            [90, 55],
+            [35, 10],
+          ],
+        },
+      },
     ],
   },
 ];

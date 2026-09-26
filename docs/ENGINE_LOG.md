@@ -5,6 +5,48 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grade 4 (Section 2, first review)
+
+One lesson-reviewer and one page-reviewer on 13 pages. What the engine now does:
+
+- A relation of the form `h = 10t + u` with pairwise solves could not fill the tenths and the
+  extra hundredths from the hundredths alone (the grid sets `h`), and `a = t + o` left the
+  tens and ones blank from the factor alone. The harness's "determined but left unknown"
+  check stayed quiet because only the digit ranges (0–9), not the formulas, pin the parts
+  down. → Relations that solve the place part from the number alone (`t = tenths in h`,
+  `t = tens of a`, `placePart()` in math-4-more.ts). Rule for writers: a value read off a
+  number's digits gets its own relation from that number.
+- Typing a prime above 12 was rejected ("No whole numbers fit"): the factor pair 1 × 13 was
+  out of range. → Factors range to 100; the array draws at most `max` dots and its caption
+  says "(the first 20 shown)"; the harness no longer flags a factor past the drawing.
+- A product of two typed factors where the zero top (0 × any bottom) made the new top 0
+  whatever the bottom: the search saw a determined value the solver could not reach. → Tops
+  start at 1 on the equivalence page; a factor that can be 0 in a product needs its own
+  thought before the range is written.
+- The fraction line drew one run of jumps for a sum or a product, so 3/8 + 6/8 and 4 × 2/3
+  looked like 9/8 and 8/3 typed in. → `fractionLine.parts` (addends: alternate shade, one
+  label per run, the point drags the last addend) and `fractionLine.copies` (the runs
+  alternate every copy).
+- Only the first angle had a handle; the whole-angle label sat on the middle ray when the two
+  parts were equal; a reflex whole went off the canvas. → A second handle on the outer ray
+  moves the second angle; the label steps off the bisector; the vertex moves to the middle
+  past 180°.
+- Canvases sized for a square extent left blank bands under a wide rectangle and under the
+  hundred grid. → Canvas heights come from the drawn figure (Rectangle, Grid100).
+- Sort cards were words only, a memory test for the shape or the line pair. → `card.figure`
+  on sort cards (`lines`, `letter`, `polygon` (open or closed), `circle`, `heart`), drawn by
+  `SortLayout`.
+- The rounded number and the two neighbours were typed, so a typed 853,520 sat beside a place
+  of 100,000. → They are `derived` on the rounding page; the picture's `to` can be a variable.
+- The Grade 3–5 value cap (8) counted read-only boxes, so a four-box area model (11 values,
+  3 typed) failed the standard. → The cap counts values the student holds (not `derived`).
+- Harness: check lines ending in ", so …" and "n ÷ d = q remainder r" now balance; phrases for
+  full tenths, "the tens in", "N with the places under P made 0"; the shots script fails loudly
+  when its section-header anchor is missing (it had measured from the page top for a whole
+  section) and reports where each page's height goes.
+- `Sliders`: a 120 px track when there are at most four (four 88 px sliders wrap on a phone, so widths stay);
+  `Tape` labels at `chart.label`; `AreaModel` boxes get at least 36% of the width.
+
 ## Grade 4 build (Section 2, while writing)
 
 - A remainder must be smaller than the divisor, but a relation with nothing to solve was

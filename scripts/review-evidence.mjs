@@ -92,6 +92,8 @@ const problems = [phone, desktop, night]
   .filter((l) => /PROBLEM|^\s+- /.test(l));
 // The controls each page offers (sliders, handles, tappable cells), from the phone run.
 const controls = new Map();
+// Where each page's height goes (picture → sliders → first input, px from the section header).
+const blocks = new Map();
 {
   let current = '';
   for (const line of phone.split('\n')) {
@@ -99,6 +101,8 @@ const controls = new Map();
     if (head) current = head[1];
     const c = /^\s+controls: (.*)$/.exec(line);
     if (c && current) controls.set(current, c[1]);
+    const b = /^\s+blocks: (.*)$/.exec(line);
+    if (b && current) blocks.set(current, b[1]);
   }
 }
 
@@ -176,7 +180,10 @@ writeFileSync(
     ...(failures.length ? ['', '## Harness errors', ...failures] : []),
     '',
     '## Pages: picture kind and controls',
-    ...ids.map((id) => `- ${id}: ${kinds.get(id) ?? '?'} — ${controls.get(id) ?? '(none)'}`),
+    ...ids.map(
+      (id) =>
+        `- ${id}: ${kinds.get(id) ?? '?'} — ${controls.get(id) ?? '(none)'}${blocks.has(id) ? ` — ${blocks.get(id)}` : ''}`,
+    ),
     ...[...kinds]
       .filter(([id]) => !ids.includes(id))
       .map(([id, k]) => `- ${id}: ${k} — ${controls.get(id) ?? '(none)'}`),

@@ -3,6 +3,7 @@ import { SCIENCE_LAYOUTS } from './science';
 import type { LayoutDef } from './types';
 
 export type {
+  CardFigure,
   ExploreLayout,
   Figure,
   LayoutDef,

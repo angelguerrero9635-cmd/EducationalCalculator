@@ -356,7 +356,8 @@ export type Representation =
       lower: string;
       upper: string;
       rounded: string;
-      to: 10 | 100;
+      /** The place rounded to, or the variable that holds it (10, 100, 1,000, …). */
+      to: 10 | 100 | string;
     }
   /**
    * Fractions on a number line from 0 to `wholes`: each whole cut into `denominator` equal
@@ -369,6 +370,13 @@ export type Representation =
       wholes: number;
       /** What one whole is, e.g. "inch" (a ruler); the caption says "2 inches and 1/4 inch". */
       unit?: { one: string; many: string };
+      /**
+       * The numerator as a sum of these tops (3/8 + 6/8): each addend's run of jumps gets its
+       * own shade, and dragging the point changes the last addend with the others pinned.
+       */
+      parts?: string[];
+      /** The numerator as this many copies of one fraction (4 × 2/3): the runs alternate shade. */
+      copies?: string;
     }
   /**
    * Fraction bars of the same whole, one per row, with `num` of `den` parts shaded. `equal`
@@ -452,7 +460,15 @@ export type Representation =
   /** Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. */
   | { kind: 'angles'; parts: [string, string]; whole: string }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
-  | { kind: 'table'; sweep: string; output: string; params: string[]; rows: number[] }
+  | {
+      kind: 'table';
+      sweep: string;
+      output: string;
+      params: string[];
+      rows: number[];
+      /** A sentence naming what a parameter's value means ("1 foot = 12 inches"), over the table. */
+      named?: { param: string; names: Record<number, string> };
+    }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */
   | {
       kind: 'force';

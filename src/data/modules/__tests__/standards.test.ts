@@ -134,6 +134,7 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('standards f
   const grade = gradeOf(m.id);
   const band = gradeBand(m.id);
   const text = studentText(m);
+  const example = m.example;
   const failures = (
     items: { where: string; text: string }[],
     test: (t: string) => string | false | undefined,
@@ -232,8 +233,21 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('standards f
     ).toEqual([]);
   });
 
+  it('works every step out from a rule, never by trying numbers', () => {
+    const w = buildSteps(
+      m,
+      solve(
+        m,
+        m.startWith.map((id) => ({ id, value: example[id]! })),
+      ),
+    );
+    expect(w.steps.filter((s) => /Try numbers/.test(s.how)).map((s) => s.id)).toEqual([]);
+  });
+
   it('has about as many values as the grade can hold', () => {
     const limit = valueLimit(grade);
-    if (limit !== undefined) expect(m.variables.length).toBeLessThanOrEqual(limit);
+    // Derived values are read-only boxes the lesson fills in, not values the student holds.
+    if (limit !== undefined)
+      expect(m.variables.filter((v) => !v.derived).length).toBeLessThanOrEqual(limit);
   });
 });

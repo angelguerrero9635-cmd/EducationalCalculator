@@ -20,7 +20,8 @@ layouts" section is the catalog you propose from.
   `[layout: <kind>]`. Read one page at a time with `grep -n "^=== <id>"` and `sed`, not the
   whole file.
 - `.review/harness.txt`: the sampling harness report (`[error]` lines fail the test suite, so
-  there are none; `[minor]` lines are limits of the harness).
+  there are none; `[minor]` lines are limits of the harness: a range or fixed-number remark
+  that repeats across modules is one finding with the rule, not one per module).
 - Module code: `src/data/modules/<section file>.ts`, shared helpers `src/data/modules/helpers.ts`,
   types `src/data/modules/types.ts`, `uses.ts` for problem-type "use" lines.
 

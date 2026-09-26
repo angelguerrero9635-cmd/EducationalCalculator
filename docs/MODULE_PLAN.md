@@ -5,29 +5,29 @@ courses count once). They are written in sections.
 Each section goes through the review process in [MODULE_GUIDE.md](MODULE_GUIDE.md) (tests plus an
 independent AI review), and the next section starts only after the owner approves it.
 
-| #   | Section                                                                                             | Modules | Status                       |
-| --- | --------------------------------------------------------------------------------------------------- | ------- | ---------------------------- |
-| 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice         |
-| 1   | Math K–2                                                                                            | 64      | Done, reviewed twice         |
-| 2   | Math 3–5 (one grade at a time)                                                                      | 34      | Grade 3 built; Grade 4 built |
-| 3   | Math 6–8                                                                                            | 30      |                              |
-| 4   | Math 9–10                                                                                           | 21      |                              |
-| 5   | Math 11–12                                                                                          | 22      |                              |
-| 6   | Science K–5                                                                                         | 39      | K–3 built, reviewed          |
-| 7   | Science 6–8                                                                                         | 21      |                              |
-| 8   | Science 9–12                                                                                        | 34      |                              |
-| 9   | College Math                                                                                        | 25      |                              |
-| 10  | Chemistry                                                                                           | 42      |                              |
-| 11  | Physics                                                                                             | 32      |                              |
-| 12  | Earth Science                                                                                       | 27      |                              |
-| 13  | Geography                                                                                           | 23      |                              |
-| 14  | Biology                                                                                             | 34      |                              |
-| 15  | Engineering core 1: statics, dynamics, solid mechanics, materials, FEA                              | 29      |                              |
-| 16  | Engineering core 2: thermal-fluids, controls, circuits, logic, signals, programming, CAD, numerical | 45      |                              |
-| 17  | Aerospace + Mechanical                                                                              | 36      |                              |
-| 18  | Electrical + Computer                                                                               | 46      |                              |
-| 19  | Bioengineering + Chemical                                                                           | 47      |                              |
-| 20  | Civil                                                                                               | 33      |                              |
+| #   | Section                                                                                             | Modules | Status                     |
+| --- | --------------------------------------------------------------------------------------------------- | ------- | -------------------------- |
+| 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice       |
+| 1   | Math K–2                                                                                            | 64      | Done, reviewed twice       |
+| 2   | Math 3–5 (one grade at a time)                                                                      | 34      | Grades 3–4 built, reviewed |
+| 3   | Math 6–8                                                                                            | 30      |                            |
+| 4   | Math 9–10                                                                                           | 21      |                            |
+| 5   | Math 11–12                                                                                          | 22      |                            |
+| 6   | Science K–5                                                                                         | 39      | K–3 built, reviewed        |
+| 7   | Science 6–8                                                                                         | 21      |                            |
+| 8   | Science 9–12                                                                                        | 34      |                            |
+| 9   | College Math                                                                                        | 25      |                            |
+| 10  | Chemistry                                                                                           | 42      |                            |
+| 11  | Physics                                                                                             | 32      |                            |
+| 12  | Earth Science                                                                                       | 27      |                            |
+| 13  | Geography                                                                                           | 23      |                            |
+| 14  | Biology                                                                                             | 34      |                            |
+| 15  | Engineering core 1: statics, dynamics, solid mechanics, materials, FEA                              | 29      |                            |
+| 16  | Engineering core 2: thermal-fluids, controls, circuits, logic, signals, programming, CAD, numerical | 45      |                            |
+| 17  | Aerospace + Mechanical                                                                              | 36      |                            |
+| 18  | Electrical + Computer                                                                               | 46      |                            |
+| 19  | Bioengineering + Chemical                                                                           | 47      |                            |
+| 20  | Civil                                                                                               | 33      |                            |
 
 Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may be split further if it runs long.
 
@@ -58,8 +58,14 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   perimeter formulas (length × width, 2 × (length + width), a missing side from the perimeter);
   angles (two angles on one vertex adding to the whole, named acute, right, obtuse or straight);
   lines and symmetry (two sort pages: parallel, perpendicular or neither; lines of symmetry).
-  All 12 Grade 4 skills have a main page. New pictures: area model, angles.
-  New engine rule: a check-only relation (`constraint`).
+  All 12 Grade 4 skills have a main page, plus 12 problem types from the review: multiples,
+  round to any place, compare to 1,000,000, two-digit × two-digit and three-digit × one-digit
+  area models, times as many, what to do with the remainder, make an equivalent fraction,
+  subtract with the same bottom, mixed numbers as fractions, compare decimals, bigger units
+  and some more, angles as parts of a turn; and a third sort page, shapes by angles and sides
+  (cards now carry figures). New pictures: area model, angles; the fraction line shows addends
+  or copies; the rounding line takes any place. New engine rules: a check-only relation
+  (`constraint`), display-only values (`shows`), place-part relations.
 - **Section 2, Grade 3.** 14 skill modules (area was a pilot; patterns in the tables,
   multiplying by multiples of 10, and measuring with line plots were added to the taxonomy
   after the review) plus 22 problem types: arrays and equal jumps (multiply and divide),

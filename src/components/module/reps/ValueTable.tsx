@@ -41,8 +41,18 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
     return `${v.name} (${v.symbol})${unit ? `, ${unit}` : ''}`;
   };
 
+  const named =
+    spec.named && rep.known(spec.named.param)
+      ? spec.named.names[rep.shown(spec.named.param)]
+      : undefined;
+
   return (
     <View style={[styles.table, { borderColor: c.chartGrid }]}>
+      {named ? (
+        <Text style={[styles.named, { color: c.chartInk, borderBottomColor: c.chartGrid }]}>
+          {named}
+        </Text>
+      ) : null}
       <View
         style={[styles.row, { backgroundColor: c.chartSurface, borderBottomColor: c.chartGrid }]}
       >
@@ -104,4 +114,11 @@ const styles = StyleSheet.create({
   },
   head: { fontWeight: '600' },
   note: { padding: space.md, fontSize: font.caption + 1 },
+  named: {
+    padding: space.sm + 2,
+    fontSize: font.body,
+    fontWeight: '600',
+    textAlign: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
 });

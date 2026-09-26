@@ -22,10 +22,10 @@ export function AreaModel({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const tops = spec.top.map(val);
   const sides = spec.side.map(val);
   const faded = ![...spec.top, ...spec.side].every(rep.known);
-  // Widths: each part gets at least 30% so its label fits; the rest by size.
+  // Widths: each part gets at least 36% so its label fits at a readable size; the rest by size.
   const share = (xs: number[]) => {
     const sum = xs.reduce((a, b) => a + b, 0) || 1;
-    const raw = xs.map((x) => Math.max(0.3, x / sum));
+    const raw = xs.map((x) => Math.max(0.36, x / sum));
     const total = raw.reduce((a, b) => a + b, 0);
     return raw.map((x) => x / total);
   };
@@ -38,7 +38,8 @@ export function AreaModel({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(0.75, (0.28 * spec.side.length + 0.14) * (390 / w))}>
+      {/* Boxes are read, not measured: 0.22 of the width per row keeps two rows on a phone screen. */}
+      <Canvas aspect={(w) => Math.min(0.75, (0.22 * spec.side.length + 0.14) * (390 / w))}>
         {({ w, h }) => {
           const left = 44;
           const top = 26;

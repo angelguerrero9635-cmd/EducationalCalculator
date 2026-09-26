@@ -27,14 +27,18 @@ export function RectangleDiagram({ spec, calc }: { spec: Spec; calc: Calculator 
   const sw = rep.shown(spec.width);
   const sameUnit = rep.unit(spec.length) === rep.unit(spec.width);
 
+  const left = 72;
+  const top = 16;
+  // Room under the rectangle for the side label, and the perimeter line when shown.
+  const below = spec.around ? 68 : 44;
+  // The scale comes from the width (the extent fits across); the canvas is as tall as the
+  // rectangle itself, so a wide, short one doesn't sit above a blank band.
+  const unitFor = (w: number) => (w - left - 28) / fit.value;
+
   return (
-    <Canvas aspect={spec.around ? 0.88 : 0.8}>
+    <Canvas aspect={(w) => (top + Math.max(60, wd * unitFor(w)) + below) / w}>
       {({ w, h }) => {
-        const left = 72;
-        const top = 16;
-        // Room under the rectangle for the side label, and the perimeter line when shown.
-        const below = spec.around ? 68 : 44;
-        const unit = Math.min((w - left - 28) / fit.value, (h - top - below) / fit.value);
+        const unit = unitFor(w);
         const rw = l * unit;
         const rh = wd * unit;
         const cellPx = unit * f;

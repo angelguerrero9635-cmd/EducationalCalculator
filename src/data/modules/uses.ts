@@ -125,4 +125,24 @@ export const PROBLEM_TYPE_USES: Record<string, string> = {
   's.3.weather-climate~range':
     'Use this for the difference between the warmest and coldest months.',
   's.3.weather-climate~flood': 'Use this to count the sandbags in a wall built in equal rows.',
+  // Grade 4
+  'm.4.factors-multiples~multiples': 'Use this for “Is 40 a multiple of 8?” and listing multiples.',
+  'm.4.place-value-million~rounding': 'Use this to round a number to any place, up to 1,000,000.',
+  'm.4.place-value-million~compare':
+    'Use this to compare two numbers up to 1,000,000 with >, < or =.',
+  'm.4.multi-digit-multiply~two-digit': 'Use this for 23 × 14 with a four-box area model.',
+  'm.4.multi-digit-multiply~three-digit': 'Use this for 234 × 6 with a three-box area model.',
+  'm.4.multi-digit-multiply~times-as-many': 'Use this for “4 times as many” word problems.',
+  'm.4.long-division~interpret-remainder':
+    'Use this for “How many buses are needed?” when some are left over.',
+  'm.4.fraction-equivalence~equivalent':
+    'Use this for “3/4 = ?/12” and other equivalent fractions.',
+  'm.4.add-fractions-like~subtract': 'Use this for 7/8 − 3/8 and other same-bottom subtraction.',
+  'm.4.add-fractions-like~mixed': 'Use this to write 2 and 3/4 as 11/4, or 11/4 as a mixed number.',
+  'm.4.decimals-intro~compare': 'Use this to compare two decimals, like 0.4 and 0.35.',
+  'm.4.unit-conversion~two-units':
+    'Use this for 3 feet 5 inches as inches, or 2 hours 15 minutes as minutes.',
+  'm.4.angles~turns': 'Use this for “a quarter turn is how many degrees?”',
+  'm.4.lines-symmetry~classify-shapes':
+    'Use this to sort triangles and four-sided shapes by their angles and sides.',
 };

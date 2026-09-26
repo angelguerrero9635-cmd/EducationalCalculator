@@ -45,6 +45,11 @@ export interface Relation {
    * only used to reject values that break it once every variable in it is known.
    */
   constraint?: boolean;
+  /**
+   * Variables the display names but the rule doesn't use (the bottom in "3/4 + 2/4 = 5/4"):
+   * they can be unknown without holding the rule up.
+   */
+  shows?: string[];
   /** Display template; `{id}` is replaced by the symbol or the current value. */
   display: string;
   vars: string[];

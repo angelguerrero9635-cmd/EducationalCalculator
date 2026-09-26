@@ -80,9 +80,9 @@ function representationVars(r: Representation): string[] {
           : []),
       ];
     case 'rounding':
-      return [r.value, r.lower, r.upper, r.rounded];
+      return [r.value, r.lower, r.upper, r.rounded, ...(typeof r.to === 'string' ? [r.to] : [])];
     case 'fractionLine':
-      return [r.numerator, r.denominator];
+      return [r.numerator, r.denominator, ...(r.parts ?? []), ...(r.copies ? [r.copies] : [])];
     case 'fractionBars':
       return [...r.rows.flatMap((x) => [x.num, x.den]), ...r.controls];
     case 'timeline':
@@ -192,7 +192,8 @@ describe.each(MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s',
     for (const r of m.relations) {
       expect(r.vars.filter((v) => !ids.includes(v))).toEqual([]);
       const inTemplate = [...r.display.matchAll(/\{(\w+)\}/g)].map((x) => x[1]);
-      expect([...new Set(inTemplate)].sort()).toEqual([...r.vars].sort());
+      expect([...new Set(inTemplate)].sort()).toEqual([...r.vars, ...(r.shows ?? [])].sort());
+      expect((r.shows ?? []).filter((v) => !ids.includes(v) || r.vars.includes(v))).toEqual([]);
     }
     expect(representationVars(m.representation).filter((v) => !ids.includes(v))).toEqual([]);
   });

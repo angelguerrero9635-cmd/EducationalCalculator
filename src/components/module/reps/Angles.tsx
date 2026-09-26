@@ -38,18 +38,23 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const whole = a + b;
   const known = rep.known(first) && rep.known(second);
   const start = useRef({ a: 0, cx: 0, cy: 0, r: 1 });
+  const startW = useRef({ b: 0, cx: 0, cy: 0, r: 1 });
   const toXY = (deg: number, r: number, cx: number, cy: number) => {
     const t = (-deg * Math.PI) / 180;
     return [cx + r * Math.cos(t), cy + r * Math.sin(t)] as const;
   };
 
+  // Past a straight angle the second ray goes below the first: the vertex moves to the middle.
+  const reflex = whole > 180;
+
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(0.62, 200 / w + 0.1)}>
+      {/* Just tall enough for the rays (radius = half the width, less the handle's room). */}
+      <Canvas aspect={(w) => (reflex ? 0.9 : 0.5 + 14 / w)}>
         {({ w, h }) => {
           const cx = w / 2;
-          const cy = h - 24;
-          const r = Math.min(w / 2 - 30, h - 44);
+          const cy = reflex ? h / 2 : h - 24;
+          const r = Math.min(w / 2 - 30, (reflex ? h / 2 : h) - 44);
           const arc = (from: number, to: number, rad: number) => {
             const [x1, y1] = toXY(from, rad, cx, cy);
             const [x2, y2] = toXY(to, rad, cx, cy);
@@ -86,6 +91,21 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
             );
           };
           const [hx, hy] = toXY(a, r, cx, cy);
+          const [wx, wy] = toXY(whole, r, cx, cy);
+          const angleAt = (
+            s: { cx: number; cy: number; r: number },
+            from: number,
+            dx: number,
+            dy: number,
+          ) => {
+            const [sx, sy] = toXY(from, s.r, s.cx, s.cy);
+            const deg = (-Math.atan2(sy + dy - s.cy, sx + dx - s.cx) * 180) / Math.PI;
+            return ((Math.round(deg) % 360) + 360) % 360;
+          };
+          // The whole angle's label sits on its bisector, which is the middle ray when the two
+          // angles are equal: then it moves 14° into the bigger part, where nothing is drawn.
+          const mid = Math.min(whole, 359.9) / 2;
+          const wholeAt = Math.abs(mid - a) < 12 ? (b >= a ? a + 14 : a - 14) : mid;
           return (
             <>
               <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
@@ -110,7 +130,7 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {a > 8 ? label(0, a, r * 0.38, `${rep.value(first)}`, 'la') : null}
                 {b > 8 ? label(a, whole, r * 0.38, `${rep.value(second)}`, 'lb') : null}
                 {whole > 0
-                  ? label(0, Math.min(whole, 359.9), r * 0.86, `${rep.value(spec.whole)}`, 'lw')
+                  ? label(wholeAt, wholeAt, r * 0.86, `${rep.value(spec.whole)}`, 'lw')
                   : null}
               </Svg>
               <DragHandle
@@ -122,19 +142,29 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   start.current = { a, cx, cy, r };
                 }}
                 onMove={(dx, dy) => {
-                  const [sx, sy] = toXY(
-                    start.current.a,
-                    start.current.r,
-                    start.current.cx,
-                    start.current.cy,
-                  );
-                  const deg =
-                    (-Math.atan2(sy + dy - start.current.cy, sx + dx - start.current.cx) * 180) /
-                    Math.PI;
-                  const next = ((Math.round(deg) % 360) + 360) % 360;
+                  const next = angleAt(start.current, start.current.a, dx, dy);
                   calc.set({
                     ...rep.pin([second]),
                     [first]: rep.snapTo(first, next * rep.factor(first)),
+                  });
+                }}
+              />
+              {/* The outer ray moves the second angle; the first stays where it is. */}
+              <DragHandle
+                testID={`drag-${spec.whole}`}
+                x={wx}
+                y={wy}
+                label={rep.variable(second).name}
+                onStart={() => {
+                  startW.current = { b, cx, cy, r };
+                }}
+                onMove={(dx, dy) => {
+                  const next = angleAt(startW.current, a + startW.current.b, dx, dy);
+                  // The whole ray's angle, less the first angle, is the second (never below 0).
+                  const deg = (((next - a) % 360) + 360) % 360;
+                  calc.set({
+                    ...rep.pin([first]),
+                    [second]: rep.snapTo(second, deg * rep.factor(second)),
                   });
                 }}
               />

@@ -19,7 +19,9 @@ scope, what the scripts flagged, and each page's picture kind and controls).
   scripts already flagged sideways scrolling, text past the screen edge, overlapping chart
   labels, page errors, K–2 letters, a picture-plus-sliders-plus-first-input span over one
   844 px screen, slider text cut short and picture tap targets under 36 px; those are in
-  `evidence.md`, with each page's controls (sliders, handles, tappable cells, scenes, cards).
+  `evidence.md`, with each page's controls (sliders, handles, tappable cells, scenes, cards)
+  and where its height goes (picture → sliders → first input, in px from the section header),
+  so you never measure a span yourself.
 - Layout pages (sort, sequence, explore, observe: `src/components/module/layouts/`) have no
   inputs: judge the tap flow (card then group; stage in order; scene; bar height), the hint
   when a tap is wrong, and that a class could use it on a projector.
@@ -32,7 +34,9 @@ scope, what the scripts flagged, and each page's picture kind and controls).
 
 - Open the contact sheets, then at most about 8 single screenshots: anything `evidence.md`
   flags and two or three typical pages. Don't build sheets or crop: the sheets are made for you.
-  1024 px and dark mode: the three or four provided are enough.
+  1024 px and dark mode: the three or four provided are enough. For a picture kind new in
+  this section, take one screenshot at a state unlike the example (equal parts, a range end):
+  the example hides collisions and overflow.
 - Use the browser on at most about 8 pages. Write one Playwright script in `.review/`
   (`require('playwright')` with `NODE_PATH=$(npm root -g)`; Chromium at
   `/opt/pw-browsers/chromium`; serve `dist/` with `node scripts/verify-ssr.mjs --serve <port>`;
@@ -40,8 +44,9 @@ scope, what the scripts flagged, and each page's picture kind and controls).
   (RN-web Pressables have no button role): inputs `input-<variable id>`, sliders
   `slider-<id>`, picture handles `drag-<id>`, tappable cells `pic-`, `frame-`, `num-`,
   `row-`; layout pages `card-<n>`, `bin-<id>`, `stage-<n>`, `scene-<n>`, `bar-<n>`. Wait for
-  `networkidle`, and `scrollIntoViewIfNeeded` before mouse events below the fold. Print short
-  observations, not page dumps.
+  `networkidle`, and `scrollIntoViewIfNeeded` before mouse events below the fold. To type a
+  value, fill the input, press Enter and wait about 400 ms before reading (Tab and a short
+  wait read stale values). Print short observations, not page dumps.
 - Write findings to `.review/page-reviewer.md` as you finish each skill; on start, read it and
   continue from the last skill.
 

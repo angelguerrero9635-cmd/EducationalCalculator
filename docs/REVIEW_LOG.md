@@ -5,6 +5,24 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Grade 4 math: one lesson-reviewer and one page-reviewer, 13 pages
+
+- Cost: lesson-reviewer 74k tokens (15 tool calls, 8 min); page-reviewer 125k (66 calls,
+  14 min). About 199k tokens for 13 pages, 15k per page: the page review built its own
+  browser scripts and measured spans by hand after finding the scripts' anchor bug.
+- Missed: nothing found afterwards. Over-reported: the seven one-screen flags were the
+  scripts' fault, not the pages' (the page reviewer found and fixed the cause).
+- Right calls the checks didn't ask for: values a picture sets that leave other typed boxes
+  "?"; a prime that can't be typed; the reflex angle; captions that count a "?" value.
+- Changes made:
+  - `evidence.md` now carries where each page's height goes (picture → sliders → first
+    input), and the shots script fails loudly when its header anchor is missing.
+  - `page-reviewer`: Enter + 400 ms before reading a typed value; one non-example screenshot
+    for each picture kind new in the section; grid cells are not tap-target flags.
+  - `lesson-reviewer`: a range or fixed-number remark repeated across modules is one finding.
+  - Pages the lesson reviewer asked for were built as problem types (12) and a sort page;
+    both reviewers' engine lines are in `docs/ENGINE_LOG.md`.
+
 ## K–3 math and science: two lesson-reviewers and two page-reviewers, 173 pages
 
 - Cost: lesson-reviewer science 98k tokens (22 tool calls, 9 min); page-reviewer science 96k

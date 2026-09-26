@@ -97,8 +97,14 @@ export function addStrategy(a: number, b: number, unit = ''): string[] {
     ] as const
   ).filter(([, x, y]) => x + y > 0);
   const parts = rows.map(([, x, y]) => x + y);
-  // Places that only one number has need no adding (300 + 5 = 305).
+  // Places that only one number has need no adding (300 + 5 = 305), and a sum with nothing
+  // to regroup (240 + 18 = 258) is one line the student can do in their head.
   if (rows.filter(([, x, y]) => x > 0 && y > 0).length === 0) return [];
+  if (
+    rows.every(([, x, y]) => x + y < (x >= 100 || y >= 100 ? 1000 : x >= 10 || y >= 10 ? 100 : 10))
+  ) {
+    return [];
+  }
   return [
     ...rows
       .filter(([, x, y]) => x > 0 && y > 0)
@@ -220,16 +226,36 @@ export const dealLines = (groups: number, each: number, name: string) => [
 export function timesWork(times: number, each: number): string[] {
   if (times === 0 || each === 0) return ['Any number times 0 is 0.'];
   if (times === 1 || each === 1) return [`1 × a number is that number: ${times * each}`];
+  // A multiple of ten times a one-digit number: the fact, then the zeros (Grade 3–4 place value).
+  const zeros = (n: number) => String(n).length - String(n).replace(/0+$/, '').length;
+  if (each <= 10 && times % 10 === 0 && times > 10) {
+    const core = times / 10 ** zeros(times);
+    return [`${core} × ${each} = ${core * each}, so ${times} × ${each} = ${times * each}`];
+  }
+  if (times <= 10 && each % 10 === 0 && each > 10) {
+    const core = each / 10 ** zeros(each);
+    return [`${times} × ${core} = ${times * core}, so ${times} × ${each} = ${times * each}`];
+  }
   // A fact within 10 × 10 is counted by; break-apart is for the pages that teach it.
-  if (times <= 10) {
+  if (times <= 10 && each <= 10) {
     return [`Count by ${each}s, ${times} times: ${countList(0, each, times)} → ${times * each}`];
   }
-  const rest = times - 5;
+  // Bigger numbers split by place: 123 × 6 = 100 × 6 + 20 × 6 + 3 × 6.
+  return placeTimesWork(times, each);
+}
+
+/** `times` × `each` by the places of `times`: "100 × 6 = 600", "20 × 6 = 120", "3 × 6 = 18", the sum. */
+export function placeTimesWork(times: number, each: number): string[] {
+  const parts: number[] = [];
+  for (const size of [1000, 100, 10, 1]) {
+    const digit = Math.floor(times / size) % 10;
+    if (digit > 0 && times >= size) parts.push(digit * size);
+  }
+  if (parts.length <= 1) return [`${times} × ${each} = ${times * each}`];
+  const products = parts.map((p) => p * each);
   return [
-    `${times} = 5 + ${rest}, so ${times} × ${each} = 5 × ${each} + ${rest} × ${each}`,
-    `5 × ${each} = ${5 * each}`,
-    `${rest} × ${each} = ${rest * each}`,
-    `${5 * each} + ${rest * each} = ${times * each}`,
+    ...parts.map((p, i) => `${p} × ${each} = ${products[i]}`),
+    `${products.join(' + ')} = ${times * each}`,
   ];
 }
 
