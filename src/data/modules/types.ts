@@ -886,6 +886,11 @@ export interface ModuleDef {
    */
   notation?: 'words' | 'letters';
   /**
+   * Grade 6 words pages only: the letters the page itself teaches (x in "3x + 5 when x = 4");
+   * every other value is still named in words.
+   */
+  letters?: string[];
+  /**
    * Taxonomy skill id, or a course topic key (`<courseId>#<topicIndex>`). A skill or topic can
    * have more modules for question types that need a different model: `<id>~<slug>`.
    */

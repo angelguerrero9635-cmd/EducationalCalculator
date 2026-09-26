@@ -61,6 +61,8 @@ describe('unit conversions (exact definitions)', () => {
       'years',
       'cubes',
       'square units',
+      'cubic units',
+      'units',
       '°F',
       '°C',
       'eighths of an inch',

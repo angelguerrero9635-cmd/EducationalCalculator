@@ -406,9 +406,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'a',
         symbol: 'a',
-        name: 'First store’s price',
+        name: 'First store’s total price',
         unit: '$',
-        min: 0,
+        min: 0.01,
         max: 1000,
         step: 0.01,
         multipleOf: 0.01,
@@ -426,9 +426,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'b',
         symbol: 'b',
-        name: 'Second store’s price',
+        name: 'Second store’s total price',
         unit: '$',
-        min: 0,
+        min: 0.01,
         max: 1000,
         step: 0.01,
         multipleOf: 0.01,
@@ -581,7 +581,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     ],
     variables: [
       { id: 'p', symbol: 'p', name: 'Percent', unit: '%', min: 0, max: 300, step: 0.1 },
-      { id: 'w', symbol: 'w', name: 'Whole', min: 0, max: 100000 },
+      { id: 'w', symbol: 'w', name: 'Whole', min: 0.01, max: 100000 },
       { id: 'o', symbol: 'o', name: 'One percent of the whole', min: 0, max: 1000, derived: true },
       { id: 'x', symbol: 'x', name: 'Part', min: 0, max: 300000 },
     ],
@@ -987,7 +987,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           most40,
           {
             id: 'e = a × d',
-            display: '{a}/{b} × {d}/{c} = {e}/{f}',
+            display: '{a}/{b} ÷ {c}/{d} = {e}/{f}',
             words: 'Dividend numerator × divisor denominator = quotient numerator',
             shows: ['b', 'c', 'f'],
             check: (v: Values) => `${v.a} × ${v.d} = ${v.e}`,
@@ -1001,7 +1001,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           },
           {
             id: 'f = b × c',
-            display: '{a}/{b} × {d}/{c} = {e}/{f}',
+            display: '{a}/{b} ÷ {c}/{d} = {e}/{f}',
             words: 'Dividend denominator × divisor numerator = quotient denominator',
             shows: ['a', 'd', 'e'],
             check: (v: Values) => `${v.b} × ${v.c} = ${v.f}`,
@@ -1019,7 +1019,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           'e = a × d': {
             e: {
               expr: '{a} × {d}',
-              how: 'Multiply by the reciprocal of the divisor: flip it. Then multiply the numerators.',
+              how: (v) =>
+                v.c === undefined
+                  ? 'Dividing by a fraction is multiplying by its reciprocal. Multiply the numerators.'
+                  : `Dividing by ${v.c}/${v.d} is multiplying by its reciprocal, ${v.d}/${v.c}. Multiply the numerators.`,
+              work: (v) =>
+                v.c === undefined || v.b === undefined
+                  ? []
+                  : [`${v.a}/${v.b} ÷ ${v.c}/${v.d} = ${v.a}/${v.b} × ${v.d}/${v.c}`],
             },
             a: {
               expr: '{e} ÷ {d}',
@@ -1030,15 +1037,19 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             f: {
               expr: '{b} × {c}',
               how: 'Multiply the denominators: the dividend’s denominator times the divisor’s numerator.',
+              // Check by multiplying back: quotient × divisor = dividend (6.NS.1).
+              work: (v) =>
+                ['a', 'b', 'c', 'd', 'e', 'f'].some((k) => v[k] === undefined)
+                  ? []
+                  : [
+                      `${v.b} × ${v.c} = ${v.f}`,
+                      `Check: ${v.e}/${v.f} × ${v.c}/${v.d} = ${v.e! * v.c!}/${v.f! * v.d!} = ${v.a}/${v.b}`,
+                    ],
               note: (v) => {
                 if (v.e === undefined) return '';
                 const s = simplest(v.e, v.f!);
-                const m = mixed(v.e, v.f!);
-                const parts = [
-                  s,
-                  v.e! > v.f! && !m.includes('/') ? '' : v.e! > v.f! ? m : '',
-                ].filter(Boolean);
-                return parts.length ? `(${parts.join(' = ')})` : '';
+                const m = v.e > v.f! ? mixed(v.e, v.f!) : '';
+                return `(the quotient is ${[`${v.e}/${v.f}`, s.split(' = ')[1], m].filter((x, i, all) => x && all.indexOf(x) === i).join(' = ')})`;
               },
             },
             b: {
@@ -1088,9 +1099,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           },
           {
             id: 'g = (a × m ÷ b) ÷ (c × m ÷ d)',
-            display: '({a} × {m} ÷ {b}) ÷ ({c} × {m} ÷ {d}) = {g}',
+            display: '{a}/{b} ÷ {c}/{d} = {g}',
             words: 'Amount in the common denominator ÷ group size in it = number of groups',
-            vars: ['g', 'a', 'm', 'b', 'c', 'd'],
+            vars: ['g', 'a', 'b', 'c', 'd'],
             residual: (v: Values) => v.g! * v.c! * v.b! - v.a! * v.d!,
             solve: {
               g: (v: Values) => q(v.a! * v.d!, v.b! * v.c!),
@@ -1098,7 +1109,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
               b: () => undefined,
               c: () => undefined,
               d: () => undefined,
-              m: () => undefined,
             },
           },
         ],
@@ -1119,13 +1129,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           },
           'g = (a × m ÷ b) ÷ (c × m ÷ d)': {
             g: {
-              expr: '({a} × {m} ÷ {b}) ÷ ({c} × {m} ÷ {d})',
+              expr: '{a}/{b} ÷ {c}/{d}',
               how: 'Write both with the common denominator. Then divide the numerators.',
               work: (v) => {
                 const [A, C] = [(v.a! * v.m!) / v.b!, (v.c! * v.m!) / v.d!];
                 return [
-                  `${v.a}/${v.b} = ${A}/${v.m} and ${v.c}/${v.d} = ${C}/${v.m}`,
-                  `${A} ÷ ${C} = ${A}/${C}`,
+                  ...(v.b === v.d
+                    ? []
+                    : [`${v.a}/${v.b} = ${A}/${v.m} and ${v.c}/${v.d} = ${C}/${v.m}`]),
+                  A % C === 0 ? `${A} ÷ ${C} = ${A / C}` : `${A} ÷ ${C} = ${A}/${C}`,
                 ];
               },
               note: (v) => {
@@ -1209,7 +1221,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
               note: (v) => {
                 if (['a', 'b', 'c', 'd', 'e', 'f'].some((k) => v[k] === undefined)) return '';
                 const s = simplest(v.e!, v.f!);
-                return `(the same as ${v.a}/${v.b} ÷ ${v.c}/${v.d} = ${v.e}/${v.f}${s ? `; ${s}` : ''})`;
+                return `(one whole group holds ${v.e}/${v.f}: the same as ${v.a}/${v.b} ÷ ${v.c}/${v.d} = ${v.e}/${v.f}${s ? `; ${s}` : ''})`;
               },
             },
           },
@@ -1406,8 +1418,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       whole('a', 'a', 'First number', 1, 100),
       whole('b', 'b', 'Second number', 1, 100),
       { ...whole('g', 'g', 'Greatest common factor', 1, 100), derived: true },
-      { ...whole('x', 'x', 'First number ÷ GCF', 1, 100), derived: true },
-      { ...whole('y', 'y', 'Second number ÷ GCF', 1, 100), derived: true },
+      { ...whole('x', 'x', 'First number inside the parentheses', 1, 100), derived: true },
+      { ...whole('y', 'y', 'Second number inside the parentheses', 1, 100), derived: true },
       { ...whole('s', 's', 'Sum', 2, 200), derived: true },
     ],
     relations: [
@@ -2030,7 +2042,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Expressions with variables and exponents (6.EE.1–4, 6.EE.6, 6.EE.9) ──
   {
     id: 'm.6.expressions-variables',
-    notation: 'letters',
+    letters: ['x'],
+    // Only x is a letter here: the coefficient and the constant are numbers in "3x + 5", so the
+    // page names them in words (the plan's rule for 6.EE.2).
     assumptions: [
       '3x means 3 × x: the coefficient 3 multiplies x. The 5 in 3x + 5 is the constant.',
       'A letter stands for a number that can change.',
@@ -2054,7 +2068,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'v = cx + k',
         display: '{e} = {c}{x} + {k}',
-        words: 'Value = coefficient × x + constant',
+        words: 'Value = coefficient × the number for x + constant',
         sentence: (v: Values) => `${fmt(v.c!)}x + ${fmt(v.k!)} when x = ${fmt(v.x!)}: ?`,
         check: (v: Values) => `${fmt(v.e!)} = ${fmt(v.c!)} × ${fmt(v.x!)} + ${fmt(v.k!)}`,
         vars: ['e', 'c', 'x', 'k'],
@@ -2196,9 +2210,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.expressions-variables~distributive',
+    letters: ['x'],
     title: 'Equivalent expressions',
     use: 'Use this to check that 3(2 + x) and 6 + 3x are equal for any x.',
-    notation: 'letters',
+
     assumptions: [
       'Equivalent expressions are equal for every value of x.',
       '3(2 + x) = 3 × 2 + 3 × x = 6 + 3x: multiply each part inside by the number outside.',
@@ -2233,8 +2248,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'L = n(m + x)',
         display: '{L} = {n}({m} + {x})',
+        sentence: (v: Values) => `${v.n}(${v.m} + x) when x = ${fmt(v.x!)}: ?`,
         check: (v: Values) => `${fmt(v.L!)} = ${v.n} × (${v.m} + ${fmt(v.x!)})`,
-        words: 'Value with parentheses = number outside × (number inside + x)',
+        words: 'Value with parentheses = number outside × (number inside + the number for x)',
         vars: ['L', 'n', 'm', 'x'],
         residual: (v: Values) => v.L! - v.n! * (v.m! + v.x!),
         solve: {
@@ -2247,6 +2263,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'u = nm',
         display: '{u} = {n} × {m}',
+        sentence: (v: Values) => `${v.n} × ${v.m} = ?`,
         words: 'First part = number outside × number inside',
         vars: ['u', 'n', 'm'],
         residual: (v: Values) => v.u! - v.n! * v.m!,
@@ -2255,8 +2272,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'w = nx',
         display: '{w} = {n}{x}',
+        sentence: (v: Values) => `${v.n}x when x = ${fmt(v.x!)}: ?`,
         check: (v: Values) => `${fmt(v.w!)} = ${v.n} × ${fmt(v.x!)}`,
-        words: 'Second part = number outside × x',
+        words: 'Second part = number outside × the number for x',
         vars: ['w', 'n', 'x'],
         residual: (v: Values) => v.w! - v.n! * v.x!,
         solve: { w: (v: Values) => v.n! * v.x!, n: () => undefined, x: () => undefined },
@@ -2264,6 +2282,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'R = u + w',
         display: '{R} = {u} + {w}',
+        sentence: (v: Values) => `${v.n! * v.m!} + ${v.n}x when x = ${fmt(v.x!)}: ?`,
         words: 'Value multiplied out = first part + second part',
         vars: ['R', 'u', 'w'],
         residual: (v: Values) => v.R! - v.u! - v.w!,
@@ -2290,7 +2309,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'R = u + w': {
         R: {
           expr: '{u} + {w}',
-          how: 'Add the two parts.',
+          how: (v) =>
+            `Multiply each part inside by ${v.n}: ${v.n}(${v.m} + x) = ${v.n} × ${v.m} + ${v.n} × x = ${v.n! * v.m!} + ${v.n}x. Add the two parts.`,
           note: (v) =>
             v.L === undefined ? '' : `(L is ${fmt(v.L)} too: the expressions are equivalent)`,
         },
@@ -2406,18 +2426,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           expr: '{q} − {p}',
           how: (v) =>
             `Subtract ${fmt(v.p!)} from both sides: it keeps the balance and leaves x alone.`,
-          work: (v) => [
-            `x + ${fmt(v.p!)} − ${fmt(v.p!)} = ${fmt(v.q!)} − ${fmt(v.p!)}`,
-            `x = ${fmt(v.q! - v.p!)}`,
-          ],
+          work: (v) => [`x + ${fmt(v.p!)} − ${fmt(v.p!)} = ${fmt(v.q!)} − ${fmt(v.p!)}`],
         },
         p: {
           expr: '{q} − {x}',
           how: (v) => `Subtract ${fmt(v.x!)} from both sides.`,
-          work: (v) => [
-            `${fmt(v.x!)} + p − ${fmt(v.x!)} = ${fmt(v.q!)} − ${fmt(v.x!)}`,
-            `p = ${fmt(v.q! - v.x!)}`,
-          ],
+          work: (v) => [`${fmt(v.x!)} + p − ${fmt(v.x!)} = ${fmt(v.q!)} − ${fmt(v.x!)}`],
         },
         q: { expr: '{x} + {p}', how: 'Add the two numbers.' },
       },
@@ -2528,12 +2542,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         b: {
           expr: '{A} ÷ {h}',
           how: 'Divide both sides by the height to leave b alone.',
-          work: (v) => [`b = ${fmt(v.A!)} ÷ ${fmt(v.h!)}`],
+          work: (v) => [`${fmt(v.A!)} = b × ${fmt(v.h!)}`, `b = ${fmt(v.A!)} ÷ ${fmt(v.h!)}`],
         },
         h: {
           expr: '{A} ÷ {b}',
           how: 'Divide both sides by the base to leave h alone.',
-          work: (v) => [`h = ${fmt(v.A!)} ÷ ${fmt(v.b!)}`],
+          work: (v) => [`${fmt(v.A!)} = ${fmt(v.b!)} × h`, `h = ${fmt(v.A!)} ÷ ${fmt(v.b!)}`],
         },
       },
     },
@@ -2917,9 +2931,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Edges are whole numbers to 20 units; volume is in cubic units, surface area in square units.',
     ],
     variables: [
-      whole('s', 's', 'Edge', 1, 20),
-      { id: 'V', symbol: 'V', name: 'Volume', min: 1, max: 8000 },
-      { id: 'A', symbol: 'SA', name: 'Surface area', min: 6, max: 2400 },
+      { ...whole('s', 's', 'Edge', 1, 20), unit: 'units' },
+      { id: 'V', symbol: 'V', name: 'Volume', unit: 'cubic units', min: 1, max: 8000 },
+      { id: 'A', symbol: 'SA', name: 'Surface area', unit: 'square units', min: 6, max: 2400 },
     ],
     relations: [
       {
@@ -2955,10 +2969,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         s: {
           expr: '∛{V}',
           how: 'Which number times itself three times makes the volume?',
-          work: (v) => [
-            `${fmt(v.V!)} = s³`,
-            `${fmt(v.s!)} × ${fmt(v.s!)} × ${fmt(v.s!)} = ${fmt(v.V!)}`,
-          ],
+          work: (v) => [`${fmt(v.s!)} × ${fmt(v.s!)} × ${fmt(v.s!)} = ${fmt(v.V!)}`],
         },
       },
       'SA = 6s²': {
@@ -2974,7 +2985,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           expr: '√({A} ÷ 6)',
           how: 'Divide both sides by 6 for one face. Then find the number times itself that makes it.',
           work: (v) => [
-            `${fmt(v.A!)} = 6 × s²`,
             `s² = ${fmt(v.A!)} ÷ 6 = ${fmt(v.A! / 6)}`,
             `${fmt(v.s!)} × ${fmt(v.s!)} = ${fmt(v.A! / 6)}`,
           ],

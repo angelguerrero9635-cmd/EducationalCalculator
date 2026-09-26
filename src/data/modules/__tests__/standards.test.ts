@@ -213,6 +213,11 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
     it('uses only notation the grade has met', () => {
       // Grade 6 letter pages teach letters (grade.ts, the middle band).
       if (band === 'standard' || band === 'middle') return;
+      // A Grade 6 words page may show the one letter it teaches (x in "3x + 5").
+      const allowLetters = (t: string) =>
+        m.letters?.length
+          ? t.replace(new RegExp(`(?<![A-Za-z])(${m.letters.join('|')})(?![A-Za-z])`, 'g'), '1')
+          : t;
       const early = band === 'early';
       const sixth = grade === '6';
       expect(
@@ -225,7 +230,7 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
                 ? '× or ÷ before Grade 3'
                 : early && /\d\/\d/.test(t)
                   ? 'a fraction before Grade 3'
-                  : LETTERS.test(t)
+                  : LETTERS.test(allowLetters(t))
                     ? sixth
                       ? 'a letter standing for a number on a Grade 6 words page'
                       : 'a letter standing for a number before Grade 6'
