@@ -21,6 +21,11 @@ under the slider and the input box). What it found and what the engine now does:
   time and stops at the last value that fits, so a slider goes as far as the other values
   allow instead of sticking. The harness's model (`setValues`, newest wins, an invalid
   typed value drops the old one) is unchanged: typing keeps its text in the box.
+- A slider's track ran over the variable's whole range, so a finger at the top of "Start"
+  (20 to add, 100 the most in all) got 95 and watched the knob spring back: the value it
+  showed was not the value it kept. → Each slider's track covers only the values that fit
+  with the others held still (`Calculator.fits`, probed by halving from the current value
+  toward each end, on the variable's own steps), so the knob stays under the finger.
 - A page whose whole is fixed (a full turn of 360°) had two part sliders that could never
   move: each pinned the other, so the whole always changed. → `angles.sliders` names the
   values that get sliders instead (parts of the turn, parts in the angle); the rays are not

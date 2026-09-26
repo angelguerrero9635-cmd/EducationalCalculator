@@ -37,6 +37,44 @@ function rangeOf(rep: ReturnType<typeof useRep>, item: StepperItem): [number, nu
   return [Math.min(lo, hi), Math.max(lo, hi)];
 }
 
+/**
+ * The part of a slider's range the other values allow, in the shown unit: with 20 to add
+ * and 100 the most in all, a start of 95 fits and 96 doesn't. Found by halving from the
+ * current value toward each end (the values that fit sit in one run around it).
+ */
+function reachable(
+  rep: ReturnType<typeof useRep>,
+  calc: Calculator,
+  item: StepperItem,
+  [lo, hi]: [number, number],
+  step: number,
+): [number, number] {
+  if (!rep.known(item.var)) return [lo, hi];
+  const now = rep.shown(item.var);
+  const pins = rep.pin(item.pin);
+  const f = rep.factor(item.var);
+  // Values are probed as the slider would send them: on the variable's own steps (tens for
+  // a count of tens), or the nearest value it allows.
+  const v = rep.variable(item.var);
+  const snap = (x: number) =>
+    v.allowed ? rep.snapTo(item.var, x * f) / f : Math.round(x / step) * step;
+  const fits = (x: number) => calc.fits({ ...pins, [item.var]: rep.snapTo(item.var, x * f) });
+  const edge = (end: number) => {
+    if (fits(end)) return end;
+    // Last fitting value between `now` (fits) and `end` (doesn't), to one step.
+    let good = now;
+    let bad = end;
+    for (let i = 0; i < 14 && Math.abs(bad - good) > step; i++) {
+      const mid = snap(good + (bad - good) / 2);
+      if (mid === good || mid === bad || (mid - good) * (bad - good) <= 0) break;
+      if (fits(mid)) good = mid;
+      else bad = mid;
+    }
+    return good;
+  };
+  return [Math.min(now, edge(lo)), Math.max(now, edge(hi))];
+}
+
 /** One vertical slider: the name above, the value below, drag the knob or tap the track. */
 function Slider({
   calc,
@@ -52,7 +90,12 @@ function Slider({
   const c = usePalette();
   const rep = useRep(calc);
   const v = rep.variable(item.var);
-  const [lo, hi] = rangeOf(rep, item);
+  const full = rangeOf(rep, item);
+  // The track covers only what fits with the other values held still, so the knob stays
+  // under the finger instead of springing back from a value that can't be taken.
+  const [lo, hi] = item.wrap
+    ? full
+    : reachable(rep, calc, item, full, Math.max(item.steps[0] ?? 1, v.multipleOf ?? 0));
   const known = rep.known(item.var);
   const shown = known ? rep.shown(item.var) : (item.from ?? lo);
   const value = rep.value(item.var);

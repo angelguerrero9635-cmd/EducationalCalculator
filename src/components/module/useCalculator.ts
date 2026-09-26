@@ -35,6 +35,8 @@ export interface Calculator {
     updates: Record<string, number | undefined>,
     options?: { slide?: { id: string; step: number } },
   ) => void;
+  /** Whether `set(updates)` would be taken as it is (nothing rejected or cleared). */
+  fits: (updates: Record<string, number | undefined>) => boolean;
   /**
    * Typing in a box: `startTyping` when it gets focus, `endTyping` when it loses it. While a
    * box is being typed in, each keystroke is worked out from the values as they were at
@@ -52,6 +54,11 @@ export interface Calculator {
   unitOptions: UnitOptions;
   setUnits: (choice: UnitChoice) => void;
 }
+
+/** True when an update's own values didn't all fit: the newest rejected, or one cleared. */
+const misfits = (c: CalcState, ids: string[]) =>
+  (!!c.result.rejected && ids.includes(c.result.rejected.id)) ||
+  c.result.cleared.some((id) => ids.includes(id));
 
 /**
  * The example's opening inputs. Whole-number lesson values (e.g. Grade 3 side lengths) keep
@@ -99,9 +106,7 @@ export function useCalculator(module: ModuleDef): Calculator {
         // A slider or a drag sends a value with the others it holds still. If that doesn't
         // fit (10 − 30 left; a product no top and bottom can make), the value is not
         // taken and nothing goes blank.
-        const misfit = (c: CalcState) =>
-          (c.result.rejected && ids.includes(c.result.rejected.id)) ||
-          c.result.cleared.some((id) => ids.includes(id));
+        const misfit = (c: CalcState) => misfits(c, ids);
         let next = setValues(system, s.calc, updates);
         const slide = options?.slide;
         const target = slide ? updates[slide.id] : undefined;
@@ -154,6 +159,7 @@ export function useCalculator(module: ModuleDef): Calculator {
       module,
       values,
       result: calc.result,
+      fits: (updates) => !misfits(setValues(units.system, calc, updates), Object.keys(updates)),
       status: (id) =>
         given.has(id) ? (calc.example ? 'example' : 'given') : id in values ? 'derived' : 'unknown',
       isExample: !!calc.example,
