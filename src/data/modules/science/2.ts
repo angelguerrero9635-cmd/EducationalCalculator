@@ -3,8 +3,9 @@
  * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import { FAHRENHEIT, groupsOf, moreThan, sum2, sumAll, whole } from '../helpers';
+import { FAHRENHEIT, atLeast, moreThan, sum2, sumAll, whole } from '../helpers';
 import type { ModuleDef } from '../types';
+import { countUp } from '../work';
 
 const F = FAHRENHEIT;
 
@@ -66,32 +67,6 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       example: { a: 30, b: 24, c: 6 },
       startWith: ['a', 'b'],
       representation: { kind: 'tape', parts: ['b', 'c'], total: 'a' },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const changes = sum2(
-      't = r + i',
-      ['r', 'i', 't'],
-      ['changes that can be undone', 'changes that cannot', 'changes tested'],
-    );
-    return {
-      id: 's.2.heating-cooling',
-      assumptions: [
-        'Heating and cooling change things: ice melts, water freezes, an egg cooks.',
-        'Melting ice and freezing water can be undone.',
-        'Cooking an egg or burning paper cannot be undone.',
-        'Sort each change, then count the two groups.',
-      ],
-      variables: [
-        whole('r', 'r', 'Can be undone', 0, 10),
-        whole('i', 'i', 'Cannot be undone', 0, 10),
-        whole('t', 't', 'Changes tested', 0, 20),
-      ],
-      relations: [changes.relation],
-      steps: { 't = r + i': changes.steps },
-      example: { r: 4, i: 6, t: 10 },
-      startWith: ['r', 'i'],
-      representation: { kind: 'tally', rows: ['r', 'i'], total: 't' },
     } satisfies ModuleDef;
   })(),
   // ── Grade 2: heating and cooling (2-PS1-4) ──
@@ -257,53 +232,38 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-  (() => {
-    const all = sumAll('seeds = fur + wind + fell', ['a', 'b', 'c'], 's', 'ways the seeds went');
-    return {
-      id: 's.2.pollination-dispersal',
-      assumptions: [
-        'Animals and wind move seeds and pollen. Plants need that to grow in new places.',
-        'Seeds travel: some stick to fur, some blow away, some just fall.',
-        'Seeds that travel can grow in new places.',
-      ],
-      variables: [
-        whole('a', 'a', 'Stuck to fur', 0, 50),
-        whole('b', 'b', 'Blown by the wind', 0, 50),
-        whole('c', 'c', 'Fell under the plant', 0, 50),
-        whole('s', 's', 'Seeds', 0, 100),
-      ],
-      relations: [all.relation],
-      steps: { 'seeds = fur + wind + fell': all.steps },
-      example: { a: 8, b: 15, c: 22, s: 45 },
-      startWith: ['a', 'b', 'c'],
-      representation: { kind: 'tape', parts: ['a', 'b', 'c'], total: 's' },
-    } satisfies ModuleDef;
-  })(),
   // ── Grade 2: pollination and seed dispersal (2-LS2-2) ──
   (() => {
-    const visits = sum2(
-      'f = a + b',
-      ['a', 'b', 'f'],
-      ['morning visits', 'afternoon visits', 'visits in all'],
-    );
+    const more = moreThan('m', 'a', 'b', 'fuzzy sock', 'smooth sock', ['more', 'fewer'], '2');
     return {
-      id: 's.2.pollination-dispersal~visits',
-      title: 'A bee’s visits',
-      use: 'Use this to count a bee’s visits in the morning and the afternoon.',
+      id: 's.2.pollination-dispersal~sock-walk',
+      title: 'The sock walk',
+      use: 'Use this to compare seeds caught by a fuzzy sock and a smooth sock.',
+      pictureLabels: ['m'],
       assumptions: [
-        'A bee carries pollen from flower to flower. That is pollination.',
-        'Count the visits in the morning and in the afternoon.',
+        'Walk through a field with socks over your shoes.',
+        'Fuzzy socks act like fur. Burrs hook on.',
+        'Count the seeds stuck to each sock.',
       ],
       variables: [
-        whole('a', 'a', 'Morning visits', 0, 100),
-        whole('b', 'b', 'Afternoon visits', 0, 100),
-        whole('f', 'f', 'Visits in all', 0, 100),
+        whole('a', 'a', 'Fuzzy sock', 0, 50),
+        whole('b', 'b', 'Smooth sock', 0, 50),
+        whole('m', 'm', 'More seeds', 0, 50),
       ],
-      relations: [visits.relation],
-      steps: { 'f = a + b': visits.steps },
-      example: { a: 36, b: 27, f: 63 },
+      relations: [{ ...more.relation, display: '{a} − {b} = {m}' }, atLeast('a', 'b')],
+      steps: { ...more.steps, 'a ≥ b': {} },
+      example: { a: 23, b: 4, m: 19 },
       startWith: ['a', 'b'],
-      representation: { kind: 'tape', parts: ['a', 'b'], total: 'f' },
+      representation: {
+        kind: 'bars',
+        bars: [
+          { var: 'a', editable: true },
+          { var: 'b', editable: true },
+        ],
+        min: 0,
+        max: 30,
+        scale: 5,
+      },
     } satisfies ModuleDef;
   })(),
   // ── Grade 2: biodiversity in habitats (2-LS4-1) ──
@@ -377,32 +337,6 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
   })(),
   // ── Grade 2: landforms and Earth changes (2-ESS1-1, 2-ESS2-1, 2-ESS2-2) ──
   (() => {
-    const g = groupsOf(
-      't = y years of e',
-      ['y', 'e', 't'],
-      ['year', 'years'],
-      ['centimeter', 'centimeters'],
-    );
-    return {
-      id: 's.2.erosion-landforms',
-      assumptions: [
-        'Some changes are fast: an earthquake. Some are slow: a river wearing away its bank.',
-        'The river takes about the same amount of bank each year.',
-        'Count by that amount, once for each year.',
-      ],
-      variables: [
-        whole('y', 'y', 'Years', 0, 10),
-        whole('e', 'e', 'Centimeters worn away each year', 1, 10),
-        whole('t', 't', 'Centimeters worn away in all', 0, 100),
-      ],
-      relations: [g.relation],
-      steps: { 't = y years of e': g.steps },
-      example: { y: 4, e: 5, t: 20 },
-      startWith: ['y', 'e'],
-      representation: { kind: 'skipCount', step: 'e', count: 'y', total: 't' },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
     const saved = moreThan(
       'd',
       'a',
@@ -416,19 +350,19 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       id: 's.2.erosion-landforms~wall',
       pictureLabels: ['d'],
       title: 'Slowing erosion with a wall',
-      use: 'Use this to compare soil lost with and without a wall.',
+      use: 'Use this to compare how far two banks wore back, with and without a wall.',
       assumptions: [
         'People build walls and plant grass to slow down erosion.',
-        'Measure how much soil each bank lost in the same rain.',
+        'Measure how far each bank moved back in the same rain.',
         'The difference is the soil the wall saved.',
       ],
       variables: [
-        { ...whole('a', 'a', 'Lost with no wall', 0, 100), unit: 'cm' },
-        { ...whole('b', 'b', 'Lost with a wall', 0, 100), unit: 'cm' },
+        { ...whole('a', 'a', 'Bank worn back, no wall', 0, 100), unit: 'cm' },
+        { ...whole('b', 'b', 'Bank worn back, with a wall', 0, 100), unit: 'cm' },
         { ...whole('d', 'd', 'Soil saved', 0, 100), unit: 'cm' },
       ],
-      relations: [saved.relation],
-      steps: saved.steps,
+      relations: [{ ...saved.relation, display: '{a} − {b} = {d}' }, atLeast('a', 'b')],
+      steps: { ...saved.steps, 'a ≥ b': {} },
       example: { a: 30, b: 8, d: 22 },
       startWith: ['a', 'b'],
       representation: {
@@ -443,49 +377,103 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
-  (() => {
-    const water = sum2('w = s + f', ['s', 'f', 'w'], ['salty cups', 'fresh cups', 'cups of water']);
-    return {
-      id: 's.2.water-on-earth',
-      assumptions: [
-        'Most of Earth’s water is salty ocean water. Only a little is fresh.',
-        'Picture Earth’s water as 100 cups: about 97 are salty and 3 are fresh.',
-        'Fresh water is in ice, rivers, lakes and under the ground.',
-      ],
-      variables: [
-        { ...whole('s', 's', 'Salty', 0, 100), unit: 'cups' },
-        { ...whole('f', 'f', 'Fresh', 0, 100), unit: 'cups' },
-        { ...whole('w', 'w', 'All the water', 0, 100), unit: 'cups' },
-      ],
-      relations: [water.relation],
-      steps: { 'w = s + f': water.steps },
-      example: { s: 97, f: 3, w: 100 },
-      startWith: ['s', 'f'],
-      representation: { kind: 'tape', parts: ['s', 'f'], total: 'w' },
-    } satisfies ModuleDef;
-  })(),
-  (() => {
-    const all = sumAll('fresh = ice + rivers + ground', ['i', 'r', 'g'], 'f', 'places');
-    return {
-      id: 's.2.water-on-earth~fresh',
-      title: 'Where the fresh water is',
-      use: 'Use this to see where Earth’s fresh water is: ice, rivers and lakes, or under the ground.',
-      assumptions: [
-        'Most fresh water is frozen in ice. Much of the rest is under the ground.',
-        'Rivers and lakes hold only a little.',
-        'Picture the fresh water as 100 cups.',
-      ],
-      variables: [
-        { ...whole('i', 'i', 'In ice', 0, 100), unit: 'cups' },
-        { ...whole('r', 'r', 'In rivers and lakes', 0, 100), unit: 'cups' },
-        { ...whole('g', 'g', 'Under the ground', 0, 100), unit: 'cups' },
-        { ...whole('f', 'f', 'Fresh water', 0, 100), unit: 'cups' },
-      ],
-      relations: [all.relation],
-      steps: { 'fresh = ice + rivers + ground': all.steps },
-      example: { i: 69, r: 1, g: 30, f: 100 },
-      startWith: ['i', 'r', 'g'],
-      representation: { kind: 'tape', parts: ['i', 'r', 'g'], total: 'f' },
-    } satisfies ModuleDef;
-  })(),
+  // Earth's water pictured as 100 cups (USGS shares: about 97 salty, 3 fresh; of the fresh,
+  // about 69 in ice, 30 under the ground, 1 in rivers and lakes). The whole is fixed.
+  {
+    id: 's.2.water-on-earth~salty',
+    title: 'Salty and fresh water',
+    use: 'Use this for “97 of 100 cups are salty. How many are fresh?”',
+    assumptions: [
+      'Most of Earth’s water is salty ocean water. Only a little is fresh.',
+      'Picture all of Earth’s water as 100 cups.',
+    ],
+    variables: [
+      { ...whole('s', 's', 'Salty', 0, 100), unit: 'cups' },
+      { ...whole('f', 'f', 'Fresh', 0, 100), unit: 'cups' },
+    ],
+    relations: [
+      {
+        id: 's + f = 100',
+        display: '{s} + {f} = 100',
+        vars: ['s', 'f'],
+        residual: (v) => v.s! + v.f! - 100,
+        solve: { s: (v) => 100 - v.f!, f: (v) => 100 - v.s! },
+      },
+    ],
+    steps: {
+      's + f = 100': {
+        f: {
+          expr: '100 − {s}',
+          how: 'All the water is 100 cups. Take away the salty cups.',
+          work: (v) => countUp(v.s!, 100),
+        },
+        s: {
+          expr: '100 − {f}',
+          how: 'All the water is 100 cups. Take away the fresh cups.',
+          work: (v) => countUp(v.f!, 100),
+        },
+      },
+    },
+    example: { s: 97, f: 3 },
+    startWith: ['s'],
+    representation: {
+      kind: 'tape',
+      parts: ['s', 'f'],
+      total: { value: 100, label: 'All the water, in cups' },
+    },
+  },
+  {
+    id: 's.2.water-on-earth~fresh',
+    title: 'Where the fresh water is',
+    use: 'Use this to see where Earth’s fresh water is: ice, rivers and lakes, or under the ground.',
+    assumptions: [
+      'Most fresh water is frozen in ice. Much of the rest is under the ground.',
+      'Rivers and lakes hold only a little.',
+      'Picture all the fresh water as 100 cups.',
+    ],
+    variables: [
+      { ...whole('i', 'i', 'In ice', 0, 100), unit: 'cups' },
+      { ...whole('r', 'r', 'In rivers and lakes', 0, 100), unit: 'cups' },
+      { ...whole('g', 'g', 'Under the ground', 0, 100), unit: 'cups' },
+    ],
+    relations: [
+      {
+        id: 'i + r + g = 100',
+        display: '{i} + {r} + {g} = 100',
+        vars: ['i', 'r', 'g'],
+        residual: (v) => v.i! + v.r! + v.g! - 100,
+        solve: {
+          i: (v) => 100 - v.r! - v.g!,
+          r: (v) => 100 - v.i! - v.g!,
+          g: (v) => 100 - v.i! - v.r!,
+        },
+      },
+    ],
+    steps: {
+      'i + r + g = 100': {
+        i: {
+          expr: '100 − {r} − {g}',
+          how: 'Add the cups you know. Then count up to 100.',
+          work: (v) => [`${v.r} + ${v.g} = ${v.r! + v.g!}`, ...countUp(v.r! + v.g!, 100)],
+        },
+        r: {
+          expr: '100 − {i} − {g}',
+          how: 'Add the cups you know. Then count up to 100.',
+          work: (v) => [`${v.i} + ${v.g} = ${v.i! + v.g!}`, ...countUp(v.i! + v.g!, 100)],
+        },
+        g: {
+          expr: '100 − {i} − {r}',
+          how: 'Add the cups you know. Then count up to 100.',
+          work: (v) => [`${v.i} + ${v.r} = ${v.i! + v.r!}`, ...countUp(v.i! + v.r!, 100)],
+        },
+      },
+    },
+    example: { i: 69, r: 1, g: 30 },
+    startWith: ['i', 'r'],
+    representation: {
+      kind: 'tape',
+      parts: ['i', 'r', 'g'],
+      total: { value: 100, label: 'All the fresh water, in cups' },
+    },
+  },
 ];

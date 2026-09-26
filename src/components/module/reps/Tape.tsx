@@ -37,7 +37,10 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const compare = 'compare' in spec;
   const ids = compare ? spec.compare : spec.parts;
   const shown = ids.map((id) => (rep.known(id) ? Math.max(0, rep.shown(id)) : 0));
-  const span = compare ? Math.max(...shown) : shown.reduce((a, b) => a + b, 0);
+  // A fixed whole (the story sets it) is drawn at its size even while a part is unknown.
+  const fixed = !compare && typeof spec.total === 'object' ? spec.total : undefined;
+  const sum = shown.reduce((a, b) => a + b, 0);
+  const span = compare ? Math.max(...shown) : fixed ? Math.max(fixed.value, sum) : sum;
   // Round the scale up a little past the values (100 → 110, 72 → 80), so bars fill the width.
   const fit = useFrozen(fitScale(span));
   const fmt = (id: string) => (rep.known(id) ? formatNumber(rep.shown(id), rep.variable(id)) : '?');
@@ -55,7 +58,9 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
       })()
     : spec.caption
       ? spec.caption.replace(/\{(\w+)\}/g, (_, id: string) => fmt(id))
-      : `${spec.parts.map(fmt).join(' + ')} = ${fmt(spec.total)}`;
+      : `${spec.parts.map(fmt).join(' + ')} = ${
+          typeof spec.total === 'object' ? formatNumber(spec.total.value) : fmt(spec.total)
+        }`;
   // Compare by times: the bigger bar is this many copies of the smaller.
   const times =
     compare && spec.times && rep.known(spec.times)
@@ -217,7 +222,9 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fontSize={chart.label}
                   textAnchor="middle"
                 >
-                  {`${rep.tag(spec.total)}: ${rep.value(spec.total)}`}
+                  {typeof spec.total === 'object'
+                    ? `${spec.total.label}: ${formatNumber(spec.total.value)}`
+                    : `${rep.tag(spec.total)}: ${rep.value(spec.total)}`}
                 </ChartText>
                 {spec.parts.map((id, i) => (
                   <Rect

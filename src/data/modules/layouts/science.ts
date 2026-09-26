@@ -727,9 +727,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sort',
-    id: 's.2.heating-cooling~undo',
-    title: 'Can it be undone?',
-    use: 'Use this to sort changes into ones that can be undone and ones that cannot.',
+    id: 's.2.heating-cooling',
     assumptions: [
       'Heating and cooling change things.',
       'Melted ice can freeze again. A cooked egg stays cooked.',
@@ -743,7 +741,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Melting ice', bin: 'yes' },
       { label: 'Freezing water', bin: 'yes' },
-      { label: 'Melting butter', bin: 'yes' },
+      { label: 'Melting a crayon', bin: 'yes' },
       { label: 'Melting chocolate', bin: 'yes' },
       { label: 'Cooking an egg', bin: 'no' },
       { label: 'Burning paper', bin: 'no' },
@@ -782,9 +780,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sort',
-    id: 's.2.pollination-dispersal~travel',
-    title: 'How seeds travel',
-    use: 'Use this to sort seeds by how they travel.',
+    id: 's.2.pollination-dispersal',
     assumptions: [
       'Seeds travel away from the parent plant.',
       'Light seeds fly. Sticky seeds ride on fur. Tasty seeds go with animals.',
@@ -835,9 +831,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sort',
-    id: 's.2.erosion-landforms~fast-slow',
-    title: 'Fast or slow changes',
-    use: 'Use this to sort Earth changes into fast ones and slow ones.',
+    id: 's.2.erosion-landforms',
     assumptions: [
       'Some changes to the land happen in a day. Some take many years.',
       'Wind and water wear the land away slowly.',
@@ -857,6 +851,150 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Wind shaping a sand dune', bin: 'slow' },
       { label: 'Ice cracking a rock', bin: 'slow' },
       { label: 'Waves wearing a cliff', bin: 'slow' },
+    ],
+  },
+
+  {
+    kind: 'sort',
+    id: 's.2.material-properties~best',
+    title: 'The best material for the job',
+    use: 'Use this to pick the best material for a job.',
+    assumptions: [
+      'Every material has properties: hard, soft, clear, waterproof.',
+      'Pick the material whose property fits the job.',
+    ],
+    question: 'Which property does the job need?',
+    bins: [
+      { id: 'waterproof', label: 'Waterproof', why: 'Water runs off. It does not soak in.' },
+      { id: 'clear', label: 'Clear', why: 'You can see through it.' },
+      { id: 'soft', label: 'Soft', why: 'It bends and squashes. It feels gentle.' },
+      { id: 'hard', label: 'Hard', why: 'It keeps its shape when you push it.' },
+    ],
+    cards: [
+      { label: 'Raincoat', bin: 'waterproof' },
+      { label: 'Umbrella', bin: 'waterproof' },
+      { label: 'Window', bin: 'clear' },
+      { label: 'Glasses', bin: 'clear' },
+      { label: 'Pillow', bin: 'soft' },
+      { label: 'Blanket', bin: 'soft' },
+      { label: 'Hammer', bin: 'hard' },
+      { label: 'Chair', bin: 'hard' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.2.plant-growth-investigation~fair-test',
+    title: 'Planning a fair test',
+    use: 'Use this to plan a fair test of sunlight.',
+    assumptions: [
+      'A fair test changes only one thing.',
+      'Everything else stays the same for both plants.',
+    ],
+    question: 'In the sunlight test, is it the same for both plants?',
+    bins: [
+      { id: 'same', label: 'Same for both', why: 'Keep it the same so only one thing changes.' },
+      { id: 'different', label: 'Different', why: 'This is the one thing you test.' },
+    ],
+    cards: [
+      { label: 'Water each day', bin: 'same' },
+      { label: 'Kind of seed', bin: 'same' },
+      { label: 'Size of pot', bin: 'same' },
+      { label: 'Kind of soil', bin: 'same' },
+      { label: 'Sunlight', bin: 'different' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.2.pollination-dispersal~pollen',
+    title: 'How a bee carries pollen',
+    use: 'Use this to put the steps of pollination in order.',
+    assumptions: [
+      'Flowers need pollen from another flower to make seeds.',
+      'Bees carry the pollen without knowing it.',
+    ],
+    question: 'Put the steps in order.',
+    stages: [
+      { label: 'A bee lands on a flower to drink nectar' },
+      { label: 'Pollen sticks to its hairy body' },
+      { label: 'The bee flies to another flower of the same kind' },
+      { label: 'Pollen rubs off on that flower' },
+      { label: 'The flower can now make seeds' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.2.habitats~which-habitat',
+    title: 'Which habitat?',
+    use: 'Use this to match living things to their habitats.',
+    assumptions: [
+      'A habitat gives a living thing what it needs.',
+      'Different habitats have different living things.',
+    ],
+    question: 'Where does it live?',
+    bins: [
+      { id: 'ocean', label: 'Ocean', why: 'Salty water, from the shore to the deep sea.' },
+      { id: 'desert', label: 'Desert', why: 'Very little rain. Hot days.' },
+      { id: 'rainforest', label: 'Rainforest', why: 'Warm and wet, with tall trees.' },
+      { id: 'arctic', label: 'Arctic', why: 'Cold, with ice and snow most of the year.' },
+    ],
+    cards: [
+      { label: 'Whale', bin: 'ocean' },
+      { label: 'Octopus', bin: 'ocean' },
+      { label: 'Cactus', bin: 'desert' },
+      { label: 'Camel', bin: 'desert' },
+      { label: 'Monkey', bin: 'rainforest' },
+      { label: 'Parrot', bin: 'rainforest' },
+      { label: 'Polar bear', bin: 'arctic' },
+      { label: 'Walrus', bin: 'arctic' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.2.erosion-landforms~slow-it',
+    title: 'Slowing wind and water',
+    use: 'Use this to sort ideas that slow the wind or the water.',
+    assumptions: [
+      'Wind and water carry soil and sand away.',
+      'People build and plant things to slow them down.',
+    ],
+    question: 'Does it slow the wind or the water?',
+    bins: [
+      { id: 'wind', label: 'Slows wind', why: 'It stands in the wind’s way.' },
+      { id: 'water', label: 'Slows water', why: 'It holds the soil or blocks the water.' },
+    ],
+    cards: [
+      { label: 'Row of trees', bin: 'wind' },
+      { label: 'Snow fence', bin: 'wind' },
+      { label: 'Grass on a hill', bin: 'water' },
+      { label: 'Wall of rocks', bin: 'water' },
+      { label: 'Dam', bin: 'water' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.2.water-on-earth',
+    assumptions: [
+      'Water is in oceans, rivers, lakes and ponds.',
+      'Some water is frozen solid. Some is liquid.',
+    ],
+    question: 'Is the water solid or liquid?',
+    bins: [
+      { id: 'solid', label: 'Solid', why: 'Frozen water is ice or snow.' },
+      {
+        id: 'liquid',
+        label: 'Liquid',
+        why: 'Liquid water flows and takes the shape of its container.',
+      },
+    ],
+    cards: [
+      { label: 'Glacier', bin: 'solid' },
+      { label: 'Iceberg', bin: 'solid' },
+      { label: 'Snow on a mountain', bin: 'solid' },
+      { label: 'Frozen pond', bin: 'solid' },
+      { label: 'Ocean', bin: 'liquid' },
+      { label: 'River', bin: 'liquid' },
+      { label: 'Lake', bin: 'liquid' },
+      { label: 'Puddle', bin: 'liquid' },
     ],
   },
 

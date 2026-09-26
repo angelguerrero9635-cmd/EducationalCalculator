@@ -84,7 +84,8 @@ export type Representation =
   | {
       kind: 'tape';
       parts: string[];
-      total: string;
+      /** The whole: a value, or a fixed amount the story sets (all the water is 100 cups). */
+      total: string | { value: number; label: string };
       /**
        * The total is this many equal groups (a two-step problem): dashed lines mark them, up
        * to 12; past that a label names them (86 groups of 23).
