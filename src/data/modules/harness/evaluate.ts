@@ -106,6 +106,21 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`the tens in (${NUM})`), (n) => 10 * Math.floor((n % 100) / 10)],
   [new RegExp(`(${NUM}) with the places under (${NUM}) made 0`), (n, p) => Math.floor(n / p) * p],
   [new RegExp(`(${NUM}) rounded down to the (${NUM})s`), (n, p) => Math.floor(n / p) * p],
+  // A line plot's spread: counts at marks 1, 2, 3 … (eighths); longest marked − shortest marked.
+  [
+    new RegExp(
+      `eighths from the shortest to the longest of (${NUM}), (${NUM}), (${NUM}), (${NUM}), (${NUM})`,
+    ),
+    (...counts) => {
+      const at = counts.map((c, i) => (c > 0 ? i + 1 : 0)).filter((i) => i > 0);
+      return at.length ? Math.max(...at) - Math.min(...at) : 0;
+    },
+  ],
+  // One denominator a multiple of the other: the bigger; otherwise their product.
+  [
+    new RegExp(`common denominator of (${NUM}) and (${NUM})`),
+    (b, d) => (d % b === 0 ? d : b % d === 0 ? b : b * d),
+  ],
   [new RegExp(`left over when (${NUM}) is shared by (${NUM})`), (n, d) => n % d],
   // The right side of "743 ÷ 6 = 123 remainder 5" reads as the quotient (the module's own
   // check already balanced it).
@@ -124,8 +139,14 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) rhombuses`), (a) => 2 * a],
   [new RegExp(`(${NUM}) triangles`), (a) => a],
   // "the ten thousands part of 347,812" (expanded form), before the shorter names.
-  [new RegExp(`(?:the )?hundred thousands part of (${NUM})`), (a) => 100000 * (Math.floor(a / 100000) % 10)],
-  [new RegExp(`(?:the )?ten thousands part of (${NUM})`), (a) => 10000 * (Math.floor(a / 10000) % 10)],
+  [
+    new RegExp(`(?:the )?hundred thousands part of (${NUM})`),
+    (a) => 100000 * (Math.floor(a / 100000) % 10),
+  ],
+  [
+    new RegExp(`(?:the )?ten thousands part of (${NUM})`),
+    (a) => 10000 * (Math.floor(a / 10000) % 10),
+  ],
   [new RegExp(`(?:the )?thousands part of (${NUM})`), (a) => 1000 * (Math.floor(a / 1000) % 10)],
   [new RegExp(`(?:the )?ones part of (${NUM})`), (a) => a % 10],
   [new RegExp(`(?:the )?hundreds part of (${NUM})`), (a) => 100 * (Math.floor(a / 100) % 10)],

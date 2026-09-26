@@ -37,6 +37,10 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const b = rep.known(second) ? Math.max(0, rep.shown(second)) : 0;
   const whole = a + b;
   const known = rep.known(first) && rep.known(second);
+  // A fixed whole (a full turn of 360°) has no value of its own.
+  const wholeText = typeof spec.whole === 'number' ? `${spec.whole}°` : rep.value(spec.whole);
+  const wholeNamed =
+    typeof spec.whole === 'number' ? `a full turn, ${spec.whole}°` : rep.named(spec.whole);
   const start = useRef({ a: 0, cx: 0, cy: 0, r: 1 });
   const startW = useRef({ b: 0, cx: 0, cy: 0, r: 1 });
   const toXY = (deg: number, r: number, cx: number, cy: number) => {
@@ -131,9 +135,7 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Circle cx={cx} cy={cy} r={4} fill={c.chartInk} />
                 {a > 8 ? label(0, a, r * 0.38, `${rep.value(first)}`, 'la') : null}
                 {b > 8 ? label(a, whole, r * 0.38, `${rep.value(second)}`, 'lb') : null}
-                {whole > 0
-                  ? label(wholeAt, wholeAt, r * 0.86, `${rep.value(spec.whole)}`, 'lw')
-                  : null}
+                {whole > 0 ? label(wholeAt, wholeAt, r * 0.86, wholeText, 'lw') : null}
               </Svg>
               {draggable ? (
                 <DragHandle
@@ -156,7 +158,7 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {/* The outer ray moves the second angle; the first stays where it is. */}
               {draggable ? (
                 <DragHandle
-                  testID={`drag-${spec.whole}`}
+                  testID={`drag-${second}-end`}
                   x={wx}
                   y={wy}
                   label={rep.variable(second).name}
@@ -180,7 +182,7 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `${rep.named(first)} and ${rep.named(second)} make ${rep.named(spec.whole)}: ${kindOf(whole)}.`
+          ? `${rep.named(first)} and ${rep.named(second)} make ${wholeNamed}: ${kindOf(whole)}.`
           : `${rep.named(first)}. ${rep.named(second)}.`}
       </Caption>
       <Steppers

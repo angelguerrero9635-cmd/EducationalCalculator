@@ -546,7 +546,8 @@ export type Representation =
   | {
       kind: 'angles';
       parts: [string, string];
-      whole: string;
+      /** The whole angle: a value, or a fixed number of degrees (a full turn, 360). */
+      whole: string | number;
       /**
        * Values with sliders instead of the two parts (a turn cut into k parts, n of them in
        * the angle): the rays are then not dragged, since a part can't take any degree.

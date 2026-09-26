@@ -447,7 +447,11 @@ export function repIssues(
     }
     case 'angles': {
       // Both parts fit in a turn, and they make the whole.
-      const [a, b, w] = [val(rep.parts[0]), val(rep.parts[1]), val(rep.whole)];
+      const [a, b, w] = [
+        val(rep.parts[0]),
+        val(rep.parts[1]),
+        typeof rep.whole === 'number' ? rep.whole : val(rep.whole),
+      ];
       for (const [id, x] of [
         [rep.parts[0], a],
         [rep.parts[1], b],

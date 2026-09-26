@@ -1723,6 +1723,185 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   // ── Grade 4 ──
   {
     kind: 'sort',
+    id: 'm.4.factors-multiples~prime-composite',
+    title: 'Prime or composite?',
+    use: 'Use this to sort numbers by how many factors they have.',
+    assumptions: [
+      'A prime number has exactly two factors: 1 and itself.',
+      'A composite number has more than two factors.',
+      '1 has only one factor, so it is neither.',
+    ],
+    question: 'How many factors does it have?',
+    bins: [
+      { id: 'prime', label: 'Prime', why: 'Exactly two factors: 1 and the number.' },
+      { id: 'composite', label: 'Composite', why: 'More than two factors.' },
+      { id: 'neither', label: 'Neither', why: '1 has only one factor.' },
+    ],
+    cards: [
+      { label: '2', bin: 'prime' },
+      { label: '7', bin: 'prime' },
+      { label: '13', bin: 'prime' },
+      { label: '29', bin: 'prime' },
+      { label: '41', bin: 'prime' },
+      { label: '9', bin: 'composite' },
+      { label: '15', bin: 'composite' },
+      { label: '21', bin: 'composite' },
+      { label: '51', bin: 'composite' },
+      { label: '57', bin: 'composite' },
+      { label: '91', bin: 'composite' },
+      { label: '1', bin: 'neither' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.4.fraction-equivalence~benchmark',
+    title: 'Compare to one half',
+    use: 'Use this to compare a fraction with 1/2.',
+    assumptions: [
+      'Half the denominator is one half: 4/8 is 1/2, and so is 5/10.',
+      'A numerator more than half the denominator is more than 1/2.',
+      'Each card shows the fraction over a bar of 1/2.',
+    ],
+    question: 'Is it less than, equal to, or more than 1/2?',
+    bins: [
+      {
+        id: 'less',
+        label: 'Less than 1/2',
+        why: 'The numerator is less than half the denominator.',
+      },
+      { id: 'equal', label: 'Equal to 1/2', why: 'The numerator is half the denominator.' },
+      {
+        id: 'more',
+        label: 'More than 1/2',
+        why: 'The numerator is more than half the denominator.',
+      },
+    ],
+    cards: [
+      {
+        label: '3/8',
+        bin: 'less',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [3, 8],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '2/5',
+        bin: 'less',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [2, 5],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '4/10',
+        bin: 'less',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [4, 10],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '1/3',
+        bin: 'less',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [1, 3],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '3/6',
+        bin: 'equal',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [3, 6],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '5/10',
+        bin: 'equal',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [5, 10],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '6/12',
+        bin: 'equal',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [6, 12],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '5/8',
+        bin: 'more',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [5, 8],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '3/5',
+        bin: 'more',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [3, 5],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '7/12',
+        bin: 'more',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [7, 12],
+            [1, 2],
+          ],
+        },
+      },
+      {
+        label: '2/3',
+        bin: 'more',
+        figure: {
+          kind: 'fractionBars',
+          bars: [
+            [2, 3],
+            [1, 2],
+          ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
     id: 'm.4.lines-symmetry',
     assumptions: [
       'Parallel lines go the same way and never meet, like railroad tracks.',
@@ -1900,6 +2079,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'A right triangle has one right angle, a square corner.',
       'Parallel sides go the same way and never meet.',
       'A four-sided shape can have two pairs of parallel sides, one pair, or none.',
+      'A trapezoid has at least one pair of parallel sides (some books say exactly one).',
     ],
     question: 'Does it have a right angle? Does it have parallel sides?',
     bins: [
@@ -2066,6 +2246,217 @@ export const MATH_LAYOUTS: LayoutDef[] = [
             [90, 55],
             [35, 10],
           ],
+        },
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.4.lines-symmetry~lines-rays',
+    title: 'Points, lines, segments and rays',
+    use: 'Use this to tell a point, a line, a line segment and a ray apart.',
+    assumptions: [
+      'A point is one exact spot.',
+      'A line goes on forever both ways. A line segment has two endpoints.',
+      'A ray has one endpoint and goes on forever one way.',
+    ],
+    question: 'What is it?',
+    bins: [
+      { id: 'point', label: 'Point', why: 'One exact spot.' },
+      { id: 'line', label: 'Line', why: 'It goes on forever both ways.' },
+      { id: 'segment', label: 'Line segment', why: 'It has two endpoints.' },
+      { id: 'ray', label: 'Ray', why: 'One endpoint; it goes on forever one way.' },
+    ],
+    cards: [
+      {
+        label: 'A dot that marks one spot',
+        bin: 'point',
+        figure: { kind: 'ray', arrows: 0, point: true },
+      },
+      {
+        label: 'The corner point of a square',
+        bin: 'point',
+        figure: { kind: 'ray', arrows: 0, point: true },
+      },
+      {
+        label: 'A number line with arrows at both ends',
+        bin: 'line',
+        figure: { kind: 'ray', arrows: 2 },
+      },
+      {
+        label: 'A straight path that never ends either way',
+        bin: 'line',
+        figure: { kind: 'ray', arrows: 2 },
+      },
+      { label: 'One side of a triangle', bin: 'segment', figure: { kind: 'ray', arrows: 0 } },
+      { label: 'The edge of a ruler', bin: 'segment', figure: { kind: 'ray', arrows: 0 } },
+      { label: 'A flashlight beam', bin: 'ray', figure: { kind: 'ray', arrows: 1 } },
+      { label: 'Sunlight starting at the sun', bin: 'ray', figure: { kind: 'ray', arrows: 1 } },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 'm.4.lines-symmetry~angle-types',
+    title: 'Acute, right, obtuse and straight angles',
+    use: 'Use this to sort angles by comparing them with a square corner.',
+    assumptions: [
+      'A right angle is a square corner: 90°.',
+      'An acute angle is smaller than a right angle. An obtuse angle is bigger, but less than a straight line.',
+      'A straight angle is a straight line: 180°.',
+    ],
+    question: 'Is the angle smaller than, equal to, or bigger than a square corner?',
+    bins: [
+      { id: 'acute', label: 'Acute', why: 'Smaller than a square corner.' },
+      { id: 'right', label: 'Right', why: 'A square corner: 90°.' },
+      {
+        id: 'obtuse',
+        label: 'Obtuse',
+        why: 'Bigger than a square corner, less than a straight line.',
+      },
+      { id: 'straight', label: 'Straight', why: 'A straight line: 180°.' },
+    ],
+    cards: [
+      {
+        label: 'A corner of 30°',
+        bin: 'acute',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [95, 85],
+            [50, 85],
+            [89, 62],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'A corner of 60°',
+        bin: 'acute',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [95, 85],
+            [50, 85],
+            [72, 46],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'A square corner',
+        bin: 'right',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [95, 85],
+            [50, 85],
+            [50, 40],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'A square corner, turned',
+        bin: 'right',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [90, 90],
+            [50, 50],
+            [10, 90],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'A corner of 120°',
+        bin: 'obtuse',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [95, 85],
+            [50, 85],
+            [28, 46],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'A corner of 150°',
+        bin: 'obtuse',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [95, 85],
+            [50, 85],
+            [11, 62],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'A flat line through a point',
+        bin: 'straight',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [95, 85],
+            [50, 85],
+            [5, 85],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'Clock hands at 1:00',
+        bin: 'acute',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 10],
+            [50, 50],
+            [66, 22],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'Clock hands at 3:00',
+        bin: 'right',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 10],
+            [50, 50],
+            [82, 50],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'Clock hands at 5:00',
+        bin: 'obtuse',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 10],
+            [50, 50],
+            [66, 78],
+          ],
+          open: true,
+        },
+      },
+      {
+        label: 'Clock hands at 6:00',
+        bin: 'straight',
+        figure: {
+          kind: 'polygon',
+          points: [
+            [50, 10],
+            [50, 50],
+            [50, 82],
+          ],
+          open: true,
         },
       },
     ],

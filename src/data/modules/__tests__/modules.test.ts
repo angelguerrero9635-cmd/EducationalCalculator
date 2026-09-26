@@ -137,7 +137,7 @@ function representationVars(r: Representation): string[] {
       }
       return [...r.top, ...r.side, ...r.parts.flat(), r.total];
     case 'angles':
-      return [...r.parts, r.whole, ...(r.sliders ?? [])];
+      return [...r.parts, ...(typeof r.whole === 'string' ? [r.whole] : []), ...(r.sliders ?? [])];
     case 'doubleNumberLine':
       return [r.top, r.bottom, r.per];
     case 'coordinatePlane':
