@@ -77,7 +77,13 @@ export function Bill({ label, width = 64 }: { label: string; width?: number }) {
         strokeOpacity={0.5}
       />
       {/* The portrait's oval in the middle, with the value on it. */}
-      <Circle cx={width / 2 + 0.5} cy={h / 2 + 0.5} r={h / 2 - 5} fill={c.paper} fillOpacity={0.55} />
+      <Circle
+        cx={width / 2 + 0.5}
+        cy={h / 2 + 0.5}
+        r={h / 2 - 5}
+        fill={c.paper}
+        fillOpacity={0.55}
+      />
       <ChartText
         x={width / 2 + 0.5}
         y={h / 2 + 4.5}

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { G, Line, Rect } from 'react-native-svg';
+import Svg, { Defs, G, Line, Rect } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import { numberWords } from '@/engine/format';
@@ -9,6 +9,7 @@ import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, useRep } from './common';
+import { TopLight, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'baseTen' }>;
@@ -25,6 +26,7 @@ const digits = (n: number) => ({
  */
 export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
+  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const rows = [...spec.groups, ...(spec.total ? [spec.total] : [])];
   const value = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
@@ -65,6 +67,70 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
           o: value(spec.places.ones),
         }
       : digits(value(id));
+  // A block with a little depth (its darker side peeks out below and right) and its unit
+  // lines, so a rod reads as ten cubes stuck together and a flat as ten rods.
+  const block = (
+    key: string,
+    x: number,
+    y: number,
+    cols: number,
+    rows: number,
+    u: number,
+    fill: string,
+  ) => {
+    const d = Math.max(1.5, u * 0.35);
+    return [
+      <Rect
+        key={`${key}d`}
+        x={x + d}
+        y={y + d}
+        width={cols * u}
+        height={rows * u}
+        fill={c.shade}
+        opacity={0.35}
+      />,
+      <Rect
+        key={key}
+        x={x}
+        y={y}
+        width={cols * u}
+        height={rows * u}
+        fill={fill}
+        stroke={c.chartInk}
+        strokeWidth={chart.strokeLight}
+      />,
+      ...Array.from({ length: cols - 1 }, (_, k) => (
+        <Line
+          key={`${key}v${k}`}
+          x1={x + (k + 1) * u}
+          y1={y}
+          x2={x + (k + 1) * u}
+          y2={y + rows * u}
+          stroke={c.chartInk}
+          strokeOpacity={0.3}
+        />
+      )),
+      ...Array.from({ length: rows - 1 }, (_, k) => (
+        <Line
+          key={`${key}h${k}`}
+          x1={x}
+          y1={y + (k + 1) * u}
+          x2={x + cols * u}
+          y2={y + (k + 1) * u}
+          stroke={c.chartInk}
+          strokeOpacity={0.3}
+        />
+      )),
+      <Rect
+        key={`${key}l`}
+        x={x}
+        y={y}
+        width={cols * u}
+        height={rows * u}
+        fill={url(paint.light)}
+      />,
+    ];
+  };
   const blocks = (id: string, top: number, u: number, fill: string) => {
     const { h, t, o } = counts(id);
     const out: ReactNode[] = [];
@@ -73,28 +139,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     for (let i = 0; i < h; i++) {
       const x = 8 + (i % Math.max(cols, 1)) * (10 * u + 6);
       const y = y0 + Math.floor(i / Math.max(cols, 1)) * (10 * u + 4);
-      out.push(
-        <Rect
-          key={`h${i}`}
-          x={x}
-          y={y}
-          width={10 * u}
-          height={10 * u}
-          fill={fill}
-          stroke={c.chartInk}
-          strokeWidth={chart.strokeLight}
-        />,
-        ...Array.from({ length: 9 }, (_, k) => (
-          <Line
-            key={`h${i}-${k}`}
-            x1={x + (k + 1) * u}
-            y1={y}
-            x2={x + (k + 1) * u}
-            y2={y + 10 * u}
-            stroke={c.chartGrid}
-          />
-        )),
-      );
+      out.push(...block(`h${i}`, x, y, 10, 10, u, fill));
     }
     // Rods and ones sit beside the flats, on the flats' last line.
     const y = y0 + (flatLines(h) - 1) * (10 * u + 4);
@@ -102,16 +147,15 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     // More than 9 rods (a regroup lesson) go on as many lines as they need, 10 to a line.
     for (let i = 0; i < t; i++) {
       out.push(
-        <Rect
-          key={`t${i}`}
-          x={x + (i % 10) * (u + 4)}
-          y={y + Math.floor(i / 10) * (10 * u + 4)}
-          width={u}
-          height={10 * u}
-          fill={fill}
-          stroke={c.chartInk}
-          strokeWidth={chart.strokeLight}
-        />,
+        ...block(
+          `t${i}`,
+          x + (i % 10) * (u + 4),
+          y + Math.floor(i / 10) * (10 * u + 4),
+          1,
+          10,
+          u,
+          fill,
+        ),
       );
     }
     x += Math.min(t, 10) * (u + 4) + 6;
@@ -121,16 +165,15 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
       const group = Math.floor(i / 10);
       const k = i % 10;
       out.push(
-        <Rect
-          key={`o${i}`}
-          x={x + group * (5 * (u + 3) + 8) + (k % 5) * (u + 3)}
-          y={onesTop - (Math.floor(k / 5) + 1) * (u + 3)}
-          width={u}
-          height={u}
-          fill={fill}
-          stroke={c.chartInk}
-          strokeWidth={chart.strokeLight}
-        />,
+        ...block(
+          `o${i}`,
+          x + group * (5 * (u + 3) + 8) + (k % 5) * (u + 3),
+          onesTop - (Math.floor(k / 5) + 1) * (u + 3),
+          1,
+          1,
+          u,
+          fill,
+        ),
       );
     }
     if (spec.places && id !== spec.total) {
@@ -170,7 +213,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     Math.max(
       2.5,
       Math.min(
-        8,
+        11,
         ...rows.map((id) => {
           const d = counts(id);
           const cols = flatCols(d.h);
@@ -193,11 +236,14 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
           let top = 4;
           return (
             <Svg width={w} height={h}>
+              <Defs>
+                <TopLight id={paint.light} />
+              </Defs>
               {rows.map((id, r) => {
                 const rowTop = top;
                 top += 26 + blockHeight(r, u);
-                const fill =
-                  id === spec.total ? c.chartHighlight : r % 2 === 0 ? c.chartFill : c.chartSurface;
+                // Blocks in wood; a second group in a darker wood; the total in the highlight.
+                const fill = id === spec.total ? c.chartHighlight : r % 2 === 0 ? c.wood : c.rock4;
                 return (
                   <G key={id} opacity={rep.known(id) ? 1 : 0.35}>
                     <ChartText x={8} y={rowTop + 12} fontSize={chart.small}>

@@ -1,11 +1,12 @@
 import { View } from 'react-native';
-import Svg, { Ellipse, Path, Rect } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, useRep, Caption } from './common';
+import { TopLight, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'rockLayers' }>;
@@ -23,7 +24,9 @@ export function RockLayers({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const a = above(first);
   const b = above(second);
   const n = Math.max(a ?? 0, b ?? 0) + 1;
-  const fills = [c.chartFill, c.chartSurface];
+  // Each layer its own rock, so neighbors part at a glance: sandstone, shale, limestone, …
+  const fills = [c.rock1, c.rock2, c.rock3, c.rock4, c.rock5, c.rock6];
+  const paint = usePaintIds('light');
 
   return (
     <View>
@@ -31,7 +34,7 @@ export function RockLayers({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {({ w, h }) => {
           const left = 24;
           const width = w - 130;
-          const top = 14;
+          const top = 18;
           const bottom = h - 10;
           const layerH = (bottom - top) / n;
           const fossil = (id: string, layers: number | undefined, shell: boolean) => {
@@ -48,16 +51,22 @@ export function RockLayers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       cy={cy + r / 4}
                       rx={r}
                       ry={r / 2}
-                      fill={c.chartFill}
+                      fill={c.paper}
                       stroke={c.chartInk}
                       strokeWidth={chart.stroke}
                     />
-                    <Path
-                      d={`M ${cx - r} ${cy + r / 4} Q ${cx} ${cy - r / 2} ${cx + r} ${cy + r / 4}`}
-                      stroke={c.chartInk}
-                      strokeWidth={chart.strokeLight}
-                      fill="none"
-                    />
+                    {/* The shell's ribs fanning out from its hinge. */}
+                    {[-0.6, -0.3, 0, 0.3, 0.6].map((t) => (
+                      <Line
+                        key={t}
+                        x1={cx}
+                        y1={cy + r * 0.7}
+                        x2={cx + t * r * 1.3}
+                        y2={cy - r / 5}
+                        stroke={c.chartInk}
+                        strokeWidth={1}
+                      />
+                    ))}
                   </>
                 ) : (
                   <>
@@ -66,16 +75,30 @@ export function RockLayers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       cy={cy}
                       rx={r}
                       ry={r / 2}
-                      fill={c.chartFill}
+                      fill={c.paper}
                       stroke={c.chartInk}
                       strokeWidth={chart.stroke}
                     />
                     <Path
                       d={`M ${cx + r} ${cy} l ${r / 2} ${-r / 2} l 0 ${r} z`}
-                      fill={c.chartFill}
+                      fill={c.paper}
                       stroke={c.chartInk}
                       strokeWidth={chart.stroke}
                     />
+                    {/* Backbone, ribs and an eye: a fish turned to stone. */}
+                    <Line x1={cx - r * 0.6} y1={cy} x2={cx + r} y2={cy} stroke={c.chartInk} />
+                    {[-0.3, 0, 0.3, 0.6].map((t) => (
+                      <Line
+                        key={t}
+                        x1={cx + t * r}
+                        y1={cy - r * 0.38}
+                        x2={cx + t * r}
+                        y2={cy + r * 0.38}
+                        stroke={c.chartInk}
+                        strokeWidth={1}
+                      />
+                    ))}
+                    <Circle cx={cx - r * 0.7} cy={cy - r * 0.12} r={1.6} fill={c.chartInk} />
                   </>
                 )}
                 <ChartText
@@ -92,18 +115,57 @@ export function RockLayers({ spec, calc }: { spec: Spec; calc: Calculator }) {
           };
           return (
             <Svg width={w} height={h}>
-              {Array.from({ length: n }, (_, i) => (
-                <Rect
-                  key={`l${i}`}
-                  x={left}
-                  y={top + i * layerH}
-                  width={width}
-                  height={layerH}
-                  fill={fills[i % 2]}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.strokeLight}
-                />
-              ))}
+              <Defs>
+                <TopLight id={paint.light} strength={0.6} />
+              </Defs>
+              {Array.from({ length: n }, (_, i) => {
+                const y = top + i * layerH;
+                // A few grains, flecks or joints so each layer looks like rock, not paint.
+                const marks = Array.from({ length: Math.floor(width / 26) }, (_, k) => {
+                  const x = left + 10 + k * 26 + ((i * 11) % 13);
+                  const my = y + layerH * (0.3 + ((k * 7 + i * 3) % 5) * 0.1);
+                  return i % 3 === 0 ? (
+                    <Circle key={k} cx={x} cy={my} r={1.1} fill={c.chartInk} opacity={0.3} />
+                  ) : i % 3 === 1 ? (
+                    <Line
+                      key={k}
+                      x1={x}
+                      y1={my}
+                      x2={x + 9}
+                      y2={my}
+                      stroke={c.chartInk}
+                      strokeOpacity={0.25}
+                    />
+                  ) : (
+                    <Line
+                      key={k}
+                      x1={x}
+                      y1={y + 2}
+                      x2={x}
+                      y2={y + layerH - 2}
+                      stroke={c.chartInk}
+                      strokeOpacity={0.15}
+                    />
+                  );
+                });
+                return (
+                  <G key={`l${i}`}>
+                    <Rect
+                      x={left}
+                      y={y}
+                      width={width}
+                      height={layerH}
+                      fill={fills[i % fills.length]}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
+                    />
+                    {layerH > 10 ? marks : null}
+                    <Rect x={left} y={y} width={width} height={layerH} fill={url(paint.light)} />
+                  </G>
+                );
+              })}
+              {/* Grass on the surface. */}
+              <Rect x={left} y={top - 5} width={width} height={5} fill={c.lifeDeep} />
               {fossil(first, a, false)}
               {fossil(second, b, true)}
             </Svg>

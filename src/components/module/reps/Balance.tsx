@@ -1,11 +1,12 @@
 import { View } from 'react-native';
-import Svg, { Circle, G, Line, Path, Polygon, Rect } from 'react-native-svg';
+import Svg, { Circle, Defs, G, Line, Path, Polygon, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep, Caption } from './common';
+import { Ball, Deepen, FloorShadow, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'balance' }>;
@@ -25,7 +26,9 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const right = spec.right.reduce((s, id) => s + count(id), 0);
   const tilt = Math.max(-1, Math.min(1, (right - left) / 6)) * 14;
   const all = [...spec.left, ...(spec.takeAway ? [spec.takeAway] : []), ...spec.right];
-  const shades = [c.chartHighlight, c.chartFill];
+  // Two-color counters: one color per value on a pan.
+  const paint = usePaintIds('a', 'b', 'metal');
+  const shades = [url(paint.a), url(paint.b)];
   // Rows of counters on the fuller pan (5 per row, or 10 smaller ones above 20).
   const most = Math.max(
     spec.left.reduce((s, id) => s + count(id), 0),
@@ -83,36 +86,53 @@ export function Balance({ spec, calc }: { spec: Spec; calc: Calculator }) {
               }),
             );
             return [
-              <Line key={`${key}s1`} x1={x - 52} y1={y + 46} x2={x} y2={y} stroke={c.chartMuted} />,
-              <Line key={`${key}s2`} x1={x + 52} y1={y + 46} x2={x} y2={y} stroke={c.chartMuted} />,
-              <Rect
+              <Line key={`${key}s1`} x1={x - 52} y1={y + 46} x2={x} y2={y} stroke={c.metalDark} />,
+              <Line key={`${key}s2`} x1={x + 52} y1={y + 46} x2={x} y2={y} stroke={c.metalDark} />,
+              // A shallow metal dish.
+              <Path
                 key={`${key}p`}
-                x={x - 56}
-                y={y + 46}
-                width={112}
-                height={6}
-                rx={3}
-                fill={c.chartInk}
+                d={`M ${x - 58} ${y + 45} L ${x + 58} ${y + 45} Q ${x + 50} ${y + 56} ${x + 36} ${y + 56} L ${x - 36} ${y + 56} Q ${x - 50} ${y + 56} ${x - 58} ${y + 45} Z`}
+                fill={url(paint.metal)}
+                stroke={c.metalDark}
+                strokeWidth={chart.strokeLight}
               />,
               ...dots,
             ];
           };
           return (
             <Svg width={w} height={h}>
+              <Defs>
+                <Ball id={paint.a} color={c.chartHighlight} />
+                <Ball id={paint.b} color={c.chartSecond} />
+                <Deepen id={paint.metal} from={c.metal} to={c.metalDark} />
+              </Defs>
+              <FloorShadow cx={cx} cy={h - 6} rx={46} ry={4} />
               <Polygon
                 points={`${cx},${pivot} ${cx - 26},${h - 8} ${cx + 26},${h - 8}`}
-                fill={c.chartFill}
-                stroke={c.chartInk}
+                fill={url(paint.metal)}
+                stroke={c.metalDark}
+                strokeLinejoin="round"
               />
+              <Rect x={cx - 40} y={h - 12} width={80} height={6} rx={3} fill={c.metalDark} />
               <Line
                 x1={cx - arm}
                 y1={ly}
                 x2={cx + arm}
                 y2={ry}
-                stroke={c.chartInk}
-                strokeWidth={chart.strokeHeavy}
+                stroke={c.metalDark}
+                strokeWidth={chart.strokeHeavy + 2}
+                strokeLinecap="round"
               />
-              <Circle cx={cx} cy={pivot} r={5} fill={c.chartInk} />
+              <Line
+                x1={cx - arm}
+                y1={ly - 1}
+                x2={cx + arm}
+                y2={ry - 1}
+                stroke={c.metal}
+                strokeWidth={1.5}
+                strokeLinecap="round"
+              />
+              <Circle cx={cx} cy={pivot} r={6} fill={c.chartInk} stroke={c.metal} strokeWidth={2} />
               {pan(cx - arm, ly, spec.left, 'L')}
               {pan(cx + arm, ry, spec.right, 'R')}
             </Svg>

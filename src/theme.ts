@@ -48,6 +48,8 @@ const light = {
   /** Highlighted data (solid counters, shaded squares, the selected table row). */
   chartHighlight: '#4F46E5',
   onChartHighlight: '#FFFFFF',
+  /** A second color for counters and parts beside the highlight (the yellow of two-color counters). */
+  chartSecond: '#F4B740',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
@@ -102,6 +104,9 @@ const light = {
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
   shine: '#FFFFFF',
+  /** Edge light and edge shade for flat pieces drawn as views (cubes in a train). */
+  edgeLight: 'rgba(255, 255, 255, 0.4)',
+  edgeShade: 'rgba(0, 0, 0, 0.2)',
 };
 
 export type Palette = typeof light;
@@ -130,6 +135,7 @@ const dark: Palette = {
   chartGrid: '#343947',
   chartHighlight: '#8B83FF',
   onChartHighlight: '#0D0F14',
+  chartSecond: '#D9A441',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
 
@@ -165,6 +171,8 @@ const dark: Palette = {
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',
+  edgeLight: 'rgba(255, 255, 255, 0.3)',
+  edgeShade: 'rgba(0, 0, 0, 0.35)',
 };
 
 /**

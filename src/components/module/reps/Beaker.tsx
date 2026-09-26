@@ -78,11 +78,7 @@ export function Beaker({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       />
                     ) : null}
                     {p.x > 0 ? (
-                      <ChartText
-                        x={x0 + jw + 16}
-                        y={(py(from) + y) / 2 + 4}
-                        fontSize={chart.small}
-                      >
+                      <ChartText x={x0 + jw + 16} y={(py(from) + y) / 2 + 4} fontSize={chart.small}>
                         {`${rep.variable(p.id).name}: ${rep.value(p.id)}`}
                       </ChartText>
                     ) : null}

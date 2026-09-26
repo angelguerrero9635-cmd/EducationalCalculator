@@ -67,37 +67,37 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const inSecond = i >= L;
                 if (inSecond ? j >= W2 || k >= H2 : j >= W || k >= H) continue;
                 const bottomLayer = k === 0;
-                const fill = bottomLayer
-                  ? c.chartHighlight
-                  : inSecond
-                    ? c.chartSurface
-                    : c.chartFill;
-                const opacity = bottomLayer ? (inSecond ? 0.3 : 0.55) : 1;
+                // Colored cubes lit from the top left: the top face lighter, the right side
+                // darker. The bottom layer (the one counted first) in the highlight.
+                const fill = bottomLayer ? c.chartHighlight : inSecond ? c.life : c.chartSecond;
                 const X = px(i, j);
                 const Y = py(j, k);
+                const top = `M ${X} ${Y - unit} L ${X + unit} ${Y - unit} L ${X + unit + unit * dx} ${Y - unit - unit * dy} L ${X + unit * dx} ${Y - unit - unit * dy} Z`;
+                const side = `M ${X + unit} ${Y} L ${X + unit} ${Y - unit} L ${X + unit + unit * dx} ${Y - unit - unit * dy} L ${X + unit + unit * dx} ${Y - unit * dy} Z`;
+                const front = `M ${X} ${Y} L ${X + unit} ${Y} L ${X + unit} ${Y - unit} L ${X} ${Y - unit} Z`;
+                const edge = {
+                  stroke: c.chartInk,
+                  strokeWidth: chart.strokeLight,
+                  strokeOpacity: 0.7,
+                };
                 faces.push(
+                  <Path key={`t${i}${j}${k}`} d={top} fill={fill} />,
                   <Path
-                    key={`t${i}${j}${k}`}
-                    d={`M ${X} ${Y - unit} L ${X + unit} ${Y - unit} L ${X + unit + unit * dx} ${Y - unit - unit * dy} L ${X + unit * dx} ${Y - unit - unit * dy} Z`}
-                    fill={c.chartSurface}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeLight}
+                    key={`tl${i}${j}${k}`}
+                    d={top}
+                    fill={c.shine}
+                    fillOpacity={0.45}
+                    {...edge}
                   />,
+                  <Path key={`r${i}${j}${k}`} d={side} fill={fill} />,
                   <Path
-                    key={`r${i}${j}${k}`}
-                    d={`M ${X + unit} ${Y} L ${X + unit} ${Y - unit} L ${X + unit + unit * dx} ${Y - unit - unit * dy} L ${X + unit + unit * dx} ${Y - unit * dy} Z`}
-                    fill={c.chartGrid}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeLight}
+                    key={`rs${i}${j}${k}`}
+                    d={side}
+                    fill={c.shade}
+                    fillOpacity={0.3}
+                    {...edge}
                   />,
-                  <Path
-                    key={`f${i}${j}${k}`}
-                    d={`M ${X} ${Y} L ${X + unit} ${Y} L ${X + unit} ${Y - unit} L ${X} ${Y - unit} Z`}
-                    fill={fill}
-                    opacity={opacity}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeLight}
-                  />,
+                  <Path key={`f${i}${j}${k}`} d={front} fill={fill} {...edge} />,
                 );
               }
             }

@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
+import Svg, { Circle, Defs, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -7,6 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, useRep, Caption } from './common';
+import { BoxShadow, Deepen, TopLight, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'scale' }>;
@@ -26,6 +27,7 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const max = Math.max(spec.max, total);
   const big = spec.max >= 500;
 
+  const ids = usePaintIds('metal', 'light');
   return (
     <View>
       <Canvas aspect={0.8}>
@@ -39,20 +41,27 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const needle = angle(total);
           return (
             <Svg width={w} height={h}>
+              <Defs>
+                <Deepen id={ids.metal} from={c.metal} to={c.metalDark} />
+                <TopLight id={ids.light} />
+              </Defs>
               {blocks.map((b, i) => {
                 const x = cx - (blocks.length * (bw + 6)) / 2 + i * (bw + 6);
                 return (
                   <G key={i}>
+                    <BoxShadow x={x} y={panY - 40} width={bw} height={36} r={6} offset={2} />
                     <Rect
                       x={x}
                       y={panY - 40}
                       width={bw}
                       height={36}
                       rx={6}
-                      fill={spec.items ? (i % 2 ? c.chartSurface : c.chartFill) : c.chartFill}
-                      stroke={c.chartInk}
+                      // Things being weighed: wooden blocks, two tones so side-by-side ones part.
+                      fill={spec.items && i % 2 ? c.rock4 : c.wood}
+                      stroke={c.woodDark}
                       strokeWidth={chart.strokeLight}
                     />
+                    <Rect x={x} y={panY - 40} width={bw} height={36} rx={6} fill={url(ids.light)} />
                     <ChartText
                       x={x + bw / 2}
                       y={panY - 17}
@@ -66,23 +75,31 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
               })}
               <Path
                 d={`M ${cx - w * 0.38} ${panY} L ${cx + w * 0.38} ${panY} L ${cx + w * 0.32} ${panY + 12} L ${cx - w * 0.32} ${panY + 12} Z`}
-                fill={c.chartSurface}
-                stroke={c.chartInk}
+                fill={url(ids.metal)}
+                stroke={c.metalDark}
                 strokeWidth={chart.stroke}
+                strokeLinejoin="round"
               />
-              <Line
-                x1={cx}
-                y1={panY + 12}
-                x2={cx}
-                y2={dialY - r - 6}
-                stroke={c.chartInk}
+              <Rect
+                x={cx - 5}
+                y={panY + 12}
+                width={10}
+                height={dialY - r - panY - 16}
+                fill={url(ids.metal)}
+                stroke={c.metalDark}
+              />
+              {/* The body (metal) and the dial's paper face. */}
+              <Path
+                d={`M ${cx - r - 14} ${dialY + 4} A ${r + 14} ${r + 14} 0 0 1 ${cx + r + 14} ${dialY + 4} Z`}
+                fill={url(ids.metal)}
+                stroke={c.metalDark}
                 strokeWidth={chart.stroke}
               />
               <Path
-                d={`M ${cx - r - 10} ${dialY} A ${r + 10} ${r + 10} 0 0 1 ${cx + r + 10} ${dialY} Z`}
-                fill={c.chartSurface}
-                stroke={c.chartInk}
-                strokeWidth={chart.stroke}
+                d={`M ${cx - r - 6} ${dialY} A ${r + 6} ${r + 6} 0 0 1 ${cx + r + 6} ${dialY} Z`}
+                fill={c.paper}
+                stroke={c.metalDark}
+                strokeWidth={1}
               />
               {Array.from({ length: 11 }, (_, i) => {
                 const a = Math.PI * (1 - i / 10);
@@ -118,6 +135,16 @@ export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 );
               })}
               <Line
+                x1={cx + 1.5}
+                y1={dialY + 2.5}
+                x2={cx + 1.5 + Math.cos(needle) * (r - 8)}
+                y2={dialY + 2.5 - Math.sin(needle) * (r - 8)}
+                stroke={c.shadow}
+                strokeWidth={chart.strokeHeavy}
+                strokeLinecap="round"
+              />
+              <Line
+                strokeLinecap="round"
                 x1={cx}
                 y1={dialY}
                 x2={cx + Math.cos(needle) * (r - 8)}

@@ -21,7 +21,8 @@ export function CubeTrains({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const [width, setWidth] = useState(0);
   const parts = [...new Set(spec.rows.flat(2))];
-  const shades = [c.chartHighlight, c.chartFill, c.chartSurface];
+  // Connecting cubes in three colors, one per part.
+  const shades = [c.chartHighlight, c.chartSecond, c.life];
   const count = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
   const shade = (id: string) => shades[parts.indexOf(id) % shades.length]!;
   // K–2 reads the numbers ("3 + 4"); later grades the letters ("a + b").
@@ -43,7 +44,14 @@ export function CubeTrains({ spec, calc }: { spec: Spec; calc: Calculator }) {
         key={`${key}${id}${i}`}
         style={[
           styles.cube,
-          { width: cube, height: cube, backgroundColor: shade(id), borderColor: c.chartInk },
+          {
+            width: cube,
+            height: cube,
+            backgroundColor: shade(id),
+            borderColor: c.chartInk,
+            // Lit from above: a bright top edge and a shaded bottom edge, like a plastic cube.
+            boxShadow: `inset 0 ${cube / 7}px 0 ${c.edgeLight}, inset 0 -${cube / 7}px 0 ${c.edgeShade}`,
+          },
         ]}
       />
     ));

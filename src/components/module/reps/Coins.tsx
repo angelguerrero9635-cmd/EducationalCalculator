@@ -67,6 +67,12 @@ const styles = StyleSheet.create({
   rows: { gap: space.sm, paddingHorizontal: space.md },
   row: { gap: space.xs },
   name: { fontSize: font.caption + 1 },
-  coins: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs, minHeight: 30, alignItems: 'center' },
+  coins: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: space.xs,
+    minHeight: 30,
+    alignItems: 'center',
+  },
   total: { fontSize: font.title, fontWeight: '700', textAlign: 'center' },
 });

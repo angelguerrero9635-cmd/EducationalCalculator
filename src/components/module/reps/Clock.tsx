@@ -120,7 +120,14 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   <Path d={hand(minuteAngle, r * 0.8, 6, 2, 3)} fill={c.shadow} />
                   <Path d={hand(hourAngle, r * 0.5, 9)} fill={c.chartInk} />
                   <Path d={hand(minuteAngle, r * 0.8, 6)} fill={c.chartMuted} />
-                  <Circle cx={cx} cy={cy} r={6} fill={c.chartInk} stroke={c.metal} strokeWidth={2} />
+                  <Circle
+                    cx={cx}
+                    cy={cy}
+                    r={6}
+                    fill={c.chartInk}
+                    stroke={c.metal}
+                    strokeWidth={2}
+                  />
                 </Svg>
                 <DragHandle
                   testID="drag-minute"

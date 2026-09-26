@@ -24,7 +24,15 @@ export const url = (id: string) => `url(#${id})`;
  * Round-object shading across a shape (left to right): a dark edge, a bright band a quarter of
  * the way in, then shade again. Lay a Rect filled with it over a tube, bar or cylinder.
  */
-export function Sheen({ id, vertical = false, strength = 1 }: { id: string; vertical?: boolean; strength?: number }) {
+export function Sheen({
+  id,
+  vertical = false,
+  strength = 1,
+}: {
+  id: string;
+  vertical?: boolean;
+  strength?: number;
+}) {
   const c = usePalette();
   const k = strength;
   return (
@@ -102,7 +110,17 @@ export function Ball({ id, color }: { id: string; color: string }) {
 }
 
 /** A soft oval shadow on the floor under an object. */
-export function FloorShadow({ cx, cy, rx, ry = 4 }: { cx: number; cy: number; rx: number; ry?: number }) {
+export function FloorShadow({
+  cx,
+  cy,
+  rx,
+  ry = 4,
+}: {
+  cx: number;
+  cy: number;
+  rx: number;
+  ry?: number;
+}) {
   const c = usePalette();
   return <Ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={c.shadow} />;
 }
@@ -125,6 +143,13 @@ export function BoxShadow({
 }) {
   const c = usePalette();
   return (
-    <Rect x={x + offset * 0.5} y={y + offset} width={width} height={height} rx={r} fill={c.shadow} />
+    <Rect
+      x={x + offset * 0.5}
+      y={y + offset}
+      width={width}
+      height={height}
+      rx={r}
+      fill={c.shadow}
+    />
   );
 }
