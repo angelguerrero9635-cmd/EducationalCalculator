@@ -84,6 +84,29 @@ with a gallery page (`/gallery`, now showing layout demos too) and a harness che
   moved to `work.ts` for Grades 2 and 3.
 - Harness phrases: "N inches of 4 marks and 1 mark", "N marks".
 
+## Grades 4–5 rebuild (math 4–5 plan)
+
+- **Written work by grade.** `partialQuotients` (Grade 4: groups taken away by place, each
+  partial quotient beside it, then added) and `standardMultiply` (Grade 5: carries above, one
+  row per digit, the tens row's 0, the rows added). `autoWritten` uses them; no grid for a
+  division whose digits each share evenly (26 ÷ 2) or for adding one place unit
+  (999,000 + 1,000).
+- **A step's grid can come after its work lines** (`writtenLast`): compare place by place
+  first, then subtract; the standard algorithm's rows in words, then the grid.
+- **Exponents are written raised.** `renderTemplate` turns a whole-number caret power into
+  superscript digits (10^3 → 10³); the harness reads them back.
+- `placeCompareLines` (whole numbers and decimals to thousandths) and `numberWords` to a
+  million (expanded form's number name).
+- **Pictures:** the angles picture takes a fixed whole (a full turn, 360), so a turn no longer
+  needs a "Full turn" value; the double number line reads a decimal top (2.5 m); grid100 checks
+  a percent's range rather than whole squares.
+- **Harness phrases:** place parts by name ("the ten thousands part of 347,812"), "rounded
+  down to the 1,000s", "common denominator of 4 and 6", a line plot's spread in eighths.
+- **Still open.** A fraction value (typed 3/4 or 2 3/4) would bring the fraction pages to 3–4
+  values and allow adding mixed numbers; a unit-pair value would name real units (feet and
+  inches) instead of "bigger" and "smaller" units. Names like "x-coordinate" stay out before
+  Grade 6: the pages say across and up.
+
 ## Science Grades 4–5 (Section 6, first review)
 
 - `apart` (no direction) was used for a rise, a loss and how much farther, so a drop from

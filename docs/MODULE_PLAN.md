@@ -69,6 +69,22 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   the day, plant height, pendulum swings, clips through paper, seasons). K stays within 10
   and Grade 1 within 20; a story's order (hard push ≥ gentle push) is a constraint, so a note
   never calls the smaller one bigger.
+- **Grades 4–5, rebuilt from the reviewer's direction plan.** Grade 4: every factor pair
+  drawn; is-it-a-multiple by dividing; number patterns (4.OA.5); the place-value chart;
+  expanded form with the number name; adding and subtracting to 1,000,000 (4.NBT.4); one
+  three-value multiplication page to 9,999 × 9 and a two-digit page, both with the area model
+  drawn from the factors; partial quotients and the division area model; numerator and
+  denominator everywhere; the equivalent-fraction main page with comparing as a problem type;
+  line plots in eighths (4.MD.4); decimals past 1 and on a number line; cups, pints, quarts and
+  gallons; sorts for prime or composite, compare to 1/2, points/lines/segments/rays and angle
+  types. The factor tree moved to Grade 6. Grade 5: where the parentheses go; exponents
+  written raised; thousandths, comparing and rounding decimals (5.NBT.3–4); metric
+  conversions (5.MD.1); the standard algorithm with carries; estimating each quotient digit;
+  divide by a decimal; line plots of fractions (5.MD.2); a fraction of a whole number as equal
+  parts; fractions as division (5.NF.3); two boxes joined; two patterns graphed (5.OA.3);
+  distance on a grid line; sorts for which expression says it, is the sum more than 1, bigger
+  or smaller (scaling) and always/sometimes/never. Waiting on a fraction value type: adding
+  mixed numbers (Grades 4 and 5) and multiplying mixed numbers.
 - **Section 2, Grade 5.** Reviewed once. Order of operations with parentheses (the value
   inside as equal groups on a tape, the last number taken off the end; a divide page); powers of 10
   and exponents (the product on a place-value chart, plus a decimal times a power of 10 with

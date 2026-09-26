@@ -58,6 +58,9 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
   const both = p && q && p.known && q.known;
   const dx = both ? q.px - p.px : 0;
   const dy = both ? q.py - p.py : 0;
+  // Before slope (Grade 8) the move is said in words: "7 right, 0 up".
+  const moveX = `${formatNumber(Math.abs(dx))} ${dx < 0 ? 'left' : 'right'}`;
+  const moveY = `${formatNumber(Math.abs(dy))} ${dy < 0 ? 'down' : 'up'}`;
 
   return (
     <View>
@@ -183,7 +186,7 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       fill={c.chartMuted}
                       textAnchor="middle"
                     >
-                      {`run ${formatNumber(dx)}`}
+                      {spec.slope ? `run ${formatNumber(dx)}` : moveX}
                     </ChartText>
                     <ChartText
                       x={sx(q.px) + (dx > 0 ? 6 : -6)}
@@ -192,7 +195,7 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       fill={c.chartMuted}
                       textAnchor={dx > 0 ? 'start' : 'end'}
                     >
-                      {`rise ${formatNumber(dy)}`}
+                      {spec.slope ? `rise ${formatNumber(dy)}` : moveY}
                     </ChartText>
                   </>
                 ) : null}
@@ -275,7 +278,7 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
       <Caption>
         {p?.known
           ? both
-            ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): rise ${formatNumber(dy)}, run ${formatNumber(dx)}.${spec.slope ? ` Slope: ${rep.value(spec.slope)}.` : ''}`
+            ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
             : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
           : 'Type both coordinates to place the point.'}
       </Caption>

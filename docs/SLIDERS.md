@@ -6,15 +6,15 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-21 of 237 pages show sliders.
+25 of 251 pages show sliders.
 
 ## By picture kind
 
 | Kind | Pages | Sliders | Why |
 | --- | ---: | :---: | --- |
 | angles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| areaModel | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
-| array | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| areaModel | 7 | yes | sweeping the value shows the picture change; no touch control of its own |
+| array | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | bars | 17 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseTen | 15 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -25,21 +25,21 @@ its kind with `sliders: true | false`.
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| coordinatePlane | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| coordinatePlane | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| equalGroups | 9 | no | the picture has its own handles or taps, or the inputs are enough |
-| factorPairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fractionArea | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionBars | 7 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionLine | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| grid100 | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| hundredChart | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| linePlot | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| linePlot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberLine | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -47,7 +47,7 @@ its kind with `sliders: true | false`.
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
-| placeValueChart | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| placeValueChart | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | plot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -58,19 +58,19 @@ its kind with `sliders: true | false`.
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | rightTriangle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| rounding | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| shareWholes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 9 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 27 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 28 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| unitCubes | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
+| unitCubes | 3 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -208,28 +208,31 @@ its kind with `sliders: true | false`.
 | m.3.scaled-graphs~picture-more | pictureGraph | no |
 | m.3.measure-line-plots | linePlot | no |
 | m.3.measure-line-plots~quarter-inch | ruler | no |
-| m.4.factors-multiples | array | no |
-| m.4.factors-multiples~factor-tree | factorTree | no |
-| m.4.factors-multiples~multiples | skipCount | no |
-| m.4.place-value-million | table | no |
+| m.4.factors-multiples | factorPairs | no |
+| m.4.factors-multiples~multiples | hundredChart | no |
+| m.4.factors-multiples~pattern | skipCount | no |
+| m.4.place-value-million | placeValueChart | no |
 | m.4.place-value-million~rounding | rounding | no |
-| m.4.place-value-million~compare | tape | no |
+| m.4.place-value-million~compare | placeValueChart | no |
+| m.4.place-value-million~expanded-form | placeValueChart | no |
+| m.4.place-value-million~add-subtract | tape | no |
+| m.4.place-value-million~subtract | tape | no |
 | m.4.multi-digit-multiply | areaModel | yes |
 | m.4.multi-digit-multiply~two-digit | areaModel | yes |
-| m.4.multi-digit-multiply~three-digit | areaModel | yes |
-| m.4.multi-digit-multiply~times-as-many | equalGroups | no |
-| m.4.long-division | tape | no |
-| m.4.long-division~interpret-remainder | tape | no |
+| m.4.multi-digit-multiply~times-as-many | tape | no |
+| m.4.long-division | areaModel | yes |
+| m.4.long-division~interpret-remainder | areaModel | yes |
 | m.4.fraction-equivalence | fractionBars | yes |
-| m.4.fraction-equivalence~equivalent | fractionBars | yes |
+| m.4.fraction-equivalence~compare | fractionBars | yes |
 | m.4.add-fractions-like | fractionLine | no |
 | m.4.add-fractions-like~subtract | fractionBars | yes |
 | m.4.add-fractions-like~mixed | fractionLine | no |
+| m.4.add-fractions-like~line-plot | linePlot | no |
 | m.4.fraction-times-whole | fractionLine | no |
 | m.4.decimals-intro | grid100 | no |
-| m.4.decimals-intro~compare | tape | no |
+| m.4.decimals-intro~compare | grid100 | no |
+| m.4.decimals-intro~number-line | fractionLine | no |
 | m.4.unit-conversion | table | no |
-| m.4.unit-conversion~double-line | doubleNumberLine | no |
 | m.4.unit-conversion~two-units | tape | no |
 | m.4.area-perimeter-formulas | rectangle | no |
 | m.4.angles | angles | no |
@@ -269,24 +272,34 @@ its kind with `sliders: true | false`.
 | s.3.weather-climate~range | thermometers | no |
 | m.5.order-of-operations | tape | no |
 | m.5.order-of-operations~divide | equalGroups | no |
+| m.5.order-of-operations~where-parentheses | tape | no |
 | m.5.powers-of-ten | placeValueChart | no |
 | m.5.powers-of-ten~decimals | placeValueChart | no |
+| m.5.powers-of-ten~thousandths | placeValueChart | no |
+| m.5.powers-of-ten~compare-decimals | placeValueChart | no |
+| m.5.powers-of-ten~round-decimals | rounding | no |
+| m.5.powers-of-ten~metric | doubleNumberLine | no |
 | m.5.standard-algorithm | areaModel | yes |
-| m.5.divide-2-digit | tape | no |
+| m.5.divide-2-digit | areaModel | yes |
 | m.5.decimal-operations | tape | no |
-| m.5.decimal-operations~multiply | table | no |
-| m.5.decimal-operations~divide | table | no |
+| m.5.decimal-operations~multiply | skipCount | no |
+| m.5.decimal-operations~divide | tape | no |
 | m.5.decimal-operations~subtract | tape | no |
-| m.5.decimal-operations~times-decimal | table | no |
+| m.5.decimal-operations~times-decimal | areaModel | yes |
+| m.5.decimal-operations~divide-by-decimal | skipCount | no |
 | m.5.add-fractions-unlike | fractionBars | yes |
 | m.5.add-fractions-unlike~subtract | fractionBars | yes |
+| m.5.add-fractions-unlike~line-plot | linePlot | no |
 | m.5.multiply-fractions | fractionArea | yes |
-| m.5.multiply-fractions~of-a-whole | fractionLine | no |
+| m.5.multiply-fractions~of-a-whole | tape | no |
 | m.5.divide-unit-fractions | fractionLine | no |
 | m.5.divide-unit-fractions~unit-by-whole | fractionBars | yes |
+| m.5.divide-unit-fractions~fraction-as-division | shareWholes | no |
 | m.5.volume-rectangular | unitCubes | yes |
+| m.5.volume-rectangular~two-boxes | unitCubes | yes |
 | m.5.coordinate-plane-q1 | coordinatePlane | no |
 | m.5.coordinate-plane-q1~move | coordinatePlane | no |
+| m.5.coordinate-plane-q1~distance | coordinatePlane | no |
 | s.4.energy-speed | skipCount | no |
 | s.4.energy-conversion~solar-oven | thermometers | no |
 | s.4.wave-patterns | wave | no |
@@ -299,6 +312,7 @@ its kind with `sliders: true | false`.
 | s.5.plants-sunlight-energy | bars | no |
 | s.5.earth-spheres~water-share | pieChart | no |
 | s.5.sun-star-brightness~two-flashlights | bars | no |
+| m.6.gcf-lcm~factor-tree | factorTree | no |
 | m.6.percent | grid100 | no |
 | m.7.circles | circle | no |
 | m.8.pythagorean | rightTriangle | no |

@@ -129,9 +129,25 @@ and each strand's skills sit together within a grade.
 
 - **Standard with no skill:** 3.NBT.2 (fluently add and subtract within 1,000 with strategies
   and algorithms) had no Grade 3 row; only `m.2.add-sub-1000` (2.NBT.7) existed. Added
-  `m.3.add-sub-1000`, "Add and subtract within 1,000", with `m.2.add-sub-1000` to refresh
+  `m.3.add-sub-1000`, "Add and subtract fluently within 1,000" (the Grade 2 row
+  keeps "Add and subtract within 1,000"), with `m.2.add-sub-1000` to refresh
   first. Pages: the main page (column addition), `~subtract-zeros` and `~word`.
 - **3.G.2** (partition shapes into equal areas) has no row of its own; it is covered by
   `m.3.fractions-number-line~shapes`. No new row.
 - **3.OA.8** writes "a letter standing for the unknown"; the app writes "?" before Grade 6, on
   purpose (no letters for numbers before the grade that teaches variables).
+
+### Math Grades 4–5 alignment (reviewer direction plan)
+
+- **Standards placed under the nearest skill (no new rows):** 4.NBT.4 (add and subtract
+  multi-digit numbers) under `m.4.place-value-million`; 4.OA.5 (patterns) under
+  `m.4.factors-multiples`; 4.MD.4 (line plots in eighths) under `m.4.add-fractions-like`;
+  5.NBT.3–4 (thousandths, compare, round) and 5.MD.1 (metric conversions) under
+  `m.5.powers-of-ten`; 5.MD.2 (line plots) under `m.5.add-fractions-unlike`; 5.NF.3 (a fraction
+  as a division) under `m.5.divide-unit-fractions`; 5.NF.5 (scaling) under
+  `m.5.multiply-fractions`; 5.OA.3 (two patterns) is the main page of
+  `m.5.coordinate-plane-q1`.
+- **Prime factorization** is not 4.OA.4: the factor tree moved to `m.6.gcf-lcm~factor-tree`
+  (a Grade 6 pilot until Grade 6 is built).
+- **The Grade 4 skill "long-division"** names a method CCSS gives to Grade 6 (6.NBT.2); the
+  title stays, and Grade 4's written work is partial quotients.
