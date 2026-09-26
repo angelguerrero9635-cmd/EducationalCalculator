@@ -60,7 +60,439 @@ function FigureView({ figure, scene, c }: { figure: Figure; scene: Scene; c: Pal
       return <Magnets poles={scene.poles ?? 'N–S'} c={c} />;
     case 'flashes':
       return <Flashes pattern={scene.flashes ?? '●'} c={c} />;
+    case 'lightPath':
+      return <LightPath light={scene.light ?? { lamp: true }} c={c} />;
+    case 'particles':
+      return <Particles state={scene.particles ?? { state: 'solid' }} c={c} />;
+    case 'earth':
+      return <Earth earth={scene.earth ?? { spot: 'top' }} c={c} />;
   }
+}
+
+/** An arrow from (x1, y1) to (x2, y2) with a small head at the end. */
+function Arrow({
+  x1,
+  y1,
+  x2,
+  y2,
+  c,
+}: {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  c: Palette;
+}) {
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  const head = 9;
+  const hx = (t: number) => x2 - head * Math.cos(a + t);
+  const hy = (t: number) => y2 - head * Math.sin(a + t);
+  return (
+    <Path
+      d={`M ${x1} ${y1} L ${x2} ${y2} M ${hx(0.45)} ${hy(0.45)} L ${x2} ${y2} L ${hx(-0.45)} ${hy(-0.45)}`}
+      stroke={c.chartHighlight}
+      strokeWidth={chart.stroke}
+      fill="none"
+    />
+  );
+}
+
+/**
+ * The path of light: from the lamp to the apple, then from the apple to the eye. With the
+ * lamp off there is no path; a hand over the eye stops the light; a mirror bounces it once
+ * more before it reaches the eye.
+ */
+function LightPath({ light, c }: { light: NonNullable<Scene['light']>; c: Palette }) {
+  return (
+    <Canvas aspect={0.58}>
+      {({ w, h }) => {
+        const lamp = { x: 40, y: 40 };
+        const apple = { x: w / 2 - 10, y: h - 70 };
+        const eye = { x: w - 44, y: h * 0.42 };
+        const mirror = { x: w - 30, y: 30 };
+        const rays = light.lamp
+          ? [0, 1, 2, 3, 4].map((i) => {
+              const t = Math.PI / 6 + (i * Math.PI) / 8;
+              return (
+                <Line
+                  key={i}
+                  x1={lamp.x + 18 * Math.cos(t)}
+                  y1={lamp.y + 18 * Math.sin(t)}
+                  x2={lamp.x + 30 * Math.cos(t)}
+                  y2={lamp.y + 30 * Math.sin(t)}
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.stroke}
+                />
+              );
+            })
+          : null;
+        return (
+          <Svg width={w} height={h}>
+            {/* lamp */}
+            <Circle
+              cx={lamp.x}
+              cy={lamp.y}
+              r={14}
+              fill={light.lamp ? c.chartHighlight : c.chartSurface}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            {rays}
+            <ChartText x={lamp.x} y={lamp.y + 46} fontSize={chart.label} textAnchor="middle">
+              {light.lamp ? 'lamp on' : 'lamp off'}
+            </ChartText>
+            {/* apple */}
+            <Circle
+              cx={apple.x}
+              cy={apple.y}
+              r={16}
+              fill={light.lamp ? c.chartFill : c.chartGrid}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            <ChartText x={apple.x} y={apple.y + 30} fontSize={chart.label} textAnchor="middle">
+              apple
+            </ChartText>
+            {/* eye */}
+            <Ellipse
+              cx={eye.x}
+              cy={eye.y}
+              rx={20}
+              ry={11}
+              fill={c.chartSurface}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            <Circle cx={eye.x} cy={eye.y} r={5} fill={c.chartInk} />
+            <ChartText x={eye.x} y={eye.y + 30} fontSize={chart.label} textAnchor="middle">
+              eye
+            </ChartText>
+            {light.blocker === 'hand' ? (
+              <G>
+                <Rect
+                  x={eye.x - 34}
+                  y={eye.y - 26}
+                  width={22}
+                  height={52}
+                  rx={6}
+                  fill={c.chartGrid}
+                  stroke={c.chartInk}
+                  strokeWidth={chart.stroke}
+                />
+                <ChartText x={eye.x - 23} y={eye.y - 32} fontSize={chart.tiny} textAnchor="middle">
+                  hand
+                </ChartText>
+              </G>
+            ) : null}
+            {light.blocker === 'mirror' ? (
+              <G>
+                <Line
+                  x1={mirror.x - 16}
+                  y1={mirror.y - 16}
+                  x2={mirror.x + 16}
+                  y2={mirror.y + 16}
+                  stroke={c.chartInk}
+                  strokeWidth={chart.stroke * 2}
+                />
+                <ChartText
+                  x={mirror.x - 26}
+                  y={mirror.y - 10}
+                  fontSize={chart.tiny}
+                  textAnchor="end"
+                >
+                  mirror
+                </ChartText>
+              </G>
+            ) : null}
+            {light.lamp ? (
+              <Arrow x1={lamp.x + 16} y1={lamp.y + 14} x2={apple.x - 12} y2={apple.y - 12} c={c} />
+            ) : null}
+            {light.lamp && light.blocker === 'mirror' ? (
+              <G>
+                <Arrow
+                  x1={apple.x + 12}
+                  y1={apple.y - 14}
+                  x2={mirror.x - 8}
+                  y2={mirror.y + 8}
+                  c={c}
+                />
+                <Arrow x1={mirror.x - 4} y1={mirror.y + 14} x2={eye.x - 4} y2={eye.y - 14} c={c} />
+              </G>
+            ) : light.lamp ? (
+              <Arrow
+                x1={apple.x + 14}
+                y1={apple.y - 10}
+                x2={light.blocker === 'hand' ? eye.x - 38 : eye.x - 22}
+                y2={light.blocker === 'hand' ? eye.y + 10 : eye.y + 4}
+                c={c}
+              />
+            ) : null}
+            <ChartText x={w / 2} y={h - 6} fontSize={chart.label} textAnchor="middle">
+              {!light.lamp
+                ? 'no light: nothing to see'
+                : light.blocker === 'hand'
+                  ? 'the light is stopped before the eye'
+                  : light.blocker === 'mirror'
+                    ? 'lamp → apple → mirror → eye'
+                    : 'lamp → apple → eye'}
+            </ChartText>
+          </Svg>
+        );
+      }}
+    </Canvas>
+  );
+}
+
+/** Fixed jitter so the same scene always draws the same picture. */
+const JITTER = [
+  0.3, -0.4, 0.1, 0.45, -0.2, 0.35, -0.45, 0.05, 0.25, -0.3, 0.4, -0.1, 0.15, -0.35, 0.2, -0.25,
+];
+
+/** Particles in a box: packed rows for a solid, a crowd for a liquid, a few far apart for a gas. */
+function Particles({ state, c }: { state: NonNullable<Scene['particles']>; c: Palette }) {
+  return (
+    <Canvas aspect={0.5}>
+      {({ w, h }) => {
+        const boxW = state.squeezed ? Math.min(w, h) * 0.5 : Math.min(w, h) * 0.9;
+        const boxH = h - 40;
+        const x0 = w / 2 - boxW / 2;
+        const y0 = 12;
+        const r = 7;
+        const dots: { x: number; y: number; other: boolean }[] = [];
+        if (state.state === 'solid') {
+          const cols = 8;
+          const rows = 5;
+          const gap = 2 * r + 1;
+          for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+              dots.push({
+                x: x0 + boxW / 2 + (j - (cols - 1) / 2) * gap,
+                y: y0 + boxH - r - 2 - i * gap,
+                other: state.mixed ? (i + j) % 3 === 0 : false,
+              });
+            }
+          }
+        } else if (state.state === 'liquid') {
+          const cols = 8;
+          const rows = 4;
+          const gap = 2 * r + 6;
+          for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+              const k = i * cols + j;
+              dots.push({
+                x: x0 + boxW / 2 + (j - (cols - 1) / 2) * gap + JITTER[k % 16]! * 6,
+                y: y0 + boxH - r - 4 - i * gap + JITTER[(k + 5) % 16]! * 5,
+                other: state.mixed ? (i + j) % 3 === 0 : false,
+              });
+            }
+          }
+        } else {
+          const n = 10;
+          for (let k = 0; k < n; k++) {
+            dots.push({
+              x: x0 + r + 4 + ((boxW - 2 * r - 8) * ((k * 7) % n)) / (n - 1) + JITTER[k]! * 8,
+              y:
+                y0 +
+                r +
+                4 +
+                ((boxH - 2 * r - 8) * ((k * 3) % n)) / (n - 1) +
+                JITTER[(k + 8) % 16]! * 8,
+              other: state.mixed ? k % 3 === 0 : false,
+            });
+          }
+        }
+        return (
+          <Svg width={w} height={h}>
+            <Rect
+              x={x0}
+              y={y0}
+              width={boxW}
+              height={boxH}
+              fill={c.chartSurface}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            {dots.map((d, i) => (
+              <Circle
+                key={i}
+                cx={d.x}
+                cy={d.y}
+                r={r}
+                fill={d.other ? c.chartInk : c.chartHighlight}
+                stroke={c.chartInk}
+                strokeWidth={chart.strokeLight}
+              />
+            ))}
+            {state.state === 'gas'
+              ? dots
+                  .slice(0, 4)
+                  .map((d, i) => (
+                    <Line
+                      key={`m${i}`}
+                      x1={d.x + r}
+                      y1={d.y - r}
+                      x2={d.x + r + 10}
+                      y2={d.y - r - 10}
+                      stroke={c.chartMuted}
+                      strokeWidth={chart.strokeLight}
+                    />
+                  ))
+              : null}
+            <ChartText x={w / 2} y={h - 6} fontSize={chart.label} textAnchor="middle">
+              {state.squeezed
+                ? 'the same particles in less room'
+                : state.mixed
+                  ? 'two kinds of particles, mixed'
+                  : state.state === 'solid'
+                    ? 'packed tight, only wiggling'
+                    : state.state === 'liquid'
+                      ? 'close, sliding past each other'
+                      : 'far apart, flying about'}
+            </ChartText>
+          </Svg>
+        );
+      }}
+    </Canvas>
+  );
+}
+
+/**
+ * A globe with a person at a spot and a ball let go beside them: the pull arrow points to
+ * the center of Earth. Lit from a sun on the left, one half is day; the spot then marks the
+ * time of day as Earth turns toward the east.
+ */
+function Earth({ earth, c }: { earth: NonNullable<Scene['earth']>; c: Palette }) {
+  return (
+    <Canvas aspect={0.8}>
+      {({ w, h }) => {
+        const cx = earth.sunlit ? w / 2 + 24 : w / 2;
+        const cy = h / 2 + 6;
+        const R = Math.min(w * 0.3, h * 0.28);
+        // The spot's angle (y down): top, right side, bottom. Lit from the left, Earth turns
+        // counterclockwise seen from above the North Pole, so the top of the globe is turning
+        // into the light (morning) and the bottom out of it (evening).
+        const angle = earth.sunlit
+          ? { noon: Math.PI, morning: -Math.PI / 2, evening: Math.PI / 2, midnight: 0 }[
+              earth.sunlit
+            ]
+          : { top: -Math.PI / 2, side: 0, bottom: Math.PI / 2 }[earth.spot];
+        const px = cx + R * Math.cos(angle);
+        const py = cy + R * Math.sin(angle);
+        const ox = Math.cos(angle);
+        const oy = Math.sin(angle);
+        const tx = -oy;
+        const ty = ox;
+        const ballDist = earth.thrown ? 56 : 32;
+        const ball = { x: px + ox * ballDist + tx * 20, y: py + oy * ballDist + ty * 20 };
+        // A turning arrow over the top of the globe, pointing the way Earth turns.
+        const ar = R + 22;
+        const a0 = -Math.PI / 2 + 0.55;
+        const a1 = -Math.PI / 2 - 0.55;
+        const end = { x: cx + ar * Math.cos(a1), y: cy + ar * Math.sin(a1) };
+        return (
+          <Svg width={w} height={h}>
+            {earth.sunlit ? (
+              <G>
+                <Circle
+                  cx={24}
+                  cy={cy}
+                  r={16}
+                  fill={c.chartHighlight}
+                  stroke={c.chartInk}
+                  strokeWidth={chart.stroke}
+                />
+                <ChartText x={24} y={cy + 32} fontSize={chart.tiny} textAnchor="middle">
+                  Sun
+                </ChartText>
+              </G>
+            ) : null}
+            <Circle
+              cx={cx}
+              cy={cy}
+              r={R}
+              fill={c.chartFill}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            {earth.sunlit ? (
+              <Path
+                d={`M ${cx} ${cy - R} A ${R} ${R} 0 0 1 ${cx} ${cy + R} Z`}
+                fill={c.chartInk}
+                opacity={0.45}
+              />
+            ) : null}
+            <Circle cx={cx} cy={cy} r={4} fill={c.chartInk} />
+            <ChartText x={cx} y={cy + 18} fontSize={chart.tiny} textAnchor="middle">
+              center
+            </ChartText>
+            {/* the person (or, lit, the town): a body and a head standing out from the surface */}
+            <Line
+              x1={px}
+              y1={py}
+              x2={px + ox * 22}
+              y2={py + oy * 22}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke * 1.5}
+            />
+            <Circle
+              cx={px + ox * 28}
+              cy={py + oy * 28}
+              r={6}
+              fill={c.chartSurface}
+              stroke={c.chartInk}
+              strokeWidth={chart.stroke}
+            />
+            {earth.sunlit ? (
+              <G>
+                <Path
+                  d={`M ${cx + ar * Math.cos(a0)} ${cy + ar * Math.sin(a0)} A ${ar} ${ar} 0 0 0 ${end.x} ${end.y}`}
+                  stroke={c.chartMuted}
+                  strokeWidth={chart.stroke}
+                  fill="none"
+                />
+                <Path
+                  d={`M ${end.x} ${end.y} l 9 -6 M ${end.x} ${end.y} l 10 5`}
+                  stroke={c.chartMuted}
+                  strokeWidth={chart.stroke}
+                  fill="none"
+                />
+                <ChartText x={w - 8} y={18} fontSize={chart.tiny} textAnchor="end">
+                  Earth turns this way
+                </ChartText>
+              </G>
+            ) : (
+              <G>
+                <Circle
+                  cx={ball.x}
+                  cy={ball.y}
+                  r={7}
+                  fill={c.chartHighlight}
+                  stroke={c.chartInk}
+                  strokeWidth={chart.stroke}
+                />
+                <Arrow x1={ball.x} y1={ball.y} x2={ball.x - ox * 26} y2={ball.y - oy * 26} c={c} />
+                {earth.thrown ? (
+                  <Path
+                    d={`M ${px + ox * 30 + tx * 20} ${py + oy * 30 + ty * 20} L ${ball.x} ${ball.y}`}
+                    stroke={c.chartMuted}
+                    strokeWidth={chart.strokeLight}
+                    strokeDasharray={chart.dashFine}
+                  />
+                ) : null}
+              </G>
+            )}
+            <ChartText x={w / 2} y={h - 6} fontSize={chart.label} textAnchor="middle">
+              {earth.sunlit
+                ? `${earth.sunlit[0]!.toUpperCase()}${earth.sunlit.slice(1)} at the marked town`
+                : earth.thrown
+                  ? 'thrown up: the pull is still toward the center'
+                  : 'the pull is toward the center: that is down'}
+            </ChartText>
+          </Svg>
+        );
+      }}
+    </Canvas>
+  );
 }
 
 /** A thing built from its parts, top to bottom, the highlighted one filled and its job beside it. */

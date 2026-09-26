@@ -13,7 +13,7 @@ independent AI review), and the next section starts only after the owner approve
 | 3   | Math 6–8                                                                                            | 30      |                            |
 | 4   | Math 9–10                                                                                           | 21      |                            |
 | 5   | Math 11–12                                                                                          | 22      |                            |
-| 6   | Science K–5                                                                                         | 39      | K–3 built, reviewed        |
+| 6   | Science K–5                                                                                         | 39      | K–3 reviewed; 4–5 built    |
 | 7   | Science 6–8                                                                                         | 21      |                            |
 | 8   | Science 9–12                                                                                        | 34      |                            |
 | 9   | College Math                                                                                        | 25      |                            |
@@ -33,6 +33,22 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
 
 ## Section notes
 
+- **Section 6, Science Grades 4–5.** Built from the lesson reviewer's plan
+  (`.review/science-4-5-plan.md`), not yet reviewed. 16 skill pages plus 23 problem types.
+  Calculators where the class measures something honest: a ball timed over a track, a solar
+  oven's temperature rise, rope length and waves for wavelength, crest-to-trough for
+  amplitude, a 15-second pulse count, rocks weighed before and after shaking, mass kept when
+  salt dissolves, gas lost from a fizz, the pull on a stack of washers, a plant's gain against
+  the soil's loss, Earth's water split into salt, frozen and liquid fresh water, and two
+  flashlights at different distances. Sorts for what devices give out, messages by light or
+  sound, renewable resources, hazard protections, what dissolves, new substance or mixture,
+  food-web roles, what a plant takes in, Earth's spheres and star patterns by season.
+  Sequences for seeing to catching, rock layers, separating a mixture, a food chain and water
+  through the spheres. Observations for a ramp and a cup, a stream table, evaporation, a
+  seedling in water, a flashlight's circle, shadows through the day and daylight by month.
+  New explore figures: a light path (lamp, apple, eye, hand or mirror), particles (solid,
+  liquid, gas, mixed, squeezed) and Earth (the pull toward the center, and the sunlit half
+  through a day).
 - **Section 6, Science K–3.** 24 skill pages plus 31 problem types after two reviews (six of
   them sort, sequence, explore or observe layouts rather than calculators), each with one honest
   counting or measuring model from the class investigation (NGSS K-PS2 to 3-ESS2): pushes

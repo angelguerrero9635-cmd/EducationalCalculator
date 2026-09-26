@@ -68,6 +68,7 @@ describe('unit conversions (exact definitions)', () => {
       '°',
       'drops',
       'cups',
+      'liters',
       'feet',
       'inches',
       'meters',

@@ -121,6 +121,9 @@ describe.each(LAYOUTS.map((l) => [l.id, l] as [string, LayoutDef]))('layout %s',
           if (l.figure.kind === 'dots') expect(s.dots).toBeDefined();
           if (l.figure.kind === 'magnets') expect(s.poles).toBeDefined();
           if (l.figure.kind === 'flashes') expect(s.flashes).toBeDefined();
+          if (l.figure.kind === 'lightPath') expect(s.light).toBeDefined();
+          if (l.figure.kind === 'particles') expect(s.particles).toBeDefined();
+          if (l.figure.kind === 'earth') expect(s.earth).toBeDefined();
         }
         break;
       case 'observe':
@@ -142,7 +145,10 @@ describe.each(LAYOUTS.map((l) => [l.id, l] as [string, LayoutDef]))('layout %s',
       if (bad) out.push(`${where}: ${bad[1]} — "${text}"`);
       if (prose && !/[.!?”…]$/.test(text))
         out.push(`${where}: sentence needs a period — "${text}"`);
-      if (!prose && /\.$/.test(text)) out.push(`${where}: no period on a label — "${text}"`);
+      // (a time label ends in a.m. or p.m.: that period is part of the abbreviation)
+      if (!prose && /\.$/.test(text) && !/\b[ap]\.m\.$/.test(text)) {
+        out.push(`${where}: no period on a label — "${text}"`);
+      }
       if (prose && limit !== undefined) {
         const long = sentences(text).find((s) => words(s) > limit);
         if (long) out.push(`${where}: ${words(long)} words, limit ${limit} — "${long}"`);

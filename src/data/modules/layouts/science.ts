@@ -421,4 +421,785 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       return `Warmest: ${seasons[hi]} (${v[hi]} ${F}). Coldest: ${seasons[lo]} (${v[lo]} ${F}). ${seasons[hi]![0]!.toUpperCase()}${seasons[hi]!.slice(1)} is ${v[hi]! - v[lo]!} ${F} warmer than ${seasons[lo]}.`;
     },
   },
+  // ── Grade 4 ──
+  {
+    kind: 'observe',
+    id: 's.4.energy-speed~ramp',
+    title: 'Ramp height and how far the cup slides',
+    use: 'Use this to record how far the cup slides for each release height on the ramp.',
+    assumptions: [
+      'Let a marble roll down a ramp and hit a paper cup at the bottom.',
+      'Start the marble higher each time. Measure how far the cup slides.',
+      'The marble’s energy passes to the cup when they hit.',
+    ],
+    columns: ['5 cm', '10 cm', '15 cm', '20 cm', '25 cm'],
+    rowLabel: 'Cup slid',
+    unit: 'cm',
+    max: 60,
+    step: 5,
+    initial: [10, 20, 30, 40, 50],
+    pattern: (v) => {
+      const up = v.slice(1).every((x, i) => x >= v[i]!);
+      if (v.every((x) => x === v[0])) return 'The cup slid the same distance every time.';
+      return up
+        ? `The higher the start, the faster the marble and the farther the cup slides: ${v[0]} cm up to ${v[v.length - 1]} cm.`
+        : 'The distances go up and down. Try each height again and keep the cup in the same spot.';
+    },
+  },
+  {
+    kind: 'sort',
+    id: 's.4.energy-conversion',
+    assumptions: [
+      'Every device takes energy in and gives energy out in another form.',
+      'Most of these take in electric current from a battery or a plug.',
+      'Some give out two kinds: a toaster glows and heats. Sort each by its main job.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'What does the device mainly give out when it is switched on?',
+    bins: [
+      { id: 'light', label: 'Light', why: 'Light carries energy you can see.' },
+      { id: 'heat', label: 'Heat', why: 'Heat warms what it touches.' },
+      { id: 'sound', label: 'Sound', why: 'Sound is energy you hear.' },
+      { id: 'motion', label: 'Motion', why: 'A moving part has energy.' },
+    ],
+    cards: [
+      { label: 'Flashlight', bin: 'light' },
+      { label: 'Lamp', bin: 'light' },
+      { label: 'Toaster', bin: 'heat' },
+      { label: 'Hair dryer', bin: 'heat' },
+      { label: 'Electric kettle', bin: 'heat' },
+      { label: 'Buzzer', bin: 'sound' },
+      { label: 'Speaker', bin: 'sound' },
+      { label: 'Doorbell', bin: 'sound' },
+      { label: 'Fan', bin: 'motion' },
+      { label: 'Electric car', bin: 'motion' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.4.vision-light',
+    assumptions: [
+      'You see an object when light from it enters your eye.',
+      'Most objects do not make light. They bounce light from a lamp or the sun.',
+      'Tap a scene to follow the light.',
+    ],
+    figure: { kind: 'lightPath' },
+    scenes: [
+      {
+        label: 'Lamp on',
+        light: { lamp: true },
+        lines: [
+          'Light leaves the lamp and bounces off the apple.',
+          'The bounced light enters your eye. You see the apple.',
+        ],
+      },
+      {
+        label: 'Lamp off',
+        light: { lamp: false },
+        lines: [
+          'No light reaches the apple, so none bounces into your eye.',
+          'In a fully dark room you see nothing, even with your eyes open.',
+        ],
+      },
+      {
+        label: 'Eyes covered',
+        light: { lamp: true, blocker: 'hand' },
+        lines: ['Light still bounces off the apple.', 'A hand stops it before it enters your eye.'],
+      },
+      {
+        label: 'Mirror',
+        light: { lamp: true, blocker: 'mirror' },
+        lines: [
+          'The light bounces off the apple, then off the mirror.',
+          'It enters your eye, so you see the apple in the mirror.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.4.vision-light~signals',
+    title: 'Messages sent by light or by sound',
+    use: 'Use this to sort ways of sending a message by what carries the pattern.',
+    assumptions: [
+      'A message can travel as a pattern: flashes, colors, beats or beeps.',
+      'Light patterns are seen. Sound patterns are heard.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'What carries the pattern?',
+    bins: [
+      { id: 'light', label: 'Light', why: 'A pattern of flashes or colors you see.' },
+      { id: 'sound', label: 'Sound', why: 'A pattern of beats or beeps you hear.' },
+    ],
+    cards: [
+      { label: 'Flashlight code', bin: 'light' },
+      { label: 'Lighthouse', bin: 'light' },
+      { label: 'Traffic light', bin: 'light' },
+      { label: 'Flag colors on a ship', bin: 'light' },
+      { label: 'Drum beats', bin: 'sound' },
+      { label: 'Ship’s horn', bin: 'sound' },
+      { label: 'Buzzer code', bin: 'sound' },
+      { label: 'School bell', bin: 'sound' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.4.internal-structures',
+    assumptions: [
+      'Some parts are outside, like skin and eyes. Some are inside, like the heart and lungs.',
+      'Each part has a job that helps the animal live and grow.',
+      'Tap a part to read its job.',
+    ],
+    figure: {
+      kind: 'parts',
+      parts: [
+        { name: 'Brain', job: 'Takes in messages from the senses and decides what to do.' },
+        { name: 'Heart', job: 'Pumps blood to every part of the body.' },
+        { name: 'Lungs', job: 'Take in air and pass oxygen to the blood.' },
+        { name: 'Stomach', job: 'Breaks food down so the body can use it.' },
+        { name: 'Bones', job: 'Hold the body up and protect the soft parts.' },
+        { name: 'Skin', job: 'Keeps water in and germs out. Feels touch.' },
+      ],
+    },
+    scenes: [
+      {
+        label: 'Brain',
+        part: 'Brain',
+        lines: [
+          'The brain gets messages from the eyes, ears and skin.',
+          'It decides what the body does next.',
+        ],
+      },
+      {
+        label: 'Heart',
+        part: 'Heart',
+        lines: [
+          'The heart is a muscle that pumps blood.',
+          'Blood carries food and oxygen to every part.',
+        ],
+      },
+      {
+        label: 'Lungs',
+        part: 'Lungs',
+        lines: [
+          'The lungs fill with air when you breathe in.',
+          'Oxygen passes from the air into the blood.',
+        ],
+      },
+      {
+        label: 'Stomach',
+        part: 'Stomach',
+        lines: ['The stomach mashes and mixes food.', 'The body can then take in what it needs.'],
+      },
+      {
+        label: 'Bones',
+        part: 'Bones',
+        lines: [
+          'Bones hold the body up.',
+          'The skull protects the brain; the ribs protect the heart and lungs.',
+        ],
+      },
+      {
+        label: 'Skin',
+        part: 'Skin',
+        lines: [
+          'Skin covers the outside of the body.',
+          'It keeps germs out and feels heat, cold and touch.',
+        ],
+      },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.4.internal-structures~senses',
+    title: 'From seeing to catching',
+    use: 'Use this to put the steps from seeing a ball to catching it in order.',
+    assumptions: [
+      'Senses take in information. Nerves carry it to the brain.',
+      'The brain decides and sends a message back to the muscles.',
+      'Tap the steps in order, starting with the light.',
+    ],
+    question: 'Put the steps in order. Tap the first one, then the next.',
+    stages: [
+      { label: 'Light from the ball enters the eye' },
+      { label: 'The eye sends a message along a nerve' },
+      { label: 'The brain reads the message' },
+      { label: 'The brain sends a message to the arm' },
+      { label: 'The arm moves to catch the ball' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.4.weathering~stream-table',
+    title: 'Water poured and sand moved',
+    use: 'Use this to record how far the sand moved for each cup of water poured.',
+    assumptions: [
+      'Pour water down a tray of sand, one cup more each time.',
+      'Measure how far down the tray the sand moved.',
+      'Moving water carries sand away: that is erosion.',
+    ],
+    columns: ['1 cup', '2 cups', '3 cups', '4 cups', '5 cups'],
+    rowLabel: 'Sand moved',
+    unit: 'cm',
+    max: 50,
+    step: 5,
+    initial: [5, 10, 20, 30, 40],
+    pattern: (v) => {
+      if (v.every((x) => x === v[0])) return 'The sand moved the same distance each time.';
+      const up = v.slice(1).every((x, i) => x >= v[i]!);
+      return up
+        ? `More water moved the sand farther: from ${v[0]} cm to ${v[v.length - 1]} cm. More water means faster erosion.`
+        : 'The distances go up and down. Pour the same way each time and measure again.';
+    },
+  },
+  {
+    kind: 'sequence',
+    id: 's.4.weathering~layers-order',
+    title: 'How the rock layers formed',
+    use: 'Use this to put the events that made the rock layers in order.',
+    assumptions: [
+      'Layers settle one on top of another, so the bottom layer formed first.',
+      'The bottom layer is the oldest. The top layer is the youngest.',
+      'Tap the events in order, starting with the oldest.',
+    ],
+    question: 'Put the events in order, oldest first.',
+    stages: [
+      { label: 'Sand settles: the bottom layer forms' },
+      { label: 'Mud settles on top' },
+      { label: 'Shells settle: a layer with fossils forms' },
+      { label: 'The land is pushed up' },
+      { label: 'A river cuts down through the layers' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.4.natural-resources',
+    assumptions: [
+      'Energy for heat, light and electric current comes from natural resources.',
+      'Burning coal, oil and gas puts smoke and gases into the air.',
+      'Renewable does not mean harmless: a dam changes a river.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Will this energy source run out?',
+    bins: [
+      { id: 'renewable', label: 'Renewable', why: 'Nature makes more of it as we use it.' },
+      {
+        id: 'nonrenewable',
+        label: 'Nonrenewable',
+        why: 'Once used, it is gone for a very long time.',
+      },
+    ],
+    cards: [
+      { label: 'Sunlight', bin: 'renewable' },
+      { label: 'Wind', bin: 'renewable' },
+      { label: 'Moving water', bin: 'renewable' },
+      { label: 'Wood', bin: 'renewable' },
+      { label: 'Heat from inside Earth', bin: 'renewable' },
+      { label: 'Coal', bin: 'nonrenewable' },
+      { label: 'Oil', bin: 'nonrenewable' },
+      { label: 'Natural gas', bin: 'nonrenewable' },
+      { label: 'Uranium', bin: 'nonrenewable' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.4.natural-resources~hazards',
+    title: 'Protecting against natural hazards',
+    use: 'Use this to match each protection to the hazard it helps with.',
+    assumptions: [
+      'People cannot stop floods, earthquakes, wildfires or hurricanes.',
+      'They can build and plan to lessen the harm.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Which hazard does this protect against?',
+    bins: [
+      { id: 'flood', label: 'Flood', why: 'Keep water out, or keep homes above it.' },
+      { id: 'earthquake', label: 'Earthquake', why: 'Keep buildings and shelves from falling.' },
+      { id: 'wildfire', label: 'Wildfire', why: 'Leave nothing near homes for the fire to burn.' },
+      { id: 'hurricane', label: 'Hurricane', why: 'Guard against strong wind and leave in time.' },
+    ],
+    cards: [
+      { label: 'Levee along a river', bin: 'flood' },
+      { label: 'Sandbags', bin: 'flood' },
+      { label: 'House raised on posts', bin: 'flood' },
+      { label: 'Braced walls', bin: 'earthquake' },
+      { label: 'Shelves bolted to the wall', bin: 'earthquake' },
+      { label: 'Brush cleared near houses', bin: 'wildfire' },
+      { label: 'Fire break', bin: 'wildfire' },
+      { label: 'Storm shutters', bin: 'hurricane' },
+      { label: 'Evacuation route', bin: 'hurricane' },
+    ],
+  },
+  // ── Grade 5 ──
+  {
+    kind: 'explore',
+    id: 's.5.particles-matter',
+    assumptions: [
+      'Everything is made of particles far too small to see, even with a microscope.',
+      'The particles keep moving. Warmer means faster.',
+      'Tap a scene to see how the particles are arranged.',
+    ],
+    figure: { kind: 'particles' },
+    scenes: [
+      {
+        label: 'Solid',
+        particles: { state: 'solid' },
+        lines: ['The particles are packed tight and only wiggle.', 'A solid keeps its own shape.'],
+      },
+      {
+        label: 'Liquid',
+        particles: { state: 'liquid' },
+        lines: [
+          'The particles are close but slide past each other.',
+          'A liquid takes the shape of its cup.',
+        ],
+      },
+      {
+        label: 'Gas',
+        particles: { state: 'gas' },
+        lines: [
+          'The particles are far apart and fly about.',
+          'A gas spreads out to fill its container.',
+        ],
+      },
+      {
+        label: 'Sugar in water',
+        particles: { state: 'liquid', mixed: true },
+        lines: [
+          'The sugar breaks into particles too small to see.',
+          'They spread among the water particles. The water tastes sweet.',
+        ],
+      },
+      {
+        label: 'Squeezed air',
+        particles: { state: 'gas', squeezed: true },
+        lines: ['Air is made of particles too.', 'Pushing them into less room takes a force.'],
+      },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.5.particles-matter~evaporation',
+    title: 'Water in an open cup, day by day',
+    use: 'Use this to record the water level in an open cup each day.',
+    assumptions: [
+      'Mark the water level on an open cup each day.',
+      'The water particles leave as a gas you cannot see.',
+      'Tap a bar to change that day’s level.',
+    ],
+    columns: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6'],
+    rowLabel: 'Water level',
+    unit: 'mm',
+    max: 100,
+    step: 5,
+    initial: [90, 80, 70, 65, 55, 45],
+    pattern: (v) => {
+      if (v.every((x) => x === v[0])) return 'The level stayed the same. Is the cup covered?';
+      const down = v.slice(1).every((x, i) => x <= v[i]!);
+      return down
+        ? `The level fell from ${v[0]} mm to ${v[v.length - 1]} mm. The water left as a gas you cannot see.`
+        : 'The level went up on some days. Did someone add water, or did it rain in?';
+    },
+  },
+  {
+    kind: 'sort',
+    id: 's.5.particles-matter~properties',
+    title: 'Does it dissolve in water?',
+    use: 'Use this to sort materials by whether they dissolve in water.',
+    assumptions: [
+      'Stir a spoonful into a cup of water and wait a minute.',
+      'A material that dissolves seems to disappear, but its particles are still there.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Does it dissolve in water?',
+    bins: [
+      {
+        id: 'dissolves',
+        label: 'Dissolves',
+        why: 'It spreads through the water and seems to disappear.',
+      },
+      {
+        id: 'not',
+        label: 'Does not dissolve',
+        why: 'You can still see it, floating or sitting on the bottom.',
+      },
+    ],
+    cards: [
+      { label: 'Salt', bin: 'dissolves' },
+      { label: 'Sugar', bin: 'dissolves' },
+      { label: 'Baking soda', bin: 'dissolves' },
+      { label: 'Sand', bin: 'not' },
+      { label: 'Gravel', bin: 'not' },
+      { label: 'Pepper', bin: 'not' },
+      { label: 'Cooking oil', bin: 'not' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.5.mixtures',
+    assumptions: [
+      'Signs of a new substance: bubbles of gas, a new color, heat or light, a solid forming.',
+      'A mixture can be separated again: with a filter, a magnet or by letting the water evaporate.',
+      'Dissolving does not make a new substance.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Did mixing make a new substance?',
+    bins: [
+      {
+        id: 'new',
+        label: 'New substance',
+        why: 'A gas, a new color, heat or a new solid appeared.',
+      },
+      {
+        id: 'mixture',
+        label: 'Just a mixture',
+        why: 'The same substances, mixed. You can get them back.',
+      },
+    ],
+    cards: [
+      { label: 'Baking soda and vinegar', bin: 'new' },
+      { label: 'Iron left in wet air (rust)', bin: 'new' },
+      { label: 'Wood burning', bin: 'new' },
+      { label: 'Milk and lemon juice (curdles)', bin: 'new' },
+      { label: 'Salt in water', bin: 'mixture' },
+      { label: 'Sand in water', bin: 'mixture' },
+      { label: 'Oil and water', bin: 'mixture' },
+      { label: 'Sugar in tea', bin: 'mixture' },
+      { label: 'Iron filings and sand', bin: 'mixture' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.5.mixtures~separate',
+    title: 'Separate sand, salt and iron filings',
+    use: 'Use this to put the steps for separating sand, salt and iron filings in order.',
+    assumptions: [
+      'Each step uses one property of one substance.',
+      'Iron is pulled by a magnet. Salt dissolves. Sand does not.',
+      'Tap the steps in order.',
+    ],
+    question: 'Put the steps in order. Tap the first one, then the next.',
+    stages: [
+      { label: 'Pass a magnet over the mix: the iron filings stick' },
+      { label: 'Stir the rest into water: the salt dissolves' },
+      { label: 'Pour it through a filter: the sand stays behind' },
+      { label: 'Let the salt water evaporate: the salt is left' },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.5.gravity-down',
+    assumptions: [
+      'Gravity is a pull between Earth and every object.',
+      'Down means toward the center of Earth, wherever you stand.',
+      'Tap a scene to move the person around Earth.',
+    ],
+    figure: { kind: 'earth' },
+    scenes: [
+      {
+        label: 'At the top',
+        earth: { spot: 'top' },
+        lines: ['The ball falls toward the center of Earth.', 'We call that direction down.'],
+      },
+      {
+        label: 'On the side',
+        earth: { spot: 'side' },
+        lines: ['Down still points to the center of Earth.', 'The person does not feel sideways.'],
+      },
+      {
+        label: 'At the bottom',
+        earth: { spot: 'bottom' },
+        lines: [
+          'People on the far side of Earth are not upside down.',
+          'Down is toward the center for them too.',
+        ],
+      },
+      {
+        label: 'Thrown up',
+        earth: { spot: 'top', thrown: true },
+        lines: ['The ball slows, stops and falls back.', 'Gravity pulls it down the whole time.'],
+      },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.5.food-webs',
+    assumptions: [
+      'Every food web starts with the sun.',
+      'Arrows in a food web point the way matter and energy move: from the eaten to the eater.',
+      'Decomposers return matter to the soil for plants to use again.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'What is its role in the food web?',
+    bins: [
+      {
+        id: 'producer',
+        label: 'Producer',
+        why: 'Makes its own food from sunlight, air and water.',
+      },
+      { id: 'consumer', label: 'Consumer', why: 'Eats plants or animals.' },
+      {
+        id: 'decomposer',
+        label: 'Decomposer',
+        why: 'Breaks down dead things and returns matter to the soil.',
+      },
+    ],
+    cards: [
+      { label: 'Grass', bin: 'producer' },
+      { label: 'Oak tree', bin: 'producer' },
+      { label: 'Algae', bin: 'producer' },
+      { label: 'Rabbit', bin: 'consumer' },
+      { label: 'Deer', bin: 'consumer' },
+      { label: 'Hawk', bin: 'consumer' },
+      { label: 'Frog', bin: 'consumer' },
+      { label: 'Mushroom', bin: 'decomposer' },
+      { label: 'Bacteria', bin: 'decomposer' },
+      { label: 'Earthworm', bin: 'decomposer' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.5.food-webs~chain-order',
+    title: 'A food chain from the sun',
+    use: 'Use this to put a food chain in order, starting from the sun.',
+    assumptions: [
+      'Each arrow in a food chain means: is eaten by.',
+      'Energy from the sun passes along the chain.',
+      'Tap the living things in order, starting with the sun.',
+    ],
+    question: 'Put the food chain in order, starting with the sun.',
+    stages: [
+      { label: 'Sun' },
+      { label: 'Grass' },
+      { label: 'Grasshopper' },
+      { label: 'Frog' },
+      { label: 'Snake' },
+      { label: 'Hawk' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.5.plants-sunlight-energy~needs',
+    title: 'What a plant takes in',
+    use: 'Use this to sort what a plant takes in by where it comes from.',
+    assumptions: [
+      'A plant makes its food from air and water, using the energy of sunlight.',
+      'Soil gives only a little: some minerals.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Where does the plant get it?',
+    bins: [
+      {
+        id: 'air',
+        label: 'From the air',
+        why: 'Leaves take in carbon dioxide through tiny holes.',
+      },
+      { id: 'water', label: 'From water and soil', why: 'Roots take in water and a few minerals.' },
+      { id: 'sun', label: 'From the sun', why: 'Leaves catch the energy in sunlight.' },
+    ],
+    cards: [
+      { label: 'Carbon dioxide', bin: 'air' },
+      { label: 'Water', bin: 'water' },
+      { label: 'Minerals', bin: 'water' },
+      { label: 'Light energy', bin: 'sun' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.5.plants-sunlight-energy~water-only',
+    title: 'A seedling grown in water only',
+    use: 'Use this to record a seedling’s mass each week when it grows in water with no soil.',
+    assumptions: [
+      'Grow a seedling in a jar of water, with no soil at all.',
+      'Weigh it each week.',
+      'Tap a bar to change that week’s mass.',
+    ],
+    columns: ['Week 0', 'Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+    rowLabel: 'Mass',
+    unit: 'g',
+    max: 60,
+    step: 1,
+    initial: [2, 5, 10, 18, 28, 40],
+    pattern: (v) => {
+      const gained = v[v.length - 1]! - v[0]!;
+      if (gained <= 0) return 'The seedling did not gain mass. Did it get enough light?';
+      return `It gained ${gained} g with no soil at all. The new mass came from water and air.`;
+    },
+  },
+  {
+    kind: 'sort',
+    id: 's.5.earth-spheres',
+    assumptions: [
+      'Earth has four spheres: rock, water, air and living things.',
+      'The spheres touch and change each other: rain wears rock, roots split it, wind moves sand.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'Which sphere is it part of?',
+    bins: [
+      { id: 'geo', label: 'Geosphere', why: 'Rock, soil and the ground.' },
+      { id: 'hydro', label: 'Hydrosphere', why: 'All the water: oceans, rivers and ice.' },
+      { id: 'atmo', label: 'Atmosphere', why: 'The air around Earth.' },
+      { id: 'bio', label: 'Biosphere', why: 'Every living thing.' },
+    ],
+    cards: [
+      { label: 'Mountain', bin: 'geo' },
+      { label: 'Soil', bin: 'geo' },
+      { label: 'Sand', bin: 'geo' },
+      { label: 'Ocean', bin: 'hydro' },
+      { label: 'River', bin: 'hydro' },
+      { label: 'Glacier', bin: 'hydro' },
+      { label: 'Wind', bin: 'atmo' },
+      { label: 'Oxygen in the air', bin: 'atmo' },
+      { label: 'Tree', bin: 'bio' },
+      { label: 'Fish', bin: 'bio' },
+      { label: 'Bird', bin: 'bio' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 's.5.earth-spheres~rain-to-river',
+    title: 'Water moving through the spheres',
+    use: 'Use this to put the water’s path through the spheres in order.',
+    assumptions: [
+      'Water moves between the ocean, the air, the land and living things.',
+      'Each move carries it from one sphere to another.',
+      'Tap the steps in order, starting at the ocean.',
+    ],
+    question: 'Put the steps in order, starting at the ocean.',
+    stages: [
+      { label: 'Water evaporates from the ocean into the air' },
+      { label: 'Clouds form and rain falls on a mountain' },
+      { label: 'Rain soaks into the soil and roots take it in' },
+      { label: 'The rest runs in a river back to the sea' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.5.sun-star-brightness',
+    assumptions: [
+      'Shine one flashlight at a wall. Move it back and measure the lit circle.',
+      'The same light spreads over a bigger circle, so each part looks dimmer.',
+      'The sun is a star. Other stars look dim because they are much farther away.',
+    ],
+    columns: ['10 cm', '20 cm', '30 cm', '40 cm', '50 cm'],
+    rowLabel: 'Lit circle across',
+    unit: 'cm',
+    max: 60,
+    step: 1,
+    initial: [8, 16, 24, 32, 40],
+    pattern: (v) => {
+      if (v.every((x) => x === v[0]))
+        return 'The circle stayed the same size. Did the flashlight move?';
+      const up = v.slice(1).every((x, i) => x >= v[i]!);
+      return up
+        ? `The farther the flashlight, the wider the circle: ${v[0]} cm up to ${v[v.length - 1]} cm. The same light spread wider looks dimmer.`
+        : 'The sizes go up and down. Hold the flashlight straight and measure again.';
+    },
+  },
+  {
+    kind: 'observe',
+    id: 's.5.shadows-day-night',
+    assumptions: [
+      'Earth turns once a day, so the sun seems to move across the sky.',
+      'Measure the shadow of a meter stick at the same spot every two hours.',
+      'Tap a bar to change that hour’s shadow.',
+    ],
+    columns: ['8 a.m.', '10 a.m.', 'Noon', '2 p.m.', '4 p.m.'],
+    rowLabel: 'Shadow',
+    unit: 'cm',
+    max: 300,
+    step: 10,
+    initial: [260, 150, 90, 150, 260],
+    pattern: (v) => {
+      const hours = ['8 a.m.', '10 a.m.', 'noon', '2 p.m.', '4 p.m.'];
+      const lo = v.indexOf(Math.min(...v));
+      if (v.every((x) => x === v[0]))
+        return 'The shadow stayed the same all day. Check the stick and the spot.';
+      return `The shadow was shortest at ${hours[lo]} (${v[lo]} cm), when the sun was highest. It is longer early and late.`;
+    },
+  },
+  {
+    kind: 'explore',
+    id: 's.5.shadows-day-night~day-night',
+    title: 'Why we have day and night',
+    use: 'Use this to see why one side of Earth has day while the other has night.',
+    assumptions: [
+      'The sun lights one half of Earth at a time.',
+      'Earth turns toward the east once a day, carrying your town into the light and out again.',
+      'Tap a scene to turn Earth.',
+    ],
+    figure: { kind: 'earth' },
+    scenes: [
+      {
+        label: 'Morning',
+        earth: { spot: 'top', sunlit: 'morning' },
+        lines: ['Your town turns into the light.', 'The sun rises in the east.'],
+      },
+      {
+        label: 'Noon',
+        earth: { spot: 'top', sunlit: 'noon' },
+        lines: ['Your town faces the sun.', 'The sun is highest and shadows are shortest.'],
+      },
+      {
+        label: 'Evening',
+        earth: { spot: 'top', sunlit: 'evening' },
+        lines: ['Your town turns away from the light.', 'The sun sets in the west.'],
+      },
+      {
+        label: 'Midnight',
+        earth: { spot: 'top', sunlit: 'midnight' },
+        lines: ['Your town is on the dark side.', 'Now it is day on the other side of Earth.'],
+      },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 's.5.shadows-day-night~daylight-months',
+    title: 'Hours of daylight through the year',
+    use: 'Use this to record hours of daylight through the year and see the pattern.',
+    assumptions: [
+      'Daylight is the time from sunrise to sunset.',
+      'These are for a town in the northern United States.',
+      'Tap a bar to change that month’s daylight.',
+    ],
+    columns: ['Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'],
+    rowLabel: 'Daylight',
+    unit: 'hours',
+    max: 16,
+    step: 1,
+    initial: [9, 10, 13, 15, 14, 11],
+    pattern: (v) => {
+      const months = ['December', 'February', 'April', 'June', 'August', 'October'];
+      const hi = v.indexOf(Math.max(...v));
+      const lo = v.indexOf(Math.min(...v));
+      if (hi === lo) return 'Every month has the same daylight. That happens near the equator.';
+      return `Most daylight: ${months[hi]} (${v[hi]} hours). Least: ${months[lo]} (${v[lo]} hours).`;
+    },
+  },
+  {
+    kind: 'sort',
+    id: 's.5.shadows-day-night~season-stars',
+    title: 'Star patterns by season',
+    use: 'Use this to sort star patterns by the season they are seen in the evening sky.',
+    assumptions: [
+      'As Earth goes around the sun, the night side faces different stars.',
+      'Some star patterns near the North Star are seen all year.',
+      'These are for the evening sky in the northern United States.',
+      'Tap a card, then tap its group.',
+    ],
+    question: 'When is it seen in the evening sky?',
+    bins: [
+      { id: 'winter', label: 'Winter', why: 'The night side faces these stars in winter.' },
+      { id: 'summer', label: 'Summer', why: 'The night side faces these stars in summer.' },
+      { id: 'all', label: 'All year', why: 'They circle close to the North Star and never set.' },
+    ],
+    cards: [
+      { label: 'Orion', bin: 'winter' },
+      { label: 'Taurus', bin: 'winter' },
+      { label: 'Scorpius', bin: 'summer' },
+      { label: 'Cygnus', bin: 'summer' },
+      { label: 'Big Dipper', bin: 'all' },
+      { label: 'Cassiopeia', bin: 'all' },
+    ],
+  },
 ];

@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-22 of 225 pages show sliders.
+22 of 237 pages show sliders.
 
 ## By picture kind
 
@@ -16,7 +16,7 @@ its kind with `sliders: true | false`.
 | areaModel | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
 | array | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| bars | 12 | no | the picture has its own handles or taps, or the inputs are enough |
+| bars | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseTen | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | beaker | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | boxPlot | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -45,7 +45,7 @@ its kind with `sliders: true | false`.
 | partition | 3 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| pieChart | 1 | yes | sweeping the value shows the picture change; no touch control of its own |
+| pieChart | 2 | no | set on the module (hidden) |
 | placeValueChart | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | plot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | polygon | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -59,23 +59,23 @@ its kind with `sliders: true | false`.
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| scale | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 11 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | tape | 26 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 10 | no | the picture has its own handles or taps, or the inputs are enough |
-| thermometers | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| thermometers | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | unitCubes | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| waterfall | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| wave | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 
 ## Modules that override their kind
 
-(none)
+- s.5.earth-spheres~water-share: sliders hidden
 
 ## Every page
 
@@ -287,6 +287,18 @@ its kind with `sliders: true | false`.
 | m.5.volume-rectangular | unitCubes | yes |
 | m.5.coordinate-plane-q1 | coordinatePlane | no |
 | m.5.coordinate-plane-q1~move | coordinatePlane | no |
+| s.4.energy-speed | skipCount | no |
+| s.4.energy-conversion~solar-oven | thermometers | no |
+| s.4.wave-patterns | wave | no |
+| s.4.wave-patterns~amplitude | wave | no |
+| s.4.internal-structures~pulse | skipCount | no |
+| s.4.weathering | bars | no |
+| s.5.conservation-mass | scale | no |
+| s.5.conservation-mass~fizz | waterfall | no |
+| s.5.gravity-down~spring-scale | table | no |
+| s.5.plants-sunlight-energy | bars | no |
+| s.5.earth-spheres~water-share | pieChart | no |
+| s.5.sun-star-brightness~two-flashlights | bars | no |
 | m.6.percent | grid100 | no |
 | m.7.circles | circle | no |
 | m.8.pythagorean | rightTriangle | no |

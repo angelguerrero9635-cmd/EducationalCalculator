@@ -5,6 +5,18 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Science Grades 4–5 build (Section 6, from the reviewer's plan)
+
+- The lesson reviewer planned all 16 skills before the build (`.review/science-4-5-plan.md`):
+  page kind, honest quantities, picture, problem types, exam coverage, engine needs.
+- Three ideas had no figure: the path of light to the eye, particles too small to see, and
+  down as toward Earth's center (with day and night). → Explore figures `lightPath`,
+  `particles` and `earth`, their scene fields, and fit checks in `layouts.test.ts`.
+- Word units that must not convert (liters on the water-share page, seconds on a stopwatch
+  page) are fixed labels; the units test lists them.
+- Observe columns can be times with a.m. and p.m.: the label check allows that period.
+- Skip counts draw whole steps only, so a decimal pull per washer uses a table instead.
+
 ## No letters before Grade 6 (after the Grade 5 review)
 
 - Grades 3–5 showed letters as labels ("Rows (r): 3"), rules in letters under the number

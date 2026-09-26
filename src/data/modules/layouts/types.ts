@@ -67,7 +67,16 @@ export type Figure =
   /** Two bar magnets facing each other; a scene turns one round. */
   | { kind: 'magnets' }
   /** A flashlight code: a pattern of flashes. */
-  | { kind: 'flashes' };
+  | { kind: 'flashes' }
+  /** A lamp, an object and an eye; a scene turns the lamp on or off and puts a hand or mirror in the way. */
+  | { kind: 'lightPath' }
+  /** Particles in a box; a scene packs them as a solid, liquid or gas, mixes a second kind in, or squeezes the box. */
+  | { kind: 'particles' }
+  /**
+   * A globe with a person and a dropped ball at a spot, the pull arrow toward the center; a
+   * scene can throw the ball up, or light one half from a sun and mark the time of day.
+   */
+  | { kind: 'earth' };
 
 export interface Scene {
   label: string;
@@ -85,6 +94,16 @@ export interface Scene {
   poles?: 'N–S' | 'N–N' | 'S–S';
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
+  /** Whether the lamp is on, and what sits in the light's way (a `lightPath` figure). */
+  light?: { lamp: boolean; blocker?: 'hand' | 'mirror' };
+  /** How the particles are packed (a `particles` figure). */
+  particles?: { state: 'solid' | 'liquid' | 'gas'; mixed?: boolean; squeezed?: boolean };
+  /** Where the person stands, whether the ball is thrown, and the time of day when lit (an `earth` figure). */
+  earth?: {
+    spot: 'top' | 'side' | 'bottom';
+    thrown?: boolean;
+    sunlit?: 'morning' | 'noon' | 'evening' | 'midnight';
+  };
 }
 
 /** An idea with no honest quantity: a picture with a few scenes to switch between. */
