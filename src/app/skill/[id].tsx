@@ -80,8 +80,9 @@ export default function SkillScreen() {
           ...(type?.use ? [type.use] : []),
         ]}
       />
-      <RefreshSection rows={refreshRows(skill.id)} />
       <ModuleSections id={id} />
+      {/* What to review first sits with the other lessons, after this one's content. */}
+      <RefreshSection rows={refreshRows(skill.id)} />
       {related.length ? (
         <>
           <SectionHeader title={type ? 'Related lessons' : 'More problem types'} />
@@ -98,9 +99,9 @@ export default function SkillScreen() {
               />
             ))}
           </TileGrid>
-          <View style={styles.end} />
         </>
       ) : null}
+      <View style={styles.end} />
     </ScrollView>
   );
 }

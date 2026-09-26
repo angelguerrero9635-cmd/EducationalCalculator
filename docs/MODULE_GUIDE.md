@@ -3,9 +3,10 @@
 Each problem type is its own module and page (`<skill id>~<slug>`, listed under its skill);
 there are no switchers between modules.
 
-Every skill and course topic ("module") has four sections, shown in this order after Refresh: a
+Every skill and course topic ("module") has four sections, shown in this order: a
 **table, chart or diagram**, **Formulas** (live calculator; "Number sentences" in K–2),
-**Assumptions**, and a **Step-by-step** walkthrough. Content lives in
+**Assumptions**, and a **Step-by-step** walkthrough. Under them, **Refresh** (the lessons to
+review first) sits right above the related lessons. Content lives in
 `src/data/modules/`. This guide is the standard every module is written and reviewed against.
 
 ## Standards
@@ -148,14 +149,14 @@ incidental to what the lesson teaches, forcing them into a calculator gives a pa
 but beside the point. The lesson reviewer's check L names the better layout from this catalog;
 the engine builds a layout when a section needs it (log it in `ENGINE_LOG.md`).
 
-| Layout     | Teaches                                                                                    | Page                                                                                    | Status     |
-| ---------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ---------- |
-| calculator | a relationship between quantities                                                          | picture, numbers, formulas, walkthrough                                                 | built      |
-| sort       | putting things into groups by a property (materials, shapes, changes you can undo)         | cards tapped into labelled groups, a count per group, one sentence about the property   | built      |
-| sequence   | stages in order and how long each takes (life cycles, a day, a story problem's steps)      | stages tapped into order, each with its span, the spans added under the strip           | built      |
-| compare    | two things side by side and what differs (two habitats, two beaks, two shadows)            | the calculator's compare pictures (rows, bars, rulers, thermometers) with a result line | calculator |
-| observe    | a quantity recorded over time (plant height by week, temperature by hour, a weather chart) | a bar per column tapped to a height, the table, the pattern in a sentence               | built      |
-| explore    | an idea with no honest quantity (what light does through a mirror, why shadows form)       | a figure (parts, position, clock, dots, magnets, flashes) with scenes to switch         | built      |
+| Layout     | Teaches                                                                                    | Page                                                                                                | Status     |
+| ---------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ---------- |
+| calculator | a relationship between quantities                                                          | picture, numbers, formulas, walkthrough                                                             | built      |
+| sort       | putting things into groups by a property (materials, shapes, changes you can undo)         | cards tapped into labelled groups, a count per group, one sentence about the property               | built      |
+| sequence   | stages in order and how long each takes (life cycles, a day, a story problem's steps)      | stages tapped into order, each with its span, the spans added under the strip                       | built      |
+| compare    | two things side by side and what differs (two habitats, two beaks, two shadows)            | the calculator's compare pictures (rows, bars, rulers, thermometers) with a result line             | calculator |
+| observe    | a quantity recorded over time (plant height by week, temperature by hour, a weather chart) | a bar per column tapped to a height, the table, the pattern in a sentence                           | built      |
+| explore    | an idea with no honest quantity (what light does through a mirror, why shadows form)       | a figure (parts, position, clock, dots, magnets, flashes, light path, particles, earth) with scenes | built      |
 
 A layout page is data in `src/data/modules/layouts/` (`math.ts`, `science.ts`; types in
 `types.ts`): a sort lists its bins and cards, a sequence its stages and spans, an exploration
