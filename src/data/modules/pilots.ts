@@ -2,10 +2,55 @@
  * Pilot modules for grades not built yet (Section 0). Each moves to its grade file when that
  * grade is written. Keyed by taxonomy skill id.
  */
-import { div } from './helpers';
+import type { Values } from '@/engine/types';
+import { div, primeFactors, whole } from './helpers';
 import type { ModuleDef } from './types';
 
 export const PILOT_MODULES: ModuleDef[] = [
+  // ── Grade 6: prime factors on a factor tree (6.NS.4; moved from Grade 4) ──
+  {
+    id: 'm.6.gcf-lcm~factor-tree',
+    title: 'Factor tree',
+    use: 'Use this to break a number into its prime factors.',
+    assumptions: [
+      'Split a number into two factors. Split each factor again until every branch is prime.',
+      'The primes at the ends multiply back to the number: 24 = 2 × 2 × 2 × 3.',
+      'A prime number has no split: its tree is just itself.',
+    ],
+    variables: [
+      whole('n', 'n', 'Number', 2, 100),
+      { ...whole('c', 'c', 'Prime factors', 1, 7), derived: true },
+    ],
+    relations: [
+      {
+        id: 'c = prime factors of n',
+        display: 'prime factors of {n}, with repeats: {c}',
+        vars: ['c', 'n'],
+        residual: (v: Values) => v.c! - primeFactors(v.n!).length,
+        // Many numbers have the same count: the number can't be found from it.
+        solve: { c: (v: Values) => primeFactors(v.n!).length, n: () => undefined },
+      },
+    ],
+    steps: {
+      'c = prime factors of n': {
+        c: {
+          expr: 'prime factors of {n}',
+          how: 'Split until every branch is prime. Count the primes at the ends.',
+          work: (v) => {
+            const primes = primeFactors(v.n!);
+            return primes.length === 1
+              ? [`${v.n} is prime: no split`]
+              : [`${v.n} = ${primes.join(' × ')}`, `${primes.length} primes at the ends`];
+          },
+          note: (v) =>
+            primeFactors(v.n!).length === 1 ? `(${v.n} is prime)` : `(${v.n} is composite)`,
+        },
+      },
+    },
+    example: { n: 24, c: 4 },
+    startWith: ['n'],
+    representation: { kind: 'factorTree', value: 'n', count: 'c' },
+  },
   {
     id: 'm.6.percent',
     assumptions: [

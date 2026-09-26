@@ -356,7 +356,10 @@ export function buildSteps(
         ...(shownWork ?? []),
       ],
       ...(written ? { written } : {}),
-      writtenAfter: (band === 'standard' ? 1 : 0) + (substitutedShown ? 1 : 0),
+      writtenAfter:
+        (band === 'standard' ? 1 : 0) +
+        (substitutedShown ? 1 : 0) +
+        (text.writtenLast ? chain.length + (shownWork?.length ?? 0) : 0),
       answer: plain(result, t.id, true),
     };
   });

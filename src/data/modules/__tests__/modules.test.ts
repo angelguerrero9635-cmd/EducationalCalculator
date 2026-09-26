@@ -505,17 +505,17 @@ describe('written work and simplifying, by grade', () => {
     expect(s!.writtenAfter).toBe(0);
   });
 
-  it('Grade 4: the long-division bracket, partial products, and no running totals', () => {
+  it('Grade 4: partial quotients, partial products, and no running totals', () => {
     const [q, m, r] = steps('m.4.long-division', { n: 743, d: 6 });
     expect(q!.written?.says).toBe('743 ÷ 6 = 123 remainder 5');
-    expect(q!.written?.rows[0]!.map((c) => c.text)).toEqual(['', '', '1', '2', '3']);
+    // Groups taken away by place, each partial quotient beside it.
+    expect(q!.written?.rows[1]!.map((c) => c.text).slice(-1)).toEqual(['100 × 6']);
     expect(m!.written?.says).toBe('123 × 6 = 738');
     // A difference under 10 is counted up, not set out in columns.
     expect(r!.written).toBeUndefined();
-    const [n] = steps('m.4.multi-digit-multiply~three-digit', { a: 234, b: 6 }).slice(-1);
-    expect(n!.written?.says).toBe('1200 + 180 + 24 = 1404');
-    // The sentence "1,200 + 180 + 24 = ?" already says it: no echo line under it.
-    expect(n!.lines).toEqual([]);
+    const [n] = steps('m.4.multi-digit-multiply', { a: 234, b: 6 });
+    expect(n!.written?.says).toBe('234 × 6 = 1404');
+    expect(n!.lines).toEqual(['234 = 200 + 30 + 4']);
   });
 
   it('Grade 8 and college: one stage per line under the formula, no grids', () => {

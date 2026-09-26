@@ -727,6 +727,8 @@ export interface StepText {
    * would write (`autoWritten`) when the step has no `work` lines; `false` refuses one.
    */
   written?: false | ((v: Values) => Written | undefined);
+  /** The grid after the work lines instead of before them (compare first, then subtract). */
+  writtenLast?: boolean;
 }
 
 export interface ModuleDef {

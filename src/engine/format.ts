@@ -96,10 +96,17 @@ const ONES = [
 ];
 const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
 
-/** A whole number from 0 to 1,000 in words: 347 → "three hundred forty-seven". */
+/**
+ * A whole number from 0 to 1,000,000 in words: 347 → "three hundred forty-seven",
+ * 347,812 → "three hundred forty-seven thousand, eight hundred twelve".
+ */
 export function numberWords(n: number): string {
-  if (!Number.isInteger(n) || n < 0 || n > 1000) return formatNumber(n);
-  if (n === 1000) return 'one thousand';
+  if (!Number.isInteger(n) || n < 0 || n > 1000000) return formatNumber(n);
+  if (n === 1000000) return 'one million';
+  if (n >= 1000) {
+    const [th, rest] = [Math.floor(n / 1000), n % 1000];
+    return `${numberWords(th)} thousand${rest ? `, ${numberWords(rest)}` : ''}`;
+  }
   const h = Math.floor(n / 100);
   const r = n % 100;
   const rest = r < 20 ? ONES[r]! : `${TENS[Math.floor(r / 10)]}${r % 10 ? `-${ONES[r % 10]}` : ''}`;

@@ -573,12 +573,17 @@ export function repIssues(
         out.push(`tape: ${Math.max(a, b)} is not ${k} copies of ${Math.min(a, b)}`);
       break;
     }
-    case 'grid100':
-      count(rep.percent, 'squares shaded', 100);
+    case 'grid100': {
+      // A percent like 38.7 shades the nearest square (Grid100.tsx rounds): check the range.
+      const shaded = val(rep.percent);
+      if (shaded !== undefined && (shaded < 0 || shaded > 100)) {
+        out.push(`squares shaded ${rep.percent} out of 0–100 (${shaded})`);
+      }
       if (rep.second) count(rep.second, 'squares shaded', 100);
       // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx).
       if (rep.wholes) count(rep.wholes, 'whole grids', 3);
       break;
+    }
     case 'factorPairs': {
       // The 1-row rectangle is drawn to the width: past 100 squares a square is under 3 px.
       count(rep.value, 'number', 100);

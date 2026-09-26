@@ -3,6 +3,7 @@
  * student can do with a pencil at that grade. Numbers are plain values (no templates), so these
  * are only for modules without convertible units.
  */
+import { formatNumber } from '@/engine/format';
 
 /** "240, 250, 260, 270"; long lists keep the first two and the last: "5, 10, …, 100". */
 export function countList(from: number, step: number, count: number): string {
@@ -343,5 +344,43 @@ export function tradeLines(a: number, b: number): string[] {
     `Tens: ${t} − ${bt} = ${t - bt}`,
     `Hundreds: ${h} − ${bh} = ${h - bh}`,
   );
+  return lines;
+}
+
+const PLACE_NAMES: [string, number][] = [
+  ['Hundred thousands', 100000],
+  ['Ten thousands', 10000],
+  ['Thousands', 1000],
+  ['Hundreds', 100],
+  ['Tens', 10],
+  ['Ones', 1],
+  ['Tenths', 0.1],
+  ['Hundredths', 0.01],
+  ['Thousandths', 0.001],
+];
+
+/**
+ * Comparing place by place, biggest place first (Grades 4–5): a line for each place that is
+ * the same, then the place that decides. "Ten thousands: 5 > 2, so 452,000 > 425,900."
+ */
+export function placeCompareLines(a: number, b: number): string[] {
+  const fmt = (x: number) => formatNumber(x);
+  if (a === b) return [`Every place is the same, so ${fmt(a)} = ${fmt(b)}`];
+  // Digits as whole thousandths, so decimals compare like whole numbers.
+  const digit = (x: number, size: number) =>
+    Math.floor(Math.round(x * 1000) / Math.round(size * 1000)) % 10;
+  const lines: string[] = [];
+  for (const [name, size] of PLACE_NAMES) {
+    if (Math.max(a, b) < size && size >= 1) continue;
+    const [da, db] = [digit(a, size), digit(b, size)];
+    if (da === db) {
+      lines.push(`${name}: ${da} and ${db}, the same`);
+      continue;
+    }
+    lines.push(
+      `${name}: ${da} ${da > db ? '>' : '<'} ${db}, so ${fmt(a)} ${a > b ? '>' : '<'} ${fmt(b)}`,
+    );
+    break;
+  }
   return lines;
 }

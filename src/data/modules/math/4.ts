@@ -3,19 +3,12 @@
  * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import { formatNumber } from '@/engine/format';
+import { formatNumber, numberWords } from '@/engine/format';
 import type { Values } from '@/engine/types';
-import { apart, div, primeFactors, times, whole } from '../helpers';
+import { apart, div, times, whole } from '../helpers';
 import type { ModuleDef } from '../types';
-import { autoWritten, longDivision } from '../written';
-import {
-  addAll,
-  addStrategy,
-  divideWork,
-  placeTimesWork,
-  subtractStrategy,
-  timesWork,
-} from '../work';
+import { autoWritten, longDivision, partialQuotients } from '../written';
+import { addStrategy, divideWork, placeCompareLines, subtractStrategy, timesWork } from '../work';
 
 /** The factors of n in order: 24 → [1, 2, 3, 4, 6, 8, 12, 24]. */
 const factorsOf = (n: number): number[] =>
@@ -39,31 +32,85 @@ const placePart = (out: string, of: string, place: number, name: string) => ({
     [of]: () => undefined,
   },
 });
-/** p = a × b where a is one place-value part: "a basic fact, then the zeros". */
-const partProduct = (p: string, a: string, b: string, [an, bn]: [string, string]) => ({
-  relation: {
-    id: `${p} = ${a} × ${b}`,
-    display: `{${a}} × {${b}} = {${p}}`,
-    vars: [p, a, b],
-    residual: (v: Values) => v[p]! - v[a]! * v[b]!,
-    solve: {
-      [p]: (v: Values) => v[a]! * v[b]!,
-      [a]: (v: Values) => div(v[p]!, v[b]!),
-      [b]: (v: Values) => div(v[p]!, v[a]!),
+
+/** The first factor rounded to its biggest place: 4,327 → 4,000; 68 → 70. */
+const roughly = (x: number) => {
+  const p = 10 ** (String(Math.round(x)).length - 1);
+  return Math.round(x / p) * p;
+};
+/** "4,327 = 4,000 + 300 + 20 + 7" (a number split into its places), or nothing for one place. */
+const splitLine = (x: number) => {
+  const parts = String(x)
+    .split('')
+    .map((d, i, all) => Number(d) * 10 ** (all.length - 1 - i))
+    .filter((p) => p > 0);
+  return parts.length > 1 ? [`${fmt(x)} = ${parts.map(fmt).join(' + ')}`] : [];
+};
+
+/**
+ * First factor × second factor = product: the split into places, the partial-products grid
+ * (Grade 4), the area model drawn from the two factors, and an estimate to check.
+ */
+function multiplyPage(o: {
+  id: string;
+  title?: string;
+  use?: string;
+  assumptions: string[];
+  first: [number, number];
+  second: [number, number];
+  example: [number, number];
+}): ModuleDef {
+  const [x, y] = o.example;
+  return {
+    id: o.id,
+    ...(o.title ? { title: o.title, use: o.use } : {}),
+    assumptions: o.assumptions,
+    variables: [
+      whole('a', 'a', 'First factor', ...o.first),
+      whole('b', 'b', 'Second factor', ...o.second),
+      whole('n', 'n', 'Product', 0, o.first[1] * o.second[1]),
+    ],
+    relations: [
+      {
+        id: 'n = a × b',
+        display: '{a} × {b} = {n}',
+        vars: ['n', 'a', 'b'],
+        residual: (v: Values) => v.n! - v.a! * v.b!,
+        solve: {
+          n: (v: Values) => v.a! * v.b!,
+          a: (v: Values) => div(v.n!, v.b!),
+          b: (v: Values) => div(v.n!, v.a!),
+        },
+      },
+    ],
+    steps: {
+      'n = a × b': {
+        n: {
+          expr: '{a} × {b}',
+          how: 'Break the factors into places. Multiply every part, then add the partial products.',
+          work: (v) => [...splitLine(v.a!), ...(v.b! >= 10 ? splitLine(v.b!) : [])],
+          written: (v) => autoWritten('4', `${v.a} × ${v.b}`),
+          note: (v) => {
+            const [ra, rb] = [roughly(v.a!), v.b! >= 10 ? roughly(v.b!) : v.b!];
+            return `(about ${fmt(ra)} × ${fmt(rb)} = ${fmt(ra * rb)})`;
+          },
+        },
+        a: {
+          expr: '{n} ÷ {b}',
+          how: 'Divide the product by the second factor.',
+        },
+        b: {
+          expr: '{n} ÷ {a}',
+          how: 'Which number times the first factor makes the product? Estimate, then check.',
+          work: (v) => [`${fmt(v.a!)} × ${v.b} = ${fmt(v.n!)}`],
+        },
+      },
     },
-  },
-  steps: {
-    [p]: {
-      expr: `{${a}} × {${b}}`,
-      how: `Multiply the ${an} by the ${bn}: a basic fact, then the zeros.`,
-      // Two multi-digit factors get the partial products grid; a fact with zeros, one line.
-      work: (v: Values) =>
-        autoWritten('4', `${v[a]} × ${v[b]}`) ? [] : placeTimesWork(v[a]!, v[b]!),
-    },
-    [a]: { expr: `{${p}} ÷ {${b}}`, how: `Divide this part product by the ${bn}.` },
-    [b]: { expr: `{${p}} ÷ {${a}}`, how: `Divide this part product by the ${an}.` },
-  },
-});
+    example: { a: x, b: y, n: x * y },
+    startWith: ['a', 'b'],
+    representation: { kind: 'areaModel', factors: ['a', 'b'], total: 'n' },
+  };
+}
 
 export const MATH_4_MODULES: ModuleDef[] = [
   // ── Factors, multiples, primes and composites (4.OA.4) ──
@@ -73,7 +120,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'A factor pair is two whole numbers that multiply to make the number.',
       'Find every pair by trying 1, 2, 3, … until the factors would swap places.',
       'A prime number has exactly 2 factors: 1 and itself. A composite number has more.',
-      'The picture shows one factor pair as an array: rows × columns, up to 20 of each.',
+      'The picture shows every factor pair as a rectangle. A prime number has only one.',
     ],
     variables: [
       whole('n', 'n', 'Number', 1, 100),
@@ -96,6 +143,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       {
         id: 'f = factors of n',
         display: '{n} has {f} factors',
+        words: 'Count every factor of the number = {f}',
         vars: ['f', 'n'],
         residual: (v: Values) => v.f! - factorsOf(v.n!).length,
         // Many numbers share a factor count, so the number can't be found from it.
@@ -139,94 +187,136 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { n: 24, a: 4, b: 6, f: 8 },
     startWith: ['a', 'b'],
-    representation: { kind: 'array', rows: 'a', columns: 'b', total: 'n', max: 20 },
+    representation: { kind: 'factorPairs', value: 'n', first: 'a', second: 'b', count: 'f' },
   },
-  // ── Prime factors on a factor tree (4.OA.4) ──
+  // ── Multiples: is a number a multiple of a one-digit number? (4.OA.4) ──
   {
-    id: 'm.4.factors-multiples~factor-tree',
-    title: 'Factor tree',
-    use: 'Use this to break a number into its prime factors.',
+    id: 'm.4.factors-multiples~multiples',
+    title: 'Is it a multiple?',
+    use: 'Use this for “Is 40 a multiple of 8?”: divide and look at the remainder.',
     assumptions: [
-      'Split a number into two factors. Split each factor again until every branch is prime.',
-      'The primes at the ends multiply back to the number: 24 = 2 × 2 × 2 × 3.',
-      'A prime number has no split: its tree is just itself.',
+      'A multiple of 8 is 8 times a whole number: 8, 16, 24, 32 and so on.',
+      'To check, divide. A remainder of 0 means it is a multiple.',
+      'The chart shades every multiple and outlines the number you test.',
     ],
     variables: [
-      whole('n', 'n', 'Number', 2, 100),
-      { ...whole('c', 'c', 'Prime factors', 1, 7), derived: true },
+      whole('k', 'k', 'One-digit number', 2, 9),
+      whole('n', 'n', 'Number to test', 1, 100),
+      { ...whole('q', 'q', 'Quotient', 0, 50), derived: true },
+      { ...whole('r', 'r', 'Remainder', 0, 8), derived: true },
     ],
     relations: [
       {
-        id: 'c = prime factors of n',
-        display: '{n} has {c} prime factors, with repeats',
-        vars: ['c', 'n'],
-        residual: (v: Values) => v.c! - primeFactors(v.n!).length,
-        // Many numbers have the same count: the number can't be found from it.
-        solve: { c: (v: Values) => primeFactors(v.n!).length, n: () => undefined },
+        id: 'q = whole groups of k in n',
+        display: '{n} ÷ {k} → {q} whole groups',
+        words: 'Number to test ÷ one-digit number = {q}, with a remainder',
+        vars: ['q', 'n', 'k'],
+        residual: (v: Values) => v.q! - Math.floor(v.n! / v.k!),
+        solve: {
+          q: (v: Values) => Math.floor(v.n! / v.k!),
+          n: () => undefined,
+          k: () => undefined,
+        },
+      },
+      {
+        id: 'r = left over when n is shared by k',
+        display: 'left over when {n} is shared by {k} = {r}',
+        words: 'What is left after the whole groups = {r}',
+        vars: ['r', 'n', 'k'],
+        residual: (v: Values) => v.r! - (v.n! % v.k!),
+        solve: { r: (v: Values) => v.n! % v.k!, n: () => undefined, k: () => undefined },
       },
     ],
     steps: {
-      'c = prime factors of n': {
-        c: {
-          expr: 'prime factors of {n}',
-          how: 'Split until every branch is prime. Count the primes at the ends.',
+      'q = whole groups of k in n': {
+        q: {
+          expr: 'whole groups of {k} in {n}',
+          how: 'Divide by the one-digit number. Use a times fact you know.',
           work: (v) => {
-            const primes = primeFactors(v.n!);
-            return primes.length === 1
-              ? [`${v.n} is prime: no split`]
-              : [`${v.n} = ${primes.join(' × ')}`, `${primes.length} primes at the ends`];
+            const m = v.q! * v.k!;
+            return [`${v.q} × ${v.k} = ${m}`, ...(m < v.n! ? [`${v.n} − ${m} = ${v.n! - m}`] : [])];
+          },
+        },
+      },
+      'r = left over when n is shared by k': {
+        r: {
+          expr: 'left over when {n} is shared by {k}',
+          how: 'The remainder is what the whole groups leave.',
+          work: (v) => {
+            const m = Math.floor(v.n! / v.k!) * v.k!;
+            return [`${v.n} − ${m} = ${v.r}`];
           },
           note: (v) =>
-            primeFactors(v.n!).length === 1 ? `(${v.n} is prime)` : `(${v.n} is composite)`,
+            v.r === 0
+              ? `(remainder 0: ${v.n} is a multiple of ${v.k})`
+              : `(remainder ${v.r}: ${v.n} is not a multiple of ${v.k})`,
         },
       },
     },
-    example: { n: 24, c: 4 },
-    startWith: ['n'],
-    representation: { kind: 'factorTree', value: 'n', count: 'c' },
+    example: { k: 8, n: 40, q: 5, r: 0 },
+    startWith: ['k', 'n'],
+    representation: { kind: 'hundredChart', value: 'n', max: 100, multiplesOf: 'k' },
   },
-  // ── Multiples: is n a multiple of k? (4.OA.4) ──
-  (() => {
-    const mult = times('n = k × j', ['k', 'j', 'n'], ['number', 'count', 'multiple']);
-    return {
-      id: 'm.4.factors-multiples~multiples',
-      title: 'Multiples of a number',
-      use: 'Use this for “Is 40 a multiple of 8?” and listing multiples.',
-      assumptions: [
-        'A multiple of a number is that number times a whole number: 8, 16, 24, 32 are multiples of 8.',
-        'To check, divide. If nothing is left over, it is a multiple.',
-        'Numbers to 12, and their first 12 multiples.',
-      ],
-      variables: [
-        whole('k', 'k', 'Number', 1, 12),
-        whole('j', 'j', 'Which multiple', 1, 12),
-        whole('n', 'n', 'Multiple', 1, 144),
-      ],
-      relations: [
-        {
-          ...mult.relation,
-          check: (v: Values) => `${v.k} × ${v.j} = ${v.n}, so ${v.n} is a multiple of ${v.k}`,
-        },
-      ],
-      steps: {
-        'n = k × j': {
-          ...mult.steps,
-          n: {
-            ...mult.steps.n!,
-            how: 'Multiply the number by which multiple it is.',
-          },
-          j: {
-            ...mult.steps.j!,
-            how: 'Divide by the number. No remainder means it is a multiple.',
-            work: (v) => divideWork(v.n!, v.k!, 'second'),
-          },
+  // ── Patterns that add the same number each time (4.OA.5) ──
+  {
+    id: 'm.4.factors-multiples~pattern',
+    title: 'Number patterns',
+    use: 'Use this to find a term of a pattern that adds the same number each time.',
+    assumptions: [
+      'A pattern starts at a number and adds the same amount at each jump.',
+      'Adding an odd number makes the terms go odd, even, odd, even.',
+      'Adding an even number keeps them all odd or all even.',
+    ],
+    variables: [
+      whole('a', 'a', 'Start', 0, 100),
+      whole('s', 's', 'Add each time', 1, 25),
+      whole('j', 'j', 'Jumps', 0, 11),
+      whole('t', 't', 'Term', 0, 375),
+    ],
+    relations: [
+      {
+        id: 't = a + j × s',
+        display: '{a} + {j} × {s} = {t}',
+        words: 'Start + jumps × add each time = term',
+        vars: ['t', 'a', 'j', 's'],
+        residual: (v: Values) => v.t! - v.a! - v.j! * v.s!,
+        solve: {
+          t: (v: Values) => v.a! + v.j! * v.s!,
+          a: (v: Values) => v.t! - v.j! * v.s!,
+          j: (v: Values) => div(v.t! - v.a!, v.s!),
+          s: (v: Values) => div(v.t! - v.a!, v.j!),
         },
       },
-      example: { k: 8, j: 5, n: 40 },
-      startWith: ['k', 'j'],
-      representation: { kind: 'skipCount', step: 'k', count: 'j', total: 'n' },
-    } satisfies ModuleDef;
-  })(),
+    ],
+    steps: {
+      't = a + j × s': {
+        t: {
+          expr: '{a} + {j} × {s}',
+          how: 'Multiply the jumps by the amount added, then add the start.',
+          work: (v) => [`${v.j} × ${v.s} = ${v.j! * v.s!}`, `${v.a} + ${v.j! * v.s!} = ${v.t}`],
+          note: (v) => (v.s! % 2 === 1 ? '(adding an odd number: odd and even take turns)' : ''),
+        },
+        a: {
+          expr: '{t} − {j} × {s}',
+          how: 'Take everything the jumps added away from the term.',
+          work: (v) => [`${v.j} × ${v.s} = ${v.j! * v.s!}`, `${v.t} − ${v.j! * v.s!} = ${v.a}`],
+        },
+        j: {
+          expr: '({t} − {a}) ÷ {s}',
+          how: 'Find how much the jumps added, then divide by the amount each jump adds.',
+          work: (v) => [`${v.t} − ${v.a} = ${v.t! - v.a!}`, `${v.t! - v.a!} ÷ ${v.s} = ${v.j}`],
+        },
+        s: {
+          expr: '({t} − {a}) ÷ {j}',
+          how: 'Find how much the jumps added, then share it among the jumps.',
+          work: (v) => [`${v.t} − ${v.a} = ${v.t! - v.a!}`, `${v.t! - v.a!} ÷ ${v.j} = ${v.s}`],
+        },
+      },
+    },
+    example: { a: 3, s: 5, j: 5, t: 28 },
+    startWith: ['a', 's', 'j'],
+    representation: { kind: 'skipCount', start: 'a', step: 's', count: 'j', total: 't' },
+  },
   // ── Place value to 1,000,000: a digit's value and the place to its right (4.NBT.1) ──
   (() => {
     const fmt = (x: number) => formatNumber(x);
@@ -244,7 +334,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'A digit’s value is the digit times its place: 7 in the thousands place is 7,000.',
         'Each place is 10 times the place to its right. Moving a digit one place right divides its value by 10.',
         'Places up to hundred thousands: numbers to 999,999.',
-        'Tap a row of the table to move the digit to that place.',
+        'The chart shows the digit in its place, with × 10 and ÷ 10 to its neighbors.',
       ],
       variables: [
         whole('d', 'd', 'Digit', 1, 9),
@@ -306,7 +396,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
       example: { d: 7, p: 1000, v: 7000, r: 700 },
       startWith: ['d', 'p'],
-      representation: { kind: 'table', sweep: 'p', output: 'v', params: ['d'], rows: PLACES },
+      representation: { kind: 'placeValueChart', value: 'v', decimals: 0, highlight: 'p' },
     } satisfies ModuleDef;
   })(),
   // ── Rounding to any place, to 1,000,000 (4.NBT.3) ──
@@ -316,20 +406,21 @@ export const MATH_4_MODULES: ModuleDef[] = [
     use: 'Use this to round a number to any place, up to 1,000,000.',
     assumptions: [
       'Pick the place: tens, hundreds, thousands, ten thousands or hundred thousands.',
-      'Find the two numbers in that place just below and just above. Round to the nearer one.',
+      'Find the numbers below and above in that place. Round to the nearer one.',
       'Exactly halfway rounds up.',
     ],
     variables: [
       whole('n', 'n', 'Number', 0, 999999),
       { ...whole('p', 'p', 'Place', 10, 100000), allowed: [10, 100, 1000, 10000, 100000] },
-      { ...whole('L', 'L', 'Just below', 0, 999990), step: 10, multipleOf: 10, derived: true },
-      { ...whole('U', 'U', 'Just above', 10, 1000000), step: 10, multipleOf: 10, derived: true },
+      { ...whole('L', 'L', 'Number below', 0, 999990), step: 10, multipleOf: 10, derived: true },
+      { ...whole('U', 'U', 'Number above', 10, 1000000), step: 10, multipleOf: 10, derived: true },
       { ...whole('r', 'r', 'Rounded', 0, 1000000), step: 10, multipleOf: 10, derived: true },
     ],
     relations: [
       {
         id: 'L = place below n',
-        display: 'The {p}s at or below {n}: {L}',
+        display: '{n} rounded down to the {p}s: {L}',
+        words: 'The number rounded down to the place = {L}',
         vars: ['L', 'n', 'p'],
         residual: (v: Values) => v.L! - Math.floor(v.n! / v.p!) * v.p!,
         // Many numbers share the same number below them: the number can't be found from it.
@@ -407,7 +498,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       assumptions: [
         'Compare the biggest place first. More digits means a bigger number.',
         'Same digit in that place: move one place right and compare again.',
-        'The bars show the two numbers; the gap is how far apart they are.',
+        'The chart outlines the first place where the two numbers differ.',
       ],
       variables: [
         whole('a', 'a', 'First number', 0, 1000000),
@@ -421,435 +512,224 @@ export const MATH_4_MODULES: ModuleDef[] = [
             `${fmt(v.a!)} ${v.a! < v.b! ? '<' : v.a! > v.b! ? '>' : '='} ${fmt(v.b!)}, ${fmt(v.g!)} apart`,
         },
       ],
-      steps: { [gap.relation.id]: gap.steps },
+      steps: {
+        [gap.relation.id]: {
+          ...gap.steps,
+          // Compare place by place first; then how far apart, by subtracting.
+          g: {
+            ...gap.steps.g!,
+            how: 'Compare place by place, biggest first. Then take the smaller number from the bigger.',
+            work: (v) => placeCompareLines(v.a!, v.b!),
+            writtenLast: true,
+          },
+        },
+      },
       example: { a: 452000, b: 425900, g: 26100 },
       startWith: ['a', 'b'],
-      representation: {
-        kind: 'tape',
-        compare: ['a', 'b'],
-        difference: 'g',
-        caption: '{a} and {b} are {g} apart.',
-      },
+      pictureLabels: ['g'],
+      representation: { kind: 'placeValueChart', value: 'a', decimals: 0, compare: 'b' },
     } satisfies ModuleDef;
   })(),
-  // ── Multi-digit multiplication: the area model, 2-digit × 1-digit (4.NBT.5) ──
+  // ── Expanded form and number names (4.NBT.2) ──
   (() => {
-    const fmt = (x: number) => formatNumber(x);
+    const places: [string, number, string][] = [
+      ['h5', 100000, 'hundred thousands'],
+      ['h4', 10000, 'ten thousands'],
+      ['h3', 1000, 'thousands'],
+      ['h2', 100, 'hundreds'],
+      ['h1', 10, 'tens'],
+      ['h0', 1, 'ones'],
+    ];
+    const ids = places.map(([id]) => id);
+    const cap = (t: string) => `${t[0]!.toUpperCase()}${t.slice(1)}`;
+    const digitOf = (n: number, size: number) => Math.floor(n / size) % 10;
     return {
-      id: 'm.4.multi-digit-multiply',
+      id: 'm.4.place-value-million~expanded-form',
+      title: 'Expanded form and number names',
+      use: 'Use this to write 347,812 as 300,000 + 40,000 + 7,000 + 800 + 10 + 2, and in words.',
       assumptions: [
-        'Break the first factor into tens and ones: 43 = 40 + 3.',
-        'Multiply each part by the second factor, then add the part products.',
-        'The area model draws each part product as a box: 40 × 6 and 3 × 6.',
-        'First factor to 99, second factor to 9.',
+        'Each digit’s value is the digit times its place.',
+        'Expanded form adds the value of every digit.',
+        'Read the thousands first, then say “thousand”, then read the rest.',
       ],
       variables: [
-        whole('a', 'a', 'First factor', 10, 99),
-        whole('b', 'b', 'Second factor', 1, 9),
-        {
-          ...whole('t', 't', 'Tens of the first factor', 10, 90),
-          step: 10,
-          multipleOf: 10,
-          derived: true,
-        },
-        { ...whole('o', 'o', 'Ones of the first factor', 0, 9), derived: true },
-        { ...whole('p', 'p', 'Tens part × second', 10, 810), derived: true },
-        { ...whole('q', 'q', 'Ones part × second', 0, 81), derived: true },
-        whole('n', 'n', 'Product', 10, 891),
+        whole('n', 'n', 'Number', 0, 999999),
+        ...places.map(([id, size, name]) => ({
+          ...whole(id, id, cap(name), 0, 9 * size),
+          step: size,
+          multipleOf: size,
+        })),
       ],
       relations: [
+        ...places.map(([id, size, name]) => ({
+          ...placePart(id, 'n', size, name),
+          words: `The ${name} part of the number = {${id}}`,
+        })),
         {
-          id: 't = tens of a',
-          display: '{a} has {t} in its tens',
-          vars: ['t', 'a'],
-          residual: (v: Values) => v.t! - 10 * Math.floor(v.a! / 10),
-          // Every number from 50 to 59 has 50 in its tens: the number can't be found from it.
-          solve: { t: (v: Values) => 10 * Math.floor(v.a! / 10), a: () => undefined },
-        },
-        {
-          id: 'a = t + o',
-          display: '{a} = {t} + {o}',
-          vars: ['a', 't', 'o'],
-          residual: (v: Values) => v.a! - v.t! - v.o!,
+          id: 'n = sum of the place values',
+          display: `${ids.map((x) => `{${x}}`).join(' + ')} = {n}`,
+          words: 'Add the value of every digit = {n}',
+          vars: ['n', ...ids],
+          residual: (v: Values) => v.n! - ids.reduce((t, x) => t + v[x]!, 0),
           solve: {
-            t: (v: Values) => 10 * Math.floor(v.a! / 10),
-            o: (v: Values) => v.a! % 10,
-            a: (v: Values) => v.t! + v.o!,
-          },
-        },
-        {
-          id: 'p = t × b',
-          display: '{t} × {b} = {p}',
-          vars: ['p', 't', 'b'],
-          residual: (v: Values) => v.p! - v.t! * v.b!,
-          solve: {
-            p: (v: Values) => v.t! * v.b!,
-            t: (v: Values) => div(v.p!, v.b!),
-            b: (v: Values) => div(v.p!, v.t!),
-          },
-        },
-        {
-          id: 'q = o × b',
-          display: '{o} × {b} = {q}',
-          vars: ['q', 'o', 'b'],
-          residual: (v: Values) => v.q! - v.o! * v.b!,
-          solve: {
-            q: (v: Values) => v.o! * v.b!,
-            o: (v: Values) => div(v.q!, v.b!),
-            b: (v: Values) => div(v.q!, v.o!),
-          },
-        },
-        {
-          id: 'n = p + q',
-          display: '{p} + {q} = {n}',
-          vars: ['n', 'p', 'q'],
-          residual: (v: Values) => v.n! - v.p! - v.q!,
-          // The parts come from the factors, never from the product alone (many pairs add
-          // to one product).
-          solve: { n: (v: Values) => v.p! + v.q!, p: () => undefined, q: () => undefined },
-        },
-        {
-          id: 'n = a × b',
-          display: '{a} × {b} = {n}',
-          vars: ['n', 'a', 'b'],
-          residual: (v: Values) => v.n! - v.a! * v.b!,
-          // The product is built from the part products (the lesson), never in one jump.
-          solve: {
-            n: () => undefined,
-            a: (v: Values) => div(v.n!, v.b!),
-            b: (v: Values) => div(v.n!, v.a!),
+            n: (v: Values) => ids.reduce((t, x) => t + v[x]!, 0),
+            ...Object.fromEntries(
+              ids.map((x) => [
+                x,
+                (v: Values) => v.n! - ids.filter((y) => y !== x).reduce((t, y) => t + v[y]!, 0),
+              ]),
+            ),
           },
         },
       ],
       steps: {
-        't = tens of a': {
-          t: {
-            expr: '{a} without its ones',
-            how: 'The tens of the first factor: the number without its ones.',
-            work: (v) => [
-              `${v.a} is ${v.t! / 10} tens and ${v.a! % 10} ones; ${v.t! / 10} tens = ${v.t}`,
-            ],
-          },
-        },
-        'a = t + o': {
-          t: {
-            expr: '{a} − {o}',
-            how: 'The tens of the first factor: take the ones away.',
-          },
-          o: {
-            expr: '{a} − {t}',
-            how: 'The ones of the first factor: what is left after the tens.',
-          },
-          a: { expr: '{t} + {o}', how: 'Put the tens and the ones back together.' },
-        },
-        'p = t × b': {
-          p: {
-            expr: '{t} × {b}',
-            how: 'Multiply the tens part by the second factor: a basic fact, then a zero.',
-            work: (v) => [
-              `${v.t! / 10} × ${v.b} = ${(v.t! / 10) * v.b!}, so ${v.t} × ${v.b} = ${fmt(v.t! * v.b!)}`,
-            ],
-          },
-          t: { expr: '{p} ÷ {b}', how: 'Divide the tens part product by the second factor.' },
-          b: { expr: '{p} ÷ {t}', how: 'Divide the tens part product by the tens part.' },
-        },
-        'q = o × b': {
-          q: {
-            expr: '{o} × {b}',
-            how: 'Multiply the ones part by the second factor: a basic fact.',
-            work: (v) => timesWork(v.o!, v.b!),
-          },
-          o: { expr: '{q} ÷ {b}', how: 'Divide the ones part product by the second factor.' },
-          b: { expr: '{q} ÷ {o}', how: 'Divide the ones part product by the ones part.' },
-        },
-        'n = p + q': {
+        ...Object.fromEntries(
+          places.map(([id, size, name]) => [
+            `${id} = ${name} of n`,
+            {
+              [id]: {
+                expr: `the ${name} part of {n}`,
+                how:
+                  size === 1
+                    ? 'The ones digit is its own value.'
+                    : `Find the digit in the ${name} place. Multiply it by ${fmt(size)}.`,
+                // The number's name after its last place.
+                work: (v: Values) =>
+                  size === 1
+                    ? [`In words: ${numberWords(v.n!)}`]
+                    : [`${digitOf(v.n!, size)} × ${fmt(size)} = ${fmt(v[id]!)}`],
+              },
+            },
+          ]),
+        ),
+        'n = sum of the place values': {
           n: {
-            expr: '{p} + {q}',
-            how: 'Add the two part products.',
-            work: (v) => addStrategy(v.p!, v.q!),
+            expr: ids.map((x) => `{${x}}`).join(' + '),
+            how: 'Add the place values. Each goes in its own place.',
+            work: (v: Values) => [`In words: ${numberWords(v.n!)}`],
           },
-        },
-        'n = a × b': {
-          a: {
-            expr: '{n} ÷ {b}',
-            how: 'Divide the product by the second factor.',
-            work: (v) => divideWork(v.n!, v.b!),
-          },
-          b: {
-            expr: '{n} ÷ {a}',
-            how: 'Divide the product by the first factor.',
-            work: (v) => divideWork(v.n!, v.a!, 'second'),
-          },
+          ...Object.fromEntries(
+            ids.map((x) => [
+              x,
+              {
+                expr: `{n} − ${ids
+                  .filter((y) => y !== x)
+                  .map((y) => `{${y}}`)
+                  .join(' − ')}`,
+                how: 'Take the other place values away from the number.',
+              },
+            ]),
+          ),
         },
       },
-      example: { a: 43, b: 6, t: 40, o: 3, p: 240, q: 18, n: 258 },
-      startWith: ['a', 'b'],
-      representation: {
-        kind: 'areaModel',
-        top: ['t', 'o'],
-        side: ['b'],
-        parts: [['p', 'q']],
-        total: 'n',
-      },
+      example: { n: 347812, h5: 300000, h4: 40000, h3: 7000, h2: 800, h1: 10, h0: 2 },
+      startWith: ['n'],
+      representation: { kind: 'placeValueChart', value: 'n', decimals: 0 },
     } satisfies ModuleDef;
   })(),
-  // ── 2-digit × 2-digit as a four-box area model (4.NBT.5) ──
-  (() => {
-    const p1 = partProduct('p', 't', 's', ['tens of the first', 'tens of the second']);
-    const p2 = partProduct('q', 'o', 's', ['ones of the first', 'tens of the second']);
-    const p3 = partProduct('u', 't', 'r', ['tens of the first', 'ones of the second']);
-    const p4 = partProduct('x', 'o', 'r', ['ones of the first', 'ones of the second']);
-    return {
-      id: 'm.4.multi-digit-multiply~two-digit',
-      title: 'Two-digit times two-digit',
-      use: 'Use this for 23 × 14 with a four-box area model.',
-      assumptions: [
-        'Break both factors into tens and ones: 23 × 14 = (20 + 3) × (10 + 4).',
-        'Multiply every part of one by every part of the other: four part products.',
-        'Add the four part products.',
-        'Both factors from 10 to 99.',
-      ],
-      variables: [
-        whole('a', 'a', 'First factor', 10, 99),
-        whole('b', 'b', 'Second factor', 10, 99),
-        {
-          ...whole('t', 't', 'Tens of the first', 10, 90),
-          step: 10,
-          multipleOf: 10,
-          derived: true,
-        },
-        { ...whole('o', 'o', 'Ones of the first', 0, 9), derived: true },
-        {
-          ...whole('s', 's', 'Tens of the second', 10, 90),
-          step: 10,
-          multipleOf: 10,
-          derived: true,
-        },
-        { ...whole('r', 'r', 'Ones of the second', 0, 9), derived: true },
-        { ...whole('p', 'p', 'Tens × tens', 100, 8100), derived: true },
-        { ...whole('q', 'q', 'Ones × tens', 0, 810), derived: true },
-        { ...whole('u', 'u', 'Tens × ones', 0, 810), derived: true },
-        { ...whole('x', 'x', 'Ones × ones', 0, 81), derived: true },
-        { ...whole('n', 'n', 'Product', 100, 9801), derived: true },
-      ],
-      relations: [
-        placePart('t', 'a', 10, 'tens'),
-        placePart('s', 'b', 10, 'tens'),
-        {
-          id: 'a = t + o',
-          display: '{a} = {t} + {o}',
-          vars: ['a', 't', 'o'],
-          residual: (v: Values) => v.a! - v.t! - v.o!,
-          solve: {
-            a: (v: Values) => v.t! + v.o!,
-            t: (v: Values) => v.a! - v.o!,
-            o: (v: Values) => v.a! - v.t!,
-          },
-        },
-        {
-          id: 'b = s + r',
-          display: '{b} = {s} + {r}',
-          vars: ['b', 's', 'r'],
-          residual: (v: Values) => v.b! - v.s! - v.r!,
-          solve: {
-            b: (v: Values) => v.s! + v.r!,
-            s: (v: Values) => v.b! - v.r!,
-            r: (v: Values) => v.b! - v.s!,
-          },
-        },
-        p1.relation,
-        p2.relation,
-        p3.relation,
-        p4.relation,
-        {
-          id: 'n = p + q + u + x',
-          display: '{p} + {q} + {u} + {x} = {n}',
-          vars: ['n', 'p', 'q', 'u', 'x'],
-          residual: (v: Values) => v.n! - v.p! - v.q! - v.u! - v.x!,
-          // The parts come from the factors, never from the product alone.
-          solve: {
-            n: (v: Values) => v.p! + v.q! + v.u! + v.x!,
-            p: () => undefined,
-            q: () => undefined,
-            u: () => undefined,
-            x: () => undefined,
-          },
-        },
-        {
-          id: 'n = a × b',
-          display: '{a} × {b} = {n}',
-          vars: ['n', 'a', 'b'],
-          residual: (v: Values) => v.n! - v.a! * v.b!,
-          // The product is built from the part products (the lesson), never in one jump.
-          solve: {
-            n: () => undefined,
-            a: (v: Values) => div(v.n!, v.b!),
-            b: (v: Values) => div(v.n!, v.a!),
-          },
-        },
-      ],
-      steps: {
-        't = tens of a': {
-          t: { expr: '{a} without its ones', how: 'The tens of the first factor.' },
-        },
-        's = tens of b': {
-          s: { expr: '{b} without its ones', how: 'The tens of the second factor.' },
-        },
-        'a = t + o': {
-          o: {
-            expr: '{a} − {t}',
-            how: 'The ones of the first factor: what is left after the tens.',
-          },
-          t: { expr: '{a} − {o}', how: 'The tens of the first factor: take the ones away.' },
-          a: { expr: '{t} + {o}', how: 'Put the tens and the ones back together.' },
-        },
-        'b = s + r': {
-          r: {
-            expr: '{b} − {s}',
-            how: 'The ones of the second factor: what is left after the tens.',
-          },
-          s: { expr: '{b} − {r}', how: 'The tens of the second factor: take the ones away.' },
-          b: { expr: '{s} + {r}', how: 'Put the tens and the ones back together.' },
-        },
-        'p = t × s': p1.steps,
-        'q = o × s': p2.steps,
-        'u = t × r': p3.steps,
-        'x = o × r': p4.steps,
-        'n = p + q + u + x': {
-          n: {
-            expr: '{p} + {q} + {u} + {x}',
-            how: 'Add the four part products, biggest first.',
-            work: (v) => addAll([v.p!, v.q!, v.u!, v.x!]),
-          },
-        },
-        'n = a × b': {
-          a: { expr: '{n} ÷ {b}', how: 'Divide the product by the second factor.' },
-          b: { expr: '{n} ÷ {a}', how: 'Divide the product by the first factor.' },
+  // ── Add and subtract multi-digit numbers (4.NBT.4) ──
+  {
+    id: 'm.4.place-value-million~add-subtract',
+    title: 'Add to 1,000,000',
+    use: 'Use this to add numbers up to 1,000,000 in columns.',
+    assumptions: [
+      'Line up the places. Add the ones first, then each place to the left.',
+      'Regroup when a place passes 9: 10 in one place is 1 in the next.',
+    ],
+    variables: [
+      whole('a', 'a', 'First number', 0, 1000000),
+      whole('b', 'b', 'Second number', 0, 1000000),
+      whole('c', 'c', 'Sum', 0, 1000000),
+    ],
+    relations: [
+      {
+        id: 'c = a + b',
+        display: '{a} + {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.c! - v.a! - v.b!,
+        solve: {
+          c: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.c! - v.b!,
+          b: (v: Values) => v.c! - v.a!,
         },
       },
-      example: { a: 23, b: 14, t: 20, o: 3, s: 10, r: 4, p: 200, q: 30, u: 80, x: 12, n: 322 },
-      startWith: ['a', 'b'],
-      representation: {
-        kind: 'areaModel',
-        top: ['t', 'o'],
-        side: ['s', 'r'],
-        parts: [
-          ['p', 'q'],
-          ['u', 'x'],
-        ],
-        total: 'n',
+    ],
+    steps: {
+      'c = a + b': {
+        c: { expr: '{a} + {b}', how: 'Add in columns from the ones. Regroup past 9.' },
+        a: { expr: '{c} − {b}', how: 'Take the second number away from the sum, in columns.' },
+        b: { expr: '{c} − {a}', how: 'Take the first number away from the sum, in columns.' },
       },
-    } satisfies ModuleDef;
-  })(),
-  // ── 3-digit × 1-digit as a three-box area model (4.NBT.5) ──
-  (() => {
-    const p1 = partProduct('p', 'h', 'b', ['hundreds', 'second factor']);
-    const p2 = partProduct('q', 't', 'b', ['tens', 'second factor']);
-    const p3 = partProduct('u', 'o', 'b', ['ones', 'second factor']);
-    return {
-      id: 'm.4.multi-digit-multiply~three-digit',
-      title: 'Three-digit times one-digit',
-      use: 'Use this for 234 × 6 with a three-box area model.',
-      assumptions: [
-        'Break the first factor into hundreds, tens and ones: 234 = 200 + 30 + 4.',
-        'Multiply each part by the second factor, then add the three part products.',
-        'First factor from 100 to 999, second factor to 9.',
-      ],
-      variables: [
-        whole('a', 'a', 'First factor', 100, 999),
-        whole('b', 'b', 'Second factor', 1, 9),
-        { ...whole('h', 'h', 'Hundreds', 100, 900), step: 100, multipleOf: 100, derived: true },
-        { ...whole('t', 't', 'Tens', 0, 90), step: 10, multipleOf: 10, derived: true },
-        { ...whole('o', 'o', 'Ones', 0, 9), derived: true },
-        { ...whole('p', 'p', 'Hundreds × second', 100, 8100), derived: true },
-        { ...whole('q', 'q', 'Tens × second', 0, 810), derived: true },
-        { ...whole('u', 'u', 'Ones × second', 0, 81), derived: true },
-        { ...whole('n', 'n', 'Product', 100, 8991), derived: true },
-      ],
-      relations: [
-        placePart('h', 'a', 100, 'hundreds'),
-        placePart('t', 'a', 10, 'tens'),
-        {
-          id: 'a = h + t + o',
-          display: '{a} = {h} + {t} + {o}',
-          vars: ['a', 'h', 't', 'o'],
-          residual: (v: Values) => v.a! - v.h! - v.t! - v.o!,
-          solve: {
-            a: (v: Values) => v.h! + v.t! + v.o!,
-            o: (v: Values) => v.a! - v.h! - v.t!,
-            h: (v: Values) => v.a! - v.t! - v.o!,
-            t: (v: Values) => v.a! - v.h! - v.o!,
-          },
-        },
-        p1.relation,
-        p2.relation,
-        p3.relation,
-        {
-          id: 'n = p + q + u',
-          display: '{p} + {q} + {u} = {n}',
-          vars: ['n', 'p', 'q', 'u'],
-          residual: (v: Values) => v.n! - v.p! - v.q! - v.u!,
-          solve: {
-            n: (v: Values) => v.p! + v.q! + v.u!,
-            p: () => undefined,
-            q: () => undefined,
-            u: () => undefined,
-          },
-        },
-        {
-          id: 'n = a × b',
-          display: '{a} × {b} = {n}',
-          vars: ['n', 'a', 'b'],
-          residual: (v: Values) => v.n! - v.a! * v.b!,
-          solve: {
-            n: () => undefined,
-            a: (v: Values) => div(v.n!, v.b!),
-            b: (v: Values) => div(v.n!, v.a!),
-          },
-        },
-      ],
-      steps: {
-        'h = hundreds of a': {
-          h: { expr: '{a} without its tens and ones', how: 'The hundreds of the first factor.' },
-        },
-        't = tens of a': {
-          t: { expr: 'the tens in {a}', how: 'The tens of the first factor, without the ones.' },
-        },
-        'a = h + t + o': {
-          o: {
-            expr: '{a} − {h} − {t}',
-            how: 'The ones: what is left after the hundreds and tens.',
-          },
-          h: { expr: '{a} − {t} − {o}', how: 'The hundreds: take the tens and ones away.' },
-          t: { expr: '{a} − {h} − {o}', how: 'The tens: take the hundreds and ones away.' },
-          a: { expr: '{h} + {t} + {o}', how: 'Put the three parts back together.' },
-        },
-        'p = h × b': p1.steps,
-        'q = t × b': p2.steps,
-        'u = o × b': p3.steps,
-        'n = p + q + u': {
-          n: {
-            expr: '{p} + {q} + {u}',
-            how: 'Add the three part products, biggest first.',
-            work: (v) => addAll([v.p!, v.q!, v.u!]),
-          },
-        },
-        'n = a × b': {
-          a: { expr: '{n} ÷ {b}', how: 'Divide the product by the second factor.' },
-          b: { expr: '{n} ÷ {a}', how: 'Divide the product by the first factor.' },
+    },
+    example: { a: 347812, b: 125469, c: 473281 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'tape', parts: ['a', 'b'], total: 'c' },
+  },
+  {
+    id: 'm.4.place-value-million~subtract',
+    title: 'Subtract to 1,000,000',
+    use: 'Use this to subtract numbers up to 1,000,000 in columns.',
+    assumptions: [
+      'Line up the places. Subtract the ones first, then each place to the left.',
+      'Not enough in a place? Regroup 1 from the next place as 10.',
+      'Check by adding the difference back to what you took away.',
+    ],
+    variables: [
+      whole('a', 'a', 'Start', 0, 1000000),
+      whole('b', 'b', 'Take away', 0, 1000000),
+      whole('c', 'c', 'Difference', 0, 1000000),
+    ],
+    relations: [
+      {
+        id: 'a − b = c',
+        display: '{a} − {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.a! - v.b! - v.c!,
+        solve: {
+          c: (v: Values) => v.a! - v.b!,
+          a: (v: Values) => v.c! + v.b!,
+          b: (v: Values) => v.a! - v.c!,
         },
       },
-      example: { a: 234, b: 6, h: 200, t: 30, o: 4, p: 1200, q: 180, u: 24, n: 1404 },
-      startWith: ['a', 'b'],
-      representation: {
-        kind: 'areaModel',
-        top: ['h', 't', 'o'],
-        side: ['b'],
-        parts: [['p', 'q', 'u']],
-        total: 'n',
+    ],
+    steps: {
+      'a − b = c': {
+        c: { expr: '{a} − {b}', how: 'Subtract in columns from the ones. Regroup when needed.' },
+        a: { expr: '{c} + {b}', how: 'Add back what was taken away, in columns.' },
+        b: { expr: '{a} − {c}', how: 'Take the difference away from the start, in columns.' },
       },
-    } satisfies ModuleDef;
-  })(),
+    },
+    example: { a: 500000, b: 123456, c: 376544 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'tape', compare: ['a', 'b'], difference: 'c' },
+  },
+  // ── Multi-digit multiplication: the area model, up to 4-digit × 1-digit (4.NBT.5) ──
+  multiplyPage({
+    id: 'm.4.multi-digit-multiply',
+    assumptions: [
+      'Break the first factor into its places: 4,327 = 4,000 + 300 + 20 + 7.',
+      'Multiply each place by the second factor, then add the partial products.',
+      'The area model draws each partial product as a box.',
+      'Check with an estimate: round the first factor to its biggest place.',
+    ],
+    first: [10, 9999],
+    second: [2, 9],
+    example: [4327, 6],
+  }),
+  // ── 2-digit × 2-digit: four partial products (4.NBT.5) ──
+  multiplyPage({
+    id: 'm.4.multi-digit-multiply~two-digit',
+    title: 'Two-digit times two-digit',
+    use: 'Use this for a two-digit number times a two-digit number, like 43 × 26.',
+    assumptions: [
+      'Break both factors into tens and ones: 43 = 40 + 3 and 26 = 20 + 6.',
+      'Multiply every part by every part: four partial products. Add them.',
+      'The area model has a box for each partial product.',
+    ],
+    first: [10, 99],
+    second: [10, 99],
+    example: [43, 26],
+  }),
   // ── Multiplicative comparison: times as many (4.OA.1, 4.OA.2) ──
   (() => {
     const cmp = times(
@@ -862,7 +742,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       title: 'Times as many',
       use: 'Use this for “4 times as many” word problems.',
       assumptions: [
-        '“3 times as many” means 3 equal groups of the smaller amount.',
+        '“3 times as many” means 3 copies of the smaller amount.',
         'Bigger amount = times × smaller amount. To find the times, divide.',
         '“3 times as many” is not “3 more”: 3 more is adding.',
       ],
@@ -899,7 +779,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
       example: { s: 6, k: 4, b: 24 },
       startWith: ['s', 'k'],
-      representation: { kind: 'equalGroups', groups: 'k', each: 's', total: 'b' },
+      // The bigger bar is drawn as that many copies of the smaller one (the 4.OA.2 tape).
+      representation: { kind: 'tape', compare: ['b', 's'], difference: 'b', times: 'k' },
     } satisfies ModuleDef;
   })(),
   // ── Long division: partial quotients with a remainder (4.NBT.6) ──
@@ -921,8 +802,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.long-division',
       assumptions: [
-        'Share the dividend into equal groups of the divisor. The number of groups is the quotient.',
-        'Work one place at a time, biggest first: how many fit, multiply, take away, bring down the next digit.',
+        'Make groups the size of the divisor. The number of groups is the quotient.',
+        'Take away groups by place, biggest first: 600 is 100 sixes, 120 is 20 sixes, 18 is 3 sixes.',
         'What is left is the remainder. It is always less than the divisor.',
         'Check: quotient × divisor + remainder = dividend.',
       ],
@@ -997,9 +878,10 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'q = whole groups of d in n': {
           q: {
             expr: 'whole groups of {d} in {n}',
-            how: 'Divide one place at a time: how many fit, multiply, take away, bring the next digit down.',
+            how: 'Take away groups of the divisor by place: hundreds of groups, then tens, then ones.',
             work: (v) => partial(v.n!, v.d!),
-            written: (v) => longDivision(v.n!, v.d!),
+            // Grade 4 writes partial quotients; the bracket when the quotient is one place.
+            written: (v) => partialQuotients(v.n!, v.d!) ?? longDivision(v.n!, v.d!),
           },
         },
       },
@@ -1007,12 +889,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
       startWith: ['n', 'd'],
       pictureLabels: ['q'],
       representation: {
-        kind: 'tape',
-        parts: ['m', 'r'],
-        total: 'n',
-        groups: 'q',
-        groupsPart: 'm',
-        caption: '{q} groups of {d} make {m}, and {r} left over.',
+        kind: 'areaModel',
+        divide: { dividend: 'n', divisor: 'd', quotient: 'q', remainder: 'r' },
       },
     } satisfies ModuleDef;
   })(),
@@ -1069,6 +947,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       {
         id: 'q = full groups of d in n',
         display: '{n} ÷ {d} → {q} full groups',
+        words: 'Total ÷ in each group = {q}, with some left over',
         check: (v: Values) => `${v.n} ÷ ${v.d} = ${v.q} remainder ${v.n! % v.d!}`,
         vars: ['q', 'n', 'd'],
         residual: (v: Values) => v.q! - Math.floor(v.n! / v.d!),
@@ -1081,6 +960,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       {
         id: 'u = q, plus 1 if any are left',
         display: '{q} full groups and {r} left over: {u} groups needed',
+        words: 'Full groups, and 1 more when any are left over = {u}',
         check: (v: Values) =>
           v.r! > 0
             ? `${v.q} full groups and 1 more for the ${v.r} left: ${v.u}`
@@ -1115,7 +995,15 @@ export const MATH_4_MODULES: ModuleDef[] = [
         q: {
           expr: 'full groups of {d} in {n}',
           how: 'Divide. The whole-number part of the answer is the full groups.',
-          work: (v) => divideWork(v.n! - (v.n! % v.d!), v.d!),
+          work: (v) => {
+            const q = Math.floor(v.n! / v.d!);
+            return v.n! % v.d! === 0
+              ? [`${q} × ${v.d} = ${v.n}`]
+              : [
+                  `${q} × ${v.d} = ${q * v.d!}`,
+                  `${q + 1} × ${v.d} = ${(q + 1) * v.d!} is too many`,
+                ];
+          },
         },
       },
       'u = q, plus 1 if any are left': {
@@ -1133,12 +1021,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
     startWith: ['n', 'd'],
     pictureLabels: ['q'],
     representation: {
-      kind: 'tape',
-      parts: ['m', 'r'],
-      total: 'n',
-      groups: 'q',
-      groupsPart: 'm',
-      caption: '{q} full groups of {d} make {m}, and {r} left over: {u} groups needed.',
+      kind: 'areaModel',
+      divide: { dividend: 'n', divisor: 'd', quotient: 'q', remainder: 'r' },
     },
   },
   // ── Comparing fractions with unlike denominators: a common denominator (4.NF.1, 4.NF.2) ──

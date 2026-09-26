@@ -237,6 +237,106 @@ export function longDivision(n: number, d: number): Written | undefined {
 }
 
 /**
+ * The standard algorithm for a × b (Grade 5, 5.NBT.5): one row per digit of the second
+ * factor, the carries for each row written small above the first factor (the last row's
+ * carries on top), a 0 placeholder at the end of the tens row, and the rows added.
+ */
+export function standardMultiply(a: number, b: number): Written | undefined {
+  if (!Number.isInteger(a) || !Number.isInteger(b) || a < 10 || b < 2) return undefined;
+  const bDigits = digitsOf(b).reverse(); // ones first
+  if (bDigits.length > 2) return undefined;
+  // A 0 in the ones (× 40): one row, the 0 written first, then × 4.
+  const used = bDigits.map((db, j) => ({ db, j })).filter((x) => x.db > 0);
+  const product = a * b;
+  const rowsOf = used.map(({ db, j }) => a * db * 10 ** j);
+  const cols = Math.max(String(product).length, String(a).length, String(b).length);
+  const width = cols + 1;
+  const col = (place: number) => width - 1 - place;
+  const aDigits = digitsOf(a).reverse();
+  const digits = (n: number) =>
+    right(
+      digitsOf(n).map((d) => cell(String(d))),
+      width,
+    );
+  // Carries for each digit of the second factor: into each place of the first factor.
+  const carryRows = used.map(({ db }) => {
+    const row = Array<WrittenCell>(width).fill(blank);
+    let carry = 0;
+    let any = false;
+    aDigits.forEach((da, i) => {
+      const t = da * db + carry;
+      carry = Math.floor(t / 10);
+      if (carry > 0 && i < aDigits.length - 1) {
+        row[col(i + 1)] = cell(String(carry), { small: true, muted: true });
+        any = true;
+      }
+    });
+    return any ? row : undefined;
+  });
+  const times = digits(b);
+  times[0] = cell('×');
+  // The tens row ends in its 0 placeholder, written like any digit.
+  const lines: WrittenCell[][] = rowsOf.map((value) => digits(value));
+  const rows: WrittenCell[][] = [
+    ...[...carryRows].reverse().filter((r): r is WrittenCell[] => r !== undefined),
+    digits(a),
+    times.map((x) => ({ ...x, underline: true })),
+  ];
+  if (lines.length === 1) {
+    rows.push(lines[0]!);
+  } else {
+    lines.forEach((line, j) => {
+      const row = j === lines.length - 1 ? line.map((x) => ({ ...x, underline: true })) : line;
+      if (j === lines.length - 1) row[0] = { ...cell('+'), underline: true };
+      rows.push(row);
+    });
+    rows.push(digits(product));
+  }
+  return { kind: 'grid', rows, width, says: `${a} × ${b} = ${product}` };
+}
+
+/**
+ * n ÷ d by partial quotients (Grade 4, 4.NBT.6): take away a place's worth of groups at a
+ * time (600 is 100 sixes), each partial quotient written beside, and add them at the end.
+ */
+export function partialQuotients(n: number, d: number): Written | undefined {
+  if (!Number.isInteger(n) || !Number.isInteger(d) || n < 10 || d < 2 || n < d) return undefined;
+  const q = Math.floor(n / d);
+  const parts = digitsOf(q)
+    .reverse()
+    .map((x, i) => x * 10 ** i)
+    .filter((x) => x > 0)
+    .reverse();
+  if (parts.length < 2) return undefined;
+  const width = String(n).length + 2;
+  const num = (x: number, more: Partial<WrittenCell> = {}) =>
+    right(
+      digitsOf(x).map((c) => cell(String(c), more)),
+      width,
+    );
+  const note = (text: string) => cell(text, { small: true, muted: true, wide: true });
+  const rows: WrittenCell[][] = [
+    [cell(String(d)), cell(')'), ...digitsOf(n).map((x) => cell(String(x)))],
+  ];
+  let left = n;
+  for (const part of parts) {
+    const take = num(part * d).map((x, k) => (k >= 1 ? { ...x, underline: true } : x));
+    take[1] = cell('−', { underline: true });
+    rows.push([...take, note(`${part} × ${d}`)]);
+    left -= part * d;
+    rows.push(num(left));
+  }
+  const last = rows[rows.length - 1]!;
+  rows[rows.length - 1] = [...last, note(`${parts.join(' + ')} = ${q}`)];
+  return {
+    kind: 'grid',
+    rows,
+    width,
+    says: `${n} ÷ ${d} = ${q}${n % d ? ` remainder ${n % d}` : ''}`,
+  };
+}
+
+/**
  * Column addition or subtraction of decimals: the numbers scaled to whole hundredths (or
  * tenths), worked in columns, and the point put back in every row (Grade 5, 5.NBT.7).
  */
@@ -334,6 +434,9 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     const columns = xs.filter((x) => figures(x) >= 2).length >= 2;
     // Tens that add to 100 or less (50 + 20 + 30) are added in the head.
     if (xs.every((x) => x % 10 === 0) && sum <= 100) return undefined;
+    // Adding one place unit (999,000 + 1,000) moves one digit: done in the head.
+    if (xs.length === 2 && xs.some((x) => x >= 10 && figures(x) === 1 && /^10+$/.test(String(x))))
+      return undefined;
     return twoDigit && (carries || (sum >= 100 && columns)) ? columnAdd(xs) : undefined;
   }
   if (/^\d+ − \d+$/.test(text)) {
@@ -355,7 +458,12 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     const mental = (x: number, y: number) => y < 10 && /^[1-9]0+$/.test(String(x));
     // Times-table facts and products under 100 are done in the head.
     if (Math.max(a, b) <= 12 || a * b < 100 || mental(a, b) || mental(b, a)) return undefined;
-    return columnMultiply(a, b, g >= 5);
+    // Grade 5: the standard algorithm (bigger factor on top) when the second has 1 or 2 digits.
+    if (g >= 5) {
+      const [top, bottom] = a >= b ? [a, b] : [b, a];
+      return standardMultiply(top, bottom) ?? columnMultiply(a, b, true);
+    }
+    return columnMultiply(a, b);
   }
   // Decimals (Grade 5): line up the points and add or take away in columns.
   if (g >= 5 && /^\d+\.\d+( \+ \d+(\.\d+)?)+$|^\d+ \+ \d+\.\d+/.test(text)) {
@@ -372,7 +480,10 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     let [n0, d0] = [n, d];
     while (n0 % 10 === 0 && d0 % 10 === 0) [n0, d0] = [n0 / 10, d0 / 10];
     if (d0 === 1 || (n0 % 10 === 0 && (n0 / 10) % d0 === 0 && n0 / 10 < 100)) return undefined;
-    return longDivision(n, d);
+    // Every digit shares evenly (26 ÷ 2, 84 ÷ 4): divide each place in the head.
+    if (n < 100 && digitsOf(n).every((x) => x % d === 0)) return undefined;
+    // Grade 4 takes away groups by place (partial quotients); the bracket from Grade 5.
+    return (g === 4 ? partialQuotients(n, d) : undefined) ?? longDivision(n, d);
   }
   return undefined;
 }

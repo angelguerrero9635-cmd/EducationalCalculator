@@ -6,6 +6,8 @@ import {
   columnSubtract,
   decimalColumns,
   longDivision,
+  partialQuotients,
+  standardMultiply,
   writtenText,
 } from '../written';
 
@@ -140,10 +142,40 @@ describe('Grade 5 written work', () => {
     expect(w.says).toBe('234 × 56 = 13104');
     const notes = w.rows.flatMap((r) => r.filter((c) => c.wide).map((c) => c.text));
     expect(notes).toEqual(['234 × 6', '234 × 50']);
-    expect(autoWritten('5', '234 × 56')?.rows.length).toBe(2 + 2 + 1);
+    // Grade 5: the standard algorithm, two carry rows, the factors, two rows and the sum.
+    expect(autoWritten('5', '234 × 56')?.rows.length).toBe(2 + 2 + 2 + 1);
     expect(autoWritten('4', '234 × 56')?.rows.length).toBe(2 + 6 + 1);
     // A one-digit multiplier still goes by the digits of the first factor.
     expect(columnMultiply(234, 6, true)!.rows.length).toBe(2 + 3 + 1);
+  });
+
+  it('writes the standard algorithm with carries and the tens row’s 0', () => {
+    expect(text(standardMultiply(234, 56)!)).toBe(
+      [
+        '      1 2',
+        '      2 2',
+        '      2 3 4',
+        '×       5 6',
+        '───────────',
+        '    1 4 0 4',
+        '+ 1 1 7 0 0',
+        '───────────',
+        '  1 3 1 0 4',
+      ].join('\n'),
+    );
+    // × 40 is one row: 4,327 × 4 with the 0 written first.
+    expect(standardMultiply(4327, 40)!.rows.length).toBe(1 + 2 + 1);
+  });
+
+  it('divides by partial quotients in Grade 4 and with the bracket in Grade 5', () => {
+    const w = partialQuotients(743, 6)!;
+    expect(w.says).toBe('743 ÷ 6 = 123 remainder 5');
+    const notes = w.rows.flatMap((r) => r.filter((c) => c.wide).map((c) => c.text));
+    expect(notes).toEqual(['100 × 6', '20 × 6', '3 × 6', '100 + 20 + 3 = 123']);
+    expect(autoWritten('4', '744 ÷ 6')?.rows[1]![1]!.text).toBe('−');
+    expect(autoWritten('5', '744 ÷ 6')?.rows[1]![1]!.text).toBe(')');
+    // Every digit shares evenly: no grid.
+    expect(autoWritten('4', '26 ÷ 2')).toBeUndefined();
   });
 
   it('adds and takes away decimals with the points lined up', () => {
