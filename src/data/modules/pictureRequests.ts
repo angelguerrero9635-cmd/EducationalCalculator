@@ -323,10 +323,16 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Percent grids past 100% and in tenths of a square',
     kind: 'grid100',
     pages: ['m.6.percent~fraction-decimal-percent'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.percent-grid-page',
+      'g.percent-grid-past-100',
+      'g.percent-grid-tenths',
+      'g.percent-grid-edge',
+    ],
+    uses: '"past100":true',
     notes:
-      '125% is one full grid and 25 squares; 37.5% shades part of a square. Then the page takes 5/4 = 125%.',
+      '125% is one full grid and 25 squares; 37.5% shades part of a square. Then the page takes 5/4 = 125%. Pass `past100: true, exact: true`: a full grid per 100 (a stack with its count past 3 grids, to 10,000%), and tenths of a square filled exactly; tapping square n sets the full grids + n. The page drops "a ≤ b" and raises Numerator (1000), Decimal (10) and Percent (1000).',
   },
   {
     id: 'G01',

@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/Text';
 
 import type { Representation } from '@/data/modules';
+import { formatNumber } from '@/engine/format';
 import { font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -9,7 +10,10 @@ import { Canvas, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'grid100' }>;
 
-/** One 10 × 10 grid, `shaded` squares filled; tapping square n calls `onTap(n)`. */
+/**
+ * One 10 × 10 grid, `shaded` squares filled (37.5 fills the left half of square 38); tapping
+ * square n calls `onTap(n)`.
+ */
 function Grid({
   shaded,
   size,
@@ -25,6 +29,8 @@ function Grid({
 }) {
   const c = usePalette();
   const cell = size / 10;
+  const full = Math.floor(shaded + 1e-9);
+  const part = shaded - full;
   return (
     <View style={{ width: size, height: size, opacity: faded ? 0.35 : 1 }}>
       {Array.from({ length: 100 }, (_, i) => (
@@ -42,9 +48,23 @@ function Grid({
             height: cell,
             borderWidth: StyleSheet.hairlineWidth,
             borderColor: c.chartGrid,
-            backgroundColor: i < shaded ? c.chartHighlight : c.chartSurface,
+            backgroundColor: i < full ? c.chartHighlight : c.chartSurface,
           }}
-        />
+        >
+          {i === full && part > 1e-9 ? (
+            <View
+              testID={`${testPrefix}part`}
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: `${Math.min(100, part * 100)}%`,
+                backgroundColor: c.chartHighlight,
+              }}
+            />
+          ) : null}
+        </Pressable>
       ))}
     </View>
   );
@@ -99,12 +119,18 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   // A "?" shades nothing: the grid never shows a number the student didn't type.
   const faded = !rep.known(spec.percent);
-  const shaded = faded ? 0 : Math.round(rep.val(spec.percent));
+  const raw = faded ? 0 : Math.max(0, rep.val(spec.percent));
+  // `past100`: a full grid per 100 before the tapped grid (125% = 1 grid and 25; 200% = 1 and 100).
+  const full = spec.past100 && raw > 100 ? Math.ceil(clean(raw / 100)) - 1 : 0;
+  const rest = clean(raw - 100 * full);
+  // `exact` shades tenths of a square; otherwise a percent like 38.7 shades the nearest square.
+  const shaded = spec.exact ? rest : Math.round(rest);
   const whole =
-    spec.wholes && rep.known(spec.wholes) ? Math.max(0, Math.round(rep.val(spec.wholes))) : 0;
+    full +
+    (spec.wholes && rep.known(spec.wholes) ? Math.max(0, Math.round(rep.val(spec.wholes))) : 0);
   const second = spec.second ? Math.round(rep.val(spec.second)) : undefined;
-  // Past 3 whole grids (with `stack`), one stack stands for all of them.
-  const stacked = !!spec.stack && whole > 3;
+  // Past 3 whole grids (with `stack` or `past100`), one stack stands for all of them.
+  const stacked = !!(spec.stack || spec.past100) && whole > 3;
   const count = (stacked ? 1 : whole) + 1 + (spec.second ? 1 : 0);
   const pin = [
     ...(spec.caption ? [spec.caption.whole] : []),
@@ -146,9 +172,9 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   size={size}
                   faded={faded}
                   testPrefix="cell-"
-                  onTap={(n) => calc.set({ ...rep.pin(pin), [spec.percent]: n })}
+                  onTap={(n) => calc.set({ ...rep.pin(pin), [spec.percent]: 100 * full + n })}
                 />
-                {count > 1 ? tag(rep.tag(spec.percent)) : null}
+                {count > 1 ? tag(full > 0 ? `${num(shaded)} of 100` : rep.tag(spec.percent)) : null}
               </View>
               {spec.second ? (
                 <View style={{ width: size }}>
@@ -175,10 +201,10 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {spec.second
           ? `${shaded} of 100 and ${second ?? '?'} of 100 squares shaded`
           : whole > 0
-            ? `${whole} whole ${whole === 1 ? 'grid' : 'grids'} and ${shaded} of 100 squares shaded`
+            ? `${full > 0 ? `${rep.value(spec.percent)} is ` : ''}${whole} whole ${whole === 1 ? 'grid' : 'grids'} and ${num(shaded)} of 100 squares shaded`
             : faded
               ? 'Type a number to shade the grid.'
-              : `${rep.value(spec.percent)} is ${shaded} of 100 squares shaded`}
+              : `${rep.value(spec.percent)} is ${num(shaded)} of 100 squares shaded`}
       </Text>
       {spec.caption ? (
         <Text style={[styles.caption, { color: c.chartMuted }]}>
@@ -188,6 +214,10 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </View>
   );
 }
+
+/** Drops float dust (1.25 × 100 = 125.00000000000001) before a percent is split into grids. */
+const clean = (x: number) => Math.round(x * 1e6) / 1e6;
+const num = (x: number) => formatNumber(x);
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'center', gap: space.sm },
