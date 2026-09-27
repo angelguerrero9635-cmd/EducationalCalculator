@@ -19,6 +19,7 @@ import {
 import { imageOf } from '@/components/module/reps/transform';
 
 import { placeParts } from '../helpers';
+import { physics8Issues } from './picturesPhysics8';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1528,6 +1529,12 @@ export function repIssues(
         out.push(`solution (${x}, ${y}) is not where the lines cross`);
       break;
     }
+    case 'spectrum':
+    case 'circuit':
+    case 'electromagnet':
+    case 'orbit':
+      out.push(...physics8Issues(rep, (id) => val(id)));
+      break;
     default:
       break;
   }

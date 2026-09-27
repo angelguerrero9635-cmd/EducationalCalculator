@@ -8,6 +8,7 @@ import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
+import { physics8SpecVars } from '../typesPhysics8';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -393,6 +394,11 @@ function representationVars(r: Representation): string[] {
     case 'mapping':
     case 'transformation':
       return graphSpecVars(r);
+    case 'spectrum':
+    case 'circuit':
+    case 'electromagnet':
+    case 'orbit':
+      return physics8SpecVars(r);
   }
 }
 

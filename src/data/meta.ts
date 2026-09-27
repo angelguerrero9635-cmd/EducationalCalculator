@@ -107,6 +107,10 @@ const PICTURE_NAMES: Record<string, string> = {
   functionMachine: 'input-output machine',
   mapping: 'mapping diagram and graph',
   transformation: 'figure and its image on a grid',
+  spectrum: 'electromagnetic spectrum band',
+  circuit: 'circuit with bulbs, a switch and a meter',
+  electromagnet: 'electromagnet with its field lines',
+  orbit: 'orbit diagram with the pull of gravity',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

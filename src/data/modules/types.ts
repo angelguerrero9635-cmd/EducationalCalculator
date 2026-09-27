@@ -8,6 +8,7 @@ import type {
   MappingSpec,
   TransformationSpec,
 } from './typesGraphs';
+import type { Physics8Spec } from './typesPhysics8';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -880,6 +881,8 @@ export type Representation =
   | FunctionMachineSpec
   | MappingSpec
   | TransformationSpec
+  /** Grade 8 spectrum, circuits, electromagnet and orbit (specs in `typesPhysics8.ts`). */
+  | Physics8Spec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
