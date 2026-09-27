@@ -791,11 +791,8 @@
       "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (sandstone changed by heat and pressure)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": [
-        "https://en.wikipedia.org/wiki/Quartzite",
-        "https://commons.wikimedia.org/wiki/Category:Quartzite"
-      ],
-      "notes": "Pale pink and white, glassy-granular mosaic of fused sand grains, massive with no layers, glassy highlights."
+      "references": [],
+      "notes": "Pale pink and white, glassy-granular mosaic of fused sand grains, massive with no layers, glassy highlights. Drawn from general knowledge of quartzite; no reference page was used."
     },
     {
       "slug": "rock-layers",
