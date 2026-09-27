@@ -4,7 +4,14 @@ import { difference, whole } from '../helpers';
 import { addStrategy, countUp, subtractStrategy } from '../work';
 
 /** Compare word problems (how many more or fewer), with a tape diagram, up to `max`. */
-export function compareProblem(id: string, max: number, example: [number, number], use: string) {
+export function compareProblem(
+  id: string,
+  max: number,
+  example: [number, number],
+  use: string,
+  /** Grade 1: two cube trains matched one to one, the extra cubes marked (tapes start in Grade 2). */
+  cubes = false,
+) {
   return {
     id,
     title: 'Compare problems',
@@ -54,11 +61,20 @@ export function compareProblem(id: string, max: number, example: [number, number
     },
     example: { B: example[0], S: example[1], d: example[0] - example[1] },
     startWith: ['B', 'S'],
-    representation: {
-      kind: 'tape' as const,
-      compare: ['B', 'S'] as [string, string],
-      difference: 'd',
-    },
+    representation: cubes
+      ? {
+          kind: 'compareRows' as const,
+          a: 'B',
+          b: 'S',
+          difference: 'd',
+          icon: 'cube' as const,
+          words: ['more', 'fewer'] as [string, string],
+        }
+      : {
+          kind: 'tape' as const,
+          compare: ['B', 'S'] as [string, string],
+          difference: 'd',
+        },
   };
 }
 /** Difference of two numbers; Grade 1 counts up (1.NBT.6 doesn't subtract two-digit numbers). */

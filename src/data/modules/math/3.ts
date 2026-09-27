@@ -363,6 +363,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const area = times('A = l × w', ['l', 'w', 'A'], ['length', 'width', 'area']);
     return {
       id: 'm.3.area~missing-side',
+      sliders: false,
+      // Typed where it is written (K–6 diagram review).
+      equation: '{l} × {w} = {A}',
       title: 'A missing side from the area',
       use: 'Use this when you know the area and one side: “24 cm², 6 cm long. How wide?”',
       assumptions: [
@@ -544,6 +547,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // ── Multiply and divide within 100 (3.OA.1–4, 3.OA.7) ──
   {
     id: 'm.3.multiply-divide-100',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{g} × {k} = {n}',
     assumptions: [
       'Every group has the same number.',
       'Multiply to find the total. Divide to find the groups or how many in each.',
@@ -562,6 +568,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.multiply-divide-100~array',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{r} × {c} = {n}',
     title: 'Arrays',
     use: 'Use this for rows and columns: “6 rows of 4 chairs. How many chairs?”',
     assumptions: [
@@ -603,6 +612,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // Sharing: the total and the groups give how many in each (3.OA.2).
   {
     id: 'm.3.multiply-divide-100~share',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} ÷ {g} = {k}',
     title: 'Share equally',
     use: 'Use this to share equally: “24 stickers shared by 4 friends. How many each?”',
     assumptions: [
@@ -623,6 +635,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // Grouping: the total and the size of each group give how many groups (3.OA.2).
   {
     id: 'm.3.multiply-divide-100~how-many-groups',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} ÷ {s} = {k}',
     title: 'How many groups?',
     use: 'Use this for “24 stickers, 6 on each page. How many pages?”',
     assumptions: [
@@ -643,6 +658,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // A number sentence with a box: 8 × ? = 48 (3.OA.4).
   {
     id: 'm.3.multiply-divide-100~missing-factor',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{r} × {c} = {n}',
     title: 'The missing number',
     use: 'Use this for a number sentence with a box: 8 × ? = 48.',
     assumptions: [
@@ -664,6 +682,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // rows is 50 ÷ 5 + 35 ÷ 5 = 10 + 7.
   {
     id: 'm.3.multiply-divide-100~break-apart',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} ÷ {g} = {q}',
     title: 'Divide by breaking apart',
     use: 'Use this for “85 chairs in 5 equal rows: how many in each row?” past the facts.',
     assumptions: [
@@ -918,7 +939,14 @@ export const MATH_3_MODULES: ModuleDef[] = [
       steps: { 't = a + b': both.steps, 't = g × e': share.steps },
       example: { a: 18, b: 12, t: 30, g: 5, e: 6 },
       startWith: ['g', 'a', 'b'],
-      representation: { kind: 'equalGroups', groups: 'g', each: 'e', total: 't' },
+      // Both steps on one bar: the two amounts joined, then dashed into equal groups.
+      representation: {
+        kind: 'tape',
+        parts: ['a', 'b'],
+        total: 't',
+        groups: 'g',
+        caption: '{a} + {b} = {t}. {t} shared into {g} groups: {e} in each.',
+      },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -1357,6 +1385,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // ── Add and subtract within 1,000 (3.NBT.2) ──
   {
     id: 'm.3.add-sub-1000',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {c}',
     assumptions: [
       'Line up hundreds, tens and ones. Add or take away one place at a time, starting with the ones.',
       'Trade 10 ones for 1 ten, or 10 tens for 1 hundred, when a place gets past 9.',
@@ -1413,6 +1444,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.add-sub-1000~subtract-zeros',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} − {b} = {c}',
     title: 'Take away within 1,000',
     use: 'Use this for “Find the value of 400 − 162.”',
     assumptions: [
@@ -1523,6 +1557,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const tensTimes = times('p = a × t', ['a', 't', 'p'], ['number', 'tens', 'tens in the answer']);
     return {
       id: 'm.3.multiply-by-tens',
+      sliders: false,
+      // Typed where it is written (K–6 diagram review).
+      equation: '{a} × {m} = {n}',
       pictureLabels: ['t', 'p'],
       assumptions: [
         'A multiple of 10 is a number of tens: 80 is 8 tens.',
@@ -2542,15 +2579,15 @@ export const MATH_3_MODULES: ModuleDef[] = [
     example: { l: 6, w: 4, P: 20, A: 24 },
     startWith: ['l', 'P'],
     // Every rectangle with this perimeter: lengths 1 to half the perimeter − 1.
+    // Unit squares inside, the perimeter around: drag the length with the perimeter held.
     representation: {
-      kind: 'table',
-      sweep: 'l',
-      output: 'A',
-      params: ['P'],
-      rows: (v) =>
-        v.P !== undefined && v.P >= 4
-          ? Array.from({ length: Math.min(12, v.P / 2 - 1) }, (_, i) => i + 1)
-          : [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      kind: 'rectangle',
+      length: 'l',
+      width: 'w',
+      inside: 'A',
+      around: 'P',
+      grid: true,
+      extent: 10,
     },
   },
   {
@@ -2635,17 +2672,15 @@ export const MATH_3_MODULES: ModuleDef[] = [
     // Miles and square miles lose the whole-number check; keep to centimeters.
     unitSystems: ['metric'],
     // Every rectangle with this area: the lengths that divide it.
+    // Unit squares inside, the perimeter around: drag the length with the area held.
     representation: {
-      kind: 'table',
-      sweep: 'l',
-      output: 'P',
-      params: ['A'],
-      rows: (v) =>
-        v.A !== undefined && v.A >= 1
-          ? Array.from({ length: Math.min(19, v.A) }, (_, i) => i + 1).filter(
-              (x) => v.A! % x === 0 && v.A! / x <= 19,
-            )
-          : [1, 2, 3, 4, 6, 8, 12, 24],
+      kind: 'rectangle',
+      length: 'l',
+      width: 'w',
+      inside: 'A',
+      around: 'P',
+      grid: true,
+      extent: 10,
     },
   },
   (() => {

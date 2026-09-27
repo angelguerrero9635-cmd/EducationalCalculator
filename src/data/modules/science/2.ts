@@ -231,15 +231,8 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       steps: { 'now = start + growth': grew.steps },
       example: { s: 18, g: 7, n: 25 },
       startWith: ['s', 'n'],
-      representation: {
-        kind: 'hops',
-        start: 's',
-        hops: [{ var: 'g', sign: 1 }],
-        end: 'n',
-        min: 0,
-        max: 50,
-        tick: 5,
-      },
+      // The plant at the start and now against a cm ruler, the growth bracketed.
+      representation: { kind: 'ruler', lengths: ['s', 'n'], difference: 'g', extent: 60 },
     } satisfies ModuleDef;
   })(),
   // ── Grade 2: pollination and seed dispersal (2-LS2-2) ──

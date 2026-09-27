@@ -5,6 +5,23 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## K–6 diagram review (three lesson-reviewers)
+
+- Pictures changed to existing kinds:
+  - Grade 1 compare problems draw cube trains (`compareProblem(…, cubes)`).
+  - Meters and centimeters draw meter sticks.
+  - Plant heights draw rulers.
+  - The two-step share draws one bar joined, then split into groups.
+  - The same-perimeter and same-area pages draw a rectangle of unit squares.
+  - Take-away is drawn as part and whole.
+  - The remainder page draws the full groups plus the leftover piece.
+  - Pay and hours has the table and the unit rate.
+  - The plant's gain against the soil's loss is a compare tape.
+- Equation inputs on 43 more pages: sentences as written, including `{n} = 10 + {o}`,
+  `({a} + {b}) × {c} − {d} = {r}`, `{k} × [{a} + ({b} × {c})] = {r}`,
+  `{n} ÷ {d} = {q} remainder {r}` and `{a} + {b} = {g}({x} + {y})`.
+- The 90 pictures still to draw are in the tracker (D..) with the pages they are for.
+
 ## Sliders on iPhone (user feedback)
 
 - On the equivalent-expressions page a slider took a tap but not a slide on an iPhone. iOS

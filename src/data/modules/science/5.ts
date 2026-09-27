@@ -215,13 +215,8 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       example: { S: 5, E: 85, g: 80, T: 1000, U: 998, l: 2, r: 78 },
       startWith: ['S', 'E', 'T', 'U'],
       unitSystems: ['metric'],
-      representation: {
-        kind: 'bars',
-        bars: [{ var: 'g' }, { var: 'l' }, { var: 'r' }],
-        min: 0,
-        max: 100,
-        scale: 10,
-      },
+      // The plant's gain and the soil's loss side by side: the gap is the gain not from the soil.
+      representation: { kind: 'tape', compare: ['g', 'l'], difference: 'r' },
     } satisfies ModuleDef;
   })(),
   // ── Earth's water: salt, frozen and liquid fresh water (5-ESS2-2) ──

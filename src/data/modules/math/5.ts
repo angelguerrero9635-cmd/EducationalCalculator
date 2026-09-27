@@ -110,6 +110,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     const pages: ModuleDef[] = [
       {
         id: 'm.5.order-of-operations',
+        sliders: false,
+        // Typed where it is written (K–6 diagram review).
+        equation: '({a} + {b}) × {c} − {d} = {r}',
         assumptions: [
           'Parentheses first, then brackets [ ], then braces { }: work from the inside out.',
           'Then multiply or divide, then add or subtract.',
@@ -171,6 +174,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.5.order-of-operations~divide',
+        sliders: false,
+        // Typed where it is written (K–6 diagram review).
+        equation: '({a} + {b}) ÷ {c} = {q}',
         title: 'Add inside, then divide',
         use: 'Use this for “(18 + 6) ÷ 4 =” and other parentheses before dividing.',
         assumptions: [
@@ -332,6 +338,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         const plus = sum2('t = a + q', ['a', 'q', 't'], ['first number', 'quotient', 'sum']);
         return {
           id: 'm.5.order-of-operations~no-parentheses',
+          sliders: false,
+          // Typed where it is written (K–6 diagram review).
+          equation: '{a} + {b} ÷ {c} − {d} × {e} = {r}',
           title: 'Multiply and divide before adding',
           use: 'Use this for “3 + 15 ÷ 3 − 4 × 2 =”: multiply and divide first.',
           assumptions: [
@@ -420,6 +429,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         );
         return {
           id: 'm.5.order-of-operations~brackets',
+          sliders: false,
+          // Typed where it is written (K–6 diagram review).
+          equation: '{k} × [{a} + ({b} × {c})] = {r}',
           title: 'Parentheses inside brackets',
           use: 'Use this for “2 × [5 + (3 × 4)]”: work from the inside out.',
           assumptions: [
@@ -941,6 +953,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     };
     return {
       id: 'm.5.standard-algorithm',
+      sliders: false,
+      // Typed where it is written (K–6 diagram review).
+      equation: '{a} × {b} = {p}',
       assumptions: [
         'Multiply by the ones digit of the second factor. Carries go above.',
         'Then by the tens digit: write a 0 in the ones place first.',
@@ -1090,6 +1105,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Decimals to hundredths: add and subtract (5.NBT.7) ──
   {
     id: 'm.5.decimal-operations',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {c}',
     assumptions: [
       'Line up the decimal points, so tenths sit under tenths and hundredths under hundredths.',
       'Add or take away each place from the right, regrouping like whole numbers.',
@@ -1195,6 +1213,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.decimal-operations~divide',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} ÷ {d} = {q}',
     title: 'Divide a decimal by a whole number',
     use: 'Use this for 7.2 ÷ 4: a decimal shared into equal parts.',
     assumptions: [
@@ -1268,6 +1289,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.decimal-operations~subtract',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{c} − {b} = {a}',
     title: 'Subtract decimals',
     use: 'Use this for “Subtract. 3.48 minus 1.46 equals ___.”',
     assumptions: [
@@ -1309,6 +1333,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.decimal-operations~times-decimal',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} × {b} = {p}',
     title: 'Multiply two decimals',
     use: 'Use this for “What is the value of 0.7 × 0.4?”',
     assumptions: [

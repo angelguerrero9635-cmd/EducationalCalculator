@@ -153,10 +153,14 @@ export const MATH_1_MODULES: ModuleDef[] = [
     20,
     [11, 7],
     'Use this for “17 fish and 9 fish. How many more fish?”',
+    true,
   ),
   // Take from ten: 14 − 8 = (10 − 8) + 4 (1.OA.6, Eureka Grade 1 Module 2).
   {
     id: 'm.1.add-sub-20~take-from-ten',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{c} − {b} = {a}',
     title: 'Take from ten',
     use: 'Use this for “Find the number that makes 14 − 8 = ___ true.”',
     assumptions: [
@@ -220,6 +224,9 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // Doubles and near doubles: 6 + 7 is 6 + 6 and 1 more (1.OA.6).
   {
     id: 'm.1.add-sub-20~doubles',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {c}',
     title: 'Near doubles',
     use: 'Use this for near doubles: “Find the value of 6 + 7.”',
     assumptions: [
@@ -351,6 +358,9 @@ export const MATH_1_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.1.equal-sign',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {c} + {d}',
     assumptions: [
       'The equal sign means both sides are the same amount. It does not mean “the answer comes next”.',
       'To find a missing number, make both sides the same: 8 + 2 = 5 + ?',
@@ -756,6 +766,9 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // Two 2-digit numbers within 100 (1.NBT.4; Eureka and IM Grade 1 both teach it).
   {
     id: 'm.1.add-within-100~two-digits',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {c}',
     title: 'Add two 2-digit numbers',
     use: 'Use this for “Find the value of 35 + 48.”',
     assumptions: ['Add tens to tens and ones to ones.', 'Then put the tens and the ones together.'],
@@ -818,6 +831,9 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // Grade 1: subtract tens from tens, 10–90 (1.NBT.6).
   {
     id: 'm.1.add-within-100~subtract-tens',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} − {b} = {c}',
     title: 'Subtract tens',
     use: 'Use this for “Find the value of 90 − 70.”',
     assumptions: [
