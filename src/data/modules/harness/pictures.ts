@@ -880,6 +880,18 @@ export function repIssues(
       );
       const w = W ?? L;
       const h = H ?? L;
+      if (rep.solid === 'triangularPrism') {
+        if (W === undefined || H === undefined || sl === undefined || L === undefined) break;
+        // The third side closes the triangle (within 2%, for a side rounded to a whole number).
+        const side = rep.triangle === 'isosceles' ? Math.hypot(W / 2, H) : Math.hypot(W, H);
+        if (Math.abs(side - sl) > 0.02 * side)
+          out.push(`triangle ${W} by ${H} has a side of ${side}, shows ${sl}`);
+        const sides = rep.triangle === 'isosceles' ? W + 2 * sl : W + H + sl;
+        const all = W * H + L * sides;
+        if (T !== undefined && Math.abs(all - T) > 1e-6 * Math.max(1, T))
+          out.push(`net faces add to ${all}, total shows ${T}`);
+        break;
+      }
       const total =
         L === undefined
           ? undefined

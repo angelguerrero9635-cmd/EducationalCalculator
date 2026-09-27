@@ -8,6 +8,17 @@ import type { Values } from '@/engine/types';
 import { whole } from './helpers';
 import type { ModuleDef } from './types';
 
+/** A length in centimeters. */
+const cm = (id: string, name: string) => ({
+  id,
+  symbol: id,
+  name,
+  unit: 'cm',
+  min: 0.1,
+  max: 100,
+  step: 0.1,
+});
+
 /** An angle in whole degrees. */
 const degrees = (id: string, name: string, max = 180) => ({
   ...whole(id, id, name, 0, max),
@@ -41,6 +52,74 @@ const straight = pair(180, 'The two angles make a straight line.');
 const right = pair(90, 'The two angles make a right angle.');
 
 export const G7C_GALLERY_MODULES: ModuleDef[] = [
+  {
+    id: 'g.triangular-prism-net',
+    title: 'Net of a triangular prism',
+    assumptions: [
+      'The two ends are the same right triangle.',
+      'Each rectangle is one side of the triangle by the length.',
+    ],
+    variables: [
+      cm('b', 'Triangle base'),
+      cm('h', 'Triangle height'),
+      cm('s', 'Slanted side'),
+      cm('L', 'Length'),
+      {
+        id: 'S',
+        symbol: 'S',
+        name: 'Surface area',
+        unit: 'cm²',
+        min: 0,
+        max: 100000,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        // The third side closes the right triangle (to within 1%).
+        id: 'the sides make a right triangle',
+        constraint: true,
+        display: '{b}, {h} and {s} make a right triangle',
+        vars: ['b', 'h', 's'],
+        residual: (v: Values) => (Math.abs(Math.hypot(v.b!, v.h!) - v.s!) <= 0.01 * v.s! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'S = bh + L(b + h + s)',
+        display: '{b} × {h} + {L} × ({b} + {h} + {s}) = {S}',
+        vars: ['S', 'b', 'h', 's', 'L'],
+        residual: (v: Values) => v.S! - (v.b! * v.h! + v.L! * (v.b! + v.h! + v.s!)),
+        solve: {
+          S: (v: Values) => v.b! * v.h! + v.L! * (v.b! + v.h! + v.s!),
+          b: () => undefined,
+          h: () => undefined,
+          s: () => undefined,
+          L: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'the sides make a right triangle': {},
+      'S = bh + L(b + h + s)': {
+        S: {
+          expr: '{b} × {h} + {L} × ({b} + {h} + {s})',
+          how: 'Two triangles make b × h. The rectangles are the length times the distance around the triangle.',
+          written: false,
+        },
+      },
+    },
+    example: { b: 6, h: 8, s: 10, L: 12, S: 336 },
+    startWith: ['b', 'h', 's', 'L'],
+    representation: {
+      kind: 'net',
+      solid: 'triangularPrism',
+      width: 'b',
+      height: 'h',
+      slant: 's',
+      length: 'L',
+      total: 'S',
+    },
+  },
   {
     id: 'g.vertical-angles',
     title: 'Vertical angles',

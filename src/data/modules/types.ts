@@ -880,10 +880,19 @@ export type Representation =
       area: string;
       show?: 'rearrange' | 'double';
     }
-  /** A box, cube or square pyramid unfolded, each face labelled with its area; Fold/Unfold. */
+  /**
+   * A box, cube, square pyramid or triangular prism unfolded, each face labelled with its
+   * area; Fold/Unfold.
+   */
   | {
       kind: 'net';
-      solid: 'box' | 'cube' | 'squarePyramid';
+      /**
+       * `triangularPrism`: `width` and `height` are the triangle's base and height, `slant` its
+       * third side (`triangle: 'right'`, the default) or each equal side (`'isosceles'`), and
+       * `length` the prism's length; the net is three rectangles with a triangle on each side.
+       */
+      solid: 'box' | 'cube' | 'squarePyramid' | 'triangularPrism';
+      triangle?: 'right' | 'isosceles';
       length: string;
       width?: string;
       height?: string;
