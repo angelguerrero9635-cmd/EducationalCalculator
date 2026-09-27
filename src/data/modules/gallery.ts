@@ -32,9 +32,10 @@ import { R2B_GALLERY_MODULES } from './galleryR2b';
 import { R2C_GALLERY_MODULES } from './galleryR2c';
 import { R2D_GALLERY_MODULES } from './galleryR2d';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
-import type { CardIcon, LayoutDef } from './layouts';
+import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
+import { iconSort } from './galleryIconSort';
 
 /** A whole count, or undefined when a division doesn't come out whole. */
 const whole0 = (x: number | undefined) =>
@@ -1511,35 +1512,3 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
   ...S4B_GALLERY_LAYOUTS,
   ...S4D_GALLERY_LAYOUTS,
 ];
-
-/** A sort whose cards are card icons: [bin id, label, why, icons]. */
-export function iconSort(
-  id: string,
-  title: string,
-  question: string,
-  bins: [string, string, string, CardIcon[]][],
-): LayoutDef {
-  const names: Partial<Record<CardIcon, string>> = {
-    door: 'classroom door',
-    bus: 'school bus',
-    'water bottle': 'big water bottle',
-  };
-  return {
-    id,
-    title,
-    kind: 'sort',
-    question,
-    assumptions: ['Tap a card, then a group.', 'The drawings are what matter here.'],
-    bins: bins.map(([bin, label, why]) => ({ id: bin, label, why })),
-    cards: bins.flatMap(([bin, , , icons]) =>
-      icons.map((icon) => {
-        const label = names[icon] ?? icon;
-        return {
-          label: label[0]!.toUpperCase() + label.slice(1),
-          bin,
-          figure: { kind: 'icon' as const, icon },
-        };
-      }),
-    ),
-  };
-}
