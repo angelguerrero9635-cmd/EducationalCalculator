@@ -350,4 +350,50 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
       scale: true,
     },
   },
+  {
+    id: 'g.ratio-graph',
+    title: 'Ratio graph',
+    notation: 'letters',
+    assumptions: [
+      'Equivalent ratios multiply both parts by the same number.',
+      'Each row of the table is a point; the points lie on one line through 0.',
+    ],
+    variables: [
+      whole('a', 'a', 'Cups of flour', 1, 20),
+      whole('b', 'b', 'Cups of milk', 1, 20),
+      whole('k', 'k', 'Multiplier', 1, 10),
+      { ...whole('x', 'x', 'Flour in the batch', 1, 200), derived: true },
+      { ...whole('y', 'y', 'Milk in the batch', 1, 200), derived: true },
+    ],
+    relations: [
+      {
+        id: 'x = a × k',
+        display: '{a} × {k} = {x}',
+        vars: ['x', 'a', 'k'],
+        residual: (v: Values) => v.x! - v.a! * v.k!,
+        solve: { x: (v: Values) => v.a! * v.k! },
+      },
+      {
+        id: 'y = b × k',
+        display: '{b} × {k} = {y}',
+        vars: ['y', 'b', 'k'],
+        residual: (v: Values) => v.y! - v.b! * v.k!,
+        solve: { y: (v: Values) => v.b! * v.k! },
+      },
+    ],
+    steps: {
+      'x = a × k': { x: { expr: '{a} × {k}', how: 'Multiply the flour by the multiplier.' } },
+      'y = b × k': { y: { expr: '{b} × {k}', how: 'Multiply the milk by the same number.' } },
+    },
+    example: { a: 3, b: 5, k: 6, x: 18, y: 30 },
+    startWith: ['a', 'b', 'k'],
+    representation: {
+      kind: 'ratioTable',
+      first: 'a',
+      second: 'b',
+      times: 'k',
+      amounts: ['x', 'y'],
+      graph: true,
+    },
+  },
 ];
