@@ -1728,7 +1728,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.factors-multiples~pattern-rules',
     title: 'What is the rule?',
-    use: 'Use this to find the rule of a number pattern: add, multiply or take turns.',
+    use: 'Use this for “3, 6, 5, 8, 7, 10, 9: what comes next? Write the rule.”',
     assumptions: [
       'The rule is what takes one number to the next.',
       'Check the rule on every pair of neighbors, not just the first two.',
@@ -1764,7 +1764,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.unit-conversion~about-a-meter',
     title: 'More or less than a meter?',
-    use: 'Use this to estimate whether a length is more than or less than 1 meter.',
+    use: 'Use this for “Is it more or less than 1 meter?”',
     assumptions: [
       'A meter stick is 1 meter: about the width of a classroom door.',
       'Compare each length with a meter stick.',
@@ -1789,7 +1789,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.factors-multiples~prime-composite',
     title: 'Prime or composite?',
-    use: 'Use this to sort numbers by how many factors they have.',
+    use: 'Use this to sort numbers as prime or composite by their factors.',
     assumptions: [
       'A prime number has exactly two factors: 1 and itself.',
       'A composite number has more than two factors.',
@@ -1820,7 +1820,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.fraction-equivalence~benchmark',
     title: 'Compare to one half',
-    use: 'Use this to compare a fraction with 1/2.',
+    use: 'Use this for “Is the fraction less than, equal to or greater than one-half?”',
     assumptions: [
       'Half the denominator is one half: 4/8 is 1/2, and so is 5/10.',
       'A numerator more than half the denominator is more than 1/2.',
@@ -2070,7 +2070,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.lines-symmetry~symmetry',
     title: 'Lines of symmetry',
-    use: 'Use this to sort shapes by how many lines of symmetry they have.',
+    use: 'Use this for “How many lines of symmetry does the shape have?”',
     assumptions: [
       'A line of symmetry folds a shape onto itself: both halves match exactly.',
       'Some shapes have no line of symmetry, some have one, some have several.',
@@ -2158,7 +2158,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.lines-symmetry~classify-shapes',
     title: 'Sort shapes by angles and sides',
-    use: 'Use this to sort triangles and four-sided shapes by their angles and sides.',
+    use: 'Use this for “Which statement is true about all four shapes?”',
     assumptions: [
       'A right triangle has one right angle, a square corner.',
       'Parallel sides go the same way and never meet.',
@@ -2338,7 +2338,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.lines-symmetry~lines-rays',
     title: 'Points, lines, segments and rays',
-    use: 'Use this to tell a point, a line, a line segment and a ray apart.',
+    use: 'Use this for “Is it a line, a line segment or a ray?”',
     assumptions: [
       'A point is one exact spot.',
       'A line goes on forever both ways. A line segment has two endpoints.',
@@ -2382,7 +2382,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.4.lines-symmetry~angle-types',
     title: 'Acute, right, obtuse and straight angles',
-    use: 'Use this to sort angles by comparing them with a square corner.',
+    use: 'Use this for “Is the angle acute, right or obtuse?”',
     assumptions: [
       'A right angle is a square corner: 90°.',
       'An acute angle is smaller than a right angle. An obtuse angle is bigger, but less than a straight line.',
@@ -2549,7 +2549,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.order-of-operations~write-expression',
     title: 'Which expression says it?',
-    use: 'Use this to match words to an expression with parentheses.',
+    use: 'Use this for “Which expression matches the words?” with parentheses.',
     assumptions: [
       'Words like “the sum of” or “add first” need parentheses around the adding.',
       '“Twice” means 2 times. “3 less than” takes 3 away at the end.',
@@ -2574,7 +2574,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.add-fractions-unlike~benchmark',
     title: 'Is the sum more than 1?',
-    use: 'Use this to estimate a sum of fractions before adding.',
+    use: 'Use this for “Is the sum more or less than 1?” before adding.',
     assumptions: [
       'Compare each fraction with 1/2: two fractions less than 1/2 add to less than 1.',
       'Two fractions more than 1/2 add to more than 1.',
@@ -2602,7 +2602,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.multiply-fractions~scaling',
     title: 'Bigger or smaller?',
-    use: 'Use this to tell whether a product is more or less than the number, without multiplying.',
+    use: 'Use this for “Decide which is greater without calculating.”',
     assumptions: [
       'Times a fraction less than 1 makes a number smaller.',
       'Times 1, or a fraction equal to 1, keeps it the same.',
@@ -2770,7 +2770,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.classify-2d~triangles',
     title: 'Sort triangles by their sides',
-    use: 'Use this to name a triangle by how many of its sides are equal.',
+    use: 'Use this for “Which triangle is isosceles?” by its equal sides.',
     assumptions: [
       'An equilateral triangle has three equal sides. Its three angles are equal too.',
       'An isosceles triangle has two equal sides. A scalene triangle has no equal sides.',
@@ -2874,7 +2874,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.classify-2d~by-angles',
     title: 'Sort triangles by their angles',
-    use: 'Use this to name a triangle as acute, right or obtuse.',
+    use: 'Use this for “Is the triangle acute, right or obtuse?”',
     assumptions: [
       'A right angle is a square corner. An acute angle is smaller, an obtuse angle is bigger.',
       'A right triangle has one right angle. An obtuse triangle has one obtuse angle.',
@@ -2977,7 +2977,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.classify-2d~always-sometimes-never',
     title: 'Always, sometimes or never?',
-    use: 'Use this to decide whether a sentence about shapes is always true.',
+    use: 'Use this for “Is a square always a rectangle?”',
     assumptions: [
       'Always: every shape in the first group belongs to the second.',
       'Sometimes: some do and some do not.',

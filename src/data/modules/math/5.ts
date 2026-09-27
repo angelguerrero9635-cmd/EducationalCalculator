@@ -170,7 +170,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'm.5.order-of-operations~divide',
         title: 'Add inside, then divide',
-        use: 'Use this for (18 + 6) ÷ 4 and other expressions with parentheses and division.',
+        use: 'Use this for “(18 + 6) ÷ 4 =” and other parentheses before dividing.',
         assumptions: [
           'Work inside the parentheses first. Then divide.',
           'Without the parentheses, 18 + 6 ÷ 4 would divide first: only the 6 would be shared.',
@@ -220,7 +220,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'm.5.order-of-operations~where-parentheses',
         title: 'Where the parentheses go',
-        use: 'Use this to see how parentheses change (3 + 5) × 4 and 3 + 5 × 4.',
+        use: 'Use this to compare (3 + 5) × 4 and 3 + 5 × 4.',
         assumptions: [
           'With parentheses, add first: (3 + 5) × 4 = 8 × 4 = 32.',
           'Without them, multiply first: 3 + 5 × 4 = 3 + 20 = 23.',
@@ -331,7 +331,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         return {
           id: 'm.5.order-of-operations~no-parentheses',
           title: 'Multiply and divide before adding',
-          use: 'Use this for 3 + 15 ÷ 3 − 4 × 2: no parentheses, so multiply and divide first.',
+          use: 'Use this for “3 + 15 ÷ 3 − 4 × 2 =”: multiply and divide first.',
           assumptions: [
             'No parentheses: multiply and divide first, from left to right.',
             'Then add and subtract, from left to right.',
@@ -419,7 +419,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         return {
           id: 'm.5.order-of-operations~brackets',
           title: 'Parentheses inside brackets',
-          use: 'Use this for 2 × [5 + (3 × 4)]: work from the inside out.',
+          use: 'Use this for “2 × [5 + (3 × 4)]”: work from the inside out.',
           assumptions: [
             'Parentheses first, then the brackets around them: work from the inside out.',
             'So 2 × [5 + (3 × 4)] = 2 × [5 + 12] = 2 × 17 = 34.',
@@ -545,7 +545,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.powers-of-ten~decimals',
     title: 'Move the decimal point',
-    use: 'Use this for 3.45 × 10² = 345, or 345 ÷ 10³ = 0.345.',
+    use: 'Use this for “Write a multiplication equation relating 0.5 and 0.05,” or 3.45 × 10².',
     assumptions: [
       'Multiplying by 10 moves every digit one place left. The point stays where it is.',
       'Times 10² moves every digit 2 places left. Dividing moves every digit right.',
@@ -644,7 +644,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     return {
       id: 'm.5.powers-of-ten~thousandths',
       title: 'Tenths, hundredths and thousandths',
-      use: 'Use this for the value of a digit, like the 3 in 4.263 (3 thousandths).',
+      use: 'Use this for “What is the value of the 3 in 4.263?”',
       assumptions: [
         'A digit’s value is the digit times its place.',
         'After the point: tenths (1/10), hundredths (1/100), thousandths (1/1,000).',
@@ -699,7 +699,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.powers-of-ten~compare-decimals',
     title: 'Compare decimals',
-    use: 'Use this to compare decimals like 0.307 and 0.37 with >, < or =.',
+    use: 'Use this for “Which is greater, 0.307 or 0.37?” with >, < or =.',
     assumptions: [
       'Line up the points. Compare the biggest place first.',
       'The same digit: move one place right and compare again.',
@@ -763,7 +763,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     return {
       id: 'm.5.powers-of-ten~round-decimals',
       title: 'Round decimals',
-      use: 'Use this to round a decimal to the nearest whole, tenth or hundredth.',
+      use: 'Use this for “Round 4.268 to the nearest hundredth.”',
       assumptions: [
         'Find the numbers below and above in that place. Round to the nearer one.',
         'Look at the digit one place to the right: 5 or more rounds up.',
@@ -872,7 +872,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     return {
       id: 'm.5.powers-of-ten~metric',
       title: 'Metric conversions',
-      use: 'Use this for 2.5 m = 250 cm, or 1,500 g = 1.5 kg.',
+      use: 'Use this for “The road is 15 kilometers long. How many meters is that?”',
       assumptions: [
         'Metric units go by powers of 10: 10, 100 or 1,000 of the smaller unit.',
         'Bigger to smaller: multiply, and every digit moves left.',
@@ -1136,7 +1136,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.decimal-operations~multiply',
     title: 'Multiply a decimal by a whole number',
-    use: 'Use this for 2.5 × 4 and other decimals times a whole number.',
+    use: 'Use this for “135 dozen eggs at $0.89 per dozen. What was the total cost?”',
     assumptions: [
       'Multiply as if both were whole numbers. Then put the point back.',
       'The product has as many places after the point as the decimal, before any end zeros are dropped.',
@@ -1194,7 +1194,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.decimal-operations~divide',
     title: 'Divide a decimal by a whole number',
-    use: 'Use this for 7.2 ÷ 4 and other decimals shared into equal parts.',
+    use: 'Use this for 7.2 ÷ 4: a decimal shared into equal parts.',
     assumptions: [
       'Think of the decimal as tenths or hundredths: 7.2 is 72 tenths.',
       'Share the tenths, then write the answer back as a decimal.',
@@ -1267,7 +1267,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.decimal-operations~subtract',
     title: 'Subtract decimals',
-    use: 'Use this for 12.5 − 3.75 and other differences of decimals.',
+    use: 'Use this for “Subtract. 3.48 minus 1.46 equals ___.”',
     assumptions: [
       'Line up the decimal points. Write a 0 in any empty place: 12.5 is 12.50.',
       'Subtract each place from the right, regrouping like whole numbers.',
@@ -1308,7 +1308,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.decimal-operations~times-decimal',
     title: 'Multiply two decimals',
-    use: 'Use this for 0.4 × 0.3 and other tenths times tenths.',
+    use: 'Use this for “What is the value of 0.7 × 0.4?”',
     assumptions: [
       'Multiply the digits as whole numbers: 4 × 3 = 12.',
       'Tenths times tenths are hundredths, so the product has two decimal places: 0.12.',
@@ -1374,7 +1374,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.decimal-operations~divide-by-decimal',
     title: 'Divide by a decimal',
-    use: 'Use this for 1.2 ÷ 0.3 or 0.24 ÷ 0.08: how many of the divisor fit in the dividend?',
+    use: 'Use this for “Find the value of 2 ÷ 0.2,” or 0.24 ÷ 0.08.',
     assumptions: [
       'Dividing by a decimal asks how many of it fit.',
       'Write both in tenths (1.2 is 12 tenths, 0.3 is 3 tenths), or in hundredths when either has two places. Then divide.',
@@ -1530,8 +1530,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         id: `m.5.add-fractions-unlike~${add ? 'mixed-numbers' : 'subtract-mixed'}`,
         title: add ? 'Add mixed numbers' : 'Subtract mixed numbers',
         use: add
-          ? 'Use this for 4 2/3 + 3 5/8: give the parts a common denominator, then add wholes and parts.'
-          : 'Use this for 4 1/3 − 1 5/8, renaming a whole when the part to take away is bigger.',
+          ? 'Use this for “Jada picked 4 2/3 cups, Andre 3 5/8 cups. How many in all?”'
+          : 'Use this for “Find the value of 4 1/3 − 1 5/8.”',
         assumptions: [
           'Give the fraction parts a common denominator: the smallest number both denominators go into.',
           add
@@ -1729,7 +1729,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'm.5.add-fractions-unlike~subtract',
         title: 'Subtract fractions with unlike denominators',
-        use: 'Use this for 3/4 − 1/3 and other differences with different denominators.',
+        use: 'Use this for “Find the value of 2/3 − 7/12.”',
         assumptions: [
           'Give both fractions a common denominator: the smallest number both denominators go into.',
           'Then subtract the smaller new numerator from the bigger one and keep the denominator.',
@@ -1789,7 +1789,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     return {
       id: 'm.5.add-fractions-unlike~line-plot',
       title: 'Line plots with fractions',
-      use: 'Use this for a line plot of beakers holding 1/8, 1/4, 3/8 or 1/2 liter.',
+      use: 'Use this for “The line plot shows beakers holding 1/8, 1/4, 3/8 or 1/2 liter.”',
       assumptions: [
         'Each X is one beaker. Write every amount in eighths: 1/4 = 2/8 and 1/2 = 4/8.',
         'The total adds beakers × liters at each mark: an amount of water in liters, not a count.',
@@ -1955,7 +1955,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.multiply-fractions~of-a-whole',
     title: 'A fraction of a whole number',
-    use: 'Use this for 3/4 of 8, or 4/5 of 7 miles: cut the whole number into equal parts and take some.',
+    use: 'Use this for “Andre ran 4/5 of a 7 mile trail. How far did he run?”',
     assumptions: [
       '3/4 of 8: cut 8 into 4 equal parts, then take 3 of the parts.',
       'One part is the whole number ÷ the denominator. Then multiply by the numerator.',
@@ -2096,7 +2096,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.divide-unit-fractions~unit-by-whole',
     title: 'Divide a unit fraction by a whole number',
-    use: 'Use this for 1/3 ÷ 4: one piece shared among 4.',
+    use: 'Use this for “1/3 of a pan, split equally among 4 friends.”',
     assumptions: [
       'Sharing one piece among more people makes smaller pieces.',
       'Cut the piece into that many parts: the new denominator is the old denominator times the number sharing.',
@@ -2151,7 +2151,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.divide-unit-fractions~fraction-as-division',
     title: 'Fractions as division',
-    use: 'Use this for 3 pizzas shared by 4 people: each gets 3/4.',
+    use: 'Use this for “A 15-foot rope cut into 4 equal parts. How long is each?”',
     assumptions: [
       'Share each whole among the people: everyone gets 1 piece of each whole.',
       'With 3 wholes and 4 people, each gets 3 pieces of 1/4: 3 ÷ 4 = 3/4.',
@@ -2280,7 +2280,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.volume-rectangular~two-boxes',
     title: 'Two boxes together',
-    use: 'Use this for a shape made of two boxes: find each volume, then add.',
+    use: 'Use this for “How many small cubes in Solid A and Solid B together?”',
     assumptions: [
       'Split the shape into two boxes that do not overlap.',
       'Find each box’s volume: length × width × height. Add the two.',
@@ -2592,7 +2592,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.coordinate-plane-q1~distance',
     title: 'Distance along a grid line',
-    use: 'Use this for the distance between (2, 5) and (9, 5): the same up number.',
+    use: 'Use this for “How far is it from (2, 5) to (9, 5)?”',
     assumptions: [
       'Two points with the same up number are on one line across.',
       'The distance is the bigger across number − the smaller one.',

@@ -176,8 +176,8 @@ function mixedAddSub(op: '+' | '−'): ModuleDef {
     id: `m.4.add-fractions-like~mixed-${add ? 'add' : 'subtract'}`,
     title: add ? 'Add mixed numbers' : 'Subtract mixed numbers',
     use: add
-      ? 'Use this for 2 1/6 + 1 5/6: add mixed numbers with like denominators.'
-      : 'Use this for 18 1/4 − 2 3/4 or 2 − 3/4: take away mixed numbers.',
+      ? 'Use this for “Find the value of 2 1/6 + 1 5/6.”'
+      : 'Use this for “A total of 18 1/4 inches with a 2 3/4-inch clasp. How long is the chain?”',
     assumptions: [
       'Write each mixed number as a fraction: 2 3/4 is 2 × 4 + 3 = 11 fourths.',
       add
@@ -386,7 +386,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.factors-multiples~multiples',
     title: 'Is it a multiple?',
-    use: 'Use this for “Is 40 a multiple of 8?”: divide and look at the remainder.',
+    use: 'Use this for “Is seventeen a multiple of two?” or “Is 40 a multiple of 8?”',
     assumptions: [
       'A multiple of 8 is 8 times a whole number: 8, 16, 24, 32 and so on.',
       'To check, divide. A remainder of 0 means it is a multiple.',
@@ -454,7 +454,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.factors-multiples~pattern',
     title: 'Number patterns',
-    use: 'Use this to find a term of a pattern that adds the same number each time.',
+    use: 'Use this for “14, 26, 38, ___: the pattern increases by 12.”',
     assumptions: [
       'A pattern starts at a number and adds the same amount at each jump.',
       'Adding an odd number makes the terms go odd, even, odd, even.',
@@ -596,7 +596,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.place-value-million~rounding',
     title: 'Round to any place',
-    use: 'Use this to round a number to any place, up to 1,000,000.',
+    use: 'Use this for “What is 18,565 rounded to the nearest thousand?”',
     assumptions: [
       'Pick the place: tens, hundreds, thousands, ten thousands or hundred thousands.',
       'Find the numbers below and above in that place. Round to the nearer one.',
@@ -687,7 +687,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.place-value-million~compare',
       title: 'Compare numbers to 1,000,000',
-      use: 'Use this to compare two numbers up to 1,000,000 with >, < or =.',
+      use: 'Use this for “Which is greater: 425,900 or 452,000?” with >, < or =.',
       assumptions: [
         'Compare the biggest place first. More digits means a bigger number.',
         'Same digit in that place: move one place right and compare again.',
@@ -744,7 +744,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.place-value-million~expanded-form',
       title: 'Expanded form and number names',
-      use: 'Use this to write 347,812 as 300,000 + 40,000 + 7,000 + 800 + 10 + 2, and in words.',
+      use: 'Use this for “Which of these is equal to 8,000 + 800 + 8?” and number names.',
       assumptions: [
         'Each digit’s value is the digit times its place.',
         'Expanded form adds the value of every digit.',
@@ -831,7 +831,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.place-value-million~add-subtract',
     title: 'Add to 1,000,000',
-    use: 'Use this to add numbers up to 1,000,000 in columns.',
+    use: 'Use this for sums to 1,000,000 in columns, like 36,325 + 23,310.',
     assumptions: [
       'Line up the places. Add the ones first, then each place to the left.',
       'Regroup when a place passes 9: 10 in one place is 1 in the next.',
@@ -872,7 +872,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.place-value-million~subtract',
     title: 'Subtract to 1,000,000',
-    use: 'Use this to subtract numbers up to 1,000,000 in columns.',
+    use: 'Use this for “Subtract: 6,090 − 4,843.”',
     assumptions: [
       'Line up the places. Subtract the ones first, then each place to the left.',
       'Not enough in a place? Regroup 1 from the next place as 10.',
@@ -928,7 +928,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   multiplyPage({
     id: 'm.4.multi-digit-multiply~two-digit',
     title: 'Two-digit times two-digit',
-    use: 'Use this for a two-digit number times a two-digit number, like 43 × 26.',
+    use: 'Use this for “Multiply: 43 × 67.”',
     assumptions: [
       'Break both factors into tens and ones: 43 = 40 + 3 and 26 = 20 + 6.',
       'Multiply every part by every part: four partial products. Add them.',
@@ -948,7 +948,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.multi-digit-multiply~times-as-many',
       title: 'Times as many',
-      use: 'Use this for “4 times as many” word problems.',
+      use: 'Use this for “Ben has 4 times as many stickers as Ana.”',
       assumptions: [
         '“3 times as many” means 3 copies of the smaller amount.',
         'Bigger amount = times × smaller amount. To find the times, divide.',
@@ -1112,7 +1112,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.long-division~interpret-remainder',
     title: 'What to do with the remainder',
-    use: 'Use this for “How many buses are needed?” when some are left over.',
+    use: 'Use this for “Each bus holds 40 students. How many buses are needed?”',
     assumptions: [
       'Divide, then decide what the remainder means in the story.',
       'Buses or boxes needed: any left over need one more, so round the quotient up.',
@@ -1366,7 +1366,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.fraction-equivalence~compare',
       title: 'Compare fractions',
-      use: 'Use this to compare two fractions with different denominators, like 3/4 and 5/8.',
+      use: 'Use this for “Which fraction is greater, 2/5 or 2/6?” Explain or show your reasoning.',
       assumptions: [
         'Give both fractions the same denominator, then compare the numerators.',
         'If one denominator is a multiple of the other, use it (3/4 and 5/8: eighths).',
@@ -1586,7 +1586,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.add-fractions-like~subtract',
     title: 'Subtract fractions with like denominators',
-    use: 'Use this for 7/8 − 3/8 and other fractions with like denominators.',
+    use: 'Use this for “4/6 − 1/6 =” and other like denominators.',
     assumptions: [
       'Like denominators mean same-size parts: subtract the numerators, keep the denominator.',
       'The first fraction is at least as big as the second. It can be more than 1 (13/5 − 4/5).',
@@ -1659,7 +1659,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.add-fractions-like~mixed',
     title: 'Mixed numbers as fractions',
-    use: 'Use this to write 2 and 3/4 as 11/4, or 11/4 as a mixed number.',
+    use: 'Use this for “Write 2 3/4 as a fraction,” or 11/4 as a mixed number.',
     assumptions: [
       'A mixed number is wholes and a fraction: 2 and 3/4.',
       'Each whole is all the parts: 2 wholes in quarters is 2 × 4 = 8 quarters. Add the extra parts.',
@@ -1767,7 +1767,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.add-fractions-like~line-plot',
       title: 'Line plots in eighths',
-      use: 'Use this for line plots of lengths like 1/8, 3/8 and 5/8 inch.',
+      use: 'Use this for “The line plot shows the lengths of toothpicks in inches.”',
       assumptions: [
         'Each X is one object, measured to the nearest 1/8 inch.',
         'Longest − shortest uses the X’s at the ends of the plot.',
@@ -2130,7 +2130,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.decimals-intro~compare',
       title: 'Compare decimals',
-      use: 'Use this to compare two decimals, like 0.4 and 0.35, or 8.28 and 8.25 seconds.',
+      use: 'Use this for race times like 8.28 and 8.2 seconds: which is less?',
       assumptions: [
         'Write both decimals as hundredths: 0.4 is 40 hundredths, 0.35 is 35 hundredths.',
         'Then compare the hundredths like whole numbers: 8.28 is 828 hundredths.',
@@ -2222,7 +2222,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.decimals-intro~number-line',
     title: 'Decimals on a number line',
-    use: 'Use this to find 0.62, 0.7 or 2.6 on a number line.',
+    use: 'Use this for “Point A is 6 spaces after 2. What decimal is it?”',
     assumptions: [
       'Cut the line from 0 to 1 into 10 equal parts for tenths, or 100 for hundredths.',
       'Count the parts from 0: 62 hundredths from 0 is 0.62, and 26 tenths is 2.6.',
@@ -2725,7 +2725,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.angles~protractor',
     title: 'Read a protractor',
-    use: 'Use this to read an angle on a protractor, either scale.',
+    use: 'Use this for “What is the measure of the angle?” on a protractor, either scale.',
     assumptions: [
       'Put the centre of the protractor on the corner and one arm along the 0° line.',
       'Read the scale that starts at 0 on that arm. The other scale reads 180° minus the angle.',
