@@ -926,20 +926,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.weather-patterns~storm',
     kind: 'icon',
     pages: ['s.K.weather-patterns~storm'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3f-storm'],
+    uses: '"icon":"hearing a storm forecast"',
     notes:
-      'Hear the forecast → a radio or TV showing a storm cloud; Get ready: bring toys in, close windows → a child carrying toys in beside a closed window; Stay inside while it storms → a house with rain and lightning outside; Go out when it has passed → a child outside, with sun and puddles',
+      "Hear the forecast → a radio or TV showing a storm cloud; Get ready: bring toys in, close windows → a child carrying toys in beside a closed window; Stay inside while it storms → a house with rain and lightning outside; Go out when it has passed → a child outside, with sun and puddles. Drawn: the same house and child on every stage (the sky, the window and the child change); each stage gets figure: { kind: 'icon', icon }: Hear the forecast → 'hearing a storm forecast' (a radio whose speech bubble shows a storm cloud, window open, sun out); Get ready: bring toys in, close windows → 'getting ready for a storm' (the child carries the ball to the door, window shut, dark clouds coming); Stay inside while it storms → 'staying inside in a storm' (rain and lightning, the child looking out of the shut window); Go out when it has passed → 'going out after a storm' (sun and puddles, the child and ball outside)",
   },
   {
     id: 'D09',
     what: 'Card pictures for s.K.weather-patterns~falls',
     kind: 'icon',
     pages: ['s.K.weather-patterns~falls'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3f-falls'],
+    uses: '"icon":"rain cloud"',
     notes:
-      'Rain → a cloud with raindrops; Snow → a cloud with snowflakes; Hail → a cloud with round hailstones; Wind → a tree bending, with wind lines; Fog → houses half hidden in low gray mist',
+      "Rain → a cloud with raindrops; Snow → a cloud with snowflakes; Hail → a cloud with round hailstones; Wind → a tree bending, with wind lines; Fog → houses half hidden in low gray mist. Drawn: each card gets figure: { kind: 'icon', icon }: Rain → 'rain cloud'; Snow → 'snow cloud'; Hail → 'hail cloud'; Wind → 'tree in wind'; Fog → 'fog over houses'. The shared 'storm cloud' (a dark cloud with lightning and rain) is in the same demo",
   },
   {
     id: 'D10',
@@ -1214,10 +1216,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.weather-climate~hazards',
     kind: 'icon',
     pages: ['s.3.weather-climate~hazards'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3f-weather-hazards'],
+    uses: '"icon":"sandbag wall"',
     notes:
-      'Sandbag wall → a stacked sandbag wall; House on stilts → a house on stilts; Levee → a raised bank beside a river; Storm shutters → a window with closed shutters; Tied-down roof → a roof with metal straps; Storm shelter → an underground shelter door; Lightning rod → a rod on a roof with a wire to the ground',
+      "Sandbag wall → a stacked sandbag wall; House on stilts → a house on stilts; Levee → a raised bank beside a river; Storm shutters → a window with closed shutters; Tied-down roof → a roof with metal straps; Storm shelter → an underground shelter door; Lightning rod → a rod on a roof with a wire to the ground. Drawn: each card gets figure: { kind: 'icon', icon }: Sandbag wall → 'sandbag wall'; House on stilts → 'house on stilts'; Levee → 'levee'; Storm shutters → 'storm shutters'; Tied-down roof → 'roof straps'; Storm shelter → 'storm shelter door'; Lightning rod → 'lightning rod'; Going indoors (not requested) → 'staying inside in a storm' (D08's stage: a child looking out from the house in a thunderstorm)",
   },
   {
     id: 'D37',
