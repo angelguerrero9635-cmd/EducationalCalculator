@@ -841,7 +841,16 @@ export type Representation =
        * one of the four, or a variable (1 <, 2 ≤, 3 >, 4 ≥) with buttons to change it;
        * `letter` names the unknown from Grade 6 (default x).
        */
-      inequality?: { sign: string; test?: string; letter?: string };
+      inequality?: {
+        sign: string;
+        test?: string;
+        letter?: string;
+        /**
+         * Grade 7: the inequality as written is `times`·x + `plus` (sign) `total`; `value` is its
+         * solved bound, (total − plus) ÷ times. A negative `times` flips the drawn sign.
+         */
+        twoStep?: { times: string; plus: string; total: string };
+      };
     }
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {

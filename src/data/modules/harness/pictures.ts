@@ -821,6 +821,17 @@ export function repIssues(
             out.push(`inequality sign ${sign} = ${s} is not 1–4 (<, ≤, >, ≥)`);
         }
         if (rep.vertical) out.push('inequality lines are drawn across, not vertical');
+        if (rep.inequality.twoStep) {
+          // The bound drawn is the written inequality solved: (total − plus) ÷ times.
+          const { times, plus, total } = rep.inequality.twoStep;
+          const [p, q, r] = [times, plus, total].map(val);
+          if (p === 0) out.push('two-step inequality with 0 blocks of x');
+          if (a !== undefined && p && q !== undefined && r !== undefined) {
+            const bound = (r - q) / p;
+            if (Math.abs(bound - a) > 1e-6 * Math.max(1, Math.abs(a)))
+              out.push(`two-step inequality solves to ${bound}, the line shows ${a}`);
+          }
+        }
       }
       break;
     }

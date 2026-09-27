@@ -152,6 +152,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
 | `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |
 | `integerLine`      | `inequality: { sign, test }`             | the bound's open or closed circle, an arrow over the solutions, a test point  |
+| `integerLine`      | `inequality.twoStep: { times, plus, … }` | px + q < r solved in the caption; a negative p flips the sign drawn           |
 | `unitCubes`        | `scale`                                  | past `max` a side, the box to scale, edges labelled, one unit cube for size   |
 | `ratioTable`       | `graph`                                  | axes to the biggest row in 3–4 numbered steps; under the table on a phone     |
 | `coordinatePlane`  | `plot`                                   | tap the grid or drag to place one point; the path from 0 across, then up      |

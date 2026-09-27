@@ -37,6 +37,12 @@ const twoStepSteps = {
   },
 };
 
+/** Whether px + q (sign s: 1 <, 2 ≤, 3 >, 4 ≥) r holds at the test number t. */
+const holdsAt = (v: Values) => {
+  const lhs = v.p! * v.t! + v.q!;
+  return [lhs < v.r!, lhs <= v.r!, lhs > v.r!, lhs >= v.r!][v.s! - 1] ?? false;
+};
+
 export const G7B_GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.hanger',
@@ -135,6 +141,97 @@ export const G7B_GALLERY_MODULES: ModuleDef[] = [
     representation: {
       kind: 'tape',
       equation: { times: 'p', unknown: 'x', plus: 'q', total: 'r', grouped: true },
+    },
+  },
+  {
+    id: 'g.two-step-inequality',
+    title: 'Two-step inequality',
+    assumptions: [
+      'Adding or taking the same number from both sides keeps an inequality true.',
+      'Dividing both sides by a negative number flips the sign (< becomes >).',
+      'A test number is a solution when it makes the written inequality true.',
+    ],
+    variables: [
+      whole('p', 'p', 'Times x', -10, 10),
+      whole('q', 'q', 'Added', -20, 20),
+      whole('r', 'r', 'Right side', -50, 50),
+      whole('s', 's', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4),
+      { id: 'b', symbol: 'b', name: 'Bound', min: -100, max: 100, derived: true },
+      whole('t', 't', 'Test number', -20, 20),
+      { ...whole('h', 'h', 'True (1) or false (0)', 0, 1), derived: true },
+    ],
+    relations: [
+      {
+        id: 'p ≠ 0',
+        constraint: true,
+        display: '{p} is not 0',
+        vars: ['p'],
+        residual: (v: Values) => (v.p! !== 0 ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'b = (r − q) ÷ p',
+        display: '{b} = ({r} − {q}) ÷ {p}',
+        vars: ['b', 'r', 'q', 'p'],
+        residual: (v: Values) => v.b! * v.p! - (v.r! - v.q!),
+        solve: {
+          b: (v: Values) => div(v.r! - v.q!, v.p!),
+          r: (v: Values) => v.b! * v.p! + v.q!,
+          q: (v: Values) => v.r! - v.b! * v.p!,
+          p: () => undefined,
+        },
+      },
+      {
+        id: 'h = test',
+        display: 'test {t} in {p}x + {q}, sign {s}, {r}: {h}',
+        check: (v: Values) => `${holdsAt(v) ? 1 : 0} = ${v.h}`,
+        vars: ['h', 't', 's', 'p', 'q', 'r'],
+        residual: (v: Values) => ([1, 2, 3, 4].includes(v.s!) ? v.h! - (holdsAt(v) ? 1 : 0) : NaN),
+        solve: {
+          h: (v: Values) => (holdsAt(v) ? 1 : 0),
+          t: () => undefined,
+          s: () => undefined,
+          p: () => undefined,
+          q: () => undefined,
+          r: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'p ≠ 0': {},
+      'b = (r − q) ÷ p': {
+        b: {
+          expr: '({r} − {q}) ÷ {p}',
+          how: 'Take {q} from both sides, then divide both sides by {p}.',
+        },
+        r: { expr: '{b} × {p} + {q}', how: 'Undo the steps: multiply, then add.' },
+        q: { expr: '{r} − {b} × {p}', how: 'Take the x part from the right side.' },
+      },
+      'h = test': {
+        h: {
+          expr: (v: Values) => `${holdsAt(v) ? 1 : 0}`,
+          how: 'Put the test number in for x. True is 1, false is 0.',
+          work: (v: Values) => {
+            const pt = v.p! * v.t!;
+            const lhs = pt + v.q!;
+            return [
+              `${v.p} × ${v.t! < 0 ? `(${v.t})` : v.t} = ${pt}`,
+              `${pt < 0 ? `(${pt})` : pt} ${v.q! < 0 ? '−' : '+'} ${Math.abs(v.q!)} = ${lhs}`,
+              `${lhs} ${'<≤>≥'[v.s! - 1]} ${v.r} is ${holdsAt(v) ? 'true' : 'false'}`,
+            ];
+          },
+          written: false,
+        },
+      },
+    },
+    example: { p: -2, q: 1, r: 7, s: 2, b: -3, t: 1, h: 1 },
+    startWith: ['p', 'q', 'r', 's', 't'],
+    representation: {
+      kind: 'integerLine',
+      value: 'b',
+      min: -8,
+      max: 8,
+      inequality: { sign: 's', test: 't', twoStep: { times: 'p', plus: 'q', total: 'r' } },
     },
   },
 ];

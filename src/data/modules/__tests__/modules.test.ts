@@ -234,6 +234,9 @@ function representationVars(r: Representation): string[] {
         ...[r.inequality?.test, r.inequality?.sign].filter(
           (x): x is string => !!x && !['<', '≤', '>', '≥'].includes(x),
         ),
+        ...(r.inequality?.twoStep
+          ? [r.inequality.twoStep.times, r.inequality.twoStep.plus, r.inequality.twoStep.total]
+          : []),
       ];
     case 'percentBar':
       return [r.percent, r.part, r.whole, ...(r.onePercent ? [r.onePercent] : [])];

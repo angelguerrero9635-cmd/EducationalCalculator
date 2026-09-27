@@ -17,6 +17,7 @@ type Spec = Extract<Representation, { kind: 'integerLine' }>;
 /** The four signs, in the order a sign value counts them (1 is <, 2 is ≤, 3 is >, 4 is ≥). */
 export const INEQUALITY_SIGNS = ['<', '≤', '>', '≥'] as const;
 type Sign = (typeof INEQUALITY_SIGNS)[number];
+const FLIP: Record<Sign, Sign> = { '<': '>', '≤': '≥', '>': '<', '≥': '≤' };
 const WORDS: Record<Sign, string> = {
   '<': 'less than',
   '≤': 'less than or equal to',
@@ -38,11 +39,17 @@ export function InequalityLine({ spec, calc }: { spec: Spec; calc: Calculator })
   const signVar = (INEQUALITY_SIGNS as readonly string[]).includes(ineq.sign)
     ? undefined
     : ineq.sign;
-  const sign: Sign | undefined = signVar
+  const written: Sign | undefined = signVar
     ? rep.known(signVar)
       ? INEQUALITY_SIGNS[Math.round(rep.shown(signVar)) - 1]
       : undefined
     : (ineq.sign as Sign);
+  // Grade 7: the written px + q (sign) r, solved; dividing by a negative p flips the sign drawn.
+  const two = ineq.twoStep;
+  const twoKnown = !!two && [two.times, two.plus, two.total].every(rep.known);
+  const tp = two && rep.known(two.times) ? rep.shown(two.times) : 1;
+  const flips = !!two && tp < 0;
+  const sign = written && flips ? FLIP[written] : written;
   const bound = rep.shown(spec.value);
   const boundKnown = rep.known(spec.value);
   const test = ineq.test && rep.known(ineq.test) ? rep.shown(ineq.test) : undefined;
@@ -74,13 +81,50 @@ export function InequalityLine({ spec, calc }: { spec: Spec; calc: Calculator })
   // Grade 6 on: "x > 3". K–5 (no letters): the sign and bound alone, "> 3".
   const letter = rep.words ? '' : `${ineq.letter ?? 'x'} `;
 
+  /** "3 × 5 + 2 = 17": the written side at the test number. */
+  const twoTest = (t: number) => {
+    const q = rep.shown(two!.plus);
+    const lhs = tp * t + q;
+    const ts = t < 0 ? `(${formatNumber(t)})` : formatNumber(t);
+    return `${formatNumber(tp)} × ${ts} ${q < 0 ? '−' : '+'} ${formatNumber(Math.abs(q))} = ${formatNumber(lhs)}, and ${formatNumber(lhs)}`;
+  };
+  /** The written inequality and its two steps, each on its own line. */
+  const twoStepLines = () => {
+    const ws = written ?? '?';
+    const x = ineq.letter ?? 'x';
+    const v = (id: string) => (rep.known(id) ? formatNumber(rep.shown(id)) : '?');
+    const P = !rep.known(two!.times) ? '?' : tp === 1 ? '' : tp === -1 ? '−' : formatNumber(tp);
+    const q = rep.known(two!.plus) ? rep.shown(two!.plus) : undefined;
+    const plus = q === undefined ? '+ ?' : q < 0 ? `− ${formatNumber(-q)}` : `+ ${formatNumber(q)}`;
+    const lines = [`${P}${x} ${plus} ${ws} ${v(two!.total)}`];
+    if (!twoKnown || !written) return `${lines[0]} · `;
+    const rest = rep.shown(two!.total) - q!;
+    if (q !== 0)
+      lines.push(
+        q! > 0
+          ? `Take ${formatNumber(q!)} from both sides`
+          : `Add ${formatNumber(-q!)} to both sides`,
+        `${P}${x} ${written} ${formatNumber(rest)}`,
+      );
+    if (tp !== 1)
+      lines.push(
+        flips
+          ? `Divide both sides by ${formatNumber(tp)}: the sign flips`
+          : `Divide both sides by ${formatNumber(tp)}`,
+      );
+    return `${lines.join(' · ')} · `;
+  };
+
   return (
     <View>
       {signVar ? (
         <View style={{ paddingHorizontal: space.md, marginBottom: space.sm }}>
           <SegmentedControl<Sign>
-            segments={INEQUALITY_SIGNS.map((s) => ({ value: s, label: `${letter}${s}` }))}
-            value={(sign ?? '') as Sign}
+            segments={INEQUALITY_SIGNS.map((s) => ({
+              value: s,
+              label: two ? s : `${letter}${s}`,
+            }))}
+            value={(written ?? '') as Sign}
             onChange={(s) =>
               calc.set({
                 ...rep.pin([spec.value, ...(ineq.test ? [ineq.test] : [])]),
@@ -243,13 +287,16 @@ export function InequalityLine({ spec, calc }: { spec: Spec; calc: Calculator })
         }}
       </Canvas>
       <Caption>
-        {!boundKnown || !sign
-          ? 'Type the number and pick the sign.'
-          : `${letter ? `${letter}${sign} ${num(bound)}: ` : ''}every number ${WORDS[sign]} ${num(bound)}. The ${closed ? `closed circle takes in ${num(bound)}` : `open circle leaves out ${num(bound)}`}.${
-              test === undefined
-                ? ''
-                : ` Test ${num(test)}: ${formatNumber(test)} ${sign} ${formatNumber(bound)} is ${holds ? 'true' : 'false'}.`
-            }`}
+        {(two ? twoStepLines() : '') +
+          (!boundKnown || !sign
+            ? 'Type the number and pick the sign.'
+            : `${letter ? `${letter}${sign} ${num(bound)}: ` : ''}every number ${WORDS[sign]} ${num(bound)}. The ${closed ? `closed circle takes in ${num(bound)}` : `open circle leaves out ${num(bound)}`}.${
+                test === undefined
+                  ? ''
+                  : two && twoKnown && written
+                    ? ` · Test ${num(test)}: ${twoTest(test)} ${written} ${formatNumber(rep.shown(two.total))} is ${holds ? 'true' : 'false'}.`
+                    : ` Test ${num(test)}: ${formatNumber(test)} ${sign} ${formatNumber(bound)} is ${holds ? 'true' : 'false'}.`
+              }`)}
       </Caption>
       <Steppers
         calc={calc}
