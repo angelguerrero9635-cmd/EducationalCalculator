@@ -300,7 +300,10 @@ the assumptions and a table or diagram.
      n (`dotPlot` takes the same `count`). Money that isn't whole cents shows as "about $3.33".
    - A page whose problem is written as one equation (dividing fractions) can set `equation:
 '{a}/{b} ÷ {c}/{d} = {e}/{f}'`: the boxes sit in the equation, `{a}/{b}` stacked as a
-     fraction, worked-out values dashed; values not in it keep their rows.
+     fraction, worked-out values dashed; values not in it keep their rows. `1/{b}` puts a fixed
+     number in a fraction, `{w} {a}/{b}` is a mixed number, `{b}^{n}` a power; text between
+     the boxes (`%`, `:`, `of`) is written as is. On a letters page each box shows its letter.
+     Used on the fraction pages (Grades 3–6), powers, percent, ratios and one-step equations.
    - The `use` line quotes the kind of released question the page solves, in the question's
      own words ("Which number is greater, 54 or 36?"), and never promises more.
    - `layouts.test.ts` covers the sort, sequence, explore and observe pages.

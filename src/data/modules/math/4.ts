@@ -174,6 +174,8 @@ function mixedAddSub(op: '+' | '−'): ModuleDef {
   });
   return {
     id: `m.4.add-fractions-like~mixed-${add ? 'add' : 'subtract'}`,
+    sliders: false,
+    equation: `{w1} {n1}/{b} ${op} {w2} {n2}/{b} = {wd} {rd}/{b}`,
     title: add ? 'Add mixed numbers' : 'Subtract mixed numbers',
     use: add
       ? 'Use this for “Find the value of 2 1/6 + 1 5/6.”'
@@ -1260,6 +1262,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.4.fraction-equivalence',
+      sliders: false,
+      equation: '{a}/{b} = {p}/{m}',
       assumptions: [
         'Multiply the numerator and the denominator by the same number: the fraction keeps its size.',
         'Each part is cut into that many smaller parts: more parts, the same amount of the whole.',
@@ -1468,6 +1472,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
   // ── Adding fractions with like denominators; the sum as a mixed number (4.NF.3) ──
   {
     id: 'm.4.add-fractions-like',
+    sliders: false,
+    equation: '{a}/{b} + {c}/{b} = {s}/{b}',
     assumptions: [
       'Like denominators mean the same-size parts: add the numerators, keep the denominator.',
       'A sum bigger than 1 can be written as wholes and parts: 7/4 = 1 whole and 3/4.',
@@ -1585,6 +1591,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
   // ── Subtracting fractions with like denominators (4.NF.3a) ──
   {
     id: 'm.4.add-fractions-like~subtract',
+    sliders: false,
+    equation: '{a}/{b} − {c}/{b} = {s}/{b}',
     title: 'Subtract fractions with like denominators',
     use: 'Use this for “4/6 − 1/6 =” and other like denominators.',
     assumptions: [
@@ -1658,6 +1666,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
   // ── Mixed numbers as fractions (4.NF.3b, 4.NF.3c) ──
   {
     id: 'm.4.add-fractions-like~mixed',
+    sliders: false,
+    equation: '{w} {r}/{b} = {s}/{b}',
     title: 'Mixed numbers as fractions',
     use: 'Use this for “Write 2 3/4 as a fraction,” or 11/4 as a mixed number.',
     assumptions: [
@@ -1883,6 +1893,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
   // ── Multiplying a fraction by a whole number (4.NF.4) ──
   {
     id: 'm.4.fraction-times-whole',
+    sliders: false,
+    equation: '{n} × {a}/{b} = {p}/{b}',
     assumptions: [
       'A whole number times a fraction is that many copies of the fraction: 5 × 2/3 is 2/3 five times.',
       'Multiply the whole number by the numerator. The denominator stays: the parts are the same size.',

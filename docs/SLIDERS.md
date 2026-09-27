@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-37 of 319 pages show sliders.
+28 of 319 pages show sliders.
 
 ## By picture kind
 
@@ -36,8 +36,8 @@ its kind with `sliders: true | false`.
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fieldOfView | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| fractionArea | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
-| fractionBars | 7 | yes | sweeping the value shows the picture change; no touch control of its own |
+| fractionArea | 2 | no | set on the module (hidden) |
+| fractionBars | 7 | no | set on the module (hidden) |
 | fractionFit | 3 | no | set on the module (hidden) |
 | fractionLine | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -52,7 +52,7 @@ its kind with `sliders: true | false`.
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | partition | 3 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| percentBar | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| percentBar | 1 | no | set on the module (hidden) |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
 | placeValueChart | 10 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -62,7 +62,7 @@ its kind with `sliders: true | false`.
 | protractor | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| ratioTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| ratioTable | 1 | no | set on the module (hidden) |
 | rectangle | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | rightTriangle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -87,12 +87,34 @@ its kind with `sliders: true | false`.
 
 ## Modules that override their kind
 
+- m.3.fractions-number-line~wholes: sliders hidden
+- m.3.compare-fractions: sliders hidden
+- m.4.fraction-equivalence: sliders hidden
+- m.4.add-fractions-like: sliders hidden
+- m.4.add-fractions-like~subtract: sliders hidden
+- m.4.add-fractions-like~mixed: sliders hidden
+- m.4.add-fractions-like~mixed-add: sliders hidden
+- m.4.add-fractions-like~mixed-subtract: sliders hidden
+- m.4.fraction-times-whole: sliders hidden
+- m.5.add-fractions-unlike: sliders hidden
+- m.5.add-fractions-unlike~subtract: sliders hidden
+- m.5.add-fractions-unlike~mixed-numbers: sliders hidden
+- m.5.add-fractions-unlike~subtract-mixed: sliders hidden
+- m.5.multiply-fractions: sliders hidden
+- m.5.divide-unit-fractions: sliders hidden
+- m.5.divide-unit-fractions~unit-by-whole: sliders hidden
 - s.5.earth-spheres~water-share: sliders hidden
+- m.6.ratios: sliders hidden
 - m.6.ratios~tape: sliders shown
+- m.6.percent: sliders hidden
 - m.6.divide-fractions: sliders hidden
-- m.6.divide-fractions~how-many-fit: sliders shown
-- m.6.divide-fractions~how-much-in-one: sliders shown
+- m.6.divide-fractions~how-many-fit: sliders hidden
+- m.6.divide-fractions~how-much-in-one: sliders hidden
 - m.6.gcf-lcm: sliders shown
+- m.6.expressions-variables~exponents: sliders hidden
+- m.6.expressions-variables~order-of-operations: sliders hidden
+- m.6.one-step-equations: sliders hidden
+- m.6.one-step-equations~multiply: sliders hidden
 
 ## Every page
 
@@ -209,7 +231,7 @@ its kind with `sliders: true | false`.
 | m.3.fractions-number-line~shapes | partition | yes |
 | m.3.fractions-number-line~wholes | fractionLine | no |
 | m.3.fractions-number-line~unit-fraction | tape | no |
-| m.3.compare-fractions | fractionBars | yes |
+| m.3.compare-fractions | fractionBars | no |
 | m.3.elapsed-time | clock | no |
 | m.3.elapsed-time~elapsed | timeline | no |
 | m.3.elapsed-time~start-time | timeline | no |
@@ -312,15 +334,15 @@ its kind with `sliders: true | false`.
 | m.5.decimal-operations~subtract | tape | no |
 | m.5.decimal-operations~times-decimal | areaModel | yes |
 | m.5.decimal-operations~divide-by-decimal | skipCount | no |
-| m.5.add-fractions-unlike | fractionBars | yes |
-| m.5.add-fractions-unlike~subtract | fractionBars | yes |
-| m.5.add-fractions-unlike~mixed-numbers | fractionBars | yes |
-| m.5.add-fractions-unlike~subtract-mixed | fractionBars | yes |
+| m.5.add-fractions-unlike | fractionBars | no |
+| m.5.add-fractions-unlike~subtract | fractionBars | no |
+| m.5.add-fractions-unlike~mixed-numbers | fractionBars | no |
+| m.5.add-fractions-unlike~subtract-mixed | fractionBars | no |
 | m.5.add-fractions-unlike~line-plot | linePlot | no |
-| m.5.multiply-fractions | fractionArea | yes |
+| m.5.multiply-fractions | fractionArea | no |
 | m.5.multiply-fractions~of-a-whole | tape | no |
 | m.5.divide-unit-fractions | fractionLine | no |
-| m.5.divide-unit-fractions~unit-by-whole | fractionBars | yes |
+| m.5.divide-unit-fractions~unit-by-whole | fractionBars | no |
 | m.5.divide-unit-fractions~fraction-as-division | shareWholes | no |
 | m.5.volume-rectangular | unitCubes | yes |
 | m.5.volume-rectangular~two-boxes | unitCubes | yes |
@@ -355,8 +377,8 @@ its kind with `sliders: true | false`.
 | m.6.multi-digit-decimals~add-subtract | placeValueChart | no |
 | m.6.multi-digit-decimals~divide-by-decimal | skipCount | no |
 | m.6.divide-fractions | fractionFit | no |
-| m.6.divide-fractions~how-many-fit | fractionFit | yes |
-| m.6.divide-fractions~how-much-in-one | fractionFit | yes |
+| m.6.divide-fractions~how-many-fit | fractionFit | no |
+| m.6.divide-fractions~how-much-in-one | fractionFit | no |
 | m.6.gcf-lcm | venn | yes |
 | m.6.gcf-lcm~lcm | skipCount | no |
 | m.6.gcf-lcm~factor-tree | factorTree | no |

@@ -1777,6 +1777,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.fractions-number-line~wholes',
+      sliders: false,
+      equation: '{a}/{b} = {w}',
       title: 'Whole numbers as fractions',
       use: 'Use this for “How many fourths make a whole?” or 2 = 8/4.',
       assumptions: [
@@ -1841,6 +1843,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.compare-fractions',
+      sliders: false,
+      equation: '{a}/{b} = {c}/{d}',
       assumptions: [
         'Equivalent fractions are the same size: they cover the same part of the whole.',
         'Cutting each part into pieces changes the count, not the amount shaded.',

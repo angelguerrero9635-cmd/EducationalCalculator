@@ -1528,6 +1528,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       const answer = add ? 'Sum' : 'Difference';
       return {
         id: `m.5.add-fractions-unlike~${add ? 'mixed-numbers' : 'subtract-mixed'}`,
+        sliders: false,
+        equation: `{w1} {a}/{b} ${op} {w2} {c}/{d} = {S}`,
         title: add ? 'Add mixed numbers' : 'Subtract mixed numbers',
         use: add
           ? 'Use this for “Jada picked 4 2/3 cups, Andre 3 5/8 cups. How many in all?”'
@@ -1681,6 +1683,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     return [
       {
         id: 'm.5.add-fractions-unlike',
+        sliders: false,
+        equation: '{a}/{b} + {c}/{d} = {s}/{m}',
         assumptions: [
           'Fractions can only be added when the parts are the same size: give them a common denominator.',
           'Use the smallest number both denominators go into. Rewrite each fraction over it, then add the numerators.',
@@ -1728,6 +1732,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.5.add-fractions-unlike~subtract',
+        sliders: false,
+        equation: '{a}/{b} − {c}/{d} = {s}/{m}',
         title: 'Subtract fractions with unlike denominators',
         use: 'Use this for “Find the value of 2/3 − 7/12.”',
         assumptions: [
@@ -1876,6 +1882,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Multiplying fractions (5.NF.4) ──
   {
     id: 'm.5.multiply-fractions',
+    sliders: false,
+    equation: '{a}/{b} × {c}/{d} = {p}/{q}',
     assumptions: [
       'A fraction of a fraction: multiply the numerators and multiply the denominators.',
       'The square shows why: columns for one fraction, rows for the other, and the overlap.',
@@ -2048,6 +2056,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Dividing with unit fractions (5.NF.7) ──
   {
     id: 'm.5.divide-unit-fractions',
+    sliders: false,
+    equation: '{n} ÷ 1/{b} = {q}',
     assumptions: [
       'Dividing by a unit fraction asks how many of those pieces fit: how many fourths in 3?',
       'Each whole holds as many pieces as the denominator says. Multiply the whole number by the denominator.',
@@ -2095,6 +2105,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.divide-unit-fractions~unit-by-whole',
+    sliders: false,
+    equation: '1/{b} ÷ {n} = 1/{m}',
     title: 'Divide a unit fraction by a whole number',
     use: 'Use this for “1/3 of a pan, split equally among 4 friends.”',
     assumptions: [

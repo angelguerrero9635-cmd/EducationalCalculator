@@ -143,6 +143,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Ratios and ratio tables (6.RP.1, 6.RP.3a) ──
   {
     id: 'm.6.ratios',
+    sliders: false,
+    equation: '{a} : {b} = {x} : {y}',
     assumptions: [
       'Equivalent ratios multiply both parts by the same number.',
       'Adding the same number to both parts does not keep the ratio.',
@@ -818,6 +820,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Percent of a quantity (6.RP.3c) ──
   {
     id: 'm.6.percent',
+    sliders: false,
+    equation: '{p}% of {w} = {x}',
     assumptions: [
       'Percent means out of 100: the whole is 100%.',
       'More than 100% means more than the whole.',
@@ -1504,7 +1508,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.6.divide-fractions~how-many-fit',
-        sliders: true,
+        sliders: false,
+        equation: '{a}/{b} ÷ {c}/{d} = {g}',
         title: 'How many groups?',
         use: 'Use this for “How many 3/4-cup servings are in 2 1/4 cups?”',
         assumptions: [
@@ -1606,7 +1611,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.6.divide-fractions~how-much-in-one',
-        sliders: true,
+        sliders: false,
+        equation: '{a}/{b} ÷ {c}/{d} = {e}/{f}',
         title: 'How much in one group?',
         use: 'Use this when 2/3 gallon fills 3/4 of a tank: how much fills the whole tank?',
         assumptions: [
@@ -2699,6 +2705,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.expressions-variables~exponents',
+    sliders: false,
+    equation: '{b}^{n} = {p}',
     title: 'Powers',
     use: 'Use this for “Find the value of 3⁴.”',
     assumptions: [
@@ -2749,6 +2757,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.expressions-variables~order-of-operations',
+    sliders: false,
+    equation: '{a} + {b} × {c}^{e} = {v}',
     title: 'Order of operations with exponents',
     use: 'Use this for “Find the value of 2 + 3 × 4²”: exponents first, then multiply, then add.',
     assumptions: [
@@ -2995,6 +3005,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── One-step equations and inequalities (6.EE.5–8) ──
   {
     id: 'm.6.one-step-equations',
+    sliders: false,
+    equation: '{x} + {p} = {q}',
     notation: 'letters',
     assumptions: [
       'Do the same to both sides, and the two sides stay equal.',
@@ -3042,6 +3054,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.one-step-equations~multiply',
+    sliders: false,
+    equation: '{c} × {x} = {q}',
     title: 'Solve px = q',
     use: 'Use this for “Solve 10 = 4a,” or 0.6d = 1.8.',
     notation: 'letters',

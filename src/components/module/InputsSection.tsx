@@ -188,11 +188,31 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   );
 }
 
-/** One box inside the equation: the value's number, typed in place. */
-function EquationBox({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
+/**
+ * One box inside the equation: the value's number, typed in place. It widens for a longer
+ * answer (8 7/24); on a Grade 6 letters page the value's letter sits under it.
+ */
+function EquationBox({
+  variable,
+  calc,
+  small,
+  compact,
+  letter,
+}: {
+  variable: VariableDef;
+  calc: Calculator;
+  small?: boolean;
+  compact?: boolean;
+  letter?: boolean;
+}) {
   const c = usePalette();
   const { shown, error, status, onChangeText, onFocus, onBlur } = useVariableBox(variable, calc);
-  return (
+  const tight = small || compact;
+  const width = Math.max(
+    tight ? 40 : 56,
+    (shown.length || 1) * (tight ? 11 : 13) + (tight ? 14 : 20),
+  );
+  const box = (
     <TextInput
       testID={`input-${variable.id}`}
       accessibilityLabel={variable.name}
@@ -208,7 +228,9 @@ function EquationBox({ variable, calc }: { variable: VariableDef; calc: Calculat
       selectTextOnFocus
       style={[
         styles.eqBox,
+        (small || compact) && styles.eqBoxSmall,
         {
+          width,
           color: c.text,
           borderColor: error ? c.text : c.border,
           borderStyle: variable.derived ? 'dashed' : 'solid',
@@ -218,60 +240,139 @@ function EquationBox({ variable, calc }: { variable: VariableDef; calc: Calculat
       ]}
     />
   );
+  if (!letter) return box;
+  return (
+    <View style={styles.eqLettered}>
+      {box}
+      <Text style={[styles.eqLetter, { color: c.textMuted }]}>{variable.symbol}</Text>
+    </View>
+  );
 }
 
-/** A template split into boxes, stacked fractions ({a}/{b}) and the text between them. */
+/** A box ({a}) or a fixed number (the 1 of 1/{b}) in the equation. */
+type Slot = { id: string } | { text: string };
+
+/** A template split into its pieces: boxes, fractions, mixed numbers, powers and the text between. */
 type EquationPart =
   | { kind: 'box'; id: string }
-  | { kind: 'fraction'; top: string; bottom: string }
+  | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
+  | { kind: 'power'; base: string; exponent: string }
   | { kind: 'text'; text: string };
 
+const SLOT = String.raw`\{(\w+)\}|(\d+)`;
+const slot = (id: string | undefined, text: string | undefined): Slot =>
+  id !== undefined ? { id } : { text: text! };
+
+/**
+ * `{a}/{b}` and `1/{b}` are stacked fractions, `{w} {a}/{b}` a mixed number, `{b}^{n}` a power;
+ * any other `{id}` is a box, and the rest is text (÷, =, %, :).
+ */
 export function equationParts(template: string): EquationPart[] {
+  const re = new RegExp(
+    String.raw`(?:\{(\w+)\} )?(?:${SLOT})\/(?:${SLOT})|\{(\w+)\}\^\{(\w+)\}|\{(\w+)\}`,
+    'g',
+  );
   const parts: EquationPart[] = [];
-  const re = /\{(\w+)\}\/\{(\w+)\}|\{(\w+)\}/g;
   let last = 0;
   for (const m of template.matchAll(re)) {
-    if (m.index! > last) parts.push({ kind: 'text', text: template.slice(last, m.index) });
-    parts.push(m[1] ? { kind: 'fraction', top: m[1], bottom: m[2]! } : { kind: 'box', id: m[3]! });
+    const text = template.slice(last, m.index).trim();
+    if (text) parts.push({ kind: 'text', text });
+    const [, whole, topId, topText, bottomId, bottomText, base, exponent, box] = m;
+    if (box) parts.push({ kind: 'box', id: box });
+    else if (base) parts.push({ kind: 'power', base, exponent: exponent! });
+    else
+      parts.push({
+        kind: 'fraction',
+        top: slot(topId, topText),
+        bottom: slot(bottomId, bottomText),
+        ...(whole ? { whole } : {}),
+      });
     last = m.index! + m[0].length;
   }
-  if (last < template.length) parts.push({ kind: 'text', text: template.slice(last) });
+  const rest = template.slice(last).trim();
+  if (rest) parts.push({ kind: 'text', text: rest });
   return parts;
 }
+
+/** Every value's id in the template, in order. */
+export const equationIds = (template: string): string[] =>
+  equationParts(template).flatMap((p) =>
+    p.kind === 'box'
+      ? [p.id]
+      : p.kind === 'power'
+        ? [p.base, p.exponent]
+        : p.kind === 'fraction'
+          ? [
+              p.whole,
+              'id' in p.top ? p.top.id : undefined,
+              'id' in p.bottom ? p.bottom.id : undefined,
+            ].filter((x): x is string => !!x)
+          : [],
+  );
 
 /** The equation with a box for each value, so the numbers go where the problem writes them. */
 function EquationInput({ template, calc }: { template: string; calc: Calculator }) {
   const c = usePalette();
   const byId = new Map(calc.module.variables.map((v) => [v.id, v]));
   const early = isEarlyGrade(calc.module.id);
-  const box = (id: string) => <EquationBox key={id} variable={byId.get(id)!} calc={calc} />;
-  const parts = equationParts(template);
-  const ids = parts.flatMap((p) =>
-    p.kind === 'box' ? [p.id] : p.kind === 'fraction' ? [p.top, p.bottom] : [],
+  // Grade 6 letters pages name each box's letter under it (x + 7 = 12).
+  const letters = calc.module.notation === 'letters';
+  // Long equations (mixed numbers) use smaller boxes, so a phone fits them on one line.
+  const compact = equationIds(template).length > 6;
+  const box = (id: string, key: string, small = false, letter = letters) => (
+    <EquationBox
+      key={key}
+      variable={byId.get(id)!}
+      calc={calc}
+      small={small}
+      compact={compact}
+      letter={letter}
+    />
   );
+  const slotView = (s: Slot, key: string) =>
+    'id' in s ? (
+      box(s.id, key, false, false)
+    ) : (
+      <Text key={key} style={[styles.eqText, styles.eqFixed, { color: c.text }]}>
+        {s.text}
+      </Text>
+    );
+  const parts = equationParts(template);
   // Messages for the boxes, under the equation (the boxes have no room beside them).
-  const messages = ids.flatMap((id) => {
+  const messages = [...new Set(equationIds(template))].flatMap((id) => {
     const e = calc.errors[id];
     return e ? [`${byId.get(id)!.name}: ${early ? kidMessage(e) : e}`] : [];
   });
+  const piece = (p: EquationPart, i: number) =>
+    p.kind === 'text' ? (
+      <Text key={i} style={[styles.eqText, { color: c.text }]}>
+        {p.text}
+      </Text>
+    ) : p.kind === 'box' ? (
+      box(p.id, `b${i}`)
+    ) : p.kind === 'power' ? (
+      <View key={i} style={styles.eqPower}>
+        {box(p.base, `p${i}`)}
+        <View style={styles.eqExponent}>{box(p.exponent, `e${i}`, true)}</View>
+      </View>
+    ) : (
+      <View key={i} style={styles.eqMixed}>
+        {p.whole ? box(p.whole, `w${i}`, false, false) : null}
+        <View style={styles.eqFraction}>
+          {slotView(p.top, `t${i}`)}
+          <View style={[styles.eqBar, { backgroundColor: c.text }]} />
+          {slotView(p.bottom, `d${i}`)}
+        </View>
+      </View>
+    );
   return (
     <View style={styles.equation} testID="equation">
-      <View style={styles.eqRow}>
-        {parts.map((p, i) =>
-          p.kind === 'text' ? (
-            <Text key={i} style={[styles.eqText, { color: c.text }]}>
-              {p.text.trim()}
-            </Text>
-          ) : p.kind === 'box' ? (
-            box(p.id)
-          ) : (
-            <View key={i} style={styles.eqFraction}>
-              {box(p.top)}
-              <View style={[styles.eqBar, { backgroundColor: c.text }]} />
-              {box(p.bottom)}
-            </View>
-          ),
-        )}
+      <View style={[styles.eqRow, compact && styles.eqRowCompact]}>
+        {groups(parts).map((group, g) => (
+          <View key={g} style={[styles.eqGroup, compact && styles.eqRowCompact]}>
+            {group.map(({ p, i }) => piece(p, i))}
+          </View>
+        ))}
       </View>
       {messages.map((m) => (
         <Text key={m} style={[styles.meta, { color: c.text, textAlign: 'center' }]}>
@@ -280,6 +381,21 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       ))}
     </View>
   );
+}
+
+/**
+ * Pieces that wrap together: a sign and what follows it ("= 8 7/24", "+ 1 5/6"), so a line
+ * never ends with "=".
+ */
+function groups(parts: EquationPart[]) {
+  const out: { p: EquationPart; i: number }[][] = [];
+  parts.forEach((p, i) => {
+    const prev = out[out.length - 1];
+    const after = prev?.[prev.length - 1]?.p;
+    if (prev && after?.kind === 'text') prev.push({ p, i });
+    else out.push([{ p, i }]);
+  });
+  return out;
 }
 
 /**
@@ -341,7 +457,7 @@ export function InputsSection({ calc }: { calc: Calculator }) {
           // A data set of 5 hides the boxes for a 6th value and on.
           .filter((v) => !outOfCount(v, calc.result.values))
           // Values in the equation are typed there.
-          .filter((v) => !module.equation?.includes(`{${v.id}}`))
+          .filter((v) => !module.equation || !equationIds(module.equation).includes(v.id))
           .map((v) => (
             <VariableInput key={v.id} variable={v} calc={calc} />
           ))}
@@ -399,9 +515,17 @@ const styles = StyleSheet.create({
   eqText: { fontSize: font.body + 6, fontWeight: '600' },
   eqFraction: { alignItems: 'center', gap: 4 },
   eqBar: { height: 2, alignSelf: 'stretch', borderRadius: 1 },
+  eqRowCompact: { gap: 4 },
+  eqGroup: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  eqMixed: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  eqPower: { flexDirection: 'row', alignItems: 'flex-start' },
+  eqExponent: { marginTop: -14, marginLeft: 2 },
+  eqLettered: { alignItems: 'center', gap: 2 },
+  eqLetter: { fontSize: font.caption, fontStyle: 'italic' },
+  eqFixed: { minHeight: 44, textAlignVertical: 'center', lineHeight: 44 },
+  eqBoxSmall: { minHeight: 32, fontSize: font.caption + 2 },
   eqBox: {
     fontFamily: font.family,
-    width: 64,
     minHeight: 44,
     borderWidth: 1,
     borderRadius: radius.sm,
