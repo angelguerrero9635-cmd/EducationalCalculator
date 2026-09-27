@@ -175,6 +175,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`tens digit of (${NUM})`), (a) => Math.floor(a / 10) % 10],
   [new RegExp(`ones digit of (${NUM})`), (a) => a % 10],
   [new RegExp(`full tens in (${NUM})`), (a) => Math.floor(a / 10)],
+  // A signed change (6.NS.5): a fall from 8 °C to −2 °C is −10.
+  [/[Cc]hange from (-?\d+(?:\.\d+)?) to (-?\d+(?:\.\d+)?)/, (a, b) => b - a],
   // Grade 6 signed numbers (6.NS.8): the distance along a line or between two points.
   [
     /[Ff]rom (-?\d+(?:\.\d+)?) (?:up |across |down )?to (-?\d+(?:\.\d+)?)/,

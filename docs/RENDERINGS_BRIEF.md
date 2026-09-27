@@ -153,6 +153,9 @@ bus.
     for Grade 5 powers of ten to exponent 9.
 28. **Decimal jumps past 30**: the divide-by-a-decimal picture for quotients to 999
     (21 ÷ 0.2 = 105 jumps of 0.2): group the jumps by tens when there are many.
+29. **Percent grids past 100% and in tenths**: `grid100` whose percent can pass 100 (whole
+    grids first: 125% is one full grid and 25 squares) and shade part of a square (37.5%), so
+    the Grade 6 fraction-decimal-percent page can take 5/4 = 125%.
 
 ### 2. Grade 7 math (planned skills in `src/data/taxonomy.ts`)
 

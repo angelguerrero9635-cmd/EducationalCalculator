@@ -676,7 +676,9 @@ export function repIssues(
         a !== undefined &&
         b !== undefined &&
         d !== undefined &&
-        Math.abs(Math.abs(b - a) - d) > 1e-9
+        // The jump is a distance, or a signed change (a drop of 10 is −10).
+        Math.abs(Math.abs(b - a) - d) > 1e-9 &&
+        Math.abs(b - a - d) > 1e-9
       )
         out.push(`jump from ${a} to ${b} shows ${d}`);
       break;

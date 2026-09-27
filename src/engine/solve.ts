@@ -67,7 +67,9 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
     return `Must be ${list.length > 1 ? `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}` : list[0]}`;
   }
   const m = variable.multipleOf;
-  if (m && Math.abs(x / f / m - Math.round(x / f / m)) > 1e-9) {
+  // Relative to the count of steps: 9,449.871 is 9,449,871.000000002 thousandths in floats.
+  const steps = m ? x / f / m : 0;
+  if (m && Math.abs(steps - Math.round(steps)) > 1e-9 * Math.max(1, Math.abs(steps))) {
     // Start the list at the smallest allowed multiple (12, 24, 36, … when the minimum is 12).
     const first = Math.max(0, Math.ceil((variable.min ?? 0) / f / m - 1e-9)) * m;
     return `Must be ${[first, first + m, first + 2 * m].map((x) => formatNumber(x)).join(', ')}, …`;

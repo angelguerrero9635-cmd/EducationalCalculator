@@ -11,13 +11,14 @@ import type { Values } from '@/engine/types';
 
 import { div, primeFactors, whole } from '../helpers';
 import type { ModuleDef } from '../types';
-import { decimalLongDivision, decimalMultiply } from '../written';
+import { decimalColumns, decimalLongDivision, decimalMultiply } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
 /** A number as the steps show it (rounded like `fmt`), to do arithmetic on what is written. */
 const shownNum = (x: number) => Number(fmt(x).replace(/,/g, '').replace('−', '-'));
 /** Exact to 9 places: 7.5 ÷ 6 is 1.25, not 1.2499999999. */
 const exact = (x: number) => Number(x.toFixed(9));
+const thousandths = (x: number) => Number(x.toFixed(3));
 /** The exact quotient before a price is rounded to the cent ("10 ÷ 3 = 3.3333"), else nothing. */
 const subCent = (x: number, sum: string) =>
   Math.abs(x * 100 - Math.round(x * 100)) < 1e-6 ? [] : [`${sum} = ${formatNumber(x)}`];
@@ -224,7 +225,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     use: 'Use this when you know the ratio and the total, or how many more.',
     assumptions: [
       'Every box in the tape is worth the same amount.',
-      'The second part of the ratio is at least the first, so “how many more” is never negative.',
+      '“How many more” is the bigger amount minus the smaller: the extra boxes times what one is worth.',
       'Parts of the ratio are whole numbers to 20.',
     ],
     variables: [
@@ -243,17 +244,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       { id: 'x', symbol: 'x', name: 'First amount', min: 0, max: 200000 },
       { id: 'y', symbol: 'y', name: 'Second amount', min: 0, max: 200000 },
       { id: 't', symbol: 't', name: 'Total', min: 0, max: 400000 },
-      { id: 'd', symbol: 'd', name: 'How many more in the second', min: 0, max: 200000 },
+      { id: 'd', symbol: 'd', name: 'How many more in the bigger', min: 0, max: 200000 },
     ],
     relations: [
-      {
-        id: 'b ≥ a',
-        constraint: true,
-        display: '{b} is at least {a}',
-        vars: ['b', 'a'],
-        residual: (v: Values) => (v.b! >= v.a! ? 0 : 1),
-        solve: {},
-      },
       {
         id: 'n = a + b',
         display: '{a} + {b} = {n}',
@@ -304,21 +297,22 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         },
       },
       {
-        id: 'd = (b − a) × u',
-        display: '({b} − {a}) × {u} = {d}',
-        words: '(Second part − first part) × one part is worth = how many more in the second',
+        id: 'd = extra boxes × u',
+        display: '{a} and {b} boxes differ by some; that many × {u} = {d}',
+        words: '(Bigger part − smaller part) × one part is worth = how many more',
+        check: (v: Values) =>
+          `(${Math.max(v.a!, v.b!)} − ${Math.min(v.a!, v.b!)}) × ${formatNumber(v.u!, { fraction: 40 })} = ${fmt(v.d!)}`,
         vars: ['d', 'b', 'a', 'u'],
-        residual: (v: Values) => v.d! - (v.b! - v.a!) * v.u!,
+        residual: (v: Values) => v.d! - Math.abs(v.b! - v.a!) * v.u!,
         solve: {
-          d: (v: Values) => exact((v.b! - v.a!) * v.u!),
-          u: (v: Values) => q(v.d!, v.b! - v.a!),
+          d: (v: Values) => exact(Math.abs(v.b! - v.a!) * v.u!),
+          u: (v: Values) => q(v.d!, Math.abs(v.b! - v.a!)),
           a: () => undefined,
           b: () => undefined,
         },
       },
     ],
     steps: {
-      'b ≥ a': {},
       'n = a + b': {
         n: { expr: '{a} + {b}', how: 'Count the boxes in both tapes.' },
         a: { expr: '{n} − {b}', how: 'Take the second part from the parts in all.' },
@@ -336,14 +330,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         y: { expr: '{b} × {u}', how: 'The second tape has that many boxes, each worth the same.' },
         u: { expr: '{y} ÷ {b}', how: 'Share the second amount equally among its boxes.' },
       },
-      'd = (b − a) × u': {
+      'd = extra boxes × u': {
         d: {
-          expr: '({b} − {a}) × {u}',
-          how: 'The second tape has more boxes. Multiply the extra boxes by what one is worth.',
+          expr: (v) => (v.b! >= v.a! ? '({b} − {a}) × {u}' : '({a} − {b}) × {u}'),
+          how: 'One tape has more boxes. Multiply the extra boxes by what one is worth.',
         },
         u: {
-          expr: '{d} ÷ ({b} − {a})',
-          how: 'The extra boxes in the second tape make the difference. Share it among them.',
+          expr: (v) => (v.b! >= v.a! ? '{d} ÷ ({b} − {a})' : '{d} ÷ ({a} − {b})'),
+          how: 'The extra boxes in the longer tape make the difference. Share it among them.',
         },
       },
     },
@@ -356,6 +350,137 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       amounts: ['x', 'y'],
       total: 't',
       difference: 'd',
+    },
+  },
+
+  {
+    id: 'm.6.ratios~three-parts',
+    title: 'Ratios with three parts',
+    use: 'Use this for a ratio of 6:5:2 with 78 people in all: how many in each part?',
+    assumptions: [
+      'Every box in the three tapes is worth the same amount.',
+      'Share the total among all the boxes, then multiply for each part.',
+      'Parts of the ratio are whole numbers to 12.',
+    ],
+    variables: [
+      whole('a', 'a', 'First part of the ratio', 1, 12),
+      whole('b', 'b', 'Second part of the ratio', 1, 12),
+      whole('c', 'c', 'Third part of the ratio', 1, 12),
+      { ...whole('n', 'n', 'Parts in all', 3, 36), derived: true },
+      {
+        id: 'u',
+        symbol: 'u',
+        name: 'One part is worth',
+        min: 0,
+        max: 200000,
+        fraction: 60,
+        derived: true,
+      },
+      { id: 'x', symbol: 'x', name: 'First amount', min: 0, max: 200000 },
+      { id: 'y', symbol: 'y', name: 'Second amount', min: 0, max: 200000 },
+      { id: 'z', symbol: 'z', name: 'Third amount', min: 0, max: 200000 },
+      { id: 't', symbol: 't', name: 'Total', min: 0, max: 600000 },
+    ],
+    relations: [
+      {
+        id: 't = x + y + z',
+        display: '{x} + {y} + {z} = {t}',
+        words: 'First amount + second amount + third amount = total',
+        vars: ['t', 'x', 'y', 'z'],
+        residual: (v: Values) => v.t! - v.x! - v.y! - v.z!,
+        solve: {
+          t: (v: Values) => exact(v.x! + v.y! + v.z!),
+          x: (v: Values) => exact(v.t! - v.y! - v.z!),
+          y: (v: Values) => exact(v.t! - v.x! - v.z!),
+          z: (v: Values) => exact(v.t! - v.x! - v.y!),
+        },
+      },
+      {
+        id: 'n = a + b + c',
+        display: '{a} + {b} + {c} = {n}',
+        words: 'First part + second part + third part = parts in all',
+        vars: ['n', 'a', 'b', 'c'],
+        residual: (v: Values) => v.n! - v.a! - v.b! - v.c!,
+        solve: {
+          n: (v: Values) => v.a! + v.b! + v.c!,
+          a: (v: Values) => v.n! - v.b! - v.c!,
+          b: (v: Values) => v.n! - v.a! - v.c!,
+          c: (v: Values) => v.n! - v.a! - v.b!,
+        },
+      },
+      {
+        id: 't = n × u',
+        display: '{t} ÷ {n} = {u}',
+        words: 'Total ÷ parts in all = one part is worth',
+        check: (v: Values) => `${formatNumber(v.u!, { fraction: 60 })} × ${v.n} = ${fmt(v.t!)}`,
+        vars: ['t', 'n', 'u'],
+        residual: (v: Values) => v.t! - v.n! * v.u!,
+        solve: {
+          u: (v: Values) => q(v.t!, v.n!),
+          t: (v: Values) => exact(v.n! * v.u!),
+          n: () => undefined,
+        },
+      },
+      ...(
+        [
+          ['x', 'a', 'first'],
+          ['y', 'b', 'second'],
+          ['z', 'c', 'third'],
+        ] as const
+      ).map(([amt, part, which]) => ({
+        id: `${amt} = ${part} × u`,
+        display: `{${part}} × {u} = {${amt}}`,
+        words: `${which[0]!.toUpperCase()}${which.slice(1)} part × one part is worth = ${which} amount`,
+        vars: [amt, part, 'u'],
+        residual: (v: Values) => v[amt]! - v[part]! * v.u!,
+        solve: {
+          [amt]: (v: Values) => exact(v[part]! * v.u!),
+          u: (v: Values) => q(v[amt]!, v[part]!),
+          [part]: () => undefined,
+        },
+      })),
+    ],
+    steps: {
+      't = x + y + z': {
+        t: { expr: '{x} + {y} + {z}', how: 'The three amounts make the total.' },
+        x: { expr: '{t} − {y} − {z}', how: 'Take the other amounts from the total.' },
+        y: { expr: '{t} − {x} − {z}', how: 'Take the other amounts from the total.' },
+        z: { expr: '{t} − {x} − {y}', how: 'Take the other amounts from the total.' },
+      },
+      'n = a + b + c': {
+        n: { expr: '{a} + {b} + {c}', how: 'Count the boxes in all three tapes.' },
+        a: { expr: '{n} − {b} − {c}', how: 'Take the other parts from the parts in all.' },
+        b: { expr: '{n} − {a} − {c}', how: 'Take the other parts from the parts in all.' },
+        c: { expr: '{n} − {a} − {b}', how: 'Take the other parts from the parts in all.' },
+      },
+      't = n × u': {
+        u: { expr: '{t} ÷ {n}', how: 'Share the total equally among all the boxes.' },
+        t: { expr: '{n} × {u}', how: 'Every box is worth the same: multiply.' },
+      },
+      ...Object.fromEntries(
+        (
+          [
+            ['x', 'a'],
+            ['y', 'b'],
+            ['z', 'c'],
+          ] as const
+        ).map(([amt, part]) => [
+          `${amt} = ${part} × u`,
+          {
+            [amt]: { expr: `{${part}} × {u}`, how: 'That tape’s boxes, each worth the same.' },
+            u: { expr: `{${amt}} ÷ {${part}}`, how: 'Share that amount equally among its boxes.' },
+          },
+        ]),
+      ),
+    },
+    example: { a: 6, b: 5, c: 2, n: 13, u: 6, x: 36, y: 30, z: 12, t: 78 },
+    startWith: ['a', 'b', 'c', 't'],
+    representation: {
+      kind: 'tape',
+      ratio: ['a', 'b'],
+      unit: 'u',
+      amounts: ['x', 'y'],
+      total: 't',
     },
   },
 
@@ -764,16 +889,17 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.percent~fraction-decimal-percent',
     title: 'Fractions, decimals and percents',
-    use: 'Use this to write a fraction as a decimal and a percent.',
+    use: 'Use this to write a fraction as a decimal and a percent, like 3/5 = 0.6 = 60% or 3/8 = 37.5%.',
     assumptions: [
       'Make the denominator 100: the numerator is then the percent.',
       'A percent is hundredths: 60% = 60/100 = 0.6.',
-      'The fraction is at most 1, with a denominator that divides 100.',
+      'Make the denominator 100 when it divides 100; else divide (3 ÷ 8 = 0.375 = 37.5%).',
+      'The fraction is at most 1. Denominators 2, 4, 5, 8, 10, 20, 25, 40, 50 and 100.',
     ],
     variables: [
       whole('a', 'a', 'Numerator', 0, 100),
-      { ...whole('b', 'b', 'Denominator', 2, 100), allowed: [2, 4, 5, 10, 20, 25, 50, 100] },
-      { id: 'd', symbol: 'd', name: 'Decimal', min: 0, max: 1, step: 0.01, multipleOf: 0.01 },
+      { ...whole('b', 'b', 'Denominator', 2, 100), allowed: [2, 4, 5, 8, 10, 20, 25, 40, 50, 100] },
+      { id: 'd', symbol: 'd', name: 'Decimal', min: 0, max: 1, step: 0.001, multipleOf: 0.001 },
       {
         id: 'p',
         symbol: 'p',
@@ -781,8 +907,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         unit: '%',
         min: 0,
         max: 100,
-        step: 1,
-        multipleOf: 1,
+        step: 0.1,
+        multipleOf: 0.1,
       },
     ],
     relations: [
@@ -824,6 +950,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           how: 'Make the denominator 100: multiply the top and bottom by the same number.',
           work: (v) => {
             const k = 100 / v.b!;
+            // Eighths and fortieths don't scale to hundredths by a whole number: divide.
+            if (!Number.isInteger(k)) return [`${v.a} ÷ ${v.b} = ${fmt(v.d!)}`];
             return k === 1
               ? [`${v.a}/100 = ${fmt(v.d!)}`]
               : [
@@ -831,7 +959,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
                   `${v.a! * k}/100 = ${fmt(v.d!)}`,
                 ];
           },
-          written: false,
+          written: (v) =>
+            Number.isInteger(100 / v.b!) ? undefined : decimalLongDivision(v.a!, v.b!),
         },
         a: {
           expr: '{d} × {b}',
@@ -1002,6 +1131,82 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { a: 2.35, b: 1.4, p: 3.29 },
     startWith: ['a', 'b'],
     representation: { kind: 'areaModel', factors: ['a', 'b'], total: 'p' },
+  },
+  {
+    id: 'm.6.multi-digit-decimals~add-subtract',
+    title: 'Add and subtract decimals',
+    use: 'Use this for 7.2 − 3.67 or 16 − 1.4, or a sum like $14.50 + $4.35.',
+    assumptions: [
+      'Line up the decimal points, so tenths are under tenths and hundredths under hundredths.',
+      'Write zeros in empty places: 7.2 − 3.67 is 7.20 − 3.67. A whole number like 16 has its point after the ones.',
+      'Numbers to 9,999.999 (three decimal places).',
+    ],
+    variables: [
+      {
+        id: 'a',
+        symbol: 'a',
+        name: 'First number',
+        min: 0,
+        max: 9999.999,
+        step: 0.001,
+        multipleOf: 0.001,
+      },
+      {
+        id: 'b',
+        symbol: 'b',
+        name: 'Second number',
+        min: 0,
+        max: 9999.999,
+        step: 0.001,
+        multipleOf: 0.001,
+      },
+      {
+        id: 's',
+        symbol: 's',
+        name: 'Sum',
+        min: 0,
+        max: 19999.998,
+        step: 0.001,
+        multipleOf: 0.001,
+      },
+    ],
+    relations: [
+      {
+        id: 's = a + b',
+        display: '{a} + {b} = {s}',
+        words: 'First number + second number = sum',
+        vars: ['s', 'a', 'b'],
+        residual: (v: Values) => v.s! - v.a! - v.b!,
+        solve: {
+          // Every value is in thousandths: round the float error away on that grid.
+          s: (v: Values) => thousandths(v.a! + v.b!),
+          a: (v: Values) => thousandths(v.s! - v.b!),
+          b: (v: Values) => thousandths(v.s! - v.a!),
+        },
+      },
+    ],
+    steps: {
+      's = a + b': {
+        s: {
+          expr: '{a} + {b}',
+          how: 'Line up the points and add each place, right to left.',
+          written: (v) => decimalColumns('+', [v.a!, v.b!]),
+        },
+        a: {
+          expr: '{s} − {b}',
+          how: 'Subtract: line up the points, write zeros in empty places, and regroup where needed.',
+          written: (v) => decimalColumns('−', [v.s!, v.b!]),
+        },
+        b: {
+          expr: '{s} − {a}',
+          how: 'Subtract: line up the points, write zeros in empty places, and regroup where needed.',
+          written: (v) => decimalColumns('−', [v.s!, v.a!]),
+        },
+      },
+    },
+    example: { a: 3.67, b: 3.53, s: 7.2 },
+    startWith: ['s', 'b'],
+    representation: { kind: 'placeValueChart', value: 'a', decimals: 3, compare: 'b' },
   },
   {
     id: 'm.6.multi-digit-decimals~divide-by-decimal',
@@ -1726,13 +1931,13 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.integers~change',
-    title: 'How much warmer?',
-    use: 'Use this for how many degrees from −5 °C up to 3 °C.',
+    title: 'How much warmer or colder?',
+    use: 'Use this for the change from −5 °C up to 3 °C, or a drop from 8 °C to −2 °C.',
     assumptions: [
-      'The rise is the distance on the thermometer from the lower temperature up to the higher one.',
+      'The change is the distance on the thermometer from the morning to the afternoon: positive when it rises, negative when it drops.',
       'Below 0 and above 0: add the two distances from 0.',
       'A higher temperature is warmer: −3 °C > −7 °C because −3 is higher up.',
-      'Temperatures from −40 °C to 50 °C; the afternoon is at least as warm as the morning.',
+      'Temperatures from −40 °C to 50 °C.',
     ],
     unitSystems: ['metric'],
     variables: [
@@ -1759,9 +1964,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'r',
         symbol: 'r',
-        name: 'Rise',
+        name: 'Change',
         unit: '°C',
-        min: 0,
+        min: -90,
         max: 90,
         step: 0.5,
         multipleOf: 0.5,
@@ -1770,42 +1975,57 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     relations: [
       {
         id: 'r = n − m',
-        display: 'From {m} up to {n}: {r}',
-        words: 'From the morning temperature up to the afternoon temperature = rise',
+        display: 'The change from {m} to {n} is {r}',
+        words: 'Afternoon temperature − morning temperature = change',
         check: (v: Values) => apartLine(v.m!, v.n!),
         vars: ['r', 'n', 'm'],
         residual: (v: Values) => v.r! - (v.n! - v.m!),
         solve: {
-          r: (v: Values) => v.n! - v.m!,
-          n: (v: Values) => v.m! + v.r!,
-          m: (v: Values) => v.n! - v.r!,
+          r: (v: Values) => exact(v.n! - v.m!),
+          n: (v: Values) => exact(v.m! + v.r!),
+          m: (v: Values) => exact(v.n! - v.r!),
         },
       },
     ],
     steps: {
       'r = n − m': {
         r: {
-          expr: 'From {m} up to {n}',
-          how: 'Count up the thermometer from the morning to the afternoon.',
-          work: (v) =>
-            v.m! < 0 && v.n! > 0
-              ? [
-                  `From ${sgn(v.m!)} up to 0 is ${fmt(-v.m!)}`,
-                  `From 0 up to ${sgn(v.n!)} is ${fmt(v.n!)}`,
-                  `${fmt(-v.m!)} + ${fmt(v.n!)} = ${fmt(v.r!)}`,
-                ]
-              : [sidesLine(v.m!, v.n!), apartLine(v.m!, v.n!)],
-          note: (v) => (v.r === 0 ? '(no change)' : `(${sgn(v.n!)} °C > ${sgn(v.m!)} °C)`),
+          expr: 'change from {m} to {n}',
+          how: (v) =>
+            v.r! >= 0
+              ? 'Count up the thermometer from the morning to the afternoon.'
+              : 'Count down the thermometer from the morning to the afternoon: a drop is negative.',
+          work: (v) => {
+            const [lo, hi] = [Math.min(v.m!, v.n!), Math.max(v.m!, v.n!)];
+            const way = v.r! >= 0 ? 'up' : 'down';
+            const lines =
+              lo < 0 && hi > 0
+                ? [
+                    `From ${sgn(v.m!)} ${way} to 0 is ${fmt(Math.abs(v.m!))}`,
+                    `From 0 ${way} to ${sgn(v.n!)} is ${fmt(Math.abs(v.n!))}`,
+                    `${fmt(Math.abs(v.m!))} + ${fmt(Math.abs(v.n!))} = ${fmt(Math.abs(v.r!))}`,
+                  ]
+                : [sidesLine(v.m!, v.n!), apartLine(v.m!, v.n!)];
+            return v.r! < 0
+              ? [...lines, `A drop of ${fmt(-v.r!)} °C is a change of −${fmt(-v.r!)} °C.`]
+              : lines;
+          },
+          note: (v) =>
+            v.r === 0
+              ? '(no change)'
+              : v.r! > 0
+                ? `(${sgn(v.n!)} °C > ${sgn(v.m!)} °C: warmer)`
+                : `(${sgn(v.n!)} °C < ${sgn(v.m!)} °C: colder)`,
           written: false,
         },
         n: {
           expr: '{m} + {r}',
-          how: 'Count up the rise from the morning temperature.',
+          how: 'Count the change from the morning temperature: up if it rises, down if it drops.',
           written: false,
         },
         m: {
           expr: '{n} − {r}',
-          how: 'Count down the rise from the afternoon temperature.',
+          how: 'Undo the change from the afternoon temperature.',
           written: false,
         },
       },
@@ -1821,6 +2041,94 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       max: 10,
       vertical: true,
       unit: '°C',
+    },
+  },
+
+  {
+    id: 'm.6.integers~compare',
+    title: 'Compare rational numbers',
+    use: 'Use this to compare −12.5 and −12, or |−7| and 5, on the number line.',
+    assumptions: [
+      'On a number line, the number further right is greater: −12 > −12.5.',
+      'For negative numbers, the one closer to 0 is greater, though its absolute value is smaller.',
+      'Absolute value is the distance from 0; comparing distances is not comparing the numbers.',
+      'Numbers from −100 to 100.',
+    ],
+    variables: [
+      { id: 'x', symbol: 'x', name: 'First number', min: -100, max: 100, step: 0.25 },
+      { id: 'y', symbol: 'y', name: 'Second number', min: -100, max: 100, step: 0.25 },
+      {
+        id: 'p',
+        symbol: 'p',
+        name: 'First number’s absolute value',
+        min: 0,
+        max: 100,
+        derived: true,
+      },
+      {
+        id: 'q',
+        symbol: 'q',
+        name: 'Second number’s absolute value',
+        min: 0,
+        max: 100,
+        derived: true,
+      },
+      { id: 'g', symbol: 'g', name: 'Distance apart', min: 0, max: 200, derived: true },
+    ],
+    relations: [
+      {
+        id: 'p = |x|',
+        display: '|{x}| = {p}',
+        vars: ['p', 'x'],
+        residual: (v: Values) => v.p! - Math.abs(v.x!),
+        solve: { p: (v: Values) => Math.abs(v.x!), x: () => undefined },
+      },
+      {
+        id: 'q = |y|',
+        display: '|{y}| = {q}',
+        vars: ['q', 'y'],
+        residual: (v: Values) => v.q! - Math.abs(v.y!),
+        solve: { q: (v: Values) => Math.abs(v.y!), y: () => undefined },
+      },
+      {
+        id: 'g = distance from x to y',
+        display: 'From {x} to {y} is {g}',
+        words: 'Distance between the two numbers on the line = {g}',
+        check: (v: Values) => apartLine(v.x!, v.y!),
+        vars: ['g', 'x', 'y'],
+        residual: (v: Values) => v.g! - Math.abs(v.y! - v.x!),
+        solve: {
+          g: (v: Values) => exact(Math.abs(v.y! - v.x!)),
+          x: () => undefined,
+          y: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'p = |x|': { p: { expr: '|{x}|', how: 'The first number’s distance from 0.' } },
+      'q = |y|': { q: { expr: '|{y}|', how: 'The second number’s distance from 0.' } },
+      'g = distance from x to y': {
+        g: {
+          expr: 'From {x} to {y}',
+          how: 'Place both on the line. The one further right is greater.',
+          work: (v) => [sidesLine(v.x!, v.y!), apartLine(v.x!, v.y!)],
+          note: (v) => {
+            const sign = v.x! < v.y! ? '<' : v.x! > v.y! ? '>' : '=';
+            const abs = v.p! < v.q! ? '<' : v.p! > v.q! ? '>' : '=';
+            return `(${sgn(v.x!)} ${sign} ${sgn(v.y!)}; |${sgn(v.x!)}| ${abs} |${sgn(v.y!)}|)`;
+          },
+        },
+      },
+    },
+    example: { x: -12.5, y: -12, p: 12.5, q: 12, g: 0.5 },
+    startWith: ['x', 'y'],
+    representation: {
+      kind: 'integerLine',
+      value: 'x',
+      second: 'y',
+      change: 'g',
+      min: -20,
+      max: 20,
     },
   },
 
@@ -2689,6 +2997,94 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       total: 'q',
       groups: 'c',
       caption: '{c}x = {q} · {c} × {x} = {q}',
+    },
+  },
+  {
+    id: 'm.6.one-step-equations~inequality-solutions',
+    notation: 'letters',
+    title: 'Solutions of an inequality',
+    use: 'Use this to test a value: is 35 a solution of 2n < 71? Is 5.01 a solution of k > 5?',
+    assumptions: [
+      'A solution makes the inequality true. Put the value in and compare the two sides.',
+      'The boundary is where the two sides are equal: 2n = 71 at n = 35.5.',
+      '< and > leave the boundary out (open circle); ≤ and ≥ take it in (closed circle).',
+      'Coefficients from 0.01 to 100; bounds and values from −1,000 to 1,000.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'Coefficient', min: 0.01, max: 100, step: 0.01 },
+      { id: 'c', symbol: 'c', name: 'Bound', min: -1000, max: 1000, step: 0.01 },
+      { id: 'x', symbol: 'x', name: 'Value to test', min: -1000, max: 1000, step: 0.01 },
+      {
+        id: 'p',
+        symbol: 'p',
+        name: 'Left side at the value',
+        min: -100000,
+        max: 100000,
+        derived: true,
+      },
+      { id: 'e', symbol: 'e', name: 'Boundary', min: -100000, max: 100000, derived: true },
+      { id: 'd', symbol: 'd', name: 'Left side − bound', min: -200000, max: 200000, derived: true },
+    ],
+    relations: [
+      {
+        id: 'p = a × x',
+        display: '{a} × {x} = {p}',
+        vars: ['p', 'a', 'x'],
+        residual: (v: Values) => v.p! - v.a! * v.x!,
+        solve: {
+          p: (v: Values) => exact(v.a! * v.x!),
+          a: () => undefined,
+          x: (v: Values) => q(v.p!, v.a!),
+        },
+      },
+      {
+        id: 'e = c ÷ a',
+        display: '{c} ÷ {a} = {e}',
+        words: 'Bound ÷ coefficient = boundary',
+        vars: ['e', 'c', 'a'],
+        residual: (v: Values) => v.e! * v.a! - v.c!,
+        solve: { e: (v: Values) => q(v.c!, v.a!), c: () => undefined, a: () => undefined },
+      },
+      {
+        id: 'd = p − c',
+        display: '{p} − {c} = {d}',
+        vars: ['d', 'p', 'c'],
+        residual: (v: Values) => v.d! - v.p! + v.c!,
+        solve: { d: (v: Values) => exact(v.p! - v.c!), p: () => undefined, c: () => undefined },
+      },
+    ],
+    steps: {
+      'p = a × x': {
+        p: { expr: '{a} × {x}', how: 'Put the value in: work out the left side.' },
+        x: { expr: '{p} ÷ {a}', how: 'Divide the left side by the coefficient.' },
+      },
+      'e = c ÷ a': {
+        e: {
+          expr: '{c} ÷ {a}',
+          how: 'The boundary: the value that makes the two sides equal.',
+        },
+      },
+      'd = p − c': {
+        d: {
+          expr: '{p} − {c}',
+          how: 'Compare the left side with the bound: above it, below it, or on it.',
+          note: (v) => {
+            const [p, c] = [sgn(v.p!), sgn(v.c!)];
+            const sign = v.d! > 0 ? '>' : v.d! < 0 ? '<' : '=';
+            const yes = (t: boolean) => (t ? 'a solution' : 'not a solution');
+            return `(${p} ${sign} ${c}: ${sgn(v.x!)} is ${yes(v.d! > 0)} of > and ${yes(v.d! >= 0)} of ≥; ${yes(v.d! < 0)} of < and ${yes(v.d! <= 0)} of ≤)`;
+          },
+        },
+      },
+    },
+    example: { a: 2, c: 71, x: 35, p: 70, e: 35.5, d: -1 },
+    startWith: ['a', 'c', 'x'],
+    representation: {
+      kind: 'integerLine',
+      value: 'e',
+      second: 'x',
+      min: -40,
+      max: 40,
     },
   },
 
