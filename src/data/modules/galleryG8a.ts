@@ -230,7 +230,11 @@ export const G8A_GALLERY_MODULES: ModuleDef[] = [
         display: '{n} = exponent of the power of ten at or below {N}',
         vars: ['n', 'N'],
         residual: (v: Values) => v.n! - Math.floor(Math.log10(v.N!) + 1e-9),
-        solve: { n: (v: Values) => (v.N! > 0 ? Math.floor(Math.log10(v.N!) + 1e-9) : undefined) },
+        solve: {
+          n: (v: Values) => (v.N! > 0 ? Math.floor(Math.log10(v.N!) + 1e-9) : undefined),
+          // The power of ten alone doesn't say the number.
+          N: () => undefined,
+        },
       },
     ],
     steps: {
