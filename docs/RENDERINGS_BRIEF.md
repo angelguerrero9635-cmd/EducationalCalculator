@@ -20,18 +20,15 @@ closest existing picture until yours is ready, then pulls your branch and plugs 
 
 ## Hard rules
 
-- **Use real images where they make a picture more realistic** (photos or illustrations of
-  animals, plants, rocks, objects, the sky), taken from public-domain, Creative Commons or
-  free stock sources (Wikimedia Commons, NASA, USGS, NOAA, Openverse, Unsplash, Pixabay).
-  Download them at build time into `assets/images/<topic>/`, resize and compress them (keep
-  the app small), and list each one in `assets/images/CREDITS.md` with its source URL,
-  author and license. Use only licenses that allow reuse in an app (public domain, CC0,
-  CC BY, CC BY-SA with attribution, the Unsplash or Pixabay license); never use licensed
-  textbook or test material. The app itself never loads anything from the network: images
-  ship in the bundle. If an image host is blocked, say so and draw that picture in code.
-- **Values stay drawn in code.** Anything that moves with the student's numbers (bars,
-  lines, points, liquid levels, handles, labels) is react-native-svg over or beside the
-  image, so it stays exact. Charts and number diagrams are drawn in code.
+- **Online images are reference only.** Look at photos and illustrations online (Wikimedia
+  Commons, NASA, USGS, NOAA, Openverse, museum and field-guide pictures) to get shapes,
+  proportions, colors and details right, then draw the picture yourself in code with
+  react-native-svg. Never copy, trace, embed or download an image into the repository: no
+  image files, no bundled assets, no network calls from the app. Lesson text and pictures
+  stay original.
+- **Values stay exact.** Anything that moves with the student's numbers (bars, lines,
+  points, liquid levels, handles, labels) is drawn from the values; charts and number
+  diagrams stay flat and exact.
 - Ask before adding a dependency (an image or SVG library).
 - **Every color is a theme token** (`usePalette()`; add tokens to `src/theme.ts` in both light
   and dark). `src/components/__tests__/colors.test.ts` fails on any hex or rgb literal in a
