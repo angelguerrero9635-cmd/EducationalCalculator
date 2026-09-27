@@ -50,6 +50,16 @@ function derive(
   };
 }
 
+/** A value no bigger than another (a sample inside its population). */
+const atMost = (small: string, big: string) => ({
+  id: `${small} ≤ ${big}`,
+  constraint: true as const,
+  display: `{${small}} is at most {${big}}`,
+  vars: [small, big],
+  residual: (v: Values) => (v[small]! <= v[big]! ? 0 : 1),
+  solve: {},
+});
+
 /** The plane stays on the solid: `at` from 0 to the height. */
 const onSolid = (at: string, reach: string) => ({
   id: `${at} ≤ ${reach}`,
@@ -93,6 +103,78 @@ const straight = pair(180, 'The two angles make a straight line.');
 const right = pair(90, 'The two angles make a right angle.');
 
 export const G7C_GALLERY_MODULES: ModuleDef[] = [
+  {
+    id: 'g.random-sample',
+    title: 'A random sample',
+    assumptions: [
+      'Every student is as likely as any other to be picked.',
+      'The sample shows about the same share as the whole school.',
+    ],
+    variables: [
+      whole('N', 'N', 'Students in the school', 1, 400),
+      whole('n', 'n', 'Students in the sample', 1, 400),
+      whole('k', 'k', 'Sample who walk to school', 0, 400),
+      whole('T', 'T', 'Whole school who walk', 0, 400),
+      {
+        id: 'E',
+        symbol: 'E',
+        name: 'Estimate for the school',
+        min: 0,
+        max: 400,
+        derived: true,
+      },
+    ],
+    relations: [
+      atMost('n', 'N'),
+      atMost('k', 'n'),
+      atMost('T', 'N'),
+      atMost('k', 'T'),
+      {
+        // The sample's others (who don't walk) come from the school's others.
+        id: 'n − k ≤ N − T',
+        constraint: true,
+        display: '{n} − {k} is at most {N} − {T}',
+        vars: ['n', 'k', 'N', 'T'],
+        residual: (v: Values) => (v.n! - v.k! <= v.N! - v.T! ? 0 : 1),
+        solve: {},
+      },
+      derive(
+        'E = k ÷ n × N',
+        'E',
+        ['k', 'n', 'N'],
+        '{k} ÷ {n} × {N} = {E}',
+        (v) => (v.k! / v.n!) * v.N!,
+      ),
+    ],
+    steps: {
+      'n ≤ N': {},
+      'k ≤ n': {},
+      'T ≤ N': {},
+      'k ≤ T': {},
+      'n − k ≤ N − T': {},
+      'E = k ÷ n × N': {
+        E: {
+          expr: '{k} ÷ {n} × {N}',
+          how: 'The share who walk in the sample, times everyone in the school.',
+        },
+      },
+    },
+    example: { N: 200, n: 20, k: 6, T: 64, E: 60 },
+    startWith: ['N', 'n', 'k', 'T'],
+    standalone: {
+      vars: ['T'],
+      why: 'The whole school is what the sample estimates; the picture colors it so a new sample can be drawn.',
+    },
+    representation: {
+      kind: 'sample',
+      population: 'N',
+      size: 'n',
+      found: 'k',
+      trait: 'T',
+      estimate: 'E',
+      labels: ['walk', 'do not'],
+    },
+  },
   {
     id: 'g.prism-cross-section',
     title: 'Cross-section of a prism',

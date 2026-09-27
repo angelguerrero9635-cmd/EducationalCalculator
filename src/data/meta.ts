@@ -82,6 +82,7 @@ const PICTURE_NAMES: Record<string, string> = {
   net: 'net',
   crossSection: 'solid cut by a plane',
   dotPlot: 'dot plot',
+  sample: 'random sample of a population',
   fieldOfView: 'microscope field of view',
   gradCylinder: 'graduated cylinder',
   grassSlope: 'soil trays on a slope',

@@ -922,6 +922,22 @@ export type Representation =
       area?: string;
       volume?: string;
     }
+  /**
+   * A population of `population` dots (up to 400) with a random sample of `size` ringed, of
+   * whom `found` have the trait. With `trait` (how many in the population have it) those are
+   * colored and "Take a new sample" draws again, setting `found`; without it only the sample
+   * shows who has it. `estimate` is found ÷ size × population. `labels` name having and not
+   * having the trait ("like soccer", "do not").
+   */
+  | {
+      kind: 'sample';
+      population: string;
+      size: string;
+      found: string;
+      trait?: string;
+      estimate?: string;
+      labels?: [string, string];
+    }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
   | {
       kind: 'dotPlot';

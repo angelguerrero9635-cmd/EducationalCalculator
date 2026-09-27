@@ -959,6 +959,30 @@ export function repIssues(
         out.push(`solid drawn with volume ${vol}, shows ${V}`);
       break;
     }
+    case 'sample': {
+      // One dot per member (SAMPLE_MAX in Sample.tsx); the sample fits in the population.
+      count(rep.population, 'population', 400);
+      count(rep.size, 'sample');
+      count(rep.found, 'found in the sample');
+      if (rep.trait) count(rep.trait, 'population with the trait');
+      const [N, n, k, T, E] = [rep.population, rep.size, rep.found, rep.trait, rep.estimate].map(
+        (id) => (id ? val(id) : undefined),
+      );
+      if (N !== undefined && n !== undefined && n > N) out.push(`sample of ${n} from ${N}`);
+      if (n !== undefined && k !== undefined && k > n) out.push(`${k} found in a sample of ${n}`);
+      if (T !== undefined && N !== undefined && T > N) out.push(`${T} with the trait of ${N}`);
+      if (T !== undefined && k !== undefined && k > T)
+        out.push(`${k} found in the sample, only ${T} in the population`);
+      if (T !== undefined && N !== undefined && n !== undefined && k !== undefined && n - k > N - T)
+        out.push(`${n - k} without the trait in the sample, only ${N - T} in the population`);
+      // The estimate scales the sample up; a lesson may round it to a whole number.
+      if (N !== undefined && n !== undefined && k !== undefined && E !== undefined && n > 0) {
+        const e = (N * k) / n;
+        if (Math.abs(e - E) > 0.5 + 1e-9)
+          out.push(`estimate ${k} ÷ ${n} × ${N} = ${e}, shows ${E}`);
+      }
+      break;
+    }
     case 'dotPlot': {
       const sorted = firstValues(rep.data, rep.count);
       const md = rep.median ? val(rep.median) : undefined;

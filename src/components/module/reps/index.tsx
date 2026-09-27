@@ -12,6 +12,7 @@ import { BaseHeight } from './BaseHeight';
 import { Net } from './Net';
 import { CrossSection } from './CrossSection';
 import { DotPlot } from './DotPlot';
+import { Sample } from './Sample';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
@@ -265,6 +266,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <CrossSection spec={spec} calc={calc} />;
     case 'dotPlot':
       return <DotPlot spec={spec} calc={calc} />;
+    case 'sample':
+      return <Sample spec={spec} calc={calc} />;
     case 'fieldOfView':
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':
