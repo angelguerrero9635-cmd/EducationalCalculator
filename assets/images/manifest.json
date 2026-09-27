@@ -1,6 +1,214 @@
 {
   "files": [
     {
+      "slug": "base-ten-blocks",
+      "topic": "classroom",
+      "title": "Base-ten blocks",
+      "svg": "assets/images/classroom/base-ten-blocks.svg",
+      "file": "assets/images/classroom/base-ten-blocks.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "BaseTen picture (place value)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:ZR1000_(Dienes-Material).jpg",
+        "https://commons.wikimedia.org/wiki/File:ZR100_(Dienes-Material).jpg",
+        "https://commons.wikimedia.org/wiki/File:Base_ten_blocks_(light).svg"
+      ],
+      "notes": "Light wood blocks at one unit size: 1 thousand cube, 2 hundred flats, 3 ten rods and 4 ones, so it shows 1,234."
+    },
+    {
+      "slug": "unit-cubes",
+      "topic": "classroom",
+      "title": "Linking cubes",
+      "svg": "assets/images/classroom/unit-cubes.svg",
+      "file": "assets/images/classroom/unit-cubes.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "UnitCubes and CubeTrains pictures (counting, adding, volume)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Snap_cube_puzzle_cube.jpg",
+        "https://www.hand2mind.com/glossary-of-hands-on-manipulatives/snap-cubes",
+        "https://www.naticulate.com/linking-cubes-complete-guide/"
+      ],
+      "notes": "A train of 5 snapped-together blue cubes and 3 loose cubes (red, yellow, green), each with its connector nub: shows 5 + 3."
+    },
+    {
+      "slug": "pattern-blocks",
+      "topic": "classroom",
+      "title": "Pattern blocks",
+      "svg": "assets/images/classroom/pattern-blocks.svg",
+      "file": "assets/images/classroom/pattern-blocks.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "PatternBlocks picture (shapes, fractions of a hexagon)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://en.wikipedia.org/wiki/Pattern_Blocks",
+        "https://commons.wikimedia.org/wiki/Category:Pattern_blocks",
+        "https://www.hand2mind.com/glossary-of-hands-on-manipulatives/pattern-blocks"
+      ],
+      "notes": "The six blocks in their standard colors (yellow hexagon, red trapezoid, blue rhombus, green triangle, orange square, tan thin rhombus) and a hexagon made of a trapezoid, a rhombus and a triangle."
+    },
+    {
+      "slug": "bowling-ball",
+      "topic": "everyday",
+      "title": "Bowling ball",
+      "svg": "assets/images/everyday/bowling-ball.svg",
+      "file": "assets/images/everyday/bowling-ball.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Glossy blue-purple sphere with two finger holes and a thumb hole. Heavy object for heavier/lighter."
+    },
+    {
+      "slug": "crayon",
+      "topic": "everyday",
+      "title": "Crayon",
+      "svg": "assets/images/everyday/crayon.svg",
+      "file": "assets/images/everyday/crayon.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight and length (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Single red wax crayon, paper wrapper without text, pointed tip. Light, short object."
+    },
+    {
+      "slug": "sock",
+      "topic": "everyday",
+      "title": "Striped sock",
+      "svg": "assets/images/everyday/sock.svg",
+      "file": "assets/images/everyday/sock.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Single white sock with blue stripes, red cuff, heel and toe."
+    },
+    {
+      "slug": "brick",
+      "topic": "everyday",
+      "title": "Brick",
+      "svg": "assets/images/everyday/brick.svg",
+      "file": "assets/images/everyday/brick.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Red clay brick in three-quarter view with three holes on top and speckled texture."
+    },
+    {
+      "slug": "watermelon",
+      "topic": "everyday",
+      "title": "Watermelon",
+      "svg": "assets/images/everyday/watermelon.svg",
+      "file": "assets/images/everyday/watermelon.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight and capacity (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Whole striped watermelon with a slice beside it."
+    },
+    {
+      "slug": "backpack",
+      "topic": "everyday",
+      "title": "School backpack",
+      "svg": "assets/images/everyday/backpack.svg",
+      "file": "assets/images/everyday/backpack.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight and capacity (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Blue backpack with red front pocket, zippers, top handle and shoulder straps."
+    },
+    {
+      "slug": "paper-clip",
+      "topic": "everyday",
+      "title": "Paper clip",
+      "svg": "assets/images/everyday/paper-clip.svg",
+      "file": "assets/images/everyday/paper-clip.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight and length (K measurable-attributes; Grade 1–2 length)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Silver paper clip with the usual double-loop shape, tilted."
+    },
+    {
+      "slug": "door",
+      "topic": "everyday",
+      "title": "Door",
+      "svg": "assets/images/everyday/door.svg",
+      "file": "assets/images/everyday/door.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare height (K measurable-attributes; Grade 2 length)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Wooden four-panel door in its frame, front view, with knob."
+    },
+    {
+      "slug": "eraser",
+      "topic": "everyday",
+      "title": "Eraser",
+      "svg": "assets/images/everyday/eraser.svg",
+      "file": "assets/images/everyday/eraser.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare weight and length (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Pink rectangular eraser with one worn, rounded corner and a few eraser crumbs."
+    },
+    {
+      "slug": "bed",
+      "topic": "everyday",
+      "title": "Bed",
+      "svg": "assets/images/everyday/bed.svg",
+      "file": "assets/images/everyday/bed.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Compare length and weight (K measurable-attributes)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Single bed in three-quarter view: headboard, mattress, pillow, blue blanket with a folded sheet."
+    },
+    {
+      "slug": "school-bus",
+      "topic": "everyday",
+      "title": "School bus",
+      "svg": "assets/images/everyday/school-bus.svg",
+      "file": "assets/images/everyday/school-bus.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Compare length and weight (K measurable-attributes; Grade 2 length)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Side view, 1200x800. Yellow bus with windows, black stripes, folded stop-sign arm and wheels; no text."
+    },
+    {
       "slug": "beaker",
       "topic": "measuring",
       "title": "Beaker with water",
@@ -15,6 +223,135 @@
         "https://commons.wikimedia.org/wiki/File:Beaker_01.jpg"
       ],
       "notes": "Water at the 200 mL line; scale 100–300 mL."
+    },
+    {
+      "slug": "measuring-jug",
+      "topic": "measuring",
+      "title": "Measuring jug with water",
+      "svg": "assets/images/measuring/measuring-jug.svg",
+      "file": "assets/images/measuring/measuring-jug.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Beaker picture (liquid volume, mL)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Beaker_01.jpg"
+      ],
+      "notes": "Plastic kitchen jug with handle and spout; scale every 50 mL, numbered 250, 500, 750, 1000; water at the 500 mL line."
+    },
+    {
+      "slug": "graduated-cylinder",
+      "topic": "measuring",
+      "title": "Graduated cylinder with water",
+      "svg": "assets/images/measuring/graduated-cylinder.svg",
+      "file": "assets/images/measuring/graduated-cylinder.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "GradCylinder picture (liquid volume, mL)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Graduated_cylinder.jpg"
+      ],
+      "notes": "Scale 0–100 mL, ticks every 2 mL, numbers every 10 (10–100); water with a concave meniscus whose bottom sits on the 60 mL line."
+    },
+    {
+      "slug": "thermometer",
+      "topic": "measuring",
+      "title": "Thermometer",
+      "svg": "assets/images/measuring/thermometer.svg",
+      "file": "assets/images/measuring/thermometer.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Thermometers picture (temperature, °C)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Liquid-in-glass thermometer, °C scale −10 to 50 with ticks every degree and numbers every 10; red column at 20 °C."
+    },
+    {
+      "slug": "wall-clock",
+      "topic": "measuring",
+      "title": "Wall clock",
+      "svg": "assets/images/measuring/wall-clock.svg",
+      "file": "assets/images/measuring/wall-clock.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Clock picture (telling time)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Clock_chrome.jpg",
+        "https://commons.wikimedia.org/wiki/File:Clock_on_wall.jpg"
+      ],
+      "notes": "Clock shows 3:00: short hour hand on 3, long minute hand on 12, no second hand; numbers 1–12 and minute ticks."
+    },
+    {
+      "slug": "kitchen-scale",
+      "topic": "measuring",
+      "title": "Kitchen scale",
+      "svg": "assets/images/measuring/kitchen-scale.svg",
+      "file": "assets/images/measuring/kitchen-scale.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Scale picture (mass, grams)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Kitchen_scale_20101109.jpg",
+        "https://commons.wikimedia.org/wiki/File:Kitchen-scale.jpg"
+      ],
+      "notes": "Dial scale with an empty pan; dial 0–1000 g (0 at the top), ticks every 20 g, numbers every 100 g; pointer on 0."
+    },
+    {
+      "slug": "pan-balance",
+      "topic": "measuring",
+      "title": "Pan balance",
+      "svg": "assets/images/measuring/pan-balance.svg",
+      "file": "assets/images/measuring/pan-balance.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Balance picture (comparing mass)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Classroom bucket balance, empty and level; pointer on the center mark."
+    },
+    {
+      "slug": "ruler",
+      "topic": "measuring",
+      "title": "Centimeter ruler",
+      "svg": "assets/images/measuring/ruler.svg",
+      "file": "assets/images/measuring/ruler.webp",
+      "width": 1200,
+      "height": 350,
+      "use": "Ruler picture (length, cm and mm)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Ruler_on_table.jpg",
+        "https://commons.wikimedia.org/wiki/File:School_Rulers.jpg"
+      ],
+      "notes": "15 cm ruler seen from above: mm ticks, longer half-cm ticks, cm numbers 0–15. Wide canvas (1200×350)."
+    },
+    {
+      "slug": "protractor",
+      "topic": "measuring",
+      "title": "Protractor",
+      "svg": "assets/images/measuring/protractor.svg",
+      "file": "assets/images/measuring/protractor.webp",
+      "width": 1200,
+      "height": 720,
+      "use": "Protractor picture (angles, degrees)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Protractor.svg",
+        "https://commons.wikimedia.org/wiki/File:180%C2%B0_Protractor.svg",
+        "https://commons.wikimedia.org/wiki/File:Protractor_Rapporteur_Degrees_V3.jpg"
+      ],
+      "notes": "Half-circle protractor, ticks every 1°, 5° and 10°; outer scale 0–180 from the left, inner (blue) scale 0–180 from the right; center hole on the baseline. Wide canvas (1200×720)."
     }
   ]
 }

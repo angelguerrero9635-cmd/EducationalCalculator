@@ -12,7 +12,7 @@
   <ellipse cx="400" cy="728" rx="250" ry="16" fill="#1f2937" opacity="0.12"/>
   <path d="M168 700 Q168 660 208 660 L592 660 Q632 660 632 700 L632 716 L168 716 Z" fill="#e5e7eb" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
   <path d="M176 700 L624 700 L624 710 L176 710 Z" fill="#9ca3af"/>
-  <path d="M470 660 L470 430 C470 380 452 346 404 334 L382 334 L382 226 L408 226 C510 236 566 310 566 420 L566 660 Z" fill="#e5e7eb" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M470 660 L470 430 C470 380 452 346 404 334 L360 334 L360 226 L408 226 C510 236 566 310 566 420 L566 660 Z" fill="#e5e7eb" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
   <path d="M536 640 L536 420 C536 344 504 290 446 262" fill="none" stroke="#9ca3af" stroke-width="16" stroke-linecap="round"/>
   <path d="M290 612 Q290 596 306 596 L354 596 Q370 596 370 612 L370 660 L290 660 Z" fill="#9ca3af" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
   <ellipse cx="330" cy="598" rx="30" ry="8" fill="#facc15" stroke="#1f2937" stroke-width="4"/>
@@ -27,15 +27,15 @@
     <path d="M454 506 L454 490 Q454 482 446 482 L376 488 L376 494 L446 494 L446 506 Z"/>
   </g>
   <g stroke="#1f2937" stroke-width="5" stroke-linejoin="round">
-    <path d="M338 426 L392 466 L382 480 L326 440 Z" fill="url(#microscope-metal)" transform="rotate(0)"/>
-    <path d="M318 426 L266 468 L278 482 L330 440 Z" fill="url(#microscope-metal)"/>
+    <path d="M340 424 L404 474 L392 490 L326 440 Z" fill="url(#microscope-metal)"/>
+    <path d="M320 424 L256 474 L268 490 L334 440 Z" fill="url(#microscope-metal)"/>
     <rect x="312" y="428" width="36" height="46" rx="4" fill="url(#microscope-metal)"/>
     <rect x="318" y="472" width="24" height="16" rx="3" fill="#cbd5e1"/>
   </g>
   <g stroke="none">
     <rect x="315" y="446" width="30" height="8" fill="#3b82f6"/>
-    <path d="M285 452 L300 440 L305 446 L290 458 Z" fill="#ef4444"/>
-    <path d="M375 452 L360 440 L355 446 L370 458 Z" fill="#facc15"/>
+    <path d="M278 458 L296 444 L302 452 L284 466 Z" fill="#ef4444"/>
+    <path d="M382 458 L364 444 L358 452 L376 466 Z" fill="#facc15"/>
   </g>
   <path d="M270 426 Q270 396 300 392 L362 392 Q394 396 394 426 Z" fill="#9ca3af" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
   <path d="M284 412 L380 412" stroke="#e5e7eb" stroke-width="5" stroke-linecap="round"/>
