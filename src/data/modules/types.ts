@@ -725,6 +725,48 @@ export type Representation =
   /** Rock layers stacked on a fossil, each `years` old; `total` is the fossil's age. */
   /** Two fossils in a column of rock layers: `fossils` are the layers above each; deeper is older. */
   | { kind: 'rockLayers'; fossils: [string, string]; difference: string }
+  /**
+   * A square root as a side (Grade 8): the square of area `area` on a unit grid, its side
+   * `side`, the whole-number squares just under and over it dashed, and a number line to the
+   * same scale placing the root between two whole numbers, beside fixed `marks` (√2 at
+   * 1.41421…, π at 3.14159…). Drag the corner to change the area.
+   */
+  | { kind: 'rootSquare'; area: string; side: string; marks?: { at: number; label: string }[] }
+  /**
+   * Exponent rules as rows of factors (Grade 8): each power a row of its `base` repeated.
+   * `rule` 'product': b^first × b^second, the two rows joined into one of `result` factors;
+   * 'quotient': b^first ÷ b^second, one row over the other, the pairs that cancel crossed out
+   * and what is left (factors of 1/b when the bottom has more); 'power': (b^first)^second,
+   * `second` copies of the row. `result` is the answer's exponent. Drag a row's end.
+   */
+  | {
+      kind: 'factorRows';
+      base: string;
+      first: string;
+      second: string;
+      result: string;
+      rule: 'product' | 'quotient' | 'power';
+    }
+  /**
+   * Scientific notation on a powers-of-ten ruler (Grade 8): the `number` placed on a log scale
+   * of 10ⁿ⁻² … 10ⁿ⁺³, its decade opened up below as a ruler from 1 to 10 where the `mantissa`
+   * is read, "× 10ⁿ" with the `exponent`. Drag the mantissa, or the number to another decade.
+   */
+  | { kind: 'powerScale'; number: string; mantissa: string; exponent: string }
+  /**
+   * An equation with the unknown on both sides as a pan balance (Grade 8): `left` and `right`
+   * are [coefficient, constant] (variables or numbers) of `x`, so 3x + 4 = x + 10 is
+   * left [3, 4], right [1, 10]. Each pan holds wooden x-blocks and unit counters; negatives
+   * are balloons (−x, −1) pulling the pan up. The beam tips at the current `x` and is level
+   * when the sides are equal. `cancel` crosses out what the two pans share.
+   */
+  | {
+      kind: 'equationBalance';
+      x: string;
+      left: [string | number, string | number];
+      right: [string | number, string | number];
+      cancel?: boolean;
+    }
   /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */
   | { kind: 'pushes'; right: string; left: string; extra: string; max: number }
   /**
@@ -791,6 +833,12 @@ export type Representation =
       y: string;
       second?: { x: string; y: string };
       slope?: string;
+      /**
+       * Grade 8 slope: the rise and the run as values. The triangle is shaded, each leg drawn
+       * heavy with an arrow and labelled with its value ("rise = 6", "run = 3").
+       */
+      rise?: string;
+      run?: string;
       /**
        * The pattern's earlier points, back to the start: each one `across` less and `up` less
        * than the next (numbers or variables), drawn as small dots and listed in a table.

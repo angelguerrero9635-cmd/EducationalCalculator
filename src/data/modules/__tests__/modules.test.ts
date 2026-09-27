@@ -173,6 +173,7 @@ function representationVars(r: Representation): string[] {
         r.y,
         ...(r.second ? [r.second.x, r.second.y] : []),
         ...(r.slope ? [r.slope] : []),
+        ...[r.rise, r.run].filter((v): v is string => !!v),
         ...(r.distance ? [r.distance] : []),
         ...(r.rect ? [r.rect.left, r.rect.right, r.rect.bottom, r.rect.top] : []),
         ...(r.trail
@@ -371,6 +372,14 @@ function representationVars(r: Representation): string[] {
       return [r.slope, r.intercept, ...(r.at ? [r.at.x, r.at.y] : [])];
     case 'curvedSolid':
       return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
+    case 'rootSquare':
+      return [r.area, r.side];
+    case 'factorRows':
+      return [r.base, r.first, r.second, r.result];
+    case 'powerScale':
+      return [r.number, r.mantissa, r.exponent];
+    case 'equationBalance':
+      return [r.x, ...[...r.left, ...r.right].filter((v): v is string => typeof v === 'string')];
     case 'pushes':
       return [r.right, r.left, r.extra];
     case 'force':

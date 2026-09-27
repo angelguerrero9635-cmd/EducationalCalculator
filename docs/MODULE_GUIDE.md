@@ -118,6 +118,10 @@ search or the sitemap, but the module tests and the harness run over it):
 | `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap    | Grade 7 compound probability        |
 | `treeDiagram`      | two stages branching left to right, each branch 1/n; a path lit       | Grade 7 compound probability        |
 | `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random       | Grade 7 probability                 |
+| `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line      | Grade 8 square roots, irrationals   |
+| `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked     | Grade 8 exponent rules              |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10 (4.7 × 10⁵)        | Grade 8 scientific notation         |
+| `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x  | Grade 8 equations, both sides       |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -180,6 +184,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `angles`           | `whole: 90 \| 180`, `cross`              | a right angle or a straight line split in two; `cross`: vertical angles       |
 | `net`              | `solid: 'triangularPrism'`, `triangle`   | three rectangles and two triangles (right or isosceles); folds to the prism   |
 | `dotPlot`          | `second`, `labels`, `difference`         | a second sample's dot plot under the first, same scale; the gap between means |
+| `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
