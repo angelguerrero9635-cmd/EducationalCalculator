@@ -9,6 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
 import { InequalityLine } from './Inequality';
+import { SignedJump } from './SignedJump';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'integerLine' }>;
@@ -34,6 +35,8 @@ export function tickStep(span: number, most = 20): number {
 export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   return spec.inequality ? (
     <InequalityLine spec={spec} calc={calc} />
+  ) : spec.jump ? (
+    <SignedJump spec={spec} calc={calc} />
   ) : (
     <PointLine spec={spec} calc={calc} />
   );

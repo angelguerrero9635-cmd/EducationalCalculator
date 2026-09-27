@@ -819,6 +819,12 @@ export type Representation =
        * `letter` names the unknown from Grade 6 (default x).
        */
       inequality?: { sign: string; test?: string; letter?: string };
+      /**
+       * Adding (`op` '+', the default) or subtracting ('−') a signed number as a jump from
+       * `value` by `by` to `result`: right for a positive jump, left for a negative one;
+       * subtracting jumps the other way (adding the opposite). Drag the start or the end.
+       */
+      jump?: { by: string; result: string; op?: '+' | '−' };
     }
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {

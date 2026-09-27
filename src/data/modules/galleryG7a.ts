@@ -118,7 +118,13 @@ function signedSum(
   example: Values,
   representation: ModuleDef['representation'],
   range = 20,
+  /** Decimal steps (0.25) for rational numbers; whole numbers when left out. */
+  step?: number,
 ): ModuleDef {
+  const num = (id: string, name: string, r: number) =>
+    step === undefined
+      ? whole(id, id, name, -r, r)
+      : { id, symbol: id, name, min: -r, max: r, step, multipleOf: step };
   const op = subtract ? '−' : '+';
   const rel = `r = a ${op} b`;
   return {
@@ -127,9 +133,9 @@ function signedSum(
     notation: 'letters',
     assumptions,
     variables: [
-      whole('a', 'a', 'First number', -range, range),
-      whole('b', 'b', 'Second number', -range, range),
-      { ...whole('r', 'r', subtract ? 'Difference' : 'Sum', -2 * range, 2 * range), derived: true },
+      num('a', 'First number', range),
+      num('b', 'Second number', range),
+      { ...num('r', subtract ? 'Difference' : 'Sum', 2 * range), derived: true },
     ],
     relations: [
       {
@@ -138,9 +144,9 @@ function signedSum(
         vars: ['r', 'a', 'b'],
         residual: (v: Values) => v.r! - (subtract ? v.a! - v.b! : v.a! + v.b!),
         solve: {
-          r: (v: Values) => (subtract ? v.a! - v.b! : v.a! + v.b!),
-          a: (v: Values) => (subtract ? v.r! + v.b! : v.r! - v.b!),
-          b: (v: Values) => (subtract ? v.a! - v.r! : v.r! - v.a!),
+          r: (v: Values) => exact(subtract ? v.a! - v.b! : v.a! + v.b!),
+          a: (v: Values) => exact(subtract ? v.r! + v.b! : v.r! - v.b!),
+          b: (v: Values) => exact(subtract ? v.a! - v.r! : v.r! - v.a!),
         },
       },
     ],
@@ -159,7 +165,8 @@ function signedSum(
     },
     example,
     startWith: ['a', 'b'],
-    sliders: true,
+    // Counters have no handle of their own: sliders set the two numbers.
+    ...(representation.kind === 'zeroPairs' ? { sliders: true } : {}),
     representation,
   };
 }
@@ -347,4 +354,36 @@ export const G7A_GALLERY_MODULES: ModuleDef[] = [
     startWith: ['a', 'b'],
     representation: { kind: 'signTable', first: 'a', second: 'b', result: 'r' },
   },
+  signedSum(
+    'g.signed-jump-add',
+    'Adding on a number line',
+    false,
+    [
+      'Start at the first number. A positive number jumps right; a negative one jumps left.',
+      'Fractions and decimals jump the same way as whole numbers.',
+    ],
+    { a: -3.5, b: 5, r: 1.5 },
+    { kind: 'integerLine', value: 'a', min: -5, max: 5, jump: { by: 'b', result: 'r' } },
+    10,
+    0.25,
+  ),
+  signedSum(
+    'g.signed-jump-subtract',
+    'Subtracting on a number line',
+    true,
+    [
+      'Subtracting a number is adding its opposite, so the jump goes the other way.',
+      'Subtracting a negative number jumps right.',
+    ],
+    { a: 2, b: -3.5, r: 5.5 },
+    {
+      kind: 'integerLine',
+      value: 'a',
+      min: -5,
+      max: 5,
+      jump: { by: 'b', result: 'r', op: '−' },
+    },
+    10,
+    0.25,
+  ),
 ];

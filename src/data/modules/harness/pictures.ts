@@ -789,6 +789,18 @@ export function repIssues(
         }
         if (rep.vertical) out.push('inequality lines are drawn across, not vertical');
       }
+      if (rep.jump) {
+        const [by, r] = [rep.jump.by, rep.jump.result].map(val);
+        if (a !== undefined && by !== undefined && r !== undefined) {
+          const lands = rep.jump.op === '−' ? a - by : a + by;
+          if (Math.abs(lands - r) > 1e-9 * Math.max(1, Math.abs(r)))
+            out.push(
+              `jump from ${a} by ${rep.jump.op ?? '+'}${by} lands on ${lands}, result shows ${r}`,
+            );
+        }
+        if (rep.vertical) out.push('signed jumps are drawn across, not vertical');
+        if (rep.inequality) out.push('a line shows a jump or an inequality, not both');
+      }
       break;
     }
     case 'percentBar': {

@@ -224,7 +224,9 @@ function representationVars(r: Representation): string[] {
     case 'integerLine':
       return [
         r.value,
-        ...[r.opposite, r.absolute, r.second, r.change].filter((x): x is string => !!x),
+        ...[r.opposite, r.absolute, r.second, r.change, r.jump?.by, r.jump?.result].filter(
+          (x): x is string => !!x,
+        ),
         ...[r.inequality?.test, r.inequality?.sign].filter(
           (x): x is string => !!x && !['<', '≤', '>', '≥'].includes(x),
         ),
