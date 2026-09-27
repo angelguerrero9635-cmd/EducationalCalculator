@@ -360,6 +360,12 @@ export interface ObserveLayout extends LayoutBase {
   pattern: (values: number[]) => string;
   /** Columns are intervals of one number line: the bars touch, with a count scale beside. */
   histogram?: boolean;
+  /**
+   * A picture of the column last tapped, above the chart. `shadowStick`: a stick `stick`
+   * units tall (100 for a meter stick in cm) and its noon shadow as long as the value, with
+   * the sun on the line from the shadow's tip over the stick's top (higher for a shorter shadow).
+   */
+  figure?: { kind: 'shadowStick'; stick: number };
 }
 
 export type LayoutDef = SortLayout | SequenceLayout | ExploreLayout | ObserveLayout;

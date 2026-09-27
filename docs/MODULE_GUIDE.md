@@ -260,6 +260,10 @@ rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a sc
 lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
 shrink (`fewer`).
 
+Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
+(`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
+scale, with the sun on the line over the stick's top (higher for a shorter shadow).
+
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
 (equal or unequal parts, some shaded), `bar` (a ribbon with cubes laid right or wrong),

@@ -710,6 +710,23 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
     ],
   },
   {
+    id: 'g.noon-shadow',
+    title: 'Noon shadow by month',
+    kind: 'observe',
+    assumptions: [
+      'Measure a meter stick’s shadow at noon, every two months.',
+      'Tap a bar: the picture shows that month.',
+    ],
+    columns: ['Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'],
+    rowLabel: 'Noon shadow',
+    unit: 'cm',
+    max: 300,
+    step: 10,
+    initial: [200, 130, 60, 30, 50, 110],
+    figure: { kind: 'shadowStick', stick: 100 },
+    pattern: (v) => `Shortest: ${Math.min(...v)} cm. Longest: ${Math.max(...v)} cm.`,
+  },
+  {
     id: 'g.times-table',
     title: 'Times table',
     kind: 'explore',
