@@ -153,6 +153,45 @@ const powersToBillions = (
   representation: { kind: 'placeValueChart', value: 'p', decimals: 0, from: 'n', periods: true },
 });
 
+/** R28: n ÷ d as jumps of d, grouped by tens and hundreds past 30 (skipCount `group`). */
+const groupedJumps = (id: string, title: string, example: { n: number; d: number }): ModuleDef => ({
+  id,
+  title,
+  assumptions: [
+    'Dividing by a decimal asks how many of it fit.',
+    'Past 30 jumps, ten jumps are drawn as one arc, and past 300 a hundred jumps are.',
+    'Divisors from 0.01 to 0.99, quotients to 999.',
+  ],
+  variables: [
+    { id: 'n', symbol: 'n', name: 'Dividend', min: 0.01, max: 999, step: 0.01, multipleOf: 0.01 },
+    { id: 'd', symbol: 'd', name: 'Divisor', min: 0.01, max: 0.99, step: 0.01, multipleOf: 0.01 },
+    whole('q', 'q', 'Quotient', 1, 999),
+  ],
+  relations: [
+    {
+      id: 'n = q × d',
+      display: '{n} ÷ {d} = {q}',
+      vars: ['n', 'q', 'd'],
+      residual: (v: Values) => v.n! - v.q! * v.d!,
+      solve: {
+        n: (v: Values) => Number((v.q! * v.d!).toFixed(9)),
+        q: (v: Values) => (v.d ? Number((v.n! / v.d).toFixed(9)) : undefined),
+        d: (v: Values) => (v.q ? Number((v.n! / v.q).toFixed(9)) : undefined),
+      },
+    },
+  ],
+  steps: {
+    'n = q × d': {
+      q: { expr: '{n} ÷ {d}', how: 'How many jumps of the divisor fit in the dividend?' },
+      n: { expr: '{q} × {d}', how: 'That many of the divisor.' },
+      d: { expr: '{n} ÷ {q}', how: 'Share the dividend into that many equal parts.' },
+    },
+  },
+  example: { ...example, q: Math.round(example.n / example.d) },
+  startWith: ['n', 'd'],
+  representation: { kind: 'skipCount', step: 'd', count: 'q', total: 'n', group: true },
+});
+
 export const R2D_GALLERY_MODULES: ModuleDef[] = [
   fractionsPastOne('g.fraction-area-wholes', 'Fraction area past one whole', {
     a: 5,
@@ -175,4 +214,7 @@ export const R2D_GALLERY_MODULES: ModuleDef[] = [
   powersToBillions('g.place-value-periods', 'Powers of ten, as the page starts', { n: 34, k: 3 }),
   powersToBillions('g.place-value-billions', 'Powers of ten to billions', { n: 1, k: 9 }),
   powersToBillions('g.place-value-edge', 'Hundreds of billions', { n: 999, k: 9 }),
+  groupedJumps('g.jumps-grouped-page', 'Decimal jumps, as the page starts', { n: 1.2, d: 0.3 }),
+  groupedJumps('g.jumps-grouped-tens', 'Decimal jumps in tens', { n: 21, d: 0.2 }),
+  groupedJumps('g.jumps-grouped-hundreds', 'Decimal jumps in hundreds', { n: 199.8, d: 0.2 }),
 ];

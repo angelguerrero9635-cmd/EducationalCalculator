@@ -183,6 +183,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100, the point placed; `'ticks'`: a jump per tick |
 | `tape`, `beaker`   | `mixed`                                  | shares and amounts as exact mixed numbers (33 1/3, 2 3/8 L)                   |
 | `skipCount`        | (no `count`)                             | a quotient past whole jumps: the last part of a jump (33 1/3 jumps)           |
+| `skipCount`        | `group`                                  | past 30 jumps (to 999): an arc per ten jumps, per hundred past 300            |
 | `coins`            | bills (`cents` 100, 500, 1000) and coins | the bills beside the coins, one total in dollars and cents, the sum under it  |
 | `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
 | `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |

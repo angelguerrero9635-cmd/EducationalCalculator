@@ -299,6 +299,11 @@ export type Representation =
        * rows run to `total`, the first landing they share (the least common multiple), circled.
        */
       second?: { step: string };
+      /**
+       * Past 30 jumps (to 999): one arc per ten jumps, per hundred past 300, then the single
+       * jumps left; each run named at the top (“10 × 10 jumps: +20”).
+       */
+      group?: boolean;
     }
   /**
    * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)

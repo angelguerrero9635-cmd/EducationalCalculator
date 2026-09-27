@@ -262,7 +262,8 @@ export function repIssues(
       break;
     }
     case 'skipCount': {
-      if (typeof rep.count === 'string') count(rep.count, 'skips', 30);
+      // With `group`, jumps to 999 are drawn in tens and hundreds (SkipCount.tsx).
+      if (typeof rep.count === 'string') count(rep.count, 'skips', rep.group ? 999 : 30);
       const s = val(rep.step);
       // Decimal jumps are drawn to the hundredth (SkipCount.tsx).
       if (s !== undefined && s < 0.01) out.push(`skip size ${s} < 0.01 (drawn as 0.01)`);

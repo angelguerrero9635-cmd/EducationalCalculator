@@ -316,9 +316,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.5.decimal-operations~divide-by-decimal',
       'm.6.multi-digit-decimals~divide-by-decimal',
     ],
-    status: 'requested',
-    gallery: [],
-    notes: '21 ÷ 0.2 = 105 jumps of 0.2: quotients to 999.',
+    status: 'drawn',
+    gallery: ['g.jumps-grouped-page', 'g.jumps-grouped-tens', 'g.jumps-grouped-hundreds'],
+    uses: '"group":true',
+    notes:
+      'Pass `group: true` on the skipCount. To 30 jumps it draws as today; past 30 an arc per ten jumps, past 300 per hundred, then the single jumps left, each run named ("10 × 10 jumps: +20") and a caption with the sum (100 × 0.2 + 5 × 0.2 = 21). The pages raise the quotient to 999 and the dividend to fit (999 × the largest divisor), and update "whole-number answers to 30".',
   },
   {
     id: 'R29',
