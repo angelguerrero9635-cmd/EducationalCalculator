@@ -294,7 +294,12 @@ the assumptions and a table or diagram.
      as part of the module.
    - Values that a lesson names (`allowed: [5, 10, 100]`) and working values nobody types
      (`derived: true`) are declared on the variable; the solver, sliders, harness and dump
-     respect both.
+     respect both. An answer the question gives as a fraction or mixed number takes
+     `fraction: <largest denominator>` (5 1/4, 3 7/8 inches); a data set of 3 to 10 values puts
+     `countedBy: { count: 'n', index }` on each value, and the relations read only the first
+     n (`dotPlot` takes the same `count`). Money that isn't whole cents shows as "about $3.33".
+   - The `use` line quotes the kind of released question the page solves, in the question's
+     own words ("Which number is greater, 54 or 36?"), and never promises more.
    - `layouts.test.ts` covers the sort, sequence, explore and observe pages.
 2. **Evidence, gathered once with no model involved:**
    `pnpm build:web && node scripts/review-evidence.mjs --prefix <ids or prefixes>`. It writes

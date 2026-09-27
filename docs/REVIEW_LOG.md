@@ -5,6 +5,17 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Question-language pass: every K–6 title and use line against the released questions
+
+- Setup: one table per grade (page id, title and use line, then up to 12 released question
+  stems for the skill), made from the module list and `research/questions/`; no reviewer run.
+- Most use lines already quoted a problem; the generic ones ("Use this to compare two
+  numbers") became the question's own words ("Which number is greater, 54 or 36?").
+- A use line must promise only what the page solves: one draft quoted 3³ + 4(8 − 5) ÷ 6 for a
+  page that only takes a + b × cⁿ, and was rewritten.
+- Changes made: `lesson-reviewer` check F now reads each use line against the skill's
+  released questions and asks for the question's own words where the page solves it.
+
 ## K–6 edge-case review: five groups, a lesson-reviewer and a page-reviewer each, 12 reports
 
 - Setup: `review-evidence.mjs --edges` (25 samples, 5 sequences, every opening value at each

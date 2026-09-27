@@ -129,6 +129,9 @@ Solves / Partly / No, naming the question id.
 - A student who has used the page should be able to answer the real items, so check the words,
   the number sizes, the unknown's position and the picture (a NAEP tape diagram or thermometer
   should look like the page's).
+- Read each problem type's `use` line against those questions: where the page solves one,
+  the use line should say it in the question's own words ("Which number is greater, 54 or
+  36?"), and it must never promise a problem the page can't solve.
 - Recommend an extension, a borrowed picture, or a `[new-page]`.
 - Report a question filed under the wrong skill (for example a unit conversion under fraction
   addition) as `[data] research/questions: <id> → <right skill>`.

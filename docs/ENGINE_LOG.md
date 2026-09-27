@@ -5,6 +5,29 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Pages built from the released questions (K–6, after the edge-case review)
+
+- Center and spread took exactly 5 or 6 values; released items use 4, 7 and 10. → A value can
+  belong to a list whose length is itself a value (`countedBy` on the variable): past the
+  count it is hidden, never asked for and left out of every relation. `dotPlot` takes `count`
+  and draws the first n. The module, standards and sampling tests read counted lists.
+- A price for one item that isn't a whole number of cents ($10 for 3) was dropped. →
+  `dollarsOf` shows "about $3.33" (or "less than 1 cent") in the answer, the picture and the
+  value box, after a work line with the exact quotient; the harness reads "about $…" answers.
+- A check-only rule (0 when it holds, 1 when not) passed once the values reached the thousands,
+  because `holds` scaled its tolerance by the values. → Rules are exact: `holds` returns
+  residual === 0 for a constraint.
+- 9,449.871 failed "multiple of 0.001" (9,449,871.000000002 thousandths). → The multiple-of
+  check is relative to the number of steps.
+- A signed change (a drop of 10 °C) was drawn as a jump and checked as a distance. → The
+  integer-line check takes a signed change; the harness reads "change from a to b" as b − a.
+- Answers a question asks as a fraction or a mixed number (5 1/4, 3 7/8 inches, 8 7/24) come from
+  `fraction` on the variable; the new pages use it for fractions of a whole, line plot totals
+  and mixed-number sums.
+- Pictures that cap a range (100-square grids, 3 whole grids, 30 jumps, fraction area of one
+  whole, a 12-group limit, charts to millions) are listed in `docs/RENDERINGS_BRIEF.md` for the
+  picture branch; the pages keep their ranges until those pictures land.
+
 ## K–6 edge-case review (math and science, 12 reviewers, low sampling, every edge)
 
 - A value the student typed that no longer fitted was dropped silently, and the evidence
