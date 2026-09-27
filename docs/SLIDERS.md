@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-41 of 342 pages show sliders.
+41 of 356 pages show sliders.
 
 ## By picture kind
 
@@ -27,9 +27,11 @@ its kind with `sliders: true | false`.
 | coins | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | coordinatePlane | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| crossSection | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | curvedSolid | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| dotPlot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| diceGrid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| dotPlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -455,3 +457,17 @@ its kind with `sliders: true | false`.
 | g.cone-in-cylinder | curvedSolid | no |
 | g.sphere-in-cylinder | curvedSolid | no |
 | g.scatter-fit | scatter | no |
+| g.bag-of-marbles | marbles | no |
+| g.tree-diagram | treeDiagram | no |
+| g.two-dice | diceGrid | no |
+| g.spinner | spinner | no |
+| g.two-samples | dotPlot | no |
+| g.random-sample | sample | no |
+| g.prism-cross-section | crossSection | no |
+| g.triangular-prism-volume | crossSection | no |
+| g.pyramid-slice | crossSection | no |
+| g.pyramid-upright-slice | crossSection | no |
+| g.triangular-prism-net | net | no |
+| g.vertical-angles | angles | no |
+| g.supplementary-angles | angles | no |
+| g.complementary-angles | angles | no |
