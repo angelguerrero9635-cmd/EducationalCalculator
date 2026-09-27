@@ -308,6 +308,8 @@ function representationVars(r: Representation): string[] {
       return [r.near, r.times, ...(r.far ? [r.far] : [])];
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
+    case 'curvedSolid':
+      return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
     case 'pushes':
       return [r.right, r.left, r.extra];
     case 'force':

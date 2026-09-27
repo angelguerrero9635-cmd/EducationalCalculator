@@ -553,6 +553,19 @@ export function repIssues(
           if (x !== undefined && x < 0) out.push(`${id} = ${x} is off the first quadrant`);
         }
       }
+      // Legs: the drawn distance is the hypotenuse of the legs across and up.
+      if (rep.legs && (!rep.segment || !rep.second))
+        out.push('legs need a segment to a second point');
+      if (rep.legs && rep.second && rep.distance) {
+        const [x1, y1, x2, y2, d] = [rep.x, rep.y, rep.second.x, rep.second.y, rep.distance].map(
+          val,
+        );
+        if ([x1, y1, x2, y2, d].every((v) => v !== undefined)) {
+          const h = Math.hypot(x2! - x1!, y2! - y1!);
+          if (Math.abs(h - d!) > 1e-6 * (1 + h))
+            out.push(`distance ${d} drawn, the legs make ${h}`);
+        }
+      }
       if (rep.second && rep.slope) {
         const [x1, y1, x2, y2, m] = [rep.x, rep.y, rep.second.x, rep.second.y, rep.slope].map(val);
         if ([x1, y1, x2, y2, m].every((v) => v !== undefined) && x2! !== x1!) {
@@ -963,6 +976,28 @@ export function repIssues(
       count(rep.right, 'push');
       count(rep.left, 'push');
       break;
+    case 'curvedSolid': {
+      // A cylinder or cone needs its height; a sphere has none. Only a cone or a sphere is
+      // poured into a cylinder.
+      if ((rep.shape === 'sphere') === !!rep.height)
+        out.push(`a ${rep.shape} ${rep.height ? 'has no' : 'needs a'} height`);
+      if (rep.compare && rep.shape === 'cylinder') out.push('a cylinder is compared with itself');
+      const [r, h] = [rep.radius, rep.height].map((id) => (id ? val(id) : undefined));
+      if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
+      if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
+      // The caption works V from the radius and height drawn (in the radius's unit), so a
+      // volume shown in another unit (L) is not compared here; the relation holds it.
+      break;
+    }
+    case 'rightTriangle': {
+      // The three squares must fit together: a² + b² = c².
+      const [a, b, c] = [rep.a, rep.b, rep.c].map(val);
+      if (a !== undefined && b !== undefined && c !== undefined) {
+        if (Math.abs(a * a + b * b - c * c) > 1e-6 * (1 + c * c))
+          out.push(`squares ${a}² + ${b}² don't make ${c}²`);
+      }
+      break;
+    }
     case 'quadrilateral': {
       const r = val(rep.rightAngles);
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);

@@ -86,6 +86,7 @@ const PICTURE_NAMES: Record<string, string> = {
   grassSlope: 'soil trays on a slope',
   flashlights: 'two flashlights',
   leafCount: 'plants with their leaves counted',
+  curvedSolid: 'glass cylinder, cone or sphere',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();
