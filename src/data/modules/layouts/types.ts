@@ -95,6 +95,8 @@ export type CardFigure =
       shape?: 'box' | 'round' | 'long' | 'branched' | 'rod';
       chloroplasts?: boolean;
     }
+  /** A ball-and-stick molecule, or one atom ("H2O", "CO2", "Fe"), in the classroom colors. */
+  | { kind: 'molecule'; formula: string }
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -248,7 +250,17 @@ export type Figure =
    * filled has the trait, half-filled carries it; a line joins parents, their children hang
    * below. Generations are numbered I, II, III and people 1, 2, … in each (Grade 7).
    */
-  | { kind: 'pedigree'; people: PedigreePerson[] };
+  | { kind: 'pedigree'; people: PedigreePerson[] }
+  /**
+   * Ball-and-stick molecules (Grade 7, `chemFigures.tsx`): one molecule big with its atoms
+   * named, or several in a box packed as a solid, liquid or gas; `after` adds a second box
+   * behind an arrow (a reaction or a change).
+   */
+  | { kind: 'molecules' }
+  /** Boxes of particles as a solid, a liquid and a gas, with the changes between them as arrows. */
+  | { kind: 'phases' }
+  /** The periodic table with an element, a group or a period lit (Grade 8). */
+  | { kind: 'periodicTable' };
 
 /** One person in a `pedigree` figure. */
 export interface PedigreePerson {
@@ -282,6 +294,22 @@ export type CarbonProcess =
   | 'burning'
   | 'dissolving'
   | 'burial';
+
+/** A substance in a `molecules` scene: its formula ("H2O") and how many (default 1). */
+export interface MoleculeItem {
+  formula: string;
+  count?: number;
+}
+
+/** The changes between solid, liquid and gas on a `phases` figure. */
+export type PhaseChange =
+  | 'melting'
+  | 'freezing'
+  | 'boiling'
+  | 'evaporation'
+  | 'condensation'
+  | 'sublimation'
+  | 'deposition';
 
 /** The members of the `foodWeb` figure. */
 export type FoodWebMember =
@@ -431,6 +459,36 @@ export interface Scene {
    * person whose genotype is a question mark.
    */
   family?: { lit?: string[]; carriers?: boolean; genotypes?: boolean; ask?: string };
+  /**
+   * What a `molecules` figure shows. One item with no count, state or `after`: the molecule
+   * big, each element's atom named. Otherwise the items' molecules mixed in a box, packed as
+   * a `state` (spread out when left out); `after` draws a second box behind an arrow.
+   */
+  molecules?: {
+    items: MoleculeItem[];
+    state?: 'solid' | 'liquid' | 'gas';
+    after?: MoleculeItem[];
+    afterState?: 'solid' | 'liquid' | 'gas';
+  };
+  /**
+   * The state lit on a `phases` figure and the change lit among its arrows (melting and
+   * boiling or evaporation over the boxes, freezing and condensation under them; sublimation
+   * and deposition only when lit). `formula` draws the particles as that molecule ("H2O");
+   * plain balls when left out.
+   */
+  phase?: { state?: 'solid' | 'liquid' | 'gas'; change?: PhaseChange; formula?: string };
+  /**
+   * What a `periodicTable` figure lights: an element (atomic number or symbol) with its card,
+   * a group, a period, and a ring around each element in `ring`; `families` fills metals,
+   * metalloids, nonmetals and noble gases.
+   */
+  elements?: {
+    element?: number | string;
+    group?: number;
+    period?: number;
+    ring?: (number | string)[];
+    families?: boolean;
+  };
   /** The process lit (a `rockCycle` figure). */
   rock?: {
     process: 'melting' | 'cooling' | 'weathering' | 'deposition' | 'metamorphism' | 'uplift';

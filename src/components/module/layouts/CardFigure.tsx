@@ -15,6 +15,7 @@ import type { CardFigure as Spec, CardIcon } from '@/data/modules/layouts';
 import { chart, usePalette } from '@/theme';
 
 import { MaterialIcon, inMaterials } from './cardIcons';
+import { MoleculeCard } from './chemFigures';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -41,6 +42,8 @@ export function figureWidth(f: Spec): number {
       return Math.max(S, Math.ceil(f.count / 2) * 11 + 10);
     case 'polygon':
       return f.marks ? MARKED : S;
+    case 'molecule':
+      return 72;
     default:
       return S;
   }
@@ -240,6 +243,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <CellFigure f={f} ink={ink} shade={shade} />;
     case 'rock':
       return <RockFigure texture={f.texture} ink={ink} shade={shade} />;
+    case 'molecule':
+      return <MoleculeCard formula={f.formula} w={w} h={S} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;

@@ -9,6 +9,7 @@ import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
 import { lifeSpecVars } from '../typesLife';
+import { chemSpecVars } from '../typesChem';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -397,6 +398,11 @@ function representationVars(r: Representation): string[] {
     case 'energyPyramid':
     case 'generations':
       return lifeSpecVars(r);
+    case 'molecules':
+    case 'reaction':
+    case 'heatingCurve':
+    case 'periodicTable':
+      return chemSpecVars(r);
   }
 }
 

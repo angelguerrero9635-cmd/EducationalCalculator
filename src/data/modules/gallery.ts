@@ -14,6 +14,7 @@ import { G8A_GALLERY_MODULES } from './galleryG8a';
 import { OPTION_GALLERY_MODULES } from './galleryOptions';
 import { G8B_GALLERY_MODULES } from './galleryG8b';
 import { S4B_GALLERY_LAYOUTS, S4B_GALLERY_MODULES } from './galleryS4b';
+import { S4A_GALLERY_LAYOUTS, S4A_GALLERY_MODULES } from './galleryS4a';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
@@ -1032,6 +1033,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
   ...G8A_GALLERY_MODULES,
   ...G8B_GALLERY_MODULES,
   ...S4B_GALLERY_MODULES,
+  ...S4A_GALLERY_MODULES,
 ];
 
 /**
@@ -1039,6 +1041,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
  * reason: every drawing can be seen and screenshotted before a lesson uses it.
  */
 export const GALLERY_LAYOUTS: LayoutDef[] = [
+  ...S4A_GALLERY_LAYOUTS,
   {
     id: 'g.push',
     title: 'Push and pull',

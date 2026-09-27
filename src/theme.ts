@@ -146,6 +146,31 @@ const light = {
   orange: '#F08A2C',
   /** A purple spinner sector or marble (beside the pattern-block red, blue and green). */
   purple: '#8E5BD0',
+  /**
+   * Atoms in ball-and-stick molecules, in the classroom (CPK) colors: hydrogen white, carbon
+   * black, oxygen red, nitrogen blue, chlorine and fluorine green, sulfur yellow, phosphorus
+   * orange, sodium and potassium violet, other metals grey, noble gases cyan, the rest pink.
+   * `atomInk` and `onAtom` are the symbols printed on light and dark balls; `atomBond` the sticks.
+   */
+  atomH: '#F4F5F7',
+  atomC: '#3A3E46',
+  atomO: '#E0403A',
+  atomN: '#3C64D8',
+  atomHalogen: '#3DAE4A',
+  atomS: '#EDC937',
+  atomP: '#EE8A2E',
+  atomAlkali: '#9457D0',
+  atomMetal: '#A3ABB6',
+  atomNoble: '#4CC3D6',
+  atomOther: '#E07FBE',
+  atomInk: '#1B1E28',
+  onAtom: '#FFFFFF',
+  atomBond: '#9AA1AC',
+  /** Periodic-table families (flat fills): metals, metalloids, nonmetals, noble gases. */
+  tableMetal: '#D7E4F7',
+  tableMetalloid: '#DCEFD2',
+  tableNonmetal: '#FCEBC4',
+  tableNoble: '#E9DDF8',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -248,6 +273,24 @@ const dark: Palette = {
   rubber: '#1C1E23',
   orange: '#D2742A',
   purple: '#7A4DB8',
+  atomH: '#D5D9DF',
+  atomC: '#5D636E',
+  atomO: '#D2463F',
+  atomN: '#4A6FDA',
+  atomHalogen: '#37984A',
+  atomS: '#CDAE30',
+  atomP: '#D2762A',
+  atomAlkali: '#8150BD',
+  atomMetal: '#848D99',
+  atomNoble: '#3AA3B5',
+  atomOther: '#C06CA3',
+  atomInk: '#14171D',
+  onAtom: '#FFFFFF',
+  atomBond: '#7B828E',
+  tableMetal: '#22324A',
+  tableMetalloid: '#253A26',
+  tableNonmetal: '#43381C',
+  tableNoble: '#34284A',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

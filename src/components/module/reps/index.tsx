@@ -105,6 +105,10 @@ import { RootSquare } from './RootSquare';
 import { FactorRows } from './FactorRows';
 import { PowerScale } from './PowerScale';
 import { EquationBalance } from './EquationBalance';
+import { Molecules } from './Molecules';
+import { Reaction } from './Reaction';
+import { HeatingCurve } from './HeatingCurve';
+import { PeriodicTable } from './PeriodicTable';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -125,6 +129,7 @@ export const representationTitle = (r: Representation) =>
           'scatter',
           'linearFunction',
           'lineSystem',
+          'heatingCurve',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
@@ -189,6 +194,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PowerScale spec={spec} calc={calc} />;
     case 'equationBalance':
       return <EquationBalance spec={spec} calc={calc} />;
+    case 'molecules':
+      return <Molecules spec={spec} calc={calc} />;
+    case 'reaction':
+      return <Reaction spec={spec} calc={calc} />;
+    case 'heatingCurve':
+      return <HeatingCurve spec={spec} calc={calc} />;
+    case 'periodicTable':
+      return <PeriodicTable spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':

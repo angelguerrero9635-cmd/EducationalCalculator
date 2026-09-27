@@ -17,6 +17,7 @@ import {
   volumeOf,
 } from '@/components/module/reps/section';
 import { imageOf } from '@/components/module/reps/transform';
+import { chemIssues } from './chemPictures';
 
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
@@ -1550,6 +1551,19 @@ export function repIssues(
         out.push(`function machine with ${rep.rule.length} steps (1 to 3 fit)`);
       break;
     }
+    case 'molecules':
+    case 'reaction':
+    case 'heatingCurve':
+    case 'periodicTable':
+      // Chemistry pictures draw fixed numbers in formula units (a time in hours still meets
+      // spans in minutes), so they read every value in formula units.
+      out.push(
+        ...chemIssues(rep, (x) => {
+          const y = val(x);
+          return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
+        }),
+      );
+      break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
       const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
