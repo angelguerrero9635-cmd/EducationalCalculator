@@ -953,6 +953,20 @@ export type Representation =
       chance?: string;
       total?: string;
     }
+  /**
+   * Two dice as a 6 × 6 grid of their 36 pairs, each cell showing the `event` (sum, the
+   * difference bigger − smaller, or product); the cells whose number `compare`s (=, <, ≤, >,
+   * ≥) with `target` are shaded. `count` is how many, `chance` is count ÷ 36. Tap a cell to
+   * make its number the target.
+   */
+  | {
+      kind: 'diceGrid';
+      target: string;
+      event?: 'sum' | 'difference' | 'product';
+      compare?: '=' | '<' | '≤' | '>' | '≥';
+      count?: string;
+      chance?: string;
+    }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
   | {
       kind: 'dotPlot';

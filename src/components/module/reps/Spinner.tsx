@@ -7,7 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
-import { CHANCE_COLORS, PictureButton, chanceColor } from './chance';
+import { CHANCE_COLORS, PictureButton, chanceColor, chanceText } from './chance';
 import { BoxShadow, Metal, TopLight, url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'spinner' }>;
@@ -81,7 +81,7 @@ export function Spinner({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const pickName = names[pick] ?? `outcome ${pick + 1}`;
   const chanceLine =
     spec.chance && total > 0
-      ? `${rep.words ? rep.variable(spec.chance).name : `${rep.variable(spec.chance).symbol}(${pickName})`} = ${counts[pick]}/${total} = ${rep.value(spec.chance)}`
+      ? `${rep.words ? rep.variable(spec.chance).name : `${rep.variable(spec.chance).symbol}(${pickName})`} = ${chanceText(counts[pick]!, total, rep.value(spec.chance), rep.shown(spec.chance))}`
       : total > 0
         ? `${counts[pick]} of ${total} sectors are ${pickName}.`
         : 'Type how many sectors each color has.';

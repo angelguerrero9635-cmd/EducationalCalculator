@@ -5,6 +5,8 @@
  */
 import type { Values } from '@/engine/types';
 
+import { diceCount } from '@/components/module/reps/dice';
+
 import { whole } from './helpers';
 import type { ModuleDef } from './types';
 
@@ -103,6 +105,53 @@ const straight = pair(180, 'The two angles make a straight line.');
 const right = pair(90, 'The two angles make a right angle.');
 
 export const G7C_GALLERY_MODULES: ModuleDef[] = [
+  (() => {
+    /** The pairs of two dice with a sum of s, as a list ("1 + 6, 2 + 5, …"). */
+    const pairs = (s: number) =>
+      [1, 2, 3, 4, 5, 6].filter((a) => s - a >= 1 && s - a <= 6).map((a) => `${a} + ${s - a}`);
+    return {
+      id: 'g.two-dice',
+      title: 'Two dice',
+      assumptions: [
+        'Each die is fair: every face is as likely as any other.',
+        'The 36 pairs of faces are equally likely.',
+      ],
+      variables: [
+        whole('s', 's', 'Sum', 2, 12),
+        { ...whole('k', 'k', 'Pairs with that sum', 0, 36), derived: true },
+        { id: 'P', symbol: 'P', name: 'Chance of that sum', min: 0, max: 1, derived: true },
+      ],
+      relations: [
+        {
+          ...derive('k = pairs with sum s', 'k', ['s'], 'pairs with a sum of {s}: {k}', (v) =>
+            diceCount('sum', '=', v.s!),
+          ),
+          // The pairs counted in the grid (listed in the step's work).
+          check: (v: Values) => `${pairs(v.s!).length} = ${v.k}`,
+        },
+        derive('P = k ÷ 36', 'P', ['k'], '{k} ÷ 36 = {P}', (v) => v.k! / 36),
+      ],
+      steps: {
+        'k = pairs with sum s': {
+          k: {
+            expr: (v: Values) => `${pairs(v.s!).length}`,
+            how: 'Count the cells of the grid that show the sum.',
+            work: (v: Values) => [pairs(v.s!).join(', ')],
+            written: false,
+          },
+        },
+        'P = k ÷ 36': {
+          P: {
+            expr: '{k} ÷ 36',
+            how: 'The pairs with the sum out of all 36 equally likely pairs.',
+          },
+        },
+      },
+      example: { s: 7, k: 6, P: 1 / 6 },
+      startWith: ['s'],
+      representation: { kind: 'diceGrid', target: 's', count: 'k', chance: 'P' },
+    } satisfies ModuleDef;
+  })(),
   {
     id: 'g.spinner',
     title: 'A spinner',

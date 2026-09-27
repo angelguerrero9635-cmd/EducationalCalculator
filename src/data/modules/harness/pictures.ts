@@ -5,6 +5,7 @@
  */
 import type { VariableDef } from '@/engine/types';
 
+import { diceCount } from '@/components/module/reps/dice';
 import { toFraction } from '@/components/module/reps/exact';
 import {
   areaOf,
@@ -957,6 +958,16 @@ export function repIssues(
       const vol = volumeOf(rep.solid, l, w, h);
       if (V !== undefined && off(vol, V, rep.volume!))
         out.push(`solid drawn with volume ${vol}, shows ${V}`);
+      break;
+    }
+    case 'diceGrid': {
+      const t = val(rep.target);
+      if (t === undefined) break;
+      const n = diceCount(rep.event ?? 'sum', rep.compare ?? '=', t);
+      const [k, P] = [rep.count, rep.chance].map((id) => (id ? val(id) : undefined));
+      if (k !== undefined && k !== n) out.push(`${n} pairs shaded, count shows ${k}`);
+      if (P !== undefined && Math.abs(n / 36 - P) > 1e-6)
+        out.push(`${n} of 36 pairs shaded, chance shows ${P}`);
       break;
     }
     case 'spinner': {

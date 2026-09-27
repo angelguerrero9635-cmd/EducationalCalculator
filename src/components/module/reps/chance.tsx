@@ -7,6 +7,18 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/Text';
 import { font, radius, space, usePalette, type Palette } from '@/theme';
 
+/**
+ * A chance as the student writes it: the count out of all, in lowest terms when that is
+ * different, then the value ("6/36 = 1/6 ≈ 0.1667", "3/8 = 0.375").
+ */
+export function chanceText(k: number, n: number, value: string, x: number): string {
+  const g = gcd(k, n) || 1;
+  const lowest = g > 1 && k > 0 && n > 0 ? ` = ${k / g}/${n / g}` : '';
+  const exact = Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-6;
+  return `${k}/${n}${lowest} ${exact ? '=' : '≈'} ${value}`;
+}
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+
 /** A repeatable random sequence in [0, 1) from a seed (mulberry32). */
 export function seeded(seed: number) {
   let a = seed >>> 0;
