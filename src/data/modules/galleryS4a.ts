@@ -3,7 +3,10 @@
  * the periodic table) and their explore figures. Spread into GALLERY_MODULES and
  * GALLERY_LAYOUTS in gallery.ts; kept apart so that file's other demos merge easily.
  */
+import { formatNumber } from '@/engine/format';
 import type { Relation, Values } from '@/engine/types';
+
+import { heatingCorners, heatingTemp } from '@/components/module/reps/chem';
 
 import { div, whole } from './helpers';
 import type { LayoutDef } from './layouts';
@@ -260,5 +263,79 @@ S4A_GALLERY_MODULES.push(
     },
   },
 );
+
+/** Ice from −40 °C heated at a steady rate: the times match water's heats (21 J/g a minute). */
+const ICE = heatingCorners(-40, 0, 100, [4, 16, 20, 108]);
+
+S4A_GALLERY_MODULES.push({
+  id: 'g.heating-curve',
+  title: 'Heating curve',
+  notation: 'letters',
+  assumptions: [
+    'Ice at −40 °C is heated at a steady rate until all of it has boiled away.',
+    'While it melts or boils, the heat goes into changing the state, not into warming.',
+    'Drag the point along the curve.',
+  ],
+  variables: [
+    { id: 't', symbol: 't', name: 'Time in minutes', min: 0, max: 148, step: 0.5 },
+    {
+      id: 'T',
+      symbol: 'T',
+      name: 'Temperature',
+      unit: '°C',
+      min: -40,
+      max: 100,
+      derived: true,
+    },
+  ],
+  relations: [
+    {
+      id: 'T = curve(t)',
+      display: '{T} = the temperature on the curve at {t}',
+      vars: ['T', 't'],
+      residual: (v: Values) => v.T! - heatingTemp(ICE, v.t!),
+      solve: { T: (v: Values) => heatingTemp(ICE, v.t!) },
+      check: (v: Values) => {
+        const [t, T] = [formatNumber(v.t!), formatNumber(v.T!)];
+        return v.t! <= 4
+          ? `${T} = 10 × ${t} − 40`
+          : v.t! <= 20
+            ? `${T} = 0`
+            : v.t! <= 40
+              ? `${T} = 5 × (${t} − 20)`
+              : `${T} = 100`;
+      },
+    },
+  ],
+  steps: {
+    'T = curve(t)': {
+      T: {
+        expr: (v: Values) =>
+          v.t! <= 4 ? '10 × {t} − 40' : v.t! <= 20 ? '0' : v.t! <= 40 ? '5 × ({t} − 20)' : '100',
+        how: (v: Values) =>
+          v.t! <= 4
+            ? 'The ice warms 10 °C a minute from −40 °C.'
+            : v.t! <= 20
+              ? 'The ice is melting: it stays at 0 °C.'
+              : v.t! <= 40
+                ? 'The water warms 5 °C a minute from 0 °C, starting at 20 min.'
+                : 'The water is boiling: it stays at 100 °C.',
+      },
+    },
+  },
+  example: { t: 30, T: 50 },
+  startWith: ['t'],
+  representation: {
+    kind: 'heatingCurve',
+    start: -40,
+    melt: 0,
+    boil: 100,
+    spans: [4, 16, 20, 108],
+    at: 't',
+    temp: 'T',
+    names: ['ice', 'water', 'steam'],
+    formula: 'H2O',
+  },
+});
 
 export const S4A_GALLERY_LAYOUTS: LayoutDef[] = [];

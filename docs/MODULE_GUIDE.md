@@ -129,6 +129,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
 | `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted     | Grade 7 atoms and molecules         |
 | `reaction`         | molecules before and after the arrow; each element's atoms counted    | Grade 7 reactions, balancing        |
+| `heatingCurve`     | temperature against time, flat while melting and boiling; particles   | Grade 7 phase changes               |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

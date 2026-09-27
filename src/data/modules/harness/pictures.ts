@@ -1520,7 +1520,14 @@ export function repIssues(
     case 'reaction':
     case 'heatingCurve':
     case 'periodicTable':
-      out.push(...chemIssues(rep, val));
+      // Chemistry pictures draw fixed numbers in formula units (a time in hours still meets
+      // spans in minutes), so they read every value in formula units.
+      out.push(
+        ...chemIssues(rep, (x) => {
+          const y = val(x);
+          return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
+        }),
+      );
       break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
