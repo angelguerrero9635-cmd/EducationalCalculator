@@ -10,7 +10,9 @@ import { Ball, FloorShadow, LitRect, Sheen, TopLight, url, usePaintIds } from '.
 /**
  * A meter stick standing on the ground at noon and its shadow, to scale with the reading: the
  * sun sits on the line from the shadow's tip over the stick's top, so a shorter shadow puts
- * the sun higher. Drawn above an observe page's chart for the column tapped last.
+ * the sun higher. Drawn above an observe page's chart for the column tapped last. With a
+ * `side`, the shadow points west (left), east (right) or north (right, the ground's ends then
+ * named South and North), and the time is the column's own.
  */
 export function ShadowStick({
   stick,
@@ -18,12 +20,14 @@ export function ShadowStick({
   max,
   unit,
   column,
+  side,
 }: {
   stick: number;
   shadow: number;
   max: number;
   unit: string;
   column: string;
+  side?: 'west' | 'east' | 'north';
 }) {
   const c = usePalette();
   const ids = usePaintIds('sun', 'wood', 'light');
@@ -32,20 +36,28 @@ export function ShadowStick({
       <Canvas aspect={0.52}>
         {({ w, h }) => {
           const ground = h - 40;
-          const x0 = Math.round(w * 0.3);
-          const px = Math.min((w - x0 - 20) / Math.max(max, 1), (ground - 46) / stick);
+          // The shadow runs right, or left for a west shadow.
+          const dir = side === 'west' ? -1 : 1;
+          const x0 = Math.round(w * (dir > 0 ? 0.3 : 0.7));
+          const room = dir > 0 ? w - x0 - 20 : x0 - 20;
+          const px = Math.min(room / Math.max(max, 1), (ground - 46) / stick);
           const H = stick * px;
           const L = shadow * px;
+          const tip = x0 + dir * L;
           const top = { x: x0, y: ground - H };
           // From the stick's top, away from the shadow's tip, until the sun reaches the edge.
           const len = Math.hypot(L, H) || 1;
-          const dx = -L / len;
+          const dx = (-dir * L) / len;
           const dy = -H / len;
-          const t = Math.min(dx < 0 ? (top.x - 24) / -dx : Infinity, (top.y - 22) / -dy);
+          const t = Math.min(
+            dx < 0 ? (top.x - 24) / -dx : dx > 0 ? (w - 24 - top.x) / dx : Infinity,
+            (top.y - 22) / -dy,
+          );
           const sun = { x: top.x + dx * t, y: top.y + dy * t };
           const tick = [10, 20, 25, 50].find((k) => k * px >= 6) ?? 50;
           const shadowText = `${shadow} ${unit}`;
-          const shadowLabel = fitLabel(x0 + L / 2, shadowText, chart.small, w);
+          const shadowLabel = fitLabel((x0 + tip) / 2, shadowText, chart.small, w);
+          const ends = side === 'north' ? ['South', 'North'] : side ? ['West', 'East'] : null;
           return (
             <Svg width={w} height={h}>
               <Defs>
@@ -57,7 +69,7 @@ export function ShadowStick({
               <Line
                 x1={sun.x}
                 y1={sun.y}
-                x2={x0 + L}
+                x2={tip}
                 y2={ground}
                 stroke={c.chartMuted}
                 strokeWidth={chart.strokeLight}
@@ -69,7 +81,7 @@ export function ShadowStick({
               <Rect x={0} y={ground + 12} width={w} height={4} fill={c.soil} />
               {L > 0 ? (
                 <Path
-                  d={`M ${x0} ${ground - 2} L ${x0 + L} ${ground + 1} L ${x0} ${ground + 5} Z`}
+                  d={`M ${x0} ${ground - 2} L ${tip} ${ground + 1} L ${x0} ${ground + 5} Z`}
                   fill={c.shade}
                   opacity={0.45}
                 />
@@ -90,7 +102,12 @@ export function ShadowStick({
                   strokeWidth={1}
                 />
               ))}
-              <ChartText x={x0 - 10} y={ground - H / 2 + 4} fontSize={chart.small} textAnchor="end">
+              <ChartText
+                x={x0 - dir * 10}
+                y={ground - H / 2 + 4}
+                fontSize={chart.small}
+                textAnchor={dir > 0 ? 'end' : 'start'}
+              >
                 {`${stick} ${unit}`}
               </ChartText>
               {/* The shadow's length, measured under the ground. */}
@@ -98,19 +115,13 @@ export function ShadowStick({
                 <Line
                   x1={x0}
                   y1={ground + 22}
-                  x2={x0 + L}
+                  x2={tip}
                   y2={ground + 22}
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight}
                 />
                 <Line x1={x0} y1={ground + 18} x2={x0} y2={ground + 26} stroke={c.chartInk} />
-                <Line
-                  x1={x0 + L}
-                  y1={ground + 18}
-                  x2={x0 + L}
-                  y2={ground + 26}
-                  stroke={c.chartInk}
-                />
+                <Line x1={tip} y1={ground + 18} x2={tip} y2={ground + 26} stroke={c.chartInk} />
                 <ChartText
                   x={shadowLabel.x}
                   y={ground + 37}
@@ -121,8 +132,30 @@ export function ShadowStick({
                   {shadowText}
                 </ChartText>
               </G>
-              <ChartText x={w - 6} y={16} fontSize={chart.label} fontWeight="700" textAnchor="end">
-                {`${column}, noon`}
+              {ends ? (
+                <G>
+                  <ChartText x={4} y={ground - 6} fontSize={chart.tiny} fill={c.chartMuted}>
+                    {ends[0]}
+                  </ChartText>
+                  <ChartText
+                    x={w - 4}
+                    y={ground - 6}
+                    fontSize={chart.tiny}
+                    fill={c.chartMuted}
+                    textAnchor="end"
+                  >
+                    {ends[1]}
+                  </ChartText>
+                </G>
+              ) : null}
+              <ChartText
+                x={dir > 0 ? w - 6 : 6}
+                y={16}
+                fontSize={chart.label}
+                fontWeight="700"
+                textAnchor={dir > 0 ? 'end' : 'start'}
+              >
+                {side ? column : `${column}, noon`}
               </ChartText>
             </Svg>
           );

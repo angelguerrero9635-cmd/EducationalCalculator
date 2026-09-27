@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Text } from '@/components/Text';
 import type { SortLayout as Spec } from '@/data/modules/layouts';
+import { OffspringFigure } from './animalFigures';
 import { CardFigureView } from './CardFigure';
 import { font, radius, space, usePalette } from '@/theme';
 
@@ -60,6 +61,7 @@ export function SortLayout({ spec }: { spec: Spec }) {
     <View style={styles.wrap}>
       <Text style={[styles.question, { color: c.text }]}>{spec.question}</Text>
       <Text style={[styles.how, { color: c.textMuted }]}>Tap a card, then tap its group.</Text>
+      {spec.header?.kind === 'offspring' ? <OffspringFigure animals={spec.header.animals} /> : null}
       {/* The cards still to sort. */}
       <View style={styles.cards}>
         {done ? (
