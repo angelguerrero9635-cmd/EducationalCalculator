@@ -105,9 +105,10 @@
       "license": "Owned by the project; no third-party content",
       "references": [
         "https://www.wpc.ncep.noaa.gov/basicwx/basicwx_ndfd.php",
-        "https://commons.wikimedia.org/wiki/File:Surface_analysis.gif"
+        "https://commons.wikimedia.org/wiki/File:Surface_analysis.gif",
+        "https://www.naturalearthdata.com/about/terms-of-use/"
       ],
-      "notes": "Simplified contiguous U.S. outline. Red L in the Plains with a cold front (blue, triangles pointing east/southeast, the way it moves) running southwest and a warm front (red, half-circles pointing north) running east, which becomes a stationary front (alternating blue triangles on the south side and red half-circles on the north side). Blue H in the West. Green rain area with raindrops near the low and along the fronts. Only letters H and L."
+      "notes": "Simplified contiguous U.S. outline. Red L in the Plains with a cold front (blue, triangles pointing east/southeast, the way it moves) running southwest and a warm front (red, half-circles pointing north) running east, which becomes a stationary front (alternating blue triangles on the south side and red half-circles on the north side). Blue H in the West. Green rain area with raindrops near the low and along the fronts. Only letters H and L. The U.S. outline is the lower 48 from Natural Earth 1:110m (public-domain map data, used as coordinates only) in an Albers projection; the rain area is clipped to land."
     },
     {
       "slug": "plate-boundaries",
@@ -186,8 +187,11 @@
       "use": "Earth picture (Earth in space, planets)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": ["https://commons.wikimedia.org/wiki/File:Whole_world_-_land_and_oceans.jpg"],
-      "notes": "Globe centered near 12° N, 72° W: North and South America, Greenland (white ice), the edge of Africa and Europe, a sliver of Antarctica. Cloud bands, a hurricane in the Atlantic, thin blue atmosphere glow, night-side shading, a few stars on black."
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Whole_world_-_land_and_oceans.jpg",
+        "https://www.naturalearthdata.com/about/terms-of-use/"
+      ],
+      "notes": "Globe centered near 12° N, 72° W (orthographic view): North and South America, the Caribbean, Greenland as white ice, the edge of Africa (Sahara in tan) and Europe near the rim. Coastlines are computed from Natural Earth 1:110m outlines (public-domain map data, used as coordinates only). Cloud bands, an Atlantic hurricane spinning counterclockwise, thin blue atmosphere glow, night-side shading, a few stars on black."
     },
     {
       "slug": "bowling-ball",

@@ -16,5 +16,5 @@ To change one, edit its SVG and run
 SVGs, re-renders the WebPs (1200 px, under 250 KB) and rebuilds the manifest and sheet.
 
 Known simplifications: coin portraits are stylized profiles, the quarter back shows the
-classic heraldic eagle, maps and the globe use hand-simplified coastlines, and the graduated
+classic heraldic eagle, the world map, globe and U.S. outline use simplified Natural Earth coastlines (public-domain map data), and the graduated
 cylinder has 2 mL ticks.
