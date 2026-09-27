@@ -96,7 +96,8 @@ picture, or a gradient id not from `usePaintIds`.
 
 **F2. Interaction (assessment specialist).** Every value the picture shows can be changed from
 the picture or its slider, both ways; a "?" value doesn't draw the example's number; the
-picture matches a diagram from a real exam item or textbook for the lesson (name it).
+picture matches a diagram from a real exam item or textbook for the lesson (name it; the
+`picture` lines in `.review/questions.md` describe the released items' figures).
 
 ## Fix yourself (small, no math or wording changes)
 

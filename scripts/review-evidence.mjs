@@ -10,6 +10,8 @@
 //                   and a few in dark mode, with the layout checks (review-shots.mjs)
 //   scenes/         every scene of every exploration; drags.md: every handle dragged, with
 //                   the values before and after (review-interact.mjs)
+//   questions.md    released test and practice questions for the section's skills
+//                   (review-questions.mjs, from research/questions/)
 //   evidence.md     an index: module ids, the files, and any problems the scripts flagged
 // Needs a web build (pnpm build:web) and the globally installed Playwright (NODE_PATH).
 import { spawnSync } from 'node:child_process';
@@ -171,6 +173,15 @@ const sheets = sheetFiles.length
   ? run('contact sheets', 'python3', ['-c', sheetScript, join(out, 'sheets'), ...sheetFiles])
   : 'no sheets';
 
+// 3c. Released questions for the section's skills (review-questions.mjs).
+const questions = run('released questions', 'node', [
+  'scripts/review-questions.mjs',
+  '--prefix',
+  prefix,
+  '--out',
+  out,
+]);
+
 // 4. Index.
 const failures = report.split('\n').filter((l) => l.startsWith('- [error]'));
 writeFileSync(
@@ -184,6 +195,7 @@ writeFileSync(
     `- Harness: ${join(out, 'harness.txt')} — ${failures.length} error lines`,
     `- Screenshots: ${join(out, 'shots')}/<id>-390.png (all), -1024.png (first ${wide}), dark for the first ${dark}`,
     `- Scenes and drags: ${join(out, 'scenes')}/<id>-<n>.png, ${join(out, 'drags.md')} (${interact.trim().split('\n').pop()})`,
+    `- Released questions: ${join(out, 'questions.md')} (${questions.trim().split('\n').pop()})`,
     `- Contact sheets: ${join(out, 'sheets')}/sheet<n>.png, one page per picture kind (${sheets.trim().split('\n').pop()})`,
     '',
     '## Flagged by the scripts',

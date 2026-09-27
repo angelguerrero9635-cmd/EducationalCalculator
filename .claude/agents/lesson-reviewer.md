@@ -22,6 +22,9 @@ layouts" section is the catalog you propose from.
 - `.review/harness.txt`: the sampling harness report (`[error]` lines fail the test suite, so
   there are none; `[minor]` lines are limits of the harness: a range or fixed-number remark
   that repeats across modules is one finding with the rule, not one per module).
+- `.review/questions.md`: released test and practice questions for the section's skills (NAEP,
+  public domain; Illustrative Mathematics, CC BY), grouped by skill id, with choices, answer and
+  picture. Read one skill's block at a time. Reference only: never copy their text into a lesson.
 - Module code: `src/data/modules/<math|science>/<grade>.ts` (a problem type's "use" line is on
   the module), shared helpers `src/data/modules/helpers.ts`, types `src/data/modules/types.ts`,
   the harness's phrases `src/data/modules/harness/evaluate.ts`.
@@ -94,9 +97,17 @@ inclusive names. Give exact replacement strings.
 **K. Plain language.** Where words teach better than letters, symbols or jargon at the grade,
 and the few places the notation is better. Keep the number sentence the grade writes.
 
-**F. Exam coverage.** The 4–8 common question types for the skill; mark each Solves / Partly /
-No against the module and its problem types. Unknowns in every position. Recommend an extension,
-a borrowed picture, or a `[new-page]`.
+**F. Exam coverage.** Start from the skill's block in `questions.md`, then add the common
+question types it lacks (4–8 in all). For each, work the question on the module and mark it
+Solves / Partly / No, naming the question id.
+
+- A student who has used the page should be able to answer the real items, so check the words,
+  the number sizes, the unknown's position and the picture (a NAEP tape diagram or thermometer
+  should look like the page's).
+- Recommend an extension, a borrowed picture, or a `[new-page]`.
+- Report a question filed under the wrong skill (for example a unit conversion under fraction
+  addition) as `[data] research/questions: <id> → <right skill>`.
+- Skills listed under "no released questions" use the common types only.
 
 **G. Curriculum coverage.** Map 2–3 widely used curricula for the grade (K–8: Illustrative
 Mathematics, Eureka, Open Up; science: Amplify, Mystery Science, FOSS; high school and college:
