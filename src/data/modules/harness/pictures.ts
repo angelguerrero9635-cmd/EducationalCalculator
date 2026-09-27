@@ -968,6 +968,28 @@ export function repIssues(
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
       break;
     }
+    case 'linearFunction': {
+      const [m, b] = [val(rep.slope), val(rep.intercept)];
+      const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
+      if ([m, b, x, y].every((v) => v !== undefined) && rep.point) {
+        if (Math.abs(m! * x! + b! - y!) > 1e-6 * Math.max(1, Math.abs(y!)))
+          out.push(`point (${x}, ${y}) is not on y = ${m}x + ${b}`);
+      }
+      break;
+    }
+    case 'lineSystem': {
+      const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
+      const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
+      if ([m1, b1, m2, b2].some((v) => v === undefined) || x === undefined || y === undefined)
+        break;
+      if (m1 === m2) out.push(`lines with the same slope ${m1} drawn with a solution (${x}, ${y})`);
+      else if (
+        Math.abs(m1! * x + b1! - y) > 1e-6 * Math.max(1, Math.abs(y)) ||
+        Math.abs(m2! * x + b2! - y) > 1e-6 * Math.max(1, Math.abs(y))
+      )
+        out.push(`solution (${x}, ${y}) is not where the lines cross`);
+      break;
+    }
     default:
       break;
   }

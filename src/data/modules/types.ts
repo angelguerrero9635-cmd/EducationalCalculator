@@ -1,6 +1,13 @@
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import type { Written } from './written';
 import type { UnitSystem } from '@/engine/units';
+import type {
+  FunctionMachineSpec,
+  LineSystemSpec,
+  LinearFunctionSpec,
+  MappingSpec,
+  TransformationSpec,
+} from './typesGraphs';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -698,6 +705,12 @@ export type Representation =
       extent: number;
       quadrants: 1 | 4;
     }
+  /** Grade 8 functions, systems and transformations (specs in `typesGraphs.ts`). */
+  | LinearFunctionSpec
+  | LineSystemSpec
+  | FunctionMachineSpec
+  | MappingSpec
+  | TransformationSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

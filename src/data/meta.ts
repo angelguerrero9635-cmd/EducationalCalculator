@@ -86,6 +86,11 @@ const PICTURE_NAMES: Record<string, string> = {
   grassSlope: 'soil trays on a slope',
   flashlights: 'two flashlights',
   leafCount: 'plants with their leaves counted',
+  linearFunction: 'graph of a line with its slope triangle',
+  lineSystem: 'two lines and where they cross',
+  functionMachine: 'input-output machine',
+  mapping: 'mapping diagram and graph',
+  transformation: 'figure and its image on a grid',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

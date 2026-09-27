@@ -45,6 +45,7 @@ import { ForceDiagram } from './ForceDiagram';
 import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
+import { LinearFunction, LineSystem } from './Lines';
 import { RectangleDiagram } from './Rectangle';
 import { Rectilinear } from './Rectilinear';
 import { AreaModel } from './AreaModel';
@@ -98,12 +99,18 @@ export const representationTitle = (r: Representation) =>
           'pieChart',
           'coordinatePlane',
           'placeValueChart',
+          'linearFunction',
+          'lineSystem',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'linearFunction':
+      return <LinearFunction spec={spec} calc={calc} />;
+    case 'lineSystem':
+      return <LineSystem spec={spec} calc={calc} />;
     case 'tape':
       return 'ratio' in spec ? (
         <RatioTape spec={spec} calc={calc} />

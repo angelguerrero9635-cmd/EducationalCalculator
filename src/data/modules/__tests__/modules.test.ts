@@ -7,6 +7,7 @@ import { resolveItem } from '@/data/selectors';
 import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
+import { graphSpecVars } from '../typesGraphs';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -314,6 +315,12 @@ function representationVars(r: Representation): string[] {
       return [r.force, r.mass, r.acceleration];
     case 'seriesCircuit':
       return [r.source, r.current, ...r.resistors.flatMap((x) => [x.r, x.v])];
+    case 'linearFunction':
+    case 'lineSystem':
+    case 'functionMachine':
+    case 'mapping':
+    case 'transformation':
+      return graphSpecVars(r);
   }
 }
 
