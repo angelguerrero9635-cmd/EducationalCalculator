@@ -8,6 +8,7 @@ import type {
   MappingSpec,
   TransformationSpec,
 } from './typesGraphs';
+import type { ChemSpec } from './typesChem';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -880,6 +881,8 @@ export type Representation =
   | FunctionMachineSpec
   | MappingSpec
   | TransformationSpec
+  /** Grade 7–8 chemistry: molecules, reactions, heating curves, the periodic table (`typesChem.ts`). */
+  | ChemSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

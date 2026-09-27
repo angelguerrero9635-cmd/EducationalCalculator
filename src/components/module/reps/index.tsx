@@ -103,6 +103,7 @@ import { RootSquare } from './RootSquare';
 import { FactorRows } from './FactorRows';
 import { PowerScale } from './PowerScale';
 import { EquationBalance } from './EquationBalance';
+import { Molecules } from './Molecules';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -187,6 +188,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PowerScale spec={spec} calc={calc} />;
     case 'equationBalance':
       return <EquationBalance spec={spec} calc={calc} />;
+    case 'molecules':
+      return <Molecules spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':

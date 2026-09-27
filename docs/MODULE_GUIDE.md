@@ -127,6 +127,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `functionMachine`  | an input card through a rule's steps to the output; a tappable table  | Grade 8 functions                   |
 | `mapping`          | pairs as arrows between two ovals; the graph with a vertical line     | Grade 8 functions (is it one?)      |
 | `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
+| `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted     | Grade 7 atoms and molecules         |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
