@@ -66,4 +66,50 @@ export const R3J_GALLERY_LAYOUTS: LayoutDef[] = [
       ],
     },
   })),
+  // D78: the thermometer at the tapped time's temperature.
+  fromPage(
+    's.K.weather-patterns~morning-afternoon',
+    'observe',
+    'g.r3j-thermometer',
+    'Thermometer by time of day',
+    () => ({ figure: { kind: 'thermometer' } }),
+  ),
+  // D79: the plant beside a ruler at the tapped week's height.
+  fromPage(
+    's.2.plant-growth-investigation~weeks',
+    'observe',
+    'g.r3j-plant-height',
+    'Plant height by week',
+    () => ({ figure: { kind: 'plantHeight' } }),
+  ),
+  // D91: the ramp at the tapped release height and the cup slid the distance.
+  fromPage('s.4.energy-speed~ramp', 'observe', 'g.r3j-ramp', 'Ramp and cup', () => ({
+    figure: { kind: 'ramp', heights: [5, 10, 15, 20, 25] },
+  })),
+  // D99: the shadow for the tapped hour, west in the morning and east in the afternoon.
+  fromPage(
+    's.5.shadows-day-night',
+    'observe',
+    'g.r3j-shadow-day',
+    'Shadow through the day',
+    () => ({
+      figure: { kind: 'shadowStick', stick: 100, sides: ['west', 'west', 'north', 'east', 'east'] },
+    }),
+  ),
+  // D100: the flashlight at the tapped distance and its lit circle.
+  fromPage(
+    's.5.sun-star-brightness',
+    'observe',
+    'g.r3j-flashlight',
+    'Flashlight and lit circle',
+    () => ({ figure: { kind: 'flashlight', distances: [10, 20, 30, 40, 50] } }),
+  ),
+  // D101: the open cup at the tapped day's level, Day 1's level dashed.
+  fromPage(
+    's.5.particles-matter~evaporation',
+    'observe',
+    'g.r3j-cup',
+    'Water in an open cup',
+    () => ({ figure: { kind: 'cup' } }),
+  ),
 ];

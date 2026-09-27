@@ -349,7 +349,11 @@ size beside the sun's edge, ringing a scene's `lit` ones with their widths in Ea
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
-scale, with the sun on the line over the stick's top (higher for a shorter shadow).
+scale, with the sun on the line over the stick's top (higher for a shorter shadow); `sides`
+(one per column: `west`, `east`, `north`) turns the shadow through the day. Also, in
+`layouts/observeFigures.tsx`: `thermometer`, `plantHeight` (a potted plant beside a cm ruler),
+`ramp` (`heights` per column; the cup slid the value), `flashlight` (`distances` per column;
+the lit circle side on and face on) and `cup` (an open cup, the first column's level dashed).
 
 Drawn explore figures: a `parts` figure with `drawing: 'plant' | 'animal' | 'body'`
 (`layouts/partsDrawings.tsx`) draws the thing, labels every part and lights the scene's part;
