@@ -85,6 +85,7 @@ const PICTURE_NAMES: Record<string, string> = {
   sample: 'random sample of a population',
   spinner: 'spinner',
   diceGrid: 'grid of two dice',
+  treeDiagram: 'tree diagram',
   fieldOfView: 'microscope field of view',
   gradCylinder: 'graduated cylinder',
   grassSlope: 'soil trays on a slope',

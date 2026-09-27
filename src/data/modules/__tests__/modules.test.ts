@@ -258,6 +258,8 @@ function representationVars(r: Representation): string[] {
         r.height,
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
+    case 'treeDiagram':
+      return [r.first, r.second, ...[r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
     case 'spinner':

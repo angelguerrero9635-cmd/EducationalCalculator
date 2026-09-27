@@ -16,6 +16,7 @@ import { DotPlotPair } from './DotPlotPair';
 import { Sample } from './Sample';
 import { Spinner } from './Spinner';
 import { DiceGrid } from './DiceGrid';
+import { TreeDiagram } from './TreeDiagram';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
@@ -279,6 +280,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Spinner spec={spec} calc={calc} />;
     case 'diceGrid':
       return <DiceGrid spec={spec} calc={calc} />;
+    case 'treeDiagram':
+      return <TreeDiagram spec={spec} calc={calc} />;
     case 'fieldOfView':
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':

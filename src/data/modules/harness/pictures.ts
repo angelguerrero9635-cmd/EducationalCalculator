@@ -960,6 +960,22 @@ export function repIssues(
         out.push(`solid drawn with volume ${vol}, shows ${V}`);
       break;
     }
+    case 'treeDiagram': {
+      // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
+      count(rep.first, 'first-stage outcomes', 6);
+      count(rep.second, 'second-stage outcomes', 6);
+      const [a, b, n, P] = [rep.first, rep.second, rep.total, rep.chance].map((id) =>
+        id ? val(id) : undefined,
+      );
+      for (const x of [a, b]) if (x !== undefined && x < 1) out.push(`a stage with ${x} outcomes`);
+      if (a !== undefined && b !== undefined && n !== undefined && a * b !== n)
+        out.push(`${a} × ${b} branches drawn, total shows ${n}`);
+      if (a !== undefined && b !== undefined && P !== undefined && Math.abs(1 / (a * b) - P) > 1e-6)
+        out.push(`one of ${a * b} paths drawn, chance shows ${P}`);
+      if (rep.path && a !== undefined && b !== undefined && (rep.path[0] >= a || rep.path[1] >= b))
+        out.push(`path ${rep.path.join(', ')} is not a branch of ${a} × ${b}`);
+      break;
+    }
     case 'diceGrid': {
       const t = val(rep.target);
       if (t === undefined) break;

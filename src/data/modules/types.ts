@@ -967,6 +967,22 @@ export type Representation =
       count?: string;
       chance?: string;
     }
+  /**
+   * A tree diagram for two stages with `first` and `second` equally likely outcomes (1 to 6
+   * each): a branch per outcome marked 1/n, the leaves listing every pair (the first 24).
+   * `names` name each stage's outcomes (A, B, … and 1, 2, … by default), `stages` the
+   * stages; `path` (0-based) is highlighted and `chance` is its probability, 1 ÷ `total`.
+   */
+  | {
+      kind: 'treeDiagram';
+      first: string;
+      second: string;
+      total?: string;
+      names?: [string[], string[]];
+      stages?: [string, string];
+      path?: [number, number];
+      chance?: string;
+    }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
   | {
       kind: 'dotPlot';

@@ -105,6 +105,47 @@ const straight = pair(180, 'The two angles make a straight line.');
 const right = pair(90, 'The two angles make a right angle.');
 
 export const G7C_GALLERY_MODULES: ModuleDef[] = [
+  {
+    id: 'g.tree-diagram',
+    title: 'Tree diagram',
+    assumptions: [
+      'The coin lands heads or tails, equally likely.',
+      'The spinner stops on each of its equal sectors equally often.',
+    ],
+    variables: [
+      whole('a', 'a', 'Coin outcomes', 1, 6),
+      whole('b', 'b', 'Spinner outcomes', 2, 6),
+      { ...whole('n', 'n', 'Outcomes in all', 1, 36), derived: true },
+      { id: 'P', symbol: 'P', name: 'Chance of heads and 2', min: 0, max: 1, derived: true },
+    ],
+    relations: [
+      derive('n = a × b', 'n', ['a', 'b'], '{a} × {b} = {n}', (v) => v.a! * v.b!),
+      derive('P = 1 ÷ n', 'P', ['n'], '1 ÷ {n} = {P}', (v) => 1 / v.n!),
+    ],
+    steps: {
+      'n = a × b': {
+        n: { expr: '{a} × {b}', how: 'Each coin outcome branches into every spinner outcome.' },
+      },
+      'P = 1 ÷ n': {
+        P: { expr: '1 ÷ {n}', how: 'Heads and 2 is one of the equally likely outcomes.' },
+      },
+    },
+    example: { a: 2, b: 3, n: 6, P: 1 / 6 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'treeDiagram',
+      first: 'a',
+      second: 'b',
+      total: 'n',
+      names: [
+        ['H', 'T'],
+        ['1', '2', '3', '4', '5', '6'],
+      ],
+      stages: ['Coin', 'Spinner'],
+      path: [0, 1],
+      chance: 'P',
+    },
+  },
   (() => {
     /** The pairs of two dice with a sum of s, as a list ("1 + 6, 2 + 5, …"). */
     const pairs = (s: number) =>
