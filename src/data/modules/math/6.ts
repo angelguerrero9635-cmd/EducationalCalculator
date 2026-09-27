@@ -2554,7 +2554,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { c: 4, x: 7.5, q: 30 },
     startWith: ['c', 'q'],
-    representation: { kind: 'tape', parts: ['x'], total: 'q', groups: 'c' },
+    // The equation with its coefficient, then the groups the tape shows: "4x = 30", "4 × 7.5 = 30".
+    representation: {
+      kind: 'tape',
+      parts: ['x'],
+      total: 'q',
+      groups: 'c',
+      caption: '{c}x = {q} · {c} × {x} = {q}',
+    },
   },
 
   // ── Area of triangles, parallelograms and trapezoids (6.G.1) ──
