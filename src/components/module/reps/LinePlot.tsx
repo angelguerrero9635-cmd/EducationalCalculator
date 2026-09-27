@@ -14,6 +14,8 @@ type Spec = Extract<Representation, { kind: 'linePlot' }>;
 /** Most X's drawn in one column. */
 const MAX = 10;
 
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+
 /**
  * Line plot: a number line with one X above a value for each object measured at that value.
  * Tap the k-th spot above a value to make its count k (tap the top X to take one away).
@@ -35,12 +37,17 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           ? Math.max(1, Math.round(rep.shown(spec.marks)))
           : undefined
       : undefined;
+  // A start in parts of a unit (3 3/4 with `startParts: 4`), else a whole number.
+  const sp = spec.startParts ?? 1;
   const startAt =
-    spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : undefined;
+    spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start) * sp) / sp : undefined;
   const mark = (i: number) => {
     if (d === undefined || startAt === undefined) return '?';
-    const whole = startAt + Math.floor(i / d);
-    let [n, den] = [i % d, d];
+    // Count in the parts both the start and the marks use: 3 3/4 + 1/2 is 15/4 + 2/4.
+    const L = (d * sp) / gcd(d, sp);
+    const t = Math.round(startAt * L) + i * (L / d);
+    const whole = Math.floor(t / L);
+    let [n, den] = [t % L, L];
     for (let g = n; g > 1; g--) {
       if (n % g === 0 && den % g === 0) {
         n /= g;
@@ -106,7 +113,7 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         <Steppers
           calc={calc}
           items={[
-            { var: spec.start, steps: [1], pin: ids },
+            { var: spec.start, steps: [1 / sp], pin: ids },
             ...(typeof spec.marks === 'string'
               ? [{ var: spec.marks, steps: [1], pin: [...ids, spec.start] }]
               : []),
@@ -134,5 +141,12 @@ const styles = StyleSheet.create({
   tickMark: { width: 1.5, height: 8 },
   label: { fontSize: font.caption + 1, fontVariant: ['tabular-nums'] },
   unit: { fontSize: font.caption + 1, textAlign: 'center' },
-  count: { fontSize: font.caption, fontVariant: ['tabular-nums'] },
+  // Stretched to its column so a long count ("10 objects") wraps instead of running into the next.
+  count: {
+    fontSize: font.caption,
+    fontVariant: ['tabular-nums'],
+    alignSelf: 'stretch',
+    paddingHorizontal: 2,
+    textAlign: 'center',
+  },
 });

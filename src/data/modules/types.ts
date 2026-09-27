@@ -175,6 +175,11 @@ export type Representation =
        * then not used).
        */
       marks?: 2 | 4 | 8 | string;
+      /**
+       * With `marks`: the start may be a fraction in these parts of a unit (4: 3 3/4 inches), its
+       * slider steps by 1/4, and every mark reads as a mixed number (3 3/4, 4, 4 1/4, …).
+       */
+      startParts?: 2 | 4 | 8;
     }
   /**
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
