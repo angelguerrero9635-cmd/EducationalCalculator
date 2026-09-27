@@ -959,6 +959,26 @@ export function repIssues(
         out.push(`solid drawn with volume ${vol}, shows ${V}`);
       break;
     }
+    case 'spinner': {
+      // Equal sectors (SPINNER_MAX in Spinner.tsx), one color per outcome.
+      rep.parts.forEach((id) => count(id, 'sectors', 24));
+      const xs = rep.parts.map(val);
+      if (rep.colors && rep.colors.length < rep.parts.length)
+        out.push('a spinner outcome has no color');
+      if (rep.names && rep.names.length < rep.parts.length)
+        out.push('a spinner outcome has no name');
+      if ((rep.pick ?? 0) >= rep.parts.length)
+        out.push(`spinner pick ${rep.pick} is not an outcome`);
+      if (xs.some((x) => x === undefined)) break;
+      const total = (xs as number[]).reduce((s, x) => s + x, 0);
+      if (total > 24) out.push(`${total} sectors, more than the spinner's 24`);
+      const T = rep.total ? val(rep.total) : undefined;
+      if (T !== undefined && T !== total) out.push(`sectors add to ${total}, total shows ${T}`);
+      const P = rep.chance ? val(rep.chance) : undefined;
+      if (P !== undefined && total > 0 && Math.abs(xs[rep.pick ?? 0]! / total - P) > 1e-6)
+        out.push(`${xs[rep.pick ?? 0]} of ${total} sectors drawn, chance shows ${P}`);
+      break;
+    }
     case 'sample': {
       // One dot per member (SAMPLE_MAX in Sample.tsx); the sample fits in the population.
       count(rep.population, 'population', 400);

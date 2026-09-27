@@ -103,6 +103,56 @@ const straight = pair(180, 'The two angles make a straight line.');
 const right = pair(90, 'The two angles make a right angle.');
 
 export const G7C_GALLERY_MODULES: ModuleDef[] = [
+  {
+    id: 'g.spinner',
+    title: 'A spinner',
+    assumptions: [
+      'The spinner is cut into equal sectors.',
+      'The arrow is as likely to stop in any sector as any other.',
+    ],
+    variables: [
+      whole('r', 'r', 'Red sectors', 0, 12),
+      whole('b', 'b', 'Blue sectors', 0, 12),
+      whole('y', 'y', 'Yellow sectors', 0, 12),
+      whole('n', 'n', 'Sectors in all', 1, 24),
+      { id: 'P', symbol: 'P', name: 'Chance of red', min: 0, max: 1, derived: true },
+    ],
+    relations: [
+      {
+        id: 'n = r + b + y',
+        display: '{r} + {b} + {y} = {n}',
+        vars: ['n', 'r', 'b', 'y'],
+        residual: (v: Values) => v.n! - v.r! - v.b! - v.y!,
+        solve: {
+          n: (v: Values) => v.r! + v.b! + v.y!,
+          r: (v: Values) => v.n! - v.b! - v.y!,
+          b: (v: Values) => v.n! - v.r! - v.y!,
+          y: (v: Values) => v.n! - v.r! - v.b!,
+        },
+      },
+      derive('P = r ÷ n', 'P', ['r', 'n'], '{r} ÷ {n} = {P}', (v) => v.r! / v.n!),
+    ],
+    steps: {
+      'n = r + b + y': {
+        n: { expr: '{r} + {b} + {y}', how: 'Add the sectors of every color.' },
+        r: { expr: '{n} − {b} − {y}', how: 'Take the blue and yellow sectors from all of them.' },
+        b: { expr: '{n} − {r} − {y}', how: 'Take the red and yellow sectors from all of them.' },
+        y: { expr: '{n} − {r} − {b}', how: 'Take the red and blue sectors from all of them.' },
+      },
+      'P = r ÷ n': {
+        P: { expr: '{r} ÷ {n}', how: 'The red sectors out of all the equal sectors.' },
+      },
+    },
+    example: { r: 3, b: 4, y: 1, n: 8, P: 0.375 },
+    startWith: ['r', 'b', 'y'],
+    representation: {
+      kind: 'spinner',
+      parts: ['r', 'b', 'y'],
+      colors: ['red', 'blue', 'yellow'],
+      chance: 'P',
+      total: 'n',
+    },
+  },
   (() => {
     // Two samples of eight: minutes read last night in two classes.
     const A = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8'];

@@ -14,6 +14,7 @@ import { CrossSection } from './CrossSection';
 import { DotPlot } from './DotPlot';
 import { DotPlotPair } from './DotPlotPair';
 import { Sample } from './Sample';
+import { Spinner } from './Spinner';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
@@ -273,6 +274,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       );
     case 'sample':
       return <Sample spec={spec} calc={calc} />;
+    case 'spinner':
+      return <Spinner spec={spec} calc={calc} />;
     case 'fieldOfView':
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':

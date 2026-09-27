@@ -938,6 +938,21 @@ export type Representation =
       estimate?: string;
       labels?: [string, string];
     }
+  /**
+   * A spinner cut into equal sectors: `parts` are how many sectors each outcome has (up to 24
+   * in all), in `colors` (red, blue, green, yellow, orange, purple) and named by `names` (the
+   * color names by default). The event is outcome `pick` (0 first), its sectors outlined;
+   * `chance` is its probability, parts[pick] ÷ `total`. "Spin" turns the arrow.
+   */
+  | {
+      kind: 'spinner';
+      parts: string[];
+      colors?: ('red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple')[];
+      names?: string[];
+      pick?: number;
+      chance?: string;
+      total?: string;
+    }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
   | {
       kind: 'dotPlot';

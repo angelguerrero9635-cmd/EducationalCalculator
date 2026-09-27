@@ -108,6 +108,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
 | `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it      | Grade 7 cross-sections, volume      |
 | `sample`           | a population of dots, a random sample ringed; draw a new sample       | Grade 7 sampling, inferences        |
+| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin          | Grade 7 probability                 |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
