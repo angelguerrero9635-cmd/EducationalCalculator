@@ -856,13 +856,23 @@ export function repIssues(
     }
     case 'grid100': {
       // A percent like 38.7 shades the nearest square (Grid100.tsx rounds): check the range.
+      // `past100` adds a full grid per 100 (one stack past 3 grids, up to 99 of them); `exact`
+      // shades tenths of a square, so the percent must be in tenths.
       const shaded = val(rep.percent);
-      if (shaded !== undefined && (shaded < 0 || shaded > 100)) {
-        out.push(`squares shaded ${rep.percent} out of 0–100 (${shaded})`);
+      const most = rep.past100 ? 10000 : 100;
+      if (shaded !== undefined && (shaded < 0 || shaded > most)) {
+        out.push(`squares shaded ${rep.percent} out of 0–${most} (${shaded})`);
       }
+      if (
+        rep.exact &&
+        shaded !== undefined &&
+        Math.abs(shaded * 10 - Math.round(shaded * 10)) > 1e-6
+      )
+        out.push(`squares shaded ${rep.percent} = ${shaded} is not in tenths of a square`);
       if (rep.second) count(rep.second, 'squares shaded', 100);
-      // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx).
-      if (rep.wholes) count(rep.wholes, 'whole grids', 3);
+      // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx); with
+      // `stack` more are one stack with its count, to 99.
+      if (rep.wholes) count(rep.wholes, 'whole grids', rep.stack ? 99 : 3);
       break;
     }
     case 'factorPairs': {

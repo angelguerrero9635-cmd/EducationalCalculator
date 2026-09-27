@@ -161,7 +161,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
 | `tape`             | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
-| `grid100`          | `second`, `wholes`                       | a second grid to compare; whole grids for the ones                            |
+| `grid100`          | `second`, `wholes`, `stack`, `past100`   | a grid to compare; ones grids (`stack` past 3); past 100%; `exact` tenths     |
 | `rounding`         | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
 | `coordinatePlane`  | `trail`                                  | a pattern's earlier points and their table                                    |
 | `unitCubes`        | `second`, `total`                        | two boxes joined into an L                                                    |

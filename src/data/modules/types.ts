@@ -466,6 +466,12 @@ export type Representation =
       second?: string;
       /** Whole grids, fully shaded, before the first: the ones of a decimal (1.35). */
       wholes?: string;
+      /** Past 3 whole grids, one stack of grids with its count ("45 whole grids"): ones to 99. */
+      stack?: boolean;
+      /** A percent past 100 draws a full grid per 100 before the rest (125% = 1 grid + 25). */
+      past100?: boolean;
+      /** Shade tenths of a square exactly (37.5 fills half of square 38) instead of rounding. */
+      exact?: boolean;
     }
   /**
    * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is

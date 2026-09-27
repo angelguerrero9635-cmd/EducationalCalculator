@@ -263,10 +263,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Hundredths grids past 3 ones',
     kind: 'grid100',
     pages: ['m.4.decimals-intro'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.hundredths-ones', 'g.hundredths-many-ones', 'g.hundredths-ones-99'],
+    uses: '"stack":true',
     notes:
-      '45.06 is 45 whole grids and 6 hundredths: draw a few whole grids and a count, so ones can go to 99.',
+      '45.06 is 45 whole grids and 6 hundredths: draw a few whole grids and a count, so ones can go to 99. Pass `stack: true` with `wholes`: up to 3 ones draw as before, past 3 one stack of grids marked "× 45" and "45 whole grids". The page raises Ones to 0–99 and As a decimal to 99.99.',
   },
   {
     id: 'R24',
@@ -322,10 +323,16 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Percent grids past 100% and in tenths of a square',
     kind: 'grid100',
     pages: ['m.6.percent~fraction-decimal-percent'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.percent-grid-page',
+      'g.percent-grid-past-100',
+      'g.percent-grid-tenths',
+      'g.percent-grid-edge',
+    ],
+    uses: '"past100":true',
     notes:
-      '125% is one full grid and 25 squares; 37.5% shades part of a square. Then the page takes 5/4 = 125%.',
+      '125% is one full grid and 25 squares; 37.5% shades part of a square. Then the page takes 5/4 = 125%. Pass `past100: true, exact: true`: a full grid per 100 (a stack with its count past 3 grids, to 10,000%), and tenths of a square filled exactly; tapping square n sets the full grids + n. The page drops "a ≤ b" and raises Numerator (1000), Decimal (10) and Percent (1000).',
   },
   {
     id: 'G01',
