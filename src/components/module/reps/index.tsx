@@ -82,6 +82,7 @@ import { GrassSlope } from './GrassSlope';
 import { Flashlights } from './Flashlights';
 import { LeafCount } from './LeafCount';
 import { CurvedSolid } from './CurvedSolid';
+import { Scatter } from './Scatter';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -99,6 +100,7 @@ export const representationTitle = (r: Representation) =>
           'pieChart',
           'coordinatePlane',
           'placeValueChart',
+          'scatter',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
@@ -141,6 +143,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LeafCount spec={spec} calc={calc} />;
     case 'curvedSolid':
       return <CurvedSolid spec={spec} calc={calc} />;
+    case 'scatter':
+      return <Scatter spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':

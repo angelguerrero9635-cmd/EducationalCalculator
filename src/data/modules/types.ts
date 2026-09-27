@@ -456,6 +456,24 @@ export type Representation =
       extent: number;
     }
   /**
+   * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
+   * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the
+   * caption counts points above and below it. `clusters` rings named groups (point indices),
+   * `outlier` rings one point; `at` reads an input up to the line and across to its prediction
+   * (the module's relation gives y = slope × x + intercept).
+   */
+  | {
+      kind: 'scatter';
+      x: { label: string; min: number; max: number; step?: number };
+      y: { label: string; min: number; max: number; step?: number };
+      points: [number, number][];
+      slope: string;
+      intercept: string;
+      clusters?: { label: string; points: number[] }[];
+      outlier?: number;
+      at?: { x: string; y: string };
+    }
+  /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
    * their current values; the point sits at the current (x, y) and drags along x.
    */

@@ -976,6 +976,27 @@ export function repIssues(
       count(rep.right, 'push');
       count(rep.left, 'push');
       break;
+    case 'scatter': {
+      // Every point is on the axes; clusters and the outlier name points that exist.
+      const on = (v: number, a: { min: number; max: number }) => v >= a.min && v <= a.max;
+      rep.points.forEach(([x, y], i) => {
+        if (!on(x, rep.x) || !on(y, rep.y)) out.push(`point ${i} (${x}, ${y}) is off the axes`);
+      });
+      const named = [...(rep.clusters ?? []).flatMap((c) => c.points), rep.outlier ?? 0];
+      for (const i of named) if (!rep.points[i]) out.push(`there is no point ${i}`);
+      // The prediction sits on the line (compared when none of the four has a unit).
+      if (rep.at) {
+        const ids4 = [rep.slope, rep.intercept, rep.at.x, rep.at.y];
+        const [m, b, x, y] = ids4.map(val);
+        if (
+          ids4.every((id) => !byId.get(id)?.unit) &&
+          [m, b, x, y].every((v) => v !== undefined) &&
+          Math.abs(m! * x! + b! - y!) > 1e-6 * (1 + Math.abs(y!))
+        )
+          out.push(`prediction ${y} is off the line (${m! * x! + b!})`);
+      }
+      break;
+    }
     case 'curvedSolid': {
       // A cylinder or cone needs its height; a sphere has none. Only a cone or a sphere is
       // poured into a cylinder.
