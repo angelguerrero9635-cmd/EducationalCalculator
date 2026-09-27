@@ -914,9 +914,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.living-needs~homes',
     kind: 'icon',
     pages: ['s.K.living-needs~homes'],
-    status: 'requested',
-    gallery: [],
-    notes: 'Duck → duck; Owl → owl; Squirrel → squirrel; Lizard → lizard; Roadrunner → roadrunner',
+    status: 'drawn',
+    gallery: ['g.icons-homes'],
+    uses: '"icon":"duck"',
+    notes:
+      "Duck → duck; Owl → owl; Squirrel → squirrel; Lizard → lizard; Roadrunner → roadrunner. Drawn: Card label → icon: Duck → 'duck'; Owl → 'owl'; Squirrel → 'squirrel'; Lizard → 'lizard'; Roadrunner → 'roadrunner' (Fish, Frog, Deer and Camel keep their icons).",
   },
   {
     id: 'D08',
@@ -973,10 +975,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.offspring~care',
     kind: 'icon',
     pages: ['s.1.offspring~care'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.icons-parent-care'],
+    uses: '"icon":"hen on nest"',
     notes:
-      "Bird brings worms → a bird feeding chicks in a nest; Cow feeds her calf → a calf drinking from a cow; Kangaroo pouch → a joey in a kangaroo's pouch; Lion carries her cub → a lioness carrying a cub in her mouth; Hen sits on her eggs → a hen on a nest; Penguin keeps its chick on its feet → a penguin with a chick on its feet",
+      "Bird brings worms → a bird feeding chicks in a nest; Cow feeds her calf → a calf drinking from a cow; Kangaroo pouch → a joey in a kangaroo's pouch; Lion carries her cub → a lioness carrying a cub in her mouth; Hen sits on her eggs → a hen on a nest; Penguin keeps its chick on its feet → a penguin with a chick on its feet. Drawn: Card label → icon: Bird brings worms → 'bird feeding chicks'; Cow feeds her calf → 'calf drinking milk'; Kangaroo pouch → 'joey in pouch'; Lion carries her cub → 'lioness carrying cub'; Hen sits on her eggs → 'hen on nest'; Penguin keeps its chick on its feet → 'penguin chick on feet'.",
   },
   {
     id: 'D14',
@@ -1083,10 +1086,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.habitats~which-habitat',
     kind: 'icon',
     pages: ['s.2.habitats~which-habitat'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.icons-which-habitat'],
+    uses: '"icon":"walrus"',
     notes:
-      'Whale → whale; Octopus → octopus; Monkey → monkey; Parrot → parrot; Vines → vines hanging from a tree; Polar bear → polar bear; Walrus → walrus',
+      "Whale → whale; Octopus → octopus; Monkey → monkey; Parrot → parrot; Vines → vines hanging from a tree; Polar bear → polar bear; Walrus → walrus. Drawn: Card label → icon: Whale → 'whale'; Octopus → 'octopus'; Monkey → 'monkey'; Parrot → 'parrot'; Vines → 'hanging vines'; Polar bear → 'polar bear'; Walrus → 'walrus'. 'polar bear' also fits the Polar bear card on s.3.adaptation-fossils~survive-where.",
   },
   {
     id: 'D25',
@@ -1183,20 +1187,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.adaptation-fossils',
     kind: 'icon',
     pages: ['s.3.adaptation-fossils'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.icons-fossils'],
+    uses: '"icon":"clam fossil"',
     notes:
-      'Clam shell → a clam shell fossil; Coral → a coral fossil; Shark tooth → a shark tooth fossil; Fern leaf → a fern leaf print in rock; Dragonfly → a dragonfly fossil; Woolly mammoth hair → a woolly mammoth; Musk ox → a musk ox',
+      "Clam shell → a clam shell fossil; Coral → a coral fossil; Shark tooth → a shark tooth fossil; Fern leaf → a fern leaf print in rock; Dragonfly → a dragonfly fossil; Woolly mammoth hair → a woolly mammoth; Musk ox → a musk ox. Drawn: Card label → icon: Clam shell → 'clam fossil'; Coral → 'coral fossil'; Shark tooth → 'shark tooth fossil'; Fern leaf → 'fern fossil'; Dragonfly → 'dragonfly fossil'; Woolly mammoth hair → 'woolly mammoth'; Musk ox → 'musk ox' (Fish keeps 'fish').",
   },
   {
     id: 'D35',
     what: 'Card pictures for s.3.animal-groups~group-jobs',
     kind: 'icon',
     pages: ['s.3.animal-groups~group-jobs'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.icons-group-jobs'],
+    uses: '"icon":"penguin huddle"',
     notes:
-      "Wolf pack hunting → wolves running together; Ants carrying food → ants carrying a leaf; Zebra herd → a group of zebras; School of fish → a school of fish (existing icon 'fish', repeated); Meerkat lookout → a meerkat standing up on watch; Penguin huddle → penguins packed together; Bees in a winter ball → a ball of bees",
+      "Wolf pack hunting → wolves running together; Ants carrying food → ants carrying a leaf; Zebra herd → a group of zebras; School of fish → a school of fish (existing icon 'fish', repeated); Meerkat lookout → a meerkat standing up on watch; Penguin huddle → penguins packed together; Bees in a winter ball → a ball of bees. Drawn: Card label → icon: Wolf pack hunting → 'wolf pack'; Ants carrying food → 'ants carrying leaf'; Zebra herd → 'zebra herd'; School of fish → 'school of fish' (a new drawing: a card shows one icon, so the 'fish' shape is drawn small, eleven times, in silver in water); Meerkat lookout → 'meerkat lookout'; Penguin huddle → 'penguin huddle'; Bees in a winter ball → 'bee ball'.",
   },
   {
     id: 'D36',
