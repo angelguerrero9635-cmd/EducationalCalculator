@@ -977,6 +977,17 @@ export function repIssues(
       }
       break;
     }
+    case 'mapping': {
+      // The diagram has a row per different input and output; more than 8 don't fit.
+      if (rep.pairs.length < 1 || rep.pairs.length > 8)
+        out.push(`mapping with ${rep.pairs.length} pairs (1 to 8 fit)`);
+      for (const p of rep.pairs) {
+        const [x, y] = [val(p.x), val(p.y)];
+        if ((x !== undefined && !Number.isFinite(x)) || (y !== undefined && !Number.isFinite(y)))
+          out.push(`mapping pair (${x}, ${y}) is not a number`);
+      }
+      break;
+    }
     case 'functionMachine': {
       let x = val(rep.input);
       for (const s of rep.rule) {

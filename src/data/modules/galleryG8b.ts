@@ -20,7 +20,51 @@ const signed = (id: string, symbol: string, name: string, step = 1, lim = 10) =>
   ...(step === 1 ? { integer: true } : {}),
 });
 
+/** Four outputs typed; each input is its output squared (so 2 and −2 share the input 4). */
+const SQUARES = [1, 2, 3, 4] as const;
+
 export const G8B_GALLERY_MODULES: ModuleDef[] = [
+  {
+    id: 'g.mapping',
+    title: 'Mapping diagram',
+    assumptions: [
+      'Each pair is an input and an output. Each input is its output times itself.',
+      'A function gives each input exactly one output.',
+      'On the graph, no vertical line crosses a function twice.',
+    ],
+    standalone: {
+      vars: ['y2', 'x2', 'y3', 'x3', 'y4', 'x4'],
+      why: 'Each pair stands alone; the picture tests whether the pairs make a function.',
+    },
+    variables: SQUARES.flatMap((i) => [
+      signed(`y${i}`, `y${'₁₂₃₄'[i - 1]}`, `Output ${i}`),
+      { ...signed(`x${i}`, `x${'₁₂₃₄'[i - 1]}`, `Input ${i}`, 1, 100), derived: true },
+    ]),
+    relations: SQUARES.map((i) => ({
+      id: `x${i} = y${i} × y${i}`,
+      display: `{x${i}} = {y${i}} × {y${i}}`,
+      vars: [`x${i}`, `y${i}`],
+      residual: (v: Values) => v[`x${i}`]! - v[`y${i}`]! * v[`y${i}`]!,
+      solve: {
+        [`x${i}`]: (v: Values) => v[`y${i}`]! * v[`y${i}`]!,
+        [`y${i}`]: () => undefined,
+      },
+    })),
+    steps: Object.fromEntries(
+      SQUARES.map((i) => [
+        `x${i} = y${i} × y${i}`,
+        {
+          [`x${i}`]: { expr: `{y${i}} × {y${i}}`, how: 'The input is the output times itself.' },
+        },
+      ]),
+    ),
+    example: { y1: 2, x1: 4, y2: -2, x2: 4, y3: 3, x3: 9, y4: 1, x4: 1 },
+    startWith: ['y1', 'y2', 'y3', 'y4'],
+    representation: {
+      kind: 'mapping',
+      pairs: SQUARES.map((i) => ({ x: `x${i}`, y: `y${i}` })),
+    },
+  },
   {
     id: 'g.function-machine',
     title: 'Function machine',
