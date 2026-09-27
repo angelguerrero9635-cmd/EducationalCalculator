@@ -91,7 +91,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `protractor`       | both scales, an arm to drag                                           | Grade 4 measuring angles            |
 | `wave`             | crests and troughs with wavelength (and amplitude) marked             | Grade 4 and 8 waves, physics        |
 | `punnettSquare`    | two parents' alleles and the four offspring boxes                     | Grade 7 heredity, biology           |
-| `factorPairs`      | every rectangle of a number's unit squares, the typed pair outlined   | Grade 4 factors, primes, composites |
+| `factorPairs`      | each rectangle of its unit squares, pair outlined; thin bars past 100 | Grade 4 factors, primes, composites |
 | `shareWholes`      | wholes cut into as many parts as people, one share shaded in each     | Grade 5 fractions as division       |
 | `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump  | Grade 6 negatives, temperature      |
 | `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                      | Grade 6 percent                     |
@@ -146,7 +146,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | Kind               | Option                                   | Draws                                                                         |
 | ------------------ | ---------------------------------------- | ----------------------------------------------------------------------------- |
 | `compareRows`      | `object`                                 | the pencil, crayon or ribbon measured, above its row of cubes                 |
-| `hundredChart`     | `piece`, `multiplesOf`                   | only the number and its four neighbors; or every multiple shaded              |
+| `hundredChart`     | `piece`, `multiplesOf`, `max: 1000`      | the number and its 4 neighbors; or multiples shaded; 1000: its hundred only   |
 | `hops`             | a hop `sign` naming a variable (1 or −1) | a + / − switch that flips that hop                                            |
 | `rectangle`        | `grid`                                   | unit squares on a perimeter page                                              |
 | `polygon`          | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |

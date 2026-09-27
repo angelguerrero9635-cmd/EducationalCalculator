@@ -240,13 +240,25 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
   },
   {
     id: 'R21',
-    what: 'Factor pairs to 200; hundred chart around any number to 1,000',
+    what: 'Factor pairs to 200',
     kind: 'factorPairs',
-    pages: ['m.4.factors-multiples', 'm.4.factors-multiples~multiples'],
-    status: 'requested',
-    gallery: [],
+    pages: ['m.4.factors-multiples'],
+    status: 'drawn',
+    gallery: ['g.factor-pairs-126', 'g.factor-pairs-200'],
+    uses: '"max":200',
     notes:
-      'Factors of 105 and 126; is 652 a multiple of 5? The lesson chat raises the ranges once these draw.',
+      'Factors of 105 and 126. No new field: past 100 the rectangles draw as thin bars to scale, each row labeled. The page raises n (and a, b) to 200 and f to 18 (180 has 18 factors).',
+  },
+  {
+    id: 'R21b',
+    what: 'Hundred chart around any number to 1,000',
+    kind: 'hundredChart',
+    pages: ['m.4.factors-multiples~multiples'],
+    status: 'drawn',
+    gallery: ['g.multiples-652', 'g.multiples-1000', 'g.chart-piece-652', 'g.chart-piece-990'],
+    uses: '"max":1000',
+    notes:
+      'Is 652 a multiple of 5? Pass max: 1000: the chart draws the hundred holding the number (601–700), multiples shaded; with piece, three rows around it. The page raises n to 1000 and q to 500.',
   },
   {
     id: 'R22',

@@ -77,7 +77,8 @@ export type Representation =
   | {
       kind: 'hundredChart';
       value: string;
-      max: 100 | 120;
+      /** 1000: only the hundred holding `value` (601–700), or three rows of it with `piece`. */
+      max: 100 | 120 | 1000;
       marks?: string[];
       /** Counting by tens from `value`: dots on the numbers passed, one row down per ten. */
       tens?: { count: string };
