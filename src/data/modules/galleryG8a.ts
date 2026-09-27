@@ -120,7 +120,88 @@ const exponentRule = (
   };
 };
 
+/** a × x + b = c × x + d on a balance: x-blocks and units on both pans. */
+const equationBalance = (id: string, title: string, assumptions: string[], example: Values) =>
+  ({
+    id,
+    title,
+    assumptions,
+    variables: [
+      whole('a', 'a', 'x-blocks on the left', -6, 6),
+      whole('b', 'b', 'Units on the left', -12, 12),
+      whole('c', 'c', 'x-blocks on the right', -6, 6),
+      whole('d', 'd', 'Units on the right', -12, 12),
+      { id: 'x', symbol: 'x', name: 'Weight of one x-block', min: -50, max: 50, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'a × x + b = c × x + d',
+        display: '{a} × {x} + {b} = {c} × {x} + {d}',
+        vars: ['x', 'a', 'b', 'c', 'd'],
+        residual: (v: Values) => v.a! * v.x! + v.b! - (v.c! * v.x! + v.d!),
+        solve: {
+          x: (v: Values) => div(v.d! - v.b!, v.a! - v.c!),
+          b: (v: Values) => v.c! * v.x! + v.d! - v.a! * v.x!,
+          d: (v: Values) => v.a! * v.x! + v.b! - v.c! * v.x!,
+          a: (v: Values) => div(v.c! * v.x! + v.d! - v.b!, v.x!),
+          c: (v: Values) => div(v.a! * v.x! + v.b! - v.d!, v.x!),
+        },
+      },
+    ],
+    steps: {
+      'a × x + b = c × x + d': {
+        x: {
+          expr: '({d} − {b}) ÷ ({a} − {c})',
+          how: 'Take the same x-blocks and units from both sides, then share the units left among the x-blocks left.',
+        },
+        b: {
+          expr: '{c} × {x} + {d} − {a} × {x}',
+          how: 'The right side’s weight, less the left side’s x-blocks.',
+        },
+        d: {
+          expr: '{a} × {x} + {b} − {c} × {x}',
+          how: 'The left side’s weight, less the right side’s x-blocks.',
+        },
+        a: {
+          expr: '({c} × {x} + {d} − {b}) ÷ {x}',
+          how: 'The right side’s weight less the left side’s units, in x-blocks.',
+        },
+        c: {
+          expr: '({a} × {x} + {b} − {d}) ÷ {x}',
+          how: 'The left side’s weight less the right side’s units, in x-blocks.',
+        },
+      },
+    },
+    example,
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'equationBalance',
+      x: 'x',
+      left: ['a', 'b'],
+      right: ['c', 'd'],
+      cancel: true,
+    },
+  }) satisfies ModuleDef;
+
 export const G8A_GALLERY_MODULES: ModuleDef[] = [
+  equationBalance(
+    'g.equation-balance',
+    'Unknowns on both sides',
+    [
+      'Each x-block weighs the same unknown amount x; each counter weighs 1.',
+      'Taking the same weight from both pans keeps the balance level.',
+    ],
+    { a: 3, b: 4, c: 1, d: 10, x: 3 },
+  ),
+  equationBalance(
+    'g.equation-balloons',
+    'Negatives on a balance',
+    [
+      'A balloon pulls its pan up: a balloon marked −x takes away one x, one marked −1 takes away 1.',
+      'The balance is level when both sides come to the same amount.',
+    ],
+    { a: 2, b: -3, c: -1, d: 6, x: 3 },
+  ),
   {
     id: 'g.scientific-notation',
     title: 'Scientific notation',

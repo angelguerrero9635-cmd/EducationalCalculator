@@ -987,6 +987,17 @@ export function repIssues(
       }
       break;
     }
+    case 'equationBalance': {
+      // Whole x-blocks and counters (balloons when negative), as many as a pan holds.
+      const [k1, n1, k2, n2] = [...rep.left, ...rep.right].map(val);
+      for (const k of [k1, k2])
+        if (k !== undefined && (k !== Math.round(k) || Math.abs(k) > 10))
+          out.push(`${k} x-blocks on a pan (whole, up to 10)`);
+      for (const n of [n1, n2])
+        if (n !== undefined && (n !== Math.round(n) || Math.abs(n) > 15))
+          out.push(`${n} unit counters on a pan (whole, up to 15)`);
+      break;
+    }
     case 'powerScale': {
       const [x, a, e] = [rep.number, rep.mantissa, rep.exponent].map(val);
       // (The sampled values are rounded to 9 decimals, so a tiny number can read as 0.)

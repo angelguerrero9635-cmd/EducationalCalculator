@@ -89,6 +89,7 @@ const PICTURE_NAMES: Record<string, string> = {
   rootSquare: 'square and its root on a number line',
   factorRows: 'rows of repeated factors',
   powerScale: 'powers-of-ten ruler',
+  equationBalance: 'balance with x-blocks on both sides',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

@@ -315,6 +315,8 @@ function representationVars(r: Representation): string[] {
       return [r.base, r.first, r.second, r.result];
     case 'powerScale':
       return [r.number, r.mantissa, r.exponent];
+    case 'equationBalance':
+      return [r.x, ...[...r.left, ...r.right].filter((v): v is string => typeof v === 'string')];
     case 'pushes':
       return [r.right, r.left, r.extra];
     case 'force':

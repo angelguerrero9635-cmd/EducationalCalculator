@@ -647,6 +647,20 @@ export type Representation =
    * is read, "× 10ⁿ" with the `exponent`. Drag the mantissa, or the number to another decade.
    */
   | { kind: 'powerScale'; number: string; mantissa: string; exponent: string }
+  /**
+   * An equation with the unknown on both sides as a pan balance (Grade 8): `left` and `right`
+   * are [coefficient, constant] (variables or numbers) of `x`, so 3x + 4 = x + 10 is
+   * left [3, 4], right [1, 10]. Each pan holds wooden x-blocks and unit counters; negatives
+   * are balloons (−x, −1) pulling the pan up. The beam tips at the current `x` and is level
+   * when the sides are equal. `cancel` crosses out what the two pans share.
+   */
+  | {
+      kind: 'equationBalance';
+      x: string;
+      left: [string | number, string | number];
+      right: [string | number, string | number];
+      cancel?: boolean;
+    }
   /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */
   | { kind: 'pushes'; right: string; left: string; extra: string; max: number }
   /**
