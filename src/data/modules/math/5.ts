@@ -1404,7 +1404,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { a: 0.4, b: 0.3, p: 0.12 },
     startWith: ['a', 'b'],
     // Each factor split into ones and tenths (1.4 = 1 + 0.4): a box for every pair.
-    representation: { kind: 'areaModel', factors: ['a', 'b'], total: 'p' },
+    // Tenths × tenths on a 10 × 10 grid: the overlap is the product in hundredths.
+    representation: { kind: 'grid100', percent: 'p', product: ['a', 'b'] },
   },
   {
     id: 'm.5.decimal-operations~divide-by-decimal',

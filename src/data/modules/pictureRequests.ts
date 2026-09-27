@@ -1559,7 +1559,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The t counters crossed out (✕ over a filled counter) instead of open ○ counters; l stays solid; driven by s, t, l',
     kind: 'tenFrame',
     pages: ['m.K.add-sub-10~take-away'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.ten-frame-take-away', 'g.ten-frame-take-away-all'],
     uses: '"takeAway":true',
     notes:
@@ -1570,7 +1570,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'One full frame and o ones in the second, with b counters crossed out inside the full ten; driven by c, o, b, r, a',
     kind: 'tenFrame',
     pages: ['m.1.add-sub-20~take-from-ten'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.ten-frame-take-from-ten', 'g.ten-frame-take-from-ten-edge'],
     uses: '"crossOut":"b"',
     notes:
@@ -1581,7 +1581,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The blocks of a with b crossed out, after any trade (a traded rod drawn as 10 cubes); driven by a, b, c',
     kind: 'baseTen',
     pages: ['m.2.add-sub-1000~subtract'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.base-ten-take-away', 'g.base-ten-take-away-1000'],
     uses: '"takeAway":"b"',
     notes:
@@ -1592,7 +1592,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "One column per category, drawn in that category's icon; driven by c, s, t, n",
     kind: 'pictureGraph',
     pages: ['m.1.data-3-categories'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.picture-graph-fruit', 'g.fruit-icons'],
     uses: '"icon":"apple"',
     notes:
@@ -1603,7 +1603,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Frogs, fish and insects drawn as their animal; driven by f, h, i, n',
     kind: 'pictureGraph',
     pages: ['s.2.habitats~pond-count'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.picture-graph-pond'],
     uses: '"icon":"frog"',
     notes:
@@ -1614,7 +1614,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A drawn plant whose tapped part lights up; driven by scene.part',
     kind: 'plant',
     pages: ['s.1.structures-function'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-plant'],
     uses: '"drawing":"plant"',
     notes:
@@ -1625,7 +1625,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A drawn animal with the tapped part highlighted; driven by scene.part',
     kind: 'animal',
     pages: ['s.1.structures-function~animal'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-animal'],
     uses: '"drawing":"animal"',
     notes:
@@ -1636,7 +1636,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A grown cat (orange) and its kitten (gray, white nose patch) above the bins',
     kind: 'figure',
     pages: ['s.1.offspring'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-offspring-cat'],
     uses: '"kind":"offspring"',
     notes:
@@ -1647,7 +1647,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Shown above the bins',
     kind: 'figure',
     pages: ['s.1.offspring~deer'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-offspring-deer'],
     uses: '"kind":"offspring"',
     notes:
@@ -1658,7 +1658,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "One thermometer, filled to the tapped column's temperature",
     kind: 'thermometer',
     pages: ['s.K.weather-patterns~morning-afternoon'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-thermometer'],
     uses: '"kind":"thermometer"',
     notes:
@@ -1669,7 +1669,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "A plant beside a cm ruler at the tapped week's height",
     kind: 'plantHeight',
     pages: ['s.2.plant-growth-investigation~weeks'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-plant-height'],
     uses: '"kind":"plantHeight"',
     notes:
@@ -1680,7 +1680,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Each number on its own rounding line with an arrow to its rounded value; caption x + y = e',
     kind: 'rounding',
     pages: ['m.3.rounding~estimate'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.rounding-two-sum', 'g.rounding-two-sum-edge'],
     uses: '"estimate":"e"',
     notes:
@@ -1691,7 +1691,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The same two rounding lines, caption x − y = e',
     kind: 'rounding',
     pages: ['m.3.rounding~estimate-difference'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.rounding-two-difference'],
     uses: '"minus":true',
     notes:
@@ -1702,7 +1702,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Every side labeled with the side length and the perimeter under the shape; driven by n, s, P',
     kind: 'polygon',
     pages: ['m.3.perimeter~equal-sides'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.polygon-equal-sides', 'g.polygon-equal-sides-8'],
     uses: '"side":"s"',
     notes:
@@ -1713,7 +1713,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Half pictures (worth k ÷ 2) and one icon with the key "each ● = k"',
     kind: 'pictureGraph',
     pages: ['m.3.scaled-graphs~picture-graph'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.picture-graph-half', 'g.picture-graph-half-10'],
     uses: '"half":true',
     notes:
@@ -1724,7 +1724,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The scenes (Alone, In a herd, Huddled) drawn as animals instead of dots',
     kind: 'animal',
     pages: ['s.3.animal-groups'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-animal-groups'],
     uses: '"animal":"penguin"',
     notes:
@@ -1735,7 +1735,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A body outline with brain, heart, lungs, stomach, bones and skin; tapping a part highlights it',
     kind: 'body',
     pages: ['s.4.internal-structures'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-body'],
     uses: '"drawing":"body"',
     notes:
@@ -1746,7 +1746,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "A ramp with the cup released at the tapped column's height, sliding the recorded distance",
     kind: 'ramp',
     pages: ['s.4.energy-speed~ramp'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-ramp'],
     uses: '"kind":"ramp"',
     notes:
@@ -1757,7 +1757,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Three bars of a, b and c boxes, each worth u, with the amounts and the total bracketed',
     kind: 'tape',
     pages: ['m.6.ratios~three-parts'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.ratio-tape-three-parts', 'g.ratio-tape-three-edge'],
     uses: '"ratio":["a","b","c"]',
     notes:
@@ -1768,7 +1768,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A 10 × 10 square with a tenths columns and b tenths rows shaded; the overlap is the product in hundredths',
     kind: 'grid100',
     pages: ['m.5.decimal-operations~times-decimal'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.grid-product', 'g.grid-product-9', 'g.grid-product-area'],
     uses: '"product":["a","b"]',
     notes:
@@ -1779,7 +1779,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'a and b stacked by place with the points lined up, the sum s in a third row under a rule',
     kind: 'placeValueChart',
     pages: ['m.6.multi-digit-decimals~add-subtract'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.place-value-sum', 'g.place-value-sum-edge'],
     uses: '"plus":"b"',
     notes:
@@ -1790,7 +1790,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A scale reading B before and A after, with gas bubbles leaving labelled g = B − A',
     kind: 'scale',
     pages: ['s.5.conservation-mass~fizz'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.scale-before-after', 'g.scale-before-after-edge'],
     uses: '"before":"B"',
     notes:
@@ -1801,7 +1801,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'n washers hanging from a spring scale reading p newtons',
     kind: 'scale',
     pages: ['s.5.gravity-down~spring-scale'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.spring-scale', 'g.spring-scale-20'],
     uses: '"hanging":true',
     notes:
@@ -1812,7 +1812,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "The stick and the shadow for the tapped hour, the sun on the line from the shadow's tip over the stick",
     kind: 'observe',
     pages: ['s.5.shadows-day-night'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-shadow-day'],
     uses: '"sides"',
     notes:
@@ -1823,7 +1823,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The flashlight at the tapped distance and the lit circle as wide as the value',
     kind: 'flashlight',
     pages: ['s.5.sun-star-brightness'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-flashlight'],
     uses: '"kind":"flashlight"',
     notes:
@@ -1834,7 +1834,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "An open cup with the water at the tapped day's level (mm) and a dashed line at Day 1's level",
     kind: 'cup',
     pages: ['s.5.particles-matter~evaporation'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3j-cup'],
     uses: '"kind":"cup"',
     notes:

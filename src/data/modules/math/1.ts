@@ -218,7 +218,15 @@ export const MATH_1_MODULES: ModuleDef[] = [
     },
     example: { c: 14, b: 8, o: 4, r: 2, a: 6 },
     startWith: ['c', 'b'],
-    representation: { kind: 'tenFrame', first: 'a', second: 'b', total: 'c', frames: 2 },
+    // The full ten and the ones, the counters taken crossed out inside the ten.
+    representation: {
+      kind: 'tenFrame',
+      first: 10,
+      second: 'o',
+      total: 'c',
+      frames: 2,
+      crossOut: 'b',
+    },
     pictureLabels: ['o', 'r'],
   },
   // Doubles and near doubles: 6 + 7 is 6 + 6 and 1 more (1.OA.6).
@@ -995,9 +1003,9 @@ export const MATH_1_MODULES: ModuleDef[] = [
     representation: {
       kind: 'pictureGraph',
       columns: [
-        { var: 'c', icon: 'circle' },
-        { var: 's', icon: 'square' },
-        { var: 't', icon: 'triangle' },
+        { var: 'c', icon: 'apple' },
+        { var: 's', icon: 'banana' },
+        { var: 't', icon: 'grapes' },
       ],
       max: 20,
       total: 'n',

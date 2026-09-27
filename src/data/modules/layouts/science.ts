@@ -179,6 +179,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     max: 100,
     step: 5,
     initial: [55, 65, 70],
+    figure: { kind: 'thermometer' },
     pattern: (v) => {
       const [a, , c] = v as [number, number, number];
       if (c > a) return 'It got warmer as the day went on.';
@@ -346,6 +347,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     figure: {
       kind: 'parts',
+      drawing: 'plant',
       parts: [
         { name: 'Flower', job: 'Makes seeds. Its colors bring bees.' },
         { name: 'Leaves', job: 'Catch sunlight to make food.' },
@@ -388,6 +390,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     figure: {
       kind: 'parts',
+      drawing: 'animal',
       parts: [
         { name: 'Eyes', job: 'See food and danger.' },
         { name: 'Ears', job: 'Hear sounds from far away.' },
@@ -679,6 +682,13 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'They are not exactly the same.',
     ],
     question: 'Is the kitten like its mother here?',
+    header: {
+      kind: 'offspring',
+      animals: [
+        { animal: 'cat', label: 'Mother', fur: 'orange' },
+        { animal: 'cat', label: 'Kitten', young: true, fur: 'gray', nosePatch: true },
+      ],
+    },
     bins: [
       { id: 'same', label: 'Same', why: 'Young animals look like their parents.' },
       { id: 'different', label: 'Different', why: 'They are not exactly the same.' },
@@ -703,6 +713,14 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Young animals look like their parents, but not exactly.',
     ],
     question: 'Is the fawn like its parents here?',
+    header: {
+      kind: 'offspring',
+      animals: [
+        { animal: 'deer', label: 'Doe' },
+        { animal: 'deer', label: 'Buck', antlers: true },
+        { animal: 'deer', label: 'Fawn', young: true, spots: true },
+      ],
+    },
     bins: [
       { id: 'same', label: 'Same', why: 'Young animals look like their parents.' },
       { id: 'different', label: 'Different', why: 'It is young, and not exactly the same.' },
@@ -1027,6 +1045,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     max: 30,
     step: 1,
     initial: [3, 7, 12, 18],
+    figure: { kind: 'plantHeight' },
     pattern: (v) => {
       const grew = v.slice(1).map((x, i) => x - v[i]!);
       if (grew.every((g) => g > 0)) {
@@ -1391,11 +1410,13 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         label: 'Alone',
         dots: [1, 1],
+        animal: 'deer',
         lines: ['One deer must watch for danger by itself.', 'It looks for food alone.'],
       },
       {
         label: 'In a herd',
         dots: [1, 12],
+        animal: 'deer',
         lines: [
           'Many eyes watch for danger.',
           'The herd finds food together.',
@@ -1405,6 +1426,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         label: 'Huddled',
         dots: [1, 30],
+        animal: 'penguin',
         lines: ['Penguins huddle close together.', 'The middle of the huddle stays warm.'],
       },
     ],
@@ -1904,6 +1926,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     max: 60,
     step: 5,
     initial: [10, 20, 30, 40, 50],
+    figure: { kind: 'ramp', heights: [5, 10, 15, 20, 25] },
     pattern: (v) => {
       const up = v.slice(1).every((x, i) => x >= v[i]!);
       if (v.every((x) => x === v[0])) return 'The cup slid the same distance every time.';
@@ -2087,6 +2110,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     figure: {
       kind: 'parts',
+      drawing: 'body',
       parts: [
         { name: 'Brain', job: 'Takes in messages from the senses and decides what to do.' },
         { name: 'Heart', job: 'Pumps blood to every part of the body.' },
@@ -2479,6 +2503,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     max: 100,
     step: 5,
     initial: [90, 80, 70, 65, 55, 45],
+    figure: { kind: 'cup' },
     pattern: (v) => {
       if (v.every((x) => x === v[0])) return 'The level stayed the same. Is the cup covered?';
       const down = v.slice(1).every((x, i) => x <= v[i]!);
@@ -2947,6 +2972,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     max: 60,
     step: 1,
     initial: [8, 16, 24, 32, 40],
+    figure: { kind: 'flashlight', distances: [10, 20, 30, 40, 50] },
     pattern: (v) => {
       if (v.every((x) => x === v[0]))
         return 'The circle stayed the same size. Did the flashlight move?';
@@ -2971,6 +2997,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     max: 300,
     step: 10,
     initial: [260, 150, 90, 150, 260],
+    figure: { kind: 'shadowStick', stick: 100, sides: ['west', 'west', 'north', 'east', 'east'] },
     pattern: (v) => {
       const hours = ['8 a.m.', '10 a.m.', 'noon', '2 p.m.', '4 p.m.'];
       const lo = v.indexOf(Math.min(...v));

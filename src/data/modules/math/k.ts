@@ -232,7 +232,8 @@ export const MATH_K_MODULES: ModuleDef[] = [
     },
     example: { s: 7, t: 3, l: 4 },
     startWith: ['s', 't'],
-    representation: { kind: 'tenFrame', first: 'l', second: 't', total: 's' },
+    // The taken counters crossed out after the ones left.
+    representation: { kind: 'tenFrame', first: 'l', second: 't', total: 's', takeAway: true },
   },
   // ─── Kindergarten ──────────────────────────────────────────────────────────
   {

@@ -1277,11 +1277,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
       example: { a: 238, b: 154, x: 240, y: 150, e: 390, s: 392, o: 2 },
       startWith: ['a', 'b'],
+      // Each number on its own rounding line, then the estimate from the rounded numbers.
       representation: {
-        kind: 'tape',
-        parts: ['a', 'b'],
-        total: 's',
-        caption: 'Estimate: {x} + {y} = {e}. Exact: {a} + {b} = {s}.',
+        kind: 'rounding',
+        value: 'a',
+        rounded: 'x',
+        to: 10,
+        second: { value: 'b', rounded: 'y', estimate: 'e' },
       },
     } satisfies ModuleDef;
   })(),
@@ -1376,10 +1378,11 @@ export const MATH_3_MODULES: ModuleDef[] = [
       example: { a: 512, b: 287, x: 510, y: 290, e: 220, s: 225, o: 5 },
       startWith: ['a', 'b'],
       representation: {
-        kind: 'tape',
-        parts: ['s', 'b'],
-        total: 'a',
-        caption: 'Estimate: {x} − {y} = {e}. Exact: {a} − {b} = {s}.',
+        kind: 'rounding',
+        value: 'a',
+        rounded: 'x',
+        to: 10,
+        second: { value: 'b', rounded: 'y', estimate: 'e', minus: true },
       },
     } satisfies ModuleDef;
   })(),
@@ -2704,7 +2707,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
       example: { n: 6, s: 5, P: 30 },
       startWith: ['n', 's'],
       pictureLabels: ['s', 'P'],
-      representation: { kind: 'polygon', sides: 'n' },
+      // Every side labeled with its length; the perimeter all the way around.
+      representation: { kind: 'polygon', sides: 'n', side: 's', around: 'P' },
     } satisfies ModuleDef;
   })(),
   // ── Scaled graphs (3.MD.3) ──
@@ -2883,11 +2887,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
         kind: 'pictureGraph',
         columns: [
           { var: 'p1', icon: 'circle' },
-          { var: 'p2', icon: 'square' },
-          { var: 'p3', icon: 'triangle' },
+          { var: 'p2', icon: 'circle' },
+          { var: 'p3', icon: 'circle' },
         ],
         max: 10,
         key: 'k',
+        // One picture with its key; half a picture is half the key.
+        half: true,
       },
     } satisfies ModuleDef;
   })(),

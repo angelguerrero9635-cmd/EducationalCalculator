@@ -1054,6 +1054,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
     representation: {
       kind: 'baseTen',
       groups: ['a'],
+      // The blocks taken away crossed out, after any trade.
+      takeAway: 'b',
       controls: [
         { var: 'a', steps: [1, 10, 100] },
         { var: 'b', steps: [1, 10, 100] },

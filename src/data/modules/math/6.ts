@@ -382,10 +382,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         fraction: 60,
         derived: true,
       },
-      { id: 'x', symbol: 'x', name: 'First amount', min: 0, max: 200000 },
-      { id: 'y', symbol: 'y', name: 'Second amount', min: 0, max: 200000 },
-      { id: 'z', symbol: 'z', name: 'Third amount', min: 0, max: 200000 },
-      { id: 't', symbol: 't', name: 'Total', min: 0, max: 600000 },
+      { id: 'x', symbol: 'x', name: 'First amount', min: 1, max: 600000 },
+      { id: 'y', symbol: 'y', name: 'Second amount', min: 1, max: 600000 },
+      { id: 'z', symbol: 'z', name: 'Third amount', min: 1, max: 600000 },
+      { id: 't', symbol: 't', name: 'Total', min: 1, max: 600000 },
     ],
     relations: [
       {
@@ -483,9 +483,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     startWith: ['a', 'b', 'c', 't'],
     representation: {
       kind: 'tape',
-      ratio: ['a', 'b'],
+      ratio: ['a', 'b', 'c'],
       unit: 'u',
-      amounts: ['x', 'y'],
+      amounts: ['x', 'y', 'z'],
       total: 't',
     },
   },
@@ -1309,7 +1309,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { a: 3.67, b: 3.53, s: 7.2 },
     startWith: ['s', 'b'],
-    representation: { kind: 'placeValueChart', value: 'a', decimals: 3, compare: 'b' },
+    // The two numbers stacked with the points lined up, the sum under a rule.
+    representation: { kind: 'placeValueChart', value: 'a', plus: 'b', total: 's', decimals: 3 },
   },
   {
     id: 'm.6.multi-digit-decimals~divide-by-decimal',

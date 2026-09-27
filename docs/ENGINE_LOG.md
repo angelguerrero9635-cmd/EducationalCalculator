@@ -5,6 +5,30 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Round 3 pictures placed (D01–D101)
+
+- 432 card pictures on 64 sorts and sequences, taken from the pictures chat's gallery demos by
+  card label. The cards the reviewers left as words stay text.
+- Pictures:
+  - crossed-out counters and blocks for take-away;
+  - fruit and animal icons in picture graphs;
+  - half pictures with one key;
+  - two rounding lines for an estimate;
+  - equal sides labeled on a polygon;
+  - a third ratio bar;
+  - tenths × tenths on a 10 × 10 grid;
+  - decimals stacked by place with their sum;
+  - a scale before and after, and a spring scale.
+- Drawn figures:
+  - a plant, a bear and turtle, and a body with its organs;
+  - the parent and young above two offspring sorts;
+  - deer and penguins for animal groups;
+  - a thermometer, a plant beside a ruler, a ramp, the noon shadow's side, a flashlight and a
+    cup on six observe pages.
+- The three-part ratio page's amounts could each reach only 200,000 while the total reached
+  600,000, so a large total had no split the solver could find. The amounts now run to 600,000,
+  and start at 1: a total of 0.1 split 3 : 9 : 7 broke the typed decimals. Seeds 1–20 now pass.
+
 ## Round 2 pictures placed (R15, R21–R29)
 
 - Ranges raised to the released questions:

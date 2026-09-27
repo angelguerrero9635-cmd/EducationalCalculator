@@ -72,16 +72,8 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       startWith: ['d', 'v', 'c', 'A'],
       unitSystems: ['metric'],
       pictureLabels: ['B'],
-      representation: {
-        kind: 'waterfall',
-        items: [
-          { var: 'd', sign: 1 },
-          { var: 'v', sign: 1 },
-          { var: 'c', sign: 1 },
-          { var: 'g', sign: -1 },
-        ],
-        total: 'A',
-      },
+      // The scale before and after the fizz: the difference is the gas that escaped.
+      representation: { kind: 'scale', items: ['d', 'v', 'c'], total: 'A', before: 'B', max: 500 },
     } satisfies ModuleDef;
   })(),
   // ── Gravity: the pull on washers on a spring scale (5-PS2-1) ──
@@ -156,13 +148,8 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       example: { n: 6, e: 0.5, p: 3 },
       startWith: ['n', 'e'],
       unitSystems: ['metric'],
-      representation: {
-        kind: 'table',
-        sweep: 'n',
-        output: 'p',
-        params: ['e'],
-        rows: [1, 2, 4, 6, 8, 10, 12, 16, 20],
-      },
+      // The washers hanging from a spring scale that reads the pull in newtons.
+      representation: { kind: 'scale', count: 'n', each: 'e', total: 'p', max: 10, hanging: true },
     } satisfies ModuleDef;
   })(),
   // ── Plants get their mass from air and water (5-LS1-1) ──

@@ -6,19 +6,19 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-26 of 451 pages show sliders.
+26 of 477 pages show sliders.
 
 ## By picture kind
 
 | Kind | Pages | Sliders | Why |
 | --- | ---: | :---: | --- |
 | angles | 5 | no | set on the module (hidden) |
-| areaModel | 12 | no | set on the module (hidden) |
+| areaModel | 11 | no | set on the module (hidden) |
 | array | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 1 | no | set on the module (hidden) |
 | bars | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseHeight | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| baseTen | 15 | no | the picture has its own handles or taps, or the inputs are enough |
+| baseTen | 17 | no | the picture has its own handles or taps, or the inputs are enough |
 | beaker | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | boxPlot | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | circle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -54,7 +54,7 @@ its kind with `sliders: true | false`.
 | generations | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grassSlope | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| grid100 | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| grid100 | 13 | no | the picture has its own handles or taps, or the inputs are enough |
 | hanger | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | heatingCurve | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 6 | no | set on the module (hidden) |
@@ -77,11 +77,11 @@ its kind with `sliders: true | false`.
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | percentBar | 4 | no | set on the module (hidden) |
 | periodicTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| pictureGraph | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
-| placeValueChart | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| placeValueChart | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | plot | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| polygon | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | powerScale | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | protractor | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -94,10 +94,10 @@ its kind with `sliders: true | false`.
 | rightTriangle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rootSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| rounding | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | sample | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| scale | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | scaleCopy | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | scatter | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -107,10 +107,10 @@ its kind with `sliders: true | false`.
 | skipCount | 16 | no | the picture has its own handles or taps, or the inputs are enough |
 | spectrum | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | tape | 39 | no | set on the module (hidden) |
-| tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| tenFrame | 13 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 10 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | transformation | 4 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -118,7 +118,7 @@ its kind with `sliders: true | false`.
 | unitCubes | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | venn | 1 | yes | set on the module (shown) |
-| waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| waterfall | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | zeroPairs | 2 | yes | set on the module (shown) |
 
@@ -204,6 +204,17 @@ its kind with `sliders: true | false`.
 - g.fraction-area-wholes: sliders hidden
 - g.fraction-area-mixed: sliders hidden
 - g.fraction-area-edge: sliders hidden
+- g.ten-frame-take-away: sliders hidden
+- g.ten-frame-take-away-all: sliders hidden
+- g.ten-frame-take-from-ten: sliders hidden
+- g.ten-frame-take-from-ten-edge: sliders hidden
+- g.base-ten-take-away: sliders hidden
+- g.base-ten-take-away-1000: sliders hidden
+- g.grid-product: sliders hidden
+- g.grid-product-9: sliders hidden
+- g.grid-product-area: sliders hidden
+- g.place-value-sum: sliders hidden
+- g.place-value-sum-edge: sliders hidden
 
 ## Every page
 
@@ -309,8 +320,8 @@ its kind with `sliders: true | false`.
 | m.3.two-step-problems~add-subtract | hops | no |
 | m.3.rounding | rounding | no |
 | m.3.rounding~hundred | rounding | no |
-| m.3.rounding~estimate | tape | no |
-| m.3.rounding~estimate-difference | tape | no |
+| m.3.rounding~estimate | rounding | no |
+| m.3.rounding~estimate-difference | rounding | no |
 | m.3.add-sub-1000 | baseTen | no |
 | m.3.add-sub-1000~subtract-zeros | baseTen | no |
 | m.3.add-sub-1000~word | tape | no |
@@ -424,7 +435,7 @@ its kind with `sliders: true | false`.
 | m.5.decimal-operations~multiply | skipCount | no |
 | m.5.decimal-operations~divide | tape | no |
 | m.5.decimal-operations~subtract | tape | no |
-| m.5.decimal-operations~times-decimal | areaModel | no |
+| m.5.decimal-operations~times-decimal | grid100 | no |
 | m.5.decimal-operations~divide-by-decimal | skipCount | no |
 | m.5.add-fractions-unlike | fractionBars | no |
 | m.5.add-fractions-unlike~subtract | fractionBars | no |
@@ -450,8 +461,8 @@ its kind with `sliders: true | false`.
 | s.4.weathering | bars | no |
 | s.4.weathering~grass-slope | grassSlope | no |
 | s.5.conservation-mass | scale | no |
-| s.5.conservation-mass~fizz | waterfall | no |
-| s.5.gravity-down~spring-scale | table | no |
+| s.5.conservation-mass~fizz | scale | no |
+| s.5.gravity-down~spring-scale | scale | no |
 | s.5.plants-sunlight-energy | tape | no |
 | s.5.earth-spheres~water-share | pieChart | no |
 | s.5.sun-star-brightness~two-flashlights | flashlights | no |
@@ -660,3 +671,29 @@ its kind with `sliders: true | false`.
 | g.jumps-grouped-page | skipCount | no |
 | g.jumps-grouped-tens | skipCount | no |
 | g.jumps-grouped-hundreds | skipCount | no |
+| g.ten-frame-take-away | tenFrame | no |
+| g.ten-frame-take-away-all | tenFrame | no |
+| g.ten-frame-take-from-ten | tenFrame | no |
+| g.ten-frame-take-from-ten-edge | tenFrame | no |
+| g.base-ten-take-away | baseTen | no |
+| g.base-ten-take-away-1000 | baseTen | no |
+| g.picture-graph-fruit | pictureGraph | no |
+| g.picture-graph-pond | pictureGraph | no |
+| g.picture-graph-half | pictureGraph | no |
+| g.picture-graph-half-10 | pictureGraph | no |
+| g.rounding-two-sum | rounding | no |
+| g.rounding-two-sum-edge | rounding | no |
+| g.rounding-two-difference | rounding | no |
+| g.polygon-equal-sides | polygon | no |
+| g.polygon-equal-sides-8 | polygon | no |
+| g.ratio-tape-three-parts | tape | no |
+| g.ratio-tape-three-edge | tape | no |
+| g.grid-product | grid100 | no |
+| g.grid-product-9 | grid100 | no |
+| g.grid-product-area | grid100 | no |
+| g.place-value-sum | placeValueChart | no |
+| g.place-value-sum-edge | placeValueChart | no |
+| g.scale-before-after | scale | no |
+| g.scale-before-after-edge | scale | no |
+| g.spring-scale | scale | no |
+| g.spring-scale-20 | scale | no |

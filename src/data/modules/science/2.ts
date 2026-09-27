@@ -329,9 +329,9 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       representation: {
         kind: 'pictureGraph',
         columns: [
-          { var: 'f', icon: 'circle' },
-          { var: 'h', icon: 'triangle' },
-          { var: 'i', icon: 'star' },
+          { var: 'f', icon: 'frog' },
+          { var: 'h', icon: 'fish' },
+          { var: 'i', icon: 'grasshopper' },
         ],
         max: 10,
         total: 'n',
