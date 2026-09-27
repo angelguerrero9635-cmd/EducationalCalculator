@@ -987,6 +987,21 @@ export function repIssues(
       }
       break;
     }
+    case 'powerScale': {
+      const [x, a, e] = [rep.number, rep.mantissa, rep.exponent].map(val);
+      // (The sampled values are rounded to 9 decimals, so a tiny number can read as 0.)
+      if (x !== undefined && x < 0) out.push(`number ${x} has no place on a powers-of-ten ruler`);
+      if (a !== undefined && (a < 1 || a >= 10)) out.push(`mantissa ${a} is not from 1 up to 10`);
+      if (e !== undefined && e !== Math.round(e)) out.push(`exponent ${e} is not whole`);
+      if (
+        x !== undefined &&
+        a !== undefined &&
+        e !== undefined &&
+        Math.abs(a * 10 ** e - x) > Math.max(1e-9, 1e-9 * x)
+      )
+        out.push(`${a} × 10^${e} drawn, the number shows ${x}`);
+      break;
+    }
     case 'rootSquare': {
       const [a, sd] = [val(rep.area), val(rep.side)];
       if (a !== undefined && a < 0) out.push(`square of area ${a}`);

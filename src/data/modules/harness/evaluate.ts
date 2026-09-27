@@ -240,6 +240,11 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) hundredths`), (a) => a / 100],
   // Powers of ten (Grade 5): "zeros in 1000" is the exponent.
   [new RegExp(`zeros in (${NUM})`), (a) => Math.round(Math.log10(a))],
+  // Scientific notation (Grade 8): the exponent of the power of ten at or below a number.
+  [
+    new RegExp(`exponent of the power of ten at or below (${NUM})`),
+    (a) => Math.floor(Math.log10(a) + 1e-9),
+  ],
   [new RegExp(`ones left in (${NUM})`), (a) => a % 10],
   [new RegExp(`tens in (${NUM})`), (a) => a / 10],
   [new RegExp(`pairs in (${NUM})`), (a) => Math.floor(a / 2)],

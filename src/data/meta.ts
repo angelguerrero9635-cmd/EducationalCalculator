@@ -88,6 +88,7 @@ const PICTURE_NAMES: Record<string, string> = {
   leafCount: 'plants with their leaves counted',
   rootSquare: 'square and its root on a number line',
   factorRows: 'rows of repeated factors',
+  powerScale: 'powers-of-ten ruler',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

@@ -108,6 +108,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
 | `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line      | Grade 8 square roots, irrationals   |
 | `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked     | Grade 8 exponent rules              |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10 (4.7 × 10⁵)        | Grade 8 scientific notation         |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

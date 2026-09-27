@@ -641,6 +641,12 @@ export type Representation =
       result: string;
       rule: 'product' | 'quotient' | 'power';
     }
+  /**
+   * Scientific notation on a powers-of-ten ruler (Grade 8): the `number` placed on a log scale
+   * of 10ⁿ⁻² … 10ⁿ⁺³, its decade opened up below as a ruler from 1 to 10 where the `mantissa`
+   * is read, "× 10ⁿ" with the `exponent`. Drag the mantissa, or the number to another decade.
+   */
+  | { kind: 'powerScale'; number: string; mantissa: string; exponent: string }
   /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */
   | { kind: 'pushes'; right: string; left: string; extra: string; max: number }
   /**

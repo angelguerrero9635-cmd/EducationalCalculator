@@ -83,6 +83,7 @@ import { Flashlights } from './Flashlights';
 import { LeafCount } from './LeafCount';
 import { RootSquare } from './RootSquare';
 import { FactorRows } from './FactorRows';
+import { PowerScale } from './PowerScale';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -144,6 +145,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <RootSquare spec={spec} calc={calc} />;
     case 'factorRows':
       return <FactorRows spec={spec} calc={calc} />;
+    case 'powerScale':
+      return <PowerScale spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':

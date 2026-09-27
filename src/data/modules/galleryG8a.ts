@@ -121,6 +121,59 @@ const exponentRule = (
 };
 
 export const G8A_GALLERY_MODULES: ModuleDef[] = [
+  {
+    id: 'g.scientific-notation',
+    title: 'Scientific notation',
+    assumptions: [
+      'A number in scientific notation is a number from 1 up to 10 times a power of ten.',
+      'Each power of ten is ten times the one before it, so the ruler steps by × 10.',
+    ],
+    variables: [
+      { id: 'N', symbol: 'N', name: 'Number', min: 1e-12, max: 1e13 },
+      { id: 'a', symbol: 'a', name: 'Number from 1 up to 10', min: 1, max: 9.99, step: 0.01 },
+      whole('n', 'n', 'Power of ten', -12, 12),
+    ],
+    relations: [
+      {
+        id: 'N = a × 10^n',
+        display: '{N} = {a} × 10^{n}',
+        vars: ['N', 'a', 'n'],
+        residual: (v: Values) => v.N! - v.a! * 10 ** v.n!,
+        solve: {
+          N: (v: Values) => v.a! * 10 ** v.n!,
+          a: (v: Values) => v.N! / 10 ** v.n!,
+        },
+      },
+      {
+        id: 'n from N',
+        display: '{n} = exponent of the power of ten at or below {N}',
+        vars: ['n', 'N'],
+        residual: (v: Values) => v.n! - Math.floor(Math.log10(v.N!) + 1e-9),
+        solve: { n: (v: Values) => (v.N! > 0 ? Math.floor(Math.log10(v.N!) + 1e-9) : undefined) },
+      },
+    ],
+    steps: {
+      'N = a × 10^n': {
+        N: {
+          expr: '{a} × 10^{n}',
+          how: 'Multiply by 10 once for each power: the point moves right n places (left if n is negative).',
+        },
+        a: {
+          expr: '{N} ÷ 10^{n}',
+          how: 'Divide by the power of ten to leave one digit before the point.',
+        },
+      },
+      'n from N': {
+        n: {
+          expr: 'exponent of the power of ten at or below {N}',
+          how: 'Count how many places the point moves to leave one digit, not 0, before it.',
+        },
+      },
+    },
+    example: { N: 470000, a: 4.7, n: 5 },
+    startWith: ['N'],
+    representation: { kind: 'powerScale', number: 'N', mantissa: 'a', exponent: 'n' },
+  },
   exponentRule(
     'product',
     'g.exponent-product',

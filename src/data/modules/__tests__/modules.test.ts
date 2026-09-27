@@ -313,6 +313,8 @@ function representationVars(r: Representation): string[] {
       return [r.area, r.side];
     case 'factorRows':
       return [r.base, r.first, r.second, r.result];
+    case 'powerScale':
+      return [r.number, r.mantissa, r.exponent];
     case 'pushes':
       return [r.right, r.left, r.extra];
     case 'force':
