@@ -778,11 +778,15 @@ export function repIssues(
     case 'placeValueChart': {
       const x = val(rep.value);
       if (x !== undefined && x < 0) out.push(`place-value chart of a negative number ${x}`);
-      // Seven whole places (millions) are drawn (PlaceValueChart.tsx).
+      // Seven whole places (millions) are drawn, twelve in periods (PlaceValueChart.tsx).
+      const top = rep.periods ? 1e12 : 1e7;
       for (const id of [rep.value, rep.from, rep.compare]) {
         const n = id ? val(id) : undefined;
-        if (n !== undefined && n >= 1e7) out.push(`place-value chart of ${n}: past the millions`);
+        if (n !== undefined && n >= top) out.push(`place-value chart of ${n}: past ${top} places`);
+        if (rep.periods && n !== undefined && Math.abs(n - Math.round(n)) > 1e-9)
+          out.push(`periods chart of ${n}: whole numbers only`);
       }
+      if (rep.periods && rep.decimals) out.push('periods chart with decimal places');
       const lit = rep.highlight ? val(rep.highlight) : undefined;
       if (lit !== undefined && Math.abs(Math.log10(lit) - Math.round(Math.log10(lit))) > 1e-9)
         out.push(`highlighted place ${lit} is not a place value`);

@@ -968,6 +968,12 @@ export type Representation =
       highlight?: string;
       from?: string;
       compare?: string;
+      /**
+       * Whole numbers past the millions (to hundred billions): columns grouped in periods (ones,
+       * thousands, millions, billions) under one header each, compact 100 · 10 · 1 headers.
+       * Numbers to the millions draw as without it. Only with `decimals` 0.
+       */
+      periods?: boolean;
     }
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
   | {

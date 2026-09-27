@@ -302,9 +302,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Place-value chart to billions',
     kind: 'placeValueChart',
     pages: ['m.5.powers-of-ten'],
-    status: 'requested',
-    gallery: [],
-    notes: '10⁹ = 1,000,000,000: exponents to 9.',
+    status: 'drawn',
+    gallery: ['g.place-value-periods', 'g.place-value-billions', 'g.place-value-edge'],
+    uses: '"periods":true',
+    notes:
+      'Pass `periods: true` on the placeValueChart (decimals 0). Numbers to the millions draw as today; past them, the columns are grouped in periods (ones, thousands, millions, billions) to 999,999,999,999. The page raises the exponent to 9, the power of 10 to 1,000,000,000 (drop its `allowed` list: the sampling test lists every number between its ends and runs out of memory at 10⁹; 10^k = e keeps it a power of 10, as in g.place-value-billions), the product to 999,000,000,000, and updates "the chart ends at millions". The product input box cuts off 999,000,000,000 at 390 px (not the picture).',
   },
   {
     id: 'R28',

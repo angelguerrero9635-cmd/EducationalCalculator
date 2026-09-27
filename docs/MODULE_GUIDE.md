@@ -160,6 +160,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `array`            | `sides`                                  | the rows and columns labeled, “?” until solved                                |
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
+| `placeValueChart`  | `periods`                                | whole numbers to hundred billions, columns grouped ones … billions            |
 | `tape`             | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
 | `grid100`          | `second`, `wholes`                       | a second grid to compare; whole grids for the ones                            |
 | `rounding`         | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
