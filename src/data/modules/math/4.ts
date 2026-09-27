@@ -8,7 +8,14 @@ import type { Values } from '@/engine/types';
 import { apart, div, times, whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 import { autoWritten, columnAdd, columnSubtract, longDivision, partialQuotients } from '../written';
-import { addStrategy, divideWork, placeCompareLines, subtractStrategy, timesWork } from '../work';
+import {
+  addStrategy,
+  countList,
+  divideWork,
+  placeCompareLines,
+  subtractStrategy,
+  timesWork,
+} from '../work';
 
 /** The factors of n in order: 24 → [1, 2, 3, 4, 6, 8, 12, 24]. */
 const factorsOf = (n: number): number[] =>
@@ -114,6 +121,186 @@ function multiplyPage(o: {
 
 /** The denominators Grade 4 uses (4.NF: 2, 3, 4, 5, 6, 8, 10, 12). */
 const DENOMS_4 = [2, 3, 4, 5, 6, 8, 10, 12];
+
+/**
+ * Adding or subtracting mixed numbers (4.NF.3c): write each as a fraction, add or take away
+ * the numerators, then write the answer as a mixed number again (18 1/4 − 2 3/4 = 73/4 − 11/4
+ * = 62/4 = 15 2/4).
+ */
+function mixedAddSub(op: '+' | '−'): ModuleDef {
+  const add = op === '+';
+  const partsOf = (w: string, n: string, out: string, which: string) => ({
+    id: `${out} = ${w} × b + ${n}`,
+    display: `{${w}} wholes and {${n}}/{b} = {${out}}/{b}`,
+    words: `${which} wholes × denominator + ${which.toLowerCase()} numerator = {${out}}`,
+    check: (v: Values) => `${v[w]} × ${v.b} + ${v[n]} = ${v[out]}`,
+    vars: [out, w, 'b', n],
+    residual: (v: Values) => v[out]! - v[w]! * v.b! - v[n]!,
+    solve: {
+      [out]: (v: Values) => v[w]! * v.b! + v[n]!,
+      [n]: (v: Values) => v[out]! - v[w]! * v.b!,
+      [w]: (v: Values) => div(v[out]! - v[n]!, v.b!),
+      b: () => undefined,
+    },
+  });
+  const partsSteps = (w: string, n: string, out: string) => ({
+    [out]: {
+      expr: `{${w}} × {b} + {${n}}`,
+      how: 'Each whole is that many parts. Multiply, then add the extra parts.',
+      work: (v: Values) => [
+        `${v[w]} ${v[w] === 1 ? 'whole' : 'wholes'} = ${v[w]} × ${v.b} = ${v[w]! * v.b!} parts`,
+        `${v[w]! * v.b!} + ${v[n]} = ${v[out]}, so ${v[out]}/${v.b}`,
+      ],
+    },
+    [n]: {
+      expr: `{${out}} − {${w}} × {b}`,
+      how: 'Take out the parts that make the wholes. The rest are the extra parts.',
+    },
+    [w]: {
+      expr: `({${out}} − {${n}}) ÷ {b}`,
+      how: 'Take the extra parts away. Every full set of parts is one whole.',
+    },
+  });
+  const less = (n: string) => ({
+    id: `${n} < b`,
+    constraint: true as const,
+    display: `{${n}}/{b} is less than 1`,
+    vars: [n, 'b'],
+    residual: (v: Values) => (v[n]! < v.b! ? 0 : 1),
+    solve: {},
+  });
+  return {
+    id: `m.4.add-fractions-like~mixed-${add ? 'add' : 'subtract'}`,
+    title: add ? 'Add mixed numbers' : 'Subtract mixed numbers',
+    use: add
+      ? 'Use this for 2 1/6 + 1 5/6: add mixed numbers with like denominators.'
+      : 'Use this for 18 1/4 − 2 3/4 or 2 − 3/4: take away mixed numbers.',
+    assumptions: [
+      'Write each mixed number as a fraction: 2 3/4 is 2 × 4 + 3 = 11 fourths.',
+      add
+        ? 'Add the numerators. The denominator stays.'
+        : 'Take away the numerators. The denominator stays. A whole number like 2 is 2 wholes and 0/4.',
+      'Write the answer as wholes and a fraction again.',
+    ],
+    variables: [
+      { ...whole('b', 'b', 'Denominator', 2, 12), allowed: DENOMS_4 },
+      whole('w1', 'w₁', 'First wholes', 0, 20),
+      whole('n1', 'n₁', 'First numerator', 0, 11),
+      whole('w2', 'w₂', 'Second wholes', 0, 20),
+      whole('n2', 'n₂', 'Second numerator', 0, 11),
+      { ...whole('A', 'A', 'First as a fraction', 0, 251), derived: true },
+      { ...whole('B', 'B', 'Second as a fraction', 0, 251), derived: true },
+      {
+        ...whole('D', 'D', add ? 'Numerator of the sum' : 'Numerator of the difference', 0, 502),
+        derived: true,
+      },
+      { ...whole('wd', 'W', 'Wholes in the answer', 0, 41), derived: true },
+      { ...whole('rd', 'R', 'Fraction part of the answer', 0, 11), derived: true },
+    ],
+    relations: [
+      less('n1'),
+      less('n2'),
+      partsOf('w1', 'n1', 'A', 'First'),
+      partsOf('w2', 'n2', 'B', 'Second'),
+      {
+        id: add ? 'D = A + B' : 'D = A − B',
+        display: add ? '{A}/{b} + {B}/{b} = {D}/{b}' : '{A}/{b} − {B}/{b} = {D}/{b}',
+        words: add
+          ? 'Add the numerators; the denominator stays'
+          : 'Take away the numerators; the denominator stays',
+        check: (v: Values) => (add ? `${v.A} + ${v.B} = ${v.D}` : `${v.A} − ${v.B} = ${v.D}`),
+        vars: ['D', 'A', 'B'],
+        shows: ['b'],
+        residual: (v: Values) => v.D! - (add ? v.A! + v.B! : v.A! - v.B!),
+        solve: {
+          D: (v: Values) => (add ? v.A! + v.B! : v.A! - v.B!),
+          A: (v: Values) => (add ? v.D! - v.B! : v.D! + v.B!),
+          B: (v: Values) => (add ? v.D! - v.A! : v.A! - v.D!),
+        },
+      },
+      {
+        id: 'wd = floor(D/b)',
+        display: 'full wholes in {D}/{b}: {wd}',
+        words: 'Full wholes in the answer = {wd}',
+        vars: ['wd', 'D', 'b'],
+        residual: (v: Values) => v.wd! - Math.floor(v.D! / v.b!),
+        solve: {
+          wd: (v: Values) => Math.floor(v.D! / v.b!),
+          D: () => undefined,
+          b: () => undefined,
+        },
+      },
+      {
+        id: 'rd = D − wd × b',
+        display: '{D}/{b} = {wd} wholes and {rd}/{b}',
+        words: 'Numerator − wholes × denominator = fraction part',
+        check: (v: Values) => `${v.wd} × ${v.b} + ${v.rd} = ${v.D}`,
+        vars: ['rd', 'D', 'wd', 'b'],
+        residual: (v: Values) => v.rd! - (v.D! - v.wd! * v.b!),
+        solve: {
+          rd: (v: Values) => v.D! - v.wd! * v.b!,
+          D: (v: Values) => v.wd! * v.b! + v.rd!,
+          wd: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'n1 < b': {},
+      'n2 < b': {},
+      'A = w1 × b + n1': partsSteps('w1', 'n1', 'A'),
+      'B = w2 × b + n2': partsSteps('w2', 'n2', 'B'),
+      [add ? 'D = A + B' : 'D = A − B']: {
+        D: {
+          expr: add ? '{A} + {B}' : '{A} − {B}',
+          how: add
+            ? 'Add the numerators. The parts are the same size.'
+            : 'Take away the numerators. The parts are the same size.',
+          work: (v: Values) => (add ? addStrategy(v.A!, v.B!) : subtractStrategy(v.A!, v.B!)),
+        },
+        A: { expr: add ? '{D} − {B}' : '{D} + {B}', how: 'Undo the adding or taking away.' },
+        B: { expr: add ? '{D} − {A}' : '{A} − {D}', how: 'Undo the adding or taking away.' },
+      },
+      'wd = floor(D/b)': {
+        wd: {
+          expr: 'wholes in {D} parts of {b}',
+          how: 'Every full set of parts makes 1 whole. Find how many full sets fit.',
+          work: (v: Values) =>
+            v.wd! > 0
+              ? [`${v.wd} × ${v.b} = ${v.wd! * v.b!}: ${v.wd} ${v.wd === 1 ? 'whole' : 'wholes'}`]
+              : [`${v.D} is less than ${v.b}, so the answer is less than 1 whole.`],
+        },
+      },
+      'rd = D − wd × b': {
+        D: {
+          expr: '{wd} × {b} + {rd}',
+          how: 'Each whole has the same number of parts. Add the fraction part.',
+        },
+        rd: {
+          expr: '{D} − {wd} × {b}',
+          how: 'Take away the parts that make wholes. The rest is the fraction part.',
+          work: (v: Values) => [
+            `${v.wd} × ${v.b} = ${v.wd! * v.b!}`,
+            `${v.D} − ${v.wd! * v.b!} = ${v.rd}`,
+          ],
+          note: (v: Values) =>
+            `(${v.D}/${v.b} = ${v.wd ? `${v.wd}` : ''}${v.wd && v.rd ? ' ' : ''}${v.rd || !v.wd ? `${v.rd}/${v.b}` : ''})`,
+        },
+      },
+    },
+    example: add
+      ? { b: 6, w1: 2, n1: 1, w2: 1, n2: 5, A: 13, B: 11, D: 24, wd: 4, rd: 0 }
+      : { b: 4, w1: 18, n1: 1, w2: 2, n2: 3, A: 73, B: 11, D: 62, wd: 15, rd: 2 },
+    startWith: ['b', 'w1', 'n1', 'w2', 'n2'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'A',
+      denominator: 'b',
+      wholes: 1,
+      second: { numerator: 'D', denominator: 'b' },
+    },
+  };
+}
 
 export const MATH_4_MODULES: ModuleDef[] = [
   // ── Factors, multiples, primes and composites (4.OA.4) ──
@@ -1056,23 +1243,16 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'Multiply the numerator and the denominator by the same number: the fraction keeps its size.',
         'Each part is cut into that many smaller parts: more parts, the same amount of the whole.',
         'Denominators 2, 3, 4, 5, 6, 8, 10 and 12; factors to 10, so tenths can become hundredths.',
+        'It works past 1 whole too: 10/3 = 40/12.',
       ],
       variables: [
-        whole('a', 'a', 'Numerator', 1, 12),
+        whole('a', 'a', 'Numerator', 1, 24),
         { ...whole('b', 'b', 'Denominator', 2, 12), allowed: DENOMS_4 },
         whole('k', 'k', 'Factor', 2, 10),
-        whole('p', 'p', 'New numerator', 2, 120),
+        whole('p', 'p', 'New numerator', 2, 240),
         whole('m', 'm', 'New denominator', 4, 120),
       ],
       relations: [
-        {
-          id: 'a ≤ b',
-          constraint: true,
-          display: '{a}/{b} is at most 1',
-          vars: ['a', 'b'],
-          residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
-          solve: {},
-        },
         { ...top.relation, words: 'Numerator × factor = new numerator' },
         {
           ...bottom.relation,
@@ -1084,7 +1264,6 @@ export const MATH_4_MODULES: ModuleDef[] = [
         },
       ],
       steps: {
-        'a ≤ b': {},
         'p = a × k': {
           ...top.steps,
           p: { ...top.steps.p!, how: 'Multiply the numerator by the factor.' },
@@ -1101,14 +1280,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
       example: { a: 3, b: 4, k: 3, p: 9, m: 12 },
       startWith: ['a', 'b', 'k'],
+      // Two number lines, one cut in the old parts and one in the new: the points meet, past 1
+      // whole too (10/3 and 40/12).
       representation: {
-        kind: 'fractionBars',
-        rows: [
-          { num: 'a', den: 'b' },
-          { num: 'p', den: 'm' },
-        ],
-        controls: ['a', 'b', 'k'],
-        equal: true,
+        kind: 'fractionLine',
+        numerator: 'a',
+        denominator: 'b',
+        wholes: 1,
+        second: { numerator: 'p', denominator: 'm' },
       },
     } satisfies ModuleDef;
   })(),
@@ -1117,8 +1296,17 @@ export const MATH_4_MODULES: ModuleDef[] = [
     const sign = (v: Values) => (v.p! > v.q! ? '>' : v.p! < v.q! ? '<' : '=');
     const known = (v: Values) =>
       ['a', 'b', 'c', 'd', 'm', 'p', 'q'].every((k) => v[k] !== undefined);
-    /** One denominator a multiple of the other: use the bigger. Otherwise multiply them. */
-    const common = (b: number, d: number) => (d % b === 0 ? d : b % d === 0 ? b : b * d);
+    /**
+     * The least common denominator, as a Grade 4 class finds it: count by the bigger
+     * denominator until the other divides it (12, 24 for 12 and 8), not 12 × 8 = 96.
+     */
+    const common = (b: number, d: number) => {
+      if (!(b >= 1 && d >= 1 && Number.isInteger(b) && Number.isInteger(d))) return b * d;
+      const big = Math.max(b, d);
+      let m = big;
+      while (m % b !== 0 || m % d !== 0) m += big;
+      return m;
+    };
     const scaled = (id: string, [num, den, out]: [string, string, string], which: string) => ({
       relation: {
         id,
@@ -1213,7 +1401,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'm = common denominator of b and d': {
           m: {
             expr: 'common denominator of {b} and {d}',
-            how: 'Is one denominator a multiple of the other? Use it. If not, multiply them.',
+            how: 'Count by the bigger denominator until the other one divides it.',
             work: (v) =>
               v.b === v.d
                 ? [`The denominators are the same: ${v.m}`]
@@ -1221,7 +1409,10 @@ export const MATH_4_MODULES: ModuleDef[] = [
                   ? [
                       `${Math.max(v.b!, v.d!)} = ${Math.min(v.b!, v.d!)} × ${Math.max(v.b!, v.d!) / Math.min(v.b!, v.d!)}: use ${v.m}`,
                     ]
-                  : [`Neither is a multiple of the other: ${v.b} × ${v.d} = ${v.m}`],
+                  : [
+                      `Count by ${Math.max(v.b!, v.d!)}s: ${countList(0, Math.max(v.b!, v.d!), v.m! / Math.max(v.b!, v.d!))} → ${v.m}`,
+                      `${v.m} ÷ ${Math.min(v.b!, v.d!)} = ${v.m! / Math.min(v.b!, v.d!)}: ${Math.min(v.b!, v.d!)} goes into ${v.m}`,
+                    ],
           },
         },
         'p = a × (m ÷ b)': first.steps,
@@ -1230,9 +1421,11 @@ export const MATH_4_MODULES: ModuleDef[] = [
           q: {
             ...second.steps.q!,
             note: (v) =>
-              known(v)
-                ? `(${v.p}/${v.m} ${sign(v)} ${v.q}/${v.m}, so ${v.a}/${v.b} ${sign(v)} ${v.c}/${v.d})`
-                : '',
+              !known(v)
+                ? ''
+                : v.b === v.d
+                  ? `(same denominator: compare the numerators, so ${v.a}/${v.b} ${sign(v)} ${v.c}/${v.d})`
+                  : `(${v.p}/${v.m} ${sign(v)} ${v.q}/${v.m}, so ${v.a}/${v.b} ${sign(v)} ${v.c}/${v.d})`,
           },
         },
       },
@@ -1257,33 +1450,17 @@ export const MATH_4_MODULES: ModuleDef[] = [
     assumptions: [
       'Like denominators mean the same-size parts: add the numerators, keep the denominator.',
       'A sum bigger than 1 can be written as wholes and parts: 7/4 = 1 whole and 3/4.',
-      'Each fraction is at most 1. Denominators 2, 3, 4, 5, 6, 8, 10 and 12.',
+      'Fractions can be more than 1 (9/8 + 3/8). Denominators 2, 3, 4, 5, 6, 8, 10 and 12.',
     ],
     variables: [
       { ...whole('b', 'b', 'Denominator', 2, 12), allowed: DENOMS_4 },
-      whole('a', 'a', 'First numerator', 0, 12),
-      whole('c', 'c', 'Second numerator', 0, 12),
-      whole('s', 's', 'Numerator of the sum', 0, 24),
-      { ...whole('w', 'w', 'Wholes in the sum', 0, 12), derived: true },
+      whole('a', 'a', 'First numerator', 0, 24),
+      whole('c', 'c', 'Second numerator', 0, 24),
+      whole('s', 's', 'Numerator of the sum', 0, 48),
+      { ...whole('w', 'w', 'Wholes in the sum', 0, 24), derived: true },
       { ...whole('r', 'r', 'Numerator of the fraction part', 0, 11), derived: true },
     ],
     relations: [
-      {
-        id: 'a ≤ b',
-        constraint: true,
-        display: '{a}/{b} is at most 1',
-        vars: ['a', 'b'],
-        residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
-        solve: {},
-      },
-      {
-        id: 'c ≤ b',
-        constraint: true,
-        display: '{c}/{b} is at most 1',
-        vars: ['c', 'b'],
-        residual: (v: Values) => (v.c! <= v.b! ? 0 : 1),
-        solve: {},
-      },
       {
         id: 's = a + c',
         display: '{a}/{b} + {c}/{b} = {s}/{b}',
@@ -1327,8 +1504,6 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     ],
     steps: {
-      'a ≤ b': {},
-      'c ≤ b': {},
       's = a + c': {
         s: {
           expr: '{a} + {c}',
@@ -1393,24 +1568,16 @@ export const MATH_4_MODULES: ModuleDef[] = [
     use: 'Use this for 7/8 − 3/8 and other fractions with like denominators.',
     assumptions: [
       'Like denominators mean same-size parts: subtract the numerators, keep the denominator.',
-      'The first fraction is at least as big as the second, and at most 1.',
+      'The first fraction is at least as big as the second. It can be more than 1 (13/5 − 4/5).',
       'Denominators 2, 3, 4, 5, 6, 8, 10 and 12.',
     ],
     variables: [
       { ...whole('b', 'b', 'Denominator', 2, 12), allowed: DENOMS_4 },
-      whole('a', 'a', 'First numerator', 1, 12),
-      whole('c', 'c', 'Second numerator', 0, 12),
-      whole('s', 's', 'Numerator of the difference', 0, 12),
+      whole('a', 'a', 'First numerator', 1, 24),
+      whole('c', 'c', 'Second numerator', 0, 24),
+      whole('s', 's', 'Numerator of the difference', 0, 24),
     ],
     relations: [
-      {
-        id: 'a ≤ b',
-        constraint: true,
-        display: '{a}/{b} is at most 1',
-        vars: ['a', 'b'],
-        residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
-        solve: {},
-      },
       {
         id: 'c ≤ a',
         constraint: true,
@@ -1435,7 +1602,6 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     ],
     steps: {
-      'a ≤ b': {},
       'c ≤ a': {},
       's = a − c': {
         s: {
@@ -1459,14 +1625,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { b: 8, a: 7, c: 3, s: 4 },
     startWith: ['b', 'a', 'c'],
+    // The first fraction on one line and the difference under it, past 1 whole too.
     representation: {
-      kind: 'fractionBars',
-      rows: [
-        { num: 'a', den: 'b' },
-        { num: 'c', den: 'b' },
-        { num: 's', den: 'b' },
-      ],
-      controls: ['a', 'b', 'c'],
+      kind: 'fractionLine',
+      numerator: 'a',
+      denominator: 'b',
+      wholes: 1,
+      second: { numerator: 's', denominator: 'b' },
     },
   },
   // ── Mixed numbers as fractions (4.NF.3b, 4.NF.3c) ──
@@ -1477,13 +1642,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
     assumptions: [
       'A mixed number is wholes and a fraction: 2 and 3/4.',
       'Each whole is all the parts: 2 wholes in quarters is 2 × 4 = 8 quarters. Add the extra parts.',
-      'Wholes to 3; the fraction part is less than 1.',
+      'Wholes to 10; the fraction part is less than 1.',
     ],
     variables: [
-      whole('w', 'w', 'Wholes', 0, 3),
+      whole('w', 'w', 'Wholes', 0, 10),
       { ...whole('b', 'b', 'Denominator', 2, 12), allowed: DENOMS_4 },
       whole('r', 'r', 'Extra numerator', 0, 11),
-      whole('s', 's', 'Numerator in all', 0, 47),
+      whole('s', 's', 'Numerator in all', 0, 131),
     ],
     relations: [
       {
@@ -1508,8 +1673,31 @@ export const MATH_4_MODULES: ModuleDef[] = [
           b: () => undefined,
         },
       },
+      {
+        // From the fraction to the mixed number (11/4 → 2 wholes): the full sets of parts.
+        id: 'w = floor(s/b)',
+        display: 'full wholes in {s}/{b}: {w}',
+        words: 'Full wholes in the fraction = {w}',
+        vars: ['w', 's', 'b'],
+        residual: (v: Values) => v.w! - Math.floor(v.s! / v.b!),
+        solve: {
+          w: (v: Values) => Math.floor(v.s! / v.b!),
+          s: () => undefined,
+          b: () => undefined,
+        },
+      },
     ],
     steps: {
+      'w = floor(s/b)': {
+        w: {
+          expr: 'wholes in {s} parts of {b}',
+          how: 'Every full set of parts makes 1 whole. Find how many full sets fit.',
+          work: (v) =>
+            v.w! > 0
+              ? [`${v.w} × ${v.b} = ${v.w! * v.b!}: ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`]
+              : [`${v.s} is less than ${v.b}, so it is less than 1 whole.`],
+        },
+      },
       'r < b': {},
       's = w × b + r': {
         s: {
@@ -1536,6 +1724,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
     startWith: ['w', 'b', 'r'],
     representation: { kind: 'fractionLine', numerator: 's', denominator: 'b', wholes: 3 },
   },
+  mixedAddSub('+'),
+  mixedAddSub('−'),
   // ── Line plots in eighths of an inch (4.MD.4) ──
   (() => {
     const xs = ['x1', 'x2', 'x3', 'x4', 'x5'];

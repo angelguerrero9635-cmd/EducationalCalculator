@@ -652,6 +652,67 @@ export const MATH_3_MODULES: ModuleDef[] = [
     startWith: ['n', 'r'],
     representation: { kind: 'array', rows: 'r', columns: 'c', total: 'n', max: 10, sides: true },
   },
+  // Division past the facts by breaking the total apart (3.OA.5 with 3.NBT): 85 chairs in 5
+  // rows is 50 ÷ 5 + 35 ÷ 5 = 10 + 7.
+  {
+    id: 'm.3.multiply-divide-100~break-apart',
+    title: 'Divide by breaking apart',
+    use: 'Use this for “85 chairs in 5 equal rows: how many in each row?” past the facts.',
+    assumptions: [
+      'Break the total into a part you can share by tens and a part you know: 85 = 50 + 35.',
+      'Share each part: 50 ÷ 5 = 10 and 35 ÷ 5 = 7. Add the answers: 10 + 7 = 17.',
+      'Totals to 100, shared into 2 to 9 equal groups.',
+    ],
+    variables: [
+      whole('n', 'n', 'Total', 11, 100),
+      whole('g', 'g', 'Equal groups', 2, 9),
+      whole('q', 'q', 'In each group', 1, 50),
+    ],
+    relations: [
+      {
+        id: 'n = g × q',
+        display: '{n} ÷ {g} = {q}',
+        words: 'Total ÷ equal groups = in each group',
+        check: (v: Values) => `${v.g} × ${v.q} = ${v.n}`,
+        vars: ['n', 'g', 'q'],
+        residual: (v: Values) => v.n! - v.g! * v.q!,
+        solve: {
+          q: (v: Values) => div(v.n!, v.g!),
+          n: (v: Values) => v.g! * v.q!,
+          g: (v: Values) => div(v.n!, v.q!),
+        },
+      },
+    ],
+    steps: {
+      'n = g × q': {
+        q: {
+          expr: '{n} ÷ {g}',
+          how: 'Break the total into tens of groups and a part you know. Share each part, then add.',
+          work: (v: Values) => {
+            const tens = Math.floor(v.q! / 10) * 10;
+            const big = tens * v.g!;
+            const rest = v.n! - big;
+            if (tens === 0) return [`${v.n} ÷ ${v.g} = ${v.q}, because ${v.g} × ${v.q} = ${v.n}`];
+            if (rest === 0) return [`${v.g} × ${tens} = ${big}, so ${v.n} ÷ ${v.g} = ${tens}`];
+            return [
+              `${v.n} = ${big} + ${rest}`,
+              `${big} ÷ ${v.g} = ${tens}`,
+              `${rest} ÷ ${v.g} = ${v.q! - tens}`,
+              `${tens} + ${v.q! - tens} = ${v.q}`,
+            ];
+          },
+        },
+        n: { expr: '{g} × {q}', how: 'The groups times the number in each group.' },
+        g: { expr: '{n} ÷ {q}', how: 'Divide the total by the number in each group.' },
+      },
+    },
+    example: { n: 85, g: 5, q: 17 },
+    startWith: ['n', 'g'],
+    representation: {
+      kind: 'areaModel',
+      divide: { dividend: 'n', divisor: 'g', quotient: 'q' },
+    },
+  },
   // ── Properties of multiplication (3.OA.5) ──
   (() => {
     const left = times('p = a × b', ['a', 'b', 'p'], ['rows', 'first part', 'first product']);
@@ -949,6 +1010,101 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  // Two steps that add, then take away (3.OA.8 with 3.NBT.2): "625 cards, 184 more, then 80
+  // given away" and "23 − 6 − 12".
+  {
+    id: 'm.3.two-step-problems~add-subtract',
+    title: 'Add, then take away',
+    use: 'Use this for “had 184, got 80 more, then gave away 264: how many are left?”',
+    assumptions: [
+      'Do the steps in the order the story tells them: add first, then take away.',
+      'The total after adding is the start for taking away.',
+      'Numbers to 1,000.',
+    ],
+    variables: [
+      whole('a', 'a', 'Start', 0, 1000),
+      whole('b', 'b', 'Added', 0, 1000),
+      { ...whole('t', 't', 'Total after adding', 0, 1000), derived: true },
+      whole('c', 'c', 'Taken away', 0, 1000),
+      whole('l', 'l', 'Left', 0, 1000),
+    ],
+    relations: [
+      {
+        id: 't = a + b',
+        display: '{a} + {b} = {t}',
+        words: 'Start + added = total after adding',
+        vars: ['t', 'a', 'b'],
+        residual: (v: Values) => v.t! - v.a! - v.b!,
+        solve: {
+          t: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.t! - v.b!,
+          b: (v: Values) => v.t! - v.a!,
+        },
+      },
+      {
+        id: 'l = t − c',
+        display: '{t} − {c} = {l}',
+        words: 'Total after adding − taken away = left',
+        vars: ['l', 't', 'c'],
+        residual: (v: Values) => v.l! - v.t! + v.c!,
+        solve: {
+          l: (v: Values) => v.t! - v.c!,
+          t: (v: Values) => v.l! + v.c!,
+          c: (v: Values) => v.t! - v.l!,
+        },
+      },
+    ],
+    steps: {
+      't = a + b': {
+        t: {
+          expr: '{a} + {b}',
+          how: 'First step: add what was added to the start.',
+          work: (v: Values) => addStrategy(v.a!, v.b!),
+        },
+        a: {
+          expr: '{t} − {b}',
+          how: 'Take away what was added from the total.',
+          work: (v: Values) => subtractStrategy(v.t!, v.b!),
+        },
+        b: {
+          expr: '{t} − {a}',
+          how: 'Take the start away from the total.',
+          work: (v: Values) => subtractStrategy(v.t!, v.a!),
+        },
+      },
+      'l = t − c': {
+        l: {
+          expr: '{t} − {c}',
+          how: 'Second step: take away from the total.',
+          work: (v: Values) => subtractStrategy(v.t!, v.c!),
+        },
+        t: {
+          expr: '{l} + {c}',
+          how: 'Put back what was taken away.',
+          work: (v: Values) => addStrategy(v.l!, v.c!),
+        },
+        c: {
+          expr: '{t} − {l}',
+          how: 'Take what is left away from the total.',
+          work: (v: Values) => subtractStrategy(v.t!, v.l!),
+        },
+      },
+    },
+    example: { a: 184, b: 80, t: 264, c: 100, l: 164 },
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'hops',
+      start: 'a',
+      hops: [
+        { var: 'b', sign: 1 },
+        { var: 'c', sign: -1 },
+      ],
+      end: 'l',
+      min: 0,
+      max: 1000,
+      tick: 100,
+    },
+  },
   // ── Rounding (3.NBT.1) ──
   {
     id: 'm.3.rounding',

@@ -122,10 +122,15 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
       return at.length ? Math.max(...at) - Math.min(...at) : 0;
     },
   ],
-  // One denominator a multiple of the other: the bigger; otherwise their product.
+  // The least common denominator (Grade 4 counts by the bigger one until the other divides it).
   [
     new RegExp(`common denominator of (${NUM}) and (${NUM})`),
-    (b, d) => (d % b === 0 ? d : b % d === 0 ? b : b * d),
+    (b, d) => {
+      if (!(b >= 1 && d >= 1 && Number.isInteger(b) && Number.isInteger(d))) return b * d;
+      let m = Math.max(b, d);
+      while (m % b !== 0 || m % d !== 0) m += Math.max(b, d);
+      return m;
+    },
   ],
   [new RegExp(`left over when (${NUM}) is shared by (${NUM})`), (n, d) => n % d],
   // The right side of "743 ÷ 6 = 123 remainder 5" reads as the quotient (the module's own
