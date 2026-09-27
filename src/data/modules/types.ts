@@ -612,6 +612,11 @@ export type Representation =
       reflect?: boolean;
       /** A rectangle from its left and right x-coordinates and bottom and top y-coordinates. */
       rect?: { left: string; right: string; bottom: string; top: string };
+      /**
+       * Plot a point (first quadrant): tap the grid or drag to place (x, y); the path from 0,
+       * across then up, is drawn to it.
+       */
+      plot?: boolean;
       /** Numerals I–IV in the quadrants. */
       quadrantLabels?: boolean;
       /** Largest |coordinate| drawn (grows to fit). */

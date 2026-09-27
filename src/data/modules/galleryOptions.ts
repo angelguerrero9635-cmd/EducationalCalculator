@@ -396,4 +396,41 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
       graph: true,
     },
   },
+  {
+    id: 'g.plot-point',
+    title: 'Plot a point',
+    assumptions: [
+      'Start at 0. The first number says how far across, the second how far up.',
+      'Tap the grid or drag the point to place it.',
+    ],
+    variables: [
+      whole('x', 'x', 'Across', 0, 10),
+      whole('y', 'y', 'Up', 0, 10),
+      { ...whole('s', 's', 'Steps along the path', 0, 20), derived: true },
+    ],
+    relations: [
+      {
+        id: 's = x + y',
+        display: '{x} + {y} = {s}',
+        vars: ['s', 'x', 'y'],
+        residual: (v: Values) => v.s! - v.x! - v.y!,
+        solve: { s: (v: Values) => v.x! + v.y! },
+      },
+    ],
+    steps: {
+      's = x + y': {
+        s: { expr: '{x} + {y}', how: 'The steps across and the steps up, added.' },
+      },
+    },
+    example: { x: 3, y: 5, s: 8 },
+    startWith: ['x', 'y'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x',
+      y: 'y',
+      plot: true,
+      extent: 10,
+      quadrants: 1,
+    },
+  },
 ];

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type GestureResponderEvent } from 'react-native';
 
 import { Text } from '@/components/Text';
 import Svg, { Circle, G, Line, Path } from 'react-native-svg';
@@ -26,7 +26,8 @@ type Spec = Extract<Representation, { kind: 'coordinatePlane' }>;
 /**
  * A coordinate plane (the first quadrant, or all four) with a point to drag. With a second
  * point the line through both is drawn, and a rise-over-run triangle between them shows the
- * slope.
+ * slope. With `plot`, the student taps the grid (or drags) to place one point, and the path
+ * from 0, across then up, is drawn to it.
  */
 export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -364,6 +365,74 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     </ChartText>
                   </>
                 ) : null}
+                {/* Plotting: from 0, across the x-axis, then up to the point. */}
+                {spec.plot && p?.known && (p.px !== 0 || p.py !== 0)
+                  ? (() => {
+                      const ax = sx(p.px);
+                      const ay = sy(0);
+                      const ty = sy(p.py);
+                      const head = (x: number, y: number, dxh: number, dyh: number) =>
+                        `M ${x} ${y} l ${-dxh * 9 - dyh * 5} ${-dyh * 9 + dxh * 5} l ${dyh * 10} ${-dxh * 10} z`;
+                      return (
+                        <G>
+                          {p.px !== 0 ? (
+                            <>
+                              <Line
+                                x1={sx(0)}
+                                y1={ay}
+                                x2={ax - 4}
+                                y2={ay}
+                                stroke={c.chartSecond}
+                                strokeWidth={chart.strokeHeavy + 1}
+                              />
+                              <Path d={head(ax, ay, 1, 0)} fill={c.chartSecond} />
+                              <ChartText
+                                {...fitLabel(
+                                  (sx(0) + ax) / 2,
+                                  `${formatNumber(p.px)} across`,
+                                  chart.small,
+                                  w,
+                                )}
+                                y={ay - 7}
+                                fontSize={chart.small}
+                                fontWeight="700"
+                              >
+                                {`${formatNumber(p.px)} across`}
+                              </ChartText>
+                            </>
+                          ) : null}
+                          {p.py !== 0 ? (
+                            <>
+                              <Line
+                                x1={ax}
+                                y1={ay}
+                                x2={ax}
+                                y2={ty + 4}
+                                stroke={c.chartSecond}
+                                strokeWidth={chart.strokeHeavy + 1}
+                              />
+                              <Path d={head(ax, ty, 0, -1)} fill={c.chartSecond} />
+                              <ChartText
+                                {...fitLabel(
+                                  ax + 8,
+                                  `${formatNumber(p.py)} up`,
+                                  chart.small,
+                                  w,
+                                  'start',
+                                  8,
+                                )}
+                                y={(ay + ty) / 2 + 4}
+                                fontSize={chart.small}
+                                fontWeight="700"
+                              >
+                                {`${formatNumber(p.py)} up`}
+                              </ChartText>
+                            </>
+                          ) : null}
+                        </G>
+                      );
+                    })()
+                  : null}
                 {trail.map(([tx, ty], i) => (
                   <Circle key={`trail${i}`} cx={sx(tx)} cy={sy(ty)} r={4} fill={c.chartMuted} />
                 ))}
@@ -410,6 +479,35 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   );
                 })}
               </Svg>
+              {/* Plotting: a tap on the grid puts the point on the nearest crossing. */}
+              {spec.plot ? (
+                <Pressable
+                  accessibilityLabel="Tap the grid to place the point"
+                  style={{
+                    position: 'absolute',
+                    left: sx(lo) - unit / 2,
+                    top: sy(E) - unit / 2,
+                    width: (E - lo + 1) * unit,
+                    height: (E - lo + 1) * unit,
+                  }}
+                  onPress={(e: GestureResponderEvent) => {
+                    const ne = e.nativeEvent as unknown as {
+                      locationX?: number;
+                      locationY?: number;
+                      offsetX?: number;
+                      offsetY?: number;
+                    };
+                    const lx = ne.locationX ?? ne.offsetX ?? 0;
+                    const ly = ne.locationY ?? ne.offsetY ?? 0;
+                    const x = lo + (lx - unit / 2) / unit;
+                    const y = E - (ly - unit / 2) / unit;
+                    calc.set({
+                      [spec.x]: rep.snapTo(spec.x, x * rep.factor(spec.x)),
+                      [spec.y]: rep.snapTo(spec.y, y * rep.factor(spec.y)),
+                    });
+                  }}
+                />
+              ) : null}
               {pts
                 .filter((pt) => pt.known)
                 .map((pt) => (
@@ -462,11 +560,15 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
             ? `(${formatNumber(p.px)}, ${formatNumber(p.py)}) reflected across the x-axis is (${formatNumber(p.px)}, ${formatNumber(-p.py)}); across the y-axis (${formatNumber(-p.px)}, ${formatNumber(p.py)}); across both (${formatNumber(-p.px)}, ${formatNumber(-p.py)}).`
             : spec.segment && both
               ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
-              : p?.known
-                ? both
-                  ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
-                  : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
-                : 'Type both coordinates to place the point.'}
+              : spec.plot
+                ? p?.known
+                  ? `Start at 0. Go ${formatNumber(p.px)} across, then ${formatNumber(p.py)} up: the point (${formatNumber(p.px)}, ${formatNumber(p.py)}).`
+                  : 'Tap the grid to place the point, or type both numbers.'
+                : p?.known
+                  ? both
+                    ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
+                    : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
+                  : 'Type both coordinates to place the point.'}
       </Caption>
       <Steppers
         calc={calc}

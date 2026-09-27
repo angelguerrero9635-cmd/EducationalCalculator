@@ -492,6 +492,9 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
+      // Plotting draws its path from 0 across then up, in the first quadrant only.
+      if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
+      if (rep.plot && rep.second) out.push('plotting places one point, not two');
       if (rep.quadrants === 1) {
         for (const id of [rep.x, rep.y, rep.second?.x, rep.second?.y]) {
           const x = id === undefined ? undefined : val(id);
