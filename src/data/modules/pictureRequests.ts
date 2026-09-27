@@ -261,10 +261,14 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Line plot in quarter inches from a fractional start',
     kind: 'linePlot',
     pages: ['m.4.add-fractions-like~line-plot'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.line-plot-quarter-start', 'g.line-plot-quarter-start-halves'],
+    uses: '"startParts":4',
     notes:
-      'Straws from 3 3/4 to 5 1/2 inches: marks step by 1/4 or 1/2 from a start that is itself a fraction.',
+      'Straws from 3 3/4 to 5 1/2 inches: marks step by 1/4 or 1/2 from a start that is itself a fraction. ' +
+      'Pass start (a value id holding 3.75, step 0.25), marks (4, 2 or a value id), startParts: 4, unit "in" and ' +
+      'one point per mark ({ var, at: i }); labels read 3 3/4, 4, 4 1/4 … The page must change from its fixed ' +
+      'eighths (1/8 to 5/8) to a start value and one count per mark (up to 8 fit at 390 px).',
   },
   {
     id: 'R23',
@@ -293,9 +297,14 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Decimal number line from any whole start',
     kind: 'fractionLine',
     pages: ['m.4.decimals-intro~number-line'],
-    status: 'requested',
-    gallery: [],
-    notes: 'A line from 1 to 3 in tenths with 2.6 marked.',
+    status: 'drawn',
+    gallery: ['g.decimal-line-from-whole', 'g.decimal-line-from-whole-hundredths'],
+    uses: '"startWhole"',
+    notes:
+      'A line from 1 to 3 in tenths with 2.6 marked. Add startWhole to the representation (a number, e.g. 1 with ' +
+      'wholes: 2, or a value id such as a derived "whole before the point" = wholes in k parts of n); the page ' +
+      'keeps k (parts from 0) and n (10 or 100). The line stretches to take in the point, tenths label every ' +
+      'other one when crowded, and the jumps count on from the whole before the point (by tenths, then hundredths).',
   },
   {
     id: 'R26',

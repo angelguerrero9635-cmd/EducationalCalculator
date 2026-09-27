@@ -421,9 +421,19 @@ export function repIssues(
       break;
     }
     case 'linePlot': {
-      // LinePlot.tsx draws at most 10 X's a column, from a whole-number start.
+      // LinePlot.tsx draws at most 10 X's a column, from a whole start (or 1/startParts).
       for (const p of rep.points) count(p.var, 'X marks', 10);
-      if (rep.start) count(rep.start, 'line plot start');
+      if (rep.start && rep.startParts === undefined) count(rep.start, 'line plot start');
+      else if (rep.start) {
+        // A fractional start is drawn to the nearest 1/startParts.
+        const s = val(rep.start);
+        if (
+          s !== undefined &&
+          (s < 0 || Math.abs(s * rep.startParts! - Math.round(s * rep.startParts!)) > 1e-9)
+        )
+          out.push(`line plot start ${s} is not a whole number of 1/${rep.startParts}`);
+        if (rep.marks === undefined) out.push('line plot startParts needs marks');
+      }
       if (rep.marks !== undefined) {
         if (!rep.start) out.push('line plot marks need a start');
         const d = val(rep.marks);
@@ -507,8 +517,19 @@ export function repIssues(
           : rep.from === undefined
             ? Math.ceil(a / b)
             : Math.max(Math.ceil(Math.max(a, f ?? a) / b) - Math.floor(Math.min(a, f ?? a) / b), 1);
-      if (span > 24 && a !== undefined && b !== undefined) {
+      if (span > 24 && rep.startWhole === undefined && a !== undefined && b !== undefined) {
         out.push(`${a}/${b} needs ${span} wholes on the line`);
+      }
+      // `startWhole`: the line runs from that whole (or the point's) to start + wholes.
+      if (rep.startWhole !== undefined) {
+        count(rep.startWhole, 'line start whole');
+        const s = val(rep.startWhole);
+        const p = a !== undefined && b !== undefined && b >= 1 ? a / b : undefined;
+        const from = Math.min(s ?? Infinity, p === undefined ? Infinity : Math.floor(p));
+        const to = Math.max((s ?? 0) + rep.wholes, p === undefined ? 0 : Math.ceil(p));
+        if (Number.isFinite(from) && to - from > 24) {
+          out.push(`line from ${from} to ${to} needs more than 24 wholes`);
+        }
       }
       if (rep.second) {
         count(rep.second.numerator, 'second line parts counted');

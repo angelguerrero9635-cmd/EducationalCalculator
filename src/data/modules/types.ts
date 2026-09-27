@@ -183,6 +183,11 @@ export type Representation =
        * then not used).
        */
       marks?: 2 | 4 | 8 | string;
+      /**
+       * With `marks`: the start may be a fraction in these parts of a unit (4: 3 3/4 inches), its
+       * slider steps by 1/4, and every mark reads as a mixed number (3 3/4, 4, 4 1/4, …).
+       */
+      startParts?: 2 | 4 | 8;
     }
   /**
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
@@ -623,6 +628,11 @@ export type Representation =
       second?: { numerator: string; denominator: string };
       /** Tenths and hundredths as decimals: the tenths are labeled 0.1, 0.2 … and the point too. */
       decimal?: boolean;
+      /**
+       * The first whole on the line (a number or a value id): it runs from here to here +
+       * `wholes` (1 to 3), stretching to take in the point; the point is still counted from 0.
+       */
+      startWhole?: number | string;
       /**
        * Mixed-number jumps (18 1/4 − 2 3/4): a jump from this value to the numerator, both
        * counted in parts (18 1/4 is 73 fourths), drawn as one jump of whole numbers and one of
