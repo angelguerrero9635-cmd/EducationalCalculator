@@ -152,13 +152,13 @@ export const MATH_1_MODULES: ModuleDef[] = [
     'm.1.add-sub-20~compare',
     20,
     [11, 7],
-    'Use this for “how many more?” and “how many fewer?” word problems.',
+    'Use this for “17 fish and 9 fish. How many more fish?”',
   ),
   // Take from ten: 14 − 8 = (10 − 8) + 4 (1.OA.6, Eureka Grade 1 Module 2).
   {
     id: 'm.1.add-sub-20~take-from-ten',
     title: 'Take from ten',
-    use: 'Use this for 14 − 8 by taking 8 from the 10.',
+    use: 'Use this for “Find the number that makes 14 − 8 = ___ true.”',
     assumptions: [
       'Split the teen number into 10 and some ones: 14 is 10 and 4.',
       'Take the number away from the 10. Then add the ones back.',
@@ -221,7 +221,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   {
     id: 'm.1.add-sub-20~doubles',
     title: 'Near doubles',
-    use: 'Use this for near doubles, like 6 + 7.',
+    use: 'Use this for near doubles: “Find the value of 6 + 7.”',
     assumptions: [
       'A double adds a number to itself: 6 + 6 = 12.',
       'A near double is one more: 6 + 7 is 6 + 6 and 1 more.',
@@ -482,7 +482,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   {
     id: 'm.1.count-120~less',
     title: 'One less, ten less',
-    use: 'Use this for one less and ten less on the 120 chart.',
+    use: 'Use this for “What is 1 less? What is 10 less?” on the 120 chart.',
     assumptions: [
       'One less is the number just before.',
       'Ten less is one row up on the chart. The ones digit stays the same.',
@@ -645,7 +645,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   {
     id: 'm.1.tens-ones~regroup',
     title: 'Trade ones for tens',
-    use: 'Use this for “2 tens and 17 ones is ___.”',
+    use: 'Use this for “How many cubes? 2 towers of 10 and 17 more.”',
     assumptions: [
       '10 ones make 1 ten.',
       'A number can have more than 9 ones: 2 tens and 17 ones is 37.',
@@ -757,7 +757,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   {
     id: 'm.1.add-within-100~two-digits',
     title: 'Add two 2-digit numbers',
-    use: 'Use this for two 2-digit numbers, like 36 + 47.',
+    use: 'Use this for “Find the value of 35 + 48.”',
     assumptions: ['Add tens to tens and ones to ones.', 'Then put the tens and the ones together.'],
     variables: [
       whole('a', 'a', 'First number', 10, 90),
@@ -819,7 +819,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   {
     id: 'm.1.add-within-100~subtract-tens',
     title: 'Subtract tens',
-    use: 'Use this for 70 − 30 and other tens take away tens.',
+    use: 'Use this for “Find the value of 90 − 70.”',
     assumptions: [
       'Both numbers are tens: 10, 20, 30, … 90.',
       'Take away tens from tens: 7 tens − 3 tens = 4 tens, so 70 − 30 = 40.',
@@ -991,7 +991,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   {
     id: 'm.1.data-3-categories~compare',
     title: 'How many more?',
-    use: 'Use this for “how many more?” in a picture graph.',
+    use: 'Use this for “How many more students chose dogs than cats?”',
     assumptions: [
       'Each picture stands for one object.',
       'Line up the two columns. Count the extra pictures in the taller one.',
@@ -1019,7 +1019,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   {
     id: 'm.1.data-3-categories~tally',
     title: 'Tally chart',
-    use: 'Use this to read and add up a tally chart.',
+    use: 'Use this for “How many students chose dogs?” in a tally chart.',
     assumptions: [
       'Each mark stands for one vote.',
       'The fifth mark crosses the other four, so you can count by 5s.',
@@ -1119,6 +1119,6 @@ export const MATH_1_MODULES: ModuleDef[] = [
     99,
     [1, 10],
     [45, 54],
-    'Use this to compare two numbers with >, < or =.',
+    'Use this for “Which number is greater, 54 or 36?”',
   ),
 ];

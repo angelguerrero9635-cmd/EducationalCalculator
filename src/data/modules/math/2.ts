@@ -291,7 +291,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.add-sub-100-fluency~within-20',
     title: 'Facts within 20',
-    use: 'Use this for facts within 20 from memory, like 9 + 6.',
+    use: 'Use this for “Find the value of each expression: 9 + 6, 10 − 3.”',
     assumptions: [
       'Know these facts by heart by the end of Grade 2.',
       'Stuck? Make a ten: 9 + 6 is 9 + 1 + 5.',
@@ -313,7 +313,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.add-sub-100-fluency~tape',
     title: 'Word problems',
-    use: 'Use this for part-and-whole word problems with a bar model.',
+    use: 'Use this for “Mai puts 18 more on the shelf. Now there are 47.”',
     assumptions: [
       'Draw one bar for the whole and cut it into the two parts.',
       'To find the whole, add the parts. To find a part, take the other part away.',
@@ -355,7 +355,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.add-sub-100-fluency~four-numbers',
     title: 'Add four numbers',
-    use: 'Use this to add up to four 2-digit numbers.',
+    use: 'Use this for “Find the value of 25 + 25 + 10 + 5.”',
     assumptions: [
       'Add all the tens. Then all the ones. Look for ones that make a ten.',
       'In 23 + 17, the 3 and the 7 make a ten.',
@@ -468,7 +468,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     'm.2.add-sub-100-fluency~compare',
     100,
     [52, 37],
-    'Use this for “how many more?” word problems up to 100.',
+    'Use this for “30 in the music room, 74 in the cafeteria. How many more?”',
   ),
   // ─── Grade 1 ───────────────────────────────────────────────────────────────
   // Order three lengths; compare two by using a third (1.MD.1).
@@ -709,7 +709,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.place-value-1000~expanded',
     title: 'Expanded form',
-    use: 'Use this for expanded form, like 347 = 300 + 40 + 7.',
+    use: 'Use this for “Select all representations of 318,” like 300 + 10 + 8.',
     assumptions: [
       'Expanded form adds the value of each digit: 347 = 300 + 40 + 7.',
       'The hundreds part is 100, 200, 300 and so on. The tens part is 10, 20, 30 and so on.',
@@ -967,7 +967,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     return {
       id: 'm.2.add-sub-1000~ten-hundred-more',
       title: '10 or 100 more or less',
-      use: 'Use this for 10 more, 10 less, 100 more and 100 less.',
+      use: 'Use this for “He gives 2 tens away. What is the value now?”',
       assumptions: [
         '10 more or 10 less changes the tens digit by 1.',
         '100 more or 100 less changes the hundreds digit by 1.',
@@ -995,7 +995,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.add-sub-1000~subtract',
     title: 'Take away within 1,000',
-    use: 'Use this to take away within 1,000, like 403 − 178.',
+    use: 'Use this for “Find the value of 936 − 428.”',
     assumptions: [
       'Take ones from ones, tens from tens, hundreds from hundreds.',
       'Not enough ones? Trade 1 ten for 10 ones. No tens? Trade 1 hundred for 10 tens first.',
@@ -1390,7 +1390,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.arrays~equal-groups',
     title: 'Equal groups',
-    use: 'Use this for equal groups, like 3 bags of 4 apples.',
+    use: 'Use this for “How many counters are there in all?” in equal rows.',
     assumptions: [
       'Every group has the same number of dots.',
       'Add the number in one group, once for each group: 3 groups of 4 is 4 + 4 + 4.',
@@ -1857,7 +1857,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.money~change',
     title: 'Money left after buying',
-    use: 'Use this for “You pay $1. How much money is left?”',
+    use: 'Use this for “She gave the clerk a $5 bill. What is the change?”',
     assumptions: [
       'The money you have is the price plus what is left.',
       'To find what is left, take the price away. Count up from the price to check.',
@@ -2049,7 +2049,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.money~one-coin',
     title: 'Count one kind of coin',
-    use: 'Use this to count one kind of coin, like 4 nickels.',
+    use: 'Use this for “What is the value of the coins altogether?” with one kind.',
     assumptions: [
       'Penny 1¢, nickel 5¢, dime 10¢, quarter 25¢.',
       'Count by the coin’s value, once for each coin: 3 dimes is 10, 20, 30 → 30¢.',
@@ -2411,7 +2411,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     id: 'm.2.graphs-line-plots~compare',
     pictureLabels: ['d'],
     title: 'How many more? (bar graph)',
-    use: 'Use this for “how many more?” in a bar graph.',
+    use: 'Use this for “How many more students chose soccer than baseball?” in a bar graph.',
     assumptions: [
       'Read each bar’s number on the scale, starting at 0.',
       'To compare, count up from the shorter bar to the taller bar.',
@@ -2440,7 +2440,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.graphs-line-plots~picture-graph',
     title: 'Picture graph',
-    use: 'Use this to read a picture graph with four groups.',
+    use: 'Use this for “Use the table to complete the picture graph.”',
     assumptions: [
       'Each picture stands for 1.',
       'Count the pictures in each column. Add all the columns for the total.',
@@ -2558,7 +2558,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.thirds-polygons~rows-columns',
     title: 'Rows and columns of squares',
-    use: 'Use this to cut a rectangle into rows and columns of squares.',
+    use: 'Use this for “Partition the rectangle into 10 equal squares.”',
     assumptions: [
       'Cut a rectangle into rows and columns of same-size squares. Leave no gaps.',
       'Count the squares: add the number in a row once for each row.',
@@ -2612,7 +2612,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.thirds-polygons~solids',
     title: 'Faces, edges and corners',
-    use: 'Use this to count faces, edges and corners of a cube or prism.',
+    use: 'Use this for “A prism has how many faces, edges and vertices?”',
     assumptions: [
       'A face is a flat surface. An edge is where two faces meet. A corner is where edges meet.',
       'A cube has 6 square faces, 12 edges and 8 corners.',
@@ -2687,6 +2687,6 @@ export const MATH_2_MODULES: ModuleDef[] = [
     999,
     [1, 10, 100],
     [347, 374],
-    'Use this to compare 3-digit numbers with >, < or =.',
+    'Use this for “Put a < or > in the blank: 197 ___ 311.”',
   ),
 ];

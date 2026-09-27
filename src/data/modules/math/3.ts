@@ -1152,7 +1152,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   {
     id: 'm.3.rounding~hundred',
     title: 'Round to the nearest hundred',
-    use: 'Use this to round a 3-digit number to the nearest hundred.',
+    use: 'Use this for “What is 346 rounded to the nearest hundred?”',
     assumptions: [
       'Find the hundreds just below and just above the number.',
       'Round to the nearer one. 50 or more past the hundred rounds up.',
@@ -1218,7 +1218,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.rounding~estimate',
       title: 'Estimate a sum',
-      use: 'Use this to estimate a sum by rounding, and check an answer.',
+      use: 'Use this for “About how many?” and to check a sum by rounding.',
       pictureLabels: ['x', 'y', 'e', 'o'],
       assumptions: [
         'Round each number to the nearest ten, then add the rounded numbers.',
@@ -1316,7 +1316,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.rounding~estimate-difference',
       title: 'Estimate a difference',
-      use: 'Use this to estimate a difference by rounding, then check.',
+      use: 'Use this for “708 students, 394 in the cafeteria. About how many in class?”',
       pictureLabels: ['x', 'y', 'e', 'o'],
       assumptions: [
         'Round each number to the nearest ten, then subtract the rounded numbers.',
@@ -1414,7 +1414,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   {
     id: 'm.3.add-sub-1000~subtract-zeros',
     title: 'Take away within 1,000',
-    use: 'Use this to take away within 1,000, even across zeros, like 400 − 162.',
+    use: 'Use this for “Find the value of 400 − 162.”',
     assumptions: [
       'No ones and no tens to trade? Trade 1 hundred for 10 tens first.',
       'Then trade 1 of those tens for 10 ones. Now every place has enough.',
@@ -1742,7 +1742,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.fractions-number-line~shapes',
       title: 'Fractions of a shape',
-      use: 'Use this to name the shaded part of a shape, like 3/4.',
+      use: 'Use this for “What fraction of the figure is shaded?”',
       pictureLabels: ['u'],
       assumptions: [
         'The parts must be equal, or it is not a fraction.',
@@ -1778,7 +1778,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.fractions-number-line~wholes',
       title: 'Whole numbers as fractions',
-      use: 'Use this to write a whole number as a fraction, like 2 = 8/4.',
+      use: 'Use this for “How many fourths make a whole?” or 2 = 8/4.',
       assumptions: [
         'A fraction is a whole number when the parts counted fill whole numbers exactly.',
         'Every whole has the same number of parts: 4/4 = 1, 8/4 = 2, 12/4 = 3.',
@@ -2359,7 +2359,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   {
     id: 'm.3.perimeter~missing-side',
     title: 'Find a missing side',
-    use: 'Use this when you know the perimeter and every side but one.',
+    use: 'Use this for “The perimeter of a park is 444 m. It is 175 m long. How wide?”',
     assumptions: [
       'Add all the sides to get the perimeter.',
       'To find one side, take the other sides away from the perimeter.',
@@ -2423,7 +2423,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   {
     id: 'm.3.perimeter~same-perimeter',
     title: 'Same perimeter, different area',
-    use: 'Use this to compare rectangles with the same perimeter but different areas.',
+    use: 'Use this for “Which rectangle has the same perimeter as this one?”',
     assumptions: [
       'Rectangles with the same perimeter can have different areas.',
       'Perimeter goes around the edge. Area covers the inside, in square units.',
@@ -2514,7 +2514,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   {
     id: 'm.3.perimeter~same-area',
     title: 'Same area, different perimeter',
-    use: 'Use this to compare rectangles with the same area but different perimeters.',
+    use: 'Use this for rectangles with the same area but different perimeters.',
     assumptions: [
       'Rectangles with the same area can have different perimeters.',
       'A long thin rectangle has a bigger perimeter than a square one.',
@@ -2611,7 +2611,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.perimeter~equal-sides',
       title: 'Shapes with equal sides',
-      use: 'Use this for a shape with equal sides: “A hexagon with 5 cm sides. What is its perimeter?”',
+      use: 'Use this for “A stop sign has 8 sides of 10 inches. What is its perimeter?”',
       assumptions: [
         'Every side is the same length.',
         'Add the side once for each side: that is sides × side length.',
@@ -2758,7 +2758,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.scaled-graphs~picture-graph',
       title: 'Picture graph with a key',
-      use: 'Use this for picture graphs where each picture stands for 2, 5 or 10.',
+      use: 'Use this for “Each picture stands for 10 students. How many?”',
       pictureLabels: ['n1', 'n2', 'n3'],
       assumptions: [
         'The key says how many each picture stands for.',
@@ -2827,7 +2827,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     return {
       id: 'm.3.scaled-graphs~picture-more',
       title: 'How many more on a picture graph',
-      use: 'Use this for “How many more apples than pears?” on a picture graph with a key.',
+      use: 'Use this for “How many more basketballs than footballs?” on a picture graph.',
       pictureLabels: ['n1', 'n2'],
       assumptions: [
         'Find each count first: pictures × the key.',
@@ -2947,7 +2947,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   {
     id: 'm.3.measure-line-plots~quarter-inch',
     title: 'Read a ruler to the quarter inch',
-    use: 'Use this to read a length on a ruler marked in halves or quarters of an inch.',
+    use: 'Use this for “What is the length of the rectangle?” to the quarter inch.',
     pictureLabels: ['w', 'r'],
     assumptions: [
       'Each inch on the ruler is split into equal marks: 2 for halves, 4 for quarters.',

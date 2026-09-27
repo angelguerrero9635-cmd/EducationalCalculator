@@ -138,8 +138,8 @@ export const MATH_K_MODULES: ModuleDef[] = [
   // Number partners: break a number up to 10 into two parts (K.OA.3).
   {
     id: 'm.K.add-sub-10~number-bond',
-    title: 'Number partners',
-    use: 'Use this for “7 is 4 and ___” and other ways to split a number.',
+    title: 'Break apart a number',
+    use: 'Use this for “How can you break apart 7 cubes into 2 parts?”',
     assumptions: [
       'The whole is in the top circle. The two parts are below.',
       'The two parts together make the whole.',
@@ -279,7 +279,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
   {
     id: 'm.K.count-100~tens',
     title: 'Count by tens',
-    use: 'Use this to count by tens to 100.',
+    use: 'Use this for “10, 20, 30. What is the next number?”',
     assumptions: ['Count by tens: 10, 20, 30 …', 'Each jump is 10 more.'],
     variables: [whole('t', 't', 'Tens', 1, 10), whole('n', 'n', 'Number reached', 10, 100)],
     relations: [
@@ -348,7 +348,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
   {
     id: 'm.K.count-objects~five-group',
     title: '5 and some more',
-    use: 'Use this to see 6 to 10 as 5 and some more.',
+    use: 'Use this for “How many counters are there?” with 5 and some more.',
     assumptions: [
       'The top row of the ten-frame holds 5.',
       'Numbers from 6 to 10 are 5 and some more.',
@@ -426,8 +426,8 @@ export const MATH_K_MODULES: ModuleDef[] = [
     });
     return {
       id: 'm.K.compare-10~numerals',
-      title: 'Which number is greater?',
-      use: 'Use this to tell which number is greater, like 6 or 9.',
+      title: 'Which number is more?',
+      use: 'Use this for “Circle the number that is more: 5 or 7.”',
       assumptions: ['When we count, a greater number comes later.', 'Match counters to check.'],
       variables: [
         whole('a', 'a', 'First number', 1, 10),

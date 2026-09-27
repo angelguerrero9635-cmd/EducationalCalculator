@@ -9,8 +9,8 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sequence',
     id: 'm.K.add-sub-10~all-partners',
-    title: 'All the ways to make 5',
-    use: 'Use this to list every pair that makes 5, in order.',
+    title: 'All the ways to make a number',
+    use: 'Use this for “8 cars, some red and some blue. Show all the ways.”',
     assumptions: [
       'A number can be split into two parts in more than one way.',
       'Go in order. The first part goes up by 1. The second goes down by 1.',
@@ -353,7 +353,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.K.shapes-2d-3d~solids',
     title: 'Flat or solid?',
-    use: 'Use this to tell flat shapes from solid shapes.',
+    use: 'Use this for “Which has the same shape as a cylinder?”',
     assumptions: [
       'A flat shape lies on the paper. A solid shape takes up space.',
       'A ball is a sphere. A box is a cube. A can is a cylinder.',
@@ -436,7 +436,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.K.measurable-attributes~weight',
     title: 'Heavier and lighter',
-    use: 'Use this to tell heavier things from lighter things.',
+    use: 'Use this for “Which is heavier?” on a balance scale.',
     assumptions: [
       'Hold one in each hand. The heavier one pulls down.',
       'On a balance, the heavier side goes down.',
@@ -522,7 +522,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 'm.1.measure-nonstandard~order',
     title: 'Order three ribbons',
-    use: 'Use this to order three things from longest to shortest.',
+    use: 'Use this for “List the rectangles from longest to shortest.”',
     assumptions: [
       'Line up the ribbons at one end to compare them.',
       'A rope is longer than a ribbon. The ribbon is longer than a string. So the rope is longer than the string.',
@@ -539,7 +539,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.1.measure-nonstandard~right-way',
     title: 'Measured the right way?',
-    use: 'Use this to spot a length measured the wrong way.',
+    use: 'Use this for “Jada says it is 5 paper clips long. Do you agree?”',
     assumptions: [
       'Start at the end of the object.',
       'Lay the cubes end to end, with no gaps and no overlaps.',
@@ -639,7 +639,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.1.halves-fourths~equal-parts',
     title: 'Equal parts or not?',
-    use: 'Use this for “Is this shape cut into halves?”',
+    use: 'Use this for “Han split the circle into fourths. Do you agree?”',
     assumptions: [
       'Halves are 2 equal parts. Fourths are 4 equal parts.',
       'If one part is bigger, the parts are not equal.',
@@ -819,7 +819,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.1.shape-attributes~name-changes',
     title: 'What changes the name?',
-    use: 'Use this to tell what changes a shape’s name.',
+    use: 'Use this for “Is this shape a triangle? Why or why not?”',
     assumptions: [
       'Some things decide a shape’s name.',
       'Other things can change and the name stays.',
@@ -852,7 +852,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.1.halves-fourths~bigger-share',
     title: 'Which share is bigger?',
-    use: 'Use this to tell whether a half or a fourth is bigger.',
+    use: 'Use this for “Which is bigger: half or a fourth?”',
     assumptions: [
       'Cut the same shape into more parts: each part is smaller.',
       'Half a pizza is bigger than a fourth of that pizza.',
@@ -914,7 +914,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.1.tens-ones~compare-sort',
     title: 'Greater, less or equal?',
-    use: 'Use this to pick >, < or = for two numbers.',
+    use: 'Use this for “Put a < or > in each box: 91 ___ 19.”',
     assumptions: [
       'Compare the tens first. If they are the same, compare the ones.',
       'The open side of > or < faces the greater number.',
@@ -949,7 +949,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.2.even-odd~sort',
     title: 'Even or odd?',
-    use: 'Use this to sort numbers to 20 as even or odd.',
+    use: 'Use this for “Is the number of dots even or odd? Explain how you know.”',
     assumptions: [
       'Put the dots in pairs.',
       'Even: every dot has a partner. Odd: one is left over.',
@@ -974,7 +974,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.2.standard-length~which-unit',
     title: 'Which unit?',
-    use: 'Use this to pick the best unit.',
+    use: 'Use this for “Which of these could be measured using a meter stick?”',
     assumptions: [
       'Small things: centimeters. Big things: meters.',
       'A bigger unit means you need fewer of them.',
@@ -998,7 +998,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.2.time-5-min~am-pm',
     title: 'a.m. or p.m.?',
-    use: 'Use this to tell a.m. from p.m.',
+    use: 'Use this for “Write the time, including a.m. or p.m.”',
     assumptions: ['a.m. is from midnight to noon.', 'p.m. is from noon to midnight.'],
     question: 'Does it happen in the a.m. or the p.m.?',
     bins: [
@@ -1018,7 +1018,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.2.thirds-polygons~polygons',
     title: 'Name the shape',
-    use: 'Use this to name shapes by their sides and angles.',
+    use: 'Use this for “Find a pentagon. Explain why the shape is a pentagon.”',
     assumptions: [
       'Count the sides. Count the angles. They match.',
       'Turned or stretched, the name stays the same.',
@@ -1146,7 +1146,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.2.thirds-polygons~same-share',
     title: 'Equal shares, different shapes',
-    use: 'Use this to see equal shares that are not the same shape.',
+    use: 'Use this for “Is the same amount of each square shaded?”',
     assumptions: [
       'Equal shares are the same amount of the whole.',
       'They do not have to be the same shape.',
@@ -1242,7 +1242,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.3.arithmetic-patterns~even-odd',
     title: 'Even or odd answer?',
-    use: 'Use this to tell if an answer is even or odd without working it out.',
+    use: 'Use this for “Is the answer even or odd?” without working it out.',
     assumptions: [
       'An even number times any number is even.',
       'Odd + odd is even. Even + odd is odd.',
@@ -1428,7 +1428,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.3.quadrilaterals~is-quadrilateral',
     title: 'Quadrilateral or not?',
-    use: 'Use this to tell a quadrilateral from other shapes.',
+    use: 'Use this for “If a figure has four sides, must it be a rectangle?”',
     assumptions: [
       'A quadrilateral has 4 straight sides and 4 corners.',
       'Its sides join up: the shape is closed.',
@@ -1555,7 +1555,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.3.compare-fractions~which-greater',
     title: 'Which fraction is greater?',
-    use: 'Use this to compare two fractions of the same whole.',
+    use: 'Use this for “Is 1/4 of a candy bar smaller than 1/5 of it?”',
     assumptions: [
       'Same bottom number: the parts are the same size. More parts is more.',
       'Same top number: fewer, bigger parts is more.',
@@ -1673,7 +1673,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.3.mass-liquid-volume~which-unit',
     title: 'Grams or kilograms?',
-    use: 'Use this to pick grams or kilograms for an object.',
+    use: 'Use this for “Circle the items that might weigh about 1 kilogram.”',
     assumptions: ['A paper clip is about 1 gram.', 'A textbook is about 1 kilogram.'],
     question: 'Would you weigh it in grams or kilograms?',
     bins: [
@@ -1697,7 +1697,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.3.mass-liquid-volume~about-a-liter',
     title: 'More, less or about a liter?',
-    use: 'Use this to estimate whether a container holds more than, less than or about 1 liter.',
+    use: 'Use this for “Does it hold more than a liter, less, or about a liter?”',
     assumptions: [
       'A big water bottle holds about 1 liter.',
       'Compare each container with that bottle.',
