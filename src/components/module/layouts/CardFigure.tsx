@@ -14,6 +14,8 @@ import Svg, {
 import type { CardFigure as Spec, CardIcon } from '@/data/modules/layouts';
 import { chart, usePalette } from '@/theme';
 
+import { MaterialIcon, inMaterials } from './cardIcons';
+
 /** Height of every card figure; most are square. */
 const S = 48;
 const M = 6;
@@ -660,6 +662,7 @@ function Bar({ f, ink, shade }: { f: Extract<Spec, { kind: 'bar' }>; ink: string
 /** Small drawings of everyday things, in outline, each in its own color (a green leaf, a red crayon). */
 function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string }) {
   const c = usePalette();
+  if (inMaterials(icon)) return <MaterialIcon icon={icon} ink={ink} />;
   const colors: Partial<Record<CardIcon, string>> = {
     sun: c.chartSecond,
     moon: c.paper,
@@ -671,10 +674,8 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
     watermelon: c.life,
     backpack: c.blockBlue,
     'bowling ball': c.blockBlue,
-    door: c.wood,
     eraser: c.blockRed,
     bed: c.blockBlue,
-    bus: c.chartSecond,
   };
   const tint = colors[icon] ?? shade;
   const line = {
@@ -796,21 +797,6 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
           />
         </G>
       );
-    case 'paper clip':
-      return (
-        <Path
-          d="M 18 40 V 12 A 6 6 0 0 1 30 12 V 34 A 4 4 0 0 1 22 34 V 16"
-          fill="none"
-          {...line}
-        />
-      );
-    case 'door':
-      return (
-        <G>
-          <Rect x={13} y={4} width={22} height={40} fill={tint} {...line} />
-          <Circle cx={30} cy={25} r={1.8} fill={ink} />
-        </G>
-      );
     case 'eraser':
       return (
         <G transform="rotate(-20 24 24)">
@@ -833,26 +819,6 @@ function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string
             stroke={ink}
             strokeWidth={1.25}
           />
-        </G>
-      );
-    case 'bus':
-      return (
-        <G>
-          <Rect x={4} y={12} width={40} height={22} rx={4} fill={tint} {...line} />
-          {[8, 18, 28].map((x) => (
-            <Rect
-              key={x}
-              x={x}
-              y={16}
-              width={7}
-              height={7}
-              fill="none"
-              stroke={ink}
-              strokeWidth={1.25}
-            />
-          ))}
-          <Circle cx={13} cy={36} r={4} fill={ink} />
-          <Circle cx={35} cy={36} r={4} fill={ink} />
         </G>
       );
   }

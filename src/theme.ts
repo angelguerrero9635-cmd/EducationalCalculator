@@ -109,6 +109,22 @@ const light = {
   /** Living things: cells, leaves. */
   life: '#8FCB8A',
   lifeDeep: '#4E9A4E',
+  /** Animals and people in card icons: brown, dark brown, tan and grey fur, and skin. */
+  fur: '#A8764A',
+  furDark: '#6B4428',
+  furLight: '#DDB88C',
+  furGrey: '#9EA4AC',
+  skin: '#E2AE86',
+  /** Snow, and white fur and feathers. */
+  snow: '#FAFCFF',
+  /** A seal's blubber in a cut-away. */
+  fat: '#F4E2B0',
+  /** Tree bark. */
+  bark: '#8A6F58',
+  /** Black rubber and plastic (tires, a pan handle), and black fur and feathers. */
+  rubber: '#34373E',
+  /** Orange things: a wind sock, juice, a goldfish. */
+  orange: '#F08A2C',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -185,6 +201,16 @@ const dark: Palette = {
   plastic: '#22324A',
   life: '#4F8A4B',
   lifeDeep: '#2F6230',
+  fur: '#8A5E38',
+  furDark: '#553520',
+  furLight: '#A88762',
+  furGrey: '#747A83',
+  skin: '#B8835E',
+  snow: '#CDD6E1',
+  fat: '#C4AD76',
+  bark: '#65503F',
+  rubber: '#1C1E23',
+  orange: '#D2742A',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

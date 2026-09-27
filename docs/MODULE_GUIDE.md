@@ -260,7 +260,9 @@ and `rockCycle`, in `layouts/figures6.tsx`.
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
 (equal or unequal parts, some shaded), `bar` (a ribbon with cubes laid right or wrong),
-`dots` (pairs), `icon` (a fixed set of everyday things), `fractionBars`, `ray` (segment,
+`dots` (pairs), `icon` (a fixed set of everyday things: flat outlines, and weather tools,
+animals, adaptations and classroom, kitchen and drink things drawn in their materials in
+`layouts/cardIcons.tsx`, shown on `/gallery` as `g.icons-*`), `fractionBars`, `ray` (segment,
 ray, line or point), `net` (six squares), `inequality` (an open or closed circle and an
 arrow), `cell` (a small cell) and `rock` (a texture); a `polygon` can mark its `base`, a
 `dashed` height and the base `extend`ed. Every figure and card figure has a page at `/gallery`.

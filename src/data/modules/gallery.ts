@@ -7,7 +7,7 @@
 import type { Values } from '@/engine/types';
 
 import { div, times, whole } from './helpers';
-import type { LayoutDef } from './layouts';
+import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
 
@@ -822,6 +822,79 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       ).map((icon) => ({ label: icon, bin: 'things', figure: { kind: 'icon' as const, icon } })),
     ],
   },
+  // Card icons drawn in their materials, one sort per set of lesson cards.
+  iconSort('g.icons-weather', 'Weather tools', 'What does each tool measure?', [
+    ['temp', 'Temperature', 'A thermometer shows how hot or cold the air is.', ['thermometer']],
+    ['rain', 'Rain', 'A rain gauge collects rain so you can see how much fell.', ['rain gauge']],
+    [
+      'wind',
+      'Wind',
+      'A wind vane and a wind sock point with the wind.',
+      ['wind vane', 'wind sock'],
+    ],
+  ]),
+  iconSort('g.icons-young', 'Eggs or born alive', 'How does each animal start its life?', [
+    [
+      'eggs',
+      'Hatch from eggs',
+      'These animals hatch from eggs.',
+      ['bird', 'frog', 'grasshopper', 'turtle', 'fish'],
+    ],
+    [
+      'alive',
+      'Born alive',
+      'These animals are born alive and drink milk.',
+      ['cat', 'dog', 'dolphin', 'person'],
+    ],
+  ]),
+  iconSort('g.icons-survival', 'Hide and survive', 'How does each body part help?', [
+    [
+      'hide',
+      'Blends in',
+      'Its colors match where it lives, so it is hard to see.',
+      ['tree frog', 'warbler', 'white hare'],
+    ],
+    ['cold', 'Stays warm', 'Thick fur and blubber keep body heat in.', ['thick fur', 'blubber']],
+    [
+      'dry',
+      'Lives in the desert',
+      'A hump stores fat and a thick stem stores water.',
+      ['camel hump', 'cactus stem'],
+    ],
+  ]),
+  iconSort('g.icons-diet', 'What animals eat', 'What does each animal eat?', [
+    ['plants', 'Plants', 'Plant-eaters eat leaves, grass and twigs.', ['rabbit', 'deer']],
+    ['meat', 'Animals', 'Meat-eaters catch other animals.', ['hawk', 'snake', 'heron']],
+    ['both', 'Both', 'These animals eat plants and animals.', ['raccoon', 'bear']],
+  ]),
+  iconSort('g.icons-meter', 'About a meter', 'Is it shorter or longer than a meter?', [
+    [
+      'short',
+      'Shorter',
+      'These are shorter than a meter stick.',
+      ['pencil', 'paper clip', 'workbook'],
+    ],
+    ['meter', 'About a meter', 'A meter stick is one meter long.', ['meter stick']],
+    ['long', 'Longer', 'These are longer than a meter stick.', ['door', 'bus']],
+  ]),
+  iconSort('g.icons-liter', 'About a liter', 'Does it hold less than a liter or about a liter?', [
+    ['less', 'Less', 'These hold much less than a liter.', ['juice box', 'eyedropper']],
+    ['liter', 'About a liter', 'These hold about one liter.', ['water bottle', 'milk carton']],
+  ]),
+  iconSort('g.icons-heat', 'Heat', 'Does heat move through it easily?', [
+    [
+      'through',
+      'Heat moves through',
+      'Metal lets heat through, so a kettle heats water.',
+      ['kettle'],
+    ],
+    [
+      'slow',
+      'Heat moves slowly',
+      'Plastic and cloth slow heat, so hands stay safe.',
+      ['pan handle', 'oven mitt'],
+    ],
+  ]),
   {
     id: 'g.bar-order',
     title: 'Ribbons in order',
@@ -834,3 +907,35 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
     })),
   },
 ];
+
+/** A sort whose cards are card icons: [bin id, label, why, icons]. */
+function iconSort(
+  id: string,
+  title: string,
+  question: string,
+  bins: [string, string, string, CardIcon[]][],
+): LayoutDef {
+  const names: Partial<Record<CardIcon, string>> = {
+    door: 'classroom door',
+    bus: 'school bus',
+    'water bottle': 'big water bottle',
+  };
+  return {
+    id,
+    title,
+    kind: 'sort',
+    question,
+    assumptions: ['Tap a card, then a group.', 'The drawings are what matter here.'],
+    bins: bins.map(([bin, label, why]) => ({ id: bin, label, why })),
+    cards: bins.flatMap(([bin, , , icons]) =>
+      icons.map((icon) => {
+        const label = names[icon] ?? icon;
+        return {
+          label: label[0]!.toUpperCase() + label.slice(1),
+          bin,
+          figure: { kind: 'icon' as const, icon },
+        };
+      }),
+    ),
+  };
+}
