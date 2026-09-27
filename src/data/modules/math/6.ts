@@ -2821,6 +2821,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.expressions-variables~distributive',
     notation: 'letters',
+    sliders: false,
+    // Typed the way it is written: 3(2 + x) = 6 + 3x, with a number put in for x.
+    equation: '{n}({m} + {x}) = {u} + {w}',
     letters: ['x'],
     title: 'Equivalent expressions',
     use: 'Use this for “Are 3(2 + x) and 6 + 3x equivalent?”',

@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-37 of 420 pages show sliders.
+36 of 420 pages show sliders.
 
 ## By picture kind
 
@@ -150,6 +150,7 @@ its kind with `sliders: true | false`.
 - m.6.gcf-lcm: sliders shown
 - m.6.expressions-variables~exponents: sliders hidden
 - m.6.expressions-variables~order-of-operations: sliders hidden
+- m.6.expressions-variables~distributive: sliders hidden
 - m.6.one-step-equations: sliders hidden
 - m.6.one-step-equations~multiply: sliders hidden
 - g.zero-pairs-add: sliders shown
@@ -437,7 +438,7 @@ its kind with `sliders: true | false`.
 | m.6.expressions-variables | table | no |
 | m.6.expressions-variables~exponents | table | no |
 | m.6.expressions-variables~order-of-operations | table | no |
-| m.6.expressions-variables~distributive | areaModel | yes |
+| m.6.expressions-variables~distributive | areaModel | no |
 | m.6.expressions-variables~two-quantities | plot | no |
 | m.6.one-step-equations | tape | no |
 | m.6.one-step-equations~multiply | tape | no |

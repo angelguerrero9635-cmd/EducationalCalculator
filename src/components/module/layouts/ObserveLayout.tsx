@@ -1,14 +1,20 @@
-import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { Text } from '@/components/Text';
 import type { ObserveLayout as Spec } from '@/data/modules/layouts';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
+import { RESPONDER, useWebPointerDrag } from '../pointerDrag';
 import { Caption } from '../reps/common';
 import { ShadowStick } from './ShadowStick';
 
 const CHART_HEIGHT = 180;
+/** The browser must not pan the page while a finger moves along a bar. */
+const WEB_BAR_STYLE =
+  Platform.OS === 'web'
+    ? ({ touchAction: 'none', userSelect: 'none' } as unknown as ViewStyle)
+    : null;
 
 /**
  * A quantity recorded over time: a bar per column (tap a bar at the height you want), the
@@ -25,7 +31,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
     setPicked(i);
     const raw = ((height - y) / height) * spec.max;
     const next = Math.max(0, Math.min(spec.max, Math.round(raw / spec.step) * spec.step));
-    setValues(values.map((x, k) => (k === i ? next : x)));
+    setValues((vs) => vs.map((x, k) => (k === i ? next : x)));
   };
   return (
     <View style={styles.wrap}>
@@ -56,41 +62,14 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
           </View>
         ) : null}
         {values.map((x, i) => (
-          <View
+          <Bar
             key={spec.columns[i]}
-            testID={`bar-${i}`}
-            accessibilityRole="adjustable"
-            accessibilityLabel={`${spec.columns[i]}: ${x} ${spec.unit}`}
-            accessibilityValue={{ min: 0, max: spec.max, now: x }}
-            // The column takes the touch itself, so the tap's height is measured in it.
-            onStartShouldSetResponder={() => true}
-            onMoveShouldSetResponder={() => true}
-            onResponderGrant={(e) => setAt(i, e.nativeEvent.locationY, CHART_HEIGHT)}
-            // The bar follows the finger while it moves, not only where it first touched.
-            onResponderMove={(e) => setAt(i, e.nativeEvent.locationY, CHART_HEIGHT)}
-            style={[
-              styles.column,
-              few && styles.fewColumn,
-              spec.histogram && styles.wideColumn,
-              { borderBottomColor: c.chartInk },
-            ]}
-          >
-            <Text pointerEvents="none" style={[styles.value, { color: c.text }]}>
-              {x}
-            </Text>
-            <View
-              pointerEvents="none"
-              style={[
-                styles.bar,
-                spec.histogram && styles.histogramBar,
-                {
-                  height: Math.max(2, (x / spec.max) * (CHART_HEIGHT - 24)),
-                  backgroundColor: c.chartHighlight,
-                  borderColor: c.chartInk,
-                },
-              ]}
-            />
-          </View>
+            i={i}
+            x={x}
+            spec={spec}
+            few={few}
+            onSet={(y) => setAt(i, y, CHART_HEIGHT)}
+          />
         ))}
       </View>
       <View style={[styles.labels, spec.histogram && styles.touchingLabels]}>
@@ -128,6 +107,72 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       </View>
       <Caption>{spec.pattern(values)}</Caption>
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a bar at the height you want.</Text>
+    </View>
+  );
+}
+
+/** One column: tap it at the height you want, or drag along it. */
+function Bar({
+  i,
+  x,
+  spec,
+  few,
+  onSet,
+}: {
+  i: number;
+  x: number;
+  spec: Spec;
+  few: boolean;
+  onSet: (y: number) => void;
+}) {
+  const c = usePalette();
+  // Web: pointer events with capture, the column's top measured at the press.
+  const ref = useRef<View>(null);
+  const top = useRef(0);
+  useWebPointerDrag(ref, {
+    start: (_x, y, el) => {
+      top.current = el.getBoundingClientRect().top;
+      onSet(y - top.current);
+    },
+    move: (_x, y) => onSet(y - top.current),
+  });
+  return (
+    <View
+      testID={`bar-${i}`}
+      accessibilityRole="adjustable"
+      accessibilityLabel={`${spec.columns[i]}: ${x} ${spec.unit}`}
+      accessibilityValue={{ min: 0, max: spec.max, now: x }}
+      // The column takes the touch itself, so the tap's height is measured in it.
+      ref={ref}
+      onStartShouldSetResponder={RESPONDER ? () => true : undefined}
+      onMoveShouldSetResponder={RESPONDER ? () => true : undefined}
+      onResponderTerminationRequest={RESPONDER ? () => false : undefined}
+      onResponderGrant={RESPONDER ? (e) => onSet(e.nativeEvent.locationY) : undefined}
+      // The bar follows the finger while it moves, not only where it first touched.
+      onResponderMove={RESPONDER ? (e) => onSet(e.nativeEvent.locationY) : undefined}
+      style={[
+        styles.column,
+        few && styles.fewColumn,
+        spec.histogram && styles.wideColumn,
+        { borderBottomColor: c.chartInk },
+        WEB_BAR_STYLE,
+      ]}
+    >
+      <Text pointerEvents="none" style={[styles.value, { color: c.text }]}>
+        {x}
+      </Text>
+      <View
+        pointerEvents="none"
+        style={[
+          styles.bar,
+          spec.histogram && styles.histogramBar,
+          {
+            height: Math.max(2, (x / spec.max) * (CHART_HEIGHT - 24)),
+            backgroundColor: c.chartHighlight,
+            borderColor: c.chartInk,
+          },
+        ]}
+      />
     </View>
   );
 }
