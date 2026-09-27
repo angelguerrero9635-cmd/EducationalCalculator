@@ -108,6 +108,8 @@ export type Representation =
       groupsPart?: string;
       /** A sentence under the bar, with {id} for values. */
       caption?: string;
+      /** Values that aren't whole read as mixed numbers (33 1/3, 2 3/8 L), read exactly. */
+      mixed?: boolean;
     }
   /**
    * A ratio as two bars of equal boxes (3 boxes and 5 boxes), every box worth `unit`; the bars'
@@ -129,6 +131,8 @@ export type Representation =
       times?: string;
       /** A sentence under the bars, with {id} for values, e.g. "Ben has {d} more than Ana." */
       caption?: string;
+      /** Values that aren't whole read as mixed numbers (33 1/3, 2 3/8 L), read exactly. */
+      mixed?: boolean;
     }
   /** Line plot: an X for each object above its value on a number line; tap to set counts. */
   | {
@@ -536,7 +540,14 @@ export type Representation =
       max: number;
     }
   /** A measuring jug with liter marks up to `max`; the `parts` stack up to the `total`. */
-  | { kind: 'beaker'; parts: string[]; total: string; max: number }
+  | {
+      kind: 'beaker';
+      parts: string[];
+      total: string;
+      max: number;
+      /** Amounts that aren't whole read as mixed numbers (2 3/8 L), read exactly. */
+      mixed?: boolean;
+    }
   /**
    * A quadrilateral with 2 pairs of equal sides (`first`, `second`), square corners when
    * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.

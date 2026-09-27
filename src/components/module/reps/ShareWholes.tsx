@@ -7,6 +7,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, Caption, ChartText, useRep } from './common';
+import { mixedText } from './exact';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'shareWholes' }>;
@@ -72,7 +73,10 @@ export function ShareWholes({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `${W} ${W === 1 ? 'whole' : 'wholes'} shared by ${P}: ${W} × 1/${P} = ${W}/${P} for each person.`
+          ? `${W} ${W === 1 ? 'whole' : 'wholes'} shared by ${P}: ${W} × 1/${P} = ${W}/${P}${
+              // Past one whole, the share as a mixed number in lowest terms: 7/3 = 2 1/3.
+              W >= P ? ` = ${mixedText(W / P)}` : ''
+            } for each person.`
           : 'Type the wholes and the people sharing them.'}
       </Caption>
       <Steppers

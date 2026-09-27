@@ -6,6 +6,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, useRep, Caption } from './common';
+import { mixedValue } from './exact';
 import { Deepen, FloorShadow, Glass, Sheen, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
@@ -15,6 +16,8 @@ type Spec = Extract<Representation, { kind: 'beaker' }>;
 export function Beaker({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
+  // `mixed`: amounts read as mixed numbers (2 3/8 L), not decimals.
+  const value = (id: string) => (spec.mixed ? mixedValue(rep, id) : rep.value(id));
   const parts = spec.parts.map((id) => ({
     id,
     x: rep.known(id) ? Math.max(0, rep.shown(id)) : 0,
@@ -79,7 +82,7 @@ export function Beaker({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     ) : null}
                     {p.x > 0 ? (
                       <ChartText x={x0 + jw + 16} y={(py(from) + y) / 2 + 4} fontSize={chart.small}>
-                        {`${rep.variable(p.id).name}: ${rep.value(p.id)}`}
+                        {`${rep.variable(p.id).name}: ${value(p.id)}`}
                       </ChartText>
                     ) : null}
                   </G>
@@ -141,7 +144,7 @@ export function Beaker({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Caption>{`${spec.parts.map((id) => rep.value(id)).join(' + ')} = ${rep.value(spec.total)} in all`}</Caption>
+      <Caption>{`${spec.parts.map((id) => value(id)).join(' + ')} = ${value(spec.total)} in all`}</Caption>
       <Steppers
         calc={calc}
         items={spec.parts.map((id) => ({

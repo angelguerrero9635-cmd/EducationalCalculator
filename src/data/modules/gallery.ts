@@ -689,6 +689,130 @@ export const GALLERY_MODULES: ModuleDef[] = [
     },
   },
   {
+    id: 'g.jumps-in-a-quotient',
+    title: 'Jumps in a quotient',
+    assumptions: [
+      'Every jump is the same size.',
+      'The last jump can be part of a jump: 100 ÷ 3 is 33 jumps and 1/3 of a jump.',
+    ],
+    variables: [
+      whole('n', 'n', 'Distance', 1, 100),
+      whole('d', 'd', 'Each jump', 1, 12),
+      { id: 'q', symbol: 'q', name: 'Jumps', min: 0, max: 100, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'q = n ÷ d',
+        display: '{n} ÷ {d} = {q}',
+        vars: ['q', 'n', 'd'],
+        residual: (v: Values) => v.q! * v.d! - v.n!,
+        solve: { q: (v: Values) => div(v.n!, v.d!), n: (v: Values) => v.q! * v.d! },
+      },
+    ],
+    steps: {
+      'q = n ÷ d': {
+        q: { expr: '{n} ÷ {d}', how: 'How many jumps of that size fit in the distance?' },
+        n: { expr: '{q} × {d}', how: 'The jumps times the size of each.' },
+      },
+    },
+    example: { n: 100, d: 3, q: 100 / 3 },
+    startWith: ['n', 'd'],
+    representation: { kind: 'skipCount', step: 'd', total: 'n' },
+  },
+  {
+    id: 'g.share-as-mixed',
+    title: 'A share as a mixed number',
+    assumptions: [
+      'The ribbon is cut into equal shares, one for each person.',
+      'A share that is not whole reads as a mixed number: 100 m ÷ 3 = 33 1/3 m.',
+    ],
+    variables: [
+      { ...whole('t', 't', 'Ribbon', 1, 100), unit: 'meters' },
+      whole('p', 'p', 'People', 1, 12),
+      { id: 'e', symbol: 'e', name: 'Each share', min: 0, max: 100, step: 0.01, unit: 'meters' },
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'The other shares',
+        min: 0,
+        max: 100,
+        step: 0.01,
+        unit: 'meters',
+      },
+    ],
+    relations: [
+      {
+        id: 'e = t ÷ p',
+        display: '{t} ÷ {p} = {e}',
+        vars: ['e', 't', 'p'],
+        residual: (v: Values) => v.e! * v.p! - v.t!,
+        solve: { e: (v: Values) => div(v.t!, v.p!), t: (v: Values) => v.e! * v.p! },
+      },
+      {
+        id: 'r = t − e',
+        display: '{t} − {e} = {r}',
+        vars: ['r', 't', 'e'],
+        residual: (v: Values) => v.r! - (v.t! - v.e!),
+        solve: {
+          r: (v: Values) => v.t! - v.e!,
+          t: (v: Values) => v.r! + v.e!,
+          e: (v: Values) => v.t! - v.r!,
+        },
+      },
+    ],
+    steps: {
+      'e = t ÷ p': {
+        e: { expr: '{t} ÷ {p}', how: 'Share the ribbon equally.' },
+        t: { expr: '{e} × {p}', how: 'Put the shares back together.' },
+      },
+      'r = t − e': {
+        r: { expr: '{t} − {e}', how: 'The ribbon left for the others.' },
+        t: { expr: '{r} + {e}', how: 'One share and the others make the ribbon.' },
+        e: { expr: '{t} − {r}', how: 'The ribbon less the others’ shares.' },
+      },
+    },
+    example: { t: 100, p: 3, e: 100 / 3, r: 200 / 3 },
+    startWith: ['t', 'p'],
+    representation: { kind: 'tape', parts: ['e', 'r'], total: 't', groups: 'p', mixed: true },
+  },
+  {
+    id: 'g.liters-as-mixed',
+    title: 'Liters as mixed numbers',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each jug is measured in eighths of a liter.',
+      'Pouring both into one jug adds the amounts.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'In the jug', min: 0, max: 2.5, step: 0.125, unit: 'liters' },
+      { id: 'b', symbol: 'b', name: 'Poured in', min: 0, max: 2.5, step: 0.125, unit: 'liters' },
+      { id: 't', symbol: 't', name: 'Total', min: 0, max: 5, step: 0.125, unit: 'liters' },
+    ],
+    relations: [
+      {
+        id: 't = a + b',
+        display: '{a} + {b} = {t}',
+        vars: ['t', 'a', 'b'],
+        residual: (v: Values) => v.t! - (v.a! + v.b!),
+        solve: {
+          t: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.t! - v.b!,
+          b: (v: Values) => v.t! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      't = a + b': {
+        t: { expr: '{a} + {b}', how: 'Add what was in the jug and what was poured in.' },
+        a: { expr: '{t} − {b}', how: 'Take away what was poured in.' },
+        b: { expr: '{t} − {a}', how: 'Take away what was in the jug.' },
+      },
+    },
+    example: { a: 1.5, b: 0.875, t: 2.375 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'beaker', parts: ['a', 'b'], total: 't', max: 5, mixed: true },
+  },
+  {
     id: 'g.wave',
     title: 'Wave',
     assumptions: [

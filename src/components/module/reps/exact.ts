@@ -64,3 +64,11 @@ export function mixedValue(
   if (!withUnit || !unit) return text;
   return `${text}${unit === '°' || unit === '×' ? '' : ' '}${unitFor(x, unit)}`;
 }
+
+/**
+ * A quotient as it is written: a decimal when it ends within 4 places (4.2), else a mixed
+ * number when it is one (33 1/3), else the decimal.
+ */
+export function quotientText(x: number): string {
+  return Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-6 ? formatNumber(x) : mixedText(x);
+}
