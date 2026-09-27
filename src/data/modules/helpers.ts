@@ -208,6 +208,8 @@ export const moreThan = (
       `The ${bn} is ${words[0]}: add the difference to the ${an}.`,
     ],
     ...(grade === 'K1' ? { countOn: true, compareWords: words } : { countUp: true }),
+    // The numbers and what they stand for: "9 is farther than 4 (the hard push)".
+    names: [an, bn],
     same: `There is no difference. Both are the same.`,
   });
 
@@ -372,6 +374,8 @@ export function difference(
     bigger?: [string, string];
     /** The line when both are the same ("Both pencils are the same length"). */
     equal?: string;
+    /** What a and b stand for: the compareWords line then names the bigger one. */
+    names?: [string, string];
     /** How to find a or b when there is no difference (default: they are the same). */
     same?: string;
   },
@@ -428,7 +432,9 @@ export function difference(
                     : how.bigger && hi > lo
                       ? [how.bigger[v[a]! > v[b]! ? 0 : 1]]
                       : how.compareWords && hi > lo
-                        ? [`${hi} is ${how.compareWords[0]} than ${lo}`]
+                        ? [
+                            `${hi} is ${how.compareWords[0]} than ${lo}${how.names ? ` (the ${how.names[v[a]! > v[b]! ? 0 : 1]})` : ''}`,
+                          ]
                         : []),
                   ...(how.countUp ? countUp(lo, hi) : []),
                   ...(how.countOn && hi > lo

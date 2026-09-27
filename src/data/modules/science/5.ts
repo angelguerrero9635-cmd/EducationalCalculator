@@ -63,7 +63,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
         { ...whole('v', 'v', 'Vinegar', 20, 300), unit: 'g' },
         { ...whole('c', 'c', 'Cup', 5, 100), unit: 'g' },
         { ...whole('B', 'B', 'Total before', 26, 420), unit: 'g', derived: true },
-        { ...whole('A', 'A', 'Total after', 1, 450), unit: 'g' },
+        { ...whole('A', 'A', 'Total after', 16, 420), unit: 'g' },
         { ...whole('g', 'g', 'Gas that escaped', 0, 10), unit: 'g' },
       ],
       relations: [before.relation, gas.relation],
@@ -128,6 +128,8 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
             expr: '{n} × {e}',
             how: 'The same pull for every washer: multiply by the washers.',
             work: (v: Values) => {
+              // A whole pull (6 × 2) needs no tenths.
+              if (Number.isInteger(v.e!)) return [];
               const tenths = Math.round(v.e! * 10);
               return [
                 `${v.n} × ${tenths} ${tenths === 1 ? 'tenth' : 'tenths'} = ${v.n! * tenths} ${v.n! * tenths === 1 ? 'tenth' : 'tenths'}`,
@@ -342,7 +344,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       ],
       variables: [
         { ...whole('n', 'n', 'Nearer flashlight', 10, 100), unit: 'cm' },
-        whole('k', 'k', 'Times as far', 1, 10),
+        whole('k', 'k', 'Times as far', 2, 10),
         { ...whole('f', 'f', 'Farther flashlight', 10, 1000), unit: 'cm' },
       ],
       relations: [far.relation],

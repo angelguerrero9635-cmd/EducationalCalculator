@@ -50,11 +50,12 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'The eyepiece is the lens you look through. On most school microscopes it is 10×.',
       'The objective is the lens near the slide: 4×, 10× or 40×; some microscopes also have 100×.',
       '400× means the image looks 400 times as wide as the real thing.',
+      'At higher power fewer cells fit in the circle, but each looks bigger. Eyepieces are 5×, 10×, 15× or 20×.',
     ],
     variables: [
-      { ...whole('e', 'e', 'Eyepiece power', 10, 15), unit: '×', allowed: [10, 15] },
+      { ...whole('e', 'e', 'Eyepiece power', 5, 20), unit: '×', allowed: [5, 10, 15, 20] },
       { ...whole('o', 'o', 'Objective power', 4, 100), unit: '×', allowed: [4, 10, 40, 100] },
-      { ...whole('t', 't', 'Total magnification', 40, 1500), unit: '×' },
+      { ...whole('t', 't', 'Total magnification', 20, 2000), unit: '×' },
     ],
     relations: [
       {
@@ -239,8 +240,8 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     ],
     variables: [
       { ...whole('h', 'h', 'Heart rate', 40, 220), unit: 'beats per minute' },
-      whole('b', 'b', 'Blood per beat in mL', 20, 200),
-      { id: 'q', symbol: 'q', name: 'Blood each minute in mL', min: 800, max: 44000 },
+      whole('b', 'b', 'Blood per beat in mL', 40, 150),
+      { id: 'q', symbol: 'q', name: 'Blood each minute in mL', min: 1600, max: 33000 },
     ],
     relations: [
       {
@@ -363,7 +364,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
           symbol: 'a',
           name: 'Water level before',
           unit: 'mL',
-          min: 0,
+          min: 5,
           max: 1000,
           step: 1,
         },
@@ -430,11 +431,11 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'Some water splashes or evaporates, so a barrel collects a little less.',
     ],
     variables: [
-      { id: 'l', symbol: 'l', name: 'Roof length', unit: 'm', min: 1, max: 200, step: 0.5 },
-      { id: 'w', symbol: 'w', name: 'Roof width', unit: 'm', min: 1, max: 200, step: 0.5 },
-      { id: 'A', symbol: 'A', name: 'Roof area', unit: 'm²', min: 1, max: 40000 },
-      { id: 'r', symbol: 'r', name: 'Rainfall in millimeters', min: 0, max: 500, step: 1 },
-      { id: 'W', symbol: 'W', name: 'Water collected', unit: 'liters', min: 0, max: 20000000 },
+      { id: 'l', symbol: 'l', name: 'Roof length', unit: 'm', min: 1, max: 100, step: 0.5 },
+      { id: 'w', symbol: 'w', name: 'Roof width', unit: 'm', min: 1, max: 100, step: 0.5 },
+      { id: 'A', symbol: 'A', name: 'Roof area', unit: 'm²', min: 1, max: 10000 },
+      { id: 'r', symbol: 'r', name: 'Rainfall', unit: 'mm', min: 0, max: 300, step: 1 },
+      { id: 'W', symbol: 'W', name: 'Water collected', unit: 'liters', min: 0, max: 3000000 },
     ],
     relations: [
       {
@@ -501,7 +502,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         'The dew point is the temperature at which water vapor starts to condense into droplets.',
         'Rising air cools, and clouds form where it has cooled to its dew point.',
         'Each 1 °C between the air temperature and the dew point puts the cloud base about 125 m higher above the ground.',
-        'The air temperature is at least the dew point.',
+        'The air temperature is at least the dew point. A cloud base at 0 m is fog.',
       ],
       variables: [
         {
@@ -520,7 +521,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
           name: 'Dew point',
           unit: '°C',
           min: -40,
-          max: 50,
+          max: 35,
           step: 0.5,
           multipleOf: 0.5,
         },

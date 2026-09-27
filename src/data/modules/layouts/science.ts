@@ -74,7 +74,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Roof', bin: 'shade' },
       { label: 'Clear plastic', bin: 'through' },
       { label: 'Window glass', bin: 'through' },
-      { label: 'Net with big holes', bin: 'through' },
+      { label: 'Glass door', bin: 'through' },
     ],
   },
   {
@@ -570,7 +570,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Has pointy ears', bin: 'same' },
       { label: 'Much smaller', bin: 'different' },
       { label: 'White patch on its nose', bin: 'different' },
-      { label: 'Blue eyes, not green', bin: 'different' },
+      { label: 'Gray fur, not orange', bin: 'different' },
     ],
   },
   {
@@ -719,7 +719,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Rubber band', bin: 'easy' },
       { label: 'String', bin: 'easy' },
       { label: 'Cloth', bin: 'easy' },
-      { label: 'Paper', bin: 'little' },
+      { label: 'Craft stick', bin: 'little' },
       { label: 'Plastic ruler', bin: 'little' },
       { label: 'Cardboard', bin: 'little' },
       { label: 'Rock', bin: 'no' },
@@ -744,6 +744,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Freezing water', bin: 'yes' },
       { label: 'Melting a crayon', bin: 'yes' },
       { label: 'Melting chocolate', bin: 'yes' },
+      { label: 'Boiling water into steam', bin: 'yes' },
       { label: 'Cooking an egg', bin: 'no' },
       { label: 'Burning paper', bin: 'no' },
       { label: 'Baking bread', bin: 'no' },
@@ -796,7 +797,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Dandelion fluff', bin: 'wind' },
       { label: 'Maple seed with wings', bin: 'wind' },
       { label: 'Milkweed fluff', bin: 'wind' },
-      { label: 'Burr on a sock', bin: 'animal' },
+      { label: 'Burr on a dog’s fur', bin: 'animal' },
       { label: 'Berry eaten by a bird', bin: 'animal' },
       { label: 'Acorn buried by a squirrel', bin: 'animal' },
       { label: 'Coconut', bin: 'water' },
@@ -873,7 +874,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Pillow', bin: 'soft' },
       { label: 'Blanket', bin: 'soft' },
       { label: 'Hammer', bin: 'hard' },
-      { label: 'Chair', bin: 'hard' },
+      { label: 'Wooden chair', bin: 'hard' },
     ],
   },
   {
@@ -960,7 +961,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Row of trees', bin: 'wind' },
       { label: 'Snow fence', bin: 'wind' },
-      { label: 'Grass on a hill', bin: 'water' },
+      { label: 'Sandbags along a river', bin: 'water' },
       { label: 'Wall of rocks', bin: 'water' },
       { label: 'Dam', bin: 'water' },
     ],
@@ -1140,9 +1141,12 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       const steps = v.slice(1).map((x, i) => x - v[i]!);
       const steady = steps.every((d) => d === first);
       if (last === 0) return 'No swings yet. Start the pendulum and count.';
+      // Swings so far only go up; a count that falls is a counting slip.
+      if (steps.some((d) => d < 0)) return 'Swings so far can’t go down. Check the count.';
+      const rise = [first, ...steps];
       return steady
         ? `It adds ${first} swings every 10 seconds. In 70 seconds: ${last + first}.`
-        : `It adds about ${Math.round(last / v.length)} swings every 10 seconds. In 60 seconds: ${last}.`;
+        : `It adds about ${Math.round(rise.reduce((a, b) => a + b, 0) / rise.length)} swings every 10 seconds. In 60 seconds: ${last}.`;
     },
   },
   {
@@ -1165,6 +1169,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       if (last < first)
         return 'The more paper between, the fewer clips it lifts. The pull is weaker farther away.';
       if (last > first) return 'More clips with more paper? Check the magnet and try again.';
+      if (first === 0) return 'No clips at all. Try a stronger magnet.';
       return 'The same clips every time. Try a weaker magnet or thicker paper.';
     },
   },
@@ -1182,7 +1187,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Paper clip', bin: 'pulled' },
       { label: 'Iron nail', bin: 'pulled' },
-      { label: 'Steel spoon', bin: 'pulled' },
+      { label: 'Soup can (steel)', bin: 'pulled' },
       { label: 'Fridge door', bin: 'pulled' },
       { label: 'Aluminum can', bin: 'not' },
       { label: 'Penny', bin: 'not' },
@@ -1340,7 +1345,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: 'Fish', bin: 'water' },
-      { label: 'Shell', bin: 'water' },
+      { label: 'Clam shell', bin: 'water' },
       { label: 'Coral', bin: 'water' },
       { label: 'Shark tooth', bin: 'water' },
       { label: 'Fern leaf', bin: 'wet' },
@@ -1367,8 +1372,8 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Camel', bin: 'well' },
       { label: 'Cactus', bin: 'well' },
-      { label: 'Rabbit', bin: 'less' },
-      { label: 'Coyote', bin: 'less' },
+      { label: 'Deer', bin: 'less' },
+      { label: 'Horse', bin: 'less' },
       { label: 'Frog', bin: 'not' },
       { label: 'Polar bear', bin: 'not' },
       { label: 'Fern', bin: 'not' },
@@ -1382,7 +1387,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: ['Some animals live in groups.', 'The group helps each member survive.'],
     question: 'How does the group help?',
     bins: [
-      { id: 'food', label: 'Find food', why: 'Many hunters catch bigger prey.' },
+      { id: 'food', label: 'Find food', why: 'Working together, they catch or carry more food.' },
       { id: 'safe', label: 'Stay safe', why: 'Many eyes spot danger.' },
       { id: 'warm', label: 'Stay warm', why: 'Close bodies share heat.' },
     ],
@@ -1539,6 +1544,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Paper clip', bin: 'conductor' },
       { label: 'Aluminum foil', bin: 'conductor' },
       { label: 'Coin', bin: 'conductor' },
+      { label: 'Steel nail', bin: 'conductor' },
       { label: 'Plastic spoon', bin: 'insulator' },
       { label: 'Rubber band', bin: 'insulator' },
       { label: 'Wood stick', bin: 'insulator' },
@@ -1594,6 +1600,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A message can travel as a pattern: flashes, colors, beats or beeps.',
       'Light patterns are seen. Sound patterns are heard.',
+      'Light travels much faster than sound, so you see lightning before you hear thunder.',
     ],
     question: 'What carries the pattern?',
     bins: [
@@ -2239,7 +2246,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'River', bin: 'hydro' },
       { label: 'Glacier', bin: 'hydro' },
       { label: 'Wind', bin: 'atmo' },
-      { label: 'Oxygen in the air', bin: 'atmo' },
+      { label: 'Nitrogen and oxygen in the air', bin: 'atmo' },
       { label: 'Tree', bin: 'bio' },
       { label: 'Fish', bin: 'bio' },
       { label: 'Bird', bin: 'bio' },
@@ -2408,11 +2415,12 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: 'Riding a bike instead of driving', bin: 'air' },
-      { label: 'Planting trees along a busy road', bin: 'air' },
+      { label: 'Planting trees to clean the air by a busy road', bin: 'air' },
       { label: 'Fixing a dripping tap', bin: 'water' },
       { label: 'Keeping oil out of storm drains', bin: 'water' },
       { label: 'Recycling cans and paper', bin: 'land' },
       { label: 'Composting food scraps', bin: 'land' },
+      { label: 'Bringing a cloth bag to the store', bin: 'land' },
       { label: 'Protecting a wetland as a park', bin: 'life' },
       { label: 'Building a bridge for animals over a highway', bin: 'life' },
     ],
@@ -2664,7 +2672,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         label: 'Digestive',
         body: { systems: ['digestive'] },
-        lines: ['The stomach and intestines break food into small pieces the blood can carry.'],
+        lines: [
+          'The esophagus carries food to the stomach.',
+          'The stomach and intestines break food into small pieces the blood can carry.',
+        ],
       },
       {
         label: 'Nervous',
@@ -2692,7 +2703,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         body: { systems: ['respiratory', 'circulatory', 'muscular', 'nervous'] },
         lines: [
           'Working muscles need more oxygen.',
-          'You breathe faster and the heart beats faster to deliver it.',
+          'You breathe faster and the heart beats faster to deliver it. Sweat cools the skin.',
         ],
       },
       {
@@ -2822,6 +2833,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'Pour each liquid slowly down the side of the jar.',
       'The densest liquid sinks to the bottom. The least dense one floats on top.',
+      'A solid floats at the boundary of a denser liquid below and a less dense one above.',
     ],
     question: 'Put the liquids in order from the bottom of the jar to the top.',
     stack: true,
@@ -2845,7 +2857,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       {
         label: 'Evaporation',
         water: { process: 'evaporation', driver: 'sun' },
-        lines: ['The sun warms the ocean. Liquid water turns into water vapor and rises.'],
+        lines: [
+          'The sun warms the ocean. Liquid water turns into water vapor and rises.',
+          'The salt stays behind, so rain is fresh water.',
+        ],
       },
       {
         label: 'Transpiration',
