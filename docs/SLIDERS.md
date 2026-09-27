@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-44 of 390 pages show sliders.
+44 of 398 pages show sliders.
 
 ## By picture kind
 
@@ -22,6 +22,7 @@ its kind with `sliders: true | false`.
 | beaker | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | boxPlot | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | circle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| circuit | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | clock | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -34,6 +35,7 @@ its kind with `sliders: true | false`.
 | dotPlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| electromagnet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | energyPyramid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | energyTrack | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -69,6 +71,7 @@ its kind with `sliders: true | false`.
 | net | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberLine | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| orbit | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | partition | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -102,6 +105,7 @@ its kind with `sliders: true | false`.
 | signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skaters | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| spectrum | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -526,3 +530,11 @@ its kind with `sliders: true | false`.
 | g.skaters | skaters | no |
 | g.roller-coaster | energyTrack | no |
 | g.pendulum | energyTrack | no |
+| g.em-spectrum | spectrum | no |
+| g.visible-light | spectrum | no |
+| g.series-circuit | circuit | no |
+| g.parallel-circuit | circuit | no |
+| g.bulbs-in-series | circuit | no |
+| g.electromagnet | electromagnet | no |
+| g.orbit | orbit | no |
+| g.orbit-mars | orbit | no |
