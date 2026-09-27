@@ -18,6 +18,14 @@ import { MaterialIcon, inMaterials } from './cardIcons';
 import { Round3Icon } from './icons';
 import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
+import {
+  CellPartsCard,
+  DotPlotCard,
+  MapCard,
+  MoonCard,
+  StarsCard,
+  r3hFigureWidth,
+} from './cardFiguresR3h';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -27,6 +35,8 @@ const MARKED = 64;
 
 /** Width a figure is drawn at: square, or wider for bars, dots and lines. */
 export function figureWidth(f: Spec): number {
+  const r3h = r3hFigureWidth(f);
+  if (r3h) return r3h;
   switch (f.kind) {
     case 'bar':
       return Math.max(S, 16 + (f.length + (f.units === 'offset' ? 2 : 0)) * 8 + 24);
@@ -242,7 +252,16 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       );
     }
     case 'cell':
+      if (f.highlight) return <CellPartsCard f={f} ink={ink} shade={shade} />;
       return <CellFigure f={f} ink={ink} shade={shade} />;
+    case 'moon':
+      return <MoonCard f={f} />;
+    case 'stars':
+      return <StarsCard f={f} ink={ink} shade={shade} />;
+    case 'map':
+      return <MapCard f={f} w={w} ink={ink} shade={shade} />;
+    case 'dotPlot':
+      return <DotPlotCard f={f} w={w} ink={ink} shade={shade} />;
     case 'rock':
       return <RockFigure texture={f.texture} ink={ink} shade={shade} />;
     case 'molecule':

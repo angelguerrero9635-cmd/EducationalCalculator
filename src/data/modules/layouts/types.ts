@@ -97,7 +97,21 @@ export type CardFigure =
       type: 'plant' | 'animal' | 'bacterium';
       shape?: 'box' | 'round' | 'long' | 'branched' | 'rod';
       chloroplasts?: boolean;
+      /** Draw every part and outline this one (a part the cell type has). */
+      highlight?: CellPart;
     }
+  /** The moon in one of its shapes (waxing lit on the right, waning on the left). */
+  | { kind: 'moon'; phase: MoonPhase }
+  /** A constellation: its stars, sized by brightness, joined by lines. */
+  | { kind: 'stars'; constellation: Constellation }
+  /**
+   * A small flat map: the world (centered on the Atlantic, or on the Pacific) or North
+   * America, with a named region shaded and/or a pin at [longitude, latitude] (west and south
+   * negative).
+   */
+  | { kind: 'map'; area: MapArea; region?: MapRegion; pin?: [number, number] }
+  /** A tiny flat dot plot of fixed values, the smallest and largest labelled. */
+  | { kind: 'dotPlot'; values: number[] }
   /** A ball-and-stick molecule, or one atom ("H2O", "CO2", "Fe"), in the classroom colors. */
   | { kind: 'molecule'; formula: string }
   /** A rock's outline filled with its texture. */
@@ -317,6 +331,38 @@ export type PhaseChange =
   | 'condensation'
   | 'sublimation'
   | 'deposition';
+
+/** The parts a `cell` card figure can outline. */
+export type CellPart =
+  'wall' | 'membrane' | 'cytoplasm' | 'nucleus' | 'chloroplasts' | 'vacuole' | 'mitochondria';
+
+/** The constellations a `stars` card figure draws. */
+export type Constellation =
+  'Orion' | 'Taurus' | 'Scorpius' | 'Cygnus' | 'Big Dipper' | 'Cassiopeia';
+
+/** The `map` card figure's views. */
+export type MapArea = 'world' | 'pacific' | 'northAmerica';
+
+/**
+ * Regions a `map` card figure shades. World and Pacific maps: 'pacific ocean', 'andes',
+ * 'great plains', 'central australia', 'sahara'. North America: 'northern canada', 'arctic
+ * lands', 'north pacific', 'north atlantic', 'gulf of mexico', 'caribbean sea', 'northern
+ * mexico', 'desert southwest'.
+ */
+export type MapRegion =
+  | 'pacific ocean'
+  | 'andes'
+  | 'great plains'
+  | 'central australia'
+  | 'sahara'
+  | 'northern canada'
+  | 'arctic lands'
+  | 'north pacific'
+  | 'north atlantic'
+  | 'gulf of mexico'
+  | 'caribbean sea'
+  | 'northern mexico'
+  | 'desert southwest';
 
 /** The members of the `foodWeb` figure. */
 export type FoodWebMember =

@@ -993,20 +993,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.sky-patterns~moon',
     kind: 'moon',
     pages: ['s.1.sky-patterns~moon'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-moon'],
+    uses: '"kind":"moon"',
     notes:
-      "every stage (New moon, Thin crescent, Half moon, Almost full, Full moon) → the moon in that phase; needs NEW CardFigure {kind:'moon', phase: MoonPhase}",
+      "every stage (New moon, Thin crescent, Half moon, Almost full, Full moon) → the moon in that phase; needs NEW CardFigure {kind:'moon', phase: MoonPhase}. DRAWN: card figure {kind:'moon', phase}. New moon → 'new'; Thin crescent → 'waxing crescent'; Half moon → 'first quarter'; Almost full → 'waxing gibbous'; Full moon → 'full' (the sky figure's moon, lit on the right).",
   },
   {
     id: 'D16',
     what: 'Card pictures for s.1.sky-patterns~moon-waning',
     kind: 'icon',
     pages: ['s.1.sky-patterns~moon-waning'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-moon-waning'],
+    uses: '"phase":"waning',
     notes:
-      'every stage (Full moon, Almost full, Half moon, Thin crescent, New moon) → the moon in that phase (waning: lit on the left)',
+      "every stage (Full moon, Almost full, Half moon, Thin crescent, New moon) → the moon in that phase (waning: lit on the left). DRAWN: card figure {kind:'moon', phase}. Full moon → 'full'; Almost full → 'waning gibbous'; Half moon → 'third quarter'; Thin crescent → 'waning crescent'; New moon → 'new' (lit on the left).",
   },
   {
     id: 'D17',
@@ -1293,10 +1295,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.weathering~map-patterns',
     kind: 'icon',
     pages: ['s.4.weathering~map-patterns'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-map-patterns'],
+    uses: '"kind":"map"',
     notes:
-      "every card (Volcanoes around the Pacific Ocean, Earthquakes in Japan, The Andes mountains, Volcanoes in Alaska, The Great Plains, Central Australia, The Sahara) → a small world map with the place marked by a dot (reuse the 'continents' outline)",
+      "every card (Volcanoes around the Pacific Ocean, Earthquakes in Japan, The Andes mountains, Volcanoes in Alaska, The Great Plains, Central Australia, The Sahara) → a small world map with the place marked by a dot (reuse the 'continents' outline). DRAWN: card figure {kind:'map', area:'pacific', region?, pin?: [lon, lat]} (world centered on the Pacific). Volcanoes around the Pacific Ocean → region 'pacific ocean'; Earthquakes in Japan → pin [138, 36]; The Andes mountains → region 'andes'; Volcanoes in Alaska → pin [-154, 58]; The Great Plains → region 'great plains'; Central Australia → region 'central australia'; The Sahara → region 'sahara'. Own lon/lat outline, not the 'continents' figure's (its shapes are not placed by longitude and latitude).",
   },
   {
     id: 'D46',
@@ -1403,10 +1406,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.shadows-day-night~season-stars',
     kind: 'stars',
     pages: ['s.5.shadows-day-night~season-stars'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-season-stars'],
+    uses: '"kind":"stars"',
     notes:
-      "Orion, Taurus, Scorpius, Cygnus, Big Dipper, Cassiopeia → each constellation's star pattern (points and lines); NEW card figure 'stars'",
+      "Orion, Taurus, Scorpius, Cygnus, Big Dipper, Cassiopeia → each constellation's star pattern (points and lines); NEW card figure 'stars'. DRAWN: card figure {kind:'stars', constellation} with constellation = the card label: 'Orion', 'Taurus', 'Scorpius', 'Cygnus', 'Big Dipper', 'Cassiopeia' (catalog star positions, north up and east on the left as seen looking up, dots sized by brightness).",
   },
   {
     id: 'D57',
@@ -1423,10 +1427,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.cell-organelles~plant-animal',
     kind: 'icon',
     pages: ['s.6.cell-organelles~plant-animal'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-plant-animal', 'g.r3h-animal-parts'],
+    uses: '"highlight"',
     notes:
-      "Cell wall, Chloroplasts, One large central vacuole (plant); Nucleus, Cell membrane, Cytoplasm, Mitochondria (animal) → the existing 'cell' card figure with that part outlined; NEW option highlight",
+      "Cell wall, Chloroplasts, One large central vacuole (plant); Nucleus, Cell membrane, Cytoplasm, Mitochondria (animal) → the existing 'cell' card figure with that part outlined; NEW option highlight. DRAWN: option highlight on the cell card figure (plant: 'wall' | 'chloroplasts' | 'vacuole' | 'nucleus' | 'membrane' | 'cytoplasm' | 'mitochondria'; animal: the last four). Use type 'plant' on every card so the picture does not give the answer: Cell wall → {kind:'cell', type:'plant', highlight:'wall'}; Chloroplasts → 'chloroplasts'; One large central vacuole → 'vacuole'; Nucleus → 'nucleus'; Cell membrane → 'membrane'; Cytoplasm → 'cytoplasm'; Mitochondria → 'mitochondria'.",
   },
   {
     id: 'D59',
@@ -1443,10 +1448,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.weather-fronts~air-masses',
     kind: 'map',
     pages: ['s.6.weather-fronts~air-masses'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-air-masses'],
+    uses: '"area":"northAmerica"',
     notes:
-      "each air-mass card (northern Canada, Arctic lands, North Pacific, North Atlantic, Gulf of Mexico, Caribbean, northern Mexico, desert Southwest) → a North America outline with the source region shaded; NEW card figure 'map' with a region",
+      "each air-mass card (northern Canada, Arctic lands, North Pacific, North Atlantic, Gulf of Mexico, Caribbean, northern Mexico, desert Southwest) → a North America outline with the source region shaded; NEW card figure 'map' with a region. DRAWN: card figure {kind:'map', area:'northAmerica', region}. northern Canada → 'northern canada'; Arctic lands → 'arctic lands'; North Pacific → 'north pacific'; North Atlantic → 'north atlantic'; Gulf of Mexico → 'gulf of mexico'; Caribbean Sea → 'caribbean sea'; northern Mexico → 'northern mexico'; desert Southwest → 'desert southwest'.",
   },
   {
     id: 'D61',
@@ -1463,10 +1469,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.plate-tectonics~boundaries',
     kind: 'map',
     pages: ['s.6.plate-tectonics~boundaries'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-boundaries'],
+    uses: '"pin"',
     notes:
-      "each place (Mid-Atlantic Ridge, Iceland, East African Rift, Himalayas, Andes Mountains, Mariana Trench, Mount St. Helens, San Andreas Fault, North Anatolian Fault) → a small world map with a pin at the place, no plate boundaries drawn; NEW card figure 'map' with a point",
+      "each place (Mid-Atlantic Ridge, Iceland, East African Rift, Himalayas, Andes Mountains, Mariana Trench, Mount St. Helens, San Andreas Fault, North Anatolian Fault) → a small world map with a pin at the place, no plate boundaries drawn; NEW card figure 'map' with a point. DRAWN: card figure {kind:'map', area, pin:[lon, lat]}, no boundaries drawn. area 'world': Mid-Atlantic Ridge [-42, 30]; Iceland [-19, 65]; East African Rift [36.5, 0]; Himalayas [84, 28.5]; Andes Mountains [-69, -20]; Mariana Trench [142.2, 11.3]; North Anatolian Fault in Turkey [35, 40.8]. area 'northAmerica' (the two are close on a world map): Mount St. Helens [-122.2, 46.2]; San Andreas Fault [-120.5, 35.5].",
   },
   {
     id: 'D63',
@@ -1483,10 +1490,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.6.center-spread~mean-or-median',
     kind: 'dotPlot',
     pages: ['m.6.center-spread~mean-or-median'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-mean-median'],
+    uses: '"kind":"dotPlot"',
     notes:
-      "each data-set card (2, 3, 3, 4, 40; 1, 50, 52, 53, 55; 20, 25, 30, 25, 180; 10–14; heights; highs) → a small dot plot of the values; NEW card figure 'dotPlot'",
+      "each data-set card (2, 3, 3, 4, 40; 1, 50, 52, 53, 55; 20, 25, 30, 25, 180; 10–14; heights; highs) → a small dot plot of the values; NEW card figure 'dotPlot'. DRAWN: card figure {kind:'dotPlot', values} with the card's values: [2, 3, 3, 4, 40]; [1, 50, 52, 53, 55]; [20, 25, 30, 25, 180]; [10, 11, 12, 13, 14]; [150, 152, 151, 153, 149]; [21, 22, 20, 23, 22]. The pay card gives no numbers: leave it without a figure.",
   },
   {
     id: 'D65',
