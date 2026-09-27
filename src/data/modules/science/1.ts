@@ -65,14 +65,8 @@ export const SCIENCE_1_MODULES: ModuleDef[] = [
       steps: { 'p = y + g': grow.steps },
       example: { y: 5, g: 9, p: 14 },
       startWith: ['y', 'p'],
-      representation: {
-        kind: 'hops',
-        start: 'y',
-        hops: [{ var: 'g', sign: 1 }],
-        end: 'p',
-        min: 0,
-        max: 20,
-      },
+      // The young plant and the grown one side by side, the gap bracketed.
+      representation: { kind: 'ruler', lengths: ['y', 'p'], difference: 'g', extent: 20 },
     } satisfies ModuleDef;
   })(),
   // ── Grade 1: patterns of the sun, moon and stars (1-ESS1-1, 1-ESS1-2) ──

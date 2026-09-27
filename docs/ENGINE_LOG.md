@@ -5,6 +5,37 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## K–6 diagram review (three lesson-reviewers)
+
+- Pictures changed to existing kinds:
+  - Grade 1 compare problems draw cube trains (`compareProblem(…, cubes)`).
+  - Meters and centimeters draw meter sticks.
+  - Plant heights draw rulers.
+  - The two-step share draws one bar joined, then split into groups.
+  - The same-perimeter and same-area pages draw a rectangle of unit squares.
+  - Take-away is drawn as part and whole.
+  - The remainder page draws the full groups plus the leftover piece.
+  - Pay and hours has the table and the unit rate.
+  - The plant's gain against the soil's loss is a compare tape.
+- Equation inputs on 43 more pages: sentences as written, including `{n} = 10 + {o}`,
+  `({a} + {b}) × {c} − {d} = {r}`, `{k} × [{a} + ({b} × {c})] = {r}`,
+  `{n} ÷ {d} = {q} remainder {r}` and `{a} + {b} = {g}({x} + {y})`.
+- The 90 pictures still to draw are in the tracker (D..) with the pages they are for.
+
+## Sliders on iPhone (user feedback)
+
+- On the equivalent-expressions page a slider took a tap but not a slide on an iPhone. iOS
+  Safari doesn't always honor `touch-action: none`: it took the finger's movement along the
+  vertical track for a page scroll and cancelled the drag. → The shared drag helper
+  (`pointerDrag.ts`) cancels `touchmove` on the element with a non-passive listener. That
+  covers every slider, every draggable picture handle, and the observe pages' bars, which now
+  use the same helper on the web.
+- Checked with an iPhone touch emulation on all 25 pages with sliders: every slider that isn't
+  held moves both ways; an observe bar follows a drag.
+- The equivalent-expressions page takes the equation instead of sliders:
+  `{n}({m} + {x}) = {u} + {w}`. An equation with more than 4 columns side by side uses the
+  compact boxes, so it fits on a phone line.
+
 ## Pictures from the other chat merged
 
 - Their branch merged. Conflicts were in `dotPlot` (their count handling was kept, along with our

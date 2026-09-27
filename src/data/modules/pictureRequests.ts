@@ -7,7 +7,7 @@
 export type PictureStatus = 'requested' | 'drawn' | 'placed';
 
 export interface PictureRequest {
-  /** R.. for K–6 pages, G.. for the planned Grade 7 and 8 skills. */
+  /** R.. for K–6 pages, G.. for the planned Grade 7 and 8 skills, D.. for the K–6 diagram review. */
   id: string;
   /** What to draw, in a few words. */
   what: string;
@@ -848,5 +848,903 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.planets-to-scale'],
     notes: 'For the planned skill: its page is not built yet.',
+  },
+  // Round 3: the K–6 diagram review (docs/RENDERINGS_ROUND_3.md).
+  {
+    id: 'D01',
+    what: 'Card pictures for m.K.add-sub-10~all-partners',
+    kind: 'icon',
+    pages: ['m.K.add-sub-10~all-partners'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      '0 + 5 → 5 cars in a row, 0 red and 5 blue; 1 + 4 → 5 cars, 1 red and 4 blue; 2 + 3 → 5 cars, 2 red and 3 blue; 3 + 2 → 5 cars, 3 red and 2 blue; 4 + 1 → 5 cars, 4 red and 1 blue; 5 + 0 → 5 cars, 5 red and 0 blue',
+  },
+  {
+    id: 'D02',
+    what: 'Card pictures for m.2.standard-length~which-unit',
+    kind: 'icon',
+    pages: ['m.2.standard-length~which-unit'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Hallway → a long school hallway with doors; Classroom → a classroom with desks, seen from above',
+  },
+  {
+    id: 'D03',
+    what: 'Card pictures for m.2.time-5-min~am-pm',
+    kind: 'icon',
+    pages: ['m.2.time-5-min~am-pm'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Eat breakfast → a cereal bowl, with the morning sun in the window; Eat dinner → a dinner plate, with the evening sky in the window; See the sunrise → the sun half above the horizon, morning sky, arrow up (now the same 'sun' icon as sunset); Watch the sunset → the sun half below the horizon, orange sky, arrow down",
+  },
+  {
+    id: 'D04',
+    what: 'Card pictures for m.2.even-odd~sort',
+    kind: 'icon',
+    pages: ['m.2.even-odd~sort'],
+    status: 'requested',
+    gallery: [],
+    notes: '0 → the empty two-row dot frame (no dots)',
+  },
+  {
+    id: 'D05',
+    what: 'Card pictures for s.K.sunlight-warms~shade',
+    kind: 'icon',
+    pages: ['s.K.sunlight-warms~shade'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Umbrella → an open umbrella with shade under it; Tree → a leafy tree; Tent → a tent; Sun hat → a wide-brim sun hat; Roof → a house roof; Clear plastic → a clear plastic sheet or cup; Window glass → a window; Glass door → a glass door',
+  },
+  {
+    id: 'D06',
+    what: 'Card pictures for s.K.living-needs~who-needs',
+    kind: 'icon',
+    pages: ['s.K.living-needs~who-needs'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Sunlight → existing icon 'sun'; Soil for roots → a pot of soil with roots; Water → a water drop; A den or nest → a bird's nest",
+  },
+  {
+    id: 'D07',
+    what: 'Card pictures for s.K.living-needs~homes',
+    kind: 'icon',
+    pages: ['s.K.living-needs~homes'],
+    status: 'requested',
+    gallery: [],
+    notes: 'Duck → duck; Owl → owl; Squirrel → squirrel; Lizard → lizard; Roadrunner → roadrunner',
+  },
+  {
+    id: 'D08',
+    what: 'Card pictures for s.K.weather-patterns~storm',
+    kind: 'icon',
+    pages: ['s.K.weather-patterns~storm'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Hear the forecast → a radio or TV showing a storm cloud; Get ready: bring toys in, close windows → a child carrying toys in beside a closed window; Stay inside while it storms → a house with rain and lightning outside; Go out when it has passed → a child outside, with sun and puddles',
+  },
+  {
+    id: 'D09',
+    what: 'Card pictures for s.K.weather-patterns~falls',
+    kind: 'icon',
+    pages: ['s.K.weather-patterns~falls'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Rain → a cloud with raindrops; Snow → a cloud with snowflakes; Hail → a cloud with round hailstones; Wind → a tree bending, with wind lines; Fog → houses half hidden in low gray mist',
+  },
+  {
+    id: 'D10',
+    what: 'Card pictures for s.K.living-things-change-environment',
+    kind: 'icon',
+    pages: ['s.K.living-things-change-environment'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Beaver builds a dam → a beaver at a stick dam; Squirrel digs a hole → a squirrel digging; Bird builds a nest → a bird with a twig at a nest; Tree roots crack the sidewalk → roots lifting a cracked sidewalk; Weeds grow through a crack → weeds in a pavement crack; People build a road → a road roller on a new road; People plant a garden → hands planting a seedling',
+  },
+  {
+    id: 'D11',
+    what: 'Card pictures for s.K.living-things-change-environment~helps',
+    kind: 'icon',
+    pages: ['s.K.living-things-change-environment~helps'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Pick up litter → a hand putting a can in a bin; Reuse a bag → a cloth shopping bag; Turn off the water → a hand closing a faucet; Plant a tree → a seedling being planted; Drop a wrapper → a wrapper falling on grass; Leave the water running → a faucet running; Pick all the flowers → a hand holding a big bunch, bare stems in the ground',
+  },
+  {
+    id: 'D12',
+    what: 'Card pictures for s.1.sound-vibration~cup-phone',
+    kind: 'icon',
+    pages: ['s.1.sound-vibration~cup-phone'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Your voice shakes the cup → a child talking into a cup, with sound lines; The string shakes → a taut string with wiggle marks; The other cup shakes → the far cup with shake marks; Your friend hears you → a friend with a cup at their ear',
+  },
+  {
+    id: 'D13',
+    what: 'Card pictures for s.1.offspring~care',
+    kind: 'icon',
+    pages: ['s.1.offspring~care'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Bird brings worms → a bird feeding chicks in a nest; Cow feeds her calf → a calf drinking from a cow; Kangaroo pouch → a joey in a kangaroo's pouch; Lion carries her cub → a lioness carrying a cub in her mouth; Hen sits on her eggs → a hen on a nest; Penguin keeps its chick on its feet → a penguin with a chick on its feet",
+  },
+  {
+    id: 'D14',
+    what: 'Card pictures for s.1.offspring~match',
+    kind: 'icon',
+    pages: ['s.1.offspring~match'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Tadpole → tadpole; Frog eggs → a clump of frog eggs; Caterpillar → caterpillar; Chrysalis → chrysalis hanging from a twig; Acorn → acorn; Oak seedling → oak seedling with lobed leaves',
+  },
+  {
+    id: 'D15',
+    what: 'Card pictures for s.1.sky-patterns~moon',
+    kind: 'moon',
+    pages: ['s.1.sky-patterns~moon'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "every stage (New moon, Thin crescent, Half moon, Almost full, Full moon) → the moon in that phase; needs NEW CardFigure {kind:'moon', phase: MoonPhase}",
+  },
+  {
+    id: 'D16',
+    what: 'Card pictures for s.1.sky-patterns~moon-waning',
+    kind: 'icon',
+    pages: ['s.1.sky-patterns~moon-waning'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'every stage (Full moon, Almost full, Half moon, Thin crescent, New moon) → the moon in that phase (waning: lit on the left)',
+  },
+  {
+    id: 'D17',
+    what: 'Card pictures for s.1.light-shadows~materials',
+    kind: 'icon',
+    pages: ['s.1.light-shadows~materials'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Window glass → a window pane; Clear plastic → a clear plastic cup; Wax paper → a cloudy sheet of wax paper; Tissue paper → a thin tissue-paper sheet; Wood → a wooden block; A book → a closed book; A mirror → a hand mirror; A shiny spoon → a metal spoon with a shine mark',
+  },
+  {
+    id: 'D18',
+    what: 'Card pictures for s.2.material-properties~sort',
+    kind: 'icon',
+    pages: ['s.2.material-properties~sort'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Rubber band → rubber band; String → a piece of string; Cloth → a folded cloth; Craft stick → craft stick; Plastic ruler → plastic ruler; Cardboard → a cardboard piece; Rock → rock; Metal spoon → metal spoon; Glass → a drinking glass',
+  },
+  {
+    id: 'D19',
+    what: 'Card pictures for s.2.heating-cooling',
+    kind: 'icon',
+    pages: ['s.2.heating-cooling'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Melting ice → an ice cube with a puddle; Freezing water → an ice-cube tray; Melting a crayon → a drooping, melted crayon; Melting chocolate → a chocolate bar going soft; Boiling water into steam → a pot with steam; Cooking an egg → a fried egg in a pan; Burning paper → paper with a flame and ash; Baking bread → a loaf of bread; Toasting bread → a slice of toast',
+  },
+  {
+    id: 'D20',
+    what: 'Card pictures for s.2.pollination-dispersal',
+    kind: 'icon',
+    pages: ['s.2.pollination-dispersal'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Dandelion fluff → a dandelion seed head; Maple seed with wings → a winged maple seed; Milkweed fluff → an open milkweed pod with fluffy seeds; Burr on a dog’s fur → a burr stuck in dog fur; Berry eaten by a bird → a bird eating a berry; Acorn buried by a squirrel → a squirrel burying an acorn; Coconut → a coconut floating on water; Water lily seed → a water lily with seed pod on a pond',
+  },
+  {
+    id: 'D21',
+    what: 'Card pictures for s.2.pollination-dispersal~pollen',
+    kind: 'icon',
+    pages: ['s.2.pollination-dispersal~pollen'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "A bee lands on a flower to drink nectar → a bee on a flower; Pollen sticks to its hairy body → a close-up bee with yellow pollen dots; The bee flies to another flower of the same kind → a bee flying between two matching flowers; Pollen rubs off on that flower → pollen dots on the second flower's center; The flower can now make seeds → a flower head turning into seeds",
+  },
+  {
+    id: 'D22',
+    what: 'Card pictures for s.2.erosion-landforms~map',
+    kind: 'icon',
+    pages: ['s.2.erosion-landforms~map'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Mountain → mountain (map symbol); Hill → hill; Valley → a valley between two slopes; Island → island in water; Lake → lake surrounded by land; River → winding river; Ocean → a wide blue sea with waves; Pond → small pond',
+  },
+  {
+    id: 'D23',
+    what: 'Card pictures for s.2.erosion-landforms',
+    kind: 'icon',
+    pages: ['s.2.erosion-landforms'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Earthquake → cracked ground with shake lines; Volcano erupting → erupting volcano; Landslide → rocks sliding down a hillside; Flood → water over a riverbank and road; River wearing a canyon → a river in a deep canyon; Wind shaping a sand dune → a dune with wind lines; Ice cracking a rock → a rock split by ice in a crack; Waves wearing a cliff → waves at the base of a cliff',
+  },
+  {
+    id: 'D24',
+    what: 'Card pictures for s.2.habitats~which-habitat',
+    kind: 'icon',
+    pages: ['s.2.habitats~which-habitat'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Whale → whale; Octopus → octopus; Monkey → monkey; Parrot → parrot; Vines → vines hanging from a tree; Polar bear → polar bear; Walrus → walrus',
+  },
+  {
+    id: 'D25',
+    what: 'Card pictures for s.2.erosion-landforms~slow-it',
+    kind: 'icon',
+    pages: ['s.2.erosion-landforms~slow-it'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Row of trees → a row of trees; Snow fence → a slatted snow fence; Sandbags along a river → sandbags stacked on a riverbank; Wall of rocks → a rock wall at a shore; Dam → a dam across a river',
+  },
+  {
+    id: 'D26',
+    what: 'Card pictures for s.2.water-on-earth',
+    kind: 'icon',
+    pages: ['s.2.water-on-earth'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Glacier → a glacier between mountains; Iceberg → iceberg in the sea; Snow on a mountain → a snow-capped mountain; Frozen pond → a frozen pond with a skater; Ocean → ocean waves; River → river; Lake → lake; Puddle → a puddle',
+  },
+  {
+    id: 'D27',
+    what: 'Card pictures for m.3.mass-liquid-volume~which-unit',
+    kind: 'icon',
+    pages: ['m.3.mass-liquid-volume~which-unit'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Grape → a single grape; Apple → an apple; Letter → an envelope letter; Bicycle → a bicycle; Watermelon → existing icon 'watermelon'; Bag of potatoes → a sack of potatoes; Child → existing icon 'person'",
+  },
+  {
+    id: 'D28',
+    what: 'Card pictures for s.3.balanced-forces~balanced',
+    kind: 'icon',
+    pages: ['s.3.balanced-forces~balanced'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Book resting on a table → a book on a table, with equal arrows up and down; Tug of war with no one moving → two teams pulling a rope, with equal arrows; A swing hanging still → a swing hanging straight down; Box on a carpet, pushed gently, stays still → a hand pushing a box on a rug; Kicked ball starts to roll → a foot kicking a ball, with a motion arrow; Bike braking to a stop → a bike with the brake on; Apple falling → an apple falling from a branch; Rock sliding on ice slows down → a rock on ice, with a slowing arrow',
+  },
+  {
+    id: 'D29',
+    what: 'Card pictures for s.3.life-cycles',
+    kind: 'icon',
+    pages: ['s.3.life-cycles'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Egg → a butterfly egg on a leaf; Caterpillar → a caterpillar; Chrysalis → a chrysalis hanging from a twig; Butterfly → a butterfly',
+  },
+  {
+    id: 'D30',
+    what: 'Card pictures for s.3.life-cycles~frog',
+    kind: 'icon',
+    pages: ['s.3.life-cycles~frog'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Egg → frog eggs (a jelly clump); Tadpole → a tadpole; Froglet → a froglet with legs and a short tail; Frog → existing icon 'frog'",
+  },
+  {
+    id: 'D31',
+    what: 'Card pictures for s.3.life-cycles~bean',
+    kind: 'icon',
+    pages: ['s.3.life-cycles~bean'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Seed → a bean seed; Sprout → a seed with a root and a shoot; Young plant → a small plant with a few leaves; Plant with flowers → a bean plant with flowers; Pods with new seeds → an open bean pod with seeds',
+  },
+  {
+    id: 'D32',
+    what: 'Card pictures for s.3.life-cycles~changes',
+    kind: 'icon',
+    pages: ['s.3.life-cycles~changes'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Butterfly → a butterfly; Ladybug → a ladybug; Mosquito → a mosquito; Chicken → a chicken; Human → existing icon 'person'",
+  },
+  {
+    id: 'D33',
+    what: 'Card pictures for s.3.inherited-traits',
+    kind: 'icon',
+    pages: ['s.3.inherited-traits'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Eye color → an eye; Flower color → two flowers of different colors; A scar → a knee with a scar; A plant bent by wind → a tree leaning in the wind; A pale plant grown in the dark → a pale, thin seedling in a dark box; A dog sits on command → existing icon 'dog', sitting; Riding a bike → a child on a bike",
+  },
+  {
+    id: 'D34',
+    what: 'Card pictures for s.3.adaptation-fossils',
+    kind: 'icon',
+    pages: ['s.3.adaptation-fossils'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Clam shell → a clam shell fossil; Coral → a coral fossil; Shark tooth → a shark tooth fossil; Fern leaf → a fern leaf print in rock; Dragonfly → a dragonfly fossil; Woolly mammoth hair → a woolly mammoth; Musk ox → a musk ox',
+  },
+  {
+    id: 'D35',
+    what: 'Card pictures for s.3.animal-groups~group-jobs',
+    kind: 'icon',
+    pages: ['s.3.animal-groups~group-jobs'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Wolf pack hunting → wolves running together; Ants carrying food → ants carrying a leaf; Zebra herd → a group of zebras; School of fish → a school of fish (existing icon 'fish', repeated); Meerkat lookout → a meerkat standing up on watch; Penguin huddle → penguins packed together; Bees in a winter ball → a ball of bees",
+  },
+  {
+    id: 'D36',
+    what: 'Card pictures for s.3.weather-climate~hazards',
+    kind: 'icon',
+    pages: ['s.3.weather-climate~hazards'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Sandbag wall → a stacked sandbag wall; House on stilts → a house on stilts; Levee → a raised bank beside a river; Storm shutters → a window with closed shutters; Tied-down roof → a roof with metal straps; Storm shelter → an underground shelter door; Lightning rod → a rod on a roof with a wire to the ground',
+  },
+  {
+    id: 'D37',
+    what: 'Card pictures for s.4.energy-conversion',
+    kind: 'icon',
+    pages: ['s.4.energy-conversion'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Flashlight → a flashlight; Lamp → a desk lamp; Toaster → a toaster; Hair dryer → a hair dryer; Electric kettle → existing icon 'kettle'; Buzzer → a buzzer; Speaker → a speaker; Doorbell → a doorbell button and chime; Fan → an electric fan; Electric car → an electric car with a plug",
+  },
+  {
+    id: 'D38',
+    what: 'Card pictures for s.4.energy-conversion~trace',
+    kind: 'icon',
+    pages: ['s.4.energy-conversion~trace'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'The battery stores energy → a battery; Electric current carries it along the wire → a battery joined to a wire; The thin wire in the bulb gets very hot → a bulb with a glowing red filament; The bulb gives out light and heat → a lit bulb, with light and heat lines',
+  },
+  {
+    id: 'D39',
+    what: 'Card pictures for s.4.energy-conversion~conductors',
+    kind: 'icon',
+    pages: ['s.4.energy-conversion~conductors'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Copper wire → a coil of copper wire; Aluminum foil → a sheet of foil; Coin → a coin; Steel nail → a nail; Plastic spoon → a plastic spoon; Rubber band → a rubber band; Wood stick → a wooden stick; Glass marble → a marble',
+  },
+  {
+    id: 'D40',
+    what: 'Card pictures for s.3.magnets~magnetic',
+    kind: 'icon',
+    pages: ['s.3.magnets~magnetic'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Iron nail → a nail; Soup can (steel) → a soup can; Fridge door → a fridge; Aluminum can → a soda can; Penny → a penny; Wooden block → a wooden block; Rubber band → a rubber band',
+  },
+  {
+    id: 'D41',
+    what: 'Card pictures for s.4.vision-light~signals',
+    kind: 'icon',
+    pages: ['s.4.vision-light~signals'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Flashlight code → a flashlight flashing; Lighthouse → a lighthouse; Traffic light → a traffic light; Flag colors on a ship → a ship with signal flags; Drum beats → a drum; Ship’s horn → a ship's horn; Buzzer code → a buzzer; School bell → a school bell",
+  },
+  {
+    id: 'D42',
+    what: 'Card pictures for s.4.internal-structures~senses',
+    kind: 'icon',
+    pages: ['s.4.internal-structures~senses'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Light from the ball enters the eye → a ball, with a light line to an eye; The eye sends a message along a nerve → an eye with a nerve lit to the brain; The brain reads the message → a brain, lit; The brain sends a message to the arm → a nerve from the brain to the arm, lit; The arm moves to catch the ball → a hand catching a ball',
+  },
+  {
+    id: 'D43',
+    what: 'Card pictures for s.4.internal-structures~jobs',
+    kind: 'icon',
+    pages: ['s.4.internal-structures~jobs'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Rose thorns → a rose stem with thorns; Turtle shell → existing icon 'turtle'; Tree roots → a tree with its roots showing; Bird’s beak → existing icon 'bird', beak marked; Fish gills → existing icon 'fish', gills marked; Owl’s eyes → an owl's face; Bird’s wings → a bird flying, wings spread; Flower → a flower; Seeds → seeds (for example a sunflower head)",
+  },
+  {
+    id: 'D44',
+    what: 'Card pictures for s.4.weathering~layers-order',
+    kind: 'icon',
+    pages: ['s.4.weathering~layers-order'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Sand settles: the bottom layer forms → a cut-away view: one sand layer under water; Mud settles on top of the sand → a cut-away view: sand, then mud; Shells settle on the mud: a layer with fossils forms → a cut-away view: sand, mud and a shell layer; The land is pushed up → the same layers raised above the water line; A river cuts down through the layers → the raised layers with a river canyon cut through them',
+  },
+  {
+    id: 'D45',
+    what: 'Card pictures for s.4.weathering~map-patterns',
+    kind: 'icon',
+    pages: ['s.4.weathering~map-patterns'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "every card (Volcanoes around the Pacific Ocean, Earthquakes in Japan, The Andes mountains, Volcanoes in Alaska, The Great Plains, Central Australia, The Sahara) → a small world map with the place marked by a dot (reuse the 'continents' outline)",
+  },
+  {
+    id: 'D46',
+    what: 'Card pictures for s.4.natural-resources',
+    kind: 'icon',
+    pages: ['s.4.natural-resources'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Sunlight → existing icon 'sun'; Wind → a wind turbine; Moving water → a dam with water flowing through it; Wood → a stack of logs; Heat from inside Earth → a geyser; Coal → lumps of coal; Oil → an oil pump; Natural gas → a gas stove flame",
+  },
+  {
+    id: 'D47',
+    what: 'Card pictures for s.4.natural-resources~hazards',
+    kind: 'icon',
+    pages: ['s.4.natural-resources~hazards'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Levee along a river → a raised bank beside a river; Sandbags → a stacked sandbag wall; House raised on posts → a house on posts; Braced walls → a wall frame with cross braces; Shelves bolted to the wall → a bookshelf with wall brackets; Brush cleared near houses → a house with a cleared ring around it; Fire break → a bare strip cut through a forest; Storm shutters → a window with closed shutters; Roof strapped to the walls → a roof with metal straps',
+  },
+  {
+    id: 'D48',
+    what: 'Card pictures for s.5.particles-matter~properties',
+    kind: 'icon',
+    pages: ['s.5.particles-matter~properties'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Sand → a small pile of sand grains; Gravel → a handful of small stones; Pepper → ground black pepper in a shaker; Cooking oil → a bottle of yellow cooking oil',
+  },
+  {
+    id: 'D49',
+    what: 'Card pictures for s.5.particles-matter~magnet',
+    kind: 'icon',
+    pages: ['s.5.particles-matter~magnet'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Iron nail → an iron nail; Steel paper clip → existing icon 'paper clip'; Aluminum can → a soda can; Copper coin → a copper-colored coin; Plastic spoon → a plastic spoon; Wood block → a wooden block",
+  },
+  {
+    id: 'D50',
+    what: 'Card pictures for s.5.mixtures',
+    kind: 'icon',
+    pages: ['s.5.mixtures'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Iron left in wet air (rust) → an iron nail with rust patches; Wood burning → a log on fire, with ash and smoke; Sand in water → a jar of water with sand settled at the bottom; Oil and water → a jar with a layer of oil floating on water',
+  },
+  {
+    id: 'D51',
+    what: 'Card pictures for s.5.mixtures~separate',
+    kind: 'icon',
+    pages: ['s.5.mixtures~separate'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Pass a magnet over the dry mix → a bar magnet with iron filings stuck to it above a dish of the mix; Stir the rest into water → a beaker of water with a stirring rod; Pour it through a filter → a funnel with filter paper over a beaker, sand left in the paper; Let the salt water evaporate → a shallow dish in the sun with salt crystals left',
+  },
+  {
+    id: 'D52',
+    what: 'Card pictures for s.5.food-webs',
+    kind: 'icon',
+    pages: ['s.5.food-webs'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Grass → a tuft of grass; Oak tree → an oak tree with lobed leaves; Algae → green algae on pond water; Mushroom → a mushroom on a log; Bacteria → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Earthworm → an earthworm in soil",
+  },
+  {
+    id: 'D53',
+    what: 'Card pictures for s.5.food-webs~chain-order',
+    kind: 'icon',
+    pages: ['s.5.food-webs~chain-order'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Sun → existing icon 'sun'; Grass → a tuft of grass; Grasshopper → existing icon 'grasshopper'; Frog → existing icon 'frog'; Snake → existing icon 'snake'; Hawk → existing icon 'hawk'",
+  },
+  {
+    id: 'D54',
+    what: 'Card pictures for s.5.earth-spheres',
+    kind: 'icon',
+    pages: ['s.5.earth-spheres'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Mountain → a rocky mountain peak; Soil → a cut-away clump of brown soil; Sand → a sand dune; Ocean → ocean waves to the horizon; River → a river winding through land; Glacier → a glacier's ice tongue between mountains; Wind → existing icon 'wind sock'; Tree → a leafy tree",
+  },
+  {
+    id: 'D55',
+    what: 'Card pictures for s.5.earth-spheres~rain-to-river',
+    kind: 'icon',
+    pages: ['s.5.earth-spheres~rain-to-river'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Water evaporates from the ocean → the sun over the ocean with vapor arrows rising; Clouds form and rain falls on a mountain → a cloud raining on a mountain; Rain soaks into the soil → cut-away soil with roots taking in water; The rest runs in a river → a river running into the sea',
+  },
+  {
+    id: 'D56',
+    what: 'Card pictures for s.5.shadows-day-night~season-stars',
+    kind: 'stars',
+    pages: ['s.5.shadows-day-night~season-stars'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Orion, Taurus, Scorpius, Cygnus, Big Dipper, Cassiopeia → each constellation's star pattern (points and lines); NEW card figure 'stars'",
+  },
+  {
+    id: 'D57',
+    what: 'Card pictures for s.6.cells',
+    kind: 'icon',
+    pages: ['s.6.cells'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Bacterium in yogurt → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Amoeba from a pond → an amoeba with pseudopods under a microscope; Paramecium → a slipper-shaped paramecium with cilia; Yeast that raises bread → oval yeast cells, one budding; Elodea water plant → an Elodea sprig; Grain of quartz sand → an angular sand grain under a microscope; Air bubble on a slide → a round air bubble with a dark rim under a microscope; Salt crystal → a cube-shaped salt crystal; Human → existing icon 'person'",
+  },
+  {
+    id: 'D58',
+    what: 'Card pictures for s.6.cell-organelles~plant-animal',
+    kind: 'icon',
+    pages: ['s.6.cell-organelles~plant-animal'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Cell wall, Chloroplasts, One large central vacuole (plant); Nucleus, Cell membrane, Cytoplasm, Mitochondria (animal) → the existing 'cell' card figure with that part outlined; NEW option highlight",
+  },
+  {
+    id: 'D59',
+    what: 'Card pictures for s.6.body-systems~levels',
+    kind: 'icon',
+    pages: ['s.6.body-systems~levels'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Cell: one heart muscle cell → existing 'cell' figure {type:'animal', shape:'long'}; Tissue: a sheet of heart muscle cells → a sheet of long muscle cells side by side; Organ: the heart → existing card figure {kind:'heart'}; Organ system: the heart, blood vessels and blood → a torso outline with the heart and red and blue vessels; Organism: a whole person → existing icon 'person'",
+  },
+  {
+    id: 'D60',
+    what: 'Card pictures for s.6.weather-fronts~air-masses',
+    kind: 'map',
+    pages: ['s.6.weather-fronts~air-masses'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "each air-mass card (northern Canada, Arctic lands, North Pacific, North Atlantic, Gulf of Mexico, Caribbean, northern Mexico, desert Southwest) → a North America outline with the source region shaded; NEW card figure 'map' with a region",
+  },
+  {
+    id: 'D61',
+    what: 'Card pictures for s.6.weather-fronts~forecast',
+    kind: 'icon',
+    pages: ['s.6.weather-fronts~forecast'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'The barometer is falling fast → a barometer dial, needle moving down; The barometer is rising → a barometer dial, needle moving up; A low-pressure center is moving in → a red L with an arrow; A high-pressure center is overhead → a blue H; A cold front is a few hours away → a blue cold-front line with triangles pointing at a town dot; Warm, humid air is rising up a mountainside → air arrows rising up a mountain slope; Dry air is sinking over the area → air arrows sinking over flat land',
+  },
+  {
+    id: 'D62',
+    what: 'Card pictures for s.6.plate-tectonics~boundaries',
+    kind: 'map',
+    pages: ['s.6.plate-tectonics~boundaries'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "each place (Mid-Atlantic Ridge, Iceland, East African Rift, Himalayas, Andes Mountains, Mariana Trench, Mount St. Helens, San Andreas Fault, North Anatolian Fault) → a small world map with a pin at the place, no plate boundaries drawn; NEW card figure 'map' with a point",
+  },
+  {
+    id: 'D63',
+    what: 'Card pictures for s.6.rock-cycle~sandstone',
+    kind: 'icon',
+    pages: ['s.6.rock-cycle~sandstone'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Granite on a mountain weathers into sand grains → a granite peak crumbling into grains; Rain and rivers carry the sand downhill → a river carrying sand down a slope; The sand settles in layers → sand layers on a lake floor under water; New layers pile on top and squeeze the sand → a stack of layers with down arrows; Minerals glue the grains into sandstone → existing rock figure {kind:'rock', texture:'grains'}",
+  },
+  {
+    id: 'D64',
+    what: 'Card pictures for m.6.center-spread~mean-or-median',
+    kind: 'dotPlot',
+    pages: ['m.6.center-spread~mean-or-median'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "each data-set card (2, 3, 3, 4, 40; 1, 50, 52, 53, 55; 20, 25, 30, 25, 180; 10–14; heights; highs) → a small dot plot of the values; NEW card figure 'dotPlot'",
+  },
+  {
+    id: 'D65',
+    what: 'The t counters crossed out (✕ over a filled counter) instead of open ○ counters; l stays solid; driven by s, t, l',
+    kind: 'tenFrame',
+    pages: ['m.K.add-sub-10~take-away'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: tenFrame + NEW option takeAway: true. Why: K take-away is drawn by crossing out; open counters read as adding.',
+  },
+  {
+    id: 'D66',
+    what: 'One full frame and o ones in the second, with b counters crossed out inside the full ten; driven by c, o, b, r, a',
+    kind: 'tenFrame',
+    pages: ['m.1.add-sub-20~take-from-ten'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: tenFrame first:10, second:'o', total:'c', frames:2 + NEW option crossOut:'b'. Why: The page teaches \"take from the ten\"; the current frame never shows the ten being broken.",
+  },
+  {
+    id: 'D68',
+    what: 'The blocks of a with b crossed out, after any trade (a traded rod drawn as 10 cubes); driven by a, b, c',
+    kind: 'baseTen',
+    pages: ['m.2.add-sub-1000~subtract'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: baseTen + NEW option takeAway:'b'. Why: IM draws the crossed-out blocks; the current picture shows only a.",
+  },
+  {
+    id: 'D70',
+    what: "One column per category, drawn in that category's icon; driven by c, s, t, n",
+    kind: 'pictureGraph',
+    pages: ['m.1.data-3-categories'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: pictureGraph with icons matching the categories (NEW icon values 'apple', 'banana', 'grapes'). Why: The values say Apple/Banana/Grapes but the columns draw shapes.",
+  },
+  {
+    id: 'D71',
+    what: 'Frogs, fish and insects drawn as their animal; driven by f, h, i, n',
+    kind: 'pictureGraph',
+    pages: ['s.2.habitats~pond-count'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: pictureGraph with icon accepting CardIcon names: 'frog', 'fish', 'grasshopper'. Why: A shape key is arbitrary for Grade 2.",
+  },
+  {
+    id: 'D74',
+    what: 'A drawn plant whose tapped part lights up; driven by scene.part',
+    kind: 'plant',
+    pages: ['s.1.structures-function'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: NEW explore figure plant (flower, leaves, stem, roots; the scene's part highlighted and labeled). Why: The current parts figure is word buttons only.",
+  },
+  {
+    id: 'D75',
+    what: 'A drawn animal with the tapped part highlighted; driven by scene.part',
+    kind: 'animal',
+    pages: ['s.1.structures-function~animal'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: NEW explore figure animal (a bear for eyes, ears, fur and claws, plus a turtle for the shell). Why: Word buttons only; a shell needs a second animal.',
+  },
+  {
+    id: 'D76',
+    what: 'A grown cat (orange) and its kitten (gray, white nose patch) above the bins',
+    kind: 'figure',
+    pages: ['s.1.offspring'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: NEW sort header figure: the parent cat and the kitten. Why: Cards like "Gray fur, not orange" can\'t be sorted without seeing the two animals.',
+  },
+  {
+    id: 'D77',
+    what: 'Shown above the bins',
+    kind: 'figure',
+    pages: ['s.1.offspring~deer'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: NEW sort header figure: a doe, a buck with antlers and a spotted fawn. Why: "White spots on its back" and "Has no antlers yet" need the picture.',
+  },
+  {
+    id: 'D78',
+    what: "One thermometer, filled to the tapped column's temperature",
+    kind: 'thermometer',
+    pages: ['s.K.weather-patterns~morning-afternoon'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: NEW observe figure thermometer (like shadowStick). Why: Kindergarten reads temperature on a thermometer.',
+  },
+  {
+    id: 'D79',
+    what: "A plant beside a cm ruler at the tapped week's height",
+    kind: 'plantHeight',
+    pages: ['s.2.plant-growth-investigation~weeks'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: NEW observe figure plantHeight (like shadowStick). Why: Ties the bars to the plant being measured.',
+  },
+  {
+    id: 'D81',
+    what: 'Each number on its own rounding line with an arrow to its rounded value; caption x + y = e',
+    kind: 'rounding',
+    pages: ['m.3.rounding~estimate'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: rounding + NEW option second: {value:'b', rounded:'y'} (two lines stacked; the first driven by a and x). Why: The tape shows only the exact numbers, so the rounding that makes the estimate never appears (IM uses number lines).",
+  },
+  {
+    id: 'D82',
+    what: 'The same two rounding lines, caption x − y = e',
+    kind: 'rounding',
+    pages: ['m.3.rounding~estimate-difference'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: rounding + the same second option (a → x, b → y). Why: Same reason as ~estimate.',
+  },
+  {
+    id: 'D85',
+    what: 'Every side labeled with the side length and the perimeter under the shape; driven by n, s, P',
+    kind: 'polygon',
+    pages: ['m.3.perimeter~equal-sides'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: polygon sides 'n' + NEW option side: 's', with around 'P'. Why: A stop-sign item gives one side and asks for the perimeter.",
+  },
+  {
+    id: 'D86',
+    what: 'Half pictures (worth k ÷ 2) and one icon with the key "each ● = k"',
+    kind: 'pictureGraph',
+    pages: ['m.3.scaled-graphs~picture-graph'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: pictureGraph + NEW option half: true, and one icon for every column. Why: NAEP uses half pictures and a single icon with a key.',
+  },
+  {
+    id: 'D89',
+    what: 'The scenes (Alone, In a herd, Huddled) drawn as animals instead of dots',
+    kind: 'animal',
+    pages: ['s.3.animal-groups'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: explore 'dots' + NEW option animal (deer for the herd, a penguin for the huddle). Why: Plain dots are abstract for Grade 3.",
+  },
+  {
+    id: 'D90',
+    what: 'A body outline with brain, heart, lungs, stomach, bones and skin; tapping a part highlights it',
+    kind: 'body',
+    pages: ['s.4.internal-structures'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: explore 'bodySystems' in a Grade 4 mode, or 'parts' + NEW body outline. Why: The 'parts' figure is only text buttons; NAEP labels parts on a drawing of a body.",
+  },
+  {
+    id: 'D91',
+    what: "A ramp with the cup released at the tapped column's height, sliding the recorded distance",
+    kind: 'ramp',
+    pages: ['s.4.energy-speed~ramp'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      'Picture: observe figure NEW ramp (like shadowStick). Why: The link between release height and distance is the lesson; the page has no figure.',
+  },
+  {
+    id: 'D92',
+    what: 'Three bars of a, b and c boxes, each worth u, with the amounts and the total bracketed',
+    kind: 'tape',
+    pages: ['m.6.ratios~three-parts'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: tape (ratio) + NEW option: a third bar (ratio: ['a','b','c'], amounts: ['x','y','z']). Why: The current spec draws only two parts, so the third part is missing (IM part-part-whole tapes).",
+  },
+  {
+    id: 'D93',
+    what: 'A 10 × 10 square with a tenths columns and b tenths rows shaded; the overlap is the product in hundredths',
+    kind: 'grid100',
+    pages: ['m.5.decimal-operations~times-decimal'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: grid100 + NEW option product: ['a','b'] (keep areaModel when a factor is 1 or more). Why: IM: \"Shade the diagram to represent 0.7 × 0.4\" on a 10 × 10 grid.",
+  },
+  {
+    id: 'D94',
+    what: 'a and b stacked by place with the points lined up, the sum s in a third row under a rule',
+    kind: 'placeValueChart',
+    pages: ['m.6.multi-digit-decimals~add-subtract'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: placeValueChart + NEW option total: 's' (drop compare). Why: compare marks where a and b differ, which isn't adding, and the sum isn't drawn.",
+  },
+  {
+    id: 'D96',
+    what: 'A scale reading B before and A after, with gas bubbles leaving labelled g = B − A',
+    kind: 'scale',
+    pages: ['s.5.conservation-mass~fizz'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: scale + NEW option before: 'B' (two dials). Why: The question is two readings on a scale; a waterfall chart is too abstract.",
+  },
+  {
+    id: 'D97',
+    what: 'n washers hanging from a spring scale reading p newtons',
+    kind: 'scale',
+    pages: ['s.5.gravity-down~spring-scale'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: scale (count 'n', each 'e', total 'p') + NEW option hanging: true (a spring scale with a hook, in N). Why: The use line asks how hard gravity pulls, read on a spring scale.",
+  },
+  {
+    id: 'D99',
+    what: "The stick and the shadow for the tapped hour, the sun on the line from the shadow's tip over the stick",
+    kind: 'observe',
+    pages: ['s.5.shadows-day-night'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: observe figure {kind:'shadowStick', stick: 100} + side option if needed (morning and afternoon shadows point opposite ways). Why: The shadow's length through the day is what the page records.",
+  },
+  {
+    id: 'D100',
+    what: 'The flashlight at the tapped distance and the lit circle as wide as the value',
+    kind: 'flashlight',
+    pages: ['s.5.sun-star-brightness'],
+    status: 'requested',
+    gallery: [],
+    notes:
+      "Picture: NEW observe figure flashlight (reuse the flashlights drawing). Why: The recorded quantity is a lit circle's width.",
+  },
+  {
+    id: 'D101',
+    what: "An open cup with the water at the tapped day's level (mm) and a dashed line at Day 1's level",
+    kind: 'cup',
+    pages: ['s.5.particles-matter~evaporation'],
+    status: 'requested',
+    gallery: [],
+    notes: 'Picture: NEW observe figure cup. Why: Seeing the level drop is the evidence.',
   },
 ];

@@ -10,7 +10,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 'm.K.add-sub-10~all-partners',
     title: 'All the ways to make a number',
-    use: 'Use this for “8 cars, some red and some blue. Show all the ways.”',
+    use: 'Use this for “5 cars, some red and some blue. Show all the ways.”',
     assumptions: [
       'A number can be split into two parts in more than one way.',
       'Go in order. The first part goes up by 1. The second goes down by 1.',

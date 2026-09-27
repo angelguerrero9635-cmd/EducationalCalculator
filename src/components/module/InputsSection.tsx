@@ -330,8 +330,14 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
   const early = isEarlyGrade(calc.module.id);
   // Grade 6 letters pages name each box's letter under it (x + 7 = 12).
   const letters = calc.module.notation === 'letters';
-  // Long equations (mixed numbers) use smaller boxes, so a phone fits them on one line.
-  const compact = equationIds(template).length > 6;
+  // Long equations use smaller boxes, so a phone fits them on one line: more than 6 values,
+  // or more than 4 columns side by side (a box, a fraction or a power is one; a mixed number
+  // two), as in 3(2 + x) = 6 + 12.
+  const columns = equationParts(template).reduce(
+    (n, p) => n + (p.kind === 'text' ? 0 : p.kind === 'fraction' && p.whole ? 2 : 1),
+    0,
+  );
+  const compact = equationIds(template).length > 6 || columns > 4;
   const box = (id: string, key: string, small = false, letter = letters) => (
     <EquationBox
       key={key}

@@ -8,6 +8,11 @@ import { Platform, type View } from 'react-native';
  * pointer, so a value stays where the finger left it. `start` and `move` get the pointer's
  * client position; `end` fires on lift or cancel. On native the hook does nothing: the
  * responder props on the same view do the work there.
+ *
+ * iOS Safari doesn't always honor `touch-action: none`: it takes a finger moving along the
+ * element for a page scroll and cancels the pointer, so a tap works and a slide doesn't. A
+ * non-passive `touchmove` listener that cancels the default keeps the page still while a
+ * touch that started on the element moves.
  */
 export function useWebPointerDrag(
   ref: RefObject<View | null>,
@@ -45,15 +50,20 @@ export function useWebPointerDrag(
       el.releasePointerCapture?.(e.pointerId);
       latest.current.end?.();
     };
+    const noScroll = (e: TouchEvent) => {
+      if (e.cancelable) e.preventDefault();
+    };
     el.addEventListener('pointerdown', down);
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerup', up);
     el.addEventListener('pointercancel', up);
+    el.addEventListener('touchmove', noScroll, { passive: false });
     return () => {
       el.removeEventListener('pointerdown', down);
       el.removeEventListener('pointermove', move);
       el.removeEventListener('pointerup', up);
       el.removeEventListener('pointercancel', up);
+      el.removeEventListener('touchmove', noScroll);
     };
   }, [ref]);
 }

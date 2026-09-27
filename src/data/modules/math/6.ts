@@ -990,6 +990,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Multi-digit division and decimals (6.NS.2, 6.NS.3) ──
   {
     id: 'm.6.multi-digit-decimals',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} ÷ {d} = {q}',
     assumptions: [
       'Divide, multiply, subtract, bring down: the same steps for every digit.',
       'When the digits run out, write a point and zeros and keep going.',
@@ -1136,6 +1139,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.multi-digit-decimals~multiply-decimals',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} × {b} = {p}',
     title: 'Multiply decimals',
     use: 'Use this for “Find the value of (0.061)(0.43),” or 2.35 × 1.4.',
     assumptions: [
@@ -1236,6 +1242,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.multi-digit-decimals~add-subtract',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {s}',
     title: 'Add and subtract decimals',
     use: 'Use this for “$14.50 − $4.35 − $5.25,” or 7.2 − 3.67.',
     assumptions: [
@@ -1855,6 +1864,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.gcf-lcm~distributive',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {g}({x} + {y})',
     title: 'Factor out the GCF',
     use: 'Use this for “Write 36 + 8 as a product of the GCF and a sum.”',
     assumptions: [
@@ -2821,6 +2833,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.expressions-variables~distributive',
     notation: 'letters',
+    sliders: false,
+    // Typed the way it is written: 3(2 + x) = 6 + 3x, with a number put in for x.
+    equation: '{n}({m} + {x}) = {u} + {w}',
     letters: ['x'],
     title: 'Equivalent expressions',
     use: 'Use this for “Are 3(2 + x) and 6 + 3x equivalent?”',
@@ -3002,6 +3017,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       y: { var: 'e', min: 0, max: 150 },
       params: ['r'],
       autoRange: true,
+      // The line through (0, 0), (1, r) ringed, and a table of hours and pay beside it.
+      unitRate: 'r',
+      table: [0, 1, 2, 3, 4, 5],
     },
   },
 

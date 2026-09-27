@@ -5,6 +5,28 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## K–6 diagram review: three lesson-reviewers (K–2, 3–4, 5–6)
+
+- Setup: `.review/diagrams/pages-*.md`, one entry per page with:
+  - its kind, title and use line;
+  - its values and relations;
+  - its picture spec and inputs;
+  - its cards or stages, with or without a figure.
+
+  Pages whose picture was just changed were marked to skip. About 100k tokens a reviewer.
+  Reports are in `.review/diagrams/report-*.md`.
+
+- Found:
+  - 64 sort and sequence pages whose cards need pictures (real objects, organisms, events);
+  - 37 picture changes;
+  - 44 pages that should take their inputs where the sentence is written.
+- Changes made:
+  - 11 picture changes used kinds that already exist and were made here.
+  - The other 90 are tracker entries D01–D101 for the pictures chat, in
+    `docs/RENDERINGS_ROUND_3.md`.
+  - 43 equation inputs were applied. The powers-of-ten one waits: the input can't show a fixed
+    base of 10.
+
 ## Picture words on fraction division: focused lesson-reviewer pass
 
 - Setup: the user's phone screenshot, the picture's code and the page; one lesson-reviewer,

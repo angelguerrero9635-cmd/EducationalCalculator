@@ -6,17 +6,17 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-37 of 420 pages show sliders.
+26 of 420 pages show sliders.
 
 ## By picture kind
 
 | Kind | Pages | Sliders | Why |
 | --- | ---: | :---: | --- |
-| angles | 5 | no | the picture has its own handles or taps, or the inputs are enough |
-| areaModel | 13 | yes | sweeping the value shows the picture change; no touch control of its own |
+| angles | 5 | no | set on the module (hidden) |
+| areaModel | 12 | no | set on the module (hidden) |
 | array | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| balance | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| bars | 16 | no | the picture has its own handles or taps, or the inputs are enough |
+| balance | 1 | no | set on the module (hidden) |
+| bars | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseHeight | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseTen | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | beaker | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -26,7 +26,7 @@ its kind with `sliders: true | false`.
 | clock | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| compareRows | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | coordinatePlane | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | crossSection | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -38,7 +38,7 @@ its kind with `sliders: true | false`.
 | electromagnet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | energyPyramid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | energyTrack | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| equalGroups | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | equationBalance | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorRows | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -57,7 +57,7 @@ its kind with `sliders: true | false`.
 | grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | hanger | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | heatingCurve | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| hops | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| hops | 6 | no | set on the module (hidden) |
 | hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | integerLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | leafCount | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -89,13 +89,13 @@ its kind with `sliders: true | false`.
 | pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | ratioTable | 2 | no | set on the module (hidden) |
 | reaction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| rectangle | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| rectangle | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | rightTriangle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rootSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| ruler | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| ruler | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | sample | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | scaleCopy | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -104,19 +104,19 @@ its kind with `sliders: true | false`.
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skaters | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 15 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
 | spectrum | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 37 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 39 | no | set on the module (hidden) |
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 10 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | transformation | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | treeDiagram | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | unitCubes | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
-| unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| unitTiles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | venn | 1 | yes | set on the module (shown) |
 | waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -124,8 +124,37 @@ its kind with `sliders: true | false`.
 
 ## Modules that override their kind
 
+- m.K.add-sub-10~take-away: sliders hidden
+- m.K.count-objects~five-group: sliders hidden
+- m.K.make-10: sliders hidden
+- m.K.teens-place-value: sliders hidden
+- m.1.add-sub-20~take-from-ten: sliders hidden
+- m.1.add-sub-20~doubles: sliders hidden
+- m.1.equal-sign: sliders hidden
+- m.1.add-within-100~two-digits: sliders hidden
+- m.1.add-within-100~subtract-tens: sliders hidden
+- m.2.add-sub-100-fluency~tape: sliders hidden
+- m.2.add-sub-100-fluency~four-numbers: sliders hidden
+- m.2.place-value-1000~expanded: sliders hidden
+- m.2.add-sub-1000~subtract: sliders hidden
+- m.3.area~missing-side: sliders hidden
+- m.3.multiply-divide-100: sliders hidden
+- m.3.multiply-divide-100~array: sliders hidden
+- m.3.multiply-divide-100~share: sliders hidden
+- m.3.multiply-divide-100~how-many-groups: sliders hidden
+- m.3.multiply-divide-100~missing-factor: sliders hidden
+- m.3.multiply-divide-100~break-apart: sliders hidden
+- m.3.add-sub-1000: sliders hidden
+- m.3.add-sub-1000~subtract-zeros: sliders hidden
+- m.3.multiply-by-tens: sliders hidden
 - m.3.fractions-number-line~wholes: sliders hidden
 - m.3.compare-fractions: sliders hidden
+- m.4.place-value-million~add-subtract: sliders hidden
+- m.4.place-value-million~subtract: sliders hidden
+- m.4.multi-digit-multiply: sliders hidden
+- m.4.multi-digit-multiply~two-digit: sliders hidden
+- m.4.multi-digit-multiply~times-as-many: sliders hidden
+- m.4.long-division: sliders hidden
 - m.4.fraction-equivalence: sliders hidden
 - m.4.add-fractions-like: sliders hidden
 - m.4.add-fractions-like~subtract: sliders hidden
@@ -133,6 +162,16 @@ its kind with `sliders: true | false`.
 - m.4.add-fractions-like~mixed-add: sliders hidden
 - m.4.add-fractions-like~mixed-subtract: sliders hidden
 - m.4.fraction-times-whole: sliders hidden
+- m.4.angles: sliders hidden
+- m.5.order-of-operations: sliders hidden
+- m.5.order-of-operations~divide: sliders hidden
+- m.5.order-of-operations~no-parentheses: sliders hidden
+- m.5.order-of-operations~brackets: sliders hidden
+- m.5.standard-algorithm: sliders hidden
+- m.5.decimal-operations: sliders hidden
+- m.5.decimal-operations~divide: sliders hidden
+- m.5.decimal-operations~subtract: sliders hidden
+- m.5.decimal-operations~times-decimal: sliders hidden
 - m.5.add-fractions-unlike: sliders hidden
 - m.5.add-fractions-unlike~subtract: sliders hidden
 - m.5.add-fractions-unlike~mixed-numbers: sliders hidden
@@ -144,12 +183,17 @@ its kind with `sliders: true | false`.
 - m.6.ratios: sliders hidden
 - m.6.ratios~tape: sliders shown
 - m.6.percent: sliders hidden
+- m.6.multi-digit-decimals: sliders hidden
+- m.6.multi-digit-decimals~multiply-decimals: sliders hidden
+- m.6.multi-digit-decimals~add-subtract: sliders hidden
 - m.6.divide-fractions: sliders hidden
 - m.6.divide-fractions~how-many-fit: sliders hidden
 - m.6.divide-fractions~how-much-in-one: sliders hidden
 - m.6.gcf-lcm: sliders shown
+- m.6.gcf-lcm~distributive: sliders hidden
 - m.6.expressions-variables~exponents: sliders hidden
 - m.6.expressions-variables~order-of-operations: sliders hidden
+- m.6.expressions-variables~distributive: sliders hidden
 - m.6.one-step-equations: sliders hidden
 - m.6.one-step-equations~multiply: sliders hidden
 - g.zero-pairs-add: sliders shown
@@ -177,7 +221,7 @@ its kind with `sliders: true | false`.
 | m.K.measurable-attributes~capacity | compareRows | no |
 | m.K.compose-shapes | patternBlocks | no |
 | m.1.add-sub-20 | tenFrame | no |
-| m.1.add-sub-20~compare | tape | no |
+| m.1.add-sub-20~compare | compareRows | no |
 | m.1.add-sub-20~take-from-ten | tenFrame | no |
 | m.1.add-sub-20~doubles | tenFrame | no |
 | m.1.addition-properties | cubeTrains | no |
@@ -222,7 +266,7 @@ its kind with `sliders: true | false`.
 | m.2.standard-length~number-line | numberLine | no |
 | m.2.standard-length~broken-ruler | ruler | no |
 | m.2.standard-length~two-units | unitTiles | no |
-| m.2.standard-length~meters | skipCount | no |
+| m.2.standard-length~meters | unitTiles | no |
 | m.2.money | coins | no |
 | m.2.money~bills-coins | coins | no |
 | m.2.money~change | tape | no |
@@ -250,12 +294,12 @@ its kind with `sliders: true | false`.
 | m.3.multiply-divide-100~share | equalGroups | no |
 | m.3.multiply-divide-100~how-many-groups | skipCount | no |
 | m.3.multiply-divide-100~missing-factor | array | no |
-| m.3.multiply-divide-100~break-apart | areaModel | yes |
+| m.3.multiply-divide-100~break-apart | areaModel | no |
 | m.3.multiplication-properties | array | no |
 | m.3.multiplication-properties~order | array | no |
 | m.3.multiplication-properties~grouping | equalGroups | no |
 | m.3.two-step-problems | tape | no |
-| m.3.two-step-problems~share | equalGroups | no |
+| m.3.two-step-problems~share | tape | no |
 | m.3.two-step-problems~multiply-add | tape | no |
 | m.3.two-step-problems~subtract-share | tape | no |
 | m.3.two-step-problems~compare | tape | no |
@@ -284,8 +328,8 @@ its kind with `sliders: true | false`.
 | m.3.mass-liquid-volume~heavier | tape | no |
 | m.3.perimeter | rectangle | no |
 | m.3.perimeter~missing-side | polygon | no |
-| m.3.perimeter~same-perimeter | table | no |
-| m.3.perimeter~same-area | table | no |
+| m.3.perimeter~same-perimeter | rectangle | no |
+| m.3.perimeter~same-area | rectangle | no |
 | m.3.perimeter~equal-sides | polygon | no |
 | m.3.scaled-graphs | bars | no |
 | m.3.scaled-graphs~picture-graph | pictureGraph | no |
@@ -301,11 +345,11 @@ its kind with `sliders: true | false`.
 | m.4.place-value-million~expanded-form | placeValueChart | no |
 | m.4.place-value-million~add-subtract | tape | no |
 | m.4.place-value-million~subtract | tape | no |
-| m.4.multi-digit-multiply | areaModel | yes |
-| m.4.multi-digit-multiply~two-digit | areaModel | yes |
+| m.4.multi-digit-multiply | areaModel | no |
+| m.4.multi-digit-multiply~two-digit | areaModel | no |
 | m.4.multi-digit-multiply~times-as-many | tape | no |
-| m.4.long-division | areaModel | yes |
-| m.4.long-division~interpret-remainder | areaModel | yes |
+| m.4.long-division | areaModel | no |
+| m.4.long-division~interpret-remainder | tape | no |
 | m.4.fraction-equivalence | fractionLine | no |
 | m.4.fraction-equivalence~compare | fractionBars | yes |
 | m.4.add-fractions-like | fractionLine | no |
@@ -335,7 +379,7 @@ its kind with `sliders: true | false`.
 | s.K.weather-patterns~warmer | thermometers | no |
 | s.K.living-things-change-environment~litter | tally | no |
 | s.1.sound-vibration~drum | bars | no |
-| s.1.offspring~grow | hops | no |
+| s.1.offspring~grow | ruler | no |
 | s.1.sky-patterns | bars | no |
 | s.1.sky-patterns~shadow | ruler | no |
 | s.2.material-properties | bars | no |
@@ -344,7 +388,7 @@ its kind with `sliders: true | false`.
 | s.2.heating-cooling~cooling | thermometers | no |
 | s.2.plant-growth-investigation | leafCount | no |
 | s.2.plant-growth-investigation~water | ruler | no |
-| s.2.plant-growth-investigation~week | hops | no |
+| s.2.plant-growth-investigation~week | ruler | no |
 | s.2.pollination-dispersal~sock-walk | bars | no |
 | s.2.habitats | bars | no |
 | s.2.habitats~pond-count | pictureGraph | no |
@@ -370,13 +414,13 @@ its kind with `sliders: true | false`.
 | m.5.powers-of-ten~compare-decimals | placeValueChart | no |
 | m.5.powers-of-ten~round-decimals | rounding | no |
 | m.5.powers-of-ten~metric | doubleNumberLine | no |
-| m.5.standard-algorithm | areaModel | yes |
+| m.5.standard-algorithm | areaModel | no |
 | m.5.divide-2-digit | areaModel | yes |
 | m.5.decimal-operations | tape | no |
 | m.5.decimal-operations~multiply | skipCount | no |
 | m.5.decimal-operations~divide | tape | no |
 | m.5.decimal-operations~subtract | tape | no |
-| m.5.decimal-operations~times-decimal | areaModel | yes |
+| m.5.decimal-operations~times-decimal | areaModel | no |
 | m.5.decimal-operations~divide-by-decimal | skipCount | no |
 | m.5.add-fractions-unlike | fractionBars | no |
 | m.5.add-fractions-unlike~subtract | fractionBars | no |
@@ -404,7 +448,7 @@ its kind with `sliders: true | false`.
 | s.5.conservation-mass | scale | no |
 | s.5.conservation-mass~fizz | waterfall | no |
 | s.5.gravity-down~spring-scale | table | no |
-| s.5.plants-sunlight-energy | bars | no |
+| s.5.plants-sunlight-energy | tape | no |
 | s.5.earth-spheres~water-share | pieChart | no |
 | s.5.sun-star-brightness~two-flashlights | flashlights | no |
 | m.6.ratios | ratioTable | no |
@@ -416,9 +460,9 @@ its kind with `sliders: true | false`.
 | m.6.unit-rates~convert | doubleNumberLine | no |
 | m.6.percent | percentBar | no |
 | m.6.percent~fraction-decimal-percent | grid100 | no |
-| m.6.multi-digit-decimals | areaModel | yes |
+| m.6.multi-digit-decimals | areaModel | no |
 | m.6.multi-digit-decimals~remainder | areaModel | yes |
-| m.6.multi-digit-decimals~multiply-decimals | areaModel | yes |
+| m.6.multi-digit-decimals~multiply-decimals | areaModel | no |
 | m.6.multi-digit-decimals~add-subtract | placeValueChart | no |
 | m.6.multi-digit-decimals~divide-by-decimal | skipCount | no |
 | m.6.divide-fractions | fractionFit | no |
@@ -427,7 +471,7 @@ its kind with `sliders: true | false`.
 | m.6.gcf-lcm | venn | yes |
 | m.6.gcf-lcm~lcm | skipCount | no |
 | m.6.gcf-lcm~factor-tree | factorTree | no |
-| m.6.gcf-lcm~distributive | areaModel | yes |
+| m.6.gcf-lcm~distributive | areaModel | no |
 | m.6.integers | integerLine | no |
 | m.6.integers~change | integerLine | no |
 | m.6.integers~compare | integerLine | no |
@@ -437,7 +481,7 @@ its kind with `sliders: true | false`.
 | m.6.expressions-variables | table | no |
 | m.6.expressions-variables~exponents | table | no |
 | m.6.expressions-variables~order-of-operations | table | no |
-| m.6.expressions-variables~distributive | areaModel | yes |
+| m.6.expressions-variables~distributive | areaModel | no |
 | m.6.expressions-variables~two-quantities | plot | no |
 | m.6.one-step-equations | tape | no |
 | m.6.one-step-equations~multiply | tape | no |

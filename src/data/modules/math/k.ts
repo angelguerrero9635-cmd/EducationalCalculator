@@ -185,6 +185,9 @@ export const MATH_K_MODULES: ModuleDef[] = [
   // Kindergarten take-away stories: start, take away, left (K.OA.2).
   {
     id: 'm.K.add-sub-10~take-away',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{s} − {t} = {l}',
     title: 'Take away',
     use: 'Use this for “7 birds, 3 fly away. How many are left?”',
     assumptions: [
@@ -347,6 +350,9 @@ export const MATH_K_MODULES: ModuleDef[] = [
   // 5 and some more: numbers 5–10 on a five-group (K.CC.5, Eureka K Module 1).
   {
     id: 'm.K.count-objects~five-group',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} = 5 + {e}',
     title: '5 and some more',
     use: 'Use this for “How many counters are there?” with 5 and some more.',
     assumptions: [
@@ -451,6 +457,9 @@ export const MATH_K_MODULES: ModuleDef[] = [
   })(),
   {
     id: 'm.K.make-10',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = 10',
     assumptions: ['A ten-frame has 10 boxes.', 'The counters and the empty boxes make 10.'],
     variables: [whole('a', 'a', 'Counters', 0, 10), whole('b', 'b', 'More to make 10', 0, 10)],
     relations: [
@@ -479,6 +488,9 @@ export const MATH_K_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.K.teens-place-value',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} = 10 + {o}',
     assumptions: [
       'The first ten-frame is full: 10 ones.',
       'The numbers 11 to 19 are 10 ones and some more ones.',

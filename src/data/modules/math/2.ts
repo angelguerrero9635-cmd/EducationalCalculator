@@ -312,6 +312,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.2.add-sub-100-fluency~tape',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {c}',
     title: 'Word problems',
     use: 'Use this for “Mai puts 18 more on the shelf. Now there are 47.”',
     assumptions: [
@@ -354,6 +357,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.2.add-sub-100-fluency~four-numbers',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} + {c} + {e} = {n}',
     title: 'Add four numbers',
     use: 'Use this for “Find the value of 25 + 25 + 10 + 5.”',
     assumptions: [
@@ -708,6 +714,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Split from m.2.place-value-1000: expanded form (2.NBT.3).
   {
     id: 'm.2.place-value-1000~expanded',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{n} = {H} + {T} + {O}',
     title: 'Expanded form',
     use: 'Use this for “Select all representations of 318,” like 300 + 10 + 8.',
     assumptions: [
@@ -994,6 +1003,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Subtract within 1,000, trading across a zero: 403 − 178 (2.NBT.7).
   {
     id: 'm.2.add-sub-1000~subtract',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} − {b} = {c}',
     title: 'Take away within 1,000',
     use: 'Use this for “Find the value of 936 − 428.”',
     assumptions: [
@@ -1680,7 +1692,14 @@ export const MATH_2_MODULES: ModuleDef[] = [
     },
     example: { m: 3, c: 300 },
     startWith: ['m'],
-    representation: { kind: 'skipCount', step: 100, count: 'm', total: 'c' },
+    // Meter sticks, each marked in 100 centimeters (as feet of 12 inches on ~two-units).
+    representation: {
+      kind: 'unitTiles',
+      count: 'm',
+      size: 100,
+      total: 'c',
+      names: { small: ['centimeter', 'centimeters'], big: ['meter', 'meters'] },
+    },
   },
   {
     id: 'm.2.money',

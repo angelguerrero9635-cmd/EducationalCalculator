@@ -71,6 +71,9 @@ function multiplyPage(o: {
   return {
     id: o.id,
     ...(o.title ? { title: o.title, use: o.use } : {}),
+    sliders: false,
+    // Typed where it is written: 43 × 67 = ? (K–6 diagram review).
+    equation: '{a} × {b} = {n}',
     assumptions: o.assumptions,
     variables: [
       whole('a', 'a', 'First factor', ...o.first),
@@ -833,6 +836,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
   // ── Add and subtract multi-digit numbers (4.NBT.4) ──
   {
     id: 'm.4.place-value-million~add-subtract',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {c}',
     title: 'Add to 1,000,000',
     use: 'Use this for sums to 1,000,000 in columns, like 36,325 + 23,310.',
     assumptions: [
@@ -874,6 +880,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.4.place-value-million~subtract',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} − {b} = {c}',
     title: 'Subtract to 1,000,000',
     use: 'Use this for “Subtract: 6,090 − 4,843.”',
     assumptions: [
@@ -912,7 +921,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { a: 500000, b: 123456, c: 376544 },
     startWith: ['a', 'b'],
-    representation: { kind: 'tape', compare: ['a', 'b'], difference: 'c' },
+    // Take away: the start split into the part taken and the difference.
+    representation: { kind: 'tape', parts: ['c', 'b'], total: 'a' },
   },
   // ── Multi-digit multiplication: the area model, up to 4-digit × 1-digit (4.NBT.5) ──
   multiplyPage({
@@ -950,6 +960,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.4.multi-digit-multiply~times-as-many',
+      sliders: false,
+      // Typed where it is written (K–6 diagram review).
+      equation: '{k} × {s} = {b}',
       title: 'Times as many',
       use: 'Use this for “Ben has 4 times as many stickers as Ana.”',
       assumptions: [
@@ -1018,6 +1031,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
     };
     return {
       id: 'm.4.long-division',
+      sliders: false,
+      // Typed where it is written (K–6 diagram review).
+      equation: '{n} ÷ {d} = {q} remainder {r}',
       assumptions: [
         'Make groups the size of the divisor. The number of groups is the quotient.',
         'Take away groups by place, biggest first: 600 is 100 sixes, 120 is 20 sixes, 18 is 3 sixes.',
@@ -1248,9 +1264,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
     example: { n: 50, d: 8, q: 6, r: 2, m: 48, u: 7 },
     startWith: ['n', 'd'],
     pictureLabels: ['q'],
+    // The full groups and the leftover as its own piece: why the answer is one more group.
     representation: {
-      kind: 'areaModel',
-      divide: { dividend: 'n', divisor: 'd', quotient: 'q', remainder: 'r' },
+      kind: 'tape',
+      parts: ['m', 'r'],
+      total: 'n',
+      groups: 'q',
+      groupsPart: 'm',
+      caption: '{q} full groups and {r} left over: {u} groups needed.',
     },
   },
   // ── Making an equivalent fraction (4.NF.1) ──
@@ -2677,6 +2698,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
   // ── Angles: degrees as parts of a turn, and angle addition (4.MD.5, 4.MD.7) ──
   {
     id: 'm.4.angles',
+    sliders: false,
+    // Typed where it is written (K–6 diagram review).
+    equation: '{a} + {b} = {w}',
     assumptions: [
       'A full turn is 360 degrees. One degree is 1/360 of a turn.',
       'A right angle is 90°: a quarter turn. A straight angle is 180°: a half turn.',
