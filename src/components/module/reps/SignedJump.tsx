@@ -68,13 +68,15 @@ export function SignedJump({ spec, calc }: { spec: Spec; calc: Calculator }) {
             return [dx / len, dy / len];
           })();
           const head = 9;
-          // Which way the jump goes, to keep the two labels apart when it is short.
-          const dirSign = q >= p ? 1 : -1;
           const tip = { x: q, y: lineY - 12 };
           const side = (k: number) =>
             `${tip.x - head * ux + k * head * 0.5 * uy} ${tip.y - head * uy - k * head * 0.5 * ux}`;
           const arrowHead = `M ${tip.x} ${tip.y} L ${side(1)} L ${side(-1)} Z`;
           const showJump = aKnown && bKnown && move !== 0;
+          // Too short for a label under each end: one label, "start → end".
+          const short = showJump && Math.abs(q - p) < 44;
+          const result = rep.known(jump.result) ? formatNumber(end) : '?';
+          const endText = short ? `${formatNumber(a)} → ${result}` : result;
           return (
             <>
               <Svg width={w} height={h}>
@@ -140,15 +142,10 @@ export function SignedJump({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </>
                 ) : null}
                 <Circle cx={p} cy={lineY} r={6} fill={c.chartInk} opacity={aKnown ? 1 : 0.35} />
-                {aKnown ? (
+                {/* The start's number under it (a short jump: "start → end" in one label). */}
+                {aKnown && !short ? (
                   <ChartText
-                    {...fitLabel(
-                      p + (showJump && Math.abs(q - p) < 40 ? -dirSign * 4 : 0),
-                      formatNumber(a),
-                      chart.label,
-                      w,
-                      showJump && Math.abs(q - p) < 40 ? (dirSign > 0 ? 'end' : 'start') : 'middle',
-                    )}
+                    {...fitLabel(p, formatNumber(a), chart.label, w)}
                     y={lineY + 40}
                     fontSize={chart.label}
                     fontWeight="700"
@@ -167,19 +164,13 @@ export function SignedJump({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       strokeWidth={chart.stroke + 0.5}
                     />
                     <ChartText
-                      {...fitLabel(
-                        q + (Math.abs(q - p) < 40 ? dirSign * 4 : 0),
-                        formatNumber(end),
-                        chart.label,
-                        w,
-                        Math.abs(q - p) < 40 ? (dirSign > 0 ? 'start' : 'end') : 'middle',
-                      )}
+                      {...fitLabel(short ? (p + q) / 2 : q, endText, chart.label, w)}
                       y={lineY + 40}
                       fontSize={chart.label}
                       fontWeight="700"
                       fill={c.chartHighlight}
                     >
-                      {rep.known(jump.result) ? formatNumber(end) : '?'}
+                      {endText}
                     </ChartText>
                   </>
                 ) : null}

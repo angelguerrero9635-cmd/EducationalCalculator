@@ -124,6 +124,8 @@ export function PercentChange({ spec, calc }: { spec: Spec; calc: Calculator }) 
             </ChartText>
           );
           const changeText = `${up ? '+' : '−'}${pctText}`;
+          // Percent change: the change carries its sign (a decrease is negative).
+          const bracketText = `${changeText} = ${up ? '' : '−'}${rep.value(spec.part).replace('−', '')}`;
           const handleX = x(up ? c1 : c0);
           const handleRow = three ? 1 : last;
           return (
@@ -182,7 +184,7 @@ export function PercentChange({ spec, calc }: { spec: Spec; calc: Calculator }) 
                 {three ? (
                   <G>
                     {label(1, named(spec.part, changeText), c.chartInk)}
-                    {bar(1, c0, c1, c.chartSecond, !known.part, 'b1')}
+                    {bar(1, c0, c1, c.chartSecond, !known.part || !known.percent, 'b1')}
                   </G>
                 ) : null}
                 {/* The new amount: the original with the change on or off. */}
@@ -190,8 +192,17 @@ export function PercentChange({ spec, calc }: { spec: Spec; calc: Calculator }) 
                   last,
                   named(change.total, known.percent ? `${formatNumber(newPct)}%` : '?%'),
                 )}
-                {bar(last, 0, up ? 100 : c0, c.chartHighlight, !known.total, 'n0')}
-                {up ? bar(last, c0, c1, c.chartSecond, !known.total, 'n1') : gap(last, 'n1')}
+                {bar(
+                  last,
+                  0,
+                  up ? 100 : c0,
+                  c.chartHighlight,
+                  !known.total || !known.percent,
+                  'n0',
+                )}
+                {up
+                  ? bar(last, c0, c1, c.chartSecond, !known.total || !known.percent, 'n1')
+                  : gap(last, 'n1')}
                 {/* Before and after: the change bracketed over its part of the after bar. */}
                 {!three && pct > 0 ? (
                   <G>
@@ -202,17 +213,12 @@ export function PercentChange({ spec, calc }: { spec: Spec; calc: Calculator }) 
                       fill="none"
                     />
                     <ChartText
-                      {...fitLabel(
-                        (x(c0) + x(c1)) / 2,
-                        `${changeText} = ${rep.value(spec.part).replace('−', '')}`,
-                        chart.small,
-                        w,
-                      )}
+                      {...fitLabel((x(c0) + x(c1)) / 2, bracketText, chart.small, w)}
                       y={barY(last) + barH + 20}
                       fontSize={chart.small}
                       fontWeight="700"
                     >
-                      {`${changeText} = ${rep.value(spec.part).replace('−', '')}`}
+                      {bracketText}
                     </ChartText>
                   </G>
                 ) : null}
