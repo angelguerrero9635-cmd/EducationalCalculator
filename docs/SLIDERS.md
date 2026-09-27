@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-39 of 320 pages show sliders.
+41 of 329 pages show sliders.
 
 ## By picture kind
 
@@ -46,7 +46,7 @@ its kind with `sliders: true | false`.
 | grid100 | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
-| integerLine | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| integerLine | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | leafCount | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | linePlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | net | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -55,11 +55,11 @@ its kind with `sliders: true | false`.
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | partition | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| percentBar | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| percentBar | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
 | placeValueChart | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| plot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| plot | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | protractor | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -75,6 +75,7 @@ its kind with `sliders: true | false`.
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -87,6 +88,7 @@ its kind with `sliders: true | false`.
 | venn | 1 | yes | set on the module (shown) |
 | waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| zeroPairs | 2 | yes | set on the module (shown) |
 
 ## Modules that override their kind
 
@@ -96,6 +98,8 @@ its kind with `sliders: true | false`.
 - m.6.divide-fractions~how-many-fit: sliders shown
 - m.6.divide-fractions~how-much-in-one: sliders shown
 - m.6.gcf-lcm: sliders shown
+- g.zero-pairs-add: sliders shown
+- g.zero-pairs-subtract: sliders shown
 
 ## Every page
 
@@ -421,3 +425,12 @@ its kind with `sliders: true | false`.
 | g.plot-point | coordinatePlane | no |
 | g.line-plot-lengths | linePlot | no |
 | g.protractor-arms | protractor | no |
+| g.proportional-graph | plot | no |
+| g.sales-tax | percentBar | no |
+| g.discount | percentBar | no |
+| g.percent-change | percentBar | no |
+| g.zero-pairs-add | zeroPairs | yes |
+| g.zero-pairs-subtract | zeroPairs | yes |
+| g.sign-table | signTable | no |
+| g.signed-jump-add | integerLine | no |
+| g.signed-jump-subtract | integerLine | no |
