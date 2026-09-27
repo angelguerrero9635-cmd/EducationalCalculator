@@ -1035,10 +1035,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.heating-cooling',
     kind: 'icon',
     pages: ['s.2.heating-cooling'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3b-heating-cooling'],
+    uses: '"icon":"melting ice cube"',
     notes:
-      'Melting ice → an ice cube with a puddle; Freezing water → an ice-cube tray; Melting a crayon → a drooping, melted crayon; Melting chocolate → a chocolate bar going soft; Boiling water into steam → a pot with steam; Cooking an egg → a fried egg in a pan; Burning paper → paper with a flame and ash; Baking bread → a loaf of bread; Toasting bread → a slice of toast',
+      "Melting ice → an ice cube with a puddle; Freezing water → an ice-cube tray; Melting a crayon → a drooping, melted crayon; Melting chocolate → a chocolate bar going soft; Boiling water into steam → a pot with steam; Cooking an egg → a fried egg in a pan; Burning paper → paper with a flame and ash; Baking bread → a loaf of bread; Toasting bread → a slice of toast. Drawn (group B), figure: {kind:'icon', icon}: Melting ice → 'melting ice cube'; Freezing water → 'ice cube tray'; Melting a crayon → 'melted crayon'; Melting chocolate → 'melting chocolate bar'; Boiling water into steam → 'pot of boiling water'; Cooking an egg → 'fried egg in a pan'; Burning paper → 'burning paper'; Baking bread → 'loaf of bread'; Toasting bread → 'slice of toast'",
   },
   {
     id: 'D20',
@@ -1115,10 +1116,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.3.mass-liquid-volume~which-unit',
     kind: 'icon',
     pages: ['m.3.mass-liquid-volume~which-unit'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3b-which-unit'],
+    uses: '"icon":"sack of potatoes"',
     notes:
-      "Grape → a single grape; Apple → an apple; Letter → an envelope letter; Bicycle → a bicycle; Watermelon → existing icon 'watermelon'; Bag of potatoes → a sack of potatoes; Child → existing icon 'person'",
+      "Grape → a single grape; Apple → an apple; Letter → an envelope letter; Bicycle → a bicycle; Watermelon → existing icon 'watermelon'; Bag of potatoes → a sack of potatoes; Child → existing icon 'person'. Drawn (group B), figure: {kind:'icon', icon}: Grape → 'grape'; Apple → 'apple' (group I's drawing); Letter → 'letter in an envelope'; Bicycle → 'bicycle'; Watermelon → 'watermelon'; Bag of potatoes → 'sack of potatoes'; Child → 'person'",
   },
   {
     id: 'D28',
