@@ -124,9 +124,16 @@ const placeLine = (n: number) => {
   );
   return parts.length > 1 ? [`${n} = ${parts.join(' + ')}`] : [];
 };
-/** Cents written as dollars and cents, e.g. "$1.35". */
-const dollars = (cents: number) =>
-  `$${Math.floor(cents / 100)}.${String(Math.round(cents % 100)).padStart(2, '0')}`;
+/**
+ * Cents from 100 on, in Grade 2 words: "(2 dollars and 68 cents)". The decimal point ($2.68)
+ * is Grade 4; under 100¢ there is nothing to add.
+ */
+const dollarWords = (cents: number) => {
+  if (cents < 100) return '';
+  const [d, c] = [Math.floor(cents / 100), Math.round(cents % 100)];
+  const ds = `${d} ${d === 1 ? 'dollar' : 'dollars'}`;
+  return c ? `(${ds} and ${c} ${c === 1 ? 'cent' : 'cents'})` : `(${ds})`;
+};
 /** "1 rhombus", "2 rhombuses". */
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 /** "Count on from 4: 5, 6, 7 → 3" (how many to count on from one amount to another). */
@@ -610,8 +617,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'n = h hundreds + t tens + o ones': {
         n: {
           work: (v) => [
-            `${v.h} hundreds = ${100 * v.h!}, ${v.t} tens = ${10 * v.t!}`,
-            `${100 * v.h!} + ${10 * v.t!} + ${v.o} = ${v.n}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}, ${v.t} tens = ${10 * v.t!}`,
+            `${formatNumber(100 * v.h!)} + ${10 * v.t!} + ${v.o} = ${formatNumber(v.n!)}`,
           ],
           expr: '{h} hundreds + {t} tens + {o} ones',
           how: 'Count the flats by hundreds, the rods by tens, then the small cubes.',
@@ -621,16 +628,16 @@ export const MATH_2_MODULES: ModuleDef[] = [
           how: 'Take away the tens and ones; count the hundreds left.',
           work: (v) => [
             `${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${10 * v.t!} − ${v.o} = ${100 * v.h!}`,
-            `${100 * v.h!} is ${v.h} hundreds`,
+            `${formatNumber(v.n!)} − ${10 * v.t!} − ${v.o} = ${formatNumber(100 * v.h!)}`,
+            `${formatNumber(100 * v.h!)} is ${v.h} hundreds`,
           ],
         },
         t: {
           expr: 'tens in ({n} − {h} hundreds − {o} ones)',
           how: 'Take away the hundreds and ones; count the tens left.',
           work: (v) => [
-            `${v.h} hundreds = ${100 * v.h!}`,
-            `${v.n} − ${100 * v.h!} − ${v.o} = ${10 * v.t!}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}`,
+            `${formatNumber(v.n!)} − ${formatNumber(100 * v.h!)} − ${v.o} = ${10 * v.t!}`,
             `${10 * v.t!} is ${v.t} tens`,
           ],
         },
@@ -638,16 +645,19 @@ export const MATH_2_MODULES: ModuleDef[] = [
           expr: '{n} − {h} hundreds − {t} tens',
           how: 'Take away the hundreds and tens; the rest are ones.',
           work: (v) => [
-            `${v.h} hundreds = ${100 * v.h!}, ${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${100 * v.h!} − ${10 * v.t!} = ${v.o}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}, ${v.t} tens = ${10 * v.t!}`,
+            `${formatNumber(v.n!)} − ${formatNumber(100 * v.h!)} − ${10 * v.t!} = ${v.o}`,
           ],
         },
       },
       'h = hundreds digit': {
         h: {
-          work: (v) => [...placeLine(v.n!), `${100 * v.h!} is ${v.h} hundreds`],
+          work: (v) => [...placeLine(v.n!), `${formatNumber(100 * v.h!)} is ${v.h} hundreds`],
           expr: 'whole hundreds in {n}',
-          how: 'Read the digit in the hundreds place (count the flats).',
+          how: (v) =>
+            v.n === 1000
+              ? 'Count the flats: 10 hundreds make 1,000.'
+              : 'Read the digit in the hundreds place (count the flats).',
         },
       },
       't = tens digit': {
@@ -730,17 +740,26 @@ export const MATH_2_MODULES: ModuleDef[] = [
           how: 'Add the parts: hundreds, then tens, then ones.',
         },
         H: {
-          work: (v) => [`${v.n} − ${v.T} = ${v.n! - v.T!}`, `${v.n! - v.T!} − ${v.O} = ${v.H}`],
+          work: (v) => [
+            `${formatNumber(v.n!)} − ${v.T} = ${v.n! - v.T!}`,
+            `${v.n! - v.T!} − ${v.O} = ${v.H}`,
+          ],
           expr: '{n} − {T} − {O}',
           how: 'Take the tens and ones away. The rest is hundreds.',
         },
         T: {
-          work: (v) => [`${v.n} − ${v.H} = ${v.n! - v.H!}`, `${v.n! - v.H!} − ${v.O} = ${v.T}`],
+          work: (v) => [
+            `${formatNumber(v.n!)} − ${v.H} = ${v.n! - v.H!}`,
+            `${v.n! - v.H!} − ${v.O} = ${v.T}`,
+          ],
           expr: '{n} − {H} − {O}',
           how: 'Take the hundreds and ones away. The rest is tens.',
         },
         O: {
-          work: (v) => [`${v.n} − ${v.H} = ${v.n! - v.H!}`, `${v.n! - v.H!} − ${v.T} = ${v.O}`],
+          work: (v) => [
+            `${formatNumber(v.n!)} − ${v.H} = ${v.n! - v.H!}`,
+            `${v.n! - v.H!} − ${v.T} = ${v.O}`,
+          ],
           expr: '{n} − {H} − {T}',
           how: 'Take the hundreds and tens away. The rest is ones.',
         },
@@ -748,7 +767,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'H = hundreds in n': {
         H: {
           work: (v) => [
-            `${v.n}: hundreds digit ${Math.floor(v.n! / 100)} → ${Math.floor(v.n! / 100)} hundreds = ${v.H}`,
+            `${formatNumber(v.n!)}: hundreds digit ${Math.floor(v.n! / 100)} → ${Math.floor(v.n! / 100)} hundreds = ${v.H}`,
           ],
           expr: 'hundreds part of {n}',
           how: 'The hundreds digit tells how many hundreds.',
@@ -757,7 +776,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'T = tens in n': {
         T: {
           work: (v) => [
-            `${v.n}: tens digit ${Math.floor(v.n! / 10) % 10} → ${Math.floor(v.n! / 10) % 10} tens = ${v.T}`,
+            `${formatNumber(v.n!)}: tens digit ${Math.floor(v.n! / 10) % 10} → ${Math.floor(v.n! / 10) % 10} tens = ${v.T}`,
           ],
           expr: 'tens part of {n}',
           how: 'The tens digit tells how many tens.',
@@ -796,7 +815,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = h hundreds + t tens + o ones',
-        check: (v: Values) => `${100 * v.h!} + ${10 * v.t!} + ${v.o} = ${v.n}`,
+        check: (v: Values) =>
+          `${formatNumber(100 * v.h!)} + ${10 * v.t!} + ${v.o} = ${formatNumber(v.n!)}`,
         display: '{n} = {h} hundreds + {t} tens + {o} ones',
         vars: ['n', 'h', 't', 'o'],
         residual: (v: Values) => v.n! - 100 * v.h! - 10 * v.t! - v.o!,
@@ -812,10 +832,10 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'n = h hundreds + t tens + o ones': {
         n: {
           work: (v: Values) => [
-            `${v.h} hundreds = ${100 * v.h!}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}`,
             `${v.t} tens = ${10 * v.t!}`,
-            `${100 * v.h!} + ${10 * v.t!} = ${100 * v.h! + 10 * v.t!}`,
-            `${100 * v.h! + 10 * v.t!} + ${v.o} = ${v.n}`,
+            `${formatNumber(100 * v.h!)} + ${10 * v.t!} = ${formatNumber(100 * v.h! + 10 * v.t!)}`,
+            `${formatNumber(100 * v.h! + 10 * v.t!)} + ${v.o} = ${formatNumber(v.n!)}`,
           ],
           expr: '{h} hundreds + {t} tens + {o} ones',
           how: 'Find the value of the hundreds and the tens. Then add them with the ones.',
@@ -823,16 +843,16 @@ export const MATH_2_MODULES: ModuleDef[] = [
         h: {
           work: (v: Values) => [
             `${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${10 * v.t!} = ${v.n! - 10 * v.t!}`,
-            `${v.n! - 10 * v.t!} − ${v.o} = ${100 * v.h!}`,
-            `${100 * v.h!} is ${v.h} hundreds`,
+            `${formatNumber(v.n!)} − ${10 * v.t!} = ${formatNumber(v.n! - 10 * v.t!)}`,
+            `${formatNumber(v.n! - 10 * v.t!)} − ${v.o} = ${formatNumber(100 * v.h!)}`,
+            `${formatNumber(100 * v.h!)} is ${v.h} hundreds`,
           ],
           expr: 'hundreds in ({n} − {t} tens − {o} ones)',
           how: 'Take away the tens and ones. Count the hundreds left.',
         },
         t: {
           work: (v: Values) => [
-            `${v.h} hundreds = ${100 * v.h!}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}`,
             `${v.n} − ${100 * v.h!} = ${v.n! - 100 * v.h!}`,
             `${v.n! - 100 * v.h!} − ${v.o} = ${10 * v.t!}`,
             `${10 * v.t!} is ${v.t} tens`,
@@ -1029,7 +1049,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       {
         id: 'n = a + k jumps of s',
         check: (v) => `${v.a} + ${v.k} jumps of ${v.s} = ${v.n}`,
-        display: 'Start at {a}. {k} jumps of {s} land on {n}.',
+        display: 'Start at {a}. After {k} jumps of {s}, you land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! - v.k! * v.s!,
         solve: {
@@ -1095,7 +1115,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       {
         id: 'n = a − k jumps of s',
         check: (v) => `${v.a} − ${v.k} jumps of ${v.s} = ${v.n}`,
-        display: 'Start at {a}. {k} jumps back by {s} land on {n}.',
+        display: 'Start at {a}. After {k} jumps back by {s}, you land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! + v.k! * v.s!,
         solve: {
@@ -1346,9 +1366,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Measure both ribbons in the same unit.',
     ],
     variables: [
-      { ...whole('L', 'L', 'Longer ribbon', 0, 30), unit: 'cm' },
-      { ...whole('S', 'S', 'Shorter ribbon', 0, 30), unit: 'cm' },
-      { ...whole('d', 'd', 'How much longer', 0, 30), unit: 'cm' },
+      { ...whole('L', 'L', 'Longer ribbon', 1, 30), unit: 'cm' },
+      { ...whole('S', 'S', 'Shorter ribbon', 1, 30), unit: 'cm' },
+      { ...whole('d', 'd', 'How much longer', 0, 29), unit: 'cm' },
     ],
     relations: [
       {
@@ -1394,9 +1414,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Use the same unit for both lengths.',
     ],
     variables: [
-      { ...whole('a', 'a', 'First length', 0, 100), unit: 'cm' },
-      { ...whole('b', 'b', 'Second length', 0, 100), unit: 'cm' },
-      { ...whole('s', 's', 'Total length', 0, 100), unit: 'cm' },
+      { ...whole('a', 'a', 'First length', 1, 100), unit: 'cm' },
+      { ...whole('b', 'b', 'Second length', 1, 100), unit: 'cm' },
+      { ...whole('s', 's', 'Total length', 2, 100), unit: 'cm' },
     ],
     relations: [
       {
@@ -1674,7 +1694,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     ],
     variables: [
       { ...whole('T', 'T', 'Money you have', 0, 1000), unit: '¢' },
-      { ...whole('P', 'P', 'Price', 0, 1000), unit: '¢' },
+      { ...whole('P', 'P', 'Price', 1, 1000), unit: '¢' },
       { ...whole('L', 'L', 'Money left', 0, 1000), unit: '¢' },
     ],
     relations: [
@@ -1693,19 +1713,19 @@ export const MATH_2_MODULES: ModuleDef[] = [
           written: false,
           expr: '{T} − {P}',
           how: 'Count up from the price to the money you have.',
-          note: (v) => `(${dollars(v.L!)})`,
+          note: (v) => dollarWords(v.L!),
         },
         P: {
           work: (v) => subtractStrategy(v.T!, v.L!, '¢'),
           expr: '{T} − {L}',
           how: 'Take the money left away from the money you have.',
-          note: (v) => `(${dollars(v.P!)})`,
+          note: (v) => dollarWords(v.P!),
         },
         T: {
           work: (v) => addStrategy(v.P!, v.L!, '¢'),
           expr: '{P} + {L}',
           how: 'Add the price and the money left.',
-          note: (v) => `(${dollars(v.T!)})`,
+          note: (v) => dollarWords(v.T!),
         },
       },
     },
@@ -1814,7 +1834,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Type the amount in cents: 125¢ is 1 dollar and 25 cents.',
     ],
     variables: [
-      { ...whole('P', 'P', 'Price', 0, 1000), unit: '¢' },
+      { ...whole('P', 'P', 'Price', 1, 1000), unit: '¢' },
       { ...whole('H', 'H', 'Money you have', 0, 1000), unit: '¢' },
       { ...whole('M', 'M', 'Still needed', 0, 1000), unit: '¢' },
     ],
@@ -1834,19 +1854,19 @@ export const MATH_2_MODULES: ModuleDef[] = [
           how: 'Count up from the money you have to the price.',
           work: (v: Values) => countUp(v.H!, v.P!, '¢'),
           written: false,
-          note: (v: Values) => `(${dollars(v.M!)})`,
+          note: (v: Values) => dollarWords(v.M!),
         },
         H: {
           expr: '{P} − {M}',
           how: 'Take the money you still need away from the price.',
           work: (v: Values) => subtractStrategy(v.P!, v.M!, '¢'),
-          note: (v: Values) => `(${dollars(v.H!)})`,
+          note: (v: Values) => dollarWords(v.H!),
         },
         P: {
           expr: '{H} + {M}',
           how: 'Add the money you have and the money you still need.',
           work: (v: Values) => addStrategy(v.H!, v.M!, '¢'),
-          note: (v: Values) => `(${dollars(v.P!)})`,
+          note: (v: Values) => dollarWords(v.P!),
         },
       },
     },
@@ -1972,11 +1992,11 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Add the bars to find the total.',
     ],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 10),
-      whole('b', 'b', 'Basketball', 0, 10),
-      whole('c', 'c', 'Baseball', 0, 10),
-      whole('e', 'e', 'Tennis', 0, 10),
-      whole('n', 'n', 'Total', 0, 40),
+      whole('a', 'a', 'Soccer', 0, 20),
+      whole('b', 'b', 'Basketball', 0, 20),
+      whole('c', 'c', 'Baseball', 0, 20),
+      whole('e', 'e', 'Tennis', 0, 20),
+      whole('n', 'n', 'Total', 0, 80),
     ],
     relations: [
       {
@@ -2045,9 +2065,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
     use: 'Use this for “how many more chose soccer and tennis than baseball?”',
     assumptions: ['First put the two bars together.', 'Then compare with the third bar.'],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 10),
-      whole('e', 'e', 'Tennis', 0, 10),
-      whole('c', 'c', 'Baseball', 0, 10),
+      whole('a', 'a', 'Soccer', 0, 20),
+      whole('e', 'e', 'Tennis', 0, 20),
+      whole('c', 'c', 'Baseball', 0, 20),
       { ...whole('t', 't', 'Soccer and tennis', 0, 20), derived: true },
       whole('d', 'd', 'How many more', 0, 20),
     ],
@@ -2198,9 +2218,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'To compare, count up from the shorter bar to the taller bar.',
     ],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 10),
-      whole('b', 'b', 'Basketball', 0, 10),
-      whole('d', 'd', 'How many more', 0, 10),
+      whole('a', 'a', 'Soccer', 0, 20),
+      whole('b', 'b', 'Basketball', 0, 20),
+      whole('d', 'd', 'How many more', 0, 20),
     ],
     relations: [cmpBars.relation],
     steps: { ...cmpBars.steps },
@@ -2213,7 +2233,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
         { var: 'b', editable: true },
       ],
       min: 0,
-      max: 10,
+      max: 20,
       scale: 1,
     },
   },

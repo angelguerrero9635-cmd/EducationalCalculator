@@ -774,7 +774,8 @@ function Position({ where, c }: { where: NonNullable<Scene['position']>; c: Pale
                 ? { x: box.x + box.w + r + 14, y: box.y + box.h / 2 }
                 : where === 'in front of'
                   ? { x: w / 2 - 20, y: box.y + box.h - 6 }
-                  : { x: w / 2 + 24, y: box.y + 4 };
+                  : // Behind: peeking over the box's top edge, so the ball still shows.
+                    { x: w / 2 + 24, y: box.y - 12 };
         const ballNode = (
           <Circle
             cx={ball.x}

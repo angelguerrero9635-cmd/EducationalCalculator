@@ -6,7 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep, Caption } from './common';
+import { Canvas, ChartText, DragHandle, useFrozen, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'fractionLine' }>;
@@ -133,9 +133,14 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
           Math.max(1, Math.round(rep.shown(spec.second.denominator))),
       )
     : 0;
-  const W = Math.max(spec.wholes, Math.ceil(raw / b), second);
-  const a = raw;
   const known = rep.known(spec.numerator) && rep.known(spec.denominator);
+  // A "?" denominator draws no parts: the line keeps its usual wholes, not raw ÷ 1.
+  // The number of wholes holds still while the point is dragged (the line doesn't rescale
+  // under the finger).
+  const fit = useFrozen(Math.max(spec.wholes, known ? Math.ceil(raw / b) : 0, second));
+  const W = fit.value;
+  const scale = useRef(1);
+  const a = raw;
   const wholes = Math.floor(a / b);
   const left = a - wholes * b;
   // Where each run of jumps ends: the addends' tops in turn, or every `each` jumps for copies.
@@ -171,7 +176,7 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const step = unit / b;
           const lift = Math.min(h * 0.38, Math.max(10, step * 0.55));
           // Label every mark when there's room; otherwise only whole numbers.
-          const labelAll = step >= 30;
+          const labelAll = known && step >= 30;
           return (
             <>
               <Svg width={w} height={h}>
@@ -310,18 +315,27 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   x={px(a / b)}
                   y={y}
                   label={rep.variable(dragVar).name}
-                  onStart={() => (start.current = a)}
+                  onStart={() => {
+                    start.current = a;
+                    scale.current = step;
+                    fit.freeze();
+                  }}
+                  onEnd={fit.release}
                   onMove={(dx) =>
-                    calc.set({
-                      ...rep.pin([
-                        spec.denominator,
-                        ...(spec.parts ?? []).filter((id) => id !== dragVar),
-                      ]),
-                      [dragVar]: rep.snapTo(
-                        dragVar,
-                        Math.min(W * b, Math.max(0, start.current + dx / step)) - dragOthers,
-                      ),
-                    })
+                    calc.set(
+                      {
+                        ...rep.pin([
+                          spec.denominator,
+                          ...(spec.parts ?? []).filter((id) => id !== dragVar),
+                        ]),
+                        [dragVar]: rep.snapTo(
+                          dragVar,
+                          Math.min(W * b, Math.max(0, start.current + dx / scale.current)) -
+                            dragOthers,
+                        ),
+                      },
+                      rep.slide(dragVar),
+                    )
                   }
                 />
               ) : null}

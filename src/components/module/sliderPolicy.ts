@@ -21,7 +21,14 @@ const SLIDER_KINDS = new Set<Representation['kind']>([
 
 /** Whether this module's page shows a slider row under (or beside) its picture. */
 export const showsSliders = (m: ModuleDef): boolean =>
-  m.sliders ?? SLIDER_KINDS.has(m.representation.kind);
+  m.sliders ?? (SLIDER_KINDS.has(m.representation.kind) || namesSliders(m));
+
+/** A picture that lists its own slider values (angles of a turn in equal parts) has no handle
+ * for them, so it always shows its sliders. */
+const namesSliders = (m: ModuleDef) => {
+  const r = m.representation as { sliders?: unknown };
+  return Array.isArray(r.sliders) && r.sliders.length > 0;
+};
 
 /** For the docs: the reason a module shows or hides its sliders. */
 export const sliderReason = (m: ModuleDef): string =>
@@ -29,4 +36,6 @@ export const sliderReason = (m: ModuleDef): string =>
     ? `set on the module (${m.sliders ? 'shown' : 'hidden'})`
     : SLIDER_KINDS.has(m.representation.kind)
       ? 'sweeping the value shows the picture change; no touch control of its own'
-      : 'the picture has its own handles or taps, or the inputs are enough';
+      : namesSliders(m)
+        ? 'the picture names its slider values and has no handle for them'
+        : 'the picture has its own handles or taps, or the inputs are enough';

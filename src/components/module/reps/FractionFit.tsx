@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import Svg, { G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -16,9 +17,9 @@ export function mixed(num: number, den: number): string {
   if (den === 0) return '?';
   const g = gcd(Math.abs(num), den) || 1;
   const [p, q] = [num / g, den / g];
-  if (q === 1) return String(p);
+  if (q === 1) return formatNumber(p);
   const whole = Math.floor(p / q);
-  return whole ? `${whole} ${p - whole * q}/${q}` : `${p}/${q}`;
+  return whole ? `${formatNumber(whole)} ${p - whole * q}/${q}` : `${p}/${q}`;
 }
 
 /**
@@ -107,7 +108,13 @@ export function FractionFit({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const barY = h * 0.42;
           const barH = h * 0.2;
           const ticks = Array.from({ length: wholes * b + 1 }, (_, i) => i / b);
-          const groups = divisor > 0 ? Math.min(40, Math.ceil(dividend / divisor - 1e-9)) : 0;
+          const count = divisor > 0 ? Math.ceil(dividend / divisor - 1e-9) : 0;
+          // Groups too narrow to draw one by one (30 ÷ 1/12) are one shaded bar, labelled
+          // with how many groups it holds.
+          const many = count > 40 || X(divisor) - X(0) < 8;
+          const groups = many ? 0 : count;
+          // Whole-number labels far enough apart to read: every 1, 2, 5, 10 … wholes.
+          const every = [1, 2, 5, 10, 20, 50, 100].find((k) => X(k) - X(0) >= 16) ?? 100;
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
               <Rect
@@ -130,18 +137,44 @@ export function FractionFit({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   strokeWidth={Math.abs(t - Math.round(t)) < 1e-9 ? chart.stroke : 1}
                 />
               ))}
-              {Array.from({ length: wholes + 1 }, (_, i) => (
-                <ChartText
-                  key={`w${i}`}
-                  x={X(i)}
-                  y={barY + barH + 26}
-                  fontSize={chart.tiny}
-                  fill={c.chartMuted}
-                  textAnchor="middle"
-                >
-                  {String(i)}
-                </ChartText>
-              ))}
+              {Array.from({ length: wholes + 1 }, (_, i) => i)
+                .filter((i) => i % every === 0)
+                .map((i) => (
+                  <ChartText
+                    key={`w${i}`}
+                    x={X(i)}
+                    y={barY + barH + 26}
+                    fontSize={chart.tiny}
+                    fill={c.chartMuted}
+                    textAnchor="middle"
+                  >
+                    {String(i)}
+                  </ChartText>
+                ))}
+              {many ? (
+                <>
+                  <Rect
+                    x={X(0)}
+                    y={barY}
+                    width={X(dividend) - X(0)}
+                    height={barH}
+                    fill={c.chartHighlight}
+                    fillOpacity={0.3}
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.strokeLight}
+                  />
+                  <ChartText
+                    x={(X(0) + X(dividend)) / 2}
+                    y={barY - 10}
+                    fontSize={chart.small}
+                    fontWeight="700"
+                    fill={c.chartHighlight}
+                    textAnchor="middle"
+                  >
+                    {`${mixed(qn, qd)} groups, too small to draw one by one`}
+                  </ChartText>
+                </>
+              ) : null}
               {Array.from({ length: groups }, (_, i) => {
                 const from = i * divisor;
                 const to = Math.min(dividend, (i + 1) * divisor);

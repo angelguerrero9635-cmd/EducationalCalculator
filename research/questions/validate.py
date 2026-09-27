@@ -78,6 +78,15 @@ def validate(recs, skills, errors):
             errors.append(f"{w}: unknown skillId {sid}")
         elif sid[0] != r.get("subject", "?")[0]:
             errors.append(f"{w}: skillId {sid} is not a {r.get('subject')} skill")
+        also = r.get("alsoSkills", [])
+        if not (isinstance(also, list) and all(isinstance(a, str) for a in also)):
+            errors.append(f"{w}: alsoSkills must be a list of skill ids")
+        else:
+            for a in also:
+                if a not in skills:
+                    errors.append(f"{w}: unknown alsoSkills id {a}")
+                elif a == sid:
+                    errors.append(f"{w}: alsoSkills repeats skillId {a}")
         if r.get("type") not in TYPES:
             errors.append(f"{w}: bad type {r.get('type')!r}")
         if not isinstance(r.get("question"), str) or not r["question"].strip():
@@ -114,12 +123,17 @@ def main():
     by_source = collections.Counter(source_label(r) for r in recs)
     by_file = collections.Counter((r["subject"], r["grade"]) for r in recs)
     by_skill = collections.Counter(r["skillId"] for r in recs)
+    # A question also counts for the lessons that teach its idea earlier (science: tested in
+    # Grades 4 and 8, learned in every grade).
+    by_lesson = collections.Counter(
+        s for r in recs for s in [r["skillId"], *r.get("alsoSkills", [])]
+    )
     print(f"records: {len(recs)}  errors: {len(errors)}")
     print("by source:", dict(by_source))
     for subject in ("math", "science"):
         print(subject, {g: by_file.get((subject, g), 0) for g in GRADES})
-    covered = [s for s in skills if by_skill.get(s)]
-    print(f"K-8 skills: {len(skills)}  with >=1 question: {len(covered)}  null skillId: {by_skill.get(None, 0)}")
+    covered = [s for s in skills if by_lesson.get(s)]
+    print(f"K-8 skills: {len(skills)}  with >=1 question (filed or also): {len(covered)}  null skillId: {by_skill.get(None, 0)}")
     if "--markdown" in sys.argv:
         print("\n## Totals by source\n\n| Source | Questions |\n| --- | ---: |")
         for k, v in by_source.most_common():
@@ -130,12 +144,12 @@ def main():
         for subject in ("math", "science"):
             row = [by_file.get((subject, g), 0) for g in GRADES]
             print(f"| {subject} | " + " | ".join(map(str, row)) + f" | {sum(row)} |")
-        print("\n## Questions per skill (every K–8 skill in taxonomy.ts)\n\n| Skill id | Title | Questions |\n| --- | --- | ---: |")
+        print("\n## Questions per skill (every K–8 skill in taxonomy.ts)\n\nFiled: the question's `skillId`. Also: questions filed elsewhere that list this skill in\n`alsoSkills` (an idea tested later that this lesson teaches).\n\n| Skill id | Title | Filed | Also |\n| --- | --- | ---: | ---: |")
         for s, t in skills.items():
-            print(f"| `{s}` | {t} | {by_skill.get(s, 0)} |")
+            print(f"| `{s}` | {t} | {by_skill.get(s, 0)} | {by_lesson.get(s, 0) - by_skill.get(s, 0)} |")
         print("\n## Skills with no questions\n")
         for s, t in skills.items():
-            if not by_skill.get(s):
+            if not by_lesson.get(s):
                 print(f"- `{s}` — {t}")
         kinds = collections.Counter(r["picture"]["kind"] for r in recs if r["picture"]["involved"])
         print("\n## Picture kinds used by the questions\n\n| Kind | Questions |\n| --- | ---: |")

@@ -2,11 +2,15 @@ import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
+
+/** "1 cube", "12 cubes". */
+const cubes = (n: number) => (n === 1 ? 'cube' : 'cubes');
 
 type Spec = Extract<Representation, { kind: 'unitCubes' }>;
 
@@ -148,20 +152,23 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {k > 1 && known
-          ? `${rl} × ${rw} × ${rh} = ${rl * rw * rh} cubes with edge 1/${k}. ${k ** 3} of them make one unit cube, so the volume is ${rl * rw * rh} ÷ ${k ** 3} = ${rep.value(spec.volume, false)} cubic units.`
+          ? `${rl} × ${rw} × ${rh} = ${formatNumber(rl * rw * rh)} ${cubes(rl * rw * rh)} with edge 1/${k}. ${k ** 3} of them make one unit cube, so the volume is ${formatNumber(rl * rw * rh)} ÷ ${k ** 3} = ${rep.value(spec.volume, false)} cubic ${rep.val(spec.volume) === 1 ? 'unit' : 'units'}.`
           : two && known && known2
-            ? `First box: ${rl} × ${rw} × ${rh} = ${rep.value(spec.volume, false)} cubes. Second box: ${real(two.length)} × ${real(two.width)} × ${real(two.height)} = ${rep.value(two.volume, false)} cubes. Together: ${rep.value(spec.volume, false)} + ${rep.value(two.volume, false)} = ${spec.total ? rep.value(spec.total, false) : '?'} cubes.`
+            ? `First box: ${rl} × ${rw} × ${rh} = ${rep.value(spec.volume, false)} ${cubes(rep.val(spec.volume))}. Second box: ${real(two.length)} × ${real(two.width)} × ${real(two.height)} = ${rep.value(two.volume, false)} ${cubes(rep.val(two.volume))}. Together: ${rep.value(spec.volume, false)} + ${rep.value(two.volume, false)} = ${spec.total ? rep.value(spec.total, false) : '?'} cubes.`
             : known
-              ? `One layer is ${rl} × ${rw} = ${layer} cubes. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${layer} × ${rh} = ${rep.value(spec.volume, false)} cubes.`
+              ? `The shaded bottom layer is ${rl} × ${rw} = ${formatNumber(layer)} ${cubes(layer)}. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${formatNumber(layer)} × ${rh} = ${rep.value(spec.volume, false)} ${cubes(rep.val(spec.volume))}.`
               : 'Type the length, width and height to fill the box.'}
       </Caption>
       <Steppers
         calc={calc}
+        // A value both boxes share ("Width of both") gets one slider, not two.
         items={[
-          spec.length,
-          spec.width,
-          spec.height,
-          ...(two ? [two.length, two.width, two.height] : []),
+          ...new Set([
+            spec.length,
+            spec.width,
+            spec.height,
+            ...(two ? [two.length, two.width, two.height] : []),
+          ]),
         ].map((id, _, all) => ({
           var: id,
           steps: [1],

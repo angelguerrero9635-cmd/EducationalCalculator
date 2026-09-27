@@ -65,19 +65,22 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const cv = rep.value(spec.columns, false);
   const caption = !known
     ? rep.early
-      ? `${rv} rows of ${cv}: ${rep.value(spec.total, false)}`
+      ? `${rv} ${rv === '1' ? 'row' : 'rows'} of ${cv}: ${rep.value(spec.total, false)}`
       : rep.words
-        ? `${rv} rows of ${cv}: ${rv} × ${cv} = ${rep.value(spec.total, false)}`
-        : `${sym(spec.rows)} = ${rv} rows of ${sym(spec.columns)} = ${cv}: ${rv} × ${cv} = ${rep.label(spec.total, false)}`
+        ? `${rv} ${rv === '1' ? 'row' : 'rows'} of ${cv}: ${rv} × ${cv} = ${rep.value(spec.total, false)}`
+        : `${sym(spec.rows)} = ${rv} ${rv === '1' ? 'row' : 'rows'} of ${sym(spec.columns)} = ${cv}: ${rv} × ${cv} = ${rep.label(spec.total, false)}`
     : rep.early
-      ? `${rows} rows of ${cols}: ${sums || '0'} = ${rep.value(spec.total, false)}`
+      ? // One row has nothing to add up: "1 row of 5: 5".
+        rows === 1
+        ? `1 row of ${cols}: ${rep.value(spec.total, false)}`
+        : `${rows} rows of ${cols}: ${sums || '0'} = ${rep.value(spec.total, false)}`
       : split
         ? `${rows} × ${cols} = ${rows} × ${firstCols} + ${rows} × ${cols - firstCols} = ${rows * firstCols} + ${rows * (cols - firstCols)} = ${rows * cols}`
         : spec.turned
-          ? `${rows} rows of ${cols} = ${cols} rows of ${rows}: ${rows} × ${cols} = ${cols} × ${rows} = ${rows * cols}`
+          ? `${rows} ${rows === 1 ? 'row' : 'rows'} of ${cols} = ${cols} rows of ${rows}: ${rows} × ${cols} = ${cols} × ${rows} = ${rows * cols}`
           : rep.words
-            ? `${rows} rows of ${cols}: ${rows} × ${cols} = ${rep.value(spec.total, false)}`
-            : `${sym(spec.rows)} = ${rows} rows of ${sym(spec.columns)} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`;
+            ? `${rows} ${rows === 1 ? 'row' : 'rows'} of ${cols}: ${rows} × ${cols} = ${rep.value(spec.total, false)}`
+            : `${sym(spec.rows)} = ${rows} ${rows === 1 ? 'row' : 'rows'} of ${sym(spec.columns)} = ${cols}: ${sums || '0'} = ${rep.label(spec.total, false)}`;
 
   /**
    * Cell size from the width; the height fits the rows drawn (at least 6, and one spare row to

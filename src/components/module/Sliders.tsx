@@ -115,7 +115,13 @@ function Slider({
   const known = rep.known(item.var);
   const shown = known ? rep.shown(item.var) : (item.from ?? lo);
   const value = rep.value(item.var);
-  const ratio = hi > lo ? Math.min(1, Math.max(0, (shown - lo) / (hi - lo))) : 0;
+  // A held slider (only one value fits) still shows where that value sits in the full range.
+  const ratio =
+    hi > lo
+      ? Math.min(1, Math.max(0, (shown - lo) / (hi - lo)))
+      : full[1] > full[0]
+        ? Math.min(1, Math.max(0, (shown - full[0]) / (full[1] - full[0])))
+        : 0;
   // Only one value fits with the others held still: the slider is shown held, not movable.
   const held = known && !(hi > lo);
   const track = wide ? SHORT_TRACK : TRACK;

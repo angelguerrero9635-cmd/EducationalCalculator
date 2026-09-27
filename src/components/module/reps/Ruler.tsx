@@ -194,10 +194,13 @@ export function Ruler({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }}
                   onEnd={fit.release}
                   onMove={(dx) =>
-                    calc.set({
-                      ...rep.pin(spec.lengths.filter((x) => x !== id)),
-                      [id]: rep.snapTo(id, (start.current + dx / scale) * per * rep.factor(id)),
-                    })
+                    calc.set(
+                      {
+                        ...rep.pin(spec.lengths.filter((x) => x !== id)),
+                        [id]: rep.snapTo(id, (start.current + dx / scale) * per * rep.factor(id)),
+                      },
+                      rep.slide(id),
+                    )
                   }
                 />
               ))}

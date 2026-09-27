@@ -151,19 +151,24 @@ function outOfReach(system: System, values: Values): boolean {
     if (!aff) return false;
     let lo = aff.c0;
     let hi = aff.c0;
+    // Tolerance scaled by the size of the terms, not of the sum (which is near 0 exactly when
+    // it matters): with values in miles a true 0 comes out as 0.00003.
+    let size = Math.abs(aff.c0);
     for (const id of rel.vars) {
       const k = aff.coef.get(id)!;
       if (id in values) {
         lo += k * values[id]!;
         hi += k * values[id]!;
+        size += Math.abs(k * values[id]!);
         continue;
       }
       const v = byId.get(id);
       if (v?.min === undefined || v.max === undefined) return false;
       lo += Math.min(k * v.min, k * v.max);
       hi += Math.max(k * v.min, k * v.max);
+      size += Math.max(Math.abs(k * v.min), Math.abs(k * v.max));
     }
-    const tol = 1e-9 * (1 + Math.max(Math.abs(lo), Math.abs(hi)));
+    const tol = 1e-9 * (1 + size);
     return lo > tol || hi < -tol;
   });
 }
@@ -342,7 +347,13 @@ function narrow(system: System, vals: Values, bounds: Bounds): boolean {
       for (const id of open) mid[id] = (bounds.get(id)!.lo + bounds.get(id)!.hi) / 2;
       const r0 = relation.residual(mid);
       if (!Number.isFinite(r0)) continue;
-      const a = open.map((id) => relation.residual({ ...mid, [id]: mid[id]! + 1 }) - r0);
+      // Slopes measured over one step of each value's own grid (a mile is 160,934.4 cm): a
+      // step of 1 in large units loses the slope to rounding, and the error then grows by the
+      // size of the value when the constant term is worked out.
+      const a = open.map((id) => {
+        const h = bounds.get(id)!.f || 1;
+        return (relation.residual({ ...mid, [id]: mid[id]! + h }) - r0) / h;
+      });
       // Check the linear form at every corner of the ranges and at scattered inside points
       // (a difference |a − b| or a digit rule fails this and is left to the search).
       const corners = open.length <= 8 ? 2 ** open.length : 0;
@@ -391,8 +402,10 @@ function narrow(system: System, vals: Values, bounds: Bounds): boolean {
           number,
         ];
         const b = bounds.get(open[i]!)!;
-        const lo = Math.max(b.lo, Math.ceil(x1 / b.f - 1e-9) * b.f);
-        const hi = Math.min(b.hi, Math.floor(x2 / b.f + 1e-9) * b.f);
+        // Values are whole steps apart, so a millionth of a step absorbs rounding without ever
+        // admitting a value that doesn't fit.
+        const lo = Math.max(b.lo, Math.ceil(x1 / b.f - 1e-6) * b.f);
+        const hi = Math.min(b.hi, Math.floor(x2 / b.f + 1e-6) * b.f);
         if (lo > hi) return false;
         if (lo !== b.lo || hi !== b.hi) {
           bounds.set(open[i]!, { lo, hi, f: b.f });

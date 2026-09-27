@@ -70,7 +70,7 @@ describeOrSkip('review dump', () => {
         `values: ${m.variables
           .map(
             (v) =>
-              `${v.id} "${v.name}" (${v.symbol}) ${v.min ?? '−∞'}..${v.max ?? '∞'}${v.unit ? ` ${v.unit}` : ''}${v.integer ? ' whole' : ''}`,
+              `${v.id} "${v.name}" (${v.symbol}) ${v.min ?? '−∞'}..${v.max ?? '∞'}${v.unit ? ` ${v.unit}` : ''}${v.integer ? ' whole' : ''}${v.allowed ? ` allowed [${v.allowed.join(', ')}]` : ''}${v.multipleOf ? ` multiple of ${v.multipleOf}` : ''}${v.derived ? ' derived' : ''}`,
           )
           .join('; ')}`,
       );
@@ -97,17 +97,53 @@ describeOrSkip('review dump', () => {
         lines.push(`-- ${label}: ${ids.join(', ')}`);
         lines.push(...walkthroughText(buildSteps(m, result)));
       }
-      // Two boundary samples: the opening values with the first one at its smallest and at
-      // its largest allowed value, so the reviewer sees the edges without a browser.
-      const first = m.variables.find((v) => v.id === m.startWith[0]);
-      for (const edge of ['min', 'max'] as const) {
-        const x = first?.[edge];
-        if (first === undefined || x === undefined || x === m.example[first.id]) continue;
+      // Boundary samples, so the reviewer sees the edges without a browser. By default the
+      // first opening value at its smallest and largest; REVIEW_EDGES=all does every opening
+      // value at each end (the others at the example), then all of them at their smallest and
+      // all at their largest together.
+      const opening = m.startWith
+        .map((id) => m.variables.find((v) => v.id === id))
+        .filter((v): v is NonNullable<typeof v> => v !== undefined);
+      const ends = (v: (typeof opening)[number], edge: 'min' | 'max') =>
+        v.allowed ? (edge === 'min' ? v.allowed[0] : v.allowed[v.allowed.length - 1]) : v[edge];
+      const edgeCases: [string, Record<string, number>][] = [];
+      for (const v of env.REVIEW_EDGES === 'all' ? opening : opening.slice(0, 1)) {
+        for (const edge of ['min', 'max'] as const) {
+          const x = ends(v, edge);
+          if (x === undefined || x === m.example[v.id]) continue;
+          edgeCases.push([`${v.id} = ${x}`, { [v.id]: x }]);
+        }
+      }
+      if (env.REVIEW_EDGES === 'all' && opening.length > 1) {
+        for (const edge of ['min', 'max'] as const) {
+          const set = Object.fromEntries(
+            opening.flatMap((v) => {
+              const x = ends(v, edge);
+              return x === undefined ? [] : [[v.id, x]];
+            }),
+          );
+          if (Object.keys(set).length > 1) {
+            edgeCases.push([
+              `all at ${edge} (${Object.entries(set)
+                .map(([k, x]) => `${k} = ${x}`)
+                .join(', ')})`,
+              set,
+            ]);
+          }
+        }
+      }
+      for (const [label, set] of edgeCases) {
+        // The edged values go last, as a student types them: a value that doesn't fit is then
+        // the one rejected, with the reason the page shows (not an older one dropped silently).
+        const order = [
+          ...m.startWith.filter((id) => !(id in set)),
+          ...m.startWith.filter((id) => id in set),
+        ];
         const result = solve(
           m,
-          m.startWith.map((id) => ({ id, value: id === first.id ? x : m.example[id]! })),
+          order.map((id) => ({ id, value: set[id] ?? m.example[id]! })),
         );
-        lines.push(`-- edge ${first.id} = ${x}: ${m.startWith.join(', ')}`);
+        lines.push(`-- edge ${label}: ${order.join(', ')}`);
         lines.push(
           ...(result.rejected
             ? [`  rejected: ${result.rejected.reason}`]

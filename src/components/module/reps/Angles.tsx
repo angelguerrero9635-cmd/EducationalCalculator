@@ -96,7 +96,9 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
               </ChartText>
             );
           };
-          const [hx, hy] = toXY(a, r, cx, cy);
+          // The first ray's handle sits inside the ray, so it never hides under the outer ray's
+          // handle when the second angle is small.
+          const [hx, hy] = toXY(a, r * 0.62, cx, cy);
           const [wx, wy] = toXY(whole, r, cx, cy);
           const angleAt = (
             s: { cx: number; cy: number; r: number },
@@ -117,7 +119,7 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
               <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
                 {/* The first angle's wedge, then the second's, on the same vertex. */}
                 <Path
-                  d={`${arc(0, a, r * 0.55)} L ${cx} ${cy} Z`}
+                  d={`${arc(0, Math.min(a, 359.9), r * 0.55)} L ${cx} ${cy} Z`}
                   fill={c.chartHighlight}
                   opacity={0.25}
                 />
@@ -135,7 +137,7 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Circle cx={cx} cy={cy} r={4} fill={c.chartInk} />
                 {a > 8 ? label(0, a, r * 0.38, `${rep.value(first)}`, 'la') : null}
                 {b > 8 ? label(a, whole, r * 0.38, `${rep.value(second)}`, 'lb') : null}
-                {whole > 0 ? label(wholeAt, wholeAt, r * 0.86, wholeText, 'lw') : null}
+                {whole > 0 && b > 0 ? label(wholeAt, wholeAt, r * 0.86, wholeText, 'lw') : null}
               </Svg>
               {draggable ? (
                 <DragHandle
@@ -148,10 +150,13 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }}
                   onMove={(dx, dy) => {
                     const next = angleAt(start.current, start.current.a, dx, dy);
-                    calc.set({
-                      ...rep.pin([second]),
-                      [first]: rep.snapTo(first, next * rep.factor(first)),
-                    });
+                    calc.set(
+                      {
+                        ...rep.pin([second]),
+                        [first]: rep.snapTo(first, next * rep.factor(first)),
+                      },
+                      rep.slide(first),
+                    );
                   }}
                 />
               ) : null}
@@ -169,10 +174,13 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     const next = angleAt(startW.current, a + startW.current.b, dx, dy);
                     // The whole ray's angle, less the first angle, is the second (never below 0).
                     const deg = (((next - a) % 360) + 360) % 360;
-                    calc.set({
-                      ...rep.pin([first]),
-                      [second]: rep.snapTo(second, deg * rep.factor(second)),
-                    });
+                    calc.set(
+                      {
+                        ...rep.pin([first]),
+                        [second]: rep.snapTo(second, deg * rep.factor(second)),
+                      },
+                      rep.slide(second),
+                    );
                   }}
                 />
               ) : null}

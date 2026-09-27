@@ -41,10 +41,11 @@ function CutOut({
   const tall = Math.max(spec.extent / 2, b);
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(0.9, (tall * ((w - 80) / across) + 70) / w)}>
+      <Canvas aspect={(w) => Math.min(0.9, (tall * ((w - 96) / across) + 70) / w)}>
         {({ w, h }) => {
           const left = 44;
-          const unit = Math.min((w - left - 36) / across, (h - 60) / tall);
+          // Room on the right for a height label as long as "10 cm".
+          const unit = Math.min((w - left - 52) / across, (h - 60) / tall);
           const base = 16 + tall * unit;
           const top = base - b * unit;
           const cx = left + (a - cw) * unit;
@@ -157,10 +158,11 @@ function SideBySide({
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(0.9, (tall * ((w - 80) / across) + 70) / w)}>
+      <Canvas aspect={(w) => Math.min(0.9, (tall * ((w - 96) / across) + 70) / w)}>
         {({ w, h }) => {
           const left = 44;
-          const unit = Math.min((w - left - 36) / across, (h - 60) / tall);
+          // Room on the right for a height label as long as "10 cm".
+          const unit = Math.min((w - left - 52) / across, (h - 60) / tall);
           const base = 16 + tall * unit;
           const part = (x: number, cols: number, rows: number, fill: string, key: string) => [
             <Rect

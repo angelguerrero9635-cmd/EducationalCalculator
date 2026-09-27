@@ -15,14 +15,15 @@ type Spec = Extract<Representation, { kind: 'fieldOfView' }>;
 /**
  * The circle seen through a microscope eyepiece, its width labelled, with `across` cells laid
  * end to end along the middle; one cell is outlined with its length. Past 30 cells the row is
- * drawn as 30 and the count is written.
+ * drawn at true size up to 100 (thin slivers past that), so one cell is always 1/n of the field.
  */
 export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const paint = usePaintIds('light', 'cell');
   const n = Math.max(1, Math.round(rep.shown(spec.across)));
-  const drawn = Math.min(n, 30);
+  // Cells are drawn at their true size (the field ÷ n) up to 100 of them.
+  const drawn = Math.min(n, 100);
   const known = rep.known(spec.field) && rep.known(spec.across);
   const unit = rep.unit(spec.field) ?? '';
 
@@ -33,14 +34,14 @@ export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const r = Math.min(w, h) / 2 - 26;
           const cx = w / 2;
           const cy = h / 2 + 6;
-          const cell = (2 * r) / drawn;
+          const cell = (2 * r) / n;
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
               <Defs>
                 {/* Lamp light through the slide: bright in the middle, dimmer at the edge. */}
                 <RadialGradient id={paint.light} cx="0.5" cy="0.5" r="0.5">
-                  <Stop offset="0" stopColor={c.paper} />
-                  <Stop offset="0.85" stopColor={c.paper} />
+                  <Stop offset="0" stopColor={c.slideLight} />
+                  <Stop offset="0.85" stopColor={c.slideLight} />
                   <Stop offset="1" stopColor={c.shade} stopOpacity={0.3} />
                 </RadialGradient>
                 <RadialGradient id={paint.cell} cx="0.45" cy="0.4" r="0.6">
@@ -92,7 +93,8 @@ export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {`${rep.value(spec.field)} across`}
               </ChartText>
               <ChartText
-                x={cx - r + cell / 2}
+                // Clear of the dark rim when a cell is narrow.
+                x={cell > 60 ? cx - r + cell / 2 : cx - r + 14}
                 y={cy + Math.min(cell * 0.35, 15) + 18}
                 fontSize={chart.small}
                 fontWeight="700"
@@ -109,7 +111,7 @@ export function FieldOfView({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `${n} cells fill ${formatNumber(rep.shown(spec.field))}${unit ? ` ${unit}` : ''} end to end${n > 30 ? ' (30 drawn)' : ''}.`
+          ? `${n} ${n === 1 ? 'cell fills' : 'cells fill'} ${formatNumber(rep.shown(spec.field))}${unit ? ` ${unit}` : ''} end to end${n > 100 ? ' (100 drawn)' : ''}.`
           : 'Type the field of view and the cells across.'}
       </Caption>
       <Steppers calc={calc} items={[{ var: spec.across, steps: [1], pin: [spec.field] }]} />

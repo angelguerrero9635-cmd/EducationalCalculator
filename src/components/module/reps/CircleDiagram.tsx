@@ -104,7 +104,10 @@ export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) 
                   handleStart.current.x + dx - cx,
                   handleStart.current.y + dy - cy,
                 );
-                calc.set({ [spec.radius]: rep.snapTo(spec.radius, d / scale) });
+                calc.set(
+                  { [spec.radius]: rep.snapTo(spec.radius, d / scale) },
+                  rep.slide(spec.radius),
+                );
               }}
             />
           </>

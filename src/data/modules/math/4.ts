@@ -7,7 +7,7 @@ import { formatNumber, numberWords } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { apart, div, times, whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
-import { autoWritten, longDivision, partialQuotients } from '../written';
+import { autoWritten, columnAdd, columnSubtract, longDivision, partialQuotients } from '../written';
 import { addStrategy, divideWork, placeCompareLines, subtractStrategy, timesWork } from '../work';
 
 /** The factors of n in order: 24 → [1, 2, 3, 4, 6, 8, 12, 24]. */
@@ -387,7 +387,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'r = v ÷ 10': {
           r: {
             expr: '{v} ÷ 10',
-            how: 'One place to the right is worth ten times less: divide the value by 10.',
+            how: 'A place to the right is worth 1/10 as much: divide the value by 10.',
             work: (v) => [`${fmt(v.v!)} ÷ 10 = ${fmt(v.v! / 10)}`],
           },
           v: {
@@ -659,7 +659,11 @@ export const MATH_4_MODULES: ModuleDef[] = [
     ],
     steps: {
       'c = a + b': {
-        c: { expr: '{a} + {b}', how: 'Add in columns from the ones. Regroup past 9.' },
+        c: {
+          expr: '{a} + {b}',
+          how: 'Add in columns from the ones. Regroup past 9.',
+          written: (v: Values) => columnAdd([v.a!, v.b!]),
+        },
         a: { expr: '{c} − {b}', how: 'Take the second number away from the sum, in columns.' },
         b: { expr: '{c} − {a}', how: 'Take the first number away from the sum, in columns.' },
       },
@@ -697,7 +701,11 @@ export const MATH_4_MODULES: ModuleDef[] = [
     ],
     steps: {
       'a − b = c': {
-        c: { expr: '{a} − {b}', how: 'Subtract in columns from the ones. Regroup when needed.' },
+        c: {
+          expr: '{a} − {b}',
+          how: 'Subtract in columns from the ones. Regroup when needed.',
+          written: (v: Values) => columnSubtract(v.a!, v.b!),
+        },
         a: { expr: '{c} + {b}', how: 'Add back what was taken away, in columns.' },
         b: { expr: '{a} − {c}', how: 'Take the difference away from the start, in columns.' },
       },
@@ -1007,10 +1015,10 @@ export const MATH_4_MODULES: ModuleDef[] = [
           work: (v) => {
             const q = Math.floor(v.n! / v.d!);
             return v.n! % v.d! === 0
-              ? [`${q} × ${v.d} = ${v.n}`]
+              ? [`${q} × ${v.d} = ${fmt(v.n!)}`]
               : [
-                  `${q} × ${v.d} = ${q * v.d!}`,
-                  `${q + 1} × ${v.d} = ${(q + 1) * v.d!} is too many`,
+                  `${q} × ${v.d} = ${fmt(q * v.d!)}`,
+                  `${q + 1} × ${v.d} = ${fmt((q + 1) * v.d!)} is too many`,
                 ];
           },
         },
@@ -1255,8 +1263,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
       { ...whole('b', 'b', 'Denominator', 2, 12), allowed: DENOMS_4 },
       whole('a', 'a', 'First numerator', 0, 12),
       whole('c', 'c', 'Second numerator', 0, 12),
-      whole('s', 's', 'Numerator of the sum', 0, 20),
-      { ...whole('w', 'w', 'Wholes in the sum', 0, 2), derived: true },
+      whole('s', 's', 'Numerator of the sum', 0, 24),
+      { ...whole('w', 'w', 'Wholes in the sum', 0, 12), derived: true },
       { ...whole('r', 'r', 'Numerator of the fraction part', 0, 11), derived: true },
     ],
     relations: [
@@ -1538,12 +1546,12 @@ export const MATH_4_MODULES: ModuleDef[] = [
       return u.length ? Math.max(...u) - Math.min(...u) : 0;
     };
     const total = (v: Values) => xs.reduce((t, id) => t + at(id) * v[id]!, 0);
-    /** Eighths of an inch as inches: 32 → "4 inches", 12 → "1 inch and 4/8 inch", 3 → "3/8 inch". */
+    /** Eighths of an inch as inches: 32 → "4 inches", 12 → "1 4/8 inches", 3 → "3/8 inch". */
     const inches = (e: number) => {
       const w = Math.floor(e / 8);
       const r = e % 8;
       const whole = w === 1 ? '1 inch' : `${w} inches`;
-      return w === 0 ? `${r}/8 inch` : r ? `${whole} and ${r}/8 inch` : whole;
+      return w === 0 ? `${r}/8 inch` : r ? `${w} ${r}/8 inches` : whole;
     };
     return {
       id: 'm.4.add-fractions-like~line-plot',
@@ -1614,15 +1622,18 @@ export const MATH_4_MODULES: ModuleDef[] = [
           T: {
             expr: xs.map((id) => `{${id}} × ${at(id)}`).join(' + '),
             how: 'At each mark, multiply the count by the eighths. Add them all.',
-            work: (v) => [
-              ...xs
-                .filter((id) => v[id]! > 0)
-                .map((id) => `${v[id]} × ${at(id)}/8 = ${v[id]! * at(id)}/8`),
-              `${xs
-                .filter((id) => v[id]! > 0)
-                .map((id) => v[id]! * at(id))
-                .join(' + ')} = ${total(v)}, so ${total(v)}/8 inch`,
-            ],
+            work: (v) => {
+              const on = xs.filter((id) => v[id]! > 0);
+              if (!on.length) return ['No X’s yet: 0'];
+              return [
+                ...on.map((id) => `${v[id]} × ${at(id)}/8 = ${v[id]! * at(id)}/8`),
+                ...(on.length > 1
+                  ? [
+                      `${on.map((id) => v[id]! * at(id)).join(' + ')} = ${total(v)}, so ${total(v)}/8 inch`,
+                    ]
+                  : []),
+              ];
+            },
             note: (v) => `(${inches(total(v))})`,
           },
           ...Object.fromEntries(
@@ -1655,23 +1666,24 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'A whole number times a fraction is that many copies of the fraction: 5 × 2/3 is 2/3 five times.',
       'Multiply the whole number by the numerator. The denominator stays: the parts are the same size.',
       'A product past 1 can be written as wholes and parts: 10/3 = 3 wholes and 1/3.',
-      'The fraction is at most 1. Whole numbers to 10; denominators 2, 3, 4, 5, 6, 8, 10, 12.',
+      'Any fraction, even past 1 (3 × 4/3). Whole numbers to 10; denominators 2, 3, 4, 5, 6, 8, 10, 12.',
     ],
     variables: [
       whole('n', 'n', 'Whole number', 1, 10),
-      whole('a', 'a', 'Numerator', 1, 12),
+      whole('a', 'a', 'Numerator', 1, 24),
       { ...whole('b', 'b', 'Denominator', 2, 12), allowed: DENOMS_4 },
-      whole('p', 'p', 'Numerator of the product', 1, 120),
-      { ...whole('w', 'w', 'Wholes in the product', 0, 10), derived: true },
+      whole('p', 'p', 'Numerator of the product', 1, 240),
+      { ...whole('w', 'w', 'Wholes in the product', 0, 24), derived: true },
       { ...whole('r', 'r', 'Numerator of the fraction part', 0, 11), derived: true },
     ],
     relations: [
       {
-        id: 'a ≤ b',
+        // The number line holds 24 wholes.
+        id: 'p/b ≤ 24',
         constraint: true,
-        display: '{a}/{b} is at most 1',
-        vars: ['a', 'b'],
-        residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
+        display: '{p}/{b} is at most 24 wholes',
+        vars: ['p', 'b'],
+        residual: (v: Values) => (v.p! <= 24 * v.b! ? 0 : 1),
         solve: {},
       },
       {
@@ -1716,7 +1728,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     ],
     steps: {
-      'a ≤ b': {},
+      'p/b ≤ 24': {},
       'p = n × a': {
         p: {
           expr: '{n} × {a}',
@@ -1756,7 +1768,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
           work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.p} − ${v.w! * v.b!} = ${v.r}`],
           note: (v) =>
             v.w! > 0
-              ? `(${v.p}/${v.b} = ${v.w} ${v.w === 1 ? 'whole' : 'wholes'} and ${v.r}/${v.b})`
+              ? v.r === 0
+                ? `(${v.p}/${v.b} = ${v.w}: exactly ${v.w} ${v.w === 1 ? 'whole' : 'wholes'})`
+                : `(${v.p}/${v.b} = ${v.w} ${v.w === 1 ? 'whole' : 'wholes'} and ${v.r}/${v.b})`
               : '',
         },
         w: {
@@ -1965,7 +1979,17 @@ export const MATH_4_MODULES: ModuleDef[] = [
             work: (v) => [`${v.c} hundredths = 0.${String(v.c).padStart(2, '0')}`],
           },
         },
-        [gap.relation.id]: gap.steps,
+        // The answer to "which is greater?", after how far apart they are.
+        [gap.relation.id]: {
+          ...(gap.steps as Record<string, StepText>),
+          g: {
+            ...(gap.steps as Record<string, StepText>).g!,
+            note: (v: Values) => {
+              const sign = v.a! < v.c! ? '<' : v.a! > v.c! ? '>' : '=';
+              return `(${v.a} ${sign} ${v.c}, so ${v.x} ${sign} ${v.y})`;
+            },
+          },
+        } as Record<string, StepText>,
       },
       example: { x: 0.4, y: 0.35, a: 40, c: 35, g: 5 },
       startWith: ['x', 'y'],
@@ -2062,12 +2086,12 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'To change bigger units into smaller ones, multiply by that number. A table shows the pattern.',
       ],
       variables: [
-        whole('b', 'b', 'Bigger units', 1, 12),
+        whole('b', 'b', 'Bigger units', 1, 100),
         {
           ...whole('k', 'k', 'Smaller units in 1 bigger unit', 2, 1000),
           allowed: [2, 3, 4, 7, 10, 12, 16, 24, 60, 100, 1000],
         },
-        whole('s', 's', 'Smaller units', 2, 12000),
+        whole('s', 's', 'Smaller units', 2, 100000),
       ],
       relations: [
         {
@@ -2239,14 +2263,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'Area is the space inside: length × width, in square units.',
         'Perimeter is the distance around: two lengths and two widths, so 2 × (length + width).',
         'From the perimeter, half of it is length + width. Take away the side you know to find the other.',
-        'Whole-number sides up to 30.',
+        'Whole-number sides up to 100.',
       ],
       variables: [
-        { ...whole('l', 'l', 'Length', 1, 30), unit: 'm' },
-        { ...whole('w', 'w', 'Width', 1, 30), unit: 'm' },
-        { ...whole('A', 'A', 'Area', 1, 900), unit: 'm²' },
-        { ...whole('h', 'h', 'Half the perimeter', 2, 60), unit: 'm', derived: true },
-        { ...whole('P', 'P', 'Perimeter', 4, 120), unit: 'm' },
+        { ...whole('l', 'l', 'Length', 1, 100), unit: 'm' },
+        { ...whole('w', 'w', 'Width', 1, 100), unit: 'm' },
+        { ...whole('A', 'A', 'Area', 1, 10000), unit: 'm²' },
+        { ...whole('h', 'h', 'Half the perimeter', 2, 200), unit: 'm', derived: true },
+        { ...whole('P', 'P', 'Perimeter', 4, 400), unit: 'm' },
       ],
       relations: [
         {
@@ -2315,7 +2339,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'P = 2 × h': {
           P: {
             expr: '2 × {h}',
-            how: 'The perimeter is two lengths and two widths: double length + width.',
+            how: 'The perimeter is two lengths and two widths: double the half perimeter.',
             work: (v) => [`2 × ${fmt(v.h!)} = ${fmt(2 * v.h!)}`],
           },
           h: {
@@ -2447,11 +2471,15 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'The turn is cut into 2, 3, 4, 6, 8 or 12 equal parts.',
     ],
     variables: [
-      { ...whole('k', 'k', 'Equal parts of the turn', 2, 12), allowed: [2, 3, 4, 6, 8, 12] },
-      whole('n', 'n', 'Parts in the angle', 1, 12),
-      { ...whole('e', 'e', 'One part', 30, 180), unit: '°', derived: true },
-      { ...whole('a', 'a', 'Angle', 30, 360), unit: '°' },
-      { ...whole('r', 'r', 'Rest of the turn', 0, 330), unit: '°', derived: true },
+      // Every count that divides 360 into whole degrees a class meets (20° parts: 18 of them).
+      {
+        ...whole('k', 'k', 'Equal parts of the turn', 2, 36),
+        allowed: [2, 3, 4, 5, 6, 8, 9, 10, 12, 18, 36],
+      },
+      whole('n', 'n', 'Parts in the angle', 1, 36),
+      { ...whole('e', 'e', 'One part', 10, 180), unit: '°', derived: true },
+      { ...whole('a', 'a', 'Angle', 10, 360), unit: '°' },
+      { ...whole('r', 'r', 'Rest of the turn', 0, 350), unit: '°', derived: true },
     ],
     relations: [
       {

@@ -115,10 +115,13 @@ export function ForceDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
               }}
               onEnd={fit.release}
               onMove={(dx) =>
-                calc.set({
-                  ...rep.pin([spec.mass]),
-                  [spec.force]: rep.snapTo(spec.force, start.current + dx / fScale),
-                })
+                calc.set(
+                  {
+                    ...rep.pin([spec.mass]),
+                    [spec.force]: rep.snapTo(spec.force, start.current + dx / fScale),
+                  },
+                  rep.slide(spec.force),
+                )
               }
             />
           </>

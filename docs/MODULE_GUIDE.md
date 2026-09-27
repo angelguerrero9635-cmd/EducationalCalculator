@@ -163,7 +163,8 @@ and a lesson that uses it, or a gallery module until one exists.
   - `Ball` for counters and spheres;
   - a soft `FloorShadow` or `BoxShadow` under objects that stand on something.
   - Dark mode takes less shine (`sheen` in the palette), so dark fills don't turn grey.
-- **Abstract diagrams stay flat:** number lines, grids, graphs, measured shapes, tables and trees.
+- **Abstract diagrams stay flat:** number lines, grids, graphs, bars, pie charts, measured shapes,
+  tables and trees.
   Shading there would add noise to what is read exactly.
 - **Color never carries a meaning the text doesn't state.** Where a lesson says "solid" and
   "open" counters (ten frames, compare rows), that encoding stays. A second amount uses

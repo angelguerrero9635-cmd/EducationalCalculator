@@ -1,4 +1,4 @@
-import { dollars, formatNumber, renderTemplate } from '@/engine/format';
+import { dollars, formatNumber, renderTemplate, unitFor } from '@/engine/format';
 import { holds, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
@@ -111,6 +111,8 @@ const COUNT_WORDS: Record<string, string> = {
   hundreds: 'hundred',
   thousands: 'thousand',
   rows: 'row',
+  times: 'time',
+  places: 'place',
   groups: 'group',
   clips: 'clip',
   jumps: 'jump',
@@ -203,7 +205,7 @@ export function buildSteps(
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollars(n);
     if (unit === '¢' || unit === '°' || unit === '%' || unit === '×') return `${n}${unit}`;
-    return `${n} ${x === 1 ? (SINGULAR[unit] ?? unit) : unit}`;
+    return `${n} ${x === 1 ? (SINGULAR[unit] ?? unitFor(1, unit)) : unit}`;
   };
   /** Variables for filling formulas with working values (no whole-number rounding if converted). */
   const workVars = direct ? vars : vars.map((v) => ({ ...v, integer: false }));
@@ -350,7 +352,7 @@ export function buildSteps(
       (band === 'elementary' ||
         (band === 'early' && !!workLines?.some((l) => /^(Hundreds|Tens|Ones): /.test(l)))) &&
       written &&
-      /^\d+ [+−]/.test(written.says) &&
+      /^[\d,]+ [+−]/.test(written.says) &&
       workLines?.some(running)
         ? // A sentence that only led into the jumps ("Start with the bigger number.") goes too.
           workLines.filter((l) => !running(l) && (l.includes('=') || !l.endsWith('.')))
@@ -488,7 +490,13 @@ function byGrade(lines: string[], grade: string | undefined): string[] {
     if (d && Number(d[3]) > 3) {
       const [each, n, q] = [Number(d[1]), Number(d[2]), Number(d[3])];
       const strategy = factWork(q, each);
-      out.push(...(strategy.length ? [...strategy, `${q} groups of ${each} make ${n}`] : [line]));
+      // No "q groups of each make n" when the strategy's last line already ends at n.
+      const done = strategy.length && strategy[strategy.length - 1]!.endsWith(`: ${n}`);
+      out.push(
+        ...(strategy.length
+          ? [...strategy, ...(done ? [] : [`${q} groups of ${each} make ${n}`])]
+          : [line]),
+      );
       continue;
     }
     out.push(line);

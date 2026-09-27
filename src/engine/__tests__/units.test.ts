@@ -179,8 +179,8 @@ describe('unit context', () => {
 
   it('applies ranges and whole-number rules to the shown number', () => {
     const ctx = makeUnitContext(mod('m.3.area'), { system: 'us' });
-    const r = solve(ctx.system, [{ id: 'l', value: ctx.fromDisplay('l', 11) }]);
-    expect(r.rejected?.reason).toBe('Must be at most 10 in');
+    const r = solve(ctx.system, [{ id: 'l', value: ctx.fromDisplay('l', 13) }]);
+    expect(r.rejected?.reason).toBe('Must be at most 12 in');
     const ok = solve(ctx.system, [
       { id: 'l', value: ctx.fromDisplay('l', 4) },
       { id: 'w', value: ctx.fromDisplay('w', 3) },

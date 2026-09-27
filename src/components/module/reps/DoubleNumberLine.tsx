@@ -31,16 +31,22 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
         ? rep.shown(spec.per)
         : 0;
   const known = rep.known(spec.top) && rep.known(spec.per);
-  // Whole top units drawn: the spec's count, or enough for the value.
-  const N = Math.max(spec.ticks, Math.ceil(top));
+  // Marks every 1, 2, 5, 10, 20, 50, … top units, whichever keeps the line to about a dozen
+  // marks (10,000 years is not 10,000 ticks): the spec's count, or enough for the value.
+  const tickStep =
+    [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000].find(
+      (s) => Math.ceil(top / s) <= Math.max(spec.ticks, 12),
+    ) ?? 100000;
+  const N = Math.max(spec.ticks, Math.ceil(top / tickStep));
 
   return (
     <View>
       <Canvas aspect={0.4}>
         {({ w, h }) => {
           const pad = 28;
+          // Width of one mark's step; `px` takes a value in top units.
           const unit = (w - 2 * pad) / N;
-          const px = (x: number) => pad + x * unit;
+          const px = (x: number) => pad + (x / tickStep) * unit;
           const yTop = h * 0.34;
           const yBottom = h * 0.7;
           const labelEvery = unit >= 34 ? 1 : unit >= 18 ? 2 : 5;
@@ -69,18 +75,18 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
                 {Array.from({ length: N + 1 }, (_, i) => [
                   <Line
                     key={`tt${i}`}
-                    x1={px(i)}
+                    x1={px(i * tickStep)}
                     y1={yTop - 6}
-                    x2={px(i)}
+                    x2={px(i * tickStep)}
                     y2={yTop + 6}
                     stroke={c.chartInk}
                     strokeWidth={chart.strokeLight}
                   />,
                   <Line
                     key={`tb${i}`}
-                    x1={px(i)}
+                    x1={px(i * tickStep)}
                     y1={yBottom - 6}
-                    x2={px(i)}
+                    x2={px(i * tickStep)}
                     y2={yBottom + 6}
                     stroke={c.chartInk}
                     strokeWidth={chart.strokeLight}
@@ -88,26 +94,26 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
                   i % labelEvery === 0 || i === N ? (
                     <ChartText
                       key={`lt${i}`}
-                      x={px(i)}
+                      x={px(i * tickStep)}
                       y={yTop - 10}
                       fontSize={chart.label}
                       textAnchor="middle"
                     >
-                      {String(i)}
+                      {formatNumber(i * tickStep)}
                     </ChartText>
                   ) : null,
                   i % labelEvery === 0 || i === N ? (
                     <ChartText
                       key={`lb${i}`}
-                      x={px(i)}
+                      x={px(i * tickStep)}
                       y={yBottom + 18}
                       fontSize={chart.label}
                       textAnchor="middle"
                     >
                       {per
                         ? spec.prefix === '$'
-                          ? `$${(i * per).toFixed(2)}`
-                          : formatNumber(Number((i * per).toFixed(4)))
+                          ? `$${(i * tickStep * per).toFixed(2)}`
+                          : formatNumber(Number((i * tickStep * per).toFixed(4)))
                         : '?'}
                     </ChartText>
                   ) : null,
@@ -131,13 +137,17 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
                   label={rep.variable(spec.top).name}
                   onStart={() => (start.current = top)}
                   onMove={(dx) =>
-                    calc.set({
-                      ...rep.pin([spec.per]),
-                      [spec.top]: rep.snapTo(
-                        spec.top,
-                        Math.max(0, start.current + dx / unit) * rep.factor(spec.top),
-                      ),
-                    })
+                    calc.set(
+                      {
+                        ...rep.pin([spec.per]),
+                        [spec.top]: rep.snapTo(
+                          spec.top,
+                          Math.max(0, start.current + (dx / unit) * tickStep) *
+                            rep.factor(spec.top),
+                        ),
+                      },
+                      rep.slide(spec.top),
+                    )
                   }
                 />
               ) : null}

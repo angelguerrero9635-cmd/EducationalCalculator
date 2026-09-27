@@ -134,7 +134,12 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                           stroke={c.chartInk}
                           strokeWidth={mark ? chart.stroke : chart.strokeLight}
                         />,
-                        mark || (v - lo) % every === 0 ? (
+                        // A number never prints on top of a bold mark (40 next to 32).
+                        mark ||
+                        ((v - lo) % every === 0 &&
+                          !(spec.marks ?? []).some(
+                            (m) => m !== v && Math.abs(py(m) - py(v)) < 12,
+                          )) ? (
                           <ChartText
                             key={`l${id}${k}`}
                             x={cx - tube / 2 - 12}
@@ -175,8 +180,10 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
               </Svg>
               {spec.items.map((id, i) => {
                 // A "?" thermometer's handle waits next to the other one (or at the bottom).
+                // A "?" thermometer's handle waits beside the other reading, or halfway up (not at
+                // the bottom, where it would read as the lowest temperature).
                 const from =
-                  shown[i] ?? shown.find((x, k) => k !== i && x !== undefined) ?? spec.min;
+                  shown[i] ?? shown.find((x, k) => k !== i && x !== undefined) ?? (lo + hi) / 2;
                 return (
                   <DragHandle
                     key={`d${id}`}
@@ -186,13 +193,16 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     label={rep.variable(id).name}
                     onStart={() => (start.current = from)}
                     onMove={(_, dy) =>
-                      calc.set({
-                        ...rep.pin(spec.items.filter((x) => x !== id)),
-                        [id]: rep.snapTo(
-                          id,
-                          (start.current - (dy / (bottom - top)) * (hi - lo)) * rep.factor(id),
-                        ),
-                      })
+                      calc.set(
+                        {
+                          ...rep.pin(spec.items.filter((x) => x !== id)),
+                          [id]: rep.snapTo(
+                            id,
+                            (start.current - (dy / (bottom - top)) * (hi - lo)) * rep.factor(id),
+                          ),
+                        },
+                        rep.slide(id),
+                      )
                     }
                   />
                 );
@@ -203,13 +213,16 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {(() => {
-          const names = `${spec.items.map((id) => rep.named(id)).join('. ')}.`;
+          const listed = spec.items.map((id) => rep.named(id)).join('. ');
+          // No full stop after a "?" ("Temperature now: ?").
+          const names = listed.endsWith('?') ? listed : `${listed}.`;
           const [a, b] = shown;
           if (!spec.difference || a === undefined || b === undefined) return names;
           // Say which one is warmer, so a shade warmer than the sun reads as what it is.
           if (a === b) return `${names} Both the same.`;
           const warmer = rep.variable(spec.items[a > b ? 0 : 1]!).name;
-          return `${names} ${warmer} is warmer by ${nowrap(rep.value(spec.difference))}.`;
+          const cooler = rep.variable(spec.items[a > b ? 1 : 0]!).name.toLowerCase();
+          return `${names} ${warmer} is ${nowrap(rep.value(spec.difference))} warmer than ${cooler}.`;
         })()}
       </Caption>
       {unit ? null : null}

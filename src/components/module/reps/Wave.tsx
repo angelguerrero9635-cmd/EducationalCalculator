@@ -156,7 +156,12 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }}
                   onMove={(dx, dy) =>
                     calc.set({
-                      ...rep.pin(spec.frequency ? [spec.frequency] : []),
+                      // The rope's length (the waves along it) stays as typed while the waves are
+                      // stretched or squeezed.
+                      ...rep.pin([
+                        ...(spec.frequency ? [spec.frequency] : []),
+                        ...(typeof spec.extent === 'string' ? [spec.extent] : []),
+                      ]),
                       ...(spec.amplitude
                         ? {
                             [spec.amplitude]: rep.snapTo(

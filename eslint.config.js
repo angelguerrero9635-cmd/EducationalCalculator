@@ -7,6 +7,7 @@ module.exports = defineConfig([
   expoConfig,
   prettierConfig,
   {
-    ignores: ['dist/*', '.expo/*', 'node_modules/*', 'coverage/*'],
+    // .review/ holds reviewers' scratch scripts (not committed).
+    ignores: ['dist/*', '.expo/*', 'node_modules/*', 'coverage/*', '.review/*'],
   },
 ]);

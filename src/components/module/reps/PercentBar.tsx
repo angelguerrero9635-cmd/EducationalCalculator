@@ -41,6 +41,19 @@ export function PercentBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
             { length: Math.round(top.value / (100 / ticks)) + 1 },
             (_, i) => (i * 100) / ticks,
           );
+          // Labels every `every` ticks (and always at 100%), so the longest never runs into the
+          // next one.
+          const bottom = (m: number) => formatNumber(Number(((whole * m) / 100).toFixed(4)));
+          const longest = Math.max(
+            ...marks.map((m) => Math.max(bottom(m).length, `${formatNumber(m)}%`.length)),
+          );
+          const every = Math.max(
+            1,
+            Math.ceil((longest * chart.tiny * 0.6 + 8) / Math.max(1, x(marks[1] ?? 1) - x(0))),
+          );
+          const labelled = marks.filter(
+            (m, i) => m === 100 || (i % every === 0 && Math.abs(m - 100) / (100 / ticks) >= every),
+          );
           return (
             <>
               <Svg width={w} height={h}>
@@ -88,36 +101,32 @@ export function PercentBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     strokeWidth={m === 100 ? chart.stroke : 1}
                   />
                 ))}
-                {marks
-                  .filter((_, i) => ticks === 4 || i % 2 === 0 || w > 480)
-                  .map((m) => (
-                    <ChartText
-                      key={`p${m}`}
-                      x={x(m)}
-                      y={barY - 10}
-                      fontSize={chart.tiny}
-                      fill={c.chartMuted}
-                      textAnchor="middle"
-                    >
-                      {`${formatNumber(m)}%`}
-                    </ChartText>
-                  ))}
+                {labelled.map((m) => (
+                  <ChartText
+                    key={`p${m}`}
+                    x={x(m)}
+                    y={barY - 10}
+                    fontSize={chart.tiny}
+                    fill={c.chartMuted}
+                    textAnchor="middle"
+                  >
+                    {`${formatNumber(m)}%`}
+                  </ChartText>
+                ))}
                 {/* The bottom scale: the whole at 100%, the same share at every tick. */}
-                {marks
-                  .filter((_, i) => ticks === 4 || i % 2 === 0 || w > 480)
-                  .map((m) => (
-                    <ChartText
-                      key={`v${m}`}
-                      x={x(m)}
-                      y={barY + barH + 18}
-                      fontSize={chart.tiny}
-                      fill={m === 100 ? c.chartInk : c.chartMuted}
-                      fontWeight={m === 100 ? '700' : '400'}
-                      textAnchor="middle"
-                    >
-                      {formatNumber(Number(((whole * m) / 100).toFixed(4)))}
-                    </ChartText>
-                  ))}
+                {labelled.map((m) => (
+                  <ChartText
+                    key={`v${m}`}
+                    x={x(m)}
+                    y={barY + barH + 18}
+                    fontSize={chart.tiny}
+                    fill={m === 100 ? c.chartInk : c.chartMuted}
+                    fontWeight={m === 100 ? '700' : '400'}
+                    textAnchor="middle"
+                  >
+                    {bottom(m)}
+                  </ChartText>
+                ))}
                 <ChartText
                   x={x(pct)}
                   y={barY + barH + 38}
@@ -140,13 +149,16 @@ export function PercentBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 }}
                 onEnd={top.release}
                 onMove={(dx) =>
-                  calc.set({
-                    ...rep.pin([spec.whole]),
-                    [spec.percent]: rep.snapTo(
-                      spec.percent,
-                      start.current + (dx / (w - 2 * pad)) * top.value,
-                    ),
-                  })
+                  calc.set(
+                    {
+                      ...rep.pin([spec.whole]),
+                      [spec.percent]: rep.snapTo(
+                        spec.percent,
+                        start.current + (dx / (w - 2 * pad)) * top.value,
+                      ),
+                    },
+                    rep.slide(spec.percent),
+                  )
                 }
               />
             </>

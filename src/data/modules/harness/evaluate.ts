@@ -106,6 +106,10 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`the tens in (${NUM})`), (n) => 10 * Math.floor((n % 100) / 10)],
   [new RegExp(`(${NUM}) with the places under (${NUM}) made 0`), (n, p) => Math.floor(n / p) * p],
   [new RegExp(`(${NUM}) rounded down to the (${NUM})s`), (n, p) => Math.floor(n / p) * p],
+  // The place by name (Grade 5): "4.268 rounded down to the hundredths".
+  [new RegExp(`(${NUM}) rounded down to the ones`), (n) => Math.floor(n + 1e-9)],
+  [new RegExp(`(${NUM}) rounded down to the tenths`), (n) => Math.floor(n * 10 + 1e-9) / 10],
+  [new RegExp(`(${NUM}) rounded down to the hundredths`), (n) => Math.floor(n * 100 + 1e-9) / 100],
   // A line plot's spread: counts at marks 1, 2, 3 … (eighths); longest marked − shortest marked.
   [
     new RegExp(
@@ -332,6 +336,9 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     }
     if (!replaced) break;
   }
+  // A minus sign before a power, "−(0.04)^(1 ÷ 2)", is the negative of the power (JavaScript
+  // won't parse "-(a) ** b" as written).
+  s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
   const bare = s.replace(/(?:sqrt|cbrt|log|abs)\(/g, '(').replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {

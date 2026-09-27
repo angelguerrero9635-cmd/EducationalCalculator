@@ -12,7 +12,7 @@ const F = FAHRENHEIT;
 export const SCIENCE_2_MODULES: ModuleDef[] = [
   // ── Grade 2: properties of materials (2-PS1-1, 2-PS1-2) ──
   (() => {
-    const more = moreThan('m', 'a', 'b', 'paper towel', 'plastic sheet', ['more', 'fewer'], '2');
+    const more = moreThan('m', 'a', 'b', 'paper towel', 'newspaper', ['more', 'fewer'], '2');
     return {
       id: 's.2.material-properties',
       pictureLabels: ['m'],
@@ -23,7 +23,7 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       ],
       variables: [
         { ...whole('a', 'a', 'Paper towel', 0, 50), unit: 'drops' },
-        { ...whole('b', 'b', 'Plastic sheet', 0, 50), unit: 'drops' },
+        { ...whole('b', 'b', 'Newspaper', 0, 50), unit: 'drops' },
         { ...whole('m', 'm', 'More drops', 0, 50), unit: 'drops' },
       ],
       relations: [more.relation],
@@ -58,8 +58,8 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
         'Count the blocks in the house and the blocks left over.',
       ],
       variables: [
-        whole('a', 'a', 'Blocks in the tower', 0, 50),
-        whole('b', 'b', 'Blocks in the new house', 0, 50),
+        whole('a', 'a', 'Blocks in the tower', 1, 50),
+        whole('b', 'b', 'Blocks in the new house', 1, 50),
         whole('c', 'c', 'Blocks left over', 0, 50),
       ],
       relations: [used.relation],
@@ -187,12 +187,13 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
         'The difference shows what water does.',
       ],
       variables: [
-        { ...whole('w', 'w', 'Watered plant', 0, 50), unit: 'cm' },
+        { ...whole('w', 'w', 'Watered plant', 1, 50), unit: 'cm' },
         { ...whole('n', 'n', 'Dry plant', 0, 50), unit: 'cm' },
-        { ...whole('d', 'd', 'Taller by', 0, 50), unit: 'cm' },
+        { ...whole('d', 'd', 'Taller by', 0, 49), unit: 'cm' },
       ],
-      relations: [taller.relation],
-      steps: taller.steps,
+      // The watered plant grows at least as tall: the other way round, measure again.
+      relations: [{ ...taller.relation, display: '{w} − {n} = {d}' }, atLeast('w', 'n')],
+      steps: { ...taller.steps, 'w ≥ n': {} },
       example: { w: 22, n: 8, d: 14 },
       startWith: ['w', 'n'],
       representation: { kind: 'ruler', lengths: ['w', 'n'], difference: 'd', extent: 30 },
@@ -385,11 +386,13 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
     use: 'Use this for “97 of 100 cups are salty. How many are fresh?”',
     assumptions: [
       'Most of Earth’s water is salty ocean water. Only a little is fresh.',
-      'Picture all of Earth’s water as 100 cups.',
+      'Picture all of Earth’s water as 100 cups: 97 are salty and 3 are fresh.',
+      'Land plants, people and most animals need fresh water.',
     ],
+    // These are facts to read, not values to choose: only the true numbers go in.
     variables: [
-      { ...whole('s', 's', 'Salty', 0, 100), unit: 'cups' },
-      { ...whole('f', 'f', 'Fresh', 0, 100), unit: 'cups' },
+      { ...whole('s', 's', 'Salty', 97, 97), unit: 'cups', allowed: [97] },
+      { ...whole('f', 'f', 'Fresh', 3, 3), unit: 'cups', allowed: [3] },
     ],
     relations: [
       {
@@ -429,12 +432,13 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
     assumptions: [
       'Most fresh water is frozen in ice. Much of the rest is under the ground.',
       'Rivers and lakes hold only a little.',
-      'Picture all the fresh water as 100 cups.',
+      'Picture all the fresh water as 100 cups: about 69 in ice, 30 under the ground, 1 in rivers and lakes.',
     ],
+    // Facts to read (USGS): only the true numbers go in.
     variables: [
-      { ...whole('i', 'i', 'In ice', 0, 100), unit: 'cups' },
-      { ...whole('r', 'r', 'In rivers and lakes', 0, 100), unit: 'cups' },
-      { ...whole('g', 'g', 'Under the ground', 0, 100), unit: 'cups' },
+      { ...whole('i', 'i', 'In ice', 69, 69), unit: 'cups', allowed: [69] },
+      { ...whole('r', 'r', 'In rivers and lakes', 1, 1), unit: 'cups', allowed: [1] },
+      { ...whole('g', 'g', 'Under the ground', 30, 30), unit: 'cups', allowed: [30] },
     ],
     relations: [
       {

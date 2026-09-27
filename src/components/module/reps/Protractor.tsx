@@ -54,11 +54,13 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
             if (mid) {
               const [ix, iy] = toXY(d, R - 27);
               const [ox, oy] = toXY(d, R + 12);
+              // The end labels (0 and 180) sit above the flat edge, clear of a ray lying on it.
+              const lift = d === 0 || d === 180 ? -6 : 3;
               marks.push(
                 <ChartText
                   key={`i${d}`}
                   x={ix}
-                  y={iy + 3}
+                  y={iy + lift}
                   fontSize={chart.tiny}
                   textAnchor="middle"
                 >
@@ -67,7 +69,7 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <ChartText
                   key={`o${d}`}
                   x={ox}
-                  y={oy + 3}
+                  y={oy + lift}
                   fontSize={chart.tiny}
                   fill={c.chartMuted}
                   textAnchor="middle"
@@ -161,9 +163,12 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     const [sx, sy] = toXY(s.a, s.r);
                     const deg = (-Math.atan2(sy + dy - s.cy, sx + dx - s.cx) * 180) / Math.PI;
                     const next = Math.min(180, Math.max(0, Math.round(deg)));
-                    calc.set({
-                      [spec.angle]: rep.snapTo(spec.angle, next * rep.factor(spec.angle)),
-                    });
+                    calc.set(
+                      {
+                        [spec.angle]: rep.snapTo(spec.angle, next * rep.factor(spec.angle)),
+                      },
+                      rep.slide(spec.angle),
+                    );
                   }}
                 />
               ) : null}

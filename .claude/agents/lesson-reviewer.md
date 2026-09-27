@@ -22,6 +22,9 @@ layouts" section is the catalog you propose from.
 - `.review/harness.txt`: the sampling harness report (`[error]` lines fail the test suite, so
   there are none; `[minor]` lines are limits of the harness: a range or fixed-number remark
   that repeats across modules is one finding with the rule, not one per module).
+- `.review/questions.md`: released test and practice questions for the section's skills (NAEP,
+  public domain; Illustrative Mathematics, CC BY), grouped by skill id, with choices, answer and
+  picture. Read one skill's block at a time. Reference only: never copy their text into a lesson.
 - Module code: `src/data/modules/<math|science>/<grade>.ts` (a problem type's "use" line is on
   the module), shared helpers `src/data/modules/helpers.ts`, types `src/data/modules/types.ts`,
   the harness's phrases `src/data/modules/harness/evaluate.ts`.
@@ -46,6 +49,31 @@ working value.
   fix. Never read screenshots or start a browser: that is `page-reviewer`'s job.
 - At most a few web lookups for the whole section; otherwise use what you know and say so.
 - Write findings once, tersely, in the report format. No praise, no restating the module.
+
+## Edge-case review
+
+When the prompt says **edge-case review**, the evidence was made with `--edges`: fewer random
+samples, most of them at the boundaries, and the dump has `-- edge` walkthroughs for every
+opening value at its smallest and largest, then all of them at once. Spend the review there.
+The edged value is typed last, as a student would, so a value that doesn't fit prints as
+`rejected:` with the page's reason. The `values:` line shows `allowed`, `multipleOf` and
+`derived`. Pictures that grow to fit their values (bars, ruler, thermometers, pushes, hops)
+are not "past the scale"; flag a picture only when the page-reviewer's screenshot shows it.
+For each module, read the `-- edge` blocks first, then check:
+
+- The smallest and largest allowed values give a true, sensible answer. Look for:
+  - zero groups, a whole of 0, a remainder equal to the divisor;
+  - a count of 1 read as plural ("1 groups");
+  - a rounding tie;
+  - the largest number past the picture's scale or the grade's number range.
+- A rejected edge is right to reject, and its reason reads well to a student. An edge that
+  should be allowed but is rejected is a finding.
+- The answer at the edge would be marked right on the released questions for the skill
+  (`questions.md`). The number sizes there set the range a page needs: a NAEP item with
+  5,003 − 872 means the page's range must reach it.
+- The harness's `[error]` and `[minor]` lines at edges (units, cleared values, edits in a row).
+
+Checks A, Q, D and F apply as usual. Skip E, K and G unless something at an edge breaks them.
 
 ## Checks
 
@@ -94,9 +122,17 @@ inclusive names. Give exact replacement strings.
 **K. Plain language.** Where words teach better than letters, symbols or jargon at the grade,
 and the few places the notation is better. Keep the number sentence the grade writes.
 
-**F. Exam coverage.** The 4–8 common question types for the skill; mark each Solves / Partly /
-No against the module and its problem types. Unknowns in every position. Recommend an extension,
-a borrowed picture, or a `[new-page]`.
+**F. Exam coverage.** Start from the skill's block in `questions.md`, then add the common
+question types it lacks (4–8 in all). For each, work the question on the module and mark it
+Solves / Partly / No, naming the question id.
+
+- A student who has used the page should be able to answer the real items, so check the words,
+  the number sizes, the unknown's position and the picture (a NAEP tape diagram or thermometer
+  should look like the page's).
+- Recommend an extension, a borrowed picture, or a `[new-page]`.
+- Report a question filed under the wrong skill (for example a unit conversion under fraction
+  addition) as `[data] research/questions: <id> → <right skill>`.
+- Skills listed under "no released questions" use the common types only.
 
 **G. Curriculum coverage.** Map 2–3 widely used curricula for the grade (K–8: Illustrative
 Mathematics, Eureka, Open Up; science: Amplify, Mystery Science, FOSS; high school and college:

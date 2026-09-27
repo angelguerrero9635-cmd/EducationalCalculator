@@ -38,10 +38,13 @@ export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) 
     },
     onMove: (_: number, dy: number) => {
       const step = rep.variable(id).step ?? 0.5;
-      calc.set({
-        ...rep.pin(pin),
-        [id]: rep.snapTo(id, (start.current - (dy / PX_PER_STEP) * step) * rep.factor(id)),
-      });
+      calc.set(
+        {
+          ...rep.pin(pin),
+          [id]: rep.snapTo(id, (start.current - (dy / PX_PER_STEP) * step) * rep.factor(id)),
+        },
+        rep.slide(id),
+      );
     },
   });
 

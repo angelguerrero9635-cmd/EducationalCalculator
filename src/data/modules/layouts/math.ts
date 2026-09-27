@@ -178,7 +178,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       {
         id: 'rectangle',
         label: 'Rectangle',
-        why: 'A rectangle has 4 sides and 4 square corners.',
+        why: 'A rectangle has 4 square corners. Two sides are longer than the other two.',
       },
       { id: 'hexagon', label: 'Hexagon', why: 'A hexagon has 6 sides and 6 corners.' },
     ],
@@ -425,7 +425,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: 'Sphere (a ball)', bin: 'rolls', figure: { kind: 'solid', shape: 'sphere' } },
-      { label: 'Cone (a party hat)', bin: 'rolls', figure: { kind: 'solid', shape: 'cone' } },
       { label: 'Cube (a box)', bin: 'stacks', figure: { kind: 'solid', shape: 'cube' } },
       { label: 'Book', bin: 'stacks', figure: { kind: 'solid', shape: 'box' } },
       { label: 'Cereal box', bin: 'stacks', figure: { kind: 'solid', shape: 'box' } },
@@ -526,7 +525,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     use: 'Use this to order three things from longest to shortest.',
     assumptions: [
       'Line up the ribbons at one end to compare them.',
-      'Red is longer than blue. Blue is longer than green. So red is longer than green.',
+      'A rope is longer than a ribbon. The ribbon is longer than a string. So the rope is longer than the string.',
       'Tap the ribbons in order, longest first.',
     ],
     question: 'Put the ribbons in order, longest first.',
@@ -689,7 +688,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         figure: { kind: 'cut', shape: 'rectangle', parts: 3, equal: false },
       },
       {
-        label: 'Circle, one big piece',
+        label: 'Circle cut into a big and a small piece',
         bin: 'unequal',
         figure: { kind: 'cut', shape: 'circle', parts: 2, equal: false, shaded: 1 },
       },
@@ -873,17 +872,17 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       {
-        label: 'Half a pizza',
+        label: 'Pizza cut in 2, one part shaded',
         bin: 'half',
         figure: { kind: 'cut', shape: 'circle', parts: 2, equal: true, shaded: 1 },
       },
       {
-        label: 'A fourth of a pizza',
+        label: 'Pizza cut in 4, one part shaded',
         bin: 'fourth',
         figure: { kind: 'cut', shape: 'circle', parts: 4, equal: true, shaded: 1 },
       },
       {
-        label: 'Half a sandwich',
+        label: 'Sandwich cut in 2, one part shaded',
         bin: 'half',
         figure: {
           kind: 'cut',
@@ -895,17 +894,17 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'A fourth of a sandwich',
+        label: 'Sandwich cut in 4, one part shaded',
         bin: 'fourth',
         figure: { kind: 'cut', shape: 'square', parts: 4, equal: true, shaded: 1 },
       },
       {
-        label: 'Half a bar',
+        label: 'Bar cut in 2, one part shaded',
         bin: 'half',
         figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: true, shaded: 1 },
       },
       {
-        label: 'A fourth of a bar',
+        label: 'Bar cut in 4, one part shaded',
         bin: 'fourth',
         figure: { kind: 'cut', shape: 'rectangle', parts: 4, equal: true, shaded: 1 },
       },
@@ -1012,7 +1011,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: 'See the sunrise', bin: 'am', figure: { kind: 'icon', icon: 'sun' } },
       { label: 'Eat dinner', bin: 'pm' },
       { label: 'Go to bed', bin: 'pm', figure: { kind: 'icon', icon: 'bed' } },
-      { label: 'See the moon come up', bin: 'pm', figure: { kind: 'icon', icon: 'moon' } },
+      { label: 'Watch the sunset', bin: 'pm', figure: { kind: 'icon', icon: 'sun' } },
     ],
   },
   {
@@ -2122,7 +2121,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'Acute triangle (all angles small)',
+        label: 'Acute triangle (every angle less than a square corner)',
         bin: 'triangle',
         figure: {
           kind: 'polygon',
@@ -2546,10 +2545,10 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.classify-2d',
     assumptions: [
-      'A parallelogram has two pairs of parallel sides. A trapezoid here has exactly one pair.',
-      'A rectangle is a parallelogram with four right angles. A rhombus has four equal sides.',
+      'A trapezoid has at least one pair of parallel sides, so every parallelogram is a trapezoid too.',
+      'A parallelogram has two pairs of parallel sides. A rectangle is a parallelogram with four right angles. A rhombus has four equal sides.',
       'A square is both: four right angles and four equal sides. Give the most exact name.',
-      'Some books say a trapezoid has at least one pair. Then every parallelogram is a trapezoid too.',
+      'Some books say a trapezoid has exactly one pair. Then a parallelogram is not a trapezoid.',
     ],
     question: 'What is the most exact name for the four-sided shape?',
     bins: [
@@ -2571,8 +2570,8 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       },
       {
         id: 'trapezoid',
-        label: 'Trapezoid',
-        why: 'Exactly one pair of parallel sides.',
+        label: 'Trapezoid, not a parallelogram',
+        why: 'One pair of parallel sides; the other two sides are not parallel.',
       },
     ],
     cards: [
@@ -2898,6 +2897,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'Always: every shape in the first group belongs to the second.',
       'Sometimes: some do and some do not.',
       'Never: none do.',
+      'A trapezoid has at least one pair of parallel sides, so a parallelogram counts as one.',
     ],
     question: 'Is it always, sometimes, or never true?',
     bins: [
@@ -2912,6 +2912,8 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: 'A rectangle is a square', bin: 'sometimes' },
       { label: 'A parallelogram is a rhombus', bin: 'sometimes' },
       { label: 'A rhombus is a square', bin: 'sometimes' },
+      { label: 'A parallelogram is a trapezoid', bin: 'always' },
+      { label: 'A trapezoid is a parallelogram', bin: 'sometimes' },
       { label: 'A triangle is a quadrilateral', bin: 'never' },
       { label: 'A square has a side longer than another side', bin: 'never' },
     ],
@@ -3530,7 +3532,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'Two rows of 3, shifted',
+        label: 'Two rows of 3 that touch at one square',
         bin: 'yes',
         figure: {
           kind: 'net',
@@ -3605,7 +3607,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'A row of 4 with two on one square',
+        label: 'A row of 4 with two stacked above one square',
         bin: 'no',
         figure: {
           kind: 'net',

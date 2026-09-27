@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Defs, Path, RadialGradient, Stop } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
@@ -7,7 +7,6 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette, useTone } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { url, usePaintIds } from './paint';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -21,6 +20,7 @@ function Wedge({
   a0,
   a1,
   fill,
+  fillOpacity = 1,
   stroke,
 }: {
   cx: number;
@@ -29,13 +29,15 @@ function Wedge({
   a0: number;
   a1: number;
   fill: string;
+  fillOpacity?: number;
   stroke: string;
 }) {
   const toXY = (deg: number) => {
     const t = ((deg - 90) * Math.PI) / 180;
     return [cx + r * Math.cos(t), cy + r * Math.sin(t)] as const;
   };
-  if (a1 - a0 >= 359.99) return <Circle cx={cx} cy={cy} r={r} fill={fill} stroke={stroke} />;
+  if (a1 - a0 >= 359.99)
+    return <Circle cx={cx} cy={cy} r={r} fill={fill} fillOpacity={fillOpacity} stroke={stroke} />;
   const [x0, y0] = toXY(a0);
   const [x1, y1] = toXY(a1);
   const large = a1 - a0 > 180 ? 1 : 0;
@@ -43,6 +45,7 @@ function Wedge({
     <Path
       d={`M ${cx} ${cy} L ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1} Z`}
       fill={fill}
+      fillOpacity={fillOpacity}
       stroke={stroke}
       strokeWidth={chart.strokeLight}
     />
@@ -52,7 +55,9 @@ function Wedge({
 /** A wedge's fill from the palette's tones, so each part has its own colour. */
 function ToneWedge(props: { tone: number } & Omit<Parameters<typeof Wedge>[0], 'fill'>) {
   const t = useTone(props.tone);
-  return <Wedge {...props} fill={t.bg} />;
+  // The tone's strong colour, half see-through: each part stands out from the page and from
+  // its neighbours, and the dark label on it stays readable.
+  return <Wedge {...props} fill={t.fg} fillOpacity={0.45} />;
 }
 
 /** Minimum wedge (degrees) that holds its own label; thinner ones are named in the key. */
@@ -64,7 +69,7 @@ function KeyItem({ tone, text }: { tone: number; text: string }) {
   const t = useTone(tone);
   return (
     <View style={styles.keyItem}>
-      <View style={[styles.swatch, { backgroundColor: t.bg, borderColor: c.chartInk }]} />
+      <View style={[styles.swatch, { backgroundColor: t.fg, opacity: 0.6 }]} />
       <Text style={[styles.keyText, { color: c.text }]}>{text}</Text>
     </View>
   );
@@ -76,14 +81,15 @@ function KeyItem({ tone, text }: { tone: number; text: string }) {
  */
 export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
-  const paint = usePaintIds('dome');
   const rep = useRep(calc);
   const parts = spec.parts.map((id) => Math.max(0, rep.shown(id)));
   const total = spec.total ? Math.max(0, rep.shown(spec.total)) : 100;
   const known = spec.parts.every(rep.known) && (!spec.total || rep.known(spec.total));
   const sum = parts.reduce((a, b) => a + b, 0);
   const whole = Math.max(total, sum) || 1;
-  const unit = spec.total ? '' : '%';
+  // A part's value as shown, with its unit ("970 liters", "25%"), or "?" when it isn't known.
+  const partText = (i: number) =>
+    !known ? '?' : spec.total ? rep.value(spec.parts[i]!) : `${formatNumber(parts[i]!)}%`;
 
   return (
     <View>
@@ -100,14 +106,6 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
           });
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
-              <Defs>
-                <RadialGradient id={paint.dome} cx="0.4" cy="0.35" r="0.7">
-                  <Stop offset="0" stopColor={c.shine} stopOpacity={0.35 * c.sheen} />
-                  <Stop offset="0.6" stopColor={c.shine} stopOpacity={0} />
-                  <Stop offset="1" stopColor={c.shade} stopOpacity={0.12} />
-                </RadialGradient>
-              </Defs>
-              <Circle cx={cx + 2} cy={cy + 4} r={r} fill={c.shadow} />
               <Circle cx={cx} cy={cy} r={r} fill={c.chartSurface} stroke={c.chartInk} />
               {wedges.map(({ a0, a1, i }) =>
                 a1 > a0 ? (
@@ -123,8 +121,6 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                 ) : null,
               )}
-              {/* Light across the whole pie, so it reads as one round thing cut in parts. */}
-              <Circle cx={cx} cy={cy} r={r} fill={url(paint.dome)} />
               {wedges.map(({ a0, a1, i }) => {
                 if (a1 - a0 < LABEL_MIN) return null;
                 const mid = ((a0 + a1) / 2 - 90) * (Math.PI / 180);
@@ -138,7 +134,7 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fontWeight="700"
                     textAnchor="middle"
                   >
-                    {`${rep.variable(spec.parts[i]!).name}: ${formatNumber(parts[i]!)}${unit}`}
+                    {`${rep.variable(spec.parts[i]!).name}: ${partText(i)}`}
                   </ChartText>
                 );
               })}
@@ -153,7 +149,7 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
             <KeyItem
               key={i}
               tone={i}
-              text={`${rep.variable(spec.parts[i]!).name}: ${formatNumber(v)}${unit}`}
+              text={`${rep.variable(spec.parts[i]!).name}: ${partText(i)}`}
             />
           ) : null,
         )}
@@ -161,7 +157,9 @@ export function PieChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Caption>
         {known
           ? spec.total
-            ? `${spec.parts.map((id) => rep.value(id, false)).join(' + ')} = ${formatNumber(sum)} of ${formatNumber(total)}.`
+            ? sum === total
+              ? `${spec.parts.map((id) => rep.value(id, false)).join(' + ')} = ${rep.value(spec.total)}.`
+              : `${spec.parts.map((id) => rep.value(id, false)).join(' + ')} = ${formatNumber(sum)} of ${rep.value(spec.total)}.`
             : `${spec.parts.map((id) => `${rep.value(id, false)}%`).join(' + ')} = ${formatNumber(sum)}% of the whole.`
           : 'Type each part to draw the pie.'}
       </Caption>
@@ -186,6 +184,7 @@ const styles = StyleSheet.create({
     rowGap: space.xs,
   },
   keyItem: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
-  swatch: { width: 12, height: 12, borderRadius: 2, borderWidth: StyleSheet.hairlineWidth },
+  // A round dot, not a square box that reads as an empty checkbox.
+  swatch: { width: 14, height: 14, borderRadius: 7 },
   keyText: { fontSize: font.caption + 1, fontWeight: '600' },
 });

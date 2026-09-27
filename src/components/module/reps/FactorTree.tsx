@@ -64,9 +64,10 @@ export function FactorTree({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(0.9, (depth * 52 + 24) / w)}>
+      {/* The last row's circles sit 18 px above the bottom, so none is cut off. */}
+      <Canvas aspect={(w) => Math.min(1.2, (depth * 52 + 36) / w)}>
         {({ w, h }) => {
-          const rowH = (h - 24) / Math.max(1, depth - 1 || 1);
+          const rowH = (h - 36) / Math.max(1, depth - 1 || 1);
           const nodes: React.ReactNode[] = [];
           // Each subtree gets a horizontal span in proportion to its leaves.
           const place = (t: Node, x0: number, x1: number, level: number, key: string) => {

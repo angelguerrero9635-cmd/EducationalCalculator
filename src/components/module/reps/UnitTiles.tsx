@@ -31,11 +31,16 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // Room for at least 24 cubes; longer objects shrink the cubes (held steady while dragging).
   const span = useFrozen(Math.max(24, total));
 
+  // Room on the left for the longest row name ("Length in inches"), so it never runs into the tiles.
+  const left = Math.max(
+    76,
+    14 + chart.small * 0.56 * Math.max(rep.tag(spec.total).length, rep.tag(spec.count).length, 6),
+  );
+
   return (
     <View>
-      <Canvas aspect={(w) => (80 + 2 * Math.min(24, (w - 92) / span.value)) / w}>
+      <Canvas aspect={(w) => (80 + 2 * Math.min(24, (w - left - 16) / span.value)) / w}>
         {({ w, h }) => {
-          const left = 76;
           const cell = Math.min(24, (w - left - 16) / span.value);
           const objY = 16;
           const cubeY = objY + 38;
@@ -98,10 +103,13 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 }}
                 onEnd={span.release}
                 onMove={(dx) =>
-                  calc.set({
-                    ...rep.pin(sizeVar ? [sizeVar] : []),
-                    [spec.count]: rep.snapTo(spec.count, start.current + dx / (size * cell)),
-                  })
+                  calc.set(
+                    {
+                      ...rep.pin(sizeVar ? [sizeVar] : []),
+                      [spec.count]: rep.snapTo(spec.count, start.current + dx / (size * cell)),
+                    },
+                    rep.slide(spec.count),
+                  )
                 }
               />
             </>

@@ -563,7 +563,7 @@ describe('written work and simplifying, by grade', () => {
     // A difference under 10 is counted up, not set out in columns.
     expect(r!.written).toBeUndefined();
     const [n] = steps('m.4.multi-digit-multiply', { a: 234, b: 6 });
-    expect(n!.written?.says).toBe('234 × 6 = 1404');
+    expect(n!.written?.says).toBe('234 × 6 = 1,404');
     expect(n!.lines).toEqual(['234 = 200 + 30 + 4']);
   });
 

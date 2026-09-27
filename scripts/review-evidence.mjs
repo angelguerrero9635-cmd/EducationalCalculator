@@ -2,6 +2,11 @@
 // their tokens on judgement rather than on writing scripts:
 //
 //   node scripts/review-evidence.mjs --prefix s.K.,s.1.,s.2.,s.3. [--out .review] [--wide 3] [--dark 3]
+//     [--edges]
+//
+// --edges: an edge-case review. Fewer random samples (SAMPLES=25, SEQUENCES=5), most of them
+// taken at the boundaries (EDGE_BIAS=0.8), and the dump walks every opening value at its
+// smallest and largest, then all of them at once (REVIEW_EDGES=all).
 //
 // Writes into the output folder:
 //   dump.txt        every module's definition and walkthroughs (dump.review.test.ts)
@@ -10,6 +15,8 @@
 //                   and a few in dark mode, with the layout checks (review-shots.mjs)
 //   scenes/         every scene of every exploration; drags.md: every handle dragged, with
 //                   the values before and after (review-interact.mjs)
+//   questions.md    released test and practice questions for the section's skills
+//                   (review-questions.mjs, from research/questions/)
 //   evidence.md     an index: module ids, the files, and any problems the scripts flagged
 // Needs a web build (pnpm build:web) and the globally installed Playwright (NODE_PATH).
 import { spawnSync } from 'node:child_process';
@@ -29,6 +36,9 @@ if (!prefix) {
 const out = flag('--out', '.review');
 const wide = Number(flag('--wide', '3'));
 const dark = Number(flag('--dark', '3'));
+const edgeEnv = args.includes('--edges')
+  ? { REVIEW_EDGES: 'all', SAMPLES: '25', SEQUENCES: '5', EDGE_BIAS: '0.8' }
+  : {};
 mkdirSync(join(out, 'shots'), { recursive: true });
 
 const run = (label, cmd, cmdArgs, env = {}) => {
@@ -49,6 +59,7 @@ run(
   {
     REVIEW_DUMP: join(out, 'dump.txt'),
     MODULE_IDS: prefix,
+    ...edgeEnv,
   },
 );
 const ids = [...readFileSync(join(out, 'dump.txt'), 'utf8').matchAll(/^=== (\S+)/gm)].map(
@@ -61,7 +72,7 @@ const harness = run(
   'npx',
   // (not --silent: the report is printed with console.log)
   ['jest', 'src/data/modules/__tests__/sampling.test.ts'],
-  { MODULE_IDS: prefix, SAMPLING_REPORT: '1' },
+  { MODULE_IDS: prefix, SAMPLING_REPORT: '1', ...edgeEnv },
 );
 const report = harness
   .split('\n')
@@ -171,6 +182,15 @@ const sheets = sheetFiles.length
   ? run('contact sheets', 'python3', ['-c', sheetScript, join(out, 'sheets'), ...sheetFiles])
   : 'no sheets';
 
+// 3c. Released questions for the section's skills (review-questions.mjs).
+const questions = run('released questions', 'node', [
+  'scripts/review-questions.mjs',
+  '--prefix',
+  prefix,
+  '--out',
+  out,
+]);
+
 // 4. Index.
 const failures = report.split('\n').filter((l) => l.startsWith('- [error]'));
 writeFileSync(
@@ -184,6 +204,7 @@ writeFileSync(
     `- Harness: ${join(out, 'harness.txt')} — ${failures.length} error lines`,
     `- Screenshots: ${join(out, 'shots')}/<id>-390.png (all), -1024.png (first ${wide}), dark for the first ${dark}`,
     `- Scenes and drags: ${join(out, 'scenes')}/<id>-<n>.png, ${join(out, 'drags.md')} (${interact.trim().split('\n').pop()})`,
+    `- Released questions: ${join(out, 'questions.md')} (${questions.trim().split('\n').pop()})`,
     `- Contact sheets: ${join(out, 'sheets')}/sheet<n>.png, one page per picture kind (${sheets.trim().split('\n').pop()})`,
     '',
     '## Flagged by the scripts',

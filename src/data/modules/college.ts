@@ -447,7 +447,8 @@ export const COLLEGE_MODULES: ModuleDef[] = [
         y: { expr: '{c} × {x}^{n}', how: 'Raise x to the power n, then multiply by c.' },
         c: { expr: '{y} ÷ {x}^{n}', how: 'Divide both sides by xⁿ.' },
         x: {
-          expr: '({y} ÷ {c})^(1 ÷ {n})',
+          // For even n the negative root is written with its sign.
+          expr: (v) => (v.x! < 0 && v.n! % 2 === 0 ? '−' : '') + '({y} ÷ {c})^(1 ÷ {n})',
           how: 'Divide by c, then take the n-th root. For even n both signs work; the one nearest the current point is shown.',
         },
         n: {
@@ -466,7 +467,8 @@ export const COLLEGE_MODULES: ModuleDef[] = [
         },
         c: { expr: '{m} ÷ ({n} × {x}^({n} − 1))', how: 'Divide both sides by n·xⁿ⁻¹.' },
         x: {
-          expr: '({m} ÷ ({n} × {c}))^(1 ÷ ({n} − 1))',
+          expr: (v) =>
+            (v.x! < 0 && (v.n! - 1) % 2 === 0 ? '−' : '') + '({m} ÷ ({n} × {c}))^(1 ÷ ({n} − 1))',
           how: 'Divide by n·c, then take the (n − 1)-th root.',
         },
       },

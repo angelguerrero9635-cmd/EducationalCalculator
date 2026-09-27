@@ -35,12 +35,14 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={spec.brackets ? 0.56 : 0.42}>
-        {({ w, h }) => {
+      {/* 26 px under the box for two more rows of value labels when values bunch up. */}
+      <Canvas aspect={(w) => (spec.brackets ? 0.56 : 0.42) + 26 / w}>
+        {({ w, h: full }) => {
+          const h = full - 26;
           const pad = 24;
           const unit = (w - 2 * pad) / (hi - lo || 1);
           const sx = (x: number) => pad + (x - lo) * unit;
-          const yLine = h - 30;
+          const yLine = full - 30;
           // Brackets go above the value labels, so the box sits lower.
           const yMid = spec.brackets ? h * 0.52 : h * 0.42;
           const boxH = spec.brackets ? h * 0.28 : h * 0.36;
@@ -48,9 +50,44 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const ticks: number[] = [];
           for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) ticks.push(t);
           const [mn, q1, md, q3, mx] = vals as [number, number, number, number, number];
+          // Value labels: equal values share one label. Labels take turns above and below the
+          // box; one that would touch the last label in its row goes to the other side, or to a
+          // row further down.
+          const up = yMid - boxH / 2 - 8;
+          const down = yMid + boxH / 2 + 16;
+          const width = (t: string) => t.length * chart.small * 0.6 + 6;
+          const rows = [up, down, down + 13, down + 26];
+          const last: ({ x: number; w: number } | undefined)[] = rows.map(() => undefined);
+          const clear = (r: number, x: number, lw: number) => {
+            const p = last[r];
+            return !p || Math.abs(x - p.x) > (lw + p.w) / 2;
+          };
+          const labels: { i: number; x: number; y: number }[] = [];
+          ids.forEach((id, i) => {
+            if (i > 0 && vals[i] === vals[i - 1]) return;
+            const x = sx(vals[i]!);
+            const lw = width(rep.value(id, false));
+            const order = labels.length % 2 === 0 ? [0, 1, 2, 3] : [1, 0, 2, 3];
+            const r = order.find((k) => clear(k, x, lw)) ?? 3;
+            last[r] = { x, w: lw };
+            labels.push({ i, x, y: rows[r]! });
+          });
+          // Handles closer than a handle's width are spread up and down the box, so each one
+          // can be picked up.
+          const handleY: number[] = [];
+          for (let i = 0; i < ids.length;) {
+            let j = i + 1;
+            while (j < ids.length && sx(vals[j]!) - sx(vals[j - 1]!) < chart.handle) j++;
+            const k = j - i;
+            const spread = Math.min(boxH, (k - 1) * chart.handle);
+            for (let n = 0; n < k; n++) {
+              handleY.push(k === 1 ? yMid : yMid - spread / 2 + (n * spread) / (k - 1));
+            }
+            i = j;
+          }
           return (
             <>
-              <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
+              <Svg width={w} height={full} opacity={known ? 1 : 0.4}>
                 <Line
                   x1={pad - 6}
                   y1={yLine}
@@ -126,16 +163,16 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   stroke={c.chartHighlight}
                   strokeWidth={chart.strokeHeavy}
                 />
-                {ids.map((id, i) => (
+                {labels.map(({ i, x, y }) => (
                   <ChartText
-                    key={`v${id}`}
-                    x={sx(vals[i]!)}
-                    y={i % 2 === 0 ? yMid - boxH / 2 - 8 : yMid + boxH / 2 + 16}
+                    key={`v${ids[i]}`}
+                    x={x}
+                    y={y}
                     fontSize={chart.small}
                     fontWeight={i === 2 ? '700' : undefined}
                     textAnchor="middle"
                   >
-                    {rep.value(id, false)}
+                    {rep.value(ids[i]!, false)}
                   </ChartText>
                 ))}
                 {spec.brackets
@@ -173,17 +210,20 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       key={id}
                       testID={`drag-${id}`}
                       x={sx(vals[i]!)}
-                      y={yMid}
+                      y={handleY[i]!}
                       label={rep.variable(id).name}
                       onStart={() => {
                         start.current = vals[i]!;
                         range.freeze();
                       }}
                       onMove={(dx) =>
-                        calc.set({
-                          ...rep.pin(ids.filter((x) => x !== id)),
-                          [id]: rep.snapTo(id, (start.current + dx / unit) * rep.factor(id)),
-                        })
+                        calc.set(
+                          {
+                            ...rep.pin(ids.filter((x) => x !== id)),
+                            [id]: rep.snapTo(id, (start.current + dx / unit) * rep.factor(id)),
+                          },
+                          rep.slide(id),
+                        )
                       }
                       onEnd={range.release}
                     />

@@ -6,7 +6,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, useFrozen, useRep } from './common';
+import { Canvas, fitLabel, Caption, ChartText, useFrozen, useRep } from './common';
 import { tickStep } from './IntegerLine';
 import { Steppers } from './Steppers';
 
@@ -109,11 +109,10 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     strokeDasharray={chart.dash}
                   />
                   <ChartText
-                    x={x(median)}
+                    {...fitLabel(x(median), `median ${formatNumber(median)}`, chart.small, w)}
                     y={10}
                     fontSize={chart.small}
                     fill={c.chartHighlight}
-                    textAnchor="middle"
                   >
                     {`median ${formatNumber(median)}`}
                   </ChartText>
@@ -123,12 +122,16 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <G>
                   <Path d={`M ${x(mean)} ${lineY + 22} l -8 12 l 16 0 z`} fill={c.chartHighlight} />
                   <ChartText
-                    x={x(mean)}
+                    {...fitLabel(
+                      x(mean),
+                      `mean ${formatNumber(Number(mean.toFixed(2)))}`,
+                      chart.small,
+                      w,
+                    )}
                     y={lineY + 48}
                     fontSize={chart.small}
                     fontWeight="700"
                     fill={c.chartHighlight}
-                    textAnchor="middle"
                   >
                     {`mean ${formatNumber(Number(mean.toFixed(2)))}`}
                   </ChartText>

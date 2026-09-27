@@ -20,12 +20,21 @@ import Svg, {
   type RectProps,
 } from 'react-native-svg';
 
-import { usePalette } from '@/theme';
+import { useIsClient, usePalette } from '@/theme';
 
-/** Unique gradient ids for one picture: `ids.glass`, `ids.water`, … */
+/**
+ * Unique gradient ids for one picture: `ids.glass`, `ids.water`, …
+ *
+ * The id changes once, right after the page mounts. A pre-rendered web page is hydrated with
+ * the server's ids, but React's `useId` gives different ids in the browser: shapes drawn after
+ * the first edit then point at a gradient that isn't there and draw hollow. Renaming every id
+ * after mount rewrites the gradients and their references together.
+ */
 export function usePaintIds<K extends string>(...names: K[]): Record<K, string> {
   // React's ids contain colons, which aren't allowed in url(#…) references on the web.
-  const base = 'p' + useId().replace(/[^A-Za-z0-9]/g, '');
+  const id = useId().replace(/[^A-Za-z0-9]/g, '');
+  const live = useIsClient();
+  const base = `p${id}${live ? 'c' : ''}`;
   return Object.fromEntries(names.map((n) => [n, `${base}-${n}`])) as Record<K, string>;
 }
 

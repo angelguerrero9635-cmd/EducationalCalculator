@@ -22,7 +22,7 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
       variables: [
         { ...whole('a', 'a', 'Hard push', 1, 20), unit: 'cubes' },
         { ...whole('b', 'b', 'Gentle push', 0, 20), unit: 'cubes' },
-        { ...whole('d', 'd', 'Farther by', 0, 10), unit: 'cubes' },
+        { ...whole('d', 'd', 'Farther by', 0, 20), unit: 'cubes' },
       ],
       // The story fixes the order, so the sentence reads as a take-away.
       relations: [{ ...farther.relation, display: '{a} − {b} = {d}' }, atLeast('a', 'b')],
@@ -43,9 +43,9 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         'Put one thermometer in the sun and one in the shade. Wait 10 minutes.',
       ],
       variables: [
-        { ...whole('u', 'u', 'Sunny spot', 40, 110), unit: F },
-        { ...whole('h', 'h', 'Shady spot', 40, 110), unit: F },
-        { ...whole('w', 'w', 'Warmer by', 0, 10), unit: F },
+        { ...whole('u', 'u', 'Sunny spot', 40, 100), unit: F },
+        { ...whole('h', 'h', 'Shady spot', 40, 100), unit: F },
+        { ...whole('w', 'w', 'Warmer by', 0, 40), unit: F },
       ],
       // The story fixes the order, so the sentence reads as a take-away.
       relations: [{ ...warmer.relation, display: '{u} − {h} = {w}' }, atLeast('u', 'h')],
@@ -57,7 +57,7 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         items: ['u', 'h'],
         difference: 'w',
         min: 40,
-        max: 110,
+        max: 100,
       },
     } satisfies ModuleDef;
   })(),
@@ -76,9 +76,9 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         'Read the thermometer at the start and again later.',
       ],
       variables: [
-        { ...whole('s', 's', 'Start temperature', 40, 100), unit: F },
-        { ...whole('r', 'r', 'Degrees warmer', 0, 10), unit: F },
-        { ...whole('t', 't', 'Temperature now', 40, 110), unit: F },
+        { ...whole('s', 's', 'Start temperature', 40, 90), unit: F },
+        { ...whole('r', 'r', 'Degrees warmer', 0, 40), unit: F },
+        { ...whole('t', 't', 'Temperature now', 40, 100), unit: F },
       ],
       relations: [warms.relation],
       steps: { 'now = start + rise': warms.steps },
@@ -89,7 +89,7 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         items: ['s', 't'],
         difference: 'r',
         min: 40,
-        max: 110,
+        max: 100,
       },
     } satisfies ModuleDef;
   })(),
@@ -98,19 +98,19 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
     const more = moreThan('m', 'w', 'd', 'watered cup', 'dry cup', ['more', 'fewer']);
     return {
       id: 's.K.living-needs',
-      pictureLabels: ['m'],
       assumptions: [
         'Plants need water and light. Animals need food and water.',
         'Plant 10 seeds in each cup. Water one cup only.',
         'Count the seeds that sprouted in each cup. The difference shows what water does.',
       ],
       variables: [
-        whole('w', 'w', 'Sprouted with water', 0, 10),
-        whole('d', 'd', 'Sprouted with no water', 0, 10),
+        whole('w', 'w', 'Seeds sprouted with water', 0, 10),
+        whole('d', 'd', 'Seeds sprouted with no water', 0, 10),
         whole('m', 'm', 'More with water', 0, 10),
       ],
-      relations: [more.relation],
-      steps: more.steps,
+      // The watered cup sprouts at least as many: the other way round, count again.
+      relations: [{ ...more.relation, display: '{w} − {d} = {m}' }, atLeast('w', 'd')],
+      steps: { ...more.steps, 'w ≥ d': {} },
       example: { w: 8, d: 2, m: 6 },
       startWith: ['w', 'd'],
       representation: {
@@ -135,12 +135,12 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
       assumptions: [
         'Each school day, mark the weather.',
         'Count the marks. Which weather came most?',
-        'Two school weeks is 10 days.',
+        'Mark the weather each school day for a month.',
       ],
       variables: [
-        whole('s', 's', 'Sunny days', 0, 10),
-        whole('n', 'n', 'Not sunny days', 0, 10),
-        whole('d', 'd', 'Days counted', 0, 10),
+        whole('s', 's', 'Sunny days', 0, 20),
+        whole('n', 'n', 'Not sunny days', 0, 20),
+        whole('d', 'd', 'Days counted', 0, 20),
       ],
       relations: [all.relation],
       steps: { 'days = sunny + not sunny': all.steps },
@@ -171,7 +171,7 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
       variables: [
         { ...whole('t', 't', 'Today', 20, 100), unit: F },
         { ...whole('y', 'y', 'Yesterday', 20, 100), unit: F },
-        { ...whole('w', 'w', 'Degrees apart', 0, 10), unit: F },
+        { ...whole('w', 'w', 'Warmer or cooler by', 0, 40), unit: F },
       ],
       relations: [warmer.relation],
       steps: warmer.steps,
@@ -203,8 +203,8 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
       ],
       variables: [
         whole('a', 'a', 'Cans', 0, 10),
-        whole('c', 'c', 'Paper', 0, 10),
-        whole('p', 'p', 'Pieces picked up', 0, 10),
+        whole('c', 'c', 'Pieces of paper', 0, 10),
+        whole('p', 'p', 'Pieces picked up', 0, 20),
       ],
       relations: [all.relation],
       steps: { 'pieces = cans + paper': all.steps },

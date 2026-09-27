@@ -5,6 +5,41 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## K–6 edge-case review (math and science, 12 reviewers, low sampling, every edge)
+
+- A value the student typed that no longer fitted was dropped silently, and the evidence
+  hid why. → The dump's edge blocks put the edited value last (as a student types it), so
+  the rejection and its reason print; the values line shows `allowed`, `multipleOf` and
+  `derived`. Sampling snaps typed values to each variable's step and puts the edges (min,
+  max, one step in, 0, 1, 2) first.
+- Picture drags that went past what the other values allow were refused, and a refused
+  drag marked the held values "doesn't fit" (box plot boxes showing old numbers). → Every
+  single-value drag passes `rep.slide(id)`: it stops at the last value that fits. A refused
+  drag marks only the dragged value.
+- Labels ran off the canvas at the edges of a range. → `fitLabel` in `reps/common.tsx` flips
+  or slides a label inside (coordinate plane, dot plot, tape). Two points in one place share
+  a label; a zero-length segment has none.
+- Large units (miles) broke the solver's narrowing and reach checks. → Slopes are measured
+  per grid step and tolerances scale with the size of the terms (solve.ts and the harness).
+- "6.400e7" and "9.999e8" in Grade 6 answers. → Whole numbers below 10^15 print in full with
+  separators. "1 units", "1 minutes", "1 days" → `unitFor` gives the singular after 1 (word
+  units only; symbols such as ms stay).
+- Step text: teen factors break apart (6 × 14 = 60 + 24), two multiples of ten use the fact,
+  "1 ten", divisor 1, where 1,000's hundreds come from, no lines for places that are 0 in
+  both numbers, millions in place compares, separators in every sum, count-up and written
+  header. The repeated "q groups make n" after a strategy line that already says n is gone.
+- Compare pages said "9 is longer than 6" and never "the same". → `difference` takes
+  `bigger`/`equal` sentences and `moreThan` names the bigger thing; pages with a direction
+  ("more with water", "warmest") add `atLeast` so the other way round is refused.
+- Add and subtract "how" lines were fixed strings that didn't fit 0 + 5 or 36 + 30. →
+  `addSub` takes a function of the values.
+- Harness: a minus before a power ("−(0.04)^(1 ÷ 2)"), rounding "to the hundredths" by name,
+  and more than 40 fraction groups (FractionFit now draws one bar past 40).
+- Still open (engine work listed for the owner): a fraction display for measure and quotient
+  answers (33 1/3, 2 3/8 L); per-variable unit lists (no rain in km); an inequality never
+  being the step that finds a value; K–2 rejection wording that names the value and its
+  limit; display precision on a variable (density to 2 significant figures).
+
 ## Picture art pass (owner request: better-quality images for every diagram type)
 
 - Photos could not be used:

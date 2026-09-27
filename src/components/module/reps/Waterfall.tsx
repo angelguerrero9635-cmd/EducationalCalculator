@@ -130,7 +130,8 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     textAnchor="middle"
                   >
                     {rep.known(s.var)
-                      ? `${s.sign > 0 ? '+' : '−'}${formatNumber(rep.shown(s.var))}`
+                      ? // No sign on 0 ("0", not "−0").
+                        `${rep.shown(s.var) === 0 ? '' : s.sign > 0 ? '+' : '−'}${formatNumber(rep.shown(s.var))}`
                       : '?'}
                   </ChartText>,
                   ...barName(s.var, cx(i), h - bottom + 18, `s${i}`),
@@ -168,13 +169,16 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     }}
                     onEnd={range.release}
                     onMove={(_, dy) =>
-                      calc.set({
-                        ...rep.pin(editable.filter((id) => id !== s.var)),
-                        [s.var]: rep.snapTo(
-                          s.var,
-                          (start.current - (s.sign * dy) / scale) * rep.factor(s.var),
-                        ),
-                      })
+                      calc.set(
+                        {
+                          ...rep.pin(editable.filter((id) => id !== s.var)),
+                          [s.var]: rep.snapTo(
+                            s.var,
+                            (start.current - (s.sign * dy) / scale) * rep.factor(s.var),
+                          ),
+                        },
+                        rep.slide(s.var),
+                      )
                     }
                   />
                 ) : null,

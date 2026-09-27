@@ -135,12 +135,15 @@ export function Rounding({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   label={rep.variable(spec.value).name}
                   onStart={() => (start.current = n)}
                   onMove={(dx) =>
-                    calc.set({
-                      [spec.value]: rep.snapTo(
-                        spec.value,
-                        Math.min(hi, Math.max(lo, start.current + (dx / (w - 2 * pad)) * to)),
-                      ),
-                    })
+                    calc.set(
+                      {
+                        [spec.value]: rep.snapTo(
+                          spec.value,
+                          Math.min(hi, Math.max(lo, start.current + (dx / (w - 2 * pad)) * to)),
+                        ),
+                      },
+                      rep.slide(spec.value),
+                    )
                   }
                 />
               ) : null}

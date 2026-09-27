@@ -59,10 +59,22 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
               }}
               onEnd={fit.release}
               onMove={(_, dy) =>
-                calc.set({
-                  ...rep.pin([other]),
-                  [id]: rep.snapTo(id, Math.max(0, start.current[key] - dy / perMl)),
-                })
+                calc.set(
+                  {
+                    ...rep.pin([other]),
+                    // The level after stays above the level before (the object takes up room).
+                    [id]: rep.snapTo(
+                      id,
+                      key === 'after'
+                        ? Math.max(start.current.before + 1, start.current.after - dy / perMl)
+                        : Math.min(
+                            start.current.after - 1,
+                            Math.max(0, start.current.before - dy / perMl),
+                          ),
+                    ),
+                  },
+                  rep.slide(id),
+                )
               }
             />
           );
@@ -165,7 +177,7 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fontSize={chart.small}
                   fill={c.chartInk}
                 >
-                  {`before ${formatNumber(before)} mL`}
+                  {`before ${rep.known(spec.before) ? formatNumber(before) : '?'} mL`}
                 </ChartText>
                 <ChartText
                   x={x0 + tubeW + 18}
@@ -173,9 +185,9 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fontSize={chart.small}
                   fill={c.chartHighlight}
                 >
-                  {`after ${formatNumber(after)} mL`}
+                  {`after ${rep.known(spec.after) ? formatNumber(after) : '?'} mL`}
                 </ChartText>
-                {after > before ? (
+                {known && after > before ? (
                   <>
                     <Path
                       d={`M ${x0 - 30} ${Y(before)} l -6 0 L ${x0 - 36} ${Y(after)} l 6 0`}
@@ -193,7 +205,7 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     >
                       {spec.volume && rep.known(spec.volume)
                         ? rep.value(spec.volume)
-                        : `${formatNumber(Number((after - before).toFixed(3)))} mL`}
+                        : `${formatNumber(Number((after - before).toFixed(3)))} cm³`}
                     </ChartText>
                   </>
                 ) : null}

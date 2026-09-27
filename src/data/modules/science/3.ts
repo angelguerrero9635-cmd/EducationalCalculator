@@ -3,7 +3,7 @@
  * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import { FAHRENHEIT, apart, sumAll, whole } from '../helpers';
+import { FAHRENHEIT, apart, atLeast, sumAll, whole } from '../helpers';
 import type { ModuleDef } from '../types';
 
 const F = FAHRENHEIT;
@@ -26,7 +26,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       assumptions: [
         'A force is a push or a pull. A spring scale measures it in newtons (N).',
         'Two pushes on opposite sides are balanced when they are equal: the box stays still.',
-        'When one push is bigger, the box moves that way. The extra push is the difference.',
+        'On a smooth floor, when one push is bigger, the box moves that way. The extra push is the difference.',
       ],
       variables: [
         { ...whole('r', 'r', 'Push to the right', 0, 50), unit: 'N' },
@@ -53,8 +53,8 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         'A stronger magnet holds a longer chain.',
       ],
       variables: [
-        whole('a', 'a', 'First magnet', 0, 30),
-        whole('b', 'b', 'Second magnet', 0, 30),
+        whole('a', 'a', 'Clips on the first magnet', 0, 30),
+        whole('b', 'b', 'Clips on the second magnet', 0, 30),
         whole('m', 'm', 'More clips', 0, 30),
       ],
       relations: [more.relation],
@@ -86,10 +86,10 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         'Puppies from the same parents are not all the same.',
       ],
       variables: [
-        whole('b', 'b', 'Brown', 0, 10),
-        whole('k', 'k', 'Black', 0, 10),
-        whole('s', 's', 'Spotted', 0, 10),
-        whole('p', 'p', 'Puppies', 0, 30),
+        whole('b', 'b', 'Brown puppies', 0, 8),
+        whole('k', 'k', 'Black puppies', 0, 8),
+        whole('s', 's', 'Spotted puppies', 0, 8),
+        whole('p', 'p', 'Puppies', 1, 15),
       ],
       relations: [litter.relation],
       steps: { 'p = brown + black + spotted': litter.steps },
@@ -115,16 +115,17 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       title: 'Traits the environment changes',
       use: 'Use this to compare plants with the same traits grown with different water.',
       assumptions: [
-        'Two plants from the same seeds inherit the same traits.',
+        'Two plants from seeds of the same parent plant inherit similar traits.',
         'The environment still matters: the plant that gets more water grows taller.',
       ],
       variables: [
-        { ...whole('w', 'w', 'Watered plant', 0, 60), unit: 'cm' },
-        { ...whole('d', 'd', 'Dry plant', 0, 60), unit: 'cm' },
-        { ...whole('t', 't', 'Taller by', 0, 60), unit: 'cm' },
+        { ...whole('w', 'w', 'Watered plant', 1, 60), unit: 'cm' },
+        { ...whole('d', 'd', 'Dry plant', 1, 60), unit: 'cm' },
+        { ...whole('t', 't', 'Taller by', 0, 59), unit: 'cm' },
       ],
-      relations: [taller.relation],
-      steps: { 't = w and d apart': taller.steps },
+      // The watered plant grows at least as tall: the other way round, measure again.
+      relations: [{ ...taller.relation, display: '{w} − {d} = {t}' }, atLeast('w', 'd')],
+      steps: { 't = w and d apart': taller.steps, 'w ≥ d': {} },
       example: { w: 32, d: 14, t: 18 },
       startWith: ['w', 'd'],
       representation: {
@@ -193,8 +194,8 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         'Count the birds of each kind that survived.',
       ],
       variables: [
-        whole('a', 'a', 'Big-beaked birds', 0, 50),
-        whole('b', 'b', 'Small-beaked birds', 0, 50),
+        whole('a', 'a', 'Big-beaked birds that survived', 0, 50),
+        whole('b', 'b', 'Small-beaked birds that survived', 0, 50),
         whole('m', 'm', 'More survived', 0, 50),
       ],
       relations: [more.relation],
@@ -229,10 +230,10 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
         'Add the rain of each week to find the rain for the month.',
       ],
       variables: [
-        { ...whole('a', 'a', 'Week 1', 0, 100), unit: 'mm' },
-        { ...whole('b', 'b', 'Week 2', 0, 100), unit: 'mm' },
-        { ...whole('c', 'c', 'Week 3', 0, 100), unit: 'mm' },
-        { ...whole('d', 'd', 'Week 4', 0, 100), unit: 'mm' },
+        { ...whole('a', 'a', 'Rain in week 1', 0, 100), unit: 'mm' },
+        { ...whole('b', 'b', 'Rain in week 2', 0, 100), unit: 'mm' },
+        { ...whole('c', 'c', 'Rain in week 3', 0, 100), unit: 'mm' },
+        { ...whole('d', 'd', 'Rain in week 4', 0, 100), unit: 'mm' },
         { ...whole('m', 'm', 'Rain this month', 0, 400), unit: 'mm' },
       ],
       relations: [month.relation],
@@ -263,14 +264,15 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       assumptions: [
         'Climate is the usual weather of a place over many years.',
         'A place with hot summers and cold winters has a big difference between its months.',
+        'Below 32 °F, rain falls as snow.',
       ],
       variables: [
-        { ...whole('h', 'h', 'Warmest month', 0, 120), unit: F },
-        { ...whole('c', 'c', 'Coldest month', 0, 120), unit: F },
-        { ...whole('r', 'r', 'Difference', 0, 120), unit: F },
+        { ...whole('h', 'h', 'Warmest month', 0, 100), unit: F },
+        { ...whole('c', 'c', 'Coldest month', 0, 100), unit: F },
+        { ...whole('r', 'r', 'Temperature range', 0, 100), unit: F },
       ],
-      relations: [range.relation],
-      steps: { 'r = h and c apart': range.steps },
+      relations: [{ ...range.relation, display: '{h} − {c} = {r}' }, atLeast('h', 'c')],
+      steps: { 'r = h and c apart': range.steps, 'h ≥ c': {} },
       example: { h: 84, c: 28, r: 56 },
       startWith: ['h', 'c'],
       representation: {

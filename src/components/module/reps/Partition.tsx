@@ -104,9 +104,12 @@ export function Partition({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {spec.fraction
-          ? `${rep.words ? '' : `${rep.variable(spec.parts).symbol} = `}${p} equal parts: ${k}/${p} shaded, ${p - k}/${p} not shaded.`
-          : `${rep.words ? '' : `${rep.variable(spec.parts).symbol} = `}${p} equal parts (${NAMES[p] ?? `${p} parts`}): ${rep.words ? '' : `${rep.variable(spec.shaded).symbol} = `}${k} shaded, ${p - k} not shaded. ${k} ${(k === 1 ? ONE : MANY)[p] ?? 'parts'} shaded.`}
+        {!rep.known(spec.parts) || !rep.known(spec.shaded)
+          ? // A "?" is never shown as a number: say what is known and ask for the rest.
+            `${rep.known(spec.parts) ? p : '?'} equal parts: ${rep.known(spec.shaded) ? k : '?'} shaded.`
+          : spec.fraction
+            ? `${rep.words ? '' : `${rep.variable(spec.parts).symbol} = `}${p} equal parts: ${k}/${p} shaded, ${p - k}/${p} not shaded.`
+            : `${rep.words ? '' : `${rep.variable(spec.parts).symbol} = `}${p} equal parts (${NAMES[p] ?? `${p} parts`}): ${rep.words ? '' : `${rep.variable(spec.shaded).symbol} = `}${k} shaded, ${p - k} not shaded. ${k} ${(k === 1 ? ONE : MANY)[p] ?? 'parts'} shaded.`}
       </Caption>
       <Steppers
         calc={calc}

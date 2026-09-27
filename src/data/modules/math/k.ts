@@ -11,6 +11,7 @@ import { countList } from '../work';
 const cmpK10 = difference('d', 'a', 'b', {
   countOn: true,
   compareWords: ['more', 'fewer'],
+  equal: 'Both rows have the same number. Nothing is left over.',
   display: 'Match {a} and {b}: {d} left over',
   diff: 'Match the counters in pairs. Count the solid ones left over.',
   first: [
@@ -24,7 +25,8 @@ const cmpK10 = difference('d', 'a', 'b', {
 });
 const cmpPencils = difference('d', 'a', 'b', {
   countOn: true,
-  compareWords: ['longer', 'shorter'],
+  bigger: ['The first pencil is longer.', 'The second pencil is longer.'],
+  equal: 'The pencils are the same length.',
   display: 'Line up {a} and {b}: {d} cubes stick out',
   diff: 'Line up the pencils at one end. Count the cubes that stick out.',
   first: [
@@ -56,6 +58,8 @@ const blockLines = (z: number, r: number) => [
 const capacity = difference('d', 'a', 'b', {
   diff: 'Match the cups one to one. Count the extra cups.',
   countOn: true,
+  bigger: ['The first jar holds more.', 'The second jar holds more.'],
+  equal: 'The jars hold the same amount.',
   display: 'Match {a} and {b} cups: {d} extra cups',
   first: [
     'The first jar holds more. Add the extra cups to the second jar.',
@@ -516,9 +520,9 @@ export const MATH_K_MODULES: ModuleDef[] = [
       'Count the cubes that stick out. That is how much longer.',
     ],
     variables: [
-      { ...whole('a', 'a', 'First pencil', 0, 12), unit: 'cubes' },
-      { ...whole('b', 'b', 'Second pencil', 0, 12), unit: 'cubes' },
-      { ...whole('d', 'd', 'Cubes that stick out', 0, 12), unit: 'cubes' },
+      { ...whole('a', 'a', 'First pencil', 1, 12), unit: 'cubes' },
+      { ...whole('b', 'b', 'Second pencil', 1, 12), unit: 'cubes' },
+      { ...whole('d', 'd', 'Cubes that stick out', 0, 11), unit: 'cubes' },
     ],
     relations: [cmpPencils.relation],
     steps: {
@@ -547,9 +551,9 @@ export const MATH_K_MODULES: ModuleDef[] = [
       'Same number of cups? Then they hold the same.',
     ],
     variables: [
-      { ...whole('a', 'a', 'First jar', 0, 10), unit: 'cups' },
-      { ...whole('b', 'b', 'Second jar', 0, 10), unit: 'cups' },
-      { ...whole('d', 'd', 'How many more cups', 0, 10), unit: 'cups' },
+      { ...whole('a', 'a', 'First jar', 1, 10), unit: 'cups' },
+      { ...whole('b', 'b', 'Second jar', 1, 10), unit: 'cups' },
+      { ...whole('d', 'd', 'How many more cups', 0, 9), unit: 'cups' },
     ],
     relations: [capacity.relation],
     steps: { ...capacity.steps },

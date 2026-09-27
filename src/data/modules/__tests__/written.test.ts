@@ -26,7 +26,7 @@ describe('written work grids', () => {
 
   it('adds several numbers and carries past the top place', () => {
     const w = columnAdd([1200, 180, 24])!;
-    expect(w.says).toBe('1200 + 180 + 24 = 1404');
+    expect(w.says).toBe('1,200 + 180 + 24 = 1,404');
     expect(text(w).split('\n').slice(-1)[0]).toBe('  1 4 0 4');
     expect(columnAdd([950, 75])!.rows[0]!.map((c) => c.text)).toEqual(['', '1', '1', '', '']);
   });
@@ -82,7 +82,7 @@ describe('written work grids', () => {
     expect(autoWritten('5', '50 + 20 + 30')).toBeUndefined();
     expect(autoWritten('5', '1,000 − 998')).toBeUndefined();
     expect(autoWritten('1', '38 + 25')).toBeUndefined();
-    expect(autoWritten('4', '1,200 + 180 + 24')?.says).toBe('1200 + 180 + 24 = 1404');
+    expect(autoWritten('4', '1,200 + 180 + 24')?.says).toBe('1,200 + 180 + 24 = 1,404');
     expect(autoWritten('2', '63 − 25')?.says).toBe('63 − 25 = 38');
     expect(autoWritten('2', '68 − 25')).toBeUndefined();
     expect(autoWritten('4', '43 × 6')?.says).toBe('43 × 6 = 258');
@@ -139,7 +139,7 @@ describe('simplify chain', () => {
 describe('Grade 5 written work', () => {
   it('multiplies one row per digit of the second factor', () => {
     const w = columnMultiply(234, 56, true)!;
-    expect(w.says).toBe('234 × 56 = 13104');
+    expect(w.says).toBe('234 × 56 = 13,104');
     const notes = w.rows.flatMap((r) => r.filter((c) => c.wide).map((c) => c.text));
     expect(notes).toEqual(['234 × 6', '234 × 50']);
     // Grade 5: the standard algorithm, two carry rows, the factors, two rows and the sum.

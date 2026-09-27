@@ -1,0 +1,212 @@
+# Renderings brief: pictures for every module through Grade 8
+
+A prompt for a second chat working in this repository. Paste everything below the line.
+
+---
+
+You are working in the EducationalCalculator repository (Expo SDK 57, Expo Router, TypeScript
+strict, react-native-svg). It is a study app for K–12 students, often minors. Read
+`CLAUDE.md`, `docs/MODULE_GUIDE.md` (the picture catalog and the "Art direction" section) and
+`src/theme.ts` before you start.
+
+## Your job
+
+Make every picture (charts, graphs, diagrams, object pictures, card icons and explore
+figures) that the math and science modules need from Kindergarten through Grade 8: the ones
+the built K–6 pages still lack, the changes to existing pictures listed below, and the ones
+the planned Grade 7 and 8 skills will need. You own all image work: the lesson chat will not
+draw or change pictures. It builds and changes the lesson pages at the same time, using the
+closest existing picture until yours is ready, then pulls your branch and plugs yours in.
+
+## Hard rules
+
+- **Online images are reference only.** Look at photos and illustrations online (Wikimedia
+  Commons, NASA, USGS, NOAA, Openverse, museum and field-guide pictures) to get shapes,
+  proportions, colors and details right, then draw the picture yourself in code with
+  react-native-svg. Never copy, trace, embed or download an image into the repository: no
+  image files, no bundled assets, no network calls from the app. Lesson text and pictures
+  stay original.
+- **Values stay exact.** Anything that moves with the student's numbers (bars, lines,
+  points, liquid levels, handles, labels) is drawn from the values; charts and number
+  diagrams stay flat and exact.
+- Ask before adding a dependency (an image or SVG library).
+- **Every color is a theme token** (`usePalette()`; add tokens to `src/theme.ts` in both light
+  and dark). `src/components/__tests__/colors.test.ts` fails on any hex or rgb literal in a
+  component.
+- **Art direction** (MODULE_GUIDE): real objects are drawn in their materials with the
+  helpers in `src/components/module/reps/paint.tsx` (`usePaintIds`, `TopLight`, `Sheen`,
+  `Ball`, `Glass`, `Metal`, `FloorShadow`, `BoxShadow`, `LitRect`); abstract diagrams (number
+  lines, grids, graphs, bars, pie charts, measured shapes, tables, trees) stay flat. Light
+  comes from the top left. Gradient ids come from `usePaintIds` only.
+- **Pictures are driven by values.** A picture reads the module's values through `useRep(calc)`
+  (`src/components/module/reps/common.tsx`): `rep.known(id)`, `rep.shown(id)`,
+  `rep.value(id)`, `rep.label(id)`. A value that is "?" draws faded or as a placeholder and
+  never as a number the student did not type. Captions say the equation the picture shows,
+  with every number in it (a coefficient, a unit), in the grade's words: no letters for
+  numbers before Grade 6 (K–5 name values in words).
+- **Drags** use `DragHandle` and pass `rep.slide(id)` to `calc.set`, so a drag stops at the
+  last value that fits. Labels stay inside the canvas (`fitLabel`). Nothing is cut off at
+  390 px wide; no sideways scroll.
+- **Registering a new picture kind** touches: its type in `src/data/modules/types.ts`
+  (`Representation`), `src/components/module/reps/index.tsx`, `meta.ts`, the kind list in
+  `src/data/modules/__tests__/modules.test.ts`, a check in
+  `src/data/modules/harness/pictures.ts`, a demo module in `src/data/modules/gallery.ts` (so
+  it shows on `/gallery`), and a line in the MODULE_GUIDE picture catalog. Layout figures
+  (`CardFigure`, explore `figure` kinds, `CardIcon`) are typed in
+  `src/data/modules/layouts/types.ts` and drawn in `src/components/module/layouts/`.
+- **Don't edit lesson content** (`src/data/modules/math/*.ts`, `science/*.ts`,
+  `layouts/math.ts`, `layouts/science.ts`) except the gallery demos; the other chat owns
+  those. Add new files where you can; when you must touch a shared file (types, index, meta,
+  theme), keep the edit small so merges are easy.
+- **Work on your own branch** (start from `claude/ios-education-wireframe-313z7z`), commit
+  after each picture kind with a clear message, push, and don't open pull requests.
+- Before each push: `pnpm check` (typecheck, lint, format, all tests). For a picture, also
+  `pnpm build:web` and `NODE_PATH=$(npm root -g) pnpm shots -- <gallery ids> --widths 390`,
+  and look at the shots in light and dark.
+
+## What exists (don't rebuild)
+
+Picture kinds in `Representation`: angles, areaModel, array, balance, bars, baseHeight, baseTen,
+beaker, boxPlot, circle, clock, coinRow, coins, compareRows, coordinatePlane, cubeTrains,
+dotPlot, dotSet, doubleNumberLine, equalGroups, factorPairs, factorTree, fieldOfView, force,
+fractionArea, fractionBars, fractionFit, fractionLine, gradCylinder, grid100, hops,
+hundredChart, integerLine, linePlot, lineUp, net, numberBond, numberLine, pairs, partition,
+partnerList, patternBlocks, percentBar, pictureGraph, pieChart, placeValueChart, plot,
+polygon, prism, protractor, punnettSquare, pushes, quadrilateral, ratioTable, rectangle,
+rectilinear, rightTriangle, rockLayers, rounding, ruler, scale, seriesCircuit, shareWholes,
+skipCount, solid, table, tally, tape, tenFrame, thermometers, timeline, unitCubes, unitTiles,
+venn, waterfall, wave.
+
+Explore figures: parts, position, clock, dots, magnets, flashes, lightPath, particles, earth,
+push, vibration, sky, static, timesTable, cell, bodySystems, waterCycle, front, plates,
+continents, rockCycle. Card figures: lines, letter, polygon, circle, heart, solid, cut, bar,
+dots, icon, fractionBars, ray, net, inequality, cell, rock. Card icons: sun, moon, feather,
+leaf, crayon, sock, brick, watermelon, backpack, bowling ball, paper clip, door, eraser, bed,
+bus.
+
+## What to build, in this order
+
+### 1. Pictures the K–6 pages need now
+
+1. **Card icons** for new sorts (add to `CardIcon`, drawn in their materials): thermometer,
+   rain gauge, wind vane, wind sock; bird, frog, grasshopper, turtle, fish, cat, dog, dolphin,
+   person (eggs or born alive); green tree frog on a leaf, striped warbler on bark, white hare
+   in snow, thick fur, blubber, camel hump, cactus stem (camouflage and survival); rabbit,
+   deer, hawk, snake, heron, raccoon, bear (plant-eater / meat-eater / both); meter stick,
+   classroom door, school bus, pencil, paper clip, workbook (about a meter); big water bottle,
+   milk carton, juice box, eyedropper (about a liter); pan handle, oven mitt, kettle (heat).
+2. **Food web** explore figure (`foodWeb`): sun, grass, rabbit, grasshopper, mouse, frog,
+   snake, hawk, with arrows meaning "is eaten by"; a scene can light one chain or grey out a
+   removed animal and show what grows or shrinks.
+3. **Moon phases through a whole cycle** on the `sky` figure (waxing and waning, lit on the
+   correct side for the Northern Hemisphere) and the moon rising in the east.
+4. **Noon shadow by month**: a meter stick and its noon shadow for Dec–Oct, the sun higher
+   in June (an observe-page figure or a `shadowStick` picture driven by a length value).
+5. **Grass slope**: two trays of soil on a slope under a watering can, one with grass, with
+   the soil washed off collected below (driven by two values).
+6. **Two flashlights**: the same flashlight at one and at k times the distance, the lit
+   circle k times as wide and k × k times the area, with one square of the grid shaded.
+7. **Dark and light cups** in the sun with thermometers (reuse `thermometers`; add the cups). 8. **Fraction bars past one whole**: `fractionBars` rows that draw as many whole bars as
+   the fraction needs (7/4 is one whole bar and 3/4 of the next), and **mixed-number jumps**
+   on `fractionLine` (18 1/4 − 2 3/4).
+8. **Set model for fractions**: `partition` with `shape: 'set'` (objects in a row, some
+   marked: 3 of 7 umbrellas).
+9. **Bills and coins together**: `coins` with bills ($1, $5, $10) beside the coins and one
+   total.
+10. **Center and spread with 3 to 10 values**: `dotPlot` and `boxPlot` that draw only the first
+    n values (n is a value), the median marked for odd and even n.
+11. **Inequalities on a number line**: `integerLine` with an open or closed circle at the
+    bound, an arrow to the solutions, and a test point marked true or false.
+12. **Scaled unit cubes**: `unitCubes` past 10 per edge draws a labelled box to scale
+    (40 × 60 × 80 cm).
+13. **Ratio graph on numbered axes**: the `ratioTable` graph's axes scale to the rows shown,
+    with 3–4 numbered ticks per axis.
+14. **3-digit number line**: `numberLine` from a start (500) with ticks every 1, 10 or 100
+    and a point to place (540).
+15. **Plot a point**: `coordinatePlane` first quadrant where the student taps or drags one
+    point, with the path "across then up" drawn from the origin.
+16. **Line plot of lengths**: `linePlot` with 6 marks starting at any whole number, in inches
+    or centimeters, in halves, quarters or eighths.
+17. **Measured leaves**: a plant in the sun and one in the shade with their green leaves
+    counted (for the Grade 2 page that now counts leaves, not height).
+18. **Protractor with neither arm at 0**: `protractor` reading two arm marks (45 and 135).
+19. **Fraction answers**: pictures that show a quotient or a share as a mixed number
+    (33 1/3 groups, 2 3/8 L), drawn from the value, not rounded decimals.
+
+### 2. Grade 7 math (planned skills in `src/data/taxonomy.ts`)
+
+- proportional-relationships: a graph of y = kx through the origin with the point (1, k)
+  marked; a table beside it.
+- percent-applications: a percent bar for tax, tip, markup and discount (the original, the
+  change and the new amount as three bars), and percent change as before/after bars.
+- rational-operations: two-color counters (positive and negative) with zero pairs; a number
+  line with signed jumps; a sign table for multiplying.
+- two-step-equations: a balance (hanger) with x-blocks and unit weights; a tape for
+  px + q = r; an inequality on a number line.
+- scale-drawings: a figure on a grid and its scaled copy, with the scale factor labelled.
+- circles: a circle with radius and diameter, the circumference unrolled along a line (π
+  diameters), and the area as wedges rearranged into a near-parallelogram.
+- angle-relationships: two crossing lines (vertical angles), a straight line split in two
+  (supplementary), a right angle split in two (complementary), adjacent angles; all with
+  draggable rays.
+- prisms: a prism with its cross-section and its net (triangular and rectangular), and a
+  plane slicing a prism or pyramid.
+- sampling: a population of dots with a random sample circled; two samples' dot plots.
+- probability: a spinner with sectors, a pair of dice as a 6 × 6 grid of outcomes, a tree
+  diagram for two stages, a bag of colored marbles.
+
+### 3. Grade 8 math
+
+- roots-irrationals: a square whose area is the number and side is the root; a number line
+  placing √2, √10, π between whole numbers.
+- exponent-rules: repeated factors grouped (2³ × 2⁴ = 2⁷) as rows of factors.
+- scientific-notation: a powers-of-ten scale (a log ruler) placing a number and its
+  mantissa × 10ⁿ.
+- slope: a line on a grid with the rise/run triangle drawn and labelled; two points
+  draggable.
+- multi-step-equations: a balance with x-blocks on both sides.
+- systems-linear: two lines on one grid with the intersection marked (none when parallel).
+- functions-intro: an input-output machine and a mapping diagram (arrows from inputs to
+  outputs), a graph with the vertical-line test.
+- linear-functions: y = mx + b with the intercept and slope triangle.
+- transformations: a figure and its image on a grid for translation, reflection (the mirror
+  line), rotation (the center and angle) and dilation (the center and factor).
+- pythagorean: squares on the three sides of a right triangle; the distance between two
+  grid points with its right triangle.
+- volume-curved: a cylinder, cone and sphere with water levels (a cone fills 1/3 of the
+  cylinder), dimensions labelled.
+- scatter-plots: a scatter plot with a draggable line of fit, clusters and an outlier.
+
+### 4. Grade 7 and 8 science
+
+- atoms-molecules: ball-and-stick molecules (water, carbon dioxide, oxygen), atoms of an
+  element as same-colored balls.
+- phase-changes: a heating curve (temperature against time with flat melting and boiling
+  steps) and particle boxes for solid, liquid and gas.
+- chemical-reactions: particles before and after (atoms rearranged, none lost), balance
+  counters on each side of the arrow.
+- photosynthesis-respiration: a leaf and a cell with inputs and outputs (light, water, carbon
+  dioxide in; sugar, oxygen out) as arrows.
+- ecosystem-energy: an energy pyramid (10% to each level), the carbon cycle.
+- punnett-squares: exists; add a pedigree chart.
+- natural-selection: a population of beetles over generations as a stacked bar per
+  generation, the colors shifting.
+- motion: distance-time and speed-time graphs with the slope read as speed or acceleration.
+- newtons-laws: a cart pulled by a force with mass blocks; action-reaction pairs on two
+  skaters.
+- kinetic-potential: a roller coaster or pendulum with energy bars (kinetic and potential)
+  that trade as it moves.
+- em-spectrum: the spectrum band from radio to gamma with wavelength drawn above it.
+- electricity-basics: series and parallel circuits (parallel is new) with bulbs, a switch
+  and a meter.
+- magnetic-fields: field lines around a bar magnet, and an electromagnet (coil on a nail)
+  whose strength follows the turns and the current.
+- periodic-table: the table as a grid with a group, a period or an element highlighted.
+- gravity-orbits: an orbit diagram (sun, planet, moon) with the pull drawn as an arrow;
+  planets to scale by size.
+
+## How to report
+
+When each group is done, push, and write a short note in `docs/RENDERINGS_BRIEF.md` under a
+"Done" heading: the kind or figure name, the file, the gallery id and its spec (the fields a
+module passes), so the lesson chat can plug it in.

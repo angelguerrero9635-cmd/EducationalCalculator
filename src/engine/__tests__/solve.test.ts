@@ -1,4 +1,4 @@
-import { formatNumber, parseCents, parseNumber, renderTemplate } from '../format';
+import { formatNumber, parseCents, parseNumber, renderTemplate, unitFor } from '../format';
 import { findRoots, holds, solve, type System } from '../solve';
 import { initialState, setValues } from '../state';
 
@@ -36,6 +36,66 @@ describe('solve', () => {
     expect(two.values).toEqual({ l: 4, w: 3, A: 12 });
     expect(two.derived).toEqual(['A']);
     expect(two.unknown).toEqual([]);
+  });
+
+  it('keeps an input that fits when the values are in large units (miles in centimeters)', () => {
+    // A = x × y − u × z with every length a whole number of miles (160,934.4 cm each): typing
+    // A = 89 mi² after u = 1 mi must keep u (10 × 9 − 1 × 1 = 89), not clear it.
+    const mi = 160934.4;
+    const len = (id: string, lo: number, hi: number) => ({
+      id,
+      name: id,
+      symbol: id,
+      integer: true,
+      unitFactor: mi,
+      min: lo * mi,
+      max: hi * mi,
+    });
+    const cutOut: System = {
+      variables: [
+        len('x', 2, 10),
+        len('y', 2, 10),
+        len('u', 1, 9),
+        len('z', 1, 9),
+        len('p', 1, 9),
+        len('q', 1, 9),
+        {
+          id: 'A',
+          name: 'A',
+          symbol: 'A',
+          integer: true,
+          unitFactor: mi * mi,
+          min: mi * mi,
+          max: 99 * mi * mi,
+        },
+      ],
+      relations: [
+        {
+          id: 'x = u + p',
+          display: '',
+          vars: ['x', 'u', 'p'],
+          residual: (v) => v.x! - v.u! - v.p!,
+        },
+        {
+          id: 'y = z + q',
+          display: '',
+          vars: ['y', 'z', 'q'],
+          residual: (v) => v.y! - v.z! - v.q!,
+        },
+        {
+          id: 'A = x × y − u × z',
+          display: '',
+          vars: ['A', 'x', 'y', 'u', 'z'],
+          residual: (v) => v.A! - (v.x! * v.y! - v.u! * v.z!),
+        },
+      ],
+    };
+    const r = solve(cutOut, [
+      { id: 'u', value: mi },
+      { id: 'A', value: 89 * mi * mi },
+    ]);
+    expect(r.dropped).toEqual([]);
+    expect(r.rejected).toBeUndefined();
   });
 
   it('solves for any variable, not just the "output"', () => {
@@ -248,7 +308,9 @@ describe('format', () => {
     expect(formatNumber(12)).toBe('12');
     expect(formatNumber(Math.PI)).toBe('3.1416');
     expect(formatNumber(2.5, { integer: true })).toBe('3');
-    expect(formatNumber(1.5e9)).toBe('1.500e9');
+    expect(formatNumber(1.5e9)).toBe('1,500,000,000');
+    expect(formatNumber(1.5e15)).toBe('1.500e15');
+    expect(formatNumber(2.5e7 + 0.5)).toBe('2.500e7');
   });
 
   it('parses user input', () => {
@@ -276,5 +338,17 @@ describe('parseCents', () => {
     expect(parseCents('45¢')).toBe(45);
     expect(parseCents('$')).toBeUndefined();
     expect(parseCents('1.2.3')).toBe('invalid');
+  });
+});
+
+describe('unitFor', () => {
+  it('reads a word unit in the singular after 1, and leaves symbols alone', () => {
+    expect(unitFor(1, 'cubic units')).toBe('cubic unit');
+    expect(unitFor(1, 'inches')).toBe('inch');
+    expect(unitFor(1, 'boxes')).toBe('box');
+    expect(unitFor(2, 'cups')).toBe('cups');
+    expect(unitFor(1, 'ms')).toBe('ms');
+    expect(unitFor(1, 'hrs')).toBe('hrs');
+    expect(unitFor(1, 'cm')).toBe('cm');
   });
 });

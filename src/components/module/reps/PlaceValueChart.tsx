@@ -122,8 +122,9 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
         (columns
           .map((col) => ({ col, d: digitAt(x, col.place, spec.decimals) }))
           .filter(({ d }) => d !== '0')
-          .map(({ col, d }) => `${d} ${col.name}`)
-          .join(' + ') || '0') + '.',
+          // One of a place is singular: "1 ten", "1 hundred thousand".
+          .map(({ col, d }) => `${d} ${d === '1' ? col.name.replace(/s$/, '') : col.name}`)
+          .join(' + ') || '0 ones') + '.',
       );
     }
     if (litIndex >= 0) {
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   rowTight: { paddingHorizontal: 0 },
   cellWrap: { flexDirection: 'row', alignItems: 'flex-end' },
   cellTight: { width: 47, margin: 1 },
-  headTight: { fontSize: font.caption - 3, letterSpacing: -0.3 },
+  headTight: { fontSize: font.caption - 4, letterSpacing: -0.4 },
   digitTight: { fontSize: font.title },
   pointTight: { fontSize: font.title + 2 },
   cell: {

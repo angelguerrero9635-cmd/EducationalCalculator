@@ -29,7 +29,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
       variables: [
         { ...whole('L', 'L', 'Track length', 10, 500), unit: 'cm' },
         { ...whole('t', 't', 'Time', 1, 10), unit: 'seconds' },
-        { ...whole('v', 'v', 'Distance each second', 1, 100), unit: 'cm' },
+        { ...whole('v', 'v', 'Distance each second', 1, 500), unit: 'cm' },
       ],
       relations: [track.relation],
       steps: {
@@ -135,7 +135,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
     assumptions: [
       'Amplitude is how far the wave rises above the middle line.',
       'From the top of a crest to the bottom of a trough is twice the amplitude.',
-      'A bigger shake makes a taller wave: more energy.',
+      'A bigger shake makes a taller wave: more energy. A louder sound is a wave with a bigger amplitude.',
     ],
     standalone: {
       vars: ['w'],
@@ -219,11 +219,11 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
       assumptions: [
         'Weathering breaks rock into smaller pieces. Shaking rocks in a jar is a fast model of it.',
         'Weigh the rocks before and after. The pieces knocked off are the mass lost.',
-        'Erosion moves the pieces away: water, ice, wind and roots.',
+        'Erosion moves the pieces away: water, ice, wind and gravity.',
       ],
       variables: [
         { ...whole('b', 'b', 'Mass before shaking', 10, 500), unit: 'g' },
-        { ...whole('a', 'a', 'Mass after shaking', 0, 500), unit: 'g' },
+        { ...whole('a', 'a', 'Mass after shaking', 1, 500), unit: 'g' },
         { ...whole('w', 'w', 'Mass worn away', 0, 500), unit: 'g' },
       ],
       relations: [worn.relation],

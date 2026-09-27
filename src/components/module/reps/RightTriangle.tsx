@@ -108,10 +108,13 @@ export function RightTriangle({ spec, calc }: { spec: Spec; calc: Calculator }) 
               }}
               onEnd={fit.release}
               onMove={(_, dy) =>
-                calc.set({
-                  ...rep.pin([spec.b]),
-                  [spec.a]: rep.snapTo(spec.a, start.current - dy / s),
-                })
+                calc.set(
+                  {
+                    ...rep.pin([spec.b]),
+                    [spec.a]: rep.snapTo(spec.a, start.current - dy / s),
+                  },
+                  rep.slide(spec.a),
+                )
               }
             />
             <DragHandle
@@ -125,10 +128,13 @@ export function RightTriangle({ spec, calc }: { spec: Spec; calc: Calculator }) 
               }}
               onEnd={fit.release}
               onMove={(dx) =>
-                calc.set({
-                  ...rep.pin([spec.a]),
-                  [spec.b]: rep.snapTo(spec.b, start.current + dx / s),
-                })
+                calc.set(
+                  {
+                    ...rep.pin([spec.a]),
+                    [spec.b]: rep.snapTo(spec.b, start.current + dx / s),
+                  },
+                  rep.slide(spec.b),
+                )
               }
             />
           </>
