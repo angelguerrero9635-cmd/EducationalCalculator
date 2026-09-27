@@ -141,36 +141,61 @@ function affineOf(rel: Relation): Affine | undefined {
 
 /**
  * A sum the unknown values can't reach, whatever they are within their ranges (a total of 10
- * with 12 already typed and the rest at least 0): the inputs can never be completed.
+ * with 12 already typed and the rest at least 0): the inputs can never be completed. Returns
+ * the reason in words a young student reads ("In all would have to be 14, but it can be at
+ * most 10"), or undefined when every sum is still in reach.
  */
-function outOfReach(system: System, values: Values): boolean {
+function outOfReach(system: System, values: Values): string | undefined {
   const byId = new Map(system.variables.map((v) => [v.id, v]));
-  return system.relations.some((rel) => {
-    if (rel.constraint || rel.vars.every((id) => id in values)) return false;
+  for (const rel of system.relations) {
+    if (rel.constraint || rel.vars.every((id) => id in values)) continue;
     const aff = affineOf(rel);
-    if (!aff) return false;
+    if (!aff) continue;
     let lo = aff.c0;
     let hi = aff.c0;
+    let rest = aff.c0;
     // Tolerance scaled by the size of the terms, not of the sum (which is near 0 exactly when
     // it matters): with values in miles a true 0 comes out as 0.00003.
     let size = Math.abs(aff.c0);
+    let unbounded = false;
+    const open: string[] = [];
     for (const id of rel.vars) {
       const k = aff.coef.get(id)!;
       if (id in values) {
         lo += k * values[id]!;
         hi += k * values[id]!;
+        rest += k * values[id]!;
         size += Math.abs(k * values[id]!);
         continue;
       }
+      open.push(id);
       const v = byId.get(id);
-      if (v?.min === undefined || v.max === undefined) return false;
+      if (v?.min === undefined || v.max === undefined) {
+        unbounded = true;
+        break;
+      }
       lo += Math.min(k * v.min, k * v.max);
       hi += Math.max(k * v.min, k * v.max);
       size += Math.max(Math.abs(k * v.min), Math.abs(k * v.max));
     }
+    if (unbounded) continue;
     const tol = 1e-9 * (1 + size);
-    return lo > tol || hi < -tol;
-  });
+    if (!(lo > tol || hi < -tol)) continue;
+    // One value left to find: say what it would have to be and its limit.
+    if (open.length === 1) {
+      const v = byId.get(open[0]!)!;
+      const k = aff.coef.get(v.id)!;
+      const f = v.unitFactor ?? 1;
+      const unit = v.displayUnit ?? v.unit;
+      const shown = (x: number) =>
+        `${formatNumber(Number((x / f).toPrecision(6)))}${unit && !/^[$¢%°]/.test(unit) ? ` ${unit}` : ''}`;
+      const need = -rest / k;
+      const over = need > v.max!;
+      return `${v.name} would have to be ${shown(need)}, but it can be at ${over ? 'most' : 'least'} ${shown(over ? v.max! : v.min!)}`;
+    }
+    return 'The other numbers can’t reach this: they would go past their limits';
+  }
+  return undefined;
 }
 
 /** Finds roots of `f` in [lo, hi] by scanning for sign changes and bisecting. */
@@ -534,7 +559,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     // With values still unknown, check they can still be filled in: a sum within reach of
     // the unknowns' ranges, and some whole numbers that fit.
     const open = propagated.ok && Object.keys(propagated.values).length < system.variables.length;
-    const unreachable = open && outOfReach(system, propagated.values);
+    const unreachable = open ? outOfReach(system, propagated.values) : undefined;
     const none =
       open &&
       !unreachable &&
@@ -543,9 +568,9 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         return !r.exhausted && r.solutions.length === 0;
       })();
     const trial: Propagation = unreachable
-      ? { ok: false, reason: 'The other values can’t reach this within their ranges' }
+      ? { ok: false, reason: unreachable }
       : none
-        ? { ok: false, reason: 'No whole numbers fit these values' }
+        ? { ok: false, reason: 'These numbers can’t all be true together' }
         : propagated;
     if (trial.ok) {
       known = trial.values;
@@ -579,8 +604,10 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     }
   }
   // Explain each filled value with a formula that gives it directly once everything is known,
-  // so its step shows the usual arithmetic; otherwise it reads as found by trying numbers.
-  for (const id of filled) {
+  // so its step shows the usual arithmetic. A value only a rule like "a/b is at most 1" or the
+  // ranges pin down is left for the student to type: a step can't be found from an order
+  // rule ("12/? is at most 1, so the denominator is 12" reads as circular).
+  for (const id of [...filled]) {
     const direct = system.relations.find((rel) => {
       const fn = rel.solve?.[id];
       if (!fn || fn.length === 0 || !rel.vars.every((v) => v in known)) return false;
@@ -590,7 +617,15 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       const xs = out === undefined ? [] : Array.isArray(out) ? out : [out];
       return xs.some((x) => closeTo(x, known[id]!));
     });
-    const relation = direct ?? system.relations.find((rel) => rel.vars.includes(id))!;
+    const relation =
+      direct ?? system.relations.find((rel) => rel.vars.includes(id) && !rel.constraint);
+    if (!relation) {
+      const rest = { ...known };
+      delete rest[id];
+      known = rest;
+      filled.splice(filled.indexOf(id), 1);
+      continue;
+    }
     trace = [...trace, { id, relation: relation.id, exact: !!direct }];
   }
 

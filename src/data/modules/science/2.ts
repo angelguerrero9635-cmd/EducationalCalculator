@@ -139,32 +139,45 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
   })(),
   // ── Grade 2: what plants need to grow (2-LS2-1) ──
   (() => {
-    const taller = moreThan(
+    const more = moreThan(
       'd',
       's',
       'h',
       'plant in the sun',
       'plant in the shade',
-      ['taller', 'shorter'],
+      ['more leaves', 'fewer leaves'],
       '2',
+      'Count up from the smaller number to the bigger one. That is how many more leaves.',
     );
     return {
       id: 's.2.plant-growth-investigation',
+      pictureLabels: ['d'],
+      // A plant in the dark grows tall, thin and pale, so height can mislead: count the green
+      // leaves instead (a plant with sunlight makes more).
       assumptions: [
         'Grow two plants the same way, except one gets sunlight and one does not.',
-        'Water both the same. Measure them after two weeks.',
-        'The difference shows what sunlight does.',
+        'Water both the same. After two weeks, count the green leaves on each.',
+        'A plant with no sun grows thin and pale. It may be tall, but it has few green leaves.',
       ],
       variables: [
-        { ...whole('s', 's', 'Plant in the sun', 0, 50), unit: 'cm' },
-        { ...whole('h', 'h', 'Plant in the shade', 0, 50), unit: 'cm' },
-        { ...whole('d', 'd', 'Taller by', 0, 50), unit: 'cm' },
+        whole('s', 's', 'Leaves on the sunny plant', 0, 30),
+        whole('h', 'h', 'Leaves on the shady plant', 0, 30),
+        whole('d', 'd', 'More leaves in the sun', 0, 30),
       ],
-      relations: [taller.relation],
-      steps: taller.steps,
-      example: { s: 24, h: 9, d: 15 },
+      relations: [{ ...more.relation, display: '{s} − {h} = {d}' }, atLeast('s', 'h')],
+      steps: { ...more.steps, 's ≥ h': {} },
+      example: { s: 14, h: 5, d: 9 },
       startWith: ['s', 'h'],
-      representation: { kind: 'ruler', lengths: ['s', 'h'], difference: 'd', extent: 30 },
+      representation: {
+        kind: 'bars',
+        bars: [
+          { var: 's', editable: true },
+          { var: 'h', editable: true },
+        ],
+        min: 0,
+        max: 20,
+        scale: 5,
+      },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -187,9 +200,9 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
         'The difference shows what water does.',
       ],
       variables: [
-        { ...whole('w', 'w', 'Watered plant', 1, 50), unit: 'cm' },
-        { ...whole('n', 'n', 'Dry plant', 0, 50), unit: 'cm' },
-        { ...whole('d', 'd', 'Taller by', 0, 49), unit: 'cm' },
+        { ...whole('w', 'w', 'Watered plant', 1, 50), unit: 'cm', units: ['cm', 'mm', 'in'] },
+        { ...whole('n', 'n', 'Dry plant', 0, 50), unit: 'cm', units: ['cm', 'mm', 'in'] },
+        { ...whole('d', 'd', 'Taller by', 0, 49), unit: 'cm', units: ['cm', 'mm', 'in'] },
       ],
       // The watered plant grows at least as tall: the other way round, measure again.
       relations: [{ ...taller.relation, display: '{w} − {n} = {d}' }, atLeast('w', 'n')],

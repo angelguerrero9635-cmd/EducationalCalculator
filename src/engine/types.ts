@@ -17,6 +17,17 @@ export interface VariableDef {
   integer?: boolean;
   /** Show at least this many digits, padding with zeros (minutes on a clock: 3:05). */
   digits?: number;
+  /**
+   * Show a value that isn't whole as a fraction or mixed number with a denominator up to this
+   * (33 1/3 groups, 2 3/8 liters), the way the question asks for it; a value no such fraction
+   * hits stays a decimal. Boxes also take "2 3/8" and "3/8" typed.
+   */
+  fraction?: number;
+  /**
+   * The only units this value may be shown in (rain in mm, cm or in, never km): the unit menu
+   * and the unit systems keep to these.
+   */
+  units?: string[];
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
   /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */

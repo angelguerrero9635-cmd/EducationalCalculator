@@ -1478,6 +1478,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           min: 0,
           max: 7.5,
           step: 0.125,
+          // The total as the line plot reads it: 2 3/8 liters.
+          fraction: 8,
           derived: true,
         },
         { ...whole('N', 'N', 'Number of beakers', 0, 24), derived: true },

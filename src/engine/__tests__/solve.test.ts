@@ -1,4 +1,11 @@
-import { formatNumber, parseCents, parseNumber, renderTemplate, unitFor } from '../format';
+import {
+  asFraction,
+  formatNumber,
+  parseCents,
+  parseNumber,
+  renderTemplate,
+  unitFor,
+} from '../format';
 import { findRoots, holds, solve, type System } from '../solve';
 import { initialState, setValues } from '../state';
 
@@ -350,5 +357,23 @@ describe('unitFor', () => {
     expect(unitFor(1, 'ms')).toBe('ms');
     expect(unitFor(1, 'hrs')).toBe('hrs');
     expect(unitFor(1, 'cm')).toBe('cm');
+  });
+});
+
+describe('fractions', () => {
+  it('shows a value as a mixed number or fraction when the lesson asks for one', () => {
+    expect(asFraction(100 / 3, 12)).toBe('33 1/3');
+    expect(asFraction(0.375, 8)).toBe('3/8');
+    expect(asFraction(19 / 8, 8)).toBe('2 3/8');
+    expect(asFraction(-2.5, 4)).toBe('−2 1/2');
+    expect(asFraction(0.3141, 12)).toBeUndefined();
+    expect(formatNumber(32 / 3, { fraction: 12 })).toBe('10 2/3');
+    expect(formatNumber(4, { fraction: 12 })).toBe('4');
+  });
+  it('reads fractions and mixed numbers typed in a box', () => {
+    expect(parseNumber('3/8')).toBe(0.375);
+    expect(parseNumber('2 3/8')).toBe(2.375);
+    expect(parseNumber('−1 1/2')).toBe(-1.5);
+    expect(parseNumber('1/0')).toBe('invalid');
   });
 });

@@ -264,6 +264,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
 export function evaluate(text: string, clampRoots = false): number | undefined {
   let s = text
+    // A mixed number (2 3/8) is its whole plus its fraction.
+    .replace(/(?<![\d./])(\d+) (\d+)\/(\d+)(?![\d.])/g, '($1 + $2/$3)')
     .replace(/−/g, '-')
     .replace(/×/g, '*')
     .replace(/÷/g, '/')

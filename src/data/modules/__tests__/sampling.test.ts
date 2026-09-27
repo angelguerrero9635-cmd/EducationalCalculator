@@ -185,6 +185,21 @@ const describe_ = (sys: System, vals: Values | readonly Given[]) => {
     .join(', ');
 };
 
+/**
+ * The number an answer line ends at ("x = 36", "$7.50", "33 1/3 groups", "3/8 inch"): a
+ * mixed number or fraction counts as its value.
+ */
+function resultNumber(result: string, exp = false): number {
+  const rhs = result.split(' = ')[1] ?? '';
+  const mixed = /^(-?)(?:(\d+) )?(\d+)\/(\d+)(?![\d.])/.exec(rhs);
+  if (mixed) {
+    const x = Number(mixed[2] ?? 0) + Number(mixed[3]) / Number(mixed[4]);
+    return mixed[1] ? -x : x;
+  }
+  const re = exp ? /^\$?(-?[\d.]+(?:e[-+]?\d+)?)/ : /^\$?(-?[\d.]+)/;
+  return Number(re.exec(rhs)?.[1]);
+}
+
 // ─── Checks on one solver result ─────────────────────────────────────────────
 
 interface Ctx {
@@ -340,7 +355,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   const allNonNegative = c.module.variables.every((v) => (v.min ?? -1) >= 0);
   for (const s of w.steps) {
     // The answer's leading number ("536¢ ($5.36)" → 536).
-    const value = Number(/^\$?(-?[\d.]+(?:e[-+]?\d+)?)/.exec(s.result.split(' = ')[1] ?? '')?.[1]);
+    const value = resultNumber(s.result, true);
     // The substituted line is left out when it would only repeat the rearranged line (numbers
     // only, e.g. "t = 6 − 3 − 2") or the result ("s = 4"): evaluate the rearranged line then.
     const line = s.substituted ?? s.rearranged;
@@ -387,7 +402,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   for (const s of w.steps) {
     if (!s.written) continue;
     const says = s.written.says;
-    const answer = Number(/^\$?(-?[\d.]+)/.exec(s.result.split(' = ')[1] ?? '')?.[1]);
+    const answer = resultNumber(s.result);
     const long = /^(\d+) ÷ (\d+) = (\d+) remainder (\d+)$/.exec(says);
     const plain = /^(.*) = (\d+(?:\.\d+)?)$/.exec(says);
     const x = plain ? evaluate(plain[1]!) : undefined;
@@ -432,7 +447,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   // numbers were said or the number reached. When the step's answer is the number reached,
   // an arrow at the count of numbers ("→ 3" for 4 + 3 = 7) points at the wrong number.
   for (const s of w.steps) {
-    const answer = Number(/^\$?(-?[\d.]+)/.exec(s.result.split(' = ')[1] ?? '')?.[1]);
+    const answer = resultNumber(s.result);
     const lines = s.work ?? [];
     lines.forEach((line, i) => {
       const m =

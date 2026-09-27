@@ -3,8 +3,12 @@ import type { Values, VariableDef } from './types';
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
 export function formatNumber(
   x: number,
-  variable?: Pick<VariableDef, 'integer' | 'digits'>,
+  variable?: Pick<VariableDef, 'integer' | 'digits' | 'fraction'>,
 ): string {
+  if (variable?.fraction && !Number.isInteger(x)) {
+    const f = asFraction(x, variable.fraction);
+    if (f) return f;
+  }
   // Padded numbers are clock minutes ("05"): no separators there.
   if (variable?.integer && variable.digits) {
     return String(Math.round(x)).padStart(variable.digits, '0');
@@ -22,6 +26,24 @@ export function formatNumber(
 
 const minus = (s: string) => s.replace(/^-/, '−');
 
+/**
+ * x as a mixed number or fraction in lowest terms with a denominator up to `most`
+ * ("33 1/3", "3/8", "−2 1/2"), or undefined when none is within a hair of x.
+ */
+export function asFraction(x: number, most: number): string | undefined {
+  const abs = Math.abs(x);
+  for (let d = 2; d <= most; d++) {
+    const n = Math.round(abs * d);
+    if (Math.abs(abs * d - n) > 1e-6 * d) continue;
+    const whole = Math.floor(n / d);
+    const r = n - whole * d;
+    if (r === 0) return undefined;
+    const text = whole ? `${withSeparators(String(whole))} ${r}/${d}` : `${r}/${d}`;
+    return x < 0 ? `−${text}` : text;
+  }
+  return undefined;
+}
+
 /** A shown number as dollars: cents are two digits ("$7.50", not "$7.5"). */
 export const dollars = (num: string) => `$${num.replace(/(\.\d)$/, '$10')}`;
 
@@ -35,10 +57,20 @@ const withSeparators = (s: string) =>
 /** Drops thousands separators so text can be evaluated: "1,000 + 250" → "1000 + 250". */
 export const plainDigits = (s: string) => s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1');
 
-/** Parses user input; accepts "1,000", "−3" (Unicode minus) and "1e3". Undefined when blank. */
+/**
+ * Parses user input; accepts "1,000", "−3" (Unicode minus), "1e3", and fractions and mixed
+ * numbers ("3/8", "2 3/8", "−1 1/2"). Undefined when blank.
+ */
 export function parseNumber(text: string): number | undefined | 'invalid' {
   const cleaned = text.trim().replace(/,/g, '').replace(/−/g, '-');
   if (cleaned === '') return undefined;
+  const frac = /^([-+]?)(?:(\d+)\s+)?(\d+)\/(\d+)$/.exec(cleaned);
+  if (frac) {
+    const [, sign, whole, num, den] = frac;
+    if (Number(den) === 0) return 'invalid';
+    const x = Number(whole ?? 0) + Number(num) / Number(den);
+    return sign === '-' ? -x : x;
+  }
   if (!/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(cleaned)) return 'invalid';
   return Number(cleaned);
 }

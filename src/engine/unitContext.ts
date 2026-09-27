@@ -31,6 +31,7 @@ export function unitChoices(
   return unitsOf(unit.dimension)
     .filter((u) => system === 'mixed' || u.system === system || u.system === 'both')
     .filter((u) => !cubes || LENGTHS.some((l) => u.id === `${l}²` || u.id === `${l}³`))
+    .filter((u) => !variable.units || variable.units.includes(u.id))
     .map((u) => u.id);
 }
 
