@@ -71,6 +71,13 @@ export function repIssues(
       if (a !== undefined && b !== undefined && c !== undefined && a + b !== c) {
         out.push(`ten-frame groups ${a} + ${b} don't make the total ${c}`);
       }
+      // Take from ten: the crossed-out counters come out of the full ten (TenFrame.tsx).
+      if (rep.crossOut) {
+        count(rep.crossOut, 'crossed-out counters', 10);
+        const k = val(rep.crossOut);
+        if (k !== undefined && a !== undefined && k > Math.min(10, a))
+          out.push(`ten-frame crosses out ${k} of a ten holding ${a}`);
+      }
       break;
     }
     case 'hundredChart': {
@@ -142,6 +149,13 @@ export function repIssues(
       // 0 sides draws a circle.
       if (s !== undefined && s !== 0 && (s < 3 || s !== Math.round(s)))
         out.push(`polygon with ${s} sides`);
+      // Equal sides: each labeled with the length, the perimeter under it is sides × length.
+      if (rep.side) {
+        const [len, p] = [val(rep.side), rep.around ? val(rep.around) : undefined];
+        if (len !== undefined && len <= 0) out.push(`side ${rep.side} = ${len}`);
+        if (s !== undefined && len !== undefined && p !== undefined && Math.abs(s * len - p) > 1e-9)
+          out.push(`${s} sides of ${len} labeled, perimeter shows ${p}`);
+      }
       break;
     }
     case 'balance': {
@@ -233,10 +247,19 @@ export function repIssues(
       }
       break;
     }
-    case 'baseTen':
+    case 'baseTen': {
       for (const id of [...rep.groups, ...(rep.total ? [rep.total] : [])])
         count(id, 'blocks', 1000);
+      // Take away: crossed out of the one group's blocks, so it can't be more than the group.
+      if (rep.takeAway) {
+        count(rep.takeAway, 'blocks taken away', 1000);
+        if (rep.groups.length !== 1) out.push('baseTen takeAway needs exactly one group');
+        const [a, b] = [val(rep.groups[0]!), val(rep.takeAway)];
+        if (a !== undefined && b !== undefined && b > a)
+          out.push(`~baseTen takes ${b} away from only ${a} (drawn without cross-outs)`);
+      }
       break;
+    }
     case 'unitTiles': {
       count(rep.count, 'units');
       count(rep.total, 'small units');
@@ -456,6 +479,8 @@ export function repIssues(
           if (x < 0 || x > rep.max) out.push(`pictures ${c.var} = ${x} past 0–${rep.max}`);
         } else count(c.var, 'pictures', rep.max);
       }
+      // Half pictures are worth half the key: without a key there is nothing to halve.
+      if (rep.half && !rep.key) out.push('picture graph with half pictures has no key');
       break;
     case 'numberLine': {
       // A `from` line runs `span` ticks of `every` from its start (NumberLine.tsx).
@@ -486,8 +511,31 @@ export function repIssues(
     }
     // Grade 3 pictures.
     case 'rounding': {
-      const [n, lo, hi, r] = [rep.value, rep.lower, rep.upper, rep.rounded].map(val);
+      const [n, lo, hi, r] = [rep.value, rep.lower, rep.upper, rep.rounded].map((x) =>
+        x === undefined ? undefined : val(x),
+      );
       const to = typeof rep.to === 'number' ? rep.to : val(rep.to);
+      // Each line's arrow goes to the nearer end, halfway rounding up (Rounding.tsx).
+      const drawn = (x: number | undefined) =>
+        x === undefined || to === undefined || to <= 0
+          ? undefined
+          : Math.floor(x / to + 0.5 + 1e-9) * to;
+      const lines = [[n, r, rep.rounded] as const];
+      if (rep.second) {
+        const [n2, r2] = [val(rep.second.value), val(rep.second.rounded)];
+        lines.push([n2, r2, rep.second.rounded] as const);
+        const e = rep.second.estimate ? val(rep.second.estimate) : undefined;
+        const [d1, d2] = [drawn(n), drawn(n2)];
+        if (e !== undefined && d1 !== undefined && d2 !== undefined) {
+          const made = rep.second.minus ? d1 - d2 : d1 + d2;
+          if (Math.abs(made - e) > 1e-9) out.push(`rounded lines make ${made}, estimate is ${e}`);
+        }
+      }
+      for (const [x, rx, id] of lines) {
+        const d = drawn(x);
+        if (d !== undefined && rx !== undefined && Math.abs(d - rx) > 1e-9)
+          out.push(`the arrow goes to ${d}, ${id} is ${rx}`);
+      }
       for (const [id, x] of [
         [rep.lower, lo],
         [rep.upper, hi],

@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, View } from 'react-native';
+import Svg, { Line } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
@@ -17,7 +18,9 @@ type Spec = Extract<Representation, { kind: 'tenFrame' }>;
  * to k. Otherwise tapping inside the solid counters sets the first group; tapping beyond them
  * sets the total (or the second group, when the total is fixed). Tapping a group's last
  * counter removes it, so a group can go down to 0. When the total and second group were typed
- * and the first is worked out (take away), the second group is crossed out.
+ * and the first is worked out (take away), the second group is crossed out. `takeAway` always
+ * draws the second group as filled counters crossed out; `crossOut` crosses out that many
+ * counters at the end of the full ten (take from ten), and a tap in the ten sets it.
  */
 export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -27,7 +30,10 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const a = num(spec.first);
   const b = num(spec.second);
   const frames = spec.frames ?? 1;
-  const faded = !known(spec.first) || !known(spec.second);
+  const crossVar = spec.crossOut;
+  const crossed = crossVar ? Math.max(0, Math.min(10, Math.min(a, num(crossVar)))) : 0;
+  const faded =
+    !known(spec.first) || !known(spec.second) || (crossVar !== undefined && !known(crossVar));
   const text = (x: string | number) => (known(x) ? String(num(x)) : '?');
   const secondIsVar = typeof spec.second === 'string';
   const onlyFirst =
@@ -36,10 +42,11 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const typed = (x: string | number) =>
     typeof x === 'string' && ['given', 'example'].includes(calc.status(x));
   const takeAway =
-    typeof spec.first === 'string' &&
-    calc.status(spec.first) === 'derived' &&
-    typed(spec.second) &&
-    typed(spec.total);
+    !!spec.takeAway ||
+    (typeof spec.first === 'string' &&
+      calc.status(spec.first) === 'derived' &&
+      typed(spec.second) &&
+      typed(spec.total));
 
   // "Take away (t)" already says it; other names get "(taken away)" in the legend.
   const secondSaysTake =
@@ -49,7 +56,11 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   const tap = (k: number) => {
     const firstPin = typeof spec.first === 'string' ? [spec.first] : [];
-    if (onlyFirst) {
+    if (crossVar && k <= a) {
+      // Cross out from the tapped counter to the end of the ten; tap the first crossed to undo it.
+      const pin = [spec.second, spec.total].filter((x): x is string => typeof x === 'string');
+      calc.set({ ...rep.pin(pin), [crossVar]: 11 - k === crossed ? 10 - k : 11 - k });
+    } else if (onlyFirst) {
       calc.set({ [spec.first as string]: k === a ? k - 1 : k });
     } else if (k <= a) {
       if (typeof spec.first !== 'string') return; // a fixed group can't change
@@ -63,6 +74,13 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
         [spec.second as string]: k === a + b ? k - a - 1 : k - a,
       });
     }
+  };
+
+  /** Take from ten: "10 − 8 = 2, 2 + 4 = 6", from the counters drawn. */
+  const takeFromTen = () => {
+    if (faded) return `${text(spec.total)} − ${crossVar ? text(crossVar) : '?'} = ?`;
+    const left = a - crossed;
+    return `${a} − ${crossed} = ${left}, ${left} + ${b} = ${left + b}`;
   };
 
   return (
@@ -102,8 +120,13 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             { width: cell, height: cell, borderColor: c.chartGrid },
                           ]}
                         >
-                          {kind === 'first' ? (
+                          {kind === 'first' && crossVar && i >= a - crossed ? (
+                            <Crossed size={cell * 0.62} />
+                          ) : kind === 'first' || (crossVar && kind === 'second') ? (
+                            // Take from ten: the ones are counters of the same number, solid.
                             <CounterDot size={cell * 0.62} color={c.chartHighlight} />
+                          ) : kind === 'second' && spec.takeAway ? (
+                            <Crossed size={cell * 0.62} />
                           ) : kind !== 'empty' ? (
                             <View
                               style={{
@@ -148,12 +171,22 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 },
               ]
             : []),
+          ...(crossVar
+            ? [
+                {
+                  var: crossVar,
+                  steps: [1],
+                  marker: '✕',
+                  pin: [spec.second, spec.total].filter((x): x is string => typeof x === 'string'),
+                },
+              ]
+            : []),
           ...(typeof spec.second === 'string'
             ? [
                 {
                   var: spec.second,
                   steps: [1],
-                  marker: takeAway ? '✕' : '○',
+                  marker: takeAway ? '✕' : crossVar ? '●' : '○',
                   pin:
                     typeof spec.first === 'string' && typeof spec.total === 'string'
                       ? [spec.first]
@@ -164,9 +197,11 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
         ]}
       />
       <Text style={[styles.sum, { color: c.text }]}>
-        {takeAway
-          ? `${text(spec.total)} − ${text(spec.second)} = ${text(spec.first)}`
-          : `${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
+        {crossVar
+          ? takeFromTen()
+          : takeAway
+            ? `${text(spec.total)} − ${text(spec.second)} = ${text(spec.first)}`
+            : `${text(spec.first)} + ${text(spec.second)} = ${text(spec.total)}`}
       </Text>
       {sliders ? null : (
         <Text style={[styles.legend, { color: c.textMuted }]}>
@@ -175,6 +210,39 @@ export function TenFrame({ spec, calc }: { spec: Spec; calc: Calculator }) {
           }${takeAway && !secondSaysTake ? ' (taken away)' : ''}`}
         </Text>
       )}
+    </View>
+  );
+}
+
+/** A counter taken away: filled, with a ✕ over it. */
+function Crossed({ size }: { size: number }) {
+  const c = usePalette();
+  const k = size * 0.18;
+  return (
+    <View style={{ width: size, height: size }}>
+      <View style={{ opacity: 0.6 }}>
+        <CounterDot size={size} color={c.chartHighlight} />
+      </View>
+      <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
+        <Line
+          x1={k}
+          y1={k}
+          x2={size - k}
+          y2={size - k}
+          stroke={c.chartInk}
+          strokeWidth={3}
+          strokeLinecap="round"
+        />
+        <Line
+          x1={size - k}
+          y1={k}
+          x2={k}
+          y2={size - k}
+          stroke={c.chartInk}
+          strokeWidth={3}
+          strokeLinecap="round"
+        />
+      </Svg>
     </View>
   );
 }

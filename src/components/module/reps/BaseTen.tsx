@@ -21,8 +21,37 @@ const digits = (n: number) => ({
 });
 
 /**
+ * The blocks of a before taking b away: a ten traded for 10 ones when there are too few ones,
+ * a hundred for 10 tens when there are too few tens (or none to trade), as on paper.
+ */
+export function tradeFor(a: number, b: number) {
+  const x = digits(a);
+  const y = digits(b);
+  let { h, t, o } = x;
+  let hundred = false;
+  let ten = false;
+  if (o < y.o) {
+    if (t === 0) {
+      h -= 1;
+      t += 10;
+      hundred = true;
+    }
+    t -= 1;
+    o += 10;
+    ten = true;
+  }
+  if (t < y.t) {
+    h -= 1;
+    t += 10;
+    hundred = true;
+  }
+  return { h, t, o, hundred, ten, take: y };
+}
+
+/**
  * Base-ten blocks: hundreds as 10 × 10 flats, tens as rods of 10, ones as single cubes. Each
- * group gets its own row; the total row shows the sum regrouped (10 ones make a ten).
+ * group gets its own row; the total row shows the sum regrouped (10 ones make a ten). With
+ * `takeAway`, the group's blocks after any trade, the blocks taken away crossed out.
  */
 export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -31,6 +60,16 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rows = [...spec.groups, ...(spec.total ? [spec.total] : [])];
   const value = (id: string) => (rep.known(id) ? Math.max(0, Math.round(rep.shown(id))) : 0);
   const controlIds = spec.controls.map((k) => k.var);
+  // Take away: only once both numbers are typed and the second is not more than the first.
+  const from = spec.groups[0]!;
+  const trade =
+    spec.takeAway &&
+    spec.groups.length === 1 &&
+    rep.known(from) &&
+    rep.known(spec.takeAway) &&
+    value(spec.takeAway) <= value(from)
+      ? tradeFor(value(from), value(spec.takeAway))
+      : undefined;
 
   // Up to 5 flats per line; more wrap onto a second line so 3-digit numbers fit a phone.
   const flatCols = (h: number) => (h > 5 ? Math.ceil(h / 2) : h);
@@ -38,7 +77,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const hundreds = rows.some((id) => (rep.variable(id).max ?? 0) >= 100);
   const place = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
   const describeCounts = (id: string) => {
-    if (!spec.places || id === spec.total) return describe(value(id));
+    if ((!spec.places && !(trade && id === from)) || id === spec.total) return describe(value(id));
     const d = counts(id);
     const parts = [
       ...(d.h > 0 ? [place(d.h, 'hundred', 'hundreds')] : []),
@@ -60,13 +99,15 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   // A regroup lesson draws the counts the student typed, not the number's digits.
   const counts = (id: string) =>
-    spec.places && id !== spec.total
-      ? {
-          h: spec.places.hundreds ? value(spec.places.hundreds) : 0,
-          t: value(spec.places.tens),
-          o: value(spec.places.ones),
-        }
-      : digits(value(id));
+    trade && id === from
+      ? trade
+      : spec.places && id !== spec.total
+        ? {
+            h: spec.places.hundreds ? value(spec.places.hundreds) : 0,
+            t: value(spec.places.tens),
+            o: value(spec.places.ones),
+          }
+        : digits(value(id));
   // A block with a little depth (its darker side peeks out below and right) and its unit
   // lines, so a rod reads as ten cubes stuck together and a flat as ten rods.
   const block = (
@@ -131,51 +172,86 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
       />,
     ];
   };
+  /** A ✕ over a block taken away (on a rod, a square ✕ across its middle). */
+  const cross = (key: string, x: number, y: number, bw: number, bh: number) => {
+    const s = Math.min(bw, bh);
+    const [x0, y0] = [x + (bw - s) / 2, y + (bh - s) / 2];
+    return (
+      <G key={key}>
+        <Line x1={x0} y1={y0} x2={x0 + s} y2={y0 + s} stroke={c.chartInk} strokeWidth={1.8} />
+        <Line x1={x0 + s} y1={y0} x2={x0} y2={y0 + s} stroke={c.chartInk} strokeWidth={1.8} />
+      </G>
+    );
+  };
+  /** A block taken away is drawn faded under its ✕. */
+  const faded = (on: boolean | undefined, key: string, parts: ReactNode[]) =>
+    on
+      ? [
+          <G key={key} opacity={0.45}>
+            {parts}
+          </G>,
+        ]
+      : parts;
   const blocks = (id: string, top: number, u: number, fill: string) => {
     const { h, t, o } = counts(id);
     const out: ReactNode[] = [];
+    const taken = trade && id === from ? trade.take : undefined;
+    const crosses: ReactNode[] = [];
     const y0 = top + 18;
     const cols = flatCols(h);
     for (let i = 0; i < h; i++) {
       const x = 8 + (i % Math.max(cols, 1)) * (10 * u + 6);
       const y = y0 + Math.floor(i / Math.max(cols, 1)) * (10 * u + 4);
-      out.push(...block(`h${i}`, x, y, 10, 10, u, fill));
+      const gone = taken && i >= h - taken.h;
+      out.push(...faded(gone, `fh${i}`, block(`h${i}`, x, y, 10, 10, u, fill)));
+      if (gone) crosses.push(cross(`xh${i}`, x, y, 10 * u, 10 * u));
     }
     // Rods and ones sit beside the flats, on the flats' last line.
     const y = y0 + (flatLines(h) - 1) * (10 * u + 4);
     let x = 8 + cols * (10 * u + 6);
     // More than 9 rods (a regroup lesson) go on as many lines as they need, 10 to a line.
     for (let i = 0; i < t; i++) {
-      out.push(
-        ...block(
-          `t${i}`,
-          x + (i % 10) * (u + 4),
-          y + Math.floor(i / 10) * (10 * u + 4),
-          1,
-          10,
-          u,
-          fill,
-        ),
-      );
+      const rx = x + (i % 10) * (u + 4);
+      const ry = y + Math.floor(i / 10) * (10 * u + 4);
+      const gone = taken && i >= t - taken.t;
+      out.push(...faded(gone, `ft${i}`, block(`t${i}`, rx, ry, 1, 10, u, fill)));
+      if (gone) crosses.push(cross(`xt${i}`, rx - 2, ry, u + 4, 10 * u));
     }
     x += Math.min(t, 10) * (u + 4) + 6;
     // Ones stack in fives; in a regroup lesson every full ten of them is boxed as a trade.
-    const onesTop = y + (h || t ? 10 * u : 2 * (u + 3));
+    const onesTop = y + (h || t ? 10 * u : (taken ? 5 : 2) * (u + 3));
     for (let i = 0; i < o; i++) {
       const group = Math.floor(i / 10);
       const k = i % 10;
+      // Taking away: columns of 5 standing beside the rods (a ten is 2 columns), so the
+      // blocks stay big enough to count with up to 19 ones.
+      const ox = taken
+        ? x + Math.floor(i / 5) * (u + 3) + group * 6
+        : x + group * (5 * (u + 3) + 8) + (k % 5) * (u + 3);
+      const oy = taken
+        ? onesTop - ((i % 5) + 1) * (u + 3)
+        : onesTop - (Math.floor(k / 5) + 1) * (u + 3);
+      const gone = taken && i >= o - taken.o;
+      out.push(...faded(gone, `fo${i}`, block(`o${i}`, ox, oy, 1, 1, u, fill)));
+      if (gone) crosses.push(cross(`xo${i}`, ox, oy, u, u));
+    }
+    // The ten traded for ones: its 10 cubes boxed, like a regroup lesson's.
+    if (taken && trade?.ten) {
       out.push(
-        ...block(
-          `o${i}`,
-          x + group * (5 * (u + 3) + 8) + (k % 5) * (u + 3),
-          onesTop - (Math.floor(k / 5) + 1) * (u + 3),
-          1,
-          1,
-          u,
-          fill,
-        ),
+        <Rect
+          key="traded"
+          x={x - 2}
+          y={onesTop - 5 * (u + 3) - 2}
+          width={2 * (u + 3) + 1}
+          height={5 * (u + 3) + 1}
+          fill="none"
+          stroke={c.chartInk}
+          strokeWidth={chart.strokeLight}
+          strokeDasharray={chart.dash}
+        />,
       );
     }
+    out.push(...crosses);
     if (spec.places && id !== spec.total) {
       for (let g = 0; g < Math.floor(o / 10); g++) {
         out.push(
@@ -206,7 +282,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     return d.h === 0 && d.t === 0;
   });
   const blockHeight = (r: number, u: number) =>
-    onlyOnes[r] ? 2 * (u + 3) + 4 : lines[r]! * (10 * u + 4);
+    onlyOnes[r] ? (trade && rows[r] === from ? 5 : 2) * (u + 3) + 4 : lines[r]! * (10 * u + 4);
   // Block size from the width: room for every row's flats plus 9 rods and 5 ones, so stepping
   // the ones or tens doesn't resize the picture. The height then follows.
   const unitFor = (w: number) =>
@@ -217,6 +293,12 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
         ...rows.map((id) => {
           const d = counts(id);
           const cols = flatCols(d.h);
+          if (trade && id === from)
+            // Ones in columns of 5: room for 4 columns (19 ones) so a trade doesn't resize it.
+            return (
+              (w - 16 - 6 * cols - 4 * Math.min(9, d.t) - 6 - 3 * 4 - 6) /
+              (10 * cols + Math.max(9, Math.min(d.t, 10)) + 4)
+            );
           const groups = spec.places ? Math.max(1, Math.ceil(Math.max(d.o, 1) / 10)) : 1;
           return (
             (w - 16 - 6 * cols - 4 * Math.min(9, d.t) - 6 - 3 * 5 * groups - 8 * (groups - 1)) /
@@ -227,6 +309,18 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
     );
   const heightFor = (w: number) =>
     8 + rows.reduce((sum, _, r) => sum + 26 + blockHeight(r, unitFor(w)), 0);
+
+  /** The trades, then the take-away as a number sentence (each on its own line). */
+  const takeText = () => {
+    if (!spec.takeAway || !rep.known(from) || !rep.known(spec.takeAway)) return '';
+    const [a, b] = [value(from), value(spec.takeAway)];
+    if (!trade) return `${a} − ${b}: ${b} is more than ${a}.`;
+    const trades = [
+      ...(trade.hundred ? ['1 hundred for 10 tens'] : []),
+      ...(trade.ten ? ['1 ten for 10 ones'] : []),
+    ];
+    return `${trades.length ? `Trade ${trades.join(', then ')}.\n` : ''}${b > 0 ? `Cross out ${describe(b)}.` : 'Nothing to cross out.'}\n${a} − ${b} = ${a - b}`;
+  };
 
   return (
     <View>
@@ -273,6 +367,7 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
           })()}
         </Text>
       ) : null}
+      {spec.takeAway ? <Text style={[styles.words, { color: c.text }]}>{takeText()}</Text> : null}
       <Steppers
         calc={calc}
         items={spec.controls.map((k) => ({

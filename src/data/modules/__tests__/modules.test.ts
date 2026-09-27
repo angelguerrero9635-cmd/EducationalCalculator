@@ -23,7 +23,9 @@ function representationVars(r: Representation): string[] {
         ...[r.jump, r.from, r.every, r.count].filter((v): v is string => !!v),
       ];
     case 'tenFrame':
-      return [r.first, r.second, r.total].filter((v): v is string => typeof v === 'string');
+      return [r.first, r.second, r.total, r.crossOut].filter(
+        (v): v is string => typeof v === 'string',
+      );
     case 'hundredChart':
       return [
         r.value,
@@ -36,6 +38,7 @@ function representationVars(r: Representation): string[] {
     case 'polygon':
       return [
         ...(r.sides ? [r.sides] : []),
+        ...(r.side ? [r.side] : []),
         ...(r.corners ? [r.corners] : []),
         ...(r.sideValues ?? []),
         ...(r.around ? [r.around] : []),
@@ -51,6 +54,7 @@ function representationVars(r: Representation): string[] {
         ...r.groups,
         ...(r.total ? [r.total] : []),
         ...(r.words ? [r.words] : []),
+        ...(r.takeAway ? [r.takeAway] : []),
         ...r.controls.map((c) => c.var),
       ];
     case 'unitTiles':
@@ -128,7 +132,13 @@ function representationVars(r: Representation): string[] {
           : []),
       ];
     case 'rounding':
-      return [r.value, r.lower, r.upper, r.rounded, ...(typeof r.to === 'string' ? [r.to] : [])];
+      return [
+        r.value,
+        r.rounded,
+        ...[r.lower, r.upper, r.second?.estimate].filter((x): x is string => !!x),
+        ...(r.second ? [r.second.value, r.second.rounded] : []),
+        ...(typeof r.to === 'string' ? [r.to] : []),
+      ];
     case 'fractionLine':
       return [
         r.numerator,
