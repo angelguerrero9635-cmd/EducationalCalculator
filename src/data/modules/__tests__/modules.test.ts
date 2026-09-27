@@ -117,6 +117,7 @@ function representationVars(r: Representation): string[] {
         ...(r.parts ?? []),
         ...(r.copies ? [r.copies] : []),
         ...(r.second ? [r.second.numerator, r.second.denominator] : []),
+        ...(r.from ? [r.from] : []),
       ];
     case 'fractionBars':
       return [...r.rows.flatMap((x) => [x.num, x.den]), ...r.controls];

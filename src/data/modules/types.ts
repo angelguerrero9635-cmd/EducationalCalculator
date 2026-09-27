@@ -462,6 +462,13 @@ export type Representation =
       second?: { numerator: string; denominator: string };
       /** Tenths and hundredths as decimals: the tenths are labeled 0.1, 0.2 … and the point too. */
       decimal?: boolean;
+      /**
+       * Mixed-number jumps (18 1/4 − 2 3/4): a jump from this value to the numerator, both
+       * counted in parts (18 1/4 is 73 fourths), drawn as one jump of whole numbers and one of
+       * the parts left. The line shows only the wholes around the two points (at least
+       * `wholes`) and names both points as mixed numbers.
+       */
+      from?: string;
     }
   /**
    * Fraction bars of the same whole, one per row, with `num` of `den` parts shaded. `equal`

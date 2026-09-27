@@ -514,6 +514,68 @@ export const GALLERY_MODULES: ModuleDef[] = [
     },
   },
   {
+    id: 'g.mixed-number-jumps',
+    title: 'Mixed-number jumps',
+    assumptions: [
+      'Every value is counted in parts of one whole: 18 1/4 is 73 fourths.',
+      'Jump back the whole numbers first, then the parts left.',
+    ],
+    variables: [
+      whole('d', 'd', 'Parts in one whole', 2, 12),
+      whole('a', 'a', 'Start, in parts', 0, 120),
+      whole('t', 't', 'Parts taken away', 0, 24),
+      whole('c', 'c', 'Parts left', 0, 120),
+      whole('W', 'W', 'Wholes left', 0, 60),
+    ],
+    relations: [
+      {
+        id: 'c = a − t',
+        display: '{a} − {t} = {c}',
+        vars: ['c', 'a', 't'],
+        residual: (v: Values) => v.c! - (v.a! - v.t!),
+        solve: {
+          c: (v: Values) => v.a! - v.t!,
+          a: (v: Values) => v.c! + v.t!,
+          t: (v: Values) => v.a! - v.c!,
+        },
+      },
+      {
+        id: 'W = whole groups of d in c',
+        display: 'whole groups of {d} in {c} = {W}',
+        vars: ['W', 'c', 'd'],
+        residual: (v: Values) => v.W! - Math.floor(v.c! / v.d!),
+        solve: {
+          W: (v: Values) => Math.floor(v.c! / v.d!),
+          c: () => undefined,
+          d: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'c = a − t': {
+        c: { expr: '{a} − {t}', how: 'Take the parts away.' },
+        a: { expr: '{c} + {t}', how: 'Put the parts back.' },
+        t: { expr: '{a} − {c}', how: 'The parts between the start and what is left.' },
+      },
+      'W = whole groups of d in c': {
+        W: {
+          expr: 'whole groups of {d} in {c}',
+          how: 'Every {d} parts make one whole.',
+          work: (v: Values) => [`${v.W} × ${v.d} = ${v.W! * v.d!}`],
+        },
+      },
+    },
+    example: { d: 4, a: 73, t: 11, c: 62, W: 15 },
+    startWith: ['d', 'a', 't'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'c',
+      denominator: 'd',
+      wholes: 3,
+      from: 'a',
+    },
+  },
+  {
     id: 'g.wave',
     title: 'Wave',
     assumptions: [

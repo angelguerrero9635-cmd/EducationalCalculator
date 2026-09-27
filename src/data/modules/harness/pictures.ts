@@ -337,8 +337,17 @@ export function repIssues(
       count(rep.numerator, 'parts counted');
       if (b !== undefined && b < 1) out.push(`${b} parts in a whole`);
       // The line stretches to the fraction (FractionLine.tsx); more than 24 wholes won't fit.
-      if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 24) {
-        out.push(`${a}/${b} needs ${Math.ceil(a / b)} wholes on the line`);
+      // With `from`, it shows only the wholes between the two points.
+      const f = rep.from === undefined ? undefined : val(rep.from);
+      if (rep.from !== undefined) count(rep.from, 'jump start in parts');
+      const span =
+        a === undefined || b === undefined || b < 1
+          ? 0
+          : rep.from === undefined
+            ? Math.ceil(a / b)
+            : Math.max(Math.ceil(Math.max(a, f ?? a) / b) - Math.floor(Math.min(a, f ?? a) / b), 1);
+      if (span > 24 && a !== undefined && b !== undefined) {
+        out.push(`${a}/${b} needs ${span} wholes on the line`);
       }
       if (rep.second) {
         count(rep.second.numerator, 'second line parts counted');
