@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="microscope-metal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e2e8f0"/>
+      <stop offset="1" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="microscope-beam" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#fde047" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#fde047" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="400" cy="728" rx="250" ry="16" fill="#1f2937" opacity="0.12"/>
+  <path d="M168 700 Q168 660 208 660 L592 660 Q632 660 632 700 L632 716 L168 716 Z" fill="#e5e7eb" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M176 700 L624 700 L624 710 L176 710 Z" fill="#9ca3af"/>
+  <path d="M470 660 L470 430 C470 380 452 346 404 334 L382 334 L382 226 L408 226 C510 236 566 310 566 420 L566 660 Z" fill="#e5e7eb" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M536 640 L536 420 C536 344 504 290 446 262" fill="none" stroke="#9ca3af" stroke-width="16" stroke-linecap="round"/>
+  <path d="M290 612 Q290 596 306 596 L354 596 Q370 596 370 612 L370 660 L290 660 Z" fill="#9ca3af" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <ellipse cx="330" cy="598" rx="30" ry="8" fill="#facc15" stroke="#1f2937" stroke-width="4"/>
+  <path d="M302 594 L358 594 L352 548 L308 548 Z" fill="url(#microscope-beam)"/>
+  <rect x="306" y="530" width="48" height="22" rx="4" fill="url(#microscope-metal)" stroke="#1f2937" stroke-width="5"/>
+  <rect x="186" y="506" width="300" height="26" rx="6" fill="#e5e7eb" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="192" y="522" width="288" height="6" fill="#9ca3af"/>
+  <rect x="250" y="494" width="160" height="12" rx="2" fill="#dbeafe" fill-opacity="0.9" stroke="#1f2937" stroke-width="4"/>
+  <rect x="318" y="496" width="24" height="8" rx="3" fill="#f472b6" opacity="0.8"/>
+  <g fill="url(#microscope-metal)" stroke="#1f2937" stroke-width="4" stroke-linejoin="round">
+    <path d="M206 506 L206 490 Q206 482 214 482 L284 488 L284 494 L214 494 L214 506 Z"/>
+    <path d="M454 506 L454 490 Q454 482 446 482 L376 488 L376 494 L446 494 L446 506 Z"/>
+  </g>
+  <g stroke="#1f2937" stroke-width="5" stroke-linejoin="round">
+    <path d="M338 426 L392 466 L382 480 L326 440 Z" fill="url(#microscope-metal)" transform="rotate(0)"/>
+    <path d="M318 426 L266 468 L278 482 L330 440 Z" fill="url(#microscope-metal)"/>
+    <rect x="312" y="428" width="36" height="46" rx="4" fill="url(#microscope-metal)"/>
+    <rect x="318" y="472" width="24" height="16" rx="3" fill="#cbd5e1"/>
+  </g>
+  <g stroke="none">
+    <rect x="315" y="446" width="30" height="8" fill="#3b82f6"/>
+    <path d="M285 452 L300 440 L305 446 L290 458 Z" fill="#ef4444"/>
+    <path d="M375 452 L360 440 L355 446 L370 458 Z" fill="#facc15"/>
+  </g>
+  <path d="M270 426 Q270 396 300 392 L362 392 Q394 396 394 426 Z" fill="#9ca3af" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M284 412 L380 412" stroke="#e5e7eb" stroke-width="5" stroke-linecap="round"/>
+  <rect x="294" y="210" width="72" height="184" rx="6" fill="#e5e7eb" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="304" y="222" width="12" height="160" rx="6" fill="#ffffff" opacity="0.8"/>
+  <rect x="346" y="216" width="14" height="172" fill="#9ca3af" opacity="0.6"/>
+  <rect x="284" y="196" width="92" height="22" rx="6" fill="#9ca3af" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="306" y="104" width="48" height="94" rx="4" fill="url(#microscope-metal)" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="298" y="86" width="64" height="24" rx="6" fill="#374151" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <rect x="314" y="118" width="8" height="70" rx="4" fill="#ffffff" opacity="0.8"/>
+  <circle cx="518" cy="452" r="44" fill="#374151" stroke="#1f2937" stroke-width="6"/>
+  <circle cx="518" cy="452" r="30" fill="#6b7280"/>
+  <circle cx="518" cy="452" r="10" fill="#cbd5e1" stroke="#1f2937" stroke-width="4"/>
+  <path d="M500 426 A30 30 0 0 1 540 430" fill="none" stroke="#9ca3af" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="518" cy="572" r="26" fill="#374151" stroke="#1f2937" stroke-width="6"/>
+  <circle cx="518" cy="572" r="8" fill="#cbd5e1" stroke="#1f2937" stroke-width="4"/>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="beaker-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#93c5fd"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+    <clipPath id="beaker-inside">
+      <path d="M232 170 L568 170 L568 668 Q568 700 536 700 L264 700 Q232 700 232 668 Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="400" cy="716" rx="220" ry="18" fill="#1f2937" opacity="0.12"/>
+  <g clip-path="url(#beaker-inside)">
+    <rect x="200" y="430" width="400" height="300" fill="url(#beaker-water)" opacity="0.8"/>
+    <ellipse cx="400" cy="430" rx="168" ry="14" fill="#bfdbfe"/>
+  </g>
+  <path d="M232 170 L568 170 L568 668 Q568 700 536 700 L264 700 Q232 700 232 668 Z" fill="#dbeafe" fill-opacity="0.35" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M246 170 L582 170" fill="none" stroke="#1f2937" stroke-width="10" stroke-linecap="round"/>
+  <path d="M236 196 Q236 172 206 154" fill="none" stroke="#1f2937" stroke-width="8" stroke-linecap="round"/>
+  <rect x="258" y="200" width="22" height="460" rx="11" fill="#ffffff" opacity="0.7"/>
+  <g stroke="#1f2937" stroke-width="4" stroke-linecap="round">
+    <line x1="470" y1="270" x2="540" y2="270"/>
+    <line x1="505" y1="345" x2="540" y2="345"/>
+    <line x1="470" y1="420" x2="540" y2="420"/>
+    <line x1="505" y1="495" x2="540" y2="495"/>
+    <line x1="470" y1="570" x2="540" y2="570"/>
+    <line x1="505" y1="645" x2="540" y2="645"/>
+  </g>
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="30" fill="#1f2937" text-anchor="end">
+    <text x="458" y="281">300</text>
+    <text x="458" y="431">200</text>
+    <text x="458" y="581">100</text>
+  </g>
+</svg>

@@ -1,0 +1,20 @@
+{
+  "files": [
+    {
+      "slug": "beaker",
+      "topic": "measuring",
+      "title": "Beaker with water",
+      "svg": "assets/images/measuring/beaker.svg",
+      "file": "assets/images/measuring/beaker.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Beaker picture (liquid volume, mL)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Beaker_01.jpg"
+      ],
+      "notes": "Water at the 200 mL line; scale 100–300 mL."
+    }
+  ]
+}

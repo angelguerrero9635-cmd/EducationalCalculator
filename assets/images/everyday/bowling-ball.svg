@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <radialGradient id="bowling-ball-body" cx="0.36" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#6d5ce8"/>
+      <stop offset="1" stop-color="#2e1f7a"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="400" cy="722" rx="250" ry="22" fill="#1f2937" opacity="0.12"/>
+  <circle cx="400" cy="410" r="300" fill="url(#bowling-ball-body)" stroke="#1f2937" stroke-width="6"/>
+  <path d="M170 520 Q250 690 460 700 Q640 690 690 470 Q650 640 450 660 Q260 660 170 520 Z" fill="#1e1b4b" opacity="0.35"/>
+  <ellipse cx="250" cy="250" rx="70" ry="42" transform="rotate(-38 250 250)" fill="#ffffff" opacity="0.55"/>
+  <circle cx="318" cy="198" r="14" fill="#ffffff" opacity="0.6"/>
+  <g stroke="#1f2937" stroke-width="6">
+    <ellipse cx="370" cy="330" rx="38" ry="32" fill="#111827"/>
+    <ellipse cx="480" cy="316" rx="38" ry="32" fill="#111827"/>
+    <ellipse cx="438" cy="470" rx="44" ry="37" fill="#111827"/>
+  </g>
+  <g fill="none" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round" opacity="0.8">
+    <path d="M342 350 Q370 366 400 350"/>
+    <path d="M452 336 Q480 352 510 336"/>
+    <path d="M405 494 Q438 512 472 494"/>
+  </g>
+</svg>
