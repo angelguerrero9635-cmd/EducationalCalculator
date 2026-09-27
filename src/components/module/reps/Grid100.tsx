@@ -73,11 +73,15 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
   return (
     <View style={{ gap: space.sm }}>
       {/* A grid is at most 320 px square: no blank strip under it on a wider phone. */}
-      <Canvas aspect={(w) => (sizeFor(w) + (count > 1 ? 20 : 0)) / w}>
+      {/* Labels under the grids wrap to two lines within a grid's width, so they get room for two. */}
+      <Canvas aspect={(w) => (sizeFor(w) + (count > 1 ? 34 : 0)) / w}>
         {({ w }) => {
           const size = sizeFor(w);
+          // A label never widens its grid's column: it wraps inside it instead.
           const tag = (text: string) => (
-            <Text style={[styles.tag, { color: c.textMuted }]}>{text}</Text>
+            <Text numberOfLines={2} style={[styles.tag, { color: c.textMuted, width: size }]}>
+              {text}
+            </Text>
           );
           return (
             <View style={styles.row}>
