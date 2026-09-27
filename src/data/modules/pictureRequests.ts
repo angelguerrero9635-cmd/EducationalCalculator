@@ -1182,10 +1182,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.inherited-traits',
     kind: 'icon',
     pages: ['s.3.inherited-traits'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3d-traits'],
+    uses: '"icon":"knee with scar"',
     notes:
-      "Eye color → an eye; Flower color → two flowers of different colors; A scar → a knee with a scar; A plant bent by wind → a tree leaning in the wind; A pale plant grown in the dark → a pale, thin seedling in a dark box; A dog sits on command → existing icon 'dog', sitting; Riding a bike → a child on a bike",
+      "Eye color → an eye; Flower color → two flowers of different colors; A scar → a knee with a scar; A plant bent by wind → a tree leaning in the wind; A pale plant grown in the dark → a pale, thin seedling in a dark box; A dog sits on command → existing icon 'dog', sitting; Riding a bike → a child on a bike. DRAWN (icons, group D): Eye color → icon 'eye'; Flower color → icon 'two flower colors' (a purple and a white flower of one kind); Number of legs → no picture (none was asked); A scar → icon 'knee with scar'; A plant bent by wind → icon 'tree bent by wind'; A pale plant grown in the dark → icon 'pale seedling in dark box'; A dog sits on command → icon 'dog sitting' (the dog icon's dog, sitting); Riding a bike → icon 'child riding bike'.",
   },
   {
     id: 'D34',
@@ -1282,10 +1283,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.internal-structures~jobs',
     kind: 'icon',
     pages: ['s.4.internal-structures~jobs'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3d-part-jobs'],
+    uses: '"icon":"owl face"',
     notes:
-      "Rose thorns → a rose stem with thorns; Turtle shell → existing icon 'turtle'; Tree roots → a tree with its roots showing; Bird’s beak → existing icon 'bird', beak marked; Fish gills → existing icon 'fish', gills marked; Owl’s eyes → an owl's face; Bird’s wings → a bird flying, wings spread; Flower → a flower; Seeds → seeds (for example a sunflower head)",
+      "Rose thorns → a rose stem with thorns; Turtle shell → existing icon 'turtle'; Tree roots → a tree with its roots showing; Bird’s beak → existing icon 'bird', beak marked; Fish gills → existing icon 'fish', gills marked; Owl’s eyes → an owl's face; Bird’s wings → a bird flying, wings spread; Flower → a flower; Seeds → seeds (for example a sunflower head). DRAWN (icons, group D): Rose thorns → icon 'rose stem with thorns'; Turtle shell → icon 'turtle'; Tree roots → icon 'tree with roots'; Bird’s beak → icon 'bird beak' (the bird icon with its beak ringed); Fish gills → icon 'fish gills' (the fish icon with its gill cover ringed); Owl’s eyes → icon 'owl face'; Bird’s wings → icon 'bird flying'; Flower → icon 'flower'; Seeds → icon 'sunflower head'.",
   },
   {
     id: 'D44',
@@ -1373,20 +1375,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.food-webs',
     kind: 'icon',
     pages: ['s.5.food-webs'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3d-food-web-roles'],
+    uses: '"icon":"earthworm in soil"',
     notes:
-      "Grass → a tuft of grass; Oak tree → an oak tree with lobed leaves; Algae → green algae on pond water; Mushroom → a mushroom on a log; Bacteria → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Earthworm → an earthworm in soil",
+      "Grass → a tuft of grass; Oak tree → an oak tree with lobed leaves; Algae → green algae on pond water; Mushroom → a mushroom on a log; Bacteria → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Earthworm → an earthworm in soil. DRAWN (icons, group D): Grass → icon 'tuft of grass'; Oak tree → icon 'oak tree'; Algae → icon 'algae on pond'; Rabbit → icon 'rabbit'; Deer → icon 'deer'; Hawk → icon 'hawk'; Frog → icon 'frog'; Mushroom → icon 'mushroom on log'; Bacteria → card figure {kind:'cell', type:'bacterium', shape:'rod'}; Earthworm → icon 'earthworm in soil'. ('oak tree' and 'mushroom on log' also fit the Oak tree and Mushroom cards on s.6.cells.)",
   },
   {
     id: 'D53',
     what: 'Card pictures for s.5.food-webs~chain-order',
     kind: 'icon',
     pages: ['s.5.food-webs~chain-order'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3d-food-chain'],
+    uses: '"icon":"tuft of grass"',
     notes:
-      "Sun → existing icon 'sun'; Grass → a tuft of grass; Grasshopper → existing icon 'grasshopper'; Frog → existing icon 'frog'; Snake → existing icon 'snake'; Hawk → existing icon 'hawk'",
+      "Sun → existing icon 'sun'; Grass → a tuft of grass; Grasshopper → existing icon 'grasshopper'; Frog → existing icon 'frog'; Snake → existing icon 'snake'; Hawk → existing icon 'hawk'. DRAWN (icons, group D): Stage figures: Sun → icon 'sun'; Grass → icon 'tuft of grass'; Grasshopper → icon 'grasshopper'; Frog → icon 'frog'; Snake → icon 'snake'; Hawk → icon 'hawk'.",
   },
   {
     id: 'D54',
