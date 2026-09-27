@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <g id="magnet-clip">
+      <path d="M8 70 L8 20 A7 7 0 0 1 22 20 L22 84 A11 11 0 0 1 0 84 L0 15 A15 15 0 0 1 30 15 L30 66" fill="none" stroke="#1f2937" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 70 L8 20 A7 7 0 0 1 22 20 L22 84 A11 11 0 0 1 0 84 L0 15 A15 15 0 0 1 30 15 L30 66" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </defs>
+  <rect x="0" y="0" width="1200" height="800" fill="#eef2f7"/>
+  <rect x="0" y="480" width="1200" height="320" fill="#e2e8f0"/>
+  <ellipse cx="365" cy="638" rx="250" ry="16" fill="#1f2937" opacity="0.12"/>
+  <g stroke="#4b5563" stroke-width="5" stroke-linecap="round"><line x1="125.3" y1="566.6" x2="108.8" y2="559"/><line x1="125.7" y1="536.8" x2="119.4" y2="523.9"/><line x1="128.1" y1="536.3" x2="123.5" y2="525.9"/><line x1="126.3" y1="572.1" x2="113.6" y2="570"/><line x1="67.2" y1="562.9" x2="54.3" y2="560.5"/><line x1="102.7" y1="544.8" x2="87" y2="531.6"/><line x1="105.1" y1="581.4" x2="83.8" y2="585.5"/><line x1="120.7" y1="517.9" x2="115.7" y2="505.3"/><line x1="134.6" y1="560.3" x2="125.9" y2="549.1"/><line x1="129.9" y1="590.4" x2="118.2" y2="602.5"/><line x1="107.1" y1="586.6" x2="90.9" y2="592.3"/><line x1="100" y1="539.4" x2="88.6" y2="529"/><line x1="94.3" y1="553.7" x2="79.8" y2="546.5"/><line x1="82.2" y1="546.6" x2="65.9" y2="537.8"/><line x1="102" y1="547.4" x2="88.7" y2="537.5"/><line x1="109.8" y1="620.2" x2="101.9" y2="631.6"/><line x1="73.1" y1="562.8" x2="59.9" y2="560.2"/><line x1="131.2" y1="574.6" x2="112.5" y2="574.1"/><line x1="104.3" y1="602.3" x2="88.6" y2="614.5"/><line x1="87.2" y1="550.9" x2="71.5" y2="543.1"/><line x1="99.9" y1="582.5" x2="80" y2="586.4"/><line x1="130.6" y1="609.4" x2="123.9" y2="625.1"/><line x1="123" y1="528.6" x2="116.1" y2="513.2"/><line x1="130.2" y1="632" x2="126.7" y2="645"/><line x1="81" y1="559.5" x2="69.4" y2="556.2"/><line x1="118.3" y1="572.8" x2="105.2" y2="571.5"/><line x1="120.4" y1="522.7" x2="115.5" y2="511.6"/><line x1="114.3" y1="555.3" x2="98.2" y2="543.6"/><line x1="127.8" y1="542.4" x2="120.4" y2="528.1"/><line x1="109.1" y1="623.1" x2="98.5" y2="639"/><line x1="108.3" y1="555.3" x2="95.4" y2="547.4"/><line x1="101.8" y1="632.8" x2="94.9" y2="643.2"/><line x1="126.7" y1="555.9" x2="117.5" y2="546"/><line x1="85.2" y1="573.2" x2="70.6" y2="572.6"/><line x1="94.1" y1="560.8" x2="73.9" y2="554.1"/><line x1="100.2" y1="594.4" x2="84.4" y2="602.5"/><line x1="133.3" y1="580.3" x2="114.6" y2="589"/><line x1="88.2" y1="615.7" x2="73.6" y2="628.1"/><line x1="101.7" y1="564.9" x2="89.2" y2="561.6"/><line x1="127.9" y1="580.6" x2="116" y2="584.7"/><line x1="580.2" y1="581.1" x2="594.1" y2="585"/><line x1="595.5" y1="561.8" x2="607.7" y2="557"/><line x1="608.5" y1="629.8" x2="618.3" y2="641.9"/><line x1="577.3" y1="574.3" x2="590.3" y2="573.7"/><line x1="584.8" y1="565.1" x2="603.3" y2="557.5"/><line x1="588" y1="539.3" x2="595.1" y2="530.3"/><line x1="644.7" y1="579.9" x2="665.3" y2="581.3"/><line x1="584.8" y1="588.1" x2="598.4" y2="595.3"/><line x1="600.6" y1="532.2" x2="611.4" y2="520"/><line x1="584.3" y1="595.9" x2="594.7" y2="604.7"/><line x1="614.4" y1="623.8" x2="628" y2="637.6"/><line x1="606.7" y1="616.5" x2="619.9" y2="629.3"/><line x1="595.4" y1="547.5" x2="606.9" y2="538.1"/><line x1="582" y1="561.3" x2="597.7" y2="551.8"/><line x1="587.5" y1="635.3" x2="595.7" y2="653.2"/><line x1="585.2" y1="566.3" x2="598.5" y2="561.7"/><line x1="634" y1="594.9" x2="653.3" y2="601"/><line x1="619.1" y1="572.4" x2="639.1" y2="571.4"/><line x1="581.3" y1="533.1" x2="590.4" y2="516"/><line x1="607.4" y1="612.1" x2="619.6" y2="622.5"/><line x1="604" y1="531.8" x2="613.9" y2="521.3"/><line x1="617.2" y1="623.5" x2="628.2" y2="633.9"/><line x1="639.9" y1="558.2" x2="658.5" y2="553.6"/><line x1="603.4" y1="525.6" x2="615.2" y2="511"/><line x1="598.3" y1="529.4" x2="610.9" y2="513.4"/><line x1="592.4" y1="587.5" x2="608.3" y2="594"/><line x1="643.3" y1="579.6" x2="659.6" y2="580.7"/><line x1="597.1" y1="625" x2="604.7" y2="635.7"/><line x1="584.3" y1="557.4" x2="595.6" y2="549.3"/><line x1="588.6" y1="580.9" x2="604.4" y2="584.3"/><line x1="600.9" y1="521.8" x2="609.4" y2="510"/><line x1="612.8" y1="570.3" x2="633.7" y2="568.1"/><line x1="639.9" y1="561.6" x2="656.5" y2="558.3"/><line x1="612.6" y1="578.7" x2="624.7" y2="579.6"/><line x1="585.2" y1="571.3" x2="597.1" y2="569.5"/><line x1="626" y1="571.3" x2="643.6" y2="570.2"/><line x1="603.4" y1="556.9" x2="619.1" y2="549.8"/><line x1="589" y1="579.2" x2="603.6" y2="581.3"/><line x1="594.1" y1="601.4" x2="607.2" y2="612"/><line x1="620.6" y1="615.8" x2="633.1" y2="625.3"/></g>
+  <polygon points="140,540 184,510 379,510 335,540" fill="#f87171"/>
+  <polygon points="335,540 379,510 574,510 530,540" fill="#93c5fd"/>
+  <polygon points="530,540 574,510 574,600 530,630" fill="#1d4ed8"/>
+  <rect x="140" y="540" width="195.0" height="90" fill="#ef4444"/>
+  <rect x="335.0" y="540" width="195.0" height="90" fill="#3b82f6"/>
+  <polygon points="140,630 530,630 574,600 574,510 184,510 140,540" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M140 540 L530 540 L574 510 M530 540 L530 630 M335.0 630 L335.0 540 L379.0 510" fill="none" stroke="#1f2937" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="60" fill="#ffffff" text-anchor="middle"><text x="237.5" y="606.0">N</text><text x="432.5" y="606.0">S</text></g>
+  <path d="M878 112 L878 0" stroke="#1f2937" stroke-width="6" stroke-linecap="round"/>
+  <path d="M878 112 L878 0" stroke="#d6a76c" stroke-width="2"/>
+  <path d="M752 434 L752 244 A140 140 0 0 1 892 104 L892 178 A66 66 0 0 0 826 244 L826 434 Z" fill="#b91c1c"/>
+  <path d="M892 104 A140 140 0 0 1 1032 244 L1032 434 L958 434 L958 244 A66 66 0 0 0 892 178 Z" fill="#1d4ed8"/>
+  <rect x="752" y="390" width="74" height="44" fill="#94a3b8"/>
+  <rect x="958" y="390" width="74" height="44" fill="#94a3b8"/>
+  <path d="M752 434 L752 244 A140 140 0 0 1 1032 244 L1032 434 L958 434 L958 244 A66 66 0 0 0 826 244 L826 434 Z" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M730 450 L730 260 A140 140 0 0 1 870 120 L870 194 A66 66 0 0 0 804 260 L804 450 Z" fill="#ef4444"/>
+  <path d="M870 120 A140 140 0 0 1 1010 260 L1010 450 L936 450 L936 260 A66 66 0 0 0 870 194 Z" fill="#3b82f6"/>
+  <rect x="730" y="406" width="74" height="44" fill="#cbd5e1"/>
+  <rect x="730" y="406" width="74" height="10" fill="#94a3b8"/>
+  <rect x="936" y="406" width="74" height="44" fill="#cbd5e1"/>
+  <rect x="936" y="406" width="74" height="10" fill="#94a3b8"/>
+  <path d="M730 450 L730 260 A140 140 0 0 1 1010 260 L1010 450 L936 450 L936 260 A66 66 0 0 0 804 260 L804 450 Z" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M870 120 L870 194 M730 406 L804 406 M936 406 L1010 406" stroke="#1f2937" stroke-width="5" stroke-linecap="round"/>
+  <path d="M746 410 L746 260 A124 124 0 0 1 830 142" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" opacity="0.4"/>
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="56" fill="#ffffff" text-anchor="middle"><text x="767.0" y="378">N</text><text x="973.0" y="378">S</text></g>
+  <use href="#magnet-clip" transform="translate(746.0 438) scale(1.4) rotate(-3 15 0)"/>
+  <use href="#magnet-clip" transform="translate(753.0 558) scale(1.4) rotate(7 15 0)"/>
+  <use href="#magnet-clip" transform="translate(952.0 438) scale(1.4) rotate(4 15 0)"/>
+  <use href="#magnet-clip" transform="translate(830 772) scale(1.4) rotate(-82)"/>
+  <use href="#magnet-clip" transform="translate(1000 700) scale(1.4) rotate(-100)"/>
+</svg>

@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "penny-front",
+    "title": "Penny (front)",
+    "use": "Coins and CoinRow pictures (1 cent)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:2010_cent_obverse.png",
+      "https://commons.wikimedia.org/wiki/File:2017-P_Lincoln_Shield_cent_obverse.jpg",
+      "https://commons.wikimedia.org/wiki/File:US_One_Cent_Obv.png"
+    ],
+    "notes": "Copper coin, stylized profile facing right with beard; IN GOD WE TRUST on top, LIBERTY on the left. Size to scale with the other coins (19.05 mm)."
+  },
+  {
+    "slug": "penny-back",
+    "title": "Penny (back)",
+    "use": "Coins and CoinRow pictures (1 cent)",
+    "references": ["https://en.wikipedia.org/wiki/Lincoln_cent"],
+    "notes": "Union Shield reverse: shield with 13 stripes and E PLURIBUS UNUM on its top bar, ONE CENT scroll, UNITED STATES OF AMERICA around the top."
+  },
+  {
+    "slug": "nickel-front",
+    "title": "Nickel (front)",
+    "use": "Coins and CoinRow pictures (5 cents)",
+    "references": ["https://commons.wikimedia.org/wiki/File:Jefferson-Nickel-Unc-Obv.jpg"],
+    "notes": "Silver coin, stylized forward-facing bust (simple features, not a likeness); IN GOD WE TRUST on the left, LIBERTY on the right. 21.21 mm to scale."
+  },
+  {
+    "slug": "nickel-back",
+    "title": "Nickel (back)",
+    "use": "Coins and CoinRow pictures (5 cents)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:US_Nickel_2013_Rev.png",
+      "https://commons.wikimedia.org/wiki/File:2006_Nickel_Unc_Rev.jpg"
+    ],
+    "notes": "Monticello building with dome and columned portico; E PLURIBUS UNUM, FIVE CENTS, UNITED STATES OF AMERICA."
+  },
+  {
+    "slug": "dime-front",
+    "title": "Dime (front)",
+    "use": "Coins and CoinRow pictures (10 cents)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:2005-Dime-Obv-Unc-P.png",
+      "https://commons.wikimedia.org/wiki/File:Dime_Obverse_13.png"
+    ],
+    "notes": "Silver coin with reeded edge, stylized profile facing left; LIBERTY on the left, IN GOD WE TRUST under the chin. 17.91 mm to scale (smallest)."
+  },
+  {
+    "slug": "dime-back",
+    "title": "Dime (back)",
+    "use": "Coins and CoinRow pictures (10 cents)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Dime_Reverse_13.png",
+      "https://commons.wikimedia.org/wiki/File:2005_Dime_Rev_Unc_P.png"
+    ],
+    "notes": "Torch with an olive branch (left) and an oak branch (right); UNITED STATES OF AMERICA, E PLURIBUS UNUM, ONE DIME; reeded edge."
+  },
+  {
+    "slug": "quarter-front",
+    "title": "Quarter (front)",
+    "use": "Coins and CoinRow pictures (25 cents)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:2021-P_US_Quarter_Obverse.jpg",
+      "https://commons.wikimedia.org/wiki/File:1999_Obverse_Proof.png"
+    ],
+    "notes": "Silver coin with reeded edge, stylized profile facing left with hair tied back in a ribbon; LIBERTY on top, IN GOD WE TRUST on the left. 24.26 mm: 680 px across."
+  },
+  {
+    "slug": "quarter-back",
+    "title": "Quarter (back)",
+    "use": "Coins and CoinRow pictures (25 cents)",
+    "references": ["https://commons.wikimedia.org/wiki/File:1932_Washington_quarter_reverse.jpg"],
+    "notes": "Heraldic eagle with raised wings on a bundle of arrows above olive branches; UNITED STATES OF AMERICA, E PLURIBUS UNUM, QUARTER DOLLAR; reeded edge."
+  }
+]

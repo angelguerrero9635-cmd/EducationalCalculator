@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <radialGradient id="ramp-ball" cx="0.35" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#f87171"/>
+      <stop offset="1" stop-color="#b91c1c"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="800" fill="#eef2f7"/>
+  <rect x="0" y="550" width="1200" height="250" fill="#e2e8f0"/>
+  <ellipse cx="480" cy="626" rx="360" ry="14" fill="#1f2937" opacity="0.1"/>
+  <polygon points="170,522.6 196,504.6 326,504.6 300,522.6" fill="#93c5fd"/>
+  <polygon points="300,522.6 326,504.6 326,602 300,620" fill="#1d4ed8"/>
+  <rect x="170" y="522.5641025641025" width="130" height="97.43589743589745" fill="#3b82f6"/>
+  <polygon points="170,620 300,620 326,602 326,504.6 196,504.6 170,522.6" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M170 522.5641025641025 L300 522.5641025641025 L300 620.0 M300 522.5641025641025 L326 504.56410256410254" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="170,425.1 196,407.1 326,407.1 300,425.1" fill="#fde68a"/>
+  <polygon points="300,425.1 326,407.1 326,504.6 300,522.6" fill="#ca9a04"/>
+  <rect x="170" y="425.1282051282051" width="130" height="97.43589743589745" fill="#facc15"/>
+  <polygon points="170,522.6 300,522.6 326,504.6 326,407.1 196,407.1 170,425.1" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M170 425.1282051282051 L300 425.1282051282051 L300 522.5641025641025 M300 425.1282051282051 L326 407.1282051282051" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="170,327.7 196,309.7 326,309.7 300,327.7" fill="#86efac"/>
+  <polygon points="300,327.7 326,309.7 326,407.1 300,425.1" fill="#15803d"/>
+  <rect x="170" y="327.6923076923077" width="130" height="97.43589743589745" fill="#22c55e"/>
+  <polygon points="170,425.1 300,425.1 326,407.1 326,309.7 196,309.7 170,327.7" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M170 327.6923076923077 L300 327.6923076923077 L300 425.12820512820514 M300 327.6923076923077 L326 309.6923076923077" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="150,212 800,592 826,574 176,194" fill="#f0d3a2"/>
+  <polygon points="150,212 800,592 800,620 150,240" fill="#d6a76c"/>
+  <polygon points="150,240 150,212 176,194 826,574 800,592 800,620" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <line x1="150" y1="212" x2="800" y2="592" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <path d="M230 272.8 L430 389.7 M520 444.3 L720 561.2" stroke="#b07b40" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#1f2937" stroke-width="6" stroke-linecap="round" opacity="0.55"><line x1="377.8" y1="305.4" x2="317.4" y2="270.1"/><line x1="382.3" y1="277.9" x2="296" y2="227.5"/><line x1="404.1" y1="260.5" x2="343.7" y2="225.2"/></g>
+  <path d="M506.6 350.6 L814.7 530.7 Q866.5 561 936.5 561 L1080 561" fill="none" stroke="#1f2937" stroke-width="6" stroke-linecap="round" stroke-dasharray="2 20" opacity="0.7"/>
+  <path d="M1070 535 L1112 561 L1070 587 Z" fill="#1f2937" stroke="#1f2937" stroke-width="6" stroke-linejoin="round" opacity="0.7"/>
+  <circle cx="446.2" cy="315.3" r="46" fill="url(#ramp-ball)" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <ellipse cx="432.2" cy="297.3" rx="13" ry="8" fill="#ffffff" opacity="0.7" transform="rotate(-35 432.2 297.3)"/>
+</svg>

@@ -244,6 +244,76 @@
       "notes": "Side view, 1200x800. Yellow bus with windows, black stripes, folded stop-sign arm and wheels; no text."
     },
     {
+      "slug": "series-circuit",
+      "topic": "forces",
+      "title": "Series circuit",
+      "svg": "assets/images/forces/series-circuit.svg",
+      "file": "assets/images/forces/series-circuit.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "SeriesCircuit picture (closed circuit, one loop)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://en.wikipedia.org/wiki/Series_and_parallel_circuits",
+        "https://littlebinsforlittlehands.com/series-circuits-for-kids/",
+        "https://www.teachengineering.org/activities/cub_electricity_lesson05_activity1"
+      ],
+      "notes": "A D cell (+ and − marked), a closed switch and a glowing bulb in its holder, joined by wires in one closed loop."
+    },
+    {
+      "slug": "magnet",
+      "topic": "forces",
+      "title": "Magnets",
+      "svg": "assets/images/forces/magnet.svg",
+      "file": "assets/images/forces/magnet.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Magnets picture (attract, poles)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://en.wikipedia.org/wiki/Horseshoe_magnet",
+        "https://commons.wikimedia.org/wiki/Category:Horseshoe_magnets",
+        "https://www.first4magnets.com/blog/the-different-shapes-of-magnets-and-their-uses/"
+      ],
+      "notes": "A bar magnet (N red, S blue) with paper clips and iron filings at its ends, and a horseshoe magnet (N red, S blue tips) holding paper clips."
+    },
+    {
+      "slug": "ball-ramp",
+      "topic": "forces",
+      "title": "Ball rolling down a ramp",
+      "svg": "assets/images/forces/ball-ramp.svg",
+      "file": "assets/images/forces/ball-ramp.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Pushes picture (energy and speed, motion)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://ucscphysicsdemo.sites.ucsc.edu/physics-5a6a/ball-rolling-down-inclined-plane/",
+        "https://sciencedemonstrations.fas.harvard.edu/presentations/scantling-and-ball"
+      ],
+      "notes": "A wooden ramp propped on blocks, a ball rolling down it with motion lines, and arrows showing it rolls on across the floor."
+    },
+    {
+      "slug": "water-waves",
+      "topic": "forces",
+      "title": "Water waves",
+      "svg": "assets/images/forces/water-waves.svg",
+      "file": "assets/images/forces/water-waves.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Wave picture (crest, trough, wavelength, amplitude)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.physicsclassroom.com/tutorial/vibrations-and-waves/properties-of-a-wave/anatomy-of-a-wave",
+        "https://www.sparkl.me/learn/cambridge-igcse/physics-0625-core/features-of-a-wave-wavefront-wavelength-frequency-crest-trough-amplitude-wave-speed/revision-notes/3847"
+      ],
+      "notes": "Side view of even water waves (4 wavelengths across, same height) with a dashed still-water line and a small boat on a crest; no words, so crest, trough, wavelength and amplitude can be pointed out."
+    },
+    {
       "slug": "beaker",
       "topic": "measuring",
       "title": "Beaker with water",
@@ -387,6 +457,394 @@
         "https://commons.wikimedia.org/wiki/File:Protractor_Rapporteur_Degrees_V3.jpg"
       ],
       "notes": "Half-circle protractor, ticks every 1°, 5° and 10°; outer scale 0–180 from the left, inner (blue) scale 0–180 from the right; center hole on the baseline. Wide canvas (1200×720)."
+    },
+    {
+      "slug": "penny-front",
+      "topic": "money",
+      "title": "Penny (front)",
+      "svg": "assets/images/money/penny-front.svg",
+      "file": "assets/images/money/penny-front.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (1 cent)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:2010_cent_obverse.png",
+        "https://commons.wikimedia.org/wiki/File:2017-P_Lincoln_Shield_cent_obverse.jpg",
+        "https://commons.wikimedia.org/wiki/File:US_One_Cent_Obv.png"
+      ],
+      "notes": "Copper coin, stylized profile facing right with beard; IN GOD WE TRUST on top, LIBERTY on the left. Size to scale with the other coins (19.05 mm)."
+    },
+    {
+      "slug": "penny-back",
+      "topic": "money",
+      "title": "Penny (back)",
+      "svg": "assets/images/money/penny-back.svg",
+      "file": "assets/images/money/penny-back.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (1 cent)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://en.wikipedia.org/wiki/Lincoln_cent"
+      ],
+      "notes": "Union Shield reverse: shield with 13 stripes and E PLURIBUS UNUM on its top bar, ONE CENT scroll, UNITED STATES OF AMERICA around the top."
+    },
+    {
+      "slug": "nickel-front",
+      "topic": "money",
+      "title": "Nickel (front)",
+      "svg": "assets/images/money/nickel-front.svg",
+      "file": "assets/images/money/nickel-front.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (5 cents)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Jefferson-Nickel-Unc-Obv.jpg"
+      ],
+      "notes": "Silver coin, stylized forward-facing bust (simple features, not a likeness); IN GOD WE TRUST on the left, LIBERTY on the right. 21.21 mm to scale."
+    },
+    {
+      "slug": "nickel-back",
+      "topic": "money",
+      "title": "Nickel (back)",
+      "svg": "assets/images/money/nickel-back.svg",
+      "file": "assets/images/money/nickel-back.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (5 cents)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:US_Nickel_2013_Rev.png",
+        "https://commons.wikimedia.org/wiki/File:2006_Nickel_Unc_Rev.jpg"
+      ],
+      "notes": "Monticello building with dome and columned portico; E PLURIBUS UNUM, FIVE CENTS, UNITED STATES OF AMERICA."
+    },
+    {
+      "slug": "dime-front",
+      "topic": "money",
+      "title": "Dime (front)",
+      "svg": "assets/images/money/dime-front.svg",
+      "file": "assets/images/money/dime-front.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (10 cents)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:2005-Dime-Obv-Unc-P.png",
+        "https://commons.wikimedia.org/wiki/File:Dime_Obverse_13.png"
+      ],
+      "notes": "Silver coin with reeded edge, stylized profile facing left; LIBERTY on the left, IN GOD WE TRUST under the chin. 17.91 mm to scale (smallest)."
+    },
+    {
+      "slug": "dime-back",
+      "topic": "money",
+      "title": "Dime (back)",
+      "svg": "assets/images/money/dime-back.svg",
+      "file": "assets/images/money/dime-back.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (10 cents)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Dime_Reverse_13.png",
+        "https://commons.wikimedia.org/wiki/File:2005_Dime_Rev_Unc_P.png"
+      ],
+      "notes": "Torch with an olive branch (left) and an oak branch (right); UNITED STATES OF AMERICA, E PLURIBUS UNUM, ONE DIME; reeded edge."
+    },
+    {
+      "slug": "quarter-front",
+      "topic": "money",
+      "title": "Quarter (front)",
+      "svg": "assets/images/money/quarter-front.svg",
+      "file": "assets/images/money/quarter-front.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (25 cents)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:2021-P_US_Quarter_Obverse.jpg",
+        "https://commons.wikimedia.org/wiki/File:1999_Obverse_Proof.png"
+      ],
+      "notes": "Silver coin with reeded edge, stylized profile facing left with hair tied back in a ribbon; LIBERTY on top, IN GOD WE TRUST on the left. 24.26 mm: 680 px across."
+    },
+    {
+      "slug": "quarter-back",
+      "topic": "money",
+      "title": "Quarter (back)",
+      "svg": "assets/images/money/quarter-back.svg",
+      "file": "assets/images/money/quarter-back.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Coins and CoinRow pictures (25 cents)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:1932_Washington_quarter_reverse.jpg"
+      ],
+      "notes": "Heraldic eagle with raised wings on a bundle of arrows above olive branches; UNITED STATES OF AMERICA, E PLURIBUS UNUM, QUARTER DOLLAR; reeded edge."
+    },
+    {
+      "slug": "granite",
+      "topic": "rocks",
+      "title": "Granite",
+      "svg": "assets/images/rocks/granite.svg",
+      "file": "assets/images/rocks/granite.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, weathering (Grade 4)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Granit.jpg"
+      ],
+      "notes": "Coarse interlocking crystals you can see: pink and white feldspar, gray glassy quartz, black mica and hornblende. Igneous (cooled slowly underground)."
+    },
+    {
+      "slug": "basalt",
+      "topic": "rocks",
+      "title": "Basalt",
+      "svg": "assets/images/rocks/basalt.svg",
+      "file": "assets/images/rocks/basalt.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, volcanoes",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.usgs.gov/media/images/vesicular-basalt-side-view",
+        "https://www.usgs.gov/media/images/vesicular-basalt-top-view"
+      ],
+      "notes": "Dark gray-black, fine-grained (crystals too small to see), a few small gas holes (vesicles). Igneous (cooled quickly from lava)."
+    },
+    {
+      "slug": "obsidian",
+      "topic": "rocks",
+      "title": "Obsidian",
+      "svg": "assets/images/rocks/obsidian.svg",
+      "file": "assets/images/rocks/obsidian.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, volcanoes",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.usgs.gov/media/images/volcanic-glass-obsidian",
+        "https://commons.wikimedia.org/wiki/File:ObsidianOregon.jpg"
+      ],
+      "notes": "Glossy black volcanic glass with sharp edges and conchoidal (curved, shell-like) fracture surfaces with ripple rings; strong highlights. No crystals."
+    },
+    {
+      "slug": "pumice",
+      "topic": "rocks",
+      "title": "Pumice",
+      "svg": "assets/images/rocks/pumice.svg",
+      "file": "assets/images/rocks/pumice.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, density (floats on water)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Bims.jpeg",
+        "https://commons.wikimedia.org/wiki/File:Dacitic_pumice_(Holocene,_Mt._St_Helens).jpg",
+        "https://www.usgs.gov/media/images/rocks-sink-or-float"
+      ],
+      "notes": "Pale gray-cream, rounded, full of many gas holes of different sizes (stretched a little in one direction); looks light."
+    },
+    {
+      "slug": "sandstone",
+      "topic": "rocks",
+      "title": "Sandstone",
+      "svg": "assets/images/rocks/sandstone.svg",
+      "file": "assets/images/rocks/sandstone.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, weathering (Grade 4)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:SandstoneUSGOV.jpg",
+        "https://www.usgs.gov/media/images/sandstone-sample-2",
+        "https://www.usgs.gov/media/images/sandstone-group-sample"
+      ],
+      "notes": "Tan-orange blocky rock, sandy speckled grains, faint horizontal layers."
+    },
+    {
+      "slug": "shale",
+      "topic": "rocks",
+      "title": "Shale",
+      "svg": "assets/images/rocks/shale.svg",
+      "file": "assets/images/rocks/shale.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, weathering (Grade 4)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.usgs.gov/media/images/oil-shale-sample-1",
+        "https://www.usgs.gov/media/images/oil-shale-sample-2"
+      ],
+      "notes": "Dark gray, many thin flat layers seen on the edge, flaky stepped ends, a thin sheet flaking off the top."
+    },
+    {
+      "slug": "limestone-shells",
+      "topic": "rocks",
+      "title": "Limestone with shells",
+      "svg": "assets/images/rocks/limestone-shells.svg",
+      "file": "assets/images/rocks/limestone-shells.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, fossils",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:CoquinaFlorida.jpg",
+        "https://www.nps.gov/articles/000/fossil-brachiopods.htm"
+      ],
+      "notes": "Gray-cream fossiliferous limestone packed with ribbed shells, small snail shells and broken shell pieces."
+    },
+    {
+      "slug": "conglomerate",
+      "topic": "rocks",
+      "title": "Conglomerate",
+      "svg": "assets/images/rocks/conglomerate.svg",
+      "file": "assets/images/rocks/conglomerate.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, weathering and erosion (Grade 4)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:ConglomerateUSGOV.jpg",
+        "https://www.usgs.gov/media/images/conglomerate-gold-ore"
+      ],
+      "notes": "Rounded pebbles of many colors and sizes (white quartz, red, gray, black, tan) cemented in a finer sandy matrix."
+    },
+    {
+      "slug": "slate",
+      "topic": "rocks",
+      "title": "Slate",
+      "svg": "assets/images/rocks/slate.svg",
+      "file": "assets/images/rocks/slate.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (shale changed by heat and pressure)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Gray_slate_(GeoDIL_number_-_15).jpg",
+        "https://commons.wikimedia.org/wiki/File:SlateUSGOV.jpg"
+      ],
+      "notes": "Dark blue-gray thin flat slab with a smooth split face, sharp broken edges and fine splitting lines on the edge."
+    },
+    {
+      "slug": "marble",
+      "topic": "rocks",
+      "title": "Marble",
+      "svg": "assets/images/rocks/marble.svg",
+      "file": "assets/images/rocks/marble.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (limestone changed by heat and pressure), weathering by acid rain",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.usgs.gov/media/images/calcite-marble-2",
+        "https://www.usgs.gov/media/images/calcite-marble"
+      ],
+      "notes": "White rock with soft gray veins and a sugary mosaic of small crystals with sparkles."
+    },
+    {
+      "slug": "gneiss",
+      "topic": "rocks",
+      "title": "Gneiss",
+      "svg": "assets/images/rocks/gneiss.svg",
+      "file": "assets/images/rocks/gneiss.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (foliation from pressure)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:GneissUSGOV.jpg",
+        "https://www.usgs.gov/media/images/granite-augen-gneiss"
+      ],
+      "notes": "Bold wavy alternating light (white, pink) and dark bands (foliation), each band speckled with mineral grains."
+    },
+    {
+      "slug": "quartzite",
+      "topic": "rocks",
+      "title": "Quartzite",
+      "svg": "assets/images/rocks/quartzite.svg",
+      "file": "assets/images/rocks/quartzite.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (sandstone changed by heat and pressure)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://en.wikipedia.org/wiki/Quartzite",
+        "https://commons.wikimedia.org/wiki/Category:Quartzite"
+      ],
+      "notes": "Pale pink and white, glassy-granular mosaic of fused sand grains, massive with no layers, glassy highlights."
+    },
+    {
+      "slug": "rock-layers",
+      "topic": "rocks",
+      "title": "Rock layers in a canyon wall",
+      "svg": "assets/images/rocks/rock-layers.svg",
+      "file": "assets/images/rocks/rock-layers.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "RockLayers picture (older layers at the bottom), sedimentary rocks, fossils and Earth history",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Grand_Canyon_layers.jpg",
+        "https://www.nps.gov/articles/000/grcatime-layered-paleozoic-rock.htm"
+      ],
+      "notes": "Canyon wall with nine horizontal sedimentary layers of different colors, thicknesses and textures (cream limestone on top, pale cross-bedded sandstone, red layers, gray, green-gray shale, brown sandstone at the bottom); the wall steps down to the right; sky, clouds, shrubs, a hazy far wall. Older layers are lower."
+    },
+    {
+      "slug": "fish-fossil",
+      "topic": "rocks",
+      "title": "Fish fossil",
+      "svg": "assets/images/rocks/fish-fossil.svg",
+      "file": "assets/images/rocks/fish-fossil.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Fossils (Grade 3–4), sedimentary rocks, Earth history",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.nps.gov/fobu/learn/nature/fossil-fish.htm"
+      ],
+      "notes": "Whole herring-like fish skeleton (like Knightia) pressed into a pale limestone slab: skull with eye socket and gill cover, backbone of vertebrae, ribs, fins with rays, forked tail."
+    },
+    {
+      "slug": "shell-fossil",
+      "topic": "rocks",
+      "title": "Shell fossils",
+      "svg": "assets/images/rocks/shell-fossil.svg",
+      "file": "assets/images/rocks/shell-fossil.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Fossils (Grade 3–4), sedimentary rocks, Earth history",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.nps.gov/articles/000/fossil-brachiopods.htm"
+      ],
+      "notes": "Ribbed brachiopod shells (fan-shaped, with a beak and growth lines) and a coiled ammonite in a gray-tan rock with broken shell bits."
     }
   ]
 }

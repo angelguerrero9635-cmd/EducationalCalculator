@@ -8,8 +8,8 @@
   </defs>
   <ellipse cx="400" cy="724" rx="210" ry="14" fill="#1f2937" opacity="0.12"/>
   <g clip-path="url(#cyl-inside)">
-    <path d="M320 327 Q400 357 480 327 L480 660 L320 660 Z" fill="url(#cyl-water)" opacity="0.8"/>
-    <path d="M336 330 Q400 354 464 330" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round"/>
+    <path d="M330 326 C344 342 370 342 400 342 C430 342 456 342 470 326 L470 660 L330 660 Z" fill="url(#cyl-water)" opacity="0.8"/>
+    <path d="M336 330 C348 342 370 342 400 342 C430 342 452 342 464 330" fill="none" stroke="#1d4ed8" stroke-width="4" stroke-linecap="round"/>
   </g>
   <path d="M330 96 L330 648 L470 648 L470 96 Z" fill="#dbeafe" fill-opacity="0.4"/>
   <path d="M330 96 L330 648 L470 648 L470 96" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
@@ -69,7 +69,7 @@
     <line x1="434" y1="159.6" x2="456" y2="159.6"/>
     <line x1="410" y1="150" x2="456" y2="150"/>
   </g>
-  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="26" fill="#1f2937" text-anchor="end">
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="26" fill="#1f2937" text-anchor="end" stroke="#ffffff" stroke-width="6" stroke-linejoin="round" paint-order="stroke">
     <text x="398" y="591">10</text>
     <text x="398" y="543">20</text>
     <text x="398" y="495">30</text>
