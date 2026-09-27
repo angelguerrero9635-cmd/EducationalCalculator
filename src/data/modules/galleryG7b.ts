@@ -64,4 +64,77 @@ export const G7B_GALLERY_MODULES: ModuleDef[] = [
       steps: true,
     },
   },
+  {
+    id: 'g.tape-equation',
+    title: 'Tape for px + q = r',
+    assumptions: [
+      'The bar is p equal boxes of x and a piece q, together as long as r.',
+      'A negative q is a piece taken off the end of the boxes.',
+    ],
+    variables: [
+      whole('p', 'p', 'Boxes', 1, 12),
+      whole('q', 'q', 'Added', -50, 50),
+      whole('r', 'r', 'Total', 0, 200),
+      { id: 'x', symbol: 'x', name: 'One box', min: 0.5, max: 100, step: 0.5 },
+    ],
+    relations: [twoStep],
+    steps: twoStepSteps,
+    example: { p: 3, q: 5, r: 20, x: 5 },
+    startWith: ['p', 'q', 'r'],
+    representation: {
+      kind: 'tape',
+      equation: { times: 'p', unknown: 'x', plus: 'q', total: 'r' },
+    },
+  },
+  {
+    id: 'g.tape-equation-grouped',
+    title: 'Tape for p(x + q) = r',
+    assumptions: [
+      'The bar is p equal groups, each x and q, together as long as r.',
+      'A negative q makes each group x less q: one box “x − 15”.',
+    ],
+    variables: [
+      whole('p', 'p', 'Groups', 1, 12),
+      whole('q', 'q', 'Added to each', -50, 50),
+      whole('r', 'r', 'Total', 1, 300),
+      { id: 'x', symbol: 'x', name: 'Unknown', min: 0.5, max: 100, step: 0.5 },
+    ],
+    relations: [
+      {
+        id: 'p(x + q) = r',
+        display: '{p} × ({x} + {q}) = {r}',
+        vars: ['p', 'x', 'q', 'r'],
+        residual: (v: Values) => v.p! * (v.x! + v.q!) - v.r!,
+        solve: {
+          x: (v: Values) => {
+            const each = div(v.r!, v.p!);
+            return each === undefined ? undefined : each - v.q!;
+          },
+          r: (v: Values) => v.p! * (v.x! + v.q!),
+          q: (v: Values) => {
+            const each = div(v.r!, v.p!);
+            return each === undefined ? undefined : each - v.x!;
+          },
+          p: (v: Values) => whole0(div(v.r!, v.x! + v.q!)),
+        },
+      },
+    ],
+    steps: {
+      'p(x + q) = r': {
+        x: {
+          expr: '{r} ÷ {p} − {q}',
+          how: 'Divide both sides by {p}, then take {q} from both sides.',
+        },
+        r: { expr: '{p} × ({x} + {q})', how: 'Add inside the brackets, then multiply.' },
+        q: { expr: '{r} ÷ {p} − {x}', how: 'Divide by {p} for one group, then take away {x}.' },
+        p: { expr: '{r} ÷ ({x} + {q})', how: 'Divide the total by one group.' },
+      },
+    },
+    example: { p: 3, q: -15, r: 90, x: 45 },
+    startWith: ['p', 'q', 'r'],
+    representation: {
+      kind: 'tape',
+      equation: { times: 'p', unknown: 'x', plus: 'q', total: 'r', grouped: true },
+    },
+  },
 ];

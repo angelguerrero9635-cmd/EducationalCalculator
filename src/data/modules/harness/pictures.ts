@@ -684,6 +684,19 @@ export function repIssues(
       count(rep.value, 'number');
       break;
     case 'tape': {
+      if ('equation' in rep) {
+        // p boxes of x, then q (TapeEquation.tsx): whole groups, positive boxes, the total.
+        const { times, unknown, plus, total, grouped } = rep.equation;
+        count(times, 'tape boxes', 12);
+        const [p, x, q, r] = [times, unknown, plus, total].map(val);
+        if (x !== undefined && q !== undefined && (x <= 0 || (grouped && x + q <= 0)))
+          out.push(`tape box ${grouped ? x + q : x} is not positive`);
+        if (p === undefined || x === undefined || q === undefined || r === undefined) break;
+        const made = grouped ? p * (x + q) : p * x + q;
+        if (Math.abs(made - r) > 1e-6 * Math.max(1, Math.abs(r)))
+          out.push(`tape: ${p} boxes of ${x} and ${q} make ${made}, not ${r}`);
+        break;
+      }
       if ('mixed' in rep && rep.mixed) {
         const ids = 'compare' in rep ? [...rep.compare, rep.difference] : rep.parts;
         for (const id of ids) exact(val(id), `tape value ${id}`);

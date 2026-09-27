@@ -123,6 +123,22 @@ export type Representation =
       total?: string;
       difference?: string;
     }
+  /**
+   * An equation px + q = r as a bar (Grade 7): `times` boxes of the `unknown`, then `plus`,
+   * together as long as `total`; a negative `plus` is a piece of the boxes taken off past the
+   * total. `grouped`: p(x + q) = r, `times` equal groups each of x and q (or one box "x − 15").
+   * Drag the end of the bar to change the total.
+   */
+  | {
+      kind: 'tape';
+      equation: {
+        times: string;
+        unknown: string;
+        plus: string;
+        total: string;
+        grouped?: boolean;
+      };
+    }
   | {
       kind: 'tape';
       compare: [string, string];

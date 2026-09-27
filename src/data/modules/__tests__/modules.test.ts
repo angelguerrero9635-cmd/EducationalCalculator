@@ -59,6 +59,8 @@ function representationVars(r: Representation): string[] {
         ...(r.second ? [r.second.step] : []),
       ].filter((v): v is string => typeof v === 'string');
     case 'tape':
+      if ('equation' in r)
+        return [r.equation.times, r.equation.unknown, r.equation.plus, r.equation.total];
       if ('ratio' in r)
         return [
           ...r.ratio,

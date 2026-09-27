@@ -39,6 +39,7 @@ import { Ruler } from './Ruler';
 import { LinePlot } from './LinePlot';
 import { SkipCount } from './SkipCount';
 import { Tape } from './Tape';
+import { TapeEquation } from './TapeEquation';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
 import { CircleDiagram } from './CircleDiagram';
@@ -108,6 +109,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'tape':
       return 'ratio' in spec ? (
         <RatioTape spec={spec} calc={calc} />
+      ) : 'equation' in spec ? (
+        <TapeEquation spec={spec} calc={calc} />
       ) : (
         <Tape spec={spec} calc={calc} />
       );
