@@ -61,8 +61,8 @@ const skills = new Map();
   }
 }
 for (const r of records) {
-  if (prefixes.some((p) => r.skillId?.startsWith(p)) && !skills.has(r.skillId)) {
-    skills.set(r.skillId, '');
+  for (const id of [r.skillId, ...(r.alsoSkills ?? [])]) {
+    if (prefixes.some((p) => id?.startsWith(p)) && !skills.has(id)) skills.set(id, '');
   }
 }
 
@@ -74,7 +74,13 @@ const clip = (s, n) => {
   return t.length > n ? `${t.slice(0, n - 1)}…` : t;
 };
 const bySkill = new Map([...skills.keys()].map((id) => [id, []]));
-for (const r of records) bySkill.get(r.skillId)?.push(r);
+// A question counts for its skill and for each lesson in `alsoSkills` (science is tested in
+// Grades 4 and 8 but learned in every grade, so an idea tested later lists the lessons that
+// teach it first).
+for (const r of records) {
+  bySkill.get(r.skillId)?.push(r);
+  for (const also of r.alsoSkills ?? []) bySkill.get(also)?.push({ ...r, filedUnder: r.skillId });
+}
 
 const lines = [
   `# Released questions for ${prefixes.join(', ')}`,
@@ -96,7 +102,8 @@ for (const [id, title] of [...skills].sort(([a], [b]) => a.localeCompare(b))) {
     count++;
     const src = q.id.startsWith('NAEP') ? 'NAEP' : 'IM';
     const pic = q.picture?.involved ? ` · picture: ${q.picture.kind}` : '';
-    lines.push(`- **${q.id}** (${src}, grade ${q.grade}, ${q.type}${pic})`);
+    const filed = q.filedUnder ? ` · filed under ${q.filedUnder}` : '';
+    lines.push(`- **${q.id}** (${src}, grade ${q.grade}, ${q.type}${pic}${filed})`);
     lines.push(`  ${clip(q.question, 420)}`);
     if (q.choices?.length)
       lines.push(`  Choices: ${q.choices.map((c) => clip(c, 60)).join(' | ')}`);
