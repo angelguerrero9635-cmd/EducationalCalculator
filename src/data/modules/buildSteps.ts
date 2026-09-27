@@ -490,7 +490,13 @@ function byGrade(lines: string[], grade: string | undefined): string[] {
     if (d && Number(d[3]) > 3) {
       const [each, n, q] = [Number(d[1]), Number(d[2]), Number(d[3])];
       const strategy = factWork(q, each);
-      out.push(...(strategy.length ? [...strategy, `${q} groups of ${each} make ${n}`] : [line]));
+      // No "q groups of each make n" when the strategy's last line already ends at n.
+      const done = strategy.length && strategy[strategy.length - 1]!.endsWith(`: ${n}`);
+      out.push(
+        ...(strategy.length
+          ? [...strategy, ...(done ? [] : [`${q} groups of ${each} make ${n}`])]
+          : [line]),
+      );
       continue;
     }
     out.push(line);

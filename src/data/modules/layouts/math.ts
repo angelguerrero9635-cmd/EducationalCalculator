@@ -2122,7 +2122,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'Acute triangle (all angles small)',
+        label: 'Acute triangle (every angle less than a square corner)',
         bin: 'triangle',
         figure: {
           kind: 'polygon',

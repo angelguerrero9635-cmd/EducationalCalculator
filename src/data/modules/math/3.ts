@@ -112,7 +112,7 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
       {
         id: `L = ${place} below n`,
         display: `The ${place} at or below {n} is {L}`,
-        words: `The ${place} below {n} = {L}`,
+        words: `The ${place} at or below the number = {L}`,
         vars: ['L', 'n'],
         residual: (v) => v.L! - below(v.n!),
         // Every number from 40 to 49 has the ten 40 below it: the number can't be found from it.
@@ -190,10 +190,18 @@ function timeHops(h: number, m: number, d: number): string[] {
     parts.push(step);
     [hh, mm, left] = [next(hh), 0, left - step];
   }
-  while (left >= 60) {
-    lines.push(`${clock(hh, mm)} → ${clock(next(hh), mm)} is 60 minutes`);
-    parts.push(60);
-    [hh, left] = [next(hh), left - 60];
+  // Whole hours in one hop: "4:00 → 7:00 is 3 hours = 180 minutes".
+  if (left >= 60) {
+    const k = Math.floor(left / 60);
+    let to = hh;
+    for (let i = 0; i < k; i++) to = next(to);
+    lines.push(
+      k === 1
+        ? `${clock(hh, mm)} → ${clock(to, mm)} is 60 minutes`
+        : `${clock(hh, mm)} → ${clock(to, mm)} is ${k} hours = ${60 * k} minutes`,
+    );
+    parts.push(60 * k);
+    [hh, left] = [to, left - 60 * k];
   }
   if (left > 0) {
     lines.push(`${clock(hh, mm)} → ${clock(hh, mm + left)} is ${mins(left)}`);
@@ -213,10 +221,17 @@ function timeHopsBack(h: number, m: number, d: number): string[] {
     parts.push(mm);
     [mm, left] = [0, left - mm];
   }
-  while (left >= 60) {
-    lines.push(`${clock(hh, mm)} → ${clock(prev(hh), mm)} is 60 minutes`);
-    parts.push(60);
-    [hh, left] = [prev(hh), left - 60];
+  if (left >= 60) {
+    const k = Math.floor(left / 60);
+    let to = hh;
+    for (let i = 0; i < k; i++) to = prev(to);
+    lines.push(
+      k === 1
+        ? `${clock(hh, mm)} → ${clock(to, mm)} is 60 minutes`
+        : `${clock(hh, mm)} → ${clock(to, mm)} is ${k} hours = ${60 * k} minutes`,
+    );
+    parts.push(60 * k);
+    [hh, left] = [to, left - 60 * k];
   }
   if (left > 0) {
     const [th, tm] = mm >= left ? [hh, mm - left] : [prev(hh), mm + 60 - left];
@@ -291,9 +306,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Area counts the unit squares that cover the inside with no gaps or overlaps.',
     ],
     variables: [
-      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 1, max: 10, step: 1, integer: true },
+      { id: 'l', symbol: 'l', name: 'Length', unit: 'cm', min: 1, max: 12, step: 1, integer: true },
       { id: 'w', symbol: 'w', name: 'Width', unit: 'cm', min: 1, max: 10, step: 1, integer: true },
-      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 1, max: 100, integer: true },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 1, max: 120, integer: true },
     ],
     relations: [
       {
@@ -347,9 +362,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'Area = length × width, so width = area ÷ length.',
       ],
       variables: [
-        { ...whole('l', 'l', 'Length', 1, 10), unit: 'cm' },
+        { ...whole('l', 'l', 'Length', 1, 12), unit: 'cm' },
         { ...whole('w', 'w', 'Width', 1, 10), unit: 'cm' },
-        { ...whole('A', 'A', 'Area', 1, 100), unit: 'cm²' },
+        { ...whole('A', 'A', 'Area', 1, 120), unit: 'cm²' },
       ],
       relations: [area.relation],
       steps: { 'A = l × w': area.steps },
@@ -839,10 +854,10 @@ export const MATH_3_MODULES: ModuleDef[] = [
       ],
       variables: [
         whole('g', 'g', 'Boxes', 1, 10),
-        whole('k', 'k', 'In each box', 1, 10),
-        whole('m', 'm', 'In the boxes', 0, 100),
+        whole('k', 'k', 'In each box', 1, 12),
+        whole('m', 'm', 'In the boxes', 0, 120),
         whole('e', 'e', 'Extra', 0, 100),
-        whole('t', 't', 'Total', 0, 200),
+        whole('t', 't', 'Total', 0, 220),
       ],
       relations: [boxes.relation, all.relation],
       steps: { 'm = g × k': boxes.steps, 't = m + e': all.steps },
@@ -913,13 +928,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
       pictureLabels: ['g', 'k'],
       assumptions: [
         'First multiply to find how many are in the boxes.',
-        'Then compare: take the smaller number away from the bigger one.',
+        'Then compare: take the number in the boxes away from what Ben has.',
       ],
       variables: [
         whole('g', 'g', 'Boxes', 1, 10),
-        whole('k', 'k', 'In each box', 1, 10),
-        whole('m', 'm', 'In the boxes', 1, 100),
-        whole('b', 'b', 'Ben has', 1, 100),
+        whole('k', 'k', 'In each box', 1, 12),
+        whole('m', 'm', 'In the boxes', 1, 120),
+        whole('b', 'b', 'Ben has', 1, 120),
         whole('d', 'd', 'How many more Ben has', 0, 100),
       ],
       relations: [boxes.relation, { ...more.relation, display: '{b} − {m} = {d}' }],
@@ -1218,8 +1233,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.add-sub-1000~subtract-zeros',
-    title: 'Take away across zeros',
-    use: 'Use this to take away from a number with zeros, like 400 − 162.',
+    title: 'Take away within 1,000',
+    use: 'Use this to take away within 1,000, even across zeros, like 400 − 162.',
     assumptions: [
       'No ones and no tens to trade? Trade 1 hundred for 10 tens first.',
       'Then trade 1 of those tens for 10 ones. Now every place has enough.',
@@ -1345,7 +1360,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         {
           id: 'm = t tens',
           display: '{m} is {t} tens',
-          words: '{m} = {t} tens',
+          words: '{m} ÷ 10 = {t}',
           vars: ['m', 't'],
           residual: (v) => v.m! - 10 * v.t!,
           solve: { m: (v) => 10 * v.t!, t: (v) => div(v.m!, 10) },
@@ -1354,6 +1369,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         {
           id: 'n = p tens',
           display: '{p} tens = {n}',
+          words: '{p} × 10 = {n}',
           vars: ['n', 'p'],
           residual: (v) => v.n! - 10 * v.p!,
           solve: { n: (v) => 10 * v.p!, p: (v) => div(v.n!, 10) },
@@ -1402,15 +1418,15 @@ export const MATH_3_MODULES: ModuleDef[] = [
       variables: [
         whole('a', 'a', 'Boxes', 1, 9),
         { ...whole('m', 'm', 'Pencils in each box', 10, 90), step: 10, multipleOf: 10 },
-        { ...whole('t', 't', 'Tens in it', 1, 9), derived: true },
-        { ...whole('p', 'p', 'Tens in the answer', 1, 81), derived: true },
+        { ...whole('t', 't', 'Tens in each box', 1, 9), derived: true },
+        { ...whole('p', 'p', 'Tens of pencils', 1, 81), derived: true },
         { ...whole('n', 'n', 'Pencils', 10, 810), step: 10, multipleOf: 10 },
       ],
       relations: [
         {
           id: 'm = t tens',
           display: '{m} is {t} tens',
-          words: '{m} = {t} tens',
+          words: '{m} ÷ 10 = {t}',
           vars: ['m', 't'],
           residual: (v) => v.m! - 10 * v.t!,
           solve: { m: (v) => 10 * v.t!, t: (v) => div(v.m!, 10) },
@@ -1419,6 +1435,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         {
           id: 'n = p tens',
           display: '{p} tens = {n}',
+          words: '{p} × 10 = {n}',
           vars: ['n', 'p'],
           residual: (v) => v.n! - 10 * v.p!,
           solve: { n: (v) => 10 * v.p!, p: (v) => div(v.n!, 10) },
@@ -1758,12 +1775,12 @@ export const MATH_3_MODULES: ModuleDef[] = [
     assumptions: [
       'Count on from the start: to the next hour, then whole hours, then the minutes left.',
       'After 12:59 the clock starts again at 1:00.',
-      '60 minutes make 1 hour.',
+      '60 minutes make 1 hour. Times up to 600 minutes (10 hours).',
     ],
     variables: [
       whole('sh', 'h₁', 'Start hour', 1, 12),
       { ...whole('sm', 'm₁', 'Start minutes', 0, 59), digits: 2 },
-      whole('d', 'd', 'Minutes it takes', 1, 120),
+      whole('d', 'd', 'Minutes it takes', 1, 600),
       whole('eh', 'h₂', 'End hour', 1, 12),
       { ...whole('em', 'm₂', 'End minutes', 0, 59), digits: 2 },
     ],
@@ -1885,7 +1902,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     variables: [
       whole('sh', 'h₁', 'Start hour', 1, 12),
       { ...whole('sm', 'm₁', 'Start minutes', 0, 59), digits: 2 },
-      whole('d', 'd', 'Minutes it takes', 1, 120),
+      whole('d', 'd', 'Minutes it takes', 1, 600),
       whole('eh', 'h₂', 'End hour', 1, 12),
       { ...whole('em', 'm₂', 'End minutes', 0, 59), digits: 2 },
     ],
@@ -2090,7 +2107,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       variables: [
         { ...whole('a', 'a', 'Heavier mass', 1, 100), unit: 'kg' },
         { ...whole('b', 'b', 'Lighter mass', 1, 100), unit: 'kg' },
-        { ...whole('d', 'd', 'Difference', 0, 99), unit: 'kg' },
+        { ...whole('d', 'd', 'How much heavier', 0, 99), unit: 'kg' },
       ],
       relations: [heavier.relation],
       steps: { 'a = b + d': heavier.steps },
@@ -2791,7 +2808,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
           expr: '{a} − {w} × {b}',
           how: 'Take away the marks that make whole inches. The rest are left over.',
           work: (v) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`, `${v.a} − ${v.w! * v.b!} = ${v.r}`],
-          note: (v) => (v.b === 4 && v.r === 2 ? '(2/4 inch is 1/2 inch)' : ''),
+          // The answer to "How long?": the whole inches and the marks as one length.
+          note: (v) => {
+            const frac = v.r === 0 ? '' : v.b === 4 && v.r === 2 ? '1/2' : `${v.r}/${v.b}`;
+            const len = [v.w ? String(v.w) : '', frac].filter(Boolean).join(' ') || '0';
+            const unit = len === '1' || (!v.w && v.r) ? 'inch' : 'inches';
+            return `(${len} ${unit} long${v.b === 4 && v.r === 2 ? ': 2/4 inch is 1/2 inch' : ''})`;
+          },
         },
         w: {
           expr: '({a} − {r}) ÷ {b}',

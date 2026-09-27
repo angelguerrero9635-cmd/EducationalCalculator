@@ -25,7 +25,9 @@ export function sumSteps(nums: number[], unit = '', evenTwo = false): string[] {
   const lines: string[] = [];
   let acc = nums[0]!;
   for (const n of nums.slice(1)) {
-    lines.push(`${acc}${unit} + ${n}${unit} = ${acc + n}${unit}`);
+    lines.push(
+      `${formatNumber(acc)}${unit} + ${formatNumber(n)}${unit} = ${formatNumber(acc + n)}${unit}`,
+    );
     acc += n;
   }
   return lines;
@@ -237,6 +239,22 @@ export function timesWork(times: number, each: number): string[] {
     const core = each / 10 ** zeros(each);
     return [`${times} × ${core} = ${times * core}, so ${times} × ${each} = ${times * each}`];
   }
+  // Two multiples of ten: the fact, then all the zeros (30 × 30: 3 × 3 = 9, so 900).
+  if (times % 10 === 0 && each % 10 === 0 && times > 10 && each > 10) {
+    const [ct, ce] = [times / 10 ** zeros(times), each / 10 ** zeros(each)];
+    return [
+      `${ct} × ${ce} = ${ct * ce}, so ${formatNumber(times)} × ${formatNumber(each)} = ${formatNumber(times * each)}`,
+    ];
+  }
+  // A teen factor with a one-digit one: break the teen apart into 10 and the rest (3.OA.5).
+  const [big, small] = times >= each ? [times, each] : [each, times];
+  if (big > 10 && big < 20 && small < 10) {
+    const rest = big - 10;
+    return [
+      `${small} × 10 = ${small * 10} and ${small} × ${rest} = ${small * rest}`,
+      `${small * 10} + ${small * rest} = ${times * each}`,
+    ];
+  }
   // A fact within 10 × 10 is counted by; break-apart is for the pages that teach it.
   if (times <= 10 && each <= 10) {
     return [`Count by ${each}s, ${times} times: ${countList(0, each, times)} → ${times * each}`];
@@ -269,6 +287,7 @@ export function divideWork(n: number, d: number, missing: 'first' | 'second' = '
   const q = n / d;
   if (!Number.isInteger(q) || q < 0) return [];
   if (n === 0) return ['0 shared into any number of groups is 0.'];
+  if (d === 1) return [`1 × a number is that number: ${n}`];
   const think = missing === 'first' ? `Think: ? × ${d} = ${n}` : `Think: ${d} × ? = ${n}`;
   // Past ten counts, the fact is the shorter road.
   if (q > 10) return [think, `${n} ÷ ${d} = ${q} because ${q} × ${d} = ${n}`];
@@ -302,7 +321,7 @@ export function factWork(times: number, each: number): string[] {
     case 9:
       return [`10 × ${each} = ${p(10)}`, `One group less: ${p(10)} − ${each} = ${p(9)}`];
     case 10:
-      return [`10 groups of ${each} is ${each} tens: ${p(10)}`];
+      return [`10 groups of ${each} is ${each} ${each === 1 ? 'ten' : 'tens'}: ${p(10)}`];
     default:
       return [];
   }
@@ -321,9 +340,11 @@ export function regroupLine(ones: number): string {
  */
 export function tradeLines(a: number, b: number): string[] {
   if (b > a) return [];
+  if (b === 0) return [`${formatNumber(a)} − 0 = ${formatNumber(a)}`];
   let [h, t, o] = [Math.floor(a / 100), Math.floor(a / 10) % 10, a % 10];
   const [bh, bt, bo] = [Math.floor(b / 100), Math.floor(b / 10) % 10, b % 10];
-  const lines: string[] = [];
+  // 1,000 has no hundreds digit to cross out: say where its 10 hundreds come from.
+  const lines: string[] = h >= 10 ? [`${formatNumber(a)} is ${h} hundreds`] : [];
   if (o < bo) {
     if (t === 0) {
       h -= 1;
@@ -339,15 +360,15 @@ export function tradeLines(a: number, b: number): string[] {
     t += 10;
     lines.push(`Trade 1 hundred for 10 tens: ${t} tens`);
   }
-  lines.push(
-    `Ones: ${o} − ${bo} = ${o - bo}`,
-    `Tens: ${t} − ${bt} = ${t - bt}`,
-    `Hundreds: ${h} − ${bh} = ${h - bh}`,
-  );
+  // A place that is 0 in both numbers (1 − 0 has no tens or hundreds) gets no line.
+  lines.push(`Ones: ${o} − ${bo} = ${o - bo}`);
+  if (t || bt || h || bh) lines.push(`Tens: ${t} − ${bt} = ${t - bt}`);
+  if (h || bh) lines.push(`Hundreds: ${h} − ${bh} = ${h - bh}`);
   return lines;
 }
 
 const PLACE_NAMES: [string, number][] = [
+  ['Millions', 1000000],
   ['Hundred thousands', 100000],
   ['Ten thousands', 10000],
   ['Thousands', 1000],
