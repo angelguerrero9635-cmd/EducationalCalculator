@@ -3,42 +3,28 @@
     "slug": "series-circuit",
     "title": "Series circuit",
     "use": "SeriesCircuit picture (closed circuit, one loop)",
-    "references": [
-      "https://en.wikipedia.org/wiki/Series_and_parallel_circuits",
-      "https://littlebinsforlittlehands.com/series-circuits-for-kids/",
-      "https://www.teachengineering.org/activities/cub_electricity_lesson05_activity1"
-    ],
-    "notes": "A D cell (+ and − marked), a closed switch and a glowing bulb in its holder, joined by wires in one closed loop."
+    "references": [],
+    "notes": "A D cell (+ and − marked), a closed switch and a glowing bulb in its holder, joined by wires in one closed loop. Drawn from general knowledge."
   },
   {
     "slug": "magnet",
     "title": "Magnets",
     "use": "Magnets picture (attract, poles)",
-    "references": [
-      "https://en.wikipedia.org/wiki/Horseshoe_magnet",
-      "https://commons.wikimedia.org/wiki/Category:Horseshoe_magnets",
-      "https://www.first4magnets.com/blog/the-different-shapes-of-magnets-and-their-uses/"
-    ],
-    "notes": "A bar magnet (N red, S blue) with paper clips and iron filings at its ends, and a horseshoe magnet (N red, S blue tips) holding paper clips."
+    "references": [],
+    "notes": "A bar magnet (N red, S blue) with paper clips and iron filings at its ends, and a horseshoe magnet (N red, S blue tips) holding paper clips. Drawn from general knowledge."
   },
   {
     "slug": "ball-ramp",
     "title": "Ball rolling down a ramp",
     "use": "Pushes picture (energy and speed, motion)",
-    "references": [
-      "https://ucscphysicsdemo.sites.ucsc.edu/physics-5a6a/ball-rolling-down-inclined-plane/",
-      "https://sciencedemonstrations.fas.harvard.edu/presentations/scantling-and-ball"
-    ],
-    "notes": "A wooden ramp propped on blocks, a ball rolling down it with motion lines, and arrows showing it rolls on across the floor."
+    "references": [],
+    "notes": "A long wooden ramp propped on a stack of 3 blocks, a ball partway down it with motion lines, and a dashed path with an arrow running on across a gray floor to the right edge. Drawn from general knowledge."
   },
   {
     "slug": "water-waves",
     "title": "Water waves",
     "use": "Wave picture (crest, trough, wavelength, amplitude)",
-    "references": [
-      "https://www.physicsclassroom.com/tutorial/vibrations-and-waves/properties-of-a-wave/anatomy-of-a-wave",
-      "https://www.sparkl.me/learn/cambridge-igcse/physics-0625-core/features-of-a-wave-wavefront-wavelength-frequency-crest-trough-amplitude-wave-speed/revision-notes/3847"
-    ],
-    "notes": "Side view of even water waves (every crest the same height and the same distance apart, 4 crests and 3 troughs) over a dashed still-water line, with a small sailboat bobbing in the middle trough; no words, so crest, trough, wavelength and amplitude can be pointed out."
+    "references": [],
+    "notes": "Side view of even water waves (every crest the same height and the same distance apart, 4 crests and 3 troughs) over a dashed still-water line, with a small sailboat bobbing in the middle trough; no words, so crest, trough, wavelength and amplitude can be pointed out. Drawn from general knowledge."
   }
 ]

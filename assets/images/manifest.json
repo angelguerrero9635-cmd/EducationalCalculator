@@ -29,12 +29,8 @@
       "use": "UnitCubes and CubeTrains pictures (counting, adding, volume)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": [
-        "https://commons.wikimedia.org/wiki/File:Snap_cube_puzzle_cube.jpg",
-        "https://www.hand2mind.com/glossary-of-hands-on-manipulatives/snap-cubes",
-        "https://www.naticulate.com/linking-cubes-complete-guide/"
-      ],
-      "notes": "A train of 5 snapped-together blue cubes and 3 loose cubes (red, yellow, green), each with its connector nub: shows 5 + 3."
+      "references": [],
+      "notes": "A train of 5 snapped-together blue cubes and 3 loose cubes (red, yellow, green), each with its connector nub: shows 5 + 3. Drawn from general knowledge."
     },
     {
       "slug": "pattern-blocks",
@@ -47,12 +43,8 @@
       "use": "PatternBlocks picture (shapes, fractions of a hexagon)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": [
-        "https://en.wikipedia.org/wiki/Pattern_Blocks",
-        "https://commons.wikimedia.org/wiki/Category:Pattern_blocks",
-        "https://www.hand2mind.com/glossary-of-hands-on-manipulatives/pattern-blocks"
-      ],
-      "notes": "The six blocks in their standard colors (yellow hexagon, red trapezoid, blue rhombus, green triangle, orange square, tan thin rhombus) and a hexagon made of a trapezoid, a rhombus and a triangle."
+      "references": [],
+      "notes": "The six blocks in their standard colors (yellow hexagon, red trapezoid, blue rhombus, green triangle, orange square, tan thin rhombus) and a hexagon made of a trapezoid, a rhombus and a triangle. Drawn from general knowledge."
     },
     {
       "slug": "two-color-counters",
@@ -65,12 +57,8 @@
       "use": "TenFrame counters and counting pictures (two-color counters)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": [
-        "https://www.hand2mind.com/item/foam-two-color-counters-set-of-200",
-        "https://www.learningresources.com/item-red-yellow-counters-set-of-200",
-        "https://www.brainingcamp.com/two-color-counters"
-      ],
-      "notes": "Round counters red on one side and yellow on the other: 4 showing red, 2 showing yellow and 1 standing on its edge."
+      "references": [],
+      "notes": "Round counters red on one side and yellow on the other: 4 showing red, 2 showing yellow and 1 standing on its edge. Drawn from general knowledge."
     },
     {
       "slug": "ten-frame",
@@ -83,11 +71,124 @@
       "use": "TenFrame picture (numbers to 10, make ten)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "A 2 by 5 ten frame with 7 red counters: the top row full, 2 in the bottom row; shows 7 (3 more make 10). Drawn from general knowledge."
+    },
+    {
+      "slug": "water-cycle",
+      "topic": "earth-space",
+      "title": "The water cycle",
+      "svg": "assets/images/earth-space/water-cycle.svg",
+      "file": "assets/images/earth-space/water-cycle.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "water-cycle (Grade 6)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
       "references": [
-        "https://toytheater.com/two-color-counter-ten-frame/",
-        "https://toytheater.com/two-color-counter-double-ten-frame/"
+        "https://commons.wikimedia.org/wiki/File:Water_cycle.png",
+        "https://commons.wikimedia.org/wiki/File:Water_cycle.svg",
+        "https://commons.wikimedia.org/wiki/File:Hydrologic_cycle.png"
       ],
-      "notes": "A 2 by 5 ten frame with 7 red counters: the top row full, 2 in the bottom row; shows 7 (3 more make 10)."
+      "notes": "Sun, ocean, mountains, a river and clouds. Arrows only: two wavy arrows up from the ocean (evaporation), a curved arrow from the white cloud to the rain cloud (condensation and cloud movement), a down arrow in the rain (precipitation), and an arrow along the land to the ocean (runoff and collection)."
+    },
+    {
+      "slug": "weather-map-fronts",
+      "topic": "earth-space",
+      "title": "Weather map with fronts",
+      "svg": "assets/images/earth-space/weather-map-fronts.svg",
+      "file": "assets/images/earth-space/weather-map-fronts.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "weather-fronts (Grade 6)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.wpc.ncep.noaa.gov/basicwx/basicwx_ndfd.php",
+        "https://commons.wikimedia.org/wiki/File:Surface_analysis.gif"
+      ],
+      "notes": "Simplified contiguous U.S. outline. Red L in the Plains with a cold front (blue, triangles pointing east/southeast, the way it moves) running southwest and a warm front (red, half-circles pointing north) running east, which becomes a stationary front (alternating blue triangles on the south side and red half-circles on the north side). Blue H in the West. Green rain area with raindrops near the low and along the fronts. Only letters H and L."
+    },
+    {
+      "slug": "plate-boundaries",
+      "topic": "earth-space",
+      "title": "Plate boundaries",
+      "svg": "assets/images/earth-space/plate-boundaries.svg",
+      "file": "assets/images/earth-space/plate-boundaries.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Plate boundaries picture (divergent, convergent, transform)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Tectonic_plate_boundaries.png",
+        "https://commons.wikimedia.org/wiki/File:Plates_tect2_en.svg"
+      ],
+      "notes": "Three panels, left to right. Divergent: cross-section of a mid-ocean ridge, plates moving apart, magma rising in the gap, mantle currents rising in the middle. Convergent: oceanic plate sinking (subducting) under a continental plate at a trench, magma rising to a volcano. Transform: two blocks seen from above sliding past each other, with a stream and a road offset along the fault. No words."
+    },
+    {
+      "slug": "world-map-continents",
+      "topic": "earth-space",
+      "title": "World map of the continents",
+      "svg": "assets/images/earth-space/world-map-continents.svg",
+      "file": "assets/images/earth-space/world-map-continents.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Continents and oceans picture (world map)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:BlankMap-World.svg",
+        "https://commons.wikimedia.org/wiki/File:Continents.svg"
+      ],
+      "notes": "Miller-style cylindrical map, outlines computed from hand-listed approximate coastline points. North America orange (with Greenland), South America green, Europe purple, Africa yellow, Asia red, Australia and Oceania tan, Antarctica white; blue ocean. No labels."
+    },
+    {
+      "slug": "sun",
+      "topic": "earth-space",
+      "title": "The Sun",
+      "svg": "assets/images/earth-space/sun.svg",
+      "file": "assets/images/earth-space/sun.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Sun picture (stars, the Sun as a star)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA's_Solar_Dynamics_Observatory_-_20100819.jpg",
+        "https://commons.wikimedia.org/wiki/File:Solar_prominence_from_STEREO_spacecraft_September_29,_2008.jpg"
+      ],
+      "notes": "Yellow-orange disk, darker toward the edge, with two sunspot pairs and one single spot, a soft glow around it and one prominence loop at the edge; dark space. No face."
+    },
+    {
+      "slug": "moon-phases",
+      "topic": "earth-space",
+      "title": "Phases of the Moon",
+      "svg": "assets/images/earth-space/moon-phases.svg",
+      "file": "assets/images/earth-space/moon-phases.webp",
+      "width": 1200,
+      "height": 800,
+      "use": "Moon phases picture",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Eight phases in reading order, two rows: new, waxing crescent, first quarter, waxing gibbous; full, waning gibbous, third quarter, waning crescent. Northern Hemisphere view: waxing phases lit on the right, waning phases lit on the left. Gray arrows between phases in each row. Dark sky with a few stars; no words."
+    },
+    {
+      "slug": "earth-from-space",
+      "topic": "earth-space",
+      "title": "Earth from space",
+      "svg": "assets/images/earth-space/earth-from-space.svg",
+      "file": "assets/images/earth-space/earth-from-space.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Earth picture (Earth in space, planets)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Whole_world_-_land_and_oceans.jpg"
+      ],
+      "notes": "Globe centered near 12° N, 72° W: North and South America, Greenland (white ice), the edge of Africa and Europe, a sliver of Antarctica. Cloud bands, a hurricane in the Atlantic, thin blue atmosphere glow, night-side shading, a few stars on black."
     },
     {
       "slug": "bowling-ball",
@@ -254,12 +355,8 @@
       "use": "SeriesCircuit picture (closed circuit, one loop)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": [
-        "https://en.wikipedia.org/wiki/Series_and_parallel_circuits",
-        "https://littlebinsforlittlehands.com/series-circuits-for-kids/",
-        "https://www.teachengineering.org/activities/cub_electricity_lesson05_activity1"
-      ],
-      "notes": "A D cell (+ and − marked), a closed switch and a glowing bulb in its holder, joined by wires in one closed loop."
+      "references": [],
+      "notes": "A D cell (+ and − marked), a closed switch and a glowing bulb in its holder, joined by wires in one closed loop. Drawn from general knowledge."
     },
     {
       "slug": "magnet",
@@ -272,12 +369,8 @@
       "use": "Magnets picture (attract, poles)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": [
-        "https://en.wikipedia.org/wiki/Horseshoe_magnet",
-        "https://commons.wikimedia.org/wiki/Category:Horseshoe_magnets",
-        "https://www.first4magnets.com/blog/the-different-shapes-of-magnets-and-their-uses/"
-      ],
-      "notes": "A bar magnet (N red, S blue) with paper clips and iron filings at its ends, and a horseshoe magnet (N red, S blue tips) holding paper clips."
+      "references": [],
+      "notes": "A bar magnet (N red, S blue) with paper clips and iron filings at its ends, and a horseshoe magnet (N red, S blue tips) holding paper clips. Drawn from general knowledge."
     },
     {
       "slug": "ball-ramp",
@@ -290,11 +383,8 @@
       "use": "Pushes picture (energy and speed, motion)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
-      "references": [
-        "https://ucscphysicsdemo.sites.ucsc.edu/physics-5a6a/ball-rolling-down-inclined-plane/",
-        "https://sciencedemonstrations.fas.harvard.edu/presentations/scantling-and-ball"
-      ],
-      "notes": "A wooden ramp propped on blocks, a ball rolling down it with motion lines, and arrows showing it rolls on across the floor."
+      "references": [],
+      "notes": "A long wooden ramp propped on a stack of 3 blocks, a ball partway down it with motion lines, and a dashed path with an arrow running on across a gray floor to the right edge. Drawn from general knowledge."
     },
     {
       "slug": "water-waves",
@@ -307,11 +397,103 @@
       "use": "Wave picture (crest, trough, wavelength, amplitude)",
       "author": "Original artwork made for EducationalCalculator",
       "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Side view of even water waves (every crest the same height and the same distance apart, 4 crests and 3 troughs) over a dashed still-water line, with a small sailboat bobbing in the middle trough; no words, so crest, trough, wavelength and amplitude can be pointed out. Drawn from general knowledge."
+    },
+    {
+      "slug": "microscope",
+      "topic": "life",
+      "title": "Compound light microscope",
+      "svg": "assets/images/life/microscope.svg",
+      "file": "assets/images/life/microscope.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Microscope picture (parts of a microscope, life science)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
       "references": [
-        "https://www.physicsclassroom.com/tutorial/vibrations-and-waves/properties-of-a-wave/anatomy-of-a-wave",
-        "https://www.sparkl.me/learn/cambridge-igcse/physics-0625-core/features-of-a-wave-wavefront-wavelength-frequency-crest-trough-amplitude-wave-speed/revision-notes/3847"
+        "https://commons.wikimedia.org/wiki/File:Compound_Microscope.JPG",
+        "https://commons.wikimedia.org/wiki/File:Optical_microscope_nikon_alphaphot.jpg"
       ],
-      "notes": "Side view of even water waves (every crest the same height and the same distance apart, 4 crests and 3 troughs) over a dashed still-water line, with a small sailboat bobbing in the middle trough; no words, so crest, trough, wavelength and amplitude can be pointed out."
+      "notes": "Side view, no labels: eyepiece, body tube, revolving nosepiece with 3 objectives (red, yellow, blue bands), stage with 2 clips holding a slide, condenser, lamp in the base, arm, coarse (large) and fine (small) focus knobs, base."
+    },
+    {
+      "slug": "onion-cells",
+      "topic": "life",
+      "title": "Onion skin cells under a microscope",
+      "svg": "assets/images/life/onion-cells.svg",
+      "file": "assets/images/life/onion-cells.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Plant cells picture (cell wall, nucleus; plant vs animal cells)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Circular field of view on a dark surround. Brick-like rectangular cells in staggered rows, thick brown cell walls, one nucleus per cell, iodine stain pale yellow-brown. Drawn from general knowledge of the classroom slide."
+    },
+    {
+      "slug": "cheek-cells",
+      "topic": "life",
+      "title": "Cheek cells under a microscope",
+      "svg": "assets/images/life/cheek-cells.svg",
+      "file": "assets/images/life/cheek-cells.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Animal cells picture (cell membrane, nucleus; plant vs animal cells)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [],
+      "notes": "Circular field of view. Flat irregular polygonal cells with thin membranes (no walls), methylene blue stain, darker blue nucleus in each, a few cells overlapping, small specks in the background. Drawn from general knowledge of the classroom slide."
+    },
+    {
+      "slug": "bacteria",
+      "topic": "life",
+      "title": "Bacteria under a microscope",
+      "svg": "assets/images/life/bacteria.svg",
+      "file": "assets/images/life/bacteria.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Bacteria picture (single-celled organisms, shapes of bacteria)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:EscherichiaColi_NIAID.jpg",
+        "https://commons.wikimedia.org/wiki/File:Staphylococcus_aureus,_50,000x,_USDA,_ARS,_EMU.jpg"
+      ],
+      "notes": "Circular field of view. Pink rod-shaped bacteria (bacilli, one chain of three) and purple round bacteria (cocci): three chains and one grape-like cluster, plus scattered single cells."
+    },
+    {
+      "slug": "leaf",
+      "topic": "life",
+      "title": "Green leaf",
+      "svg": "assets/images/life/leaf.svg",
+      "file": "assets/images/life/leaf.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Leaf picture (plant parts, veins)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://commons.wikimedia.org/wiki/File:Leaf_1_web.jpg",
+        "https://commons.wikimedia.org/wiki/File:Leaf.jpg"
+      ],
+      "notes": "A simple oval leaf with a pointed tip, petiole, midrib, and secondary veins that branch off the midrib toward the tip, with small veinlets."
+    },
+    {
+      "slug": "feather",
+      "topic": "life",
+      "title": "Bird feather",
+      "svg": "assets/images/life/feather.svg",
+      "file": "assets/images/life/feather.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "Feather picture (animal body coverings, structure and function)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.fws.gov/media/snowy-owl-feather"
+      ],
+      "notes": "A contour feather: hollow shaft (rachis) running to the tip, two vanes (the upper one wider) with barbs drawn as fine lines slanting toward the tip, two small splits in the vanes, and a fluffy downy base near the quill."
     },
     {
       "slug": "beaker",

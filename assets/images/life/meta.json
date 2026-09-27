@@ -1,0 +1,53 @@
+[
+  {
+    "slug": "microscope",
+    "title": "Compound light microscope",
+    "use": "Microscope picture (parts of a microscope, life science)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Compound_Microscope.JPG",
+      "https://commons.wikimedia.org/wiki/File:Optical_microscope_nikon_alphaphot.jpg"
+    ],
+    "notes": "Side view, no labels: eyepiece, body tube, revolving nosepiece with 3 objectives (red, yellow, blue bands), stage with 2 clips holding a slide, condenser, lamp in the base, arm, coarse (large) and fine (small) focus knobs, base."
+  },
+  {
+    "slug": "onion-cells",
+    "title": "Onion skin cells under a microscope",
+    "use": "Plant cells picture (cell wall, nucleus; plant vs animal cells)",
+    "references": [],
+    "notes": "Circular field of view on a dark surround. Brick-like rectangular cells in staggered rows, thick brown cell walls, one nucleus per cell, iodine stain pale yellow-brown. Drawn from general knowledge of the classroom slide."
+  },
+  {
+    "slug": "cheek-cells",
+    "title": "Cheek cells under a microscope",
+    "use": "Animal cells picture (cell membrane, nucleus; plant vs animal cells)",
+    "references": [],
+    "notes": "Circular field of view. Flat irregular polygonal cells with thin membranes (no walls), methylene blue stain, darker blue nucleus in each, a few cells overlapping, small specks in the background. Drawn from general knowledge of the classroom slide."
+  },
+  {
+    "slug": "bacteria",
+    "title": "Bacteria under a microscope",
+    "use": "Bacteria picture (single-celled organisms, shapes of bacteria)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:EscherichiaColi_NIAID.jpg",
+      "https://commons.wikimedia.org/wiki/File:Staphylococcus_aureus,_50,000x,_USDA,_ARS,_EMU.jpg"
+    ],
+    "notes": "Circular field of view. Pink rod-shaped bacteria (bacilli, one chain of three) and purple round bacteria (cocci): three chains and one grape-like cluster, plus scattered single cells."
+  },
+  {
+    "slug": "leaf",
+    "title": "Green leaf",
+    "use": "Leaf picture (plant parts, veins)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Leaf_1_web.jpg",
+      "https://commons.wikimedia.org/wiki/File:Leaf.jpg"
+    ],
+    "notes": "A simple oval leaf with a pointed tip, petiole, midrib, and secondary veins that branch off the midrib toward the tip, with small veinlets."
+  },
+  {
+    "slug": "feather",
+    "title": "Bird feather",
+    "use": "Feather picture (animal body coverings, structure and function)",
+    "references": ["https://www.fws.gov/media/snowy-owl-feather"],
+    "notes": "A contour feather: hollow shaft (rachis) running to the tip, two vanes (the upper one wider) with barbs drawn as fine lines slanting toward the tip, two small splits in the vanes, and a fluffy downy base near the quill."
+  }
+]

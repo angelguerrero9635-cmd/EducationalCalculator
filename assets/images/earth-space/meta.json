@@ -1,0 +1,67 @@
+[
+  {
+    "slug": "water-cycle",
+    "title": "The water cycle",
+    "use": "water-cycle (Grade 6)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Water_cycle.png",
+      "https://commons.wikimedia.org/wiki/File:Water_cycle.svg",
+      "https://commons.wikimedia.org/wiki/File:Hydrologic_cycle.png"
+    ],
+    "notes": "Sun, ocean, mountains, a river and clouds. Arrows only: two wavy arrows up from the ocean (evaporation), a curved arrow from the white cloud to the rain cloud (condensation and cloud movement), a down arrow in the rain (precipitation), and an arrow along the land to the ocean (runoff and collection)."
+  },
+  {
+    "slug": "weather-map-fronts",
+    "title": "Weather map with fronts",
+    "use": "weather-fronts (Grade 6)",
+    "references": [
+      "https://www.wpc.ncep.noaa.gov/basicwx/basicwx_ndfd.php",
+      "https://commons.wikimedia.org/wiki/File:Surface_analysis.gif"
+    ],
+    "notes": "Simplified contiguous U.S. outline. Red L in the Plains with a cold front (blue, triangles pointing east/southeast, the way it moves) running southwest and a warm front (red, half-circles pointing north) running east, which becomes a stationary front (alternating blue triangles on the south side and red half-circles on the north side). Blue H in the West. Green rain area with raindrops near the low and along the fronts. Only letters H and L."
+  },
+  {
+    "slug": "plate-boundaries",
+    "title": "Plate boundaries",
+    "use": "Plate boundaries picture (divergent, convergent, transform)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Tectonic_plate_boundaries.png",
+      "https://commons.wikimedia.org/wiki/File:Plates_tect2_en.svg"
+    ],
+    "notes": "Three panels, left to right. Divergent: cross-section of a mid-ocean ridge, plates moving apart, magma rising in the gap, mantle currents rising in the middle. Convergent: oceanic plate sinking (subducting) under a continental plate at a trench, magma rising to a volcano. Transform: two blocks seen from above sliding past each other, with a stream and a road offset along the fault. No words."
+  },
+  {
+    "slug": "world-map-continents",
+    "title": "World map of the continents",
+    "use": "Continents and oceans picture (world map)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:BlankMap-World.svg",
+      "https://commons.wikimedia.org/wiki/File:Continents.svg"
+    ],
+    "notes": "Miller-style cylindrical map, outlines computed from hand-listed approximate coastline points. North America orange (with Greenland), South America green, Europe purple, Africa yellow, Asia red, Australia and Oceania tan, Antarctica white; blue ocean. No labels."
+  },
+  {
+    "slug": "sun",
+    "title": "The Sun",
+    "use": "Sun picture (stars, the Sun as a star)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA's_Solar_Dynamics_Observatory_-_20100819.jpg",
+      "https://commons.wikimedia.org/wiki/File:Solar_prominence_from_STEREO_spacecraft_September_29,_2008.jpg"
+    ],
+    "notes": "Yellow-orange disk, darker toward the edge, with two sunspot pairs and one single spot, a soft glow around it and one prominence loop at the edge; dark space. No face."
+  },
+  {
+    "slug": "moon-phases",
+    "title": "Phases of the Moon",
+    "use": "Moon phases picture",
+    "references": [],
+    "notes": "Eight phases in reading order, two rows: new, waxing crescent, first quarter, waxing gibbous; full, waning gibbous, third quarter, waning crescent. Northern Hemisphere view: waxing phases lit on the right, waning phases lit on the left. Gray arrows between phases in each row. Dark sky with a few stars; no words."
+  },
+  {
+    "slug": "earth-from-space",
+    "title": "Earth from space",
+    "use": "Earth picture (Earth in space, planets)",
+    "references": ["https://commons.wikimedia.org/wiki/File:Whole_world_-_land_and_oceans.jpg"],
+    "notes": "Globe centered near 12° N, 72° W: North and South America, Greenland (white ice), the edge of Africa and Europe, a sliver of Antarctica. Cloud bands, a hurricane in the Atlantic, thin blue atmosphere glow, night-side shading, a few stars on black."
+  }
+]
