@@ -232,7 +232,56 @@ export type Figure =
    * A meadow food web: the sun, grass, rabbit, grasshopper, mouse, frog, snake and hawk, each
    * arrow meaning "is eaten by" (the sun's arrow: its energy goes into the grass).
    */
-  | { kind: 'foodWeb' };
+  | { kind: 'foodWeb' }
+  /**
+   * A leaf making sugar in the light (photosynthesis) and a cell using it (respiration), each
+   * with its inputs and outputs as labelled arrows and its word equation (Grade 7).
+   */
+  | { kind: 'leafCell' }
+  /**
+   * The carbon cycle: the air's carbon dioxide, a tree, an animal, the dead matter and its
+   * decomposers, fossil fuels, a factory and the ocean, with the processes as arrows (Grade 7).
+   */
+  | { kind: 'carbonCycle' }
+  /**
+   * A family's pedigree chart in the standard symbols: squares are males, circles females,
+   * filled has the trait, half-filled carries it; a line joins parents, their children hang
+   * below. Generations are numbered I, II, III and people 1, 2, … in each (Grade 7).
+   */
+  | { kind: 'pedigree'; people: PedigreePerson[] };
+
+/** One person in a `pedigree` figure. */
+export interface PedigreePerson {
+  id: string;
+  sex: 'male' | 'female';
+  /** 1 for the oldest generation; people are drawn left to right in the order listed. */
+  generation: number;
+  /** Shows the trait (a filled symbol). */
+  trait?: boolean;
+  /** Carries the allele without showing it (half-filled). */
+  carrier?: boolean;
+  /** Both parents' ids: the child hangs from the line joining them. */
+  parents?: [string, string];
+  /** A partner with no children in the chart, joined by a line. */
+  partner?: string;
+  /** Their alleles ("Aa"), shown when a scene turns genotypes on. */
+  genotype?: string;
+}
+
+/** What goes into or comes out of photosynthesis and respiration (a `leafCell` figure). */
+export type LeafCellSubstance =
+  'light' | 'water' | 'carbon dioxide' | 'sugar' | 'oxygen' | 'energy';
+
+/** The processes of a `carbonCycle` figure. */
+export type CarbonProcess =
+  | 'photosynthesis'
+  | 'respiration'
+  | 'eating'
+  | 'death'
+  | 'decomposition'
+  | 'burning'
+  | 'dissolving'
+  | 'burial';
 
 /** The members of the `foodWeb` figure. */
 export type FoodWebMember =
@@ -369,6 +418,19 @@ export interface Scene {
     more?: FoodWebMember[];
     fewer?: FoodWebMember[];
   };
+  /**
+   * The process a `leafCell` figure shows (the leaf, the cell, or both trading their outputs)
+   * and one input or output lit.
+   */
+  leafCell?: { process: 'photosynthesis' | 'respiration' | 'both'; lit?: LeafCellSubstance };
+  /** The process lit (a `carbonCycle` figure); with none, the whole cycle. */
+  carbon?: { process?: CarbonProcess };
+  /**
+   * A `pedigree` figure: the people ringed (ids), whether carriers are half-filled (off, they
+   * look like anyone without the trait), whether genotypes show under the symbols, and one
+   * person whose genotype is a question mark.
+   */
+  family?: { lit?: string[]; carriers?: boolean; genotypes?: boolean; ask?: string };
   /** The process lit (a `rockCycle` figure). */
   rock?: {
     process: 'melting' | 'cooling' | 'weathering' | 'deposition' | 'metamorphism' | 'uplift';

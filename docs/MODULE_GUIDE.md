@@ -313,7 +313,12 @@ flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or sh
 and `rockCycle`, in `layouts/figures6.tsx`. `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
 rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a scene's `web`
 lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
-shrink (`fewer`).
+shrink (`fewer`). Grade 7 life science adds, in `layouts/figuresLife.tsx`: `leafCell` (a leaf in
+the light and a cell with its mitochondria, the inputs and outputs as arrows and the word
+equations; `leafCell: { process, lit? }` shows photosynthesis, respiration or both trading
+their outputs), `carbonCycle` (air, a tree, a rabbit, dead matter and mushrooms, coal and oil,
+a factory and the ocean; `carbon: { process? }` lights one process) and `pedigree` (a family
+given as `people` in the standard symbols; `family: { lit?, carriers?, genotypes?, ask? }`).
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

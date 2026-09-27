@@ -239,13 +239,13 @@ function Change({
   );
 }
 
-type Ids = Record<
+export type Ids = Record<
   'sun' | 'fur' | 'grey' | 'feather' | 'scales' | 'frog' | 'insect' | 'cream',
   string
 >;
 
 /** One member drawn about (0, 0), about 44 wide and 34 tall, facing right, lit from the top left. */
-function Member({ m, ids, c }: { m: FoodWebMember; ids: Ids; c: Palette }) {
+export function Member({ m, ids, c }: { m: FoodWebMember; ids: Ids; c: Palette }) {
   const eye = (x: number, y: number, r = 1.6) => (
     <G>
       <Circle cx={x} cy={y} r={r} fill={c.animalEye} />

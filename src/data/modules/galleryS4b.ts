@@ -188,4 +188,155 @@ export const S4B_GALLERY_MODULES: ModuleDef[] = [
   },
 ];
 
-export const S4B_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const S4B_GALLERY_LAYOUTS: LayoutDef[] = [
+  {
+    id: 'g.leaf-cell',
+    title: 'Photosynthesis and respiration',
+    kind: 'explore',
+    assumptions: [
+      'Arrows going in are what the process uses; arrows going out are what it makes.',
+      'Plant cells do both; animal cells only respire.',
+    ],
+    figure: { kind: 'leafCell' },
+    scenes: [
+      {
+        label: 'Leaf',
+        lines: ['A leaf uses light to make sugar from carbon dioxide and water.'],
+        leafCell: { process: 'photosynthesis' },
+      },
+      ...(['light', 'carbon dioxide', 'water', 'sugar', 'oxygen'] as const).map((lit) => ({
+        label: `Leaf: ${lit}`,
+        lines: [`The ${lit} arrow is lit.`],
+        leafCell: { process: 'photosynthesis' as const, lit },
+      })),
+      {
+        label: 'Cell',
+        lines: ['A cell breaks down sugar with oxygen to get energy.'],
+        leafCell: { process: 'respiration' },
+      },
+      {
+        label: 'Cell: energy',
+        lines: ['The energy is what the cell uses to live and grow.'],
+        leafCell: { process: 'respiration', lit: 'energy' },
+      },
+      {
+        label: 'Both',
+        lines: ['What the leaf makes, the cell uses; what the cell makes, the leaf uses.'],
+        leafCell: { process: 'both' },
+      },
+      {
+        label: 'Both: oxygen',
+        lines: ['Oxygen from the leaf goes into the cell.'],
+        leafCell: { process: 'both', lit: 'oxygen' },
+      },
+    ],
+  },
+  {
+    id: 'g.carbon-cycle',
+    title: 'Carbon cycle',
+    kind: 'explore',
+    assumptions: [
+      'Each arrow is carbon moving from one place to another.',
+      'The dashed arrow takes millions of years.',
+    ],
+    figure: { kind: 'carbonCycle' },
+    scenes: [
+      { label: 'Whole cycle', lines: ['Carbon moves around and around.'], carbon: {} },
+      ...(
+        [
+          ['photosynthesis', 'Plants take carbon dioxide out of the air.'],
+          ['respiration', 'Plants and animals breathe carbon dioxide back out.'],
+          ['eating', 'Animals get carbon by eating plants.'],
+          ['death', 'Dead plants, animals and waste hold carbon.'],
+          ['decomposition', 'Decomposers break down dead matter and give off carbon dioxide.'],
+          ['burning', 'Burning coal and oil puts old carbon into the air.'],
+          ['dissolving', 'The ocean takes in carbon dioxide and gives some back.'],
+          ['burial', 'Buried dead matter slowly becomes coal and oil.'],
+        ] as const
+      ).map(([process, line]) => ({ label: process, lines: [line], carbon: { process } })),
+    ],
+  },
+  {
+    id: 'g.pedigree',
+    title: 'Pedigree chart',
+    kind: 'explore',
+    assumptions: [
+      'The trait comes from a recessive allele a: only aa shows it.',
+      'Squares are males and circles are females.',
+    ],
+    figure: {
+      kind: 'pedigree',
+      people: [
+        { id: 'gp', sex: 'male', generation: 1, carrier: true, genotype: 'Aa' },
+        { id: 'gm', sex: 'female', generation: 1, trait: true, genotype: 'aa' },
+        { id: 'wife', sex: 'female', generation: 2, carrier: true, genotype: 'Aa' },
+        {
+          id: 'son',
+          sex: 'male',
+          generation: 2,
+          carrier: true,
+          genotype: 'Aa',
+          parents: ['gp', 'gm'],
+        },
+        {
+          id: 'daughter',
+          sex: 'female',
+          generation: 2,
+          carrier: true,
+          genotype: 'Aa',
+          parents: ['gp', 'gm'],
+        },
+        { id: 'husband', sex: 'male', generation: 2, genotype: 'AA', partner: 'daughter' },
+        {
+          id: 'k1',
+          sex: 'male',
+          generation: 3,
+          trait: true,
+          genotype: 'aa',
+          parents: ['son', 'wife'],
+        },
+        { id: 'k2', sex: 'female', generation: 3, genotype: 'AA', parents: ['son', 'wife'] },
+        {
+          id: 'k3',
+          sex: 'male',
+          generation: 3,
+          carrier: true,
+          genotype: 'Aa',
+          parents: ['son', 'wife'],
+        },
+        {
+          id: 'k4',
+          sex: 'female',
+          generation: 3,
+          carrier: true,
+          genotype: 'Aa',
+          parents: ['daughter', 'husband'],
+        },
+        { id: 'k5', sex: 'male', generation: 3, genotype: 'AA', parents: ['daughter', 'husband'] },
+      ],
+    },
+    scenes: [
+      { label: 'Family', lines: ['Three generations of one family.'], family: {} },
+      {
+        label: 'Who has it',
+        lines: ['The filled symbols show the trait.'],
+        family: { lit: ['gm', 'k1'] },
+      },
+      {
+        label: 'Parents of III-1',
+        lines: ['Neither parent shows the trait. What must their genotypes be?'],
+        family: { lit: ['son', 'wife'], ask: 'son' },
+      },
+      {
+        label: 'Carriers',
+        lines: ['Half-filled symbols carry one a without showing the trait.'],
+        family: { carriers: true },
+      },
+      {
+        label: 'Genotypes',
+        lines: ['Every genotype, written under its symbol.'],
+        family: { carriers: true, genotypes: true },
+      },
+    ],
+  },
+];

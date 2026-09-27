@@ -32,6 +32,9 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   continents: 'continents',
   rockCycle: 'rock',
   foodWeb: 'web',
+  leafCell: 'leafCell',
+  carbonCycle: 'carbon',
+  pedigree: 'family',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */
