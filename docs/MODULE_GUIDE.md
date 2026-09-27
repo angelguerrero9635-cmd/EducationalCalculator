@@ -107,6 +107,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded   | Grade 5 star brightness             |
 | `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
 | `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps | Grade 7–8 equations                 |
+| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow      | Grade 7 scale drawings              |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

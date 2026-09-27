@@ -43,6 +43,25 @@ const holdsAt = (v: Values) => {
   return [lhs < v.r!, lhs <= v.r!, lhs > v.r!, lhs >= v.r!][v.s! - 1] ?? false;
 };
 
+/** A copy's length: the original's times the scale factor k. */
+const scaled = (copy: string, original: string) => ({
+  id: `${copy} = k × ${original}`,
+  display: `{${copy}} = {k} × {${original}}`,
+  vars: [copy, 'k', original],
+  residual: (v: Values) => v[copy]! - v.k! * v[original]!,
+  solve: {
+    [copy]: (v: Values) => v.k! * v[original]!,
+    k: (v: Values) => div(v[copy]!, v[original]!),
+    [original]: () => undefined,
+  },
+});
+const scaledSteps = (copy: string, original: string) => ({
+  [`${copy} = k × ${original}`]: {
+    [copy]: { expr: `{k} × {${original}}`, how: 'Multiply the length by the scale factor.' },
+    k: { expr: `{${copy}} ÷ {${original}}`, how: 'Divide the copy’s length by the original’s.' },
+  },
+});
+
 export const G7B_GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.hanger',
@@ -232,6 +251,94 @@ export const G7B_GALLERY_MODULES: ModuleDef[] = [
       min: -8,
       max: 8,
       inequality: { sign: 's', test: 't', twoStep: { times: 'p', plus: 'q', total: 'r' } },
+    },
+  },
+  {
+    id: 'g.scale-copy',
+    title: 'Scaled copy on a grid',
+    assumptions: [
+      'A scaled copy multiplies every length of the figure by the same scale factor.',
+      'Its angles stay the same, so the copy has the same shape.',
+    ],
+    variables: [
+      { id: 'k', symbol: 'k', name: 'Scale factor', min: 0.5, max: 3, step: 0.5 },
+      whole('w', 'w', 'Width', 1, 6),
+      whole('h', 'h', 'Height', 1, 6),
+      { id: 'W', symbol: 'W', name: 'Copy width', min: 0, max: 24, derived: true },
+      { id: 'H', symbol: 'H', name: 'Copy height', min: 0, max: 24, derived: true },
+    ],
+    relations: [scaled('W', 'w'), scaled('H', 'h')],
+    steps: { ...scaledSteps('W', 'w'), ...scaledSteps('H', 'h') },
+    example: { k: 2, w: 4, h: 4, W: 8, H: 8 },
+    startWith: ['k', 'w', 'h'],
+    representation: {
+      kind: 'scaleCopy',
+      factor: 'k',
+      width: 'w',
+      height: 'h',
+      copyWidth: 'W',
+      copyHeight: 'H',
+      shape: 'L',
+    },
+  },
+  {
+    id: 'g.scale-copy-area',
+    title: 'Scaled copy and its area',
+    assumptions: [
+      'Every length of the copy is k times the original’s.',
+      'Its area is k × k times the original’s: k times as wide and k times as tall.',
+    ],
+    variables: [
+      { id: 'k', symbol: 'k', name: 'Scale factor', min: 0.5, max: 3, step: 0.5 },
+      whole('w', 'w', 'Base', 1, 6),
+      whole('h', 'h', 'Height', 1, 6),
+      { id: 'A', symbol: 'A', name: 'Area', min: 0, max: 64, derived: true },
+      { id: 'B', symbol: 'B', name: 'Copy area', min: 0, max: 600, derived: true },
+    ],
+    relations: [
+      {
+        id: 'A = w × h ÷ 2',
+        display: '{A} = {w} × {h} ÷ 2',
+        vars: ['A', 'w', 'h'],
+        residual: (v: Values) => v.A! - (v.w! * v.h!) / 2,
+        solve: {
+          A: (v: Values) => (v.w! * v.h!) / 2,
+          w: () => undefined,
+          h: () => undefined,
+        },
+      },
+      {
+        id: 'B = A × k²',
+        display: '{B} = {A} × {k} × {k}',
+        vars: ['B', 'A', 'k'],
+        residual: (v: Values) => v.B! - v.A! * v.k! * v.k!,
+        solve: {
+          B: (v: Values) => v.A! * v.k! * v.k!,
+          A: () => undefined,
+          k: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'A = w × h ÷ 2': {
+        A: { expr: '{w} × {h} ÷ 2', how: 'A triangle is half of its base times its height.' },
+      },
+      'B = A × k²': {
+        B: {
+          expr: '{A} × {k} × {k}',
+          how: 'The copy is k times as wide and k times as tall: k × k times the area.',
+        },
+      },
+    },
+    example: { k: 2, w: 4, h: 3, A: 6, B: 24 },
+    startWith: ['k', 'w', 'h'],
+    representation: {
+      kind: 'scaleCopy',
+      factor: 'k',
+      width: 'w',
+      height: 'h',
+      area: ['A', 'B'],
+      shape: 'triangle',
     },
   },
 ];

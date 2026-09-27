@@ -296,6 +296,10 @@ function representationVars(r: Representation): string[] {
       ];
     case 'circle':
       return [r.radius, r.diameter, r.circumference, r.area].filter((v): v is string => !!v);
+    case 'scaleCopy':
+      return [r.factor, r.width, r.height, r.copyWidth, r.copyHeight, ...(r.area ?? [])].filter(
+        (v): v is string => typeof v === 'string',
+      );
     case 'rightTriangle':
       return [r.a, r.b, r.c];
     case 'plot':

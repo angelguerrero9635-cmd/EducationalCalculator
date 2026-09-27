@@ -449,6 +449,23 @@ export type Representation =
       /** Whole grids, fully shaded, before the first: the ones of a decimal (1.35). */
       wholes?: string;
     }
+  /**
+   * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is
+   * `width` × `height` squares in the outline `shape` (default an L), the copy is `factor` times
+   * each length, joined by an arrow labelled with the factor. `copyWidth`, `copyHeight` and
+   * `area` (original, copy) are values the module works out; drag the copy's corner to change
+   * the factor.
+   */
+  | {
+      kind: 'scaleCopy';
+      factor: string;
+      width: string | number;
+      height: string | number;
+      copyWidth?: string;
+      copyHeight?: string;
+      area?: [string, string];
+      shape?: 'rectangle' | 'triangle' | 'L' | 'trapezoid';
+    }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
   | {
       kind: 'circle';

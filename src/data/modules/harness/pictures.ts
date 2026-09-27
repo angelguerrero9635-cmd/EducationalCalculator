@@ -6,6 +6,7 @@
 import type { VariableDef } from '@/engine/types';
 
 import { toFraction } from '@/components/module/reps/exact';
+import { outline } from '@/components/module/reps/scaleOutline';
 
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
@@ -156,6 +157,38 @@ export function repIssues(
         Math.abs(xl! * x + ul! - (xr! * x + ur!)) > 1e-6 * Math.max(1, ur! + xr! * x)
       )
         out.push(`~hanger is not level: ${xl! * x + ul!} against ${xr! * x + ur!}`);
+      break;
+    }
+    case 'scaleCopy': {
+      // Whole squares for the original; both figures side by side fit about 30 squares.
+      count(rep.width, 'original width', 12);
+      count(rep.height, 'original height', 12);
+      const [W, H, k] = [rep.width, rep.height, rep.factor].map(val);
+      if (k !== undefined && k <= 0) out.push(`scale factor ${k} is not positive`);
+      if (W === undefined || H === undefined || k === undefined || k <= 0) break;
+      if (W + W * k > 26 || Math.max(H, H * k) > 24)
+        out.push(`scaled copy (${W} × ${H}, factor ${k}) is past the grid`);
+      const near = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+      const cw = rep.copyWidth ? val(rep.copyWidth) : undefined;
+      const ch = rep.copyHeight ? val(rep.copyHeight) : undefined;
+      if (cw !== undefined && !near(cw, W * k)) out.push(`copy width ${cw} is not ${k} × ${W}`);
+      if (ch !== undefined && !near(ch, H * k)) out.push(`copy height ${ch} is not ${k} × ${H}`);
+      if (rep.area) {
+        // The original's area is the outline's squares; the copy's is k × k times it.
+        const pts = outline(rep.shape, W, H);
+        const squares =
+          Math.abs(
+            pts.reduce((s, [x, y], i) => {
+              const [x2, y2] = pts[(i + 1) % pts.length]!;
+              return s + x * y2 - x2 * y;
+            }, 0),
+          ) / 2;
+        const [a0, a1] = rep.area.map(val);
+        if (a0 !== undefined && !near(a0, squares))
+          out.push(`original area ${a0}, the outline covers ${squares} squares`);
+        if (a0 !== undefined && a1 !== undefined && !near(a1, a0 * k * k))
+          out.push(`copy area ${a1} is not ${k} × ${k} × ${a0}`);
+      }
       break;
     }
     case 'baseTen':

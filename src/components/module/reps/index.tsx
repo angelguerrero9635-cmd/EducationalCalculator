@@ -43,6 +43,7 @@ import { TapeEquation } from './TapeEquation';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
 import { CircleDiagram } from './CircleDiagram';
+import { ScaleCopy } from './ScaleCopy';
 import { ForceDiagram } from './ForceDiagram';
 import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
@@ -180,6 +181,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Grid100 spec={spec} calc={calc} />;
     case 'circle':
       return <CircleDiagram spec={spec} calc={calc} />;
+    case 'scaleCopy':
+      return <ScaleCopy spec={spec} calc={calc} />;
     case 'rightTriangle':
       return <RightTriangle spec={spec} calc={calc} />;
     case 'plot':
