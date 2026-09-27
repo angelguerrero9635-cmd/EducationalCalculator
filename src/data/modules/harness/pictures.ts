@@ -352,11 +352,17 @@ export function repIssues(
       break;
     }
     case 'fractionBars':
+      if (rep.wholes !== undefined && (rep.wholes < 1 || rep.wholes > 6)) {
+        out.push(`fraction bars laid out ${rep.wholes} wholes wide (1–6)`);
+      }
       for (const row of rep.rows) {
         const [a, b] = [val(row.num), val(row.den)];
         count(row.num, 'shaded parts');
-        // One bar is one whole: more shaded parts than parts can't be drawn (the bar clamps).
-        if (a !== undefined && b !== undefined && a > b) out.push(`${a}/${b} shaded on one bar`);
+        // A row draws as many whole bars as the fraction needs, up to 6 (FractionBars.tsx).
+        if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 6) {
+          out.push(`${a}/${b} needs ${Math.ceil(a / b)} whole bars; a row holds 6`);
+        }
+        if (b !== undefined && b < 1) out.push(`${b} parts in a whole bar`);
       }
       break;
     case 'timeline': {

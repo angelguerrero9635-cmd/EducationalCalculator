@@ -479,6 +479,12 @@ export type Representation =
       compare?: [number, number] | [number, number, number, number];
       /** A sentence under the bars instead of the comparison, with {id} for values. */
       caption?: string;
+      /**
+       * Wholes laid out in every row (default 1). A fraction past one whole always takes the
+       * bars it needs (7/4 is one whole and 3/4 of the next), up to 6; setting this keeps the
+       * bars' size still while the values change.
+       */
+      wholes?: number;
     }
   /**
    * Elapsed time on a number line: from the start time to the end time in jumps (to the next

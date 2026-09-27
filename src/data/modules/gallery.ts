@@ -448,6 +448,72 @@ export const GALLERY_MODULES: ModuleDef[] = [
     representation: { kind: 'shareWholes', wholes: 'w', people: 'p', each: 'e' },
   },
   {
+    id: 'g.fraction-bars-past-one',
+    title: 'Fraction bars past one whole',
+    assumptions: [
+      'Both fractions cut the same whole into the same number of parts.',
+      'A sum past one whole takes a second bar the same size as the first.',
+    ],
+    variables: [
+      whole('a', 'a', 'First top', 0, 12),
+      whole('c', 'c', 'Second top', 0, 12),
+      whole('b', 'b', 'Parts in one whole', 2, 12),
+      whole('s', 's', 'Top of the sum', 0, 12),
+      whole('w', 'w', 'Whole bars filled', 0, 12),
+    ],
+    relations: [
+      {
+        id: 's = a + c',
+        display: '{a} + {c} = {s}',
+        vars: ['s', 'a', 'c'],
+        residual: (v: Values) => v.s! - v.a! - v.c!,
+        solve: {
+          s: (v: Values) => v.a! + v.c!,
+          a: (v: Values) => v.s! - v.c!,
+          c: (v: Values) => v.s! - v.a!,
+        },
+      },
+      {
+        id: 'w = whole bars in s/b',
+        display: 'whole groups of {b} in {s} = {w}',
+        vars: ['w', 's', 'b'],
+        residual: (v: Values) => v.w! - Math.floor(v.s! / v.b!),
+        solve: {
+          w: (v: Values) => Math.floor(v.s! / v.b!),
+          s: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      's = a + c': {
+        s: { expr: '{a} + {c}', how: 'Same-size parts: add the tops.' },
+        a: { expr: '{s} − {c}', how: 'Take the second top from the sum.' },
+        c: { expr: '{s} − {a}', how: 'Take the first top from the sum.' },
+      },
+      'w = whole bars in s/b': {
+        w: {
+          expr: 'whole groups of {b} in {s}',
+          how: 'Every {b} parts fill one whole bar.',
+          work: (v: Values) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`],
+        },
+      },
+    },
+    example: { a: 3, c: 4, b: 4, s: 7, w: 1 },
+    startWith: ['a', 'c', 'b'],
+    representation: {
+      kind: 'fractionBars',
+      rows: [
+        { num: 'a', den: 'b' },
+        { num: 'c', den: 'b' },
+        { num: 's', den: 'b' },
+      ],
+      controls: ['a', 'c', 'b'],
+      wholes: 2,
+      caption: '{a}/{b} + {c}/{b} = {s}/{b}',
+    },
+  },
+  {
     id: 'g.wave',
     title: 'Wave',
     assumptions: [
