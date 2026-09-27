@@ -894,10 +894,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.sunlight-warms~shade',
     kind: 'icon',
     pages: ['s.K.sunlight-warms~shade'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3a-shade'],
+    uses: '"icon":"open umbrella"',
     notes:
-      'Umbrella → an open umbrella with shade under it; Tree → a leafy tree; Tent → a tent; Sun hat → a wide-brim sun hat; Roof → a house roof; Clear plastic → a clear plastic sheet or cup; Window glass → a window; Glass door → a glass door',
+      "Umbrella → an open umbrella with shade under it; Tree → a leafy tree; Tent → a tent; Sun hat → a wide-brim sun hat; Roof → a house roof; Clear plastic → a clear plastic sheet or cup; Window glass → a window; Glass door → a glass door. Drawn: each card gets figure: { kind: 'icon', icon }: Umbrella → 'open umbrella'; Tree → 'leafy tree' (drawn by group E); Tent → 'tent'; Sun hat → 'sun hat'; Roof → 'house roof'; Clear plastic → 'clear plastic cup'; Window glass → 'window'; Glass door → 'glass door'",
   },
   {
     id: 'D06',
@@ -1013,20 +1014,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.light-shadows~materials',
     kind: 'icon',
     pages: ['s.1.light-shadows~materials'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3a-light-materials'],
+    uses: '"icon":"wax paper"',
     notes:
-      'Window glass → a window pane; Clear plastic → a clear plastic cup; Wax paper → a cloudy sheet of wax paper; Tissue paper → a thin tissue-paper sheet; Wood → a wooden block; A book → a closed book; A mirror → a hand mirror; A shiny spoon → a metal spoon with a shine mark',
+      "Window glass → a window pane; Clear plastic → a clear plastic cup; Wax paper → a cloudy sheet of wax paper; Tissue paper → a thin tissue-paper sheet; Wood → a wooden block; A book → a closed book; A mirror → a hand mirror; A shiny spoon → a metal spoon with a shine mark. Drawn: each card gets figure: { kind: 'icon', icon }: Window glass → 'window'; Clear plastic → 'clear plastic cup'; Wax paper → 'wax paper'; Tissue paper → 'tissue paper'; Wood → 'wooden block'; A book → 'closed book'; A mirror → 'hand mirror'; A shiny spoon → 'metal spoon' (it has the shine mark)",
   },
   {
     id: 'D18',
     what: 'Card pictures for s.2.material-properties~sort',
     kind: 'icon',
     pages: ['s.2.material-properties~sort'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3a-bend'],
+    uses: '"icon":"piece of string"',
     notes:
-      'Rubber band → rubber band; String → a piece of string; Cloth → a folded cloth; Craft stick → craft stick; Plastic ruler → plastic ruler; Cardboard → a cardboard piece; Rock → rock; Metal spoon → metal spoon; Glass → a drinking glass',
+      "Rubber band → rubber band; String → a piece of string; Cloth → a folded cloth; Craft stick → craft stick; Plastic ruler → plastic ruler; Cardboard → a cardboard piece; Rock → rock; Metal spoon → metal spoon; Glass → a drinking glass. Drawn: each card gets figure: { kind: 'icon', icon }: Rubber band → 'rubber band'; String → 'piece of string'; Cloth → 'folded cloth' (a towel over a rail); Craft stick → 'craft stick'; Plastic ruler → 'plastic ruler'; Cardboard → 'cardboard piece'; Rock → 'gray rock'; Metal spoon → 'metal spoon'; Glass → 'drinking glass'",
   },
   {
     id: 'D19',
