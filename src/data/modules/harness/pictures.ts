@@ -793,7 +793,7 @@ export function repIssues(
     }
     case 'percentBar': {
       const [p, part, whole] = [rep.percent, rep.part, rep.whole].map(val);
-      if (p !== undefined && p < 0) out.push(`percent ${p} below 0`);
+      if (p !== undefined && p < 0 && !rep.change) out.push(`percent ${p} below 0`);
       if (
         p !== undefined &&
         part !== undefined &&
@@ -801,6 +801,18 @@ export function repIssues(
         Math.abs((p / 100) * whole - part) > 1e-6 * Math.max(1, part)
       )
         out.push(`bar shades ${p}% of ${whole}, part shows ${part}`);
+      if (rep.change) {
+        const t = val(rep.change.total);
+        const up = rep.change.direction;
+        if (whole !== undefined && part !== undefined && t !== undefined) {
+          if (Math.abs(Math.abs(t - whole) - Math.abs(part)) > 1e-6 * Math.max(1, whole))
+            out.push(`new amount ${t} is not ${whole} changed by ${part}`);
+          if ((up === 'up' && t < whole) || (up === 'down' && t > whole))
+            out.push(`new amount ${t} goes the wrong way from ${whole} (${up})`);
+        }
+        if (up === 'down' && p !== undefined && Math.abs(p) > 100)
+          out.push(`a ${Math.abs(p)}% decrease takes more than the whole`);
+      }
       break;
     }
     case 'ratioTable': {

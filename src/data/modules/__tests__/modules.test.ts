@@ -230,7 +230,13 @@ function representationVars(r: Representation): string[] {
         ),
       ];
     case 'percentBar':
-      return [r.percent, r.part, r.whole, ...(r.onePercent ? [r.onePercent] : [])];
+      return [
+        r.percent,
+        r.part,
+        r.whole,
+        ...(r.onePercent ? [r.onePercent] : []),
+        ...(r.change ? [r.change.total] : []),
+      ];
     case 'ratioTable':
       return [r.first, r.second, r.times, ...r.amounts];
     case 'fractionFit':

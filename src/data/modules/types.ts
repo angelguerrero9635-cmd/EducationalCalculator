@@ -828,6 +828,13 @@ export type Representation =
       whole: string;
       onePercent?: string;
       ticks?: 4 | 10;
+      /**
+       * Tax, tip, markup or discount, and percent change: `part` is the change and `total`
+       * the new amount. Three bars (the original, the change, the new amount), or with
+       * `bars: 2` before and after with the change marked. `direction` follows the values
+       * (a negative percent or a smaller total is down) unless it is given.
+       */
+      change?: { total: string; direction?: 'up' | 'down'; bars?: 2 | 3 };
     }
   /**
    * A table of equivalent ratios: the parts `first` : `second`, rows 1–4 times them (or `rows`)
