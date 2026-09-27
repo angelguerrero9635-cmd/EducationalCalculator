@@ -520,9 +520,14 @@ export const MATH_1_MODULES: ModuleDef[] = [
             v.n! >= 100 && v.n! < 110
               ? 'Go one row up on the chart.'
               : 'Go one row up on the chart. The tens digit goes down by 1.',
-          work: (v: Values) => [
-            `Tens: ${Math.floor(v.n! / 10)} → ${Math.floor(v.v! / 10)}, ones stay ${v.n! % 10}`,
-          ],
+          // The tens digit, as on the ten-more page (12 tens is Grade 2); from 100 to 109 the
+          // hundred goes, so no digit line.
+          work: (v: Values) =>
+            v.n! >= 100 && v.n! < 110
+              ? []
+              : [
+                  `Tens: ${Math.floor((v.n! % 100) / 10)} → ${Math.floor((v.v! % 100) / 10)}, ones stay ${v.n! % 10}`,
+                ],
         },
         n: { expr: '{v} + 10', how: 'Go one row down on the chart.' },
       },

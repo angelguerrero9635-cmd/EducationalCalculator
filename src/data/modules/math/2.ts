@@ -25,6 +25,7 @@ import {
 
 /** Money in the dollars-and-cents module: each coin's id, value in cents and names. */
 const MONEY = [
+  { id: 'fv', cents: 500, one: 'five-dollar bill', many: 'five-dollar bills' },
   { id: 'db', cents: 100, one: 'dollar', many: 'dollars' },
   { id: 'q', cents: 25, one: 'quarter', many: 'quarters' },
   { id: 'dm', cents: 10, one: 'dime', many: 'dimes' },
@@ -55,7 +56,7 @@ const moneyParts = (v: Values, skip?: string) =>
 /** Counting-on lines for each kind of coin (2 quarters: 25, 50 → 50¢), and always the dollars. */
 const countOnLines = (parts: ReturnType<typeof moneyParts>) =>
   parts
-    .filter((p) => (p.n > 1 && p.coin.cents > 1) || p.coin.cents === 100)
+    .filter((p) => (p.n > 1 && p.coin.cents > 1) || p.coin.cents >= 100)
     .map((p) => coinLine(p.coin, p.n));
 /** Counting on coin by coin, worth the most first: "Count on: 100¢, 125¢, 150¢, 160¢". */
 function runningCount(parts: ReturnType<typeof moneyParts>): string[] {
@@ -76,7 +77,7 @@ function moneyTotalWork(v: Values): string[] {
   return [
     ...(running.length
       ? parts
-          .filter((p) => (p.n > 1 && p.coin.cents > 1) || p.coin.cents === 100)
+          .filter((p) => (p.n > 1 && p.coin.cents > 1) || p.coin.cents >= 100)
           .map((p) => `${p.n} ${p.n === 1 ? p.coin.one : p.coin.many} = ${p.cents}¢`)
       : countOnLines(parts)),
     ...(running.length
@@ -98,7 +99,9 @@ function moneyCoinWork(coin: Coin) {
     const left = v.T! - other;
     const n = left / coin.cents;
     return [
-      ...countOnLines(parts),
+      ...(coin.cents >= 100 || parts.some((p) => p.coin.cents >= 100)
+        ? parts.map((p) => coinLine(p.coin, p.n))
+        : countOnLines(parts)),
       parts.length === 0
         ? 'No other money: 0¢'
         : parts.length === 1
@@ -115,14 +118,28 @@ function moneyCoinWork(coin: Coin) {
 }
 /** The total written in dollars and cents too, e.g. "($1.68)". */
 /** Grade 2 writes cents (68¢); "$1.68" only once a dollar is made. */
-const inDollars = (v: Values) =>
-  v.T! >= 100 ? `($${Math.floor(v.T! / 100)}.${String(v.T! % 100).padStart(2, '0')})` : '';
+const inDollars = (v: Values) => dollarWords(v.T!);
 /** "347 = 300 + 40 + 7", leaving out places that are 0 ("305 = 300 + 5"). */
 const placeLine = (n: number) => {
   const parts = [Math.floor(n / 100) * 100, Math.floor((n % 100) / 10) * 10, n % 10].filter(
     (x) => x > 0,
   );
   return parts.length > 1 ? [`${n} = ${parts.join(' + ')}`] : [];
+};
+/** The seven counts on the line plot of lengths, first length first. */
+const XS = ['x0', 'x1', 'x2', 'x3', 'x4', 'x5', 'x6'];
+/**
+ * Reads the line plot: the longest or shortest length with an X, or the length with the most
+ * X's (the first one, if two tie). Undefined with no X's.
+ */
+const plotRead = (v: Values, what: 'longest' | 'shortest' | 'most') => {
+  const counts = XS.map((x) => v[x]!);
+  if (counts.every((n) => n === 0)) return undefined;
+  const at = (i: number) => v.f! + i;
+  if (what === 'shortest') return at(counts.findIndex((n) => n > 0));
+  if (what === 'longest')
+    return at(counts.length - 1 - [...counts].reverse().findIndex((n) => n > 0));
+  return at(counts.indexOf(Math.max(...counts)));
 };
 /**
  * Cents from 100 on, in Grade 2 words: "(2 dollars and 68 cents)". The decimal point ($2.68)
@@ -1096,6 +1113,68 @@ export const MATH_2_MODULES: ModuleDef[] = [
     startWith: ['a', 'k', 's'],
     representation: { kind: 'skipCount', start: 'a', step: 's', count: 'k', total: 'n' },
   },
+  // Three-digit numbers on a number line (2.NBT.2, 2.MD.6): "Where is 540 on a line from 500
+  // to 600?" and "What number is the point?".
+  {
+    id: 'm.2.place-value-1000~number-line',
+    title: 'Numbers on a number line',
+    use: 'Use this for “Where is 540 on a line from 500 to 600?” or “What number is at the point?”',
+    assumptions: [
+      'Read the number at the start of the line and how much each tick mark is worth.',
+      'Count the ticks from the start to the point: by 1s, by 10s or by 100s.',
+      'On a line from 500 to 600 with 10 ticks, each tick is 10.',
+    ],
+    variables: [
+      whole('a', 'a', 'Line starts at', 0, 990),
+      { ...whole('s', 's', 'Each tick is worth', 1, 100), allowed: [1, 10, 100] },
+      whole('k', 'k', 'Ticks from the start', 0, 10),
+      whole('n', 'n', 'Number at the point', 0, 1000),
+    ],
+    relations: [
+      {
+        id: 'n = a + k ticks of s',
+        check: (v) => `${v.a} + ${v.k} jumps of ${v.s} = ${v.n}`,
+        display: 'Start at {a}. {k} ticks of {s} land on {n}.',
+        vars: ['n', 'a', 'k', 's'],
+        residual: (v) => v.n! - v.a! - v.k! * v.s!,
+        solve: {
+          n: (v) => v.a! + v.k! * v.s!,
+          a: (v) => v.n! - v.k! * v.s!,
+          k: (v) => div(v.n! - v.a!, v.s!),
+        },
+      },
+    ],
+    steps: {
+      'n = a + k ticks of s': {
+        n: {
+          work: (v) =>
+            v.k === 0
+              ? [`The point is at the start: ${v.a}`]
+              : [`Count on by ${v.s}s from ${v.a}: ${countList(v.a!, v.s!, v.k!)} → ${v.n}`],
+          expr: '{a} + {k} jumps of {s}',
+          how: 'Start at the number at the start. Count on by the tick size, once for each tick.',
+        },
+        k: {
+          work: (v) => [
+            `${v.n} − ${v.a} = ${v.n! - v.a!}`,
+            `Count by ${v.s}s to ${v.n! - v.a!}: ${countList(0, v.s!, v.k!)} → ${v.k} ${v.k === 1 ? 'tick' : 'ticks'}`,
+          ],
+          expr: 'jumps of {s} from {a} to {n}',
+          how: 'Count the ticks from the start to the number.',
+        },
+        a: {
+          work: (v) => [
+            `Count back by ${v.s}s from ${v.n}: ${countList(v.n!, -v.s!, v.k!)} → ${v.a}`,
+          ],
+          expr: '{n} − {k} jumps of {s}',
+          how: 'Count back from the point to the start of the line.',
+        },
+      },
+    },
+    example: { a: 500, s: 10, k: 4, n: 540 },
+    startWith: ['a', 's', 'n'],
+    representation: { kind: 'skipCount', start: 'a', step: 's', count: 'k', total: 'n' },
+  },
   // Skip count backward by 5s, 10s or 100s (2.NBT.2).
   {
     id: 'm.2.skip-count~back',
@@ -1267,12 +1346,12 @@ export const MATH_2_MODULES: ModuleDef[] = [
     assumptions: [
       'Each row has the same number of dots. So does each column.',
       'Add the same number once for each row: 3 rows of 4 is 4 + 4 + 4.',
-      'Up to 5 rows and 5 columns.',
+      'Up to 10 rows and 5 columns.',
     ],
     variables: [
-      whole('r', 'r', 'Rows', 1, 5),
+      whole('r', 'r', 'Rows', 1, 10),
       whole('c', 'c', 'In each row', 1, 5),
-      whole('n', 'n', 'Total', 1, 25),
+      whole('n', 'n', 'Total', 1, 50),
     ],
     relations: [
       {
@@ -1649,22 +1728,22 @@ export const MATH_2_MODULES: ModuleDef[] = [
         q: {
           expr: (v) => `quarters in ({T} − ${moneyWords(v, 'q')})`,
           how: 'Take away the other coins’ value. Count the 25s in what is left.',
-          work: moneyCoinWork(MONEY[1]),
+          work: moneyCoinWork(MONEY[2]),
         },
         dm: {
           expr: (v) => `dimes in ({T} − ${moneyWords(v, 'dm')})`,
           how: 'Take away the other coins’ value. Count the 10s in what is left.',
-          work: moneyCoinWork(MONEY[2]),
+          work: moneyCoinWork(MONEY[3]),
         },
         nk: {
           expr: (v) => `nickels in ({T} − ${moneyWords(v, 'nk')})`,
           how: 'Take away the other coins’ value. Count the 5s in what is left.',
-          work: moneyCoinWork(MONEY[3]),
+          work: moneyCoinWork(MONEY[4]),
         },
         pn: {
           expr: (v) => `{T} − ${moneyWords(v, 'pn')}`,
           how: 'Take away the other coins’ value. The rest is pennies.',
-          work: moneyCoinWork(MONEY[4]),
+          work: moneyCoinWork(MONEY[5]),
         },
       },
     },
@@ -1678,6 +1757,98 @@ export const MATH_2_MODULES: ModuleDef[] = [
         { var: 'dm', cents: 10, name: 'Dimes' },
         { var: 'nk', cents: 5, name: 'Nickels' },
         { var: 'pn', cents: 1, name: 'Pennies' },
+      ],
+      total: 'T',
+    },
+  },
+  // Bills and coins together (2.MD.8): "$5, $1 and 2 quarters. How much money?"
+  {
+    id: 'm.2.money~bills-coins',
+    title: 'Bills and coins together',
+    use: 'Use this for “a $5 bill, a $1 bill and 2 quarters: how much money?”',
+    assumptions: [
+      'A dollar bill is 100¢. A five-dollar bill is 500¢.',
+      'A quarter is 25¢ and a dime is 10¢.',
+      'Count the bills first, then the coins.',
+    ],
+    variables: [
+      whole('fv', 'f', 'Five-dollar bills', 0, 3),
+      whole('db', 'b', 'Dollar bills', 0, 9),
+      whole('q', 'q', 'Quarters', 0, 9),
+      whole('dm', 'd', 'Dimes', 0, 9),
+      { ...whole('T', 'T', 'In all', 0, 2515), unit: '¢' },
+    ],
+    relations: [
+      {
+        id: 'T = bills + coins',
+        check: (v) =>
+          `${
+            moneyParts(v)
+              .map((p) => `${p.cents}¢`)
+              .join(' + ') || '0¢'
+          } = ${v.T}¢`,
+        display: '{fv} five-dollar bills + {db} dollar bills + {q} quarters + {dm} dimes = {T}¢',
+        vars: ['T', 'fv', 'db', 'q', 'dm'],
+        residual: (v) => v.T! - (500 * v.fv! + 100 * v.db! + 25 * v.q! + 10 * v.dm!),
+        solve: {
+          T: (v) => 500 * v.fv! + 100 * v.db! + 25 * v.q! + 10 * v.dm!,
+          dm: (v) => (v.T! - 500 * v.fv! - 100 * v.db! - 25 * v.q!) / 10,
+          q: (v) => (v.T! - 500 * v.fv! - 100 * v.db! - 10 * v.dm!) / 25,
+          db: (v) => (v.T! - 500 * v.fv! - 25 * v.q! - 10 * v.dm!) / 100,
+          fv: (v) => (v.T! - 100 * v.db! - 25 * v.q! - 10 * v.dm!) / 500,
+        },
+      },
+    ],
+    steps: {
+      'T = bills + coins': {
+        T: {
+          expr: (v) => moneyWords(v),
+          how: 'Count the bills by 500s and 100s. Then count on the coins.',
+          // Each kind's value, then the kinds added one at a time.
+          work: (v: Values) => {
+            const parts = moneyParts(v);
+            return [
+              ...parts.map((p) => coinLine(p.coin, p.n)),
+              ...sumSteps(
+                parts.map((p) => p.cents),
+                '¢',
+              ),
+            ];
+          },
+          note: inDollars,
+        },
+        dm: {
+          expr: (v) => `dimes in ({T} − ${moneyWords(v, 'dm')})`,
+          how: 'Take away the other money’s value. Count the 10s in what is left.',
+          work: moneyCoinWork(MONEY[3]),
+        },
+        q: {
+          expr: (v) => `quarters in ({T} − ${moneyWords(v, 'q')})`,
+          how: 'Take away the other money’s value. Count the 25s in what is left.',
+          work: moneyCoinWork(MONEY[2]),
+        },
+        db: {
+          expr: (v) => `dollars in ({T} − ${moneyWords(v, 'db')})`,
+          how: 'Take away the other money’s value. Count the 100s in what is left.',
+          work: moneyCoinWork(MONEY[1]),
+        },
+        fv: {
+          expr: (v) => `five-dollar bills in ({T} − ${moneyWords(v, 'fv')})`,
+          how: 'Take away the other money’s value. Count the 500s in what is left.',
+          work: moneyCoinWork(MONEY[0]),
+        },
+      },
+    },
+    example: { fv: 1, db: 1, q: 2, dm: 0, T: 650 },
+    clearTo: { fv: 0, db: 0, q: 0, dm: 0 },
+    startWith: ['fv', 'db', 'q', 'dm'],
+    representation: {
+      kind: 'coins',
+      coins: [
+        { var: 'fv', cents: 500, name: 'Five-dollar bills' },
+        { var: 'db', cents: 100, name: 'Dollar bills' },
+        { var: 'q', cents: 25, name: 'Quarters' },
+        { var: 'dm', cents: 10, name: 'Dimes' },
       ],
       total: 'T',
     },
@@ -2129,84 +2300,112 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Grade 2: line plot of measurements (2.MD.9).
   {
     id: 'm.2.graphs-line-plots~line-plot',
-    title: 'Line plot',
-    use: 'Use this to make or read a line plot of lengths.',
+    title: 'Line plot of lengths',
+    use: 'Use this to make a line plot of lengths and find the longest, shortest and most common.',
+    unitSystems: ['metric'],
     standalone: {
       vars: ['f'],
-      why: 'The shortest length only labels the line; the counts don’t depend on it.',
+      why: 'The first length only labels the line; the counts don’t depend on it.',
     },
     assumptions: [
-      'Measure each object to the nearest whole inch. Set the shortest length with − / +.',
+      'Measure each object to the nearest whole unit. Set the first length on the line with − / +.',
       'Put one X above the number line for each object, at its length.',
-      'Count the X’s to find how many objects in all.',
+      'The longest and shortest are the X’s farthest right and left. The most common has the most X’s.',
     ],
     variables: [
-      { ...whole('f', 'f', 'Shortest length', 1, 20), unit: 'inches' },
-      whole('x4', 'A', 'Objects at the shortest length', 0, 10),
-      whole('x5', 'B', 'Objects 1 inch longer', 0, 10),
-      whole('x6', 'C', 'Objects 2 inches longer', 0, 10),
-      whole('x7', 'D', 'Objects at the longest length', 0, 10),
-      whole('N', 'N', 'Objects measured', 0, 40),
+      { ...whole('f', 'f', 'First length on the line', 1, 20), unit: 'cm', units: ['cm'] },
+      whole('x0', 'A', 'Objects at the first length', 0, 10),
+      whole('x1', 'B', 'Objects 1 longer', 0, 10),
+      whole('x2', 'C', 'Objects 2 longer', 0, 10),
+      whole('x3', 'D', 'Objects 3 longer', 0, 10),
+      whole('x4', 'E', 'Objects 4 longer', 0, 10),
+      whole('x5', 'F', 'Objects 5 longer', 0, 10),
+      whole('x6', 'G', 'Objects 6 longer', 0, 10),
+      { ...whole('N', 'N', 'Objects measured', 0, 70), derived: true },
+      {
+        ...whole('L', 'L', 'Longest length', 0, 26),
+        unit: 'cm',
+        units: ['cm'],
+        derived: true,
+      },
+      {
+        ...whole('S', 'S', 'Shortest length', 0, 26),
+        unit: 'cm',
+        units: ['cm'],
+        derived: true,
+      },
+      {
+        ...whole('M', 'M', 'Most common length', 0, 26),
+        unit: 'cm',
+        units: ['cm'],
+        derived: true,
+      },
     ],
     relations: [
       {
         id: 'N = all X’s',
-        display: '{N} = {x4} + {x5} + {x6} + {x7}',
-        vars: ['N', 'x4', 'x5', 'x6', 'x7'],
-        residual: (v) => v.N! - v.x4! - v.x5! - v.x6! - v.x7!,
-        solve: {
-          N: (v) => v.x4! + v.x5! + v.x6! + v.x7!,
-          x4: (v) => v.N! - v.x5! - v.x6! - v.x7!,
-          x5: (v) => v.N! - v.x4! - v.x6! - v.x7!,
-          x6: (v) => v.N! - v.x4! - v.x5! - v.x7!,
-          x7: (v) => v.N! - v.x4! - v.x5! - v.x6!,
-        },
+        display: '{N} = {x0} + {x1} + {x2} + {x3} + {x4} + {x5} + {x6}',
+        vars: ['N', ...XS],
+        residual: (v) => v.N! - XS.reduce((a, x) => a + v[x]!, 0),
+        solve: { N: (v) => XS.reduce((a, x) => a + v[x]!, 0) },
+      },
+      {
+        id: 'L = farthest right X',
+        display:
+          'X’s at {f} and on: {x0}, {x1}, {x2}, {x3}, {x4}, {x5}, {x6}. The X farthest right is at {L}',
+        vars: ['L', 'f', ...XS],
+        residual: (v) => v.L! - plotRead(v, 'longest')!,
+        solve: { L: (v) => plotRead(v, 'longest') },
+      },
+      {
+        id: 'S = farthest left X',
+        display:
+          'X’s at {f} and on: {x0}, {x1}, {x2}, {x3}, {x4}, {x5}, {x6}. The X farthest left is at {S}',
+        vars: ['S', 'f', ...XS],
+        residual: (v) => v.S! - plotRead(v, 'shortest')!,
+        solve: { S: (v) => plotRead(v, 'shortest') },
+      },
+      {
+        id: 'M = tallest stack',
+        display:
+          'X’s at {f} and on: {x0}, {x1}, {x2}, {x3}, {x4}, {x5}, {x6}. The tallest stack of X’s is at {M}',
+        vars: ['M', 'f', ...XS],
+        residual: (v) => v.M! - plotRead(v, 'most')!,
+        solve: { M: (v) => plotRead(v, 'most') },
       },
     ],
     steps: {
       'N = all X’s': {
         N: {
-          expr: '{x4} + {x5} + {x6} + {x7}',
+          expr: '{x0} + {x1} + {x2} + {x3} + {x4} + {x5} + {x6}',
           how: 'Count every X on the line plot.',
-          work: (v) => sumSteps([v.x4!, v.x5!, v.x6!, v.x7!]),
+          work: (v) => sumSteps(XS.map((x) => v[x]!).filter((n) => n > 0)),
         },
-        x4: {
-          work: (v) => missingPart(v.N!, [v.x5!, v.x6!, v.x7!]),
-          expr: '{N} − {x5} − {x6} − {x7}',
-          how: 'Take the X’s at the other lengths away from the total.',
-        },
-        x5: {
-          work: (v) => missingPart(v.N!, [v.x4!, v.x6!, v.x7!]),
-          expr: '{N} − {x4} − {x6} − {x7}',
-          how: 'Take the X’s at the other lengths away from the total.',
-        },
-        x6: {
-          work: (v) => missingPart(v.N!, [v.x4!, v.x5!, v.x7!]),
-          expr: '{N} − {x4} − {x5} − {x7}',
-          how: 'Take the X’s at the other lengths away from the total.',
-        },
-        x7: {
-          work: (v) => missingPart(v.N!, [v.x4!, v.x5!, v.x6!]),
-          expr: '{N} − {x4} − {x5} − {x6}',
-          how: 'Take the X’s at the other lengths away from the total.',
+      },
+      'L = farthest right X': {
+        L: { expr: 'the length of the X farthest right', how: 'Find the last length with an X.' },
+      },
+      'S = farthest left X': {
+        S: { expr: 'the length of the X farthest left', how: 'Find the first length with an X.' },
+      },
+      'M = tallest stack': {
+        M: {
+          expr: 'the length with the most X’s',
+          how: 'Find the tallest stack of X’s.',
+          work: (v) => [`Most X’s: ${Math.max(...XS.map((x) => v[x]!))} at ${plotRead(v, 'most')}`],
         },
       },
     },
-    example: { f: 4, x4: 2, x5: 5, x6: 3, x7: 1, N: 11 },
-    startWith: ['f', 'x4', 'x5', 'x6', 'x7'],
+    example: { f: 5, x0: 1, x1: 2, x2: 4, x3: 3, x4: 2, x5: 0, x6: 1, N: 13, L: 11, S: 5, M: 7 },
+    startWith: ['f', ...XS],
     representation: {
       kind: 'linePlot',
-      unit: 'in',
+      unit: 'cm',
       start: 'f',
-      points: [
-        { var: 'x4', at: 4 },
-        { var: 'x5', at: 5 },
-        { var: 'x6', at: 6 },
-        { var: 'x7', at: 7 },
-      ],
+      points: XS.map((x, i) => ({ var: x, at: 5 + i })),
     },
-    pictureLabels: ['N'],
   },
+
   // Grade 2: how many more in a bar graph (2.MD.10).
   {
     id: 'm.2.graphs-line-plots~compare',

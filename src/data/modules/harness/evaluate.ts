@@ -23,6 +23,8 @@ export const primeFactorCount = (n: number) => {
 export const NUM = String.raw`\(?-?\d+(?:\.\d+)?(?:e[-+]?\d+)?\)?`;
 export const toNum = (s: string) => Number(s.replace(/[()]/g, ''));
 export const COIN: Record<string, number> = {
+  'five-dollar bill': 500,
+  'five-dollar bills': 500,
   dollar: 100,
   dollars: 100,
   quarter: 25,
@@ -308,9 +310,14 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       }
     }
     // "3 quarters" → 75 first; "quarters in (75)" only once the bracket is one number.
-    const coins = /\(?(-?[\d.]+)\)? (dollars?|quarters?|dimes?|nickels?|penny|pennies)/.exec(s);
+    const coins =
+      /\(?(-?[\d.]+)\)? (five-dollar bills?|dollars?|quarters?|dimes?|nickels?|penny|pennies)/.exec(
+        s,
+      );
     const coinsIn =
-      /(dollars|quarters|dimes|nickels) in (?:\((-?[\d.]+)\)|(-?[\d.]+)(?![\d.]))/.exec(s);
+      /(five-dollar bills|dollars|quarters|dimes|nickels) in (?:\((-?[\d.]+)\)|(-?[\d.]+)(?![\d.]))/.exec(
+        s,
+      );
     if (coins || coinsIn) {
       const m = (coins ?? coinsIn)!;
       const x = coins

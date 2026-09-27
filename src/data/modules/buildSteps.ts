@@ -423,7 +423,9 @@ export function buildSteps(
   const repeated = (line: string) => /\d/.test(line) && line.length >= 8 && seen.has(line);
   for (const s of steps) {
     s.lines = s.lines.filter((line) => !repeated(line));
-    if (s.work) s.work = s.work.filter((line) => !repeated(line));
+    // A count-up chain ending in "Jumps: …" keeps every jump, or its total wouldn't add up.
+    if (s.work && !s.work.some((l) => l.startsWith('Jumps: ')))
+      s.work = s.work.filter((line) => !repeated(line));
     for (const line of s.lines) seen.add(line);
   }
   return {

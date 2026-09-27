@@ -27,7 +27,8 @@ function wordLimit(grade: string | undefined): number | undefined {
 function valueLimit(grade: string | undefined): number | undefined {
   if (grade === undefined) return undefined;
   const g = grade === 'K' ? 0 : Number(grade);
-  return g <= 2 ? 6 : g <= 8 ? 8 : undefined;
+  // Kindergarten holds 6; from Grade 1 a released item can need 7 or 8 (a line plot of 7 lengths).
+  return g === 0 ? 6 : g <= 8 ? 8 : undefined;
 }
 
 /** Shorthand and jargon by grade (check K). */

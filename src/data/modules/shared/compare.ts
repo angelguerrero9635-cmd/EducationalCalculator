@@ -100,7 +100,13 @@ export const compareNumbers = (
     whole('d', 'd', 'How far apart', 0, max),
   ],
   relations: [cmpNumbers(max <= 99).relation],
-  steps: cmpNumbers(max <= 99).steps,
+  // The difference is counted up, as the step says: no column grid beside the jumps.
+  steps: Object.fromEntries(
+    Object.entries(cmpNumbers(max <= 99).steps).map(([rid, byVar]) => [
+      rid,
+      { ...byVar, d: { ...byVar.d!, written: false as const } },
+    ]),
+  ),
   example: { a: example[0], b: example[1], d: Math.abs(example[0] - example[1]) },
   startWith: ['a', 'b'],
   representation: {
