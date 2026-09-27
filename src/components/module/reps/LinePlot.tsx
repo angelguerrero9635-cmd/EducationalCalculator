@@ -26,6 +26,32 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const first = spec.points[0]?.at ?? 0;
   const at = (x: number) =>
     spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) + x - first : x;
+  // Halves, quarters or eighths from a whole-number start: mark i is start + i/d.
+  const d =
+    spec.start && spec.marks !== undefined
+      ? typeof spec.marks === 'number'
+        ? spec.marks
+        : rep.known(spec.marks)
+          ? Math.max(1, Math.round(rep.shown(spec.marks)))
+          : undefined
+      : undefined;
+  const startAt =
+    spec.start && rep.known(spec.start) ? Math.round(rep.shown(spec.start)) : undefined;
+  const mark = (i: number) => {
+    if (d === undefined || startAt === undefined) return '?';
+    const whole = startAt + Math.floor(i / d);
+    let [n, den] = [i % d, d];
+    for (let g = n; g > 1; g--) {
+      if (n % g === 0 && den % g === 0) {
+        n /= g;
+        den /= g;
+        break;
+      }
+    }
+    return n === 0 ? `${whole}` : whole === 0 ? `${n}/${den}` : `${whole} ${n}/${den}`;
+  };
+  const fine = spec.marks !== undefined && spec.start !== undefined;
+  const unitName = spec.unit ?? (spec.start ? rep.unit(spec.start) : undefined);
 
   return (
     <View style={{ gap: space.sm, paddingHorizontal: space.md }}>
@@ -38,7 +64,7 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Pressable
                   key={i}
                   testID={`x-${p.var}-${i + 1}`}
-                  accessibilityLabel={`${p.label ?? at(p.at)}${spec.unit ? ` ${spec.unit}` : ''}: ${i + 1}`}
+                  accessibilityLabel={`${fine ? mark(spec.points.indexOf(p)) : (p.label ?? at(p.at))}${unitName ? ` ${unitName}` : ''}: ${i + 1}`}
                   onPress={() =>
                     calc.set({
                       ...rep.pin(ids.filter((id) => id !== p.var)),
@@ -65,7 +91,9 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {spec.points.map((p) => (
           <View key={p.var} style={styles.tick}>
             <View style={[styles.tickMark, { backgroundColor: c.chartInk }]} />
-            <Text style={[styles.label, { color: c.text }]}>{p.label ?? at(p.at)}</Text>
+            <Text style={[styles.label, { color: c.text }]}>
+              {fine ? mark(spec.points.indexOf(p)) : (p.label ?? at(p.at))}
+            </Text>
             {/* How many were measured at this length, as a count ("10 objects"), so it doesn't
                 read as a second scale under the lengths. */}
             <Text style={[styles.count, { color: c.textMuted }]}>
@@ -75,12 +103,22 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         ))}
       </View>
       {spec.start ? (
-        <Steppers calc={calc} items={[{ var: spec.start, steps: [1], pin: ids }]} />
+        <Steppers
+          calc={calc}
+          items={[
+            { var: spec.start, steps: [1], pin: ids },
+            ...(typeof spec.marks === 'string'
+              ? [{ var: spec.marks, steps: [1], pin: [...ids, spec.start] }]
+              : []),
+          ]}
+        />
       ) : null}
-      {spec.unit ? (
-        <Text
-          style={[styles.unit, { color: c.textMuted }]}
-        >{`Length in ${getUnit(spec.unit)?.name ?? spec.unit}`}</Text>
+      {unitName ? (
+        <Text style={[styles.unit, { color: c.textMuted }]}>
+          {fine && d !== undefined && startAt !== undefined
+            ? `Length in ${getUnit(unitName)?.name ?? unitName}, marked every 1/${d}: ${mark(0)} to ${mark(spec.points.length - 1)}`
+            : `Length in ${getUnit(unitName)?.name ?? unitName}`}
+        </Text>
       ) : null}
     </View>
   );

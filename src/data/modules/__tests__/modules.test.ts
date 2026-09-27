@@ -70,7 +70,11 @@ function representationVars(r: Representation): string[] {
             ...(r.groups ? [r.groups] : []),
           ];
     case 'linePlot':
-      return [...r.points.map((p) => p.var), ...(r.start ? [r.start] : [])];
+      return [
+        ...r.points.map((p) => p.var),
+        ...(r.start ? [r.start] : []),
+        ...(typeof r.marks === 'string' ? [r.marks] : []),
+      ];
     case 'pairs':
       return [r.value];
     case 'hops':
@@ -172,6 +176,8 @@ function representationVars(r: Representation): string[] {
         r.q3,
         r.max,
         ...[r.brackets?.range, r.brackets?.iqr].filter((x): x is string => !!x),
+        ...(r.data ?? []),
+        ...(r.count ? [r.count] : []),
       ];
     case 'pieChart':
       return [...r.parts, ...(r.total ? [r.total] : [])];
@@ -201,7 +207,11 @@ function representationVars(r: Representation): string[] {
     case 'factorTree':
       return [r.value, ...[r.count, r.second, r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'protractor':
-      return [r.angle, ...(r.other ? [r.other] : [])];
+      return [
+        r.angle,
+        ...(r.other ? [r.other] : []),
+        ...(r.arms ? [r.arms.first, r.arms.second] : []),
+      ];
     case 'wave':
       return [
         ...(r.amplitude ? [r.amplitude] : []),
@@ -215,6 +225,9 @@ function representationVars(r: Representation): string[] {
       return [
         r.value,
         ...[r.opposite, r.absolute, r.second, r.change].filter((x): x is string => !!x),
+        ...[r.inequality?.test, r.inequality?.sign].filter(
+          (x): x is string => !!x && !['<', '≤', '>', '≥'].includes(x),
+        ),
       ];
     case 'percentBar':
       return [r.percent, r.part, r.whole, ...(r.onePercent ? [r.onePercent] : [])];
@@ -235,7 +248,7 @@ function representationVars(r: Representation): string[] {
     case 'net':
       return [r.length, ...[r.width, r.height, r.slant, r.total].filter((x): x is string => !!x)];
     case 'dotPlot':
-      return [...r.data, ...[r.mean, r.median, r.range].filter((x): x is string => !!x)];
+      return [...r.data, ...[r.mean, r.median, r.range, r.count].filter((x): x is string => !!x)];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
     case 'gradCylinder':

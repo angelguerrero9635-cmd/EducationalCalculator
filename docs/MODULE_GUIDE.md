@@ -147,6 +147,15 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100, the point placed; `'ticks'`: a jump per tick |
 | `tape`, `beaker`   | `mixed`                                  | shares and amounts as exact mixed numbers (33 1/3, 2 3/8 L)                   |
 | `skipCount`        | (no `count`)                             | a quotient past whole jumps: the last part of a jump (33 1/3 jumps)           |
+| `coins`            | bills (`cents` 100, 500, 1000) and coins | the bills beside the coins, one total in dollars and cents, the sum under it  |
+| `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
+| `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |
+| `integerLine`      | `inequality: { sign, test }`             | the bound's open or closed circle, an arrow over the solutions, a test point  |
+| `unitCubes`        | `scale`                                  | past `max` a side, the box to scale, edges labelled, one unit cube for size   |
+| `ratioTable`       | `graph`                                  | axes to the biggest row in 3–4 numbered steps; under the table on a phone     |
+| `coordinatePlane`  | `plot`                                   | tap the grid or drag to place one point; the path from 0 across, then up      |
+| `linePlot`         | `start`, `marks: 2 \| 4 \| 8`            | marks every 1/2, 1/4 or 1/8 from any whole number (12, 12 1/4, …)             |
+| `protractor`       | `arms: { first, second }`                | neither arm on 0: each reads on the inner scale; the angle is the difference  |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

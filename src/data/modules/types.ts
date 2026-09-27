@@ -142,6 +142,12 @@ export type Representation =
       unit?: string;
       /** The first length on the line; the others follow by 1 (default: the points' `at`). */
       start?: string;
+      /**
+       * With `start`: the marks are halves, quarters or eighths (2, 4, 8, or a value), so the
+       * lengths run start, start + 1/4, start + 2/4, … (labelled "3 1/4"; `at` and `label` are
+       * then not used).
+       */
+      marks?: 2 | 4 | 8 | string;
     }
   /**
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
@@ -681,6 +687,11 @@ export type Representation =
       reflect?: boolean;
       /** A rectangle from its left and right x-coordinates and bottom and top y-coordinates. */
       rect?: { left: string; right: string; bottom: string; top: string };
+      /**
+       * Plot a point (first quadrant): tap the grid or drag to place (x, y); the path from 0,
+       * across then up, is drawn to it.
+       */
+      plot?: boolean;
       /** Numerals I–IV in the quadrants. */
       quadrantLabels?: boolean;
       /** Largest |coordinate| drawn (grows to fit). */
@@ -698,6 +709,13 @@ export type Representation =
       range: [number, number];
       /** Brackets over the plot for the range and the interquartile range. */
       brackets?: { range?: string; iqr?: string };
+      /**
+       * The values the five numbers come from, drawn as dots above the plot (only the first
+       * `count` of them); the middle one (odd) or two (even) are ringed at the median. The
+       * five numbers are then read from the values, not dragged.
+       */
+      data?: string[];
+      count?: string;
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
   | { kind: 'pieChart'; parts: string[]; total?: string }
@@ -728,6 +746,11 @@ export type Representation =
       total?: string;
       /** Cubes of edge 1/cube (2: half-unit cubes) fill the box; `volume` stays in unit cubes. */
       cube?: 2 | 3 | 4;
+      /**
+       * Past `max` a side, draw the box to scale (40 × 60 × 80 cm): each edge labelled, lines
+       * every few units on its faces and one unit cube under it for size.
+       */
+      scale?: boolean;
     }
   /**
    * Place-value chart: the digits of `value` in labelled columns, `decimals` places (0–3) past
@@ -782,6 +805,13 @@ export type Representation =
       vertical?: boolean;
       /** A fixed unit written after the numbers ("°C"). */
       unit?: string;
+      /**
+       * An inequality with `value` as its bound (across only): an open (<, >) or closed (≤, ≥)
+       * circle, an arrow over the solutions, and a `test` point marked true or false. `sign` is
+       * one of the four, or a variable (1 <, 2 ≤, 3 >, 4 ≥) with buttons to change it;
+       * `letter` names the unknown from Grade 6 (default x).
+       */
+      inequality?: { sign: string; test?: string; letter?: string };
     }
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {
@@ -861,13 +891,27 @@ export type Representation =
       median?: string;
       range?: string;
       deviations?: boolean;
+      /**
+       * How many values there are (3 to 10): only the first `count` of `data` are drawn, the
+       * middle one (odd) or two (even) ringed and the median marked between them.
+       */
+      count?: string;
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }
   /** A graduated cylinder: the level before (dashed), after, and the rise (the object's volume). */
   | { kind: 'gradCylinder'; before: string; after: string; volume?: string; max: number }
-  /** Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale. */
-  | { kind: 'protractor'; angle: string; other?: string }
+  /**
+   * Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale.
+   * With `arms`, neither arm is on 0: each reads a mark on the inner scale (45 and 135), both
+   * drag, and `angle` is the difference.
+   */
+  | {
+      kind: 'protractor';
+      angle: string;
+      other?: string;
+      arms?: { first: string; second: string };
+    }
   /**
    * A wave drawn with its `wavelength` (and `amplitude`, when the lesson has one; else a
    * fixed height); `extent` is the width shown in wavelength units.

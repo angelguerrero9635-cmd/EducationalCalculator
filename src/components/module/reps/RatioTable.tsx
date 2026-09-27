@@ -6,16 +6,36 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, useRep } from './common';
+import { Canvas, Caption, ChartText, fitLabel, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'ratioTable' }>;
 
 /**
+ * An axis from 0 that reaches `max` in 3 or 4 numbered steps of 1, 2, 2.5, 3, 4 or 5 times a
+ * power of ten (max 9 → 0, 3, 6, 9; max 20 → 0, 5, 10, 15, 20).
+ */
+export function numberedAxis(max: number): number[] {
+  const top = Math.max(max, 1e-9);
+  for (let e = -2; e <= 8; e++) {
+    for (const k of [1, 2, 2.5, 3, 4, 5]) {
+      const s = k * 10 ** e;
+      const n = Math.ceil(top / s - 1e-9);
+      if (n <= 4) return Array.from({ length: n + 1 }, (_, i) => Number((i * s).toFixed(6)));
+    }
+  }
+  return [0, top];
+}
+
+/**
  * A table of equivalent ratios: two columns named after the parts, rows 1 to 4 times the
  * ratio with the typed row slotted in order and outlined, "× k" beside each row. With `graph`
- * the pairs are points on a first-quadrant plane beside the table, on one line through 0.
+ * the pairs are points on a first-quadrant plane beside the table (under it on a phone), on one
+ * line through 0; the axes reach the biggest row in 3 or 4 numbered steps.
  */
+/** Wide enough for the graph beside the table; narrower puts it under the table. */
+const SIDE = 460;
+
 export function RatioTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
@@ -33,23 +53,39 @@ export function RatioTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => (spec.graph && w >= 360 ? 0.62 : 0.3 + multipliers.length * 0.09)}>
+      <Canvas
+        aspect={(w) =>
+          spec.graph && w >= SIDE
+            ? 0.62
+            : spec.graph
+              ? (16 + (multipliers.length + 1) * 30 + Math.min(0.62 * w, 240)) / w
+              : 0.3 + multipliers.length * 0.09
+        }
+      >
         {({ w, h }) => {
-          const tableW = spec.graph && w >= 360 ? w * 0.5 : w;
-          const rowH = Math.min(30, (h - 34) / (multipliers.length + 1));
+          // Wide: the graph beside the table. A phone: under it.
+          const side = !!spec.graph && w >= SIDE;
+          const tableW = side ? w * 0.5 : w;
+          const tableH = side || !spec.graph ? h : 16 + (multipliers.length + 1) * 30;
+          const rowH = Math.min(30, (tableH - 34) / (multipliers.length + 1));
           const colW = (tableW - 54) / 2;
           const x0 = 50;
           const cell = (row: number, col: number) => ({
             x: x0 + col * colW,
             y: 8 + row * rowH,
           });
-          // The plane: the pairs as points, scaled to the biggest row.
-          const px0 = tableW + 26;
-          const pw = w - px0 - 12;
-          const maxX = Math.max(1, ...multipliers.map((m) => m * p));
-          const maxY = Math.max(1, ...multipliers.map((m) => m * q));
+          // The plane: the pairs as points; each axis reaches the biggest row in numbered steps.
+          const xTicks = numberedAxis(Math.max(...multipliers.map((m) => m * p)));
+          const yTicks = numberedAxis(Math.max(...multipliers.map((m) => m * q)));
+          const maxX = xTicks[xTicks.length - 1]!;
+          const maxY = yTicks[yTicks.length - 1]!;
+          const yLabelW = Math.max(...yTicks.map((t) => formatNumber(t).length)) * 6.5 + 8;
+          const px0 = (side ? tableW + 14 : 20) + yLabelW;
+          const pw = w - px0 - (side ? 14 : 30);
+          const top = side ? 22 : tableH + 26;
+          const bottom = h - 34;
           const gx = (x: number) => px0 + (x / maxX) * pw;
-          const gy = (y: number) => h - 26 - (y / maxY) * (h - 44);
+          const gy = (y: number) => bottom - (y / maxY) * (bottom - top);
           return (
             <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
               {[nameA ?? '', nameB ?? ''].map((name, col) => {
@@ -116,15 +152,60 @@ export function RatioTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </G>
                 );
               })}
-              {spec.graph && w >= 360 ? (
+              {spec.graph ? (
                 <G>
+                  {xTicks.slice(1).map((t) => (
+                    <Line
+                      key={`gx${t}`}
+                      x1={gx(t)}
+                      y1={gy(0)}
+                      x2={gx(t)}
+                      y2={gy(maxY)}
+                      stroke={c.chartGrid}
+                    />
+                  ))}
+                  {yTicks.slice(1).map((t) => (
+                    <Line
+                      key={`gy${t}`}
+                      x1={gx(0)}
+                      y1={gy(t)}
+                      x2={gx(maxX)}
+                      y2={gy(t)}
+                      stroke={c.chartGrid}
+                    />
+                  ))}
                   <Line x1={px0} y1={gy(0)} x2={px0 + pw} y2={gy(0)} stroke={c.chartInk} />
-                  <Line x1={px0} y1={gy(0)} x2={px0} y2={8} stroke={c.chartInk} />
+                  <Line x1={px0} y1={gy(0)} x2={px0} y2={gy(maxY)} stroke={c.chartInk} />
+                  {xTicks.map((t) => (
+                    <ChartText
+                      key={`nx${t}`}
+                      x={gx(t)}
+                      y={gy(0) + 13}
+                      fontSize={chart.tiny}
+                      fill={c.chartMuted}
+                      textAnchor="middle"
+                    >
+                      {formatNumber(t)}
+                    </ChartText>
+                  ))}
+                  {yTicks.map((t) => (
+                    <ChartText
+                      key={`ny${t}`}
+                      x={px0 - 5}
+                      y={gy(t) + 3.5}
+                      fontSize={chart.tiny}
+                      fill={c.chartMuted}
+                      textAnchor="end"
+                    >
+                      {formatNumber(t)}
+                    </ChartText>
+                  ))}
+                  {/* The line through 0 and every pair, as far as the axes go. */}
                   <Line
                     x1={gx(0)}
                     y1={gy(0)}
-                    x2={gx(maxX)}
-                    y2={gy(maxY)}
+                    x2={gx(p === 0 || q / p > maxY / maxX ? (maxY * p) / (q || 1) : maxX)}
+                    y2={gy(p === 0 || q / p > maxY / maxX ? maxY : (maxX * q) / p)}
                     stroke={c.chartMuted}
                     strokeDasharray={chart.dashFine}
                   />
@@ -138,15 +219,20 @@ export function RatioTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     />
                   ))}
                   <ChartText
-                    x={px0 + pw}
-                    y={gy(0) + 18}
-                    fontSize={chart.tiny}
-                    fill={c.chartMuted}
-                    textAnchor="end"
+                    x={px0 + pw / 2}
+                    y={gy(0) + 28}
+                    fontSize={chart.small}
+                    fontWeight="700"
+                    textAnchor="middle"
                   >
                     {header(nameA ?? '')}
                   </ChartText>
-                  <ChartText x={px0 + 4} y={16} fontSize={chart.tiny} fill={c.chartMuted}>
+                  <ChartText
+                    {...fitLabel(px0 - yLabelW, header(nameB ?? ''), chart.small, w, 'start')}
+                    y={top - 10}
+                    fontSize={chart.small}
+                    fontWeight="700"
+                  >
                     {header(nameB ?? '')}
                   </ChartText>
                 </G>

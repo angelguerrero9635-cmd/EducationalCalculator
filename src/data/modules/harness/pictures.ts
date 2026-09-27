@@ -32,6 +32,19 @@ export function repIssues(
     if (x === undefined || Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-6) return;
     if (!toFraction(x)) out.push(`${what} ${x} is neither a short decimal nor a fraction`);
   };
+  const medianOf = (s: number[]) =>
+    s.length % 2 ? s[(s.length - 1) / 2]! : (s[s.length / 2 - 1]! + s[s.length / 2]!) / 2;
+  /** The first `count` values in order (DotPlot/BoxPlot draw only those), once all are known. */
+  const firstValues = (data?: string[], n?: string) => {
+    if (!data || !n) return undefined;
+    count(n, 'values drawn', data.length);
+    const k = val(n);
+    if (k === undefined) return undefined;
+    if (k < 1) out.push(`${k} values drawn`);
+    const xs = data.slice(0, k).map(val);
+    if (k < 1 || xs.some((x) => x === undefined)) return undefined;
+    return (xs as number[]).sort((a, b) => a - b);
+  };
   switch (rep.kind) {
     case 'tenFrame': {
       const cap = 10 * (rep.frames ?? 1);
@@ -298,12 +311,28 @@ export function repIssues(
     }
     case 'coins': {
       for (const c of rep.coins) count(c.var, 'coins', 20);
+      // Coins.tsx draws US coins and $1, $5, $10 and $20 bills (bills beside coins).
+      for (const c of rep.coins)
+        if (![1, 5, 10, 25, 100, 500, 1000, 2000].includes(c.cents))
+          out.push(`coins draws ${c.cents}¢, not a US coin or bill`);
       const t = val(rep.total);
       const parts = rep.coins.map((c) => val(c.var));
       if (t !== undefined && parts.every((x) => x !== undefined)) {
         const sum =
           rep.coins.reduce((s, c, i) => s + c.cents * parts[i]!, 0) / (rep.dollars ? 100 : 1);
         if (Math.abs(sum - t) > 1e-9) out.push(`coins add to ${sum}, total shows ${t}`);
+      }
+      break;
+    }
+    case 'linePlot': {
+      // LinePlot.tsx draws at most 10 X's a column, from a whole-number start.
+      for (const p of rep.points) count(p.var, 'X marks', 10);
+      if (rep.start) count(rep.start, 'line plot start');
+      if (rep.marks !== undefined) {
+        if (!rep.start) out.push('line plot marks need a start');
+        const d = val(rep.marks);
+        if (d !== undefined && ![1, 2, 4, 8].includes(d))
+          out.push(`line plot marked every 1/${d}, not halves, quarters or eighths`);
       }
       break;
     }
@@ -515,6 +544,9 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
+      // Plotting draws its path from 0 across then up, in the first quadrant only.
+      if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
+      if (rep.plot && rep.second) out.push('plotting places one point, not two');
       if (rep.quadrants === 1) {
         for (const id of [rep.x, rep.y, rep.second?.x, rep.second?.y]) {
           const x = id === undefined ? undefined : val(id);
@@ -532,6 +564,15 @@ export function repIssues(
     }
     case 'boxPlot': {
       const five = [rep.min, rep.q1, rep.median, rep.q3, rep.max].map(val);
+      // With `data`, the plot's least, median and greatest are the first n values' own.
+      const sorted = firstValues(rep.data, rep.count);
+      if (sorted) {
+        const own = [sorted[0]!, medianOf(sorted), sorted[sorted.length - 1]!];
+        [five[0], five[2], five[4]].forEach((x, i) => {
+          if (x !== undefined && Math.abs(x - own[i]!) > 1e-9)
+            out.push(`box plot of ${sorted.join(', ')} draws ${x} for ${own[i]}`);
+        });
+      }
       for (let i = 1; i < five.length; i++) {
         const a = five[i - 1];
         const b = five[i];
@@ -577,7 +618,10 @@ export function repIssues(
         if (x < 0) out.push(`${what} ${id} is negative (${x})`);
         if (Math.abs(x * k - Math.round(x * k)) > 1e-9)
           out.push(`${what} ${id} is not whole cubes (${x})`);
-        if (x * k > rep.max) out.push(`${what} ${id} = ${x} exceeds the drawing's ${rep.max}`);
+        // With `scale` a bigger box is drawn to scale (ScaledBox), not in cubes.
+        if (x * k > rep.max && !(rep.scale && k === 1 && !rep.second))
+          out.push(`${what} ${id} = ${x} exceeds the drawing's ${rep.max}`);
+        if (rep.scale && x <= 0) out.push(`${what} ${id} = ${x}: a box to scale needs a size`);
       }
       if ([l, w, h, v].every((x) => x !== undefined) && Math.abs(l! * w! * h! - v!) > 1e-9)
         out.push(`${l} × ${w} × ${h} cubes drawn, volume shows ${v}`);
@@ -686,6 +730,19 @@ export function repIssues(
       const o = rep.other ? val(rep.other) : undefined;
       if (a !== undefined && o !== undefined && Math.abs(a + o - 180) > 1e-9)
         out.push(`protractor scales ${a} and ${o} don't add to 180`);
+      if (rep.arms) {
+        const [f, s] = [rep.arms.first, rep.arms.second].map(val);
+        for (const x of [f, s])
+          if (x !== undefined && (x < 0 || x > 180))
+            out.push(`protractor arm at ${x} is off the scale`);
+        if (
+          f !== undefined &&
+          s !== undefined &&
+          a !== undefined &&
+          Math.abs(Math.abs(s - f) - a) > 1e-9
+        )
+          out.push(`protractor arms at ${f} and ${s} show the angle ${a}`);
+      }
       break;
     }
     case 'wave': {
@@ -723,6 +780,15 @@ export function repIssues(
         Math.abs(Math.abs(b - a) - d) > 1e-9
       )
         out.push(`jump from ${a} to ${b} shows ${d}`);
+      if (rep.inequality) {
+        const { sign } = rep.inequality;
+        if (!['<', '≤', '>', '≥'].includes(sign)) {
+          const s = val(sign);
+          if (s !== undefined && ![1, 2, 3, 4].includes(s))
+            out.push(`inequality sign ${sign} = ${s} is not 1–4 (<, ≤, >, ≥)`);
+        }
+        if (rep.vertical) out.push('inequality lines are drawn across, not vertical');
+      }
       break;
     }
     case 'percentBar': {
@@ -817,6 +883,10 @@ export function repIssues(
       break;
     }
     case 'dotPlot': {
+      const sorted = firstValues(rep.data, rep.count);
+      const md = rep.median ? val(rep.median) : undefined;
+      if (sorted && md !== undefined && Math.abs(medianOf(sorted) - md) > 1e-9)
+        out.push(`median of ${sorted.join(', ')} is ${medianOf(sorted)}, shows ${md}`);
       const data = rep.data.map(val).filter((x): x is number => x !== undefined);
       const m = rep.mean ? val(rep.mean) : undefined;
       if (m !== undefined && data.length === rep.data.length) {
