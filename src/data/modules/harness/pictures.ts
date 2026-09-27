@@ -530,6 +530,18 @@ export function repIssues(
       if (a !== undefined && b !== undefined && w !== undefined && Math.abs(a + b - w) > 1e-9) {
         out.push(`angles ${a} + ${b} drawn, whole shows ${w}`);
       }
+      // Crossing lines: a straight line, and each vertical angle equals the part across from it.
+      if (rep.cross) {
+        if (rep.whole !== 180) out.push(`crossing lines need a straight whole, not ${rep.whole}`);
+        for (const [v, p] of [
+          [rep.cross.first, a],
+          [rep.cross.second, b],
+        ] as const) {
+          const x = v ? val(v) : undefined;
+          if (x !== undefined && p !== undefined && Math.abs(x - p) > 1e-9)
+            out.push(`vertical angle ${v} = ${x}, across from ${p}`);
+        }
+      }
       break;
     }
     case 'doubleNumberLine': {

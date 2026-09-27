@@ -639,7 +639,11 @@ export type Representation =
       kind: 'areaModel';
       divide: { dividend: string; divisor: string; quotient: string; remainder?: string };
     }
-  /** Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. */
+  /**
+   * Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. A whole
+   * of 90 or 180 is a right angle (complementary parts, with its corner mark) or a straight
+   * line (supplementary): only the middle ray turns, and the second part follows it.
+   */
   | {
       kind: 'angles';
       parts: [string, string];
@@ -650,6 +654,12 @@ export type Representation =
        * the angle): the rays are then not dragged, since a part can't take any degree.
        */
       sliders?: string[];
+      /**
+       * `whole: 180` only: two crossing lines. The first line runs on through the vertex, so
+       * each part has a vertical angle across from it, labelled with `first` and `second`
+       * (values equal to the parts), or with the part's own value.
+       */
+      cross?: { first?: string; second?: string };
     }
   /**
    * Two number lines that line up: the top counted in one unit (bigger units), the bottom in
