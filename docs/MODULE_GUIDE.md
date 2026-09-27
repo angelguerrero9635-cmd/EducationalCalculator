@@ -112,6 +112,12 @@ search or the sitemap, but the module tests and the harness run over it):
 | `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow      | Grade 7 scale drawings              |
 | `curvedSolid`      | a glass cylinder, cone or sphere of water, its radius and height      | Grade 8 volume of curved solids     |
 | `scatter`          | data points, a line of fit dragged by its ends, clusters, an outlier  | Grade 8 scatter plots               |
+| `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it      | Grade 7 cross-sections, volume      |
+| `sample`           | a population of dots, a random sample ringed; draw a new sample       | Grade 7 sampling, inferences        |
+| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin          | Grade 7 probability                 |
+| `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap    | Grade 7 compound probability        |
+| `treeDiagram`      | two stages branching left to right, each branch 1/n; a path lit       | Grade 7 compound probability        |
+| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random       | Grade 7 probability                 |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -171,6 +177,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `rightTriangle`    | `grid`                                   | each square ruled in unit squares (sides to 12); a² + b² = c² worked          |
 | `coordinatePlane`  | `legs` (with `segment`)                  | the right triangle under the segment, legs labelled; d² = a² + b² worked      |
 | `curvedSolid`      | `compare` (cone or sphere)               | the same cylinder beside it holding its water: 1/3 (cone) or 2/3 (sphere)     |
+| `angles`           | `whole: 90 \| 180`, `cross`              | a right angle or a straight line split in two; `cross`: vertical angles       |
+| `net`              | `solid: 'triangularPrism'`, `triangle`   | three rectangles and two triangles (right or isosceles); folds to the prism   |
+| `dotPlot`          | `second`, `labels`, `difference`         | a second sample's dot plot under the first, same scale; the gap between means |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

@@ -144,6 +144,8 @@ const light = {
   rubber: '#34373E',
   /** Orange things: a wind sock, juice, a goldfish. */
   orange: '#F08A2C',
+  /** A purple spinner sector or marble (beside the pattern-block red, blue and green). */
+  purple: '#8E5BD0',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -245,6 +247,7 @@ const dark: Palette = {
   bark: '#65503F',
   rubber: '#1C1E23',
   orange: '#D2742A',
+  purple: '#7A4DB8',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

@@ -11,7 +11,14 @@ import { FractionFit } from './FractionFit';
 import { Venn } from './Venn';
 import { BaseHeight } from './BaseHeight';
 import { Net } from './Net';
+import { CrossSection } from './CrossSection';
 import { DotPlot } from './DotPlot';
+import { DotPlotPair } from './DotPlotPair';
+import { Sample } from './Sample';
+import { Spinner } from './Spinner';
+import { DiceGrid } from './DiceGrid';
+import { TreeDiagram } from './TreeDiagram';
+import { Marbles } from './Marbles';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
@@ -282,8 +289,24 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <BaseHeight spec={spec} calc={calc} />;
     case 'net':
       return <Net spec={spec} calc={calc} />;
+    case 'crossSection':
+      return <CrossSection spec={spec} calc={calc} />;
     case 'dotPlot':
-      return <DotPlot spec={spec} calc={calc} />;
+      return spec.second ? (
+        <DotPlotPair spec={{ ...spec, second: spec.second }} calc={calc} />
+      ) : (
+        <DotPlot spec={spec} calc={calc} />
+      );
+    case 'sample':
+      return <Sample spec={spec} calc={calc} />;
+    case 'spinner':
+      return <Spinner spec={spec} calc={calc} />;
+    case 'diceGrid':
+      return <DiceGrid spec={spec} calc={calc} />;
+    case 'treeDiagram':
+      return <TreeDiagram spec={spec} calc={calc} />;
+    case 'marbles':
+      return <Marbles spec={spec} calc={calc} />;
     case 'fieldOfView':
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':

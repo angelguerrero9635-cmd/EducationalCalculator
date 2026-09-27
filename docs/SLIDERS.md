@@ -12,7 +12,7 @@ its kind with `sliders: true | false`.
 
 | Kind | Pages | Sliders | Why |
 | --- | ---: | :---: | --- |
-| angles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| angles | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | areaModel | 11 | yes | sweeping the value shows the picture change; no touch control of its own |
 | array | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -51,7 +51,8 @@ its kind with `sliders: true | false`.
 | integerLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | leafCount | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | linePlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
-| net | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| marbles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| net | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberLine | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -74,6 +75,7 @@ its kind with `sliders: true | false`.
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| sample | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | scaleCopy | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | scatter | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -81,12 +83,14 @@ its kind with `sliders: true | false`.
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | tape | 35 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| treeDiagram | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | unitCubes | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | venn | 1 | yes | set on the module (shown) |

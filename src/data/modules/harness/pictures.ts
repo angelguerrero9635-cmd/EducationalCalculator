@@ -5,8 +5,17 @@
  */
 import type { VariableDef } from '@/engine/types';
 
+import { diceCount } from '@/components/module/reps/dice';
 import { toFraction } from '@/components/module/reps/exact';
 import { outline } from '@/components/module/reps/scaleOutline';
+import {
+  areaOf,
+  planeOf,
+  reachOf,
+  sectionOf,
+  solidOf,
+  volumeOf,
+} from '@/components/module/reps/section';
 
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
@@ -603,6 +612,18 @@ export function repIssues(
       if (a !== undefined && b !== undefined && w !== undefined && Math.abs(a + b - w) > 1e-9) {
         out.push(`angles ${a} + ${b} drawn, whole shows ${w}`);
       }
+      // Crossing lines: a straight line, and each vertical angle equals the part across from it.
+      if (rep.cross) {
+        if (rep.whole !== 180) out.push(`crossing lines need a straight whole, not ${rep.whole}`);
+        for (const [v, p] of [
+          [rep.cross.first, a],
+          [rep.cross.second, b],
+        ] as const) {
+          const x = v ? val(v) : undefined;
+          if (x !== undefined && p !== undefined && Math.abs(x - p) > 1e-9)
+            out.push(`vertical angle ${v} = ${x}, across from ${p}`);
+        }
+      }
       break;
     }
     case 'doubleNumberLine': {
@@ -1031,6 +1052,18 @@ export function repIssues(
       );
       const w = W ?? L;
       const h = H ?? L;
+      if (rep.solid === 'triangularPrism') {
+        if (W === undefined || H === undefined || sl === undefined || L === undefined) break;
+        // The third side closes the triangle (within 2%, for a side rounded to a whole number).
+        const side = rep.triangle === 'isosceles' ? Math.hypot(W / 2, H) : Math.hypot(W, H);
+        if (Math.abs(side - sl) > 0.02 * side)
+          out.push(`triangle ${W} by ${H} has a side of ${side}, shows ${sl}`);
+        const sides = rep.triangle === 'isosceles' ? W + 2 * sl : W + H + sl;
+        const all = W * H + L * sides;
+        if (T !== undefined && Math.abs(all - T) > 1e-6 * Math.max(1, T))
+          out.push(`net faces add to ${all}, total shows ${T}`);
+        break;
+      }
       const total =
         L === undefined
           ? undefined
@@ -1045,6 +1078,125 @@ export function repIssues(
         out.push(`net faces add to ${total}, total shows ${T}`);
       break;
     }
+    case 'crossSection': {
+      const [l, w0, h, at, A, V] = [
+        rep.length,
+        rep.width,
+        rep.height,
+        rep.at,
+        rep.area,
+        rep.volume,
+      ].map((id) => {
+        // In formula units: the lengths, the area and the volume agree whatever is shown.
+        const x = id ? val(id) : undefined;
+        return x === undefined ? undefined : x * (byId.get(id!)?.unitFactor ?? 1);
+      });
+      const w = rep.width ? w0 : l;
+      if (l === undefined || w === undefined || h === undefined) break;
+      if (l <= 0 || w <= 0 || h <= 0) {
+        out.push(`solid ${l} by ${w} by ${h} has a side of 0 or less`);
+        break;
+      }
+      const cut = rep.cut ?? 'base';
+      const reach = reachOf(rep.solid, cut, w, h);
+      // The picture parks the plane at the middle while `at` is "?".
+      if (rep.at && at === undefined) break;
+      const where = at ?? reach / 2;
+      if (cut !== 'diagonal' && (where < 0 || where > reach))
+        out.push(`plane at ${where} is off the solid (0 to ${reach})`);
+      const section = sectionOf(
+        solidOf(rep.solid, l, w, h, rep.triangle === 'isosceles'),
+        planeOf(rep.solid, cut, where, l, w),
+      );
+      const area = areaOf(section);
+      // Shown values are rounded to 9 places: a length of 0.000001 km is only roughly
+      // itself, so the check leaves out lengths too small to read and allows the rounding.
+      const readable = [rep.length, rep.width, rep.height]
+        .filter((id): id is string => !!id)
+        .every((id) => (val(id) ?? 1) >= 1e-3);
+      const off = (x: number, y: number, id: string) =>
+        readable && Math.abs(x - y) > 1e-4 * Math.abs(y) + 1e-9 * (byId.get(id)?.unitFactor ?? 1);
+      if (A !== undefined && off(area, A, rep.area!))
+        out.push(`cut drawn with area ${area}, shows ${A}`);
+      const vol = volumeOf(rep.solid, l, w, h);
+      if (V !== undefined && off(vol, V, rep.volume!))
+        out.push(`solid drawn with volume ${vol}, shows ${V}`);
+      break;
+    }
+    case 'treeDiagram': {
+      // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
+      count(rep.first, 'first-stage outcomes', 6);
+      count(rep.second, 'second-stage outcomes', 6);
+      const [a, b, n, P] = [rep.first, rep.second, rep.total, rep.chance].map((id) =>
+        id ? val(id) : undefined,
+      );
+      for (const x of [a, b]) if (x !== undefined && x < 1) out.push(`a stage with ${x} outcomes`);
+      if (a !== undefined && b !== undefined && n !== undefined && a * b !== n)
+        out.push(`${a} × ${b} branches drawn, total shows ${n}`);
+      if (a !== undefined && b !== undefined && P !== undefined && Math.abs(1 / (a * b) - P) > 1e-6)
+        out.push(`one of ${a * b} paths drawn, chance shows ${P}`);
+      if (rep.path && a !== undefined && b !== undefined && (rep.path[0] >= a || rep.path[1] >= b))
+        out.push(`path ${rep.path.join(', ')} is not a branch of ${a} × ${b}`);
+      break;
+    }
+    case 'diceGrid': {
+      const t = val(rep.target);
+      if (t === undefined) break;
+      const n = diceCount(rep.event ?? 'sum', rep.compare ?? '=', t);
+      const [k, P] = [rep.count, rep.chance].map((id) => (id ? val(id) : undefined));
+      if (k !== undefined && k !== n) out.push(`${n} pairs shaded, count shows ${k}`);
+      if (P !== undefined && Math.abs(n / 36 - P) > 1e-6)
+        out.push(`${n} of 36 pairs shaded, chance shows ${P}`);
+      break;
+    }
+    case 'spinner':
+    case 'marbles': {
+      // Equal sectors (SPINNER_MAX in Spinner.tsx) or marbles (MARBLES_MAX in Marbles.tsx),
+      // one color per outcome.
+      const cap = rep.kind === 'spinner' ? 24 : 40;
+      const what = rep.kind === 'spinner' ? 'sectors' : 'marbles';
+      rep.parts.forEach((id) => count(id, what, cap));
+      const xs = rep.parts.map(val);
+      if (rep.colors && rep.colors.length < rep.parts.length)
+        out.push('a spinner outcome has no color');
+      if (rep.names && rep.names.length < rep.parts.length)
+        out.push('a spinner outcome has no name');
+      if ((rep.pick ?? 0) >= rep.parts.length)
+        out.push(`spinner pick ${rep.pick} is not an outcome`);
+      if (xs.some((x) => x === undefined)) break;
+      const total = (xs as number[]).reduce((s, x) => s + x, 0);
+      if (total > cap) out.push(`${total} ${what}, more than the picture's ${cap}`);
+      const T = rep.total ? val(rep.total) : undefined;
+      if (T !== undefined && T !== total) out.push(`${what} add to ${total}, total shows ${T}`);
+      const P = rep.chance ? val(rep.chance) : undefined;
+      if (P !== undefined && total > 0 && Math.abs(xs[rep.pick ?? 0]! / total - P) > 1e-6)
+        out.push(`${xs[rep.pick ?? 0]} of ${total} ${what} drawn, chance shows ${P}`);
+      break;
+    }
+    case 'sample': {
+      // One dot per member (SAMPLE_MAX in Sample.tsx); the sample fits in the population.
+      count(rep.population, 'population', 400);
+      count(rep.size, 'sample');
+      count(rep.found, 'found in the sample');
+      if (rep.trait) count(rep.trait, 'population with the trait');
+      const [N, n, k, T, E] = [rep.population, rep.size, rep.found, rep.trait, rep.estimate].map(
+        (id) => (id ? val(id) : undefined),
+      );
+      if (N !== undefined && n !== undefined && n > N) out.push(`sample of ${n} from ${N}`);
+      if (n !== undefined && k !== undefined && k > n) out.push(`${k} found in a sample of ${n}`);
+      if (T !== undefined && N !== undefined && T > N) out.push(`${T} with the trait of ${N}`);
+      if (T !== undefined && k !== undefined && k > T)
+        out.push(`${k} found in the sample, only ${T} in the population`);
+      if (T !== undefined && N !== undefined && n !== undefined && k !== undefined && n - k > N - T)
+        out.push(`${n - k} without the trait in the sample, only ${N - T} in the population`);
+      // The estimate scales the sample up; a lesson may round it to a whole number.
+      if (N !== undefined && n !== undefined && k !== undefined && E !== undefined && n > 0) {
+        const e = (N * k) / n;
+        if (Math.abs(e - E) > 0.5 + 1e-9)
+          out.push(`estimate ${k} ÷ ${n} × ${N} = ${e}, shows ${E}`);
+      }
+      break;
+    }
     case 'dotPlot': {
       const sorted = firstValues(rep.data, rep.count);
       const md = rep.median ? val(rep.median) : undefined;
@@ -1056,6 +1208,32 @@ export function repIssues(
         const mean = data.reduce((s, x) => s + x, 0) / data.length;
         if (Math.abs(mean - m) > 1e-6 * Math.max(1, Math.abs(m)))
           out.push(`dots balance at ${mean}, mean shows ${m}`);
+      }
+      if (rep.second) {
+        // The second sample's center, and the gap between the two centers.
+        const xs = rep.second.data.map(val);
+        const known = xs.every((x) => x !== undefined) ? (xs as number[]) : undefined;
+        const m2 = rep.second.mean ? val(rep.second.mean) : undefined;
+        const md2 = rep.second.median ? val(rep.second.median) : undefined;
+        if (known && m2 !== undefined) {
+          const mean2 = known.reduce((s, x) => s + x, 0) / known.length;
+          if (Math.abs(mean2 - m2) > 1e-6 * Math.max(1, Math.abs(m2)))
+            out.push(`second sample balances at ${mean2}, mean shows ${m2}`);
+        }
+        if (known && md2 !== undefined) {
+          const md = medianOf([...known].sort((a, b) => a - b));
+          if (Math.abs(md - md2) > 1e-9) out.push(`second sample's median is ${md}, shows ${md2}`);
+        }
+        const c1 = rep.mean ? m : rep.median ? val(rep.median) : undefined;
+        const c2 = rep.second.mean ? m2 : md2;
+        const d = rep.difference ? val(rep.difference) : undefined;
+        if (
+          c1 !== undefined &&
+          c2 !== undefined &&
+          d !== undefined &&
+          Math.abs(Math.abs(c1 - c2) - d) > 1e-6
+        )
+          out.push(`centers ${c1} and ${c2} drawn, difference shows ${d}`);
       }
       break;
     }

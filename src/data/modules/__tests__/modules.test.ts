@@ -159,7 +159,12 @@ function representationVars(r: Representation): string[] {
       }
       return [...r.top, ...r.side, ...r.parts.flat(), r.total];
     case 'angles':
-      return [...r.parts, ...(typeof r.whole === 'string' ? [r.whole] : []), ...(r.sliders ?? [])];
+      return [
+        ...r.parts,
+        ...(typeof r.whole === 'string' ? [r.whole] : []),
+        ...(r.sliders ?? []),
+        ...[r.cross?.first, r.cross?.second].filter((x): x is string => !!x),
+      ];
     case 'doubleNumberLine':
       return [r.top, r.bottom, r.per];
     case 'coordinatePlane':
@@ -267,8 +272,34 @@ function representationVars(r: Representation): string[] {
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
     case 'net':
       return [r.length, ...[r.width, r.height, r.slant, r.total].filter((x): x is string => !!x)];
+    case 'crossSection':
+      return [
+        r.length,
+        r.height,
+        ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
+      ];
+    case 'treeDiagram':
+      return [r.first, r.second, ...[r.total, r.chance].filter((x): x is string => !!x)];
+    case 'diceGrid':
+      return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
+    case 'spinner':
+    case 'marbles':
+      return [...r.parts, ...[r.chance, r.total].filter((x): x is string => !!x)];
+    case 'sample':
+      return [
+        r.population,
+        r.size,
+        r.found,
+        ...[r.trait, r.estimate].filter((x): x is string => !!x),
+      ];
     case 'dotPlot':
-      return [...r.data, ...[r.mean, r.median, r.range, r.count].filter((x): x is string => !!x)];
+      return [
+        ...r.data,
+        ...[r.mean, r.median, r.range, r.count, r.difference].filter((x): x is string => !!x),
+        ...(r.second
+          ? [...r.second.data, ...[r.second.mean, r.second.median].filter((x): x is string => !!x)]
+          : []),
+      ];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
     case 'gradCylinder':

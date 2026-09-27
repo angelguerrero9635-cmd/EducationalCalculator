@@ -745,7 +745,11 @@ export type Representation =
       kind: 'areaModel';
       divide: { dividend: string; divisor: string; quotient: string; remainder?: string };
     }
-  /** Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. */
+  /**
+   * Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. A whole
+   * of 90 or 180 is a right angle (complementary parts, with its corner mark) or a straight
+   * line (supplementary): only the middle ray turns, and the second part follows it.
+   */
   | {
       kind: 'angles';
       parts: [string, string];
@@ -756,6 +760,12 @@ export type Representation =
        * the angle): the rays are then not dragged, since a part can't take any degree.
        */
       sliders?: string[];
+      /**
+       * `whole: 180` only: two crossing lines. The first line runs on through the vertex, so
+       * each part has a vertical angle across from it, labelled with `first` and `second`
+       * (values equal to the parts), or with the part's own value.
+       */
+      cross?: { first?: string; second?: string };
     }
   /**
    * Two number lines that line up: the top counted in one unit (bigger units), the bottom in
@@ -1015,15 +1025,121 @@ export type Representation =
       area: string;
       show?: 'rearrange' | 'double';
     }
-  /** A box, cube or square pyramid unfolded, each face labelled with its area; Fold/Unfold. */
+  /**
+   * A box, cube, square pyramid or triangular prism unfolded, each face labelled with its
+   * area; Fold/Unfold.
+   */
   | {
       kind: 'net';
-      solid: 'box' | 'cube' | 'squarePyramid';
+      /**
+       * `triangularPrism`: `width` and `height` are the triangle's base and height, `slant` its
+       * third side (`triangle: 'right'`, the default) or each equal side (`'isosceles'`), and
+       * `length` the prism's length; the net is three rectangles with a triangle on each side.
+       */
+      solid: 'box' | 'cube' | 'squarePyramid' | 'triangularPrism';
+      triangle?: 'right' | 'isosceles';
       length: string;
       width?: string;
       height?: string;
       /** The height of each triangle on a pyramid's faces. */
       slant?: string;
+      total?: string;
+    }
+  /**
+   * A clear solid cut by a plane, the cut face shaded: a box or a pyramid on a `length` ×
+   * `width` base (`width` left out: square), or a triangular prism lying with its triangle at
+   * the front (a right triangle with legs `length` across and `width` up, or `isosceles` with
+   * base `length` and height `width`) and its `height` running back. `cut: 'base'` (the
+   * default) is parallel to the base, `at` up the height (the prism: back along it); `'side'`
+   * is across it, `at` back across the width (the prism: up the triangle); `'diagonal'` stands
+   * on the base's diagonal. Drag the plane's corner to move `at`. `area` is the cut's area
+   * and `volume` the solid's.
+   */
+  | {
+      kind: 'crossSection';
+      solid: 'box' | 'triangularPrism' | 'pyramid';
+      length: string;
+      width?: string;
+      height: string;
+      triangle?: 'right' | 'isosceles';
+      cut?: 'base' | 'side' | 'diagonal';
+      at?: string;
+      area?: string;
+      volume?: string;
+    }
+  /**
+   * A population of `population` dots (up to 400) with a random sample of `size` ringed, of
+   * whom `found` have the trait. With `trait` (how many in the population have it) those are
+   * colored and "Take a new sample" draws again, setting `found`; without it only the sample
+   * shows who has it. `estimate` is found ÷ size × population. `labels` name having and not
+   * having the trait ("like soccer", "do not").
+   */
+  | {
+      kind: 'sample';
+      population: string;
+      size: string;
+      found: string;
+      trait?: string;
+      estimate?: string;
+      labels?: [string, string];
+    }
+  /**
+   * A spinner cut into equal sectors: `parts` are how many sectors each outcome has (up to 24
+   * in all), in `colors` (red, blue, green, yellow, orange, purple) and named by `names` (the
+   * color names by default). The event is outcome `pick` (0 first), its sectors outlined;
+   * `chance` is its probability, parts[pick] ÷ `total`. "Spin" turns the arrow.
+   */
+  | {
+      kind: 'spinner';
+      parts: string[];
+      colors?: ('red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple')[];
+      names?: string[];
+      pick?: number;
+      chance?: string;
+      total?: string;
+    }
+  /**
+   * Two dice as a 6 × 6 grid of their 36 pairs, each cell showing the `event` (sum, the
+   * difference bigger − smaller, or product); the cells whose number `compare`s (=, <, ≤, >,
+   * ≥) with `target` are shaded. `count` is how many, `chance` is count ÷ 36. Tap a cell to
+   * make its number the target.
+   */
+  | {
+      kind: 'diceGrid';
+      target: string;
+      event?: 'sum' | 'difference' | 'product';
+      compare?: '=' | '<' | '≤' | '>' | '≥';
+      count?: string;
+      chance?: string;
+    }
+  /**
+   * A tree diagram for two stages with `first` and `second` equally likely outcomes (1 to 6
+   * each): a branch per outcome marked 1/n, the leaves listing every pair (the first 24).
+   * `names` name each stage's outcomes (A, B, … and 1, 2, … by default), `stages` the
+   * stages; `path` (0-based) is highlighted and `chance` is its probability, 1 ÷ `total`.
+   */
+  | {
+      kind: 'treeDiagram';
+      first: string;
+      second: string;
+      total?: string;
+      names?: [string[], string[]];
+      stages?: [string, string];
+      path?: [number, number];
+      chance?: string;
+    }
+  /**
+   * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
+   * `colors` and named by `names` (the color names by default). The event is color `pick`
+   * (0 first); `chance` is parts[pick] ÷ `total`. "Draw a marble" takes one out at random.
+   */
+  | {
+      kind: 'marbles';
+      parts: string[];
+      colors?: ('red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple')[];
+      names?: string[];
+      pick?: number;
+      chance?: string;
       total?: string;
     }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
@@ -1041,6 +1157,14 @@ export type Representation =
        * middle one (odd) or two (even) ringed and the median marked between them.
        */
       count?: string;
+      /**
+       * A second sample's dot plot under the first on the same scale (two samples compared):
+       * its values and its mean or median; `labels` name the two, `difference` is the gap
+       * between their means (or medians), marked between the plots.
+       */
+      second?: { data: string[]; mean?: string; median?: string };
+      labels?: [string, string];
+      difference?: string;
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }

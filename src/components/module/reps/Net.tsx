@@ -8,7 +8,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, useRep } from './common';
+import { Canvas, Caption, ChartText, fitLabel, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'net' }>;
@@ -48,25 +48,59 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const known = rep.known(spec.length);
   const n = (x: number) => formatNumber(Number(x.toFixed(3)));
   const pyramid = spec.solid === 'squarePyramid';
+  // A triangular prism: `width` and `height` are the triangle's base and height, `slant` its
+  // third side (right) or each equal side (isosceles), and `length` the prism's length.
+  const prism3 = spec.solid === 'triangularPrism';
+  const rightTri = spec.triangle !== 'isosceles';
+  // The slanted side as drawn follows the drawn base and height, so the triangle closes.
+  const sd = rightTri ? Math.hypot(W, H) : Math.hypot(W / 2, H);
   const lengthUnit = rep.unit(spec.length);
   const unit = lengthUnit ? ` ${lengthUnit}` : '';
 
   // Faces in net units: a box as a cross (back, top, front, bottom down the middle; the two
-  // ends beside the top); a pyramid as its square base with a triangle on each side.
-  const faces: Face[] = pyramid
-    ? [{ x: slant, y: slant, w: L, h: L, tw: tL, th: tL, name: 'base', area: tL * tL }]
+  // ends beside the top); a pyramid as its square base with a triangle on each side; a
+  // triangular prism as its three rectangles side by side, a triangle above and below the base.
+  const strip = rightTri
+    ? [
+        { w: H, tw: tH },
+        { w: W, tw: tW },
+        { w: sd, tw: tS },
+      ]
     : [
-        { x: H, y: 0, w: L, h: H, tw: tL, th: tH, name: 'back', area: tL * tH },
-        { x: 0, y: H, w: H, h: W, tw: tH, th: tW, name: 'end', area: tW * tH },
-        { x: H, y: H, w: L, h: W, tw: tL, th: tW, name: 'top', area: tL * tW },
-        { x: H + L, y: H, w: H, h: W, tw: tH, th: tW, name: 'end', area: tW * tH },
-        { x: H, y: H + W, w: L, h: H, tw: tL, th: tH, name: 'front', area: tL * tH },
-        { x: H, y: 2 * H + W, w: L, h: W, tw: tL, th: tW, name: 'bottom', area: tL * tW },
+        { w: sd, tw: tS },
+        { w: W, tw: tW },
+        { w: sd, tw: tS },
       ];
-  const netW = pyramid ? L + 2 * slant : 2 * H + L;
-  const netH = pyramid ? L + 2 * slant : 2 * H + 2 * W;
-  const triangle = 0.5 * tL * tS;
-  const total = pyramid ? L * L + 4 * triangle : faces.reduce((s, f) => s + f.area, 0);
+  const faces: Face[] = prism3
+    ? strip.map((f, i) => ({
+        x: strip.slice(0, i).reduce((t, g) => t + g.w, 0),
+        y: H,
+        w: f.w,
+        h: L,
+        tw: f.tw,
+        th: tL,
+        name: 'side',
+        area: f.tw * tL,
+      }))
+    : pyramid
+      ? [{ x: slant, y: slant, w: L, h: L, tw: tL, th: tL, name: 'base', area: tL * tL }]
+      : [
+          { x: H, y: 0, w: L, h: H, tw: tL, th: tH, name: 'back', area: tL * tH },
+          { x: 0, y: H, w: H, h: W, tw: tH, th: tW, name: 'end', area: tW * tH },
+          { x: H, y: H, w: L, h: W, tw: tL, th: tW, name: 'top', area: tL * tW },
+          { x: H + L, y: H, w: H, h: W, tw: tH, th: tW, name: 'end', area: tW * tH },
+          { x: H, y: H + W, w: L, h: H, tw: tL, th: tH, name: 'front', area: tL * tH },
+          { x: H, y: 2 * H + W, w: L, h: W, tw: tL, th: tW, name: 'bottom', area: tL * tW },
+        ];
+  const netW = prism3 ? strip.reduce((t, g) => t + g.w, 0) : pyramid ? L + 2 * slant : 2 * H + L;
+  const netH = prism3 ? L + 2 * H : pyramid ? L + 2 * slant : 2 * H + 2 * W;
+  const triangle = prism3 ? 0.5 * tW * tH : 0.5 * tL * tS;
+  const total = pyramid
+    ? tL * tL + 4 * triangle
+    : faces.reduce((s, f) => s + f.area, 0) + (prism3 ? 2 * triangle : 0);
+  // The triangular prism's base triangle in net units: its base on the middle rectangle.
+  const t0 = prism3 ? faces[1]!.x : 0;
+  const apexX = rightTri ? t0 : t0 + W / 2;
 
   return (
     <View>
@@ -90,6 +124,58 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
               const d = W * 0.5 * k;
               const x1 = (w - (L * k + d)) / 2;
               const y1 = (h + (H * k - d)) / 2;
+              if (prism3) {
+                // The triangle in front, the prism running back and up to the right.
+                // The prism lies on its side: the triangle at the front end, the length
+                // running back to the right and a little up.
+                const kk = Math.min((w - 2 * pad) / (W + L * 0.8), (h - 2 * pad) / (H + L * 0.35));
+                const [dx, dy] = [L * 0.8 * kk, L * 0.35 * kk];
+                const ax = (w - (W * kk + dx)) / 2;
+                const ay = (h + H * kk + dy) / 2;
+                const A = { x: ax, y: ay };
+                const B = { x: ax + W * kk, y: ay };
+                const C = { x: ax + (rightTri ? 0 : (W * kk) / 2), y: ay - H * kk };
+                const back = (p: { x: number; y: number }) => ({ x: p.x + dx, y: p.y - dy });
+                const pts = (...ps: { x: number; y: number }[]) =>
+                  ps.map((p) => `${p.x},${p.y}`).join(' ');
+                const edge = (
+                  p: { x: number; y: number },
+                  q: { x: number; y: number },
+                  hidden = false,
+                ) => (
+                  <Line
+                    x1={p.x}
+                    y1={p.y}
+                    x2={q.x}
+                    y2={q.y}
+                    stroke={c.chartInk}
+                    strokeWidth={chart.strokeLight}
+                    strokeDasharray={hidden ? chart.dash : undefined}
+                  />
+                );
+                return (
+                  <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
+                    {/* The slanted faces seen from above, then the triangle in front. */}
+                    <Polygon points={pts(C, B, back(B), back(C))} fill={c.chartFill} />
+                    {rightTri ? null : (
+                      <Polygon points={pts(A, C, back(C), back(A))} fill={c.chartSurface} />
+                    )}
+                    <Polygon
+                      points={pts(A, B, C)}
+                      fill={c.chartHighlight}
+                      fillOpacity={0.2}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
+                    />
+                    {edge(back(A), back(B), true)}
+                    {edge(A, back(A), rightTri)}
+                    {edge(back(A), back(C), rightTri)}
+                    {edge(B, back(B))}
+                    {edge(C, back(C))}
+                    {edge(back(B), back(C))}
+                  </Svg>
+                );
+              }
               if (pyramid) {
                 const apex = `${x1 + (L * k + d) / 2},${y1 - H * k * 0.9}`;
                 return (
@@ -174,6 +260,95 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       : null}
                   </G>
                 ))}
+                {prism3 ? (
+                  <G>
+                    {/* The two bases: a triangle above the middle rectangle and one below. */}
+                    {[
+                      [H, 0],
+                      [H + L, 2 * H + L],
+                    ].map(([base, apex], i) => (
+                      <Polygon
+                        key={`b${i}`}
+                        points={`${X(t0)},${Y(base!)} ${X(t0 + W)},${Y(base!)} ${X(apexX)},${Y(apex!)}`}
+                        fill={c.chartSecond}
+                        fillOpacity={0.35}
+                        stroke={c.chartInk}
+                        strokeWidth={chart.strokeLight}
+                      />
+                    ))}
+                    {rightTri ? null : (
+                      // The triangle's height, dashed from the apex to the base.
+                      <Line
+                        x1={X(apexX)}
+                        y1={Y(0)}
+                        x2={X(apexX)}
+                        y2={Y(H)}
+                        stroke={c.chartInk}
+                        strokeDasharray={chart.dash}
+                      />
+                    )}
+                    {/* Each triangle's area at its centroid. */}
+                    {[H - H / 3, H + L + H / 3].map((cy, i) => (
+                      <ChartText
+                        key={`a${i}`}
+                        x={X((2 * t0 + W + apexX) / 3)}
+                        y={Y(cy) + 4}
+                        fontSize={chart.small}
+                        fill={c.chartInk}
+                        textAnchor="middle"
+                      >
+                        {n(triangle)}
+                      </ChartText>
+                    ))}
+                    {/* The triangle's height beside it (its upright side, when right-angled). */}
+                    <ChartText
+                      x={X(apexX) - 4}
+                      y={Y(H / 2) + 4}
+                      fontSize={chart.tiny}
+                      fontWeight="700"
+                      fill={c.chartInk}
+                      textAnchor="end"
+                    >
+                      {`height ${n(tH)}${unit}`}
+                    </ChartText>
+                    {/* The base and slanted sides along the top of their rectangles. */}
+                    {faces.map((f, i) =>
+                      i === 1 ? null : (
+                        <ChartText
+                          key={`e${i}`}
+                          {...fitLabel(X(f.x + f.w / 2), `${n(f.tw)}${unit}`, chart.tiny, w)}
+                          y={Y(H) - 5}
+                          fontSize={chart.tiny}
+                          fontWeight="700"
+                          fill={c.chartInk}
+                        >
+                          {rightTri && i === 0 ? '' : `${n(f.tw)}${unit}`}
+                        </ChartText>
+                      ),
+                    )}
+                    <ChartText
+                      x={X(t0 + W / 2)}
+                      y={Y(H) + 12}
+                      fontSize={chart.tiny}
+                      fontWeight="700"
+                      fill={c.chartInk}
+                      textAnchor="middle"
+                    >
+                      {`${n(tW)}${unit}`}
+                    </ChartText>
+                    <ChartText
+                      x={X(0) - 6}
+                      y={Y(H + L / 2)}
+                      fontSize={chart.tiny}
+                      fontWeight="700"
+                      fill={c.chartInk}
+                      textAnchor="middle"
+                      transform={`rotate(-90 ${X(0) - 6} ${Y(H + L / 2)})`}
+                    >
+                      {`length ${n(tL)}${unit}`}
+                    </ChartText>
+                  </G>
+                ) : null}
                 {pyramid
                   ? [
                       // Triangles on the four sides of the base, pointing out.
@@ -196,7 +371,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {pyramid
                   ? label({ x: slant, y: slant * 0.35, w: L, h: slant * 0.6 }, n(triangle))
                   : null}
-                {pyramid ? (
+                {prism3 ? null : pyramid ? (
                   <G>
                     {/* The triangle's height on its face, and the base side. */}
                     <Line
@@ -277,7 +452,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </View>
       <Caption>
         {known
-          ? `${pyramid ? 'Base and four triangles' : 'Six faces'} add to ${n(total)}${spec.total && rep.unit(spec.total) ? ` ${rep.unit(spec.total)}` : ''}.${notToScale ? ' Not to scale.' : ''}`
+          ? `${prism3 ? `2 × ${n(triangle)} + ${faces.map((f) => `${n(f.tw)} × ${n(tL)}`).join(' + ')} = ${n(total)} · ` : ''}${pyramid ? 'Base and four triangles' : prism3 ? 'Two triangles and three rectangles' : 'Six faces'} add to ${n(total)}${spec.total && rep.unit(spec.total) ? ` ${rep.unit(spec.total)}` : ''}.${notToScale ? ' Not to scale.' : ''}`
           : 'Type the edge lengths.'}
       </Caption>
       <Steppers
