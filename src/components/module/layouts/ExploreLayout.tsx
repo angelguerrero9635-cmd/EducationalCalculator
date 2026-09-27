@@ -8,6 +8,7 @@ import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 
 import { Canvas, Caption, ChartText } from '../reps/common';
 import { Arrow, Push, Sky, Static, TimesTable, Vibration } from './figures';
+import { FoodWeb } from './foodWeb';
 import {
   BodyFigure,
   CellFigure6,
@@ -123,6 +124,8 @@ function FigureView({
       return <ContinentsFigure continents={scene.continents ?? { age: 0 }} c={c} />;
     case 'rockCycle':
       return <RockCycleFigure rock={scene.rock ?? { process: 'melting' }} c={c} />;
+    case 'foodWeb':
+      return <FoodWeb web={scene.web ?? {}} />;
   }
 }
 

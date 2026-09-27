@@ -189,7 +189,27 @@ export type Figure =
   /** The continents at a time in the past, with a clue that they were joined (Grade 6). */
   | { kind: 'continents' }
   /** The rock cycle: three kinds of rock and the processes between them (Grade 6). */
-  | { kind: 'rockCycle' };
+  | { kind: 'rockCycle' }
+  /**
+   * A meadow food web: the sun, grass, rabbit, grasshopper, mouse, frog, snake and hawk, each
+   * arrow meaning "is eaten by" (the sun's arrow: its energy goes into the grass).
+   */
+  | { kind: 'foodWeb' };
+
+/** The members of the `foodWeb` figure. */
+export type FoodWebMember =
+  'sun' | 'grass' | 'rabbit' | 'grasshopper' | 'mouse' | 'frog' | 'snake' | 'hawk';
+
+/** The moon's shapes through one cycle, as seen from the Northern Hemisphere. */
+export type MoonPhase =
+  | 'new'
+  | 'waxing crescent'
+  | 'first quarter'
+  | 'waxing gibbous'
+  | 'full'
+  | 'waning gibbous'
+  | 'third quarter'
+  | 'waning crescent';
 
 export interface Scene {
   label: string;
@@ -230,8 +250,19 @@ export interface Scene {
   push?: { from: 'behind' | 'front' | 'side'; strength: 'gentle' | 'hard'; pull?: boolean };
   /** The sound maker and whether it is shaking (a `vibration` figure). */
   vibrate?: { thing: 'band' | 'drum' | 'bell' | 'voice'; shaking: boolean };
-  /** The sun at a spot on its path, or the night sky (a `sky` figure). */
-  sky?: { body: 'sun' | 'night'; at?: 'east' | 'high' | 'west' };
+  /**
+   * The sun at a spot on its path, or the night sky (a `sky` figure). At night, `phase` draws
+   * the moon in that shape (waxing lit on the right, waning on the left); `rising` adds an
+   * arrow along the path toward the west (the sun or moon rising in the east); `cycle` adds a
+   * strip of the eight shapes under the sky with this one ringed.
+   */
+  sky?: {
+    body: 'sun' | 'night';
+    at?: 'east' | 'high' | 'west';
+    phase?: MoonPhase;
+    rising?: boolean;
+    cycle?: boolean;
+  };
   /** Whether the balloon was rubbed, and what it is near (a `static` figure). */
   charge?: { rubbed: boolean; near: 'paper' | 'hair' | 'wall' | 'balloon' };
   /** What the table shows and lights (a `timesTable` figure). Rows and columns are 0–10. */
@@ -289,6 +320,17 @@ export interface Scene {
   };
   /** Millions of years ago, and the clue shown (a `continents` figure). */
   continents?: { age: 250 | 150 | 0; clue?: 'fossils' | 'rocks' | 'shapes' | 'climate' };
+  /**
+   * What a `foodWeb` figure shows: one food chain lit (its members in order, from the sun or
+   * grass up), an animal taken away (drawn crossed out, its arrows dashed), and which members
+   * then grow in number (`more`) or shrink (`fewer`), marked with an up or down arrow.
+   */
+  web?: {
+    chain?: FoodWebMember[];
+    removed?: FoodWebMember;
+    more?: FoodWebMember[];
+    fewer?: FoodWebMember[];
+  };
   /** The process lit (a `rockCycle` figure). */
   rock?: {
     process: 'melting' | 'cooling' | 'weathering' | 'deposition' | 'metamorphism' | 'uplift';

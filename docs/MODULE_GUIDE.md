@@ -248,14 +248,17 @@ Explore figures: `parts` (tap a part), `position`, `clock`, `dots`, `magnets`, `
 `lightPath` (lamp, object, eye, hand or mirror; with `wall`, a `height` and clear, cloudy or
 solid blockers it traces the shadow), `particles`, `earth`, `push` (a ball pushed from
 behind, the front or the side, gently or hard, or pulled), `vibration` (a band, drum, bell or
-voice, still or shaking), `sky` (the sun east, high or west; the night sky), `static` (a
+voice, still or shaking), `sky` (the sun east, high or west; the night sky with the moon in a `phase`, waxing lit on the right; `rising` for sunrise or moonrise in the east; `cycle` for the strip of eight shapes), `static` (a
 balloon, rubbed or not, near paper, hair, a wall or a balloon) and `timesTable` (a 0–10
 addition or times table lighting rows, columns, even or odd cells or the mirror line).
 Grade 6 science adds `cell` (a plant, animal or bacterial cell with one part lit),
 `bodySystems`, `waterCycle` (one process lit, with its driver), `front` (cold, warm or
 stationary; or a high or low), `plates` (five boundaries, with rock ages or the mantle's
 flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or shape clue)
-and `rockCycle`, in `layouts/figures6.tsx`.
+and `rockCycle`, in `layouts/figures6.tsx`. `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
+rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a scene's `web`
+lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
+shrink (`fewer`).
 
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`

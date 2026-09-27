@@ -619,6 +619,27 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       { label: 'High', lines: ['Midday.'], sky: { body: 'sun', at: 'high' } },
       { label: 'West', lines: ['Evening.'], sky: { body: 'sun', at: 'west' } },
       { label: 'Night', lines: ['Night.'], sky: { body: 'night', at: 'high' } },
+      {
+        label: 'Moonrise',
+        lines: ['The full moon rises in the east.'],
+        sky: { body: 'night', at: 'east', phase: 'full', rising: true },
+      },
+      ...(
+        [
+          'new',
+          'waxing crescent',
+          'first quarter',
+          'waxing gibbous',
+          'full',
+          'waning gibbous',
+          'third quarter',
+          'waning crescent',
+        ] as const
+      ).map((phase) => ({
+        label: phase,
+        lines: [`The moon: ${phase}.`],
+        sky: { body: 'night' as const, at: 'high' as const, phase, cycle: true },
+      })),
     ],
   },
   {
@@ -653,6 +674,39 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       },
       { label: 'Solid', lines: ['Solid.'], light: { lamp: true, blocker: 'solid', height: 'low' } },
       { label: 'Off', lines: ['Lamp off.'], light: { lamp: false, wall: true } },
+    ],
+  },
+  {
+    id: 'g.food-web',
+    title: 'Food web',
+    kind: 'explore',
+    assumptions: [
+      'Each arrow means: is eaten by.',
+      'The sun’s arrow is its energy going into the grass.',
+    ],
+    figure: { kind: 'foodWeb' },
+    scenes: [
+      { label: 'Whole web', lines: ['A meadow food web.'], web: {} },
+      {
+        label: 'One chain',
+        lines: ['Sun, grass, grasshopper, frog, snake, hawk.'],
+        web: { chain: ['sun', 'grass', 'grasshopper', 'frog', 'snake', 'hawk'] },
+      },
+      {
+        label: 'Rabbit chain',
+        lines: ['Sun, grass, rabbit, hawk.'],
+        web: { chain: ['sun', 'grass', 'rabbit', 'hawk'] },
+      },
+      {
+        label: 'No frogs',
+        lines: ['The frogs are gone.', 'More grasshoppers; the snakes have less to eat.'],
+        web: { removed: 'frog', more: ['grasshopper'], fewer: ['snake'] },
+      },
+      {
+        label: 'No snakes',
+        lines: ['The snakes are gone.', 'More mice and frogs.'],
+        web: { removed: 'snake', more: ['mouse', 'frog'] },
+      },
     ],
   },
   {
