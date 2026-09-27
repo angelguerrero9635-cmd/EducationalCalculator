@@ -78,6 +78,9 @@ import { FactorTree } from './FactorTree';
 import { Protractor } from './Protractor';
 import { Wave } from './Wave';
 import { PunnettSquare } from './PunnettSquare';
+import { GrassSlope } from './GrassSlope';
+import { Flashlights } from './Flashlights';
+import { LeafCount } from './LeafCount';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -129,6 +132,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Angles spec={spec} calc={calc} />;
     case 'thermometers':
       return <Thermometers spec={spec} calc={calc} />;
+    case 'grassSlope':
+      return <GrassSlope spec={spec} calc={calc} />;
+    case 'flashlights':
+      return <Flashlights spec={spec} calc={calc} />;
+    case 'leafCount':
+      return <LeafCount spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':

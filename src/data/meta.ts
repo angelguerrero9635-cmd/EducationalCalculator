@@ -83,6 +83,9 @@ const PICTURE_NAMES: Record<string, string> = {
   dotPlot: 'dot plot',
   fieldOfView: 'microscope field of view',
   gradCylinder: 'graduated cylinder',
+  grassSlope: 'soil trays on a slope',
+  flashlights: 'two flashlights',
+  leafCount: 'plants with their leaves counted',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

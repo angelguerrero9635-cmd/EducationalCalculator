@@ -103,6 +103,9 @@ search or the sitemap, but the module tests and the harness run over it):
 | `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations  | Grade 6 statistics                  |
 | `fieldOfView`      | the microscope circle with cells end to end across it                 | Grade 6 cells                       |
 | `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume | Grade 6 density                     |
+| `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars       | Grade 2 and 4 erosion               |
+| `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded   | Grade 5 star brightness             |
+| `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -137,6 +140,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `boxPlot`          | `brackets`                               | the range and the interquartile range bracketed                               |
 | `doubleNumberLine` | `prefix: '$'`                            | dollars to the cent                                                           |
 | `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
+| `thermometers`     | `cups`                                   | each thermometer in a dark or light cup of water in the sun                   |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
@@ -248,14 +252,21 @@ Explore figures: `parts` (tap a part), `position`, `clock`, `dots`, `magnets`, `
 `lightPath` (lamp, object, eye, hand or mirror; with `wall`, a `height` and clear, cloudy or
 solid blockers it traces the shadow), `particles`, `earth`, `push` (a ball pushed from
 behind, the front or the side, gently or hard, or pulled), `vibration` (a band, drum, bell or
-voice, still or shaking), `sky` (the sun east, high or west; the night sky), `static` (a
+voice, still or shaking), `sky` (the sun east, high or west; the night sky with the moon in a `phase`, waxing lit on the right; `rising` for sunrise or moonrise in the east; `cycle` for the strip of eight shapes), `static` (a
 balloon, rubbed or not, near paper, hair, a wall or a balloon) and `timesTable` (a 0–10
 addition or times table lighting rows, columns, even or odd cells or the mirror line).
 Grade 6 science adds `cell` (a plant, animal or bacterial cell with one part lit),
 `bodySystems`, `waterCycle` (one process lit, with its driver), `front` (cold, warm or
 stationary; or a high or low), `plates` (five boundaries, with rock ages or the mantle's
 flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or shape clue)
-and `rockCycle`, in `layouts/figures6.tsx`.
+and `rockCycle`, in `layouts/figures6.tsx`. `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
+rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a scene's `web`
+lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
+shrink (`fewer`).
+
+Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
+(`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
+scale, with the sun on the line over the stick's top (higher for a shorter shadow).
 
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
