@@ -738,7 +738,7 @@ export type Representation =
     }
   /**
    * Dividing fractions: `groups` lays groups the size of the divisor along the dividend;
-   * `share` shows the dividend filling the divisor's part of one whole group.
+   * `share` shows the dividend filling the divisor's parts of the whole, each part labelled.
    */
   | {
       kind: 'fractionFit';

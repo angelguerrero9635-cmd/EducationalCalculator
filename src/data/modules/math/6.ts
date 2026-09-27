@@ -1613,20 +1613,20 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         id: 'm.6.divide-fractions~how-much-in-one',
         sliders: false,
         equation: '{a}/{b} ÷ {c}/{d} = {e}/{f}',
-        title: 'How much in one group?',
+        title: 'How much fills the whole?',
         use: 'Use this when 2/3 gallon fills 3/4 of a tank: how much fills the whole tank?',
         assumptions: [
-          'The amount fills part of one group. Find one of those parts, then the whole group.',
-          'This is the same as dividing the amount by the fraction of a group.',
-          'Denominators from 1 to 20; the whole group is at most 144 times the amount.',
+          'The amount fills some parts of the whole. Find what one part holds, then the whole.',
+          'This is the same as dividing the amount by the fraction of the whole it fills.',
+          'Denominators from 1 to 20; the whole is at most 144 times the amount.',
         ],
         variables: [
           fr('a', 'Amount numerator'),
           den('b', 'Amount denominator'),
-          { ...fr('c', 'Fraction of a group it fills: numerator', 12), min: 1 },
-          den('d', 'Fraction of a group it fills: denominator'),
-          { ...fr('e', 'Whole group numerator', 2000), derived: true },
-          { ...fr('f', 'Whole group denominator', 240), min: 1, derived: true },
+          { ...fr('c', 'Fraction of the whole it fills: numerator', 12), min: 1 },
+          den('d', 'Fraction of the whole it fills: denominator'),
+          { ...fr('e', 'Whole amount numerator', 2000), derived: true },
+          { ...fr('f', 'Whole amount denominator', 240), min: 1, derived: true },
         ],
         relations: [
           most144,
@@ -1643,7 +1643,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           {
             id: 'e = a × d',
             display: '{d} × {a}/{f} = {e}/{f}',
-            words: 'Denominator of the fraction it fills × one part = whole group',
+            words: 'Parts in the whole × one part = whole amount',
             shows: ['f'],
             check: (v: Values) => `${v.d} × ${v.a} = ${v.e}`,
             vars: ['e', 'a', 'd'],
@@ -1657,18 +1657,17 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             f: {
               expr: '{b} × {c}',
               how: (v) =>
-                `The amount fills ${v.c} parts of the group. One part is the amount ÷ ${v.c}: multiply the denominator by ${v.c}.`,
+                `The amount fills ${v.c} parts of the whole. One part holds the amount ÷ ${v.c}: multiply the denominator by ${v.c}.`,
             },
           },
           'e = a × d': {
             e: {
               expr: '{a} × {d}',
-              how: (v) =>
-                `The whole group is ${v.d} of those parts: multiply the numerator by ${v.d}.`,
+              how: (v) => `The whole is ${v.d} of those parts: multiply the numerator by ${v.d}.`,
               note: (v) => {
                 if (['a', 'b', 'c', 'd', 'e', 'f'].some((k) => v[k] === undefined)) return '';
                 const s = simplest(v.e!, v.f!);
-                return `(one whole group holds ${v.e}/${v.f}: the same as ${v.a}/${v.b} ÷ ${v.c}/${v.d} = ${v.e}/${v.f}${s ? `; ${s}` : ''})`;
+                return `(the whole holds ${v.e}/${v.f}: the same as ${v.a}/${v.b} ÷ ${v.c}/${v.d} = ${v.e}/${v.f}${s ? `; ${s}` : ''})`;
               },
             },
           },

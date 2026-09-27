@@ -5,6 +5,22 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Fraction division picture words (user feedback, lesson-reviewer)
+
+- "2/3 is 3/4 of a group, so a whole group is 8/9" was hard to follow: an amount and a
+  fraction of the whole in one clause joined by "is", "group" where the question says "the
+  whole tank", and no step for what one part holds. → The `share` picture labels each part
+  with what it holds (2/9), the top bracket "2/3 fills 3 of 4 parts", the bottom "the whole:
+  4 × 2/9 = 8/9"; the caption: "2/3 fills 3 of the 4 parts, so one part holds 2/3 ÷ 3 = 2/9.
+  The whole holds 4 × 2/9 = 8/9." Its math never breaks across lines.
+- An amount past the whole (2/3 fills 5/4) drew only 4 parts. → It draws 5, with the whole
+  bracketed under the first 4.
+- The page says "the whole" throughout (title "How much fills the whole?", value names,
+  steps, note).
+- `groups` captions: "0 full groups … : 8/9 groups" → "Not one whole group of 3/4 fits in 2/3;
+  it holds 8/9 of a group."; "1 groups" → singular; a partial last group ends "so 1 2/3
+  groups in all".
+
 ## Page limits out of the formulas (user feedback)
 
 - Limits ("3/4 is at most 1", "is at most 24 wholes") in the Formulas section and the Check

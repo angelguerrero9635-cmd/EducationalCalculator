@@ -5,6 +5,16 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Picture words on fraction division: focused lesson-reviewer pass
+
+- Setup: the user's phone screenshot, the picture's code and the page; one lesson-reviewer,
+  about 36k tokens, report only. All suggestions applied (engine log).
+- Neither reviewer caught it before: the lesson-reviewer reads the dump (no captions) and the
+  page-reviewer checked captions for wrapping only.
+- Changes made: `lesson-reviewer` check E reads each picture label and caption against the
+  use line's question (every fraction says what it is, the question's word for the whole, the
+  one-part step shown); `page-reviewer` reads captions as the student would.
+
 ## Typeset formulas: focused lesson-reviewer pass
 
 - Setup: `.review/latex/formulas.md` (every page's formula lines by kind, plain and as

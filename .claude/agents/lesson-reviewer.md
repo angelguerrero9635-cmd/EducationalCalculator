@@ -118,6 +118,10 @@ use the helpers in `work.ts` and `helpers.ts`. The boxed `written work` under a 
 **E. Language.** Concreteness in K–2, one step per sentence, consistent terms (CCSS/NGSS words),
 positive framing, signaling (labels use the same words as the steps; never depend on color),
 inclusive names. Give exact replacement strings.
+Read each picture label and caption aloud against the use line's question: every fraction says
+what it is (an amount, or a count of the whole's parts), the whole is called by the question's
+word, and the middle step the walkthrough uses (what one part holds) is shown. "2/3 is 3/4 of a
+group" fails all three; "2/3 fills 3 of the 4 parts, so one part holds 2/9" passes.
 
 **K. Plain language.** Where words teach better than letters, symbols or jargon at the grade,
 and the few places the notation is better. Keep the number sentence the grade writes.

@@ -25,8 +25,9 @@ export function mixed(num: number, den: number): string {
 /**
  * Dividing fractions as a picture. `groups` (how many groups?): the dividend as a bar on a
  * ruler of wholes, groups the size of the divisor bracketed along it, the last partial group
- * labelled with the fraction of a group it holds. `share` (how much in one group?): one whole
- * group cut into the divisor's parts, the parts the dividend fills shaded, the whole marked.
+ * labelled with the fraction of a group it holds. `share` (how much fills the whole?): the whole
+ * cut into the divisor's parts, each labelled with what one part holds, the parts the dividend
+ * fills shaded, the whole marked with its work (4 × 2/9 = 8/9).
  */
 export function FractionFit({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -42,6 +43,16 @@ export function FractionFit({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // The quotient as a fraction: (a/b) ÷ (p/q) = (a × q) / (b × p).
   const [qn, qd] = [a * q, b * p];
   const full = divisor > 0 ? Math.floor(dividend / divisor + 1e-9) : 0;
+  // `share`: one part holds the amount ÷ p (a/(b × p), as the steps write it); the whole is q
+  // of those parts.
+  const frac = (num: number, den: number) => (den === 1 ? String(num) : `${num}/${den}`);
+  const onePart = frac(a, b * p);
+  const product = frac(a * q, b * p);
+  const simplest = mixed(qn, qd);
+  const wholeWork = `${q} × ${onePart} = ${product}${simplest === product ? '' : ` = ${simplest}`}`;
+  const s = (k: number) => (k === 1 ? '' : 's');
+  // Math in the caption never breaks across lines ("2/3 ÷ 3" stays together).
+  const keep = (t: string) => t.replace(/ ([÷×=]) /g, '\u00a0$1\u00a0');
 
   return (
     <View>
@@ -49,55 +60,76 @@ export function FractionFit({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {({ w, h }) => {
           const pad = 22;
           if (spec.mode === 'share') {
-            // One whole group, cut into the divisor's denominator; the given parts shaded.
-            const barY = h * 0.38;
-            const barH = h * 0.26;
-            const part = (w - 2 * pad) / q;
+            // The whole cut into the divisor's denominator, each part labelled with what it holds;
+            // the parts the amount fills shaded. An amount past the whole (fills 5 of 4 parts)
+            // draws the extra parts too, with the whole bracketed under the first q.
+            const n = Math.max(p, q);
+            const barY = h * 0.34;
+            const barH = h * 0.3;
+            const part = (w - 2 * pad) / n;
+            const filled = Math.min(p, n);
+            const center = (x0: number, x1: number) =>
+              Math.min(Math.max((x0 + x1) / 2, w * 0.3), w * 0.7);
+            const whole = spec.quotient && rep.known(spec.quotient);
             return (
               <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
-                {Array.from({ length: q }, (_, i) => (
-                  <Rect
-                    key={i}
-                    x={pad + i * part}
-                    y={barY}
-                    width={part}
-                    height={barH}
-                    fill={i < p ? c.chartHighlight : c.chartSurface}
-                    fillOpacity={i < p ? 0.35 : 1}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeLight}
-                  />
+                {Array.from({ length: n }, (_, i) => (
+                  <G key={i}>
+                    <Rect
+                      x={pad + i * part}
+                      y={barY}
+                      width={part}
+                      height={barH}
+                      fill={i < p ? c.chartHighlight : c.chartSurface}
+                      fillOpacity={i < p ? 0.35 : 1}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
+                    />
+                    {known && p > 0 && (part >= 30 || i === 0) ? (
+                      <ChartText
+                        x={pad + (i + 0.5) * part}
+                        y={barY + barH / 2 + 4}
+                        fontSize={chart.label}
+                        fill={i < p ? c.chartInk : c.chartMuted}
+                        textAnchor="middle"
+                      >
+                        {onePart}
+                      </ChartText>
+                    ) : null}
+                  </G>
                 ))}
                 <Path
-                  d={`M ${pad} ${barY - 8} l 0 -8 L ${pad + Math.min(p, q) * part} ${barY - 16} l 0 8`}
+                  d={`M ${pad} ${barY - 8} l 0 -8 L ${pad + filled * part} ${barY - 16} l 0 8`}
                   stroke={c.chartHighlight}
                   strokeWidth={chart.stroke}
                   fill="none"
                 />
                 <ChartText
-                  x={pad + (Math.min(p, q) * part) / 2}
+                  x={center(pad, pad + filled * part)}
                   y={barY - 22}
                   fontSize={chart.label}
                   fontWeight="700"
                   fill={c.chartHighlight}
                   textAnchor="middle"
                 >
-                  {`${mixed(a, b)} fills ${p}/${q}`}
+                  {p > q
+                    ? `${mixed(a, b)} fills ${p} parts`
+                    : `${mixed(a, b)} fills ${p} of ${q} part${q === 1 ? '' : 's'}`}
                 </ChartText>
                 <Path
-                  d={`M ${pad} ${barY + barH + 8} l 0 8 L ${w - pad} ${barY + barH + 16} l 0 -8`}
+                  d={`M ${pad} ${barY + barH + 8} l 0 8 L ${pad + q * part} ${barY + barH + 16} l 0 -8`}
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight}
                   fill="none"
                 />
                 <ChartText
-                  x={w / 2}
+                  x={center(pad, pad + q * part)}
                   y={barY + barH + 32}
                   fontSize={chart.label}
                   fill={c.chartInk}
                   textAnchor="middle"
                 >
-                  {`one whole group: ${spec.quotient && rep.known(spec.quotient) ? mixed(qn, qd) : '?'}`}
+                  {`the whole: ${whole ? wholeWork : '?'}`}
                 </ChartText>
               </Svg>
             );
@@ -236,10 +268,18 @@ export function FractionFit({ spec, calc }: { spec: Spec; calc: Calculator }) {
           : p === 0
             ? 'A group can’t be 0.'
             : spec.mode === 'share'
-              ? `${mixed(a, b)} is ${p}/${q} of a group, so a whole group is ${mixed(qn, qd)}.`
-              : full * divisor === dividend || Math.abs(full * divisor - dividend) < 1e-9
-                ? `${full} groups of ${mixed(p, q)} fit in ${mixed(a, b)}.`
-                : `${full} full groups of ${mixed(p, q)} fit in ${mixed(a, b)}, and ${mixed(qn - full * qd, qd)} of another: ${mixed(qn, qd)} groups.`}
+              ? keep(
+                  `${
+                    p > q
+                      ? `${mixed(a, b)} fills ${p} parts, and ${q} part${s(q)} make${q === 1 ? 's' : ''} the whole`
+                      : `${mixed(a, b)} fills ${p} of the ${q} part${s(q)}`
+                  }, so one part holds ${mixed(a, b)} ÷ ${p} = ${onePart}. The whole holds ${wholeWork}.`,
+                )
+              : full === 0
+                ? `Not one whole group of ${mixed(p, q)} fits in ${mixed(a, b)}; it holds ${simplest} of a group.`
+                : Math.abs(full * divisor - dividend) < 1e-9
+                  ? `${full} group${s(full)} of ${mixed(p, q)} fit${full === 1 ? 's' : ''} in ${mixed(a, b)}.`
+                  : `${full} full group${s(full)} of ${mixed(p, q)} fit${full === 1 ? 's' : ''} in ${mixed(a, b)}, and ${mixed(qn - full * qd, qd)} of another, so ${simplest} groups in all.`}
       </Caption>
       <Steppers
         calc={calc}

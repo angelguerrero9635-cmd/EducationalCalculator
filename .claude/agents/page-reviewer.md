@@ -63,7 +63,9 @@ dump's `-- edge` lines give the values). Then:
 
 Report pictures that overflow, overlap, shrink to nothing, draw a value the student didn't
 type, or lose their handle off the edge. Report captions that wrap badly with long numbers, and
-controls that stop responding at an end. Checks J and F2 apply as usual; H and I only where an
+controls that stop responding at an end. Read the caption and labels under each picture as the student
+would: report any a student couldn't follow (a fraction that doesn't say what it is, a word the
+question doesn't use, a jump the picture doesn't show), with the text you'd write instead. Checks J and F2 apply as usual; H and I only where an
 edge breaks them.
 
 ## Checks
