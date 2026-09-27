@@ -157,9 +157,27 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'So living things grow by making more cells, not bigger ones.',
     ],
     variables: [
-      whole('a', 'a', 'Side in cm', 1, 10),
-      { id: 'S', symbol: 'S', name: 'Surface area in cm²', min: 6, max: 600, derived: true },
-      { id: 'V', symbol: 'V', name: 'Volume in cm³', min: 1, max: 1000, derived: true },
+      { ...whole('a', 'a', 'Side', 1, 10), unit: 'cm', units: ['cm'] },
+      {
+        id: 'S',
+        symbol: 'S',
+        name: 'Surface area',
+        unit: 'cm²',
+        units: ['cm²'],
+        min: 6,
+        max: 600,
+        derived: true,
+      },
+      {
+        id: 'V',
+        symbol: 'V',
+        name: 'Volume',
+        unit: 'cm³',
+        units: ['cm³'],
+        min: 1,
+        max: 1000,
+        derived: true,
+      },
       {
         id: 'r',
         symbol: 'r',
@@ -240,8 +258,16 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     ],
     variables: [
       { ...whole('h', 'h', 'Heart rate', 40, 220), unit: 'beats per minute' },
-      whole('b', 'b', 'Blood per beat in mL', 40, 150),
-      { id: 'q', symbol: 'q', name: 'Blood each minute in mL', min: 1600, max: 33000 },
+      { ...whole('b', 'b', 'Blood per beat', 40, 150), unit: 'mL', units: ['mL'] },
+      {
+        id: 'q',
+        symbol: 'q',
+        name: 'Blood each minute',
+        unit: 'mL',
+        units: ['mL'],
+        min: 1600,
+        max: 33000,
+      },
     ],
     relations: [
       {
@@ -606,9 +632,26 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'Weather maps and radar show how far away a front is.',
     ],
     variables: [
-      { id: 'd', symbol: 'd', name: 'Distance to the front in km', min: 0, max: 3000 },
-      { id: 's', symbol: 's', name: 'Front speed in km each hour', min: 5, max: 80, step: 1 },
-      { id: 't', symbol: 't', name: 'Time to arrive in hours', min: 0, max: 600 },
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Distance to the front',
+        unit: 'km',
+        units: ['km'],
+        min: 0,
+        max: 3000,
+      },
+      {
+        id: 's',
+        symbol: 's',
+        name: 'Front speed',
+        unit: 'km/h',
+        units: ['km/h'],
+        min: 5,
+        max: 80,
+        step: 1,
+      },
+      { id: 't', symbol: 't', name: 'Time to arrive', unit: 'h', units: ['h'], min: 0, max: 600 },
     ],
     relations: [
       {
@@ -652,7 +695,15 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'The speed is an average: plates creep, and faults can slip suddenly in earthquakes.',
     ],
     variables: [
-      { id: 'd', symbol: 'd', name: 'Distance moved in km', min: 0, max: 10000 },
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Distance moved',
+        unit: 'km',
+        units: ['km'],
+        min: 0,
+        max: 10000,
+      },
       { id: 't', symbol: 't', name: 'Time in millions of years', min: 0.1, max: 300, step: 0.1 },
       {
         id: 'k',
@@ -719,7 +770,15 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'Layers squeeze thinner as they harden into rock, so the answer is an estimate.',
     ],
     variables: [
-      { id: 'd', symbol: 'd', name: 'Layer thickness in cm', min: 0.1, max: 10000 },
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Layer thickness',
+        unit: 'cm',
+        units: ['cm'],
+        min: 0.1,
+        max: 10000,
+      },
       { id: 'r', symbol: 'r', name: 'Rate in cm each 1,000 years', min: 0.1, max: 100 },
       { id: 't', symbol: 't', name: 'Time in thousands of years', min: 0, max: 100000 },
     ],

@@ -2287,14 +2287,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Here both boxes are the same width. Count in unit cubes; sides to 6.',
     ],
     variables: [
-      whole('w', 'w', 'Width of both', 1, 6),
-      whole('l1', 'l₁', 'First length', 1, 6),
-      whole('h1', 'h₁', 'First height', 1, 6),
-      whole('l2', 'l₂', 'Second length', 1, 6),
-      whole('h2', 'h₂', 'Second height', 1, 6),
-      { ...whole('V1', 'V₁', 'First volume', 1, 216), derived: true },
-      { ...whole('V2', 'V₂', 'Second volume', 1, 216), derived: true },
-      whole('T', 'T', 'Total volume', 2, 432),
+      { ...whole('w', 'w', 'Width of both', 1, 6), unit: 'units' },
+      { ...whole('l1', 'l₁', 'First length', 1, 6), unit: 'units' },
+      { ...whole('h1', 'h₁', 'First height', 1, 6), unit: 'units' },
+      { ...whole('l2', 'l₂', 'Second length', 1, 6), unit: 'units' },
+      { ...whole('h2', 'h₂', 'Second height', 1, 6), unit: 'units' },
+      { ...whole('V1', 'V₁', 'First volume', 1, 216), unit: 'cubic units', derived: true },
+      { ...whole('V2', 'V₂', 'Second volume', 1, 216), unit: 'cubic units', derived: true },
+      { ...whole('T', 'T', 'Total volume', 2, 432), unit: 'cubic units' },
     ],
     relations: [
       ...(

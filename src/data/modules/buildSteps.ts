@@ -94,6 +94,8 @@ const SINGULAR: Record<string, string> = {
   cups: 'cup',
   cubes: 'cube',
   'square units': 'square unit',
+  'cubic units': 'cubic unit',
+  units: 'unit',
   inches: 'inch',
   meters: 'meter',
   centimeters: 'centimeter',

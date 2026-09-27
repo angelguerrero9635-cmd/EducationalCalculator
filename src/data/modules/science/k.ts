@@ -93,6 +93,35 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    const more = moreThan('w', 'd', 'l', 'dark cup', 'light cup', ['warmer', 'cooler']);
+    return {
+      id: 's.K.sunlight-warms~dark-light',
+      title: 'Dark or light: which warms more?',
+      use: 'Use this for dark and light cups in the sun.',
+      assumptions: [
+        'Dark things take in more sunlight. Light things bounce more of it away.',
+        'Both cups hold the same water in the same sun.',
+      ],
+      variables: [
+        { ...whole('d', 'd', 'Dark cup', 40, 100), unit: F },
+        { ...whole('l', 'l', 'Light cup', 40, 100), unit: F },
+        { ...whole('w', 'w', 'Dark cup warmer by', 0, 40), unit: F },
+      ],
+      // The dark cup ends up at least as warm: the other way round, check the thermometers.
+      relations: [{ ...more.relation, display: '{d} − {l} = {w}' }, atLeast('d', 'l')],
+      steps: { ...more.steps, 'd ≥ l': {} },
+      example: { d: 84, l: 76, w: 8 },
+      startWith: ['d', 'l'],
+      representation: {
+        kind: 'thermometers',
+        items: ['d', 'l'],
+        difference: 'w',
+        min: 40,
+        max: 100,
+      },
+    } satisfies ModuleDef;
+  })(),
   // ── Kindergarten: what plants and animals need (K-LS1-1) ──
   (() => {
     const more = moreThan('m', 'w', 'd', 'watered cup', 'dry cup', ['more', 'fewer']);

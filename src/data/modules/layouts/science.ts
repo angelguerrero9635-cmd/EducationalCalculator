@@ -171,6 +171,54 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sort',
+    id: 's.K.weather-patterns~tools',
+    title: 'Weather tools',
+    use: 'Use this to match weather tools to what they measure.',
+    assumptions: [
+      'Scientists use tools to measure the weather each day.',
+      'Each tool measures one thing.',
+    ],
+    question: 'What does it measure?',
+    bins: [
+      { id: 'warm', label: 'How warm', why: 'A thermometer shows how warm or cold the air is.' },
+      { id: 'rain', label: 'How much rain', why: 'A rain gauge collects the rain that falls.' },
+      { id: 'wind', label: 'Which way the wind blows', why: 'It turns or points with the wind.' },
+    ],
+    cards: [
+      { label: 'Thermometer', bin: 'warm' },
+      { label: 'Rain gauge', bin: 'rain' },
+      { label: 'Wind vane', bin: 'wind' },
+      { label: 'Wind sock', bin: 'wind' },
+    ],
+  },
+  {
+    kind: 'sort',
+    id: 's.K.weather-patterns~falls',
+    title: 'What falls from clouds?',
+    use: 'Use this to sort weather by whether it falls from clouds.',
+    assumptions: [
+      'Rain, snow and hail are water that falls from clouds.',
+      'Wind and fog do not fall from clouds.',
+    ],
+    question: 'Does it fall from clouds?',
+    bins: [
+      {
+        id: 'falls',
+        label: 'Falls from clouds',
+        why: 'Water drops or ice fall down to the ground.',
+      },
+      { id: 'not', label: 'Does not fall', why: 'It moves across the ground or stays in the air.' },
+    ],
+    cards: [
+      { label: 'Rain', bin: 'falls' },
+      { label: 'Snow', bin: 'falls' },
+      { label: 'Hail', bin: 'falls' },
+      { label: 'Wind', bin: 'not' },
+      { label: 'Fog', bin: 'not' },
+    ],
+  },
+  {
+    kind: 'sort',
     id: 's.K.living-things-change-environment',
     assumptions: [
       'Living things change the place where they live.',
@@ -575,6 +623,30 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   },
   {
     kind: 'sort',
+    id: 's.1.offspring~deer',
+    title: 'A fawn and its parents',
+    use: 'Use this to sort how a fawn is like its parents.',
+    assumptions: [
+      'A fawn is a young deer. A buck is the father; a doe is the mother.',
+      'Young animals look like their parents, but not exactly.',
+    ],
+    question: 'Is the fawn like its parents here?',
+    bins: [
+      { id: 'same', label: 'Same', why: 'Young animals look like their parents.' },
+      { id: 'different', label: 'Different', why: 'It is young, and not exactly the same.' },
+    ],
+    cards: [
+      { label: 'Has four legs', bin: 'same' },
+      { label: 'Has hooves', bin: 'same' },
+      { label: 'Has brown fur', bin: 'same' },
+      { label: 'Has big ears', bin: 'same' },
+      { label: 'Much smaller', bin: 'different' },
+      { label: 'White spots on its back', bin: 'different' },
+      { label: 'Has no antlers yet', bin: 'different' },
+    ],
+  },
+  {
+    kind: 'sort',
     id: 's.1.offspring~care',
     title: 'How parents help their young',
     use: 'Use this to sort how parents help their young.',
@@ -652,6 +724,16 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         sky: { body: 'night', at: 'high' },
         lines: ['We see stars. We often see the moon too.'],
       },
+      {
+        label: 'Moon rising',
+        sky: { body: 'night', at: 'east' },
+        lines: ['The moon also rises in the east.'],
+      },
+      {
+        label: 'Moon setting',
+        sky: { body: 'night', at: 'west' },
+        lines: ['Like the sun, the moon sets in the west.'],
+      },
     ],
   },
   {
@@ -670,6 +752,26 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     unit: 'days',
     totalLabel: 'New moon to full moon',
+  },
+  {
+    kind: 'sequence',
+    id: 's.1.sky-patterns~moon-waning',
+    title: 'The moon shrinks back',
+    use: 'Use this to put the moon’s shapes in order after full moon.',
+    assumptions: [
+      'After full moon, the lit part gets smaller each night.',
+      'The shapes come back in the same order, the other way round.',
+    ],
+    question: 'Put the shapes in order, from full moon to new moon.',
+    stages: [
+      { label: 'Full moon', span: 1 },
+      { label: 'Almost full', span: 6 },
+      { label: 'Half moon', span: 1 },
+      { label: 'Thin crescent', span: 6 },
+      { label: 'New moon', span: 1 },
+    ],
+    unit: 'days',
+    totalLabel: 'Full moon to new moon',
   },
   {
     kind: 'sort',
@@ -865,6 +967,8 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'clear', label: 'Clear', why: 'You can see through it.' },
       { id: 'soft', label: 'Soft', why: 'It bends and squashes. It feels gentle.' },
       { id: 'hard', label: 'Hard', why: 'It keeps its shape when you push it.' },
+      { id: 'heat', label: 'Lets heat through', why: 'Metal lets heat pass through it fast.' },
+      { id: 'noheat', label: 'Keeps heat out', why: 'Plastic, wood and cloth slow the heat.' },
     ],
     cards: [
       { label: 'Raincoat', bin: 'waterproof' },
@@ -875,6 +979,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Blanket', bin: 'soft' },
       { label: 'Hammer', bin: 'hard' },
       { label: 'Wooden chair', bin: 'hard' },
+      { label: 'Cooking pan', bin: 'heat' },
+      { label: 'Kettle', bin: 'heat' },
+      { label: 'Pan handle', bin: 'noheat' },
+      { label: 'Oven mitt', bin: 'noheat' },
     ],
   },
   {
@@ -896,6 +1004,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Kind of seed', bin: 'same' },
       { label: 'Size of pot', bin: 'same' },
       { label: 'Kind of soil', bin: 'same' },
+      { label: 'Number of plants in each group', bin: 'same' },
       { label: 'Sunlight', bin: 'different' },
     ],
   },
@@ -940,6 +1049,8 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Camel', bin: 'desert' },
       { label: 'Monkey', bin: 'rainforest' },
       { label: 'Parrot', bin: 'rainforest' },
+      { label: 'Tree frog', bin: 'rainforest' },
+      { label: 'Vines', bin: 'rainforest' },
       { label: 'Polar bear', bin: 'arctic' },
       { label: 'Walrus', bin: 'arctic' },
     ],
@@ -1115,9 +1226,11 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Book resting on a table', bin: 'balanced' },
       { label: 'Tug of war with no one moving', bin: 'balanced' },
       { label: 'A swing hanging still', bin: 'balanced' },
+      { label: 'Box on a carpet, pushed gently, stays still', bin: 'balanced' },
       { label: 'Kicked ball starts to roll', bin: 'unbalanced' },
       { label: 'Bike braking to a stop', bin: 'unbalanced' },
       { label: 'Apple falling', bin: 'unbalanced' },
+      { label: 'Rock sliding on ice slows down', bin: 'unbalanced' },
     ],
   },
   {
@@ -1241,6 +1354,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A frog starts as an egg in the water.',
       'It hatches as a tadpole, then grows legs as a froglet.',
+      'A frog lays hundreds of eggs. Only a few grow into frogs.',
     ],
     question: 'Put the stages in order, starting with the egg.',
     stages: [
@@ -1251,6 +1365,32 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     unit: 'days',
     totalLabel: 'Egg to frog',
+  },
+  {
+    kind: 'sort',
+    id: 's.3.life-cycles~eggs',
+    title: 'Eggs or born alive?',
+    use: 'Use this to sort animals that hatch from eggs and animals born alive.',
+    assumptions: [
+      'Every animal’s life cycle starts with birth or hatching.',
+      'Some young grow in eggs; others grow inside the mother.',
+    ],
+    question: 'How does it start life?',
+    bins: [
+      { id: 'eggs', label: 'Hatches from an egg', why: 'Eggs grow outside the mother.' },
+      { id: 'alive', label: 'Born alive', why: 'The young grow inside the mother.' },
+    ],
+    cards: [
+      { label: 'Bird', bin: 'eggs' },
+      { label: 'Frog', bin: 'eggs' },
+      { label: 'Grasshopper', bin: 'eggs' },
+      { label: 'Turtle', bin: 'eggs' },
+      { label: 'Fish', bin: 'eggs' },
+      { label: 'Cat', bin: 'alive' },
+      { label: 'Dog', bin: 'alive' },
+      { label: 'Dolphin', bin: 'alive' },
+      { label: 'Person', bin: 'alive' },
+    ],
   },
   {
     kind: 'sequence',
@@ -1719,7 +1859,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'protect', label: 'Protection', why: 'It keeps the plant or animal safe.' },
       {
         id: 'food',
-        label: 'Getting food and water',
+        label: 'Getting food, water and air',
         why: 'It takes in what the living thing needs.',
       },
       {
@@ -1734,6 +1874,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Turtle shell', bin: 'protect' },
       { label: 'Tree roots', bin: 'food' },
       { label: 'Bird’s beak', bin: 'food' },
+      { label: 'Fish gills', bin: 'food' },
       { label: 'Owl’s eyes', bin: 'sense' },
       { label: 'Bird’s wings', bin: 'sense' },
       { label: 'Flower', bin: 'young' },
@@ -1762,6 +1903,30 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       return up
         ? `More water moved the sand farther: from ${v[0]} cm to ${v[v.length - 1]} cm. More water means more erosion.`
         : 'The distances go up and down. Pour the same way each time and measure again.';
+    },
+  },
+  {
+    kind: 'observe',
+    id: 's.4.weathering~grass-slope',
+    title: 'Grass on a slope',
+    use: 'Use this to compare soil washed off bare and grassy slopes.',
+    assumptions: [
+      'Two trays of soil sit on the same slope. One has grass growing in it.',
+      'Pour the same water on each. Weigh the soil that washes off.',
+      'Tap a bar to change a reading.',
+    ],
+    columns: ['Bare soil', 'Soil with grass'],
+    rowLabel: 'Soil washed off',
+    unit: 'g',
+    max: 400,
+    step: 10,
+    initial: [320, 60],
+    pattern: (v) => {
+      const [bare, grass] = v as [number, number];
+      if (grass < bare) return 'Grass roots held the soil: less washed away.';
+      if (grass > bare)
+        return 'More washed off the grassy tray. Check that the water was the same.';
+      return 'The same amount washed off both.';
     },
   },
   {
@@ -2164,6 +2329,33 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
   },
   {
+    kind: 'sort',
+    id: 's.5.food-webs~eaters',
+    title: 'Plant-eaters and meat-eaters',
+    use: 'Use this to sort animals by what they eat.',
+    assumptions: [
+      'Plant-eaters get energy from plants. Meat-eaters get it from other animals.',
+      'Animals that eat both get energy from plants and animals.',
+    ],
+    question: 'What does it eat?',
+    bins: [
+      { id: 'plants', label: 'Eats only plants', why: 'Its energy comes from plants.' },
+      { id: 'animals', label: 'Eats only animals', why: 'Its energy comes from other animals.' },
+      { id: 'both', label: 'Eats both', why: 'It eats plants and animals.' },
+    ],
+    cards: [
+      { label: 'Rabbit', bin: 'plants' },
+      { label: 'Deer', bin: 'plants' },
+      { label: 'Grasshopper', bin: 'plants' },
+      { label: 'Hawk', bin: 'animals' },
+      { label: 'Snake', bin: 'animals' },
+      { label: 'Heron', bin: 'animals' },
+      { label: 'Raccoon', bin: 'both' },
+      { label: 'Bear', bin: 'both' },
+      { label: 'Person', bin: 'both' },
+    ],
+  },
+  {
     kind: 'explore',
     id: 's.5.plants-sunlight-energy~needs',
     title: 'What a plant takes in',
@@ -2372,6 +2564,30 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       const lo = v.indexOf(Math.min(...v));
       if (hi === lo) return 'Every month has the same daylight. That happens near the equator.';
       return `Most daylight: ${months[hi]} (${v[hi]} hours). Least: ${months[lo]} (${v[lo]} hours).`;
+    },
+  },
+  {
+    kind: 'observe',
+    id: 's.5.shadows-day-night~noon-shadow',
+    title: 'The noon shadow through the year',
+    use: 'Use this to record a meter stick’s noon shadow each month.',
+    assumptions: [
+      'A meter stick stands straight up in the same spot. Measure its shadow at noon.',
+      'These are for a town in the middle of the United States.',
+      'Tap a bar to change that month’s shadow.',
+    ],
+    columns: ['Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'],
+    rowLabel: 'Noon shadow',
+    unit: 'cm',
+    max: 250,
+    step: 5,
+    initial: [200, 135, 60, 30, 50, 115],
+    pattern: (v) => {
+      const months = ['December', 'February', 'April', 'June', 'August', 'October'];
+      const hi = v.indexOf(Math.max(...v));
+      const lo = v.indexOf(Math.min(...v));
+      if (hi === lo) return 'The shadow is the same every month.';
+      return `Shortest in ${months[lo]}, when the noon sun is highest. Longest in ${months[hi]}, when it is lowest.`;
     },
   },
   {

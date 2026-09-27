@@ -339,24 +339,44 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       use: 'Use this to compare two of the same flashlight when one is several times as far away.',
       assumptions: [
         'Two of the same flashlight give the same light.',
-        'Twice as far, the lit circle is twice as wide, so the flashlight looks dimmer.',
+        'Twice as far, the lit circle is twice as wide and twice as tall: 4 times the wall.',
+        'The same light spread over more wall looks dimmer.',
         'Stars work the same way: the sun is a star that is very close to us.',
       ],
       variables: [
         { ...whole('n', 'n', 'Nearer flashlight', 10, 100), unit: 'cm' },
         whole('k', 'k', 'Times as far', 2, 10),
         { ...whole('f', 'f', 'Farther flashlight', 10, 1000), unit: 'cm' },
+        { ...whole('a', 'a', 'Times as much wall lit', 4, 100), derived: true },
       ],
-      relations: [far.relation],
+      relations: [
+        far.relation,
+        {
+          id: 'a = k × k',
+          display: '{k} × {k} = {a}',
+          words: 'Times as far × times as far = times as much wall lit',
+          vars: ['a', 'k'],
+          residual: (v: Values) => v.a! - v.k! * v.k!,
+          solve: { a: (v: Values) => v.k! * v.k!, k: () => undefined },
+        },
+      ],
       steps: {
         'f = n × k': {
           f: { expr: '{n} × {k}', how: 'That many times the nearer distance.' },
           k: { expr: '{f} ÷ {n}', how: 'Divide the farther distance by the nearer one.' },
           n: { expr: '{f} ÷ {k}', how: 'Divide the farther distance by how many times as far.' },
         },
+        'a = k × k': {
+          a: {
+            expr: '{k} × {k}',
+            how: 'The lit circle is that many times as wide and as tall.',
+            note: (v) => `(each part of the wall gets 1/${v.a} as much light: dimmer)`,
+          },
+        },
       },
-      example: { n: 50, k: 4, f: 200 },
+      example: { n: 50, k: 4, f: 200, a: 16 },
       startWith: ['n', 'k'],
+      pictureLabels: ['k', 'a'],
       unitSystems: ['metric'],
       representation: {
         kind: 'bars',
