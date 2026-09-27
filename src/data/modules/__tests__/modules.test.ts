@@ -1,4 +1,4 @@
-import { holds, solve } from '@/engine/solve';
+import { holds, outOfCount, solve } from '@/engine/solve';
 import { initialState, setValues } from '@/engine/state';
 import { makeUnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
@@ -308,6 +308,8 @@ const close = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * (1 + Math.abs(
 
 describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s', (_, m) => {
   const ids = m.variables.map((v) => v.id);
+  // The values the example holds: all but those past a data set's count.
+  const inExample = m.variables.filter((v) => !outOfCount(v, m.example)).map((v) => v.id);
 
   // The picture gallery's demonstrations (g.*) have no skill and carry their own title.
   const gallery = m.id.startsWith('g.');
@@ -341,7 +343,9 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('modu
     for (const r of m.relations) {
       expect(r.vars.filter((v) => !ids.includes(v))).toEqual([]);
       const inTemplate = [...r.display.matchAll(/\{(\w+)\}/g)].map((x) => x[1]);
-      expect([...new Set(inTemplate)].sort()).toEqual([...r.vars, ...(r.shows ?? [])].sort());
+      // A data set's values are named by its count ("the {n} values"), not one by one.
+      const listed = r.vars.filter((id) => !m.variables.find((v) => v.id === id)?.countedBy);
+      expect([...new Set(inTemplate)].sort()).toEqual([...listed, ...(r.shows ?? [])].sort());
       expect((r.shows ?? []).filter((v) => !ids.includes(v) || r.vars.includes(v))).toEqual([]);
     }
     expect(representationVars(m.representation).filter((v) => !ids.includes(v))).toEqual([]);
@@ -380,14 +384,16 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('modu
   });
 
   it('has a worked example that satisfies every relation and range', () => {
-    expect(Object.keys(m.example).sort()).toEqual([...ids].sort());
+    // Values past a data set's count are left out of the example.
+    const inSet = inExample;
+    expect(Object.keys(m.example).sort()).toEqual([...inSet].sort());
     for (const r of m.relations) expect(holds(r, m.example)).toBe(true);
     const result = solve(
       m,
-      m.variables.map((v) => ({ id: v.id, value: m.example[v.id]! })),
+      inSet.map((id) => ({ id, value: m.example[id]! })),
     );
     expect(result.rejected).toBeUndefined();
-    expect(result.dropped.length + result.given.length).toBe(ids.length);
+    expect(result.dropped.length + result.given.length).toBe(inSet.length);
   });
 
   it('has no zero example values for variables with units (keeps the unit check meaningful)', () => {
@@ -401,7 +407,7 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('modu
     for (const r of m.relations) {
       for (const [id, fn] of Object.entries(r.solve ?? {})) {
         // `() => undefined` marks a value the relation can't determine (e.g. n from its tens).
-        if (fn!.length === 0) continue;
+        if (fn!.length === 0 || !(id in m.example)) continue;
         const others = { ...m.example };
         delete others[id];
         const out = fn!(others);
@@ -417,11 +423,11 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('modu
       m.startWith.map((id) => ({ id, value: m.example[id]! })),
     );
     expect(result.unknown).toEqual([]);
-    for (const id of ids) expect(close(result.values[id]!, m.example[id]!)).toBe(true);
+    for (const id of inExample) expect(close(result.values[id]!, m.example[id]!)).toBe(true);
   });
 
   it('any combination of inputs gives values consistent with the example', () => {
-    const typable = ids.filter((id) => !m.variables.find((v) => v.id === id)?.derived);
+    const typable = inExample.filter((id) => !m.variables.find((v) => v.id === id)?.derived);
     for (const combo of subsets(typable, m.startWith.length)) {
       const result = solve(
         m,
@@ -467,7 +473,10 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
       const w = buildSteps(m, result);
       expect(w.given.map((q) => q.id)).toEqual(m.startWith);
       expect([...w.steps.map((s) => s.id), ...m.startWith].sort()).toEqual(
-        m.variables.map((v) => v.id).sort(),
+        m.variables
+          .filter((v) => !outOfCount(v, m.example))
+          .map((v) => v.id)
+          .sort(),
       );
       for (const s of w.steps) {
         expect(s.rearranged).toBeDefined();

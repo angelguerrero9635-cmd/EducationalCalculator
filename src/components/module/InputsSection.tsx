@@ -6,6 +6,7 @@ import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
 import { gradeBand, isEarlyGrade } from '@/data/modules';
 import { formatNumber, parseCents, parseNumber } from '@/engine/format';
+import { outOfCount } from '@/engine/solve';
 import type { VariableDef } from '@/engine/types';
 import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
@@ -228,9 +229,12 @@ export function InputsSection({ calc }: { calc: Calculator }) {
         ) : null}
       </View>
       <View>
-        {module.variables.map((v) => (
-          <VariableInput key={v.id} variable={v} calc={calc} />
-        ))}
+        {module.variables
+          // A data set of 5 hides the boxes for a 6th value and on.
+          .filter((v) => !outOfCount(v, calc.result.values))
+          .map((v) => (
+            <VariableInput key={v.id} variable={v} calc={calc} />
+          ))}
       </View>
       <View style={styles.buttons}>
         <Button label="Clear all" variant="secondary" onPress={calc.clear} />

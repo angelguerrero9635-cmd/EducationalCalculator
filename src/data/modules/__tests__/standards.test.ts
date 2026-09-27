@@ -311,9 +311,12 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
 
     it('has about as many values as the grade can hold', () => {
       const limit = valueLimit(grade);
-      // Derived values are read-only boxes the lesson fills in, not values the student holds.
+      // Derived values are read-only boxes the lesson fills in, not values the student holds;
+      // a data set (3 to 10 values and their count) is one list, held as one value.
       if (limit !== undefined)
-        expect(m.variables.filter((v) => !v.derived).length).toBeLessThanOrEqual(limit);
+        expect(m.variables.filter((v) => !v.derived && !v.countedBy).length).toBeLessThanOrEqual(
+          limit,
+        );
     });
   },
 );

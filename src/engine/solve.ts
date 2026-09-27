@@ -46,6 +46,13 @@ const TOLERANCE = 1e-6;
  * With a unit context, the whole-number rule and the numbers in the message refer to the
  * value as shown to the user.
  */
+/** A value past its list's count (the 8th value of a data set of 7): left out of everything. */
+export function outOfCount(v: VariableDef | undefined, values: Values): boolean {
+  if (!v?.countedBy) return false;
+  const n = values[v.countedBy.count];
+  return n !== undefined && v.countedBy.index > n;
+}
+
 export function checkValue(variable: VariableDef, x: number): string | undefined {
   if (!Number.isFinite(x)) return 'Not a number';
   const f = variable.unitFactor ?? 1;
@@ -291,7 +298,9 @@ function propagate(
   while (changed) {
     changed = false;
     for (const relation of system.relations) {
-      const unknowns = relation.vars.filter((id) => !(id in values));
+      const unknowns = relation.vars.filter(
+        (id) => !(id in values) && !outOfCount(byId.get(id), values),
+      );
       if (unknowns.length === 0) {
         if (!holds(relation, values)) {
           return { ok: false, reason: `Doesn’t fit ${relation.id}` };
@@ -461,7 +470,10 @@ function wholeSolutions(
   let exhausted = false;
   const search = (vals: Values) => {
     const open = system.variables.filter(
-      (v) => !(v.id in vals) && system.relations.some((r) => r.vars.includes(v.id)),
+      (v) =>
+        !(v.id in vals) &&
+        !outOfCount(v, vals) &&
+        system.relations.some((r) => r.vars.includes(v.id)),
     );
     if (open.length === 0) {
       solutions.push(vals);
@@ -636,7 +648,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     given: kept,
     derived: ids.filter((id) => id in known && !givenIds.has(id)),
     trace,
-    unknown: ids.filter((id) => !(id in known)),
+    unknown: ids.filter((id) => !(id in known) && !outOfCount(byId.get(id), known)),
     dropped,
     cleared,
     rejected,

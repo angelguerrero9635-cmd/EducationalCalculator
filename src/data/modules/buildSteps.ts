@@ -1,5 +1,5 @@
 import { dollars, formatNumber, renderTemplate, unitFor } from '@/engine/format';
-import { holds, type SolveResult } from '@/engine/solve';
+import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 
@@ -434,7 +434,16 @@ export function buildSteps(
     find: result.trace.map((t) => quantity(t.id)),
     steps,
     check: module.relations
-      .filter((r) => r.vars.every((id) => id in result.values))
+      .filter((r) =>
+        r.vars.every(
+          (id) =>
+            id in result.values ||
+            outOfCount(
+              module.variables.find((v) => v.id === id),
+              result.values,
+            ),
+        ),
+      )
       .map((r) => ({
         formula: agree(
           r.check && direct ? r.check(working) : renderTemplate(r.display, workVars, working),

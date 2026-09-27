@@ -786,6 +786,8 @@ export type Representation =
   | {
       kind: 'dotPlot';
       data: string[];
+      /** How many of `data` are in the set (3 to 10 values): the rest are not drawn. */
+      count?: string;
       min: number;
       max: number;
       mean?: string;

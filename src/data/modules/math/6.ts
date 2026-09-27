@@ -83,7 +83,39 @@ const sidesLine = (a: number, b: number) =>
 const quadrant = (x: number, y: number) =>
   x === 0 || y === 0 ? 0 : x > 0 ? (y > 0 ? 1 : 4) : y > 0 ? 2 : 3;
 /** The six data values of a median page. */
-const six = (v: Values) => ['a', 'b', 'c', 'd', 'e', 'f'].map((id) => v[id]!);
+/** A data set of 3 to 10 values: the ids, the count and the values that are in the set. */
+const DATA = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
+const ORDINALS = [
+  'First',
+  'Second',
+  'Third',
+  'Fourth',
+  'Fifth',
+  'Sixth',
+  'Seventh',
+  'Eighth',
+  'Ninth',
+  'Tenth',
+];
+const COUNT = whole('n', 'n', 'Number of values', 3, 10);
+const DATA_VARS = DATA.map((id, i) => ({
+  id,
+  symbol: id,
+  name: `${ORDINALS[i]} value`,
+  min: 0,
+  max: 1000,
+  countedBy: { count: 'n', index: i + 1 },
+}));
+const counted = (v: Values) => DATA.slice(0, v.n);
+/** The values as the step text lists them: "{a}, {b}, {c}". */
+const listed = (v: Values) =>
+  counted(v)
+    .map((id) => `{${id}}`)
+    .join(', ');
+const dataOf = (v: Values) => counted(v).map((id) => v[id]!);
+const sumOf = (xs: number[]) => xs.reduce((t, x) => t + x, 0);
+/** The mean distance of the values from the mean m. */
+const madOf = (v: Values) => sumOf(dataOf(v).map((x) => Math.abs(x - v.m!))) / v.n!;
 /** The middle value in order, or halfway between the middle two. */
 const median = (xs: number[]) => {
   const s = [...xs].sort((x, y) => x - y);
@@ -3276,165 +3308,194 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
   },
 
-  // ── Mean, median, mode, range and MAD (6.SP.1–5) ──
+  // ── Mean, median, mode, range and MAD (6.SP.1–5): data sets of 3 to 10 values ──
   {
     id: 'm.6.center-spread',
+    use: 'Use this for the mean of a data set, or how many values there are from the sum and the mean.',
     assumptions: [
-      'The mean shares the total equally among the values.',
+      'The mean shares the total equally among the values: sum ÷ number of values.',
       'It is the balance point of the dot plot.',
       'One very large or very small value moves the mean a lot.',
+      'From 3 to 10 values.',
     ],
     variables: [
-      { id: 'a', symbol: 'a', name: 'First value', min: 0, max: 1000 },
-      { id: 'b', symbol: 'b', name: 'Second value', min: 0, max: 1000 },
-      { id: 'c', symbol: 'c', name: 'Third value', min: 0, max: 1000 },
-      { id: 'd', symbol: 'd', name: 'Fourth value', min: 0, max: 1000 },
-      { id: 'e', symbol: 'e', name: 'Fifth value', min: 0, max: 1000 },
-      { id: 's', symbol: 's', name: 'Sum', min: 0, max: 5000 },
+      COUNT,
+      ...DATA_VARS,
+      { id: 's', symbol: 's', name: 'Sum', min: 0, max: 10000 },
       { id: 'm', symbol: 'm', name: 'Mean', min: 0, max: 1000 },
     ],
     relations: [
       {
-        id: 's = a + b + c + d + e',
-        display: '{a} + {b} + {c} + {d} + {e} = {s}',
-        words: 'First + second + third + fourth + fifth = sum',
-        vars: ['s', 'a', 'b', 'c', 'd', 'e'],
-        residual: (v: Values) => v.s! - v.a! - v.b! - v.c! - v.d! - v.e!,
+        id: 's = sum of the values',
+        display: 'sum of the {n} values = {s}',
+        words: 'Add all the values = sum',
+        check: (v: Values) => `${dataOf(v).map(fmt).join(' + ')} = ${fmt(v.s!)}`,
+        vars: ['s', 'n', ...DATA],
+        residual: (v: Values) => v.s! - sumOf(dataOf(v)),
         solve: {
-          s: (v: Values) => exact(v.a! + v.b! + v.c! + v.d! + v.e!),
-          a: (v: Values) => exact(v.s! - v.b! - v.c! - v.d! - v.e!),
-          b: (v: Values) => exact(v.s! - v.a! - v.c! - v.d! - v.e!),
-          c: (v: Values) => exact(v.s! - v.a! - v.b! - v.d! - v.e!),
-          d: (v: Values) => exact(v.s! - v.a! - v.b! - v.c! - v.e!),
-          e: (v: Values) => exact(v.s! - v.a! - v.b! - v.c! - v.d!),
+          s: (v: Values) => exact(sumOf(dataOf(v))),
+          n: () => undefined,
+          ...Object.fromEntries(
+            DATA.map((id) => [
+              id,
+              (v: Values) =>
+                exact(
+                  v.s! -
+                    sumOf(
+                      counted(v)
+                        .filter((x) => x !== id)
+                        .map((x) => v[x]!),
+                    ),
+                ),
+            ]),
+          ),
         },
       },
       {
-        id: 'm = s ÷ 5',
-        display: '{s} ÷ 5 = {m}',
-        words: 'Sum ÷ 5 = mean',
-        check: (v: Values) => `${fmt(v.m!)} × 5 = ${fmt(v.s!)}`,
-        vars: ['m', 's'],
-        residual: (v: Values) => v.m! * 5 - v.s!,
-        solve: { m: (v: Values) => v.s! / 5, s: (v: Values) => exact(v.m! * 5) },
+        id: 'm = s ÷ n',
+        display: '{s} ÷ {n} = {m}',
+        words: 'Sum ÷ number of values = mean',
+        check: (v: Values) => `${fmt(v.m!)} × ${v.n} = ${fmt(v.s!)}`,
+        vars: ['m', 's', 'n'],
+        residual: (v: Values) => v.m! * v.n! - v.s!,
+        solve: {
+          m: (v: Values) => q(v.s!, v.n!),
+          s: (v: Values) => exact(v.m! * v.n!),
+          n: (v: Values) => q(v.s!, v.m!),
+        },
       },
     ],
     steps: {
-      's = a + b + c + d + e': {
-        s: { expr: '{a} + {b} + {c} + {d} + {e}', how: 'Add all five values.' },
+      's = sum of the values': {
+        s: {
+          expr: (v: Values) =>
+            counted(v)
+              .map((id) => `{${id}}`)
+              .join(' + '),
+          how: 'Add all the values.',
+        },
         ...Object.fromEntries(
-          (['a', 'b', 'c', 'd', 'e'] as const).map((id) => {
-            const others = ['a', 'b', 'c', 'd', 'e'].filter((x) => x !== id);
-            return [
-              id,
-              {
-                expr: `{s} − ({${others.join('} + {')}})`,
-                how: 'The sum less the four values you know is the missing one.',
-                work: (v: Values) => {
-                  const known = others.reduce((t, x) => t + v[x]!, 0);
-                  return [
-                    `${others.map((x) => fmt(v[x]!)).join(' + ')} = ${fmt(known)}`,
-                    `${fmt(v.s!)} − ${fmt(known)} = ${fmt(v[id]!)}`,
-                  ];
-                },
-                written: false as const,
+          DATA.map((id) => [
+            id,
+            {
+              expr: (v: Values) =>
+                `{s} − (${counted(v)
+                  .filter((x) => x !== id)
+                  .map((x) => `{${x}}`)
+                  .join(' + ')})`,
+              how: 'The sum less the values you know is the missing one.',
+              work: (v: Values) => {
+                const others = counted(v).filter((x) => x !== id);
+                const known = sumOf(others.map((x) => v[x]!));
+                return [
+                  `${others.map((x) => fmt(v[x]!)).join(' + ')} = ${fmt(known)}`,
+                  `${fmt(v.s!)} − ${fmt(known)} = ${fmt(v[id]!)}`,
+                ];
               },
-            ];
-          }),
+              written: false as const,
+            },
+          ]),
         ),
       },
-      'm = s ÷ 5': {
-        m: { expr: '{s} ÷ 5', how: 'Share the sum equally among the 5 values.' },
-        s: { expr: '{m} × 5', how: 'Five values of the mean make the sum.' },
+      'm = s ÷ n': {
+        m: { expr: '{s} ÷ {n}', how: 'Share the sum equally among the values.' },
+        s: {
+          expr: '{m} × {n}',
+          how: 'Each value at the mean: the mean times the number of values.',
+        },
+        n: { expr: '{s} ÷ {m}', how: 'How many means make the sum: that many values.' },
       },
     },
-    example: { a: 4, b: 7, c: 9, d: 5, e: 10, s: 35, m: 7 },
-    startWith: ['a', 'b', 'c', 'd', 'e'],
-    representation: {
-      kind: 'dotPlot',
-      data: ['a', 'b', 'c', 'd', 'e'],
-      min: 0,
-      max: 12,
-      mean: 'm',
-    },
+    example: { n: 5, a: 4, b: 7, c: 9, d: 5, e: 10, s: 35, m: 7 },
+    startWith: ['n', 'a', 'b', 'c', 'd', 'e'],
+    representation: { kind: 'dotPlot', data: DATA, count: 'n', min: 0, max: 12, mean: 'm' },
   },
   {
     id: 'm.6.center-spread~median',
     title: 'Median, range and mode',
-    use: 'Use this for the median and range of six values, and the mode if there is one.',
+    use: 'Use this for the median and range of a data set, and the mode if there is one.',
     assumptions: [
       'Put the values in order first.',
-      'With six values the median is halfway between the middle two.',
+      'An odd number of values: the median is the middle one. An even number: halfway between the middle two.',
       'The range is the greatest minus the least; the mode is the value that appears most often.',
+      'From 3 to 10 values.',
     ],
     variables: [
-      ...(['a', 'b', 'c', 'd', 'e', 'f'] as const).map((id, i) => ({
-        id,
-        symbol: id,
-        name: `${['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth'][i]} value`,
-        min: 0,
-        max: 1000,
-      })),
+      COUNT,
+      ...DATA_VARS,
       { id: 'M', symbol: 'M', name: 'Median', min: 0, max: 1000, derived: true },
       { id: 'R', symbol: 'R', name: 'Range', min: 0, max: 1000, derived: true },
     ],
     relations: [
       {
         id: 'M = median',
-        display: 'median of {a}, {b}, {c}, {d}, {e}, {f}: {M}',
+        display: 'median of the {n} values: {M}',
         words: 'The middle of the values in order = median',
-        vars: ['M', 'a', 'b', 'c', 'd', 'e', 'f'],
-        residual: (v: Values) => v.M! - median(six(v)),
+        check: (v: Values) => `median of ${dataOf(v).map(fmt).join(', ')}: ${fmt(v.M!)}`,
+        vars: ['M', 'n', ...DATA],
+        residual: (v: Values) => v.M! - median(dataOf(v)),
         solve: {
-          M: (v: Values) => median(six(v)),
-          ...Object.fromEntries(['a', 'b', 'c', 'd', 'e', 'f'].map((id) => [id, () => undefined])),
+          M: (v: Values) => median(dataOf(v)),
+          ...Object.fromEntries(['n', ...DATA].map((id) => [id, () => undefined])),
         },
       },
       {
         id: 'R = range',
-        display: 'range of {a}, {b}, {c}, {d}, {e}, {f}: {R}',
+        display: 'range of the {n} values: {R}',
         words: 'Greatest value − least value = range',
         check: (v: Values) =>
-          `${fmt(Math.max(...six(v)))} − ${fmt(Math.min(...six(v)))} = ${fmt(v.R!)}`,
-        vars: ['R', 'a', 'b', 'c', 'd', 'e', 'f'],
-        residual: (v: Values) => v.R! - (Math.max(...six(v)) - Math.min(...six(v))),
+          `${fmt(Math.max(...dataOf(v)))} − ${fmt(Math.min(...dataOf(v)))} = ${fmt(v.R!)}`,
+        vars: ['R', 'n', ...DATA],
+        residual: (v: Values) => v.R! - (Math.max(...dataOf(v)) - Math.min(...dataOf(v))),
         solve: {
-          R: (v: Values) => exact(Math.max(...six(v)) - Math.min(...six(v))),
-          ...Object.fromEntries(['a', 'b', 'c', 'd', 'e', 'f'].map((id) => [id, () => undefined])),
+          R: (v: Values) => exact(Math.max(...dataOf(v)) - Math.min(...dataOf(v))),
+          ...Object.fromEntries(['n', ...DATA].map((id) => [id, () => undefined])),
         },
       },
     ],
     steps: {
       'M = median': {
         M: {
-          expr: 'median of {a}, {b}, {c}, {d}, {e}, {f}',
-          how: 'Put the values in order. Find the number halfway between the middle two.',
-          work: (v) => {
-            const xs = [...six(v)].sort((x, y) => x - y);
-            return [
-              `In order: ${xs.map(fmt).join(', ')}`,
-              `The middle two are ${fmt(xs[2]!)} and ${fmt(xs[3]!)}.`,
-              `(${fmt(xs[2]!)} + ${fmt(xs[3]!)}) ÷ 2 = ${fmt(v.M!)}`,
-            ];
+          expr: (v: Values) => `median of ${listed(v)}`,
+          how: (v: Values) =>
+            v.n! % 2
+              ? 'Put the values in order. With an odd number of values, the median is the middle one.'
+              : 'Put the values in order. Find the number halfway between the middle two.',
+          work: (v: Values) => {
+            const xs = [...dataOf(v)].sort((x, y) => x - y);
+            const k = xs.length;
+            return k % 2
+              ? [
+                  `In order: ${xs.map(fmt).join(', ')}`,
+                  `${(k - 1) / 2} values on each side of the middle one: ${fmt(xs[(k - 1) / 2]!)}`,
+                ]
+              : [
+                  `In order: ${xs.map(fmt).join(', ')}`,
+                  `The middle two are ${fmt(xs[k / 2 - 1]!)} and ${fmt(xs[k / 2]!)}.`,
+                  `(${fmt(xs[k / 2 - 1]!)} + ${fmt(xs[k / 2]!)}) ÷ 2 = ${fmt(v.M!)}`,
+                ];
           },
-          note: (v) => `(${modeText(six(v))})`,
+          note: (v: Values) => `(${modeText(dataOf(v))})`,
           written: false,
         },
       },
       'R = range': {
         R: {
-          expr: 'range of {a}, {b}, {c}, {d}, {e}, {f}',
+          expr: (v: Values) => `range of ${listed(v)}`,
           how: 'Take the least value from the greatest.',
-          work: (v) => [`${fmt(Math.max(...six(v)))} − ${fmt(Math.min(...six(v)))} = ${fmt(v.R!)}`],
+          work: (v: Values) => [
+            `${fmt(Math.max(...dataOf(v)))} − ${fmt(Math.min(...dataOf(v)))} = ${fmt(v.R!)}`,
+          ],
           written: false,
         },
       },
     },
-    example: { a: 8, b: 3, c: 12, d: 7, e: 5, f: 9, M: 7.5, R: 9 },
-    startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
+    example: { n: 6, a: 8, b: 3, c: 12, d: 7, e: 5, f: 9, M: 7.5, R: 9 },
+    startWith: ['n', 'a', 'b', 'c', 'd', 'e', 'f'],
     representation: {
       kind: 'dotPlot',
-      data: ['a', 'b', 'c', 'd', 'e', 'f'],
+      data: DATA,
+      count: 'n',
       min: 0,
       max: 15,
       median: 'M',
@@ -3449,81 +3510,80 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Find the mean first.',
       'The distance of each value from the mean is never negative.',
       'The MAD is the mean of those distances: a bigger MAD means the data is more spread out.',
+      'From 3 to 10 values.',
     ],
     variables: [
-      ...(['a', 'b', 'c', 'd', 'e'] as const).map((id, i) => ({
-        id,
-        symbol: id,
-        name: `${['First', 'Second', 'Third', 'Fourth', 'Fifth'][i]} value`,
-        min: 0,
-        max: 1000,
-      })),
+      COUNT,
+      ...DATA_VARS,
       { id: 'm', symbol: 'm', name: 'Mean', min: 0, max: 1000, derived: true },
       { id: 'D', symbol: 'D', name: 'Mean absolute deviation', min: 0, max: 1000, derived: true },
     ],
     relations: [
       {
         id: 'm = mean',
-        display: '({a} + {b} + {c} + {d} + {e}) ÷ 5 = {m}',
-        words: 'Sum of the values ÷ 5 = mean',
-        vars: ['m', 'a', 'b', 'c', 'd', 'e'],
-        residual: (v: Values) => v.m! * 5 - v.a! - v.b! - v.c! - v.d! - v.e!,
+        display: 'sum of the {n} values ÷ {n} = {m}',
+        words: 'Sum of the values ÷ number of values = mean',
+        check: (v: Values) => `(${dataOf(v).map(fmt).join(' + ')}) ÷ ${v.n} = ${fmt(v.m!)}`,
+        vars: ['m', 'n', ...DATA],
+        residual: (v: Values) => v.m! * v.n! - sumOf(dataOf(v)),
         solve: {
-          m: (v: Values) => (v.a! + v.b! + v.c! + v.d! + v.e!) / 5,
-          ...Object.fromEntries(['a', 'b', 'c', 'd', 'e'].map((id) => [id, () => undefined])),
+          m: (v: Values) => q(sumOf(dataOf(v)), v.n!),
+          ...Object.fromEntries(['n', ...DATA].map((id) => [id, () => undefined])),
         },
       },
       {
         id: 'D = MAD',
-        display: 'mean distance from {m} of {a}, {b}, {c}, {d}, {e}: {D}',
+        display: 'mean distance from {m} of the {n} values: {D}',
         words: 'Mean of the distances from the mean = mean absolute deviation',
-        vars: ['D', 'm', 'a', 'b', 'c', 'd', 'e'],
-        residual: (v: Values) =>
-          v.D! - ['a', 'b', 'c', 'd', 'e'].reduce((t, id) => t + Math.abs(v[id]! - v.m!), 0) / 5,
+        check: (v: Values) =>
+          `mean distance from ${fmt(v.m!)} of ${dataOf(v).map(fmt).join(', ')}: ${fmt(v.D!)}`,
+        vars: ['D', 'm', 'n', ...DATA],
+        residual: (v: Values) => v.D! - madOf(v),
         solve: {
-          D: (v: Values) =>
-            ['a', 'b', 'c', 'd', 'e'].reduce((t, id) => t + Math.abs(v[id]! - v.m!), 0) / 5,
-          ...Object.fromEntries(['m', 'a', 'b', 'c', 'd', 'e'].map((id) => [id, () => undefined])),
+          D: (v: Values) => exact(madOf(v)),
+          ...Object.fromEntries(['m', 'n', ...DATA].map((id) => [id, () => undefined])),
         },
       },
     ],
     steps: {
       'm = mean': {
         m: {
-          expr: '({a} + {b} + {c} + {d} + {e}) ÷ 5',
-          how: 'Add the values and share the sum equally among the 5.',
-          work: (v) => {
-            const s = v.a! + v.b! + v.c! + v.d! + v.e!;
-            return [
-              `${fmt(v.a!)} + ${fmt(v.b!)} + ${fmt(v.c!)} + ${fmt(v.d!)} + ${fmt(v.e!)} = ${fmt(s)}`,
-              `${fmt(s)} ÷ 5 = ${fmt(v.m!)}`,
-            ];
+          expr: (v: Values) =>
+            `(${counted(v)
+              .map((id) => `{${id}}`)
+              .join(' + ')}) ÷ {n}`,
+          how: 'Add the values and share the sum equally among them.',
+          work: (v: Values) => {
+            const xs = dataOf(v);
+            const t = sumOf(xs);
+            return [`${xs.map(fmt).join(' + ')} = ${fmt(t)}`, `${fmt(t)} ÷ ${v.n} = ${fmt(v.m!)}`];
           },
           written: false,
         },
       },
       'D = MAD': {
         D: {
-          expr: 'mean distance from {m} of {a}, {b}, {c}, {d}, {e}',
+          expr: (v: Values) => `mean distance from {m} of ${listed(v)}`,
           how: 'Find how far each value is from the mean. Then find the mean of those distances.',
-          work: (v) => {
-            const ds = ['a', 'b', 'c', 'd', 'e'].map((id) => Math.abs(v[id]! - v.m!));
-            const s = ds.reduce((t, x) => t + x, 0);
+          work: (v: Values) => {
+            const ds = dataOf(v).map((x) => exact(Math.abs(x - v.m!)));
+            const t = exact(sumOf(ds));
             return [
               `Distances from ${fmt(v.m!)}: ${ds.map(fmt).join(', ')}`,
-              `${ds.map(fmt).join(' + ')} = ${fmt(s)}`,
-              `${fmt(s)} ÷ 5 = ${fmt(v.D!)}`,
+              `${ds.map(fmt).join(' + ')} = ${fmt(t)}`,
+              `${fmt(t)} ÷ ${v.n} = ${fmt(v.D!)}`,
             ];
           },
           written: false,
         },
       },
     },
-    example: { a: 4, b: 7, c: 9, d: 5, e: 10, m: 7, D: 2 },
-    startWith: ['a', 'b', 'c', 'd', 'e'],
+    example: { n: 5, a: 4, b: 7, c: 9, d: 5, e: 10, m: 7, D: 2 },
+    startWith: ['n', 'a', 'b', 'c', 'd', 'e'],
     representation: {
       kind: 'dotPlot',
-      data: ['a', 'b', 'c', 'd', 'e'],
+      data: DATA,
+      count: 'n',
       min: 0,
       max: 12,
       mean: 'm',

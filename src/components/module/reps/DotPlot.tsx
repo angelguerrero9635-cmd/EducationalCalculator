@@ -21,7 +21,10 @@ type Spec = Extract<Representation, { kind: 'dotPlot' }>;
 export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  const known = spec.data.filter(rep.known);
+  // With a count, only the first `count` values are data; the rest are hidden boxes.
+  const n = spec.count && rep.known(spec.count) ? rep.shown(spec.count) : spec.data.length;
+  const ids = spec.data.slice(0, n);
+  const known = ids.filter(rep.known);
   const data = known.map((id) => rep.shown(id));
   const extent = useFrozen(
     (() => {
@@ -169,10 +172,10 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Caption>
       <Steppers
         calc={calc}
-        items={spec.data.map((id) => ({
+        items={ids.map((id) => ({
           var: id,
           steps: [1],
-          pin: spec.data.filter((x) => x !== id),
+          pin: ids.filter((x) => x !== id),
         }))}
       />
     </View>

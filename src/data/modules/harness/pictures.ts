@@ -773,9 +773,11 @@ export function repIssues(
       break;
     }
     case 'dotPlot': {
-      const data = rep.data.map(val).filter((x): x is number => x !== undefined);
+      const n = rep.count ? val(rep.count) : undefined;
+      const ids = rep.data.slice(0, n ?? rep.data.length);
+      const data = ids.map(val).filter((x): x is number => x !== undefined);
       const m = rep.mean ? val(rep.mean) : undefined;
-      if (m !== undefined && data.length === rep.data.length) {
+      if (m !== undefined && data.length === ids.length) {
         const mean = data.reduce((s, x) => s + x, 0) / data.length;
         if (Math.abs(mean - m) > 1e-6 * Math.max(1, Math.abs(m)))
           out.push(`dots balance at ${mean}, mean shows ${m}`);

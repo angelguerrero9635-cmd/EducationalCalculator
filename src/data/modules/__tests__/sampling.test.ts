@@ -627,7 +627,8 @@ function stageRandom(c: Ctx, r: Rng, n: number) {
     checkAll(c, givens, res);
     if (res.unknown.length === 0 && !res.rejected) {
       // Every value from one consistent solution: any subset, in any order, must be accepted.
-      const ids = r.shuffle(typable(c).map((v) => v.id));
+      // A value past a data set's count has none: it is not part of the solution.
+      const ids = r.shuffle(typable(c).map((v) => v.id)).filter((id) => id in res.values);
       const size = Math.max(1, Math.min(ids.length, c.module.startWith.length + r.pick([0, 1, 2])));
       const subset = ids.slice(0, size).map((id) => ({ id, value: res.values[id]! }));
       const withPrevious = r.next() < 0.5;

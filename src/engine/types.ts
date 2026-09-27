@@ -38,6 +38,12 @@ export interface VariableDef {
    */
   derived?: boolean;
   /**
+   * One of a list of values whose length is itself a value (a data set of 3 to 10 numbers):
+   * counted only while `count` is at least `index`. Past the count it is hidden, never asked
+   * for, and left out of every relation (the relations read only the first `count` values).
+   */
+  countedBy?: { count: string; index: number };
+  /**
    * Set by the unit context, not by content: how many formula units one shown unit equals, and
    * the shown unit. Ranges and whole-number rules then apply to the shown number.
    */

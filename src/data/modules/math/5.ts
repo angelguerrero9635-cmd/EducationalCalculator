@@ -2032,9 +2032,77 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       total: 'T',
     },
   },
-  // ── Two patterns graphed as points (5.OA.3, 5.G.1, 5.G.2) ──
+  // ── Plot and read a point (5.G.1, 5.G.2) ──
   {
     id: 'm.5.coordinate-plane-q1',
+    standalone: {
+      vars: ['u', 'y'],
+      why: 'Across and up are two separate moves from the origin to the same point.',
+    },
+    assumptions: [
+      'The origin is (0, 0), where the two axes meet.',
+      'An ordered pair (across, up) gives the coordinates: start at the origin, go across the first number, then up the second.',
+      'Reading a point: count across from the origin to below the point, then up to it.',
+      'Whole numbers to 20.',
+    ],
+    variables: [
+      whole('r', 'r', 'Steps across from the origin', 0, 20),
+      whole('u', 'u', 'Steps up from the origin', 0, 20),
+      whole('x', 'x', 'First coordinate (across)', 0, 20),
+      whole('y', 'y', 'Second coordinate (up)', 0, 20),
+    ],
+    relations: [
+      {
+        id: 'x = 0 + r',
+        display: '0 + {r} = {x}',
+        words: 'Origin + steps across = first coordinate',
+        vars: ['x', 'r'],
+        residual: (v: Values) => v.x! - v.r!,
+        solve: { x: (v: Values) => v.r!, r: (v: Values) => v.x! },
+      },
+      {
+        id: 'y = 0 + u',
+        display: '0 + {u} = {y}',
+        words: 'Origin + steps up = second coordinate',
+        vars: ['y', 'u'],
+        residual: (v: Values) => v.y! - v.u!,
+        solve: { y: (v: Values) => v.u!, u: (v: Values) => v.y! },
+      },
+    ],
+    steps: {
+      'x = 0 + r': {
+        x: {
+          expr: '0 + {r}',
+          how: 'Start at the origin (0, 0). Go across along the x-axis first.',
+          work: (v: Values) => [`Across ${v.r} from 0: the first coordinate is ${v.x}.`],
+        },
+        r: {
+          expr: '{x} − 0',
+          how: 'The first number of the ordered pair says how far across to go.',
+        },
+      },
+      'y = 0 + u': {
+        y: {
+          expr: '0 + {u}',
+          how: 'Then go up, parallel to the y-axis.',
+          work: (v: Values) => [`Up ${v.u}: the second coordinate is ${v.y}.`],
+          note: (v: Values) => (v.x !== undefined ? `(the point (${v.x}, ${v.y}))` : ''),
+        },
+        u: {
+          expr: '{y} − 0',
+          how: 'The second number of the ordered pair says how far up to go.',
+        },
+      },
+    },
+    example: { r: 9, u: 3, x: 9, y: 3 },
+    startWith: ['x', 'y'],
+    representation: { kind: 'coordinatePlane', x: 'x', y: 'y', extent: 10, quadrants: 1 },
+  },
+  // ── Two patterns graphed as points (5.OA.3, 5.G.2) ──
+  {
+    id: 'm.5.coordinate-plane-q1~patterns',
+    title: 'Two patterns as points',
+    use: 'Use this for “Rule A: start at 0, add 3. Rule B: start at 0, add 6. Graph the pairs.”',
     assumptions: [
       'Two patterns start at 0. Each term adds the same amount to each pattern.',
       'Pair the terms: the first pattern’s number goes across, the second’s goes up.',
@@ -2042,8 +2110,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     ],
     variables: [
       whole('t', 't', 'Term', 0, 10),
-      whole('s', 's', 'First rule adds', 1, 10),
-      whole('u', 'u', 'Second rule adds', 1, 10),
+      whole('s', 's', 'First rule’s step', 1, 10),
+      whole('u', 'u', 'Second rule’s step', 1, 10),
       whole('x', 'x', 'First number (across)', 0, 100),
       whole('y', 'y', 'Second number (up)', 0, 100),
     ],
