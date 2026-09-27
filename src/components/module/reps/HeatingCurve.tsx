@@ -357,8 +357,12 @@ export function HeatingCurve({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       strokeWidth={1.5}
                     />
                     <ChartText
-                      {...fitLabel(px, withUnit(yText, tempUnit), chart.value, w)}
-                      y={py + (part === 1 || part === 3 ? 22 : -12)}
+                      // On a flat step: under it. On a rising stretch: up and to the left, clear
+                      // of the line (the state's name is on its right).
+                      {...(part === 1 || part === 3
+                        ? fitLabel(px, withUnit(yText, tempUnit), chart.value, w)
+                        : fitLabel(px - 10, withUnit(yText, tempUnit), chart.value, w, 'end', 10))}
+                      y={py + (part === 1 || part === 3 ? 22 : -8)}
                       fontSize={chart.value}
                       fontWeight="700"
                       fill={c.chartHighlight}

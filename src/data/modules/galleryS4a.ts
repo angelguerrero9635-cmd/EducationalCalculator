@@ -348,7 +348,8 @@ const placeOn = (
     id: `${id} = ${what} of Z`,
     display: `{${id}} = the ${what} of element {Z}`,
     vars: [id, 'Z'],
-    residual: (v: Values) => v[id]! - (of(v.Z!) ?? NaN),
+    // The lanthanides and actinides have no group here: nothing to check.
+    residual: (v: Values) => (of(v.Z!) === undefined ? 0 : v[id]! - of(v.Z!)!),
     solve: { [id]: (v: Values) => of(v.Z!), Z: () => undefined },
     check: (v: Values) => `${formatNumber(v[id]!)} = ${formatNumber(of(v.Z!) ?? NaN)}`,
   },
