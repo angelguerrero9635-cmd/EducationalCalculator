@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-41 of 329 pages show sliders.
+41 of 336 pages show sliders.
 
 ## By picture kind
 
@@ -21,7 +21,7 @@ its kind with `sliders: true | false`.
 | baseTen | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | beaker | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | boxPlot | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| circle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| circle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | clock | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -44,9 +44,10 @@ its kind with `sliders: true | false`.
 | gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grassSlope | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| hanger | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
-| integerLine | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| integerLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | leafCount | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | linePlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | net | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -73,13 +74,14 @@ its kind with `sliders: true | false`.
 | rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| scaleCopy | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 33 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 35 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -434,3 +436,10 @@ its kind with `sliders: true | false`.
 | g.sign-table | signTable | no |
 | g.signed-jump-add | integerLine | no |
 | g.signed-jump-subtract | integerLine | no |
+| g.hanger | hanger | no |
+| g.tape-equation | tape | no |
+| g.tape-equation-grouped | tape | no |
+| g.two-step-inequality | integerLine | no |
+| g.scale-copy | scaleCopy | no |
+| g.scale-copy-area | scaleCopy | no |
+| g.circle-parts | circle | no |
