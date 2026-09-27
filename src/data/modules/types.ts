@@ -32,8 +32,21 @@ export type Representation =
       max: number;
       /** Labelled tick spacing; with tick > 1, unlabelled ticks still mark every 1. */
       tick?: number;
-      /** 'tens': draw the jump as jumps of 10, then one jump for the ones (38 → 48 → 58 → 63). */
-      jumps?: 'tens';
+      /**
+       * 'tens': draw the jump as jumps of 10, then one jump for the ones (38 → 48 → 58 → 63).
+       * 'ticks': one jump per tick (500 → 510 → 520 → 530 → 540 by 10s), then any rest.
+       */
+      jumps?: 'tens' | 'ticks';
+      /**
+       * A line that starts at this value (500) instead of `min`, running `span` ticks of
+       * `every` (500 to 600 by 10s); `min` and `max` are then ignored. A caption says the
+       * number sentence: "500 + 40 = 540".
+       */
+      from?: string;
+      /** Tick spacing as a value (1, 10 or 100) for a `from` line; default `tick`. */
+      every?: string;
+      /** Ticks on a `from` line (default 10). */
+      span?: number;
     }
   /**
    * Ten-frames with two kinds of counters: `first` solid (●), then `second` open (○), `total` in all.

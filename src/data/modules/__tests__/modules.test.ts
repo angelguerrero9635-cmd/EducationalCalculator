@@ -12,7 +12,7 @@ import type { ModuleDef, Representation } from '../types';
 function representationVars(r: Representation): string[] {
   switch (r.kind) {
     case 'numberLine':
-      return [r.start, r.jump, r.end];
+      return [r.start, r.jump, r.end, ...[r.from, r.every].filter((v): v is string => !!v)];
     case 'tenFrame':
       return [r.first, r.second, r.total].filter((v): v is string => typeof v === 'string');
     case 'hundredChart':

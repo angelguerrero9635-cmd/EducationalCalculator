@@ -306,14 +306,21 @@ export function repIssues(
         } else count(c.var, 'pictures', rep.max);
       }
       break;
-    case 'numberLine':
+    case 'numberLine': {
+      // A `from` line runs `span` ticks of `every` from its start (NumberLine.tsx).
+      const every = rep.every === undefined ? (rep.tick ?? 1) : val(rep.every);
+      const lo = rep.from === undefined ? rep.min : val(rep.from);
+      if (every !== undefined && every <= 0) out.push(`number line ticks every ${every}`);
+      if (lo === undefined || every === undefined) break;
+      const hi = rep.from === undefined ? rep.max : lo + (rep.span ?? 10) * every;
       for (const id of [rep.start, rep.end]) {
         const x = val(id);
-        if (x !== undefined && (x < rep.min || x > rep.max)) {
-          out.push(`number line point ${id} = ${x} off the line (${rep.min}–${rep.max})`);
+        if (x !== undefined && (x < lo - 1e-9 || x > hi + 1e-9)) {
+          out.push(`number line point ${id} = ${x} off the line (${lo}–${hi})`);
         }
       }
       break;
+    }
     // Grade 3 pictures.
     case 'rounding': {
       const [n, lo, hi, r] = [rep.value, rep.lower, rep.upper, rep.rounded].map(val);

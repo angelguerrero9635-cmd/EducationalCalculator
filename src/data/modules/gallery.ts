@@ -11,6 +11,10 @@ import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
 
+/** A whole count, or undefined when a division doesn't come out whole. */
+const whole0 = (x: number | undefined) =>
+  x !== undefined && Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : undefined;
+
 export const GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.coordinate-plane',
@@ -616,6 +620,72 @@ export const GALLERY_MODULES: ModuleDef[] = [
       shape: 'set',
       object: 'umbrella',
       fraction: true,
+    },
+  },
+  {
+    id: 'g.number-line-500',
+    title: 'Three-digit number line',
+    assumptions: [
+      'The line starts at the start number and has 10 equal jumps.',
+      'Each jump is 1, 10 or 100.',
+      'The number to place is on the line.',
+    ],
+    variables: [
+      {
+        ...whole('a', 'a', 'Start of the line', 100, 900),
+        allowed: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+      },
+      { ...whole('t', 't', 'Each jump', 1, 100), allowed: [1, 10, 100] },
+      whole('k', 'k', 'Jumps', 0, 10),
+      whole('d', 'd', 'Distance from the start', 0, 1000),
+      whole('n', 'n', 'Number to place', 100, 1900),
+    ],
+    relations: [
+      {
+        id: 'd = k × t',
+        display: '{k} × {t} = {d}',
+        vars: ['d', 'k', 't'],
+        residual: (v: Values) => v.d! - v.k! * v.t!,
+        solve: {
+          d: (v: Values) => v.k! * v.t!,
+          k: (v: Values) => whole0(div(v.d!, v.t!)),
+          t: () => undefined,
+        },
+      },
+      {
+        id: 'n = a + d',
+        display: '{a} + {d} = {n}',
+        vars: ['n', 'a', 'd'],
+        residual: (v: Values) => v.n! - (v.a! + v.d!),
+        solve: {
+          n: (v: Values) => v.a! + v.d!,
+          d: (v: Values) => v.n! - v.a!,
+          a: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'd = k × t': {
+        d: { expr: '{k} × {t}', how: 'Count the jumps: each one is the same size.' },
+        k: { expr: '{d} ÷ {t}', how: 'How many jumps make the distance?' },
+      },
+      'n = a + d': {
+        n: { expr: '{a} + {d}', how: 'Start at the start of the line and go on.' },
+        d: { expr: '{n} − {a}', how: 'How far the number is from the start.' },
+      },
+    },
+    example: { a: 500, t: 10, k: 4, d: 40, n: 540 },
+    startWith: ['a', 't', 'n'],
+    representation: {
+      kind: 'numberLine',
+      start: 'a',
+      jump: 'd',
+      end: 'n',
+      min: 0,
+      max: 1000,
+      from: 'a',
+      every: 't',
+      jumps: 'ticks',
     },
   },
   {
