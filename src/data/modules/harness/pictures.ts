@@ -563,7 +563,10 @@ export function repIssues(
         if (x < 0) out.push(`${what} ${id} is negative (${x})`);
         if (Math.abs(x * k - Math.round(x * k)) > 1e-9)
           out.push(`${what} ${id} is not whole cubes (${x})`);
-        if (x * k > rep.max) out.push(`${what} ${id} = ${x} exceeds the drawing's ${rep.max}`);
+        // With `scale` a bigger box is drawn to scale (ScaledBox), not in cubes.
+        if (x * k > rep.max && !(rep.scale && k === 1 && !rep.second))
+          out.push(`${what} ${id} = ${x} exceeds the drawing's ${rep.max}`);
+        if (rep.scale && x <= 0) out.push(`${what} ${id} = ${x}: a box to scale needs a size`);
       }
       if ([l, w, h, v].every((x) => x !== undefined) && Math.abs(l! * w! * h! - v!) > 1e-9)
         out.push(`${l} × ${w} × ${h} cubes drawn, volume shows ${v}`);

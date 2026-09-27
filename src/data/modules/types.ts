@@ -666,6 +666,11 @@ export type Representation =
       total?: string;
       /** Cubes of edge 1/cube (2: half-unit cubes) fill the box; `volume` stays in unit cubes. */
       cube?: 2 | 3 | 4;
+      /**
+       * Past `max` a side, draw the box to scale (40 × 60 × 80 cm): each edge labelled, lines
+       * every few units on its faces and one unit cube under it for size.
+       */
+      scale?: boolean;
     }
   /**
    * Place-value chart: the digits of `value` in labelled columns, `decimals` places (0–3) past

@@ -299,4 +299,55 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
       inequality: { sign: 's', test: 't', letter: 'x' },
     },
   },
+  {
+    id: 'g.scaled-box',
+    title: 'Box to scale',
+    assumptions: [
+      'Volume = length × width × height, counted in unit cubes.',
+      'Past 10 cubes a side, the box is drawn to scale with one cube beside it.',
+    ],
+    variables: [
+      { ...whole('l', 'l', 'Length', 1, 100), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 100), unit: 'cm' },
+      { ...whole('h', 'h', 'Height', 1, 100), unit: 'cm' },
+      { ...whole('V', 'V', 'Volume', 1, 1000000), unit: 'cm³', derived: true },
+    ],
+    relations: [
+      {
+        id: 'V = l × w × h',
+        display: '{l} × {w} × {h} = {V}',
+        vars: ['V', 'l', 'w', 'h'],
+        residual: (v: Values) => v.V! - v.l! * v.w! * v.h!,
+        solve: {
+          V: (v: Values) => v.l! * v.w! * v.h!,
+          l: () => undefined,
+          w: () => undefined,
+          h: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'V = l × w × h': {
+        V: {
+          expr: '{l} × {w} × {h}',
+          how: 'Multiply the three edges.',
+          work: (v: Values) => [
+            `${v.l} × ${v.w} = ${v.l! * v.w!}`,
+            `${v.l! * v.w!} × ${v.h} = ${v.V}`,
+          ],
+        },
+      },
+    },
+    example: { l: 40, w: 60, h: 80, V: 192000 },
+    startWith: ['l', 'w', 'h'],
+    representation: {
+      kind: 'unitCubes',
+      length: 'l',
+      width: 'w',
+      height: 'h',
+      volume: 'V',
+      max: 10,
+      scale: true,
+    },
+  },
 ];
