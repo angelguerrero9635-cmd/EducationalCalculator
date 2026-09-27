@@ -40,7 +40,7 @@
   <g stroke="#ffffff" stroke-width="12" stroke-linecap="round"><line x1="298" y1="646" x2="342" y2="646"/><line x1="458" y1="646" x2="502" y2="646"/><line x1="480" y1="624" x2="480" y2="668"/></g>
   <ellipse cx="845" cy="700" rx="140" ry="10" fill="#1f2937" opacity="0.12"/>
   <rect x="712" y="600" width="266" height="90" rx="14" fill="#d6a76c" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
-  <rect x="712" y="670" width="266" height="20" fill="#b98a52"/>
+  <path d="M712 670 L978 670 L978 676 Q978 690 964 690 L726 690 Q712 690 712 676 Z" fill="#b98a52"/>
   <rect x="712" y="600" width="266" height="90" rx="14" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
   <line x1="716" y1="670" x2="974" y2="670" stroke="#1f2937" stroke-width="4" opacity="0.4"/>
   <circle cx="742" cy="640" r="15" fill="url(#circuit-metal)" stroke="#1f2937" stroke-width="5"/>

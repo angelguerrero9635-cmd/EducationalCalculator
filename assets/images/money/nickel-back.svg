@@ -13,6 +13,7 @@
   <circle cx="400" cy="400" r="261.6" fill="none" stroke="#94a3b8" stroke-width="5"/>
   <path d="M156.7 305.8 A261.6 261.6 0 0 1 305.8 156.7" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
   <g transform="translate(400 400) scale(2.6158)">
+    <g transform="translate(0 -2) scale(0.86)">
     <path d="M-22 -18 A22 22 0 0 1 22 -18 Z" fill="#e2e8f0" stroke="#1f2937" stroke-width="1.53" stroke-linejoin="round" stroke-linecap="round"/>
     <path d="M-26 -18 L26 -18 L26 -10 L-26 -10 Z" fill="#e2e8f0" stroke="#1f2937" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"/>
     <path d="M-74 -4 L74 -4 L74 30 L-74 30 Z" fill="#e2e8f0" stroke="#1f2937" stroke-width="1.53" stroke-linejoin="round" stroke-linecap="round"/>
@@ -29,8 +30,9 @@
     <path d="M40 6 L48 6 L48 22 L40 22 Z" fill="#94a3b8" stroke="#1f2937" stroke-width="0.96" stroke-linejoin="round" stroke-linecap="round"/>
     <path d="M56 6 L64 6 L64 22 L56 22 Z" fill="#94a3b8" stroke="#1f2937" stroke-width="0.96" stroke-linejoin="round" stroke-linecap="round"/>
     <path d="M-82 30 L82 30 L82 38 L-82 38 Z" fill="#f1f5f9" stroke="#1f2937" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"/>
+    </g>
     <text font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="14" letter-spacing="1" fill="#334155" text-anchor="middle"><textPath href="#nickelb-t5" startOffset="50%">E PLURIBUS UNUM</textPath></text>
-    <text x="0" y="60" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" letter-spacing="1.5" fill="#334155" text-anchor="middle">FIVE CENTS</text>
+    <text x="0" y="56" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" letter-spacing="1.5" fill="#334155" text-anchor="middle">FIVE CENTS</text>
     <text font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="12" letter-spacing="0.6" fill="#334155" text-anchor="middle"><textPath href="#nickelb-t6" startOffset="50%">UNITED STATES OF AMERICA</textPath></text>
   </g>
 </svg>
