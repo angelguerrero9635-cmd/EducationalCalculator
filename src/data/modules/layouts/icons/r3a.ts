@@ -29,4 +29,14 @@ export const R3A_ICONS = [
   'plastic ruler',
   'cardboard piece',
   'gray rock',
+  // Conductors, magnets and dissolving (D39, D40, D48).
+  'copper wire coil',
+  'aluminum foil',
+  'glass marble',
+  'soup can',
+  'fridge',
+  'sand pile',
+  'gravel',
+  'pepper shaker',
+  'cooking oil bottle',
 ] as const;

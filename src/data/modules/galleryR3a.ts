@@ -92,4 +92,79 @@ export const R3A_GALLERY_LAYOUTS: LayoutDef[] = [
       ['Glass', 'no', 'drinking glass'],
     ],
   ),
+  // D39: s.4.energy-conversion~conductors.
+  cardSort(
+    'g.r3a-conductors',
+    'Does electric current flow through it?',
+    'Does the bulb light when it is in the circuit?',
+    [
+      ['conductor', 'Conductor', 'Current flows through it: the bulb lights.'],
+      ['insulator', 'Insulator', 'Current cannot get through: the bulb stays dark.'],
+    ],
+    [
+      ['Copper wire', 'conductor', 'copper wire coil'],
+      ['Paper clip', 'conductor', 'paper clip'],
+      ['Aluminum foil', 'conductor', 'aluminum foil'],
+      ['Coin', 'conductor', 'copper coin'],
+      ['Steel nail', 'conductor', 'steel nail'],
+      ['Plastic spoon', 'insulator', 'plastic spoon'],
+      ['Rubber band', 'insulator', 'rubber band'],
+      ['Wood stick', 'insulator', 'craft stick'],
+      ['Glass marble', 'insulator', 'glass marble'],
+    ],
+  ),
+  // D40: s.3.magnets~magnetic.
+  cardSort(
+    'g.r3a-magnetic',
+    'What a magnet pulls',
+    'Does a magnet pull it?',
+    [
+      ['pulled', 'Pulled', 'It has iron or steel in it.'],
+      ['not', 'Not pulled', 'Magnets do not pull on these.'],
+    ],
+    [
+      ['Paper clip', 'pulled', 'paper clip'],
+      ['Iron nail', 'pulled', 'steel nail'],
+      ['Soup can (steel)', 'pulled', 'soup can'],
+      ['Fridge door', 'pulled', 'fridge'],
+      ['Aluminum can', 'not', 'soda can'],
+      ['Penny', 'not', 'copper coin'],
+      ['Wooden block', 'not', 'wooden block'],
+      ['Rubber band', 'not', 'rubber band'],
+    ],
+  ),
+  // D48: s.5.particles-matter~properties (Salt, Sugar and Baking soda have no picture).
+  cardSort(
+    'g.r3a-dissolve',
+    'Does it dissolve in water?',
+    'Does it dissolve in water?',
+    [
+      ['dissolves', 'Dissolves', 'It spreads through the water and seems to disappear.'],
+      ['not', 'Does not dissolve', 'You can still see it, floating or sitting on the bottom.'],
+    ],
+    [
+      ['Sand', 'not', 'sand pile'],
+      ['Gravel', 'not', 'gravel'],
+      ['Pepper', 'not', 'pepper shaker'],
+      ['Cooking oil', 'not', 'cooking oil bottle'],
+    ],
+  ),
+  // D49: s.5.particles-matter~magnet.
+  cardSort(
+    'g.r3a-magnet-pull',
+    'Does a magnet pull it?',
+    'Does a magnet pull it?',
+    [
+      ['pulled', 'Pulled', 'It has iron or steel in it.'],
+      ['not', 'Not pulled', 'No iron or steel: the magnet does nothing.'],
+    ],
+    [
+      ['Iron nail', 'pulled', 'steel nail'],
+      ['Steel paper clip', 'pulled', 'paper clip'],
+      ['Aluminum can', 'not', 'soda can'],
+      ['Copper coin', 'not', 'copper coin'],
+      ['Plastic spoon', 'not', 'plastic spoon'],
+      ['Wood block', 'not', 'wooden block'],
+    ],
+  ),
 ];

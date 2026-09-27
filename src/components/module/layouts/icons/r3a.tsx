@@ -21,7 +21,16 @@ import {
 
 import { usePalette } from '@/theme';
 
-import { FloorShadow, Glass, Metal, Sheen, TopLight, url, usePaintIds } from '../../reps/paint';
+import {
+  Deepen,
+  FloorShadow,
+  Glass,
+  Metal,
+  Sheen,
+  TopLight,
+  url,
+  usePaintIds,
+} from '../../reps/paint';
 import type { IconProps } from './types';
 
 /** An ellipse as a path, so it can be filled and then lit with the same `d`. */
@@ -29,11 +38,17 @@ const ell = (cx: number, cy: number, rx: number, ry: number) =>
   `M ${cx - rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx + rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx - rx} ${cy} Z`;
 
 /** Points scattered over a box, the same every time (grains, specks). */
-const scatter = (n: number, x: number, y: number, w: number, h: number, seed = 1) =>
-  Array.from({ length: n }, (_, i) => {
-    const t = (i * 7919 + seed * 104729) % 997;
-    return [x + ((t * 13) % 97) * (w / 97), y + ((t * 31) % 89) * (h / 89)] as const;
-  });
+const scatter = (n: number, x: number, y: number, w: number, h: number, seed = 1) => {
+  const r = (k: number) => {
+    const v = Math.sin(k * 12.9898 + seed * 78.233) * 43758.5453;
+    return v - Math.floor(v);
+  };
+  return Array.from({ length: n }, (_, i) => [x + r(2 * i) * w, y + r(2 * i + 1) * h] as const);
+};
+
+/** A falling drop with its point up. */
+const drop = (x: number, y: number, s = 1) =>
+  `M ${x} ${y - 3.5 * s} Q ${x + 2.6 * s} ${y + 0.5 * s} ${x} ${y + 2 * s} Q ${x - 2.6 * s} ${y + 0.5 * s} ${x} ${y - 3.5 * s} Z`;
 
 /** A nail lying on a slant, head at the lower left; `rust` adds rust patches and flakes. */
 const NAIL_SHANK = 'M 8.5 21.8 H 38 L 45 24 L 38 26.2 H 8.5 Z';
@@ -54,6 +69,7 @@ export function R3AIcon({ icon, ink }: IconProps): ReactNode {
     'metal',
     'chrome',
     'copper',
+    'oil',
   );
 
   const o = (w = 1.25) => ({
@@ -269,25 +285,25 @@ export function R3AIcon({ icon, ink }: IconProps): ReactNode {
       art = (
         <>
           {ground(25, 42, 15)}
-          <Ellipse cx={24} cy={26.5} rx={16} ry={13} fill={c.copperDark} {...o(1.1)} />
-          <Ellipse cx={24} cy={24} rx={16} ry={13} fill={url(ids.copper)} {...o(1.2)} />
+          <Ellipse cx={24} cy={25} rx={16} ry={15} fill={c.copperDark} {...o(1.1)} />
+          <Ellipse cx={24} cy={23.4} rx={16} ry={15} fill={url(ids.copper)} {...o(1.2)} />
           <Ellipse
             cx={24}
-            cy={24}
-            rx={13}
-            ry={10.4}
+            cy={23.4}
+            rx={13.2}
+            ry={12.3}
             fill="none"
             stroke={c.copperDark}
             strokeOpacity={0.6}
             strokeWidth={0.9}
           />
           <Path
-            d="M 20 32 C 20.5 29 19 27 19.5 23.5 C 20 19 24 16.5 27.5 18.5 C 30 20 29.6 23 29 25 L 30.2 27.2 L 28.6 27.6 C 28.8 29.5 27.8 30.4 26 30.2 L 26.2 32 Z"
+            d="M 17 34 C 17 31 19 30 21 29.5 V 27.5 C 19 26 18.5 23 19.5 20.5 C 21 17 26 16.5 28 19.5 C 29 21 29 22.5 28.6 23.5 L 30 25.6 L 28.6 26 L 28.8 27.6 C 28.6 28.6 27.4 28.8 26 28.6 V 29.6 C 29 30 31 31.5 31 34 Z"
             fill={c.copperDark}
-            fillOpacity={0.4}
+            fillOpacity={0.35}
           />
           <Path
-            d="M 12 20 C 14 15 18.5 12.5 23 12.3"
+            d="M 11.5 19 C 13.5 13.5 18 10.5 23 10.2"
             fill="none"
             stroke={c.shine}
             strokeOpacity={0.7 * c.sheen}
@@ -751,6 +767,248 @@ export function R3AIcon({ icon, ink }: IconProps): ReactNode {
         </>
       );
       break;
+    // ── Conductors and magnets (D39, D40) ─────────────────────────────────────
+    case 'copper wire coil': {
+      const xs = [12, 16, 20, 24, 28, 32];
+      const back = xs.map((x) => `M ${x} 36 A 4.5 11 0 0 1 ${x + 4} 14`).join(' ');
+      const front = xs.map((x) => `M ${x} 14 A 4.5 11 0 0 0 ${x} 36`).join(' ');
+      const ends = 'M 12 14 C 8 12 6 9 3 8 M 36 14 C 40 14 42 12 45 9';
+      const wire = (d: string, color: string) => (
+        <>
+          <Path d={d} fill="none" {...o(3.4)} />
+          <Path d={d} fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" />
+        </>
+      );
+      art = (
+        <>
+          {ground(24, 41, 17)}
+          {wire(back, c.copperDark)}
+          {wire(front, c.copper)}
+          {wire(ends, c.copper)}
+          <Path
+            d={front}
+            fill="none"
+            stroke={c.shine}
+            strokeOpacity={0.6 * c.sheen}
+            strokeWidth={0.6}
+            transform="translate(-0.6 0)"
+          />
+        </>
+      );
+      break;
+    }
+    case 'aluminum foil': {
+      const sheet = 'M 6 16 L 18 9 L 30 12 L 42 8 L 40 24 L 43 38 L 28 36 L 16 41 L 5 33 L 9 24 Z';
+      art = (
+        <>
+          {ground(24, 41, 18)}
+          <Path d={sheet} fill={c.silver} />
+          <Path d="M 18 9 L 20 22 L 6 16 Z" fill={c.shine} fillOpacity={0.7} />
+          <Path d="M 30 12 L 31 25 L 42 8 Z" fill={c.silverDark} fillOpacity={0.35} />
+          <Path d="M 20 22 L 31 25 L 22 31 Z" fill={c.shine} fillOpacity={0.55} />
+          <Path d="M 5 33 L 22 31 L 16 41 Z" fill={c.silverDark} fillOpacity={0.4} />
+          <Path d="M 40 24 L 31 25 L 43 38 Z" fill={c.silverDark} fillOpacity={0.3} />
+          <Path d="M 9 24 L 20 22 L 22 31 L 5 33 Z" fill={c.silverDark} fillOpacity={0.15} />
+          <Path d="M 28 36 L 31 25 L 43 38 Z" fill={c.shine} fillOpacity={0.4} />
+          <Path
+            d="M 18 9 L 20 22 L 31 25 L 30 12 M 20 22 L 9 24 M 20 22 L 22 31 L 31 25 L 40 24 M 22 31 L 28 36 M 22 31 L 16 41 M 31 25 L 43 38"
+            fill="none"
+            stroke={c.silverDark}
+            strokeWidth={0.6}
+          />
+          <Path d={sheet} fill="none" {...o(1.1)} />
+          <Path d="M 11 17 L 14 14.5" stroke={c.shine} strokeWidth={1.4} strokeLinecap="round" />
+        </>
+      );
+      break;
+    }
+    case 'glass marble':
+      art = (
+        <>
+          <FloorShadow cx={26} cy={40} rx={12} ry={2.8} />
+          <Circle cx={24} cy={24} r={14} fill={c.waterTop} fillOpacity={0.5} />
+          {[0, 120, 240].map((a) => (
+            <Path
+              key={a}
+              d="M 24 24 C 20 16 14 17 11.5 22 C 16 21.5 20 22.5 24 24 Z"
+              fill={c.blockBlue}
+              transform={`rotate(${a} 24 24)`}
+            />
+          ))}
+          <Circle cx={24} cy={24} r={14} fill={url(ids.round)} {...o(1.2)} />
+          <Ellipse
+            cx={18}
+            cy={16.5}
+            rx={4.2}
+            ry={2.3}
+            fill={c.shine}
+            fillOpacity={0.9}
+            transform="rotate(-38 18 16.5)"
+          />
+          <Circle cx={31} cy={31} r={1.3} fill={c.shine} fillOpacity={0.6} />
+        </>
+      );
+      break;
+    case 'soup can':
+      art = (
+        <>
+          {ground(24, 43, 15)}
+          <Path d="M 11 12 V 40 A 13 3.5 0 0 0 37 40 V 12 Z" fill={c.silver} />
+          <Path d="M 11 17 Q 24 20.5 37 17 V 27 Q 24 30.5 11 27 Z" fill={c.blockRed} />
+          <Path d="M 11 27 Q 24 30.5 37 27 V 36 Q 24 39.5 11 36 Z" fill={c.snow} />
+          <Circle cx={24} cy={29} r={3} fill={c.sunDisk} {...o(0.7)} />
+          <Path
+            d="M 11 14.5 Q 24 18 37 14.5 M 11 38.4 Q 24 41.9 37 38.4"
+            fill="none"
+            stroke={c.metalDark}
+            strokeWidth={0.7}
+          />
+          <Path d="M 11 12 V 40 A 13 3.5 0 0 0 37 40 V 12 Z" fill={url(ids.sheen)} {...o(1.2)} />
+          <Ellipse cx={24} cy={12} rx={13} ry={3.5} fill={c.silver} {...o(1.1)} />
+          <Ellipse
+            cx={24}
+            cy={12.2}
+            rx={10.8}
+            ry={2.5}
+            fill="none"
+            stroke={c.metalDark}
+            strokeWidth={0.7}
+          />
+        </>
+      );
+      break;
+    case 'fridge':
+      art = (
+        <>
+          {ground(24, 44, 15)}
+          <Rect x={11} y={3} width={26} height={40} rx={3} fill={c.silver} />
+          <Rect x={11} y={3} width={26} height={40} rx={3} fill={url(ids.sheen)} {...o(1.2)} />
+          <Line x1={11} y1={16} x2={37} y2={16} {...o(1)} />
+          <Rect x={14} y={7} width={2.4} height={6} rx={1.2} fill={c.metal} {...o(0.8)} />
+          <Rect x={14} y={19} width={2.4} height={11} rx={1.2} fill={c.metal} {...o(0.8)} />
+          <Path d="M 26 39.5 H 34 M 26 41 H 34" stroke={c.metalDark} strokeWidth={0.8} />
+          <Rect x={13} y={43} width={3} height={1.6} fill={ink} />
+          <Rect x={32} y={43} width={3} height={1.6} fill={ink} />
+        </>
+      );
+      break;
+
+    // ── Does it dissolve? (D48) ───────────────────────────────────────────────
+    case 'sand pile':
+      art = (
+        <>
+          {ground(24, 42, 21)}
+          {lit('M 4 41 C 9 34 15 20.5 24 19.5 C 33 20.5 39 34 44 41 Z', c.rock1)}
+          {scatter(60, 6, 21, 36, 19, 2)
+            .filter(([x, y]) => y > 22.5 + Math.abs(x - 24) * 0.95 && y < 40)
+            .map(([x, y], i) => (
+              <Circle
+                key={i}
+                cx={x}
+                cy={y}
+                r={0.55}
+                fill={i % 3 ? c.woodDark : c.shine}
+                fillOpacity={0.85}
+              />
+            ))}
+          {(
+            [
+              [4, 43.5],
+              [7.5, 44.5],
+              [41, 43.8],
+              [44.5, 43],
+            ] as const
+          ).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.7} fill={c.rock1} {...o(0.4)} />
+          ))}
+        </>
+      );
+      break;
+    case 'gravel':
+      art = (
+        <>
+          {ground(24, 42, 20)}
+          {(
+            [
+              [24, 18, 5, 4, c.rock3, -10],
+              [15, 24, 5.5, 4.2, c.rock4, 15],
+              [33, 24, 5.5, 4.4, c.rock2, -20],
+              [21, 28, 5.5, 4.4, c.rock2, 10],
+              [10, 34, 6, 4.5, c.rock2, -5],
+              [28, 32, 6.5, 5, c.rock5, 20],
+              [39, 34, 5, 4.2, c.rock3, -15],
+              [19, 37, 6, 4.4, c.rock3, 5],
+              [33, 39, 5.5, 3.8, c.rock4, -8],
+            ] as const
+          ).map(([x, y, rx, ry, color, a], i) => (
+            <G key={i} transform={`rotate(${a} ${x} ${y})`}>
+              {lit(ell(x, y, rx, ry), color, 1)}
+            </G>
+          ))}
+        </>
+      );
+      break;
+    case 'pepper shaker': {
+      const body =
+        'M 15 18 C 15 15.5 16.5 14.5 19 14.5 H 29 C 31.5 14.5 33 15.5 33 18 V 41 C 33 43 31.5 44 29 44 H 19 C 16.5 44 15 43 15 41 Z';
+      art = (
+        <>
+          {ground(24, 44, 13)}
+          <Path d={body} fill={url(ids.glass)} />
+          <Path
+            d="M 15.8 25 C 20 23.8 27 26 32.2 24.6 V 41 C 32.2 42.4 31 43.2 29 43.2 H 19 C 17 43.2 15.8 42.4 15.8 41 Z"
+            fill={c.rubber}
+            fillOpacity={0.92}
+          />
+          {scatter(22, 16.5, 26.5, 15, 16, 4).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.5} fill={i % 2 ? c.furGrey : c.rock5} />
+          ))}
+          <Path d={body} fill={url(ids.sheen)} {...o(1.1)} />
+          <Path d="M 17.6 18 V 40" stroke={c.glassShine} strokeWidth={1.4} strokeLinecap="round" />
+          <Path d="M 15.5 13 C 15.5 4.5 32.5 4.5 32.5 13 Z" fill={url(ids.chrome)} {...o(1.1)} />
+          {(
+            [
+              [21, 8],
+              [24, 7],
+              [27, 8],
+              [22.5, 10.5],
+              [25.5, 10.5],
+            ] as const
+          ).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.75} fill={c.rubber} />
+          ))}
+          <Rect x={14.5} y={12.5} width={19} height={3.5} rx={1} fill={c.silver} />
+          <Rect x={14.5} y={12.5} width={19} height={3.5} rx={1} fill={url(ids.sheen)} {...o(1)} />
+          {scatter(7, 3, 41, 9, 3.5, 6).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.6} fill={c.rubber} />
+          ))}
+        </>
+      );
+      break;
+    }
+    case 'cooking oil bottle': {
+      const body =
+        'M 20.5 8 H 27.5 V 10.5 C 27.5 12.5 34 13.5 34 18 V 42 C 34 44 32.5 45 31 45 H 17 C 15.5 45 14 44 14 42 V 18 C 14 13.5 20.5 12.5 20.5 10.5 Z';
+      art = (
+        <>
+          {ground(24, 45, 12)}
+          <Path d={body} fill={url(ids.glass)} />
+          <Path
+            d="M 14.8 17.5 H 33.2 V 42 C 33.2 43.4 32 44.2 31 44.2 H 17 C 16 44.2 14.8 43.4 14.8 42 Z"
+            fill={url(ids.oil)}
+            fillOpacity={0.92}
+          />
+          <Rect x={14.8} y={17.5} width={18.4} height={1.4} fill={c.shine} fillOpacity={0.45} />
+          <Rect x={17} y={26} width={14} height={10} rx={1.2} fill={c.snow} {...o(0.7)} />
+          <Path d={drop(24, 31.5, 1.3)} fill={c.sunDisk} {...o(0.6)} />
+          <Path d={body} fill={url(ids.sheen)} />
+          <Path d={body} fill="none" {...o(1.2)} />
+          <Rect x={19.5} y={3} width={9} height={5.5} rx={1.2} fill={c.blockRed} />
+          <Rect x={19.5} y={3} width={9} height={5.5} rx={1.2} fill={url(ids.sheen)} {...o(1)} />
+        </>
+      );
+      break;
+    }
   }
 
   return (
@@ -768,6 +1026,7 @@ export function R3AIcon({ icon, ink }: IconProps): ReactNode {
         <Metal id={ids.metal} light={c.silver} dark={c.silverDark} />
         <Metal id={ids.chrome} light={c.metal} dark={c.metalDark} />
         <Metal id={ids.copper} light={c.copper} dark={c.copperDark} />
+        <Deepen id={ids.oil} from={c.sunDisk} to={c.chartSecond} />
       </Defs>
       {art}
     </G>
