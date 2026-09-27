@@ -183,6 +183,12 @@ const light = {
   poleSouth: '#2F6FD0',
   /** A lit bulb's warm glow. */
   bulbGlow: '#FFD95A',
+  /** A flower's petals, and a body's organs: brain and lungs, heart, stomach, and bones. */
+  petal: '#E8618C',
+  organ: '#EFA3A8',
+  organDeep: '#C83A44',
+  stomach: '#E3B07A',
+  bone: '#F3EEDF',
   /** Planets in their own colors (Earth is water and land; the moon is moonLit). */
   planetMercury: '#A9A39B',
   planetVenus: '#E8D3A2',
@@ -321,6 +327,11 @@ const dark: Palette = {
   poleNorth: '#C94444',
   poleSouth: '#3A6FC0',
   bulbGlow: '#F2C94C',
+  petal: '#C9507A',
+  organ: '#C7838A',
+  organDeep: '#B8323C',
+  stomach: '#B98A5A',
+  bone: '#D9D3C2',
   planetMercury: '#8A857E',
   planetVenus: '#BFAA7A',
   planetMars: '#A9532F',
