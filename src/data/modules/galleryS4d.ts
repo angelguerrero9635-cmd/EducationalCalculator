@@ -283,4 +283,74 @@ export const S4D_GALLERY_MODULES: ModuleDef[] = [
   },
 ];
 
-export const S4D_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const S4D_GALLERY_LAYOUTS: LayoutDef[] = [
+  {
+    id: 'g.magnetic-field',
+    title: 'Magnetic field lines',
+    kind: 'explore',
+    assumptions: [
+      'Field lines leave a magnet’s north pole and go round to its south pole.',
+      'A compass needle’s red end points along the field.',
+    ],
+    figure: { kind: 'magnets' },
+    scenes: [
+      {
+        label: 'One magnet',
+        lines: ['The lines crowd together at the poles, where the field is strongest.'],
+        poles: 'N–S',
+        field: { single: true },
+      },
+      {
+        label: 'Compasses',
+        lines: ['Each compass lines up with the field where it sits.'],
+        poles: 'N–S',
+        field: { single: true, lines: false, compasses: true },
+      },
+      {
+        label: 'N faces S',
+        lines: ['Lines run straight across the gap: the magnets pull together.'],
+        poles: 'N–S',
+        field: {},
+      },
+      {
+        label: 'N faces N',
+        lines: ['The lines push away from each other: the magnets push apart.'],
+        poles: 'N–N',
+        field: {},
+      },
+      {
+        label: 'No field',
+        lines: ['Opposite poles pull together.'],
+        poles: 'N–S',
+      },
+    ],
+  },
+  {
+    id: 'g.planets-to-scale',
+    title: 'Planets to scale',
+    kind: 'explore',
+    assumptions: [
+      'Every planet, the moon and the sun’s edge are drawn to one scale by size.',
+      'Their distances apart are not to scale.',
+    ],
+    figure: { kind: 'planets' },
+    scenes: [
+      { label: 'All', lines: ['The four inner planets are small and rocky.'], planets: {} },
+      {
+        label: 'Earth and moon',
+        lines: ['The moon is about a quarter of Earth’s width.'],
+        planets: { lit: ['earth', 'moon'] },
+      },
+      {
+        label: 'Jupiter',
+        lines: ['Jupiter is the biggest planet: 11 Earths across.'],
+        planets: { lit: ['jupiter'] },
+      },
+      {
+        label: 'Giants',
+        lines: ['The four outer planets are giants made mostly of gas and ice.'],
+        planets: { lit: ['jupiter', 'saturn', 'uranus', 'neptune'] },
+      },
+    ],
+  },
+];

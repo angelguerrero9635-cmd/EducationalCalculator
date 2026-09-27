@@ -9,6 +9,7 @@ import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 import { Canvas, Caption, ChartText } from '../reps/common';
 import { Arrow, Push, Sky, Static, TimesTable, Vibration } from './figures';
 import { FoodWeb } from './foodWeb';
+import { MagnetsFigure, PlanetsFigure } from './figures8';
 import {
   BodyFigure,
   CellFigure6,
@@ -91,7 +92,7 @@ function FigureView({
     case 'dots':
       return <Dots groups={scene.dots?.[0] ?? 1} each={scene.dots?.[1] ?? 1} c={c} />;
     case 'magnets':
-      return <Magnets poles={scene.poles ?? 'N–S'} c={c} />;
+      return <MagnetsFigure poles={scene.poles ?? 'N–S'} field={scene.field} />;
     case 'flashes':
       return <Flashes pattern={scene.flashes ?? '●'} c={c} />;
     case 'lightPath':
@@ -126,6 +127,8 @@ function FigureView({
       return <RockCycleFigure rock={scene.rock ?? { process: 'melting' }} c={c} />;
     case 'foodWeb':
       return <FoodWeb web={scene.web ?? {}} />;
+    case 'planets':
+      return <PlanetsFigure planets={scene.planets ?? {}} />;
   }
 }
 
@@ -928,88 +931,6 @@ function Dots({ groups, each, c }: { groups: number; each: number; c: Palette })
                 strokeWidth={chart.strokeLight}
               />
             ))}
-          </Svg>
-        );
-      }}
-    </Canvas>
-  );
-}
-
-/** Two bar magnets facing each other, with arrows for pull or push. */
-function Magnets({ poles, c }: { poles: NonNullable<Scene['poles']>; c: Palette }) {
-  const [leftEnd, rightEnd] = poles.split('–') as [string, string];
-  const attract = leftEnd !== rightEnd;
-  return (
-    <Canvas aspect={0.36}>
-      {({ w, h }) => {
-        const y = h / 2;
-        const mw = Math.min(150, w * 0.34);
-        const mh = 44;
-        const gap = attract ? 18 : 56;
-        const leftX = w / 2 - gap / 2 - mw;
-        const rightX = w / 2 + gap / 2;
-        const magnet = (x: number, first: string, second: string) => (
-          <G>
-            <Rect
-              x={x}
-              y={y - mh / 2}
-              width={mw / 2}
-              height={mh}
-              fill={first === 'N' ? c.chartHighlight : c.chartFill}
-              stroke={c.chartInk}
-              strokeWidth={chart.stroke}
-            />
-            <Rect
-              x={x + mw / 2}
-              y={y - mh / 2}
-              width={mw / 2}
-              height={mh}
-              fill={second === 'N' ? c.chartHighlight : c.chartFill}
-              stroke={c.chartInk}
-              strokeWidth={chart.stroke}
-            />
-            <ChartText
-              x={x + mw / 4}
-              y={y + 5}
-              fontSize={chart.emphasis}
-              fontWeight="700"
-              fill={first === 'N' ? c.onChartHighlight : c.chartInk}
-              textAnchor="middle"
-            >
-              {first}
-            </ChartText>
-            <ChartText
-              x={x + (3 * mw) / 4}
-              y={y + 5}
-              fontSize={chart.emphasis}
-              fontWeight="700"
-              fill={second === 'N' ? c.onChartHighlight : c.chartInk}
-              textAnchor="middle"
-            >
-              {second}
-            </ChartText>
-          </G>
-        );
-        const arrow = (from: number, to: number) => (
-          <Path
-            d={`M ${from} ${y - mh / 2 - 14} L ${to} ${y - mh / 2 - 14} M ${to} ${y - mh / 2 - 14} l ${to > from ? -8 : 8} -5 M ${to} ${y - mh / 2 - 14} l ${to > from ? -8 : 8} 5`}
-            stroke={c.chartInk}
-            strokeWidth={chart.stroke}
-            fill="none"
-          />
-        );
-        const other = (p: string) => (p === 'N' ? 'S' : 'N');
-        return (
-          <Svg width={w} height={h}>
-            {magnet(leftX, other(leftEnd), leftEnd)}
-            {magnet(rightX, rightEnd, other(rightEnd))}
-            {attract
-              ? arrow(leftX + mw - 40, leftX + mw - 4)
-              : arrow(leftX + mw - 4, leftX + mw - 40)}
-            {attract ? arrow(rightX + 40, rightX + 4) : arrow(rightX + 4, rightX + 40)}
-            <ChartText x={w / 2} y={h - 6} fontSize={chart.label} textAnchor="middle">
-              {attract ? 'pull together' : 'push apart'}
-            </ChartText>
           </Svg>
         );
       }}

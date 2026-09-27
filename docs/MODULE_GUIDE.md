@@ -313,7 +313,10 @@ flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or sh
 and `rockCycle`, in `layouts/figures6.tsx`. `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
 rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a scene's `web`
 lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
-shrink (`fewer`).
+shrink (`fewer`). Grade 8, in `layouts/figures8.tsx`: a `magnets` scene can set
+`field` (the field lines from N to S, `compasses` round the magnets, or one magnet `single`;
+magnets are painted N red, S blue), and `planets` draws the planets and the moon to scale by
+size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
