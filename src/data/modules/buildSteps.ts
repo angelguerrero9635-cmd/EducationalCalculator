@@ -1,4 +1,4 @@
-import { dollars, formatNumber, renderTemplate, unitFor } from '@/engine/format';
+import { dollarsOf, formatNumber, renderTemplate, unitFor } from '@/engine/format';
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
@@ -203,7 +203,7 @@ export function buildSteps(
     const n = formatNumber(x, inShownUnit && v ? { ...v, digits: undefined } : undefined);
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
-    if (unit === '$') return dollars(n);
+    if (unit === '$') return dollarsOf(x, n);
     if (unit === '¢' || unit === '°' || unit === '%' || unit === '×') return `${n}${unit}`;
     return `${n} ${x === 1 ? (SINGULAR[unit] ?? unitFor(1, unit)) : unit}`;
   };

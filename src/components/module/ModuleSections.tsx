@@ -12,7 +12,7 @@ import {
   quantityLabel,
   type ModuleDef,
 } from '@/data/modules';
-import { dollars, formatNumber } from '@/engine/format';
+import { dollarsOf, formatNumber } from '@/engine/format';
 import { font, space, usePalette } from '@/theme';
 
 import { FormulaSection } from './FormulaSection';
@@ -42,7 +42,7 @@ function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
           x === undefined || !unit
             ? num
             : unit === '$'
-              ? dollars(num)
+              ? dollarsOf(x, num)
               : ['¢', '%', '°', '×'].includes(unit)
                 ? `${num}${unit}`
                 : `${num} ${unit}`;

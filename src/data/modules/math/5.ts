@@ -12,6 +12,10 @@ import { placeCompareLines } from '../work';
 import { longDivision } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
+/** Tenths when both numbers have at most one place after the point, else hundredths. */
+const tenthsOr = (v: Values) => (places(v.n!) <= 1 && places(v.d!) <= 1 ? 'tenths' : 'hundredths');
+/** A value as a fraction or mixed number, the way Grade 5 writes it: 5 1/4. */
+const frac = (x: number) => formatNumber(x, { fraction: 12 });
 /** A fraction is at most 1 (a check-only relation). */
 const atMostOne = (top: string, bottom: string) => ({
   id: `${top} ≤ ${bottom}`,
@@ -305,6 +309,154 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           caption: 'With parentheses {w}, without {o}: {d} apart.',
         },
       },
+      (() => {
+        const quot = {
+          id: 'b = q × c',
+          display: '{b} ÷ {c} = {q}',
+          check: (v: Values) => `${v.q} × ${v.c} = ${v.b}`,
+          vars: ['b', 'q', 'c'],
+          residual: (v: Values) => v.b! - v.q! * v.c!,
+          solve: {
+            q: (v: Values) => div(v.b!, v.c!),
+            b: (v: Values) => v.q! * v.c!,
+            c: (v: Values) => div(v.b!, v.q!),
+          },
+        };
+        const prod = times(
+          'p = d × e',
+          ['d', 'e', 'p'],
+          ['third number', 'fourth number', 'product'],
+        );
+        const plus = sum2('t = a + q', ['a', 'q', 't'], ['first number', 'quotient', 'sum']);
+        return {
+          id: 'm.5.order-of-operations~no-parentheses',
+          title: 'Multiply and divide before adding',
+          use: 'Use this for 3 + 15 ÷ 3 − 4 × 2: no parentheses, so multiply and divide first.',
+          assumptions: [
+            'No parentheses: multiply and divide first, from left to right.',
+            'Then add and subtract, from left to right.',
+            'So 3 + 15 ÷ 3 − 4 × 2 = 3 + 5 − 8 = 0.',
+            'Numbers to 100, divisors and factors to 10; the result is not below 0.',
+          ],
+          variables: [
+            whole('a', 'a', 'First number', 0, 100),
+            whole('b', 'b', 'Number divided', 0, 100),
+            whole('c', 'c', 'Divisor', 1, 10),
+            whole('d', 'd', 'Third number', 0, 10),
+            whole('e', 'e', 'Fourth number', 0, 10),
+            { ...whole('q', 'q', 'Quotient', 0, 100), derived: true },
+            { ...whole('p', 'p', 'Product', 0, 100), derived: true },
+            { ...whole('t', 't', 'First number + quotient', 0, 200), derived: true },
+            whole('r', 'r', 'Result', 0, 200),
+          ],
+          relations: [
+            quot,
+            prod.relation,
+            plus.relation,
+            {
+              id: 'r = t − p',
+              display: '{t} − {p} = {r}',
+              vars: ['r', 't', 'p'],
+              residual: (v: Values) => v.r! - v.t! + v.p!,
+              solve: {
+                r: (v: Values) => v.t! - v.p!,
+                t: (v: Values) => v.r! + v.p!,
+                p: (v: Values) => v.t! - v.r!,
+              },
+            },
+          ],
+          steps: {
+            'b = q × c': {
+              q: {
+                expr: '{b} ÷ {c}',
+                how: 'Divide first: division comes before adding and subtracting.',
+                work: (v: Values) => [`${v.b} ÷ ${v.c} = ${v.q}`],
+              },
+              b: { expr: '{q} × {c}', how: 'The quotient times the divisor.' },
+              c: { expr: '{b} ÷ {q}', how: 'The number divided ÷ the quotient.' },
+            },
+            'p = d × e': {
+              ...prod.steps,
+              p: { ...prod.steps.p!, how: 'Multiply next, before any adding or subtracting.' },
+            },
+            't = a + q': {
+              ...plus.steps,
+              t: { ...plus.steps.t!, how: 'Now add and subtract from left to right: add first.' },
+            },
+            'r = t − p': {
+              r: { expr: '{t} − {p}', how: 'Then subtract the product.' },
+              t: { expr: '{r} + {p}', how: 'Add the product back.' },
+              p: { expr: '{t} − {r}', how: 'The sum less the result is the product.' },
+            },
+          },
+          example: { a: 3, b: 15, c: 3, d: 4, e: 2, q: 5, p: 8, t: 8, r: 0 },
+          startWith: ['a', 'b', 'c', 'd', 'e'],
+          pictureLabels: ['r'],
+          representation: {
+            kind: 'tape',
+            parts: ['r', 'p'],
+            total: 't',
+            caption: '{a} + {b} ÷ {c} − {d} × {e} = {a} + {q} − {p} = {r}',
+          },
+        } satisfies ModuleDef;
+      })(),
+      (() => {
+        const inner = times(
+          'p = b × c',
+          ['b', 'c', 'p'],
+          ['first factor', 'second factor', 'product'],
+        );
+        const mid = sum2(
+          's = a + p',
+          ['a', 'p', 's'],
+          ['number in the brackets', 'product', 'value in the brackets'],
+        );
+        const outer = times(
+          'r = k × s',
+          ['k', 's', 'r'],
+          ['multiplier', 'value in the brackets', 'result'],
+        );
+        return {
+          id: 'm.5.order-of-operations~brackets',
+          title: 'Parentheses inside brackets',
+          use: 'Use this for 2 × [5 + (3 × 4)]: work from the inside out.',
+          assumptions: [
+            'Parentheses first, then the brackets around them: work from the inside out.',
+            'So 2 × [5 + (3 × 4)] = 2 × [5 + 12] = 2 × 17 = 34.',
+            'Factors and the multiplier to 10, the number in the brackets to 50.',
+          ],
+          variables: [
+            whole('k', 'k', 'Multiplier', 1, 10),
+            whole('a', 'a', 'Number in the brackets', 0, 50),
+            whole('b', 'b', 'First factor', 0, 10),
+            whole('c', 'c', 'Second factor', 0, 10),
+            { ...whole('p', 'p', 'Product in the parentheses', 0, 100), derived: true },
+            { ...whole('s', 's', 'Value in the brackets', 0, 150), derived: true },
+            whole('r', 'r', 'Result', 0, 1500),
+          ],
+          relations: [inner.relation, mid.relation, outer.relation],
+          steps: {
+            'p = b × c': {
+              ...inner.steps,
+              p: { ...inner.steps.p!, how: 'Parentheses first: multiply inside them.' },
+            },
+            's = a + p': {
+              ...mid.steps,
+              s: {
+                ...mid.steps.s!,
+                how: 'Then the brackets: add the product to the number there.',
+              },
+            },
+            'r = k × s': {
+              ...outer.steps,
+              r: { ...outer.steps.r!, how: 'Last, multiply the value in the brackets.' },
+            },
+          },
+          example: { k: 2, a: 5, b: 3, c: 4, p: 12, s: 17, r: 34 },
+          startWith: ['k', 'a', 'b', 'c'],
+          representation: { kind: 'equalGroups', groups: 'k', each: 's', total: 'r' },
+        } satisfies ModuleDef;
+      })(),
     ];
     return pages;
   })(),
@@ -1222,15 +1374,23 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.decimal-operations~divide-by-decimal',
     title: 'Divide by a decimal',
-    use: 'Use this for 1.2 ÷ 0.3: how many 3 tenths fit in 12 tenths?',
+    use: 'Use this for 1.2 ÷ 0.3 or 0.24 ÷ 0.08: how many of the divisor fit in the dividend?',
     assumptions: [
       'Dividing by a decimal asks how many of it fit.',
-      'Write both in tenths: 1.2 is 12 tenths and 0.3 is 3 tenths. Then divide the tenths.',
-      'Dividends to 9.9, divisors from 0.1 to 0.9, whole-number answers to 30.',
+      'Write both in tenths (1.2 is 12 tenths, 0.3 is 3 tenths), or in hundredths when either has two places. Then divide.',
+      'Dividends to 9.99, divisors from 0.01 to 0.99, whole-number answers to 30.',
     ],
     variables: [
-      { id: 'n', symbol: 'n', name: 'Dividend', min: 0.1, max: 9.9, step: 0.1, multipleOf: 0.1 },
-      { id: 'd', symbol: 'd', name: 'Divisor', min: 0.1, max: 0.9, step: 0.1, multipleOf: 0.1 },
+      {
+        id: 'n',
+        symbol: 'n',
+        name: 'Dividend',
+        min: 0.01,
+        max: 9.99,
+        step: 0.01,
+        multipleOf: 0.01,
+      },
+      { id: 'd', symbol: 'd', name: 'Divisor', min: 0.01, max: 0.99, step: 0.01, multipleOf: 0.01 },
       whole('q', 'q', 'Quotient', 1, 30),
     ],
     relations: [
@@ -1252,11 +1412,13 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'n = q × d': {
         q: {
           expr: '{n} ÷ {d}',
-          how: 'Write both in tenths. How many of the divisor’s tenths fit in the dividend’s?',
+          how: (v: Values) =>
+            `Write both in ${tenthsOr(v)}. How many of the divisor’s ${tenthsOr(v)} fit in the dividend’s?`,
           work: (v: Values) => {
-            const [a, b] = [Math.round(v.n! * 10), Math.round(v.d! * 10)];
+            const k = tenthsOr(v) === 'tenths' ? 10 : 100;
+            const [a, b] = [Math.round(v.n! * k), Math.round(v.d! * k)];
             return [
-              `${fmt(v.n!)} = ${a} tenths, ${fmt(v.d!)} = ${b} tenths`,
+              `${fmt(v.n!)} = ${a} ${tenthsOr(v)}, ${fmt(v.d!)} = ${b} ${tenthsOr(v)}`,
               `${a} ÷ ${b} = ${v.q}`,
             ];
           },
@@ -1352,6 +1514,169 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       'p = a × m ÷ b': first.steps,
       'q = c × m ÷ d': second.steps,
+    };
+    /**
+     * Mixed numbers with unlike denominators (5.NF.1): a common denominator for the parts, then
+     * wholes and parts; 4 2/3 + 3 5/8 = 7 31/24 = 8 7/24, and 4 1/3 − 1 5/8 renames a whole.
+     */
+    const mixed = (op: '+' | '−'): ModuleDef => {
+      const add = op === '+';
+      const borrow = (v: Values) => (!add && v.p! < v.q! ? 1 : 0);
+      const wholes = (v: Values) => (add ? v.w1! + v.w2! : v.w1! - v.w2! - borrow(v));
+      const parts = (v: Values) =>
+        add ? v.p! + v.q! : v.p! >= v.q! ? v.p! - v.q! : v.p! + v.m! - v.q!;
+      const answer = add ? 'Sum' : 'Difference';
+      return {
+        id: `m.5.add-fractions-unlike~${add ? 'mixed-numbers' : 'subtract-mixed'}`,
+        title: add ? 'Add mixed numbers' : 'Subtract mixed numbers',
+        use: add
+          ? 'Use this for 4 2/3 + 3 5/8: give the parts a common denominator, then add wholes and parts.'
+          : 'Use this for 4 1/3 − 1 5/8, renaming a whole when the part to take away is bigger.',
+        assumptions: [
+          'Give the fraction parts a common denominator: the smallest number both denominators go into.',
+          add
+            ? 'Add the whole numbers and add the parts. Parts that make a whole or more add one more whole.'
+            : 'Take away the parts, then the whole numbers. If the part to take away is bigger, rename 1 whole as parts first.',
+          `Whole numbers to 10; each fraction part is at most 1, with denominators 2 to 12.${add ? '' : ' The first number is the bigger one.'}`,
+        ],
+        variables: [
+          whole('w1', 'w₁', 'First whole number', 0, 10),
+          ...fractions(op)
+            .slice(0, 4)
+            .map((v) => (v.id === 'b' || v.id === 'd' ? { ...v, allowed: undefined } : v)),
+          whole('w2', 'w₂', 'Second whole number', 0, 10),
+          ...fractions(op).slice(4, 7),
+          add
+            ? { ...whole('s', 's', 'Parts added', 2, 288), derived: true }
+            : { ...whole('s', 's', 'Parts left', 0, 287), derived: true },
+          { id: 'S', symbol: 'S', name: answer, min: 0, max: 22, fraction: 144, derived: true },
+        ],
+        relations: [
+          atMostOne('a', 'b'),
+          atMostOne('c', 'd'),
+          ...(add
+            ? []
+            : [
+                {
+                  id: 'w1 ≥ w2',
+                  constraint: true as const,
+                  display: '{w1} is at least {w2}',
+                  vars: ['w1', 'w2'],
+                  residual: (v: Values) => (v.w1! >= v.w2! ? 0 : 1),
+                  solve: {},
+                },
+                {
+                  id: 'first ≥ second',
+                  constraint: true as const,
+                  display: '{w1} and {a}/{b} is at least {w2} and {c}/{d}',
+                  vars: ['w1', 'a', 'b', 'w2', 'c', 'd'],
+                  residual: (v: Values) =>
+                    v.w1! + v.a! / v.b! >= v.w2! + v.c! / v.d! - 1e-9 ? 0 : 1,
+                  solve: {},
+                },
+              ]),
+          common,
+          first.relation,
+          second.relation,
+          {
+            id: add ? 's = p + q' : 's = p − q, renamed',
+            display: add ? '{p}/{m} + {q}/{m} = {s}/{m}' : '{p}/{m} − {q}/{m} → {s}/{m}',
+            words: add
+              ? 'Add the new numerators; the denominator stays'
+              : 'Subtract the new numerators, renaming 1 whole when the first is smaller',
+            vars: ['s', 'p', 'q', 'm'],
+            residual: (v: Values) => v.s! - parts(v),
+            solve: {
+              s: parts,
+              p: () => undefined,
+              q: () => undefined,
+              m: () => undefined,
+            },
+          },
+          {
+            id: 'S = wholes and parts',
+            display: add
+              ? '{w1} + {w2} + {s}/{m} = {S}'
+              : '{w1} − {w2} (1 less if {p}/{m} is less than {q}/{m}) and {s}/{m} = {S}',
+            words: `Whole numbers ${op} whole numbers, and the parts = ${answer.toLowerCase()}`,
+            check: (v: Values) => `${wholes(v)} + ${v.s}/${v.m} = ${frac(v.S!)}`,
+            vars: add ? ['S', 'w1', 'w2', 's', 'm'] : ['S', 'w1', 'w2', 's', 'm', 'p', 'q'],
+            residual: (v: Values) => v.S! - wholes(v) - v.s! / v.m!,
+            solve: {
+              S: (v: Values) => wholes(v) + v.s! / v.m!,
+              ...Object.fromEntries(
+                (add ? ['w1', 'w2', 's', 'm'] : ['w1', 'w2', 's', 'm', 'p', 'q']).map((id) => [
+                  id,
+                  () => undefined,
+                ]),
+              ),
+            },
+          },
+        ],
+        steps: {
+          'a ≤ b': {},
+          'c ≤ d': {},
+          ...(add ? {} : { 'w1 ≥ w2': {}, 'first ≥ second': {} }),
+          ...commonSteps,
+          [add ? 's = p + q' : 's = p − q, renamed']: {
+            s: {
+              expr: (v: Values) =>
+                add ? '{p} + {q}' : v.p! >= v.q! ? '{p} − {q}' : '{p} + {m} − {q}',
+              how: (v: Values) =>
+                add
+                  ? 'Same denominator now: add the numerators of the parts.'
+                  : v.p! >= v.q!
+                    ? 'Same denominator now: subtract the numerators of the parts.'
+                    : 'The first part is smaller: rename 1 whole as parts, then subtract.',
+              work: (v: Values) =>
+                add || v.p! >= v.q!
+                  ? [`${v.p} ${op} ${v.q} = ${v.s}`]
+                  : [
+                      `${v.p}/${v.m} is less than ${v.q}/${v.m}: 1 whole is ${v.m}/${v.m}.`,
+                      `${v.p} + ${v.m} = ${v.p! + v.m!}`,
+                      `${v.p! + v.m!} − ${v.q} = ${v.s}`,
+                    ],
+            },
+          },
+          'S = wholes and parts': {
+            S: {
+              expr: (v: Values) =>
+                add
+                  ? '{w1} + {w2} + {s} ÷ {m}'
+                  : borrow(v)
+                    ? '{w1} − 1 − {w2} + {s} ÷ {m}'
+                    : '{w1} − {w2} + {s} ÷ {m}',
+              how: add
+                ? 'Add the whole numbers, then put the parts with them.'
+                : 'Take away the whole numbers (one fewer if a whole was renamed), then put the parts with them.',
+              work: (v: Values) => [
+                add
+                  ? `${v.w1} + ${v.w2} = ${wholes(v)}`
+                  : borrow(v)
+                    ? `${v.w1} − 1 − ${v.w2} = ${wholes(v)}`
+                    : `${v.w1} − ${v.w2} = ${wholes(v)}`,
+                ...(v.s! >= v.m! ? [`${v.s}/${v.m} = ${frac(v.s! / v.m!)}`] : []),
+                `${wholes(v)} + ${v.s}/${v.m} = ${frac(v.S!)}`,
+              ],
+            },
+          },
+        },
+        example: add
+          ? { w1: 4, a: 2, b: 3, w2: 3, c: 5, d: 8, m: 24, p: 16, q: 15, s: 31, S: 199 / 24 }
+          : { w1: 4, a: 1, b: 3, w2: 1, c: 5, d: 8, m: 24, p: 8, q: 15, s: 17, S: 65 / 24 },
+        startWith: ['w1', 'a', 'b', 'w2', 'c', 'd'],
+        representation: {
+          kind: 'fractionBars',
+          rows: [
+            { num: 'a', den: 'b' },
+            { num: 'p', den: 'm' },
+            { num: 'c', den: 'd' },
+            { num: 'q', den: 'm' },
+          ],
+          controls: ['a', 'b', 'c', 'd'],
+          caption: `{w1} and {p}/{m} ${op} {w2} and {q}/{m}`,
+        },
+      };
     };
     return [
       {
@@ -1450,6 +1775,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         startWith: ['a', 'b', 'c', 'd'],
         representation: bars('−'),
       },
+      mixed('+'),
+      mixed('−'),
     ] satisfies ModuleDef[];
   })(),
   // ── Line plots of fractions of a liter (5.MD.2) ──
@@ -1628,19 +1955,19 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.5.multiply-fractions~of-a-whole',
     title: 'A fraction of a whole number',
-    use: 'Use this for 3/4 of 8: cut 8 into 4 equal parts and take 3 of them.',
+    use: 'Use this for 3/4 of 8, or 4/5 of 7 miles: cut the whole number into equal parts and take some.',
     assumptions: [
       '3/4 of 8: cut 8 into 4 equal parts, then take 3 of the parts.',
       'One part is the whole number ÷ the denominator. Then multiply by the numerator.',
-      'Whole numbers to 60 that the denominator divides evenly.',
+      'Whole numbers to 60. A part can be a fraction: 7 ÷ 4 = 1 3/4, so 3/4 of 7 = 21/4 = 5 1/4.',
     ],
     variables: [
       whole('w', 'w', 'Whole number', 1, 60),
       whole('a', 'a', 'Numerator', 1, 12),
       { ...whole('b', 'b', 'Denominator', 2, 12), allowed: BOTTOMS },
-      { ...whole('o', 'o', 'One part', 1, 30), derived: true },
-      whole('p', 'p', 'Product', 1, 60),
-      { ...whole('k', 'k', 'The rest', 0, 59), derived: true },
+      { id: 'o', symbol: 'o', name: 'One part', min: 0, max: 30, fraction: 12, derived: true },
+      { id: 'p', symbol: 'p', name: 'Product', min: 0, max: 60, fraction: 12 },
+      { id: 'k', symbol: 'k', name: 'The rest', min: 0, max: 59, fraction: 12, derived: true },
     ],
     relations: [
       atMostOne('a', 'b'),
@@ -1648,13 +1975,13 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         id: 'w = o × b',
         display: '{w} ÷ {b} = {o}',
         words: 'Whole number ÷ denominator = one part',
-        check: (v: Values) => `${v.o} × ${v.b} = ${v.w}`,
+        check: (v: Values) => `${frac(v.o!)} × ${v.b} = ${v.w}`,
         vars: ['w', 'o', 'b'],
         residual: (v: Values) => v.w! - v.o! * v.b!,
         solve: {
           w: (v: Values) => v.o! * v.b!,
-          o: (v: Values) => div(v.w!, v.b!),
-          b: (v: Values) => div(v.w!, v.o!),
+          o: (v: Values) => v.w! / v.b!,
+          b: (v: Values) => v.w! / v.o!,
         },
       },
       {
@@ -1665,8 +1992,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         residual: (v: Values) => v.p! - v.a! * v.o!,
         solve: {
           p: (v: Values) => v.a! * v.o!,
-          a: (v: Values) => div(v.p!, v.o!),
-          o: (v: Values) => div(v.p!, v.a!),
+          a: (v: Values) => v.p! / v.o!,
+          o: (v: Values) => v.p! / v.a!,
         },
       },
       {
@@ -1681,12 +2008,24 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     steps: {
       'a ≤ b': {},
       'w = o × b': {
-        o: { expr: '{w} ÷ {b}', how: 'Cut the whole number into that many equal parts.' },
+        o: {
+          expr: '{w} ÷ {b}',
+          how: 'Cut the whole number into that many equal parts.',
+          work: (v) => [`${v.w} ÷ ${v.b} = ${v.w}/${v.b}${v.w! % v.b! ? '' : ` = ${v.w! / v.b!}`}`],
+        },
         w: { expr: '{o} × {b}', how: 'All the parts together make the whole number.' },
         b: { expr: '{w} ÷ {o}', how: 'How many parts of that size make the whole number.' },
       },
       'p = a × o': {
-        p: { expr: '{a} × {o}', how: 'Take that many of the parts.' },
+        p: {
+          expr: '{a} × {o}',
+          how: 'Take that many of the parts.',
+          // The same as (numerator × whole number) ÷ denominator: 3/4 × 7 = 21/4.
+          work: (v) => [
+            `${v.a} × ${v.w}/${v.b} = ${v.a! * v.w!}/${v.b}`,
+            ...(v.a! * v.w! >= v.b! ? [`${v.a! * v.w!}/${v.b} = ${frac(v.p!)}`] : []),
+          ],
+        },
         a: { expr: '{p} ÷ {o}', how: 'How many parts make the product.' },
         o: { expr: '{p} ÷ {a}', how: 'Share the product among the parts taken.' },
       },

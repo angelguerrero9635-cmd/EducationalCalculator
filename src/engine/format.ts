@@ -47,6 +47,17 @@ export function asFraction(x: number, most: number): string | undefined {
 /** A shown number as dollars: cents are two digits ("$7.50", not "$7.5"). */
 export const dollars = (num: string) => `$${num.replace(/(\.\d)$/, '$10')}`;
 
+/**
+ * Money that isn't a whole number of cents ($10 for 3 is $3.3333… each) as the price a store
+ * would show: "about $3.33", or "less than 1 cent". `num` is the value already formatted.
+ */
+export const dollarsOf = (x: number, num: string) => {
+  const cents = Math.round(x * 100);
+  if (Math.abs(x * 100 - cents) < 1e-6) return dollars(num);
+  if (Math.abs(x) < 0.005) return 'less than 1 cent';
+  return `about ${dollars((cents / 100).toFixed(2))}`;
+};
+
 /** Thousands separators from 1,000 ("12,500.5"), the way students read numbers in class. */
 const withSeparators = (s: string) =>
   s.replace(

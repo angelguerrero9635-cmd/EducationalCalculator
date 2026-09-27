@@ -190,7 +190,8 @@ const describe_ = (sys: System, vals: Values | readonly Given[]) => {
  * mixed number or fraction counts as its value.
  */
 function resultNumber(result: string, exp = false): number {
-  const rhs = result.split(' = ')[1] ?? '';
+  // "about $3.33": a price rounded to the cent.
+  const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '');
   const mixed = /^(-?)(?:(\d+) )?(\d+)\/(\d+)(?![\d.])/.exec(rhs);
   if (mixed) {
     const x = Number(mixed[2] ?? 0) + Number(mixed[3]) / Number(mixed[4]);
@@ -354,6 +355,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   }
   const allNonNegative = c.module.variables.every((v) => (v.min ?? -1) >= 0);
   for (const s of w.steps) {
+    // A price under a cent has no number to compare.
+    if (/ = less than 1 cent/.test(s.result)) continue;
     // The answer's leading number ("536¢ ($5.36)" → 536).
     const value = resultNumber(s.result, true);
     // The substituted line is left out when it would only repeat the rearranged line (numbers
@@ -411,8 +414,12 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
         Number(long[4]) < Number(long[2])
       : x !== undefined && shownClose(x, Number(plain![2]));
     const ends = Number(long ? long[3] : plain?.[2]);
+    // "about $17.27": the answer is the work's end rounded to the cent (or under a cent).
+    const rounded = / = about \$/.test(s.result)
+      ? Math.abs(ends - answer) <= 0.0051
+      : / = less than 1 cent/.test(s.result) && ends < 0.01;
     if (!ok) c.f.add('error', `${c.label}written work is wrong: "${says}"`, where);
-    else if (ends !== answer) {
+    else if (ends !== answer && !rounded) {
       c.f.add('error', `${c.label}written work "${says}" doesn't end at ${s.result}`, where);
     }
     // A decimal grid writes every place after the point (0.05, not "0. 5"): a digit row must

@@ -18,6 +18,9 @@ const fmt = (x: number) => formatNumber(x);
 const shownNum = (x: number) => Number(fmt(x).replace(/,/g, '').replace('−', '-'));
 /** Exact to 9 places: 7.5 ÷ 6 is 1.25, not 1.2499999999. */
 const exact = (x: number) => Number(x.toFixed(9));
+/** The exact quotient before a price is rounded to the cent ("10 ÷ 3 = 3.3333"), else nothing. */
+const subCent = (x: number, sum: string) =>
+  Math.abs(x * 100 - Math.round(x * 100)) < 1e-6 ? [] : [`${sum} = ${formatNumber(x)}`];
 const q = (a: number, b: number) => (b === 0 ? undefined : exact(a / b));
 const gcd = (a: number, b: number): number =>
   !Number.isFinite(a) || !Number.isFinite(b) ? 1 : b === 0 ? a : gcd(b, a % b);
@@ -363,6 +366,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Every item costs the same: the rate stays the same.',
       'The unit rate is the amount for 1.',
       'Prices are in dollars and cents; counts are whole numbers to 1,000.',
+      'A price for one that isn’t a whole number of cents is shown to the cent: $10 for 3 is about $3.33 each.',
     ],
     variables: [
       whole('n', 'n', 'Number of items', 1, 1000),
@@ -383,8 +387,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         unit: '$',
         min: 0,
         max: 10000,
+        // $10 for 3 is about $3.33 each: the price of one need not be a whole number of cents.
         step: 0.01,
-        multipleOf: 0.01,
       },
     ],
     relations: [
@@ -392,12 +396,25 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         id: 't = c × n',
         display: '{c} × {n} = {t}',
         words: 'Cost per item × number of items = total cost',
+        // Sub-cent prices: $10 ÷ 3 × 3 is $10 again, to the cent.
+        check: (v: Values) =>
+          Math.abs(v.c! * 100 - Math.round(v.c! * 100)) < 1e-6
+            ? `${fmt(v.c!)} × ${v.n} = ${fmt(v.t!)}`
+            : `${fmt(v.t!)} ÷ ${v.n} × ${v.n} = ${fmt(v.t!)}`,
         vars: ['t', 'c', 'n'],
         residual: (v: Values) => v.t! - v.c! * v.n!,
         solve: {
-          t: (v: Values) => exact(v.c! * v.n!),
+          t: (v: Values) => {
+            const x = v.c! * v.n!;
+            const cents = Math.round(x * 100) / 100;
+            return Math.abs(x - cents) < 1e-6 ? cents : exact(x);
+          },
           c: (v: Values) => q(v.t!, v.n!),
-          n: (v: Values) => q(v.t!, v.c!),
+          // A price like $12.3386… is rounded: the count it gives is whole to within that.
+          n: (v: Values) => {
+            const x = q(v.t!, v.c!);
+            return x !== undefined && Math.abs(x - Math.round(x)) < 1e-6 ? Math.round(x) : x;
+          },
         },
       },
     ],
@@ -406,6 +423,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         c: {
           expr: '{t} ÷ {n}',
           how: 'The unit rate is the price of 1. Share the total cost equally among the items.',
+          work: (v) => subCent(v.c!, `${fmt(v.t!)} ÷ ${v.n}`),
         },
         t: { expr: '{c} × {n}', how: 'Every item costs the same: multiply the price of 1.' },
         n: {
@@ -526,15 +544,24 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     ],
     steps: {
       'p = a ÷ m': {
-        p: { expr: '{a} ÷ {m}', how: 'Find the price of one at the first store: divide.' },
+        p: {
+          expr: '{a} ÷ {m}',
+          how: 'Find the price of one at the first store: divide.',
+          work: (v) => subCent(v.p!, `${fmt(v.a!)} ÷ ${v.m}`),
+        },
       },
       'r = b ÷ n': {
-        r: { expr: '{b} ÷ {n}', how: 'Find the price of one at the second store: divide.' },
+        r: {
+          expr: '{b} ÷ {n}',
+          how: 'Find the price of one at the second store: divide.',
+          work: (v) => subCent(v.r!, `${fmt(v.b!)} ÷ ${v.n}`),
+        },
       },
       'd = p and r apart': {
         d: {
           expr: (v) => (v.p! >= v.r! ? '{p} − {r}' : '{r} − {p}'),
           how: 'Take the lower price for one from the higher one.',
+          work: (v) => subCent(v.d!, `${fmt(Math.max(v.p!, v.r!))} − ${fmt(Math.min(v.p!, v.r!))}`),
           note: (v) =>
             v.p! === v.r!
               ? '(the same price: neither is the better buy)'
@@ -606,6 +633,59 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { d: 150, t: 2.5, s: 60 },
     startWith: ['d', 't'],
     representation: { kind: 'doubleNumberLine', top: 't', bottom: 'd', per: 's', ticks: 5 },
+  },
+
+  {
+    id: 'm.6.unit-rates~convert',
+    title: 'Convert units with a rate',
+    use: 'Use this for 168 fluid ounces in quarts (32 fluid ounces in 1 quart) or 3 miles in yards.',
+    assumptions: [
+      'A conversion is a rate: how many of the new unit are in 1 of the old one (1 mile = 1,760 yards).',
+      'To the smaller unit, multiply by the rate. To the bigger unit, divide by it.',
+      'The double number line keeps the two amounts in the same ratio.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'Amount in the first unit', min: 0, max: 1000000, step: 0.01 },
+      {
+        id: 'k',
+        symbol: 'k',
+        name: 'Second units in 1 first unit',
+        min: 0.001,
+        max: 100000,
+        step: 0.001,
+      },
+      { id: 'b', symbol: 'b', name: 'Amount in the second unit', min: 0, max: 1000000, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'b = a × k',
+        display: '{a} × {k} = {b}',
+        words: 'Amount in the first unit × rate = amount in the second unit',
+        vars: ['b', 'a', 'k'],
+        residual: (v: Values) => v.b! - v.a! * v.k!,
+        solve: {
+          b: (v: Values) => exact(v.a! * v.k!),
+          a: (v: Values) => q(v.b!, v.k!),
+          k: (v: Values) => q(v.b!, v.a!),
+        },
+      },
+    ],
+    steps: {
+      'b = a × k': {
+        b: {
+          expr: '{a} × {k}',
+          how: 'Each first unit is that many second units: multiply by the rate.',
+        },
+        a: {
+          expr: '{b} ÷ {k}',
+          how: 'How many groups of the rate fit in the amount? Divide by the rate.',
+        },
+        k: { expr: '{b} ÷ {a}', how: 'The rate is the second amount for 1 of the first: divide.' },
+      },
+    },
+    example: { a: 5.25, k: 32, b: 168 },
+    startWith: ['b', 'k'],
+    representation: { kind: 'doubleNumberLine', top: 'a', bottom: 'b', per: 'k', ticks: 5 },
   },
 
   // ── Percent of a quantity (6.RP.3c) ──

@@ -106,15 +106,16 @@ bus.
    the soil washed off collected below (driven by two values).
 6. **Two flashlights**: the same flashlight at one and at k times the distance, the lit
    circle k times as wide and k × k times the area, with one square of the grid shaded.
-7. **Dark and light cups** in the sun with thermometers (reuse `thermometers`; add the cups). 8. **Fraction bars past one whole**: `fractionBars` rows that draw as many whole bars as
+7. **Dark and light cups** in the sun with thermometers (reuse `thermometers`; add the cups).
+8. **Fraction bars past one whole**: `fractionBars` rows that draw as many whole bars as
    the fraction needs (7/4 is one whole bar and 3/4 of the next), and **mixed-number jumps**
    on `fractionLine` (18 1/4 − 2 3/4).
 8. **Set model for fractions**: `partition` with `shape: 'set'` (objects in a row, some
    marked: 3 of 7 umbrellas).
 9. **Bills and coins together**: `coins` with bills ($1, $5, $10) beside the coins and one
    total.
-10. **Center and spread with 3 to 10 values**: `dotPlot` and `boxPlot` that draw only the first
-    n values (n is a value), the median marked for odd and even n.
+10. **Center and spread with 3 to 10 values**: `dotPlot` already takes `count` and draws the
+    first n values (done in the lesson branch); make the median mark clear for odd and even n.
 11. **Inequalities on a number line**: `integerLine` with an open or closed circle at the
     bound, an arrow to the solutions, and a test point marked true or false.
 12. **Scaled unit cubes**: `unitCubes` past 10 per edge draws a labelled box to scale
@@ -145,6 +146,13 @@ bus.
     the Grade 3 grouping page can take a factor that is a multiple of 10.
 24. **Decimal number line from any start**: `fractionLine` with `decimal` that starts at a whole
     number (a line from 1 to 3 in tenths, with 2.6 marked).
+25. **Fraction area past one whole**: `fractionArea` whose factors can be more than 1
+    (5/7 × 10/3 as a 2-by-4 block of unit squares, 5/2 × 1 1/3), so Grade 5 multiplication can
+    drop "each fraction at most 1".
+26. **Place-value chart to billions**: `placeValueChart` with billions (10⁹ = 1,000,000,000),
+    for Grade 5 powers of ten to exponent 9.
+27. **Decimal jumps past 30**: the divide-by-a-decimal picture for quotients to 999
+    (21 ÷ 0.2 = 105 jumps of 0.2): group the jumps by tens when there are many.
 
 ### 2. Grade 7 math (planned skills in `src/data/taxonomy.ts`)
 
