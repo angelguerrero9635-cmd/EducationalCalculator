@@ -164,7 +164,7 @@ function WordEquation({
         {right}
       </ChartText>
       {over ? (
-        <ChartText x={x} y={y - 11} fontSize={chart.tiny} textAnchor="middle" fill={c.chartMuted}>
+        <ChartText x={x} y={y - 15} fontSize={chart.tiny} textAnchor="middle" fill={c.chartMuted}>
           {over}
         </ChartText>
       ) : null}
