@@ -46,14 +46,16 @@ const MOUNTAIN_SHADE = 'M 18 7 L 23.5 17 L 30 12 L 45 42 H 25 L 21.5 30 L 22.5 1
 
 /** The cut-away of rock layers (s.4.weathering~layers-order), frame and sea level. */
 const CUT = { x0: 4, x1: 44, y0: 4, y1: 44, sea: 22 };
-/** How far a layer is raised at x once the land is pushed up: most in the middle. */
-const bulge = (x: number) => Math.exp(-(((x - 24) / 14) ** 2));
+/** Once the land is pushed up, the layers right of this x are raised as a block. */
+const FAULT = 12;
+/** How far the block is raised: its sand ends up just above the sea. */
+const LIFT = 18;
 /** The river's canyon through the raised layers: [top left, top right, floor right, floor left]. */
 const CANYON: [number, number][] = [
-  [17, 0],
-  [31, 0],
-  [26.3, 16.5],
-  [21.7, 16.5],
+  [23, 10],
+  [33, 10],
+  [29.6, 20.3],
+  [26.4, 20.3],
 ];
 
 export function R3EIcon({ icon, ink }: IconProps): ReactNode {
@@ -222,12 +224,12 @@ export function R3EIcon({ icon, ink }: IconProps): ReactNode {
 
   /**
    * One stage of the rock layers forming (1 sand, 2 mud, 3 shells, 4 raised, 5 cut by a river),
-   * as a cut-away with the sea level fixed. Once raised, the layers bow up in the middle, above
-   * the sea; the sea stays at the sides. The river's canyon floor stays above the sea.
+   * as a cut-away with the sea level fixed. Once raised, the layers right of a break are lifted
+   * as a flat block above the sea, which stays over the unraised layers on the left. The river's
+   * canyon cuts through the shells and mud into the sand, its floor still above the sea.
    */
   const strata = (stage: 1 | 2 | 3 | 4 | 5) => {
-    const lift = stage >= 4 ? 22 : 0;
-    const top = (y: number, x: number) => y - lift * bulge(x);
+    const top = (y: number, x: number) => (stage >= 4 && x >= FAULT ? y - LIFT : y);
     const xs = Array.from({ length: 41 }, (_, i) => CUT.x0 + i);
     const edge = (y: number, back = false) =>
       (back ? [...xs].reverse() : xs).map((x) => `${x} ${top(y, x).toFixed(2)}`).join(' L ');
@@ -285,7 +287,7 @@ export function R3EIcon({ icon, ink }: IconProps): ReactNode {
             <Path d={`M 0 0 H 48 V 48 H 0 Z M ${walls} Z`} clipRule="evenodd" />
           </ClipPath>
           <ClipPath id={ids.above}>
-            <Rect x={0} y={0} width={48} height={CUT.sea} />
+            <Rect x={FAULT + 0.8} y={0} width={48} height={CUT.sea} />
           </ClipPath>
           <ClipPath id={ids.dome}>
             <Path d={land} />
@@ -304,9 +306,13 @@ export function R3EIcon({ icon, ink }: IconProps): ReactNode {
           {stage === 5 ? (
             <>
               <G clipPath={url(ids.dome)}>
-                <Path d={`M ${walls}`} fill="none" {...o(0.9)} />
+                <Path
+                  d={`M ${[1, 2, 3, 0].map((i) => CANYON[i]!.join(' ')).join(' L ')}`}
+                  fill="none"
+                  {...o(0.9)}
+                />
               </G>
-              <Path d="M 21.2 14.4 H 26.8 L 26.3 16.5 H 21.7 Z" fill={c.water} {...o(0.6)} />
+              <Path d="M 25.8 18.6 H 30.2 L 29.6 20.3 H 26.4 Z" fill={c.water} {...o(0.6)} />
             </>
           ) : null}
           {stage === 1
@@ -344,9 +350,9 @@ export function R3EIcon({ icon, ink }: IconProps): ReactNode {
             : null}
           {stage === 4 ? (
             <>
-              {arrow(16, 43, 16, 36, ink)}
-              {arrow(24, 43, 24, 30, ink)}
-              {arrow(32, 43, 32, 36, ink)}
+              {arrow(20, 43, 20, 29, ink)}
+              {arrow(28, 43, 28, 29, ink)}
+              {arrow(36, 43, 36, 29, ink)}
             </>
           ) : null}
         </G>

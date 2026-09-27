@@ -1298,7 +1298,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     gallery: ['g.r3e-layers-order'],
     uses: '"icon":"layers pushed up"',
     notes:
-      "Sand settles: the bottom layer forms → a cut-away view: one sand layer under water; Mud settles on top of the sand → a cut-away view: sand, then mud; Shells settle on the mud: a layer with fossils forms → a cut-away view: sand, mud and a shell layer; The land is pushed up → the same layers raised above the water line; A river cuts down through the layers → the raised layers with a river canyon cut through them. Drawn: one cut-away, same frame and sea level in every stage. Stage label → icon: Sand settles: the bottom layer forms → 'sand layer under water'; Mud settles on top of the sand → 'mud on sand'; Shells settle on the mud: a layer with fossils forms → 'shell layer on mud'; The land is pushed up → 'layers pushed up' (the layers bow up above the sea, which stays at the sides; arrows up); A river cuts down through the layers → 'river cutting layers' (a canyon through the shells and mud into the sand; its floor stays above the sea). Set each stage's figure: { kind: 'icon', icon: … }.",
+      "Sand settles: the bottom layer forms → a cut-away view: one sand layer under water; Mud settles on top of the sand → a cut-away view: sand, then mud; Shells settle on the mud: a layer with fossils forms → a cut-away view: sand, mud and a shell layer; The land is pushed up → the same layers raised above the water line; A river cuts down through the layers → the raised layers with a river canyon cut through them. Drawn: one cut-away, same frame and sea level in every stage. Stage label → icon: Sand settles: the bottom layer forms → 'sand layer under water'; Mud settles on top of the sand → 'mud on sand'; Shells settle on the mud: a layer with fossils forms → 'shell layer on mud'; The land is pushed up → 'layers pushed up' (the layers right of a break are lifted as a flat block above the sea, which stays over the unraised layers on the left; arrows up); A river cuts down through the layers → 'river cutting layers' (a canyon through the shells and mud into the sand; its floor stays above the sea). Set each stage's figure: { kind: 'icon', icon: … }.",
   },
   {
     id: 'D45',
@@ -1407,10 +1407,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.earth-spheres~rain-to-river',
     kind: 'icon',
     pages: ['s.5.earth-spheres~rain-to-river'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3e-rain-to-river'],
+    uses: '"icon":"rain on mountain"',
     notes:
-      'Water evaporates from the ocean → the sun over the ocean with vapor arrows rising; Clouds form and rain falls on a mountain → a cloud raining on a mountain; Rain soaks into the soil → cut-away soil with roots taking in water; The rest runs in a river → a river running into the sea',
+      "Water evaporates from the ocean → the sun over the ocean with vapor arrows rising; Clouds form and rain falls on a mountain → a cloud raining on a mountain; Rain soaks into the soil → cut-away soil with roots taking in water; The rest runs in a river → a river running into the sea. Drawn: one scene (the sea on the left, cut-away soil with a tree and its roots, a mountain on the right), one step added per stage. Stage label → icon: Water evaporates from the ocean … → 'ocean water evaporating'; Clouds form and rain falls on a mountain … → 'rain on mountain'; Rain soaks into the soil and roots take it in … → 'rain soaking into soil'; The rest runs in a river back to the sea … → 'river to the sea'. Set each stage's figure: { kind: 'icon', icon: … }.",
   },
   {
     id: 'D56',
@@ -1493,10 +1494,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.rock-cycle~sandstone',
     kind: 'icon',
     pages: ['s.6.rock-cycle~sandstone'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3e-sandstone'],
+    uses: '"icon":"granite crumbling"',
     notes:
-      "Granite on a mountain weathers into sand grains → a granite peak crumbling into grains; Rain and rivers carry the sand downhill → a river carrying sand down a slope; The sand settles in layers → sand layers on a lake floor under water; New layers pile on top and squeeze the sand → a stack of layers with down arrows; Minerals glue the grains into sandstone → existing rock figure {kind:'rock', texture:'grains'}",
+      "Granite on a mountain weathers into sand grains → a granite peak crumbling into grains; Rain and rivers carry the sand downhill → a river carrying sand down a slope; The sand settles in layers → sand layers on a lake floor under water; New layers pile on top and squeeze the sand → a stack of layers with down arrows; Minerals glue the grains into sandstone → existing rock figure {kind:'rock', texture:'grains'}. Drawn: Stage label → figure: Granite on a mountain weathers into sand grains → icon 'granite crumbling'; Rain and rivers carry the sand downhill → icon 'river carrying sand' (the same mountain); The sand settles in layers on a lake or sea floor → icon 'sand settling in lake'; New layers pile on top and squeeze the sand → icon 'layers squeezing sand' (the same lake cut-away); Minerals glue the grains into sandstone → { kind: 'rock', texture: 'grains' } (existing).",
   },
   {
     id: 'D64',
