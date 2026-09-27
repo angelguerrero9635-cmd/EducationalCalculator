@@ -22,6 +22,58 @@ const signed = (id: string, symbol: string, name: string, step = 1, lim = 10) =>
 
 export const G8B_GALLERY_MODULES: ModuleDef[] = [
   {
+    id: 'g.function-machine',
+    title: 'Function machine',
+    assumptions: [
+      'A function gives exactly one output for each input.',
+      'The machine divides the input by d, then adds a.',
+      'Tap an input in the table to put it through the machine.',
+    ],
+    variables: [
+      signed('x', 'x', 'Input', 1, 100),
+      { ...signed('d', 'd', 'Divide by', 1, 12), min: 1 },
+      signed('a', 'a', 'Add', 1, 20),
+      signed('y', 'y', 'Output', 0.01, 200),
+    ],
+    relations: [
+      {
+        id: 'y = x ÷ d + a',
+        display: '{y} = {x} ÷ {d} + {a}',
+        vars: ['y', 'x', 'd', 'a'],
+        residual: (v: Values) => v.y! * v.d! - (v.x! + v.a! * v.d!),
+        solve: {
+          y: (v: Values) => div(v.x!, v.d!)! + v.a!,
+          x: (v: Values) => (v.y! - v.a!) * v.d!,
+          a: (v: Values) => v.y! - div(v.x!, v.d!)!,
+          d: (v: Values) => div(v.x!, v.y! - v.a!),
+        },
+      },
+    ],
+    steps: {
+      'y = x ÷ d + a': {
+        y: { expr: '{x} ÷ {d} + {a}', how: 'Divide the input by d, then add a.' },
+        x: {
+          expr: '({y} − {a}) × {d}',
+          how: 'Undo the steps in reverse: subtract a, then multiply.',
+        },
+        a: { expr: '{y} − {x} ÷ {d}', how: 'The output less what the division gave.' },
+        d: { expr: '{x} ÷ ({y} − {a})', how: 'The input divided by what the division must give.' },
+      },
+    },
+    example: { x: 6, d: 2, a: 5, y: 8 },
+    startWith: ['x', 'd', 'a'],
+    representation: {
+      kind: 'functionMachine',
+      input: 'x',
+      output: 'y',
+      rule: [
+        { op: '÷', by: 'd' },
+        { op: '+', by: 'a' },
+      ],
+      table: [0, 2, 4, 6, 8, 10],
+    },
+  },
+  {
     id: 'g.linear-function',
     title: 'Linear function',
     assumptions: [

@@ -46,6 +46,7 @@ import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
 import { LinearFunction, LineSystem } from './Lines';
+import { FunctionMachine } from './FunctionMachine';
 import { RectangleDiagram } from './Rectangle';
 import { Rectilinear } from './Rectilinear';
 import { AreaModel } from './AreaModel';
@@ -111,6 +112,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
       return <LineSystem spec={spec} calc={calc} />;
+    case 'functionMachine':
+      return <FunctionMachine spec={spec} calc={calc} />;
     case 'tape':
       return 'ratio' in spec ? (
         <RatioTape spec={spec} calc={calc} />

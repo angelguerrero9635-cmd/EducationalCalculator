@@ -108,6 +108,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
 | `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag    | Grade 8 linear functions            |
 | `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)     | Grade 8 systems                     |
+| `functionMachine`  | an input card through a rule's steps to the output; a tappable table  | Grade 8 functions                   |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

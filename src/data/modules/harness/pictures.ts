@@ -977,6 +977,24 @@ export function repIssues(
       }
       break;
     }
+    case 'functionMachine': {
+      let x = val(rep.input);
+      for (const s of rep.rule) {
+        const by = val(s.by);
+        if (x === undefined || by === undefined) {
+          x = undefined;
+          break;
+        }
+        if (s.op === '÷' && by === 0) out.push('function rule divides by 0');
+        x = s.op === '+' ? x + by : s.op === '−' ? x - by : s.op === '×' ? x * by : x / by;
+      }
+      const y = val(rep.output);
+      if (x !== undefined && y !== undefined && Math.abs(x - y) > 1e-6 * Math.max(1, Math.abs(y)))
+        out.push(`machine gives ${x}, output shows ${y}`);
+      if (rep.rule.length < 1 || rep.rule.length > 3)
+        out.push(`function machine with ${rep.rule.length} steps (1 to 3 fit)`);
+      break;
+    }
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
       const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
