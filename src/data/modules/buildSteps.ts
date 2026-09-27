@@ -436,7 +436,10 @@ export function buildSteps(
     given: givenIds.map(quantity),
     find: result.trace.map((t) => quantity(t.id)),
     steps,
+    // Page limits (a constraint: "3/4 is at most 1") are never shown as a check: a student
+    // would take them for part of the problem. A value that breaks one is refused as it is typed.
     check: module.relations
+      .filter((r) => !r.constraint)
       .filter((r) =>
         r.vars.every(
           (id) =>

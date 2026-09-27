@@ -489,7 +489,8 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
         expect(s.substituted ?? '').not.toContain('?');
       }
       expect(w.missing).toEqual([]);
-      expect(w.check.length).toBe(m.relations.length);
+      // Page limits are never shown as checks.
+      expect(w.check.length).toBe(m.relations.filter((r) => !r.constraint).length);
       expect(w.check.every((c) => c.ok)).toBe(true);
     });
   },

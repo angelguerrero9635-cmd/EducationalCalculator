@@ -45,35 +45,34 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
   return (
     <View style={styles.container} testID="formulas">
       <View style={styles.formulas}>
-        {module.relations.map((r) => {
-          const letters = renderTemplate(r.display, module.variables);
-          const numbers = noEmptyPart(
-            agree(
-              renderTemplate(
-                r.display,
-                units.coherent
-                  ? module.variables
-                  : module.variables.map((v) => ({ ...v, integer: false })),
-                working,
+        {/* Page limits (constraints) are never shown: a student would take them for a step. */}
+        {module.relations
+          .filter((r) => !r.constraint)
+          .map((r) => {
+            const letters = renderTemplate(r.display, module.variables);
+            const numbers = noEmptyPart(
+              agree(
+                renderTemplate(
+                  r.display,
+                  units.coherent
+                    ? module.variables
+                    : module.variables.map((v) => ({ ...v, integer: false })),
+                  working,
+                ),
               ),
-            ),
-          );
-          // K–2: just the number sentence (what students write), no letters. Grades 3–5: the
-          // number sentence first, the rule in words under it (letters start in Grade 6).
-          const [first, second] = early
-            ? [numbers, null]
-            : elementary
-              ? [numbers, wordRule(r.display, module.variables, r.words)]
-              : // Grade 6 letters: the formula (with what its letters mean), then the numbers.
-                [letters, numbers];
-          // Typeset as in the step-by-step (fractions stacked, powers raised, letters in
-          // italic), except: a limit ("3/4 is at most 1") is a rule about the inputs, kept as
-          // text; Grade 6 formulas state rules, so ÷ stays inline; words under a formula get
-          // only small number fractions.
-          const math = (text: string, style: StyleProp<TextStyle>, extra?: LatexOptions) =>
-            r.constraint ? (
-              <Text style={style}>{text}</Text>
-            ) : (
+            );
+            // K–2: just the number sentence (what students write), no letters. Grades 3–5: the
+            // number sentence first, the rule in words under it (letters start in Grade 6).
+            const [first, second] = early
+              ? [numbers, null]
+              : elementary
+                ? [numbers, wordRule(r.display, module.variables, r.words)]
+                : // Grade 6 letters: the formula (with what its letters mean), then the numbers.
+                  [letters, numbers];
+            // Typeset as in the step-by-step (fractions stacked, powers raised, letters in
+            // italic), except: Grade 6 formulas state rules, so ÷ stays inline; words under a
+            // formula get only small number fractions.
+            const math = (text: string, style: StyleProp<TextStyle>, extra?: LatexOptions) => (
               <MathLine
                 text={text}
                 band={band}
@@ -82,36 +81,31 @@ export function FormulaSection({ calc }: { calc: Calculator }) {
                 style={style}
               />
             );
-          return (
-            <View
-              key={r.id}
-              style={[styles.formula, { backgroundColor: c.surface, borderColor: c.border }]}
-            >
-              {middle && !r.constraint ? (
-                <MathLine
-                  text={first}
-                  band={band}
-                  symbols={symbols}
-                  options={{ solving: false }}
-                  after={` (${lowerFirst(wordRule(r.display, module.variables, r.words))})`}
-                  style={[styles.symbolic, { color: c.text }]}
-                />
-              ) : (
-                math(
-                  middle
-                    ? `${first} (${lowerFirst(wordRule(r.display, module.variables, r.words))})`
-                    : first,
-                  [styles.symbolic, { color: c.text }],
-                )
-              )}
-              {second === null
-                ? null
-                : math(second, [styles.substituted, { color: c.textMuted }], {
-                    words: elementary,
-                  })}
-            </View>
-          );
-        })}
+            return (
+              <View
+                key={r.id}
+                style={[styles.formula, { backgroundColor: c.surface, borderColor: c.border }]}
+              >
+                {middle ? (
+                  <MathLine
+                    text={first}
+                    band={band}
+                    symbols={symbols}
+                    options={{ solving: false }}
+                    after={` (${lowerFirst(wordRule(r.display, module.variables, r.words))})`}
+                    style={[styles.symbolic, { color: c.text }]}
+                  />
+                ) : (
+                  math(first, [styles.symbolic, { color: c.text }])
+                )}
+                {second === null
+                  ? null
+                  : math(second, [styles.substituted, { color: c.textMuted }], {
+                      words: elementary,
+                    })}
+              </View>
+            );
+          })}
       </View>
       {!units.coherent && formulaUnits ? (
         <Text style={[styles.hint, { color: c.textMuted }]}>

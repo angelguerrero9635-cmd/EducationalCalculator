@@ -4,7 +4,8 @@ import { Platform, StyleSheet, TextInput, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Dropdown, type DropdownOption } from '@/components/Dropdown';
 import { Text } from '@/components/Text';
-import { gradeBand, isEarlyGrade } from '@/data/modules';
+import { gradeBand, isEarlyGrade, wordRule } from '@/data/modules';
+import type { ModuleDef } from '@/data/modules/types';
 import { formatNumber, parseCents, parseNumber } from '@/engine/format';
 import { outOfCount } from '@/engine/solve';
 import type { VariableDef } from '@/engine/types';
@@ -15,6 +16,18 @@ import { font, radius, space, usePalette } from '@/theme';
 import type { Calculator } from './useCalculator';
 
 type SystemOption = 'metric' | 'us' | 'mixed';
+
+/**
+ * A broken page limit ("Doesn’t fit p/b ≤ 24") said as a limit of this page, in words. The
+ * limits are never shown as formulas: a student would take them for a step of the problem.
+ */
+function limitMessage(message: string, module: ModuleDef): string {
+  const id = /^Doesn’t fit (.+)$/.exec(message)?.[1];
+  const r = module.relations.find((x) => x.id === id && x.constraint);
+  if (!r) return message;
+  const rule = wordRule(r.display, module.variables, r.words);
+  return `This page only works when ${rule[0]!.toLowerCase()}${rule.slice(1)}`;
+}
 
 /** Solver messages in words for Kindergarten–Grade 2. */
 function kidMessage(message: string): string {
@@ -99,7 +112,7 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
   const band = gradeBand(calc.module.id);
   const letters = band === 'standard' || band === 'middle';
   const rawError = typo ? 'Enter a number' : calc.errors[variable.id];
-  const error = rawError && early ? kidMessage(rawError) : rawError;
+  const error = rawError && (early ? kidMessage(rawError) : limitMessage(rawError, calc.module));
   const statusWord = variable.derived
     ? early
       ? 'worked out'
@@ -341,7 +354,9 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
   // Messages for the boxes, under the equation (the boxes have no room beside them).
   const messages = [...new Set(equationIds(template))].flatMap((id) => {
     const e = calc.errors[id];
-    return e ? [`${byId.get(id)!.name}: ${early ? kidMessage(e) : e}`] : [];
+    return e
+      ? [`${byId.get(id)!.name}: ${early ? kidMessage(e) : limitMessage(e, calc.module)}`]
+      : [];
   });
   const piece = (p: EquationPart, i: number) =>
     p.kind === 'text' ? (

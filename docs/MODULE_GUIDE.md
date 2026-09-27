@@ -310,8 +310,10 @@ the assumptions and a table or diagram.
      pages, divisions stacked from high school. K–2 stays plain. `latex.test.ts` checks every
      page's lines come back to the same text. The Formulas section uses the same rules, with
      three differences: Grade 6 formulas state rules, so ÷ stays inline; the rule in words
-     under a Grade 3–5 number sentence gets only small number fractions; a limit
-     (`constraint`, "3/4 is at most 1") stays text.
+     under a Grade 3–5 number sentence gets only small number fractions.
+   - Page limits (`constraint`: "3/4 is at most 1", "at most 24 wholes") are never shown as
+     formulas or checks, since a student takes them for a step of the problem. A value that
+     breaks one is refused under its box: "This page only works when …", in words.
    - The `use` line quotes the kind of released question the page solves, in the question's
      own words ("Which number is greater, 54 or 36?"), and never promises more.
    - `layouts.test.ts` covers the sort, sequence, explore and observe pages.

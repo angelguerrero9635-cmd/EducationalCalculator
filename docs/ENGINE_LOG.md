@@ -5,13 +5,20 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Page limits out of the formulas (user feedback)
+
+- Limits ("3/4 is at most 1", "is at most 24 wholes") in the Formulas section and the Check
+  read as steps for solving the problem. → Constraint relations are left out of both; a value
+  that breaks one gets "This page only works when …" (the rule in words) under its box instead
+  of "Doesn’t fit p/b ≤ 24". The module test counts checks without the limits.
+
 ## Typeset math in the Formulas section (lesson-reviewer, focused)
 
 - Formulas were flat text while the steps under them were typeset. → `FormulaSection` draws
   its lines with `MathLine`: Grades 3–5 number sentences stacked; Grade 6 letters in italic
   with ÷ inline (`solving: false`) and the meaning in words after them as text; high school
   letters and numbers with divisions stacked; the words line only small number fractions
-  (`words: true`), so "natural increase ÷ population" never stacks; limits stay text.
+  (`words: true`), so "natural increase ÷ population" never stacks.
 - `(1 + r ÷ 100)^t` left a raw ^ (the division split the bracket first). → Bracket powers are
   found first, with their divisions typeset inside.
 - `v₀²` lost its power; `cx`, `rh`, `px` were upright; `a/b` on a letters page stayed flat;
