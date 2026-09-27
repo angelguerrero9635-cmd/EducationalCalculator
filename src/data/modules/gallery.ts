@@ -12,6 +12,7 @@ import { G8C_GALLERY_MODULES } from './galleryG8c';
 import { G7C_GALLERY_MODULES } from './galleryG7c';
 import { G8A_GALLERY_MODULES } from './galleryG8a';
 import { OPTION_GALLERY_MODULES } from './galleryOptions';
+import { G8B_GALLERY_MODULES } from './galleryG8b';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
@@ -1028,6 +1029,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
   ...G8C_GALLERY_MODULES,
   ...G7C_GALLERY_MODULES,
   ...G8A_GALLERY_MODULES,
+  ...G8B_GALLERY_MODULES,
 ];
 
 /**

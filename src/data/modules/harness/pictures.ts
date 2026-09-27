@@ -16,6 +16,7 @@ import {
   solidOf,
   volumeOf,
 } from '@/components/module/reps/section';
+import { imageOf } from '@/components/module/reps/transform';
 
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
@@ -1434,6 +1435,97 @@ export function repIssues(
     case 'quadrilateral': {
       const r = val(rep.rightAngles);
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
+      break;
+    }
+    case 'linearFunction': {
+      const [m, b] = [val(rep.slope), val(rep.intercept)];
+      const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
+      if ([m, b, x, y].every((v) => v !== undefined) && rep.point) {
+        if (Math.abs(m! * x! + b! - y!) > 1e-6 * Math.max(1, Math.abs(y!)))
+          out.push(`point (${x}, ${y}) is not on y = ${m}x + ${b}`);
+      }
+      break;
+    }
+    case 'transformation': {
+      if (rep.figure.length < 2 || rep.figure.length > 6)
+        out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
+      const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
+      const mirror = rep.move === 'reflect' ? rep.mirror : undefined;
+      const line =
+        mirror && typeof mirror === 'object' ? val('x' in mirror ? mirror.x : mirror.y) : undefined;
+      const center = 'center' in rep && rep.center ? rep.center : undefined;
+      const move = {
+        right: rep.move === 'translate' ? num(rep.right, 0) : 0,
+        up: rep.move === 'translate' ? num(rep.up, 0) : 0,
+        angle: rep.move === 'rotate' ? num(rep.angle, 0) : 0,
+        factor: rep.move === 'dilate' ? num(rep.factor, 1) : 1,
+        cx: num(center?.[0], 0),
+        cy: num(center?.[1], 0),
+      };
+      if (move.factor !== undefined && move.factor <= 0)
+        out.push(`dilation by scale factor ${move.factor}`);
+      const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
+      const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
+      const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];
+      if (
+        !rep.image ||
+        all.some((x) => x === undefined) ||
+        (mirror && typeof mirror === 'object' && line === undefined)
+      )
+        break;
+      const [ex, ey] = imageOf([a![0]!, a![1]!], rep.move, {
+        right: move.right!,
+        up: move.up!,
+        mirror,
+        line,
+        angle: move.angle!,
+        factor: move.factor!,
+        center: [move.cx!, move.cy!],
+      });
+      if (Math.abs(ex - ix!) > 1e-6 || Math.abs(ey - iy!) > 1e-6)
+        out.push(`image (${ix}, ${iy}) is not where the move takes A (${ex}, ${ey})`);
+      break;
+    }
+    case 'mapping': {
+      // The diagram has a row per different input and output; more than 8 don't fit.
+      if (rep.pairs.length < 1 || rep.pairs.length > 8)
+        out.push(`mapping with ${rep.pairs.length} pairs (1 to 8 fit)`);
+      for (const p of rep.pairs) {
+        const [x, y] = [val(p.x), val(p.y)];
+        if ((x !== undefined && !Number.isFinite(x)) || (y !== undefined && !Number.isFinite(y)))
+          out.push(`mapping pair (${x}, ${y}) is not a number`);
+      }
+      break;
+    }
+    case 'functionMachine': {
+      let x = val(rep.input);
+      for (const s of rep.rule) {
+        const by = val(s.by);
+        if (x === undefined || by === undefined) {
+          x = undefined;
+          break;
+        }
+        if (s.op === '÷' && by === 0) out.push('function rule divides by 0');
+        x = s.op === '+' ? x + by : s.op === '−' ? x - by : s.op === '×' ? x * by : x / by;
+      }
+      const y = val(rep.output);
+      if (x !== undefined && y !== undefined && Math.abs(x - y) > 1e-6 * Math.max(1, Math.abs(y)))
+        out.push(`machine gives ${x}, output shows ${y}`);
+      if (rep.rule.length < 1 || rep.rule.length > 3)
+        out.push(`function machine with ${rep.rule.length} steps (1 to 3 fit)`);
+      break;
+    }
+    case 'lineSystem': {
+      const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
+      const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
+      if ([m1, b1, m2, b2].some((v) => v === undefined) || x === undefined || y === undefined)
+        break;
+      if (m1 === m2) out.push(`lines with the same slope ${m1} drawn with a solution (${x}, ${y})`);
+      else if (
+        Math.abs(m1! * x + b1! - y) > 1e-6 * Math.max(1, Math.abs(y)) ||
+        Math.abs(m2! * x + b2! - y) > 1e-6 * Math.max(1, Math.abs(y))
+      )
+        out.push(`solution (${x}, ${y}) is not where the lines cross`);
       break;
     }
     default:

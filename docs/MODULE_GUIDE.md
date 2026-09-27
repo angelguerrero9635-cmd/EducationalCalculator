@@ -122,6 +122,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked     | Grade 8 exponent rules              |
 | `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10 (4.7 × 10⁵)        | Grade 8 scientific notation         |
 | `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x  | Grade 8 equations, both sides       |
+| `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag    | Grade 8 linear functions            |
+| `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)     | Grade 8 systems                     |
+| `functionMachine`  | an input card through a rule's steps to the output; a tappable table  | Grade 8 functions                   |
+| `mapping`          | pairs as arrows between two ovals; the graph with a vertical line     | Grade 8 functions (is it one?)      |
+| `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
