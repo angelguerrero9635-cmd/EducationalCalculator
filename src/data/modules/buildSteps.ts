@@ -352,7 +352,7 @@ export function buildSteps(
       (band === 'elementary' ||
         (band === 'early' && !!workLines?.some((l) => /^(Hundreds|Tens|Ones): /.test(l)))) &&
       written &&
-      /^\d+ [+−]/.test(written.says) &&
+      /^[\d,]+ [+−]/.test(written.says) &&
       workLines?.some(running)
         ? // A sentence that only led into the jumps ("Start with the bigger number.") goes too.
           workLines.filter((l) => !running(l) && (l.includes('=') || !l.endsWith('.')))

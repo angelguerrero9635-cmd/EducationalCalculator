@@ -178,7 +178,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       {
         id: 'rectangle',
         label: 'Rectangle',
-        why: 'A rectangle has 4 sides and 4 square corners.',
+        why: 'A rectangle has 4 square corners. Two sides are longer than the other two.',
       },
       { id: 'hexagon', label: 'Hexagon', why: 'A hexagon has 6 sides and 6 corners.' },
     ],
@@ -425,7 +425,6 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: 'Sphere (a ball)', bin: 'rolls', figure: { kind: 'solid', shape: 'sphere' } },
-      { label: 'Cone (a party hat)', bin: 'rolls', figure: { kind: 'solid', shape: 'cone' } },
       { label: 'Cube (a box)', bin: 'stacks', figure: { kind: 'solid', shape: 'cube' } },
       { label: 'Book', bin: 'stacks', figure: { kind: 'solid', shape: 'box' } },
       { label: 'Cereal box', bin: 'stacks', figure: { kind: 'solid', shape: 'box' } },
@@ -526,7 +525,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     use: 'Use this to order three things from longest to shortest.',
     assumptions: [
       'Line up the ribbons at one end to compare them.',
-      'Red is longer than blue. Blue is longer than green. So red is longer than green.',
+      'A rope is longer than a ribbon. The ribbon is longer than a string. So the rope is longer than the string.',
       'Tap the ribbons in order, longest first.',
     ],
     question: 'Put the ribbons in order, longest first.',
@@ -689,7 +688,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         figure: { kind: 'cut', shape: 'rectangle', parts: 3, equal: false },
       },
       {
-        label: 'Circle, one big piece',
+        label: 'Circle cut into a big and a small piece',
         bin: 'unequal',
         figure: { kind: 'cut', shape: 'circle', parts: 2, equal: false, shaded: 1 },
       },
@@ -873,17 +872,17 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       {
-        label: 'Half a pizza',
+        label: 'Pizza cut in 2, one part shaded',
         bin: 'half',
         figure: { kind: 'cut', shape: 'circle', parts: 2, equal: true, shaded: 1 },
       },
       {
-        label: 'A fourth of a pizza',
+        label: 'Pizza cut in 4, one part shaded',
         bin: 'fourth',
         figure: { kind: 'cut', shape: 'circle', parts: 4, equal: true, shaded: 1 },
       },
       {
-        label: 'Half a sandwich',
+        label: 'Sandwich cut in 2, one part shaded',
         bin: 'half',
         figure: {
           kind: 'cut',
@@ -895,17 +894,17 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'A fourth of a sandwich',
+        label: 'Sandwich cut in 4, one part shaded',
         bin: 'fourth',
         figure: { kind: 'cut', shape: 'square', parts: 4, equal: true, shaded: 1 },
       },
       {
-        label: 'Half a bar',
+        label: 'Bar cut in 2, one part shaded',
         bin: 'half',
         figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: true, shaded: 1 },
       },
       {
-        label: 'A fourth of a bar',
+        label: 'Bar cut in 4, one part shaded',
         bin: 'fourth',
         figure: { kind: 'cut', shape: 'rectangle', parts: 4, equal: true, shaded: 1 },
       },
@@ -1012,7 +1011,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: 'See the sunrise', bin: 'am', figure: { kind: 'icon', icon: 'sun' } },
       { label: 'Eat dinner', bin: 'pm' },
       { label: 'Go to bed', bin: 'pm', figure: { kind: 'icon', icon: 'bed' } },
-      { label: 'See the moon come up', bin: 'pm', figure: { kind: 'icon', icon: 'moon' } },
+      { label: 'Watch the sunset', bin: 'pm', figure: { kind: 'icon', icon: 'sun' } },
     ],
   },
   {

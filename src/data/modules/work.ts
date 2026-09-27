@@ -114,7 +114,7 @@ export function addStrategy(a: number, b: number, unit = ''): string[] {
       .map(([name, x, y]) => `${name}: ${x} + ${y} = ${x + y}`),
     ...sumSteps(parts),
     ...(parts.length === 2 ? [`${parts[0]} + ${parts[1]} = ${c}`] : []),
-  ].map((l) => (u ? l.replace(/(\d+)(?![\d.])/g, `$1${u}`) : l));
+  ].map((l) => (u ? l.replace(/(\d(?:[\d,]*\d)?)(?![\d.])/g, `$1${u}`) : l));
 }
 
 /**
@@ -191,10 +191,12 @@ export function countUp(from: number, to: number, unit = ''): string[] {
   const lines: string[] = [];
   at = from;
   for (const h of hops) {
-    lines.push(`${at}${unit} + ${h}${unit} = ${at + h}${unit}`);
+    lines.push(`${formatNumber(at)}${unit} + ${h}${unit} = ${formatNumber(at + h)}${unit}`);
     at += h;
   }
-  lines.push(`Jumps: ${hops.map((h) => `${h}${unit}`).join(' + ')} = ${to - from}${unit}`);
+  lines.push(
+    `Jumps: ${hops.map((h) => `${formatNumber(h)}${unit}`).join(' + ')} = ${formatNumber(to - from)}${unit}`,
+  );
   return lines;
 }
 

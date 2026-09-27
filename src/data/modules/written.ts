@@ -5,6 +5,10 @@
  * (Grade 4 on). `autoWritten` picks the layout for a plain arithmetic line by grade; a module
  * can set `written` on a step to choose (or with `false`, refuse) one.
  */
+import { formatNumber } from '@/engine/format';
+
+/** Numbers in the line above the grid read as elsewhere: "1,000 − 178" (the grid's digits stay plain). */
+const fn = (x: number) => formatNumber(x);
 
 export interface WrittenCell {
   text: string;
@@ -73,7 +77,7 @@ export function columnAdd(nums: number[]): Written | undefined {
       width,
     ),
   );
-  return { kind: 'grid', rows, width, says: `${nums.join(' + ')} = ${sum}` };
+  return { kind: 'grid', rows, width, says: `${nums.map(fn).join(' + ')} = ${fn(sum)}` };
 }
 
 /** Column subtraction c − b, regrouped digits crossed out with the new values written above. */
@@ -123,7 +127,7 @@ export function columnSubtract(c: number, b: number): Written | undefined {
       width,
     ),
   );
-  return { kind: 'grid', rows, width, says: `${c} − ${b} = ${c - b}` };
+  return { kind: 'grid', rows, width, says: `${fn(c)} − ${fn(b)} = ${fn(c - b)}` };
 }
 
 /**
@@ -173,7 +177,7 @@ export function columnMultiply(
     ]),
     digits(product),
   ];
-  return { kind: 'grid', rows, width, says: `${a} × ${b} = ${product}` };
+  return { kind: 'grid', rows, width, says: `${fn(a)} × ${fn(b)} = ${fn(product)}` };
 }
 
 /**
@@ -232,7 +236,7 @@ export function longDivision(n: number, d: number): Written | undefined {
     kind: 'grid',
     rows,
     width,
-    says: `${n} ÷ ${d} = ${q}${r ? ` remainder ${r}` : ''}`,
+    says: `${fn(n)} ÷ ${fn(d)} = ${fn(q)}${r ? ` remainder ${fn(r)}` : ''}`,
   };
 }
 
@@ -292,7 +296,7 @@ export function standardMultiply(a: number, b: number): Written | undefined {
     });
     rows.push(digits(product));
   }
-  return { kind: 'grid', rows, width, says: `${a} × ${b} = ${product}` };
+  return { kind: 'grid', rows, width, says: `${fn(a)} × ${fn(b)} = ${fn(product)}` };
 }
 
 /**
@@ -372,7 +376,7 @@ export function partialQuotients(n: number, d: number): Written | undefined {
     kind: 'grid',
     rows,
     width,
-    says: `${n} ÷ ${d} = ${q}${n % d ? ` remainder ${n % d}` : ''}`,
+    says: `${fn(n)} ÷ ${fn(d)} = ${fn(q)}${n % d ? ` remainder ${fn(n % d)}` : ''}`,
   };
 }
 
@@ -449,7 +453,7 @@ export function decimalLongDivision(n: number, d: number, maxPlaces = 3): Writte
     rows.push(bottom);
   });
   const q = Number((n / d).toFixed(fraction));
-  return { kind: 'grid', rows, width, says: `${n} ÷ ${d} = ${q}` };
+  return { kind: 'grid', rows, width, says: `${fn(n)} ÷ ${fn(d)} = ${fn(q)}` };
 }
 
 /**

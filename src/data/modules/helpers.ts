@@ -365,6 +365,13 @@ export function difference(
     countOn?: boolean;
     /** Say which is bigger first ("7 is more than 4"): the words for [more, fewer]. */
     compareWords?: [string, string];
+    /**
+     * Say which thing is bigger in the lesson's words, not as numbers: [when a is bigger, when
+     * b is bigger] ("The first pencil is longer"). Used in place of compareWords' sentence.
+     */
+    bigger?: [string, string];
+    /** The line when both are the same ("Both pencils are the same length"). */
+    equal?: string;
     /** How to find a or b when there is no difference (default: they are the same). */
     same?: string;
   },
@@ -408,15 +415,21 @@ export function difference(
       [d]: {
         expr: (v) => (aMore(v) ? `{${a}} − {${b}}` : `{${b}} − {${a}}`),
         how: how.diff,
-        ...(how.countUp || how.compare || how.countOn
+        ...(how.countUp || how.compare || how.countOn || how.compareWords || how.bigger
           ? {
               work: (v: Values) => {
                 const [lo, hi] = [Math.min(v[a]!, v[b]!), Math.max(v[a]!, v[b]!)];
+                const words = how.compareWords || how.bigger || how.equal;
                 return [
                   ...(how.compare ? [compareLine(v[a]!, v[b]!)] : []),
-                  ...(how.compareWords && hi > lo
-                    ? [`${hi} is ${how.compareWords[0]} than ${lo}`]
-                    : []),
+                  // Which is bigger, in the lesson's words; or that they are the same.
+                  ...(words && hi === lo
+                    ? [how.equal ?? `${lo} and ${hi} are the same`]
+                    : how.bigger && hi > lo
+                      ? [how.bigger[v[a]! > v[b]! ? 0 : 1]]
+                      : how.compareWords && hi > lo
+                        ? [`${hi} is ${how.compareWords[0]} than ${lo}`]
+                        : []),
                   ...(how.countUp ? countUp(lo, hi) : []),
                   ...(how.countOn && hi > lo
                     ? [`Count on from ${lo}: ${countList(lo, 1, hi - lo)} → ${hi - lo}`]

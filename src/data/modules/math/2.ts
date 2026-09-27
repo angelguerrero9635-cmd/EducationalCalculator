@@ -124,9 +124,16 @@ const placeLine = (n: number) => {
   );
   return parts.length > 1 ? [`${n} = ${parts.join(' + ')}`] : [];
 };
-/** Cents written as dollars and cents, e.g. "$1.35". */
-const dollars = (cents: number) =>
-  `$${Math.floor(cents / 100)}.${String(Math.round(cents % 100)).padStart(2, '0')}`;
+/**
+ * Cents from 100 on, in Grade 2 words: "(2 dollars and 68 cents)". The decimal point ($2.68)
+ * is Grade 4; under 100¢ there is nothing to add.
+ */
+const dollarWords = (cents: number) => {
+  if (cents < 100) return '';
+  const [d, c] = [Math.floor(cents / 100), Math.round(cents % 100)];
+  const ds = `${d} ${d === 1 ? 'dollar' : 'dollars'}`;
+  return c ? `(${ds} and ${c} ${c === 1 ? 'cent' : 'cents'})` : `(${ds})`;
+};
 /** "1 rhombus", "2 rhombuses". */
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 /** "Count on from 4: 5, 6, 7 → 3" (how many to count on from one amount to another). */
@@ -1359,9 +1366,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Measure both ribbons in the same unit.',
     ],
     variables: [
-      { ...whole('L', 'L', 'Longer ribbon', 0, 30), unit: 'cm' },
-      { ...whole('S', 'S', 'Shorter ribbon', 0, 30), unit: 'cm' },
-      { ...whole('d', 'd', 'How much longer', 0, 30), unit: 'cm' },
+      { ...whole('L', 'L', 'Longer ribbon', 1, 30), unit: 'cm' },
+      { ...whole('S', 'S', 'Shorter ribbon', 1, 30), unit: 'cm' },
+      { ...whole('d', 'd', 'How much longer', 0, 29), unit: 'cm' },
     ],
     relations: [
       {
@@ -1407,9 +1414,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Use the same unit for both lengths.',
     ],
     variables: [
-      { ...whole('a', 'a', 'First length', 0, 100), unit: 'cm' },
-      { ...whole('b', 'b', 'Second length', 0, 100), unit: 'cm' },
-      { ...whole('s', 's', 'Total length', 0, 100), unit: 'cm' },
+      { ...whole('a', 'a', 'First length', 1, 100), unit: 'cm' },
+      { ...whole('b', 'b', 'Second length', 1, 100), unit: 'cm' },
+      { ...whole('s', 's', 'Total length', 2, 100), unit: 'cm' },
     ],
     relations: [
       {
@@ -1687,7 +1694,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     ],
     variables: [
       { ...whole('T', 'T', 'Money you have', 0, 1000), unit: '¢' },
-      { ...whole('P', 'P', 'Price', 0, 1000), unit: '¢' },
+      { ...whole('P', 'P', 'Price', 1, 1000), unit: '¢' },
       { ...whole('L', 'L', 'Money left', 0, 1000), unit: '¢' },
     ],
     relations: [
@@ -1706,19 +1713,19 @@ export const MATH_2_MODULES: ModuleDef[] = [
           written: false,
           expr: '{T} − {P}',
           how: 'Count up from the price to the money you have.',
-          note: (v) => `(${dollars(v.L!)})`,
+          note: (v) => dollarWords(v.L!),
         },
         P: {
           work: (v) => subtractStrategy(v.T!, v.L!, '¢'),
           expr: '{T} − {L}',
           how: 'Take the money left away from the money you have.',
-          note: (v) => `(${dollars(v.P!)})`,
+          note: (v) => dollarWords(v.P!),
         },
         T: {
           work: (v) => addStrategy(v.P!, v.L!, '¢'),
           expr: '{P} + {L}',
           how: 'Add the price and the money left.',
-          note: (v) => `(${dollars(v.T!)})`,
+          note: (v) => dollarWords(v.T!),
         },
       },
     },
@@ -1827,7 +1834,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Type the amount in cents: 125¢ is 1 dollar and 25 cents.',
     ],
     variables: [
-      { ...whole('P', 'P', 'Price', 0, 1000), unit: '¢' },
+      { ...whole('P', 'P', 'Price', 1, 1000), unit: '¢' },
       { ...whole('H', 'H', 'Money you have', 0, 1000), unit: '¢' },
       { ...whole('M', 'M', 'Still needed', 0, 1000), unit: '¢' },
     ],
@@ -1847,19 +1854,19 @@ export const MATH_2_MODULES: ModuleDef[] = [
           how: 'Count up from the money you have to the price.',
           work: (v: Values) => countUp(v.H!, v.P!, '¢'),
           written: false,
-          note: (v: Values) => `(${dollars(v.M!)})`,
+          note: (v: Values) => dollarWords(v.M!),
         },
         H: {
           expr: '{P} − {M}',
           how: 'Take the money you still need away from the price.',
           work: (v: Values) => subtractStrategy(v.P!, v.M!, '¢'),
-          note: (v: Values) => `(${dollars(v.H!)})`,
+          note: (v: Values) => dollarWords(v.H!),
         },
         P: {
           expr: '{H} + {M}',
           how: 'Add the money you have and the money you still need.',
           work: (v: Values) => addStrategy(v.H!, v.M!, '¢'),
-          note: (v: Values) => `(${dollars(v.P!)})`,
+          note: (v: Values) => dollarWords(v.P!),
         },
       },
     },
@@ -1985,11 +1992,11 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Add the bars to find the total.',
     ],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 10),
-      whole('b', 'b', 'Basketball', 0, 10),
-      whole('c', 'c', 'Baseball', 0, 10),
-      whole('e', 'e', 'Tennis', 0, 10),
-      whole('n', 'n', 'Total', 0, 40),
+      whole('a', 'a', 'Soccer', 0, 20),
+      whole('b', 'b', 'Basketball', 0, 20),
+      whole('c', 'c', 'Baseball', 0, 20),
+      whole('e', 'e', 'Tennis', 0, 20),
+      whole('n', 'n', 'Total', 0, 80),
     ],
     relations: [
       {
@@ -2058,9 +2065,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
     use: 'Use this for “how many more chose soccer and tennis than baseball?”',
     assumptions: ['First put the two bars together.', 'Then compare with the third bar.'],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 10),
-      whole('e', 'e', 'Tennis', 0, 10),
-      whole('c', 'c', 'Baseball', 0, 10),
+      whole('a', 'a', 'Soccer', 0, 20),
+      whole('e', 'e', 'Tennis', 0, 20),
+      whole('c', 'c', 'Baseball', 0, 20),
       { ...whole('t', 't', 'Soccer and tennis', 0, 20), derived: true },
       whole('d', 'd', 'How many more', 0, 20),
     ],
@@ -2211,9 +2218,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'To compare, count up from the shorter bar to the taller bar.',
     ],
     variables: [
-      whole('a', 'a', 'Soccer', 0, 10),
-      whole('b', 'b', 'Basketball', 0, 10),
-      whole('d', 'd', 'How many more', 0, 10),
+      whole('a', 'a', 'Soccer', 0, 20),
+      whole('b', 'b', 'Basketball', 0, 20),
+      whole('d', 'd', 'How many more', 0, 20),
     ],
     relations: [cmpBars.relation],
     steps: { ...cmpBars.steps },
@@ -2226,7 +2233,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
         { var: 'b', editable: true },
       ],
       min: 0,
-      max: 10,
+      max: 20,
       scale: 1,
     },
   },

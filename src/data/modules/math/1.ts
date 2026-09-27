@@ -133,7 +133,13 @@ export const MATH_1_MODULES: ModuleDef[] = [
       whole('c', 'c', 'Total', 0, 20),
     ],
     ...addSub({
-      c: 'Make a ten first, then add the rest.',
+      // The strategy that fits the numbers: adding 0, making a ten, or counting on.
+      c: (v) =>
+        v.a === 0 || v.b === 0
+          ? 'Adding 0 leaves the number the same.'
+          : v.a! + v.b! > 10 && Math.max(v.a!, v.b!) < 10
+            ? 'Make a ten first, then add the rest.'
+            : 'Count on from the bigger number.',
       a: 'Take the second number away from the total.',
       b: 'Count on from the first number up to the total.',
     }),
@@ -214,16 +220,16 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // Doubles and near doubles: 6 + 7 is 6 + 6 and 1 more (1.OA.6).
   {
     id: 'm.1.add-sub-20~doubles',
-    title: 'Doubles and near doubles',
-    use: 'Use this for doubles and near doubles, like 6 + 7.',
+    title: 'Near doubles',
+    use: 'Use this for near doubles, like 6 + 7.',
     assumptions: [
       'A double adds a number to itself: 6 + 6 = 12.',
       'A near double is one more: 6 + 7 is 6 + 6 and 1 more.',
     ],
     variables: [
-      whole('a', 'a', 'Smaller number', 0, 9),
-      { ...whole('b', 'b', 'Bigger number', 1, 10), derived: true },
-      whole('c', 'c', 'In all', 1, 19),
+      whole('a', 'a', 'Smaller number', 1, 9),
+      { ...whole('b', 'b', 'Bigger number', 2, 10), derived: true },
+      whole('c', 'c', 'In all', 3, 19),
     ],
     relations: [
       {
@@ -351,10 +357,10 @@ export const MATH_1_MODULES: ModuleDef[] = [
       'Subtraction works the same way: 8 = 10 − 2 is true, because 10 − 2 is 8.',
     ],
     variables: [
-      whole('a', 'a', 'First on left', 0, 10),
-      whole('b', 'b', 'Second on left', 0, 10),
-      whole('c', 'c', 'First on right', 0, 10),
-      whole('d', 'd', 'Second on right', 0, 10),
+      whole('a', 'a', 'First on left', 0, 20),
+      whole('b', 'b', 'Second on left', 0, 20),
+      whole('c', 'c', 'First on right', 0, 20),
+      whole('d', 'd', 'Second on right', 0, 20),
     ],
     relations: [
       {
@@ -719,7 +725,14 @@ export const MATH_1_MODULES: ModuleDef[] = [
       whole('c', 'c', 'Total', 0, 100),
     ],
     ...addSub({
-      c: 'Make the next ten. Then add the rest.',
+      c: (v) =>
+        v.b === 0
+          ? 'Adding 0 leaves the number the same.'
+          : v.b! % 10 === 0
+            ? 'Add the tens. The ones stay the same.'
+            : (v.a! % 10) + v.b! >= 10
+              ? 'Make the next ten. Then add the rest.'
+              : 'Add the ones. The tens stay the same.',
       a: 'Take the second number away from the total.',
       b: 'Count up to the total: tens first, then ones.',
     }),
@@ -866,7 +879,8 @@ export const MATH_1_MODULES: ModuleDef[] = [
   (() => {
     const longer = difference('d', 'a', 'b', {
       countOn: true,
-      compareWords: ['longer', 'shorter'],
+      bigger: ['The pencil is longer.', 'The crayon is longer.'],
+      equal: 'The pencil and the crayon are the same length.',
       display: 'Line up {a} and {b}: {d} cubes longer',
       diff: 'Line up the ends. Count on from the shorter one.',
       first: [
@@ -912,10 +926,10 @@ export const MATH_1_MODULES: ModuleDef[] = [
       'Add all three columns to get the total.',
     ],
     variables: [
-      whole('c', 'c', 'Apple', 0, 10),
-      whole('s', 's', 'Banana', 0, 10),
-      whole('t', 't', 'Grapes', 0, 10),
-      whole('n', 'n', 'Total', 0, 30),
+      whole('c', 'c', 'Apple', 0, 20),
+      whole('s', 's', 'Banana', 0, 20),
+      whole('t', 't', 'Grapes', 0, 20),
+      whole('n', 'n', 'Total', 0, 60),
     ],
     relations: [
       {
@@ -964,7 +978,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
         { var: 's', icon: 'square' },
         { var: 't', icon: 'triangle' },
       ],
-      max: 10,
+      max: 20,
       total: 'n',
     },
   },
@@ -978,9 +992,9 @@ export const MATH_1_MODULES: ModuleDef[] = [
       'Line up the two columns. Count the extra pictures in the taller one.',
     ],
     variables: [
-      whole('c', 'c', 'Circles', 0, 10),
-      whole('s', 's', 'Squares', 0, 10),
-      whole('d', 'd', 'How many more', 0, 10),
+      whole('c', 'c', 'Circles', 0, 20),
+      whole('s', 's', 'Squares', 0, 20),
+      whole('d', 'd', 'How many more', 0, 20),
     ],
     relations: [cmpShapes.relation],
     steps: { ...cmpShapes.steps },
@@ -992,7 +1006,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
         { var: 'c', icon: 'circle' },
         { var: 's', icon: 'square' },
       ],
-      max: 10,
+      max: 20,
     },
     pictureLabels: ['d'],
   },
@@ -1007,10 +1021,10 @@ export const MATH_1_MODULES: ModuleDef[] = [
       'Add every row to get the total.',
     ],
     variables: [
-      whole('a', 'a', 'Apples', 0, 10),
-      whole('b', 'b', 'Bananas', 0, 10),
-      whole('g', 'g', 'Grapes', 0, 10),
-      whole('n', 'n', 'Total', 0, 30),
+      whole('a', 'a', 'Apples', 0, 20),
+      whole('b', 'b', 'Bananas', 0, 20),
+      whole('g', 'g', 'Grapes', 0, 20),
+      whole('n', 'n', 'Total', 0, 60),
     ],
     relations: [
       {

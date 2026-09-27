@@ -2,7 +2,9 @@
 import { addWork, countUpWork, subtractWork } from '../helpers';
 import type { StepText } from '../types';
 
-export function addSub(how: { c: string; a: string; b: string }) {
+type How = StepText['how'];
+
+export function addSub(how: { c: How; a: How; b: How }) {
   const relations = [
     {
       id: 'a + b = c',
