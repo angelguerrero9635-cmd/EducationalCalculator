@@ -51,11 +51,11 @@ export function ScaleCopy({ spec, calc }: { spec: Spec; calc: Calculator }) {
     lines.push(`Scale factor ${K}: every length times ${K}`);
     if (known(spec.width))
       lines.push(
-        `${formatNumber(W)} × ${K} = ${spec.copyWidth ? plain(spec.copyWidth, W * k) : formatNumber(W * k)}`,
+        `Width: ${formatNumber(W)} × ${K} = ${spec.copyWidth ? plain(spec.copyWidth, W * k) : formatNumber(W * k)}`,
       );
     if (known(spec.height))
       lines.push(
-        `${formatNumber(H)} × ${K} = ${spec.copyHeight ? plain(spec.copyHeight, H * k) : formatNumber(H * k)}`,
+        `Height: ${formatNumber(H)} × ${K} = ${spec.copyHeight ? plain(spec.copyHeight, H * k) : formatNumber(H * k)}`,
       );
     if (spec.area && rep.known(spec.area[0]))
       lines.push(
