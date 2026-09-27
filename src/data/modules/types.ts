@@ -926,6 +926,11 @@ export type Representation =
       first: { num: string; den: string };
       second: { num: string; den: string };
       product?: { num: string; den: string };
+      /**
+       * Fractions past one whole (10/3): a block of unit squares, up to `wholes` a side, each cut
+       * into den × den pieces, whole-square borders heavier; the product counted in pieces.
+       */
+      wholes?: number;
     }
   /** Unit cubes filling a box `length` × `width` × `height`, drawn layer by layer. */
   | {

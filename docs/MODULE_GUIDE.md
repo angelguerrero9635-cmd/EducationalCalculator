@@ -176,6 +176,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
 | `thermometers`     | `cups`                                   | each thermometer in a dark or light cup of water in the sun                   |
 | `fractionBars`     | `wholes`; a fraction past 1              | as many whole bars as it needs (7/4: a whole bar and 3/4 of the next), to 6   |
+| `fractionArea`     | `wholes`                                 | a fraction past 1 (10/3): a block of unit squares, to `wholes` a side         |
 | `fractionLine`     | `from` (counted in parts)                | mixed-number jumps (18 1/4 − 2 3/4): the wholes, then the parts left          |
 | `partition`        | `shape: 'set'`, `object`                 | a set of umbrellas or counters, some shaded (3/7 of the set)                  |
 | `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100, the point placed; `'ticks'`: a jump per tick |

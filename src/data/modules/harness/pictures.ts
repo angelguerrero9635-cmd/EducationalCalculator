@@ -729,8 +729,12 @@ export function repIssues(
         const d = val(f!.den);
         count(f!.num, 'top');
         if (d !== undefined && d < 1) out.push(`bottom ${f!.den} = ${d}`);
-        if (n !== undefined && d !== undefined && n > d)
-          out.push(`${n}/${d} is more than one whole`);
+        if (n === undefined || d === undefined || d < 1) continue;
+        // With `wholes`, a fraction past one is a block of unit squares (FractionArea.tsx).
+        if (!rep.wholes) {
+          if (n > d) out.push(`${n}/${d} is more than one whole`);
+        } else if (f !== rep.product && Math.ceil(n / d) > rep.wholes)
+          out.push(`${n}/${d} needs ${Math.ceil(n / d)} unit squares, past ${rep.wholes}`);
       }
       break;
     }

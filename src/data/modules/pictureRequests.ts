@@ -291,10 +291,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Fraction area past one whole',
     kind: 'fractionArea',
     pages: ['m.5.multiply-fractions'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.fraction-area-wholes', 'g.fraction-area-mixed', 'g.fraction-area-edge'],
+    uses: '"wholes":6',
     notes:
-      '5/7 × 10/3 as a 2-by-4 block of unit squares; 5/2 × 1 1/3. Then the page drops "each fraction at most 1".',
+      'Pass `wholes: 6` on the fractionArea (the most unit squares a side: 12/2 = 6). The block is ceil(first) squares across by ceil(second) down, so 5/7 × 10/3 is 1 across by 4 down (not 2 by 4). The page swaps atMostOne for "at most 6" constraints (see g.fraction-area-wholes; they keep a, b and c, d linked) and drops "each fraction at most 1" from the assumptions. Numerators stay whole: 1 1/3 is typed as 4/3; 5/7 needs 7 in the allowed denominators. The caption gives the pieces over pieces-in-a-whole and its mixed number (50/21 = 2 8/21).',
   },
   {
     id: 'R27',
