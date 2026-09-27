@@ -686,7 +686,7 @@ function Bar({ f, ink, shade }: { f: Extract<Spec, { kind: 'bar' }>; ink: string
 }
 
 /** Small drawings of everyday things, in outline, each in its own color (a green leaf, a red crayon). */
-function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string }) {
+export function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string }) {
   const c = usePalette();
   if (inMaterials(icon)) return <MaterialIcon icon={icon} ink={ink} />;
   if (isRound3Icon(icon)) return <Round3Icon icon={icon} ink={ink} />;

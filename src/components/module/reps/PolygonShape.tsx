@@ -22,7 +22,10 @@ const NAMES: Record<number, string> = {
   8: 'octagon',
 };
 
-/** A regular polygon with its corners marked; − / + change the number of sides. */
+/**
+ * A regular polygon with its corners marked; − / + change the number of sides. With `side`,
+ * every side is labeled with that length and the perimeter (`around`) is written under it.
+ */
 export function PolygonShape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   if (spec.sideValues) return <LabeledSides spec={spec} ids={spec.sideValues} calc={calc} />;
   return <Stepped spec={spec} sides={spec.sides!} calc={calc} />;
@@ -161,7 +164,8 @@ function Stepped({ spec, sides, calc }: { spec: Spec; sides: string; calc: Calcu
       ) : null}
       <Canvas aspect={0.7}>
         {({ w, h }) => {
-          const r = Math.min(w, h) / 2 - 20;
+          // Side labels sit outside the shape: leave them room.
+          const r = Math.min(w, h) / 2 - (spec.side ? 34 : 20);
           const cx = w / 2;
           const cy = h / 2 + 6;
           // Irregular shapes: each corner at its own distance and a little off its even spacing
@@ -197,14 +201,47 @@ function Stepped({ spec, sides, calc }: { spec: Spec; sides: string; calc: Calcu
               {pts.map(([x, y], i) => (
                 <Circle key={i} cx={x} cy={y} r={6} fill={c.chartHighlight} />
               ))}
+              {/* Equal sides: every side labeled with the one length, outside its middle. */}
+              {spec.side && n >= 3
+                ? pts.map((p, i) => {
+                    const q = pts[(i + 1) % n]!;
+                    const mx = (p[0] + q[0]) / 2;
+                    const my = (p[1] + q[1]) / 2;
+                    const d = Math.hypot(mx - cx, my - cy) || 1;
+                    return (
+                      <ChartText
+                        key={`s${i}`}
+                        x={mx + ((mx - cx) / d) * 20}
+                        y={my + ((my - cy) / d) * 16 + 5}
+                        fontSize={chart.small}
+                        fontWeight="700"
+                        fill={rep.known(spec.side!) ? c.chartInk : c.chartHighlight}
+                        textAnchor="middle"
+                      >
+                        {rep.known(spec.side!) ? rep.value(spec.side!) : '?'}
+                      </ChartText>
+                    );
+                  })
+                : null}
             </Svg>
           );
         }}
       </Canvas>
       <Text
         style={[styles.name, { color: c.text }]}
-      >{`A ${name}: ${sidesSym}${n} sides, ${cornerSym}${n} ${angles ? 'angles' : 'corners'}${n === 0 ? '. It is round.' : ''}`}</Text>
-      <Steppers calc={calc} items={[{ var: sides, steps: [1], pin: [], skip: [1, 2] }]} />
+      >{`${/^[aeiou]/.test(name) ? 'An' : 'A'} ${name}: ${sidesSym}${n} sides, ${cornerSym}${n} ${angles ? 'angles' : 'corners'}${n === 0 ? '. It is round.' : ''}`}</Text>
+      {spec.side && spec.around ? (
+        <Text style={[styles.name, { color: c.text }]}>
+          {`${rep.tag(spec.around)}: ${n} × ${rep.value(spec.side)} = ${rep.known(spec.around) ? rep.value(spec.around) : '?'} all the way around`}
+        </Text>
+      ) : null}
+      <Steppers
+        calc={calc}
+        items={[
+          { var: sides, steps: [1], pin: spec.side ? [spec.side] : [], skip: [1, 2] },
+          ...(spec.side ? [{ var: spec.side, steps: [1], pin: [sides] }] : []),
+        ]}
+      />
     </View>
   );
 }

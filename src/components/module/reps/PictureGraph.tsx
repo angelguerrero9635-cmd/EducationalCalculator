@@ -3,14 +3,18 @@ import Svg, { Circle, Polygon, Rect } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
+import type { CardIcon } from '@/data/modules/layouts';
+import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
+import { Icon as CardIconArt } from '../layouts/CardFigure';
 import type { Calculator } from '../useCalculator';
 import { Canvas, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'pictureGraph' }>;
 type Icon = Spec['columns'][number]['icon'];
+const SHAPES: readonly Icon[] = ['circle', 'square', 'triangle', 'star'];
 
 function Shape({
   icon,
@@ -26,6 +30,13 @@ function Shape({
   const s = size;
   const pad = s * 0.14;
   const common = { fill, stroke, strokeWidth: chart.strokeLight };
+  // A card icon ('apple', 'frog') in its own colors, scaled from its 48 × 48 box.
+  if (!SHAPES.includes(icon))
+    return (
+      <Svg width={s} height={s} viewBox="0 0 48 48">
+        <CardIconArt icon={icon as CardIcon} ink={stroke} shade={fill} />
+      </Svg>
+    );
   return (
     <Svg width={s} height={s}>
       {icon === 'circle' ? (
@@ -50,7 +61,8 @@ function Shape({
 
 /**
  * One column of picture icons per category. Tap the k-th cell of a column to count k; tap the
- * top icon of a column to take one away (so a count can go down to 0).
+ * top icon of a column to take one away (so a count can go down to 0). With `half`, the top
+ * icon takes half a picture away and a half picture is in the key.
  */
 export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -60,9 +72,10 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const biggest = Math.max(0, ...ids.map((id) => (rep.known(id) ? Math.ceil(rep.val(id)) : 0)));
   const rows = Math.max(3, Math.min(spec.max, biggest + 2));
   const colWidth = (w: number) => Math.min(88, (w - 16) / spec.columns.length);
-  // Each icon is a tap target: at least 44 pt when the columns leave room.
+  // Each icon is a tap target: at least 44 pt when the columns leave room; a tall graph (9 or
+  // 10 rows) keeps to 44 so it fits a phone screen with its inputs.
   const cellFor = (w: number) =>
-    Math.max(Math.min(44, colWidth(w)), Math.min(52, colWidth(w) * 0.75));
+    Math.max(Math.min(44, colWidth(w)), Math.min(52, colWidth(w) * 0.75, 440 / rows));
 
   return (
     <View style={{ gap: space.md }}>
@@ -92,7 +105,12 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
                           onPress={() =>
                             calc.set({
                               ...rep.pin(ids.filter((id) => id !== col.var)),
-                              [col.var]: i + 1 === n ? n - 1 : i + 1,
+                              [col.var]:
+                                spec.half && half && i === n
+                                  ? n
+                                  : i + 1 === n && !half
+                                    ? n - (spec.half ? 0.5 : 1)
+                                    : i + 1,
                             })
                           }
                           style={{
@@ -124,7 +142,15 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </View>
                     <Text style={[styles.label, { color: c.text }]}>{rep.tag(col.var)}</Text>
                     <Text style={[styles.count, { color: c.text }]}>
-                      {known ? (half ? `${n} and a half` : n) : '?'}
+                      {known
+                        ? half
+                          ? spec.half
+                            ? n
+                              ? `${n} 1/2`
+                              : '1/2'
+                            : `${n} and a half`
+                          : n
+                        : '?'}
                     </Text>
                   </View>
                 );
@@ -138,18 +164,30 @@ export function PictureGraph({ spec, calc }: { spec: Spec; calc: Calculator }) {
           {/* The key as it's drawn on a worksheet: the pictures, then what each stands for. */}
           <View style={styles.key}>
             <Text style={[styles.total, { color: c.text }]}>Key:</Text>
-            {spec.columns.map((col) => (
-              <Shape
-                key={col.var}
-                icon={col.icon}
-                size={22}
-                fill={c.chartFill}
-                stroke={c.chartInk}
-              />
+            {/* Each picture once: a graph drawn in one icon shows it once. */}
+            {[...new Set(spec.columns.map((col) => col.icon))].map((icon) => (
+              <Shape key={icon} icon={icon} size={22} fill={c.chartFill} stroke={c.chartInk} />
             ))}
             <Text style={[styles.total, { color: c.text }]}>
-              {`each stands for ${rep.value(spec.key)}`}
+              {spec.half ? `= ${rep.value(spec.key)}` : `each stands for ${rep.value(spec.key)}`}
             </Text>
+            {spec.half ? (
+              <>
+                <View style={{ width: 11, height: 22, overflow: 'hidden', marginLeft: space.md }}>
+                  <Shape
+                    icon={spec.columns[0]!.icon}
+                    size={22}
+                    fill={c.chartFill}
+                    stroke={c.chartInk}
+                  />
+                </View>
+                <Text style={[styles.total, { color: c.text }]}>
+                  {rep.known(spec.key)
+                    ? `= ${formatNumber(rep.val(spec.key) / 2)} (half of ${rep.value(spec.key)})`
+                    : '= half of ?'}
+                </Text>
+              </>
+            ) : null}
           </View>
           <Steppers
             calc={calc}

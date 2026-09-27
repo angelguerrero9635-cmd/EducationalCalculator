@@ -49,19 +49,23 @@ function digitAt(x: number, place: number, decimals: number): string {
  * A place-value chart: one column per place, the number's digits in them, the decimal point
  * between ones and tenths. Each column is 10 times the one to its right. A second row shows
  * the number before a × 10 (digits one place left) or the number compared with it. With
- * `periods`, a number past the millions has its columns grouped in periods of three.
+ * `periods`, a number past the millions has its columns grouped in periods of three. With
+ * `plus` and `total`, two numbers stacked for adding and their sum under a rule.
  */
 export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const known = rep.known(spec.value);
   const x = Math.max(0, rep.shown(spec.value));
-  const other = spec.from ?? spec.compare;
+  const other = spec.from ?? spec.compare ?? spec.plus;
   const y = other && rep.known(other) ? Math.max(0, rep.shown(other)) : undefined;
+  // Adding: the sum, in a third row under a rule.
+  const adding = !!(spec.plus && spec.total);
+  const z = adding && rep.known(spec.total!) ? Math.max(0, rep.shown(spec.total!)) : undefined;
   const wholeLen = (n: number) => Math.floor(n).toString().length;
   const needed = Math.min(
     spec.periods ? WHOLE.length : 7,
-    Math.max(wholeLen(x), y !== undefined ? wholeLen(y) : 1),
+    Math.max(wholeLen(x), y !== undefined ? wholeLen(y) : 1, z !== undefined ? wholeLen(z) : 1),
   );
   // Past the millions (with `periods`): whole periods of three columns each.
   const grouped = !!spec.periods && needed > 7;
@@ -75,6 +79,8 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
   const firstPart = columns.findIndex((col) => col.place < 1);
   // Past five columns the row would wrap at phone width: narrower cells keep it on one line.
   const tight = columns.length > 5;
+  // Eight columns (ten thousands to thousandths) still fit a phone in one row.
+  const tighter = columns.length > 7;
   const lit = spec.highlight && rep.known(spec.highlight) ? rep.shown(spec.highlight) : undefined;
   const litIndex =
     lit === undefined ? -1 : columns.findIndex((col) => Math.abs(col.place - lit) < 1e-12);
@@ -141,15 +147,22 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
     </View>
   );
 
-  const row = (n: number | undefined, key: string, label?: string) =>
-    grouped ? periodRow(n, key, label) : plainRow(n, key, label);
+  const row = (n: number | undefined, key: string, label?: string, heads = true) =>
+    grouped ? periodRow(n, key, label) : plainRow(n, key, label, heads);
 
-  const plainRow = (n: number | undefined, key: string, label?: string) => (
+  /** A row of digits; `heads` false leaves out the place names (rows under the first). */
+  const plainRow = (n: number | undefined, key: string, label?: string, heads = true) => (
     <View key={key}>
       {label ? <Text style={[styles.rowLabel, { color: c.textMuted }]}>{label}</Text> : null}
       <View style={[styles.row, tight && styles.rowTight]}>
         {columns.map((col, i) => {
-          const d = n === undefined ? '?' : digitAt(n, col.place, spec.decimals);
+          // Adding, places before a number's first digit stay blank, as written in columns.
+          const d =
+            n === undefined
+              ? '?'
+              : adding && col.place > 1 && col.place >= 10 ** wholeLen(n)
+                ? ''
+                : digitAt(n, col.place, spec.decimals);
           const outlined = i === litIndex || i === differ;
           return (
             <View key={col.name} style={styles.cellWrap}>
@@ -157,19 +170,22 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
                 style={[
                   styles.cell,
                   tight && styles.cellTight,
+                  tighter && styles.cellTighter,
                   { borderColor: c.chartGrid, backgroundColor: c.chartSurface },
-                  d !== '0' && d !== '?' && { backgroundColor: c.chartFill },
+                  d !== '0' && d !== '?' && d !== '' && { backgroundColor: c.chartFill },
                   outlined && { borderColor: c.chartHighlight, borderWidth: 3 },
                 ]}
               >
-                <Text
-                  style={[styles.head, tight && styles.headTight, { color: c.chartMuted }]}
-                  numberOfLines={2}
-                >
-                  {col.name}
-                </Text>
+                {heads ? (
+                  <Text
+                    style={[styles.head, tight && styles.headTight, { color: c.chartMuted }]}
+                    numberOfLines={2}
+                  >
+                    {col.name}
+                  </Text>
+                ) : null}
                 <Text style={[styles.digit, tight && styles.digitTight, { color: c.chartInk }]}>
-                  {d}
+                  {d || ' '}
                 </Text>
               </View>
               {i === firstPart - 1 ? (
@@ -189,7 +205,12 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
   const lines: string[] = [];
   if (!known) lines.push('Type a number to fill the chart.');
   else {
-    if (!spec.compare) {
+    if (adding) {
+      lines.push(
+        `${formatNumber(x)} + ${y === undefined ? '?' : formatNumber(y)} = ${z === undefined ? '?' : formatNumber(z)}.`,
+        'The points line up: tenths under tenths, hundredths under hundredths.',
+      );
+    } else if (!spec.compare) {
       lines.push(
         (columns
           .map((col) => ({ col, d: digitAt(x, col.place, spec.decimals) }))
@@ -227,9 +248,16 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
       {row(
         known ? x : undefined,
         'value',
-        spec.from ? 'After' : spec.compare ? rep.tag(spec.value) : undefined,
+        spec.from ? 'After' : spec.compare || adding ? rep.tag(spec.value) : undefined,
       )}
       {spec.compare ? row(y, 'compare', rep.tag(spec.compare)) : null}
+      {adding ? (
+        <>
+          {row(y, 'plus', `+ ${rep.tag(spec.plus!)}`, false)}
+          <View style={[styles.rule, { borderColor: c.chartInk }]} />
+          {row(z, 'total', rep.tag(spec.total!), false)}
+        </>
+      ) : null}
       <Caption>{lines.join(' ')}</Caption>
       <Steppers
         calc={calc}
@@ -237,10 +265,13 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
           {
             var: spec.value,
             steps: [10 ** -spec.decimals, 1, 10],
-            pin: spec.compare ? [spec.compare] : [],
+            pin: spec.compare ? [spec.compare] : spec.plus ? [spec.plus] : [],
           },
           ...(spec.compare
             ? [{ var: spec.compare, steps: [10 ** -spec.decimals, 1, 10], pin: [spec.value] }]
+            : []),
+          ...(spec.plus
+            ? [{ var: spec.plus, steps: [10 ** -spec.decimals, 1, 10], pin: [spec.value] }]
             : []),
         ]}
       />
@@ -257,9 +288,11 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   rowLabel: { fontSize: font.caption, textAlign: 'center' },
+  rule: { borderTopWidth: 2, marginHorizontal: space.md, marginTop: space.xs },
   rowTight: { paddingHorizontal: 0 },
   cellWrap: { flexDirection: 'row', alignItems: 'flex-end' },
   cellTight: { width: 47, margin: 1 },
+  cellTighter: { width: 40 },
   headTight: { fontSize: font.caption - 4, letterSpacing: -0.4 },
   digitTight: { fontSize: font.title },
   pointTight: { fontSize: font.title + 2 },
