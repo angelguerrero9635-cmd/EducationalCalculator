@@ -6,6 +6,7 @@
 import type { VariableDef } from '@/engine/types';
 
 import { toFraction } from '@/components/module/reps/exact';
+import { imageOf } from '@/components/module/reps/transform';
 
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
@@ -975,6 +976,46 @@ export function repIssues(
         if (Math.abs(m! * x! + b! - y!) > 1e-6 * Math.max(1, Math.abs(y!)))
           out.push(`point (${x}, ${y}) is not on y = ${m}x + ${b}`);
       }
+      break;
+    }
+    case 'transformation': {
+      if (rep.figure.length < 2 || rep.figure.length > 6)
+        out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
+      const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
+      const mirror = rep.move === 'reflect' ? rep.mirror : undefined;
+      const line =
+        mirror && typeof mirror === 'object' ? val('x' in mirror ? mirror.x : mirror.y) : undefined;
+      const center = 'center' in rep && rep.center ? rep.center : undefined;
+      const move = {
+        right: rep.move === 'translate' ? num(rep.right, 0) : 0,
+        up: rep.move === 'translate' ? num(rep.up, 0) : 0,
+        angle: rep.move === 'rotate' ? num(rep.angle, 0) : 0,
+        factor: rep.move === 'dilate' ? num(rep.factor, 1) : 1,
+        cx: num(center?.[0], 0),
+        cy: num(center?.[1], 0),
+      };
+      if (move.factor !== undefined && move.factor <= 0)
+        out.push(`dilation by scale factor ${move.factor}`);
+      const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
+      const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
+      const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];
+      if (
+        !rep.image ||
+        all.some((x) => x === undefined) ||
+        (mirror && typeof mirror === 'object' && line === undefined)
+      )
+        break;
+      const [ex, ey] = imageOf([a![0]!, a![1]!], rep.move, {
+        right: move.right!,
+        up: move.up!,
+        mirror,
+        line,
+        angle: move.angle!,
+        factor: move.factor!,
+        center: [move.cx!, move.cy!],
+      });
+      if (Math.abs(ex - ix!) > 1e-6 || Math.abs(ey - iy!) > 1e-6)
+        out.push(`image (${ix}, ${iy}) is not where the move takes A (${ex}, ${ey})`);
       break;
     }
     case 'mapping': {

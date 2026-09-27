@@ -23,7 +23,247 @@ const signed = (id: string, symbol: string, name: string, step = 1, lim = 10) =>
 /** Four outputs typed; each input is its output squared (so 2 and −2 share the input 4). */
 const SQUARES = [1, 2, 3, 4] as const;
 
+/** A: its x and y (the rest of the figure is fixed); A′: where the move takes it. */
+const CORNER_A = [
+  signed('ax', 'x', 'A across'),
+  signed('ay', 'y', 'A up'),
+  { ...signed('px', 'x′', 'A′ across', 0.01, 100) },
+  { ...signed('py', 'y′', 'A′ up', 0.01, 100) },
+];
+
 export const G8B_GALLERY_MODULES: ModuleDef[] = [
+  {
+    id: 'g.translation',
+    title: 'Translation',
+    assumptions: [
+      'A translation slides every point the same distance the same way.',
+      'h is the slide right (left when negative), k the slide up (down when negative).',
+      'Drag A′ to change the slide.',
+    ],
+    standalone: {
+      vars: ['ay', 'k', 'py'],
+      why: 'The slide up is worked out on its own, apart from the slide across.',
+    },
+    variables: [...CORNER_A, signed('h', 'h', 'Right'), signed('k', 'k', 'Up')],
+    relations: [
+      {
+        id: 'x′ = x + h',
+        display: '{px} = {ax} + {h}',
+        vars: ['px', 'ax', 'h'],
+        residual: (v: Values) => v.px! - v.ax! - v.h!,
+        solve: {
+          px: (v: Values) => v.ax! + v.h!,
+          ax: (v: Values) => v.px! - v.h!,
+          h: (v: Values) => v.px! - v.ax!,
+        },
+      },
+      {
+        id: 'y′ = y + k',
+        display: '{py} = {ay} + {k}',
+        vars: ['py', 'ay', 'k'],
+        residual: (v: Values) => v.py! - v.ay! - v.k!,
+        solve: {
+          py: (v: Values) => v.ay! + v.k!,
+          ay: (v: Values) => v.py! - v.k!,
+          k: (v: Values) => v.py! - v.ay!,
+        },
+      },
+    ],
+    steps: {
+      'x′ = x + h': {
+        px: { expr: '{ax} + {h}', how: 'Slide A across by h.' },
+        ax: { expr: '{px} − {h}', how: 'Slide A′ back by h.' },
+        h: { expr: '{px} − {ax}', how: 'How far across A moved.' },
+      },
+      'y′ = y + k': {
+        py: { expr: '{ay} + {k}', how: 'Slide A up by k.' },
+        ay: { expr: '{py} − {k}', how: 'Slide A′ back down by k.' },
+        k: { expr: '{py} − {ay}', how: 'How far up A moved.' },
+      },
+    },
+    example: { ax: -6, ay: 2, h: 7, k: -4, px: 1, py: -2 },
+    startWith: ['ax', 'ay', 'h', 'k'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [-2, 2],
+        [-5, 5],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'translate',
+      right: 'h',
+      up: 'k',
+    },
+  },
+  {
+    id: 'g.reflection',
+    title: 'Reflection',
+    assumptions: [
+      'A reflection flips the figure over the mirror line x = a.',
+      'Each corner and its image are the same distance from the line.',
+      'Drag the mirror line.',
+    ],
+    standalone: {
+      vars: ['ay', 'py'],
+      why: 'A flip across an up-and-down line keeps each height as it was.',
+    },
+    variables: [...CORNER_A, signed('a', 'a', 'Mirror line')],
+    relations: [
+      {
+        id: 'x′ = 2a − x',
+        display: '{px} = 2 × {a} − {ax}',
+        vars: ['px', 'a', 'ax'],
+        residual: (v: Values) => v.px! - (2 * v.a! - v.ax!),
+        solve: {
+          px: (v: Values) => 2 * v.a! - v.ax!,
+          ax: (v: Values) => 2 * v.a! - v.px!,
+          a: (v: Values) => (v.px! + v.ax!) / 2,
+        },
+      },
+      {
+        id: 'y′ = y',
+        display: '{py} = {ay}',
+        vars: ['py', 'ay'],
+        residual: (v: Values) => v.py! - v.ay!,
+        solve: { py: (v: Values) => v.ay!, ay: (v: Values) => v.py! },
+      },
+    ],
+    steps: {
+      'x′ = 2a − x': {
+        px: { expr: '2 × {a} − {ax}', how: 'As far past the line as A is before it.' },
+        ax: { expr: '2 × {a} − {px}', how: 'As far before the line as A′ is past it.' },
+        a: { expr: '({px} + {ax}) ÷ 2', how: 'The line is halfway between A and A′.' },
+      },
+      'y′ = y': {
+        py: { expr: '{ay}', how: 'A flip across an up-and-down line keeps the height.' },
+        ay: { expr: '{py}', how: 'A flip across an up-and-down line keeps the height.' },
+      },
+    },
+    example: { ax: -5, ay: 1, a: 1, px: 7, py: 1 },
+    startWith: ['ax', 'ay', 'a'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [-2, 1],
+        [-5, 5],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'reflect',
+      mirror: { x: 'a' },
+    },
+  },
+  {
+    id: 'g.rotation',
+    title: 'Rotation',
+    assumptions: [
+      'A rotation turns the figure about the center (0, 0).',
+      'A positive angle turns counterclockwise, a negative one clockwise.',
+      'Drag A′ around the center.',
+    ],
+    variables: [
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Angle',
+        unit: '°',
+        min: -270,
+        max: 270,
+        allowed: [-270, -180, -90, 0, 90, 180, 270],
+      },
+      { ...signed('t', 't', 'Quarter turns', 1, 3), derived: true },
+    ],
+    pictureLabels: ['t'],
+    relations: [
+      {
+        id: 't = r ÷ 90',
+        display: '{t} = {r} ÷ 90',
+        vars: ['t', 'r'],
+        residual: (v: Values) => v.t! * 90 - v.r!,
+        solve: { t: (v: Values) => v.r! / 90, r: () => undefined },
+      },
+    ],
+    steps: {
+      't = r ÷ 90': {
+        t: { expr: '{r} ÷ 90', how: 'A quarter turn is 90°.' },
+      },
+    },
+    example: { r: 90, t: 1 },
+    startWith: ['r'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        [3, 1],
+        [8, 1],
+        [3, 5],
+      ],
+      move: 'rotate',
+      angle: 'r',
+    },
+  },
+  {
+    id: 'g.dilation',
+    title: 'Dilation',
+    assumptions: [
+      'A dilation from (0, 0) multiplies every coordinate by the scale factor k.',
+      'A factor above 1 enlarges the figure; between 0 and 1 it shrinks it.',
+      'Drag A′ along its ray.',
+    ],
+    variables: [
+      ...CORNER_A,
+      { id: 'k', symbol: 'k', name: 'Scale factor', min: 0.25, max: 4, step: 0.25 },
+    ],
+    relations: [
+      {
+        id: 'x′ = kx',
+        display: '{px} = {k} × {ax}',
+        vars: ['px', 'k', 'ax'],
+        residual: (v: Values) => v.px! - v.k! * v.ax!,
+        solve: {
+          px: (v: Values) => v.k! * v.ax!,
+          ax: (v: Values) => div(v.px!, v.k!),
+          k: (v: Values) => div(v.px!, v.ax!),
+        },
+      },
+      {
+        id: 'y′ = ky',
+        display: '{py} = {k} × {ay}',
+        vars: ['py', 'k', 'ay'],
+        residual: (v: Values) => v.py! - v.k! * v.ay!,
+        solve: {
+          py: (v: Values) => v.k! * v.ay!,
+          ay: (v: Values) => div(v.py!, v.k!),
+          k: (v: Values) => div(v.py!, v.ay!),
+        },
+      },
+    ],
+    steps: {
+      'x′ = kx': {
+        px: { expr: '{k} × {ax}', how: 'Multiply the across by the scale factor.' },
+        ax: { expr: '{px} ÷ {k}', how: 'Divide the image’s across by the scale factor.' },
+        k: { expr: '{px} ÷ {ax}', how: 'How many times as far across A′ is.' },
+      },
+      'y′ = ky': {
+        py: { expr: '{k} × {ay}', how: 'Multiply the up by the scale factor.' },
+        ay: { expr: '{py} ÷ {k}', how: 'Divide the image’s up by the scale factor.' },
+        k: { expr: '{py} ÷ {ay}', how: 'How many times as far up A′ is.' },
+      },
+    },
+    example: { ax: 1, ay: 1, k: 3, px: 3, py: 3 },
+    startWith: ['ax', 'ay', 'k'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [3, 1],
+        [1, 2],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'dilate',
+      factor: 'k',
+    },
+  },
   {
     id: 'g.mapping',
     title: 'Mapping diagram',

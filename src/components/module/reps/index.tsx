@@ -48,6 +48,7 @@ import { Plot } from './Plot';
 import { LinearFunction, LineSystem } from './Lines';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
+import { Transformation } from './Transformation';
 import { RectangleDiagram } from './Rectangle';
 import { Rectilinear } from './Rectilinear';
 import { AreaModel } from './AreaModel';
@@ -117,6 +118,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FunctionMachine spec={spec} calc={calc} />;
     case 'mapping':
       return <Mapping spec={spec} calc={calc} />;
+    case 'transformation':
+      return <Transformation spec={spec} calc={calc} />;
     case 'tape':
       return 'ratio' in spec ? (
         <RatioTape spec={spec} calc={calc} />
