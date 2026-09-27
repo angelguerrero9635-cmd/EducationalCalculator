@@ -721,8 +721,9 @@ export function repIssues(
         rep.divisor.den,
       ].map(val);
       if (b === 0 || q === 0) out.push('a fraction with denominator 0');
-      if (a !== undefined && b && p !== undefined && q && p > 0 && a / b / (p / q) > 40)
-        out.push(`more than 40 groups (${a / b / (p / q)})`);
+      // Past 40 groups FractionFit draws one labelled bar; past 144 the lesson stops.
+      if (a !== undefined && b && p !== undefined && q && p > 0 && a / b / (p / q) > 144)
+        out.push(`more than 144 groups (${a / b / (p / q)})`);
       break;
     }
     case 'venn':

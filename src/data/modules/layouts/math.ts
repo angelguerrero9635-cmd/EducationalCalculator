@@ -2546,10 +2546,10 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.5.classify-2d',
     assumptions: [
-      'A parallelogram has two pairs of parallel sides. A trapezoid here has exactly one pair.',
-      'A rectangle is a parallelogram with four right angles. A rhombus has four equal sides.',
+      'A trapezoid has at least one pair of parallel sides, so every parallelogram is a trapezoid too.',
+      'A parallelogram has two pairs of parallel sides. A rectangle is a parallelogram with four right angles. A rhombus has four equal sides.',
       'A square is both: four right angles and four equal sides. Give the most exact name.',
-      'Some books say a trapezoid has at least one pair. Then every parallelogram is a trapezoid too.',
+      'Some books say a trapezoid has exactly one pair. Then a parallelogram is not a trapezoid.',
     ],
     question: 'What is the most exact name for the four-sided shape?',
     bins: [
@@ -2571,8 +2571,8 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       },
       {
         id: 'trapezoid',
-        label: 'Trapezoid',
-        why: 'Exactly one pair of parallel sides.',
+        label: 'Trapezoid, not a parallelogram',
+        why: 'One pair of parallel sides; the other two sides are not parallel.',
       },
     ],
     cards: [
@@ -2898,6 +2898,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'Always: every shape in the first group belongs to the second.',
       'Sometimes: some do and some do not.',
       'Never: none do.',
+      'A trapezoid has at least one pair of parallel sides, so a parallelogram counts as one.',
     ],
     question: 'Is it always, sometimes, or never true?',
     bins: [
@@ -2912,6 +2913,8 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: 'A rectangle is a square', bin: 'sometimes' },
       { label: 'A parallelogram is a rhombus', bin: 'sometimes' },
       { label: 'A rhombus is a square', bin: 'sometimes' },
+      { label: 'A parallelogram is a trapezoid', bin: 'always' },
+      { label: 'A trapezoid is a parallelogram', bin: 'sometimes' },
       { label: 'A triangle is a quadrilateral', bin: 'never' },
       { label: 'A square has a side longer than another side', bin: 'never' },
     ],
@@ -3530,7 +3533,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'Two rows of 3, shifted',
+        label: 'Two rows of 3 that touch at one square',
         bin: 'yes',
         figure: {
           kind: 'net',
@@ -3605,7 +3608,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         },
       },
       {
-        label: 'A row of 4 with two on one square',
+        label: 'A row of 4 with two stacked above one square',
         bin: 'no',
         figure: {
           kind: 'net',

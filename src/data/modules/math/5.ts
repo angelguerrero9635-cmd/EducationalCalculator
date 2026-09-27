@@ -83,6 +83,9 @@ const estimateLines = (n: number, d: number): string[] => {
         lines.push(`Try ${guess + 1}: ${guess + 1} × ${d} = ${fmt((guess + 1) * d)}`);
         lines.push(`${fmt((guess + 1) * d)} still fits in ${fmt(cur)}: use ${q}`);
       }
+    } else {
+      // A 0 digit in the middle of the quotient gets its own line.
+      lines.push(`${fmt(cur)} is less than ${d}: no group fits, write 0`);
     }
     cur -= q * d;
   }
@@ -312,13 +315,16 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'The exponent counts how many tens are multiplied: 10³ = 10 × 10 × 10 = 1,000.',
       'Multiplying by 10 moves every digit one place to the left. The chart shows the places.',
       'Multiplying by 10³ moves the digits three places: write three zeros after the number.',
-      'Numbers to 999, exponents to 4.',
+      'Numbers to 999, exponents to 6, products to 9,999,999 (the chart ends at millions).',
     ],
     variables: [
       whole('n', 'n', 'Number', 1, 999),
-      whole('k', 'k', 'Exponent', 0, 4),
-      { ...whole('e', 'e', 'Power of 10', 1, 10000), allowed: [1, 10, 100, 1000, 10000] },
-      whole('p', 'p', 'Product', 1, 9990000),
+      whole('k', 'k', 'Exponent', 0, 6),
+      {
+        ...whole('e', 'e', 'Power of 10', 1, 1000000),
+        allowed: [1, 10, 100, 1000, 10000, 100000, 1000000],
+      },
+      whole('p', 'p', 'Product', 1, 9999999),
     ],
     relations: [
       {
@@ -672,7 +678,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       steps: {
         'L = place below n': {
           L: {
-            expr: '{n} rounded down to the {p}s',
+            // The place by name: "rounded down to the hundredths", not "to the 0.01s".
+            expr: (v: Values) => `{n} rounded down to the ${NAMES[v.p!] ?? '{p}s'}`,
             how: (v: Values) => `Keep the digits to the ${NAMES[v.p!] ?? 'place'}; drop the rest.`,
           },
         },
@@ -724,8 +731,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           ...whole('k', 'k', 'Smaller units in 1 bigger unit', 10, 1000),
           allowed: [10, 100, 1000],
         },
-        { id: 'a', symbol: 'a', name: 'Bigger units', min: 0.001, max: 20, step: 0.001 },
-        { id: 'c', symbol: 'c', name: 'Smaller units', min: 0.01, max: 20000, step: 0.01 },
+        { id: 'a', symbol: 'a', name: 'Bigger units', min: 0.001, max: 10000, step: 0.001 },
+        { id: 'c', symbol: 'c', name: 'Smaller units', min: 0.01, max: 20000000, step: 0.01 },
       ],
       relations: [
         {
@@ -784,12 +791,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         'Multiply by the ones digit of the second factor. Carries go above.',
         'Then by the tens digit: write a 0 in the ones place first.',
         'Add the two rows. Check with an estimate.',
-        'First factor to 9,999, second factor from 10 to 99.',
+        'First factor to 99,999, second factor from 10 to 99.',
       ],
       variables: [
-        whole('a', 'a', 'First factor', 10, 9999),
+        whole('a', 'a', 'First factor', 10, 99999),
         whole('b', 'b', 'Second factor', 10, 99),
-        whole('p', 'p', 'Product', 100, 989901),
+        whole('p', 'p', 'Product', 100, 9899901),
       ],
       relations: [
         {
@@ -841,14 +848,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Make groups the size of the divisor. The number of groups is the quotient.',
       'Estimate each digit with the divisor rounded to tens, then check: multiply, take away, bring down.',
       'What is left is the remainder. It is always less than the divisor.',
-      'Dividends to 9,999, divisors from 10 to 99.',
+      'Dividends to 99,999, divisors from 10 to 99.',
     ],
     variables: [
-      whole('n', 'n', 'Dividend', 100, 9999),
+      whole('n', 'n', 'Dividend', 100, 99999),
       whole('d', 'd', 'Divisor', 10, 99),
-      whole('q', 'q', 'Quotient', 1, 999),
+      whole('q', 'q', 'Quotient', 1, 9999),
       whole('r', 'r', 'Remainder', 0, 98),
-      { ...whole('m', 'm', 'Shared out', 10, 9999), derived: true },
+      { ...whole('m', 'm', 'Used in the groups', 10, 99999), derived: true },
     ],
     relations: [
       {
@@ -897,14 +904,17 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     steps: {
       'r < d': {},
       'm = q × d': {
-        m: { expr: '{q} × {d}', how: 'The groups times the divisor: what was shared out.' },
-        q: { expr: '{m} ÷ {d}', how: 'Divide what was shared out by the divisor.' },
-        d: { expr: '{m} ÷ {q}', how: 'Divide what was shared out by the quotient.' },
+        m: { expr: '{q} × {d}', how: 'The groups times the divisor: what is used in the groups.' },
+        q: { expr: '{m} ÷ {d}', how: 'Divide what is used in the groups by the divisor.' },
+        d: { expr: '{m} ÷ {q}', how: 'Divide what is used in the groups by the quotient.' },
       },
       'n = m + r': {
-        n: { expr: '{m} + {r}', how: 'The dividend is what was shared out plus the remainder.' },
+        n: {
+          expr: '{m} + {r}',
+          how: 'The dividend is what is used in the groups plus the remainder.',
+        },
         m: { expr: '{n} − {r}', how: 'Take the remainder away from the dividend.' },
-        r: { expr: '{n} − {m}', how: 'The remainder is what is left after sharing out.' },
+        r: { expr: '{n} − {m}', how: 'The remainder is what is left after making the groups.' },
       },
       'q = whole groups of d in n': {
         q: {
@@ -929,12 +939,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Line up the decimal points, so tenths sit under tenths and hundredths under hundredths.',
       'Add or take away each place from the right, regrouping like whole numbers.',
-      'The point in the answer goes under the other points. Numbers to 99.99.',
+      'The point in the answer goes under the other points. Numbers to 999.99.',
     ],
     variables: [
-      { id: 'a', symbol: 'a', name: 'First number', min: 0, max: 99.99, step: 0.01 },
-      { id: 'b', symbol: 'b', name: 'Second number', min: 0, max: 99.99, step: 0.01 },
-      { id: 'c', symbol: 'c', name: 'Total', min: 0, max: 199.98, step: 0.01 },
+      { id: 'a', symbol: 'a', name: 'First number', min: 0, max: 999.99, step: 0.01 },
+      { id: 'b', symbol: 'b', name: 'Second number', min: 0, max: 999.99, step: 0.01 },
+      { id: 'c', symbol: 'c', name: 'Total', min: 0, max: 1999.98, step: 0.01 },
     ],
     relations: [
       {
@@ -978,12 +988,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Multiply as if both were whole numbers. Then put the point back.',
       'The product has as many places after the point as the decimal, before any end zeros are dropped.',
-      'Decimals to 9.99, whole numbers to 12.',
+      'Decimals to 9.99, whole numbers to 20.',
     ],
     variables: [
-      { id: 'a', symbol: 'a', name: 'Decimal', min: 0.1, max: 9.99, step: 0.01 },
-      whole('b', 'b', 'Whole number', 1, 12),
-      { id: 'p', symbol: 'p', name: 'Product', min: 0.1, max: 119.88, step: 0.01 },
+      { id: 'a', symbol: 'a', name: 'Decimal', min: 0.01, max: 9.99, step: 0.01 },
+      whole('b', 'b', 'Whole number', 1, 20),
+      { id: 'p', symbol: 'p', name: 'Product', min: 0.01, max: 199.8, step: 0.01 },
     ],
     relations: [
       {
@@ -1036,7 +1046,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Think of the decimal as tenths or hundredths: 7.2 is 72 tenths.',
       'Share the tenths, then write the answer back as a decimal.',
-      'Decimals to 99.9, whole numbers from 2 to 9.',
+      'Decimals to 99.9, whole numbers from 2 to 9. Each share comes out in hundredths.',
     ],
     variables: [
       { id: 'n', symbol: 'n', name: 'Decimal', min: 0.1, max: 99.9, step: 0.1 },
@@ -1056,8 +1066,18 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           d: (v: Values) => div(v.n!, v.q!),
         },
       },
+      {
+        // Grade 5 shares end at hundredths (5.NBT.7): 0.1 ÷ 4 = 0.025 is past it.
+        id: 'q in hundredths',
+        constraint: true,
+        display: '{q} comes out in hundredths',
+        vars: ['q'],
+        residual: (v: Values) => (Math.abs(v.q! * 100 - Math.round(v.q! * 100)) < 1e-6 ? 0 : 1),
+        solve: {},
+      },
     ],
     steps: {
+      'q in hundredths': {},
       'n = q × d': {
         q: {
           expr: '{n} ÷ {d}',
@@ -1099,12 +1119,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Line up the decimal points. Write a 0 in any empty place: 12.5 is 12.50.',
       'Subtract each place from the right, regrouping like whole numbers.',
-      'The point in the answer goes under the other points. Numbers to 99.99.',
+      'The point in the answer goes under the other points. Numbers to 999.99.',
     ],
     variables: [
-      { id: 'c', symbol: 'c', name: 'Start', min: 0, max: 99.99, step: 0.01 },
-      { id: 'b', symbol: 'b', name: 'Number taken away', min: 0, max: 99.99, step: 0.01 },
-      { id: 'a', symbol: 'a', name: 'Difference', min: 0, max: 99.99, step: 0.01 },
+      { id: 'c', symbol: 'c', name: 'Start', min: 0, max: 999.99, step: 0.01 },
+      { id: 'b', symbol: 'b', name: 'Number taken away', min: 0, max: 999.99, step: 0.01 },
+      { id: 'a', symbol: 'a', name: 'Difference', min: 0, max: 999.99, step: 0.01 },
     ],
     relations: [
       {
@@ -1739,12 +1759,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Sharing one piece among more people makes smaller pieces.',
       'Cut the piece into that many parts: the new denominator is the old denominator times the number sharing.',
-      'Denominators from 2 to 6, shared among 2 to 6.',
+      'Denominators from 2 to 6, shared among 2 to 10.',
     ],
     variables: [
       whole('b', 'b', 'Denominator', 2, 6),
-      whole('n', 'n', 'Shared among', 2, 6),
-      whole('m', 'm', 'New denominator', 4, 36),
+      whole('n', 'n', 'Shared among', 2, 10),
+      whole('m', 'm', 'New denominator', 4, 60),
     ],
     relations: [
       {
@@ -2174,30 +2194,41 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       why: 'Both points share the up number; it does not change the distance.',
     },
     variables: [
-      whole('a', 'a', 'Start across', 0, 20),
-      whole('b', 'b', 'End across', 0, 20),
+      whole('a', 'a', 'First point across', 0, 20),
+      whole('b', 'b', 'Second point across', 0, 20),
       whole('y', 'y', 'Up (the same for both)', 0, 20),
       whole('d', 'd', 'Distance', 0, 20),
     ],
     relations: [
       {
-        id: 'd = b − a',
-        display: '{b} − {a} = {d}',
-        words: 'End across − start across = distance',
+        // Either point can be the one further across: the distance is bigger − smaller.
+        id: 'd = bigger − smaller',
+        display: 'The distance from {a} to {b} is {d}',
+        words: 'Bigger across number − smaller across number = distance',
+        check: (v: Values) => `${Math.max(v.a!, v.b!)} − ${Math.min(v.a!, v.b!)} = ${v.d}`,
         vars: ['d', 'b', 'a'],
-        residual: (v: Values) => v.d! - v.b! + v.a!,
+        residual: (v: Values) => v.d! - Math.abs(v.b! - v.a!),
         solve: {
-          d: (v: Values) => v.b! - v.a!,
-          b: (v: Values) => v.a! + v.d!,
-          a: (v: Values) => v.b! - v.d!,
+          d: (v: Values) => Math.abs(v.b! - v.a!),
+          b: (v: Values) => [v.a! + v.d!, v.a! - v.d!],
+          a: (v: Values) => [v.b! - v.d!, v.b! + v.d!],
         },
       },
     ],
     steps: {
-      'd = b − a': {
-        d: { expr: '{b} − {a}', how: 'Count the steps across: end minus start.' },
-        b: { expr: '{a} + {d}', how: 'Start across plus the distance.' },
-        a: { expr: '{b} − {d}', how: 'End across minus the distance.' },
+      'd = bigger − smaller': {
+        d: {
+          expr: (v: Values) => (v.b! >= v.a! ? '{b} − {a}' : '{a} − {b}'),
+          how: 'Count the steps across: the bigger across number minus the smaller one.',
+        },
+        b: {
+          expr: (v: Values) => (v.b! >= v.a! ? '{a} + {d}' : '{a} − {d}'),
+          how: 'Go the distance across from the first point.',
+        },
+        a: {
+          expr: (v: Values) => (v.a! <= v.b! ? '{b} − {d}' : '{b} + {d}'),
+          how: 'Go the distance across from the second point.',
+        },
       },
     },
     example: { a: 2, b: 9, y: 5, d: 7 },

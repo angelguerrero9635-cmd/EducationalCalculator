@@ -115,8 +115,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       whole('a', 'a', 'First part of the ratio', 1, 50),
       whole('b', 'b', 'Second part of the ratio', 1, 50),
       { id: 'k', symbol: 'k', name: 'Multiplier', min: 0.1, max: 100, step: 0.1 },
-      { id: 'x', symbol: 'x', name: 'First amount', min: 0, max: 5000 },
-      { id: 'y', symbol: 'y', name: 'Second amount', min: 0, max: 5000 },
+      { id: 'x', symbol: 'x', name: 'First amount', min: 0.1, max: 5000 },
+      { id: 'y', symbol: 'y', name: 'Second amount', min: 0.1, max: 5000 },
     ],
     relations: [
       {
@@ -736,11 +736,11 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Divide, multiply, subtract, bring down: the same steps for every digit.',
       'When the digits run out, write a point and zeros and keep going.',
-      'Divisors are whole numbers from 2 to 99; quotients end within three decimal places.',
+      'Divisors are whole numbers from 2 to 999; quotients end within three decimal places.',
     ],
     variables: [
       { id: 'n', symbol: 'n', name: 'Dividend', min: 0, max: 99999, step: 0.01, multipleOf: 0.01 },
-      whole('d', 'd', 'Divisor', 2, 99),
+      whole('d', 'd', 'Divisor', 2, 999),
       {
         id: 'q',
         symbol: 'q',
@@ -790,26 +790,26 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Multiply without the points, then count the decimal places in both factors.',
       'The product has that many decimal places, before end zeros are dropped: 3.290 = 3.29.',
-      'Factors to two decimal places.',
+      'Factors to three decimal places.',
     ],
     variables: [
       {
         id: 'a',
         symbol: 'a',
         name: 'First factor',
-        min: 0.01,
-        max: 999.99,
-        step: 0.01,
-        multipleOf: 0.01,
+        min: 0.001,
+        max: 999.999,
+        step: 0.001,
+        multipleOf: 0.001,
       },
       {
         id: 'b',
         symbol: 'b',
         name: 'Second factor',
-        min: 0.01,
-        max: 99.99,
-        step: 0.01,
-        multipleOf: 0.01,
+        min: 0.001,
+        max: 99.999,
+        step: 0.001,
+        multipleOf: 0.001,
       },
       { id: 'p', symbol: 'p', name: 'Product', min: 0, max: 100000 },
     ],
@@ -961,14 +961,18 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Dividing fractions by fractions (6.NS.1) ──
   (() => {
     const fr = (id: string, name: string, max = 100) => whole(id, id, name, 0, max);
-    const den = (id: string, name: string) => ({ ...whole(id, id, name, 1, 12), allowed: DENOMS });
-    /** The picture lays out at most 40 groups. */
-    const most40 = {
-      id: 'quotient ≤ 40',
+    // Denominators to 20 (14/15 ÷ 7/5).
+    const den = (id: string, name: string) => ({
+      ...whole(id, id, name, 1, 20),
+      allowed: [...DENOMS, 15, 16, 20],
+    });
+    /** Quotients to 144 (12 ÷ 1/12); past 40 groups the picture draws one bar. */
+    const most144 = {
+      id: 'quotient ≤ 144',
       constraint: true as const,
-      display: '{a}/{b} ÷ {c}/{d} is at most 40',
+      display: '{a}/{b} ÷ {c}/{d} is at most 144',
       vars: ['a', 'b', 'c', 'd'],
-      residual: (v: Values) => (v.a! * v.d! <= 40 * v.b! * v.c! ? 0 : 1),
+      residual: (v: Values) => (v.a! * v.d! <= 144 * v.b! * v.c! ? 0 : 1),
       solve: {},
     };
     const pages: ModuleDef[] = [
@@ -977,7 +981,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         sliders: true,
         assumptions: [
           'Dividing by a fraction is multiplying by its reciprocal: flip its numerator and denominator.',
-          'The divisor is never 0, and the quotient is at most 40.',
+          'The divisor is never 0, and the quotient is at most 144.',
           'Write mixed numbers as fractions first: 2 1/4 = 9/4.',
         ],
         variables: [
@@ -985,11 +989,11 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           den('b', 'Dividend denominator'),
           { ...fr('c', 'Divisor numerator', 12), min: 1 },
           den('d', 'Divisor denominator'),
-          { ...fr('e', 'Quotient numerator', 1200), derived: true },
-          { ...fr('f', 'Quotient denominator', 144), min: 1, derived: true },
+          { ...fr('e', 'Quotient numerator', 2000), derived: true },
+          { ...fr('f', 'Quotient denominator', 240), min: 1, derived: true },
         ],
         relations: [
-          most40,
+          most144,
           {
             id: 'e = a × d',
             display: '{a}/{b} ÷ {c}/{d} = {e}/{f}',
@@ -1020,7 +1024,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           },
         ],
         steps: {
-          'quotient ≤ 40': {},
+          'quotient ≤ 144': {},
           'e = a × d': {
             e: {
               expr: '{a} × {d}',
@@ -1083,7 +1087,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         assumptions: [
           'Write both amounts with the same denominator. Then divide the numerators.',
           'A part of a group left over is a fraction of a group.',
-          'Denominators from 1 to 12, up to 40 groups; write mixed numbers as fractions (2 1/4 = 9/4).',
+          'Denominators from 1 to 20, up to 144 groups; write mixed numbers as fractions (2 1/4 = 9/4).',
         ],
         variables: [
           fr('a', 'Amount numerator'),
@@ -1094,7 +1098,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           { id: 'g', symbol: 'g', name: 'Number of groups', min: 0, max: 1200, derived: true },
         ],
         relations: [
-          most40,
+          most144,
           {
             id: 'm = LCM of b and d',
             display: 'least common multiple of {b} and {d}: {m}',
@@ -1119,7 +1123,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           },
         ],
         steps: {
-          'quotient ≤ 40': {},
+          'quotient ≤ 144': {},
           'm = LCM of b and d': {
             m: {
               expr: 'least common multiple of {b} and {d}',
@@ -1177,18 +1181,18 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         assumptions: [
           'The amount fills part of one group. Find one of those parts, then the whole group.',
           'This is the same as dividing the amount by the fraction of a group.',
-          'Denominators from 1 to 12; the whole group is at most 40 times the amount.',
+          'Denominators from 1 to 20; the whole group is at most 144 times the amount.',
         ],
         variables: [
           fr('a', 'Amount numerator'),
           den('b', 'Amount denominator'),
           { ...fr('c', 'Parts of the group it fills', 12), min: 1 },
           den('d', 'Parts in one group'),
-          { ...fr('e', 'Whole group numerator', 1200), derived: true },
-          { ...fr('f', 'Whole group denominator', 144), min: 1, derived: true },
+          { ...fr('e', 'Whole group numerator', 2000), derived: true },
+          { ...fr('f', 'Whole group denominator', 240), min: 1, derived: true },
         ],
         relations: [
-          most40,
+          most144,
           {
             id: 'f = b × c',
             display: '{a}/{b} ÷ {c} = {a}/{f}',
@@ -1211,7 +1215,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           },
         ],
         steps: {
-          'quotient ≤ 40': {},
+          'quotient ≤ 144': {},
           'f = b × c': {
             f: {
               expr: '{b} × {c}',
@@ -1487,7 +1491,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         s: {
           expr: '{g} × ({x} + {y})',
           how: 'The sum is the GCF times the two numbers left inside the parentheses.',
-          note: (v) => `(${v.a} + ${v.b} = ${v.g} × (${v.x} + ${v.y}))`,
+          note: (v) =>
+            v.g === 1
+              ? '(the GCF is 1: nothing bigger to factor out)'
+              : `(${v.a} + ${v.b} = ${v.g} × (${v.x} + ${v.y}))`,
         },
       },
     },
@@ -1922,10 +1929,44 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           { ...coord('r', 'Right x-coordinate'), min: -19.5 },
           { ...coord('b', 'Bottom y-coordinate'), max: 19.5 },
           { ...coord('t', 'Top y-coordinate'), min: -19.5 },
-          { id: 'w', symbol: 'w', name: 'Width', min: 0.5, max: 40, step: 0.5, multipleOf: 0.5 },
-          { id: 'h', symbol: 'h', name: 'Height', min: 0.5, max: 40, step: 0.5, multipleOf: 0.5 },
-          { id: 'A', symbol: 'A', name: 'Area', min: 0, max: 1600, derived: true },
-          { id: 'P', symbol: 'P', name: 'Perimeter', min: 0, max: 160, derived: true },
+          {
+            id: 'w',
+            symbol: 'w',
+            name: 'Width',
+            unit: 'units',
+            min: 0.5,
+            max: 40,
+            step: 0.5,
+            multipleOf: 0.5,
+          },
+          {
+            id: 'h',
+            symbol: 'h',
+            name: 'Height',
+            unit: 'units',
+            min: 0.5,
+            max: 40,
+            step: 0.5,
+            multipleOf: 0.5,
+          },
+          {
+            id: 'A',
+            symbol: 'A',
+            name: 'Area',
+            unit: 'square units',
+            min: 0,
+            max: 1600,
+            derived: true,
+          },
+          {
+            id: 'P',
+            symbol: 'P',
+            name: 'Perimeter',
+            unit: 'units',
+            min: 0,
+            max: 160,
+            derived: true,
+          },
         ],
         relations: [
           {
@@ -2745,7 +2786,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         name: 'Rectangle area',
         unit: 'm²',
         min: 0,
-        max: 10000,
+        max: 400,
         derived: true,
       },
       { id: 'T', symbol: 'T', name: 'Triangle area', unit: 'm²', min: 0, max: 200, derived: true },
@@ -2763,7 +2804,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'T = ½ × w × r',
         display: '½ × {w} × {r} = {T}',
-        words: 'Width × roof height ÷ 2 = triangle area',
+        words: 'Half of width × roof height = triangle area',
         vars: ['T', 'w', 'r'],
         residual: (v: Values) => v.T! - 0.5 * v.w! * v.r!,
         solve: { T: (v: Values) => 0.5 * v.w! * v.r!, w: () => undefined, r: () => undefined },
@@ -3012,6 +3053,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'The net is a square base and 4 matching triangles.',
       'Each triangle’s height is measured on its face, from the base edge to the top.',
+      'The triangles must be tall enough to meet at the top: more than half the base side.',
       'Area is in square units.',
     ],
     variables: [
@@ -3063,6 +3105,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         solve: { T: (v: Values) => 0.5 * v.a! * v.t!, a: () => undefined, t: () => undefined },
       },
       {
+        // Triangles shorter than half the base side can't lean in to meet at the top.
+        id: 't > a ÷ 2',
+        constraint: true,
+        display: 'The triangle height {t} is more than half the base side {a}',
+        vars: ['t', 'a'],
+        residual: (v: Values) => (v.t! > v.a! / 2 ? 0 : 1),
+        solve: {},
+      },
+      {
         id: 'S = B + 4T',
         display: '{B} + 4 × {T} = {S}',
         words: 'Base area + 4 × one triangle = surface area',
@@ -3073,6 +3124,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     ],
     steps: {
       'B = a × a': { B: { expr: '{a} × {a}', how: 'The base is a square.' } },
+      't > a ÷ 2': {},
       'T = ½ × a × t': {
         T: {
           expr: '½ × {a} × {t}',
