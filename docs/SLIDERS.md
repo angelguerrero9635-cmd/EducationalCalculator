@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-41 of 374 pages show sliders.
+44 of 390 pages show sliders.
 
 ## By picture kind
 
@@ -34,6 +34,8 @@ its kind with `sliders: true | false`.
 | dotPlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| energyPyramid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| energyTrack | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | equationBalance | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -41,16 +43,18 @@ its kind with `sliders: true | false`.
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fieldOfView | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | flashlights | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| force | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | fractionArea | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionBars | 8 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionFit | 3 | yes | set on the module (shown) |
 | fractionLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | functionMachine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| generations | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grassSlope | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | hanger | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| heatingCurve | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | integerLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -60,6 +64,8 @@ its kind with `sliders: true | false`.
 | lineSystem | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | mapping | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | marbles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| molecules | 3 | yes | set on the module (shown) |
+| motionGraph | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | net | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberLine | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -67,6 +73,7 @@ its kind with `sliders: true | false`.
 | partition | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | percentBar | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| periodicTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
 | placeValueChart | 8 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -78,6 +85,7 @@ its kind with `sliders: true | false`.
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | ratioTable | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| reaction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectangle | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | rightTriangle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -92,6 +100,7 @@ its kind with `sliders: true | false`.
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| skaters | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
 | spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -119,6 +128,9 @@ its kind with `sliders: true | false`.
 - m.6.gcf-lcm: sliders shown
 - g.zero-pairs-add: sliders shown
 - g.zero-pairs-subtract: sliders shown
+- g.water-molecules: sliders shown
+- g.carbon-dioxide-molecules: sliders shown
+- g.oxygen-molecules: sliders shown
 
 ## Every page
 
@@ -498,3 +510,19 @@ its kind with `sliders: true | false`.
 | g.linear-function-context | linearFunction | no |
 | g.line-system | lineSystem | no |
 | g.line-system-context | lineSystem | no |
+| g.energy-pyramid | energyPyramid | no |
+| g.beetle-generations | generations | no |
+| g.water-molecules | molecules | yes |
+| g.carbon-dioxide-molecules | molecules | yes |
+| g.oxygen-molecules | molecules | yes |
+| g.balance-water | reaction | no |
+| g.burning-methane | reaction | no |
+| g.heating-curve | heatingCurve | no |
+| g.periodic-table | periodicTable | no |
+| g.distance-time | motionGraph | no |
+| g.walk-graph | motionGraph | no |
+| g.speed-time | motionGraph | no |
+| g.cart-force | force | no |
+| g.skaters | skaters | no |
+| g.roller-coaster | energyTrack | no |
+| g.pendulum | energyTrack | no |
