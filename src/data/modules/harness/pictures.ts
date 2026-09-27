@@ -352,7 +352,8 @@ export function repIssues(
     }
     case 'equalGroups': {
       // Each group is an 88 px circle; past 16 the dots shrink to fit up to 100 (EqualGroups.tsx).
-      count(rep.groups, 'groups', 12);
+      // With bundles, past 12 groups go in rows of ten small circles, up to 9 rows.
+      count(rep.groups, 'groups', rep.bundles ? 90 : 12);
       count(
         rep.each,
         rep.unit === 10 ? 'ten-rods in a group' : 'dots in a group',

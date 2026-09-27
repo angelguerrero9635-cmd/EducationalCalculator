@@ -152,7 +152,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `polygon`          | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |
 | `rectilinear`      | `cut` instead of `right`                 | a rectangle with a corner cut out, both areas labeled                         |
 | `ruler`            | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |
-| `equalGroups`      | `unit: 10`                               | ten-rods, `each` counted in tens                                              |
+| `equalGroups`      | `unit: 10`, `bundles`                    | ten-rods, `each` counted in tens; bundles: rows of ten circles, each numbered |
 | `bars`             | `scale` as a variable                    | the grid spacing read from a value                                            |
 | `pictureGraph`     | (with a key)                             | half a picture for a half count                                               |
 | `fractionLine`     | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |

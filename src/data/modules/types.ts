@@ -345,6 +345,8 @@ export type Representation =
       total: string;
       /** 10: each item is a ten-rod, and `each` counts tens (4 groups of 6 tens). */
       unit?: 10;
+      /** Up to 90 groups: past 12, rows of ten small circles with `each` written in each. */
+      bundles?: true;
     }
   /** A prism on a base with `sides` sides (a cube when the base is a square). the sliders change it. */
   | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }

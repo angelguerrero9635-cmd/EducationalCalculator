@@ -285,9 +285,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Equal groups up to 90 groups',
     kind: 'equalGroups',
     pages: ['m.3.multiplication-properties~grouping'],
-    status: 'requested',
-    gallery: [],
-    notes: '4 × 50 × 9 as 50 groups of 36: a factor that is a multiple of 10.',
+    status: 'drawn',
+    gallery: ['g.equal-groups-50', 'g.equal-groups-90'],
+    uses: '"bundles":true',
+    notes:
+      '4 × 50 × 9 as 50 groups of 36. Pass bundles: true: past 12 groups, rows of ten small circles with the number in each group written inside (12 or fewer draw as before). The page raises c to 90, q to 900 and n to 9000.',
   },
   {
     id: 'R25',

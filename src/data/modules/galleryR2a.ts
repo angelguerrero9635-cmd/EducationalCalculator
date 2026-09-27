@@ -148,6 +148,56 @@ function multiplesDemo(id: string, k: number, n: number): ModuleDef {
   };
 }
 
+/** Many equal groups (R24): 4 × 9 × 50 as 50 groups of 36, bundled in rows of ten groups. */
+function groupingDemo(id: string, a: number, b: number, c: number): ModuleDef {
+  const first = times(
+    'p = a × b',
+    ['a', 'b', 'p'],
+    ['first factor', 'second factor', 'product of the first two'],
+  );
+  const second = times(
+    'q = b × c',
+    ['b', 'c', 'q'],
+    ['second factor', 'third factor', 'product of the last two'],
+  );
+  const left = times(
+    'n = p × c',
+    ['p', 'c', 'n'],
+    ['product of the first two', 'third factor', 'product'],
+  );
+  const right = times(
+    'n = a × q',
+    ['a', 'q', 'n'],
+    ['first factor', 'product of the last two', 'product'],
+  );
+  return {
+    id,
+    title: 'Many equal groups',
+    assumptions: [
+      'With three factors, multiply any two first. The product is the same.',
+      'The picture draws each group as first × second, in rows of ten groups.',
+    ],
+    variables: [
+      whole('a', 'a', 'First factor', 0, 10),
+      whole('b', 'b', 'Second factor', 0, 10),
+      whole('c', 'c', 'Third factor', 0, 90),
+      whole('p', 'p', 'First two multiplied', 0, 100),
+      whole('q', 'q', 'Last two multiplied', 0, 900),
+      whole('n', 'n', 'Product', 0, 9000),
+    ],
+    relations: [first.relation, second.relation, left.relation, right.relation],
+    steps: {
+      'p = a × b': first.steps,
+      'q = b × c': second.steps,
+      'n = p × c': left.steps,
+      'n = a × q': right.steps,
+    },
+    example: { a, b, c, p: a * b, q: b * c, n: a * b * c },
+    startWith: ['a', 'b', 'c'],
+    representation: { kind: 'equalGroups', groups: 'c', each: 'p', total: 'n', bundles: true },
+  };
+}
+
 export const R2A_GALLERY_MODULES: ModuleDef[] = [
   factorPairsDemo('g.factor-pairs-126', { a: 9, b: 14, n: 126 }),
   factorPairsDemo('g.factor-pairs-200', { a: 8, b: 25, n: 200 }),
@@ -155,4 +205,6 @@ export const R2A_GALLERY_MODULES: ModuleDef[] = [
   chartPieceDemo('g.chart-piece-990', 990),
   multiplesDemo('g.multiples-652', 5, 652),
   multiplesDemo('g.multiples-1000', 8, 1000),
+  groupingDemo('g.equal-groups-50', 4, 9, 50),
+  groupingDemo('g.equal-groups-90', 10, 10, 90),
 ];
