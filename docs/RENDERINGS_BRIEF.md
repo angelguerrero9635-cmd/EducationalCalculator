@@ -400,3 +400,10 @@ Notes for the lesson pages:
 - A pedigree's people must be listed in a sensible order (partners side by side, children in
   their parents' order); the figure spaces them evenly.
 - Energy bars assume joules; a fixed mass in the cart and skater captions assumes kilograms.
+
+### Round 2 (2026-09-27): range raises on K–6 pictures
+
+Every `requested` entry in `src/data/modules/pictureRequests.ts` is now `drawn`: R15 and
+R21–R29. The tracker is the record: each entry lists its gallery demos, the text a page will
+contain once it uses the option (`uses`) and, in `notes`, the fields to pass and the ranges the
+page must raise. All new fields are optional; pages that don't pass them draw as before.

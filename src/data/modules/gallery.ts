@@ -17,6 +17,10 @@ import { S4B_GALLERY_LAYOUTS, S4B_GALLERY_MODULES } from './galleryS4b';
 import { S4A_GALLERY_LAYOUTS, S4A_GALLERY_MODULES } from './galleryS4a';
 import { S4C_GALLERY_MODULES } from './galleryS4c';
 import { S4D_GALLERY_LAYOUTS, S4D_GALLERY_MODULES } from './galleryS4d';
+import { R2A_GALLERY_MODULES } from './galleryR2a';
+import { R2B_GALLERY_MODULES } from './galleryR2b';
+import { R2C_GALLERY_MODULES } from './galleryR2c';
+import { R2D_GALLERY_MODULES } from './galleryR2d';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
@@ -1038,6 +1042,10 @@ export const GALLERY_MODULES: ModuleDef[] = [
   ...S4A_GALLERY_MODULES,
   ...S4C_GALLERY_MODULES,
   ...S4D_GALLERY_MODULES,
+  ...R2A_GALLERY_MODULES,
+  ...R2B_GALLERY_MODULES,
+  ...R2C_GALLERY_MODULES,
+  ...R2D_GALLERY_MODULES,
 ];
 
 /**

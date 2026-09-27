@@ -17,7 +17,11 @@ import { physics8SpecVars } from '../typesPhysics8';
 function representationVars(r: Representation): string[] {
   switch (r.kind) {
     case 'numberLine':
-      return [r.start, r.jump, r.end, ...[r.from, r.every].filter((v): v is string => !!v)];
+      return [
+        r.start,
+        r.end,
+        ...[r.jump, r.from, r.every, r.count].filter((v): v is string => !!v),
+      ];
     case 'tenFrame':
       return [r.first, r.second, r.total].filter((v): v is string => typeof v === 'string');
     case 'hundredChart':
@@ -133,6 +137,7 @@ function representationVars(r: Representation): string[] {
         ...(r.copies ? [r.copies] : []),
         ...(r.second ? [r.second.numerator, r.second.denominator] : []),
         ...(r.from ? [r.from] : []),
+        ...(typeof r.startWhole === 'string' ? [r.startWhole] : []),
       ];
     case 'fractionBars':
       return [...r.rows.flatMap((x) => [x.num, x.den]), ...r.controls];

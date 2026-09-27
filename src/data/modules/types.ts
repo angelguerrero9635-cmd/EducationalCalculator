@@ -37,7 +37,8 @@ export type Representation =
   | {
       kind: 'numberLine';
       start: string;
-      jump: string;
+      /** The distance from start to end; not needed with `count`. */
+      jump?: string;
       end: string;
       min: number;
       max: number;
@@ -58,6 +59,12 @@ export type Representation =
       every?: string;
       /** Ticks on a `from` line (default 10). */
       span?: number;
+      /**
+       * On a `from` line: the ticks counted from the start to the point, drawn one jump per
+       * tick and named in the caption as a count ("Start at 500. 4 jumps of 10: 510, 520, 530,
+       * 540."), so no distance value is needed. Dragging the point snaps to a tick.
+       */
+      count?: string;
     }
   /**
    * Ten-frames with two kinds of counters: `first` solid (●), then `second` open (○), `total` in all.
@@ -77,7 +84,8 @@ export type Representation =
   | {
       kind: 'hundredChart';
       value: string;
-      max: 100 | 120;
+      /** 1000: only the hundred holding `value` (601–700), or three rows of it with `piece`. */
+      max: 100 | 120 | 1000;
       marks?: string[];
       /** Counting by tens from `value`: dots on the numbers passed, one row down per ten. */
       tens?: { count: string };
@@ -175,6 +183,11 @@ export type Representation =
        * then not used).
        */
       marks?: 2 | 4 | 8 | string;
+      /**
+       * With `marks`: the start may be a fraction in these parts of a unit (4: 3 3/4 inches), its
+       * slider steps by 1/4, and every mark reads as a mixed number (3 3/4, 4, 4 1/4, …).
+       */
+      startParts?: 2 | 4 | 8;
     }
   /**
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
@@ -299,6 +312,11 @@ export type Representation =
        * rows run to `total`, the first landing they share (the least common multiple), circled.
        */
       second?: { step: string };
+      /**
+       * Past 30 jumps (to 999): one arc per ten jumps, per hundred past 300, then the single
+       * jumps left; each run named at the top (“10 × 10 jumps: +20”).
+       */
+      group?: boolean;
     }
   /**
    * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)
@@ -344,6 +362,8 @@ export type Representation =
       total: string;
       /** 10: each item is a ten-rod, and `each` counts tens (4 groups of 6 tens). */
       unit?: 10;
+      /** Up to 90 groups: past 12, rows of ten small circles with `each` written in each. */
+      bundles?: true;
     }
   /** A prism on a base with `sides` sides (a cube when the base is a square). the sliders change it. */
   | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }
@@ -459,6 +479,12 @@ export type Representation =
       second?: string;
       /** Whole grids, fully shaded, before the first: the ones of a decimal (1.35). */
       wholes?: string;
+      /** Past 3 whole grids, one stack of grids with its count ("45 whole grids"): ones to 99. */
+      stack?: boolean;
+      /** A percent past 100 draws a full grid per 100 before the rest (125% = 1 grid + 25). */
+      past100?: boolean;
+      /** Shade tenths of a square exactly (37.5 fills half of square 38) instead of rounding. */
+      exact?: boolean;
     }
   /**
    * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is
@@ -607,6 +633,11 @@ export type Representation =
       second?: { numerator: string; denominator: string };
       /** Tenths and hundredths as decimals: the tenths are labeled 0.1, 0.2 … and the point too. */
       decimal?: boolean;
+      /**
+       * The first whole on the line (a number or a value id): it runs from here to here +
+       * `wholes` (1 to 3), stretching to take in the point; the point is still counted from 0.
+       */
+      startWhole?: number | string;
       /**
        * Mixed-number jumps (18 1/4 − 2 3/4): a jump from this value to the numerator, both
        * counted in parts (18 1/4 is 73 fourths), drawn as one jump of whole numbers and one of
@@ -926,6 +957,11 @@ export type Representation =
       first: { num: string; den: string };
       second: { num: string; den: string };
       product?: { num: string; den: string };
+      /**
+       * Fractions past one whole (10/3): a block of unit squares, up to `wholes` a side, each cut
+       * into den × den pieces, whole-square borders heavier; the product counted in pieces.
+       */
+      wholes?: number;
     }
   /** Unit cubes filling a box `length` × `width` × `height`, drawn layer by layer. */
   | {
@@ -963,6 +999,12 @@ export type Representation =
       highlight?: string;
       from?: string;
       compare?: string;
+      /**
+       * Whole numbers past the millions (to hundred billions): columns grouped in periods (ones,
+       * thousands, millions, billions) under one header each, compact 100 · 10 · 1 headers.
+       * Numbers to the millions draw as without it. Only with `decimals` 0.
+       */
+      periods?: boolean;
     }
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
   | {

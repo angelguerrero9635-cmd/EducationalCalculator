@@ -19,7 +19,14 @@ const WHOLE = [
   'ten thousands',
   'hundred thousands',
   'millions',
+  'ten millions',
+  'hundred millions',
+  'billions',
+  'ten billions',
+  'hundred billions',
 ];
+/** Periods of three places, for `periods` (numbers past the millions). */
+const PERIODS = ['ones', 'thousands', 'millions', 'billions'];
 const PARTS = ['tenths', 'hundredths', 'thousandths'];
 
 /** A column: its name and place value. */
@@ -41,7 +48,8 @@ function digitAt(x: number, place: number, decimals: number): string {
 /**
  * A place-value chart: one column per place, the number's digits in them, the decimal point
  * between ones and tenths. Each column is 10 times the one to its right. A second row shows
- * the number before a × 10 (digits one place left) or the number compared with it.
+ * the number before a × 10 (digits one place left) or the number compared with it. With
+ * `periods`, a number past the millions has its columns grouped in periods of three.
  */
 export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -51,7 +59,13 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
   const other = spec.from ?? spec.compare;
   const y = other && rep.known(other) ? Math.max(0, rep.shown(other)) : undefined;
   const wholeLen = (n: number) => Math.floor(n).toString().length;
-  const places = Math.min(WHOLE.length, Math.max(wholeLen(x), y !== undefined ? wholeLen(y) : 1));
+  const needed = Math.min(
+    spec.periods ? WHOLE.length : 7,
+    Math.max(wholeLen(x), y !== undefined ? wholeLen(y) : 1),
+  );
+  // Past the millions (with `periods`): whole periods of three columns each.
+  const grouped = !!spec.periods && needed > 7;
+  const places = grouped ? Math.ceil(needed / 3) * 3 : needed;
   const columns: Column[] = [
     ...WHOLE.slice(0, places)
       .map((name, i) => ({ name, place: 10 ** i }))
@@ -72,7 +86,65 @@ export function PlaceValueChart({ spec, calc }: { spec: Spec; calc: Calculator }
         )
       : -1;
 
-  const row = (n: number | undefined, key: string, label?: string) => (
+  /** Periods layout: each period boxed under its name, compact 100 · 10 · 1 headers. */
+  const periodRow = (n: number | undefined, key: string, label?: string) => (
+    <View key={key}>
+      {label ? <Text style={[styles.rowLabel, { color: c.textMuted }]}>{label}</Text> : null}
+      <View style={styles.periods}>
+        {Array.from({ length: places / 3 }, (_, g) => {
+          const start = g * 3;
+          return (
+            <View
+              key={g}
+              style={[styles.period, { borderColor: c.chartInk, backgroundColor: c.chartSurface }]}
+            >
+              <Text
+                style={[styles.periodHead, { color: c.chartInk }]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
+                {PERIODS[places / 3 - 1 - g]}
+              </Text>
+              <View style={styles.periodCells}>
+                {columns.slice(start, start + 3).map((col, j) => {
+                  const i = start + j;
+                  // Places before the number's first digit stay blank (not leading zeros).
+                  const d =
+                    n === undefined
+                      ? '?'
+                      : col.place > 1 && col.place >= 10 ** wholeLen(n)
+                        ? ''
+                        : digitAt(n, col.place, 0);
+                  const outlined = i === litIndex || i === differ;
+                  return (
+                    <View
+                      key={col.name}
+                      style={[
+                        styles.small,
+                        { borderColor: c.chartGrid, backgroundColor: c.chartSurface },
+                        d !== '0' && d !== '?' && d !== '' && { backgroundColor: c.chartFill },
+                        outlined && { borderColor: c.chartHighlight, borderWidth: 3 },
+                      ]}
+                    >
+                      <Text style={[styles.smallHead, { color: c.chartMuted }]}>
+                        {['100', '10', '1'][j]}
+                      </Text>
+                      <Text style={[styles.smallDigit, { color: c.chartInk }]}>{d || ' '}</Text>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          );
+        })}
+      </View>
+    </View>
+  );
+
+  const row = (n: number | undefined, key: string, label?: string) =>
+    grouped ? periodRow(n, key, label) : plainRow(n, key, label);
+
+  const plainRow = (n: number | undefined, key: string, label?: string) => (
     <View key={key}>
       {label ? <Text style={[styles.rowLabel, { color: c.textMuted }]}>{label}</Text> : null}
       <View style={[styles.row, tight && styles.rowTight]}>
@@ -191,6 +263,20 @@ const styles = StyleSheet.create({
   headTight: { fontSize: font.caption - 4, letterSpacing: -0.4 },
   digitTight: { fontSize: font.title },
   pointTight: { fontSize: font.title + 2 },
+  periods: { flexDirection: 'row', gap: 3, paddingHorizontal: 2 },
+  period: { flex: 1, borderWidth: 1.5, borderRadius: radius.sm, padding: 1 },
+  periodHead: { fontSize: font.caption - 1, fontWeight: '700', textAlign: 'center' },
+  periodCells: { flexDirection: 'row' },
+  small: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 3,
+    margin: 1,
+    alignItems: 'center',
+    paddingVertical: 2,
+  },
+  smallHead: { fontSize: font.caption - 3, fontVariant: ['tabular-nums'] },
+  smallDigit: { fontSize: font.body + 2, fontWeight: '800', fontVariant: ['tabular-nums'] },
   cell: {
     width: 62,
     borderWidth: 1,

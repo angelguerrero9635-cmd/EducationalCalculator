@@ -89,6 +89,16 @@ export function repIssues(
           );
         }
       }
+      // A 1,000 chart draws only the hundred holding the value: counting by tens stays in it.
+      const t = rep.tens ? val(rep.tens.count) : undefined;
+      if (
+        rep.max === 1000 &&
+        n !== undefined &&
+        t !== undefined &&
+        n + 10 * t > Math.ceil(n / 100) * 100
+      ) {
+        out.push(`counting ${t} tens from ${n} leaves the hundred drawn`);
+      }
       break;
     }
     case 'compareRows': {
@@ -262,7 +272,8 @@ export function repIssues(
       break;
     }
     case 'skipCount': {
-      if (typeof rep.count === 'string') count(rep.count, 'skips', 30);
+      // With `group`, jumps to 999 are drawn in tens and hundreds (SkipCount.tsx).
+      if (typeof rep.count === 'string') count(rep.count, 'skips', rep.group ? 999 : 30);
       const s = val(rep.step);
       // Decimal jumps are drawn to the hundredth (SkipCount.tsx).
       if (s !== undefined && s < 0.01) out.push(`skip size ${s} < 0.01 (drawn as 0.01)`);
@@ -342,7 +353,8 @@ export function repIssues(
     }
     case 'equalGroups': {
       // Each group is an 88 px circle; past 16 the dots shrink to fit up to 100 (EqualGroups.tsx).
-      count(rep.groups, 'groups', 12);
+      // With bundles, past 12 groups go in rows of ten small circles, up to 9 rows.
+      count(rep.groups, 'groups', rep.bundles ? 90 : 12);
       count(
         rep.each,
         rep.unit === 10 ? 'ten-rods in a group' : 'dots in a group',
@@ -410,9 +422,19 @@ export function repIssues(
       break;
     }
     case 'linePlot': {
-      // LinePlot.tsx draws at most 10 X's a column, from a whole-number start.
+      // LinePlot.tsx draws at most 10 X's a column, from a whole start (or 1/startParts).
       for (const p of rep.points) count(p.var, 'X marks', 10);
-      if (rep.start) count(rep.start, 'line plot start');
+      if (rep.start && rep.startParts === undefined) count(rep.start, 'line plot start');
+      else if (rep.start) {
+        // A fractional start is drawn to the nearest 1/startParts.
+        const s = val(rep.start);
+        if (
+          s !== undefined &&
+          (s < 0 || Math.abs(s * rep.startParts! - Math.round(s * rep.startParts!)) > 1e-9)
+        )
+          out.push(`line plot start ${s} is not a whole number of 1/${rep.startParts}`);
+        if (rep.marks === undefined) out.push('line plot startParts needs marks');
+      }
       if (rep.marks !== undefined) {
         if (!rep.start) out.push('line plot marks need a start');
         const d = val(rep.marks);
@@ -447,6 +469,18 @@ export function repIssues(
         if (x !== undefined && (x < lo - 1e-9 || x > hi + 1e-9)) {
           out.push(`number line point ${id} = ${x} off the line (${lo}–${hi})`);
         }
+      }
+      // A line counted by ticks: whole ticks, one jump each, from the start to the point.
+      if (rep.count !== undefined && rep.from !== undefined) {
+        count(rep.count, 'ticks counted', rep.span ?? 10);
+        const [k, a, n] = [val(rep.count), val(rep.start), val(rep.end)];
+        if (
+          k !== undefined &&
+          a !== undefined &&
+          n !== undefined &&
+          Math.abs(a + k * every - n) > 1e-9
+        )
+          out.push(`${k} ticks of ${every} from ${a} land on ${a + k * every}, the point is ${n}`);
       }
       break;
     }
@@ -484,8 +518,19 @@ export function repIssues(
           : rep.from === undefined
             ? Math.ceil(a / b)
             : Math.max(Math.ceil(Math.max(a, f ?? a) / b) - Math.floor(Math.min(a, f ?? a) / b), 1);
-      if (span > 24 && a !== undefined && b !== undefined) {
+      if (span > 24 && rep.startWhole === undefined && a !== undefined && b !== undefined) {
         out.push(`${a}/${b} needs ${span} wholes on the line`);
+      }
+      // `startWhole`: the line runs from that whole (or the point's) to start + wholes.
+      if (rep.startWhole !== undefined) {
+        count(rep.startWhole, 'line start whole');
+        const s = val(rep.startWhole);
+        const p = a !== undefined && b !== undefined && b >= 1 ? a / b : undefined;
+        const from = Math.min(s ?? Infinity, p === undefined ? Infinity : Math.floor(p));
+        const to = Math.max((s ?? 0) + rep.wholes, p === undefined ? 0 : Math.ceil(p));
+        if (Number.isFinite(from) && to - from > 24) {
+          out.push(`line from ${from} to ${to} needs more than 24 wholes`);
+        }
       }
       if (rep.second) {
         count(rep.second.numerator, 'second line parts counted');
@@ -729,8 +774,12 @@ export function repIssues(
         const d = val(f!.den);
         count(f!.num, 'top');
         if (d !== undefined && d < 1) out.push(`bottom ${f!.den} = ${d}`);
-        if (n !== undefined && d !== undefined && n > d)
-          out.push(`${n}/${d} is more than one whole`);
+        if (n === undefined || d === undefined || d < 1) continue;
+        // With `wholes`, a fraction past one is a block of unit squares (FractionArea.tsx).
+        if (!rep.wholes) {
+          if (n > d) out.push(`${n}/${d} is more than one whole`);
+        } else if (f !== rep.product && Math.ceil(n / d) > rep.wholes)
+          out.push(`${n}/${d} needs ${Math.ceil(n / d)} unit squares, past ${rep.wholes}`);
       }
       break;
     }
@@ -774,11 +823,15 @@ export function repIssues(
     case 'placeValueChart': {
       const x = val(rep.value);
       if (x !== undefined && x < 0) out.push(`place-value chart of a negative number ${x}`);
-      // Seven whole places (millions) are drawn (PlaceValueChart.tsx).
+      // Seven whole places (millions) are drawn, twelve in periods (PlaceValueChart.tsx).
+      const top = rep.periods ? 1e12 : 1e7;
       for (const id of [rep.value, rep.from, rep.compare]) {
         const n = id ? val(id) : undefined;
-        if (n !== undefined && n >= 1e7) out.push(`place-value chart of ${n}: past the millions`);
+        if (n !== undefined && n >= top) out.push(`place-value chart of ${n}: past ${top} places`);
+        if (rep.periods && n !== undefined && Math.abs(n - Math.round(n)) > 1e-9)
+          out.push(`periods chart of ${n}: whole numbers only`);
       }
+      if (rep.periods && rep.decimals) out.push('periods chart with decimal places');
       const lit = rep.highlight ? val(rep.highlight) : undefined;
       if (lit !== undefined && Math.abs(Math.log10(lit) - Math.round(Math.log10(lit))) > 1e-9)
         out.push(`highlighted place ${lit} is not a place value`);
@@ -844,18 +897,28 @@ export function repIssues(
     }
     case 'grid100': {
       // A percent like 38.7 shades the nearest square (Grid100.tsx rounds): check the range.
+      // `past100` adds a full grid per 100 (one stack past 3 grids, up to 99 of them); `exact`
+      // shades tenths of a square, so the percent must be in tenths.
       const shaded = val(rep.percent);
-      if (shaded !== undefined && (shaded < 0 || shaded > 100)) {
-        out.push(`squares shaded ${rep.percent} out of 0–100 (${shaded})`);
+      const most = rep.past100 ? 10000 : 100;
+      if (shaded !== undefined && (shaded < 0 || shaded > most)) {
+        out.push(`squares shaded ${rep.percent} out of 0–${most} (${shaded})`);
       }
+      if (
+        rep.exact &&
+        shaded !== undefined &&
+        Math.abs(shaded * 10 - Math.round(shaded * 10)) > 1e-6
+      )
+        out.push(`squares shaded ${rep.percent} = ${shaded} is not in tenths of a square`);
       if (rep.second) count(rep.second, 'squares shaded', 100);
-      // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx).
-      if (rep.wholes) count(rep.wholes, 'whole grids', 3);
+      // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx); with
+      // `stack` more are one stack with its count, to 99.
+      if (rep.wholes) count(rep.wholes, 'whole grids', rep.stack ? 99 : 3);
       break;
     }
     case 'factorPairs': {
-      // The 1-row rectangle is drawn to the width: past 100 squares a square is under 3 px.
-      count(rep.value, 'number', 100);
+      // The 1-row rectangle is drawn to the width; past 100 (to 200) they are thin bars to scale.
+      count(rep.value, 'number', 200);
       const [n, a, b] = [rep.value, rep.first, rep.second].map((id) => (id ? val(id) : undefined));
       if (n !== undefined && n < 1) out.push(`factor pairs of ${n}`);
       if (n !== undefined && a !== undefined && b !== undefined && a * b !== n)

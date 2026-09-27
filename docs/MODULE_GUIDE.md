@@ -91,7 +91,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `protractor`       | both scales, an arm to drag                                           | Grade 4 measuring angles            |
 | `wave`             | crests and troughs with wavelength (and amplitude) marked             | Grade 4 and 8 waves, physics        |
 | `punnettSquare`    | two parents' alleles and the four offspring boxes                     | Grade 7 heredity, biology           |
-| `factorPairs`      | every rectangle of a number's unit squares, the typed pair outlined   | Grade 4 factors, primes, composites |
+| `factorPairs`      | each rectangle of its unit squares, pair outlined; thin bars past 100 | Grade 4 factors, primes, composites |
 | `shareWholes`      | wholes cut into as many parts as people, one share shaded in each     | Grade 5 fractions as division       |
 | `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump  | Grade 6 negatives, temperature      |
 | `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                      | Grade 6 percent                     |
@@ -146,13 +146,13 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | Kind               | Option                                   | Draws                                                                         |
 | ------------------ | ---------------------------------------- | ----------------------------------------------------------------------------- |
 | `compareRows`      | `object`                                 | the pencil, crayon or ribbon measured, above its row of cubes                 |
-| `hundredChart`     | `piece`, `multiplesOf`                   | only the number and its four neighbors; or every multiple shaded              |
+| `hundredChart`     | `piece`, `multiplesOf`, `max: 1000`      | the number and its 4 neighbors; or multiples shaded; 1000: its hundred only   |
 | `hops`             | a hop `sign` naming a variable (1 or −1) | a + / − switch that flips that hop                                            |
 | `rectangle`        | `grid`                                   | unit squares on a perimeter page                                              |
 | `polygon`          | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |
 | `rectilinear`      | `cut` instead of `right`                 | a rectangle with a corner cut out, both areas labeled                         |
 | `ruler`            | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |
-| `equalGroups`      | `unit: 10`                               | ten-rods, `each` counted in tens                                              |
+| `equalGroups`      | `unit: 10`, `bundles`                    | ten-rods, `each` counted in tens; bundles: rows of ten circles, each numbered |
 | `bars`             | `scale` as a variable                    | the grid spacing read from a value                                            |
 | `pictureGraph`     | (with a key)                             | half a picture for a half count                                               |
 | `fractionLine`     | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |
@@ -160,8 +160,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `array`            | `sides`                                  | the rows and columns labeled, “?” until solved                                |
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
+| `placeValueChart`  | `periods`                                | whole numbers to hundred billions, columns grouped ones … billions            |
 | `tape`             | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
-| `grid100`          | `second`, `wholes`                       | a second grid to compare; whole grids for the ones                            |
+| `grid100`          | `second`, `wholes`, `stack`, `past100`   | a grid to compare; ones grids (`stack` past 3); past 100%; `exact` tenths     |
 | `rounding`         | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
 | `coordinatePlane`  | `trail`                                  | a pattern's earlier points and their table                                    |
 | `unitCubes`        | `second`, `total`                        | two boxes joined into an L                                                    |
@@ -176,11 +177,14 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
 | `thermometers`     | `cups`                                   | each thermometer in a dark or light cup of water in the sun                   |
 | `fractionBars`     | `wholes`; a fraction past 1              | as many whole bars as it needs (7/4: a whole bar and 3/4 of the next), to 6   |
+| `fractionArea`     | `wholes`                                 | a fraction past 1 (10/3): a block of unit squares, to `wholes` a side         |
 | `fractionLine`     | `from` (counted in parts)                | mixed-number jumps (18 1/4 − 2 3/4): the wholes, then the parts left          |
+| `fractionLine`     | `startWhole` (a number or value id)      | a line from any whole, start + `wholes` (1 to 3 in tenths, 2.6 marked)        |
 | `partition`        | `shape: 'set'`, `object`                 | a set of umbrellas or counters, some shaded (3/7 of the set)                  |
-| `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100, the point placed; `'ticks'`: a jump per tick |
+| `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100; `jumps: 'ticks'` or `count`: a jump per tick |
 | `tape`, `beaker`   | `mixed`                                  | shares and amounts as exact mixed numbers (33 1/3, 2 3/8 L)                   |
 | `skipCount`        | (no `count`)                             | a quotient past whole jumps: the last part of a jump (33 1/3 jumps)           |
+| `skipCount`        | `group`                                  | past 30 jumps (to 999): an arc per ten jumps, per hundred past 300            |
 | `coins`            | bills (`cents` 100, 500, 1000) and coins | the bills beside the coins, one total in dollars and cents, the sum under it  |
 | `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
 | `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |
@@ -191,6 +195,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `ratioTable`       | `graph`                                  | axes to the biggest row in 3–4 numbered steps; under the table on a phone     |
 | `coordinatePlane`  | `plot`                                   | tap the grid or drag to place one point; the path from 0 across, then up      |
 | `linePlot`         | `start`, `marks: 2 \| 4 \| 8`            | marks every 1/2, 1/4 or 1/8 from any whole number (12, 12 1/4, …)             |
+| `linePlot`         | `startParts: 2 \| 4 \| 8` (with `marks`) | a fractional start (3 3/4), marks read 3 3/4, 4, 4 1/4 … 5 1/2                |
 | `protractor`       | `arms: { first, second }`                | neither arm on 0: each reads on the inner scale; the angle is the difference  |
 | `percentBar`       | `change: { total, direction?, bars? }`   | tax or discount: original, change, new amount; `bars: 2`: before and after    |
 | `plot`             | `unitRate`, `table`                      | y = kx through (0, 0) with (1, k) ringed and dragged; x, y, y ÷ x beside it   |

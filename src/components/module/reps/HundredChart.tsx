@@ -11,7 +11,8 @@ import { Steppers } from './Steppers';
 type Spec = Extract<Representation, { kind: 'hundredChart' }>;
 
 /**
- * Numbers 1–100 (or 1–120) in rows of ten. Every number up to `value` is shaded, so full rows
+ * Numbers 1–100 (or 1–120) in rows of ten. With `max: 1000` it draws one hundred of the
+ * thousand, the one holding `value` (601–700 for 652); a piece draws three rows around it. Every number up to `value` is shaded, so full rows
  * show the tens; `marks` (e.g. one more, ten more) are outlined. Tap a number to set `value`.
  */
 export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
@@ -32,6 +33,18 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
           (Math.abs(k - n) !== 1 || Math.ceil(k / 10) === Math.ceil(n / 10)),
       )
     : undefined;
+  // The part drawn: all of a 100 or 120 chart; one hundred (or three rows) of a 1,000 chart.
+  const [from, to] = (() => {
+    if (spec.max !== 1000) return [1, spec.max];
+    const at = Math.max(1, n);
+    if (spec.piece) {
+      const row = Math.floor((at - 1) / 10) * 10 + 1;
+      const start = Math.min(971, Math.max(1, row - 10));
+      return [start, start + 29];
+    }
+    const start = Math.floor((at - 1) / 100) * 100 + 1;
+    return [start, start + 99];
+  })();
   const marks = (spec.marks ?? []).filter(rep.known).map((id) => Math.round(rep.shown(id)));
   // Counting by tens from n: a dot on each number passed (n + 10, n + 20, …).
   const tens =
@@ -44,7 +57,7 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View style={{ gap: space.sm }}>
-      <Canvas aspect={spec.max / 100}>
+      <Canvas aspect={(to - from + 1) / 100}>
         {({ w }) => {
           const cell = Math.floor((w - 2 * chart.stroke) / 10);
           return (
@@ -54,11 +67,11 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 { width: cell * 10 + 2 * chart.stroke, borderColor: c.chartInk },
               ]}
             >
-              {Array.from({ length: spec.max }, (_, i) => {
-                const k = i + 1;
+              {Array.from({ length: to - from + 1 }, (_, i) => {
+                const k = from + i;
                 const on = spec.multiplesOf ? step > 0 && k % step === 0 : k <= n;
                 const blank = piece !== undefined && !piece.includes(k);
-                const marked = marks.includes(k);
+                const marked = marks.includes(k) && !blank;
                 const passed = tens.includes(k);
                 return (
                   <Pressable
@@ -100,7 +113,7 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             : (spec.multiplesOf ? on : k === n)
                               ? c.onChartHighlight
                               : c.chartInk,
-                          fontSize: Math.min(font.caption + 1, cell / 2.6),
+                          fontSize: Math.min(font.caption + 1, cell / (k >= 1000 ? 3.4 : 2.6)),
                         },
                       ]}
                     >
@@ -115,19 +128,21 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {[
-          spec.multiplesOf
-            ? `${rep.tag(spec.value)} ${rep.value(spec.value)} (in a box). Multiples of ${rep.value(spec.multiplesOf)} (shaded)`
-            : `${rep.tag(spec.value)} ${rep.value(spec.value)} (shaded)`,
-        ]
+        {(spec.max === 1000 ? [`Numbers ${from} to ${to.toLocaleString('en-US')}`] : [])
           .concat(
-            (spec.marks ?? [])
-              .filter(rep.known)
-              .map((id) =>
-                Math.round(rep.shown(id)) > spec.max
-                  ? `${named(id)} (past the chart)`
-                  : `${named(id)} (in a box)`,
-              ),
+            spec.multiplesOf
+              ? `${rep.tag(spec.value)} ${rep.value(spec.value)} (in a box). Multiples of ${rep.value(spec.multiplesOf)} (shaded)`
+              : `${rep.tag(spec.value)} ${rep.value(spec.value)} (shaded)`,
+          )
+          .concat(
+            (spec.marks ?? []).filter(rep.known).map((id) => {
+              const x = Math.round(rep.shown(id));
+              if (x > spec.max) return `${named(id)} (past the chart)`;
+              // Off the part drawn, or a blank square of a piece (after 990 is on the next row).
+              if (x < from || x > to || (piece && !piece.includes(x)))
+                return `${named(id)} (not on this part)`;
+              return `${named(id)} (in a box)`;
+            }),
             spec.tens && rep.known(spec.tens.count) ? [`${named(spec.tens.count)} (dots)`] : [],
           )
           .map((line) => `${line}.`)
@@ -144,7 +159,7 @@ export function HundredChart({ spec, calc }: { spec: Spec; calc: Calculator }) {
               marker: '•',
               // Only as many tens as fit on the chart from the start number, so the slider
               // never asks for a number past the chart (which would drop the start number).
-              ...(n > 0 ? { wrap: [1, Math.max(1, Math.floor((spec.max - n) / 10))] } : {}),
+              ...(n > 0 ? { wrap: [1, Math.max(1, Math.floor((to - n) / 10))] } : {}),
             },
           ]}
         />
