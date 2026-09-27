@@ -252,6 +252,12 @@ function representationVars(r: Representation): string[] {
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
     case 'net':
       return [r.length, ...[r.width, r.height, r.slant, r.total].filter((x): x is string => !!x)];
+    case 'crossSection':
+      return [
+        r.length,
+        r.height,
+        ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
+      ];
     case 'dotPlot':
       return [...r.data, ...[r.mean, r.median, r.range, r.count].filter((x): x is string => !!x)];
     case 'fieldOfView':

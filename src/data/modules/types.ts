@@ -900,6 +900,28 @@ export type Representation =
       slant?: string;
       total?: string;
     }
+  /**
+   * A clear solid cut by a plane, the cut face shaded: a box or a pyramid on a `length` ×
+   * `width` base (`width` left out: square), or a triangular prism lying with its triangle at
+   * the front (a right triangle with legs `length` across and `width` up, or `isosceles` with
+   * base `length` and height `width`) and its `height` running back. `cut: 'base'` (the
+   * default) is parallel to the base, `at` up the height (the prism: back along it); `'side'`
+   * is across it, `at` back across the width (the prism: up the triangle); `'diagonal'` stands
+   * on the base's diagonal. Drag the plane's corner to move `at`. `area` is the cut's area
+   * and `volume` the solid's.
+   */
+  | {
+      kind: 'crossSection';
+      solid: 'box' | 'triangularPrism' | 'pyramid';
+      length: string;
+      width?: string;
+      height: string;
+      triangle?: 'right' | 'isosceles';
+      cut?: 'base' | 'side' | 'diagonal';
+      at?: string;
+      area?: string;
+      volume?: string;
+    }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
   | {
       kind: 'dotPlot';

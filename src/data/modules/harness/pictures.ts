@@ -6,6 +6,14 @@
 import type { VariableDef } from '@/engine/types';
 
 import { toFraction } from '@/components/module/reps/exact';
+import {
+  areaOf,
+  planeOf,
+  reachOf,
+  sectionOf,
+  solidOf,
+  volumeOf,
+} from '@/components/module/reps/section';
 
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
@@ -904,6 +912,51 @@ export function repIssues(
               : 2 * (L * w + L * h + w * h);
       if (total !== undefined && T !== undefined && Math.abs(total - T) > 1e-6 * Math.max(1, T))
         out.push(`net faces add to ${total}, total shows ${T}`);
+      break;
+    }
+    case 'crossSection': {
+      const [l, w0, h, at, A, V] = [
+        rep.length,
+        rep.width,
+        rep.height,
+        rep.at,
+        rep.area,
+        rep.volume,
+      ].map((id) => {
+        // In formula units: the lengths, the area and the volume agree whatever is shown.
+        const x = id ? val(id) : undefined;
+        return x === undefined ? undefined : x * (byId.get(id!)?.unitFactor ?? 1);
+      });
+      const w = rep.width ? w0 : l;
+      if (l === undefined || w === undefined || h === undefined) break;
+      if (l <= 0 || w <= 0 || h <= 0) {
+        out.push(`solid ${l} by ${w} by ${h} has a side of 0 or less`);
+        break;
+      }
+      const cut = rep.cut ?? 'base';
+      const reach = reachOf(rep.solid, cut, w, h);
+      // The picture parks the plane at the middle while `at` is "?".
+      if (rep.at && at === undefined) break;
+      const where = at ?? reach / 2;
+      if (cut !== 'diagonal' && (where < 0 || where > reach))
+        out.push(`plane at ${where} is off the solid (0 to ${reach})`);
+      const section = sectionOf(
+        solidOf(rep.solid, l, w, h, rep.triangle === 'isosceles'),
+        planeOf(rep.solid, cut, where, l, w),
+      );
+      const area = areaOf(section);
+      // Shown values are rounded to 9 places: a length of 0.000001 km is only roughly
+      // itself, so the check leaves out lengths too small to read and allows the rounding.
+      const readable = [rep.length, rep.width, rep.height]
+        .filter((id): id is string => !!id)
+        .every((id) => (val(id) ?? 1) >= 1e-3);
+      const off = (x: number, y: number, id: string) =>
+        readable && Math.abs(x - y) > 1e-4 * Math.abs(y) + 1e-9 * (byId.get(id)?.unitFactor ?? 1);
+      if (A !== undefined && off(area, A, rep.area!))
+        out.push(`cut drawn with area ${area}, shows ${A}`);
+      const vol = volumeOf(rep.solid, l, w, h);
+      if (V !== undefined && off(vol, V, rep.volume!))
+        out.push(`solid drawn with volume ${vol}, shows ${V}`);
       break;
     }
     case 'dotPlot': {

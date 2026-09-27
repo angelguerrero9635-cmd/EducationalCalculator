@@ -10,6 +10,7 @@ import { FractionFit } from './FractionFit';
 import { Venn } from './Venn';
 import { BaseHeight } from './BaseHeight';
 import { Net } from './Net';
+import { CrossSection } from './CrossSection';
 import { DotPlot } from './DotPlot';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
@@ -260,6 +261,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <BaseHeight spec={spec} calc={calc} />;
     case 'net':
       return <Net spec={spec} calc={calc} />;
+    case 'crossSection':
+      return <CrossSection spec={spec} calc={calc} />;
     case 'dotPlot':
       return <DotPlot spec={spec} calc={calc} />;
     case 'fieldOfView':

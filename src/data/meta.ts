@@ -80,6 +80,7 @@ const PICTURE_NAMES: Record<string, string> = {
   venn: 'Venn diagram',
   baseHeight: 'base and height',
   net: 'net',
+  crossSection: 'solid cut by a plane',
   dotPlot: 'dot plot',
   fieldOfView: 'microscope field of view',
   gradCylinder: 'graduated cylinder',
