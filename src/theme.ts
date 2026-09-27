@@ -140,6 +140,10 @@ const light = {
   fat: '#F4E2B0',
   /** Tree bark. */
   bark: '#8A6F58',
+  /** Pink flower petals (a rose, a bean flower), an earthworm's skin, and bright pollen. */
+  petalPink: '#F08DB4',
+  wormPink: '#D98A86',
+  pollen: '#FFD21F',
   /** Black rubber and plastic (tires, a pan handle), and black fur and feathers. */
   rubber: '#34373E',
   /** Orange things: a wind sock, juice, a goldfish. */
@@ -291,6 +295,9 @@ const dark: Palette = {
   snow: '#CDD6E1',
   fat: '#C4AD76',
   bark: '#65503F',
+  petalPink: '#C8698F',
+  wormPink: '#A9625F',
+  pollen: '#E9BE1C',
   rubber: '#1C1E23',
   orange: '#D2742A',
   purple: '#7A4DB8',
