@@ -32,8 +32,21 @@ export type Representation =
       max: number;
       /** Labelled tick spacing; with tick > 1, unlabelled ticks still mark every 1. */
       tick?: number;
-      /** 'tens': draw the jump as jumps of 10, then one jump for the ones (38 → 48 → 58 → 63). */
-      jumps?: 'tens';
+      /**
+       * 'tens': draw the jump as jumps of 10, then one jump for the ones (38 → 48 → 58 → 63).
+       * 'ticks': one jump per tick (500 → 510 → 520 → 530 → 540 by 10s), then any rest.
+       */
+      jumps?: 'tens' | 'ticks';
+      /**
+       * A line that starts at this value (500) instead of `min`, running `span` ticks of
+       * `every` (500 to 600 by 10s); `min` and `max` are then ignored. A caption says the
+       * number sentence: "500 + 40 = 540".
+       */
+      from?: string;
+      /** Tick spacing as a value (1, 10 or 100) for a `from` line; default `tick`. */
+      every?: string;
+      /** Ticks on a `from` line (default 10). */
+      span?: number;
     }
   /**
    * Ten-frames with two kinds of counters: `first` solid (●), then `second` open (○), `total` in all.
@@ -95,6 +108,8 @@ export type Representation =
       groupsPart?: string;
       /** A sentence under the bar, with {id} for values. */
       caption?: string;
+      /** Values that aren't whole read as mixed numbers (33 1/3, 2 3/8 L), read exactly. */
+      mixed?: boolean;
     }
   /**
    * A ratio as two bars of equal boxes (3 boxes and 5 boxes), every box worth `unit`; the bars'
@@ -116,6 +131,8 @@ export type Representation =
       times?: string;
       /** A sentence under the bars, with {id} for values, e.g. "Ben has {d} more than Ana." */
       caption?: string;
+      /** Values that aren't whole read as mixed numbers (33 1/3, 2 3/8 L), read exactly. */
+      mixed?: boolean;
     }
   /** Line plot: an X for each object above its value on a number line; tap to set counts. */
   | {
@@ -196,12 +213,17 @@ export type Representation =
       /** Show an a.m. / p.m. choice next to the digital time. */
       ampm?: boolean;
     }
-  /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
+  /**
+   * A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. `set`:
+   * the whole is a set of `parts` objects in a row, `shaded` of them marked (3 of 7 umbrellas).
+   */
   | {
       kind: 'partition';
       parts: string;
       shaded: string;
-      shape: 'circle' | 'rectangle';
+      shape: 'circle' | 'rectangle' | 'set';
+      /** The things in a set (default counters). */
+      object?: 'umbrella' | 'counter';
       /** The value the the sliders buttons change (default `parts`), e.g. times cut in half. */
       control?: string;
       /** How much the sliders change it (default 1), e.g. 2 for halves ↔ fourths. */
@@ -462,6 +484,13 @@ export type Representation =
       second?: { numerator: string; denominator: string };
       /** Tenths and hundredths as decimals: the tenths are labeled 0.1, 0.2 … and the point too. */
       decimal?: boolean;
+      /**
+       * Mixed-number jumps (18 1/4 − 2 3/4): a jump from this value to the numerator, both
+       * counted in parts (18 1/4 is 73 fourths), drawn as one jump of whole numbers and one of
+       * the parts left. The line shows only the wholes around the two points (at least
+       * `wholes`) and names both points as mixed numbers.
+       */
+      from?: string;
     }
   /**
    * Fraction bars of the same whole, one per row, with `num` of `den` parts shaded. `equal`
@@ -479,6 +508,12 @@ export type Representation =
       compare?: [number, number] | [number, number, number, number];
       /** A sentence under the bars instead of the comparison, with {id} for values. */
       caption?: string;
+      /**
+       * Wholes laid out in every row (default 1). A fraction past one whole always takes the
+       * bars it needs (7/4 is one whole and 3/4 of the next), up to 6; setting this keeps the
+       * bars' size still while the values change.
+       */
+      wholes?: number;
     }
   /**
    * Elapsed time on a number line: from the start time to the end time in jumps (to the next
@@ -505,7 +540,14 @@ export type Representation =
       max: number;
     }
   /** A measuring jug with liter marks up to `max`; the `parts` stack up to the `total`. */
-  | { kind: 'beaker'; parts: string[]; total: string; max: number }
+  | {
+      kind: 'beaker';
+      parts: string[];
+      total: string;
+      max: number;
+      /** Amounts that aren't whole read as mixed numbers (2 3/8 L), read exactly. */
+      mixed?: boolean;
+    }
   /**
    * A quadrilateral with 2 pairs of equal sides (`first`, `second`), square corners when
    * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.

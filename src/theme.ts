@@ -90,6 +90,8 @@ const light = {
   metalDark: '#7D8795',
   /** A clock face, a dial or a card. */
   paper: '#FFFDF8',
+  /** Plain cloth (an umbrella's canopy beside a colored one). */
+  fabric: '#D9DCE3',
   /** Rock layers, top to bottom: sandstone, shale, limestone, siltstone, mudstone, clay. */
   rock1: '#EACB92',
   rock2: '#A7B0BA',
@@ -204,6 +206,7 @@ const dark: Palette = {
   metal: '#4B5360',
   metalDark: '#2B313B',
   paper: '#20242E',
+  fabric: '#4A505D',
   rock1: '#9C8453',
   rock2: '#5D6570',
   rock3: '#8A8676',

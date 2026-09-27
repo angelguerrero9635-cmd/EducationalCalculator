@@ -11,6 +11,10 @@ import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
 
+/** A whole count, or undefined when a division doesn't come out whole. */
+const whole0 = (x: number | undefined) =>
+  x !== undefined && Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : undefined;
+
 export const GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.coordinate-plane',
@@ -446,6 +450,367 @@ export const GALLERY_MODULES: ModuleDef[] = [
     example: { w: 3, p: 4, e: 0.75 },
     startWith: ['w', 'p'],
     representation: { kind: 'shareWholes', wholes: 'w', people: 'p', each: 'e' },
+  },
+  {
+    id: 'g.fraction-bars-past-one',
+    title: 'Fraction bars past one whole',
+    assumptions: [
+      'Both fractions cut the same whole into the same number of parts.',
+      'A sum past one whole takes a second bar the same size as the first.',
+    ],
+    variables: [
+      whole('a', 'a', 'First top', 0, 12),
+      whole('c', 'c', 'Second top', 0, 12),
+      whole('b', 'b', 'Parts in one whole', 2, 12),
+      whole('s', 's', 'Top of the sum', 0, 12),
+      whole('w', 'w', 'Whole bars filled', 0, 12),
+    ],
+    relations: [
+      {
+        id: 's = a + c',
+        display: '{a} + {c} = {s}',
+        vars: ['s', 'a', 'c'],
+        residual: (v: Values) => v.s! - v.a! - v.c!,
+        solve: {
+          s: (v: Values) => v.a! + v.c!,
+          a: (v: Values) => v.s! - v.c!,
+          c: (v: Values) => v.s! - v.a!,
+        },
+      },
+      {
+        id: 'w = whole bars in s/b',
+        display: 'whole groups of {b} in {s} = {w}',
+        vars: ['w', 's', 'b'],
+        residual: (v: Values) => v.w! - Math.floor(v.s! / v.b!),
+        solve: {
+          w: (v: Values) => Math.floor(v.s! / v.b!),
+          s: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      's = a + c': {
+        s: { expr: '{a} + {c}', how: 'Same-size parts: add the tops.' },
+        a: { expr: '{s} − {c}', how: 'Take the second top from the sum.' },
+        c: { expr: '{s} − {a}', how: 'Take the first top from the sum.' },
+      },
+      'w = whole bars in s/b': {
+        w: {
+          expr: 'whole groups of {b} in {s}',
+          how: 'Every {b} parts fill one whole bar.',
+          work: (v: Values) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`],
+        },
+      },
+    },
+    example: { a: 3, c: 4, b: 4, s: 7, w: 1 },
+    startWith: ['a', 'c', 'b'],
+    representation: {
+      kind: 'fractionBars',
+      rows: [
+        { num: 'a', den: 'b' },
+        { num: 'c', den: 'b' },
+        { num: 's', den: 'b' },
+      ],
+      controls: ['a', 'c', 'b'],
+      wholes: 2,
+      caption: '{a}/{b} + {c}/{b} = {s}/{b}',
+    },
+  },
+  {
+    id: 'g.mixed-number-jumps',
+    title: 'Mixed-number jumps',
+    assumptions: [
+      'Every value is counted in parts of one whole: 18 1/4 is 73 fourths.',
+      'Jump back the whole numbers first, then the parts left.',
+    ],
+    variables: [
+      whole('d', 'd', 'Parts in one whole', 2, 12),
+      whole('a', 'a', 'Start, in parts', 0, 120),
+      whole('t', 't', 'Parts taken away', 0, 24),
+      whole('c', 'c', 'Parts left', 0, 120),
+      whole('W', 'W', 'Wholes left', 0, 60),
+    ],
+    relations: [
+      {
+        id: 'c = a − t',
+        display: '{a} − {t} = {c}',
+        vars: ['c', 'a', 't'],
+        residual: (v: Values) => v.c! - (v.a! - v.t!),
+        solve: {
+          c: (v: Values) => v.a! - v.t!,
+          a: (v: Values) => v.c! + v.t!,
+          t: (v: Values) => v.a! - v.c!,
+        },
+      },
+      {
+        id: 'W = whole groups of d in c',
+        display: 'whole groups of {d} in {c} = {W}',
+        vars: ['W', 'c', 'd'],
+        residual: (v: Values) => v.W! - Math.floor(v.c! / v.d!),
+        solve: {
+          W: (v: Values) => Math.floor(v.c! / v.d!),
+          c: () => undefined,
+          d: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'c = a − t': {
+        c: { expr: '{a} − {t}', how: 'Take the parts away.' },
+        a: { expr: '{c} + {t}', how: 'Put the parts back.' },
+        t: { expr: '{a} − {c}', how: 'The parts between the start and what is left.' },
+      },
+      'W = whole groups of d in c': {
+        W: {
+          expr: 'whole groups of {d} in {c}',
+          how: 'Every {d} parts make one whole.',
+          work: (v: Values) => [`${v.W} × ${v.d} = ${v.W! * v.d!}`],
+        },
+      },
+    },
+    example: { d: 4, a: 73, t: 11, c: 62, W: 15 },
+    startWith: ['d', 'a', 't'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'c',
+      denominator: 'd',
+      wholes: 3,
+      from: 'a',
+    },
+  },
+  {
+    id: 'g.fraction-of-a-set',
+    title: 'Fraction of a set',
+    assumptions: [
+      'The whole is the set of umbrellas; each umbrella is one equal part.',
+      'Tap an umbrella to shade it or clear it.',
+    ],
+    variables: [
+      whole('n', 'n', 'Umbrellas', 1, 12),
+      whole('k', 'k', 'Shaded', 0, 12),
+      whole('u', 'u', 'Not shaded', 0, 12),
+    ],
+    relations: [
+      {
+        id: 'u = n − k',
+        display: '{n} − {k} = {u}',
+        vars: ['u', 'n', 'k'],
+        residual: (v: Values) => v.u! - (v.n! - v.k!),
+        solve: {
+          u: (v: Values) => v.n! - v.k!,
+          n: (v: Values) => v.u! + v.k!,
+          k: (v: Values) => v.n! - v.u!,
+        },
+      },
+    ],
+    steps: {
+      'u = n − k': {
+        u: { expr: '{n} − {k}', how: 'The umbrellas that are not shaded.' },
+        n: { expr: '{u} + {k}', how: 'All the umbrellas: shaded and not.' },
+        k: { expr: '{n} − {u}', how: 'The umbrellas that are shaded.' },
+      },
+    },
+    example: { n: 7, k: 3, u: 4 },
+    startWith: ['n', 'k'],
+    representation: {
+      kind: 'partition',
+      parts: 'n',
+      shaded: 'k',
+      shape: 'set',
+      object: 'umbrella',
+      fraction: true,
+    },
+  },
+  {
+    id: 'g.number-line-500',
+    title: 'Three-digit number line',
+    assumptions: [
+      'The line starts at the start number and has 10 equal jumps.',
+      'Each jump is 1, 10 or 100.',
+      'The number to place is on the line.',
+    ],
+    variables: [
+      {
+        ...whole('a', 'a', 'Start of the line', 100, 900),
+        allowed: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+      },
+      { ...whole('t', 't', 'Each jump', 1, 100), allowed: [1, 10, 100] },
+      whole('k', 'k', 'Jumps', 0, 10),
+      whole('d', 'd', 'Distance from the start', 0, 1000),
+      whole('n', 'n', 'Number to place', 100, 1900),
+    ],
+    relations: [
+      {
+        id: 'd = k × t',
+        display: '{k} × {t} = {d}',
+        vars: ['d', 'k', 't'],
+        residual: (v: Values) => v.d! - v.k! * v.t!,
+        solve: {
+          d: (v: Values) => v.k! * v.t!,
+          k: (v: Values) => whole0(div(v.d!, v.t!)),
+          t: () => undefined,
+        },
+      },
+      {
+        id: 'n = a + d',
+        display: '{a} + {d} = {n}',
+        vars: ['n', 'a', 'd'],
+        residual: (v: Values) => v.n! - (v.a! + v.d!),
+        solve: {
+          n: (v: Values) => v.a! + v.d!,
+          d: (v: Values) => v.n! - v.a!,
+          a: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'd = k × t': {
+        d: { expr: '{k} × {t}', how: 'Count the jumps: each one is the same size.' },
+        k: { expr: '{d} ÷ {t}', how: 'How many jumps make the distance?' },
+      },
+      'n = a + d': {
+        n: { expr: '{a} + {d}', how: 'Start at the start of the line and go on.' },
+        d: { expr: '{n} − {a}', how: 'How far the number is from the start.' },
+      },
+    },
+    example: { a: 500, t: 10, k: 4, d: 40, n: 540 },
+    startWith: ['a', 't', 'n'],
+    representation: {
+      kind: 'numberLine',
+      start: 'a',
+      jump: 'd',
+      end: 'n',
+      min: 0,
+      max: 1000,
+      from: 'a',
+      every: 't',
+      jumps: 'ticks',
+    },
+  },
+  {
+    id: 'g.jumps-in-a-quotient',
+    title: 'Jumps in a quotient',
+    assumptions: [
+      'Every jump is the same size.',
+      'The last jump can be part of a jump: 100 ÷ 3 is 33 jumps and 1/3 of a jump.',
+    ],
+    variables: [
+      whole('n', 'n', 'Distance', 1, 100),
+      whole('d', 'd', 'Each jump', 1, 12),
+      { id: 'q', symbol: 'q', name: 'Jumps', min: 0, max: 100, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'q = n ÷ d',
+        display: '{n} ÷ {d} = {q}',
+        vars: ['q', 'n', 'd'],
+        residual: (v: Values) => v.q! * v.d! - v.n!,
+        solve: { q: (v: Values) => div(v.n!, v.d!), n: (v: Values) => v.q! * v.d! },
+      },
+    ],
+    steps: {
+      'q = n ÷ d': {
+        q: { expr: '{n} ÷ {d}', how: 'How many jumps of that size fit in the distance?' },
+        n: { expr: '{q} × {d}', how: 'The jumps times the size of each.' },
+      },
+    },
+    example: { n: 100, d: 3, q: 100 / 3 },
+    startWith: ['n', 'd'],
+    representation: { kind: 'skipCount', step: 'd', total: 'n' },
+  },
+  {
+    id: 'g.share-as-mixed',
+    title: 'A share as a mixed number',
+    assumptions: [
+      'The ribbon is cut into equal shares, one for each person.',
+      'A share that is not whole reads as a mixed number: 100 m ÷ 3 = 33 1/3 m.',
+    ],
+    variables: [
+      { ...whole('t', 't', 'Ribbon', 1, 100), unit: 'meters' },
+      whole('p', 'p', 'People', 1, 12),
+      { id: 'e', symbol: 'e', name: 'Each share', min: 0, max: 100, step: 0.01, unit: 'meters' },
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'The other shares',
+        min: 0,
+        max: 100,
+        step: 0.01,
+        unit: 'meters',
+      },
+    ],
+    relations: [
+      {
+        id: 'e = t ÷ p',
+        display: '{t} ÷ {p} = {e}',
+        vars: ['e', 't', 'p'],
+        residual: (v: Values) => v.e! * v.p! - v.t!,
+        solve: { e: (v: Values) => div(v.t!, v.p!), t: (v: Values) => v.e! * v.p! },
+      },
+      {
+        id: 'r = t − e',
+        display: '{t} − {e} = {r}',
+        vars: ['r', 't', 'e'],
+        residual: (v: Values) => v.r! - (v.t! - v.e!),
+        solve: {
+          r: (v: Values) => v.t! - v.e!,
+          t: (v: Values) => v.r! + v.e!,
+          e: (v: Values) => v.t! - v.r!,
+        },
+      },
+    ],
+    steps: {
+      'e = t ÷ p': {
+        e: { expr: '{t} ÷ {p}', how: 'Share the ribbon equally.' },
+        t: { expr: '{e} × {p}', how: 'Put the shares back together.' },
+      },
+      'r = t − e': {
+        r: { expr: '{t} − {e}', how: 'The ribbon left for the others.' },
+        t: { expr: '{r} + {e}', how: 'One share and the others make the ribbon.' },
+        e: { expr: '{t} − {r}', how: 'The ribbon less the others’ shares.' },
+      },
+    },
+    example: { t: 100, p: 3, e: 100 / 3, r: 200 / 3 },
+    startWith: ['t', 'p'],
+    representation: { kind: 'tape', parts: ['e', 'r'], total: 't', groups: 'p', mixed: true },
+  },
+  {
+    id: 'g.liters-as-mixed',
+    title: 'Liters as mixed numbers',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each jug is measured in eighths of a liter.',
+      'Pouring both into one jug adds the amounts.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'In the jug', min: 0, max: 2.5, step: 0.125, unit: 'liters' },
+      { id: 'b', symbol: 'b', name: 'Poured in', min: 0, max: 2.5, step: 0.125, unit: 'liters' },
+      { id: 't', symbol: 't', name: 'Total', min: 0, max: 5, step: 0.125, unit: 'liters' },
+    ],
+    relations: [
+      {
+        id: 't = a + b',
+        display: '{a} + {b} = {t}',
+        vars: ['t', 'a', 'b'],
+        residual: (v: Values) => v.t! - (v.a! + v.b!),
+        solve: {
+          t: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.t! - v.b!,
+          b: (v: Values) => v.t! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      't = a + b': {
+        t: { expr: '{a} + {b}', how: 'Add what was in the jug and what was poured in.' },
+        a: { expr: '{t} − {b}', how: 'Take away what was poured in.' },
+        b: { expr: '{t} − {a}', how: 'Take away what was in the jug.' },
+      },
+    },
+    example: { a: 1.5, b: 0.875, t: 2.375 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'beaker', parts: ['a', 'b'], total: 't', max: 5, mixed: true },
   },
   {
     id: 'g.wave',

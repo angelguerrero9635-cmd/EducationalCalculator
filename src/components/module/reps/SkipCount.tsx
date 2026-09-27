@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
+import { quotientText } from './exact';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'skipCount' }>;
@@ -28,15 +29,28 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const s = raw >= 1 ? fix(raw) : Math.max(0.01, fix(raw));
   // A number keeps the count fixed too (4 quarters in a minute): nothing to drag or type.
   const countVar = typeof spec.count === 'string' ? spec.count : undefined;
+  // How many jumps fit in the total (a quotient): 100 ÷ 3 is 33 jumps and 1/3 of a jump.
+  const quotient =
+    !countVar && spec.count === undefined && !spec.second && rep.known(spec.total)
+      ? rep.shown(spec.total) / (stepVar ? rep.shown(stepVar) : (spec.step as number))
+      : undefined;
+  const part =
+    quotient !== undefined &&
+    Number.isFinite(quotient) &&
+    Math.abs(quotient - Math.round(quotient)) > 1e-9
+      ? quotient - Math.floor(quotient)
+      : 0;
   const k = Math.max(
     0,
-    Math.round(
-      countVar
-        ? rep.shown(countVar)
-        : spec.count === undefined
-          ? rep.shown(spec.total) / (stepVar ? rep.shown(stepVar) : (spec.step as number))
-          : (spec.count as number),
-    ),
+    part > 0
+      ? Math.floor(quotient!)
+      : Math.round(
+          countVar
+            ? rep.shown(countVar)
+            : spec.count === undefined
+              ? rep.shown(spec.total) / (stepVar ? rep.shown(stepVar) : (spec.step as number))
+              : (spec.count as number),
+        ),
   );
   const from = spec.start && rep.known(spec.start) ? fix(rep.shown(spec.start)) : 0;
   // A second row (the other number's multiples) runs to the total, the first shared landing.
@@ -45,7 +59,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const end = second ? rep.shown(spec.total) : 0;
   const k2 = second ? Math.max(0, Math.min(40, Math.round(end / s2))) : 0;
   // Room for 10 jumps, so the 11 labeled ticks fall where the jumps land (0, 4, 8, … for 4s).
-  const fit = useFrozen(k <= 10 ? s * 10 : niceCeil(s * k));
+  const fit = useFrozen(k + (part > 0 ? 1 : 0) <= 10 ? s * 10 : niceCeil(s * (k + part)));
   // Counting back: jumps go left from the start, so the line ends at the start.
   const dir = spec.back ? -1 : 1;
 
@@ -108,6 +122,26 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fill="none"
                   />
                 ))}
+                {part > 0 ? (
+                  // The last, part of a jump: dashed, landing on the total.
+                  <Path
+                    d={`M ${px(from + dir * k * s)} ${y} Q ${(px(from + dir * k * s) + px(from + dir * (k + part) * s)) / 2} ${y - 2 * lift * Math.max(0.4, part)} ${px(from + dir * (k + part) * s)} ${y}`}
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.stroke}
+                    strokeDasharray={chart.dashFine}
+                    fill="none"
+                  />
+                ) : null}
+                {part > 0 ? (
+                  <Circle
+                    cx={px(from + dir * (k + part) * s)}
+                    cy={y}
+                    r={5}
+                    fill="none"
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.stroke}
+                  />
+                ) : null}
                 {second
                   ? Array.from({ length: k2 }, (_, i) => (
                       <Path
@@ -174,6 +208,11 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           {`Multiples of ${formatNumber(s)}: ${Array.from({ length: Math.min(k, 12) }, (_, i) => formatNumber(fix((i + 1) * s))).join(', ')}. Multiples of ${formatNumber(s2)}: ${Array.from({ length: Math.min(k2, 12) }, (_, i) => formatNumber(fix((i + 1) * s2))).join(', ')}. Both reach ${formatNumber(end)} first.`}
         </Caption>
       ) : null}
+      {part > 0 ? (
+        <Caption>
+          {`${formatNumber(rep.shown(spec.total))} ÷ ${formatNumber(s)} = ${quotientText(quotient!)}: ${k} ${k === 1 ? 'jump' : 'jumps'} and ${quotientText(part)} of a jump.`}
+        </Caption>
+      ) : null}
       <Caption>
         {k === 0
           ? formatNumber(from)
@@ -188,8 +227,8 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
           ...(countVar ? [countVar] : []),
           spec.total,
         ]
-          .map((id) => `${rep.named(id)}.`)
-          .join(' ')}
+          .map((id) => rep.named(id))
+          .join(' · ')}
       </Caption>
       <Steppers
         calc={calc}

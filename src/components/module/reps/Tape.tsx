@@ -6,6 +6,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { mixedValue } from './exact';
 import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, fitLabel, useFrozen, useRep, Caption } from './common';
 
@@ -53,7 +54,26 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const span = compare ? Math.max(...shown) : fixed ? Math.max(fixed.value, sum) : sum;
   // Round the scale up a little past the values (100 → 110, 72 → 80), so bars fill the width.
   const fit = useFrozen(fitScale(span));
-  const fmt = (id: string) => (rep.known(id) ? formatNumber(rep.shown(id), rep.variable(id)) : '?');
+  // `mixed`: a share or quotient reads as a mixed number (33 1/3, 2 3/8 L), not a decimal.
+  const value = (id: string) => (spec.mixed ? mixedValue(rep, id) : rep.value(id));
+  const label = (id: string) =>
+    !spec.mixed
+      ? rep.label(id)
+      : rep.words
+        ? value(id)
+        : `${rep.variable(id).symbol} = ${value(id)}`;
+  const named = (id: string) =>
+    !spec.mixed
+      ? rep.named(id)
+      : rep.words
+        ? `${rep.variable(id).name}: ${value(id)}`
+        : `${rep.variable(id).symbol} = ${value(id)}`;
+  const fmt = (id: string) =>
+    !rep.known(id)
+      ? '?'
+      : spec.mixed
+        ? mixedValue(rep, id, false)
+        : formatNumber(rep.shown(id), rep.variable(id));
   const name = (id: string) => rep.variable(id).name;
 
   const caption = compare
@@ -161,7 +181,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontSize={chart.small}
                       fill={i === 0 ? c.onChartHighlight : c.chartInk}
                     >
-                      {`${name(id)}: ${rep.label(id)}`}
+                      {`${name(id)}: ${label(id)}`}
                     </ChartText>
                   ))}
                   {times > 1 && Math.min(x, y) > 0
@@ -235,11 +255,11 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           // Names under the parts sit on one row unless one is wider than its part.
           // A part too narrow for its value inside (under a handle) names it with its value below.
           const narrow = (i: number) => x1(i) - x0(i) < chart.handle + 12;
-          const under = (id: string, i: number) => (narrow(i) ? rep.named(id) : rep.tag(id));
+          const under = (id: string, i: number) => (narrow(i) ? named(id) : rep.tag(id));
           const totalText =
             typeof spec.total === 'object'
               ? `${spec.total.label}: ${formatNumber(spec.total.value)}`
-              : `${rep.tag(spec.total)}: ${rep.value(spec.total)}`;
+              : `${rep.tag(spec.total)}: ${value(spec.total)}`;
           const stagger = spec.parts.some(
             (id, i) => under(id, i).length * chart.tiny * 0.6 > x1(i) - x0(i) - 4,
           );
@@ -289,9 +309,9 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         with its letter is under the bar. */}
                     {x1(i) - x0(i) < chart.handle + 12
                       ? ''
-                      : rep.label(id).length * chart.small * 0.55 > x1(i) - x0(i) - chart.handle - 4
-                        ? rep.value(id)
-                        : rep.label(id)}
+                      : label(id).length * chart.small * 0.55 > x1(i) - x0(i) - chart.handle - 4
+                        ? value(id)
+                        : label(id)}
                   </ChartText>
                 ))}
                 {spec.parts.map((id, i) => (

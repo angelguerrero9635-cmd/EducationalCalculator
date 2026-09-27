@@ -5,6 +5,8 @@
  */
 import type { VariableDef } from '@/engine/types';
 
+import { toFraction } from '@/components/module/reps/exact';
+
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
 
@@ -21,6 +23,14 @@ export function repIssues(
     if (x < 0) out.push(`${what} ${id} is negative (${x})`);
     if (Math.abs(x - Math.round(x)) > 1e-9) out.push(`${what} ${id} is not whole (${x})`);
     if (max !== undefined && x > max) out.push(`${what} ${id} = ${x} exceeds the drawing's ${max}`);
+  };
+  /**
+   * A value a picture writes exactly (a quotient, a share): whole, a decimal ending within 4
+   * places, or a fraction with a bottom to 16 (33 1/3). Anything else prints a long decimal.
+   */
+  const exact = (x: number | undefined, what: string) => {
+    if (x === undefined || Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-6) return;
+    if (!toFraction(x)) out.push(`${what} ${x} is neither a short decimal nor a fraction`);
   };
   switch (rep.kind) {
     case 'tenFrame': {
@@ -148,6 +158,8 @@ export function repIssues(
       const k = val(rep.shaded);
       count(rep.shaded, 'shaded parts');
       if (p !== undefined && p < 1) out.push(`partition with ${p} parts`);
+      // A set is drawn in rows of up to 8, three rows at most (Partition.tsx).
+      if (rep.shape === 'set' && p !== undefined && p > 24) out.push(`a set of ${p} objects`);
       if (p !== undefined && k !== undefined && k > p) out.push(`${k} shaded of ${p} parts`);
       break;
     }
@@ -156,6 +168,11 @@ export function repIssues(
       const s = val(rep.step);
       // Decimal jumps are drawn to the hundredth (SkipCount.tsx).
       if (s !== undefined && s < 0.01) out.push(`skip size ${s} < 0.01 (drawn as 0.01)`);
+      // Without a count, the jumps are the total ÷ the jump, the last one part of a jump.
+      const t = val(rep.total);
+      if (rep.count === undefined && !rep.second && t !== undefined && s !== undefined && s > 0) {
+        exact(t / s, 'jumps');
+      }
       break;
     }
     case 'pairs':
@@ -304,14 +321,21 @@ export function repIssues(
         } else count(c.var, 'pictures', rep.max);
       }
       break;
-    case 'numberLine':
+    case 'numberLine': {
+      // A `from` line runs `span` ticks of `every` from its start (NumberLine.tsx).
+      const every = rep.every === undefined ? (rep.tick ?? 1) : val(rep.every);
+      const lo = rep.from === undefined ? rep.min : val(rep.from);
+      if (every !== undefined && every <= 0) out.push(`number line ticks every ${every}`);
+      if (lo === undefined || every === undefined) break;
+      const hi = rep.from === undefined ? rep.max : lo + (rep.span ?? 10) * every;
       for (const id of [rep.start, rep.end]) {
         const x = val(id);
-        if (x !== undefined && (x < rep.min || x > rep.max)) {
-          out.push(`number line point ${id} = ${x} off the line (${rep.min}–${rep.max})`);
+        if (x !== undefined && (x < lo - 1e-9 || x > hi + 1e-9)) {
+          out.push(`number line point ${id} = ${x} off the line (${lo}–${hi})`);
         }
       }
       break;
+    }
     // Grade 3 pictures.
     case 'rounding': {
       const [n, lo, hi, r] = [rep.value, rep.lower, rep.upper, rep.rounded].map(val);
@@ -337,8 +361,17 @@ export function repIssues(
       count(rep.numerator, 'parts counted');
       if (b !== undefined && b < 1) out.push(`${b} parts in a whole`);
       // The line stretches to the fraction (FractionLine.tsx); more than 24 wholes won't fit.
-      if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 24) {
-        out.push(`${a}/${b} needs ${Math.ceil(a / b)} wholes on the line`);
+      // With `from`, it shows only the wholes between the two points.
+      const f = rep.from === undefined ? undefined : val(rep.from);
+      if (rep.from !== undefined) count(rep.from, 'jump start in parts');
+      const span =
+        a === undefined || b === undefined || b < 1
+          ? 0
+          : rep.from === undefined
+            ? Math.ceil(a / b)
+            : Math.max(Math.ceil(Math.max(a, f ?? a) / b) - Math.floor(Math.min(a, f ?? a) / b), 1);
+      if (span > 24 && a !== undefined && b !== undefined) {
+        out.push(`${a}/${b} needs ${span} wholes on the line`);
       }
       if (rep.second) {
         count(rep.second.numerator, 'second line parts counted');
@@ -352,11 +385,17 @@ export function repIssues(
       break;
     }
     case 'fractionBars':
+      if (rep.wholes !== undefined && (rep.wholes < 1 || rep.wholes > 6)) {
+        out.push(`fraction bars laid out ${rep.wholes} wholes wide (1–6)`);
+      }
       for (const row of rep.rows) {
         const [a, b] = [val(row.num), val(row.den)];
         count(row.num, 'shaded parts');
-        // One bar is one whole: more shaded parts than parts can't be drawn (the bar clamps).
-        if (a !== undefined && b !== undefined && a > b) out.push(`${a}/${b} shaded on one bar`);
+        // A row draws as many whole bars as the fraction needs, up to 6 (FractionBars.tsx).
+        if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 6) {
+          out.push(`${a}/${b} needs ${Math.ceil(a / b)} whole bars; a row holds 6`);
+        }
+        if (b !== undefined && b < 1) out.push(`${b} parts in a whole bar`);
       }
       break;
     case 'timeline': {
@@ -386,6 +425,7 @@ export function repIssues(
     case 'beaker': {
       const t = val(rep.total);
       if (t !== undefined && t > rep.max) out.push(`total ${t} L past the jug's ${rep.max} L`);
+      if (rep.mixed) for (const id of [...rep.parts, rep.total]) exact(val(id), `amount ${id}`);
       break;
     }
     case 'thermometers':
@@ -580,6 +620,10 @@ export function repIssues(
       count(rep.value, 'number');
       break;
     case 'tape': {
+      if ('mixed' in rep && rep.mixed) {
+        const ids = 'compare' in rep ? [...rep.compare, rep.difference] : rep.parts;
+        for (const id of ids) exact(val(id), `tape value ${id}`);
+      }
       if ('ratio' in rep) {
         // Ratio boxes: whole counts, each bar's amount its boxes times the unit.
         count(rep.ratio[0], 'ratio boxes', 40);
