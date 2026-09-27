@@ -113,7 +113,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       id: 's.3.inherited-traits~environment',
       pictureLabels: ['t'],
       title: 'Traits the environment changes',
-      use: 'Use this to compare plants with the same traits grown with different water.',
+      use: 'Use this for “Some bean plants are much taller in the same field. Why?”',
       assumptions: [
         'Two plants from seeds of the same parent plant inherit similar traits.',
         'The environment still matters: the plant that gets more water grows taller.',
@@ -154,7 +154,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     return {
       id: 's.3.adaptation-fossils~layers',
       title: 'Which fossil is older?',
-      use: 'Use this to tell which of two fossils is older from the rock layers.',
+      use: 'Use this for “Which fossil is older?” from the rock layers.',
       pictureLabels: ['d'],
       assumptions: [
         'A fossil is what is left of a living thing from long ago, kept in rock.',
@@ -260,7 +260,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
     return {
       id: 's.3.weather-climate~range',
       title: 'Warmest and coldest months',
-      use: 'Use this for the difference between the warmest and coldest months.',
+      use: 'Use this for the difference between the warmest and coldest months of a climate.',
       assumptions: [
         'Climate is the usual weather of a place over many years.',
         'A place with hot summers and cold winters has a big difference between its months.',

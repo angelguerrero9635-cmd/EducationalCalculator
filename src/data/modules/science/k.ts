@@ -98,7 +98,7 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
     return {
       id: 's.K.sunlight-warms~dark-light',
       title: 'Dark or light: which warms more?',
-      use: 'Use this for dark and light cups in the sun.',
+      use: 'Use this for black and white buckets in the sun.',
       assumptions: [
         'Dark things take in more sunlight. Light things bounce more of it away.',
         'Both cups hold the same water in the same sun.',

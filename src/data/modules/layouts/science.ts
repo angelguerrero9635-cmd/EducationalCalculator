@@ -151,7 +151,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 's.K.weather-patterns~morning-afternoon',
     title: 'Warmer as the day goes on',
-    use: 'Use this to record the temperature at three times of day.',
+    use: 'Use this to record the air temperature at three times of day.',
     assumptions: [
       'Read the same thermometer three times in one day.',
       'Tap a bar to change a reading.',
@@ -173,7 +173,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.K.weather-patterns~tools',
     title: 'Weather tools',
-    use: 'Use this to match weather tools to what they measure.',
+    use: 'Use this for “Which tool measures how much rain falls?”',
     assumptions: [
       'Scientists use tools to measure the weather each day.',
       'Each tool measures one thing.',
@@ -195,7 +195,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.K.weather-patterns~falls',
     title: 'What falls from clouds?',
-    use: 'Use this to sort weather by whether it falls from clouds.',
+    use: 'Use this for “Which is NOT a form of precipitation?”',
     assumptions: [
       'Rain, snow and hail are water that falls from clouds.',
       'Wind and fog do not fall from clouds.',
@@ -625,7 +625,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.1.offspring~deer',
     title: 'A fawn and its parents',
-    use: 'Use this to sort how a fawn is like its parents.',
+    use: 'Use this for a doe, a buck and a fawn.',
     assumptions: [
       'A fawn is a young deer. A buck is the father; a doe is the mother.',
       'Young animals look like their parents, but not exactly.',
@@ -757,7 +757,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 's.1.sky-patterns~moon-waning',
     title: 'The moon shrinks back',
-    use: 'Use this to put the moon’s shapes in order after full moon.',
+    use: 'Use this for the moon’s shapes in the nights after full moon.',
     assumptions: [
       'After full moon, the lit part gets smaller each night.',
       'The shapes come back in the same order, the other way round.',
@@ -956,7 +956,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.2.material-properties~best',
     title: 'The best material for the job',
-    use: 'Use this to pick the best material for a job.',
+    use: 'Use this for “Why is metal good for a cooking pan?”',
     assumptions: [
       'Every material has properties: hard, soft, clear, waterproof.',
       'Pick the material whose property fits the job.',
@@ -989,7 +989,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.2.plant-growth-investigation~fair-test',
     title: 'Planning a fair test',
-    use: 'Use this to plan a fair test of sunlight.',
+    use: 'Use this for “Which student changed only the sunlight?”',
     assumptions: [
       'A fair test changes only one thing.',
       'Everything else stays the same for both plants.',
@@ -1030,7 +1030,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.2.habitats~which-habitat',
     title: 'Which habitat?',
-    use: 'Use this to match living things to their habitats.',
+    use: 'Use this for “Which group would all live in a rain forest?”',
     assumptions: [
       'A habitat gives a living thing what it needs.',
       'Different habitats have different living things.',
@@ -1059,7 +1059,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.2.erosion-landforms~slow-it',
     title: 'Slowing wind and water',
-    use: 'Use this to sort ideas that slow the wind or the water.',
+    use: 'Use this for “Water washed the sand away. What slows it down?”',
     assumptions: [
       'Wind and water carry soil and sand away.',
       'People build and plant things to slow them down.',
@@ -1110,7 +1110,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'explore',
     id: 's.3.magnets~poles',
     title: 'Which poles pull, which push',
-    use: 'Use this to see when two magnets pull together and when they push apart.',
+    use: 'Use this for “Maria pushes magnet 1 toward magnet 2. What happens?”',
     assumptions: [
       'Every magnet has a north pole (N) and a south pole (S).',
       'Opposite poles pull together. Same poles push apart.',
@@ -1350,7 +1350,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 's.3.life-cycles~frog',
     title: 'From egg to frog',
-    use: 'Use this to put a frog’s stages in order and add up the days.',
+    use: 'Use this for a frog’s life cycle: the stages in order, and the days.',
     assumptions: [
       'A frog starts as an egg in the water.',
       'It hatches as a tadpole, then grows legs as a froglet.',
@@ -1370,7 +1370,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.3.life-cycles~eggs',
     title: 'Eggs or born alive?',
-    use: 'Use this to sort animals that hatch from eggs and animals born alive.',
+    use: 'Use this for “Which animal develops inside its mother before it is born alive?”',
     assumptions: [
       'Every animal’s life cycle starts with birth or hatching.',
       'Some young grow in eggs; others grow inside the mother.',
@@ -1594,7 +1594,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 's.4.energy-speed~ramp',
     title: 'Ramp height and how far the cup slides',
-    use: 'Use this to record how far the cup slides for each release height on the ramp.',
+    use: 'Use this for “Does a higher release on the ramp push the cup farther?”',
     assumptions: [
       'Let a marble roll down a ramp and hit a paper cup at the bottom.',
       'Start the marble higher each time. Measure how far the cup slides.',
@@ -1647,7 +1647,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 's.4.energy-conversion~trace',
     title: 'Follow the energy in a flashlight',
-    use: 'Use this to follow the energy from a flashlight’s battery to its light.',
+    use: 'Use this for “What energy changes happen when a flashlight is turned on?”',
     assumptions: [
       'Energy moves from place to place. It changes form but is not used up.',
       'Electric current carries energy along a wire.',
@@ -1665,7 +1665,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.4.energy-conversion~conductors',
     title: 'Does electric current flow through it?',
-    use: 'Use this to sort materials into conductors and insulators.',
+    use: 'Use this for “Which material would make the bulb light up?”: conductors and insulators.',
     assumptions: [
       'Put the object in a circuit with a battery and a bulb.',
       'If the bulb lights, current flows through the object.',
@@ -1849,7 +1849,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.4.internal-structures~jobs',
     title: 'What does this part help with?',
-    use: 'Use this to sort plant and animal parts by what they help with.',
+    use: 'Use this for “How do a fish’s gills help it survive?” and other parts.',
     assumptions: [
       'Every part helps a plant or animal survive, grow or make young.',
       'Some parts are on the outside, like thorns and shells.',
@@ -1885,7 +1885,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 's.4.weathering~stream-table',
     title: 'Water poured and sand moved',
-    use: 'Use this to record how far the sand moved for each cup of water poured.',
+    use: 'Use this for “Roger poured water over sand. How far did the sand move?”',
     assumptions: [
       'Pour water down a tray of sand, one cup more each time.',
       'Measure how far down the tray the sand moved.',
@@ -1909,7 +1909,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 's.4.weathering~grass-slope',
     title: 'Grass on a slope',
-    use: 'Use this to compare soil washed off bare and grassy slopes.',
+    use: 'Use this for “How does grass keep soil from washing away?”',
     assumptions: [
       'Two trays of soil sit on the same slope. One has grass growing in it.',
       'Pour the same water on each. Weigh the soil that washes off.',
@@ -1952,7 +1952,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.4.weathering~map-patterns',
     title: 'Where volcanoes and earthquakes happen',
-    use: 'Use this to sort places by the pattern of volcanoes and earthquakes on a map.',
+    use: 'Use this for “Where do most volcanoes and earthquakes happen?” on a map.',
     assumptions: [
       'Most volcanoes and earthquakes happen in lines along the edges of oceans.',
       'Those lines are where pieces of Earth’s crust meet.',
@@ -2088,7 +2088,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 's.5.particles-matter~evaporation',
     title: 'Water in an open cup, day by day',
-    use: 'Use this to record the water level in an open cup each day.',
+    use: 'Use this for “Where did the water in the open cup go?”, recorded day by day.',
     assumptions: [
       'Mark the water level on an open cup each day.',
       'The water particles leave as a gas you cannot see.',
@@ -2218,7 +2218,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 's.5.mixtures~dissolve-warm',
     title: 'Sugar that dissolves in cool and warm water',
-    use: 'Use this to record how many spoons of sugar dissolve at each water temperature.',
+    use: 'Use this for “Does more sugar dissolve in warm water than in cool water?”',
     assumptions: [
       'Stir in one spoon of sugar at a time until no more disappears.',
       'Use the same amount of water each time.',
@@ -2332,7 +2332,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.5.food-webs~eaters',
     title: 'Plant-eaters and meat-eaters',
-    use: 'Use this to sort animals by what they eat.',
+    use: 'Use this for “Which animals eat only plants?” and meat-eaters and both.',
     assumptions: [
       'Plant-eaters get energy from plants. Meat-eaters get it from other animals.',
       'Animals that eat both get energy from plants and animals.',
@@ -2359,7 +2359,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'explore',
     id: 's.5.plants-sunlight-energy~needs',
     title: 'What a plant takes in',
-    use: 'Use this to see where each thing a plant takes in comes from.',
+    use: 'Use this for “Where does a plant get the materials it needs to grow?”',
     assumptions: [
       'A plant makes its food from air and water, using the energy of sunlight.',
       'Soil gives only a little: some minerals.',
@@ -2512,7 +2512,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'explore',
     id: 's.5.shadows-day-night~day-night',
     title: 'Why we have day and night',
-    use: 'Use this to see why one side of Earth has day while the other has night.',
+    use: 'Use this for “Why is it day on one side of Earth and night on the other?”',
     assumptions: [
       'The sun lights one half of Earth at a time.',
       'Earth turns toward the east once a day, carrying your town into the light and out again.',
@@ -2570,7 +2570,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 's.5.shadows-day-night~noon-shadow',
     title: 'The noon shadow through the year',
-    use: 'Use this to record a meter stick’s noon shadow each month.',
+    use: 'Use this for “Is the noon shadow longer in summer or in winter?”',
     assumptions: [
       'A meter stick stands straight up in the same spot. Measure its shadow at noon.',
       'These are for a town in the middle of the United States.',
@@ -3045,7 +3045,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 's.6.density~layers',
     title: 'A density column',
-    use: 'Use this to order liquids in a jar from bottom to top.',
+    use: 'Use this for “Which liquid ends up at the bottom?” and where a block floats between layers.',
     assumptions: [
       'Pour each liquid slowly down the side of the jar.',
       'The densest liquid sinks to the bottom. The least dense one floats on top.',

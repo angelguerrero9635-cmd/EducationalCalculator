@@ -45,7 +45,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
   {
     id: 's.6.cells~magnification',
     title: 'Total magnification',
-    use: 'Use this to find a microscope’s total magnification from its two lenses.',
+    use: 'Use this for “A 10× eyepiece and a 40× lens: what is the total magnification?”',
     assumptions: [
       'The eyepiece is the lens you look through. On most school microscopes it is 10×.',
       'The objective is the lens near the slide: 4×, 10× or 40×; some microscopes also have 100×.',
@@ -94,7 +94,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
   {
     id: 's.6.cells~cell-size',
     title: 'Cell size from the field of view',
-    use: 'Use this to estimate a cell’s length from how many fit across the field of view.',
+    use: 'Use this for “About 20 cells fit across a 2 mm field. How long is one cell?”',
     unitSystems: ['metric'],
     assumptions: [
       'A micrometer (µm) is a thousandth of a millimeter. Most cells are 10 to 100 µm long; onion skin cells are bigger, about 200 to 400 µm.',
@@ -248,7 +248,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
   {
     id: 's.6.body-systems~heart-output',
     title: 'Blood pumped each minute',
-    use: 'Use this to find how much blood the heart pumps in a minute.',
+    use: 'Use this for “70 beats a minute, 70 mL a beat. How much blood a minute?”',
     unitSystems: ['metric'],
     assumptions: [
       'Heart rate is how many times the heart beats in one minute. Feel it as your pulse.',
@@ -376,7 +376,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     return {
       id: 's.6.density~displacement',
       title: 'Volume by water displacement',
-      use: 'Use this to find an object’s volume and density with a graduated cylinder.',
+      use: 'Use this for “The water rose from 50 mL to 62 mL. What is the object’s volume and density?”',
       unitSystems: ['metric'],
       assumptions: [
         'The water rises by exactly the object’s volume when it sinks all the way under.',
@@ -449,7 +449,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
   {
     id: 's.6.water-cycle~roof-rain',
     title: 'Rain collected from a roof',
-    use: 'Use this to find how much rain falls on a roof in one storm.',
+    use: 'Use this for “How many liters of rain fall on a 10 m by 8 m roof in a 25 mm storm?”',
     unitSystems: ['metric'],
     assumptions: [
       'A rain gauge measures rain as a depth in millimeters.',
@@ -522,7 +522,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     return {
       id: 's.6.water-cycle~cloud-base',
       title: 'How high clouds form',
-      use: 'Use this to estimate the height of the cloud base from the temperature and dew point.',
+      use: 'Use this for “How high will the clouds form?” from the temperature and the dew point.',
       unitSystems: ['metric'],
       assumptions: [
         'The dew point is the temperature at which water vapor starts to condense into droplets.',
@@ -625,7 +625,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
   {
     id: 's.6.weather-fronts~arrival',
     title: 'When will the front arrive?',
-    use: 'Use this to estimate when a front will reach you.',
+    use: 'Use this for “A front 300 km away moves 30 km each hour. When will it arrive?”',
     assumptions: [
       'Cold fronts often move about 25 to 50 km each hour; warm fronts about half as fast.',
       'A front can speed up, slow down or stall, so the answer is an estimate.',
@@ -687,7 +687,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
   {
     id: 's.6.plate-tectonics~speed',
     title: 'How fast a plate moves',
-    use: 'Use this to find a plate’s speed in centimeters a year from distance and time.',
+    use: 'Use this for “Kauai moved about 500 km in 5 million years. How fast is that?”',
     assumptions: [
       'A hot spot under Hawaii makes volcanoes, and the Pacific Plate carries each island away from it.',
       'Kauai is about 500 km from the hot spot, and its oldest rock is about 5 million years old.',
@@ -763,7 +763,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
   {
     id: 's.6.rock-cycle~layer-time',
     title: 'How long a layer took to form',
-    use: 'Use this to estimate how long a sediment layer took to build up.',
+    use: 'Use this for “About 1 cm of ooze builds up in 1,000 years. How long for 30 cm?”',
     assumptions: [
       'The rate is how thick a layer grows in 1,000 years.',
       'The deep sea floor gains about 1 cm of shell ooze in 1,000 years; one river flood can leave several centimeters.',

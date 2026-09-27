@@ -52,7 +52,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     return {
       id: 's.5.conservation-mass~fizz',
       title: 'Gas that escaped from a fizz',
-      use: 'Use this to find how much gas escaped when baking soda met vinegar in an open cup.',
+      use: 'Use this for “The cup weighed less after the fizz. Where did the mass go?”',
       assumptions: [
         'Baking soda and vinegar make a gas: the fizz.',
         'In an open cup the gas floats away, so the scale reads less.',
@@ -94,7 +94,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     return {
       id: 's.5.gravity-down~spring-scale',
       title: 'The pull on a stack of washers',
-      use: 'Use this to find the pull of gravity on a stack of the same washers.',
+      use: 'Use this for “How hard does gravity pull on a stack of 6 washers?”',
       assumptions: [
         'Gravity pulls every washer down. A spring scale measures the pull in newtons (N).',
         'Each washer is pulled the same. More washers, more pull.',
@@ -228,7 +228,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
   {
     id: 's.5.earth-spheres~water-share',
     title: 'How much of Earth’s water is fresh',
-    use: 'Use this to split Earth’s water into salt water, frozen fresh water and liquid fresh water.',
+    use: 'Use this for “How much of Earth’s water is fresh, and how much is frozen?”',
     assumptions: [
       'About 97 of every 100 liters of Earth’s water are salty ocean water.',
       'About 2 of every 3 liters of fresh water are frozen in ice at the poles and on mountains.',
@@ -336,7 +336,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     return {
       id: 's.5.sun-star-brightness~two-flashlights',
       title: 'Two flashlights at different distances',
-      use: 'Use this to compare two of the same flashlight when one is several times as far away.',
+      use: 'Use this for “Why does a flashlight look dimmer farther away?” and why the sun looks brightest.',
       assumptions: [
         'Two of the same flashlight give the same light.',
         'Twice as far, the lit circle is twice as wide and twice as tall: 4 times the wall.',

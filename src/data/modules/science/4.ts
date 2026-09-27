@@ -66,7 +66,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
     return {
       id: 's.4.energy-conversion~solar-oven',
       title: 'How much a solar oven warmed up',
-      use: 'Use this to find how much a solar oven warmed up in the sun.',
+      use: 'Use this for “How many degrees did the solar oven warm up in the sun?”',
       assumptions: [
         'A solar oven is a box with a clear lid. Light from the sun goes in and becomes heat.',
         'Read the thermometer at the start and again after 30 minutes in the sun.',
@@ -131,7 +131,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
   {
     id: 's.4.wave-patterns~amplitude',
     title: 'Amplitude from crest to trough',
-    use: 'Use this to find a wave’s amplitude from its crest-to-trough height.',
+    use: 'Use this for a wave’s amplitude: a louder sound is a wave with a bigger amplitude.',
     assumptions: [
       'Amplitude is how far the wave rises above the middle line.',
       'From the top of a crest to the bottom of a trough is twice the amplitude.',
@@ -174,7 +174,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
   {
     id: 's.4.internal-structures~pulse',
     title: 'Beats per minute from a 15-second count',
-    use: 'Use this to find beats per minute from a 15-second pulse count.',
+    use: 'Use this for “You count 18 beats in 15 seconds. How many beats per minute?”',
     assumptions: [
       'The heart pumps blood to every part. Each pump is a beat you can feel at the wrist.',
       'A minute has four 15-second parts. Count for 15 seconds, then multiply by 4.',
