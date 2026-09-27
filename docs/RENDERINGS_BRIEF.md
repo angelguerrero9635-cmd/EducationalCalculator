@@ -304,3 +304,44 @@ Notes for the lesson pages:
   captions give an (x, y) rule only about (0, 0).
 - On a phone the linear-function slope triangle can be drawn at a multiple of the slope (rise 4,
   run 2 for "up 2 for every 1 across").
+
+### Group 4: Grade 7 and 8 science
+
+Gallery demos are in `galleryS4a.ts` (chemistry), `galleryS4b.ts` (life science),
+`galleryS4c.ts` (motion, forces, energy) and `galleryS4d.ts` (waves, circuits, magnets, orbits).
+Explore figures are set on the layout (`figure: { kind }`) and lit per scene by the scene field
+named in the table.
+
+| Skill                      | Kind or figure (file)                                       | Gallery id                                                              | Spec                                                                                                                                                                      |
+| -------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| atoms-molecules            | `molecules` (`reps/Molecules.tsx`, specs in `typesChem.ts`) | `g.water-molecules`, `g.carbon-dioxide-molecules`, `g.oxygen-molecules` | `{ kind: 'molecules', formula, count, atoms?: { H: '<var>', … }, name? }` (formulas plain: `'H2O'`)                                                                       |
+| atoms-molecules            | explore figure `molecules`; card figure `molecule`          | `g.molecule-models`, `g.molecule-cards`                                 | scene `molecules: { items: { formula, count? }[], state?, after?, afterState? }`; card `{ kind: 'molecule', formula }`                                                    |
+| phase-changes              | `heatingCurve` (`reps/HeatingCurve.tsx`)                    | `g.heating-curve`                                                       | `{ kind: 'heatingCurve', start, melt, boil, end?, spans: [4 or 5], at?, temp?, names?, units?, formula? }`                                                                |
+| phase-changes              | explore figure `phases`                                     | `g.phases`                                                              | scene `phase: { state?, change?: 'melting' \| 'freezing' \| 'boiling' \| 'evaporation' \| 'condensation' \| 'sublimation' \| 'deposition', formula? }`                    |
+| chemical-reactions         | `reaction` (`reps/Reaction.tsx`)                            | `g.balance-water`, `g.burning-methane`                                  | `{ kind: 'reaction', reactants: { formula, count }[], products: { formula, count }[], atoms?: { O: [before, after] } }`                                                   |
+| periodic-table             | `periodicTable` (`reps/PeriodicTable.tsx`); explore figure  | `g.periodic-table`, `g.periodic-table-figure`                           | `{ kind: 'periodicTable', element?, group?, period?, families? }`; scene `elements: { element?, group?, period?, ring?, families? }`                                      |
+| photosynthesis-respiration | explore figure `leafCell` (`layouts/figuresLife.tsx`)       | `g.leaf-cell`                                                           | scene `leafCell: { process: 'photosynthesis' \| 'respiration' \| 'both', lit?: 'light' \| 'water' \| 'carbon dioxide' \| 'sugar' \| 'oxygen' \| 'energy' }`               |
+| ecosystem-energy           | `energyPyramid` (`reps/EnergyPyramid.tsx`)                  | `g.energy-pyramid`                                                      | `{ kind: 'energyPyramid', levels: [2–5 vars, producers first], percent?, names? }`                                                                                        |
+| ecosystem-energy           | explore figure `carbonCycle`                                | `g.carbon-cycle`                                                        | scene `carbon: { process?: 'photosynthesis' \| 'respiration' \| 'eating' \| 'death' \| 'decomposition' \| 'burning' \| 'dissolving' \| 'burial' }`                        |
+| punnett-squares            | explore figure `pedigree`                                   | `g.pedigree`                                                            | `figure: { kind: 'pedigree', people: { id, sex, generation, trait?, carrier?, parents?, partner?, genotype? }[] }`; scene `family: { lit?, carriers?, genotypes?, ask? }` |
+| natural-selection          | `generations` (`reps/Generations.tsx`)                      | `g.beetle-generations`                                                  | `{ kind: 'generations', counts: string[][] (2–8 generations × 2–3 varieties), colors?, names?, follow?, label? }`                                                         |
+| motion                     | `motionGraph` (`reps/MotionGraph.tsx`, `typesMechanics.ts`) | `g.distance-time`, `g.walk-graph`, `g.speed-time`                       | `{ kind: 'motionGraph', time, extent?, strip? }` plus `graph: 'distance', speed, distance, start?, then?` or `graph: 'speed', acceleration, speed, start?, distance?`     |
+| newtons-laws               | `force` option (`reps/ForceCart.tsx`)                       | `g.cart-force`                                                          | existing `force` fields plus `object: 'cart'`, `block?` (one block's mass)                                                                                                |
+| newtons-laws               | `skaters` (`reps/Skaters.tsx`)                              | `g.skaters`                                                             | `{ kind: 'skaters', force, masses: [m1, m2], accelerations?: [a1, a2], names? }`                                                                                          |
+| kinetic-potential          | `energyTrack` (`reps/EnergyTrack.tsx`)                      | `g.roller-coaster`, `g.pendulum`                                        | `{ kind: 'energyTrack', track: 'coaster' \| 'pendulum', height, potential, kinetic, total?, top?, mass?, speed?, g? }` (add `atLeast(top, height)`)                       |
+| em-spectrum                | `spectrum` (`reps/…`, specs in `typesPhysics8.ts`)          | `g.em-spectrum`, `g.visible-light`                                      | `{ kind: 'spectrum', wavelength, meters?, frequency?, speed? }`                                                                                                           |
+| electricity-basics         | `circuit`                                                   | `g.series-circuit`, `g.parallel-circuit`, `g.bulbs-in-series`           | `{ kind: 'circuit', wiring: 'series' \| 'parallel', voltage, bulbs: [vars], count?, current, branches?, switch? }`                                                        |
+| magnetic-fields            | `electromagnet`                                             | `g.electromagnet`                                                       | `{ kind: 'electromagnet', turns, current, strength?, clips? }`                                                                                                            |
+| magnetic-fields            | `magnets` explore figure (field lines added)                | `g.magnetic-field`                                                      | scene `field: { single?, lines?, compasses? }`; N red, S blue, lines from N to S                                                                                          |
+| gravity-orbits             | `orbit`                                                     | `g.orbit`, `g.orbit-mars`                                               | `{ kind: 'orbit', distance, pull, mass?, planet?: 'mercury' … 'neptune', moon? }`                                                                                         |
+| gravity-orbits             | explore figure `planets` (to scale by size)                 | `g.planets-to-scale`                                                    | scene `planets: { lit?: PlanetName[] }`                                                                                                                                   |
+
+Notes for the lesson pages:
+
+- Molecules with a real shape drawn: H2, O2, N2, Cl2, F2, H2O, CO2, CO, NO, HCl, CH4, NH3, O3, SO2,
+  NO2, H2O2, NaCl, MgO, C2H6, CH3OH; other formulas get a compact cluster with the right atoms.
+- A heating curve's time value should have no switchable unit (the harness can't convert a
+  piecewise check).
+- A pedigree's people must be listed in a sensible order (partners side by side, children in
+  their parents' order); the figure spaces them evenly.
+- Energy bars assume joules; a fixed mass in the cart and skater captions assumes kilograms.
