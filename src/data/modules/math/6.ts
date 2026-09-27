@@ -196,7 +196,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       whole('a', 'a', 'First part of the ratio', 1, 20),
       whole('b', 'b', 'Second part of the ratio', 1, 20),
       { ...whole('n', 'n', 'Parts in all', 2, 40), derived: true },
-      { id: 'u', symbol: 'u', name: 'One part is worth', min: 0, max: 10000, derived: true },
+      { id: 'u', symbol: 'u', name: 'One part is worth', min: 0, max: 200000, derived: true },
       { id: 'x', symbol: 'x', name: 'First amount', min: 0, max: 200000 },
       { id: 'y', symbol: 'y', name: 'Second amount', min: 0, max: 200000 },
       { id: 't', symbol: 't', name: 'Total', min: 0, max: 400000 },

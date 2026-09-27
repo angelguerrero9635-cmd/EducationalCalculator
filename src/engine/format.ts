@@ -145,10 +145,11 @@ const IRREGULAR: Record<string, string> = {
 
 /**
  * A word unit as it reads after the number 1: "1 cup", "1 second", "1 cubic unit", "1 foot".
- * Symbols (cm, mL, °F, µm) are the same for any number.
+ * Symbols (cm, mL, °F, µm, ms, hrs) are the same for any number: a single word of three
+ * letters or fewer is read as a symbol.
  */
 export function unitFor(x: number, unit: string): string {
-  if (x !== 1 || !/^[a-z][a-z ]*[a-z]$/.test(unit)) return unit;
+  if (x !== 1 || !/^[a-z][a-z ]*[a-z]$/.test(unit) || /^[a-z]{1,3}$/.test(unit)) return unit;
   if (IRREGULAR[unit]) return IRREGULAR[unit];
   // The first plural word takes the singular: "cubic units" → "cubic unit", "liters per
   // second" → "liter per second".

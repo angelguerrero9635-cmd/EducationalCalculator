@@ -30,6 +30,12 @@ export function Pushes({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const y = h * 0.5;
           const room = cx - box / 2 - 20;
           const px = (x: number) => (x / max) * room;
+          // A push's value and name sit over its arrow; a short arrow (or none, at 0) moves them
+          // out beside the box, where they can't run into the other side's.
+          const leftX = px(r) >= 70 ? cx - box / 2 - px(r) / 2 : cx - box / 2 - 6;
+          const leftAnchor = px(r) >= 70 ? 'middle' : 'end';
+          const rightX = px(l) >= 70 ? cx + box / 2 + px(l) / 2 : cx + box / 2 + 6;
+          const rightAnchor = px(l) >= 70 ? 'middle' : 'start';
           const arrow = (from: number, to: number, key: string) =>
             Math.abs(to - from) < 2 ? null : (
               <Path
@@ -58,38 +64,38 @@ export function Pushes({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {arrow(cx - box / 2 - px(r), cx - box / 2, 'r')}
               {arrow(cx + box / 2 + px(l), cx + box / 2, 'l')}
               <ChartText
-                x={cx - box / 2 - px(r) / 2}
+                x={leftX}
                 y={y - 14}
                 fontSize={chart.small}
                 fontWeight="700"
-                textAnchor="middle"
+                textAnchor={leftAnchor}
               >
                 {rep.value(spec.right)}
               </ChartText>
               <ChartText
-                x={cx + box / 2 + px(l) / 2}
+                x={rightX}
                 y={y - 14}
                 fontSize={chart.small}
                 fontWeight="700"
-                textAnchor="middle"
+                textAnchor={rightAnchor}
               >
                 {rep.value(spec.left)}
               </ChartText>
               <ChartText
-                x={cx - box / 2 - px(r) / 2}
+                x={leftX}
                 y={y + box / 2 + 18}
                 fontSize={chart.small}
                 fill={c.chartMuted}
-                textAnchor="middle"
+                textAnchor={leftAnchor}
               >
                 {rep.tag(spec.right)}
               </ChartText>
               <ChartText
-                x={cx + box / 2 + px(l) / 2}
+                x={rightX}
                 y={y + box / 2 + 18}
                 fontSize={chart.small}
                 fill={c.chartMuted}
-                textAnchor="middle"
+                textAnchor={rightAnchor}
               >
                 {rep.tag(spec.left)}
               </ChartText>

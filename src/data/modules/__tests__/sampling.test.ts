@@ -133,7 +133,14 @@ function sampleValue(r: Rng, v: VariableDef, example: number | undefined): numbe
   else if (v.integer) s = r.int(Math.ceil(lo - 1e-9), Math.floor(hi + 1e-9));
   else {
     s = lo + r.next() * (hi - lo);
-    if (r.next() < 0.5) s = Math.round(s * 10) / 10;
+    // Tenths half the time; otherwise to the value's own step, as a student types it (not 15
+    // decimals).
+    s =
+      r.next() < 0.5
+        ? Math.round(s * 10) / 10
+        : v.step
+          ? Number((Math.round(s / v.step) * v.step).toFixed(10))
+          : s;
     s = Math.min(hi, Math.max(lo, s));
   }
   if (v.integer) s = Math.round(s);

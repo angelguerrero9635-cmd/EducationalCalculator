@@ -50,7 +50,10 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
     <View style={{ gap: space.sm }}>
       <Canvas
         aspect={(w) =>
-          (2 * (Math.min(34, (w - 110) / max) + (spec.object ? OBJECT_H + 4 : 0)) + space.md) / w
+          // Each row at least 34 px tall, so a two-line name never runs into the next row.
+          (2 * Math.max(34, Math.min(34, (w - 110) / max) + (spec.object ? OBJECT_H + 4 : 0)) +
+            space.md) /
+          w
         }
       >
         {({ w }) => {
@@ -58,7 +61,7 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <View style={{ gap: space.md, paddingHorizontal: space.sm }}>
               {rows.map((id, r) => (
-                <View key={id} style={styles.row}>
+                <View key={id} style={[styles.row, { minHeight: 34 }]}>
                   <Text style={[styles.name, { color: c.text }]} numberOfLines={2}>
                     {rep.tag(id)}
                   </Text>
@@ -79,6 +82,8 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                           <Pressable
                             key={i}
                             testID={`row-${id}-${i + 1}`}
+                            // Small counters still take a finger-sized tap.
+                            hitSlop={{ top: 9, bottom: 9 }}
                             accessibilityLabel={`${rep.variable(id).name}: ${i + 1}`}
                             onPress={() =>
                               calc.set({

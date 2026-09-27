@@ -44,6 +44,10 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
             { length: Math.floor((hi - lo) / tick) + 1 },
             (_, i) => lo + i * tick,
           );
+          const labelEvery =
+            [1, 2, 5, 10].find(
+              (k) => k * tick * unit >= String(hi).length * chart.label * 0.6 + 8,
+            ) ?? 10;
           return (
             <Svg width={w} height={h}>
               <Line
@@ -54,18 +58,22 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 stroke={c.chartInk}
                 strokeWidth={chart.stroke}
               />
-              {ticks.map((n) => (
+              {ticks.map((n, i) => (
                 <G key={n}>
                   <Line x1={sx(n)} y1={y - 6} x2={sx(n)} y2={y + 6} stroke={c.chartInk} />
-                  <ChartText
-                    x={sx(n)}
-                    y={y + 22}
-                    fontSize={chart.label}
-                    fill={c.chartMuted}
-                    textAnchor="middle"
-                  >
-                    {n}
-                  </ChartText>
+                  {/* Numbers on every 1st, 2nd, 5th or 10th mark, whichever leaves room for the
+                      widest ("95" next to "100" ran together as "95100"). */}
+                  {i % labelEvery === 0 ? (
+                    <ChartText
+                      x={sx(n)}
+                      y={y + 22}
+                      fontSize={chart.label}
+                      fill={c.chartMuted}
+                      textAnchor="middle"
+                    >
+                      {n}
+                    </ChartText>
+                  ) : null}
                 </G>
               ))}
               {spec.hops.map((hop, i) => {

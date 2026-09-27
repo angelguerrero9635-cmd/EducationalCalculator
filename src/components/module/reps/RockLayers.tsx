@@ -103,7 +103,8 @@ export function RockLayers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 )}
                 <ChartText
                   x={left + width + 8}
-                  y={cy + 4}
+                  // Both fossils in one layer: the names stack instead of running together.
+                  y={cy + 4 + (a === b ? (shell ? 7 : -7) : 0)}
                   fontSize={chart.small}
                   fontWeight="700"
                   fill={c.chartInk}

@@ -102,6 +102,8 @@ const light = {
   blockBlue: '#3E7BD6',
   blockGreen: '#3DA35D',
   onBlock: '#FFFFFF',
+  /** Lamp light through a microscope slide: bright in both themes, as it is in life. */
+  slideLight: '#FFFBEA',
   /** Plastic tools (protractors, counters' tray). */
   plastic: '#DCEBFF',
   /** Living things: cells, leaves. */
@@ -179,6 +181,7 @@ const dark: Palette = {
   blockBlue: '#3C74C8',
   blockGreen: '#3A9656',
   onBlock: '#FFFFFF',
+  slideLight: '#E6E0C4',
   plastic: '#22324A',
   life: '#4F8A4B',
   lifeDeep: '#2F6230',

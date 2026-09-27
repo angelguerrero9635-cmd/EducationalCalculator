@@ -38,7 +38,8 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Canvas aspect={0.65}>
         {({ w, h }) => {
           const top = 30;
-          const bottom = 36;
+          // Room under the axis for the names, clear of a handle resting at 0.
+          const bottom = 44;
           const plotH = h - top - bottom;
           // A line every `scale` step; numbers every 1, 2, 5 or 10 steps, whichever gives at
           // most 10 numbers. The top is rounded up to the next number, so the tallest bar (50
@@ -143,7 +144,7 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     <ChartText
                       key={`l${b.var}`}
                       x={cx(i)}
-                      y={h - bottom + 16}
+                      y={h - bottom + 24}
                       fontSize={chart.small}
                       fill={c.chartMuted}
                       textAnchor="middle"
@@ -154,7 +155,7 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       <ChartText
                         key={`n${b.var}`}
                         x={cx(i)}
-                        y={h - bottom + 30}
+                        y={h - bottom + 38}
                         fontSize={chart.small}
                         fill={c.chartMuted}
                         textAnchor="middle"

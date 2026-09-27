@@ -75,7 +75,8 @@ export function Tally({ spec, calc }: { spec: Spec; calc: Calculator }) {
         const counts = ids.map((id) => (rep.known(id) ? Math.round(rep.shown(id)) : -1));
         const top = Math.max(...counts);
         const leaders = ids.filter((_, i) => counts[i] === top);
-        return top > 0 && leaders.length === 1 ? (
+        // Only when every row is known: a "?" row could be the biggest.
+        return top > 0 && leaders.length === 1 && ids.every(rep.known) ? (
           <Text style={[styles.caption, { color: c.textMuted }]}>
             {`Most: ${rep.variable(leaders[0]!).name.toLowerCase()}`}
           </Text>

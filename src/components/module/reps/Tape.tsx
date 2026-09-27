@@ -41,7 +41,15 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const shown = ids.map((id) => (rep.known(id) ? Math.max(0, rep.shown(id)) : 0));
   // A fixed whole (the story sets it) is drawn at its size even while a part is unknown.
   const fixed = !compare && typeof spec.total === 'object' ? spec.total : undefined;
-  const sum = shown.reduce((a, b) => a + b, 0);
+  // A "?" part still gets a box to fill: as wide as the known parts on average (or a quarter
+  // of the scale when none is known), faded, with "?" in it.
+  const knownParts = shown.filter((_, i) => rep.known(ids[i]!));
+  const placeholder = knownParts.length
+    ? Math.max(1, knownParts.reduce((a, b) => a + b, 0) / knownParts.length)
+    : 1;
+  const drawn =
+    compare || fixed ? shown : shown.map((x, i) => (rep.known(ids[i]!) ? x : placeholder));
+  const sum = drawn.reduce((a, b) => a + b, 0);
   const span = compare ? Math.max(...shown) : fixed ? Math.max(fixed.value, sum) : sum;
   // Round the scale up a little past the values (100 → 110, 72 → 80), so bars fill the width.
   const fit = useFrozen(fitScale(span));
@@ -214,7 +222,7 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           }
 
           const y = 40;
-          const ends = shown.reduce<number[]>(
+          const ends = drawn.reduce<number[]>(
             (acc, v) => [...acc, (acc.length ? acc[acc.length - 1]! : 0) + v],
             [],
           );
@@ -290,7 +298,13 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     // Names take two rows only when a name is wider than its part.
                     y={y + barH + 18 + (stagger ? (i % 2) * 14 : 0)}
                     fontSize={chart.tiny}
-                    textAnchor={i === spec.parts.length - 1 && narrow(i) ? 'end' : 'middle'}
+                    textAnchor={
+                      i === spec.parts.length - 1 && narrow(i)
+                        ? 'end'
+                        : i === 0 && narrow(i)
+                          ? 'start'
+                          : 'middle'
+                    }
                     fill={c.chartMuted}
                   >
                     {under(id, i)}
@@ -325,7 +339,10 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 })}
                 <Line x1={left} y1={y} x2={left} y2={y + barH} stroke={c.chartInk} />
               </Svg>
-              {spec.parts.map((id, i) => drag(id, i, x1(i), y + barH / 2))}
+              {/* With a fixed whole, the last part's end is the whole's end: no handle there. */}
+              {spec.parts
+                .slice(0, fixed ? -1 : undefined)
+                .map((id, i) => drag(id, i, x1(i), y + barH / 2))}
             </>
           );
         }}

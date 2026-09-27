@@ -1,4 +1,4 @@
-import { formatNumber, parseCents, parseNumber, renderTemplate } from '../format';
+import { formatNumber, parseCents, parseNumber, renderTemplate, unitFor } from '../format';
 import { findRoots, holds, solve, type System } from '../solve';
 import { initialState, setValues } from '../state';
 
@@ -338,5 +338,17 @@ describe('parseCents', () => {
     expect(parseCents('45¢')).toBe(45);
     expect(parseCents('$')).toBeUndefined();
     expect(parseCents('1.2.3')).toBe('invalid');
+  });
+});
+
+describe('unitFor', () => {
+  it('reads a word unit in the singular after 1, and leaves symbols alone', () => {
+    expect(unitFor(1, 'cubic units')).toBe('cubic unit');
+    expect(unitFor(1, 'inches')).toBe('inch');
+    expect(unitFor(1, 'boxes')).toBe('box');
+    expect(unitFor(2, 'cups')).toBe('cups');
+    expect(unitFor(1, 'ms')).toBe('ms');
+    expect(unitFor(1, 'hrs')).toBe('hrs');
+    expect(unitFor(1, 'cm')).toBe('cm');
   });
 });

@@ -332,6 +332,9 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     }
     if (!replaced) break;
   }
+  // A minus sign before a power, "−(0.04)^(1 ÷ 2)", is the negative of the power (JavaScript
+  // won't parse "-(a) ** b" as written).
+  s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
   const bare = s.replace(/(?:sqrt|cbrt|log|abs)\(/g, '(').replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {

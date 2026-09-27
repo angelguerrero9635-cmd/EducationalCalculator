@@ -15,6 +15,7 @@ const CHART_HEIGHT = 180;
  */
 export function ObserveLayout({ spec }: { spec: Spec }) {
   const tight = spec.columns.length > 5;
+  const few = spec.columns.length <= 4;
   const c = usePalette();
   const [values, setValues] = useState(spec.initial);
   const setAt = (i: number, y: number, height: number) => {
@@ -50,9 +51,13 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
             accessibilityValue={{ min: 0, max: spec.max, now: x }}
             // The column takes the touch itself, so the tap's height is measured in it.
             onStartShouldSetResponder={() => true}
+            onMoveShouldSetResponder={() => true}
             onResponderGrant={(e) => setAt(i, e.nativeEvent.locationY, CHART_HEIGHT)}
+            // The bar follows the finger while it moves, not only where it first touched.
+            onResponderMove={(e) => setAt(i, e.nativeEvent.locationY, CHART_HEIGHT)}
             style={[
               styles.column,
+              few && styles.fewColumn,
               spec.histogram && styles.wideColumn,
               { borderBottomColor: c.chartInk },
             ]}
@@ -77,7 +82,7 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       </View>
       <View style={[styles.labels, spec.histogram && styles.touchingLabels]}>
         {spec.columns.map((col) => (
-          <Text key={col} style={[styles.label, { color: c.text }]}>
+          <Text key={col} style={[styles.label, few && styles.fewColumn, { color: c.text }]}>
             {col}
           </Text>
         ))}
@@ -128,12 +133,16 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
     maxWidth: 56,
+    // Dragging a bar doesn't select the page's text (web).
+    userSelect: 'none',
     height: CHART_HEIGHT,
     justifyContent: 'flex-end',
     alignItems: 'center',
     borderBottomWidth: chart.stroke,
     gap: 2,
   },
+  // Four columns or fewer get room for a whole word ("Afternoon") under each.
+  fewColumn: { maxWidth: 84 },
   value: { fontSize: font.caption + 1, fontWeight: '700', fontVariant: ['tabular-nums'] },
   bar: { width: 36, borderWidth: chart.strokeLight, borderRadius: 3 },
   labels: { flexDirection: 'row', justifyContent: 'center', gap: space.md },
