@@ -137,6 +137,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `boxPlot`          | `brackets`                               | the range and the interquartile range bracketed                               |
 | `doubleNumberLine` | `prefix: '$'`                            | dollars to the cent                                                           |
 | `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
+| `coins`            | bills (`cents` 100, 500, 1000) and coins | the bills beside the coins, one total in dollars and cents, the sum under it  |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

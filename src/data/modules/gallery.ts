@@ -6,6 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
+import { OPTION_GALLERY_MODULES } from './galleryOptions';
 import { div, times, whole } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
@@ -546,6 +547,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
       letter: 'B',
     },
   },
+  ...OPTION_GALLERY_MODULES,
 ];
 
 /**

@@ -281,6 +281,10 @@ export function repIssues(
     }
     case 'coins': {
       for (const c of rep.coins) count(c.var, 'coins', 20);
+      // Coins.tsx draws US coins and $1, $5, $10 and $20 bills (bills beside coins).
+      for (const c of rep.coins)
+        if (![1, 5, 10, 25, 100, 500, 1000, 2000].includes(c.cents))
+          out.push(`coins draws ${c.cents}¢, not a US coin or bill`);
       const t = val(rep.total);
       const parts = rep.coins.map((c) => val(c.var));
       if (t !== undefined && parts.every((x) => x !== undefined)) {
