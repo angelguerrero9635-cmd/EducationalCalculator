@@ -474,6 +474,15 @@ export type Representation =
       diameter?: string;
       circumference?: string;
       area?: string;
+      /**
+       * Grade 7 pictures, with buttons to switch when there are two or more: 'radius' (the
+       * circle above), 'unroll' (the circle rolled one turn: its circumference along a line,
+       * π diameters, with three diameters marked under it) and 'wedges' (the circle cut into
+       * `wedges` pieces laid top and bottom in a near-parallelogram π × r long and r tall).
+       */
+      views?: ('radius' | 'unroll' | 'wedges')[];
+      /** How many wedges (even, 4–24; a number or a value). Default 8. */
+      wedges?: number | string;
     }
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
   | { kind: 'rightTriangle'; a: string; b: string; c: string; extent: number }

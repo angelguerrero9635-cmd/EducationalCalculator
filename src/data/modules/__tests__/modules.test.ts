@@ -295,7 +295,9 @@ function representationVars(r: Representation): string[] {
         ...(r.wholes ? [r.wholes] : []),
       ];
     case 'circle':
-      return [r.radius, r.diameter, r.circumference, r.area].filter((v): v is string => !!v);
+      return [r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
+        (v): v is string => typeof v === 'string',
+      );
     case 'scaleCopy':
       return [r.factor, r.width, r.height, r.copyWidth, r.copyHeight, ...(r.area ?? [])].filter(
         (v): v is string => typeof v === 'string',

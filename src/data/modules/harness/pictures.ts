@@ -159,6 +159,26 @@ export function repIssues(
         out.push(`~hanger is not level: ${xl! * x + ul!} against ${xr! * x + ur!}`);
       break;
     }
+    case 'circle': {
+      // Wedges come in an even count, 4–24 (CircleParts.tsx rounds to one).
+      if (rep.wedges !== undefined) {
+        count(rep.wedges, 'wedges', 24);
+        const n = val(rep.wedges);
+        if (n !== undefined && (n < 4 || n % 2 !== 0)) out.push(`${n} wedges (even, 4–24)`);
+      }
+      const [r, d, C, A] = [rep.radius, rep.diameter, rep.circumference, rep.area].map((id) =>
+        id ? val(id) : undefined,
+      );
+      const off = (a: number, b: number) => Math.abs(a - b) > 1e-6 * Math.max(1, Math.abs(b));
+      if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
+      if (r !== undefined && d !== undefined && off(d, 2 * r))
+        out.push(`diameter ${d} is not 2 × ${r}`);
+      if (r !== undefined && C !== undefined && off(C, 2 * Math.PI * r))
+        out.push(`circumference ${C} is not 2π × ${r}`);
+      if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
+        out.push(`area ${A} is not π × ${r}²`);
+      break;
+    }
     case 'scaleCopy': {
       // Whole squares for the original; both figures side by side fit about 30 squares.
       count(rep.width, 'original width', 12);

@@ -341,4 +341,76 @@ export const G7B_GALLERY_MODULES: ModuleDef[] = [
       shape: 'triangle',
     },
   },
+  {
+    id: 'g.circle-parts',
+    title: 'Circle unrolled and in wedges',
+    assumptions: [
+      'Rolled one full turn, a circle covers its circumference: π diameters.',
+      'Cut into wedges and laid top and bottom, a circle is close to a parallelogram.',
+      'That shape is half the circumference long and a radius tall: π × r × r.',
+    ],
+    standalone: {
+      vars: ['n'],
+      why: 'How many wedges the circle is cut into changes only the picture, not the area.',
+    },
+    variables: [
+      { id: 'r', symbol: 'r', name: 'Radius', unit: 'cm', min: 0, max: 1000, step: 0.5 },
+      { id: 'd', symbol: 'd', name: 'Diameter', unit: 'cm', min: 0, max: 2000 },
+      { id: 'C', symbol: 'C', name: 'Circumference', unit: 'cm', min: 0, max: 6300 },
+      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 3200000 },
+      { ...whole('n', 'n', 'Wedges', 4, 24), allowed: [4, 6, 8, 10, 12, 16, 20, 24] },
+    ],
+    relations: [
+      {
+        id: 'd = 2r',
+        display: '{d} = 2 × {r}',
+        vars: ['d', 'r'],
+        residual: (v: Values) => v.d! - 2 * v.r!,
+        solve: { d: (v: Values) => 2 * v.r!, r: (v: Values) => v.d! / 2 },
+      },
+      {
+        id: 'C = πd',
+        display: '{C} = π × {d}',
+        vars: ['C', 'd'],
+        residual: (v: Values) => v.C! - Math.PI * v.d!,
+        solve: { C: (v: Values) => Math.PI * v.d!, d: (v: Values) => v.C! / Math.PI },
+      },
+      {
+        id: 'A = πr²',
+        display: '{A} = π × {r}²',
+        vars: ['A', 'r'],
+        residual: (v: Values) => v.A! - Math.PI * v.r! ** 2,
+        solve: {
+          A: (v: Values) => Math.PI * v.r! ** 2,
+          r: (v: Values) => Math.sqrt(v.A! / Math.PI),
+        },
+      },
+    ],
+    steps: {
+      'd = 2r': {
+        d: { expr: '2 × {r}', how: 'A diameter is two radii end to end.' },
+        r: { expr: '{d} ÷ 2', how: 'The radius is half the diameter.' },
+      },
+      'C = πd': {
+        C: { expr: 'π × {d}', how: 'One turn covers π diameters.' },
+        d: { expr: '{C} ÷ π', how: 'Divide both sides by π.' },
+      },
+      'A = πr²': {
+        A: { expr: 'π × {r}²', how: 'Half the circumference (π × r) times the radius.' },
+        r: { expr: '√({A} ÷ π)', how: 'Divide by π, then take the square root.' },
+      },
+    },
+    example: { r: 3, d: 6, C: 6 * Math.PI, A: 9 * Math.PI, n: 8 },
+    startWith: ['r', 'n'],
+    representation: {
+      kind: 'circle',
+      radius: 'r',
+      extent: 5,
+      diameter: 'd',
+      circumference: 'C',
+      area: 'A',
+      views: ['radius', 'unroll', 'wedges'],
+      wedges: 'n',
+    },
+  },
 ];
