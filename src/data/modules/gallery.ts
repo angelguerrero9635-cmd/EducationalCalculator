@@ -13,6 +13,7 @@ import { G7C_GALLERY_MODULES } from './galleryG7c';
 import { G8A_GALLERY_MODULES } from './galleryG8a';
 import { OPTION_GALLERY_MODULES } from './galleryOptions';
 import { G8B_GALLERY_MODULES } from './galleryG8b';
+import { S4B_GALLERY_LAYOUTS, S4B_GALLERY_MODULES } from './galleryS4b';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
@@ -1030,6 +1031,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
   ...G7C_GALLERY_MODULES,
   ...G8A_GALLERY_MODULES,
   ...G8B_GALLERY_MODULES,
+  ...S4B_GALLERY_MODULES,
 ];
 
 /**
@@ -1461,6 +1463,7 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       figure: { kind: 'bar' as const, length: n, units: 'cubes' as const },
     })),
   },
+  ...S4B_GALLERY_LAYOUTS,
 ];
 
 /** A sort whose cards are card icons: [bin id, label, why, icons]. */

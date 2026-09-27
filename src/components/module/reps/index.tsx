@@ -19,6 +19,8 @@ import { Spinner } from './Spinner';
 import { DiceGrid } from './DiceGrid';
 import { TreeDiagram } from './TreeDiagram';
 import { Marbles } from './Marbles';
+import { EnergyPyramid } from './EnergyPyramid';
+import { Generations } from './Generations';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
@@ -335,6 +337,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <TreeDiagram spec={spec} calc={calc} />;
     case 'marbles':
       return <Marbles spec={spec} calc={calc} />;
+    case 'energyPyramid':
+      return <EnergyPyramid spec={spec} calc={calc} />;
+    case 'generations':
+      return <Generations spec={spec} calc={calc} />;
     case 'fieldOfView':
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':

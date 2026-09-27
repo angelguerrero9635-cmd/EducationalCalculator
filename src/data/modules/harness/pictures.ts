@@ -1194,6 +1194,41 @@ export function repIssues(
         out.push(`${xs[rep.pick ?? 0]} of ${total} ${what} drawn, chance shows ${P}`);
       break;
     }
+    case 'energyPyramid': {
+      // Up to 5 tiers (PYRAMID_MAX in EnergyPyramid.tsx), each the share of the one below.
+      if (rep.levels.length < 2 || rep.levels.length > 5)
+        out.push(`${rep.levels.length} pyramid levels (2 to 5 are drawn)`);
+      if (rep.names && rep.names.length < rep.levels.length)
+        out.push('a pyramid level has no name');
+      const xs = rep.levels.map(val);
+      xs.forEach((x, i) => {
+        if (x !== undefined && x < 0) out.push(`level ${i + 1} energy ${x} is negative`);
+      });
+      const p = val(rep.percent ?? 10);
+      if (p !== undefined && (p <= 0 || p > 100)) out.push(`${p}% passed up is not a share`);
+      if (p === undefined) break;
+      xs.slice(1).forEach((x, i) => {
+        const below = xs[i];
+        if (x === undefined || below === undefined) return;
+        const want = (below * p) / 100;
+        if (Math.abs(x - want) > 1e-6 * Math.max(1, Math.abs(want)))
+          out.push(`level ${i + 2} shows ${x}, ${p}% of ${below} is ${want}`);
+      });
+      break;
+    }
+    case 'generations': {
+      // 2 to 8 bars (GENERATIONS_MAX in Generations.tsx) of 2 or 3 varieties each.
+      const g = rep.counts.length;
+      if (g < 2 || g > 8) out.push(`${g} generations (2 to 8 are drawn)`);
+      const k = rep.counts[0]?.length ?? 0;
+      if (k < 2 || k > 3 || rep.counts.some((row) => row.length !== k))
+        out.push('each generation needs the same 2 or 3 varieties');
+      if (rep.colors && rep.colors.length < k) out.push('a variety has no color');
+      if (rep.names && rep.names.length < k) out.push('a variety has no name');
+      if ((rep.follow ?? 0) >= k) out.push(`followed variety ${rep.follow} is not a variety`);
+      rep.counts.flat().forEach((id) => count(id, 'beetles'));
+      break;
+    }
     case 'sample': {
       // One dot per member (SAMPLE_MAX in Sample.tsx); the sample fits in the population.
       count(rep.population, 'population', 400);
