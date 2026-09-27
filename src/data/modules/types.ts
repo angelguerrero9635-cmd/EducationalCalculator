@@ -143,13 +143,14 @@ export type Representation =
     }
   /**
    * A ratio as two bars of equal boxes (3 boxes and 5 boxes), every box worth `unit`; the bars'
-   * amounts, the total and how many more the longer bar has.
+   * amounts, the total and how many more the longer bar has. Three parts (6 : 5 : 2) draw a
+   * third bar and bracket the total beside the three.
    */
   | {
       kind: 'tape';
-      ratio: [string, string];
+      ratio: [string, string] | [string, string, string];
       unit: string;
-      amounts?: [string, string];
+      amounts?: [string, string] | [string, string, string];
       total?: string;
       difference?: string;
     }
@@ -509,6 +510,12 @@ export type Representation =
       past100?: boolean;
       /** Shade tenths of a square exactly (37.5 fills half of square 38) instead of rounding. */
       exact?: boolean;
+      /**
+       * Tenths times tenths (0.7 × 0.4): the first factor's tenths as columns, the second's as
+       * rows, the overlap the product (`percent`, a decimal) in hundredths. A factor of 1 or
+       * more, or past tenths, draws the area model of the two factors instead.
+       */
+      product?: [string, string];
     }
   /**
    * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is
@@ -722,6 +729,16 @@ export type Representation =
       each?: string;
       total: string;
       max: number;
+      /**
+       * A second reading before the `total` (after): two scales side by side, the cup fizzing
+       * on the second and its bubbles labelled with the difference (gas that escaped).
+       */
+      before?: string;
+      /**
+       * A spring scale hanging from a bar, in newtons: `count` washers of `each` on its hook,
+       * the pointer at the `total` (scale up to `max`).
+       */
+      hanging?: boolean;
     }
   /** A measuring jug with liter marks up to `max`; the `parts` stack up to the `total`. */
   | {
@@ -1029,6 +1046,12 @@ export type Representation =
       highlight?: string;
       from?: string;
       compare?: string;
+      /**
+       * Adding: `value` and `plus` stacked by place, points lined up, and their sum `total` in a
+       * third row under a rule.
+       */
+      plus?: string;
+      total?: string;
       /**
        * Whole numbers past the millions (to hundred billions): columns grouped in periods (ones,
        * thousands, millions, billions) under one header each, compact 100 · 10 · 1 headers.

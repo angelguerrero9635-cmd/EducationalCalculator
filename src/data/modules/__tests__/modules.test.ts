@@ -158,6 +158,7 @@ function representationVars(r: Representation): string[] {
         ...(r.items ?? []),
         ...(r.count ? [r.count] : []),
         ...(r.each ? [r.each] : []),
+        ...(r.before ? [r.before] : []),
         r.total,
       ];
     case 'beaker':
@@ -231,7 +232,10 @@ function representationVars(r: Representation): string[] {
         ...(r.total ? [r.total] : []),
       ];
     case 'placeValueChart':
-      return [r.value, ...[r.highlight, r.from, r.compare].filter((v): v is string => !!v)];
+      return [
+        r.value,
+        ...[r.highlight, r.from, r.compare, r.plus, r.total].filter((v): v is string => !!v),
+      ];
     case 'factorPairs':
       return [r.value, ...[r.first, r.second, r.count].filter((v): v is string => !!v)];
     case 'shareWholes':
@@ -356,6 +360,7 @@ function representationVars(r: Representation): string[] {
         ...(r.caption ? [r.caption.part, r.caption.whole] : []),
         ...(r.second ? [r.second] : []),
         ...(r.wholes ? [r.wholes] : []),
+        ...(r.product ?? []),
       ];
     case 'circle':
       return [r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(

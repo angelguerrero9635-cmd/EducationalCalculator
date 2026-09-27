@@ -10,8 +10,11 @@ import type { LayoutDef } from './layouts';
 import { MATH_1_MODULES } from './math/1';
 import { MATH_2_MODULES } from './math/2';
 import { MATH_3_MODULES } from './math/3';
+import { MATH_5_MODULES } from './math/5';
+import { MATH_6_MODULES } from './math/6';
 import { MATH_K_MODULES } from './math/k';
 import { SCIENCE_2_MODULES } from './science/2';
+import { SCIENCE_5_MODULES } from './science/5';
 import type { ModuleDef, Representation } from './types';
 
 const PAGES = [
@@ -19,7 +22,10 @@ const PAGES = [
   ...MATH_1_MODULES,
   ...MATH_2_MODULES,
   ...MATH_3_MODULES,
+  ...MATH_5_MODULES,
+  ...MATH_6_MODULES,
   ...SCIENCE_2_MODULES,
+  ...SCIENCE_5_MODULES,
 ];
 
 /** The page `pageId` as a gallery demo `id`, drawn with `representation` (and `example`). */
@@ -190,6 +196,88 @@ export const R3I_GALLERY_MODULES: ModuleDef[] = [
     'Polygon: a stop sign',
     { kind: 'polygon', sides: 'n', side: 's', around: 'P' },
     { example: { n: 8, s: 20, P: 160 } },
+  ),
+  // D92: three ratio bars, the total bracketed beside them.
+  demo('m.6.ratios~three-parts', 'g.ratio-tape-three-parts', 'Ratio tape: three parts', {
+    kind: 'tape',
+    ratio: ['a', 'b', 'c'],
+    unit: 'u',
+    amounts: ['x', 'y', 'z'],
+    total: 't',
+  }),
+  demo(
+    'm.6.ratios~three-parts',
+    'g.ratio-tape-three-edge',
+    'Ratio tape: a long first part',
+    { kind: 'tape', ratio: ['a', 'b', 'c'], unit: 'u', amounts: ['x', 'y', 'z'], total: 't' },
+    {
+      example: { a: 12, b: 1, c: 7, n: 20, u: 10000, x: 120000, y: 10000, z: 70000, t: 200000 },
+    },
+  ),
+  // D93: tenths columns times tenths rows, the overlap the product in hundredths.
+  demo('m.5.decimal-operations~times-decimal', 'g.grid-product', 'Hundred grid: tenths × tenths', {
+    kind: 'grid100',
+    percent: 'p',
+    product: ['a', 'b'],
+  }),
+  demo(
+    'm.5.decimal-operations~times-decimal',
+    'g.grid-product-9',
+    'Hundred grid: 0.9 × 0.9',
+    { kind: 'grid100', percent: 'p', product: ['a', 'b'] },
+    { example: { a: 0.9, b: 0.9, p: 0.81 } },
+  ),
+  demo(
+    'm.5.decimal-operations~times-decimal',
+    'g.grid-product-area',
+    'Hundred grid: 1.4 × 0.3 (area model)',
+    { kind: 'grid100', percent: 'p', product: ['a', 'b'] },
+    { example: { a: 1.4, b: 0.3, p: 0.42 } },
+  ),
+  // D94: two decimals stacked by place, the sum under a rule.
+  demo(
+    'm.6.multi-digit-decimals~add-subtract',
+    'g.place-value-sum',
+    'Place-value chart: adding decimals',
+    { kind: 'placeValueChart', value: 'a', plus: 'b', total: 's', decimals: 3 },
+  ),
+  demo(
+    'm.6.multi-digit-decimals~add-subtract',
+    'g.place-value-sum-edge',
+    'Place-value chart: the biggest sum',
+    { kind: 'placeValueChart', value: 'a', plus: 'b', total: 's', decimals: 3 },
+    { example: { a: 9999.999, b: 9999.999, s: 19999.998 } },
+  ),
+  // D96: the same scale before and after the fizz, the escaped gas labelled.
+  demo('s.5.conservation-mass~fizz', 'g.scale-before-after', 'Scale: before and after', {
+    kind: 'scale',
+    items: ['d', 'v', 'c'],
+    total: 'A',
+    before: 'B',
+    max: 500,
+  }),
+  demo(
+    's.5.conservation-mass~fizz',
+    'g.scale-before-after-edge',
+    'Scale: 10 g of gas',
+    { kind: 'scale', items: ['d', 'v', 'c'], total: 'A', before: 'B', max: 500 },
+    { example: { d: 20, v: 300, c: 100, B: 420, A: 410, g: 10 } },
+  ),
+  // D97: washers hanging from a spring scale, read in newtons.
+  demo('s.5.gravity-down~spring-scale', 'g.spring-scale', 'Spring scale: washers', {
+    kind: 'scale',
+    count: 'n',
+    each: 'e',
+    total: 'p',
+    max: 10,
+    hanging: true,
+  }),
+  demo(
+    's.5.gravity-down~spring-scale',
+    'g.spring-scale-20',
+    'Spring scale: 20 washers',
+    { kind: 'scale', count: 'n', each: 'e', total: 'p', max: 10, hanging: true },
+    { example: { n: 20, e: 2, p: 40 } },
   ),
 ];
 // D70: the fruit icons at card size.

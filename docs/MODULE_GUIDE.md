@@ -209,6 +209,15 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `dotPlot`          | `second`, `labels`, `difference`         | a second sample's dot plot under the first, same scale; the gap between means |
 | `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
 | `force`            | `object: 'cart'`, `block`                | a lab cart with the mass as metal blocks, pulled by a rope; F = m × a         |
+| `tenFrame`         | `takeAway`; `crossOut`                   | taken counters filled and crossed out; b crossed out inside the full ten      |
+| `baseTen`          | `takeAway` (one group)                   | the blocks after any trade (boxed), those taken away faded and crossed out    |
+| `pictureGraph`     | `icon` a card icon; `half`               | columns of apples, frogs …; a half picture in the key (key ÷ 2)               |
+| `rounding`         | `second: { value, rounded, … }`          | a second number's line under the first; the estimate x + y (or − y)           |
+| `polygon`          | `side` (with `sides`, `around`)          | every side labeled with the one length, sides × length under it               |
+| `tape`             | `ratio` of three parts                   | a third bar of boxes, the total bracketed beside the three                    |
+| `grid100`          | `product: [a, b]`                        | a tenths as columns × b tenths as rows, the overlap the product               |
+| `placeValueChart`  | `plus`, `total`                          | two numbers stacked by place, points lined up, the sum under a rule           |
+| `scale`            | `before`; `hanging`                      | two scales, before and after, gas bubbles labelled; a spring scale in N       |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

@@ -625,8 +625,22 @@ export function repIssues(
     }
     case 'scale': {
       const t = val(rep.total);
-      if (t !== undefined && t > rep.max) out.push(`total ${t} past the dial's ${rep.max}`);
-      if (rep.count) count(rep.count, 'items on the scale', 10);
+      // A spring scale reads on past its `max` to the next 10 (ScaleOptions.tsx).
+      if (t !== undefined && t > rep.max && !rep.hanging)
+        out.push(`total ${t} past the dial's ${rep.max}`);
+      // A spring scale hangs up to 20 washers (ScaleOptions.tsx); a kitchen scale 10 bags.
+      if (rep.count) count(rep.count, 'items on the scale', rep.hanging ? 20 : 10);
+      if (rep.hanging && rep.count && rep.each) {
+        const [n, e] = [val(rep.count), val(rep.each)];
+        if (n !== undefined && e !== undefined && t !== undefined && Math.abs(n * e - t) > 1e-6)
+          out.push(`${n} of ${e} on the scale, it reads ${t}`);
+      }
+      if (rep.hanging && !(rep.count && rep.each)) out.push('a spring scale needs count and each');
+      // Before and after: the difference is the gas that left, so the first reads at least as much.
+      const b = rep.before ? val(rep.before) : undefined;
+      if (b !== undefined && b > rep.max) out.push(`before ${b} past the dial's ${rep.max}`);
+      if (b !== undefined && t !== undefined && b < t)
+        out.push(`before ${b} is less than after ${t}: nothing escaped`);
       break;
     }
     case 'beaker': {
@@ -869,11 +883,17 @@ export function repIssues(
       break;
     }
     case 'placeValueChart': {
+      // Adding: the sum's row is the two rows added, place by place (PlaceValueChart.tsx).
+      if (rep.plus && rep.total) {
+        const [a, b, t] = [rep.value, rep.plus, rep.total].map(val);
+        if (a !== undefined && b !== undefined && t !== undefined && Math.abs(a + b - t) > 1e-6)
+          out.push(`place-value rows ${a} + ${b} drawn, the sum row shows ${t}`);
+      }
       const x = val(rep.value);
       if (x !== undefined && x < 0) out.push(`place-value chart of a negative number ${x}`);
       // Seven whole places (millions) are drawn, twelve in periods (PlaceValueChart.tsx).
       const top = rep.periods ? 1e12 : 1e7;
-      for (const id of [rep.value, rep.from, rep.compare]) {
+      for (const id of [rep.value, rep.from, rep.compare, rep.plus, rep.total]) {
         const n = id ? val(id) : undefined;
         if (n !== undefined && n >= top) out.push(`place-value chart of ${n}: past ${top} places`);
         if (rep.periods && n !== undefined && Math.abs(n - Math.round(n)) > 1e-9)
@@ -914,13 +934,24 @@ export function repIssues(
       }
       if ('ratio' in rep) {
         // Ratio boxes: whole counts, each bar's amount its boxes times the unit.
-        count(rep.ratio[0], 'ratio boxes', 40);
-        count(rep.ratio[1], 'ratio boxes', 40);
-        const [p, q, u] = [val(rep.ratio[0]), val(rep.ratio[1]), val(rep.unit)];
-        for (const [n, id] of [
-          [p, rep.amounts?.[0]],
-          [q, rep.amounts?.[1]],
-        ] as const) {
+        for (const id of rep.ratio) count(id, 'ratio boxes', 40);
+        if (rep.amounts && rep.amounts.length !== rep.ratio.length)
+          out.push(`tape: ${rep.ratio.length} bars with ${rep.amounts.length} amounts`);
+        const u = val(rep.unit);
+        // Three bars bracket the total: it is all the boxes times the unit.
+        const all = rep.ratio.map(val);
+        const t = rep.total ? val(rep.total) : undefined;
+        if (
+          rep.ratio.length === 3 &&
+          u !== undefined &&
+          t !== undefined &&
+          all.every((x) => x !== undefined)
+        ) {
+          const made = all.reduce((s, x) => s! + x!, 0)! * u;
+          if (Math.abs(made - t) > 1e-6 * Math.max(1, t))
+            out.push(`tape: ${made} in the boxes, total shows ${t}`);
+        }
+        for (const [n, id] of rep.ratio.map((r, j) => [val(r), rep.amounts?.[j]] as const)) {
           const x = id ? val(id) : undefined;
           if (
             n !== undefined &&
@@ -944,6 +975,16 @@ export function repIssues(
       break;
     }
     case 'grid100': {
+      // Tenths × tenths: columns and rows of one grid, the overlap the product (Grid100.tsx);
+      // a factor of 1 or more, or past tenths, draws the area model, so any product fits.
+      if (rep.product) {
+        const [a, b, p] = [...rep.product, rep.percent].map(val);
+        if (a !== undefined && b !== undefined && p !== undefined && Math.abs(a * b - p) > 1e-6)
+          out.push(`grid ${a} × ${b} shaded, product shows ${p}`);
+        for (const [id, x] of rep.product.map((id) => [id, val(id)] as const))
+          if (x !== undefined && x < 0) out.push(`factor ${id} = ${x} below 0`);
+        break;
+      }
       // A percent like 38.7 shades the nearest square (Grid100.tsx rounds): check the range.
       // `past100` adds a full grid per 100 (one stack past 3 grids, up to 99 of them); `exact`
       // shades tenths of a square, so the percent must be in tenths.
