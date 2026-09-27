@@ -20,7 +20,11 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as const))('typeset steps for 
       ...w.check.map((k) => k.formula),
     ];
     for (const line of lines) {
-      const tex = toLatex(line, w.band);
+      const tex = toLatex(
+        line,
+        w.band,
+        m.variables.map((v) => v.symbol),
+      );
       if (tex === undefined) continue;
       expect(fromLatex(tex)).toBe(line);
       expect(() => splitLine(tex)).not.toThrow();

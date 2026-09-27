@@ -137,6 +137,13 @@ Solves / Partly / No, naming the question id.
   addition) as `[data] research/questions: <id> → <right skill>`.
 - Skills listed under "no released questions" use the common types only.
 
+**T. Typeset math.** The step-by-step draws math in a LaTeX subset (`src/engine/latex.ts`):
+fractions stacked from Grade 3, powers and roots, italic letters and stacked solving lines on
+Grade 6 letter pages, stacked divisions from high school. Flag a line whose math should be
+typeset and isn't, or is typeset where the grade writes it differently (Grades 3–6 keep ÷ and
+remainders; units, ratios and clock times stay text). Give the rule change for `toLatex`, not a
+change to the step text, unless the text itself is wrong (a fraction "=" a rounded decimal).
+
 **G. Curriculum coverage.** Map 2–3 widely used curricula for the grade (K–8: Illustrative
 Mathematics, Eureka, Open Up; science: Amplify, Mystery Science, FOSS; high school and college:
 OpenStax and standard texts) to modules: list only Partly and Missing, with the proposed page.

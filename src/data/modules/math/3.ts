@@ -1664,7 +1664,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'w = wholes in a/b',
-        display: '{a}/{b} passes {w} whole numbers',
+        display: '{a}/{b} fills {w} wholes',
         words: 'Whole numbers passed by {a}/{b} = {w}',
         vars: ['w', 'a', 'b'],
         residual: (v) => v.w! - Math.floor(v.a! / v.b!),

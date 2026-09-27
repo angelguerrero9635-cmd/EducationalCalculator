@@ -88,10 +88,10 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // "24 shared into pairs" is what is left over: 0 for even, 1 for odd.
   [new RegExp(`(${NUM}) shared into pairs`), (a) => a % 2],
   // "whole inches in 9 marks of 1/4" (the fraction is already 0.25 by the time this runs).
-  [new RegExp(`whole inches in (${NUM}) marks of (${NUM})`), (a, b) => Math.floor(a * b)],
+  [new RegExp(`whole inches in (${NUM}) marks? of (${NUM})`), (a, b) => Math.floor(a * b)],
   // "2 inches of 4 marks and 1 mark": marks counted on a ruler with half or quarter marks.
   [
-    new RegExp(`(${NUM}) inch(?:es)? of (${NUM}) marks and (${NUM}) marks?`),
+    new RegExp(`(${NUM}) inch(?:es)? of (${NUM}) marks? and (${NUM}) marks?`),
     (w, b, r) => w * b + r,
   ],
   [new RegExp(`(${NUM}) marks?\\b(?! of)`), (a) => a],

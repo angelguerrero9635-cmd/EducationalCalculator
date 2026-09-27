@@ -16,6 +16,8 @@ const fmt = (x: number) => formatNumber(x);
 const tenthsOr = (v: Values) => (places(v.n!) <= 1 && places(v.d!) <= 1 ? 'tenths' : 'hundredths');
 /** A value as a fraction or mixed number, the way Grade 5 writes it: 5 1/4. */
 const frac = (x: number) => formatNumber(x, { fraction: 12 });
+/** A mixed number with any denominator up to 144 (8 7/24). */
+const mixedOf = (x: number) => formatNumber(x, { fraction: 144 });
 /** A fraction is at most 1 (a check-only relation). */
 const atMostOne = (top: string, bottom: string) => ({
   id: `${top} ≤ ${bottom}`,
@@ -35,7 +37,7 @@ const litersLine = (eighths: number) => {
   const g = gcd(r, 8) || 1;
   if (eighths < 8) return [];
   return [
-    `${eighths}/8 = ${w}${r ? ` and ${r / g}/${8 / g}` : ''} ${w === 1 && !r ? 'liter' : 'liters'}`,
+    `${eighths}/8 = ${w}${r ? ` ${r / g}/${8 / g}` : ''} ${w === 1 && !r ? 'liter' : 'liters'}`,
   ];
 };
 /** "(6/12 = 1/2)" when a fraction simplifies, "(0/12 = 0)" for none, else nothing. */
@@ -1570,7 +1572,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
                 {
                   id: 'first ≥ second',
                   constraint: true as const,
-                  display: '{w1} and {a}/{b} is at least {w2} and {c}/{d}',
+                  display: '{w1} {a}/{b} is at least {w2} {c}/{d}',
                   vars: ['w1', 'a', 'b', 'w2', 'c', 'd'],
                   residual: (v: Values) =>
                     v.w1! + v.a! / v.b! >= v.w2! + v.c! / v.d! - 1e-9 ? 0 : 1,
@@ -1601,7 +1603,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
               ? '{w1} + {w2} + {s}/{m} = {S}'
               : '{w1} − {w2} (1 less if {p}/{m} is less than {q}/{m}) and {s}/{m} = {S}',
             words: `Whole numbers ${op} whole numbers, and the parts = ${answer.toLowerCase()}`,
-            check: (v: Values) => `${wholes(v)} + ${v.s}/${v.m} = ${frac(v.S!)}`,
+            check: (v: Values) => `${wholes(v)} + ${v.s}/${v.m} = ${mixedOf(v.S!)}`,
             vars: add ? ['S', 'w1', 'w2', 's', 'm'] : ['S', 'w1', 'w2', 's', 'm', 'p', 'q'],
             residual: (v: Values) => v.S! - wholes(v) - v.s! / v.m!,
             solve: {
@@ -1644,10 +1646,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             S: {
               expr: (v: Values) =>
                 add
-                  ? '{w1} + {w2} + {s} ÷ {m}'
+                  ? '{w1} + {w2} + {s}/{m}'
                   : borrow(v)
-                    ? '{w1} − 1 − {w2} + {s} ÷ {m}'
-                    : '{w1} − {w2} + {s} ÷ {m}',
+                    ? '{w1} − 1 − {w2} + {s}/{m}'
+                    : '{w1} − {w2} + {s}/{m}',
               how: add
                 ? 'Add the whole numbers, then put the parts with them.'
                 : 'Take away the whole numbers (one fewer if a whole was renamed), then put the parts with them.',
@@ -1657,8 +1659,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
                   : borrow(v)
                     ? `${v.w1} − 1 − ${v.w2} = ${wholes(v)}`
                     : `${v.w1} − ${v.w2} = ${wholes(v)}`,
-                ...(v.s! >= v.m! ? [`${v.s}/${v.m} = ${frac(v.s! / v.m!)}`] : []),
-                `${wholes(v)} + ${v.s}/${v.m} = ${frac(v.S!)}`,
+                ...(v.s! >= v.m! ? [`${v.s}/${v.m} = ${mixedOf(v.s! / v.m!)}`] : []),
+                `${wholes(v)} + ${v.s}/${v.m} = ${mixedOf(v.S!)}`,
               ],
             },
           },

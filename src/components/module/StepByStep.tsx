@@ -17,6 +17,8 @@ export function StepByStep({ calc }: { calc: Calculator }) {
   const c = usePalette();
   const w = buildSteps(calc.module, calc.result, calc.units);
   const early = w.band === 'early';
+  // Letters in italic from the Grade 6 letter pages on.
+  const symbols = calc.module.variables.map((v) => v.symbol);
   const sentence = early ? 'number sentence' : 'formula';
   // Conversion steps (when needed) come first and last, numbered with the others.
   const offset = w.convertIn.length ? 1 : 0;
@@ -73,6 +75,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
             <MathLine
               text={s.lead.sentence}
               band={w.band}
+              symbols={symbols}
               style={[styles.math, styles.bold, { color: c.text }]}
             />
           ) : null}
@@ -85,13 +88,19 @@ export function StepByStep({ calc }: { calc: Calculator }) {
               </Text>
             )
           ) : null}
-          <MathLine text={s.how} band={w.band} style={[styles.body, { color: c.textMuted }]} />
+          <MathLine
+            text={s.how}
+            band={w.band}
+            symbols={symbols}
+            style={[styles.body, { color: c.textMuted }]}
+          />
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
             {s.lines.slice(0, s.writtenAfter).map((line, k) => (
               <MathLine
                 key={k}
                 text={line}
                 band={w.band}
+                symbols={symbols}
                 style={[styles.math, { color: c.text }]}
               />
             ))}
@@ -101,12 +110,14 @@ export function StepByStep({ calc }: { calc: Calculator }) {
                 key={k}
                 text={line}
                 band={w.band}
+                symbols={symbols}
                 style={[styles.math, { color: c.text }]}
               />
             ))}
             <MathLine
               text={s.answer}
               band={w.band}
+              symbols={symbols}
               style={[styles.math, styles.bold, { color: c.text }]}
             />
           </View>
@@ -155,6 +166,7 @@ export function StepByStep({ calc }: { calc: Calculator }) {
               key={k.formula}
               text={`${k.formula}   ${k.ok ? '✓' : w.checkFail}`}
               band={w.band}
+              symbols={symbols}
               style={[styles.math, { color: c.text }]}
             />
           ))}

@@ -237,7 +237,7 @@ function mixedAddSub(op: '+' | '−'): ModuleDef {
       },
       {
         id: 'rd = D − wd × b',
-        display: '{D}/{b} = {wd} wholes and {rd}/{b}',
+        display: '{D}/{b} = {wd} {rd}/{b}',
         words: 'Numerator − wholes × denominator = fraction part',
         check: (v: Values) => `${v.wd} × ${v.b} + ${v.rd} = ${v.D}`,
         vars: ['rd', 'D', 'wd', 'b'],
@@ -1505,7 +1505,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
       {
         id: 'w = wholes in s/b',
-        display: '{s}/{b} = {w} wholes and {r}/{b}',
+        display: '{s}/{b} = {w} {r}/{b}',
         words: 'Numerator of the sum = wholes × denominator + numerator of the fraction part',
         check: (v: Values) => `${v.w} × ${v.b} + ${v.r} = ${v.s}`,
         vars: ['w', 's', 'b', 'r'],
@@ -1935,7 +1935,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
       {
         id: 'w = wholes in p/b',
-        display: '{p}/{b} = {w} wholes and {r}/{b}',
+        display: '{p}/{b} = {w} {r}/{b}',
         words: 'Numerator of the product = wholes × denominator + numerator of the fraction part',
         check: (v: Values) => `${v.w} × ${v.b} + ${v.r} = ${v.p}`,
         vars: ['w', 'p', 'b', 'r'],

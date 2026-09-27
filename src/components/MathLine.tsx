@@ -1,7 +1,13 @@
 import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
 import { Text } from '@/components/Text';
-import { splitLine, toLatex, type MathBand, type MathNode } from '@/engine/latex';
+import {
+  splitLine,
+  toLatex,
+  withoutOuterBrackets,
+  type MathBand,
+  type MathNode,
+} from '@/engine/latex';
 import { font } from '@/theme';
 
 /**
@@ -12,13 +18,16 @@ import { font } from '@/theme';
 export function MathLine({
   text,
   band,
+  symbols,
   style,
 }: {
   text: string;
   band: MathBand;
+  /** The module's letters, drawn in italic from the Grade 6 letter pages on. */
+  symbols?: string[];
   style?: StyleProp<TextStyle>;
 }) {
-  const tex = toLatex(text, band);
+  const tex = toLatex(text, band, symbols);
   if (tex === undefined) return <Text style={style}>{text}</Text>;
   const flat = StyleSheet.flatten(style) ?? {};
   const size = flat.fontSize ?? font.body;
@@ -52,27 +61,35 @@ function MathNodes({
     <View style={styles.row}>
       {nodes.map((n, i) =>
         n.t === 'text' ? (
-          <Text key={i} style={at(size)}>
+          <Text key={i} style={[at(size), n.italic && styles.italic]}>
             {n.s}
           </Text>
         ) : n.t === 'frac' ? (
           <View key={i} style={styles.frac}>
-            <MathNodes nodes={n.num} style={style} size={size * (n.small ? 0.7 : 0.85)} />
+            <MathNodes
+              nodes={withoutOuterBrackets(n.num)}
+              style={style}
+              size={size * (n.small ? 0.7 : 0.85)}
+            />
             <View style={[styles.bar, { backgroundColor: StyleSheet.flatten(style)?.color }]} />
-            <MathNodes nodes={n.den} style={style} size={size * (n.small ? 0.7 : 0.85)} />
+            <MathNodes
+              nodes={withoutOuterBrackets(n.den)}
+              style={style}
+              size={size * (n.small ? 0.7 : 0.85)}
+            />
           </View>
         ) : n.t === 'sup' ? (
           <View key={i} style={styles.row}>
             <MathNodes nodes={n.base} style={style} size={size} />
             <View style={{ alignSelf: 'flex-start', marginTop: -size * 0.1 }}>
-              <MathNodes nodes={n.exp} style={style} size={size * 0.65} />
+              <MathNodes nodes={withoutOuterBrackets(n.exp)} style={style} size={size * 0.65} />
             </View>
           </View>
         ) : (
           <View key={i} style={styles.row}>
             <Text style={at(size)}>√</Text>
             <View style={[styles.radicand, { borderTopColor: StyleSheet.flatten(style)?.color }]}>
-              <MathNodes nodes={n.body} style={style} size={size} />
+              <MathNodes nodes={withoutOuterBrackets(n.body)} style={style} size={size} />
             </View>
           </View>
         ),
@@ -86,5 +103,6 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center' },
   frac: { alignItems: 'center', marginHorizontal: 2, paddingVertical: 1 },
   bar: { height: 1.5, alignSelf: 'stretch', marginVertical: 1, minWidth: 10 },
+  italic: { fontStyle: 'italic' },
   radicand: { borderTopWidth: 1.5, paddingHorizontal: 1, marginTop: 2 },
 });

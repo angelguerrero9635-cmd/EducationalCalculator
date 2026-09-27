@@ -5,6 +5,18 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Typeset math in the step-by-step (lesson-reviewer, focused)
+
+- Steps showed 2/3 ÷ 3/4 and √(3² + 4²) as flat text. → A LaTeX subset drawn by the app
+  (`engine/latex.ts`, `components/MathLine.tsx`): no dependency, no network, iOS and the web.
+  The text stays plain for the harness; `toLatex` typesets at render time, by grade band.
+- The reviewer's rules: units never become powers or letters (36 m²); a fraction before a period
+  counts; bracket and ^ powers; math inside roots; stacked divisions from high school and on
+  Grade 6 solving lines; letters in italic on letter pages; smaller fractions in sentences.
+- A typeset fraction "=" a rounded decimal (31/24 = 1.2917) read as false. → Mixed-number lines
+  use fractions to 144 (31/24 = 1 7/24).
+- `latex.test.ts` round-trips every page's step lines and parses them.
+
 ## Pages built from the released questions (K–6, after the edge-case review)
 
 - Center and spread took exactly 5 or 6 values; released items use 4, 7 and 10. → A value can

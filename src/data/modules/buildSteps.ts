@@ -117,6 +117,7 @@ const COUNT_WORDS: Record<string, string> = {
   places: 'place',
   groups: 'group',
   clips: 'clip',
+  marks: 'mark',
   jumps: 'jump',
   feet: 'foot',
   inches: 'inch',

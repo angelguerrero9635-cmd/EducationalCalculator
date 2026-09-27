@@ -1395,7 +1395,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     const most144 = {
       id: 'quotient ≤ 144',
       constraint: true as const,
-      display: '{a}/{b} ÷ {c}/{d} is at most 144',
+      display: 'The quotient of {a}/{b} ÷ {c}/{d} is at most 144',
       vars: ['a', 'b', 'c', 'd'],
       residual: (v: Values) => (v.a! * v.d! <= 144 * v.b! * v.c! ? 0 : 1),
       solve: {},
@@ -1591,7 +1591,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
                 const full = Math.floor(A / C);
                 const left = A - full * C;
                 return left === 0
-                  ? `(${full} group${full === 1 ? '' : 's'})`
+                  ? ''
                   : `(${mixed(A, C)}: ${full} full group${full === 1 ? '' : 's'} and ${left}/${C} of a group)`;
               },
               written: false,
@@ -2637,6 +2637,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Expressions with variables and exponents (6.EE.1–4, 6.EE.6, 6.EE.9) ──
   {
     id: 'm.6.expressions-variables',
+    notation: 'letters',
     letters: ['x'],
     // Only x is a letter here: the coefficient and the constant are numbers in "3x + 5", so the
     // page names them in words (the plan's rule for 6.EE.2).
@@ -2818,6 +2819,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.expressions-variables~distributive',
+    notation: 'letters',
     letters: ['x'],
     title: 'Equivalent expressions',
     use: 'Use this for “Are 3(2 + x) and 6 + 3x equivalent?”',

@@ -304,6 +304,11 @@ the assumptions and a table or diagram.
      number in a fraction, `{w} {a}/{b}` is a mixed number, `{b}^{n}` a power; text between
      the boxes (`%`, `:`, `of`) is written as is. On a letters page each box shows its letter.
      Used on the fraction pages (Grades 3–6), powers, percent, ratios and one-step equations.
+   - Step text stays plain; the step-by-step typesets it at render time (`toLatex` in
+     `src/engine/latex.ts`, drawn by `MathLine`): fractions and mixed numbers stacked from
+     Grade 3, powers and roots, letters in italic and solving lines stacked on Grade 6 letter
+     pages, divisions stacked from high school. K–2 stays plain. `latex.test.ts` checks every
+     page's lines come back to the same text.
    - The `use` line quotes the kind of released question the page solves, in the question's
      own words ("Which number is greater, 54 or 36?"), and never promises more.
    - `layouts.test.ts` covers the sort, sequence, explore and observe pages.
