@@ -138,6 +138,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `doubleNumberLine` | `prefix: '$'`                            | dollars to the cent                                                           |
 | `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
 | `coins`            | bills (`cents` 100, 500, 1000) and coins | the bills beside the coins, one total in dollars and cents, the sum under it  |
+| `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
+| `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

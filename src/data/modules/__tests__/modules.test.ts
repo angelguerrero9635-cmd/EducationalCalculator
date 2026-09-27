@@ -171,6 +171,8 @@ function representationVars(r: Representation): string[] {
         r.q3,
         r.max,
         ...[r.brackets?.range, r.brackets?.iqr].filter((x): x is string => !!x),
+        ...(r.data ?? []),
+        ...(r.count ? [r.count] : []),
       ];
     case 'pieChart':
       return [...r.parts, ...(r.total ? [r.total] : [])];
@@ -234,7 +236,10 @@ function representationVars(r: Representation): string[] {
     case 'net':
       return [r.length, ...[r.width, r.height, r.slant, r.total].filter((x): x is string => !!x)];
     case 'dotPlot':
-      return [...r.data, ...[r.mean, r.median, r.range].filter((x): x is string => !!x)];
+      return [
+        ...r.data,
+        ...[r.mean, r.median, r.range, r.count].filter((x): x is string => !!x),
+      ];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
     case 'gradCylinder':

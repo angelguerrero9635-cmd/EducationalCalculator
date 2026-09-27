@@ -190,6 +190,15 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
       return n % 2 ? s[(n - 1) / 2]! : (s[n / 2 - 1]! + s[n / 2]!) / 2;
     },
   ],
+  // Box plots from a list: the least and the greatest value.
+  [
+    new RegExp(`least of ((?:${NUM}, )+${NUM})`),
+    (...xs) => Math.min(...xs.filter((x) => !Number.isNaN(x))),
+  ],
+  [
+    new RegExp(`greatest of ((?:${NUM}, )+${NUM})`),
+    (...xs) => Math.max(...xs.filter((x) => !Number.isNaN(x))),
+  ],
   [
     new RegExp(`range of ((?:${NUM}, )+${NUM})`),
     (...xs) =>

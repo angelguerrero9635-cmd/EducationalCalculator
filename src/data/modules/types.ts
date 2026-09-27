@@ -629,6 +629,13 @@ export type Representation =
       range: [number, number];
       /** Brackets over the plot for the range and the interquartile range. */
       brackets?: { range?: string; iqr?: string };
+      /**
+       * The values the five numbers come from, drawn as dots above the plot (only the first
+       * `count` of them); the middle one (odd) or two (even) are ringed at the median. The
+       * five numbers are then read from the values, not dragged.
+       */
+      data?: string[];
+      count?: string;
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
   | { kind: 'pieChart'; parts: string[]; total?: string }
@@ -792,6 +799,11 @@ export type Representation =
       median?: string;
       range?: string;
       deviations?: boolean;
+      /**
+       * How many values there are (3 to 10): only the first `count` of `data` are drawn, the
+       * middle one (odd) or two (even) ringed and the median marked between them.
+       */
+      count?: string;
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }

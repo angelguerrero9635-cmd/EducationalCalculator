@@ -4,10 +4,10 @@
  * lengths, a protractor with neither arm on 0). Spread into GALLERY_MODULES in gallery.ts; kept
  * apart so that file's other demos merge easily.
  */
-import type { Values } from '@/engine/types';
+import type { Relation, Values } from '@/engine/types';
 
 import { whole } from './helpers';
-import type { ModuleDef } from './types';
+import type { ModuleDef, StepText } from './types';
 
 /** Bills and coins with what each is worth in cents. */
 const MONEY = [
@@ -25,6 +25,103 @@ const partLines = (v: Values, skip?: string) =>
   );
 const worth = (v: Values, skip?: string) =>
   MONEY.reduce((s, m) => s + (m.id === skip ? 0 : m.cents * v[m.id]!), 0);
+
+/** Up to ten data values; `n` says how many of them (from the first) are the data. */
+const DATA = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'] as const;
+const ORDINAL = [
+  'First',
+  'Second',
+  'Third',
+  'Fourth',
+  'Fifth',
+  'Sixth',
+  'Seventh',
+  'Eighth',
+  'Ninth',
+  'Tenth',
+];
+const dataVariables = [
+  ...DATA.map((id, i) => whole(id, id, `${ORDINAL[i]} value`, 0, 20)),
+  whole('n', 'n', 'How many values', 3, 10),
+];
+const firstN = (v: Values) => DATA.slice(0, v.n!).map((id) => v[id]!);
+const inOrder = (v: Values) => [...firstN(v)].sort((x, y) => x - y);
+const medianOf = (s: number[]) =>
+  s.length % 2 ? s[(s.length - 1) / 2]! : (s[s.length / 2 - 1]! + s[s.length / 2]!) / 2;
+/** The values below the median and above it (the median itself left out when n is odd). */
+const halves = (s: number[]) => [
+  s.slice(0, Math.floor(s.length / 2)),
+  s.slice(Math.ceil(s.length / 2)),
+];
+/** "median of 3, 5, 7" (or the one value when a half holds only one). */
+const ofList = (what: string, xs: number[]) =>
+  xs.length > 1 ? `${what} of ${xs.join(', ')}` : `${xs[0]}`;
+
+/** A value read from the first n data values, with its step: the median, a quartile, … */
+function stat(
+  id: string,
+  name: string,
+  pick: (s: number[]) => { what: string; list: number[] },
+  how: string,
+): { relation: Relation; steps: Record<string, StepText> } {
+  const value = (v: Values) => {
+    const { what, list } = pick(inOrder(v));
+    return what === 'median'
+      ? medianOf(list)
+      : what === 'least'
+        ? Math.min(...list)
+        : Math.max(...list);
+  };
+  return {
+    relation: {
+      id: `${id} = ${name}`,
+      display: `${name} of the first {n} of ${DATA.map((x) => `{${x}}`).join(', ')}: {${id}}`,
+      check: (v: Values) => `${ofList(pick(inOrder(v)).what, pick(inOrder(v)).list)} = ${v[id]}`,
+      vars: [id, 'n', ...DATA],
+      residual: (v: Values) => v[id]! - value(v),
+      solve: {
+        [id]: value,
+        ...Object.fromEntries(['n', ...DATA].map((x) => [x, () => undefined])),
+      },
+    },
+    steps: {
+      [id]: {
+        expr: (v: Values) => ofList(pick(inOrder(v)).what, pick(inOrder(v)).list),
+        how,
+        work: (v: Values) => [`In order: ${inOrder(v).join(', ')}`],
+        written: false,
+      },
+    },
+  };
+}
+const MEDIAN = stat(
+  'M',
+  'median',
+  (s) => ({ what: 'median', list: s }),
+  'Put the first values in order. Take the middle one, or halfway between the middle two.',
+);
+const BOX = [
+  stat('L', 'least', (s) => ({ what: 'least', list: s }), 'The least value is first in order.'),
+  stat(
+    'Q',
+    'first quartile',
+    (s) => ({ what: 'median', list: halves(s)[0]! }),
+    'The first quartile is the median of the values below the median.',
+  ),
+  MEDIAN,
+  stat(
+    'U',
+    'third quartile',
+    (s) => ({ what: 'median', list: halves(s)[1]! }),
+    'The third quartile is the median of the values above the median.',
+  ),
+  stat(
+    'G',
+    'greatest',
+    (s) => ({ what: 'greatest', list: s }),
+    'The greatest value is last in order.',
+  ),
+];
 
 export const OPTION_GALLERY_MODULES: ModuleDef[] = [
   {
@@ -89,6 +186,61 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
       kind: 'coins',
       coins: MONEY.map((m) => ({ var: m.id, cents: m.cents, name: m.name })),
       total: 'T',
+    },
+  },
+  {
+    id: 'g.dot-plot-median',
+    title: 'Median of 3 to 10 values',
+    assumptions: [
+      'Only the first values count: as many as “How many values” says.',
+      'Put them in order. The median is the middle one, or halfway between the middle two.',
+    ],
+    variables: [
+      ...dataVariables,
+      { id: 'M', symbol: 'M', name: 'Median', min: 0, max: 20, step: 0.5, derived: true },
+    ],
+    relations: [MEDIAN.relation],
+    steps: { [MEDIAN.relation.id]: MEDIAN.steps },
+    example: { a: 6, b: 3, c: 9, d: 4, e: 6, f: 11, g: 2, h: 8, i: 5, j: 7, n: 7, M: 6 },
+    startWith: [...DATA, 'n'],
+    representation: { kind: 'dotPlot', data: [...DATA], count: 'n', median: 'M', min: 0, max: 12 },
+  },
+  {
+    id: 'g.box-plot-data',
+    title: 'Box plot from 3 to 10 values',
+    assumptions: [
+      'Only the first values count: as many as “How many values” says.',
+      'The quartiles are the medians of the values below and above the median.',
+    ],
+    variables: [
+      ...dataVariables,
+      ...(
+        [
+          ['L', 'Least'],
+          ['Q', 'First quartile'],
+          ['M', 'Median'],
+          ['U', 'Third quartile'],
+          ['G', 'Greatest'],
+        ] as const
+      ).map(([id, name]) => ({ id, symbol: id, name, min: 0, max: 20, step: 0.5, derived: true })),
+    ],
+    relations: BOX.map((b) => b.relation),
+    steps: Object.fromEntries(BOX.map((b) => [b.relation.id, b.steps])),
+    example: {
+      ...{ a: 12, b: 5, c: 9, d: 14, e: 7, f: 3, g: 10, h: 16, i: 8, j: 11, n: 8 },
+      ...{ L: 3, Q: 6, M: 9.5, U: 13, G: 16 },
+    },
+    startWith: [...DATA, 'n'],
+    representation: {
+      kind: 'boxPlot',
+      min: 'L',
+      q1: 'Q',
+      median: 'M',
+      q3: 'U',
+      max: 'G',
+      range: [0, 20],
+      data: [...DATA],
+      count: 'n',
     },
   },
 ];

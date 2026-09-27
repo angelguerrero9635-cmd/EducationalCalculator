@@ -22,6 +22,19 @@ export function repIssues(
     if (Math.abs(x - Math.round(x)) > 1e-9) out.push(`${what} ${id} is not whole (${x})`);
     if (max !== undefined && x > max) out.push(`${what} ${id} = ${x} exceeds the drawing's ${max}`);
   };
+  const medianOf = (s: number[]) =>
+    s.length % 2 ? s[(s.length - 1) / 2]! : (s[s.length / 2 - 1]! + s[s.length / 2]!) / 2;
+  /** The first `count` values in order (DotPlot/BoxPlot draw only those), once all are known. */
+  const firstValues = (data?: string[], n?: string) => {
+    if (!data || !n) return undefined;
+    count(n, 'values drawn', data.length);
+    const k = val(n);
+    if (k === undefined) return undefined;
+    if (k < 1) out.push(`${k} values drawn`);
+    const xs = data.slice(0, k).map(val);
+    if (k < 1 || xs.some((x) => x === undefined)) return undefined;
+    return (xs as number[]).sort((a, b) => a - b);
+  };
   switch (rep.kind) {
     case 'tenFrame': {
       const cap = 10 * (rep.frames ?? 1);
@@ -496,6 +509,15 @@ export function repIssues(
     }
     case 'boxPlot': {
       const five = [rep.min, rep.q1, rep.median, rep.q3, rep.max].map(val);
+      // With `data`, the plot's least, median and greatest are the first n values' own.
+      const sorted = firstValues(rep.data, rep.count);
+      if (sorted) {
+        const own = [sorted[0]!, medianOf(sorted), sorted[sorted.length - 1]!];
+        [five[0], five[2], five[4]].forEach((x, i) => {
+          if (x !== undefined && Math.abs(x - own[i]!) > 1e-9)
+            out.push(`box plot of ${sorted.join(', ')} draws ${x} for ${own[i]}`);
+        });
+      }
       for (let i = 1; i < five.length; i++) {
         const a = five[i - 1];
         const b = five[i];
@@ -777,6 +799,10 @@ export function repIssues(
       break;
     }
     case 'dotPlot': {
+      const sorted = firstValues(rep.data, rep.count);
+      const md = rep.median ? val(rep.median) : undefined;
+      if (sorted && md !== undefined && Math.abs(medianOf(sorted) - md) > 1e-9)
+        out.push(`median of ${sorted.join(', ')} is ${medianOf(sorted)}, shows ${md}`);
       const data = rep.data.map(val).filter((x): x is number => x !== undefined);
       const m = rep.mean ? val(rep.mean) : undefined;
       if (m !== undefined && data.length === rep.data.length) {
