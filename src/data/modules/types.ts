@@ -720,6 +720,13 @@ export type Representation =
       vertical?: boolean;
       /** A fixed unit written after the numbers ("°C"). */
       unit?: string;
+      /**
+       * An inequality with `value` as its bound (across only): an open (<, >) or closed (≤, ≥)
+       * circle, an arrow over the solutions, and a `test` point marked true or false. `sign` is
+       * one of the four, or a variable (1 <, 2 ≤, 3 >, 4 ≥) with buttons to change it;
+       * `letter` names the unknown from Grade 6 (default x).
+       */
+      inequality?: { sign: string; test?: string; letter?: string };
     }
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {

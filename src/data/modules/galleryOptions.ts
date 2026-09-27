@@ -123,6 +123,10 @@ const BOX = [
   ),
 ];
 
+/** Whether the test number t meets the inequality with sign s (1 <, 2 ≤, 3 >, 4 ≥) and bound b. */
+const holds = (v: Values) =>
+  [v.t! < v.b!, v.t! <= v.b!, v.t! > v.b!, v.t! >= v.b!][v.s! - 1] ?? false;
+
 export const OPTION_GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.bills-and-coins',
@@ -241,6 +245,58 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
       range: [0, 20],
       data: [...DATA],
       count: 'n',
+    },
+  },
+  {
+    id: 'g.inequality-line',
+    title: 'Inequality on a number line',
+    notation: 'letters',
+    assumptions: [
+      'An open circle leaves the number out (< or >); a closed circle takes it in (≤ or ≥).',
+      'The arrow covers every solution. A test number is true when it is on the arrow.',
+    ],
+    variables: [
+      whole('b', 'b', 'Bound', -10, 10),
+      whole('s', 's', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4),
+      whole('t', 't', 'Test number', -10, 10),
+      { ...whole('h', 'h', 'True (1) or false (0)', 0, 1), derived: true },
+    ],
+    relations: [
+      {
+        id: 'h = test',
+        display: 'test {t} with sign {s} and bound {b}: {h}',
+        check: (v: Values) => `${holds(v) ? 1 : 0} = ${v.h}`,
+        vars: ['h', 't', 's', 'b'],
+        // Not a sum: NaN off the four signs, so the solver never treats it as one.
+        residual: (v: Values) => ([1, 2, 3, 4].includes(v.s!) ? v.h! - (holds(v) ? 1 : 0) : NaN),
+        solve: {
+          h: (v: Values) => (holds(v) ? 1 : 0),
+          t: () => undefined,
+          s: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'h = test': {
+        h: {
+          expr: (v: Values) => `${holds(v) ? 1 : 0}`,
+          how: 'Is the test number on the arrow? True is 1, false is 0.',
+          work: (v: Values) => [
+            `${v.t} ${'<≤>≥'[v.s! - 1]} ${v.b} is ${holds(v) ? 'true' : 'false'}`,
+          ],
+          written: false,
+        },
+      },
+    },
+    example: { b: 3, s: 3, t: 5, h: 1 },
+    startWith: ['b', 's', 't'],
+    representation: {
+      kind: 'integerLine',
+      value: 'b',
+      min: -5,
+      max: 10,
+      inequality: { sign: 's', test: 't', letter: 'x' },
     },
   },
 ];

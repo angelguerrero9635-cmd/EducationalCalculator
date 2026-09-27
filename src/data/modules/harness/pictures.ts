@@ -705,6 +705,15 @@ export function repIssues(
         Math.abs(Math.abs(b - a) - d) > 1e-9
       )
         out.push(`jump from ${a} to ${b} shows ${d}`);
+      if (rep.inequality) {
+        const { sign } = rep.inequality;
+        if (!['<', '≤', '>', '≥'].includes(sign)) {
+          const s = val(sign);
+          if (s !== undefined && ![1, 2, 3, 4].includes(s))
+            out.push(`inequality sign ${sign} = ${s} is not 1–4 (<, ≤, >, ≥)`);
+        }
+        if (rep.vertical) out.push('inequality lines are drawn across, not vertical');
+      }
       break;
     }
     case 'percentBar': {

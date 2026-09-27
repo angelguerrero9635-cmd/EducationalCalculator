@@ -216,6 +216,9 @@ function representationVars(r: Representation): string[] {
       return [
         r.value,
         ...[r.opposite, r.absolute, r.second, r.change].filter((x): x is string => !!x),
+        ...[r.inequality?.test, r.inequality?.sign].filter(
+          (x): x is string => !!x && !['<', '≤', '>', '≥'].includes(x),
+        ),
       ];
     case 'percentBar':
       return [r.percent, r.part, r.whole, ...(r.onePercent ? [r.onePercent] : [])];
@@ -236,10 +239,7 @@ function representationVars(r: Representation): string[] {
     case 'net':
       return [r.length, ...[r.width, r.height, r.slant, r.total].filter((x): x is string => !!x)];
     case 'dotPlot':
-      return [
-        ...r.data,
-        ...[r.mean, r.median, r.range, r.count].filter((x): x is string => !!x),
-      ];
+      return [...r.data, ...[r.mean, r.median, r.range, r.count].filter((x): x is string => !!x)];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
     case 'gradCylinder':
