@@ -44,6 +44,14 @@ and each strand's skills sit together within a grade.
 
 ## Resolved
 
+### K–6 edge-case review
+
+- **`m.5.volume-rectangular` title had letters in Grade 5.** "Volume of rectangular prisms
+  (V = l × w × h)" showed a formula in letters on Grade 5 pages, where values are named in
+  words until Grade 6 (the owner's rule; the screenshot check flagged it on both volume pages).
+  The title is now "Volume of rectangular prisms (length × width × height)". Only the title
+  string changed; the id is the same.
+
 ### Grade 4 review
 
 - **Standards taught as problem types, not skills.** 4.OA.1–2 (times as many) and 4.OA.3

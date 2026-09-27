@@ -163,7 +163,7 @@ const MATH: Record<Grade, Row[]> = {
     ["add-fractions-unlike", "Add and subtract fractions with unlike denominators", NF, ["m.4.add-fractions-like", "m.4.fraction-equivalence"]],
     ["multiply-fractions", "Multiply fractions and mixed numbers", NF, ["m.4.fraction-times-whole"]],
     ["divide-unit-fractions", "Divide unit fractions and whole numbers", NF],
-    ["volume-rectangular", "Volume of rectangular prisms (V = l × w × h)", MD, ["m.4.area-perimeter-formulas"]],
+    ["volume-rectangular", "Volume of rectangular prisms (length × width × height)", MD, ["m.4.area-perimeter-formulas"]],
     ["coordinate-plane-q1", "Graph points in the first quadrant", G],
     ["classify-2d", "Classify 2D figures in a hierarchy", G, ["m.4.lines-symmetry"]],
   ],
