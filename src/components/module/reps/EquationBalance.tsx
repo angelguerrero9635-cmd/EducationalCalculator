@@ -12,6 +12,9 @@ import { Ball, Deepen, FloorShadow, TopLight, url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'equationBalance' }>;
 
+/** Balloons in a row above a pan. */
+const BALLOONS = 6;
+
 /** "3x", "x", "−x", "−2x". */
 const term = (k: number, x: string) =>
   k === 1 ? x : k === -1 ? `−${x}` : `${formatNumber(k)}${x}`;
@@ -64,7 +67,14 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
       : 0;
   // The pans hang low enough for the tallest stack; balloons need room above the beam.
   const hang = Math.max(46, stackH(a, b) + 14, stackH(cc, d) + 14);
-  const pivot = [a, b, cc, d].some((v) => v < 0) ? 62 : 22;
+  const balloonRows = Math.max(
+    0,
+    ...[
+      [a, b],
+      [cc, d],
+    ].map(([k, n]) => Math.ceil((Math.max(0, -k!) + Math.max(0, -n!)) / BALLOONS)),
+  );
+  const pivot = balloonRows > 0 ? 62 + (balloonRows - 1) * 24 : 22;
 
   const pan = (px: number, py: number, k: number, n: number, key: string): ReactNode[] => {
     const floor = py + hang - 2;
@@ -155,10 +165,12 @@ export function EquationBalance({ spec, calc }: { spec: Spec; calc: Calculator }
       ...Array.from({ length: Math.max(0, -n) }, (_, i) => ({ big: false, i })),
     ];
     const top = floor - stackH(k, n) - 26;
-    const spread = Math.min(15, 110 / Math.max(1, negs.length));
+    // Rows of up to 6 balloons, each row higher than the last, staggered a little.
     negs.forEach((g, j) => {
-      const bx = px - ((negs.length - 1) * spread) / 2 + j * spread;
-      const by = top - (j % 2) * 10;
+      const row = Math.floor(j / BALLOONS);
+      const inRow = Math.min(BALLOONS, negs.length - row * BALLOONS);
+      const bx = px - ((inRow - 1) * 19) / 2 + (j % BALLOONS) * 19;
+      const by = top - row * 24 - (j % 2) * 5;
       const [rx, ry] = g.big ? [11, 13] : [7.5, 9];
       const crossed = g.big ? sameX < 0 && g.i < crossX : sameU < 0 && g.i < crossU;
       out.push(

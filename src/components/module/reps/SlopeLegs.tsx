@@ -106,7 +106,10 @@ export function SlopeLegs({
           fill="none"
         />
       ) : null}
-      {label((ax + cx) / 2, runY, run, 'middle')}
+      {/* A run too short for its label: the label goes past the corner, clear of the point. */}
+      {Math.abs(cx - ax) < run.length * chart.label * 0.6 + 12
+        ? label(cx + (dx >= 0 ? 8 : -8), runY, run, dx >= 0 ? 'start' : 'end')
+        : label((ax + cx) / 2, runY, run, 'middle')}
       {label(riseX, (cy + by) / 2 + 4, rise, dx > 0 ? 'start' : 'end')}
     </G>
   );

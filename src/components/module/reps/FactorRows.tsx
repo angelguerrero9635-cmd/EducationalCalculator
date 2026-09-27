@@ -297,12 +297,14 @@ export function FactorRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const id = row.drag;
                 const end = at(Math.max(0, row.count - 1), tops[k]!);
                 // Where the next factor would go: drag right to add factors, left to take them away.
-                const x = row.count === 0 ? x0 + tile / 2 : end.x + slot + tile / 2;
+                // (On a full line the handle sits on the last factor instead.)
+                const full = row.count > 0 && row.count % PER_LINE === 0;
+                const x = row.count === 0 ? x0 + tile / 2 : end.x + (full ? 0 : slot) + tile / 2;
                 return (
                   <DragHandle
                     key={`h${row.key}`}
                     testID={`drag-${row.key}`}
-                    x={Math.min(w - 12, x)}
+                    x={x}
                     y={end.y + tile / 2}
                     label={rep.variable(id).name}
                     onStart={() => {
