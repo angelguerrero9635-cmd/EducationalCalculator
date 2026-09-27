@@ -128,6 +128,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `mapping`          | pairs as arrows between two ovals; the graph with a vertical line     | Grade 8 functions (is it one?)      |
 | `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
 | `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up | Grade 8 electromagnetic spectrum    |
+| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel      | Grade 8 circuits                    |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

@@ -58,6 +58,8 @@ export function physics8Issues(
       if (Rs.some((r) => r !== undefined && !(r > 0))) out.push('a bulb with no resistance');
       if (V === undefined || I === undefined || on === undefined || n === undefined) break;
       if (Rs.some((r) => r === undefined || !(r > 0))) break;
+      // A value the shown unit rounds to a few digits (0.000001 MΩ) can't be compared.
+      if ([V, I, ...Rs].some((x) => x !== 0 && Math.abs(x!) < 1e-4)) break;
       const R = Rs as number[];
       const expected =
         on === 0
