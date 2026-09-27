@@ -261,6 +261,19 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
     if (x === undefined) continue;
     const shown = Number(shownOf(v, x).toPrecision(6));
     if (!(v.id in res.values)) {
+      // A value that only order rules pin (3 ≤ median ≤ 3) is left for the student by design:
+      // no step can find it from a rule that only checks.
+      const formula = c.sys.relations.some(
+        (r) => !r.constraint && (r.solve?.[v.id]?.length ?? 0) > 0,
+      );
+      if (!formula) {
+        c.f.add(
+          'minor',
+          `${c.label}${v.id} is pinned by an order rule only`,
+          `${where} → ${v.id} = ${shown}`,
+        );
+        continue;
+      }
       relaxed ??= complete(relax(c.sys), kept, 64, 8000);
       if (determined(relaxed, v.id) !== undefined) {
         c.f.add(
