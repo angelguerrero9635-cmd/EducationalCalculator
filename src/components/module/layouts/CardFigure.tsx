@@ -153,6 +153,17 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
     case 'dots': {
       const cols = Math.ceil(f.count / 2);
       const x0 = (w - (cols - 1) * 11) / 2;
+      // Zero: the two rows the pairs go in, dotted and empty.
+      if (f.count === 0)
+        return (
+          <Path
+            d={`M ${w / 2 - 10} ${S / 2 - 7} H ${w / 2 + 10} M ${w / 2 - 10} ${S / 2 + 7} H ${w / 2 + 10}`}
+            stroke={ink}
+            strokeWidth={1}
+            strokeDasharray="1.5 3"
+            strokeLinecap="round"
+          />
+        );
       return (
         <G>
           {Array.from({ length: f.count }, (_, i) => (
