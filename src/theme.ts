@@ -134,6 +134,11 @@ const light = {
   furLight: '#DDB88C',
   furGrey: '#9EA4AC',
   skin: '#E2AE86',
+  /** People in the round-3 scene icons (group G): more skin tones, and the sky at dawn and dusk. */
+  skinBrown: '#B67B52',
+  skinDeep: '#7B4A2E',
+  skyMorning: '#BFE3F7',
+  skyEvening: '#F5A36A',
   /** Snow, and white fur and feathers. */
   snow: '#FAFCFF',
   /** A seal's blubber in a cut-away. */
@@ -298,6 +303,10 @@ const dark: Palette = {
   furLight: '#A88762',
   furGrey: '#747A83',
   skin: '#B8835E',
+  skinBrown: '#95633F',
+  skinDeep: '#643C25',
+  skyMorning: '#4E7390',
+  skyEvening: '#A85A34',
   snow: '#CDD6E1',
   fat: '#C4AD76',
   bark: '#65503F',
