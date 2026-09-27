@@ -84,7 +84,8 @@ export type Representation =
   | {
       kind: 'hundredChart';
       value: string;
-      max: 100 | 120;
+      /** 1000: only the hundred holding `value` (601–700), or three rows of it with `piece`. */
+      max: 100 | 120 | 1000;
       marks?: string[];
       /** Counting by tens from `value`: dots on the numbers passed, one row down per ten. */
       tens?: { count: string };
@@ -351,6 +352,8 @@ export type Representation =
       total: string;
       /** 10: each item is a ten-rod, and `each` counts tens (4 groups of 6 tens). */
       unit?: 10;
+      /** Up to 90 groups: past 12, rows of ten small circles with `each` written in each. */
+      bundles?: true;
     }
   /** A prism on a base with `sides` sides (a cube when the base is a square). the sliders change it. */
   | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }

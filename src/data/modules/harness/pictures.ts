@@ -89,6 +89,16 @@ export function repIssues(
           );
         }
       }
+      // A 1,000 chart draws only the hundred holding the value: counting by tens stays in it.
+      const t = rep.tens ? val(rep.tens.count) : undefined;
+      if (
+        rep.max === 1000 &&
+        n !== undefined &&
+        t !== undefined &&
+        n + 10 * t > Math.ceil(n / 100) * 100
+      ) {
+        out.push(`counting ${t} tens from ${n} leaves the hundred drawn`);
+      }
       break;
     }
     case 'compareRows': {
@@ -342,7 +352,8 @@ export function repIssues(
     }
     case 'equalGroups': {
       // Each group is an 88 px circle; past 16 the dots shrink to fit up to 100 (EqualGroups.tsx).
-      count(rep.groups, 'groups', 12);
+      // With bundles, past 12 groups go in rows of ten small circles, up to 9 rows.
+      count(rep.groups, 'groups', rep.bundles ? 90 : 12);
       count(
         rep.each,
         rep.unit === 10 ? 'ten-rods in a group' : 'dots in a group',
@@ -876,8 +887,8 @@ export function repIssues(
       break;
     }
     case 'factorPairs': {
-      // The 1-row rectangle is drawn to the width: past 100 squares a square is under 3 px.
-      count(rep.value, 'number', 100);
+      // The 1-row rectangle is drawn to the width; past 100 (to 200) they are thin bars to scale.
+      count(rep.value, 'number', 200);
       const [n, a, b] = [rep.value, rep.first, rep.second].map((id) => (id ? val(id) : undefined));
       if (n !== undefined && n < 1) out.push(`factor pairs of ${n}`);
       if (n !== undefined && a !== undefined && b !== undefined && a * b !== n)

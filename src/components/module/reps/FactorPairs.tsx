@@ -20,7 +20,7 @@ export function factorPairs(n: number): [number, number][] {
 /**
  * Every rectangle that n unit squares make, one per factor pair, drawn to the same scale one
  * under another with its pair beside it. The pair typed in is outlined; a prime number makes
- * only the 1-row rectangle.
+ * only the 1-row rectangle. Past 100 (to 200) the rectangles stay to scale as thin bars.
  */
 export function FactorPairs({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -34,10 +34,16 @@ export function FactorPairs({ spec, calc }: { spec: Spec; calc: Calculator }) {
     p !== undefined && q !== undefined && ((p === a && q === b) || (p === b && q === a));
   const label = 64;
   const gap = 12;
-  const cellFor = (w: number) => Math.max(2, Math.min(22, (w - label - 16) / n));
-  const height = (w: number) => pairs.reduce((s, [a]) => s + a * cellFor(w) + gap, 0) + gap;
+  // Past 100 the 1-row rectangle would run off the canvas at 2 px a square: squares get
+  // thinner (the rectangles stay to scale, as thin bars) and each row keeps room for its label.
+  const big = n > 100;
+  const cellFor = (w: number) =>
+    big ? (w - label - 16) / n : Math.max(2, Math.min(22, (w - label - 16) / n));
+  const rowFor = (rh: number) => (big ? Math.max(rh, 14) : rh);
+  const height = (w: number) => pairs.reduce((s, [a]) => s + rowFor(a * cellFor(w)) + gap, 0) + gap;
 
-  const list = pairs.map(([a, b]) => `${a} × ${b}`).join(', ');
+  // Non-breaking spaces: a pair never wraps across two lines ("6 ×" | "21").
+  const list = pairs.map(([a, b]) => `${a}\u00a0×\u00a0${b}`).join(', ');
   return (
     <View>
       <Canvas aspect={(w) => Math.min(1.4, height(w) / w)}>
@@ -52,13 +58,16 @@ export function FactorPairs({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const top = y;
                 const rw = b * cell;
                 const rh = a * cell * k;
-                y += rh + gap * k;
+                const row = rowFor(rh);
+                // A thin bar sits in the middle of its row, level with its label.
+                const barTop = big ? top + (row - Math.max(3, rh)) / 2 : top;
+                y += row + gap * k;
                 const on = isPick(a, b);
                 return (
                   <G key={a}>
                     <ChartText
                       x={label - 10}
-                      y={top + Math.max(rh, 12) / 2 + 5}
+                      y={big ? top + row / 2 + 5 : top + Math.max(rh, 12) / 2 + 5}
                       fontSize={chart.value}
                       fontWeight={on ? '700' : '400'}
                       fill={on ? c.chartHighlight : c.chartInk}
@@ -68,9 +77,9 @@ export function FactorPairs({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                     <Rect
                       x={label}
-                      y={top}
+                      y={barTop}
                       width={rw}
-                      height={Math.max(2, rh)}
+                      height={Math.max(big ? 3 : 2, rh)}
                       fill={on ? c.chartHighlight : c.chartFill}
                       fillOpacity={on ? 0.35 : 1}
                       stroke={on ? c.chartHighlight : c.chartInk}
