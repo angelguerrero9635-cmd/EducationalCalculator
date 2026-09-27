@@ -130,8 +130,8 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
             work: (v: Values) => {
               const tenths = Math.round(v.e! * 10);
               return [
-                `${v.n} × ${tenths} tenths = ${v.n! * tenths} tenths`,
-                `${v.n! * tenths} tenths = ${fmt(v.p!)}`,
+                `${v.n} × ${tenths} ${tenths === 1 ? 'tenth' : 'tenths'} = ${v.n! * tenths} ${v.n! * tenths === 1 ? 'tenth' : 'tenths'}`,
+                `${v.n! * tenths} ${v.n! * tenths === 1 ? 'tenth' : 'tenths'} = ${fmt(v.p!)}`,
               ];
             },
           },

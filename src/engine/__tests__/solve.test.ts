@@ -308,7 +308,9 @@ describe('format', () => {
     expect(formatNumber(12)).toBe('12');
     expect(formatNumber(Math.PI)).toBe('3.1416');
     expect(formatNumber(2.5, { integer: true })).toBe('3');
-    expect(formatNumber(1.5e9)).toBe('1.500e9');
+    expect(formatNumber(1.5e9)).toBe('1,500,000,000');
+    expect(formatNumber(1.5e15)).toBe('1.500e15');
+    expect(formatNumber(2.5e7 + 0.5)).toBe('2.500e7');
   });
 
   it('parses user input', () => {

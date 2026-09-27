@@ -1,3 +1,4 @@
+import { unitFor } from '@/engine/format';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -103,7 +104,7 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
             </Text>
             {withSpans && i < placed && stage.span !== undefined ? (
               <Text style={[styles.span, { color: c.text }]}>
-                {`${stage.span} ${spec.unit ?? ''}`.trim()}
+                {`${stage.span} ${spec.unit ? unitFor(stage.span, spec.unit) : ''}`.trim()}
               </Text>
             ) : null}
           </View>

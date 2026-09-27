@@ -35,26 +35,37 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
   const val = (id: string) => (rep.known(id) ? Math.max(0, rep.shown(id)) : 0);
   if ('factors' in spec) {
     const [a, b] = spec.factors.map(val) as [number, number];
+    const known = spec.factors.every(rep.known);
     const tops = placeParts(a, 4);
     const sides = placeParts(b, 4);
     const products = sides.flatMap((s) => tops.map((t) => t * s));
+    // A "?" factor is labelled "?", never drawn as 0.
+    const factorText = (i: 0 | 1, x: number) => (rep.known(spec.factors[i]) ? fmt(x) : '?');
     return {
-      top: tops.map(fmt),
-      side: sides.map(fmt),
+      top: tops.map((t) => factorText(0, t)),
+      side: sides.map((s) => factorText(1, s)),
       topSize: tops,
       sideSize: sides,
       box: (i, j) => [`${fmt(tops[i]!)} × ${fmt(sides[j]!)}`, fmt(tops[i]! * sides[j]!)],
-      caption: `${fmt(a)} × ${fmt(b)}: ${products.map(fmt).join(' + ')} = ${rep.value(spec.total)}.`,
+      caption: !known
+        ? 'Type both factors.'
+        : products.length === 1
+          ? `${fmt(a)} × ${fmt(b)} = ${rep.value(spec.total)}.`
+          : `${fmt(a)} × ${fmt(b)}: ${products.map(fmt).join(' + ')} = ${rep.value(spec.total)}.`,
       steppers: [...spec.factors],
-      faded: !spec.factors.every(rep.known),
+      faded: !known,
     };
   }
   if ('divide' in spec) {
     const d = spec.divide;
     const [n, s, q] = [val(d.dividend), val(d.divisor), val(d.quotient)];
     const r = d.remainder ? val(d.remainder) : 0;
-    const parts = placeParts(q, 4);
+    const known = [d.dividend, d.divisor].every(rep.known);
+    // Fewer than one full group (1 ÷ 2): no group boxes, only what is left over.
+    const parts = q > 0 ? placeParts(q, 4) : [];
     const amounts = parts.map((p) => p * s);
+    const left = r ? ` + ${fmt(r)} left over` : '';
+    const rest = r ? `, remainder ${fmt(r)}` : '';
     return {
       top: parts.map(fmt),
       side: [fmt(s)],
@@ -62,12 +73,15 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
       sideSize: [1],
       box: (i) => [`${fmt(s)} × ${fmt(parts[i]!)}`, fmt(amounts[i]!)],
       remainder: d.remainder ? fmt(r) : undefined,
-      caption:
-        `${amounts.map(fmt).join(' + ')}${r ? ` + ${fmt(r)} left over` : ''} = ${fmt(n)}. ` +
-        `${fmt(n)} ÷ ${fmt(s)} = ${parts.map(fmt).join(' + ')} = ${fmt(q)}` +
-        `${r ? `, remainder ${fmt(r)}` : ''}.`,
+      caption: !known
+        ? 'Type the dividend and the divisor.'
+        : parts.length <= 1
+          ? // One group of boxes: no "= parts" step to add up.
+            `${fmt(s)} × ${fmt(q)}${left} = ${fmt(n)}. ${fmt(n)} ÷ ${fmt(s)} = ${fmt(q)}${rest}.`
+          : `${amounts.map(fmt).join(' + ')}${left} = ${fmt(n)}. ` +
+            `${fmt(n)} ÷ ${fmt(s)} = ${parts.map(fmt).join(' + ')} = ${fmt(q)}${rest}.`,
       steppers: [d.dividend, d.divisor],
-      faded: ![d.dividend, d.divisor].every(rep.known),
+      faded: !known,
     };
   }
   return {

@@ -151,19 +151,24 @@ function outOfReach(system: System, values: Values): boolean {
     if (!aff) return false;
     let lo = aff.c0;
     let hi = aff.c0;
+    // Tolerance scaled by the size of the terms, not of the sum (which is near 0 exactly when
+    // it matters): with values in miles a true 0 comes out as 0.00003.
+    let size = Math.abs(aff.c0);
     for (const id of rel.vars) {
       const k = aff.coef.get(id)!;
       if (id in values) {
         lo += k * values[id]!;
         hi += k * values[id]!;
+        size += Math.abs(k * values[id]!);
         continue;
       }
       const v = byId.get(id);
       if (v?.min === undefined || v.max === undefined) return false;
       lo += Math.min(k * v.min, k * v.max);
       hi += Math.max(k * v.min, k * v.max);
+      size += Math.max(Math.abs(k * v.min), Math.abs(k * v.max));
     }
-    const tol = 1e-9 * (1 + Math.max(Math.abs(lo), Math.abs(hi)));
+    const tol = 1e-9 * (1 + size);
     return lo > tol || hi < -tol;
   });
 }

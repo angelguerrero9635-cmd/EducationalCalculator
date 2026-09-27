@@ -86,12 +86,12 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
           return (
             <View style={styles.row}>
               {Array.from({ length: whole }, (_, i) => (
-                <View key={`w${i}`}>
+                <View key={`w${i}`} style={{ width: size }}>
                   <Grid shaded={100} size={size} faded={false} testPrefix={`whole${i}-`} />
                   {tag('1 whole')}
                 </View>
               ))}
-              <View>
+              <View style={{ width: size }}>
                 <Grid
                   shaded={shaded}
                   size={size}
@@ -102,7 +102,7 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {count > 1 ? tag(rep.tag(spec.percent)) : null}
               </View>
               {spec.second ? (
-                <View>
+                <View style={{ width: size }}>
                   <Grid
                     shaded={second ?? 0}
                     size={size}
@@ -127,7 +127,7 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
           ? `${shaded} of 100 and ${second ?? '?'} of 100 squares shaded`
           : whole > 0
             ? `${whole} whole ${whole === 1 ? 'grid' : 'grids'} and ${shaded} of 100 squares shaded`
-            : `${rep.named(spec.percent)}: ${shaded} of 100 squares shaded`}
+            : `${rep.tag(spec.percent)}: ${shaded} of 100 squares shaded`}
       </Text>
       {spec.caption ? (
         <Text style={[styles.caption, { color: c.chartMuted }]}>

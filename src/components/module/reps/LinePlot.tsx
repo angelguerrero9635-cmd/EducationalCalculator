@@ -66,7 +66,11 @@ export function LinePlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           <View key={p.var} style={styles.tick}>
             <View style={[styles.tickMark, { backgroundColor: c.chartInk }]} />
             <Text style={[styles.label, { color: c.text }]}>{p.label ?? at(p.at)}</Text>
-            <Text style={[styles.count, { color: c.textMuted }]}>{rep.label(p.var)}</Text>
+            {/* How many were measured at this length, as a count ("10 objects"), so it doesn't
+                read as a second scale under the lengths. */}
+            <Text style={[styles.count, { color: c.textMuted }]}>
+              {`${rep.value(p.var, false)} ${rep.value(p.var, false) === '1' ? 'object' : 'objects'}`}
+            </Text>
           </View>
         ))}
       </View>

@@ -1052,6 +1052,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
                     ],
               note: (v) => {
                 if (v.e === undefined) return '';
+                if (v.e === 0) return '(the quotient is 0)';
                 const s = simplest(v.e, v.f!);
                 const m = v.e > v.f! ? mixed(v.e, v.f!) : '';
                 return `(the quotient is ${[`${v.e}/${v.f}`, s.split(' = ')[1], m].filter((x, i, all) => x && all.indexOf(x) === i).join(' = ')})`;
@@ -2107,7 +2108,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.expressions-variables~exponents',
     title: 'Powers',
-    use: 'Use this for 3⁴: the base multiplied by itself, the exponent times.',
+    use: 'Use this for 3⁴: the base used as a factor, the exponent times.',
     assumptions: [
       'The exponent counts how many times the base is a factor: 3⁴ is 3 × 3 × 3 × 3, not 3 × 4.',
       'Any base to the exponent 1 is the base.',
@@ -2122,7 +2123,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'p = b^n',
         display: '{b}^{n} = {p}',
-        words: 'The base multiplied by itself, the exponent times = value',
+        words: 'The base used as a factor, the exponent times = value',
         vars: ['p', 'b', 'n'],
         residual: (v: Values) => v.p! - v.b! ** v.n!,
         solve: { p: (v: Values) => v.b! ** v.n!, b: () => undefined, n: () => undefined },
@@ -2317,7 +2318,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           how: (v) =>
             `Multiply each part inside by ${v.n}: ${v.n}(${v.m} + x) = ${v.n} × ${v.m} + ${v.n} × x = ${v.n! * v.m!} + ${v.n}x. Add the two parts.`,
           note: (v) =>
-            v.L === undefined ? '' : `(L is ${fmt(v.L)} too: the expressions are equivalent)`,
+            v.L === undefined
+              ? ''
+              : `(the value with parentheses is ${fmt(v.L)} too: the two match for every x)`,
         },
       },
     },
@@ -2970,7 +2973,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'V = s³': {
         V: {
           expr: '{s}³',
-          how: 'Multiply the edge by itself three times.',
+          how: 'Use the edge as a factor three times.',
           work: (v) => [`${fmt(v.s!)}³ = ${fmt(v.s!)} × ${fmt(v.s!)} × ${fmt(v.s!)}`],
         },
         s: {

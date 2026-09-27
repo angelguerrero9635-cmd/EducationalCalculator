@@ -13,6 +13,8 @@ export function formatNumber(
   if (variable?.integer) return minus(withSeparators(String(Math.round(x) || 0)));
   if (x === 0) return '0';
   const abs = Math.abs(x);
+  // Whole numbers are written out in full (20,000,000; 999,890,001) up to a quadrillion.
+  if (Number.isInteger(x) && abs < 1e15) return minus(withSeparators(String(x)));
   if (abs >= 1e7 || abs < 1e-4) return minus(x.toExponential(3).replace('e+', 'e'));
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals.
   return minus(withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4)))));
@@ -132,4 +134,29 @@ export function numberWords(n: number): string {
   const rest = r < 20 ? ONES[r]! : `${TENS[Math.floor(r / 10)]}${r % 10 ? `-${ONES[r % 10]}` : ''}`;
   if (h === 0) return rest;
   return `${ONES[h]} hundred${r ? ` ${rest}` : ''}`;
+}
+
+/** Word units whose singular isn't the plural less its final "s". */
+const IRREGULAR: Record<string, string> = {
+  inches: 'inch',
+  feet: 'foot',
+  'feet per second': 'foot per second',
+};
+
+/**
+ * A word unit as it reads after the number 1: "1 cup", "1 second", "1 cubic unit", "1 foot".
+ * Symbols (cm, mL, °F, µm) are the same for any number.
+ */
+export function unitFor(x: number, unit: string): string {
+  if (x !== 1 || !/^[a-z][a-z ]*[a-z]$/.test(unit)) return unit;
+  if (IRREGULAR[unit]) return IRREGULAR[unit];
+  // The first plural word takes the singular: "cubic units" → "cubic unit", "liters per
+  // second" → "liter per second".
+  return unit.replace(
+    /^((?:[a-z]+ )*?)([a-z]+?)(e?s)\b/,
+    (m, head: string, stem: string, end: string) =>
+      end === 'es' && /(ch|sh|x|s)$/.test(stem)
+        ? `${head}${stem}`
+        : `${head}${stem}${end === 'es' ? 'e' : ''}`,
+  );
 }

@@ -52,13 +52,13 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     id: 's.K.sunlight-warms~shade',
     title: 'What makes shade',
     use: 'Use this to sort things by whether they make shade.',
-    assumptions: ['Shade keeps a spot cool.', 'Something that blocks the sun makes shade.'],
+    assumptions: ['Shade keeps a spot cooler.', 'Something that blocks the sun makes shade.'],
     question: 'Does it block the sun?',
     bins: [
       {
         id: 'shade',
         label: 'Makes shade',
-        why: 'It blocks the sunlight. The spot under it stays cool.',
+        why: 'It blocks the sunlight. The spot under it stays cooler.',
       },
       {
         id: 'through',
@@ -164,7 +164,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     initial: [55, 65, 70],
     pattern: (v) => {
       const [a, , c] = v as [number, number, number];
-      if (c > a) return 'It got warmer as the sun climbed.';
+      if (c > a) return 'It got warmer as the day went on.';
       if (c < a) return 'It got cooler as the day went on.';
       return 'It stayed the same all day.';
     },
@@ -527,10 +527,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 's.1.structures-function~copy',
-    title: 'Tools copied from animals',
-    use: 'Use this to match an animal part to a tool like it.',
+    title: 'Tools copied from plants and animals',
+    use: 'Use this to match plant and animal parts to tools.',
     assumptions: [
-      'People copy animal parts to solve problems.',
+      'People copy plant and animal parts to solve problems.',
       'A part and its tool do the same job.',
     ],
     question: 'What job does it do?',
@@ -647,7 +647,11 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
         sky: { body: 'sun', at: 'west' },
         lines: ['The sun goes down in the west.'],
       },
-      { label: 'Night', sky: { body: 'night', at: 'high' }, lines: ['We see the moon and stars.'] },
+      {
+        label: 'Night',
+        sky: { body: 'night', at: 'high' },
+        lines: ['We see stars. We often see the moon too.'],
+      },
     ],
   },
   {
@@ -900,7 +904,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     title: 'How a bee carries pollen',
     use: 'Use this to put the steps of pollination in order.',
     assumptions: [
-      'Flowers need pollen from another flower to make seeds.',
+      'Many flowers need pollen from another flower to make seeds.',
       'Bees carry the pollen without knowing it.',
     ],
     question: 'Put the steps in order.',
@@ -1084,7 +1088,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       const seasons = ['winter', 'spring', 'summer', 'fall'];
       const hi = v.indexOf(Math.max(...v));
       const lo = v.indexOf(Math.min(...v));
-      if (hi === lo) return 'Every season is the same. That is a place with no seasons.';
+      if (hi === lo) return 'Every season is the same. The temperature stays the same all year.';
       return `Warmest: ${seasons[hi]} (${v[hi]} ${F}). Coldest: ${seasons[lo]} (${v[lo]} ${F}). ${seasons[hi]![0]!.toUpperCase()}${seasons[hi]!.slice(1)} is ${v[hi]! - v[lo]!} ${F} warmer than ${seasons[lo]}.`;
     },
   },
@@ -1266,7 +1270,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     title: 'Change shape or grow bigger?',
     use: 'Use this to sort animals by how they grow.',
     assumptions: [
-      'Every life cycle has birth, growth, young and death.',
+      'Every life cycle has birth, growth, having young and death.',
       'Some animals change shape as they grow.',
     ],
     question: 'How does it grow up?',
@@ -1474,7 +1478,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       'Most of these take in electric current from a battery or a plug.',
       'Some give out two kinds: a toaster glows and heats. Sort each by its main job.',
     ],
-    question: 'What does the device mainly give out when it is switched on?',
+    question: 'What is the device’s main job when it is switched on?',
     bins: [
       { id: 'light', label: 'Light', why: 'Light carries energy you can see.' },
       { id: 'heat', label: 'Heat', why: 'Heat warms what it touches.' },
@@ -2041,10 +2045,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
   {
     kind: 'observe',
     id: 's.5.mixtures~dissolve-warm',
-    title: 'Salt that dissolves in cool and warm water',
-    use: 'Use this to record how many spoons of salt dissolve at each water temperature.',
+    title: 'Sugar that dissolves in cool and warm water',
+    use: 'Use this to record how many spoons of sugar dissolve at each water temperature.',
     assumptions: [
-      'Stir in one spoon of salt at a time until no more disappears.',
+      'Stir in one spoon of sugar at a time until no more disappears.',
       'Use the same amount of water each time.',
       'Tap a bar to change the spoons for that temperature.',
     ],
@@ -2138,7 +2142,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     title: 'A food chain from the sun',
     use: 'Use this to put a food chain in order, starting from the sun.',
     assumptions: [
-      'Each arrow in a food chain means: is eaten by.',
+      'After the sun, each arrow means: is eaten by.',
       'Energy from the sun passes along the chain.',
       'Tap each one in order, starting with the sun.',
     ],

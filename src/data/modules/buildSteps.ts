@@ -1,4 +1,4 @@
-import { dollars, formatNumber, renderTemplate } from '@/engine/format';
+import { dollars, formatNumber, renderTemplate, unitFor } from '@/engine/format';
 import { holds, type SolveResult } from '@/engine/solve';
 import type { Values } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
@@ -111,6 +111,8 @@ const COUNT_WORDS: Record<string, string> = {
   hundreds: 'hundred',
   thousands: 'thousand',
   rows: 'row',
+  times: 'time',
+  places: 'place',
   groups: 'group',
   clips: 'clip',
   jumps: 'jump',
@@ -203,7 +205,7 @@ export function buildSteps(
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollars(n);
     if (unit === '¢' || unit === '°' || unit === '%' || unit === '×') return `${n}${unit}`;
-    return `${n} ${x === 1 ? (SINGULAR[unit] ?? unit) : unit}`;
+    return `${n} ${x === 1 ? (SINGULAR[unit] ?? unitFor(1, unit)) : unit}`;
   };
   /** Variables for filling formulas with working values (no whole-number rounding if converted). */
   const workVars = direct ? vars : vars.map((v) => ({ ...v, integer: false }));

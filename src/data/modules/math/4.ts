@@ -387,7 +387,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'r = v ÷ 10': {
           r: {
             expr: '{v} ÷ 10',
-            how: 'One place to the right is worth ten times less: divide the value by 10.',
+            how: 'A place to the right is worth 1/10 as much: divide the value by 10.',
             work: (v) => [`${fmt(v.v!)} ÷ 10 = ${fmt(v.v! / 10)}`],
           },
           v: {
@@ -1007,10 +1007,10 @@ export const MATH_4_MODULES: ModuleDef[] = [
           work: (v) => {
             const q = Math.floor(v.n! / v.d!);
             return v.n! % v.d! === 0
-              ? [`${q} × ${v.d} = ${v.n}`]
+              ? [`${q} × ${v.d} = ${fmt(v.n!)}`]
               : [
-                  `${q} × ${v.d} = ${q * v.d!}`,
-                  `${q + 1} × ${v.d} = ${(q + 1) * v.d!} is too many`,
+                  `${q} × ${v.d} = ${fmt(q * v.d!)}`,
+                  `${q + 1} × ${v.d} = ${fmt((q + 1) * v.d!)} is too many`,
                 ];
           },
         },
@@ -1538,12 +1538,12 @@ export const MATH_4_MODULES: ModuleDef[] = [
       return u.length ? Math.max(...u) - Math.min(...u) : 0;
     };
     const total = (v: Values) => xs.reduce((t, id) => t + at(id) * v[id]!, 0);
-    /** Eighths of an inch as inches: 32 → "4 inches", 12 → "1 inch and 4/8 inch", 3 → "3/8 inch". */
+    /** Eighths of an inch as inches: 32 → "4 inches", 12 → "1 4/8 inches", 3 → "3/8 inch". */
     const inches = (e: number) => {
       const w = Math.floor(e / 8);
       const r = e % 8;
       const whole = w === 1 ? '1 inch' : `${w} inches`;
-      return w === 0 ? `${r}/8 inch` : r ? `${whole} and ${r}/8 inch` : whole;
+      return w === 0 ? `${r}/8 inch` : r ? `${w} ${r}/8 inches` : whole;
     };
     return {
       id: 'm.4.add-fractions-like~line-plot',
@@ -1614,15 +1614,18 @@ export const MATH_4_MODULES: ModuleDef[] = [
           T: {
             expr: xs.map((id) => `{${id}} × ${at(id)}`).join(' + '),
             how: 'At each mark, multiply the count by the eighths. Add them all.',
-            work: (v) => [
-              ...xs
-                .filter((id) => v[id]! > 0)
-                .map((id) => `${v[id]} × ${at(id)}/8 = ${v[id]! * at(id)}/8`),
-              `${xs
-                .filter((id) => v[id]! > 0)
-                .map((id) => v[id]! * at(id))
-                .join(' + ')} = ${total(v)}, so ${total(v)}/8 inch`,
-            ],
+            work: (v) => {
+              const on = xs.filter((id) => v[id]! > 0);
+              if (!on.length) return ['No X’s yet: 0'];
+              return [
+                ...on.map((id) => `${v[id]} × ${at(id)}/8 = ${v[id]! * at(id)}/8`),
+                ...(on.length > 1
+                  ? [
+                      `${on.map((id) => v[id]! * at(id)).join(' + ')} = ${total(v)}, so ${total(v)}/8 inch`,
+                    ]
+                  : []),
+              ];
+            },
             note: (v) => `(${inches(total(v))})`,
           },
           ...Object.fromEntries(
@@ -2315,7 +2318,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'P = 2 × h': {
           P: {
             expr: '2 × {h}',
-            how: 'The perimeter is two lengths and two widths: double length + width.',
+            how: 'The perimeter is two lengths and two widths: double the half perimeter.',
             work: (v) => [`2 × ${fmt(v.h!)} = ${fmt(2 * v.h!)}`],
           },
           h: {

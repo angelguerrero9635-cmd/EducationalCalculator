@@ -219,7 +219,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
       assumptions: [
         'Weathering breaks rock into smaller pieces. Shaking rocks in a jar is a fast model of it.',
         'Weigh the rocks before and after. The pieces knocked off are the mass lost.',
-        'Erosion moves the pieces away: water, ice, wind and roots.',
+        'Erosion moves the pieces away: water, ice, wind and gravity.',
       ],
       variables: [
         { ...whole('b', 'b', 'Mass before shaking', 10, 500), unit: 'g' },

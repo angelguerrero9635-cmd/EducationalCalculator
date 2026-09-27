@@ -250,7 +250,9 @@ export function BaseTen({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       {`${rep.variable(id).name}: ${rep.label(id)}${
                         rep.known(id)
                           ? rep.early
-                            ? ` (${describeCounts(id)})`
+                            ? describeCounts(id) === '0'
+                              ? ''
+                              : ` (${describeCounts(id)})`
                             : `  =  ${describeCounts(id)}`
                           : ''
                       }`}

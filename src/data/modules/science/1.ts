@@ -16,7 +16,7 @@ export const SCIENCE_1_MODULES: ModuleDef[] = [
       use: 'Use this for “Which hit made more rice jump? How many more?”',
       assumptions: [
         'Put rice on a drum. Hit the drum and the rice jumps.',
-        'A loud sound makes the drum vibrate more, so more rice jumps.',
+        'A hard hit makes the drum vibrate more. The sound is louder, and more rice jumps.',
         'Count the grains that jumped off.',
       ],
       variables: [

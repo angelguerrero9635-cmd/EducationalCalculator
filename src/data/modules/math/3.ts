@@ -2229,7 +2229,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     use: 'Use this to compare rectangles with the same perimeter but different areas.',
     assumptions: [
       'Rectangles with the same perimeter can have different areas.',
-      'Perimeter goes around the edge (cm). Area covers the inside (square cm).',
+      'Perimeter goes around the edge. Area covers the inside, in square units.',
       'Keep the perimeter and change the length to compare.',
     ],
     variables: [

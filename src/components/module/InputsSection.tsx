@@ -18,7 +18,7 @@ type SystemOption = 'metric' | 'us' | 'mixed';
 /** Solver messages in words for Kindergarten–Grade 2. */
 function kidMessage(message: string): string {
   if (message === 'Enter a number') return 'Type a number';
-  if (message.startsWith('Cleared')) return 'Changed to match your new number';
+  if (message.startsWith('Cleared')) return 'Didn’t fit with your new number. Type it again.';
   if (message === 'Must be a whole number') return 'Use a whole number';
   const least = /^Must be at least (.+)$/.exec(message);
   if (least) return `Use ${least[1]} or more`;
@@ -111,7 +111,11 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
     value === undefined ? '' : formatNumber(calc.units.toDisplay(variable.id, value), variable);
   // While typing, and after a number the range refused, the box keeps the typed text beside
   // its message, so the student can fix it instead of retyping it.
-  const shown = draft !== null && (focused || calc.errors[variable.id]) ? draft : formatted;
+  // A value cleared because it no longer fits shows "?" (the picture and sentences drop it too),
+  // not the old number beside a message.
+  const cleared = calc.errors[variable.id]?.startsWith('Cleared') ?? false;
+  const shown =
+    draft !== null && (focused || (calc.errors[variable.id] && !cleared)) ? draft : formatted;
 
   const onChangeText = (text: string) => {
     setDraft(text);

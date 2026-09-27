@@ -34,9 +34,11 @@ const litersLine = (eighths: number) => {
     `${eighths}/8 = ${w}${r ? ` and ${r / g}/${8 / g}` : ''} ${w === 1 && !r ? 'liter' : 'liters'}`,
   ];
 };
-/** "(6/12 = 1/2)" when a fraction simplifies, else nothing. */
+/** "(6/12 = 1/2)" when a fraction simplifies, "(0/12 = 0)" for none, else nothing. */
 const simplerNote = (top: number, bottom: number) => {
+  if (top === 0) return `(${top}/${bottom} = 0)`;
   const g = gcd(top, bottom);
+  if (g === bottom) return `(${top}/${bottom} = ${top / g})`;
   return g > 1 ? `(${top}/${bottom} = ${top / g}/${bottom / g})` : '';
 };
 /** "5/4 = 1 whole and 1/4" for a top past the bottom, else nothing. */
@@ -746,7 +748,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             how: (v: Values) =>
               `${PAIRS[v.k!] ?? 'Each bigger unit is the same number'}. Multiply.`,
             work: (v: Values) => [
-              `Every digit moves ${Math.log10(v.k!)} places left: ${fmt(v.a!)} → ${fmt(v.c!)}`,
+              `Every digit moves ${Math.log10(v.k!)} ${v.k === 10 ? 'place' : 'places'} left: ${fmt(v.a!)} → ${fmt(v.c!)}`,
             ],
             written: false,
           },
@@ -754,7 +756,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             expr: '{c} ÷ {k}',
             how: 'Divide by the smaller units in one bigger unit.',
             work: (v: Values) => [
-              `Every digit moves ${Math.log10(v.k!)} places right: ${fmt(v.c!)} → ${fmt(v.a!)}`,
+              `Every digit moves ${Math.log10(v.k!)} ${v.k === 10 ? 'place' : 'places'} right: ${fmt(v.c!)} → ${fmt(v.a!)}`,
             ],
             written: false,
           },
@@ -975,7 +977,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     use: 'Use this for 2.5 × 4 and other decimals times a whole number.',
     assumptions: [
       'Multiply as if both were whole numbers. Then put the point back.',
-      'The product has as many places after the point as the decimal had.',
+      'The product has as many places after the point as the decimal, before any end zeros are dropped.',
       'Decimals to 9.99, whole numbers to 12.',
     ],
     variables: [
@@ -1065,14 +1067,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             const tenths = Math.round(v.n! * 10);
             if (tenths % v.d! === 0) {
               return [
-                `${fmt(v.n!)} = ${tenths} tenths`,
-                `${tenths} ÷ ${v.d} = ${tenths / v.d!} tenths = ${fmt(v.q!)}`,
+                `${fmt(v.n!)} = ${fmt(tenths)} tenths`,
+                `${fmt(tenths)} ÷ ${v.d} = ${fmt(tenths / v.d!)} tenths = ${fmt(v.q!)}`,
               ];
             }
             const hundredths = tenths * 10;
             return [
               `${fmt(v.n!)} = ${fmt(hundredths)} hundredths`,
-              `${hundredths} ÷ ${v.d} = ${fmt(hundredths / v.d!)} hundredths = ${fmt(v.q!)}`,
+              `${fmt(hundredths)} ÷ ${v.d} = ${fmt(hundredths / v.d!)} hundredths = ${fmt(v.q!)}`,
             ];
           },
         },

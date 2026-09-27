@@ -1,21 +1,19 @@
 import { useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { Text } from '@/components/Text';
-import Svg, { Defs, Line } from 'react-native-svg';
+import Svg, { Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'bars' }>;
 
 export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
-  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
   const editable = spec.bars.filter((b) => b.editable).map((b) => b.var);
@@ -42,7 +40,19 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const top = 30;
           const bottom = 36;
           const plotH = h - top - bottom;
-          const { min, max } = range.value;
+          // A line every `scale` step; numbers every 1, 2, 5 or 10 steps, whichever gives at
+          // most 10 numbers. The top is rounded up to the next number, so the tallest bar (50
+          // with steps of 2) always sits on the scale.
+          const k = step
+            ? ([1, 2, 5, 10, 20, 50].find(
+                (n) => (range.value.max - range.value.min) / (step * n) <= 10,
+              ) ?? 100)
+            : 0;
+          const every = (step ?? 0) * k;
+          const min = range.value.min;
+          const max = every
+            ? Math.ceil((range.value.max - min) / every) * every + min
+            : range.value.max;
           const scale = plotH / (max - min);
           const sy = (v: number) => top + (max - Math.min(max, Math.max(min, v))) * scale;
           // Room on the left for the numbered scale, when there is one.
@@ -50,18 +60,17 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const slot = (w - 16 - axis) / spec.bars.length;
           const barW = Math.min(56, slot * 0.6);
           const cx = (i: number) => 8 + axis + slot * (i + 0.5);
-          // Every `scale`, or every 2 × scale when the range grows past 10 marks.
-          const every = step ? step * Math.max(1, Math.ceil((max - min) / step / 10)) : 0;
+          const lines =
+            step && (max - min) / step <= 60
+              ? Array.from({ length: Math.round((max - min) / step) + 1 }, (_, i) => min + i * step)
+              : [];
           const marks = every
-            ? Array.from({ length: Math.floor((max - min) / every) + 1 }, (_, i) => min + i * every)
+            ? Array.from({ length: Math.round((max - min) / every) + 1 }, (_, i) => min + i * every)
             : [];
           return (
             <>
               <Svg width={w} height={h}>
-                <Defs>
-                  <TopLight id={paint.light} />
-                </Defs>
-                {marks.map((m) => [
+                {lines.map((m) => (
                   <Line
                     key={`g${m}`}
                     x1={axis}
@@ -69,8 +78,10 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     x2={w - 4}
                     y2={sy(m)}
                     stroke={c.chartGrid}
-                    strokeWidth={chart.strokeLight}
-                  />,
+                    strokeWidth={marks.includes(m) ? chart.strokeLight : 0.75}
+                  />
+                ))}
+                {marks.map((m) => (
                   <ChartText
                     key={`s${m}`}
                     x={axis - 6}
@@ -80,8 +91,8 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     textAnchor="end"
                   >
                     {formatNumber(m)}
-                  </ChartText>,
-                ])}
+                  </ChartText>
+                ))}
                 <Line
                   // Starts at the scale so the 0 label isn't struck through.
                   x1={axis || 4}
@@ -97,15 +108,14 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   const y1 = sy(v);
                   const known = rep.known(b.var);
                   return (
-                    <LitRect
-                      lightId={paint.light}
+                    <Rect
                       key={b.var}
-                      rx={3}
                       x={cx(i) - barW / 2}
                       y={Math.min(y0, y1)}
                       width={barW}
                       height={Math.max(1, Math.abs(y1 - y0))}
-                      fill={b.editable ? c.water : c.chartSurface}
+                      fill={b.editable ? c.chartHighlight : c.chartSurface}
+                      fillOpacity={b.editable ? 0.85 : 1}
                       stroke={c.chartInk}
                       strokeDasharray={b.editable ? undefined : chart.dash}
                       opacity={known ? 1 : 0.35}

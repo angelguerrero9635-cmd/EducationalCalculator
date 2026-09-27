@@ -54,11 +54,13 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
             if (mid) {
               const [ix, iy] = toXY(d, R - 27);
               const [ox, oy] = toXY(d, R + 12);
+              // The end labels (0 and 180) sit above the flat edge, clear of a ray lying on it.
+              const lift = d === 0 || d === 180 ? -6 : 3;
               marks.push(
                 <ChartText
                   key={`i${d}`}
                   x={ix}
-                  y={iy + 3}
+                  y={iy + lift}
                   fontSize={chart.tiny}
                   textAnchor="middle"
                 >
@@ -67,7 +69,7 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <ChartText
                   key={`o${d}`}
                   x={ox}
-                  y={oy + 3}
+                  y={oy + lift}
                   fontSize={chart.tiny}
                   fill={c.chartMuted}
                   textAnchor="middle"

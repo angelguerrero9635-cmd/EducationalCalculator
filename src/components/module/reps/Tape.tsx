@@ -97,7 +97,17 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
               onEnd={fit.release}
               onMove={(dx) =>
                 calc.set({
-                  ...rep.pin(ids.filter((v) => v !== id)),
+                  // Moving the line between two parts: the next part gives way and the total
+                  // stays (price up, money left down). The last part grows the total.
+                  ...rep.pin(
+                    ids
+                      .filter((v) => v !== id && v !== ids[i + 1])
+                      .concat(
+                        ids[i + 1] && !compare && typeof spec.total === 'string'
+                          ? [spec.total]
+                          : [],
+                      ),
+                  ),
                   [id]: rep.snapTo(id, (start.current + dx / scale) * rep.factor(id)),
                 })
               }
@@ -212,8 +222,11 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const x1 = (i: number) => left + ends[i]! * scale;
           const fills = [c.chartHighlight, c.chartSecond, c.life];
           // Names under the parts sit on one row unless one is wider than its part.
+          // A part too narrow for its value inside (under a handle) names it with its value below.
+          const narrow = (i: number) => x1(i) - x0(i) < chart.handle + 12;
+          const under = (id: string, i: number) => (narrow(i) ? rep.named(id) : rep.tag(id));
           const stagger = spec.parts.some(
-            (id, i) => rep.tag(id).length * chart.tiny * 0.6 > x1(i) - x0(i) - 4,
+            (id, i) => under(id, i).length * chart.tiny * 0.6 > x1(i) - x0(i) - 4,
           );
           return (
             <>
@@ -272,14 +285,15 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {spec.parts.map((id, i) => (
                   <ChartText
                     key={`n${id}`}
-                    x={(x0(i) + x1(i)) / 2}
+                    // The last name, near the bar's end, is right-aligned so it stays on screen.
+                    x={i === spec.parts.length - 1 && narrow(i) ? x1(i) : (x0(i) + x1(i)) / 2}
                     // Names take two rows only when a name is wider than its part.
                     y={y + barH + 18 + (stagger ? (i % 2) * 14 : 0)}
                     fontSize={chart.tiny}
-                    textAnchor="middle"
+                    textAnchor={i === spec.parts.length - 1 && narrow(i) ? 'end' : 'middle'}
                     fill={c.chartMuted}
                   >
-                    {rep.tag(id)}
+                    {under(id, i)}
                   </ChartText>
                 ))}
                 {!dashed && spec.groups ? (

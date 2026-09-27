@@ -26,7 +26,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       assumptions: [
         'A force is a push or a pull. A spring scale measures it in newtons (N).',
         'Two pushes on opposite sides are balanced when they are equal: the box stays still.',
-        'When one push is bigger, the box moves that way. The extra push is the difference.',
+        'On a smooth floor, when one push is bigger, the box moves that way. The extra push is the difference.',
       ],
       variables: [
         { ...whole('r', 'r', 'Push to the right', 0, 50), unit: 'N' },
@@ -115,7 +115,7 @@ export const SCIENCE_3_MODULES: ModuleDef[] = [
       title: 'Traits the environment changes',
       use: 'Use this to compare plants with the same traits grown with different water.',
       assumptions: [
-        'Two plants from the same seeds inherit the same traits.',
+        'Two plants from seeds of the same parent plant inherit similar traits.',
         'The environment still matters: the plant that gets more water grows taller.',
       ],
       variables: [
