@@ -2,6 +2,7 @@ import type { Representation } from '@/data/modules';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
+import { Hanger } from './Hanger';
 import { RatioTape } from './RatioTape';
 import { IntegerLine } from './IntegerLine';
 import { PercentBar } from './PercentBar';
@@ -38,9 +39,11 @@ import { Ruler } from './Ruler';
 import { LinePlot } from './LinePlot';
 import { SkipCount } from './SkipCount';
 import { Tape } from './Tape';
+import { TapeEquation } from './TapeEquation';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
 import { CircleDiagram } from './CircleDiagram';
+import { ScaleCopy } from './ScaleCopy';
 import { ForceDiagram } from './ForceDiagram';
 import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
@@ -109,6 +112,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'tape':
       return 'ratio' in spec ? (
         <RatioTape spec={spec} calc={calc} />
+      ) : 'equation' in spec ? (
+        <TapeEquation spec={spec} calc={calc} />
       ) : (
         <Tape spec={spec} calc={calc} />
       );
@@ -178,6 +183,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Grid100 spec={spec} calc={calc} />;
     case 'circle':
       return <CircleDiagram spec={spec} calc={calc} />;
+    case 'scaleCopy':
+      return <ScaleCopy spec={spec} calc={calc} />;
     case 'rightTriangle':
       return <RightTriangle spec={spec} calc={calc} />;
     case 'plot':
@@ -200,6 +207,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PolygonShape spec={spec} calc={calc} />;
     case 'balance':
       return <Balance spec={spec} calc={calc} />;
+    case 'hanger':
+      return <Hanger spec={spec} calc={calc} />;
     case 'baseTen':
       return <BaseTen spec={spec} calc={calc} />;
     case 'unitTiles':

@@ -10,17 +10,20 @@ import { mixedValue } from './exact';
 import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, ChartText, DragHandle, fitLabel, useFrozen, useRep, Caption } from './common';
 
-type Spec = Exclude<Extract<Representation, { kind: 'tape' }>, { ratio: [string, string] }>;
+type Spec = Exclude<
+  Extract<Representation, { kind: 'tape' }>,
+  { ratio: [string, string] } | { equation: unknown }
+>;
 
 /** A scale just past `span`: 10% more, rounded up to a tenth of its power of ten (at least 10). */
-const fitScale = (span: number) => {
+export const fitScale = (span: number) => {
   const x = Math.max(10, span * 1.1);
   const step = 10 ** Math.floor(Math.log10(x)) / 10;
   return Math.ceil(x / step) * step;
 };
 
 /** A bracket under (or over) [x1, x2] at height y, opening toward the bar. */
-const bracket = (x1: number, x2: number, y: number, dir: 1 | -1) => {
+export const bracket = (x1: number, x2: number, y: number, dir: 1 | -1) => {
   const t = 6 * dir;
   const mid = (x1 + x2) / 2;
   return `M ${x1} ${y - t} L ${x1} ${y} L ${mid - 4} ${y} L ${mid} ${y + t} L ${mid + 4} ${y} L ${x2} ${y} L ${x2} ${y - t}`;

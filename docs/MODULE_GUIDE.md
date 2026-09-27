@@ -108,6 +108,8 @@ search or the sitemap, but the module tests and the harness run over it):
 | `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
 | `zeroPairs`        | yellow + and red − counters; a + with a − circled as a zero pair      | Grade 7 adding, subtracting signs   |
 | `signTable`        | the answer’s sign for each pair of signs, the numbers’ cell outlined  | Grade 7 multiplying, dividing signs |
+| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps | Grade 7–8 equations                 |
+| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow      | Grade 7 scale drawings              |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -153,6 +155,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
 | `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |
 | `integerLine`      | `inequality: { sign, test }`             | the bound's open or closed circle, an arrow over the solutions, a test point  |
+| `integerLine`      | `inequality.twoStep: { times, plus, … }` | px + q < r solved in the caption; a negative p flips the sign drawn           |
+| `circle`           | `views`, `wedges`                        | 'unroll': one turn along a line, π diameters; 'wedges': a near-parallelogram  |
 | `unitCubes`        | `scale`                                  | past `max` a side, the box to scale, edges labelled, one unit cube for size   |
 | `ratioTable`       | `graph`                                  | axes to the biggest row in 3–4 numbered steps; under the table on a phone     |
 | `coordinatePlane`  | `plot`                                   | tap the grid or drag to place one point; the path from 0 across, then up      |
@@ -161,6 +165,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `percentBar`       | `change: { total, direction?, bars? }`   | tax or discount: original, change, new amount; `bars: 2`: before and after    |
 | `plot`             | `unitRate`, `table`                      | y = kx through (0, 0) with (1, k) ringed and dragged; x, y, y ÷ x beside it   |
 | `integerLine`      | `jump: { by, result, op? }`              | signed jump from the value (+ right, − left); subtracting goes the other way  |
+| `tape`             | `equation: { times, unknown, plus, … }`  | px + q = r: p boxes of x and q under r (−q taken off); `grouped`: p(x + q)    |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

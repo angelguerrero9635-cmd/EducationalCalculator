@@ -33,6 +33,10 @@ function representationVars(r: Representation): string[] {
       ];
     case 'balance':
       return [...r.left, ...r.right, ...(r.takeAway ? [r.takeAway] : [])];
+    case 'hanger':
+      return [r.unknown, r.left.x, r.left.units, r.right.x, r.right.units].filter(
+        (v): v is string => typeof v === 'string',
+      );
     case 'baseTen':
       return [
         ...r.groups,
@@ -55,6 +59,8 @@ function representationVars(r: Representation): string[] {
         ...(r.second ? [r.second.step] : []),
       ].filter((v): v is string => typeof v === 'string');
     case 'tape':
+      if ('equation' in r)
+        return [r.equation.times, r.equation.unknown, r.equation.plus, r.equation.total];
       if ('ratio' in r)
         return [
           ...r.ratio,
@@ -230,6 +236,9 @@ function representationVars(r: Representation): string[] {
         ...[r.inequality?.test, r.inequality?.sign].filter(
           (x): x is string => !!x && !['<', '≤', '>', '≥'].includes(x),
         ),
+        ...(r.inequality?.twoStep
+          ? [r.inequality.twoStep.times, r.inequality.twoStep.plus, r.inequality.twoStep.total]
+          : []),
       ];
     case 'percentBar':
       return [
@@ -297,7 +306,13 @@ function representationVars(r: Representation): string[] {
         ...(r.wholes ? [r.wholes] : []),
       ];
     case 'circle':
-      return [r.radius, r.diameter, r.circumference, r.area].filter((v): v is string => !!v);
+      return [r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
+        (v): v is string => typeof v === 'string',
+      );
+    case 'scaleCopy':
+      return [r.factor, r.width, r.height, r.copyWidth, r.copyHeight, ...(r.area ?? [])].filter(
+        (v): v is string => typeof v === 'string',
+      );
     case 'rightTriangle':
       return [r.a, r.b, r.c];
     case 'plot':

@@ -6,6 +6,7 @@
 import type { VariableDef } from '@/engine/types';
 
 import { toFraction } from '@/components/module/reps/exact';
+import { outline } from '@/components/module/reps/scaleOutline';
 
 import { placeParts } from '../helpers';
 import type { ModuleDef, Representation } from '../types';
@@ -135,6 +136,78 @@ export function repIssues(
       if (k !== undefined && left.every((x) => x !== undefined)) {
         const sum = left.reduce((s, x) => s! + x!, 0)!;
         if (k > sum) out.push(`balance crosses out ${k} of only ${sum} counters`);
+      }
+      break;
+    }
+    case 'hanger': {
+      // Blocks and weights are whole things on a tray: up to 8 blocks and 40 weights a side
+      // (Hanger.tsx packs them in rows); an unknown below 0 can't hang.
+      for (const s of [rep.left, rep.right]) {
+        if (s.x !== undefined) count(s.x, 'hanger blocks', 8);
+        if (s.units !== undefined) count(s.units, 'hanger weights', 40);
+      }
+      const x = val(rep.unknown);
+      if (x !== undefined && x < 0) out.push(`hanger block weighs ${x} (below 0)`);
+      const [xl, ul, xr, ur] = [rep.left.x, rep.left.units, rep.right.x, rep.right.units].map(
+        (v) => (v === undefined ? 0 : val(v)),
+      );
+      if (
+        x !== undefined &&
+        [xl, ul, xr, ur].every((v) => v !== undefined) &&
+        Math.abs(xl! * x + ul! - (xr! * x + ur!)) > 1e-6 * Math.max(1, ur! + xr! * x)
+      )
+        out.push(`~hanger is not level: ${xl! * x + ul!} against ${xr! * x + ur!}`);
+      break;
+    }
+    case 'circle': {
+      // Wedges come in an even count, 4–24 (CircleParts.tsx rounds to one).
+      if (rep.wedges !== undefined) {
+        count(rep.wedges, 'wedges', 24);
+        const n = val(rep.wedges);
+        if (n !== undefined && (n < 4 || n % 2 !== 0)) out.push(`${n} wedges (even, 4–24)`);
+      }
+      const [r, d, C, A] = [rep.radius, rep.diameter, rep.circumference, rep.area].map((id) =>
+        id ? val(id) : undefined,
+      );
+      const off = (a: number, b: number) => Math.abs(a - b) > 1e-6 * Math.max(1, Math.abs(b));
+      if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
+      if (r !== undefined && d !== undefined && off(d, 2 * r))
+        out.push(`diameter ${d} is not 2 × ${r}`);
+      if (r !== undefined && C !== undefined && off(C, 2 * Math.PI * r))
+        out.push(`circumference ${C} is not 2π × ${r}`);
+      if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
+        out.push(`area ${A} is not π × ${r}²`);
+      break;
+    }
+    case 'scaleCopy': {
+      // Whole squares for the original; both figures side by side fit about 30 squares.
+      count(rep.width, 'original width', 12);
+      count(rep.height, 'original height', 12);
+      const [W, H, k] = [rep.width, rep.height, rep.factor].map(val);
+      if (k !== undefined && k <= 0) out.push(`scale factor ${k} is not positive`);
+      if (W === undefined || H === undefined || k === undefined || k <= 0) break;
+      if (W + W * k > 26 || Math.max(H, H * k) > 24)
+        out.push(`scaled copy (${W} × ${H}, factor ${k}) is past the grid`);
+      const near = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+      const cw = rep.copyWidth ? val(rep.copyWidth) : undefined;
+      const ch = rep.copyHeight ? val(rep.copyHeight) : undefined;
+      if (cw !== undefined && !near(cw, W * k)) out.push(`copy width ${cw} is not ${k} × ${W}`);
+      if (ch !== undefined && !near(ch, H * k)) out.push(`copy height ${ch} is not ${k} × ${H}`);
+      if (rep.area) {
+        // The original's area is the outline's squares; the copy's is k × k times it.
+        const pts = outline(rep.shape, W, H);
+        const squares =
+          Math.abs(
+            pts.reduce((s, [x, y], i) => {
+              const [x2, y2] = pts[(i + 1) % pts.length]!;
+              return s + x * y2 - x2 * y;
+            }, 0),
+          ) / 2;
+        const [a0, a1] = rep.area.map(val);
+        if (a0 !== undefined && !near(a0, squares))
+          out.push(`original area ${a0}, the outline covers ${squares} squares`);
+        if (a0 !== undefined && a1 !== undefined && !near(a1, a0 * k * k))
+          out.push(`copy area ${a1} is not ${k} × ${k} × ${a0}`);
       }
       break;
     }
@@ -664,6 +737,19 @@ export function repIssues(
       count(rep.value, 'number');
       break;
     case 'tape': {
+      if ('equation' in rep) {
+        // p boxes of x, then q (TapeEquation.tsx): whole groups, positive boxes, the total.
+        const { times, unknown, plus, total, grouped } = rep.equation;
+        count(times, 'tape boxes', 12);
+        const [p, x, q, r] = [times, unknown, plus, total].map(val);
+        if (x !== undefined && q !== undefined && (x <= 0 || (grouped && x + q <= 0)))
+          out.push(`tape box ${grouped ? x + q : x} is not positive`);
+        if (p === undefined || x === undefined || q === undefined || r === undefined) break;
+        const made = grouped ? p * (x + q) : p * x + q;
+        if (Math.abs(made - r) > 1e-6 * Math.max(1, Math.abs(r)))
+          out.push(`tape: ${p} boxes of ${x} and ${q} make ${made}, not ${r}`);
+        break;
+      }
       if ('mixed' in rep && rep.mixed) {
         const ids = 'compare' in rep ? [...rep.compare, rep.difference] : rep.parts;
         for (const id of ids) exact(val(id), `tape value ${id}`);
@@ -788,6 +874,17 @@ export function repIssues(
             out.push(`inequality sign ${sign} = ${s} is not 1–4 (<, ≤, >, ≥)`);
         }
         if (rep.vertical) out.push('inequality lines are drawn across, not vertical');
+        if (rep.inequality.twoStep) {
+          // The bound drawn is the written inequality solved: (total − plus) ÷ times.
+          const { times, plus, total } = rep.inequality.twoStep;
+          const [p, q, r] = [times, plus, total].map(val);
+          if (p === 0) out.push('two-step inequality with 0 blocks of x');
+          if (a !== undefined && p && q !== undefined && r !== undefined) {
+            const bound = (r - q) / p;
+            if (Math.abs(bound - a) > 1e-6 * Math.max(1, Math.abs(a)))
+              out.push(`two-step inequality solves to ${bound}, the line shows ${a}`);
+          }
+        }
       }
       if (rep.jump) {
         const [by, r] = [rep.jump.by, rep.jump.result].map(val);

@@ -123,6 +123,22 @@ export type Representation =
       total?: string;
       difference?: string;
     }
+  /**
+   * An equation px + q = r as a bar (Grade 7): `times` boxes of the `unknown`, then `plus`,
+   * together as long as `total`; a negative `plus` is a piece of the boxes taken off past the
+   * total. `grouped`: p(x + q) = r, `times` equal groups each of x and q (or one box "x − 15").
+   * Drag the end of the bar to change the total.
+   */
+  | {
+      kind: 'tape';
+      equation: {
+        times: string;
+        unknown: string;
+        plus: string;
+        total: string;
+        grouped?: boolean;
+      };
+    }
   | {
       kind: 'tape';
       compare: [string, string];
@@ -178,6 +194,20 @@ export type Representation =
       right: string[];
       /** Taken away from the left pan: those counters are crossed out (10 − 2 on the left). */
       takeAway?: string;
+    }
+  /**
+   * A hanger (Grade 7–8 equations): a wooden beam on a hook with a tray on each end holding
+   * `x` blocks of the `unknown` and `units` unit weights (a value or a fixed count, whole and
+   * not negative). Level when both sides weigh the same (always level while the unknown is
+   * "?"). `steps` adds buttons that walk the solving: take the same from both sides, then
+   * split into as many equal parts as there are blocks.
+   */
+  | {
+      kind: 'hanger';
+      unknown: string;
+      left: { x?: string | number; units?: string | number };
+      right: { x?: string | number; units?: string | number };
+      steps?: boolean;
     }
   /**
    * Base-ten blocks (hundreds flats, tens rods, ones cubes) for each group, and for the total.
@@ -419,6 +449,23 @@ export type Representation =
       /** Whole grids, fully shaded, before the first: the ones of a decimal (1.35). */
       wholes?: string;
     }
+  /**
+   * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is
+   * `width` × `height` squares in the outline `shape` (default an L), the copy is `factor` times
+   * each length, joined by an arrow labelled with the factor. `copyWidth`, `copyHeight` and
+   * `area` (original, copy) are values the module works out; drag the copy's corner to change
+   * the factor.
+   */
+  | {
+      kind: 'scaleCopy';
+      factor: string;
+      width: string | number;
+      height: string | number;
+      copyWidth?: string;
+      copyHeight?: string;
+      area?: [string, string];
+      shape?: 'rectangle' | 'triangle' | 'L' | 'trapezoid';
+    }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
   | {
       kind: 'circle';
@@ -427,6 +474,15 @@ export type Representation =
       diameter?: string;
       circumference?: string;
       area?: string;
+      /**
+       * Grade 7 pictures, with buttons to switch when there are two or more: 'radius' (the
+       * circle above), 'unroll' (the circle rolled one turn: its circumference along a line,
+       * π diameters, with three diameters marked under it) and 'wedges' (the circle cut into
+       * `wedges` pieces laid top and bottom in a near-parallelogram π × r long and r tall).
+       */
+      views?: ('radius' | 'unroll' | 'wedges')[];
+      /** How many wedges (even, 4–24; a number or a value). Default 8. */
+      wedges?: number | string;
     }
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
   | { kind: 'rightTriangle'; a: string; b: string; c: string; extent: number }
@@ -818,7 +874,16 @@ export type Representation =
        * one of the four, or a variable (1 <, 2 ≤, 3 >, 4 ≥) with buttons to change it;
        * `letter` names the unknown from Grade 6 (default x).
        */
-      inequality?: { sign: string; test?: string; letter?: string };
+      inequality?: {
+        sign: string;
+        test?: string;
+        letter?: string;
+        /**
+         * Grade 7: the inequality as written is `times`·x + `plus` (sign) `total`; `value` is its
+         * solved bound, (total − plus) ÷ times. A negative `times` flips the drawn sign.
+         */
+        twoStep?: { times: string; plus: string; total: string };
+      };
       /**
        * Adding (`op` '+', the default) or subtracting ('−') a signed number as a jump from
        * `value` by `by` to `result`: right for a positive jump, left for a negative one;
