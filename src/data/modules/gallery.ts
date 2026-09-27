@@ -1513,7 +1513,6 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
 ];
 
 /** A sort whose cards are card icons: [bin id, label, why, icons]. */
-/** A sort of card icons, one bin per group (the gallery's icon demos). */
 export function iconSort(
   id: string,
   title: string,
