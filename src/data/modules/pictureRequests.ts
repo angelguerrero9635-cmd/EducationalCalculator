@@ -1104,10 +1104,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.erosion-landforms~slow-it',
     kind: 'icon',
     pages: ['s.2.erosion-landforms~slow-it'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3f-slow-it'],
+    uses: '"icon":"snow fence"',
     notes:
-      'Row of trees → a row of trees; Snow fence → a slatted snow fence; Sandbags along a river → sandbags stacked on a riverbank; Wall of rocks → a rock wall at a shore; Dam → a dam across a river',
+      "Row of trees → a row of trees; Snow fence → a slatted snow fence; Sandbags along a river → sandbags stacked on a riverbank; Wall of rocks → a rock wall at a shore; Dam → a dam across a river. Drawn: each card gets figure: { kind: 'icon', icon }: Row of trees → 'row of trees' (a windbreak of four trees along a plowed field); Snow fence → 'snow fence'; Sandbags along a river → 'sandbags on riverbank'; Wall of rocks → 'rock wall at shore'; Dam → 'dam' (shared with D46)",
   },
   {
     id: 'D26',
@@ -1320,20 +1321,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.natural-resources',
     kind: 'icon',
     pages: ['s.4.natural-resources'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3f-energy'],
+    uses: '"icon":"wind turbine"',
     notes:
-      "Sunlight → existing icon 'sun'; Wind → a wind turbine; Moving water → a dam with water flowing through it; Wood → a stack of logs; Heat from inside Earth → a geyser; Coal → lumps of coal; Oil → an oil pump; Natural gas → a gas stove flame",
+      "Sunlight → existing icon 'sun'; Wind → a wind turbine; Moving water → a dam with water flowing through it; Wood → a stack of logs; Heat from inside Earth → a geyser; Coal → lumps of coal; Oil → an oil pump; Natural gas → a gas stove flame. Drawn: each card gets figure: { kind: 'icon', icon }: Sunlight → 'sun' (existing); Wind → 'wind turbine'; Moving water → 'dam' (water pouring out through its gates into the river; also D25's Dam); Wood → 'stack of logs'; Heat from inside Earth → 'geyser'; Coal → 'lumps of coal'; Oil → 'oil pump'; Natural gas → 'gas stove flame'; Uranium (not requested) → 'nuclear power plant' (a cooling tower with steam and a reactor dome, where uranium's energy is used)",
   },
   {
     id: 'D47',
     what: 'Card pictures for s.4.natural-resources~hazards',
     kind: 'icon',
     pages: ['s.4.natural-resources~hazards'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3f-natural-hazards'],
+    uses: '"icon":"braced walls"',
     notes:
-      'Levee along a river → a raised bank beside a river; Sandbags → a stacked sandbag wall; House raised on posts → a house on posts; Braced walls → a wall frame with cross braces; Shelves bolted to the wall → a bookshelf with wall brackets; Brush cleared near houses → a house with a cleared ring around it; Fire break → a bare strip cut through a forest; Storm shutters → a window with closed shutters; Roof strapped to the walls → a roof with metal straps',
+      "Levee along a river → a raised bank beside a river; Sandbags → a stacked sandbag wall; House raised on posts → a house on posts; Braced walls → a wall frame with cross braces; Shelves bolted to the wall → a bookshelf with wall brackets; Brush cleared near houses → a house with a cleared ring around it; Fire break → a bare strip cut through a forest; Storm shutters → a window with closed shutters; Roof strapped to the walls → a roof with metal straps. Drawn: each card gets figure: { kind: 'icon', icon }: Levee along a river → 'levee'; Sandbags → 'sandbag wall'; House raised on posts → 'house on stilts'; Braced walls → 'braced walls'; Shelves bolted to the wall → 'bolted shelves'; Brush cleared near houses → 'cleared brush around house'; Fire break → 'fire break'; Storm shutters → 'storm shutters'; Roof strapped to the walls → 'roof straps' (levee, sandbag wall, house on stilts, storm shutters and roof straps are the same drawings as D36)",
   },
   {
     id: 'D48',

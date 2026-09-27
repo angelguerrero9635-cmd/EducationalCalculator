@@ -21,4 +21,23 @@ export const R3F_ICONS = [
   'getting ready for a storm',
   'staying inside in a storm',
   'going out after a storm',
+  // Slowing wind and water (D25); 'dam' is shared with D46.
+  'row of trees',
+  'snow fence',
+  'sandbags on riverbank',
+  'rock wall at shore',
+  'dam',
+  // Energy resources (D46).
+  'wind turbine',
+  'stack of logs',
+  'geyser',
+  'lumps of coal',
+  'oil pump',
+  'gas stove flame',
+  'nuclear power plant',
+  // Protecting against natural hazards (D47).
+  'braced walls',
+  'bolted shelves',
+  'cleared brush around house',
+  'fire break',
 ] as const;

@@ -88,4 +88,65 @@ export const R3F_GALLERY_LAYOUTS: LayoutDef[] = [
       ['Going indoors', 'lightning', 'staying inside in a storm'],
     ],
   ),
+  // D25: s.2.erosion-landforms~slow-it.
+  cardSort(
+    'g.r3f-slow-it',
+    'Slowing wind and water',
+    'Does it slow the wind or the water?',
+    [
+      ['wind', 'Slows wind', 'It stands in the wind’s way.'],
+      ['water', 'Slows water', 'It holds the soil or blocks the water.'],
+    ],
+    [
+      ['Row of trees', 'wind', 'row of trees'],
+      ['Snow fence', 'wind', 'snow fence'],
+      ['Sandbags along a river', 'water', 'sandbags on riverbank'],
+      ['Wall of rocks', 'water', 'rock wall at shore'],
+      ['Dam', 'water', 'dam'],
+    ],
+  ),
+  // D46: s.4.natural-resources (Sunlight → the existing 'sun').
+  cardSort(
+    'g.r3f-energy',
+    'Energy resources',
+    'Will this energy source run out?',
+    [
+      ['renewable', 'Renewable', 'Nature makes more of it in a lifetime, or it never runs out.'],
+      ['nonrenewable', 'Nonrenewable', 'Once used, it is gone for a very long time.'],
+    ],
+    [
+      ['Sunlight', 'renewable', 'sun'],
+      ['Wind', 'renewable', 'wind turbine'],
+      ['Moving water', 'renewable', 'dam'],
+      ['Wood', 'renewable', 'stack of logs'],
+      ['Heat from inside Earth', 'renewable', 'geyser'],
+      ['Coal', 'nonrenewable', 'lumps of coal'],
+      ['Oil', 'nonrenewable', 'oil pump'],
+      ['Natural gas', 'nonrenewable', 'gas stove flame'],
+      ['Uranium', 'nonrenewable', 'nuclear power plant'],
+    ],
+  ),
+  // D47: s.4.natural-resources~hazards.
+  cardSort(
+    'g.r3f-natural-hazards',
+    'Protecting against natural hazards',
+    'Which hazard does this protect against?',
+    [
+      ['flood', 'Flood', 'Keep water out, or keep homes above it.'],
+      ['earthquake', 'Earthquake', 'Keep buildings and shelves from falling.'],
+      ['wildfire', 'Wildfire', 'Leave nothing near homes for the fire to burn.'],
+      ['hurricane', 'Hurricane', 'Hold roofs and windows against strong wind.'],
+    ],
+    [
+      ['Levee along a river', 'flood', 'levee'],
+      ['Sandbags', 'flood', 'sandbag wall'],
+      ['House raised on posts', 'flood', 'house on stilts'],
+      ['Braced walls', 'earthquake', 'braced walls'],
+      ['Shelves bolted to the wall', 'earthquake', 'bolted shelves'],
+      ['Brush cleared near houses', 'wildfire', 'cleared brush around house'],
+      ['Fire break', 'wildfire', 'fire break'],
+      ['Storm shutters', 'hurricane', 'storm shutters'],
+      ['Roof strapped to the walls', 'hurricane', 'roof straps'],
+    ],
+  ),
 ];

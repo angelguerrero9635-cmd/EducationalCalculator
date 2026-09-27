@@ -249,6 +249,30 @@ export function R3FIcon({ icon, ink }: IconProps): ReactNode {
       }),
     );
 
+  /** A pine tree standing at (x, base), `h` tall. */
+  const pine = (x: number, base: number, h: number, key?: string) => (
+    <G key={key}>
+      <Rect x={x - h * 0.05} y={base - h * 0.2} width={h * 0.1} height={h * 0.2} fill={c.bark} />
+      {lit(
+        `M ${x} ${base - h} L ${x + h * 0.3} ${base - h * 0.18} H ${x - h * 0.3} Z`,
+        c.lifeDeep,
+        Math.min(1, h / 14),
+      )}
+    </G>
+  );
+  /** A round bush or tree top at (x, y), radius r. */
+  const bush = (x: number, y: number, r: number, key?: string) => (
+    <G key={key}>{lit(ell(x, y, r, r * 0.85), c.lifeDeep, 0.9)}</G>
+  );
+  /** An irregular rock around (x, y), radius r. */
+  const rock = (x: number, y: number, r: number, fill: string, key?: string) => {
+    const pts = [0, 55, 115, 175, 235, 300].map((a, i) => {
+      const k = r * [1, 0.85, 1.05, 0.9, 1, 0.8][i]!;
+      return `${x + k * Math.cos((a * Math.PI) / 180)},${y + k * 0.85 * Math.sin((a * Math.PI) / 180)}`;
+    });
+    return <G key={key}>{lit(`M ${pts.join(' L ')} Z`, fill, 0.9)}</G>;
+  };
+
   let art: ReactNode;
   switch (icon) {
     // ── Precipitation and other weather (D09) ─────────────────────────────────
@@ -619,6 +643,461 @@ export function R3FIcon({ icon, ink }: IconProps): ReactNode {
         </>
       );
       break;
+
+    // ── Slowing wind and water (D25) ──────────────────────────────────────────
+    case 'row of trees':
+      art = (
+        <>
+          <Rect x={0} y={38} width={48} height={10} fill={c.soil} />
+          {line('M 0 42 H 48 M 0 46 H 48', c.soilDark, 0.9, 0.8)}
+          {line('M 0 38 H 48', c.lifeDeep, 1.6)}
+          {[8, 18.5, 29, 39.5].map((x, i) => (
+            <G key={x}>
+              {face(`M ${x - 1.2} 26 H ${x + 1.2} V 38.5 H ${x - 1.2} Z`, c.bark, 0.8)}
+              {lit(ell(x, 20 + (i % 2) * 1.5, 5.6, 9), i % 2 ? c.life : c.lifeDeep, 1.1)}
+            </G>
+          ))}
+        </>
+      );
+      break;
+    case 'snow fence':
+      art = (
+        <>
+          {wind(1.5, 8, 9)}
+          {wind(12, 4, 7, false)}
+          {Array.from({ length: 14 }, (_, i) => {
+            const x = 7.2 + i * 2.5;
+            return <G key={i}>{face(`M ${x} 19 H ${x + 1.4} V 38 H ${x} Z`, c.orange, 0.6)}</G>;
+          })}
+          {line('M 5 22 H 43 M 5 34 H 43', c.metalDark, 0.9)}
+          {face('M 4.5 16 H 7 V 40 H 4.5 Z', c.wood, 0.9)}
+          {face('M 41 16 H 43.5 V 40 H 41 Z', c.wood, 0.9)}
+          <Path
+            d="M 0 40 C 10 39 20 38.5 26 37.5 C 34 36 38 30 44 29 C 46 29 47.5 30.5 48 31 V 48 H 0 Z"
+            fill={c.snow}
+            {...o(1)}
+          />
+          <Path
+            d="M 30 37 C 35 35 38 31 43 30.5"
+            fill="none"
+            stroke={c.rainCloud}
+            strokeWidth={1}
+          />
+        </>
+      );
+      break;
+    case 'sandbags on riverbank':
+      art = (
+        <>
+          {grass(16)}
+          {bush(40, 10, 5)}
+          <Rect x={39.2} y={13} width={1.6} height={4} fill={c.bark} />
+          <Path d={waves(0, 48, 34.5, 48, 8)} fill={c.water} />
+          {line('M 6 40 H 14 M 22 43 H 32 M 36 39.5 H 44', c.waterTop, 1)}
+          {sandbags(
+            [
+              [0.5, 29.5, 5],
+              [5.2, 24, 4],
+            ],
+            9.4,
+            5.6,
+          )}
+        </>
+      );
+      break;
+    case 'rock wall at shore':
+      art = (
+        <>
+          <Path d="M 22 44 V 33 C 26 30 32 29 48 29 V 44 Z" fill={c.rock1} {...o(1)} />
+          {grass(29, 34, 48)}
+          <Path d={waves(0, 22, 29, 44, 4)} fill={c.water} />
+          <Path
+            d="M 2 29 C 4 23 10 21 13 24 C 11 23.5 9 25 10 27"
+            fill="none"
+            stroke={c.waterTop}
+            strokeWidth={1.6}
+            strokeLinecap="round"
+          />
+          {rock(17, 40.5, 4.6, c.rock2, 'a')}
+          {rock(26, 40.8, 4.8, c.rock5, 'b')}
+          {rock(34.5, 40.5, 4.3, c.rock2, 'c')}
+          {rock(21.3, 33.8, 4.4, c.rock5, 'd')}
+          {rock(30, 33.6, 4.5, c.rock2, 'e')}
+          {rock(25.5, 26.8, 4.1, c.rock2, 'f')}
+          {line('M 0 44 H 48', ink, 1.1)}
+          {(
+            [
+              [12, 20],
+              [15, 17],
+              [9.5, 16.5],
+            ] as const
+          ).map(([x, y], i) => (
+            <Path key={i} d={drop(x, y, 0.55)} fill={c.waterTop} {...o(0.5)} />
+          ))}
+        </>
+      );
+      break;
+    case 'dam':
+      art = (
+        <>
+          <Rect x={10} y={10.5} width={28} height={5} fill={c.water} />
+          {lit('M 0 12 L 14 9 L 17.5 44 H 0 Z', c.life, 1)}
+          {lit('M 48 12 L 34 9 L 30.5 44 H 48 Z', c.life, 1)}
+          {face('M 12.5 13 Q 24 16 35.5 13 L 32 41 H 16 Z', c.rock3)}
+          {line('M 19.5 14.8 L 19 32 M 24 15.5 V 32 M 28.5 14.8 L 29 32', ink, 0.6, 0.4)}
+          {line('M 12.5 13 Q 24 16 35.5 13', c.metalDark, 1.2)}
+          <Rect x={19.2} y={32} width={3.6} height={4} fill={c.cupDark} {...o(0.7)} />
+          <Rect x={25.2} y={32} width={3.6} height={4} fill={c.cupDark} {...o(0.7)} />
+          <Path d="M 13 48 L 16 41 H 32 L 35 48 Z" fill={c.water} {...o(1)} />
+          <Path
+            d="M 19.4 35 C 19 39 17.5 41 16.5 44 H 23.5 C 23 41 22.8 39 22.6 35 Z M 25.4 35 C 25.2 39 25 41 24.5 44 H 31.5 C 30.5 41 29 39 28.6 35 Z"
+            fill={c.waterTop}
+            {...o(0.7)}
+          />
+          {line('M 18 46 C 20 45 22 47 24 46 C 26 45 28 47 30 46', c.snow, 1)}
+        </>
+      );
+      break;
+
+    // ── Energy resources (D46) ────────────────────────────────────────────────
+    case 'wind turbine': {
+      const blade = (a: number, s = 1) => (
+        <Path
+          key={a}
+          d={`M 0 -1.2 C ${4 * s} -1.8 ${12 * s} -0.8 ${15 * s} 0 C ${12 * s} 0.9 ${4 * s} 1.4 0 1.2 Z`}
+          fill={c.snow}
+          transform={`rotate(${a})`}
+          {...o(0.8 * Math.min(1, s + 0.3))}
+        />
+      );
+      const turbine = (x: number, top: number, s: number) => (
+        <G transform={`translate(${x} ${top}) scale(${s})`}>
+          <Path d="M -0.9 1 H 0.9 L 1.7 30 H -1.7 Z" fill={c.snow} {...o(0.9 / s)} />
+          <Path d="M -0.9 1 H 0.9 L 1.7 30 H -1.7 Z" fill={url(ids.sheen)} />
+          {face('M -1.5 -1.8 H 4.5 V 1.8 H -1.5 Z', c.snow, 0.8 / s)}
+          <G transform="translate(-1.8 0)">
+            {[-90, 30, 150].map((a) => blade(a))}
+            <Circle cx={0} cy={0} r={1.5} fill={c.silver} {...o(0.8 / s)} />
+          </G>
+        </G>
+      );
+      art = (
+        <>
+          {lit('M 0 48 V 42 C 12 38 34 37 48 41 V 48 Z', c.life, 1)}
+          {turbine(39, 24, 0.55)}
+          {turbine(20, 14, 1)}
+        </>
+      );
+      break;
+    }
+    case 'stack of logs': {
+      const logs: [number, number][] = [
+        [19.5, 21],
+        [29.5, 21],
+        [14.5, 29.6],
+        [24.5, 29.6],
+        [34.5, 29.6],
+        [9.5, 38.2],
+        [19.5, 38.2],
+        [29.5, 38.2],
+        [39.5, 38.2],
+      ];
+      const r = 5;
+      art = (
+        <>
+          <FloorShadow cx={27} cy={43.4} rx={21} ry={2.2} />
+          {logs.map(([x, y], i) => (
+            <G key={`b${i}`}>
+              {lit(
+                `M ${x + 0.55 * r} ${y + 0.83 * r} L ${x - 0.55 * r} ${y - 0.83 * r} L ${x + 5 - 0.55 * r} ${y - 3.5 - 0.83 * r} A ${r} ${r} 0 0 1 ${x + 5 + 0.55 * r} ${y - 3.5 + 0.83 * r} Z`,
+                c.bark,
+                0.9,
+              )}
+            </G>
+          ))}
+          {logs.map(([x, y], i) => (
+            <G key={`f${i}`}>
+              <Circle cx={x} cy={y} r={r} fill={c.wood} stroke={c.bark} strokeWidth={1.4} />
+              <Circle cx={x} cy={y} r={r + 0.6} fill="none" {...o(0.8)} />
+              <Circle cx={x} cy={y} r={2.8} fill="none" stroke={c.woodDark} strokeWidth={0.6} />
+              <Circle cx={x} cy={y} r={1.1} fill="none" stroke={c.woodDark} strokeWidth={0.6} />
+              <Circle cx={x} cy={y} r={r} fill={url(ids.round)} />
+            </G>
+          ))}
+        </>
+      );
+      break;
+    }
+    case 'geyser':
+      art = (
+        <>
+          {lit('M 1 45 C 8 38 16 36.5 24 36.5 C 32 36.5 40 38 47 45 Z', c.rock3, 1)}
+          {line('M 9 42 C 12 40.5 15 41 17 40 M 31 40 C 34 41 37 40.5 40 42', c.rock4, 0.9)}
+          <Path d={ell(24, 37.5, 6, 1.6)} fill={c.water} {...o(0.7)} />
+          <Path
+            d="M 21.6 37.5 L 19.5 14 C 19.5 10 28.5 10 28.5 14 L 26.4 37.5 Z"
+            fill={c.water}
+            {...o(1)}
+          />
+          {line('M 22.5 34 L 21 16 M 25.5 34 L 26.8 17', c.waterTop, 1)}
+          {(
+            [
+              [16.5, 11, 3.6],
+              [22, 7, 4.2],
+              [29, 7.5, 3.8],
+              [33.5, 11.5, 3.2],
+              [13, 16, 2.6],
+              [36, 17, 2.4],
+            ] as const
+          ).map(([x, y, r], i) => (
+            <G key={i}>
+              <Circle cx={x} cy={y} r={r} fill={c.snow} {...o(0.8)} />
+              <Circle cx={x} cy={y} r={r} fill={url(ids.round)} />
+            </G>
+          ))}
+          {(
+            [
+              [15, 24],
+              [33, 25],
+              [12.5, 31],
+              [35.5, 31.5],
+            ] as const
+          ).map(([x, y], i) => (
+            <Path key={i} d={drop(x, y, 0.7)} fill={c.water} {...o(0.5)} />
+          ))}
+        </>
+      );
+      break;
+    case 'lumps of coal': {
+      const lumps = [
+        ['M 12 33 L 15 24 L 22 21 L 27 27 L 22 33 Z', 'M 15 24 L 22 21 L 19 27 Z'],
+        ['M 24 29 L 28 20 L 35 19 L 38 26 L 33 31 Z', 'M 28 20 L 35 19 L 31 24 Z'],
+        ['M 5 43 L 8 35 L 15 31 L 21 36 L 20 43 Z', 'M 8 35 L 15 31 L 13 37 Z'],
+        ['M 18 43 L 20 33 L 27 28 L 34 31 L 35 43 Z', 'M 20 33 L 27 28 L 25 35 Z'],
+        ['M 31 43 L 33 35 L 39 32 L 44 36 L 44 43 Z', 'M 33 35 L 39 32 L 37 37 Z'],
+      ];
+      art = (
+        <>
+          <FloorShadow cx={24} cy={43.5} rx={21} ry={2.2} />
+          {lumps.map(([d, top], i) => (
+            <G key={i}>
+              <Path d={d} fill={c.rubber} {...o(1)} />
+              <Path d={top} fill={c.shine} fillOpacity={0.32 * c.sheen + 0.08} />
+              <Path d={d} fill={url(ids.round)} />
+            </G>
+          ))}
+          {(
+            [
+              [17, 25],
+              [31, 22],
+              [11, 36],
+            ] as const
+          ).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.7} fill={c.shine} />
+          ))}
+        </>
+      );
+      break;
+    }
+    case 'oil pump':
+      art = (
+        <>
+          {face('M 2 41 H 46 V 44.5 H 2 Z', c.rock3, 1)}
+          {steel('M 4.5 35.5 H 9 V 41 H 4.5 Z', 0.8)}
+          {line('M 6.8 24 V 35.5', ink, 0.9)}
+          {line('M 21 41 L 26 16 L 31 41 M 22.4 34 H 29.6', c.metalDark, 2.2)}
+          {face('M 34 35 H 44 V 41 H 34 Z', c.metalDark, 0.9)}
+          {line('M 39.5 13.5 L 37.5 32.5', c.metalDark, 1.8)}
+          {lit(ell(37.5, 32.5, 4.6, 4.6), c.blockRed, 1)}
+          <Circle cx={37.5} cy={32.5} r={1.1} fill={ink} />
+          {lit('M 8.5 14.5 L 41 11 L 41.4 15 L 9 18.5 Z', c.chartSecond, 1)}
+          {lit(
+            'M 3 10.5 C 7 9.5 10 11.5 10 14.5 L 10.6 20.5 C 10 23.5 7.5 25 4 25 C 6 20 5.5 15 3 10.5 Z',
+            c.chartSecond,
+            1,
+          )}
+          <Circle cx={26} cy={15.8} r={1.4} fill={c.silver} {...o(0.7)} />
+        </>
+      );
+      break;
+    case 'gas stove flame': {
+      const flames = Array.from({ length: 12 }, (_, i) => {
+        const a = (i * 2 * Math.PI) / 12;
+        return { x: 24 + 10.5 * Math.cos(a), y: 30 + 3 * Math.sin(a), back: Math.sin(a) < 0 };
+      });
+      const flame = (x: number, y: number, k: number) => (
+        <G key={k}>
+          <Path
+            d={`M ${x} ${y - 7} C ${x + 2.2} ${y - 3.5} ${x + 1.8} ${y} ${x} ${y} C ${x - 1.8} ${y} ${x - 2.2} ${y - 3.5} ${x} ${y - 7} Z`}
+            fill={c.spectrumBlue}
+          />
+          <Path
+            d={`M ${x} ${y - 3.5} C ${x + 1} ${y - 2} ${x + 0.9} ${y} ${x} ${y} C ${x - 0.9} ${y} ${x - 1} ${y - 2} ${x} ${y - 3.5} Z`}
+            fill={c.waterTop}
+          />
+        </G>
+      );
+      art = (
+        <>
+          {face('M 2 30 H 46 L 47 46 H 1 Z', c.metal, 1)}
+          {flames.filter((f) => f.back).map((f, i) => flame(f.x, f.y, i))}
+          <Path d={ell(24, 31, 11, 3.4)} fill={c.metalDark} {...o(1)} />
+          <Path d={ell(24, 30.3, 7, 2)} fill={c.rubber} {...o(0.7)} />
+          {flames.filter((f) => !f.back).map((f, i) => flame(f.x, f.y, 100 + i))}
+          {line('M 4 38 L 13 33.5 M 44 38 L 35 33.5 M 24 43 V 35', c.rubber, 2)}
+          <Path d={ell(24, 36, 20, 6.5)} fill="none" stroke={c.rubber} strokeWidth={2} />
+        </>
+      );
+      break;
+    }
+    case 'nuclear power plant':
+      art = (
+        <>
+          {grass(43)}
+          {face('M 31 34 H 45 V 43 H 31 Z', c.rock3, 1)}
+          {lit('M 31 34 C 31 26.5 45 26.5 45 34 Z', c.silver, 1)}
+          {lit('M 7 43 C 10 33 11.5 25 9.5 16 H 26.5 C 24.5 25 26 33 29 43 Z', c.rock3, 1.1)}
+          <Path d={ell(18, 16, 8.5, 1.6)} fill={c.cupDark} {...o(0.9)} />
+          {line('M 10.8 22 C 15 23 21 23 25.2 22', c.blockRed, 1.4, 0.8)}
+          {(
+            [
+              [14, 10, 3.6],
+              [19.5, 7, 4.2],
+              [26, 6.5, 3.8],
+              [31, 9, 3],
+              [36, 7.5, 2.4],
+            ] as const
+          ).map(([x, y, r], i) => (
+            <G key={i}>
+              <Circle cx={x} cy={y} r={r} fill={c.snow} {...o(0.8)} />
+              <Circle cx={x} cy={y} r={r} fill={url(ids.round)} />
+            </G>
+          ))}
+        </>
+      );
+      break;
+
+    // ── Protecting against natural hazards (D47) ──────────────────────────────
+    case 'braced walls': {
+      const studs = [4, 14, 24, 34, 41.5];
+      art = (
+        <>
+          {studs.map((x) => (
+            <G key={x}>{face(`M ${x} 10 H ${x + 2.5} V 40 H ${x} Z`, c.wood, 0.8)}</G>
+          ))}
+          {face('M 5.5 11.5 L 8.5 10 L 42.5 38.5 L 39.5 40 Z', c.woodDark, 0.9)}
+          {face('M 39.5 10 L 42.5 11.5 L 8.5 40 L 5.5 38.5 Z', c.woodDark, 0.9)}
+          {face('M 3 5 H 45 V 10 H 3 Z', c.wood, 1)}
+          {line('M 3 7.5 H 45', ink, 0.6, 0.6)}
+          {face('M 3 40 H 45 V 43 H 3 Z', c.wood, 1)}
+          {line('M 1 43 H 47', ink, 1.1)}
+          {(
+            [
+              [15.2, 17.6],
+              [15.2, 32.4],
+              [25.2, 25],
+              [35.2, 17.6],
+              [35.2, 32.4],
+            ] as const
+          ).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.6} fill={ink} />
+          ))}
+        </>
+      );
+      break;
+    }
+    case 'bolted shelves': {
+      const books: [number, number, number, string][] = [];
+      const colors = [c.blockRed, c.blockBlue, c.chartSecond, c.blockGreen, c.purple];
+      [
+        [13.5, 20.5],
+        [13.5, 29.5],
+        [13.5, 38.5],
+      ].forEach(([x0, base], row) => {
+        let x = x0!;
+        for (let i = 0; i < 5; i++) {
+          const w = 3 + ((i + row) % 3) * 0.6;
+          books.push([x, base!, w, colors[(i + row * 2) % 5]!]);
+          x += w + 0.3;
+        }
+      });
+      art = (
+        <>
+          <Rect x={0} y={0} width={48} height={44} fill={c.fabric} />
+          {face('M 0 42 H 48 V 44 H 0 Z', c.paper, 0.8)}
+          {line('M 0 44 H 48', ink, 1.1)}
+          {face('M 12 12 H 36 V 44 H 12 Z', c.wood, 1.1)}
+          {face('M 13.5 13.5 H 34.5 V 42.5 H 13.5 Z', c.woodDark, 0.8)}
+          {books.map(([x, base, w, fill], i) => (
+            <G key={i}>
+              {face(`M ${x} ${base - 5.5 - (i % 2)} H ${x + w} V ${base} H ${x} Z`, fill, 0.6)}
+            </G>
+          ))}
+          {[20.5, 29.5, 38.5].map((y) => (
+            <G key={y}>{face(`M 13.5 ${y} H 34.5 V ${y + 1.6} H 13.5 Z`, c.wood, 0.7)}</G>
+          ))}
+          {[14, 30].map((x) => (
+            <G key={x}>
+              {steel(`M ${x} 4 H ${x + 3.4} V 11 H ${x + 4} V 13.5 H ${x} Z`, 0.8)}
+              <Circle cx={x + 1.7} cy={6.5} r={0.7} fill={ink} />
+              <Circle cx={x + 1.7} cy={9.5} r={0.7} fill={ink} />
+            </G>
+          ))}
+        </>
+      );
+      break;
+    }
+    case 'cleared brush around house':
+      art = (
+        <>
+          <Path d={ell(24, 31, 23.5, 14)} fill={c.life} {...o(1)} />
+          <Path d={ell(24, 32, 15, 8)} fill={c.rock1} {...o(0.8)} />
+          {(
+            [
+              [5, 26, 3.6],
+              [10.5, 21, 4],
+              [18, 18.5, 4],
+              [26.5, 18, 4],
+              [34.5, 19.5, 4],
+              [41.5, 23.5, 3.8],
+            ] as const
+          ).map(([x, y, r], i) => bush(x, y, r, `b${i}`))}
+          {house(19, 30, 29, 36)}
+          {(
+            [
+              [4.5, 36, 3.4],
+              [9.5, 41, 3.6],
+              [38, 41.5, 3.6],
+              [43.5, 35.5, 3.4],
+            ] as const
+          ).map(([x, y, r], i) => bush(x, y, r, `f${i}`))}
+        </>
+      );
+      break;
+    case 'fire break': {
+      const rows: [number, number][] = [
+        [13, 4],
+        [19, 5.5],
+        [26, 7.5],
+        [35, 10],
+        [46, 12.5],
+      ];
+      art = (
+        <>
+          <Path d="M 0 48 V 12 C 12 8 36 8 48 12 V 48 Z" fill={c.life} {...o(1)} />
+          <Path d="M 22.5 9.3 H 25.5 L 33 48 H 15 Z" fill={c.rock1} {...o(0.9)} />
+          {line('M 24 12 L 24 48', c.rock4, 0.7, 0.7)}
+          {rows.map(([base, h], r) => {
+            const half = 1.5 + ((base - 9) / 39) * 7.5;
+            const xs: number[] = [];
+            for (let x = 24 - half - h * 0.45; x > -h * 0.3; x -= h * 0.62) xs.push(x);
+            for (let x = 24 + half + h * 0.45; x < 48 + h * 0.3; x += h * 0.62) xs.push(x);
+            return xs.map((x, i) => pine(x, base, h, `${r}-${i}`));
+          })}
+        </>
+      );
+      break;
+    }
   }
 
   return (
