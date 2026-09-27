@@ -240,25 +240,21 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
   },
   {
     id: 'R21',
-    what: 'Factor pairs to 200',
+    what: 'Factor pairs to 200; hundred chart around any number to 1,000',
     kind: 'factorPairs',
-    pages: ['m.4.factors-multiples'],
+    pages: ['m.4.factors-multiples', 'm.4.factors-multiples~multiples'],
     status: 'drawn',
-    gallery: ['g.factor-pairs-126', 'g.factor-pairs-200'],
-    uses: '"max":200',
+    gallery: [
+      'g.factor-pairs-126',
+      'g.factor-pairs-200',
+      'g.multiples-652',
+      'g.multiples-1000',
+      'g.chart-piece-652',
+      'g.chart-piece-990',
+    ],
+    uses: '"max":',
     notes:
-      'Factors of 105 and 126. No new field: past 100 the rectangles draw as thin bars to scale, each row labeled. The page raises n (and a, b) to 200 and f to 18 (180 has 18 factors).',
-  },
-  {
-    id: 'R21b',
-    what: 'Hundred chart around any number to 1,000',
-    kind: 'hundredChart',
-    pages: ['m.4.factors-multiples~multiples'],
-    status: 'drawn',
-    gallery: ['g.multiples-652', 'g.multiples-1000', 'g.chart-piece-652', 'g.chart-piece-990'],
-    uses: '"max":1000',
-    notes:
-      'Is 652 a multiple of 5? Pass max: 1000: the chart draws the hundred holding the number (601–700), multiples shaded; with piece, three rows around it. The page raises n to 1000 and q to 500.',
+      'Factors of 105 and 126 (m.4.factors-multiples): no new field; past 100 the rectangles draw as thin bars to scale, each row labeled. Raise n, a and b to 200 and f to 18 (180 has 18 factors). Is 652 a multiple of 5? (~multiples, hundredChart): pass max: 1000; the chart draws the hundred holding the number (601–700) with the multiples shaded, and with piece three rows around it. Raise n to 1000 and q to 500. The two pages share no mark, so `uses` only finds "max": mark this placed once both ranges are raised.',
   },
   {
     id: 'R22',
