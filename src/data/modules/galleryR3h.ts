@@ -254,4 +254,74 @@ export const R3H_GALLERY_LAYOUTS: LayoutDef[] = [
       figure: { kind: 'cell', type: 'animal', highlight: part },
     })),
   },
+  // D57: s.6.cells (Oak tree, Mushroom and Glass bead are other groups' drawings)
+  {
+    kind: 'sort',
+    id: 'g.r3h-cells',
+    title: 'Made of cells?',
+    assumptions: [
+      'Every living thing is made of one or more cells.',
+      'Most cells are too small to see without a microscope.',
+    ],
+    question: 'What is it made of?',
+    bins: [
+      { id: 'one', label: 'One cell', why: 'The whole living thing is one cell.' },
+      { id: 'many', label: 'Many cells', why: 'Many cells of different kinds work together.' },
+      { id: 'none', label: 'No cells', why: 'It is not alive and never was.' },
+    ],
+    cards: [
+      {
+        label: 'Bacterium in yogurt',
+        bin: 'one',
+        figure: { kind: 'cell', type: 'bacterium', shape: 'rod' },
+      },
+      { label: 'Amoeba from a pond', bin: 'one', figure: { kind: 'icon', icon: 'amoeba' } },
+      { label: 'Paramecium', bin: 'one', figure: { kind: 'icon', icon: 'paramecium' } },
+      {
+        label: 'Yeast that raises bread',
+        bin: 'one',
+        figure: { kind: 'icon', icon: 'budding yeast' },
+      },
+      { label: 'Human', bin: 'many', figure: { kind: 'icon', icon: 'person' } },
+      { label: 'Elodea water plant', bin: 'many', figure: { kind: 'icon', icon: 'elodea sprig' } },
+      {
+        label: 'Grain of quartz sand',
+        bin: 'none',
+        figure: { kind: 'icon', icon: 'quartz sand grain' },
+      },
+      {
+        label: 'Air bubble on a slide',
+        bin: 'none',
+        figure: { kind: 'icon', icon: 'air bubble on a slide' },
+      },
+      { label: 'Salt crystal', bin: 'none', figure: { kind: 'icon', icon: 'salt crystal' } },
+    ],
+  },
+  // D59: s.6.body-systems~levels
+  {
+    kind: 'sequence',
+    id: 'g.r3h-body-levels',
+    title: 'From cell to organism',
+    assumptions: [
+      'Each level is made of the one before it.',
+      'The heart is one organ of the circulatory system.',
+    ],
+    question: 'Put the levels in order, smallest first.',
+    stages: [
+      {
+        label: 'Cell: one heart muscle cell',
+        figure: { kind: 'cell', type: 'animal', shape: 'long' },
+      },
+      {
+        label: 'Tissue: a sheet of heart muscle cells',
+        figure: { kind: 'icon', icon: 'heart muscle tissue' },
+      },
+      { label: 'Organ: the heart', figure: { kind: 'heart' } },
+      {
+        label: 'Organ system: the heart, blood vessels and blood',
+        figure: { kind: 'icon', icon: 'circulatory system' },
+      },
+      { label: 'Organism: a whole person', figure: { kind: 'icon', icon: 'person' } },
+    ],
+  },
 ];

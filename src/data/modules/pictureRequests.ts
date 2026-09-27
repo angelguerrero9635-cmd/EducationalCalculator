@@ -1417,10 +1417,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.cells',
     kind: 'icon',
     pages: ['s.6.cells'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-cells'],
+    uses: '"icon":"paramecium"',
     notes:
-      "Bacterium in yogurt → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Amoeba from a pond → an amoeba with pseudopods under a microscope; Paramecium → a slipper-shaped paramecium with cilia; Yeast that raises bread → oval yeast cells, one budding; Elodea water plant → an Elodea sprig; Grain of quartz sand → an angular sand grain under a microscope; Air bubble on a slide → a round air bubble with a dark rim under a microscope; Salt crystal → a cube-shaped salt crystal; Human → existing icon 'person'",
+      "Bacterium in yogurt → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Amoeba from a pond → an amoeba with pseudopods under a microscope; Paramecium → a slipper-shaped paramecium with cilia; Yeast that raises bread → oval yeast cells, one budding; Elodea water plant → an Elodea sprig; Grain of quartz sand → an angular sand grain under a microscope; Air bubble on a slide → a round air bubble with a dark rim under a microscope; Salt crystal → a cube-shaped salt crystal; Human → existing icon 'person'. DRAWN (icons, group H): Bacterium in yogurt → {kind:'cell', type:'bacterium', shape:'rod'}; Amoeba from a pond → icon 'amoeba'; Paramecium → icon 'paramecium'; Yeast that raises bread → icon 'budding yeast'; Elodea water plant → icon 'elodea sprig'; Grain of quartz sand → icon 'quartz sand grain'; Air bubble on a slide → icon 'air bubble on a slide'; Salt crystal → icon 'salt crystal'; Human → icon 'person'. The microscope ones are drawn in a lit microscope field.",
   },
   {
     id: 'D58',
@@ -1438,10 +1439,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.body-systems~levels',
     kind: 'icon',
     pages: ['s.6.body-systems~levels'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3h-body-levels'],
+    uses: '"icon":"circulatory system"',
     notes:
-      "Cell: one heart muscle cell → existing 'cell' figure {type:'animal', shape:'long'}; Tissue: a sheet of heart muscle cells → a sheet of long muscle cells side by side; Organ: the heart → existing card figure {kind:'heart'}; Organ system: the heart, blood vessels and blood → a torso outline with the heart and red and blue vessels; Organism: a whole person → existing icon 'person'",
+      "Cell: one heart muscle cell → existing 'cell' figure {type:'animal', shape:'long'}; Tissue: a sheet of heart muscle cells → a sheet of long muscle cells side by side; Organ: the heart → existing card figure {kind:'heart'}; Organ system: the heart, blood vessels and blood → a torso outline with the heart and red and blue vessels; Organism: a whole person → existing icon 'person'. DRAWN (icons, group H): Cell: one heart muscle cell → {kind:'cell', type:'animal', shape:'long'}; Tissue: a sheet of heart muscle cells → icon 'heart muscle tissue'; Organ: the heart → {kind:'heart'}; Organ system: the heart, blood vessels and blood → icon 'circulatory system'; Organism: a whole person → icon 'person'.",
   },
   {
     id: 'D60',
