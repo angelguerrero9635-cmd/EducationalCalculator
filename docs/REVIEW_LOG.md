@@ -5,6 +5,15 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Typeset formulas: focused lesson-reviewer pass
+
+- Setup: `.review/latex/formulas.md` (every page's formula lines by kind, plain and as
+  `toLatex` would draw them); one lesson-reviewer, about 50k tokens, report only.
+- Found 7 converter faults and the band rules for each kind of line; all applied (engine log).
+  It also found two content faults typesetting made stand out (4 0/6, the regrouping line) and
+  a real bug in the plain text (3 × 4 written 34), fixed.
+- Changes made: check T now covers the Formulas section and its three differences.
+
 ## Question-language pass: every K–6 title and use line against the released questions
 
 - Setup: one table per grade (page id, title and use line, then up to 12 released question

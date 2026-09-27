@@ -54,6 +54,42 @@ describe('toLatex', () => {
     );
   });
 
+  it('formulas: products, bracket powers with a division, subscripts, function names', () => {
+    expect(both('v = cx + k', 'middle', ['v', 'c', 'x', 'k'])).toBe(
+      '$\\mathit{v}$ = $\\mathit{c}\\mathit{x}$ + $\\mathit{k}$',
+    );
+    // A short word made of the letters stays a word.
+    expect(toLatex('a is at most t', 'middle', ['a', 't'])).toBe(
+      '$\\mathit{a}$ is at most $\\mathit{t}$',
+    );
+    expect(both('y = a × (1 + r ÷ 100)^t', 'standard', ['y', 'a', 'r', 't'])).toBe(
+      '$\\mathit{y}$ = $\\mathit{a}$ × $\\pow{(1 + \\divfrac{\\mathit{r}}{100})}{\\mathit{t}}$',
+    );
+    expect(both('(1 + 10 ÷ 100)³', 'standard')).toBe('${(1 + \\divfrac{10}{100})}^{3}$');
+    expect(both('v² = v₀² + 2 × a × d', 'standard', ['v', 'v₀', 'a', 'd'])).toBe(
+      '${\\mathit{v}}^{2}$ = ${\\mathit{v₀}}^{2}$ + 2 × $\\mathit{a}$ × $\\mathit{d}$',
+    );
+    expect(both('a/b is at most 1', 'standard', ['a', 'b'])).toBe(
+      '$\\tfrac{\\mathit{a}}{\\mathit{b}}$ is at most 1',
+    );
+    expect(both('f′(x) = c × x^n', 'standard', ['c', 'x', 'n'])).toBe(
+      '$\\mathit{f}$′($\\mathit{x}$) = $\\mathit{c}$ × $\\pow{\\mathit{x}}{\\mathit{n}}$',
+    );
+    expect(toLatex('point x^power n', 'standard', ['x', 'n'])).not.toContain('\\pow');
+    // Grade 6 formulas state a rule: ÷ stays inline there.
+    expect(toLatex('c ÷ a = e', 'middle', ['c', 'a', 'e'], { solving: false })).toBe(
+      '$\\mathit{c}$ ÷ $\\mathit{a}$ = $\\mathit{e}$',
+    );
+    // Words under a formula: only number fractions, small.
+    expect(toLatex('Ribbons at 2 1/4 in = ribbons', 'elementary', [], { words: true })).toBe(
+      'Ribbons at $2\\tfrac{1}{4}$ in = ribbons',
+    );
+    expect(toLatex('Leg a² + leg b² = hypotenuse²', 'standard', ['a', 'b'], { words: true })).toBe(
+      undefined,
+    );
+    expect(both('3/4 is at most 1', 'elementary')).toBe('$\\tfrac{3}{4}$ is at most 1');
+  });
+
   it('parses the commands it draws, and refuses others', () => {
     expect(splitLine('$\\frac{1}{2}$ of 8').map((p) => p.t)).toEqual(['math', 'text']);
     expect(parseMath('3 \\times 4 \\le 12')).toEqual([{ t: 'text', s: '3 × 4 ≤ 12' }]);

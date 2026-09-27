@@ -1584,7 +1584,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           second.relation,
           {
             id: add ? 's = p + q' : 's = p − q, renamed',
-            display: add ? '{p}/{m} + {q}/{m} = {s}/{m}' : '{p}/{m} − {q}/{m} → {s}/{m}',
+            display: add
+              ? '{p}/{m} + {q}/{m} = {s}/{m}'
+              : '{p}/{m} − {q}/{m} → {s}/{m} (rename 1 whole as {m}/{m} first if needed)',
             words: add
               ? 'Add the new numerators; the denominator stays'
               : 'Subtract the new numerators, renaming 1 whole when the first is smaller',

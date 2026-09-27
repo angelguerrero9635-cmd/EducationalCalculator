@@ -108,6 +108,8 @@ export function renderTemplate(
   values?: Values,
 ): string {
   const byId = new Map(variables.map((v) => [v.id, v]));
+  // Letters side by side multiply (cx); with numbers in them the × is written (3 × 4, not 34).
+  if (values) template = template.replace(/\}\{/g, '} × {');
   const filled = template.replace(/\{(\w+)\}/g, (_, id: string, at: number) => {
     const variable = byId.get(id);
     if (!variable) return id;

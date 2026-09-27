@@ -5,6 +5,7 @@ import {
   splitLine,
   toLatex,
   withoutOuterBrackets,
+  type LatexOptions,
   type MathBand,
   type MathNode,
 } from '@/engine/latex';
@@ -19,29 +20,35 @@ export function MathLine({
   text,
   band,
   symbols,
+  options,
+  after,
   style,
 }: {
   text: string;
   band: MathBand;
   /** The module's letters, drawn in italic from the Grade 6 letter pages on. */
   symbols?: string[];
+  options?: LatexOptions;
+  /** Plain text after the math on the same line (a Grade 6 formula's meaning in words). */
+  after?: string;
   style?: StyleProp<TextStyle>;
 }) {
-  const tex = toLatex(text, band, symbols);
-  if (tex === undefined) return <Text style={style}>{text}</Text>;
+  const tex = toLatex(text, band, symbols, options);
+  if (tex === undefined) return <Text style={style}>{after ? `${text}${after}` : text}</Text>;
   const flat = StyleSheet.flatten(style) ?? {};
   const size = flat.fontSize ?? font.body;
   return (
-    <View style={styles.line} accessible accessibilityLabel={text}>
-      {splitLine(tex).flatMap((piece, i) =>
-        piece.t === 'text'
-          ? // Word by word, so a long line wraps like text.
-            (piece.s.match(/\S+\s*|\s+/g) ?? []).map((word, k) => (
-              <Text key={`${i}-${k}`} style={style}>
-                {word}
-              </Text>
-            ))
-          : [<MathNodes key={i} nodes={piece.nodes} style={style} size={size} />],
+    <View style={styles.line} accessible accessibilityLabel={`${text}${after ?? ''}`}>
+      {[...splitLine(tex), ...(after ? [{ t: 'text' as const, s: after }] : [])].flatMap(
+        (piece, i) =>
+          piece.t === 'text'
+            ? // Word by word, so a long line wraps like text.
+              (piece.s.match(/\S+\s*|\s+/g) ?? []).map((word, k) => (
+                <Text key={`${i}-${k}`} style={style}>
+                  {word}
+                </Text>
+              ))
+            : [<MathNodes key={i} nodes={piece.nodes} style={style} size={size} />],
       )}
     </View>
   );

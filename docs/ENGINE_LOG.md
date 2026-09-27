@@ -5,6 +5,28 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Typeset math in the Formulas section (lesson-reviewer, focused)
+
+- Formulas were flat text while the steps under them were typeset. → `FormulaSection` draws
+  its lines with `MathLine`: Grades 3–5 number sentences stacked; Grade 6 letters in italic
+  with ÷ inline (`solving: false`) and the meaning in words after them as text; high school
+  letters and numbers with divisions stacked; the words line only small number fractions
+  (`words: true`), so "natural increase ÷ population" never stacks; limits stay text.
+- `(1 + r ÷ 100)^t` left a raw ^ (the division split the bracket first). → Bracket powers are
+  found first, with their divisions typeset inside.
+- `v₀²` lost its power; `cx`, `rh`, `px` were upright; `a/b` on a letters page stayed flat;
+  `f(x)` was upright; `x^power` took the p of "power". → Subscripted letters take powers,
+  runs of up to three module letters are italic products outside sentences (never a short
+  word like "at"), two module letters stack as a fraction, f/g/h before a bracket is italic,
+  and ^ takes a whole letter only.
+- Limit lines ("3/4 is at most 1", "fills", "full wholes in") read as sentences. → Their
+  fractions are drawn small.
+- `v = cx + k` read "17 = 34 + 5" with numbers in. → `renderTemplate` writes × between side by
+  side letters when it fills in numbers (17 = 3 × 4 + 5).
+- "24/6 = 4 0/6" → the Formulas section drops an empty fraction part (24/6 = 4); the Grade 5
+  regrouping line says "rename 1 whole as 24/24 first if needed".
+- `latex.test.ts` also round-trips every page's formula lines (letters, numbers, words).
+
 ## Typeset math in the step-by-step (lesson-reviewer, focused)
 
 - Steps showed 2/3 ÷ 3/4 and √(3² + 4²) as flat text. → A LaTeX subset drawn by the app

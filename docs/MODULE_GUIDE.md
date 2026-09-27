@@ -308,7 +308,10 @@ the assumptions and a table or diagram.
      `src/engine/latex.ts`, drawn by `MathLine`): fractions and mixed numbers stacked from
      Grade 3, powers and roots, letters in italic and solving lines stacked on Grade 6 letter
      pages, divisions stacked from high school. K–2 stays plain. `latex.test.ts` checks every
-     page's lines come back to the same text.
+     page's lines come back to the same text. The Formulas section uses the same rules, with
+     three differences: Grade 6 formulas state rules, so ÷ stays inline; the rule in words
+     under a Grade 3–5 number sentence gets only small number fractions; a limit
+     (`constraint`, "3/4 is at most 1") stays text.
    - The `use` line quotes the kind of released question the page solves, in the question's
      own words ("Which number is greater, 54 or 36?"), and never promises more.
    - `layouts.test.ts` covers the sort, sequence, explore and observe pages.

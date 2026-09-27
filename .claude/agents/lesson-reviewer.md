@@ -143,6 +143,9 @@ Grade 6 letter pages, stacked divisions from high school. Flag a line whose math
 typeset and isn't, or is typeset where the grade writes it differently (Grades 3–6 keep ÷ and
 remainders; units, ratios and clock times stay text). Give the rule change for `toLatex`, not a
 change to the step text, unless the text itself is wrong (a fraction "=" a rounded decimal).
+The Formulas section uses the same rules except: Grade 6 formulas keep ÷ inline, the rule in
+words gets only small number fractions, and limits ("3/4 is at most 1") stay text. Check the
+numbers line reads as true arithmetic (3 × 4, never 34; 4, never 4 0/6).
 
 **G. Curriculum coverage.** Map 2–3 widely used curricula for the grade (K–8: Illustrative
 Mathematics, Eureka, Open Up; science: Amplify, Mystery Science, FOSS; high school and college:
