@@ -110,48 +110,48 @@ bus.
 8. **Fraction bars past one whole**: `fractionBars` rows that draw as many whole bars as
    the fraction needs (7/4 is one whole bar and 3/4 of the next), and **mixed-number jumps**
    on `fractionLine` (18 1/4 − 2 3/4).
-8. **Set model for fractions**: `partition` with `shape: 'set'` (objects in a row, some
+9. **Set model for fractions**: `partition` with `shape: 'set'` (objects in a row, some
    marked: 3 of 7 umbrellas).
-9. **Bills and coins together**: `coins` with bills ($1, $5, $10) beside the coins and one
-   total.
-10. **Center and spread with 3 to 10 values**: `dotPlot` already takes `count` and draws the
+10. **Bills and coins together**: `coins` with bills ($1, $5, $10) beside the coins and one
+    total.
+11. **Center and spread with 3 to 10 values**: `dotPlot` already takes `count` and draws the
     first n values (done in the lesson branch); make the median mark clear for odd and even n.
-11. **Inequalities on a number line**: `integerLine` with an open or closed circle at the
+12. **Inequalities on a number line**: `integerLine` with an open or closed circle at the
     bound, an arrow to the solutions, and a test point marked true or false.
-12. **Scaled unit cubes**: `unitCubes` past 10 per edge draws a labelled box to scale
+13. **Scaled unit cubes**: `unitCubes` past 10 per edge draws a labelled box to scale
     (40 × 60 × 80 cm).
-13. **Ratio graph on numbered axes**: the `ratioTable` graph's axes scale to the rows shown,
+14. **Ratio graph on numbered axes**: the `ratioTable` graph's axes scale to the rows shown,
     with 3–4 numbered ticks per axis.
-14. **3-digit number line**: `numberLine` from a start (500) with ticks every 1, 10 or 100
+15. **3-digit number line**: `numberLine` from a start (500) with ticks every 1, 10 or 100
     and a point to place (540).
-15. **Plot a point**: `coordinatePlane` first quadrant where the student taps or drags one
+16. **Plot a point**: `coordinatePlane` first quadrant where the student taps or drags one
     point, with the path "across then up" drawn from the origin.
-16. **Line plot of lengths**: `linePlot` with 6 marks starting at any whole number, in inches
+17. **Line plot of lengths**: `linePlot` with 6 marks starting at any whole number, in inches
     or centimeters, in halves, quarters or eighths.
-17. **Measured leaves**: a plant in the sun and one in the shade with their green leaves
+18. **Measured leaves**: a plant in the sun and one in the shade with their green leaves
     counted (for the Grade 2 page that now counts leaves, not height).
-18. **Protractor with neither arm at 0**: `protractor` reading two arm marks (45 and 135).
-19. **Fraction answers**: pictures that show a quotient or a share as a mixed number
+19. **Protractor with neither arm at 0**: `protractor` reading two arm marks (45 and 135).
+20. **Fraction answers**: pictures that show a quotient or a share as a mixed number
     (33 1/3 groups, 2 3/8 L), drawn from the value, not rounded decimals.
 
-20. **Factor pairs past 100**: `factorPairs` for numbers to 200 (factors of 105, 126), and a
+21. **Factor pairs past 100**: `factorPairs` for numbers to 200 (factors of 105, 126), and a
     `hundredChart` that shows the hundred around a number up to 1,000 (is 652 a multiple of 5?).
     The lesson chat will raise those pages' ranges once these draw.
-21. **Line plot in quarter inches from any start**: `linePlot` whose marks step by 1/4 or 1/2
+22. **Line plot in quarter inches from any start**: `linePlot` whose marks step by 1/4 or 1/2
     from a start that is itself a fraction (straws from 3 3/4 to 5 1/2 inches).
-22. **Hundredths grids past 3 ones**: `grid100` with `wholes` up to 99 (45.06 is 45 whole
+23. **Hundredths grids past 3 ones**: `grid100` with `wholes` up to 99 (45.06 is 45 whole
     grids and 6 hundredths): draw a few whole grids and a count, so the Grade 4 decimals page can
     take ones to 99.
-23. **Groups of many**: `equalGroups` with up to 90 groups (4 × 50 × 9 as 50 groups of 36), so
+24. **Groups of many**: `equalGroups` with up to 90 groups (4 × 50 × 9 as 50 groups of 36), so
     the Grade 3 grouping page can take a factor that is a multiple of 10.
-24. **Decimal number line from any start**: `fractionLine` with `decimal` that starts at a whole
+25. **Decimal number line from any start**: `fractionLine` with `decimal` that starts at a whole
     number (a line from 1 to 3 in tenths, with 2.6 marked).
-25. **Fraction area past one whole**: `fractionArea` whose factors can be more than 1
+26. **Fraction area past one whole**: `fractionArea` whose factors can be more than 1
     (5/7 × 10/3 as a 2-by-4 block of unit squares, 5/2 × 1 1/3), so Grade 5 multiplication can
     drop "each fraction at most 1".
-26. **Place-value chart to billions**: `placeValueChart` with billions (10⁹ = 1,000,000,000),
+27. **Place-value chart to billions**: `placeValueChart` with billions (10⁹ = 1,000,000,000),
     for Grade 5 powers of ten to exponent 9.
-27. **Decimal jumps past 30**: the divide-by-a-decimal picture for quotients to 999
+28. **Decimal jumps past 30**: the divide-by-a-decimal picture for quotients to 999
     (21 ÷ 0.2 = 105 jumps of 0.2): group the jumps by tens when there are many.
 
 ### 2. Grade 7 math (planned skills in `src/data/taxonomy.ts`)
