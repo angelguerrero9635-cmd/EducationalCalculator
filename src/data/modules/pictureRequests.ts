@@ -232,11 +232,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Number line from a start (500) with ticks of 1, 10 or 100, counted by ticks',
     kind: 'numberLine',
     pages: ['m.2.place-value-1000~number-line'],
-    status: 'requested',
-    gallery: [],
-    uses: '"from"',
+    status: 'drawn',
+    gallery: ['g.number-line-ticks', 'g.number-line-ticks-100'],
+    uses: '"count":"k"',
     notes:
-      'Drawn once, but it needs a distance value. Take the tick count and tick size instead (count: k, every: s), so Grade 2 never writes a multiplication.',
+      'Pass { kind: "numberLine", start: "a", from: "a", every: "s", count: "k", end: "n", min: 0, max: 1000 } (no jump). One jump per tick, each named "+10" while it fits; the caption counts: "Start at 500. 4 jumps of 10: 510, 520, 530, 540." The line runs 10 ticks (span) from the start; dragging the point snaps to a tick. The page keeps its own variables and relation.',
   },
   {
     id: 'R21',

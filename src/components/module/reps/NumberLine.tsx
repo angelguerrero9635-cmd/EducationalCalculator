@@ -18,9 +18,11 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const a = rep.val(spec.start);
-  const b = rep.val(spec.jump);
   const end = rep.val(spec.end);
-  const faded = ![spec.start, spec.jump, spec.end].every(rep.known);
+  // A line counted by ticks (`count`) has no distance value: the jump is the ticks between.
+  const counted = !!spec.count && !!spec.from;
+  const b = spec.jump ? rep.val(spec.jump) : end - a;
+  const faded = ![spec.start, spec.jump ?? spec.count ?? spec.end, spec.end].every(rep.known);
   // Subtraction (the end and the jump typed, the start worked out): hop back from the end.
   const back = calc.status(spec.start) === 'derived' && calc.status(spec.end) === 'given';
   // A line from a value (500) in ticks of 1, 10 or 100; otherwise min to max.
@@ -50,9 +52,9 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
         const [from0, to0] = back ? [end, a] : [a, end];
         const d = to0 - from0;
         const sign = d < 0 ? -1 : 1;
-        const size = spec.jumps === 'ticks' ? tick : 10;
+        const size = spec.jumps === 'ticks' || counted ? tick : 10;
         const tens =
-          spec.jumps === 'tens' || spec.jumps === 'ticks'
+          spec.jumps === 'tens' || spec.jumps === 'ticks' || counted
             ? Math.min(40, Math.floor(Math.abs(d) / size + 1e-9))
             : 0;
         const stops = [
@@ -108,11 +110,18 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const lift = Math.min(h * 0.45, 30 + Math.abs(to - from) * unit * 0.3);
                 const mid = (sx(from) + sx(to)) / 2;
                 const label =
-                  arcs.length === 1
+                  arcs.length === 1 && spec.jump
                     ? `${back ? '−' : b >= 0 ? '+' : ''}${rep.value(spec.jump)}`
                     : `${sign > 0 ? '+' : '−'}${formatNumber(Number(Math.abs(to - from).toFixed(6)))}`;
-                // Many small jumps name only the first, so the labels don't pile up.
-                if (arcs.length > 6 && i > 0 && Math.abs(Math.abs(to - from) - size) < 1e-9) {
+                // Many small jumps name only the first, so the labels don't pile up; a counted
+                // line names every jump while the labels fit between the ticks.
+                const roomy = counted && unit * tick >= 10 + chart.small * 0.6 * label.length;
+                if (
+                  arcs.length > 6 &&
+                  i > 0 &&
+                  !roomy &&
+                  Math.abs(Math.abs(to - from) - size) < 1e-9
+                ) {
                   return (
                     <Path
                       key={i}
@@ -135,9 +144,14 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fill="none"
                     />
                     <ChartText
-                      {...fitLabel(mid, label, arcs.length === 1 ? chart.value : chart.small, w)}
+                      {...fitLabel(
+                        mid,
+                        label,
+                        arcs.length === 1 && !counted ? chart.value : chart.small,
+                        w,
+                      )}
                       y={y - lift - 8}
-                      fontSize={arcs.length === 1 ? chart.value : chart.small}
+                      fontSize={arcs.length === 1 && !counted ? chart.value : chart.small}
                       fill={c.chartInk}
                     >
                       {label}
@@ -174,7 +188,7 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 onMove={(dx) =>
                   calc.set(
                     {
-                      ...rep.pin([spec.jump]),
+                      ...rep.pin([spec.jump ?? spec.count ?? spec.end]),
                       [spec.start]: rep.snapTo(spec.start, start.current + dx / unit),
                     },
                     rep.slide(spec.start),
@@ -192,10 +206,15 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 calc.set(
                   {
                     ...rep.pin([spec.start, ...(spec.every ? [spec.every] : [])]),
-                    [spec.end]: rep.snapTo(
-                      spec.end,
-                      Math.min(hi, Math.max(lo, start.current + dx / unit)),
-                    ),
+                    [spec.end]: counted
+                      ? // On a tick: the start and a whole number of ticks.
+                        lo +
+                        tick *
+                          Math.min(
+                            Math.round((hi - lo) / tick),
+                            Math.max(0, Math.round((start.current + dx / unit - lo) / tick)),
+                          )
+                      : rep.snapTo(spec.end, Math.min(hi, Math.max(lo, start.current + dx / unit))),
                   },
                   rep.slide(spec.end),
                 )
@@ -207,6 +226,26 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </Canvas>
   );
   if (!spec.from) return picture;
+  if (counted) {
+    // Grade 2 counts the ticks: "Start at 500. 4 jumps of 10: 510, 520, 530, 540."
+    const k = rep.val(spec.count!);
+    const stops = Array.from({ length: Math.min(k, 20) }, (_, i) =>
+      formatNumber(Number((a + (i + 1) * tick).toFixed(6))),
+    );
+    const list = k > 20 ? [...stops.slice(0, 2), '…', formatNumber(end)] : stops;
+    return (
+      <View>
+        {picture}
+        <Caption>
+          {faded || !fromKnown
+            ? 'Type the numbers to place the point.'
+            : k === 0
+              ? `The point is at the start: ${formatNumber(a)}.`
+              : `Start at ${formatNumber(a)}. ${k} ${k === 1 ? 'jump' : 'jumps'} of ${formatNumber(tick)}: ${list.join(', ')}.`}
+        </Caption>
+      </View>
+    );
+  }
   // The number sentence the jumps show, with every number: "500 + 40 = 540".
   const jumpsN = spec.jumps === 'ticks' ? Math.floor(Math.abs(end - a) / tick + 1e-9) : 0;
   const rest = Number((Math.abs(end - a) - jumpsN * tick).toFixed(6));

@@ -37,7 +37,8 @@ export type Representation =
   | {
       kind: 'numberLine';
       start: string;
-      jump: string;
+      /** The distance from start to end; not needed with `count`. */
+      jump?: string;
       end: string;
       min: number;
       max: number;
@@ -58,6 +59,12 @@ export type Representation =
       every?: string;
       /** Ticks on a `from` line (default 10). */
       span?: number;
+      /**
+       * On a `from` line: the ticks counted from the start to the point, drawn one jump per
+       * tick and named in the caption as a count ("Start at 500. 4 jumps of 10: 510, 520, 530,
+       * 540."), so no distance value is needed. Dragging the point snaps to a tick.
+       */
+      count?: string;
     }
   /**
    * Ten-frames with two kinds of counters: `first` solid (●), then `second` open (○), `total` in all.

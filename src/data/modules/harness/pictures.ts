@@ -448,6 +448,18 @@ export function repIssues(
           out.push(`number line point ${id} = ${x} off the line (${lo}–${hi})`);
         }
       }
+      // A line counted by ticks: whole ticks, one jump each, from the start to the point.
+      if (rep.count !== undefined && rep.from !== undefined) {
+        count(rep.count, 'ticks counted', rep.span ?? 10);
+        const [k, a, n] = [val(rep.count), val(rep.start), val(rep.end)];
+        if (
+          k !== undefined &&
+          a !== undefined &&
+          n !== undefined &&
+          Math.abs(a + k * every - n) > 1e-9
+        )
+          out.push(`${k} ticks of ${every} from ${a} land on ${a + k * every}, the point is ${n}`);
+      }
       break;
     }
     // Grade 3 pictures.

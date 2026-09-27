@@ -6,7 +6,7 @@
  */
 import type { Relation, Values } from '@/engine/types';
 
-import { whole } from './helpers';
+import { div, whole } from './helpers';
 import type { ModuleDef, StepText } from './types';
 
 /** Bills and coins with what each is worth in cents. */
@@ -131,6 +131,57 @@ const holds = (v: Values) =>
 const PLOT = ['a', 'b', 'c', 'd', 'e', 'f'];
 const plotLength = (v: Values, id: string) => Number((v.s! + PLOT.indexOf(id) / v.m!).toFixed(6));
 const plotTotal = (v: Values) => PLOT.reduce((t, id) => t + v[id]! * plotLength(v, id), 0);
+
+/**
+ * A three-digit number line counted by ticks (m.2.place-value-1000~number-line): the start,
+ * the tick size and the ticks counted, with no distance value to multiply out.
+ */
+const ticksLine = (id: string, title: string, example: Values): ModuleDef => ({
+  id,
+  title,
+  assumptions: [
+    'Read the number at the start of the line and how much each tick mark is worth.',
+    'Count the ticks from the start to the point.',
+  ],
+  variables: [
+    whole('a', 'a', 'Line starts at', 0, 990),
+    { ...whole('s', 's', 'Each tick is worth', 1, 100), allowed: [1, 10, 100] },
+    whole('k', 'k', 'Ticks from the start', 0, 10),
+    whole('n', 'n', 'Number at the point', 0, 1000),
+  ],
+  relations: [
+    {
+      id: 'n = a + k ticks of s',
+      display: 'Start at {a}. {k} ticks of {s} land on {n}.',
+      vars: ['n', 'a', 'k', 's'],
+      residual: (v: Values) => v.n! - v.a! - v.k! * v.s!,
+      solve: {
+        n: (v: Values) => v.a! + v.k! * v.s!,
+        a: (v: Values) => v.n! - v.k! * v.s!,
+        k: (v: Values) => div(v.n! - v.a!, v.s!),
+      },
+    },
+  ],
+  steps: {
+    'n = a + k ticks of s': {
+      n: { expr: '{a} + {k} jumps of {s}', how: 'Count on by the tick size, once for each tick.' },
+      k: { expr: 'jumps of {s} from {a} to {n}', how: 'Count the ticks from the start.' },
+      a: { expr: '{n} − {k} jumps of {s}', how: 'Count back from the point to the start.' },
+    },
+  },
+  example,
+  startWith: ['a', 's', 'n'],
+  representation: {
+    kind: 'numberLine',
+    start: 'a',
+    end: 'n',
+    min: 0,
+    max: 1000,
+    from: 'a',
+    every: 's',
+    count: 'k',
+  },
+});
 
 export const OPTION_GALLERY_MODULES: ModuleDef[] = [
   {
@@ -557,4 +608,6 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
     startWith: ['f', 's'],
     representation: { kind: 'protractor', angle: 'a', arms: { first: 'f', second: 's' } },
   },
+  ticksLine('g.number-line-ticks', 'Number line counted by ticks', { a: 500, s: 10, k: 4, n: 540 }),
+  ticksLine('g.number-line-ticks-100', 'Number line in hundreds', { a: 0, s: 100, k: 10, n: 1000 }),
 ];
