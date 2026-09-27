@@ -206,7 +206,11 @@ function representationVars(r: Representation): string[] {
     case 'factorTree':
       return [r.value, ...[r.count, r.second, r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'protractor':
-      return [r.angle, ...(r.other ? [r.other] : [])];
+      return [
+        r.angle,
+        ...(r.other ? [r.other] : []),
+        ...(r.arms ? [r.arms.first, r.arms.second] : []),
+      ];
     case 'wave':
       return [
         ...(r.amplitude ? [r.amplitude] : []),

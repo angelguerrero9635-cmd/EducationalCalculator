@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -14,14 +15,23 @@ type Spec = Extract<Representation, { kind: 'protractor' }>;
 /**
  * A protractor over an angle: one arm along the 0° line to the right, the other turned by
  * the angle. The inner scale counts up from the first arm; the outer scale counts from the
- * other end, so it reads 180° minus the angle. Drag the turned arm.
+ * other end, so it reads 180° minus the angle. Drag the turned arm. With `arms`, neither arm is
+ * on 0: each arm reads its own mark on the inner scale, both drag, and the angle between them
+ * is the difference of the two readings.
  */
 export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef({ a: 0, cx: 0, cy: 0, r: 1 });
   const known = rep.known(spec.angle);
-  const a = Math.min(180, Math.max(0, rep.shown(spec.angle)));
+  const clamp = (x: number) => Math.min(180, Math.max(0, x));
+  const arms = spec.arms;
+  const armsKnown = !arms || (rep.known(arms.first) && rep.known(arms.second));
+  // The two arms' marks on the inner scale: 0 and the angle, or the two readings.
+  const fa = arms ? clamp(rep.shown(arms.first)) : 0;
+  const sa = arms ? clamp(rep.shown(arms.second)) : clamp(rep.shown(spec.angle));
+  const a = Math.abs(sa - fa);
+  const [loA, hiA] = [Math.min(fa, sa), Math.max(fa, sa)];
 
   return (
     <View>
@@ -79,13 +89,33 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
               );
             }
           }
-          const [ax, ay] = toXY(a, R + 24);
-          const [hx, hy] = toXY(a, R * 0.8);
-          const [wx, wy] = toXY(0, R + 24);
-          const arcEnd = toXY(a, 30);
+          const [ax, ay] = toXY(sa, R + 24);
+          const [wx, wy] = toXY(fa, R + 24);
+          const arcStart = toXY(loA, 30);
+          const arcEnd = toXY(hiA, 30);
+          const [vx, vy] = arms ? toXY((loA + hiA) / 2, 52) : [cx, cy - R * 0.35];
+          // Each arm's reading, on the plastic between the scale and the inner arc.
+          // Each reading sits just outside the angle, beside its arm, not on it.
+          const reading = (deg: number) => {
+            const side = deg === loA && loA !== hiA ? -1 : 1;
+            const [x, y] = toXY(Math.min(176, Math.max(4, deg + side * 8)), R * 0.66);
+            return (
+              <ChartText
+                key={`r${deg}`}
+                x={x}
+                y={y + 4}
+                fontSize={chart.label}
+                fontWeight="700"
+                fill={c.chartHighlight}
+                textAnchor="middle"
+              >
+                {`${formatNumber(deg)}`}
+              </ChartText>
+            );
+          };
           return (
             <>
-              <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
+              <Svg width={w} height={h} opacity={known && armsKnown ? 1 : 0.4}>
                 <Path
                   d={`M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy} Z`}
                   fill={c.shadow}
@@ -116,7 +146,7 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 {marks}
                 {a > 0 ? (
                   <Path
-                    d={`M ${cx + 30} ${cy} A 30 30 0 ${a > 180 ? 1 : 0} 0 ${arcEnd[0]} ${arcEnd[1]}`}
+                    d={`M ${arcStart[0]} ${arcStart[1]} A 30 30 0 0 0 ${arcEnd[0]} ${arcEnd[1]}`}
                     fill="none"
                     stroke={c.chartHighlight}
                     strokeWidth={chart.stroke}
@@ -139,9 +169,10 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   strokeWidth={chart.strokeHeavy}
                 />
                 <Circle cx={cx} cy={cy} r={4} fill={c.chartInk} />
+                {arms && armsKnown ? [reading(fa), reading(sa)] : null}
                 <ChartText
-                  x={cx}
-                  y={cy - R * 0.35}
+                  x={vx}
+                  y={vy + (arms ? 5 : 0)}
                   fontSize={chart.emphasis}
                   fontWeight="700"
                   textAnchor="middle"
@@ -149,39 +180,70 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   {rep.value(spec.angle)}
                 </ChartText>
               </Svg>
-              {known ? (
-                <DragHandle
-                  testID={`drag-${spec.angle}`}
-                  x={hx}
-                  y={hy}
-                  label={rep.variable(spec.angle).name}
-                  onStart={() => {
-                    start.current = { a, cx, cy, r: R * 0.8 };
-                  }}
-                  onMove={(dx, dy) => {
-                    const s = start.current;
-                    const [sx, sy] = toXY(s.a, s.r);
-                    const deg = (-Math.atan2(sy + dy - s.cy, sx + dx - s.cx) * 180) / Math.PI;
-                    const next = Math.min(180, Math.max(0, Math.round(deg)));
-                    calc.set(
-                      {
-                        [spec.angle]: rep.snapTo(spec.angle, next * rep.factor(spec.angle)),
-                      },
-                      rep.slide(spec.angle),
-                    );
-                  }}
-                />
-              ) : null}
+              {(arms
+                ? armsKnown
+                  ? [
+                      { id: arms.first, deg: fa },
+                      { id: arms.second, deg: sa },
+                    ]
+                  : []
+                : known
+                  ? [{ id: spec.angle, deg: sa }]
+                  : []
+              ).map(({ id, deg: at }) => {
+                const [hx, hy] = toXY(at, R * (arms ? 0.86 : 0.8));
+                return (
+                  <DragHandle
+                    key={id}
+                    testID={`drag-${id}`}
+                    x={hx}
+                    y={hy}
+                    label={rep.variable(id).name}
+                    onStart={() => {
+                      start.current = { a: at, cx, cy, r: R * (arms ? 0.86 : 0.8) };
+                    }}
+                    onMove={(dx, dy) => {
+                      const s = start.current;
+                      const [sx, sy] = toXY(s.a, s.r);
+                      const deg = (-Math.atan2(sy + dy - s.cy, sx + dx - s.cx) * 180) / Math.PI;
+                      const next = Math.min(180, Math.max(0, Math.round(deg)));
+                      calc.set(
+                        {
+                          ...(arms
+                            ? rep.pin([arms.first, arms.second].filter((x) => x !== id))
+                            : {}),
+                          [id]: rep.snapTo(id, next * rep.factor(id)),
+                        },
+                        rep.slide(id),
+                      );
+                    }}
+                  />
+                );
+              })}
             </>
           );
         }}
       </Canvas>
       <Caption>
-        {known
-          ? `The inner scale starts at 0 on the flat arm and reads ${rep.value(spec.angle)}.${spec.other ? ` The outer scale reads ${rep.value(spec.other)}: 180° − ${rep.value(spec.angle)}.` : ''}`
-          : 'Type the angle to turn the arm.'}
+        {arms
+          ? armsKnown
+            ? `Neither arm is on 0. The arms read ${formatNumber(fa)} and ${formatNumber(sa)} on the inner scale: ${formatNumber(hiA)} − ${formatNumber(loA)} = ${rep.value(spec.angle)}.`
+            : 'Type where each arm is on the inner scale.'
+          : known
+            ? `The inner scale starts at 0 on the flat arm and reads ${rep.value(spec.angle)}.${spec.other ? ` The outer scale reads ${rep.value(spec.other)}: 180° − ${rep.value(spec.angle)}.` : ''}`
+            : 'Type the angle to turn the arm.'}
       </Caption>
-      <Steppers calc={calc} items={[{ var: spec.angle, steps: [1, 10], pin: [] }]} />
+      <Steppers
+        calc={calc}
+        items={
+          arms
+            ? [
+                { var: arms.first, steps: [1, 10], pin: [arms.second] },
+                { var: arms.second, steps: [1, 10], pin: [arms.first] },
+              ]
+            : [{ var: spec.angle, steps: [1, 10], pin: [] }]
+        }
+      />
     </View>
   );
 }

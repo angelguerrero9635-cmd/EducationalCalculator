@@ -119,24 +119,6 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     />
                   ))
                 : null}
-              {dots.map((d) => {
-                const mid = middle?.ranks.includes(rank.get(d.i)!);
-                return (
-                  <G key={d.i}>
-                    <Circle cx={x(d.v)} cy={d.y} r={r} fill={mid ? c.chartHighlight : c.chartInk} />
-                    {mid ? (
-                      <Circle
-                        cx={x(d.v)}
-                        cy={d.y}
-                        r={r + 3}
-                        fill="none"
-                        stroke={c.chartHighlight}
-                        strokeWidth={chart.strokeLight}
-                      />
-                    ) : null}
-                  </G>
-                );
-              })}
               {median !== undefined ? (
                 <G>
                   <Line
@@ -158,6 +140,24 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </ChartText>
                 </G>
               ) : null}
+              {dots.map((d) => {
+                const mid = middle?.ranks.includes(rank.get(d.i)!);
+                return (
+                  <G key={d.i}>
+                    <Circle cx={x(d.v)} cy={d.y} r={r} fill={mid ? c.chartHighlight : c.chartInk} />
+                    {mid ? (
+                      <Circle
+                        cx={x(d.v)}
+                        cy={d.y}
+                        r={r + 3}
+                        fill="none"
+                        stroke={c.chartHighlight}
+                        strokeWidth={chart.strokeLight}
+                      />
+                    ) : null}
+                  </G>
+                );
+              })}
               {mean !== undefined ? (
                 <G>
                   <Path d={`M ${x(mean)} ${lineY + 22} l -8 12 l 16 0 z`} fill={c.chartHighlight} />

@@ -512,4 +512,49 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
       points: PLOT.map((id, i) => ({ var: id, at: i })),
     },
   },
+  {
+    id: 'g.protractor-arms',
+    title: 'Protractor, neither arm on 0',
+    assumptions: [
+      'Read both arms on the same scale.',
+      'The angle is the difference of the two readings.',
+    ],
+    variables: [
+      { ...whole('f', 'f', 'First arm reads', 0, 180), unit: '°' },
+      { ...whole('s', 's', 'Second arm reads', 0, 180), unit: '°' },
+      { ...whole('a', 'a', 'Angle', 0, 180), unit: '°' },
+    ],
+    relations: [
+      {
+        id: 'f ≤ s',
+        constraint: true,
+        display: '{f} is at most {s}',
+        vars: ['f', 's'],
+        residual: (v: Values) => (v.f! <= v.s! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'a = s − f',
+        display: '{s} − {f} = {a}',
+        vars: ['a', 's', 'f'],
+        residual: (v: Values) => v.a! - (v.s! - v.f!),
+        solve: {
+          a: (v: Values) => v.s! - v.f!,
+          s: (v: Values) => v.f! + v.a!,
+          f: (v: Values) => v.s! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      'f ≤ s': {},
+      'a = s − f': {
+        a: { expr: '{s} − {f}', how: 'Take the smaller reading from the bigger one.' },
+        s: { expr: '{f} + {a}', how: 'Turn on from the first arm by the angle.' },
+        f: { expr: '{s} − {a}', how: 'Turn back from the second arm by the angle.' },
+      },
+    },
+    example: { f: 45, s: 135, a: 90 },
+    startWith: ['f', 's'],
+    representation: { kind: 'protractor', angle: 'a', arms: { first: 'f', second: 's' } },
+  },
 ];

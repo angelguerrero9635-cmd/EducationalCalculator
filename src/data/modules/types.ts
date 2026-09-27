@@ -832,8 +832,17 @@ export type Representation =
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }
   /** A graduated cylinder: the level before (dashed), after, and the rise (the object's volume). */
   | { kind: 'gradCylinder'; before: string; after: string; volume?: string; max: number }
-  /** Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale. */
-  | { kind: 'protractor'; angle: string; other?: string }
+  /**
+   * Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale.
+   * With `arms`, neither arm is on 0: each reads a mark on the inner scale (45 and 135), both
+   * drag, and `angle` is the difference.
+   */
+  | {
+      kind: 'protractor';
+      angle: string;
+      other?: string;
+      arms?: { first: string; second: string };
+    }
   /**
    * A wave drawn with its `wavelength` (and `amplitude`, when the lesson has one; else a
    * fixed height); `extent` is the width shown in wavelength units.

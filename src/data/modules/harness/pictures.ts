@@ -686,6 +686,19 @@ export function repIssues(
       const o = rep.other ? val(rep.other) : undefined;
       if (a !== undefined && o !== undefined && Math.abs(a + o - 180) > 1e-9)
         out.push(`protractor scales ${a} and ${o} don't add to 180`);
+      if (rep.arms) {
+        const [f, s] = [rep.arms.first, rep.arms.second].map(val);
+        for (const x of [f, s])
+          if (x !== undefined && (x < 0 || x > 180))
+            out.push(`protractor arm at ${x} is off the scale`);
+        if (
+          f !== undefined &&
+          s !== undefined &&
+          a !== undefined &&
+          Math.abs(Math.abs(s - f) - a) > 1e-9
+        )
+          out.push(`protractor arms at ${f} and ${s} show the angle ${a}`);
+      }
       break;
     }
     case 'wave': {
