@@ -250,7 +250,7 @@ export function Generations({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {[
           `${cap(names[follow] ?? '')}: ${rows.map((row) => rep.value(row[follow]!)).join(', ')}`,
           `In all: ${rows.map((row, g) => (row.every(rep.known) ? formatNumber(totals[g]!) : '?')).join(', ')}`,
-          `Share of ${names[follow] ?? ''}: ${rows
+          `Share of all: ${rows
             .map((_, g) => {
               const p = share(g);
               return p === undefined ? '?' : `${formatNumber(Math.round(p * 10) / 10)}%`;
