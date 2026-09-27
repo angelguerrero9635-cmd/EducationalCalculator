@@ -75,6 +75,12 @@ const sum = {
   },
 };
 
+const strength = product('S', 'N', 'I', [
+  'Multiply the turns by the current.',
+  'Divide the strength by the current.',
+  'Divide the strength by the turns.',
+]);
+
 export const S4D_GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.em-spectrum',
@@ -280,6 +286,49 @@ export const S4D_GALLERY_MODULES: ModuleDef[] = [
       count: 'n',
       current: 'I',
     },
+  },
+  {
+    id: 'g.electromagnet',
+    title: 'Electromagnet',
+    assumptions: [
+      'A current in a coil of wire makes a magnet; an iron nail inside makes it stronger.',
+      'Its strength follows turns × current (in amp-turns).',
+      'Here every 5 amp-turns picks up one paper clip.',
+    ],
+    variables: [
+      { ...whole('N', 'N', 'Turns', 10, 60), unit: 'turns', allowed: [10, 20, 30, 40, 50, 60] },
+      {
+        id: 'I',
+        symbol: 'I',
+        name: 'Current',
+        unit: 'A',
+        min: 0,
+        max: 2,
+        step: 0.5,
+      },
+      { id: 'S', symbol: 'S', name: 'Strength', unit: 'amp-turns', min: 0, max: 120, step: 1 },
+      { ...whole('k', 'k', 'Paper clips', 0, 24), unit: 'clips' },
+    ],
+    relations: [
+      strength.relation,
+      {
+        id: 'k = S ÷ 5',
+        display: '{k} = {S} ÷ 5',
+        vars: ['k', 'S'],
+        residual: (v: Values) => v.k! - v.S! / 5,
+        solve: { k: (v: Values) => v.S! / 5, S: (v: Values) => 5 * v.k! },
+      },
+    ],
+    steps: {
+      [strength.relation.id]: strength.steps,
+      'k = S ÷ 5': {
+        k: { expr: '{S} ÷ 5', how: 'One clip for every 5 amp-turns.' },
+        S: { expr: '5 × {k}', how: 'Each clip takes 5 amp-turns.' },
+      },
+    },
+    example: { N: 20, I: 1.5, S: 30, k: 6 },
+    startWith: ['N', 'I'],
+    representation: { kind: 'electromagnet', turns: 'N', current: 'I', strength: 'S', clips: 'k' },
   },
 ];
 

@@ -100,6 +100,7 @@ import { ZeroPairs } from './ZeroPairs';
 import { CurvedSolid } from './CurvedSolid';
 import { Spectrum } from './Spectrum';
 import { Circuit } from './Circuit';
+import { Electromagnet } from './Electromagnet';
 import { Scatter } from './Scatter';
 import { RootSquare } from './RootSquare';
 import { FactorRows } from './FactorRows';
@@ -177,6 +178,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Flashlights spec={spec} calc={calc} />;
     case 'leafCount':
       return <LeafCount spec={spec} calc={calc} />;
+    case 'electromagnet':
+      return <Electromagnet spec={spec} calc={calc} />;
     case 'circuit':
       return <Circuit spec={spec} calc={calc} />;
     case 'spectrum':

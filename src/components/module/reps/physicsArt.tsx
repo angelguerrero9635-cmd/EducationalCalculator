@@ -79,6 +79,67 @@ export function Battery({
 }
 
 /**
+ * A battery cell lying down, + end (copper band and nub) on the left: body from `left` to
+ * `left + length`, centered on `y`. `sheen` is a vertical Sheen gradient id.
+ */
+export function BatteryFlat({
+  left,
+  y,
+  length,
+  width = 22,
+  sheen,
+  faded,
+}: {
+  left: number;
+  y: number;
+  length: number;
+  width?: number;
+  sheen: string;
+  faded?: boolean;
+}) {
+  const c = usePalette();
+  const band = length * 0.28;
+  const top = y - width / 2;
+  return (
+    <G opacity={faded ? 0.45 : 1}>
+      <Rect x={left + 2} y={top + 3} width={length} height={width} rx={4} fill={c.shadow} />
+      <Rect
+        x={left - 5}
+        y={y - 5}
+        width={7}
+        height={10}
+        rx={2}
+        fill={c.metal}
+        stroke={c.metalDark}
+      />
+      <Rect x={left} y={top} width={length} height={width} rx={4} fill={c.rubber} />
+      <Rect x={left} y={top} width={band} height={width} rx={4} fill={c.copper} />
+      <Rect x={left} y={top} width={length} height={width} rx={4} fill={url(sheen)} />
+      <ChartText
+        x={left + band / 2}
+        y={y + 4.5}
+        fontSize={chart.label}
+        fontWeight="700"
+        fill={c.pennyInk}
+        textAnchor="middle"
+      >
+        +
+      </ChartText>
+      <ChartText
+        x={left + length - 9}
+        y={y + 4.5}
+        fontSize={chart.label}
+        fontWeight="700"
+        fill={c.pennyInk}
+        textAnchor="middle"
+      >
+        −
+      </ChartText>
+    </G>
+  );
+}
+
+/**
  * A light bulb in a metal screw socket, the socket's middle at (x, y): a glass globe above it
  * with a filament, glowing with `glow` (0 dark to 1 full). `glass` is a Glass gradient id and
  * `metal` a Metal one.
