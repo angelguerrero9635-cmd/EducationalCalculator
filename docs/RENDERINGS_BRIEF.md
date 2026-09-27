@@ -133,6 +133,12 @@ bus.
 19. **Fraction answers**: pictures that show a quotient or a share as a mixed number
     (33 1/3 groups, 2 3/8 L), drawn from the value, not rounded decimals.
 
+20. **Factor pairs past 100**: `factorPairs` for numbers to 200 (factors of 105, 126), and a
+    `hundredChart` that shows the hundred around a number up to 1,000 (is 652 a multiple of 5?).
+    The lesson chat will raise those pages' ranges once these draw.
+21. **Line plot in quarter inches from any start**: `linePlot` whose marks step by 1/4 or 1/2
+    from a start that is itself a fraction (straws from 3 3/4 to 5 1/2 inches).
+
 ### 2. Grade 7 math (planned skills in `src/data/taxonomy.ts`)
 
 - proportional-relationships: a graph of y = kx through the origin with the point (1, k)

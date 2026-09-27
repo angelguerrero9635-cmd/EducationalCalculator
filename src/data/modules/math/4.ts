@@ -2551,6 +2551,72 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  // ── A square: every side the same (4.MD.3; NAEP 2003-4M6 #10, 2011-4M9 #7) ──
+  {
+    id: 'm.4.area-perimeter-formulas~square',
+    title: 'Perimeter and area of a square',
+    use: 'Use this for a square: “The perimeter of a square is 36 meters. How long is each side?”',
+    assumptions: [
+      'A square has 4 sides, all the same length.',
+      'Perimeter is the distance around: 4 × side.',
+      'Area is the space inside: side × side, in square units.',
+      'Whole-number sides up to 100.',
+    ],
+    variables: [
+      { ...whole('s', 's', 'Side', 1, 100), unit: 'm' },
+      { ...whole('P', 'P', 'Perimeter', 4, 400), unit: 'm' },
+      { ...whole('A', 'A', 'Area', 1, 10000), unit: 'm²' },
+    ],
+    relations: [
+      {
+        id: 'P = 4 × s',
+        display: '4 × {s} = {P}',
+        words: '4 × side = perimeter',
+        vars: ['P', 's'],
+        residual: (v: Values) => v.P! - 4 * v.s!,
+        solve: { P: (v: Values) => 4 * v.s!, s: (v: Values) => v.P! / 4 },
+      },
+      {
+        id: 'A = s × s',
+        display: '{s} × {s} = {A}',
+        words: 'Side × side = area',
+        vars: ['A', 's'],
+        residual: (v: Values) => v.A! - v.s! * v.s!,
+        solve: { A: (v: Values) => v.s! * v.s! },
+      },
+    ],
+    steps: {
+      'P = 4 × s': {
+        P: {
+          expr: '4 × {s}',
+          how: 'All 4 sides are the same: multiply the side by 4.',
+          work: (v) => timesWork(4, v.s!),
+        },
+        s: {
+          expr: '{P} ÷ 4',
+          how: 'The perimeter is 4 equal sides: divide it by 4.',
+          work: (v) => divideWork(v.P!, 4),
+        },
+      },
+      'A = s × s': {
+        A: {
+          expr: '{s} × {s}',
+          how: 'Multiply the side by itself: rows of unit squares.',
+          work: (v) => timesWork(v.s!, v.s!),
+        },
+      },
+    },
+    example: { s: 9, P: 36, A: 81 },
+    startWith: ['P'],
+    representation: {
+      kind: 'rectangle',
+      length: 's',
+      width: 's',
+      inside: 'A',
+      around: 'P',
+      extent: 10,
+    },
+  } satisfies ModuleDef,
   // ── Angles: degrees as parts of a turn, and angle addition (4.MD.5, 4.MD.7) ──
   {
     id: 'm.4.angles',

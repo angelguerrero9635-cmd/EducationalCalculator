@@ -2286,9 +2286,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Perimeter is a length, not square units.',
     ],
     variables: [
-      { ...whole('l', 'l', 'Length', 1, 20), unit: 'cm' },
-      { ...whole('w', 'w', 'Width', 1, 20), unit: 'cm' },
-      { ...whole('P', 'P', 'Perimeter', 4, 80), unit: 'cm' },
+      { ...whole('l', 'l', 'Length', 1, 500), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 500), unit: 'cm' },
+      { ...whole('P', 'P', 'Perimeter', 4, 1000), unit: 'cm' },
     ],
     relations: [
       {
@@ -2497,10 +2497,10 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Keep the area and change the length to compare.',
     ],
     variables: [
-      { ...whole('l', 'l', 'Length', 1, 19), unit: 'cm' },
-      { ...whole('w', 'w', 'Width', 1, 19), unit: 'cm' },
-      { ...whole('P', 'P', 'Perimeter', 4, 74), step: 2, unit: 'cm' },
-      { ...whole('A', 'A', 'Area', 1, 36), unit: 'cm²' },
+      { ...whole('l', 'l', 'Length', 1, 100), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 100), unit: 'cm' },
+      { ...whole('P', 'P', 'Perimeter', 4, 202), step: 2, unit: 'cm' },
+      { ...whole('A', 'A', 'Area', 1, 100), unit: 'cm²' },
     ],
     relations: [
       {
@@ -2732,24 +2732,30 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'Half a picture stands for half the key: with a key of 2, half a picture is 1.',
       ],
       variables: [
-        { ...whole('k', 'k', 'Each picture stands for', 2, 10), allowed: [2, 5, 10] },
+        { ...whole('k', 'k', 'Each picture stands for', 2, 10), allowed: [2, 4, 5, 10] },
         {
           ...whole('p1', 'p₁', 'Apple pictures', 0, 10),
           step: 0.5,
           multipleOf: 0.5,
           integer: false,
+          // Half a picture reads as a fraction in Grade 3: 3 1/2 pictures, not 3.5.
+          fraction: 2,
         },
         {
           ...whole('p2', 'p₂', 'Pear pictures', 0, 10),
           step: 0.5,
           multipleOf: 0.5,
           integer: false,
+          // Half a picture reads as a fraction in Grade 3: 3 1/2 pictures, not 3.5.
+          fraction: 2,
         },
         {
           ...whole('p3', 'p₃', 'Plum pictures', 0, 10),
           step: 0.5,
           multipleOf: 0.5,
           integer: false,
+          // Half a picture reads as a fraction in Grade 3: 3 1/2 pictures, not 3.5.
+          fraction: 2,
         },
         whole('n1', 'n₁', 'Apples', 0, 100),
         whole('n2', 'n₂', 'Pears', 0, 100),
@@ -2794,18 +2800,22 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'Then subtract the smaller count from the bigger one.',
       ],
       variables: [
-        { ...whole('k', 'k', 'Each picture stands for', 2, 10), allowed: [2, 5, 10] },
+        { ...whole('k', 'k', 'Each picture stands for', 2, 10), allowed: [2, 4, 5, 10] },
         {
           ...whole('p1', 'p₁', 'Apple pictures', 0, 10),
           step: 0.5,
           multipleOf: 0.5,
           integer: false,
+          // Half a picture reads as a fraction in Grade 3: 3 1/2 pictures, not 3.5.
+          fraction: 2,
         },
         {
           ...whole('p2', 'p₂', 'Pear pictures', 0, 10),
           step: 0.5,
           multipleOf: 0.5,
           integer: false,
+          // Half a picture reads as a fraction in Grade 3: 3 1/2 pictures, not 3.5.
+          fraction: 2,
         },
         whole('n1', 'n₁', 'Apples', 0, 100),
         whole('n2', 'n₂', 'Pears', 0, 100),
@@ -2911,9 +2921,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Every full set of marks is 1 inch; the marks left over are the fraction of an inch.',
     ],
     variables: [
-      whole('a', 'a', 'Marks from 0', 0, 12),
+      whole('a', 'a', 'Marks from 0', 0, 48),
       { ...whole('b', 'b', 'Marks in one inch', 2, 4), allowed: [2, 4] },
-      whole('w', 'w', 'Whole inches', 0, 3),
+      whole('w', 'w', 'Whole inches', 0, 12),
       whole('r', 'r', 'Marks past the last inch', 0, 3),
     ],
     relations: [

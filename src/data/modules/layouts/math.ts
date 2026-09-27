@@ -1696,18 +1696,21 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.3.mass-liquid-volume~about-a-liter',
-    title: 'More or less than a liter?',
-    use: 'Use this to estimate whether a container holds more or less than 1 liter.',
+    title: 'More, less or about a liter?',
+    use: 'Use this to estimate whether a container holds more than, less than or about 1 liter.',
     assumptions: [
       'A big water bottle holds about 1 liter.',
       'Compare each container with that bottle.',
     ],
-    question: 'Does it hold more or less than 1 liter?',
+    question: 'Does it hold more than, less than, or about 1 liter?',
     bins: [
       { id: 'less', label: 'Less than 1 liter', why: 'It holds less than a big water bottle.' },
+      { id: 'about', label: 'About 1 liter', why: 'It holds about as much as a big water bottle.' },
       { id: 'more', label: 'More than 1 liter', why: 'It holds more than a big water bottle.' },
     ],
     cards: [
+      { label: 'Big water bottle', bin: 'about' },
+      { label: 'Carton of milk (1 liter)', bin: 'about' },
       { label: 'Spoon', bin: 'less' },
       { label: 'Cup', bin: 'less' },
       { label: 'Juice box', bin: 'less' },
@@ -1720,6 +1723,68 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   },
 
   // ── Grade 4 ──
+  // What rule makes the pattern (4.OA.5): NAEP items add, multiply or take turns.
+  {
+    kind: 'sort',
+    id: 'm.4.factors-multiples~pattern-rules',
+    title: 'What is the rule?',
+    use: 'Use this to find the rule of a number pattern: add, multiply or take turns.',
+    assumptions: [
+      'The rule is what takes one number to the next.',
+      'Check the rule on every pair of neighbors, not just the first two.',
+      'Some patterns take turns between two steps: +3, then −1.',
+    ],
+    question: 'Which rule makes the pattern?',
+    bins: [
+      {
+        id: 'add',
+        label: 'Add the same number',
+        why: 'Each number is the one before plus the same amount.',
+      },
+      {
+        id: 'times',
+        label: 'Multiply by the same number',
+        why: 'Each number is the one before times the same amount.',
+      },
+      { id: 'turns', label: 'Two steps that take turns', why: 'The steps change back and forth.' },
+    ],
+    cards: [
+      { label: '3, 6, 9, 12', bin: 'add' },
+      { label: '14, 26, 38, 50', bin: 'add' },
+      { label: '5, 12, 19, 26', bin: 'add' },
+      { label: '2, 6, 18, 54', bin: 'times' },
+      { label: '5, 10, 20, 40', bin: 'times' },
+      { label: '1, 4, 16, 64', bin: 'times' },
+      { label: '3, 6, 5, 8, 7', bin: 'turns' },
+      { label: '1, 6, 4, 9, 7', bin: 'turns' },
+    ],
+  },
+  // About a meter (4.MD.1): benchmark lengths.
+  {
+    kind: 'sort',
+    id: 'm.4.unit-conversion~about-a-meter',
+    title: 'More or less than a meter?',
+    use: 'Use this to estimate whether a length is more than or less than 1 meter.',
+    assumptions: [
+      'A meter stick is 1 meter: about the width of a classroom door.',
+      'Compare each length with a meter stick.',
+    ],
+    question: 'Is it more than or less than 1 meter?',
+    bins: [
+      { id: 'less', label: 'Less than 1 meter', why: 'It is shorter than a meter stick.' },
+      { id: 'more', label: 'More than 1 meter', why: 'It is longer than a meter stick.' },
+    ],
+    cards: [
+      { label: 'Paper clip', bin: 'less' },
+      { label: 'Your finger', bin: 'less' },
+      { label: 'Math workbook', bin: 'less' },
+      { label: 'Pencil', bin: 'less' },
+      { label: 'Height of a classroom door', bin: 'more' },
+      { label: 'Width of the classroom', bin: 'more' },
+      { label: 'School bus', bin: 'more' },
+      { label: 'Hallway', bin: 'more' },
+    ],
+  },
   {
     kind: 'sort',
     id: 'm.4.factors-multiples~prime-composite',
@@ -1966,6 +2031,26 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       },
       { label: 'The letter X', bin: 'neither', figure: { kind: 'lines', angle: 60 } },
       { label: 'The letter V', bin: 'neither', figure: { kind: 'letter', text: 'V' } },
+      {
+        label: 'The two sides of the letter N',
+        bin: 'parallel',
+        figure: { kind: 'letter', text: 'N' },
+      },
+      {
+        label: 'The two sides of the letter H',
+        bin: 'parallel',
+        figure: { kind: 'letter', text: 'H' },
+      },
+      {
+        label: 'The two lines of the letter T',
+        bin: 'perpendicular',
+        figure: { kind: 'letter', text: 'T' },
+      },
+      {
+        label: 'The two lines of the letter L',
+        bin: 'perpendicular',
+        figure: { kind: 'letter', text: 'L' },
+      },
       {
         label: 'The hands of a clock at 1:00',
         bin: 'neither',
