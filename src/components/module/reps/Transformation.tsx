@@ -48,8 +48,11 @@ function ruleText(move: TransformationSpec['move'], v: MoveValues): string | und
       if (Math.abs(v.angle / 90 - Math.round(v.angle / 90)) > 1e-9) return undefined;
       return ['(x, y) → (x, y)', '(x, y) → (−y, x)', '(x, y) → (−x, −y)', '(x, y) → (y, −x)'][q];
     }
-    case 'dilate':
-      return atOrigin ? `(x, y) → (${coef(v.factor)}x, ${coef(v.factor)}y)` : undefined;
+    case 'dilate': {
+      // A fraction factor is bracketed: (x, y) → ((5/4)x, (5/4)y).
+      const k = coef(v.factor).includes('/') ? `(${coef(v.factor)})` : coef(v.factor);
+      return atOrigin ? `(x, y) → (${k}x, ${k}y)` : undefined;
+    }
   }
 }
 
