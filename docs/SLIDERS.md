@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-26 of 420 pages show sliders.
+26 of 451 pages show sliders.
 
 ## By picture kind
 
@@ -38,31 +38,31 @@ its kind with `sliders: true | false`.
 | electromagnet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | energyPyramid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | energyTrack | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| equalGroups | 10 | no | the picture has its own handles or taps, or the inputs are enough |
 | equationBalance | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorPairs | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorRows | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fieldOfView | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | flashlights | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| fractionArea | 2 | no | set on the module (hidden) |
+| fractionArea | 5 | no | set on the module (hidden) |
 | fractionBars | 8 | no | set on the module (hidden) |
 | fractionFit | 3 | no | set on the module (hidden) |
-| fractionLine | 12 | no | the picture has its own handles or taps, or the inputs are enough |
+| fractionLine | 14 | no | the picture has its own handles or taps, or the inputs are enough |
 | functionMachine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | generations | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grassSlope | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| grid100 | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | hanger | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | heatingCurve | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 6 | no | set on the module (hidden) |
-| hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| hundredChart | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | integerLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | leafCount | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | linearFunction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| linePlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| linePlot | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | lineSystem | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | mapping | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | marbles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -70,7 +70,7 @@ its kind with `sliders: true | false`.
 | motionGraph | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | net | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| numberLine | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| numberLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | orbit | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | partition | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
@@ -79,7 +79,7 @@ its kind with `sliders: true | false`.
 | periodicTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
-| placeValueChart | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| placeValueChart | 13 | no | the picture has its own handles or taps, or the inputs are enough |
 | plot | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | powerScale | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -104,7 +104,7 @@ its kind with `sliders: true | false`.
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | skaters | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 16 | no | the picture has its own handles or taps, or the inputs are enough |
 | spectrum | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 9 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -201,6 +201,9 @@ its kind with `sliders: true | false`.
 - g.water-molecules: sliders shown
 - g.carbon-dioxide-molecules: sliders shown
 - g.oxygen-molecules: sliders shown
+- g.fraction-area-wholes: sliders hidden
+- g.fraction-area-mixed: sliders hidden
+- g.fraction-area-edge: sliders hidden
 
 ## Every page
 
@@ -257,7 +260,7 @@ its kind with `sliders: true | false`.
 | m.2.add-sub-1000~ten-hundred-more | baseTen | no |
 | m.2.add-sub-1000~subtract | baseTen | no |
 | m.2.skip-count | skipCount | no |
-| m.2.place-value-1000~number-line | skipCount | no |
+| m.2.place-value-1000~number-line | numberLine | no |
 | m.2.skip-count~back | skipCount | no |
 | m.2.even-odd | pairs | no |
 | m.2.arrays | array | no |
@@ -358,6 +361,7 @@ its kind with `sliders: true | false`.
 | m.4.add-fractions-like~mixed-add | fractionLine | no |
 | m.4.add-fractions-like~mixed-subtract | fractionLine | no |
 | m.4.add-fractions-like~line-plot | linePlot | no |
+| m.4.add-fractions-like~line-plot-quarters | linePlot | no |
 | m.4.fraction-times-whole | fractionLine | no |
 | m.4.decimals-intro | grid100 | no |
 | m.4.decimals-intro~compare | placeValueChart | no |
@@ -548,6 +552,8 @@ its kind with `sliders: true | false`.
 | g.plot-point | coordinatePlane | no |
 | g.line-plot-lengths | linePlot | no |
 | g.protractor-arms | protractor | no |
+| g.number-line-ticks | numberLine | no |
+| g.number-line-ticks-100 | numberLine | no |
 | g.proportional-graph | plot | no |
 | g.sales-tax | percentBar | no |
 | g.discount | percentBar | no |
@@ -626,3 +632,31 @@ its kind with `sliders: true | false`.
 | g.electromagnet | electromagnet | no |
 | g.orbit | orbit | no |
 | g.orbit-mars | orbit | no |
+| g.factor-pairs-126 | factorPairs | no |
+| g.factor-pairs-200 | factorPairs | no |
+| g.chart-piece-652 | hundredChart | no |
+| g.chart-piece-990 | hundredChart | no |
+| g.multiples-652 | hundredChart | no |
+| g.multiples-1000 | hundredChart | no |
+| g.equal-groups-50 | equalGroups | no |
+| g.equal-groups-90 | equalGroups | no |
+| g.line-plot-quarter-start | linePlot | no |
+| g.line-plot-quarter-start-halves | linePlot | no |
+| g.decimal-line-from-whole | fractionLine | no |
+| g.decimal-line-from-whole-hundredths | fractionLine | no |
+| g.hundredths-ones | grid100 | no |
+| g.hundredths-many-ones | grid100 | no |
+| g.hundredths-ones-99 | grid100 | no |
+| g.percent-grid-page | grid100 | no |
+| g.percent-grid-past-100 | grid100 | no |
+| g.percent-grid-tenths | grid100 | no |
+| g.percent-grid-edge | grid100 | no |
+| g.fraction-area-wholes | fractionArea | no |
+| g.fraction-area-mixed | fractionArea | no |
+| g.fraction-area-edge | fractionArea | no |
+| g.place-value-periods | placeValueChart | no |
+| g.place-value-billions | placeValueChart | no |
+| g.place-value-edge | placeValueChart | no |
+| g.jumps-grouped-page | skipCount | no |
+| g.jumps-grouped-tens | skipCount | no |
+| g.jumps-grouped-hundreds | skipCount | no |

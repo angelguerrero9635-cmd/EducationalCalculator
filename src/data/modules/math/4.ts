@@ -320,12 +320,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'Find every pair by trying 1, 2, 3, … until the factors would swap places.',
       'A prime number has exactly 2 factors: 1 and itself. A composite number has more.',
       'The picture shows every factor pair as a rectangle. A prime number has only one.',
+      'Numbers to 200 (the factors of 105 or 126).',
     ],
     variables: [
-      whole('n', 'n', 'Number', 1, 100),
-      whole('a', 'a', 'One factor', 1, 100),
-      whole('b', 'b', 'Its partner', 1, 100),
-      { ...whole('f', 'f', 'Number of factors', 1, 12), derived: true },
+      whole('n', 'n', 'Number', 1, 200),
+      whole('a', 'a', 'One factor', 1, 200),
+      whole('b', 'b', 'Its partner', 1, 200),
+      { ...whole('f', 'f', 'Number of factors', 1, 18), derived: true },
     ],
     relations: [
       {
@@ -396,12 +397,12 @@ export const MATH_4_MODULES: ModuleDef[] = [
     assumptions: [
       'A multiple of 8 is 8 times a whole number: 8, 16, 24, 32 and so on.',
       'To check, divide. A remainder of 0 means it is a multiple.',
-      'The chart shades every multiple and outlines the number you test.',
+      'The chart shades every multiple and outlines the number you test. Past 100 it shows the hundred the number is in (601 to 700).',
     ],
     variables: [
       whole('k', 'k', 'One-digit number', 2, 9),
-      whole('n', 'n', 'Number to test', 1, 100),
-      { ...whole('q', 'q', 'Quotient', 0, 50), derived: true },
+      whole('n', 'n', 'Number to test', 1, 1000),
+      { ...whole('q', 'q', 'Quotient', 0, 500), derived: true },
       { ...whole('r', 'r', 'Remainder', 0, 8), derived: true },
     ],
     relations: [
@@ -454,7 +455,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { k: 8, n: 40, q: 5, r: 0 },
     startWith: ['k', 'n'],
-    representation: { kind: 'hundredChart', value: 'n', max: 100, multiplesOf: 'k' },
+    representation: { kind: 'hundredChart', value: 'n', max: 1000, multiplesOf: 'k' },
   },
   // ── Patterns that add the same number each time (4.OA.5) ──
   {
@@ -1912,6 +1913,128 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  // Lengths from a start that is itself a fraction (4.MD.4): straws from 3 3/4 to 5 1/4 inches.
+  (() => {
+    const xs = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+    /** Inches as a mixed number: 3.75 → "3 3/4". */
+    const mix = (x: number) => formatNumber(x, { fraction: 4 });
+    const at = (v: Values, id: string) => v.s! + xs.indexOf(id) / 4;
+    const used = (v: Values) => xs.filter((id) => v[id]! > 0).map((id) => at(v, id));
+    const spread = (v: Values) => {
+      const u = used(v);
+      return u.length ? Math.max(...u) - Math.min(...u) : 0;
+    };
+    const total = (v: Values) => xs.reduce((t, id) => t + v[id]! * at(v, id), 0);
+    const terms = (v: Values) =>
+      xs
+        .filter((id) => v[id]! > 0)
+        .map((id) => `${v[id]} × ${mix(at(v, id))}`)
+        .join(' + ') || '0';
+    return {
+      id: 'm.4.add-fractions-like~line-plot-quarters',
+      title: 'Line plots in quarter inches',
+      use: 'Use this for “The line plot shows straw lengths from 3 3/4 to 5 1/4 inches.”',
+      assumptions: [
+        'Each X is one straw, measured to the nearest 1/4 inch.',
+        'The marks start at the shortest length, which can be a fraction: 3 3/4, 4, 4 1/4 and on.',
+        'Longest − shortest uses the X’s at the ends of the plot.',
+        'The total length adds every straw: count × length at each mark.',
+      ],
+      variables: [
+        {
+          id: 's',
+          symbol: 's',
+          name: 'Shortest mark',
+          unit: 'inches',
+          min: 0,
+          max: 20,
+          step: 0.25,
+          multipleOf: 0.25,
+          fraction: 4,
+        },
+        ...xs.map((id, i) => whole(id, id, `Straws at mark ${i + 1}`, 0, 6)),
+        {
+          id: 'D',
+          symbol: 'D',
+          name: 'Longest − shortest',
+          unit: 'inches',
+          min: 0,
+          max: 1.5,
+          step: 0.25,
+          fraction: 4,
+          derived: true,
+        },
+        {
+          id: 'T',
+          symbol: 'T',
+          name: 'Total length',
+          unit: 'inches',
+          min: 0,
+          max: 1100,
+          step: 0.25,
+          fraction: 4,
+          derived: true,
+        },
+      ],
+      relations: [
+        {
+          id: 'D = longest − shortest',
+          display: `the longest − the shortest of the marks from {s} by 1/4 with ${xs.map((id) => `{${id}}`).join(', ')} = {D}`,
+          words: 'Longest − shortest = {D}',
+          check: (v: Values) => {
+            const u = used(v);
+            return u.length
+              ? `${mix(Math.max(...u))} − ${mix(Math.min(...u))} = ${mix(v.D!)}`
+              : `0 = ${mix(v.D!)}`;
+          },
+          vars: ['D', 's', ...xs],
+          residual: (v: Values) => v.D! - spread(v),
+          solve: { D: spread },
+        },
+        {
+          id: 'T = count × length, added',
+          display: `the lengths from {s} by 1/4, ${xs.map((id) => `{${id}}`).join(', ')} of each: {T}`,
+          words: 'Straws × length at each mark, added = {T}',
+          check: (v: Values) => `${terms(v)} = ${mix(v.T!)}`,
+          vars: ['T', 's', ...xs],
+          residual: (v: Values) => v.T! - total(v),
+          solve: { T: total },
+        },
+      ],
+      steps: {
+        'D = longest − shortest': {
+          D: {
+            expr: (v: Values) => {
+              const u = used(v);
+              return u.length ? `${mix(Math.max(...u))} − ${mix(Math.min(...u))}` : '0';
+            },
+            how: 'Find the X’s farthest apart. Take the shortest length from the longest.',
+          },
+        },
+        'T = count × length, added': {
+          T: {
+            expr: terms,
+            how: 'Each length times the X’s above it, all added.',
+            work: (v: Values) =>
+              xs
+                .filter((id) => v[id]! > 0)
+                .map((id) => `${v[id]} × ${mix(at(v, id))} = ${mix(v[id]! * at(v, id))}`),
+          },
+        },
+      },
+      example: { s: 3.75, a: 1, b: 2, c: 0, d: 3, e: 1, f: 2, g: 1, D: 1.5, T: 45.25 },
+      startWith: ['s', ...xs],
+      pictureLabels: ['D'],
+      representation: {
+        kind: 'linePlot',
+        start: 's',
+        marks: 4,
+        startParts: 4,
+        unit: 'in',
+        points: xs.map((id, i) => ({ var: id, at: i })),
+      },
+    } satisfies ModuleDef;
+  })(),
   // ── Multiplying a fraction by a whole number (4.NF.4) ──
   {
     id: 'm.4.fraction-times-whole',
@@ -2056,14 +2179,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
     assumptions: [
       'A tenth is 10 hundredths: 3/10 = 30/100. The grid has 100 squares, so each square is a hundredth.',
       'Hundredths are written as a decimal: 34/100 = 0.34. The first place after the point is tenths, the second is hundredths.',
-      'A number past 1 has ones before the point: 2.34 is 2 ones and 34 hundredths.',
+      'A number past 1 has ones before the point: 45.06 is 45 ones and 6 hundredths.',
     ],
     variables: [
       whole('t', 't', 'Tenths digit', 0, 9),
       whole('u', 'u', 'Hundredths digit', 0, 9),
       whole('h', 'h', 'Hundredths past the ones', 0, 99),
-      whole('o', 'o', 'Ones', 0, 3),
-      { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 3.99, step: 0.01 },
+      whole('o', 'o', 'Ones', 0, 99),
+      { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 99.99, step: 0.01 },
     ],
     relations: [
       {
@@ -2148,7 +2271,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { t: 3, u: 4, h: 34, o: 2, d: 2.34 },
     startWith: ['o', 't', 'u'],
-    representation: { kind: 'grid100', percent: 'h', wholes: 'o' },
+    representation: { kind: 'grid100', percent: 'h', wholes: 'o', stack: true },
   },
   // ── Comparing decimals to hundredths (4.NF.7) ──
   (() => {
@@ -2261,11 +2384,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'Cut the line from 0 to 1 into 10 equal parts for tenths, or 100 for hundredths.',
       'Count the parts from 0: 62 hundredths from 0 is 0.62, and 26 tenths is 2.6.',
       '7 tenths and 70 hundredths are the same point.',
+      'The line starts at the whole before the point: 2.6 is 6 tenths past 2.',
     ],
     variables: [
       { ...whole('n', 'n', 'Parts from 0 to 1', 10, 100), allowed: [10, 100] },
       whole('k', 'k', 'Parts from 0', 0, 1000),
       { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 10, step: 0.01 },
+      { ...whole('w', 'w', 'Whole before the point', 0, 10), derived: true },
     ],
     relations: [
       {
@@ -2278,6 +2403,18 @@ export const MATH_4_MODULES: ModuleDef[] = [
           d: (v: Values) => v.k! / v.n!,
           k: (v: Values) => v.d! * v.n!,
           n: (v: Values) => div(v.k!, v.d!),
+        },
+      },
+      {
+        id: 'w = floor(k/n)',
+        display: 'full wholes in {k}/{n}: {w}',
+        words: 'Full wholes before the point = {w}',
+        vars: ['w', 'k', 'n'],
+        residual: (v: Values) => v.w! - Math.floor(v.k! / v.n!),
+        solve: {
+          w: (v: Values) => Math.floor(v.k! / v.n!),
+          k: () => undefined,
+          n: () => undefined,
         },
       },
     ],
@@ -2305,8 +2442,18 @@ export const MATH_4_MODULES: ModuleDef[] = [
           how: 'How many of these parts make 1 whole?',
         },
       },
+      'w = floor(k/n)': {
+        w: {
+          expr: 'wholes in {k} parts of {n}',
+          how: 'Every full set of parts is 1 whole: the line starts at the whole before the point.',
+          work: (v) =>
+            v.w! > 0
+              ? [`${v.w} × ${v.n} = ${v.w! * v.n!}: ${v.w} ${v.w === 1 ? 'whole' : 'wholes'}`]
+              : [`${v.k} is less than ${v.n}, so the point is before 1.`],
+        },
+      },
     },
-    example: { n: 100, k: 62, d: 0.62 },
+    example: { n: 100, k: 62, d: 0.62, w: 0 },
     startWith: ['n', 'k'],
     representation: {
       kind: 'fractionLine',
@@ -2314,6 +2461,8 @@ export const MATH_4_MODULES: ModuleDef[] = [
       denominator: 'n',
       wholes: 1,
       decimal: true,
+      // From the whole before the point: a line from 2 to 3 in tenths for 2.6.
+      startWhole: 'w',
     },
   },
   // ── Converting units within one system: a conversion table (4.MD.1) ──

@@ -18,6 +18,15 @@ const tenthsOr = (v: Values) => (places(v.n!) <= 1 && places(v.d!) <= 1 ? 'tenth
 const frac = (x: number) => formatNumber(x, { fraction: 12 });
 /** A mixed number with any denominator up to 144 (8 7/24). */
 const mixedOf = (x: number) => formatNumber(x, { fraction: 144 });
+/** A fraction is at most 6 wholes: the most the fraction-area picture draws (12/2). */
+const atMostSix = (top: string, bottom: string) => ({
+  id: `${top} ≤ 6${bottom}`,
+  constraint: true as const,
+  display: `{${top}}/{${bottom}} is at most 6`,
+  vars: [top, bottom],
+  residual: (v: Values) => (v[top]! <= 6 * v[bottom]! ? 0 : 1),
+  solve: {},
+});
 /** A fraction is at most 1 (a check-only relation). */
 const atMostOne = (top: string, bottom: string) => ({
   id: `${top} ≤ ${bottom}`,
@@ -481,16 +490,13 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'The exponent counts how many tens are multiplied: 10³ = 10 × 10 × 10 = 1,000.',
       'Multiplying by 10 moves every digit one place to the left. The chart shows the places.',
       'Multiplying by 10³ moves the digits three places: write three zeros after the number.',
-      'Numbers to 999, exponents to 6, products to 9,999,999 (the chart ends at millions).',
+      'Numbers to 999, exponents to 9 (10⁹ = 1,000,000,000): past millions the chart groups the places in periods.',
     ],
     variables: [
       whole('n', 'n', 'Number', 1, 999),
-      whole('k', 'k', 'Exponent', 0, 6),
-      {
-        ...whole('e', 'e', 'Power of 10', 1, 1000000),
-        allowed: [1, 10, 100, 1000, 10000, 100000, 1000000],
-      },
-      whole('p', 'p', 'Product', 1, 9999999),
+      whole('k', 'k', 'Exponent', 0, 9),
+      { ...whole('e', 'e', 'Power of 10', 1, 1000000000), derived: true },
+      whole('p', 'p', 'Product', 1, 999000000000),
     ],
     relations: [
       {
@@ -554,7 +560,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 34, k: 3, e: 1000, p: 34000 },
     startWith: ['n', 'k'],
-    representation: { kind: 'placeValueChart', value: 'p', decimals: 0, from: 'n' },
+    representation: { kind: 'placeValueChart', value: 'p', decimals: 0, from: 'n', periods: true },
   },
   {
     id: 'm.5.powers-of-ten~decimals',
@@ -1407,7 +1413,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Dividing by a decimal asks how many of it fit.',
       'Write both in tenths (1.2 is 12 tenths, 0.3 is 3 tenths), or in hundredths when either has two places. Then divide.',
-      'Dividends to 9.99, divisors from 0.01 to 0.99, whole-number answers to 30.',
+      'Dividends to 999, divisors from 0.01 to 0.99, whole-number answers to 999 (21 ÷ 0.2 = 105).',
     ],
     variables: [
       {
@@ -1415,12 +1421,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         symbol: 'n',
         name: 'Dividend',
         min: 0.01,
-        max: 9.99,
+        max: 999,
         step: 0.01,
         multipleOf: 0.01,
       },
       { id: 'd', symbol: 'd', name: 'Divisor', min: 0.01, max: 0.99, step: 0.01, multipleOf: 0.01 },
-      whole('q', 'q', 'Quotient', 1, 30),
+      whole('q', 'q', 'Quotient', 1, 999),
     ],
     relations: [
       {
@@ -1463,7 +1469,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 1.2, d: 0.3, q: 4 },
     startWith: ['n', 'd'],
-    representation: { kind: 'skipCount', step: 'd', count: 'q', total: 'n' },
+    // Past 30 jumps, an arc for every ten (or hundred) jumps, then the single jumps left.
+    representation: { kind: 'skipCount', step: 'd', count: 'q', total: 'n', group: true },
   },
 
   // ── Adding fractions with unlike denominators (5.NF.1) ──
@@ -1918,19 +1925,19 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'A fraction of a fraction: multiply the numerators and multiply the denominators.',
       'The square shows why: columns for one fraction, rows for the other, and the overlap.',
-      'Each fraction is at most 1. Denominators 2, 3, 4, 5, 6, 8, 10 and 12.',
+      'A fraction can be more than 1 (10/3): the picture adds whole squares. Denominators 2 to 12.',
     ],
     variables: [
       whole('a', 'a', 'First numerator', 1, 12),
-      { ...whole('b', 'b', 'First denominator', 2, 12), allowed: BOTTOMS },
+      whole('b', 'b', 'First denominator', 2, 12),
       whole('c', 'c', 'Second numerator', 1, 12),
-      { ...whole('d', 'd', 'Second denominator', 2, 12), allowed: BOTTOMS },
+      whole('d', 'd', 'Second denominator', 2, 12),
       { ...whole('p', 'p', 'Product numerator', 1, 144), derived: true },
       { ...whole('q', 'q', 'Product denominator', 4, 144), derived: true },
     ],
     relations: [
-      atMostOne('a', 'b'),
-      atMostOne('c', 'd'),
+      atMostSix('a', 'b'),
+      atMostSix('c', 'd'),
       {
         id: 'p = a × c',
         display: '{a} × {c} = {p}',
@@ -1961,8 +1968,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
     ],
     steps: {
-      'a ≤ b': {},
-      'c ≤ d': {},
+      'a ≤ 6b': {},
+      'c ≤ 6d': {},
       'p = a × c': {
         p: {
           expr: '{a} × {c}',
@@ -1989,6 +1996,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       first: { num: 'a', den: 'b' },
       second: { num: 'c', den: 'd' },
       product: { num: 'p', den: 'q' },
+      // Past one whole: a block of unit squares, up to 6 a side (12/2).
+      wholes: 6,
     },
   },
   {

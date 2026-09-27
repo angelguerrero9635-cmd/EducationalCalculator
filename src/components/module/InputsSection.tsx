@@ -188,6 +188,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         style={[
           styles.input,
           picker && styles.inputNarrow,
+          // Long values (576,000,000,000) get a wider box and smaller digits, so none is cut off.
+          (shown ?? '').length > 11 && (picker ? styles.inputLongNarrow : styles.inputLong),
           {
             color: c.text,
             borderColor: error ? c.text : c.border,
@@ -525,6 +527,8 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   inputNarrow: { width: 96 },
+  inputLong: { width: 156, fontSize: font.body - 3 },
+  inputLongNarrow: { width: 124, fontSize: font.body - 3 },
   equation: { paddingHorizontal: space.lg, paddingVertical: space.md, gap: space.xs },
   eqRow: {
     flexDirection: 'row',

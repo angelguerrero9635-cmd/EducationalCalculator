@@ -232,7 +232,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Number line from a start (500) with ticks of 1, 10 or 100, counted by ticks',
     kind: 'numberLine',
     pages: ['m.2.place-value-1000~number-line'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.number-line-ticks', 'g.number-line-ticks-100'],
     uses: '"count":"k"',
     notes:
@@ -243,7 +243,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Factor pairs to 200; hundred chart around any number to 1,000',
     kind: 'factorPairs',
     pages: ['m.4.factors-multiples', 'm.4.factors-multiples~multiples'],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.factor-pairs-126',
       'g.factor-pairs-200',
@@ -260,8 +260,8 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     id: 'R22',
     what: 'Line plot in quarter inches from a fractional start',
     kind: 'linePlot',
-    pages: ['m.4.add-fractions-like~line-plot'],
-    status: 'drawn',
+    pages: ['m.4.add-fractions-like~line-plot-quarters'],
+    status: 'placed',
     gallery: ['g.line-plot-quarter-start', 'g.line-plot-quarter-start-halves'],
     uses: '"startParts":4',
     notes:
@@ -275,7 +275,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Hundredths grids past 3 ones',
     kind: 'grid100',
     pages: ['m.4.decimals-intro'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.hundredths-ones', 'g.hundredths-many-ones', 'g.hundredths-ones-99'],
     uses: '"stack":true',
     notes:
@@ -286,7 +286,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Equal groups up to 90 groups',
     kind: 'equalGroups',
     pages: ['m.3.multiplication-properties~grouping'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.equal-groups-50', 'g.equal-groups-90'],
     uses: '"bundles":true',
     notes:
@@ -297,7 +297,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Decimal number line from any whole start',
     kind: 'fractionLine',
     pages: ['m.4.decimals-intro~number-line'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.decimal-line-from-whole', 'g.decimal-line-from-whole-hundredths'],
     uses: '"startWhole"',
     notes:
@@ -311,7 +311,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Fraction area past one whole',
     kind: 'fractionArea',
     pages: ['m.5.multiply-fractions'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.fraction-area-wholes', 'g.fraction-area-mixed', 'g.fraction-area-edge'],
     uses: '"wholes":6',
     notes:
@@ -322,7 +322,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Place-value chart to billions',
     kind: 'placeValueChart',
     pages: ['m.5.powers-of-ten'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.place-value-periods', 'g.place-value-billions', 'g.place-value-edge'],
     uses: '"periods":true',
     notes:
@@ -336,7 +336,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.5.decimal-operations~divide-by-decimal',
       'm.6.multi-digit-decimals~divide-by-decimal',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.jumps-grouped-page', 'g.jumps-grouped-tens', 'g.jumps-grouped-hundreds'],
     uses: '"group":true',
     notes:
@@ -347,7 +347,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Percent grids past 100% and in tenths of a square',
     kind: 'grid100',
     pages: ['m.6.percent~fraction-decimal-percent'],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.percent-grid-page',
       'g.percent-grid-past-100',

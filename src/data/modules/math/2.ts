@@ -1185,7 +1185,17 @@ export const MATH_2_MODULES: ModuleDef[] = [
     },
     example: { a: 500, s: 10, k: 4, n: 540 },
     startWith: ['a', 's', 'n'],
-    representation: { kind: 'skipCount', start: 'a', step: 's', count: 'k', total: 'n' },
+    // The line from its start, one jump per tick, the point to place.
+    representation: {
+      kind: 'numberLine',
+      start: 'a',
+      from: 'a',
+      every: 's',
+      count: 'k',
+      end: 'n',
+      min: 0,
+      max: 1000,
+    },
   },
   // Skip count backward by 5s, 10s or 100s (2.NBT.2).
   {

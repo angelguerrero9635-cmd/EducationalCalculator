@@ -862,15 +862,16 @@ export const MATH_3_MODULES: ModuleDef[] = [
       assumptions: [
         'With three factors, multiply any two first. The product is the same.',
         'So 3 × 5 × 2 = 15 × 2 = 3 × 10: pick the pair that makes an easy fact.',
-        'The picture draws each group as first × second dots.',
+        'The picture draws each group as first × second dots. Past 12 groups, each group is one circle with its count.',
+        'The third factor can go to 90, like 4 × 9 × 50: 36 groups of 50 is the same as 50 groups of 36.',
       ],
       variables: [
         whole('a', 'a', 'First factor', 0, 10),
         whole('b', 'b', 'Second factor', 0, 10),
-        whole('c', 'c', 'Third factor', 0, 10),
+        whole('c', 'c', 'Third factor', 0, 90),
         whole('p', 'p', 'First two multiplied', 0, 100),
-        whole('q', 'q', 'Last two multiplied', 0, 100),
-        whole('n', 'n', 'Product', 0, 100),
+        whole('q', 'q', 'Last two multiplied', 0, 900),
+        whole('n', 'n', 'Product', 0, 9000),
       ],
       relations: [first.relation, second.relation, left.relation, right.relation],
       steps: {
@@ -882,7 +883,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       example: { a: 3, b: 5, c: 2, p: 15, q: 10, n: 30 },
       startWith: ['a', 'b', 'c'],
       // c groups of (a × b): the first two factors make each group.
-      representation: { kind: 'equalGroups', groups: 'c', each: 'p', total: 'n' },
+      representation: { kind: 'equalGroups', groups: 'c', each: 'p', total: 'n', bundles: true },
     } satisfies ModuleDef;
   })(),
   // ── Two-step word problems (3.OA.8) ──

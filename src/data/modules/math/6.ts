@@ -902,32 +902,24 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Make the denominator 100: the numerator is then the percent.',
       'A percent is hundredths: 60% = 60/100 = 0.6.',
       'Make the denominator 100 when it divides 100; else divide (3 ÷ 8 = 0.375 = 37.5%).',
-      'The fraction is at most 1. Denominators 2, 4, 5, 8, 10, 20, 25, 40, 50 and 100.',
+      'A fraction past 1 is past 100%: 5/4 = 1.25 = 125%. Denominators 2, 4, 5, 8, 10, 20, 25, 40, 50 and 100.',
     ],
     variables: [
-      whole('a', 'a', 'Numerator', 0, 100),
+      whole('a', 'a', 'Numerator', 0, 1000),
       { ...whole('b', 'b', 'Denominator', 2, 100), allowed: [2, 4, 5, 8, 10, 20, 25, 40, 50, 100] },
-      { id: 'd', symbol: 'd', name: 'Decimal', min: 0, max: 1, step: 0.001, multipleOf: 0.001 },
+      { id: 'd', symbol: 'd', name: 'Decimal', min: 0, max: 10, step: 0.001, multipleOf: 0.001 },
       {
         id: 'p',
         symbol: 'p',
         name: 'Percent',
         unit: '%',
         min: 0,
-        max: 100,
+        max: 1000,
         step: 0.1,
         multipleOf: 0.1,
       },
     ],
     relations: [
-      {
-        id: 'a ≤ b',
-        constraint: true,
-        display: '{a}/{b} is at most 1',
-        vars: ['a', 'b'],
-        residual: (v: Values) => (v.a! <= v.b! ? 0 : 1),
-        solve: {},
-      },
       {
         id: 'd = a ÷ b',
         display: '{a} ÷ {b} = {d}',
@@ -951,7 +943,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
     ],
     steps: {
-      'a ≤ b': {},
       'd = a ÷ b': {
         d: {
           expr: '{a} ÷ {b}',
@@ -984,7 +975,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { a: 3, b: 5, d: 0.6, p: 60 },
     startWith: ['a', 'b'],
-    representation: { kind: 'grid100', percent: 'p' },
+    // A full grid for every 100%, then the squares left; 37.5% fills part of a square.
+    representation: { kind: 'grid100', percent: 'p', past100: true, exact: true },
   },
 
   // ── Multi-digit division and decimals (6.NS.2, 6.NS.3) ──
@@ -1391,7 +1383,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 1.26, d: 0.3, q: 4.2 },
     startWith: ['n', 'd'],
-    representation: { kind: 'skipCount', step: 'd', total: 'n' },
+    representation: { kind: 'skipCount', step: 'd', total: 'n', group: true },
   },
 
   // ── Dividing fractions by fractions (6.NS.1) ──

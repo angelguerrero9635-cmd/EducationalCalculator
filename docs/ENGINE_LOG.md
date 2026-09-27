@@ -5,6 +5,25 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Round 2 pictures placed (R15, R21–R29)
+
+- Ranges raised to the released questions:
+  - factor pairs to 200, multiples to 1,000;
+  - hundredths with ones to 99;
+  - the grouping page's third factor to 90;
+  - powers of ten to 10⁹;
+  - decimal division with quotients to 999;
+  - percents past 100% (5/4 = 125%) and in tenths of a square;
+  - fraction multiplication past one whole (10/3 × 5/7).
+- New pictures:
+  - the Grade 2 number line counts its ticks from the start;
+  - the decimal line starts at the whole before the point (a derived value);
+  - a new quarter-inch line plot page from a fractional start (3 3/4 to 5 1/4 in), written in
+    mixed numbers; the toothpick page stays in eighths.
+- The power of 10 is worked out from the exponent: with no allowed list, a typed 999,999,999 had
+  passed as 10⁹.
+- A value longer than 11 characters gets a wider input box and smaller digits.
+
 ## K–6 diagram review (three lesson-reviewers)
 
 - Pictures changed to existing kinds:
