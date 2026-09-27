@@ -8,7 +8,7 @@ import type {
   MappingSpec,
   TransformationSpec,
 } from './typesGraphs';
-import type { MotionGraphSpec, SkatersSpec } from './typesMechanics';
+import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -884,6 +884,7 @@ export type Representation =
   /** Grade 8 motion, forces and energy (specs in `typesMechanics.ts`). */
   | MotionGraphSpec
   | SkatersSpec
+  | EnergyTrackSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

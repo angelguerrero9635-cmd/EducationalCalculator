@@ -129,6 +129,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
 | `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second    | Grade 8 motion                      |
 | `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m      | Grade 8 Newton's laws               |
+| `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes | Grade 8 kinetic, potential energy   |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

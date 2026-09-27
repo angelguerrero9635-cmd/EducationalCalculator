@@ -106,6 +106,7 @@ import { EquationBalance } from './EquationBalance';
 import { MotionGraph } from './MotionGraph';
 import { ForceCart } from './ForceCart';
 import { Skaters } from './Skaters';
+import { EnergyTrack } from './EnergyTrack';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -141,6 +142,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <MotionGraph spec={spec} calc={calc} />;
     case 'skaters':
       return <Skaters spec={spec} calc={calc} />;
+    case 'energyTrack':
+      return <EnergyTrack spec={spec} calc={calc} />;
     case 'functionMachine':
       return <FunctionMachine spec={spec} calc={calc} />;
     case 'mapping':

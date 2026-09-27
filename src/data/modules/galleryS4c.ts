@@ -6,7 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
-import { div } from './helpers';
+import { atLeast, div } from './helpers';
 import type { ModuleDef } from './types';
 
 const T = { id: 't', symbol: 't', name: 'Time', unit: 's', min: 0, max: 20, step: 0.5 };
@@ -51,6 +51,168 @@ const newton2 = {
     a: { expr: '{F} ÷ {m}', how: 'The same pull speeds up a heavier cart less.' },
   },
 };
+
+/** Gravity's pull on each kilogram, in N/kg. */
+const G = 9.8;
+
+/**
+ * Energy on a coaster or a pendulum: PE = m × g × h, the total m × g × top (it all starts as
+ * potential energy), KE = total − PE; with `speed`, KE = 1/2 × m × v² too.
+ */
+function energyModule(
+  id: string,
+  title: string,
+  track: 'coaster' | 'pendulum',
+  what: string,
+  limits: { m: [number, number]; top: [number, number] },
+  example: { m: number; H: number; h: number },
+  speed: boolean,
+): ModuleDef {
+  const { m, H, h } = example;
+  const E = m * G * H;
+  const PE = m * G * h;
+  const KE = E - PE;
+  return {
+    id,
+    title,
+    assumptions: [
+      `The ${what} starts at rest at the top, so all its energy starts as potential energy.`,
+      'Friction and air are too small to count, so the total energy stays the same.',
+      'Potential energy is m × g × h, with g = 9.8 N/kg; kinetic energy is the rest.',
+    ],
+    variables: [
+      {
+        id: 'm',
+        symbol: 'm',
+        name: 'Mass',
+        unit: 'kg',
+        min: limits.m[0],
+        max: limits.m[1],
+        step: 0.5,
+      },
+      {
+        id: 'H',
+        symbol: 'H',
+        name: 'Top height',
+        unit: 'm',
+        min: limits.top[0],
+        max: limits.top[1],
+        step: 0.1,
+      },
+      {
+        id: 'h',
+        symbol: 'h',
+        name: 'Height now',
+        unit: 'm',
+        min: 0,
+        max: limits.top[1],
+        step: 0.1,
+      },
+      { id: 'PE', symbol: 'PE', name: 'Potential energy', unit: 'J', min: 0, max: 1e7 },
+      { id: 'KE', symbol: 'KE', name: 'Kinetic energy', unit: 'J', min: 0, max: 1e7 },
+      { id: 'E', symbol: 'E', name: 'Total energy', unit: 'J', min: 0, max: 1e7 },
+      ...(speed
+        ? [{ id: 'v', symbol: 'v', name: 'Speed', unit: 'm/s', min: 0, max: 100, derived: true }]
+        : []),
+    ],
+    relations: [
+      atLeast('H', 'h'),
+      {
+        id: 'PE = m × g × h',
+        display: `{PE} = {m} × ${G} × {h}`,
+        vars: ['PE', 'm', 'h'],
+        residual: (v: Values) => v.PE! - v.m! * G * v.h!,
+        solve: {
+          PE: (v: Values) => v.m! * G * v.h!,
+          m: (v: Values) => div(v.PE!, G * v.h!),
+          h: (v: Values) => div(v.PE!, G * v.m!),
+        },
+      },
+      {
+        id: 'E = m × g × H',
+        display: `{E} = {m} × ${G} × {H}`,
+        vars: ['E', 'm', 'H'],
+        residual: (v: Values) => v.E! - v.m! * G * v.H!,
+        solve: {
+          E: (v: Values) => v.m! * G * v.H!,
+          m: (v: Values) => div(v.E!, G * v.H!),
+          H: (v: Values) => div(v.E!, G * v.m!),
+        },
+      },
+      {
+        id: 'PE + KE = E',
+        display: '{PE} + {KE} = {E}',
+        vars: ['PE', 'KE', 'E'],
+        residual: (v: Values) => v.PE! + v.KE! - v.E!,
+        solve: {
+          E: (v: Values) => v.PE! + v.KE!,
+          KE: (v: Values) => v.E! - v.PE!,
+          PE: (v: Values) => v.E! - v.KE!,
+        },
+      },
+      ...(speed
+        ? [
+            {
+              id: 'KE = 1/2 × m × v²',
+              display: '{KE} = 1/2 × {m} × {v}²',
+              vars: ['KE', 'm', 'v'],
+              residual: (v: Values) => v.KE! - (v.m! * v.v! ** 2) / 2,
+              solve: {
+                v: (v: Values) =>
+                  v.m! > 0 && v.KE! >= 0 ? Math.sqrt((2 * v.KE!) / v.m!) : undefined,
+                KE: (v: Values) => (v.m! * v.v! ** 2) / 2,
+                m: (v: Values) => div(2 * v.KE!, v.v! ** 2),
+              },
+            },
+          ]
+        : []),
+    ],
+    steps: {
+      'H ≥ h': {},
+      'PE = m × g × h': {
+        PE: { expr: `{m} × ${G} × {h}`, how: 'Each kilogram lifted each meter stores 9.8 J.' },
+        m: { expr: `{PE} ÷ (${G} × {h})`, how: 'Divide by g × h.' },
+        h: { expr: `{PE} ÷ ({m} × ${G})`, how: 'Divide by m × g.' },
+      },
+      'E = m × g × H': {
+        E: { expr: `{m} × ${G} × {H}`, how: 'At the top it is all potential energy.' },
+        m: { expr: `{E} ÷ (${G} × {H})`, how: 'Divide by g × H.' },
+        H: { expr: `{E} ÷ ({m} × ${G})`, how: 'Divide by m × g.' },
+      },
+      'PE + KE = E': {
+        E: { expr: '{PE} + {KE}', how: 'The two kinds add up to the total.' },
+        KE: { expr: '{E} − {PE}', how: 'What is not potential energy is kinetic energy.' },
+        PE: { expr: '{E} − {KE}', how: 'What is not kinetic energy is potential energy.' },
+      },
+      ...(speed
+        ? {
+            'KE = 1/2 × m × v²': {
+              v: {
+                expr: '√(2 × {KE} ÷ {m})',
+                how: 'Double the kinetic energy, divide by the mass, take the root.',
+              },
+              KE: { expr: '1/2 × {m} × {v}²', how: 'Half the mass times the speed squared.' },
+              m: { expr: '2 × {KE} ÷ {v}²', how: 'Double the kinetic energy and divide by v².' },
+            },
+          }
+        : {}),
+    },
+    example: { m, H, h, PE, KE, E, ...(speed ? { v: Math.sqrt((2 * KE) / m) } : {}) },
+    startWith: ['m', 'H', 'h'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'energyTrack',
+      track,
+      height: 'h',
+      potential: 'PE',
+      kinetic: 'KE',
+      total: 'E',
+      top: 'H',
+      mass: 'm',
+      ...(speed ? { speed: 'v' } : {}),
+    },
+  };
+}
 
 export const S4C_GALLERY_MODULES: ModuleDef[] = [
   {
@@ -282,4 +444,22 @@ export const S4C_GALLERY_MODULES: ModuleDef[] = [
       accelerations: ['a1', 'a2'],
     },
   },
+  energyModule(
+    'g.roller-coaster',
+    'Roller coaster energy',
+    'coaster',
+    'car',
+    { m: [50, 1000], top: [5, 60] },
+    { m: 200, H: 30, h: 12 },
+    true,
+  ),
+  energyModule(
+    'g.pendulum',
+    'Pendulum energy',
+    'pendulum',
+    'bob',
+    { m: [0.5, 10], top: [0.1, 2] },
+    { m: 2, H: 0.5, h: 0.2 },
+    false,
+  ),
 ];

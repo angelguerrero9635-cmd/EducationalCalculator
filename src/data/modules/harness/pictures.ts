@@ -1577,6 +1577,53 @@ export function repIssues(
       });
       break;
     }
+    case 'energyTrack': {
+      // In formula units (J, kg, m, m/s): PE + KE = total, PE = m × g × h, total = m × g ×
+      // top, KE = 1/2 × m × v²; the height is from 0 to the top.
+      const f = (id: string | number | undefined) => {
+        if (id === undefined || typeof id === 'number') return id;
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const g = rep.g ?? 9.8;
+      const [h, pe, ke, total, top, m, v] = [
+        rep.height,
+        rep.potential,
+        rep.kinetic,
+        rep.total,
+        rep.top,
+        rep.mass,
+        rep.speed,
+      ].map(f);
+      const near = (x: number, y: number) => Math.abs(x - y) <= 1e-4 * Math.max(1, Math.abs(y));
+      const unitsOk = [rep.potential, rep.kinetic, rep.total, rep.height, rep.top, rep.mass].every(
+        (id) => typeof id !== 'string' || ['J', 'm', 'kg', ''].includes(byId.get(id)?.unit ?? ''),
+      );
+      for (const [x, what] of [
+        [h, 'height'],
+        [pe, 'potential energy'],
+        [ke, 'kinetic energy'],
+      ] as const)
+        if (x !== undefined && x < -1e-9) out.push(`${what} ${x} is below 0`);
+      if (h !== undefined && top !== undefined && h > top + 1e-6 * Math.max(1, top))
+        out.push(`height ${h} is above the top ${top}`);
+      if (unitsOk) {
+        if (pe !== undefined && ke !== undefined && total !== undefined && !near(pe + ke, total))
+          out.push(`PE + KE = ${pe + ke}, not the total ${total}`);
+        if (m !== undefined && h !== undefined && pe !== undefined && !near(pe, m * g * h))
+          out.push(`PE ${pe} is not m × g × h (${m * g * h})`);
+        if (
+          m !== undefined &&
+          top !== undefined &&
+          total !== undefined &&
+          !near(total, m * g * top)
+        )
+          out.push(`total ${total} is not m × g × top (${m * g * top})`);
+        if (m !== undefined && v !== undefined && ke !== undefined && !near(ke, (m * v * v) / 2))
+          out.push(`KE ${ke} is not 1/2 × m × v² (${(m * v * v) / 2})`);
+      }
+      break;
+    }
     case 'motionGraph': {
       // In formula units (the picture works in them): the line's end is the start plus slope ×
       // time when the module's units agree (m, s, m/s, m/s²); the time and the trip's

@@ -109,6 +109,7 @@ const PICTURE_NAMES: Record<string, string> = {
   transformation: 'figure and its image on a grid',
   motionGraph: 'distance-time or speed-time graph',
   skaters: 'two skaters pushing apart',
+  energyTrack: 'roller coaster or pendulum with energy bars',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();
