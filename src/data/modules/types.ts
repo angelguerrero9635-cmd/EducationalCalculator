@@ -451,6 +451,13 @@ export type Representation =
       shadeToPoint?: boolean;
       /** Dashed lines through 0 to compare with (y = slope × x), labelled ("Water"). */
       reference?: { slope: number; label: string }[];
+      /**
+       * A proportional relationship y = kx: this variable is k. The line through (0, 0) with
+       * the point (1, k) ringed; drag it up or down to change k.
+       */
+      unitRate?: string;
+      /** A table beside the graph: these x values with y and y ÷ x; the point's row outlined. */
+      table?: number[];
     }
   /**
    * Rounding: a number line from the multiple of `to` below `value` to the one above, the

@@ -294,7 +294,9 @@ function representationVars(r: Representation): string[] {
         r.x.var,
         r.y.var,
         ...r.params,
-        ...[r.tangentSlope, r.slopeTriangle, r.intercept].filter((v): v is string => !!v),
+        ...[r.tangentSlope, r.slopeTriangle, r.intercept, r.unitRate].filter(
+          (v): v is string => !!v,
+        ),
       ];
     case 'table':
       return [r.sweep, r.output, ...r.params];

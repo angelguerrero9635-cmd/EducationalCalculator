@@ -963,6 +963,22 @@ export function repIssues(
       count(rep.right, 'push');
       count(rep.left, 'push');
       break;
+    case 'plot': {
+      if (rep.table && rep.table.length > 8) out.push(`table of ${rep.table.length} rows (8 fit)`);
+      if (!rep.unitRate) break;
+      if (!rep.params.includes(rep.unitRate))
+        out.push(`unit rate ${rep.unitRate} is not one of the graph's params`);
+      // y = kx: the point and (1, k) lie on one line through 0.
+      const [x, y, k] = [rep.x.var, rep.y.var, rep.unitRate].map(val);
+      if (
+        x !== undefined &&
+        y !== undefined &&
+        k !== undefined &&
+        Math.abs(y - k * x) > 1e-6 * Math.max(1, Math.abs(y))
+      )
+        out.push(`(${x}, ${y}) is not on y = ${k}x`);
+      break;
+    }
     case 'quadrilateral': {
       const r = val(rep.rightAngles);
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);

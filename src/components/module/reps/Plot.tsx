@@ -9,7 +9,16 @@ import { solve } from '@/engine/solve';
 import { chart, font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
+import {
+  Canvas,
+  ChartText,
+  DragHandle,
+  fitLabel,
+  niceCeil,
+  useFrozen,
+  useRep,
+  Caption,
+} from './common';
 
 type Spec = Extract<Representation, { kind: 'plot' }>;
 const SAMPLES = 120;
@@ -95,10 +104,42 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   };
   const xVar = rep.variable(spec.x.var);
 
+  // y = kx: the point (1, k), in shown units.
+  const k = spec.unitRate && paramsKnown ? slopeOf(spec.unitRate) : undefined;
+  const unitPoint = k === undefined ? undefined : { k, text: `(1, ${formatNumber(k)})` };
+  const symbolOf = (id: string) => (rep.words ? rep.variable(id).name : rep.variable(id).symbol);
+  const [xs, ys] = [symbolOf(spec.x.var), symbolOf(spec.y.var)];
+  // The table: its x values and the point's, each with y and y ÷ x (the same k in every row).
+  const yAt = (x: number) => {
+    if (!paramsKnown) return undefined;
+    const givens = Object.entries(pinned).map(([id, value]) => ({ id, value }));
+    const y = solve(module, [...givens, { id: spec.x.var, value: x * fx }]).values[spec.y.var];
+    return y === undefined ? undefined : Number((y / fy).toFixed(10));
+  };
+  const tableHeads = [xs, ys, `${ys} ÷ ${xs}`];
+  const tableRows = spec.table
+    ? [...new Set([...spec.table, ...(px === undefined ? [] : [px])])]
+        .sort((a, b) => a - b)
+        .slice(0, 8)
+        .map((x) => {
+          const y = yAt(x);
+          return {
+            cells: [
+              formatNumber(x),
+              y === undefined ? '?' : formatNumber(y),
+              y === undefined ? '?' : x === 0 ? '—' : formatNumber(Number((y / x).toFixed(8))),
+            ],
+            current: x === px,
+          };
+        })
+    : [];
+
   return (
     <>
-      <Canvas aspect={0.75}>
-        {({ w, h }) => {
+      <Canvas aspect={spec.table ? 0.72 : 0.75}>
+        {({ w: cw, h }) => {
+          // With a table, the graph takes the left part and the table the right.
+          const w = spec.table ? Math.round(cw * 0.62) : cw;
           const L = 44;
           const R = 12;
           const T = 24;
@@ -137,10 +178,12 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const hasPoint = px !== undefined && py !== undefined;
           const hx = px === undefined ? undefined : Math.min(w - R, Math.max(L, sx(px)));
           const hy = py === undefined ? undefined : Math.min(h - B, Math.max(T, sy(py)));
+          const inView = (x: number, y: number) =>
+            x >= L - 1 && x <= w - R + 1 && y >= T - 1 && y <= h - B + 1;
 
           return (
             <>
-              <Svg width={w} height={h}>
+              <Svg width={cw} height={h}>
                 <Defs>
                   <ClipPath id="plot-area">
                     <Rect x={L} y={T} width={w - L - R} height={h - T - B} />
@@ -272,6 +315,27 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       </ChartText>
                     </>
                   ) : null}
+                  {unitPoint ? (
+                    <>
+                      <Line
+                        x1={sx(1)}
+                        y1={sy(unitPoint.k)}
+                        x2={sx(1)}
+                        y2={axisY}
+                        stroke={c.chartHighlight}
+                        strokeDasharray={chart.dashFine}
+                      />
+                      <Line
+                        x1={sx(1)}
+                        y1={sy(unitPoint.k)}
+                        x2={axisX}
+                        y2={sy(unitPoint.k)}
+                        stroke={c.chartHighlight}
+                        strokeDasharray={chart.dashFine}
+                      />
+                      <Circle cx={sx(0)} cy={sy(0)} r={3.5} fill={c.chartInk} />
+                    </>
+                  ) : null}
                   {hasPoint ? (
                     <>
                       <Line
@@ -294,6 +358,37 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </>
                   ) : null}
                 </G>
+                {unitPoint && inView(sx(1), sy(unitPoint.k)) ? (
+                  <>
+                    <Circle
+                      cx={sx(1)}
+                      cy={sy(unitPoint.k)}
+                      r={6}
+                      fill={c.card}
+                      stroke={c.chartHighlight}
+                      strokeWidth={chart.stroke}
+                    />
+                    <ChartText
+                      {...fitLabel(sx(1) + 14, unitPoint.text, chart.label, w - R, 'start', 14)}
+                      y={Math.max(T + 10, sy(unitPoint.k) - 12)}
+                      fontSize={chart.label}
+                      fontWeight="700"
+                      fill={c.chartHighlight}
+                    >
+                      {unitPoint.text}
+                    </ChartText>
+                  </>
+                ) : null}
+                {spec.table ? (
+                  <ValueColumns
+                    x0={w + 10}
+                    x1={cw - 1}
+                    y0={T - 14}
+                    y1={h - B + 10}
+                    heads={tableHeads}
+                    rows={tableRows}
+                  />
+                ) : null}
               </Svg>
               {hx !== undefined && hy !== undefined ? (
                 <DragHandle
@@ -317,14 +412,50 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }
                 />
               ) : null}
+              {unitPoint && spec.unitRate && inView(sx(1), sy(unitPoint.k)) ? (
+                <DragHandle
+                  testID={`drag-${spec.unitRate}`}
+                  x={sx(1)}
+                  y={sy(unitPoint.k)}
+                  label={rep.variable(spec.unitRate).name}
+                  onStart={() => {
+                    start.current = unitPoint.k;
+                    axes.freeze();
+                  }}
+                  onEnd={axes.release}
+                  onMove={(_, dy) =>
+                    calc.set(
+                      {
+                        ...rep.pin([spec.x.var, ...spec.params.filter((p) => p !== spec.unitRate)]),
+                        [spec.unitRate!]: rep.snapTo(
+                          spec.unitRate!,
+                          ((start.current - dy / yScale) * fy) / fx,
+                        ),
+                      },
+                      rep.slide(spec.unitRate!),
+                    )
+                  }
+                />
+              ) : null}
             </>
           );
         }}
       </Canvas>
       <Caption>
-        {[spec.x.var, spec.y.var, ...(spec.tangentSlope ? [spec.tangentSlope] : []), ...spec.params]
-          .map((id) => rep.label(id))
-          .join('   ·   ')}
+        {[
+          ...(unitPoint
+            ? [
+                `${ys} = ${formatNumber(unitPoint.k)}${xs}`,
+                `The line goes through (0, 0) and (1, ${formatNumber(unitPoint.k)}).`,
+              ]
+            : []),
+          ...[
+            spec.x.var,
+            spec.y.var,
+            ...(spec.tangentSlope ? [spec.tangentSlope] : []),
+            ...spec.params,
+          ].map((id) => rep.label(id)),
+        ].join('   ·   ')}
       </Caption>
       {!paramsKnown ? (
         <Text style={[styles.caption, { color: c.textMuted }]}>
@@ -332,6 +463,101 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         </Text>
       ) : null}
     </>
+  );
+}
+
+/** A small table drawn in the chart: a header row, then rows; the current row outlined. */
+function ValueColumns({
+  x0,
+  x1,
+  y0,
+  y1,
+  heads,
+  rows,
+}: {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+  heads: string[];
+  rows: { cells: string[]; current: boolean }[];
+}) {
+  const c = usePalette();
+  const cw = (x1 - x0) / heads.length;
+  const rh = Math.min(30, (y1 - y0) / (rows.length + 1));
+  const size = cw < 40 ? chart.tiny : chart.small;
+  const rowY = (i: number) => y0 + rh * i;
+  return (
+    <G>
+      <Rect x={x0} y={y0} width={x1 - x0} height={rh} fill={c.chartSurface} />
+      {rows.map((r, i) =>
+        r.current ? (
+          <Rect
+            key={`hl${i}`}
+            x={x0}
+            y={rowY(i + 1)}
+            width={x1 - x0}
+            height={rh}
+            fill={c.chartHighlight}
+            fillOpacity={0.14}
+          />
+        ) : null,
+      )}
+      {Array.from({ length: rows.length + 2 }, (_, i) => (
+        <Line key={`h${i}`} x1={x0} y1={rowY(i)} x2={x1} y2={rowY(i)} stroke={c.chartGrid} />
+      ))}
+      {Array.from({ length: heads.length + 1 }, (_, i) => (
+        <Line
+          key={`v${i}`}
+          x1={x0 + cw * i}
+          y1={y0}
+          x2={x0 + cw * i}
+          y2={rowY(rows.length + 1)}
+          stroke={c.chartGrid}
+        />
+      ))}
+      {heads.map((t, j) => (
+        <ChartText
+          key={`t${j}`}
+          x={x0 + cw * (j + 0.5)}
+          y={y0 + rh / 2 + 4}
+          fontSize={size}
+          fontWeight="700"
+          textAnchor="middle"
+        >
+          {t}
+        </ChartText>
+      ))}
+      {rows.map((r, i) =>
+        r.cells.map((t, j) => (
+          <ChartText
+            key={`c${i}-${j}`}
+            x={x0 + cw * (j + 0.5)}
+            y={rowY(i + 1) + rh / 2 + 4}
+            fontSize={size}
+            fontWeight={r.current || j === 2 ? '700' : '400'}
+            fill={j === 2 ? c.chartHighlight : t === '?' ? c.chartMuted : c.chartInk}
+            textAnchor="middle"
+          >
+            {t}
+          </ChartText>
+        )),
+      )}
+      {rows.map((r, i) =>
+        r.current ? (
+          <Rect
+            key={`o${i}`}
+            x={x0}
+            y={rowY(i + 1)}
+            width={x1 - x0}
+            height={rh}
+            fill="none"
+            stroke={c.chartHighlight}
+            strokeWidth={chart.stroke}
+          />
+        ) : null,
+      )}
+    </G>
   );
 }
 
