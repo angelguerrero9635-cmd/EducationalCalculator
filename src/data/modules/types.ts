@@ -196,12 +196,17 @@ export type Representation =
       /** Show an a.m. / p.m. choice next to the digital time. */
       ampm?: boolean;
     }
-  /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
+  /**
+   * A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. `set`:
+   * the whole is a set of `parts` objects in a row, `shaded` of them marked (3 of 7 umbrellas).
+   */
   | {
       kind: 'partition';
       parts: string;
       shaded: string;
-      shape: 'circle' | 'rectangle';
+      shape: 'circle' | 'rectangle' | 'set';
+      /** The things in a set (default counters). */
+      object?: 'umbrella' | 'counter';
       /** The value the the sliders buttons change (default `parts`), e.g. times cut in half. */
       control?: string;
       /** How much the sliders change it (default 1), e.g. 2 for halves ↔ fourths. */

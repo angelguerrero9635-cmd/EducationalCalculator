@@ -576,6 +576,49 @@ export const GALLERY_MODULES: ModuleDef[] = [
     },
   },
   {
+    id: 'g.fraction-of-a-set',
+    title: 'Fraction of a set',
+    assumptions: [
+      'The whole is the set of umbrellas; each umbrella is one equal part.',
+      'Tap an umbrella to shade it or clear it.',
+    ],
+    variables: [
+      whole('n', 'n', 'Umbrellas', 1, 12),
+      whole('k', 'k', 'Shaded', 0, 12),
+      whole('u', 'u', 'Not shaded', 0, 12),
+    ],
+    relations: [
+      {
+        id: 'u = n − k',
+        display: '{n} − {k} = {u}',
+        vars: ['u', 'n', 'k'],
+        residual: (v: Values) => v.u! - (v.n! - v.k!),
+        solve: {
+          u: (v: Values) => v.n! - v.k!,
+          n: (v: Values) => v.u! + v.k!,
+          k: (v: Values) => v.n! - v.u!,
+        },
+      },
+    ],
+    steps: {
+      'u = n − k': {
+        u: { expr: '{n} − {k}', how: 'The umbrellas that are not shaded.' },
+        n: { expr: '{u} + {k}', how: 'All the umbrellas: shaded and not.' },
+        k: { expr: '{n} − {u}', how: 'The umbrellas that are shaded.' },
+      },
+    },
+    example: { n: 7, k: 3, u: 4 },
+    startWith: ['n', 'k'],
+    representation: {
+      kind: 'partition',
+      parts: 'n',
+      shaded: 'k',
+      shape: 'set',
+      object: 'umbrella',
+      fraction: true,
+    },
+  },
+  {
     id: 'g.wave',
     title: 'Wave',
     assumptions: [

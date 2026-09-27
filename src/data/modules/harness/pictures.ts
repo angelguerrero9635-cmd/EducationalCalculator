@@ -148,6 +148,8 @@ export function repIssues(
       const k = val(rep.shaded);
       count(rep.shaded, 'shaded parts');
       if (p !== undefined && p < 1) out.push(`partition with ${p} parts`);
+      // A set is drawn in rows of up to 8, three rows at most (Partition.tsx).
+      if (rep.shape === 'set' && p !== undefined && p > 24) out.push(`a set of ${p} objects`);
       if (p !== undefined && k !== undefined && k > p) out.push(`${k} shaded of ${p} parts`);
       break;
     }
