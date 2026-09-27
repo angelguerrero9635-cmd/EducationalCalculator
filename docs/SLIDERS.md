@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-41 of 336 pages show sliders.
+41 of 342 pages show sliders.
 
 ## By picture kind
 
@@ -26,8 +26,9 @@ its kind with `sliders: true | false`.
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| coordinatePlane | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| coordinatePlane | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| curvedSolid | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotPlot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -69,12 +70,13 @@ its kind with `sliders: true | false`.
 | ratioTable | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectangle | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
-| rightTriangle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| rightTriangle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | scaleCopy | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| scatter | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -443,3 +445,9 @@ its kind with `sliders: true | false`.
 | g.scale-copy | scaleCopy | no |
 | g.scale-copy-area | scaleCopy | no |
 | g.circle-parts | circle | no |
+| g.squares-on-sides | rightTriangle | no |
+| g.grid-distance | coordinatePlane | no |
+| g.cylinder-volume | curvedSolid | no |
+| g.cone-in-cylinder | curvedSolid | no |
+| g.sphere-in-cylinder | curvedSolid | no |
+| g.scatter-fit | scatter | no |
