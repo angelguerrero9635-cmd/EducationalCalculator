@@ -1743,7 +1743,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     gallery: ['g.ratio-tape-three-parts', 'g.ratio-tape-three-edge'],
     uses: '"ratio":["a","b","c"]',
     notes:
-      "Picture: tape (ratio) + NEW option: a third bar (ratio: ['a','b','c'], amounts: ['x','y','z']). Why: The current spec draws only two parts, so the third part is missing (IM part-part-whole tapes). Drawn (round 3, group I): the ratio tape takes three parts. representation { kind: 'tape', ratio: ['a', 'b', 'c'], unit: 'u', amounts: ['x', 'y', 'z'], total: 't' }: three bars of boxes worth u, each bar's amount beside it, and the total bracketed to the right of all three (in all). The caption reads a : b : c makes n equal parts, each worth u. Total: t.",
+      "Picture: tape (ratio) + NEW option: a third bar (ratio: ['a','b','c'], amounts: ['x','y','z']). Why: The current spec draws only two parts, so the third part is missing (IM part-part-whole tapes). Drawn (round 3, group I): the ratio tape takes three parts. representation { kind: 'tape', ratio: ['a', 'b', 'c'], unit: 'u', amounts: ['x', 'y', 'z'], total: 't' }: three bars of boxes worth u, each bar's amount beside it, and the total bracketed to the right of all three (in all). The caption reads a : b : c makes n equal parts, each worth u. Total: t. Page bug, not the picture: the page's own sampling test fails for 8 of SEED=1–20 (e.g. SEED=6 MODULE_IDS=m.6.ratios~three-parts: \"t cleared although it fits the newer inputs\", givens t=600000, c=11, z=200000), on the lesson branch too; the default seed passes.",
   },
   {
     id: 'D93',
