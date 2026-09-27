@@ -520,6 +520,16 @@ function hexSpots(n: number): [number, number][] {
   return out.slice(0, n);
 }
 
+/** A molecule turned `deg` degrees in the picture's plane (the balls stay lit from the top left). */
+export function turned(m: Molecule, deg: number): Molecule {
+  if (deg % 360 === 0) return m;
+  const [cos, sin] = [Math.cos((deg * Math.PI) / 180), Math.sin((deg * Math.PI) / 180)];
+  return {
+    ...m,
+    atoms: m.atoms.map((a) => ({ ...a, x: a.x * cos - a.y * sin, y: a.x * sin + a.y * cos })),
+  };
+}
+
 /** The box a molecule's balls fill, in bond lengths: [minX, minY, maxX, maxY]. */
 export function extentOf(m: Molecule): [number, number, number, number] {
   if (m.atoms.length === 0) return [0, 0, 0, 0];

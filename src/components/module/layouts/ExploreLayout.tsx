@@ -9,6 +9,7 @@ import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 import { Canvas, Caption, ChartText } from '../reps/common';
 import { Arrow, Push, Sky, Static, TimesTable, Vibration } from './figures';
 import { FoodWeb } from './foodWeb';
+import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import {
   BodyFigure,
   CellFigure6,
@@ -126,6 +127,12 @@ function FigureView({
       return <RockCycleFigure rock={scene.rock ?? { process: 'melting' }} c={c} />;
     case 'foodWeb':
       return <FoodWeb web={scene.web ?? {}} />;
+    case 'molecules':
+      return <MoleculesFigure scene={scene.molecules ?? { items: [{ formula: 'H2O' }] }} />;
+    case 'phases':
+      return <PhasesFigure phase={scene.phase ?? {}} />;
+    case 'periodicTable':
+      return <PeriodicTableFigure elements={scene.elements ?? {}} />;
   }
 }
 

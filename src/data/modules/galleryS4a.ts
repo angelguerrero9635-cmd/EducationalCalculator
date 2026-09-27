@@ -386,4 +386,174 @@ S4A_GALLERY_MODULES.push({
   representation: { kind: 'periodicTable', element: 'Z', families: true },
 });
 
-export const S4A_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const S4A_GALLERY_LAYOUTS: LayoutDef[] = [
+  {
+    id: 'g.molecule-models',
+    title: 'Molecule models',
+    kind: 'explore',
+    assumptions: [
+      'Each ball is an atom; each stick is a bond.',
+      'Hydrogen is white, carbon black, oxygen red, nitrogen blue.',
+    ],
+    figure: { kind: 'molecules' },
+    scenes: [
+      {
+        label: 'Water',
+        lines: ['Two hydrogen atoms joined to one oxygen atom.'],
+        molecules: { items: [{ formula: 'H2O' }] },
+      },
+      {
+        label: 'Carbon dioxide',
+        lines: ['One carbon atom between two oxygen atoms.'],
+        molecules: { items: [{ formula: 'CO2' }] },
+      },
+      {
+        label: 'Oxygen',
+        lines: ['Two oxygen atoms: an element, one kind of atom.'],
+        molecules: { items: [{ formula: 'O2' }] },
+      },
+      {
+        label: 'Methane',
+        lines: ['One carbon atom with four hydrogen atoms.'],
+        molecules: { items: [{ formula: 'CH4' }] },
+      },
+      {
+        label: 'Ammonia',
+        lines: ['One nitrogen atom with three hydrogen atoms.'],
+        molecules: { items: [{ formula: 'NH3' }] },
+      },
+      {
+        label: 'Iron',
+        lines: ['A solid element: every ball is the same kind of atom.'],
+        molecules: { items: [{ formula: 'Fe', count: 24 }], state: 'solid' },
+      },
+      {
+        label: 'Water, liquid',
+        lines: ['A compound: every molecule is the same, two kinds of atom in each.'],
+        molecules: { items: [{ formula: 'H2O', count: 14 }], state: 'liquid' },
+      },
+      {
+        label: 'Air',
+        lines: ['A mixture of gases: nitrogen and oxygen molecules, far apart.'],
+        molecules: {
+          items: [
+            { formula: 'N2', count: 8 },
+            { formula: 'O2', count: 2 },
+          ],
+          state: 'gas',
+        },
+      },
+      {
+        label: 'Reaction',
+        lines: ['Hydrogen and oxygen become water: the same atoms, joined in new ways.'],
+        molecules: {
+          items: [
+            { formula: 'H2', count: 4 },
+            { formula: 'O2', count: 2 },
+          ],
+          after: [{ formula: 'H2O', count: 4 }],
+          state: 'gas',
+        },
+      },
+    ],
+  },
+  {
+    id: 'g.phases',
+    title: 'States of matter',
+    kind: 'explore',
+    assumptions: [
+      'The same particles in each box: only how close and how fast they move changes.',
+      'The arrows over the boxes take in heat; the arrows under them give heat out.',
+    ],
+    figure: { kind: 'phases' },
+    scenes: [
+      {
+        label: 'Solid',
+        lines: ['Packed in rows; each particle only wiggles in place.'],
+        phase: { state: 'solid', formula: 'H2O' },
+      },
+      {
+        label: 'Melting',
+        lines: ['Heat loosens the rows: the solid becomes a liquid.'],
+        phase: { state: 'liquid', change: 'melting', formula: 'H2O' },
+      },
+      {
+        label: 'Boiling',
+        lines: ['The particles break away and fly apart as a gas.'],
+        phase: { state: 'gas', change: 'boiling', formula: 'H2O' },
+      },
+      {
+        label: 'Evaporation',
+        lines: ['Particles leave the surface of a liquid, below its boiling point too.'],
+        phase: { state: 'gas', change: 'evaporation', formula: 'H2O' },
+      },
+      {
+        label: 'Condensation',
+        lines: ['A gas cools and its particles gather into a liquid.'],
+        phase: { state: 'liquid', change: 'condensation', formula: 'H2O' },
+      },
+      {
+        label: 'Freezing',
+        lines: ['A liquid cools and its particles settle into rows.'],
+        phase: { state: 'solid', change: 'freezing', formula: 'H2O' },
+      },
+      {
+        label: 'Sublimation',
+        lines: ['A solid turns straight into a gas, as dry ice does.'],
+        phase: { state: 'gas', change: 'sublimation' },
+      },
+      {
+        label: 'Deposition',
+        lines: ['A gas turns straight into a solid, as frost does.'],
+        phase: { state: 'solid', change: 'deposition', formula: 'H2O' },
+      },
+    ],
+  },
+  {
+    id: 'g.periodic-table-figure',
+    title: 'Periodic table figure',
+    kind: 'explore',
+    assumptions: ['A column is a group; a row is a period.', 'Elements in a group behave alike.'],
+    figure: { kind: 'periodicTable' },
+    scenes: [
+      { label: 'Oxygen', lines: ['Oxygen, atomic number 8.'], elements: { element: 'O' } },
+      {
+        label: 'Group 1',
+        lines: ['Group 1: hydrogen and the alkali metals.'],
+        elements: { group: 1 },
+      },
+      { label: 'Period 3', lines: ['Period 3: sodium to argon.'], elements: { period: 3 } },
+      {
+        label: 'Families',
+        lines: ['Metals on the left, nonmetals on the right, metalloids between.'],
+        elements: { families: true },
+      },
+      {
+        label: 'Like argon',
+        lines: ['Helium, neon and argon: noble gases, in one group.'],
+        elements: { element: 'Ar', ring: ['He', 'Ne'], families: true },
+      },
+    ],
+  },
+  {
+    id: 'g.molecule-cards',
+    title: 'Molecule cards',
+    kind: 'sort',
+    assumptions: ['An element has one kind of atom.', 'A compound has two or more kinds joined.'],
+    question: 'Element or compound?',
+    bins: [
+      { id: 'element', label: 'Element', why: 'Every atom in it is the same kind.' },
+      { id: 'compound', label: 'Compound', why: 'It joins atoms of different kinds.' },
+    ],
+    cards: [
+      { label: 'Water', bin: 'compound', figure: { kind: 'molecule', formula: 'H2O' } },
+      { label: 'Oxygen', bin: 'element', figure: { kind: 'molecule', formula: 'O2' } },
+      { label: 'Carbon dioxide', bin: 'compound', figure: { kind: 'molecule', formula: 'CO2' } },
+      { label: 'Iron', bin: 'element', figure: { kind: 'molecule', formula: 'Fe' } },
+      { label: 'Table salt', bin: 'compound', figure: { kind: 'molecule', formula: 'NaCl' } },
+      { label: 'Nitrogen', bin: 'element', figure: { kind: 'molecule', formula: 'N2' } },
+      { label: 'Methane', bin: 'compound', figure: { kind: 'molecule', formula: 'CH4' } },
+      { label: 'Ammonia', bin: 'compound', figure: { kind: 'molecule', formula: 'NH3' } },
+    ],
+  },
+];
