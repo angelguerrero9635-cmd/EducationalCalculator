@@ -15,4 +15,27 @@ export const R3B_ICONS = [
   'letter in an envelope',
   'bicycle',
   'sack of potatoes',
+  // Devices and the energy they give out (D37).
+  'flashlight',
+  'desk lamp',
+  'toaster',
+  'hair dryer',
+  'buzzer',
+  'speaker',
+  'doorbell',
+  'electric fan',
+  'electric car',
+  // The energy in a flashlight, one circuit stage by stage (D38).
+  'circuit battery',
+  'circuit wire current',
+  'circuit hot filament',
+  'circuit lit bulb',
+  // Messages by light and by sound (D41).
+  'flashing flashlight',
+  'lighthouse',
+  'traffic light',
+  'ship with signal flags',
+  'drum',
+  'ship horn',
+  'school bell',
 ] as const;

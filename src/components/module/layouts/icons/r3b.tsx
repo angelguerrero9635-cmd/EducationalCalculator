@@ -63,7 +63,9 @@ export function R3BIcon({ icon, ink }: IconProps): ReactNode {
     'glow',
     'hot',
     'beam',
+    'beamLeft',
     'beamDown',
+    'glowRed',
   );
 
   const o = (w = 1.2) => ({
@@ -121,6 +123,143 @@ export function R3BIcon({ icon, ink }: IconProps): ReactNode {
       strokeLinecap="round"
     />
   );
+  /**
+   * Sound: `n` arcs spreading right from (x, y), turned by `rot` degrees; `flip` mirrors them
+   * to spread left.
+   */
+  const waves = (x: number, y: number, flip = false, rot = 0, n = 3, step = 3.3) => (
+    <G transform={`${flip ? `translate(${2 * x} 0) scale(-1 1) ` : ''}rotate(${rot} ${x} ${y})`}>
+      {Array.from({ length: n }, (_, i) => {
+        const r = step * (i + 1);
+        return (
+          <Path
+            key={i}
+            d={`M ${x + r * 0.77} ${y - r * 0.64} A ${r} ${r} 0 0 1 ${x + r * 0.77} ${y + r * 0.64}`}
+            fill="none"
+            stroke={ink}
+            strokeWidth={1.3}
+            strokeLinecap="round"
+          />
+        );
+      })}
+    </G>
+  );
+  /** A small arrow on a wire at (x, y), pointing `dir` degrees (0 is right, 90 down). */
+  const arrow = (x: number, y: number, dir: number) => (
+    <Path
+      key={`${x} ${y}`}
+      d={`M ${x + 2.4} ${y} L ${x - 1.6} ${y - 2.2} L ${x - 1.6} ${y + 2.2} Z`}
+      fill={c.sunDisk}
+      transform={`rotate(${dir} ${x} ${y})`}
+      {...o(0.7)}
+    />
+  );
+  /** A flashlight pointing right, switched on; `code` adds a row of flashes (dot, dash, dot). */
+  const flashlight = (code: boolean) => (
+    <>
+      {code ? (
+        <>
+          <Circle cx={9} cy={8} r={6} fill={url(ids.glow)} />
+          <Circle cx={20} cy={8} r={7} fill={url(ids.glow)} />
+          <Circle cx={32} cy={8} r={6} fill={url(ids.glow)} />
+          <Circle cx={9} cy={8} r={2.4} fill={c.bulbGlow} {...o(0.8)} />
+          <Rect x={14} y={5.6} width={12} height={4.8} rx={2.4} fill={c.bulbGlow} {...o(0.8)} />
+          <Circle cx={32} cy={8} r={2.4} fill={c.bulbGlow} {...o(0.8)} />
+        </>
+      ) : null}
+      <G transform={code ? 'translate(0 7)' : undefined}>
+        <FloorShadow cx={15} cy={33} rx={13} ry={2} />
+        <Path d="M 31 17 L 47 8 V 40 L 31 31 Z" fill={url(ids.beam)} />
+        <Circle cx={31} cy={24} r={9} fill={url(ids.glow)} />
+        <Rect x={3} y={20} width={20} height={8} rx={2.5} fill={c.blockBlue} {...o(1.1)} />
+        <Rect x={3} y={20} width={20} height={8} rx={2.5} fill={url(ids.sheenV)} />
+        {[6, 8.5].map((x) => (
+          <Line key={x} x1={x} y1={20.5} x2={x} y2={27.5} stroke={c.rubber} strokeWidth={0.8} />
+        ))}
+        <Rect x={12} y={18.4} width={5} height={2.2} rx={1} fill={c.rubber} {...o(0.7)} />
+        {shaded('M 22 20 L 28 16 H 31 V 32 H 28 L 22 28 Z', c.silver, ids.sheenV, 1.1)}
+        <Path d={ell(31, 24, 1.8, 8)} fill={c.bulbGlow} {...o(0.9)} />
+      </G>
+    </>
+  );
+  /**
+   * The flashlight's circuit as one scene, stage by stage: 1 the battery (the rest faint),
+   * 2 current along the wire, 3 the filament red-hot, 4 the bulb giving out light and heat.
+   */
+  const circuit = (stage: 1 | 2 | 3 | 4) => {
+    const globe = 'M 26 20 C 20.5 17 20.5 5 30 4.5 C 39.5 5 39.5 17 34 20 Z';
+    const filament =
+      'M 28 20 V 13.5 L 28.8 11.5 L 29.6 13.5 L 30.4 11.5 L 31.2 13.5 L 32 11.5 V 20';
+    return (
+      <>
+        <FloorShadow cx={23} cy={44} rx={15} ry={2} />
+        {stage === 4 ? <Circle cx={30} cy={12.5} r={17} fill={url(ids.glow)} /> : null}
+        {stage === 4 ? rising([16.5, 43.5], 21, 11, c.orange, 1.3) : null}
+        {stage === 4
+          ? [-150, -120, -60, -30].map((a) => {
+              const r = (a * Math.PI) / 180;
+              return (
+                <Line
+                  key={a}
+                  x1={30 + 10.5 * Math.cos(r)}
+                  y1={12.5 + 10.5 * Math.sin(r)}
+                  x2={30 + 13.5 * Math.cos(r)}
+                  y2={12.5 + 13.5 * Math.sin(r)}
+                  stroke={c.sunRay}
+                  strokeWidth={1.6}
+                  strokeLinecap="round"
+                />
+              );
+            })
+          : null}
+        <G opacity={stage === 1 ? 0.3 : 1}>
+          {limb('M 38 38 H 44 V 24 H 34', c.copper, 1.6)}
+          {limb('M 10 38 H 5 V 31 H 30 V 28', c.copper, 1.6)}
+          {stage === 3 ? <Circle cx={30} cy={13} r={8} fill={url(ids.glowRed)} /> : null}
+          <Path d={globe} fill={stage === 4 ? c.bulbGlow : url(ids.glass)} {...o(1.1)} />
+          <Path
+            d={filament}
+            fill="none"
+            stroke={stage === 3 ? c.mercury : stage === 4 ? c.orange : c.metalDark}
+            strokeWidth={stage >= 3 ? 1.3 : 0.9}
+            strokeLinejoin="round"
+          />
+          <Rect x={26} y={20} width={8} height={7} rx={1} fill={c.silver} {...o(1)} />
+          <Rect x={26} y={20} width={8} height={7} rx={1} fill={url(ids.sheen)} />
+          {[22.3, 24.6].map((y) => (
+            <Line
+              key={y}
+              x1={26.5}
+              y1={y}
+              x2={33.5}
+              y2={y}
+              stroke={c.metalDark}
+              strokeWidth={0.7}
+            />
+          ))}
+          <Path d={ell(30, 27.8, 1.8, 1)} fill={c.rubber} />
+        </G>
+        {stage >= 2
+          ? [
+              arrow(41, 38, 0),
+              arrow(44, 31, -90),
+              arrow(39, 24, 180),
+              arrow(17, 31, 180),
+              arrow(5, 34.5, 90),
+            ]
+          : null}
+        <Rect x={10} y={34} width={26} height={8} rx={1.5} fill={c.rubber} {...o(1.1)} />
+        <Rect x={27} y={34.6} width={8.4} height={6.8} fill={c.copper} />
+        <Rect x={10} y={34} width={26} height={8} rx={1.5} fill={url(ids.sheenV)} />
+        <Rect x={36} y={36.2} width={2.4} height={3.6} rx={0.6} fill={c.silver} {...o(0.8)} />
+        <Path
+          d="M 19.5 34.8 L 16.8 38.6 H 19 L 17.8 41.2 L 21.6 37.2 H 19.4 L 20.8 34.8 Z"
+          fill={c.sunDisk}
+          {...o(0.5)}
+        />
+      </>
+    );
+  };
 
   let art: ReactNode = null;
   switch (icon) {
@@ -541,6 +680,379 @@ export function R3BIcon({ icon, ink }: IconProps): ReactNode {
       );
       break;
     }
+
+    // ── Devices: what each gives out (D37) ────────────────────────────────────
+    case 'flashlight':
+      art = flashlight(false);
+      break;
+    case 'desk lamp':
+      art = (
+        <>
+          <Path d="M 40.5 17.5 L 29.5 27.5 L 30 44 H 47 V 22 Z" fill={url(ids.beamDown)} />
+          <FloorShadow cx={14} cy={43} rx={11} ry={2.2} />
+          <Path d={ell(14, 41, 9, 2.8)} fill={c.blockGreen} {...o(1.1)} />
+          <Path d={ell(14, 41, 9, 2.8)} fill={url(ids.round)} />
+          {limb('M 14 40 L 9 24 L 23.5 11', c.silver, 1.8)}
+          <Circle cx={9} cy={24} r={1.9} fill={c.silverDark} {...o(0.7)} />
+          <Circle cx={35} cy={22.5} r={9} fill={url(ids.glow)} />
+          {lit('M 20 10.5 L 26 5.5 L 41 17 L 29 28 Z', c.blockGreen)}
+          <Path
+            d={ell(35, 22.5, 7.8, 2)}
+            fill={c.bulbGlow}
+            transform="rotate(-42 35 22.5)"
+            {...o(0.9)}
+          />
+        </>
+      );
+      break;
+    case 'toaster':
+      art = (
+        <>
+          <FloorShadow cx={24} cy={43} rx={19} ry={2.4} />
+          {rising([19, 31], 9, 8, c.orange, 1.2)}
+          {[13, 25].map((x) => (
+            <G key={x}>
+              <Rect x={x} y={9} width={10} height={12} rx={3} fill={c.furDark} {...o(1)} />
+              <Rect x={x + 1.5} y={10.5} width={7} height={10} rx={2} fill={c.wood} />
+            </G>
+          ))}
+          {shaded(
+            'M 7 40 V 24 C 7 19.5 10 17 15 17 H 33 C 38 17 41 19.5 41 24 V 40 Z',
+            c.silver,
+            ids.sheen,
+          )}
+          {[12, 24].map((x) => (
+            <Rect key={x} x={x + 0.5} y={16.2} width={11} height={1.6} rx={0.8} fill={c.orange} />
+          ))}
+          <Rect x={41} y={22} width={4} height={3} rx={1} fill={c.rubber} {...o(0.8)} />
+          <Circle cx={24} cy={31} r={3} fill={c.rubber} {...o(0.8)} />
+          <Line x1={24} y1={31} x2={25.6} y2={29.2} stroke={c.silver} strokeWidth={0.9} />
+          <Rect x={9} y={40} width={5} height={2.4} rx={1} fill={c.rubber} />
+          <Rect x={34} y={40} width={5} height={2.4} rx={1} fill={c.rubber} />
+        </>
+      );
+      break;
+    case 'hair dryer':
+      art = (
+        <>
+          {[14, 18.5, 23].map((y) => (
+            <Path
+              key={y}
+              d={`M 39.5 ${y} C 41.5 ${y - 2} 42.5 ${y + 2} 44.5 ${y} S 46.5 ${y - 1} 47 ${y}`}
+              fill="none"
+              stroke={c.orange}
+              strokeWidth={1.3}
+              strokeLinecap="round"
+            />
+          ))}
+          <Path d="M 18 41 C 16 45 10 44 7 46" fill="none" {...o(1.4)} />
+          {shaded('M 14.5 23 H 23 L 21 40 C 21 42 15.5 42 15.5 40 Z', c.purple, ids.sheen)}
+          <Rect x={20.5} y={27} width={2} height={4} rx={1} fill={c.rubber} />
+          {shaded('M 32 12.5 L 38 14.5 V 22.5 L 32 24.5 Z', c.rubber, ids.sheenV, 1)}
+          {shaded('M 10 10 H 32 V 27 H 10 Z', c.purple, ids.sheenV)}
+          <Path d={ell(10, 18.5, 4, 8.5)} fill={c.rubber} {...o(1.1)} />
+          {[15, 18.5, 22].map((y) => (
+            <Line key={y} x1={7.5} y1={y} x2={12.5} y2={y} stroke={c.metalDark} strokeWidth={1} />
+          ))}
+        </>
+      );
+      break;
+    case 'buzzer':
+      art = (
+        <>
+          <FloorShadow cx={22} cy={40} rx={14} ry={2.2} />
+          {limb('M 18 37 C 16 42 10 41 6 45', c.poleNorth, 1.6)}
+          {limb('M 26 37 C 28 42 34 41 38 45', c.rubber, 1.6)}
+          {shaded('M 11 24 V 34 A 11 3.5 0 0 0 33 34 V 24 Z', c.rubber, ids.sheen)}
+          <Path d={ell(22, 24, 11, 3.5)} fill={c.metalDark} {...o(1.1)} />
+          <Circle cx={22} cy={24} r={1.3} fill={c.rubber} />
+          {waves(35, 18, false, -35)}
+          {waves(9, 18, true, -35)}
+        </>
+      );
+      break;
+    case 'speaker':
+      art = (
+        <>
+          <FloorShadow cx={18} cy={45} rx={14} ry={2} />
+          <Rect x={5} y={4} width={26} height={40} rx={2} fill={c.wood} {...o(1.2)} />
+          <Rect x={5} y={4} width={26} height={40} rx={2} fill={url(ids.light)} />
+          <Circle cx={18} cy={30} r={9.5} fill={url(ids.metal)} {...o(1)} />
+          <Circle cx={18} cy={30} r={7.6} fill={c.rubber} {...o(0.6)} />
+          <Circle cx={18} cy={30} r={7.6} fill={url(ids.round)} />
+          <Circle cx={18} cy={30} r={2.6} fill={c.metalDark} {...o(0.6)} />
+          <Circle cx={18} cy={12.5} r={4.6} fill={url(ids.metal)} {...o(1)} />
+          <Circle cx={18} cy={12.5} r={2.8} fill={c.rubber} />
+          {waves(33, 24)}
+        </>
+      );
+      break;
+    case 'doorbell':
+      art = (
+        <>
+          <Path
+            d="M 10 20 V 13 C 10 8 13 5 18 5 H 29.5"
+            fill="none"
+            stroke={c.copper}
+            strokeWidth={1.2}
+            strokeLinecap="round"
+          />
+          <Rect x={4} y={20} width={12} height={21} rx={3} fill={c.snow} {...o(1.1)} />
+          <Rect x={4} y={20} width={12} height={21} rx={3} fill={url(ids.light)} />
+          <Circle cx={10} cy={30.5} r={6.5} fill={url(ids.glow)} />
+          <Circle cx={10} cy={30.5} r={4.2} fill={c.bulbGlow} {...o(0.9)} />
+          <Circle cx={10} cy={30.5} r={2.8} fill={url(ids.metal)} {...o(0.7)} />
+          <Rect x={29.5} y={3} width={5} height={3.5} rx={1} fill={c.metalDark} {...o(0.8)} />
+          <Path
+            d="M 24 20 C 24 11 27.5 6.5 32 6.5 C 36.5 6.5 40 11 40 20 L 42 22.5 H 22 Z"
+            fill={url(ids.brass)}
+            {...o(1.1)}
+          />
+          <Circle cx={32} cy={24.5} r={2} fill={c.brassDark} {...o(0.8)} />
+          {waves(43, 15, false, 0, 2, 2.6)}
+          {waves(21, 15, true, 0, 2, 2.6)}
+        </>
+      );
+      break;
+    case 'electric fan': {
+      const blade = (a: number) => (
+        <G key={a} transform={`rotate(${a} 22 18)`}>
+          <Path d={ell(22, 11, 4.2, 6.5)} fill={c.blockBlue} {...o(0.9)} />
+          <Path d={ell(22, 11, 4.2, 6.5)} fill={url(ids.round)} />
+        </G>
+      );
+      art = (
+        <>
+          <FloorShadow cx={22} cy={43} rx={12} ry={2.2} />
+          {[12, 18, 24].map((y) => (
+            <Path
+              key={y}
+              d={`M 40 ${y} C 42 ${y - 1.5} 44 ${y + 1.5} 47 ${y}`}
+              fill="none"
+              stroke={c.chartMuted}
+              strokeWidth={1.3}
+              strokeLinecap="round"
+            />
+          ))}
+          <Rect x={20.5} y={30} width={3} height={11} fill={c.silver} {...o(0.9)} />
+          <Rect x={20.5} y={30} width={3} height={11} fill={url(ids.sheen)} />
+          <Path d={ell(22, 41, 10, 2.8)} fill={c.blockBlue} {...o(1.1)} />
+          <Path d={ell(22, 41, 10, 2.8)} fill={url(ids.round)} />
+          {[0, 120, 240].map(blade)}
+          <Circle cx={22} cy={18} r={3} fill={url(ids.metal)} {...o(0.8)} />
+          {Array.from({ length: 8 }, (_, i) => {
+            const a = (i * Math.PI) / 4;
+            return (
+              <Line
+                key={i}
+                x1={22 + 3.5 * Math.cos(a)}
+                y1={18 + 3.5 * Math.sin(a)}
+                x2={22 + 15 * Math.cos(a)}
+                y2={18 + 15 * Math.sin(a)}
+                stroke={c.silverDark}
+                strokeWidth={0.6}
+              />
+            );
+          })}
+          <Circle cx={22} cy={18} r={10} fill="none" stroke={c.silverDark} strokeWidth={0.6} />
+          <Circle cx={22} cy={18} r={15} fill="none" {...o(2.6)} />
+          <Circle cx={22} cy={18} r={15} fill="none" stroke={c.silver} strokeWidth={1.4} />
+        </>
+      );
+      break;
+    }
+    case 'electric car':
+      art = (
+        <>
+          <FloorShadow cx={22} cy={42} rx={21} ry={2.2} />
+          <Rect x={40} y={14} width={6.5} height={28} rx={1.5} fill={c.silver} {...o(1)} />
+          <Rect x={40} y={14} width={6.5} height={28} rx={1.5} fill={url(ids.sheen)} />
+          <Rect x={41.5} y={16.5} width={3.5} height={4} rx={0.8} fill={c.blockGreen} />
+          {limb('M 40 28 C 36 36 39 36 37 29.5', c.rubber, 1.6)}
+          {lit(
+            'M 3 35 V 29.5 C 3 27 5 26 8 25.5 L 13 19 C 14 18 15 17.5 17 17.5 H 26 C 28 17.5 29 18 30 19 L 34 25 C 36.5 25.5 38 27 38 29.5 V 35 Z',
+            c.blockGreen,
+          )}
+          <Path d="M 14.5 20 H 20.5 V 25 H 10.5 Z" fill={url(ids.glass)} {...o(0.8)} />
+          <Path d="M 22.5 20 H 26 C 27 20 28 21 31 25 H 22.5 Z" fill={url(ids.glass)} {...o(0.8)} />
+          <Rect x={35.5} y={27.5} width={3} height={3.5} rx={0.8} fill={c.rubber} {...o(0.7)} />
+          <Path
+            d="M 19.5 26.5 L 16 31 H 18.8 L 17.2 35 L 22 29.5 H 19.2 L 21 26.5 Z"
+            fill={c.sunDisk}
+            {...o(0.6)}
+          />
+          {[11, 30].map((x) => (
+            <G key={x}>
+              <Circle cx={x} cy={35.5} r={5} fill={c.rubber} {...o(1.1)} />
+              <Circle cx={x} cy={35.5} r={2.2} fill={url(ids.metal)} {...o(0.6)} />
+            </G>
+          ))}
+        </>
+      );
+      break;
+
+    // ── Energy in a flashlight, stage by stage (D38) ──────────────────────────
+    case 'circuit battery':
+      art = circuit(1);
+      break;
+    case 'circuit wire current':
+      art = circuit(2);
+      break;
+    case 'circuit hot filament':
+      art = circuit(3);
+      break;
+    case 'circuit lit bulb':
+      art = circuit(4);
+      break;
+
+    // ── Messages by light and by sound (D41) ──────────────────────────────────
+    case 'flashing flashlight':
+      art = flashlight(true);
+      break;
+    case 'lighthouse': {
+      /** A band of the tapered tower between two heights. */
+      const band = (y0: number, y1: number) => {
+        const x = (y: number) => 20 - (y - 16) / 8;
+        return `M ${x(y0)} ${y0} H ${48 - x(y0)} L ${48 - x(y1)} ${y1} H ${x(y1)} Z`;
+      };
+      art = (
+        <>
+          <Path d="M 22 10.5 L 1 3 V 18 Z" fill={url(ids.beamLeft)} />
+          <Path d="M 26 10.5 L 47 3 V 18 Z" fill={url(ids.beam)} />
+          <Path
+            d="M 0 43 C 4 41 8 45 12 43 S 20 41 24 43 S 32 45 36 43 S 44 41 48 43 V 47 H 0 Z"
+            fill={c.water}
+            {...o(0.9)}
+          />
+          {lit('M 11 43 C 11 38 15 36 20 37 H 30 C 34 36 38 39 37 43 Z', c.rock5, 1)}
+          <Path d={band(16, 39)} fill={c.snow} />
+          <Path d={band(21, 26)} fill={c.blockRed} />
+          <Path d={band(31, 36)} fill={c.blockRed} />
+          <Path d={band(16, 39)} fill={url(ids.sheen)} {...o(1.1)} />
+          <Rect x={22.5} y={33} width={3} height={5} rx={1.5} fill={c.rubber} />
+          <Circle cx={24} cy={10.5} r={8} fill={url(ids.glow)} />
+          <Rect x={20} y={7} width={8} height={7} fill={c.bulbGlow} {...o(1)} />
+          <Line x1={24} y1={7} x2={24} y2={14} stroke={c.rubber} strokeWidth={0.8} />
+          <Rect x={17} y={14} width={14} height={2.4} rx={0.6} fill={c.rubber} {...o(0.8)} />
+          <Path d="M 19 7 L 24 2.5 L 29 7 Z" fill={c.blockRed} {...o(1)} />
+        </>
+      );
+      break;
+    }
+    case 'traffic light': {
+      const lamp = (cy: number, color: string, on: boolean) => (
+        <G key={cy}>
+          {on ? <Circle cx={24} cy={cy} r={10} fill={url(ids.glowRed)} /> : null}
+          <Circle cx={24} cy={cy} r={4.6} fill={color} opacity={on ? 1 : 0.35} {...o(0.8)} />
+          {on ? <Circle cx={24} cy={cy} r={4.6} fill={url(ids.round)} /> : null}
+        </G>
+      );
+      art = (
+        <>
+          <Rect x={22} y={38} width={4} height={9} fill={c.metalDark} {...o(0.9)} />
+          <Rect x={15} y={2} width={18} height={38} rx={4} fill={c.rubber} {...o(1.2)} />
+          <Rect x={15} y={2} width={18} height={38} rx={4} fill={url(ids.light)} />
+          {lamp(11.5, c.spectrumRed, true)}
+          {lamp(21.5, c.spectrumYellow, false)}
+          {lamp(31.5, c.spectrumGreen, false)}
+        </>
+      );
+      break;
+    }
+    case 'ship with signal flags': {
+      const flags: [number, number, string][] = [
+        [11.3, 22.5, c.sunDisk],
+        [17.5, 16.5, c.blockBlue],
+        [23.8, 10.5, c.blockRed],
+        [32.5, 9.3, c.blockGreen],
+        [36.2, 15.6, c.sunDisk],
+        [39.8, 21.8, c.blockRed],
+      ];
+      art = (
+        <>
+          <Path d="M 5 29 L 30 5 L 44 29" fill="none" stroke={ink} strokeWidth={0.7} />
+          <Line x1={30} y1={4} x2={30} y2={30} stroke={c.woodDark} strokeWidth={1.8} />
+          {flags.map(([x, y, color]) => (
+            <Rect key={x} x={x - 2} y={y} width={4.2} height={4.2} fill={color} {...o(0.6)} />
+          ))}
+          <Rect x={12} y={23} width={14} height={7} rx={1} fill={c.snow} {...o(1)} />
+          {[15, 19, 23].map((x) => (
+            <Circle key={x} cx={x} cy={26.5} r={1.1} fill={c.water} {...o(0.5)} />
+          ))}
+          {lit('M 2 30 H 46 L 40.5 39 H 7.5 Z', c.blockBlue)}
+          <Path d="M 3.6 33 H 44.2" stroke={c.blockRed} strokeWidth={1.6} />
+          <Path
+            d="M 0 40 C 4 38 8 42 12 40 S 20 38 24 40 S 32 42 36 40 S 44 38 48 40 V 46 H 0 Z"
+            fill={c.water}
+            {...o(0.9)}
+          />
+        </>
+      );
+      break;
+    }
+    case 'drum':
+      art = (
+        <>
+          <FloorShadow cx={24} cy={43} rx={18} ry={2.5} />
+          {shaded('M 8 21 V 36 A 16 4.5 0 0 0 40 36 V 21 Z', c.blockRed, ids.sheen)}
+          <Path
+            d="M 9 23 L 13 35 L 17 24.5 L 21 36.5 L 25 24.8 L 29 36.5 L 33 24.5 L 37 35 L 39.5 23"
+            fill="none"
+            stroke={c.snow}
+            strokeWidth={0.9}
+            strokeLinejoin="round"
+          />
+          <Path d="M 8 36 A 16 4.5 0 0 0 40 36" fill="none" {...o(3)} />
+          <Path d="M 8 36 A 16 4.5 0 0 0 40 36" fill="none" stroke={c.silver} strokeWidth={1.6} />
+          <Path d={ell(24, 21, 16, 4.5)} fill={c.snow} stroke={c.silver} strokeWidth={1.8} />
+          <Path d={ell(24, 21, 16, 4.5)} fill="none" {...o(0.8)} />
+          {limb('M 6 6 L 20 19', c.wood, 1.8)}
+          {limb('M 42 6 L 28 19', c.wood, 1.8)}
+          <Circle cx={20} cy={19} r={1.3} fill={c.wood} {...o(0.7)} />
+          <Circle cx={28} cy={19} r={1.3} fill={c.wood} {...o(0.7)} />
+          {['M 21.5 13.5 L 20.5 10.5', 'M 26.5 13.5 L 27.5 10.5', 'M 24 13 V 9.5'].map((d) => (
+            <Path key={d} d={d} stroke={ink} strokeWidth={1.2} strokeLinecap="round" />
+          ))}
+        </>
+      );
+      break;
+    case 'ship horn':
+      art = (
+        <>
+          {shaded('M 5 45 L 6 18 H 19 L 20 45 Z', c.blockRed, ids.sheen)}
+          <Path d="M 6 18 H 19 L 18.8 23.5 H 6.2 Z" fill={c.rubber} {...o(1)} />
+          <Rect x={18.5} y={25} width={5} height={4} fill={c.metalDark} {...o(0.8)} />
+          {shaded(
+            'M 23 25.5 H 27 C 31 25.5 34 21 38 18 V 37 C 34 34 31 29.5 27 29.5 H 23 Z',
+            c.brass,
+            ids.sheenV,
+          )}
+          <Path d={ell(38, 27.5, 2.6, 9.5)} fill={c.brassDark} {...o(1)} />
+          {waves(41.5, 27.5, false, 0, 2, 3)}
+          {rising([12.5], 16, 12, c.chartMuted, 1.4)}
+        </>
+      );
+      break;
+    case 'school bell':
+      art = (
+        <>
+          {waves(10, 27, true, 0, 2, 3)}
+          {waves(38, 27, false, 0, 2, 3)}
+          <G transform="rotate(-14 24 24)">
+            <Rect x={21} y={2} width={6} height={14} rx={3} fill={c.wood} {...o(1.1)} />
+            <Rect x={21} y={2} width={6} height={14} rx={3} fill={url(ids.sheen)} />
+            <Circle cx={25.5} cy={41.5} r={2.3} fill={c.brassDark} {...o(0.8)} />
+            <Path
+              d="M 21 18 C 16 18 14.5 24 14 31 C 13.5 36 10 37 9 39.5 H 39 C 38 37 34.5 36 34 31 C 33.5 24 32 18 27 18 Z"
+              fill={url(ids.brass)}
+              {...o(1.2)}
+            />
+            <Path d={ell(24, 39.5, 15, 2.2)} fill={c.brassDark} {...o(1)} />
+            <Rect x={19.5} y={15} width={9} height={3.2} rx={1} fill={c.brassDark} {...o(0.9)} />
+          </G>
+        </>
+      );
+      break;
   }
 
   return (
@@ -574,6 +1086,15 @@ export function R3BIcon({ icon, ink }: IconProps): ReactNode {
           <Stop offset="0" stopColor={c.bulbGlow} stopOpacity={0.85} />
           <Stop offset="1" stopColor={c.bulbGlow} stopOpacity={0} />
         </LinearGradient>
+        <LinearGradient id={ids.beamLeft} x1="1" y1="0" x2="0" y2="0">
+          <Stop offset="0" stopColor={c.bulbGlow} stopOpacity={0.85} />
+          <Stop offset="1" stopColor={c.bulbGlow} stopOpacity={0} />
+        </LinearGradient>
+        <RadialGradient id={ids.glowRed} cx="0.5" cy="0.5" r="0.5">
+          <Stop offset="0" stopColor={c.mercury} stopOpacity={0.8} />
+          <Stop offset="0.5" stopColor={c.mercury} stopOpacity={0.35} />
+          <Stop offset="1" stopColor={c.mercury} stopOpacity={0} />
+        </RadialGradient>
         <LinearGradient id={ids.beamDown} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0" stopColor={c.bulbGlow} stopOpacity={0.8} />
           <Stop offset="1" stopColor={c.bulbGlow} stopOpacity={0} />

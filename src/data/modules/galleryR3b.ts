@@ -63,4 +63,35 @@ export const R3B_GALLERY_LAYOUTS: LayoutDef[] = [
     'Bag of potatoes': 'sack of potatoes',
     Child: 'person',
   }),
+  // D37: what each device gives out.
+  withIcons('s.4.energy-conversion', 'g.r3b-energy-conversion', 'Energy in devices', {
+    Flashlight: 'flashlight',
+    Lamp: 'desk lamp',
+    Toaster: 'toaster',
+    'Hair dryer': 'hair dryer',
+    'Electric kettle': 'kettle',
+    Buzzer: 'buzzer',
+    Speaker: 'speaker',
+    Doorbell: 'doorbell',
+    Fan: 'electric fan',
+    'Electric car': 'electric car',
+  }),
+  // D38: one circuit, stage by stage.
+  withIcons('s.4.energy-conversion~trace', 'g.r3b-energy-trace', 'Energy in a flashlight', {
+    'The battery stores energy': 'circuit battery',
+    'Electric current carries it along the wire': 'circuit wire current',
+    'The thin wire in the bulb gets very hot': 'circuit hot filament',
+    'The bulb gives out light and heat': 'circuit lit bulb',
+  }),
+  // D41: messages carried by light or by sound.
+  withIcons('s.4.vision-light~signals', 'g.r3b-signals', 'Signals by light or sound', {
+    'Flashlight code': 'flashing flashlight',
+    Lighthouse: 'lighthouse',
+    'Traffic light': 'traffic light',
+    'Flag colors on a ship': 'ship with signal flags',
+    'Drum beats': 'drum',
+    'Ship’s horn': 'ship horn',
+    'Buzzer code': 'buzzer',
+    'School bell': 'school bell',
+  }),
 ].filter((l): l is LayoutDef => l !== undefined);
