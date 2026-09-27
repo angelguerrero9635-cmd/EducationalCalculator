@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-41 of 356 pages show sliders.
+41 of 374 pages show sliders.
 
 ## By picture kind
 
@@ -26,7 +26,7 @@ its kind with `sliders: true | false`.
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| coordinatePlane | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| coordinatePlane | 10 | no | the picture has its own handles or taps, or the inputs are enough |
 | crossSection | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | curvedSolid | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -35,7 +35,9 @@ its kind with `sliders: true | false`.
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| equationBalance | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorRows | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fieldOfView | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | flashlights | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -44,6 +46,7 @@ its kind with `sliders: true | false`.
 | fractionBars | 8 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionFit | 3 | yes | set on the module (shown) |
 | fractionLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| functionMachine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grassSlope | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 3 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -52,7 +55,10 @@ its kind with `sliders: true | false`.
 | hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | integerLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | leafCount | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| linearFunction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | linePlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| lineSystem | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| mapping | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | marbles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | net | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -66,6 +72,7 @@ its kind with `sliders: true | false`.
 | placeValueChart | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | plot | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| powerScale | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | protractor | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -75,6 +82,7 @@ its kind with `sliders: true | false`.
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | rightTriangle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| rootSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | sample | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -92,6 +100,7 @@ its kind with `sliders: true | false`.
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | thermometers | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| transformation | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | treeDiagram | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | unitCubes | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -471,3 +480,21 @@ its kind with `sliders: true | false`.
 | g.vertical-angles | angles | no |
 | g.supplementary-angles | angles | no |
 | g.complementary-angles | angles | no |
+| g.equation-balance | equationBalance | no |
+| g.equation-balloons | equationBalance | no |
+| g.scientific-notation | powerScale | no |
+| g.exponent-product | factorRows | no |
+| g.exponent-quotient | factorRows | no |
+| g.exponent-power | factorRows | no |
+| g.root-square | rootSquare | no |
+| g.slope-triangle | coordinatePlane | no |
+| g.translation | transformation | no |
+| g.reflection | transformation | no |
+| g.rotation | transformation | no |
+| g.dilation | transformation | no |
+| g.mapping | mapping | no |
+| g.function-machine | functionMachine | no |
+| g.linear-function | linearFunction | no |
+| g.linear-function-context | linearFunction | no |
+| g.line-system | lineSystem | no |
+| g.line-system-context | lineSystem | no |
