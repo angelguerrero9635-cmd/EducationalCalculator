@@ -32,6 +32,26 @@ const steady = {
   },
 };
 
+/** F = m × a, with its steps. */
+const newton2 = {
+  relation: {
+    id: 'F = m × a',
+    display: '{F} = {m} × {a}',
+    vars: ['F', 'm', 'a'],
+    residual: (v: Values) => v.F! - v.m! * v.a!,
+    solve: {
+      F: (v: Values) => v.m! * v.a!,
+      m: (v: Values) => div(v.F!, v.a!),
+      a: (v: Values) => div(v.F!, v.m!),
+    },
+  },
+  steps: {
+    F: { expr: '{m} × {a}', how: 'More mass or more acceleration needs more force.' },
+    m: { expr: '{F} ÷ {a}', how: 'Divide the force by the acceleration it gives.' },
+    a: { expr: '{F} ÷ {m}', how: 'The same pull speeds up a heavier cart less.' },
+  },
+};
+
 export const S4C_GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.distance-time',
@@ -170,6 +190,96 @@ export const S4C_GALLERY_MODULES: ModuleDef[] = [
       start: 'u',
       distance: 'd',
       extent: { time: 10, value: 10 },
+    },
+  },
+  {
+    id: 'g.cart-force',
+    title: 'A cart pulled by a force',
+    assumptions: [
+      'The rope pulls the cart with a net force F; friction is too small to count.',
+      'Each metal block on the cart is 1 kg, and the mass m counts the blocks.',
+      'F = m × a: 1 N speeds up 1 kg by 1 m/s every second.',
+    ],
+    variables: [
+      { id: 'F', symbol: 'F', name: 'Pull', unit: 'N', min: 0, max: 400, step: 1 },
+      { id: 'm', symbol: 'm', name: 'Mass', unit: 'kg', min: 1, max: 20, step: 0.5 },
+      { id: 'a', symbol: 'a', name: 'Acceleration', unit: 'm/s²', min: 0, max: 20, step: 0.5 },
+    ],
+    relations: [newton2.relation],
+    steps: { 'F = m × a': newton2.steps },
+    example: { m: 4, a: 2.5, F: 10 },
+    startWith: ['m', 'a'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'force',
+      object: 'cart',
+      block: 1,
+      force: 'F',
+      mass: 'm',
+      acceleration: 'a',
+      forceExtent: 20,
+      accelerationExtent: 5,
+    },
+  },
+  {
+    id: 'g.skaters',
+    title: 'Two skaters push apart',
+    assumptions: [
+      'The ice is smooth enough that friction doesn’t count.',
+      'When one skater pushes the other, the other pushes back just as hard (the third law).',
+      'Each skater speeds up by the push ÷ its own mass (the second law).',
+    ],
+    variables: [
+      { id: 'F', symbol: 'F', name: 'Push', unit: 'N', min: 0, max: 400, step: 5 },
+      { id: 'm1', symbol: 'm₁', name: 'Mass of A', unit: 'kg', min: 20, max: 100, step: 1 },
+      { id: 'm2', symbol: 'm₂', name: 'Mass of B', unit: 'kg', min: 20, max: 100, step: 1 },
+      { id: 'a1', symbol: 'a₁', name: 'Acceleration of A', unit: 'm/s²', min: 0, max: 20 },
+      { id: 'a2', symbol: 'a₂', name: 'Acceleration of B', unit: 'm/s²', min: 0, max: 20 },
+    ],
+    relations: [
+      {
+        id: 'a₁ = F ÷ m₁',
+        display: '{a1} = {F} ÷ {m1}',
+        vars: ['a1', 'F', 'm1'],
+        residual: (v: Values) => v.a1! * v.m1! - v.F!,
+        solve: {
+          a1: (v: Values) => div(v.F!, v.m1!),
+          F: (v: Values) => v.a1! * v.m1!,
+          m1: (v: Values) => div(v.F!, v.a1!),
+        },
+      },
+      {
+        id: 'a₂ = F ÷ m₂',
+        display: '{a2} = {F} ÷ {m2}',
+        vars: ['a2', 'F', 'm2'],
+        residual: (v: Values) => v.a2! * v.m2! - v.F!,
+        solve: {
+          a2: (v: Values) => div(v.F!, v.m2!),
+          F: (v: Values) => v.a2! * v.m2!,
+          m2: (v: Values) => div(v.F!, v.a2!),
+        },
+      },
+    ],
+    steps: {
+      'a₁ = F ÷ m₁': {
+        a1: { expr: '{F} ÷ {m1}', how: 'A feels the whole push: divide it by A’s mass.' },
+        F: { expr: '{a1} × {m1}', how: 'The push is A’s mass times A’s acceleration.' },
+        m1: { expr: '{F} ÷ {a1}', how: 'Divide the push by the acceleration it gives A.' },
+      },
+      'a₂ = F ÷ m₂': {
+        a2: { expr: '{F} ÷ {m2}', how: 'B feels the same push the other way: divide by B’s mass.' },
+        F: { expr: '{a2} × {m2}', how: 'The push is B’s mass times B’s acceleration.' },
+        m2: { expr: '{F} ÷ {a2}', how: 'Divide the push by the acceleration it gives B.' },
+      },
+    },
+    example: { F: 60, m1: 40, m2: 60, a1: 1.5, a2: 1 },
+    startWith: ['F', 'm1', 'm2'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'skaters',
+      force: 'F',
+      masses: ['m1', 'm2'],
+      accelerations: ['a1', 'a2'],
     },
   },
 ];

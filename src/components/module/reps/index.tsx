@@ -104,6 +104,8 @@ import { FactorRows } from './FactorRows';
 import { PowerScale } from './PowerScale';
 import { EquationBalance } from './EquationBalance';
 import { MotionGraph } from './MotionGraph';
+import { ForceCart } from './ForceCart';
+import { Skaters } from './Skaters';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -137,6 +139,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LineSystem spec={spec} calc={calc} />;
     case 'motionGraph':
       return <MotionGraph spec={spec} calc={calc} />;
+    case 'skaters':
+      return <Skaters spec={spec} calc={calc} />;
     case 'functionMachine':
       return <FunctionMachine spec={spec} calc={calc} />;
     case 'mapping':
@@ -238,7 +242,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'table':
       return <ValueTable spec={spec} calc={calc} />;
     case 'force':
-      return <ForceDiagram spec={spec} calc={calc} />;
+      return spec.object === 'cart' ? (
+        <ForceCart spec={spec} calc={calc} />
+      ) : (
+        <ForceDiagram spec={spec} calc={calc} />
+      );
     case 'tenFrame':
       return <TenFrame spec={spec} calc={calc} />;
     case 'pictureGraph':

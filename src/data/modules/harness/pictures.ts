@@ -1528,6 +1528,55 @@ export function repIssues(
         out.push(`solution (${x}, ${y}) is not where the lines cross`);
       break;
     }
+    case 'force': {
+      // F = m × a in formula units (N, kg, m/s²); a cart carries at most 20 blocks.
+      const f = (id: string) => {
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const [F, m, a] = [f(rep.force), f(rep.mass), f(rep.acceleration)];
+      const units = [rep.force, rep.mass, rep.acceleration].map((id) => byId.get(id)?.unit);
+      if (
+        F !== undefined &&
+        m !== undefined &&
+        a !== undefined &&
+        units.join() === 'N,kg,m/s²' &&
+        Math.abs(F - m * a) > 1e-4 * Math.max(1, Math.abs(F))
+      )
+        out.push(`force ${F} is not mass × acceleration (${m * a})`);
+      // The block is in the mass's formula unit.
+      if (rep.object === 'cart' && rep.block !== undefined && m !== undefined) {
+        if (rep.block <= 0) out.push(`cart blocks of ${rep.block}`);
+        else if (m / rep.block > 20 + 1e-6)
+          out.push(`${m / rep.block} blocks on the cart (20 fit)`);
+      }
+      break;
+    }
+    case 'skaters': {
+      // Each skater's acceleration is the shared push ÷ its own mass (N ÷ kg = m/s²).
+      const f = (id: string) => {
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const F = f(rep.force);
+      if (F !== undefined && F < 0) out.push(`push ${F} is below 0`);
+      rep.masses.forEach((id, i) => {
+        const m = f(id);
+        if (m !== undefined && m <= 0) out.push(`skater ${i + 1} has mass ${m}`);
+        const a = rep.accelerations ? f(rep.accelerations[i]!) : undefined;
+        const units = [rep.force, id, rep.accelerations?.[i]].map((x) => x && byId.get(x)?.unit);
+        if (
+          F !== undefined &&
+          m !== undefined &&
+          m > 0 &&
+          a !== undefined &&
+          units.join() === 'N,kg,m/s²' &&
+          Math.abs(a - F / m) > 1e-4 * Math.max(1, Math.abs(a))
+        )
+          out.push(`skater ${i + 1} speeds up by ${a}, not push ÷ mass (${F / m})`);
+      });
+      break;
+    }
     case 'motionGraph': {
       // In formula units (the picture works in them): the line's end is the start plus slope ×
       // time when the module's units agree (m, s, m/s, m/s²); the time and the trip's

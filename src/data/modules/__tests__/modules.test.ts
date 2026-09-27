@@ -395,6 +395,7 @@ function representationVars(r: Representation): string[] {
     case 'transformation':
       return graphSpecVars(r);
     case 'motionGraph':
+    case 'skaters':
       return mechanicsSpecVars(r);
   }
 }

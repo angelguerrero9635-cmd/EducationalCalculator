@@ -51,8 +51,8 @@ export type MotionGraphSpec = {
  */
 export interface SkatersSpec {
   kind: 'skaters';
-  force: NumOrVar;
-  masses: [NumOrVar, NumOrVar];
+  force: string;
+  masses: [string, string];
   accelerations?: [string, string];
   /** Default ['A', 'B']. */
   names?: [string, string];
