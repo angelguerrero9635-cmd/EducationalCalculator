@@ -130,6 +130,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up | Grade 8 electromagnetic spectrum    |
 | `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel      | Grade 8 circuits                    |
 | `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point  | Grade 8 electromagnets              |
+| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it | Grade 8 gravity and orbits          |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

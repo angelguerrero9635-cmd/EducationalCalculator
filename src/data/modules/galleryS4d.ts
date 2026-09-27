@@ -81,6 +81,69 @@ const strength = product('S', 'N', 'I', [
   'Divide the strength by the turns.',
 ]);
 
+/** An orbit demo: the sun's pull on a planet from its mass and distance (Earth's pull = 1). */
+function orbitDemo(
+  id: string,
+  title: string,
+  planet: 'earth' | 'mars',
+  example: Values,
+  moon = false,
+): ModuleDef {
+  return {
+    id,
+    title,
+    assumptions: [
+      'Gravity pulls the planet toward the sun; without it the planet would fly off in a line.',
+      'The pull grows with the planet’s mass and falls with the distance squared.',
+      'Pull is counted in Earth’s pull (1), mass in Earth masses, distance in AU (Earth’s is 1).',
+    ],
+    variables: [
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Distance from the sun',
+        unit: 'AU',
+        min: 0.3,
+        max: 10,
+        step: 0.01,
+      },
+      {
+        id: 'm',
+        symbol: 'm',
+        name: 'Mass',
+        unit: 'Earth masses',
+        min: 0.05,
+        max: 320,
+        step: 0.001,
+      },
+      { id: 'F', symbol: 'F', name: 'Pull', min: 0, max: 4000, step: 0.0001 },
+    ],
+    relations: [
+      {
+        id: 'F = m ÷ d²',
+        display: '{F} = {m} ÷ {d}²',
+        vars: ['F', 'm', 'd'],
+        residual: (v: Values) => v.F! * v.d! ** 2 - v.m!,
+        solve: {
+          F: (v: Values) => v.m! / v.d! ** 2,
+          m: (v: Values) => v.F! * v.d! ** 2,
+          d: (v: Values) => (v.F! > 0 ? Math.sqrt(v.m! / v.F!) : undefined),
+        },
+      },
+    ],
+    steps: {
+      'F = m ÷ d²': {
+        F: { expr: '{m} ÷ {d}²', how: 'Square the distance, then divide the mass by it.' },
+        m: { expr: '{F} × {d}²', how: 'Multiply the pull by the distance squared.' },
+        d: { expr: '√({m} ÷ {F})', how: 'Divide the mass by the pull, then take the square root.' },
+      },
+    },
+    example,
+    startWith: ['d', 'm'],
+    representation: { kind: 'orbit', distance: 'd', pull: 'F', mass: 'm', planet, moon },
+  };
+}
+
 export const S4D_GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.em-spectrum',
@@ -330,6 +393,12 @@ export const S4D_GALLERY_MODULES: ModuleDef[] = [
     startWith: ['N', 'I'],
     representation: { kind: 'electromagnet', turns: 'N', current: 'I', strength: 'S', clips: 'k' },
   },
+  orbitDemo('g.orbit', 'Orbit and the pull of gravity', 'earth', { d: 1, m: 1, F: 1 }, true),
+  orbitDemo('g.orbit-mars', 'The sun’s pull on Mars', 'mars', {
+    d: 1.52,
+    m: 0.107,
+    F: 0.107 / 1.52 ** 2,
+  }),
 ];
 
 export const S4D_GALLERY_LAYOUTS: LayoutDef[] = [

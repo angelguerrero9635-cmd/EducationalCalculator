@@ -100,6 +100,7 @@ import { ZeroPairs } from './ZeroPairs';
 import { CurvedSolid } from './CurvedSolid';
 import { Spectrum } from './Spectrum';
 import { Circuit } from './Circuit';
+import { Orbit } from './Orbit';
 import { Electromagnet } from './Electromagnet';
 import { Scatter } from './Scatter';
 import { RootSquare } from './RootSquare';
@@ -180,6 +181,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LeafCount spec={spec} calc={calc} />;
     case 'electromagnet':
       return <Electromagnet spec={spec} calc={calc} />;
+    case 'orbit':
+      return <Orbit spec={spec} calc={calc} />;
     case 'circuit':
       return <Circuit spec={spec} calc={calc} />;
     case 'spectrum':
