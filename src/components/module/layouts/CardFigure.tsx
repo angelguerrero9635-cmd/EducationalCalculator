@@ -15,6 +15,8 @@ import type { CardFigure as Spec, CardIcon } from '@/data/modules/layouts';
 import { chart, usePalette } from '@/theme';
 
 import { MaterialIcon, inMaterials } from './cardIcons';
+import { Round3Icon } from './icons';
+import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
 
 /** Height of every card figure; most are square. */
@@ -668,6 +670,7 @@ function Bar({ f, ink, shade }: { f: Extract<Spec, { kind: 'bar' }>; ink: string
 function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string }) {
   const c = usePalette();
   if (inMaterials(icon)) return <MaterialIcon icon={icon} ink={ink} />;
+  if (isRound3Icon(icon)) return <Round3Icon icon={icon} ink={ink} />;
   const colors: Partial<Record<CardIcon, string>> = {
     sun: c.chartSecond,
     moon: c.paper,

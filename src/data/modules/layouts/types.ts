@@ -1,4 +1,5 @@
 import type { PlanetName } from '../typesPhysics8';
+import type { Round3Icon } from './icons';
 
 /**
  * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
@@ -168,7 +169,9 @@ export type CardIcon =
   | 'eyedropper'
   | 'pan handle'
   | 'oven mitt'
-  | 'kettle';
+  | 'kettle'
+  // Round 3, one list per drawing group (layouts/icons/).
+  | Round3Icon;
 
 /** Stages to put in order, each with how long it takes; the total under the strip. */
 export interface SequenceLayout extends LayoutBase {
