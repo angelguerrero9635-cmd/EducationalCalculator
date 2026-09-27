@@ -610,8 +610,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'n = h hundreds + t tens + o ones': {
         n: {
           work: (v) => [
-            `${v.h} hundreds = ${100 * v.h!}, ${v.t} tens = ${10 * v.t!}`,
-            `${100 * v.h!} + ${10 * v.t!} + ${v.o} = ${v.n}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}, ${v.t} tens = ${10 * v.t!}`,
+            `${formatNumber(100 * v.h!)} + ${10 * v.t!} + ${v.o} = ${formatNumber(v.n!)}`,
           ],
           expr: '{h} hundreds + {t} tens + {o} ones',
           how: 'Count the flats by hundreds, the rods by tens, then the small cubes.',
@@ -621,16 +621,16 @@ export const MATH_2_MODULES: ModuleDef[] = [
           how: 'Take away the tens and ones; count the hundreds left.',
           work: (v) => [
             `${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${10 * v.t!} − ${v.o} = ${100 * v.h!}`,
-            `${100 * v.h!} is ${v.h} hundreds`,
+            `${formatNumber(v.n!)} − ${10 * v.t!} − ${v.o} = ${formatNumber(100 * v.h!)}`,
+            `${formatNumber(100 * v.h!)} is ${v.h} hundreds`,
           ],
         },
         t: {
           expr: 'tens in ({n} − {h} hundreds − {o} ones)',
           how: 'Take away the hundreds and ones; count the tens left.',
           work: (v) => [
-            `${v.h} hundreds = ${100 * v.h!}`,
-            `${v.n} − ${100 * v.h!} − ${v.o} = ${10 * v.t!}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}`,
+            `${formatNumber(v.n!)} − ${formatNumber(100 * v.h!)} − ${v.o} = ${10 * v.t!}`,
             `${10 * v.t!} is ${v.t} tens`,
           ],
         },
@@ -638,16 +638,19 @@ export const MATH_2_MODULES: ModuleDef[] = [
           expr: '{n} − {h} hundreds − {t} tens',
           how: 'Take away the hundreds and tens; the rest are ones.',
           work: (v) => [
-            `${v.h} hundreds = ${100 * v.h!}, ${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${100 * v.h!} − ${10 * v.t!} = ${v.o}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}, ${v.t} tens = ${10 * v.t!}`,
+            `${formatNumber(v.n!)} − ${formatNumber(100 * v.h!)} − ${10 * v.t!} = ${v.o}`,
           ],
         },
       },
       'h = hundreds digit': {
         h: {
-          work: (v) => [...placeLine(v.n!), `${100 * v.h!} is ${v.h} hundreds`],
+          work: (v) => [...placeLine(v.n!), `${formatNumber(100 * v.h!)} is ${v.h} hundreds`],
           expr: 'whole hundreds in {n}',
-          how: 'Read the digit in the hundreds place (count the flats).',
+          how: (v) =>
+            v.n === 1000
+              ? 'Count the flats: 10 hundreds make 1,000.'
+              : 'Read the digit in the hundreds place (count the flats).',
         },
       },
       't = tens digit': {
@@ -730,17 +733,26 @@ export const MATH_2_MODULES: ModuleDef[] = [
           how: 'Add the parts: hundreds, then tens, then ones.',
         },
         H: {
-          work: (v) => [`${v.n} − ${v.T} = ${v.n! - v.T!}`, `${v.n! - v.T!} − ${v.O} = ${v.H}`],
+          work: (v) => [
+            `${formatNumber(v.n!)} − ${v.T} = ${v.n! - v.T!}`,
+            `${v.n! - v.T!} − ${v.O} = ${v.H}`,
+          ],
           expr: '{n} − {T} − {O}',
           how: 'Take the tens and ones away. The rest is hundreds.',
         },
         T: {
-          work: (v) => [`${v.n} − ${v.H} = ${v.n! - v.H!}`, `${v.n! - v.H!} − ${v.O} = ${v.T}`],
+          work: (v) => [
+            `${formatNumber(v.n!)} − ${v.H} = ${v.n! - v.H!}`,
+            `${v.n! - v.H!} − ${v.O} = ${v.T}`,
+          ],
           expr: '{n} − {H} − {O}',
           how: 'Take the hundreds and ones away. The rest is tens.',
         },
         O: {
-          work: (v) => [`${v.n} − ${v.H} = ${v.n! - v.H!}`, `${v.n! - v.H!} − ${v.T} = ${v.O}`],
+          work: (v) => [
+            `${formatNumber(v.n!)} − ${v.H} = ${v.n! - v.H!}`,
+            `${v.n! - v.H!} − ${v.T} = ${v.O}`,
+          ],
           expr: '{n} − {H} − {T}',
           how: 'Take the hundreds and tens away. The rest is ones.',
         },
@@ -748,7 +760,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'H = hundreds in n': {
         H: {
           work: (v) => [
-            `${v.n}: hundreds digit ${Math.floor(v.n! / 100)} → ${Math.floor(v.n! / 100)} hundreds = ${v.H}`,
+            `${formatNumber(v.n!)}: hundreds digit ${Math.floor(v.n! / 100)} → ${Math.floor(v.n! / 100)} hundreds = ${v.H}`,
           ],
           expr: 'hundreds part of {n}',
           how: 'The hundreds digit tells how many hundreds.',
@@ -757,7 +769,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'T = tens in n': {
         T: {
           work: (v) => [
-            `${v.n}: tens digit ${Math.floor(v.n! / 10) % 10} → ${Math.floor(v.n! / 10) % 10} tens = ${v.T}`,
+            `${formatNumber(v.n!)}: tens digit ${Math.floor(v.n! / 10) % 10} → ${Math.floor(v.n! / 10) % 10} tens = ${v.T}`,
           ],
           expr: 'tens part of {n}',
           how: 'The tens digit tells how many tens.',
@@ -796,7 +808,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
     relations: [
       {
         id: 'n = h hundreds + t tens + o ones',
-        check: (v: Values) => `${100 * v.h!} + ${10 * v.t!} + ${v.o} = ${v.n}`,
+        check: (v: Values) =>
+          `${formatNumber(100 * v.h!)} + ${10 * v.t!} + ${v.o} = ${formatNumber(v.n!)}`,
         display: '{n} = {h} hundreds + {t} tens + {o} ones',
         vars: ['n', 'h', 't', 'o'],
         residual: (v: Values) => v.n! - 100 * v.h! - 10 * v.t! - v.o!,
@@ -812,10 +825,10 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'n = h hundreds + t tens + o ones': {
         n: {
           work: (v: Values) => [
-            `${v.h} hundreds = ${100 * v.h!}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}`,
             `${v.t} tens = ${10 * v.t!}`,
-            `${100 * v.h!} + ${10 * v.t!} = ${100 * v.h! + 10 * v.t!}`,
-            `${100 * v.h! + 10 * v.t!} + ${v.o} = ${v.n}`,
+            `${formatNumber(100 * v.h!)} + ${10 * v.t!} = ${formatNumber(100 * v.h! + 10 * v.t!)}`,
+            `${formatNumber(100 * v.h! + 10 * v.t!)} + ${v.o} = ${formatNumber(v.n!)}`,
           ],
           expr: '{h} hundreds + {t} tens + {o} ones',
           how: 'Find the value of the hundreds and the tens. Then add them with the ones.',
@@ -823,16 +836,16 @@ export const MATH_2_MODULES: ModuleDef[] = [
         h: {
           work: (v: Values) => [
             `${v.t} tens = ${10 * v.t!}`,
-            `${v.n} − ${10 * v.t!} = ${v.n! - 10 * v.t!}`,
-            `${v.n! - 10 * v.t!} − ${v.o} = ${100 * v.h!}`,
-            `${100 * v.h!} is ${v.h} hundreds`,
+            `${formatNumber(v.n!)} − ${10 * v.t!} = ${formatNumber(v.n! - 10 * v.t!)}`,
+            `${formatNumber(v.n! - 10 * v.t!)} − ${v.o} = ${formatNumber(100 * v.h!)}`,
+            `${formatNumber(100 * v.h!)} is ${v.h} hundreds`,
           ],
           expr: 'hundreds in ({n} − {t} tens − {o} ones)',
           how: 'Take away the tens and ones. Count the hundreds left.',
         },
         t: {
           work: (v: Values) => [
-            `${v.h} hundreds = ${100 * v.h!}`,
+            `${v.h} hundreds = ${formatNumber(100 * v.h!)}`,
             `${v.n} − ${100 * v.h!} = ${v.n! - 100 * v.h!}`,
             `${v.n! - 100 * v.h!} − ${v.o} = ${10 * v.t!}`,
             `${10 * v.t!} is ${v.t} tens`,
@@ -1029,7 +1042,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       {
         id: 'n = a + k jumps of s',
         check: (v) => `${v.a} + ${v.k} jumps of ${v.s} = ${v.n}`,
-        display: 'Start at {a}. {k} jumps of {s} land on {n}.',
+        display: 'Start at {a}. After {k} jumps of {s}, you land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! - v.k! * v.s!,
         solve: {
@@ -1095,7 +1108,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       {
         id: 'n = a − k jumps of s',
         check: (v) => `${v.a} − ${v.k} jumps of ${v.s} = ${v.n}`,
-        display: 'Start at {a}. {k} jumps back by {s} land on {n}.',
+        display: 'Start at {a}. After {k} jumps back by {s}, you land on {n}.',
         vars: ['n', 'a', 'k', 's'],
         residual: (v) => v.n! - v.a! + v.k! * v.s!,
         solve: {

@@ -3,6 +3,7 @@
  * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
+import { formatNumber as f } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { apart, atLeast, div, whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
@@ -143,7 +144,7 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
         L: {
           expr: to === 10 ? '{n} without its ones' : '{n} without its tens and ones',
           how: `Keep the ${to === 10 ? 'hundreds and tens' : 'hundreds'}. Make the other digits 0.`,
-          work: (v) => [`${v.n} = ${below(v.n!)} + ${v.n! - below(v.n!)}`],
+          work: (v) => [`${f(v.n!)} = ${f(below(v.n!))} + ${v.n! - below(v.n!)}`],
         },
       },
       [`U = L + ${to}`]: {
@@ -155,10 +156,10 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
           expr: (v) => (v.n! - v.L! < half ? '{L}' : '{U}'),
           how: `Round to the nearer ${place}. Halfway (${half} past) or more rounds up.`,
           work: (v) => [
-            `From ${v.L} to ${v.n} is ${v.n! - v.L!}. From ${v.n} to ${v.U} is ${v.U! - v.n!}.`,
+            `From ${f(v.L!)} to ${f(v.n!)} is ${v.n! - v.L!}. From ${f(v.n!)} to ${f(v.U!)} is ${v.U! - v.n!}.`,
             v.n! - v.L! < half
-              ? `${v.n! - v.L!} is less than ${half}: round down to ${v.L}.`
-              : `${v.n! - v.L!} is ${half} or more: round up to ${v.U}.`,
+              ? `${v.n! - v.L!} is less than ${half}: round down to ${f(v.L!)}.`
+              : `${v.n! - v.L!} is ${half} or more: round up to ${f(v.U!)}.`,
           ],
         },
       },
@@ -170,7 +171,10 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
 const groups = times('n = g × k', ['g', 'k', 'n'], ['groups', 'number in each group', 'total']);
 const arrayTimes = times('n = r × c', ['r', 'c', 'n'], ['rows', 'number in each row', 'total']);
 const jumps = times('n = k × s', ['k', 's', 'n'], ['jumps', 'size of each jump', 'end number']);
+const bySize = times('n = k × s', ['k', 's', 'n'], ['groups', 'number in each group', 'total']);
+const factors = times('n = r × c', ['r', 'c', 'n'], ['first factor', 'second factor', 'product']);
 const clock = (h: number, m: number) => `${h}:${String(m).padStart(2, '0')}`;
+const mins = (n: number) => `${n} ${n === 1 ? 'minute' : 'minutes'}`;
 /**
  * Counting on from a start time, the way Grade 3 uses a number line: to the next hour, then
  * whole hours, then the minutes left ("3:45 → 4:00 is 15 minutes").
@@ -182,7 +186,7 @@ function timeHops(h: number, m: number, d: number): string[] {
   const next = (hour: number) => (hour % 12) + 1;
   if (mm > 0 && left >= 60 - mm) {
     const step = 60 - mm;
-    lines.push(`${clock(hh, mm)} → ${clock(next(hh), 0)} is ${step} minutes`);
+    lines.push(`${clock(hh, mm)} → ${clock(next(hh), 0)} is ${mins(step)}`);
     parts.push(step);
     [hh, mm, left] = [next(hh), 0, left - step];
   }
@@ -192,7 +196,7 @@ function timeHops(h: number, m: number, d: number): string[] {
     [hh, left] = [next(hh), left - 60];
   }
   if (left > 0) {
-    lines.push(`${clock(hh, mm)} → ${clock(hh, mm + left)} is ${left} minutes`);
+    lines.push(`${clock(hh, mm)} → ${clock(hh, mm + left)} is ${mins(left)}`);
     parts.push(left);
   }
   if (parts.length > 1) lines.push(`${parts.join(' + ')} = ${d} minutes`);
@@ -205,7 +209,7 @@ function timeHopsBack(h: number, m: number, d: number): string[] {
   const prev = (hour: number) => (hour === 1 ? 12 : hour - 1);
   let [hh, mm, left] = [h, m, d];
   if (mm > 0 && left >= mm) {
-    lines.push(`${clock(hh, mm)} → ${clock(hh, 0)} is ${mm} minutes`);
+    lines.push(`${clock(hh, mm)} → ${clock(hh, 0)} is ${mins(mm)}`);
     parts.push(mm);
     [mm, left] = [0, left - mm];
   }
@@ -216,7 +220,7 @@ function timeHopsBack(h: number, m: number, d: number): string[] {
   }
   if (left > 0) {
     const [th, tm] = mm >= left ? [hh, mm - left] : [prev(hh), mm + 60 - left];
-    lines.push(`${clock(hh, mm)} → ${clock(th, tm)} is ${left} minutes`);
+    lines.push(`${clock(hh, mm)} → ${clock(th, tm)} is ${mins(left)}`);
     parts.push(left);
   }
   if (parts.length > 1) lines.push(`${parts.join(' + ')} = ${d} minutes`);
@@ -426,7 +430,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       assumptions: [
         'Cut the shape into two rectangles that don’t overlap.',
         'Find each rectangle’s area, then add them.',
-        'Each square is 1 square centimeter.',
+        'Each square is 1 square unit.',
       ],
       variables: [
         { ...whole('a', 'a', 'Left width', 1, 10), unit: 'cm' },
@@ -607,8 +611,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
       whole('s', 's', 'In each group', 1, 10),
       whole('n', 'n', 'Total', 1, 100),
     ],
-    relations: [jumps.relation],
-    steps: { 'n = k × s': jumps.steps },
+    relations: [bySize.relation],
+    steps: { 'n = k × s': bySize.steps },
     example: { k: 4, s: 6, n: 24 },
     startWith: ['n', 's'],
     representation: { kind: 'skipCount', step: 's', count: 'k', total: 'n' },
@@ -627,8 +631,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
       whole('c', 'c', 'Second factor', 1, 10),
       whole('n', 'n', 'Product', 1, 100),
     ],
-    relations: [arrayTimes.relation],
-    steps: { 'n = r × c': arrayTimes.steps },
+    relations: [factors.relation],
+    steps: { 'n = r × c': factors.steps },
     example: { r: 8, c: 6, n: 48 },
     startWith: ['n', 'r'],
     representation: { kind: 'array', rows: 'r', columns: 'c', total: 'n', max: 10, sides: true },
@@ -712,15 +716,23 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const first = times(
       'p = a × b',
       ['a', 'b', 'p'],
-      ['first factor', 'second factor', 'first product'],
+      ['first factor', 'second factor', 'product of the first two'],
     );
     const second = times(
       'q = b × c',
       ['b', 'c', 'q'],
-      ['second factor', 'third factor', 'second product'],
+      ['second factor', 'third factor', 'product of the last two'],
     );
-    const left = times('n = p × c', ['p', 'c', 'n'], ['first product', 'third factor', 'total']);
-    const right = times('n = a × q', ['a', 'q', 'n'], ['first factor', 'second product', 'total']);
+    const left = times(
+      'n = p × c',
+      ['p', 'c', 'n'],
+      ['product of the first two', 'third factor', 'product'],
+    );
+    const right = times(
+      'n = a × q',
+      ['a', 'q', 'n'],
+      ['first factor', 'product of the last two', 'product'],
+    );
     return {
       id: 'm.3.multiplication-properties~grouping',
       title: 'Group the factors',
@@ -847,7 +859,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
-    const given = plus('s = l + a', ['l', 'a', 's'], ['number left', 'number given away', 'start']);
+    const given = plus('s = l + a', ['l', 'a', 's'], ['number left', 'number given', 'start']);
     const share = times(
       'l = g × e',
       ['g', 'e', 'l'],
@@ -892,7 +904,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const more = plus(
       'b = m + d',
       ['m', 'd', 'b'],
-      ['number in the boxes', 'how many more', 'Ben’s number'],
+      ['number in the boxes', 'how many more', 'number Ben has'],
     );
     return {
       id: 'm.3.two-step-problems~compare',
@@ -980,10 +992,10 @@ export const MATH_3_MODULES: ModuleDef[] = [
             const n = v[from]!;
             const lo = Math.floor(n / 10) * 10;
             return [
-              `${n} is between ${lo} and ${lo + 10}.`,
+              `${f(n)} is between ${f(lo)} and ${f(lo + 10)}.`,
               n - lo < 5
-                ? `${n - lo} ones is less than 5: round down to ${lo}.`
-                : `${n - lo} ones is 5 or more: round up to ${lo + 10}.`,
+                ? `${n - lo} ${n - lo === 1 ? 'one' : 'ones'} is less than 5: round down to ${f(lo)}.`
+                : `${n - lo} ones is 5 or more: round up to ${f(lo + 10)}.`,
             ];
           },
         },
@@ -1068,10 +1080,10 @@ export const MATH_3_MODULES: ModuleDef[] = [
             const n = v[from]!;
             const lo = Math.floor(n / 10) * 10;
             return [
-              `${n} is between ${lo} and ${lo + 10}.`,
+              `${f(n)} is between ${f(lo)} and ${f(lo + 10)}.`,
               n - lo < 5
-                ? `${n - lo} ones is less than 5: round down to ${lo}.`
-                : `${n - lo} ones is 5 or more: round up to ${lo + 10}.`,
+                ? `${n - lo} ${n - lo === 1 ? 'one' : 'ones'} is less than 5: round down to ${f(lo)}.`
+                : `${n - lo} ones is 5 or more: round up to ${f(lo + 10)}.`,
             ];
           },
         },
@@ -1354,7 +1366,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
             how: 'Say the multiple of 10 as tens.',
             work: (v) => [`${v.m} is ${v.t} tens`],
           },
-          m: { expr: '{t} × 10', how: 'Say the tens as a number: 6 tens is 60.' },
+          m: { expr: '{t} × 10', how: 'Say the tens as a number.' },
         },
         'p = a × t': tensTimes.steps,
         'n = p tens': {
@@ -1363,7 +1375,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
             how: 'Say the tens as a number.',
             work: (v) => [`${v.p} tens = ${v.n}`],
           },
-          p: { expr: '{n} ÷ 10', how: 'Say the product as tens: 240 is 24 tens.' },
+          p: { expr: '{n} ÷ 10', how: 'Say the product as tens.' },
         },
       },
       example: { a: 4, m: 60, t: 6, p: 24, n: 240 },
@@ -1419,7 +1431,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
             how: 'Say the multiple of 10 as tens.',
             work: (v) => [`${v.m} is ${v.t} tens`],
           },
-          m: { expr: '{t} × 10', how: 'Say the tens as a number: 6 tens is 60.' },
+          m: { expr: '{t} × 10', how: 'Say the tens as a number.' },
         },
         'p = a × t': tensTimes.steps,
         'n = p tens': {
@@ -1428,7 +1440,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
             how: 'Say the tens as a number.',
             work: (v) => [`${v.p} tens = ${v.n}`],
           },
-          p: { expr: '{n} ÷ 10', how: 'Say the product as tens: 240 is 24 tens.' },
+          p: { expr: '{n} ÷ 10', how: 'Say the number of pencils as tens.' },
         },
       },
       example: { a: 8, m: 40, t: 4, p: 32, n: 320 },
@@ -1539,7 +1551,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'The parts must be equal, or it is not a fraction.',
         'The bottom number is how many equal parts; the top is how many are shaded.',
         '1/4 is one of 4 equal parts. 3/4 is three of them.',
-        'Each part is 1/4 of the whole shape’s area.',
+        'Each of 4 equal parts is 1/4 of the whole shape’s area.',
       ],
       variables: [
         { ...whole('b', 'b', 'Equal parts', 2, 8), allowed: [...DENOMS_3] },
@@ -2098,7 +2110,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     assumptions: [
       'Perimeter is the distance all the way around a shape.',
       'A rectangle’s opposite sides are equal: add length + width + length + width.',
-      'Perimeter is a length (cm), not square units.',
+      'Perimeter is a length, not square units.',
     ],
     variables: [
       { ...whole('l', 'l', 'Length', 1, 20), unit: 'cm' },

@@ -555,8 +555,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         id: 'g = a and b apart',
         display: '{a} and {b} are {g} apart',
         words: 'Bigger decimal − smaller decimal = {g}',
-        check: (v: Values) =>
-          `${fmt(v.a!)} ${v.a! < v.b! ? '<' : v.a! > v.b! ? '>' : '='} ${fmt(v.b!)}`,
+        // Compare the decimals as shown (to thousandths): a gap of 0 can leave the other one
+        // a hair off in floating point, which would print "99.998 < 99.998".
+        check: (v: Values) => {
+          const [a, b] = [Number(v.a!.toFixed(3)), Number(v.b!.toFixed(3))];
+          return `${fmt(a)} ${a < b ? '<' : a > b ? '>' : '='} ${fmt(b)}`;
+        },
         vars: ['g', 'a', 'b'],
         residual: (v: Values) => v.g! - Math.abs(v.a! - v.b!),
         solve: {

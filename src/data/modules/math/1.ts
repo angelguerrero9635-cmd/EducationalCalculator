@@ -454,7 +454,10 @@ export const MATH_1_MODULES: ModuleDef[] = [
       'q = n + 10': {
         q: {
           expr: '{n} + 10',
-          how: 'Ten more: the number just below on the chart. The tens digit goes up by 1.',
+          how: (v) =>
+            v.n! % 100 < 90
+              ? 'Ten more: the number just below on the chart. The tens digit goes up by 1.'
+              : 'Ten more: the number just below on the chart.',
           work: (v) =>
             v.n! % 100 < 90
               ? [
@@ -507,7 +510,10 @@ export const MATH_1_MODULES: ModuleDef[] = [
       'v = n − 10': {
         v: {
           expr: '{n} − 10',
-          how: 'Go one row up on the chart. The tens digit goes down by 1.',
+          how: (v) =>
+            v.n! >= 100 && v.n! < 110
+              ? 'Go one row up on the chart.'
+              : 'Go one row up on the chart. The tens digit goes down by 1.',
           work: (v: Values) => [
             `Tens: ${Math.floor(v.n! / 10)} → ${Math.floor(v.v! / 10)}, ones stay ${v.n! % 10}`,
           ],
@@ -564,11 +570,23 @@ export const MATH_1_MODULES: ModuleDef[] = [
     ],
     steps: {
       'u = n − 10': {
-        u: { expr: '{n} − 10', how: 'Above is 10 less. The tens digit goes down by 1.' },
+        u: {
+          expr: '{n} − 10',
+          how: (v) =>
+            v.n! >= 100 && v.n! < 110
+              ? 'Above is 10 less.'
+              : 'Above is 10 less. The tens digit goes down by 1.',
+        },
         n: { expr: '{u} + 10', how: 'The number is 10 more than the one above.' },
       },
       'w = n + 10': {
-        w: { expr: '{n} + 10', how: 'Below is 10 more. The tens digit goes up by 1.' },
+        w: {
+          expr: '{n} + 10',
+          how: (v) =>
+            v.n! % 100 < 90
+              ? 'Below is 10 more. The tens digit goes up by 1.'
+              : 'Below is 10 more.',
+        },
         n: { expr: '{w} − 10', how: 'The number is 10 less than the one below.' },
       },
       'l = n − 1': {
