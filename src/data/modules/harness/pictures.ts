@@ -307,6 +307,18 @@ export function repIssues(
       }
       break;
     }
+    case 'linePlot': {
+      // LinePlot.tsx draws at most 10 X's a column, from a whole-number start.
+      for (const p of rep.points) count(p.var, 'X marks', 10);
+      if (rep.start) count(rep.start, 'line plot start');
+      if (rep.marks !== undefined) {
+        if (!rep.start) out.push('line plot marks need a start');
+        const d = val(rep.marks);
+        if (d !== undefined && ![1, 2, 4, 8].includes(d))
+          out.push(`line plot marked every 1/${d}, not halves, quarters or eighths`);
+      }
+      break;
+    }
     case 'cubeTrains':
       for (const id of new Set(rep.rows.flat(2))) count(id, 'cubes', 40);
       break;

@@ -125,6 +125,12 @@ export type Representation =
       unit?: string;
       /** The first length on the line; the others follow by 1 (default: the points' `at`). */
       start?: string;
+      /**
+       * With `start`: the marks are halves, quarters or eighths (2, 4, 8, or a value), so the
+       * lengths run start, start + 1/4, start + 2/4, … (labelled "3 1/4"; `at` and `label` are
+       * then not used).
+       */
+      marks?: 2 | 4 | 8 | string;
     }
   /**
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`

@@ -70,7 +70,11 @@ function representationVars(r: Representation): string[] {
             ...(r.groups ? [r.groups] : []),
           ];
     case 'linePlot':
-      return [...r.points.map((p) => p.var), ...(r.start ? [r.start] : [])];
+      return [
+        ...r.points.map((p) => p.var),
+        ...(r.start ? [r.start] : []),
+        ...(typeof r.marks === 'string' ? [r.marks] : []),
+      ];
     case 'pairs':
       return [r.value];
     case 'hops':

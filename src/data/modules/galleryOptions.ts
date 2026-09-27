@@ -127,6 +127,11 @@ const BOX = [
 const holds = (v: Values) =>
   [v.t! < v.b!, v.t! <= v.b!, v.t! > v.b!, v.t! >= v.b!][v.s! - 1] ?? false;
 
+/** Six marks from a whole-number start s, every 1/m: mark i is s + i/m. */
+const PLOT = ['a', 'b', 'c', 'd', 'e', 'f'];
+const plotLength = (v: Values, id: string) => Number((v.s! + PLOT.indexOf(id) / v.m!).toFixed(6));
+const plotTotal = (v: Values) => PLOT.reduce((t, id) => t + v[id]! * plotLength(v, id), 0);
+
 export const OPTION_GALLERY_MODULES: ModuleDef[] = [
   {
     id: 'g.bills-and-coins',
@@ -431,6 +436,80 @@ export const OPTION_GALLERY_MODULES: ModuleDef[] = [
       plot: true,
       extent: 10,
       quadrants: 1,
+    },
+  },
+  {
+    id: 'g.line-plot-lengths',
+    title: 'Line plot of lengths',
+    assumptions: [
+      'Each X is one object measured to the nearest mark.',
+      'The marks are halves, quarters or eighths of a unit, starting at a whole number.',
+    ],
+    variables: [
+      whole('s', 's', 'First length (cm)', 0, 30),
+      { ...whole('m', 'm', 'Marks in each unit', 2, 8), allowed: [2, 4, 8] },
+      ...PLOT.map((id, i) => whole(id, id, `Objects at mark ${i + 1}`, 0, 10)),
+      { ...whole('T', 'T', 'Objects in all', 0, 60), derived: true },
+      {
+        id: 'S',
+        symbol: 'S',
+        name: 'All the lengths together (cm)',
+        min: 0,
+        max: 3000,
+        step: 0.125,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'T = a + b + c + d + e + f',
+        display: '{a} + {b} + {c} + {d} + {e} + {f} = {T}',
+        vars: ['T', ...PLOT],
+        residual: (v: Values) => v.T! - PLOT.reduce((t, id) => t + v[id]!, 0),
+        solve: { T: (v: Values) => PLOT.reduce((t, id) => t + v[id]!, 0) },
+      },
+      {
+        id: 'S = lengths',
+        display:
+          'the lengths from {s} in steps of 1/{m}, {a}, {b}, {c}, {d}, {e}, {f} of each: {S}',
+        check: (v: Values) =>
+          `${
+            PLOT.filter((id) => v[id]! > 0)
+              .map((id) => `${v[id]} × ${plotLength(v, id)}`)
+              .join(' + ') || '0'
+          } = ${v.S}`,
+        vars: ['S', 's', 'm', ...PLOT],
+        residual: (v: Values) => v.S! - plotTotal(v),
+        solve: { S: plotTotal },
+      },
+    ],
+    steps: {
+      'T = a + b + c + d + e + f': {
+        T: { expr: '{a} + {b} + {c} + {d} + {e} + {f}', how: 'Count every X.' },
+      },
+      'S = lengths': {
+        S: {
+          expr: (v: Values) =>
+            PLOT.filter((id) => v[id]! > 0)
+              .map((id) => `${v[id]} × ${plotLength(v, id)}`)
+              .join(' + ') || '0',
+          how: 'Each length times the X’s above it, all added.',
+          work: (v: Values) =>
+            PLOT.filter((id) => v[id]! > 0).map(
+              (id) =>
+                `${v[id]} × ${plotLength(v, id)} = ${Number((v[id]! * plotLength(v, id)).toFixed(6))}`,
+            ),
+        },
+      },
+    },
+    example: { s: 12, m: 4, a: 1, b: 3, c: 2, d: 4, e: 1, f: 2, T: 13, S: 164.25 },
+    startWith: ['s', 'm', ...PLOT],
+    representation: {
+      kind: 'linePlot',
+      start: 's',
+      marks: 'm',
+      unit: 'cm',
+      points: PLOT.map((id, i) => ({ var: id, at: i })),
     },
   },
 ];
