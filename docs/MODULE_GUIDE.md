@@ -405,6 +405,8 @@ the assumptions and a table or diagram.
    - Page limits (`constraint`: "3/4 is at most 1", "at most 24 wholes") are never shown as
      formulas or checks, since a student takes them for a step of the problem. A value that
      breaks one is refused under its box: "This page only works when …", in words.
+   - A picture a page needs and the app lacks goes in `pictureRequests.ts` with the page ids it
+     is for. Once it is on every page it names, set `status: 'placed'`; the test checks it.
    - The `use` line quotes the kind of released question the page solves, in the question's
      own words ("Which number is greater, 54 or 36?"), and never promises more.
    - `layouts.test.ts` covers the sort, sequence, explore and observe pages.

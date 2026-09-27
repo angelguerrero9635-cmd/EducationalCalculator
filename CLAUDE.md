@@ -17,6 +17,7 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 | `src/data/modules/shared/`                   | Helpers two grade files share (add-sub, compare)                                                                            |
 | `src/data/modules/pilots.ts`                 | Pilot modules for grades not built yet; move each to its grade file                                                         |
 | `src/data/modules/gallery.ts`, `/gallery`    | Demo modules for picture kinds no lesson uses yet                                                                           |
+| `src/data/modules/pictureRequests.ts`        | Every picture requested, the pages it is for and its status (requested, drawn, placed)                                      |
 | `src/data/modules/harness/`                  | The sampling harness: `evaluate.ts` (PHRASES the step text uses), `pictures.ts` (checks per picture kind), `search.ts`      |
 | `src/components/module/reps/`                | One component per picture kind; register new kinds in `reps/index.tsx`, `meta.ts`, `modules.test.ts`, `harness/pictures.ts` |
 | `src/components/module/sliderPolicy.ts`      | Which picture kinds show sliders (a module can set `sliders`)                                                               |
