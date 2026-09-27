@@ -134,12 +134,21 @@ const light = {
   furLight: '#DDB88C',
   furGrey: '#9EA4AC',
   skin: '#E2AE86',
+  /** People in the round-3 scene icons (group G): more skin tones, and the sky at dawn and dusk. */
+  skinBrown: '#B67B52',
+  skinDeep: '#7B4A2E',
+  skyMorning: '#BFE3F7',
+  skyEvening: '#F5A36A',
   /** Snow, and white fur and feathers. */
   snow: '#FAFCFF',
   /** A seal's blubber in a cut-away. */
   fat: '#F4E2B0',
   /** Tree bark. */
   bark: '#8A6F58',
+  /** Pink flower petals (a rose, a bean flower), an earthworm's skin, and bright pollen. */
+  petalPink: '#F08DB4',
+  wormPink: '#D98A86',
+  pollen: '#FFD21F',
   /** Black rubber and plastic (tires, a pan handle), and black fur and feathers. */
   rubber: '#34373E',
   /** Orange things: a wind sock, juice, a goldfish. */
@@ -183,6 +192,16 @@ const light = {
   poleSouth: '#2F6FD0',
   /** A lit bulb's warm glow. */
   bulbGlow: '#FFD95A',
+  /** Brass bells and horns, and chocolate (card icons, round 3 group B). */
+  brass: '#D9A83B',
+  brassDark: '#8C6420',
+  chocolate: '#6B3E22',
+  /** A flower's petals, and a body's organs: brain and lungs, heart, stomach, and bones. */
+  petal: '#E8618C',
+  organ: '#EFA3A8',
+  organDeep: '#C83A44',
+  stomach: '#E3B07A',
+  bone: '#F3EEDF',
   /** Planets in their own colors (Earth is water and land; the moon is moonLit). */
   planetMercury: '#A9A39B',
   planetVenus: '#E8D3A2',
@@ -192,6 +211,11 @@ const light = {
   planetSaturn: '#E3CD92',
   planetUranus: '#9ED9DE',
   planetNeptune: '#4A74D9',
+  /** Weather cards: a rain or snow cloud, a storm cloud, fog, a sandbag's burlap. */
+  rainCloud: '#D3D9E2',
+  stormCloud: '#6B7486',
+  mist: '#C3CAD4',
+  sandbag: '#D8BF8F',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -288,9 +312,16 @@ const dark: Palette = {
   furLight: '#A88762',
   furGrey: '#747A83',
   skin: '#B8835E',
+  skinBrown: '#95633F',
+  skinDeep: '#643C25',
+  skyMorning: '#4E7390',
+  skyEvening: '#A85A34',
   snow: '#CDD6E1',
   fat: '#C4AD76',
   bark: '#65503F',
+  petalPink: '#C8698F',
+  wormPink: '#A9625F',
+  pollen: '#E9BE1C',
   rubber: '#1C1E23',
   orange: '#D2742A',
   purple: '#7A4DB8',
@@ -321,6 +352,14 @@ const dark: Palette = {
   poleNorth: '#C94444',
   poleSouth: '#3A6FC0',
   bulbGlow: '#F2C94C',
+  brass: '#B8892E',
+  brassDark: '#6A4A18',
+  chocolate: '#5E3620',
+  petal: '#C9507A',
+  organ: '#C7838A',
+  organDeep: '#B8323C',
+  stomach: '#B98A5A',
+  bone: '#D9D3C2',
   planetMercury: '#8A857E',
   planetVenus: '#BFAA7A',
   planetMars: '#A9532F',
@@ -329,6 +368,10 @@ const dark: Palette = {
   planetSaturn: '#BBA56E',
   planetUranus: '#6FB2B8',
   planetNeptune: '#3A5FB8',
+  rainCloud: '#687182',
+  stormCloud: '#434A58',
+  mist: '#5E6676',
+  sandbag: '#9B8558',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

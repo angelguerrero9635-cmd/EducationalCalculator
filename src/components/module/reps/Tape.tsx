@@ -12,7 +12,7 @@ import { Canvas, ChartText, DragHandle, fitLabel, useFrozen, useRep, Caption } f
 
 type Spec = Exclude<
   Extract<Representation, { kind: 'tape' }>,
-  { ratio: [string, string] } | { equation: unknown }
+  { ratio: unknown } | { equation: unknown }
 >;
 
 /** A scale just past `span`: 10% more, rounded up to a tenth of its power of ten (at least 10). */

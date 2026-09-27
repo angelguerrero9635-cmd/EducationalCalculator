@@ -15,7 +15,17 @@ import type { CardFigure as Spec, CardIcon } from '@/data/modules/layouts';
 import { chart, usePalette } from '@/theme';
 
 import { MaterialIcon, inMaterials } from './cardIcons';
+import { Round3Icon } from './icons';
+import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
+import {
+  CellPartsCard,
+  DotPlotCard,
+  MapCard,
+  MoonCard,
+  StarsCard,
+  r3hFigureWidth,
+} from './cardFiguresR3h';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -25,6 +35,8 @@ const MARKED = 64;
 
 /** Width a figure is drawn at: square, or wider for bars, dots and lines. */
 export function figureWidth(f: Spec): number {
+  const r3h = r3hFigureWidth(f);
+  if (r3h) return r3h;
   switch (f.kind) {
     case 'bar':
       return Math.max(S, 16 + (f.length + (f.units === 'offset' ? 2 : 0)) * 8 + 24);
@@ -141,6 +153,17 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
     case 'dots': {
       const cols = Math.ceil(f.count / 2);
       const x0 = (w - (cols - 1) * 11) / 2;
+      // Zero: the two rows the pairs go in, dotted and empty.
+      if (f.count === 0)
+        return (
+          <Path
+            d={`M ${w / 2 - 10} ${S / 2 - 7} H ${w / 2 + 10} M ${w / 2 - 10} ${S / 2 + 7} H ${w / 2 + 10}`}
+            stroke={ink}
+            strokeWidth={1}
+            strokeDasharray="1.5 3"
+            strokeLinecap="round"
+          />
+        );
       return (
         <G>
           {Array.from({ length: f.count }, (_, i) => (
@@ -240,7 +263,16 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       );
     }
     case 'cell':
+      if (f.highlight) return <CellPartsCard f={f} ink={ink} shade={shade} />;
       return <CellFigure f={f} ink={ink} shade={shade} />;
+    case 'moon':
+      return <MoonCard f={f} />;
+    case 'stars':
+      return <StarsCard f={f} ink={ink} shade={shade} />;
+    case 'map':
+      return <MapCard f={f} w={w} ink={ink} shade={shade} />;
+    case 'dotPlot':
+      return <DotPlotCard f={f} w={w} ink={ink} shade={shade} />;
     case 'rock':
       return <RockFigure texture={f.texture} ink={ink} shade={shade} />;
     case 'molecule':
@@ -665,9 +697,10 @@ function Bar({ f, ink, shade }: { f: Extract<Spec, { kind: 'bar' }>; ink: string
 }
 
 /** Small drawings of everyday things, in outline, each in its own color (a green leaf, a red crayon). */
-function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string }) {
+export function Icon({ icon, ink, shade }: { icon: CardIcon; ink: string; shade: string }) {
   const c = usePalette();
   if (inMaterials(icon)) return <MaterialIcon icon={icon} ink={ink} />;
+  if (isRound3Icon(icon)) return <Round3Icon icon={icon} ink={ink} />;
   const colors: Partial<Record<CardIcon, string>> = {
     sun: c.chartSecond,
     moon: c.paper,

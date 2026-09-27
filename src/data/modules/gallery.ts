@@ -18,13 +18,24 @@ import { S4A_GALLERY_LAYOUTS, S4A_GALLERY_MODULES } from './galleryS4a';
 import { S4C_GALLERY_MODULES } from './galleryS4c';
 import { S4D_GALLERY_LAYOUTS, S4D_GALLERY_MODULES } from './galleryS4d';
 import { R2A_GALLERY_MODULES } from './galleryR2a';
+import { R3A_GALLERY_LAYOUTS, R3A_GALLERY_MODULES } from './galleryR3a';
+import { R3B_GALLERY_LAYOUTS, R3B_GALLERY_MODULES } from './galleryR3b';
+import { R3C_GALLERY_LAYOUTS, R3C_GALLERY_MODULES } from './galleryR3c';
+import { R3D_GALLERY_LAYOUTS, R3D_GALLERY_MODULES } from './galleryR3d';
+import { R3E_GALLERY_LAYOUTS, R3E_GALLERY_MODULES } from './galleryR3e';
+import { R3F_GALLERY_LAYOUTS, R3F_GALLERY_MODULES } from './galleryR3f';
+import { R3G_GALLERY_LAYOUTS, R3G_GALLERY_MODULES } from './galleryR3g';
+import { R3H_GALLERY_LAYOUTS, R3H_GALLERY_MODULES } from './galleryR3h';
+import { R3I_GALLERY_LAYOUTS, R3I_GALLERY_MODULES } from './galleryR3i';
+import { R3J_GALLERY_LAYOUTS, R3J_GALLERY_MODULES } from './galleryR3j';
 import { R2B_GALLERY_MODULES } from './galleryR2b';
 import { R2C_GALLERY_MODULES } from './galleryR2c';
 import { R2D_GALLERY_MODULES } from './galleryR2d';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
-import type { CardIcon, LayoutDef } from './layouts';
+import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
+import { iconSort } from './galleryIconSort';
 
 /** A whole count, or undefined when a division doesn't come out whole. */
 const whole0 = (x: number | undefined) =>
@@ -1046,6 +1057,16 @@ export const GALLERY_MODULES: ModuleDef[] = [
   ...R2B_GALLERY_MODULES,
   ...R2C_GALLERY_MODULES,
   ...R2D_GALLERY_MODULES,
+  ...R3A_GALLERY_MODULES,
+  ...R3B_GALLERY_MODULES,
+  ...R3C_GALLERY_MODULES,
+  ...R3D_GALLERY_MODULES,
+  ...R3E_GALLERY_MODULES,
+  ...R3F_GALLERY_MODULES,
+  ...R3G_GALLERY_MODULES,
+  ...R3H_GALLERY_MODULES,
+  ...R3I_GALLERY_MODULES,
+  ...R3J_GALLERY_MODULES,
 ];
 
 /**
@@ -1053,6 +1074,16 @@ export const GALLERY_MODULES: ModuleDef[] = [
  * reason: every drawing can be seen and screenshotted before a lesson uses it.
  */
 export const GALLERY_LAYOUTS: LayoutDef[] = [
+  ...R3A_GALLERY_LAYOUTS,
+  ...R3B_GALLERY_LAYOUTS,
+  ...R3C_GALLERY_LAYOUTS,
+  ...R3D_GALLERY_LAYOUTS,
+  ...R3E_GALLERY_LAYOUTS,
+  ...R3F_GALLERY_LAYOUTS,
+  ...R3G_GALLERY_LAYOUTS,
+  ...R3H_GALLERY_LAYOUTS,
+  ...R3I_GALLERY_LAYOUTS,
+  ...R3J_GALLERY_LAYOUTS,
   ...S4A_GALLERY_LAYOUTS,
   {
     id: 'g.push',
@@ -1481,35 +1512,3 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
   ...S4B_GALLERY_LAYOUTS,
   ...S4D_GALLERY_LAYOUTS,
 ];
-
-/** A sort whose cards are card icons: [bin id, label, why, icons]. */
-function iconSort(
-  id: string,
-  title: string,
-  question: string,
-  bins: [string, string, string, CardIcon[]][],
-): LayoutDef {
-  const names: Partial<Record<CardIcon, string>> = {
-    door: 'classroom door',
-    bus: 'school bus',
-    'water bottle': 'big water bottle',
-  };
-  return {
-    id,
-    title,
-    kind: 'sort',
-    question,
-    assumptions: ['Tap a card, then a group.', 'The drawings are what matter here.'],
-    bins: bins.map(([bin, label, why]) => ({ id: bin, label, why })),
-    cards: bins.flatMap(([bin, , , icons]) =>
-      icons.map((icon) => {
-        const label = names[icon] ?? icon;
-        return {
-          label: label[0]!.toUpperCase() + label.slice(1),
-          bin,
-          figure: { kind: 'icon' as const, icon },
-        };
-      }),
-    ),
-  };
-}

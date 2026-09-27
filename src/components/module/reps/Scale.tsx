@@ -8,15 +8,23 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, useRep, Caption } from './common';
 import { BoxShadow, Deepen, TopLight, url, usePaintIds } from './paint';
+import { SpringScale, TwoScales } from './ScaleOptions';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'scale' }>;
 
 /**
  * A kitchen scale: the things on the pan, and a dial whose needle points at the total mass.
- * Either separate `items`, or `count` equal bags of mass `each`.
+ * Either separate `items`, or `count` equal bags of mass `each`. `before` draws two readings
+ * and `hanging` a spring scale (ScaleOptions.tsx).
  */
 export function Scale({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  if (spec.hanging) return <SpringScale spec={spec} calc={calc} />;
+  if (spec.before) return <TwoScales spec={spec} before={spec.before} calc={calc} />;
+  return <KitchenScale spec={spec} calc={calc} />;
+}
+
+function KitchenScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const total = rep.known(spec.total) ? rep.shown(spec.total) : 0;

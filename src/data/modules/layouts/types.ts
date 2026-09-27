@@ -1,4 +1,5 @@
 import type { PlanetName } from '../typesPhysics8';
+import type { Round3Icon } from './icons';
 
 /**
  * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
@@ -30,6 +31,31 @@ export interface SortLayout extends LayoutBase {
     why: string;
   }[];
   cards: { label: string; bin: string; figure?: CardFigure }[];
+  /** A picture above the cards, so they can be judged by looking (`layouts/offspringFigure.tsx`). */
+  header?: SortHeader;
+}
+
+/**
+ * A sort's picture above the cards. `offspring`: the animals side by side on the ground,
+ * left to right, at one scale (the young drawn smaller), each named under it.
+ */
+export type SortHeader = { kind: 'offspring'; animals: OffspringAnimal[] };
+
+/** One animal in an `offspring` header. */
+export interface OffspringAnimal {
+  animal: 'cat' | 'deer';
+  /** Its name under it: "Mother", "Kitten", "Buck". */
+  label: string;
+  /** A young one, drawn at about two thirds the size. */
+  young?: boolean;
+  /** Its fur (default: a cat orange, a deer brown). */
+  fur?: 'orange' | 'gray' | 'brown';
+  /** A white patch on the nose. */
+  nosePatch?: boolean;
+  /** White spots on the back (a fawn). */
+  spots?: boolean;
+  /** Antlers (a buck). */
+  antlers?: boolean;
 }
 
 /** A small drawing on a sort card, so the property is seen, not remembered. */
@@ -96,7 +122,21 @@ export type CardFigure =
       type: 'plant' | 'animal' | 'bacterium';
       shape?: 'box' | 'round' | 'long' | 'branched' | 'rod';
       chloroplasts?: boolean;
+      /** Draw every part and outline this one (a part the cell type has). */
+      highlight?: CellPart;
     }
+  /** The moon in one of its shapes (waxing lit on the right, waning on the left). */
+  | { kind: 'moon'; phase: MoonPhase }
+  /** A constellation: its stars, sized by brightness, joined by lines. */
+  | { kind: 'stars'; constellation: Constellation }
+  /**
+   * A small flat map: the world (centered on the Atlantic, or on the Pacific) or North
+   * America, with a named region shaded and/or a pin at [longitude, latitude] (west and south
+   * negative).
+   */
+  | { kind: 'map'; area: MapArea; region?: MapRegion; pin?: [number, number] }
+  /** A tiny flat dot plot of fixed values, the smallest and largest labelled. */
+  | { kind: 'dotPlot'; values: number[] }
   /** A ball-and-stick molecule, or one atom ("H2O", "CO2", "Fe"), in the classroom colors. */
   | { kind: 'molecule'; formula: string }
   /** A rock's outline filled with its texture. */
@@ -168,7 +208,9 @@ export type CardIcon =
   | 'eyedropper'
   | 'pan handle'
   | 'oven mitt'
-  | 'kettle';
+  | 'kettle'
+  // Round 3, one list per drawing group (layouts/icons/).
+  | Round3Icon;
 
 /** Stages to put in order, each with how long it takes; the total under the strip. */
 export interface SequenceLayout extends LayoutBase {
@@ -187,8 +229,18 @@ export interface SequenceLayout extends LayoutBase {
 
 /** What an explore figure can show; a scene sets one of these. */
 export type Figure =
-  /** A thing made of named parts, each with its job; a scene highlights one part. */
-  | { kind: 'parts'; parts: { name: string; job: string }[] }
+  /**
+   * A thing made of named parts, each with its job; a scene highlights one part. With a
+   * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
+   * scene's part lit; a part is picked by tapping it. Each part's name must name a drawn part:
+   * `plant` flower, leaves, stem, roots; `animal` (a bear and a turtle) eyes, ears, fur,
+   * claws, shell; `body` brain, heart, lungs, stomach, bones, skin (any capitals).
+   */
+  | {
+      kind: 'parts';
+      parts: { name: string; job: string }[];
+      drawing?: 'plant' | 'animal' | 'body';
+    }
   /** A ball and a box; a scene puts the ball above, below, beside, in front of or behind. */
   | { kind: 'position' }
   /** A clock face; a scene sets the time. */
@@ -315,6 +367,38 @@ export type PhaseChange =
   | 'sublimation'
   | 'deposition';
 
+/** The parts a `cell` card figure can outline. */
+export type CellPart =
+  'wall' | 'membrane' | 'cytoplasm' | 'nucleus' | 'chloroplasts' | 'vacuole' | 'mitochondria';
+
+/** The constellations a `stars` card figure draws. */
+export type Constellation =
+  'Orion' | 'Taurus' | 'Scorpius' | 'Cygnus' | 'Big Dipper' | 'Cassiopeia';
+
+/** The `map` card figure's views. */
+export type MapArea = 'world' | 'pacific' | 'northAmerica';
+
+/**
+ * Regions a `map` card figure shades. World and Pacific maps: 'pacific ocean', 'andes',
+ * 'great plains', 'central australia', 'sahara'. North America: 'northern canada', 'arctic
+ * lands', 'north pacific', 'north atlantic', 'gulf of mexico', 'caribbean sea', 'northern
+ * mexico', 'desert southwest'.
+ */
+export type MapRegion =
+  | 'pacific ocean'
+  | 'andes'
+  | 'great plains'
+  | 'central australia'
+  | 'sahara'
+  | 'northern canada'
+  | 'arctic lands'
+  | 'north pacific'
+  | 'north atlantic'
+  | 'gulf of mexico'
+  | 'caribbean sea'
+  | 'northern mexico'
+  | 'desert southwest';
+
 /** The members of the `foodWeb` figure. */
 export type FoodWebMember =
   'sun' | 'grass' | 'rabbit' | 'grasshopper' | 'mouse' | 'frog' | 'snake' | 'hawk';
@@ -342,6 +426,8 @@ export interface Scene {
   time?: [number, number];
   /** [groups, animals in each] (a `dots` figure). */
   dots?: [number, number];
+  /** A `dots` figure draws its animals as deer (the young in the middle) or penguins. */
+  animal?: 'deer' | 'penguin';
   /** Which poles face each other (a `magnets` figure). */
   poles?: 'N–S' | 'N–N' | 'S–S';
   /**
@@ -530,12 +616,31 @@ export interface ObserveLayout extends LayoutBase {
   pattern: (values: number[]) => string;
   /** Columns are intervals of one number line: the bars touch, with a count scale beside. */
   histogram?: boolean;
-  /**
-   * A picture of the column last tapped, above the chart. `shadowStick`: a stick `stick`
-   * units tall (100 for a meter stick in cm) and its noon shadow as long as the value, with
-   * the sun on the line from the shadow's tip over the stick's top (higher for a shorter shadow).
-   */
-  figure?: { kind: 'shadowStick'; stick: number };
+  /** A picture of the column last tapped, above the chart (`ObserveFigure`). */
+  figure?: ObserveFigure;
 }
+
+/**
+ * An observe page's picture of the column tapped last, drawn to scale from its value:
+ * - `shadowStick`: a stick `stick` units tall (100 for a meter stick in cm) and its shadow as
+ *   long as the value, the sun on the line from the shadow's tip over the stick's top. With
+ *   `sides` (one per column) the shadow points west, east or north, the ground's ends are
+ *   named, and the time is the column's; without, it is a noon shadow.
+ * - `thermometer`: one thermometer from 0 to the page's `max`, filled to the value.
+ * - `plantHeight`: a plant in a pot beside a centimeter ruler to `max`, as tall as the value.
+ * - `ramp`: a ramp raised to `heights[i]` cm (the column's release height) and the cup slid
+ *   the value along the floor, both to one scale.
+ * - `flashlight`: the flashlight `distances[i]` cm from a wall and the lit circle on it as
+ *   wide as the value, side on and face on.
+ * - `cup`: an open cup `max` tall with the water at the value and a dashed line at the first
+ *   column's level.
+ */
+export type ObserveFigure =
+  | { kind: 'shadowStick'; stick: number; sides?: ('west' | 'east' | 'north')[] }
+  | { kind: 'thermometer' }
+  | { kind: 'plantHeight' }
+  | { kind: 'ramp'; heights: number[] }
+  | { kind: 'flashlight'; distances: number[] }
+  | { kind: 'cup' };
 
 export type LayoutDef = SortLayout | SequenceLayout | ExploreLayout | ObserveLayout;

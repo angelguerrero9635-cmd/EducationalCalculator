@@ -6,6 +6,7 @@ import { formatNumber } from '@/engine/format';
 import { font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { AreaModel } from './AreaModel';
 import { Canvas, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'grid100' }>;
@@ -112,9 +113,134 @@ function Stack({ count, size }: { count: number; size: number }) {
 
 /**
  * 100 squares = the whole. Tapping square n sets the count to n. Whole grids before it show
- * the ones of a decimal; a second grid beside it is a number to compare.
+ * the ones of a decimal; a second grid beside it is a number to compare. With `product`,
+ * tenths times tenths on one grid (`ProductGrid`).
  */
 export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  return spec.product ? (
+    <ProductGrid spec={spec} factors={spec.product} calc={calc} />
+  ) : (
+    <PercentGrid spec={spec} calc={calc} />
+  );
+}
+
+/** A factor in whole tenths from 0 to 9 (0.7 → 7), or undefined when the grid can't show it. */
+const tenthsOf = (x: number) => {
+  const t = Math.round(x * 10);
+  return Math.abs(x * 10 - t) < 1e-9 && t >= 0 && t < 10 ? t : undefined;
+};
+
+/**
+ * Tenths times tenths on a 10 × 10 grid (0.7 × 0.4): the first factor's tenths as columns
+ * from the left, the second's as rows from the top, the overlap shaded darkest is the product
+ * in hundredths. Tapping a square makes it the corner of the overlap. A factor of 1 or more
+ * (or past tenths) doesn't fit one grid: the area model of the two factors draws instead.
+ */
+function ProductGrid({
+  spec,
+  factors,
+  calc,
+}: {
+  spec: Spec;
+  factors: [string, string];
+  calc: Calculator;
+}) {
+  const c = usePalette();
+  const rep = useRep(calc);
+  const [fa, fb] = factors;
+  const known = rep.known(fa) && rep.known(fb);
+  const [a, b] = [tenthsOf(rep.val(fa)), tenthsOf(rep.val(fb))];
+  if (known && (a === undefined || b === undefined))
+    return <AreaModel spec={{ kind: 'areaModel', factors, total: spec.percent }} calc={calc} />;
+  const cols = known ? a! : 0;
+  const rows = known ? b! : 0;
+  const sizeFor = (w: number) => Math.min(320, w - 40);
+  return (
+    <View style={{ gap: space.sm }}>
+      <Canvas aspect={(w) => (sizeFor(w) + 30) / w}>
+        {({ w }) => {
+          const size = sizeFor(w);
+          const cell = size / 10;
+          return (
+            <View style={{ alignSelf: 'center', paddingLeft: 24, paddingTop: 24 }}>
+              {/* The factors along the edges they shade: tenths across the top, down the side. */}
+              <Text style={[styles.edge, { color: c.chartInk, left: 24, top: 2, width: size }]}>
+                {known ? `${num(cols / 10)} = ${cols} ${cols === 1 ? 'tenth' : 'tenths'}` : '?'}
+              </Text>
+              <View
+                style={[styles.side, { left: 12 - size / 2, top: 24 + size / 2 - 11, width: size }]}
+              >
+                <Text style={[styles.edgeText, { color: c.chartInk, width: size }]}>
+                  {known ? `${num(rows / 10)} = ${rows} ${rows === 1 ? 'tenth' : 'tenths'}` : '?'}
+                </Text>
+              </View>
+              <View style={{ width: size, height: size, opacity: known ? 1 : 0.35 }}>
+                {Array.from({ length: 100 }, (_, k) => {
+                  const i = k % 10;
+                  const j = Math.floor(k / 10);
+                  const inCol = i < cols;
+                  const inRow = j < rows;
+                  return (
+                    <Pressable
+                      key={k}
+                      testID={`cell-${k + 1}`}
+                      accessibilityLabel={`${i + 1} tenths by ${j + 1} tenths`}
+                      onPress={() => calc.set({ [fa]: (i + 1) / 10, [fb]: (j + 1) / 10 })}
+                      style={{
+                        position: 'absolute',
+                        left: i * cell,
+                        top: j * cell,
+                        width: cell,
+                        height: cell,
+                        borderWidth: StyleSheet.hairlineWidth,
+                        borderColor: c.chartGrid,
+                        backgroundColor: c.chartSurface,
+                      }}
+                    >
+                      {inCol || inRow ? (
+                        <View
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor:
+                              inCol && inRow
+                                ? c.chartHighlight
+                                : inCol
+                                  ? c.chartHighlight
+                                  : c.chartSecond,
+                            opacity: inCol && inRow ? 1 : inCol ? 0.25 : 0.35,
+                          }}
+                        />
+                      ) : null}
+                    </Pressable>
+                  );
+                })}
+                {/* The whole square outlined: one whole. */}
+                <View
+                  pointerEvents="none"
+                  style={[StyleSheet.absoluteFill, { borderWidth: 2, borderColor: c.chartInk }]}
+                />
+              </View>
+            </View>
+          );
+        }}
+      </Canvas>
+      <Text style={[styles.caption, { color: c.chartInk }]}>
+        {known
+          ? `${cols} tenths × ${rows} tenths = ${cols * rows} hundredths. ${num(cols / 10)} × ${num(rows / 10)} = ${num((cols * rows) / 100)}.`
+          : 'Type both decimals to shade the grid.'}
+      </Text>
+      <Text style={[styles.caption, { color: c.chartMuted }]}>
+        {'Columns and rows overlap in the solid squares: each is 1 hundredth.'}
+      </Text>
+    </View>
+  );
+}
+
+function PercentGrid({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   // A "?" shades nothing: the grid never shows a number the student didn't type.
@@ -223,6 +349,9 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'center', gap: space.sm },
   tag: { fontSize: font.caption, textAlign: 'center', marginTop: 2 },
   caption: { fontSize: font.body - 1, textAlign: 'center' },
+  edge: { position: 'absolute', fontSize: font.caption, fontWeight: '600', textAlign: 'center' },
+  edgeText: { fontSize: font.caption, fontWeight: '600', textAlign: 'center' },
+  side: { position: 'absolute', height: 22, transform: [{ rotate: '-90deg' }] },
   badgeWrap: { position: 'absolute', alignItems: 'center', justifyContent: 'center' },
   badge: {
     fontSize: font.body,

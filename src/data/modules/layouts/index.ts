@@ -13,11 +13,14 @@ export type {
   LayoutDef,
   MoleculeItem,
   MoonPhase,
+  ObserveFigure,
   ObserveLayout,
+  OffspringAnimal,
   PedigreePerson,
   PhaseChange,
   Scene,
   SequenceLayout,
+  SortHeader,
   SortLayout,
 } from './types';
 

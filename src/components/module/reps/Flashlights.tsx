@@ -175,7 +175,7 @@ export function Flashlights({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 /** A metal flashlight pointing right, its lens at (x, y). */
-function Torch({ x, y, c, sheen }: { x: number; y: number; c: Palette; sheen: string }) {
+export function Torch({ x, y, c, sheen }: { x: number; y: number; c: Palette; sheen: string }) {
   return (
     <G>
       <Rect

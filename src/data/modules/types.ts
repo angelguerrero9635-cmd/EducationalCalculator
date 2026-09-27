@@ -12,6 +12,7 @@ import type { EnergyPyramidSpec, GenerationsSpec } from './typesLife';
 import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
+import type { CardIcon } from './layouts/types';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -79,6 +80,16 @@ export type Representation =
       total: string | number;
       /** 1 frame (10) or 2 frames (20). */
       frames?: 1 | 2;
+      /**
+       * Take-away (K): the `second` counters are the ones taken, drawn filled and crossed out
+       * (✕) after the `first` ones left; the sentence reads total − second = first.
+       */
+      takeAway?: boolean;
+      /**
+       * Take from ten (Grade 1, `first` 10): this many counters crossed out inside the full ten,
+       * the `second` ones left alone in the next frame.
+       */
+      crossOut?: string;
     }
   /** Hundred chart (rows of ten). Tap a number to set `value`; `marks` are outlined. */
   | {
@@ -132,13 +143,14 @@ export type Representation =
     }
   /**
    * A ratio as two bars of equal boxes (3 boxes and 5 boxes), every box worth `unit`; the bars'
-   * amounts, the total and how many more the longer bar has.
+   * amounts, the total and how many more the longer bar has. Three parts (6 : 5 : 2) draw a
+   * third bar and bracket the total beside the three.
    */
   | {
       kind: 'tape';
-      ratio: [string, string];
+      ratio: [string, string] | [string, string, string];
       unit: string;
-      amounts?: [string, string];
+      amounts?: [string, string] | [string, string, string];
       total?: string;
       difference?: string;
     }
@@ -197,6 +209,8 @@ export type Representation =
       kind: 'polygon';
       /** The number of sides (a stepper changes it). Not used with `sideValues`. */
       sides?: string;
+      /** With `sides`: every side labeled with this length (equal sides); `around` under it. */
+      side?: string;
       /**
        * A shape with one side per value (3–6), each side labeled with its length and an
        * unknown one as “?”; `around` is the perimeter, labeled under it.
@@ -250,6 +264,11 @@ export type Representation =
        * 2 rods and 17 cubes for 37, each full ten of cubes boxed).
        */
       places?: { hundreds?: string; tens: string; ones: string };
+      /**
+       * Taking this value away from the one group: its blocks after any trade (a traded ten
+       * drawn as 10 cubes, a traded hundred as 10 rods), with this value's blocks crossed out.
+       */
+      takeAway?: string;
       controls: { var: string; steps: number[] }[];
     }
   /**
@@ -438,11 +457,17 @@ export type Representation =
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {
       kind: 'pictureGraph';
-      columns: { var: string; icon: 'circle' | 'square' | 'triangle' | 'star' }[];
+      /** A shape, or a card icon drawn in its colors ('apple', 'frog'). */
+      columns: { var: string; icon: 'circle' | 'square' | 'triangle' | 'star' | CardIcon }[];
       max: number;
       total?: string;
       /** How many each picture stands for (a scaled picture graph's key). */
       key?: string;
+      /**
+       * With `key`: half pictures are in the key (half a picture = key ÷ 2), and tapping a
+       * column's top picture takes half of it away.
+       */
+      half?: boolean;
     }
   /**
    * Waterfall chart: each item adds (`sign: 1`) or subtracts (`sign: -1`) from a running total,
@@ -485,6 +510,12 @@ export type Representation =
       past100?: boolean;
       /** Shade tenths of a square exactly (37.5 fills half of square 38) instead of rounding. */
       exact?: boolean;
+      /**
+       * Tenths times tenths (0.7 × 0.4): the first factor's tenths as columns, the second's as
+       * rows, the overlap the product (`percent`, a decimal) in hundredths. A factor of 1 or
+       * more, or past tenths, draws the area model of the two factors instead.
+       */
+      product?: [string, string];
     }
   /**
    * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is
@@ -602,11 +633,17 @@ export type Representation =
   | {
       kind: 'rounding';
       value: string;
-      lower: string;
-      upper: string;
+      /** The ends of the line, when the page has them as values (the picture works them out). */
+      lower?: string;
+      upper?: string;
       rounded: string;
       /** The place rounded to, or the variable that holds it (10, 100, 1,000, … or 1, 0.1, 0.01). */
       to: number | string;
+      /**
+       * A second number's line under the first, with its arrow to its rounded value (estimating
+       * a sum or difference): `estimate` = rounded + second rounded (`minus`: − it), in the caption.
+       */
+      second?: { value: string; rounded: string; estimate?: string; minus?: boolean };
     }
   /**
    * Fractions on a number line from 0 to `wholes`: each whole cut into `denominator` equal
@@ -692,6 +729,16 @@ export type Representation =
       each?: string;
       total: string;
       max: number;
+      /**
+       * A second reading before the `total` (after): two scales side by side, the cup fizzing
+       * on the second and its bubbles labelled with the difference (gas that escaped).
+       */
+      before?: string;
+      /**
+       * A spring scale hanging from a bar, in newtons: `count` washers of `each` on its hook,
+       * the pointer at the `total` (scale up to `max`).
+       */
+      hanging?: boolean;
     }
   /** A measuring jug with liter marks up to `max`; the `parts` stack up to the `total`. */
   | {
@@ -999,6 +1046,12 @@ export type Representation =
       highlight?: string;
       from?: string;
       compare?: string;
+      /**
+       * Adding: `value` and `plus` stacked by place, points lined up, and their sum `total` in a
+       * third row under a rule.
+       */
+      plus?: string;
+      total?: string;
       /**
        * Whole numbers past the millions (to hundred billions): columns grouped in periods (ones,
        * thousands, millions, billions) under one header each, compact 100 · 10 · 1 headers.

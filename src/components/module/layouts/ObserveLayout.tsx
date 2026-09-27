@@ -2,11 +2,18 @@ import { useRef, useState } from 'react';
 import { Platform, StyleSheet, View, type ViewStyle } from 'react-native';
 
 import { Text } from '@/components/Text';
-import type { ObserveLayout as Spec } from '@/data/modules/layouts';
+import type { ObserveFigure, ObserveLayout as Spec } from '@/data/modules/layouts';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
 import { RESPONDER, useWebPointerDrag } from '../pointerDrag';
 import { Caption } from '../reps/common';
+import {
+  CupFigure,
+  FlashlightFigure,
+  PlantHeightFigure,
+  RampFigure,
+  ThermometerFigure,
+} from './observeFigures';
 import { ShadowStick } from './ShadowStick';
 
 const CHART_HEIGHT = 180;
@@ -35,14 +42,8 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
   };
   return (
     <View style={styles.wrap}>
-      {spec.figure?.kind === 'shadowStick' ? (
-        <ShadowStick
-          stick={spec.figure.stick}
-          shadow={values[picked]!}
-          max={spec.max}
-          unit={spec.unit}
-          column={spec.columns[picked]!}
-        />
+      {spec.figure ? (
+        <ObserveFigureView figure={spec.figure} values={values} picked={picked} spec={spec} />
       ) : null}
       <View style={[styles.chart, spec.histogram && styles.touching]}>
         {spec.histogram ? (
@@ -109,6 +110,57 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
       <Text style={[styles.hint, { color: c.textMuted }]}>Tap a bar at the height you want.</Text>
     </View>
   );
+}
+
+/** The picture of the column tapped last. */
+function ObserveFigureView({
+  figure,
+  values,
+  picked,
+  spec,
+}: {
+  figure: ObserveFigure;
+  values: number[];
+  picked: number;
+  spec: Spec;
+}) {
+  const common = {
+    value: values[picked]!,
+    max: spec.max,
+    unit: spec.unit,
+    column: spec.columns[picked]!,
+  };
+  switch (figure.kind) {
+    case 'shadowStick':
+      return (
+        <ShadowStick
+          stick={figure.stick}
+          shadow={common.value}
+          max={spec.max}
+          unit={spec.unit}
+          column={common.column}
+          side={figure.sides?.[picked]}
+        />
+      );
+    case 'thermometer':
+      return <ThermometerFigure {...common} />;
+    case 'plantHeight':
+      return <PlantHeightFigure {...common} />;
+    case 'ramp':
+      return (
+        <RampFigure {...common} height={figure.heights[picked] ?? 0} heights={figure.heights} />
+      );
+    case 'flashlight':
+      return (
+        <FlashlightFigure
+          {...common}
+          distance={figure.distances[picked] ?? 0}
+          distances={figure.distances}
+        />
+      );
+    case 'cup':
+      return <CupFigure {...common} first={values[0]!} firstColumn={spec.columns[0]!} />;
+  }
 }
 
 /** One column: tap it at the height you want, or drag along it. */

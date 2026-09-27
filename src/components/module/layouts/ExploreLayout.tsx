@@ -8,7 +8,9 @@ import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 
 import { Canvas, Caption, ChartText } from '../reps/common';
 import { Arrow, Push, Sky, Static, TimesTable, Vibration } from './figures';
+import { AnimalGroup } from './animalFigures';
 import { FoodWeb } from './foodWeb';
+import { PartsDrawing } from './partsDrawings';
 import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife';
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
@@ -30,8 +32,11 @@ export function ExploreLayout({ spec }: { spec: Spec }) {
   const c = usePalette();
   const [index, setIndex] = useState(0);
   const scene = spec.scenes[index]!;
+  // (A drawn parts figure keeps its chips: the names are also on the drawing.)
   const partsOnly =
-    spec.figure.kind === 'parts' && spec.scenes.every((sc) => sc.part !== undefined);
+    spec.figure.kind === 'parts' &&
+    !spec.figure.drawing &&
+    spec.scenes.every((sc) => sc.part !== undefined);
   return (
     <View style={styles.wrap}>
       <FigureView
@@ -86,12 +91,31 @@ function FigureView({
 }) {
   switch (figure.kind) {
     case 'parts':
+      if (figure.drawing) {
+        return (
+          <PartsDrawing
+            drawing={figure.drawing}
+            parts={figure.parts}
+            highlight={scene.part}
+            onPart={onPart}
+          />
+        );
+      }
       return <Parts parts={figure.parts} highlight={scene.part} c={c} onPart={onPart} />;
     case 'position':
       return <Position where={scene.position ?? 'above'} c={c} />;
     case 'clock':
       return <ClockFace time={scene.time ?? [3, 0]} c={c} />;
     case 'dots':
+      if (scene.animal) {
+        return (
+          <AnimalGroup
+            animal={scene.animal}
+            groups={scene.dots?.[0] ?? 1}
+            each={scene.dots?.[1] ?? 1}
+          />
+        );
+      }
       return <Dots groups={scene.dots?.[0] ?? 1} each={scene.dots?.[1] ?? 1} c={c} />;
     case 'magnets':
       return <MagnetsFigure poles={scene.poles ?? 'N–S'} field={scene.field} />;
