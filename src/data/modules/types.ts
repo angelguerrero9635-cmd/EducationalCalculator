@@ -983,6 +983,20 @@ export type Representation =
       path?: [number, number];
       chance?: string;
     }
+  /**
+   * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
+   * `colors` and named by `names` (the color names by default). The event is color `pick`
+   * (0 first); `chance` is parts[pick] ÷ `total`. "Draw a marble" takes one out at random.
+   */
+  | {
+      kind: 'marbles';
+      parts: string[];
+      colors?: ('red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple')[];
+      names?: string[];
+      pick?: number;
+      chance?: string;
+      total?: string;
+    }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
   | {
       kind: 'dotPlot';

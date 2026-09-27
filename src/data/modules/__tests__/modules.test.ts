@@ -263,6 +263,7 @@ function representationVars(r: Representation): string[] {
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
     case 'spinner':
+    case 'marbles':
       return [...r.parts, ...[r.chance, r.total].filter((x): x is string => !!x)];
     case 'sample':
       return [

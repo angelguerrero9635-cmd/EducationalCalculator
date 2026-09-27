@@ -106,6 +106,57 @@ const right = pair(90, 'The two angles make a right angle.');
 
 export const G7C_GALLERY_MODULES: ModuleDef[] = [
   {
+    id: 'g.bag-of-marbles',
+    title: 'A bag of marbles',
+    assumptions: [
+      'The marbles are the same size and feel the same.',
+      'Each marble is as likely to be drawn as any other.',
+    ],
+    variables: [
+      whole('r', 'r', 'Red marbles', 0, 15),
+      whole('b', 'b', 'Blue marbles', 0, 15),
+      whole('g', 'g', 'Green marbles', 0, 10),
+      whole('n', 'n', 'Marbles in all', 1, 40),
+      { id: 'P', symbol: 'P', name: 'Chance of blue', min: 0, max: 1, derived: true },
+    ],
+    relations: [
+      {
+        id: 'n = r + b + g',
+        display: '{r} + {b} + {g} = {n}',
+        vars: ['n', 'r', 'b', 'g'],
+        residual: (v: Values) => v.n! - v.r! - v.b! - v.g!,
+        solve: {
+          n: (v: Values) => v.r! + v.b! + v.g!,
+          r: (v: Values) => v.n! - v.b! - v.g!,
+          b: (v: Values) => v.n! - v.r! - v.g!,
+          g: (v: Values) => v.n! - v.r! - v.b!,
+        },
+      },
+      derive('P = b ÷ n', 'P', ['b', 'n'], '{b} ÷ {n} = {P}', (v) => v.b! / v.n!),
+    ],
+    steps: {
+      'n = r + b + g': {
+        n: { expr: '{r} + {b} + {g}', how: 'Add the marbles of every color.' },
+        r: { expr: '{n} − {b} − {g}', how: 'Take the blue and green marbles from all of them.' },
+        b: { expr: '{n} − {r} − {g}', how: 'Take the red and green marbles from all of them.' },
+        g: { expr: '{n} − {r} − {b}', how: 'Take the red and blue marbles from all of them.' },
+      },
+      'P = b ÷ n': {
+        P: { expr: '{b} ÷ {n}', how: 'The blue marbles out of all the marbles.' },
+      },
+    },
+    example: { r: 5, b: 3, g: 2, n: 10, P: 0.3 },
+    startWith: ['r', 'b', 'g'],
+    representation: {
+      kind: 'marbles',
+      parts: ['r', 'b', 'g'],
+      colors: ['red', 'blue', 'green'],
+      pick: 1,
+      chance: 'P',
+      total: 'n',
+    },
+  },
+  {
     id: 'g.tree-diagram',
     title: 'Tree diagram',
     assumptions: [

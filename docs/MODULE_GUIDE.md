@@ -111,6 +111,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `spinner`          | a spinner in equal colored sectors, the event outlined; Spin          | Grade 7 probability                 |
 | `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap    | Grade 7 compound probability        |
 | `treeDiagram`      | two stages branching left to right, each branch 1/n; a path lit       | Grade 7 compound probability        |
+| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random       | Grade 7 probability                 |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

@@ -17,6 +17,7 @@ import { Sample } from './Sample';
 import { Spinner } from './Spinner';
 import { DiceGrid } from './DiceGrid';
 import { TreeDiagram } from './TreeDiagram';
+import { Marbles } from './Marbles';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
@@ -282,6 +283,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
       return <TreeDiagram spec={spec} calc={calc} />;
+    case 'marbles':
+      return <Marbles spec={spec} calc={calc} />;
     case 'fieldOfView':
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':
