@@ -81,6 +81,8 @@ import { PunnettSquare } from './PunnettSquare';
 import { GrassSlope } from './GrassSlope';
 import { Flashlights } from './Flashlights';
 import { LeafCount } from './LeafCount';
+import { SignTable } from './SignTable';
+import { ZeroPairs } from './ZeroPairs';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -252,6 +254,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PercentBar spec={spec} calc={calc} />;
     case 'ratioTable':
       return <RatioTable spec={spec} calc={calc} />;
+    case 'zeroPairs':
+      return <ZeroPairs spec={spec} calc={calc} />;
+    case 'signTable':
+      return <SignTable spec={spec} calc={calc} />;
     case 'fractionFit':
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':

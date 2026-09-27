@@ -833,6 +833,35 @@ export function repIssues(
         out.push(`row ${k} × ${q} shows ${y}`);
       break;
     }
+    case 'zeroPairs': {
+      const [a, b, r] = [rep.first, rep.second, rep.result].map(val);
+      for (const [id, x] of [
+        [rep.first, a],
+        [rep.second, b],
+      ] as const) {
+        if (x === undefined) continue;
+        if (!Number.isInteger(x)) out.push(`counters for ${id} = ${x}, not a whole number`);
+        if (Math.abs(x) > 20) out.push(`${Math.abs(x)} counters for ${id} (20 fit)`);
+      }
+      if (a !== undefined && b !== undefined && r !== undefined) {
+        const want = rep.op === '−' ? a - b : a + b;
+        if (Math.abs(want - r) > 1e-9) out.push(`counters leave ${want}, result shows ${r}`);
+      }
+      break;
+    }
+    case 'signTable': {
+      const [a, b, r] = [rep.first, rep.second, rep.result].map(val);
+      if (a !== undefined && b !== undefined && r !== undefined) {
+        const want = rep.op === '÷' ? (b === 0 ? undefined : a / b) : a * b;
+        if (want === undefined) out.push('sign table divides by 0');
+        else if (Math.abs(want - r) > 1e-6 * Math.max(1, Math.abs(r)))
+          out.push(`${a} ${rep.op ?? '×'} ${b} is ${want}, result shows ${r}`);
+        // The outlined cell's sign is the answer's sign.
+        if (a !== 0 && b !== 0 && r !== 0 && a * b > 0 !== r > 0)
+          out.push(`sign table says ${a * b > 0 ? '+' : '−'}, result ${r}`);
+      }
+      break;
+    }
     case 'fractionFit': {
       for (const id of [rep.dividend.num, rep.dividend.den, rep.divisor.num, rep.divisor.den])
         count(id, 'fraction part');

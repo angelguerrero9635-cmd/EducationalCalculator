@@ -239,6 +239,9 @@ function representationVars(r: Representation): string[] {
       ];
     case 'ratioTable':
       return [r.first, r.second, r.times, ...r.amounts];
+    case 'zeroPairs':
+    case 'signTable':
+      return [r.first, r.second, r.result];
     case 'fractionFit':
       return [
         r.dividend.num,

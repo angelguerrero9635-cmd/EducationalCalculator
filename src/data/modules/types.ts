@@ -850,6 +850,18 @@ export type Representation =
       graph?: boolean;
     }
   /**
+   * Two-color counters for adding (`op` '+', the default) or subtracting ('−') integers: `first`
+   * and `second` as yellow + and red − counters; each + with a − is a zero pair (0). Subtracting
+   * adds zero pairs when there are too few to take away. Up to 20 of each kind.
+   */
+  | { kind: 'zeroPairs'; first: string; second: string; result: string; op?: '+' | '−' }
+  /**
+   * The sign rule for multiplying (or dividing, `op: '÷'`): a 2 × 2 table of the two numbers'
+   * signs, each cell the answer's sign; the numbers' cell outlined with their equation. Tap a
+   * cell to give the numbers those signs.
+   */
+  | { kind: 'signTable'; first: string; second: string; result: string; op?: '×' | '÷' }
+  /**
    * Dividing fractions: `groups` lays groups the size of the divisor along the dividend;
    * `share` shows the dividend filling the divisor's part of one whole group.
    */

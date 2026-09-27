@@ -76,6 +76,8 @@ const PICTURE_NAMES: Record<string, string> = {
   integerLine: 'number line with negatives',
   percentBar: 'percent bar',
   ratioTable: 'ratio table',
+  zeroPairs: 'two-color counters with zero pairs',
+  signTable: 'sign table',
   fractionFit: 'fraction groups',
   venn: 'Venn diagram',
   baseHeight: 'base and height',

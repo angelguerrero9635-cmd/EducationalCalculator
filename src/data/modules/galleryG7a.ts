@@ -6,6 +6,7 @@
 import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 
+import { whole } from './helpers';
 import type { ModuleDef, StepText } from './types';
 
 const fmt = (x: number) => formatNumber(x);
@@ -105,6 +106,61 @@ function percentOn(
       whole: 'w',
       change: { total: 'T', direction: up ? 'up' : 'down' },
     },
+  };
+}
+
+/** a + b = r or a − b = r with integers, for two-color counters and signed jumps. */
+function signedSum(
+  id: string,
+  title: string,
+  subtract: boolean,
+  assumptions: string[],
+  example: Values,
+  representation: ModuleDef['representation'],
+  range = 20,
+): ModuleDef {
+  const op = subtract ? '−' : '+';
+  const rel = `r = a ${op} b`;
+  return {
+    id,
+    title,
+    notation: 'letters',
+    assumptions,
+    variables: [
+      whole('a', 'a', 'First number', -range, range),
+      whole('b', 'b', 'Second number', -range, range),
+      { ...whole('r', 'r', subtract ? 'Difference' : 'Sum', -2 * range, 2 * range), derived: true },
+    ],
+    relations: [
+      {
+        id: rel,
+        display: `{r} = {a} ${op} {b}`,
+        vars: ['r', 'a', 'b'],
+        residual: (v: Values) => v.r! - (subtract ? v.a! - v.b! : v.a! + v.b!),
+        solve: {
+          r: (v: Values) => (subtract ? v.a! - v.b! : v.a! + v.b!),
+          a: (v: Values) => (subtract ? v.r! + v.b! : v.r! - v.b!),
+          b: (v: Values) => (subtract ? v.a! - v.r! : v.r! - v.a!),
+        },
+      },
+    ],
+    steps: {
+      [rel]: subtract
+        ? {
+            r: { expr: '{a} − {b}', how: 'Take the second number away from the first.' },
+            a: { expr: '{r} + {b}', how: 'Add the second number back on.' },
+            b: { expr: '{a} − {r}', how: 'Take the difference from the first number.' },
+          }
+        : {
+            r: { expr: '{a} + {b}', how: 'Add the two numbers.' },
+            a: { expr: '{r} − {b}', how: 'Take the second number from the sum.' },
+            b: { expr: '{r} − {a}', how: 'Take the first number from the sum.' },
+          },
+    },
+    example,
+    startWith: ['a', 'b'],
+    sliders: true,
+    representation,
   };
 }
 
@@ -230,5 +286,65 @@ export const G7A_GALLERY_MODULES: ModuleDef[] = [
       whole: 'b',
       change: { total: 'a', bars: 2 },
     },
+  },
+  signedSum(
+    'g.zero-pairs-add',
+    'Adding with zero pairs',
+    false,
+    [
+      'A yellow counter is +1 and a red counter is −1.',
+      'A + and a − together make a zero pair: 0. The counters left over are the sum.',
+    ],
+    { a: 3, b: -5, r: -2 },
+    { kind: 'zeroPairs', first: 'a', second: 'b', result: 'r' },
+  ),
+  signedSum(
+    'g.zero-pairs-subtract',
+    'Subtracting with zero pairs',
+    true,
+    [
+      'Subtracting takes counters away. A zero pair is 0, so adding one changes nothing.',
+      'With too few counters to take away, add zero pairs first.',
+    ],
+    { a: 2, b: 5, r: -3 },
+    { kind: 'zeroPairs', first: 'a', second: 'b', result: 'r', op: '−' },
+  ),
+  {
+    id: 'g.sign-table',
+    title: 'Signs when multiplying',
+    notation: 'letters',
+    assumptions: [
+      'Multiply the sizes of the numbers, then find the sign from the table.',
+      'Same signs give a positive answer; different signs give a negative one.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'First number', min: -20, max: 20, step: 0.5 },
+      { id: 'b', symbol: 'b', name: 'Second number', min: -20, max: 20, step: 0.5 },
+      { id: 'r', symbol: 'r', name: 'Product', min: -400, max: 400, derived: true },
+    ],
+    relations: [
+      {
+        id: 'r = a × b',
+        display: '{r} = {a} × {b}',
+        check: (v: Values) => `${fmt(v.r!)} = ${fmt(v.a!)} × ${fmt(v.b!)}`,
+        vars: ['r', 'a', 'b'],
+        residual: (v: Values) => v.r! - v.a! * v.b!,
+        solve: {
+          r: (v: Values) => exact(v.a! * v.b!),
+          a: (v: Values) => q(v.r!, v.b!),
+          b: (v: Values) => q(v.r!, v.a!),
+        },
+      },
+    ],
+    steps: {
+      'r = a × b': {
+        r: { expr: '{a} × {b}', how: 'Multiply the sizes; same signs give +, different signs −.' },
+        a: { expr: '{r} ÷ {b}', how: 'Divide both sides by b.' },
+        b: { expr: '{r} ÷ {a}', how: 'Divide both sides by a.' },
+      },
+    },
+    example: { a: -3, b: 4, r: -12 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'signTable', first: 'a', second: 'b', result: 'r' },
   },
 ];
