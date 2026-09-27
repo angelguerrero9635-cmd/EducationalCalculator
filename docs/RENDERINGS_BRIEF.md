@@ -11,16 +11,28 @@ strict, react-native-svg). It is a study app for K–12 students, often minors. 
 
 ## Your job
 
-Build the pictures (charts, graphs, diagrams, object drawings, card icons and explore
+Make every picture (charts, graphs, diagrams, object pictures, card icons and explore
 figures) that the math and science modules need from Kindergarten through Grade 8: the ones
-the built K–6 pages still lack, and the ones the planned Grade 7 and 8 skills will need.
-Another chat is building and changing the lesson pages at the same time; you build the
-pictures they plug into.
+the built K–6 pages still lack, the changes to existing pictures listed below, and the ones
+the planned Grade 7 and 8 skills will need. You own all image work: the lesson chat will not
+draw or change pictures. It builds and changes the lesson pages at the same time, using the
+closest existing picture until yours is ready, then pulls your branch and plugs yours in.
 
 ## Hard rules
 
-- **Everything is drawn in code** with react-native-svg. No image files, no downloads, no
-  network calls, no new dependencies. Image hosts are blocked in this environment anyway.
+- **Use real images where they make a picture more realistic** (photos or illustrations of
+  animals, plants, rocks, objects, the sky), taken from public-domain, Creative Commons or
+  free stock sources (Wikimedia Commons, NASA, USGS, NOAA, Openverse, Unsplash, Pixabay).
+  Download them at build time into `assets/images/<topic>/`, resize and compress them (keep
+  the app small), and list each one in `assets/images/CREDITS.md` with its source URL,
+  author and license. Use only licenses that allow reuse in an app (public domain, CC0,
+  CC BY, CC BY-SA with attribution, the Unsplash or Pixabay license); never use licensed
+  textbook or test material. The app itself never loads anything from the network: images
+  ship in the bundle. If an image host is blocked, say so and draw that picture in code.
+- **Values stay drawn in code.** Anything that moves with the student's numbers (bars,
+  lines, points, liquid levels, handles, labels) is react-native-svg over or beside the
+  image, so it stays exact. Charts and number diagrams are drawn in code.
+- Ask before adding a dependency (an image or SVG library).
 - **Every color is a theme token** (`usePalette()`; add tokens to `src/theme.ts` in both light
   and dark). `src/components/__tests__/colors.test.ts` fails on any hex or rgb literal in a
   component.
@@ -97,11 +109,32 @@ bus.
    the soil washed off collected below (driven by two values).
 6. **Two flashlights**: the same flashlight at one and at k times the distance, the lit
    circle k times as wide and k × k times the area, with one square of the grid shaded.
-7. **Dark and light cups** in the sun with thermometers (reuse `thermometers`; add the cups).
-   The lesson chat is changing these itself; don't touch them: fraction bars past one whole,
-   mixed-number jumps on `fractionLine`, a set model on `partition`, bills with coins, `dotPlot` and
-   `boxPlot` with 3 to 10 values, inequalities on `integerLine`, scaled `unitCubes` and the
-   `ratioTable` graph axes.
+7. **Dark and light cups** in the sun with thermometers (reuse `thermometers`; add the cups). 8. **Fraction bars past one whole**: `fractionBars` rows that draw as many whole bars as
+   the fraction needs (7/4 is one whole bar and 3/4 of the next), and **mixed-number jumps**
+   on `fractionLine` (18 1/4 − 2 3/4).
+8. **Set model for fractions**: `partition` with `shape: 'set'` (objects in a row, some
+   marked: 3 of 7 umbrellas).
+9. **Bills and coins together**: `coins` with bills ($1, $5, $10) beside the coins and one
+   total.
+10. **Center and spread with 3 to 10 values**: `dotPlot` and `boxPlot` that draw only the first
+    n values (n is a value), the median marked for odd and even n.
+11. **Inequalities on a number line**: `integerLine` with an open or closed circle at the
+    bound, an arrow to the solutions, and a test point marked true or false.
+12. **Scaled unit cubes**: `unitCubes` past 10 per edge draws a labelled box to scale
+    (40 × 60 × 80 cm).
+13. **Ratio graph on numbered axes**: the `ratioTable` graph's axes scale to the rows shown,
+    with 3–4 numbered ticks per axis.
+14. **3-digit number line**: `numberLine` from a start (500) with ticks every 1, 10 or 100
+    and a point to place (540).
+15. **Plot a point**: `coordinatePlane` first quadrant where the student taps or drags one
+    point, with the path "across then up" drawn from the origin.
+16. **Line plot of lengths**: `linePlot` with 6 marks starting at any whole number, in inches
+    or centimeters, in halves, quarters or eighths.
+17. **Measured leaves**: a plant in the sun and one in the shade with their green leaves
+    counted (for the Grade 2 page that now counts leaves, not height).
+18. **Protractor with neither arm at 0**: `protractor` reading two arm marks (45 and 135).
+19. **Fraction answers**: pictures that show a quotient or a share as a mixed number
+    (33 1/3 groups, 2 3/8 L), drawn from the value, not rounded decimals.
 
 ### 2. Grade 7 math (planned skills in `src/data/taxonomy.ts`)
 
