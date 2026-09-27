@@ -116,6 +116,10 @@ const PICTURE_NAMES: Record<string, string> = {
   motionGraph: 'distance-time or speed-time graph',
   skaters: 'two skaters pushing apart',
   energyTrack: 'roller coaster or pendulum with energy bars',
+  spectrum: 'electromagnetic spectrum band',
+  circuit: 'circuit with bulbs, a switch and a meter',
+  electromagnet: 'electromagnet with its field lines',
+  orbit: 'orbit diagram with the pull of gravity',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

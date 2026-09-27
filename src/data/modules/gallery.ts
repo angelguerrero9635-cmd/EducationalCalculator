@@ -16,6 +16,7 @@ import { G8B_GALLERY_MODULES } from './galleryG8b';
 import { S4B_GALLERY_LAYOUTS, S4B_GALLERY_MODULES } from './galleryS4b';
 import { S4A_GALLERY_LAYOUTS, S4A_GALLERY_MODULES } from './galleryS4a';
 import { S4C_GALLERY_MODULES } from './galleryS4c';
+import { S4D_GALLERY_LAYOUTS, S4D_GALLERY_MODULES } from './galleryS4d';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
@@ -1036,6 +1037,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
   ...S4B_GALLERY_MODULES,
   ...S4A_GALLERY_MODULES,
   ...S4C_GALLERY_MODULES,
+  ...S4D_GALLERY_MODULES,
 ];
 
 /**
@@ -1469,6 +1471,7 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
     })),
   },
   ...S4B_GALLERY_LAYOUTS,
+  ...S4D_GALLERY_LAYOUTS,
 ];
 
 /** A sort whose cards are card icons: [bin id, label, why, icons]. */

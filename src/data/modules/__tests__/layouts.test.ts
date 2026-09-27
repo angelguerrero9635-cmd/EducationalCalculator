@@ -38,6 +38,7 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   molecules: 'molecules',
   phases: 'phase',
   periodicTable: 'elements',
+  planets: 'planets',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */

@@ -136,6 +136,10 @@ search or the sitemap, but the module tests and the harness run over it):
 | `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second    | Grade 8 motion                      |
 | `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m      | Grade 8 Newton's laws               |
 | `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes | Grade 8 kinetic, potential energy   |
+| `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up | Grade 8 electromagnetic spectrum    |
+| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel      | Grade 8 circuits                    |
+| `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point  | Grade 8 electromagnets              |
+| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it | Grade 8 gravity and orbits          |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -333,6 +337,10 @@ molecules in the classroom colors: one alone drawn big with each element named, 
 `phases` (solid, liquid and gas boxes of the same particles, the changes between them as
 arrows; a scene lights a `state` and a `change`) and `periodicTable` (an `element` with its
 card, a `group`, a `period`, a `ring` of elements, `families` filled).
+shrink (`fewer`). Grade 8, in `layouts/figures8.tsx`: a `magnets` scene can set
+`field` (the field lines from N to S, `compasses` round the magnets, or one magnet `single`;
+magnets are painted N red, S blue), and `planets` draws the planets and the moon to scale by
+size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

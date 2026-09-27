@@ -20,6 +20,7 @@ import { imageOf } from '@/components/module/reps/transform';
 import { chemIssues } from './chemPictures';
 
 import { placeParts } from '../helpers';
+import { physics8Issues } from './picturesPhysics8';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1718,6 +1719,12 @@ export function repIssues(
       }
       break;
     }
+    case 'spectrum':
+    case 'circuit':
+    case 'electromagnet':
+    case 'orbit':
+      out.push(...physics8Issues(rep, (id) => val(id)));
+      break;
     default:
       break;
   }

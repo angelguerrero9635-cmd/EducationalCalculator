@@ -1,3 +1,5 @@
+import type { PlanetName } from '../typesPhysics8';
+
 /**
  * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
  * lesson whose idea isn't a quantity relationship gets one of these: the page keeps the
@@ -260,7 +262,9 @@ export type Figure =
   /** Boxes of particles as a solid, a liquid and a gas, with the changes between them as arrows. */
   | { kind: 'phases' }
   /** The periodic table with an element, a group or a period lit (Grade 8). */
-  | { kind: 'periodicTable' };
+  | { kind: 'periodicTable' }
+  /** The planets and Earth’s moon side by side, to scale by size, beside the sun’s edge (Grade 8). */
+  | { kind: 'planets' };
 
 /** One person in a `pedigree` figure. */
 export interface PedigreePerson {
@@ -340,6 +344,14 @@ export interface Scene {
   dots?: [number, number];
   /** Which poles face each other (a `magnets` figure). */
   poles?: 'N–S' | 'N–N' | 'S–S';
+  /**
+   * A `magnets` figure's field (Grade 8): lines from N to S around the magnets (unless `lines`
+   * is false), compass needles round them (`compasses`), or one magnet alone (`single`; the
+   * scene's `poles` are then not used).
+   */
+  field?: { single?: boolean; lines?: boolean; compasses?: boolean };
+  /** The planets ringed, each with its width in Earths (a `planets` figure). */
+  planets?: { lit?: PlanetName[] };
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
