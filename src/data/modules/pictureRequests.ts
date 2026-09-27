@@ -1046,20 +1046,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.pollination-dispersal',
     kind: 'icon',
     pages: ['s.2.pollination-dispersal'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3d-seeds-travel'],
+    uses: '"icon":"milkweed pod"',
     notes:
-      'Dandelion fluff → a dandelion seed head; Maple seed with wings → a winged maple seed; Milkweed fluff → an open milkweed pod with fluffy seeds; Burr on a dog’s fur → a burr stuck in dog fur; Berry eaten by a bird → a bird eating a berry; Acorn buried by a squirrel → a squirrel burying an acorn; Coconut → a coconut floating on water; Water lily seed → a water lily with seed pod on a pond',
+      "Dandelion fluff → a dandelion seed head; Maple seed with wings → a winged maple seed; Milkweed fluff → an open milkweed pod with fluffy seeds; Burr on a dog’s fur → a burr stuck in dog fur; Berry eaten by a bird → a bird eating a berry; Acorn buried by a squirrel → a squirrel burying an acorn; Coconut → a coconut floating on water; Water lily seed → a water lily with seed pod on a pond. DRAWN (icons, group D): Dandelion fluff → icon 'dandelion seed head'; Maple seed with wings → icon 'winged maple seed'; Milkweed fluff → icon 'milkweed pod'; Burr on a dog’s fur → icon 'burr in dog fur'; Berry eaten by a bird → icon 'bird eating berry'; Acorn buried by a squirrel → icon 'squirrel burying acorn'; Coconut → icon 'floating coconut'; Water lily seed → icon 'water lily seed pod'.",
   },
   {
     id: 'D21',
     what: 'Card pictures for s.2.pollination-dispersal~pollen',
     kind: 'icon',
     pages: ['s.2.pollination-dispersal~pollen'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3d-pollen'],
+    uses: '"icon":"bee with pollen"',
     notes:
-      "A bee lands on a flower to drink nectar → a bee on a flower; Pollen sticks to its hairy body → a close-up bee with yellow pollen dots; The bee flies to another flower of the same kind → a bee flying between two matching flowers; Pollen rubs off on that flower → pollen dots on the second flower's center; The flower can now make seeds → a flower head turning into seeds",
+      "A bee lands on a flower to drink nectar → a bee on a flower; Pollen sticks to its hairy body → a close-up bee with yellow pollen dots; The bee flies to another flower of the same kind → a bee flying between two matching flowers; Pollen rubs off on that flower → pollen dots on the second flower's center; The flower can now make seeds → a flower head turning into seeds. DRAWN (icons, group D): Stage figures, in order: A bee lands on a flower to drink nectar → icon 'bee on flower'; Pollen sticks to its hairy body → icon 'bee with pollen'; The bee flies to another flower of the same kind → icon 'bee between flowers'; Pollen rubs off on that flower → icon 'pollen on flower'; The flower can now make seeds → icon 'flower making seeds'. One pink flower (the shared icon 'flower') throughout.",
   },
   {
     id: 'D22',
@@ -1169,10 +1171,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.life-cycles~changes',
     kind: 'icon',
     pages: ['s.3.life-cycles~changes'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3d-grow-up'],
+    uses: '"icon":"ladybug"',
     notes:
-      "Butterfly → a butterfly; Ladybug → a ladybug; Mosquito → a mosquito; Chicken → a chicken; Human → existing icon 'person'",
+      "Butterfly → a butterfly; Ladybug → a ladybug; Mosquito → a mosquito; Chicken → a chicken; Human → existing icon 'person'. DRAWN (icons, group D): Butterfly → icon 'butterfly'; Frog → icon 'frog'; Ladybug → icon 'ladybug'; Mosquito → icon 'mosquito'; Dog → icon 'dog'; Turtle → icon 'turtle'; Chicken → icon 'chicken'; Human → icon 'person'.",
   },
   {
     id: 'D33',
