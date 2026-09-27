@@ -6,7 +6,7 @@
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values } from '@/engine/types';
 
-import { heatingCorners, heatingTemp } from '@/components/module/reps/chem';
+import { groupOf, heatingCorners, heatingTemp, periodOf } from '@/components/module/reps/chem';
 
 import { div, whole } from './helpers';
 import type { LayoutDef } from './layouts';
@@ -336,6 +336,54 @@ S4A_GALLERY_MODULES.push({
     names: ['ice', 'water', 'steam'],
     formula: 'H2O',
   },
+});
+
+/** An element's group or period, read off the table: solvable only for the group or period. */
+const placeOn = (
+  id: string,
+  what: 'group' | 'period',
+  of: (z: number) => number | undefined,
+): { relation: Relation; steps: Record<string, StepText> } => ({
+  relation: {
+    id: `${id} = ${what} of Z`,
+    display: `{${id}} = the ${what} of element {Z}`,
+    vars: [id, 'Z'],
+    residual: (v: Values) => v[id]! - (of(v.Z!) ?? NaN),
+    solve: { [id]: (v: Values) => of(v.Z!), Z: () => undefined },
+    check: (v: Values) => `${formatNumber(v[id]!)} = ${formatNumber(of(v.Z!) ?? NaN)}`,
+  },
+  steps: {
+    [id]: {
+      expr: (v: Values) => formatNumber(of(v.Z!) ?? NaN),
+      how:
+        what === 'group'
+          ? 'Find the element on the table and read the number at the top of its column.'
+          : 'Find the element on the table and read the number at the start of its row.',
+    },
+  },
+});
+
+const tablePlace = [placeOn('g', 'group', groupOf), placeOn('p', 'period', periodOf)];
+
+S4A_GALLERY_MODULES.push({
+  id: 'g.periodic-table',
+  title: 'Periodic table',
+  notation: 'letters',
+  assumptions: [
+    'Elements are in order of atomic number: the number of protons in one atom.',
+    'A column is a group, a row is a period. Tap an element.',
+    'The two rows under the table belong in periods 6 and 7; they have no group number here.',
+  ],
+  variables: [
+    whole('Z', 'Z', 'Atomic number', 1, 118),
+    { ...whole('g', 'g', 'Group', 1, 18), derived: true },
+    { ...whole('p', 'p', 'Period', 1, 7), derived: true },
+  ],
+  relations: tablePlace.map((r) => r.relation),
+  steps: Object.fromEntries(tablePlace.map((r) => [r.relation.id, r.steps])),
+  example: { Z: 8, g: 16, p: 2 },
+  startWith: ['Z'],
+  representation: { kind: 'periodicTable', element: 'Z', families: true },
 });
 
 export const S4A_GALLERY_LAYOUTS: LayoutDef[] = [];

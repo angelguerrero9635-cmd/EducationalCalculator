@@ -110,6 +110,7 @@ const PICTURE_NAMES: Record<string, string> = {
   molecules: 'ball-and-stick molecules',
   reaction: 'particles before and after a reaction',
   heatingCurve: 'heating curve',
+  periodicTable: 'periodic table',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

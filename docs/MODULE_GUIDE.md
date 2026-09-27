@@ -130,6 +130,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted     | Grade 7 atoms and molecules         |
 | `reaction`         | molecules before and after the arrow; each element's atoms counted    | Grade 7 reactions, balancing        |
 | `heatingCurve`     | temperature against time, flat while melting and boiling; particles   | Grade 7 phase changes               |
+| `periodicTable`    | the table as a grid: an element (its card), a group or a period lit   | Grade 8 periodic table              |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

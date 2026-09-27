@@ -7,6 +7,8 @@ import {
   ELEMENTS,
   MAX_MOLECULES,
   atomsOf,
+  groupOf,
+  periodOf,
   heatingCorners,
   heatingTemp,
   parseFormula,
@@ -106,6 +108,11 @@ export function chemIssues(
       if (g !== undefined && (g < 1 || g > 18 || g !== Math.round(g))) out.push(`group ${g}`);
       const p = rep.period === undefined ? undefined : val(rep.period);
       if (p !== undefined && (p < 1 || p > 7 || p !== Math.round(p))) out.push(`period ${p}`);
+      // An element and its own group or period, when a module has both.
+      if (z !== undefined && z >= 1 && z <= ELEMENTS.length && z === Math.round(z)) {
+        if (g !== undefined && groupOf(z) !== g) out.push(`element ${z} is not in group ${g}`);
+        if (p !== undefined && periodOf(z) !== p) out.push(`element ${z} is not in period ${p}`);
+      }
       break;
     }
   }

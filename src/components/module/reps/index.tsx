@@ -106,6 +106,7 @@ import { EquationBalance } from './EquationBalance';
 import { Molecules } from './Molecules';
 import { Reaction } from './Reaction';
 import { HeatingCurve } from './HeatingCurve';
+import { PeriodicTable } from './PeriodicTable';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -197,6 +198,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Reaction spec={spec} calc={calc} />;
     case 'heatingCurve':
       return <HeatingCurve spec={spec} calc={calc} />;
+    case 'periodicTable':
+      return <PeriodicTable spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':
