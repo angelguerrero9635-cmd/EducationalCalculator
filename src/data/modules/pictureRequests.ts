@@ -855,7 +855,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.K.add-sub-10~all-partners',
     kind: 'icon',
     pages: ['m.K.add-sub-10~all-partners'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-all-partners'],
     uses: '"icon":"cars 2 red 3 blue"',
     notes:
@@ -866,7 +866,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.2.standard-length~which-unit',
     kind: 'icon',
     pages: ['m.2.standard-length~which-unit'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-which-unit'],
     uses: '"icon":"school hallway"',
     notes:
@@ -877,7 +877,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.2.time-5-min~am-pm',
     kind: 'icon',
     pages: ['m.2.time-5-min~am-pm'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-am-pm'],
     uses: '"icon":"sunrise with arrow up"',
     notes:
@@ -888,7 +888,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.2.even-odd~sort',
     kind: 'icon',
     pages: ['m.2.even-odd~sort'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-even-odd'],
     uses: '"count":0',
     notes:
@@ -899,7 +899,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.sunlight-warms~shade',
     kind: 'icon',
     pages: ['s.K.sunlight-warms~shade'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-shade'],
     uses: '"icon":"open umbrella"',
     notes:
@@ -910,7 +910,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.living-needs~who-needs',
     kind: 'icon',
     pages: ['s.K.living-needs~who-needs'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-who-needs'],
     uses: '"icon":"pot of soil with roots"',
     notes:
@@ -921,7 +921,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.living-needs~homes',
     kind: 'icon',
     pages: ['s.K.living-needs~homes'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.icons-homes'],
     uses: '"icon":"duck"',
     notes:
@@ -932,7 +932,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.weather-patterns~storm',
     kind: 'icon',
     pages: ['s.K.weather-patterns~storm'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3f-storm'],
     uses: '"icon":"hearing a storm forecast"',
     notes:
@@ -943,7 +943,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.weather-patterns~falls',
     kind: 'icon',
     pages: ['s.K.weather-patterns~falls'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3f-falls'],
     uses: '"icon":"rain cloud"',
     notes:
@@ -954,7 +954,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.living-things-change-environment',
     kind: 'icon',
     pages: ['s.K.living-things-change-environment'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-who-changed'],
     uses: '"icon":"beaver at dam"',
     notes:
@@ -965,7 +965,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.K.living-things-change-environment~helps',
     kind: 'icon',
     pages: ['s.K.living-things-change-environment~helps'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-helps'],
     uses: '"icon":"cloth shopping bag"',
     notes:
@@ -976,7 +976,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.sound-vibration~cup-phone',
     kind: 'icon',
     pages: ['s.1.sound-vibration~cup-phone'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-cup-phone'],
     uses: '"icon":"cup phone string shakes"',
     notes:
@@ -987,7 +987,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.offspring~care',
     kind: 'icon',
     pages: ['s.1.offspring~care'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.icons-parent-care'],
     uses: '"icon":"hen on nest"',
     notes:
@@ -998,7 +998,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.offspring~match',
     kind: 'icon',
     pages: ['s.1.offspring~match'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-offspring'],
     uses: '"icon":"oak seedling"',
     notes:
@@ -1009,7 +1009,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.sky-patterns~moon',
     kind: 'moon',
     pages: ['s.1.sky-patterns~moon'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-moon'],
     uses: '"kind":"moon"',
     notes:
@@ -1020,7 +1020,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.sky-patterns~moon-waning',
     kind: 'icon',
     pages: ['s.1.sky-patterns~moon-waning'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-moon-waning'],
     uses: '"phase":"waning',
     notes:
@@ -1031,7 +1031,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.1.light-shadows~materials',
     kind: 'icon',
     pages: ['s.1.light-shadows~materials'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-light-materials'],
     uses: '"icon":"wax paper"',
     notes:
@@ -1042,7 +1042,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.material-properties~sort',
     kind: 'icon',
     pages: ['s.2.material-properties~sort'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-bend'],
     uses: '"icon":"piece of string"',
     notes:
@@ -1053,7 +1053,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.heating-cooling',
     kind: 'icon',
     pages: ['s.2.heating-cooling'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3b-heating-cooling'],
     uses: '"icon":"melting ice cube"',
     notes:
@@ -1064,7 +1064,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.pollination-dispersal',
     kind: 'icon',
     pages: ['s.2.pollination-dispersal'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-seeds-travel'],
     uses: '"icon":"milkweed pod"',
     notes:
@@ -1075,7 +1075,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.pollination-dispersal~pollen',
     kind: 'icon',
     pages: ['s.2.pollination-dispersal~pollen'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-pollen'],
     uses: '"icon":"bee with pollen"',
     notes:
@@ -1086,7 +1086,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.erosion-landforms~map',
     kind: 'icon',
     pages: ['s.2.erosion-landforms~map'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3e-land-water'],
     uses: '"icon":"mountain"',
     notes:
@@ -1097,7 +1097,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.erosion-landforms',
     kind: 'icon',
     pages: ['s.2.erosion-landforms'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3e-land-changes'],
     uses: '"icon":"earthquake crack"',
     notes:
@@ -1108,7 +1108,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.habitats~which-habitat',
     kind: 'icon',
     pages: ['s.2.habitats~which-habitat'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.icons-which-habitat'],
     uses: '"icon":"walrus"',
     notes:
@@ -1119,7 +1119,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.erosion-landforms~slow-it',
     kind: 'icon',
     pages: ['s.2.erosion-landforms~slow-it'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3f-slow-it'],
     uses: '"icon":"snow fence"',
     notes:
@@ -1130,7 +1130,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.water-on-earth',
     kind: 'icon',
     pages: ['s.2.water-on-earth'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3e-water-on-earth'],
     uses: '"icon":"glacier"',
     notes:
@@ -1141,7 +1141,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.3.mass-liquid-volume~which-unit',
     kind: 'icon',
     pages: ['m.3.mass-liquid-volume~which-unit'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3b-which-unit'],
     uses: '"icon":"sack of potatoes"',
     notes:
@@ -1152,7 +1152,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.balanced-forces~balanced',
     kind: 'icon',
     pages: ['s.3.balanced-forces~balanced'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-balanced'],
     uses: '"icon":"tug of war with equal arrows"',
     notes:
@@ -1163,7 +1163,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.life-cycles',
     kind: 'icon',
     pages: ['s.3.life-cycles'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-butterfly-cycle'],
     uses: '"icon":"butterfly egg on leaf"',
     notes:
@@ -1174,7 +1174,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.life-cycles~frog',
     kind: 'icon',
     pages: ['s.3.life-cycles~frog'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-frog-cycle'],
     uses: '"icon":"froglet"',
     notes:
@@ -1185,7 +1185,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.life-cycles~bean',
     kind: 'icon',
     pages: ['s.3.life-cycles~bean'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-bean-cycle'],
     uses: '"icon":"bean sprout"',
     notes:
@@ -1196,7 +1196,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.life-cycles~changes',
     kind: 'icon',
     pages: ['s.3.life-cycles~changes'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-grow-up'],
     uses: '"icon":"ladybug"',
     notes:
@@ -1207,7 +1207,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.inherited-traits',
     kind: 'icon',
     pages: ['s.3.inherited-traits'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-traits'],
     uses: '"icon":"knee with scar"',
     notes:
@@ -1218,7 +1218,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.adaptation-fossils',
     kind: 'icon',
     pages: ['s.3.adaptation-fossils'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.icons-fossils'],
     uses: '"icon":"clam fossil"',
     notes:
@@ -1229,7 +1229,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.animal-groups~group-jobs',
     kind: 'icon',
     pages: ['s.3.animal-groups~group-jobs'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.icons-group-jobs'],
     uses: '"icon":"penguin huddle"',
     notes:
@@ -1240,7 +1240,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.weather-climate~hazards',
     kind: 'icon',
     pages: ['s.3.weather-climate~hazards'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3f-weather-hazards'],
     uses: '"icon":"sandbag wall"',
     notes:
@@ -1251,7 +1251,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.energy-conversion',
     kind: 'icon',
     pages: ['s.4.energy-conversion'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3b-energy-conversion'],
     uses: '"icon":"desk lamp"',
     notes:
@@ -1262,7 +1262,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.energy-conversion~trace',
     kind: 'icon',
     pages: ['s.4.energy-conversion~trace'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3b-energy-trace'],
     uses: '"icon":"circuit lit bulb"',
     notes:
@@ -1273,7 +1273,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.energy-conversion~conductors',
     kind: 'icon',
     pages: ['s.4.energy-conversion~conductors'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-conductors'],
     uses: '"icon":"copper wire coil"',
     notes:
@@ -1284,7 +1284,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.3.magnets~magnetic',
     kind: 'icon',
     pages: ['s.3.magnets~magnetic'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-magnetic'],
     uses: '"icon":"soup can"',
     notes:
@@ -1295,7 +1295,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.vision-light~signals',
     kind: 'icon',
     pages: ['s.4.vision-light~signals'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3b-signals'],
     uses: '"icon":"lighthouse"',
     notes:
@@ -1306,7 +1306,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.internal-structures~senses',
     kind: 'icon',
     pages: ['s.4.internal-structures~senses'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3g-senses'],
     uses: '"icon":"brain lit"',
     notes:
@@ -1317,7 +1317,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.internal-structures~jobs',
     kind: 'icon',
     pages: ['s.4.internal-structures~jobs'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-part-jobs'],
     uses: '"icon":"owl face"',
     notes:
@@ -1328,7 +1328,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.weathering~layers-order',
     kind: 'icon',
     pages: ['s.4.weathering~layers-order'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3e-layers-order'],
     uses: '"icon":"layers pushed up"',
     notes:
@@ -1339,7 +1339,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.weathering~map-patterns',
     kind: 'icon',
     pages: ['s.4.weathering~map-patterns'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-map-patterns'],
     uses: '"kind":"map"',
     notes:
@@ -1350,7 +1350,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.natural-resources',
     kind: 'icon',
     pages: ['s.4.natural-resources'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3f-energy'],
     uses: '"icon":"wind turbine"',
     notes:
@@ -1361,7 +1361,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.natural-resources~hazards',
     kind: 'icon',
     pages: ['s.4.natural-resources~hazards'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3f-natural-hazards'],
     uses: '"icon":"braced walls"',
     notes:
@@ -1372,7 +1372,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.particles-matter~properties',
     kind: 'icon',
     pages: ['s.5.particles-matter~properties'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-dissolve'],
     uses: '"icon":"pepper shaker"',
     notes:
@@ -1383,7 +1383,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.particles-matter~magnet',
     kind: 'icon',
     pages: ['s.5.particles-matter~magnet'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-magnet-pull'],
     uses: '"icon":"copper coin"',
     notes:
@@ -1394,7 +1394,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.mixtures',
     kind: 'icon',
     pages: ['s.5.mixtures'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-mixtures'],
     uses: '"icon":"burning log"',
     notes:
@@ -1405,7 +1405,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.mixtures~separate',
     kind: 'icon',
     pages: ['s.5.mixtures~separate'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3a-separate'],
     uses: '"icon":"magnet over sand mix"',
     notes:
@@ -1416,7 +1416,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.food-webs',
     kind: 'icon',
     pages: ['s.5.food-webs'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-food-web-roles'],
     uses: '"icon":"earthworm in soil"',
     notes:
@@ -1427,7 +1427,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.food-webs~chain-order',
     kind: 'icon',
     pages: ['s.5.food-webs~chain-order'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3d-food-chain'],
     uses: '"icon":"tuft of grass"',
     notes:
@@ -1438,7 +1438,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.earth-spheres',
     kind: 'icon',
     pages: ['s.5.earth-spheres'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3e-earth-spheres'],
     uses: '"icon":"soil clump"',
     notes:
@@ -1449,7 +1449,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.earth-spheres~rain-to-river',
     kind: 'icon',
     pages: ['s.5.earth-spheres~rain-to-river'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3e-rain-to-river'],
     uses: '"icon":"rain on mountain"',
     notes:
@@ -1460,7 +1460,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.shadows-day-night~season-stars',
     kind: 'stars',
     pages: ['s.5.shadows-day-night~season-stars'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-season-stars'],
     uses: '"kind":"stars"',
     notes:
@@ -1471,7 +1471,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.cells',
     kind: 'icon',
     pages: ['s.6.cells'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-cells'],
     uses: '"icon":"paramecium"',
     notes:
@@ -1482,7 +1482,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.cell-organelles~plant-animal',
     kind: 'icon',
     pages: ['s.6.cell-organelles~plant-animal'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-plant-animal', 'g.r3h-animal-parts'],
     uses: '"highlight"',
     notes:
@@ -1493,7 +1493,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.body-systems~levels',
     kind: 'icon',
     pages: ['s.6.body-systems~levels'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-body-levels'],
     uses: '"icon":"circulatory system"',
     notes:
@@ -1504,7 +1504,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.weather-fronts~air-masses',
     kind: 'map',
     pages: ['s.6.weather-fronts~air-masses'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-air-masses'],
     uses: '"area":"northAmerica"',
     notes:
@@ -1515,7 +1515,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.weather-fronts~forecast',
     kind: 'icon',
     pages: ['s.6.weather-fronts~forecast'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3f-forecast'],
     uses: '"icon":"barometer falling"',
     notes:
@@ -1526,7 +1526,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.plate-tectonics~boundaries',
     kind: 'map',
     pages: ['s.6.plate-tectonics~boundaries'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-boundaries'],
     uses: '"pin"',
     notes:
@@ -1537,7 +1537,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.rock-cycle~sandstone',
     kind: 'icon',
     pages: ['s.6.rock-cycle~sandstone'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3e-sandstone'],
     uses: '"icon":"granite crumbling"',
     notes:
@@ -1548,7 +1548,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.6.center-spread~mean-or-median',
     kind: 'dotPlot',
     pages: ['m.6.center-spread~mean-or-median'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r3h-mean-median'],
     uses: '"kind":"dotPlot"',
     notes:
