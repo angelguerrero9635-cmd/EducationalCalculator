@@ -953,6 +953,14 @@ export type Representation =
        * middle one (odd) or two (even) ringed and the median marked between them.
        */
       count?: string;
+      /**
+       * A second sample's dot plot under the first on the same scale (two samples compared):
+       * its values and its mean or median; `labels` name the two, `difference` is the gap
+       * between their means (or medians), marked between the plots.
+       */
+      second?: { data: string[]; mean?: string; median?: string };
+      labels?: [string, string];
+      difference?: string;
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }

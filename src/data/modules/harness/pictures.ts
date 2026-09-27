@@ -995,6 +995,32 @@ export function repIssues(
         if (Math.abs(mean - m) > 1e-6 * Math.max(1, Math.abs(m)))
           out.push(`dots balance at ${mean}, mean shows ${m}`);
       }
+      if (rep.second) {
+        // The second sample's center, and the gap between the two centers.
+        const xs = rep.second.data.map(val);
+        const known = xs.every((x) => x !== undefined) ? (xs as number[]) : undefined;
+        const m2 = rep.second.mean ? val(rep.second.mean) : undefined;
+        const md2 = rep.second.median ? val(rep.second.median) : undefined;
+        if (known && m2 !== undefined) {
+          const mean2 = known.reduce((s, x) => s + x, 0) / known.length;
+          if (Math.abs(mean2 - m2) > 1e-6 * Math.max(1, Math.abs(m2)))
+            out.push(`second sample balances at ${mean2}, mean shows ${m2}`);
+        }
+        if (known && md2 !== undefined) {
+          const md = medianOf([...known].sort((a, b) => a - b));
+          if (Math.abs(md - md2) > 1e-9) out.push(`second sample's median is ${md}, shows ${md2}`);
+        }
+        const c1 = rep.mean ? m : rep.median ? val(rep.median) : undefined;
+        const c2 = rep.second.mean ? m2 : md2;
+        const d = rep.difference ? val(rep.difference) : undefined;
+        if (
+          c1 !== undefined &&
+          c2 !== undefined &&
+          d !== undefined &&
+          Math.abs(Math.abs(c1 - c2) - d) > 1e-6
+        )
+          out.push(`centers ${c1} and ${c2} drawn, difference shows ${d}`);
+      }
       break;
     }
     case 'fieldOfView': {

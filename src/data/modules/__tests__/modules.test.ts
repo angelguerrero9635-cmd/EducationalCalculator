@@ -266,7 +266,13 @@ function representationVars(r: Representation): string[] {
         ...[r.trait, r.estimate].filter((x): x is string => !!x),
       ];
     case 'dotPlot':
-      return [...r.data, ...[r.mean, r.median, r.range, r.count].filter((x): x is string => !!x)];
+      return [
+        ...r.data,
+        ...[r.mean, r.median, r.range, r.count, r.difference].filter((x): x is string => !!x),
+        ...(r.second
+          ? [...r.second.data, ...[r.second.mean, r.second.median].filter((x): x is string => !!x)]
+          : []),
+      ];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
     case 'gradCylinder':

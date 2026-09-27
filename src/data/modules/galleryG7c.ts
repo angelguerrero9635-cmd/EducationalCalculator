@@ -103,6 +103,104 @@ const straight = pair(180, 'The two angles make a straight line.');
 const right = pair(90, 'The two angles make a right angle.');
 
 export const G7C_GALLERY_MODULES: ModuleDef[] = [
+  (() => {
+    // Two samples of eight: minutes read last night in two classes.
+    const A = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8'];
+    const B = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8'];
+    const mean = (ids: string[]) => (v: Values) =>
+      ids.reduce((t, id) => t + v[id]!, 0) / ids.length;
+    const sum = (ids: string[]) => ids.map((id) => `{${id}}`).join(' + ');
+    const worked = (id: string, name: string) => ({
+      id,
+      symbol: id,
+      name,
+      min: 0,
+      max: 60,
+      derived: true,
+    });
+    return {
+      id: 'g.two-samples',
+      title: 'Two samples compared',
+      assumptions: [
+        'Each class is a random sample of its grade. Times are in minutes.',
+        'The mean is the balance point of a dot plot.',
+      ],
+      variables: [
+        ...A.map((id, i) => ({
+          ...whole(id, id, `Class A, student ${i + 1}`, 0, 60),
+        })),
+        ...B.map((id, i) => ({
+          ...whole(id, id, `Class B, student ${i + 1}`, 0, 60),
+        })),
+        worked('P', 'Mean of class A'),
+        worked('Q', 'Mean of class B'),
+        worked('d', 'Difference of the means'),
+      ],
+      relations: [
+        derive('P = mean of A', 'P', A, `(${sum(A)}) ÷ 8 = {P}`, mean(A)),
+        derive('Q = mean of B', 'Q', B, `(${sum(B)}) ÷ 8 = {Q}`, mean(B)),
+        {
+          ...derive('d = |Q − P|', 'd', ['P', 'Q'], 'the gap from {P} to {Q} = {d}', (v) =>
+            Math.abs(v.Q! - v.P!),
+          ),
+          // The bigger mean less the smaller, as a number sentence the check can read.
+          check: (v: Values) => `${Math.max(v.P!, v.Q!)} − ${Math.min(v.P!, v.Q!)} = ${v.d}`,
+        },
+      ],
+      steps: {
+        'P = mean of A': {
+          P: {
+            expr: `(${sum(A)}) ÷ 8`,
+            how: 'Add the eight times in class A and share them out evenly.',
+          },
+        },
+        'Q = mean of B': {
+          Q: {
+            expr: `(${sum(B)}) ÷ 8`,
+            how: 'Add the eight times in class B and share them out evenly.',
+          },
+        },
+        'd = |Q − P|': {
+          d: {
+            expr: (v: Values) => (v.Q! >= v.P! ? '{Q} − {P}' : '{P} − {Q}'),
+            how: 'Take the smaller mean from the bigger one.',
+          },
+        },
+      },
+      example: {
+        a1: 10,
+        a2: 15,
+        a3: 15,
+        a4: 20,
+        a5: 20,
+        a6: 20,
+        a7: 25,
+        a8: 35,
+        b1: 20,
+        b2: 25,
+        b3: 30,
+        b4: 30,
+        b5: 30,
+        b6: 35,
+        b7: 40,
+        b8: 46,
+        P: 20,
+        Q: 32,
+        d: 12,
+      },
+      startWith: [...A, ...B],
+      representation: {
+        kind: 'dotPlot',
+        data: A,
+        min: 0,
+        max: 50,
+        mean: 'P',
+        second: { data: B, mean: 'Q' },
+        labels: ['Class A', 'Class B'],
+        difference: 'd',
+      },
+    } satisfies ModuleDef;
+  })(),
   {
     id: 'g.random-sample',
     title: 'A random sample',
