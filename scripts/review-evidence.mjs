@@ -2,6 +2,11 @@
 // their tokens on judgement rather than on writing scripts:
 //
 //   node scripts/review-evidence.mjs --prefix s.K.,s.1.,s.2.,s.3. [--out .review] [--wide 3] [--dark 3]
+//     [--edges]
+//
+// --edges: an edge-case review. Fewer random samples (SAMPLES=25, SEQUENCES=5), most of them
+// taken at the boundaries (EDGE_BIAS=0.8), and the dump walks every opening value at its
+// smallest and largest, then all of them at once (REVIEW_EDGES=all).
 //
 // Writes into the output folder:
 //   dump.txt        every module's definition and walkthroughs (dump.review.test.ts)
@@ -31,6 +36,9 @@ if (!prefix) {
 const out = flag('--out', '.review');
 const wide = Number(flag('--wide', '3'));
 const dark = Number(flag('--dark', '3'));
+const edgeEnv = args.includes('--edges')
+  ? { REVIEW_EDGES: 'all', SAMPLES: '25', SEQUENCES: '5', EDGE_BIAS: '0.8' }
+  : {};
 mkdirSync(join(out, 'shots'), { recursive: true });
 
 const run = (label, cmd, cmdArgs, env = {}) => {
@@ -51,6 +59,7 @@ run(
   {
     REVIEW_DUMP: join(out, 'dump.txt'),
     MODULE_IDS: prefix,
+    ...edgeEnv,
   },
 );
 const ids = [...readFileSync(join(out, 'dump.txt'), 'utf8').matchAll(/^=== (\S+)/gm)].map(
@@ -63,7 +72,7 @@ const harness = run(
   'npx',
   // (not --silent: the report is printed with console.log)
   ['jest', 'src/data/modules/__tests__/sampling.test.ts'],
-  { MODULE_IDS: prefix, SAMPLING_REPORT: '1' },
+  { MODULE_IDS: prefix, SAMPLING_REPORT: '1', ...edgeEnv },
 );
 const report = harness
   .split('\n')

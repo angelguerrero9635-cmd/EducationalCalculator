@@ -50,6 +50,22 @@ scope, what the scripts flagged, and each page's picture kind and controls).
 - Write findings to `.review/page-reviewer.md` as you finish each skill; on start, read it and
   continue from the last skill.
 
+## Edge-case review
+
+When the prompt says **edge-case review**, the screenshots show the example values, which hide
+the edges. Spend the browser session on the extremes instead. On the pages whose picture kinds
+are most likely to break (long counts, big numbers, fractions near 0 or 1, negative values),
+type each opening value at its smallest and its largest, then all at once (`evidence.md` and the
+dump's `-- edge` lines give the values). Then:
+
+- drag each handle and slider to both ends;
+- clear a box to "?".
+
+Report pictures that overflow, overlap, shrink to nothing, draw a value the student didn't
+type, or lose their handle off the edge. Report captions that wrap badly with long numbers, and
+controls that stop responding at an end. Checks J and F2 apply as usual; H and I only where an
+edge breaks them.
+
 ## Checks
 
 **H. Classroom use (teacher).** Per skill, a 20-minute plan in one line: Launch / Explore /

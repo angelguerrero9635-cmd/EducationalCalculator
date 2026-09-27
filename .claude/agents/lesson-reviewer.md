@@ -50,6 +50,27 @@ working value.
 - At most a few web lookups for the whole section; otherwise use what you know and say so.
 - Write findings once, tersely, in the report format. No praise, no restating the module.
 
+## Edge-case review
+
+When the prompt says **edge-case review**, the evidence was made with `--edges`: fewer random
+samples, most of them at the boundaries, and the dump has `-- edge` walkthroughs for every
+opening value at its smallest and largest, then all of them at once. Spend the review there.
+For each module, read the `-- edge` blocks first, then check:
+
+- The smallest and largest allowed values give a true, sensible answer. Look for:
+  - zero groups, a whole of 0, a remainder equal to the divisor;
+  - a count of 1 read as plural ("1 groups");
+  - a rounding tie;
+  - the largest number past the picture's scale or the grade's number range.
+- A rejected edge is right to reject, and its reason reads well to a student. An edge that
+  should be allowed but is rejected is a finding.
+- The answer at the edge would be marked right on the released questions for the skill
+  (`questions.md`). The number sizes there set the range a page needs: a NAEP item with
+  5,003 − 872 means the page's range must reach it.
+- The harness's `[error]` and `[minor]` lines at edges (units, cleared values, edits in a row).
+
+Checks A, Q, D and F apply as usual. Skip E, K and G unless something at an edge breaks them.
+
 ## Checks
 
 For every module, cite the check letter.

@@ -9,7 +9,9 @@
  *
  * Env: MODULE_IDS (comma-separated ids or id prefixes; default all modules), SEED (default 1),
  * SAMPLES (random givens per module, default 100), SEQUENCES (edit sequences per module,
- * default 15; raise both for a deep run), SAMPLING_REPORT=1 (print a summary).
+ * default 15; raise both for a deep run), EDGE_BIAS (share of sampled values taken from the
+ * edges: min, max, one step inside each, 0, 1 and 2; default 0.3; a review run lowers SAMPLES and
+ * raises this to spend its samples on the boundaries), SAMPLING_REPORT=1 (print a summary).
  */
 import {
   checkValue,
@@ -67,6 +69,7 @@ const FILTER = (env.MODULE_IDS ?? '')
 const SEED = Number(env.SEED ?? 1);
 const N_RANDOM = Number(env.SAMPLES ?? 100);
 const N_SEQUENCES = Number(env.SEQUENCES ?? 15);
+const EDGE_BIAS = Number(env.EDGE_BIAS ?? 0.3);
 const SEQUENCE_LENGTH = 10;
 const N_PER_UNIT_CHOICE = 10;
 const REPORT = env.SAMPLING_REPORT === '1';
@@ -111,14 +114,22 @@ function shownRange(v: VariableDef, example: number | undefined): [number, numbe
 
 /** Whole-number domain (formula units), or undefined when not enumerable. */
 
-/** A random valid value (formula units), with the edges min, max, 0 and 1 over-sampled. */
+/**
+ * A random valid value (formula units), with the edges over-sampled (EDGE_BIAS): min, max, one
+ * step inside each, 0, 1 and 2, where the range allows them.
+ */
 function sampleValue(r: Rng, v: VariableDef, example: number | undefined): number {
   const f = factorOf(v);
-  if (v.allowed) return r.pick(v.allowed) * f;
+  if (v.allowed) {
+    const a = v.allowed;
+    const ends = [a[0]!, a[a.length - 1]!];
+    return (r.next() < EDGE_BIAS ? r.pick(ends) : r.pick(a)) * f;
+  }
   const [lo, hi] = shownRange(v, example);
-  const edges = [lo, hi, 0, 1].filter((x) => x >= lo && x <= hi);
+  const step = v.integer ? 1 : (v.step ?? 0.1);
+  const edges = [lo, hi, lo + step, hi - step, 0, 1, 2].filter((x) => x >= lo && x <= hi);
   let s: number;
-  if (r.next() < 0.3) s = r.pick(edges);
+  if (r.next() < EDGE_BIAS) s = r.pick(edges);
   else if (v.integer) s = r.int(Math.ceil(lo - 1e-9), Math.floor(hi + 1e-9));
   else {
     s = lo + r.next() * (hi - lo);

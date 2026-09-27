@@ -38,6 +38,66 @@ describe('solve', () => {
     expect(two.unknown).toEqual([]);
   });
 
+  it('keeps an input that fits when the values are in large units (miles in centimeters)', () => {
+    // A = x × y − u × z with every length a whole number of miles (160,934.4 cm each): typing
+    // A = 89 mi² after u = 1 mi must keep u (10 × 9 − 1 × 1 = 89), not clear it.
+    const mi = 160934.4;
+    const len = (id: string, lo: number, hi: number) => ({
+      id,
+      name: id,
+      symbol: id,
+      integer: true,
+      unitFactor: mi,
+      min: lo * mi,
+      max: hi * mi,
+    });
+    const cutOut: System = {
+      variables: [
+        len('x', 2, 10),
+        len('y', 2, 10),
+        len('u', 1, 9),
+        len('z', 1, 9),
+        len('p', 1, 9),
+        len('q', 1, 9),
+        {
+          id: 'A',
+          name: 'A',
+          symbol: 'A',
+          integer: true,
+          unitFactor: mi * mi,
+          min: mi * mi,
+          max: 99 * mi * mi,
+        },
+      ],
+      relations: [
+        {
+          id: 'x = u + p',
+          display: '',
+          vars: ['x', 'u', 'p'],
+          residual: (v) => v.x! - v.u! - v.p!,
+        },
+        {
+          id: 'y = z + q',
+          display: '',
+          vars: ['y', 'z', 'q'],
+          residual: (v) => v.y! - v.z! - v.q!,
+        },
+        {
+          id: 'A = x × y − u × z',
+          display: '',
+          vars: ['A', 'x', 'y', 'u', 'z'],
+          residual: (v) => v.A! - (v.x! * v.y! - v.u! * v.z!),
+        },
+      ],
+    };
+    const r = solve(cutOut, [
+      { id: 'u', value: mi },
+      { id: 'A', value: 89 * mi * mi },
+    ]);
+    expect(r.dropped).toEqual([]);
+    expect(r.rejected).toBeUndefined();
+  });
+
   it('solves for any variable, not just the "output"', () => {
     const r = solve(area, [
       { id: 'A', value: 12 },
