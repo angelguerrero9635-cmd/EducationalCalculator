@@ -35,10 +35,11 @@
     "title": "World map of the continents",
     "use": "Continents and oceans picture (world map)",
     "references": [
-      "https://commons.wikimedia.org/wiki/File:BlankMap-World.svg",
-      "https://commons.wikimedia.org/wiki/File:Continents.svg"
+      "https://commons.wikimedia.org/wiki/File:Continents_vide_couleurs.png",
+      "https://en.wikipedia.org/wiki/World_map",
+      "https://www.naturalearthdata.com/about/terms-of-use/"
     ],
-    "notes": "Miller-style cylindrical map, outlines computed from hand-listed approximate coastline points. North America orange (with Greenland), South America green, Europe purple, Africa yellow, Asia red, Australia and Oceania tan, Antarctica white; blue ocean. No labels."
+    "notes": "Seven continents in flat colors on a Robinson projection, no labels: North America orange (with Greenland), South America green, Europe purple, Africa yellow, Asia red, Oceania tan, Antarctica white. Coastlines are computed from Natural Earth 1:110m country outlines (public-domain map data, used as coordinates only) and simplified; Russia is split into Europe and Asia at 60°E (standing in for the Urals). Layout and colors-by-continent were checked against a Wikimedia Commons continents map, used only as a visual reference."
   },
   {
     "slug": "sun",
