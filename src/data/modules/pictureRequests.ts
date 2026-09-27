@@ -1294,10 +1294,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.weathering~layers-order',
     kind: 'icon',
     pages: ['s.4.weathering~layers-order'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3e-layers-order'],
+    uses: '"icon":"layers pushed up"',
     notes:
-      'Sand settles: the bottom layer forms → a cut-away view: one sand layer under water; Mud settles on top of the sand → a cut-away view: sand, then mud; Shells settle on the mud: a layer with fossils forms → a cut-away view: sand, mud and a shell layer; The land is pushed up → the same layers raised above the water line; A river cuts down through the layers → the raised layers with a river canyon cut through them',
+      "Sand settles: the bottom layer forms → a cut-away view: one sand layer under water; Mud settles on top of the sand → a cut-away view: sand, then mud; Shells settle on the mud: a layer with fossils forms → a cut-away view: sand, mud and a shell layer; The land is pushed up → the same layers raised above the water line; A river cuts down through the layers → the raised layers with a river canyon cut through them. Drawn: one cut-away, same frame and sea level in every stage. Stage label → icon: Sand settles: the bottom layer forms → 'sand layer under water'; Mud settles on top of the sand → 'mud on sand'; Shells settle on the mud: a layer with fossils forms → 'shell layer on mud'; The land is pushed up → 'layers pushed up' (the layers bow up above the sea, which stays at the sides; arrows up); A river cuts down through the layers → 'river cutting layers' (a canyon through the shells and mud into the sand; its floor stays above the sea). Set each stage's figure: { kind: 'icon', icon: … }.",
   },
   {
     id: 'D45',
@@ -1395,10 +1396,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.earth-spheres',
     kind: 'icon',
     pages: ['s.5.earth-spheres'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3e-earth-spheres'],
+    uses: '"icon":"soil clump"',
     notes:
-      "Mountain → a rocky mountain peak; Soil → a cut-away clump of brown soil; Sand → a sand dune; Ocean → ocean waves to the horizon; River → a river winding through land; Glacier → a glacier's ice tongue between mountains; Wind → existing icon 'wind sock'; Tree → a leafy tree",
+      "Mountain → a rocky mountain peak; Soil → a cut-away clump of brown soil; Sand → a sand dune; Ocean → ocean waves to the horizon; River → a river winding through land; Glacier → a glacier's ice tongue between mountains; Wind → existing icon 'wind sock'; Tree → a leafy tree. Drawn: Card label → icon: Mountain → 'mountain'; Soil → 'soil clump'; Sand → 'sand dune'; Ocean → 'ocean'; River → 'river'; Glacier → 'glacier'; Wind → 'wind sock' (existing); Tree → 'leafy tree'. Nitrogen and oxygen in the air stays without a picture (air is invisible); Fish and Bird keep their icons.",
   },
   {
     id: 'D55',
