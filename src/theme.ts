@@ -206,6 +206,11 @@ const light = {
   planetSaturn: '#E3CD92',
   planetUranus: '#9ED9DE',
   planetNeptune: '#4A74D9',
+  /** Weather cards: a rain or snow cloud, a storm cloud, fog, a sandbag's burlap. */
+  rainCloud: '#D3D9E2',
+  stormCloud: '#6B7486',
+  mist: '#C3CAD4',
+  sandbag: '#D8BF8F',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -354,6 +359,10 @@ const dark: Palette = {
   planetSaturn: '#BBA56E',
   planetUranus: '#6FB2B8',
   planetNeptune: '#3A5FB8',
+  rainCloud: '#687182',
+  stormCloud: '#434A58',
+  mist: '#5E6676',
+  sandbag: '#9B8558',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',
