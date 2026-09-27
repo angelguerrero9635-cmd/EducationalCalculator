@@ -82,7 +82,10 @@ export function MotionGraph({ spec, calc }: { spec: MotionGraphSpec; calc: Calcu
   const posUnit = posId ? rep.unit(posId) : undefined;
   const every = t <= 12 ? 1 : Math.ceil(t / 12);
   const ticks = Array.from({ length: Math.floor(t / every + 1e-9) + 1 }, (_, i) => i * every);
-  const posMax = niceCeil(Math.max(1e-9, ...ticks.map(posAt), posAt(t)) / fP);
+  // The strip's end: a round number just past the farthest position (in the shown unit).
+  const farthest = Math.max(1e-9, ...ticks.map(posAt), posAt(t)) / fP;
+  const posStep = niceCeil(farthest / 5);
+  const posMax = Math.ceil(farthest / posStep - 1e-9) * posStep;
 
   const vars = [spec.time, slopeId, ...(typeof spec.start === 'string' ? [spec.start] : [])];
   const others = (id: string) => rep.pin(vars.filter((v) => v !== id));
@@ -100,7 +103,7 @@ export function MotionGraph({ spec, calc }: { spec: MotionGraphSpec; calc: Calcu
           const midY = f.sy((y0 + y1) / 2);
           const sl = f.sx(0);
           const sr = f.sx(ext.value.t);
-          const px = (p: number) => sl + (Math.max(0, p / fP) / posMax) * (sr - sl);
+          const px = (p: number) => sl + (Math.max(0, p) / posMax) * (sr - sl);
           const up = rise >= 0;
           const axisY = f.sy(0);
           const chipW = (text: string) => text.length * chart.small * 0.58 + 6;
@@ -168,7 +171,7 @@ export function MotionGraph({ spec, calc }: { spec: MotionGraphSpec; calc: Calcu
                     {ticks.map((k) => (
                       <Circle
                         key={k}
-                        cx={px(posAt(k))}
+                        cx={px(posAt(k) / fP)}
                         cy={30}
                         r={4.5}
                         fill={k === 0 ? c.card : c.chartHighlight}
