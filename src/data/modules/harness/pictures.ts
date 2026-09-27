@@ -272,7 +272,8 @@ export function repIssues(
       break;
     }
     case 'skipCount': {
-      if (typeof rep.count === 'string') count(rep.count, 'skips', 30);
+      // With `group`, jumps to 999 are drawn in tens and hundreds (SkipCount.tsx).
+      if (typeof rep.count === 'string') count(rep.count, 'skips', rep.group ? 999 : 30);
       const s = val(rep.step);
       // Decimal jumps are drawn to the hundredth (SkipCount.tsx).
       if (s !== undefined && s < 0.01) out.push(`skip size ${s} < 0.01 (drawn as 0.01)`);
@@ -773,8 +774,12 @@ export function repIssues(
         const d = val(f!.den);
         count(f!.num, 'top');
         if (d !== undefined && d < 1) out.push(`bottom ${f!.den} = ${d}`);
-        if (n !== undefined && d !== undefined && n > d)
-          out.push(`${n}/${d} is more than one whole`);
+        if (n === undefined || d === undefined || d < 1) continue;
+        // With `wholes`, a fraction past one is a block of unit squares (FractionArea.tsx).
+        if (!rep.wholes) {
+          if (n > d) out.push(`${n}/${d} is more than one whole`);
+        } else if (f !== rep.product && Math.ceil(n / d) > rep.wholes)
+          out.push(`${n}/${d} needs ${Math.ceil(n / d)} unit squares, past ${rep.wholes}`);
       }
       break;
     }
@@ -818,11 +823,15 @@ export function repIssues(
     case 'placeValueChart': {
       const x = val(rep.value);
       if (x !== undefined && x < 0) out.push(`place-value chart of a negative number ${x}`);
-      // Seven whole places (millions) are drawn (PlaceValueChart.tsx).
+      // Seven whole places (millions) are drawn, twelve in periods (PlaceValueChart.tsx).
+      const top = rep.periods ? 1e12 : 1e7;
       for (const id of [rep.value, rep.from, rep.compare]) {
         const n = id ? val(id) : undefined;
-        if (n !== undefined && n >= 1e7) out.push(`place-value chart of ${n}: past the millions`);
+        if (n !== undefined && n >= top) out.push(`place-value chart of ${n}: past ${top} places`);
+        if (rep.periods && n !== undefined && Math.abs(n - Math.round(n)) > 1e-9)
+          out.push(`periods chart of ${n}: whole numbers only`);
       }
+      if (rep.periods && rep.decimals) out.push('periods chart with decimal places');
       const lit = rep.highlight ? val(rep.highlight) : undefined;
       if (lit !== undefined && Math.abs(Math.log10(lit) - Math.round(Math.log10(lit))) > 1e-9)
         out.push(`highlighted place ${lit} is not a place value`);

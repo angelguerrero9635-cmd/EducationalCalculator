@@ -160,6 +160,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `array`            | `sides`                                  | the rows and columns labeled, “?” until solved                                |
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
+| `placeValueChart`  | `periods`                                | whole numbers to hundred billions, columns grouped ones … billions            |
 | `tape`             | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
 | `grid100`          | `second`, `wholes`, `stack`, `past100`   | a grid to compare; ones grids (`stack` past 3); past 100%; `exact` tenths     |
 | `rounding`         | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
@@ -176,12 +177,14 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
 | `thermometers`     | `cups`                                   | each thermometer in a dark or light cup of water in the sun                   |
 | `fractionBars`     | `wholes`; a fraction past 1              | as many whole bars as it needs (7/4: a whole bar and 3/4 of the next), to 6   |
+| `fractionArea`     | `wholes`                                 | a fraction past 1 (10/3): a block of unit squares, to `wholes` a side         |
 | `fractionLine`     | `from` (counted in parts)                | mixed-number jumps (18 1/4 − 2 3/4): the wholes, then the parts left          |
 | `fractionLine`     | `startWhole` (a number or value id)      | a line from any whole, start + `wholes` (1 to 3 in tenths, 2.6 marked)        |
 | `partition`        | `shape: 'set'`, `object`                 | a set of umbrellas or counters, some shaded (3/7 of the set)                  |
 | `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100; `jumps: 'ticks'` or `count`: a jump per tick |
 | `tape`, `beaker`   | `mixed`                                  | shares and amounts as exact mixed numbers (33 1/3, 2 3/8 L)                   |
 | `skipCount`        | (no `count`)                             | a quotient past whole jumps: the last part of a jump (33 1/3 jumps)           |
+| `skipCount`        | `group`                                  | past 30 jumps (to 999): an arc per ten jumps, per hundred past 300            |
 | `coins`            | bills (`cents` 100, 500, 1000) and coins | the bills beside the coins, one total in dollars and cents, the sum under it  |
 | `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
 | `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |

@@ -312,6 +312,11 @@ export type Representation =
        * rows run to `total`, the first landing they share (the least common multiple), circled.
        */
       second?: { step: string };
+      /**
+       * Past 30 jumps (to 999): one arc per ten jumps, per hundred past 300, then the single
+       * jumps left; each run named at the top (“10 × 10 jumps: +20”).
+       */
+      group?: boolean;
     }
   /**
    * Number line with one hop per step of a word problem: start at `start`, hop forward (sign 1)
@@ -952,6 +957,11 @@ export type Representation =
       first: { num: string; den: string };
       second: { num: string; den: string };
       product?: { num: string; den: string };
+      /**
+       * Fractions past one whole (10/3): a block of unit squares, up to `wholes` a side, each cut
+       * into den × den pieces, whole-square borders heavier; the product counted in pieces.
+       */
+      wholes?: number;
     }
   /** Unit cubes filling a box `length` × `width` × `height`, drawn layer by layer. */
   | {
@@ -989,6 +999,12 @@ export type Representation =
       highlight?: string;
       from?: string;
       compare?: string;
+      /**
+       * Whole numbers past the millions (to hundred billions): columns grouped in periods (ones,
+       * thousands, millions, billions) under one header each, compact 100 · 10 · 1 headers.
+       * Numbers to the millions draw as without it. Only with `decimals` 0.
+       */
+      periods?: boolean;
     }
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
   | {

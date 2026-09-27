@@ -311,19 +311,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Fraction area past one whole',
     kind: 'fractionArea',
     pages: ['m.5.multiply-fractions'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.fraction-area-wholes', 'g.fraction-area-mixed', 'g.fraction-area-edge'],
+    uses: '"wholes":6',
     notes:
-      '5/7 × 10/3 as a 2-by-4 block of unit squares; 5/2 × 1 1/3. Then the page drops "each fraction at most 1".',
+      'Pass `wholes: 6` on the fractionArea (the most unit squares a side: 12/2 = 6). The block is ceil(first) squares across by ceil(second) down, so 5/7 × 10/3 is 1 across by 4 down (not 2 by 4). The page swaps atMostOne for "at most 6" constraints (see g.fraction-area-wholes; they keep a, b and c, d linked) and drops "each fraction at most 1" from the assumptions. Numerators stay whole: 1 1/3 is typed as 4/3; 5/7 needs 7 in the allowed denominators. The caption gives the pieces over pieces-in-a-whole and its mixed number (50/21 = 2 8/21).',
   },
   {
     id: 'R27',
     what: 'Place-value chart to billions',
     kind: 'placeValueChart',
     pages: ['m.5.powers-of-ten'],
-    status: 'requested',
-    gallery: [],
-    notes: '10⁹ = 1,000,000,000: exponents to 9.',
+    status: 'drawn',
+    gallery: ['g.place-value-periods', 'g.place-value-billions', 'g.place-value-edge'],
+    uses: '"periods":true',
+    notes:
+      'Pass `periods: true` on the placeValueChart (decimals 0). Numbers to the millions draw as today; past them, the columns are grouped in periods (ones, thousands, millions, billions) to 999,999,999,999. The page raises the exponent to 9, the power of 10 to 1,000,000,000 (drop its `allowed` list: the sampling test lists every number between its ends and runs out of memory at 10⁹; 10^k = e keeps it a power of 10, as in g.place-value-billions), the product to 999,000,000,000, and updates "the chart ends at millions". The product input box cuts off 999,000,000,000 at 390 px (not the picture).',
   },
   {
     id: 'R28',
@@ -333,9 +336,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.5.decimal-operations~divide-by-decimal',
       'm.6.multi-digit-decimals~divide-by-decimal',
     ],
-    status: 'requested',
-    gallery: [],
-    notes: '21 ÷ 0.2 = 105 jumps of 0.2: quotients to 999.',
+    status: 'drawn',
+    gallery: ['g.jumps-grouped-page', 'g.jumps-grouped-tens', 'g.jumps-grouped-hundreds'],
+    uses: '"group":true',
+    notes:
+      'Pass `group: true` on the skipCount. To 30 jumps it draws as today; past 30 an arc per ten jumps, past 300 per hundred, then the single jumps left, each run named ("10 × 10 jumps: +20") and a caption with the sum (100 × 0.2 + 5 × 0.2 = 21). The pages raise the quotient to 999 and the dividend to fit (999 × the largest divisor), and update "whole-number answers to 30".',
   },
   {
     id: 'R29',
