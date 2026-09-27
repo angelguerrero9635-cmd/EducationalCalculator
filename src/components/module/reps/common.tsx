@@ -174,6 +174,29 @@ export function ChartText(props: SvgTextProps) {
 }
 
 /** Joins a short phrase with non-breaking spaces, so a caption never wraps inside "C = 8 corners". */
+/**
+ * Keeps a label inside a canvas `w` wide: a label that would run past an edge is flipped to
+ * the inside of its point (`gap` px away) or, when centered, slid in from the edge. Widths are
+ * estimated from the font size.
+ */
+export function fitLabel(
+  x: number,
+  text: string,
+  fontSize: number,
+  w: number,
+  anchor: 'start' | 'middle' | 'end' = 'middle',
+  gap = 0,
+): { x: number; textAnchor: 'start' | 'middle' | 'end' } {
+  const tw = text.length * fontSize * 0.58;
+  if (anchor === 'middle') {
+    const half = tw / 2 + 2;
+    return { x: Math.min(w - half, Math.max(half, x)), textAnchor: 'middle' };
+  }
+  if (anchor === 'end' && x - tw < 2) return { x: x + 2 * gap, textAnchor: 'start' };
+  if (anchor === 'start' && x + tw > w - 2) return { x: x - 2 * gap, textAnchor: 'end' };
+  return { x, textAnchor: anchor };
+}
+
 export const nowrap = (s: string) => s.replace(/ /g, '\u00a0');
 
 /** Rounds to the variable's drag step and keeps it within [min, max]. */
@@ -275,6 +298,15 @@ export function useRep(calc: Calculator) {
         limits.max === undefined ? Infinity : limits.max / f,
       );
       return shown * f;
+    },
+    /**
+     * The `set` option for a drag: past what the other values allow, the handle stops at the
+     * last value that fits instead of the value being refused (steps of the shown unit).
+     */
+    slide: (id: string) => {
+      const v = byId.get(id)!;
+      if (v.allowed) return undefined;
+      return { slide: { id, step: (v.integer ? 1 : (v.step ?? 0.1)) * units.factor(id) } };
     },
   };
 }

@@ -59,19 +59,22 @@ export function GradCylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
               }}
               onEnd={fit.release}
               onMove={(_, dy) =>
-                calc.set({
-                  ...rep.pin([other]),
-                  // The level after stays above the level before (the object takes up room).
-                  [id]: rep.snapTo(
-                    id,
-                    key === 'after'
-                      ? Math.max(start.current.before + 1, start.current.after - dy / perMl)
-                      : Math.min(
-                          start.current.after - 1,
-                          Math.max(0, start.current.before - dy / perMl),
-                        ),
-                  ),
-                })
+                calc.set(
+                  {
+                    ...rep.pin([other]),
+                    // The level after stays above the level before (the object takes up room).
+                    [id]: rep.snapTo(
+                      id,
+                      key === 'after'
+                        ? Math.max(start.current.before + 1, start.current.after - dy / perMl)
+                        : Math.min(
+                            start.current.after - 1,
+                            Math.max(0, start.current.before - dy / perMl),
+                          ),
+                    ),
+                  },
+                  rep.slide(id),
+                )
               }
             />
           );

@@ -139,7 +139,11 @@ export function useCalculator(module: ModuleDef): Calculator {
             next.result.rejected?.reason ?? `Doesn’t fit with ${names.join(' and ')} as it is`;
           next = {
             ...s.calc,
-            errors: { ...s.calc.errors, ...Object.fromEntries(ids.map((id) => [id, reason])) },
+            // A drag marks only the value it moves: the ones it held still keep their numbers.
+            errors: {
+              ...s.calc.errors,
+              ...Object.fromEntries((slide ? [slide.id] : ids).map((id) => [id, reason])),
+            },
           };
         }
         return { ...s, calc: next };

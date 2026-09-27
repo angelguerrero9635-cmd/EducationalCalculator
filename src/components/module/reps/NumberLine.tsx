@@ -139,10 +139,13 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
               label={rep.variable(spec.start).name}
               onStart={() => (start.current = a)}
               onMove={(dx) =>
-                calc.set({
-                  ...rep.pin([spec.jump]),
-                  [spec.start]: rep.snapTo(spec.start, start.current + dx / unit),
-                })
+                calc.set(
+                  {
+                    ...rep.pin([spec.jump]),
+                    [spec.start]: rep.snapTo(spec.start, start.current + dx / unit),
+                  },
+                  rep.slide(spec.start),
+                )
               }
             />
             <DragHandle
@@ -152,10 +155,13 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
               label={rep.variable(spec.end).name}
               onStart={() => (start.current = end)}
               onMove={(dx) =>
-                calc.set({
-                  ...rep.pin([spec.start]),
-                  [spec.end]: rep.snapTo(spec.end, start.current + dx / unit),
-                })
+                calc.set(
+                  {
+                    ...rep.pin([spec.start]),
+                    [spec.end]: rep.snapTo(spec.end, start.current + dx / unit),
+                  },
+                  rep.slide(spec.end),
+                )
               }
             />
           </>

@@ -140,10 +140,13 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     const y = start.current.y + dy - cy;
                     let minutes = ((Math.atan2(x, -y) / (2 * Math.PI)) * 60 + 60) % 60;
                     minutes = Math.round(minutes / spec.minuteStep) * spec.minuteStep;
-                    calc.set({
-                      ...rep.pin([spec.hour]),
-                      [spec.minute]: rep.snapTo(spec.minute, minutes % 60),
-                    });
+                    calc.set(
+                      {
+                        ...rep.pin([spec.hour]),
+                        [spec.minute]: rep.snapTo(spec.minute, minutes % 60),
+                      },
+                      rep.slide(spec.minute),
+                    );
                   }}
                 />
               </>

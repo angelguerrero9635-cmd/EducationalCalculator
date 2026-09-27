@@ -137,13 +137,17 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
                   label={rep.variable(spec.top).name}
                   onStart={() => (start.current = top)}
                   onMove={(dx) =>
-                    calc.set({
-                      ...rep.pin([spec.per]),
-                      [spec.top]: rep.snapTo(
-                        spec.top,
-                        Math.max(0, start.current + (dx / unit) * tickStep) * rep.factor(spec.top),
-                      ),
-                    })
+                    calc.set(
+                      {
+                        ...rep.pin([spec.per]),
+                        [spec.top]: rep.snapTo(
+                          spec.top,
+                          Math.max(0, start.current + (dx / unit) * tickStep) *
+                            rep.factor(spec.top),
+                        ),
+                      },
+                      rep.slide(spec.top),
+                    )
                   }
                 />
               ) : null}

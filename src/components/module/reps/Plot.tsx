@@ -307,10 +307,13 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }}
                   onEnd={axes.release}
                   onMove={(dx) =>
-                    calc.set({
-                      ...pinned,
-                      [spec.x.var]: rep.snapTo(spec.x.var, (start.current + dx / xScale) * fx),
-                    })
+                    calc.set(
+                      {
+                        ...pinned,
+                        [spec.x.var]: rep.snapTo(spec.x.var, (start.current + dx / xScale) * fx),
+                      },
+                      rep.slide(spec.x.var),
+                    )
                   }
                 />
               ) : null}

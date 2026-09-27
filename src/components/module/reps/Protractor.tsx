@@ -163,9 +163,12 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     const [sx, sy] = toXY(s.a, s.r);
                     const deg = (-Math.atan2(sy + dy - s.cy, sx + dx - s.cx) * 180) / Math.PI;
                     const next = Math.min(180, Math.max(0, Math.round(deg)));
-                    calc.set({
-                      [spec.angle]: rep.snapTo(spec.angle, next * rep.factor(spec.angle)),
-                    });
+                    calc.set(
+                      {
+                        [spec.angle]: rep.snapTo(spec.angle, next * rep.factor(spec.angle)),
+                      },
+                      rep.slide(spec.angle),
+                    );
                   }}
                 />
               ) : null}

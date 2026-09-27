@@ -322,17 +322,20 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }}
                   onEnd={fit.release}
                   onMove={(dx) =>
-                    calc.set({
-                      ...rep.pin([
-                        spec.denominator,
-                        ...(spec.parts ?? []).filter((id) => id !== dragVar),
-                      ]),
-                      [dragVar]: rep.snapTo(
-                        dragVar,
-                        Math.min(W * b, Math.max(0, start.current + dx / scale.current)) -
-                          dragOthers,
-                      ),
-                    })
+                    calc.set(
+                      {
+                        ...rep.pin([
+                          spec.denominator,
+                          ...(spec.parts ?? []).filter((id) => id !== dragVar),
+                        ]),
+                        [dragVar]: rep.snapTo(
+                          dragVar,
+                          Math.min(W * b, Math.max(0, start.current + dx / scale.current)) -
+                            dragOthers,
+                        ),
+                      },
+                      rep.slide(dragVar),
+                    )
                   }
                 />
               ) : null}

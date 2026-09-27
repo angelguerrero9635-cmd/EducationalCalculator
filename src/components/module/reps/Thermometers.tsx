@@ -193,13 +193,16 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     label={rep.variable(id).name}
                     onStart={() => (start.current = from)}
                     onMove={(_, dy) =>
-                      calc.set({
-                        ...rep.pin(spec.items.filter((x) => x !== id)),
-                        [id]: rep.snapTo(
-                          id,
-                          (start.current - (dy / (bottom - top)) * (hi - lo)) * rep.factor(id),
-                        ),
-                      })
+                      calc.set(
+                        {
+                          ...rep.pin(spec.items.filter((x) => x !== id)),
+                          [id]: rep.snapTo(
+                            id,
+                            (start.current - (dy / (bottom - top)) * (hi - lo)) * rep.factor(id),
+                          ),
+                        },
+                        rep.slide(id),
+                      )
                     }
                   />
                 );

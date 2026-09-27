@@ -15,7 +15,8 @@ type Spec = Extract<Representation, { kind: 'integerLine' }>;
 /** A tick spacing that gives at most `most` ticks over `span`: 1, 2, 5, 10, 20, 25, 50, … */
 export function tickStep(span: number, most = 20): number {
   for (const base of [1, 10, 100, 1000]) {
-    for (const k of [1, 2, 2.5, 5]) {
+    // No 2.5 below 10: a line counts by 1, 2 or 5 there, never by 2.5.
+    for (const k of base === 1 ? [1, 2, 5] : [1, 2, 2.5, 5]) {
       const s = k * base;
       if (span / s <= most) return s;
     }
@@ -49,6 +50,9 @@ export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const [lo, hi] = extent.value;
   const step = tickStep(hi - lo);
   const vertical = !!spec.vertical;
+  // A cleared number is drawn faded, with no handle and no jump to or from it.
+  const aKnown = rep.known(spec.value);
+  const bKnown = !spec.second || rep.known(spec.second);
 
   return (
     <View>
@@ -118,7 +122,7 @@ export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     );
                   })}
                 {/* The opposite: the same distance on the other side, joined through 0. */}
-                {spec.opposite && a !== 0 ? (
+                {spec.opposite && aKnown && a !== 0 ? (
                   <>
                     <Path
                       d={
@@ -151,7 +155,7 @@ export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </>
                 ) : null}
                 {/* Absolute value: the distance from 0, bracketed on the far side. */}
-                {spec.absolute && a !== 0 ? (
+                {spec.absolute && aKnown && a !== 0 ? (
                   <>
                     <Line
                       x1={vertical ? lineAt - 34 : zero.x}
@@ -174,7 +178,7 @@ export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </>
                 ) : null}
                 {/* A second point and the jump between the two. */}
-                {q ? (
+                {q && aKnown && bKnown ? (
                   <>
                     <Path
                       d={
@@ -198,33 +202,48 @@ export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                   </>
                 ) : null}
-                <Circle cx={p.x} cy={p.y} r={6} fill={c.chartHighlight} />
-                {q ? <Circle cx={q.x} cy={q.y} r={6} fill={c.chartInk} /> : null}
+                <Circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={6}
+                  fill={c.chartHighlight}
+                  opacity={aKnown ? 1 : 0.4}
+                />
+                {q ? (
+                  <Circle cx={q.x} cy={q.y} r={6} fill={c.chartInk} opacity={bKnown ? 1 : 0.4} />
+                ) : null}
               </Svg>
               {[
                 { id: spec.value, at: p },
                 ...(spec.second && q ? [{ id: spec.second, at: q }] : []),
-              ].map(({ id, at }) => (
-                <DragHandle
-                  key={id}
-                  testID={`drag-${id}`}
-                  x={at.x}
-                  y={at.y}
-                  label={rep.variable(id).name}
-                  onStart={() => {
-                    start.current = rep.shown(id);
-                    extent.freeze();
-                  }}
-                  onEnd={extent.release}
-                  onMove={(dx, dy) => {
-                    const moved = vertical ? -dy / perUnit : dx / perUnit;
-                    calc.set({
-                      ...rep.pin(spec.second ? [id === spec.value ? spec.second : spec.value] : []),
-                      [id]: rep.snapTo(id, (start.current + moved) * rep.factor(id)),
-                    });
-                  }}
-                />
-              ))}
+              ]
+                .filter(({ id }) => rep.known(id))
+                .map(({ id, at }) => (
+                  <DragHandle
+                    key={id}
+                    testID={`drag-${id}`}
+                    x={at.x}
+                    y={at.y}
+                    label={rep.variable(id).name}
+                    onStart={() => {
+                      start.current = rep.shown(id);
+                      extent.freeze();
+                    }}
+                    onEnd={extent.release}
+                    onMove={(dx, dy) => {
+                      const moved = vertical ? -dy / perUnit : dx / perUnit;
+                      calc.set(
+                        {
+                          ...rep.pin(
+                            spec.second ? [id === spec.value ? spec.second : spec.value] : [],
+                          ),
+                          [id]: rep.snapTo(id, (start.current + moved) * rep.factor(id)),
+                        },
+                        rep.slide(id),
+                      );
+                    }}
+                  />
+                ))}
             </>
           );
         }}
@@ -232,11 +251,13 @@ export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Caption>
         {!rep.known(spec.value)
           ? 'Type a number to place it on the line.'
-          : b !== undefined && spec.second
-            ? `From ${num(a)} to ${num(b)}: ${num(Math.abs(b - a))} ${b >= a ? (vertical ? 'up' : 'to the right') : vertical ? 'down' : 'to the left'}.`
-            : a === 0
-              ? '0 is its own opposite. It is 0 from 0.'
-              : `${formatNumber(a)} is ${formatNumber(Math.abs(a))} from 0${spec.opposite ? `. Its opposite is ${formatNumber(-a)}` : ''}.`}
+          : spec.second && !bKnown
+            ? `Type the ${rep.variable(spec.second).name.toLowerCase()} to see the jump.`
+            : b !== undefined && spec.second
+              ? `From ${num(a)} to ${num(b)}: ${num(Math.abs(b - a))} ${b >= a ? (vertical ? 'up' : 'to the right') : vertical ? 'down' : 'to the left'}.`
+              : a === 0
+                ? '0 is its own opposite. It is 0 from 0.'
+                : `${formatNumber(a)} is ${formatNumber(Math.abs(a))} from 0${spec.opposite ? `. Its opposite is ${formatNumber(-a)}` : ''}.`}
       </Caption>
       <Steppers
         calc={calc}

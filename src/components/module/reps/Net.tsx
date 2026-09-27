@@ -13,7 +13,17 @@ import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'net' }>;
 
-type Face = { x: number; y: number; w: number; h: number; name: string; area: number };
+/** A face as drawn (x, y, w, h) and its true edges (tw × th = area). */
+type Face = {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  tw: number;
+  th: number;
+  name: string;
+  area: number;
+};
 
 /**
  * A box, cube or square pyramid unfolded flat, each face labelled with its area; "Fold" draws
@@ -24,10 +34,17 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const [folded, setFolded] = useState(false);
-  const L = Math.max(0.1, rep.shown(spec.length));
-  const W = spec.width ? Math.max(0.1, rep.shown(spec.width)) : L;
-  const H = spec.height ? Math.max(0.1, rep.shown(spec.height)) : L;
-  const slant = spec.slant ? Math.max(0.1, rep.shown(spec.slant)) : L;
+  // True edges (for the numbers) and drawn edges: no edge is drawn shorter than a sixth of
+  // the longest, so a 100 × 0.1 × 0.1 box still shows its faces (the net is then not to
+  // scale, and the caption says so).
+  const tL = Math.max(0.1, rep.shown(spec.length));
+  const tW = spec.width ? Math.max(0.1, rep.shown(spec.width)) : tL;
+  const tH = spec.height ? Math.max(0.1, rep.shown(spec.height)) : tL;
+  const tS = spec.slant ? Math.max(0.1, rep.shown(spec.slant)) : tL;
+  const big = Math.max(tL, tW, tH, spec.slant ? tS : 0);
+  const dr = (x: number) => Math.max(x, big / 6);
+  const [L, W, H, slant] = [dr(tL), dr(tW), dr(tH), dr(tS)];
+  const notToScale = [tL, tW, tH, ...(spec.slant ? [tS] : [])].some((x) => dr(x) !== x);
   const known = rep.known(spec.length);
   const n = (x: number) => formatNumber(Number(x.toFixed(3)));
   const pyramid = spec.solid === 'squarePyramid';
@@ -37,18 +54,18 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // Faces in net units: a box as a cross (back, top, front, bottom down the middle; the two
   // ends beside the top); a pyramid as its square base with a triangle on each side.
   const faces: Face[] = pyramid
-    ? [{ x: slant, y: slant, w: L, h: L, name: 'base', area: L * L }]
+    ? [{ x: slant, y: slant, w: L, h: L, tw: tL, th: tL, name: 'base', area: tL * tL }]
     : [
-        { x: H, y: 0, w: L, h: H, name: 'back', area: L * H },
-        { x: 0, y: H, w: H, h: W, name: 'end', area: W * H },
-        { x: H, y: H, w: L, h: W, name: 'top', area: L * W },
-        { x: H + L, y: H, w: H, h: W, name: 'end', area: W * H },
-        { x: H, y: H + W, w: L, h: H, name: 'front', area: L * H },
-        { x: H, y: 2 * H + W, w: L, h: W, name: 'bottom', area: L * W },
+        { x: H, y: 0, w: L, h: H, tw: tL, th: tH, name: 'back', area: tL * tH },
+        { x: 0, y: H, w: H, h: W, tw: tH, th: tW, name: 'end', area: tW * tH },
+        { x: H, y: H, w: L, h: W, tw: tL, th: tW, name: 'top', area: tL * tW },
+        { x: H + L, y: H, w: H, h: W, tw: tH, th: tW, name: 'end', area: tW * tH },
+        { x: H, y: H + W, w: L, h: H, tw: tL, th: tH, name: 'front', area: tL * tH },
+        { x: H, y: 2 * H + W, w: L, h: W, tw: tL, th: tW, name: 'bottom', area: tL * tW },
       ];
   const netW = pyramid ? L + 2 * slant : 2 * H + L;
   const netH = pyramid ? L + 2 * slant : 2 * H + 2 * W;
-  const triangle = 0.5 * L * slant;
+  const triangle = 0.5 * tL * tS;
   const total = pyramid ? L * L + 4 * triangle : faces.reduce((s, f) => s + f.area, 0);
 
   return (
@@ -150,8 +167,8 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       ? label(
                           f,
                           // "5 × 3 = 15" where it fits: the face's two edges times each other.
-                          f.w * s > 22 + 7 * `${n(f.w)} × ${n(f.h)} = ${n(f.area)}`.length
-                            ? `${n(f.w)} × ${n(f.h)} = ${n(f.area)}`
+                          f.w * s > 22 + 7 * `${n(f.tw)} × ${n(f.th)} = ${n(f.area)}`.length
+                            ? `${n(f.tw)} × ${n(f.th)} = ${n(f.area)}`
                             : n(f.area),
                         )
                       : null}
@@ -196,7 +213,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontSize={chart.tiny}
                       fill={c.chartInk}
                     >
-                      {`${n(slant)}${unit}`}
+                      {`${n(tS)}${unit}`}
                     </ChartText>
                     <ChartText
                       x={X(slant) + 4}
@@ -205,7 +222,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontWeight="700"
                       fill={c.chartInk}
                     >
-                      {`side ${n(L)}${unit}`}
+                      {`side ${n(tL)}${unit}`}
                     </ChartText>
                   </G>
                 ) : (
@@ -220,7 +237,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fill={c.chartInk}
                       textAnchor="middle"
                     >
-                      {`length ${n(L)}${unit}`}
+                      {`length ${n(tL)}${unit}`}
                     </ChartText>
                     <ChartText
                       x={X(H) - 4}
@@ -230,7 +247,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fill={c.chartInk}
                       textAnchor="end"
                     >
-                      {`height ${n(H)}${unit}`}
+                      {`height ${n(tH)}${unit}`}
                     </ChartText>
                     <ChartText
                       x={X(0)}
@@ -239,7 +256,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontWeight="700"
                       fill={c.chartInk}
                     >
-                      {`width ${n(W)}${unit}`}
+                      {`width ${n(tW)}${unit}`}
                     </ChartText>
                   </G>
                 )}
@@ -260,7 +277,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </View>
       <Caption>
         {known
-          ? `${pyramid ? 'Base and four triangles' : 'Six faces'} add to ${n(total)}${spec.total && rep.unit(spec.total) ? ` ${rep.unit(spec.total)}` : ''}.`
+          ? `${pyramid ? 'Base and four triangles' : 'Six faces'} add to ${n(total)}${spec.total && rep.unit(spec.total) ? ` ${rep.unit(spec.total)}` : ''}.${notToScale ? ' Not to scale.' : ''}`
           : 'Type the edge lengths.'}
       </Caption>
       <Steppers

@@ -9,7 +9,16 @@ import { formatNumber } from '@/engine/format';
 import { chart, font, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import {
+  Canvas,
+  Caption,
+  ChartText,
+  DragHandle,
+  fitLabel,
+  niceCeil,
+  useFrozen,
+  useRep,
+} from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'coordinatePlane' }>;
@@ -28,8 +37,8 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
     ...(spec.second ? [{ x: spec.second.x, y: spec.second.y, testID: 'drag-second' }] : []),
   ].map((p) => ({
     ...p,
-    px: rep.shown(p.x),
-    py: rep.shown(p.y),
+    px: rep.known(p.x) ? rep.shown(p.x) : 0,
+    py: rep.known(p.y) ? rep.shown(p.y) : 0,
     known: rep.known(p.x) && rep.known(p.y),
   }));
   // The plane grows (to a round size) to keep every point in view; held while dragging.
@@ -247,11 +256,17 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       <G key={`rc${i}`}>
                         <Circle cx={sx(cx)} cy={sy(cy)} r={4} fill={c.chartHighlight} />
                         <ChartText
-                          x={sx(cx) + (cx === rect.l ? -6 : 6)}
+                          {...fitLabel(
+                            sx(cx) + (cx === rect.l ? -6 : 6),
+                            `(${formatNumber(cx)}, ${formatNumber(cy)})`,
+                            chart.small,
+                            w,
+                            cx === rect.l ? 'end' : 'start',
+                            6,
+                          )}
                           y={sy(cy) + (cy === rect.b ? 14 : -6)}
                           fontSize={chart.small}
                           fontWeight="700"
-                          textAnchor={cx === rect.l ? 'end' : 'start'}
                         >
                           {`(${formatNumber(cx)}, ${formatNumber(cy)})`}
                         </ChartText>
@@ -269,11 +284,17 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       strokeWidth={chart.stroke}
                     />
                     <ChartText
-                      x={sx(ix) + (ix < 0 ? -9 : 9)}
+                      {...fitLabel(
+                        sx(ix) + (ix < 0 ? -9 : 9),
+                        `(${formatNumber(ix)}, ${formatNumber(iy)})`,
+                        chart.small,
+                        w,
+                        ix < 0 ? 'end' : 'start',
+                        9,
+                      )}
                       y={sy(iy) + (iy < 0 ? 18 : -8)}
                       fontSize={chart.small}
                       fill={c.chartInk}
-                      textAnchor={ix < 0 ? 'end' : 'start'}
                     >
                       {`(${formatNumber(ix)}, ${formatNumber(iy)})`}
                     </ChartText>
@@ -290,14 +311,21 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                         stroke={c.chartHighlight}
                         strokeWidth={chart.strokeHeavy}
                       />
-                      {spec.distance && rep.known(spec.distance) ? (
+                      {/* No length label on a segment of length 0 (the caption says it). */}
+                      {spec.distance && rep.known(spec.distance) && (dx !== 0 || dy !== 0) ? (
                         <ChartText
-                          x={sx(clear(p.px, q.px)) + (dx === 0 ? 8 : 0)}
+                          {...fitLabel(
+                            sx(clear(p.px, q.px)) + (dx === 0 ? 8 : 0),
+                            `${rep.value(spec.distance, false)} units`,
+                            chart.label,
+                            w,
+                            dx === 0 ? 'start' : 'middle',
+                            8,
+                          )}
                           y={sy(clear(p.py, q.py)) + (dx === 0 ? 4 : 18)}
                           fontSize={chart.label}
                           fontWeight="700"
                           fill={c.chartHighlight}
-                          textAnchor={dx === 0 ? 'start' : 'middle'}
                         >
                           {`${rep.value(spec.distance, false)} units`}
                         </ChartText>
@@ -349,10 +377,12 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     opacity={pt.known ? 1 : 0.35}
                   />
                 ))}
-                {pts.map((pt) => {
+                {pts.map((pt, k) => {
                   // A point on a rectangle's corner already has the corner's label.
                   if (rect && [rect.l, rect.r].includes(pt.px) && [rect.b, rect.t].includes(pt.py))
                     return null;
+                  // Two points in the same place share one label.
+                  if (pts.slice(0, k).some((o) => o.px === pt.px && o.py === pt.py)) return null;
                   // The label goes above the point, on the side the line does not cross: the
                   // upper-left when the line rises (and there is room), else the upper-right.
                   // A lone point in four quadrants (reflections) labels away from both axes,
@@ -363,11 +393,17 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   return (
                     <ChartText
                       key={`t${pt.testID}`}
-                      x={sx(pt.px) + (upLeft ? -9 : 9)}
+                      {...fitLabel(
+                        sx(pt.px) + (upLeft ? -9 : 9),
+                        `(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`,
+                        chart.label,
+                        w,
+                        upLeft ? 'end' : 'start',
+                        9,
+                      )}
                       y={sy(pt.py) + (below ? 20 : -8)}
                       fontSize={chart.label}
                       fontWeight="700"
-                      textAnchor={upLeft ? 'end' : 'start'}
                     >
                       {`(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`}
                     </ChartText>

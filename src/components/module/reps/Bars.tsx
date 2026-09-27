@@ -180,13 +180,16 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     }}
                     onEnd={range.release}
                     onMove={(_, dy) =>
-                      calc.set({
-                        ...rep.pin(editable.filter((id) => id !== b.var)),
-                        [b.var]: rep.snapTo(
-                          b.var,
-                          (start.current - dy / scale) * rep.factor(b.var),
-                        ),
-                      })
+                      calc.set(
+                        {
+                          ...rep.pin(editable.filter((id) => id !== b.var)),
+                          [b.var]: rep.snapTo(
+                            b.var,
+                            (start.current - dy / scale) * rep.factor(b.var),
+                          ),
+                        },
+                        rep.slide(b.var),
+                      )
                     }
                   />
                 ) : null,

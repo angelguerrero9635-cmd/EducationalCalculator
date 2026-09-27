@@ -103,10 +103,13 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 }}
                 onEnd={span.release}
                 onMove={(dx) =>
-                  calc.set({
-                    ...rep.pin(sizeVar ? [sizeVar] : []),
-                    [spec.count]: rep.snapTo(spec.count, start.current + dx / (size * cell)),
-                  })
+                  calc.set(
+                    {
+                      ...rep.pin(sizeVar ? [sizeVar] : []),
+                      [spec.count]: rep.snapTo(spec.count, start.current + dx / (size * cell)),
+                    },
+                    rep.slide(spec.count),
+                  )
                 }
               />
             </>

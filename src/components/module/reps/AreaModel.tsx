@@ -60,7 +60,21 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
     const d = spec.divide;
     const [n, s, q] = [val(d.dividend), val(d.divisor), val(d.quotient)];
     const r = d.remainder ? val(d.remainder) : 0;
-    const known = [d.dividend, d.divisor].every(rep.known);
+    // A quotient cleared (a dividend the range can't take) counts as unknown too: the model
+    // then shows "?" rather than a quotient of 0.
+    const known = [d.dividend, d.divisor, d.quotient].every(rep.known);
+    if (!known) {
+      return {
+        top: ['?'],
+        side: [rep.known(d.divisor) ? fmt(s) : '?'],
+        topSize: [1],
+        sideSize: [1],
+        box: () => ['?', '?'],
+        caption: 'Type the dividend and the divisor.',
+        steppers: [d.dividend, d.divisor],
+        faded: true,
+      };
+    }
     // Fewer than one full group (1 ÷ 2): no group boxes, only what is left over.
     const parts = q > 0 ? placeParts(q, 4) : [];
     const amounts = parts.map((p) => p * s);
@@ -73,15 +87,14 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
       sideSize: [1],
       box: (i) => [`${fmt(s)} × ${fmt(parts[i]!)}`, fmt(amounts[i]!)],
       remainder: d.remainder ? fmt(r) : undefined,
-      caption: !known
-        ? 'Type the dividend and the divisor.'
-        : parts.length <= 1
+      caption:
+        parts.length <= 1
           ? // One group of boxes: no "= parts" step to add up.
             `${fmt(s)} × ${fmt(q)}${left} = ${fmt(n)}. ${fmt(n)} ÷ ${fmt(s)} = ${fmt(q)}${rest}.`
           : `${amounts.map(fmt).join(' + ')}${left} = ${fmt(n)}. ` +
             `${fmt(n)} ÷ ${fmt(s)} = ${parts.map(fmt).join(' + ')} = ${fmt(q)}${rest}.`,
       steppers: [d.dividend, d.divisor],
-      faded: !known,
+      faded: false,
     };
   }
   return {

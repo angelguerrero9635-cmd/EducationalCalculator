@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   rowTight: { paddingHorizontal: 0 },
   cellWrap: { flexDirection: 'row', alignItems: 'flex-end' },
   cellTight: { width: 47, margin: 1 },
-  headTight: { fontSize: font.caption - 3, letterSpacing: -0.3 },
+  headTight: { fontSize: font.caption - 4, letterSpacing: -0.4 },
   digitTight: { fontSize: font.title },
   pointTight: { fontSize: font.title + 2 },
   cell: {

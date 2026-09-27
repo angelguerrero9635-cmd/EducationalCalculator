@@ -150,10 +150,13 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }}
                   onMove={(dx, dy) => {
                     const next = angleAt(start.current, start.current.a, dx, dy);
-                    calc.set({
-                      ...rep.pin([second]),
-                      [first]: rep.snapTo(first, next * rep.factor(first)),
-                    });
+                    calc.set(
+                      {
+                        ...rep.pin([second]),
+                        [first]: rep.snapTo(first, next * rep.factor(first)),
+                      },
+                      rep.slide(first),
+                    );
                   }}
                 />
               ) : null}
@@ -171,10 +174,13 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     const next = angleAt(startW.current, a + startW.current.b, dx, dy);
                     // The whole ray's angle, less the first angle, is the second (never below 0).
                     const deg = (((next - a) % 360) + 360) % 360;
-                    calc.set({
-                      ...rep.pin([first]),
-                      [second]: rep.snapTo(second, deg * rep.factor(second)),
-                    });
+                    calc.set(
+                      {
+                        ...rep.pin([first]),
+                        [second]: rep.snapTo(second, deg * rep.factor(second)),
+                      },
+                      rep.slide(second),
+                    );
                   }}
                 />
               ) : null}

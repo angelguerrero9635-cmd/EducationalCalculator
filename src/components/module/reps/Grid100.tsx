@@ -57,8 +57,9 @@ function Grid({
 export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  const shaded = Math.round(rep.val(spec.percent));
+  // A "?" shades nothing: the grid never shows a number the student didn't type.
   const faded = !rep.known(spec.percent);
+  const shaded = faded ? 0 : Math.round(rep.val(spec.percent));
   const whole =
     spec.wholes && rep.known(spec.wholes) ? Math.max(0, Math.round(rep.val(spec.wholes))) : 0;
   const second = spec.second ? Math.round(rep.val(spec.second)) : undefined;
@@ -127,7 +128,9 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
           ? `${shaded} of 100 and ${second ?? '?'} of 100 squares shaded`
           : whole > 0
             ? `${whole} whole ${whole === 1 ? 'grid' : 'grids'} and ${shaded} of 100 squares shaded`
-            : `${rep.tag(spec.percent)}: ${shaded} of 100 squares shaded`}
+            : faded
+              ? 'Type a number to shade the grid.'
+              : `${rep.value(spec.percent)} is ${shaded} of 100 squares shaded`}
       </Text>
       {spec.caption ? (
         <Text style={[styles.caption, { color: c.chartMuted }]}>

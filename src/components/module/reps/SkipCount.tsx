@@ -152,13 +152,16 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   }}
                   onEnd={fit.release}
                   onMove={(dx) =>
-                    calc.set({
-                      ...rep.pin(stepVar ? [stepVar] : []),
-                      [countVar]: rep.snapTo(
-                        countVar,
-                        start.current + (dir * dx) / (px(s) - px(0)),
-                      ),
-                    })
+                    calc.set(
+                      {
+                        ...rep.pin(stepVar ? [stepVar] : []),
+                        [countVar]: rep.snapTo(
+                          countVar,
+                          start.current + (dir * dx) / (px(s) - px(0)),
+                        ),
+                      },
+                      rep.slide(countVar),
+                    )
                   }
                 />
               ) : null}

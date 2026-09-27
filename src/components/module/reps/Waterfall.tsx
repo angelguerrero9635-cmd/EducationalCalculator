@@ -169,13 +169,16 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     }}
                     onEnd={range.release}
                     onMove={(_, dy) =>
-                      calc.set({
-                        ...rep.pin(editable.filter((id) => id !== s.var)),
-                        [s.var]: rep.snapTo(
-                          s.var,
-                          (start.current - (s.sign * dy) / scale) * rep.factor(s.var),
-                        ),
-                      })
+                      calc.set(
+                        {
+                          ...rep.pin(editable.filter((id) => id !== s.var)),
+                          [s.var]: rep.snapTo(
+                            s.var,
+                            (start.current - (s.sign * dy) / scale) * rep.factor(s.var),
+                          ),
+                        },
+                        rep.slide(s.var),
+                      )
                     }
                   />
                 ) : null,
