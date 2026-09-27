@@ -5,7 +5,7 @@
  */
 import { formatNumber, numberWords } from '@/engine/format';
 import type { Values } from '@/engine/types';
-import { apart, div, times, whole } from '../helpers';
+import { apart, atLeast, div, times, whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 import { autoWritten, columnAdd, columnSubtract, longDivision, partialQuotients } from '../written';
 import {
@@ -2772,6 +2772,49 @@ export const MATH_4_MODULES: ModuleDef[] = [
     example: { a: 35, r: 145 },
     startWith: ['a'],
     representation: { kind: 'protractor', angle: 'a', other: 'r' },
+  },
+  // Neither arm on 0 (4.MD.6): read both arms on one scale and subtract.
+  {
+    id: 'm.4.angles~arms',
+    title: 'Measure when neither arm is on 0',
+    use: 'Use this for “One ray points to 45 and the other to 135. What is the angle?”',
+    pictureLabels: ['a'],
+    assumptions: [
+      'Read both arms on the same scale of the protractor.',
+      'The angle is the difference between the two readings.',
+      'Readings from 0° to 180°.',
+    ],
+    variables: [
+      { ...whole('f', 'f', 'First arm reads', 0, 180), unit: '°' },
+      { ...whole('s', 's', 'Second arm reads', 0, 180), unit: '°' },
+      { ...whole('a', 'a', 'Angle', 0, 180), unit: '°' },
+    ],
+    relations: [
+      atLeast('s', 'f'),
+      {
+        id: 'a = s − f',
+        display: '{s} − {f} = {a}',
+        words: 'Second arm reads − first arm reads = angle',
+        vars: ['a', 's', 'f'],
+        residual: (v: Values) => v.a! - (v.s! - v.f!),
+        solve: {
+          a: (v: Values) => v.s! - v.f!,
+          s: (v: Values) => v.f! + v.a!,
+          f: (v: Values) => v.s! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      's ≥ f': {},
+      'a = s − f': {
+        a: { expr: '{s} − {f}', how: 'Take the smaller reading from the bigger one.' },
+        s: { expr: '{f} + {a}', how: 'Turn on from the first arm by the angle.' },
+        f: { expr: '{s} − {a}', how: 'Turn back from the second arm by the angle.' },
+      },
+    },
+    example: { f: 45, s: 135, a: 90 },
+    startWith: ['f', 's'],
+    representation: { kind: 'protractor', angle: 'a', arms: { first: 'f', second: 's' } },
   },
   // ── Angles as fractions of a turn (4.MD.5) ──
   {

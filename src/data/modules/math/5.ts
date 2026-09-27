@@ -2055,6 +2055,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       total: 'w',
       groups: 'b',
       caption: '{w} in {b} equal parts of {o}: {a} parts make {p}.',
+      // 7 in 4 parts of 1 3/4, not 1.75.
+      mixed: true,
     },
   },
   // ── Dividing with unit fractions (5.NF.7) ──
@@ -2231,14 +2233,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Volume counts the unit cubes that fill the box.',
       'The base area is length × width: the cubes in one layer. The box has a layer for every unit of height.',
-      'Volume = length × width × height, in cubic units. Sides to 10.',
+      'Volume = length × width × height, in cubic units. Sides to 100 (40 × 60 × 80 cm).',
+      'Past 10 a side, the box is drawn to scale with one unit cube beside it.',
     ],
     variables: [
-      { ...whole('l', 'l', 'Length', 1, 10), unit: 'cm' },
-      { ...whole('w', 'w', 'Width', 1, 10), unit: 'cm' },
-      { ...whole('h', 'h', 'Height', 1, 10), unit: 'cm' },
-      { ...whole('B', 'B', 'Base area', 1, 100), unit: 'cm²', derived: true },
-      { ...whole('V', 'V', 'Volume', 1, 1000), unit: 'cm³' },
+      { ...whole('l', 'l', 'Length', 1, 100), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 100), unit: 'cm' },
+      { ...whole('h', 'h', 'Height', 1, 100), unit: 'cm' },
+      { ...whole('B', 'B', 'Base area', 1, 10000), unit: 'cm²', derived: true },
+      { ...whole('V', 'V', 'Volume', 1, 1000000), unit: 'cm³' },
     ],
     relations: [
       {
@@ -2291,6 +2294,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       height: 'h',
       volume: 'V',
       max: 10,
+      scale: true,
     },
   },
   {
@@ -2451,7 +2455,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { r: 9, u: 3, x: 9, y: 3 },
     startWith: ['x', 'y'],
-    representation: { kind: 'coordinatePlane', x: 'x', y: 'y', extent: 10, quadrants: 1 },
+    // Tap or drag the point; the path across, then up, is drawn from the origin.
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x',
+      y: 'y',
+      extent: 10,
+      quadrants: 1,
+      plot: true,
+    },
   },
   // ── Two patterns graphed as points (5.OA.3, 5.G.2) ──
   {

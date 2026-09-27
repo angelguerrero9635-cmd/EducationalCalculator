@@ -251,8 +251,8 @@ export function GrassSlope({ spec, calc }: { spec: Spec; calc: Calculator }) {
           if (!spec.difference || !rep.known(spec.bare) || !rep.known(spec.grass)) return listed;
           const [a, b] = [rep.shown(spec.bare), rep.shown(spec.grass)];
           if (a === b) return `${listed} The same soil washed off both.`;
-          const more = rep.variable(a > b ? spec.bare : spec.grass).name;
-          return `${listed} ${more}: ${nowrap(rep.value(spec.difference))} more washed off.`;
+          const tray = a > b ? 'bare tray' : 'grass tray';
+          return `${listed} More washed off the ${tray}: ${nowrap(rep.value(spec.difference))}.`;
         })()}
       </Caption>
     </View>

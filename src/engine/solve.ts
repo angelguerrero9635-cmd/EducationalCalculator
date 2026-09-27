@@ -469,8 +469,9 @@ function wholeSolutions(
   previous: Values,
   limit: number,
 ): { solutions: Values[]; exhausted: boolean } {
-  // Enough for two unknown minutes on a clock (60 × 60 tries).
-  const budget = { left: 4000 };
+  // Enough for two unknown minutes on a clock (60 × 60 tries), or a volume whose three
+  // sides (to 100) must be found as whole numbers.
+  const budget = { left: 20000 };
   const solutions: Values[] = [];
   let exhausted = false;
   const search = (vals: Values) => {

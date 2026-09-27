@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-37 of 419 pages show sliders.
+37 of 420 pages show sliders.
 
 ## By picture kind
 
@@ -84,7 +84,7 @@ its kind with `sliders: true | false`.
 | polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | powerScale | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| protractor | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| protractor | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | ratioTable | 2 | no | set on the module (hidden) |
@@ -324,6 +324,7 @@ its kind with `sliders: true | false`.
 | m.4.area-perimeter-formulas~square | rectangle | no |
 | m.4.angles | angles | no |
 | m.4.angles~protractor | protractor | no |
+| m.4.angles~arms | protractor | no |
 | m.4.angles~turns | angles | yes |
 | s.K.pushes-pulls | ruler | no |
 | s.K.sunlight-warms | thermometers | no |

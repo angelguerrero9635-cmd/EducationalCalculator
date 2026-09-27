@@ -5,6 +5,20 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Pictures from the other chat merged
+
+- Their branch merged. Conflicts were in `dotPlot` (their count handling was kept, along with our
+  harness median check) and in `SLIDERS.md`.
+- A "$10" in step text ended typeset math. → Dollar signs outside math are written `\$` and
+  split correctly.
+- A price answered "about $0.03" left the check showing a number the steps never showed. →
+  - The steps add the exact value ("0.02 × 161.9 ÷ 100 = 0.03238") when every input was typed.
+  - The harness reads the exact value behind "about $" and "less than 1 cent".
+- With sides to 100, the whole-number search gave up before it could prove that a volume like
+  677,020 can't be made. → The search budget is 20,000 tries (from 4,000).
+- The grass-slope caption repeated the value's name. → It now reads "More washed off the bare
+  tray: 260 g."
+
 ## Fraction division picture words (user feedback, lesson-reviewer)
 
 - "2/3 is 3/4 of a group, so a whole group is 8/9" was hard to follow: an amount and a

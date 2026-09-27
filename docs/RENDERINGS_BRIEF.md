@@ -274,6 +274,37 @@ Notes for the lesson pages:
   and print decimals.
 - Captions list named values with " · " (one line each); "a. b." would read as one equation.
 
+### Plugged in by the lesson chat
+
+Group 1 pictures now on lesson pages:
+
+- Card icons on 61 sort cards (weather tools, eggs or born alive, plant- and meat-eaters, desert
+  survival, heat, about a meter, about a liter). The camouflage icons wait for a camouflage page.
+- `foodWeb` on the new `s.5.food-webs~web` ("What happens if one is removed?").
+- Moon phases: moonrise and moonset on `s.1.sky-patterns`, and the new
+  `s.1.sky-patterns~moon-cycle`.
+- `shadowStick` on `s.5.shadows-day-night~noon-shadow`.
+- `grassSlope`: `s.4.weathering~grass-slope` is now a calculator page (it was an observe page).
+- `flashlights`, dark and light `cups`, and `leafCount` on their pages.
+- Mixed-number jumps on `m.4.add-fractions-like~mixed-add` and `~mixed-subtract`.
+- The set model on the new `m.3.fractions-number-line~set`.
+- The inequality line on `m.6.one-step-equations~inequality-solutions`, which now has a sign
+  value.
+- The scaled box on `m.5.volume-rectangular` (sides now go to 100).
+- Plot a point on `m.5.coordinate-plane-q1`.
+- Protractor arms on the new `m.4.angles~arms`.
+- Mixed-number labels on `m.5.multiply-fractions~of-a-whole`.
+- Bills and coins, fraction bars past one whole, and the ratio graph apply without changes.
+
+Not used yet:
+
+- The 3-digit `numberLine` needs a distance value, which Grade 2 would have to write as a
+  multiplication.
+- The `linePlot` `start` option would need values that aren't named after fixed marks.
+- `boxPlot` `data`: no page builds a box plot from a list of values yet.
+
+Items 21–29 are still open.
+
 ### Group 2: Grade 7 math
 
 Gallery demos are in `galleryG7a.ts`, `galleryG7b.ts` and `galleryG7c.ts`. `NumOrVar` is a
