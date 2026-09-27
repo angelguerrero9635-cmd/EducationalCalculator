@@ -1,0 +1,79 @@
+[
+  {
+    "slug": "bowling-ball",
+    "title": "Bowling ball",
+    "use": "Compare weight (K measurable-attributes)",
+    "references": [],
+    "notes": "Glossy blue-purple sphere with two finger holes and a thumb hole. Heavy object for heavier/lighter."
+  },
+  {
+    "slug": "crayon",
+    "title": "Crayon",
+    "use": "Compare weight and length (K measurable-attributes)",
+    "references": [],
+    "notes": "Single red wax crayon, paper wrapper without text, pointed tip. Light, short object."
+  },
+  {
+    "slug": "sock",
+    "title": "Striped sock",
+    "use": "Compare weight (K measurable-attributes)",
+    "references": [],
+    "notes": "Single white sock with blue stripes, red cuff, heel and toe."
+  },
+  {
+    "slug": "brick",
+    "title": "Brick",
+    "use": "Compare weight (K measurable-attributes)",
+    "references": [],
+    "notes": "Red clay brick in three-quarter view with three holes on top and speckled texture."
+  },
+  {
+    "slug": "watermelon",
+    "title": "Watermelon",
+    "use": "Compare weight and capacity (K measurable-attributes)",
+    "references": [],
+    "notes": "Whole striped watermelon with a slice beside it."
+  },
+  {
+    "slug": "backpack",
+    "title": "School backpack",
+    "use": "Compare weight and capacity (K measurable-attributes)",
+    "references": [],
+    "notes": "Blue backpack with red front pocket, zippers, top handle and shoulder straps."
+  },
+  {
+    "slug": "paper-clip",
+    "title": "Paper clip",
+    "use": "Compare weight and length (K measurable-attributes; Grade 1–2 length)",
+    "references": [],
+    "notes": "Silver paper clip with the usual double-loop shape, tilted."
+  },
+  {
+    "slug": "door",
+    "title": "Door",
+    "use": "Compare height (K measurable-attributes; Grade 2 length)",
+    "references": [],
+    "notes": "Wooden four-panel door in its frame, front view, with knob."
+  },
+  {
+    "slug": "eraser",
+    "title": "Eraser",
+    "use": "Compare weight and length (K measurable-attributes)",
+    "references": [],
+    "notes": "Pink rectangular eraser with one worn, rounded corner and a few eraser crumbs."
+  },
+  {
+    "slug": "bed",
+    "title": "Bed",
+    "use": "Compare length and weight (K measurable-attributes)",
+    "references": [],
+    "notes": "Single bed in three-quarter view: headboard, mattress, pillow, blue blanket with a folded sheet."
+  },
+  {
+    "slug": "school-bus",
+    "title": "School bus",
+    "use": "Compare length and weight (K measurable-attributes; Grade 2 length)",
+    "references": [],
+    "notes": "Side view, 1200x800. Yellow bus with windows, black stripes, folded stop-sign arm and wheels; no text."
+  }
+]

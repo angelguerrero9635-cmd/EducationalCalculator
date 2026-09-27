@@ -1,16 +1,56 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { View as RNView } from 'react-native';
 import Svg, { Circle, Line } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
-import { chart, usePalette } from '@/theme';
+import { SegmentedControl } from '@/components/SegmentedControl';
+import { chart, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { CircleUnroll, CircleWedges } from './CircleParts';
 import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'circle' }>;
 
-/** Circle with its radius and diameter drawn; drag the radius end to resize. */
+type View = NonNullable<Spec['views']>[number];
+const VIEW_LABELS: Record<View, string> = {
+  radius: 'Radius',
+  unroll: 'Unrolled',
+  wedges: 'Wedges',
+};
+
+/**
+ * A circle: its radius and diameter, or (Grade 7 `views`) the circumference unrolled and the
+ * area cut into wedges, with buttons to switch when there are two or more.
+ */
 export function CircleDiagram({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  const views = spec.views ?? ['radius'];
+  const [view, setView] = useState<View>(views[0]!);
+  const shown = views.includes(view) ? view : views[0]!;
+  return (
+    <RNView>
+      {views.length > 1 ? (
+        <RNView style={{ paddingHorizontal: space.md, marginBottom: space.sm }}>
+          <SegmentedControl<View>
+            segments={views.map((v) => ({ value: v, label: VIEW_LABELS[v] }))}
+            value={shown}
+            onChange={setView}
+          />
+        </RNView>
+      ) : null}
+      {shown === 'unroll' ? (
+        <CircleUnroll spec={spec} calc={calc} />
+      ) : shown === 'wedges' ? (
+        <CircleWedges spec={spec} calc={calc} />
+      ) : (
+        <CircleRadius spec={spec} calc={calc} />
+      )}
+    </RNView>
+  );
+}
+
+/** Circle with its radius and diameter drawn; drag the radius end to resize. */
+function CircleRadius({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const handleStart = useRef({ x: 0, y: 0 });

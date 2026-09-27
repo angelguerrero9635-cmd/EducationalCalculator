@@ -1,0 +1,142 @@
+[
+  {
+    "slug": "granite",
+    "title": "Granite",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, weathering (Grade 4)",
+    "references": ["https://commons.wikimedia.org/wiki/File:Granit.jpg"],
+    "notes": "Coarse interlocking crystals you can see: pink and white feldspar, gray glassy quartz, black mica and hornblende. Igneous (cooled slowly underground)."
+  },
+  {
+    "slug": "basalt",
+    "title": "Basalt",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, volcanoes",
+    "references": [
+      "https://www.usgs.gov/media/images/vesicular-basalt-side-view",
+      "https://www.usgs.gov/media/images/vesicular-basalt-top-view"
+    ],
+    "notes": "Dark gray-black, fine-grained (crystals too small to see), a few small gas holes (vesicles). Igneous (cooled quickly from lava)."
+  },
+  {
+    "slug": "obsidian",
+    "title": "Obsidian",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, volcanoes",
+    "references": [
+      "https://www.usgs.gov/media/images/volcanic-glass-obsidian",
+      "https://commons.wikimedia.org/wiki/File:ObsidianOregon.jpg"
+    ],
+    "notes": "Glossy black volcanic glass with sharp edges and conchoidal (curved, shell-like) fracture surfaces with ripple rings; strong highlights. No crystals."
+  },
+  {
+    "slug": "pumice",
+    "title": "Pumice",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), igneous rocks, density (floats on water)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Bims.jpeg",
+      "https://commons.wikimedia.org/wiki/File:Dacitic_pumice_(Holocene,_Mt._St_Helens).jpg",
+      "https://www.usgs.gov/media/images/rocks-sink-or-float"
+    ],
+    "notes": "Pale gray-cream, rounded, full of many gas holes of different sizes (stretched a little in one direction); looks light."
+  },
+  {
+    "slug": "sandstone",
+    "title": "Sandstone",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, weathering (Grade 4)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:SandstoneUSGOV.jpg",
+      "https://www.usgs.gov/media/images/sandstone-sample-2",
+      "https://www.usgs.gov/media/images/sandstone-group-sample"
+    ],
+    "notes": "Tan-orange blocky rock, sandy speckled grains, faint horizontal layers."
+  },
+  {
+    "slug": "shale",
+    "title": "Shale",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, weathering (Grade 4)",
+    "references": [
+      "https://www.usgs.gov/media/images/oil-shale-sample-1",
+      "https://www.usgs.gov/media/images/oil-shale-sample-2"
+    ],
+    "notes": "Dark gray, many thin flat layers seen on the edge, flaky stepped ends, a thin sheet flaking off the top."
+  },
+  {
+    "slug": "limestone-shells",
+    "title": "Limestone with shells",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, fossils",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:CoquinaFlorida.jpg",
+      "https://www.nps.gov/articles/000/fossil-brachiopods.htm"
+    ],
+    "notes": "Gray-cream fossiliferous limestone packed with ribbed shells, small snail shells and broken shell pieces."
+  },
+  {
+    "slug": "conglomerate",
+    "title": "Conglomerate",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), sedimentary rocks, weathering and erosion (Grade 4)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:ConglomerateUSGOV.jpg",
+      "https://www.usgs.gov/media/images/conglomerate-gold-ore"
+    ],
+    "notes": "Rounded pebbles of many colors and sizes (white quartz, red, gray, black, tan) cemented in a finer sandy matrix."
+  },
+  {
+    "slug": "slate",
+    "title": "Slate",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (shale changed by heat and pressure)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Gray_slate_(GeoDIL_number_-_15).jpg",
+      "https://commons.wikimedia.org/wiki/File:SlateUSGOV.jpg"
+    ],
+    "notes": "Dark blue-gray thin flat slab with a smooth split face, sharp broken edges and fine splitting lines on the edge."
+  },
+  {
+    "slug": "marble",
+    "title": "Marble",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (limestone changed by heat and pressure), weathering by acid rain",
+    "references": [
+      "https://www.usgs.gov/media/images/calcite-marble-2",
+      "https://www.usgs.gov/media/images/calcite-marble"
+    ],
+    "notes": "White rock with soft gray veins and a sugary mosaic of small crystals with sparkles."
+  },
+  {
+    "slug": "gneiss",
+    "title": "Gneiss",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (foliation from pressure)",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:GneissUSGOV.jpg",
+      "https://www.usgs.gov/media/images/granite-augen-gneiss"
+    ],
+    "notes": "Bold wavy alternating light (white, pink) and dark bands (foliation), each band speckled with mineral grains."
+  },
+  {
+    "slug": "quartzite",
+    "title": "Quartzite",
+    "use": "Rock-cycle cards (Grade 6 rock cycle), metamorphic rocks (sandstone changed by heat and pressure)",
+    "references": [],
+    "notes": "Pale pink and white, glassy-granular mosaic of fused sand grains, massive with no layers, glassy highlights. Drawn from general knowledge of quartzite; no reference page was used."
+  },
+  {
+    "slug": "rock-layers",
+    "title": "Rock layers in a canyon wall",
+    "use": "RockLayers picture (older layers at the bottom), sedimentary rocks, fossils and Earth history",
+    "references": [
+      "https://commons.wikimedia.org/wiki/File:Grand_Canyon_layers.jpg",
+      "https://www.nps.gov/articles/000/grcatime-layered-paleozoic-rock.htm"
+    ],
+    "notes": "Canyon wall with nine horizontal sedimentary layers of different colors, thicknesses and textures (cream limestone on top, pale cross-bedded sandstone, red layers, gray, green-gray shale, brown sandstone at the bottom); the wall steps down to the right; sky, clouds, shrubs, a hazy far wall. Older layers are lower."
+  },
+  {
+    "slug": "fish-fossil",
+    "title": "Fish fossil",
+    "use": "Fossils (Grade 3–4), sedimentary rocks, Earth history",
+    "references": ["https://www.nps.gov/fobu/learn/nature/fossil-fish.htm"],
+    "notes": "Whole herring-like fish skeleton (like Knightia) pressed into a pale limestone slab: skull with eye socket and gill cover, backbone of vertebrae, ribs, fins with rays, forked tail."
+  },
+  {
+    "slug": "shell-fossil",
+    "title": "Shell fossils",
+    "use": "Fossils (Grade 3–4), sedimentary rocks, Earth history",
+    "references": ["https://www.nps.gov/articles/000/fossil-brachiopods.htm"],
+    "notes": "Ribbed brachiopod shells (fan-shaped, with a beak and growth lines) and a coiled ammonite in a gray-tan rock with broken shell bits."
+  }
+]

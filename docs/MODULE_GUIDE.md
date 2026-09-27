@@ -103,6 +103,43 @@ search or the sitemap, but the module tests and the harness run over it):
 | `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations  | Grade 6 statistics                  |
 | `fieldOfView`      | the microscope circle with cells end to end across it                 | Grade 6 cells                       |
 | `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume | Grade 6 density                     |
+| `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars       | Grade 2 and 4 erosion               |
+| `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded   | Grade 5 star brightness             |
+| `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
+| `zeroPairs`        | yellow + and red − counters; a + with a − circled as a zero pair      | Grade 7 adding, subtracting signs   |
+| `signTable`        | the answer’s sign for each pair of signs, the numbers’ cell outlined  | Grade 7 multiplying, dividing signs |
+| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps | Grade 7–8 equations                 |
+| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow      | Grade 7 scale drawings              |
+| `curvedSolid`      | a glass cylinder, cone or sphere of water, its radius and height      | Grade 8 volume of curved solids     |
+| `scatter`          | data points, a line of fit dragged by its ends, clusters, an outlier  | Grade 8 scatter plots               |
+| `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it      | Grade 7 cross-sections, volume      |
+| `sample`           | a population of dots, a random sample ringed; draw a new sample       | Grade 7 sampling, inferences        |
+| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin          | Grade 7 probability                 |
+| `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap    | Grade 7 compound probability        |
+| `treeDiagram`      | two stages branching left to right, each branch 1/n; a path lit       | Grade 7 compound probability        |
+| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random       | Grade 7 probability                 |
+| `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line      | Grade 8 square roots, irrationals   |
+| `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked     | Grade 8 exponent rules              |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10 (4.7 × 10⁵)        | Grade 8 scientific notation         |
+| `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x  | Grade 8 equations, both sides       |
+| `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag    | Grade 8 linear functions            |
+| `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)     | Grade 8 systems                     |
+| `functionMachine`  | an input card through a rule's steps to the output; a tappable table  | Grade 8 functions                   |
+| `mapping`          | pairs as arrows between two ovals; the graph with a vertical line     | Grade 8 functions (is it one?)      |
+| `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
+| `energyPyramid`    | a tier per feeding level, to scale, 10% passed up each step; drag     | Grade 7 energy in ecosystems        |
+| `generations`      | a stacked bar per generation (green and brown beetles), the share     | Grade 7 natural selection           |
+| `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted     | Grade 7 atoms and molecules         |
+| `reaction`         | molecules before and after the arrow; each element's atoms counted    | Grade 7 reactions, balancing        |
+| `heatingCurve`     | temperature against time, flat while melting and boiling; particles   | Grade 7 phase changes               |
+| `periodicTable`    | the table as a grid: an element (its card), a group or a period lit   | Grade 8 periodic table              |
+| `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second    | Grade 8 motion                      |
+| `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m      | Grade 8 Newton's laws               |
+| `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes | Grade 8 kinetic, potential energy   |
+| `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up | Grade 8 electromagnetic spectrum    |
+| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel      | Grade 8 circuits                    |
+| `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point  | Grade 8 electromagnets              |
+| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it | Grade 8 gravity and orbits          |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -137,6 +174,36 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `boxPlot`          | `brackets`                               | the range and the interquartile range bracketed                               |
 | `doubleNumberLine` | `prefix: '$'`                            | dollars to the cent                                                           |
 | `plot`             | `reference`                              | a dashed comparison line through 0 ("Water")                                  |
+| `thermometers`     | `cups`                                   | each thermometer in a dark or light cup of water in the sun                   |
+| `fractionBars`     | `wholes`; a fraction past 1              | as many whole bars as it needs (7/4: a whole bar and 3/4 of the next), to 6   |
+| `fractionLine`     | `from` (counted in parts)                | mixed-number jumps (18 1/4 − 2 3/4): the wholes, then the parts left          |
+| `partition`        | `shape: 'set'`, `object`                 | a set of umbrellas or counters, some shaded (3/7 of the set)                  |
+| `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100, the point placed; `'ticks'`: a jump per tick |
+| `tape`, `beaker`   | `mixed`                                  | shares and amounts as exact mixed numbers (33 1/3, 2 3/8 L)                   |
+| `skipCount`        | (no `count`)                             | a quotient past whole jumps: the last part of a jump (33 1/3 jumps)           |
+| `coins`            | bills (`cents` 100, 500, 1000) and coins | the bills beside the coins, one total in dollars and cents, the sum under it  |
+| `dotPlot`          | `count`                                  | only the first n values (3–10), the middle one or two ringed at the median    |
+| `boxPlot`          | `data`, `count`                          | the first n values as dots over the box, the middle ones ringed at the median |
+| `integerLine`      | `inequality: { sign, test }`             | the bound's open or closed circle, an arrow over the solutions, a test point  |
+| `integerLine`      | `inequality.twoStep: { times, plus, … }` | px + q < r solved in the caption; a negative p flips the sign drawn           |
+| `circle`           | `views`, `wedges`                        | 'unroll': one turn along a line, π diameters; 'wedges': a near-parallelogram  |
+| `unitCubes`        | `scale`                                  | past `max` a side, the box to scale, edges labelled, one unit cube for size   |
+| `ratioTable`       | `graph`                                  | axes to the biggest row in 3–4 numbered steps; under the table on a phone     |
+| `coordinatePlane`  | `plot`                                   | tap the grid or drag to place one point; the path from 0 across, then up      |
+| `linePlot`         | `start`, `marks: 2 \| 4 \| 8`            | marks every 1/2, 1/4 or 1/8 from any whole number (12, 12 1/4, …)             |
+| `protractor`       | `arms: { first, second }`                | neither arm on 0: each reads on the inner scale; the angle is the difference  |
+| `percentBar`       | `change: { total, direction?, bars? }`   | tax or discount: original, change, new amount; `bars: 2`: before and after    |
+| `plot`             | `unitRate`, `table`                      | y = kx through (0, 0) with (1, k) ringed and dragged; x, y, y ÷ x beside it   |
+| `integerLine`      | `jump: { by, result, op? }`              | signed jump from the value (+ right, − left); subtracting goes the other way  |
+| `tape`             | `equation: { times, unknown, plus, … }`  | px + q = r: p boxes of x and q under r (−q taken off); `grouped`: p(x + q)    |
+| `rightTriangle`    | `grid`                                   | each square ruled in unit squares (sides to 12); a² + b² = c² worked          |
+| `coordinatePlane`  | `legs` (with `segment`)                  | the right triangle under the segment, legs labelled; d² = a² + b² worked      |
+| `curvedSolid`      | `compare` (cone or sphere)               | the same cylinder beside it holding its water: 1/3 (cone) or 2/3 (sphere)     |
+| `angles`           | `whole: 90 \| 180`, `cross`              | a right angle or a straight line split in two; `cross`: vertical angles       |
+| `net`              | `solid: 'triangularPrism'`, `triangle`   | three rectangles and two triangles (right or isosceles); folds to the prism   |
+| `dotPlot`          | `second`, `labels`, `difference`         | a second sample's dot plot under the first, same scale; the gap between means |
+| `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |
+| `force`            | `object: 'cart'`, `block`                | a lab cart with the mass as metal blocks, pulled by a rope; F = m × a         |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
@@ -248,19 +315,43 @@ Explore figures: `parts` (tap a part), `position`, `clock`, `dots`, `magnets`, `
 `lightPath` (lamp, object, eye, hand or mirror; with `wall`, a `height` and clear, cloudy or
 solid blockers it traces the shadow), `particles`, `earth`, `push` (a ball pushed from
 behind, the front or the side, gently or hard, or pulled), `vibration` (a band, drum, bell or
-voice, still or shaking), `sky` (the sun east, high or west; the night sky), `static` (a
+voice, still or shaking), `sky` (the sun east, high or west; the night sky with the moon in a `phase`, waxing lit on the right; `rising` for sunrise or moonrise in the east; `cycle` for the strip of eight shapes), `static` (a
 balloon, rubbed or not, near paper, hair, a wall or a balloon) and `timesTable` (a 0–10
 addition or times table lighting rows, columns, even or odd cells or the mirror line).
 Grade 6 science adds `cell` (a plant, animal or bacterial cell with one part lit),
 `bodySystems`, `waterCycle` (one process lit, with its driver), `front` (cold, warm or
 stationary; or a high or low), `plates` (five boundaries, with rock ages or the mantle's
 flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or shape clue)
-and `rockCycle`, in `layouts/figures6.tsx`.
+and `rockCycle`, in `layouts/figures6.tsx`. `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
+rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a scene's `web`
+lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
+shrink (`fewer`). Grade 7 life science adds, in `layouts/figuresLife.tsx`: `leafCell` (a leaf in
+the light and a cell with its mitochondria, the inputs and outputs as arrows and the word
+equations; `leafCell: { process, lit? }` shows photosynthesis, respiration or both trading
+their outputs), `carbonCycle` (air, a tree, a rabbit, dead matter and mushrooms, coal and oil,
+a factory and the ocean; `carbon: { process? }` lights one process) and `pedigree` (a family
+given as `people` in the standard symbols; `family: { lit?, carriers?, genotypes?, ask? }`).
+shrink (`fewer`). Grade 7–8 chemistry (`layouts/chemFigures.tsx`): `molecules` (ball-and-stick
+molecules in the classroom colors: one alone drawn big with each element named, or a scene's
+`items` in a box packed as a `state`, with `after` in a second box behind an arrow),
+`phases` (solid, liquid and gas boxes of the same particles, the changes between them as
+arrows; a scene lights a `state` and a `change`) and `periodicTable` (an `element` with its
+card, a `group`, a `period`, a `ring` of elements, `families` filled).
+shrink (`fewer`). Grade 8, in `layouts/figures8.tsx`: a `magnets` scene can set
+`field` (the field lines from N to S, `compasses` round the magnets, or one magnet `single`;
+magnets are painted N red, S blue), and `planets` draws the planets and the moon to scale by
+size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
+
+Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
+(`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
+scale, with the sun on the line over the stick's top (higher for a shorter shadow).
 
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
 (equal or unequal parts, some shaded), `bar` (a ribbon with cubes laid right or wrong),
-`dots` (pairs), `icon` (a fixed set of everyday things), `fractionBars`, `ray` (segment,
+`dots` (pairs), `molecule` (a ball-and-stick molecule or one atom from a `formula`), `icon` (a fixed set of everyday things: flat outlines, and weather tools,
+animals, adaptations and classroom, kitchen and drink things drawn in their materials in
+`layouts/cardIcons.tsx`, shown on `/gallery` as `g.icons-*`), `fractionBars`, `ray` (segment,
 ray, line or point), `net` (six squares), `inequality` (an open or closed circle and an
 arrow), `cell` (a small cell) and `rock` (a texture); a `polygon` can mark its `base`, a
 `dashed` height and the base `extend`ed. Every figure and card figure has a page at `/gallery`.

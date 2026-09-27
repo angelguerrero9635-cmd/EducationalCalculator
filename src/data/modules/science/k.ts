@@ -117,6 +117,7 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
         kind: 'thermometers',
         items: ['d', 'l'],
         difference: 'w',
+        cups: ['dark', 'light'],
         min: 40,
         max: 100,
       },

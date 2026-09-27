@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <ellipse cx="400" cy="720" rx="250" ry="20" fill="#1f2937" opacity="0.12"/>
+  <path d="M340 130 Q340 80 400 80 Q460 80 460 130" fill="none" stroke="#1f2937" stroke-width="22" stroke-linecap="round"/>
+  <path d="M340 130 Q340 80 400 80 Q460 80 460 130" fill="none" stroke="#1d4ed8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M190 260 Q150 400 170 600" fill="none" stroke="#1f2937" stroke-width="34" stroke-linecap="round"/>
+  <path d="M190 260 Q150 400 170 600" fill="none" stroke="#1d4ed8" stroke-width="22" stroke-linecap="round"/>
+  <path d="M610 260 Q650 400 630 600" fill="none" stroke="#1f2937" stroke-width="34" stroke-linecap="round"/>
+  <path d="M610 260 Q650 400 630 600" fill="none" stroke="#1d4ed8" stroke-width="22" stroke-linecap="round"/>
+  <path d="M200 700 L200 280 Q200 130 400 130 Q600 130 600 280 L600 700 Q600 712 588 712 L212 712 Q200 712 200 700 Z" fill="#3b82f6" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M540 170 Q600 210 600 280 L600 700 Q600 712 588 712 L560 712 Z" fill="#1d4ed8" opacity="0.35"/>
+  <path d="M236 300 Q240 190 330 160" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" opacity="0.45"/>
+  <path d="M218 290 Q222 170 400 164 Q578 170 582 290" fill="none" stroke="#1f2937" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round"/>
+  <path d="M226 300 Q232 184 400 178 Q568 184 574 300" fill="none" stroke="#1f2937" stroke-width="5"/>
+  <rect x="560" y="286" width="16" height="36" rx="6" fill="#cbd5e1" stroke="#1f2937" stroke-width="4"/>
+  <path d="M250 480 Q250 440 290 440 L510 440 Q550 440 550 480 L550 660 Q550 680 530 680 L270 680 Q250 680 250 660 Z" fill="#ef4444" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M262 500 L538 500" stroke="#1f2937" stroke-width="5" stroke-linecap="round"/>
+  <rect x="470" y="492" width="14" height="36" rx="5" fill="#cbd5e1" stroke="#1f2937" stroke-width="4"/>
+  <path d="M262 660 L538 660 L538 668 Q538 680 526 680 L274 680 Q262 680 262 668 Z" fill="#991b1b" opacity="0.3"/>
+  <path d="M280 540 Q300 520 330 520" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" opacity="0.4"/>
+</svg>

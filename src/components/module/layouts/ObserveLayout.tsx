@@ -6,6 +6,7 @@ import type { ObserveLayout as Spec } from '@/data/modules/layouts';
 import { chart, font, radius, space, usePalette } from '@/theme';
 
 import { Caption } from '../reps/common';
+import { ShadowStick } from './ShadowStick';
 
 const CHART_HEIGHT = 180;
 
@@ -18,13 +19,25 @@ export function ObserveLayout({ spec }: { spec: Spec }) {
   const few = spec.columns.length <= 4;
   const c = usePalette();
   const [values, setValues] = useState(spec.initial);
+  // The column the figure shows: the one tapped last.
+  const [picked, setPicked] = useState(0);
   const setAt = (i: number, y: number, height: number) => {
+    setPicked(i);
     const raw = ((height - y) / height) * spec.max;
     const next = Math.max(0, Math.min(spec.max, Math.round(raw / spec.step) * spec.step));
     setValues(values.map((x, k) => (k === i ? next : x)));
   };
   return (
     <View style={styles.wrap}>
+      {spec.figure?.kind === 'shadowStick' ? (
+        <ShadowStick
+          stick={spec.figure.stick}
+          shadow={values[picked]!}
+          max={spec.max}
+          unit={spec.unit}
+          column={spec.columns[picked]!}
+        />
+      ) : null}
       <View style={[styles.chart, spec.histogram && styles.touching]}>
         {spec.histogram ? (
           // The count scale: 0, half and the top, level with the bars.

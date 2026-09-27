@@ -22,6 +22,8 @@ const thousandths = (x: number) => Number(x.toFixed(3));
 /** The exact quotient before a price is rounded to the cent ("10 ÷ 3 = 3.3333"), else nothing. */
 const subCent = (x: number, sum: string) =>
   Math.abs(x * 100 - Math.round(x * 100)) < 1e-6 ? [] : [`${sum} = ${formatNumber(x)}`];
+/** Left side − bound `d` against sign `s` (1 <, 2 ≤, 3 >, 4 ≥): is the inequality true? */
+const truth = (d: number, s: number) => [d < 0, d <= 0, d > 0, d >= 0][s - 1] ?? false;
 const q = (a: number, b: number) => (b === 0 ? undefined : exact(a / b));
 const gcd = (a: number, b: number): number =>
   !Number.isFinite(a) || !Number.isFinite(b) ? 1 : b === 0 ? a : gcd(b, a % b);
@@ -3138,12 +3140,22 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'A solution makes the inequality true. Put the value in and compare the two sides.',
       'The boundary is where the two sides are equal: 2n = 71 at n = 35.5.',
       '< and > leave the boundary out (open circle); ≤ and ≥ take it in (closed circle).',
+      'Pick the sign: 1 is <, 2 is ≤, 3 is >, 4 is ≥.',
       'Coefficients from 0.01 to 100; bounds and values from −1,000 to 1,000.',
     ],
     variables: [
       { id: 'a', symbol: 'a', name: 'Coefficient', min: 0.01, max: 100, step: 0.01 },
       { id: 'c', symbol: 'c', name: 'Bound', min: -1000, max: 1000, step: 0.01 },
       { id: 'x', symbol: 'x', name: 'Value to test', min: -1000, max: 1000, step: 0.01 },
+      {
+        id: 's',
+        symbol: 's',
+        name: 'Sign (1 <, 2 ≤, 3 >, 4 ≥)',
+        min: 1,
+        max: 4,
+        step: 1,
+        integer: true,
+      },
       {
         id: 'p',
         symbol: 'p',
@@ -3154,6 +3166,16 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       { id: 'e', symbol: 'e', name: 'Boundary', min: -100000, max: 100000, derived: true },
       { id: 'd', symbol: 'd', name: 'Left side − bound', min: -200000, max: 200000, derived: true },
+      {
+        id: 'h',
+        symbol: 'h',
+        name: 'A solution? (1 yes, 0 no)',
+        min: 0,
+        max: 1,
+        step: 1,
+        integer: true,
+        derived: true,
+      },
     ],
     relations: [
       {
@@ -3182,6 +3204,20 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         residual: (v: Values) => v.d! - v.p! + v.c!,
         solve: { d: (v: Values) => exact(v.p! - v.c!), p: () => undefined, c: () => undefined },
       },
+      {
+        id: 'h = d fits the sign',
+        display: '{d} with sign {s}: {h}',
+        check: (v: Values) => `${truth(v.d!, v.s!) ? 1 : 0} = ${v.h}`,
+        vars: ['h', 'd', 's'],
+        // Not a sum: NaN off the four signs, so the solver never treats it as one.
+        residual: (v: Values) =>
+          [1, 2, 3, 4].includes(v.s!) ? v.h! - (truth(v.d!, v.s!) ? 1 : 0) : NaN,
+        solve: {
+          h: (v: Values) => ([1, 2, 3, 4].includes(v.s!) ? (truth(v.d!, v.s!) ? 1 : 0) : undefined),
+          d: () => undefined,
+          s: () => undefined,
+        },
+      },
     ],
     steps: {
       'p = a × x': {
@@ -3199,22 +3235,32 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           expr: '{p} − {c}',
           how: 'Compare the left side with the bound: above it, below it, or on it.',
           note: (v) => {
-            const [p, c] = [sgn(v.p!), sgn(v.c!)];
             const sign = v.d! > 0 ? '>' : v.d! < 0 ? '<' : '=';
-            const yes = (t: boolean) => (t ? 'a solution' : 'not a solution');
-            return `(${p} ${sign} ${c}: ${sgn(v.x!)} is ${yes(v.d! > 0)} of > and ${yes(v.d! >= 0)} of ≥; ${yes(v.d! < 0)} of < and ${yes(v.d! <= 0)} of ≤)`;
+            return `(${sgn(v.p!)} ${sign} ${sgn(v.c!)})`;
           },
         },
       },
+      'h = d fits the sign': {
+        h: {
+          expr: (v: Values) => `${truth(v.d!, v.s!) ? 1 : 0}`,
+          how: 'Does the comparison match the sign? Then the value is a solution (1); if not, 0.',
+          work: (v: Values) => [
+            `${sgn(v.p!)} ${'<≤>≥'[v.s! - 1]} ${sgn(v.c!)} is ${truth(v.d!, v.s!) ? 'true' : 'false'}`,
+          ],
+          written: false,
+        },
+      },
     },
-    example: { a: 2, c: 71, x: 35, p: 70, e: 35.5, d: -1 },
-    startWith: ['a', 'c', 'x'],
+    example: { a: 2, c: 71, x: 35, s: 1, p: 70, e: 35.5, d: -1, h: 1 },
+    startWith: ['a', 'c', 'x', 's'],
+    // The solutions from the boundary: an open or closed circle, the arrow, and the value
+    // tested marked true or false.
     representation: {
       kind: 'integerLine',
       value: 'e',
-      second: 'x',
       min: -40,
       max: 40,
+      inequality: { sign: 's', test: 'x', letter: 'x' },
     },
   },
 

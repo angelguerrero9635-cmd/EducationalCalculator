@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <ellipse cx="400" cy="512" rx="310" ry="18" fill="#1f2937" opacity="0.12"/>
+  <g transform="rotate(-10 400 400)" stroke="#1f2937" stroke-width="6" stroke-linejoin="round">
+    <path d="M580 350 L660 372 Q720 390 720 400 Q720 410 660 428 L580 450 Z" fill="#ef4444"/>
+    <path d="M100 350 L580 350 L580 450 L100 450 Q80 450 80 430 L80 370 Q80 350 100 350 Z" fill="#ef4444"/>
+    <rect x="150" y="346" width="400" height="108" fill="#ef4444"/>
+    <rect x="240" y="382" width="220" height="36" rx="18" fill="#fde68a"/>
+  </g>
+  <g transform="rotate(-10 400 400)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M170 350 Q180 366 170 382 Q160 400 170 418 Q180 434 170 450" stroke="#1f2937" stroke-width="5"/>
+    <path d="M200 350 Q210 366 200 382 Q190 400 200 418 Q210 434 200 450" stroke="#1f2937" stroke-width="5"/>
+    <path d="M500 350 Q510 366 500 382 Q490 400 500 418 Q510 434 500 450" stroke="#1f2937" stroke-width="5"/>
+    <path d="M530 350 Q540 366 530 382 Q520 400 530 418 Q540 434 530 450" stroke="#1f2937" stroke-width="5"/>
+    <path d="M92 364 L92 384" stroke="#ffffff" stroke-width="8" opacity="0.5"/>
+    <path d="M226 364 L476 364" stroke="#ffffff" stroke-width="8" opacity="0.4"/>
+    <path d="M596 368 L650 382" stroke="#ffffff" stroke-width="8" opacity="0.55"/>
+    <path d="M100 440 L580 440" stroke="#7f1d1d" stroke-width="8" opacity="0.25"/>
+  </g>
+</svg>

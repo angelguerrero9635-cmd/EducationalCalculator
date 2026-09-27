@@ -76,6 +76,24 @@ export function Bill({ label, width = 64 }: { label: string; width?: number }) {
         stroke={c.billInk}
         strokeOpacity={0.5}
       />
+      {/* The value in the top-left and bottom-right corners, as on a real bill. */}
+      {[
+        [7, 12, 'start'],
+        [width - 6, h - 5, 'end'],
+      ].map(([x, y, anchor]) => (
+        <ChartText
+          key={anchor}
+          x={x}
+          y={y}
+          fontSize={chart.tiny - 2}
+          fontWeight="700"
+          textAnchor={anchor as 'start' | 'end'}
+          fill={c.billInk}
+          fillOpacity={0.8}
+        >
+          {label.replace('$', '')}
+        </ChartText>
+      ))}
       {/* The portrait's oval in the middle, with the value on it. */}
       <Circle
         cx={width / 2 + 0.5}

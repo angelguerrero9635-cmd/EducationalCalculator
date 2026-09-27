@@ -118,13 +118,13 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'desert', label: 'Desert', why: 'Desert animals need little water.' },
     ],
     cards: [
-      { label: 'Fish', bin: 'pond' },
-      { label: 'Frog', bin: 'pond' },
+      { label: 'Fish', bin: 'pond', figure: { kind: 'icon', icon: 'fish' } },
+      { label: 'Frog', bin: 'pond', figure: { kind: 'icon', icon: 'frog' } },
       { label: 'Duck', bin: 'pond' },
-      { label: 'Deer', bin: 'forest' },
+      { label: 'Deer', bin: 'forest', figure: { kind: 'icon', icon: 'deer' } },
       { label: 'Owl', bin: 'forest' },
       { label: 'Squirrel', bin: 'forest' },
-      { label: 'Camel', bin: 'desert' },
+      { label: 'Camel', bin: 'desert', figure: { kind: 'icon', icon: 'camel hump' } },
       { label: 'Lizard', bin: 'desert' },
       { label: 'Roadrunner', bin: 'desert' },
     ],
@@ -185,10 +185,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'wind', label: 'Which way the wind blows', why: 'It turns or points with the wind.' },
     ],
     cards: [
-      { label: 'Thermometer', bin: 'warm' },
-      { label: 'Rain gauge', bin: 'rain' },
-      { label: 'Wind vane', bin: 'wind' },
-      { label: 'Wind sock', bin: 'wind' },
+      { label: 'Thermometer', bin: 'warm', figure: { kind: 'icon', icon: 'thermometer' } },
+      { label: 'Rain gauge', bin: 'rain', figure: { kind: 'icon', icon: 'rain gauge' } },
+      { label: 'Wind vane', bin: 'wind', figure: { kind: 'icon', icon: 'wind vane' } },
+      { label: 'Wind sock', bin: 'wind', figure: { kind: 'icon', icon: 'wind sock' } },
     ],
   },
   {
@@ -591,7 +591,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Turtle shell', bin: 'safe' },
       { label: 'Bike helmet', bin: 'safe' },
-      { label: 'Bear fur', bin: 'warm' },
+      { label: 'Bear fur', bin: 'warm', figure: { kind: 'icon', icon: 'thick fur' } },
       { label: 'Winter coat', bin: 'warm' },
       { label: 'Duck feet', bin: 'swim' },
       { label: 'Swim fins', bin: 'swim' },
@@ -726,13 +726,67 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       },
       {
         label: 'Moon rising',
-        sky: { body: 'night', at: 'east' },
+        sky: { body: 'night', at: 'east', phase: 'full', rising: true },
         lines: ['The moon also rises in the east.'],
       },
       {
         label: 'Moon setting',
-        sky: { body: 'night', at: 'west' },
+        sky: { body: 'night', at: 'west', phase: 'full' },
         lines: ['Like the sun, the moon sets in the west.'],
+      },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.1.sky-patterns~moon-cycle',
+    title: 'The moon through a month',
+    use: 'Use this for “Which shows the moon a week after new moon?”',
+    assumptions: [
+      'The lit part grows for two weeks. Then it shrinks for two weeks.',
+      'As it grows, the right side is lit. As it shrinks, the left side is lit.',
+      'The row shows all eight shapes. The ring marks this one.',
+    ],
+    figure: { kind: 'sky' },
+    scenes: [
+      {
+        label: 'New moon',
+        sky: { body: 'night', at: 'high', phase: 'new', cycle: true },
+        lines: ['We can’t see the moon.'],
+      },
+      {
+        label: 'Growing crescent',
+        sky: { body: 'night', at: 'high', phase: 'waxing crescent', cycle: true },
+        lines: ['A thin sliver, lit on the right.'],
+      },
+      {
+        label: 'Half moon',
+        sky: { body: 'night', at: 'high', phase: 'first quarter', cycle: true },
+        lines: ['About a week after new moon.', 'The right half is lit.'],
+      },
+      {
+        label: 'Almost full',
+        sky: { body: 'night', at: 'high', phase: 'waxing gibbous', cycle: true },
+        lines: ['More than half is lit, and it is still growing.'],
+      },
+      {
+        label: 'Full moon',
+        sky: { body: 'night', at: 'high', phase: 'full', cycle: true },
+        lines: ['About two weeks after new moon.', 'The whole face is lit.'],
+      },
+      {
+        label: 'Shrinking',
+        sky: { body: 'night', at: 'high', phase: 'waning gibbous', cycle: true },
+        lines: ['The lit part gets smaller each night.'],
+      },
+      {
+        label: 'Other half',
+        sky: { body: 'night', at: 'high', phase: 'third quarter', cycle: true },
+        lines: ['About three weeks after new moon.', 'The left half is lit.'],
+      },
+      {
+        label: 'Shrinking crescent',
+        sky: { body: 'night', at: 'high', phase: 'waning crescent', cycle: true },
+        lines: ['A thin sliver, lit on the left.', 'Then it is new moon again.'],
       },
     ],
   },
@@ -980,9 +1034,9 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Hammer', bin: 'hard' },
       { label: 'Wooden chair', bin: 'hard' },
       { label: 'Cooking pan', bin: 'heat' },
-      { label: 'Kettle', bin: 'heat' },
-      { label: 'Pan handle', bin: 'noheat' },
-      { label: 'Oven mitt', bin: 'noheat' },
+      { label: 'Kettle', bin: 'heat', figure: { kind: 'icon', icon: 'kettle' } },
+      { label: 'Pan handle', bin: 'noheat', figure: { kind: 'icon', icon: 'pan handle' } },
+      { label: 'Oven mitt', bin: 'noheat', figure: { kind: 'icon', icon: 'oven mitt' } },
     ],
   },
   {
@@ -1045,11 +1099,11 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Whale', bin: 'ocean' },
       { label: 'Octopus', bin: 'ocean' },
-      { label: 'Cactus', bin: 'desert' },
-      { label: 'Camel', bin: 'desert' },
+      { label: 'Cactus', bin: 'desert', figure: { kind: 'icon', icon: 'cactus stem' } },
+      { label: 'Camel', bin: 'desert', figure: { kind: 'icon', icon: 'camel hump' } },
       { label: 'Monkey', bin: 'rainforest' },
       { label: 'Parrot', bin: 'rainforest' },
-      { label: 'Tree frog', bin: 'rainforest' },
+      { label: 'Tree frog', bin: 'rainforest', figure: { kind: 'icon', icon: 'tree frog' } },
       { label: 'Vines', bin: 'rainforest' },
       { label: 'Polar bear', bin: 'arctic' },
       { label: 'Walrus', bin: 'arctic' },
@@ -1298,7 +1352,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'not', label: 'Not pulled', why: 'Magnets do not pull on these.' },
     ],
     cards: [
-      { label: 'Paper clip', bin: 'pulled' },
+      { label: 'Paper clip', bin: 'pulled', figure: { kind: 'icon', icon: 'paper clip' } },
       { label: 'Iron nail', bin: 'pulled' },
       { label: 'Soup can (steel)', bin: 'pulled' },
       { label: 'Fridge door', bin: 'pulled' },
@@ -1381,15 +1435,15 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'alive', label: 'Born alive', why: 'The young grow inside the mother.' },
     ],
     cards: [
-      { label: 'Bird', bin: 'eggs' },
-      { label: 'Frog', bin: 'eggs' },
-      { label: 'Grasshopper', bin: 'eggs' },
-      { label: 'Turtle', bin: 'eggs' },
-      { label: 'Fish', bin: 'eggs' },
-      { label: 'Cat', bin: 'alive' },
-      { label: 'Dog', bin: 'alive' },
-      { label: 'Dolphin', bin: 'alive' },
-      { label: 'Person', bin: 'alive' },
+      { label: 'Bird', bin: 'eggs', figure: { kind: 'icon', icon: 'bird' } },
+      { label: 'Frog', bin: 'eggs', figure: { kind: 'icon', icon: 'frog' } },
+      { label: 'Grasshopper', bin: 'eggs', figure: { kind: 'icon', icon: 'grasshopper' } },
+      { label: 'Turtle', bin: 'eggs', figure: { kind: 'icon', icon: 'turtle' } },
+      { label: 'Fish', bin: 'eggs', figure: { kind: 'icon', icon: 'fish' } },
+      { label: 'Cat', bin: 'alive', figure: { kind: 'icon', icon: 'cat' } },
+      { label: 'Dog', bin: 'alive', figure: { kind: 'icon', icon: 'dog' } },
+      { label: 'Dolphin', bin: 'alive', figure: { kind: 'icon', icon: 'dolphin' } },
+      { label: 'Person', bin: 'alive', figure: { kind: 'icon', icon: 'person' } },
     ],
   },
   {
@@ -1429,11 +1483,11 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: 'Butterfly', bin: 'shape' },
-      { label: 'Frog', bin: 'shape' },
+      { label: 'Frog', bin: 'shape', figure: { kind: 'icon', icon: 'frog' } },
       { label: 'Ladybug', bin: 'shape' },
       { label: 'Mosquito', bin: 'shape' },
-      { label: 'Dog', bin: 'bigger' },
-      { label: 'Turtle', bin: 'bigger' },
+      { label: 'Dog', bin: 'bigger', figure: { kind: 'icon', icon: 'dog' } },
+      { label: 'Turtle', bin: 'bigger', figure: { kind: 'icon', icon: 'turtle' } },
       { label: 'Chicken', bin: 'bigger' },
       { label: 'Human', bin: 'bigger' },
     ],
@@ -1484,7 +1538,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'cold', label: 'Cold', why: 'Animals with thick fur lived here.' },
     ],
     cards: [
-      { label: 'Fish', bin: 'water' },
+      { label: 'Fish', bin: 'water', figure: { kind: 'icon', icon: 'fish' } },
       { label: 'Clam shell', bin: 'water' },
       { label: 'Coral', bin: 'water' },
       { label: 'Shark tooth', bin: 'water' },
@@ -1510,11 +1564,11 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'not', label: 'Not at all', why: 'It needs water, shade or cold the desert lacks.' },
     ],
     cards: [
-      { label: 'Camel', bin: 'well' },
-      { label: 'Cactus', bin: 'well' },
-      { label: 'Deer', bin: 'less' },
+      { label: 'Camel', bin: 'well', figure: { kind: 'icon', icon: 'camel hump' } },
+      { label: 'Cactus', bin: 'well', figure: { kind: 'icon', icon: 'cactus stem' } },
+      { label: 'Deer', bin: 'less', figure: { kind: 'icon', icon: 'deer' } },
       { label: 'Horse', bin: 'less' },
-      { label: 'Frog', bin: 'not' },
+      { label: 'Frog', bin: 'not', figure: { kind: 'icon', icon: 'frog' } },
       { label: 'Polar bear', bin: 'not' },
       { label: 'Fern', bin: 'not' },
     ],
@@ -1681,7 +1735,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     ],
     cards: [
       { label: 'Copper wire', bin: 'conductor' },
-      { label: 'Paper clip', bin: 'conductor' },
+      { label: 'Paper clip', bin: 'conductor', figure: { kind: 'icon', icon: 'paper clip' } },
       { label: 'Aluminum foil', bin: 'conductor' },
       { label: 'Coin', bin: 'conductor' },
       { label: 'Steel nail', bin: 'conductor' },
@@ -1903,30 +1957,6 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       return up
         ? `More water moved the sand farther: from ${v[0]} cm to ${v[v.length - 1]} cm. More water means more erosion.`
         : 'The distances go up and down. Pour the same way each time and measure again.';
-    },
-  },
-  {
-    kind: 'observe',
-    id: 's.4.weathering~grass-slope',
-    title: 'Grass on a slope',
-    use: 'Use this for “How does grass keep soil from washing away?”',
-    assumptions: [
-      'Two trays of soil sit on the same slope. One has grass growing in it.',
-      'Pour the same water on each. Weigh the soil that washes off.',
-      'Tap a bar to change a reading.',
-    ],
-    columns: ['Bare soil', 'Soil with grass'],
-    rowLabel: 'Soil washed off',
-    unit: 'g',
-    max: 400,
-    step: 10,
-    initial: [320, 60],
-    pattern: (v) => {
-      const [bare, grass] = v as [number, number];
-      if (grass < bare) return 'Grass roots held the soil: less washed away.';
-      if (grass > bare)
-        return 'More washed off the grassy tray. Check that the water was the same.';
-      return 'The same amount washed off both.';
     },
   },
   {
@@ -2299,10 +2329,10 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Grass', bin: 'producer' },
       { label: 'Oak tree', bin: 'producer' },
       { label: 'Algae', bin: 'producer' },
-      { label: 'Rabbit', bin: 'consumer' },
-      { label: 'Deer', bin: 'consumer' },
-      { label: 'Hawk', bin: 'consumer' },
-      { label: 'Frog', bin: 'consumer' },
+      { label: 'Rabbit', bin: 'consumer', figure: { kind: 'icon', icon: 'rabbit' } },
+      { label: 'Deer', bin: 'consumer', figure: { kind: 'icon', icon: 'deer' } },
+      { label: 'Hawk', bin: 'consumer', figure: { kind: 'icon', icon: 'hawk' } },
+      { label: 'Frog', bin: 'consumer', figure: { kind: 'icon', icon: 'frog' } },
       { label: 'Mushroom', bin: 'decomposer' },
       { label: 'Bacteria', bin: 'decomposer' },
       { label: 'Earthworm', bin: 'decomposer' },
@@ -2344,15 +2374,63 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { id: 'both', label: 'Eats both', why: 'It eats plants and animals.' },
     ],
     cards: [
-      { label: 'Rabbit', bin: 'plants' },
-      { label: 'Deer', bin: 'plants' },
-      { label: 'Grasshopper', bin: 'plants' },
-      { label: 'Hawk', bin: 'animals' },
-      { label: 'Snake', bin: 'animals' },
-      { label: 'Heron', bin: 'animals' },
-      { label: 'Raccoon', bin: 'both' },
-      { label: 'Bear', bin: 'both' },
-      { label: 'Person', bin: 'both' },
+      { label: 'Rabbit', bin: 'plants', figure: { kind: 'icon', icon: 'rabbit' } },
+      { label: 'Deer', bin: 'plants', figure: { kind: 'icon', icon: 'deer' } },
+      { label: 'Grasshopper', bin: 'plants', figure: { kind: 'icon', icon: 'grasshopper' } },
+      { label: 'Hawk', bin: 'animals', figure: { kind: 'icon', icon: 'hawk' } },
+      { label: 'Snake', bin: 'animals', figure: { kind: 'icon', icon: 'snake' } },
+      { label: 'Heron', bin: 'animals', figure: { kind: 'icon', icon: 'heron' } },
+      { label: 'Raccoon', bin: 'both', figure: { kind: 'icon', icon: 'raccoon' } },
+      { label: 'Bear', bin: 'both', figure: { kind: 'icon', icon: 'bear' } },
+      { label: 'Person', bin: 'both', figure: { kind: 'icon', icon: 'person' } },
+    ],
+  },
+  {
+    kind: 'explore',
+    id: 's.5.food-webs~web',
+    title: 'What happens if one is removed?',
+    use: 'Use this for “What would most likely happen if the snakes were removed?”',
+    assumptions: [
+      'Each arrow means: is eaten by. The sun’s arrow is its energy going into the grass.',
+      'When an animal is removed, what it ate grows in number.',
+      'What ate it has less food, unless it can eat something else.',
+    ],
+    figure: { kind: 'foodWeb' },
+    scenes: [
+      {
+        label: 'Whole web',
+        web: {},
+        lines: ['A meadow food web.', 'Follow the arrows from the sun to the hawk.'],
+      },
+      {
+        label: 'One chain',
+        web: { chain: ['sun', 'grass', 'grasshopper', 'frog', 'snake', 'hawk'] },
+        lines: ['Sun, grass, grasshopper, frog, snake, hawk.', 'Energy passes along each arrow.'],
+      },
+      {
+        label: 'No snakes',
+        web: { removed: 'snake', more: ['mouse', 'frog'] },
+        lines: [
+          'Nothing eats the mice and frogs as much, so there are more of them.',
+          'The hawk still eats mice and rabbits.',
+        ],
+      },
+      {
+        label: 'No frogs',
+        web: { removed: 'frog', more: ['grasshopper'], fewer: ['snake'] },
+        lines: [
+          'More grasshoppers live, since no frogs eat them.',
+          'The snakes have less to eat, so there are fewer.',
+        ],
+      },
+      {
+        label: 'No grass',
+        web: { removed: 'grass', fewer: ['rabbit', 'grasshopper', 'mouse'] },
+        lines: [
+          'Without grass, the plant-eaters have no food.',
+          'Every animal above them has less to eat too.',
+        ],
+      },
     ],
   },
   {
@@ -2440,8 +2518,8 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Wind', bin: 'atmo' },
       { label: 'Nitrogen and oxygen in the air', bin: 'atmo' },
       { label: 'Tree', bin: 'bio' },
-      { label: 'Fish', bin: 'bio' },
-      { label: 'Bird', bin: 'bio' },
+      { label: 'Fish', bin: 'bio', figure: { kind: 'icon', icon: 'fish' } },
+      { label: 'Bird', bin: 'bio', figure: { kind: 'icon', icon: 'bird' } },
     ],
   },
   {
@@ -2574,7 +2652,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A meter stick stands straight up in the same spot. Measure its shadow at noon.',
       'These are for a town in the middle of the United States.',
-      'Tap a bar to change that month’s shadow.',
+      'Tap a bar to change that month’s shadow and see the stick that month.',
     ],
     columns: ['Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'],
     rowLabel: 'Noon shadow',
@@ -2582,6 +2660,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     max: 250,
     step: 5,
     initial: [200, 135, 60, 30, 50, 115],
+    figure: { kind: 'shadowStick', stick: 100 },
     pattern: (v) => {
       const months = ['December', 'February', 'April', 'June', 'August', 'October'];
       const hi = v.indexOf(Math.max(...v));

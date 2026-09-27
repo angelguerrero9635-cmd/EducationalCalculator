@@ -6,7 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
-import { FAHRENHEIT, minus, times, whole } from '../helpers';
+import { FAHRENHEIT, atLeast, minus, moreThan, times, whole } from '../helpers';
 import type { ModuleDef } from '../types';
 
 const F = FAHRENHEIT;
@@ -239,6 +239,39 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
         max: 150,
         scale: 25,
       },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const saved = moreThan(
+      'd',
+      'a',
+      'b',
+      'bare tray',
+      'grass tray',
+      ['more', 'less'],
+      '2',
+      'Take the grass tray’s soil from the bare tray’s. That is the soil the grass saved.',
+    );
+    return {
+      id: 's.4.weathering~grass-slope',
+      title: 'Grass on a slope',
+      use: 'Use this for “How does grass keep soil from washing away?”',
+      pictureLabels: ['d'],
+      assumptions: [
+        'Two trays of soil sit on the same slope. One has grass growing in it.',
+        'Pour the same water on each. The soil that washes off collects in the jar below.',
+        'Weigh the soil in each jar. Grass roots hold the soil, so less washes away.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Soil washed off the bare tray', 0, 400), unit: 'g' },
+        { ...whole('b', 'b', 'Soil washed off the grass tray', 0, 400), unit: 'g' },
+        { ...whole('d', 'd', 'Soil the grass saved', 0, 400), unit: 'g' },
+      ],
+      relations: [{ ...saved.relation, display: '{a} − {b} = {d}' }, atLeast('a', 'b')],
+      steps: { ...saved.steps, 'a ≥ b': {} },
+      example: { a: 320, b: 60, d: 260 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'grassSlope', bare: 'a', grass: 'b', difference: 'd', max: 400 },
     } satisfies ModuleDef;
   })(),
 ];

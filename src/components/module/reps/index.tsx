@@ -2,6 +2,7 @@ import type { Representation } from '@/data/modules';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
+import { Hanger } from './Hanger';
 import { RatioTape } from './RatioTape';
 import { IntegerLine } from './IntegerLine';
 import { PercentBar } from './PercentBar';
@@ -10,7 +11,16 @@ import { FractionFit } from './FractionFit';
 import { Venn } from './Venn';
 import { BaseHeight } from './BaseHeight';
 import { Net } from './Net';
+import { CrossSection } from './CrossSection';
 import { DotPlot } from './DotPlot';
+import { DotPlotPair } from './DotPlotPair';
+import { Sample } from './Sample';
+import { Spinner } from './Spinner';
+import { DiceGrid } from './DiceGrid';
+import { TreeDiagram } from './TreeDiagram';
+import { Marbles } from './Marbles';
+import { EnergyPyramid } from './EnergyPyramid';
+import { Generations } from './Generations';
 import { FieldOfView } from './FieldOfView';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
@@ -38,13 +48,19 @@ import { Ruler } from './Ruler';
 import { LinePlot } from './LinePlot';
 import { SkipCount } from './SkipCount';
 import { Tape } from './Tape';
+import { TapeEquation } from './TapeEquation';
 import { UnitTiles } from './UnitTiles';
 import { Bars } from './Bars';
 import { CircleDiagram } from './CircleDiagram';
+import { ScaleCopy } from './ScaleCopy';
 import { ForceDiagram } from './ForceDiagram';
 import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
+import { LinearFunction, LineSystem } from './Lines';
+import { FunctionMachine } from './FunctionMachine';
+import { Mapping } from './Mapping';
+import { Transformation } from './Transformation';
 import { RectangleDiagram } from './Rectangle';
 import { Rectilinear } from './Rectilinear';
 import { AreaModel } from './AreaModel';
@@ -78,6 +94,29 @@ import { FactorTree } from './FactorTree';
 import { Protractor } from './Protractor';
 import { Wave } from './Wave';
 import { PunnettSquare } from './PunnettSquare';
+import { GrassSlope } from './GrassSlope';
+import { Flashlights } from './Flashlights';
+import { LeafCount } from './LeafCount';
+import { SignTable } from './SignTable';
+import { ZeroPairs } from './ZeroPairs';
+import { CurvedSolid } from './CurvedSolid';
+import { Spectrum } from './Spectrum';
+import { Circuit } from './Circuit';
+import { Orbit } from './Orbit';
+import { Electromagnet } from './Electromagnet';
+import { Scatter } from './Scatter';
+import { RootSquare } from './RootSquare';
+import { FactorRows } from './FactorRows';
+import { PowerScale } from './PowerScale';
+import { EquationBalance } from './EquationBalance';
+import { Molecules } from './Molecules';
+import { Reaction } from './Reaction';
+import { HeatingCurve } from './HeatingCurve';
+import { PeriodicTable } from './PeriodicTable';
+import { MotionGraph } from './MotionGraph';
+import { ForceCart } from './ForceCart';
+import { Skaters } from './Skaters';
+import { EnergyTrack } from './EnergyTrack';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -95,15 +134,38 @@ export const representationTitle = (r: Representation) =>
           'pieChart',
           'coordinatePlane',
           'placeValueChart',
+          'scatter',
+          'linearFunction',
+          'lineSystem',
+          'heatingCurve',
+          'motionGraph',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'linearFunction':
+      return <LinearFunction spec={spec} calc={calc} />;
+    case 'lineSystem':
+      return <LineSystem spec={spec} calc={calc} />;
+    case 'motionGraph':
+      return <MotionGraph spec={spec} calc={calc} />;
+    case 'skaters':
+      return <Skaters spec={spec} calc={calc} />;
+    case 'energyTrack':
+      return <EnergyTrack spec={spec} calc={calc} />;
+    case 'functionMachine':
+      return <FunctionMachine spec={spec} calc={calc} />;
+    case 'mapping':
+      return <Mapping spec={spec} calc={calc} />;
+    case 'transformation':
+      return <Transformation spec={spec} calc={calc} />;
     case 'tape':
       return 'ratio' in spec ? (
         <RatioTape spec={spec} calc={calc} />
+      ) : 'equation' in spec ? (
+        <TapeEquation spec={spec} calc={calc} />
       ) : (
         <Tape spec={spec} calc={calc} />
       );
@@ -129,6 +191,40 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Angles spec={spec} calc={calc} />;
     case 'thermometers':
       return <Thermometers spec={spec} calc={calc} />;
+    case 'grassSlope':
+      return <GrassSlope spec={spec} calc={calc} />;
+    case 'flashlights':
+      return <Flashlights spec={spec} calc={calc} />;
+    case 'leafCount':
+      return <LeafCount spec={spec} calc={calc} />;
+    case 'electromagnet':
+      return <Electromagnet spec={spec} calc={calc} />;
+    case 'orbit':
+      return <Orbit spec={spec} calc={calc} />;
+    case 'circuit':
+      return <Circuit spec={spec} calc={calc} />;
+    case 'spectrum':
+      return <Spectrum spec={spec} calc={calc} />;
+    case 'curvedSolid':
+      return <CurvedSolid spec={spec} calc={calc} />;
+    case 'scatter':
+      return <Scatter spec={spec} calc={calc} />;
+    case 'rootSquare':
+      return <RootSquare spec={spec} calc={calc} />;
+    case 'factorRows':
+      return <FactorRows spec={spec} calc={calc} />;
+    case 'powerScale':
+      return <PowerScale spec={spec} calc={calc} />;
+    case 'equationBalance':
+      return <EquationBalance spec={spec} calc={calc} />;
+    case 'molecules':
+      return <Molecules spec={spec} calc={calc} />;
+    case 'reaction':
+      return <Reaction spec={spec} calc={calc} />;
+    case 'heatingCurve':
+      return <HeatingCurve spec={spec} calc={calc} />;
+    case 'periodicTable':
+      return <PeriodicTable spec={spec} calc={calc} />;
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':
@@ -167,6 +263,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Grid100 spec={spec} calc={calc} />;
     case 'circle':
       return <CircleDiagram spec={spec} calc={calc} />;
+    case 'scaleCopy':
+      return <ScaleCopy spec={spec} calc={calc} />;
     case 'rightTriangle':
       return <RightTriangle spec={spec} calc={calc} />;
     case 'plot':
@@ -174,7 +272,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'table':
       return <ValueTable spec={spec} calc={calc} />;
     case 'force':
-      return <ForceDiagram spec={spec} calc={calc} />;
+      return spec.object === 'cart' ? (
+        <ForceCart spec={spec} calc={calc} />
+      ) : (
+        <ForceDiagram spec={spec} calc={calc} />
+      );
     case 'tenFrame':
       return <TenFrame spec={spec} calc={calc} />;
     case 'pictureGraph':
@@ -189,6 +291,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PolygonShape spec={spec} calc={calc} />;
     case 'balance':
       return <Balance spec={spec} calc={calc} />;
+    case 'hanger':
+      return <Hanger spec={spec} calc={calc} />;
     case 'baseTen':
       return <BaseTen spec={spec} calc={calc} />;
     case 'unitTiles':
@@ -243,6 +347,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PercentBar spec={spec} calc={calc} />;
     case 'ratioTable':
       return <RatioTable spec={spec} calc={calc} />;
+    case 'zeroPairs':
+      return <ZeroPairs spec={spec} calc={calc} />;
+    case 'signTable':
+      return <SignTable spec={spec} calc={calc} />;
     case 'fractionFit':
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
@@ -251,8 +359,28 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <BaseHeight spec={spec} calc={calc} />;
     case 'net':
       return <Net spec={spec} calc={calc} />;
+    case 'crossSection':
+      return <CrossSection spec={spec} calc={calc} />;
     case 'dotPlot':
-      return <DotPlot spec={spec} calc={calc} />;
+      return spec.second ? (
+        <DotPlotPair spec={{ ...spec, second: spec.second }} calc={calc} />
+      ) : (
+        <DotPlot spec={spec} calc={calc} />
+      );
+    case 'sample':
+      return <Sample spec={spec} calc={calc} />;
+    case 'spinner':
+      return <Spinner spec={spec} calc={calc} />;
+    case 'diceGrid':
+      return <DiceGrid spec={spec} calc={calc} />;
+    case 'treeDiagram':
+      return <TreeDiagram spec={spec} calc={calc} />;
+    case 'marbles':
+      return <Marbles spec={spec} calc={calc} />;
+    case 'energyPyramid':
+      return <EnergyPyramid spec={spec} calc={calc} />;
+    case 'generations':
+      return <Generations spec={spec} calc={calc} />;
     case 'fieldOfView':
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':

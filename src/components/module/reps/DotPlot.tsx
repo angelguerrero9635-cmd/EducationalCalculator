@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, fitLabel, Caption, ChartText, useFrozen, useRep } from './common';
 import { tickStep } from './IntegerLine';
+import { medianSentence, middleOf } from './median';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'dotPlot' }>;
@@ -16,16 +17,22 @@ type Spec = Extract<Representation, { kind: 'dotPlot' }>;
  * A dot plot: one dot per data value, stacked where values repeat, on a number line. The mean
  * sits under the line as a balance point (a triangle); the median is a dashed line; the range
  * a bracket from the least to the greatest; `deviations` draws each dot's distance from the
- * mean.
+ * mean. With `count`, only the first n values are drawn and the middle one (or two) is ringed
+ * at the median.
  */
 export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  // With a count, only the first `count` values are data; the rest are hidden boxes.
-  const n = spec.count && rep.known(spec.count) ? rep.shown(spec.count) : spec.data.length;
-  const ids = spec.data.slice(0, n);
-  const known = ids.filter(rep.known);
+  // With `count`, only the first n values are data; a "?" count draws every typed value, faded.
+  const n =
+    spec.count && rep.known(spec.count)
+      ? Math.max(0, Math.min(spec.data.length, Math.round(rep.shown(spec.count))))
+      : undefined;
+  const used = spec.count && n !== undefined ? spec.data.slice(0, n) : spec.data;
+  const faded = spec.count !== undefined && n === undefined;
+  const known = used.filter(rep.known);
   const data = known.map((id) => rep.shown(id));
+  const complete = known.length === used.length;
   const extent = useFrozen(
     (() => {
       const lo = Math.min(spec.min, ...data);
@@ -37,8 +44,22 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const [lo, hi] = extent.value;
   const step = tickStep(hi - lo, 12);
   const mean = spec.mean && rep.known(spec.mean) ? rep.shown(spec.mean) : undefined;
-  const median = spec.median && rep.known(spec.median) ? rep.shown(spec.median) : undefined;
   const sorted = [...data].sort((a, b) => a - b);
+  // Count mode marks the middle of the first n values: ring the middle dot(s). The median is
+  // the module's value when it has one (not drawn while it is "?"), else the typed values'.
+  const middle = spec.count && !faded && complete ? middleOf(sorted) : undefined;
+  const median = spec.median
+    ? rep.known(spec.median)
+      ? rep.shown(spec.median)
+      : undefined
+    : middle?.median;
+  // Each dot's place in order (ties by position), so the middle ones can be ringed.
+  const rank = new Map(
+    data
+      .map((v, i) => ({ v, i }))
+      .sort((a, b) => a.v - b.v || a.i - b.i)
+      .map((d, k) => [d.i, k]),
+  );
 
   return (
     <View>
@@ -54,13 +75,14 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
             const key = Number(v.toFixed(4));
             const level = seen.get(key) ?? 0;
             seen.set(key, level + 1);
-            return { v, i, y: lineY - r - 2 - level * (2 * r + 2) };
+            // Count mode rings the middle dots: leave room for the ring between stacked dots.
+            return { v, i, y: lineY - r - 2 - level * (2 * r + (spec.count ? 6 : 2)) };
           });
           const ticks = Array.from({ length: Math.round((hi - lo) / step) + 1 }, (_, i) =>
             Number((lo + i * step).toFixed(6)),
           );
           return (
-            <Svg width={w} height={h}>
+            <Svg width={w} height={h} opacity={faded ? 0.4 : 1}>
               <Line
                 x1={pad - 6}
                 y1={lineY}
@@ -97,9 +119,6 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     />
                   ))
                 : null}
-              {dots.map((d) => (
-                <Circle key={d.i} cx={x(d.v)} cy={d.y} r={r} fill={c.chartInk} />
-              ))}
               {median !== undefined ? (
                 <G>
                   <Line
@@ -121,6 +140,24 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </ChartText>
                 </G>
               ) : null}
+              {dots.map((d) => {
+                const mid = middle?.ranks.includes(rank.get(d.i)!);
+                return (
+                  <G key={d.i}>
+                    <Circle cx={x(d.v)} cy={d.y} r={r} fill={mid ? c.chartHighlight : c.chartInk} />
+                    {mid ? (
+                      <Circle
+                        cx={x(d.v)}
+                        cy={d.y}
+                        r={r + 3}
+                        fill="none"
+                        stroke={c.chartHighlight}
+                        strokeWidth={chart.strokeLight}
+                      />
+                    ) : null}
+                  </G>
+                );
+              })}
               {mean !== undefined ? (
                 <G>
                   <Path d={`M ${x(mean)} ${lineY + 22} l -8 12 l 16 0 z`} fill={c.chartHighlight} />
@@ -166,17 +203,27 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {data.length
-          ? `${data.length} values: ${sorted.map((v) => formatNumber(v)).join(', ')}.`
-          : 'Type the data values.'}
+        {middle
+          ? `${data.length} values in order: ${sorted.map((v) => formatNumber(v)).join(', ')}. ${medianSentence(
+              sorted,
+              median === undefined ? '?' : formatNumber(median),
+            )}`
+          : spec.count && !faded && !complete
+            ? `Type the first ${n} values.`
+            : data.length
+              ? `${data.length} values: ${sorted.map((v) => formatNumber(v)).join(', ')}.`
+              : 'Type the data values.'}
       </Caption>
       <Steppers
         calc={calc}
-        items={ids.map((id) => ({
-          var: id,
-          steps: [1],
-          pin: ids.filter((x) => x !== id),
-        }))}
+        items={[
+          ...used.map((id) => ({
+            var: id,
+            steps: [1],
+            pin: [...used, ...(spec.count ? [spec.count] : [])].filter((x) => x !== id),
+          })),
+          ...(spec.count ? [{ var: spec.count, steps: [1], pin: used }] : []),
+        ]}
       />
     </View>
   );

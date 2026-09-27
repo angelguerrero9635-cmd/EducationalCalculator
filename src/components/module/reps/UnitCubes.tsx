@@ -7,6 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
+import { ScaledBox } from './ScaledBox';
 import { Steppers } from './Steppers';
 
 /** "1 cube", "12 cubes". */
@@ -39,6 +40,48 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const across = L + L2;
   const deep = Math.max(W, W2);
   const tall = Math.max(H, H2);
+  const steppers = (
+    <Steppers
+      calc={calc}
+      // A value both boxes share ("Width of both") gets one slider, not two.
+      items={[
+        ...new Set([
+          spec.length,
+          spec.width,
+          spec.height,
+          ...(two ? [two.length, two.width, two.height] : []),
+        ]),
+      ].map((id, _, all) => ({
+        var: id,
+        steps: [1],
+        pin: all.filter((x) => x !== id),
+      }))}
+    />
+  );
+
+  // Past `max` a side (with `scale`), a box drawn to scale instead of cubes.
+  if (spec.scale && k === 1 && !two && Math.max(rl, rw, rh) > spec.max) {
+    const unit = rep.unit(spec.length);
+    const [a, b, d] = [spec.length, spec.width, spec.height].map((id) => rep.shown(id));
+    return (
+      <View>
+        <ScaledBox
+          length={a!}
+          width={b!}
+          height={d!}
+          labels={[rep.label(spec.length), rep.label(spec.width), rep.label(spec.height)]}
+          unitName={`1 ${unit ?? 'unit'} cube`}
+          faded={!known}
+        />
+        <Caption>
+          {known
+            ? `${formatNumber(a!)} × ${formatNumber(b!)} × ${formatNumber(d!)} = ${rep.value(spec.volume)}. That many 1 ${unit ?? 'unit'} cubes fill the box.`
+            : 'Type the length, width and height to draw the box.'}
+        </Caption>
+        {steppers}
+      </View>
+    );
+  }
 
   return (
     <View>
@@ -159,22 +202,7 @@ export function UnitCubes({ spec, calc }: { spec: Spec; calc: Calculator }) {
               ? `The shaded bottom layer is ${rl} × ${rw} = ${formatNumber(layer)} ${cubes(layer)}. ${rh} ${rh === 1 ? 'layer' : 'layers'}: ${formatNumber(layer)} × ${rh} = ${rep.value(spec.volume, false)} ${cubes(rep.val(spec.volume))}.`
               : 'Type the length, width and height to fill the box.'}
       </Caption>
-      <Steppers
-        calc={calc}
-        // A value both boxes share ("Width of both") gets one slider, not two.
-        items={[
-          ...new Set([
-            spec.length,
-            spec.width,
-            spec.height,
-            ...(two ? [two.length, two.width, two.height] : []),
-          ]),
-        ].map((id, _, all) => ({
-          var: id,
-          steps: [1],
-          pin: all.filter((x) => x !== id),
-        }))}
-      />
+      {steppers}
     </View>
   );
 }

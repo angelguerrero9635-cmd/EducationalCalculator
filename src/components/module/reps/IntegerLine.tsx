@@ -8,6 +8,8 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { InequalityLine } from './Inequality';
+import { SignedJump } from './SignedJump';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'integerLine' }>;
@@ -27,9 +29,20 @@ export function tickStep(span: number, most = 20): number {
 /**
  * A number line through 0 (across, or up and down for temperatures and heights): the number
  * as a point to drag, its opposite mirrored through 0 with a dashed arc, its distance from 0
- * bracketed (absolute value), or a second point with the jump between the two.
+ * bracketed (absolute value), or a second point with the jump between the two. With
+ * `inequality`, an inequality's solutions instead (Inequality.tsx).
  */
 export function IntegerLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  return spec.inequality ? (
+    <InequalityLine spec={spec} calc={calc} />
+  ) : spec.jump ? (
+    <SignedJump spec={spec} calc={calc} />
+  ) : (
+    <PointLine spec={spec} calc={calc} />
+  );
+}
+
+function PointLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef(0);

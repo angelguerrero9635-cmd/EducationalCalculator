@@ -1,3 +1,5 @@
+import type { PlanetName } from '../typesPhysics8';
+
 /**
  * Module layouts other than the calculator (docs/MODULE_GUIDE.md, "Module layouts"). A
  * lesson whose idea isn't a quantity relationship gets one of these: the page keeps the
@@ -95,6 +97,8 @@ export type CardFigure =
       shape?: 'box' | 'round' | 'long' | 'branched' | 'rod';
       chloroplasts?: boolean;
     }
+  /** A ball-and-stick molecule, or one atom ("H2O", "CO2", "Fe"), in the classroom colors. */
+  | { kind: 'molecule'; formula: string }
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -126,7 +130,45 @@ export type CardIcon =
   | 'door'
   | 'eraser'
   | 'bed'
-  | 'bus';
+  | 'bus'
+  // Drawn in their materials (layouts/cardIcons.tsx).
+  | 'thermometer'
+  | 'rain gauge'
+  | 'wind vane'
+  | 'wind sock'
+  | 'bird'
+  | 'frog'
+  | 'grasshopper'
+  | 'turtle'
+  | 'fish'
+  | 'cat'
+  | 'dog'
+  | 'dolphin'
+  | 'person'
+  | 'tree frog'
+  | 'warbler'
+  | 'white hare'
+  | 'thick fur'
+  | 'blubber'
+  | 'camel hump'
+  | 'cactus stem'
+  | 'rabbit'
+  | 'deer'
+  | 'hawk'
+  | 'snake'
+  | 'heron'
+  | 'raccoon'
+  | 'bear'
+  | 'meter stick'
+  | 'pencil'
+  | 'workbook'
+  | 'water bottle'
+  | 'milk carton'
+  | 'juice box'
+  | 'eyedropper'
+  | 'pan handle'
+  | 'oven mitt'
+  | 'kettle';
 
 /** Stages to put in order, each with how long it takes; the total under the strip. */
 export interface SequenceLayout extends LayoutBase {
@@ -189,7 +231,104 @@ export type Figure =
   /** The continents at a time in the past, with a clue that they were joined (Grade 6). */
   | { kind: 'continents' }
   /** The rock cycle: three kinds of rock and the processes between them (Grade 6). */
-  | { kind: 'rockCycle' };
+  | { kind: 'rockCycle' }
+  /**
+   * A meadow food web: the sun, grass, rabbit, grasshopper, mouse, frog, snake and hawk, each
+   * arrow meaning "is eaten by" (the sun's arrow: its energy goes into the grass).
+   */
+  | { kind: 'foodWeb' }
+  /**
+   * A leaf making sugar in the light (photosynthesis) and a cell using it (respiration), each
+   * with its inputs and outputs as labelled arrows and its word equation (Grade 7).
+   */
+  | { kind: 'leafCell' }
+  /**
+   * The carbon cycle: the air's carbon dioxide, a tree, an animal, the dead matter and its
+   * decomposers, fossil fuels, a factory and the ocean, with the processes as arrows (Grade 7).
+   */
+  | { kind: 'carbonCycle' }
+  /**
+   * A family's pedigree chart in the standard symbols: squares are males, circles females,
+   * filled has the trait, half-filled carries it; a line joins parents, their children hang
+   * below. Generations are numbered I, II, III and people 1, 2, … in each (Grade 7).
+   */
+  | { kind: 'pedigree'; people: PedigreePerson[] }
+  /**
+   * Ball-and-stick molecules (Grade 7, `chemFigures.tsx`): one molecule big with its atoms
+   * named, or several in a box packed as a solid, liquid or gas; `after` adds a second box
+   * behind an arrow (a reaction or a change).
+   */
+  | { kind: 'molecules' }
+  /** Boxes of particles as a solid, a liquid and a gas, with the changes between them as arrows. */
+  | { kind: 'phases' }
+  /** The periodic table with an element, a group or a period lit (Grade 8). */
+  | { kind: 'periodicTable' }
+  /** The planets and Earth’s moon side by side, to scale by size, beside the sun’s edge (Grade 8). */
+  | { kind: 'planets' };
+
+/** One person in a `pedigree` figure. */
+export interface PedigreePerson {
+  id: string;
+  sex: 'male' | 'female';
+  /** 1 for the oldest generation; people are drawn left to right in the order listed. */
+  generation: number;
+  /** Shows the trait (a filled symbol). */
+  trait?: boolean;
+  /** Carries the allele without showing it (half-filled). */
+  carrier?: boolean;
+  /** Both parents' ids: the child hangs from the line joining them. */
+  parents?: [string, string];
+  /** A partner with no children in the chart, joined by a line. */
+  partner?: string;
+  /** Their alleles ("Aa"), shown when a scene turns genotypes on. */
+  genotype?: string;
+}
+
+/** What goes into or comes out of photosynthesis and respiration (a `leafCell` figure). */
+export type LeafCellSubstance =
+  'light' | 'water' | 'carbon dioxide' | 'sugar' | 'oxygen' | 'energy';
+
+/** The processes of a `carbonCycle` figure. */
+export type CarbonProcess =
+  | 'photosynthesis'
+  | 'respiration'
+  | 'eating'
+  | 'death'
+  | 'decomposition'
+  | 'burning'
+  | 'dissolving'
+  | 'burial';
+
+/** A substance in a `molecules` scene: its formula ("H2O") and how many (default 1). */
+export interface MoleculeItem {
+  formula: string;
+  count?: number;
+}
+
+/** The changes between solid, liquid and gas on a `phases` figure. */
+export type PhaseChange =
+  | 'melting'
+  | 'freezing'
+  | 'boiling'
+  | 'evaporation'
+  | 'condensation'
+  | 'sublimation'
+  | 'deposition';
+
+/** The members of the `foodWeb` figure. */
+export type FoodWebMember =
+  'sun' | 'grass' | 'rabbit' | 'grasshopper' | 'mouse' | 'frog' | 'snake' | 'hawk';
+
+/** The moon's shapes through one cycle, as seen from the Northern Hemisphere. */
+export type MoonPhase =
+  | 'new'
+  | 'waxing crescent'
+  | 'first quarter'
+  | 'waxing gibbous'
+  | 'full'
+  | 'waning gibbous'
+  | 'third quarter'
+  | 'waning crescent';
 
 export interface Scene {
   label: string;
@@ -205,6 +344,14 @@ export interface Scene {
   dots?: [number, number];
   /** Which poles face each other (a `magnets` figure). */
   poles?: 'N–S' | 'N–N' | 'S–S';
+  /**
+   * A `magnets` figure's field (Grade 8): lines from N to S around the magnets (unless `lines`
+   * is false), compass needles round them (`compasses`), or one magnet alone (`single`; the
+   * scene's `poles` are then not used).
+   */
+  field?: { single?: boolean; lines?: boolean; compasses?: boolean };
+  /** The planets ringed, each with its width in Earths (a `planets` figure). */
+  planets?: { lit?: PlanetName[] };
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
@@ -230,8 +377,19 @@ export interface Scene {
   push?: { from: 'behind' | 'front' | 'side'; strength: 'gentle' | 'hard'; pull?: boolean };
   /** The sound maker and whether it is shaking (a `vibration` figure). */
   vibrate?: { thing: 'band' | 'drum' | 'bell' | 'voice'; shaking: boolean };
-  /** The sun at a spot on its path, or the night sky (a `sky` figure). */
-  sky?: { body: 'sun' | 'night'; at?: 'east' | 'high' | 'west' };
+  /**
+   * The sun at a spot on its path, or the night sky (a `sky` figure). At night, `phase` draws
+   * the moon in that shape (waxing lit on the right, waning on the left); `rising` adds an
+   * arrow along the path toward the west (the sun or moon rising in the east); `cycle` adds a
+   * strip of the eight shapes under the sky with this one ringed.
+   */
+  sky?: {
+    body: 'sun' | 'night';
+    at?: 'east' | 'high' | 'west';
+    phase?: MoonPhase;
+    rising?: boolean;
+    cycle?: boolean;
+  };
   /** Whether the balloon was rubbed, and what it is near (a `static` figure). */
   charge?: { rubbed: boolean; near: 'paper' | 'hair' | 'wall' | 'balloon' };
   /** What the table shows and lights (a `timesTable` figure). Rows and columns are 0–10. */
@@ -289,6 +447,60 @@ export interface Scene {
   };
   /** Millions of years ago, and the clue shown (a `continents` figure). */
   continents?: { age: 250 | 150 | 0; clue?: 'fossils' | 'rocks' | 'shapes' | 'climate' };
+  /**
+   * What a `foodWeb` figure shows: one food chain lit (its members in order, from the sun or
+   * grass up), an animal taken away (drawn crossed out, its arrows dashed), and which members
+   * then grow in number (`more`) or shrink (`fewer`), marked with an up or down arrow.
+   */
+  web?: {
+    chain?: FoodWebMember[];
+    removed?: FoodWebMember;
+    more?: FoodWebMember[];
+    fewer?: FoodWebMember[];
+  };
+  /**
+   * The process a `leafCell` figure shows (the leaf, the cell, or both trading their outputs)
+   * and one input or output lit.
+   */
+  leafCell?: { process: 'photosynthesis' | 'respiration' | 'both'; lit?: LeafCellSubstance };
+  /** The process lit (a `carbonCycle` figure); with none, the whole cycle. */
+  carbon?: { process?: CarbonProcess };
+  /**
+   * A `pedigree` figure: the people ringed (ids), whether carriers are half-filled (off, they
+   * look like anyone without the trait), whether genotypes show under the symbols, and one
+   * person whose genotype is a question mark.
+   */
+  family?: { lit?: string[]; carriers?: boolean; genotypes?: boolean; ask?: string };
+  /**
+   * What a `molecules` figure shows. One item with no count, state or `after`: the molecule
+   * big, each element's atom named. Otherwise the items' molecules mixed in a box, packed as
+   * a `state` (spread out when left out); `after` draws a second box behind an arrow.
+   */
+  molecules?: {
+    items: MoleculeItem[];
+    state?: 'solid' | 'liquid' | 'gas';
+    after?: MoleculeItem[];
+    afterState?: 'solid' | 'liquid' | 'gas';
+  };
+  /**
+   * The state lit on a `phases` figure and the change lit among its arrows (melting and
+   * boiling or evaporation over the boxes, freezing and condensation under them; sublimation
+   * and deposition only when lit). `formula` draws the particles as that molecule ("H2O");
+   * plain balls when left out.
+   */
+  phase?: { state?: 'solid' | 'liquid' | 'gas'; change?: PhaseChange; formula?: string };
+  /**
+   * What a `periodicTable` figure lights: an element (atomic number or symbol) with its card,
+   * a group, a period, and a ring around each element in `ring`; `families` fills metals,
+   * metalloids, nonmetals and noble gases.
+   */
+  elements?: {
+    element?: number | string;
+    group?: number;
+    period?: number;
+    ring?: (number | string)[];
+    families?: boolean;
+  };
   /** The process lit (a `rockCycle` figure). */
   rock?: {
     process: 'melting' | 'cooling' | 'weathering' | 'deposition' | 'metamorphism' | 'uplift';
@@ -318,6 +530,12 @@ export interface ObserveLayout extends LayoutBase {
   pattern: (values: number[]) => string;
   /** Columns are intervals of one number line: the bars touch, with a count scale beside. */
   histogram?: boolean;
+  /**
+   * A picture of the column last tapped, above the chart. `shadowStick`: a stick `stick`
+   * units tall (100 for a meter stick in cm) and its noon shadow as long as the value, with
+   * the sun on the line from the shadow's tip over the stick's top (higher for a shorter shadow).
+   */
+  figure?: { kind: 'shadowStick'; stick: number };
 }
 
 export type LayoutDef = SortLayout | SequenceLayout | ExploreLayout | ObserveLayout;

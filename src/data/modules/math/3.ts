@@ -1769,6 +1769,44 @@ export const MATH_3_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   (() => {
+    const parts = plus(
+      'n = k + u',
+      ['k', 'u', 'n'],
+      ['shaded umbrellas', 'umbrellas not shaded', 'umbrellas in all'],
+      '{k} shaded + {u} not shaded = {n} umbrellas',
+    );
+    return {
+      id: 'm.3.fractions-number-line~set',
+      title: 'Fractions of a set',
+      use: 'Use this for “What fraction of the umbrellas are shaded?”',
+      pictureLabels: ['u'],
+      assumptions: [
+        'The whole is the set: all the umbrellas. Each umbrella is one equal part.',
+        'The bottom number is how many umbrellas in all; the top is how many are shaded.',
+        'Tap an umbrella to shade it or clear it.',
+      ],
+      variables: [
+        whole('n', 'n', 'Umbrellas in all', 1, 12),
+        whole('k', 'k', 'Shaded', 0, 12),
+        whole('u', 'u', 'Not shaded', 0, 12),
+      ],
+      relations: [
+        { ...parts.relation, words: 'Shaded umbrellas + umbrellas not shaded = umbrellas in all' },
+      ],
+      steps: { 'n = k + u': parts.steps },
+      example: { n: 7, k: 3, u: 4 },
+      startWith: ['n', 'k'],
+      representation: {
+        kind: 'partition',
+        parts: 'n',
+        shaded: 'k',
+        shape: 'set',
+        object: 'umbrella',
+        fraction: true,
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
     const fill = times(
       'a = w × b',
       ['w', 'b', 'a'],

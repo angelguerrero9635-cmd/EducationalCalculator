@@ -6,10 +6,25 @@
  */
 import type { Values } from '@/engine/types';
 
-import { div, times, whole } from './helpers';
-import type { LayoutDef } from './layouts';
+import { G7A_GALLERY_MODULES } from './galleryG7a';
+import { G7B_GALLERY_MODULES } from './galleryG7b';
+import { G8C_GALLERY_MODULES } from './galleryG8c';
+import { G7C_GALLERY_MODULES } from './galleryG7c';
+import { G8A_GALLERY_MODULES } from './galleryG8a';
+import { OPTION_GALLERY_MODULES } from './galleryOptions';
+import { G8B_GALLERY_MODULES } from './galleryG8b';
+import { S4B_GALLERY_LAYOUTS, S4B_GALLERY_MODULES } from './galleryS4b';
+import { S4A_GALLERY_LAYOUTS, S4A_GALLERY_MODULES } from './galleryS4a';
+import { S4C_GALLERY_MODULES } from './galleryS4c';
+import { S4D_GALLERY_LAYOUTS, S4D_GALLERY_MODULES } from './galleryS4d';
+import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
+import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
+
+/** A whole count, or undefined when a division doesn't come out whole. */
+const whole0 = (x: number | undefined) =>
+  x !== undefined && Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : undefined;
 
 export const GALLERY_MODULES: ModuleDef[] = [
   {
@@ -448,6 +463,367 @@ export const GALLERY_MODULES: ModuleDef[] = [
     representation: { kind: 'shareWholes', wholes: 'w', people: 'p', each: 'e' },
   },
   {
+    id: 'g.fraction-bars-past-one',
+    title: 'Fraction bars past one whole',
+    assumptions: [
+      'Both fractions cut the same whole into the same number of parts.',
+      'A sum past one whole takes a second bar the same size as the first.',
+    ],
+    variables: [
+      whole('a', 'a', 'First top', 0, 12),
+      whole('c', 'c', 'Second top', 0, 12),
+      whole('b', 'b', 'Parts in one whole', 2, 12),
+      whole('s', 's', 'Top of the sum', 0, 12),
+      whole('w', 'w', 'Whole bars filled', 0, 12),
+    ],
+    relations: [
+      {
+        id: 's = a + c',
+        display: '{a} + {c} = {s}',
+        vars: ['s', 'a', 'c'],
+        residual: (v: Values) => v.s! - v.a! - v.c!,
+        solve: {
+          s: (v: Values) => v.a! + v.c!,
+          a: (v: Values) => v.s! - v.c!,
+          c: (v: Values) => v.s! - v.a!,
+        },
+      },
+      {
+        id: 'w = whole bars in s/b',
+        display: 'whole groups of {b} in {s} = {w}',
+        vars: ['w', 's', 'b'],
+        residual: (v: Values) => v.w! - Math.floor(v.s! / v.b!),
+        solve: {
+          w: (v: Values) => Math.floor(v.s! / v.b!),
+          s: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      's = a + c': {
+        s: { expr: '{a} + {c}', how: 'Same-size parts: add the tops.' },
+        a: { expr: '{s} − {c}', how: 'Take the second top from the sum.' },
+        c: { expr: '{s} − {a}', how: 'Take the first top from the sum.' },
+      },
+      'w = whole bars in s/b': {
+        w: {
+          expr: 'whole groups of {b} in {s}',
+          how: 'Every {b} parts fill one whole bar.',
+          work: (v: Values) => [`${v.w} × ${v.b} = ${v.w! * v.b!}`],
+        },
+      },
+    },
+    example: { a: 3, c: 4, b: 4, s: 7, w: 1 },
+    startWith: ['a', 'c', 'b'],
+    representation: {
+      kind: 'fractionBars',
+      rows: [
+        { num: 'a', den: 'b' },
+        { num: 'c', den: 'b' },
+        { num: 's', den: 'b' },
+      ],
+      controls: ['a', 'c', 'b'],
+      wholes: 2,
+      caption: '{a}/{b} + {c}/{b} = {s}/{b}',
+    },
+  },
+  {
+    id: 'g.mixed-number-jumps',
+    title: 'Mixed-number jumps',
+    assumptions: [
+      'Every value is counted in parts of one whole: 18 1/4 is 73 fourths.',
+      'Jump back the whole numbers first, then the parts left.',
+    ],
+    variables: [
+      whole('d', 'd', 'Parts in one whole', 2, 12),
+      whole('a', 'a', 'Start, in parts', 0, 120),
+      whole('t', 't', 'Parts taken away', 0, 24),
+      whole('c', 'c', 'Parts left', 0, 120),
+      whole('W', 'W', 'Wholes left', 0, 60),
+    ],
+    relations: [
+      {
+        id: 'c = a − t',
+        display: '{a} − {t} = {c}',
+        vars: ['c', 'a', 't'],
+        residual: (v: Values) => v.c! - (v.a! - v.t!),
+        solve: {
+          c: (v: Values) => v.a! - v.t!,
+          a: (v: Values) => v.c! + v.t!,
+          t: (v: Values) => v.a! - v.c!,
+        },
+      },
+      {
+        id: 'W = whole groups of d in c',
+        display: 'whole groups of {d} in {c} = {W}',
+        vars: ['W', 'c', 'd'],
+        residual: (v: Values) => v.W! - Math.floor(v.c! / v.d!),
+        solve: {
+          W: (v: Values) => Math.floor(v.c! / v.d!),
+          c: () => undefined,
+          d: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'c = a − t': {
+        c: { expr: '{a} − {t}', how: 'Take the parts away.' },
+        a: { expr: '{c} + {t}', how: 'Put the parts back.' },
+        t: { expr: '{a} − {c}', how: 'The parts between the start and what is left.' },
+      },
+      'W = whole groups of d in c': {
+        W: {
+          expr: 'whole groups of {d} in {c}',
+          how: 'Every {d} parts make one whole.',
+          work: (v: Values) => [`${v.W} × ${v.d} = ${v.W! * v.d!}`],
+        },
+      },
+    },
+    example: { d: 4, a: 73, t: 11, c: 62, W: 15 },
+    startWith: ['d', 'a', 't'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'c',
+      denominator: 'd',
+      wholes: 3,
+      from: 'a',
+    },
+  },
+  {
+    id: 'g.fraction-of-a-set',
+    title: 'Fraction of a set',
+    assumptions: [
+      'The whole is the set of umbrellas; each umbrella is one equal part.',
+      'Tap an umbrella to shade it or clear it.',
+    ],
+    variables: [
+      whole('n', 'n', 'Umbrellas', 1, 12),
+      whole('k', 'k', 'Shaded', 0, 12),
+      whole('u', 'u', 'Not shaded', 0, 12),
+    ],
+    relations: [
+      {
+        id: 'u = n − k',
+        display: '{n} − {k} = {u}',
+        vars: ['u', 'n', 'k'],
+        residual: (v: Values) => v.u! - (v.n! - v.k!),
+        solve: {
+          u: (v: Values) => v.n! - v.k!,
+          n: (v: Values) => v.u! + v.k!,
+          k: (v: Values) => v.n! - v.u!,
+        },
+      },
+    ],
+    steps: {
+      'u = n − k': {
+        u: { expr: '{n} − {k}', how: 'The umbrellas that are not shaded.' },
+        n: { expr: '{u} + {k}', how: 'All the umbrellas: shaded and not.' },
+        k: { expr: '{n} − {u}', how: 'The umbrellas that are shaded.' },
+      },
+    },
+    example: { n: 7, k: 3, u: 4 },
+    startWith: ['n', 'k'],
+    representation: {
+      kind: 'partition',
+      parts: 'n',
+      shaded: 'k',
+      shape: 'set',
+      object: 'umbrella',
+      fraction: true,
+    },
+  },
+  {
+    id: 'g.number-line-500',
+    title: 'Three-digit number line',
+    assumptions: [
+      'The line starts at the start number and has 10 equal jumps.',
+      'Each jump is 1, 10 or 100.',
+      'The number to place is on the line.',
+    ],
+    variables: [
+      {
+        ...whole('a', 'a', 'Start of the line', 100, 900),
+        allowed: [100, 200, 300, 400, 500, 600, 700, 800, 900],
+      },
+      { ...whole('t', 't', 'Each jump', 1, 100), allowed: [1, 10, 100] },
+      whole('k', 'k', 'Jumps', 0, 10),
+      whole('d', 'd', 'Distance from the start', 0, 1000),
+      whole('n', 'n', 'Number to place', 100, 1900),
+    ],
+    relations: [
+      {
+        id: 'd = k × t',
+        display: '{k} × {t} = {d}',
+        vars: ['d', 'k', 't'],
+        residual: (v: Values) => v.d! - v.k! * v.t!,
+        solve: {
+          d: (v: Values) => v.k! * v.t!,
+          k: (v: Values) => whole0(div(v.d!, v.t!)),
+          t: () => undefined,
+        },
+      },
+      {
+        id: 'n = a + d',
+        display: '{a} + {d} = {n}',
+        vars: ['n', 'a', 'd'],
+        residual: (v: Values) => v.n! - (v.a! + v.d!),
+        solve: {
+          n: (v: Values) => v.a! + v.d!,
+          d: (v: Values) => v.n! - v.a!,
+          a: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'd = k × t': {
+        d: { expr: '{k} × {t}', how: 'Count the jumps: each one is the same size.' },
+        k: { expr: '{d} ÷ {t}', how: 'How many jumps make the distance?' },
+      },
+      'n = a + d': {
+        n: { expr: '{a} + {d}', how: 'Start at the start of the line and go on.' },
+        d: { expr: '{n} − {a}', how: 'How far the number is from the start.' },
+      },
+    },
+    example: { a: 500, t: 10, k: 4, d: 40, n: 540 },
+    startWith: ['a', 't', 'n'],
+    representation: {
+      kind: 'numberLine',
+      start: 'a',
+      jump: 'd',
+      end: 'n',
+      min: 0,
+      max: 1000,
+      from: 'a',
+      every: 't',
+      jumps: 'ticks',
+    },
+  },
+  {
+    id: 'g.jumps-in-a-quotient',
+    title: 'Jumps in a quotient',
+    assumptions: [
+      'Every jump is the same size.',
+      'The last jump can be part of a jump: 100 ÷ 3 is 33 jumps and 1/3 of a jump.',
+    ],
+    variables: [
+      whole('n', 'n', 'Distance', 1, 100),
+      whole('d', 'd', 'Each jump', 1, 12),
+      { id: 'q', symbol: 'q', name: 'Jumps', min: 0, max: 100, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'q = n ÷ d',
+        display: '{n} ÷ {d} = {q}',
+        vars: ['q', 'n', 'd'],
+        residual: (v: Values) => v.q! * v.d! - v.n!,
+        solve: { q: (v: Values) => div(v.n!, v.d!), n: (v: Values) => v.q! * v.d! },
+      },
+    ],
+    steps: {
+      'q = n ÷ d': {
+        q: { expr: '{n} ÷ {d}', how: 'How many jumps of that size fit in the distance?' },
+        n: { expr: '{q} × {d}', how: 'The jumps times the size of each.' },
+      },
+    },
+    example: { n: 100, d: 3, q: 100 / 3 },
+    startWith: ['n', 'd'],
+    representation: { kind: 'skipCount', step: 'd', total: 'n' },
+  },
+  {
+    id: 'g.share-as-mixed',
+    title: 'A share as a mixed number',
+    assumptions: [
+      'The ribbon is cut into equal shares, one for each person.',
+      'A share that is not whole reads as a mixed number: 100 m ÷ 3 = 33 1/3 m.',
+    ],
+    variables: [
+      { ...whole('t', 't', 'Ribbon', 1, 100), unit: 'meters' },
+      whole('p', 'p', 'People', 1, 12),
+      { id: 'e', symbol: 'e', name: 'Each share', min: 0, max: 100, step: 0.01, unit: 'meters' },
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'The other shares',
+        min: 0,
+        max: 100,
+        step: 0.01,
+        unit: 'meters',
+      },
+    ],
+    relations: [
+      {
+        id: 'e = t ÷ p',
+        display: '{t} ÷ {p} = {e}',
+        vars: ['e', 't', 'p'],
+        residual: (v: Values) => v.e! * v.p! - v.t!,
+        solve: { e: (v: Values) => div(v.t!, v.p!), t: (v: Values) => v.e! * v.p! },
+      },
+      {
+        id: 'r = t − e',
+        display: '{t} − {e} = {r}',
+        vars: ['r', 't', 'e'],
+        residual: (v: Values) => v.r! - (v.t! - v.e!),
+        solve: {
+          r: (v: Values) => v.t! - v.e!,
+          t: (v: Values) => v.r! + v.e!,
+          e: (v: Values) => v.t! - v.r!,
+        },
+      },
+    ],
+    steps: {
+      'e = t ÷ p': {
+        e: { expr: '{t} ÷ {p}', how: 'Share the ribbon equally.' },
+        t: { expr: '{e} × {p}', how: 'Put the shares back together.' },
+      },
+      'r = t − e': {
+        r: { expr: '{t} − {e}', how: 'The ribbon left for the others.' },
+        t: { expr: '{r} + {e}', how: 'One share and the others make the ribbon.' },
+        e: { expr: '{t} − {r}', how: 'The ribbon less the others’ shares.' },
+      },
+    },
+    example: { t: 100, p: 3, e: 100 / 3, r: 200 / 3 },
+    startWith: ['t', 'p'],
+    representation: { kind: 'tape', parts: ['e', 'r'], total: 't', groups: 'p', mixed: true },
+  },
+  {
+    id: 'g.liters-as-mixed',
+    title: 'Liters as mixed numbers',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Each jug is measured in eighths of a liter.',
+      'Pouring both into one jug adds the amounts.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'In the jug', min: 0, max: 2.5, step: 0.125, unit: 'liters' },
+      { id: 'b', symbol: 'b', name: 'Poured in', min: 0, max: 2.5, step: 0.125, unit: 'liters' },
+      { id: 't', symbol: 't', name: 'Total', min: 0, max: 5, step: 0.125, unit: 'liters' },
+    ],
+    relations: [
+      {
+        id: 't = a + b',
+        display: '{a} + {b} = {t}',
+        vars: ['t', 'a', 'b'],
+        residual: (v: Values) => v.t! - (v.a! + v.b!),
+        solve: {
+          t: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.t! - v.b!,
+          b: (v: Values) => v.t! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      't = a + b': {
+        t: { expr: '{a} + {b}', how: 'Add what was in the jug and what was poured in.' },
+        a: { expr: '{t} − {b}', how: 'Take away what was poured in.' },
+        b: { expr: '{t} − {a}', how: 'Take away what was in the jug.' },
+      },
+    },
+    example: { a: 1.5, b: 0.875, t: 2.375 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'beaker', parts: ['a', 'b'], total: 't', max: 5, mixed: true },
+  },
+  {
     id: 'g.wave',
     title: 'Wave',
     assumptions: [
@@ -546,6 +922,122 @@ export const GALLERY_MODULES: ModuleDef[] = [
       letter: 'B',
     },
   },
+  (() => {
+    const saved = moreThan('d', 'a', 'b', 'bare tray', 'grass tray', ['more', 'less'], '2');
+    return {
+      id: 'g.grass-slope',
+      title: 'Grass on a slope',
+      assumptions: [
+        'Two trays of soil on the same slope get the same water.',
+        'One tray is planted with grass.',
+        'The soil washed off each tray settles in the jar below it.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Bare tray', 0, 200), unit: 'g' },
+        { ...whole('b', 'b', 'Grass tray', 0, 200), unit: 'g' },
+        { ...whole('d', 'd', 'Soil saved', 0, 200), unit: 'g' },
+      ],
+      relations: [{ ...saved.relation, display: '{a} − {b} = {d}' }, atLeast('a', 'b')],
+      steps: { ...saved.steps, 'a ≥ b': {} },
+      example: { a: 120, b: 30, d: 90 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'grassSlope', bare: 'a', grass: 'b', difference: 'd', max: 150 },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const far = times(
+      'f = n × k',
+      ['n', 'k', 'f'],
+      ['nearer flashlight', 'times as far', 'farther flashlight'],
+    );
+    return {
+      id: 'g.flashlights',
+      title: 'Two flashlights',
+      assumptions: [
+        'Two of the same flashlight give the same light.',
+        'Its beam spreads the same way at any distance.',
+      ],
+      variables: [
+        { ...whole('n', 'n', 'Nearer flashlight', 10, 100), unit: 'cm' },
+        whole('k', 'k', 'Times as far', 2, 10),
+        { ...whole('f', 'f', 'Farther flashlight', 10, 1000), unit: 'cm' },
+      ],
+      relations: [far.relation],
+      steps: { 'f = n × k': far.steps },
+      example: { n: 50, k: 3, f: 150 },
+      startWith: ['n', 'k'],
+      unitSystems: ['metric'],
+      representation: { kind: 'flashlights', near: 'n', times: 'k', far: 'f' },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const more = moreThan(
+      'd',
+      's',
+      'h',
+      'plant in the sun',
+      'plant in the shade',
+      ['more', 'fewer'],
+      '2',
+    );
+    return {
+      id: 'g.leaf-count',
+      title: 'Leaves in sun and shade',
+      assumptions: [
+        'Grow two plants the same way, one in the sun and one in the shade.',
+        'Count the green leaves on each after two weeks.',
+      ],
+      variables: [
+        { ...whole('s', 's', 'Plant in the sun', 0, 40), unit: 'leaves' },
+        { ...whole('h', 'h', 'Plant in the shade', 0, 40), unit: 'leaves' },
+        { ...whole('d', 'd', 'More leaves', 0, 40), unit: 'leaves' },
+      ],
+      relations: [{ ...more.relation, display: '{s} − {h} = {d}' }, atLeast('s', 'h')],
+      steps: { ...more.steps, 's ≥ h': {} },
+      example: { s: 14, h: 6, d: 8 },
+      startWith: ['s', 'h'],
+      representation: { kind: 'leafCount', items: ['s', 'h'], difference: 'd' },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const warmer = moreThan('w', 'k', 'l', 'dark cup', 'light cup', ['warmer', 'cooler']);
+    return {
+      id: 'g.dark-light-cups',
+      title: 'Dark and light cups in the sun',
+      assumptions: [
+        'Fill a dark cup and a light cup with the same water.',
+        'Leave both in the sun for an hour.',
+      ],
+      variables: [
+        { ...whole('k', 'k', 'Dark cup', 40, 120), unit: FAHRENHEIT },
+        { ...whole('l', 'l', 'Light cup', 40, 120), unit: FAHRENHEIT },
+        { ...whole('w', 'w', 'Warmer by', 0, 60), unit: FAHRENHEIT },
+      ],
+      relations: [{ ...warmer.relation, display: '{k} − {l} = {w}' }, atLeast('k', 'l')],
+      steps: { ...warmer.steps, 'k ≥ l': {} },
+      example: { k: 88, l: 76, w: 12 },
+      startWith: ['k', 'l'],
+      representation: {
+        kind: 'thermometers',
+        items: ['k', 'l'],
+        difference: 'w',
+        min: 40,
+        max: 100,
+        cups: ['dark', 'light'],
+      },
+    } satisfies ModuleDef;
+  })(),
+  ...OPTION_GALLERY_MODULES,
+  ...G7A_GALLERY_MODULES,
+  ...G7B_GALLERY_MODULES,
+  ...G8C_GALLERY_MODULES,
+  ...G7C_GALLERY_MODULES,
+  ...G8A_GALLERY_MODULES,
+  ...G8B_GALLERY_MODULES,
+  ...S4B_GALLERY_MODULES,
+  ...S4A_GALLERY_MODULES,
+  ...S4C_GALLERY_MODULES,
+  ...S4D_GALLERY_MODULES,
 ];
 
 /**
@@ -553,6 +1045,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
  * reason: every drawing can be seen and screenshotted before a lesson uses it.
  */
 export const GALLERY_LAYOUTS: LayoutDef[] = [
+  ...S4A_GALLERY_LAYOUTS,
   {
     id: 'g.push',
     title: 'Push and pull',
@@ -619,6 +1112,27 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       { label: 'High', lines: ['Midday.'], sky: { body: 'sun', at: 'high' } },
       { label: 'West', lines: ['Evening.'], sky: { body: 'sun', at: 'west' } },
       { label: 'Night', lines: ['Night.'], sky: { body: 'night', at: 'high' } },
+      {
+        label: 'Moonrise',
+        lines: ['The full moon rises in the east.'],
+        sky: { body: 'night', at: 'east', phase: 'full', rising: true },
+      },
+      ...(
+        [
+          'new',
+          'waxing crescent',
+          'first quarter',
+          'waxing gibbous',
+          'full',
+          'waning gibbous',
+          'third quarter',
+          'waning crescent',
+        ] as const
+      ).map((phase) => ({
+        label: phase,
+        lines: [`The moon: ${phase}.`],
+        sky: { body: 'night' as const, at: 'high' as const, phase, cycle: true },
+      })),
     ],
   },
   {
@@ -654,6 +1168,56 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       { label: 'Solid', lines: ['Solid.'], light: { lamp: true, blocker: 'solid', height: 'low' } },
       { label: 'Off', lines: ['Lamp off.'], light: { lamp: false, wall: true } },
     ],
+  },
+  {
+    id: 'g.food-web',
+    title: 'Food web',
+    kind: 'explore',
+    assumptions: [
+      'Each arrow means: is eaten by.',
+      'The sun’s arrow is its energy going into the grass.',
+    ],
+    figure: { kind: 'foodWeb' },
+    scenes: [
+      { label: 'Whole web', lines: ['A meadow food web.'], web: {} },
+      {
+        label: 'One chain',
+        lines: ['Sun, grass, grasshopper, frog, snake, hawk.'],
+        web: { chain: ['sun', 'grass', 'grasshopper', 'frog', 'snake', 'hawk'] },
+      },
+      {
+        label: 'Rabbit chain',
+        lines: ['Sun, grass, rabbit, hawk.'],
+        web: { chain: ['sun', 'grass', 'rabbit', 'hawk'] },
+      },
+      {
+        label: 'No frogs',
+        lines: ['The frogs are gone.', 'More grasshoppers; the snakes have less to eat.'],
+        web: { removed: 'frog', more: ['grasshopper'], fewer: ['snake'] },
+      },
+      {
+        label: 'No snakes',
+        lines: ['The snakes are gone.', 'More mice and frogs.'],
+        web: { removed: 'snake', more: ['mouse', 'frog'] },
+      },
+    ],
+  },
+  {
+    id: 'g.noon-shadow',
+    title: 'Noon shadow by month',
+    kind: 'observe',
+    assumptions: [
+      'Measure a meter stick’s shadow at noon, every two months.',
+      'Tap a bar: the picture shows that month.',
+    ],
+    columns: ['Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'],
+    rowLabel: 'Noon shadow',
+    unit: 'cm',
+    max: 300,
+    step: 10,
+    initial: [200, 130, 60, 30, 50, 110],
+    figure: { kind: 'shadowStick', stick: 100 },
+    pattern: (v) => `Shortest: ${Math.min(...v)} cm. Longest: ${Math.max(...v)} cm.`,
   },
   {
     id: 'g.times-table',
@@ -822,6 +1386,79 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       ).map((icon) => ({ label: icon, bin: 'things', figure: { kind: 'icon' as const, icon } })),
     ],
   },
+  // Card icons drawn in their materials, one sort per set of lesson cards.
+  iconSort('g.icons-weather', 'Weather tools', 'What does each tool measure?', [
+    ['temp', 'Temperature', 'A thermometer shows how hot or cold the air is.', ['thermometer']],
+    ['rain', 'Rain', 'A rain gauge collects rain so you can see how much fell.', ['rain gauge']],
+    [
+      'wind',
+      'Wind',
+      'A wind vane and a wind sock point with the wind.',
+      ['wind vane', 'wind sock'],
+    ],
+  ]),
+  iconSort('g.icons-young', 'Eggs or born alive', 'How does each animal start its life?', [
+    [
+      'eggs',
+      'Hatch from eggs',
+      'These animals hatch from eggs.',
+      ['bird', 'frog', 'grasshopper', 'turtle', 'fish'],
+    ],
+    [
+      'alive',
+      'Born alive',
+      'These animals are born alive and drink milk.',
+      ['cat', 'dog', 'dolphin', 'person'],
+    ],
+  ]),
+  iconSort('g.icons-survival', 'Hide and survive', 'How does each body part help?', [
+    [
+      'hide',
+      'Blends in',
+      'Its colors match where it lives, so it is hard to see.',
+      ['tree frog', 'warbler', 'white hare'],
+    ],
+    ['cold', 'Stays warm', 'Thick fur and blubber keep body heat in.', ['thick fur', 'blubber']],
+    [
+      'dry',
+      'Lives in the desert',
+      'A hump stores fat and a thick stem stores water.',
+      ['camel hump', 'cactus stem'],
+    ],
+  ]),
+  iconSort('g.icons-diet', 'What animals eat', 'What does each animal eat?', [
+    ['plants', 'Plants', 'Plant-eaters eat leaves, grass and twigs.', ['rabbit', 'deer']],
+    ['meat', 'Animals', 'Meat-eaters catch other animals.', ['hawk', 'snake', 'heron']],
+    ['both', 'Both', 'These animals eat plants and animals.', ['raccoon', 'bear']],
+  ]),
+  iconSort('g.icons-meter', 'About a meter', 'Is it shorter or longer than a meter?', [
+    [
+      'short',
+      'Shorter',
+      'These are shorter than a meter stick.',
+      ['pencil', 'paper clip', 'workbook'],
+    ],
+    ['meter', 'About a meter', 'A meter stick is one meter long.', ['meter stick']],
+    ['long', 'Longer', 'These are longer than a meter stick.', ['door', 'bus']],
+  ]),
+  iconSort('g.icons-liter', 'About a liter', 'Does it hold less than a liter or about a liter?', [
+    ['less', 'Less', 'These hold much less than a liter.', ['juice box', 'eyedropper']],
+    ['liter', 'About a liter', 'These hold about one liter.', ['water bottle', 'milk carton']],
+  ]),
+  iconSort('g.icons-heat', 'Heat', 'Does heat move through it easily?', [
+    [
+      'through',
+      'Heat moves through',
+      'Metal lets heat through, so a kettle heats water.',
+      ['kettle'],
+    ],
+    [
+      'slow',
+      'Heat moves slowly',
+      'Plastic and cloth slow heat, so hands stay safe.',
+      ['pan handle', 'oven mitt'],
+    ],
+  ]),
   {
     id: 'g.bar-order',
     title: 'Ribbons in order',
@@ -833,4 +1470,38 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
       figure: { kind: 'bar' as const, length: n, units: 'cubes' as const },
     })),
   },
+  ...S4B_GALLERY_LAYOUTS,
+  ...S4D_GALLERY_LAYOUTS,
 ];
+
+/** A sort whose cards are card icons: [bin id, label, why, icons]. */
+function iconSort(
+  id: string,
+  title: string,
+  question: string,
+  bins: [string, string, string, CardIcon[]][],
+): LayoutDef {
+  const names: Partial<Record<CardIcon, string>> = {
+    door: 'classroom door',
+    bus: 'school bus',
+    'water bottle': 'big water bottle',
+  };
+  return {
+    id,
+    title,
+    kind: 'sort',
+    question,
+    assumptions: ['Tap a card, then a group.', 'The drawings are what matter here.'],
+    bins: bins.map(([bin, label, why]) => ({ id: bin, label, why })),
+    cards: bins.flatMap(([bin, , , icons]) =>
+      icons.map((icon) => {
+        const label = names[icon] ?? icon;
+        return {
+          label: label[0]!.toUpperCase() + label.slice(1),
+          bin,
+          figure: { kind: 'icon' as const, icon },
+        };
+      }),
+    ),
+  };
+}

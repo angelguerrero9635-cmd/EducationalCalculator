@@ -532,6 +532,11 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       ...w.convertOut,
     ].flatMap(numbersIn),
   );
+  // A price shown "about $0.10" (or "less than 1 cent") stands for its exact value, which the
+  // check uses.
+  for (const q of [...w.given, ...w.find])
+    if (/^about \$|^less than 1 cent/.test(q.value) && res.values[q.id] !== undefined)
+      shown.add(res.values[q.id]!);
   for (const chk of w.check) {
     const strays = numbersIn(chk.formula).filter((x) => ![...shown].some((y) => shownClose(x, y)));
     if (strays.length) {

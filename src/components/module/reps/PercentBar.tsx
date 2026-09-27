@@ -9,6 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { LitRect, TopLight, usePaintIds } from './paint';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { PercentChange } from './PercentChange';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'percentBar' }>;
@@ -19,6 +20,14 @@ type Spec = Extract<Representation, { kind: 'percentBar' }>;
  * end of the shading to change the percent.
  */
 export function PercentBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  return spec.change ? (
+    <PercentChange spec={spec} calc={calc} />
+  ) : (
+    <OneBar spec={spec} calc={calc} />
+  );
+}
+
+function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const paint = usePaintIds('light');
   const rep = useRep(calc);

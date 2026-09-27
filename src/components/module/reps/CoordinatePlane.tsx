@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type GestureResponderEvent } from 'react-native';
 
 import { Text } from '@/components/Text';
 import Svg, { Circle, G, Line, Path } from 'react-native-svg';
@@ -19,6 +19,8 @@ import {
   useFrozen,
   useRep,
 } from './common';
+import { DistanceLegs, distanceCaption } from './DistanceLegs';
+import { SlopeLegs } from './SlopeLegs';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'coordinatePlane' }>;
@@ -26,7 +28,8 @@ type Spec = Extract<Representation, { kind: 'coordinatePlane' }>;
 /**
  * A coordinate plane (the first quadrant, or all four) with a point to drag. With a second
  * point the line through both is drawn, and a rise-over-run triangle between them shows the
- * slope.
+ * slope. With `plot`, the student taps the grid (or drags) to place one point, and the path
+ * from 0, across then up, is drawn to it.
  */
 export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -96,6 +99,18 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
       : undefined;
   const dx = both ? q.px - p.px : 0;
   const dy = both ? q.py - p.py : 0;
+  // Grade 8 slope: the rise and run as values, their legs drawn heavy and labelled.
+  const legs = !spec.segment && !!(spec.rise || spec.run);
+  const legLabel = (id: string | undefined, word: string, d: number) =>
+    id ? rep.label(id, false) : `${word} = ${formatNumber(d)}`;
+  const sym = (id: string) => rep.variable(id).symbol;
+  const slopeSentence = () => {
+    if (dx === 0) return 'The run is 0: the line is straight up and down, and has no slope.';
+    const rise = spec.rise ? sym(spec.rise) : 'rise';
+    const run = spec.run ? sym(spec.run) : 'run';
+    const m = spec.slope && rep.known(spec.slope) ? ` = ${rep.value(spec.slope, false)}` : '';
+    return `${spec.slope ? `${sym(spec.slope)} = ` : 'Slope = '}${rise} ÷ ${run} = ${formatNumber(dy)} ÷ ${formatNumber(dx)}${m}.`;
+  };
   // Before slope (Grade 8) the move is said in words: "7 right, 0 up".
   const moveX = `${formatNumber(Math.abs(dx))} ${dx < 0 ? 'left' : 'right'}`;
   const moveY = `${formatNumber(Math.abs(dy))} ${dy < 0 ? 'down' : 'up'}`;
@@ -300,7 +315,18 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     </ChartText>
                   </G>
                 ))}
-                {spec.segment ? (
+                {spec.segment && spec.legs ? (
+                  both ? (
+                    <DistanceLegs
+                      p={{ x: p.px, y: p.py }}
+                      q={{ x: q.px, y: q.py }}
+                      sx={sx}
+                      sy={sy}
+                      w={w}
+                      label={spec.distance ? `${rep.label(spec.distance)} units` : undefined}
+                    />
+                  ) : null
+                ) : spec.segment ? (
                   both ? (
                     <>
                       <Line
@@ -335,7 +361,18 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                 ) : (
                   lineThrough()
                 )}
-                {!spec.segment && both && dx !== 0 && dy !== 0 ? (
+                {legs && both && (dx !== 0 || dy !== 0) ? (
+                  <SlopeLegs
+                    from={{ x: p.px, y: p.py }}
+                    to={{ x: q.px, y: q.py }}
+                    sx={sx}
+                    sy={sy}
+                    w={w}
+                    rise={legLabel(spec.rise, 'rise', dy)}
+                    run={legLabel(spec.run, 'run', dx)}
+                  />
+                ) : null}
+                {!legs && !spec.segment && both && dx !== 0 && dy !== 0 ? (
                   <>
                     <Path
                       d={`M ${sx(p.px)} ${sy(p.py)} L ${sx(q.px)} ${sy(p.py)} L ${sx(q.px)} ${sy(q.py)}`}
@@ -364,6 +401,74 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     </ChartText>
                   </>
                 ) : null}
+                {/* Plotting: from 0, across the x-axis, then up to the point. */}
+                {spec.plot && p?.known && (p.px !== 0 || p.py !== 0)
+                  ? (() => {
+                      const ax = sx(p.px);
+                      const ay = sy(0);
+                      const ty = sy(p.py);
+                      const head = (x: number, y: number, dxh: number, dyh: number) =>
+                        `M ${x} ${y} l ${-dxh * 9 - dyh * 5} ${-dyh * 9 + dxh * 5} l ${dyh * 10} ${-dxh * 10} z`;
+                      return (
+                        <G>
+                          {p.px !== 0 ? (
+                            <>
+                              <Line
+                                x1={sx(0)}
+                                y1={ay}
+                                x2={ax - 4}
+                                y2={ay}
+                                stroke={c.chartSecond}
+                                strokeWidth={chart.strokeHeavy + 1}
+                              />
+                              <Path d={head(ax, ay, 1, 0)} fill={c.chartSecond} />
+                              <ChartText
+                                {...fitLabel(
+                                  (sx(0) + ax) / 2,
+                                  `${formatNumber(p.px)} across`,
+                                  chart.small,
+                                  w,
+                                )}
+                                y={ay - 7}
+                                fontSize={chart.small}
+                                fontWeight="700"
+                              >
+                                {`${formatNumber(p.px)} across`}
+                              </ChartText>
+                            </>
+                          ) : null}
+                          {p.py !== 0 ? (
+                            <>
+                              <Line
+                                x1={ax}
+                                y1={ay}
+                                x2={ax}
+                                y2={ty + 4}
+                                stroke={c.chartSecond}
+                                strokeWidth={chart.strokeHeavy + 1}
+                              />
+                              <Path d={head(ax, ty, 0, -1)} fill={c.chartSecond} />
+                              <ChartText
+                                {...fitLabel(
+                                  ax + 8,
+                                  `${formatNumber(p.py)} up`,
+                                  chart.small,
+                                  w,
+                                  'start',
+                                  8,
+                                )}
+                                y={(ay + ty) / 2 + 4}
+                                fontSize={chart.small}
+                                fontWeight="700"
+                              >
+                                {`${formatNumber(p.py)} up`}
+                              </ChartText>
+                            </>
+                          ) : null}
+                        </G>
+                      );
+                    })()
+                  : null}
                 {trail.map(([tx, ty], i) => (
                   <Circle key={`trail${i}`} cx={sx(tx)} cy={sy(ty)} r={4} fill={c.chartMuted} />
                 ))}
@@ -387,6 +492,29 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   // upper-left when the line rises (and there is room), else the upper-right.
                   // A lone point in four quadrants (reflections) labels away from both axes,
                   // where their numbers are.
+                  // With the rise and run drawn (Grade 8 slope), the first point's label goes on
+                  // the side away from its triangle, which the legs and their labels fill.
+                  if (legs && both && k === 0 && (dx !== 0 || dy !== 0)) {
+                    const text = `(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`;
+                    return (
+                      <ChartText
+                        key={`t${pt.testID}`}
+                        {...fitLabel(
+                          sx(pt.px) + (dx >= 0 ? -9 : 9),
+                          text,
+                          chart.label,
+                          w,
+                          dx >= 0 ? 'end' : 'start',
+                          9,
+                        )}
+                        y={sy(pt.py) + (dy > 0 ? 20 : -8)}
+                        fontSize={chart.label}
+                        fontWeight="700"
+                      >
+                        {text}
+                      </ChartText>
+                    );
+                  }
                   const out = !both && spec.quadrants === 4;
                   const upLeft = out ? pt.px < 0 : both && dx * dy > 0 && sx(pt.px) - x0 > 60;
                   const below = out && pt.py < 0;
@@ -410,6 +538,35 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   );
                 })}
               </Svg>
+              {/* Plotting: a tap on the grid puts the point on the nearest crossing. */}
+              {spec.plot ? (
+                <Pressable
+                  accessibilityLabel="Tap the grid to place the point"
+                  style={{
+                    position: 'absolute',
+                    left: sx(lo) - unit / 2,
+                    top: sy(E) - unit / 2,
+                    width: (E - lo + 1) * unit,
+                    height: (E - lo + 1) * unit,
+                  }}
+                  onPress={(e: GestureResponderEvent) => {
+                    const ne = e.nativeEvent as unknown as {
+                      locationX?: number;
+                      locationY?: number;
+                      offsetX?: number;
+                      offsetY?: number;
+                    };
+                    const lx = ne.locationX ?? ne.offsetX ?? 0;
+                    const ly = ne.locationY ?? ne.offsetY ?? 0;
+                    const x = lo + (lx - unit / 2) / unit;
+                    const y = E - (ly - unit / 2) / unit;
+                    calc.set({
+                      [spec.x]: rep.snapTo(spec.x, x * rep.factor(spec.x)),
+                      [spec.y]: rep.snapTo(spec.y, y * rep.factor(spec.y)),
+                    });
+                  }}
+                />
+              ) : null}
               {pts
                 .filter((pt) => pt.known)
                 .map((pt) => (
@@ -460,13 +617,25 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
           ? `A rectangle ${formatNumber(Math.abs(rect.r - rect.l))} units wide and ${formatNumber(Math.abs(rect.t - rect.b))} units tall.`
           : spec.reflect && p?.known
             ? `(${formatNumber(p.px)}, ${formatNumber(p.py)}) reflected across the x-axis is (${formatNumber(p.px)}, ${formatNumber(-p.py)}); across the y-axis (${formatNumber(-p.px)}, ${formatNumber(p.py)}); across both (${formatNumber(-p.px)}, ${formatNumber(-p.py)}).`
-            : spec.segment && both
-              ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
-              : p?.known
-                ? both
-                  ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
-                  : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
-                : 'Type both coordinates to place the point.'}
+            : spec.segment && both && spec.legs
+              ? distanceCaption(
+                  { x: p.px, y: p.py },
+                  { x: q.px, y: q.py },
+                  spec.distance ? rep.variable(spec.distance).symbol : 'd',
+                )
+              : spec.segment && both
+                ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
+                : spec.plot
+                  ? p?.known
+                    ? `Start at 0. Go ${formatNumber(p.px)} across, then ${formatNumber(p.py)} up: the point (${formatNumber(p.px)}, ${formatNumber(p.py)}).`
+                    : 'Tap the grid to place the point, or type both numbers.'
+                  : p?.known
+                    ? both
+                      ? legs
+                        ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}) · ${slopeSentence()}`
+                        : `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
+                      : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
+                    : 'Type both coordinates to place the point.'}
       </Caption>
       <Steppers
         calc={calc}

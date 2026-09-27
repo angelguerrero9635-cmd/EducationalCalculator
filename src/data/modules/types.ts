@@ -1,6 +1,17 @@
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import type { Written } from './written';
 import type { UnitSystem } from '@/engine/units';
+import type {
+  FunctionMachineSpec,
+  LineSystemSpec,
+  LinearFunctionSpec,
+  MappingSpec,
+  TransformationSpec,
+} from './typesGraphs';
+import type { EnergyPyramidSpec, GenerationsSpec } from './typesLife';
+import type { ChemSpec } from './typesChem';
+import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
+import type { Physics8Spec } from './typesPhysics8';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -32,8 +43,21 @@ export type Representation =
       max: number;
       /** Labelled tick spacing; with tick > 1, unlabelled ticks still mark every 1. */
       tick?: number;
-      /** 'tens': draw the jump as jumps of 10, then one jump for the ones (38 → 48 → 58 → 63). */
-      jumps?: 'tens';
+      /**
+       * 'tens': draw the jump as jumps of 10, then one jump for the ones (38 → 48 → 58 → 63).
+       * 'ticks': one jump per tick (500 → 510 → 520 → 530 → 540 by 10s), then any rest.
+       */
+      jumps?: 'tens' | 'ticks';
+      /**
+       * A line that starts at this value (500) instead of `min`, running `span` ticks of
+       * `every` (500 to 600 by 10s); `min` and `max` are then ignored. A caption says the
+       * number sentence: "500 + 40 = 540".
+       */
+      from?: string;
+      /** Tick spacing as a value (1, 10 or 100) for a `from` line; default `tick`. */
+      every?: string;
+      /** Ticks on a `from` line (default 10). */
+      span?: number;
     }
   /**
    * Ten-frames with two kinds of counters: `first` solid (●), then `second` open (○), `total` in all.
@@ -95,6 +119,8 @@ export type Representation =
       groupsPart?: string;
       /** A sentence under the bar, with {id} for values. */
       caption?: string;
+      /** Values that aren't whole read as mixed numbers (33 1/3, 2 3/8 L), read exactly. */
+      mixed?: boolean;
     }
   /**
    * A ratio as two bars of equal boxes (3 boxes and 5 boxes), every box worth `unit`; the bars'
@@ -108,6 +134,22 @@ export type Representation =
       total?: string;
       difference?: string;
     }
+  /**
+   * An equation px + q = r as a bar (Grade 7): `times` boxes of the `unknown`, then `plus`,
+   * together as long as `total`; a negative `plus` is a piece of the boxes taken off past the
+   * total. `grouped`: p(x + q) = r, `times` equal groups each of x and q (or one box "x − 15").
+   * Drag the end of the bar to change the total.
+   */
+  | {
+      kind: 'tape';
+      equation: {
+        times: string;
+        unknown: string;
+        plus: string;
+        total: string;
+        grouped?: boolean;
+      };
+    }
   | {
       kind: 'tape';
       compare: [string, string];
@@ -116,6 +158,8 @@ export type Representation =
       times?: string;
       /** A sentence under the bars, with {id} for values, e.g. "Ben has {d} more than Ana." */
       caption?: string;
+      /** Values that aren't whole read as mixed numbers (33 1/3, 2 3/8 L), read exactly. */
+      mixed?: boolean;
     }
   /** Line plot: an X for each object above its value on a number line; tap to set counts. */
   | {
@@ -125,6 +169,12 @@ export type Representation =
       unit?: string;
       /** The first length on the line; the others follow by 1 (default: the points' `at`). */
       start?: string;
+      /**
+       * With `start`: the marks are halves, quarters or eighths (2, 4, 8, or a value), so the
+       * lengths run start, start + 1/4, start + 2/4, … (labelled "3 1/4"; `at` and `label` are
+       * then not used).
+       */
+      marks?: 2 | 4 | 8 | string;
     }
   /**
    * Regular polygon with `sides` sides (and as many corners); change it with the sliders. `angle`
@@ -155,6 +205,20 @@ export type Representation =
       right: string[];
       /** Taken away from the left pan: those counters are crossed out (10 − 2 on the left). */
       takeAway?: string;
+    }
+  /**
+   * A hanger (Grade 7–8 equations): a wooden beam on a hook with a tray on each end holding
+   * `x` blocks of the `unknown` and `units` unit weights (a value or a fixed count, whole and
+   * not negative). Level when both sides weigh the same (always level while the unknown is
+   * "?"). `steps` adds buttons that walk the solving: take the same from both sides, then
+   * split into as many equal parts as there are blocks.
+   */
+  | {
+      kind: 'hanger';
+      unknown: string;
+      left: { x?: string | number; units?: string | number };
+      right: { x?: string | number; units?: string | number };
+      steps?: boolean;
     }
   /**
    * Base-ten blocks (hundreds flats, tens rods, ones cubes) for each group, and for the total.
@@ -196,12 +260,17 @@ export type Representation =
       /** Show an a.m. / p.m. choice next to the digital time. */
       ampm?: boolean;
     }
-  /** A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. */
+  /**
+   * A shape cut into `parts` equal parts, `shaded` of them shaded. Tap parts to shade. `set`:
+   * the whole is a set of `parts` objects in a row, `shaded` of them marked (3 of 7 umbrellas).
+   */
   | {
       kind: 'partition';
       parts: string;
       shaded: string;
-      shape: 'circle' | 'rectangle';
+      shape: 'circle' | 'rectangle' | 'set';
+      /** The things in a set (default counters). */
+      object?: 'umbrella' | 'counter';
       /** The value the the sliders buttons change (default `parts`), e.g. times cut in half. */
       control?: string;
       /** How much the sliders change it (default 1), e.g. 2 for halves ↔ fourths. */
@@ -391,6 +460,23 @@ export type Representation =
       /** Whole grids, fully shaded, before the first: the ones of a decimal (1.35). */
       wholes?: string;
     }
+  /**
+   * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is
+   * `width` × `height` squares in the outline `shape` (default an L), the copy is `factor` times
+   * each length, joined by an arrow labelled with the factor. `copyWidth`, `copyHeight` and
+   * `area` (original, copy) are values the module works out; drag the copy's corner to change
+   * the factor.
+   */
+  | {
+      kind: 'scaleCopy';
+      factor: string;
+      width: string | number;
+      height: string | number;
+      copyWidth?: string;
+      copyHeight?: string;
+      area?: [string, string];
+      shape?: 'rectangle' | 'triangle' | 'L' | 'trapezoid';
+    }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
   | {
       kind: 'circle';
@@ -399,9 +485,61 @@ export type Representation =
       diameter?: string;
       circumference?: string;
       area?: string;
+      /**
+       * Grade 7 pictures, with buttons to switch when there are two or more: 'radius' (the
+       * circle above), 'unroll' (the circle rolled one turn: its circumference along a line,
+       * π diameters, with three diameters marked under it) and 'wedges' (the circle cut into
+       * `wedges` pieces laid top and bottom in a near-parallelogram π × r long and r tall).
+       */
+      views?: ('radius' | 'unroll' | 'wedges')[];
+      /** How many wedges (even, 4–24; a number or a value). Default 8. */
+      wedges?: number | string;
     }
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
-  | { kind: 'rightTriangle'; a: string; b: string; c: string; extent: number }
+  | {
+      kind: 'rightTriangle';
+      a: string;
+      b: string;
+      c: string;
+      extent: number;
+      /** Each square ruled in unit squares (sides up to 12), so the areas can be counted. */
+      grid?: boolean;
+    }
+  /**
+   * A glass cylinder, cone or sphere full of water, to scale, its radius (and height) marked
+   * and draggable; the caption works V with the numbers. `compare` (cone or sphere) stands the
+   * cylinder of the same radius and height (2r for a sphere) beside it, holding the solid's
+   * water: 1/3 of it for a cone, 2/3 for a sphere. `extent` is the biggest diameter or height
+   * drawn before the scale shrinks (shown units).
+   */
+  | {
+      kind: 'curvedSolid';
+      shape: 'cylinder' | 'cone' | 'sphere';
+      radius: string;
+      /** The height (cylinder and cone; a sphere has none). */
+      height?: string;
+      volume?: string;
+      compare?: boolean;
+      extent: number;
+    }
+  /**
+   * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
+   * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the
+   * caption counts points above and below it. `clusters` rings named groups (point indices),
+   * `outlier` rings one point; `at` reads an input up to the line and across to its prediction
+   * (the module's relation gives y = slope × x + intercept).
+   */
+  | {
+      kind: 'scatter';
+      x: { label: string; min: number; max: number; step?: number };
+      y: { label: string; min: number; max: number; step?: number };
+      points: [number, number][];
+      slope: string;
+      intercept: string;
+      clusters?: { label: string; points: number[] }[];
+      outlier?: number;
+      at?: { x: string; y: string };
+    }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
    * their current values; the point sits at the current (x, y) and drags along x.
@@ -423,6 +561,13 @@ export type Representation =
       shadeToPoint?: boolean;
       /** Dashed lines through 0 to compare with (y = slope × x), labelled ("Water"). */
       reference?: { slope: number; label: string }[];
+      /**
+       * A proportional relationship y = kx: this variable is k. The line through (0, 0) with
+       * the point (1, k) ringed; drag it up or down to change k.
+       */
+      unitRate?: string;
+      /** A table beside the graph: these x values with y and y ÷ x; the point's row outlined. */
+      table?: number[];
     }
   /**
    * Rounding: a number line from the multiple of `to` below `value` to the one above, the
@@ -462,6 +607,13 @@ export type Representation =
       second?: { numerator: string; denominator: string };
       /** Tenths and hundredths as decimals: the tenths are labeled 0.1, 0.2 … and the point too. */
       decimal?: boolean;
+      /**
+       * Mixed-number jumps (18 1/4 − 2 3/4): a jump from this value to the numerator, both
+       * counted in parts (18 1/4 is 73 fourths), drawn as one jump of whole numbers and one of
+       * the parts left. The line shows only the wholes around the two points (at least
+       * `wholes`) and names both points as mixed numbers.
+       */
+      from?: string;
     }
   /**
    * Fraction bars of the same whole, one per row, with `num` of `den` parts shaded. `equal`
@@ -479,6 +631,12 @@ export type Representation =
       compare?: [number, number] | [number, number, number, number];
       /** A sentence under the bars instead of the comparison, with {id} for values. */
       caption?: string;
+      /**
+       * Wholes laid out in every row (default 1). A fraction past one whole always takes the
+       * bars it needs (7/4 is one whole and 3/4 of the next), up to 6; setting this keeps the
+       * bars' size still while the values change.
+       */
+      wholes?: number;
     }
   /**
    * Elapsed time on a number line: from the start time to the end time in jumps (to the next
@@ -505,7 +663,14 @@ export type Representation =
       max: number;
     }
   /** A measuring jug with liter marks up to `max`; the `parts` stack up to the `total`. */
-  | { kind: 'beaker'; parts: string[]; total: string; max: number }
+  | {
+      kind: 'beaker';
+      parts: string[];
+      total: string;
+      max: number;
+      /** Amounts that aren't whole read as mixed numbers (2 3/8 L), read exactly. */
+      mixed?: boolean;
+    }
   /**
    * A quadrilateral with 2 pairs of equal sides (`first`, `second`), square corners when
    * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.
@@ -540,10 +705,79 @@ export type Representation =
       max: number;
       /** Extra labeled marks, e.g. 32 where water freezes. */
       marks?: number[];
+      /**
+       * Each thermometer stands in a cup of water in the sun: a dark or a light cup, one per
+       * item (the sun shines on them from the top left).
+       */
+      cups?: ('dark' | 'light')[];
+    }
+  /**
+   * Two trays of soil on a slope under a watering can, the second planted with grass; below
+   * each, a jar with the soil the water washed off (`bare`, `grass`; the jars' scale is `max`,
+   * grown to fit).
+   */
+  | { kind: 'grassSlope'; bare: string; grass: string; difference?: string; max: number }
+  /**
+   * The same flashlight `near` from a wall and `times` as far (`far` = near × times): the lit
+   * circle `times` as wide, and, seen face on, `times` × `times` squares of the near circle's
+   * size, one shaded.
+   */
+  | { kind: 'flashlights'; near: string; times: string; far?: string }
+  /**
+   * Two potted plants, one in the sun and one in the shade (`places`), with as many green
+   * leaves as their counts (`items`); `difference` is how many more the first has.
+   */
+  | {
+      kind: 'leafCount';
+      items: [string, string];
+      difference?: string;
+      places?: ['sun' | 'shade', 'sun' | 'shade'];
     }
   /** Rock layers stacked on a fossil, each `years` old; `total` is the fossil's age. */
   /** Two fossils in a column of rock layers: `fossils` are the layers above each; deeper is older. */
   | { kind: 'rockLayers'; fossils: [string, string]; difference: string }
+  /**
+   * A square root as a side (Grade 8): the square of area `area` on a unit grid, its side
+   * `side`, the whole-number squares just under and over it dashed, and a number line to the
+   * same scale placing the root between two whole numbers, beside fixed `marks` (√2 at
+   * 1.41421…, π at 3.14159…). Drag the corner to change the area.
+   */
+  | { kind: 'rootSquare'; area: string; side: string; marks?: { at: number; label: string }[] }
+  /**
+   * Exponent rules as rows of factors (Grade 8): each power a row of its `base` repeated.
+   * `rule` 'product': b^first × b^second, the two rows joined into one of `result` factors;
+   * 'quotient': b^first ÷ b^second, one row over the other, the pairs that cancel crossed out
+   * and what is left (factors of 1/b when the bottom has more); 'power': (b^first)^second,
+   * `second` copies of the row. `result` is the answer's exponent. Drag a row's end.
+   */
+  | {
+      kind: 'factorRows';
+      base: string;
+      first: string;
+      second: string;
+      result: string;
+      rule: 'product' | 'quotient' | 'power';
+    }
+  /**
+   * Scientific notation on a powers-of-ten ruler (Grade 8): the `number` placed on a log scale
+   * of 10ⁿ⁻² … 10ⁿ⁺³, its decade opened up below as a ruler from 1 to 10 where the `mantissa`
+   * is read, "× 10ⁿ" with the `exponent`. Drag the mantissa, or the number to another decade.
+   */
+  | { kind: 'powerScale'; number: string; mantissa: string; exponent: string }
+  /**
+   * An equation with the unknown on both sides as a pan balance (Grade 8): `left` and `right`
+   * are [coefficient, constant] (variables or numbers) of `x`, so 3x + 4 = x + 10 is
+   * left [3, 4], right [1, 10]. Each pan holds wooden x-blocks and unit counters; negatives
+   * are balloons (−x, −1) pulling the pan up. The beam tips at the current `x` and is level
+   * when the sides are equal. `cancel` crosses out what the two pans share.
+   */
+  | {
+      kind: 'equationBalance';
+      x: string;
+      left: [string | number, string | number];
+      right: [string | number, string | number];
+      cancel?: boolean;
+    }
   /** A box pushed from both sides; arrows scaled to the pushes, `extra` the unbalanced part. */
   | { kind: 'pushes'; right: string; left: string; extra: string; max: number }
   /**
@@ -564,7 +798,11 @@ export type Representation =
       kind: 'areaModel';
       divide: { dividend: string; divisor: string; quotient: string; remainder?: string };
     }
-  /** Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. */
+  /**
+   * Two angles on one vertex (`parts`) making the `whole` angle; drag the middle ray. A whole
+   * of 90 or 180 is a right angle (complementary parts, with its corner mark) or a straight
+   * line (supplementary): only the middle ray turns, and the second part follows it.
+   */
   | {
       kind: 'angles';
       parts: [string, string];
@@ -575,6 +813,12 @@ export type Representation =
        * the angle): the rays are then not dragged, since a part can't take any degree.
        */
       sliders?: string[];
+      /**
+       * `whole: 180` only: two crossing lines. The first line runs on through the vertex, so
+       * each part has a vertical angle across from it, labelled with `first` and `second`
+       * (values equal to the parts), or with the part's own value.
+       */
+      cross?: { first?: string; second?: string };
     }
   /**
    * Two number lines that line up: the top counted in one unit (bigger units), the bottom in
@@ -601,6 +845,12 @@ export type Representation =
       second?: { x: string; y: string };
       slope?: string;
       /**
+       * Grade 8 slope: the rise and the run as values. The triangle is shaded, each leg drawn
+       * heavy with an arrow and labelled with its value ("rise = 6", "run = 3").
+       */
+      rise?: string;
+      run?: string;
+      /**
        * The pattern's earlier points, back to the start: each one `across` less and `up` less
        * than the next (numbers or variables), drawn as small dots and listed in a table.
        */
@@ -608,16 +858,43 @@ export type Representation =
       /** The segment between the two points (no line or slope), labelled with `distance`. */
       segment?: boolean;
       distance?: string;
+      /**
+       * With `segment`: the right triangle under it (legs across and up, dashed, with their
+       * lengths and a right angle), and the caption works d² = a² + b² (Grade 8 distance).
+       */
+      legs?: boolean;
       /** The point's images across the x-axis, the y-axis and both, drawn hollow. */
       reflect?: boolean;
       /** A rectangle from its left and right x-coordinates and bottom and top y-coordinates. */
       rect?: { left: string; right: string; bottom: string; top: string };
+      /**
+       * Plot a point (first quadrant): tap the grid or drag to place (x, y); the path from 0,
+       * across then up, is drawn to it.
+       */
+      plot?: boolean;
       /** Numerals I–IV in the quadrants. */
       quadrantLabels?: boolean;
       /** Largest |coordinate| drawn (grows to fit). */
       extent: number;
       quadrants: 1 | 4;
     }
+  /** Grade 8 functions, systems and transformations (specs in `typesGraphs.ts`). */
+  | LinearFunctionSpec
+  | LineSystemSpec
+  | FunctionMachineSpec
+  | MappingSpec
+  | TransformationSpec
+  /** Grade 7 life science: energy pyramid, generations (specs in `typesLife.ts`). */
+  | EnergyPyramidSpec
+  | GenerationsSpec
+  /** Grade 7–8 chemistry: molecules, reactions, heating curves, the periodic table (`typesChem.ts`). */
+  | ChemSpec
+  /** Grade 8 motion, forces and energy (specs in `typesMechanics.ts`). */
+  | MotionGraphSpec
+  | SkatersSpec
+  | EnergyTrackSpec
+  /** Grade 8 spectrum, circuits, electromagnet and orbit (specs in `typesPhysics8.ts`). */
+  | Physics8Spec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
@@ -629,6 +906,13 @@ export type Representation =
       range: [number, number];
       /** Brackets over the plot for the range and the interquartile range. */
       brackets?: { range?: string; iqr?: string };
+      /**
+       * The values the five numbers come from, drawn as dots above the plot (only the first
+       * `count` of them); the middle one (odd) or two (even) are ringed at the median. The
+       * five numbers are then read from the values, not dragged.
+       */
+      data?: string[];
+      count?: string;
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
   | { kind: 'pieChart'; parts: string[]; total?: string }
@@ -659,6 +943,11 @@ export type Representation =
       total?: string;
       /** Cubes of edge 1/cube (2: half-unit cubes) fill the box; `volume` stays in unit cubes. */
       cube?: 2 | 3 | 4;
+      /**
+       * Past `max` a side, draw the box to scale (40 × 60 × 80 cm): each edge labelled, lines
+       * every few units on its faces and one unit cube under it for size.
+       */
+      scale?: boolean;
     }
   /**
    * Place-value chart: the digits of `value` in labelled columns, `decimals` places (0–3) past
@@ -713,6 +1002,28 @@ export type Representation =
       vertical?: boolean;
       /** A fixed unit written after the numbers ("°C"). */
       unit?: string;
+      /**
+       * An inequality with `value` as its bound (across only): an open (<, >) or closed (≤, ≥)
+       * circle, an arrow over the solutions, and a `test` point marked true or false. `sign` is
+       * one of the four, or a variable (1 <, 2 ≤, 3 >, 4 ≥) with buttons to change it;
+       * `letter` names the unknown from Grade 6 (default x).
+       */
+      inequality?: {
+        sign: string;
+        test?: string;
+        letter?: string;
+        /**
+         * Grade 7: the inequality as written is `times`·x + `plus` (sign) `total`; `value` is its
+         * solved bound, (total − plus) ÷ times. A negative `times` flips the drawn sign.
+         */
+        twoStep?: { times: string; plus: string; total: string };
+      };
+      /**
+       * Adding (`op` '+', the default) or subtracting ('−') a signed number as a jump from
+       * `value` by `by` to `result`: right for a positive jump, left for a negative one;
+       * subtracting jumps the other way (adding the opposite). Drag the start or the end.
+       */
+      jump?: { by: string; result: string; op?: '+' | '−' };
     }
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {
@@ -722,6 +1033,13 @@ export type Representation =
       whole: string;
       onePercent?: string;
       ticks?: 4 | 10;
+      /**
+       * Tax, tip, markup or discount, and percent change: `part` is the change and `total`
+       * the new amount. Three bars (the original, the change, the new amount), or with
+       * `bars: 2` before and after with the change marked. `direction` follows the values
+       * (a negative percent or a smaller total is down) unless it is given.
+       */
+      change?: { total: string; direction?: 'up' | 'down'; bars?: 2 | 3 };
     }
   /**
    * A table of equivalent ratios: the parts `first` : `second`, rows 1–4 times them (or `rows`)
@@ -736,6 +1054,18 @@ export type Representation =
       rows?: number[];
       graph?: boolean;
     }
+  /**
+   * Two-color counters for adding (`op` '+', the default) or subtracting ('−') integers: `first`
+   * and `second` as yellow + and red − counters; each + with a − is a zero pair (0). Subtracting
+   * adds zero pairs when there are too few to take away. Up to 20 of each kind.
+   */
+  | { kind: 'zeroPairs'; first: string; second: string; result: string; op?: '+' | '−' }
+  /**
+   * The sign rule for multiplying (or dividing, `op: '÷'`): a 2 × 2 table of the two numbers'
+   * signs, each cell the answer's sign; the numbers' cell outlined with their equation. Tap a
+   * cell to give the numbers those signs.
+   */
+  | { kind: 'signTable'; first: string; second: string; result: string; op?: '×' | '÷' }
   /**
    * Dividing fractions: `groups` lays groups the size of the divisor along the dividend;
    * `share` shows the dividend filling the divisor's parts of the whole, each part labelled.
@@ -771,10 +1101,19 @@ export type Representation =
       area: string;
       show?: 'rearrange' | 'double';
     }
-  /** A box, cube or square pyramid unfolded, each face labelled with its area; Fold/Unfold. */
+  /**
+   * A box, cube, square pyramid or triangular prism unfolded, each face labelled with its
+   * area; Fold/Unfold.
+   */
   | {
       kind: 'net';
-      solid: 'box' | 'cube' | 'squarePyramid';
+      /**
+       * `triangularPrism`: `width` and `height` are the triangle's base and height, `slant` its
+       * third side (`triangle: 'right'`, the default) or each equal side (`'isosceles'`), and
+       * `length` the prism's length; the net is three rectangles with a triangle on each side.
+       */
+      solid: 'box' | 'cube' | 'squarePyramid' | 'triangularPrism';
+      triangle?: 'right' | 'isosceles';
       length: string;
       width?: string;
       height?: string;
@@ -782,25 +1121,142 @@ export type Representation =
       slant?: string;
       total?: string;
     }
+  /**
+   * A clear solid cut by a plane, the cut face shaded: a box or a pyramid on a `length` ×
+   * `width` base (`width` left out: square), or a triangular prism lying with its triangle at
+   * the front (a right triangle with legs `length` across and `width` up, or `isosceles` with
+   * base `length` and height `width`) and its `height` running back. `cut: 'base'` (the
+   * default) is parallel to the base, `at` up the height (the prism: back along it); `'side'`
+   * is across it, `at` back across the width (the prism: up the triangle); `'diagonal'` stands
+   * on the base's diagonal. Drag the plane's corner to move `at`. `area` is the cut's area
+   * and `volume` the solid's.
+   */
+  | {
+      kind: 'crossSection';
+      solid: 'box' | 'triangularPrism' | 'pyramid';
+      length: string;
+      width?: string;
+      height: string;
+      triangle?: 'right' | 'isosceles';
+      cut?: 'base' | 'side' | 'diagonal';
+      at?: string;
+      area?: string;
+      volume?: string;
+    }
+  /**
+   * A population of `population` dots (up to 400) with a random sample of `size` ringed, of
+   * whom `found` have the trait. With `trait` (how many in the population have it) those are
+   * colored and "Take a new sample" draws again, setting `found`; without it only the sample
+   * shows who has it. `estimate` is found ÷ size × population. `labels` name having and not
+   * having the trait ("like soccer", "do not").
+   */
+  | {
+      kind: 'sample';
+      population: string;
+      size: string;
+      found: string;
+      trait?: string;
+      estimate?: string;
+      labels?: [string, string];
+    }
+  /**
+   * A spinner cut into equal sectors: `parts` are how many sectors each outcome has (up to 24
+   * in all), in `colors` (red, blue, green, yellow, orange, purple) and named by `names` (the
+   * color names by default). The event is outcome `pick` (0 first), its sectors outlined;
+   * `chance` is its probability, parts[pick] ÷ `total`. "Spin" turns the arrow.
+   */
+  | {
+      kind: 'spinner';
+      parts: string[];
+      colors?: ('red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple')[];
+      names?: string[];
+      pick?: number;
+      chance?: string;
+      total?: string;
+    }
+  /**
+   * Two dice as a 6 × 6 grid of their 36 pairs, each cell showing the `event` (sum, the
+   * difference bigger − smaller, or product); the cells whose number `compare`s (=, <, ≤, >,
+   * ≥) with `target` are shaded. `count` is how many, `chance` is count ÷ 36. Tap a cell to
+   * make its number the target.
+   */
+  | {
+      kind: 'diceGrid';
+      target: string;
+      event?: 'sum' | 'difference' | 'product';
+      compare?: '=' | '<' | '≤' | '>' | '≥';
+      count?: string;
+      chance?: string;
+    }
+  /**
+   * A tree diagram for two stages with `first` and `second` equally likely outcomes (1 to 6
+   * each): a branch per outcome marked 1/n, the leaves listing every pair (the first 24).
+   * `names` name each stage's outcomes (A, B, … and 1, 2, … by default), `stages` the
+   * stages; `path` (0-based) is highlighted and `chance` is its probability, 1 ÷ `total`.
+   */
+  | {
+      kind: 'treeDiagram';
+      first: string;
+      second: string;
+      total?: string;
+      names?: [string[], string[]];
+      stages?: [string, string];
+      path?: [number, number];
+      chance?: string;
+    }
+  /**
+   * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
+   * `colors` and named by `names` (the color names by default). The event is color `pick`
+   * (0 first); `chance` is parts[pick] ÷ `total`. "Draw a marble" takes one out at random.
+   */
+  | {
+      kind: 'marbles';
+      parts: string[];
+      colors?: ('red' | 'blue' | 'green' | 'yellow' | 'orange' | 'purple')[];
+      names?: string[];
+      pick?: number;
+      chance?: string;
+      total?: string;
+    }
   /** A dot plot: a dot per value, the mean as a balance point, the median, the range. */
   | {
       kind: 'dotPlot';
       data: string[];
-      /** How many of `data` are in the set (3 to 10 values): the rest are not drawn. */
-      count?: string;
       min: number;
       max: number;
       mean?: string;
       median?: string;
       range?: string;
       deviations?: boolean;
+      /**
+       * How many values there are (3 to 10): only the first `count` of `data` are drawn, the
+       * middle one (odd) or two (even) ringed and the median marked between them.
+       */
+      count?: string;
+      /**
+       * A second sample's dot plot under the first on the same scale (two samples compared):
+       * its values and its mean or median; `labels` name the two, `difference` is the gap
+       * between their means (or medians), marked between the plots.
+       */
+      second?: { data: string[]; mean?: string; median?: string };
+      labels?: [string, string];
+      difference?: string;
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }
   /** A graduated cylinder: the level before (dashed), after, and the rise (the object's volume). */
   | { kind: 'gradCylinder'; before: string; after: string; volume?: string; max: number }
-  /** Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale. */
-  | { kind: 'protractor'; angle: string; other?: string }
+  /**
+   * Protractor: one arm on 0°, the other at `angle`; `other` is the reading on the outer scale.
+   * With `arms`, neither arm is on 0: each reads a mark on the inner scale (45 and 135), both
+   * drag, and `angle` is the difference.
+   */
+  | {
+      kind: 'protractor';
+      angle: string;
+      other?: string;
+      arms?: { first: string; second: string };
+    }
   /**
    * A wave drawn with its `wavelength` (and `amplitude`, when the lesson has one; else a
    * fixed height); `extent` is the width shown in wavelength units.
@@ -845,6 +1301,13 @@ export type Representation =
       /** Smallest force / acceleration the arrows are scaled to (grows to fit). */
       forceExtent: number;
       accelerationExtent: number;
+      /**
+       * 'cart': a lab cart carrying the mass as metal blocks, pulled by a rope, with
+       * F = m × a worked under it (reps/ForceCart.tsx). Default: a crate pushed.
+       */
+      object?: 'crate' | 'cart';
+      /** One block's mass in the module's mass unit (default: a round size, up to 10 blocks). */
+      block?: number;
     }
   /**
    * Series circuit: a source `source` driving `current` through resistors in a loop, each

@@ -88,6 +88,14 @@ describe('toLatex', () => {
       undefined,
     );
     expect(both('3/4 is at most 1', 'elementary')).toBe('$\\tfrac{3}{4}$ is at most 1');
+    // A dollar sign in the text is not a math delimiter.
+    expect(both('t × $10 + f × $5 = T', 'standard', ['t', 'f', 'T'])).toBe(
+      '$\\mathit{t}$ × \\$10 + $\\mathit{f}$ × \\$5 = $\\mathit{T}$',
+    );
+    expect(splitLine('\\$10 and $\\half$').map((p) => (p.t === 'text' ? p.s : 'math'))).toEqual([
+      '$10 and ',
+      'math',
+    ]);
   });
 
   it('parses the commands it draws, and refuses others', () => {

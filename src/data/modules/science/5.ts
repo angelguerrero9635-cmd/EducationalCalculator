@@ -378,13 +378,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       startWith: ['n', 'k'],
       pictureLabels: ['k', 'a'],
       unitSystems: ['metric'],
-      representation: {
-        kind: 'bars',
-        bars: [{ var: 'n' }, { var: 'f' }],
-        min: 0,
-        max: 500,
-        scale: 100,
-      },
+      representation: { kind: 'flashlights', near: 'n', times: 'k', far: 'f' },
     } satisfies ModuleDef;
   })(),
 ];

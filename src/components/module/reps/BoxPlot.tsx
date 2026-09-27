@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { G, Line, Path, Rect } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -8,13 +8,16 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
+import { medianSentence, middleOf } from './median';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'boxPlot' }>;
 
 /**
  * A box plot over a number line: whiskers from the least to the greatest value, a box from
- * the first to the third quartile, a line at the median. Drag any of the five marks.
+ * the first to the third quartile, a line at the median. Drag any of the five marks. With
+ * `data`, the values themselves are dots above the plot (the first `count` of them), the middle
+ * one or two ringed at the median; the five numbers are then read from them, not dragged.
  */
 export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
@@ -24,10 +27,36 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const names = ['least', 'first quartile', 'median', 'third quartile', 'greatest'];
   const vals = ids.map((id) => rep.shown(id));
   const known = ids.every(rep.known);
+  // The values behind the plot: only the first n, all of them (faded) while n is "?".
+  const n =
+    spec.data && spec.count && rep.known(spec.count)
+      ? Math.max(0, Math.min(spec.data.length, Math.round(rep.shown(spec.count))))
+      : undefined;
+  const used = spec.data ? (n !== undefined ? spec.data.slice(0, n) : spec.data) : [];
+  const typed = used.filter(rep.known);
+  const data = typed.map((id) => rep.shown(id));
+  const sorted = [...data].sort((a, b) => a - b);
+  const complete = spec.data !== undefined && typed.length === used.length && data.length > 0;
+  const fadedData = spec.count !== undefined && n === undefined;
+  const middle = complete && !fadedData ? middleOf(sorted) : undefined;
+  const rank = new Map(
+    data
+      .map((v, i) => ({ v, i }))
+      .sort((a, b) => a.v - b.v || a.i - b.i)
+      .map((d, k) => [d.i, k]),
+  );
+  // Dots stack where values repeat; the band above the plot is as tall as the tallest stack.
+  const levels = new Map<number, number>();
+  const dots = data.map((v, i) => {
+    const level = levels.get(v) ?? 0;
+    levels.set(v, level + 1);
+    return { v, i, level };
+  });
+  const band = spec.data ? 12 + Math.max(1, ...levels.values()) * 16 : 0;
   const [lo0, hi0] = spec.range;
-  const hiRaw = Math.max(hi0, ...vals);
+  const hiRaw = Math.max(hi0, ...vals, ...data);
   const range = useFrozen<[number, number]>([
-    Math.min(lo0, ...vals),
+    Math.min(lo0, ...vals, ...data),
     hiRaw > hi0 ? niceCeil(hiRaw) : hi0,
   ]);
   const [lo, hi] = range.value;
@@ -36,15 +65,15 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   return (
     <View>
       {/* 26 px under the box for two more rows of value labels when values bunch up. */}
-      <Canvas aspect={(w) => (spec.brackets ? 0.56 : 0.42) + 26 / w}>
+      <Canvas aspect={(w) => (spec.brackets ? 0.56 : 0.42) + (26 + band) / w}>
         {({ w, h: full }) => {
-          const h = full - 26;
+          const h = full - 26 - band;
           const pad = 24;
           const unit = (w - 2 * pad) / (hi - lo || 1);
           const sx = (x: number) => pad + (x - lo) * unit;
           const yLine = full - 30;
           // Brackets go above the value labels, so the box sits lower.
-          const yMid = spec.brackets ? h * 0.52 : h * 0.42;
+          const yMid = band + (spec.brackets ? h * 0.52 : h * 0.42);
           const boxH = spec.brackets ? h * 0.28 : h * 0.36;
           const step = niceCeil((hi - lo) / 8);
           const ticks: number[] = [];
@@ -163,6 +192,46 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   stroke={c.chartHighlight}
                   strokeWidth={chart.strokeHeavy}
                 />
+                {spec.data ? (
+                  <G opacity={fadedData ? 0.4 : 1}>
+                    {/* The median down from the middle dot(s) to the box's median line. */}
+                    {middle && rep.known(spec.median) ? (
+                      <Line
+                        x1={sx(md)}
+                        y1={band - 14}
+                        x2={sx(md)}
+                        y2={up - chart.small - 2}
+                        stroke={c.chartHighlight}
+                        strokeWidth={chart.strokeLight}
+                        strokeDasharray={chart.dash}
+                      />
+                    ) : null}
+                    {dots.map((d) => {
+                      const mid = middle?.ranks.includes(rank.get(d.i)!);
+                      const cy = band - 14 - d.level * 16;
+                      return (
+                        <G key={`d${d.i}`}>
+                          <Circle
+                            cx={sx(d.v)}
+                            cy={cy}
+                            r={4.5}
+                            fill={mid ? c.chartHighlight : c.chartInk}
+                          />
+                          {mid ? (
+                            <Circle
+                              cx={sx(d.v)}
+                              cy={cy}
+                              r={7}
+                              fill="none"
+                              stroke={c.chartHighlight}
+                              strokeWidth={chart.strokeLight}
+                            />
+                          ) : null}
+                        </G>
+                      );
+                    })}
+                  </G>
+                ) : null}
                 {labels.map(({ i, x, y }) => (
                   <ChartText
                     key={`v${ids[i]}`}
@@ -204,7 +273,7 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       ))
                   : null}
               </Svg>
-              {known
+              {known && !spec.data
                 ? ids.map((id, i) => (
                     <DragHandle
                       key={id}
@@ -234,13 +303,37 @@ export function BoxPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {known
-          ? `The middle half of the data runs from ${formatNumber(vals[1]!)} to ${formatNumber(vals[3]!)}, a width of ${formatNumber(iqr)}. Half the values are at or below the median, ${formatNumber(vals[2]!)}.`
-          : `Type the five numbers: ${names.join(', ')}.`}
+        {`${
+          middle
+            ? `${data.length} values in order: ${sorted.map((v) => formatNumber(v)).join(', ')}. ${medianSentence(
+                sorted,
+                rep.value(spec.median, false),
+              )} `
+            : spec.data && !fadedData && !complete
+              ? `Type the first ${n ?? used.length} values. `
+              : ''
+        }${
+          known
+            ? `The middle half of the data runs from ${formatNumber(vals[1]!)} to ${formatNumber(vals[3]!)}, a width of ${formatNumber(iqr)}. Half the values are at or below the median, ${formatNumber(vals[2]!)}.`
+            : spec.data
+              ? ''
+              : `Type the five numbers: ${names.join(', ')}.`
+        }`}
       </Caption>
       <Steppers
         calc={calc}
-        items={ids.map((id) => ({ var: id, steps: [1], pin: ids.filter((x) => x !== id) }))}
+        items={
+          spec.data
+            ? [
+                ...used.map((id) => ({
+                  var: id,
+                  steps: [1],
+                  pin: [...used, ...(spec.count ? [spec.count] : [])].filter((x) => x !== id),
+                })),
+                ...(spec.count ? [{ var: spec.count, steps: [1], pin: used }] : []),
+              ]
+            : ids.map((id) => ({ var: id, steps: [1], pin: ids.filter((x) => x !== id) }))
+        }
       />
     </View>
   );

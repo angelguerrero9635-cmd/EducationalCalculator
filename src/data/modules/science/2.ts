@@ -169,14 +169,10 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       example: { s: 14, h: 5, d: 9 },
       startWith: ['s', 'h'],
       representation: {
-        kind: 'bars',
-        bars: [
-          { var: 's', editable: true },
-          { var: 'h', editable: true },
-        ],
-        min: 0,
-        max: 20,
-        scale: 5,
+        kind: 'leafCount',
+        items: ['s', 'h'],
+        difference: 'd',
+        places: ['sun', 'shade'],
       },
     } satisfies ModuleDef;
   })(),

@@ -6,84 +6,121 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-28 of 319 pages show sliders.
+37 of 419 pages show sliders.
 
 ## By picture kind
 
 | Kind | Pages | Sliders | Why |
 | --- | ---: | :---: | --- |
-| angles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| angles | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | areaModel | 13 | yes | sweeping the value shows the picture change; no touch control of its own |
 | array | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| bars | 18 | no | the picture has its own handles or taps, or the inputs are enough |
+| bars | 16 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseHeight | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseTen | 15 | no | the picture has its own handles or taps, or the inputs are enough |
-| beaker | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| boxPlot | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| circle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| beaker | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| boxPlot | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| circle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| circuit | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | clock | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| coins | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| coins | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| coordinatePlane | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| coordinatePlane | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| crossSection | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| dotPlot | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| curvedSolid | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| diceGrid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| dotPlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| electromagnet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| energyPyramid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| energyTrack | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | equalGroups | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| equationBalance | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorRows | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fieldOfView | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| flashlights | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| force | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | fractionArea | 2 | no | set on the module (hidden) |
-| fractionBars | 7 | no | set on the module (hidden) |
+| fractionBars | 8 | no | set on the module (hidden) |
 | fractionFit | 3 | no | set on the module (hidden) |
-| fractionLine | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| fractionLine | 12 | no | the picture has its own handles or taps, or the inputs are enough |
+| functionMachine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| generations | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| grassSlope | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| hanger | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| heatingCurve | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | hops | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
-| integerLine | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| linePlot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| net | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| integerLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| leafCount | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| linearFunction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| linePlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| lineSystem | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| mapping | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| marbles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| molecules | 3 | yes | set on the module (shown) |
+| motionGraph | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| net | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| numberLine | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| numberLine | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| orbit | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| partition | 3 | yes | sweeping the value shows the picture change; no touch control of its own |
+| partition | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| percentBar | 1 | no | set on the module (hidden) |
+| percentBar | 4 | no | set on the module (hidden) |
+| periodicTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
 | placeValueChart | 10 | no | the picture has its own handles or taps, or the inputs are enough |
-| plot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| plot | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| powerScale | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| protractor | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| protractor | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| ratioTable | 1 | no | set on the module (hidden) |
+| ratioTable | 2 | no | set on the module (hidden) |
+| reaction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectangle | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
-| rightTriangle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| rightTriangle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| rootSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | ruler | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| sample | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| scaleCopy | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| scatter | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| skaters | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 15 | no | the picture has its own handles or taps, or the inputs are enough |
+| spectrum | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 34 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 37 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
-| thermometers | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| thermometers | 10 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| unitCubes | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
+| transformation | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| treeDiagram | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| unitCubes | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | venn | 1 | yes | set on the module (shown) |
 | waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| zeroPairs | 2 | yes | set on the module (shown) |
 
 ## Modules that override their kind
 
@@ -115,6 +152,11 @@ its kind with `sliders: true | false`.
 - m.6.expressions-variables~order-of-operations: sliders hidden
 - m.6.one-step-equations: sliders hidden
 - m.6.one-step-equations~multiply: sliders hidden
+- g.zero-pairs-add: sliders shown
+- g.zero-pairs-subtract: sliders shown
+- g.water-molecules: sliders shown
+- g.carbon-dioxide-molecules: sliders shown
+- g.oxygen-molecules: sliders shown
 
 ## Every page
 
@@ -229,6 +271,7 @@ its kind with `sliders: true | false`.
 | m.3.multiply-by-tens~word | equalGroups | no |
 | m.3.fractions-number-line | fractionLine | no |
 | m.3.fractions-number-line~shapes | partition | yes |
+| m.3.fractions-number-line~set | partition | yes |
 | m.3.fractions-number-line~wholes | fractionLine | no |
 | m.3.fractions-number-line~unit-fraction | tape | no |
 | m.3.compare-fractions | fractionBars | no |
@@ -298,7 +341,7 @@ its kind with `sliders: true | false`.
 | s.2.material-properties~pieces | tape | no |
 | s.2.heating-cooling~warming | thermometers | no |
 | s.2.heating-cooling~cooling | thermometers | no |
-| s.2.plant-growth-investigation | bars | no |
+| s.2.plant-growth-investigation | leafCount | no |
 | s.2.plant-growth-investigation~water | ruler | no |
 | s.2.plant-growth-investigation~week | hops | no |
 | s.2.pollination-dispersal~sock-walk | bars | no |
@@ -356,12 +399,13 @@ its kind with `sliders: true | false`.
 | s.4.wave-patterns~amplitude | wave | no |
 | s.4.internal-structures~pulse | skipCount | no |
 | s.4.weathering | bars | no |
+| s.4.weathering~grass-slope | grassSlope | no |
 | s.5.conservation-mass | scale | no |
 | s.5.conservation-mass~fizz | waterfall | no |
 | s.5.gravity-down~spring-scale | table | no |
 | s.5.plants-sunlight-energy | bars | no |
 | s.5.earth-spheres~water-share | pieChart | no |
-| s.5.sun-star-brightness~two-flashlights | bars | no |
+| s.5.sun-star-brightness~two-flashlights | flashlights | no |
 | m.6.ratios | ratioTable | no |
 | m.6.ratios~tape | tape | yes |
 | m.6.ratios~three-parts | tape | no |
@@ -437,5 +481,103 @@ its kind with `sliders: true | false`.
 | g.place-value-chart | placeValueChart | no |
 | g.factor-pairs | factorPairs | no |
 | g.share-wholes | shareWholes | no |
+| g.fraction-bars-past-one | fractionBars | yes |
+| g.mixed-number-jumps | fractionLine | no |
+| g.fraction-of-a-set | partition | yes |
+| g.number-line-500 | numberLine | no |
+| g.jumps-in-a-quotient | skipCount | no |
+| g.share-as-mixed | tape | no |
+| g.liters-as-mixed | beaker | no |
 | g.wave | wave | no |
 | g.punnett-square | punnettSquare | no |
+| g.grass-slope | grassSlope | no |
+| g.flashlights | flashlights | no |
+| g.leaf-count | leafCount | no |
+| g.dark-light-cups | thermometers | no |
+| g.bills-and-coins | coins | no |
+| g.dot-plot-median | dotPlot | no |
+| g.box-plot-data | boxPlot | no |
+| g.inequality-line | integerLine | no |
+| g.scaled-box | unitCubes | yes |
+| g.ratio-graph | ratioTable | no |
+| g.plot-point | coordinatePlane | no |
+| g.line-plot-lengths | linePlot | no |
+| g.protractor-arms | protractor | no |
+| g.proportional-graph | plot | no |
+| g.sales-tax | percentBar | no |
+| g.discount | percentBar | no |
+| g.percent-change | percentBar | no |
+| g.zero-pairs-add | zeroPairs | yes |
+| g.zero-pairs-subtract | zeroPairs | yes |
+| g.sign-table | signTable | no |
+| g.signed-jump-add | integerLine | no |
+| g.signed-jump-subtract | integerLine | no |
+| g.hanger | hanger | no |
+| g.tape-equation | tape | no |
+| g.tape-equation-grouped | tape | no |
+| g.two-step-inequality | integerLine | no |
+| g.scale-copy | scaleCopy | no |
+| g.scale-copy-area | scaleCopy | no |
+| g.circle-parts | circle | no |
+| g.squares-on-sides | rightTriangle | no |
+| g.grid-distance | coordinatePlane | no |
+| g.cylinder-volume | curvedSolid | no |
+| g.cone-in-cylinder | curvedSolid | no |
+| g.sphere-in-cylinder | curvedSolid | no |
+| g.scatter-fit | scatter | no |
+| g.bag-of-marbles | marbles | no |
+| g.tree-diagram | treeDiagram | no |
+| g.two-dice | diceGrid | no |
+| g.spinner | spinner | no |
+| g.two-samples | dotPlot | no |
+| g.random-sample | sample | no |
+| g.prism-cross-section | crossSection | no |
+| g.triangular-prism-volume | crossSection | no |
+| g.pyramid-slice | crossSection | no |
+| g.pyramid-upright-slice | crossSection | no |
+| g.triangular-prism-net | net | no |
+| g.vertical-angles | angles | no |
+| g.supplementary-angles | angles | no |
+| g.complementary-angles | angles | no |
+| g.equation-balance | equationBalance | no |
+| g.equation-balloons | equationBalance | no |
+| g.scientific-notation | powerScale | no |
+| g.exponent-product | factorRows | no |
+| g.exponent-quotient | factorRows | no |
+| g.exponent-power | factorRows | no |
+| g.root-square | rootSquare | no |
+| g.slope-triangle | coordinatePlane | no |
+| g.translation | transformation | no |
+| g.reflection | transformation | no |
+| g.rotation | transformation | no |
+| g.dilation | transformation | no |
+| g.mapping | mapping | no |
+| g.function-machine | functionMachine | no |
+| g.linear-function | linearFunction | no |
+| g.linear-function-context | linearFunction | no |
+| g.line-system | lineSystem | no |
+| g.line-system-context | lineSystem | no |
+| g.energy-pyramid | energyPyramid | no |
+| g.beetle-generations | generations | no |
+| g.water-molecules | molecules | yes |
+| g.carbon-dioxide-molecules | molecules | yes |
+| g.oxygen-molecules | molecules | yes |
+| g.balance-water | reaction | no |
+| g.burning-methane | reaction | no |
+| g.heating-curve | heatingCurve | no |
+| g.periodic-table | periodicTable | no |
+| g.distance-time | motionGraph | no |
+| g.walk-graph | motionGraph | no |
+| g.speed-time | motionGraph | no |
+| g.cart-force | force | no |
+| g.skaters | skaters | no |
+| g.roller-coaster | energyTrack | no |
+| g.pendulum | energyTrack | no |
+| g.em-spectrum | spectrum | no |
+| g.visible-light | spectrum | no |
+| g.series-circuit | circuit | no |
+| g.parallel-circuit | circuit | no |
+| g.bulbs-in-series | circuit | no |
+| g.electromagnet | electromagnet | no |
+| g.orbit | orbit | no |
+| g.orbit-mars | orbit | no |

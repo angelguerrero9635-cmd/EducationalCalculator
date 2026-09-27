@@ -211,7 +211,7 @@ export function toLatex(
       m.groups!.mw || m.groups!.fn ? atom(m, 'elementary', true, []) : undefined,
     );
     if (!segs.some((x) => x.tex !== undefined)) return undefined;
-    return segs.map((x) => (x.tex !== undefined ? `$${x.tex}$` : x.s)).join('');
+    return segs.map((x) => (x.tex !== undefined ? `$${x.tex}$` : escapeDollars(x.s))).join('');
   }
   let segs: Seg[] = [{ s: line }];
   // Divisions drawn stacked: every one in high school and college; on Grade 6 letter pages only
@@ -243,12 +243,16 @@ export function toLatex(
   segs = pass(segs, atomPattern(band), (m) => atom(m, band, prose, symbols));
   if (letterBand(band)) segs = italics(segs, symbols, !prose);
   if (!segs.some((x) => x.tex !== undefined)) return undefined;
-  return segs.map((x) => (x.tex !== undefined ? `$${x.tex}$` : x.s)).join('');
+  return segs.map((x) => (x.tex !== undefined ? `$${x.tex}$` : escapeDollars(x.s))).join('');
 }
+
+/** Math between `$…$`; a dollar sign in the text ("$10") is written `\$`. */
+const MATH = /(?<!\\)\$([^$]*)\$/g;
+const escapeDollars = (t: string) => t.replace(/\$/g, '\\$');
 
 /** The plain text a typeset line came from (for the round-trip test). */
 export function fromLatex(tex: string): string {
-  return tex.replace(/\$([^$]*)\$/g, (_, math: string) => plainMath(parseMath(math)));
+  return tex.replace(MATH, (_, math: string) => plainMath(parseMath(math))).replace(/\\\$/g, '$');
 }
 
 // ─── Parsing ───────────────────────────────────────────────────────────────────
@@ -433,11 +437,12 @@ export type LinePiece = { t: 'text'; s: string } | { t: 'math'; nodes: MathNode[
 export function splitLine(tex: string): LinePiece[] {
   const pieces: LinePiece[] = [];
   let last = 0;
-  for (const m of tex.matchAll(/\$([^$]*)\$/g)) {
-    if (m.index! > last) pieces.push({ t: 'text', s: tex.slice(last, m.index) });
+  const text = (t: string) => pieces.push({ t: 'text', s: t.replace(/\\\$/g, '$') });
+  for (const m of tex.matchAll(MATH)) {
+    if (m.index! > last) text(tex.slice(last, m.index));
     pieces.push({ t: 'math', nodes: parseMath(m[1]!) });
     last = m.index! + m[0].length;
   }
-  if (last < tex.length) pieces.push({ t: 'text', s: tex.slice(last) });
+  if (last < tex.length) text(tex.slice(last));
   return pieces;
 }

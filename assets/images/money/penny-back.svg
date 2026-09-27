@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <radialGradient id="pennyb-metal" cx="0.38" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#e7a878"/>
+      <stop offset="1" stop-color="#c2703d"/>
+    </radialGradient>
+    <clipPath id="pennyb-field"><circle cx="0" cy="0" r="100"/></clipPath>
+    <path id="pennyb-t2" d="M0 78 A78 78 0 1 1 0 -78 A78 78 0 1 1 0 78"/>
+  </defs>
+  <circle cx="410" cy="412" r="267" fill="#1f2937" opacity="0.12"/>
+  <circle cx="400" cy="400" r="267" fill="url(#pennyb-metal)" stroke="#1f2937" stroke-width="6"/>
+  <circle cx="400" cy="400" r="234.9" fill="none" stroke="#9a4f22" stroke-width="5"/>
+  <path d="M181.5 315.4 A234.9 234.9 0 0 1 315.4 181.5" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+  <g transform="translate(400 400) scale(2.3494)">
+    <path d="M-46 -44 L46 -44 L46 -22 L-46 -22 Z" fill="#d88752" stroke="#1f2937" stroke-width="1.70" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M-46 -22 L46 -22 L46 18 Q46 46 0 64 Q-46 46 -46 18 Z" fill="#d88752" stroke="#1f2937" stroke-width="1.70" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M-38.9 -18 L-38.9 28.5 M-31.8 -18 L-31.8 38.9 M-24.8 -18 L-24.8 47.2 M-17.7 -18 L-17.7 53.5 M-10.6 -18 L-10.6 57.7 M-3.5 -18 L-3.5 59.7 M3.5 -18 L3.5 59.7 M10.6 -18 L10.6 57.7 M17.7 -18 L17.7 53.5 M24.8 -18 L24.8 47.2 M31.8 -18 L31.8 38.9 M38.9 -18 L38.9 28.5" fill="none" stroke="#9a4f22" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="0" y="-30" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="8" letter-spacing="0.2" fill="#5b260b" text-anchor="middle">E PLURIBUS UNUM</text>
+    <path d="M-74 6 L-58 6 L-58 30 L-74 30 L-66 18 Z" fill="#9a4f22" stroke="#1f2937" stroke-width="1.28" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M74 6 L58 6 L58 30 L74 30 L66 18 Z" fill="#9a4f22" stroke="#1f2937" stroke-width="1.28" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M-62 0 Q0 8 62 0 L62 24 Q0 32 -62 24 Z" fill="#e7a878" stroke="#1f2937" stroke-width="1.28" stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="0" y="20" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="14" letter-spacing="1" fill="#5b260b" text-anchor="middle">ONE CENT</text>
+    <text font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="13" letter-spacing="1" fill="#5b260b" text-anchor="middle"><textPath href="#pennyb-t2" startOffset="50%">UNITED STATES OF AMERICA</textPath></text>
+  </g>
+</svg>

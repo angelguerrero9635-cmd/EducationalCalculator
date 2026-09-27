@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <radialGradient id="ramp-ball" cx="0.35" cy="0.3" r="0.75">
+      <stop offset="0" stop-color="#f87171"/>
+      <stop offset="1" stop-color="#b91c1c"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="800" fill="#eef2f7"/>
+  <rect x="0" y="520" width="1200" height="280" fill="#dde2ea"/>
+  <rect x="0" y="498" width="1200" height="22" fill="#ffffff"/>
+  <line x1="0" y1="498" x2="1200" y2="498" stroke="#1f2937" stroke-width="4" opacity="0.3"/>
+  <line x1="0" y1="520" x2="1200" y2="520" stroke="#1f2937" stroke-width="5" opacity="0.55"/>
+  <g stroke="#c3cad6" stroke-width="4"><line x1="0" y1="575" x2="1200" y2="575"/><line x1="0" y1="640" x2="1200" y2="640"/><line x1="0" y1="715" x2="1200" y2="715"/></g>
+  <ellipse cx="420" cy="676" rx="380" ry="16" fill="#1f2937" opacity="0.1"/>
+  <polygon points="80,565.6 110,545.6 300,545.6 270,565.6" fill="#93c5fd"/>
+  <polygon points="270,565.6 300,545.6 300,648 270,668" fill="#1d4ed8"/>
+  <rect x="80" y="565.6" width="190" height="102.4" fill="#3b82f6"/>
+  <polygon points="80,668 270,668 300,648 300,545.6 110,545.6 80,565.6" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M80 565.6 L270 565.6 L270 668 M270 565.6 L300 545.6" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="80,463.3 110,443.3 300,443.3 270,463.3" fill="#fde68a"/>
+  <polygon points="270,463.3 300,443.3 300,545.6 270,565.6" fill="#ca9a04"/>
+  <rect x="80" y="463.3" width="190" height="102.4" fill="#facc15"/>
+  <polygon points="80,565.6 270,565.6 300,545.6 300,443.3 110,443.3 80,463.3" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M80 463.3 L270 463.3 L270 565.6 M270 463.3 L300 443.3" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="80,360.9 110,340.9 300,340.9 270,360.9" fill="#86efac"/>
+  <polygon points="270,360.9 300,340.9 300,443.3 270,463.3" fill="#15803d"/>
+  <rect x="80" y="360.9" width="190" height="102.4" fill="#22c55e"/>
+  <polygon points="80,463.3 270,463.3 300,443.3 300,340.9 110,340.9 80,360.9" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M80 360.9 L270 360.9 L270 463.3 M270 360.9 L300 340.9" fill="none" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <polygon points="50,180 730,634 760,614 80,160" fill="#f0d3a2"/>
+  <polygon points="50,180 730,634 730,668 50,214" fill="#d6a76c"/>
+  <polygon points="50,214 50,180 80,160 760,614 730,634 730,668" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <line x1="50" y1="180" x2="730" y2="634" stroke="#1f2937" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#b07b40" stroke-width="4" stroke-linecap="round"><line x1="130" y1="251.4" x2="330" y2="384.9"/><line x1="420" y1="447" x2="640" y2="593.9"/><line x1="520" y1="505.8" x2="700" y2="626"/></g>
+  <g stroke="#1f2937" stroke-width="7" stroke-linecap="round" opacity="0.55"><line x1="298" y1="291.9" x2="231.4" y2="247.4"/><line x1="304.6" y1="260.2" x2="204.8" y2="193.6"/><line x1="331.3" y1="242" x2="264.7" y2="197.5"/></g>
+  <path d="M454.3 360.2 L755.3 561.1 Q813.5 600 893.5 600 L1110 600" fill="none" stroke="#1f2937" stroke-width="7" stroke-linecap="round" stroke-dasharray="3 22" opacity="0.7"/>
+  <path d="M1108 570 L1156 600 L1108 630 Z" fill="#1f2937" stroke="#1f2937" stroke-width="6" stroke-linejoin="round" opacity="0.7"/>
+  <circle cx="382.8" cy="312.4" r="58" fill="url(#ramp-ball)" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <ellipse cx="364.8" cy="290.4" rx="16" ry="10" fill="#ffffff" opacity="0.7" transform="rotate(-35 364.8 290.4)"/>
+</svg>

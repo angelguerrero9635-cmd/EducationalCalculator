@@ -297,12 +297,13 @@ function mixedAddSub(op: '+' | '−'): ModuleDef {
       ? { b: 6, w1: 2, n1: 1, w2: 1, n2: 5, A: 13, B: 11, D: 24, wd: 4, rd: 0 }
       : { b: 4, w1: 18, n1: 1, w2: 2, n2: 3, A: 73, B: 11, D: 62, wd: 15, rd: 2 },
     startWith: ['b', 'w1', 'n1', 'w2', 'n2'],
+    // A jump from the first number to the answer, in parts: the wholes, then the parts left.
     representation: {
       kind: 'fractionLine',
-      numerator: 'A',
+      numerator: 'D',
       denominator: 'b',
       wholes: 1,
-      second: { numerator: 'D', denominator: 'b' },
+      from: 'A',
     },
   };
 }

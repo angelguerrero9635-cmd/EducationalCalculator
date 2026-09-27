@@ -5,7 +5,22 @@
  */
 import type { VariableDef } from '@/engine/types';
 
+import { diceCount } from '@/components/module/reps/dice';
+import { toFraction } from '@/components/module/reps/exact';
+import { outline } from '@/components/module/reps/scaleOutline';
+import {
+  areaOf,
+  planeOf,
+  reachOf,
+  sectionOf,
+  solidOf,
+  volumeOf,
+} from '@/components/module/reps/section';
+import { imageOf } from '@/components/module/reps/transform';
+import { chemIssues } from './chemPictures';
+
 import { placeParts } from '../helpers';
+import { physics8Issues } from './picturesPhysics8';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -21,6 +36,27 @@ export function repIssues(
     if (x < 0) out.push(`${what} ${id} is negative (${x})`);
     if (Math.abs(x - Math.round(x)) > 1e-9) out.push(`${what} ${id} is not whole (${x})`);
     if (max !== undefined && x > max) out.push(`${what} ${id} = ${x} exceeds the drawing's ${max}`);
+  };
+  /**
+   * A value a picture writes exactly (a quotient, a share): whole, a decimal ending within 4
+   * places, or a fraction with a bottom to 16 (33 1/3). Anything else prints a long decimal.
+   */
+  const exact = (x: number | undefined, what: string) => {
+    if (x === undefined || Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-6) return;
+    if (!toFraction(x)) out.push(`${what} ${x} is neither a short decimal nor a fraction`);
+  };
+  const medianOf = (s: number[]) =>
+    s.length % 2 ? s[(s.length - 1) / 2]! : (s[s.length / 2 - 1]! + s[s.length / 2]!) / 2;
+  /** The first `count` values in order (DotPlot/BoxPlot draw only those), once all are known. */
+  const firstValues = (data?: string[], n?: string) => {
+    if (!data || !n) return undefined;
+    count(n, 'values drawn', data.length);
+    const k = val(n);
+    if (k === undefined) return undefined;
+    if (k < 1) out.push(`${k} values drawn`);
+    const xs = data.slice(0, k).map(val);
+    if (k < 1 || xs.some((x) => x === undefined)) return undefined;
+    return (xs as number[]).sort((a, b) => a - b);
   };
   switch (rep.kind) {
     case 'tenFrame': {
@@ -115,6 +151,78 @@ export function repIssues(
       }
       break;
     }
+    case 'hanger': {
+      // Blocks and weights are whole things on a tray: up to 8 blocks and 40 weights a side
+      // (Hanger.tsx packs them in rows); an unknown below 0 can't hang.
+      for (const s of [rep.left, rep.right]) {
+        if (s.x !== undefined) count(s.x, 'hanger blocks', 8);
+        if (s.units !== undefined) count(s.units, 'hanger weights', 40);
+      }
+      const x = val(rep.unknown);
+      if (x !== undefined && x < 0) out.push(`hanger block weighs ${x} (below 0)`);
+      const [xl, ul, xr, ur] = [rep.left.x, rep.left.units, rep.right.x, rep.right.units].map(
+        (v) => (v === undefined ? 0 : val(v)),
+      );
+      if (
+        x !== undefined &&
+        [xl, ul, xr, ur].every((v) => v !== undefined) &&
+        Math.abs(xl! * x + ul! - (xr! * x + ur!)) > 1e-6 * Math.max(1, ur! + xr! * x)
+      )
+        out.push(`~hanger is not level: ${xl! * x + ul!} against ${xr! * x + ur!}`);
+      break;
+    }
+    case 'circle': {
+      // Wedges come in an even count, 4–24 (CircleParts.tsx rounds to one).
+      if (rep.wedges !== undefined) {
+        count(rep.wedges, 'wedges', 24);
+        const n = val(rep.wedges);
+        if (n !== undefined && (n < 4 || n % 2 !== 0)) out.push(`${n} wedges (even, 4–24)`);
+      }
+      const [r, d, C, A] = [rep.radius, rep.diameter, rep.circumference, rep.area].map((id) =>
+        id ? val(id) : undefined,
+      );
+      const off = (a: number, b: number) => Math.abs(a - b) > 1e-6 * Math.max(1, Math.abs(b));
+      if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
+      if (r !== undefined && d !== undefined && off(d, 2 * r))
+        out.push(`diameter ${d} is not 2 × ${r}`);
+      if (r !== undefined && C !== undefined && off(C, 2 * Math.PI * r))
+        out.push(`circumference ${C} is not 2π × ${r}`);
+      if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
+        out.push(`area ${A} is not π × ${r}²`);
+      break;
+    }
+    case 'scaleCopy': {
+      // Whole squares for the original; both figures side by side fit about 30 squares.
+      count(rep.width, 'original width', 12);
+      count(rep.height, 'original height', 12);
+      const [W, H, k] = [rep.width, rep.height, rep.factor].map(val);
+      if (k !== undefined && k <= 0) out.push(`scale factor ${k} is not positive`);
+      if (W === undefined || H === undefined || k === undefined || k <= 0) break;
+      if (W + W * k > 26 || Math.max(H, H * k) > 24)
+        out.push(`scaled copy (${W} × ${H}, factor ${k}) is past the grid`);
+      const near = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+      const cw = rep.copyWidth ? val(rep.copyWidth) : undefined;
+      const ch = rep.copyHeight ? val(rep.copyHeight) : undefined;
+      if (cw !== undefined && !near(cw, W * k)) out.push(`copy width ${cw} is not ${k} × ${W}`);
+      if (ch !== undefined && !near(ch, H * k)) out.push(`copy height ${ch} is not ${k} × ${H}`);
+      if (rep.area) {
+        // The original's area is the outline's squares; the copy's is k × k times it.
+        const pts = outline(rep.shape, W, H);
+        const squares =
+          Math.abs(
+            pts.reduce((s, [x, y], i) => {
+              const [x2, y2] = pts[(i + 1) % pts.length]!;
+              return s + x * y2 - x2 * y;
+            }, 0),
+          ) / 2;
+        const [a0, a1] = rep.area.map(val);
+        if (a0 !== undefined && !near(a0, squares))
+          out.push(`original area ${a0}, the outline covers ${squares} squares`);
+        if (a0 !== undefined && a1 !== undefined && !near(a1, a0 * k * k))
+          out.push(`copy area ${a1} is not ${k} × ${k} × ${a0}`);
+      }
+      break;
+    }
     case 'baseTen':
       for (const id of [...rep.groups, ...(rep.total ? [rep.total] : [])])
         count(id, 'blocks', 1000);
@@ -148,6 +256,8 @@ export function repIssues(
       const k = val(rep.shaded);
       count(rep.shaded, 'shaded parts');
       if (p !== undefined && p < 1) out.push(`partition with ${p} parts`);
+      // A set is drawn in rows of up to 8, three rows at most (Partition.tsx).
+      if (rep.shape === 'set' && p !== undefined && p > 24) out.push(`a set of ${p} objects`);
       if (p !== undefined && k !== undefined && k > p) out.push(`${k} shaded of ${p} parts`);
       break;
     }
@@ -156,6 +266,11 @@ export function repIssues(
       const s = val(rep.step);
       // Decimal jumps are drawn to the hundredth (SkipCount.tsx).
       if (s !== undefined && s < 0.01) out.push(`skip size ${s} < 0.01 (drawn as 0.01)`);
+      // Without a count, the jumps are the total ÷ the jump, the last one part of a jump.
+      const t = val(rep.total);
+      if (rep.count === undefined && !rep.second && t !== undefined && s !== undefined && s > 0) {
+        exact(t / s, 'jumps');
+      }
       break;
     }
     case 'pairs':
@@ -281,12 +396,28 @@ export function repIssues(
     }
     case 'coins': {
       for (const c of rep.coins) count(c.var, 'coins', 20);
+      // Coins.tsx draws US coins and $1, $5, $10 and $20 bills (bills beside coins).
+      for (const c of rep.coins)
+        if (![1, 5, 10, 25, 100, 500, 1000, 2000].includes(c.cents))
+          out.push(`coins draws ${c.cents}¢, not a US coin or bill`);
       const t = val(rep.total);
       const parts = rep.coins.map((c) => val(c.var));
       if (t !== undefined && parts.every((x) => x !== undefined)) {
         const sum =
           rep.coins.reduce((s, c, i) => s + c.cents * parts[i]!, 0) / (rep.dollars ? 100 : 1);
         if (Math.abs(sum - t) > 1e-9) out.push(`coins add to ${sum}, total shows ${t}`);
+      }
+      break;
+    }
+    case 'linePlot': {
+      // LinePlot.tsx draws at most 10 X's a column, from a whole-number start.
+      for (const p of rep.points) count(p.var, 'X marks', 10);
+      if (rep.start) count(rep.start, 'line plot start');
+      if (rep.marks !== undefined) {
+        if (!rep.start) out.push('line plot marks need a start');
+        const d = val(rep.marks);
+        if (d !== undefined && ![1, 2, 4, 8].includes(d))
+          out.push(`line plot marked every 1/${d}, not halves, quarters or eighths`);
       }
       break;
     }
@@ -304,14 +435,21 @@ export function repIssues(
         } else count(c.var, 'pictures', rep.max);
       }
       break;
-    case 'numberLine':
+    case 'numberLine': {
+      // A `from` line runs `span` ticks of `every` from its start (NumberLine.tsx).
+      const every = rep.every === undefined ? (rep.tick ?? 1) : val(rep.every);
+      const lo = rep.from === undefined ? rep.min : val(rep.from);
+      if (every !== undefined && every <= 0) out.push(`number line ticks every ${every}`);
+      if (lo === undefined || every === undefined) break;
+      const hi = rep.from === undefined ? rep.max : lo + (rep.span ?? 10) * every;
       for (const id of [rep.start, rep.end]) {
         const x = val(id);
-        if (x !== undefined && (x < rep.min || x > rep.max)) {
-          out.push(`number line point ${id} = ${x} off the line (${rep.min}–${rep.max})`);
+        if (x !== undefined && (x < lo - 1e-9 || x > hi + 1e-9)) {
+          out.push(`number line point ${id} = ${x} off the line (${lo}–${hi})`);
         }
       }
       break;
+    }
     // Grade 3 pictures.
     case 'rounding': {
       const [n, lo, hi, r] = [rep.value, rep.lower, rep.upper, rep.rounded].map(val);
@@ -337,8 +475,17 @@ export function repIssues(
       count(rep.numerator, 'parts counted');
       if (b !== undefined && b < 1) out.push(`${b} parts in a whole`);
       // The line stretches to the fraction (FractionLine.tsx); more than 24 wholes won't fit.
-      if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 24) {
-        out.push(`${a}/${b} needs ${Math.ceil(a / b)} wholes on the line`);
+      // With `from`, it shows only the wholes between the two points.
+      const f = rep.from === undefined ? undefined : val(rep.from);
+      if (rep.from !== undefined) count(rep.from, 'jump start in parts');
+      const span =
+        a === undefined || b === undefined || b < 1
+          ? 0
+          : rep.from === undefined
+            ? Math.ceil(a / b)
+            : Math.max(Math.ceil(Math.max(a, f ?? a) / b) - Math.floor(Math.min(a, f ?? a) / b), 1);
+      if (span > 24 && a !== undefined && b !== undefined) {
+        out.push(`${a}/${b} needs ${span} wholes on the line`);
       }
       if (rep.second) {
         count(rep.second.numerator, 'second line parts counted');
@@ -352,11 +499,17 @@ export function repIssues(
       break;
     }
     case 'fractionBars':
+      if (rep.wholes !== undefined && (rep.wholes < 1 || rep.wholes > 6)) {
+        out.push(`fraction bars laid out ${rep.wholes} wholes wide (1–6)`);
+      }
       for (const row of rep.rows) {
         const [a, b] = [val(row.num), val(row.den)];
         count(row.num, 'shaded parts');
-        // One bar is one whole: more shaded parts than parts can't be drawn (the bar clamps).
-        if (a !== undefined && b !== undefined && a > b) out.push(`${a}/${b} shaded on one bar`);
+        // A row draws as many whole bars as the fraction needs, up to 6 (FractionBars.tsx).
+        if (a !== undefined && b !== undefined && b >= 1 && Math.ceil(a / b) > 6) {
+          out.push(`${a}/${b} needs ${Math.ceil(a / b)} whole bars; a row holds 6`);
+        }
+        if (b !== undefined && b < 1) out.push(`${b} parts in a whole bar`);
       }
       break;
     case 'timeline': {
@@ -386,6 +539,7 @@ export function repIssues(
     case 'beaker': {
       const t = val(rep.total);
       if (t !== undefined && t > rep.max) out.push(`total ${t} L past the jug's ${rep.max} L`);
+      if (rep.mixed) for (const id of [...rep.parts, rep.total]) exact(val(id), `amount ${id}`);
       break;
     }
     case 'thermometers':
@@ -461,6 +615,18 @@ export function repIssues(
       if (a !== undefined && b !== undefined && w !== undefined && Math.abs(a + b - w) > 1e-9) {
         out.push(`angles ${a} + ${b} drawn, whole shows ${w}`);
       }
+      // Crossing lines: a straight line, and each vertical angle equals the part across from it.
+      if (rep.cross) {
+        if (rep.whole !== 180) out.push(`crossing lines need a straight whole, not ${rep.whole}`);
+        for (const [v, p] of [
+          [rep.cross.first, a],
+          [rep.cross.second, b],
+        ] as const) {
+          const x = v ? val(v) : undefined;
+          if (x !== undefined && p !== undefined && Math.abs(x - p) > 1e-9)
+            out.push(`vertical angle ${v} = ${x}, across from ${p}`);
+        }
+      }
       break;
     }
     case 'doubleNumberLine': {
@@ -475,10 +641,26 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
+      // Plotting draws its path from 0 across then up, in the first quadrant only.
+      if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
+      if (rep.plot && rep.second) out.push('plotting places one point, not two');
       if (rep.quadrants === 1) {
         for (const id of [rep.x, rep.y, rep.second?.x, rep.second?.y]) {
           const x = id === undefined ? undefined : val(id);
           if (x !== undefined && x < 0) out.push(`${id} = ${x} is off the first quadrant`);
+        }
+      }
+      // Legs: the drawn distance is the hypotenuse of the legs across and up.
+      if (rep.legs && (!rep.segment || !rep.second))
+        out.push('legs need a segment to a second point');
+      if (rep.legs && rep.second && rep.distance) {
+        const [x1, y1, x2, y2, d] = [rep.x, rep.y, rep.second.x, rep.second.y, rep.distance].map(
+          val,
+        );
+        if ([x1, y1, x2, y2, d].every((v) => v !== undefined)) {
+          const h = Math.hypot(x2! - x1!, y2! - y1!);
+          if (Math.abs(h - d!) > 1e-6 * (1 + h))
+            out.push(`distance ${d} drawn, the legs make ${h}`);
         }
       }
       if (rep.second && rep.slope) {
@@ -488,10 +670,39 @@ export function repIssues(
           if (Math.abs(rise - m!) > 1e-6) out.push(`slope ${m} drawn, rise over run is ${rise}`);
         }
       }
+      // Labelled legs (Grade 8 slope) must be the points' own rise and run.
+      if ((rep.rise || rep.run) && !rep.second) out.push('rise and run need a second point');
+      if (rep.second) {
+        const [x1, y1, x2, y2] = [rep.x, rep.y, rep.second.x, rep.second.y].map(val);
+        const [rise, run] = [rep.rise, rep.run].map((id) => (id ? val(id) : undefined));
+        if (
+          y1 !== undefined &&
+          y2 !== undefined &&
+          rise !== undefined &&
+          Math.abs(y2 - y1 - rise) > 1e-9
+        )
+          out.push(`rise ${rise} labelled, the points rise ${y2 - y1}`);
+        if (
+          x1 !== undefined &&
+          x2 !== undefined &&
+          run !== undefined &&
+          Math.abs(x2 - x1 - run) > 1e-9
+        )
+          out.push(`run ${run} labelled, the points run ${x2 - x1}`);
+      }
       break;
     }
     case 'boxPlot': {
       const five = [rep.min, rep.q1, rep.median, rep.q3, rep.max].map(val);
+      // With `data`, the plot's least, median and greatest are the first n values' own.
+      const sorted = firstValues(rep.data, rep.count);
+      if (sorted) {
+        const own = [sorted[0]!, medianOf(sorted), sorted[sorted.length - 1]!];
+        [five[0], five[2], five[4]].forEach((x, i) => {
+          if (x !== undefined && Math.abs(x - own[i]!) > 1e-9)
+            out.push(`box plot of ${sorted.join(', ')} draws ${x} for ${own[i]}`);
+        });
+      }
       for (let i = 1; i < five.length; i++) {
         const a = five[i - 1];
         const b = five[i];
@@ -537,7 +748,10 @@ export function repIssues(
         if (x < 0) out.push(`${what} ${id} is negative (${x})`);
         if (Math.abs(x * k - Math.round(x * k)) > 1e-9)
           out.push(`${what} ${id} is not whole cubes (${x})`);
-        if (x * k > rep.max) out.push(`${what} ${id} = ${x} exceeds the drawing's ${rep.max}`);
+        // With `scale` a bigger box is drawn to scale (ScaledBox), not in cubes.
+        if (x * k > rep.max && !(rep.scale && k === 1 && !rep.second))
+          out.push(`${what} ${id} = ${x} exceeds the drawing's ${rep.max}`);
+        if (rep.scale && x <= 0) out.push(`${what} ${id} = ${x}: a box to scale needs a size`);
       }
       if ([l, w, h, v].every((x) => x !== undefined) && Math.abs(l! * w! * h! - v!) > 1e-9)
         out.push(`${l} × ${w} × ${h} cubes drawn, volume shows ${v}`);
@@ -580,6 +794,23 @@ export function repIssues(
       count(rep.value, 'number');
       break;
     case 'tape': {
+      if ('equation' in rep) {
+        // p boxes of x, then q (TapeEquation.tsx): whole groups, positive boxes, the total.
+        const { times, unknown, plus, total, grouped } = rep.equation;
+        count(times, 'tape boxes', 12);
+        const [p, x, q, r] = [times, unknown, plus, total].map(val);
+        if (x !== undefined && q !== undefined && (x <= 0 || (grouped && x + q <= 0)))
+          out.push(`tape box ${grouped ? x + q : x} is not positive`);
+        if (p === undefined || x === undefined || q === undefined || r === undefined) break;
+        const made = grouped ? p * (x + q) : p * x + q;
+        if (Math.abs(made - r) > 1e-6 * Math.max(1, Math.abs(r)))
+          out.push(`tape: ${p} boxes of ${x} and ${q} make ${made}, not ${r}`);
+        break;
+      }
+      if ('mixed' in rep && rep.mixed) {
+        const ids = 'compare' in rep ? [...rep.compare, rep.difference] : rep.parts;
+        for (const id of ids) exact(val(id), `tape value ${id}`);
+      }
       if ('ratio' in rep) {
         // Ratio boxes: whole counts, each bar's amount its boxes times the unit.
         count(rep.ratio[0], 'ratio boxes', 40);
@@ -642,6 +873,19 @@ export function repIssues(
       const o = rep.other ? val(rep.other) : undefined;
       if (a !== undefined && o !== undefined && Math.abs(a + o - 180) > 1e-9)
         out.push(`protractor scales ${a} and ${o} don't add to 180`);
+      if (rep.arms) {
+        const [f, s] = [rep.arms.first, rep.arms.second].map(val);
+        for (const x of [f, s])
+          if (x !== undefined && (x < 0 || x > 180))
+            out.push(`protractor arm at ${x} is off the scale`);
+        if (
+          f !== undefined &&
+          s !== undefined &&
+          a !== undefined &&
+          Math.abs(Math.abs(s - f) - a) > 1e-9
+        )
+          out.push(`protractor arms at ${f} and ${s} show the angle ${a}`);
+      }
       break;
     }
     case 'wave': {
@@ -681,11 +925,43 @@ export function repIssues(
         Math.abs(b - a - d) > 1e-9
       )
         out.push(`jump from ${a} to ${b} shows ${d}`);
+      if (rep.inequality) {
+        const { sign } = rep.inequality;
+        if (!['<', '≤', '>', '≥'].includes(sign)) {
+          const s = val(sign);
+          if (s !== undefined && ![1, 2, 3, 4].includes(s))
+            out.push(`inequality sign ${sign} = ${s} is not 1–4 (<, ≤, >, ≥)`);
+        }
+        if (rep.vertical) out.push('inequality lines are drawn across, not vertical');
+        if (rep.inequality.twoStep) {
+          // The bound drawn is the written inequality solved: (total − plus) ÷ times.
+          const { times, plus, total } = rep.inequality.twoStep;
+          const [p, q, r] = [times, plus, total].map(val);
+          if (p === 0) out.push('two-step inequality with 0 blocks of x');
+          if (a !== undefined && p && q !== undefined && r !== undefined) {
+            const bound = (r - q) / p;
+            if (Math.abs(bound - a) > 1e-6 * Math.max(1, Math.abs(a)))
+              out.push(`two-step inequality solves to ${bound}, the line shows ${a}`);
+          }
+        }
+      }
+      if (rep.jump) {
+        const [by, r] = [rep.jump.by, rep.jump.result].map(val);
+        if (a !== undefined && by !== undefined && r !== undefined) {
+          const lands = rep.jump.op === '−' ? a - by : a + by;
+          if (Math.abs(lands - r) > 1e-9 * Math.max(1, Math.abs(r)))
+            out.push(
+              `jump from ${a} by ${rep.jump.op ?? '+'}${by} lands on ${lands}, result shows ${r}`,
+            );
+        }
+        if (rep.vertical) out.push('signed jumps are drawn across, not vertical');
+        if (rep.inequality) out.push('a line shows a jump or an inequality, not both');
+      }
       break;
     }
     case 'percentBar': {
       const [p, part, whole] = [rep.percent, rep.part, rep.whole].map(val);
-      if (p !== undefined && p < 0) out.push(`percent ${p} below 0`);
+      if (p !== undefined && p < 0 && !rep.change) out.push(`percent ${p} below 0`);
       if (
         p !== undefined &&
         part !== undefined &&
@@ -693,6 +969,18 @@ export function repIssues(
         Math.abs((p / 100) * whole - part) > 1e-6 * Math.max(1, part)
       )
         out.push(`bar shades ${p}% of ${whole}, part shows ${part}`);
+      if (rep.change) {
+        const t = val(rep.change.total);
+        const up = rep.change.direction;
+        if (whole !== undefined && part !== undefined && t !== undefined) {
+          if (Math.abs(Math.abs(t - whole) - Math.abs(part)) > 1e-6 * Math.max(1, whole))
+            out.push(`new amount ${t} is not ${whole} changed by ${part}`);
+          if ((up === 'up' && t < whole) || (up === 'down' && t > whole))
+            out.push(`new amount ${t} goes the wrong way from ${whole} (${up})`);
+        }
+        if (up === 'down' && p !== undefined && Math.abs(p) > 100)
+          out.push(`a ${Math.abs(p)}% decrease takes more than the whole`);
+      }
       break;
     }
     case 'ratioTable': {
@@ -711,6 +999,35 @@ export function repIssues(
         Math.abs(q * k - y) > 1e-6 * Math.max(1, y)
       )
         out.push(`row ${k} × ${q} shows ${y}`);
+      break;
+    }
+    case 'zeroPairs': {
+      const [a, b, r] = [rep.first, rep.second, rep.result].map(val);
+      for (const [id, x] of [
+        [rep.first, a],
+        [rep.second, b],
+      ] as const) {
+        if (x === undefined) continue;
+        if (!Number.isInteger(x)) out.push(`counters for ${id} = ${x}, not a whole number`);
+        if (Math.abs(x) > 20) out.push(`${Math.abs(x)} counters for ${id} (20 fit)`);
+      }
+      if (a !== undefined && b !== undefined && r !== undefined) {
+        const want = rep.op === '−' ? a - b : a + b;
+        if (Math.abs(want - r) > 1e-9) out.push(`counters leave ${want}, result shows ${r}`);
+      }
+      break;
+    }
+    case 'signTable': {
+      const [a, b, r] = [rep.first, rep.second, rep.result].map(val);
+      if (a !== undefined && b !== undefined && r !== undefined) {
+        const want = rep.op === '÷' ? (b === 0 ? undefined : a / b) : a * b;
+        if (want === undefined) out.push('sign table divides by 0');
+        else if (Math.abs(want - r) > 1e-6 * Math.max(1, Math.abs(r)))
+          out.push(`${a} ${rep.op ?? '×'} ${b} is ${want}, result shows ${r}`);
+        // The outlined cell's sign is the answer's sign.
+        if (a !== 0 && b !== 0 && r !== 0 && a * b > 0 !== r > 0)
+          out.push(`sign table says ${a * b > 0 ? '+' : '−'}, result ${r}`);
+      }
       break;
     }
     case 'fractionFit': {
@@ -760,6 +1077,18 @@ export function repIssues(
       );
       const w = W ?? L;
       const h = H ?? L;
+      if (rep.solid === 'triangularPrism') {
+        if (W === undefined || H === undefined || sl === undefined || L === undefined) break;
+        // The third side closes the triangle (within 2%, for a side rounded to a whole number).
+        const side = rep.triangle === 'isosceles' ? Math.hypot(W / 2, H) : Math.hypot(W, H);
+        if (Math.abs(side - sl) > 0.02 * side)
+          out.push(`triangle ${W} by ${H} has a side of ${side}, shows ${sl}`);
+        const sides = rep.triangle === 'isosceles' ? W + 2 * sl : W + H + sl;
+        const all = W * H + L * sides;
+        if (T !== undefined && Math.abs(all - T) > 1e-6 * Math.max(1, T))
+          out.push(`net faces add to ${all}, total shows ${T}`);
+        break;
+      }
       const total =
         L === undefined
           ? undefined
@@ -774,7 +1103,165 @@ export function repIssues(
         out.push(`net faces add to ${total}, total shows ${T}`);
       break;
     }
+    case 'crossSection': {
+      const [l, w0, h, at, A, V] = [
+        rep.length,
+        rep.width,
+        rep.height,
+        rep.at,
+        rep.area,
+        rep.volume,
+      ].map((id) => {
+        // In formula units: the lengths, the area and the volume agree whatever is shown.
+        const x = id ? val(id) : undefined;
+        return x === undefined ? undefined : x * (byId.get(id!)?.unitFactor ?? 1);
+      });
+      const w = rep.width ? w0 : l;
+      if (l === undefined || w === undefined || h === undefined) break;
+      if (l <= 0 || w <= 0 || h <= 0) {
+        out.push(`solid ${l} by ${w} by ${h} has a side of 0 or less`);
+        break;
+      }
+      const cut = rep.cut ?? 'base';
+      const reach = reachOf(rep.solid, cut, w, h);
+      // The picture parks the plane at the middle while `at` is "?".
+      if (rep.at && at === undefined) break;
+      const where = at ?? reach / 2;
+      if (cut !== 'diagonal' && (where < 0 || where > reach))
+        out.push(`plane at ${where} is off the solid (0 to ${reach})`);
+      const section = sectionOf(
+        solidOf(rep.solid, l, w, h, rep.triangle === 'isosceles'),
+        planeOf(rep.solid, cut, where, l, w),
+      );
+      const area = areaOf(section);
+      // Shown values are rounded to 9 places: a length of 0.000001 km is only roughly
+      // itself, so the check leaves out lengths too small to read and allows the rounding.
+      const readable = [rep.length, rep.width, rep.height]
+        .filter((id): id is string => !!id)
+        .every((id) => (val(id) ?? 1) >= 1e-3);
+      const off = (x: number, y: number, id: string) =>
+        readable && Math.abs(x - y) > 1e-4 * Math.abs(y) + 1e-9 * (byId.get(id)?.unitFactor ?? 1);
+      if (A !== undefined && off(area, A, rep.area!))
+        out.push(`cut drawn with area ${area}, shows ${A}`);
+      const vol = volumeOf(rep.solid, l, w, h);
+      if (V !== undefined && off(vol, V, rep.volume!))
+        out.push(`solid drawn with volume ${vol}, shows ${V}`);
+      break;
+    }
+    case 'treeDiagram': {
+      // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
+      count(rep.first, 'first-stage outcomes', 6);
+      count(rep.second, 'second-stage outcomes', 6);
+      const [a, b, n, P] = [rep.first, rep.second, rep.total, rep.chance].map((id) =>
+        id ? val(id) : undefined,
+      );
+      for (const x of [a, b]) if (x !== undefined && x < 1) out.push(`a stage with ${x} outcomes`);
+      if (a !== undefined && b !== undefined && n !== undefined && a * b !== n)
+        out.push(`${a} × ${b} branches drawn, total shows ${n}`);
+      if (a !== undefined && b !== undefined && P !== undefined && Math.abs(1 / (a * b) - P) > 1e-6)
+        out.push(`one of ${a * b} paths drawn, chance shows ${P}`);
+      if (rep.path && a !== undefined && b !== undefined && (rep.path[0] >= a || rep.path[1] >= b))
+        out.push(`path ${rep.path.join(', ')} is not a branch of ${a} × ${b}`);
+      break;
+    }
+    case 'diceGrid': {
+      const t = val(rep.target);
+      if (t === undefined) break;
+      const n = diceCount(rep.event ?? 'sum', rep.compare ?? '=', t);
+      const [k, P] = [rep.count, rep.chance].map((id) => (id ? val(id) : undefined));
+      if (k !== undefined && k !== n) out.push(`${n} pairs shaded, count shows ${k}`);
+      if (P !== undefined && Math.abs(n / 36 - P) > 1e-6)
+        out.push(`${n} of 36 pairs shaded, chance shows ${P}`);
+      break;
+    }
+    case 'spinner':
+    case 'marbles': {
+      // Equal sectors (SPINNER_MAX in Spinner.tsx) or marbles (MARBLES_MAX in Marbles.tsx),
+      // one color per outcome.
+      const cap = rep.kind === 'spinner' ? 24 : 40;
+      const what = rep.kind === 'spinner' ? 'sectors' : 'marbles';
+      rep.parts.forEach((id) => count(id, what, cap));
+      const xs = rep.parts.map(val);
+      if (rep.colors && rep.colors.length < rep.parts.length)
+        out.push('a spinner outcome has no color');
+      if (rep.names && rep.names.length < rep.parts.length)
+        out.push('a spinner outcome has no name');
+      if ((rep.pick ?? 0) >= rep.parts.length)
+        out.push(`spinner pick ${rep.pick} is not an outcome`);
+      if (xs.some((x) => x === undefined)) break;
+      const total = (xs as number[]).reduce((s, x) => s + x, 0);
+      if (total > cap) out.push(`${total} ${what}, more than the picture's ${cap}`);
+      const T = rep.total ? val(rep.total) : undefined;
+      if (T !== undefined && T !== total) out.push(`${what} add to ${total}, total shows ${T}`);
+      const P = rep.chance ? val(rep.chance) : undefined;
+      if (P !== undefined && total > 0 && Math.abs(xs[rep.pick ?? 0]! / total - P) > 1e-6)
+        out.push(`${xs[rep.pick ?? 0]} of ${total} ${what} drawn, chance shows ${P}`);
+      break;
+    }
+    case 'energyPyramid': {
+      // Up to 5 tiers (PYRAMID_MAX in EnergyPyramid.tsx), each the share of the one below.
+      if (rep.levels.length < 2 || rep.levels.length > 5)
+        out.push(`${rep.levels.length} pyramid levels (2 to 5 are drawn)`);
+      if (rep.names && rep.names.length < rep.levels.length)
+        out.push('a pyramid level has no name');
+      const xs = rep.levels.map(val);
+      xs.forEach((x, i) => {
+        if (x !== undefined && x < 0) out.push(`level ${i + 1} energy ${x} is negative`);
+      });
+      const p = val(rep.percent ?? 10);
+      if (p !== undefined && (p <= 0 || p > 100)) out.push(`${p}% passed up is not a share`);
+      if (p === undefined) break;
+      xs.slice(1).forEach((x, i) => {
+        const below = xs[i];
+        if (x === undefined || below === undefined) return;
+        const want = (below * p) / 100;
+        if (Math.abs(x - want) > 1e-6 * Math.max(1, Math.abs(want)))
+          out.push(`level ${i + 2} shows ${x}, ${p}% of ${below} is ${want}`);
+      });
+      break;
+    }
+    case 'generations': {
+      // 2 to 8 bars (GENERATIONS_MAX in Generations.tsx) of 2 or 3 varieties each.
+      const g = rep.counts.length;
+      if (g < 2 || g > 8) out.push(`${g} generations (2 to 8 are drawn)`);
+      const k = rep.counts[0]?.length ?? 0;
+      if (k < 2 || k > 3 || rep.counts.some((row) => row.length !== k))
+        out.push('each generation needs the same 2 or 3 varieties');
+      if (rep.colors && rep.colors.length < k) out.push('a variety has no color');
+      if (rep.names && rep.names.length < k) out.push('a variety has no name');
+      if ((rep.follow ?? 0) >= k) out.push(`followed variety ${rep.follow} is not a variety`);
+      rep.counts.flat().forEach((id) => count(id, 'beetles'));
+      break;
+    }
+    case 'sample': {
+      // One dot per member (SAMPLE_MAX in Sample.tsx); the sample fits in the population.
+      count(rep.population, 'population', 400);
+      count(rep.size, 'sample');
+      count(rep.found, 'found in the sample');
+      if (rep.trait) count(rep.trait, 'population with the trait');
+      const [N, n, k, T, E] = [rep.population, rep.size, rep.found, rep.trait, rep.estimate].map(
+        (id) => (id ? val(id) : undefined),
+      );
+      if (N !== undefined && n !== undefined && n > N) out.push(`sample of ${n} from ${N}`);
+      if (n !== undefined && k !== undefined && k > n) out.push(`${k} found in a sample of ${n}`);
+      if (T !== undefined && N !== undefined && T > N) out.push(`${T} with the trait of ${N}`);
+      if (T !== undefined && k !== undefined && k > T)
+        out.push(`${k} found in the sample, only ${T} in the population`);
+      if (T !== undefined && N !== undefined && n !== undefined && k !== undefined && n - k > N - T)
+        out.push(`${n - k} without the trait in the sample, only ${N - T} in the population`);
+      // The estimate scales the sample up; a lesson may round it to a whole number.
+      if (N !== undefined && n !== undefined && k !== undefined && E !== undefined && n > 0) {
+        const e = (N * k) / n;
+        if (Math.abs(e - E) > 0.5 + 1e-9)
+          out.push(`estimate ${k} ÷ ${n} × ${N} = ${e}, shows ${E}`);
+      }
+      break;
+    }
     case 'dotPlot': {
+      const sorted = firstValues(rep.data, rep.count);
+      const md = rep.median ? val(rep.median) : undefined;
+      if (sorted && md !== undefined && Math.abs(medianOf(sorted) - md) > 1e-9)
+        out.push(`median of ${sorted.join(', ')} is ${medianOf(sorted)}, shows ${md}`);
       const n = rep.count ? val(rep.count) : undefined;
       const ids = rep.data.slice(0, n ?? rep.data.length);
       const data = ids.map(val).filter((x): x is number => x !== undefined);
@@ -783,6 +1270,32 @@ export function repIssues(
         const mean = data.reduce((s, x) => s + x, 0) / data.length;
         if (Math.abs(mean - m) > 1e-6 * Math.max(1, Math.abs(m)))
           out.push(`dots balance at ${mean}, mean shows ${m}`);
+      }
+      if (rep.second) {
+        // The second sample's center, and the gap between the two centers.
+        const xs = rep.second.data.map(val);
+        const known = xs.every((x) => x !== undefined) ? (xs as number[]) : undefined;
+        const m2 = rep.second.mean ? val(rep.second.mean) : undefined;
+        const md2 = rep.second.median ? val(rep.second.median) : undefined;
+        if (known && m2 !== undefined) {
+          const mean2 = known.reduce((s, x) => s + x, 0) / known.length;
+          if (Math.abs(mean2 - m2) > 1e-6 * Math.max(1, Math.abs(m2)))
+            out.push(`second sample balances at ${mean2}, mean shows ${m2}`);
+        }
+        if (known && md2 !== undefined) {
+          const md = medianOf([...known].sort((a, b) => a - b));
+          if (Math.abs(md - md2) > 1e-9) out.push(`second sample's median is ${md}, shows ${md2}`);
+        }
+        const c1 = rep.mean ? m : rep.median ? val(rep.median) : undefined;
+        const c2 = rep.second.mean ? m2 : md2;
+        const d = rep.difference ? val(rep.difference) : undefined;
+        if (
+          c1 !== undefined &&
+          c2 !== undefined &&
+          d !== undefined &&
+          Math.abs(Math.abs(c1 - c2) - d) > 1e-6
+        )
+          out.push(`centers ${c1} and ${c2} drawn, difference shows ${d}`);
       }
       break;
     }
@@ -812,6 +1325,87 @@ export function repIssues(
         out.push(`rise ${b - a} shows volume ${v}`);
       break;
     }
+    case 'grassSlope': {
+      const [a, b, d] = [rep.bare, rep.grass, rep.difference].map((id) =>
+        id ? val(id) : undefined,
+      );
+      // The jars' scale grows to fit (GrassSlope.tsx); soil can't be less than none.
+      for (const x of [a, b])
+        if (x !== undefined && x < 0) out.push(`washed-off soil ${x} below 0`);
+      if (
+        a !== undefined &&
+        b !== undefined &&
+        d !== undefined &&
+        Math.abs(Math.abs(a - b) - d) > 1e-9
+      )
+        out.push(`jars ${a} and ${b} don't differ by ${d}`);
+      break;
+    }
+    case 'flashlights': {
+      const [n, k, f] = [rep.near, rep.times, rep.far].map((id) => (id ? val(id) : undefined));
+      // Up to 10 × 10 squares fit the face-on grid.
+      count(rep.times, 'times as far', 10);
+      if (k !== undefined && k < 1) out.push(`times as far ${k} is under 1`);
+      if (n !== undefined && k !== undefined && f !== undefined && Math.abs(n * k - f) > 1e-6 * f)
+        out.push(`${n} × ${k} drawn, farther flashlight shows ${f}`);
+      break;
+    }
+    case 'leafCount': {
+      count(rep.items[0], 'leaves', 40);
+      count(rep.items[1], 'leaves', 40);
+      const [a, b, d] = [...rep.items, rep.difference].map((id) => (id ? val(id) : undefined));
+      if (a !== undefined && b !== undefined && d !== undefined && Math.abs(a - b) !== d)
+        out.push(`plants with ${a} and ${b} leaves don't differ by ${d}`);
+      break;
+    }
+    case 'factorRows': {
+      const [p, q, r] = [rep.first, rep.second, rep.result].map(val);
+      // Each row wraps at 12 tiles; past two lines a row is too long to count by eye.
+      count(rep.first, 'factors', 12);
+      count(rep.second, 'factors', 12);
+      if (p !== undefined && q !== undefined) {
+        const want = rep.rule === 'product' ? p + q : rep.rule === 'quotient' ? p - q : p * q;
+        if (r !== undefined && r !== want) out.push(`${rep.rule} of ${p} and ${q} shows ${r}`);
+        if (rep.rule === 'power' && p * q > 24) out.push(`${q} rows of ${p} is past 24 factors`);
+      }
+      break;
+    }
+    case 'equationBalance': {
+      // Whole x-blocks and counters (balloons when negative), as many as a pan holds.
+      const [k1, n1, k2, n2] = [...rep.left, ...rep.right].map(val);
+      for (const k of [k1, k2])
+        if (k !== undefined && (k !== Math.round(k) || Math.abs(k) > 10))
+          out.push(`${k} x-blocks on a pan (whole, up to 10)`);
+      for (const n of [n1, n2])
+        if (n !== undefined && (n !== Math.round(n) || Math.abs(n) > 15))
+          out.push(`${n} unit counters on a pan (whole, up to 15)`);
+      break;
+    }
+    case 'powerScale': {
+      const [x, a, e] = [rep.number, rep.mantissa, rep.exponent].map(val);
+      // (The sampled values are rounded to 9 decimals, so a tiny number can read as 0.)
+      if (x !== undefined && x < 0) out.push(`number ${x} has no place on a powers-of-ten ruler`);
+      if (a !== undefined && (a < 1 || a >= 10)) out.push(`mantissa ${a} is not from 1 up to 10`);
+      if (e !== undefined && e !== Math.round(e)) out.push(`exponent ${e} is not whole`);
+      if (
+        x !== undefined &&
+        a !== undefined &&
+        e !== undefined &&
+        Math.abs(a * 10 ** e - x) > Math.max(1e-9, 1e-9 * x)
+      )
+        out.push(`${a} × 10^${e} drawn, the number shows ${x}`);
+      break;
+    }
+    case 'rootSquare': {
+      const [a, sd] = [val(rep.area), val(rep.side)];
+      if (a !== undefined && a < 0) out.push(`square of area ${a}`);
+      // The grid grows to the side; past 12 the unit squares are too small to read.
+      if (a !== undefined && a > 144) out.push(`square of area ${a} is past a 12 × 12 grid`);
+      if (a !== undefined && a >= 0 && sd !== undefined && Math.abs(sd - Math.sqrt(a)) > 0.006)
+        out.push(`side ${sd} squared is ${sd * sd}, the area shows ${a}`);
+      for (const m of rep.marks ?? []) if (m.at < 0) out.push(`mark ${m.label} below 0`);
+      break;
+    }
     case 'rockLayers':
       count(rep.fossils[0], 'layers', 12);
       count(rep.fossils[1], 'layers', 12);
@@ -820,11 +1414,321 @@ export function repIssues(
       count(rep.right, 'push');
       count(rep.left, 'push');
       break;
+    case 'plot': {
+      if (rep.table && rep.table.length > 8) out.push(`table of ${rep.table.length} rows (8 fit)`);
+      if (!rep.unitRate) break;
+      if (!rep.params.includes(rep.unitRate))
+        out.push(`unit rate ${rep.unitRate} is not one of the graph's params`);
+      // y = kx: the point and (1, k) lie on one line through 0.
+      const [x, y, k] = [rep.x.var, rep.y.var, rep.unitRate].map(val);
+      if (
+        x !== undefined &&
+        y !== undefined &&
+        k !== undefined &&
+        Math.abs(y - k * x) > 1e-6 * Math.max(1, Math.abs(y))
+      )
+        out.push(`(${x}, ${y}) is not on y = ${k}x`);
+      break;
+    }
+    case 'scatter': {
+      // Every point is on the axes; clusters and the outlier name points that exist.
+      const on = (v: number, a: { min: number; max: number }) => v >= a.min && v <= a.max;
+      rep.points.forEach(([x, y], i) => {
+        if (!on(x, rep.x) || !on(y, rep.y)) out.push(`point ${i} (${x}, ${y}) is off the axes`);
+      });
+      const named = [...(rep.clusters ?? []).flatMap((c) => c.points), rep.outlier ?? 0];
+      for (const i of named) if (!rep.points[i]) out.push(`there is no point ${i}`);
+      // The prediction sits on the line (compared when none of the four has a unit).
+      if (rep.at) {
+        const ids4 = [rep.slope, rep.intercept, rep.at.x, rep.at.y];
+        const [m, b, x, y] = ids4.map(val);
+        if (
+          ids4.every((id) => !byId.get(id)?.unit) &&
+          [m, b, x, y].every((v) => v !== undefined) &&
+          Math.abs(m! * x! + b! - y!) > 1e-6 * (1 + Math.abs(y!))
+        )
+          out.push(`prediction ${y} is off the line (${m! * x! + b!})`);
+      }
+      break;
+    }
+    case 'curvedSolid': {
+      // A cylinder or cone needs its height; a sphere has none. Only a cone or a sphere is
+      // poured into a cylinder.
+      if ((rep.shape === 'sphere') === !!rep.height)
+        out.push(`a ${rep.shape} ${rep.height ? 'has no' : 'needs a'} height`);
+      if (rep.compare && rep.shape === 'cylinder') out.push('a cylinder is compared with itself');
+      const [r, h] = [rep.radius, rep.height].map((id) => (id ? val(id) : undefined));
+      if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
+      if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
+      // The caption works V from the radius and height drawn (in the radius's unit), so a
+      // volume shown in another unit (L) is not compared here; the relation holds it.
+      break;
+    }
+    case 'rightTriangle': {
+      // The three squares must fit together: a² + b² = c².
+      const [a, b, c] = [rep.a, rep.b, rep.c].map(val);
+      if (a !== undefined && b !== undefined && c !== undefined) {
+        if (Math.abs(a * a + b * b - c * c) > 1e-6 * (1 + c * c))
+          out.push(`squares ${a}² + ${b}² don't make ${c}²`);
+      }
+      break;
+    }
     case 'quadrilateral': {
       const r = val(rep.rightAngles);
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
       break;
     }
+    case 'linearFunction': {
+      const [m, b] = [val(rep.slope), val(rep.intercept)];
+      const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
+      if ([m, b, x, y].every((v) => v !== undefined) && rep.point) {
+        if (Math.abs(m! * x! + b! - y!) > 1e-6 * Math.max(1, Math.abs(y!)))
+          out.push(`point (${x}, ${y}) is not on y = ${m}x + ${b}`);
+      }
+      break;
+    }
+    case 'transformation': {
+      if (rep.figure.length < 2 || rep.figure.length > 6)
+        out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
+      const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
+      const mirror = rep.move === 'reflect' ? rep.mirror : undefined;
+      const line =
+        mirror && typeof mirror === 'object' ? val('x' in mirror ? mirror.x : mirror.y) : undefined;
+      const center = 'center' in rep && rep.center ? rep.center : undefined;
+      const move = {
+        right: rep.move === 'translate' ? num(rep.right, 0) : 0,
+        up: rep.move === 'translate' ? num(rep.up, 0) : 0,
+        angle: rep.move === 'rotate' ? num(rep.angle, 0) : 0,
+        factor: rep.move === 'dilate' ? num(rep.factor, 1) : 1,
+        cx: num(center?.[0], 0),
+        cy: num(center?.[1], 0),
+      };
+      if (move.factor !== undefined && move.factor <= 0)
+        out.push(`dilation by scale factor ${move.factor}`);
+      const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
+      const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
+      const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];
+      if (
+        !rep.image ||
+        all.some((x) => x === undefined) ||
+        (mirror && typeof mirror === 'object' && line === undefined)
+      )
+        break;
+      const [ex, ey] = imageOf([a![0]!, a![1]!], rep.move, {
+        right: move.right!,
+        up: move.up!,
+        mirror,
+        line,
+        angle: move.angle!,
+        factor: move.factor!,
+        center: [move.cx!, move.cy!],
+      });
+      if (Math.abs(ex - ix!) > 1e-6 || Math.abs(ey - iy!) > 1e-6)
+        out.push(`image (${ix}, ${iy}) is not where the move takes A (${ex}, ${ey})`);
+      break;
+    }
+    case 'mapping': {
+      // The diagram has a row per different input and output; more than 8 don't fit.
+      if (rep.pairs.length < 1 || rep.pairs.length > 8)
+        out.push(`mapping with ${rep.pairs.length} pairs (1 to 8 fit)`);
+      for (const p of rep.pairs) {
+        const [x, y] = [val(p.x), val(p.y)];
+        if ((x !== undefined && !Number.isFinite(x)) || (y !== undefined && !Number.isFinite(y)))
+          out.push(`mapping pair (${x}, ${y}) is not a number`);
+      }
+      break;
+    }
+    case 'functionMachine': {
+      let x = val(rep.input);
+      for (const s of rep.rule) {
+        const by = val(s.by);
+        if (x === undefined || by === undefined) {
+          x = undefined;
+          break;
+        }
+        if (s.op === '÷' && by === 0) out.push('function rule divides by 0');
+        x = s.op === '+' ? x + by : s.op === '−' ? x - by : s.op === '×' ? x * by : x / by;
+      }
+      const y = val(rep.output);
+      if (x !== undefined && y !== undefined && Math.abs(x - y) > 1e-6 * Math.max(1, Math.abs(y)))
+        out.push(`machine gives ${x}, output shows ${y}`);
+      if (rep.rule.length < 1 || rep.rule.length > 3)
+        out.push(`function machine with ${rep.rule.length} steps (1 to 3 fit)`);
+      break;
+    }
+    case 'molecules':
+    case 'reaction':
+    case 'heatingCurve':
+    case 'periodicTable':
+      // Chemistry pictures draw fixed numbers in formula units (a time in hours still meets
+      // spans in minutes), so they read every value in formula units.
+      out.push(
+        ...chemIssues(rep, (x) => {
+          const y = val(x);
+          return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
+        }),
+      );
+      break;
+    case 'lineSystem': {
+      const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
+      const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
+      if ([m1, b1, m2, b2].some((v) => v === undefined) || x === undefined || y === undefined)
+        break;
+      if (m1 === m2) out.push(`lines with the same slope ${m1} drawn with a solution (${x}, ${y})`);
+      else if (
+        Math.abs(m1! * x + b1! - y) > 1e-6 * Math.max(1, Math.abs(y)) ||
+        Math.abs(m2! * x + b2! - y) > 1e-6 * Math.max(1, Math.abs(y))
+      )
+        out.push(`solution (${x}, ${y}) is not where the lines cross`);
+      break;
+    }
+    case 'force': {
+      // F = m × a in formula units (N, kg, m/s²); a cart carries at most 20 blocks.
+      const f = (id: string) => {
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const [F, m, a] = [f(rep.force), f(rep.mass), f(rep.acceleration)];
+      const units = [rep.force, rep.mass, rep.acceleration].map((id) => byId.get(id)?.unit);
+      if (
+        F !== undefined &&
+        m !== undefined &&
+        a !== undefined &&
+        units.join() === 'N,kg,m/s²' &&
+        Math.abs(F - m * a) > 1e-4 * Math.max(1, Math.abs(F))
+      )
+        out.push(`force ${F} is not mass × acceleration (${m * a})`);
+      // The block is in the mass's formula unit.
+      if (rep.object === 'cart' && rep.block !== undefined && m !== undefined) {
+        if (rep.block <= 0) out.push(`cart blocks of ${rep.block}`);
+        else if (m / rep.block > 20 + 1e-6)
+          out.push(`${m / rep.block} blocks on the cart (20 fit)`);
+      }
+      break;
+    }
+    case 'skaters': {
+      // Each skater's acceleration is the shared push ÷ its own mass (N ÷ kg = m/s²).
+      const f = (id: string) => {
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const F = f(rep.force);
+      if (F !== undefined && F < 0) out.push(`push ${F} is below 0`);
+      rep.masses.forEach((id, i) => {
+        const m = f(id);
+        if (m !== undefined && m <= 0) out.push(`skater ${i + 1} has mass ${m}`);
+        const a = rep.accelerations ? f(rep.accelerations[i]!) : undefined;
+        const units = [rep.force, id, rep.accelerations?.[i]].map((x) => x && byId.get(x)?.unit);
+        if (
+          F !== undefined &&
+          m !== undefined &&
+          m > 0 &&
+          a !== undefined &&
+          units.join() === 'N,kg,m/s²' &&
+          Math.abs(a - F / m) > 1e-4 * Math.max(1, Math.abs(a))
+        )
+          out.push(`skater ${i + 1} speeds up by ${a}, not push ÷ mass (${F / m})`);
+      });
+      break;
+    }
+    case 'energyTrack': {
+      // In formula units (J, kg, m, m/s): PE + KE = total, PE = m × g × h, total = m × g ×
+      // top, KE = 1/2 × m × v²; the height is from 0 to the top.
+      const f = (id: string | number | undefined) => {
+        if (id === undefined || typeof id === 'number') return id;
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const g = rep.g ?? 9.8;
+      const [h, pe, ke, total, top, m, v] = [
+        rep.height,
+        rep.potential,
+        rep.kinetic,
+        rep.total,
+        rep.top,
+        rep.mass,
+        rep.speed,
+      ].map(f);
+      const near = (x: number, y: number) => Math.abs(x - y) <= 1e-4 * Math.max(1, Math.abs(y));
+      const unitsOk = [rep.potential, rep.kinetic, rep.total, rep.height, rep.top, rep.mass].every(
+        (id) => typeof id !== 'string' || ['J', 'm', 'kg', ''].includes(byId.get(id)?.unit ?? ''),
+      );
+      for (const [x, what] of [
+        [h, 'height'],
+        [pe, 'potential energy'],
+        [ke, 'kinetic energy'],
+      ] as const)
+        if (x !== undefined && x < -1e-9) out.push(`${what} ${x} is below 0`);
+      if (h !== undefined && top !== undefined && h > top + 1e-6 * Math.max(1, top))
+        out.push(`height ${h} is above the top ${top}`);
+      if (unitsOk) {
+        if (pe !== undefined && ke !== undefined && total !== undefined && !near(pe + ke, total))
+          out.push(`PE + KE = ${pe + ke}, not the total ${total}`);
+        if (m !== undefined && h !== undefined && pe !== undefined && !near(pe, m * g * h))
+          out.push(`PE ${pe} is not m × g × h (${m * g * h})`);
+        if (
+          m !== undefined &&
+          top !== undefined &&
+          total !== undefined &&
+          !near(total, m * g * top)
+        )
+          out.push(`total ${total} is not m × g × top (${m * g * top})`);
+        if (m !== undefined && v !== undefined && ke !== undefined && !near(ke, (m * v * v) / 2))
+          out.push(`KE ${ke} is not 1/2 × m × v² (${(m * v * v) / 2})`);
+      }
+      break;
+    }
+    case 'motionGraph': {
+      // In formula units (the picture works in them): the line's end is the start plus slope ×
+      // time when the module's units agree (m, s, m/s, m/s²); the time and the trip's
+      // positions (or speeds) never go below 0.
+      const unit = (id: string | number | undefined) =>
+        typeof id === 'string' ? (byId.get(id)?.unit ?? '') : '';
+      const fv = (id: string | number | undefined) => {
+        const x = id === undefined ? 0 : val(id);
+        return x === undefined || typeof id !== 'string' ? x : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const slopeId = rep.graph === 'distance' ? rep.speed : rep.acceleration;
+      const endId = rep.graph === 'distance' ? rep.distance : rep.speed;
+      const [t, start, m, end] = [fv(rep.time), fv(rep.start), fv(slopeId), fv(endId)];
+      const [tu, eu, mu] = [unit(rep.time), unit(endId), unit(slopeId)];
+      const agree =
+        rep.graph === 'distance' ? mu === `${eu}/${tu}` : mu === `${eu}²` && eu.endsWith(`/${tu}`);
+      // Shown values are rounded to 9 places, so a time in hours is only roughly itself.
+      const near = (x: number, y: number) => Math.abs(x - y) <= 1e-4 * Math.max(1, Math.abs(y));
+      if (t !== undefined && t < 0) out.push(`motion graph time ${t} is negative`);
+      if ([t, start, m, end].every((x) => x !== undefined) && agree) {
+        const want = start! + m! * t!;
+        if (!near(end!, want))
+          out.push(`motion graph ends at ${end}, not start + slope × time = ${want}`);
+      }
+      if (rep.graph === 'speed') {
+        for (const v of [start, end])
+          if (v !== undefined && v < 0) out.push(`speed ${v} is below 0 on a speed-time graph`);
+        const d = rep.distance ? fv(rep.distance) : undefined;
+        if (d !== undefined && [t, start, end].every((x) => x !== undefined)) {
+          const area = ((start! + end!) / 2) * t!;
+          if (agree && unit(rep.distance) === eu.split('/')[0] && !near(d, area))
+            out.push(`distance ${d} is not the area under the line (${area})`);
+        }
+      } else if (rep.then) {
+        if (rep.then.length > 5) out.push(`${rep.then.length} legs after the first (5 fit)`);
+        let x = end;
+        for (const leg of rep.then) {
+          if (leg.time <= 0) out.push(`a leg lasts ${leg.time}`);
+          if (x === undefined) break;
+          x += leg.speed * leg.time;
+          if (x < -1e-9) out.push(`the trip goes below 0 (${x})`);
+        }
+      }
+      break;
+    }
+    case 'spectrum':
+    case 'circuit':
+    case 'electromagnet':
+    case 'orbit':
+      out.push(...physics8Issues(rep, (id) => val(id)));
+      break;
     default:
       break;
   }

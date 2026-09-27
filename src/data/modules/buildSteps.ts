@@ -244,6 +244,8 @@ export function buildSteps(
 
   // Values known before each step: the entered ones, then each answer as it is found.
   const known: Values = Object.fromEntries(givenIdsOf(result).map((id) => [id, working[id]!]));
+  /** The values the student typed (exact as shown). */
+  const typed = new Set(givenIdsOf(result));
   const steps = result.trace.map((t): Step => {
     const knownHere = { ...known };
     known[t.id] = working[t.id]!;
@@ -350,7 +352,19 @@ export function buildSteps(
     // lines with words ("Tens: 40 + 30 = 70") stay as the thinking behind the columns. K–2
     // keep their jumps, which the number line shows.
     const running = (l: string) => /^[\d,]+\S* [+−] [\d,]+\S* = [\d,]+\S*$/.test(l);
-    const shownWork =
+    // A price that isn't whole cents is answered "about $3.33": the exact value comes first
+    // ("10 ÷ 3 = 3.333") when the inputs are exact, unless a work line already shows it.
+    const x = workValue(t.id);
+    const exactLine = formatNumber(x);
+    const subCent =
+      workUnit(t.id) === '$' &&
+      Math.abs(x * 100 - Math.round(x * 100)) >= 1e-6 &&
+      // Only from typed values: a worked-out one is rounded (12.3636), so the line wouldn't add up.
+      [...expr.matchAll(/\{(\w+)\}/g)].every((m) => typed.has(m[1]!)) &&
+      !(workLines ?? []).some((l) => l.endsWith(`= ${exactLine}`))
+        ? [`${bare} = ${exactLine}`]
+        : [];
+    const shownWork0 =
       // Grade 2 too, when place lines ("Hundreds: 200 + 100 = 300") say the thinking.
       (band === 'elementary' ||
         (band === 'early' && !!workLines?.some((l) => /^(Hundreds|Tens|Ones): /.test(l)))) &&
@@ -360,6 +374,7 @@ export function buildSteps(
         ? // A sentence that only led into the jumps ("Start with the bigger number.") goes too.
           workLines.filter((l) => !running(l) && (l.includes('=') || !l.endsWith('.')))
         : workLines;
+    const shownWork = subCent.length ? [...(shownWork0 ?? []), ...subCent] : shownWork0;
     // With no work lines or grid, an expression of two or more operations is simplified one
     // stage per line, the way it is written under a formula in class (c = √(9 + 16), c = √25).
     const chain =

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
-import type { Scene } from '@/data/modules/layouts';
+import type { MoonPhase, Scene } from '@/data/modules/layouts';
 import { chart, type Palette } from '@/theme';
 
 import { Canvas, ChartText } from '../reps/common';
@@ -452,27 +452,102 @@ function Star({ x, y, r, c }: { x: number; y: number; r: number; c: Palette }) {
   return <Path d={`M ${pts.join(' L ')} Z`} fill={c.chartHighlight} />;
 }
 
+const PHASES: MoonPhase[] = [
+  'new',
+  'waxing crescent',
+  'first quarter',
+  'waxing gibbous',
+  'full',
+  'waning gibbous',
+  'third quarter',
+  'waning crescent',
+];
+
+/**
+ * The moon at (x, y) in one of its shapes, as seen from the Northern Hemisphere: the dark disc,
+ * then the lit part bounded by the edge and the curved line between day and night. Waxing
+ * moons are lit on the right, waning moons on the left.
+ */
+export function MoonShape({
+  x,
+  y,
+  r,
+  phase,
+  c,
+}: {
+  x: number;
+  y: number;
+  r: number;
+  phase: MoonPhase;
+  c: Palette;
+}) {
+  const i = PHASES.indexOf(phase);
+  const angle = (i * Math.PI) / 4;
+  const waxing = i > 0 && i < 4;
+  // Half the width of the curve between the lit and dark parts: a full circle at new and full
+  // moon, a straight line at the quarters.
+  const rx = Math.abs(r * Math.cos(angle));
+  const crescent = i === 1 || i === 7;
+  let lit: ReactNode = null;
+  if (phase === 'full') {
+    lit = <Circle cx={x} cy={y} r={r} fill={c.moonLit} />;
+  } else if (phase !== 'new') {
+    // The edge half (right when waxing), then back up along the curve: it bulges toward the
+    // lit edge for a crescent and away from it for a gibbous moon.
+    const edge = waxing ? 1 : 0;
+    const curve = waxing === crescent ? 0 : 1;
+    lit = (
+      <Path
+        d={`M ${x} ${y - r} A ${r} ${r} 0 0 ${edge} ${x} ${y + r} A ${Math.max(rx, 0.01)} ${r} 0 0 ${curve} ${x} ${y - r} Z`}
+        fill={c.moonLit}
+      />
+    );
+  }
+  return (
+    <G>
+      <Circle cx={x} cy={y} r={r} fill={c.moonDark} />
+      {lit}
+      {/* The rim, dashed for a new moon, so it is still seen. */}
+      <Circle
+        cx={x}
+        cy={y}
+        r={r}
+        fill="none"
+        stroke={c.chartMuted}
+        strokeWidth={1}
+        strokeDasharray={phase === 'new' ? chart.dashFine : undefined}
+      />
+    </G>
+  );
+}
+
 /**
  * The sky over a house, East on the left and West on the right (facing south), with the
  * sun's path as a dotted arc. The sun sits low in the east, high at midday or low in the
- * west; at night the sky is dark with the Moon and stars.
+ * west; at night the sky is dark with the moon, in its shape, and stars. `rising` draws the
+ * way the sun or moon moves along its path; `cycle` a strip of the moon's eight shapes.
  */
 export function Sky({ sky, c }: { sky: NonNullable<Scene['sky']>; c: Palette }) {
+  const strip = sky.cycle ? 78 : 0;
   return (
-    <Canvas aspect={0.55}>
+    <Canvas aspect={(w) => 0.55 + strip / w}>
       {({ w, h }) => {
-        const ground = h - 44;
+        const ground = h - 44 - strip;
         const cx = w / 2;
         const rx = w / 2 - 44;
         const ry = ground - 34;
-        const spot = (t: number) => ({
-          x: cx - rx * Math.cos(t),
-          y: ground - ry * Math.sin(t),
+        const spot = (t: number, grow = 0) => ({
+          x: cx - (rx + grow) * Math.cos(t),
+          y: ground - (ry + grow) * Math.sin(t),
         });
-        const at = spot(
-          sky.at === 'east' ? 0.35 : sky.at === 'west' ? Math.PI - 0.35 : Math.PI / 2,
-        );
+        const t0 = sky.at === 'east' ? 0.35 : sky.at === 'west' ? Math.PI - 0.35 : Math.PI / 2;
+        const at = spot(t0);
         const night = sky.body === 'night';
+        const phase = sky.phase ?? 'waxing crescent';
+        // The way it moves: along the path toward the west, just outside it.
+        const way = Array.from({ length: 9 }, (_, k) => spot(t0 + 0.28 + k * 0.05, 26));
+        const last = way[way.length - 1]!;
+        const before = way[way.length - 2]!;
         return (
           <Svg width={w} height={h}>
             <Rect x={0} y={0} width={w} height={ground} fill={night ? c.chartNight : c.chartDay} />
@@ -495,9 +570,7 @@ export function Sky({ sky, c }: { sky: NonNullable<Scene['sky']>; c: Palette }) 
                 ].map(([fx, fy], i) => (
                   <Star key={i} x={w * fx!} y={ground * fy!} r={6} c={c} />
                 ))}
-                {/* The Moon: a lit circle with a dark bite out of it. */}
-                <Circle cx={at.x} cy={at.y} r={16} fill={c.chartHighlight} />
-                <Circle cx={at.x + 8} cy={at.y - 5} r={14} fill={c.chartNight} />
+                <MoonShape x={at.x} y={at.y} r={16} phase={phase} c={c} />
               </G>
             ) : (
               <G>
@@ -525,6 +598,25 @@ export function Sky({ sky, c }: { sky: NonNullable<Scene['sky']>; c: Palette }) 
                 />
               </G>
             )}
+            {sky.rising ? (
+              <G>
+                <Path
+                  d={`M ${way.map((p) => `${p.x} ${p.y}`).join(' L ')}`}
+                  stroke={night ? c.moonLit : c.chartInk}
+                  strokeWidth={chart.stroke}
+                  strokeLinecap="round"
+                  fill="none"
+                />
+                <Arrow
+                  x1={before.x}
+                  y1={before.y}
+                  x2={last.x}
+                  y2={last.y}
+                  c={c}
+                  color={night ? c.moonLit : c.chartInk}
+                />
+              </G>
+            ) : null}
             <Line
               x1={0}
               y1={ground}
@@ -552,15 +644,58 @@ export function Sky({ sky, c }: { sky: NonNullable<Scene['sky']>; c: Palette }) 
             >
               West
             </ChartText>
-            <ChartText x={cx} y={h - 6} fontSize={chart.label} textAnchor="middle">
+            <ChartText x={cx} y={ground + 38} fontSize={chart.label} textAnchor="middle">
               {night
-                ? 'night'
-                : sky.at === 'east'
-                  ? 'morning'
-                  : sky.at === 'west'
-                    ? 'evening'
-                    : 'midday'}
+                ? sky.rising
+                  ? 'moonrise'
+                  : sky.phase
+                    ? `${sky.phase === 'new' || sky.phase === 'full' ? `${sky.phase} moon` : sky.phase}`
+                    : 'night'
+                : sky.rising
+                  ? 'sunrise'
+                  : sky.at === 'east'
+                    ? 'morning'
+                    : sky.at === 'west'
+                      ? 'evening'
+                      : 'midday'}
             </ChartText>
+            {sky.cycle ? (
+              <G>
+                {PHASES.map((p, k) => {
+                  const slot = (w - 16) / 8;
+                  const mx = 8 + slot * (k + 0.5);
+                  const my = h - strip + 30;
+                  const r = Math.min(13, slot / 2 - 5);
+                  return (
+                    <G key={p}>
+                      {p === phase ? (
+                        <Circle
+                          cx={mx}
+                          cy={my}
+                          r={r + 5}
+                          fill="none"
+                          stroke={c.chartHighlight}
+                          strokeWidth={chart.strokeHeavy}
+                        />
+                      ) : null}
+                      <MoonShape x={mx} y={my} r={r} phase={p} c={c} />
+                    </G>
+                  );
+                })}
+                {(['new', 'full'] as const).map((p) => (
+                  <ChartText
+                    key={p}
+                    x={8 + ((w - 16) / 8) * (p === 'new' ? 0.5 : 4.5)}
+                    y={h - 8}
+                    fontSize={chart.tiny}
+                    fill={c.chartMuted}
+                    textAnchor="middle"
+                  >
+                    {p}
+                  </ChartText>
+                ))}
+              </G>
+            ) : null}
           </Svg>
         );
       }}
