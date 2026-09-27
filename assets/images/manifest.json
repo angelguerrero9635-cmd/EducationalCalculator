@@ -16,6 +16,21 @@
       "notes": "NWS Weather Prediction Center national forecast chart: cold, warm and stationary fronts, highs and lows, and precipitation; legend and date text are baked in. NWS asks that content not be modified (only resized here). Good for weather-fronts (Grade 6)."
     },
     {
+      "slug": "feather-snowy-owl",
+      "topic": "life",
+      "file": "assets/images/life/feather-snowy-owl.webp",
+      "width": 1200,
+      "height": 800,
+      "sourcePage": "https://www.fws.gov/media/snowy-owl-feather",
+      "fileUrl": "https://www.fws.gov/sites/default/files/2023-01/Snowy%20Owl%20feather%20Lisa%20Hupp.jpg",
+      "author": "U.S. Fish and Wildlife Service (credit: Lisa Hupp/USFWS)",
+      "license": "Public domain (page states \"Usage Rights/License: Public Domain\")",
+      "licenseUrl": "https://www.fws.gov/media/snowy-owl-feather",
+      "retrieved": "2026-09-27",
+      "ships": true,
+      "notes": "USFWS: a white Snowy Owl feather lying on Arctic tundra; natural background."
+    },
+    {
       "slug": "basalt-vesicular-side",
       "topic": "rocks",
       "file": "assets/images/rocks/basalt-vesicular-side.webp",
@@ -104,6 +119,21 @@
       "retrieved": "2026-09-27",
       "ships": true,
       "notes": "Cockerellites liops (spiny fish) fossil, whole skeleton, NPS."
+    },
+    {
+      "slug": "gneiss-augen-outcrop",
+      "topic": "rocks",
+      "file": "assets/images/rocks/gneiss-augen-outcrop.webp",
+      "width": 1088,
+      "height": 662,
+      "sourcePage": "https://www.usgs.gov/media/images/granite-augen-gneiss",
+      "fileUrl": "https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/ds942-granitoid.png",
+      "author": "U.S. Geological Survey",
+      "license": "Public domain (U.S. Geological Survey work; page states \"Sources/Usage: Public Domain.\")",
+      "licenseUrl": "https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits",
+      "retrieved": "2026-09-27",
+      "ships": true,
+      "notes": "USGS: granite augen gneiss at Napias Creek, Idaho; banded metamorphic rock with eye-shaped feldspar. Close-up of rock, not a hand sample."
     },
     {
       "slug": "limestone-shells-slab",
