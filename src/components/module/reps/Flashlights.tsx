@@ -162,10 +162,10 @@ export function Flashlights({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {(() => {
           const listed = [spec.near, spec.times, ...(spec.far ? [spec.far] : [])]
             .map((id) => rep.named(id))
-            .join('. ');
+            .join(' · ');
           if (!kKnown) return listed.endsWith('?') ? listed : `${listed}.`;
           return (
-            `${listed}. The lit circle is ${k} times as wide. ` +
+            `${listed} · The lit circle is ${k} times as wide. ` +
             `It covers ${k} × ${k} = ${k * k} squares, so each square gets 1/${k * k} of the light.`
           );
         })()}

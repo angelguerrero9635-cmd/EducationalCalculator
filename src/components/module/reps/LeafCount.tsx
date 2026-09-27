@@ -180,7 +180,7 @@ export function LeafCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {(() => {
-          const listed = spec.items.map((id) => rep.named(id)).join('. ');
+          const listed = spec.items.map((id) => rep.named(id)).join(' · ');
           const names = listed.endsWith('?') ? listed : `${listed}.`;
           const [a, b] = spec.items.map((id) => rep.known(id));
           if (!spec.difference || !a || !b) return names;

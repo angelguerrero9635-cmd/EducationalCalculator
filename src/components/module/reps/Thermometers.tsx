@@ -227,7 +227,7 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {(() => {
-          const listed = spec.items.map((id) => rep.named(id)).join('. ');
+          const listed = spec.items.map((id) => rep.named(id)).join(' · ');
           // No full stop after a "?" ("Temperature now: ?").
           const names = listed.endsWith('?') ? listed : `${listed}.`;
           const [a, b] = shown;
