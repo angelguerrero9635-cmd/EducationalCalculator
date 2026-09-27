@@ -51,6 +51,46 @@ function Grid({
 }
 
 /**
+ * Many whole grids as one stack: three grids fanned behind each other with the count on the
+ * front one, so 45 ones take the room of one grid.
+ */
+function Stack({ count, size }: { count: number; size: number }) {
+  const c = usePalette();
+  const step = Math.max(3, Math.round(size * 0.05));
+  const front = size - 2 * step;
+  const layer = (k: number) => ({
+    position: 'absolute' as const,
+    left: k * step,
+    top: (2 - k) * step,
+    width: front,
+    height: front,
+    borderWidth: 1,
+    borderColor: c.chartGrid,
+    backgroundColor: c.chartHighlight,
+  });
+  return (
+    <View style={{ width: size, height: size }} testID="whole-stack">
+      <View style={layer(2)} />
+      <View style={layer(1)} />
+      <View style={{ position: 'absolute', left: 0, top: 2 * step }}>
+        <Grid shaded={100} size={front} faded={false} testPrefix="stack-" />
+      </View>
+      <View style={[styles.badgeWrap, { left: 0, top: 2 * step, width: front, height: front }]}>
+        <Text
+          numberOfLines={1}
+          style={[
+            styles.badge,
+            { color: c.chartInk, backgroundColor: c.chartSurface, borderColor: c.chartGrid },
+          ]}
+        >
+          {`× ${count}`}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/**
  * 100 squares = the whole. Tapping square n sets the count to n. Whole grids before it show
  * the ones of a decimal; a second grid beside it is a number to compare.
  */
@@ -63,7 +103,9 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const whole =
     spec.wholes && rep.known(spec.wholes) ? Math.max(0, Math.round(rep.val(spec.wholes))) : 0;
   const second = spec.second ? Math.round(rep.val(spec.second)) : undefined;
-  const count = whole + 1 + (spec.second ? 1 : 0);
+  // Past 3 whole grids (with `stack`), one stack stands for all of them.
+  const stacked = !!spec.stack && whole > 3;
+  const count = (stacked ? 1 : whole) + 1 + (spec.second ? 1 : 0);
   const pin = [
     ...(spec.caption ? [spec.caption.whole] : []),
     ...(spec.second ? [spec.second] : []),
@@ -86,7 +128,13 @@ export function Grid100({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
           return (
             <View style={styles.row}>
-              {Array.from({ length: whole }, (_, i) => (
+              {stacked ? (
+                <View style={{ width: size }}>
+                  <Stack count={whole} size={size} />
+                  {tag(`${whole} whole grids`)}
+                </View>
+              ) : null}
+              {Array.from({ length: stacked ? 0 : whole }, (_, i) => (
                 <View key={`w${i}`} style={{ width: size }}>
                   <Grid shaded={100} size={size} faded={false} testPrefix={`whole${i}-`} />
                   {tag('1 whole')}
@@ -145,4 +193,14 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'center', gap: space.sm },
   tag: { fontSize: font.caption, textAlign: 'center', marginTop: 2 },
   caption: { fontSize: font.body - 1, textAlign: 'center' },
+  badgeWrap: { position: 'absolute', alignItems: 'center', justifyContent: 'center' },
+  badge: {
+    fontSize: font.body,
+    fontWeight: '700',
+    paddingHorizontal: space.sm,
+    paddingVertical: 2,
+    borderWidth: 1,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
 });

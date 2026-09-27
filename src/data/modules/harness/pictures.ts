@@ -849,8 +849,9 @@ export function repIssues(
         out.push(`squares shaded ${rep.percent} out of 0–100 (${shaded})`);
       }
       if (rep.second) count(rep.second, 'squares shaded', 100);
-      // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx).
-      if (rep.wholes) count(rep.wholes, 'whole grids', 3);
+      // Whole grids shrink the row: up to 3 fit beside the tapped grid (Grid100.tsx); with
+      // `stack` more are one stack with its count, to 99.
+      if (rep.wholes) count(rep.wholes, 'whole grids', rep.stack ? 99 : 3);
       break;
     }
     case 'factorPairs': {

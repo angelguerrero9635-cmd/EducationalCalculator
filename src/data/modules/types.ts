@@ -459,6 +459,8 @@ export type Representation =
       second?: string;
       /** Whole grids, fully shaded, before the first: the ones of a decimal (1.35). */
       wholes?: string;
+      /** Past 3 whole grids, one stack of grids with its count ("45 whole grids"): ones to 99. */
+      stack?: boolean;
     }
   /**
    * A figure on a grid and its scaled copy beside it (Grade 7 scale drawings): the original is

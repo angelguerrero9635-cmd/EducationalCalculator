@@ -263,10 +263,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Hundredths grids past 3 ones',
     kind: 'grid100',
     pages: ['m.4.decimals-intro'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.hundredths-ones', 'g.hundredths-many-ones', 'g.hundredths-ones-99'],
+    uses: '"stack":true',
     notes:
-      '45.06 is 45 whole grids and 6 hundredths: draw a few whole grids and a count, so ones can go to 99.',
+      '45.06 is 45 whole grids and 6 hundredths: draw a few whole grids and a count, so ones can go to 99. Pass `stack: true` with `wholes`: up to 3 ones draw as before, past 3 one stack of grids marked "× 45" and "45 whole grids". The page raises Ones to 0–99 and As a decimal to 99.99.',
   },
   {
     id: 'R24',
