@@ -1042,10 +1042,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.heating-cooling',
     kind: 'icon',
     pages: ['s.2.heating-cooling'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3b-heating-cooling'],
+    uses: '"icon":"melting ice cube"',
     notes:
-      'Melting ice → an ice cube with a puddle; Freezing water → an ice-cube tray; Melting a crayon → a drooping, melted crayon; Melting chocolate → a chocolate bar going soft; Boiling water into steam → a pot with steam; Cooking an egg → a fried egg in a pan; Burning paper → paper with a flame and ash; Baking bread → a loaf of bread; Toasting bread → a slice of toast',
+      "Melting ice → an ice cube with a puddle; Freezing water → an ice-cube tray; Melting a crayon → a drooping, melted crayon; Melting chocolate → a chocolate bar going soft; Boiling water into steam → a pot with steam; Cooking an egg → a fried egg in a pan; Burning paper → paper with a flame and ash; Baking bread → a loaf of bread; Toasting bread → a slice of toast. Drawn (group B), figure: {kind:'icon', icon}: Melting ice → 'melting ice cube'; Freezing water → 'ice cube tray'; Melting a crayon → 'melted crayon'; Melting chocolate → 'melting chocolate bar'; Boiling water into steam → 'pot of boiling water'; Cooking an egg → 'fried egg in a pan'; Burning paper → 'burning paper'; Baking bread → 'loaf of bread'; Toasting bread → 'slice of toast'",
   },
   {
     id: 'D20',
@@ -1128,10 +1129,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for m.3.mass-liquid-volume~which-unit',
     kind: 'icon',
     pages: ['m.3.mass-liquid-volume~which-unit'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3b-which-unit'],
+    uses: '"icon":"sack of potatoes"',
     notes:
-      "Grape → a single grape; Apple → an apple; Letter → an envelope letter; Bicycle → a bicycle; Watermelon → existing icon 'watermelon'; Bag of potatoes → a sack of potatoes; Child → existing icon 'person'",
+      "Grape → a single grape; Apple → an apple; Letter → an envelope letter; Bicycle → a bicycle; Watermelon → existing icon 'watermelon'; Bag of potatoes → a sack of potatoes; Child → existing icon 'person'. Drawn (group B), figure: {kind:'icon', icon}: Grape → 'grape'; Apple → 'apple' (group I's drawing); Letter → 'letter in an envelope'; Bicycle → 'bicycle'; Watermelon → 'watermelon'; Bag of potatoes → 'sack of potatoes'; Child → 'person'",
   },
   {
     id: 'D28',
@@ -1235,20 +1237,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.energy-conversion',
     kind: 'icon',
     pages: ['s.4.energy-conversion'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3b-energy-conversion'],
+    uses: '"icon":"desk lamp"',
     notes:
-      "Flashlight → a flashlight; Lamp → a desk lamp; Toaster → a toaster; Hair dryer → a hair dryer; Electric kettle → existing icon 'kettle'; Buzzer → a buzzer; Speaker → a speaker; Doorbell → a doorbell button and chime; Fan → an electric fan; Electric car → an electric car with a plug",
+      "Flashlight → a flashlight; Lamp → a desk lamp; Toaster → a toaster; Hair dryer → a hair dryer; Electric kettle → existing icon 'kettle'; Buzzer → a buzzer; Speaker → a speaker; Doorbell → a doorbell button and chime; Fan → an electric fan; Electric car → an electric car with a plug. Drawn (group B), figure: {kind:'icon', icon}: Flashlight → 'flashlight'; Lamp → 'desk lamp'; Toaster → 'toaster'; Hair dryer → 'hair dryer'; Electric kettle → 'kettle'; Buzzer → 'buzzer'; Speaker → 'speaker'; Doorbell → 'doorbell'; Fan → 'electric fan'; Electric car → 'electric car'",
   },
   {
     id: 'D38',
     what: 'Card pictures for s.4.energy-conversion~trace',
     kind: 'icon',
     pages: ['s.4.energy-conversion~trace'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3b-energy-trace'],
+    uses: '"icon":"circuit lit bulb"',
     notes:
-      'The battery stores energy → a battery; Electric current carries it along the wire → a battery joined to a wire; The thin wire in the bulb gets very hot → a bulb with a glowing red filament; The bulb gives out light and heat → a lit bulb, with light and heat lines',
+      "The battery stores energy → a battery; Electric current carries it along the wire → a battery joined to a wire; The thin wire in the bulb gets very hot → a bulb with a glowing red filament; The bulb gives out light and heat → a lit bulb, with light and heat lines. Drawn (group B) as one circuit scene changing stage by stage, figure: {kind:'icon', icon} on each stage: The battery stores energy → 'circuit battery' (the rest of the circuit faint); Electric current carries it along the wire → 'circuit wire current' (arrows on the wire); The thin wire in the bulb gets very hot → 'circuit hot filament'; The bulb gives out light and heat → 'circuit lit bulb'",
   },
   {
     id: 'D39',
@@ -1277,10 +1281,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.4.vision-light~signals',
     kind: 'icon',
     pages: ['s.4.vision-light~signals'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3b-signals'],
+    uses: '"icon":"lighthouse"',
     notes:
-      "Flashlight code → a flashlight flashing; Lighthouse → a lighthouse; Traffic light → a traffic light; Flag colors on a ship → a ship with signal flags; Drum beats → a drum; Ship’s horn → a ship's horn; Buzzer code → a buzzer; School bell → a school bell",
+      "Flashlight code → a flashlight flashing; Lighthouse → a lighthouse; Traffic light → a traffic light; Flag colors on a ship → a ship with signal flags; Drum beats → a drum; Ship’s horn → a ship's horn; Buzzer code → a buzzer; School bell → a school bell. Drawn (group B), figure: {kind:'icon', icon}: Flashlight code → 'flashing flashlight'; Lighthouse → 'lighthouse'; Traffic light → 'traffic light'; Flag colors on a ship → 'ship with signal flags'; Drum beats → 'drum'; Ship’s horn → 'ship horn'; Buzzer code → 'buzzer'; School bell → 'school bell'",
   },
   {
     id: 'D42',

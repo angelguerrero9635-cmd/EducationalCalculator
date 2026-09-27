@@ -187,6 +187,10 @@ const light = {
   poleSouth: '#2F6FD0',
   /** A lit bulb's warm glow. */
   bulbGlow: '#FFD95A',
+  /** Brass bells and horns, and chocolate (card icons, round 3 group B). */
+  brass: '#D9A83B',
+  brassDark: '#8C6420',
+  chocolate: '#6B3E22',
   /** A flower's petals, and a body's organs: brain and lungs, heart, stomach, and bones. */
   petal: '#E8618C',
   organ: '#EFA3A8',
@@ -334,6 +338,9 @@ const dark: Palette = {
   poleNorth: '#C94444',
   poleSouth: '#3A6FC0',
   bulbGlow: '#F2C94C',
+  brass: '#B8892E',
+  brassDark: '#6A4A18',
+  chocolate: '#5E3620',
   petal: '#C9507A',
   organ: '#C7838A',
   organDeep: '#B8323C',
