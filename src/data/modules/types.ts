@@ -180,6 +180,20 @@ export type Representation =
       takeAway?: string;
     }
   /**
+   * A hanger (Grade 7–8 equations): a wooden beam on a hook with a tray on each end holding
+   * `x` blocks of the `unknown` and `units` unit weights (a value or a fixed count, whole and
+   * not negative). Level when both sides weigh the same (always level while the unknown is
+   * "?"). `steps` adds buttons that walk the solving: take the same from both sides, then
+   * split into as many equal parts as there are blocks.
+   */
+  | {
+      kind: 'hanger';
+      unknown: string;
+      left: { x?: string | number; units?: string | number };
+      right: { x?: string | number; units?: string | number };
+      steps?: boolean;
+    }
+  /**
    * Base-ten blocks (hundreds flats, tens rods, ones cubes) for each group, and for the total.
    * `controls` add the sliders buttons (e.g. ±1, ±10) that change a value.
    */

@@ -2,6 +2,7 @@ import type { Representation } from '@/data/modules';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
+import { Hanger } from './Hanger';
 import { RatioTape } from './RatioTape';
 import { IntegerLine } from './IntegerLine';
 import { PercentBar } from './PercentBar';
@@ -198,6 +199,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PolygonShape spec={spec} calc={calc} />;
     case 'balance':
       return <Balance spec={spec} calc={calc} />;
+    case 'hanger':
+      return <Hanger spec={spec} calc={calc} />;
     case 'baseTen':
       return <BaseTen spec={spec} calc={calc} />;
     case 'unitTiles':

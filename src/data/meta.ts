@@ -74,6 +74,7 @@ const PICTURE_NAMES: Record<string, string> = {
   wave: 'wave',
   punnettSquare: 'Punnett square',
   integerLine: 'number line with negatives',
+  hanger: 'hanger diagram',
   percentBar: 'percent bar',
   ratioTable: 'ratio table',
   fractionFit: 'fraction groups',

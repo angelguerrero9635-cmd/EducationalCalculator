@@ -138,6 +138,26 @@ export function repIssues(
       }
       break;
     }
+    case 'hanger': {
+      // Blocks and weights are whole things on a tray: up to 8 blocks and 40 weights a side
+      // (Hanger.tsx packs them in rows); an unknown below 0 can't hang.
+      for (const s of [rep.left, rep.right]) {
+        if (s.x !== undefined) count(s.x, 'hanger blocks', 8);
+        if (s.units !== undefined) count(s.units, 'hanger weights', 40);
+      }
+      const x = val(rep.unknown);
+      if (x !== undefined && x < 0) out.push(`hanger block weighs ${x} (below 0)`);
+      const [xl, ul, xr, ur] = [rep.left.x, rep.left.units, rep.right.x, rep.right.units].map(
+        (v) => (v === undefined ? 0 : val(v)),
+      );
+      if (
+        x !== undefined &&
+        [xl, ul, xr, ur].every((v) => v !== undefined) &&
+        Math.abs(xl! * x + ul! - (xr! * x + ur!)) > 1e-6 * Math.max(1, ur! + xr! * x)
+      )
+        out.push(`~hanger is not level: ${xl! * x + ul!} against ${xr! * x + ur!}`);
+      break;
+    }
     case 'baseTen':
       for (const id of [...rep.groups, ...(rep.total ? [rep.total] : [])])
         count(id, 'blocks', 1000);

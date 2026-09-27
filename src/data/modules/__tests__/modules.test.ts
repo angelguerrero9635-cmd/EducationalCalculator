@@ -33,6 +33,10 @@ function representationVars(r: Representation): string[] {
       ];
     case 'balance':
       return [...r.left, ...r.right, ...(r.takeAway ? [r.takeAway] : [])];
+    case 'hanger':
+      return [r.unknown, r.left.x, r.left.units, r.right.x, r.right.units].filter(
+        (v): v is string => typeof v === 'string',
+      );
     case 'baseTen':
       return [
         ...r.groups,

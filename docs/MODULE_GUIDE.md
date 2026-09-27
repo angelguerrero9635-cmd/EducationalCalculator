@@ -106,6 +106,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars       | Grade 2 and 4 erosion               |
 | `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded   | Grade 5 star brightness             |
 | `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
+| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps | Grade 7–8 equations                 |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
