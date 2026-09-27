@@ -1350,20 +1350,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.5.mixtures',
     kind: 'icon',
     pages: ['s.5.mixtures'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3a-mixtures'],
+    uses: '"icon":"burning log"',
     notes:
-      'Iron left in wet air (rust) → an iron nail with rust patches; Wood burning → a log on fire, with ash and smoke; Sand in water → a jar of water with sand settled at the bottom; Oil and water → a jar with a layer of oil floating on water',
+      "Iron left in wet air (rust) → an iron nail with rust patches; Wood burning → a log on fire, with ash and smoke; Sand in water → a jar of water with sand settled at the bottom; Oil and water → a jar with a layer of oil floating on water. Drawn: each of these cards gets figure: { kind: 'icon', icon }: Iron left in wet air (rust) → 'rusty nail'; Wood burning → 'burning log'; Sand in water → 'jar of sand and water'; Oil and water → 'jar of oil and water'. The other cards were not requested",
   },
   {
     id: 'D51',
     what: 'Card pictures for s.5.mixtures~separate',
     kind: 'icon',
     pages: ['s.5.mixtures~separate'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3a-separate'],
+    uses: '"icon":"magnet over sand mix"',
     notes:
-      'Pass a magnet over the dry mix → a bar magnet with iron filings stuck to it above a dish of the mix; Stir the rest into water → a beaker of water with a stirring rod; Pour it through a filter → a funnel with filter paper over a beaker, sand left in the paper; Let the salt water evaporate → a shallow dish in the sun with salt crystals left',
+      "Pass a magnet over the dry mix → a bar magnet with iron filings stuck to it above a dish of the mix; Stir the rest into water → a beaker of water with a stirring rod; Pour it through a filter → a funnel with filter paper over a beaker, sand left in the paper; Let the salt water evaporate → a shallow dish in the sun with salt crystals left. Drawn: each stage gets figure: { kind: 'icon', icon }, one bench and the same glass dish or beaker in every step: Pass a magnet over the dry mix: the iron filings stick → 'magnet over sand mix'; Stir the rest into water: the salt dissolves → 'stirring salt water'; Pour it through a filter: the sand stays behind → 'filtering sand'; Let the salt water evaporate: the salt is left → 'evaporating salt water'",
   },
   {
     id: 'D52',

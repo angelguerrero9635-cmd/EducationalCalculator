@@ -17,6 +17,7 @@ import {
   RadialGradient,
   Rect,
   Stop,
+  Text as SvgText,
 } from 'react-native-svg';
 
 import { usePalette } from '@/theme';
@@ -188,6 +189,75 @@ export function R3AIcon({ icon, ink }: IconProps): ReactNode {
           {...o(0.8)}
         />
       ) : null}
+    </>
+  );
+
+  /** Sand grains: tan dots with a few dark ones. */
+  const grains = (x: number, y: number, w: number, h: number, seed: number) =>
+    scatter(Math.round((w * h) / 6), x, y, w, h, seed).map(([gx, gy], i) => (
+      <Circle key={i} cx={gx} cy={gy} r={0.55} fill={i % 3 ? c.woodDark : c.rock4} />
+    ));
+  /** Sand, salt and iron filings mixed: tan, white and black specks. */
+  const mix = (x: number, y: number, w: number, h: number) =>
+    scatter(30, x, y, w, h, 9).map(([gx, gy], i) => (
+      <Circle
+        key={i}
+        cx={gx}
+        cy={gy}
+        r={0.6}
+        fill={[c.rubber, c.snow, c.woodDark][i % 3]}
+        {...(i % 3 === 1 ? o(0.25) : {})}
+      />
+    ));
+
+  /** A glass jar with a metal lid; `inside` is drawn in the glass. */
+  const JAR =
+    'M 12 14 H 36 C 37.5 15 38 16.5 38 19 V 41 C 38 43 36.5 44 34.5 44 H 13.5 C 11.5 44 10 43 10 41 V 19 C 10 16.5 10.5 15 12 14 Z';
+  const inJar = (top: number) =>
+    `M 10.8 ${top} H 37.2 V 41 C 37.2 42.5 36 43.2 34.5 43.2 H 13.5 C 12 43.2 10.8 42.5 10.8 41 Z`;
+  const jar = (inside: ReactNode) => (
+    <>
+      {ground(24, 44, 15)}
+      <Path d={JAR} fill={url(ids.glass)} />
+      {inside}
+      <Path d={JAR} fill={url(ids.sheen)} {...o(1.2)} />
+      <Path d="M 13 19 V 40" stroke={c.glassShine} strokeWidth={1.4} strokeLinecap="round" />
+      <Rect x={11} y={6.5} width={26} height={6.5} rx={1.3} fill={c.silver} />
+      <Path
+        d="M 14 7 V 12.5 M 17 7 V 12.5 M 20 7 V 12.5 M 23 7 V 12.5 M 26 7 V 12.5 M 29 7 V 12.5 M 32 7 V 12.5 M 35 7 V 12.5"
+        stroke={c.metalDark}
+        strokeWidth={0.5}
+      />
+      <Rect x={11} y={6.5} width={26} height={6.5} rx={1.3} fill={url(ids.sheen)} {...o(1.1)} />
+    </>
+  );
+
+  /** A shallow glass dish on the bench (the first and last steps of D51). */
+  const DISH = 'M 7 33 H 41 C 40 39.5 36 43 31 43 H 17 C 12 43 8 39.5 7 33 Z';
+  const dish = (inside: ReactNode) => (
+    <>
+      {ground(24, 44, 19)}
+      {inside}
+      <Path d={DISH} fill={url(ids.glass)} fillOpacity={0.85} />
+      <Path d={DISH} fill={url(ids.sheen)} {...o(1.1)} />
+      <Path
+        d="M 11 36 C 12 38.5 14 40.5 16 41"
+        stroke={c.glassShine}
+        strokeWidth={1.2}
+        fill="none"
+      />
+    </>
+  );
+
+  /** A glass beaker on the bench (the middle steps of D51), with a spout and marks. */
+  const beaker = (body: string, inside: ReactNode) => (
+    <>
+      {ground(24, 44, 15)}
+      <Path d={body} fill={url(ids.glass)} />
+      {inside}
+      <Path d={body} fill={url(ids.sheen)} {...o(1.1)} />
+      <Path d={body} fill="none" {...o(1.1)} />
+      <Path d="M 32 31 H 35 M 33.5 34.5 H 35 M 32 38 H 35" stroke={c.glassEdge} strokeWidth={0.7} />
     </>
   );
 
@@ -1009,6 +1079,236 @@ export function R3AIcon({ icon, ink }: IconProps): ReactNode {
       );
       break;
     }
+    // ── New substance or mixture (D50) ────────────────────────────────────────
+    case 'burning log':
+      art = (
+        <>
+          {ground(24, 44, 20)}
+          <Path d="M 3 44 C 3.5 41 8 40.5 9.5 44 Z" fill={c.furGrey} {...o(0.7)} />
+          {scatter(6, 3, 39, 8, 3, 8).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.6} fill={c.furGrey} />
+          ))}
+          <Path d="M 12 33 H 37 V 43 H 12 Z" fill={c.bark} />
+          <Path
+            d="M 15 35.5 H 24 M 20 38 H 33 M 14 40.5 H 22 M 27 40.5 H 34"
+            stroke={c.soilDark}
+            strokeWidth={0.8}
+            strokeLinecap="round"
+          />
+          <Path d="M 12 33 H 37 V 43 H 12 Z" fill={url(ids.sheenV)} />
+          <Path d="M 12 33 H 37 V 35.5 H 12 Z" fill={c.rubber} fillOpacity={0.55} />
+          <Path d="M 12 33 H 37 M 12 43 H 37" {...o(1.1)} />
+          <Path d="M 12 33 A 3.2 5 0 0 0 12 43" fill="none" {...o(1.1)} />
+          {lit(ell(37, 38, 3.2, 5), c.wood, 1.1)}
+          <Path d={ell(37, 38, 1.6, 2.6)} fill="none" stroke={c.woodDark} strokeWidth={0.6} />
+          <Path
+            d="M 13 34 C 9 27 14 23 14 16 C 18 20 19 17 20.5 10 C 25 16 29 18 28 8 C 34 15 38 24 35 34 Z"
+            fill={c.orange}
+            {...o(1.1)}
+          />
+          <Path
+            d="M 17 34 C 15 29 19 26 20 21 C 23 25.5 26 24 27 18.5 C 31 24 32 29 30.5 34 Z"
+            fill={c.sunDisk}
+          />
+          <Path d="M 21 34 C 20 31 22.5 29.5 23.5 27 C 25.5 29.5 27 31 26 34 Z" fill={c.bulbGlow} />
+          <Path
+            d="M 20 8 C 17.5 6 20.5 4 18.5 1.5 M 30 6 C 32.5 4 29.5 2.5 31.5 0.5"
+            fill="none"
+            stroke={c.chartMuted}
+            strokeWidth={1.3}
+            strokeLinecap="round"
+          />
+        </>
+      );
+      break;
+    case 'jar of sand and water':
+      art = jar(
+        <>
+          <Path d={inJar(19)} fill={c.water} fillOpacity={0.45} />
+          <Rect x={10.8} y={19} width={26.4} height={1.4} fill={c.waterTop} />
+          <Path
+            d="M 10.8 35.5 C 16 34 30 34.5 37.2 36 V 41 C 37.2 42.5 36 43.2 34.5 43.2 H 13.5 C 12 43.2 10.8 42.5 10.8 41 Z"
+            fill={c.rock1}
+          />
+          {grains(12, 37, 24, 5.5, 11)}
+        </>,
+      );
+      break;
+    case 'jar of oil and water':
+      art = jar(
+        <>
+          <Path d={inJar(29)} fill={c.water} fillOpacity={0.55} />
+          <Path d="M 10.8 19 H 37.2 V 29 H 10.8 Z" fill={url(ids.oil)} fillOpacity={0.9} />
+          <Rect x={10.8} y={19} width={26.4} height={1.4} fill={c.shine} fillOpacity={0.5} />
+          <Path d="M 10.8 29 H 37.2" stroke={c.orange} strokeWidth={0.8} />
+          <Circle cx={18} cy={34} r={1.2} fill={c.sunDisk} {...o(0.5)} />
+          <Circle cx={28} cy={37} r={0.9} fill={c.sunDisk} {...o(0.5)} />
+        </>,
+      );
+      break;
+
+    // ── Separating sand, salt and iron filings (D51), one bench, in order ─────
+    case 'magnet over sand mix':
+      art = (
+        <>
+          {dish(
+            <>
+              <Path d="M 8.5 34 C 13 25.5 35 25.5 39.5 34 Z" fill={c.rock1} {...o(0.8)} />
+              {mix(14.5, 29.8, 19, 3.6)}
+            </>,
+          )}
+          <Path
+            d={Array.from({ length: 12 }, (_, i) => {
+              const x = 11 + i * 2.4;
+              return `M ${x} 15 L ${x + (i % 2 ? 0.8 : -0.6)} ${17.5 + (i % 3)}`;
+            }).join(' ')}
+            stroke={c.silverDark}
+            strokeWidth={1.1}
+            strokeLinecap="round"
+          />
+          {(
+            [
+              [17, 22],
+              [25, 24.5],
+              [31, 21.5],
+              [21, 27],
+            ] as const
+          ).map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={0.8} fill={c.silverDark} />
+          ))}
+          <Rect x={9} y={8} width={15} height={7} fill={c.poleNorth} />
+          <Rect x={24} y={8} width={15} height={7} fill={c.poleSouth} />
+          <Rect x={9} y={8} width={30} height={7} rx={1} fill={url(ids.light)} {...o(1.1)} />
+          <SvgText
+            x={16.5}
+            y={13.6}
+            fontSize={5.5}
+            fontWeight="700"
+            textAnchor="middle"
+            fill={c.onBlock}
+          >
+            N
+          </SvgText>
+          <SvgText
+            x={31.5}
+            y={13.6}
+            fontSize={5.5}
+            fontWeight="700"
+            textAnchor="middle"
+            fill={c.onBlock}
+          >
+            S
+          </SvgText>
+        </>
+      );
+      break;
+    case 'stirring salt water':
+      art = (
+        <>
+          {beaker(
+            'M 12 9 V 41 C 12 43 13.5 44 15.5 44 H 32.5 C 34.5 44 36 43 36 41 V 9 Z',
+            <>
+              <Path
+                d="M 12.8 20 H 35.2 V 41 C 35.2 42.4 34 43.2 32.5 43.2 H 15.5 C 14 43.2 12.8 42.4 12.8 41 Z"
+                fill={c.water}
+                fillOpacity={0.45}
+              />
+              <Rect x={12.8} y={20} width={22.4} height={1.4} fill={c.waterTop} />
+              <Path
+                d="M 13.4 30 C 17 35 30 35 34 29 M 34 29 L 31.4 29.4 M 34 29 L 33.6 31.6"
+                fill="none"
+                stroke={c.waterDeep}
+                strokeWidth={1}
+                strokeLinecap="round"
+              />
+              {grains(15, 24, 18, 17, 12)}
+              {scatter(6, 15, 22, 18, 6, 13).map(([x, y], i) => (
+                <Circle key={i} cx={x} cy={y} r={0.55} fill={c.snow} fillOpacity={0.8} />
+              ))}
+            </>,
+          )}
+          <Path d="M 21 41 L 32 3" {...o(3)} />
+          <Path d="M 21 41 L 32 3" stroke={c.glass} strokeWidth={1.6} strokeLinecap="round" />
+          <Path d="M 21.3 39 L 31.4 4.5" stroke={c.glassShine} strokeWidth={0.5} />
+        </>
+      );
+      break;
+    case 'filtering sand':
+      art = (
+        <>
+          {beaker(
+            'M 13 27 V 41 C 13 43 14.5 44 16.5 44 H 31.5 C 33.5 44 35 43 35 41 V 27 Z',
+            <>
+              <Path
+                d="M 13.8 37 H 34.2 V 41 C 34.2 42.4 33 43.2 31.5 43.2 H 16.5 C 15 43.2 13.8 42.4 13.8 41 Z"
+                fill={c.water}
+                fillOpacity={0.45}
+              />
+              <Rect x={13.8} y={37} width={20.4} height={1.2} fill={c.waterTop} />
+              <Path d={drop(24, 33.5, 0.8)} fill={c.water} {...o(0.5)} />
+            </>,
+          )}
+          <Path d="M 21 22 H 27 V 30 H 21 Z" fill={url(ids.glass)} {...o(1)} />
+          <Path d="M 8 6 H 40 L 27 22 H 21 Z" fill={url(ids.glass)} {...o(1.1)} />
+          <Path d="M 11.5 7.5 H 36.5 L 24 22 Z" fill={c.snow} {...o(0.8)} />
+          <Path d="M 24 7.5 V 22 M 17.5 7.5 L 24 22" stroke={c.glassEdge} strokeWidth={0.6} />
+          <Path d="M 17.4 15 H 30.6 L 24 22 Z" fill={c.rock1} />
+          {grains(19, 15.5, 10, 3.5, 14)}
+          <Path d="M 11 9 L 14 8" stroke={c.glassShine} strokeWidth={1} strokeLinecap="round" />
+        </>
+      );
+      break;
+    case 'evaporating salt water':
+      art = (
+        <>
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+            <Path
+              key={a}
+              d="M 37 2 V 0"
+              transform={`rotate(${a} 37 8.5) translate(0 -0.5)`}
+              stroke={c.sunRay}
+              strokeWidth={1.3}
+              strokeLinecap="round"
+            />
+          ))}
+          <Circle cx={37} cy={8.5} r={4.2} fill={c.sunDisk} {...o(0.9)} />
+          <Path
+            d="M 15 27 C 13 24.5 17 22.5 15 19.5 M 23 26 C 21 23.5 25 21.5 23 18.5 M 31 27 C 29 24.5 33 22.5 31 19.5"
+            fill="none"
+            stroke={c.glassEdge}
+            strokeWidth={1.1}
+            strokeLinecap="round"
+          />
+          {dish(
+            <>
+              <Path d="M 8.5 34 C 14 30.6 34 30.6 39.5 34 Z" fill={c.snow} {...o(0.7)} />
+              {(
+                [
+                  [13, 32, 10],
+                  [17.5, 31.8, -15],
+                  [23, 31.4, 20],
+                  [28, 31.6, 0],
+                  [33.5, 32.2, -25],
+                  [20.5, 32.2, 40],
+                  [30.5, 32.3, 15],
+                ] as const
+              ).map(([x, y, a], i) => (
+                <Rect
+                  key={i}
+                  x={x - 1.3}
+                  y={y - 1.3}
+                  width={2.6}
+                  height={2.6}
+                  fill={c.snow}
+                  transform={`rotate(${a} ${x} ${y})`}
+                  {...o(0.5)}
+                />
+              ))}
+            </>,
+          )}
+        </>
+      );
+      break;
   }
 
   return (

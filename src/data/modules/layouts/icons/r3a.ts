@@ -39,4 +39,12 @@ export const R3A_ICONS = [
   'gravel',
   'pepper shaker',
   'cooking oil bottle',
+  // Mixtures and separating them, in order (D50, D51).
+  'burning log',
+  'jar of sand and water',
+  'jar of oil and water',
+  'magnet over sand mix',
+  'stirring salt water',
+  'filtering sand',
+  'evaporating salt water',
 ] as const;

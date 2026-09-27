@@ -167,4 +167,40 @@ export const R3A_GALLERY_LAYOUTS: LayoutDef[] = [
       ['Wood block', 'not', 'wooden block'],
     ],
   ),
+  // D50: s.5.mixtures (the cards that were requested).
+  cardSort(
+    'g.r3a-mixtures',
+    'New substance or mixture',
+    'Did mixing make a new substance?',
+    [
+      ['new', 'New substance', 'A gas, a new color, heat or a new solid appeared.'],
+      ['mixture', 'Just a mixture', 'The same substances, mixed. You can get them back.'],
+    ],
+    [
+      ['Iron left in wet air (rust)', 'new', 'rusty nail'],
+      ['Wood burning', 'new', 'burning log'],
+      ['Sand in water', 'mixture', 'jar of sand and water'],
+      ['Oil and water', 'mixture', 'jar of oil and water'],
+    ],
+  ),
+  // D51: s.5.mixtures~separate, the page's own steps.
+  {
+    id: 'g.r3a-separate',
+    title: 'Separate sand, salt and iron filings',
+    kind: 'sequence',
+    question: 'Put the steps in order. Tap the first one, then the next.',
+    assumptions: [
+      'Each step uses one property of one substance. Take the iron out first, while the mix is still dry.',
+      'Iron is pulled by a magnet. Salt dissolves. Sand does not.',
+      'Tap the steps in order.',
+    ],
+    stages: (
+      [
+        ['Pass a magnet over the dry mix: the iron filings stick', 'magnet over sand mix'],
+        ['Stir the rest into water: the salt dissolves', 'stirring salt water'],
+        ['Pour it through a filter: the sand stays behind', 'filtering sand'],
+        ['Let the salt water evaporate: the salt is left', 'evaporating salt water'],
+      ] as const
+    ).map(([label, icon]) => ({ label, figure: { kind: 'icon' as const, icon } })),
+  },
 ];
