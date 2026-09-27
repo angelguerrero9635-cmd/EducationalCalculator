@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+<defs>
+<linearGradient id="obsidian-glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b4252"/><stop offset="1" stop-color="#07090d"/></linearGradient><clipPath id="obsidian-clip"><path d="M138 470Q139 399 186 330Q227 264 300 222Q369 185 446 184Q524 188 584 228Q647 273 672 340Q689 411 662 482Q634 549 570 592Q490 630 398 632Q309 637 238 604Q167 549 138 470Z"/></clipPath>
+</defs>
+<ellipse cx="405" cy="634" rx="270" ry="26" fill="#1f2937" opacity="0.12"/>
+<g clip-path="url(#obsidian-clip)">
+<path d="M138 470Q139 399 186 330Q227 264 300 222Q369 185 446 184Q524 188 584 228Q647 273 672 340Q689 411 662 482Q634 549 570 592Q490 630 398 632Q309 637 238 604Q167 549 138 470Z" fill="url(#obsidian-glass)"/>
+<path d="M100 470Q300 400 420 470Q520 530 700 470L760 760L60 760Z" fill="#000000" opacity="0.28"/>
+<path d="M560 200Q520 360 690 420L760 160Z" fill="#000000" opacity="0.2"/>
+<path d="M493 201A50 50 0 0 1 399 201M523 212A82 82 0 0 1 369 212M557 224A118 118 0 0 1 335 224M594 238A158 158 0 0 1 298 238M637 253A203 203 0 0 1 255 253M684 271A253 253 0 0 1 208 271M155 423A50 50 0 0 1 181 495M166 393A82 82 0 0 1 209 511M178 359A118 118 0 0 1 240 529M192 322A158 158 0 0 1 275 549M207 279A203 203 0 0 1 314 571M627 502A40 40 0 0 1 648 444M601 517A71 71 0 0 1 638 415M571 535A105 105 0 0 1 626 383M537 554A144 144 0 0 1 613 347M500 576A187 187 0 0 1 598 306" fill="none" stroke="#6b7280" stroke-width="3" opacity="0.7"/>
+<g fill="none" stroke="#ffffff" stroke-linecap="round"><path d="M232 356Q300 270 420 250" stroke-width="16" opacity="0.85"/><path d="M214 420Q236 390 262 372" stroke-width="8" opacity="0.6"/><path d="M560 256Q610 300 626 360" stroke-width="10" opacity="0.55"/><path d="M300 520Q390 560 500 540" stroke-width="7" opacity="0.35"/></g>
+<path d="M452 214l8 -18 8 18 18 8 -18 8 -8 18 -8 -18 -18 -8Z" fill="#ffffff"/>
+</g>
+<path d="M138 470Q139 399 186 330Q227 264 300 222Q369 185 446 184Q524 188 584 228Q647 273 672 340Q689 411 662 482Q634 549 570 592Q490 630 398 632Q309 637 238 604Q167 549 138 470Z" fill="none" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+</svg>

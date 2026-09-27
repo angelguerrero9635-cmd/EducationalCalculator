@@ -55,6 +55,41 @@
       "notes": "The six blocks in their standard colors (yellow hexagon, red trapezoid, blue rhombus, green triangle, orange square, tan thin rhombus) and a hexagon made of a trapezoid, a rhombus and a triangle."
     },
     {
+      "slug": "two-color-counters",
+      "topic": "classroom",
+      "title": "Two-color counters",
+      "svg": "assets/images/classroom/two-color-counters.svg",
+      "file": "assets/images/classroom/two-color-counters.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "TenFrame counters and counting pictures (two-color counters)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://www.hand2mind.com/item/foam-two-color-counters-set-of-200",
+        "https://www.learningresources.com/item-red-yellow-counters-set-of-200",
+        "https://www.brainingcamp.com/two-color-counters"
+      ],
+      "notes": "Round counters red on one side and yellow on the other: 4 showing red, 2 showing yellow and 1 standing on its edge."
+    },
+    {
+      "slug": "ten-frame",
+      "topic": "classroom",
+      "title": "Ten frame",
+      "svg": "assets/images/classroom/ten-frame.svg",
+      "file": "assets/images/classroom/ten-frame.webp",
+      "width": 1200,
+      "height": 1200,
+      "use": "TenFrame picture (numbers to 10, make ten)",
+      "author": "Original artwork made for EducationalCalculator",
+      "license": "Owned by the project; no third-party content",
+      "references": [
+        "https://toytheater.com/two-color-counter-ten-frame/",
+        "https://toytheater.com/two-color-counter-double-ten-frame/"
+      ],
+      "notes": "A 2 by 5 ten frame with 7 red counters: the top row full, 2 in the bottom row; shows 7 (3 more make 10)."
+    },
+    {
       "slug": "bowling-ball",
       "topic": "everyday",
       "title": "Bowling ball",

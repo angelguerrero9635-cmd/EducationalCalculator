@@ -83,9 +83,10 @@
     <text x="200" y="422">9</text>
     <text x="226.8" y="322">10</text>
     <text x="300" y="248.8">11</text>
-    <text x="400" y="222">12</text>
+    <text x="395" y="222" text-anchor="end">1</text>
+    <text x="405" y="222" text-anchor="start">2</text>
   </g>
-  <path d="M388 400 L400 150 L412 400 Q412 416 400 416 Q388 416 388 400 Z" fill="#1f2937" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
-  <path d="M400 384 L560 392 Q572 400 560 408 L400 416 Z" fill="#1f2937" stroke="#1f2937" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M391 400 L398.5 150 L401.5 150 L409 400 Q409 412 400 412 Q391 412 391 400 Z" fill="#1f2937"/>
+  <path d="M400 386 L534 394 Q544 400 534 406 L400 414 Z" fill="#1f2937"/>
   <circle cx="400" cy="400" r="20" fill="#ef4444" stroke="#1f2937" stroke-width="6"/>
 </svg>
