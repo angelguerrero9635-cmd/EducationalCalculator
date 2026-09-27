@@ -78,7 +78,6 @@ export function Spinner({ spec, calc }: { spec: Spec; calc: Calculator }) {
     frame.current = requestAnimationFrame(step);
   };
 
-  const sym = (id: string) => (rep.words ? rep.variable(id).name : rep.variable(id).symbol);
   const pickName = names[pick] ?? `outcome ${pick + 1}`;
   const chanceLine =
     spec.chance && total > 0
