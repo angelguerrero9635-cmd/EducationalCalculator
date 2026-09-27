@@ -1,4 +1,5 @@
 import { StyleSheet, View } from 'react-native';
+import { MathLine } from '@/components/MathLine';
 import { Text } from '@/components/Text';
 
 import { buildSteps } from '@/data/modules/buildSteps';
@@ -69,7 +70,11 @@ export function StepByStep({ calc }: { calc: Calculator }) {
             {`Step ${i + 1 + offset} · ${s.heading}`}
           </Text>
           {s.lead.sentence ? (
-            <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.lead.sentence}</Text>
+            <MathLine
+              text={s.lead.sentence}
+              band={w.band}
+              style={[styles.math, styles.bold, { color: c.text }]}
+            />
           ) : null}
           {s.lead.formula ? (
             s.lead.sentence ? (
@@ -80,20 +85,30 @@ export function StepByStep({ calc }: { calc: Calculator }) {
               </Text>
             )
           ) : null}
-          <Text style={[styles.body, { color: c.textMuted }]}>{s.how}</Text>
+          <MathLine text={s.how} band={w.band} style={[styles.body, { color: c.textMuted }]} />
           <View style={[styles.lines, { borderLeftColor: c.border }]}>
             {s.lines.slice(0, s.writtenAfter).map((line, k) => (
-              <Text key={k} style={[styles.math, { color: c.text }]}>
-                {line}
-              </Text>
+              <MathLine
+                key={k}
+                text={line}
+                band={w.band}
+                style={[styles.math, { color: c.text }]}
+              />
             ))}
             {s.written ? <WrittenWork work={s.written} /> : null}
             {s.lines.slice(s.writtenAfter).map((line, k) => (
-              <Text key={k} style={[styles.math, { color: c.text }]}>
-                {line}
-              </Text>
+              <MathLine
+                key={k}
+                text={line}
+                band={w.band}
+                style={[styles.math, { color: c.text }]}
+              />
             ))}
-            <Text style={[styles.math, styles.bold, { color: c.text }]}>{s.answer}</Text>
+            <MathLine
+              text={s.answer}
+              band={w.band}
+              style={[styles.math, styles.bold, { color: c.text }]}
+            />
           </View>
         </View>
       ))}
@@ -136,9 +151,12 @@ export function StepByStep({ calc }: { calc: Calculator }) {
             Put the numbers back in. Both sides should match.
           </Text>
           {w.check.map((k) => (
-            <Text key={k.formula} style={[styles.math, { color: c.text }]}>
-              {`${k.formula}   ${k.ok ? '✓' : w.checkFail}`}
-            </Text>
+            <MathLine
+              key={k.formula}
+              text={`${k.formula}   ${k.ok ? '✓' : w.checkFail}`}
+              band={w.band}
+              style={[styles.math, { color: c.text }]}
+            />
           ))}
         </View>
       ) : null}
