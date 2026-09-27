@@ -160,6 +160,11 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
             v.n! - v.L! < half
               ? `${v.n! - v.L!} is less than ${half}: round down to ${f(v.L!)}.`
               : `${v.n! - v.L!} is ${half} or more: round up to ${f(v.U!)}.`,
+            // The released questions also ask it backwards: which numbers round to 80?
+            ((r) =>
+              `Every number from ${f(Math.max(0, r - half))} to ${f(r + half - 1)} rounds to ${f(r)}.`)(
+              v.n! - v.L! < half ? v.L! : v.U!,
+            ),
           ],
         },
       },
@@ -167,6 +172,9 @@ function rounding(to: 10 | 100): Pick<ModuleDef, 'relations' | 'steps'> {
   };
 }
 // ─── Modules ────────────────────────────────────────────────────────────────
+
+/** The four bars of the scaled bar graph: dogs, cats, fish, birds. */
+const BARS = ['a', 'b', 'c', 'e'] as const;
 
 const groups = times('n = g × k', ['g', 'k', 'n'], ['groups', 'number in each group', 'total']);
 const arrayTimes = times('n = r × c', ['r', 'c', 'n'], ['rows', 'number in each row', 'total']);
@@ -775,7 +783,23 @@ export const MATH_3_MODULES: ModuleDef[] = [
         whole('n', 'n', 'Total', 0, 100),
       ],
       relations: [ab.relation, ba.relation],
-      steps: { 'n = a × b': ab.steps, 'n = b × a': ba.steps },
+      steps: {
+        'n = a × b': {
+          ...ab.steps,
+          n: {
+            ...ab.steps.n!,
+            // The lesson is the turned fact: say it, then use it.
+            work: (v) =>
+              v.a === v.b
+                ? timesWork(v.a!, v.b!)
+                : [
+                    `${v.a} × ${v.b} = ${v.b} × ${v.a}. Use the fact you know.`,
+                    ...timesWork(v.b!, v.a!),
+                  ],
+          },
+        },
+        'n = b × a': ba.steps,
+      },
       example: { a: 4, b: 7, n: 28 },
       startWith: ['a', 'b'],
       representation: {
@@ -888,7 +912,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         whole('b', 'b', 'Second amount', 0, 100),
         whole('t', 't', 'Total', 0, 100),
         whole('g', 'g', 'Groups', 1, 10),
-        whole('e', 'e', 'In each group', 0, 10),
+        whole('e', 'e', 'In each group', 0, 100),
       ],
       relations: [both.relation, share.relation],
       steps: { 't = a + b': both.steps, 't = g × e': share.steps },
@@ -955,7 +979,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         whole('a', 'a', 'Given away', 0, 100),
         whole('l', 'l', 'Left', 1, 100),
         whole('g', 'g', 'Groups', 1, 10),
-        whole('e', 'e', 'In each group', 1, 10),
+        whole('e', 'e', 'In each group', 1, 100),
       ],
       relations: [{ ...given.relation, display: '{s} − {a} = {l}' }, share.relation],
       steps: { 's = l + a': given.steps, 'l = g × e': share.steps },
@@ -1760,9 +1784,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'Every whole has the same number of parts: 4/4 = 1, 8/4 = 2, 12/4 = 3.',
       ],
       variables: [
-        whole('a', 'a', 'Parts counted', 0, 24),
+        whole('a', 'a', 'Parts counted', 0, 64),
         { ...whole('b', 'b', 'Parts in one whole', 1, 8), allowed: [1, ...DENOMS_3] },
-        whole('w', 'w', 'Whole number', 0, 3),
+        whole('w', 'w', 'Whole number', 0, 8),
       ],
       relations: [fill.relation],
       steps: { 'a = w × b': fill.steps },
@@ -2619,20 +2643,24 @@ export const MATH_3_MODULES: ModuleDef[] = [
       whole('a', 'a', 'Dogs', 0, 50),
       whole('b', 'b', 'Cats', 0, 50),
       whole('c', 'c', 'Fish', 0, 50),
-      whole('t', 't', 'Total', 0, 150),
+      whole('e', 'e', 'Birds', 0, 50),
+      whole('t', 't', 'Total', 0, 200),
       whole('d', 'd', 'How many more', 0, 50),
     ],
     relations: [
       {
-        id: 't = a + b + c',
-        display: '{a} + {b} + {c} = {t}',
-        vars: ['t', 'a', 'b', 'c'],
-        residual: (v) => v.t! - v.a! - v.b! - v.c!,
+        id: 't = a + b + c + e',
+        display: '{a} + {b} + {c} + {e} = {t}',
+        vars: ['t', ...BARS],
+        residual: (v) => v.t! - BARS.reduce((sum, x) => sum + v[x]!, 0),
         solve: {
-          t: (v) => v.a! + v.b! + v.c!,
-          a: (v) => v.t! - v.b! - v.c!,
-          b: (v) => v.t! - v.a! - v.c!,
-          c: (v) => v.t! - v.a! - v.b!,
+          t: (v) => BARS.reduce((sum, x) => sum + v[x]!, 0),
+          ...Object.fromEntries(
+            BARS.map((x) => [
+              x,
+              (v: Values) => v.t! - BARS.filter((y) => y !== x).reduce((sum, y) => sum + v[y]!, 0),
+            ]),
+          ),
         },
       },
       {
@@ -2650,27 +2678,32 @@ export const MATH_3_MODULES: ModuleDef[] = [
       },
     ],
     steps: {
-      't = a + b + c': {
+      't = a + b + c + e': {
         t: {
-          expr: '{a} + {b} + {c}',
+          expr: '{a} + {b} + {c} + {e}',
           how: 'Add all the bars.',
-          work: (v) => addAll([v.a!, v.b!, v.c!]),
+          work: (v) => [
+            `Each line stands for ${v.s ?? 'the scale'}: read each bar against the lines.`,
+            ...addAll(BARS.map((x) => v[x]!)),
+          ],
         },
-        a: {
-          expr: '{t} − {b} − {c}',
-          how: 'Take the other bars away from the total.',
-          work: (v) => [`${v.b} + ${v.c} = ${v.b! + v.c!}`, `${v.t} − ${v.b! + v.c!} = ${v.a}`],
-        },
-        b: {
-          expr: '{t} − {a} − {c}',
-          how: 'Take the other bars away from the total.',
-          work: (v) => [`${v.a} + ${v.c} = ${v.a! + v.c!}`, `${v.t} − ${v.a! + v.c!} = ${v.b}`],
-        },
-        c: {
-          expr: '{t} − {a} − {b}',
-          how: 'Take the other bars away from the total.',
-          work: (v) => [`${v.a} + ${v.b} = ${v.a! + v.b!}`, `${v.t} − ${v.a! + v.b!} = ${v.c}`],
-        },
+        ...Object.fromEntries(
+          BARS.map((x) => {
+            const rest = BARS.filter((y) => y !== x);
+            const sum = (v: Values) => rest.reduce((n, y) => n + v[y]!, 0);
+            return [
+              x,
+              {
+                expr: `{t} − ${rest.map((y) => `{${y}}`).join(' − ')}`,
+                how: 'Take the other bars away from the total.',
+                work: (v: Values) => [
+                  `${rest.map((y) => v[y]).join(' + ')} = ${sum(v)}`,
+                  `${v.t} − ${sum(v)} = ${v[x]}`,
+                ],
+              } satisfies StepText,
+            ];
+          }),
+        ),
       },
       'd = difference of a and b': {
         d: {
@@ -2697,8 +2730,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
         },
       },
     },
-    example: { s: 5, a: 25, b: 15, c: 10, t: 50, d: 10 },
-    startWith: ['s', 'a', 'b', 'c'],
+    example: { s: 5, a: 25, b: 15, c: 10, e: 20, t: 70, d: 10 },
+    startWith: ['s', 'a', 'b', 'c', 'e'],
     // The scale only sets where the lines fall; the counts never depend on it.
     standalone: { vars: ['s'], why: 'Each line stands for 2, 5 or 10: it sets the scale only.' },
     representation: {
@@ -2707,6 +2740,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         { var: 'a', editable: true },
         { var: 'b', editable: true },
         { var: 'c', editable: true },
+        { var: 'e', editable: true },
       ],
       min: 0,
       max: 50,

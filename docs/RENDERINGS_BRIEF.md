@@ -138,6 +138,13 @@ bus.
     The lesson chat will raise those pages' ranges once these draw.
 21. **Line plot in quarter inches from any start**: `linePlot` whose marks step by 1/4 or 1/2
     from a start that is itself a fraction (straws from 3 3/4 to 5 1/2 inches).
+22. **Hundredths grids past 3 ones**: `grid100` with `wholes` up to 99 (45.06 is 45 whole
+    grids and 6 hundredths): draw a few whole grids and a count, so the Grade 4 decimals page can
+    take ones to 99.
+23. **Groups of many**: `equalGroups` with up to 90 groups (4 × 50 × 9 as 50 groups of 36), so
+    the Grade 3 grouping page can take a factor that is a multiple of 10.
+24. **Decimal number line from any start**: `fractionLine` with `decimal` that starts at a whole
+    number (a line from 1 to 3 in tenths, with 2.6 marked).
 
 ### 2. Grade 7 math (planned skills in `src/data/taxonomy.ts`)
 

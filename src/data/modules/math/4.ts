@@ -95,7 +95,10 @@ function multiplyPage(o: {
         n: {
           expr: '{a} × {b}',
           how: 'Break the factors into places. Multiply every part, then add the partial products.',
-          work: (v) => [...splitLine(v.a!), ...(v.b! >= 10 ? splitLine(v.b!) : [])],
+          work: (v) =>
+            v.a === v.b && v.a! >= 10
+              ? splitLine(v.a!).map((x) => `Both factors: ${x}`)
+              : [...splitLine(v.a!), ...(v.b! >= 10 ? splitLine(v.b!) : [])],
           written: (v) => autoWritten('4', `${v.a} × ${v.b}`),
           note: (v) => {
             const [ra, rb] = [roughly(v.a!), v.b! >= 10 ? roughly(v.b!) : v.b!];
@@ -733,6 +736,11 @@ export const MATH_4_MODULES: ModuleDef[] = [
     const ids = places.map(([id]) => id);
     const cap = (t: string) => `${t[0]!.toUpperCase()}${t.slice(1)}`;
     const digitOf = (n: number, size: number) => Math.floor(n / size) % 10;
+    // 347,812 = 300,000 + 40,000 + 7,000 + 800 + 10 + 2 (places that are 0 are left out).
+    const expanded = (v: Values) => {
+      const parts = places.map(([, size]) => digitOf(v.n!, size) * size).filter((x) => x > 0);
+      return parts.length > 1 ? `${fmt(v.n!)} = ${parts.map(fmt).join(' + ')}` : '';
+    };
     return {
       id: 'm.4.place-value-million~expanded-form',
       title: 'Expanded form and number names',
@@ -783,11 +791,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
                   size === 1
                     ? 'The ones digit is its own value.'
                     : `Find the digit in the ${name} place. Multiply it by ${fmt(size)}.`,
-                // The number's name after its last place.
+                // After the last place: the expanded form, then the number's name.
                 work: (v: Values) =>
                   size === 1
-                    ? [`In words: ${numberWords(v.n!)}`]
-                    : [`${digitOf(v.n!, size)} × ${fmt(size)} = ${fmt(v[id]!)}`],
+                    ? [expanded(v), `In words: ${numberWords(v.n!)}`].filter((x) => x !== '')
+                    : digitOf(v.n!, size) === 0
+                      ? [`0 ${name}: nothing to write for this place.`]
+                      : [`${digitOf(v.n!, size)} × ${fmt(size)} = ${fmt(v[id]!)}`],
               },
             },
           ]),
@@ -1208,12 +1218,23 @@ export const MATH_4_MODULES: ModuleDef[] = [
                   `${q + 1} × ${v.d} = ${fmt((q + 1) * v.d!)} is too many`,
                 ];
           },
+          written: (v) => partialQuotients(v.n!, v.d!) ?? longDivision(v.n!, v.d!),
         },
       },
       'u = q, plus 1 if any are left': {
         u: {
           expr: (v) => (v.r! > 0 ? '{q} + 1' : '{q}'),
           how: 'Everyone needs a group. Any left over need one more group.',
+          // The story decides which reading answers it; show the other two as well.
+          work: (v) =>
+            v.r! > 0
+              ? [
+                  `Full groups only: ${v.q}. Left over: ${v.r}.`,
+                  ...(v.q! >= v.r!
+                    ? [`Shared out one at a time: ${v.r} of the ${v.q} groups get 1 more.`]
+                    : []),
+                ]
+              : [],
           note: (v) =>
             v.r! > 0
               ? `(${v.r} left over can’t be left behind, so round up)`
@@ -1759,7 +1780,18 @@ export const MATH_4_MODULES: ModuleDef[] = [
           unit: 'eighths of an inch',
           derived: true,
         },
-        { ...whole('T', 'T', 'Total length', 0, 90), unit: 'eighths of an inch', derived: true },
+        {
+          id: 'T',
+          symbol: 'T',
+          name: 'Total length',
+          unit: 'inches',
+          min: 0,
+          max: 11.25,
+          step: 0.125,
+          // The answer as the question asks it: 3 7/8 inches.
+          fraction: 8,
+          derived: true,
+        },
       ],
       relations: [
         {
@@ -1775,18 +1807,18 @@ export const MATH_4_MODULES: ModuleDef[] = [
         },
         {
           id: 'T = count × length, added',
-          display: `${xs.map((id) => `{${id}} × ${at(id)}/8`).join(' + ')} = {T}/8`,
+          display: `${xs.map((id) => `{${id}} × ${at(id)}/8`).join(' + ')} = {T}`,
           words: 'Objects × length at each mark, added = {T}',
           vars: ['T', ...xs],
-          residual: (v: Values) => v.T! - total(v),
+          residual: (v: Values) => v.T! - total(v) / 8,
           solve: {
-            T: total,
+            T: (v: Values) => total(v) / 8,
             ...Object.fromEntries(
               xs.map((id) => [
                 id,
                 (v: Values) =>
                   div(
-                    v.T! - xs.filter((y) => y !== id).reduce((t, y) => t + at(y) * v[y]!, 0),
+                    v.T! * 8 - xs.filter((y) => y !== id).reduce((t, y) => t + at(y) * v[y]!, 0),
                     at(id),
                   ),
               ]),
@@ -1810,7 +1842,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         },
         'T = count × length, added': {
           T: {
-            expr: xs.map((id) => `{${id}} × ${at(id)}`).join(' + '),
+            expr: xs.map((id) => `{${id}} × ${at(id)}/8`).join(' + '),
             how: 'At each mark, multiply the count by the eighths. Add them all.',
             work: (v) => {
               const on = xs.filter((id) => v[id]! > 0);
@@ -1824,13 +1856,12 @@ export const MATH_4_MODULES: ModuleDef[] = [
                   : []),
               ];
             },
-            note: (v) => `(${inches(total(v))})`,
           },
           ...Object.fromEntries(
             xs.map((id) => [
               id,
               {
-                expr: `({T} − ${xs
+                expr: `({T} × 8 − ${xs
                   .filter((y) => y !== id)
                   .map((y) => `{${y}} × ${at(y)}`)
                   .join(' − ')}) ÷ ${at(id)}`,
@@ -1840,7 +1871,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
           ),
         },
       },
-      example: { x1: 1, x2: 3, x3: 4, x4: 2, x5: 1, D: 4, T: 32 },
+      example: { x1: 1, x2: 3, x3: 4, x4: 2, x5: 1, D: 4, T: 4 },
       startWith: xs,
       representation: {
         kind: 'linePlot',
@@ -2099,18 +2130,19 @@ export const MATH_4_MODULES: ModuleDef[] = [
     return {
       id: 'm.4.decimals-intro~compare',
       title: 'Compare decimals',
-      use: 'Use this to compare two decimals, like 0.4 and 0.35.',
+      use: 'Use this to compare two decimals, like 0.4 and 0.35, or 8.28 and 8.25 seconds.',
       assumptions: [
         'Write both decimals as hundredths: 0.4 is 40 hundredths, 0.35 is 35 hundredths.',
-        'Then compare the hundredths like whole numbers.',
-        'Decimals from 0 to 0.99.',
+        'Then compare the hundredths like whole numbers: 8.28 is 828 hundredths.',
+        'The chart lines the places up and marks the first place where they differ.',
+        'Decimals from 0 to 99.99.',
       ],
       variables: [
-        { id: 'x', symbol: 'x', name: 'First decimal', min: 0, max: 0.99, step: 0.01 },
-        { id: 'y', symbol: 'y', name: 'Second decimal', min: 0, max: 0.99, step: 0.01 },
-        whole('a', 'a', 'First as hundredths', 0, 99),
-        whole('c', 'c', 'Second as hundredths', 0, 99),
-        whole('g', 'g', 'Hundredths apart', 0, 99),
+        { id: 'x', symbol: 'x', name: 'First decimal', min: 0, max: 99.99, step: 0.01 },
+        { id: 'y', symbol: 'y', name: 'Second decimal', min: 0, max: 99.99, step: 0.01 },
+        whole('a', 'a', 'First as hundredths', 0, 9999),
+        whole('c', 'c', 'Second as hundredths', 0, 9999),
+        whole('g', 'g', 'Hundredths apart', 0, 9999),
       ],
       relations: [
         {
@@ -2119,7 +2151,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
           words: 'First decimal, in hundredths = {a}',
           vars: ['a', 'x'],
           residual: (v: Values) => v.a! - v.x! * 100,
-          solve: { a: (v: Values) => v.x! * 100, x: (v: Values) => v.a! / 100 },
+          solve: { a: (v: Values) => Math.round(v.x! * 100), x: (v: Values) => v.a! / 100 },
         },
         {
           id: 'c = y × 100',
@@ -2127,13 +2159,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
           words: 'Second decimal, in hundredths = {c}',
           vars: ['c', 'y'],
           residual: (v: Values) => v.c! - v.y! * 100,
-          solve: { c: (v: Values) => v.y! * 100, y: (v: Values) => v.c! / 100 },
+          solve: { c: (v: Values) => Math.round(v.y! * 100), y: (v: Values) => v.c! / 100 },
         },
         {
           ...gap.relation,
           words: 'Bigger hundredths − smaller hundredths = {g}',
           check: (v: Values) =>
-            `${v.a} ${v.a! < v.c! ? '<' : v.a! > v.c! ? '>' : '='} ${v.c}, so ${v.x} ${v.a! < v.c! ? '<' : v.a! > v.c! ? '>' : '='} ${v.y}`,
+            `${fmt(v.a!)} ${v.a! < v.c! ? '<' : v.a! > v.c! ? '>' : '='} ${fmt(v.c!)}, so ${fmt(v.x!)} ${v.a! < v.c! ? '<' : v.a! > v.c! ? '>' : '='} ${fmt(v.y!)}`,
         },
       ],
       steps: {
@@ -2143,14 +2175,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
             how: 'Read the two digits after the point as hundredths. One digit: add a 0.',
             work: (v) => [
               v.x!.toFixed(2) === String(v.x)
-                ? `${v.x} = ${v.a} hundredths`
-                : `${v.x} = ${v.x!.toFixed(2)} = ${v.a} hundredths`,
+                ? `${fmt(v.x!)} = ${fmt(v.a!)} hundredths`
+                : `${fmt(v.x!)} = ${v.x!.toFixed(2)} = ${fmt(v.a!)} hundredths`,
             ],
           },
           x: {
             expr: '{a} ÷ 100',
             how: 'Hundredths go two places after the point.',
-            work: (v) => [`${v.a} hundredths = 0.${String(v.a).padStart(2, '0')}`],
+            work: (v) => [`${fmt(v.a!)} hundredths = ${(v.a! / 100).toFixed(2)}`],
           },
         },
         'c = y × 100': {
@@ -2159,14 +2191,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
             how: 'Read the two digits after the point as hundredths. One digit: add a 0.',
             work: (v) => [
               v.y!.toFixed(2) === String(v.y)
-                ? `${v.y} = ${v.c} hundredths`
-                : `${v.y} = ${v.y!.toFixed(2)} = ${v.c} hundredths`,
+                ? `${fmt(v.y!)} = ${fmt(v.c!)} hundredths`
+                : `${fmt(v.y!)} = ${v.y!.toFixed(2)} = ${fmt(v.c!)} hundredths`,
             ],
           },
           y: {
             expr: '{c} ÷ 100',
             how: 'Hundredths go two places after the point.',
-            work: (v) => [`${v.c} hundredths = 0.${String(v.c).padStart(2, '0')}`],
+            work: (v) => [`${fmt(v.c!)} hundredths = ${(v.c! / 100).toFixed(2)}`],
           },
         },
         // The answer to "which is greater?", after how far apart they are.
@@ -2176,30 +2208,30 @@ export const MATH_4_MODULES: ModuleDef[] = [
             ...(gap.steps as Record<string, StepText>).g!,
             note: (v: Values) => {
               const sign = v.a! < v.c! ? '<' : v.a! > v.c! ? '>' : '=';
-              return `(${v.a} ${sign} ${v.c}, so ${v.x} ${sign} ${v.y})`;
+              return `(${fmt(v.a!)} ${sign} ${fmt(v.c!)}, so ${fmt(v.x!)} ${sign} ${fmt(v.y!)})`;
             },
           },
         } as Record<string, StepText>,
       },
       example: { x: 0.4, y: 0.35, a: 40, c: 35, g: 5 },
       startWith: ['x', 'y'],
-      representation: { kind: 'grid100', percent: 'a', second: 'c' },
+      representation: { kind: 'placeValueChart', value: 'x', decimals: 2, compare: 'y' },
     } satisfies ModuleDef;
   })(),
   // ── Decimals on a number line (4.NF.6) ──
   {
     id: 'm.4.decimals-intro~number-line',
     title: 'Decimals on a number line',
-    use: 'Use this to find 0.62 or 0.7 on a number line from 0 to 1.',
+    use: 'Use this to find 0.62, 0.7 or 2.6 on a number line.',
     assumptions: [
       'Cut the line from 0 to 1 into 10 equal parts for tenths, or 100 for hundredths.',
-      'Count the parts from 0: 62 hundredths from 0 is 0.62.',
+      'Count the parts from 0: 62 hundredths from 0 is 0.62, and 26 tenths is 2.6.',
       '7 tenths and 70 hundredths are the same point.',
     ],
     variables: [
       { ...whole('n', 'n', 'Parts from 0 to 1', 10, 100), allowed: [10, 100] },
-      whole('k', 'k', 'Parts from 0', 0, 100),
-      { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 1, step: 0.01 },
+      whole('k', 'k', 'Parts from 0', 0, 1000),
+      { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 10, step: 0.01 },
     ],
     relations: [
       {
@@ -2256,7 +2288,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     const PAIRS: Record<number, string> = {
       2: '1 pint = 2 cups (or 1 quart = 2 pints)',
       3: '1 yard = 3 feet',
-      4: '1 gallon = 4 quarts',
+      4: '1 gallon = 4 quarts (or 1 quart = 4 cups)',
       7: '1 week = 7 days',
       10: '1 centimeter = 10 millimeters',
       12: '1 foot = 12 inches',
@@ -2266,12 +2298,23 @@ export const MATH_4_MODULES: ModuleDef[] = [
       100: '1 meter = 100 centimeters',
       1000: '1 kilometer = 1,000 meters (or 1 kilogram = 1,000 grams, 1 liter = 1,000 milliliters)',
     };
+    // The smaller unit, where the number names only one pair.
+    const SMALL: Record<number, string> = {
+      3: 'feet',
+      7: 'days',
+      10: 'millimeters',
+      12: 'inches',
+      16: 'ounces',
+      24: 'hours',
+      60: 'minutes',
+      100: 'centimeters',
+    };
     return {
       id: 'm.4.unit-conversion',
       assumptions: [
         'A bigger unit is a fixed number of smaller units: 1 foot = 12 inches, 1 hour = 60 minutes.',
         'Also 1 yard = 3 feet, 1 week = 7 days, 1 day = 24 hours, 1 pound = 16 ounces, 1 centimeter = 10 millimeters, 1 meter = 100 centimeters.',
-        'Also 1 pint = 2 cups, 1 quart = 2 pints and 1 gallon = 4 quarts.',
+        'Also 1 pint = 2 cups, 1 quart = 2 pints, 1 quart = 4 cups and 1 gallon = 4 quarts.',
         '1 kilometer, 1 kilogram or 1 liter is 1,000 of the smaller unit.',
         'To change bigger units into smaller ones, multiply by that number. A table shows the pattern.',
       ],
@@ -2303,6 +2346,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
             how: (v) =>
               `${PAIRS[v.k!] ?? 'Each bigger unit is the same number of smaller units'}. Multiply by that number.`,
             work: (v) => [`${v.b} × ${fmt(v.k!)} = ${fmt(v.b! * v.k!)}`],
+            note: (v) => (SMALL[v.k!] ? `(${fmt(v.s!)} ${SMALL[v.k!]})` : ''),
           },
           b: {
             expr: '{s} ÷ {k}',
@@ -2623,13 +2667,13 @@ export const MATH_4_MODULES: ModuleDef[] = [
     assumptions: [
       'A full turn is 360 degrees. One degree is 1/360 of a turn.',
       'A right angle is 90°: a quarter turn. A straight angle is 180°: a half turn.',
-      'Two angles that share a vertex and a ray add up: the whole angle is their sum.',
+      'Two angles that share a vertex and a ray add up: the whole angle is their sum, up to a straight angle.',
       'Drag the middle ray, or use the sliders, to change the angles.',
     ],
     variables: [
       { ...whole('a', 'a', 'First angle', 1, 179), unit: '°' },
       { ...whole('b', 'b', 'Second angle', 1, 179), unit: '°' },
-      { ...whole('w', 'w', 'Whole angle', 2, 358), unit: '°' },
+      { ...whole('w', 'w', 'Whole angle', 2, 180), unit: '°' },
     ],
     relations: [
       {
@@ -2720,11 +2764,11 @@ export const MATH_4_MODULES: ModuleDef[] = [
   {
     id: 'm.4.angles~turns',
     title: 'Angles as parts of a turn',
-    use: 'Use this for “a quarter turn is how many degrees?”',
+    use: 'Use this for “a quarter turn is how many degrees?” or “how many 20° angles make a full turn?”',
     assumptions: [
       'A full turn is 360°. Cut the turn into equal parts: a quarter turn is 360 ÷ 4 = 90°.',
       'An angle that is some of those parts is that many times the part: 3 quarter turns is 270°.',
-      'The turn is cut into 2, 3, 4, 6, 8 or 12 equal parts.',
+      'The turn is cut into 2, 3, 4, 5, 6, 8, 9, 10, 12, 18 or 36 equal parts.',
     ],
     variables: [
       // Every count that divides 360 into whole degrees a class meets (20° parts: 18 of them).
@@ -2733,7 +2777,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
         allowed: [2, 3, 4, 5, 6, 8, 9, 10, 12, 18, 36],
       },
       whole('n', 'n', 'Parts in the angle', 1, 36),
-      { ...whole('e', 'e', 'One part', 10, 180), unit: '°', derived: true },
+      { ...whole('e', 'e', 'One part', 10, 180), unit: '°' },
       { ...whole('a', 'a', 'Angle', 10, 360), unit: '°' },
       { ...whole('r', 'r', 'Rest of the turn', 0, 350), unit: '°', derived: true },
     ],
@@ -2782,7 +2826,11 @@ export const MATH_4_MODULES: ModuleDef[] = [
           how: 'Share the full turn into equal parts.',
           work: (v) => divideWork(360, v.k!),
         },
-        k: { expr: '360 ÷ {e}', how: 'How many of that part fill the turn.' },
+        k: {
+          expr: '360 ÷ {e}',
+          how: 'How many of that part fill the turn.',
+          work: (v) => divideWork(360, v.e!),
+        },
       },
       'a = n × e': {
         a: {
