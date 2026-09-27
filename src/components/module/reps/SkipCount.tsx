@@ -360,7 +360,7 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
       ) : null}
       <Caption>
         {grouped
-          ? landings()
+          ? `The arcs land on ${landings()}.`
           : k === 0
             ? formatNumber(from)
             : Array.from({ length: Math.min(k + 1, 12) }, (_, i) =>
