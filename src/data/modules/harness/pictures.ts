@@ -626,6 +626,19 @@ export function repIssues(
           if (x !== undefined && x < 0) out.push(`${id} = ${x} is off the first quadrant`);
         }
       }
+      // Legs: the drawn distance is the hypotenuse of the legs across and up.
+      if (rep.legs && (!rep.segment || !rep.second))
+        out.push('legs need a segment to a second point');
+      if (rep.legs && rep.second && rep.distance) {
+        const [x1, y1, x2, y2, d] = [rep.x, rep.y, rep.second.x, rep.second.y, rep.distance].map(
+          val,
+        );
+        if ([x1, y1, x2, y2, d].every((v) => v !== undefined)) {
+          const h = Math.hypot(x2! - x1!, y2! - y1!);
+          if (Math.abs(h - d!) > 1e-6 * (1 + h))
+            out.push(`distance ${d} drawn, the legs make ${h}`);
+        }
+      }
       if (rep.second && rep.slope) {
         const [x1, y1, x2, y2, m] = [rep.x, rep.y, rep.second.x, rep.second.y, rep.slope].map(val);
         if ([x1, y1, x2, y2, m].every((v) => v !== undefined) && x2! !== x1!) {
@@ -1127,6 +1140,49 @@ export function repIssues(
         Math.abs(y - k * x) > 1e-6 * Math.max(1, Math.abs(y))
       )
         out.push(`(${x}, ${y}) is not on y = ${k}x`);
+      break;
+    }
+    case 'scatter': {
+      // Every point is on the axes; clusters and the outlier name points that exist.
+      const on = (v: number, a: { min: number; max: number }) => v >= a.min && v <= a.max;
+      rep.points.forEach(([x, y], i) => {
+        if (!on(x, rep.x) || !on(y, rep.y)) out.push(`point ${i} (${x}, ${y}) is off the axes`);
+      });
+      const named = [...(rep.clusters ?? []).flatMap((c) => c.points), rep.outlier ?? 0];
+      for (const i of named) if (!rep.points[i]) out.push(`there is no point ${i}`);
+      // The prediction sits on the line (compared when none of the four has a unit).
+      if (rep.at) {
+        const ids4 = [rep.slope, rep.intercept, rep.at.x, rep.at.y];
+        const [m, b, x, y] = ids4.map(val);
+        if (
+          ids4.every((id) => !byId.get(id)?.unit) &&
+          [m, b, x, y].every((v) => v !== undefined) &&
+          Math.abs(m! * x! + b! - y!) > 1e-6 * (1 + Math.abs(y!))
+        )
+          out.push(`prediction ${y} is off the line (${m! * x! + b!})`);
+      }
+      break;
+    }
+    case 'curvedSolid': {
+      // A cylinder or cone needs its height; a sphere has none. Only a cone or a sphere is
+      // poured into a cylinder.
+      if ((rep.shape === 'sphere') === !!rep.height)
+        out.push(`a ${rep.shape} ${rep.height ? 'has no' : 'needs a'} height`);
+      if (rep.compare && rep.shape === 'cylinder') out.push('a cylinder is compared with itself');
+      const [r, h] = [rep.radius, rep.height].map((id) => (id ? val(id) : undefined));
+      if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
+      if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
+      // The caption works V from the radius and height drawn (in the radius's unit), so a
+      // volume shown in another unit (L) is not compared here; the relation holds it.
+      break;
+    }
+    case 'rightTriangle': {
+      // The three squares must fit together: a² + b² = c².
+      const [a, b, c] = [rep.a, rep.b, rep.c].map(val);
+      if (a !== undefined && b !== undefined && c !== undefined) {
+        if (Math.abs(a * a + b * b - c * c) > 1e-6 * (1 + c * c))
+          out.push(`squares ${a}² + ${b}² don't make ${c}²`);
+      }
       break;
     }
     case 'quadrilateral': {

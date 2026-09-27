@@ -485,7 +485,50 @@ export type Representation =
       wedges?: number | string;
     }
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
-  | { kind: 'rightTriangle'; a: string; b: string; c: string; extent: number }
+  | {
+      kind: 'rightTriangle';
+      a: string;
+      b: string;
+      c: string;
+      extent: number;
+      /** Each square ruled in unit squares (sides up to 12), so the areas can be counted. */
+      grid?: boolean;
+    }
+  /**
+   * A glass cylinder, cone or sphere full of water, to scale, its radius (and height) marked
+   * and draggable; the caption works V with the numbers. `compare` (cone or sphere) stands the
+   * cylinder of the same radius and height (2r for a sphere) beside it, holding the solid's
+   * water: 1/3 of it for a cone, 2/3 for a sphere. `extent` is the biggest diameter or height
+   * drawn before the scale shrinks (shown units).
+   */
+  | {
+      kind: 'curvedSolid';
+      shape: 'cylinder' | 'cone' | 'sphere';
+      radius: string;
+      /** The height (cylinder and cone; a sphere has none). */
+      height?: string;
+      volume?: string;
+      compare?: boolean;
+      extent: number;
+    }
+  /**
+   * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
+   * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the
+   * caption counts points above and below it. `clusters` rings named groups (point indices),
+   * `outlier` rings one point; `at` reads an input up to the line and across to its prediction
+   * (the module's relation gives y = slope × x + intercept).
+   */
+  | {
+      kind: 'scatter';
+      x: { label: string; min: number; max: number; step?: number };
+      y: { label: string; min: number; max: number; step?: number };
+      points: [number, number][];
+      slope: string;
+      intercept: string;
+      clusters?: { label: string; points: number[] }[];
+      outlier?: number;
+      at?: { x: string; y: string };
+    }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
    * their current values; the point sits at the current (x, y) and drags along x.
@@ -746,6 +789,11 @@ export type Representation =
       /** The segment between the two points (no line or slope), labelled with `distance`. */
       segment?: boolean;
       distance?: string;
+      /**
+       * With `segment`: the right triangle under it (legs across and up, dashed, with their
+       * lengths and a right angle), and the caption works d² = a² + b² (Grade 8 distance).
+       */
+      legs?: boolean;
       /** The point's images across the x-axis, the y-axis and both, drawn hollow. */
       reflect?: boolean;
       /** A rectangle from its left and right x-coordinates and bottom and top y-coordinates. */

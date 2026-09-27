@@ -19,6 +19,7 @@ import {
   useFrozen,
   useRep,
 } from './common';
+import { DistanceLegs, distanceCaption } from './DistanceLegs';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'coordinatePlane' }>;
@@ -301,7 +302,18 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     </ChartText>
                   </G>
                 ))}
-                {spec.segment ? (
+                {spec.segment && spec.legs ? (
+                  both ? (
+                    <DistanceLegs
+                      p={{ x: p.px, y: p.py }}
+                      q={{ x: q.px, y: q.py }}
+                      sx={sx}
+                      sy={sy}
+                      w={w}
+                      label={spec.distance ? `${rep.label(spec.distance)} units` : undefined}
+                    />
+                  ) : null
+                ) : spec.segment ? (
                   both ? (
                     <>
                       <Line
@@ -558,17 +570,23 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
           ? `A rectangle ${formatNumber(Math.abs(rect.r - rect.l))} units wide and ${formatNumber(Math.abs(rect.t - rect.b))} units tall.`
           : spec.reflect && p?.known
             ? `(${formatNumber(p.px)}, ${formatNumber(p.py)}) reflected across the x-axis is (${formatNumber(p.px)}, ${formatNumber(-p.py)}); across the y-axis (${formatNumber(-p.px)}, ${formatNumber(p.py)}); across both (${formatNumber(-p.px)}, ${formatNumber(-p.py)}).`
-            : spec.segment && both
-              ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
-              : spec.plot
-                ? p?.known
-                  ? `Start at 0. Go ${formatNumber(p.px)} across, then ${formatNumber(p.py)} up: the point (${formatNumber(p.px)}, ${formatNumber(p.py)}).`
-                  : 'Tap the grid to place the point, or type both numbers.'
-                : p?.known
-                  ? both
-                    ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
-                    : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
-                  : 'Type both coordinates to place the point.'}
+            : spec.segment && both && spec.legs
+              ? distanceCaption(
+                  { x: p.px, y: p.py },
+                  { x: q.px, y: q.py },
+                  spec.distance ? rep.variable(spec.distance).symbol : 'd',
+                )
+              : spec.segment && both
+                ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
+                : spec.plot
+                  ? p?.known
+                    ? `Start at 0. Go ${formatNumber(p.px)} across, then ${formatNumber(p.py)} up: the point (${formatNumber(p.px)}, ${formatNumber(p.py)}).`
+                    : 'Tap the grid to place the point, or type both numbers.'
+                  : p?.known
+                    ? both
+                      ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
+                      : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
+                    : 'Type both coordinates to place the point.'}
       </Caption>
       <Steppers
         calc={calc}
