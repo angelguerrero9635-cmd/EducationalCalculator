@@ -407,3 +407,13 @@ Every `requested` entry in `src/data/modules/pictureRequests.ts` is now `drawn`:
 R21–R29. The tracker is the record: each entry lists its gallery demos, the text a page will
 contain once it uses the option (`uses`) and, in `notes`, the fields to pass and the ranges the
 page must raise. All new fields are optional; pages that don't pass them draw as before.
+
+### Round 3 (2026-09-27): the K–6 diagram review
+
+Every `D..` entry in `src/data/modules/pictureRequests.ts` (D01–D101, 90 entries) is now
+`drawn`: card icons for the sorts and sequences, the new card figures (`moon`, `stars`, `map`,
+`dotPlot`, and `highlight` on `cell`), options on existing picture kinds, and the new explore,
+observe and sort-header figures. The tracker is the record: each entry lists its gallery demos,
+its `uses` text and, in `notes`, the exact fields and icon names each card takes. Round-3 card
+icons are named per drawing group in `src/data/modules/layouts/icons/` and drawn in
+`src/components/module/layouts/icons/`.
