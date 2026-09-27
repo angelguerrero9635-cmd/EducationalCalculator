@@ -6,7 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
-import { div, times, whole } from './helpers';
+import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
 import { timesWork } from './work';
@@ -546,6 +546,111 @@ export const GALLERY_MODULES: ModuleDef[] = [
       letter: 'B',
     },
   },
+  (() => {
+    const saved = moreThan('d', 'a', 'b', 'bare tray', 'grass tray', ['more', 'less'], '2');
+    return {
+      id: 'g.grass-slope',
+      title: 'Grass on a slope',
+      assumptions: [
+        'Two trays of soil on the same slope get the same water.',
+        'One tray is planted with grass.',
+        'The soil washed off each tray settles in the jar below it.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Bare tray', 0, 200), unit: 'g' },
+        { ...whole('b', 'b', 'Grass tray', 0, 200), unit: 'g' },
+        { ...whole('d', 'd', 'Soil saved', 0, 200), unit: 'g' },
+      ],
+      relations: [{ ...saved.relation, display: '{a} − {b} = {d}' }, atLeast('a', 'b')],
+      steps: { ...saved.steps, 'a ≥ b': {} },
+      example: { a: 120, b: 30, d: 90 },
+      startWith: ['a', 'b'],
+      representation: { kind: 'grassSlope', bare: 'a', grass: 'b', difference: 'd', max: 150 },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const far = times(
+      'f = n × k',
+      ['n', 'k', 'f'],
+      ['nearer flashlight', 'times as far', 'farther flashlight'],
+    );
+    return {
+      id: 'g.flashlights',
+      title: 'Two flashlights',
+      assumptions: [
+        'Two of the same flashlight give the same light.',
+        'Its beam spreads the same way at any distance.',
+      ],
+      variables: [
+        { ...whole('n', 'n', 'Nearer flashlight', 10, 100), unit: 'cm' },
+        whole('k', 'k', 'Times as far', 2, 10),
+        { ...whole('f', 'f', 'Farther flashlight', 10, 1000), unit: 'cm' },
+      ],
+      relations: [far.relation],
+      steps: { 'f = n × k': far.steps },
+      example: { n: 50, k: 3, f: 150 },
+      startWith: ['n', 'k'],
+      unitSystems: ['metric'],
+      representation: { kind: 'flashlights', near: 'n', times: 'k', far: 'f' },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const more = moreThan(
+      'd',
+      's',
+      'h',
+      'plant in the sun',
+      'plant in the shade',
+      ['more', 'fewer'],
+      '2',
+    );
+    return {
+      id: 'g.leaf-count',
+      title: 'Leaves in sun and shade',
+      assumptions: [
+        'Grow two plants the same way, one in the sun and one in the shade.',
+        'Count the green leaves on each after two weeks.',
+      ],
+      variables: [
+        { ...whole('s', 's', 'Plant in the sun', 0, 40), unit: 'leaves' },
+        { ...whole('h', 'h', 'Plant in the shade', 0, 40), unit: 'leaves' },
+        { ...whole('d', 'd', 'More leaves', 0, 40), unit: 'leaves' },
+      ],
+      relations: [{ ...more.relation, display: '{s} − {h} = {d}' }, atLeast('s', 'h')],
+      steps: { ...more.steps, 's ≥ h': {} },
+      example: { s: 14, h: 6, d: 8 },
+      startWith: ['s', 'h'],
+      representation: { kind: 'leafCount', items: ['s', 'h'], difference: 'd' },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const warmer = moreThan('w', 'k', 'l', 'dark cup', 'light cup', ['warmer', 'cooler']);
+    return {
+      id: 'g.dark-light-cups',
+      title: 'Dark and light cups in the sun',
+      assumptions: [
+        'Fill a dark cup and a light cup with the same water.',
+        'Leave both in the sun for an hour.',
+      ],
+      variables: [
+        { ...whole('k', 'k', 'Dark cup', 40, 120), unit: FAHRENHEIT },
+        { ...whole('l', 'l', 'Light cup', 40, 120), unit: FAHRENHEIT },
+        { ...whole('w', 'w', 'Warmer by', 0, 60), unit: FAHRENHEIT },
+      ],
+      relations: [{ ...warmer.relation, display: '{k} − {l} = {w}' }, atLeast('k', 'l')],
+      steps: { ...warmer.steps, 'k ≥ l': {} },
+      example: { k: 88, l: 76, w: 12 },
+      startWith: ['k', 'l'],
+      representation: {
+        kind: 'thermometers',
+        items: ['k', 'l'],
+        difference: 'w',
+        min: 40,
+        max: 100,
+        cups: ['dark', 'light'],
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
 
 /**

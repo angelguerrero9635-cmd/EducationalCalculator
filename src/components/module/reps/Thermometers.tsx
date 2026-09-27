@@ -1,13 +1,14 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Circle, Defs, Line, Rect } from 'react-native-svg';
+import Svg, { Circle, Defs, Ellipse, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, nowrap, useRep, Caption } from './common';
-import { Ball, BoxShadow, Glass, Sheen, url, usePaintIds } from './paint';
+import { SunDisk } from './nature';
+import { Ball, BoxShadow, FloorShadow, Glass, Sheen, url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'thermometers' }>;
 
@@ -27,15 +28,16 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
     ...shown.map((x) => (x === undefined ? spec.max : Math.ceil(x / 10) * 10)),
   );
   const unit = rep.unit(spec.items[0]!) ?? '';
-  const ids = usePaintIds('glass', 'sheen', 'bulb');
+  const ids = usePaintIds('glass', 'sheen', 'bulb', 'sun', 'cup');
+  const cups = spec.cups;
 
   return (
     <View>
-      <Canvas aspect={0.7}>
+      <Canvas aspect={cups ? 0.8 : 0.7}>
         {({ w, h }) => {
           const top = 22;
           // Leaves room under the bulb for the name label.
-          const bottom = h - 40;
+          const bottom = h - (cups ? 72 : 40);
           const py = (x: number) => bottom - ((x - lo) / (hi - lo)) * (bottom - top);
           const slot = w / spec.items.length;
           const tube = 18;
@@ -49,7 +51,10 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   <Glass id={ids.glass} />
                   <Sheen id={ids.sheen} />
                   <Ball id={ids.bulb} color={c.mercury} />
+                  <Sheen id={ids.cup} />
+                  <Ball id={ids.sun} color={c.sunDisk} />
                 </Defs>
+                {cups ? <SunDisk x={22} y={22} r={10} ball={ids.sun} c={c} /> : null}
                 {spec.items.map((id, i) => {
                   const cx = slot * i + slot / 2 + 10;
                   const x = shown[i];
@@ -116,6 +121,15 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       stroke={c.glassEdge}
                       strokeWidth={chart.stroke}
                     />,
+                    cups?.[i] ? (
+                      <Cup
+                        key={`c${id}`}
+                        cx={cx}
+                        top={bottom + 8}
+                        dark={cups[i] === 'dark'}
+                        sheen={ids.cup}
+                      />
+                    ) : null,
                     ...[
                       // A ten next to an extra mark (30 by 32) gives way to the mark.
                       ...Array.from({ length: (hi - lo) / 10 + 1 }, (_, k) => lo + k * 10).filter(
@@ -227,5 +241,23 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Caption>
       {unit ? null : null}
     </View>
+  );
+}
+
+/** A cup of water the thermometer stands in, dark or light, lit from the top left. */
+function Cup({ cx, top, dark, sheen }: { cx: number; top: number; dark: boolean; sheen: string }) {
+  const c = usePalette();
+  const wTop = 27;
+  const wBot = 21;
+  const hgt = 42;
+  const body = `M ${cx - wTop} ${top} L ${cx + wTop} ${top} L ${cx + wBot} ${top + hgt} L ${cx - wBot} ${top + hgt} Z`;
+  return (
+    <>
+      <FloorShadow cx={cx + 4} cy={top + hgt + 1} rx={wTop} />
+      <Path d={body} fill={dark ? c.cupDark : c.cupLight} stroke={c.chartMuted} />
+      <Path d={body} fill={url(sheen)} />
+      {/* The water inside, seen over the rim. */}
+      <Ellipse cx={cx} cy={top} rx={wTop} ry={4} fill={c.water} stroke={c.chartMuted} />
+    </>
   );
 }

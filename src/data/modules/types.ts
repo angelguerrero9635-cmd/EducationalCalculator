@@ -540,6 +540,33 @@ export type Representation =
       max: number;
       /** Extra labeled marks, e.g. 32 where water freezes. */
       marks?: number[];
+      /**
+       * Each thermometer stands in a cup of water in the sun: a dark or a light cup, one per
+       * item (the sun shines on them from the top left).
+       */
+      cups?: ('dark' | 'light')[];
+    }
+  /**
+   * Two trays of soil on a slope under a watering can, the second planted with grass; below
+   * each, a jar with the soil the water washed off (`bare`, `grass`; the jars' scale is `max`,
+   * grown to fit).
+   */
+  | { kind: 'grassSlope'; bare: string; grass: string; difference?: string; max: number }
+  /**
+   * The same flashlight `near` from a wall and `times` as far (`far` = near × times): the lit
+   * circle `times` as wide, and, seen face on, `times` × `times` squares of the near circle's
+   * size, one shaded.
+   */
+  | { kind: 'flashlights'; near: string; times: string; far?: string }
+  /**
+   * Two potted plants, one in the sun and one in the shade (`places`), with as many green
+   * leaves as their counts (`items`); `difference` is how many more the first has.
+   */
+  | {
+      kind: 'leafCount';
+      items: [string, string];
+      difference?: string;
+      places?: ['sun' | 'shade', 'sun' | 'shade'];
     }
   /** Rock layers stacked on a fossil, each `years` old; `total` is the fossil's age. */
   /** Two fossils in a column of rock layers: `fossils` are the layers above each; deeper is older. */

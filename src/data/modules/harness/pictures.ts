@@ -808,6 +808,39 @@ export function repIssues(
         out.push(`rise ${b - a} shows volume ${v}`);
       break;
     }
+    case 'grassSlope': {
+      const [a, b, d] = [rep.bare, rep.grass, rep.difference].map((id) =>
+        id ? val(id) : undefined,
+      );
+      // The jars' scale grows to fit (GrassSlope.tsx); soil can't be less than none.
+      for (const x of [a, b])
+        if (x !== undefined && x < 0) out.push(`washed-off soil ${x} below 0`);
+      if (
+        a !== undefined &&
+        b !== undefined &&
+        d !== undefined &&
+        Math.abs(Math.abs(a - b) - d) > 1e-9
+      )
+        out.push(`jars ${a} and ${b} don't differ by ${d}`);
+      break;
+    }
+    case 'flashlights': {
+      const [n, k, f] = [rep.near, rep.times, rep.far].map((id) => (id ? val(id) : undefined));
+      // Up to 10 × 10 squares fit the face-on grid.
+      count(rep.times, 'times as far', 10);
+      if (k !== undefined && k < 1) out.push(`times as far ${k} is under 1`);
+      if (n !== undefined && k !== undefined && f !== undefined && Math.abs(n * k - f) > 1e-6 * f)
+        out.push(`${n} × ${k} drawn, farther flashlight shows ${f}`);
+      break;
+    }
+    case 'leafCount': {
+      count(rep.items[0], 'leaves', 40);
+      count(rep.items[1], 'leaves', 40);
+      const [a, b, d] = [...rep.items, rep.difference].map((id) => (id ? val(id) : undefined));
+      if (a !== undefined && b !== undefined && d !== undefined && Math.abs(a - b) !== d)
+        out.push(`plants with ${a} and ${b} leaves don't differ by ${d}`);
+      break;
+    }
     case 'rockLayers':
       count(rep.fossils[0], 'layers', 12);
       count(rep.fossils[1], 'layers', 12);

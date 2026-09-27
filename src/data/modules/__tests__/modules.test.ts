@@ -288,6 +288,12 @@ function representationVars(r: Representation): string[] {
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'rockLayers':
       return [...r.fossils, r.difference];
+    case 'grassSlope':
+      return [r.bare, r.grass, ...(r.difference ? [r.difference] : [])];
+    case 'flashlights':
+      return [r.near, r.times, ...(r.far ? [r.far] : [])];
+    case 'leafCount':
+      return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'pushes':
       return [r.right, r.left, r.extra];
     case 'force':
