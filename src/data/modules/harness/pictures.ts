@@ -1577,6 +1577,147 @@ export function repIssues(
         out.push(`solution (${x}, ${y}) is not where the lines cross`);
       break;
     }
+    case 'force': {
+      // F = m × a in formula units (N, kg, m/s²); a cart carries at most 20 blocks.
+      const f = (id: string) => {
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const [F, m, a] = [f(rep.force), f(rep.mass), f(rep.acceleration)];
+      const units = [rep.force, rep.mass, rep.acceleration].map((id) => byId.get(id)?.unit);
+      if (
+        F !== undefined &&
+        m !== undefined &&
+        a !== undefined &&
+        units.join() === 'N,kg,m/s²' &&
+        Math.abs(F - m * a) > 1e-4 * Math.max(1, Math.abs(F))
+      )
+        out.push(`force ${F} is not mass × acceleration (${m * a})`);
+      // The block is in the mass's formula unit.
+      if (rep.object === 'cart' && rep.block !== undefined && m !== undefined) {
+        if (rep.block <= 0) out.push(`cart blocks of ${rep.block}`);
+        else if (m / rep.block > 20 + 1e-6)
+          out.push(`${m / rep.block} blocks on the cart (20 fit)`);
+      }
+      break;
+    }
+    case 'skaters': {
+      // Each skater's acceleration is the shared push ÷ its own mass (N ÷ kg = m/s²).
+      const f = (id: string) => {
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const F = f(rep.force);
+      if (F !== undefined && F < 0) out.push(`push ${F} is below 0`);
+      rep.masses.forEach((id, i) => {
+        const m = f(id);
+        if (m !== undefined && m <= 0) out.push(`skater ${i + 1} has mass ${m}`);
+        const a = rep.accelerations ? f(rep.accelerations[i]!) : undefined;
+        const units = [rep.force, id, rep.accelerations?.[i]].map((x) => x && byId.get(x)?.unit);
+        if (
+          F !== undefined &&
+          m !== undefined &&
+          m > 0 &&
+          a !== undefined &&
+          units.join() === 'N,kg,m/s²' &&
+          Math.abs(a - F / m) > 1e-4 * Math.max(1, Math.abs(a))
+        )
+          out.push(`skater ${i + 1} speeds up by ${a}, not push ÷ mass (${F / m})`);
+      });
+      break;
+    }
+    case 'energyTrack': {
+      // In formula units (J, kg, m, m/s): PE + KE = total, PE = m × g × h, total = m × g ×
+      // top, KE = 1/2 × m × v²; the height is from 0 to the top.
+      const f = (id: string | number | undefined) => {
+        if (id === undefined || typeof id === 'number') return id;
+        const x = val(id);
+        return x === undefined ? undefined : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const g = rep.g ?? 9.8;
+      const [h, pe, ke, total, top, m, v] = [
+        rep.height,
+        rep.potential,
+        rep.kinetic,
+        rep.total,
+        rep.top,
+        rep.mass,
+        rep.speed,
+      ].map(f);
+      const near = (x: number, y: number) => Math.abs(x - y) <= 1e-4 * Math.max(1, Math.abs(y));
+      const unitsOk = [rep.potential, rep.kinetic, rep.total, rep.height, rep.top, rep.mass].every(
+        (id) => typeof id !== 'string' || ['J', 'm', 'kg', ''].includes(byId.get(id)?.unit ?? ''),
+      );
+      for (const [x, what] of [
+        [h, 'height'],
+        [pe, 'potential energy'],
+        [ke, 'kinetic energy'],
+      ] as const)
+        if (x !== undefined && x < -1e-9) out.push(`${what} ${x} is below 0`);
+      if (h !== undefined && top !== undefined && h > top + 1e-6 * Math.max(1, top))
+        out.push(`height ${h} is above the top ${top}`);
+      if (unitsOk) {
+        if (pe !== undefined && ke !== undefined && total !== undefined && !near(pe + ke, total))
+          out.push(`PE + KE = ${pe + ke}, not the total ${total}`);
+        if (m !== undefined && h !== undefined && pe !== undefined && !near(pe, m * g * h))
+          out.push(`PE ${pe} is not m × g × h (${m * g * h})`);
+        if (
+          m !== undefined &&
+          top !== undefined &&
+          total !== undefined &&
+          !near(total, m * g * top)
+        )
+          out.push(`total ${total} is not m × g × top (${m * g * top})`);
+        if (m !== undefined && v !== undefined && ke !== undefined && !near(ke, (m * v * v) / 2))
+          out.push(`KE ${ke} is not 1/2 × m × v² (${(m * v * v) / 2})`);
+      }
+      break;
+    }
+    case 'motionGraph': {
+      // In formula units (the picture works in them): the line's end is the start plus slope ×
+      // time when the module's units agree (m, s, m/s, m/s²); the time and the trip's
+      // positions (or speeds) never go below 0.
+      const unit = (id: string | number | undefined) =>
+        typeof id === 'string' ? (byId.get(id)?.unit ?? '') : '';
+      const fv = (id: string | number | undefined) => {
+        const x = id === undefined ? 0 : val(id);
+        return x === undefined || typeof id !== 'string' ? x : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const slopeId = rep.graph === 'distance' ? rep.speed : rep.acceleration;
+      const endId = rep.graph === 'distance' ? rep.distance : rep.speed;
+      const [t, start, m, end] = [fv(rep.time), fv(rep.start), fv(slopeId), fv(endId)];
+      const [tu, eu, mu] = [unit(rep.time), unit(endId), unit(slopeId)];
+      const agree =
+        rep.graph === 'distance' ? mu === `${eu}/${tu}` : mu === `${eu}²` && eu.endsWith(`/${tu}`);
+      // Shown values are rounded to 9 places, so a time in hours is only roughly itself.
+      const near = (x: number, y: number) => Math.abs(x - y) <= 1e-4 * Math.max(1, Math.abs(y));
+      if (t !== undefined && t < 0) out.push(`motion graph time ${t} is negative`);
+      if ([t, start, m, end].every((x) => x !== undefined) && agree) {
+        const want = start! + m! * t!;
+        if (!near(end!, want))
+          out.push(`motion graph ends at ${end}, not start + slope × time = ${want}`);
+      }
+      if (rep.graph === 'speed') {
+        for (const v of [start, end])
+          if (v !== undefined && v < 0) out.push(`speed ${v} is below 0 on a speed-time graph`);
+        const d = rep.distance ? fv(rep.distance) : undefined;
+        if (d !== undefined && [t, start, end].every((x) => x !== undefined)) {
+          const area = ((start! + end!) / 2) * t!;
+          if (agree && unit(rep.distance) === eu.split('/')[0] && !near(d, area))
+            out.push(`distance ${d} is not the area under the line (${area})`);
+        }
+      } else if (rep.then) {
+        if (rep.then.length > 5) out.push(`${rep.then.length} legs after the first (5 fit)`);
+        let x = end;
+        for (const leg of rep.then) {
+          if (leg.time <= 0) out.push(`a leg lasts ${leg.time}`);
+          if (x === undefined) break;
+          x += leg.speed * leg.time;
+          if (x < -1e-9) out.push(`the trip goes below 0 (${x})`);
+        }
+      }
+      break;
+    }
     default:
       break;
   }

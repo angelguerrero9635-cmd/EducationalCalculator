@@ -10,6 +10,7 @@ import type {
 } from './typesGraphs';
 import type { EnergyPyramidSpec, GenerationsSpec } from './typesLife';
 import type { ChemSpec } from './typesChem';
+import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -887,6 +888,10 @@ export type Representation =
   | GenerationsSpec
   /** Grade 7–8 chemistry: molecules, reactions, heating curves, the periodic table (`typesChem.ts`). */
   | ChemSpec
+  /** Grade 8 motion, forces and energy (specs in `typesMechanics.ts`). */
+  | MotionGraphSpec
+  | SkatersSpec
+  | EnergyTrackSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
@@ -1293,6 +1298,13 @@ export type Representation =
       /** Smallest force / acceleration the arrows are scaled to (grows to fit). */
       forceExtent: number;
       accelerationExtent: number;
+      /**
+       * 'cart': a lab cart carrying the mass as metal blocks, pulled by a rope, with
+       * F = m × a worked under it (reps/ForceCart.tsx). Default: a crate pushed.
+       */
+      object?: 'crate' | 'cart';
+      /** One block's mass in the module's mass unit (default: a round size, up to 10 blocks). */
+      block?: number;
     }
   /**
    * Series circuit: a source `source` driving `current` through resistors in a loop, each

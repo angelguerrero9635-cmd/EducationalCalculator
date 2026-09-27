@@ -10,6 +10,7 @@ import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
 import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
+import { mechanicsSpecVars } from '../typesMechanics';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -403,6 +404,10 @@ function representationVars(r: Representation): string[] {
     case 'heatingCurve':
     case 'periodicTable':
       return chemSpecVars(r);
+    case 'motionGraph':
+    case 'skaters':
+    case 'energyTrack':
+      return mechanicsSpecVars(r);
   }
 }
 
