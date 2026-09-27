@@ -11,7 +11,7 @@ import type { Values } from '@/engine/types';
 
 import { div, primeFactors, whole } from '../helpers';
 import type { ModuleDef } from '../types';
-import { decimalColumns, decimalLongDivision, decimalMultiply } from '../written';
+import { decimalColumns, decimalLongDivision, decimalMultiply, longDivision } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
 /** A number as the steps show it (rounded like `fmt`), to do arithmetic on what is written. */
@@ -63,6 +63,8 @@ const powers = (primes: number[]) => {
 
 /** Negative numbers written with a true minus: −4. */
 const sgn = (x: number) => (x < 0 ? `−${fmt(-x)}` : fmt(x));
+/** A constant after a term: "+ 5" or "− 3". */
+const plusMinus = (k: number) => (k < 0 ? `− ${fmt(-k)}` : `+ ${fmt(k)}`);
 /**
  * The distance between two numbers on a line, by their distances from 0 (6.NS.8): opposite
  * sides add ("|−4| + |5| = 4 + 5 = 9"), the same side subtracts ("|−7| − |−2| = 5").
@@ -985,7 +987,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       'Divide, multiply, subtract, bring down: the same steps for every digit.',
       'When the digits run out, write a point and zeros and keep going.',
-      'Divisors are whole numbers from 2 to 999; quotients end within three decimal places.',
+      'Divisors are whole numbers from 2 to 999; quotients end within three decimal places (else use the remainder page).',
     ],
     variables: [
       { id: 'n', symbol: 'n', name: 'Dividend', min: 0, max: 99999, step: 0.01, multipleOf: 0.01 },
@@ -1030,6 +1032,100 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     representation: {
       kind: 'areaModel',
       divide: { dividend: 'n', divisor: 'd', quotient: 'q' },
+    },
+  },
+  {
+    id: 'm.6.multi-digit-decimals~remainder',
+    title: 'Divide with a remainder',
+    use: 'Use this for 1,431 ÷ 99 = 14 remainder 45, when the quotient doesn’t come out even.',
+    assumptions: [
+      'Divide, multiply, subtract, bring down. What is left at the end is the remainder.',
+      'The remainder is less than the divisor.',
+      'As a decimal the quotient keeps going (14.4545…): round it, to hundredths say, if the question asks.',
+      'Dividends to 99,999; divisors from 2 to 999.',
+    ],
+    variables: [
+      whole('n', 'n', 'Dividend', 0, 99999),
+      whole('d', 'd', 'Divisor', 2, 999),
+      whole('w', 'w', 'Whole-number quotient', 0, 49999),
+      { ...whole('m', 'm', 'Divisor × quotient', 0, 99999), derived: true },
+      whole('r', 'r', 'Remainder', 0, 998),
+    ],
+    relations: [
+      {
+        id: 'r < d',
+        constraint: true,
+        display: '{r} is less than {d}',
+        vars: ['r', 'd'],
+        residual: (v: Values) => (v.r! < v.d! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'w = whole times d fits in n',
+        display: '{n} ÷ {d} → {w} whole groups',
+        words: 'Dividend ÷ divisor, whole number part = {w}',
+        vars: ['w', 'n', 'd'],
+        residual: (v: Values) => v.w! - Math.floor(v.n! / v.d!),
+        solve: {
+          w: (v: Values) => Math.floor(v.n! / v.d!),
+          n: () => undefined,
+          d: () => undefined,
+        },
+      },
+      {
+        id: 'm = w × d',
+        display: '{w} × {d} = {m}',
+        vars: ['m', 'w', 'd'],
+        residual: (v: Values) => v.m! - v.w! * v.d!,
+        solve: {
+          m: (v: Values) => v.w! * v.d!,
+          w: (v: Values) => q(v.m!, v.d!),
+          d: (v: Values) => q(v.m!, v.w!),
+        },
+      },
+      {
+        id: 'n = m + r',
+        display: '{m} + {r} = {n}',
+        words: 'Divisor × quotient + remainder = dividend',
+        vars: ['n', 'm', 'r'],
+        residual: (v: Values) => v.n! - v.m! - v.r!,
+        solve: {
+          n: (v: Values) => v.m! + v.r!,
+          m: (v: Values) => v.n! - v.r!,
+          r: (v: Values) => v.n! - v.m!,
+        },
+      },
+    ],
+    steps: {
+      'r < d': {},
+      'w = whole times d fits in n': {
+        w: {
+          expr: 'whole groups of {d} in {n}',
+          how: 'Divide place by place, and stop at the ones.',
+          written: (v) => longDivision(v.n!, v.d!),
+        },
+      },
+      'm = w × d': {
+        m: { expr: '{w} × {d}', how: 'Multiply back: how much the whole quotient uses.' },
+        w: { expr: '{m} ÷ {d}', how: 'Divide what is used by the divisor.' },
+        d: { expr: '{m} ÷ {w}', how: 'Divide what is used by the quotient.' },
+      },
+      'n = m + r': {
+        r: {
+          expr: '{n} − {m}',
+          how: 'What is left over is the remainder.',
+          note: (v) =>
+            v.r === 0 ? '(no remainder)' : `(as a decimal: about ${(v.n! / v.d!).toFixed(2)})`,
+        },
+        n: { expr: '{m} + {r}', how: 'What is used plus what is left is the dividend.' },
+        m: { expr: '{n} − {r}', how: 'Take the remainder from the dividend.' },
+      },
+    },
+    example: { n: 1431, d: 99, w: 14, m: 1386, r: 45 },
+    startWith: ['n', 'd'],
+    representation: {
+      kind: 'areaModel',
+      divide: { dividend: 'n', divisor: 'd', quotient: 'w', remainder: 'r' },
     },
   },
   {
@@ -1519,8 +1615,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         variables: [
           fr('a', 'Amount numerator'),
           den('b', 'Amount denominator'),
-          { ...fr('c', 'Parts of the group it fills', 12), min: 1 },
-          den('d', 'Parts in one group'),
+          { ...fr('c', 'Fraction of a group it fills: numerator', 12), min: 1 },
+          den('d', 'Fraction of a group it fills: denominator'),
           { ...fr('e', 'Whole group numerator', 2000), derived: true },
           { ...fr('f', 'Whole group denominator', 240), min: 1, derived: true },
         ],
@@ -1539,7 +1635,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           {
             id: 'e = a × d',
             display: '{d} × {a}/{f} = {e}/{f}',
-            words: 'Parts in one group × one part = whole group',
+            words: 'Denominator of the fraction it fills × one part = whole group',
             shows: ['f'],
             check: (v: Values) => `${v.d} × ${v.a} = ${v.e}`,
             vars: ['e', 'a', 'd'],
@@ -2138,8 +2234,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       id,
       symbol: id,
       name,
-      min: -20,
-      max: 20,
+      min: -10000,
+      max: 10000,
       step: 0.5,
       multipleOf: 0.5,
     });
@@ -2158,14 +2254,22 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         assumptions: [
           'Use two points on the same row (the same y-coordinate) or the same column (the same x-coordinate).',
           'On opposite sides of an axis, add the distances from the axis; on the same side, subtract.',
-          'Coordinates from −20 to 20; the distance is in units.',
+          'Coordinates from −10,000 to 10,000 (a map of elevations); the distance is in units.',
         ],
         variables: [
           coord('x1', 'First point’s x-coordinate'),
           coord('y1', 'First point’s y-coordinate'),
           coord('x2', 'Second point’s x-coordinate'),
           coord('y2', 'Second point’s y-coordinate'),
-          { id: 'd', symbol: 'd', name: 'Distance', min: 0, max: 40, step: 0.5, multipleOf: 0.5 },
+          {
+            id: 'd',
+            symbol: 'd',
+            name: 'Distance',
+            min: 0,
+            max: 20000,
+            step: 0.5,
+            multipleOf: 0.5,
+          },
         ],
         relations: [
           lined,
@@ -2264,7 +2368,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         assumptions: [
           'Across the x-axis the y-coordinate changes sign; across the y-axis the x-coordinate does.',
           'Across both axes, both change sign.',
-          'Coordinates from −20 to 20. A point on an axis is in no quadrant (0).',
+          'Coordinates from −10,000 to 10,000. A point on an axis is in no quadrant (0).',
         ],
         variables: [
           coord('x', 'x-coordinate'),
@@ -2358,20 +2462,20 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         assumptions: [
           'The sides run along the grid, so each side is a distance on one row or one column.',
           'Area = width × height; perimeter = 2 × (width + height).',
-          'Coordinates from −20 to 20; lengths in units, area in square units.',
+          'Coordinates from −10,000 to 10,000; lengths in units, area in square units.',
         ],
         variables: [
-          { ...coord('l', 'Left x-coordinate'), max: 19.5 },
-          { ...coord('r', 'Right x-coordinate'), min: -19.5 },
-          { ...coord('b', 'Bottom y-coordinate'), max: 19.5 },
-          { ...coord('t', 'Top y-coordinate'), min: -19.5 },
+          { ...coord('l', 'Left x-coordinate'), max: 9999.5 },
+          { ...coord('r', 'Right x-coordinate'), min: -9999.5 },
+          { ...coord('b', 'Bottom y-coordinate'), max: 9999.5 },
+          { ...coord('t', 'Top y-coordinate'), min: -9999.5 },
           {
             id: 'w',
             symbol: 'w',
             name: 'Width',
             unit: 'units',
             min: 0.5,
-            max: 40,
+            max: 20000,
             step: 0.5,
             multipleOf: 0.5,
           },
@@ -2381,7 +2485,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             name: 'Height',
             unit: 'units',
             min: 0.5,
-            max: 40,
+            max: 20000,
             step: 0.5,
             multipleOf: 0.5,
           },
@@ -2391,7 +2495,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             name: 'Area',
             unit: 'square units',
             min: 0,
-            max: 1600,
+            max: 400000000,
             derived: true,
           },
           {
@@ -2400,7 +2504,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             name: 'Perimeter',
             unit: 'units',
             min: 0,
-            max: 160,
+            max: 80000,
             derived: true,
           },
         ],
@@ -2531,11 +2635,11 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     assumptions: [
       '3x means 3 × x: the coefficient 3 multiplies x. The 5 in 3x + 5 is the constant.',
       'A letter stands for a number that can change.',
-      'Multiply before you add.',
+      'Multiply before you add or subtract. The constant can be negative: 2w − 3 adds −3.',
     ],
     variables: [
       { id: 'c', symbol: 'c', name: 'Coefficient', min: 0, max: 20, step: 0.5, multipleOf: 0.5 },
-      { id: 'k', symbol: 'k', name: 'Constant', min: 0, max: 100, step: 0.5, multipleOf: 0.5 },
+      { id: 'k', symbol: 'k', name: 'Constant', min: -100, max: 100, step: 0.5, multipleOf: 0.5 },
       {
         id: 'x',
         symbol: 'x',
@@ -2545,19 +2649,26 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         step: 0.5,
         multipleOf: 0.5,
       },
-      { id: 'e', symbol: 'v', name: 'Value of the expression', min: 0, max: 2100, derived: true },
+      {
+        id: 'e',
+        symbol: 'v',
+        name: 'Value of the expression',
+        min: -100,
+        max: 2100,
+        derived: true,
+      },
     ],
     relations: [
       {
         id: 'v = cx + k',
         display: '{e} = {c}{x} + {k}',
         words: 'Value = coefficient × the number for x + constant',
-        sentence: (v: Values) => `${fmt(v.c!)}x + ${fmt(v.k!)} when x = ${fmt(v.x!)}: ?`,
-        check: (v: Values) => `${fmt(v.e!)} = ${fmt(v.c!)} × ${fmt(v.x!)} + ${fmt(v.k!)}`,
+        sentence: (v: Values) => `${fmt(v.c!)}x ${plusMinus(v.k!)} when x = ${fmt(v.x!)}: ?`,
+        check: (v: Values) => `${sgn(v.e!)} = ${fmt(v.c!)} × ${fmt(v.x!)} ${plusMinus(v.k!)}`,
         vars: ['e', 'c', 'x', 'k'],
         residual: (v: Values) => v.e! - v.c! * v.x! - v.k!,
         solve: {
-          e: (v: Values) => v.c! * v.x! + v.k!,
+          e: (v: Values) => exact(v.c! * v.x! + v.k!),
           c: () => undefined,
           x: () => undefined,
           k: () => undefined,
@@ -2567,8 +2678,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     steps: {
       'v = cx + k': {
         e: {
-          expr: '{c} × {x} + {k}',
-          how: (v) => `Put ${fmt(v.x!)} in for x. Multiply before you add.`,
+          // A negative constant reads as taking away: 3 × 4 − 5, not 3 × 4 + −5.
+          expr: (v) => `{c} × {x} ${v.k! < 0 ? `− ${fmt(-v.k!)}` : '+ {k}'}`,
+          how: (v) =>
+            `Put ${fmt(v.x!)} in for x. Multiply before you ${v.k! < 0 ? 'subtract' : 'add'}.`,
         },
       },
     },

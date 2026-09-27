@@ -105,6 +105,9 @@ const closeTo = (x: number, target: number) =>
  * Otherwise it falls back to the residual, scaled by the size of the values.
  */
 export function holds(relation: Relation, values: Values): boolean {
+  // A rule only checks (0 when it holds, 1 when not): no tolerance scaled by the values, or
+  // a 1 would pass once the numbers are in the thousands.
+  if (relation.constraint) return relation.residual(values) === 0;
   for (const [id, fn] of Object.entries(relation.solve ?? {})) {
     const others = { ...values };
     delete others[id];
