@@ -127,6 +127,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `functionMachine`  | an input card through a rule's steps to the output; a tappable table  | Grade 8 functions                   |
 | `mapping`          | pairs as arrows between two ovals; the graph with a vertical line     | Grade 8 functions (is it one?)      |
 | `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
+| `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second    | Grade 8 motion                      |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

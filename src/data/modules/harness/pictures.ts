@@ -1528,6 +1528,51 @@ export function repIssues(
         out.push(`solution (${x}, ${y}) is not where the lines cross`);
       break;
     }
+    case 'motionGraph': {
+      // In formula units (the picture works in them): the line's end is the start plus slope ×
+      // time when the module's units agree (m, s, m/s, m/s²); the time and the trip's
+      // positions (or speeds) never go below 0.
+      const unit = (id: string | number | undefined) =>
+        typeof id === 'string' ? (byId.get(id)?.unit ?? '') : '';
+      const fv = (id: string | number | undefined) => {
+        const x = id === undefined ? 0 : val(id);
+        return x === undefined || typeof id !== 'string' ? x : x * (byId.get(id)?.unitFactor ?? 1);
+      };
+      const slopeId = rep.graph === 'distance' ? rep.speed : rep.acceleration;
+      const endId = rep.graph === 'distance' ? rep.distance : rep.speed;
+      const [t, start, m, end] = [fv(rep.time), fv(rep.start), fv(slopeId), fv(endId)];
+      const [tu, eu, mu] = [unit(rep.time), unit(endId), unit(slopeId)];
+      const agree =
+        rep.graph === 'distance' ? mu === `${eu}/${tu}` : mu === `${eu}²` && eu.endsWith(`/${tu}`);
+      // Shown values are rounded to 9 places, so a time in hours is only roughly itself.
+      const near = (x: number, y: number) => Math.abs(x - y) <= 1e-4 * Math.max(1, Math.abs(y));
+      if (t !== undefined && t < 0) out.push(`motion graph time ${t} is negative`);
+      if ([t, start, m, end].every((x) => x !== undefined) && agree) {
+        const want = start! + m! * t!;
+        if (!near(end!, want))
+          out.push(`motion graph ends at ${end}, not start + slope × time = ${want}`);
+      }
+      if (rep.graph === 'speed') {
+        for (const v of [start, end])
+          if (v !== undefined && v < 0) out.push(`speed ${v} is below 0 on a speed-time graph`);
+        const d = rep.distance ? fv(rep.distance) : undefined;
+        if (d !== undefined && [t, start, end].every((x) => x !== undefined)) {
+          const area = ((start! + end!) / 2) * t!;
+          if (agree && unit(rep.distance) === eu.split('/')[0] && !near(d, area))
+            out.push(`distance ${d} is not the area under the line (${area})`);
+        }
+      } else if (rep.then) {
+        if (rep.then.length > 5) out.push(`${rep.then.length} legs after the first (5 fit)`);
+        let x = end;
+        for (const leg of rep.then) {
+          if (leg.time <= 0) out.push(`a leg lasts ${leg.time}`);
+          if (x === undefined) break;
+          x += leg.speed * leg.time;
+          if (x < -1e-9) out.push(`the trip goes below 0 (${x})`);
+        }
+      }
+      break;
+    }
     default:
       break;
   }

@@ -107,6 +107,7 @@ const PICTURE_NAMES: Record<string, string> = {
   functionMachine: 'input-output machine',
   mapping: 'mapping diagram and graph',
   transformation: 'figure and its image on a grid',
+  motionGraph: 'distance-time or speed-time graph',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

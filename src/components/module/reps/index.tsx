@@ -103,6 +103,7 @@ import { RootSquare } from './RootSquare';
 import { FactorRows } from './FactorRows';
 import { PowerScale } from './PowerScale';
 import { EquationBalance } from './EquationBalance';
+import { MotionGraph } from './MotionGraph';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -123,6 +124,7 @@ export const representationTitle = (r: Representation) =>
           'scatter',
           'linearFunction',
           'lineSystem',
+          'motionGraph',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
@@ -133,6 +135,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
       return <LineSystem spec={spec} calc={calc} />;
+    case 'motionGraph':
+      return <MotionGraph spec={spec} calc={calc} />;
     case 'functionMachine':
       return <FunctionMachine spec={spec} calc={calc} />;
     case 'mapping':
