@@ -3008,7 +3008,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.ratios~language',
     title: 'Ratio language',
-    use: 'Use this to match words like “for every” and “to” with the ratio they describe.',
+    use: 'Use this for “For every 2 cats there are 3 dogs”: the ratio of cats to dogs.',
     assumptions: [
       'A shelter has 2 cats and 3 dogs, so 5 animals in all.',
       'The order of the words is the order of the numbers: cats to dogs is 2:3.',
@@ -3036,7 +3036,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.ratios~equivalent',
     title: 'Equivalent ratios',
-    use: 'Use this to tell whether a ratio is equivalent to 2:3.',
+    use: 'Use this for “Is 4:6 equivalent to 2:3?”',
     assumptions: [
       'Equivalent ratios multiply (or divide) both parts by the same number.',
       'Adding the same number to both parts changes the ratio: 2:3 and 3:4 are not equivalent.',
@@ -3068,7 +3068,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.percent~benchmarks',
     title: 'Benchmark percents',
-    use: 'Use this to match fractions, decimals and “out of” with 10%, 25%, 50%, 75% and 100%.',
+    use: 'Use this for “Which is 25%?”: fractions, decimals and “out of” for benchmark percents.',
     assumptions: [
       'Percent means out of 100: 25% is 25/100 = 1/4.',
       '“5 out of 20” is the fraction 5/20, which is 1/4.',
@@ -3103,7 +3103,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.divide-fractions~bigger-or-smaller',
     title: 'Bigger or smaller quotient?',
-    use: 'Use this to tell, before dividing, whether 6 ÷ a fraction is more or less than 6.',
+    use: 'Use this for “Is 6 ÷ 1/4 more or less than 6?” before dividing.',
     assumptions: [
       'Dividing by a number less than 1 gives more: more groups fit.',
       'Dividing by 1 changes nothing.',
@@ -3131,7 +3131,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.gcf-lcm~gcf-or-lcm',
     title: 'GCF or LCM?',
-    use: 'Use this to decide whether a word problem needs the GCF or the LCM.',
+    use: 'Use this for “Does the problem need the GCF or the LCM?”',
     assumptions: [
       'The GCF splits things into equal groups with nothing left over.',
       'The LCM finds when two repeating things happen together again.',
@@ -3179,7 +3179,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sequence',
     id: 'm.6.integers~order',
     title: 'Order rational numbers',
-    use: 'Use this to put negative numbers, fractions and absolute values in order.',
+    use: 'Use this for “Order from least to greatest: −6, −2 1/2, 3/4, |−5|.”',
     assumptions: [
       'Further left on the number line is less: −6 < −1.',
       'Every negative number is less than 0, and 0 is less than every positive number.',
@@ -3200,7 +3200,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.integers~meaning',
     title: 'Positive, negative or zero?',
-    use: 'Use this to match everyday amounts with positive and negative numbers.',
+    use: 'Use this for “A drop of 8 degrees is −8”: everyday positive and negative amounts.',
     assumptions: [
       'Positive and negative numbers name opposite directions: above and below, gain and loss.',
       'Zero is the starting point: sea level, 0 °C, nothing owed.',
@@ -3230,7 +3230,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.coordinate-plane-4q~quadrant',
     title: 'Which quadrant?',
-    use: 'Use this to place a point in a quadrant from the signs of its coordinates.',
+    use: 'Use this for “In which quadrant is (−3, 5)?”',
     assumptions: [
       'The first coordinate says left or right; the second says up or down.',
       'The quadrants go counterclockwise from the top right: I, II, III, IV.',
@@ -3261,7 +3261,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.expressions-variables~words',
     title: 'Words to expressions',
-    use: 'Use this to write phrases like “5 less than a number” as expressions.',
+    use: 'Use this for “Write an expression for 5 less than a number.”',
     assumptions: [
       'The letter x stands for the number.',
       '“5 less than a number” starts with the number: x − 5.',
@@ -3293,7 +3293,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.expressions-variables~parts',
     title: 'Parts of an expression',
-    use: 'Use this to name the coefficient, the constant and the variable in an expression.',
+    use: 'Use this for “In 2c + 4, what is the coefficient? The constant?”',
     assumptions: [
       'The variable is the letter.',
       'The coefficient is the number multiplying the letter: the 4 in 4x.',
@@ -3320,7 +3320,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.one-step-equations~write-equation',
     title: 'Equations from stories',
-    use: 'Use this to match a story with the equation that fits it.',
+    use: 'Use this for “Which equation matches the story?”',
     assumptions: [
       'The letter x stands for the number the story doesn’t tell you.',
       '“More” and “rose by” add; “equal pieces” and “times” multiply; “gave away” subtracts.',
@@ -3347,7 +3347,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.one-step-equations~inequality',
     title: 'Inequalities',
-    use: 'Use this to match words and number-line graphs with x > 3, x ≥ 3, x < 3 and x ≤ 3.',
+    use: 'Use this for “Which inequality matches the graph?”: x > 3, x ≥ 3, x < 3 or x ≤ 3.',
     assumptions: [
       'An open circle leaves 3 out; a closed (filled) circle takes 3 in.',
       '“At least 3” includes 3; “more than 3” does not.',
@@ -3395,7 +3395,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.area-polygons~height',
     title: 'Which segment is a height?',
-    use: 'Use this to find the height that goes with a base, even outside the shape.',
+    use: 'Use this for “Which segment is a height for this base?”',
     assumptions: [
       'A height meets the base (or its line) at a square corner.',
       'In an obtuse triangle the height can fall outside: extend the base to meet it.',
@@ -3540,7 +3540,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.surface-area-nets~which-net',
     title: 'Which nets fold into a cube?',
-    use: 'Use this to tell whether six squares fold into a cube.',
+    use: 'Use this for “Which of these nets can be folded into a cube?”',
     assumptions: [
       'A cube has 6 faces, so its net has 6 squares.',
       'Picture folding: two squares may not land on the same face.',
@@ -3712,7 +3712,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.center-spread~statistical-questions',
     title: 'Statistical questions',
-    use: 'Use this to tell a statistical question from a question with one answer.',
+    use: 'Use this for “Is this a statistical question?”',
     assumptions: [
       'A statistical question expects answers that vary.',
       'You answer it by collecting data from many people or things.',
@@ -3738,7 +3738,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 'm.6.center-spread~mean-or-median',
     title: 'Mean or median?',
-    use: 'Use this to choose the mean or the median to describe the center of a set of data.',
+    use: 'Use this for “Which better describes the center: the mean or the median?”',
     assumptions: [
       'An outlier is a value far from the rest.',
       'An outlier pulls the mean toward it; the median barely moves.',
@@ -3763,7 +3763,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     kind: 'observe',
     id: 'm.6.center-spread~histogram',
     title: 'Histograms',
-    use: 'Use this to read how data spreads across equal intervals.',
+    use: 'Use this for “How many values are in each interval?” on a histogram.',
     assumptions: [
       'Each bar counts the students whose time to get to school, in minutes, falls in that interval.',
       'The intervals are the same width and don’t overlap.',

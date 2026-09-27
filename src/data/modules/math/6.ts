@@ -224,7 +224,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.6.ratios~tape',
     sliders: true,
     title: 'Part-part-whole ratios',
-    use: 'Use this when you know the ratio and the total, or how many more.',
+    use: 'Use this for “The ratio of tokens is 8 to 7. There are 135 in all. How many more?”',
     assumptions: [
       'Every box in the tape is worth the same amount.',
       '“How many more” is the bigger amount minus the smaller: the extra boxes times what one is worth.',
@@ -358,7 +358,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.ratios~three-parts',
     title: 'Ratios with three parts',
-    use: 'Use this for a ratio of 6:5:2 with 78 people in all: how many in each part?',
+    use: 'Use this for “A ratio of 6:5:2 with 78 people in all. How many in each part?”',
     assumptions: [
       'Every box in the three tapes is worth the same amount.',
       'Share the total among all the boxes, then multiply for each part.',
@@ -578,7 +578,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.unit-rates~better-buy',
     title: 'Which is the better buy?',
-    use: 'Use this to compare two prices by the cost of one item.',
+    use: 'Use this for “Which is the better buy?”: compare the price of one item.',
     assumptions: [
       'The better buy is the one with the lower price for one item.',
       'The two stores sell the same item.',
@@ -708,7 +708,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.unit-rates~speed',
     title: 'Constant speed',
-    use: 'Use this for distance, time and speed when the speed stays the same.',
+    use: 'Use this for “3 miles in 12 minutes. How long for 7 miles?” at the same speed.',
     assumptions: [
       'The speed stays the same the whole way.',
       'Speed is the distance in 1 hour.',
@@ -765,7 +765,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.unit-rates~convert',
     title: 'Convert units with a rate',
-    use: 'Use this for 168 fluid ounces in quarts (32 fluid ounces in 1 quart) or 3 miles in yards.',
+    use: 'Use this for “How many quarts is 168 fluid ounces?” with 32 fluid ounces in a quart.',
     assumptions: [
       'A conversion is a rate: how many of the new unit are in 1 of the old one (1 mile = 1,760 yards).',
       'To the smaller unit, multiply by the rate. To the bigger unit, divide by it.',
@@ -891,7 +891,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.percent~fraction-decimal-percent',
     title: 'Fractions, decimals and percents',
-    use: 'Use this to write a fraction as a decimal and a percent, like 3/5 = 0.6 = 60% or 3/8 = 37.5%.',
+    use: 'Use this for “Write 3/5 as a decimal and a percent,” or 3/8 = 37.5%.',
     assumptions: [
       'Make the denominator 100: the numerator is then the percent.',
       'A percent is hundredths: 60% = 60/100 = 0.6.',
@@ -1037,7 +1037,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.multi-digit-decimals~remainder',
     title: 'Divide with a remainder',
-    use: 'Use this for 1,431 ÷ 99 = 14 remainder 45, when the quotient doesn’t come out even.',
+    use: 'Use this for “1,431 ÷ 99 = ?” when it doesn’t come out even: 14 remainder 45.',
     assumptions: [
       'Divide, multiply, subtract, bring down. What is left at the end is the remainder.',
       'The remainder is less than the divisor.',
@@ -1131,7 +1131,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.multi-digit-decimals~multiply-decimals',
     title: 'Multiply decimals',
-    use: 'Use this for 2.35 × 1.4: multiply as whole numbers, then place the point.',
+    use: 'Use this for “Find the value of (0.061)(0.43),” or 2.35 × 1.4.',
     assumptions: [
       'Multiply without the points, then count the decimal places in both factors.',
       'The product has that many decimal places, before end zeros are dropped: 3.290 = 3.29.',
@@ -1231,7 +1231,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.multi-digit-decimals~add-subtract',
     title: 'Add and subtract decimals',
-    use: 'Use this for 7.2 − 3.67 or 16 − 1.4, or a sum like $14.50 + $4.35.',
+    use: 'Use this for “$14.50 − $4.35 − $5.25,” or 7.2 − 3.67.',
     assumptions: [
       'Line up the decimal points, so tenths are under tenths and hundredths under hundredths.',
       'Write zeros in empty places: 7.2 − 3.67 is 7.20 − 3.67. A whole number like 16 has its point after the ones.',
@@ -1307,7 +1307,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.multi-digit-decimals~divide-by-decimal',
     title: 'Divide by a decimal',
-    use: 'Use this for 1.26 ÷ 0.3: make the divisor whole, then divide.',
+    use: 'Use this for “2.1 ÷ 1.5”: make the divisor whole, then divide.',
     assumptions: [
       'Multiply the dividend and the divisor by the same 10 or 100: the quotient stays the same.',
       'Choose the power of ten that makes the divisor a whole number.',
@@ -1504,7 +1504,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         id: 'm.6.divide-fractions~how-many-fit',
         sliders: true,
         title: 'How many groups?',
-        use: 'Use this for how many 3/4-cup servings are in 2 1/4 cups.',
+        use: 'Use this for “How many 3/4-cup servings are in 2 1/4 cups?”',
         assumptions: [
           'Write both amounts with the same denominator. Then divide the numerators.',
           'A part of a group left over is a fraction of a group.',
@@ -1728,7 +1728,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.gcf-lcm~lcm',
     title: 'Least common multiple',
-    use: 'Use this to find when two repeating things line up: the LCM of two numbers.',
+    use: 'Use this for “What is the least common multiple of 10 and 15?”',
     assumptions: [
       'A multiple is the number times 1, 2, 3 and so on.',
       'The least common multiple is the first number in both lists.',
@@ -1769,7 +1769,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.gcf-lcm~factor-tree',
     title: 'Prime factorization',
-    use: 'Use this to find the GCF and LCM of bigger numbers from their prime factors.',
+    use: 'Use this for “Find the greatest common factor of 90 and 75.”',
     assumptions: [
       'Split each number until every branch ends in a prime.',
       'The primes both numbers share multiply to the GCF.',
@@ -1847,7 +1847,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.gcf-lcm~distributive',
     title: 'Factor out the GCF',
-    use: 'Use this to write 36 + 8 as 4 × (9 + 2).',
+    use: 'Use this for “Write 36 + 8 as a product of the GCF and a sum.”',
     assumptions: [
       'Both numbers are multiples of their GCF, so the sum is the GCF times a sum.',
       'Multiplying back gives the same sum: 4 × 9 + 4 × 2 = 36 + 8.',
@@ -2364,7 +2364,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'm.6.coordinate-plane-4q~reflect',
         title: 'Reflect across the axes',
-        use: 'Use this to reflect a point across the x-axis, the y-axis or both.',
+        use: 'Use this for “Reflect (3, −4) across the x-axis. Which quadrant is it in?”',
         assumptions: [
           'Across the x-axis the y-coordinate changes sign; across the y-axis the x-coordinate does.',
           'Across both axes, both change sign.',
@@ -2458,7 +2458,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       {
         id: 'm.6.coordinate-plane-4q~polygon',
         title: 'Rectangles on the coordinate plane',
-        use: 'Use this to find the sides, area and perimeter of a rectangle from its corners.',
+        use: 'Use this for “A rectangle has corners at (−2, 3) and (5, −2). Find its area.”',
         assumptions: [
           'The sides run along the grid, so each side is a distance on one row or one column.',
           'Area = width × height; perimeter = 2 × (width + height).',
@@ -2698,7 +2698,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.expressions-variables~exponents',
     title: 'Powers',
-    use: 'Use this for 3⁴: the base used as a factor, the exponent times.',
+    use: 'Use this for “Find the value of 3⁴.”',
     assumptions: [
       'The exponent counts how many times the base is a factor: 3⁴ is 3 × 3 × 3 × 3, not 3 × 4.',
       'Any base to the exponent 1 is the base.',
@@ -2748,7 +2748,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.expressions-variables~order-of-operations',
     title: 'Order of operations with exponents',
-    use: 'Use this for 2 + 3 × 4²: exponents first, then multiply, then add.',
+    use: 'Use this for “Find the value of 2 + 3 × 4²”: exponents first, then multiply, then add.',
     assumptions: [
       'Parentheses first, then exponents, then × and ÷, then + and −, left to right.',
       'The exponent belongs to the number just before it: 3 × 4² squares only the 4.',
@@ -2808,7 +2808,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.6.expressions-variables~distributive',
     letters: ['x'],
     title: 'Equivalent expressions',
-    use: 'Use this to check that 3(2 + x) and 6 + 3x are equal for any x.',
+    use: 'Use this for “Are 3(2 + x) and 6 + 3x equivalent?”',
 
     assumptions: [
       'Equivalent expressions are equal for every value of x.',
@@ -2927,7 +2927,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.expressions-variables~two-quantities',
     title: 'Two quantities that change together',
-    use: 'Use this for pay by the hour: e = 12h, with a table and a graph.',
+    use: 'Use this for “She earns $12 an hour. Write an equation for pay and hours.”',
     notation: 'letters',
     assumptions: [
       'The hours are the independent variable: you choose them.',
@@ -3041,7 +3041,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.one-step-equations~multiply',
     title: 'Solve px = q',
-    use: 'Use this for 4x = 30: undo the multiplying by dividing both sides.',
+    use: 'Use this for “Solve 10 = 4a,” or 0.6d = 1.8.',
     notation: 'letters',
     assumptions: [
       '4x means 4 × x.',
@@ -3116,7 +3116,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.6.one-step-equations~inequality-solutions',
     notation: 'letters',
     title: 'Solutions of an inequality',
-    use: 'Use this to test a value: is 35 a solution of 2n < 71? Is 5.01 a solution of k > 5?',
+    use: 'Use this for “Is 35 a solution of 2n < 71?” or “Which numbers make k > 5 true?”',
     assumptions: [
       'A solution makes the inequality true. Put the value in and compare the two sides.',
       'The boundary is where the two sides are equal: 2n = 71 at n = 35.5.',
@@ -3258,7 +3258,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.area-polygons~triangle',
     title: 'Triangles',
-    use: 'Use this for the area of a triangle, or a missing base or height.',
+    use: 'Use this for “A triangle has base 3 and height 7. What is its area?”',
     notation: 'letters',
     assumptions: [
       'Two copies of a triangle make a parallelogram, so a triangle is half of base × height.',
@@ -3319,7 +3319,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.area-polygons~trapezoid',
     title: 'Trapezoids',
-    use: 'Use this for the area of a trapezoid, cut into two triangles.',
+    use: 'Use this for “The bases are 16 and 19, the height 18. Find the area.”',
     notation: 'letters',
     assumptions: [
       'A diagonal cuts the trapezoid into two triangles with the same height.',
@@ -3414,7 +3414,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.area-polygons~composite',
     title: 'House shapes',
-    use: 'Use this for a shape made of a rectangle with a triangle on top.',
+    use: 'Use this for the area of a house shape: a rectangle with a triangle on top.',
     assumptions: [
       'Split the shape into a rectangle and a triangle, find each area, then add.',
       'The triangle’s base is the rectangle’s width.',
@@ -3618,7 +3618,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.surface-area-nets~cube',
     title: 'Cube formulas',
-    use: 'Use this for V = s³ and SA = 6s²: the volume and surface area of a cube.',
+    use: 'Use this for “What is the volume and surface area of a cube with side 2?”',
     notation: 'letters',
     assumptions: [
       's³ means s × s × s; s² means s × s.',
@@ -3693,7 +3693,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.surface-area-nets~pyramid',
     title: 'Square pyramid',
-    use: 'Use this for the surface area of a square pyramid from its net.',
+    use: 'Use this for “Find the surface area of the square pyramid from its net.”',
     assumptions: [
       'The net is a square base and 4 matching triangles.',
       'Each triangle’s height is measured on its face, from the base edge to the top.',
@@ -3793,7 +3793,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.surface-area-nets~volume-fractions',
     title: 'Volume with fraction edges',
-    use: 'Use this for a box with edges like 2 1/2, packed with half-unit cubes.',
+    use: 'Use this for “A box is 2 1/2 by 1 1/2 by 2. What is its volume?”',
     assumptions: [
       'A half-unit cube has edges of 1/2, so 8 of them make one unit cube.',
       'Count the half-unit cubes along each edge: twice the length.',
@@ -4002,7 +4002,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.center-spread~median',
     title: 'Median, range and mode',
-    use: 'Use this for the median and range of a data set, and the mode if there is one.',
+    use: 'Use this for “What is the median of these 7 numbers?” and the range and mode.',
     assumptions: [
       'Put the values in order first.',
       'An odd number of values: the median is the middle one. An even number: halfway between the middle two.',
@@ -4094,7 +4094,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.center-spread~mad',
     title: 'Mean absolute deviation',
-    use: 'Use this for the MAD: how far the values are from the mean, on average.',
+    use: 'Use this for “Find the mean absolute deviation of the data.”',
     assumptions: [
       'Find the mean first.',
       'The distance of each value from the mean is never negative.',
@@ -4182,7 +4182,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.center-spread~box-plot',
     title: 'Box plots',
-    use: 'Use this for the range and the interquartile range from a box plot.',
+    use: 'Use this for “What is the interquartile range?” from a box plot.',
     assumptions: [
       'The five numbers are in order: minimum, lower quartile, median, upper quartile, maximum.',
       'Each of the four parts holds about a quarter of the data: half the data is below the median.',
