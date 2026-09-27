@@ -6,6 +6,7 @@
  */
 import type { Values } from '@/engine/types';
 
+import { G8A_GALLERY_MODULES } from './galleryG8a';
 import { OPTION_GALLERY_MODULES } from './galleryOptions';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { CardIcon, LayoutDef } from './layouts';
@@ -1018,6 +1019,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
     } satisfies ModuleDef;
   })(),
   ...OPTION_GALLERY_MODULES,
+  ...G8A_GALLERY_MODULES,
 ];
 
 /**

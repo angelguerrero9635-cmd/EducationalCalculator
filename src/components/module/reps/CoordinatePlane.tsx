@@ -19,6 +19,7 @@ import {
   useFrozen,
   useRep,
 } from './common';
+import { SlopeLegs } from './SlopeLegs';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'coordinatePlane' }>;
@@ -97,6 +98,18 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
       : undefined;
   const dx = both ? q.px - p.px : 0;
   const dy = both ? q.py - p.py : 0;
+  // Grade 8 slope: the rise and run as values, their legs drawn heavy and labelled.
+  const legs = !spec.segment && !!(spec.rise || spec.run);
+  const legLabel = (id: string | undefined, word: string, d: number) =>
+    id ? rep.label(id, false) : `${word} = ${formatNumber(d)}`;
+  const sym = (id: string) => rep.variable(id).symbol;
+  const slopeSentence = () => {
+    if (dx === 0) return 'The run is 0: the line is straight up and down, and has no slope.';
+    const rise = spec.rise ? sym(spec.rise) : 'rise';
+    const run = spec.run ? sym(spec.run) : 'run';
+    const m = spec.slope && rep.known(spec.slope) ? ` = ${rep.value(spec.slope, false)}` : '';
+    return `${spec.slope ? `${sym(spec.slope)} = ` : 'Slope = '}${rise} ÷ ${run} = ${formatNumber(dy)} ÷ ${formatNumber(dx)}${m}.`;
+  };
   // Before slope (Grade 8) the move is said in words: "7 right, 0 up".
   const moveX = `${formatNumber(Math.abs(dx))} ${dx < 0 ? 'left' : 'right'}`;
   const moveY = `${formatNumber(Math.abs(dy))} ${dy < 0 ? 'down' : 'up'}`;
@@ -336,7 +349,18 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                 ) : (
                   lineThrough()
                 )}
-                {!spec.segment && both && dx !== 0 && dy !== 0 ? (
+                {legs && both && (dx !== 0 || dy !== 0) ? (
+                  <SlopeLegs
+                    from={{ x: p.px, y: p.py }}
+                    to={{ x: q.px, y: q.py }}
+                    sx={sx}
+                    sy={sy}
+                    w={w}
+                    rise={legLabel(spec.rise, 'rise', dy)}
+                    run={legLabel(spec.run, 'run', dx)}
+                  />
+                ) : null}
+                {!legs && !spec.segment && both && dx !== 0 && dy !== 0 ? (
                   <>
                     <Path
                       d={`M ${sx(p.px)} ${sy(p.py)} L ${sx(q.px)} ${sy(p.py)} L ${sx(q.px)} ${sy(q.py)}`}
@@ -456,6 +480,29 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   // upper-left when the line rises (and there is room), else the upper-right.
                   // A lone point in four quadrants (reflections) labels away from both axes,
                   // where their numbers are.
+                  // With the rise and run drawn (Grade 8 slope), the first point's label goes on
+                  // the side away from its triangle, which the legs and their labels fill.
+                  if (legs && both && k === 0 && (dx !== 0 || dy !== 0)) {
+                    const text = `(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`;
+                    return (
+                      <ChartText
+                        key={`t${pt.testID}`}
+                        {...fitLabel(
+                          sx(pt.px) + (dx >= 0 ? -9 : 9),
+                          text,
+                          chart.label,
+                          w,
+                          dx >= 0 ? 'end' : 'start',
+                          9,
+                        )}
+                        y={sy(pt.py) + (dy > 0 ? 20 : -8)}
+                        fontSize={chart.label}
+                        fontWeight="700"
+                      >
+                        {text}
+                      </ChartText>
+                    );
+                  }
                   const out = !both && spec.quadrants === 4;
                   const upLeft = out ? pt.px < 0 : both && dx * dy > 0 && sx(pt.px) - x0 > 60;
                   const below = out && pt.py < 0;
@@ -566,7 +613,9 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   : 'Tap the grid to place the point, or type both numbers.'
                 : p?.known
                   ? both
-                    ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
+                    ? legs
+                      ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}) · ${slopeSentence()}`
+                      : `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
                     : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
                   : 'Type both coordinates to place the point.'}
       </Caption>

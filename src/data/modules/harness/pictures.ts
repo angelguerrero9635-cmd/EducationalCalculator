@@ -560,6 +560,26 @@ export function repIssues(
           if (Math.abs(rise - m!) > 1e-6) out.push(`slope ${m} drawn, rise over run is ${rise}`);
         }
       }
+      // Labelled legs (Grade 8 slope) must be the points' own rise and run.
+      if ((rep.rise || rep.run) && !rep.second) out.push('rise and run need a second point');
+      if (rep.second) {
+        const [x1, y1, x2, y2] = [rep.x, rep.y, rep.second.x, rep.second.y].map(val);
+        const [rise, run] = [rep.rise, rep.run].map((id) => (id ? val(id) : undefined));
+        if (
+          y1 !== undefined &&
+          y2 !== undefined &&
+          rise !== undefined &&
+          Math.abs(y2 - y1 - rise) > 1e-9
+        )
+          out.push(`rise ${rise} labelled, the points rise ${y2 - y1}`);
+        if (
+          x1 !== undefined &&
+          x2 !== undefined &&
+          run !== undefined &&
+          Math.abs(x2 - x1 - run) > 1e-9
+        )
+          out.push(`run ${run} labelled, the points run ${x2 - x1}`);
+      }
       break;
     }
     case 'boxPlot': {
@@ -953,6 +973,28 @@ export function repIssues(
       const [a, b, d] = [...rep.items, rep.difference].map((id) => (id ? val(id) : undefined));
       if (a !== undefined && b !== undefined && d !== undefined && Math.abs(a - b) !== d)
         out.push(`plants with ${a} and ${b} leaves don't differ by ${d}`);
+      break;
+    }
+    case 'factorRows': {
+      const [p, q, r] = [rep.first, rep.second, rep.result].map(val);
+      // Each row wraps at 12 tiles; past two lines a row is too long to count by eye.
+      count(rep.first, 'factors', 12);
+      count(rep.second, 'factors', 12);
+      if (p !== undefined && q !== undefined) {
+        const want = rep.rule === 'product' ? p + q : rep.rule === 'quotient' ? p - q : p * q;
+        if (r !== undefined && r !== want) out.push(`${rep.rule} of ${p} and ${q} shows ${r}`);
+        if (rep.rule === 'power' && p * q > 24) out.push(`${q} rows of ${p} is past 24 factors`);
+      }
+      break;
+    }
+    case 'rootSquare': {
+      const [a, sd] = [val(rep.area), val(rep.side)];
+      if (a !== undefined && a < 0) out.push(`square of area ${a}`);
+      // The grid grows to the side; past 12 the unit squares are too small to read.
+      if (a !== undefined && a > 144) out.push(`square of area ${a} is past a 12 × 12 grid`);
+      if (a !== undefined && a >= 0 && sd !== undefined && Math.abs(sd - Math.sqrt(a)) > 0.006)
+        out.push(`side ${sd} squared is ${sd * sd}, the area shows ${a}`);
+      for (const m of rep.marks ?? []) if (m.at < 0) out.push(`mark ${m.label} below 0`);
       break;
     }
     case 'rockLayers':

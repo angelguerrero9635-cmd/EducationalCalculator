@@ -162,6 +162,7 @@ function representationVars(r: Representation): string[] {
         r.y,
         ...(r.second ? [r.second.x, r.second.y] : []),
         ...(r.slope ? [r.slope] : []),
+        ...[r.rise, r.run].filter((v): v is string => !!v),
         ...(r.distance ? [r.distance] : []),
         ...(r.rect ? [r.rect.left, r.rect.right, r.rect.bottom, r.rect.top] : []),
         ...(r.trail
@@ -308,6 +309,10 @@ function representationVars(r: Representation): string[] {
       return [r.near, r.times, ...(r.far ? [r.far] : [])];
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
+    case 'rootSquare':
+      return [r.area, r.side];
+    case 'factorRows':
+      return [r.base, r.first, r.second, r.result];
     case 'pushes':
       return [r.right, r.left, r.extra];
     case 'force':
