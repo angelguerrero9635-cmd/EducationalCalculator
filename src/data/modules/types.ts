@@ -613,6 +613,11 @@ export type Representation =
       /** Tenths and hundredths as decimals: the tenths are labeled 0.1, 0.2 … and the point too. */
       decimal?: boolean;
       /**
+       * The first whole on the line (a number or a value id): it runs from here to here +
+       * `wholes` (1 to 3), stretching to take in the point; the point is still counted from 0.
+       */
+      startWhole?: number | string;
+      /**
        * Mixed-number jumps (18 1/4 − 2 3/4): a jump from this value to the numerator, both
        * counted in parts (18 1/4 is 73 fourths), drawn as one jump of whole numbers and one of
        * the parts left. The line shows only the wholes around the two points (at least

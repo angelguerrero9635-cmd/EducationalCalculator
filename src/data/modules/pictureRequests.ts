@@ -286,9 +286,14 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Decimal number line from any whole start',
     kind: 'fractionLine',
     pages: ['m.4.decimals-intro~number-line'],
-    status: 'requested',
-    gallery: [],
-    notes: 'A line from 1 to 3 in tenths with 2.6 marked.',
+    status: 'drawn',
+    gallery: ['g.decimal-line-from-whole', 'g.decimal-line-from-whole-hundredths'],
+    uses: '"startWhole"',
+    notes:
+      'A line from 1 to 3 in tenths with 2.6 marked. Add startWhole to the representation (a number, e.g. 1 with ' +
+      'wholes: 2, or a value id such as a derived "whole before the point" = wholes in k parts of n); the page ' +
+      'keeps k (parts from 0) and n (10 or 100). The line stretches to take in the point, tenths label every ' +
+      'other one when crowded, and the jumps count on from the whole before the point (by tenths, then hundredths).',
   },
   {
     id: 'R26',

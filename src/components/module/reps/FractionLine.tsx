@@ -117,6 +117,16 @@ function runLabels(a: number, runOf: (i: number) => number): [number, number][] 
   return out;
 }
 
+/** Jumps from `from` to `to` parts: tenths first when a whole is 100 parts, then single parts. */
+function startJumps(from: number, to: number, b: number): [number, number][] {
+  const big = b === 100 ? 10 : 1;
+  const out: [number, number][] = [];
+  let i = from;
+  while (i + big <= to) out.push([i, (i += big)]);
+  while (i < to) out.push([i, (i += 1)]);
+  return out;
+}
+
 /**
  * Fractions on a number line: each whole from 0 to `wholes` cut into equal parts, one jump per
  * part from 0 to the fraction. Drag the point to another mark.
@@ -148,10 +158,26 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // A "?" denominator draws no parts: the line keeps its usual wholes, not raw ÷ 1.
   // The number of wholes (and a mixed-number line's first whole) holds still while the point
   // is dragged (the line doesn't rescale under the finger).
+  // A line from another whole (1 to 3): the typed start, else the whole below the point.
+  const hasStart = spec.startWhole !== undefined && !hasFrom;
+  const startW =
+    typeof spec.startWhole === 'number'
+      ? spec.startWhole
+      : spec.startWhole !== undefined && rep.known(spec.startWhole)
+        ? Math.max(0, Math.round(rep.shown(spec.startWhole)))
+        : known
+          ? Math.floor(raw / b)
+          : 0;
+  const startLo = known ? Math.min(startW, Math.floor(raw / b)) : startW;
   const fit = useFrozen(
     hasFrom && ends.length
       ? [windowLo, Math.max(spec.wholes, windowHi - windowLo)]
-      : [0, Math.max(spec.wholes, known ? Math.ceil(raw / b) : 0, second)],
+      : hasStart
+        ? [
+            startLo,
+            Math.max(1, startW + spec.wholes, known ? Math.ceil(raw / b) : 0, second) - startLo,
+          ]
+        : [0, Math.max(spec.wholes, known ? Math.ceil(raw / b) : 0, second)],
   );
   const [lo, W] = fit.value as [number, number];
   const scale = useRef(1);
@@ -266,7 +292,7 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                   ))}
                 {spec.decimal && b % 10 === 0
-                  ? Array.from({ length: W * 10 + 1 }, (_, i) => i)
+                  ? Array.from({ length: W * 10 + 1 }, (_, k) => lo * 10 + k)
                       .filter((i) => i % 10 !== 0)
                       .map((i) => (
                         <G key={`d${i}`}>
@@ -278,15 +304,18 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             stroke={c.chartInk}
                             strokeWidth={chart.strokeLight}
                           />
-                          <ChartText
-                            x={px(i / 10)}
-                            y={y + 24}
-                            fontSize={chart.tiny}
-                            fill={c.chartMuted}
-                            textAnchor="middle"
-                          >
-                            {decimal(i / 10, 1)}
-                          </ChartText>
+                          {/* From another whole, every other tenth when they'd touch (1.2, 1.4 …). */}
+                          {!hasStart || unit / 10 >= 24 || i % 2 === 0 ? (
+                            <ChartText
+                              x={px(i / 10)}
+                              y={y + 24}
+                              fontSize={chart.tiny}
+                              fill={c.chartMuted}
+                              textAnchor="middle"
+                            >
+                              {decimal(i / 10, 1)}
+                            </ChartText>
+                          ) : null}
                         </G>
                       ))
                   : null}
@@ -342,7 +371,7 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                   </>
                 ) : null}
-                {known && !hasFrom
+                {known && !hasFrom && !hasStart
                   ? Array.from({ length: a }, (_, i) => (
                       <Path
                         key={`j${i}`}
@@ -352,6 +381,22 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         fill="none"
                       />
                     ))
+                  : null}
+                {/* From another whole, the jumps count on from the whole before the point: hundredths
+                    go by tenths first, then hundredths (7 to 7.8, then 7.84). */}
+                {known && hasStart
+                  ? startJumps(wholes * b, a, b).map(([i0, i1], k) => {
+                      const hl = Math.min(h * 0.38, Math.max(10, (i1 - i0) * step * 0.55));
+                      return (
+                        <Path
+                          key={`j${k}`}
+                          d={`M ${px(i0 / b)} ${y} Q ${px((i0 + i1) / 2 / b)} ${y - 2 * hl} ${px(i1 / b)} ${y}`}
+                          stroke={b === 100 && i1 - i0 === 1 ? c.chartInk : c.chartHighlight}
+                          strokeWidth={chart.strokeLight}
+                          fill="none"
+                        />
+                      );
+                    })
                   : null}
                 {/* One label per run: "3/8" over its jumps, so the addends (or copies) are seen. */}
                 {known && (spec.parts || each > 0) && a > 0
@@ -440,7 +485,10 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {fromKnown
           ? mixedCaption()
           : known && spec.decimal
-            ? `${decimal(a / b, places(b))}: ${a} ${b === 10 ? 'tenths' : 'hundredths'} from 0.`
+            ? `${decimal(a / b, places(b))}: ${a} ${b === 10 ? 'tenths' : 'hundredths'} from 0` +
+              (hasStart && wholes > 0 && left > 0
+                ? `, ${left} ${b === 10 ? (left === 1 ? 'tenth' : 'tenths') : left === 1 ? 'hundredth' : 'hundredths'} past ${wholes}.`
+                : '.')
             : known
               ? `${a}/${b}: ${a} ${a === 1 ? 'jump' : 'jumps'} of 1/${b} from 0.` +
                 (spec.unit
@@ -462,6 +510,9 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
             pin: [spec.numerator],
           },
           { var: spec.numerator, steps: [1], pin: [spec.denominator] },
+          ...(typeof spec.startWhole === 'string'
+            ? [{ var: spec.startWhole, steps: [1], pin: [spec.numerator, spec.denominator] }]
+            : []),
         ]}
       />
     </View>

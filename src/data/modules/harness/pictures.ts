@@ -494,8 +494,19 @@ export function repIssues(
           : rep.from === undefined
             ? Math.ceil(a / b)
             : Math.max(Math.ceil(Math.max(a, f ?? a) / b) - Math.floor(Math.min(a, f ?? a) / b), 1);
-      if (span > 24 && a !== undefined && b !== undefined) {
+      if (span > 24 && rep.startWhole === undefined && a !== undefined && b !== undefined) {
         out.push(`${a}/${b} needs ${span} wholes on the line`);
+      }
+      // `startWhole`: the line runs from that whole (or the point's) to start + wholes.
+      if (rep.startWhole !== undefined) {
+        count(rep.startWhole, 'line start whole');
+        const s = val(rep.startWhole);
+        const p = a !== undefined && b !== undefined && b >= 1 ? a / b : undefined;
+        const from = Math.min(s ?? Infinity, p === undefined ? Infinity : Math.floor(p));
+        const to = Math.max((s ?? 0) + rep.wholes, p === undefined ? 0 : Math.ceil(p));
+        if (Number.isFinite(from) && to - from > 24) {
+          out.push(`line from ${from} to ${to} needs more than 24 wholes`);
+        }
       }
       if (rep.second) {
         count(rep.second.numerator, 'second line parts counted');

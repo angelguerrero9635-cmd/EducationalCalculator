@@ -177,6 +177,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `thermometers`     | `cups`                                   | each thermometer in a dark or light cup of water in the sun                   |
 | `fractionBars`     | `wholes`; a fraction past 1              | as many whole bars as it needs (7/4: a whole bar and 3/4 of the next), to 6   |
 | `fractionLine`     | `from` (counted in parts)                | mixed-number jumps (18 1/4 − 2 3/4): the wholes, then the parts left          |
+| `fractionLine`     | `startWhole` (a number or value id)      | a line from any whole, start + `wholes` (1 to 3 in tenths, 2.6 marked)        |
 | `partition`        | `shape: 'set'`, `object`                 | a set of umbrellas or counters, some shaded (3/7 of the set)                  |
 | `numberLine`       | `from`, `every`, `span`; `jumps`         | a line from 500 by 1, 10 or 100, the point placed; `'ticks'`: a jump per tick |
 | `tape`, `beaker`   | `mixed`                                  | shares and amounts as exact mixed numbers (33 1/3, 2 3/8 L)                   |

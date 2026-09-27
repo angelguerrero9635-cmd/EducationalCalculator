@@ -143,3 +143,102 @@ export const R2B_GALLERY_MODULES: ModuleDef[] = [
     S: 154.25,
   }),
 ];
+
+/**
+ * Tenths or hundredths on a line from another whole number (R25): the page's own variables
+ * (parts in one whole, parts from 0, the decimal). The first whole is a number, or `w`: the whole
+ * just before the point, worked out from the parts.
+ */
+function decimalFrom(
+  id: string,
+  title: string,
+  startWhole: number | 'w',
+  wholes: number,
+  example: Values,
+): ModuleDef {
+  const w = startWhole === 'w';
+  return {
+    id,
+    title,
+    assumptions: [
+      'Cut each whole into 10 equal parts for tenths, or 100 for hundredths.',
+      'Count the parts from 0: 26 tenths from 0 is 2.6.',
+      w
+        ? 'The line starts at the whole just before the point.'
+        : `The line starts at ${startWhole}, so it shows only the wholes near the point.`,
+    ],
+    variables: [
+      { ...whole('n', 'n', 'Parts from 0 to 1', 10, 100), allowed: [10, 100] },
+      whole('k', 'k', 'Parts from 0', 0, 1000),
+      { id: 'd', symbol: 'd', name: 'As a decimal', min: 0, max: 10, step: 0.01 },
+      ...(w ? [{ ...whole('w', 'w', 'Whole before the point', 0, 10), derived: true }] : []),
+    ],
+    relations: [
+      {
+        id: 'd = k ÷ n',
+        display: '{k}/{n} = {d}',
+        vars: ['d', 'k', 'n'],
+        residual: (v: Values) => v.d! - v.k! / v.n!,
+        solve: {
+          d: (v: Values) => v.k! / v.n!,
+          k: (v: Values) => v.d! * v.n!,
+          n: (v: Values) => (v.d ? v.k! / v.d : undefined),
+        },
+      },
+      ...(w
+        ? [
+            {
+              id: 'w = wholes in k/n',
+              display: 'full wholes in {k}/{n}: {w}',
+              vars: ['w', 'k', 'n'],
+              residual: (v: Values) => v.w! - Math.floor(v.k! / v.n!),
+              solve: {
+                w: (v: Values) => Math.floor(v.k! / v.n!),
+                k: () => undefined,
+                n: () => undefined,
+              },
+            },
+          ]
+        : []),
+    ],
+    steps: {
+      'd = k ÷ n': {
+        d: { expr: '{k} ÷ {n}', how: 'Tenths: one place after the point. Hundredths: two.' },
+        k: { expr: '{d} × {n}', how: 'Read the digits after the point as tenths or hundredths.' },
+        n: { expr: '{k} ÷ {d}', how: 'How many of these parts make 1 whole?' },
+      },
+      ...(w
+        ? {
+            'w = wholes in k/n': {
+              w: {
+                expr: 'wholes in {k} parts of {n}',
+                how: 'Every full set of parts makes 1 whole. The line starts there.',
+              },
+            },
+          }
+        : {}),
+    },
+    example,
+    startWith: ['n', 'k'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'k',
+      denominator: 'n',
+      wholes,
+      decimal: true,
+      startWhole,
+    },
+  };
+}
+
+R2B_GALLERY_MODULES.push(
+  // R25: the line from 1 to 3 in tenths with 2.6 marked.
+  decimalFrom('g.decimal-line-from-whole', 'Tenths from 1 to 3', 1, 2, { n: 10, k: 26, d: 2.6 }),
+  // R25 edge: hundredths on a line from the whole before the point, 7 to 9, with 7.84 marked.
+  decimalFrom('g.decimal-line-from-whole-hundredths', 'Hundredths from 7 to 9', 'w', 2, {
+    n: 100,
+    k: 784,
+    d: 7.84,
+    w: 7,
+  }),
+);
