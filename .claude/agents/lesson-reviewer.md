@@ -55,6 +55,10 @@ working value.
 When the prompt says **edge-case review**, the evidence was made with `--edges`: fewer random
 samples, most of them at the boundaries, and the dump has `-- edge` walkthroughs for every
 opening value at its smallest and largest, then all of them at once. Spend the review there.
+The edged value is typed last, as a student would, so a value that doesn't fit prints as
+`rejected:` with the page's reason. The `values:` line shows `allowed`, `multipleOf` and
+`derived`. Pictures that grow to fit their values (bars, ruler, thermometers, pushes, hops)
+are not "past the scale"; flag a picture only when the page-reviewer's screenshot shows it.
 For each module, read the `-- edge` blocks first, then check:
 
 - The smallest and largest allowed values give a true, sensible answer. Look for:

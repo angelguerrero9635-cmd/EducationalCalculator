@@ -70,7 +70,7 @@ describeOrSkip('review dump', () => {
         `values: ${m.variables
           .map(
             (v) =>
-              `${v.id} "${v.name}" (${v.symbol}) ${v.min ?? '−∞'}..${v.max ?? '∞'}${v.unit ? ` ${v.unit}` : ''}${v.integer ? ' whole' : ''}`,
+              `${v.id} "${v.name}" (${v.symbol}) ${v.min ?? '−∞'}..${v.max ?? '∞'}${v.unit ? ` ${v.unit}` : ''}${v.integer ? ' whole' : ''}${v.allowed ? ` allowed [${v.allowed.join(', ')}]` : ''}${v.multipleOf ? ` multiple of ${v.multipleOf}` : ''}${v.derived ? ' derived' : ''}`,
           )
           .join('; ')}`,
       );
@@ -133,11 +133,17 @@ describeOrSkip('review dump', () => {
         }
       }
       for (const [label, set] of edgeCases) {
+        // The edged values go last, as a student types them: a value that doesn't fit is then
+        // the one rejected, with the reason the page shows (not an older one dropped silently).
+        const order = [
+          ...m.startWith.filter((id) => !(id in set)),
+          ...m.startWith.filter((id) => id in set),
+        ];
         const result = solve(
           m,
-          m.startWith.map((id) => ({ id, value: set[id] ?? m.example[id]! })),
+          order.map((id) => ({ id, value: set[id] ?? m.example[id]! })),
         );
-        lines.push(`-- edge ${label}: ${m.startWith.join(', ')}`);
+        lines.push(`-- edge ${label}: ${order.join(', ')}`);
         lines.push(
           ...(result.rejected
             ? [`  rejected: ${result.rejected.reason}`]

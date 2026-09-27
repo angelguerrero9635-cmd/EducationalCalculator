@@ -5,6 +5,25 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## K–6 edge-case review: five groups, a lesson-reviewer and a page-reviewer each, 12 reports
+
+- Setup: `review-evidence.mjs --edges` (25 samples, 5 sequences, every opening value at each
+  end and all at once); released questions filed by the lesson that teaches them, science
+  matched by lesson (`alsoSkills`), in `questions.md` per group.
+- Found what random samples didn't: circular steps at rejected edges, ranges below released
+  items (13 × 12,000; 444 m perimeters; 20 °F day-to-day swings), compare pages with no
+  direction, pictures that kept drawing a cleared value, labels off the canvas at ±20.
+- Evidence gaps the reviewers named, now fixed: the edge blocks hid the rejection reason (the
+  edited value is now last); the values line lacked `allowed` and `multipleOf`.
+- Over-reported: "forced by a range limit" harness minors (hundreds of lines, one engine
+  limit), and picture-scale findings on pages whose pictures grow to fit.
+- About 130 released questions were re-filed from the reports' `[data]` lines; the question
+  mapper should weigh an item's grade (many Grade 4 NAEP items sat under K–2 skills).
+- Not built, listed for the owner: new pages the questions call for (mixed numbers, unit
+  conversion with rates, compare rational numbers, inequality solutions, bills and coins,
+  3-digit number lines, eggs or born alive, camouflage, weather tools), a plot-a-point main
+  page for Grade 5 coordinates, and data sizes 3..10 on center and spread.
+
 ## Owner request: better-quality images for every diagram type
 
 - Before and after contact sheets were made for 70 picture kinds, in light and dark mode (one
