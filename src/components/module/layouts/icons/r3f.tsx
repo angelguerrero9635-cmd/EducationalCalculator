@@ -273,6 +273,138 @@ export function R3FIcon({ icon, ink }: IconProps): ReactNode {
     return <G key={key}>{lit(`M ${pts.join(' L ')} Z`, fill, 0.9)}</G>;
   };
 
+  /** A stroke ending in an arrowhead at (x, y) that points along `deg` (0 = right, 90 = down). */
+  const arrow = (d: string, x: number, y: number, deg: number, color: string, w = 1.8) => {
+    const a = (deg * Math.PI) / 180;
+    const back = (k: number, side: number) =>
+      `${x - k * Math.cos(a) + side * 2.6 * Math.sin(a)} ${y - k * Math.sin(a) - side * 2.6 * Math.cos(a)}`;
+    return (
+      <>
+        {line(d, color, w)}
+        <Path d={`M ${x} ${y} L ${back(4.6, 1)} L ${back(4.6, -1)} Z`} fill={color} {...o(0.5)} />
+      </>
+    );
+  };
+  /** A barometer: a wooden case, a metal bezel, the dial and the brass set needle at the top. */
+  const barometer = (rising: boolean) => {
+    const at = (deg: number, r: number) =>
+      [24 + r * Math.cos((deg * Math.PI) / 180), 24 + r * Math.sin((deg * Math.PI) / 180)] as const;
+    const ticks = Array.from({ length: 19 }, (_, i) => {
+      const deg = -225 + i * 15;
+      const [x0, y0] = at(deg, i % 3 ? 13.8 : 12.4);
+      const [x1, y1] = at(deg, 15.2);
+      return `M ${x0} ${y0} L ${x1} ${y1}`;
+    }).join(' ');
+    const needle = rising ? -25 : -155;
+    const [nx, ny] = at(needle, 13);
+    const [tx, ty] = at(needle + 180, 4);
+    const [sx, sy] = at(rising ? -84 : -96, 10.5);
+    const [ex, ey] = at(needle + (rising ? -12 : 12), 10.5);
+    return (
+      <>
+        <FloorShadow cx={25} cy={45} rx={17} ry={2} />
+        {lit(ell(24, 24, 21.5, 21.5), c.wood, 1.2)}
+        <Circle cx={24} cy={24} r={18.3} fill={url(ids.metal)} {...o(1)} />
+        <Circle cx={24} cy={24} r={16.3} fill={c.paper} {...o(0.8)} />
+        {line(ticks, ink, 0.8)}
+        {line(`M 24 24 L 24 8.5`, c.sunRay, 1.2)}
+        {arrow(
+          `M ${sx} ${sy} A 10.5 10.5 0 0 ${rising ? 1 : 0} ${ex} ${ey}`,
+          ex,
+          ey,
+          needle + (rising ? 90 : -90) + (rising ? -12 : 12),
+          c.blockRed,
+          1.6,
+        )}
+        <Path
+          d={`M ${tx} ${ty} L ${nx} ${ny}`}
+          stroke={ink}
+          strokeWidth={1.6}
+          strokeLinecap="round"
+        />
+        <Circle cx={24} cy={24} r={1.8} fill={c.sunRay} {...o(0.7)} />
+        {arrow(
+          rising ? 'M 24 37 V 31' : 'M 24 30 V 36',
+          24,
+          rising ? 30 : 37,
+          rising ? -90 : 90,
+          c.blockRed,
+          1.8,
+        )}
+      </>
+    );
+  };
+  /** A flat weather-map panel. */
+  const mapPanel = (
+    <Rect
+      x={2}
+      y={2}
+      width={44}
+      height={44}
+      rx={3}
+      fill={c.chartSurface}
+      stroke={c.chartGrid}
+      strokeWidth={1}
+    />
+  );
+  /** Isobars (lines of equal pressure) around (x, y). */
+  const isobars = (x: number, y: number) => (
+    <>
+      {[
+        [6.5, 5.5],
+        [11, 9.5],
+        [15, 13.5],
+      ].map(([rx, ry]) => (
+        <Path
+          key={rx}
+          d={ell(x, y, rx!, ry!)}
+          fill="none"
+          stroke={c.chartMuted}
+          strokeWidth={0.9}
+        />
+      ))}
+    </>
+  );
+  /** A town: a dot with a ring. */
+  const town = (x: number, y: number) => (
+    <>
+      <Circle cx={x} cy={y} r={3.2} fill={c.chartSurface} stroke={ink} strokeWidth={1} />
+      <Circle cx={x} cy={y} r={1.6} fill={ink} />
+    </>
+  );
+  /**
+   * A cold front: a blue line (a curve from p0 through p1 to p2) with blue triangles on the side
+   * it moves toward (+1: the right of the line's direction of travel).
+   */
+  const coldFront = (p: [number, number][], side: 1 | -1) => {
+    const [p0, p1, p2] = p as [[number, number], [number, number], [number, number]];
+    const pt = (t: number) => [
+      (1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0],
+      (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1],
+    ];
+    const tri = [0.14, 0.38, 0.62, 0.86].map((t) => {
+      const [x, y] = pt(t) as [number, number];
+      const dx = 2 * (1 - t) * (p1[0] - p0[0]) + 2 * t * (p2[0] - p1[0]);
+      const dy = 2 * (1 - t) * (p1[1] - p0[1]) + 2 * t * (p2[1] - p1[1]);
+      const n = Math.hypot(dx, dy);
+      const [ux, uy] = [dx / n, dy / n];
+      const [nx, ny] = [-uy * side, ux * side];
+      return `M ${x - 2.8 * ux} ${y - 2.8 * uy} L ${x + 4.6 * nx} ${y + 4.6 * ny} L ${x + 2.8 * ux} ${y + 2.8 * uy} Z`;
+    });
+    return (
+      <>
+        <Path
+          d={`M ${p0[0]} ${p0[1]} Q ${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]}`}
+          fill="none"
+          stroke={c.spectrumBlue}
+          strokeWidth={2.4}
+          strokeLinecap="round"
+        />
+        <Path d={tri.join(' ')} fill={c.spectrumBlue} />
+      </>
+    );
+  };
+
   let art: ReactNode;
   switch (icon) {
     // ── Precipitation and other weather (D09) ─────────────────────────────────
@@ -1098,6 +1230,99 @@ export function R3FIcon({ icon, ink }: IconProps): ReactNode {
       );
       break;
     }
+
+    // ── Forecasting from pressure, fronts and moving air (D61) ────────────────
+    case 'barometer falling':
+      art = barometer(false);
+      break;
+    case 'barometer rising':
+      art = barometer(true);
+      break;
+    case 'low pressure center':
+      art = (
+        <>
+          {mapPanel}
+          {isobars(17, 24)}
+          <Path d="M 12 15 H 16.5 V 28.8 H 23.5 V 33 H 12 Z" fill={c.spectrumRed} {...o(0.8)} />
+          {arrow('M 27 24 H 36.5', 38, 24, 0, ink, 1.8)}
+          {town(41.5, 24)}
+        </>
+      );
+      break;
+    case 'high pressure center':
+      art = (
+        <>
+          {mapPanel}
+          {isobars(24, 24)}
+          <Path
+            d="M 17 15 H 21.4 V 21.9 H 26.6 V 15 H 31 V 33 H 26.6 V 26 H 21.4 V 33 H 17 Z"
+            fill={c.spectrumBlue}
+            {...o(0.8)}
+          />
+        </>
+      );
+      break;
+    case 'cold front near town':
+      art = (
+        <>
+          {mapPanel}
+          {coldFront(
+            [
+              [18, 4],
+              [8, 24],
+              [16, 44],
+            ],
+            -1,
+          )}
+          {town(35, 24)}
+        </>
+      );
+      break;
+    case 'cold front past town':
+      art = (
+        <>
+          {mapPanel}
+          {coldFront(
+            [
+              [38, 4],
+              [28, 24],
+              [36, 44],
+            ],
+            -1,
+          )}
+          {town(17, 27)}
+          {arrow('M 6 9 L 12.6 18.6', 13.8, 20.4, 55, ink, 1.8)}
+          {line('M 7.5 44 V 36', ink, 1)}
+          <Path d="M 7.5 34.5 L 5.8 37.5 H 9.2 Z" fill={ink} />
+          <Path d="M 5.6 32.5 V 27.5 L 9.4 32.5 V 27.5" fill="none" {...o(0.9)} />
+        </>
+      );
+      break;
+    case 'air rising up mountain':
+      art = (
+        <>
+          {lit('M 1 44 L 30 10 L 47 44 Z', c.rock5, 1.1)}
+          <Path d="M 30 10 L 47 44 H 36 Z" fill={c.shade} fillOpacity={0.15} />
+          {line('M 8 44 L 12 38 M 18 44 L 22 33 M 30 44 L 32 30', c.rock4, 0.8, 0.7)}
+          {grass(44)}
+          {arrow('M 1 36 Q 9 34.5 15.5 26', 16.8, 24.2, -55, c.chartHighlight, 1.8)}
+          {arrow('M 4 26.5 Q 11 25 17.5 16.5', 18.8, 14.7, -55, c.chartHighlight, 1.8)}
+          {arrow('M 23 12 Q 25.5 8 26 4', 26.2, 2.4, -85, c.chartHighlight, 1.8)}
+        </>
+      );
+      break;
+    case 'air sinking over land':
+      art = (
+        <>
+          {grass(41)}
+          {bush(9, 39.5, 2.6)}
+          {bush(40, 39.5, 2.6)}
+          {arrow('M 24 4 V 31', 24, 34, 90, c.chartHighlight, 1.8)}
+          {arrow('M 14 4 C 14 20 13 27 7.5 31', 5.6, 32.6, 145, c.chartHighlight, 1.8)}
+          {arrow('M 34 4 C 34 20 35 27 40.5 31', 42.4, 32.6, 35, c.chartHighlight, 1.8)}
+        </>
+      );
+      break;
   }
 
   return (

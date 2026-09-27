@@ -1482,10 +1482,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.6.weather-fronts~forecast',
     kind: 'icon',
     pages: ['s.6.weather-fronts~forecast'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3f-forecast'],
+    uses: '"icon":"barometer falling"',
     notes:
-      'The barometer is falling fast → a barometer dial, needle moving down; The barometer is rising → a barometer dial, needle moving up; A low-pressure center is moving in → a red L with an arrow; A high-pressure center is overhead → a blue H; A cold front is a few hours away → a blue cold-front line with triangles pointing at a town dot; Warm, humid air is rising up a mountainside → air arrows rising up a mountain slope; Dry air is sinking over the area → air arrows sinking over flat land',
+      "The barometer is falling fast → a barometer dial, needle moving down; The barometer is rising → a barometer dial, needle moving up; A low-pressure center is moving in → a red L with an arrow; A high-pressure center is overhead → a blue H; A cold front is a few hours away → a blue cold-front line with triangles pointing at a town dot; Warm, humid air is rising up a mountainside → air arrows rising up a mountain slope; Dry air is sinking over the area → air arrows sinking over flat land. Drawn (weather-map conventions: red L, blue H, gray isobars, a blue cold-front line with its triangles on the side it moves toward; a barometer's low readings on the left, high on the right): each card gets figure: { kind: 'icon', icon }: The barometer is falling fast → 'barometer falling' (the needle has swung left of the brass set needle, a curved arrow and a down arrow); The barometer is rising → 'barometer rising' (swung right, an up arrow); A low-pressure center is moving in → 'low pressure center' (a red L in its isobars, an arrow toward a town dot); A high-pressure center is overhead → 'high pressure center'; A cold front is a few hours away → 'cold front near town' (the triangles point at the town dot); Warm, humid air is rising up a mountainside → 'air rising up mountain'; Dry air is sinking over the area → 'air sinking over land' (arrows sinking and spreading out over flat land); A cold front passed last night and the wind is from the northwest (not requested) → 'cold front past town' (the front east of the town, moving away, and a wind arrow from the northwest, with a north arrow)",
   },
   {
     id: 'D62',

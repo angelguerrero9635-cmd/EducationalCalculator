@@ -149,4 +149,32 @@ export const R3F_GALLERY_LAYOUTS: LayoutDef[] = [
       ['Roof strapped to the walls', 'hurricane', 'roof straps'],
     ],
   ),
+  // D61: s.6.weather-fronts~forecast.
+  cardSort(
+    'g.r3f-forecast',
+    'Stormy or fair?',
+    'What weather is likely next?',
+    [
+      [
+        'wet',
+        'Clouds and rain likely',
+        'Air is rising, so it cools and its water vapor condenses.',
+      ],
+      ['fair', 'Clear and dry likely', 'Air is sinking, so it warms and clouds dry up.'],
+    ],
+    [
+      ['The barometer is falling fast', 'wet', 'barometer falling'],
+      ['A low-pressure center is moving in', 'wet', 'low pressure center'],
+      ['A cold front is a few hours away', 'wet', 'cold front near town'],
+      ['Warm, humid air is rising up a mountainside', 'wet', 'air rising up mountain'],
+      ['The barometer is rising', 'fair', 'barometer rising'],
+      ['A high-pressure center is overhead', 'fair', 'high pressure center'],
+      [
+        'A cold front passed last night and the wind is from the northwest',
+        'fair',
+        'cold front past town',
+      ],
+      ['Dry air is sinking over the area', 'fair', 'air sinking over land'],
+    ],
+  ),
 ];

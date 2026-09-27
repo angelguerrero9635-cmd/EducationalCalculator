@@ -40,4 +40,13 @@ export const R3F_ICONS = [
   'bolted shelves',
   'cleared brush around house',
   'fire break',
+  // Forecasting from pressure, fronts and moving air (D61).
+  'barometer falling',
+  'barometer rising',
+  'low pressure center',
+  'high pressure center',
+  'cold front near town',
+  'cold front past town',
+  'air rising up mountain',
+  'air sinking over land',
 ] as const;
