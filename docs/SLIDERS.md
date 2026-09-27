@@ -6,78 +6,93 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-25 of 251 pages show sliders.
+37 of 319 pages show sliders.
 
 ## By picture kind
 
 | Kind | Pages | Sliders | Why |
 | --- | ---: | :---: | --- |
 | angles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| areaModel | 7 | yes | sweeping the value shows the picture change; no touch control of its own |
+| areaModel | 13 | yes | sweeping the value shows the picture change; no touch control of its own |
 | array | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | balance | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| bars | 17 | no | the picture has its own handles or taps, or the inputs are enough |
+| bars | 18 | no | the picture has its own handles or taps, or the inputs are enough |
+| baseHeight | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | baseTen | 15 | no | the picture has its own handles or taps, or the inputs are enough |
 | beaker | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| boxPlot | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| boxPlot | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | circle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | clock | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| coins | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| coins | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | compareRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| coordinatePlane | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| coordinatePlane | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| dotPlot | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| doubleNumberLine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| equalGroups | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| doubleNumberLine | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| equalGroups | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| fieldOfView | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | fractionArea | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | fractionBars | 7 | yes | sweeping the value shows the picture change; no touch control of its own |
-| fractionLine | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| grid100 | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| hops | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| fractionFit | 3 | no | set on the module (hidden) |
+| fractionLine | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| grid100 | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| hops | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | hundredChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| integerLine | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | linePlot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| net | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | numberLine | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | partition | 3 | yes | sweeping the value shows the picture change; no touch control of its own |
 | patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| percentBar | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pictureGraph | 7 | no | the picture has its own handles or taps, or the inputs are enough |
 | pieChart | 2 | no | set on the module (hidden) |
-| placeValueChart | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| plot | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| placeValueChart | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| plot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
 | polygon | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | protractor | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| rectangle | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| ratioTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| rectangle | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
 | rightTriangle | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | rounding | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| ruler | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| ruler | 6 | no | the picture has its own handles or taps, or the inputs are enough |
 | scale | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 11 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 11 | no | the picture has its own handles or taps, or the inputs are enough |
 | tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 28 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 34 | no | the picture has its own handles or taps, or the inputs are enough |
 | tenFrame | 9 | no | the picture has its own handles or taps, or the inputs are enough |
-| thermometers | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| thermometers | 9 | no | the picture has its own handles or taps, or the inputs are enough |
 | timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| unitCubes | 3 | yes | sweeping the value shows the picture change; no touch control of its own |
+| unitCubes | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
 | unitTiles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| venn | 1 | yes | set on the module (shown) |
 | waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 
 ## Modules that override their kind
 
 - s.5.earth-spheres~water-share: sliders hidden
+- m.6.ratios~tape: sliders shown
+- m.6.divide-fractions: sliders hidden
+- m.6.divide-fractions~how-many-fit: sliders shown
+- m.6.divide-fractions~how-much-in-one: sliders shown
+- m.6.gcf-lcm: sliders shown
 
 ## Every page
 
@@ -134,6 +149,7 @@ its kind with `sliders: true | false`.
 | m.2.add-sub-1000~ten-hundred-more | baseTen | no |
 | m.2.add-sub-1000~subtract | baseTen | no |
 | m.2.skip-count | skipCount | no |
+| m.2.place-value-1000~number-line | skipCount | no |
 | m.2.skip-count~back | skipCount | no |
 | m.2.even-odd | pairs | no |
 | m.2.arrays | array | no |
@@ -144,6 +160,7 @@ its kind with `sliders: true | false`.
 | m.2.standard-length~two-units | unitTiles | no |
 | m.2.standard-length~meters | skipCount | no |
 | m.2.money | coins | no |
+| m.2.money~bills-coins | coins | no |
 | m.2.money~change | tape | no |
 | m.2.money~bills | coins | no |
 | m.2.money~more-needed | tape | no |
@@ -169,6 +186,7 @@ its kind with `sliders: true | false`.
 | m.3.multiply-divide-100~share | equalGroups | no |
 | m.3.multiply-divide-100~how-many-groups | skipCount | no |
 | m.3.multiply-divide-100~missing-factor | array | no |
+| m.3.multiply-divide-100~break-apart | areaModel | yes |
 | m.3.multiplication-properties | array | no |
 | m.3.multiplication-properties~order | array | no |
 | m.3.multiplication-properties~grouping | equalGroups | no |
@@ -177,6 +195,7 @@ its kind with `sliders: true | false`.
 | m.3.two-step-problems~multiply-add | tape | no |
 | m.3.two-step-problems~subtract-share | tape | no |
 | m.3.two-step-problems~compare | tape | no |
+| m.3.two-step-problems~add-subtract | hops | no |
 | m.3.rounding | rounding | no |
 | m.3.rounding~hundred | rounding | no |
 | m.3.rounding~estimate | tape | no |
@@ -222,25 +241,29 @@ its kind with `sliders: true | false`.
 | m.4.multi-digit-multiply~times-as-many | tape | no |
 | m.4.long-division | areaModel | yes |
 | m.4.long-division~interpret-remainder | areaModel | yes |
-| m.4.fraction-equivalence | fractionBars | yes |
+| m.4.fraction-equivalence | fractionLine | no |
 | m.4.fraction-equivalence~compare | fractionBars | yes |
 | m.4.add-fractions-like | fractionLine | no |
-| m.4.add-fractions-like~subtract | fractionBars | yes |
+| m.4.add-fractions-like~subtract | fractionLine | no |
 | m.4.add-fractions-like~mixed | fractionLine | no |
+| m.4.add-fractions-like~mixed-add | fractionLine | no |
+| m.4.add-fractions-like~mixed-subtract | fractionLine | no |
 | m.4.add-fractions-like~line-plot | linePlot | no |
 | m.4.fraction-times-whole | fractionLine | no |
 | m.4.decimals-intro | grid100 | no |
-| m.4.decimals-intro~compare | grid100 | no |
+| m.4.decimals-intro~compare | placeValueChart | no |
 | m.4.decimals-intro~number-line | fractionLine | no |
 | m.4.unit-conversion | table | no |
 | m.4.unit-conversion~two-units | tape | no |
 | m.4.area-perimeter-formulas | rectangle | no |
+| m.4.area-perimeter-formulas~square | rectangle | no |
 | m.4.angles | angles | no |
 | m.4.angles~protractor | protractor | no |
-| m.4.angles~turns | angles | no |
+| m.4.angles~turns | angles | yes |
 | s.K.pushes-pulls | ruler | no |
 | s.K.sunlight-warms | thermometers | no |
 | s.K.sunlight-warms~warming | thermometers | no |
+| s.K.sunlight-warms~dark-light | thermometers | no |
 | s.K.living-needs | compareRows | no |
 | s.K.weather-patterns | tally | no |
 | s.K.weather-patterns~warmer | thermometers | no |
@@ -253,7 +276,7 @@ its kind with `sliders: true | false`.
 | s.2.material-properties~pieces | tape | no |
 | s.2.heating-cooling~warming | thermometers | no |
 | s.2.heating-cooling~cooling | thermometers | no |
-| s.2.plant-growth-investigation | ruler | no |
+| s.2.plant-growth-investigation | bars | no |
 | s.2.plant-growth-investigation~water | ruler | no |
 | s.2.plant-growth-investigation~week | hops | no |
 | s.2.pollination-dispersal~sock-walk | bars | no |
@@ -273,6 +296,8 @@ its kind with `sliders: true | false`.
 | m.5.order-of-operations | tape | no |
 | m.5.order-of-operations~divide | equalGroups | no |
 | m.5.order-of-operations~where-parentheses | tape | no |
+| m.5.order-of-operations~no-parentheses | tape | no |
+| m.5.order-of-operations~brackets | equalGroups | no |
 | m.5.powers-of-ten | placeValueChart | no |
 | m.5.powers-of-ten~decimals | placeValueChart | no |
 | m.5.powers-of-ten~thousandths | placeValueChart | no |
@@ -289,6 +314,8 @@ its kind with `sliders: true | false`.
 | m.5.decimal-operations~divide-by-decimal | skipCount | no |
 | m.5.add-fractions-unlike | fractionBars | yes |
 | m.5.add-fractions-unlike~subtract | fractionBars | yes |
+| m.5.add-fractions-unlike~mixed-numbers | fractionBars | yes |
+| m.5.add-fractions-unlike~subtract-mixed | fractionBars | yes |
 | m.5.add-fractions-unlike~line-plot | linePlot | no |
 | m.5.multiply-fractions | fractionArea | yes |
 | m.5.multiply-fractions~of-a-whole | tape | no |
@@ -298,6 +325,7 @@ its kind with `sliders: true | false`.
 | m.5.volume-rectangular | unitCubes | yes |
 | m.5.volume-rectangular~two-boxes | unitCubes | yes |
 | m.5.coordinate-plane-q1 | coordinatePlane | no |
+| m.5.coordinate-plane-q1~patterns | coordinatePlane | no |
 | m.5.coordinate-plane-q1~move | coordinatePlane | no |
 | m.5.coordinate-plane-q1~distance | coordinatePlane | no |
 | s.4.energy-speed | skipCount | no |
@@ -312,13 +340,68 @@ its kind with `sliders: true | false`.
 | s.5.plants-sunlight-energy | bars | no |
 | s.5.earth-spheres~water-share | pieChart | no |
 | s.5.sun-star-brightness~two-flashlights | bars | no |
+| m.6.ratios | ratioTable | no |
+| m.6.ratios~tape | tape | yes |
+| m.6.ratios~three-parts | tape | no |
+| m.6.unit-rates | doubleNumberLine | no |
+| m.6.unit-rates~better-buy | tape | no |
+| m.6.unit-rates~speed | doubleNumberLine | no |
+| m.6.unit-rates~convert | doubleNumberLine | no |
+| m.6.percent | percentBar | no |
+| m.6.percent~fraction-decimal-percent | grid100 | no |
+| m.6.multi-digit-decimals | areaModel | yes |
+| m.6.multi-digit-decimals~remainder | areaModel | yes |
+| m.6.multi-digit-decimals~multiply-decimals | areaModel | yes |
+| m.6.multi-digit-decimals~add-subtract | placeValueChart | no |
+| m.6.multi-digit-decimals~divide-by-decimal | skipCount | no |
+| m.6.divide-fractions | fractionFit | no |
+| m.6.divide-fractions~how-many-fit | fractionFit | yes |
+| m.6.divide-fractions~how-much-in-one | fractionFit | yes |
+| m.6.gcf-lcm | venn | yes |
+| m.6.gcf-lcm~lcm | skipCount | no |
 | m.6.gcf-lcm~factor-tree | factorTree | no |
-| m.6.percent | grid100 | no |
+| m.6.gcf-lcm~distributive | areaModel | yes |
+| m.6.integers | integerLine | no |
+| m.6.integers~change | integerLine | no |
+| m.6.integers~compare | integerLine | no |
+| m.6.coordinate-plane-4q | coordinatePlane | no |
+| m.6.coordinate-plane-4q~reflect | coordinatePlane | no |
+| m.6.coordinate-plane-4q~polygon | coordinatePlane | no |
+| m.6.expressions-variables | table | no |
+| m.6.expressions-variables~exponents | table | no |
+| m.6.expressions-variables~order-of-operations | table | no |
+| m.6.expressions-variables~distributive | areaModel | yes |
+| m.6.expressions-variables~two-quantities | plot | no |
+| m.6.one-step-equations | tape | no |
+| m.6.one-step-equations~multiply | tape | no |
+| m.6.one-step-equations~inequality-solutions | integerLine | no |
+| m.6.area-polygons | baseHeight | no |
+| m.6.area-polygons~triangle | baseHeight | no |
+| m.6.area-polygons~trapezoid | baseHeight | no |
+| m.6.area-polygons~composite | baseHeight | no |
+| m.6.surface-area-nets | net | no |
+| m.6.surface-area-nets~cube | net | no |
+| m.6.surface-area-nets~pyramid | net | no |
+| m.6.surface-area-nets~volume-fractions | unitCubes | yes |
+| m.6.center-spread | dotPlot | no |
+| m.6.center-spread~median | dotPlot | no |
+| m.6.center-spread~mad | dotPlot | no |
+| m.6.center-spread~box-plot | boxPlot | no |
+| s.6.cells~magnification | table | no |
+| s.6.cells~cell-size | fieldOfView | no |
+| s.6.cells~why-small | table | no |
+| s.6.body-systems~heart-output | table | no |
+| s.6.density | plot | no |
+| s.6.density~displacement | gradCylinder | no |
+| s.6.water-cycle~roof-rain | rectangle | no |
+| s.6.water-cycle~cloud-base | thermometers | no |
+| s.6.weather-fronts~arrival | doubleNumberLine | no |
+| s.6.plate-tectonics~speed | doubleNumberLine | no |
+| s.6.rock-cycle~layer-time | doubleNumberLine | no |
 | m.7.circles | circle | no |
 | m.8.pythagorean | rightTriangle | no |
 | m.8.linear-functions | plot | no |
 | m.9.exponential-functions | table | no |
-| s.6.density | plot | no |
 | s.8.newtons-laws | force | no |
 | he.physics.university-1#0 | plot | no |
 | he.engineering.circuits-1#0 | seriesCircuit | no |

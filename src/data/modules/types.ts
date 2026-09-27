@@ -941,6 +941,12 @@ export interface ModuleDef {
    */
   sliders?: boolean;
   /**
+   * The inputs drawn as the equation itself instead of one row per value: a template with
+   * {id} for each box, where `{a}/{b}` is a stacked fraction ('{a}/{b} ÷ {c}/{d} = {e}/{f}').
+   * Values not in the template keep their rows below it.
+   */
+  equation?: string;
+  /**
    * Unit systems offered for the whole module (default: metric and US customary). Mixed units
    * stay available either way.
    */

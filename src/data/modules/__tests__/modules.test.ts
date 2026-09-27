@@ -336,6 +336,12 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('modu
     expect(m.id.includes('~') ? !!m.title : m.title === undefined).toBe(true);
   });
 
+  it('draws its equation from declared values only', () => {
+    if (!m.equation) return;
+    const inTemplate = [...m.equation.matchAll(/\{(\w+)\}/g)].map((x) => x[1]);
+    expect(inTemplate.filter((id) => !ids.includes(id!))).toEqual([]);
+  });
+
   it('has assumptions, unique variables and relations over declared variables', () => {
     expect(m.assumptions.length).toBeGreaterThan(0);
     expect(new Set(ids).size).toBe(ids.length);

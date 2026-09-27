@@ -298,6 +298,9 @@ the assumptions and a table or diagram.
      `fraction: <largest denominator>` (5 1/4, 3 7/8 inches); a data set of 3 to 10 values puts
      `countedBy: { count: 'n', index }` on each value, and the relations read only the first
      n (`dotPlot` takes the same `count`). Money that isn't whole cents shows as "about $3.33".
+   - A page whose problem is written as one equation (dividing fractions) can set `equation:
+'{a}/{b} ÷ {c}/{d} = {e}/{f}'`: the boxes sit in the equation, `{a}/{b}` stacked as a
+     fraction, worked-out values dashed; values not in it keep their rows.
    - The `use` line quotes the kind of released question the page solves, in the question's
      own words ("Which number is greater, 54 or 36?"), and never promises more.
    - `layouts.test.ts` covers the sort, sequence, explore and observe pages.

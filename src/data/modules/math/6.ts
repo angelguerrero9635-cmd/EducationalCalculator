@@ -1399,7 +1399,9 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     const pages: ModuleDef[] = [
       {
         id: 'm.6.divide-fractions',
-        sliders: true,
+        // Typed into the equation as a student writes it, not slid.
+        sliders: false,
+        equation: '{a}/{b} ÷ {c}/{d} = {e}/{f}',
         assumptions: [
           'Dividing by a fraction is multiplying by its reciprocal: flip its numerator and denominator.',
           'The divisor is never 0, and the quotient is at most 144.',

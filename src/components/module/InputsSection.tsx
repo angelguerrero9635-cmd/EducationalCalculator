@@ -81,9 +81,11 @@ function UnitPicker({ variable, calc }: { variable: VariableDef; calc: Calculato
   );
 }
 
-/** One row: the value's letter (from Grade 3), its name and status, and the box with its unit. */
-function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
-  const c = usePalette();
+/**
+ * One value's box: the text shown (the draft while typing, the value otherwise), its error
+ * and status, and the handlers. Shared by the rows and the equation.
+ */
+function useVariableBox(variable: VariableDef, calc: Calculator) {
   const [draft, setDraft] = useState<string | null>(null);
   const [typo, setTypo] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -125,6 +127,26 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
     setTypo(parsed === 'invalid');
     if (parsed !== 'invalid') calc.setShown(variable.id, parsed);
   };
+  // On the example, a box empties on focus, so typing the same number still counts as typed.
+  const onFocus = () => {
+    calc.startTyping();
+    setFocused(true);
+    setDraft(calc.isExample ? '' : shown);
+  };
+  const onBlur = () => {
+    calc.endTyping();
+    setFocused(false);
+    if (typo) setDraft(null);
+    setTypo(false);
+  };
+  return { shown, error, status, statusWord, unit, picker, letters, onChangeText, onFocus, onBlur };
+}
+
+/** One row: the value's letter (from Grade 3), its name and status, and the box with its unit. */
+function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
+  const c = usePalette();
+  const { shown, error, status, statusWord, unit, picker, letters, onChangeText, onFocus, onBlur } =
+    useVariableBox(variable, calc);
 
   return (
     <View style={[styles.row, { borderBottomColor: c.border }]}>
@@ -143,18 +165,8 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         value={shown}
         placeholder="?"
         placeholderTextColor={c.textMuted}
-        // On the example, a box empties on focus, so typing the same number still counts as typed.
-        onFocus={() => {
-          calc.startTyping();
-          setFocused(true);
-          setDraft(calc.isExample ? '' : shown);
-        }}
-        onBlur={() => {
-          calc.endTyping();
-          setFocused(false);
-          if (typo) setDraft(null);
-          setTypo(false);
-        }}
+        onFocus={onFocus}
+        onBlur={onBlur}
         onChangeText={onChangeText}
         editable={!variable.derived}
         keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric'}
@@ -176,9 +188,104 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
   );
 }
 
+/** One box inside the equation: the value's number, typed in place. */
+function EquationBox({ variable, calc }: { variable: VariableDef; calc: Calculator }) {
+  const c = usePalette();
+  const { shown, error, status, onChangeText, onFocus, onBlur } = useVariableBox(variable, calc);
+  return (
+    <TextInput
+      testID={`input-${variable.id}`}
+      accessibilityLabel={variable.name}
+      value={shown}
+      placeholder="?"
+      placeholderTextColor={c.textMuted}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onChangeText={onChangeText}
+      editable={!variable.derived}
+      keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric'}
+      returnKeyType="done"
+      selectTextOnFocus
+      style={[
+        styles.eqBox,
+        {
+          color: c.text,
+          borderColor: error ? c.text : c.border,
+          borderStyle: variable.derived ? 'dashed' : 'solid',
+          backgroundColor: status === 'given' || status === 'example' ? c.background : c.surface,
+          fontWeight: status === 'given' ? '600' : '400',
+        },
+      ]}
+    />
+  );
+}
+
+/** A template split into boxes, stacked fractions ({a}/{b}) and the text between them. */
+type EquationPart =
+  | { kind: 'box'; id: string }
+  | { kind: 'fraction'; top: string; bottom: string }
+  | { kind: 'text'; text: string };
+
+export function equationParts(template: string): EquationPart[] {
+  const parts: EquationPart[] = [];
+  const re = /\{(\w+)\}\/\{(\w+)\}|\{(\w+)\}/g;
+  let last = 0;
+  for (const m of template.matchAll(re)) {
+    if (m.index! > last) parts.push({ kind: 'text', text: template.slice(last, m.index) });
+    parts.push(m[1] ? { kind: 'fraction', top: m[1], bottom: m[2]! } : { kind: 'box', id: m[3]! });
+    last = m.index! + m[0].length;
+  }
+  if (last < template.length) parts.push({ kind: 'text', text: template.slice(last) });
+  return parts;
+}
+
+/** The equation with a box for each value, so the numbers go where the problem writes them. */
+function EquationInput({ template, calc }: { template: string; calc: Calculator }) {
+  const c = usePalette();
+  const byId = new Map(calc.module.variables.map((v) => [v.id, v]));
+  const early = isEarlyGrade(calc.module.id);
+  const box = (id: string) => <EquationBox key={id} variable={byId.get(id)!} calc={calc} />;
+  const parts = equationParts(template);
+  const ids = parts.flatMap((p) =>
+    p.kind === 'box' ? [p.id] : p.kind === 'fraction' ? [p.top, p.bottom] : [],
+  );
+  // Messages for the boxes, under the equation (the boxes have no room beside them).
+  const messages = ids.flatMap((id) => {
+    const e = calc.errors[id];
+    return e ? [`${byId.get(id)!.name}: ${early ? kidMessage(e) : e}`] : [];
+  });
+  return (
+    <View style={styles.equation} testID="equation">
+      <View style={styles.eqRow}>
+        {parts.map((p, i) =>
+          p.kind === 'text' ? (
+            <Text key={i} style={[styles.eqText, { color: c.text }]}>
+              {p.text.trim()}
+            </Text>
+          ) : p.kind === 'box' ? (
+            box(p.id)
+          ) : (
+            <View key={i} style={styles.eqFraction}>
+              {box(p.top)}
+              <View style={[styles.eqBar, { backgroundColor: c.text }]} />
+              {box(p.bottom)}
+            </View>
+          ),
+        )}
+      </View>
+      {messages.map((m) => (
+        <Text key={m} style={[styles.meta, { color: c.text, textAlign: 'center' }]}>
+          {m}
+        </Text>
+      ))}
+    </View>
+  );
+}
+
 /**
  * The numbers of the problem: a units menu when the module offers one, a hint, one row per
- * value, and the Clear / Show example buttons. Shown between the picture and the formulas.
+ * value (or the equation with its boxes, when the module draws one), and the Clear / Show
+ * example buttons. Shown between the picture and the formulas.
  */
 export function InputsSection({ calc }: { calc: Calculator }) {
   const c = usePalette();
@@ -228,10 +335,13 @@ export function InputsSection({ calc }: { calc: Calculator }) {
           />
         ) : null}
       </View>
+      {module.equation ? <EquationInput template={module.equation} calc={calc} /> : null}
       <View>
         {module.variables
           // A data set of 5 hides the boxes for a 6th value and on.
           .filter((v) => !outOfCount(v, calc.result.values))
+          // Values in the equation are typed there.
+          .filter((v) => !module.equation?.includes(`{${v.id}}`))
           .map((v) => (
             <VariableInput key={v.id} variable={v} calc={calc} />
           ))}
@@ -278,6 +388,28 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
   },
   inputNarrow: { width: 96 },
+  equation: { paddingHorizontal: space.lg, paddingVertical: space.md, gap: space.xs },
+  eqRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.sm,
+  },
+  eqText: { fontSize: font.body + 6, fontWeight: '600' },
+  eqFraction: { alignItems: 'center', gap: 4 },
+  eqBar: { height: 2, alignSelf: 'stretch', borderRadius: 1 },
+  eqBox: {
+    fontFamily: font.family,
+    width: 64,
+    minHeight: 44,
+    borderWidth: 1,
+    borderRadius: radius.sm,
+    paddingHorizontal: space.xs,
+    fontSize: font.body + 2,
+    textAlign: 'center',
+    fontVariant: ['tabular-nums'],
+  },
   buttons: {
     flexDirection: 'row',
     gap: space.sm,
