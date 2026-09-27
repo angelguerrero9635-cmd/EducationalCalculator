@@ -1068,20 +1068,22 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.erosion-landforms~map',
     kind: 'icon',
     pages: ['s.2.erosion-landforms~map'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3e-land-water'],
+    uses: '"icon":"mountain"',
     notes:
-      'Mountain → mountain (map symbol); Hill → hill; Valley → a valley between two slopes; Island → island in water; Lake → lake surrounded by land; River → winding river; Ocean → a wide blue sea with waves; Pond → small pond',
+      "Mountain → mountain (map symbol); Hill → hill; Valley → a valley between two slopes; Island → island in water; Lake → lake surrounded by land; River → winding river; Ocean → a wide blue sea with waves; Pond → small pond. Drawn: Card label → icon: Mountain → 'mountain'; Hill → 'hill'; Valley → 'valley'; Island → 'island'; Lake → 'lake'; River → 'river'; Ocean → 'ocean'; Pond → 'pond'. The shared landform drawings are used here, not separate map symbols: each is a small side or slanted view with water always blue and land green or rock, which is what the page's rule (\"Blue on a map is water\") needs; a flat map symbol (a triangle for a mountain) would not be recognizable on its own at card size.",
   },
   {
     id: 'D23',
     what: 'Card pictures for s.2.erosion-landforms',
     kind: 'icon',
     pages: ['s.2.erosion-landforms'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3e-land-changes'],
+    uses: '"icon":"earthquake crack"',
     notes:
-      'Earthquake → cracked ground with shake lines; Volcano erupting → erupting volcano; Landslide → rocks sliding down a hillside; Flood → water over a riverbank and road; River wearing a canyon → a river in a deep canyon; Wind shaping a sand dune → a dune with wind lines; Ice cracking a rock → a rock split by ice in a crack; Waves wearing a cliff → waves at the base of a cliff',
+      "Earthquake → cracked ground with shake lines; Volcano erupting → erupting volcano; Landslide → rocks sliding down a hillside; Flood → water over a riverbank and road; River wearing a canyon → a river in a deep canyon; Wind shaping a sand dune → a dune with wind lines; Ice cracking a rock → a rock split by ice in a crack; Waves wearing a cliff → waves at the base of a cliff. Drawn: Card label → icon: Earthquake → 'earthquake crack'; Volcano erupting → 'erupting volcano'; Landslide → 'landslide'; Flood → 'flooded road'; River wearing a canyon → 'river canyon'; Wind shaping a sand dune → 'wind shaping dune'; Ice cracking a rock → 'ice cracking rock'; Waves wearing a cliff → 'waves at cliff'.",
   },
   {
     id: 'D24',
@@ -1109,10 +1111,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Card pictures for s.2.water-on-earth',
     kind: 'icon',
     pages: ['s.2.water-on-earth'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r3e-water-on-earth'],
+    uses: '"icon":"glacier"',
     notes:
-      'Glacier → a glacier between mountains; Iceberg → iceberg in the sea; Snow on a mountain → a snow-capped mountain; Frozen pond → a frozen pond with a skater; Ocean → ocean waves; River → river; Lake → lake; Puddle → a puddle',
+      "Glacier → a glacier between mountains; Iceberg → iceberg in the sea; Snow on a mountain → a snow-capped mountain; Frozen pond → a frozen pond with a skater; Ocean → ocean waves; River → river; Lake → lake; Puddle → a puddle. Drawn: Card label → icon: Glacier → 'glacier'; Iceberg → 'iceberg'; Snow on a mountain → 'snowy mountain'; Frozen pond → 'frozen pond'; Ocean → 'ocean'; River → 'river'; Lake → 'lake'; Puddle → 'puddle'.",
   },
   {
     id: 'D27',
