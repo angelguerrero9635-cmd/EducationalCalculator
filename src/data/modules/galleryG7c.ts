@@ -1,6 +1,8 @@
 /**
- * Gallery demos for the Grade 7 geometry and chance pictures: angle pairs (vertical,
- * supplementary, complementary). Spread into GALLERY_MODULES in gallery.ts; kept apart so that
+ * Gallery demos for the Grade 7 geometry, sampling and chance pictures: angle pairs
+ * (vertical, supplementary, complementary), a triangular prism's net, cross-sections of
+ * prisms and pyramids, a random sample, two samples' dot plots, a spinner, two dice, a tree
+ * diagram and a bag of marbles. Spread into GALLERY_MODULES in gallery.ts; kept apart so that
  * file's other demos merge easily.
  */
 import type { Values } from '@/engine/types';
