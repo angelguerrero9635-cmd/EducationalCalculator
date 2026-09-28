@@ -2449,10 +2449,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real object in the cylinder, bigger scale numbers, a before line',
     kind: 'gradCylinder',
     pages: ['s.6.density~displacement'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-cylinder', 'g.r4h-cylinder-big', 'g.r4h-cylinder-small'],
     notes:
-      'Urgency: low. Weak now: One of the better pictures, but scale numerals grey 9–10 px; object a grey half-disc that doesn\'t read as a stone or weight; thin base, no pour spout; small change label; "before"/"after" near clipping. Redo: Scale numerals 12 px ink, longer major ticks. Object as a real item (textured stone or Metal weight) fully submerged with a contact shadow. Hexagonal base with depth, pour lip at the rim. Curved meniscus with the reading at its bottom; "before" level as a ghosted water line. Change bracket 2 px with a 14 px label. Right-hand labels 8 px inside the canvas or moved left. Meniscus handle unchanged.',
+      'Urgency: low. Weak now: One of the better pictures, but scale numerals grey 9–10 px; object a grey half-disc that doesn\'t read as a stone or weight; thin base, no pour spout; small change label; "before"/"after" near clipping. Redo: Scale numerals 12 px ink, longer major ticks. Object as a real item (textured stone or Metal weight) fully submerged with a contact shadow. Hexagonal base with depth, pour lip at the rim. Curved meniscus with the reading at its bottom; "before" level as a ghosted water line. Change bracket 2 px with a 14 px label. Right-hand labels 8 px inside the canvas or moved left. Meniscus handle unchanged.' +
+      ' Drawn (round 4, group H): scale numerals 12 px ink, major ticks 24 px and minor 12 px; the object a speckled stone (Ball in rock5) with a contact shadow, sized from the rise and capped so it always lies fully under the water; a hexagonal glass foot with its front sides in depth; a flared rim with a pour lip; the water top a curved meniscus whose bottom is the reading (after line 2 px highlight, 12 px bold label); the level before a 2 px dashed water-blue line (a ghosted water band would sit under the water, so the dashed line stands for it) with a 12 px label that steps down when the levels are close; the change bracket 2 px, clear of the numerals, with a 14 px label. Handles and drag unchanged. No page change.',
   },
   {
     id: 'Q52',

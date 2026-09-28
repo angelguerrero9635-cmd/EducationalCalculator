@@ -46,6 +46,35 @@ export const R4H_GALLERY_MODULES: ModuleDef[] = [
     n: 2,
     s: 225,
   }),
+  // Q51: s.6.density~displacement, the page's example, a big stone past the 100 mL scale and a
+  // 1 mL rise.
+  copy(SCIENCE_6_MODULES, 's.6.density~displacement', 'g.r4h-cylinder', 'Cylinder (page example)'),
+  copy(
+    SCIENCE_6_MODULES,
+    's.6.density~displacement',
+    'g.r4h-cylinder-big',
+    'Cylinder (big stone)',
+    {
+      a: 300,
+      c: 420,
+      V: 120,
+      m: 324,
+      rho: 2.7,
+    },
+  ),
+  copy(
+    SCIENCE_6_MODULES,
+    's.6.density~displacement',
+    'g.r4h-cylinder-small',
+    'Cylinder (1 mL rise)',
+    {
+      a: 50,
+      c: 51,
+      V: 1,
+      m: 2.7,
+      rho: 2.7,
+    },
+  ),
 ];
 
 export const R4H_GALLERY_LAYOUTS: LayoutDef[] = [
