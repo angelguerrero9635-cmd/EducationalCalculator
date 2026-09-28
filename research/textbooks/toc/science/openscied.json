@@ -1,0 +1,3462 @@
+{
+ "id": "openscied",
+ "curriculum": "OpenSciEd Elementary (K–5) and Middle School (6–8)",
+ "publisher": "OpenSciEd",
+ "edition": "Version 1.0 (middle school ©2022; elementary storylines dated 2024–2026)",
+ "subject": "science",
+ "grades": [
+  "K",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "content": "full",
+ "license": {
+  "name": "CC BY 4.0",
+  "url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "© OpenSciEd. Licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0). The OpenSciEd name and logo are not subject to the Creative Commons license. Source: https://openscied.org/ (unit list pages) and the unit Teacher Edition and Storyline PDFs linked per unit."
+ },
+ "sourceUrl": "https://openscied.org/curriculum/middle-school/explore-the-curriculum/",
+ "retrieved": "2026-09-28",
+ "sources": [
+  "https://openscied.org/curriculum/middle-school/explore-the-curriculum/",
+  "https://openscied.org/curriculum/elementary-school/explore-the-curriculum/",
+  "https://openscied.org/k5-scope-sequence/",
+  "https://openscied.org/wp-content/uploads/2024/02/OpenSciEd-Middle-School-Scope-Sequence.pdf"
+ ],
+ "notes": "Unit numbers, titles and driving questions come from the two explore-the-curriculum pages (openscied.org asks a 600-second crawl delay, so only a handful of its pages were fetched). Middle-school lessons are the lesson questions listed in each unit Teacher Edition table of contents; the \"performanceExpectations\" are those the unit says it builds toward, as bundled in the Middle School Scope and Sequence (Feb 2022; an asterisk marks a PE that builds across several units). K–5 PEs come from the Standards Alignment page. Elementary lessons come from each unit Storyline (lesson sets, lesson type, lesson question, phenomenon). The \"+ Computer Science\" variants of 6.3, 6.5, 7.6, 8.1 and 8.2 and the high-school units are not included. Where no skill of the unit's own grade fits, skills is [] and the unit notes name the nearest skill.",
+ "books": [
+  {
+   "grade": "K",
+   "units": [
+    {
+     "n": "K.1",
+     "title": "Energy: Sunlight",
+     "drivingQuestion": "Why do some surfaces get hot and how can we make them less hot?",
+     "url": "https://openscied.org/instructional-materials/k-1-energy-sunlight/",
+     "skills": [
+      "s.K.sunlight-warms"
+     ],
+     "performanceExpectations": [
+      "K-PS3-1",
+      "K-PS3-2",
+      "K-2-ETS1-1",
+      "K-2-ETS1-2"
+     ],
+     "lessons": [],
+     "notes": "Lesson titles not found on a public page (no Teacher Edition or Storyline file could be located)."
+    },
+    {
+     "n": "K.2",
+     "title": "Weather",
+     "drivingQuestion": "How can we be prepared for the weather?",
+     "url": "https://openscied.org/instructional-materials/k-2-weather/",
+     "skills": [
+      "s.K.weather-patterns"
+     ],
+     "performanceExpectations": [
+      "K-ESS2-1",
+      "K-ESS3-2"
+     ],
+     "lessons": [],
+     "notes": "Lesson titles not found on a public page (no Teacher Edition or Storyline file could be located)."
+    },
+    {
+     "n": "K.3",
+     "title": "Forces & Motion",
+     "drivingQuestion": "How can we move things to where we want them to go?",
+     "url": "https://openscied.org/instructional-materials/k-3-forces-motion/",
+     "skills": [
+      "s.K.pushes-pulls"
+     ],
+     "performanceExpectations": [
+      "K-PS2-1",
+      "K-PS2-2",
+      "K-2-ETS1-1",
+      "K-2-ETS1-2",
+      "K-2-ETS1-3"
+     ],
+     "lessons": [],
+     "notes": "Lesson titles not found on a public page (no Teacher Edition or Storyline file could be located)."
+    },
+    {
+     "n": "K.4",
+     "title": "Plants, Animals, & Their Environments",
+     "drivingQuestion": "Do birds, other animals, and plants need people to help them live?",
+     "url": "https://openscied.org/instructional-materials/k-4-ecosystems-plants-animals/",
+     "skills": [
+      "s.K.living-needs",
+      "s.K.living-things-change-environment"
+     ],
+     "performanceExpectations": [
+      "K-LS1-1",
+      "K-ESS2-2",
+      "K-ESS3-1",
+      "K-ESS3-3"
+     ],
+     "lessons": [],
+     "notes": "Lesson titles not found on a public page (no Teacher Edition or Storyline file could be located)."
+    }
+   ]
+  },
+  {
+   "grade": "1",
+   "units": [
+    {
+     "n": "1.1",
+     "title": "Waves: Light",
+     "drivingQuestion": "How can we read under covers when it is dark?",
+     "url": "https://openscied.org/instructional-materials/1-1-waves-light/",
+     "skills": [
+      "s.1.light-shadows"
+     ],
+     "performanceExpectations": [
+      "1-PS4-2",
+      "1-PS4-3"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G1_ULI/preview/unit-materials/1.1%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-10)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "What happens when we try to read under covers?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Reading can be easier or harder depending on the cover materials."
+        },
+        {
+         "n": "2",
+         "title": "Where is light coming from around us?",
+         "type": "Investigation",
+         "phenomenon": "Light comes from different objects inside and outside of my classroom."
+        },
+        {
+         "n": "3",
+         "title": "How can we test what happens when the same light shines on different materials?",
+         "type": "Investigation"
+        },
+        {
+         "n": "4",
+         "title": "What happens when we shine the same light on different materials?",
+         "type": "Investigation",
+         "phenomenon": "Different materials allow different amounts of light to pass through."
+        },
+        {
+         "n": "5",
+         "title": "Why is it brighter or dimmer under different cover materials?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "6",
+         "title": "Can we see without light? Why or why not?",
+         "type": "Investigation",
+         "phenomenon": "Whether you can see an object depends on the amount of light shining on it."
+        },
+        {
+         "n": "7",
+         "title": "How can we use mirrors and foil to make it light where it is dark?",
+         "type": "Investigation",
+         "phenomenon": "Some materials make a beam of light change direction."
+        },
+        {
+         "n": "8",
+         "title": "How can we use a model to explain how to make it easier to read under covers that block light?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "9",
+         "title": "How can we explain how to read under covers when it is dark?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "10",
+         "title": "How can we use our class book to communicate about reading under covers to members of our community?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "1.2",
+     "title": "Waves: Sound",
+     "drivingQuestion": "How can we communicate using objects that make sound?",
+     "url": "https://openscied.org/instructional-materials/1-2-waves-sound/",
+     "skills": [
+      "s.1.sound-vibration"
+     ],
+     "performanceExpectations": [
+      "1-PS4-1",
+      "1-PS4-4",
+      "K-2-ETS1-1",
+      "K-2-ETS1-2",
+      "K-2-ETS1-3"
+     ],
+     "lessons": [],
+     "notes": "Lesson titles not found on a public page (no Teacher Edition or Storyline file could be located)."
+    },
+    {
+     "n": "1.3",
+     "title": "Space: Sky Patterns",
+     "drivingQuestion": "What patterns of the Sun, Moon, and stars can we observe, describe, and predict?",
+     "url": "https://openscied.org/instructional-materials/1-3-space-sky-patterns/",
+     "skills": [
+      "s.1.sky-patterns"
+     ],
+     "performanceExpectations": [
+      "1-ESS1-1",
+      "1-ESS1-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G1_USP/preview/unit-materials/1.3%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-5)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Where is the Sun in the sky today?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "The Sun appears in the sky in a location that we can observe and record."
+        },
+        {
+         "n": "2",
+         "title": "Where is the Sun in the sky throughout the day?",
+         "type": "Investigation",
+         "phenomenon": "The Sun appears in different locations in the sky throughout the day."
+        },
+        {
+         "n": "3",
+         "title": "Do the Sun’s different locations in the sky repeat?",
+         "type": "Investigation",
+         "phenomenon": "Each morning, the Sun appears in a different location in the sky than each afternoon."
+        },
+        {
+         "n": "4",
+         "title": "What happens to the Sun in the sky between morning and afternoon?",
+         "type": "Investigation",
+         "phenomenon": "The Sun appears to move across the sky."
+        },
+        {
+         "n": "5",
+         "title": "How can we use patterns of the Sun’s changing locations in the sky to know where it will be?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 6-7)",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Does the Moon appear to change locations in the sky and, if so, how?",
+         "type": "Investigation",
+         "phenomenon": "The Moon appears in different locations in the sky."
+        },
+        {
+         "n": "7",
+         "title": "What makes it daytime or nighttime?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Daytime and nighttime skies are different."
+        }
+       ]
+      },
+      {
+       "n": "Three",
+       "title": "Lesson Set Three (Lessons 8-10)",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "How long are daytime and nighttime, and are they always the same?",
+         "type": "Investigation"
+        },
+        {
+         "n": "9",
+         "title": "When are daytimes shorter and longer?",
+         "type": "Investigation"
+        },
+        {
+         "n": "10",
+         "title": "How can evening events (evening walks) sometimes happen in the daytime and",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "1.4",
+     "title": "Animal & Plant Traits",
+     "drivingQuestion": "How do the ways plants and animals look and act help them live and grow?",
+     "url": "https://openscied.org/instructional-materials/1-4-animal-plant-traits/",
+     "skills": [
+      "s.1.structures-function",
+      "s.1.offspring"
+     ],
+     "performanceExpectations": [
+      "1-LS1-1",
+      "1-LS1-2",
+      "1-LS3-1",
+      "K-2-ETS1-1",
+      "K-2-ETS1-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G1_UTR/preview/unit-materials/1.4%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-10)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "What do we notice and wonder about the parts of plants and animals, and how these parts help them live and grow?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "2",
+         "title": "What parts do plants and animals of the same kind have, and how do they look similar and different?",
+         "type": "Investigation"
+        },
+        {
+         "n": "3",
+         "title": "How do smaller plants and animals compare to bigger ones?",
+         "type": "Investigation",
+         "phenomenon": "Baby plants and animals seem to look like smaller versions of their parents."
+        },
+        {
+         "n": "4",
+         "title": "How can we use patterns to explain whether pairs of plants and animals could be parents and offspring?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "5",
+         "title": "How do roots, stems, leaves, flowers, and fruit help a plant live and grow?",
+         "type": "Investigation"
+        },
+        {
+         "n": "6",
+         "title": "What do animal parts help them do?",
+         "type": "Investigation"
+        },
+        {
+         "n": "7",
+         "title": "How do animal offspring survive with help from their parents?",
+         "type": "Investigation",
+         "phenomenon": "Animals use body parts and behaviors to help them and their offspring survive."
+        },
+        {
+         "n": "8",
+         "title": "How do plants use their parts, and how do animals use their parts and behaviors to survive?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "9",
+         "title": "How can we find out about other plant and animal parts to help us design our solutions?",
+         "type": "Investigation"
+        },
+        {
+         "n": "10",
+         "title": "How can we design solutions that mimic plants and animals to solve problems?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)",
+     "storylineHeader": "DO BIRDS, OTHER ANIMALS, AND PLANTS NEED PEOPLE TO HELP THEM LIVE?",
+     "notes": "The Storyline PDF header shows the driving question of unit K.4 Plants, Animals, & Their Environments; its lessons match this unit."
+    }
+   ]
+  },
+  {
+   "grade": "2",
+   "units": [
+    {
+     "n": "2.1",
+     "title": "Earth: Land Changing Shape",
+     "drivingQuestion": "How do wind and water change the shape of the land and what can we do about it?",
+     "url": "https://openscied.org/instructional-materials/2-1-earth-land-change/",
+     "skills": [
+      "s.2.erosion-landforms"
+     ],
+     "performanceExpectations": [
+      "2-ESS1-1",
+      "2-ESS2-1",
+      "K-2-ETS1-1",
+      "K-2-ETS1-2",
+      "K-2-ETS1-3"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G2_ULE/preview/unit-materials/2.1%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-6)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How is land changing shape?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Land is changing shape without animals and people moving it."
+        },
+        {
+         "n": "2",
+         "title": "How can we develop a model to test how wind and water might move the land in our community?",
+         "type": "Investigation"
+        },
+        {
+         "n": "3",
+         "title": "How could wind and water change the land in our models?",
+         "type": "Investigation"
+        },
+        {
+         "n": "4",
+         "title": "How do both wind and water move land near our school?",
+         "type": "Investigation",
+         "phenomenon": "Wind and water may change the land around our school."
+        },
+        {
+         "n": "5",
+         "title": "How might wind and water change the shape of rocks and rocky land?",
+         "type": "Investigation",
+         "phenomenon": "Rocks seem to"
+        },
+        {
+         "n": "6",
+         "title": "How much time does it take for rocky land to change shape?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 7-10)",
+       "lessons": [
+        {
+         "n": "7",
+         "title": "How can we define our community problem and develop a model to test our solutions?",
+         "type": "Investigation"
+        },
+        {
+         "n": "8",
+         "title": "What ideas from existing land change solutions can we apply to our designs?",
+         "type": "Investigation"
+        },
+        {
+         "n": "9",
+         "title": "How can we determine if our design solutions to the community land change problem are effective?",
+         "type": "Investigation"
+        },
+        {
+         "n": "10",
+         "title": "What design solutions are effective at keeping the land from changing shape?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)",
+     "storylineHeader": "HOW DO WIND AND WATER CHANGE THE SHAPE OF LAND AND WHAT CAN WE DO ABOUT IT?"
+    },
+    {
+     "n": "2.2",
+     "title": "Structure & Properties of Matter",
+     "drivingQuestion": "How can we design a new toy?",
+     "url": "https://openscied.org/instructional-materials/2-2-matter/",
+     "skills": [
+      "s.2.material-properties",
+      "s.2.heating-cooling"
+     ],
+     "performanceExpectations": [
+      "2-PS1-1",
+      "2-PS1-2",
+      "2-PS1-3",
+      "2-PS1-4",
+      "K-2-ETS1-1",
+      "K-2-ETS1-2",
+      "K-2-ETS1-3"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G2_UMA/preview/unit-materials/2.2%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-10)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How do we play with toys?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "2",
+         "title": "What do we notice about different objects and the materials they are made of?",
+         "type": "Investigation"
+        },
+        {
+         "n": "3",
+         "title": "How can we use the properties of materials to decide what we need for our toy?",
+         "type": "Investigation"
+        },
+        {
+         "n": "4",
+         "title": "How can we change objects and materials so we can better use them to build our toys?",
+         "type": "Investigation"
+        },
+        {
+         "n": "5",
+         "title": "What happens to materials when they are heated or cooled?",
+         "type": "Investigation"
+        },
+        {
+         "n": "6",
+         "title": "How can we choose which materials to use for our toys?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Engineers use argumentation to figure things out and to explain their thinking."
+        },
+        {
+         "n": "7",
+         "title": "How can we use kindergartners’ interests to design toys?",
+         "type": "Investigation",
+         "phenomenon": "Kindergartners want new toys."
+        },
+        {
+         "n": "8",
+         "title": "How can we use our design sketches to build a toy?",
+         "type": "Investigation",
+         "phenomenon": "Toy designers use plans to build design solutions."
+        },
+        {
+         "n": "9",
+         "title": "How can we finalize our toy designs?",
+         "type": "Investigation"
+        },
+        {
+         "n": "10",
+         "title": "How can we share our toy designs with the kindergartners?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Toy designers present their ideas to others."
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "2.3",
+     "title": "Habitats & Biodiversity",
+     "drivingQuestion": "What lives where?",
+     "url": "https://openscied.org/instructional-materials/2-3-habitats/",
+     "skills": [
+      "s.2.habitats",
+      "s.2.water-on-earth"
+     ],
+     "performanceExpectations": [
+      "2-LS4-1",
+      "2-ESS2-2",
+      "2-ESS3-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G2_UHA/preview/unit-materials/2.3%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-5)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Where can we observe plants and animals?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Animals and plants can be found in many different places."
+        },
+        {
+         "n": "2",
+         "title": "What is the land like in places where plants and animals live?",
+         "type": "Investigation",
+         "phenomenon": "The land where plants and animals live looks different."
+        },
+        {
+         "n": "3",
+         "title": "Where is water found, and what is it like?",
+         "type": "Investigation",
+         "phenomenon": "Water is in many places and can look different."
+        },
+        {
+         "n": "4",
+         "title": "How can we show the location, shapes, and kinds of land and water in a place?",
+         "type": "Investigation"
+        },
+        {
+         "n": "5",
+         "title": "How are places where plants and animals live similar and different?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 6-10)",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "What kinds of plants and animals live near us?",
+         "type": "Investigation",
+         "phenomenon": "Plants and animals are in our schoolyard."
+        },
+        {
+         "n": "7",
+         "title": "What kinds of plants and animals live in each national park?",
+         "type": "Investigation",
+         "phenomenon": "Plants and animals live in national parks."
+        },
+        {
+         "n": "8",
+         "title": "What kinds of plants and animals live on land and in water?",
+         "type": "Investigation",
+         "phenomenon": "There are plants and animals on land and in water."
+        },
+        {
+         "n": "9",
+         "title": "How can we share information about the national parks with others?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "10",
+         "title": "What kinds of plants and animals live in different places?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Plants and animals are in different kinds of places."
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "2.4",
+     "title": "Plants",
+     "drivingQuestion": "How can plants grow in different places?",
+     "url": "https://openscied.org/instructional-materials/2-4-puzzling-plants/",
+     "skills": [
+      "s.2.pollination-dispersal",
+      "s.2.plant-growth-investigation"
+     ],
+     "performanceExpectations": [
+      "2-LS2-1",
+      "2-LS2-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G2_UPP/preview/unit-materials/2.4%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-6)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "What do we notice and wonder about plants growing in different places?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "2",
+         "title": "How can seeds get to new places?",
+         "type": "Investigation"
+        },
+        {
+         "n": "3",
+         "title": "How can seeds be moved to new places by sticking?",
+         "type": "Investigation",
+         "phenomenon": "Some seeds stick to some surfaces, while others do not."
+        },
+        {
+         "n": "4",
+         "title": "Can seeds be moved by animals when using them for food? If so, how?",
+         "type": "Investigation",
+         "phenomenon": "As animals store seeds to use as food later, they may move them to a new place."
+        },
+        {
+         "n": "5",
+         "title": "How can pollen be moved in order to make seeds?",
+         "type": "Investigation",
+         "phenomenon": "Pollen can be moved from one flower to another."
+        },
+        {
+         "n": "6",
+         "title": "How can seeds in fruits get moved to new places?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Animal scat can have seeds from fruits and berries."
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 7-10)",
+       "lessons": [
+        {
+         "n": "7",
+         "title": "How can we gather evidence that plants need light and water to keep growing and stay healthy?",
+         "type": "Investigation"
+        },
+        {
+         "n": "8",
+         "title": "How are our plants in different conditions similar and/or different?",
+         "type": "Investigation",
+         "phenomenon": "Plants in different conditions are different over time."
+        },
+        {
+         "n": "9",
+         "title": "Did plants need light and water to keep growing and stay healthy? How do we know?",
+         "type": "Investigation"
+        },
+        {
+         "n": "10",
+         "title": "How do plants keep growing in different places?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Plants in different places, including unusual ones, can keep growing and stay healthy."
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    }
+   ]
+  },
+  {
+   "grade": "3",
+   "units": [
+    {
+     "n": "3.1",
+     "title": "Forces & Interactions",
+     "drivingQuestion": "How can we design objects to balance and move in different ways?",
+     "url": "https://openscied.org/instructional-materials/3-1-forces-interactions/",
+     "skills": [
+      "s.3.balanced-forces",
+      "s.3.magnets"
+     ],
+     "performanceExpectations": [
+      "3-PS2-1",
+      "3-PS2-2",
+      "3-PS2-3",
+      "3-PS2-4",
+      "3-5-ETS1-1",
+      "3-5-ETS1-3"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G3_UFI/preview/unit-materials/3.1%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-8)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How do these sculptures balance and move?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Balancing and moving sculptures."
+        },
+        {
+         "n": "2",
+         "title": "How can we build a sculpture that will balance?",
+         "type": "Investigation",
+         "phenomenon": "Symmetrical balance sculptures."
+        },
+        {
+         "n": "3",
+         "title": "How can we make our sculpture more playful or puzzling?",
+         "type": "Investigation"
+        },
+        {
+         "n": "4",
+         "title": "How can we make our sculpture off-center and still balance?",
+         "type": "Investigation",
+         "phenomenon": "Building an off-centered sculpture that balances."
+        },
+        {
+         "n": "5",
+         "title": "How can we make a sculpture balanced when hanging from above?",
+         "type": "Investigation",
+         "phenomenon": "Hanging balance sculptures."
+        },
+        {
+         "n": "6",
+         "title": "How does the shape of the balance point and a force cause it to move?",
+         "type": "Investigation",
+         "phenomenon": "Sculptures can move in predictable ways by changing the shape of the balance point."
+        },
+        {
+         "n": "7",
+         "title": "How can we design a sculpture to move in the way we want?",
+         "type": "Investigation"
+        },
+        {
+         "n": "8",
+         "title": "How can we share oddly balanced sculptures with others?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 9-14)",
+       "lessons": [
+        {
+         "n": "9",
+         "title": "How do the new magnetic sculptures move?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Magnetic moving sculptures."
+        },
+        {
+         "n": "10",
+         "title": "If we test two magnets, are there forces between them?",
+         "type": "Investigation",
+         "phenomenon": "Flipping a magnet changes the direction of forces between magnets."
+        },
+        {
+         "n": "11",
+         "title": "How does the strength of a magnet or where it’s placed affect forces?",
+         "type": "Investigation"
+        },
+        {
+         "n": "12",
+         "title": "What happens if we change one magnet to a metal object?",
+         "type": "Investigation",
+         "phenomenon": "Magnets and some metals show pull forces when near each other."
+        },
+        {
+         "n": "13",
+         "title": "How can we create and share a magnetic sculpture?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Sculptures with magnets can balance and move in puzzling ways."
+        },
+        {
+         "n": "14",
+         "title": "How can we use magnets to solve a problem?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Applying ideas about magnets and forces to address clothing accessibility."
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "3.2",
+     "title": "Weather & Hazards",
+     "drivingQuestion": "Why do plants only grow well in certain places, and how can we protect them?",
+     "url": "https://openscied.org/instructional-materials/3-2-weather-hazards/",
+     "skills": [
+      "s.3.weather-climate"
+     ],
+     "performanceExpectations": [
+      "3-ESS2-1",
+      "3-ESS2-2",
+      "3-ESS3-1",
+      "3-5-ETS1-2",
+      "3-LS1-1 (plants)"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G3_UWH/preview/unit-materials/3.2%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-6)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How can we get fruits and vegetables all year?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Apples, bananas, and oranges are at school all year."
+        },
+        {
+         "n": "2",
+         "title": "How do we get fruits from plants?",
+         "type": "Investigation"
+        },
+        {
+         "n": "3",
+         "title": "How do the water needs of different plants affect where they can grow well?",
+         "type": "Investigation",
+         "phenomenon": "Fruit grows in places with different precipitation."
+        },
+        {
+         "n": "4",
+         "title": "How is temperature related to where fruit plants grow?",
+         "type": "Investigation",
+         "phenomenon": "Temperatures in fruit-growing places are not always the same."
+        },
+        {
+         "n": "5",
+         "title": "How can temperature and precipitation patterns help us predict where to grow plants?",
+         "type": "Investigation"
+        },
+        {
+         "n": "6",
+         "title": "How can we get apples, oranges, and bananas on the school menu all year?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 7-12)",
+       "lessons": [
+        {
+         "n": "7",
+         "title": "How can we protect fruit plants in hazardous weather?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Damaged fruit plants after hazardous weather."
+        },
+        {
+         "n": "8",
+         "title": "How can weather hazards affect plants?",
+         "type": "Investigation",
+         "phenomenon": "Fruit is affected by different weather hazards."
+        },
+        {
+         "n": "9",
+         "title": "How do farmers and engineers protect plants from wind damage?",
+         "type": "Investigation",
+         "phenomenon": "Different types of windbreaks are used to protect plants and fruits from strong winds."
+        },
+        {
+         "n": "10",
+         "title": "How well do our windbreak designs reduce the impact of wind on plants?",
+         "type": "Investigation",
+         "phenomenon": "Windbreak prototypes reduce the wind on the plants."
+        },
+        {
+         "n": "11",
+         "title": "How and why do we compare design solutions before making decisions?",
+         "type": "Investigation",
+         "phenomenon": "Engineers consider many criteria and constraints when evaluating design solutions."
+        },
+        {
+         "n": "12",
+         "title": "How can we choose solutions that protect plants from weather-related hazards?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "3.3",
+     "title": "Trait Variations",
+     "drivingQuestion": "Why do animals look and act the way they do?",
+     "url": "https://openscied.org/instructional-materials/3-3-trait-variations/",
+     "skills": [
+      "s.3.life-cycles",
+      "s.3.inherited-traits",
+      "s.3.adaptation-fossils"
+     ],
+     "performanceExpectations": [
+      "3-LS1-1 (animals)",
+      "3-LS3-1 (animals)",
+      "3-LS3-2",
+      "3-LS4-1",
+      "3-LS4-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G3_UTV/preview/unit-materials/3.3%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-4)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How do newborn and adult dogs look and act differently?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Newborn puppies look similar to each other but change during their lives to look different as adults."
+        },
+        {
+         "n": "2",
+         "title": "What is happening between being a newborn and being an adult?",
+         "type": "Investigation",
+         "phenomenon": "Newborn canines depend on adults to survive, then go through many similar changes as they grow."
+        },
+        {
+         "n": "3",
+         "title": "What do adult canines do that puppies cannot do (and why)?",
+         "type": "Investigation"
+        },
+        {
+         "n": "4",
+         "title": "How do other animals change over their lifetime?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Animals look and act differently, but also experience similar life stages and processes."
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 5-10)",
+       "lessons": [
+        {
+         "n": "5",
+         "title": "How can we predict what a canine will look like?",
+         "type": "Investigation"
+        },
+        {
+         "n": "6",
+         "title": "Why can dogs do things they did not learn from their parents or people?",
+         "type": "Investigation"
+        },
+        {
+         "n": "7",
+         "title": "How does learning affect a dog’s traits?",
+         "type": "Investigation",
+         "phenomenon": "Dogs can learn jobs that change how they act."
+        },
+        {
+         "n": "8",
+         "title": "How can we explain why domesticated dogs look and act the way they do?",
+         "type": "Investigation",
+         "phenomenon": "Dogs have differences in how they look and act."
+        },
+        {
+         "n": "9",
+         "title": "What causes wild canines to look and act the way they do?",
+         "type": "Investigation",
+         "phenomenon": "Wolves have some traits we see and some we can’t see."
+        },
+        {
+         "n": "10",
+         "title": "Why do animals look and act the way they do?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Animals look and act similar to parents and siblings, but also different."
+        }
+       ]
+      },
+      {
+       "n": "Three",
+       "title": "Lesson Set Three (Lessons 11-14)",
+       "lessons": [
+        {
+         "n": "11",
+         "title": "How long have people and dogs been working together?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "We have evidence suggesting that dogs and people have lived and worked together for a long time."
+        },
+        {
+         "n": "12",
+         "title": "How do we know when dogs and humans started working together?",
+         "type": "Investigation"
+        },
+        {
+         "n": "13",
+         "title": "What was the world like long ago when dogs and humans started working together?",
+         "type": "Investigation"
+        },
+        {
+         "n": "14",
+         "title": "How can we use fossils to make sense of plants, animals, and places long ago?",
+         "type": "Investigation, Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "3.4",
+     "title": "Ecosystem Change & Survival",
+     "drivingQuestion": "Why do animals and plants live where they do and what should we do when it changes?",
+     "url": "https://openscied.org/instructional-materials/3-4-ecosystem-change-survival/",
+     "skills": [
+      "s.3.adaptation-fossils",
+      "s.3.animal-groups"
+     ],
+     "performanceExpectations": [
+      "3-LS4-3",
+      "3-LS4-4",
+      "3-LS3-1 (plants)",
+      "3-LS2-1",
+      "3-5-ETS1-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G3_UCH/preview/unit-materials/3.4%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-8)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Why does a manatee join a group of dolphins in the waters around Tampa Bay?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "2",
+         "title": "Where do manatees and dolphins live and what is it like there?",
+         "type": "Investigation",
+         "phenomenon": "There are different kinds of waters where dolphins and manatees live."
+        },
+        {
+         "n": "3",
+         "title": "Do manatees and dolphins share the same waters all year?",
+         "type": "Investigation",
+         "phenomenon": "Manatees and dolphins are located in different waters at different times."
+        },
+        {
+         "n": "4",
+         "title": "Which other animals and plants live in these waters?",
+         "type": "Investigation",
+         "phenomenon": "Some of the animals and plants in water habitats interact and others do not."
+        },
+        {
+         "n": "5",
+         "title": "How can we figure out more about seagrass?",
+         "type": "Investigation",
+         "phenomenon": "We can observe differences in seagrasses."
+        },
+        {
+         "n": "6",
+         "title": "How does the seagrass get to be different?",
+         "type": "Investigation",
+         "phenomenon": "We observe similarities in living seagrass and parent/offspring data."
+        },
+        {
+         "n": "7",
+         "title": "Why do some animals live in groups?",
+         "type": "Investigation",
+         "phenomenon": "Some animals always live in groups and others rarely do."
+        },
+        {
+         "n": "8",
+         "title": "Why did the manatee and dolphins form a group when they usually do not?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 9-13)",
+       "lessons": [
+        {
+         "n": "9",
+         "title": "Why are manatees struggling to survive if they are protected?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "10",
+         "title": "What should we do to make sure manatees have access to warm water?",
+         "type": "Investigation"
+        },
+        {
+         "n": "11",
+         "title": "What should we do to make sure manatees have seagrass and protection from boats?",
+         "type": "Investigation"
+        },
+        {
+         "n": "12",
+         "title": "How can we design solutions to protect manatees and their habitats?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "13",
+         "title": "How can we choose solutions that protect plants and animals from changes in their environment?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    }
+   ]
+  },
+  {
+   "grade": "4",
+   "units": [
+    {
+     "n": "4.1",
+     "title": "Energy Transfer: Collisions",
+     "drivingQuestion": "Why does an object’s motion change?",
+     "url": "https://openscied.org/instructional-materials/4-1-energy-transfer-collisions/",
+     "skills": [
+      "s.4.energy-speed"
+     ],
+     "performanceExpectations": [
+      "4-PS3-1",
+      "4-PS3-3"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G4_UCS/preview/unit-materials/4.1%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-9)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Why does a soccer ball’s motion change?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "A soccer ball moves differently with different kicks and on different surfaces."
+        },
+        {
+         "n": "2",
+         "title": "Why do these objects move the way they do?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Hockey and marbles involve objects that start and stop moving in similar and different ways."
+        },
+        {
+         "n": "3",
+         "title": "How does the ball start moving in the first place?",
+         "type": "Investigation",
+         "phenomenon": "A ball moves when it is kicked."
+        },
+        {
+         "n": "4",
+         "title": "How can we test what keeps the ball moving on its own?",
+         "type": "Investigation",
+         "phenomenon": "Simple materials can be used to create a physical system for carrying out fair tests about motion."
+        },
+        {
+         "n": "5",
+         "title": "How does the force of the kick change the motion of the ball?",
+         "type": "Investigation",
+         "phenomenon": "We can use a fair test to investigate how the force of a kick changes the motion of the ball."
+        },
+        {
+         "n": "6",
+         "title": "How can we test if a kick is like other collisions?",
+         "type": "Investigation",
+         "phenomenon": "Collisions can happen between two round objects."
+        },
+        {
+         "n": "7",
+         "title": "How and why does the motion of two balls change after a collision?",
+         "type": "Investigation",
+         "phenomenon": "Collisions can involve a moving ball and a non-moving ball."
+        },
+        {
+         "n": "8",
+         "title": "Why does the ball slow down after a collision?",
+         "type": "Investigation"
+        },
+        {
+         "n": "9",
+         "title": "Why do we observe changes in the motion of moving objects?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 10-12)",
+       "lessons": [
+        {
+         "n": "10",
+         "title": "How and why is sound produced during a collision?",
+         "type": "Investigation",
+         "phenomenon": "Sounds get louder when we kick a ball harder."
+        },
+        {
+         "n": "11",
+         "title": "How and why does the temperature of an object change after a collision?",
+         "type": "Investigation",
+         "phenomenon": "A burned hole appears in paper held between colliding metal balls."
+        },
+        {
+         "n": "12",
+         "title": "How is energy transferred in a collision?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "In a collision, objects’ motions change in different ways."
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "4.2",
+     "title": "Energy Transfer: Electricity",
+     "drivingQuestion": "How do we power clocks and other devices?",
+     "url": "https://openscied.org/instructional-materials/4-2-electricity/",
+     "skills": [
+      "s.4.energy-conversion",
+      "s.4.natural-resources"
+     ],
+     "performanceExpectations": [
+      "4-PS3-2",
+      "4-PS3-4",
+      "4-PS4-3",
+      "4-ESS3-1",
+      "3-5-ETS1-1",
+      "3-5-ETS1-3"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G4_UEL/preview/unit-materials/4.2%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-8)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How do we get these clocks to turn on and stay on?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Some clocks need to be plugged in, some do not."
+        },
+        {
+         "n": "2",
+         "title": "What’s going on inside these devices?",
+         "type": "Investigation",
+         "phenomenon": "Both clocks turn on and stay on in different ways."
+        },
+        {
+         "n": "3",
+         "title": "How does a device get its energy from a battery?",
+         "type": "Investigation",
+         "phenomenon": "The light bulb turns on."
+        },
+        {
+         "n": "4",
+         "title": "Where is the electricity coming from?",
+         "type": "Investigation",
+         "phenomenon": "Electricity travels through the plug that goes into the wall."
+        },
+        {
+         "n": "5",
+         "title": "Where does electricity come from?",
+         "type": "Investigation",
+         "phenomenon": "Wind turbines have blades that spin."
+        },
+        {
+         "n": "6",
+         "title": "How else can we generate electricity?",
+         "type": "Investigation"
+        },
+        {
+         "n": "7",
+         "title": "How do solar panels generate electricity?",
+         "type": "Investigation"
+        },
+        {
+         "n": "8",
+         "title": "How do devices like a plug-in clock turn on and stay on?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 9-11)",
+       "lessons": [
+        {
+         "n": "9",
+         "title": "How can we design a solution to transfer information across a distance?",
+         "type": "Investigation",
+         "phenomenon": "Some clocks always have the right time."
+        },
+        {
+         "n": "10",
+         "title": "How can we test our design solutions?",
+         "type": "Investigation"
+        },
+        {
+         "n": "11",
+         "title": "How do devices send and receive information?",
+         "type": "Investigation"
+        }
+       ]
+      },
+      {
+       "n": "Three",
+       "title": "Lesson Set Three (Lessons 12-14)",
+       "lessons": [
+        {
+         "n": "12",
+         "title": "What are the effects of getting and using these different resources?",
+         "type": "Investigation",
+         "phenomenon": "Plugging in our devices could affect the environment."
+        },
+        {
+         "n": "13",
+         "title": "What are the effects of using different resources for electricity?",
+         "type": "Investigation",
+         "phenomenon": "Using energy sources affects the environment."
+        },
+        {
+         "n": "14",
+         "title": "How can we power and communicate with devices on Mars?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "4.3",
+     "title": "Earth Processes",
+     "drivingQuestion": "What causes land and things on it to change? How can we reduce the impacts on humans?",
+     "url": "https://openscied.org/instructional-materials/4-3-earth-processes/",
+     "skills": [
+      "s.4.weathering",
+      "s.4.natural-resources"
+     ],
+     "performanceExpectations": [
+      "4-PS4-1",
+      "4-ESS1-1",
+      "4-ESS2-1",
+      "4-ESS2-2",
+      "4-ESS3-2",
+      "3-5-ETS1-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G4_UEP/preview/unit-materials/4.3%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-8)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "What caused the changes in Acadia National Park?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "A natural event damaged a road and changed the land in Acadia National Park."
+        },
+        {
+         "n": "2",
+         "title": "What happened in Acadia when the damage occurred?",
+         "type": "Investigation",
+         "phenomenon": "Natural hazards can happen in different places, at different times, and have different effects."
+        },
+        {
+         "n": "3",
+         "title": "How do waves move things?",
+         "type": "Investigation"
+        },
+        {
+         "n": "4",
+         "title": "What causes large waves to form?",
+         "type": "Investigation"
+        },
+        {
+         "n": "5",
+         "title": "How could waves cause something like a road to break?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Waves quickly changed the road and the land around it."
+        },
+        {
+         "n": "6",
+         "title": "How are places like Thunder Hole changing?",
+         "type": "Investigation",
+         "phenomenon": "Thunder Hole and other national park sites look like they formed in interesting ways."
+        },
+        {
+         "n": "7",
+         "title": "What evidence can we gather about how land changes without waves?",
+         "type": "Investigation",
+         "phenomenon": "Land in different national parks has changed at different rates."
+        },
+        {
+         "n": "8",
+         "title": "How does erosion change land and things on it in our communities?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 9-12)",
+       "lessons": [
+        {
+         "n": "9",
+         "title": "How can lava from volcanoes form new land, and how do we know?",
+         "type": "Investigation",
+         "phenomenon": "Hawai'i was formed from many layers of lava building up."
+        },
+        {
+         "n": "10",
+         "title": "How can there be so many plants on the island of Hawai’i?",
+         "type": "Investigation, Putting Pieces Together"
+        },
+        {
+         "n": "11",
+         "title": "How can we predict where other volcanic eruptions might happen?",
+         "type": "Investigation",
+         "phenomenon": "There are patterns in the locations of Earth’s features."
+        },
+        {
+         "n": "12",
+         "title": "How might we predict other natural hazards around the world?",
+         "type": "Investigation, Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Three",
+       "title": "Lesson Set Three (Lessons 13-16)",
+       "lessons": [
+        {
+         "n": "13",
+         "title": "What places need protecting from natural processes, and how can people do that?",
+         "type": "Investigation"
+        },
+        {
+         "n": "14",
+         "title": "How can we design a solution that could protect Seawall Road?",
+         "type": "Investigation",
+         "phenomenon": "Our earlier research helps us design solutions that are based on criteria and constraints."
+        },
+        {
+         "n": "15",
+         "title": "How can we test and compare solutions to protect places from natural processes?",
+         "type": "Investigation"
+        },
+        {
+         "n": "16",
+         "title": "How can we use our engineering process to suggest a solution that reduces erosion in Indiana Dunes National Park?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)",
+     "storylineHeader": "WHAT CAUSES LAND AND THINGS ON IT TO CHANGE?"
+    },
+    {
+     "n": "4.4",
+     "title": "Structure & Function",
+     "drivingQuestion": "How do plants’ and animals’ structures function together to meet their needs?",
+     "url": "https://openscied.org/instructional-materials/4-4-structure-function/",
+     "skills": [
+      "s.4.internal-structures",
+      "s.4.vision-light"
+     ],
+     "performanceExpectations": [
+      "4-LS1-1",
+      "4-LS1-2",
+      "4-PS4-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G4_USF/preview/unit-materials/4.4%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-5)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How do flying squirrels’ parts work to meet their needs, especially in the dark?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "2",
+         "title": "How do other animal (and plant) parts work to meet their needs, especially in the dark?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "3",
+         "title": "How does a flying squirrel move through the air?",
+         "type": "Investigation",
+         "phenomenon": "Some living things can move through the air in different ways."
+        },
+        {
+         "n": "4",
+         "title": "How do flying squirrels land safely?",
+         "type": "Investigation",
+         "phenomenon": "Flying squirrels are able to land safely after gliding."
+        },
+        {
+         "n": "5",
+         "title": "How do flying squirrels avoid predators and access food?",
+         "type": "Investigation",
+         "phenomenon": "Flying squirrels are able to find food and avoid predators by flying/gliding."
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 6-10)",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "How do flying squirrels see their food?",
+         "type": "Investigation"
+        },
+        {
+         "n": "7",
+         "title": "How do flying squirrels’ eyes help them see in the dark?",
+         "type": "Investigation"
+        },
+        {
+         "n": "8",
+         "title": "How do ground squirrels use smell to meet their needs?",
+         "type": "Investigation",
+         "phenomenon": "Living things have many ways and uses for smelling."
+        },
+        {
+         "n": "9",
+         "title": "How do ground squirrels and other animals use other sense receptors?",
+         "type": "Investigation",
+         "phenomenon": "Ground squirrels are able to meet their needs underground in the dark."
+        },
+        {
+         "n": "10",
+         "title": "How do flying squirrels use sense receptors to take care of their babies?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Three",
+       "title": "Lesson Set Three (Lessons 11-13)",
+       "lessons": [
+        {
+         "n": "11",
+         "title": "How do plants use their structures to meet their need for water?",
+         "type": "Investigation",
+         "phenomenon": "Plants have a variety of different structures."
+        },
+        {
+         "n": "12",
+         "title": "How do plant structures work together to help them grow, survive, and reproduce?",
+         "type": "Investigation"
+        },
+        {
+         "n": "13",
+         "title": "What structures do plants have to help them reproduce?",
+         "type": "Investigation, Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    }
+   ]
+  },
+  {
+   "grade": "5",
+   "units": [
+    {
+     "n": "5.1",
+     "title": "Ecosystems & Matter Cycling",
+     "drivingQuestion": "How does a nurse log help other things live and grow?",
+     "url": "https://openscied.org/instructional-materials/5-1-ecosystems-matter-cycling/",
+     "skills": [
+      "s.5.food-webs",
+      "s.5.plants-sunlight-energy"
+     ],
+     "performanceExpectations": [
+      "5-PS1-1",
+      "5-PS3-1",
+      "5-LS1-1",
+      "5-LS2-1"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G5_UEM/preview/unit-materials/5.1%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-7)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How does a fallen tree become a nurse log?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "Many things live and grow on/around fallen trees (nurse logs)."
+        },
+        {
+         "n": "2",
+         "title": "What things are found in, on, and around nurse logs?",
+         "type": "Investigation",
+         "phenomenon": "Moss is an important component of the nurse log system."
+        },
+        {
+         "n": "3",
+         "title": "How can we measure how much a plant has grown?",
+         "type": "Investigation",
+         "phenomenon": "Plants get heavier in weight as they grow."
+        },
+        {
+         "n": "4",
+         "title": "How can we figure out what plants need to grow?",
+         "type": "Investigation",
+         "phenomenon": "Plants growing with different factors gain or lose matter over time."
+        },
+        {
+         "n": "5",
+         "title": "Where do plants get the matter they need to grow?",
+         "type": "Investigation",
+         "phenomenon": "A basketball is a way to trap air to weigh it."
+        },
+        {
+         "n": "6",
+         "title": "How does light help plants grow?",
+         "type": "Investigation"
+        },
+        {
+         "n": "7",
+         "title": "How does a nurse log help plants live and grow?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Some places better support plant growth than others."
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 8-10)",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Why does a nurse log seem to lose matter over time?",
+         "type": "Investigation",
+         "phenomenon": "Nurse logs seem to disappear over time."
+        },
+        {
+         "n": "9",
+         "title": "How do animals use energy from food?",
+         "type": "Investigation"
+        },
+        {
+         "n": "10",
+         "title": "How do nurse logs help animals live and grow?",
+         "type": "Putting Pieces Together",
+         "phenomenon": "Nurse log habitats help salamanders survive."
+        }
+       ]
+      },
+      {
+       "n": "Three",
+       "title": "Lesson Set Three (Lessons 11-15)",
+       "lessons": [
+        {
+         "n": "11",
+         "title": "How do termites get matter and energy from wood in the nurse log?",
+         "type": "Investigation",
+         "phenomenon": "Termites can digest wood."
+        },
+        {
+         "n": "12",
+         "title": "Where do mushrooms get matter and energy they need to grow?",
+         "type": "Investigation",
+         "phenomenon": "Mushrooms grow on living and once-living things."
+        },
+        {
+         "n": "13",
+         "title": "Why are decomposers important to the nurse log system?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "14",
+         "title": "What can happen when the balance of an ecosystem is disrupted?",
+         "type": "Investigation"
+        },
+        {
+         "n": "15",
+         "title": "How do matter and energy flow through a grassland ecosystem?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "5.2",
+     "title": "Matter Properties",
+     "drivingQuestion": "How can we make water healthy for all living things?",
+     "url": "https://openscied.org/instructional-materials/5-2-water/",
+     "skills": [
+      "s.5.particles-matter",
+      "s.5.mixtures",
+      "s.5.conservation-mass"
+     ],
+     "performanceExpectations": [
+      "5-PS1-2",
+      "5-PS1-3",
+      "5-PS1-4",
+      "3-5-ETS1-1",
+      "3-5-ETS1-3"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G5_UMP/preview/unit-materials/5.2%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-7)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How can we tell if water is healthy or unhealthy?",
+         "type": "Anchoring Phenomenon",
+         "phenomenon": "There are five different water samples that look very different from each other."
+        },
+        {
+         "n": "2",
+         "title": "What else can we figure out about our water samples?",
+         "type": "Investigation",
+         "phenomenon": "Several water samples look and smell very different."
+        },
+        {
+         "n": "3",
+         "title": "How can we design filters to separate these materials out of the water?",
+         "type": "Investigation",
+         "phenomenon": "We can design and test a filter to separate out materials that can be seen in the water samples."
+        },
+        {
+         "n": "4",
+         "title": "How can we develop and optimize our filters to separate unhealthy materials out of the water?",
+         "type": "Investigation"
+        },
+        {
+         "n": "5",
+         "title": "How can we figure out more about unseen matter that can be in water?",
+         "type": "Investigation",
+         "phenomenon": "Water contains seen and unseen matter"
+        },
+        {
+         "n": "6",
+         "title": "How can we figure out if any of this matter that could be unhealthy is in the water samples?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "7",
+         "title": "How can we use what we figured out about our water samples to identify the cause of a rash?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 8-15)",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "How can boiling help to remove unhealthy materials from the water samples?",
+         "type": "Investigation",
+         "phenomenon": "Boiling water changes its form."
+        },
+        {
+         "n": "9",
+         "title": "How can we remove unhealthy matter from water without boiling it?",
+         "type": "Investigation"
+        },
+        {
+         "n": "10",
+         "title": "How do scientists remove matter that is making water unhealthy?",
+         "type": "Investigation",
+         "phenomenon": "Water treatments used to solve water problems can help us identify solutions for our samples."
+        },
+        {
+         "n": "11",
+         "title": "How can adding a substance make the water healthier?",
+         "type": "Investigation"
+        },
+        {
+         "n": "12",
+         "title": "What have we figured out about making water healthier for a variety of living things?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "13",
+         "title": "What community water problems need solutions?",
+         "type": "Investigation"
+        },
+        {
+         "n": "14",
+         "title": "How can we use our design evaluations to refine our water solutions to better address the needs of our community?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "15",
+         "title": "How can we use what we figured out about our water samples to create a healthy habitat for a turtle?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "5.3",
+     "title": "Earth Systems",
+     "drivingQuestion": "How does changing the flow of water impact Earth’s systems, and how can humans help?",
+     "url": "https://openscied.org/instructional-materials/5-3-earth-systems/",
+     "skills": [
+      "s.5.earth-spheres",
+      "s.5.protect-resources"
+     ],
+     "performanceExpectations": [
+      "5-ESS2-1",
+      "5-ESS2-2",
+      "5-ESS3-1",
+      "5-PS2-1",
+      "3-5-ETS1-2"
+     ],
+     "storyline": "https://openscied-uploads-production.s3.amazonaws.com/G5_UES/preview/unit-materials/5.3%20Storyline.pdf",
+     "sections": [
+      {
+       "n": "One",
+       "title": "Lesson Set One (Lessons 1-7)",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How did the Elwha Dam change the Elwha River system?",
+         "type": "Anchoring Phenomenon"
+        },
+        {
+         "n": "2",
+         "title": "How do salmon interact with parts of the Elwha River system?",
+         "type": "Investigation"
+        },
+        {
+         "n": "3",
+         "title": "How did the Elwha Dam affect the sediment and the salmon in the river system?",
+         "type": "Investigation"
+        },
+        {
+         "n": "4",
+         "title": "What causes the Elwha River to flow from south to north?",
+         "type": "Investigation",
+         "phenomenon": "Objects move until they are as close to the center of the Earth as they can be."
+        },
+        {
+         "n": "5",
+         "title": "Where does all of the water come from that keeps the Elwha River flowing?",
+         "type": "Investigation"
+        },
+        {
+         "n": "6",
+         "title": "How did the dams affect the Elwha River system?",
+         "type": "Investigation"
+        },
+        {
+         "n": "7",
+         "title": "How are decisions in our local community impacting the Earth’s spheres and their interactions?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      },
+      {
+       "n": "Two",
+       "title": "Lesson Set Two (Lessons 8-14)",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "How can humans help the Elwha River system recover from the dams’ negative impact?",
+         "type": "Investigation"
+        },
+        {
+         "n": "9",
+         "title": "How much of Earth’s water is fresh water that we can use?",
+         "type": "Investigation",
+         "phenomenon": "Most of Earth’s water is salt water; very little is fresh water that people can use."
+        },
+        {
+         "n": "10",
+         "title": "What are humans using the available freshwater on Earth for?",
+         "type": "Investigation",
+         "phenomenon": "The amount of freshwater needed to produce various common items."
+        },
+        {
+         "n": "11",
+         "title": "How are community decisions impacting their local hydrospheres?",
+         "type": "Investigation",
+         "phenomenon": "Different communities impact their hydrospheres in similar and different ways."
+        },
+        {
+         "n": "12",
+         "title": "How do we compare solutions so that we can address the freshwater needs of a community?",
+         "type": "Investigation"
+        },
+        {
+         "n": "13",
+         "title": "How can our peers help us improve our solutions to freshwater access problems?",
+         "type": "Putting Pieces Together"
+        },
+        {
+         "n": "14",
+         "title": "How can we use what we know about comparing solutions to improve the water access problem in El Paso?",
+         "type": "Putting Pieces Together"
+        }
+       ]
+      }
+     ],
+     "lessonSource": "Unit Storyline (lesson questions, lesson sets)"
+    },
+    {
+     "n": "5.4",
+     "title": "Sun, Moon, & Star Patterns",
+     "drivingQuestion": "How and why does what I see in the sky change?",
+     "url": "https://openscied.org/instructional-materials/5-4-earth-in-the-universe/",
+     "skills": [
+      "s.5.sun-star-brightness",
+      "s.5.shadows-day-night",
+      "s.5.gravity-down"
+     ],
+     "performanceExpectations": [
+      "5-ESS1-1",
+      "5-ESS1-2"
+     ],
+     "lessons": [],
+     "notes": "Lesson titles not found on a public page (no Teacher Edition or Storyline file could be located)."
+    }
+   ]
+  },
+  {
+   "grade": "6",
+   "units": [
+    {
+     "n": "6.1",
+     "title": "Light & Matter",
+     "drivingQuestion": "Why do we sometimes see different things when looking at the same object?",
+     "url": "https://openscied.org/instructional-materials/6-1-light-matter/",
+     "skills": [],
+     "performanceExpectations": [
+      "MS-PS4-2*",
+      "MS-LS1-8*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "How can something act like a mirror and a window at the same time?"
+      },
+      {
+       "n": "2",
+       "title": "What happens if we change the light?"
+      },
+      {
+       "n": "3",
+       "title": "What happens when light shines on the one-way mirror?"
+      },
+      {
+       "n": "4",
+       "title": "How do similar amounts of light transmit through and reflect off the one-way mirror?"
+      },
+      {
+       "n": "5",
+       "title": "How do light and the one-way mirror interact to cause the one-way mirror phenomenon?"
+      },
+      {
+       "n": "6",
+       "title": "Why does the music student not see the teacher?"
+      },
+      {
+       "n": "7",
+       "title": "Why do the music student and the teacher see the music student but the music student can’t see the teacher?"
+      },
+      {
+       "n": "8",
+       "title": "Why do we sometimes see different things when looking at the same object?"
+      }
+     ],
+     "notes": "Light and vision: no Grade 6 skill fits; nearest taxonomy skills are s.4.vision-light and s.8.em-spectrum.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G6_ULT/lowres/6.1%20Light%20&%20Matter%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "6.2",
+     "title": "Thermal Energy",
+     "drivingQuestion": "How can containers keep stuff from warming up or cooling down?",
+     "url": "https://openscied.org/instructional-materials/6-2-thermal-energy/",
+     "skills": [],
+     "performanceExpectations": [
+      "MS-PS1-4*",
+      "MS-PS3-3",
+      "MS-PS3-4",
+      "MS-PS3-5",
+      "MS-PS4-2*",
+      "MS-ETS1-4*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Why does the temperature of the liquid in some cup systems change more than in others?"
+      },
+      {
+       "n": "2",
+       "title": "What cup features seem most important for keeping a drink cold?"
+      },
+      {
+       "n": "3",
+       "title": "How are the cup features that keep things cold the same or different for keeping things hot?"
+      },
+      {
+       "n": "4",
+       "title": "How does a lid affect what happens to the liquid in the cup?"
+      },
+      {
+       "n": "5",
+       "title": "Where does the water on the outside of the cold cup system come from?"
+      },
+      {
+       "n": "6",
+       "title": "How can we explain the effect of a lid on what happens to the liquid in the cup over time?"
+      },
+      {
+       "n": "7",
+       "title": "If matter cannot enter or exit a closed system, how does a liquid in the system change temperature?"
+      },
+      {
+       "n": "8",
+       "title": "How does a cup’s surface affect how light warms up a liquid inside the cup?"
+      },
+      {
+       "n": "9",
+       "title": "How does the temperature of a liquid on one side of a cup wall affect the temperature of a liquid on the other side of the wall?"
+      },
+      {
+       "n": "10",
+       "title": "What is the difference between a hot and a cold liquid?"
+      },
+      {
+       "n": "11",
+       "title": "Why do particles move more in hot liquids?"
+      },
+      {
+       "n": "12",
+       "title": "How does the motion of particles compare in a sample of matter at a given temperature?"
+      },
+      {
+       "n": "13",
+       "title": "How could the motion of particles on one side of a solid wall affect the motion of the particles on the other side of that wall?"
+      },
+      {
+       "n": "14",
+       "title": "Does our evidence support that cold is leaving the system or that heat is entering the system?"
+      },
+      {
+       "n": "15",
+       "title": "How do certain design features slow down the transfer of energy into a cup?"
+      },
+      {
+       "n": "16",
+       "title": "How can we design a cup system to slow energy transfer into the liquid inside it?"
+      },
+      {
+       "n": "17",
+       "title": "How can we improve our first design to slow energy transfer into the cup system even more?"
+      },
+      {
+       "n": "18",
+       "title": "How can containers keep stuff from warming up or cooling down?"
+      }
+     ],
+     "notes": "Thermal energy and particle motion: no Grade 6 skill fits; nearest taxonomy skills are s.7.phase-changes and s.5.particles-matter.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G6_UTH/lowres/6.2%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "6.3",
+     "title": "Weather, Climate & Water Cycling",
+     "drivingQuestion": "Why does a lot of hail, rain, or snow fall at some times and not others?",
+     "url": "https://openscied.org/instructional-materials/6-3-weather-climate-water-cycling/",
+     "skills": [
+      "s.6.weather-fronts",
+      "s.6.water-cycle"
+     ],
+     "performanceExpectations": [
+      "MS-ESS2-4",
+      "MS-ESS2-5",
+      "MS-ESS2-6",
+      "MS-PS1-4*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What causes this kind of precipitation event to occur?"
+      },
+      {
+       "n": "2",
+       "title": "What are the conditions like on days when it hails?"
+      },
+      {
+       "n": "3",
+       "title": "How does the air higher up compare to the air near the ground?"
+      },
+      {
+       "n": "4",
+       "title": "Why is the air near the ground warmer than the air higher up?"
+      },
+      {
+       "n": "5",
+       "title": "What happens to the air near the ground when it is warmed up?"
+      },
+      {
+       "n": "6",
+       "title": "How can we explain the movement of air in a hail cloud?"
+      },
+      {
+       "n": "7",
+       "title": "Where did all that water in the air come from, and how did it get into the air?"
+      },
+      {
+       "n": "8",
+       "title": "What happens to water vapor in the air if we cool the air down, and why?"
+      },
+      {
+       "n": "9",
+       "title": "Why don’t we see clouds everywhere in the air, and what is a cloud made of?"
+      },
+      {
+       "n": "10",
+       "title": "Why do clouds or storms form at some times but not others?"
+      },
+      {
+       "n": "11",
+       "title": "Why don’t water droplets or ice crystals fall from the clouds all the time?"
+      },
+      {
+       "n": "12",
+       "title": "What causes more lift in one cloud versus another?"
+      },
+      {
+       "n": "13",
+       "title": "Why do some storms produce (really big) hail and others don’t?"
+      },
+      {
+       "n": "14",
+       "title": "What causes a large-scale precipitation event like this to occur?"
+      },
+      {
+       "n": "15",
+       "title": "What happens with temperature and humidity of air in large storms?"
+      },
+      {
+       "n": "16",
+       "title": "How do warm air masses and cold air masses interact along the boundaries between them?"
+      },
+      {
+       "n": "17",
+       "title": "Is there a relationship between where the air is rising and where precipitation falls?"
+      },
+      {
+       "n": "18",
+       "title": "How can we explain what is happening across this storm (and other large-scale storms)?"
+      },
+      {
+       "n": "19",
+       "title": "Are there patterns to how air masses move that can help predict where large storms will form?"
+      },
+      {
+       "n": "20",
+       "title": "How do oceans affect whether a place gets a lot or a little precipitation?"
+      },
+      {
+       "n": "21",
+       "title": "Why is there less precipitation further inland in the Pacific Northwest than further inland from the Gulf Coast?"
+      },
+      {
+       "n": "22",
+       "title": "How can we explain differences in climate in different parts of the world?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G6_UWC/lowres/6.3%20Weather,%20Climate,%20and%20Water%20Cycling%20Teacher%20Edition.pdf",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "6.4",
+     "title": "Plate Tectonics & Rock Cycling",
+     "drivingQuestion": "What causes Earth’s surface to change?",
+     "url": "https://openscied.org/instructional-materials/6-4-rock-cycling-plate-tectonics/",
+     "skills": [
+      "s.6.plate-tectonics",
+      "s.6.rock-cycle"
+     ],
+     "performanceExpectations": [
+      "MS-ESS1-4",
+      "MS-ESS2-1",
+      "MS-ESS2-2",
+      "MS-ESS2-3"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What is causing Mt. Everest and other mountains to move, grow, or shrink?"
+      },
+      {
+       "n": "2",
+       "title": "How are earthquakes related to where mountains are located?"
+      },
+      {
+       "n": "3",
+       "title": "How does what we find on and below Earth’s surface compare in different places?"
+      },
+      {
+       "n": "4",
+       "title": "What is happening to Earths’ surface and the material below it during an earthquake?"
+      },
+      {
+       "n": "5",
+       "title": "How does plate movement affect the land around mountains such as Mt. Everest?"
+      },
+      {
+       "n": "6",
+       "title": "How could plate movement help us explain how Mt. Everest and other locations are changing in elevation?"
+      },
+      {
+       "n": "7",
+       "title": "What happens at mountains where we see volcanic activity?"
+      },
+      {
+       "n": "8",
+       "title": "What is occurring at locations where two plates are moving away from each other?"
+      },
+      {
+       "n": "9",
+       "title": "What causes mountains to change?"
+      },
+      {
+       "n": "10",
+       "title": "Where were Africa and South America in the past?"
+      },
+      {
+       "n": "11",
+       "title": "Where were the other plates located in the distant past?"
+      },
+      {
+       "n": "12",
+       "title": "Where did mountains that aren’t at plate boundaries today, like the Appalachians and Urals, come from?"
+      },
+      {
+       "n": "13",
+       "title": "What causes mountains to shrink in elevation?"
+      },
+      {
+       "n": "14",
+       "title": "How is there an exposed marine fossil on Mt. Everest? And, what other remaining questions from our Driving Question Board can we now answer?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G6_UPT/lowres/6.4%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "6.5",
+     "title": "Natural Hazards",
+     "drivingQuestion": "Where do natural hazards happen and how do we prepare for them?",
+     "url": "https://openscied.org/instructional-materials/6-5-natural-hazards/",
+     "skills": [
+      "s.6.plate-tectonics"
+     ],
+     "performanceExpectations": [
+      "MS-ESS3-2",
+      "MS-PS4-3",
+      "MS-ETS1-1*",
+      "MS-ETS1-2*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What happens to a community when a tsunami occurs?"
+      },
+      {
+       "n": "2",
+       "title": "Where do tsunamis happen and what causes them?"
+      },
+      {
+       "n": "3",
+       "title": "What causes a tsunami to form and move?"
+      },
+      {
+       "n": "4",
+       "title": "How can we forecast where and when tsunamis will happen and which communities are at risk?"
+      },
+      {
+       "n": "5",
+       "title": "How can we reduce damage from a tsunami wave?"
+      },
+      {
+       "n": "6",
+       "title": "How are tsunamis detected and warning signals sent?"
+      },
+      {
+       "n": "7",
+       "title": "What are ways we can communicate with people before and during a tsunami?"
+      },
+      {
+       "n": "8",
+       "title": "Which emergency communication systems are the most reliable in a hazard?"
+      },
+      {
+       "n": "9",
+       "title": "How can we model the systems put into place to protect communities?"
+      },
+      {
+       "n": "10",
+       "title": "How can we effectively prepare our communities for a natural hazard?"
+      }
+     ],
+     "notes": "Natural hazards (tsunamis) also match s.4.natural-resources.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G6_UNH/lowres/6.5%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "6.6",
+     "title": "Cells & Systems",
+     "drivingQuestion": "How do living things heal?",
+     "url": "https://openscied.org/instructional-materials/6-6-cells-systems/",
+     "skills": [
+      "s.6.cells",
+      "s.6.cell-organelles",
+      "s.6.body-systems"
+     ],
+     "performanceExpectations": [
+      "MS-LS1-1",
+      "MS-LS1-2*",
+      "MS-LS1-3*",
+      "MS-LS1-8*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What happened in the student’s foot so they could walk again?"
+      },
+      {
+       "n": "2",
+       "title": "What do our bones, skin, and muscles do for us?"
+      },
+      {
+       "n": "3",
+       "title": "How can medical images and diagrams help us figure out more about the structures in our body?"
+      },
+      {
+       "n": "4",
+       "title": "Why is there blood in all of these places in the body?"
+      },
+      {
+       "n": "5",
+       "title": "What do nerves do, and why are they in different parts of the body?"
+      },
+      {
+       "n": "6",
+       "title": "What will we see if we look at skin, bone, and muscle with the microscope, too?"
+      },
+      {
+       "n": "7",
+       "title": "Are all things made of cells?"
+      },
+      {
+       "n": "8",
+       "title": "What happened as the skin on top of the foot healed?"
+      },
+      {
+       "n": "9",
+       "title": "What is happening at the site of an injury to fill the gap?"
+      },
+      {
+       "n": "10",
+       "title": "What do cells need to grow and make more of themselves?"
+      },
+      {
+       "n": "11",
+       "title": "How do cells get what they need to grow?"
+      },
+      {
+       "n": "12",
+       "title": "How do the structures and systems in the body work together to heal the injury?"
+      },
+      {
+       "n": "13",
+       "title": "How is the process of growing similar to healing?"
+      },
+      {
+       "n": "14",
+       "title": "How can shifting our perceptions of ability and disability allow us to be more thoughtful about how we make our environments more accessible?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G6_UCL/lowres/6.6%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    }
+   ]
+  },
+  {
+   "grade": "7",
+   "units": [
+    {
+     "n": "7.1",
+     "title": "Chemical Reactions & Matter",
+     "drivingQuestion": "How can we make something new that was not there before?",
+     "url": "https://openscied.org/instructional-materials/7-1-chemical-reactions-matter/",
+     "skills": [
+      "s.7.chemical-reactions",
+      "s.7.atoms-molecules"
+     ],
+     "performanceExpectations": [
+      "MS-PS1-1*",
+      "MS-PS1-2*",
+      "MS-PS1-5",
+      "MS-LS1-8*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What happens when a bath bomb is added to water (and what causes it to happen)?"
+      },
+      {
+       "n": "2",
+       "title": "Where is the gas coming from?"
+      },
+      {
+       "n": "3",
+       "title": "What’s in a bath bomb that is producing the gas?"
+      },
+      {
+       "n": "4",
+       "title": "Which combinations of the substances in a bath bomb produce a gas?"
+      },
+      {
+       "n": "5",
+       "title": "What gas(es) could be coming from the bath bomb?"
+      },
+      {
+       "n": "6",
+       "title": "How can we explain another phenomenon where gas bubbles appear from combining different substances together?"
+      },
+      {
+       "n": "7",
+       "title": "How can we revise our model to represent the differences in the matter that goes into and comes out of the bath bomb system?"
+      },
+      {
+       "n": "8",
+       "title": "How can particles of a new substance be formed out of the particles of an old substance?"
+      },
+      {
+       "n": "9",
+       "title": "Does heating liquid water produce a new substance in the gas bubbles that appear?"
+      },
+      {
+       "n": "10",
+       "title": "When energy from a battery was added to water, were the gases produced made of the same particles as were produced from heating the water?"
+      },
+      {
+       "n": "11",
+       "title": "How do Dalton’s models of the particles that change in a reaction compare to the ones we developed?"
+      },
+      {
+       "n": "12",
+       "title": "How can a new substance (a gas) be produced and the total mass of the closed system not change?"
+      },
+      {
+       "n": "13",
+       "title": "Why do different substances have different odors and how do we detect them?"
+      },
+      {
+       "n": "14",
+       "title": "What is happening to the Taj Mahal?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G7_UCA/lowres/7.1%20Chemical%20Reactions%20&%20Matter%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "7.2",
+     "title": "Chemical Reactions & Energy",
+     "drivingQuestion": "How can we use chemical reactions to design a solution to a problem?",
+     "url": "https://openscied.org/instructional-materials/7-2-chemical-reactions-energy/",
+     "skills": [
+      "s.7.chemical-reactions"
+     ],
+     "performanceExpectations": [
+      "MS-PS1-6",
+      "MS-ETS1-2*",
+      "MS-ETS1-3*",
+      "MS-ETS1-4*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "How can we heat up food when we don’t have our typical methods available?"
+      },
+      {
+       "n": "2",
+       "title": "How do heaters get warm without a flame?"
+      },
+      {
+       "n": "3",
+       "title": "What other chemical reactions could we use to heat up food?"
+      },
+      {
+       "n": "4",
+       "title": "How much of each reactant should we include in our homemade flameless heater?"
+      },
+      {
+       "n": "5",
+       "title": "How can we refine our criteria and constraints?"
+      },
+      {
+       "n": "6",
+       "title": "How can we redesign our homemade flameless heater?"
+      },
+      {
+       "n": "7",
+       "title": "How did our design compare to others in the class?"
+      },
+      {
+       "n": "8",
+       "title": "What effects might result from our design changes?"
+      },
+      {
+       "n": "9",
+       "title": "What is our optimal design for a homemade flameless heater?"
+      },
+      {
+       "n": "10",
+       "title": "How can we decide between competing designs?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G7_UCB/lowres/7.2%20Chemical%20Reactions%20&%20Energy%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "7.3",
+     "title": "Metabolic Reactions",
+     "drivingQuestion": "How do things inside our bodies work together to make us feel the way we do?",
+     "url": "https://openscied.org/instructional-materials/7-3-metabolic-reactions/",
+     "skills": [
+      "s.7.photosynthesis-respiration"
+     ],
+     "performanceExpectations": [
+      "MS-LS1-3*",
+      "MS-LS1-5*",
+      "MS-LS1-7",
+      "MS-PS1-1*",
+      "MS-PS1-2*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What is going on inside M’Kenna’s body that is making her feel the way she does?"
+      },
+      {
+       "n": "2",
+       "title": "Can we see anything inside M’Kenna that looks different?"
+      },
+      {
+       "n": "3",
+       "title": "Why do molecules in the small intestine seem like they are disappearing?"
+      },
+      {
+       "n": "4",
+       "title": "What happens to food molecules as they move through the small intestine and large intestine?"
+      },
+      {
+       "n": "5",
+       "title": "Why do large food molecules, like some complex carbohydrates, seem to disappear in the digestive system?"
+      },
+      {
+       "n": "6",
+       "title": "What happens to the different substances in food as it travels through the digestive system?"
+      },
+      {
+       "n": "7",
+       "title": "What is the function of the digestive system, and how is M’Kenna’s digestive system different?"
+      },
+      {
+       "n": "8",
+       "title": "What does the surface of M’Kenna’s small intestine look like up close compared with a healthy one?"
+      },
+      {
+       "n": "9",
+       "title": "How can a problem in one body system cause problems in other systems?"
+      },
+      {
+       "n": "10",
+       "title": "Why is M’Kenna losing so much weight?"
+      },
+      {
+       "n": "11",
+       "title": "What happens to matter when it is burned?"
+      },
+      {
+       "n": "12",
+       "title": "Does this chemical reaction to burn food happen inside our bodies?"
+      },
+      {
+       "n": "13",
+       "title": "How does a healthy body use food for energy and growth, and how is M’Kenna’s body functioning differently?"
+      },
+      {
+       "n": "14",
+       "title": "Do all animals do chemical reactions to get energy from food like humans?"
+      },
+      {
+       "n": "15",
+       "title": "What questions on our Driving Question Board can we now answer?"
+      }
+     ],
+     "notes": "Body systems and digestion also match s.6.body-systems.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G7_UMR/lowres/7.3%20Metabolic%20Reactions%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "7.4",
+     "title": "Matter Cycling & Photosynthesis",
+     "drivingQuestion": "Where does food come from and where does it go next?",
+     "url": "https://openscied.org/instructional-materials/7-4-matter-cycling-photosynthesis/",
+     "skills": [
+      "s.7.photosynthesis-respiration",
+      "s.7.ecosystem-energy"
+     ],
+     "performanceExpectations": [
+      "MS-LS1-2*",
+      "MS-LS1-6",
+      "MS-LS2-3",
+      "MS-PS1-3"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Where does this stuff come from?"
+      },
+      {
+       "n": "2",
+       "title": "Do plants get their food molecules by taking them in?"
+      },
+      {
+       "n": "3",
+       "title": "What other inputs could be sources of food molecules for the plant?"
+      },
+      {
+       "n": "4",
+       "title": "Are any parts that make up food molecules coming into the plant from above the surface?"
+      },
+      {
+       "n": "5",
+       "title": "How are these gases getting into and out of leaves?"
+      },
+      {
+       "n": "6",
+       "title": "How are all these things interacting together in this part of the plant?"
+      },
+      {
+       "n": "7",
+       "title": "Why do plants need light?"
+      },
+      {
+       "n": "8",
+       "title": "Where are plants getting food from?"
+      },
+      {
+       "n": "9",
+       "title": "Where do the food molecules in the maple tree come from?"
+      },
+      {
+       "n": "10",
+       "title": "Why don’t plants die at night?"
+      },
+      {
+       "n": "11",
+       "title": "Why don’t plants die when they can’t make food?"
+      },
+      {
+       "n": "12",
+       "title": "Where does the rest of our food come from?"
+      },
+      {
+       "n": "13",
+       "title": "What happens to food that doesn’t get eaten?"
+      },
+      {
+       "n": "14",
+       "title": "Where does food come from and where does it go next?"
+      },
+      {
+       "n": "15",
+       "title": "Where does food come from, and where does it go next?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G7_UMC/lowres/7.4%20Matter%20Cycling%20and%20Photosynthesis%20Teacher%20Edition.pdf",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "7.5",
+     "title": "Ecosystem Dynamics",
+     "drivingQuestion": "How does changing an ecosystem affect what lives there?",
+     "url": "https://openscied.org/instructional-materials/7-5-ecosystem-dynamics/",
+     "skills": [
+      "s.7.ecosystem-energy"
+     ],
+     "performanceExpectations": [
+      "MS-LS2-1",
+      "MS-LS2-2",
+      "MS-LS2-4",
+      "MS-LS2-5",
+      "MS-ESS3-3*",
+      "MS-ETS1-1*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "How could buying candy affect orangutan populations in the wild?"
+      },
+      {
+       "n": "2",
+       "title": "Can we replace palm oil with something else?"
+      },
+      {
+       "n": "3",
+       "title": "Can we grow oil palm trees somewhere else so that we’re not cutting down tropical rainforests?"
+      },
+      {
+       "n": "4",
+       "title": "Why do people cut down tropical rainforests when they know it is harmful to the animals that live there?"
+      },
+      {
+       "n": "5",
+       "title": "How have changes in our community affected what lives here?"
+      },
+      {
+       "n": "6",
+       "title": "If palm oil is not going away, how can we design palm farms to support orangutans and farmers?"
+      },
+      {
+       "n": "7",
+       "title": "How many orangutans typically live in the tropical rainforest?"
+      },
+      {
+       "n": "8",
+       "title": "Why do orangutans need so much forest space?"
+      },
+      {
+       "n": "9",
+       "title": "Would planting more rainforest fruit trees help the orangutan population increase?"
+      },
+      {
+       "n": "10",
+       "title": "How do changes in the amount of resources affect populations?"
+      },
+      {
+       "n": "11",
+       "title": "How does planting oil palm affect other populations?"
+      },
+      {
+       "n": "12",
+       "title": "What would happen if orangutans go extinct?"
+      },
+      {
+       "n": "13",
+       "title": "How does an ecosystem change when the plants change?"
+      },
+      {
+       "n": "14",
+       "title": "Are there ways people can grow food without harming the tropical rainforest?"
+      },
+      {
+       "n": "15",
+       "title": "How can people benefit from growing food in ways that support plants and animals in the natural ecosystem?"
+      },
+      {
+       "n": "16",
+       "title": "What approach to growing food works for everyone and why?"
+      },
+      {
+       "n": "17",
+       "title": "How can we redesign the way land is used in Indonesia to support orangutans and people at the same time?"
+      },
+      {
+       "n": "18",
+       "title": "How do our designs work for orangutans and people in Indonesia?"
+      },
+      {
+       "n": "19",
+       "title": "How can we inform others in our community about the palm oil problem and convince them to take action?"
+      },
+      {
+       "n": "20",
+       "title": "What should we do to take care of our local land, plants, and animals?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G7_UEC/lowres/7.5%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "7.6",
+     "title": "Earth’s Resources & Human Impact",
+     "drivingQuestion": "How do changes in the Earth’s system impact our communities and what can we do about it?",
+     "url": "https://openscied.org/instructional-materials/7-6-earths-resources-human-impact/",
+     "skills": [],
+     "performanceExpectations": [
+      "MS-ESS3-1",
+      "MS-ESS3-3*",
+      "MS-ESS3-4",
+      "MS-ESS3-5",
+      "MS-ETS1-2*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Why are floods and droughts happening more often?"
+      },
+      {
+       "n": "2",
+       "title": "What would we normally expect for these places and how do we know it’s really changing?"
+      },
+      {
+       "n": "3",
+       "title": "How would increased temperatures affect evaporation?"
+      },
+      {
+       "n": "4",
+       "title": "Are rising temperatures affecting anything else in Earth’s water system?"
+      },
+      {
+       "n": "5",
+       "title": "How are rising temperatures changing water stories in these communities?"
+      },
+      {
+       "n": "6",
+       "title": "How are rising temperatures connected to two seemingly different phenomena?"
+      },
+      {
+       "n": "7",
+       "title": "Are there any changes in the air that could be related to rising temperatures?"
+      },
+      {
+       "n": "8",
+       "title": "Are changes in carbon dioxide and methane related to or causing temperatures to increase?"
+      },
+      {
+       "n": "9",
+       "title": "Are the changes in the amount of CO2 in the atmosphere part of normal cycles that Earth goes through?"
+      },
+      {
+       "n": "10",
+       "title": "What is happening in the world to cause the sharp rise in CO2?"
+      },
+      {
+       "n": "11",
+       "title": "Why could burning fossil fuels create a problem for CO2 in the atmosphere?"
+      },
+      {
+       "n": "12",
+       "title": "How are changes to Earth’s carbon system impacting Earth’s water system?"
+      },
+      {
+       "n": "13",
+       "title": "Why is solving the climate change problem so challenging?"
+      },
+      {
+       "n": "14",
+       "title": "What things can people do to reduce carbon dioxide going into the atmosphere?"
+      },
+      {
+       "n": "15",
+       "title": "How can large-scale solutions work to reduce carbon in the atmosphere?"
+      },
+      {
+       "n": "16",
+       "title": "How are these solutions working in our communities?"
+      },
+      {
+       "n": "17",
+       "title": "What solutions work best for our school or community?"
+      },
+      {
+       "n": "18",
+       "title": "What can we explain now, and what questions do we still have?"
+      }
+     ],
+     "notes": "Climate change and human impact: no Grade 7 skill fits; nearest taxonomy skills are s.12.climate-systems and s.5.protect-resources.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G7_UER/lowres/7.6%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    }
+   ]
+  },
+  {
+   "grade": "8",
+   "units": [
+    {
+     "n": "8.1",
+     "title": "Contact Forces",
+     "drivingQuestion": "Why do things sometimes get damaged when they hit each other?",
+     "url": "https://openscied.org/instructional-materials/8-1-contact-forces/",
+     "skills": [
+      "s.8.newtons-laws",
+      "s.8.kinetic-potential",
+      "s.8.motion"
+     ],
+     "performanceExpectations": [
+      "MS-PS2-1",
+      "MS-PS2-2",
+      "MS-PS3-1",
+      "MS-ETS1-2*",
+      "MS-ETS1-3*",
+      "MS-LS1-8*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What happens when two things hit each other?"
+      },
+      {
+       "n": "2",
+       "title": "What causes changes in the motion and shape of colliding objects?"
+      },
+      {
+       "n": "3",
+       "title": "Do all objects change shape or bend when they are pushed in a collision?"
+      },
+      {
+       "n": "4",
+       "title": "How much do you have to push on any object to get it to deform (temporarily vs. permanently)?"
+      },
+      {
+       "n": "5",
+       "title": "How does changing the mass or speed of a moving object before it collides with another object affect the forces on those objects during the collision?"
+      },
+      {
+       "n": "6",
+       "title": "What have we figured out about objects interacting in collisions? How can we apply our new learning to answer questions about objects interacting in collisions?"
+      },
+      {
+       "n": "7",
+       "title": "How much does doubling the speed or doubling the mass affect the kinetic energy of an object and the resulting damage that it can do in a collision?"
+      },
+      {
+       "n": "8",
+       "title": "Where did the energy in our launcher system come from, and after the collisions where did it go to?"
+      },
+      {
+       "n": "9",
+       "title": "How do other contact forces from interactions with the air and the track cause energy transfers in the launcher system?"
+      },
+      {
+       "n": "10",
+       "title": "Why do some objects break or not break in a collision?"
+      },
+      {
+       "n": "11",
+       "title": "What can we design to better protect objects in a collision?"
+      },
+      {
+       "n": "12",
+       "title": "What materials best reduce the peak forces in a collision?"
+      },
+      {
+       "n": "13",
+       "title": "How (and why) does the structure of a cushioning material affect the peak forces produced in a collision?"
+      },
+      {
+       "n": "14",
+       "title": "How can we use our science ideas and other societal wants and needs to refine our designs?"
+      },
+      {
+       "n": "15",
+       "title": "How can we use what we figured out to evaluate another engineer’s design?"
+      },
+      {
+       "n": "16",
+       "title": "How can we market our designs to our potential investors?",
+       "optional": true
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G8_UCF/lowres/8.1%20Contact%20Forces%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "8.2",
+     "title": "Sound Waves",
+     "drivingQuestion": "How can a sound make something move?",
+     "url": "https://openscied.org/instructional-materials/8-2-sound-waves/",
+     "skills": [
+      "s.8.em-spectrum"
+     ],
+     "performanceExpectations": [
+      "MS-PS4-1",
+      "MS-PS4-2*",
+      "MS-LS1-8*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "How does a sound source make something like this happen?"
+      },
+      {
+       "n": "2",
+       "title": "What is happening when speakers and other music makers make sounds?"
+      },
+      {
+       "n": "3",
+       "title": "Do all objects vibrate when they make sounds?"
+      },
+      {
+       "n": "4",
+       "title": "How do the vibrations of the sound source compare for louder versus softer sounds?"
+      },
+      {
+       "n": "5",
+       "title": "How do the vibrations from a sound source compare for higher-pitch versus lower-pitch sounds?"
+      },
+      {
+       "n": "6",
+       "title": "How can any object make so many different sounds?"
+      },
+      {
+       "n": "7",
+       "title": "What is actually moving from the sound source to the window?"
+      },
+      {
+       "n": "8",
+       "title": "Do we need air to hear sound?"
+      },
+      {
+       "n": "9",
+       "title": "How can we model sound traveling through a solid, liquid, or gas?"
+      },
+      {
+       "n": "10",
+       "title": "What exactly is traveling across the medium?"
+      },
+      {
+       "n": "11",
+       "title": "How does sound make matter around us move?"
+      },
+      {
+       "n": "12",
+       "title": "What goes on in people’s ears so they can detect certain sounds?"
+      },
+      {
+       "n": "13",
+       "title": "What transfers more energy, waves of bigger amplitude or waves of greater frequency?"
+      },
+      {
+       "n": "14",
+       "title": "How can we explain our anchoring phenomenon, and which of our questions can we now answer?"
+      }
+     ],
+     "notes": "Sound waves; see also s.1.sound-vibration and s.4.wave-patterns.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G8_USO/lowres/8.2%20Sound%20Waves%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "8.3",
+     "title": "Forces at a Distance",
+     "drivingQuestion": "How can a magnet move another object without touching it?",
+     "url": "https://openscied.org/instructional-materials/8-3-forces-at-a-distance/",
+     "skills": [
+      "s.8.magnetic-fields",
+      "s.8.electricity-basics"
+     ],
+     "performanceExpectations": [
+      "MS-PS2-3",
+      "MS-PS2-5",
+      "MS-PS3-2"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "What causes a speaker to vibrate?"
+      },
+      {
+       "n": "2",
+       "title": "What can a magnet pull or push without touching?"
+      },
+      {
+       "n": "3",
+       "title": "How does energy transfer between things that are not touching?"
+      },
+      {
+       "n": "4",
+       "title": "What can we figure out about the invisible space around a magnet?"
+      },
+      {
+       "n": "5",
+       "title": "How does the magnetic field change when we add another magnet to the system?"
+      },
+      {
+       "n": "6",
+       "title": "How can we use magnetic fields to explain interactions at a distance between the magnet and the coil?"
+      },
+      {
+       "n": "7",
+       "title": "How does changing the distance between two magnets affect the amount of energy transferred out of the field?"
+      },
+      {
+       "n": "8",
+       "title": "How does the energy transferred from a battery to a wire coil compare to the energy transferred from a computer to a speaker?"
+      },
+      {
+       "n": "9",
+       "title": "How do the magnet and the electromagnet work together to move the speaker?"
+      },
+      {
+       "n": "10",
+       "title": "How does distance affect the strength of force pairs in a magnetic field?"
+      },
+      {
+       "n": "11",
+       "title": "What else determines the strength of the force pairs between two magnets in a magnetic field?"
+      },
+      {
+       "n": "12",
+       "title": "What cause-effect relationships explain how magnetic forces at a distance make things work?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G8_UDF/lowres/8.3%20Forces%20at%20a%20Distance%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "8.4",
+     "title": "Earth in Space",
+     "drivingQuestion": "How are we connected to the patterns we see in the sky and space?",
+     "url": "https://openscied.org/instructional-materials/8-4-earth-in-space/",
+     "skills": [
+      "s.8.gravity-orbits"
+     ],
+     "performanceExpectations": [
+      "MS-ESS1-1",
+      "MS-ESS1-2",
+      "MS-ESS1-3",
+      "MS-PS2-4",
+      "MS-PS4-2*"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "How are we connected to the patterns we see in the sky?"
+      },
+      {
+       "n": "2",
+       "title": "What patterns are happening in the sky that I have experienced and can observe (through models and tools)?"
+      },
+      {
+       "n": "3",
+       "title": "How can we explain the Sun’s path change over time?"
+      },
+      {
+       "n": "4",
+       "title": "How do these changes in sunlight impact us here on Earth?"
+      },
+      {
+       "n": "5",
+       "title": "How can we explain phenomena like Manhattanhenge?"
+      },
+      {
+       "n": "6",
+       "title": "Why do we see the shape of the Moon change?"
+      },
+      {
+       "n": "7",
+       "title": "Why do we see eclipses and when do we see them?"
+      },
+      {
+       "n": "8",
+       "title": "What does a lunar eclipse look like and how can we explain it?"
+      },
+      {
+       "n": "9",
+       "title": "Why do the Moon and Sun appear to change color near the horizon?"
+      },
+      {
+       "n": "10",
+       "title": "How does light interact with matter in the atmosphere?"
+      },
+      {
+       "n": "11",
+       "title": "How does the shape of a water droplet or an ice crystal cause sunlight to form into a rainbow?"
+      },
+      {
+       "n": "12",
+       "title": "Why does the Moon always change color during a lunar eclipse?"
+      },
+      {
+       "n": "13",
+       "title": "What new patterns do we see when we look more closely at other objects in the sky?"
+      },
+      {
+       "n": "14",
+       "title": "Why do some solar system objects orbit planets and others orbit the Sun?"
+      },
+      {
+       "n": "15",
+       "title": "How did the solar system get to be the way it is today?"
+      },
+      {
+       "n": "16",
+       "title": "What patterns and phenomena are beyond our solar system that we cannot see with just our eyes?"
+      },
+      {
+       "n": "17",
+       "title": "How are we connected to all of the systems in space beyond the planet we live on?"
+      }
+     ],
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G8_USS/lowres/8.4%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "8.5",
+     "title": "Genetics",
+     "drivingQuestion": "Why are living things different from one another?",
+     "url": "https://openscied.org/instructional-materials/8-5-genetics/",
+     "skills": [],
+     "performanceExpectations": [
+      "MS-LS1-2*",
+      "MS-LS1-4*",
+      "MS-LS1-5*",
+      "MS-LS3-1",
+      "MS-LS3-2",
+      "MS-LS4-5"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "How do organisms get their differences?"
+      },
+      {
+       "n": "2",
+       "title": "How do extra-big muscles compare to typical ones up close?"
+      },
+      {
+       "n": "3",
+       "title": "How do diet and exercise affect muscle size?"
+      },
+      {
+       "n": "4",
+       "title": "What is different about the food and exercise for cattle with extra-big muscles?"
+      },
+      {
+       "n": "5",
+       "title": "Where do the babies with extra-big muscles get that trait variation?"
+      },
+      {
+       "n": "6",
+       "title": "How do chromosomes cause cattle to be born with extra-big muscles?"
+      },
+      {
+       "n": "7",
+       "title": "How does an animal get extra-big muscles?"
+      },
+      {
+       "n": "8",
+       "title": "Why don’t offspring always look like their parents or their siblings?"
+      },
+      {
+       "n": "9",
+       "title": "How do farmers control the variation in their animals?"
+      },
+      {
+       "n": "10",
+       "title": "How can we use our model to explain a different trait variation?"
+      },
+      {
+       "n": "11",
+       "title": "How can we answer the rest of our questions?"
+      },
+      {
+       "n": "12",
+       "title": "Do plants have genetic material?"
+      },
+      {
+       "n": "13",
+       "title": "How do plants reproduce?"
+      },
+      {
+       "n": "14",
+       "title": "(How) do other organisms reproduce without sperm and eggs?"
+      },
+      {
+       "n": "15",
+       "title": "How do we get variations if the genetic information is exactly the same?"
+      },
+      {
+       "n": "16",
+       "title": "How much of trait variation in a population is controlled by genes or by the environment?"
+      },
+      {
+       "n": "17",
+       "title": "Why are living things different from one another?"
+      }
+     ],
+     "notes": "Genetics: no Grade 8 skill fits; nearest taxonomy skill is s.7.punnett-squares.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G8_UGE/lowres/8.5%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    },
+    {
+     "n": "8.6",
+     "title": "Natural Selection & Common Ancestry",
+     "drivingQuestion": "How could things living today be connected to the things that lived long ago?",
+     "url": "https://openscied.org/instructional-materials/8-6-natural-selection-common-ancestry/",
+     "skills": [],
+     "performanceExpectations": [
+      "MS-LS1-4*",
+      "MS-LS4-1",
+      "MS-LS4-2",
+      "MS-LS4-3",
+      "MS-LS4-4",
+      "MS-LS4-6"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "How could penguins and other things living today be connected to the things that lived long ago?"
+      },
+      {
+       "n": "2",
+       "title": "How similar or different are different species of penguins?"
+      },
+      {
+       "n": "3",
+       "title": "How do the body structures of other ancient penguins compare to modern penguins?"
+      },
+      {
+       "n": "4",
+       "title": "Why are there similarities and differences in the body structures of modern and ancient penguins?"
+      },
+      {
+       "n": "5",
+       "title": "How might other living things be connected to ancient organisms?"
+      },
+      {
+       "n": "6",
+       "title": "How could organisms living today be connected to organisms that lived long ago?"
+      },
+      {
+       "n": "7",
+       "title": "How do traits found in a population change over a shorter amount of time?"
+      },
+      {
+       "n": "8",
+       "title": "How can we model what is causing the changes in the populations happening across all our case studies?"
+      },
+      {
+       "n": "9",
+       "title": "How well does our General Model predict and explain the changes happening over time in a different population?"
+      },
+      {
+       "n": "10",
+       "title": "Why does our General Model tend to produce different outcomes in different environmental conditions?"
+      },
+      {
+       "n": "11",
+       "title": "Can we use our General Model for Natural Selection to explain changes over time in green anole lizards?"
+      },
+      {
+       "n": "12",
+       "title": "Can our model explain changes over really long periods of time?"
+      },
+      {
+       "n": "13",
+       "title": "Can we apply the General Model for Natural Selection over millions of years to explain how all the ancient and modern penguins are connected?"
+      },
+      {
+       "n": "14",
+       "title": "What do the patterns in embryo development tell us about how things living today could be connected to the things that lived long ago?"
+      },
+      {
+       "n": "15",
+       "title": "What can we explain now, and what questions do we still have?"
+      }
+     ],
+     "notes": "Natural selection: no Grade 8 skill fits; nearest taxonomy skills are s.7.natural-selection and s.9.evolution-evidence.",
+     "teacherEdition": "https://openscied-uploads-production.s3.amazonaws.com/G8_UNS/lowres/8.6%20Teacher%20Edition.pdf",
+     "version": "Version 1.0 - Copyright © 2022 OpenSciEd",
+     "lessonSource": "Teacher Edition table of contents (lesson questions)"
+    }
+   ]
+  }
+ ]
+}

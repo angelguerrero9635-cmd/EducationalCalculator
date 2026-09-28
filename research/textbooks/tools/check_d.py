@@ -79,7 +79,7 @@ REQ = ('id', 'curriculum', 'grade', 'subject', 'chapter', 'skillId', 'alsoSkills
        'answer', 'type', 'picture', 'screenshot', 'source', 'license', 'retrieved')
 
 def check_practice():
-    per = defaultdict(Counter); ids = set(); shots = []
+    per = defaultdict(lambda: {'problems': 0, 'screenshots': 0, 'files': set(), 'bytes': 0}); ids = set(); shots = []
     for path in sorted(glob.glob(os.path.join(TB, 'practice', 'science', '*.jsonl'))):
         name = os.path.basename(path)
         cid = name.split('.', 1)[1].rsplit('.', 1)[0]
@@ -112,12 +112,16 @@ def check_practice():
             if 'involved' not in pic or 'description' not in pic: err(f'{w}: picture needs involved, description')
             src = r.get('source') or {}
             if not src.get('name') or not src.get('pageUrl'): err(f'{w}: source needs name, pageUrl')
+            key = (cid, grade)
             if r.get('screenshot'):
                 p = os.path.join(TB, r['screenshot'])
                 if not os.path.exists(p): err(f'{w}: screenshot missing {r["screenshot"]}')
-                else: shots.append(p)
-            per[grade]['problems'] += 1
-            per[grade]['screenshots'] += 1 if r.get('screenshot') else 0
+                else:
+                    shots.append(p)
+                    if p not in per[key]['files']:
+                        per[key]['files'].add(p); per[key]['bytes'] += os.path.getsize(p)
+            per[key]['problems'] += 1
+            per[key]['screenshots'] += 1 if r.get('screenshot') else 0
     return per, shots
 
 def main():
@@ -133,12 +137,11 @@ def main():
         print(f'  {cid:16}', '  '.join(f'{g}:{c[g][0]}/{c[g][1]}' for g in order if g in c),
               f'| total {sum(v[0] for v in c.values())} units, {sum(v[1] for v in c.values())} lessons')
     per, shots = check_practice()
-    print('Practice (problems / screenshots / MB per grade)')
-    mb = defaultdict(float)
-    for p in shots:
-        g = os.path.basename(os.path.dirname(p))
-    for g in sorted(per, key=lambda x: (len(x), x)):
-        print(f'  grade {g}: {per[g]["problems"]} problems, {per[g]["screenshots"]} screenshots')
+    print('Practice (problems / records with a screenshot / screenshot files, MB per curriculum and grade)')
+    for (cid, g) in sorted(per, key=lambda x: (x[0], len(x[1]), x[1])):
+        v = per[(cid, g)]
+        print(f'  {cid:26} grade {g}: {v["problems"]:3} problems, {v["screenshots"]:2} with screenshot, '
+              f'{len(v["files"]):2} files, {v["bytes"] / 1e6:.2f} MB')
     total = sum(os.path.getsize(p) for p in set(shots)) / 1e6
     print(f'  screenshots total: {len(set(shots))} files, {total:.2f} MB')
     if errors:
