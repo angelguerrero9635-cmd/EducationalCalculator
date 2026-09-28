@@ -1,0 +1,1850 @@
+{
+ "id": "inspire-science",
+ "curriculum": "Inspire Science K–5 and 6–8 Integrated",
+ "publisher": "McGraw Hill",
+ "edition": "NGSS edition (©2020 program; scope-and-sequence retrieved 2026)",
+ "subject": "science",
+ "grades": [
+  "K",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "content": "titles",
+ "license": null,
+ "sourceUrl": "https://www.mheducation.com/prek-12/program/inspire-science-k-5/MKTSP-AIB05M0.html",
+ "retrieved": "2026-09-28",
+ "sources": [
+  "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+  "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf"
+ ],
+ "notes": "Titles only (all rights reserved; the scope-and-sequence pages say \"provided for individual evaluation purposes only and may not be downloaded or further distributed\", so only unit, module and lesson titles are recorded, as facts, and the PDFs are not kept). Unit titles are printed in capitals and are title-cased here. \"Module\" = section. Grades 6–8 are the Integrated course sequence (McGraw Hill also sells domain courses). Lesson numbers in 6–8 are not printed; they are numbered in page order here. Where no skill of the grade fits, a module has skills [] and a note naming the nearest skill.",
+ "books": [
+  {
+   "grade": "K",
+   "units": [
+    {
+     "n": "1",
+     "title": "Living Things",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.K.living-needs"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Plants and Animals",
+       "skills": [
+        "s.K.living-needs"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Living and Nonliving"
+        },
+        {
+         "n": "2",
+         "title": "Plant and Animal Survival"
+        },
+        {
+         "n": "3",
+         "title": "Places Plants Live"
+        },
+        {
+         "n": "4",
+         "title": "Places Animals Live"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Our Changing World",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.K.living-things-change-environment"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Changes to the Environment",
+       "skills": [
+        "s.K.living-things-change-environment"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Plants Change Their Environment"
+        },
+        {
+         "n": "2",
+         "title": "Animals Change Their Environment"
+        },
+        {
+         "n": "3",
+         "title": "People Change Their Environment"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Protect Earth",
+       "skills": [
+        "s.K.living-things-change-environment"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Natural Resources"
+        },
+        {
+         "n": "2",
+         "title": "Reduce, Reuse, Recycle"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Weather and the Sun",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.K.weather-patterns",
+      "s.K.sunlight-warms"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Weather",
+       "skills": [
+        "s.K.weather-patterns"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Describe Weather"
+        },
+        {
+         "n": "2",
+         "title": "Weather Patterns"
+        },
+        {
+         "n": "3",
+         "title": "Forecast Weather"
+        },
+        {
+         "n": "4",
+         "title": "Severe Weather"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "The Sun and Earth's Surface",
+       "skills": [
+        "s.K.sunlight-warms"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Sunlight on Earth's Surface"
+        },
+        {
+         "n": "2",
+         "title": "Protection from the Sun"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Make Things Move",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.K.pushes-pulls"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Forces and Motion",
+       "skills": [
+        "s.K.pushes-pulls"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Pushes and Pulls"
+        },
+        {
+         "n": "2",
+         "title": "Direction and Speed"
+        },
+        {
+         "n": "3",
+         "title": "When Objects Collide"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "1",
+   "units": [
+    {
+     "n": "1",
+     "title": "All About Plants",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.1.structures-function",
+      "s.1.offspring"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Plant Structures and Functions",
+       "skills": [
+        "s.1.structures-function"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Plant Parts"
+        },
+        {
+         "n": "2",
+         "title": "Functions of Plant Parts"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Plant Parents and Their Offspring",
+       "skills": [
+        "s.1.offspring"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Plants and Their Parents"
+        },
+        {
+         "n": "2",
+         "title": "Plant Survival"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Animals and How They Communicate",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.1.structures-function",
+      "s.1.offspring",
+      "s.1.sound-vibration"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Animals Parents and Their Offspring",
+       "skills": [
+        "s.1.structures-function",
+        "s.1.offspring"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Animal Structures"
+        },
+        {
+         "n": "2",
+         "title": "Functions of Animal Structures"
+        },
+        {
+         "n": "3",
+         "title": "Animals and Their Parents"
+        },
+        {
+         "n": "4",
+         "title": "Animal Behaviors"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Communication",
+       "skills": [
+        "s.1.sound-vibration"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Animal Communication"
+        },
+        {
+         "n": "2",
+         "title": "Sound"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Light and Shadows",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.1.light-shadows"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "See Objects",
+       "skills": [
+        "s.1.light-shadows"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Light"
+        },
+        {
+         "n": "2",
+         "title": "Light and Materials"
+        },
+        {
+         "n": "3",
+         "title": "Light Uses"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Sky Patterns",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.1.sky-patterns"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Observe the Sky",
+       "skills": [
+        "s.1.sky-patterns"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Objects in the Sky"
+        },
+        {
+         "n": "2",
+         "title": "Day and Night Patterns"
+        },
+        {
+         "n": "3",
+         "title": "Patterns During the Year"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "2",
+   "units": [
+    {
+     "n": "1",
+     "title": "Land and Water",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.2.water-on-earth",
+      "s.2.erosion-landforms"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Earth’s Landscape",
+       "skills": [
+        "s.2.water-on-earth",
+        "s.2.erosion-landforms"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Local Landscapes"
+        },
+        {
+         "n": "2",
+         "title": "Land and Earth"
+        },
+        {
+         "n": "3",
+         "title": "Water on Earth"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Properties of Materials",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.2.material-properties",
+      "s.2.heating-cooling"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Describe Materials",
+       "skills": [
+        "s.2.material-properties"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Investigate Materials"
+        },
+        {
+         "n": "2",
+         "title": "Test and Analyze Materials"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Changes to Materials",
+       "skills": [
+        "s.2.material-properties",
+        "s.2.heating-cooling"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Build with Materials"
+        },
+        {
+         "n": "2",
+         "title": "Materials Can Change"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Earth’s Changing Landscape",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.2.erosion-landforms"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Landscape Changes",
+       "skills": [
+        "s.2.erosion-landforms"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Slow Changes to Earth’s Landscape"
+        },
+        {
+         "n": "2",
+         "title": "Quick Changes to Earth’s Landscape"
+        },
+        {
+         "n": "3",
+         "title": "Design Solutions to Slow Landscape Changes"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Living Things and Habitats",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.2.plant-growth-investigation",
+      "s.2.pollination-dispersal",
+      "s.2.habitats"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Plants in Landscapes",
+       "skills": [
+        "s.2.plant-growth-investigation",
+        "s.2.pollination-dispersal"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "What Plants Need"
+        },
+        {
+         "n": "2",
+         "title": "Plants Depend on Animals"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Living Things in Habitats",
+       "skills": [
+        "s.2.habitats"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Local Habitats"
+        },
+        {
+         "n": "2",
+         "title": "Land Habitats"
+        },
+        {
+         "n": "3",
+         "title": "Water Habitats"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "3",
+   "units": [
+    {
+     "n": "1",
+     "title": "Forces Around Us",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.3.balanced-forces",
+      "s.3.magnets"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Forces and Motion",
+       "skills": [
+        "s.3.balanced-forces"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Motion"
+        },
+        {
+         "n": "2",
+         "title": "Forces Can Change Motion"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Electricity and Magnetism",
+       "skills": [
+        "s.3.magnets"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Electricity and Designing Solutions"
+        },
+        {
+         "n": "2",
+         "title": "Magnetism and Designing Solutions"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Life Cycles and Traits",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.3.life-cycles",
+      "s.3.inherited-traits",
+      "s.3.animal-groups"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Plants",
+       "skills": [
+        "s.3.life-cycles",
+        "s.3.inherited-traits"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Plant Life Cycles"
+        },
+        {
+         "n": "2",
+         "title": "Plant Traits"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Animals",
+       "skills": [
+        "s.3.life-cycles",
+        "s.3.inherited-traits",
+        "s.3.animal-groups"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Animal Life Cycles"
+        },
+        {
+         "n": "2",
+         "title": "Animal Traits"
+        },
+        {
+         "n": "3",
+         "title": "Animal Group Survival"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Different Environments",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.3.adaptation-fossils"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Survive the Environment",
+       "skills": [
+        "s.3.adaptation-fossils"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Survival of Organisms"
+        },
+        {
+         "n": "2",
+         "title": "Adaptations and Variations"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Change the Environment",
+       "skills": [
+        "s.3.adaptation-fossils"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Fossils"
+        },
+        {
+         "n": "2",
+         "title": "Changes Affect Organisms"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Observing Weather",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.3.weather-climate"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Weather Impacts",
+       "skills": [
+        "s.3.weather-climate"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Weather Patterns"
+        },
+        {
+         "n": "2",
+         "title": "Weather and Seasons"
+        },
+        {
+         "n": "3",
+         "title": "Natural Hazards and the Environment"
+        },
+        {
+         "n": "4",
+         "title": "Prepare for Natural Hazards"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "4",
+   "units": [
+    {
+     "n": "1",
+     "title": "Forces and Energy",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.4.energy-speed"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Energy and Motion",
+       "skills": [
+        "s.4.energy-speed"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Forces and Motion"
+        },
+        {
+         "n": "2",
+         "title": "Speed and Energy"
+        },
+        {
+         "n": "3",
+         "title": "Energy Transfer in Collisions"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Using Energy",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.4.energy-conversion",
+      "s.4.natural-resources"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Energy Transfer",
+       "skills": [
+        "s.4.energy-conversion"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Types of Energy"
+        },
+        {
+         "n": "2",
+         "title": "Sound and Light"
+        },
+        {
+         "n": "3",
+         "title": "Electricity"
+        },
+        {
+         "n": "4",
+         "title": "Heat"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Natural Resources in the Environment",
+       "skills": [
+        "s.4.natural-resources"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Energy from Nonrenewable Resources"
+        },
+        {
+         "n": "2",
+         "title": "Energy from Renewable Resources"
+        },
+        {
+         "n": "3",
+         "title": "Impact of Energy Use"
+        },
+        {
+         "n": "4",
+         "title": "Design Energy Solutions"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Our Dynamic Earth",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.4.weathering",
+      "s.4.natural-resources"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Earth and Its Changing Features",
+       "skills": [
+        "s.4.weathering"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Map Earth’s Features"
+        },
+        {
+         "n": "2",
+         "title": "Evidence from Rocks and Fossils"
+        },
+        {
+         "n": "3",
+         "title": "Changes in Landscapes Over Time"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Earthquakes",
+       "skills": [
+        "s.4.natural-resources"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Map Earthquakes"
+        },
+        {
+         "n": "2",
+         "title": "Model Earthquake Movement"
+        },
+        {
+         "n": "3",
+         "title": "Reduce Earthquake Damage"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Information Processing and Living Things",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.4.internal-structures",
+      "s.4.vision-light",
+      "s.4.wave-patterns"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Structures and Functions of Living Things",
+       "skills": [
+        "s.4.internal-structures"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Structures and Functions of Plants"
+        },
+        {
+         "n": "2",
+         "title": "Structures and Functions of Animals"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Information Processing and Transfer",
+       "skills": [
+        "s.4.vision-light",
+        "s.4.internal-structures",
+        "s.4.wave-patterns"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Information Processing in Animals"
+        },
+        {
+         "n": "2",
+         "title": "Role of Animals' Eyes"
+        },
+        {
+         "n": "3",
+         "title": "Information Transfer"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "5",
+   "units": [
+    {
+     "n": "1",
+     "title": "Investigate Matter",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.5.particles-matter",
+      "s.5.mixtures",
+      "s.5.conservation-mass"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Matter",
+       "skills": [
+        "s.5.particles-matter",
+        "s.5.mixtures",
+        "s.5.conservation-mass"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Identify Properties of Materials"
+        },
+        {
+         "n": "2",
+         "title": "Mixtures and Solutions"
+        },
+        {
+         "n": "3",
+         "title": "Physical and Chemical Changes"
+        },
+        {
+         "n": "4",
+         "title": "Solids, Liquids, and Gases"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Ecosystems",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.5.food-webs",
+      "s.5.plants-sunlight-energy",
+      "s.5.earth-spheres"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Matter in Ecosystems",
+       "skills": [
+        "s.5.food-webs",
+        "s.5.plants-sunlight-energy"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Plant Survival"
+        },
+        {
+         "n": "2",
+         "title": "Interactions of Living Things"
+        },
+        {
+         "n": "3",
+         "title": "Role of Decomposers"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Energy in Ecosystems",
+       "skills": [
+        "s.5.food-webs",
+        "s.5.earth-spheres"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Earth’s Major Systems"
+        },
+        {
+         "n": "2",
+         "title": "Cycles of Matter in Ecosystems"
+        },
+        {
+         "n": "3",
+         "title": "Energy Transfer in Ecosystems"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Earth’s Interactive Systems",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.5.earth-spheres",
+      "s.5.protect-resources"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Earth’s Water System",
+       "skills": [
+        "s.5.earth-spheres",
+        "s.5.protect-resources"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Water Distribution on Earth"
+        },
+        {
+         "n": "2",
+         "title": "Human Impact on Water Resources"
+        },
+        {
+         "n": "3",
+         "title": "Effects of the Hydrosphere"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Earth’s Other Systems",
+       "skills": [
+        "s.5.earth-spheres"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Effects of the Geosphere"
+        },
+        {
+         "n": "2",
+         "title": "Effects of the Atmosphere"
+        },
+        {
+         "n": "3",
+         "title": "Effects of the Biosphere"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Earth and Space Patterns",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-k-5.pdf",
+     "skills": [
+      "s.5.gravity-down",
+      "s.5.shadows-day-night",
+      "s.5.sun-star-brightness"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Earth’s Patterns and Movement",
+       "skills": [
+        "s.5.gravity-down",
+        "s.5.shadows-day-night"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "The Role of Gravity"
+        },
+        {
+         "n": "2",
+         "title": "Earth’s Motion"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Earth and Space",
+       "skills": [
+        "s.5.sun-star-brightness"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Earth’s Place in Space"
+        },
+        {
+         "n": "2",
+         "title": "Stars and Their Patterns"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "6",
+   "units": [
+    {
+     "n": "1",
+     "title": "Life: Structure & Function",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.6.cells",
+      "s.6.cell-organelles",
+      "s.6.body-systems"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Cells and Life",
+       "skills": [
+        "s.6.cells",
+        "s.6.cell-organelles"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Exploring Life"
+        },
+        {
+         "n": "2",
+         "title": "Cell Structure and Function"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Body Systems",
+       "skills": [
+        "s.6.body-systems"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Levels of Organization"
+        },
+        {
+         "n": "2",
+         "title": "Structure and Support"
+        },
+        {
+         "n": "3",
+         "title": "Obtaining Energy and Removing Waste"
+        },
+        {
+         "n": "4",
+         "title": "Moving Materials"
+        },
+        {
+         "n": "5",
+         "title": "Control and Information Processing"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Reproduction of Organisms",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Reproduction of Organisms",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Inheritance"
+        },
+        {
+         "n": "2",
+         "title": "Types of Reproduction"
+        },
+        {
+         "n": "3",
+         "title": "Reproduction and Growth of Animals"
+        },
+        {
+         "n": "4",
+         "title": "Reproduction and Growth of Plants"
+        }
+       ],
+       "notes": "No Grade 6 skill fits; nearest taxonomy skills are s.3.inherited-traits and s.7.punnett-squares."
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Energy in the Atmosphere",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.6.density",
+      "s.6.water-cycle",
+      "s.6.weather-fronts"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Energy and Matter",
+       "skills": [
+        "s.6.density"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Particles in Motion"
+        },
+        {
+         "n": "2",
+         "title": "States of Matter"
+        },
+        {
+         "n": "3",
+         "title": "Thermal Energy Transfers"
+        },
+        {
+         "n": "4",
+         "title": "Thermal Energy Conductivity"
+        }
+       ],
+       "notes": "Particles, states and thermal energy transfer: s.6.density is the only Grade 6 matter skill; see also s.7.phase-changes."
+      },
+      {
+       "n": "2",
+       "title": "The Water Cycle",
+       "skills": [
+        "s.6.water-cycle"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Water in the Atmosphere"
+        },
+        {
+         "n": "2",
+         "title": "Water on Earth’s Surface"
+        }
+       ]
+      },
+      {
+       "n": "3",
+       "title": "Weather and Climate",
+       "skills": [
+        "s.6.weather-fronts"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Solar Energy on Earth"
+        },
+        {
+         "n": "2",
+         "title": "Atmospheric and Oceanic Circulation"
+        },
+        {
+         "n": "3",
+         "title": "Weather Patterns"
+        },
+        {
+         "n": "4",
+         "title": "Climates of Earth"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Human Impact on the Environment",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Human Impact on the Environment",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Impact on Land"
+        },
+        {
+         "n": "2",
+         "title": "Impact on Water"
+        },
+        {
+         "n": "3",
+         "title": "Impact on the Atmosphere"
+        },
+        {
+         "n": "4",
+         "title": "Impact on Climate"
+        }
+       ],
+       "notes": "No Grade 6 skill fits; nearest taxonomy skills are s.5.protect-resources and s.12.resource-management."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "7",
+   "units": [
+    {
+     "n": "1",
+     "title": "Understanding Matter",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.7.phase-changes",
+      "s.7.atoms-molecules",
+      "s.7.chemical-reactions"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Classification and States of Matter",
+       "skills": [
+        "s.7.phase-changes",
+        "s.7.atoms-molecules"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Energy and States of Matter"
+        },
+        {
+         "n": "2",
+         "title": "Changes in Temperature"
+        },
+        {
+         "n": "3",
+         "title": "Changes in Pressure"
+        },
+        {
+         "n": "4",
+         "title": "Molecular Structure"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Matter: Properties and Changes",
+       "skills": [
+        "s.7.chemical-reactions"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Properties of Matter"
+        },
+        {
+         "n": "2",
+         "title": "Property Changes in Chemical Reactions"
+        },
+        {
+         "n": "3",
+         "title": "Energy Changes in Chemical Reactions"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "The Changing Earth",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Dynamic Earth",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Moving Continents"
+        },
+        {
+         "n": "2",
+         "title": "Development of a Theory"
+        },
+        {
+         "n": "3",
+         "title": "Shaping Earth’s Surface"
+        },
+        {
+         "n": "4",
+         "title": "Changing Earth’s Surface"
+        },
+        {
+         "n": "5",
+         "title": "The Cycling of Earth’s Materials"
+        }
+       ],
+       "notes": "No Grade 7 skill fits; nearest taxonomy skills are s.6.plate-tectonics and s.6.rock-cycle."
+      },
+      {
+       "n": "2",
+       "title": "Natural Hazards",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Earthquakes"
+        },
+        {
+         "n": "2",
+         "title": "Volcanoes"
+        },
+        {
+         "n": "3",
+         "title": "Severe Weather"
+        }
+       ],
+       "notes": "No Grade 7 skill fits; nearest taxonomy skill is s.4.natural-resources (natural hazards)."
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Earth’s Resources",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.7.chemical-reactions"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Distribution of Earth’s Resources",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Natural Resources"
+        },
+        {
+         "n": "2",
+         "title": "Distribution of Resources"
+        },
+        {
+         "n": "3",
+         "title": "Depletion of Resources"
+        }
+       ],
+       "notes": "No Grade 7 skill fits; nearest taxonomy skills are s.4.natural-resources and s.12.resource-management."
+      },
+      {
+       "n": "2",
+       "title": "Materials Science",
+       "skills": [
+        "s.7.chemical-reactions"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Synthetic Technology"
+        },
+        {
+         "n": "2",
+         "title": "Impacts of Synthetic Materials"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Interactions within Ecosystems",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.7.photosynthesis-respiration",
+      "s.7.ecosystem-energy"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Matter and Energy in Ecosystems",
+       "skills": [
+        "s.7.photosynthesis-respiration",
+        "s.7.ecosystem-energy"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Photosynthesis and Cellular Respiration"
+        },
+        {
+         "n": "2",
+         "title": "Flow of Energy"
+        },
+        {
+         "n": "3",
+         "title": "Cycling of Matter"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Dynamic Ecosystems",
+       "skills": [
+        "s.7.ecosystem-energy"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Resources in Ecosystems"
+        },
+        {
+         "n": "2",
+         "title": "Interactions Within Ecosystems"
+        },
+        {
+         "n": "3",
+         "title": "Changing Ecosystems"
+        }
+       ]
+      },
+      {
+       "n": "3",
+       "title": "Biodiversity in Ecosystems",
+       "skills": [
+        "s.7.ecosystem-energy"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Benefits of Biodiversity"
+        },
+        {
+         "n": "2",
+         "title": "Maintaining Biodiversity"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "8",
+   "units": [
+    {
+     "n": "1",
+     "title": "Change Over Time",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Geologic Time",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Analyzing the Rock and Fossil Records"
+        },
+        {
+         "n": "2",
+         "title": "Building a Time Line"
+        }
+       ],
+       "notes": "No Grade 8 skill fits; nearest taxonomy skills are s.6.rock-cycle and s.12.radiometric-dating."
+      },
+      {
+       "n": "2",
+       "title": "Natural Selection and Adaptations",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How Traits Change"
+        },
+        {
+         "n": "2",
+         "title": "The Theory of Evolution by Natural Selection"
+        },
+        {
+         "n": "3",
+         "title": "Artificial Selection"
+        }
+       ],
+       "notes": "No Grade 8 skill fits; nearest taxonomy skill is s.7.natural-selection."
+      },
+      {
+       "n": "3",
+       "title": "Evidence of Evolution",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Fossil Evidence of Evolution"
+        },
+        {
+         "n": "2",
+         "title": "Biological Evidence of Evolution"
+        }
+       ],
+       "notes": "No Grade 8 skill fits; nearest taxonomy skills are s.7.natural-selection and s.9.evolution-evidence."
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Energy and Motion",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.8.motion",
+      "s.8.newtons-laws",
+      "s.8.kinetic-potential",
+      "s.8.magnetic-fields",
+      "s.8.electricity-basics"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Forces and Motion",
+       "skills": [
+        "s.8.motion",
+        "s.8.newtons-laws"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Position and Motion"
+        },
+        {
+         "n": "2",
+         "title": "Force and Acceleration"
+        },
+        {
+         "n": "3",
+         "title": "Force Pairs"
+        },
+        {
+         "n": "4",
+         "title": "Gravitational Force"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Mechanical Energy",
+       "skills": [
+        "s.8.kinetic-potential"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Kinetic Energy"
+        },
+        {
+         "n": "2",
+         "title": "Potential Energy"
+        },
+        {
+         "n": "3",
+         "title": "Conservation of Energy"
+        }
+       ]
+      },
+      {
+       "n": "3",
+       "title": "Electromagnetic Forces",
+       "skills": [
+        "s.8.magnetic-fields",
+        "s.8.electricity-basics"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Magnetic Forces"
+        },
+        {
+         "n": "2",
+         "title": "Electric Forces"
+        },
+        {
+         "n": "3",
+         "title": "Simple Circuits"
+        },
+        {
+         "n": "4",
+         "title": "Electromagnetism"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Understanding Waves",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.8.em-spectrum"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Introduction to Waves",
+       "skills": [
+        "s.8.em-spectrum"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Wave Properties"
+        },
+        {
+         "n": "2",
+         "title": "Mechanical Wave Interactions"
+        }
+       ]
+      },
+      {
+       "n": "2",
+       "title": "Light",
+       "skills": [
+        "s.8.em-spectrum"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "How Light Travels"
+        },
+        {
+         "n": "2",
+         "title": "Light Reflection and Mirrors"
+        },
+        {
+         "n": "3",
+         "title": "Light Refraction and Lenses"
+        },
+        {
+         "n": "4",
+         "title": "Color of Light"
+        }
+       ]
+      },
+      {
+       "n": "3",
+       "title": "Information Technologies",
+       "skills": [
+        "s.8.em-spectrum"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Communicating with Signals"
+        },
+        {
+         "n": "2",
+         "title": "Modern Communication with Digital Signals"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Humans and their Place in the Universe",
+     "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
+     "skills": [
+      "s.8.gravity-orbits"
+     ],
+     "sections": [
+      {
+       "n": "1",
+       "title": "Earth and Human Activity",
+       "skills": [],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Human Population Trends"
+        },
+        {
+         "n": "2",
+         "title": "People and the Environment"
+        }
+       ],
+       "notes": "No Grade 8 skill fits; nearest taxonomy skill is s.12.resource-management."
+      },
+      {
+       "n": "2",
+       "title": "The Sun-Earth-Moon System",
+       "skills": [
+        "s.8.gravity-orbits"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Earth’s Motion Around the Sun"
+        },
+        {
+         "n": "2",
+         "title": "Lunar Phases"
+        },
+        {
+         "n": "3",
+         "title": "Eclipses"
+        }
+       ]
+      },
+      {
+       "n": "3",
+       "title": "Exploring the Universe",
+       "skills": [
+        "s.8.gravity-orbits"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Gravity and the Universe"
+        },
+        {
+         "n": "2",
+         "title": "The Solar System"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
