@@ -3862,4 +3862,243 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: 'Square, triangle: what is the 15th shape?', bin: 'square' },
     ],
   },
+
+  // Compare lengths indirectly (1.MD.1): the textbooks' "Indirect Measurement" lesson.
+  {
+    kind: 'sort',
+    id: 'm.1.measure-nonstandard~indirect',
+    title: 'Compare lengths indirectly',
+    use: 'Use this for “The pencil is longer than the crayon. The crayon is longer than the clip. Which is longer, the pencil or the clip?”',
+    assumptions: [
+      'You can compare two things with a third thing.',
+      'Longer than a longer thing means longer than that thing too.',
+      'Both longer than one thing? You can’t tell which is longer.',
+    ],
+    question: 'Is the first thing longer than the last thing?',
+    bins: [
+      {
+        id: 'longer',
+        label: 'Yes, longer',
+        why: 'It is longer than something longer than the last one.',
+      },
+      {
+        id: 'shorter',
+        label: 'No, shorter',
+        why: 'It is shorter than something shorter than the last one.',
+      },
+      {
+        id: 'cant',
+        label: 'Can’t tell',
+        why: 'Both were compared with the same thing, not with each other.',
+      },
+    ],
+    cards: [
+      {
+        label:
+          'The pencil is longer than the crayon. The crayon is longer than the clip. Pencil and clip?',
+        bin: 'longer',
+        figure: { kind: 'icon', icon: 'pencil' },
+      },
+      {
+        label:
+          'The rope is longer than the ribbon. The ribbon is longer than the string. Rope and string?',
+        bin: 'longer',
+      },
+      {
+        label:
+          'The clip is shorter than the crayon. The crayon is shorter than the pencil. Clip and pencil?',
+        bin: 'shorter',
+        figure: { kind: 'icon', icon: 'paper clip' },
+      },
+      {
+        label:
+          'The string is shorter than the ribbon. The ribbon is shorter than the rope. String and rope?',
+        bin: 'shorter',
+      },
+      {
+        label:
+          'The pencil is longer than the clip. The crayon is longer than the clip. Pencil and crayon?',
+        bin: 'cant',
+      },
+      {
+        label:
+          'The rope is longer than the string. The ribbon is longer than the string. Rope and ribbon?',
+        bin: 'cant',
+      },
+      {
+        label:
+          'The desk is longer than the book. The book is longer than the eraser. Desk and eraser?',
+        bin: 'longer',
+      },
+      {
+        label:
+          'The eraser is shorter than the book. The book is shorter than the desk. Eraser and desk?',
+        bin: 'shorter',
+      },
+    ],
+  },
+  // Estimate lengths (2.MD.3): the textbooks' "Estimating Length" lesson.
+  {
+    kind: 'sort',
+    id: 'm.2.standard-length~estimate',
+    title: 'Estimate lengths',
+    use: 'Use this for “About how long is a crayon: 1 centimeter, 10 centimeters or 1 meter?”',
+    assumptions: [
+      'Your finger is about 1 centimeter wide. A crayon is about 10 centimeters long.',
+      'A meter stick is 1 meter: about the height of a kitchen table.',
+      'Pick the closest length. You do not need to measure.',
+    ],
+    question: 'About how long is it?',
+    bins: [
+      { id: 'cm', label: 'About 1 centimeter', why: 'About as wide as your finger.' },
+      { id: 'ten', label: 'About 10 centimeters', why: 'About as long as a crayon.' },
+      { id: 'm', label: 'About 1 meter', why: 'About as long as a meter stick.' },
+    ],
+    cards: [
+      { label: 'Width of your finger', bin: 'cm' },
+      { label: 'A pea', bin: 'cm' },
+      { label: 'A paper clip', bin: 'cm', figure: { kind: 'icon', icon: 'paper clip' } },
+      { label: 'A crayon', bin: 'ten', figure: { kind: 'icon', icon: 'crayon' } },
+      { label: 'A new pencil', bin: 'ten', figure: { kind: 'icon', icon: 'pencil' } },
+      { label: 'Your hand, from wrist to fingertip', bin: 'ten' },
+      { label: 'A baseball bat', bin: 'm' },
+      { label: 'Height of a kitchen table', bin: 'm' },
+      { label: 'A big step', bin: 'm' },
+    ],
+  },
+  // Equal parts of an area (3.G.2): the textbooks' "Partition Shapes into Equal Parts".
+  {
+    kind: 'sort',
+    id: 'm.3.fractions-number-line~equal-area',
+    title: 'Equal parts of an area',
+    use: 'Use this for “Is each part one fourth of the area?”',
+    assumptions: [
+      'Equal parts of a shape have the same area. They do not have to be the same shape.',
+      'A square cut corner to corner makes 4 equal triangles: each is one fourth of the area.',
+      'If the parts are not equal, one part is not a unit fraction of the whole.',
+    ],
+    question: 'Is each part an equal share of the area?',
+    bins: [
+      {
+        id: 'equal',
+        label: 'Equal parts: each is a unit fraction of the area',
+        why: 'Every part has the same area as the others.',
+      },
+      { id: 'unequal', label: 'Not equal parts', why: 'Some parts have more area than others.' },
+    ],
+    cards: [
+      {
+        label: 'A square in 4 strips',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'square', parts: 4, equal: true },
+      },
+      {
+        label: 'A square cut corner to corner',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'square', parts: 4, equal: true, cuts: 'diagonal' },
+      },
+      {
+        label: 'A circle in 4 parts',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'circle', parts: 4, equal: true },
+      },
+      {
+        label: 'A rectangle in 3 strips',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 3, equal: true },
+      },
+      {
+        label: 'A rectangle in 2 parts',
+        bin: 'equal',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: true, cuts: 'diagonal' },
+      },
+      {
+        label: 'A square in 4 uneven parts',
+        bin: 'unequal',
+        figure: { kind: 'cut', shape: 'square', parts: 4, equal: false },
+      },
+      {
+        label: 'A circle in 3 uneven parts',
+        bin: 'unequal',
+        figure: { kind: 'cut', shape: 'circle', parts: 3, equal: false },
+      },
+      {
+        label: 'A rectangle in 2 uneven parts',
+        bin: 'unequal',
+        figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: false },
+      },
+    ],
+  },
+  // Shapes of distributions (6.SP.2): symmetric, skewed, or with a gap or outlier.
+  {
+    kind: 'sort',
+    id: 'm.6.center-spread~shape',
+    title: 'Shapes of distributions',
+    use: 'Use this for “Describe the shape of the distribution: symmetric, skewed, or with an outlier.”',
+    assumptions: [
+      'A dot plot is symmetric when the left and right halves are about mirror images.',
+      'It is skewed when the dots pile up on one side and trail off in a tail on the other.',
+      'An outlier is a value far from the rest, with a gap before it.',
+    ],
+    question: 'What is the shape of the distribution?',
+    bins: [
+      {
+        id: 'symmetric',
+        label: 'Symmetric',
+        why: 'The two halves match, with the peak in the middle.',
+      },
+      {
+        id: 'skewed',
+        label: 'Skewed, with a tail',
+        why: 'Most dots sit at one end and thin out toward the other.',
+      },
+      {
+        id: 'outlier',
+        label: 'Has an outlier',
+        why: 'One value sits far from the others, past a gap.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Quiz scores',
+        bin: 'symmetric',
+        figure: { kind: 'dotPlot', values: [6, 7, 7, 8, 8, 8, 9, 9, 10] },
+      },
+      {
+        label: 'Heights of seedlings',
+        bin: 'symmetric',
+        figure: { kind: 'dotPlot', values: [3, 4, 4, 5, 5, 5, 5, 6, 6, 7] },
+      },
+      {
+        label: 'Minutes to get to school',
+        bin: 'skewed',
+        figure: { kind: 'dotPlot', values: [5, 5, 5, 6, 6, 7, 8, 10, 14, 18] },
+      },
+      {
+        label: 'Pets per family',
+        bin: 'skewed',
+        figure: { kind: 'dotPlot', values: [0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 5] },
+      },
+      {
+        label: 'Books read in a month',
+        bin: 'outlier',
+        figure: { kind: 'dotPlot', values: [2, 3, 3, 4, 4, 5, 5, 12] },
+      },
+      {
+        label: 'Ages at a birthday party',
+        bin: 'outlier',
+        figure: { kind: 'dotPlot', values: [7, 7, 8, 8, 8, 9, 9, 35] },
+      },
+      {
+        label: 'Shoe sizes in a class',
+        bin: 'symmetric',
+        figure: { kind: 'dotPlot', values: [2, 3, 3, 4, 4, 4, 5, 5, 6] },
+      },
+      {
+        label: 'Days absent this year',
+        bin: 'skewed',
+        figure: { kind: 'dotPlot', values: [0, 0, 0, 0, 1, 1, 2, 3, 6, 9] },
+      },
+    ],
+  },
 ];

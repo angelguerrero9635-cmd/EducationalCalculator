@@ -4344,6 +4344,131 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       brackets: { range: 'R', iqr: 'I' },
     },
   },
+
+  // ── Surface area of a triangular prism (6.G.4): the textbooks' lesson our nets lacked ──
+  {
+    id: 'm.6.surface-area-nets~triangular-prism',
+    title: 'Surface area of triangular prisms',
+    use: 'Use this for “Find the surface area of the triangular prism from its net.”',
+    assumptions: [
+      'The net is 2 matching triangles and 3 rectangles, one on each side of the triangle.',
+      'The triangle has a square corner: its two legs are the base and the height, and the third side is the longest.',
+      'The rectangles are all as long as the prism. Their widths are the three sides of the triangle.',
+      'Area is in square units. The third side is worked out from the legs, so it may not be a whole number.',
+    ],
+    variables: [
+      { id: 'b', symbol: 'b', name: 'Triangle base', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'h', symbol: 'h', name: 'Triangle height', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      {
+        id: 's',
+        symbol: 's',
+        name: 'Third side',
+        unit: 'cm',
+        min: 0.1,
+        max: 150,
+        step: 0.01,
+        derived: true,
+      },
+      { id: 'L', symbol: 'L', name: 'Prism length', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'T', symbol: 'T', name: 'One triangle', unit: 'cm²', min: 0, max: 5000, derived: true },
+      {
+        id: 'R',
+        symbol: 'R',
+        name: 'The three rectangles',
+        unit: 'cm²',
+        min: 0,
+        max: 40000,
+        derived: true,
+      },
+      {
+        id: 'S',
+        symbol: 'S',
+        name: 'Surface area',
+        unit: 'cm²',
+        min: 0,
+        max: 50000,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 's = √(b² + h²)',
+        display: '√({b}² + {h}²) = {s}',
+        words: 'The third side closes the square corner: the root of base² + height²',
+        vars: ['s', 'b', 'h'],
+        residual: (v: Values) => v.s! * v.s! - v.b! * v.b! - v.h! * v.h!,
+        solve: { s: (v: Values) => Math.hypot(v.b!, v.h!), b: () => undefined, h: () => undefined },
+      },
+      {
+        id: 'T = ½ × b × h',
+        display: '½ × {b} × {h} = {T}',
+        words: 'Half of base × height = one triangle',
+        vars: ['T', 'b', 'h'],
+        residual: (v: Values) => v.T! - 0.5 * v.b! * v.h!,
+        solve: { T: (v: Values) => 0.5 * v.b! * v.h!, b: () => undefined, h: () => undefined },
+      },
+      {
+        id: 'R = (b + h + s) × L',
+        display: '({b} + {h} + {s}) × {L} = {R}',
+        words: '(Base + height + third side) × length = the three rectangles',
+        vars: ['R', 'b', 'h', 's', 'L'],
+        residual: (v: Values) => v.R! - (v.b! + v.h! + v.s!) * v.L!,
+        solve: {
+          R: (v: Values) => (v.b! + v.h! + v.s!) * v.L!,
+          b: () => undefined,
+          h: () => undefined,
+          s: () => undefined,
+          L: () => undefined,
+        },
+      },
+      {
+        id: 'S = 2T + R',
+        display: '2 × {T} + {R} = {S}',
+        words: '2 × one triangle + the three rectangles = surface area',
+        vars: ['S', 'T', 'R'],
+        residual: (v: Values) => v.S! - 2 * v.T! - v.R!,
+        solve: { S: (v: Values) => 2 * v.T! + v.R!, T: () => undefined, R: () => undefined },
+      },
+    ],
+    steps: {
+      's = √(b² + h²)': {
+        s: {
+          expr: '√({b}² + {h}²)',
+          how: 'The longest side of a right triangle: square the two legs, add, take the square root.',
+        },
+      },
+      'T = ½ × b × h': {
+        T: { expr: '½ × {b} × {h}', how: 'Each end is a triangle: half of base × height.' },
+      },
+      'R = (b + h + s) × L': {
+        R: {
+          expr: '({b} + {h} + {s}) × {L}',
+          how: 'The three rectangles side by side make one rectangle: the triangle’s perimeter by the prism’s length.',
+          work: (v) => [
+            `${fmt(v.b!)} + ${fmt(v.h!)} + ${fmt(v.s!)} = ${fmt(v.b! + v.h! + v.s!)}`,
+            `${fmt(v.b! + v.h! + v.s!)} × ${fmt(v.L!)} = ${fmt((v.b! + v.h! + v.s!) * v.L!)}`,
+          ],
+        },
+      },
+      'S = 2T + R': {
+        S: {
+          expr: '2 × {T} + {R}',
+          how: 'Add the two triangle ends and the three rectangles.',
+          work: (v) => [`2 × ${fmt(v.T!)} = ${fmt(2 * v.T!)}`],
+        },
+      },
+    },
+    example: { b: 6, h: 8, s: 10, L: 10, T: 24, R: 240, S: 288 },
+    startWith: ['b', 'h', 'L'],
+    representation: {
+      kind: 'net',
+      solid: 'triangularPrism',
+      width: 'b',
+      height: 'h',
+      slant: 's',
+      length: 'L',
+    },
+  },
 ];
 
 export const MATH_6_MODULES: ModuleDef[] = modules.flat();
