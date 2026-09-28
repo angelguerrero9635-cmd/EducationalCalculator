@@ -2251,10 +2251,17 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.4.area-perimeter-formulas~square',
       's.6.water-cycle~roof-rain',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4e-rect-same-area',
+      'g.r4e-rect-area-max',
+      'g.r4e-rect-perimeter-strip',
+      'g.r4e-rect-square-big',
+      'g.r4e-roof',
+      'g.r4e-roof-small',
+    ],
     notes:
-      'Urgency: medium. Weak now: Small, left of centre, empty canvas below and right; unit-square grid so faint it hardly shows (defeats "area counts the squares"); area label on the grid lines; side labels small grey with no dimension lines; the roof-rain page uses the same bare rectangle. Redo: Flat for math: ~80 % width, centred; visible chartGrid strokeLight unit squares with flat chartFill (optionally a light two-tint checkerboard); area in a white pill in the middle; dimension lines with end ticks for length (below) and width (left) at chart.value. Perimeter pages: outline in chartHighlight with all four sides labelled. Roof option for s.6.water-cycle~roof-rain: a shingled roof in perspective (material tokens, TopLight) with rain lines. Corner handle with a 44 px hit area.',
+      'Urgency: medium. Weak now: Small, left of centre, empty canvas below and right; unit-square grid so faint it hardly shows (defeats "area counts the squares"); area label on the grid lines; side labels small grey with no dimension lines; the roof-rain page uses the same bare rectangle. Redo: Flat for math: ~80 % width, centred; visible chartGrid strokeLight unit squares with flat chartFill (optionally a light two-tint checkerboard); area in a white pill in the middle; dimension lines with end ticks for length (below) and width (left) at chart.value. Perimeter pages: outline in chartHighlight with all four sides labelled. Roof option for s.6.water-cycle~roof-rain: a shingled roof in perspective (material tokens, TopLight) with rain lines. Corner handle with a 44 px hit area. Drawn (round 4, group E): flat, centred, sized from the values (at least 0.4 of extent, with a little room to drag longer; the frame holds still while dragging). Unit squares in a two-tint checkerboard (chartHighlight at 10 % and 19 %) with grid lines at 40 % highlight, so they can be counted in both themes; the area on a pill in the middle (beside the shape when too small to hold it). Area pages: dimension lines with end ticks and extension lines for the length (below) and the width (left), labels at chart.value bold. Perimeter pages: the heavy chartHighlight outline with all four sides labelled, unit marks on the edge for perimeter alone, the perimeter line centred under it. Corner handle unchanged (44 px). New option `roof: true`: a slate roof (rock2 with TopLight, shingle courses) in perspective over a house (walls, door, window, gutter), rain streaks falling on it, the length as a dimension line along the front and the width along the roof edge, the area on a pill; drag the back corner (right: length, up the roof: width). Page change for s.6.water-cycle~roof-rain only: its representation becomes { kind: "rectangle", length: "l", width: "w", inside: "A", extent: 20, roof: true }. The math pages need no change. `uses` is left as the default ("rectangle"), because the placed-check looks for it on every page and only the roof page passes "roof":true.',
   },
   {
     id: 'Q36',

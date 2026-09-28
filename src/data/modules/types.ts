@@ -385,7 +385,15 @@ export type Representation =
       bundles?: true;
     }
   /** A prism on a base with `sides` sides (a cube when the base is a square). the sliders change it. */
-  | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }
+  | {
+      kind: 'prism';
+      sides: string;
+      faces: string;
+      edges: string;
+      corners: string;
+      /** Faces / Edges / Corners buttons that number each one on the solid. */
+      counting?: boolean;
+    }
   /** Objects arranged in pairs; an odd one sticks out. */
   | { kind: 'pairs'; value: string; max: number }
   /** Array with `rows` × `columns` of dots (or unit squares that tile a rectangle). Drag the corner. */
@@ -493,6 +501,8 @@ export type Representation =
       around?: string;
       /** Draw the unit squares even with only a perimeter (to count the area too). */
       grid?: boolean;
+      /** Draw it as a real roof in perspective: slate shingles, a gutter and rain falling. */
+      roof?: boolean;
       extent: number;
     }
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
