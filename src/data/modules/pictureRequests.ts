@@ -2232,10 +2232,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Factor trees with shaped nodes and the shared primes paired',
     kind: 'factorTree',
     pages: ['m.6.gcf-lcm~factor-tree'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-factor-trees', 'g.r4e-factor-trees-three', 'g.r4e-factor-trees-deep'],
     notes:
-      'Urgency: medium. Weak now: Hairline grey branches look unfinished; composites are bare text, only primes circled; two trees crowded; small type; shared primes not paired across trees. Redo: Flat tree diagram: composites as rounded rectangles (chartSurface, stroke border), primes as filled circles (chartFill, ink); chart.stroke branches ending at node edges; 28 px nodes, labels at chart.value. Two columns with a thin divider. Shared primes as matched pairs with coloured rings (chartHighlight, then chartSecond). Each tree\'s primes listed at its foot ("2 · 2 · 2 · 3"). Scale depth to fit 3–4 levels without clipping.',
+      'Urgency: medium. Weak now: Hairline grey branches look unfinished; composites are bare text, only primes circled; two trees crowded; small type; shared primes not paired across trees. Redo: Flat tree diagram: composites as rounded rectangles (chartSurface, stroke border), primes as filled circles (chartFill, ink); chart.stroke branches ending at node edges; 28 px nodes, labels at chart.value. Two columns with a thin divider. Shared primes as matched pairs with coloured rings (chartHighlight, then chartSecond). Each tree\'s primes listed at its foot ("2 · 2 · 2 · 3"). Scale depth to fit 3–4 levels without clipping. Drawn (round 4, group E): flat trees in two columns with a thin divider. Composites are rounded boxes (chartSurface, chartMuted border), primes filled circles (chartFill); numbers at chart.emphasis bold; chart.stroke branches run edge to edge. Each split puts the prime one step left and the rest one step right (a staircase), so every level fits: 64 and 96, the deepest in the page range (seven and six levels), fit without clipping. Shared primes are ringed in matched pairs, one colour per shared prime (chartHighlight, then chartSecond, then ink for a third, as 60 and 90 need); the top-most copies are ringed. Each tree lists its primes in order at its foot, ringed the same way, with × between them when they fit. Caption says "Shared primes (ringed)" so the rings have a key. No page change.',
   },
   {
     id: 'Q35',
