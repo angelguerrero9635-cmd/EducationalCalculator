@@ -4247,4 +4247,188 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       },
     ],
   },
+
+  // Thermal energy (MS-PS3-3): which materials keep a drink cold.
+  {
+    kind: 'sort',
+    id: 's.6.thermal-energy~insulators',
+    title: 'Conductors and insulators of heat',
+    use: 'Use this for “Which cup keeps a drink cold longest?”: materials that let thermal energy through, and ones that slow it.',
+    assumptions: [
+      'A conductor lets thermal energy pass through quickly: metal feels cold because it takes heat from your hand fast.',
+      'An insulator slows it: foam, wool and trapped air feel warm because they take heat slowly.',
+      'A cup made of an insulator keeps a cold drink cold and a hot drink hot.',
+    ],
+    question: 'Does it let thermal energy through quickly or slowly?',
+    bins: [
+      {
+        id: 'conductor',
+        label: 'Conductor: quickly',
+        why: 'Thermal energy moves through it easily.',
+      },
+      {
+        id: 'insulator',
+        label: 'Insulator: slowly',
+        why: 'It holds thermal energy back, often with trapped air.',
+      },
+    ],
+    cards: [
+      { label: 'Aluminum foil', bin: 'conductor' },
+      { label: 'Copper pan', bin: 'conductor' },
+      { label: 'Steel spoon', bin: 'conductor' },
+      { label: 'Foam cup', bin: 'insulator' },
+      { label: 'Wool mitten', bin: 'insulator', figure: { kind: 'icon', icon: 'oven mitt' } },
+      { label: 'Trapped air in a double-walled cup', bin: 'insulator' },
+      { label: 'Glass window', bin: 'conductor' },
+      { label: 'Fluffy feathers', bin: 'insulator', figure: { kind: 'icon', icon: 'feather' } },
+    ],
+  },
+  // Light and matter (MS-PS4-2): what a material does with light.
+  {
+    kind: 'sort',
+    id: 's.6.light-matter~materials',
+    title: 'Transparent, translucent or opaque',
+    use: 'Use this for “Can you see through it?”: materials sorted by what they do with light.',
+    assumptions: [
+      'Transparent: nearly all the light passes through, so you see clearly through it.',
+      'Translucent: some light passes through but is scattered, so you see only a glow or blurred shapes.',
+      'Opaque: no light passes through; it is reflected or absorbed, and it casts a full shadow.',
+    ],
+    question: 'What does it do with light?',
+    bins: [
+      { id: 'transparent', label: 'Transparent', why: 'Light goes straight through: clear.' },
+      { id: 'translucent', label: 'Translucent', why: 'Light goes through but scatters: blurry.' },
+      { id: 'opaque', label: 'Opaque', why: 'No light goes through.' },
+    ],
+    cards: [
+      { label: 'Window glass', bin: 'transparent' },
+      { label: 'Clear plastic wrap', bin: 'transparent' },
+      { label: 'Still water in a glass', bin: 'transparent' },
+      { label: 'Wax paper', bin: 'translucent' },
+      { label: 'Frosted bathroom window', bin: 'translucent' },
+      { label: 'A thin white curtain', bin: 'translucent' },
+      { label: 'A brick', bin: 'opaque', figure: { kind: 'icon', icon: 'brick' } },
+      { label: 'Aluminum foil', bin: 'opaque' },
+      { label: 'A wooden door', bin: 'opaque', figure: { kind: 'icon', icon: 'door' } },
+    ],
+  },
+  // Reproduction (MS-LS1-4, MS-LS3-2): one parent or two.
+  {
+    kind: 'sort',
+    id: 's.6.reproduction-traits~one-or-two',
+    title: 'Asexual or sexual reproduction',
+    use: 'Use this for “Does this offspring have one parent or two?” and what that means for its traits.',
+    assumptions: [
+      'Asexual reproduction: one parent, and the offspring gets all its genes from that parent, so it matches.',
+      'Sexual reproduction: two parents, and the offspring gets half its genes from each, so it varies.',
+      'Flowers and pollen, eggs and sperm mean two parents. Budding, splitting and runners mean one.',
+    ],
+    question: 'One parent or two?',
+    bins: [
+      {
+        id: 'asexual',
+        label: 'Asexual: one parent',
+        why: 'The offspring is a genetic match of its one parent.',
+      },
+      {
+        id: 'sexual',
+        label: 'Sexual: two parents',
+        why: 'The offspring mixes genes from two parents.',
+      },
+    ],
+    cards: [
+      { label: 'A bacterium splits into two', bin: 'asexual' },
+      { label: 'Yeast grows a bud that breaks off', bin: 'asexual' },
+      { label: 'A strawberry plant sends out a runner that roots', bin: 'asexual' },
+      { label: 'A starfish arm regrows into a whole starfish', bin: 'asexual' },
+      { label: 'A bee carries pollen to a flower, which makes seeds', bin: 'sexual' },
+      {
+        label: 'A hen’s egg is fertilized and hatches a chick',
+        bin: 'sexual',
+        figure: { kind: 'icon', icon: 'bird' },
+      },
+      {
+        label: 'Frog eggs are fertilized in the pond',
+        bin: 'sexual',
+        figure: { kind: 'icon', icon: 'frog' },
+      },
+      {
+        label: 'A puppy is born to two dogs',
+        bin: 'sexual',
+        figure: { kind: 'icon', icon: 'dog' },
+      },
+    ],
+  },
+  // Earth's changing climate (MS-ESS3-5): what people do, and what nature does.
+  {
+    kind: 'sort',
+    id: 's.6.changing-climate~causes',
+    title: 'Human and natural causes of climate change',
+    use: 'Use this for “Which of these has warmed the climate over the last century?”: causes from people and causes from nature.',
+    assumptions: [
+      'Gases that trap heat (carbon dioxide, methane) are rising mainly because people burn coal, oil and gas and clear forests.',
+      'Nature changes the climate too: volcanoes, the sun’s output and slow wobbles in Earth’s orbit. These are small or slow next to the last century’s warming.',
+      'Evidence comes from thermometers, ice cores, tree rings and sea level.',
+    ],
+    question: 'Is the cause from people or from nature?',
+    bins: [
+      {
+        id: 'human',
+        label: 'From people',
+        why: 'People’s activities added heat-trapping gases or removed forests.',
+      },
+      { id: 'natural', label: 'From nature', why: 'It would happen with no people at all.' },
+    ],
+    cards: [
+      { label: 'Burning coal in power plants', bin: 'human' },
+      { label: 'Cars and trucks burning gasoline', bin: 'human' },
+      { label: 'Cutting and burning forests', bin: 'human' },
+      { label: 'Methane from landfills and cattle', bin: 'human' },
+      { label: 'A big volcano’s ash cooling the air for a year', bin: 'natural' },
+      { label: 'Slow changes in Earth’s orbit over thousands of years', bin: 'natural' },
+      {
+        label: 'The sun’s brightness rising and falling in an 11-year cycle',
+        bin: 'natural',
+        figure: { kind: 'icon', icon: 'sun' },
+      },
+      { label: 'Cement factories releasing carbon dioxide', bin: 'human' },
+    ],
+  },
+  // Human impact (MS-ESS3-3): a design solution for each problem.
+  {
+    kind: 'sort',
+    id: 's.6.human-impact~solutions',
+    title: 'Solutions that lower our impact',
+    use: 'Use this for “Which solution helps with this problem?”: match each design to the harm it reduces.',
+    assumptions: [
+      'Each solution is aimed at one kind of harm: dirty water, dirty air, lost habitat or wasted resources.',
+      'A good solution reduces the harm without causing a new one.',
+      'Monitoring (measuring the harm) comes first, so you know whether the solution worked.',
+    ],
+    question: 'Which harm does the solution reduce?',
+    bins: [
+      {
+        id: 'water',
+        label: 'Water pollution',
+        why: 'It keeps waste or chemicals out of streams and oceans.',
+      },
+      { id: 'air', label: 'Air pollution', why: 'It cuts smoke and gases going into the air.' },
+      {
+        id: 'habitat',
+        label: 'Lost habitat',
+        why: 'It keeps or restores places where living things live.',
+      },
+      { id: 'waste', label: 'Wasted resources', why: 'It uses less water, energy or material.' },
+    ],
+    cards: [
+      { label: 'A wetland built to filter runoff before it reaches the river', bin: 'water' },
+      { label: 'A filter on a factory chimney', bin: 'air' },
+      { label: 'Solar panels replacing a coal plant', bin: 'air' },
+      { label: 'A wildlife bridge over a highway', bin: 'habitat' },
+      { label: 'Replanting mangroves along a coast', bin: 'habitat' },
+      { label: 'Low-flow showerheads', bin: 'waste' },
+      { label: 'Recycling aluminum cans', bin: 'waste' },
+      { label: 'A treatment plant cleaning sewage', bin: 'water' },
+    ],
+  },
 ];

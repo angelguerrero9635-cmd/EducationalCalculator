@@ -5,6 +5,23 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Textbook coverage pass: units and lessons the programs teach that had no page
+
+- Setup: two lists from `research/textbooks/toc/`: units whose skills map to nothing in the
+  taxonomy, and, per skill, the lesson titles (most common first) against our pages' titles
+  and use lines; no reviewer run. Most "unmapped" lessons only lacked a lesson-level tag and
+  sit under a mapped unit, so the unit list is the real signal.
+- Found: two whole units (Grade 5 unit conversion; Grade 4 multi-digit addition and
+  subtraction), eight lessons most programs teach with no page, three open standards the
+  textbooks confirm, and five Grade 6 science units with no skill in Grades 6–8.
+- Not gaps: problems the solver already covers from the same page (the whole from a part and
+  its percent, a missing side from the volume, a missing angle, start- and change-unknown
+  word problems); those got a note in the page's assumptions or use line instead.
+- Changes made: 6 skills and 27 pages (`TAXONOMY_ISSUES.md`, "Textbook coverage pass"). The
+  harness learned "N rounded to the Ns" and "N rounded to the ones", and its affine check now
+  probes off the integers, so a rounding relation isn't mistaken for a linear one (it had
+  "solved" a rounded whole to 341.8).
+
 ## Textbook-language pass: every K–6 skill and page title against the textbooks
 
 - Setup: one sheet per skill from `research/textbooks/toc/`: the skill's current title, each of

@@ -44,6 +44,20 @@ and each strand's skills sit together within a grade.
 
 ## Resolved
 
+### Textbook coverage pass
+
+- **Six skills added for units the textbooks teach and the taxonomy lacked.** Math:
+  `m.5.convert-units` ("Convert units of measure with decimals", 5.MD.1: Big Ideas, enVision
+  and McGraw each give it a chapter; we had metric only). Science, Grade 6, where OpenSciEd,
+  Amplify and Inspire all have units and Grades 6–8 had none: `s.6.thermal-energy` (MS-PS3-3,
+  MS-PS3-4), `s.6.light-matter` (MS-PS4-2), `s.6.reproduction-traits` (MS-LS1-4, MS-LS3-2),
+  `s.6.changing-climate` (MS-ESS3-5) and `s.6.human-impact` (MS-ESS3-3). The Grade 6 science
+  rows are regrouped by strand (Life, Physical, Earth), which `validateTaxonomy` requires.
+- **Closed from the open list:** K.CC.2 (count on from any number) is the main page of
+  `m.K.count-100` already; 2.MD.3 (estimate lengths) is `m.2.standard-length~estimate`; 3.G.2
+  (equal parts of an area) is `m.3.fractions-number-line~equal-area`; 4.OA.5 shape patterns is
+  `m.4.factors-multiples~shape-patterns`.
+
 ### Textbook-language pass
 
 - **75 K–6 skill titles renamed to the textbooks' unit language** (`research/textbooks/`), so

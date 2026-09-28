@@ -9,12 +9,12 @@ independent AI review), and the next section starts only after the owner approve
 | --- | --------------------------------------------------------------------------------------------------- | ------- | -------------------------- |
 | 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice       |
 | 1   | Math K–2                                                                                            | 64      | Done, reviewed twice       |
-| 2   | Math 3–5 (one grade at a time)                                                                      | 34      | Grades 3–5 built, reviewed |
+| 2   | Math 3–5 (one grade at a time)                                                                      | 35      | Grades 3–5 built, reviewed |
 | 3   | Math 6–8                                                                                            | 30      | Grade 6 built, reviewed    |
 | 4   | Math 9–10                                                                                           | 21      |                            |
 | 5   | Math 11–12                                                                                          | 22      |                            |
 | 6   | Science K–5                                                                                         | 39      | K–5 built, reviewed        |
-| 7   | Science 6–8                                                                                         | 21      | Grade 6 built, reviewed    |
+| 7   | Science 6–8                                                                                         | 26      | Grade 6 built, reviewed    |
 | 8   | Science 9–12                                                                                        | 34      |                            |
 | 9   | College Math                                                                                        | 25      |                            |
 | 10  | Chemistry                                                                                           | 42      |                            |

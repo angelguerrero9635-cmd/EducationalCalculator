@@ -812,4 +812,457 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     startWith: ['d', 'r'],
     representation: { kind: 'doubleNumberLine', top: 't', bottom: 'd', per: 'r', ticks: 10 },
   },
+
+  // ── Thermal energy (MS-PS3-3, MS-PS3-4): a drink warming in a cup ──
+  {
+    id: 's.6.thermal-energy',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Thermal energy flows from warmer to cooler until both are the same temperature.',
+      'A cold drink in a warm room warms up. How fast depends on the cup: a thin metal cup lets energy through faster than a foam cup.',
+      'Warming rate is the degrees gained each minute. It is steady while the drink is much colder than the room.',
+      'The drink cannot get warmer than the room.',
+    ],
+    variables: [
+      {
+        id: 's',
+        symbol: 's',
+        name: 'Start temperature',
+        unit: '°C',
+        min: -10,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Warming rate',
+        unit: '°C/min',
+        min: 0.01,
+        max: 10,
+        step: 0.01,
+      },
+      { id: 't', symbol: 't', name: 'Minutes', unit: 'min', min: 0.1, max: 600, step: 0.1 },
+      {
+        id: 'c',
+        symbol: 'c',
+        name: 'Temperature change',
+        unit: '°C',
+        min: 0,
+        max: 120,
+        step: 0.1,
+        derived: true,
+      },
+      {
+        id: 'f',
+        symbol: 'f',
+        name: 'Temperature after',
+        unit: '°C',
+        min: -10,
+        max: 100,
+        step: 0.1,
+      },
+    ],
+    relations: [
+      {
+        id: 'c = r × t',
+        display: '{r} × {t} = {c}',
+        words: 'Warming rate × minutes = temperature change',
+        vars: ['c', 'r', 't'],
+        residual: (v: Values) => v.c! - v.r! * v.t!,
+        solve: {
+          c: (v: Values) => v.r! * v.t!,
+          r: (v: Values) => div(v.c!, v.t!),
+          t: (v: Values) => div(v.c!, v.r!),
+        },
+      },
+      {
+        id: 'f = s + c',
+        display: '{s} + {c} = {f}',
+        words: 'Start temperature + temperature change = temperature after',
+        vars: ['f', 's', 'c'],
+        residual: (v: Values) => v.f! - v.s! - v.c!,
+        solve: {
+          f: (v: Values) => v.s! + v.c!,
+          s: (v: Values) => v.f! - v.c!,
+          c: (v: Values) => v.f! - v.s!,
+        },
+      },
+    ],
+    steps: {
+      'c = r × t': {
+        c: {
+          expr: '{r} × {t}',
+          how: 'Each minute the drink gains the rate’s degrees, so multiply by the minutes.',
+        },
+        r: {
+          expr: '{c} ÷ {t}',
+          how: 'Share the change over the minutes: degrees gained each minute.',
+        },
+        t: { expr: '{c} ÷ {r}', how: 'How many minutes of that rate make the change?' },
+      },
+      'f = s + c': {
+        f: { expr: '{s} + {c}', how: 'Add the gain to where it started.' },
+        s: { expr: '{f} − {c}', how: 'Take the gain away from the temperature after.' },
+        c: { expr: '{f} − {s}', how: 'The change is after minus before.' },
+      },
+    },
+    example: { s: 4, r: 0.5, t: 20, c: 10, f: 14 },
+    startWith: ['s', 'r', 't'],
+    representation: {
+      kind: 'plot',
+      x: { var: 't', min: 0, max: 60 },
+      y: { var: 'f', min: 0, max: 30 },
+      params: ['s', 'r'],
+      autoRange: true,
+    },
+  },
+  // ── Mixing hot and cold water: equal amounts settle at the middle temperature ──
+  {
+    id: 's.6.thermal-energy~mix',
+    title: 'Mix hot and cold water',
+    use: 'Use this for “Equal cups of 80 °C and 20 °C water are mixed. What is the temperature?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Thermal energy moves from the hot water to the cold water until they are the same temperature.',
+      'With equal amounts, the hot water cools as much as the cold water warms: the mix ends halfway between.',
+      'Halfway is the average: add the two temperatures and divide by 2.',
+    ],
+    variables: [
+      { id: 'h', symbol: 'h', name: 'Hot water', unit: '°C', min: 0, max: 100, step: 0.1 },
+      { id: 'c', symbol: 'c', name: 'Cold water', unit: '°C', min: 0, max: 100, step: 0.1 },
+      { id: 'm', symbol: 'm', name: 'Mixed water', unit: '°C', min: 0, max: 100, step: 0.1 },
+    ],
+    relations: [
+      {
+        id: 'h ≥ c',
+        constraint: true,
+        display: 'The hot water {h} is at least as warm as the cold water {c}',
+        vars: ['h', 'c'],
+        residual: (v: Values) => (v.h! >= v.c! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'm = (h + c) ÷ 2',
+        display: '({h} + {c}) ÷ 2 = {m}',
+        words: '(Hot + cold) ÷ 2 = mixed temperature',
+        check: (v: Values) => `${fmt(v.m!)} − ${fmt(v.c!)} = ${fmt(v.h!)} − ${fmt(v.m!)}`,
+        vars: ['m', 'h', 'c'],
+        residual: (v: Values) => 2 * v.m! - v.h! - v.c!,
+        solve: {
+          m: (v: Values) => (v.h! + v.c!) / 2,
+          h: (v: Values) => 2 * v.m! - v.c!,
+          c: (v: Values) => 2 * v.m! - v.h!,
+        },
+      },
+    ],
+    steps: {
+      'h ≥ c': {},
+      'm = (h + c) ÷ 2': {
+        m: {
+          expr: '({h} + {c}) ÷ 2',
+          how: 'The hot cup gives what the cold cup gains, so the mix is the average of the two.',
+          note: (v) =>
+            `(the hot water cooled ${fmt(v.h! - v.m!)} °C; the cold water warmed ${fmt(v.m! - v.c!)} °C)`,
+        },
+        h: {
+          expr: '2 × {m} − {c}',
+          how: 'The mix is halfway, so the hot water was as far above it as the cold was below.',
+        },
+        c: {
+          expr: '2 × {m} − {h}',
+          how: 'The cold water was as far below the mix as the hot water was above.',
+        },
+      },
+    },
+    example: { h: 80, c: 20, m: 50 },
+    startWith: ['h', 'c'],
+    representation: {
+      kind: 'tape',
+      compare: ['h', 'c'],
+      difference: 'm',
+      caption: 'The mix settles at {m} °C, halfway between.',
+    },
+  },
+  // ── Light and matter (MS-PS4-2): light hitting a surface is reflected, absorbed or transmitted ──
+  {
+    id: 's.6.light-matter',
+    unitSystems: ['metric'],
+    assumptions: [
+      'When light hits a material, each bit of it is reflected (bounces off), absorbed (taken in) or transmitted (passes through).',
+      'The three parts add up to all the light that arrived: 100 percent.',
+      'A mirror reflects most of it; black cloth absorbs most; clear glass transmits most; a window at night does some of each.',
+      'Absorbed light warms the material.',
+    ],
+    variables: [
+      { id: 'r', symbol: 'r', name: 'Reflected', unit: '%', min: 0, max: 100, step: 0.1 },
+      { id: 'a', symbol: 'a', name: 'Absorbed', unit: '%', min: 0, max: 100, step: 0.1 },
+      { id: 't', symbol: 't', name: 'Transmitted', unit: '%', min: 0, max: 100, step: 0.1 },
+    ],
+    relations: [
+      {
+        id: 'r + a + t = 100',
+        display: '{r} + {a} + {t} = 100',
+        words: 'Reflected + absorbed + transmitted = all the light',
+        vars: ['r', 'a', 't'],
+        residual: (v: Values) => v.r! + v.a! + v.t! - 100,
+        solve: {
+          r: (v: Values) => 100 - v.a! - v.t!,
+          a: (v: Values) => 100 - v.r! - v.t!,
+          t: (v: Values) => 100 - v.r! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      'r + a + t = 100': {
+        r: { expr: '100 − {a} − {t}', how: 'Whatever is not absorbed or transmitted bounced off.' },
+        a: {
+          expr: '100 − {r} − {t}',
+          how: 'Whatever is not reflected or transmitted was taken in, warming the material.',
+        },
+        t: {
+          expr: '100 − {r} − {a}',
+          how: 'Whatever is not reflected or absorbed passed through.',
+        },
+      },
+    },
+    example: { r: 8, a: 2, t: 90 },
+    startWith: ['r', 'a'],
+    representation: {
+      kind: 'tape',
+      parts: ['r', 'a', 't'],
+      total: { value: 100, label: 'all the light' },
+    },
+  },
+  // ── Reproduction and traits (MS-LS1-4, MS-LS3-2): chromosomes from two parents ──
+  {
+    id: 's.6.reproduction-traits',
+    assumptions: [
+      'In sexual reproduction each parent gives half of its chromosomes, so the offspring gets a mix of both.',
+      'A body cell has chromosomes in pairs. An egg or sperm has one from each pair: half as many.',
+      'Egg + sperm = the full set again. People: 23 + 23 = 46. Dogs: 39 + 39 = 78.',
+      'Asexual reproduction copies one parent: every chromosome is the parent’s, so the offspring is a match.',
+    ],
+    variables: [
+      whole('g', 'g', 'Chromosomes in an egg or sperm', 1, 200),
+      { ...whole('b', 'b', 'Chromosomes in a body cell', 2, 400), step: 2, multipleOf: 2 },
+    ],
+    relations: [
+      {
+        id: 'b = 2 × g',
+        display: '{g} + {g} = {b}',
+        words: 'Chromosomes from the egg + chromosomes from the sperm = chromosomes in a body cell',
+        vars: ['b', 'g'],
+        residual: (v: Values) => v.b! - 2 * v.g!,
+        solve: { b: (v: Values) => 2 * v.g!, g: (v: Values) => v.b! / 2 },
+      },
+    ],
+    steps: {
+      'b = 2 × g': {
+        b: {
+          expr: '{g} + {g}',
+          how: 'The egg’s set and the sperm’s set join: one of each pair from each parent.',
+        },
+        g: {
+          expr: '{b} ÷ 2',
+          how: 'An egg or sperm carries one chromosome from each pair: half the body cell’s.',
+        },
+      },
+    },
+    example: { g: 23, b: 46 },
+    startWith: ['g'],
+    representation: {
+      kind: 'tape',
+      parts: ['g', 'g'],
+      total: 'b',
+      caption: 'Half from each parent: {g} + {g} = {b}.',
+    },
+  },
+  // ── Earth's changing climate (MS-ESS3-5): carbon dioxide rising ──
+  {
+    id: 's.6.changing-climate',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Carbon dioxide in the air is measured in parts per million (ppm): how many of every million bits of air.',
+      'Before factories it was about 280 ppm. Burning fuels adds more each year, and more carbon dioxide traps more heat.',
+      'The yearly rise has grown: about 1 ppm a year in 1960, about 2.5 ppm a year now.',
+      'Steady rise × years = the total rise; add it to the start.',
+    ],
+    variables: [
+      {
+        id: 's',
+        symbol: 's',
+        name: 'Carbon dioxide at the start',
+        unit: 'ppm',
+        min: 200,
+        max: 1000,
+        step: 0.1,
+      },
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Rise each year',
+        unit: 'ppm/yr',
+        min: 0.01,
+        max: 10,
+        step: 0.01,
+      },
+      { id: 'y', symbol: 'y', name: 'Years', unit: 'yr', min: 1, max: 300, step: 1 },
+      {
+        id: 'c',
+        symbol: 'c',
+        name: 'Total rise',
+        unit: 'ppm',
+        min: 0,
+        max: 1000,
+        step: 0.1,
+        derived: true,
+      },
+      {
+        id: 'f',
+        symbol: 'f',
+        name: 'Carbon dioxide after',
+        unit: 'ppm',
+        min: 200,
+        max: 2000,
+        step: 0.1,
+      },
+    ],
+    relations: [
+      {
+        id: 'c = r × y',
+        display: '{r} × {y} = {c}',
+        words: 'Rise each year × years = total rise',
+        vars: ['c', 'r', 'y'],
+        residual: (v: Values) => v.c! - v.r! * v.y!,
+        solve: {
+          c: (v: Values) => v.r! * v.y!,
+          r: (v: Values) => div(v.c!, v.y!),
+          y: (v: Values) => div(v.c!, v.r!),
+        },
+      },
+      {
+        id: 'f = s + c',
+        display: '{s} + {c} = {f}',
+        words: 'Carbon dioxide at the start + total rise = carbon dioxide after',
+        vars: ['f', 's', 'c'],
+        residual: (v: Values) => v.f! - v.s! - v.c!,
+        solve: {
+          f: (v: Values) => v.s! + v.c!,
+          s: (v: Values) => v.f! - v.c!,
+          c: (v: Values) => v.f! - v.s!,
+        },
+      },
+    ],
+    steps: {
+      'c = r × y': {
+        c: { expr: '{r} × {y}', how: 'The same rise every year, so multiply by the years.' },
+        r: { expr: '{c} ÷ {y}', how: 'Share the total rise over the years.' },
+        y: { expr: '{c} ÷ {r}', how: 'How many years of that rise make the total?' },
+      },
+      'f = s + c': {
+        f: { expr: '{s} + {c}', how: 'Add the rise to the starting amount.' },
+        s: { expr: '{f} − {c}', how: 'Take the rise away from the amount after.' },
+        c: { expr: '{f} − {s}', how: 'The rise is after minus before.' },
+      },
+    },
+    example: { s: 340, r: 2, y: 40, c: 80, f: 420 },
+    startWith: ['s', 'r', 'y'],
+    representation: {
+      kind: 'plot',
+      x: { var: 'y', min: 0, max: 100 },
+      y: { var: 'f', min: 250, max: 600 },
+      params: ['s', 'r'],
+      autoRange: true,
+    },
+  },
+  // ── Human impact (MS-ESS3-3): water saved by a shorter shower ──
+  {
+    id: 's.6.human-impact',
+    unitSystems: ['metric'],
+    assumptions: [
+      'People use resources: water, energy, land. Using less of them is one way to lower our impact.',
+      'A shower uses a steady number of liters each minute. Minutes cut × liters per minute = liters saved each day.',
+      'Over many days the savings add up: liters saved each day × days = liters saved.',
+    ],
+    variables: [
+      {
+        id: 'm',
+        symbol: 'm',
+        name: 'Minutes cut from each shower',
+        unit: 'min',
+        min: 0.5,
+        max: 30,
+        step: 0.5,
+      },
+      {
+        id: 'r',
+        symbol: 'r',
+        name: 'Liters each minute',
+        unit: 'L/min',
+        min: 1,
+        max: 30,
+        step: 0.1,
+      },
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Liters saved each day',
+        unit: 'L',
+        min: 0,
+        max: 900,
+        step: 0.1,
+        derived: true,
+      },
+      whole('n', 'n', 'Days', 1, 3650),
+      { id: 'w', symbol: 'w', name: 'Liters saved', unit: 'L', min: 0, max: 3000000, step: 0.1 },
+    ],
+    relations: [
+      {
+        id: 'd = m × r',
+        display: '{m} × {r} = {d}',
+        words: 'Minutes cut × liters each minute = liters saved each day',
+        vars: ['d', 'm', 'r'],
+        residual: (v: Values) => v.d! - v.m! * v.r!,
+        solve: {
+          d: (v: Values) => v.m! * v.r!,
+          m: (v: Values) => div(v.d!, v.r!),
+          r: (v: Values) => div(v.d!, v.m!),
+        },
+      },
+      {
+        id: 'w = d × n',
+        display: '{d} × {n} = {w}',
+        words: 'Liters saved each day × days = liters saved',
+        vars: ['w', 'd', 'n'],
+        residual: (v: Values) => v.w! - v.d! * v.n!,
+        solve: {
+          w: (v: Values) => v.d! * v.n!,
+          d: (v: Values) => div(v.w!, v.n!),
+          n: (v: Values) => div(v.w!, v.d!),
+        },
+      },
+    ],
+    steps: {
+      'd = m × r': {
+        d: { expr: '{m} × {r}', how: 'Each minute not showered saves that many liters.' },
+        m: { expr: '{d} ÷ {r}', how: 'How many minutes of that flow make the daily saving?' },
+        r: { expr: '{d} ÷ {m}', how: 'Share the daily saving over the minutes cut.' },
+      },
+      'w = d × n': {
+        w: { expr: '{d} × {n}', how: 'The same saving every day, so multiply by the days.' },
+        d: { expr: '{w} ÷ {n}', how: 'Share the total over the days.' },
+        n: { expr: '{w} ÷ {d}', how: 'How many days of that saving make the total?' },
+      },
+    },
+    example: { m: 2, r: 9, d: 18, n: 365, w: 6570 },
+    startWith: ['m', 'r', 'n'],
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'w',
+      params: ['d'],
+      rows: [1, 7, 30, 90, 180, 365],
+    },
+  },
 ];
