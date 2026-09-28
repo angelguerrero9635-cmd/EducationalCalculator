@@ -2179,10 +2179,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'An exact flat wave: wavelength from crest to crest, amplitude from the midline',
     kind: 'wave',
     pages: ['s.4.wave-patterns', 's.4.wave-patterns~amplitude'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.wave-rope', 'g.wave-rope-12', 'g.wave-amplitude', 'g.wave-amplitude-tall'],
     notes:
-      'Urgency: medium. Weak now: "amplitude" overlaps the curve at the first crest; handle overlaps the wavelength bracket end; gradient fill under an abstract wave, very thick halo; 50 cm bracket ends don\'t clearly sit on two crests. Redo: Flat and exact: a single 3 px accent line, no fill. Wavelength bracket above the crests, end ticks dropping exactly to two crest peaks. Amplitude as a vertical double arrow from the midline to a crest, labelled to its right. Handle on a crest clear of the bracket. Optional: a rope with a hand at the left on the plain-rope scene.',
+      "Urgency: medium. Weak now: \"amplitude\" overlaps the curve at the first crest; handle overlaps the wavelength bracket end; gradient fill under an abstract wave, very thick halo; 50 cm bracket ends don't clearly sit on two crests. Redo: Flat and exact: a single 3 px accent line, no fill. Wavelength bracket above the crests, end ticks dropping exactly to two crest peaks. Amplitude as a vertical double arrow from the midline to a crest, labelled to its right. Handle on a crest clear of the bracket. Optional: a rope with a hand at the left on the plain-rope scene. Drawn (round 4, group G): flat and exact, a single 3 px accent line on a dashed middle line, no fill or halo. When the page has an amplitude, across and up share one scale (6 cm on a 40 cm wave is drawn 6/40 as tall as the wave is long; crests are capped at 70 px by narrowing the wave, not by stretching it), so the picture is true to the numbers; the rope page keeps a fixed height. The wavelength bracket sits above the first two crests with dashed ends dropping to their peaks (one whole wave from its start when only one wave is drawn), its value in 13 px bold over it. The amplitude is a two-headed arrow from the middle line to the crests' level, beside the wave's right end with a dashed guide from the last crest, labelled to its right (at a crest the label ran into the falling curve). The handle moved to the first trough, clear of the bracket: down for a bigger amplitude, sideways for the wavelength. No rope-and-hand scene. No page change.",
   },
   {
     id: 'Q31',

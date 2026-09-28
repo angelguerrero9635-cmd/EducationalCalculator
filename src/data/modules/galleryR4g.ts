@@ -9,9 +9,10 @@ import { COLLEGE_MODULES } from './college';
 import type { LayoutDef } from './layouts';
 import { PILOT_MODULES } from './pilots';
 import { SCIENCE_3_MODULES } from './science/3';
+import { SCIENCE_4_MODULES } from './science/4';
 import type { ModuleDef } from './types';
 
-const PAGES = [...COLLEGE_MODULES, ...PILOT_MODULES, ...SCIENCE_3_MODULES];
+const PAGES = [...COLLEGE_MODULES, ...PILOT_MODULES, ...SCIENCE_3_MODULES, ...SCIENCE_4_MODULES];
 
 /** The page `pageId` as a gallery demo `id` (with another `example`, if given). */
 function demo(
@@ -40,6 +41,15 @@ export const R4G_GALLERY_MODULES: ModuleDef[] = [
   demo('s.8.newtons-laws', 'g.force-crate', 'Force on a crate'),
   demo('s.8.newtons-laws', 'g.force-crate-heavy', 'Force on a crate: 5,000 kg', {
     example: { m: 5000, a: 0.5, F: 2500 },
+  }),
+  // Q30: a flat, exact wave; across and up on one scale when there is an amplitude.
+  demo('s.4.wave-patterns', 'g.wave-rope', 'Wave along a rope'),
+  demo('s.4.wave-patterns', 'g.wave-rope-12', 'Wave along a rope: 12 waves', {
+    example: { R: 600, n: 12, w: 50 },
+  }),
+  demo('s.4.wave-patterns~amplitude', 'g.wave-amplitude', 'Wave amplitude'),
+  demo('s.4.wave-patterns~amplitude', 'g.wave-amplitude-tall', 'Wave amplitude: 30 cm on 10 cm', {
+    example: { h: 60, a: 30, w: 10 },
   }),
 ];
 export const R4G_GALLERY_LAYOUTS: LayoutDef[] = [];
