@@ -49,4 +49,7 @@ def text(url, delay=1.0):
 if __name__ == "__main__":
     d = float(sys.argv[sys.argv.index("--delay") + 1]) if "--delay" in sys.argv else 1.0
     p = fetch(sys.argv[1], d)
-    print(p, open(p + ".meta").read())
+    if "--cat" in sys.argv:  # print the cached body instead of its path
+        print(open(p, encoding="utf-8", errors="replace").read())
+    else:
+        print(p, open(p + ".meta").read())

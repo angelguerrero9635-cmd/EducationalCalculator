@@ -11,7 +11,7 @@ from collections import Counter, defaultdict
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 TB = os.path.join(ROOT, 'research', 'textbooks')
 TOCS = ['openscied', 'amplify-science', 'foss', 'inspire-science']
-PRACTICE_IDS = {'openscied'}  # curricula whose practice records group d writes
+PRACTICE_IDS = {'openscied', 'usgs-water-science-school'}  # curricula whose practice records group d writes
 GRADES = {'K', '1', '2', '3', '4', '5', '6', '7', '8', '6-8'}
 errors = []
 
