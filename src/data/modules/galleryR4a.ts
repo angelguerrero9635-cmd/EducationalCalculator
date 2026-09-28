@@ -42,7 +42,7 @@ export const R4A_GALLERY_MODULES: ModuleDef[] = [
   }),
   demo('m.K.compare-10~numerals', 'g.r4a-compare-numerals', 'Compare rows: 6 and 9'),
   demo('m.K.measurable-attributes', 'g.r4a-pencils', 'Compare rows: two pencils'),
-  demo('m.K.measurable-attributes', 'g.r4a-pencils-long', 'Compare rows: 12 and 1 cubes', {
+  demo('m.K.measurable-attributes', 'g.r4a-pencils-long', 'Compare rows: 12 cubes and 1 cube', {
     example: { a: 12, b: 1, d: 11 },
   }),
   demo('m.K.measurable-attributes~capacity', 'g.r4a-jars', 'Compare rows: cups of water'),
