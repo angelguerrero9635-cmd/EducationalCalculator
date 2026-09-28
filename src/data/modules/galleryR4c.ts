@@ -86,4 +86,17 @@ export const R4C_GALLERY_LAYOUTS: LayoutDef[] = [
       lines: ['A high or low takes the place of the front.'],
     },
   ]),
+  // Q18: s.6.plate-tectonics
+  demo('s.6.plate-tectonics', 'g.r4c-plates', 'Plate boundaries cross-section', [
+    {
+      label: 'Ridge with ages and the mantle',
+      plates: { boundary: 'divergent', ages: true, mantle: true },
+      lines: ['Both at once: the age bands and the convection lit.'],
+    },
+    {
+      label: 'Subduction with the mantle',
+      plates: { boundary: 'subduction', mantle: true },
+      lines: ['Convection lit under a subduction zone.'],
+    },
+  ]),
 ];
