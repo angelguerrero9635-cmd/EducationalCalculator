@@ -1942,10 +1942,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The Grade 2 clock face on the Grade 1 explore page',
     kind: 'clock',
     pages: ['m.1.time-half-hour'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-clock-explore'],
     notes:
-      'Urgency: high. Weak now: Flat thin circle, no minute ticks, no rim, plain thin hands; the Grade 1 page is a weaker copy of the Grade 2 clock. Source is ExploreLayout.tsx `ClockFace`, not figures.tsx. Redo: Reuse the reps Clock face (Metal rim, cream TopLight face, 60 minute ticks with heavier 5-minute ticks, tapered hour hand shorter and wider than the minute hand, Ball centre cap, FloorShadow); `time` exact. Optionally hour hand chartInk and minute hand chartHighlight to match "short hand / long hand"; digital time under it at chart.emphasis.',
+      'Urgency: high. Weak now: Flat thin circle, no minute ticks, no rim, plain thin hands; the Grade 1 page is a weaker copy of the Grade 2 clock. Source is ExploreLayout.tsx `ClockFace`, not figures.tsx. Redo: Reuse the reps Clock face (Metal rim, cream TopLight face, 60 minute ticks with heavier 5-minute ticks, tapered hour hand shorter and wider than the minute hand, Ball centre cap, FloorShadow); `time` exact. Optionally hour hand chartInk and minute hand chartHighlight to match "short hand / long hand"; digital time under it at chart.emphasis. Drawn (round 4, group F): the explore ClockFace now draws the shared reps dial (reps/ClockDial.tsx, also used by the Clock picture): metal rim with an inner lip and wall shadow, cream face with TopLight, 60 minute ticks with heavier five-minute ticks, 700-weight numerals up to 16 px, a short wide tapered hour hand in chartInk and a long thin minute hand in chartHighlight, a metal centre cap and a faint glass sheen; `time` exact. No digital time added: the scene lines already say "It is 3:00." No page change.',
   },
   {
     id: 'Q10',
@@ -2435,10 +2435,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Clock hands that differ clearly, bigger numerals, minute labels',
     kind: 'clock',
     pages: ['m.2.time-5-min', 'm.3.elapsed-time'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-clock', 'g.r4f-clock-edge'],
     notes:
-      'Urgency: low. Weak now: Near standard, but numerals ~13 px are small for Grade 2; hour and minute hands close in length and weight (4:25 hard to read); no minute numbers for counting by fives; flat face with no glass. Redo: Hour hand shorter and wider (6 px, ink), minute hand longer and thinner (3.5 px, primary); drag handle stays on the minute tip. Numerals 16 px semibold. Muted minute labels (5 … 55) outside the bezel at 10 px, or only on the five-minute page via a spec flag. Low-strength Glass sheen over the face; Metal centre cap. Keep the a.m./p.m. toggle.',
+      'Urgency: low. Weak now: Near standard, but numerals ~13 px are small for Grade 2; hour and minute hands close in length and weight (4:25 hard to read); no minute numbers for counting by fives; flat face with no glass. Redo: Hour hand shorter and wider (6 px, ink), minute hand longer and thinner (3.5 px, primary); drag handle stays on the minute tip. Numerals 16 px semibold. Muted minute labels (5 … 55) outside the bezel at 10 px, or only on the five-minute page via a spec flag. Low-strength Glass sheen over the face; Metal centre cap. Keep the a.m./p.m. toggle. Drawn (round 4, group F): shared dial (reps/ClockDial.tsx). Hour hand short and wide (half the radius, 11 px, chartInk); minute hand long and thin (to the tick ring, 6 px, chartHighlight) with the drag handle on its tip, now outside the numerals so it never covers one. Numerals up to 16 px bold. Muted minute labels 5 … 55 outside the rim at 12 px (not 10: the quality floor), on every Clock picture, since both pages count by fives. Faint glass sheen, metal centre cap; a.m./p.m. toggle kept. No page change.',
   },
   {
     id: 'Q51',

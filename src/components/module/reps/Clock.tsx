@@ -1,15 +1,14 @@
 import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Defs, Line, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
-import { chart, font, space, usePalette } from '@/theme';
+import { font, space, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
-import { Metal, url, usePaintIds } from './paint';
+import { ClockDial, clockGeometry } from './ClockDial';
+import { Canvas, Caption, DragHandle, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'clock' }>;
@@ -27,8 +26,6 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const h = rep.known(spec.hour) ? Math.round(rep.shown(spec.hour)) : 12;
   const m = rep.known(spec.minute) ? Math.round(rep.shown(spec.minute)) : 0;
   const minuteAngle = (m / 60) * 2 * Math.PI;
-  const hourAngle = (((h % 12) + m / 60) / 12) * 2 * Math.PI;
-  const ids = usePaintIds('bezel', 'face');
   const digital = `${h}:${String(m).padStart(2, '0')}`;
   // Time words students hear: o’clock, quarter past, half past, quarter to.
   const words =
@@ -46,89 +43,13 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
     <View>
       {/* A smaller face, so the face, a.m./p.m., caption and Hour slider fit one phone screen. */}
       <View style={styles.face}>
-        <Canvas aspect={0.9}>
+        <Canvas aspect={1}>
           {({ w, h: ht }) => {
-            const cx = w / 2;
-            const cy = ht / 2;
-            const r = Math.min(w, ht) / 2 - 12;
-            const at = (angle: number, len: number) =>
-              [cx + len * Math.sin(angle), cy - len * Math.cos(angle)] as const;
-            const [mx, my] = at(minuteAngle, r * 0.8);
-            // A hand as a long thin diamond: wide near the middle, pointed at the tip, with a
-            // short tail past the center. Drawn again offset for its shadow.
-            const hand = (angle: number, len: number, width: number, dx = 0, dy = 0) => {
-              const [tx, ty] = at(angle, len);
-              const [bx, by] = at(angle + Math.PI, len * 0.14);
-              const [lx, ly] = at(angle - Math.PI / 2, width / 2);
-              const [rx, ry] = at(angle + Math.PI / 2, width / 2);
-              const [mx2, my2] = at(angle, len * 0.18);
-              const o = (x: number, y: number) => `${x + dx} ${y + dy}`;
-              return `M ${o(bx, by)} L ${o(lx - cx + mx2, ly - cy + my2)} L ${o(tx, ty)} L ${o(rx - cx + mx2, ry - cy + my2)} Z`;
-            };
+            const { cx, cy, at, minuteTip } = clockGeometry(w, ht, true);
+            const [mx, my] = at(minuteAngle, minuteTip);
             return (
               <>
-                <Svg width={w} height={ht}>
-                  <Defs>
-                    <Metal id={ids.bezel} light={c.metal} dark={c.metalDark} />
-                    <RadialGradient id={ids.face} cx="0.5" cy="0.5" r="0.5">
-                      <Stop offset="0.75" stopColor={c.paper} />
-                      <Stop offset="1" stopColor={c.chartSurface} />
-                    </RadialGradient>
-                  </Defs>
-                  {/* Shadow on the wall, the metal rim, then the face. */}
-                  <Circle cx={cx + 2} cy={cy + 4} r={r + 7} fill={c.shadow} />
-                  <Circle cx={cx} cy={cy} r={r + 7} fill={url(ids.bezel)} />
-                  <Circle
-                    cx={cx}
-                    cy={cy}
-                    r={r}
-                    fill={url(ids.face)}
-                    stroke={c.metalDark}
-                    strokeWidth={1}
-                  />
-                  {Array.from({ length: 60 }, (_, i) => {
-                    const [x1, y1] = at((i / 60) * 2 * Math.PI, r - (i % 5 === 0 ? 10 : 5));
-                    const [x2, y2] = at((i / 60) * 2 * Math.PI, r);
-                    return (
-                      <Line
-                        key={i}
-                        x1={x1}
-                        y1={y1}
-                        x2={x2}
-                        y2={y2}
-                        stroke={i % 5 === 0 ? c.chartInk : c.chartGrid}
-                        strokeWidth={i % 5 === 0 ? chart.stroke : 1}
-                      />
-                    );
-                  })}
-                  {Array.from({ length: 12 }, (_, i) => {
-                    const [x, y] = at(((i + 1) / 12) * 2 * Math.PI, r - 26);
-                    return (
-                      <ChartText
-                        key={`n${i}`}
-                        x={x}
-                        y={y + 5}
-                        fontSize={chart.emphasis}
-                        fontWeight="600"
-                        textAnchor="middle"
-                      >
-                        {i + 1}
-                      </ChartText>
-                    );
-                  })}
-                  <Path d={hand(hourAngle, r * 0.5, 9, 2, 3)} fill={c.shadow} />
-                  <Path d={hand(minuteAngle, r * 0.8, 6, 2, 3)} fill={c.shadow} />
-                  <Path d={hand(hourAngle, r * 0.5, 9)} fill={c.chartInk} />
-                  <Path d={hand(minuteAngle, r * 0.8, 6)} fill={c.chartMuted} />
-                  <Circle
-                    cx={cx}
-                    cy={cy}
-                    r={6}
-                    fill={c.chartInk}
-                    stroke={c.metal}
-                    strokeWidth={2}
-                  />
-                </Svg>
+                <ClockDial w={w} h={ht} hour={h} minute={m} minuteLabels />
                 <DragHandle
                   testID="drag-minute"
                   x={mx}
@@ -184,7 +105,7 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
 }
 
 const styles = StyleSheet.create({
-  face: { width: '100%', maxWidth: 280, alignSelf: 'center' },
+  face: { width: '100%', maxWidth: 310, alignSelf: 'center' },
   toggle: { paddingHorizontal: space.lg, marginVertical: space.sm },
   digital: {
     fontSize: font.title,

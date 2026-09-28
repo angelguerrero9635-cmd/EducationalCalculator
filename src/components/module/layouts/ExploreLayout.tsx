@@ -7,6 +7,7 @@ import type { ExploreLayout as Spec, Figure, Scene } from '@/data/modules/layout
 import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 
 import { Canvas, Caption, ChartText } from '../reps/common';
+import { ClockDial } from '../reps/ClockDial';
 import { Arrow, Push, Sky, Static, TimesTable, Vibration } from './figures';
 import { AnimalGroup } from './animalFigures';
 import { FoodWeb } from './foodWeb';
@@ -105,7 +106,7 @@ function FigureView({
     case 'position':
       return <Position where={scene.position ?? 'above'} c={c} />;
     case 'clock':
-      return <ClockFace time={scene.time ?? [3, 0]} c={c} />;
+      return <ClockFace time={scene.time ?? [3, 0]} />;
     case 'dots':
       if (scene.animal) {
         return (
@@ -870,61 +871,15 @@ function Position({ where, c }: { where: NonNullable<Scene['position']>; c: Pale
   );
 }
 
-/** A clock face with the hands set to the scene's time. */
-function ClockFace({ time, c }: { time: [number, number]; c: Palette }) {
+/** The reps clock face (metal rim, minute ticks, tapered hands) set to the scene's time. */
+function ClockFace({ time }: { time: [number, number] }) {
   const [hour, minute] = time;
   return (
-    <Canvas aspect={0.8}>
-      {({ w, h }) => {
-        const cx = w / 2;
-        const cy = h / 2;
-        const r = Math.min(w, h) / 2 - 16;
-        const hand = (angle: number, len: number, width: number) => {
-          const a = ((angle - 90) * Math.PI) / 180;
-          return (
-            <Line
-              x1={cx}
-              y1={cy}
-              x2={cx + len * Math.cos(a)}
-              y2={cy + len * Math.sin(a)}
-              stroke={c.chartInk}
-              strokeWidth={width}
-              strokeLinecap="round"
-            />
-          );
-        };
-        return (
-          <Svg width={w} height={h}>
-            <Circle
-              cx={cx}
-              cy={cy}
-              r={r}
-              fill={c.chartSurface}
-              stroke={c.chartInk}
-              strokeWidth={chart.stroke}
-            />
-            {Array.from({ length: 12 }, (_, i) => {
-              const a = ((i * 30 - 90) * Math.PI) / 180;
-              return (
-                <ChartText
-                  key={i}
-                  x={cx + (r - 18) * Math.cos(a)}
-                  y={cy + (r - 18) * Math.sin(a) + 5}
-                  fontSize={chart.emphasis}
-                  fontWeight="600"
-                  textAnchor="middle"
-                >
-                  {String(i === 0 ? 12 : i)}
-                </ChartText>
-              );
-            })}
-            {hand((hour % 12) * 30 + minute / 2, r * 0.5, chart.strokeHeavy + 1)}
-            {hand(minute * 6, r * 0.78, chart.stroke)}
-            <Circle cx={cx} cy={cy} r={4} fill={c.chartInk} />
-          </Svg>
-        );
-      }}
-    </Canvas>
+    <View style={styles.clock}>
+      <Canvas aspect={0.92}>
+        {({ w, h }) => <ClockDial w={w} h={h} hour={hour} minute={minute} />}
+      </Canvas>
+    </View>
   );
 }
 
@@ -996,6 +951,7 @@ function Flashes({ pattern, c }: { pattern: string; c: Palette }) {
 
 const styles = StyleSheet.create({
   wrap: { gap: space.md },
+  clock: { width: '100%', maxWidth: 300, alignSelf: 'center' },
   scenes: {
     flexDirection: 'row',
     flexWrap: 'wrap',
