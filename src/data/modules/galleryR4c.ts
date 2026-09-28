@@ -99,4 +99,6 @@ export const R4C_GALLERY_LAYOUTS: LayoutDef[] = [
       lines: ['Convection lit under a subduction zone.'],
     },
   ]),
+  // Q39: s.6.rock-cycle (every process is a page scene; the demo repeats them in dark and light)
+  demo('s.6.rock-cycle', 'g.r4c-rock-cycle', 'Rock cycle ring', []),
 ];

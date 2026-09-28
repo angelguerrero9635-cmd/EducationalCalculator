@@ -5,13 +5,12 @@ import type { Scene } from '@/data/modules/layouts';
 import { chart, type Palette } from '@/theme';
 
 import { Canvas, ChartText } from '../reps/common';
-import { Arrow } from './figures';
 
 /**
- * Explore figures for Grade 6 science (docs/MODULE_GUIDE.md, "Module layouts"): a cell, the
- * body's systems, the water cycle, weather fronts, plate boundaries, the continents over time
- * and the rock cycle. Each draws one scene; the scene's lines say what to notice. Shapes are
- * drawn in the text color with the scene's part in the highlight, so nothing depends on color.
+ * Explore figures for Grade 6 science (docs/MODULE_GUIDE.md, "Module layouts"): the cell. Each
+ * draws one scene; the scene's lines say what to notice. Shapes are drawn in the text color with
+ * the scene's part in the highlight, so nothing depends on color. (The body's systems, the water
+ * cycle, fronts, plates, continents and the rock cycle have their own files since round 4.)
  */
 
 /** A label with a leader line from (x, y) to the text at (tx, ty). */
@@ -300,146 +299,6 @@ export function CellFigure6({ cell, c }: { cell: NonNullable<Scene['cell']>; c: 
           <Svg width={w} height={h}>
             {parts}
             {tags}
-          </Svg>
-        );
-      }}
-    </Canvas>
-  );
-}
-
-// ── The rock cycle ──
-
-const ROCK_BOXES = {
-  magma: { x: 0.5, y: 0.86, text: 'Magma' },
-  igneous: { x: 0.16, y: 0.5, text: 'Igneous rock' },
-  surface: { x: 0.16, y: 0.13, text: 'Rock at the surface' },
-  sediment: { x: 0.6, y: 0.13, text: 'Sediment' },
-  sedimentary: { x: 0.84, y: 0.36, text: 'Sedimentary rock' },
-  metamorphic: { x: 0.84, y: 0.66, text: 'Metamorphic rock' },
-} as const;
-type RockBox = keyof typeof ROCK_BOXES;
-const ROCK_STEPS: Record<string, { from: RockBox; to: RockBox; heat: boolean }[]> = {
-  // Any rock buried deep enough melts.
-  melting: [
-    { from: 'metamorphic', to: 'magma', heat: true },
-    { from: 'sedimentary', to: 'magma', heat: true },
-    { from: 'igneous', to: 'magma', heat: true },
-  ],
-  cooling: [{ from: 'magma', to: 'igneous', heat: true }],
-  // Rock at the surface breaks down; uplift is its own step that brings buried rock up.
-  weathering: [{ from: 'surface', to: 'sediment', heat: false }],
-  deposition: [{ from: 'sediment', to: 'sedimentary', heat: false }],
-  metamorphism: [
-    { from: 'sedimentary', to: 'metamorphic', heat: true },
-    { from: 'igneous', to: 'metamorphic', heat: true },
-  ],
-  uplift: [
-    { from: 'igneous', to: 'surface', heat: true },
-    { from: 'metamorphic', to: 'surface', heat: true },
-    { from: 'sedimentary', to: 'surface', heat: true },
-  ],
-};
-
-export function RockCycleFigure({ rock, c }: { rock: NonNullable<Scene['rock']>; c: Palette }) {
-  const lit = ROCK_STEPS[rock.process] ?? [];
-  const all = Object.values(ROCK_STEPS).flat();
-  return (
-    <Canvas aspect={0.8}>
-      {({ w, h }) => {
-        const bw = Math.min(118, w * 0.3);
-        const bh = 30;
-        const pos = (b: RockBox) => ({ x: ROCK_BOXES[b].x * w, y: ROCK_BOXES[b].y * h });
-        const edge = (from: RockBox, to: RockBox) => {
-          const a = pos(from);
-          const b = pos(to);
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const l = Math.hypot(dx, dy) || 1;
-          // Leave the boxes: step out along the line until clear of each box.
-          const out = (p: { x: number; y: number }, s: number) => {
-            const t =
-              Math.min(bw / 2 / Math.abs(dx / l || 1e-9), bh / 2 / Math.abs(dy / l || 1e-9)) + 6;
-            return { x: p.x + (s * dx * t) / l, y: p.y + (s * dy * t) / l };
-          };
-          return [out(a, 1), out(b, -1)] as const;
-        };
-        const heat = lit.some((s) => s.heat);
-        return (
-          <Svg width={w} height={h}>
-            {all.map((s, i) => {
-              const [p, q] = edge(s.from, s.to);
-              const on = lit.some((l) => l.from === s.from && l.to === s.to);
-              return on ? null : (
-                <Arrow
-                  key={`a${i}`}
-                  x1={p.x}
-                  y1={p.y}
-                  x2={q.x}
-                  y2={q.y}
-                  c={c}
-                  color={c.chartMuted}
-                  dashed
-                />
-              );
-            })}
-            {lit.map((s, i) => {
-              const [p, q] = edge(s.from, s.to);
-              return (
-                <Arrow
-                  key={`l${i}`}
-                  x1={p.x}
-                  y1={p.y}
-                  x2={q.x}
-                  y2={q.y}
-                  c={c}
-                  color={c.chartHighlight}
-                  heavy
-                />
-              );
-            })}
-            {(Object.keys(ROCK_BOXES) as RockBox[]).map((b) => {
-              const p = pos(b);
-              return (
-                <G key={b}>
-                  <Rect
-                    x={p.x - bw / 2}
-                    y={p.y - bh / 2}
-                    width={bw}
-                    height={bh}
-                    rx={8}
-                    fill={c.chartSurface}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.strokeLight}
-                  />
-                  <ChartText
-                    x={p.x}
-                    y={p.y + 4}
-                    fontSize={chart.small}
-                    fontWeight="700"
-                    fill={c.chartInk}
-                    textAnchor="middle"
-                  >
-                    {ROCK_BOXES[b].text}
-                  </ChartText>
-                </G>
-              );
-            })}
-            {lit.length ? (
-              <G>
-                {/* The driver sits in a corner, not among the boxes. */}
-                <Rect x={6} y={h - 30} width={140} height={24} rx={12} fill={c.chartHighlight} />
-                <ChartText
-                  x={76}
-                  y={h - 14}
-                  fontSize={chart.small}
-                  fontWeight="700"
-                  fill={c.onChartHighlight}
-                  textAnchor="middle"
-                >
-                  {heat ? 'Earth’s inner heat' : 'Sun and gravity'}
-                </ChartText>
-              </G>
-            ) : null}
           </Svg>
         );
       }}

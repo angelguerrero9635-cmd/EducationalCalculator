@@ -336,7 +336,7 @@ Grade 6 science adds `cell` (a plant, animal or bacterial cell with one part lit
 `bodySystems`, `waterCycle` (one process lit, with its driver), `front` (cold, warm or
 stationary; or a high or low), `plates` (five boundaries, with rock ages or the mantle's
 flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or shape clue)
-and `rockCycle`, in `layouts/figures6.tsx`. `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
+and `rockCycle` (`cell` in `layouts/figures6.tsx`; the others each in their own file there). `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
 rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a scene's `web`
 lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
 shrink (`fewer`). Grade 7 life science adds, in `layouts/figuresLife.tsx`: `leafCell` (a leaf in

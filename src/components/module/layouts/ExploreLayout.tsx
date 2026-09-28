@@ -17,7 +17,8 @@ import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
-import { CellFigure6, RockCycleFigure } from './figures6';
+import { CellFigure6 } from './figures6';
+import { RockCycleFigure } from './rockCycleFigure';
 import { PlatesFigure } from './platesFigure';
 import { WaterCycleFigure } from './waterCycleFigure';
 
