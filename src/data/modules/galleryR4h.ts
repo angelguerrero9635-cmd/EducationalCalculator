@@ -6,6 +6,7 @@ import type { Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import { SCIENCE_3_MODULES } from './science/3';
+import { SCIENCE_6_MODULES } from './science/6';
 import type { ModuleDef } from './types';
 
 /** A copy of a lesson page under a gallery id, with its own example. */
@@ -33,6 +34,18 @@ export const R4H_GALLERY_MODULES: ModuleDef[] = [
       d: 9,
     },
   ),
+  // Q40: s.6.cells~cell-size, the page's example, a 100-cell row at low power and two cells.
+  copy(SCIENCE_6_MODULES, 's.6.cells~cell-size', 'g.r4h-field', 'Field of view (page example)'),
+  copy(SCIENCE_6_MODULES, 's.6.cells~cell-size', 'g.r4h-field-many', 'Field of view (100 cells)', {
+    f: 4500,
+    n: 100,
+    s: 45,
+  }),
+  copy(SCIENCE_6_MODULES, 's.6.cells~cell-size', 'g.r4h-field-two', 'Field of view (two cells)', {
+    f: 450,
+    n: 2,
+    s: 225,
+  }),
 ];
 
 export const R4H_GALLERY_LAYOUTS: LayoutDef[] = [

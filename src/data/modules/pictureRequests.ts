@@ -2313,10 +2313,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'An eyepiece view of plant cells with a measured cell and field width',
     kind: 'fieldOfView',
     pages: ['s.6.cells~cell-size'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-field', 'g.r4h-field-many', 'g.r4h-field-two'],
     notes:
-      'Urgency: medium. Weak now: Cream disc with a heavy grey vignette that looks like a smudge; small green ovals in one thin row; "one cell" label crowded against the cell and vignette; thin width bar with 11 px text. Redo: Eyepiece view: black Metal ring with a crisp inner edge, warm bright field with falloff only in the last 8 %. Plant/onion cells as rounded rectangles with walls, nucleus and faint cytoplasm tint (token greens, TopLight), ~30 % of the field tall. Measured cell outlined in primary with a bracket "1 cell = 300 µm" at 13 px. Field-width bar as a 2 px dimension line with end ticks and a 13 px label inside the canvas. Counts and positions exact.',
+      'Urgency: medium. Weak now: Cream disc with a heavy grey vignette that looks like a smudge; small green ovals in one thin row; "one cell" label crowded against the cell and vignette; thin width bar with 11 px text. Redo: Eyepiece view: black Metal ring with a crisp inner edge, warm bright field with falloff only in the last 8 %. Plant/onion cells as rounded rectangles with walls, nucleus and faint cytoplasm tint (token greens, TopLight), ~30 % of the field tall. Measured cell outlined in primary with a bracket "1 cell = 300 µm" at 13 px. Field-width bar as a 2 px dimension line with end ticks and a 13 px label inside the canvas. Counts and positions exact.' +
+      ' Drawn (round 4, group H): a black Metal eyepiece tube with a crisp inner edge and a shadow; the lamp-lit field dims only in its last 5 %. Onion-skin cells as rounded boxes with green walls, faint cytoplasm and a nucleus; the counted row across the middle at true width (field ÷ cells, up to 100 drawn) and up to 30 % of the field tall, with fainter offset rows of tissue around it (clipped to the circle, only while a cell is 8 px or wider). The first cell outlined in the highlight with a bracket and "1 cell = 300 µm" at 13 px bold on a card plate inside the circle; the field width on a 2 px dimension line with end ticks and dashed extension lines, "1,800 µm across" at 13 px. No page change.',
   },
   {
     id: 'Q41',
