@@ -1,0 +1,5502 @@
+{
+ "id": "mcgraw-math",
+ "curriculum": "Reveal Math (K–5) and Reveal Math Course 1–3 (Grades 6–8)",
+ "publisher": "McGraw Hill",
+ "edition": "2020",
+ "subject": "math",
+ "grades": [
+  "K",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "content": "titles",
+ "terms": {
+  "unit": "Unit (K–5) / Module (6–8)",
+  "lesson": "Lesson"
+ },
+ "license": null,
+ "sourceUrl": "https://www.mheducation.com/prek-12/program/microsites/MKTSP-BGA07M0.html",
+ "retrieved": "2026-09-28",
+ "notes": "Titles only (all rights reserved). Reveal Math chosen over My Math because it covers K–8 (My Math stops at Grade 5). Unit/module and lesson titles as listed on IXL's public Reveal Math 2020 skill-plan pages (one per grade, cited as each unit's url); Grades 6–8 are Reveal Math Course 1, 2 and 3. IXL may leave out a lesson it has no skills for; paired rows ('Lesson 1-1: … Lesson 1-2: …') were split.",
+ "books": [
+  {
+   "grade": "K",
+   "units": [
+    {
+     "n": "1",
+     "title": "Math Is...",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Math Is Mine"
+      },
+      {
+       "n": "1-2",
+       "title": "Math Is Exploring and Thinking"
+      },
+      {
+       "n": "1-3",
+       "title": "Math Is In My World"
+      },
+      {
+       "n": "1-4",
+       "title": "Math Is Explaining and Sharing"
+      },
+      {
+       "n": "1-5",
+       "title": "Math Is Finding Patterns"
+      },
+      {
+       "n": "1-6",
+       "title": "Math Is Ours"
+      }
+     ],
+     "skills": [],
+     "notes": "Opening 'Math Is...' unit on mathematical habits; no content skill."
+    },
+    {
+     "n": "2",
+     "title": "Numbers to 5",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Count 1, 2, and 3"
+      },
+      {
+       "n": "2-2",
+       "title": "Represent 1, 2, and 3"
+      },
+      {
+       "n": "2-3",
+       "title": "Count 4 and 5"
+      },
+      {
+       "n": "2-4",
+       "title": "Represent 4 and 5"
+      },
+      {
+       "n": "2-5",
+       "title": "Represent 0"
+      },
+      {
+       "n": "2-6",
+       "title": "Numbers to 5"
+      },
+      {
+       "n": "2-7",
+       "title": "Equal Groups to 5"
+      },
+      {
+       "n": "2-8",
+       "title": "Greater Than and Less Than"
+      },
+      {
+       "n": "2-9",
+       "title": "Compare Numbers to 5"
+      }
+     ],
+     "skills": [
+      "m.K.count-objects",
+      "m.K.compare-10"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Numbers to 10",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Count 6 and 7"
+      },
+      {
+       "n": "3-2",
+       "title": "Represent 6 and 7"
+      },
+      {
+       "n": "3-3",
+       "title": "Count 8 and 9"
+      },
+      {
+       "n": "3-4",
+       "title": "Represent 8 and 9"
+      },
+      {
+       "n": "3-5",
+       "title": "Count 10"
+      },
+      {
+       "n": "3-6",
+       "title": "Represent 10"
+      },
+      {
+       "n": "3-7",
+       "title": "Numbers to 10"
+      },
+      {
+       "n": "3-8",
+       "title": "Compare Objects in Groups"
+      },
+      {
+       "n": "3-9",
+       "title": "Compare Numbers"
+      },
+      {
+       "n": "3-10",
+       "title": "Write Numbers to 3"
+      },
+      {
+       "n": "3-11",
+       "title": "Write Numbers to 6"
+      },
+      {
+       "n": "3-12",
+       "title": "Write Numbers to 10"
+      }
+     ],
+     "skills": [
+      "m.K.count-objects",
+      "m.K.compare-10"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Sort, Classify, and Count Objects",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Alike and Different",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Sort Objects into Groups",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Count Objects in Groups",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Describe Groups of Objects",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.classify-count"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "2-Dimensional Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Triangles"
+      },
+      {
+       "n": "5-2",
+       "title": "Squares and Rectangles"
+      },
+      {
+       "n": "5-3",
+       "title": "Hexagons"
+      },
+      {
+       "n": "5-4",
+       "title": "Circles"
+      },
+      {
+       "n": "5-5",
+       "title": "Position of 2-Dimensional Shapes"
+      }
+     ],
+     "skills": [
+      "m.K.shapes-2d-3d",
+      "m.K.position-words"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Understand Addition",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Represent and Solve Add To Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Represent and Solve More Add To Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Represent and Solve Put Together Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Represent and Solve Addition Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Represent and Solve More Addition Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.add-sub-10"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Understand Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Represent Take Apart Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Represent and Solve Take From Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Represent and Solve More Take From Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Represent and Solve Subtraction Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Represent and Solve Addition and Subtraction Problems",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.add-sub-10"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Addition and Subtraction Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Add within 5"
+      },
+      {
+       "n": "8-2",
+       "title": "Subtract within 5"
+      },
+      {
+       "n": "8-3",
+       "title": "Ways to Make 6 and 7"
+      },
+      {
+       "n": "8-4",
+       "title": "Ways to Decompose 6 and 7"
+      },
+      {
+       "n": "8-5",
+       "title": "Ways to Make 8 and 9"
+      },
+      {
+       "n": "8-6",
+       "title": "Ways to Decompose 8 and 9"
+      },
+      {
+       "n": "8-7",
+       "title": "Ways to Make 10"
+      },
+      {
+       "n": "8-8",
+       "title": "Ways to Decompose 10"
+      }
+     ],
+     "skills": [
+      "m.K.add-sub-10",
+      "m.K.make-10"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Numbers 11 to 15",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Represent 11, 12, and 13",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Make 11, 12, and 13",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Decompose 11, 12, and 13",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Represent 14 and 15",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Make 14 and 15",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Decompose 14 and 15",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.teens-place-value"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Numbers 16 to 19",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Represent 16 and 17",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Make 16 and 17",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Decompose 16 and 17",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Represent 18 and 19",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Make 18 and 19",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Decompose 18 and 19",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.teens-place-value"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "3-Dimensional Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "2-Dimensional and 3-Dimensional Shapes",
+       "skills": [
+        "m.K.shapes-2d-3d"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Cubes",
+       "skills": [
+        "m.K.shapes-2d-3d"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Spheres",
+       "skills": [
+        "m.K.shapes-2d-3d"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Cylinders",
+       "skills": [
+        "m.K.shapes-2d-3d"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Cones",
+       "skills": [
+        "m.K.shapes-2d-3d"
+       ]
+      },
+      {
+       "n": "11-6",
+       "title": "Describe 3-Dimensional Shapes",
+       "skills": [
+        "m.K.shapes-2d-3d"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.shapes-2d-3d"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Count to 100",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Count by 1s to 50",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "12-2",
+       "title": "Count by 1s to 100",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "12-3",
+       "title": "Count by 10s to 100",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "12-4",
+       "title": "Count From Any Number to 100",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "12-5",
+       "title": "Count to Find Out How Many",
+       "skills": [
+        "m.K.count-100"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.count-100"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Analyze, Compare, and Compose Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Compare and Contrast 2-Dimensional Shapes"
+      },
+      {
+       "n": "13-2",
+       "title": "Build and Draw 2-Dimensional Shapes"
+      },
+      {
+       "n": "13-3",
+       "title": "Compose 2-Dimensional Shapes"
+      },
+      {
+       "n": "13-4",
+       "title": "Compare and Contrast 3-Dimensional Shapes"
+      },
+      {
+       "n": "13-5",
+       "title": "Build 3-Dimensional Shapes"
+      },
+      {
+       "n": "13-6",
+       "title": "Describe 3-Dimensional Shapes in the World"
+      }
+     ],
+     "skills": [
+      "m.K.compose-shapes",
+      "m.K.shapes-2d-3d"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Compare Measurable Attributes",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-kindergarten",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Describe Attributes of Objects",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-2",
+       "title": "Compare Lengths",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-3",
+       "title": "Compare Heights",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-4",
+       "title": "Compare Weights",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-5",
+       "title": "Compare Capacities",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      }
+     ],
+     "skills": [
+      "m.K.measurable-attributes"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "1",
+   "units": [
+    {
+     "n": "1",
+     "title": "Math Is...",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Math Is Mine"
+      },
+      {
+       "n": "1-2",
+       "title": "Math Is Exploring and Thinking"
+      },
+      {
+       "n": "1-3",
+       "title": "Math Is In My World"
+      },
+      {
+       "n": "1-4",
+       "title": "Math Is Explaining and Sharing"
+      },
+      {
+       "n": "1-5",
+       "title": "Math Is Finding Patterns"
+      },
+      {
+       "n": "1-6",
+       "title": "Math Is Ours"
+      }
+     ],
+     "skills": [],
+     "notes": "Opening 'Math Is...' unit on mathematical habits; no content skill."
+    },
+    {
+     "n": "2",
+     "title": "Number Patterns",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Counting Patterns to 100",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Patterns on a Number Chart to 120",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Patterns on a Number Line",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Patterns When Reading and Writing Numbers",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Patterns When Representing Objects In a Group",
+       "skills": [
+        "m.1.count-120"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.count-120"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Place Value",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Numbers 11 to 19",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Understand Tens",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Represent Tens and Ones",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Represent 2-Digit Numbers",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Represent 2-Digit Numbers in Different Ways",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "3-6",
+       "title": "Compare Numbers",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "3-7",
+       "title": "Compare Numbers on a Number Line",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "3-8",
+       "title": "Use Symbols to Compare Numbers",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.tens-ones"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Addition within 20: Facts and Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Relate Counting to Addition"
+      },
+      {
+       "n": "4-2",
+       "title": "Count On to Add"
+      },
+      {
+       "n": "4-3",
+       "title": "Doubles"
+      },
+      {
+       "n": "4-4",
+       "title": "Near Doubles"
+      },
+      {
+       "n": "4-5",
+       "title": "Make a 10 to Add"
+      },
+      {
+       "n": "4-6",
+       "title": "Choose Strategies to Add"
+      },
+      {
+       "n": "4-7",
+       "title": "Use Properties to Add"
+      },
+      {
+       "n": "4-8",
+       "title": "Add Three Numbers"
+      },
+      {
+       "n": "4-9",
+       "title": "Find an Unknown Number in an Addition Equation"
+      },
+      {
+       "n": "4-10",
+       "title": "Understand the Equal Sign"
+      },
+      {
+       "n": "4-11",
+       "title": "True Addition Equations"
+      }
+     ],
+     "skills": [
+      "m.1.add-sub-20",
+      "m.1.addition-properties"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Subtraction within 20: Facts and Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Relate Counting to Subtraction",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Count Back to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Count On to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Make a 10 to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Use Near Doubles to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Use Addition to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Use Fact Families to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-8",
+       "title": "Find an Unknown Number in a Subtraction Equation",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "5-9",
+       "title": "True Subtraction Equations",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.add-sub-20"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Shapes and Solids",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Understand Defining Attributes of Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Understand Non-Defining Attributes of Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Compose Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Build New Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Understand Attributes of Solids",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Build New Solids",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.shape-attributes"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Meanings of Addition",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Represent and Solve Add To Problems"
+      },
+      {
+       "n": "7-2",
+       "title": "Represent and Solve More Add To Problems"
+      },
+      {
+       "n": "7-3",
+       "title": "Represent and Solve Put Together Problems"
+      },
+      {
+       "n": "7-4",
+       "title": "Represent and Solve More Put Together Problems"
+      },
+      {
+       "n": "7-5",
+       "title": "Represent and Solve Addition Problems with Three Addends"
+      },
+      {
+       "n": "7-6",
+       "title": "Solve Addition Problems"
+      }
+     ],
+     "skills": [
+      "m.1.add-sub-20",
+      "m.1.equal-sign"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Meanings of Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Represent and Solve Take From Problems",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Represent and Solve More Take From Problems",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Represent and Solve Take Apart Problems",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Represent and Solve More Take Apart Problems",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Solve Problems Involving Subtraction",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "8-6",
+       "title": "Solve More Problems Involving Subtraction",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "8-7",
+       "title": "Solve Problems Involving Addition and Subtraction",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.add-sub-20"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Addition within 100",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Use Mental Math to Find 10 More",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Represent Adding Tens",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Represent Adding Tens and Ones",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Decompose Addends to Add",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Use an Open Number Line to Add within 100",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Decompose to Add on an Open Number Line",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "9-7",
+       "title": "Regroup to Add",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "9-8",
+       "title": "Add 2-Digit Numbers",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.add-within-100"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Compare Using Addition and Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Represent and Solve Compare Problems",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Represent and Solve Compare Problems Using Addition",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Represent and Solve More Compare Problems",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Solve Compare Problems Using Addition and Subtraction",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.add-sub-20"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Subtraction within 100",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Use Mental Math to Find 10 Less",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Represent Subtracting Tens",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Subtract Tens",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Use Addition to Subtract Tens",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Explain Subtraction Strategies",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.add-within-100"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Measurement and Data",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Compare and Order Lengths"
+      },
+      {
+       "n": "12-2",
+       "title": "More Ways to Compare Lengths"
+      },
+      {
+       "n": "12-3",
+       "title": "Strategies to Measure Lengths"
+      },
+      {
+       "n": "12-4",
+       "title": "More Strategies to Measure Lengths"
+      },
+      {
+       "n": "12-5",
+       "title": "Tell Time to the Hour"
+      },
+      {
+       "n": "12-6",
+       "title": "Tell Time to the Half Hour"
+      },
+      {
+       "n": "12-7",
+       "title": "Organize Data"
+      },
+      {
+       "n": "12-8",
+       "title": "Represent Data"
+      },
+      {
+       "n": "12-9",
+       "title": "Interpret Data"
+      },
+      {
+       "n": "12-10",
+       "title": "Solve Problems Involving Data"
+      }
+     ],
+     "skills": [
+      "m.1.measure-nonstandard",
+      "m.1.time-half-hour",
+      "m.1.data-3-categories"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Equal Shares",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-1st-grade",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Understand Equal Shares",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      },
+      {
+       "n": "13-2",
+       "title": "Partition Shapes into Halves",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      },
+      {
+       "n": "13-3",
+       "title": "Partition Shapes into Fourths",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      },
+      {
+       "n": "13-4",
+       "title": "Describe the Whole",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      },
+      {
+       "n": "13-5",
+       "title": "Describe Halves and Fourths of Shapes",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      }
+     ],
+     "skills": [
+      "m.1.halves-fourths"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "2",
+   "units": [
+    {
+     "n": "1",
+     "title": "Math Is...",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Math Is Mine"
+      },
+      {
+       "n": "1-2",
+       "title": "Math Is Exploring and Thinking"
+      },
+      {
+       "n": "1-3",
+       "title": "Math Is In My World"
+      },
+      {
+       "n": "1-4",
+       "title": "Math Is Explaining and Sharing"
+      },
+      {
+       "n": "1-5",
+       "title": "Math Is Finding Patterns"
+      },
+      {
+       "n": "1-6",
+       "title": "Math Is Ours"
+      }
+     ],
+     "skills": [],
+     "notes": "Opening 'Math Is...' unit on mathematical habits; no content skill."
+    },
+    {
+     "n": "2",
+     "title": "Place Value to 1,000",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Understand Hundreds",
+       "skills": [
+        "m.2.place-value-1000"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Understand 3-Digit Numbers",
+       "skills": [
+        "m.2.place-value-1000"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Read and Write Numbers to 1,000",
+       "skills": [
+        "m.2.place-value-1000"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Decompose 3-Digit Numbers",
+       "skills": [
+        "m.2.place-value-1000"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Compare 3-Digit Numbers",
+       "skills": [
+        "m.2.place-value-1000"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.place-value-1000"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Patterns within Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Counting Patterns"
+      },
+      {
+       "n": "3-2",
+       "title": "Patterns When Skip Counting by 5s"
+      },
+      {
+       "n": "3-3",
+       "title": "Patterns When Skip Counting by 10s and 100s"
+      },
+      {
+       "n": "3-4",
+       "title": "Understanding Even and Odd Numbers"
+      },
+      {
+       "n": "3-5",
+       "title": "Addition Patterns"
+      },
+      {
+       "n": "3-6",
+       "title": "Patterns with Arrays"
+      },
+      {
+       "n": "3-7",
+       "title": "Use Arrays to Add"
+      }
+     ],
+     "skills": [
+      "m.2.even-odd",
+      "m.2.skip-count",
+      "m.2.arrays"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Meanings of Addition and Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Represent and Solve Add to Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Represent and Solve Take From Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Solve Two-Step Add To and Take From Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Represent and Solve Put Together Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Represent and Solve Take Apart Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Solve Two-Step Put Together and Take Apart Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Represent and Solve Compare Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-8",
+       "title": "Represent and Solve More Compare Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-9",
+       "title": "Solve Two-Step Problems with Comparison",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-10",
+       "title": "Solve Two-Step Problems Using Addition and Subtraction",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Strategies to Fluently Add within 100",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Strategies to Add Fluently within 20",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "More Strategies to Add Fluently within 20",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Represent Addition with 2-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Use Properties to Add",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Decompose Two Addends to Add",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Use a Number Line to Add",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Decompose One Addend to Add",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-8",
+       "title": "Adjust Addends to Add",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-9",
+       "title": "Add More Than Two Numbers",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-10",
+       "title": "Solve One- and Two-Step Problems Using Addition",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Strategies to Fluently Subtract within 100",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Strategies to Subtract Fluently within 20",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "More Strategies to Subtract Fluently within 20",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Represent Subtraction with 2-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Represent 2-Digit Subtraction with Regrouping",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Use a Number Line to Subtract",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Decompose Numbers to Subtract",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-7",
+       "title": "Adjust Numbers to Subtract",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-8",
+       "title": "Relate Addition and Subtraction",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-9",
+       "title": "Solve One-Step Problems Using Subtraction",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-10",
+       "title": "Solve Two-Step Problems Using Subtraction",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Measure and Compare Lengths",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Measure Length with Inches",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Measure Length with Feet and Yards",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Compare Lengths Using Customary Units",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Relate Inches, Feet, and Yards",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Estimate Length Using Customary Units",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Measure Length with Centimeters and Meters",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Compare Lengths Using Metric Units",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-8",
+       "title": "Relate Centimeters and Meters",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-9",
+       "title": "Estimate Length Using Metric Units",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-10",
+       "title": "Solve Problems Involving Length",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "7-11",
+       "title": "Solve More Problems Involving Length",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.standard-length"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Measurement: Money and Time",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Understand the Value of Coins"
+      },
+      {
+       "n": "8-2",
+       "title": "Solve Money Problems Involving Coins"
+      },
+      {
+       "n": "8-3",
+       "title": "Solve Money Problems Involving Dollar Bills and Coins"
+      },
+      {
+       "n": "8-4",
+       "title": "Tell Time to the Nearest Five Minutes"
+      },
+      {
+       "n": "8-5",
+       "title": "Be Precise When Telling Time"
+      }
+     ],
+     "skills": [
+      "m.2.money",
+      "m.2.time-5-min"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Stategies to Add 3-Digit Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Use Mental Math to Add 10 or 100",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Represent Addition with 3-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Represent Addition with 3-Digit Numbers with Regrouping",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Decompose Addends to Add 3-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Decompose One Addend to Add 3-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Adjust Addends to Add 3-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "9-7",
+       "title": "Explain Addition Strategies",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.add-sub-1000"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Strategies to Subtract 3-Digit Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Use Mental Math to Subtract 10 or 100",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Represent Subtraction with 3-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Decompose One 3-Digit Number to Count Back",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Count On to Subtract 3-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Regroup Tens",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Regroup Tens and Hundreds",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-7",
+       "title": "Adjust Numbers to Subtract 3-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-8",
+       "title": "Explain Subtraction Strategies",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-9",
+       "title": "Solve Problems Involving Addition and Subtraction",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.add-sub-1000"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Data Analysis",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Understand Picture Graphs",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Understand Bar Graphs",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Solve Problems Using Bar Graphs",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Collect Measurement Data",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Understand Line Plots",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "11-6",
+       "title": "Show Data in a Line Plot",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      }
+     ],
+     "skills": [
+      "m.2.graphs-line-plots"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Geometric Shapes and Equal Shares",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-2nd-grade",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Recognize 2-Dimensional Shapes by Their Attributes"
+      },
+      {
+       "n": "12-2",
+       "title": "Draw 2-Dimensional Shapes from Their Attributes"
+      },
+      {
+       "n": "12-3",
+       "title": "Recognize 3-Dimensional Shapes by Their Attributes"
+      },
+      {
+       "n": "12-4",
+       "title": "Understand Equal Shares"
+      },
+      {
+       "n": "12-5",
+       "title": "Relate Equal Shares"
+      },
+      {
+       "n": "12-6",
+       "title": "Partition a Rectangle into Rows and Columns"
+      }
+     ],
+     "skills": [
+      "m.2.thirds-polygons",
+      "m.2.arrays"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "3",
+   "units": [
+    {
+     "n": "1",
+     "title": "Math Is...",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Math Is Mine"
+      },
+      {
+       "n": "1-2",
+       "title": "Math Is Exploring and Thinking"
+      },
+      {
+       "n": "1-3",
+       "title": "Math Is In My World"
+      },
+      {
+       "n": "1-4",
+       "title": "Math Is Explaining and Sharing"
+      },
+      {
+       "n": "1-5",
+       "title": "Math Is Finding Patterns"
+      },
+      {
+       "n": "1-6",
+       "title": "Math Is Ours"
+      }
+     ],
+     "skills": [],
+     "notes": "Opening 'Math Is...' unit on mathematical habits; no content skill."
+    },
+    {
+     "n": "2",
+     "title": "Use Place Value to Fluently Add and Subtract within 1,000",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Represent 4-Digit Numbers"
+      },
+      {
+       "n": "2-2",
+       "title": "Round Multi-Digit Numbers"
+      },
+      {
+       "n": "2-3",
+       "title": "Estimate Sums and Differences"
+      },
+      {
+       "n": "2-4",
+       "title": "Use Addition Properties to Add"
+      },
+      {
+       "n": "2-5",
+       "title": "Addition Patterns"
+      },
+      {
+       "n": "2-6",
+       "title": "Use Partial Sums to Add"
+      },
+      {
+       "n": "2-7",
+       "title": "Decompose to Subtract"
+      },
+      {
+       "n": "2-8",
+       "title": "Adjust Numbers to Add or Subtract"
+      },
+      {
+       "n": "2-9",
+       "title": "Use Addition to Subtract"
+      },
+      {
+       "n": "2-10",
+       "title": "Fluently Add within 1,000"
+      },
+      {
+       "n": "2-11",
+       "title": "Fluently Subtract within 1,000"
+      },
+      {
+       "n": "2-12",
+       "title": "Solve Two-Step Problems Involving Addition and Subtraction"
+      }
+     ],
+     "skills": [
+      "m.3.add-sub-1000",
+      "m.3.rounding"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Multiplication and Division",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Understand Equal Groups",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Use Arrays to Multiply",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Understand the Commutative Property of Multiplication",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Understand Equal Sharing",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Understand Equal Grouping",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "3-6",
+       "title": "Relate Multiplication and Division",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "3-7",
+       "title": "Find the Unknown",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      }
+     ],
+     "skills": [
+      "m.3.multiply-divide-100"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Use Patterns to Multiply by 0, 1, 2, 5, and 10",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Use Patterns to Multiply by 2"
+      },
+      {
+       "n": "4-2",
+       "title": "Use Patterns to Multiply by 5"
+      },
+      {
+       "n": "4-3",
+       "title": "Use Patterns to Multiply by 10"
+      },
+      {
+       "n": "4-4",
+       "title": "Use Patterns to Multiply by 1 and 0"
+      },
+      {
+       "n": "4-5",
+       "title": "Multiply Fluently by 0, 1, 2, 5, and 10"
+      },
+      {
+       "n": "4-6",
+       "title": "Solve Problems Involving Equal Groups"
+      }
+     ],
+     "skills": [
+      "m.3.multiply-divide-100",
+      "m.3.arithmetic-patterns"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Use Properties to Multiply by 3, 4, 6, 7, 8, and 9",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Understand the Distributive Property"
+      },
+      {
+       "n": "5-2",
+       "title": "Use Properties to Multiply by 3"
+      },
+      {
+       "n": "5-3",
+       "title": "Use Properties to Multiply by 4"
+      },
+      {
+       "n": "5-4",
+       "title": "Use Properties to Multiply by 6"
+      },
+      {
+       "n": "5-5",
+       "title": "Use Properties to Multiply by 8"
+      },
+      {
+       "n": "5-6",
+       "title": "Use Properties to Multiply by 7 and 9"
+      },
+      {
+       "n": "5-7",
+       "title": "Lesson 5-7 Solve Problems Using Arrays",
+       "numberInferred": true
+      }
+     ],
+     "skills": [
+      "m.3.multiplication-properties",
+      "m.3.multiply-divide-100"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Connect Area and Multiplication",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Understand Area",
+       "skills": [
+        "m.3.area"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Count Unit Squares to Determine Area",
+       "skills": [
+        "m.3.area"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Use Multiplication to Determine Area",
+       "skills": [
+        "m.3.area"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Determine the Area of a Composite Figure",
+       "skills": [
+        "m.3.area"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Use the Distributive Property to Determine Area",
+       "skills": [
+        "m.3.area"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Solve Area Problems",
+       "skills": [
+        "m.3.area"
+       ]
+      }
+     ],
+     "skills": [
+      "m.3.area"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Partition Shapes into Equal Parts",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Understand Fractions",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Represent Fractions on a Number Line",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Represent One Whole as a Fraction",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Represent Whole Numbers as Fractions",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Represent a Fraction Greater Than One on a Number Line",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      }
+     ],
+     "skills": [
+      "m.3.fractions-number-line"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Fraction Equivalence and Comparison",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Understand Equivalent Fractions",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Represent Equivalent Fractions",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Represent Equivalent Fractions on a Number Line",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Understand Fractions of Different Wholes",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Compare Fractions with the Same Denominator",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "8-6",
+       "title": "Compare Fractions with the Same Numerator",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "8-7",
+       "title": "Compare Fractions",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      }
+     ],
+     "skills": [
+      "m.3.compare-fractions"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Use Multiplication to Divide",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Use Multiplication to Solve Division Equations",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Divide by 2",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Divide by 5 and 10",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Understand Division with 1 and 0",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Divide by 3 and 6",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Divide by 4 and 8",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-7",
+       "title": "Divide by 9",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-8",
+       "title": "Divide by 7",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "9-9",
+       "title": "Multiply and Divide Fluently within 100",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      }
+     ],
+     "skills": [
+      "m.3.multiply-divide-100"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Use Properties and Strategies to Multiply and Divide",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Patterns with Multiples of 10"
+      },
+      {
+       "n": "10-2",
+       "title": "More Multiplication Patterns"
+      },
+      {
+       "n": "10-3",
+       "title": "Understand the Associative Property"
+      },
+      {
+       "n": "10-4",
+       "title": "Two-Step Problems Involving Multiplication and Division"
+      },
+      {
+       "n": "10-5",
+       "title": "Solve Two-Step Problems"
+      },
+      {
+       "n": "10-6",
+       "title": "Explain the Reasonableness of a Solution"
+      }
+     ],
+     "skills": [
+      "m.3.multiplication-properties",
+      "m.3.multiply-by-tens",
+      "m.3.two-step-problems"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Perimeter",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Understand Perimeter",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Determine Perimeter of Figures",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Determine an Unknown Side Length",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Solve Problems Involving Area and Perimeter",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Solve Problems Involving Measurement",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      }
+     ],
+     "skills": [
+      "m.3.perimeter"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Measurement and Data",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Measure Liquid Volume"
+      },
+      {
+       "n": "12-2",
+       "title": "Estimate and Solve Problems with Liquid Volume"
+      },
+      {
+       "n": "12-3",
+       "title": "Measure Mass"
+      },
+      {
+       "n": "12-4",
+       "title": "Estimate and Solve Problems with Mass"
+      },
+      {
+       "n": "12-5",
+       "title": "Tell Time to the Nearest Minute"
+      },
+      {
+       "n": "12-6",
+       "title": "Solve Problems Involving Time"
+      },
+      {
+       "n": "12-7",
+       "title": "Understand Scaled Picture Graphs"
+      },
+      {
+       "n": "12-8",
+       "title": "Understand Scaled Bar Graphs"
+      },
+      {
+       "n": "12-9",
+       "title": "Solve Problems Involving Scaled Graphs"
+      },
+      {
+       "n": "12-10",
+       "title": "Measure to Halves or Fourths of an Inch"
+      },
+      {
+       "n": "12-11",
+       "title": "Show Measurement Data on a Line Plot"
+      }
+     ],
+     "skills": [
+      "m.3.elapsed-time",
+      "m.3.mass-liquid-volume",
+      "m.3.scaled-graphs",
+      "m.3.measure-line-plots"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Describe and Analyze 2-Dimensional Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-3rd-grade",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Describe and Classify Polygons",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      },
+      {
+       "n": "13-2",
+       "title": "Describe Quadrilaterals",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      },
+      {
+       "n": "13-3",
+       "title": "Classify Quadrilaterals",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      },
+      {
+       "n": "13-4",
+       "title": "Draw Quadrilaterals with Specific Attributes",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      }
+     ],
+     "skills": [
+      "m.3.quadrilaterals"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "4",
+   "units": [
+    {
+     "n": "1",
+     "title": "Math Is…",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Math Is Mine"
+      },
+      {
+       "n": "1-2",
+       "title": "Math is Exploring and Thinking"
+      },
+      {
+       "n": "1-3",
+       "title": "Math Is In My World"
+      },
+      {
+       "n": "1-4",
+       "title": "Math Is Explaining and Sharing"
+      },
+      {
+       "n": "1-5",
+       "title": "Math Is Finding Patterns"
+      },
+      {
+       "n": "1-6",
+       "title": "Math Is Ours"
+      }
+     ],
+     "skills": [],
+     "notes": "Opening 'Math Is...' unit on mathematical habits; no content skill."
+    },
+    {
+     "n": "2",
+     "title": "Generalize Place Value Structure",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Understand the Structure of Multi-Digit Numbers",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Read and Write Numbers to One Million",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Compare Multi-Digit Numbers",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Round Multi-Digit Numbers",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.place-value-million"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Addition and Subtraction Strategies and Algorithms",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Estimate Sums or Differences"
+      },
+      {
+       "n": "3-2",
+       "title": "Strategies to Add Multi-Digit Numbers"
+      },
+      {
+       "n": "3-3",
+       "title": "Understand an Addition Algorithm"
+      },
+      {
+       "n": "3-4",
+       "title": "Understand an Addition Algorithm Involving Regrouping"
+      },
+      {
+       "n": "3-5",
+       "title": "Strategies to Subtract Multi-Digit Numbers"
+      },
+      {
+       "n": "3-6",
+       "title": "Understand a Subtraction Algorithm"
+      },
+      {
+       "n": "3-7",
+       "title": "Understand a Subtraction Algorithm Involving Regrouping"
+      },
+      {
+       "n": "3-8",
+       "title": "Represent and Solve Multi-Step Problems"
+      },
+      {
+       "n": "3-9",
+       "title": "Solve Multi-Step Problems Involving Addition and Subtraction"
+      }
+     ],
+     "skills": [],
+     "notes": "Multi-digit addition and subtraction (4.NBT.4) has no Grade 4 skill; nearest m.3.add-sub-1000."
+    },
+    {
+     "n": "4",
+     "title": "Multiplication as Comparison",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Understand Comparing with Multiplication",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Represent Comparison Problems",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Solve Comparison Problems Using Multiplication",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Solve Comparison Problems Using Division",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.multi-digit-multiply"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Numbers and Number Patterns",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Understand Factors of a Number",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Under Prime and Composite Numbers",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Understand Multiples",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Number or Shape Patterns",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Generate a Pattern",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Analyze Features of a Pattern",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.factors-multiples"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Multiplication Strategies with Multi-Digit Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Multiply by Multiples of 10, 100, or 1,000",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Estimate Products",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Use the Distributive Property to Multiply",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Multiply 2-Digit by 1-Digit Factors",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Multiply Multi-Digit by 1-Digit Factors",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Multiply Two Multiples of 10",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "6-7",
+       "title": "Multiply Two 2-Digit Factors",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "6-8",
+       "title": "Solve Multi-Step Problems Involving Multiplication",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.multi-digit-multiply"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Division Strategies with Multi-Digit Dividends and One-Digit Divisors",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Divide Multiples of 10, 100, and 1000",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Estimate Quotients",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Find Equal Shares",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Understand Partial Quotients",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Divide 4-Digit Dividends by 1-Digit Divisors",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Understand Remainders",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Make Sense of a Remainder",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "7-8",
+       "title": "Solve Multi-Step Problems Using Division",
+       "skills": [
+        "m.4.long-division"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.long-division"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Fraction Equivalence",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Equivalent Fractions",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Generate Equivalent Fractions Using Models",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Generate Equivalent Fractions Using Number Lines",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Compare Fractions Using Benchmarks",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Other Ways to Compare Fractions",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.fraction-equivalence"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Addition and Subtraction Meanings and Strategies with Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Understand Decomposing Fractions",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Represent Adding Fractions",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Add Fractions with Like Denominators",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Represent Subtracting Fractions",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Subtract Fractions with Like Denominators",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Solve Problems Involving Fractions",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.add-fractions-like"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Addition and Subtraction Strategies with Mixed Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Understand Decomposing Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Represent Adding Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Add Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Represent Subtracting Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Subtract Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Solve Problems Involving Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.add-fractions-like"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Multiply Fractions by Whole Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Represent Multiplication of a Unit Fraction by a Whole Number",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Understand Multiplying a Fraction by a Whole Number",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Multiply a Fraction by a Whole Number",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Multiply a Mixed Number by a Whole Number",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Solve Problems Involving Fractions and Mixed Numbers",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.fraction-times-whole"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Decimal Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Understand Tenths and Hundredths",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-2",
+       "title": "Understand Decimal Notation",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-3",
+       "title": "Compare Decimals",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-4",
+       "title": "Adding Decimals Using Fractions",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-5",
+       "title": "Solve Problems Involving Money",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      }
+     ],
+     "skills": [
+      "m.4.decimals-intro"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Units of Measurement and Data",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Relate Metric Units"
+      },
+      {
+       "n": "13-2",
+       "title": "Relate Customary Units of Weight"
+      },
+      {
+       "n": "13-3",
+       "title": "Relate Customary Units of Capacity"
+      },
+      {
+       "n": "13-4",
+       "title": "Convert Units of Time"
+      },
+      {
+       "n": "13-5",
+       "title": "Solve Problems That Involve Units of Measure"
+      },
+      {
+       "n": "13-6",
+       "title": "Solve More Problems That Involve Units of Measure"
+      },
+      {
+       "n": "13-7",
+       "title": "Solve Problems Using a Perimeter Formula"
+      },
+      {
+       "n": "13-8",
+       "title": "Solve Problems Using an Area Formula"
+      },
+      {
+       "n": "13-9",
+       "title": "Solve Problems Involving Perimeter and Area"
+      },
+      {
+       "n": "13-10",
+       "title": "Display and Interpret Data on a Line Plot"
+      },
+      {
+       "n": "13-11",
+       "title": "Solve Problems Involving Data on a Line Plot"
+      }
+     ],
+     "skills": [
+      "m.4.unit-conversion",
+      "m.4.area-perimeter-formulas"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Geometric Figures",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-4th-grade",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Understand Lines, Line Segments, and Rays"
+      },
+      {
+       "n": "14-2",
+       "title": "Classify Angles"
+      },
+      {
+       "n": "14-3",
+       "title": "Draw and Measure Angles"
+      },
+      {
+       "n": "14-4",
+       "title": "Understand Parallel and Perpendicular Lines"
+      },
+      {
+       "n": "14-5",
+       "title": "Add and Subtract Angle Measures"
+      },
+      {
+       "n": "14-6",
+       "title": "Solve Problems Involving Unknown Angle Measures"
+      },
+      {
+       "n": "14-7",
+       "title": "Classify Polygons"
+      },
+      {
+       "n": "14-8",
+       "title": "Classify Triangles"
+      },
+      {
+       "n": "14-9",
+       "title": "Understand Line Symmetry"
+      },
+      {
+       "n": "14-10",
+       "title": "Draw Lines of Symmetry"
+      }
+     ],
+     "skills": [
+      "m.4.angles",
+      "m.4.lines-symmetry"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "5",
+   "units": [
+    {
+     "n": "1",
+     "title": "Math Is...",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Math Is Mine"
+      },
+      {
+       "n": "1-2",
+       "title": "Math Is Exploring and Thinking"
+      },
+      {
+       "n": "1-3",
+       "title": "Math Is in My World"
+      },
+      {
+       "n": "1-4",
+       "title": "Math Is Explaining and Sharing"
+      },
+      {
+       "n": "1-5",
+       "title": "Math Is Finding Patterns"
+      },
+      {
+       "n": "1-6",
+       "title": "Math Is Ours"
+      }
+     ],
+     "skills": [],
+     "notes": "Opening 'Math Is...' unit on mathematical habits; no content skill."
+    },
+    {
+     "n": "2",
+     "title": "Volume",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Understand Volume",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Use Units Cubes to Determine Volume",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Use Formulas to Determine Volume",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Determine the Volume of Composite Figures",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Solve Problems Involving Volume",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.volume-rectangular"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Place Value and Number Relationships",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Generalize Place Value",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Extend Place Value to Decimals",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Read and Write Decimals",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Compare Decimals",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Use Place Value to Round Decimals",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.powers-of-ten"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Add and Subtract Decimals",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Estimate Sums and Differences of Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Represent Addition of Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Represent Addition of Tenths and Hundredths",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Strategies to Add Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Represent Subtraction of Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Represent Subtraction of Tenths and Hundredths",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Strategies to Subtract Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-8",
+       "title": "Explain Strategies to Add and Subtract Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.decimal-operations"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Multiply Multi-Digit Whole Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Understand Powers and Exponents",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Patterns When Multiplying a Whole Number by Powers of 10",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Estimate Products of Multi-Digit Factors",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Use Area Models to Multiply Multi-Digit Factors",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Use Partial Products to Multiply Multi-Digit Factors",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Relate Partial Products to an Algorithm",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Multiply Multi-Digit Factors Fluently",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.standard-algorithm"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Multiply Decimals",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Patterns When Multiplying Decimals by Powers of 10",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Estimate Products of Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Represent Multiplication of Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Use an Area Model to Multiply Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Generalizations about Multiplying Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Explain Strategies to Multiply Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.decimal-operations"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Divide Whole Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Division Patterns with Multi-Digit Numbers",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Estimate Quotients",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Relate Multiplication and Division of Multi-Digit Numbers",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Represent Division of 2-Digit Divisors",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Use Partial Quotients",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Divide Multi-Digit Whole Numbers",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Solve Problems Involving Division",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.divide-2-digit"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Divide Decimals",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Division Patterns with Decimals and Powers of 10",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Estimate Quotients of Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Represent Division of Decimals by a Whole Number",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Divide Decimals by Whole Numbers",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Divide Whole Numbers by Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "8-6",
+       "title": "Divide Decimals by Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.decimal-operations"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Add and Subtract Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Estimate Sums and Differences of Fractions",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Represent Addition of Fractions with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Add Fractions with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Represent Subtraction of Fractions with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Subtract Fractions with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Add Mixed Numbers with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-7",
+       "title": "Subtract Mixed Numbers with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-8",
+       "title": "Add and Subtract Mixed Numbers with Regrouping",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "9-9",
+       "title": "Solve Problems Involving Fractions and Mixed Numbers",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.add-fractions-unlike"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Multiply Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Represent Multiplication of a Whole Number by a Fraction",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Multiply a Whole Number by a Fraction",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Represent Multiplication of a Fraction by a Fraction",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Multiply a Fraction by a Fraction",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Determine the Area of Rectangles with Fractional Side Lengths",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Represent Multiplication of Mixed Numbers",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-7",
+       "title": "Multiply Mixed Numbers",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-8",
+       "title": "Multiplication as Scaling",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "10-9",
+       "title": "Solve Problems Involving Fractions",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.multiply-fractions"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Divide Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Relate Fractions to Division",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Solve Problems Involving Division",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Represent Division of Whole Numbers by Unit Fractions",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Divide Whole Numbers by Unit Fractions",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Represent Division of Unit Fractions by Non-Zero Whole Numbers",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "11-6",
+       "title": "Divide Unit Fractions by Non-Zero Whole Numbers",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "11-7",
+       "title": "Solve Problems Involving Fractions",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      }
+     ],
+     "skills": [
+      "m.5.divide-unit-fractions"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Measurement and Data",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Convert Customary Units"
+      },
+      {
+       "n": "12-2",
+       "title": "Convert Metric Units"
+      },
+      {
+       "n": "12-3",
+       "title": "Solve Multi-Step Problems Involving Measurement Units"
+      },
+      {
+       "n": "12-4",
+       "title": "Represent Measurement Data on a Line Plot"
+      },
+      {
+       "n": "12-5",
+       "title": "Solve Problems Involving Measurement Data on Line Plots"
+      }
+     ],
+     "skills": [],
+     "notes": "Converting units and line plots (5.MD.1-2) have no Grade 5 skill; nearest m.4.unit-conversion."
+    },
+    {
+     "n": "13",
+     "title": "Geometry",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Understand the Coordinate Plane"
+      },
+      {
+       "n": "13-2",
+       "title": "Plot Ordered Pairs on the Coordinate Plane"
+      },
+      {
+       "n": "13-3",
+       "title": "Represent Problems on a Coordinate Plane"
+      },
+      {
+       "n": "13-4",
+       "title": "Classify Triangles by Properties"
+      },
+      {
+       "n": "13-5",
+       "title": "Properties of Quadrilaterals"
+      },
+      {
+       "n": "13-6",
+       "title": "Classify Quadrilaterals by Properties"
+      }
+     ],
+     "skills": [
+      "m.5.classify-2d",
+      "m.5.coordinate-plane-q1"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Algebraic Thinking",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-5th-grade",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Write Numerical Expressions"
+      },
+      {
+       "n": "14-2",
+       "title": "Interpret Numerical Expressions"
+      },
+      {
+       "n": "14-3",
+       "title": "Evaluate Numerical Expressions"
+      },
+      {
+       "n": "14-4",
+       "title": "Numerical Patterns"
+      },
+      {
+       "n": "14-5",
+       "title": "Relate Numerical Patterns"
+      },
+      {
+       "n": "14-6",
+       "title": "Graphs of Numerical Patterns"
+      }
+     ],
+     "skills": [
+      "m.5.order-of-operations",
+      "m.5.coordinate-plane-q1"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "6",
+   "units": [
+    {
+     "n": "1",
+     "title": "Ratios and Rates",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Understand Ratios"
+      },
+      {
+       "n": "1-2",
+       "title": "Tables of Equivalent Ratios"
+      },
+      {
+       "n": "1-3",
+       "title": "Graphs of Equivalent Ratios"
+      },
+      {
+       "n": "1-4",
+       "title": "Compare Ratio Relationships"
+      },
+      {
+       "n": "1-5",
+       "title": "Solve Ratio Problems"
+      },
+      {
+       "n": "1-6",
+       "title": "Convert Customary Measurement Units"
+      },
+      {
+       "n": "1-7",
+       "title": "Understand Rates and Unit Rates"
+      },
+      {
+       "n": "1-8",
+       "title": "Solve Rate Problems"
+      }
+     ],
+     "skills": [
+      "m.6.ratios",
+      "m.6.unit-rates"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Fractions, Decimals, and Percents",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Understand Percents",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Percents Greater Than 100% and Less Than 1%",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Relate Fractions, Decimals, and Percents",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Find the Percent of a Number",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Estimate the Percent of a Number",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "2-6",
+       "title": "Find the Whole",
+       "skills": [
+        "m.6.percent"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.percent"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Compute with Multi-Digit Numbers and Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Divide Multi-Digit Whole Numbers"
+      },
+      {
+       "n": "3-2",
+       "title": "Compute with Multi-Digit Decimals"
+      },
+      {
+       "n": "3-3",
+       "title": "Divide Whole Numbers by Fractions"
+      },
+      {
+       "n": "3-4",
+       "title": "Divide Fractions by Fractions"
+      },
+      {
+       "n": "3-5",
+       "title": "Divide with Whole and Mixed Numbers"
+      }
+     ],
+     "skills": [
+      "m.6.divide-fractions",
+      "m.6.multi-digit-decimals"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Integers, Rational Numbers, and the Coordinate Plane",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Represent Integers"
+      },
+      {
+       "n": "4-2",
+       "title": "Opposites and Absolute Value"
+      },
+      {
+       "n": "4-3",
+       "title": "Compare and Order Integers"
+      },
+      {
+       "n": "4-4",
+       "title": "Rational Numbers"
+      },
+      {
+       "n": "4-5",
+       "title": "The Coordinate Plane"
+      },
+      {
+       "n": "4-6",
+       "title": "Graph Reflections of Points"
+      },
+      {
+       "n": "4-7",
+       "title": "Absolute Value and Distance"
+      }
+     ],
+     "skills": [
+      "m.6.integers",
+      "m.6.coordinate-plane-4q"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Numerical and Algebraic Expressions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Powers and Exponents",
+       "skills": [
+        "m.6.expressions-variables"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Numerical Expressions",
+       "skills": [
+        "m.6.expressions-variables"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Write Algebraic Expressions",
+       "skills": [
+        "m.6.expressions-variables"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Evaluate Algebraic Expressions",
+       "skills": [
+        "m.6.expressions-variables"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Factors and Multiples",
+       "skills": [
+        "m.6.expressions-variables"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Use the Distributive Property",
+       "skills": [
+        "m.6.expressions-variables"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Equivalent Algebraic Expressions",
+       "skills": [
+        "m.6.expressions-variables"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.expressions-variables"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Equations and Inequalities",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Use Substitution to Solve One-Step Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "One-Step Addition Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "One-Step Subtraction Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "One-Step Multiplication Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "One-Step Division Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Inequalities",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.one-step-equations"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Relationships Between Two Variables",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Relationships Between Two Variables",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Write Equations to Represent Relationships Represented in Tables",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Graphs of Relationships",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Multiple Representations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.one-step-equations"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Area",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Area of Parallelograms",
+       "skills": [
+        "m.6.area-polygons"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Area of Triangles",
+       "skills": [
+        "m.6.area-polygons"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Area of Trapezoids",
+       "skills": [
+        "m.6.area-polygons"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Area of Regular Polygons",
+       "skills": [
+        "m.6.area-polygons"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Polygons on the Coordinate Plane",
+       "skills": [
+        "m.6.area-polygons"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.area-polygons"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Volume and Surface Area",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Volume of Rectangular Prisms",
+       "skills": [
+        "m.6.surface-area-nets"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Surface Area of Rectangular Prisms",
+       "skills": [
+        "m.6.surface-area-nets"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Surface Area of Triangular Prisms",
+       "skills": [
+        "m.6.surface-area-nets"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Surface Area of Pyramids",
+       "skills": [
+        "m.6.surface-area-nets"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.surface-area-nets"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Statistical Measures and Displays",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-6th-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Statistical Questions",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Dot Plots and Histograms",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Measures of Center",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Interquartile Range and Box Plots",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Mean Absolute Deviation",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Outliers",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "10-7",
+       "title": "Interpret Graphical Displays",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.center-spread"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "7",
+   "units": [
+    {
+     "n": "1",
+     "title": "Proportional Relationships",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Unit Rates Involving Ratios of Fractions",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Understand Proportional Relationships",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Tables of Proportional Relationships",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Graphs of Proportional Relationships",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Equations of Proportional Relationships",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "1-6",
+       "title": "Solve Problems Involving Proportional Relationships",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.proportional-relationships"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Solve Percent Problems",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Percent of Change",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Tax",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Tips and Markups",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Discounts",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Interest",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "2-6",
+       "title": "Commission and Fees",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "2-7",
+       "title": "Percent error",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.percent-applications"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Operations with Integers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Add Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Subtract Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Multiply Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Divide Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Apply Integer Operations",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.rational-operations"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Operations with Rational Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Add Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Subtract Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Multiply Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Divide Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Apply Rational Number Operations",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.rational-operations"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Simplify Algebraic Expressions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Simplify Algebraic Expressions"
+      },
+      {
+       "n": "5-2",
+       "title": "Add Linear Expressions"
+      },
+      {
+       "n": "5-3",
+       "title": "Subtract Linear Expressions"
+      },
+      {
+       "n": "5-4",
+       "title": "Factor Linear Expressions"
+      },
+      {
+       "n": "5-5",
+       "title": "Combine Operations with Linear Expressions"
+      }
+     ],
+     "skills": [],
+     "notes": "Equivalent expressions (7.EE.1-2) has no Grade 7 skill; nearest m.6.expressions-variables."
+    },
+    {
+     "n": "6",
+     "title": "Write and Solve Equations",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Write and Solve One-Step Equations",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Solve Two-Step Equations: px + q = r",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Write and Solve Two-Step Equations: px + q = r",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Solve Two-Step Equations: p(x + q) = r",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Write and Solve Two-Step Equations: p(x + q) = r",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.two-step-equations"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Write and Solve Inequalities",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Solve One-Step Addition and Subtraction Inequalities",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Write and Solve One-Step Addition and Subtraction Inequalities",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Solve One-Step Multiplication and Division Inequalities with Positive Coefficients",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Solve One-Step Multiplication and Division Inequalities with Negative Coefficients",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Write and Solve One-Step Multiplication and Division Inequalities",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Write and Solve Two-Step Inequalities",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.two-step-equations"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Geometric Figures",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Vertical and Adjacent Angles"
+      },
+      {
+       "n": "8-2",
+       "title": "Complementary and Supplementary Angles"
+      },
+      {
+       "n": "8-3",
+       "title": "Triangles"
+      },
+      {
+       "n": "8-4",
+       "title": "Scale Drawings"
+      },
+      {
+       "n": "8-5",
+       "title": "Three-Dimensional Figures"
+      }
+     ],
+     "skills": [
+      "m.7.scale-drawings",
+      "m.7.angle-relationships"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Measure Figures",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Circumference of Circles"
+      },
+      {
+       "n": "9-2",
+       "title": "Area of Circles"
+      },
+      {
+       "n": "9-3",
+       "title": "Area of Composite Figures"
+      },
+      {
+       "n": "9-4",
+       "title": "Volume"
+      },
+      {
+       "n": "9-5",
+       "title": "Surface Area"
+      },
+      {
+       "n": "9-6",
+       "title": "Volume and Surface Area of Composite Figures"
+      }
+     ],
+     "skills": [
+      "m.7.circles",
+      "m.7.prisms"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Probability",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Find Likelihoods",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Relative Frequency of Simple Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Theoretical Probability of Simple Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Compare Probabilities of Simple Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Probability of Compound Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Simulate Chance Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.probability"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Sampling and Statistics",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-7th-grade",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Biased and Unbiased Samples",
+       "skills": [
+        "m.7.sampling"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Make Predictions",
+       "skills": [
+        "m.7.sampling"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Generate Multiple Samples",
+       "skills": [
+        "m.7.sampling"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Compare Two Populations",
+       "skills": [
+        "m.7.sampling"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Assess Visual Overlap",
+       "skills": [
+        "m.7.sampling"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.sampling"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "8",
+   "units": [
+    {
+     "n": "1",
+     "title": "Exponents and Scientific Notation",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Powers and Exponents"
+      },
+      {
+       "n": "1-2",
+       "title": "Multiply and Divide Monomials"
+      },
+      {
+       "n": "1-3",
+       "title": "Powers of Monomials"
+      },
+      {
+       "n": "1-4",
+       "title": "Zero and Negative Exponents"
+      },
+      {
+       "n": "1-5",
+       "title": "Scientific Notation"
+      },
+      {
+       "n": "1-6",
+       "title": "Compute with Scientific Notation"
+      }
+     ],
+     "skills": [
+      "m.8.exponent-rules",
+      "m.8.scientific-notation"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Real Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Terminating and Repeating Decimals",
+       "skills": [
+        "m.8.roots-irrationals"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Roots",
+       "skills": [
+        "m.8.roots-irrationals"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Real Numbers",
+       "skills": [
+        "m.8.roots-irrationals"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Estimate Irrational Numbers",
+       "skills": [
+        "m.8.roots-irrationals"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Compare and Order Real Numbers",
+       "skills": [
+        "m.8.roots-irrationals"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.roots-irrationals"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Solve Equations with Variables on Each Side",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Solve Equations with Variables on Each Side",
+       "skills": [
+        "m.8.multi-step-equations"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Write and Solve Equations with Variables on Each Side",
+       "skills": [
+        "m.8.multi-step-equations"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Solve Multi-Step Equations",
+       "skills": [
+        "m.8.multi-step-equations"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Write and Solve Multi-Step Equations",
+       "skills": [
+        "m.8.multi-step-equations"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Determine the Number of Solutions",
+       "skills": [
+        "m.8.multi-step-equations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.multi-step-equations"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Linear Relationships and Slope",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Proportional Relationships and Slope"
+      },
+      {
+       "n": "4-2",
+       "title": "Slope of a Line"
+      },
+      {
+       "n": "4-3",
+       "title": "Similar Triangles and Slope"
+      },
+      {
+       "n": "4-4",
+       "title": "Direct Variation"
+      },
+      {
+       "n": "4-5",
+       "title": "Slope-Intercept Form"
+      },
+      {
+       "n": "4-6",
+       "title": "Graph Linear Equations"
+      }
+     ],
+     "skills": [
+      "m.8.slope",
+      "m.8.linear-functions"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Functions",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Identify Functions"
+      },
+      {
+       "n": "5-2",
+       "title": "Function Tables"
+      },
+      {
+       "n": "5-3",
+       "title": "Construct Linear Functions"
+      },
+      {
+       "n": "5-4",
+       "title": "Compare Functions"
+      },
+      {
+       "n": "5-5",
+       "title": "Nonlinear Functions"
+      },
+      {
+       "n": "5-6",
+       "title": "Qualitative Graphs"
+      }
+     ],
+     "skills": [
+      "m.8.functions-intro",
+      "m.8.linear-functions"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Systems of Linear Equations",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Solve Systems of Equations by Graphing",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Determine Number of Solutions",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Solve Systems of Equations by Substitution",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Solve Systems of Equations by Elimination",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Write and Solve Systems of Equations",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.systems-linear"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Triangles and the Pythagorean Theorem",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Angle Relationships and Parallel Lines",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Angle Relationships and Triangles",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "The Pythagorean Theorem",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Converse of the Pythagorean Theorem",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Distance on the Coordinate Plane",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.pythagorean"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Transformations",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Translations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Reflections",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Rotations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Dilations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.transformations"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Congruence and Similarity",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Congruence and Transformations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Congruence and Corresponding Parts",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Similarity and Transformations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Similarity and Corresponding Parts",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Indirect Measurement",
+       "skills": [
+        "m.8.transformations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.transformations"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Volume",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Volume of Cylinders",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Volume of Cones",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Volume of Spheres",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Find Missing Dimensions",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Volume of Composite Solids",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.volume-curved"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Scatter Plots and Two-Way Tables",
+     "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-8th-grade",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Scatter Plots",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Draw Lines of Fit",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Equations for Lines of Fit",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Two-Way Tables",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Associations in Two-Way Tables",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.scatter-plots"
+     ]
+    }
+   ]
+  }
+ ]
+}
