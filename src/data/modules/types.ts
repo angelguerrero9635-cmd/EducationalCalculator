@@ -360,7 +360,13 @@ export type Representation =
   /** The same number of dots in a line, rows, a circle or scattered (a toggle picks). */
   | { kind: 'dotSet'; count: string }
   /** A tally chart: one row of tally marks per category. */
-  | { kind: 'tally'; rows: string[]; total?: string }
+  | {
+      kind: 'tally';
+      rows: string[];
+      total?: string;
+      /** A card icon per row, beside its name (apple, banana, grapes; sun, rain cloud). */
+      icons?: CardIcon[];
+    }
   /** A row of one kind of coin, picked with buttons (`value` in cents), `count` of them. */
   | { kind: 'coinRow'; value: string; count: string; total: string }
   /** A solid shape picked from sphere, cone, cylinder and cube, by its flat and curved faces. */
@@ -444,7 +450,8 @@ export type Representation =
   /** Bar chart. Bars marked `editable` can be dragged; the range grows to fit the values. */
   | {
       kind: 'bars';
-      bars: { var: string; editable?: boolean }[];
+      /** `icon`: a small card icon under the bar's name (science pages: a sun, a rain cloud). */
+      bars: { var: string; editable?: boolean; icon?: CardIcon }[];
       /** Smallest range shown (grows to fit larger values). */
       min: number;
       max: number;
@@ -998,7 +1005,15 @@ export type Representation =
       count?: string;
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
-  | { kind: 'pieChart'; parts: string[]; total?: string }
+  | {
+      kind: 'pieChart';
+      parts: string[];
+      total?: string;
+      /** Palette color names, one per part, when a part's color means something (ice, sea). */
+      colors?: string[];
+      /** Parts that make a named value (fresh = frozen + liquid): pulled out and bracketed. */
+      group?: { id: string; parts: string[] };
+    }
   /**
    * Fraction × fraction as an area model: a unit square cut into `first.den` columns and
    * `second.den` rows, `first.num` columns and `second.num` rows shaded; the overlap is the

@@ -213,7 +213,7 @@ function representationVars(r: Representation): string[] {
         ...(r.count ? [r.count] : []),
       ];
     case 'pieChart':
-      return [...r.parts, ...(r.total ? [r.total] : [])];
+      return [...r.parts, ...(r.total ? [r.total] : []), ...(r.group ? [r.group.id] : [])];
     case 'fractionArea':
       return [
         r.first.num,

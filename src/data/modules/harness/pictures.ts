@@ -878,6 +878,17 @@ export function repIssues(
         const sum = parts.reduce((a, b) => a! + b!, 0)!;
         if (sum > whole + 1e-6) out.push(`pie parts add to ${sum}, more than the whole ${whole}`);
       }
+      // A group's name and amount are drawn beside its wedges: they must add to it.
+      if (rep.group) {
+        const g = val(rep.group.id);
+        const gs = rep.group.parts.map(val);
+        if (rep.group.parts.some((p) => !rep.parts.includes(p)))
+          out.push(`pie group has a part that isn't in the pie`);
+        if (g !== undefined && gs.every((x) => x !== undefined)) {
+          const s = gs.reduce((a, b) => a! + b!, 0)!;
+          if (Math.abs(s - g) > 1e-6) out.push(`pie group parts add to ${s}, not ${g}`);
+        }
+      }
       break;
     }
     case 'fractionArea': {

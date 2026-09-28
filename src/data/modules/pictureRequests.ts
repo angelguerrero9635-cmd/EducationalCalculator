@@ -1964,10 +1964,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The Grade 2 clock face on the Grade 1 explore page',
     kind: 'clock',
     pages: ['m.1.time-half-hour'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-clock-explore'],
     notes:
-      'Urgency: high. Weak now: Flat thin circle, no minute ticks, no rim, plain thin hands; the Grade 1 page is a weaker copy of the Grade 2 clock. Source is ExploreLayout.tsx `ClockFace`, not figures.tsx. Redo: Reuse the reps Clock face (Metal rim, cream TopLight face, 60 minute ticks with heavier 5-minute ticks, tapered hour hand shorter and wider than the minute hand, Ball centre cap, FloorShadow); `time` exact. Optionally hour hand chartInk and minute hand chartHighlight to match "short hand / long hand"; digital time under it at chart.emphasis.',
+      'Urgency: high. Weak now: Flat thin circle, no minute ticks, no rim, plain thin hands; the Grade 1 page is a weaker copy of the Grade 2 clock. Source is ExploreLayout.tsx `ClockFace`, not figures.tsx. Redo: Reuse the reps Clock face (Metal rim, cream TopLight face, 60 minute ticks with heavier 5-minute ticks, tapered hour hand shorter and wider than the minute hand, Ball centre cap, FloorShadow); `time` exact. Optionally hour hand chartInk and minute hand chartHighlight to match "short hand / long hand"; digital time under it at chart.emphasis. Drawn (round 4, group F): the explore ClockFace now draws the shared reps dial (reps/ClockDial.tsx, also used by the Clock picture): metal rim with an inner lip and wall shadow, cream face with TopLight, 60 minute ticks with heavier five-minute ticks, 700-weight numerals up to 16 px, a short wide tapered hour hand in chartInk and a long thin minute hand in chartHighlight, a metal centre cap and a faint glass sheen; `time` exact. No digital time added: the scene lines already say "It is 3:00." No page change.',
   },
   {
     id: 'Q10',
@@ -2016,10 +2016,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Water pie chart with meaningful colours, leader labels and a fresh-water callout',
     kind: 'pieChart',
     pages: ['s.5.earth-spheres~water-share'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-water-pie', 'g.r4f-water-pie-edge', 'g.pie-chart'],
+    uses: "group: { id: 'f'",
     notes:
-      'Urgency: high. Weak now: Colours carry the wrong meaning (salt water lavender, frozen fresh water tan like sand); the 2 % and 1 % slices are unlabelled hairlines; tiny label at a slice edge; no percentages; key below as separate text. Redo: Flat. Salt water ocean blue, frozen ice white-cyan with an ink edge, liquid fresh water blue-green, each named in the legend. Every slice labelled on a leader to an outside label ("Frozen fresh water · 20 L · 2%"). An exploded callout (small bar or zoomed wedge) breaking the 3 % fresh water into frozen and liquid. Pie ~75 % width, labels at chart.value.',
+      "Urgency: high. Weak now: Colours carry the wrong meaning (salt water lavender, frozen fresh water tan like sand); the 2 % and 1 % slices are unlabelled hairlines; tiny label at a slice edge; no percentages; key below as separate text. Redo: Flat. Salt water ocean blue, frozen ice white-cyan with an ink edge, liquid fresh water blue-green, each named in the legend. Every slice labelled on a leader to an outside label (\"Frozen fresh water · 20 L · 2%\"). An exploded callout (small bar or zoomed wedge) breaking the 3 % fresh water into frozen and liquid. Pie ~75 % width, labels at chart.value. Drawn (round 4, group F): flat pie, 54 % of the width with a label column beside it (a 75 % pie leaves no room at 390 px for outside labels that say name, amount and percent). The biggest part (salt water) is named inside on a card plate: name, liters, percent. Every other wedge has a leader from its rim to a swatch, its name and \"20 liters · 2%\" at 12–13 px. New optional fields: `colors` (palette names, one per part) and `group` ({ id, parts }): the group (fresh water) turns to face the labels, is pulled out of the pie, and its parts are bracketed under \"Fresh water · 30 liters · 3%\" (harness: group parts add to the group value). New tokens ice (white-cyan, ink edge) and freshWater (blue-green); salt water uses waterDeep. Without `colors` the parts take distinct block colors, each named by its label. Page change: s.5.earth-spheres~water-share passes representation: { kind: 'pieChart', parts: ['s', 'i', 'l'], total: 'w', colors: ['waterDeep', 'ice', 'freshWater'], group: { id: 'f', parts: ['i', 'l'] } } (its pictureLabels ['f'] can then go: the picture shows fresh water).",
   },
   {
     id: 'Q14',
@@ -2172,10 +2173,16 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.3.weather-climate',
       's.4.weathering',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4f-bars',
+      'g.r4f-bars-edge',
+      'g.r4f-bars-icons',
+      'g.r4f-bars-rain',
+      'g.r4f-bars-fixed',
+    ],
     notes:
-      'Urgency: medium. Weak now: Flat bars with heavy black outlines; value labels crowd the handles on the bar tops; small grey category labels and tiny axis numbers; right third wasted on one-row charts. Redo: Flat but crisp: 1 px darker-tone outline, gridlines at 0.5 opacity, a lighter 4 px grab lip on each bar top. Handle as a pill on the bar top with the value inside. chart.label for categories and axis numbers; widen bars to fill the width. Science pages: a small category icon under each label.',
+      "Urgency: medium. Weak now: Flat bars with heavy black outlines; value labels crowd the handles on the bar tops; small grey category labels and tiny axis numbers; right third wasted on one-row charts. Redo: Flat but crisp: 1 px darker-tone outline, gridlines at 0.5 opacity, a lighter 4 px grab lip on each bar top. Handle as a pill on the bar top with the value inside. chart.label for categories and axis numbers; widen bars to fill the width. Science pages: a small category icon under each label. Drawn (round 4, group F): flat bars with a 1 px edge in the bar's own darker tone (fill at 0.78), a lighter 4 px lip on each bar you can drag, grid lines at full opacity on numbered steps and 0.5 between; bars up to 68 % of their slot (100 px max) so two-bar charts fill the width. The handle is now a pill on the bar top with the value inside at 14 px (a grip, not a number, on readScale pages, where the height is the question); the 44 px touch area is unchanged. Category names at 12 px in ink, wrapped under their bar; scale numbers at 12 px; names start below a pill resting at 0. Bars you can't drag (s.4.weathering) are solid chartFill with a fine dashed edge and the value above. New optional per-bar field icon (a card icon under the name). No page change needed; optional icons for the science pages: s.1.sky-patterns sun / snow cloud; s.1.sound-vibration~drum drum / drum; s.2.habitats pond / sand dune; s.2.erosion-landforms~wall waves at cliff / rock wall at shore; s.2.pollination-dispersal~sock-walk sock / sock; s.3.magnets~chain paper clip / paper clip; s.3.adaptation-fossils~survive bird beak / bird beak; s.3.weather-climate rain cloud ×4; s.4.weathering gray rock / granite crumbling; e.g. bars: [{ var: 's', editable: true, icon: 'sun' }, …].",
   },
   {
     id: 'Q28',
@@ -2207,10 +2214,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real object over a wooden ruler and a yardstick, feet in two tones',
     kind: 'unitTiles',
     pages: ['m.2.standard-length~two-units', 'm.2.standard-length~meters'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-feet', 'g.r4f-feet-edge', 'g.r4f-meters', 'g.r4f-meters-edge'],
     notes:
-      'Urgency: medium. Weak now: "Object" is a flat bar with a handle; inch tiles ~3 px slivers; feet thin outlined pills; tiny row labels; nothing looks like a ruler or yardstick. Redo: Object as a real thing (wooden board or ribbon, texture, TopLight). A wooden ruler and yardstick beneath it with printed inch ticks, numbers every 1 or 6 in and foot joints. Alternate cream and tan per foot; group inch ticks per foot with "12 in" under each. Row labels above each strip in chart.label.',
+      'Urgency: medium. Weak now: "Object" is a flat bar with a handle; inch tiles ~3 px slivers; feet thin outlined pills; tiny row labels; nothing looks like a ruler or yardstick. Redo: Object as a real thing (wooden board or ribbon, texture, TopLight). A wooden ruler and yardstick beneath it with printed inch ticks, numbers every 1 or 6 in and foot joints. Alternate cream and tan per foot; group inch ticks per foot with "12 in" under each. Row labels above each strip in chart.label. Drawn (round 4, group F): the object is a satin ribbon (Sheen, notched end, BoxShadow) with the drag handle on its end; dashed guides drop from both its ends through both measures. Under it, one long wooden stick (reps/wood.tsx WoodStick: wood, grain, TopLight) marked in the small unit, each big unit in alternate wood and cream tones, ticks every inch (every 10 cm on the meter page), numbers every 3 or 6 in (every 100 cm) printed in ink on the wood, and "12 inches" / "100 centimeters" under each big unit. Then the big units as separate foot rulers or meter sticks laid end to end, each with faint inch or centimeter ticks and a paper tag "1 foot" / "1 meter". Row names with their values above each strip at 12 px bold. The drawing fits the object (at least one big unit wide), so 1 foot fills the width. No page change.',
   },
   {
     id: 'Q30',
@@ -2315,10 +2322,17 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.2.plant-growth-investigation~water',
       's.2.plant-growth-investigation~week',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4f-ruler',
+      'g.r4f-ruler-edge',
+      'g.r4f-broken',
+      'g.r4f-broken-edge',
+      'g.r4f-quarter',
+      'g.r4f-ruler-long',
+    ],
     notes:
-      'Urgency: medium. Weak now: Wooden ruler has material but is thin (~20 px) with ~8 px numbers and a detached cm label; ribbons float above with a gap and nothing shows where their ends meet the marks; "Shorter ribbon" runs into its handle; "Longer ribbon" is 9 px white on purple; the broken-ruler page shows a full ruler from 0. Redo: Ruler ~36 px tall with wood grain (Wood), long cm ticks and half-cm ticks, numbers at chart.value, "cm" at its left end. Ribbons flush on the ruler\'s top edge with Sheen; dashed guides from each ribbon end to its mark; the difference bracketed "4 cm longer" in chartSecond. Ribbon labels outside, left-aligned above each. Broken ruler: a jagged left end starting at the first shown mark, length counted as highlighted spaces 1…7 under it. 44 px handles clear of labels.',
+      'Urgency: medium. Weak now: Wooden ruler has material but is thin (~20 px) with ~8 px numbers and a detached cm label; ribbons float above with a gap and nothing shows where their ends meet the marks; "Shorter ribbon" runs into its handle; "Longer ribbon" is 9 px white on purple; the broken-ruler page shows a full ruler from 0. Redo: Ruler ~36 px tall with wood grain (Wood), long cm ticks and half-cm ticks, numbers at chart.value, "cm" at its left end. Ribbons flush on the ruler\'s top edge with Sheen; dashed guides from each ribbon end to its mark; the difference bracketed "4 cm longer" in chartSecond. Ribbon labels outside, left-aligned above each. Broken ruler: a jagged left end starting at the first shown mark, length counted as highlighted spaces 1…7 under it. 44 px handles clear of labels. Drawn (round 4, group F): a 36 px wooden ruler (reps/wood.tsx WoodStick: wood, grain, TopLight, box shadow) with whole-unit ticks, half-cm or half-inch ticks when there is room (half and quarter marks on the quarter-inch page), numbers at 13 px printed in ink every 1, 2, 5 or 10 (at least 24 px apart) and the unit ("cm", "cubes") printed at its left end. Ribbons are satin in blue and red with Sheen; the last lies flush on the ruler\'s top edge, the others above it; each has its name and length ("Longer ribbon: 12 cm") left-aligned above it at 12 px bold. Dashed guides drop from every ribbon end to its mark. With two ribbons and a difference, a chartSecond bracket runs on the shorter ribbon\'s row from its end to the longer end, with the difference ("4 cm") in a chartSecond pill, clear of the handle (past the long end when the gap is too small). Broken ruler: the ruler breaks off (jagged end) one mark before the start, and the spaces the ribbon covers are shaded under it and counted 1 … 7. 44 px handles on the ribbon ends, clear of the labels. No page change.',
   },
   {
     id: 'Q37',
@@ -2401,10 +2415,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flat waterfall chart: green increases, red decreases, connectors',
     kind: 'waterfall',
     pages: ['he.geography.human-geography#0'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-waterfall', 'g.r4f-waterfall-edge'],
     notes:
-      'Urgency: medium. Weak now: Review page (he.geography.human-geography#0) shows "Skill not found". Source shades an abstract chart with LitRect and TopLight, against the art direction; bars capped at 52 px; two-line small labels. Redo: Flat fills: increases success green, decreases danger red, total ink or primary. 1 px dashed connectors from each bar end to the next start. Each change\'s value ("+120", "−45" with a true minus) 12–13 px at the bar end. Zero baseline 1.5 px ink. Category names 12 px, wrapped or angled, inside the canvas. Visible DragHandle on editable bar ends. The page is a college topic: open it at /course/he.geography.human-geography/topic/0.',
+      'Urgency: medium. Weak now: Review page (he.geography.human-geography#0) shows "Skill not found". Source shades an abstract chart with LitRect and TopLight, against the art direction; bars capped at 52 px; two-line small labels. Redo: Flat fills: increases success green, decreases danger red, total ink or primary. 1 px dashed connectors from each bar end to the next start. Each change\'s value ("+120", "−45" with a true minus) 12–13 px at the bar end. Zero baseline 1.5 px ink. Category names 12 px, wrapped or angled, inside the canvas. Visible DragHandle on editable bar ends. The page is a college topic: open it at /course/he.geography.human-geography/topic/0. Drawn (round 4, group F): flat: increases blockGreen, decreases blockRed, the total chartHighlight, each with a 1 px edge in its own color; a key under the chart says Increase / Decrease / Total. 1 px dashed connectors from each bar\'s end to the next. Each change\'s value ("+6,000", "−4,000", true minus) at 13 px bold in a row over its bar, so it never meets a handle; the total\'s value there too. Zero baseline 1.5 px ink. Symbol (bold) and name at 12 px under each bar, wrapped to two lines; the old symbol key under the chart is gone (the names are on the chart). The bars fill the height (no scale to read). DragHandles on editable bar ends as before. No page change.',
   },
   {
     id: 'Q45',
@@ -2483,20 +2497,21 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.K.weather-patterns',
       's.K.living-things-change-environment~litter',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-tally', 'g.r4f-tally-edge', 'g.r4f-tally-weather', 'g.r4f-tally-litter'],
+    uses: '"icons":[',
     notes:
-      "Urgency: low. Weak now: Clean table, but hairline tally marks; the fifth slash is short and doesn't cross all four; small names with a big gap before the marks; no link to the counted objects; heavy black border looks like an old form. Redo: Flat table: softer border (chartGrid, radius md), strokeLight row lines, names at font.body with a small icon per category (reuse the card icons: apple, banana, grapes, sun, cloud). Marks in chart.stroke with a slight hand-drawn tilt; the fifth clearly crosses all four; groups 12 px apart. Count right-aligned in a pill. Keep the Total and Most lines.",
+      "Urgency: low. Weak now: Clean table, but hairline tally marks; the fifth slash is short and doesn't cross all four; small names with a big gap before the marks; no link to the counted objects; heavy black border looks like an old form. Redo: Flat table: softer border (chartGrid, radius md), strokeLight row lines, names at font.body with a small icon per category (reuse the card icons: apple, banana, grapes, sun, cloud). Marks in chart.stroke with a slight hand-drawn tilt; the fifth clearly crosses all four; groups 12 px apart. Count right-aligned in a pill. Keep the Total and Most lines. Drawn (round 4, group F): a soft flat table (chartGrid 1.5 px border, radius md, card fill, 1.5 px chartGrid row lines), names at 16 px semibold with an optional card icon beside each, tally marks at chart.stroke with round caps and a slight hand-drawn tilt, the fifth a slash that crosses all four from low left to high right, bundles 12 px apart (20 marks fit at 390 px), and the count right-aligned in a chartSurface pill. Total and Most lines kept. New optional field icons (one card icon per row). Page change (optional but asked for): m.1.data-3-categories~tally icons: ['apple', 'banana', 'grapes']; s.K.weather-patterns icons: ['sun', 'rain cloud']; s.K.living-things-change-environment~litter icons: ['soda can', 'wrapper falling on grass'] (no plain sheet-of-paper icon exists yet).",
   },
   {
     id: 'Q50',
     what: 'Clock hands that differ clearly, bigger numerals, minute labels',
     kind: 'clock',
     pages: ['m.2.time-5-min', 'm.3.elapsed-time'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-clock', 'g.r4f-clock-edge'],
     notes:
-      'Urgency: low. Weak now: Near standard, but numerals ~13 px are small for Grade 2; hour and minute hands close in length and weight (4:25 hard to read); no minute numbers for counting by fives; flat face with no glass. Redo: Hour hand shorter and wider (6 px, ink), minute hand longer and thinner (3.5 px, primary); drag handle stays on the minute tip. Numerals 16 px semibold. Muted minute labels (5 … 55) outside the bezel at 10 px, or only on the five-minute page via a spec flag. Low-strength Glass sheen over the face; Metal centre cap. Keep the a.m./p.m. toggle.',
+      'Urgency: low. Weak now: Near standard, but numerals ~13 px are small for Grade 2; hour and minute hands close in length and weight (4:25 hard to read); no minute numbers for counting by fives; flat face with no glass. Redo: Hour hand shorter and wider (6 px, ink), minute hand longer and thinner (3.5 px, primary); drag handle stays on the minute tip. Numerals 16 px semibold. Muted minute labels (5 … 55) outside the bezel at 10 px, or only on the five-minute page via a spec flag. Low-strength Glass sheen over the face; Metal centre cap. Keep the a.m./p.m. toggle. Drawn (round 4, group F): shared dial (reps/ClockDial.tsx). Hour hand short and wide (half the radius, 11 px, chartInk); minute hand long and thin (to the tick ring, 6 px, chartHighlight) with the drag handle on its tip, now outside the numerals so it never covers one. Numerals up to 16 px bold. Muted minute labels 5 … 55 outside the rim at 12 px (not 10: the quality floor), on every Clock picture, since both pages count by fives. Faint glass sheen, metal centre cap; a.m./p.m. toggle kept. No page change.',
   },
   {
     id: 'Q51',

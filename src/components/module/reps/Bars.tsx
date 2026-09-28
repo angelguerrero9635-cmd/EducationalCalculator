@@ -1,17 +1,43 @@
 import { useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/Text';
-import Svg, { Line, Rect } from 'react-native-svg';
+import Svg, { G, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, font, space, usePalette } from '@/theme';
 
+import { Icon as CardIconArt } from '../layouts/CardFigure';
 import type { Calculator } from '../useCalculator';
 import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'bars' }>;
 
+/** Label sizes: category names and scale numbers, their line height, and a category icon. */
+const LABEL = chart.label;
+const LINE = 15;
+const ICON = 30;
+/** The value pill on a draggable bar's top. */
+const PILL_H = 26;
+
+/** Splits a name into at most three lines about `width` px wide at the label size. */
+function wrap(text: string, width: number) {
+  const per = Math.max(5, Math.floor(width / (LABEL * 0.58)));
+  const lines: string[] = [];
+  for (const word of text.split(' ')) {
+    const last = lines[lines.length - 1];
+    if (last !== undefined && `${last} ${word}`.length <= per)
+      lines[lines.length - 1] = `${last} ${word}`;
+    else lines.push(word);
+  }
+  return lines.length > 3 ? [...lines.slice(0, 2), lines.slice(2).join(' ')] : lines;
+}
+
+/**
+ * A flat bar chart: bars with a 1 px edge in a darker tone, a light grip lip on each bar you can
+ * drag, and the value in a pill on the bar's top (the pill is the handle). Category names (and a
+ * small card icon each, when the page gives one) sit under the bars; the scale is on the left.
+ */
 export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
@@ -32,14 +58,28 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
     min: lowest < spec.min ? -niceCeil(-lowest) : spec.min,
     max: highest > spec.max ? niceCeil(highest) : spec.max,
   });
+  const icons = spec.bars.some((b) => b.icon);
+  // Room on the left for the numbered scale, when there is one.
+  const axis = step ? 34 : 0;
+  const names = (w: number) => {
+    const slot = (w - 12 - axis) / spec.bars.length;
+    return spec.bars.map((b) => {
+      const v = rep.variable(b.var);
+      const lines = wrap(v.name, slot - 6);
+      return rep.words ? lines : spec.bars.length <= 5 ? [v.symbol, ...lines] : [v.symbol];
+    });
+  };
+  // Names start below a pill resting at 0.
+  const drop = editable.length ? 30 : 20;
+  const bottomOf = (w: number) =>
+    drop - 10 + Math.max(...names(w).map((l) => l.length)) * LINE + (icons ? ICON + 6 : 0);
 
   return (
     <>
-      <Canvas aspect={0.65}>
+      <Canvas aspect={(w) => (Math.min(250, w * 0.56) + 24 + bottomOf(w)) / w}>
         {({ w, h }) => {
-          const top = 30;
-          // Room under the axis for the names, clear of a handle resting at 0.
-          const bottom = 44;
+          const top = 24;
+          const bottom = bottomOf(w);
           const plotH = h - top - bottom;
           // A line every `scale` step; numbers every 1, 2, 5 or 10 steps, whichever gives at
           // most 10 numbers. The top is rounded up to the next number, so the tallest bar (50
@@ -56,11 +96,9 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
             : range.value.max;
           const scale = plotH / (max - min);
           const sy = (v: number) => top + (max - Math.min(max, Math.max(min, v))) * scale;
-          // Room on the left for the numbered scale, when there is one.
-          const axis = step ? 30 : 0;
-          const slot = (w - 16 - axis) / spec.bars.length;
-          const barW = Math.min(56, slot * 0.6);
-          const cx = (i: number) => 8 + axis + slot * (i + 0.5);
+          const slot = (w - 12 - axis) / spec.bars.length;
+          const barW = Math.min(100, slot * 0.68);
+          const cx = (i: number) => 6 + axis + slot * (i + 0.5);
           const lines =
             step && (max - min) / step <= 60
               ? Array.from({ length: Math.round((max - min) / step) + 1 }, (_, i) => min + i * step)
@@ -68,6 +106,15 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const marks = every
             ? Array.from({ length: Math.round((max - min) / every) + 1 }, (_, i) => min + i * every)
             : [];
+          const labels = names(w);
+          // The number a bar shows: none when the student reads the scale (it's the question).
+          const valueText = (b: Spec['bars'][number]) =>
+            !rep.known(b.var)
+              ? '?'
+              : spec.readScale
+                ? ''
+                : formatNumber(rep.shown(b.var), rep.variable(b.var));
+          const pillW = (text: string) => Math.max(40, text.length * chart.emphasis * 0.62 + 20);
           return (
             <>
               <Svg width={w} height={h}>
@@ -79,7 +126,8 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     x2={w - 4}
                     y2={sy(m)}
                     stroke={c.chartGrid}
-                    strokeWidth={marks.includes(m) ? chart.strokeLight : 0.75}
+                    strokeWidth={1}
+                    strokeOpacity={marks.includes(m) ? 1 : 0.5}
                   />
                 ))}
                 {marks.map((m) => (
@@ -87,13 +135,48 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     key={`s${m}`}
                     x={axis - 6}
                     y={sy(m) + 4}
-                    fontSize={chart.small}
+                    fontSize={LABEL}
                     fill={c.chartMuted}
                     textAnchor="end"
                   >
                     {formatNumber(m)}
                   </ChartText>
                 ))}
+                {spec.bars.map((b, i) => {
+                  const v = rep.shown(b.var);
+                  const y0 = sy(0);
+                  const y1 = sy(v);
+                  const known = rep.known(b.var);
+                  const x = cx(i) - barW / 2;
+                  const bh = Math.max(1, Math.abs(y1 - y0));
+                  return (
+                    <G key={b.var} opacity={known ? 1 : 0.35}>
+                      <Rect
+                        x={x}
+                        y={Math.min(y0, y1)}
+                        width={barW}
+                        height={bh}
+                        rx={2}
+                        fill={b.editable ? c.chartHighlight : c.chartFill}
+                        fillOpacity={b.editable ? 0.78 : 1}
+                        stroke={b.editable ? c.chartHighlight : c.chartMuted}
+                        strokeWidth={1}
+                        strokeDasharray={b.editable ? undefined : chart.dashFine}
+                      />
+                      {/* A lighter lip on the top of a bar you can drag. */}
+                      {b.editable && v > 0 && bh > 6 ? (
+                        <Rect
+                          x={x + 1}
+                          y={y1 + 0.5}
+                          width={barW - 2}
+                          height={4}
+                          fill={c.shine}
+                          fillOpacity={0.4}
+                        />
+                      ) : null}
+                    </G>
+                  );
+                })}
                 <Line
                   // Starts at the scale so the 0 label isn't struck through.
                   x1={axis || 4}
@@ -104,67 +187,46 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   strokeWidth={chart.strokeLight}
                 />
                 {spec.bars.map((b, i) => {
+                  // A bar you can't drag has its value above it (no pill).
                   const v = rep.shown(b.var);
-                  const y0 = sy(0);
-                  const y1 = sy(v);
-                  const known = rep.known(b.var);
+                  const t = valueText(b);
+                  if (b.editable || !t) return null;
                   return (
-                    <Rect
-                      key={b.var}
-                      x={cx(i) - barW / 2}
-                      y={Math.min(y0, y1)}
-                      width={barW}
-                      height={Math.max(1, Math.abs(y1 - y0))}
-                      fill={b.editable ? c.chartHighlight : c.chartSurface}
-                      fillOpacity={b.editable ? 0.85 : 1}
-                      stroke={c.chartInk}
-                      strokeDasharray={b.editable ? undefined : chart.dash}
-                      opacity={known ? 1 : 0.35}
-                    />
-                  );
-                })}
-                {spec.bars.map((b, i) => {
-                  const v = rep.shown(b.var);
-                  const variable = rep.variable(b.var);
-                  return [
-                    !(spec.readScale && rep.known(b.var)) && (
-                      <ChartText
-                        key={`v${b.var}`}
-                        x={cx(i)}
-                        // Editable bars have a drag handle on top; keep the value clear of it.
-                        y={v >= 0 ? sy(v) - (b.editable ? 20 : 6) : sy(v) + (b.editable ? 28 : 14)}
-                        fontSize={chart.label}
-                        fontWeight="600"
-                        fill={c.chartInk}
-                        textAnchor="middle"
-                      >
-                        {rep.known(b.var) ? formatNumber(v, variable) : '?'}
-                      </ChartText>
-                    ),
                     <ChartText
-                      key={`l${b.var}`}
+                      key={`v${b.var}`}
                       x={cx(i)}
-                      y={h - bottom + 24}
-                      fontSize={chart.small}
-                      fill={c.chartMuted}
+                      y={v >= 0 ? sy(v) - 7 : sy(v) + 17}
+                      fontSize={chart.value}
+                      fontWeight="700"
                       textAnchor="middle"
                     >
-                      {rep.words ? variable.name : variable.symbol}
-                    </ChartText>,
-                    !rep.words && spec.bars.length <= 5 && (
+                      {t}
+                    </ChartText>
+                  );
+                })}
+                {spec.bars.map((b, i) => (
+                  <G key={`l${b.var}`}>
+                    {labels[i]!.map((line, k) => (
                       <ChartText
-                        key={`n${b.var}`}
+                        key={k}
                         x={cx(i)}
-                        y={h - bottom + 38}
-                        fontSize={chart.small}
-                        fill={c.chartMuted}
+                        y={sy(Math.min(0, min)) + drop + k * LINE}
+                        fontSize={LABEL}
+                        fontWeight={k === 0 || rep.words ? '600' : '400'}
                         textAnchor="middle"
                       >
-                        {variable.name}
+                        {line}
                       </ChartText>
-                    ),
-                  ];
-                })}
+                    ))}
+                    {b.icon ? (
+                      <G
+                        transform={`translate(${cx(i) - ICON / 2} ${h - ICON - 4}) scale(${ICON / 48})`}
+                      >
+                        <CardIconArt icon={b.icon} ink={c.chartInk} shade={c.chartFill} />
+                      </G>
+                    ) : null}
+                  </G>
+                ))}
               </Svg>
               {spec.bars.map((b, i) =>
                 b.editable ? (
@@ -194,6 +256,43 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                 ) : null,
               )}
+              {/* The pill over each handle: the bar's value (or a grip when the scale is read). */}
+              {spec.bars.map((b, i) => {
+                if (!b.editable) return null;
+                const t = valueText(b);
+                const pw = pillW(t);
+                const y = sy(rep.shown(b.var));
+                return (
+                  <View
+                    key={`p${b.var}`}
+                    pointerEvents="none"
+                    style={[
+                      styles.pill,
+                      {
+                        left: cx(i) - pw / 2,
+                        top: y - PILL_H / 2,
+                        width: pw,
+                        borderColor: c.chartHighlight,
+                        backgroundColor: c.card,
+                        boxShadow: `0 1px 3px ${c.shadow}`,
+                      },
+                    ]}
+                  >
+                    {t ? (
+                      <Text style={[styles.pillText, { color: c.chartInk }]}>{t}</Text>
+                    ) : (
+                      <View style={styles.grip}>
+                        {[0, 1, 2].map((k) => (
+                          <View
+                            key={k}
+                            style={[styles.gripLine, { backgroundColor: c.chartHighlight }]}
+                          />
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                );
+              })}
             </>
           );
         }}
@@ -209,4 +308,15 @@ export function Bars({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
 const styles = StyleSheet.create({
   caption: { fontSize: font.body, textAlign: 'center', marginTop: space.sm, fontWeight: '600' },
+  pill: {
+    position: 'absolute',
+    height: PILL_H,
+    borderRadius: PILL_H / 2,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pillText: { fontSize: chart.emphasis, fontWeight: '700', fontVariant: ['tabular-nums'] },
+  grip: { gap: 3 },
+  gripLine: { width: 14, height: 2, borderRadius: 1 },
 });
