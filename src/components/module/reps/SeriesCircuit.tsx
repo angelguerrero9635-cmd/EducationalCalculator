@@ -1,35 +1,45 @@
 import { useRef } from 'react';
-import { StyleSheet } from 'react-native';
-import Svg, { Line, Path } from 'react-native-svg';
+import { View } from 'react-native';
+import Svg, { G, Line, Path } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
-import { chart, font, space, usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useRep } from './common';
+import { Chip } from './Circuit';
+import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
 
 type Spec = Extract<Representation, { kind: 'seriesCircuit' }>;
 /** Pixels of vertical drag per variable step. */
 const PX_PER_STEP = 8;
+/** Resistor symbols and battery plates: a little heavier than chart lines, lighter than wire. */
+const PART_STROKE = 2.5;
 
+/** A resistor's zigzag from (x, y) to (x + len, y): six peaks, 8 px high. */
 const zigzag = (x: number, y: number, len: number) => {
   const n = 6;
   const seg = len / n;
-  let d = `M ${x} ${y}`;
-  for (let i = 0; i < n; i++) d += ` L ${x + seg * (i + 0.5)} ${y + (i % 2 ? 8 : -8)}`;
-  return `${d} L ${x + len} ${y}`;
+  const lead = seg / 2;
+  let d = `M ${x} ${y} L ${x + lead} ${y}`;
+  const body = len - 2 * lead;
+  const step = body / n;
+  for (let i = 0; i < n; i++) d += ` L ${x + lead + step * (i + 0.5)} ${y + (i % 2 ? 8 : -8)}`;
+  return `${d} L ${x + len - lead} ${y} L ${x + len} ${y}`;
 };
 
 /**
- * A source driving current around one loop through resistors in series. Drag the source's
- * handle or a resistor up to increase it, down to decrease it.
+ * A college schematic in the style of the Grade 8 circuits (Circuit.tsx): a source (long plate
+ * +, short plate −) drives current round one loop of copper wire through resistors in series.
+ * Each resistor's resistance is on a chip above it and its voltage drop on a chip below; the
+ * current is an arrow beside the bottom wire, clockwise out of +. Drag the source's handle or a
+ * resistor up to increase it, down to decrease it.
  */
 export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef(0);
   const resistorIds = spec.resistors.map((r) => r.r);
+  const n = spec.resistors.length;
 
   const dragProps = (id: string, pin: string[]) => ({
     label: rep.variable(id).name,
@@ -47,119 +57,168 @@ export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) 
       );
     },
   });
+  const flows = rep.known(spec.current) && rep.val(spec.current) > 0;
 
   return (
-    <>
-      <Canvas aspect={0.62}>
+    <View>
+      <Canvas aspect={(w) => 210 / w}>
         {({ w, h }) => {
-          const left = 48;
-          const right = w - 24;
-          const topY = 56;
-          const botY = h - 40;
-          const midY = (topY + botY) / 2;
-          const n = spec.resistors.length;
-          const span = (right - left) / n;
-          const rLen = Math.min(70, span * 0.55);
-          const rx = (i: number) => left + span * (i + 0.5) - rLen / 2;
-          const stroke = { stroke: c.chartInk, strokeWidth: chart.stroke, fill: 'none' as const };
-          // Copper wires; the parts (battery plates, resistors) keep their ink symbols.
+          const left = 58;
+          const right = w - 26;
+          const topY = 46;
+          const botY = h - 18;
+          const midY = (topY + botY) / 2 + 4;
+          const span = (right - left - 24) / n;
+          const rLen = Math.min(96, span * 0.62);
+          const rx = (i: number) => left + 24 + span * (i + 0.5) - rLen / 2;
+          const part = {
+            stroke: c.chartInk,
+            strokeWidth: PART_STROKE,
+            strokeLinejoin: 'round' as const,
+            strokeLinecap: 'round' as const,
+            fill: 'none' as const,
+          };
+          // Copper wires, as in Circuit.tsx.
           const wire = {
             stroke: c.copper,
             strokeWidth: chart.strokeHeavy,
             strokeLinecap: 'round' as const,
+            strokeLinejoin: 'round' as const,
             fill: 'none' as const,
           };
-          const arrowX = (left + right) / 2;
+          // The top wire runs from the left corner through each resistor to the right corner.
+          const topWire = [
+            `M ${left} ${topY} H ${rx(0)}`,
+            ...spec.resistors.slice(1).map((_, i) => `M ${rx(i) + rLen} ${topY} H ${rx(i + 1)}`),
+            `M ${rx(n - 1) + rLen} ${topY} H ${right}`,
+          ].join(' ');
+          const chevron = (x: number, y: number, dir: 'up' | 'down') => (
+            <Path
+              key={`${x},${y}`}
+              d={
+                dir === 'down'
+                  ? `M ${x - 5} ${y - 3} L ${x} ${y + 3} L ${x + 5} ${y - 3}`
+                  : `M ${x - 5} ${y + 3} L ${x} ${y - 3} L ${x + 5} ${y + 3}`
+              }
+              stroke={c.chartHighlight}
+              strokeWidth={chart.stroke}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          );
+          // The current arrow: inside the loop, just above the bottom wire, pointing left.
+          const ax = (left + right) / 2;
+          const ay = botY - 14;
+          const half = 34;
+          const sourceKnown = rep.known(spec.source);
           return (
             <>
               <Svg width={w} height={h}>
-                {/* Loop wires; the left wire meets the battery plates. */}
-                <Line x1={left} y1={topY} x2={left} y2={midY - 6} {...wire} />
-                <Line x1={left} y1={midY + 6} x2={left} y2={botY} {...wire} />
-                <Line x1={left} y1={botY} x2={right} y2={botY} {...wire} />
-                <Line x1={right} y1={botY} x2={right} y2={topY} {...wire} />
-                {spec.resistors.map((_, i) => (
-                  <Line
-                    key={`w${i}`}
-                    x1={i === 0 ? left : rx(i - 1) + rLen}
-                    y1={topY}
-                    x2={rx(i)}
-                    y2={topY}
-                    {...wire}
-                  />
-                ))}
-                <Line x1={rx(n - 1) + rLen} y1={topY} x2={right} y2={topY} {...wire} />
-
-                {/* Battery: long plate (+) on top, short plate (−) below, with polarity marks. */}
-                <Line x1={left - 16} y1={midY - 6} x2={left + 16} y2={midY - 6} {...stroke} />
-                <Line
-                  x1={left - 8}
-                  y1={midY + 6}
-                  x2={left + 8}
-                  y2={midY + 6}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.strokeHeavy}
+                <Path
+                  d={`M ${left} ${midY - 7} V ${topY} ${topWire} M ${right} ${topY} V ${botY} H ${left} V ${midY + 7}`}
+                  {...wire}
                 />
+
+                {/* Source: long plate (+) on top, short thick plate (−) below. */}
+                <G opacity={sourceKnown ? 1 : 0.45}>
+                  <Line x1={left - 18} y1={midY - 7} x2={left + 18} y2={midY - 7} {...part} />
+                  <Line
+                    x1={left - 9}
+                    y1={midY + 7}
+                    x2={left + 9}
+                    y2={midY + 7}
+                    {...part}
+                    strokeWidth={chart.strokeHeavy + 2}
+                  />
+                  <ChartText
+                    x={left - 28}
+                    y={midY - 2}
+                    fontSize={chart.emphasis}
+                    fontWeight="700"
+                    textAnchor="middle"
+                  >
+                    +
+                  </ChartText>
+                  <ChartText
+                    x={left - 28}
+                    y={midY + 17}
+                    fontSize={chart.emphasis}
+                    fontWeight="700"
+                    textAnchor="middle"
+                  >
+                    −
+                  </ChartText>
+                </G>
                 <ChartText
-                  x={left - 24}
-                  y={midY - 3}
+                  x={left + 50}
+                  y={midY + 5}
                   fontSize={chart.value}
                   fontWeight="700"
-                  textAnchor="middle"
+                  opacity={sourceKnown ? 1 : 0.45}
                 >
-                  +
-                </ChartText>
-                <ChartText
-                  x={left - 24}
-                  y={midY + 16}
-                  fontSize={chart.value}
-                  fontWeight="700"
-                  textAnchor="middle"
-                >
-                  −
-                </ChartText>
-                <ChartText x={left + 52} y={midY + 5} fontSize={chart.value} fontWeight="600">
                   {rep.label(spec.source)}
                 </ChartText>
 
-                {/* Resistors: resistance above, voltage drop below. */}
-                {spec.resistors.map((r, i) => [
-                  <Path key={`r${i}`} d={zigzag(rx(i), topY, rLen)} {...stroke} />,
-                  <ChartText
-                    key={`rl${i}`}
-                    x={rx(i) + rLen / 2}
-                    y={topY - 18}
-                    fontWeight="600"
-                    textAnchor="middle"
-                  >
-                    {rep.label(r.r)}
-                  </ChartText>,
-                  <ChartText
-                    key={`vl${i}`}
-                    x={rx(i) + rLen / 2}
-                    y={topY + 28}
-                    fill={c.chartMuted}
-                    textAnchor="middle"
-                  >
-                    {rep.label(r.v)}
-                  </ChartText>,
-                ])}
+                {/* Resistors: resistance on a chip above, voltage drop on a chip below. */}
+                {spec.resistors.map((r, i) => (
+                  <G key={r.r}>
+                    <Path
+                      d={zigzag(rx(i), topY, rLen)}
+                      {...part}
+                      opacity={rep.known(r.r) ? 1 : 0.45}
+                    />
+                    <Chip
+                      x={rx(i) + rLen / 2}
+                      y={topY - 18}
+                      text={rep.label(r.r)}
+                      w={w}
+                      size={chart.value}
+                      faded={!rep.known(r.r)}
+                    />
+                    <Chip
+                      x={rx(i) + rLen / 2}
+                      y={topY + 34}
+                      text={rep.label(r.v)}
+                      w={w}
+                      size={chart.value}
+                      faded={!rep.known(r.v)}
+                    />
+                  </G>
+                ))}
 
-                {/* Conventional current: out of +, clockwise, so leftward on the bottom wire. */}
-                <Path
-                  d={`M ${arrowX - 7} ${botY} L ${arrowX + 7} ${botY - 6} M ${arrowX - 7} ${botY} L ${arrowX + 7} ${botY + 6}`}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.stroke}
-                />
-                <ChartText
-                  x={arrowX}
-                  y={botY + 22}
-                  fontSize={chart.value}
-                  fontWeight="600"
-                  textAnchor="middle"
-                >
-                  {rep.label(spec.current)}
-                </ChartText>
+                {/* Conventional current: out of +, up, across the top, down, back along the bottom. */}
+                {flows ? (
+                  <>
+                    {chevron(left, (topY + midY - 7) / 2, 'up')}
+                    {chevron(right, (topY + botY) / 2, 'down')}
+                  </>
+                ) : null}
+                <G opacity={rep.known(spec.current) ? 1 : 0.45}>
+                  <Line
+                    x1={ax + half}
+                    y1={ay}
+                    x2={ax - half + 10}
+                    y2={ay}
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.strokeHeavy}
+                    strokeLinecap="round"
+                  />
+                  <Path
+                    d={`M ${ax - half} ${ay} L ${ax - half + 12} ${ay - 7} L ${ax - half + 12} ${ay + 7} Z`}
+                    fill={c.chartHighlight}
+                  />
+                  <ChartText
+                    x={ax}
+                    y={ay - 12}
+                    fontSize={chart.value}
+                    fontWeight="700"
+                    fill={c.chartHighlight}
+                    textAnchor="middle"
+                  >
+                    {rep.label(spec.current)}
+                  </ChartText>
+                </G>
               </Svg>
               <DragHandle
                 testID="drag-source"
@@ -180,13 +239,18 @@ export function SeriesCircuit({ spec, calc }: { spec: Spec; calc: Calculator }) 
           );
         }}
       </Canvas>
-      <Text style={[styles.hint, { color: c.textMuted }]}>
-        Drag the source’s handle or a resistor up or down to change it.
-      </Text>
-    </>
+      <Caption>{caption()}</Caption>
+    </View>
   );
-}
 
-const styles = StyleSheet.create({
-  hint: { fontSize: font.caption + 1, textAlign: 'center', marginTop: space.sm },
-});
+  /** Kirchhoff's voltage law and Ohm's law for the loop, with every number. */
+  function caption(): string {
+    const sym = (id: string) => rep.variable(id).symbol;
+    const drops = spec.resistors.map((r) => r.v);
+    const kvl = `${sym(spec.source)} = ${drops.map(sym).join(' + ')} = ${drops.map((id) => rep.value(id)).join(' + ')} = ${rep.value(spec.source)}`;
+    const rs = spec.resistors.map((r) => r.r);
+    const sum = (xs: string[]) => (xs.length > 1 ? `(${xs.join(' + ')})` : xs[0]!);
+    const ohm = `${sym(spec.current)} = ${sym(spec.source)} ÷ ${sum(rs.map(sym))} = ${rep.value(spec.source)} ÷ ${sum(rs.map((id) => rep.value(id)))} = ${rep.value(spec.current)}`;
+    return `${kvl} · ${ohm} · Drag the source or a resistor up or down to change it.`;
+  }
+}

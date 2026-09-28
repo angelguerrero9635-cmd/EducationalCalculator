@@ -2087,10 +2087,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Series circuit in the Circuit.tsx style with resistor chips and a current arrow',
     kind: 'seriesCircuit',
     pages: ['he.engineering.circuits-1#0'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.series-loop', 'g.series-loop-big'],
     notes:
-      'Urgency: high. Weak now: Review page (he.engineering.circuits-1#0) shows "Skill not found", so no screenshot. Source draws a line-segment schematic unlike the redrawn Circuit.tsx; drag cue only a hint line. Redo: Bring it to Circuit.tsx\'s standard, reusing its Chip and wire styling. Standard symbols with resistors at 2.5 px, battery with long and short plates and 14 px +/− marks, each resistor\'s value in a 13 px chip, a current arrow labelled "I = …", a visible DragHandle on each resistor chip. Optional small real-battery inset. The page is a college topic: open it at /course/he.engineering.circuits-1/topic/0.',
+      'Urgency: high. Weak now: Review page (he.engineering.circuits-1#0) shows "Skill not found", so no screenshot. Source draws a line-segment schematic unlike the redrawn Circuit.tsx; drag cue only a hint line. Redo: Bring it to Circuit.tsx\'s standard, reusing its Chip and wire styling. Standard symbols with resistors at 2.5 px, battery with long and short plates and 14 px +/− marks, each resistor\'s value in a 13 px chip, a current arrow labelled "I = …", a visible DragHandle on each resistor chip. Optional small real-battery inset. The page is a college topic: open it at /course/he.engineering.circuits-1/topic/0. Drawn (round 4, group G): the loop in Circuit.tsx\'s copper wire (Chip now exported from Circuit.tsx with a size option); source as long (+) and short thick (−) plates with 14 px +/− marks; resistors as 2.5 px zigzags, each resistance on a 13 px chip above and its voltage drop on one below; chevrons on the wires and a filled accent current arrow labelled "I = …" beside the bottom wire, clockwise out of +; a DragHandle on the source and on each resistor body (not on the chips, so no label is covered). The caption states the loop with every number (V = V₁ + V₂ = … and I = V ÷ (R₁ + R₂) = …) and the drag hint. No real-battery inset: the schematic is what the college page teaches. No page change.',
   },
   {
     id: 'Q21',
@@ -2107,20 +2107,20 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Push arrows sized by force, kids pushing, a net-force arrow',
     kind: 'pushes',
     pages: ['s.3.balanced-forces'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.pushes', 'g.pushes-lopsided'],
     notes:
-      'Urgency: medium. Weak now: Crate good, but arrows thin, same colour and same length for 20 N and 15 N, so the imbalance doesn\'t show; small grey captions on the floor line; empty width. Redo: Arrow length scaled to force (20 N visibly longer), ~6 px thick with filled heads, each side its own theme colour. Small hands or kids pushing at each tail. "net 5 N →" arrow above the crate in the accent when unbalanced, "=" marks when balanced. FloorShadow, wood floor line, captions in chart.label under each arrow.',
+      'Urgency: medium. Weak now: Crate good, but arrows thin, same colour and same length for 20 N and 15 N, so the imbalance doesn\'t show; small grey captions on the floor line; empty width. Redo: Arrow length scaled to force (20 N visibly longer), ~6 px thick with filled heads, each side its own theme colour. Small hands or kids pushing at each tail. "net 5 N →" arrow above the crate in the accent when unbalanced, "=" marks when balanced. FloorShadow, wood floor line, captions in chart.label under each arrow. Drawn (round 4, group G): the crate on a planked wooden floor, a child leaning into each push with palms at the arrow\'s tail (blue shirt and arrow for the push to the right, orange for the push to the left). Arrows are 6 px with filled heads, on one scale set by the biggest value shown (so 20 N is exactly 4/3 of 15 N; spec.max no longer sets the scale), values in 13 px bold over each arrow and the names in 12 px under the floor. Above the crate: the extra push as an ink arrow on the same scale toward the way the crate moves, labelled with its name and value; when the pushes are equal, an "=" under "Balanced". The net arrow is ink, not the accent, so it isn\'t read as a third push beside the blue one. A push of 0 draws no child or arrow (checked by typing 50 and 0, and 30 and 30: demos can\'t hold a 0 with a unit). No page change.',
   },
   {
     id: 'Q23',
     what: 'A bigger crate, force and acceleration arrows scaled to F and a',
     kind: 'force',
     pages: ['s.8.newtons-laws'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.force-crate', 'g.force-crate-heavy'],
     notes:
-      "Urgency: medium. Weak now: Mass tag covers the crate's brace; force arrow a thin black line with the handle floating at its tip; acceleration a faint dashed grey; 60 % of the frame empty above. Redo: Crate ~110 px, mass on a Tag below the top plank. Thick accent force arrow scaled to F with the handle on the arrowhead. Acceleration a solid secondary-colour arrow above the crate scaled to a, labelled in chart.label. FloorShadow, lightly textured floor, speed lines when a > 0. Cut the empty top margin.",
+      "Urgency: medium. Weak now: Mass tag covers the crate's brace; force arrow a thin black line with the handle floating at its tip; acceleration a faint dashed grey; 60 % of the frame empty above. Redo: Crate ~110 px, mass on a Tag below the top plank. Thick accent force arrow scaled to F with the handle on the arrowhead. Acceleration a solid secondary-colour arrow above the crate scaled to a, labelled in chart.label. FloorShadow, lightly textured floor, speed lines when a > 0. Cut the empty top margin. Drawn (round 4, group G): a 110 px crate on a hatched floor, the mass on a paper Tag below the top plank (13 px bold). The net force is a 6 px accent arrow with a filled head from the crate's face, its length F on its own scale; the handle sits on the shaft just behind the head so the head stays visible, and \"F = …\" rides over the arrow (past the handle when the arrow is short). The acceleration is a solid 4 px arrow in chartSecond above the crate, its length a, labelled in chart.label; speed lines trail the crate while a > 0. Each arrow's scale is a nice number just past its value (fixed while dragging; forceExtent and accelerationExtent now only set a floor near 0), so both arrows fill the width and stay proportional to F and a; the cart variant (ForceCart.tsx) is untouched. No page change.",
   },
   {
     id: 'Q24',
@@ -2224,10 +2224,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'An exact flat wave: wavelength from crest to crest, amplitude from the midline',
     kind: 'wave',
     pages: ['s.4.wave-patterns', 's.4.wave-patterns~amplitude'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.wave-rope', 'g.wave-rope-12', 'g.wave-amplitude', 'g.wave-amplitude-tall'],
     notes:
-      'Urgency: medium. Weak now: "amplitude" overlaps the curve at the first crest; handle overlaps the wavelength bracket end; gradient fill under an abstract wave, very thick halo; 50 cm bracket ends don\'t clearly sit on two crests. Redo: Flat and exact: a single 3 px accent line, no fill. Wavelength bracket above the crests, end ticks dropping exactly to two crest peaks. Amplitude as a vertical double arrow from the midline to a crest, labelled to its right. Handle on a crest clear of the bracket. Optional: a rope with a hand at the left on the plain-rope scene.',
+      "Urgency: medium. Weak now: \"amplitude\" overlaps the curve at the first crest; handle overlaps the wavelength bracket end; gradient fill under an abstract wave, very thick halo; 50 cm bracket ends don't clearly sit on two crests. Redo: Flat and exact: a single 3 px accent line, no fill. Wavelength bracket above the crests, end ticks dropping exactly to two crest peaks. Amplitude as a vertical double arrow from the midline to a crest, labelled to its right. Handle on a crest clear of the bracket. Optional: a rope with a hand at the left on the plain-rope scene. Drawn (round 4, group G): flat and exact, a single 3 px accent line on a dashed middle line, no fill or halo. When the page has an amplitude, across and up share one scale (6 cm on a 40 cm wave is drawn 6/40 as tall as the wave is long; crests are capped at 70 px by narrowing the wave, not by stretching it), so the picture is true to the numbers; the rope page keeps a fixed height. The wavelength bracket sits above the first two crests with dashed ends dropping to their peaks (one whole wave from its start when only one wave is drawn), its value in 13 px bold over it. The amplitude is a two-headed arrow from the middle line to the crests' level, beside the wave's right end with a dashed guide from the last crest, labelled to its right (at a crest the label ran into the falling curve). The handle moved to the first trough, clear of the bracket: down for a bigger amplitude, sideways for the wavelength. No rope-and-hand scene. No page change.",
   },
   {
     id: 'Q31',
@@ -2349,10 +2349,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real pan balance with bowls, a pivot pointer and side labels',
     kind: 'balance',
     pages: ['m.1.equal-sign'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.pan-balance', 'g.pan-balance-full', 'g.pan-balance-tipped'],
     notes:
-      'Urgency: medium. Weak now: Grey clip-art: flat trapezoid post, thin beam, shallow slab pans; counters squeezed on the pan rims; sides not labelled on the picture; always level with no pivot or pointer, so "Level" can\'t be seen. Redo: Real classroom pan balance: brushed-metal post and beam (Metal) on a base with FloorShadow; triangular fulcrum with a pivot pin; pointer needle and small scale arc so a level beam points at the centre mark. Pans as deep bowls with a Sheen rim on two chains; counters inside in rows of 5 with padding. A Tag chip under each pan ("8 + 2", "5 + 5"). If sides may differ, tilt by the difference (up to ~8°) with counters exact.',
+      'Urgency: medium. Weak now: Grey clip-art: flat trapezoid post, thin beam, shallow slab pans; counters squeezed on the pan rims; sides not labelled on the picture; always level with no pivot or pointer, so "Level" can\'t be seen. Redo: Real classroom pan balance: brushed-metal post and beam (Metal) on a base with FloorShadow; triangular fulcrum with a pivot pin; pointer needle and small scale arc so a level beam points at the centre mark. Pans as deep bowls with a Sheen rim on two chains; counters inside in rows of 5 with padding. A Tag chip under each pan ("8 + 2", "5 + 5"). If sides may differ, tilt by the difference (up to ~8°) with counters exact. Drawn (round 4, group G): a classroom pan balance in brushed metal (Sheen, Metal, TopLight): a base with a FloorShadow, a post, a fulcrum with a pivot pin, and a beam that turns about the pin. A pointer hangs from the beam onto a small metal scale with ticks at 4° and 8° each way and an accent middle mark, so a level beam points at the middle. Each pan is a deep bowl with a bright rim hanging on two chains; its counters sit inside in rows of 5 (rows of 10 smaller ones above 20, up to 40), one color per value, with padding to the rim. A tag under each pan gives its side ("8 + 2", "5 + 5"; with a take-away, "10 − 2"). When the sides differ (a value still "?", or a take-away), the beam tips toward the heavier side by 1.6° per counter of difference, up to 8°; the counters stay exact. The caption is unchanged. No page change.',
   },
   {
     id: 'Q39',

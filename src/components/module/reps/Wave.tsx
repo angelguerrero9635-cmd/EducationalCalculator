@@ -1,150 +1,187 @@
 import { useRef } from 'react';
 import { View } from 'react-native';
-import Svg, { Line, Path } from 'react-native-svg';
+import Svg, { G, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'wave' }>;
 
+/** Tallest crest drawn (px above the middle line); a wave with no amplitude value uses 36. */
+const MAX_AMP = 70;
+const PLAIN_AMP = 36;
+/** Room above the crests for the wavelength bracket and its label. */
+const TOP = 42;
+/** Room under the troughs for the handle. */
+const BOTTOM = 24;
+
+/** A two-headed vertical arrow from y1 to y2 at x (heads shrink on a short arrow). */
+function DoubleArrow({ x, y1, y2, color }: { x: number; y1: number; y2: number; color: string }) {
+  const len = Math.abs(y2 - y1);
+  const head = Math.min(7, len / 2);
+  const dir = y2 > y1 ? 1 : -1;
+  return (
+    <G>
+      <Line x1={x} y1={y1} x2={x} y2={y2} stroke={color} strokeWidth={chart.strokeLight} />
+      <Path
+        d={`M ${x} ${y1} L ${x - 4} ${y1 + dir * head} L ${x + 4} ${y1 + dir * head} Z`}
+        fill={color}
+      />
+      <Path
+        d={`M ${x} ${y2} L ${x - 4} ${y2 - dir * head} L ${x + 4} ${y2 - dir * head} Z`}
+        fill={color}
+      />
+    </G>
+  );
+}
+
 /**
- * A wave along a line: the amplitude is the height of a crest above the middle, the
- * wavelength the distance from one crest to the next. Drag the crest up or down for the
- * amplitude, or sideways for the wavelength.
+ * A flat, exact wave along a dashed middle line. Across and up share one scale when the lesson
+ * has an amplitude, so a 6 cm amplitude on a 40 cm wave is drawn 6/40 as tall as the wave is
+ * long. The wavelength is a bracket above two crests, its ends dropping to their peaks; the
+ * amplitude a double arrow from the middle line up to the level of a crest, beside the wave.
+ * Drag the handle on the first trough: down for a bigger amplitude, sideways for the wavelength.
  */
 export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef({ A: 0, L: 0 });
   const known = (!spec.amplitude || rep.known(spec.amplitude)) && rep.known(spec.wavelength);
-  // With no amplitude value the crest is drawn at a fixed height.
-  const A = spec.amplitude ? Math.max(0, rep.shown(spec.amplitude)) : 1;
+  const A = spec.amplitude ? Math.max(0, rep.shown(spec.amplitude)) : 0;
   const L = Math.max(0.001, rep.shown(spec.wavelength));
-  // The drawing's scale: `extent` wavelengths across, held while dragging.
+  // The drawing's scale, held while dragging.
   const scale = useFrozen({ L, A: Math.max(A, 0.001) });
   const cycles =
     typeof spec.extent === 'string'
       ? Math.min(12, Math.max(1, Math.round(rep.known(spec.extent) ? rep.shown(spec.extent) : 1)))
       : spec.extent;
+  const ampText = spec.amplitude ? rep.label(spec.amplitude) : 'amplitude';
+  // Room to the right of the wave for the amplitude arrow and its label.
+  const side = ampText.length * chart.label * 0.58 + 34;
+
+  /** Pixels per shown unit, the crest height, and the canvas height, for a width. */
+  const layout = (w: number) => {
+    const across = (w - 16 - side) / (cycles * scale.value.L);
+    const perUnit = spec.amplitude ? Math.min(across, MAX_AMP / scale.value.A) : across;
+    const amp = spec.amplitude ? A * perUnit : PLAIN_AMP;
+    const tall = spec.amplitude ? Math.max(amp, scale.value.A * perUnit) : PLAIN_AMP;
+    const half = Math.max(tall, 14);
+    return { perUnit, amp, mid: TOP + half, h: TOP + 2 * half + BOTTOM };
+  };
 
   return (
     <View>
-      <Canvas aspect={0.5}>
+      <Canvas aspect={(w) => layout(w).h / w}>
         {({ w, h }) => {
-          const pad = 20;
-          const mid = h / 2;
-          const pxPerUnit = (w - 2 * pad) / (cycles * scale.value.L);
-          // Room above the crest for the wavelength bracket and its label.
-          const ampPx = Math.min(h / 2 - 40, (A / scale.value.A) * (h / 2 - 40));
-          const N = 160;
+          const { perUnit, amp, mid } = layout(w);
+          const waveW = cycles * L * perUnit;
+          const x0 = Math.max(16, (w - side - waveW) / 2);
+          const x1 = x0 + waveW;
+          const N = Math.max(80, Math.round(cycles * 48));
           const d = Array.from({ length: N + 1 }, (_, i) => {
-            const x = (i / N) * cycles * scale.value.L;
-            const y = mid - ampPx * Math.sin((2 * Math.PI * x) / L);
-            return `${i === 0 ? 'M' : 'L'} ${pad + x * pxPerUnit} ${y}`;
+            const t = (i / N) * cycles;
+            return `${i === 0 ? 'M' : 'L'} ${x0 + t * L * perUnit} ${mid - amp * Math.sin(2 * Math.PI * t)}`;
           }).join(' ');
-          const crestX = pad + (L / 4) * pxPerUnit;
-          const nextCrestX = pad + 1.25 * L * pxPerUnit;
-          const crestY = mid - ampPx;
+          const crestY = mid - amp;
+          const troughY = mid + amp;
+          const crest = (k: number) => x0 + (k + 0.25) * L * perUnit;
+          // Crest to crest when two crests are drawn; else one whole wave from its start.
+          const twoCrests = cycles >= 1.25;
+          const bx0 = twoCrests ? crest(0) : x0;
+          const bx1 = twoCrests ? crest(1) : x0 + L * perUnit;
+          const by = crestY - 16;
+          const tickTo = twoCrests ? crestY - 3 : mid;
+          const lastCrest = crest(Math.floor(cycles - 0.25));
+          const ax = x1 + 14;
+          const troughX = x0 + 0.75 * L * perUnit;
+          const ink = c.chartInk;
           return (
             <>
               <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
                 <Line
-                  x1={pad - 6}
+                  x1={x0 - 8}
                   y1={mid}
-                  x2={w - pad + 6}
+                  x2={ax}
                   y2={mid}
                   stroke={c.chartMuted}
                   strokeWidth={chart.strokeLight}
                   strokeDasharray={chart.dashFine}
                 />
-                {/* A soft band between the wave and its middle line, a glow under the line, then
-                    the wave itself, so crests and troughs read as a moving surface. */}
-                <Path
-                  d={`${d} L ${w - pad} ${mid} L ${pad} ${mid} Z`}
-                  fill={c.chartHighlight}
-                  fillOpacity={0.1}
-                />
                 <Path
                   d={d}
                   fill="none"
                   stroke={c.chartHighlight}
-                  strokeOpacity={0.2}
-                  strokeWidth={chart.stroke * 4}
+                  strokeWidth={chart.strokeHeavy}
                   strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-                <Path
-                  d={d}
-                  fill="none"
-                  stroke={c.chartHighlight}
-                  strokeWidth={chart.stroke + 0.5}
-                  strokeLinecap="round"
-                />
-                {/* Amplitude: from the middle line up to the crest. */}
-                <Line
-                  x1={crestX}
-                  y1={mid}
-                  x2={crestX}
-                  y2={crestY}
-                  stroke={c.chartInk}
-                  strokeWidth={chart.strokeLight}
-                />
+
+                {/* Wavelength: a bracket above, its ends dropping exactly to two crest peaks. */}
+                <Line x1={bx0} y1={by} x2={bx1} y2={by} stroke={ink} strokeWidth={chart.stroke} />
+                {[bx0, bx1].map((x) => (
+                  <G key={x}>
+                    <Line
+                      x1={x}
+                      y1={by - 5}
+                      x2={x}
+                      y2={by + 5}
+                      stroke={ink}
+                      strokeWidth={chart.stroke}
+                    />
+                    <Line
+                      x1={x}
+                      y1={by + 5}
+                      x2={x}
+                      y2={tickTo}
+                      stroke={ink}
+                      strokeWidth={chart.strokeLight}
+                      strokeDasharray={chart.dashFine}
+                    />
+                  </G>
+                ))}
                 <ChartText
-                  x={crestX + 6}
-                  y={(mid + crestY) / 2 + 4}
+                  {...fitLabel((bx0 + bx1) / 2, rep.label(spec.wavelength), chart.value, w)}
+                  y={by - 8}
+                  fontSize={chart.value}
+                  fontWeight="700"
+                >
+                  {rep.label(spec.wavelength)}
+                </ChartText>
+
+                {/* Amplitude: middle line up to the crests' level, beside the wave. */}
+                {amp >= 1 ? (
+                  <>
+                    <Line
+                      x1={lastCrest}
+                      y1={crestY}
+                      x2={ax + 5}
+                      y2={crestY}
+                      stroke={ink}
+                      strokeWidth={chart.strokeLight}
+                      strokeDasharray={chart.dashFine}
+                    />
+                    <DoubleArrow x={ax} y1={mid} y2={crestY} color={ink} />
+                  </>
+                ) : null}
+                <ChartText
+                  x={ax + 9}
+                  y={(mid + crestY) / 2 + 4.5}
                   fontSize={chart.label}
                   fontWeight="700"
                 >
-                  {spec.amplitude ? rep.label(spec.amplitude) : 'amplitude'}
+                  {ampText}
                 </ChartText>
-                {/* Wavelength: crest to crest. */}
-                {nextCrestX < w - pad ? (
-                  <>
-                    <Line
-                      x1={crestX}
-                      y1={crestY - 12}
-                      x2={nextCrestX}
-                      y2={crestY - 12}
-                      stroke={c.chartInk}
-                      strokeWidth={chart.strokeLight}
-                    />
-                    <Line
-                      x1={crestX}
-                      y1={crestY - 17}
-                      x2={crestX}
-                      y2={crestY - 7}
-                      stroke={c.chartInk}
-                      strokeWidth={chart.strokeLight}
-                    />
-                    <Line
-                      x1={nextCrestX}
-                      y1={crestY - 17}
-                      x2={nextCrestX}
-                      y2={crestY - 7}
-                      stroke={c.chartInk}
-                      strokeWidth={chart.strokeLight}
-                    />
-                    <ChartText
-                      x={(crestX + nextCrestX) / 2}
-                      y={crestY - 18}
-                      fontSize={chart.label}
-                      fontWeight="700"
-                      textAnchor="middle"
-                    >
-                      {rep.label(spec.wavelength)}
-                    </ChartText>
-                  </>
-                ) : null}
               </Svg>
               {known ? (
                 <DragHandle
                   testID={`drag-${spec.amplitude ?? spec.wavelength}`}
-                  x={crestX}
-                  y={crestY}
+                  x={troughX}
+                  y={troughY}
                   label={
                     spec.amplitude
                       ? `${rep.variable(spec.amplitude).name} and ${rep.variable(spec.wavelength).name}`
@@ -164,16 +201,18 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       ]),
                       ...(spec.amplitude
                         ? {
+                            // The trough moves down as far as the crest moves up.
                             [spec.amplitude]: rep.snapTo(
                               spec.amplitude,
-                              Math.max(0, start.current.A - (dy / (h / 2 - 40)) * scale.value.A) *
+                              Math.max(0, start.current.A + dy / perUnit) *
                                 rep.factor(spec.amplitude),
                             ),
                           }
                         : {}),
+                      // The first trough is ¾ of a wavelength along.
                       [spec.wavelength]: rep.snapTo(
                         spec.wavelength,
-                        Math.max(0.001, start.current.L + (dx / pxPerUnit) * 4) *
+                        Math.max(0.001, start.current.L + dx / (0.75 * perUnit)) *
                           rep.factor(spec.wavelength),
                       ),
                     })
