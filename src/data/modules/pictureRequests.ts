@@ -2176,10 +2176,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real object over a wooden ruler and a yardstick, feet in two tones',
     kind: 'unitTiles',
     pages: ['m.2.standard-length~two-units', 'm.2.standard-length~meters'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-feet', 'g.r4f-feet-edge', 'g.r4f-meters', 'g.r4f-meters-edge'],
     notes:
-      'Urgency: medium. Weak now: "Object" is a flat bar with a handle; inch tiles ~3 px slivers; feet thin outlined pills; tiny row labels; nothing looks like a ruler or yardstick. Redo: Object as a real thing (wooden board or ribbon, texture, TopLight). A wooden ruler and yardstick beneath it with printed inch ticks, numbers every 1 or 6 in and foot joints. Alternate cream and tan per foot; group inch ticks per foot with "12 in" under each. Row labels above each strip in chart.label.',
+      'Urgency: medium. Weak now: "Object" is a flat bar with a handle; inch tiles ~3 px slivers; feet thin outlined pills; tiny row labels; nothing looks like a ruler or yardstick. Redo: Object as a real thing (wooden board or ribbon, texture, TopLight). A wooden ruler and yardstick beneath it with printed inch ticks, numbers every 1 or 6 in and foot joints. Alternate cream and tan per foot; group inch ticks per foot with "12 in" under each. Row labels above each strip in chart.label. Drawn (round 4, group F): the object is a satin ribbon (Sheen, notched end, BoxShadow) with the drag handle on its end; dashed guides drop from both its ends through both measures. Under it, one long wooden stick (reps/wood.tsx WoodStick: wood, grain, TopLight) marked in the small unit, each big unit in alternate wood and cream tones, ticks every inch (every 10 cm on the meter page), numbers every 3 or 6 in (every 100 cm) printed in ink on the wood, and "12 inches" / "100 centimeters" under each big unit. Then the big units as separate foot rulers or meter sticks laid end to end, each with faint inch or centimeter ticks and a paper tag "1 foot" / "1 meter". Row names with their values above each strip at 12 px bold. The drawing fits the object (at least one big unit wide), so 1 foot fills the width. No page change.',
   },
   {
     id: 'Q30',
