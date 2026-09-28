@@ -2290,10 +2290,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real pan balance with bowls, a pivot pointer and side labels',
     kind: 'balance',
     pages: ['m.1.equal-sign'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.pan-balance', 'g.pan-balance-full', 'g.pan-balance-tipped'],
     notes:
-      'Urgency: medium. Weak now: Grey clip-art: flat trapezoid post, thin beam, shallow slab pans; counters squeezed on the pan rims; sides not labelled on the picture; always level with no pivot or pointer, so "Level" can\'t be seen. Redo: Real classroom pan balance: brushed-metal post and beam (Metal) on a base with FloorShadow; triangular fulcrum with a pivot pin; pointer needle and small scale arc so a level beam points at the centre mark. Pans as deep bowls with a Sheen rim on two chains; counters inside in rows of 5 with padding. A Tag chip under each pan ("8 + 2", "5 + 5"). If sides may differ, tilt by the difference (up to ~8°) with counters exact.',
+      'Urgency: medium. Weak now: Grey clip-art: flat trapezoid post, thin beam, shallow slab pans; counters squeezed on the pan rims; sides not labelled on the picture; always level with no pivot or pointer, so "Level" can\'t be seen. Redo: Real classroom pan balance: brushed-metal post and beam (Metal) on a base with FloorShadow; triangular fulcrum with a pivot pin; pointer needle and small scale arc so a level beam points at the centre mark. Pans as deep bowls with a Sheen rim on two chains; counters inside in rows of 5 with padding. A Tag chip under each pan ("8 + 2", "5 + 5"). If sides may differ, tilt by the difference (up to ~8°) with counters exact. Drawn (round 4, group G): a classroom pan balance in brushed metal (Sheen, Metal, TopLight): a base with a FloorShadow, a post, a fulcrum with a pivot pin, and a beam that turns about the pin. A pointer hangs from the beam onto a small metal scale with ticks at 4° and 8° each way and an accent middle mark, so a level beam points at the middle. Each pan is a deep bowl with a bright rim hanging on two chains; its counters sit inside in rows of 5 (rows of 10 smaller ones above 20, up to 40), one color per value, with padding to the rim. A tag under each pan gives its side ("8 + 2", "5 + 5"; with a take-away, "10 − 2"). When the sides differ (a value still "?", or a take-away), the beam tips toward the heavier side by 1.6° per counter of difference, up to 8°; the counters stay exact. The caption is unchanged. No page change.',
   },
   {
     id: 'Q39',
