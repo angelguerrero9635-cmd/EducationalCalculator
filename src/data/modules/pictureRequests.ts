@@ -2287,10 +2287,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Two-coloured Venn circles with even members and the GCF badge',
     kind: 'venn',
     pages: ['m.6.gcf-lcm'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-venn', 'g.r4e-venn-many', 'g.r4e-venn-one'],
     notes:
-      'Urgency: medium. Weak now: Two identical lavender circles distinguished only by small "12"/"18" labels cramped at the tops; 9–10 px members spread unevenly; tiny GCF ring; two odd oversized vertical sliders below. Redo: Flat. Two distinct tints (chartHighlight, chartSecond) with a blended overlap; titles outside at chart.value ("Factors of 12", "Factors of 18"). Members on an even grid in each region at ~13 px. Greatest common factor as a filled chartHighlight badge with a "greatest" tag. Replace the vertical sliders with standard horizontal Sliders.tsx rows, or drop them per sliderPolicy.',
+      'Urgency: medium. Weak now: Two identical lavender circles distinguished only by small "12"/"18" labels cramped at the tops; 9–10 px members spread unevenly; tiny GCF ring; two odd oversized vertical sliders below. Redo: Flat. Two distinct tints (chartHighlight, chartSecond) with a blended overlap; titles outside at chart.value ("Factors of 12", "Factors of 18"). Members on an even grid in each region at ~13 px. Greatest common factor as a filled chartHighlight badge with a "greatest" tag. Replace the vertical sliders with standard horizontal Sliders.tsx rows, or drop them per sliderPolicy. Drawn (round 4, group E): flat, two distinct tints (chartHighlight at 14 %, chartSecond at 30 %, blending in the overlap) with matching outlines; titles outside at chart.value bold ("Factors of 12", "Factors of 18"; "Prime factors of …" for list primes). Members at chart.value on an even grid in each region, the ones nearest its middle, clear of both edges (72 and 96, eight shared, fit). The greatest common factor is a filled chartHighlight badge with a leader to a "greatest common factor" tag under the circles. Sliders: the kind has none of its own (venn is not in sliderPolicy); the two vertical sliders come from the page setting sliders: true, and are the app-wide Sliders component. The lesson chat may drop that line (sliders are not needed: the inputs change both numbers). No page change needed for the picture.',
   },
   {
     id: 'Q38',
@@ -2337,10 +2337,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flat-shaded prism with ink corner dots',
     kind: 'prism',
     pages: ['m.2.thirds-polygons~solids'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-prism-count', 'g.r4e-prism-triangle', 'g.r4e-prism-hexagon'],
+    uses: '"counting":true',
     notes:
-      'Urgency: medium. Weak now: Lavender wireframe with dots at the corners; one flat tint on all faces; corner dots look like drag handles; no face/edge/corner labels to help counting; lots of empty space. Redo: Exact solid with faces shaded flatly by orientation (top light, front mid, side darker from theme tints). Hidden edges dashed 1.5 px, visible edges 2.5 px. Corner markers as 4 px ink dots. Optional counting mode: tap a face, edge or corner to highlight it with a 14 px count chip. Fill ~80 % of the canvas; same rule for other prisms.',
+      'Urgency: medium. Weak now: Lavender wireframe with dots at the corners; one flat tint on all faces; corner dots look like drag handles; no face/edge/corner labels to help counting; lots of empty space. Redo: Exact solid with faces shaded flatly by orientation (top light, front mid, side darker from theme tints). Hidden edges dashed 1.5 px, visible edges 2.5 px. Corner markers as 4 px ink dots. Optional counting mode: tap a face, edge or corner to highlight it with a 14 px count chip. Fill ~80 % of the canvas; same rule for other prisms. Drawn (round 4, group E): the exact solid, flat-shaded (each visible side a tint of the highlight by how far it turns from the light at the front left, the top lightest), fills about 80 % of the width with the canvas sized to it. Visible edges 2.5 px ink, hidden edges 1.5 px dashed muted; corners 3.5 px ink dots (muted at the back), so they no longer look like handles. New option counting: true adds Faces, Edges and Corners buttons (44 px): each numbers every face, edge or corner on the solid with a count chip (solid in front, dashed at the back, and the caption says so); tap again to clear. Page change for m.2.thirds-polygons~solids: its representation becomes { kind: "prism", sides: "s", faces: "F", edges: "E", corners: "V", counting: true }. Without it the page works as before, showing the new drawing.',
   },
   {
     id: 'Q43',
@@ -2379,10 +2380,16 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.gcf-lcm~distributive',
       'm.6.expressions-variables~distributive',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4e-area-two-digit',
+      'g.r4e-area-big',
+      'g.r4e-area-decimals',
+      'g.r4e-area-divide',
+      'g.r4e-area-distributive',
+    ],
     notes:
-      'Urgency: low. Weak now: Very pale partial boxes with 2 px black strokes; tiny grey "5 × 10"; small dimension labels; ragged left-aligned caption; no colour link between a part and its place. Redo: Flat: colour each column by place (thousands, hundreds, tens, ones tokens at 15–20 % tint), 1.5 px chart stroke. Dimension labels on brace ticks in chart.label bold. Expression in chart.label above the product in chart.emphasis. Caption one centred line or aligned equations. Leader label above very narrow boxes.',
+      'Urgency: low. Weak now: Very pale partial boxes with 2 px black strokes; tiny grey "5 × 10"; small dimension labels; ragged left-aligned caption; no colour link between a part and its place. Redo: Flat: colour each column by place (thousands, hundreds, tens, ones tokens at 15–20 % tint), 1.5 px chart stroke. Dimension labels on brace ticks in chart.label bold. Expression in chart.label above the product in chart.emphasis. Caption one centred line or aligned equations. Leader label above very narrow boxes. Drawn (round 4, group E): flat. Each column tinted by its place at 17 % (the same place is the same card tone on every page: tens, ones, hundreds, thousands, tenths, hundredths …) and named over it in that colour ("tens", "ones"; hidden where the column is too narrow, and not for a lumped last part like 99 or for letters’ parts); 1.5 px chart ink boxes. Parts on dimension lines with end ticks (top and side), bold. In each box the multiplication at chart.label over the product at chart.emphasis (bigger in wide boxes, smaller only where it would not fit). Remainder box dashed with a "left over" tag. Centred at about 86 % width. Division captions now read "1,987 ÷ 23 = 86, remainder 9: 80 + 6." so the chain no longer breaks mid-line. No page change.',
   },
   {
     id: 'Q46',
@@ -2462,9 +2469,9 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Two-tint rectilinear parts, a countable grid, dimension lines',
     kind: 'rectilinear',
     pages: ['m.3.area~rectilinear', 'm.3.area~cut-out'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-rectilinear', 'g.r4e-rectilinear-wide', 'g.r4e-cut-out', 'g.r4e-cut-out-thin'],
     notes:
-      'Urgency: low. Weak now: Flat and exact, but very faint grid (squares hard to count); parts differ only by a light grey tint; small area numbers; side labels far from their edges, "2 cm" near the right edge; no split line. Redo: Two distinct flat tints (e.g. primary 15 %, amber 20 %); 2 px dashed split line; grid at chartGrid 1 px; part areas in 18 px centred chips ("15 cm²"); side labels on dimension lines with end ticks, 6 px from the edge and 8 px inside the canvas. Cut-out variant: removed piece hatched with a dashed outline. Sliders unchanged.',
+      'Urgency: low. Weak now: Flat and exact, but very faint grid (squares hard to count); parts differ only by a light grey tint; small area numbers; side labels far from their edges, "2 cm" near the right edge; no split line. Redo: Two distinct flat tints (e.g. primary 15 %, amber 20 %); 2 px dashed split line; grid at chartGrid 1 px; part areas in 18 px centred chips ("15 cm²"); side labels on dimension lines with end ticks, 6 px from the edge and 8 px inside the canvas. Cut-out variant: removed piece hatched with a dashed outline. Sliders unchanged. Drawn (round 4, group E): flat, centred, sized from the values. Two distinct tints (chartHighlight 15 %, chartSecond 30 %), a 2 px dashed split line where the parts meet, unit-square grid lines at 35 % chartMuted (countable in both themes). Part areas in centred chips with the unit ("15 cm²"), or above the part on a short leader when it is too thin (10 by 1). Every side on a dimension line with end ticks, 10 px from its edge and inside the canvas. Cut-out: the removed piece hatched in a dashed outline with its area on a muted chip, the cut width above and height right as muted dimension lines; the shape left in unit squares with its area on a chip (in its bigger part; the caption carries it when the L is too thin). Sliders unchanged. No page change.',
   },
 ];
