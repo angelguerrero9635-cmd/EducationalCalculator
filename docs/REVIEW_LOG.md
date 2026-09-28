@@ -5,6 +5,18 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Owner finding: no decimal point on the keyboard (website on an iPhone)
+
+- Every input asked for the `numeric` keyboard on the web, which iPhone Safari shows as a pad
+  with no point and no minus sign, so 3.48 could not be typed on a decimals page.
+- Fix: the keyboard now follows the value (`keyboardFor` in `InputsSection.tsx`): the decimal
+  pad for a value that takes decimals, the full keyboard for one that can be negative, the
+  number pad for whole numbers. iOS's own app keeps numbers-and-punctuation (both keys);
+  Android's numeric pad has both already.
+- Reviewer: the page-reviewer's browser is desktop Chrome, which never shows a soft keyboard,
+  so this could only be found on a phone. Added to its checklist as a rule to read from the
+  code: a value that allows decimals or negatives must not ask for a bare numeric keyboard.
+
 ## Textbook coverage pass: units and lessons the programs teach that had no page
 
 - Setup: two lists from `research/textbooks/toc/`: units whose skills map to nothing in the

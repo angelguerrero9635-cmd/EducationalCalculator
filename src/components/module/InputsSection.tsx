@@ -15,6 +15,18 @@ import { font, radius, space, usePalette } from '@/theme';
 
 import type { Calculator } from './useCalculator';
 
+/**
+ * The keyboard for a value. iOS's numbers-and-punctuation pad has the point and the minus sign;
+ * Android's numeric pad has both. On the web (iPhone Safari) the numeric pad has neither, so a
+ * value that takes decimals gets the decimal pad and one that can be negative the full keyboard.
+ */
+function keyboardFor(v: { integer?: boolean; min?: number }) {
+  if (Platform.OS === 'ios') return 'numbers-and-punctuation' as const;
+  if (Platform.OS !== 'web') return 'numeric' as const;
+  if ((v.min ?? 0) < 0) return 'default' as const;
+  return v.integer ? ('numeric' as const) : ('decimal-pad' as const);
+}
+
 type SystemOption = 'metric' | 'us' | 'mixed';
 
 /**
@@ -182,7 +194,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
         onBlur={onBlur}
         onChangeText={onChangeText}
         editable={!variable.derived}
-        keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric'}
+        keyboardType={keyboardFor(variable)}
         returnKeyType="done"
         selectTextOnFocus
         style={[
@@ -238,7 +250,7 @@ function EquationBox({
       onBlur={onBlur}
       onChangeText={onChangeText}
       editable={!variable.derived}
-      keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'numeric'}
+      keyboardType={keyboardFor(variable)}
       returnKeyType="done"
       selectTextOnFocus
       style={[

@@ -146,3 +146,7 @@ A dimmed slider (aria-disabled) is one the other values hold to a single value: 
 K–5 pages show no letters standing for numbers (inputs, pictures, formula box, steps): a symbol on a Grade 3–5 page is a finding.
 
 For explore pages, look at every scene in light and dark, not just the first. In a figure with day and night halves, night stays darker than day in both modes.
+
+- Keyboards can’t be seen in desktop Chrome: read `keyboardFor` in `InputsSection.tsx` when a
+  page adds a new kind of value. A value that takes decimals or negatives must not ask the web
+  for a bare numeric keyboard (iPhone Safari shows it with no point and no minus).
