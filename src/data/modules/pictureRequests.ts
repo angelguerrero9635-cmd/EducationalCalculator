@@ -1856,10 +1856,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Glossy balloon, torn paper bits, hair and a wall; charge marks once rubbed',
     kind: 'static',
     pages: ['s.3.magnets~static'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.static'],
     notes:
-      'Urgency: high. Weak now: Balloon is a flat grey outline; paper bits are 5 empty rectangles; "balloon, not rubbed" clipped at left and floats under the floor line; no hair, wall or charge, so scenes can\'t show attraction. Redo: Glossy rubber balloon (coloured fill, Ball/Sheen highlight, knot, curled string). Paper bits as torn confetti in warm paper colours that lift and tilt toward the balloon in "near paper". Add a head with hair standing up, a textured wall, two balloons pushing apart. Small +/− charge marks only once rubbed. Scene label centred inside the figure with padding.',
+      'Urgency: high. Weak now: Balloon is a flat grey outline; paper bits are 5 empty rectangles; "balloon, not rubbed" clipped at left and floats under the floor line; no hair, wall or charge, so scenes can\'t show attraction. Redo: Glossy rubber balloon (coloured fill, Ball/Sheen highlight, knot, curled string). Paper bits as torn confetti in warm paper colours that lift and tilt toward the balloon in "near paper". Add a head with hair standing up, a textured wall, two balloons pushing apart. Small +/− charge marks only once rubbed. Scene label centred inside the figure with padding. Drawn (round 4, group B): a glossy red rubber balloon (Ball shading, shine, knot, curled string) over a wooden floor; torn paper bits in paper colours that lift, tilt and stick to it when rubbed; a child\'s head whose hair stands up toward the balloon; a brick wall it sticks to (not rubbed, it lies on the floor); two balloons hanging knot-up from a rod that swing apart with arrows. Minus marks on a rubbed balloon, plus marks on the hair and wall. Object labels under the floor and the scene label centred below them, in chart.label and chart.value. New file figuresR4b.tsx. No page change.',
   },
   {
     id: 'Q03',
@@ -1876,20 +1876,20 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A globe with continents and a small child standing on it; ball falling to the centre',
     kind: 'earth',
     pages: ['s.5.gravity-down', 's.5.shadows-day-night~day-night'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4b-earth'],
     notes:
-      'Urgency: high. Weak now: Earth is a flat grey circle with a tiny centre dot; person is a lollipop stick; ball and arrow ~10 px at the top edge; tiny caption; no sense of a planet. Redo: Globe: ocean blue with green and tan continents, Ball shading, thin atmosphere halo, centre dot labelled "center" in chart.label. Small standing child (~1/6 radius) with feet on the surface in every scene (top, side, bottom). Coloured ball with a bold arrow toward the centre and a dashed line to the centre. Caption in chart.label.',
+      'Urgency: high. Weak now: Earth is a flat grey circle with a tiny centre dot; person is a lollipop stick; ball and arrow ~10 px at the top edge; tiny caption; no sense of a planet. Redo: Globe: ocean blue with green and tan continents, Ball shading, thin atmosphere halo, centre dot labelled "center" in chart.label. Small standing child (~1/6 radius) with feet on the surface in every scene (top, side, bottom). Coloured ball with a bold arrow toward the centre and a dashed line to the centre. Caption in chart.label. Drawn (round 4, group B): a globe (ocean, green land with tan deserts clipped to the circle, Ball-style light, a thin sky halo), sized from the width (radius up to 100). A child (about a third of the radius tall) stands feet-on-the-surface at top, side and bottom; a red ball beside them with a bold arrow and a dashed line to the centre dot, labelled "center" on a chip. Thrown: the ball higher with a dotted trail. Lit scenes: a sun with rays and two sunlight arrows on the left, the night half shaded, day and night on chips, a house beside the child for the marked town, and the turning arrow labelled "Earth turns this way". Captions at chart.value. No page change.',
   },
   {
     id: 'Q05',
     what: 'Desk lamp, apple with a shadow, eye and mirror; bold light beams',
     kind: 'lightPath',
     pages: ['s.1.light-shadows', 's.4.vision-light'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4b-light-path', 'g.shadows'],
     notes:
-      'Urgency: high. Weak now: Lamp is a dot with tick rays, apple a grey circle, eye an almond outline; thin arrows; small floating labels. Redo: Desk lamp (Metal shade, bulb with warm radial glow), red apple (Ball shading, stem, leaf, cast shadow on a tabletop), eye with iris and lashes. Rays as thicker warm-yellow beams with arrowheads. Real dark tint for "Dark room", a block or hand for "Block the light", a silvered mirror. Shadow length changes with low vs high lamp. Labels under each object in chart.label.',
+      'Urgency: high. Weak now: Lamp is a dot with tick rays, apple a grey circle, eye an almond outline; thin arrows; small floating labels. Redo: Desk lamp (Metal shade, bulb with warm radial glow), red apple (Ball shading, stem, leaf, cast shadow on a tabletop), eye with iris and lashes. Rays as thicker warm-yellow beams with arrowheads. Real dark tint for "Dark room", a block or hand for "Block the light", a silvered mirror. Shadow length changes with low vs high lamp. Labels under each object in chart.label. Drawn (round 4, group B): a green metal desk lamp (Sheen shade, bulb with a warm radial glow when on) on a wooden tabletop, a red apple (Ball shading, stem, leaf, a shadow on the table away from the lamp) and an eye with a blue iris, lashes and brow that looks toward the light. Light as bold warm beams (a glow under an orange arrow). Dark room: the whole room shaded dark; hand: an open hand in front of the eye where the beam stops; mirror: a silvered mirror in a wooden frame above, placed where the angles in and out are equal, the eye looking up at it. Shadow scenes keep the exact geometry: a lamp on a stand (low or high), a wooden, clear-glass or frosted block, a plaster wall, the shadow on the floor and up the wall, the light\'s edge as a dashed warm beam. Labels under the table in chart.label, captions in chart.value. No page change.',
   },
   {
     id: 'Q06',
@@ -1952,20 +1952,20 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flashlight and a strip of lit and dark frames for the flash code',
     kind: 'flashes',
     pages: ['s.1.sound-vibration~signals'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4b-flashes'],
     notes:
-      "Urgency: high. Weak now: Not a picture: one flat 44 px purple dot (an RN View) in empty space; no flashlight, no light, no sequence, on can't be told from off. Redo: SVG flashlight (Metal barrel with Sheen, rubber switch, glass lens) pointing right, beside a strip of lit and unlit frames: each flash a warm radial glow over a dark night panel with a soft beam cone; short flashes as round bursts, long ones as a stretched beam, numbered 1, 2, 3; gaps as dark frames. Night panel darker than the card in both modes. The pattern string (● and —) stays the source of truth.",
+      "Urgency: high. Weak now: Not a picture: one flat 44 px purple dot (an RN View) in empty space; no flashlight, no light, no sequence, on can't be told from off. Redo: SVG flashlight (Metal barrel with Sheen, rubber switch, glass lens) pointing right, beside a strip of lit and unlit frames: each flash a warm radial glow over a dark night panel with a soft beam cone; short flashes as round bursts, long ones as a stretched beam, numbered 1, 2, 3; gaps as dark frames. Night panel darker than the card in both modes. The pattern string (● and —) stays the source of truth. Drawn (round 4, group B): now an SVG. A metal flashlight (Sheen barrel with grip rings, red rubber switch, flared head, glowing lens) shines a soft beam cone across a night panel (darker than the card in both modes). Under it the code as frames: each flash a small night window with a warm radial burst (round for short, a stretched beam twice as wide for long), dark frames between flashes for the light off, numbered 1, 2, 3 in chart.value. A code longer than five flashes made of up to three runs (help) gets a row per run; any other long code wraps rows by width. The pattern string stays the source. No page change.",
   },
   {
     id: 'Q11',
     what: 'A hand, a rubber ball on the ground and a force arrow sized by the push',
     kind: 'push',
     pages: ['s.K.pushes-pulls~direction'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.push'],
     notes:
-      'Urgency: high. Weak now: Grey frame runs edge to edge with no margin; ball a flat disc floating mid-air with no floor; blocky glove "hand"; push arrow detached from the hand; tiny caption; faint path and ghost ball. Redo: Inset by space.lg, drop the border. Ground strip (TopLight band) with FloorShadow; real rubber ball (Ball shading, seam) ~22 px; friendly open hand (skin token) touching the ball with a bold force arrow from the hand, length/width by gentle vs hard, labelled "push"/"pull" at chart.value. Path as a dotted trail with 2–3 fading ghost balls. Pull: a real string from hand to ball. Keep from, strength and pull.',
+      'Urgency: high. Weak now: Grey frame runs edge to edge with no margin; ball a flat disc floating mid-air with no floor; blocky glove "hand"; push arrow detached from the hand; tiny caption; faint path and ghost ball. Redo: Inset by space.lg, drop the border. Ground strip (TopLight band) with FloorShadow; real rubber ball (Ball shading, seam) ~22 px; friendly open hand (skin token) touching the ball with a bold force arrow from the hand, length/width by gentle vs hard, labelled "push"/"pull" at chart.value. Path as a dotted trail with 2–3 fading ghost balls. Pull: a real string from hand to ball. Keep from, strength and pull. Drawn (round 4, group B): a wooden plank floor seen from above, inset by space.lg with no border, TopLight over it; a red rubber ball (Ball shading, seam, FloorShadow, radius 22); an open hand in the skin tokens with a sleeve, fingertips touching the ball; a bold force arrow starting at the hand (44 px and 4 px thick gentle, 78 px and 8 px hard) with "push" or "pull" on a chip. Where the ball goes: a dotted trail with two (gentle) or three (hard) fading balls; "was rolling this way" with a faded ball behind for pushes from the front and side; "stops" on a chip; a pull is a string from a curled hand with speed marks behind the ball. Keeps from, strength and pull. No page change.',
   },
   {
     id: 'Q12',
@@ -2046,10 +2046,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A box with a rubber band vibrating and bold sound arcs',
     kind: 'vibration',
     pages: ['s.1.sound-vibration'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.vibration'],
     notes:
-      'Urgency: high. Weak now: "Rubber band on a box" is a small grey outlined rectangle with an oval hole and a line, floating in empty space; thin sound arcs; 10–11 px captions a Grade 1 student can\'t read; nothing shows vibration. Redo: Real object: wooden or kraft box (texture, TopLight), dark sound hole with inner shadow, a coloured rubber band with slight sheen; ~75 % width. Vibration as 2–3 ghosted band positions at 30 % and bold 3 px sound arcs, absent when stopped. One 16 px chip ("Shaking → sound" / "Still → no sound"). Other scenes in the same style: throat with a hand on it, drum with bouncing rice, bell with motion lines.',
+      'Urgency: high. Weak now: "Rubber band on a box" is a small grey outlined rectangle with an oval hole and a line, floating in empty space; thin sound arcs; 10–11 px captions a Grade 1 student can\'t read; nothing shows vibration. Redo: Real object: wooden or kraft box (texture, TopLight), dark sound hole with inner shadow, a coloured rubber band with slight sheen; ~75 % width. Vibration as 2–3 ghosted band positions at 30 % and bold 3 px sound arcs, absent when stopped. One 16 px chip ("Shaking → sound" / "Still → no sound"). Other scenes in the same style: throat with a hand on it, drum with bouncing rice, bell with motion lines. Drawn (round 4, group B): a wooden box seen a little from above (TopLight, grain, side face, floor shadow) about three quarters of the width, a dark sound hole with a lit rim and an orange rubber band with a sheen wrapped over its ends; shaking, two ghost positions of the band at 30 %. Hum: a child in profile with a hand on the throat and lips closed; drum: a red drum (Sheen shell, cords, metal rims, a skin head) with rice grains that jump and a wooden stick; bell: a brass bell (Metal) on a wooden handle that tips when rung. Shaking adds motion lines and three bold 3 px sound arcs; still has none. One 16 px chip under the picture: "Shaking → sound" or "Still → no sound". No page change.',
   },
   {
     id: 'Q20',
