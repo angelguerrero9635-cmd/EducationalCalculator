@@ -1,0 +1,6523 @@
+{
+ "id": "envision",
+ "curriculum": "enVision Mathematics Common Core (K–5 and 6–8)",
+ "publisher": "Savvas Learning Company",
+ "edition": "©2024",
+ "subject": "math",
+ "grades": [
+  "K",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "content": "titles",
+ "terms": {
+  "unit": "Topic",
+  "lesson": "Lesson"
+ },
+ "license": null,
+ "sourceUrl": "https://www.savvas.com/solutions/mathematics/envision-mathematics-grades-k-12",
+ "retrieved": "2026-09-28",
+ "notes": "Titles only (all rights reserved). Topic and lesson titles as listed on IXL's public enVision Mathematics (2024) skill-plan pages (one per grade, cited as each unit's url); K–5 topic titles cross-checked against Harford County Public Schools' public Grade K–5 math curriculum documents (crossCheckUrl), which name enVision Mathematics 2024 as their primary resource. Lesson numbers are enVision's own (topic-lesson). IXL may leave out a lesson it has no skills for; three G2 rows without a number got it from their neighbours (numberInferred).",
+ "books": [
+  {
+   "grade": "K",
+   "units": [
+    {
+     "n": "1",
+     "title": "Numbers 0 to 5",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Count 1, 2, and 3",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Recognize 1, 2, and 3 in Different Arrangements",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Read, Make, and Write 1, 2, and 3",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Count 4 and 5",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Recognize 4 and 5 in Different Arrangements",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-6",
+       "title": "Read, Make, and Write 4 and 5",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-7",
+       "title": "Identify the Number 0",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-8",
+       "title": "Read and Write 0",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-9",
+       "title": "Numbers to 5",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "1-10",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.count-objects"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Compare Numbers 0 to 5",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Equal Groups",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Greater Than",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Less Than",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Compare Groups to 5 by Counting",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.compare-10"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Numbers 6 to 10",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Count 6 and 7",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Read, Make, and Write 6 and 7",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Count 8 and 9",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Read, Make, and Write 8 and 9",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Count 10",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "3-6",
+       "title": "Read, Make, and Write 10",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "3-7",
+       "title": "Count Numbers to 10",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      },
+      {
+       "n": "3-8",
+       "title": "Problem Solving: Look for and Use Structure",
+       "skills": [
+        "m.K.count-objects"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.count-objects"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Compare Numbers 0 to 10",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Compare Groups to 10 by Matching",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Compare Numbers Using Numerals to 10",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Compare Groups to 10 by Counting",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Compare Numbers to 10",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Problem Solving: Repeated Reasoning",
+       "skills": [
+        "m.K.compare-10"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.compare-10"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Classify and Count Data",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Classify Objects into Categories",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Count the Number of Objects in Each Category",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Sort the Categories by Counting",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Problem Solving: Critique Reasoning",
+       "skills": [
+        "m.K.classify-count"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.classify-count"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Understand Addition",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Explore Addition",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Represent Addition as Adding To",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Represent Addition as Putting Together",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Represent and Explain Addition with Equations",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Solve Addition Word Problems: Add To",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Solve Addition Word Problems: Put Together",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-7",
+       "title": "Use Patterns to Develop Fluency in Addition",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "6-8",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.add-sub-10"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Understand Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Explore Subtraction",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Represent Subtraction as Taking Apart",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Represent Subtraction as Taking From",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Represent and Explain Subtraction with Equations",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Solve Subtraction Word Problems: Taking From and Apart",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Use Patterns to Develop Fluency in Subtraction",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Problem Solving: Use Appropriate Tools",
+       "skills": [
+        "m.K.add-sub-10"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.add-sub-10"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "More Addition and Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Decompose 5 to Solve Problems"
+      },
+      {
+       "n": "8-2",
+       "title": "Related Facts"
+      },
+      {
+       "n": "8-3",
+       "title": "Problem Solving: Reasoning"
+      },
+      {
+       "n": "8-4",
+       "title": "Fluently Add and Subtract to 5"
+      },
+      {
+       "n": "8-5",
+       "title": "Decompose 6 and 7 to Solve Problems"
+      },
+      {
+       "n": "8-6",
+       "title": "Decompose 8 and 9 to Solve Problems"
+      },
+      {
+       "n": "8-7",
+       "title": "Ways to Make 10"
+      },
+      {
+       "n": "8-8",
+       "title": "Decompose 10 to Solve Problems"
+      },
+      {
+       "n": "8-9",
+       "title": "Find the Missing Part of 10"
+      },
+      {
+       "n": "8-10",
+       "title": "Continue to Find the Missing Part of 10"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.add-sub-10",
+      "m.K.make-10"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Count Numbers to 20",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Count, Read, and Write 11 and 12"
+      },
+      {
+       "n": "9-2",
+       "title": "Count, Read, and Write 13, 14, and 15"
+      },
+      {
+       "n": "9-3",
+       "title": "Count, Read, and Write 16 and 17"
+      },
+      {
+       "n": "9-4",
+       "title": "Count, Read, and Write 18, 19, and 20"
+      },
+      {
+       "n": "9-5",
+       "title": "Count Forward from Any Number to 20"
+      },
+      {
+       "n": "9-6",
+       "title": "Count to Find How Many"
+      },
+      {
+       "n": "9-7",
+       "title": "Problem Solving: Reasoning"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.count-objects",
+      "m.K.count-100"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Compose and Decompose Numbers 11 to 19",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Make 11, 12, and 13",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Make 14, 15, and 16",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Make 17, 18, and 19",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Find Parts of 11, 12, and 13",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Find Parts of 14, 15, and 16",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Find Parts of 17, 18, and 19",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      },
+      {
+       "n": "10-7",
+       "title": "Problem Solving: Look for and Use Structure",
+       "skills": [
+        "m.K.teens-place-value"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.teens-place-value"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Count Numbers to 100",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Count Using Patterns to 30",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Count by Ones and by Tens to 50",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Count by Tens to 100",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Count by Ones to 100",
+       "skills": [
+        "m.K.count-100"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Problem Solving: Look for and Use Structure",
+       "skills": [
+        "m.K.count-100"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.count-100"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Identify and Describe Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Two-Dimensional (2-D) and Three-Dimensional (3-D) Shapes"
+      },
+      {
+       "n": "12-2",
+       "title": "Circles and Triangles"
+      },
+      {
+       "n": "12-3",
+       "title": "Squares and Other Rectangles"
+      },
+      {
+       "n": "12-4",
+       "title": "Hexagons"
+      },
+      {
+       "n": "12-5",
+       "title": "Solid Figures"
+      },
+      {
+       "n": "12-6",
+       "title": "Describe Shapes in the Environment"
+      },
+      {
+       "n": "12-7",
+       "title": "Problem Solving: Precision"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.shapes-2d-3d",
+      "m.K.position-words"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Analyze, Compare, and Create Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Analyze and Compare Two-Dimensional (2-D) Shapes"
+      },
+      {
+       "n": "13-2",
+       "title": "Analyze and Compare Three-Dimensional (3-D) Shapes"
+      },
+      {
+       "n": "13-3",
+       "title": "Compare 2-D and 3-D Shapes"
+      },
+      {
+       "n": "13-4",
+       "title": "Problem Solving: Make Sense and Persevere"
+      },
+      {
+       "n": "13-5",
+       "title": "Make 2-D Shapes from Other 2-D Shapes"
+      },
+      {
+       "n": "13-6",
+       "title": "Build 2-D Shapes"
+      },
+      {
+       "n": "13-7",
+       "title": "Build 3-D Shapes"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.shapes-2d-3d",
+      "m.K.compose-shapes"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Describe and Compare Measurable Attributes",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Describe and Compare by Length and Height",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-2",
+       "title": "Describe and Compare by Capacity",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-3",
+       "title": "Describe and Compare by Weight",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-4",
+       "title": "Describe Objects by Measurable Attributes",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-5",
+       "title": "Describe and Compare Objects by Measurable Attributes",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      },
+      {
+       "n": "14-6",
+       "title": "Problem Solving: Precision",
+       "skills": [
+        "m.K.measurable-attributes"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Kindergarten%20Mathematics.pdf",
+     "skills": [
+      "m.K.measurable-attributes"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Step Up to Grade 1",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-kindergarten",
+     "lessons": [
+      {
+       "n": "15-1",
+       "title": "Put Together"
+      },
+      {
+       "n": "15-2",
+       "title": "Take From"
+      },
+      {
+       "n": "15-3",
+       "title": "Facts with 5 on a Ten-Frame"
+      },
+      {
+       "n": "15-4",
+       "title": "Add in Any Order"
+      },
+      {
+       "n": "15-5",
+       "title": "Think Addition to Subtract"
+      },
+      {
+       "n": "15-6",
+       "title": "Add Three Numbers"
+      },
+      {
+       "n": "15-7",
+       "title": "Count by 10s to 120"
+      },
+      {
+       "n": "15-8",
+       "title": "Count by 1s to 120"
+      },
+      {
+       "n": "15-9",
+       "title": "Tens and Ones"
+      },
+      {
+       "n": "15-10",
+       "title": "1 More, 1 Less; 10 More, 10 Less"
+      }
+     ],
+     "skills": [],
+     "notes": "Step Up lessons preview the next grade; not mapped."
+    }
+   ]
+  },
+  {
+   "grade": "1",
+   "units": [
+    {
+     "n": "1",
+     "title": "Understand Addition and Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Add To",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Put Together",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Both Addends Unknown",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Take From",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Compare Situations",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-6",
+       "title": "More Compare Situations",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-7",
+       "title": "Change Unknown",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-8",
+       "title": "Practice Adding and Subtracting",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "1-9",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.add-sub-20"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Fluently Add and Subtract Within 10",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Count On to Add",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Doubles",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Near Doubles",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Facts with 5 on a Ten-Frame",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Add in Any Order",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-6",
+       "title": "Count Back to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-7",
+       "title": "Think Addition to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-8",
+       "title": "Solve Word Problems with Facts to 10",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "2-9",
+       "title": "Problem Solving: Look For and Use Structure",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.add-sub-20"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Addition Facts to 20: Use Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Count On to Add"
+      },
+      {
+       "n": "3-2",
+       "title": "Count On to Add Using an Open Number Line"
+      },
+      {
+       "n": "3-3",
+       "title": "Doubles"
+      },
+      {
+       "n": "3-4",
+       "title": "Doubles Plus"
+      },
+      {
+       "n": "3-5",
+       "title": "Make 10 to Add"
+      },
+      {
+       "n": "3-6",
+       "title": "Continue to Make 10 to Add"
+      },
+      {
+       "n": "3-7",
+       "title": "Explain Addition Strategies"
+      },
+      {
+       "n": "3-8",
+       "title": "Solve Addition Word Problems with Facts to 20"
+      },
+      {
+       "n": "3-9",
+       "title": "Problem Solving: Critique Reasoning"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.add-sub-20",
+      "m.1.addition-properties"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Subtraction Facts to 20: Use Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Count to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Make 10 to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Continue to Make 10 to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Fact Families",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Use Addition to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Continue to Use Addition to Subtract",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Explain Subtraction Strategies",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-8",
+       "title": "Solve Word Problems with Facts to 20",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      },
+      {
+       "n": "4-9",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.1.add-sub-20"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.add-sub-20"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Work with Addition and Subtraction Equations",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Find the Unknown Numbers"
+      },
+      {
+       "n": "5-2",
+       "title": "True or False Equations"
+      },
+      {
+       "n": "5-3",
+       "title": "Make True Equations"
+      },
+      {
+       "n": "5-4",
+       "title": "Add Three Numbers"
+      },
+      {
+       "n": "5-5",
+       "title": "Word Problems with Three Addends"
+      },
+      {
+       "n": "5-6",
+       "title": "Solve Addition and Subtraction Word Problems"
+      },
+      {
+       "n": "5-7",
+       "title": "Problem Solving: Precision"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.equal-sign",
+      "m.1.addition-properties"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Represent and Interpret Data",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Organize Data Into Three Categories",
+       "skills": [
+        "m.1.data-3-categories"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Collect and Represent Data",
+       "skills": [
+        "m.1.data-3-categories"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Interpret Data",
+       "skills": [
+        "m.1.data-3-categories"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Continue to Interpret Data",
+       "skills": [
+        "m.1.data-3-categories"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.1.data-3-categories"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.data-3-categories"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Extend the Counting Sequence",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Count by 10s to 120",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Count by 1s to 120",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Count on a Number Chart to 120",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Count by 1s or 10s to 120",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Count on an Open Number Line",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Count and Write Numerals",
+       "skills": [
+        "m.1.count-120"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Problem Solving: Repeated Reasoning",
+       "skills": [
+        "m.1.count-120"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.count-120"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Understand Place Value",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Make Numbers 11 to 19",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Numbers Made with Tens",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Count with Groups of Tens and Ones",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Tens and Ones",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Continue with Tens and Ones",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "8-6",
+       "title": "Different Names for the Same Number",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "8-7",
+       "title": "Problem Solving: Look For and Use Structure",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.tens-ones"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Compare Two-Digit Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "1 More, 1 Less; 10 More, 10 Less",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Find Numbers on a Hundred Chart",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Compare Numbers",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Compare Numbers with Symbols (>, <, =)",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Compare Numbers on a Number Line",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.1.tens-ones"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.tens-ones"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Use Models and Strategies to Add Tens",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Add Tens Using Models",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Mental Math: Ten More Than a Number",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Add Tens and Ones Using a Hundred Chart",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Add Tens and Ones Using an Open Number Line",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Add Tens and Ones Using Models",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Make a Ten to Add",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-7",
+       "title": "Add Using Place Value",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-8",
+       "title": "Practice Adding Using Strategies",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "10-9",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.add-within-100"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Use Models and Strategies to Subtract Tens",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Subtract Tens Using Models",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Subtract Tens Using a Hundred Chart",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Subtract Tens Using an Open Number Line",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Use Addition to Subtract Tens",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Mental Math: Ten Less Than a Number",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-6",
+       "title": "Use Strategies to Practice Subtraction",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      },
+      {
+       "n": "11-7",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.1.add-within-100"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.add-within-100"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Measure Lengths",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Compare and Order by Length",
+       "skills": [
+        "m.1.measure-nonstandard"
+       ]
+      },
+      {
+       "n": "12-2",
+       "title": "Indirect Measurement",
+       "skills": [
+        "m.1.measure-nonstandard"
+       ]
+      },
+      {
+       "n": "12-3",
+       "title": "Use Units to Measure Length",
+       "skills": [
+        "m.1.measure-nonstandard"
+       ]
+      },
+      {
+       "n": "12-4",
+       "title": "Problem Solving: Use Appropriate Tools",
+       "skills": [
+        "m.1.measure-nonstandard"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.measure-nonstandard"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Time and Money",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Tell the Value of Coins",
+       "skills": [
+        "m.1.time-half-hour"
+       ]
+      },
+      {
+       "n": "13-2",
+       "title": "Find the Value of a Group of Coins",
+       "skills": [
+        "m.1.time-half-hour"
+       ]
+      },
+      {
+       "n": "13-3",
+       "title": "Understand the Hour and Minute Hands",
+       "skills": [
+        "m.1.time-half-hour"
+       ]
+      },
+      {
+       "n": "13-4",
+       "title": "Tell and Write Time to the Hour",
+       "skills": [
+        "m.1.time-half-hour"
+       ]
+      },
+      {
+       "n": "13-5",
+       "title": "Tell and Write Time to the Half Hour",
+       "skills": [
+        "m.1.time-half-hour"
+       ]
+      },
+      {
+       "n": "13-6",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.1.time-half-hour"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.time-half-hour"
+     ],
+     "notes": "Also money (coins), which the taxonomy first teaches in Grade 2 (m.2.money)."
+    },
+    {
+     "n": "14",
+     "title": "Reason with Shapes and Their Attributes",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Use Attributes to Define Two-Dimensional (2-D) Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-2",
+       "title": "Defining and Non-Defining Attributes of 2-D Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-3",
+       "title": "Build and Draw 2-D Shapes by Attributes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-4",
+       "title": "Compose 2-D Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-5",
+       "title": "Compose New 2-D Shapes from 2-D Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-6",
+       "title": "Use Attributes to Define Three-Dimensional (3-D) Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-7",
+       "title": "Defining and Non-Defining Attributes of 3-D Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-8",
+       "title": "Compose with 3-D Shapes",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      },
+      {
+       "n": "14-9",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.1.shape-attributes"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.shape-attributes"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Equal Shares of Circles and Rectangles",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "15-1",
+       "title": "Make Equal Shares",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      },
+      {
+       "n": "15-2",
+       "title": "Make Halves and Fourths of Rectangles and Circles",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      },
+      {
+       "n": "15-3",
+       "title": "Understand Halves and Fourths",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      },
+      {
+       "n": "15-4",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.1.halves-fourths"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%201%20Mathematics.pdf",
+     "skills": [
+      "m.1.halves-fourths"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Step Up to Grade 2",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-1",
+     "lessons": [
+      {
+       "n": "16-1",
+       "title": "Even and Odd Numbers"
+      },
+      {
+       "n": "16-2",
+       "title": "Use Arrays to Find Totals"
+      },
+      {
+       "n": "16-3",
+       "title": "Add on a Hundred Chart"
+      },
+      {
+       "n": "16-4",
+       "title": "Break Apart Numbers to Add"
+      },
+      {
+       "n": "16-5",
+       "title": "Subtract Tens and Ones on a Hundred Chart"
+      },
+      {
+       "n": "16-6",
+       "title": "Break Apart Numbers to Subtract"
+      },
+      {
+       "n": "16-7",
+       "title": "Solve Problems with Coins"
+      },
+      {
+       "n": "16-8",
+       "title": "Understand Hundreds"
+      },
+      {
+       "n": "16-9",
+       "title": "Models and 3-Digit Numbers"
+      },
+      {
+       "n": "16-10",
+       "title": "Read and Write 3-Digit Numbers"
+      }
+     ],
+     "skills": [],
+     "notes": "Step Up lessons preview the next grade; not mapped."
+    }
+   ]
+  },
+  {
+   "grade": "2",
+   "units": [
+    {
+     "n": "1",
+     "title": "Fluently Add and Subtract Within 20",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Addition Fact Strategies",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Doubles and Near Doubles",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Make a 10 to Add",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Addition Fact Patterns",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Count On and Count Back to Subtract",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-6",
+       "title": "Think Addition to Subtract",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-7",
+       "title": "Make a 10 to Subtract",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-8",
+       "title": "Practice Addition and Subtraction Facts",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-9",
+       "title": "Solve Addition and Subtraction Word Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "1-10",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Work with Equal Groups",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Even and Odd Numbers"
+      },
+      {
+       "n": "2-2",
+       "title": "Continue Even and Odd Numbers"
+      },
+      {
+       "n": "2-3",
+       "title": "Use Arrays to Find Totals"
+      },
+      {
+       "n": "2-4",
+       "title": "Make Arrays to Find Totals"
+      },
+      {
+       "n": "2-5",
+       "title": "Problem Solving: Model with Math"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.arrays",
+      "m.2.even-odd"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Add Within 100 Using Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Add Tens and Ones on a Hundred Chart",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Add Tens and Ones on an Open Number Line",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Break Apart Numbers to Add",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Add Using Compensation",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Practice Adding Using Strategies",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "3-6",
+       "title": "Solve One-Step and Two-Step Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "3-7",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Fluently Add Within 100",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Add 2-Digit Numbers Using Models",
+       "numberInferred": true,
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Continue to Add 2-Digit Numbers Using Models",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Add with Partial Sums",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Add Using Mental Math and Partial Sums",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Break Apart Numbers and Add Using Mental Math",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Add More Than Two 2-Digit Numbers",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Practice Adding Using Strategies",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-8",
+       "title": "Solve One-Step and Two-Step Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "4-9",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Subtract Within 100 Using Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Subtract Tens and Ones on a Hundred Chart",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Count Back to Subtract on an Open Number Line",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Add Up to Subtract Using an Open Number Line",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Break Apart Numbers to Subtract",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Subtract Using Compensation",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Practice Subtracting Using Strategies",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Solve One-Step and Two-Step Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "5-8",
+       "title": "Problem Solving: Critique Reasoning",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Fluently Subtract Within 100",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Subtract 1-Digit Numbers Using Models",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Subtract 2-Digit Numbers Using Models",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Subtract Using Partial Differences",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Continue to Subtract Using Partial Differences",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Practice Subtracting",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Solve One-Step and Two-Step Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "6-7",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "More Solving Problems Involving Addition and Subtraction",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Represent Addition and Subtraction Problems",
+       "numberInferred": true,
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Mixed Practice: Solve Addition and Subtraction Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Continue Practice with Addition and Subtraction Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Solve Two-Step Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Continue to Solve Two-Step Problems",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Make True Equations",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Continue to Make True Equations",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      },
+      {
+       "n": "7-8",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.2.add-sub-100-fluency"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Work with Time and Money",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Solve Problems with Coins"
+      },
+      {
+       "n": "8-2",
+       "title": "Continue to Solve Problems with Coins"
+      },
+      {
+       "n": "8-3",
+       "title": "Solve Problems with Dollar Bills"
+      },
+      {
+       "n": "8-4",
+       "title": "Continue to Solve Problems with Dollar Bills"
+      },
+      {
+       "n": "8-5",
+       "title": "Problem Solving: Reasoning"
+      },
+      {
+       "n": "8-6",
+       "title": "Tell and Write Time to Five Minutes"
+      },
+      {
+       "n": "8-7",
+       "title": "Tell Time Before and After the Hour"
+      },
+      {
+       "n": "8-8",
+       "title": "A.M. and P.M."
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.time-5-min",
+      "m.2.money"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Numbers to 1,000",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Understand Hundreds"
+      },
+      {
+       "n": "9-2",
+       "title": "Models and 3-Digit Numbers"
+      },
+      {
+       "n": "9-3",
+       "title": "Name Place Values"
+      },
+      {
+       "n": "9-4",
+       "title": "Read and Write 3-Digit Numbers"
+      },
+      {
+       "n": "9-5",
+       "title": "Different Ways to Name the Same Number"
+      },
+      {
+       "n": "9-6",
+       "title": "Place-Value Patterns with Numbers"
+      },
+      {
+       "n": "9-7",
+       "title": "Skip Count by 5s, 10s, and 100s to 1,000"
+      },
+      {
+       "n": "9-8",
+       "title": "Compare Numbers Using Place Value"
+      },
+      {
+       "n": "9-9",
+       "title": "Compare Numbers on the Number Line"
+      },
+      {
+       "n": "9-10",
+       "title": "Problem Solving: Look For and Use Structure"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.place-value-1000",
+      "m.2.skip-count"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Add Within 1,000 Using Models and Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Add 10 and 100",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Add on an Open Number Line",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Add Using Models",
+       "numberInferred": true,
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Continue to Add Using Models and Place Value",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Add Using Place Value and Partial Sums",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-6",
+       "title": "Explain Addition Strategies",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "10-7",
+       "title": "Problem Solving: Repeated Reasoning",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-1000"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Subtract Within 1,000 Using Models and Strategies",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Subtract 10 and 100",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Subtract on an Open Number Line",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Subtract Using Models",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Subtract Using Models and Place Value",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Explain Subtraction Strategies",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      },
+      {
+       "n": "11-6",
+       "title": "Problem Solving: Persevere",
+       "skills": [
+        "m.2.add-sub-1000"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.add-sub-1000"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Measuring Length",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Estimating Length",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-2",
+       "title": "Measure with Inches",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-3",
+       "title": "Inches, Feet, and Yards",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-4",
+       "title": "Measure Length Using Different Customary Units",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-5",
+       "title": "Measure with Centimeters",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-6",
+       "title": "Centimeters and Meters",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-7",
+       "title": "Measure Length Using Different Metric Units",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-8",
+       "title": "Compare Lengths",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      },
+      {
+       "n": "12-9",
+       "title": "Problem Solving: Precision",
+       "skills": [
+        "m.2.standard-length"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.standard-length"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Shapes and Their Attributes",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "2-Dimensional Shapes",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      },
+      {
+       "n": "13-2",
+       "title": "Polygons and Angles",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      },
+      {
+       "n": "13-3",
+       "title": "Draw 2-Dimensional Shapes",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      },
+      {
+       "n": "13-4",
+       "title": "Cubes",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      },
+      {
+       "n": "13-5",
+       "title": "Equal Shares",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      },
+      {
+       "n": "13-6",
+       "title": "Partition Shapes",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      },
+      {
+       "n": "13-7",
+       "title": "Equal Shares, Different Shapes",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      },
+      {
+       "n": "13-8",
+       "title": "Problem Solving: Repeated Reasoning",
+       "skills": [
+        "m.2.thirds-polygons"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.thirds-polygons"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "More Addition, Subtraction, and Length",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Add and Subtract with Measurements"
+      },
+      {
+       "n": "14-2",
+       "title": "Find Unknown Measurements"
+      },
+      {
+       "n": "14-3",
+       "title": "Continue to Find Unknown Measurements"
+      },
+      {
+       "n": "14-4",
+       "title": "Add and Subtract on a Number Line"
+      },
+      {
+       "n": "14-5",
+       "title": "Problem Solving: Use Appropriate Tools"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.standard-length",
+      "m.2.add-sub-100-fluency"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Graphs and Data",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "15-1",
+       "title": "Line Plots",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "15-2",
+       "title": "More Line Plots",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "15-3",
+       "title": "Bar Graphs",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "15-4",
+       "title": "Picture Graphs",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "15-5",
+       "title": "Draw Conclusions from Graphs",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      },
+      {
+       "n": "15-6",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.2.graphs-line-plots"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%202%20Mathematics.pdf",
+     "skills": [
+      "m.2.graphs-line-plots"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Step Up to Grade 3",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-2",
+     "lessons": [
+      {
+       "n": "16-1",
+       "title": "Relate Multiplication and Addition"
+      },
+      {
+       "n": "16-2",
+       "title": "Arrays and Properties"
+      },
+      {
+       "n": "16-3",
+       "title": "Division: How Many in Each Group?"
+      },
+      {
+       "n": "16-4",
+       "title": "Division: How Many Equal Groups?"
+      },
+      {
+       "n": "16-5",
+       "title": "Use Partial Sums to Add"
+      },
+      {
+       "n": "16-6",
+       "title": "Use Regrouping to Add"
+      },
+      {
+       "n": "16-7",
+       "title": "Use Partial Differences to Subtract"
+      },
+      {
+       "n": "16-8",
+       "title": "Use Regrouping to Subtract"
+      },
+      {
+       "n": "16-9",
+       "title": "Partition Regions into Equal Parts"
+      },
+      {
+       "n": "16-10",
+       "title": "Fractions and Regions"
+      }
+     ],
+     "skills": [],
+     "notes": "Step Up lessons preview the next grade; not mapped."
+    }
+   ]
+  },
+  {
+   "grade": "3",
+   "units": [
+    {
+     "n": "1",
+     "title": "Understand Multiplication and Division of Whole Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Relate Multiplication and Addition",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Multiplication on the Number Line",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Arrays and Properties",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Division: How Many in Each Group?",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Division: How Many Equal Groups?",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "1-6",
+       "title": "Problem Solving: Use Appropriate Tools",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.multiply-divide-100"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Multiplication Facts: Use Patterns",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "2 and 5 as Factors"
+      },
+      {
+       "n": "2-2",
+       "title": "9 as a Factor"
+      },
+      {
+       "n": "2-3",
+       "title": "Apply Properties: Multiply by 0 and 1"
+      },
+      {
+       "n": "2-4",
+       "title": "Multiply by 10"
+      },
+      {
+       "n": "2-5",
+       "title": "Multiplication Facts: 0, 1, 2, 5, 9, and 10"
+      },
+      {
+       "n": "2-6",
+       "title": "Problem Solving: Model with Math"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.multiply-divide-100",
+      "m.3.arithmetic-patterns"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Apply Properties: Multiplication Facts for 3, 4, 6, 7, 8",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "The Distributive Property"
+      },
+      {
+       "n": "3-2",
+       "title": "Apply Properties: 3 and 4 as Factors"
+      },
+      {
+       "n": "3-3",
+       "title": "Apply Properties: 6 and 7 as Factors"
+      },
+      {
+       "n": "3-4",
+       "title": "Apply Properties: 8 as a Factor"
+      },
+      {
+       "n": "3-5",
+       "title": "Practice Multiplication Facts"
+      },
+      {
+       "n": "3-6",
+       "title": "The Associative Property: Multiply with 3 Factors"
+      },
+      {
+       "n": "3-7",
+       "title": "Problem Solving: Repeated Reasoning"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.multiplication-properties",
+      "m.3.multiply-divide-100"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Use Multiplication to Divide: Division Facts",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Relate Multiplication and Division",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Use Multiplication to Divide with 2, 3, 4, and 5",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Use Multiplication to Divide with 6 and 7",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Use Multiplication to Divide with 8 and 9",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Multiplication Patterns: Even and Odd Numbers",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Division Involving 0 and 1",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Practice Multiplication and Division Facts",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-8",
+       "title": "Solve Multiplication and Division Equations",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      },
+      {
+       "n": "4-9",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.3.multiply-divide-100"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.multiply-divide-100"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Fluently Multiply and Divide within 100",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Patterns for Multiplication Facts"
+      },
+      {
+       "n": "5-2",
+       "title": "Use a Table to Multiply and Divide"
+      },
+      {
+       "n": "5-3",
+       "title": "Use Strategies to Multiply"
+      },
+      {
+       "n": "5-4",
+       "title": "Solve Word Problems: Multiplication and Division Facts"
+      },
+      {
+       "n": "5-5",
+       "title": "Write Multiplication and Division Math Stories"
+      },
+      {
+       "n": "5-6",
+       "title": "Problem Solving: Look For and Use Structure"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.multiply-divide-100",
+      "m.3.arithmetic-patterns"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Connect Area to Multiplication and Addition",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Cover Regions"
+      },
+      {
+       "n": "6-2",
+       "title": "Area: Nonstandard Units"
+      },
+      {
+       "n": "6-3",
+       "title": "Area: Standard Units"
+      },
+      {
+       "n": "6-4",
+       "title": "Area of Squares and Rectangles"
+      },
+      {
+       "n": "6-5",
+       "title": "Apply Properties: Area and the Distributive Property"
+      },
+      {
+       "n": "6-6",
+       "title": "Apply Properties: Area of Irregular Shapes"
+      },
+      {
+       "n": "6-7",
+       "title": "Problem Solving: Look For and Use Structure"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.area",
+      "m.3.multiplication-properties"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Represent and Interpret Data",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Read Picture Graphs and Bar Graphs",
+       "skills": [
+        "m.3.scaled-graphs"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Make Picture Graphs",
+       "skills": [
+        "m.3.scaled-graphs"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Make Bar Graphs",
+       "skills": [
+        "m.3.scaled-graphs"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Solve Word Problems Using Information in Graphs",
+       "skills": [
+        "m.3.scaled-graphs"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Problem Solving: Precision",
+       "skills": [
+        "m.3.scaled-graphs"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.scaled-graphs"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Use Strategies and Properties to Add and Subtract",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Addition Properties"
+      },
+      {
+       "n": "8-2",
+       "title": "Algebra: Addition Patterns"
+      },
+      {
+       "n": "8-3",
+       "title": "Mental Math: Addition"
+      },
+      {
+       "n": "8-4",
+       "title": "Mental Math: Subtraction"
+      },
+      {
+       "n": "8-5",
+       "title": "Round Whole Numbers"
+      },
+      {
+       "n": "8-6",
+       "title": "Estimate Sums"
+      },
+      {
+       "n": "8-7",
+       "title": "Estimate Differences"
+      },
+      {
+       "n": "8-8",
+       "title": "Problem Solving: Model with Math"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.add-sub-1000",
+      "m.3.arithmetic-patterns"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Fluently Add and Subtract Within 1,000",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Use Partial Sums to Add"
+      },
+      {
+       "n": "9-2",
+       "title": "Use Regrouping to Add"
+      },
+      {
+       "n": "9-3",
+       "title": "Add 3 or More Numbers"
+      },
+      {
+       "n": "9-4",
+       "title": "Use Partial Differences to Subtract"
+      },
+      {
+       "n": "9-5",
+       "title": "Use Regrouping to Subtract"
+      },
+      {
+       "n": "9-6",
+       "title": "Use Strategies to Add and Subtract"
+      },
+      {
+       "n": "9-7",
+       "title": "Problem Solving: Construct Arguments"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.add-sub-1000",
+      "m.3.rounding"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Multiply by Multiples of 10",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Use Patterns to Multiply",
+       "skills": [
+        "m.3.multiply-by-tens"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Use Mental Math to Multiply",
+       "skills": [
+        "m.3.multiply-by-tens"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Use Properties to Multiply",
+       "skills": [
+        "m.3.multiply-by-tens"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Problem Solving: Look For and Use Structure",
+       "skills": [
+        "m.3.multiply-by-tens"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.multiply-by-tens"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Use Operations with Whole Numbers to Solve Problems",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Solve 2-Step Word Problems: Addition and Subtraction",
+       "skills": [
+        "m.3.two-step-problems"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Solve 2-Step Word Problems: Multiplication and Division",
+       "skills": [
+        "m.3.two-step-problems"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Solve 2-Step Word Problems: All Operations",
+       "skills": [
+        "m.3.two-step-problems"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Problem Solving: Critique Reasoning",
+       "skills": [
+        "m.3.two-step-problems"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.two-step-problems"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Understand Fractions as Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Partition Regions Into Equal Parts",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "12-2",
+       "title": "Fractions and Regions",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "12-3",
+       "title": "Understand the Whole",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "12-4",
+       "title": "Number Line: Fractions Less Than 1",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "12-5",
+       "title": "Number Line: Fractions Greater Than 1",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "12-6",
+       "title": "Line Plots and Length",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "12-7",
+       "title": "More Line Plots and Length",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      },
+      {
+       "n": "12-8",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.3.fractions-number-line"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.fractions-number-line"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Fraction Equivalence and Comparison",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Equivalent Fractions: Use Models",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "13-2",
+       "title": "Equivalent Fractions: Use the Number Line",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "13-3",
+       "title": "Use Models to Compare Fractions: Same Denominator",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "13-4",
+       "title": "Use Models to Compare Fractions: Same Numerator",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "13-5",
+       "title": "Compare Fractions: Use Benchmarks",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "13-6",
+       "title": "Compare Fractions: Use the Number Line",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "13-7",
+       "title": "Whole Numbers and Fractions",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      },
+      {
+       "n": "13-8",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.3.compare-fractions"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.compare-fractions"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Solve Time, Capacity, and Mass Problems",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Time to the Minute"
+      },
+      {
+       "n": "14-2",
+       "title": "Units of Time: Measure Elapsed Time"
+      },
+      {
+       "n": "14-3",
+       "title": "Units of Time: Solve Word Problems"
+      },
+      {
+       "n": "14-4",
+       "title": "Estimate Liquid Volume"
+      },
+      {
+       "n": "14-5",
+       "title": "Measure Liquid Volume"
+      },
+      {
+       "n": "14-6",
+       "title": "Estimate Mass"
+      },
+      {
+       "n": "14-7",
+       "title": "Measure Mass"
+      },
+      {
+       "n": "14-8",
+       "title": "Solve Word Problems Involving Mass and Liquid Volume"
+      },
+      {
+       "n": "14-9",
+       "title": "Problem Solving: Reasoning"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.elapsed-time",
+      "m.3.mass-liquid-volume"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Attributes of Two-Dimensional Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "15-1",
+       "title": "Describe Quadrilaterals",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      },
+      {
+       "n": "15-2",
+       "title": "Classify Shapes",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      },
+      {
+       "n": "15-3",
+       "title": "Analyze and Compare Quadrilaterals",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      },
+      {
+       "n": "15-4",
+       "title": "Problem Solving: Precision",
+       "skills": [
+        "m.3.quadrilaterals"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.quadrilaterals"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Solve Perimeter Problems",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "16-1",
+       "title": "Understand Perimeter",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "16-2",
+       "title": "Perimeter of Common Shapes",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "16-3",
+       "title": "Perimeter and Unknown Side Lengths",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "16-4",
+       "title": "Same Perimeter, Different Area",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "16-5",
+       "title": "Same Area, Different Perimeter",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      },
+      {
+       "n": "16-6",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.3.perimeter"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%203%20Mathematics.pdf",
+     "skills": [
+      "m.3.perimeter"
+     ]
+    },
+    {
+     "n": "17",
+     "title": "Step Up to Grade 4",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-3",
+     "lessons": [
+      {
+       "n": "17-1",
+       "title": "Place Value Relationships"
+      },
+      {
+       "n": "17-2",
+       "title": "Multiply by Multiples of 10, 100, and 1000"
+      },
+      {
+       "n": "17-3",
+       "title": "Multiply by Multiples of 10"
+      },
+      {
+       "n": "17-4",
+       "title": "Use Models to Multiply 2-Digit Numbers by Multiples of 10"
+      },
+      {
+       "n": "17-5",
+       "title": "Interpret Remainders"
+      },
+      {
+       "n": "17-6",
+       "title": "Model Addition of Fractions"
+      },
+      {
+       "n": "17-7",
+       "title": "Decompose Fractions"
+      },
+      {
+       "n": "17-8",
+       "title": "Lines, Rays, and Angles"
+      },
+      {
+       "n": "17-9",
+       "title": "Understand Angles and Unit Angles"
+      },
+      {
+       "n": "17-10",
+       "title": "Lines"
+      }
+     ],
+     "skills": [],
+     "notes": "Step Up lessons preview the next grade; not mapped."
+    }
+   ]
+  },
+  {
+   "grade": "4",
+   "units": [
+    {
+     "n": "1",
+     "title": "Generalize Place Value Understanding",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Numbers Through One Million",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Place Value Relationships",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Compare Whole Numbers",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Round Whole Numbers",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.4.place-value-million"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.place-value-million"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Fluently Add and Subtract Multi-Digit Whole Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Finding Sums and Differences with Mental Math"
+      },
+      {
+       "n": "2-2",
+       "title": "Estimate Sums and Differences"
+      },
+      {
+       "n": "2-3",
+       "title": "Add Whole Numbers"
+      },
+      {
+       "n": "2-4",
+       "title": "Add Greater Numbers"
+      },
+      {
+       "n": "2-5",
+       "title": "Subtract Whole Numbers"
+      },
+      {
+       "n": "2-6",
+       "title": "Subtract Greater Numbers"
+      },
+      {
+       "n": "2-7",
+       "title": "Subtract Across Zeros"
+      },
+      {
+       "n": "2-8",
+       "title": "Problem Solving: Reasoning"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [],
+     "notes": "Multi-digit addition and subtraction (4.NBT.4) has no Grade 4 skill; nearest m.3.add-sub-1000."
+    },
+    {
+     "n": "3",
+     "title": "Use Strategies and Properties to Multiply by 1-Digit Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Multiply by Multiples of 10, 100, and 1,000",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Estimate Products",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Use Arrays and Partial Products to Multiply",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Use Area Models and Partial Products to Multiply",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "More Use Area Models and Partial Products to Multiply",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "3-6",
+       "title": "Mental Math Strategies for Multiplication",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "3-7",
+       "title": "Choose a Strategy to Multiply",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "3-8",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.multi-digit-multiply"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Use Strategies and Properties to Multiply by 2-Digit Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Multiply Multiples of 10",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Use Models to Multiply 2-Digit Numbers by Multiples of 10",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Estimate: Use Rounding or Compatible Numbers",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Arrays and Partial Products",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Area Models and Partial Products",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Use Partial Products to Multiply by 2-Digit Numbers",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.4.multi-digit-multiply"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.multi-digit-multiply"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Use Strategies and Properties to Divide by 1-Digit Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Mental Math: Find Quotients",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Mental Math: Estimate Quotients",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Mental Math: Estimate Quotients for Greater Dividends",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Interpret Remainders",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Use Partial Quotients to Divide",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Use Partial Quotients to Divide: Greater Dividends",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Use Sharing to Divide",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-8",
+       "title": "Continue Sharing to Divide",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-9",
+       "title": "Choose a Strategy to Divide",
+       "skills": [
+        "m.4.long-division"
+       ]
+      },
+      {
+       "n": "5-10",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.4.long-division"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.long-division"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Use Operations with Whole Numbers to Solve Problems",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Solve Comparison Problems"
+      },
+      {
+       "n": "6-2",
+       "title": "Continue to Solve Comparison Problems"
+      },
+      {
+       "n": "6-3",
+       "title": "Model Multi-Step Problems"
+      },
+      {
+       "n": "6-4",
+       "title": "More Model Multi-Step Problems"
+      },
+      {
+       "n": "6-5",
+       "title": "Solve Multi-Step Problems"
+      },
+      {
+       "n": "6-6",
+       "title": "Problem Solving: Make Sense and Persevere"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.multi-digit-multiply",
+      "m.4.long-division"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Factors and Multiples",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Understand Factors",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Factors",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Repeated Reasoning",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Prime and Composite Numbers",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Multiples",
+       "skills": [
+        "m.4.factors-multiples"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.factors-multiples"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Extend Understanding of Fraction Equivalence and Ordering",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Equivalent Fractions: Area Models",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Equivalent Fractions: Number Lines",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Generate Equivalent Fractions: Multiplication",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Generate Equivalent Fractions: Division",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Use Benchmarks to Compare Fractions",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-6",
+       "title": "Compare Fractions",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      },
+      {
+       "n": "8-7",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.4.fraction-equivalence"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.fraction-equivalence"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Understand Addition and Subtraction of Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Model Addition of Fractions",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Decompose Fractions",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Add Fractions with Like Denominators",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Model Subtraction of Fractions",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Subtract Fractions with Like Denominators",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Add and Subtract Fractions with Like Denominators",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-7",
+       "title": "Model Addition and Subtraction of Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-8",
+       "title": "Add Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-9",
+       "title": "Subtract Mixed Numbers",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      },
+      {
+       "n": "9-10",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.4.add-fractions-like"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.add-fractions-like"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Extend Multiplication Concepts to Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Fractions as Multiples of Unit Fractions",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "10-2",
+       "title": "Multiply a Fraction by a Whole Number: Use Models",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "10-3",
+       "title": "Multiply a Fraction by a Whole Number: Use Symbols",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "10-4",
+       "title": "Solve Time Problems",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      },
+      {
+       "n": "10-5",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.4.fraction-times-whole"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.fraction-times-whole"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Represent and Interpret Data on Line Plots",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Read line plots"
+      },
+      {
+       "n": "11-2",
+       "title": "Make line plots"
+      },
+      {
+       "n": "11-3",
+       "title": "Use Line Plots to Solve Problems"
+      },
+      {
+       "n": "11-4",
+       "title": "Problem Solving: Critique Reasoning"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [],
+     "notes": "Line plots of fraction measurements (4.MD.4) have no Grade 4 skill; nearest m.3.measure-line-plots."
+    },
+    {
+     "n": "12",
+     "title": "Understand and Compare Decimals",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Fractions and Decimals",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-2",
+       "title": "Fractions and Decimals on the Number Line",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-3",
+       "title": "Compare Decimals",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-4",
+       "title": "Add Fractions with Denominators of 10 or 100",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-5",
+       "title": "Solve Word Problems Involving Money",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      },
+      {
+       "n": "12-6",
+       "title": "Problem Solving: Look For and Use Structure",
+       "skills": [
+        "m.4.decimals-intro"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.decimals-intro"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Measurement: Find Equivalence in Units of Measure",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Equivalence with Customary Units of Length"
+      },
+      {
+       "n": "13-2",
+       "title": "Equivalence with Customary Units of Capacity"
+      },
+      {
+       "n": "13-3",
+       "title": "Equivalence with Customary Units of Weight"
+      },
+      {
+       "n": "13-4",
+       "title": "Equivalence with Metric Units of Length"
+      },
+      {
+       "n": "13-5",
+       "title": "Equivalence with Metric Units of Capacity and Mass"
+      },
+      {
+       "n": "13-6",
+       "title": "Solve Perimeter and Area Problems"
+      },
+      {
+       "n": "13-7",
+       "title": "Problem Solving: Precision"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.unit-conversion",
+      "m.4.area-perimeter-formulas"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Algebra: Generate and Analyze Patterns",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "Number Sequences"
+      },
+      {
+       "n": "14-2",
+       "title": "Patterns: Number Rules"
+      },
+      {
+       "n": "14-3",
+       "title": "Patterns: Repeating Shapes"
+      },
+      {
+       "n": "14-4",
+       "title": "Problem Solving: Look For and Use Structure"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [],
+     "notes": "Number and shape patterns (4.OA.5) have no Grade 4 skill; nearest m.3.arithmetic-patterns."
+    },
+    {
+     "n": "15",
+     "title": "Geometric Measurement: Understand Concepts of Angles and Angle Measurement",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "15-1",
+       "title": "Lines, Rays, and Angles",
+       "skills": [
+        "m.4.angles"
+       ]
+      },
+      {
+       "n": "15-2",
+       "title": "Understand Angles and Unit Angles",
+       "skills": [
+        "m.4.angles"
+       ]
+      },
+      {
+       "n": "15-3",
+       "title": "Measure with Unit Angles",
+       "skills": [
+        "m.4.angles"
+       ]
+      },
+      {
+       "n": "15-4",
+       "title": "Measure and Draw Angles",
+       "skills": [
+        "m.4.angles"
+       ]
+      },
+      {
+       "n": "15-5",
+       "title": "Add and Subtract Angle Measures",
+       "skills": [
+        "m.4.angles"
+       ]
+      },
+      {
+       "n": "15-6",
+       "title": "Problem Solving: Use Appropriate Tools",
+       "skills": [
+        "m.4.angles"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.angles"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Lines, Angles, and Shapes",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "16-1",
+       "title": "Lines",
+       "skills": [
+        "m.4.lines-symmetry"
+       ]
+      },
+      {
+       "n": "16-2",
+       "title": "Classify Triangles",
+       "skills": [
+        "m.4.lines-symmetry"
+       ]
+      },
+      {
+       "n": "16-3",
+       "title": "Classify Quadrilaterals",
+       "skills": [
+        "m.4.lines-symmetry"
+       ]
+      },
+      {
+       "n": "16-4",
+       "title": "Line Symmetry",
+       "skills": [
+        "m.4.lines-symmetry"
+       ]
+      },
+      {
+       "n": "16-5",
+       "title": "Draw Shapes with Line Symmetry",
+       "skills": [
+        "m.4.lines-symmetry"
+       ]
+      },
+      {
+       "n": "16-6",
+       "title": "Problem Solving: Critique Reasoning",
+       "skills": [
+        "m.4.lines-symmetry"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%204%20Mathematics.pdf",
+     "skills": [
+      "m.4.lines-symmetry"
+     ]
+    },
+    {
+     "n": "17",
+     "title": "Step-Up to Grade 5",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-4",
+     "lessons": [
+      {
+       "n": "17-1",
+       "title": "Understand Decimal Place Value"
+      },
+      {
+       "n": "17-2",
+       "title": "Compare Decimals"
+      },
+      {
+       "n": "17-3",
+       "title": "Use Models to Add and Subtract Decimals"
+      },
+      {
+       "n": "17-4",
+       "title": "Estimate the Product of a Decimal and a Whole Number"
+      },
+      {
+       "n": "17-5",
+       "title": "Find Common Denominators"
+      },
+      {
+       "n": "17-6",
+       "title": "Add Fractions with Unlike Denominators"
+      },
+      {
+       "n": "17-7",
+       "title": "Subtract Fractions with Unlike Denominators"
+      },
+      {
+       "n": "17-8",
+       "title": "Multiply a Whole Number by a Fraction"
+      },
+      {
+       "n": "17-9",
+       "title": "Divide Whole Numbers by Unit Fractions"
+      },
+      {
+       "n": "17-10",
+       "title": "Model Volume"
+      }
+     ],
+     "skills": [],
+     "notes": "Step Up lessons preview the next grade; not mapped."
+    }
+   ]
+  },
+  {
+   "grade": "5",
+   "units": [
+    {
+     "n": "1",
+     "title": "Understand Place Value",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Patterns with Exponents and Powers of 10",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Understand Whole-Number Place Value",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Decimals to Thousandths",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Understand Decimal Place Value",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Compare Decimals",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "1-6",
+       "title": "Round Decimals",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      },
+      {
+       "n": "1-7",
+       "title": "Problem Solving: Look For and Use Structure",
+       "skills": [
+        "m.5.powers-of-ten"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.powers-of-ten"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Use Models and Strategies to Add and Subtract Decimals",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Mental Math",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Estimate Sums and Differences of Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Use Models to Add and Subtract Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Use Strategies to Add Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Use Strategies to Subtract Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "2-6",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.decimal-operations"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Fluently Multiply Multi-Digit Whole Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Multiply Greater Numbers by Powers of 10",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Estimate Products",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Multiply by 1-Digit Numbers",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Multiply 2-Digit by 2-Digit Numbers",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Multiply 3-Digit by 2-Digit Numbers",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-6",
+       "title": "Multiply Whole Numbers with Zeros",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-7",
+       "title": "Practice Multiplying Multi-Digit Numbers",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-8",
+       "title": "Solve Word Problems Using Multiplication",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      },
+      {
+       "n": "3-9",
+       "title": "Problem Solving: Critique Reasoning",
+       "skills": [
+        "m.5.standard-algorithm"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.standard-algorithm"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Use Models and Strategies to Multiply Decimals",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Multiply Decimals by Powers of 10",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Estimate the Product of a Decimal and a Whole Number",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Use Models to Multiply a Decimal and a Whole Number",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Multiply a Decimal and a Whole Number",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Use Models to Multiply a Decimal and a Decimal",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Multiply Decimals Using Partial Products",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Use Properties to Multiply Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-8",
+       "title": "Use Number Sense to Multiply Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "4-9",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.decimal-operations"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Use Models and Strategies to Divide Whole Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Use Patterns and Mental Math to Divide",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Estimate Quotients with 2-Digit Divisors",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Use Models and Properties to Divide with 2-Digit Divisors",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Use Partial Quotients to Divide",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Use Sharing to Divide: 2-Digit Divisors",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Use Sharing to Divide: Greater Dividends",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Choose a Strategy to Divide",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      },
+      {
+       "n": "5-8",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.5.divide-2-digit"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.divide-2-digit"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Use Models and Strategies to Divide Decimals",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Patterns for Dividing with Decimals",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Estimate Decimal Quotients",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Use Models to Divide by a 1-Digit Whole Number",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Divide by a 2-Digit Whole Number",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Divide by a Decimal",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.5.decimal-operations"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.decimal-operations"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Use Equivalent Fractions to Add and Subtract Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Estimate Sums and Differences of Fractions",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Find Common Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Add Fractions with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Subtract Fractions with Unlike Denominators",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Add and Subtract Fractions",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Estimate Sums and Differences of Mixed Numbers",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Use Models to Add Mixed Numbers",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-8",
+       "title": "Add Mixed Numbers",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-9",
+       "title": "Use Models to Subtract Mixed Numbers",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-10",
+       "title": "Subtract Mixed Numbers",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-11",
+       "title": "Add and Subtract Mixed Numbers",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      },
+      {
+       "n": "7-12",
+       "title": "Problem Solving: Model with Math",
+       "skills": [
+        "m.5.add-fractions-unlike"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.add-fractions-unlike"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Apply Understanding of Multiplication to Multiply Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Multiply a Fraction by a Whole Number",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Multiply a Whole Number by a Fraction",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Multiply Fractions and Whole Numbers",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Use Models to Multiply Two Fractions",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Multiply Two Fractions",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-6",
+       "title": "Area of a Rectangle",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-7",
+       "title": "Multiply Mixed Numbers",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-8",
+       "title": "Multiplication as Scaling",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      },
+      {
+       "n": "8-9",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.5.multiply-fractions"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.multiply-fractions"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Apply Understanding of Division to Divide Fractions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "9-1",
+       "title": "Fractions and Division",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "9-2",
+       "title": "Fractions and Mixed Numbers as Quotients",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "9-3",
+       "title": "Use Multiplication to Divide",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "9-4",
+       "title": "Divide Whole Numbers by Unit Fractions",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "9-5",
+       "title": "Divide Unit Fractions by Non-Zero Whole Numbers",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "9-6",
+       "title": "Divide Whole Numbers and Unit Fractions",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "9-7",
+       "title": "Solve Problems Using Division",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      },
+      {
+       "n": "9-8",
+       "title": "Problem Solving: Repeated Reasoning",
+       "skills": [
+        "m.5.divide-unit-fractions"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.divide-unit-fractions"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Represent and Interpret Data",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "10-1",
+       "title": "Analyze Line Plots"
+      },
+      {
+       "n": "10-2",
+       "title": "Make Line Plots"
+      },
+      {
+       "n": "10-3",
+       "title": "Solve Word Problems Using Measurement Data"
+      },
+      {
+       "n": "10-4",
+       "title": "Problem Solving: Critique Reasoning"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [],
+     "notes": "Line plots with fractions (5.MD.2) have no Grade 5 skill; nearest m.3.measure-line-plots."
+    },
+    {
+     "n": "11",
+     "title": "Understand Volume Concepts",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "11-1",
+       "title": "Model Volume",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "11-2",
+       "title": "Develop a Volume Formula",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "11-3",
+       "title": "Combine Volumes of Prisms",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "11-4",
+       "title": "Solve Word Problems Using Volume",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      },
+      {
+       "n": "11-5",
+       "title": "Problem Solving: Use Appropriate Tools",
+       "skills": [
+        "m.5.volume-rectangular"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.volume-rectangular"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Convert Measurements",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "12-1",
+       "title": "Convert Customary Units of Length"
+      },
+      {
+       "n": "12-2",
+       "title": "Convert Customary Units of Capacity"
+      },
+      {
+       "n": "12-3",
+       "title": "Convert Customary Units of Weight"
+      },
+      {
+       "n": "12-4",
+       "title": "Convert Metric Units of Length"
+      },
+      {
+       "n": "12-5",
+       "title": "Convert Metric Units of Capacity"
+      },
+      {
+       "n": "12-6",
+       "title": "Convert Metric Units of Mass"
+      },
+      {
+       "n": "12-7",
+       "title": "Convert Units of Time"
+      },
+      {
+       "n": "12-8",
+       "title": "Solve Word Problems Using Measurement Conversions"
+      },
+      {
+       "n": "12-9",
+       "title": "Problem Solving: Precision"
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [],
+     "notes": "Converting measurement units (5.MD.1) has no Grade 5 skill; nearest m.4.unit-conversion."
+    },
+    {
+     "n": "13",
+     "title": "Write and Interpret Numerical Expressions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "13-1",
+       "title": "Evaluate Expressions",
+       "skills": [
+        "m.5.order-of-operations"
+       ]
+      },
+      {
+       "n": "13-2",
+       "title": "Write Numerical Expressions",
+       "skills": [
+        "m.5.order-of-operations"
+       ]
+      },
+      {
+       "n": "13-3",
+       "title": "Interpret Numerical Expressions",
+       "skills": [
+        "m.5.order-of-operations"
+       ]
+      },
+      {
+       "n": "13-4",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.5.order-of-operations"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.order-of-operations"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Graph Points on the Coordinate Plane",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "14-1",
+       "title": "The Coordinate System",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      },
+      {
+       "n": "14-2",
+       "title": "Graph Data Using Ordered Pairs",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      },
+      {
+       "n": "14-3",
+       "title": "Solve Problems Using Ordered Pairs",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      },
+      {
+       "n": "14-4",
+       "title": "Problem Solving: Reasoning",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.coordinate-plane-q1"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Algebra: Analyze Patterns and Relationships",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "15-1",
+       "title": "Numerical Patterns",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      },
+      {
+       "n": "15-2",
+       "title": "More Numerical Patterns",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      },
+      {
+       "n": "15-3",
+       "title": "Analyze and Graph Relationships",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      },
+      {
+       "n": "15-4",
+       "title": "Problem Solving: Make Sense and Persevere",
+       "skills": [
+        "m.5.coordinate-plane-q1"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.coordinate-plane-q1"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Geometric Measurement: Classify Two-Dimensional Figures",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "16-1",
+       "title": "Classify Triangles",
+       "skills": [
+        "m.5.classify-2d"
+       ]
+      },
+      {
+       "n": "16-2",
+       "title": "Classify Quadrilaterals",
+       "skills": [
+        "m.5.classify-2d"
+       ]
+      },
+      {
+       "n": "16-3",
+       "title": "Continue to Classify Quadrilaterals",
+       "skills": [
+        "m.5.classify-2d"
+       ]
+      },
+      {
+       "n": "16-4",
+       "title": "Problem Solving: Construct Arguments",
+       "skills": [
+        "m.5.classify-2d"
+       ]
+      }
+     ],
+     "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
+     "skills": [
+      "m.5.classify-2d"
+     ]
+    },
+    {
+     "n": "17",
+     "title": "Step Up to Grade 6",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-5",
+     "lessons": [
+      {
+       "n": "17-1",
+       "title": "Understand Division of Fractions"
+      },
+      {
+       "n": "17-2",
+       "title": "Understand Integers"
+      },
+      {
+       "n": "17-3",
+       "title": "Rational Numbers on the Coordinate Plane"
+      },
+      {
+       "n": "17-4",
+       "title": "Understand and Represent Exponents"
+      },
+      {
+       "n": "17-5",
+       "title": "Understand Equations and Solutions"
+      },
+      {
+       "n": "17-6",
+       "title": "Understand Ratios"
+      },
+      {
+       "n": "17-7",
+       "title": "Understand Rates and Unit Rates"
+      },
+      {
+       "n": "17-8",
+       "title": "Understand Percent"
+      },
+      {
+       "n": "17-9",
+       "title": "Relate Fractions, Decimals, and Percents"
+      },
+      {
+       "n": "17-10",
+       "title": "Find Areas of Parallelograms and Rhombuses"
+      }
+     ],
+     "skills": [],
+     "notes": "Step Up lessons preview the next grade; not mapped."
+    }
+   ]
+  },
+  {
+   "grade": "6",
+   "units": [
+    {
+     "n": "1",
+     "title": "Use Positive Rational Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Fluently Add, Subtract, and Multiply Decimals"
+      },
+      {
+       "n": "1-2",
+       "title": "Fluently Divide Whole Numbers and Decimals"
+      },
+      {
+       "n": "1-3",
+       "title": "Multiply Fractions"
+      },
+      {
+       "n": "1-4",
+       "title": "Understand Division with Fractions"
+      },
+      {
+       "n": "1-5",
+       "title": "Divide Fractions by Fractions"
+      },
+      {
+       "n": "1-6",
+       "title": "Divide Mixed Numbers"
+      },
+      {
+       "n": "1-7",
+       "title": "Solve Problems with Rational Numbers"
+      }
+     ],
+     "skills": [
+      "m.6.multi-digit-decimals",
+      "m.6.divide-fractions"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Integers and Rational Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Understand Integers"
+      },
+      {
+       "n": "2-2",
+       "title": "Represent Rational Numbers on the Number Line"
+      },
+      {
+       "n": "2-3",
+       "title": "Absolute Values of Rational Numbers"
+      },
+      {
+       "n": "2-4",
+       "title": "Represent Rational Numbers on the Coordinate Plane"
+      },
+      {
+       "n": "2-5",
+       "title": "Find Distances on the Coordinate Plane"
+      },
+      {
+       "n": "2-6",
+       "title": "Represent Polygons on the Coordinate Plane"
+      }
+     ],
+     "skills": [
+      "m.6.integers",
+      "m.6.coordinate-plane-4q"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Numeric and Algebraic Expressions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Understand and Represent Exponents"
+      },
+      {
+       "n": "3-2",
+       "title": "Find Greatest Common Factor and Least Common Multiple"
+      },
+      {
+       "n": "3-3",
+       "title": "Write and Evaluate Numerical Expressions"
+      },
+      {
+       "n": "3-4",
+       "title": "Write Algebraic Expressions"
+      },
+      {
+       "n": "3-5",
+       "title": "Evaluate Algebraic Expressions"
+      },
+      {
+       "n": "3-6",
+       "title": "Generate Equivalent Expressions"
+      },
+      {
+       "n": "3-7",
+       "title": "Simplify Algebraic Expressions"
+      }
+     ],
+     "skills": [
+      "m.6.expressions-variables",
+      "m.6.gcf-lcm"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Represent and Solve Equations and Inequalities",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Understand Equations and Solutions",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Apply Properties of Equality",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Write and Solve Addition and Subtraction Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Write and Solve Multiplication and Division Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Write and Solve Equations with Rational Numbers",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-6",
+       "title": "Understand and Write Inequalities",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-7",
+       "title": "Solve Inequalities",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-8",
+       "title": "Understand Dependent and Independent Variables",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-9",
+       "title": "Use Patterns to Write and Solve Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      },
+      {
+       "n": "4-10",
+       "title": "Relate Tables, Graphs, and Equations",
+       "skills": [
+        "m.6.one-step-equations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.one-step-equations"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Understand and Use Ratio and Rate",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Understand Ratios"
+      },
+      {
+       "n": "5-2",
+       "title": "Generate Equivalent Ratios"
+      },
+      {
+       "n": "5-3",
+       "title": "Compare Ratios"
+      },
+      {
+       "n": "5-4",
+       "title": "Represent and Graph Ratios"
+      },
+      {
+       "n": "5-5",
+       "title": "Understand Rates and Unit Rates"
+      },
+      {
+       "n": "5-6",
+       "title": "Compare Unit Rates"
+      },
+      {
+       "n": "5-7",
+       "title": "Solve Unit Rate Problems"
+      },
+      {
+       "n": "5-8",
+       "title": "Ratio Reasoning: Convert Customary Units"
+      },
+      {
+       "n": "5-9",
+       "title": "Ratio Reasoning: Convert Metric Units"
+      },
+      {
+       "n": "5-10",
+       "title": "Relate Customary and Metric Units"
+      }
+     ],
+     "skills": [
+      "m.6.ratios",
+      "m.6.unit-rates"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Understand and Use Percent",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Understand Percent",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Relate Fractions, Decimals, and Percents",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Represent Percents Greater than 100 or Less than 1",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Estimate to Find Percent",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Find the Percent of a Number",
+       "skills": [
+        "m.6.percent"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Find the Whole Given a Part and the Percent",
+       "skills": [
+        "m.6.percent"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.percent"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Solve Area, Surface Area, and Volume Problems",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Find Areas of Parallelograms and Rhombuses"
+      },
+      {
+       "n": "7-2",
+       "title": "Solve Triangle Area Problems"
+      },
+      {
+       "n": "7-3",
+       "title": "Find Areas of Trapezoids and Kites"
+      },
+      {
+       "n": "7-4",
+       "title": "Find Areas of Polygons"
+      },
+      {
+       "n": "7-5",
+       "title": "Represent Solid Figures Using Nets"
+      },
+      {
+       "n": "7-6",
+       "title": "Find Surface Areas of Prisms"
+      },
+      {
+       "n": "7-7",
+       "title": "Find Surface Areas of Pyramids"
+      },
+      {
+       "n": "7-8",
+       "title": "Find Volume with Fractional Edge Lengths"
+      }
+     ],
+     "skills": [
+      "m.6.area-polygons",
+      "m.6.surface-area-nets"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Display, Describe, and Summarize Data",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-6",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Recognize Statistical Questions",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Summarize Data Using Mean, Median, Mode, and Range",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Display Data in Box Plots",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Display Data in Frequency Tables and Histograms",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "8-5",
+       "title": "Summarize Data Using Measures of Variability",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "8-6",
+       "title": "Choose Appropriate Statistical Measures",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      },
+      {
+       "n": "8-7",
+       "title": "Summarize Data Distributions",
+       "skills": [
+        "m.6.center-spread"
+       ]
+      }
+     ],
+     "skills": [
+      "m.6.center-spread"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "7",
+   "units": [
+    {
+     "n": "1",
+     "title": "Rational Number Operations",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Relate Integers and Their Opposites",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-2",
+       "title": "Understand Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-3",
+       "title": "Add Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-4",
+       "title": "Subtract Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-5",
+       "title": "Add and Subtract Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-6",
+       "title": "Multiply Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-7",
+       "title": "Multiply Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-8",
+       "title": "Divide Integers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-9",
+       "title": "Divide Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      },
+      {
+       "n": "1-10",
+       "title": "Solve Problems with Rational Numbers",
+       "skills": [
+        "m.7.rational-operations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.rational-operations"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Analyze and Use Proportional Relationships",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Connect Ratios, Rates, and Unit Rates",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "2-2",
+       "title": "Determine Unit Rates with Ratios of Fractions",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "2-3",
+       "title": "Understand Proportional Relationships: Equivalent Ratios",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "2-4",
+       "title": "Describe Proportional Relationships: Constant of Proportionality",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "2-5",
+       "title": "Graph Proportional Relationships",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      },
+      {
+       "n": "2-6",
+       "title": "Apply Proportional Reasoning to Solve Problems",
+       "skills": [
+        "m.7.proportional-relationships"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.proportional-relationships"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Analyze and Solve Percent Problems",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Analyze Percents of Numbers",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "3-2",
+       "title": "Connect Percent and Proportion",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "3-3",
+       "title": "Represent and Use the Percent Equation",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "3-4",
+       "title": "Solve Percent Change and Percent Error Problems",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "3-5",
+       "title": "Solve Markup and Markdown Problems",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      },
+      {
+       "n": "3-6",
+       "title": "Solve Simple Interest Problems",
+       "skills": [
+        "m.7.percent-applications"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.percent-applications"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Generate Equivalent Expressions",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Write and Evaluate Algebraic Expressions"
+      },
+      {
+       "n": "4-2",
+       "title": "Generate Equivalent Expressions"
+      },
+      {
+       "n": "4-3",
+       "title": "Simplify Expressions"
+      },
+      {
+       "n": "4-4",
+       "title": "Expand Expressions"
+      },
+      {
+       "n": "4-5",
+       "title": "Factor Expressions"
+      },
+      {
+       "n": "4-6",
+       "title": "Add Expressions"
+      },
+      {
+       "n": "4-7",
+       "title": "Subtract Expressions"
+      },
+      {
+       "n": "4-8",
+       "title": "Analyze Equivalent Expressions"
+      }
+     ],
+     "skills": [],
+     "notes": "Equivalent expressions (7.EE.1-2) has no Grade 7 skill; nearest m.6.expressions-variables."
+    },
+    {
+     "n": "5",
+     "title": "Solve Problems Using Equations and Inequalities",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Write Two-Step Equations",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Solve Two-Step Equations",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Solve Equations Using the Distributive Property",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Solve Inequalities Using Addition or Subtraction",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "5-5",
+       "title": "Solving Inequalities Using Multiplication or Division",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "5-6",
+       "title": "Solve Two-Step Inequalities",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      },
+      {
+       "n": "5-7",
+       "title": "Solve Multi-Step Inequalities",
+       "skills": [
+        "m.7.two-step-equations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.two-step-equations"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Use Sampling to Draw Inferences About Populations",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Populations and Samples",
+       "skills": [
+        "m.7.sampling"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Draw Inferences from Data",
+       "skills": [
+        "m.7.sampling"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Make Comparative Inferences About Populations",
+       "skills": [
+        "m.7.sampling"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Make More Comparative Inferences About Populations",
+       "skills": [
+        "m.7.sampling"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.sampling"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Probability",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Understand Likelihood and Probability",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Understand Theoretical Probability",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Understand Experimental Probability",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Use Probability Models",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "7-5",
+       "title": "Determine Outcomes of Compound Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "7-6",
+       "title": "Find Probabilities of Compound Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      },
+      {
+       "n": "7-7",
+       "title": "Simulate Compound Events",
+       "skills": [
+        "m.7.probability"
+       ]
+      }
+     ],
+     "skills": [
+      "m.7.probability"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Solve Problems Involving Geometry",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-7",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Solve Problems Involving Scale Drawings"
+      },
+      {
+       "n": "8-2",
+       "title": "Draw Geometric Figures"
+      },
+      {
+       "n": "8-3",
+       "title": "Draw Triangles with Given Conditions"
+      },
+      {
+       "n": "8-4",
+       "title": "Solve Problems Using Angle Relationships"
+      },
+      {
+       "n": "8-5",
+       "title": "Solve Problems Involving Circumference of a Circle"
+      },
+      {
+       "n": "8-6",
+       "title": "Solve Problems Involving Area of a Circle"
+      },
+      {
+       "n": "8-7",
+       "title": "Describe Cross Sections"
+      },
+      {
+       "n": "8-8",
+       "title": "Solve Problems Involving Surface Area"
+      },
+      {
+       "n": "8-9",
+       "title": "Solve Problems Involving Volume"
+      }
+     ],
+     "skills": [
+      "m.7.scale-drawings",
+      "m.7.angle-relationships",
+      "m.7.circles",
+      "m.7.prisms"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "8",
+   "units": [
+    {
+     "n": "1",
+     "title": "Real Numbers",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "1-1",
+       "title": "Rational Numbers as Decimals"
+      },
+      {
+       "n": "1-2",
+       "title": "Understand Irrational Numbers"
+      },
+      {
+       "n": "1-3",
+       "title": "Compare and Order Real Numbers"
+      },
+      {
+       "n": "1-4",
+       "title": "Evaluate Square Roots and Cube Roots"
+      },
+      {
+       "n": "1-5",
+       "title": "Solve Equations Using Square Roots and Cube Roots"
+      },
+      {
+       "n": "1-6",
+       "title": "Use Properties of Integer Exponents"
+      },
+      {
+       "n": "1-7",
+       "title": "More Properties of Integer Exponents"
+      },
+      {
+       "n": "1-8",
+       "title": "Use Powers of 10 to Estimate Quantities"
+      },
+      {
+       "n": "1-9",
+       "title": "Understand Scientific Notation"
+      },
+      {
+       "n": "1-10",
+       "title": "Operations with Numbers in Scientific Notation"
+      }
+     ],
+     "skills": [
+      "m.8.roots-irrationals",
+      "m.8.exponent-rules",
+      "m.8.scientific-notation"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Analyze and Solve Linear Equations",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "2-1",
+       "title": "Combine Like Terms to Solve Equations"
+      },
+      {
+       "n": "2-2",
+       "title": "Solve Equations with Variables on Both Sides"
+      },
+      {
+       "n": "2-3",
+       "title": "Solve Multistep Equations"
+      },
+      {
+       "n": "2-4",
+       "title": "Equations with No Solutions or Infinitely Many Solutions"
+      },
+      {
+       "n": "2-5",
+       "title": "Compare Proportional Relationships"
+      },
+      {
+       "n": "2-6",
+       "title": "Connect Proportional Relationships and Slope"
+      },
+      {
+       "n": "2-7",
+       "title": "Analyze Linear Equations: y = mx"
+      },
+      {
+       "n": "2-8",
+       "title": "Understand the y-Intercept of a Line"
+      },
+      {
+       "n": "2-9",
+       "title": "Analyze Linear Equations: y = mx + b"
+      }
+     ],
+     "skills": [
+      "m.8.multi-step-equations",
+      "m.8.slope",
+      "m.8.linear-functions"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Use Functions to Model Relationships",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "3-1",
+       "title": "Understand Relations and Functions"
+      },
+      {
+       "n": "3-2",
+       "title": "Connect Representations of Functions"
+      },
+      {
+       "n": "3-3",
+       "title": "Compare Linear and Nonlinear Functions"
+      },
+      {
+       "n": "3-4",
+       "title": "Construct Functions to Model Linear Relationships"
+      },
+      {
+       "n": "3-5",
+       "title": "Intervals of Increase and Decrease"
+      },
+      {
+       "n": "3-6",
+       "title": "Sketch Functions from Verbal Descriptions"
+      }
+     ],
+     "skills": [
+      "m.8.functions-intro",
+      "m.8.linear-functions"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Investigate Bivariate Data",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "4-1",
+       "title": "Construct and Interpret Scatter Plots",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "4-2",
+       "title": "Analyze Linear Associations",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "4-3",
+       "title": "Use Linear Models to Make Predictions",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "4-4",
+       "title": "Interpret Two-Way Frequency Tables",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      },
+      {
+       "n": "4-5",
+       "title": "Interpret Two-Way Relative Frequency Tables",
+       "skills": [
+        "m.8.scatter-plots"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.scatter-plots"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Analyze and Solve Systems of Linear Equations",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "5-1",
+       "title": "Estimate Solutions by Inspection",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      },
+      {
+       "n": "5-2",
+       "title": "Solve Systems by Graphing",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      },
+      {
+       "n": "5-3",
+       "title": "Solve Systems by Substitution",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      },
+      {
+       "n": "5-4",
+       "title": "Solve Systems by Elimination",
+       "skills": [
+        "m.8.systems-linear"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.systems-linear"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Congruence and Similarity",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "6-1",
+       "title": "Analyze Translations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-2",
+       "title": "Analyze Reflections",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-3",
+       "title": "Analyze Rotations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-4",
+       "title": "Compose Transformations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-5",
+       "title": "Understand Congruent Figures",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-6",
+       "title": "Describe Dilations",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-7",
+       "title": "Understand Similar Figures",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-8",
+       "title": "Angles, Lines, and Transversals",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-9",
+       "title": "Interior and Exterior Angles of Triangles",
+       "skills": [
+        "m.8.transformations"
+       ]
+      },
+      {
+       "n": "6-10",
+       "title": "Angle-Angle Triangle Similarity",
+       "skills": [
+        "m.8.transformations"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.transformations"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Understand and Apply the Pythagorean Theorem",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "7-1",
+       "title": "Understand the Pythagorean Theorem",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      },
+      {
+       "n": "7-2",
+       "title": "Understand the Converse of the Pythagorean Theorem",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      },
+      {
+       "n": "7-3",
+       "title": "Apply the Pythagorean Theorem to Solve Problems",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      },
+      {
+       "n": "7-4",
+       "title": "Find Distance in the Coordinate Plane",
+       "skills": [
+        "m.8.pythagorean"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.pythagorean"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Solve Problems Involving Surface Area and Volume",
+     "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-common-core-2024-grade-8",
+     "lessons": [
+      {
+       "n": "8-1",
+       "title": "Find Surface Area of Three-Dimensional Figures",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      },
+      {
+       "n": "8-2",
+       "title": "Find Volume of Cylinders",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      },
+      {
+       "n": "8-3",
+       "title": "Find Volume of Cones",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      },
+      {
+       "n": "8-4",
+       "title": "Find Volume of Spheres",
+       "skills": [
+        "m.8.volume-curved"
+       ]
+      }
+     ],
+     "skills": [
+      "m.8.volume-curved"
+     ]
+    }
+   ]
+  }
+ ]
+}
