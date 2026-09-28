@@ -357,7 +357,13 @@ export type Representation =
   /** The same number of dots in a line, rows, a circle or scattered (a toggle picks). */
   | { kind: 'dotSet'; count: string }
   /** A tally chart: one row of tally marks per category. */
-  | { kind: 'tally'; rows: string[]; total?: string }
+  | {
+      kind: 'tally';
+      rows: string[];
+      total?: string;
+      /** A card icon per row, beside its name (apple, banana, grapes; sun, rain cloud). */
+      icons?: CardIcon[];
+    }
   /** A row of one kind of coin, picked with buttons (`value` in cents), `count` of them. */
   | { kind: 'coinRow'; value: string; count: string; total: string }
   /** A solid shape picked from sphere, cone, cylinder and cube, by its flat and curved faces. */

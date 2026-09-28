@@ -2439,10 +2439,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.K.weather-patterns',
       's.K.living-things-change-environment~litter',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-tally', 'g.r4f-tally-edge', 'g.r4f-tally-weather', 'g.r4f-tally-litter'],
+    uses: 'icons: [',
     notes:
-      "Urgency: low. Weak now: Clean table, but hairline tally marks; the fifth slash is short and doesn't cross all four; small names with a big gap before the marks; no link to the counted objects; heavy black border looks like an old form. Redo: Flat table: softer border (chartGrid, radius md), strokeLight row lines, names at font.body with a small icon per category (reuse the card icons: apple, banana, grapes, sun, cloud). Marks in chart.stroke with a slight hand-drawn tilt; the fifth clearly crosses all four; groups 12 px apart. Count right-aligned in a pill. Keep the Total and Most lines.",
+      "Urgency: low. Weak now: Clean table, but hairline tally marks; the fifth slash is short and doesn't cross all four; small names with a big gap before the marks; no link to the counted objects; heavy black border looks like an old form. Redo: Flat table: softer border (chartGrid, radius md), strokeLight row lines, names at font.body with a small icon per category (reuse the card icons: apple, banana, grapes, sun, cloud). Marks in chart.stroke with a slight hand-drawn tilt; the fifth clearly crosses all four; groups 12 px apart. Count right-aligned in a pill. Keep the Total and Most lines. Drawn (round 4, group F): a soft flat table (chartGrid 1.5 px border, radius md, card fill, 1.5 px chartGrid row lines), names at 16 px semibold with an optional card icon beside each, tally marks at chart.stroke with round caps and a slight hand-drawn tilt, the fifth a slash that crosses all four from low left to high right, bundles 12 px apart (20 marks fit at 390 px), and the count right-aligned in a chartSurface pill. Total and Most lines kept. New optional field icons (one card icon per row). Page change (optional but asked for): m.1.data-3-categories~tally icons: ['apple', 'banana', 'grapes']; s.K.weather-patterns icons: ['sun', 'rain cloud']; s.K.living-things-change-environment~litter icons: ['soda can', 'wrapper falling on grass'] (no plain sheet-of-paper icon exists yet).",
   },
   {
     id: 'Q50',
