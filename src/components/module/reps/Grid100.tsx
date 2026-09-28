@@ -330,7 +330,9 @@ function PercentGrid({ spec, calc }: { spec: Spec; calc: Calculator }) {
             ? `${full > 0 ? `${rep.value(spec.percent)} is ` : ''}${whole} whole ${whole === 1 ? 'grid' : 'grids'} and ${num(shaded)} of 100 squares shaded`
             : faded
               ? 'Type a number to shade the grid.'
-              : `${rep.value(spec.percent)} is ${num(shaded)} of 100 squares shaded`}
+              : rep.value(spec.percent) === num(shaded)
+                ? `${num(shaded)} of 100 squares shaded`
+                : `${rep.value(spec.percent)} is ${num(shaded)} of 100 squares shaded`}
       </Text>
       {spec.caption ? (
         <Text style={[styles.caption, { color: c.chartMuted }]}>
