@@ -2,9 +2,10 @@ import { useDeferredValue, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Card, Chip, EmptyState, Icon, ListRow } from '@/components';
+import { Card, Chip, EmptyState, Icon, ListRow, SectionHeader } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
-import { countLabel, search, type SearchKind } from '@/data/selectors';
+import { matchProblem } from '@/data/match';
+import { countLabel, nodeContext, search, type SearchKind } from '@/data/selectors';
 import { COURSES, SKILLS } from '@/data/taxonomy';
 import { font, radius, space, useCardShadow, usePalette } from '@/theme';
 
@@ -30,6 +31,12 @@ export default function SearchScreen() {
     () => search(deferred).filter((r) => filter === 'all' || r.kind === filter),
     [deferred, filter],
   );
+  // A typed problem (a few words, or numbers): the pages that solve it, matched on the device.
+  const problem = useMemo(() => {
+    const t = deferred.trim();
+    const wordy = t.split(/\s+/).length >= 3 || /\d/.test(t);
+    return wordy && (filter === 'all' || filter === 'skill') ? matchProblem(t, 3) : [];
+  }, [deferred, filter]);
 
   return (
     <>
@@ -45,7 +52,7 @@ export default function SearchScreen() {
               testID="search-input"
               value={query}
               onChangeText={setQuery}
-              placeholder="Search skills, courses and topics"
+              placeholder="Search, or type a homework problem"
               placeholderTextColor={c.textMuted}
               autoCorrect={false}
               autoCapitalize="none"
@@ -72,6 +79,25 @@ export default function SearchScreen() {
           keyboardDismissMode="on-drag"
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ paddingTop: space.xs, paddingBottom: insets.bottom + space.xl }}
+          ListHeaderComponent={
+            problem.length ? (
+              <View style={styles.problem}>
+                <SectionHeader title="Lessons that solve this problem" />
+                {problem.map((r, i) => (
+                  <ListRow
+                    key={r.id}
+                    overline={`${i === 0 ? 'Best match · ' : ''}${nodeContext(r.skill)}${
+                      r.title === r.skill.title ? '' : ` · ${r.skill.title}`
+                    }`}
+                    title={r.title}
+                    subtitle={r.use ?? 'The main lesson for this skill'}
+                    route={r.route}
+                  />
+                ))}
+                {results.length ? <SectionHeader title="Also matching the words" /> : null}
+              </View>
+            ) : null
+          }
           renderItem={({ item }) => (
             <ListRow
               overline={KIND_LABEL[item.kind]}
@@ -82,12 +108,12 @@ export default function SearchScreen() {
           )}
           ListEmptyComponent={
             <Card style={styles.emptyCard}>
-              {query.trim() ? (
+              {problem.length ? null : query.trim() ? (
                 <EmptyState title="No matches" message={`Nothing found for “${query.trim()}”.`} />
               ) : (
                 <EmptyState
                   title="Search everything"
-                  message={`${countLabel(SKILLS.length, 'skill')}, ${countLabel(COURSES.length, 'course')} and ${countLabel(TOPIC_COUNT, 'topic')}. Try a word from your homework, like a topic or a unit.`}
+                  message={`${countLabel(SKILLS.length, 'skill')}, ${countLabel(COURSES.length, 'course')} and ${countLabel(TOPIC_COUNT, 'topic')}. Try a word from your homework, or type a whole problem to find the lesson that solves it.`}
                 />
               )}
             </Card>
@@ -117,4 +143,5 @@ const styles = StyleSheet.create({
   },
   filters: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   emptyCard: { marginHorizontal: space.lg },
+  problem: { paddingBottom: space.sm },
 });

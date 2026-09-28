@@ -1,9 +1,10 @@
-# Find my lesson
+# Problem matching in Search
 
-A student types a homework or practice-test problem, or takes or chooses a picture of it, and
-the app opens the lesson that solves it. Everything runs on the device: no network, no account,
-and the picture is read once and dropped. The button is on the Home screen's hero, under search;
-the screen is `src/app/match.tsx`, route `/match`.
+A student types a homework or practice-test problem into the Search tab and the pages that
+solve it appear above the ordinary word matches, under "Lessons that solve this problem".
+Everything runs on the device: no network, no account, nothing stored. The matching is in
+`src/data/match.ts`; the Search tab (`src/app/(tabs)/search.tsx`) calls it when the query has
+three or more words or any digit and the filter is "All" or "Skills".
 
 ## How matching works (`src/data/match.ts`)
 
@@ -40,25 +41,8 @@ questions, top-1 53%, top-3 74%. The test fails below 65% top-3, so a change tha
 matching is caught. To improve it: add use lines and notes in the words students' problems use,
 and rerun the corpus script.
 
-## Reading a picture (`modules/vision-ocr/`)
+## Not built
 
-On iOS the picture goes to Apple's Vision framework (`VNRecognizeTextRequest`, accurate mode,
-English) in a local Expo module, and the lines come back top to bottom. Printed worksheets read
-well; handwriting and stacked fractions are unreliable, so the recognized text is shown in the
-box for the student to fix before matching. The camera and photo picker come from
-`expo-image-picker`; `app.json` carries the two permission strings.
-
-The module is native code, so it needs a native build:
-
-1. `npx expo prebuild --platform ios` (autolinking finds `modules/vision-ocr` through its
-   `expo-module.config.json`);
-2. build and run on a device or simulator (`pnpm ios`, or an EAS build).
-
-On the web and in tests the native module is absent: `ocrAvailable` is false and the screen
-offers typing only, with a line saying the iPhone app can read pictures. The web bundle never
-loads Vision.
-
-## Paywall
-
-The screen checks `isLocked('feature.find-my-lesson')` (`src/config/access.ts`), so the feature
-can sit behind the subscription with the same gate the lessons use.
+Reading a problem from a photo was built and then removed: the app takes no pictures and has
+no camera or photo permissions. On an iPhone a student can still select the text of a problem
+in the Camera or Photos app (Live Text) and paste it into Search.

@@ -8,11 +8,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSCameraUsageDescription": "Take a picture of a homework problem to find the lesson that solves it. Pictures are read on this device and are not saved or sent anywhere.",
-        "NSPhotoLibraryUsageDescription": "Choose a picture of a homework problem to find the lesson that solves it. Pictures are read on this device and are not saved or sent anywhere."
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {

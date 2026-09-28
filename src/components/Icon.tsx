@@ -10,8 +10,7 @@ export type IconName =
   | 'clock'
   | 'book'
   | 'school'
-  | 'spark'
-  | 'camera';
+  | 'spark';
 
 /**
  * Line icons drawn with react-native-svg (no icon font needed). 24 × 24 grid, rounded strokes;
@@ -50,15 +49,6 @@ export function Icon({
           <Rect x={13} y={4} width={7} height={7} rx={2} {...stroke} fill={fill} />
           <Rect x={4} y={13} width={7} height={7} rx={2} {...stroke} fill={fill} />
           <Rect x={13} y={13} width={7} height={7} rx={2} {...stroke} fill={fill} />
-        </>
-      ) : name === 'camera' ? (
-        <>
-          <Path
-            d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1.4-2h5.2L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"
-            {...stroke}
-            fill={fill}
-          />
-          <Circle cx={12} cy={13} r={3.2} {...stroke} fill={filled ? 'none' : fill} />
         </>
       ) : name === 'search' ? (
         <>

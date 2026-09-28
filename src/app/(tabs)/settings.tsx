@@ -122,9 +122,9 @@ export default function SettingsScreen() {
           text recognizer and is not saved or sent anywhere.
         </Note>
         <Note>
-          Find my lesson matches a problem to a lesson using word statistics derived from practice
-          problems by Illustrative Mathematics and OpenSciEd (CC BY 4.0). No problem text is
-          included in the app.
+          Typing a problem into Search matches it to a lesson using word statistics derived from
+          practice problems by Illustrative Mathematics and OpenSciEd (CC BY 4.0). No problem text
+          is included in the app.
         </Note>
         <Note>
           [Disclaimer placeholder] This app is an independent study aid. It is not affiliated with,
