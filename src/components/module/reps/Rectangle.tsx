@@ -47,8 +47,10 @@ function Flat({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // the length's below (and above), the perimeter line at the bottom.
   const padL = textW(widLabel) + (around ? 14 : 30);
   const padR = around ? textW(widLabel) + 30 : 26;
-  const top = around ? 30 : 16;
+  const baseTop = around ? 30 : 16;
   const below = around ? 60 : 50;
+  const inside = spec.inside ? rep.label(spec.inside) : '';
+  const pill = pillSize(inside, chart.emphasis);
   const layout = (w: number) => {
     const unit = Math.min(
       (w - padL - padR - 16) / fit.value.L,
@@ -56,13 +58,21 @@ function Flat({ spec, calc }: { spec: Spec; calc: Calculator }) {
     );
     const group = padL + fit.value.l * unit + padR;
     const x0 = (w - group) / 2 + padL;
-    return { unit, x0, h: top + Math.max(40, wd * unit) + below };
+    const rw = l * unit;
+    const rh = wd * unit;
+    // Where the area label goes: on a pill inside; beside a thin shape when the canvas has
+    // room at the right; else on a pill above the shape (a 12 by 1 fills the width).
+    const pillFits = pill.w + 8 <= rw && pill.h + 6 <= rh;
+    const fitsRight = x0 + rw + 30 + textW(inside, chart.emphasis) <= w - 4;
+    const above = !!spec.inside && !pillFits && !fitsRight;
+    const top = baseTop + (above ? pill.h + 6 : 0);
+    return { unit, x0, top, pillFits, above, h: top + Math.max(40, rh) + below };
   };
 
   return (
     <Canvas aspect={(w) => layout(w).h / w}>
       {({ w, h }) => {
-        const { unit, x0 } = layout(w);
+        const { unit, x0, top, pillFits, above } = layout(w);
         const rw = l * unit;
         const rh = wd * unit;
         const cellPx = unit * f;
@@ -97,9 +107,6 @@ function Flat({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fillOpacity={0.09}
                   />,
                 );
-        const inside = spec.inside ? rep.label(spec.inside) : '';
-        const pill = pillSize(inside, chart.emphasis);
-        const pillFits = pill.w + 8 <= rw && pill.h + 6 <= rh;
         const rightX = x0 + rw + (rh < 60 ? 26 : 10);
         return (
           <>
@@ -236,6 +243,16 @@ function Flat({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     text={inside}
                     size={chart.emphasis}
                     stroke={c.chartMuted}
+                  />
+                ) : above ? (
+                  // Too thin to hold the pill and no room at the right: it sits above.
+                  <Pill
+                    x={x0 + rw / 2}
+                    y={top - pill.h / 2 - 4}
+                    text={inside}
+                    size={chart.emphasis}
+                    stroke={c.chartMuted}
+                    w={w}
                   />
                 ) : (
                   // Too small to hold the pill: the area sits to the right.

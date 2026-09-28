@@ -5,6 +5,31 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Textbook-gap pages: one lesson-reviewer and one page-reviewer, 27 pages
+
+- Setup: `pnpm review` into `.review/new/` for the 27 pages; the two reviewers in parallel,
+  about 150k tokens each. A third page-reviewer on the 61 redrawn-picture pages
+  (`.review/pics2/`) was cut off by the session's rate limit after fixing two pictures
+  (the rectangle's area pill on a thin shape; the light figure's "clear block" label) and is
+  still to run.
+- Found (lesson): 10 errors. Grade 8 math on a Grade 6 page (the prism's third side by
+  √(b² + h²): now typed, checked to close a right triangle); a compare tape whose bracket
+  labelled the 60° gap as the 50 °C mix (now thermometers); "Glass window" as a conductor (two
+  defensible bins); 1.6 cups as a count (now whole shares with a leftover); a title promising
+  differences on a sums page (now three pages: sums, differences, products); values named by
+  their unit ("Minutes", "Liters saved") that print wrong after a unit change; a money page
+  whose words described a column grid it didn't draw; a paper clip as the 1 cm benchmark.
+- Found (page): handles that erase typed numbers on the estimate pages (derived parts),
+  two handles under each other on the light page (example widened), the net printing the
+  example's length for a "?" value, a drag turning 2.5 feet into 2.8183 (the compare page now
+  works in quarters so the smaller unit is whole), a sort hint repeating a whole problem
+  (capped at 60 characters), two parts of one variable on the chromosome tape (now egg and
+  sperm).
+- Not taken: three unrelated engine asks stay open in `ENGINE_LOG.md` (a `static` tape, a
+  `mark` on a compare tape, `autoWritten` skipping round-number grids).
+- Reviewer: the sort pages had no sheet slot and no dark or wide shot; the `-- edge` dump
+  covers only the first opening value. Both go to `review-evidence.mjs` next.
+
 ## Owner finding: no decimal point on the keyboard (website on an iPhone)
 
 - Every input asked for the `numeric` keyboard on the web, which iPhone Safari shows as a pad

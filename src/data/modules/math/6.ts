@@ -4353,24 +4353,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     use: 'Use this for “Find the surface area of the triangular prism from its net.”',
     assumptions: [
       'The net is 2 matching triangles and 3 rectangles, one on each side of the triangle.',
-      'The triangle has a square corner: its two legs are the base and the height, and the third side is the longest.',
+      'The three sides of the triangle are given on the net. The base and the height meet at a square corner.',
       'The rectangles are all as long as the prism. Their widths are the three sides of the triangle.',
-      'Area is in square units. The third side is worked out from the legs, so it may not be a whole number.',
     ],
     variables: [
-      { id: 'b', symbol: 'b', name: 'Triangle base', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
-      { id: 'h', symbol: 'h', name: 'Triangle height', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
-      {
-        id: 's',
-        symbol: 's',
-        name: 'Third side',
-        unit: 'cm',
-        min: 0.1,
-        max: 150,
-        step: 0.01,
-        derived: true,
-      },
-      { id: 'L', symbol: 'L', name: 'Prism length', unit: 'cm', min: 0.1, max: 100, step: 0.1 },
+      { id: 'b', symbol: 'b', name: 'Triangle base', unit: 'cm', min: 0.5, max: 100, step: 0.5 },
+      { id: 'h', symbol: 'h', name: 'Triangle height', unit: 'cm', min: 0.5, max: 100, step: 0.5 },
+      { id: 's', symbol: 's', name: 'Third side', unit: 'cm', min: 0.5, max: 150, step: 0.5 },
+      { id: 'L', symbol: 'L', name: 'Prism length', unit: 'cm', min: 0.5, max: 100, step: 0.5 },
       { id: 'T', symbol: 'T', name: 'One triangle', unit: 'cm²', min: 0, max: 5000, derived: true },
       {
         id: 'R',
@@ -4393,12 +4383,14 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     ],
     relations: [
       {
-        id: 's = √(b² + h²)',
-        display: '√({b}² + {h}²) = {s}',
-        words: 'The third side closes the square corner: the root of base² + height²',
+        // The three sides on the net close a triangle with a square corner (within 2 %).
+        id: 's closes the triangle',
+        constraint: true,
+        display: 'The sides {b}, {h} and {s} make a triangle with a square corner',
         vars: ['s', 'b', 'h'],
-        residual: (v: Values) => v.s! * v.s! - v.b! * v.b! - v.h! * v.h!,
-        solve: { s: (v: Values) => Math.hypot(v.b!, v.h!), b: () => undefined, h: () => undefined },
+        residual: (v: Values) =>
+          Math.abs(v.s! - Math.hypot(v.b!, v.h!)) <= 0.02 * Math.hypot(v.b!, v.h!) ? 0 : 1,
+        solve: {},
       },
       {
         id: 'T = ½ × b × h',
@@ -4432,12 +4424,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
     ],
     steps: {
-      's = √(b² + h²)': {
-        s: {
-          expr: '√({b}² + {h}²)',
-          how: 'The longest side of a right triangle: square the two legs, add, take the square root.',
-        },
-      },
+      's closes the triangle': {},
       'T = ½ × b × h': {
         T: { expr: '½ × {b} × {h}', how: 'Each end is a triangle: half of base × height.' },
       },
@@ -4455,12 +4442,15 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         S: {
           expr: '2 × {T} + {R}',
           how: 'Add the two triangle ends and the three rectangles.',
-          work: (v) => [`2 × ${fmt(v.T!)} = ${fmt(2 * v.T!)}`],
+          work: (v) => [
+            `2 × ${fmt(v.T!)} = ${fmt(2 * v.T!)}`,
+            `${fmt(2 * v.T!)} + ${fmt(v.R!)} = ${fmt(2 * v.T! + v.R!)}`,
+          ],
         },
       },
     },
     example: { b: 6, h: 8, s: 10, L: 10, T: 24, R: 240, S: 288 },
-    startWith: ['b', 'h', 'L'],
+    startWith: ['b', 'h', 's', 'L'],
     representation: {
       kind: 'net',
       solid: 'triangularPrism',

@@ -608,7 +608,8 @@ function Cut({ f, ink, shade }: { f: Extract<Spec, { kind: 'cut' }>; ink: string
       </G>
     );
   }
-  if (f.equal && f.parts === 4 && f.shape === 'square') {
+  // Four equal parts of a square: a 2 × 2 grid, unless the card asks for straight strips.
+  if (f.equal && f.parts === 4 && f.shape === 'square' && f.cuts !== 'straight') {
     return (
       <G>
         {[0, 1, 2, 3].map((i) => (

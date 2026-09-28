@@ -3841,7 +3841,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'Find the core. Count how many shapes are in it.',
       'To find a far shape, count by the core: with 3 shapes in the core, the 10th shape starts the 4th core.',
     ],
-    question: 'Which shape comes next?',
+    question: 'Which shape comes next, or which shape is at that place?',
     bins: [
       {
         id: 'circle',
@@ -3860,6 +3860,8 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       { label: 'Square, triangle, triangle, square, triangle, triangle, …', bin: 'square' },
       { label: 'Circle, square, triangle: what is the 10th shape?', bin: 'circle' },
       { label: 'Square, triangle: what is the 15th shape?', bin: 'square' },
+      { label: 'Circle, triangle, circle, triangle, circle, …', bin: 'triangle' },
+      { label: 'Circle, square, triangle: what is the 12th shape?', bin: 'triangle' },
     ],
   },
 
@@ -3874,7 +3876,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       'Longer than a longer thing means longer than that thing too.',
       'Both longer than one thing? You can’t tell which is longer.',
     ],
-    question: 'Is the first thing longer than the last thing?',
+    question: 'Is the first thing named longer than the last thing named?',
     bins: [
       {
         id: 'longer',
@@ -3957,7 +3959,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     cards: [
       { label: 'Width of your finger', bin: 'cm' },
       { label: 'A pea', bin: 'cm' },
-      { label: 'A paper clip', bin: 'cm', figure: { kind: 'icon', icon: 'paper clip' } },
+      { label: 'Your fingernail', bin: 'cm' },
       { label: 'A crayon', bin: 'ten', figure: { kind: 'icon', icon: 'crayon' } },
       { label: 'A new pencil', bin: 'ten', figure: { kind: 'icon', icon: 'pencil' } },
       { label: 'Your hand, from wrist to fingertip', bin: 'ten' },
@@ -3981,7 +3983,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
     bins: [
       {
         id: 'equal',
-        label: 'Equal parts: each is a unit fraction of the area',
+        label: 'Equal parts: each part is 1/2, 1/3 or 1/4 of the area',
         why: 'Every part has the same area as the others.',
       },
       { id: 'unequal', label: 'Not equal parts', why: 'Some parts have more area than others.' },
@@ -3990,7 +3992,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       {
         label: 'A square in 4 strips',
         bin: 'equal',
-        figure: { kind: 'cut', shape: 'square', parts: 4, equal: true },
+        figure: { kind: 'cut', shape: 'square', parts: 4, equal: true, cuts: 'straight' },
       },
       {
         label: 'A square cut corner to corner',
@@ -4008,22 +4010,22 @@ export const MATH_LAYOUTS: LayoutDef[] = [
         figure: { kind: 'cut', shape: 'rectangle', parts: 3, equal: true },
       },
       {
-        label: 'A rectangle in 2 parts',
+        label: 'A rectangle cut corner to corner',
         bin: 'equal',
         figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: true, cuts: 'diagonal' },
       },
       {
-        label: 'A square in 4 uneven parts',
+        label: 'A square in 4 parts',
         bin: 'unequal',
         figure: { kind: 'cut', shape: 'square', parts: 4, equal: false },
       },
       {
-        label: 'A circle in 3 uneven parts',
+        label: 'A circle in 3 parts',
         bin: 'unequal',
         figure: { kind: 'cut', shape: 'circle', parts: 3, equal: false },
       },
       {
-        label: 'A rectangle in 2 uneven parts',
+        label: 'A rectangle in 2 parts',
         bin: 'unequal',
         figure: { kind: 'cut', shape: 'rectangle', parts: 2, equal: false },
       },
@@ -4050,7 +4052,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       {
         id: 'skewed',
         label: 'Skewed, with a tail',
-        why: 'Most dots sit at one end and thin out toward the other.',
+        why: 'Most dots sit at one end and thin out toward the other: the tail points right.',
       },
       {
         id: 'outlier',
@@ -4077,7 +4079,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       {
         label: 'Pets per family',
         bin: 'skewed',
-        figure: { kind: 'dotPlot', values: [0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 5] },
+        figure: { kind: 'dotPlot', values: [0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 4] },
       },
       {
         label: 'Books read in a month',
@@ -4097,7 +4099,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       {
         label: 'Days absent this year',
         bin: 'skewed',
-        figure: { kind: 'dotPlot', values: [0, 0, 0, 0, 1, 1, 2, 3, 6, 9] },
+        figure: { kind: 'dotPlot', values: [0, 0, 0, 0, 1, 1, 2, 3, 4, 6] },
       },
     ],
   },

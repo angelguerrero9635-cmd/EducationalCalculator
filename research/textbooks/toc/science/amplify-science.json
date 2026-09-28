@@ -226,7 +226,7 @@
           "title": "Traits and Reproduction",
           "type": "Core",
           "url": "https://amplify.com/science-pilot-6-8-integrated/",
-          "skills": [],
+          "skills": ["s.6.reproduction-traits"],
           "lessons": [],
           "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.7.punnett-squares (genes, alleles)."
         },
@@ -235,7 +235,7 @@
           "title": "Thermal Energy",
           "type": "Core",
           "url": "https://amplify.com/science-pilot-6-8-integrated/",
-          "skills": [],
+          "skills": ["s.6.thermal-energy"],
           "lessons": [],
           "notes": "No Grade 6 skill fits; nearest taxonomy skills are s.7.phase-changes and s.8.kinetic-potential."
         },
@@ -261,7 +261,7 @@
           "title": "Earth’s Changing Climate",
           "type": "Core",
           "url": "https://amplify.com/science-pilot-6-8-integrated/",
-          "skills": [],
+          "skills": ["s.6.changing-climate"],
           "lessons": [],
           "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.12.climate-systems."
         },

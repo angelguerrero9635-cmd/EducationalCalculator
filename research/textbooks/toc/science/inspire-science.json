@@ -999,7 +999,7 @@
           "n": "2",
           "title": "Reproduction of Organisms",
           "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
-          "skills": [],
+          "skills": ["s.6.reproduction-traits"],
           "sections": [
             {
               "n": "1",
@@ -1101,7 +1101,7 @@
           "n": "4",
           "title": "Human Impact on the Environment",
           "url": "https://www.mheducation.com/unitas/school/explore/sites/inspire-science/scope-and-sequence-6-8-integrated.pdf",
-          "skills": [],
+          "skills": ["s.6.human-impact"],
           "sections": [
             {
               "n": "1",

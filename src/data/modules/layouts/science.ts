@@ -4279,7 +4279,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
       { label: 'Foam cup', bin: 'insulator' },
       { label: 'Wool mitten', bin: 'insulator', figure: { kind: 'icon', icon: 'oven mitt' } },
       { label: 'Trapped air in a double-walled cup', bin: 'insulator' },
-      { label: 'Glass window', bin: 'conductor' },
+      { label: 'Iron skillet', bin: 'conductor' },
       { label: 'Fluffy feathers', bin: 'insulator', figure: { kind: 'icon', icon: 'feather' } },
     ],
   },
@@ -4364,7 +4364,7 @@ export const SCIENCE_LAYOUTS: LayoutDef[] = [
     kind: 'sort',
     id: 's.6.changing-climate~causes',
     title: 'Human and natural causes of climate change',
-    use: 'Use this for “Which of these has warmed the climate over the last century?”: causes from people and causes from nature.',
+    use: 'Use this for “Is this cause of climate change from people or from nature?”',
     assumptions: [
       'Gases that trap heat (carbon dioxide, methane) are rising mainly because people burn coal, oil and gas and clear forests.',
       'Nature changes the climate too: volcanoes, the sun’s output and slow wobbles in Earth’s orbit. These are small or slow next to the last century’s warming.',

@@ -5,6 +5,21 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Textbook-gap pages review
+
+- A sort's wrong-bin hint repeated the whole card; over 60 characters it now says "Look
+  again." and the question (`SortLayout.tsx`).
+- A `cut` card figure drew 4 equal parts of a square as a 2 × 2 grid even with
+  `cuts: 'straight'`; it honors the cut now (`CardFigure.tsx`).
+- The plot caption in words mode names each value (`rep.named`); a tape's group label sits
+  under the part, and a label wider than a short compare bar sits past its handle (`Tape.tsx`).
+- Open, from the page reviewer: a tape whose parts are derived erases the typed inputs on a
+  drag (a `static` option or back-solving); two handles within 24 px are unreachable (stagger
+  them); a compare tape needs a `mark` for a value between the bars; `Net.tsx` prints the
+  example's length for a "?" value; `autoWritten` draws column grids for round numbers a step
+  says to add in the head; a variable named by a unit word on a convertible value should fail
+  `standards.test.ts`.
+
 ## Round 3 pictures placed (D01–D101)
 
 - 432 card pictures on 64 sorts and sequences, taken from the pictures chat's gallery demos by

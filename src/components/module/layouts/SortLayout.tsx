@@ -52,7 +52,12 @@ export function SortLayout({ spec }: { spec: Spec }) {
       setPlaced({ ...placed, [picked]: binId });
       setHint('');
     } else {
-      setHint(`Look again at “${card.label}”. ${spec.question}`);
+      // A long card would repeat a whole problem in the hint.
+      setHint(
+        card.label.length > 60
+          ? `Look again. ${spec.question}`
+          : `Look again at “${card.label}”. ${spec.question}`,
+      );
     }
     setPicked(undefined);
   };

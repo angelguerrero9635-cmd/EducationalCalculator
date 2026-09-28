@@ -1966,7 +1966,7 @@
           "title": "Light & Matter",
           "drivingQuestion": "Why do we sometimes see different things when looking at the same object?",
           "url": "https://openscied.org/instructional-materials/6-1-light-matter/",
-          "skills": [],
+          "skills": ["s.6.light-matter"],
           "performanceExpectations": ["MS-PS4-2*", "MS-LS1-8*"],
           "lessons": [
             {
@@ -2012,7 +2012,7 @@
           "title": "Thermal Energy",
           "drivingQuestion": "How can containers keep stuff from warming up or cooling down?",
           "url": "https://openscied.org/instructional-materials/6-2-thermal-energy/",
-          "skills": [],
+          "skills": ["s.6.thermal-energy"],
           "performanceExpectations": [
             "MS-PS1-4*",
             "MS-PS3-3",

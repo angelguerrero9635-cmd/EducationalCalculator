@@ -3999,7 +3999,7 @@
             }
           ],
           "crossCheckUrl": "https://www.hcps.org/departments/docs/Curriculum/Math/Grade%205%20Mathematics.pdf",
-          "skills": [],
+          "skills": ["m.5.convert-units"],
           "notes": "Converting measurement units (5.MD.1) has no Grade 5 skill; nearest m.4.unit-conversion."
         },
         {

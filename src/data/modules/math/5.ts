@@ -2746,12 +2746,12 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         'Also 1 pint = 2 cups, 1 gallon = 4 quarts or 8 pints, 1 hour = 60 minutes; metric units are 10, 100 or 1,000 apart.',
       ],
       variables: [
-        { id: 'b', symbol: 'b', name: 'Bigger units', min: 0.01, max: 1000, step: 0.01 },
+        { id: 'b', symbol: 'b', name: 'Amount in bigger unit', min: 0.001, max: 1000, step: 0.001 },
         {
           ...whole('k', 'k', 'Smaller units in 1 bigger unit', 2, 5280),
           allowed: [2, 3, 4, 8, 10, 12, 16, 36, 60, 100, 128, 1000, 2000, 5280],
         },
-        { id: 's', symbol: 's', name: 'Smaller units', min: 0.01, max: 100000, step: 0.01 },
+        { id: 's', symbol: 's', name: 'Amount in smaller unit', min: 1, max: 100000, step: 0.01 },
       ],
       relations: [
         {
@@ -2850,39 +2850,17 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       assumptions: [
         'To compare, put both measurements in the same unit. Change the bigger unit to the smaller one.',
         'Then compare the two amounts and find the difference, in the smaller unit.',
-        '1 foot = 12 inches, 1 yard = 3 feet, 1 pound = 16 ounces, 1 gallon = 4 quarts, 1 meter = 100 centimeters, 1 kilometer = 1,000 meters.',
+        '1 foot = 12 inches, 1 pound = 16 ounces, 1 gallon = 4 quarts, 1 meter = 100 centimeters, 1 kilometer = 1,000 meters. The bigger amount is in quarters (2.25, 2.5), so the smaller one is whole.',
       ],
       variables: [
+        { id: 'b', symbol: 'b', name: 'First, in bigger unit', min: 0.25, max: 1000, step: 0.25 },
         {
-          id: 'b',
-          symbol: 'b',
-          name: 'First measurement, in the bigger unit',
-          min: 0.01,
-          max: 1000,
-          step: 0.01,
+          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 4, 1000),
+          allowed: [4, 12, 16, 100, 1000],
         },
-        {
-          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 2, 1000),
-          allowed: [3, 4, 12, 16, 100, 1000],
-        },
-        {
-          id: 's',
-          symbol: 's',
-          name: 'First measurement, in the smaller unit',
-          min: 0.01,
-          max: 100000,
-          step: 0.01,
-          derived: true,
-        },
-        {
-          id: 'c',
-          symbol: 'c',
-          name: 'Second measurement, in the smaller unit',
-          min: 0,
-          max: 100000,
-          step: 0.01,
-        },
-        { id: 'd', symbol: 'd', name: 'How much more', min: 0, max: 100000, step: 0.01 },
+        { ...whole('s', 's', 'First, in smaller unit', 1, 100000), derived: true },
+        whole('c', 'c', 'Second, in smaller unit', 0, 100000),
+        whole('d', 'd', 'How much more', 0, 100000),
       ],
       relations: [
         {
@@ -2915,38 +2893,39 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         kind: 'tape',
         compare: ['s', 'c'],
         difference: 'd',
-        caption: 'In the smaller unit, the two are {d} apart.',
+        caption: 'In the smaller unit, one is {d} more than the other.',
       },
     } satisfies ModuleDef;
   })(),
-  // ── Multi-step problems with units (5.MD.1): gallons of juice into 6-ounce cups ──
+  // ── Multi-step problems with units (5.MD.1): gallons of juice into 8-ounce cups ──
   {
     id: 'm.5.convert-units~multi-step',
     sliders: false,
     title: 'Solve multi-step problems with units',
-    use: 'Use this for “2 gallons of juice poured into 8-ounce cups. How many cups?”',
+    use: 'Use this for “2 gallons of juice poured into 8-ounce cups. How many cups can be filled?”',
     assumptions: [
       'First change the big amount to the small unit: 1 gallon = 128 fluid ounces, 1 pound = 16 ounces, 1 yard = 36 inches.',
-      'Then divide by the size of one share to find how many shares.',
-      'Also 1 foot = 12 inches, 1 hour = 60 minutes, 1 kilogram = 1,000 grams, 1 liter = 1,000 milliliters.',
+      'Then divide by the size of one share. The whole number is the full shares; the rest is left over.',
+      'Also 1 gallon = 4 quarts, 1 foot = 12 inches, 1 hour = 60 minutes, 1 kilogram = 1,000 grams, 1 ton = 2,000 pounds.',
     ],
     variables: [
-      { id: 'g', symbol: 'g', name: 'Amount in the bigger unit', min: 0.1, max: 100, step: 0.1 },
+      { id: 'g', symbol: 'g', name: 'Amount in bigger unit', min: 0.1, max: 100, step: 0.1 },
       {
-        ...whole('k', 'k', 'Smaller units in 1 bigger unit', 12, 1000),
-        allowed: [12, 16, 36, 60, 128, 1000],
+        ...whole('k', 'k', 'Smaller units in 1 bigger unit', 4, 2000),
+        allowed: [4, 12, 16, 36, 60, 128, 1000, 2000],
       },
       {
         id: 't',
         symbol: 't',
-        name: 'Amount in the smaller unit',
-        min: 1,
-        max: 100000,
+        name: 'Amount in smaller unit',
+        min: 0.4,
+        max: 200000,
         step: 0.1,
         derived: true,
       },
       { id: 'c', symbol: 'c', name: 'Size of one share', min: 0.1, max: 1000, step: 0.1 },
-      { id: 'n', symbol: 'n', name: 'Number of shares', min: 0.1, max: 10000, step: 0.1 },
+      { ...whole('n', 'n', 'Full shares', 0, 2000000), derived: true },
+      { id: 'r', symbol: 'r', name: 'Left over', min: 0, max: 1000, step: 0.1, derived: true },
     ],
     relations: [
       {
@@ -2961,14 +2940,28 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         },
       },
       {
-        id: 'n = t ÷ c',
-        display: '{t} ÷ {c} = {n}',
+        id: 'n = whole groups of c in t',
+        display: 'whole groups of {c} in {t} = {n}',
+        words: 'Amount in smaller unit ÷ size of one share = full shares, with some left over',
         vars: ['n', 't', 'c'],
-        residual: (v: Values) => v.n! * v.c! - v.t!,
+        residual: (v: Values) => v.n! - Math.floor(v.t! / v.c! + 1e-9),
         solve: {
-          n: (v: Values) => div(v.t!, v.c!),
-          t: (v: Values) => v.n! * v.c!,
-          c: (v: Values) => div(v.t!, v.n!),
+          n: (v: Values) => Math.floor(v.t! / v.c! + 1e-9),
+          t: () => undefined,
+          c: () => undefined,
+        },
+      },
+      {
+        id: 'r = t − n × c',
+        display: '{t} − {n} × {c} = {r}',
+        words: 'Amount in smaller unit − full shares × size of one share = left over',
+        vars: ['r', 't', 'n', 'c'],
+        residual: (v: Values) => v.r! - (v.t! - v.n! * v.c!),
+        solve: {
+          r: (v: Values) => v.t! - v.n! * v.c!,
+          t: (v: Values) => v.r! + v.n! * v.c!,
+          n: () => undefined,
+          c: () => undefined,
         },
       },
     ],
@@ -2984,23 +2977,35 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         },
         k: { expr: '{t} ÷ {g}', how: 'How many smaller units in one bigger unit.' },
       },
-      'n = t ÷ c': {
+      'n = whole groups of c in t': {
         n: {
-          expr: '{t} ÷ {c}',
-          how: 'Share the small units into shares of that size: how many shares?',
+          expr: 'whole groups of {c} in {t}',
+          how: 'Divide by the size of one share. Keep the whole number: the full shares.',
+          work: (v: Values) => [
+            `${fmt(v.t!)} ÷ ${fmt(v.c!)} = ${fmt(v.n!)}, remainder ${fmt(v.t! - v.n! * v.c!)}`,
+          ],
         },
-        t: { expr: '{n} × {c}', how: 'All the shares together, in the smaller unit.' },
-        c: { expr: '{t} ÷ {n}', how: 'Share the small units equally among the shares.' },
+      },
+      'r = t − n × c': {
+        r: {
+          expr: '{t} − {n} × {c}',
+          how: 'What the full shares don’t use is left over: less than one share.',
+          note: (v: Values) => (v.r! === 0 ? '(nothing is left over)' : ''),
+        },
+        t: {
+          expr: '{n} × {c} + {r}',
+          how: 'The full shares and the leftover together, in the smaller unit.',
+        },
       },
     },
-    example: { g: 2, k: 128, t: 256, c: 8, n: 32 },
+    example: { g: 2, k: 128, t: 256, c: 8, n: 32, r: 0 },
     startWith: ['g', 'k', 'c'],
     representation: {
       kind: 'tape',
       parts: ['c'],
       total: 't',
       groups: 'n',
-      caption: '{n} shares of {c} make {t} in the smaller unit.',
+      caption: '{n} full shares of {c} make {t} in the smaller unit, with {r} left over.',
     },
   },
   // ── Area of a rectangle with fractional side lengths (5.NF.4b) ──
@@ -3088,38 +3093,86 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
   },
   // ── Estimate with decimals (5.NBT.7): round, then add or multiply ──
-  ...(['sum', 'product'] as const).map((kind) => {
+  ...(['sum', 'difference', 'product'] as const).map((kind) => {
     const isSum = kind === 'sum';
-    const op = isSum ? '+' : '×';
+    const isDiff = kind === 'difference';
+    const op = isSum ? '+' : isDiff ? '−' : '×';
     return {
       id: `m.5.decimal-operations~estimate-${kind}`,
       sliders: false,
-      title: isSum ? 'Estimate sums and differences of decimals' : 'Estimate products of decimals',
+      title:
+        kind === 'sum'
+          ? 'Estimate sums of decimals'
+          : kind === 'difference'
+            ? 'Estimate differences of decimals'
+            : 'Estimate products of decimals',
       use: isSum
         ? 'Use this for “About how much is 12.65 + 8.3?” by rounding each to the nearest whole number.'
-        : 'Use this for “About how much is 4.8 × 6.2?” by rounding each to the nearest whole number.',
+        : isDiff
+          ? 'Use this for “About how much is 12.65 − 8.3?” by rounding each to the nearest whole number.'
+          : 'Use this for “About how much is 4.8 × 6.2?” by rounding each to the nearest whole number.',
       assumptions: [
         'Round each decimal to the nearest whole number: 5 tenths or more rounds up.',
         isSum
           ? 'Add the rounded numbers. The estimate is close to the exact sum.'
-          : 'Multiply the rounded numbers. The estimate is close to the exact product.',
-        'Use the estimate to check that an exact answer makes sense. Numbers to 999.99.',
+          : isDiff
+            ? 'Subtract the rounded numbers. The estimate is close to the exact difference.'
+            : 'Multiply the rounded numbers. The estimate is close to the exact product.',
+        'Use the estimate to check that an exact answer makes sense. Numbers from 1 to 999.99.',
       ],
       variables: [
-        { id: 'a', symbol: 'a', name: 'First number', min: 0, max: 999.99, step: 0.01 },
-        { id: 'b', symbol: 'b', name: 'Second number', min: 0, max: 999.99, step: 0.01 },
-        { ...whole('ra', 'r', 'First number rounded', 0, 1000), derived: true },
-        { ...whole('rb', 's', 'Second number rounded', 0, 1000), derived: true },
         {
-          ...whole('e', 'e', isSum ? 'Estimated sum' : 'Estimated product', 0, 1000000),
+          id: 'a',
+          symbol: 'a',
+          name: isDiff ? 'Start' : 'First number',
+          min: 1,
+          max: 999.99,
+          step: 0.01,
+        },
+        {
+          id: 'b',
+          symbol: 'b',
+          name: isDiff ? 'Take away' : 'Second number',
+          min: 1,
+          max: 999.99,
+          step: 0.01,
+        },
+        {
+          ...whole('ra', 'r', isDiff ? 'Start rounded' : 'First number rounded', 1, 1000),
+          derived: true,
+        },
+        {
+          ...whole('rb', 's', isDiff ? 'Take away rounded' : 'Second number rounded', 1, 1000),
+          derived: true,
+        },
+        {
+          ...whole(
+            'e',
+            'e',
+            isSum ? 'Estimated sum' : isDiff ? 'Estimated difference' : 'Estimated product',
+            0,
+            1000000,
+          ),
           derived: true,
         },
       ],
       relations: [
+        ...(isDiff
+          ? [
+              {
+                id: 'b ≤ a',
+                constraint: true,
+                display: 'Take away {b} is not more than the start {a}',
+                vars: ['a', 'b'],
+                residual: (v: Values) => (v.b! <= v.a! ? 0 : 1),
+                solve: {},
+              },
+            ]
+          : []),
         {
           id: 'ra = a rounded',
           display: '{a} rounded to the ones: {ra}',
-          words: 'The first number rounded to the nearest whole = {ra}',
+          words: `The ${isDiff ? 'start' : 'first number'} rounded to the nearest whole = {ra}`,
           vars: ['ra', 'a'],
           residual: (v: Values) => v.ra! - Math.round(v.a!),
           solve: { ra: (v: Values) => Math.round(v.a!), a: () => undefined },
@@ -3127,7 +3180,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         {
           id: 'rb = b rounded',
           display: '{b} rounded to the ones: {rb}',
-          words: 'The second number rounded to the nearest whole = {rb}',
+          words: `The ${isDiff ? 'take-away' : 'second number'} rounded to the nearest whole = {rb}`,
           vars: ['rb', 'b'],
           residual: (v: Values) => v.rb! - Math.round(v.b!),
           solve: { rb: (v: Values) => Math.round(v.b!), b: () => undefined },
@@ -3136,54 +3189,76 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           id: `e = ra ${op} rb`,
           display: `{ra} ${op} {rb} = {e}`,
           vars: ['e', 'ra', 'rb'],
-          residual: (v: Values) => v.e! - (isSum ? v.ra! + v.rb! : v.ra! * v.rb!),
+          residual: (v: Values) =>
+            v.e! - (isSum ? v.ra! + v.rb! : isDiff ? v.ra! - v.rb! : v.ra! * v.rb!),
           solve: {
-            e: (v: Values) => (isSum ? v.ra! + v.rb! : v.ra! * v.rb!),
-            ra: (v: Values) => (isSum ? v.e! - v.rb! : div(v.e!, v.rb!)),
-            rb: (v: Values) => (isSum ? v.e! - v.ra! : div(v.e!, v.ra!)),
+            e: (v: Values) => (isSum ? v.ra! + v.rb! : isDiff ? v.ra! - v.rb! : v.ra! * v.rb!),
+            ra: (v: Values) => (isSum ? v.e! - v.rb! : isDiff ? v.e! + v.rb! : div(v.e!, v.rb!)),
+            rb: (v: Values) => (isSum ? v.e! - v.ra! : isDiff ? v.ra! - v.e! : div(v.e!, v.ra!)),
           },
         },
       ],
       steps: {
+        ...(isDiff ? { 'b ≤ a': {} } : {}),
         'ra = a rounded': {
           ra: {
             expr: '{a} rounded to the ones',
             how: 'Look at the tenths digit. 5 or more rounds up to the next whole number.',
+            work: (v: Values) => [
+              `${fmt(v.a!)} is between ${fmt(Math.floor(v.a!))} and ${fmt(Math.floor(v.a!) + 1)} → ${fmt(v.ra!)}`,
+            ],
           },
         },
         'rb = b rounded': {
-          rb: { expr: '{b} rounded to the ones', how: 'Round the second number the same way.' },
+          rb: {
+            expr: '{b} rounded to the ones',
+            how: `Round the ${isDiff ? 'take-away' : 'second number'} the same way.`,
+            work: (v: Values) => [
+              `${fmt(v.b!)} is between ${fmt(Math.floor(v.b!))} and ${fmt(Math.floor(v.b!) + 1)} → ${fmt(v.rb!)}`,
+            ],
+          },
         },
         [`e = ra ${op} rb`]: {
           e: {
             expr: `{ra} ${op} {rb}`,
             how: isSum
               ? 'Add the whole numbers in your head.'
-              : 'Multiply the whole numbers in your head.',
+              : isDiff
+                ? 'Subtract the whole numbers in your head.'
+                : 'Multiply the whole numbers in your head.',
+            written: false,
             note: (v: Values) =>
-              `(the exact ${kind} is ${fmt(isSum ? v.a! + v.b! : Math.round(v.a! * v.b! * 10000) / 10000)})`,
+              `(the exact ${kind} is ${fmt(isSum ? v.a! + v.b! : isDiff ? v.a! - v.b! : Math.round(v.a! * v.b! * 10000) / 10000)})`,
           },
           ra: {
-            expr: isSum ? '{e} − {rb}' : '{e} ÷ {rb}',
+            expr: isSum ? '{e} − {rb}' : isDiff ? '{e} + {rb}' : '{e} ÷ {rb}',
             how: isSum
               ? 'Take the second rounded number from the estimate.'
-              : 'Divide the estimate by the second rounded number.',
+              : isDiff
+                ? 'Add the rounded take-away back to the estimate.'
+                : 'Divide the estimate by the second rounded number.',
           },
           rb: {
-            expr: isSum ? '{e} − {ra}' : '{e} ÷ {ra}',
+            expr: isSum ? '{e} − {ra}' : isDiff ? '{ra} − {e}' : '{e} ÷ {ra}',
             how: isSum
               ? 'Take the first rounded number from the estimate.'
-              : 'Divide the estimate by the first rounded number.',
+              : isDiff
+                ? 'Take the estimate from the rounded start.'
+                : 'Divide the estimate by the first rounded number.',
           },
         },
       } as Record<string, Record<string, StepText>>,
       example: isSum
         ? { a: 12.65, b: 8.3, ra: 13, rb: 8, e: 21 }
-        : { a: 4.8, b: 6.2, ra: 5, rb: 6, e: 30 },
+        : isDiff
+          ? { a: 12.65, b: 8.3, ra: 13, rb: 8, e: 5 }
+          : { a: 4.8, b: 6.2, ra: 5, rb: 6, e: 30 },
       startWith: ['a', 'b'],
       representation: isSum
         ? { kind: 'tape', parts: ['ra', 'rb'], total: 'e' }
-        : { kind: 'areaModel', factors: ['ra', 'rb'], total: 'e' },
+        : isDiff
+          ? { kind: 'tape', parts: ['e', 'rb'], total: 'ra' }
+          : { kind: 'areaModel', factors: ['ra', 'rb'], total: 'e' },
     } satisfies ModuleDef;
   }),
 ];

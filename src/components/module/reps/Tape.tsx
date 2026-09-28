@@ -176,17 +176,26 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       opacity={rep.known(id) ? 1 : 0.35}
                     />
                   ))}
-                  {[a, b].map((id, i) => (
-                    <ChartText
-                      key={`t${id}`}
-                      x={left + 6}
-                      y={ys[i]! + barH / 2 + 5}
-                      fontSize={chart.small}
-                      fill={i === 0 ? c.onChartHighlight : c.chartInk}
-                    >
-                      {`${name(id)}: ${label(id)}`}
-                    </ChartText>
-                  ))}
+                  {[a, b].map((id, i) => {
+                    // A label wider than its bar (less the handle over its end) sits to the
+                    // right of the handle instead of being cut by it.
+                    const text = `${name(id)}: ${label(id)}`;
+                    const barW = shown[i]! * scale;
+                    const outside =
+                      text.length * chart.small * 0.58 > barW - chart.handle / 2 - 8 &&
+                      left + barW + chart.handle + text.length * chart.small * 0.58 < w;
+                    return (
+                      <ChartText
+                        key={`t${id}`}
+                        x={outside ? left + barW + chart.handle / 2 + 6 : left + 6}
+                        y={ys[i]! + barH / 2 + 5}
+                        fontSize={chart.small}
+                        fill={!outside && i === 0 ? c.onChartHighlight : c.chartInk}
+                      >
+                        {text}
+                      </ChartText>
+                    );
+                  })}
                   {times > 1 && Math.min(x, y) > 0
                     ? Array.from({ length: times - 1 }, (_, k) => {
                         const gx = left + (k + 1) * Math.min(x, y) * scale;
@@ -345,10 +354,12 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {under(id, i)}
                   </ChartText>
                 ))}
+                {/* The groups count sits under the part names: above the bar it would cross the
+                    total's bracket. */}
                 {!dashed && spec.groups ? (
                   <ChartText
                     x={left + (span * scale) / 2}
-                    y={y - 10}
+                    y={y + barH + 18 + (stagger ? 28 : 14)}
                     fontSize={chart.small}
                     textAnchor="middle"
                   >

@@ -3435,7 +3435,7 @@
               "title": "Problem Solving: Measurement"
             }
           ],
-          "skills": [],
+          "skills": ["m.5.convert-units"],
           "notes": "Converting units and line plots (5.MD.1-2) have no Grade 5 skill; nearest m.4.unit-conversion."
         },
         {

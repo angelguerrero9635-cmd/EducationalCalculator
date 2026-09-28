@@ -569,8 +569,8 @@ function Shadow({ light }: { light: NonNullable<Scene['light']> }) {
               fontSize={chart.label}
               textAnchor="middle"
             >
-              {light.blocker === 'clear' || light.blocker === 'cloudy' || light.blocker === 'solid'
-                ? light.blocker
+              {light.blocker === 'clear' || light.blocker === 'cloudy'
+                ? `${light.blocker} block`
                 : 'block'}
             </ChartText>
             <ChartText

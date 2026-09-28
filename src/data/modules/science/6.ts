@@ -828,7 +828,6 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'Thermal energy flows from warmer to cooler until both are the same temperature.',
       'A cold drink in a warm room warms up. How fast depends on the cup: a thin metal cup lets energy through faster than a foam cup.',
       'Warming rate is the degrees gained each minute. It is steady while the drink is much colder than the room.',
-      'The drink cannot get warmer than the room.',
     ],
     variables: [
       {
@@ -849,7 +848,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         max: 10,
         step: 0.01,
       },
-      { id: 't', symbol: 't', name: 'Minutes', unit: 'min', min: 0.1, max: 600, step: 0.1 },
+      { id: 't', symbol: 't', name: 'Time warming', unit: 'min', min: 0.1, max: 600, step: 0.1 },
       {
         id: 'c',
         symbol: 'c',
@@ -984,12 +983,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     },
     example: { h: 80, c: 20, m: 50 },
     startWith: ['h', 'c'],
-    representation: {
-      kind: 'tape',
-      compare: ['h', 'c'],
-      difference: 'm',
-      caption: 'The mix settles at {m} °C, halfway between.',
-    },
+    representation: { kind: 'thermometers', items: ['h', 'm', 'c'], min: 0, max: 100 },
   },
   // ── Light and matter (MS-PS4-2): light hitting a surface is reflected, absorbed or transmitted ──
   {
@@ -998,19 +992,19 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     assumptions: [
       'When light hits a material, each bit of it is reflected (bounces off), absorbed (taken in) or transmitted (passes through).',
       'The three parts add up to all the light that arrived: 100 percent.',
-      'A mirror reflects most of it; black cloth absorbs most; clear glass transmits most; a window at night does some of each.',
+      'A mirror reflects most of it; black cloth absorbs most; clear glass transmits most; tinted glass does some of each.',
       'Absorbed light warms the material.',
     ],
     variables: [
-      { id: 'r', symbol: 'r', name: 'Reflected', unit: '%', min: 0, max: 100, step: 0.1 },
-      { id: 'a', symbol: 'a', name: 'Absorbed', unit: '%', min: 0, max: 100, step: 0.1 },
-      { id: 't', symbol: 't', name: 'Transmitted', unit: '%', min: 0, max: 100, step: 0.1 },
+      { id: 'r', symbol: 'r', name: 'Light reflected', unit: '%', min: 0, max: 100, step: 0.1 },
+      { id: 'a', symbol: 'a', name: 'Light absorbed', unit: '%', min: 0, max: 100, step: 0.1 },
+      { id: 't', symbol: 't', name: 'Light transmitted', unit: '%', min: 0, max: 100, step: 0.1 },
     ],
     relations: [
       {
         id: 'r + a + t = 100',
         display: '{r} + {a} + {t} = 100',
-        words: 'Reflected + absorbed + transmitted = all the light',
+        words: 'Light reflected + light absorbed + light transmitted = all the light',
         vars: ['r', 'a', 't'],
         residual: (v: Values) => v.r! + v.a! + v.t! - 100,
         solve: {
@@ -1033,7 +1027,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         },
       },
     },
-    example: { r: 8, a: 2, t: 90 },
+    example: { r: 30, a: 20, t: 50 },
     startWith: ['r', 'a'],
     representation: {
       kind: 'tape',
@@ -1048,41 +1042,59 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'In sexual reproduction each parent gives half of its chromosomes, so the offspring gets a mix of both.',
       'A body cell has chromosomes in pairs. An egg or sperm has one from each pair: half as many.',
       'Egg + sperm = the full set again. People: 23 + 23 = 46. Dogs: 39 + 39 = 78.',
-      'Asexual reproduction copies one parent: every chromosome is the parent’s, so the offspring is a match.',
+      'Asexual reproduction copies one parent: every chromosome is the parent’s, so the offspring is a genetic match.',
     ],
     variables: [
-      whole('g', 'g', 'Chromosomes in an egg or sperm', 1, 200),
+      whole('g', 'g', 'Chromosomes in an egg', 1, 200),
+      { ...whole('p', 'p', 'Chromosomes in a sperm', 1, 200), derived: true },
       { ...whole('b', 'b', 'Chromosomes in a body cell', 2, 400), step: 2, multipleOf: 2 },
     ],
     relations: [
       {
-        id: 'b = 2 × g',
-        display: '{g} + {g} = {b}',
+        id: 'p = g',
+        display: 'The sperm carries {p}, the same as the egg’s {g}',
+        words: 'Chromosomes in a sperm = chromosomes in an egg',
+        vars: ['p', 'g'],
+        residual: (v: Values) => v.p! - v.g!,
+        solve: { p: (v: Values) => v.g!, g: (v: Values) => v.p! },
+      },
+      {
+        id: 'b = g + p',
+        display: '{g} + {p} = {b}',
         words: 'Chromosomes from the egg + chromosomes from the sperm = chromosomes in a body cell',
-        vars: ['b', 'g'],
-        residual: (v: Values) => v.b! - 2 * v.g!,
-        solve: { b: (v: Values) => 2 * v.g!, g: (v: Values) => v.b! / 2 },
+        vars: ['b', 'g', 'p'],
+        residual: (v: Values) => v.b! - v.g! - v.p!,
+        solve: {
+          b: (v: Values) => v.g! + v.p!,
+          g: (v: Values) => v.b! - v.p!,
+          p: (v: Values) => v.b! - v.g!,
+        },
       },
     ],
     steps: {
-      'b = 2 × g': {
+      'p = g': {
+        p: {
+          expr: '{g}',
+          how: 'Egg and sperm each carry one chromosome from every pair: the same number.',
+        },
+        g: { expr: '{p}', how: 'The egg carries as many as the sperm.' },
+      },
+      'b = g + p': {
         b: {
-          expr: '{g} + {g}',
+          expr: '{g} + {p}',
           how: 'The egg’s set and the sperm’s set join: one of each pair from each parent.',
         },
-        g: {
-          expr: '{b} ÷ 2',
-          how: 'An egg or sperm carries one chromosome from each pair: half the body cell’s.',
-        },
+        g: { expr: '{b} − {p}', how: 'Take the sperm’s set from the body cell’s: the egg’s set.' },
+        p: { expr: '{b} − {g}', how: 'Take the egg’s set from the body cell’s: the sperm’s set.' },
       },
     },
-    example: { g: 23, b: 46 },
+    example: { g: 23, p: 23, b: 46 },
     startWith: ['g'],
     representation: {
       kind: 'tape',
-      parts: ['g', 'g'],
+      parts: ['g', 'p'],
       total: 'b',
-      caption: 'Half from each parent: {g} + {g} = {b}.',
+      caption: 'Half from each parent: {g} + {p} = {b}.',
     },
   },
   // ── Earth's changing climate (MS-ESS3-5): carbon dioxide rising ──
@@ -1093,7 +1105,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       'Carbon dioxide in the air is measured in parts per million (ppm): how many of every million bits of air.',
       'Before factories it was about 280 ppm. Burning fuels adds more each year, and more carbon dioxide traps more heat.',
       'The yearly rise has grown: about 1 ppm a year in 1960, about 2.5 ppm a year now.',
-      'Steady rise × years = the total rise; add it to the start.',
+      'Steady rise × years = the total rise; add it to the start. The real rise has grown, so many years give a low estimate.',
     ],
     variables: [
       {
@@ -1196,7 +1208,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'm',
         symbol: 'm',
-        name: 'Minutes cut from each shower',
+        name: 'Time cut from each shower',
         unit: 'min',
         min: 0.5,
         max: 30,
@@ -1205,7 +1217,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'r',
         symbol: 'r',
-        name: 'Liters each minute',
+        name: 'Water each minute',
         unit: 'L/min',
         min: 1,
         max: 30,
@@ -1214,7 +1226,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'd',
         symbol: 'd',
-        name: 'Liters saved each day',
+        name: 'Water saved each day',
         unit: 'L',
         min: 0,
         max: 900,
@@ -1222,13 +1234,13 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         derived: true,
       },
       whole('n', 'n', 'Days', 1, 3650),
-      { id: 'w', symbol: 'w', name: 'Liters saved', unit: 'L', min: 0, max: 3000000, step: 0.1 },
+      { id: 'w', symbol: 'w', name: 'Water saved', unit: 'L', min: 0, max: 3300000, step: 0.1 },
     ],
     relations: [
       {
         id: 'd = m × r',
         display: '{m} × {r} = {d}',
-        words: 'Minutes cut × liters each minute = liters saved each day',
+        words: 'Time cut × water each minute = water saved each day',
         vars: ['d', 'm', 'r'],
         residual: (v: Values) => v.d! - v.m! * v.r!,
         solve: {
@@ -1240,7 +1252,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
       {
         id: 'w = d × n',
         display: '{d} × {n} = {w}',
-        words: 'Liters saved each day × days = liters saved',
+        words: 'Water saved each day × days = water saved',
         vars: ['w', 'd', 'n'],
         residual: (v: Values) => v.w! - v.d! * v.n!,
         solve: {

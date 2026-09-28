@@ -7,7 +7,14 @@ import { formatNumber, numberWords } from '@/engine/format';
 import type { Values } from '@/engine/types';
 import { apart, atLeast, div, times, whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
-import { autoWritten, columnAdd, columnSubtract, longDivision, partialQuotients } from '../written';
+import {
+  autoWritten,
+  columnAdd,
+  columnSubtract,
+  decimalColumns,
+  longDivision,
+  partialQuotients,
+} from '../written';
 import {
   addStrategy,
   countList,
@@ -3101,11 +3108,17 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'Use the estimate to check an exact answer: they should be close.',
       ],
       variables: [
-        whole('a', 'a', isSum ? 'First number' : 'Start', 0, 999999),
-        whole('b', 'b', isSum ? 'Second number' : 'Take away', 0, 999999),
+        whole('a', 'a', isSum ? 'First number' : 'Start', 1, 999999),
+        whole('b', 'b', isSum ? 'Second number' : 'Take away', 1, 999999),
         { ...whole('p', 'p', 'Round to', 100, 10000), allowed: [100, 1000, 10000] },
-        { ...whole('ra', 'r', 'First number rounded', 0, 1000000), derived: true },
-        { ...whole('rb', 's', 'Second number rounded', 0, 1000000), derived: true },
+        {
+          ...whole('ra', 'r', isSum ? 'First number rounded' : 'Start rounded', 0, 1000000),
+          derived: true,
+        },
+        {
+          ...whole('rb', 's', isSum ? 'Second number rounded' : 'Take away rounded', 0, 1000000),
+          derived: true,
+        },
         {
           ...whole('e', 'e', isSum ? 'Estimated sum' : 'Estimated difference', 0, 2000000),
           derived: true,
@@ -3127,7 +3140,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
         {
           id: 'ra = a rounded',
           display: '{a} rounded to the {p}s: {ra}',
-          words: 'The first number rounded to the place = {ra}',
+          words: isSum
+            ? 'The first number rounded to the place = {ra}'
+            : 'The start rounded to the place = {ra}',
           vars: ['ra', 'a', 'p'],
           residual: (v: Values) => v.ra! - round(v.a!, v.p!),
           solve: { ra: (v: Values) => round(v.a!, v.p!), a: () => undefined, p: () => undefined },
@@ -3135,7 +3150,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
         {
           id: 'rb = b rounded',
           display: '{b} rounded to the {p}s: {rb}',
-          words: 'The second number rounded to the place = {rb}',
+          words: isSum
+            ? 'The second number rounded to the place = {rb}'
+            : 'The take-away rounded to the place = {rb}',
           vars: ['rb', 'b', 'p'],
           residual: (v: Values) => v.rb! - round(v.b!, v.p!),
           solve: { rb: (v: Values) => round(v.b!, v.p!), b: () => undefined, p: () => undefined },
@@ -3166,7 +3183,9 @@ export const MATH_4_MODULES: ModuleDef[] = [
         'rb = b rounded': {
           rb: {
             expr: '{b} rounded to the {p}s',
-            how: 'Round the second number to the same place.',
+            how: isSum
+              ? 'Round the second number to the same place.'
+              : 'Round the take-away to the same place.',
             work: (v: Values) => [
               `${fmt(v.b!)} is between ${fmt(Math.floor(v.b! / v.p!) * v.p!)} and ${fmt(Math.floor(v.b! / v.p!) * v.p! + v.p!)} → ${fmt(v.rb!)}`,
             ],
@@ -3178,6 +3197,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
             how: isSum
               ? 'Add the rounded numbers. Rounded numbers are easy to add in your head.'
               : 'Subtract the rounded numbers. Rounded numbers are easy to subtract in your head.',
+            written: false,
             note: (v: Values) => `(the exact ${kind} is ${fmt(isSum ? v.a! + v.b! : v.a! - v.b!)})`,
           },
           ra: {
@@ -3222,6 +3242,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
     ],
     relations: [
       {
+        id: 'b ≤ a',
+        constraint: true,
+        display: 'Take away {b} is not more than the start {a}',
+        vars: ['a', 'b'],
+        residual: (v: Values) => (v.b! <= v.a! ? 0 : 1),
+        solve: {},
+      },
+      {
         id: 'a − b = c',
         display: '{a} − {b} = {c}',
         vars: ['c', 'a', 'b'],
@@ -3234,6 +3262,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       },
     ],
     steps: {
+      'b ≤ a': {},
       'a − b = c': {
         c: {
           expr: '{a} − {b}',
@@ -3254,7 +3283,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     sliders: false,
     equation: '{t}/10 + {h}/100 = {s}/100',
     title: 'Add tenths and hundredths',
-    use: 'Use this for “Find the value of 3/10 + 4/100” and write the sum as a decimal.',
+    use: 'Use this for “Find the value of 3/10 + 4/100” and write the sum as a decimal (sums under one whole).',
     assumptions: [
       'A tenth is 10 hundredths, so 3/10 = 30/100. Write the tenths as hundredths first.',
       'Then add the hundredths. The sum is in hundredths.',
@@ -3355,10 +3384,10 @@ export const MATH_4_MODULES: ModuleDef[] = [
     sliders: false,
     equation: '${a} + ${b} = ${c}',
     title: 'Solve problems involving money',
-    use: 'Use this for “A book costs $3.45 and a pen $1.80. How much in all?” or how much is left.',
+    use: 'Use this for “A book costs $3.45 and a pen $1.80. How much in all?” For what is left, give the total and one price.',
     assumptions: [
       'Money is a decimal: dollars before the point, cents after. $3.45 is 3 dollars and 45 cents.',
-      'Line up the points and add or subtract like whole numbers. Amounts to $999.99.',
+      'Line up the points and add or subtract like whole numbers. Each amount to $999.99.',
       'To find what is left, take the price from the total: total − price = left.',
     ],
     variables: [
@@ -3384,14 +3413,17 @@ export const MATH_4_MODULES: ModuleDef[] = [
         c: {
           expr: '{a} + {b}',
           how: 'Line up the points. Add the cents, then the dollars, regrouping 100 cents as a dollar.',
+          written: (v: Values) => decimalColumns('+', [v.a!, v.b!]),
         },
         a: {
           expr: '{c} − {b}',
           how: 'Take the second amount from the total: what is left after paying it.',
+          written: (v: Values) => decimalColumns('−', [v.c!, v.b!]),
         },
         b: {
           expr: '{c} − {a}',
           how: 'Take the first amount from the total: what is left after paying it.',
+          written: (v: Values) => decimalColumns('−', [v.c!, v.a!]),
         },
       },
     },
