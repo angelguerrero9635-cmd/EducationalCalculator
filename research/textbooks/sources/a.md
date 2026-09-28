@@ -2,12 +2,12 @@
 
 Reference only: nothing here is imported, bundled or shipped.
 
-| File                                             | What                                                               |
-| ------------------------------------------------ | ------------------------------------------------------------------ |
-| `toc/math/im-k5.json`                            | Every grade's units, sections and lessons, with URLs and skill ids |
-| `practice/math/<grade>.im-k5.jsonl`              | Every public practice problem, one record per problem              |
-| `screenshots/im-k5/<record id>.webp`             | The problem, clipped from the public page, for figure problems     |
-| `tools/check_a.py`                               | Checks the files above and prints the counts below                 |
+| File                                 | What                                                               |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| `toc/math/im-k5.json`                | Every grade's units, sections and lessons, with URLs and skill ids |
+| `practice/math/<grade>.im-k5.jsonl`  | Every public practice problem, one record per problem              |
+| `screenshots/im-k5/<record id>.webp` | The problem, clipped from the public page, for figure problems     |
+| `tools/check_a.py`                   | Checks the files above and prints the counts below                 |
 
 ## Source: IM K–5 Math (Illustrative Mathematics, 2021 edition)
 
@@ -18,6 +18,7 @@ Reference only: nothing here is imported, bundled or shipped.
   twice. Pages already cached by the earlier `research/questions/` crawl (same URLs) were reused.
 - **License statement** (footer of every page, e.g.
   <https://curriculum.illustrativemathematics.org/k5/curriculum.html>):
+
   > "© 2021 Illustrative Mathematics®. Licensed under the Creative Commons Attribution 4.0
   > license. The Illustrative Mathematics name and logo are not subject to the Creative Commons
   > license and may not be used without the prior and express written consent of Illustrative
@@ -84,15 +85,15 @@ Reference only: nothing here is imported, bundled or shipped.
 
 ### Counts
 
-| Grade | Units | Sections | Lessons | Problems | With a picture or table | Screenshots | MB |
-| --- | --: | --: | --: | --: | --: | --: | --: |
-| K | 8 | 25 | 137 | 109 | 73 | 72 | 0.89 |
-| 1 | 8 | 27 | 146 | 179 | 74 | 70 | 0.98 |
-| 2 | 9 | 25 | 146 | 182 | 94 | 90 | 1.15 |
-| 3 | 8 | 30 | 143 | 212 | 107 | 107 | 1.13 |
-| 4 | 9 | 28 | 149 | 214 | 82 | 77 | 0.92 |
-| 5 | 8 | 26 | 148 | 209 | 86 | 84 | 1.13 |
-| all | 50 | 161 | 869 | 1105 | 516 | 500 | 6.21 |
+| Grade | Units | Sections | Lessons | Problems | With a picture or table | Screenshots |   MB |
+| ----- | ----: | -------: | ------: | -------: | ----------------------: | ----------: | ---: |
+| K     |     8 |       25 |     137 |      109 |                      73 |          72 | 0.89 |
+| 1     |     8 |       27 |     146 |      179 |                      74 |          70 | 0.98 |
+| 2     |     9 |       25 |     146 |      182 |                      94 |          90 | 1.15 |
+| 3     |     8 |       30 |     143 |      212 |                     107 |         107 | 1.13 |
+| 4     |     9 |       28 |     149 |      214 |                      82 |          77 | 0.92 |
+| 5     |     8 |       26 |     148 |      209 |                      86 |          84 | 1.13 |
+| all   |    50 |      161 |     869 |     1105 |                     516 |         500 | 6.21 |
 
 "With a picture or table" counts problems whose stem or choices hold an image or an HTML table; every problem with an image has a screenshot (tables alone are in the text). Of the problems, 148 are pre-unit and 289 are exploration problems. Answers: 0 (sign-in only).
 
