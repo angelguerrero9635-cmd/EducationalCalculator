@@ -454,7 +454,7 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
             spec.y.var,
             ...(spec.tangentSlope ? [spec.tangentSlope] : []),
             ...spec.params,
-          ].map((id) => rep.label(id)),
+          ].map((id) => rep.named(id)),
         ].join('   ·   ')}
       </Caption>
       {!paramsKnown ? (

@@ -3213,7 +3213,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     assumptions: [
       'A zero has nothing to regroup from. Go left to the first place that is not zero.',
       'Regroup 1 from that place: each zero in between becomes 9, and the ones place gets 10.',
-      'Think of 5,000 as 4 thousands, 9 hundreds, 9 tens and 10 ones. The start is a multiple of 100.',
+      'Think of a start like 5,000 as 4 thousands, 9 hundreds, 9 tens and 10 ones. The start is a multiple of 100.',
     ],
     variables: [
       { ...whole('a', 'a', 'Start', 100, 1000000), step: 100, multipleOf: 100 },
@@ -3335,8 +3335,14 @@ export const MATH_4_MODULES: ModuleDef[] = [
         h: { expr: '{s} − {k}', how: 'Take the tenths part, in hundredths, from the total.' },
       },
       'd = s ÷ 100': {
-        d: { expr: '{s} ÷ 100', how: 'Hundredths go two places after the point: 34/100 is 0.34.' },
-        s: { expr: '{d} × 100', how: 'Read the decimal as hundredths: 0.34 is 34 hundredths.' },
+        d: {
+          expr: '{s} ÷ 100',
+          how: 'Hundredths go two places after the point: the last digit is in the hundredths place.',
+        },
+        s: {
+          expr: '{d} × 100',
+          how: 'Read the decimal as hundredths: the digits after the point count hundredths.',
+        },
       },
     },
     example: { t: 3, h: 4, k: 30, s: 34, d: 0.34 },
