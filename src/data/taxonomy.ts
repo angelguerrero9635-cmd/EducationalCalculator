@@ -164,6 +164,7 @@ const MATH: Record<Grade, Row[]> = {
     ["multiply-fractions", "Multiply fractions and mixed numbers", NF, ["m.4.fraction-times-whole"]],
     ["divide-unit-fractions", "Divide whole numbers and unit fractions", NF],
     ["volume-rectangular", "Volume of rectangular prisms (length × width × height)", MD, ["m.4.area-perimeter-formulas"]],
+    ["convert-units", "Convert units of measure with decimals", MD, ["m.4.unit-conversion"]],
     ["coordinate-plane-q1", "Graph points on the coordinate plane", G],
     ["classify-2d", "Classify two-dimensional figures", G, ["m.4.lines-symmetry"]],
   ],

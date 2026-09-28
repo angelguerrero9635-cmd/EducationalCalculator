@@ -111,6 +111,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) rounded to the (${NUM})s`), (n, p) => Math.round(n / p) * p],
   [new RegExp(`(${NUM}) rounded down to the (${NUM})s`), (n, p) => Math.floor(n / p) * p],
   // The place by name (Grade 5): "4.268 rounded down to the hundredths".
+  [new RegExp(`(${NUM}) rounded to the ones`), (n) => Math.round(n)],
   [new RegExp(`(${NUM}) rounded down to the ones`), (n) => Math.floor(n + 1e-9)],
   [new RegExp(`(${NUM}) rounded down to the tenths`), (n) => Math.floor(n * 10 + 1e-9) / 10],
   [new RegExp(`(${NUM}) rounded down to the hundredths`), (n) => Math.floor(n * 100 + 1e-9) / 100],

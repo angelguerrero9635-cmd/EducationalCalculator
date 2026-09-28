@@ -95,7 +95,9 @@ export function affineOf(rel: System['relations'][number]): Affine | undefined {
   const r = rng(hash(rel.id));
   let ok = Number.isFinite(c0) && [...coef.values()].every(Number.isFinite);
   for (let i = 0; ok && i < 16; i++) {
-    const p = Object.fromEntries(rel.vars.map((id) => [id, r.int(-50, 150)]));
+    // Half the probes sit off the integers: a rounding relation (ra = a rounded) is affine on
+    // whole numbers only, and treating it as affine solves ra = 341.8, which no whole can be.
+    const p = Object.fromEntries(rel.vars.map((id) => [id, r.int(-50, 150) + (i % 2 ? 0.25 : 0)]));
     const lin = c0 + rel.vars.reduce((s, id) => s + coef.get(id)! * p[id]!, 0);
     ok = close(at(p), lin, 1e-9);
   }

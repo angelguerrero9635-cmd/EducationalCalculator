@@ -2716,5 +2716,474 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       quadrants: 1,
     },
   },
+
+  // ── Convert units of measure with decimals (5.MD.1): the textbooks' Grade 5 measurement unit ──
+  (() => {
+    const PAIRS: Record<number, string> = {
+      2: '1 pint = 2 cups',
+      3: '1 yard = 3 feet',
+      4: '1 gallon = 4 quarts',
+      8: '1 gallon = 8 pints',
+      10: '1 centimeter = 10 millimeters',
+      12: '1 foot = 12 inches',
+      16: '1 pound = 16 ounces',
+      36: '1 yard = 36 inches',
+      60: '1 hour = 60 minutes',
+      100: '1 meter = 100 centimeters',
+      128: '1 gallon = 128 fluid ounces',
+      1000: '1 kilometer = 1,000 meters; 1 kilogram = 1,000 grams; 1 liter = 1,000 milliliters',
+      2000: '1 ton = 2,000 pounds',
+      5280: '1 mile = 5,280 feet',
+    };
+    return {
+      id: 'm.5.convert-units',
+      sliders: false,
+      assumptions: [
+        'A bigger unit is a fixed number of smaller units: 1 foot = 12 inches, 1 gallon = 128 fluid ounces.',
+        'Bigger to smaller: multiply. Smaller to bigger: divide. The answer can be a decimal: 30 inches = 2.5 feet.',
+        'Also 1 yard = 3 feet or 36 inches, 1 mile = 5,280 feet, 1 pound = 16 ounces, 1 ton = 2,000 pounds.',
+        'Also 1 pint = 2 cups, 1 gallon = 4 quarts or 8 pints, 1 hour = 60 minutes; metric units are 10, 100 or 1,000 apart.',
+      ],
+      variables: [
+        { id: 'b', symbol: 'b', name: 'Bigger units', min: 0.01, max: 1000, step: 0.01 },
+        {
+          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 2, 5280),
+          allowed: [2, 3, 4, 8, 10, 12, 16, 36, 60, 100, 128, 1000, 2000, 5280],
+        },
+        { id: 's', symbol: 's', name: 'Smaller units', min: 0.01, max: 100000, step: 0.01 },
+      ],
+      relations: [
+        {
+          id: 's = b × k',
+          display: '{b} × {k} = {s}',
+          vars: ['s', 'b', 'k'],
+          residual: (v: Values) => v.s! - v.b! * v.k!,
+          solve: {
+            s: (v: Values) => v.b! * v.k!,
+            b: (v: Values) => div(v.s!, v.k!),
+            k: (v: Values) => div(v.s!, v.b!),
+          },
+        },
+      ],
+      steps: {
+        's = b × k': {
+          s: {
+            expr: '{b} × {k}',
+            how: (v) =>
+              `${PAIRS[v.k!] ?? 'Each bigger unit is the same number of smaller units'}. Bigger to smaller: multiply.`,
+            work: (v) => [`${fmt(v.b!)} × ${fmt(v.k!)} = ${fmt(v.b! * v.k!)}`],
+          },
+          b: {
+            expr: '{s} ÷ {k}',
+            how: 'Smaller to bigger: divide by the smaller units in one bigger unit. The answer can be a decimal.',
+            work: (v) => [`${fmt(v.s!)} ÷ ${fmt(v.k!)} = ${fmt(v.b!)}`],
+          },
+          k: {
+            expr: '{s} ÷ {b}',
+            how: 'Divide the smaller units by the bigger units: how many smaller units in one.',
+            work: (v) => [`${fmt(v.s!)} ÷ ${fmt(v.b!)} = ${fmt(v.k!)}`],
+          },
+        },
+      },
+      example: { b: 2.5, k: 12, s: 30 },
+      startWith: ['s', 'k'],
+      representation: {
+        kind: 'table',
+        sweep: 'b',
+        output: 's',
+        params: ['k'],
+        rows: [0.5, 1, 1.5, 2, 2.5, 3],
+        named: { param: 'k', names: PAIRS },
+      },
+    } satisfies ModuleDef;
+  })(),
+  // ── Compare measurements in different units (5.MD.1) ──
+  (() => {
+    const aMore = (v: Values) => v.s! >= v.c!;
+    // Like `apart`, without its whole-number work lines: these amounts are decimals.
+    const longer = {
+      relation: {
+        id: 'd = s and c apart',
+        display: '{s} and {c} are {d} apart',
+        words: 'Difference between the two measurements, in the smaller unit = {d}',
+        check: (v: Values) =>
+          `${fmt(Math.max(v.s!, v.c!))} − ${fmt(Math.min(v.s!, v.c!))} = ${fmt(v.d!)}`,
+        vars: ['d', 's', 'c'],
+        residual: (v: Values) => v.d! - Math.abs(v.s! - v.c!),
+        solve: {
+          d: (v: Values) => Math.abs(v.s! - v.c!),
+          s: (v: Values) => [v.c! + v.d!, v.c! - v.d!].filter((x) => x >= 0),
+          c: (v: Values) => [v.s! - v.d!, v.s! + v.d!].filter((x) => x >= 0),
+        },
+      },
+      steps: {
+        d: {
+          expr: (v: Values) => (aMore(v) ? '{s} − {c}' : '{c} − {s}'),
+          how: 'Both are in the smaller unit now. Take the smaller amount from the bigger one.',
+          note: (v: Values) =>
+            v.s! === v.c!
+              ? '(they are the same length)'
+              : `(the ${aMore(v) ? 'first' : 'second'} measurement is more)`,
+        },
+        s: {
+          expr: (v: Values) => (aMore(v) ? '{c} + {d}' : '{c} − {d}'),
+          how: (v: Values) =>
+            aMore(v)
+              ? 'The first measurement is more: add the difference to the second.'
+              : 'The first measurement is less: take the difference from the second.',
+        },
+        c: {
+          expr: (v: Values) => (aMore(v) ? '{s} − {d}' : '{s} + {d}'),
+          how: (v: Values) =>
+            aMore(v)
+              ? 'The second measurement is less: take the difference from the first.'
+              : 'The second measurement is more: add the difference to the first.',
+        },
+      } as Record<string, StepText>,
+    };
+    return {
+      id: 'm.5.convert-units~compare',
+      sliders: false,
+      title: 'Compare measurements in different units',
+      use: 'Use this for “Which is longer, 2.5 feet or 28 inches? By how much?”',
+      assumptions: [
+        'To compare, put both measurements in the same unit. Change the bigger unit to the smaller one.',
+        'Then compare the two amounts and find the difference, in the smaller unit.',
+        '1 foot = 12 inches, 1 yard = 3 feet, 1 pound = 16 ounces, 1 gallon = 4 quarts, 1 meter = 100 centimeters, 1 kilometer = 1,000 meters.',
+      ],
+      variables: [
+        {
+          id: 'b',
+          symbol: 'b',
+          name: 'First measurement, in the bigger unit',
+          min: 0.01,
+          max: 1000,
+          step: 0.01,
+        },
+        {
+          ...whole('k', 'k', 'Smaller units in 1 bigger unit', 2, 1000),
+          allowed: [3, 4, 12, 16, 100, 1000],
+        },
+        {
+          id: 's',
+          symbol: 's',
+          name: 'First measurement, in the smaller unit',
+          min: 0.01,
+          max: 100000,
+          step: 0.01,
+          derived: true,
+        },
+        {
+          id: 'c',
+          symbol: 'c',
+          name: 'Second measurement, in the smaller unit',
+          min: 0,
+          max: 100000,
+          step: 0.01,
+        },
+        { id: 'd', symbol: 'd', name: 'How much more', min: 0, max: 100000, step: 0.01 },
+      ],
+      relations: [
+        {
+          id: 's = b × k',
+          display: '{b} × {k} = {s}',
+          vars: ['s', 'b', 'k'],
+          residual: (v: Values) => v.s! - v.b! * v.k!,
+          solve: {
+            s: (v: Values) => v.b! * v.k!,
+            b: (v: Values) => div(v.s!, v.k!),
+            k: (v: Values) => div(v.s!, v.b!),
+          },
+        },
+        longer.relation,
+      ],
+      steps: {
+        's = b × k': {
+          s: {
+            expr: '{b} × {k}',
+            how: 'Change the first measurement to the smaller unit: multiply.',
+          },
+          b: { expr: '{s} ÷ {k}', how: 'Back to the bigger unit: divide.' },
+          k: { expr: '{s} ÷ {b}', how: 'How many smaller units in one bigger unit.' },
+        },
+        'd = s and c apart': longer.steps,
+      },
+      example: { b: 2.5, k: 12, s: 30, c: 28, d: 2 },
+      startWith: ['b', 'k', 'c'],
+      representation: {
+        kind: 'tape',
+        compare: ['s', 'c'],
+        difference: 'd',
+        caption: 'In the smaller unit, the two are {d} apart.',
+      },
+    } satisfies ModuleDef;
+  })(),
+  // ── Multi-step problems with units (5.MD.1): gallons of juice into 6-ounce cups ──
+  {
+    id: 'm.5.convert-units~multi-step',
+    sliders: false,
+    title: 'Solve multi-step problems with units',
+    use: 'Use this for “2 gallons of juice poured into 8-ounce cups. How many cups?”',
+    assumptions: [
+      'First change the big amount to the small unit: 1 gallon = 128 fluid ounces, 1 pound = 16 ounces, 1 yard = 36 inches.',
+      'Then divide by the size of one share to find how many shares.',
+      'Also 1 foot = 12 inches, 1 hour = 60 minutes, 1 kilogram = 1,000 grams, 1 liter = 1,000 milliliters.',
+    ],
+    variables: [
+      { id: 'g', symbol: 'g', name: 'Amount in the bigger unit', min: 0.1, max: 100, step: 0.1 },
+      {
+        ...whole('k', 'k', 'Smaller units in 1 bigger unit', 12, 1000),
+        allowed: [12, 16, 36, 60, 128, 1000],
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Amount in the smaller unit',
+        min: 1,
+        max: 100000,
+        step: 0.1,
+        derived: true,
+      },
+      { id: 'c', symbol: 'c', name: 'Size of one share', min: 0.1, max: 1000, step: 0.1 },
+      { id: 'n', symbol: 'n', name: 'Number of shares', min: 0.1, max: 10000, step: 0.1 },
+    ],
+    relations: [
+      {
+        id: 't = g × k',
+        display: '{g} × {k} = {t}',
+        vars: ['t', 'g', 'k'],
+        residual: (v: Values) => v.t! - v.g! * v.k!,
+        solve: {
+          t: (v: Values) => v.g! * v.k!,
+          g: (v: Values) => div(v.t!, v.k!),
+          k: (v: Values) => div(v.t!, v.g!),
+        },
+      },
+      {
+        id: 'n = t ÷ c',
+        display: '{t} ÷ {c} = {n}',
+        vars: ['n', 't', 'c'],
+        residual: (v: Values) => v.n! * v.c! - v.t!,
+        solve: {
+          n: (v: Values) => div(v.t!, v.c!),
+          t: (v: Values) => v.n! * v.c!,
+          c: (v: Values) => div(v.t!, v.n!),
+        },
+      },
+    ],
+    steps: {
+      't = g × k': {
+        t: {
+          expr: '{g} × {k}',
+          how: 'Change to the smaller unit first: each bigger unit is that many smaller units.',
+        },
+        g: {
+          expr: '{t} ÷ {k}',
+          how: 'Back to the bigger unit: divide by the smaller units in one.',
+        },
+        k: { expr: '{t} ÷ {g}', how: 'How many smaller units in one bigger unit.' },
+      },
+      'n = t ÷ c': {
+        n: {
+          expr: '{t} ÷ {c}',
+          how: 'Share the small units into shares of that size: how many shares?',
+        },
+        t: { expr: '{n} × {c}', how: 'All the shares together, in the smaller unit.' },
+        c: { expr: '{t} ÷ {n}', how: 'Share the small units equally among the shares.' },
+      },
+    },
+    example: { g: 2, k: 128, t: 256, c: 8, n: 32 },
+    startWith: ['g', 'k', 'c'],
+    representation: {
+      kind: 'tape',
+      parts: ['c'],
+      total: 't',
+      groups: 'n',
+      caption: '{n} shares of {c} make {t} in the smaller unit.',
+    },
+  },
+  // ── Area of a rectangle with fractional side lengths (5.NF.4b) ──
+  {
+    id: 'm.5.multiply-fractions~area',
+    sliders: false,
+    equation: '{a}/{b} × {c}/{d} = {p}/{q}',
+    title: 'Area of a rectangle with fractional sides',
+    use: 'Use this for “A rug is 3/4 yard by 2/3 yard. What is its area?”',
+    assumptions: [
+      'Area = length × width, even when the sides are fractions.',
+      'Tile the rectangle with unit rectangles: the picture shows the fraction of a square yard covered.',
+      'Multiply the numerators and multiply the denominators. Sides are fractions of a unit, denominators 2 to 12.',
+    ],
+    variables: [
+      whole('a', 'a', 'Length numerator', 1, 12),
+      whole('b', 'b', 'Length denominator', 2, 12),
+      whole('c', 'c', 'Width numerator', 1, 12),
+      whole('d', 'd', 'Width denominator', 2, 12),
+      { ...whole('p', 'p', 'Area numerator', 1, 144), derived: true },
+      { ...whole('q', 'q', 'Area denominator', 4, 144), derived: true },
+    ],
+    relations: [
+      atMostSix('a', 'b'),
+      atMostSix('c', 'd'),
+      {
+        id: 'p = a × c',
+        display: '{a} × {c} = {p}',
+        words: 'Length numerator × width numerator = area numerator',
+        vars: ['p', 'a', 'c'],
+        residual: (v: Values) => v.p! - v.a! * v.c!,
+        solve: {
+          p: (v: Values) => v.a! * v.c!,
+          a: (v: Values) => div(v.p!, v.c!),
+          c: (v: Values) => div(v.p!, v.a!),
+        },
+      },
+      {
+        id: 'q = b × d',
+        display: '{b} × {d} = {q}',
+        words: 'Length denominator × width denominator = area denominator',
+        check: (v: Values) =>
+          [v.a, v.b, v.c, v.d, v.p, v.q].every((x) => x !== undefined)
+            ? `${v.a}/${v.b} × ${v.c}/${v.d} = ${v.p}/${v.q}`
+            : `${v.b} × ${v.d} = ${v.q}`,
+        vars: ['q', 'b', 'd'],
+        residual: (v: Values) => v.q! - v.b! * v.d!,
+        solve: {
+          q: (v: Values) => v.b! * v.d!,
+          b: (v: Values) => div(v.q!, v.d!),
+          d: (v: Values) => div(v.q!, v.b!),
+        },
+      },
+    ],
+    steps: {
+      'a ≤ 6b': {},
+      'c ≤ 6d': {},
+      'p = a × c': {
+        p: {
+          expr: '{a} × {c}',
+          how: 'Multiply the numerators: the tiles along the length times the tiles along the width.',
+        },
+        a: { expr: '{p} ÷ {c}', how: 'Divide the area numerator by the width numerator.' },
+        c: { expr: '{p} ÷ {a}', how: 'Divide the area numerator by the length numerator.' },
+      },
+      'q = b × d': {
+        q: {
+          expr: '{b} × {d}',
+          how: 'Multiply the denominators: how many tiles fill one square unit.',
+          note: (v: Values) =>
+            v.p === undefined || v.q === undefined ? '' : simplerNote(v.p, v.q),
+        },
+        b: { expr: '{q} ÷ {d}', how: 'Divide the area denominator by the width denominator.' },
+        d: { expr: '{q} ÷ {b}', how: 'Divide the area denominator by the length denominator.' },
+      },
+    },
+    example: { a: 3, b: 4, c: 2, d: 3, p: 6, q: 12 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'fractionArea',
+      first: { num: 'a', den: 'b' },
+      second: { num: 'c', den: 'd' },
+      product: { num: 'p', den: 'q' },
+      wholes: 6,
+    },
+  },
+  // ── Estimate with decimals (5.NBT.7): round, then add or multiply ──
+  ...(['sum', 'product'] as const).map((kind) => {
+    const isSum = kind === 'sum';
+    const op = isSum ? '+' : '×';
+    return {
+      id: `m.5.decimal-operations~estimate-${kind}`,
+      sliders: false,
+      title: isSum ? 'Estimate sums and differences of decimals' : 'Estimate products of decimals',
+      use: isSum
+        ? 'Use this for “About how much is 12.65 + 8.3?” by rounding each to the nearest whole number.'
+        : 'Use this for “About how much is 4.8 × 6.2?” by rounding each to the nearest whole number.',
+      assumptions: [
+        'Round each decimal to the nearest whole number: 5 tenths or more rounds up.',
+        isSum
+          ? 'Add the rounded numbers. The estimate is close to the exact sum.'
+          : 'Multiply the rounded numbers. The estimate is close to the exact product.',
+        'Use the estimate to check that an exact answer makes sense. Numbers to 999.99.',
+      ],
+      variables: [
+        { id: 'a', symbol: 'a', name: 'First number', min: 0, max: 999.99, step: 0.01 },
+        { id: 'b', symbol: 'b', name: 'Second number', min: 0, max: 999.99, step: 0.01 },
+        { ...whole('ra', 'r', 'First number rounded', 0, 1000), derived: true },
+        { ...whole('rb', 's', 'Second number rounded', 0, 1000), derived: true },
+        {
+          ...whole('e', 'e', isSum ? 'Estimated sum' : 'Estimated product', 0, 1000000),
+          derived: true,
+        },
+      ],
+      relations: [
+        {
+          id: 'ra = a rounded',
+          display: '{a} rounded to the ones: {ra}',
+          words: 'The first number rounded to the nearest whole = {ra}',
+          vars: ['ra', 'a'],
+          residual: (v: Values) => v.ra! - Math.round(v.a!),
+          solve: { ra: (v: Values) => Math.round(v.a!), a: () => undefined },
+        },
+        {
+          id: 'rb = b rounded',
+          display: '{b} rounded to the ones: {rb}',
+          words: 'The second number rounded to the nearest whole = {rb}',
+          vars: ['rb', 'b'],
+          residual: (v: Values) => v.rb! - Math.round(v.b!),
+          solve: { rb: (v: Values) => Math.round(v.b!), b: () => undefined },
+        },
+        {
+          id: `e = ra ${op} rb`,
+          display: `{ra} ${op} {rb} = {e}`,
+          vars: ['e', 'ra', 'rb'],
+          residual: (v: Values) => v.e! - (isSum ? v.ra! + v.rb! : v.ra! * v.rb!),
+          solve: {
+            e: (v: Values) => (isSum ? v.ra! + v.rb! : v.ra! * v.rb!),
+            ra: (v: Values) => (isSum ? v.e! - v.rb! : div(v.e!, v.rb!)),
+            rb: (v: Values) => (isSum ? v.e! - v.ra! : div(v.e!, v.ra!)),
+          },
+        },
+      ],
+      steps: {
+        'ra = a rounded': {
+          ra: {
+            expr: '{a} rounded to the ones',
+            how: 'Look at the tenths digit. 5 or more rounds up to the next whole number.',
+          },
+        },
+        'rb = b rounded': {
+          rb: { expr: '{b} rounded to the ones', how: 'Round the second number the same way.' },
+        },
+        [`e = ra ${op} rb`]: {
+          e: {
+            expr: `{ra} ${op} {rb}`,
+            how: isSum
+              ? 'Add the whole numbers in your head.'
+              : 'Multiply the whole numbers in your head.',
+            note: (v: Values) =>
+              `(the exact ${kind} is ${fmt(isSum ? v.a! + v.b! : Math.round(v.a! * v.b! * 10000) / 10000)})`,
+          },
+          ra: {
+            expr: isSum ? '{e} − {rb}' : '{e} ÷ {rb}',
+            how: isSum
+              ? 'Take the second rounded number from the estimate.'
+              : 'Divide the estimate by the second rounded number.',
+          },
+          rb: {
+            expr: isSum ? '{e} − {ra}' : '{e} ÷ {ra}',
+            how: isSum
+              ? 'Take the first rounded number from the estimate.'
+              : 'Divide the estimate by the first rounded number.',
+          },
+        },
+      } as Record<string, Record<string, StepText>>,
+      example: isSum
+        ? { a: 12.65, b: 8.3, ra: 13, rb: 8, e: 21 }
+        : { a: 4.8, b: 6.2, ra: 5, rb: 6, e: 30 },
+      startWith: ['a', 'b'],
+      representation: isSum
+        ? { kind: 'tape', parts: ['ra', 'rb'], total: 'e' }
+        : { kind: 'areaModel', factors: ['ra', 'rb'], total: 'e' },
+    } satisfies ModuleDef;
+  }),
 ];
 export const MATH_5_MODULES: ModuleDef[] = modules.flat();
