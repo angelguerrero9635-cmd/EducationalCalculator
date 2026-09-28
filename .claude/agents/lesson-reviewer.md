@@ -140,6 +140,12 @@ Solves / Partly / No, naming the question id.
 - Report a question filed under the wrong skill (for example a unit conversion under fraction
   addition) as `[data] research/questions: <id> → <right skill>`.
 - Skills listed under "no released questions" use the common types only.
+- Then the textbooks: the skill's row in `research/textbooks/CROSSWALK.md` names the unit of
+  each program that teaches it, and `research/textbooks/grades/<grade>.md` lists that unit's
+  lessons and the practice problems in `research/textbooks/practice/`. Check that the section's
+  pages cover what those units teach, in a sensible order, with the numbers, words and pictures
+  students meet in class. Report a lesson the textbooks teach and the section lacks as
+  `[new-page]`; never copy a problem into a lesson.
 
 **T. Typeset math.** The step-by-step draws math in a LaTeX subset (`src/engine/latex.ts`):
 fractions stacked from Grade 3, powers and roots, italic letters and stacked solving lines on
