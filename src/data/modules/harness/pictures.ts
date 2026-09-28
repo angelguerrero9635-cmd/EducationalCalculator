@@ -310,6 +310,20 @@ export function repIssues(
     case 'pairs':
       count(rep.value, 'objects', rep.max);
       break;
+    case 'dotSet':
+      // Scattered counters have 20 fixed spots (DotSet.tsx); past them they would overlap.
+      count(rep.count, 'counters', 20);
+      break;
+    case 'coinRow': {
+      // True-size coins five to a row, each with its running total under it (CoinRow.tsx).
+      count(rep.count, 'coins', byId.get(rep.count)?.max ?? 10);
+      const [v, k, t] = [val(rep.value), val(rep.count), val(rep.total)];
+      if (v !== undefined && ![1, 5, 10, 25].includes(v))
+        out.push(`coin value ${v}¢ is not a coin`);
+      if (v !== undefined && k !== undefined && t !== undefined && v * k !== t)
+        out.push(`${k} coins of ${v}¢ don't make the last running total ${t}¢`);
+      break;
+    }
     case 'hops': {
       // The line stretches to fit every stop (Hops.tsx), so a stop past min–max is still drawn;
       // but a story can't have fewer than 0 things part way, and a stop past the lesson's range

@@ -25,6 +25,9 @@ export interface Axis {
   label?: string;
 }
 
+/** A thing measured with cubes in compare rows (drawn as the real object). */
+export type MeasuredThing = 'pencil' | 'ribbon' | 'crayon';
+
 /**
  * The table, chart or diagram that best shows a module's lesson. Every variable a
  * representation references must be one of the module's variables; interacting with it
@@ -117,8 +120,8 @@ export type Representation =
       icon: 'dot' | 'cube' | 'cup';
       /** Words for the comparison, e.g. ['more', 'fewer'] or ['longer', 'shorter']. */
       words: [string, string];
-      /** The thing measured, drawn above each row of cubes from the same left edge. */
-      object?: 'pencil' | 'ribbon' | 'crayon';
+      /** The thing measured, drawn above each row of cubes from the same left edge (or one per row). */
+      object?: MeasuredThing | [MeasuredThing, MeasuredThing];
     }
   /**
    * Tape diagram. Part-whole: one bar cut into `parts`, with a bracket for the `total`.

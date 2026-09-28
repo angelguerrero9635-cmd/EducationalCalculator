@@ -16,6 +16,7 @@ import { LightPath } from './lightFigures';
 import { AnimalGroup } from './animalFigures';
 import { FoodWeb } from './foodWeb';
 import { PartsDrawing } from './partsDrawings';
+import { PositionScene } from './PositionScene';
 import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife';
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
@@ -342,72 +343,9 @@ function Parts({
   );
 }
 
-/** A ball and a box; the ball drawn where the position word puts it. */
-function Position({ where, c }: { where: NonNullable<Scene['position']>; c: Palette }) {
-  return (
-    <Canvas aspect={0.6}>
-      {({ w, h }) => {
-        const box = { x: w / 2 - 50, y: h * 0.42, w: 100, h: 70 };
-        const r = 20;
-        const ball =
-          where === 'above'
-            ? { x: w / 2, y: box.y - r - 10 }
-            : where === 'below'
-              ? { x: w / 2, y: box.y + box.h + r + 10 }
-              : where === 'beside'
-                ? { x: box.x + box.w + r + 14, y: box.y + box.h / 2 }
-                : where === 'in front of'
-                  ? { x: w / 2 - 20, y: box.y + box.h - 6 }
-                  : // Behind: peeking over the box's top edge, so the ball still shows.
-                    { x: w / 2 + 24, y: box.y - 12 };
-        const ballNode = (
-          <Circle
-            cx={ball.x}
-            cy={ball.y}
-            r={r}
-            fill={c.chartHighlight}
-            stroke={c.chartInk}
-            strokeWidth={chart.stroke}
-          />
-        );
-        const boxNode = (
-          <G>
-            <Rect
-              x={box.x}
-              y={box.y}
-              width={box.w}
-              height={box.h}
-              fill={c.chartFill}
-              stroke={c.chartInk}
-              strokeWidth={chart.stroke}
-            />
-            <Path
-              d={`M ${box.x} ${box.y} l 18 -14 h ${box.w} l -18 14 M ${box.x + box.w} ${box.y} l 18 -14 v ${box.h} l -18 14`}
-              fill={c.chartSurface}
-              stroke={c.chartInk}
-              strokeWidth={chart.strokeLight}
-            />
-          </G>
-        );
-        return (
-          <Svg width={w} height={h}>
-            <Line
-              x1={16}
-              y1={box.y + box.h}
-              x2={w - 16}
-              y2={box.y + box.h}
-              stroke={c.chartGrid}
-              strokeWidth={chart.stroke}
-            />
-            {/* Behind: the box is drawn over the ball. */}
-            {where === 'behind' ? ballNode : null}
-            {boxNode}
-            {where === 'behind' ? null : ballNode}
-          </Svg>
-        );
-      }}
-    </Canvas>
-  );
+/** A ball and a box on a table, seen by a child; the ball drawn where the position word puts it. */
+function Position({ where }: { where: NonNullable<Scene['position']>; c: Palette }) {
+  return <PositionScene where={where} />;
 }
 
 /** A clock face with the hands set to the scene's time. */
