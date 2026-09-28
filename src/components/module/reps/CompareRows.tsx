@@ -293,9 +293,10 @@ export function CompareRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   style={{
                     position: 'absolute',
                     left: x0,
-                    top: tops[row]!,
+                    // At least a finger tall, centred on the strip.
+                    top: tops[row]! + stripH / 2 - Math.max(chart.handleTouch, stripH) / 2,
                     width: stripW,
-                    height: stripH,
+                    height: Math.max(chart.handleTouch, stripH),
                   }}
                 />
               ))}
