@@ -227,7 +227,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.ratios~tape',
     sliders: true,
-    title: 'Part-part-whole ratios',
+    title: 'Solve ratio problems with tape diagrams',
     use: 'Use this for “The ratio of tokens is 8 to 7. There are 135 in all. How many more?”',
     assumptions: [
       'Every box in the tape is worth the same amount.',
@@ -581,7 +581,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.unit-rates~better-buy',
-    title: 'Which is the better buy?',
+    title: 'Compare unit prices',
     use: 'Use this for “Which is the better buy?”: compare the price of one item.',
     assumptions: [
       'The better buy is the one with the lower price for one item.',
@@ -768,7 +768,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
 
   {
     id: 'm.6.unit-rates~convert',
-    title: 'Convert units with a rate',
+    title: 'Convert units using rates',
     use: 'Use this for “How many quarts is 168 fluid ounces?” with 32 fluid ounces in a quart.',
     assumptions: [
       'A conversion is a rate: how many of the new unit are in 1 of the old one (1 mile = 1,760 yards).',
@@ -896,7 +896,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.percent~fraction-decimal-percent',
-    title: 'Fractions, decimals and percents',
+    title: 'Relate fractions, decimals and percents',
     use: 'Use this for “Write 3/5 as a decimal and a percent,” or 3/8 = 37.5%.',
     assumptions: [
       'Make the denominator 100: the numerator is then the percent.',
@@ -1037,7 +1037,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.multi-digit-decimals~remainder',
-    title: 'Divide with a remainder',
+    title: 'Divide multi-digit numbers with a remainder',
     use: 'Use this for “1,431 ÷ 99 = ?” when it doesn’t come out even: 14 remainder 45.',
     assumptions: [
       'Divide, multiply, subtract, bring down. What is left at the end is the remainder.',
@@ -1617,7 +1617,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         id: 'm.6.divide-fractions~how-much-in-one',
         sliders: false,
         equation: '{a}/{b} ÷ {c}/{d} = {e}/{f}',
-        title: 'How much fills the whole?',
+        title: 'How much in each group?',
         use: 'Use this when 2/3 gallon fills 3/4 of a tank: how much fills the whole tank?',
         assumptions: [
           'The amount fills some parts of the whole. Find what one part holds, then the whole.',
@@ -1860,7 +1860,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{a} + {b} = {g}({x} + {y})',
-    title: 'Factor out the GCF',
+    title: 'Factor expressions using the GCF',
     use: 'Use this for “Write 36 + 8 as a product of the GCF and a sum.”',
     assumptions: [
       'Both numbers are multiples of their GCF, so the sum is the GCF times a sum.',
@@ -2377,7 +2377,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.6.coordinate-plane-4q~reflect',
-        title: 'Reflect across the axes',
+        title: 'Reflect points across the axes',
         use: 'Use this for “Reflect (3, −4) across the x-axis. Which quadrant is it in?”',
         assumptions: [
           'Across the x-axis the y-coordinate changes sign; across the y-axis the x-coordinate does.',
@@ -2471,7 +2471,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.6.coordinate-plane-4q~polygon',
-        title: 'Rectangles on the coordinate plane',
+        title: 'Polygons on the coordinate plane',
         use: 'Use this for “A rectangle has corners at (−2, 3) and (5, −2). Find its area.”',
         assumptions: [
           'The sides run along the grid, so each side is a distance on one row or one column.',
@@ -2714,7 +2714,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.6.expressions-variables~exponents',
     sliders: false,
     equation: '{b}^{n} = {p}',
-    title: 'Powers',
+    title: 'Powers and exponents',
     use: 'Use this for “Find the value of 3⁴.”',
     assumptions: [
       'The exponent counts how many times the base is a factor: 3⁴ is 3 × 3 × 3 × 3, not 3 × 4.',
@@ -2830,7 +2830,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     // Typed the way it is written: 3(2 + x) = 6 + 3x, with a number put in for x.
     equation: '{n}({m} + {x}) = {u} + {w}',
     letters: ['x'],
-    title: 'Equivalent expressions',
+    title: 'Equivalent algebraic expressions',
     use: 'Use this for “Are 3(2 + x) and 6 + 3x equivalent?”',
 
     assumptions: [
@@ -2949,7 +2949,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.expressions-variables~two-quantities',
-    title: 'Two quantities that change together',
+    title: 'Relationships between two variables',
     use: 'Use this for “She earns $12 an hour. Write an equation for pay and hours.”',
     notation: 'letters',
     assumptions: [
@@ -3070,7 +3070,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.6.one-step-equations~multiply',
     sliders: false,
     equation: '{c} × {x} = {q}',
-    title: 'Solve px = q',
+    title: 'One-step multiplication equations',
     use: 'Use this for “Solve 10 = 4a,” or 0.6d = 1.8.',
     notation: 'letters',
     assumptions: [
@@ -3145,7 +3145,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   {
     id: 'm.6.one-step-equations~inequality-solutions',
     notation: 'letters',
-    title: 'Solutions of an inequality',
+    title: 'Solutions of inequalities',
     use: 'Use this for “Is 35 a solution of 2n < 71?” or “Which numbers make k > 5 true?”',
     assumptions: [
       'A solution makes the inequality true. Put the value in and compare the two sides.',
@@ -3331,7 +3331,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.area-polygons~triangle',
-    title: 'Triangles',
+    title: 'Area of triangles',
     use: 'Use this for “A triangle has base 3 and height 7. What is its area?”',
     notation: 'letters',
     assumptions: [
@@ -3392,7 +3392,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.area-polygons~trapezoid',
-    title: 'Trapezoids',
+    title: 'Area of trapezoids',
     use: 'Use this for “The bases are 16 and 19, the height 18. Find the area.”',
     notation: 'letters',
     assumptions: [
@@ -3487,7 +3487,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.area-polygons~composite',
-    title: 'House shapes',
+    title: 'Area of composite figures',
     use: 'Use this for the area of a house shape: a rectangle with a triangle on top.',
     assumptions: [
       'Split the shape into a rectangle and a triangle, find each area, then add.',
@@ -3691,7 +3691,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.surface-area-nets~cube',
-    title: 'Cube formulas',
+    title: 'Surface area and volume of cubes',
     use: 'Use this for “What is the volume and surface area of a cube with side 2?”',
     notation: 'letters',
     assumptions: [
@@ -3766,7 +3766,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.surface-area-nets~pyramid',
-    title: 'Square pyramid',
+    title: 'Surface area of pyramids',
     use: 'Use this for “Find the surface area of the square pyramid from its net.”',
     assumptions: [
       'The net is a square base and 4 matching triangles.',
@@ -3866,7 +3866,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.6.surface-area-nets~volume-fractions',
-    title: 'Volume with fraction edges',
+    title: 'Volume of prisms with fractional edges',
     use: 'Use this for “A box is 2 1/2 by 1 1/2 by 2. What is its volume?”',
     assumptions: [
       'A half-unit cube has edges of 1/2, so 8 of them make one unit cube.',

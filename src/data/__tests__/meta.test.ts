@@ -5,7 +5,7 @@ import { COURSES, SKILLS, getNode, type Course, type Skill } from '../taxonomy';
 describe('page metadata (titles and descriptions in pre-rendered HTML)', () => {
   it('names the skill, grade and subject, and describes the lesson', () => {
     const m = skillMeta(getNode('m.K.make-10') as Skill);
-    expect(m.title).toBe('Make 10 from any number 1–9 – Kindergarten Math');
+    expect(m.title).toBe('Add to make 10 – Kindergarten Math');
     expect(m.description).toContain('ten frame');
     expect(m.description).toContain('number sentences');
   });
@@ -27,7 +27,7 @@ describe('page metadata (titles and descriptions in pre-rendered HTML)', () => {
   });
 
   it('knows each detail page’s navigation bar title from its route', () => {
-    expect(screenTitle('skill/[id]', { id: 'm.K.make-10' })).toBe('Make 10 from any number 1–9');
+    expect(screenTitle('skill/[id]', { id: 'm.K.make-10' })).toBe('Add to make 10');
     expect(screenTitle('grade/[grade]/index', { grade: 'K' })).toBe('Kindergarten');
     expect(screenTitle('grade/[grade]/[strand]', { grade: 'K', strand: 'geometry' })).toBe(
       'Geometry',

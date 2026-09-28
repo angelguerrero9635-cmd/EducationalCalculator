@@ -34,7 +34,7 @@ const CHECKS = [
     '/skill/m.K.make-10',
     200,
     [
-      'Make 10 from any number 1–9 – Kindergarten Math | Educational Calculator',
+      'Add to make 10 – Kindergarten Math | Educational Calculator',
       '<meta data-rh="true" name="description"',
       'A ten-frame has 10 boxes.',
       'Count the open counters. They fill the empty boxes.',

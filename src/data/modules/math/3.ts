@@ -366,7 +366,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       sliders: false,
       // Typed where it is written (K–6 diagram review).
       equation: '{l} × {w} = {A}',
-      title: 'A missing side from the area',
+      title: 'Find an unknown side from the area',
       use: 'Use this when you know the area and one side: “24 cm², 6 cm long. How wide?”',
       assumptions: [
         'The shape is a rectangle.',
@@ -399,7 +399,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const all = times('A = a × l', ['a', 'l', 'A'], ['width', 'length', 'area']);
     return {
       id: 'm.3.area~split',
-      title: 'Split a rectangle into two',
+      title: 'Area and the distributive property',
       use: 'Use this to split a rectangle into two and add the areas: 6 × 8 = 6 × 5 + 6 × 3.',
       assumptions: [
         'Cut the rectangle into two rectangles. The area is the two areas added.',
@@ -451,7 +451,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const sum = plus('A = p + q', ['p', 'q', 'A'], ['left area', 'right area', 'total area']);
     return {
       id: 'm.3.area~rectilinear',
-      title: 'Shapes made of rectangles',
+      title: 'Area of composite figures',
       use: 'Use this to find the area of an L-shape made of two rectangles.',
       assumptions: [
         'Cut the shape into two rectangles that don’t overlap.',
@@ -490,7 +490,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.area~cut-out',
-      title: 'A rectangle with a corner cut out',
+      title: 'Area of a shape with a corner cut out',
       use: 'Use this for an L-shape: the whole rectangle take away the corner cut out.',
       assumptions: [
         'Find the area of the whole rectangle.',
@@ -571,7 +571,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{r} × {c} = {n}',
-    title: 'Arrays',
+    title: 'Use arrays to multiply',
     use: 'Use this for rows and columns: “6 rows of 4 chairs. How many chairs?”',
     assumptions: [
       'Every row has the same number, and so does every column.',
@@ -591,7 +591,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.multiply-divide-100~jumps',
-    title: 'Equal jumps on a number line',
+    title: 'Use number lines to divide',
     use: 'Use this for equal jumps on a number line: “How many jumps of 5 to get to 30?”',
     assumptions: [
       'Every jump is the same size, and the jumps start at 0.',
@@ -615,7 +615,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{n} ÷ {g} = {k}',
-    title: 'Share equally',
+    title: 'Division: how many in each group?',
     use: 'Use this to share equally: “24 stickers shared by 4 friends. How many each?”',
     assumptions: [
       'Deal the things out one at a time, so every group gets the same.',
@@ -638,7 +638,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{n} ÷ {s} = {k}',
-    title: 'How many groups?',
+    title: 'Division: how many equal groups?',
     use: 'Use this for “24 stickers, 6 on each page. How many pages?”',
     assumptions: [
       'Take away a full group at a time until none are left.',
@@ -661,7 +661,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{r} × {c} = {n}',
-    title: 'The missing number',
+    title: 'Solve multiplication and division equations',
     use: 'Use this for a number sentence with a box: 8 × ? = 48.',
     assumptions: [
       'The box stands for a number that makes the sentence true.',
@@ -791,7 +791,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const ba = times('n = b × a', ['b', 'a', 'n'], ['columns', 'number in each column', 'total']);
     return {
       id: 'm.3.multiplication-properties~order',
-      title: 'Change the order',
+      title: 'Multiply in any order',
       use: 'Use this for 4 × 7 = 7 × 4: turn the array to use a fact you know.',
       assumptions: [
         'Turning an array changes rows into columns, not the total.',
@@ -856,7 +856,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.multiplication-properties~grouping',
-      title: 'Group the factors',
+      title: 'Group factors to multiply',
       use: 'Use this to multiply three numbers, like 3 × 5 × 2, by picking an easy pair first.',
       pictureLabels: ['a', 'b', 'q'],
       assumptions: [
@@ -922,7 +922,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const share = times('t = g × e', ['g', 'e', 't'], ['groups', 'number in each group', 'total']);
     return {
       id: 'm.3.two-step-problems~share',
-      title: 'Add, then share equally',
+      title: 'Two-step problems: add, then divide',
       use: 'Use this for “18 red and 12 blue beads, shared equally on 5 strings. How many on each?”',
       pictureLabels: ['a', 'b'],
       assumptions: [
@@ -959,7 +959,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const all = plus('t = m + e', ['m', 'e', 't'], ['number in the boxes', 'extra', 'total']);
     return {
       id: 'm.3.two-step-problems~multiply-add',
-      title: 'Multiply, then add',
+      title: 'Two-step problems: multiply, then add',
       use: 'Use this for “3 boxes of 8 crayons and 5 more. How many in all?”',
       pictureLabels: ['g', 'k'],
       assumptions: [
@@ -996,7 +996,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.two-step-problems~subtract-share',
-      title: 'Take away, then share equally',
+      title: 'Two-step problems: subtract, then divide',
       use: 'Use this for “45 stickers, 5 given away, the rest shared on 8 pages. How many on each?”',
       pictureLabels: ['g', 'e'],
       assumptions: [
@@ -1037,7 +1037,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.two-step-problems~compare',
-      title: 'Multiply, then compare',
+      title: 'Two-step problems: multiply, then compare',
       use: 'Use this for “3 boxes of 8 crayons. Ben has 30. How many more does Ben have?”',
       pictureLabels: ['g', 'k'],
       assumptions: [
@@ -1067,7 +1067,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   // given away" and "23 − 6 − 12".
   {
     id: 'm.3.two-step-problems~add-subtract',
-    title: 'Add, then take away',
+    title: 'Two-step problems: addition and subtraction',
     use: 'Use this for “had 184, got 80 more, then gave away 264: how many are left?”',
     assumptions: [
       'Do the steps in the order the story tells them: add first, then take away.',
@@ -1246,7 +1246,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     };
     return {
       id: 'm.3.rounding~estimate',
-      title: 'Estimate a sum',
+      title: 'Estimate sums',
       use: 'Use this for “About how many?” and to check a sum by rounding.',
       pictureLabels: ['x', 'y', 'e', 'o'],
       assumptions: [
@@ -1346,7 +1346,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     };
     return {
       id: 'm.3.rounding~estimate-difference',
-      title: 'Estimate a difference',
+      title: 'Estimate differences',
       use: 'Use this for “708 students, 394 in the cafeteria. About how many in class?”',
       pictureLabels: ['x', 'y', 'e', 'o'],
       assumptions: [
@@ -1451,7 +1451,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{a} − {b} = {c}',
-    title: 'Take away within 1,000',
+    title: 'Subtract three-digit numbers with zeros',
     use: 'Use this for “Find the value of 400 − 162.”',
     assumptions: [
       'No ones and no tens to trade? Trade 1 hundred for 10 tens first.',
@@ -1509,7 +1509,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.add-sub-1000~word',
-    title: 'Word problems within 1,000',
+    title: 'Addition and subtraction word problems within 1,000',
     use: 'Use this for “The library had 526 books. It lent out 248. How many are left?”',
     assumptions: [
       'Find the whole and the parts. The whole is the books at the start.',
@@ -1629,7 +1629,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.multiply-by-tens~word',
-      title: 'Boxes of tens',
+      title: 'Word problems with multiples of 10',
       use: 'Use this for “8 boxes of 40 pencils. How many pencils?”',
       pictureLabels: ['t', 'p'],
       assumptions: [
@@ -1782,7 +1782,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.fractions-number-line~shapes',
-      title: 'Fractions of a shape',
+      title: 'Fractions of a whole',
       use: 'Use this for “What fraction of the figure is shaded?”',
       pictureLabels: ['u'],
       assumptions: [
@@ -1858,7 +1858,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       id: 'm.3.fractions-number-line~wholes',
       sliders: false,
       equation: '{a}/{b} = {w}',
-      title: 'Whole numbers as fractions',
+      title: 'Represent whole numbers as fractions',
       use: 'Use this for “How many fourths make a whole?” or 2 = 8/4.',
       assumptions: [
         'A fraction is a whole number when the parts counted fill whole numbers exactly.',
@@ -1884,7 +1884,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.fractions-number-line~unit-fraction',
-      title: 'The whole from one part',
+      title: 'Understand the whole',
       use: 'Use this to find the whole from one part: “This bar is 1/3. Draw the whole.”',
       assumptions: [
         '1/3 is one of 3 equal parts of the whole.',
@@ -2033,7 +2033,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.elapsed-time~elapsed',
-    title: 'How long? When does it end?',
+    title: 'Elapsed time and end time',
     use: 'Use this for “It starts at 3:45 and takes 35 minutes. When does it end?” and “How long?”',
     assumptions: [
       'Count on from the start: to the next hour, then whole hours, then the minutes left.',
@@ -2155,7 +2155,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.elapsed-time~start-time',
-    title: 'When did it start?',
+    title: 'Find the start time',
     use: 'Use this for “It ended at 4:20 after 35 minutes. When did it start?”',
     assumptions: [
       'Count back from the end: to the hour, then whole hours, then the minutes left.',
@@ -2307,7 +2307,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.mass-liquid-volume~liquid',
-      title: 'Liquid volume in liters',
+      title: 'Add and subtract liquid volume',
       use: 'Use this for liters: “3 L in the jug, pour in 4 L. How much now?”',
       unitSystems: ['metric'],
       assumptions: [
@@ -2331,7 +2331,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const bags = times('t = g × m', ['g', 'm', 't'], ['bags', 'mass of each bag', 'total mass']);
     return {
       id: 'm.3.mass-liquid-volume~bags',
-      title: 'Equal bags',
+      title: 'Multiply to find a total mass',
       use: 'Use this for “5 bags of 3 kg each. How heavy in all?”',
       unitSystems: ['metric'],
       assumptions: [
@@ -2360,7 +2360,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.mass-liquid-volume~heavier',
-      title: 'How much heavier?',
+      title: 'Compare masses',
       use: 'Use this for “The dog is 23 kg and the cat 5 kg. How much heavier is the dog?”',
       unitSystems: ['metric'],
       assumptions: [
@@ -2441,7 +2441,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.3.perimeter~missing-side',
-    title: 'Find a missing side',
+    title: 'Perimeter and unknown side lengths',
     use: 'Use this for “The perimeter of a park is 444 m. It is 175 m long. How wide?”',
     assumptions: [
       'Add all the sides to get the perimeter.',
@@ -2691,7 +2691,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const all = times('P = n × s', ['n', 's', 'P'], ['sides', 'side length', 'perimeter']);
     return {
       id: 'm.3.perimeter~equal-sides',
-      title: 'Shapes with equal sides',
+      title: 'Perimeter of shapes with equal sides',
       use: 'Use this for “A stop sign has 8 sides of 10 inches. What is its perimeter?”',
       assumptions: [
         'Every side is the same length.',
@@ -2839,7 +2839,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     ];
     return {
       id: 'm.3.scaled-graphs~picture-graph',
-      title: 'Picture graph with a key',
+      title: 'Read picture graphs with a key',
       use: 'Use this for “Each picture stands for 10 students. How many?”',
       pictureLabels: ['n1', 'n2', 'n3'],
       assumptions: [
@@ -2910,7 +2910,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     );
     return {
       id: 'm.3.scaled-graphs~picture-more',
-      title: 'How many more on a picture graph',
+      title: 'Solve problems using picture graphs',
       use: 'Use this for “How many more basketballs than footballs?” on a picture graph.',
       pictureLabels: ['n1', 'n2'],
       assumptions: [
@@ -3030,7 +3030,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
   })(),
   {
     id: 'm.3.measure-line-plots~quarter-inch',
-    title: 'Read a ruler to the quarter inch',
+    title: 'Measure to the nearest quarter inch',
     use: 'Use this for “What is the length of the rectangle?” to the quarter inch.',
     pictureLabels: ['w', 'r'],
     assumptions: [

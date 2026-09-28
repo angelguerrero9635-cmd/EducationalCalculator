@@ -9,7 +9,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sequence',
     id: 'm.K.add-sub-10~all-partners',
-    title: 'All the ways to make a number',
+    title: 'Find all the partner numbers',
     use: 'Use this for “5 cars, some red and some blue. Show all the ways.”',
     assumptions: [
       'A number can be split into two parts in more than one way.',
@@ -352,7 +352,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.K.shapes-2d-3d~solids',
-    title: 'Flat or solid?',
+    title: 'Flat and solid shapes',
     use: 'Use this for “Which has the same shape as a cylinder?”',
     assumptions: [
       'A flat shape lies on the paper. A solid shape takes up space.',
@@ -414,7 +414,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.K.shapes-2d-3d~rolls',
-    title: 'Does it roll or stack?',
+    title: 'Describe solid shapes',
     use: 'Use this to find which solids roll and which stack.',
     assumptions: ['A solid with a curved side rolls.', 'A solid with flat sides stacks.'],
     question: 'Does it roll, stack, or both?',
@@ -435,7 +435,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.K.measurable-attributes~weight',
-    title: 'Heavier and lighter',
+    title: 'Compare by weight',
     use: 'Use this for “Which is heavier?” on a balance scale.',
     assumptions: [
       'Hold one in each hand. The heavier one pulls down.',
@@ -492,7 +492,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.1.equal-sign~true-false',
-    title: 'True or false?',
+    title: 'True or false equations',
     use: 'Use this for “Is 6 + 1 = 5 + 2 true or false?”',
     assumptions: [
       'The equal sign means both sides are the same amount.',
@@ -521,7 +521,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sequence',
     id: 'm.1.measure-nonstandard~order',
-    title: 'Order three ribbons',
+    title: 'Order objects by length',
     use: 'Use this for “List the rectangles from longest to shortest.”',
     assumptions: [
       'Line up the ribbons at one end to compare them.',
@@ -538,7 +538,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.1.measure-nonstandard~right-way',
-    title: 'Measured the right way?',
+    title: 'Use units to measure length correctly',
     use: 'Use this for “Jada says it is 5 paper clips long. Do you agree?”',
     assumptions: [
       'Start at the end of the object.',
@@ -638,7 +638,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.1.halves-fourths~equal-parts',
-    title: 'Equal parts or not?',
+    title: 'Equal shares or not',
     use: 'Use this for “Han split the circle into fourths. Do you agree?”',
     assumptions: [
       'Halves are 2 equal parts. Fourths are 4 equal parts.',
@@ -818,7 +818,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.1.shape-attributes~name-changes',
-    title: 'What changes the name?',
+    title: 'Defining and non-defining attributes',
     use: 'Use this for “Is this shape a triangle? Why or why not?”',
     assumptions: [
       'Some things decide a shape’s name.',
@@ -851,7 +851,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.1.halves-fourths~bigger-share',
-    title: 'Which share is bigger?',
+    title: 'Compare equal shares',
     use: 'Use this for “Which is bigger: half or a fourth?”',
     assumptions: [
       'Cut the same shape into more parts: each part is smaller.',
@@ -913,7 +913,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.1.tens-ones~compare-sort',
-    title: 'Greater, less or equal?',
+    title: 'Compare numbers using symbols',
     use: 'Use this for “Put a < or > in each box: 91 ___ 19.”',
     assumptions: [
       'Compare the tens first. If they are the same, compare the ones.',
@@ -973,7 +973,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.2.standard-length~which-unit',
-    title: 'Which unit?',
+    title: 'Choose the unit',
     use: 'Use this for “Which of these could be measured using a meter stick?”',
     assumptions: [
       'Small things: centimeters. Big things: meters.',
@@ -997,7 +997,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.2.time-5-min~am-pm',
-    title: 'a.m. or p.m.?',
+    title: 'a.m. and p.m.',
     use: 'Use this for “Write the time, including a.m. or p.m.”',
     assumptions: ['a.m. is from midnight to noon.', 'p.m. is from noon to midnight.'],
     question: 'Does it happen in the a.m. or the p.m.?',
@@ -1033,7 +1033,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.2.thirds-polygons~polygons',
-    title: 'Name the shape',
+    title: 'Describe two-dimensional shapes',
     use: 'Use this for “Find a pentagon. Explain why the shape is a pentagon.”',
     assumptions: [
       'Count the sides. Count the angles. They match.',
@@ -1257,7 +1257,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.3.arithmetic-patterns~even-odd',
-    title: 'Even or odd answer?',
+    title: 'Multiplication patterns: even and odd',
     use: 'Use this for “Is the answer even or odd?” without working it out.',
     assumptions: [
       'An even number times any number is even.',
@@ -1443,7 +1443,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.3.quadrilaterals~is-quadrilateral',
-    title: 'Quadrilateral or not?',
+    title: 'Describe quadrilaterals',
     use: 'Use this for “If a figure has four sides, must it be a rectangle?”',
     assumptions: [
       'A quadrilateral has 4 straight sides and 4 corners.',
@@ -1570,7 +1570,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.3.compare-fractions~which-greater',
-    title: 'Which fraction is greater?',
+    title: 'Compare fractions',
     use: 'Use this for “Is 1/4 of a candy bar smaller than 1/5 of it?”',
     assumptions: [
       'Same bottom number: the parts are the same size. More parts is more.',
@@ -1688,7 +1688,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.3.mass-liquid-volume~which-unit',
-    title: 'Grams or kilograms?',
+    title: 'Choose grams or kilograms',
     use: 'Use this for “Circle the items that might weigh about 1 kilogram.”',
     assumptions: ['A paper clip is about 1 gram.', 'A textbook is about 1 kilogram.'],
     question: 'Would you weigh it in grams or kilograms?',
@@ -1712,7 +1712,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.3.mass-liquid-volume~about-a-liter',
-    title: 'More, less or about a liter?',
+    title: 'Estimate liquid volume',
     use: 'Use this for “Does it hold more than a liter, less, or about a liter?”',
     assumptions: [
       'A big water bottle holds about 1 liter.',
@@ -1747,7 +1747,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.factors-multiples~pattern-rules',
-    title: 'What is the rule?',
+    title: 'Number patterns: find the rule',
     use: 'Use this for “3, 6, 5, 8, 7, 10, 9: what comes next? Write the rule.”',
     assumptions: [
       'The rule is what takes one number to the next.',
@@ -1783,7 +1783,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.unit-conversion~about-a-meter',
-    title: 'More or less than a meter?',
+    title: 'Estimate lengths in metric units',
     use: 'Use this for “Is it more or less than 1 meter?”',
     assumptions: [
       'A meter stick is 1 meter: about the width of a classroom door.',
@@ -1808,7 +1808,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.factors-multiples~prime-composite',
-    title: 'Prime or composite?',
+    title: 'Prime and composite numbers',
     use: 'Use this to sort numbers as prime or composite by their factors.',
     assumptions: [
       'A prime number has exactly two factors: 1 and itself.',
@@ -1839,7 +1839,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.fraction-equivalence~benchmark',
-    title: 'Compare to one half',
+    title: 'Compare fractions using benchmarks',
     use: 'Use this for “Is the fraction less than, equal to or greater than one-half?”',
     assumptions: [
       'Half the denominator is one half: 4/8 is 1/2, and so is 5/10.',
@@ -2089,7 +2089,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.lines-symmetry~symmetry',
-    title: 'Lines of symmetry',
+    title: 'Line symmetry',
     use: 'Use this for “How many lines of symmetry does the shape have?”',
     assumptions: [
       'A line of symmetry folds a shape onto itself: both halves match exactly.',
@@ -2177,7 +2177,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.lines-symmetry~classify-shapes',
-    title: 'Sort shapes by angles and sides',
+    title: 'Classify triangles and quadrilaterals',
     use: 'Use this for “Which statement is true about all four shapes?”',
     assumptions: [
       'A right triangle has one right angle, a square corner.',
@@ -2357,7 +2357,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.lines-symmetry~lines-rays',
-    title: 'Points, lines, segments and rays',
+    title: 'Lines, line segments and rays',
     use: 'Use this for “Is it a line, a line segment or a ray?”',
     assumptions: [
       'A point is one exact spot.',
@@ -2401,7 +2401,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.4.lines-symmetry~angle-types',
-    title: 'Acute, right, obtuse and straight angles',
+    title: 'Classify angles',
     use: 'Use this for “Is the angle acute, right or obtuse?”',
     assumptions: [
       'A right angle is a square corner: 90°.',
@@ -2568,7 +2568,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.5.order-of-operations~write-expression',
-    title: 'Which expression says it?',
+    title: 'Write numerical expressions',
     use: 'Use this for “Which expression matches the words?” with parentheses.',
     assumptions: [
       'Words like “the sum of” or “add first” need parentheses around the adding.',
@@ -2593,7 +2593,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.5.add-fractions-unlike~benchmark',
-    title: 'Is the sum more than 1?',
+    title: 'Estimate sums and differences of fractions',
     use: 'Use this for “Is the sum more or less than 1?” before adding.',
     assumptions: [
       'Compare each fraction with 1/2: two fractions less than 1/2 add to less than 1.',
@@ -2621,7 +2621,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.5.multiply-fractions~scaling',
-    title: 'Bigger or smaller?',
+    title: 'Multiplication as scaling',
     use: 'Use this for “Decide which is greater without calculating.”',
     assumptions: [
       'Times a fraction less than 1 makes a number smaller.',
@@ -2789,7 +2789,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.5.classify-2d~triangles',
-    title: 'Sort triangles by their sides',
+    title: 'Classify triangles by sides',
     use: 'Use this for “Which triangle is isosceles?” by its equal sides.',
     assumptions: [
       'An equilateral triangle has three equal sides. Its three angles are equal too.',
@@ -2893,7 +2893,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.5.classify-2d~by-angles',
-    title: 'Sort triangles by their angles',
+    title: 'Classify triangles by angles',
     use: 'Use this for “Is the triangle acute, right or obtuse?”',
     assumptions: [
       'A right angle is a square corner. An acute angle is smaller, an obtuse angle is bigger.',
@@ -2996,7 +2996,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.5.classify-2d~always-sometimes-never',
-    title: 'Always, sometimes or never?',
+    title: 'Relate quadrilaterals: always, sometimes, never',
     use: 'Use this for “Is a square always a rectangle?”',
     assumptions: [
       'Always: every shape in the first group belongs to the second.',
@@ -3122,7 +3122,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.divide-fractions~bigger-or-smaller',
-    title: 'Bigger or smaller quotient?',
+    title: 'Size of a quotient',
     use: 'Use this for “Is 6 ÷ 1/4 more or less than 6?” before dividing.',
     assumptions: [
       'Dividing by a number less than 1 gives more: more groups fit.',
@@ -3219,7 +3219,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.integers~meaning',
-    title: 'Positive, negative or zero?',
+    title: 'Positive and negative numbers in context',
     use: 'Use this for “A drop of 8 degrees is −8”: everyday positive and negative amounts.',
     assumptions: [
       'Positive and negative numbers name opposite directions: above and below, gain and loss.',
@@ -3280,7 +3280,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.expressions-variables~words',
-    title: 'Words to expressions',
+    title: 'Write algebraic expressions',
     use: 'Use this for “Write an expression for 5 less than a number.”',
     assumptions: [
       'The letter x stands for the number.',
@@ -3312,7 +3312,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.expressions-variables~parts',
-    title: 'Parts of an expression',
+    title: 'Parts of an algebraic expression',
     use: 'Use this for “In 2c + 4, what is the coefficient? The constant?”',
     assumptions: [
       'The variable is the letter.',
@@ -3339,7 +3339,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.one-step-equations~write-equation',
-    title: 'Equations from stories',
+    title: 'Write equations in one variable',
     use: 'Use this for “Which equation matches the story?”',
     assumptions: [
       'The letter x stands for the number the story doesn’t tell you.',
@@ -3366,7 +3366,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.one-step-equations~inequality',
-    title: 'Inequalities',
+    title: 'Inequalities and their graphs',
     use: 'Use this for “Which inequality matches the graph?”: x > 3, x ≥ 3, x < 3 or x ≤ 3.',
     assumptions: [
       'An open circle leaves 3 out; a closed (filled) circle takes 3 in.',
@@ -3559,7 +3559,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.surface-area-nets~which-net',
-    title: 'Which nets fold into a cube?',
+    title: 'Nets of cubes',
     use: 'Use this for “Which of these nets can be folded into a cube?”',
     assumptions: [
       'A cube has 6 faces, so its net has 6 squares.',
@@ -3757,7 +3757,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
   {
     kind: 'sort',
     id: 'm.6.center-spread~mean-or-median',
-    title: 'Mean or median?',
+    title: 'Choose the mean or the median',
     use: 'Use this for “Which better describes the center: the mean or the median?”',
     assumptions: [
       'An outlier is a value far from the rest.',

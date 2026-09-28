@@ -499,7 +499,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // One less and ten less on the 120 chart (1.NBT.1, 1.NBT.5).
   {
     id: 'm.1.count-120~less',
-    title: 'One less, ten less',
+    title: 'Find 1 less and 10 less',
     use: 'Use this for “What is 1 less? What is 10 less?” on the 120 chart.',
     assumptions: [
       'One less is the number just before.',
@@ -557,7 +557,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // A piece of the 120 chart: the number and its four neighbors (1.NBT.1, 1.NBT.5).
   {
     id: 'm.1.count-120~puzzle',
-    title: 'Chart puzzle',
+    title: 'Count on a number chart to 120',
     use: 'Use this for a piece of the 120 chart with numbers missing.',
     assumptions: ['Across a row, each number is 1 more.', 'Down a column, each number is 10 more.'],
     variables: [
@@ -662,7 +662,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // Tens and ones with more than 9 ones: 2 tens 17 ones = 37 (1.NBT.2).
   {
     id: 'm.1.tens-ones~regroup',
-    title: 'Trade ones for tens',
+    title: 'Different names for the same number',
     use: 'Use this for “How many cubes? 2 towers of 10 and 17 more.”',
     assumptions: [
       '10 ones make 1 ten.',
@@ -777,7 +777,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{a} + {b} = {c}',
-    title: 'Add two 2-digit numbers',
+    title: 'Add two-digit numbers',
     use: 'Use this for “Find the value of 35 + 48.”',
     assumptions: ['Add tens to tens and ones to ones.', 'Then put the tens and the ones together.'],
     variables: [
@@ -1014,7 +1014,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
   // Grade 1: how many more in a picture graph (1.MD.4).
   {
     id: 'm.1.data-3-categories~compare',
-    title: 'How many more?',
+    title: 'Solve problems with data',
     use: 'Use this for “How many more students chose dogs than cats?”',
     assumptions: [
       'Each picture stands for one object.',

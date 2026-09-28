@@ -290,7 +290,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Facts within 20 from memory (2.OA.2): the make-ten line once, no counting.
   {
     id: 'm.2.add-sub-100-fluency~within-20',
-    title: 'Facts within 20',
+    title: 'Addition and subtraction facts to 20',
     use: 'Use this for “Find the value of each expression: 9 + 6, 10 − 3.”',
     assumptions: [
       'Know these facts by heart by the end of Grade 2.',
@@ -315,7 +315,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{a} + {b} = {c}',
-    title: 'Word problems',
+    title: 'Solve addition and subtraction word problems',
     use: 'Use this for “Mai puts 18 more on the shelf. Now there are 47.”',
     assumptions: [
       'Draw one bar for the whole and cut it into the two parts.',
@@ -360,7 +360,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{a} + {b} + {c} + {e} = {n}',
-    title: 'Add four numbers',
+    title: 'Add up to four two-digit numbers',
     use: 'Use this for “Find the value of 25 + 25 + 10 + 5.”',
     assumptions: [
       'Add all the tens. Then all the ones. Look for ones that make a ten.',
@@ -557,7 +557,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   },
   twoStep(
     'two-step',
-    'Add, then take away',
+    'Two-step problems: add, then subtract',
     'Use this for two-step problems: some come, then some go.',
     1,
     -1,
@@ -565,7 +565,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   ),
   twoStep(
     'take-add',
-    'Take away, then add',
+    'Two-step problems: subtract, then add',
     'Use this for two-step problems: some go, then some come.',
     -1,
     1,
@@ -573,19 +573,26 @@ export const MATH_2_MODULES: ModuleDef[] = [
   ),
   twoStep(
     'take-take',
-    'Take away twice',
+    'Two-step problems: subtract, then subtract',
     'Use this for two-step problems where some go, twice.',
     -1,
     -1,
     { s: 60, a: 18, m: 42, b: 25, e: 17 },
   ),
-  twoStep('add-add', 'Add twice', 'Use this for two-step problems where some come, twice.', 1, 1, {
-    s: 24,
-    a: 18,
-    m: 42,
-    b: 35,
-    e: 77,
-  }),
+  twoStep(
+    'add-add',
+    'Two-step problems: add, then add',
+    'Use this for two-step problems where some come, twice.',
+    1,
+    1,
+    {
+      s: 24,
+      a: 18,
+      m: 42,
+      b: 35,
+      e: 77,
+    },
+  ),
   {
     id: 'm.2.place-value-1000',
     assumptions: [
@@ -826,7 +833,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Grade 1: is the number sentence true or false? (1.OA.7).
   {
     id: 'm.2.place-value-1000~regroup',
-    title: 'Trade tens and ones',
+    title: 'Regroup tens and hundreds',
     use: 'Use this for “3 hundreds, 14 tens and 5 ones is ___.”',
     assumptions: [
       '10 ones make 1 ten. 10 tens make 1 hundred.',
@@ -975,7 +982,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     });
     return {
       id: 'm.2.add-sub-1000~ten-hundred-more',
-      title: '10 or 100 more or less',
+      title: 'Add or subtract 10 and 100',
       use: 'Use this for “He gives 2 tens away. What is the value now?”',
       assumptions: [
         '10 more or 10 less changes the tens digit by 1.',
@@ -1006,7 +1013,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{a} − {b} = {c}',
-    title: 'Take away within 1,000',
+    title: 'Subtract three-digit numbers',
     use: 'Use this for “Find the value of 936 − 428.”',
     assumptions: [
       'Take ones from ones, tens from tens, hundreds from hundreds.',
@@ -1202,7 +1209,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Skip count backward by 5s, 10s or 100s (2.NBT.2).
   {
     id: 'm.2.skip-count~back',
-    title: 'Skip count back',
+    title: 'Count back by 5s, 10s and 100s',
     use: 'Use this to count back by 5s, 10s or 100s.',
     assumptions: [
       'Counting back takes away the same number each time.',
@@ -1509,7 +1516,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Split from m.2.standard-length: adding lengths on a number line (2.MD.5, 2.MD.6).
   {
     id: 'm.2.standard-length~number-line',
-    title: 'Lengths on a number line',
+    title: 'Use a number line to add and subtract lengths',
     use: 'Use this to add or subtract lengths on a number line.',
     assumptions: [
       'Put two lengths end to end. Add them to find the total length.',
@@ -1612,7 +1619,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Measure the same object in feet and in inches (2.MD.2).
   {
     id: 'm.2.standard-length~two-units',
-    title: 'Feet and inches',
+    title: 'Relate inches and feet',
     use: 'Use this to measure the same object in feet and in inches.',
     assumptions: [
       '1 foot is 12 inches.',
@@ -1660,7 +1667,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Meters and centimeters: 1 meter is 100 centimeters (2.MD.2).
   {
     id: 'm.2.standard-length~meters',
-    title: 'Meters and centimeters',
+    title: 'Relate centimeters and meters',
     use: 'Use this to measure the same object in meters and in centimeters.',
     assumptions: [
       '1 meter is 100 centimeters.',
@@ -1795,7 +1802,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Bills and coins together (2.MD.8): "$5, $1 and 2 quarters. How much money?"
   {
     id: 'm.2.money~bills-coins',
-    title: 'Bills and coins together',
+    title: 'Find the value of bills and coins',
     use: 'Use this for “a $5 bill, a $1 bill and 2 quarters: how much money?”',
     assumptions: [
       'A dollar bill is 100¢. A five-dollar bill is 500¢.',
@@ -1887,7 +1894,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Split from m.2.money: making change (2.MD.8).
   {
     id: 'm.2.money~change',
-    title: 'Money left after buying',
+    title: 'Find the change',
     use: 'Use this for “She gave the clerk a $5 bill. What is the change?”',
     assumptions: [
       'The money you have is the price plus what is left.',
@@ -1938,7 +1945,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Bills: $10, $5 and $1 (2.MD.8).
   {
     id: 'm.2.money~bills',
-    title: 'Count bills',
+    title: 'Count dollar bills',
     use: 'Use this to count $10, $5 and $1 bills.',
     assumptions: [
       'Count the bills worth the most first: $10s, then $5s, then $1s.',
@@ -2079,7 +2086,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // One kind of coin: count pennies by 1s, nickels by 5s, dimes by 10s, quarters by 25s.
   {
     id: 'm.2.money~one-coin',
-    title: 'Count one kind of coin',
+    title: 'Find the value of a group of coins',
     use: 'Use this for “What is the value of the coins altogether?” with one kind.',
     assumptions: [
       'Penny 1¢, nickel 5¢, dime 10¢, quarter 25¢.',
@@ -2263,7 +2270,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Two-step bar-graph questions: put two bars together, then compare (2.MD.10).
   {
     id: 'm.2.graphs-line-plots~two-bars',
-    title: 'Two bars against one',
+    title: 'Solve more problems using bar graphs',
     use: 'Use this for “how many more chose soccer and tennis than baseball?”',
     assumptions: ['First put the two bars together.', 'Then compare with the third bar.'],
     variables: [
@@ -2331,7 +2338,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Grade 2: line plot of measurements (2.MD.9).
   {
     id: 'm.2.graphs-line-plots~line-plot',
-    title: 'Line plot of lengths',
+    title: 'Show data in a line plot',
     use: 'Use this to make a line plot of lengths and find the longest, shortest and most common.',
     unitSystems: ['metric'],
     standalone: {
@@ -2441,7 +2448,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   {
     id: 'm.2.graphs-line-plots~compare',
     pictureLabels: ['d'],
-    title: 'How many more? (bar graph)',
+    title: 'Solve problems using bar graphs',
     use: 'Use this for “How many more students chose soccer than baseball?” in a bar graph.',
     assumptions: [
       'Read each bar’s number on the scale, starting at 0.',
@@ -2470,7 +2477,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Picture graph with four categories (2.MD.10).
   {
     id: 'm.2.graphs-line-plots~picture-graph',
-    title: 'Picture graph',
+    title: 'Make picture graphs',
     use: 'Use this for “Use the table to complete the picture graph.”',
     assumptions: [
       'Each picture stands for 1.',
@@ -2588,7 +2595,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Grade 2: polygons by sides and angles (2.G.1), and rows and columns of squares (2.G.2).
   {
     id: 'm.2.thirds-polygons~rows-columns',
-    title: 'Rows and columns of squares',
+    title: 'Partition rectangles into equal squares',
     use: 'Use this for “Partition the rectangle into 10 equal squares.”',
     assumptions: [
       'Cut a rectangle into rows and columns of same-size squares. Leave no gaps.',
@@ -2642,7 +2649,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
   // Faces, edges and corners of cubes and other prisms (2.G.1).
   {
     id: 'm.2.thirds-polygons~solids',
-    title: 'Faces, edges and corners',
+    title: 'Faces, edges and vertices of solids',
     use: 'Use this for “A prism has how many faces, edges and vertices?”',
     assumptions: [
       'A face is a flat surface. An edge is where two faces meet. A corner is where edges meet.',

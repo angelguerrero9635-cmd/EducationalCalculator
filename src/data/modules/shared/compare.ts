@@ -14,7 +14,7 @@ export function compareProblem(
 ) {
   return {
     id,
-    title: 'Compare problems',
+    title: 'Solve compare problems',
     use,
     assumptions: [
       'Compare problems ask: how many more? How many fewer?',
@@ -102,7 +102,7 @@ export const compareNumbers = (
 ) => ({
   id: `${id}~compare`,
   pictureLabels: ['d'],
-  title: 'Compare numbers',
+  title: max > 99 ? 'Compare three-digit numbers' : 'Compare two-digit numbers',
   use,
   assumptions: [
     max > 99

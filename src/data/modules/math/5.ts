@@ -186,7 +186,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         sliders: false,
         // Typed where it is written (K–6 diagram review).
         equation: '({a} + {b}) ÷ {c} = {q}',
-        title: 'Add inside, then divide',
+        title: 'Evaluate expressions with parentheses',
         use: 'Use this for “(18 + 6) ÷ 4 =” and other parentheses before dividing.',
         assumptions: [
           'Work inside the parentheses first. Then divide.',
@@ -236,7 +236,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       },
       {
         id: 'm.5.order-of-operations~where-parentheses',
-        title: 'Where the parentheses go',
+        title: 'Interpret numerical expressions',
         use: 'Use this to compare (3 + 5) × 4 and 3 + 5 × 4.',
         assumptions: [
           'With parentheses, add first: (3 + 5) × 4 = 8 × 4 = 32.',
@@ -350,7 +350,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           sliders: false,
           // Typed where it is written (K–6 diagram review).
           equation: '{a} + {b} ÷ {c} − {d} × {e} = {r}',
-          title: 'Multiply and divide before adding',
+          title: 'Order of operations',
           use: 'Use this for “3 + 15 ÷ 3 − 4 × 2 =”: multiply and divide first.',
           assumptions: [
             'No parentheses: multiply and divide first, from left to right.',
@@ -441,7 +441,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           sliders: false,
           // Typed where it is written (K–6 diagram review).
           equation: '{k} × [{a} + ({b} × {c})] = {r}',
-          title: 'Parentheses inside brackets',
+          title: 'Evaluate expressions with grouping symbols',
           use: 'Use this for “2 × [5 + (3 × 4)]”: work from the inside out.',
           assumptions: [
             'Parentheses first, then the brackets around them: work from the inside out.',
@@ -564,7 +564,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.powers-of-ten~decimals',
-    title: 'Move the decimal point',
+    title: 'Place value patterns with decimals',
     use: 'Use this for “Write a multiplication equation relating 0.5 and 0.05,” or 3.45 × 10².',
     assumptions: [
       'Multiplying by 10 moves every digit one place left. The point stays where it is.',
@@ -663,7 +663,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     const exact = (x: number) => Number(x.toFixed(3));
     return {
       id: 'm.5.powers-of-ten~thousandths',
-      title: 'Tenths, hundredths and thousandths',
+      title: 'Decimals to thousandths',
       use: 'Use this for “What is the value of the 3 in 4.263?”',
       assumptions: [
         'A digit’s value is the digit times its place.',
@@ -891,7 +891,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     };
     return {
       id: 'm.5.powers-of-ten~metric',
-      title: 'Metric conversions',
+      title: 'Convert metric units',
       use: 'Use this for “The road is 15 kilometers long. How many meters is that?”',
       assumptions: [
         'Metric units go by powers of 10: 10, 100 or 1,000 of the smaller unit.',
@@ -1161,7 +1161,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.decimal-operations~multiply',
-    title: 'Multiply a decimal by a whole number',
+    title: 'Multiply decimals and whole numbers',
     use: 'Use this for “135 dozen eggs at $0.89 per dozen. What was the total cost?”',
     assumptions: [
       'Multiply as if both were whole numbers. Then put the point back.',
@@ -1222,7 +1222,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{n} ÷ {d} = {q}',
-    title: 'Divide a decimal by a whole number',
+    title: 'Divide decimals by whole numbers',
     use: 'Use this for 7.2 ÷ 4: a decimal shared into equal parts.',
     assumptions: [
       'Think of the decimal as tenths or hundredths: 7.2 is 72 tenths.',
@@ -1342,7 +1342,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{a} × {b} = {p}',
-    title: 'Multiply two decimals',
+    title: 'Multiply a decimal by a decimal',
     use: 'Use this for “What is the value of 0.7 × 0.4?”',
     assumptions: [
       'Multiply the digits as whole numbers: 4 × 3 = 12.',
@@ -2003,7 +2003,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.multiply-fractions~of-a-whole',
-    title: 'A fraction of a whole number',
+    title: 'Multiply fractions and whole numbers',
     use: 'Use this for “Andre ran 4/5 of a 7 mile trail. How far did he run?”',
     assumptions: [
       '3/4 of 8: cut 8 into 4 equal parts, then take 3 of the parts.',
@@ -2150,7 +2150,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.5.divide-unit-fractions~unit-by-whole',
     sliders: false,
     equation: '1/{b} ÷ {n} = 1/{m}',
-    title: 'Divide a unit fraction by a whole number',
+    title: 'Divide unit fractions by whole numbers',
     use: 'Use this for “1/3 of a pan, split equally among 4 friends.”',
     assumptions: [
       'Sharing one piece among more people makes smaller pieces.',
@@ -2205,7 +2205,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── A fraction is a division: 3 ÷ 4 = 3/4 (5.NF.3) ──
   {
     id: 'm.5.divide-unit-fractions~fraction-as-division',
-    title: 'Fractions as division',
+    title: 'Interpret fractions as division',
     use: 'Use this for “A 15-foot rope cut into 4 equal parts. How long is each?”',
     assumptions: [
       'Share each whole among the people: everyone gets 1 piece of each whole.',
@@ -2336,7 +2336,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.volume-rectangular~two-boxes',
-    title: 'Two boxes together',
+    title: 'Combine volumes of prisms',
     use: 'Use this for “How many small cubes in Solid A and Solid B together?”',
     assumptions: [
       'Split the shape into two boxes that do not overlap.',
@@ -2505,7 +2505,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Two patterns graphed as points (5.OA.3, 5.G.2) ──
   {
     id: 'm.5.coordinate-plane-q1~patterns',
-    title: 'Two patterns as points',
+    title: 'Graph two numerical patterns',
     use: 'Use this for “Rule A: start at 0, add 3. Rule B: start at 0, add 6. Graph the pairs.”',
     assumptions: [
       'Two patterns start at 0. Each term adds the same amount to each pattern.',
@@ -2656,7 +2656,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
   },
   {
     id: 'm.5.coordinate-plane-q1~distance',
-    title: 'Distance along a grid line',
+    title: 'Distance between points on a grid line',
     use: 'Use this for “How far is it from (2, 5) to (9, 5)?”',
     assumptions: [
       'Two points with the same up number are on one line across.',

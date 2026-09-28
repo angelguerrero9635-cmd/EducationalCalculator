@@ -138,7 +138,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
   // Number partners: break a number up to 10 into two parts (K.OA.3).
   {
     id: 'm.K.add-sub-10~number-bond',
-    title: 'Break apart a number',
+    title: 'Take apart a number',
     use: 'Use this for “How can you break apart 7 cubes into 2 parts?”',
     assumptions: [
       'The whole is in the top circle. The two parts are below.',
@@ -188,7 +188,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{s} − {t} = {l}',
-    title: 'Take away',
+    title: 'Subtract by taking from',
     use: 'Use this for “7 birds, 3 fly away. How many are left?”',
     assumptions: [
       'Start with some. Take some away. Count how many are left.',
@@ -282,7 +282,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.K.count-100~tens',
-    title: 'Count by tens',
+    title: 'Count by tens to 100',
     use: 'Use this for “10, 20, 30. What is the next number?”',
     assumptions: ['Count by tens: 10, 20, 30 …', 'Each jump is 10 more.'],
     variables: [whole('t', 't', 'Tens', 1, 10), whole('n', 'n', 'Number reached', 10, 100)],
@@ -354,7 +354,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
     sliders: false,
     // Typed where it is written (K–6 diagram review).
     equation: '{n} = 5 + {e}',
-    title: '5 and some more',
+    title: 'Count with a group of 5',
     use: 'Use this for “How many counters are there?” with 5 and some more.',
     assumptions: [
       'The top row of the ten-frame holds 5.',
@@ -433,7 +433,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
     });
     return {
       id: 'm.K.compare-10~numerals',
-      title: 'Which number is more?',
+      title: 'Compare numbers using numerals',
       use: 'Use this for “Circle the number that is more: 5 or 7.”',
       assumptions: ['When we count, a greater number comes later.', 'Match counters to check.'],
       variables: [
@@ -556,7 +556,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
   // Capacity: which container holds more (K.MD.2).
   {
     id: 'm.K.measurable-attributes~capacity',
-    title: 'Which holds more?',
+    title: 'Compare by capacity',
     use: 'Use this for “Which jar holds more cups?”',
     assumptions: [
       'Fill each jar with cups of water. Use the same cup each time.',

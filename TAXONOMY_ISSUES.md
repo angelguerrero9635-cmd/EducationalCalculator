@@ -44,6 +44,18 @@ and each strand's skills sit together within a grade.
 
 ## Resolved
 
+### Textbook-language pass
+
+- **75 K–6 skill titles renamed to the textbooks' unit language** (`research/textbooks/`), so
+  a main page is titled the way the programs title the unit that teaches it: "Compare numbers
+  to 10", "Fluently add and subtract within 100", "Understand place value to 1,000", "Area and
+  multiplication", "Factors, multiples and patterns", "Understand and use percent",
+  "Statistical measures and displays"; science skills took Amplify, FOSS and Inspire unit names
+  where one fits ("Pushes and pulls", "Light and shadows", "Inheritance and traits", "Vision
+  and light"). Ids, strands and prerequisites are unchanged. Grade 3 `compare-fractions` is
+  "Compare fractions and find equivalent fractions" because "Fraction equivalence and
+  comparison" is the Grade 4 title and a title may not repeat across grades.
+
 ### K–6 edge-case review
 
 - **`m.5.volume-rectangular` title had letters in Grade 5.** "Volume of rectangular prisms

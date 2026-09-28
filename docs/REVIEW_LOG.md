@@ -5,6 +5,29 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Textbook-language pass: every K–6 skill and page title against the textbooks
+
+- Setup: one sheet per skill from `research/textbooks/toc/`: the skill's current title, each of
+  its pages' title and use line, then the unit titles and lesson titles the eleven programs
+  file under that skill (deduplicated, most common first); no reviewer run.
+- Skill titles (the main page's title, from `taxonomy.ts`) moved to the unit name most programs
+  share when one exists ("Compare numbers to 10", "Fluently add and subtract within 100",
+  "Understand and use percent", "Statistical measures and displays"); science skills took the
+  Amplify, FOSS and Inspire unit names where one fits ("Pushes and pulls", "Inheritance and
+  traits", "Vision and light"). A title that names the standard more exactly than any unit
+  stayed ("Add and subtract within 20", "Tell time to the hour and half hour").
+- Page titles moved to the lesson title that teaches the page's problem type ("Solve compare
+  problems", "Make 10 to subtract" stayed "Take from ten" since that is the page's strategy,
+  "Two-step problems: add, then subtract", "Interpret remainders", "Multiplication as scaling",
+  "Mixed measures"); science pages kept theirs, since the science programs publish units only.
+- Rules that bit: a skill title may not repeat one first taught in an earlier grade
+  (`validateTaxonomy`), so Grade 3 is "Compare fractions and find equivalent fractions" and
+  Grade 4 "Fraction equivalence and comparison"; titles built by shared helpers
+  (`shared/compare.ts`, the Grade 2 `twoStep`) are set there, not on the page.
+- Changes made: 75 skill titles and 169 page titles; `meta.test.ts` and `verify-ssr.mjs` read
+  the Kindergarten make-10 title; `research/questions/COVERAGE.md` and `research/textbooks/`
+  regenerated from the taxonomy.
+
 ## Diagram redo review: three page-reviewers, 52 picture kinds
 
 - Setup: every picture kind or explore figure the pictures chat has never redrawn (its branch's
