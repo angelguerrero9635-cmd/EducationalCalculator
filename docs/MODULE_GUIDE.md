@@ -158,6 +158,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `fractionLine`     | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |
 | `table`            | `rows` as a function of the values       | rows that follow a parameter                                                  |
 | `array`            | `sides`                                  | the rows and columns labeled, “?” until solved                                |
+| `timeline`         | `back`                                   | jumps counted back from the end (default: a page opening on the end time)     |
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
 | `placeValueChart`  | `periods`                                | whole numbers to hundred billions, columns grouped ones … billions            |

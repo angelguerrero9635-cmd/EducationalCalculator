@@ -717,6 +717,8 @@ export type Representation =
       minutes: string;
       endHour: string;
       endMinute: string;
+      /** Jumps count back from the end time (default: when the page opens on the end time). */
+      back?: boolean;
     }
   /**
    * A scale reading a total mass: the `items` on the pan (or `count` equal items of mass

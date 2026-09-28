@@ -7,6 +7,7 @@ import type { VariableDef } from '@/engine/types';
 
 import { diceCount } from '@/components/module/reps/dice';
 import { hopArcs } from '@/components/module/reps/hopArcs';
+import { timeJumps } from '@/components/module/reps/timeJumps';
 import { toFraction } from '@/components/module/reps/exact';
 import { outline } from '@/components/module/reps/scaleOutline';
 import {
@@ -641,6 +642,19 @@ export function repIssues(
         const at = (h: number, m: number) => (h % 12) * 60 + m;
         if ((at(sh!, sm!) + d!) % 720 !== at(eh!, em!)) {
           out.push(`${sh}:${sm} + ${d} minutes is not ${eh}:${em}`);
+        }
+        // The jumps (Timeline.tsx) chain from one end to the other and add up to the minutes;
+        // forward they land on the hour after the first, backward on the hour before.
+        for (const back of [false, true]) {
+          const jumps = timeJumps(sm!, d!, em!, back);
+          let pos = back ? d! : 0;
+          for (const j of jumps) {
+            if (j.from !== pos || j.minutes <= 0) out.push(`time jumps don't chain (${back})`);
+            pos = j.to;
+          }
+          if (d! > 0 && pos !== (back ? 0 : d)) out.push(`time jumps end at ${pos}, not the end`);
+          if (jumps.length > 1 && (back ? em! - jumps[0]!.minutes : sm! + jumps[0]!.minutes) % 60)
+            out.push(`the first time jump doesn't land on an hour (${back})`);
         }
       }
       break;

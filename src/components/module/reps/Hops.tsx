@@ -199,9 +199,11 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 const len = Math.hypot(tx, ty) || 1;
                 const [ux, uy] = [tx / len, ty / len];
                 const s = 8;
-                const tip = `${x1} ${y - 1}`;
+                // The tip stops at the dot's edge, so the dot doesn't hide it.
+                const [ex, ey] = [x1 - ux * 5, y - uy * 5];
+                const tip = `${ex} ${ey}`;
                 const back = (side: number) =>
-                  `${x1 - ux * s + side * uy * s * 0.5} ${y - 1 - uy * s - side * ux * s * 0.5}`;
+                  `${ex - ux * s + side * uy * s * 0.5} ${ey - uy * s - side * ux * s * 0.5}`;
                 return (
                   <G key={k} opacity={faded ? 0.35 : 1}>
                     <Path
