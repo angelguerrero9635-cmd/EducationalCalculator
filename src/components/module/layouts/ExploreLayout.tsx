@@ -21,15 +21,13 @@ import { PositionScene } from './PositionScene';
 import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife';
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
-import {
-  BodyFigure,
-  CellFigure6,
-  ContinentsFigure,
-  FrontFigure,
-  PlatesFigure,
-  RockCycleFigure,
-  WaterCycleFigure,
-} from './figures6';
+import { BodyFigure } from './bodyFigure';
+import { ContinentsFigure } from './continentsFigure';
+import { FrontFigure } from './frontFigure';
+import { CellFigure6 } from './figures6';
+import { RockCycleFigure } from './rockCycleFigure';
+import { PlatesFigure } from './platesFigure';
+import { WaterCycleFigure } from './waterCycleFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
