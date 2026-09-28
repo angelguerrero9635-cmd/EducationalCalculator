@@ -7,10 +7,11 @@ import type { Values } from '@/engine/types';
 
 import { COLLEGE_MODULES } from './college';
 import type { LayoutDef } from './layouts';
+import { PILOT_MODULES } from './pilots';
 import { SCIENCE_3_MODULES } from './science/3';
 import type { ModuleDef } from './types';
 
-const PAGES = [...COLLEGE_MODULES, ...SCIENCE_3_MODULES];
+const PAGES = [...COLLEGE_MODULES, ...PILOT_MODULES, ...SCIENCE_3_MODULES];
 
 /** The page `pageId` as a gallery demo `id` (with another `example`, if given). */
 function demo(
@@ -34,6 +35,11 @@ export const R4G_GALLERY_MODULES: ModuleDef[] = [
   demo('s.3.balanced-forces', 'g.pushes', 'Pushes on a crate'),
   demo('s.3.balanced-forces', 'g.pushes-lopsided', 'Pushes: 50 N against 1 N', {
     example: { r: 50, l: 1, e: 49 },
+  }),
+  // Q23: a big crate, force and acceleration arrows as long as F and a.
+  demo('s.8.newtons-laws', 'g.force-crate', 'Force on a crate'),
+  demo('s.8.newtons-laws', 'g.force-crate-heavy', 'Force on a crate: 5,000 kg', {
+    example: { m: 5000, a: 0.5, F: 2500 },
   }),
 ];
 export const R4G_GALLERY_LAYOUTS: LayoutDef[] = [];

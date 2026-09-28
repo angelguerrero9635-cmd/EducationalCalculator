@@ -2086,10 +2086,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A bigger crate, force and acceleration arrows scaled to F and a',
     kind: 'force',
     pages: ['s.8.newtons-laws'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.force-crate', 'g.force-crate-heavy'],
     notes:
-      "Urgency: medium. Weak now: Mass tag covers the crate's brace; force arrow a thin black line with the handle floating at its tip; acceleration a faint dashed grey; 60 % of the frame empty above. Redo: Crate ~110 px, mass on a Tag below the top plank. Thick accent force arrow scaled to F with the handle on the arrowhead. Acceleration a solid secondary-colour arrow above the crate scaled to a, labelled in chart.label. FloorShadow, lightly textured floor, speed lines when a > 0. Cut the empty top margin.",
+      "Urgency: medium. Weak now: Mass tag covers the crate's brace; force arrow a thin black line with the handle floating at its tip; acceleration a faint dashed grey; 60 % of the frame empty above. Redo: Crate ~110 px, mass on a Tag below the top plank. Thick accent force arrow scaled to F with the handle on the arrowhead. Acceleration a solid secondary-colour arrow above the crate scaled to a, labelled in chart.label. FloorShadow, lightly textured floor, speed lines when a > 0. Cut the empty top margin. Drawn (round 4, group G): a 110 px crate on a hatched floor, the mass on a paper Tag below the top plank (13 px bold). The net force is a 6 px accent arrow with a filled head from the crate's face, its length F on its own scale; the handle sits on the shaft just behind the head so the head stays visible, and \"F = …\" rides over the arrow (past the handle when the arrow is short). The acceleration is a solid 4 px arrow in chartSecond above the crate, its length a, labelled in chart.label; speed lines trail the crate while a > 0. Each arrow's scale is a nice number just past its value (fixed while dragging; forceExtent and accelerationExtent now only set a floor near 0), so both arrows fill the width and stay proportional to F and a; the cart variant (ForceCart.tsx) is untouched. No page change.",
   },
   {
     id: 'Q24',
