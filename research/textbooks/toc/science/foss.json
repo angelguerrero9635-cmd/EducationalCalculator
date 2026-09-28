@@ -1,663 +1,551 @@
 {
- "id": "foss",
- "curriculum": "FOSS Next Generation K–8",
- "publisher": "Delta Education / School Specialty (developed at the Lawrence Hall of Science)",
- "edition": "Next Generation (2018–2019)",
- "subject": "science",
- "grades": [
-  "K",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6-8"
- ],
- "content": "titles",
- "license": null,
- "sourceUrl": "https://www.foss-science.com/foss-next-generation/",
- "retrieved": "2026-09-28",
- "notes": "Titles only (all rights reserved: \"©2024 School Specialty, LLC. The FOSS (Full Option Science System) curriculum is Copyright © The Regents of the University of California\"). Module titles and the NGSS performance expectations each module lists come from the public scope-and-sequence chart on https://www.foss-science.com/foss-next-generation/. K–5 modules are listed by grade in the chart's row order (three per grade, Earth/Physical/Life column order not kept). The 11 middle-school courses are \"Integrated Middle Grades\" with no fixed grade, so they are one book with grade \"6-8\"; their skills are mapped to the taxonomy grade where each idea lives. fossweb.com (the FOSS student/teacher site) answered \"Access Denied\" (bot protection) and was not used. PE codes are copied as printed, except \"MSESS2-3\"/\"MSLS2-2\"/\"MSESS3-3\" normalised to MS-ESS2-3/MS-LS2-2/MS-ESS3-3. The PreK module \"Observing Nature\" is left out.",
- "books": [
-  {
-   "grade": "K",
-   "units": [
+  "id": "foss",
+  "curriculum": "FOSS Next Generation K–8",
+  "publisher": "Delta Education / School Specialty (developed at the Lawrence Hall of Science)",
+  "edition": "Next Generation (2018–2019)",
+  "subject": "science",
+  "grades": ["K", "1", "2", "3", "4", "5", "6-8"],
+  "content": "titles",
+  "license": null,
+  "sourceUrl": "https://www.foss-science.com/foss-next-generation/",
+  "retrieved": "2026-09-28",
+  "notes": "Titles only (all rights reserved: \"©2024 School Specialty, LLC. The FOSS (Full Option Science System) curriculum is Copyright © The Regents of the University of California\"). Module titles and the NGSS performance expectations each module lists come from the public scope-and-sequence chart on https://www.foss-science.com/foss-next-generation/. K–5 modules are listed by grade in the chart's row order (three per grade, Earth/Physical/Life column order not kept). The 11 middle-school courses are \"Integrated Middle Grades\" with no fixed grade, so they are one book with grade \"6-8\"; their skills are mapped to the taxonomy grade where each idea lives. fossweb.com (the FOSS student/teacher site) answered \"Access Denied\" (bot protection) and was not used. PE codes are copied as printed, except \"MSESS2-3\"/\"MSLS2-2\"/\"MSESS3-3\" normalised to MS-ESS2-3/MS-LS2-2/MS-ESS3-3. The PreK module \"Observing Nature\" is left out.",
+  "books": [
     {
-     "n": "1",
-     "title": "Trees & Weather",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.K.weather-patterns",
-      "s.K.living-needs"
-     ],
-     "pes": [
-      "K-ESS2-1",
-      "K-ESS2-2",
-      "K-ESS3-1",
-      "K-ESS3-2",
-      "K-PS3-1",
-      "K-LS1-1",
-      "K-2 ETS1-2"
-     ],
-     "lessons": []
+      "grade": "K",
+      "units": [
+        {
+          "n": "1",
+          "title": "Trees & Weather",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.K.weather-patterns", "s.K.living-needs"],
+          "pes": [
+            "K-ESS2-1",
+            "K-ESS2-2",
+            "K-ESS3-1",
+            "K-ESS3-2",
+            "K-PS3-1",
+            "K-LS1-1",
+            "K-2 ETS1-2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Materials & Motion",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.K.pushes-pulls", "s.K.sunlight-warms"],
+          "pes": [
+            "K-PS2-1",
+            "K-PS2-2",
+            "K-PS3-1",
+            "K-PS3-2",
+            "K-ESS3-3",
+            "K-2 ETS1-1",
+            "K-2 ETS1-2",
+            "K-2 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Animals Two by Two",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.K.living-needs", "s.K.living-things-change-environment"],
+          "pes": ["K-LS1-1", "K-ESS2-2", "K-ESS3-1"],
+          "lessons": []
+        }
+      ]
     },
     {
-     "n": "2",
-     "title": "Materials & Motion",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.K.pushes-pulls",
-      "s.K.sunlight-warms"
-     ],
-     "pes": [
-      "K-PS2-1",
-      "K-PS2-2",
-      "K-PS3-1",
-      "K-PS3-2",
-      "K-ESS3-3",
-      "K-2 ETS1-1",
-      "K-2 ETS1-2",
-      "K-2 ETS1-3"
-     ],
-     "lessons": []
+      "grade": "1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Air & Weather",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.1.sky-patterns"],
+          "pes": [
+            "1-ESS1-1",
+            "1-ESS1-2",
+            "K-ESS2-1",
+            "K-ESS3-3",
+            "2-PS1-1",
+            "K-2 ETS1-1",
+            "K-2 ETS1-2",
+            "K-2 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Sound & Light",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.1.sound-vibration", "s.1.light-shadows"],
+          "pes": [
+            "1-PS4-1",
+            "1-PS4-2",
+            "1-PS4-3",
+            "1-PS4-4",
+            "K-2 ETS1-1",
+            "K-2 ETS1-2",
+            "K-2 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Plants & Animals",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.1.structures-function", "s.1.offspring"],
+          "pes": ["1-LS1-1", "1-LS1-2", "1-LS3-1", "K-2 ETS1-2"],
+          "lessons": []
+        }
+      ]
     },
     {
-     "n": "3",
-     "title": "Animals Two by Two",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.K.living-needs",
-      "s.K.living-things-change-environment"
-     ],
-     "pes": [
-      "K-LS1-1",
-      "K-ESS2-2",
-      "K-ESS3-1"
-     ],
-     "lessons": []
+      "grade": "2",
+      "units": [
+        {
+          "n": "1",
+          "title": "Pebbles, Sand & Silt",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.2.erosion-landforms", "s.2.water-on-earth", "s.2.material-properties"],
+          "pes": [
+            "2-ESS1-1",
+            "2-ESS2-1",
+            "2-ESS2-2",
+            "2-ESS2-3",
+            "2-PS1-1",
+            "2-PS1-2",
+            "K-2 ETS1-1",
+            "K-2 ETS1-2",
+            "K-2 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Solids & Liquids",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.2.material-properties", "s.2.heating-cooling"],
+          "pes": [
+            "2-PS1-1",
+            "2-PS1-2",
+            "2-PS1-3",
+            "2-PS1-4",
+            "K-2 ETS1-1",
+            "K-2 ETS1-2",
+            "K-2 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Insects & Plants",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.2.pollination-dispersal", "s.2.habitats", "s.2.plant-growth-investigation"],
+          "pes": [
+            "3-LS1-1",
+            "2-LS2-1",
+            "2-LS2-2",
+            "2-LS4-1",
+            "K-2 ETS1-1",
+            "K-2 ETS1-2",
+            "K-2 ETS1-3"
+          ],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "3",
+      "units": [
+        {
+          "n": "1",
+          "title": "Water & Climate",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.3.weather-climate"],
+          "pes": [
+            "3-ESS2-1",
+            "3-ESS2-2",
+            "3-ESS3-1",
+            "2-ESS2-3",
+            "2-PS1-1",
+            "3-5 ETS1-1",
+            "3-5 ETS1-2",
+            "3-5 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Motion & Matter",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.3.balanced-forces", "s.3.magnets"],
+          "pes": [
+            "3-PS2-1",
+            "3-PS2-2",
+            "3-PS2-3",
+            "3-PS2-4",
+            "3-5 ETS1-1",
+            "3-5 ETS1-2",
+            "3-5 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Structures of Life",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": [
+            "s.3.life-cycles",
+            "s.3.inherited-traits",
+            "s.3.adaptation-fossils",
+            "s.3.animal-groups"
+          ],
+          "pes": [
+            "3-LS1-1",
+            "3-LS2-1",
+            "3-LS3-1",
+            "3-LS3-2",
+            "3-LS4-1",
+            "3-LS4-2",
+            "3-LS4-3",
+            "3-LS4-4"
+          ],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "4",
+      "units": [
+        {
+          "n": "1",
+          "title": "Soils, Rocks, and Landforms",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.4.weathering", "s.4.natural-resources"],
+          "pes": [
+            "4-ESS1-1",
+            "4-ESS2-1",
+            "4-ESS2-2",
+            "4-ESS3-1",
+            "4-ESS3-2",
+            "3-5 ETS1-1",
+            "3-5 ETS1-2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Energy",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": [
+            "s.4.energy-speed",
+            "s.4.energy-conversion",
+            "s.4.wave-patterns",
+            "s.4.vision-light"
+          ],
+          "pes": [
+            "3-PS2-3",
+            "4-PS3-1",
+            "4-PS3-2",
+            "4-PS3-3",
+            "4-PS3-4",
+            "4-PS4-1",
+            "4-PS4-2",
+            "4-PS4-3",
+            "3-5 ETS1-1",
+            "3-5 ETS1-2",
+            "3-5 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Environments",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.4.internal-structures"],
+          "pes": ["4-LS1-1", "4-LS1-2", "3-LS4-2", "3-LS4-4", "5-ESS3-1"],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "5",
+      "units": [
+        {
+          "n": "1",
+          "title": "Earth & Sun",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": [
+            "s.5.sun-star-brightness",
+            "s.5.shadows-day-night",
+            "s.5.gravity-down",
+            "s.5.earth-spheres"
+          ],
+          "pes": [
+            "5-ESS1-1",
+            "5-ESS1-2",
+            "5-ESS2-1",
+            "5-ESS2-2",
+            "5-ESS3-1",
+            "5-PS1-1",
+            "5-PS2-1",
+            "3-5 ETS1-2",
+            "3-5 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Mixtures & Solutions",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.5.particles-matter", "s.5.conservation-mass", "s.5.mixtures"],
+          "pes": [
+            "5-PS1-1",
+            "5-PS1-2",
+            "5-PS1-3",
+            "5-PS1-4",
+            "3-5 ETS1-1",
+            "3-5 ETS1-2",
+            "3-5 ETS1-3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Living Systems",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.5.food-webs", "s.5.plants-sunlight-energy", "s.5.earth-spheres"],
+          "pes": ["5-LS1-1", "5-LS2-1", "4-LS1-2", "5-PS3-1", "5-ESS2-1", "5-ESS3-1"],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "6-8",
+      "units": [
+        {
+          "n": "1",
+          "title": "Weather & Water",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.6.weather-fronts", "s.6.water-cycle", "s.7.phase-changes"],
+          "pes": [
+            "MS-PS1-4",
+            "MS-PS3-3",
+            "MS-PS3-4",
+            "MS-PS3-5",
+            "MS-ESS1-1",
+            "MS-ESS2-4",
+            "MS-ESS2-5",
+            "MS-ESS2-6",
+            "MS-ESS3-2",
+            "MS-ESS3-3",
+            "MS-ESS3-4",
+            "MS-ESS3-5",
+            "MS-ETS1-1",
+            "MS-ETS1-2",
+            "MS-ETS1-3",
+            "MS-ETS1-4"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Diversity of Life",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.6.cells", "s.6.cell-organelles", "s.6.body-systems"],
+          "pes": [
+            "MS-LS1-1",
+            "MS-LS1-2",
+            "MS-LS1-3",
+            "MS-LS1-4",
+            "MS-LS1-5",
+            "MS-LS1-6",
+            "MS-LS1-7",
+            "MS-LS3-2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Human Systems Interactions",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.6.body-systems", "s.6.cells"],
+          "pes": ["MS-LS1-1", "MS-LS1-3", "MS-LS1-7", "MS-LS1-8"],
+          "lessons": [],
+          "notes": "Half-length course (marked * on the publisher page)."
+        },
+        {
+          "n": "4",
+          "title": "Chemical Interactions",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.7.atoms-molecules", "s.7.phase-changes", "s.7.chemical-reactions"],
+          "pes": [
+            "MS-PS1-1",
+            "MS-PS1-2",
+            "MS-PS1-3",
+            "MS-PS1-4",
+            "MS-PS1-5",
+            "MS-PS1-6",
+            "MS-PS3-3",
+            "MS-PS3-4",
+            "MS-PS3-5",
+            "MS-ETS1-1",
+            "MS-ETS1-2",
+            "MS-ETS1-3",
+            "MS-ETS1-4"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Earth History",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.6.rock-cycle", "s.6.plate-tectonics"],
+          "pes": [
+            "MS-ESS1-4",
+            "MS-ESS2-1",
+            "MS-ESS2-2",
+            "MS-ESS2-3",
+            "MS-ESS3-1",
+            "MS-ESS3-2",
+            "MS-ESS3-3",
+            "MS-ESS3-4",
+            "MS-ESS3-5",
+            "MS-LS4-1"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Populations & Ecosystems",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.7.ecosystem-energy", "s.7.photosynthesis-respiration"],
+          "pes": [
+            "MS-LS1-6",
+            "MS-LS1-7",
+            "MS-LS2-1",
+            "MS-LS2-2",
+            "MS-LS2-3",
+            "MS-LS2-4",
+            "MS-LS2-5",
+            "MS-PS3-4",
+            "MS-ESS3-3",
+            "MS-ESS3-4",
+            "MS-ETS1-1",
+            "MS-ETS1-2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "Heredity & Adaptation",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.7.punnett-squares", "s.7.natural-selection"],
+          "pes": [
+            "MS-LS3-1",
+            "MS-LS3-2",
+            "MS-LS4-1",
+            "MS-LS4-2",
+            "MS-LS4-3",
+            "MS-LS4-4",
+            "MS-LS4-5",
+            "MS-LS4-6",
+            "MS-ESS1-4"
+          ],
+          "lessons": [],
+          "notes": "Half-length course (marked * on the publisher page)."
+        },
+        {
+          "n": "8",
+          "title": "Electromagnetic Force",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.8.electricity-basics", "s.8.magnetic-fields"],
+          "pes": [
+            "MS-PS2-2",
+            "MS-PS2-3",
+            "MS-PS2-5",
+            "MS-PS3-2",
+            "MS-PS3-5",
+            "MS-ESS3-4",
+            "MS-ETS1-1",
+            "MS-ETS1-2",
+            "MS-ETS1-3",
+            "MS-ETS1-4"
+          ],
+          "lessons": [],
+          "notes": "Half-length course (marked * on the publisher page)."
+        },
+        {
+          "n": "9",
+          "title": "Gravity & Kinetic Energy",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": [
+            "s.8.motion",
+            "s.8.newtons-laws",
+            "s.8.kinetic-potential",
+            "s.8.gravity-orbits"
+          ],
+          "pes": [
+            "MS-PS2-1",
+            "MS-PS2-2",
+            "MS-PS2-4",
+            "MS-PS2-5",
+            "MS-PS3-1",
+            "MS-PS3-2",
+            "MS-PS3-5",
+            "MS-ESS1-2",
+            "MS-ETS1-1",
+            "MS-ETS1-2",
+            "MS-ETS1-3",
+            "MS-ETS1-4"
+          ],
+          "lessons": [],
+          "notes": "Half-length course (marked * on the publisher page)."
+        },
+        {
+          "n": "10",
+          "title": "Waves",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.8.em-spectrum"],
+          "pes": [
+            "MS-PS4-1",
+            "MS-PS4-2",
+            "MS-PS4-3",
+            "MS-ETS1-1",
+            "MS-ETS1-2",
+            "MS-ETS1-3",
+            "MS-ETS1-4"
+          ],
+          "lessons": [],
+          "notes": "Half-length course (marked * on the publisher page)."
+        },
+        {
+          "n": "11",
+          "title": "Planetary Science",
+          "url": "https://www.foss-science.com/foss-next-generation/",
+          "skills": ["s.8.gravity-orbits"],
+          "pes": [
+            "MS-PS2-4",
+            "MS-PS4-2",
+            "MS-ESS1-1",
+            "MS-ESS1-2",
+            "MS-ESS1-3",
+            "MS-ESS1-4",
+            "MS-ESS2-2",
+            "MS-ESS2-4",
+            "MS-ESS3-1",
+            "MS-ESS3-2",
+            "MS-ESS3-3",
+            "MS-ESS3-4",
+            "MS-ETS1-1"
+          ],
+          "lessons": []
+        }
+      ]
     }
-   ]
-  },
-  {
-   "grade": "1",
-   "units": [
-    {
-     "n": "1",
-     "title": "Air & Weather",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.1.sky-patterns"
-     ],
-     "pes": [
-      "1-ESS1-1",
-      "1-ESS1-2",
-      "K-ESS2-1",
-      "K-ESS3-3",
-      "2-PS1-1",
-      "K-2 ETS1-1",
-      "K-2 ETS1-2",
-      "K-2 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Sound & Light",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.1.sound-vibration",
-      "s.1.light-shadows"
-     ],
-     "pes": [
-      "1-PS4-1",
-      "1-PS4-2",
-      "1-PS4-3",
-      "1-PS4-4",
-      "K-2 ETS1-1",
-      "K-2 ETS1-2",
-      "K-2 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Plants & Animals",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.1.structures-function",
-      "s.1.offspring"
-     ],
-     "pes": [
-      "1-LS1-1",
-      "1-LS1-2",
-      "1-LS3-1",
-      "K-2 ETS1-2"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "2",
-   "units": [
-    {
-     "n": "1",
-     "title": "Pebbles, Sand & Silt",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.2.erosion-landforms",
-      "s.2.water-on-earth",
-      "s.2.material-properties"
-     ],
-     "pes": [
-      "2-ESS1-1",
-      "2-ESS2-1",
-      "2-ESS2-2",
-      "2-ESS2-3",
-      "2-PS1-1",
-      "2-PS1-2",
-      "K-2 ETS1-1",
-      "K-2 ETS1-2",
-      "K-2 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Solids & Liquids",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.2.material-properties",
-      "s.2.heating-cooling"
-     ],
-     "pes": [
-      "2-PS1-1",
-      "2-PS1-2",
-      "2-PS1-3",
-      "2-PS1-4",
-      "K-2 ETS1-1",
-      "K-2 ETS1-2",
-      "K-2 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Insects & Plants",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.2.pollination-dispersal",
-      "s.2.habitats",
-      "s.2.plant-growth-investigation"
-     ],
-     "pes": [
-      "3-LS1-1",
-      "2-LS2-1",
-      "2-LS2-2",
-      "2-LS4-1",
-      "K-2 ETS1-1",
-      "K-2 ETS1-2",
-      "K-2 ETS1-3"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "3",
-   "units": [
-    {
-     "n": "1",
-     "title": "Water & Climate",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.3.weather-climate"
-     ],
-     "pes": [
-      "3-ESS2-1",
-      "3-ESS2-2",
-      "3-ESS3-1",
-      "2-ESS2-3",
-      "2-PS1-1",
-      "3-5 ETS1-1",
-      "3-5 ETS1-2",
-      "3-5 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Motion & Matter",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.3.balanced-forces",
-      "s.3.magnets"
-     ],
-     "pes": [
-      "3-PS2-1",
-      "3-PS2-2",
-      "3-PS2-3",
-      "3-PS2-4",
-      "3-5 ETS1-1",
-      "3-5 ETS1-2",
-      "3-5 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Structures of Life",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.3.life-cycles",
-      "s.3.inherited-traits",
-      "s.3.adaptation-fossils",
-      "s.3.animal-groups"
-     ],
-     "pes": [
-      "3-LS1-1",
-      "3-LS2-1",
-      "3-LS3-1",
-      "3-LS3-2",
-      "3-LS4-1",
-      "3-LS4-2",
-      "3-LS4-3",
-      "3-LS4-4"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "4",
-   "units": [
-    {
-     "n": "1",
-     "title": "Soils, Rocks, and Landforms",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.4.weathering",
-      "s.4.natural-resources"
-     ],
-     "pes": [
-      "4-ESS1-1",
-      "4-ESS2-1",
-      "4-ESS2-2",
-      "4-ESS3-1",
-      "4-ESS3-2",
-      "3-5 ETS1-1",
-      "3-5 ETS1-2"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Energy",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.4.energy-speed",
-      "s.4.energy-conversion",
-      "s.4.wave-patterns",
-      "s.4.vision-light"
-     ],
-     "pes": [
-      "3-PS2-3",
-      "4-PS3-1",
-      "4-PS3-2",
-      "4-PS3-3",
-      "4-PS3-4",
-      "4-PS4-1",
-      "4-PS4-2",
-      "4-PS4-3",
-      "3-5 ETS1-1",
-      "3-5 ETS1-2",
-      "3-5 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Environments",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.4.internal-structures"
-     ],
-     "pes": [
-      "4-LS1-1",
-      "4-LS1-2",
-      "3-LS4-2",
-      "3-LS4-4",
-      "5-ESS3-1"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "5",
-   "units": [
-    {
-     "n": "1",
-     "title": "Earth & Sun",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.5.sun-star-brightness",
-      "s.5.shadows-day-night",
-      "s.5.gravity-down",
-      "s.5.earth-spheres"
-     ],
-     "pes": [
-      "5-ESS1-1",
-      "5-ESS1-2",
-      "5-ESS2-1",
-      "5-ESS2-2",
-      "5-ESS3-1",
-      "5-PS1-1",
-      "5-PS2-1",
-      "3-5 ETS1-2",
-      "3-5 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Mixtures & Solutions",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.5.particles-matter",
-      "s.5.conservation-mass",
-      "s.5.mixtures"
-     ],
-     "pes": [
-      "5-PS1-1",
-      "5-PS1-2",
-      "5-PS1-3",
-      "5-PS1-4",
-      "3-5 ETS1-1",
-      "3-5 ETS1-2",
-      "3-5 ETS1-3"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Living Systems",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.5.food-webs",
-      "s.5.plants-sunlight-energy",
-      "s.5.earth-spheres"
-     ],
-     "pes": [
-      "5-LS1-1",
-      "5-LS2-1",
-      "4-LS1-2",
-      "5-PS3-1",
-      "5-ESS2-1",
-      "5-ESS3-1"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "6-8",
-   "units": [
-    {
-     "n": "1",
-     "title": "Weather & Water",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.6.weather-fronts",
-      "s.6.water-cycle",
-      "s.7.phase-changes"
-     ],
-     "pes": [
-      "MS-PS1-4",
-      "MS-PS3-3",
-      "MS-PS3-4",
-      "MS-PS3-5",
-      "MS-ESS1-1",
-      "MS-ESS2-4",
-      "MS-ESS2-5",
-      "MS-ESS2-6",
-      "MS-ESS3-2",
-      "MS-ESS3-3",
-      "MS-ESS3-4",
-      "MS-ESS3-5",
-      "MS-ETS1-1",
-      "MS-ETS1-2",
-      "MS-ETS1-3",
-      "MS-ETS1-4"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Diversity of Life",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.6.cells",
-      "s.6.cell-organelles",
-      "s.6.body-systems"
-     ],
-     "pes": [
-      "MS-LS1-1",
-      "MS-LS1-2",
-      "MS-LS1-3",
-      "MS-LS1-4",
-      "MS-LS1-5",
-      "MS-LS1-6",
-      "MS-LS1-7",
-      "MS-LS3-2"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Human Systems Interactions",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.6.body-systems",
-      "s.6.cells"
-     ],
-     "pes": [
-      "MS-LS1-1",
-      "MS-LS1-3",
-      "MS-LS1-7",
-      "MS-LS1-8"
-     ],
-     "lessons": [],
-     "notes": "Half-length course (marked * on the publisher page)."
-    },
-    {
-     "n": "4",
-     "title": "Chemical Interactions",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.7.atoms-molecules",
-      "s.7.phase-changes",
-      "s.7.chemical-reactions"
-     ],
-     "pes": [
-      "MS-PS1-1",
-      "MS-PS1-2",
-      "MS-PS1-3",
-      "MS-PS1-4",
-      "MS-PS1-5",
-      "MS-PS1-6",
-      "MS-PS3-3",
-      "MS-PS3-4",
-      "MS-PS3-5",
-      "MS-ETS1-1",
-      "MS-ETS1-2",
-      "MS-ETS1-3",
-      "MS-ETS1-4"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "5",
-     "title": "Earth History",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.6.rock-cycle",
-      "s.6.plate-tectonics"
-     ],
-     "pes": [
-      "MS-ESS1-4",
-      "MS-ESS2-1",
-      "MS-ESS2-2",
-      "MS-ESS2-3",
-      "MS-ESS3-1",
-      "MS-ESS3-2",
-      "MS-ESS3-3",
-      "MS-ESS3-4",
-      "MS-ESS3-5",
-      "MS-LS4-1"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "6",
-     "title": "Populations & Ecosystems",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.7.ecosystem-energy",
-      "s.7.photosynthesis-respiration"
-     ],
-     "pes": [
-      "MS-LS1-6",
-      "MS-LS1-7",
-      "MS-LS2-1",
-      "MS-LS2-2",
-      "MS-LS2-3",
-      "MS-LS2-4",
-      "MS-LS2-5",
-      "MS-PS3-4",
-      "MS-ESS3-3",
-      "MS-ESS3-4",
-      "MS-ETS1-1",
-      "MS-ETS1-2"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "7",
-     "title": "Heredity & Adaptation",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.7.punnett-squares",
-      "s.7.natural-selection"
-     ],
-     "pes": [
-      "MS-LS3-1",
-      "MS-LS3-2",
-      "MS-LS4-1",
-      "MS-LS4-2",
-      "MS-LS4-3",
-      "MS-LS4-4",
-      "MS-LS4-5",
-      "MS-LS4-6",
-      "MS-ESS1-4"
-     ],
-     "lessons": [],
-     "notes": "Half-length course (marked * on the publisher page)."
-    },
-    {
-     "n": "8",
-     "title": "Electromagnetic Force",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.8.electricity-basics",
-      "s.8.magnetic-fields"
-     ],
-     "pes": [
-      "MS-PS2-2",
-      "MS-PS2-3",
-      "MS-PS2-5",
-      "MS-PS3-2",
-      "MS-PS3-5",
-      "MS-ESS3-4",
-      "MS-ETS1-1",
-      "MS-ETS1-2",
-      "MS-ETS1-3",
-      "MS-ETS1-4"
-     ],
-     "lessons": [],
-     "notes": "Half-length course (marked * on the publisher page)."
-    },
-    {
-     "n": "9",
-     "title": "Gravity & Kinetic Energy",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.8.motion",
-      "s.8.newtons-laws",
-      "s.8.kinetic-potential",
-      "s.8.gravity-orbits"
-     ],
-     "pes": [
-      "MS-PS2-1",
-      "MS-PS2-2",
-      "MS-PS2-4",
-      "MS-PS2-5",
-      "MS-PS3-1",
-      "MS-PS3-2",
-      "MS-PS3-5",
-      "MS-ESS1-2",
-      "MS-ETS1-1",
-      "MS-ETS1-2",
-      "MS-ETS1-3",
-      "MS-ETS1-4"
-     ],
-     "lessons": [],
-     "notes": "Half-length course (marked * on the publisher page)."
-    },
-    {
-     "n": "10",
-     "title": "Waves",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.8.em-spectrum"
-     ],
-     "pes": [
-      "MS-PS4-1",
-      "MS-PS4-2",
-      "MS-PS4-3",
-      "MS-ETS1-1",
-      "MS-ETS1-2",
-      "MS-ETS1-3",
-      "MS-ETS1-4"
-     ],
-     "lessons": [],
-     "notes": "Half-length course (marked * on the publisher page)."
-    },
-    {
-     "n": "11",
-     "title": "Planetary Science",
-     "url": "https://www.foss-science.com/foss-next-generation/",
-     "skills": [
-      "s.8.gravity-orbits"
-     ],
-     "pes": [
-      "MS-PS2-4",
-      "MS-PS4-2",
-      "MS-ESS1-1",
-      "MS-ESS1-2",
-      "MS-ESS1-3",
-      "MS-ESS1-4",
-      "MS-ESS2-2",
-      "MS-ESS2-4",
-      "MS-ESS3-1",
-      "MS-ESS3-2",
-      "MS-ESS3-3",
-      "MS-ESS3-4",
-      "MS-ETS1-1"
-     ],
-     "lessons": []
-    }
-   ]
-  }
- ]
+  ]
 }

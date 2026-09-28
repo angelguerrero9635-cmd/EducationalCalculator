@@ -1,552 +1,442 @@
 {
- "id": "amplify-science",
- "curriculum": "Amplify Science K–8",
- "publisher": "Amplify Education (developed with the Lawrence Hall of Science)",
- "edition": "NGSS national edition (web pages retrieved 2026)",
- "subject": "science",
- "grades": [
-  "K",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8"
- ],
- "content": "titles",
- "license": null,
- "sourceUrl": "https://amplify.com/programs/amplify-science/",
- "retrieved": "2026-09-28",
- "sources": [
-  "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-  "https://amplify.com/science-pilot-6-8-integrated/",
-  "https://amplify.com/california-pilot-6-8-integrated/",
-  "https://amplify.com/caregiver-hub/amplify-science-6-8/"
- ],
- "notes": "Titles only (all rights reserved). K–5 unit titles and order per grade from the caregiver hub list \"Questions for at-home discussion\" (https://amplify.com/caregiver-hub/amplify-science-k-5/). Grades 6–8 follow the integrated (NGSS-recommended) course sequence on https://amplify.com/science-pilot-6-8-integrated/ (unit order as shown there; unit type Launch/Core/Engineering internship kept). The California integrated page (https://amplify.com/california-pilot-6-8-integrated/) lists the same units but puts the Force and Motion Engineering Internship in grade 7 and the Phase Change Engineering Internship in grade 8. Amplify also sells a domain-specific 6–8 sequence (Earth/Life/Physical) not recorded here. Lessons are not listed on public pages (unit guides are PDFs under /pdf/, which robots.txt disallows), so every unit has lessons: []. Where no skill of the unit's own grade fits, skills is [] and the unit notes name the nearest skill.",
- "books": [
-  {
-   "grade": "K",
-   "units": [
+  "id": "amplify-science",
+  "curriculum": "Amplify Science K–8",
+  "publisher": "Amplify Education (developed with the Lawrence Hall of Science)",
+  "edition": "NGSS national edition (web pages retrieved 2026)",
+  "subject": "science",
+  "grades": ["K", "1", "2", "3", "4", "5", "6", "7", "8"],
+  "content": "titles",
+  "license": null,
+  "sourceUrl": "https://amplify.com/programs/amplify-science/",
+  "retrieved": "2026-09-28",
+  "sources": [
+    "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+    "https://amplify.com/science-pilot-6-8-integrated/",
+    "https://amplify.com/california-pilot-6-8-integrated/",
+    "https://amplify.com/caregiver-hub/amplify-science-6-8/"
+  ],
+  "notes": "Titles only (all rights reserved). K–5 unit titles and order per grade from the caregiver hub list \"Questions for at-home discussion\" (https://amplify.com/caregiver-hub/amplify-science-k-5/). Grades 6–8 follow the integrated (NGSS-recommended) course sequence on https://amplify.com/science-pilot-6-8-integrated/ (unit order as shown there; unit type Launch/Core/Engineering internship kept). The California integrated page (https://amplify.com/california-pilot-6-8-integrated/) lists the same units but puts the Force and Motion Engineering Internship in grade 7 and the Phase Change Engineering Internship in grade 8. Amplify also sells a domain-specific 6–8 sequence (Earth/Life/Physical) not recorded here. Lessons are not listed on public pages (unit guides are PDFs under /pdf/, which robots.txt disallows), so every unit has lessons: []. Where no skill of the unit's own grade fits, skills is [] and the unit notes name the nearest skill.",
+  "books": [
     {
-     "n": "1",
-     "title": "Needs of Plants and Animals",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.K.living-needs",
-      "s.K.living-things-change-environment"
-     ],
-     "lessons": []
+      "grade": "K",
+      "units": [
+        {
+          "n": "1",
+          "title": "Needs of Plants and Animals",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.K.living-needs", "s.K.living-things-change-environment"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Pushes and Pulls",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.K.pushes-pulls"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Sunlight and Weather",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.K.sunlight-warms", "s.K.weather-patterns"],
+          "lessons": []
+        }
+      ]
     },
     {
-     "n": "2",
-     "title": "Pushes and Pulls",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.K.pushes-pulls"
-     ],
-     "lessons": []
+      "grade": "1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Animal and Plant Defenses",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.1.structures-function", "s.1.offspring"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Light and Sound",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.1.light-shadows", "s.1.sound-vibration"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Spinning Earth",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.1.sky-patterns"],
+          "lessons": []
+        }
+      ]
     },
     {
-     "n": "3",
-     "title": "Sunlight and Weather",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.K.sunlight-warms",
-      "s.K.weather-patterns"
-     ],
-     "lessons": []
+      "grade": "2",
+      "units": [
+        {
+          "n": "1",
+          "title": "Plant and Animal Relationships",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.2.pollination-dispersal", "s.2.habitats", "s.2.plant-growth-investigation"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Properties of Materials",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.2.material-properties", "s.2.heating-cooling"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Changing Landforms",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.2.erosion-landforms", "s.2.water-on-earth"],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "3",
+      "units": [
+        {
+          "n": "1",
+          "title": "Balancing Forces",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.3.balanced-forces", "s.3.magnets"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Inheritance and Traits",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.3.inherited-traits", "s.3.life-cycles"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Environments and Survival",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.3.adaptation-fossils", "s.3.animal-groups"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Weather and Climate",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.3.weather-climate"],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "4",
+      "units": [
+        {
+          "n": "1",
+          "title": "Energy Conversions",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.4.energy-conversion", "s.4.natural-resources"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Vision and Light",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.4.vision-light", "s.4.internal-structures"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Earth’s Features",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.4.weathering"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Waves, Energy, and Information",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.4.wave-patterns"],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "5",
+      "units": [
+        {
+          "n": "1",
+          "title": "Patterns of Earth and Sky",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.5.sun-star-brightness", "s.5.shadows-day-night", "s.5.gravity-down"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Modeling Matter",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.5.particles-matter", "s.5.conservation-mass", "s.5.mixtures"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "The Earth System",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.5.earth-spheres", "s.5.protect-resources"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Ecosystem Restoration",
+          "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
+          "skills": ["s.5.food-webs", "s.5.plants-sunlight-energy"],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "6",
+      "units": [
+        {
+          "n": "1",
+          "title": "Microbiome",
+          "type": "Launch",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.6.cells"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Metabolism",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.6.body-systems", "s.6.cell-organelles"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Metabolism Engineering Internship",
+          "type": "Engineering internship",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.6.body-systems"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Traits and Reproduction",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.7.punnett-squares (genes, alleles)."
+        },
+        {
+          "n": "5",
+          "title": "Thermal Energy",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 6 skill fits; nearest taxonomy skills are s.7.phase-changes and s.8.kinetic-potential."
+        },
+        {
+          "n": "6",
+          "title": "Ocean, Atmosphere, and Climate",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.6.weather-fronts", "s.6.water-cycle"],
+          "lessons": [],
+          "notes": "Ocean currents also match s.12.ocean-atmosphere."
+        },
+        {
+          "n": "7",
+          "title": "Weather Patterns",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.6.weather-fronts", "s.6.water-cycle"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Earth’s Changing Climate",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.12.climate-systems."
+        },
+        {
+          "n": "9",
+          "title": "Earth’s Changing Climate Engineering Internship",
+          "type": "Engineering internship",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.12.climate-systems."
+        }
+      ]
+    },
+    {
+      "grade": "7",
+      "units": [
+        {
+          "n": "1",
+          "title": "Geology on Mars",
+          "type": "Launch",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 7 skill fits; nearest taxonomy skills are s.4.weathering and s.6.rock-cycle."
+        },
+        {
+          "n": "2",
+          "title": "Plate Motion",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 7 skill fits; nearest taxonomy skill is s.6.plate-tectonics."
+        },
+        {
+          "n": "3",
+          "title": "Plate Motion Engineering Internship",
+          "type": "Engineering internship",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 7 skill fits; nearest taxonomy skills are s.6.plate-tectonics and s.4.natural-resources (hazards)."
+        },
+        {
+          "n": "4",
+          "title": "Rock Transformations",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 7 skill fits; nearest taxonomy skill is s.6.rock-cycle."
+        },
+        {
+          "n": "5",
+          "title": "Phase Change",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.7.phase-changes"],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Phase Change Engineering Internship",
+          "type": "Engineering internship",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.7.phase-changes"],
+          "lessons": [],
+          "notes": "The page heading reads \"Force and Motion Engineering Internship\" but its description (portable baby incubators with phase change materials) is the Phase Change Engineering Internship."
+        },
+        {
+          "n": "7",
+          "title": "Chemical Reactions",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.7.chemical-reactions", "s.7.atoms-molecules"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Populations and Resources",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.7.ecosystem-energy"],
+          "lessons": []
+        },
+        {
+          "n": "9",
+          "title": "Matter and Energy in Ecosystems",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.7.ecosystem-energy", "s.7.photosynthesis-respiration"],
+          "lessons": []
+        }
+      ]
+    },
+    {
+      "grade": "8",
+      "units": [
+        {
+          "n": "1",
+          "title": "Harnessing Human Energy",
+          "type": "Launch",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.8.kinetic-potential", "s.8.electricity-basics"],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Force and Motion",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.8.newtons-laws", "s.8.motion"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Force and Motion Engineering Internship",
+          "type": "Engineering internship",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.8.newtons-laws"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Magnetic Fields",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.8.magnetic-fields"],
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Light Waves",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.8.em-spectrum"],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Earth, Moon, and Sun",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": ["s.8.gravity-orbits"],
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "Natural Selection",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 8 skill fits; nearest taxonomy skill is s.7.natural-selection."
+        },
+        {
+          "n": "8",
+          "title": "Natural Selection Engineering Internship",
+          "type": "Engineering internship",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 8 skill fits; nearest taxonomy skill is s.7.natural-selection."
+        },
+        {
+          "n": "9",
+          "title": "Evolutionary History",
+          "type": "Core",
+          "url": "https://amplify.com/science-pilot-6-8-integrated/",
+          "skills": [],
+          "lessons": [],
+          "notes": "No Grade 8 skill fits; nearest taxonomy skills are s.7.natural-selection and s.9.evolution-evidence."
+        }
+      ]
     }
-   ]
-  },
-  {
-   "grade": "1",
-   "units": [
-    {
-     "n": "1",
-     "title": "Animal and Plant Defenses",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.1.structures-function",
-      "s.1.offspring"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Light and Sound",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.1.light-shadows",
-      "s.1.sound-vibration"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Spinning Earth",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.1.sky-patterns"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "2",
-   "units": [
-    {
-     "n": "1",
-     "title": "Plant and Animal Relationships",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.2.pollination-dispersal",
-      "s.2.habitats",
-      "s.2.plant-growth-investigation"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Properties of Materials",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.2.material-properties",
-      "s.2.heating-cooling"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Changing Landforms",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.2.erosion-landforms",
-      "s.2.water-on-earth"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "3",
-   "units": [
-    {
-     "n": "1",
-     "title": "Balancing Forces",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.3.balanced-forces",
-      "s.3.magnets"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Inheritance and Traits",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.3.inherited-traits",
-      "s.3.life-cycles"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Environments and Survival",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.3.adaptation-fossils",
-      "s.3.animal-groups"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "4",
-     "title": "Weather and Climate",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.3.weather-climate"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "4",
-   "units": [
-    {
-     "n": "1",
-     "title": "Energy Conversions",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.4.energy-conversion",
-      "s.4.natural-resources"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Vision and Light",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.4.vision-light",
-      "s.4.internal-structures"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Earth’s Features",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.4.weathering"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "4",
-     "title": "Waves, Energy, and Information",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.4.wave-patterns"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "5",
-   "units": [
-    {
-     "n": "1",
-     "title": "Patterns of Earth and Sky",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.5.sun-star-brightness",
-      "s.5.shadows-day-night",
-      "s.5.gravity-down"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Modeling Matter",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.5.particles-matter",
-      "s.5.conservation-mass",
-      "s.5.mixtures"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "The Earth System",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.5.earth-spheres",
-      "s.5.protect-resources"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "4",
-     "title": "Ecosystem Restoration",
-     "url": "https://amplify.com/caregiver-hub/amplify-science-k-5/",
-     "skills": [
-      "s.5.food-webs",
-      "s.5.plants-sunlight-energy"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "6",
-   "units": [
-    {
-     "n": "1",
-     "title": "Microbiome",
-     "type": "Launch",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.6.cells"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Metabolism",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.6.body-systems",
-      "s.6.cell-organelles"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Metabolism Engineering Internship",
-     "type": "Engineering internship",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.6.body-systems"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "4",
-     "title": "Traits and Reproduction",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.7.punnett-squares (genes, alleles)."
-    },
-    {
-     "n": "5",
-     "title": "Thermal Energy",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 6 skill fits; nearest taxonomy skills are s.7.phase-changes and s.8.kinetic-potential."
-    },
-    {
-     "n": "6",
-     "title": "Ocean, Atmosphere, and Climate",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.6.weather-fronts",
-      "s.6.water-cycle"
-     ],
-     "lessons": [],
-     "notes": "Ocean currents also match s.12.ocean-atmosphere."
-    },
-    {
-     "n": "7",
-     "title": "Weather Patterns",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.6.weather-fronts",
-      "s.6.water-cycle"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "8",
-     "title": "Earth’s Changing Climate",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.12.climate-systems."
-    },
-    {
-     "n": "9",
-     "title": "Earth’s Changing Climate Engineering Internship",
-     "type": "Engineering internship",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 6 skill fits; nearest taxonomy skill is s.12.climate-systems."
-    }
-   ]
-  },
-  {
-   "grade": "7",
-   "units": [
-    {
-     "n": "1",
-     "title": "Geology on Mars",
-     "type": "Launch",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 7 skill fits; nearest taxonomy skills are s.4.weathering and s.6.rock-cycle."
-    },
-    {
-     "n": "2",
-     "title": "Plate Motion",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 7 skill fits; nearest taxonomy skill is s.6.plate-tectonics."
-    },
-    {
-     "n": "3",
-     "title": "Plate Motion Engineering Internship",
-     "type": "Engineering internship",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 7 skill fits; nearest taxonomy skills are s.6.plate-tectonics and s.4.natural-resources (hazards)."
-    },
-    {
-     "n": "4",
-     "title": "Rock Transformations",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 7 skill fits; nearest taxonomy skill is s.6.rock-cycle."
-    },
-    {
-     "n": "5",
-     "title": "Phase Change",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.7.phase-changes"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "6",
-     "title": "Phase Change Engineering Internship",
-     "type": "Engineering internship",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.7.phase-changes"
-     ],
-     "lessons": [],
-     "notes": "The page heading reads \"Force and Motion Engineering Internship\" but its description (portable baby incubators with phase change materials) is the Phase Change Engineering Internship."
-    },
-    {
-     "n": "7",
-     "title": "Chemical Reactions",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.7.chemical-reactions",
-      "s.7.atoms-molecules"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "8",
-     "title": "Populations and Resources",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.7.ecosystem-energy"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "9",
-     "title": "Matter and Energy in Ecosystems",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.7.ecosystem-energy",
-      "s.7.photosynthesis-respiration"
-     ],
-     "lessons": []
-    }
-   ]
-  },
-  {
-   "grade": "8",
-   "units": [
-    {
-     "n": "1",
-     "title": "Harnessing Human Energy",
-     "type": "Launch",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.8.kinetic-potential",
-      "s.8.electricity-basics"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "2",
-     "title": "Force and Motion",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.8.newtons-laws",
-      "s.8.motion"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "3",
-     "title": "Force and Motion Engineering Internship",
-     "type": "Engineering internship",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.8.newtons-laws"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "4",
-     "title": "Magnetic Fields",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.8.magnetic-fields"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "5",
-     "title": "Light Waves",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.8.em-spectrum"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "6",
-     "title": "Earth, Moon, and Sun",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [
-      "s.8.gravity-orbits"
-     ],
-     "lessons": []
-    },
-    {
-     "n": "7",
-     "title": "Natural Selection",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 8 skill fits; nearest taxonomy skill is s.7.natural-selection."
-    },
-    {
-     "n": "8",
-     "title": "Natural Selection Engineering Internship",
-     "type": "Engineering internship",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 8 skill fits; nearest taxonomy skill is s.7.natural-selection."
-    },
-    {
-     "n": "9",
-     "title": "Evolutionary History",
-     "type": "Core",
-     "url": "https://amplify.com/science-pilot-6-8-integrated/",
-     "skills": [],
-     "lessons": [],
-     "notes": "No Grade 8 skill fits; nearest taxonomy skills are s.7.natural-selection and s.9.evolution-evidence."
-    }
-   ]
-  }
- ]
+  ]
 }
