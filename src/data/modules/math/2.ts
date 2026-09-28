@@ -2718,7 +2718,14 @@ export const MATH_2_MODULES: ModuleDef[] = [
     },
     example: { s: 4, F: 6, E: 12, V: 8 },
     startWith: ['s'],
-    representation: { kind: 'prism', sides: 's', faces: 'F', edges: 'E', corners: 'V' },
+    representation: {
+      kind: 'prism',
+      sides: 's',
+      faces: 'F',
+      edges: 'E',
+      corners: 'V',
+      counting: true,
+    },
   },
   compareNumbers(
     'm.2.place-value-1000',

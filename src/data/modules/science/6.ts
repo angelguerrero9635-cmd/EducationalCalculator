@@ -507,7 +507,14 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
     example: { l: 20, w: 10, A: 200, r: 25, W: 5000 },
     startWith: ['l', 'w', 'r'],
     pictureLabels: ['r', 'W'],
-    representation: { kind: 'rectangle', length: 'l', width: 'w', inside: 'A', extent: 20 },
+    representation: {
+      kind: 'rectangle',
+      length: 'l',
+      width: 'w',
+      inside: 'A',
+      extent: 20,
+      roof: true,
+    },
   },
   (() => {
     const gap = minus(

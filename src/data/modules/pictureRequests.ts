@@ -1846,7 +1846,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Real coins: copper penny, silver nickel, dime and quarter at true sizes, running totals',
     kind: 'coinRow',
     pages: ['m.2.money~one-coin'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4a-coins', 'g.r4a-coins-ten-quarters', 'g.r4a-coins-pennies'],
     notes:
       'Urgency: high. Weak now: Coins are ~28 px grey discs with a tiny unreadable "10¢"; dimes, nickels and quarters look alike, penny isn\'t copper; row small and alone with empty width. Redo: Each coin as metal (Metal, light and dark tokens): penny copper, nickel/dime/quarter silver, true size ratios (dime smallest, quarter largest, ~56 px quarter); milled rim, raised inner ring, simple embossed profile, value in chart.value bold on the face; FloorShadow. Wrap rows of 5, grouped in fives. Keep the caption "3 dimes: 30¢"; add running totals (10¢, 20¢, 30¢) under each coin so the skip-count shows. Drawn (round 4, group A): Flat metal coins at true size ratios (quarter 58 px, dime 43 px, penny copper, the rest silver): lit rim, sunk field, ridged edge on dimes and quarters, a faint profile in relief, the value bold on the face, a drop shadow on the table (flat discs, so no floor ellipse). Rows of five; the running total (10¢, 20¢, 30¢) under each coin, the last one bold. Caption kept. Harness: a coinRow check (a real coin value; the count times the value is the last running total). No page change.',
@@ -1856,7 +1856,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Glossy balloon, torn paper bits, hair and a wall; charge marks once rubbed',
     kind: 'static',
     pages: ['s.3.magnets~static'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.static'],
     notes:
       'Urgency: high. Weak now: Balloon is a flat grey outline; paper bits are 5 empty rectangles; "balloon, not rubbed" clipped at left and floats under the floor line; no hair, wall or charge, so scenes can\'t show attraction. Redo: Glossy rubber balloon (coloured fill, Ball/Sheen highlight, knot, curled string). Paper bits as torn confetti in warm paper colours that lift and tilt toward the balloon in "near paper". Add a head with hair standing up, a textured wall, two balloons pushing apart. Small +/− charge marks only once rubbed. Scene label centred inside the figure with padding. Drawn (round 4, group B): a glossy red rubber balloon (Ball shading, shine, knot, curled string) over a wooden floor; torn paper bits in paper colours that lift, tilt and stick to it when rubbed; a child\'s head whose hair stands up toward the balloon; a brick wall it sticks to (not rubbed, it lies on the floor); two balloons hanging knot-up from a rod that swing apart with arrows. Minus marks on a rubbed balloon, plus marks on the hair and wall. Object labels under the floor and the scene label centred below them, in chart.label and chart.value. New file figuresR4b.tsx. No page change.',
@@ -1866,7 +1866,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Cardboard box and rubber ball with a viewer; "above" with a clear gap',
     kind: 'position',
     pages: ['m.K.position-words'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4a-position', 'g.r4a-position-behind'],
     notes:
       'Urgency: high. Weak now: "Above" draws the ball touching the box (reads as "on"); box is a pale wireframe cube, ball a flat disc; thin floor line with a large empty area below. Redo: Cardboard box (kraft, flaps, tape, TopLight) and a red rubber ball (Ball shading, FloorShadow). "Above": clear gap with a dashed drop shadow on the lid. Behind: partly hidden by the box. In front: overlaps it, lower and larger. Add a small child or teddy as the viewer so in front/behind have a point of view. Shrink the empty lower third. Drawn (round 4, group A): A kraft cardboard box (taped flaps, printed arrows, lit front, shaded side) on a small wooden table, and a red rubber ball (Ball shading, seam, shadow where it rests). Above: a clear gap over the lid with a dashed shadow on it. Below: on the floor under the table. Beside: on the table next to the box. In front of: lower on the table, larger, over the box front. Behind: at the back, smaller, mostly hidden by the box. A child seen from behind at the front left is the viewer. Table and floor fill the width; the empty lower third is gone. Drawn in layouts/PositionScene.tsx. No page change.',
@@ -1876,7 +1876,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A globe with continents and a small child standing on it; ball falling to the centre',
     kind: 'earth',
     pages: ['s.5.gravity-down', 's.5.shadows-day-night~day-night'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4b-earth'],
     notes:
       'Urgency: high. Weak now: Earth is a flat grey circle with a tiny centre dot; person is a lollipop stick; ball and arrow ~10 px at the top edge; tiny caption; no sense of a planet. Redo: Globe: ocean blue with green and tan continents, Ball shading, thin atmosphere halo, centre dot labelled "center" in chart.label. Small standing child (~1/6 radius) with feet on the surface in every scene (top, side, bottom). Coloured ball with a bold arrow toward the centre and a dashed line to the centre. Caption in chart.label. Drawn (round 4, group B): a globe (ocean, green land with tan deserts clipped to the circle, Ball-style light, a thin sky halo), sized from the width (radius up to 100). A child (about a third of the radius tall) stands feet-on-the-surface at top, side and bottom; a red ball beside them with a bold arrow and a dashed line to the centre dot, labelled "center" on a chip. Thrown: the ball higher with a dotted trail. Lit scenes: a sun with rays and two sunlight arrows on the left, the night half shaded, day and night on chips, a house beside the child for the marked town, and the turning arrow labelled "Earth turns this way". Captions at chart.value. No page change.',
@@ -1886,7 +1886,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Desk lamp, apple with a shadow, eye and mirror; bold light beams',
     kind: 'lightPath',
     pages: ['s.1.light-shadows', 's.4.vision-light'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4b-light-path', 'g.shadows'],
     notes:
       'Urgency: high. Weak now: Lamp is a dot with tick rays, apple a grey circle, eye an almond outline; thin arrows; small floating labels. Redo: Desk lamp (Metal shade, bulb with warm radial glow), red apple (Ball shading, stem, leaf, cast shadow on a tabletop), eye with iris and lashes. Rays as thicker warm-yellow beams with arrowheads. Real dark tint for "Dark room", a block or hand for "Block the light", a silvered mirror. Shadow length changes with low vs high lamp. Labels under each object in chart.label. Drawn (round 4, group B): a green metal desk lamp (Sheen shade, bulb with a warm radial glow when on) on a wooden tabletop, a red apple (Ball shading, stem, leaf, a shadow on the table away from the lamp) and an eye with a blue iris, lashes and brow that looks toward the light. Light as bold warm beams (a glow under an orange arrow). Dark room: the whole room shaded dark; hand: an open hand in front of the eye where the beam stops; mirror: a silvered mirror in a wooden frame above, placed where the angles in and out are equal, the eye looking up at it. Shadow scenes keep the exact geometry: a lamp on a stand (low or high), a wooden, clear-glass or frosted block, a plaster wall, the shadow on the floor and up the wall, the light\'s edge as a dashed warm beam. Labels under the table in chart.label, captions in chart.value. No page change.',
@@ -1896,7 +1896,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A painted water-cycle landscape with only the active process arrow',
     kind: 'waterCycle',
     pages: ['s.6.water-cycle'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4c-water-cycle'],
     notes:
       'Urgency: high. Weak now: Thin grey wireframe: outline-triangle mountain, lavender block ocean, tiny grey labels; every inactive path a faint dashed arrow (noisy); lollipop person; no tree for transpiration; "Driven by the sun" pill overlaps the sky corner. Redo: Painted landscape: sky gradient, sun with glow, ocean with waves, tan beach, green hillside with a leafy tree, grey rock mountain with white snowcap, soil band showing groundwater in blue, white cumulus cloud (TopLight). Only the active process arrow bold and coloured with a short label; others hidden or 25 % solid. chart.label for ocean and groundwater; move the sun pill below the header strip. Drawn (round 4, group C; waterCycleFigure.tsx): a painted landscape on a 360-wide board (sky gradient, sun with a glow, ocean with waves, tan beach, grassland with a lit tree and a river, grey rock mountain lit from the left with a snowcap, soil over a blue groundwater band with rock grains, a white cumulus that turns grey and rains for precipitation and shows droplets for condensation). Only the scene\'s step is bold in the highlight with a 13 px chip beside it; the other six stay as faint thin arrows so the loop is visible. Ocean and groundwater labelled at 13 px; the driver chip sits inside the sky at the top right, clear of the sun and cloud. No page change.',
@@ -1914,7 +1914,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.3.multiplication-properties',
       'm.3.multiplication-properties~order',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4d-array',
       'g.r4d-array-5x5',
@@ -1940,7 +1940,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.1.measure-nonstandard',
       's.K.living-needs',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4a-compare',
       'g.r4a-compare-ten-none',
@@ -1964,7 +1964,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The Grade 2 clock face on the Grade 1 explore page',
     kind: 'clock',
     pages: ['m.1.time-half-hour'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4f-clock-explore'],
     notes:
       'Urgency: high. Weak now: Flat thin circle, no minute ticks, no rim, plain thin hands; the Grade 1 page is a weaker copy of the Grade 2 clock. Source is ExploreLayout.tsx `ClockFace`, not figures.tsx. Redo: Reuse the reps Clock face (Metal rim, cream TopLight face, 60 minute ticks with heavier 5-minute ticks, tapered hour hand shorter and wider than the minute hand, Ball centre cap, FloorShadow); `time` exact. Optionally hour hand chartInk and minute hand chartHighlight to match "short hand / long hand"; digital time under it at chart.emphasis. Drawn (round 4, group F): the explore ClockFace now draws the shared reps dial (reps/ClockDial.tsx, also used by the Clock picture): metal rim with an inner lip and wall shadow, cream face with TopLight, 60 minute ticks with heavier five-minute ticks, 700-weight numerals up to 16 px, a short wide tapered hour hand in chartInk and a long thin minute hand in chartHighlight, a metal centre cap and a faint glass sheen; `time` exact. No digital time added: the scene lines already say "It is 3:00." No page change.',
@@ -1974,7 +1974,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flashlight and a strip of lit and dark frames for the flash code',
     kind: 'flashes',
     pages: ['s.1.sound-vibration~signals'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4b-flashes'],
     notes:
       "Urgency: high. Weak now: Not a picture: one flat 44 px purple dot (an RN View) in empty space; no flashlight, no light, no sequence, on can't be told from off. Redo: SVG flashlight (Metal barrel with Sheen, rubber switch, glass lens) pointing right, beside a strip of lit and unlit frames: each flash a warm radial glow over a dark night panel with a soft beam cone; short flashes as round bursts, long ones as a stretched beam, numbered 1, 2, 3; gaps as dark frames. Night panel darker than the card in both modes. The pattern string (● and —) stays the source of truth. Drawn (round 4, group B): now an SVG. A metal flashlight (Sheen barrel with grip rings, red rubber switch, flared head, glowing lens) shines a soft beam cone across a night panel (darker than the card in both modes). Under it the code as frames: each flash a small night window with a warm radial burst (round for short, a stretched beam twice as wide for long), dark frames between flashes for the light off, numbered 1, 2, 3 in chart.value. A code longer than five flashes made of up to three runs (help) gets a row per run; any other long code wraps rows by width. The pattern string stays the source. No page change.",
@@ -1984,7 +1984,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A hand, a rubber ball on the ground and a force arrow sized by the push',
     kind: 'push',
     pages: ['s.K.pushes-pulls~direction'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.push'],
     notes:
       'Urgency: high. Weak now: Grey frame runs edge to edge with no margin; ball a flat disc floating mid-air with no floor; blocky glove "hand"; push arrow detached from the hand; tiny caption; faint path and ghost ball. Redo: Inset by space.lg, drop the border. Ground strip (TopLight band) with FloorShadow; real rubber ball (Ball shading, seam) ~22 px; friendly open hand (skin token) touching the ball with a bold force arrow from the hand, length/width by gentle vs hard, labelled "push"/"pull" at chart.value. Path as a dotted trail with 2–3 fading ghost balls. Pull: a real string from hand to ball. Keep from, strength and pull. Drawn (round 4, group B): a wooden plank floor seen from above, inset by space.lg with no border, TopLight over it; a red rubber ball (Ball shading, seam, FloorShadow, radius 22); an open hand in the skin tokens with a sleeve, fingertips touching the ball; a bold force arrow starting at the hand (44 px and 4 px thick gentle, 78 px and 8 px hard) with "push" or "pull" on a chip. Where the ball goes: a dotted trail with two (gentle) or three (hard) fading balls; "was rolling this way" with a faded ball behind for pushes from the front and side; "stops" on a chip; a pull is a string from a curled hand with speed marks behind the ball. Keeps from, strength and pull. No page change.',
@@ -1998,7 +1998,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.divide-fractions~how-many-fit',
       'm.6.divide-fractions~how-much-in-one',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4d-fit',
       'g.r4d-fit-part',
@@ -2016,7 +2016,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Water pie chart with meaningful colours, leader labels and a fresh-water callout',
     kind: 'pieChart',
     pages: ['s.5.earth-spheres~water-share'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4f-water-pie', 'g.r4f-water-pie-edge', 'g.pie-chart'],
     uses: '"group":{"id":"f"',
     notes:
@@ -2027,7 +2027,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Snap cubes on one left edge, the grouped part banded and bracketed',
     kind: 'cubeTrains',
     pages: ['m.1.addition-properties'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4a-trains', 'g.r4a-trains-20', 'g.r4a-trains-zero'],
     notes:
       'Urgency: high. Weak now: Flat rectangles split into cells, not interlocking cubes; the grouped pair is marked by a heavy black outline that looks like a text box; small grey row labels; no bracket for what is added first; different left edges. Redo: Real snap cubes: raised face (paint.tsx edge light and shade), a nub on top, 1 px gaps, token colour per addend. Every train on the same left edge. "Added first" as a translucent primary band behind the grouped cubes plus a bracket under them labelled with the part\'s sum. Row labels 14 px ink above each train. Faint dashed guide at the right end showing all trains end at the same total. Drawn (round 4, group A): Snap cubes (raised face with edge light and shade, a nub on top, 1 px gaps), one colour per addend, every train on the same left edge and sized from the longest train (up to 28 px cubes). The part added first sits on a translucent primary band with a bracket under it labelled with its number sentence (3 + 8 = 11). Row labels 14 px ink above each train; a dashed guide at the right end where every train ends. No page change.',
@@ -2037,7 +2037,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "A body silhouette with each system's organs in colour and label chips",
     kind: 'bodySystems',
     pages: ['s.6.body-systems'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4c-body-systems'],
     notes:
       'Urgency: high. Weak now: Weakest in the batch: stick-figure body, faint grey organ scribbles (only the heart filled), callout label tiny and nearly clipped at the edge, dashed vessels look like construction lines, lots of empty space. Redo: Soft gender-neutral silhouette (one path) in a muted skin-token fill, ~70 % width. Each system\'s organs in their own material colours at readable size: lungs pink (TopLight), heart red, stomach and intestines, brain, spine and bones bone-white, kidneys. Active system full colour, others ghosted to ~15 %. Vessels as solid red and blue tapering paths. 14 px label chips beside highlighted organs, in two columns inside the canvas. Activity scenes ("Running", "Eating lunch", "Touching a hot pan") light several systems, each with its chip. Drawn (round 4, group C; bodyFigure.tsx): a soft gender-neutral silhouette (one outline, skin token at 40 %, lit from above) filling the board height, with each system in its own colors: pink brain with yellow spinal cord and nerves, bone-white skull, spine, ribs, pelvis and long bones, red muscle spindles with fibres, pink lungs on a windpipe, a red heart with its arch and red arteries and blue veins out to the limbs, esophagus, stomach, pink small intestine inside the tan large one, and brown kidneys with a bladder. Lit systems are drawn in full on top; the rest ghosted at 16 %. Each lit system gets a 13 px chip with its color dot in a column beside the body (two columns, rows kept apart) and a leader to its organ; activity scenes light several at once. No page change.',
@@ -2047,7 +2047,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Recognizable continents on an ocean map with shelf edges and clue symbols',
     kind: 'continents',
     pages: ['s.6.plate-tectonics~pangaea'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4c-continents'],
     notes:
       'Urgency: high. Weak now: Sharp crude polygons with black outlines on a lavender block; don\'t look like the landmasses; tiny labels overlap shapes; "Australia"/"India" crowded; ocean not drawn as ocean; era stamp jammed in the corner; clue scenes show no clue symbols. Redo: Flat blue ocean with a faint latitude grid. Smooth recognizable simplified continents (the Wegener fit, South America into the Gulf of Guinea) in land green or tan, with pale continental-shelf edges (the real shape clue). 13 px ink labels with a halo, inside each landmass or on short leaders. Era as a padded pill top right. Clue scenes: Mesosaurus/Glossopteris silhouette bands, matching rock-stripe hatching, glacier-scratch marks across joined edges. Same outlines morph between the eras. Drawn (round 4, group C; continentsFigure.tsx with outlines in continentShapes.ts): a flat blue ocean with a faint 30-degree latitude grid (equator stronger), and recognizable continents in land green simplified from the in-house world outlines (cardFigureData.ts): North America with Greenland, South America, Africa with Madagascar, Europe and Asia with Britain and Ireland, India cut from Asia along the Himalaya, Australia, and a compact Antarctica drawn in-house. Each is ringed by a pale continental shelf. The same outlines are moved and turned between eras: at 250 million years ago a fitted Pangaea (South America\'s bulge in the Gulf of Guinea, North America against northwest Africa, Greenland against Europe, India, Antarctica and Australia together south of Africa, the Tethys open to the east); at 150 the central Atlantic open and India drifting; today the real map. Names 13 px inside the land (the Americas on two lines), India and Australia on short leaders where the south is crowded; the era as a padded chip top right. Clues: Mesosaurus silhouettes on a band across South America and Africa; one hatched mountain belt through the Appalachians, east Greenland, Scotland and Norway; ice-sheet scratch arrows pointing away from one ice cap on South America, Africa, India and Australia, with coal in Antarctica; the two coasts lit with South America\'s outline slid back dashed against Africa; each clue with a key chip top left. No page change.',
@@ -2057,7 +2057,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A textbook front cross-section: warm and cold air, a real storm cloud, a map-symbol key',
     kind: 'front',
     pages: ['s.6.weather-fronts'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4c-fronts'],
     notes:
       'Urgency: high. Weak now: Flat line sketch: grey outlined cold-air blob, cloud reads as a mushroom or machine, rain as four slashes, no warm/cold colour coding, front symbol tiny in the corner, small labels. Redo: Textbook cross-section: warm air as a soft warm-token region with a curved rising arrow; cold air as a cool blue wedge whose leading edge is the blue front line with triangles. A proper cumulonimbus (lumpy tower, flat anvil, TopLight), tapered blue rain streaks, a ground strip. Weather-map symbol in a framed key box (14 px triangles; semicircles for a warm front). "warm air"/"cold air" 14 px inside their regions. Per scene change the wedge slope, cloud type (nimbostratus layers for a warm front) and symbol; H and L with spiral arrows for pressure scenes. Drawn (round 4, group C; frontFigure.tsx): a textbook cross-section on a 360-wide board with a sky, grass and soil strip. Warm air tinted warm, cold air as a cool wedge along the ground, and the front as a heavy line with its weather-map marks on the side it moves toward. Cold front: a steep blunt nose of cold air pushing right, a blue line with triangles, warm air lifted up the face (curved highlight arrow), a cumulonimbus with a lumpy tower and a flat anvil spreading ahead (light top, dark base) and tapered rain. Warm front: a long gentle slope, a red line with half discs on the cold side, warm air sliding up it, flat nimbostratus layers stepping up ahead, cirrus far ahead and light rain falling ahead of the surface front. Stationary: a mid slope alternating blue and red with triangles toward the warm air and half discs toward the cold, layered cloud and steady rain, and two equal arrows meeting. Low and high: a column of rising or sinking air over converging or spreading ground winds, cloud and rain or the sun, the map letter (red L, blue H) at the ground. Every scene has a framed key top left with the map symbol at 14 px (triangles, half discs, both, or L or H with its Northern Hemisphere spiral of winds). warm air and cold air labelled 14 px inside their regions. No page change.',
@@ -2067,7 +2067,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Layered plate cross-section: seawater, age-banded plates, glowing magma, mantle',
     kind: 'plates',
     pages: ['s.6.plate-tectonics'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4c-plates'],
     notes:
       'Urgency: high. Weak now: Two flat grey outlined slabs, a tiny triangle ridge, a big primary arrow for magma on a pale lavender mantle; dotted age bands with 10 px labels; no seawater; magma not molten. Redo: Layered cross-section: blue seawater band on top; basalt-grey oceanic plates with a thin sediment top, banded by age (stepped warm-to-cool gradient mirrored on both sides, like magnetic-stripe diagrams); raised ridge with a rift notch; glowing orange-red magma plume ending in the notch; deep orange-brown mantle with faint convection arrows; spreading arrows 2.5 px; 13 px ink labels. Other scenes in the same materials: tan granite continental plate, a subducting slab bending down, snow-capped mountains, a map-view fault for plates sliding past. Drawn (round 4, group C; platesFigure.tsx): a layered cross-section on a 360-wide board: sky, seawater with a wave line, plates, glowing magma (yellow to orange to red) and a deep orange-brown mantle with faint convection loops (lit heavy in the highlight for What moves the plates: rising under the ridge, spreading, sinking at the sides). Ocean ridge: grey basalt plates under a thin sediment skin that thickens with age, a raised ridge with a rift the magma fills, 2.5 px spreading arrows, and with ages four age bands stepped warm (new, at the ridge) to cool (older, at the edges), mirrored on both sides, labelled new and older. Rift: a speckled tan granite continent with blocks dropped along faults into a valley with a lake, magma below, pulling arrows. Subduction: the basalt ocean plate bending down at a trench under a thick granite continent, magma rising from above the sinking plate to a snow-capped volcano with a glowing vent. Collision: two continents crumpled into snow-capped peaks with folded layers, the seam and a deep root. Plates slide past: seen from above, a fault offsetting a river and a row of trees, with opposite arrows. Labels 13 px ink on a soft backing. No page change.',
@@ -2077,7 +2077,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A box with a rubber band vibrating and bold sound arcs',
     kind: 'vibration',
     pages: ['s.1.sound-vibration'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.vibration'],
     notes:
       'Urgency: high. Weak now: "Rubber band on a box" is a small grey outlined rectangle with an oval hole and a line, floating in empty space; thin sound arcs; 10–11 px captions a Grade 1 student can\'t read; nothing shows vibration. Redo: Real object: wooden or kraft box (texture, TopLight), dark sound hole with inner shadow, a coloured rubber band with slight sheen; ~75 % width. Vibration as 2–3 ghosted band positions at 30 % and bold 3 px sound arcs, absent when stopped. One 16 px chip ("Shaking → sound" / "Still → no sound"). Other scenes in the same style: throat with a hand on it, drum with bouncing rice, bell with motion lines. Drawn (round 4, group B): a wooden box seen a little from above (TopLight, grain, side face, floor shadow) about three quarters of the width, a dark sound hole with a lit rim and an orange rubber band with a sheen wrapped over its ends; shaking, two ghost positions of the band at 30 %. Hum: a child in profile with a hand on the throat and lips closed; drum: a red drum (Sheen shell, cords, metal rims, a skin head) with rice grains that jump and a wooden stick; bell: a brass bell (Metal) on a wooden handle that tips when rung. Shaking adds motion lines and three bold 3 px sound arcs; still has none. One 16 px chip under the picture: "Shaking → sound" or "Still → no sound". No page change.',
@@ -2087,7 +2087,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Series circuit in the Circuit.tsx style with resistor chips and a current arrow',
     kind: 'seriesCircuit',
     pages: ['he.engineering.circuits-1#0'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.series-loop', 'g.series-loop-big'],
     notes:
       'Urgency: high. Weak now: Review page (he.engineering.circuits-1#0) shows "Skill not found", so no screenshot. Source draws a line-segment schematic unlike the redrawn Circuit.tsx; drag cue only a hint line. Redo: Bring it to Circuit.tsx\'s standard, reusing its Chip and wire styling. Standard symbols with resistors at 2.5 px, battery with long and short plates and 14 px +/− marks, each resistor\'s value in a 13 px chip, a current arrow labelled "I = …", a visible DragHandle on each resistor chip. Optional small real-battery inset. The page is a college topic: open it at /course/he.engineering.circuits-1/topic/0. Drawn (round 4, group G): the loop in Circuit.tsx\'s copper wire (Chip now exported from Circuit.tsx with a size option); source as long (+) and short thick (−) plates with 14 px +/− marks; resistors as 2.5 px zigzags, each resistance on a 13 px chip above and its voltage drop on one below; chevrons on the wires and a filled accent current arrow labelled "I = …" beside the bottom wire, clockwise out of +; a DragHandle on the source and on each resistor body (not on the chips, so no label is covered). The caption states the loop with every number (V = V₁ + V₂ = … and I = V ÷ (R₁ + R₂) = …) and the drag hint. No real-battery inset: the schematic is what the college page teaches. No page change.',
@@ -2097,7 +2097,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A textbook cell (animal, plant or bacterium) with the chosen part glowing',
     kind: 'cell',
     pages: ['s.6.cell-organelles'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4h-cell'],
     notes:
       'Urgency: medium. Weak now: Flat beige ellipse, grey nucleus, two tiny mitochondria pills; tiny leader labels crowd the right edge; vacuole, chloroplasts, wall, bacterium not distinct; selected part weakly highlighted. Redo: Textbook cell: jelly cytoplasm (Glass), nucleus with nucleolus and double membrane, bean mitochondria with cristae (~30 px). Plant-cell version (rectangular green-tinted wall, chloroplast lenses, large vacuole) or a bacterium when those parts are chosen. Glow the selected part with an accent outline, dim the others. Labels in chart.label, leaders alternating left/right.' +
@@ -2108,7 +2108,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Push arrows sized by force, kids pushing, a net-force arrow',
     kind: 'pushes',
     pages: ['s.3.balanced-forces'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.pushes', 'g.pushes-lopsided'],
     notes:
       'Urgency: medium. Weak now: Crate good, but arrows thin, same colour and same length for 20 N and 15 N, so the imbalance doesn\'t show; small grey captions on the floor line; empty width. Redo: Arrow length scaled to force (20 N visibly longer), ~6 px thick with filled heads, each side its own theme colour. Small hands or kids pushing at each tail. "net 5 N →" arrow above the crate in the accent when unbalanced, "=" marks when balanced. FloorShadow, wood floor line, captions in chart.label under each arrow. Drawn (round 4, group G): the crate on a planked wooden floor, a child leaning into each push with palms at the arrow\'s tail (blue shirt and arrow for the push to the right, orange for the push to the left). Arrows are 6 px with filled heads, on one scale set by the biggest value shown (so 20 N is exactly 4/3 of 15 N; spec.max no longer sets the scale), values in 13 px bold over each arrow and the names in 12 px under the floor. Above the crate: the extra push as an ink arrow on the same scale toward the way the crate moves, labelled with its name and value; when the pushes are equal, an "=" under "Balanced". The net arrow is ink, not the accent, so it isn\'t read as a third push beside the blue one. A push of 0 draws no child or arrow (checked by typing 50 and 0, and 30 and 30: demos can\'t hold a 0 with a unit). No page change.',
@@ -2118,7 +2118,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A bigger crate, force and acceleration arrows scaled to F and a',
     kind: 'force',
     pages: ['s.8.newtons-laws'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.force-crate', 'g.force-crate-heavy'],
     notes:
       "Urgency: medium. Weak now: Mass tag covers the crate's brace; force arrow a thin black line with the handle floating at its tip; acceleration a faint dashed grey; 60 % of the frame empty above. Redo: Crate ~110 px, mass on a Tag below the top plank. Thick accent force arrow scaled to F with the handle on the arrowhead. Acceleration a solid secondary-colour arrow above the crate scaled to a, labelled in chart.label. FloorShadow, lightly textured floor, speed lines when a > 0. Cut the empty top margin. Drawn (round 4, group G): a 110 px crate on a hatched floor, the mass on a paper Tag below the top plank (13 px bold). The net force is a 6 px accent arrow with a filled head from the crate's face, its length F on its own scale; the handle sits on the shaft just behind the head so the head stays visible, and \"F = …\" rides over the arrow (past the handle when the arrow is short). The acceleration is a solid 4 px arrow in chartSecond above the crate, its length a, labelled in chart.label; speed lines trail the crate while a > 0. Each arrow's scale is a nice number just past its value (fixed while dragging; forceExtent and accelerationExtent now only set a floor near 0), so both arrows fill the width and stay proportional to F and a; the cart variant (ForceCart.tsx) is untouched. No page change.",
@@ -2128,7 +2128,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A cliff cross-section with textured, numbered layers and larger fossils',
     kind: 'rockLayers',
     pages: ['s.3.adaptation-fossils~layers'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4h-rock', 'g.r4h-rock-deep'],
     notes:
       'Urgency: medium. Weak now: Fossils ~18 px, hard to see; "fish"/"shell" labels outside the right edge in tiny type; faint textures; flat green grass bar; no layer numbers to count. Redo: Cliff cross-section: sandstone, shale, limestone, clay each with a clear texture (cross-bedding, laminae, blocky joints) under TopLight; irregular grass and soil top with tufts. Fossils ~30 px in bone and shell colours with shading. Number each layer at the left in chart.label (1 at top). Leader-lined fossil labels at the right; bracket "4 layers apart" between the fossils.' +
@@ -2139,7 +2139,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Large counters on a mat, numbered as they are counted',
     kind: 'dotSet',
     pages: ['m.K.count-objects'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4a-dots', 'g.r4a-dots-19'],
     notes:
       'Urgency: medium. Weak now: Dots ~14 px, too small for a K counting page; scattered with lots of empty space; no count mark on touch; not clear they can be moved. Redo: Counters ~36 px (CounterDot two-tone, or ladybug/apple objects) with FloorShadow on a soft felt mat. A tapped dot gets a number badge (1, 2, 3 …) so "touch each once" shows. Subtle drag cue on the first dot. Keep Line/Rows/Circle arrangements exact and centred. Drawn (round 4, group A): Counters up to 38 px (Ball, a raised rim, a shadow each) on a green felt mat with stitched edges, sized from the count and the arrangement. Tap a counter to count it: it shows the number said (1, 2, 3 …); tapping the last one again takes it back, and once all are counted a tap starts over; a hint line says "Tap each dot once to count it." / "You counted 7.". Line, Rows and Circle stay exact and centred; Scattered uses 20 fixed spots each farthest from those before, so 19 counters never touch. No drag cue: the counters are not dragged (the arrangement buttons move them), so a drag cue would promise something the page does not do. Harness: a dotSet check (at most 20 counters). No page change.',
@@ -2149,7 +2149,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Matte pattern blocks in standard colours filling a dashed hexagon',
     kind: 'patternBlocks',
     pages: ['m.K.compose-shapes'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4a-blocks', 'g.r4a-blocks-triangles', 'g.r4a-blocks-trapezoids'],
     notes:
       'Urgency: medium. Weak now: Glossy gradients on what should be flat plastic; colours off from standard pattern blocks; thick black seams; no tray or outline for the hexagon to fill. Redo: Standard colours (triangle green, rhombus blue, trapezoid red, hexagon yellow, square orange, thin rhombus tan); matte plastic with subtle TopLight and a 1 px lighter bevel, FloorShadow. Target hexagon as a dashed outline slot; pieces snap in with a thin dark seam. Small count badge per piece type. Drawn (round 4, group A): Matte classroom blocks (red trapezoid, blue rhombus, green triangle; the page uses only these three) with a faint light from above, a 1 px lighter bevel and thin dark seams, filling a dashed hexagon slot; empty slices stay dashed, extra blocks faded as before. A tray under the hexagon shows each block upright with a count badge. No page change.',
@@ -2175,7 +2175,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.3.weather-climate',
       's.4.weathering',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4f-bars',
       'g.r4f-bars-edge',
@@ -2198,7 +2198,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.2.add-sub-100-fluency~add-add',
       'm.3.two-step-problems~add-subtract',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4d-hops-tens',
       'g.r4d-hops-tens-edge',
@@ -2216,7 +2216,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real object over a wooden ruler and a yardstick, feet in two tones',
     kind: 'unitTiles',
     pages: ['m.2.standard-length~two-units', 'm.2.standard-length~meters'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4f-feet', 'g.r4f-feet-edge', 'g.r4f-meters', 'g.r4f-meters-edge'],
     notes:
       'Urgency: medium. Weak now: "Object" is a flat bar with a handle; inch tiles ~3 px slivers; feet thin outlined pills; tiny row labels; nothing looks like a ruler or yardstick. Redo: Object as a real thing (wooden board or ribbon, texture, TopLight). A wooden ruler and yardstick beneath it with printed inch ticks, numbers every 1 or 6 in and foot joints. Alternate cream and tan per foot; group inch ticks per foot with "12 in" under each. Row labels above each strip in chart.label. Drawn (round 4, group F): the object is a satin ribbon (Sheen, notched end, BoxShadow) with the drag handle on its end; dashed guides drop from both its ends through both measures. Under it, one long wooden stick (reps/wood.tsx WoodStick: wood, grain, TopLight) marked in the small unit, each big unit in alternate wood and cream tones, ticks every inch (every 10 cm on the meter page), numbers every 3 or 6 in (every 100 cm) printed in ink on the wood, and "12 inches" / "100 centimeters" under each big unit. Then the big units as separate foot rulers or meter sticks laid end to end, each with faint inch or centimeter ticks and a paper tag "1 foot" / "1 meter". Row names with their values above each strip at 12 px bold. The drawing fits the object (at least one big unit wide), so 1 foot fills the width. No page change.',
@@ -2226,7 +2226,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'An exact flat wave: wavelength from crest to crest, amplitude from the midline',
     kind: 'wave',
     pages: ['s.4.wave-patterns', 's.4.wave-patterns~amplitude'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.wave-rope', 'g.wave-rope-12', 'g.wave-amplitude', 'g.wave-amplitude-tall'],
     notes:
       "Urgency: medium. Weak now: \"amplitude\" overlaps the curve at the first crest; handle overlaps the wavelength bracket end; gradient fill under an abstract wave, very thick halo; 50 cm bracket ends don't clearly sit on two crests. Redo: Flat and exact: a single 3 px accent line, no fill. Wavelength bracket above the crests, end ticks dropping exactly to two crest peaks. Amplitude as a vertical double arrow from the midline to a crest, labelled to its right. Handle on a crest clear of the bracket. Optional: a rope with a hand at the left on the plain-rope scene. Drawn (round 4, group G): flat and exact, a single 3 px accent line on a dashed middle line, no fill or halo. When the page has an amplitude, across and up share one scale (6 cm on a 40 cm wave is drawn 6/40 as tall as the wave is long; crests are capped at 70 px by narrowing the wave, not by stretching it), so the picture is true to the numbers; the rope page keeps a fixed height. The wavelength bracket sits above the first two crests with dashed ends dropping to their peaks (one whole wave from its start when only one wave is drawn), its value in 13 px bold over it. The amplitude is a two-headed arrow from the middle line to the crests' level, beside the wave's right end with a dashed guide from the last crest, labelled to its right (at a crest the label ran into the falling curve). The handle moved to the first trough, clear of the bracket: down for a bigger amplitude, sideways for the wavelength. No rope-and-hand scene. No page change.",
@@ -2241,7 +2241,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.area-polygons~trapezoid',
       'm.6.area-polygons~composite',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4e-parallelogram', 'g.r4e-triangle-tall', 'g.r4e-trapezoid', 'g.r4e-house-wide'],
     notes:
       'Urgency: medium. Weak now: Small parallelogram lower left, ~80 px blank above; tiny "h"/"b" labels; thick purple base reads as a selection; faint unlabelled completing rectangle, so "leaning keeps the area" isn\'t shown; tiny right-angle mark. Redo: Centre, ~85 % width, flat. Base as a dimension line with end ticks, "b = 8 cm" at chart.value; height as a dashed perpendicular with arrowheads, "h = 5 cm"; 10 px right-angle box. Parallelogram: cut-off triangle shaded chartSecond and repeated dashed on the other side (cut and move). Triangle: doubled into a faint ghost parallelogram. Trapezoid: bases labelled b₁ and b₂. Top-vertex handle with a visible sideways track. Drawn (round 4, group E): flat, centred, sized from the values (the frame holds still while dragging). Base as a dimension line with end ticks and extension lines, "b = 8 cm" at chart.value bold; height a dashed perpendicular with arrowheads at both ends, a 10 px square corner, and its label on a pill placed clear of every edge, diagonal and chip. Parallelogram (rearrange): the cut-off triangle shaded chartSecond and repeated dashed on the other side (either lean), caption "Move the yellow triangle to the other side: a rectangle 8 by 5". Triangle (double): the turned copy as a faint dashed ghost parallelogram, caption says the triangle is half. Trapezoid: b₁ below and b₂ above as dimension lines; the diagonal splits it into two tinted triangles with their areas on pills; the frame now fits the longer top (it used to run off the left edge). Top-vertex handle (top-right corner for parallelogram and trapezoid, so it no longer covers the height) slides along a dashed track with arrowheads, parallel to the base, kept inside the canvas. House: walls and roof tinted apart, wall height and roof height as one stacked dimension line on the right, the roof height a dashed perpendicular; its caption no longer talks of leaning (the house has no handle). No page change.',
@@ -2259,7 +2259,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.6.plate-tectonics~speed',
       's.6.rock-cycle~layer-time',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4d-dnl',
       'g.r4d-dnl-many',
@@ -2276,7 +2276,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Particles in a glass jar or syringe, with motion marks by state',
     kind: 'particles',
     pages: ['s.5.particles-matter'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4h-particles'],
     notes:
       'Urgency: medium. Weak now: Solid is a 40-dot block at the bottom of a tall empty box (~60 % blank); flat purple dots in black rings look like app buttons; plain black rectangle, not a container; tiny caption; nothing shows motion. Redo: Container as a glass jar or beaker (Glass, rim, FloorShadow); syringe with a Metal plunger for squeezed air. Particles as Ball spheres in a material token (second token for sugar). Solid: a lattice block with tiny wiggle arcs. Liquid: lower half to a meniscus in a water tint, short motion tails. Gas: spread across the jar with longer motion arrows. Caption at chart.value. Particle counts and GAS_SPOTS fixed.' +
@@ -2287,7 +2287,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Factor trees with shaped nodes and the shared primes paired',
     kind: 'factorTree',
     pages: ['m.6.gcf-lcm~factor-tree'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4e-factor-trees', 'g.r4e-factor-trees-three', 'g.r4e-factor-trees-deep'],
     notes:
       'Urgency: medium. Weak now: Hairline grey branches look unfinished; composites are bare text, only primes circled; two trees crowded; small type; shared primes not paired across trees. Redo: Flat tree diagram: composites as rounded rectangles (chartSurface, stroke border), primes as filled circles (chartFill, ink); chart.stroke branches ending at node edges; 28 px nodes, labels at chart.value. Two columns with a thin divider. Shared primes as matched pairs with coloured rings (chartHighlight, then chartSecond). Each tree\'s primes listed at its foot ("2 · 2 · 2 · 3"). Scale depth to fit 3–4 levels without clipping. Drawn (round 4, group E): flat trees in two columns with a thin divider. Composites are rounded boxes (chartSurface, chartMuted border), primes filled circles (chartFill); numbers at chart.emphasis bold; chart.stroke branches run edge to edge. Each split puts the prime one step left and the rest one step right (a staircase), so every level fits: 64 and 96, the deepest in the page range (seven and six levels), fit without clipping. Shared primes are ringed in matched pairs, one colour per shared prime (chartHighlight, then chartSecond, then ink for a third, as 60 and 90 need); the top-most copies are ringed. Each tree lists its primes in order at its foot, ringed the same way, with × between them when they fit. Caption says "Shared primes (ringed)" so the rings have a key. No page change.',
@@ -2306,7 +2306,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.4.area-perimeter-formulas~square',
       's.6.water-cycle~roof-rain',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4e-rect-same-area',
       'g.r4e-rect-area-max',
@@ -2332,7 +2332,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.2.plant-growth-investigation~water',
       's.2.plant-growth-investigation~week',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4f-ruler',
       'g.r4f-ruler-edge',
@@ -2349,7 +2349,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Two-coloured Venn circles with even members and the GCF badge',
     kind: 'venn',
     pages: ['m.6.gcf-lcm'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4e-venn', 'g.r4e-venn-many', 'g.r4e-venn-one'],
     notes:
       'Urgency: medium. Weak now: Two identical lavender circles distinguished only by small "12"/"18" labels cramped at the tops; 9–10 px members spread unevenly; tiny GCF ring; two odd oversized vertical sliders below. Redo: Flat. Two distinct tints (chartHighlight, chartSecond) with a blended overlap; titles outside at chart.value ("Factors of 12", "Factors of 18"). Members on an even grid in each region at ~13 px. Greatest common factor as a filled chartHighlight badge with a "greatest" tag. Replace the vertical sliders with standard horizontal Sliders.tsx rows, or drop them per sliderPolicy. Drawn (round 4, group E): flat, two distinct tints (chartHighlight at 14 %, chartSecond at 30 %, blending in the overlap) with matching outlines; titles outside at chart.value bold ("Factors of 12", "Factors of 18"; "Prime factors of …" for list primes). Members at chart.value on an even grid in each region, the ones nearest its middle, clear of both edges (72 and 96, eight shared, fit). The greatest common factor is a filled chartHighlight badge with a leader to a "greatest common factor" tag under the circles. Sliders: the kind has none of its own (venn is not in sliderPolicy); the two vertical sliders come from the page setting sliders: true, and are the app-wide Sliders component. The lesson chat may drop that line (sliders are not needed: the inputs change both numbers). No page change needed for the picture.',
@@ -2359,7 +2359,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real pan balance with bowls, a pivot pointer and side labels',
     kind: 'balance',
     pages: ['m.1.equal-sign'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.pan-balance', 'g.pan-balance-full', 'g.pan-balance-tipped'],
     notes:
       'Urgency: medium. Weak now: Grey clip-art: flat trapezoid post, thin beam, shallow slab pans; counters squeezed on the pan rims; sides not labelled on the picture; always level with no pivot or pointer, so "Level" can\'t be seen. Redo: Real classroom pan balance: brushed-metal post and beam (Metal) on a base with FloorShadow; triangular fulcrum with a pivot pin; pointer needle and small scale arc so a level beam points at the centre mark. Pans as deep bowls with a Sheen rim on two chains; counters inside in rows of 5 with padding. A Tag chip under each pan ("8 + 2", "5 + 5"). If sides may differ, tilt by the difference (up to ~8°) with counters exact. Drawn (round 4, group G): a classroom pan balance in brushed metal (Sheen, Metal, TopLight): a base with a FloorShadow, a post, a fulcrum with a pivot pin, and a beam that turns about the pin. A pointer hangs from the beam onto a small metal scale with ticks at 4° and 8° each way and an accent middle mark, so a level beam points at the middle. Each pan is a deep bowl with a bright rim hanging on two chains; its counters sit inside in rows of 5 (rows of 10 smaller ones above 20, up to 40), one color per value, with padding to the rim. A tag under each pan gives its side ("8 + 2", "5 + 5"; with a take-away, "10 − 2"). When the sides differ (a value still "?", or a take-away), the beam tips toward the heavier side by 1.6° per counter of difference, up to 8°; the counters stay exact. The caption is unchanged. No page change.',
@@ -2369,7 +2369,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'The rock cycle as a ring of stations with rock swatches',
     kind: 'rockCycle',
     pages: ['s.6.rock-cycle'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4c-rock-cycle'],
     notes:
       'Urgency: medium. Weak now: Plain flowchart of small grey boxes with 11 px text and crossing dashed arrows; highlighted "Melting" arrows converge awkwardly; "Earth\'s inner heat" pill overlaps a corner; no rock images. Redo: Keep it a flat diagram laid out as the standard ring: surface rock top, sediment top right, sedimentary right, metamorphic bottom right, magma bottom, igneous left; curved arrows around the ring and two or three non-crossing chords. A small rock swatch per station (layered sandstone, banded gneiss, speckled granite, orange magma). 13 px labels, 44 px station chips. Active process arrows 3 px primary with arrowhead and label; others 1.5 px muted solid. Energy source icon inside the ring. Drawn (round 4, group C; rockCycleFigure.tsx): kept flat and laid out as the standard ring (surface rock top, sediment top right, sedimentary right, metamorphic bottom right, magma bottom, igneous left), each station a 36 px round swatch of the rock (cracked grey surface rock, loose grains, layered sandstone, banded gneiss, glowing magma, speckled granite) with a 13 px bold name outside the ring. Curved arrows run clockwise around the ring (weathering, deposition, metamorphism, melting, cooling, uplift) with three non-crossing chords (igneous to metamorphic, metamorphic to surface, sedimentary to surface) and a short inner arc (igneous to magma). The scene\'s arrows are 3 px in the highlight with heads, their stations ringed, and the step\'s name on a chip bottom right; the others 1.5 px muted solid. What drives the step sits inside the ring as an icon with its name (a flame for Earth\'s inner heat, the sun and a down arrow for the sun and gravity). The old sedimentary-to-magma shortcut is left out: it can only be drawn crossing the other chords, and melting still shows two routes (metamorphic and igneous rock). No page change.',
@@ -2379,7 +2379,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'An eyepiece view of plant cells with a measured cell and field width',
     kind: 'fieldOfView',
     pages: ['s.6.cells~cell-size'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4h-field', 'g.r4h-field-many', 'g.r4h-field-two'],
     notes:
       'Urgency: medium. Weak now: Cream disc with a heavy grey vignette that looks like a smudge; small green ovals in one thin row; "one cell" label crowded against the cell and vignette; thin width bar with 11 px text. Redo: Eyepiece view: black Metal ring with a crisp inner edge, warm bright field with falloff only in the last 8 %. Plant/onion cells as rounded rectangles with walls, nucleus and faint cytoplasm tint (token greens, TopLight), ~30 % of the field tall. Measured cell outlined in primary with a bracket "1 cell = 300 µm" at 13 px. Field-width bar as a 2 px dimension line with end ticks and a 13 px label inside the canvas. Counts and positions exact.' +
@@ -2390,7 +2390,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Pairs in two-cell trays, the leftover in a half-empty tray',
     kind: 'pairs',
     pages: ['m.2.even-odd'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4a-pairs', 'g.r4a-pairs-20', 'g.r4a-pairs-19'],
     notes:
       'Urgency: medium. Weak now: Seven ~20 px counters in faint grey pair frames in a tiny cluster; leftover a different colour with no frame and no explanation; no labels for pairs or the leftover. Redo: Counters ~32 px across the width. Each pair in a two-cell raised tray (paint.tsx edge helpers). Leftover in the same colour in a half-empty tray with a dashed empty cell, so "no partner" is visible, not colour-coded. 14 px pair counts (1, 2, 3) under each tray and a "left over" tag. Wrap to two rows beyond 10 pairs. Drawn (round 4, group A): Each pair in a two-cell raised plastic tray (recessed cells, edge light, shadow) with counters up to 34 px, sized to the width; all counters the same colour. The odd one sits in a tray whose other cell is empty and dashed, tagged "left over"; pair numbers 1, 2, 3 in 14 px under the trays. Up to 6 trays a row, then a second row (20 makes 10 trays in two rows). No page change.',
@@ -2400,7 +2400,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flat-shaded prism with ink corner dots',
     kind: 'prism',
     pages: ['m.2.thirds-polygons~solids'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4e-prism-count', 'g.r4e-prism-triangle', 'g.r4e-prism-hexagon'],
     uses: '"counting":true',
     notes:
@@ -2411,7 +2411,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'An elapsed-time line with five-minute ticks and chip labels',
     kind: 'timeline',
     pages: ['m.3.elapsed-time~elapsed', 'm.3.elapsed-time~start-time'],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4d-time',
       'g.r4d-time-long',
@@ -2427,7 +2427,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flat waterfall chart: green increases, red decreases, connectors',
     kind: 'waterfall',
     pages: ['he.geography.human-geography#0'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4f-waterfall', 'g.r4f-waterfall-edge'],
     notes:
       'Urgency: medium. Weak now: Review page (he.geography.human-geography#0) shows "Skill not found". Source shades an abstract chart with LitRect and TopLight, against the art direction; bars capped at 52 px; two-line small labels. Redo: Flat fills: increases success green, decreases danger red, total ink or primary. 1 px dashed connectors from each bar end to the next start. Each change\'s value ("+120", "−45" with a true minus) 12–13 px at the bar end. Zero baseline 1.5 px ink. Category names 12 px, wrapped or angled, inside the canvas. Visible DragHandle on editable bar ends. The page is a college topic: open it at /course/he.geography.human-geography/topic/0. Drawn (round 4, group F): flat: increases blockGreen, decreases blockRed, the total chartHighlight, each with a 1 px edge in its own color; a key under the chart says Increase / Decrease / Total. 1 px dashed connectors from each bar\'s end to the next. Each change\'s value ("+6,000", "−4,000", true minus) at 13 px bold in a row over its bar, so it never meets a handle; the total\'s value there too. Zero baseline 1.5 px ink. Symbol (bold) and name at 12 px under each bar, wrapped to two lines; the old symbol key under the chart is gone (the names are on the chart). The bars fill the height (no scale to read). DragHandles on editable bar ends as before. No page change.',
@@ -2449,7 +2449,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.gcf-lcm~distributive',
       'm.6.expressions-variables~distributive',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4e-area-two-digit',
       'g.r4e-area-big',
@@ -2474,7 +2474,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.6.body-systems~heart-output',
       'm.9.exponential-functions',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: [
       'g.r4d-table',
       'g.r4d-table-powers',
@@ -2490,7 +2490,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A times table with room to read and "+" hops on the highlighted row',
     kind: 'timesTable',
     pages: ['m.3.arithmetic-patterns'],
-    status: 'drawn',
+    status: 'placed',
     uses: '"pair":[4,7]',
     gallery: ['g.r4d-times-table', 'g.r4d-times-table-turn', 'g.r4d-times-table-doubles'],
     notes:
@@ -2501,7 +2501,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Number bond with coloured parts and ten-frame counters',
     kind: 'numberBond',
     pages: ['m.K.add-sub-10~number-bond'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4a-bond', 'g.r4a-bond-10'],
     notes:
       "Urgency: low. Weak now: Clean and readable, but flat grey circles and hairline connectors look like clip art; 8 px counters crammed at the bottom of each circle; unclear if anything is interactive. Redo: Flat but firmer: chart.stroke connectors meeting circle edges; whole circle chartFill, parts chartHighlight and chartSecond so counter colours carry over. ~14 px Ball counters in a 2×5 ten-frame cluster under the number in each circle. If parts can be tapped, a visible +/− or \"Tap a part\" with a pressed state. Keep whole/part fields. Drawn (round 4, group A): Flat but firmer: 3 px connectors meeting the circles' edges; the whole circle chartFill, the parts tinted and ringed in chartHighlight and chartSecond (their counters' colours). Under each number a 2 × 5 ten-frame with faint cells holds that part's Ball counters; the whole's frame shows both parts' counters together. Parts are not tappable (the inputs set them), so no tap cue was added. No page change.",
@@ -2515,7 +2515,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.K.weather-patterns',
       's.K.living-things-change-environment~litter',
     ],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4f-tally', 'g.r4f-tally-edge', 'g.r4f-tally-weather', 'g.r4f-tally-litter'],
     uses: '"icons":[',
     notes:
@@ -2526,7 +2526,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Clock hands that differ clearly, bigger numerals, minute labels',
     kind: 'clock',
     pages: ['m.2.time-5-min', 'm.3.elapsed-time'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4f-clock', 'g.r4f-clock-edge'],
     notes:
       'Urgency: low. Weak now: Near standard, but numerals ~13 px are small for Grade 2; hour and minute hands close in length and weight (4:25 hard to read); no minute numbers for counting by fives; flat face with no glass. Redo: Hour hand shorter and wider (6 px, ink), minute hand longer and thinner (3.5 px, primary); drag handle stays on the minute tip. Numerals 16 px semibold. Muted minute labels (5 … 55) outside the bezel at 10 px, or only on the five-minute page via a spec flag. Low-strength Glass sheen over the face; Metal centre cap. Keep the a.m./p.m. toggle. Drawn (round 4, group F): shared dial (reps/ClockDial.tsx). Hour hand short and wide (half the radius, 11 px, chartInk); minute hand long and thin (to the tick ring, 6 px, chartHighlight) with the drag handle on its tip, now outside the numerals so it never covers one. Numerals up to 16 px bold. Muted minute labels 5 … 55 outside the rim at 12 px (not 10: the quality floor), on every Clock picture, since both pages count by fives. Faint glass sheen, metal centre cap; a.m./p.m. toggle kept. No page change.',
@@ -2536,7 +2536,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real object in the cylinder, bigger scale numbers, a before line',
     kind: 'gradCylinder',
     pages: ['s.6.density~displacement'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4h-cylinder', 'g.r4h-cylinder-big', 'g.r4h-cylinder-small'],
     notes:
       'Urgency: low. Weak now: One of the better pictures, but scale numerals grey 9–10 px; object a grey half-disc that doesn\'t read as a stone or weight; thin base, no pour spout; small change label; "before"/"after" near clipping. Redo: Scale numerals 12 px ink, longer major ticks. Object as a real item (textured stone or Metal weight) fully submerged with a contact shadow. Hexagonal base with depth, pour lip at the rim. Curved meniscus with the reading at its bottom; "before" level as a ghosted water line. Change bracket 2 px with a 14 px label. Right-hand labels 8 px inside the canvas or moved left. Meniscus handle unchanged.' +
@@ -2547,7 +2547,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Two-tint rectilinear parts, a countable grid, dimension lines',
     kind: 'rectilinear',
     pages: ['m.3.area~rectilinear', 'm.3.area~cut-out'],
-    status: 'drawn',
+    status: 'placed',
     gallery: ['g.r4e-rectilinear', 'g.r4e-rectilinear-wide', 'g.r4e-cut-out', 'g.r4e-cut-out-thin'],
     notes:
       'Urgency: low. Weak now: Flat and exact, but very faint grid (squares hard to count); parts differ only by a light grey tint; small area numbers; side labels far from their edges, "2 cm" near the right edge; no split line. Redo: Two distinct flat tints (e.g. primary 15 %, amber 20 %); 2 px dashed split line; grid at chartGrid 1 px; part areas in 18 px centred chips ("15 cm²"); side labels on dimension lines with end ticks, 6 px from the edge and 8 px inside the canvas. Cut-out variant: removed piece hatched with a dashed outline. Sliders unchanged. Drawn (round 4, group E): flat, centred, sized from the values. Two distinct tints (chartHighlight 15 %, chartSecond 30 %), a 2 px dashed split line where the parts meet, unit-square grid lines at 35 % chartMuted (countable in both themes). Part areas in centred chips with the unit ("15 cm²"), or above the part on a short leader when it is too thin (10 by 1). Every side on a dimension line with end ticks, 10 px from its edge and inside the canvas. Cut-out: the removed piece hatched in a dashed outline with its area on a muted chip, the cut width above and height right as muted dimension lines; the shape left in unit squares with its area on a chip (in its bigger part; the caption carries it when the L is too thin). Sliders unchanged. No page change.',

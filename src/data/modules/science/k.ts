@@ -176,7 +176,7 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
       steps: { 'days = sunny + not sunny': all.steps },
       example: { s: 6, n: 4, d: 10 },
       startWith: ['s', 'n'],
-      representation: { kind: 'tally', rows: ['s', 'n'], total: 'd' },
+      representation: { kind: 'tally', rows: ['s', 'n'], total: 'd', icons: ['sun', 'rain cloud'] },
     } satisfies ModuleDef;
   })(),
   (() => {
@@ -240,7 +240,12 @@ export const SCIENCE_K_MODULES: ModuleDef[] = [
       steps: { 'pieces = cans + paper': all.steps },
       example: { a: 4, c: 3, p: 7 },
       startWith: ['a', 'c'],
-      representation: { kind: 'tally', rows: ['a', 'c'], total: 'p' },
+      representation: {
+        kind: 'tally',
+        rows: ['a', 'c'],
+        total: 'p',
+        icons: ['soda can', 'wrapper falling on grass'],
+      },
     } satisfies ModuleDef;
   })(),
 ];

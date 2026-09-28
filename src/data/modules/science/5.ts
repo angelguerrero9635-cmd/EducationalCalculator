@@ -306,7 +306,13 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     unitSystems: ['metric'],
     sliders: false,
     pictureLabels: ['f'],
-    representation: { kind: 'pieChart', parts: ['s', 'i', 'l'], total: 'w' },
+    representation: {
+      kind: 'pieChart',
+      parts: ['s', 'i', 'l'],
+      total: 'w',
+      colors: ['waterDeep', 'ice', 'freshWater'],
+      group: { id: 'f', parts: ['i', 'l'] },
+    },
   },
   // ── The sun as a star: two flashlights (5-ESS1-1) ──
   (() => {

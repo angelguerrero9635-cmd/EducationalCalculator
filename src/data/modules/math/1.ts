@@ -1096,7 +1096,12 @@ export const MATH_1_MODULES: ModuleDef[] = [
     },
     example: { a: 7, b: 4, g: 6, n: 17 },
     startWith: ['a', 'b', 'g'],
-    representation: { kind: 'tally', rows: ['a', 'b', 'g'], total: 'n' },
+    representation: {
+      kind: 'tally',
+      rows: ['a', 'b', 'g'],
+      total: 'n',
+      icons: ['apple', 'banana', 'grapes'],
+    },
   },
   {
     id: 'm.1.halves-fourths',

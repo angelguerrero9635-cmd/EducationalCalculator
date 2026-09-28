@@ -1229,7 +1229,7 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       },
       {
         label: 'Turn-around facts',
-        table: { op: '×', mirror: true },
+        table: { op: '×', mirror: true, pair: [4, 7] },
         lines: ['4 × 7 and 7 × 4 sit across the diagonal. They are equal.'],
       },
       {
