@@ -993,7 +993,15 @@ export type Representation =
       count?: string;
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
-  | { kind: 'pieChart'; parts: string[]; total?: string }
+  | {
+      kind: 'pieChart';
+      parts: string[];
+      total?: string;
+      /** Palette color names, one per part, when a part's color means something (ice, sea). */
+      colors?: string[];
+      /** Parts that make a named value (fresh = frozen + liquid): pulled out and bracketed. */
+      group?: { id: string; parts: string[] };
+    }
   /**
    * Fraction × fraction as an area model: a unit square cut into `first.den` columns and
    * `second.den` rows, `first.num` columns and `second.num` rows shaded; the overlap is the
