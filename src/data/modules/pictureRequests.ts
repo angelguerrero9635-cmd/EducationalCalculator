@@ -1932,10 +1932,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.1.measure-nonstandard',
       's.K.living-needs',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4a-compare', 'g.r4a-compare-ten-none', 'g.r4a-compare-numerals', 'g.r4a-pencils', 'g.r4a-pencils-long', 'g.r4a-jars', 'g.r4a-jars-same', 'g.r4a-compare-cubes', 'g.r4a-compare-cubes-20', 'g.r4a-pencil-crayon', 'g.r4a-pencil-crayon-20', 'g.r4a-seeds', 'g.r4a-seeds-all'],
     notes:
-      'Urgency: high. Weak now: 18–20 px counters with empty dotted placeholders that look like missing content; no match lines, so "no partner" rests on a legend sentence; row names wrap in an 84 px column; heavy wrapping verdict; rows too close together. Redo: Each row a counting strip (TopLight card, FloorShadow) with Ball two-colour counters ≥ 28 px. Thin vertical match lines (chartMuted) between paired counters; extras unpaired under a light bracket "3 more". Drop placeholders or make them faint slots. Row names above each strip, full width. Verdict as two short equal-weight lines. 16 px between rows. Capacity and measurement pages draw the real object (cups, cubes) through the same component.',
+      'Urgency: high. Weak now: 18–20 px counters with empty dotted placeholders that look like missing content; no match lines, so "no partner" rests on a legend sentence; row names wrap in an 84 px column; heavy wrapping verdict; rows too close together. Redo: Each row a counting strip (TopLight card, FloorShadow) with Ball two-colour counters ≥ 28 px. Thin vertical match lines (chartMuted) between paired counters; extras unpaired under a light bracket "3 more". Drop placeholders or make them faint slots. Row names above each strip, full width. Verdict as two short equal-weight lines. 16 px between rows. Capacity and measurement pages draw the real object (cups, cubes) through the same component. Drawn (round 4, group A): One SVG: each row a counting strip (paper card, TopLight, shadow) with its name above the top strip and below the bottom one, so nothing sits between the strips but the match lines. Counters are Ball two-colour counters (top row blue, bottom row yellow, 28 px at 10 slots); thin chartMuted match lines join each pair; the extras sit under (or over) a light bracket, "3 more". Empty slots are faint dashed outlines, only as many as the values need (at least 10, then in fives, one spare to tap into, never past the variable\'s max). Cups are clear glass cups of water; cubes are snap cubes (shared with cubeTrains) under a real pencil (eraser, metal band, sharpened wood and lead), crayon (wax in a paper wrapper) or ribbon, exactly as long as its cubes, with a dashed guide where the shorter one ends. Verdict: two short lines of equal weight. The legend now says what the lines and bracket mean. One tap target per strip (the full strip, 44 px tall): the spot tapped sets the count, as before. No page change needed. Optional new field: object can be a pair, one per row; m.1.measure-nonstandard (pencil and crayon) should pass object: [\'pencil\', \'crayon\'] so its crayon row is drawn as a crayon (demo g.r4a-pencil-crayon). uses left unset because the other six pages do not pass it.',
   },
   {
     id: 'Q09',
@@ -1996,10 +1996,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Snap cubes on one left edge, the grouped part banded and bracketed',
     kind: 'cubeTrains',
     pages: ['m.1.addition-properties'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4a-trains', 'g.r4a-trains-20', 'g.r4a-trains-zero'],
     notes:
-      'Urgency: high. Weak now: Flat rectangles split into cells, not interlocking cubes; the grouped pair is marked by a heavy black outline that looks like a text box; small grey row labels; no bracket for what is added first; different left edges. Redo: Real snap cubes: raised face (paint.tsx edge light and shade), a nub on top, 1 px gaps, token colour per addend. Every train on the same left edge. "Added first" as a translucent primary band behind the grouped cubes plus a bracket under them labelled with the part\'s sum. Row labels 14 px ink above each train. Faint dashed guide at the right end showing all trains end at the same total.',
+      'Urgency: high. Weak now: Flat rectangles split into cells, not interlocking cubes; the grouped pair is marked by a heavy black outline that looks like a text box; small grey row labels; no bracket for what is added first; different left edges. Redo: Real snap cubes: raised face (paint.tsx edge light and shade), a nub on top, 1 px gaps, token colour per addend. Every train on the same left edge. "Added first" as a translucent primary band behind the grouped cubes plus a bracket under them labelled with the part\'s sum. Row labels 14 px ink above each train. Faint dashed guide at the right end showing all trains end at the same total. Drawn (round 4, group A): Snap cubes (raised face with edge light and shade, a nub on top, 1 px gaps), one colour per addend, every train on the same left edge and sized from the longest train (up to 28 px cubes). The part added first sits on a translucent primary band with a bracket under it labelled with its number sentence (3 + 8 = 11). Row labels 14 px ink above each train; a dashed guide at the right end where every train ends. No page change.',
   },
   {
     id: 'Q15',

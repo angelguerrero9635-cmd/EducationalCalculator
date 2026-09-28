@@ -6,10 +6,13 @@
 import type { Values } from '@/engine/types';
 
 import { getLayout, type ExploreLayout, type LayoutDef } from './layouts';
+import { MATH_1_MODULES } from './math/1';
 import { MATH_2_MODULES } from './math/2';
+import { MATH_K_MODULES } from './math/k';
+import { SCIENCE_K_MODULES } from './science/k';
 import type { ModuleDef } from './types';
 
-const PAGES = [...MATH_2_MODULES];
+const PAGES = [...MATH_K_MODULES, ...MATH_1_MODULES, ...MATH_2_MODULES, ...SCIENCE_K_MODULES];
 
 /** The page `pageId` as a gallery demo `id` (with its own example unless one is given). */
 function demo(
@@ -31,6 +34,59 @@ export const R4A_GALLERY_MODULES: ModuleDef[] = [
   }),
   demo('m.2.money~one-coin', 'g.r4a-coins-pennies', 'Coins: 7 pennies', {
     example: { v: 1, k: 7, T: 7 },
+  }),
+  // Q08: counting strips with match lines and a bracket over the extras.
+  demo('m.K.compare-10', 'g.r4a-compare', 'Compare rows: 7 and 4'),
+  demo('m.K.compare-10', 'g.r4a-compare-ten-none', 'Compare rows: 10 and 0', {
+    example: { a: 10, b: 0, d: 10 },
+  }),
+  demo('m.K.compare-10~numerals', 'g.r4a-compare-numerals', 'Compare rows: 6 and 9'),
+  demo('m.K.measurable-attributes', 'g.r4a-pencils', 'Compare rows: two pencils'),
+  demo('m.K.measurable-attributes', 'g.r4a-pencils-long', 'Compare rows: 12 and 1 cubes', {
+    example: { a: 12, b: 1, d: 11 },
+  }),
+  demo('m.K.measurable-attributes~capacity', 'g.r4a-jars', 'Compare rows: cups of water'),
+  demo('m.K.measurable-attributes~capacity', 'g.r4a-jars-same', 'Compare rows: 10 cups each', {
+    example: { a: 10, b: 10, d: 0 },
+  }),
+  demo('m.1.add-sub-20~compare', 'g.r4a-compare-cubes', 'Compare rows: 11 and 7 cubes'),
+  demo('m.1.add-sub-20~compare', 'g.r4a-compare-cubes-20', 'Compare rows: 20 and 3 cubes', {
+    example: { B: 20, S: 3, d: 17 },
+  }),
+  demo('m.1.measure-nonstandard', 'g.r4a-pencil-crayon', 'Compare rows: pencil and crayon', {
+    representation: {
+      kind: 'compareRows',
+      a: 'a',
+      b: 'b',
+      difference: 'd',
+      icon: 'cube',
+      words: ['longer', 'shorter'],
+      object: ['pencil', 'crayon'],
+    },
+  }),
+  demo('m.1.measure-nonstandard', 'g.r4a-pencil-crayon-20', 'Compare rows: 19 and 20 cubes', {
+    example: { a: 19, b: 20, d: 1 },
+    representation: {
+      kind: 'compareRows',
+      a: 'a',
+      b: 'b',
+      difference: 'd',
+      icon: 'cube',
+      words: ['longer', 'shorter'],
+      object: ['pencil', 'crayon'],
+    },
+  }),
+  // Q14: snap-cube trains on one left edge, the part added first on a band with its sum.
+  demo('m.1.addition-properties', 'g.r4a-trains', 'Cube trains: 3 + 8 + 2'),
+  demo('m.1.addition-properties', 'g.r4a-trains-20', 'Cube trains: 10 + 9 + 1', {
+    example: { a: 10, b: 9, c: 1, s: 20 },
+  }),
+  demo('m.1.addition-properties', 'g.r4a-trains-zero', 'Cube trains: 0 + 1 + 9', {
+    example: { a: 0, b: 1, c: 9, s: 10 },
+  }),
+  demo('s.K.living-needs', 'g.r4a-seeds', 'Compare rows: seeds that sprouted'),
+  demo('s.K.living-needs', 'g.r4a-seeds-all', 'Compare rows: 10 and 0 seeds', {
+    example: { w: 10, d: 0, m: 10 },
   }),
 ];
 /** The explore page `pageId` as a gallery demo, its scenes starting at `first`. */
