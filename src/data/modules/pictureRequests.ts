@@ -2097,10 +2097,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A textbook cell (animal, plant or bacterium) with the chosen part glowing',
     kind: 'cell',
     pages: ['s.6.cell-organelles'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-cell'],
     notes:
-      'Urgency: medium. Weak now: Flat beige ellipse, grey nucleus, two tiny mitochondria pills; tiny leader labels crowd the right edge; vacuole, chloroplasts, wall, bacterium not distinct; selected part weakly highlighted. Redo: Textbook cell: jelly cytoplasm (Glass), nucleus with nucleolus and double membrane, bean mitochondria with cristae (~30 px). Plant-cell version (rectangular green-tinted wall, chloroplast lenses, large vacuole) or a bacterium when those parts are chosen. Glow the selected part with an accent outline, dim the others. Labels in chart.label, leaders alternating left/right.',
+      'Urgency: medium. Weak now: Flat beige ellipse, grey nucleus, two tiny mitochondria pills; tiny leader labels crowd the right edge; vacuole, chloroplasts, wall, bacterium not distinct; selected part weakly highlighted. Redo: Textbook cell: jelly cytoplasm (Glass), nucleus with nucleolus and double membrane, bean mitochondria with cristae (~30 px). Plant-cell version (rectangular green-tinted wall, chloroplast lenses, large vacuole) or a bacterium when those parts are chosen. Glow the selected part with an accent outline, dim the others. Labels in chart.label, leaders alternating left/right.' +
+      ' Drawn (round 4, group H; figuresR4h.tsx CellFigure): an animal cell as a wobbly pink blob of jelly cytoplasm with ribosome grains, a nucleus with double membrane, pores and nucleolus, four bean mitochondria with cristae; a plant cell with a thick green wall (fibres, TopLight), membrane, a large watery vacuole, the nucleus pushed aside, eight chloroplast lenses with grana stacks; a rod bacterium with wall, membrane and a tangled loop of loose DNA. The chosen part glows in the highlight with a soft halo, the others dim to 42 %. Labels 12 px (bold highlight when chosen), short names on the left, long ones on the right, leader dots on the part. No page change.',
   },
   {
     id: 'Q22',
@@ -2127,10 +2128,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A cliff cross-section with textured, numbered layers and larger fossils',
     kind: 'rockLayers',
     pages: ['s.3.adaptation-fossils~layers'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-rock', 'g.r4h-rock-deep'],
     notes:
-      'Urgency: medium. Weak now: Fossils ~18 px, hard to see; "fish"/"shell" labels outside the right edge in tiny type; faint textures; flat green grass bar; no layer numbers to count. Redo: Cliff cross-section: sandstone, shale, limestone, clay each with a clear texture (cross-bedding, laminae, blocky joints) under TopLight; irregular grass and soil top with tufts. Fossils ~30 px in bone and shell colours with shading. Number each layer at the left in chart.label (1 at top). Leader-lined fossil labels at the right; bracket "4 layers apart" between the fossils.',
+      'Urgency: medium. Weak now: Fossils ~18 px, hard to see; "fish"/"shell" labels outside the right edge in tiny type; faint textures; flat green grass bar; no layer numbers to count. Redo: Cliff cross-section: sandstone, shale, limestone, clay each with a clear texture (cross-bedding, laminae, blocky joints) under TopLight; irregular grass and soil top with tufts. Fossils ~30 px in bone and shell colours with shading. Number each layer at the left in chart.label (1 at top). Leader-lined fossil labels at the right; bracket "4 layers apart" between the fossils.' +
+      ' Drawn (round 4, group H): a cliff cut open, layers 22–36 px thick sized from the deeper fossil (not a fixed box), cycling sandstone (grains, cross-beds), shale (laminae), limestone (blocky joints), clay (soft bands), siltstone and mudstone under TopLight, each jutting or wearing back at the cliff face; soil with grass tufts on top; layer numbers 1 (top) to n at the left, 12 px bold. Fish skeleton up to 50 px and ribbed scallop up to 32 px in bone and shell colours, names 12 px bold at the right on leaders; a highlight bracket between the fossils with one tick per layer crossed and "4 layers apart" (the page value) at 13 px. No page change.',
   },
   {
     id: 'Q25',
@@ -2274,10 +2276,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Particles in a glass jar or syringe, with motion marks by state',
     kind: 'particles',
     pages: ['s.5.particles-matter'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-particles'],
     notes:
-      'Urgency: medium. Weak now: Solid is a 40-dot block at the bottom of a tall empty box (~60 % blank); flat purple dots in black rings look like app buttons; plain black rectangle, not a container; tiny caption; nothing shows motion. Redo: Container as a glass jar or beaker (Glass, rim, FloorShadow); syringe with a Metal plunger for squeezed air. Particles as Ball spheres in a material token (second token for sugar). Solid: a lattice block with tiny wiggle arcs. Liquid: lower half to a meniscus in a water tint, short motion tails. Gas: spread across the jar with longer motion arrows. Caption at chart.value. Particle counts and GAS_SPOTS fixed.',
+      'Urgency: medium. Weak now: Solid is a 40-dot block at the bottom of a tall empty box (~60 % blank); flat purple dots in black rings look like app buttons; plain black rectangle, not a container; tiny caption; nothing shows motion. Redo: Container as a glass jar or beaker (Glass, rim, FloorShadow); syringe with a Metal plunger for squeezed air. Particles as Ball spheres in a material token (second token for sugar). Solid: a lattice block with tiny wiggle arcs. Liquid: lower half to a meniscus in a water tint, short motion tails. Gas: spread across the jar with longer motion arrows. Caption at chart.value. Particle counts and GAS_SPOTS fixed.' +
+      ' Drawn (round 4, group H; figuresR4h.tsx Particles): a closed glass jar (Glass, ridged Metal-sheen lid, front streak, FloorShadow) holding Ball spheres in waterDeep (sugar in chartSecond, with a water/sugar key). Solid: the 8 × 5 lattice with wiggle arcs at its edges; liquid: 8 × 4 under a water tint with a meniscus and short slide tails; gas: the ten GAS_SPOTS with 18 px dashed flight arrows at fixed headings. Squeezed air: a capped syringe with graduations, finger grips, a rubber stopper on a Metal rod pushed to half the barrel and a push arrow; its ten particles smaller (7 px) so they fit without touching. Counts (40, 32, 10) and GAS_SPOTS unchanged; caption at chart.value. No page change.',
   },
   {
     id: 'Q34',
@@ -2376,10 +2379,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'An eyepiece view of plant cells with a measured cell and field width',
     kind: 'fieldOfView',
     pages: ['s.6.cells~cell-size'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-field', 'g.r4h-field-many', 'g.r4h-field-two'],
     notes:
-      'Urgency: medium. Weak now: Cream disc with a heavy grey vignette that looks like a smudge; small green ovals in one thin row; "one cell" label crowded against the cell and vignette; thin width bar with 11 px text. Redo: Eyepiece view: black Metal ring with a crisp inner edge, warm bright field with falloff only in the last 8 %. Plant/onion cells as rounded rectangles with walls, nucleus and faint cytoplasm tint (token greens, TopLight), ~30 % of the field tall. Measured cell outlined in primary with a bracket "1 cell = 300 µm" at 13 px. Field-width bar as a 2 px dimension line with end ticks and a 13 px label inside the canvas. Counts and positions exact.',
+      'Urgency: medium. Weak now: Cream disc with a heavy grey vignette that looks like a smudge; small green ovals in one thin row; "one cell" label crowded against the cell and vignette; thin width bar with 11 px text. Redo: Eyepiece view: black Metal ring with a crisp inner edge, warm bright field with falloff only in the last 8 %. Plant/onion cells as rounded rectangles with walls, nucleus and faint cytoplasm tint (token greens, TopLight), ~30 % of the field tall. Measured cell outlined in primary with a bracket "1 cell = 300 µm" at 13 px. Field-width bar as a 2 px dimension line with end ticks and a 13 px label inside the canvas. Counts and positions exact.' +
+      ' Drawn (round 4, group H): a black Metal eyepiece tube with a crisp inner edge and a shadow; the lamp-lit field dims only in its last 5 %. Onion-skin cells as rounded boxes with green walls, faint cytoplasm and a nucleus; the counted row across the middle at true width (field ÷ cells, up to 100 drawn) and up to 30 % of the field tall, with fainter offset rows of tissue around it (clipped to the circle, only while a cell is 8 px or wider). The first cell outlined in the highlight with a bracket and "1 cell = 300 µm" at 13 px bold on a card plate inside the circle; the field width on a 2 px dimension line with end ticks and dashed extension lines, "1,800 µm across" at 13 px. No page change.',
   },
   {
     id: 'Q41',
@@ -2532,10 +2536,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A real object in the cylinder, bigger scale numbers, a before line',
     kind: 'gradCylinder',
     pages: ['s.6.density~displacement'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-cylinder', 'g.r4h-cylinder-big', 'g.r4h-cylinder-small'],
     notes:
-      'Urgency: low. Weak now: One of the better pictures, but scale numerals grey 9–10 px; object a grey half-disc that doesn\'t read as a stone or weight; thin base, no pour spout; small change label; "before"/"after" near clipping. Redo: Scale numerals 12 px ink, longer major ticks. Object as a real item (textured stone or Metal weight) fully submerged with a contact shadow. Hexagonal base with depth, pour lip at the rim. Curved meniscus with the reading at its bottom; "before" level as a ghosted water line. Change bracket 2 px with a 14 px label. Right-hand labels 8 px inside the canvas or moved left. Meniscus handle unchanged.',
+      'Urgency: low. Weak now: One of the better pictures, but scale numerals grey 9–10 px; object a grey half-disc that doesn\'t read as a stone or weight; thin base, no pour spout; small change label; "before"/"after" near clipping. Redo: Scale numerals 12 px ink, longer major ticks. Object as a real item (textured stone or Metal weight) fully submerged with a contact shadow. Hexagonal base with depth, pour lip at the rim. Curved meniscus with the reading at its bottom; "before" level as a ghosted water line. Change bracket 2 px with a 14 px label. Right-hand labels 8 px inside the canvas or moved left. Meniscus handle unchanged.' +
+      ' Drawn (round 4, group H): scale numerals 12 px ink, major ticks 24 px and minor 12 px; the object a speckled stone (Ball in rock5) with a contact shadow, sized from the rise and capped so it always lies fully under the water; a hexagonal glass foot with its front sides in depth; a flared rim with a pour lip; the water top a curved meniscus whose bottom is the reading (after line 2 px highlight, 12 px bold label); the level before a 2 px dashed water-blue line (a ghosted water band would sit under the water, so the dashed line stands for it) with a 12 px label that steps down when the levels are close; the change bracket 2 px, clear of the numerals, with a 14 px label. Handles and drag unchanged. No page change.',
   },
   {
     id: 'Q52',

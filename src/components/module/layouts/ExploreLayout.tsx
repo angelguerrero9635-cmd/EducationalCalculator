@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Svg, { Circle, Ellipse, Line, Rect } from 'react-native-svg';
+import Svg, { Ellipse } from 'react-native-svg';
 
 import { Text } from '@/components/Text';
 import type { ExploreLayout as Spec, Figure, Scene } from '@/data/modules/layouts';
 import { chart, font, radius, space, usePalette, type Palette } from '@/theme';
 
-import { Canvas, Caption, ChartText } from '../reps/common';
+import { Canvas, Caption } from '../reps/common';
 import { ClockDial } from '../reps/ClockDial';
 import { Sky, TimesTable } from './figures';
 import { Push } from './pushFigure';
@@ -24,10 +24,10 @@ import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
-import { CellFigure6 } from './figures6';
 import { RockCycleFigure } from './rockCycleFigure';
 import { PlatesFigure } from './platesFigure';
 import { WaterCycleFigure } from './waterCycleFigure';
+import { CellFigure, Particles } from './figuresR4h';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -143,7 +143,7 @@ function FigureView({
     case 'timesTable':
       return <TimesTable table={scene.table ?? { op: '×' }} c={c} />;
     case 'cell':
-      return <CellFigure6 cell={scene.cell ?? { type: 'animal' }} c={c} />;
+      return <CellFigure cell={scene.cell ?? { type: 'animal' }} c={c} />;
     case 'bodySystems':
       return <BodyFigure body={scene.body ?? { systems: [] }} c={c} />;
     case 'waterCycle':
@@ -173,129 +173,6 @@ function FigureView({
     case 'planets':
       return <PlanetsFigure planets={scene.planets ?? {}} />;
   }
-}
-
-/** Fixed jitter so the same scene always draws the same picture. */
-const JITTER = [
-  0.3, -0.4, 0.1, 0.45, -0.2, 0.35, -0.45, 0.05, 0.25, -0.3, 0.4, -0.1, 0.15, -0.35, 0.2, -0.25,
-];
-
-/** Where the ten gas particles sit, as fractions of the box (scattered, no row or line). */
-const GAS_SPOTS: readonly (readonly [number, number])[] = [
-  [0.08, 0.15],
-  [0.55, 0.05],
-  [0.9, 0.3],
-  [0.3, 0.4],
-  [0.7, 0.55],
-  [0.12, 0.7],
-  [0.45, 0.8],
-  [0.95, 0.85],
-  [0.25, 0.98],
-  [0.62, 0.28],
-];
-
-/** Particles in a box: packed rows for a solid, a crowd for a liquid, a few far apart for a gas. */
-function Particles({ state, c }: { state: NonNullable<Scene['particles']>; c: Palette }) {
-  return (
-    <Canvas aspect={0.5}>
-      {({ w, h }) => {
-        const boxW = state.squeezed ? Math.min(w, h) * 0.5 : Math.min(w, h) * 0.9;
-        const boxH = h - 40;
-        const x0 = w / 2 - boxW / 2;
-        const y0 = 12;
-        const r = 7;
-        const dots: { x: number; y: number; other: boolean }[] = [];
-        if (state.state === 'solid') {
-          const cols = 8;
-          const rows = 5;
-          const gap = 2 * r + 1;
-          for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
-              dots.push({
-                x: x0 + boxW / 2 + (j - (cols - 1) / 2) * gap,
-                y: y0 + boxH - r - 2 - i * gap,
-                other: state.mixed ? (i + j) % 3 === 0 : false,
-              });
-            }
-          }
-        } else if (state.state === 'liquid') {
-          const cols = 8;
-          const rows = 4;
-          const gap = 2 * r + 6;
-          for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
-              const k = i * cols + j;
-              dots.push({
-                x: x0 + boxW / 2 + (j - (cols - 1) / 2) * gap + JITTER[k % 16]! * 6,
-                y: y0 + boxH - r - 4 - i * gap + JITTER[(k + 5) % 16]! * 5,
-                other: state.mixed ? (i + j) % 3 === 0 : false,
-              });
-            }
-          }
-        } else {
-          // Fixed spots spread over the whole box (fractions of its inside), so a gas never
-          // lines up in a row.
-          GAS_SPOTS.forEach(([fx, fy], k) => {
-            dots.push({
-              x: x0 + r + 4 + (boxW - 2 * r - 8) * fx,
-              y: y0 + r + 14 + (boxH - 2 * r - 18) * fy,
-              other: state.mixed ? k % 3 === 0 : false,
-            });
-          });
-        }
-        return (
-          <Svg width={w} height={h}>
-            <Rect
-              x={x0}
-              y={y0}
-              width={boxW}
-              height={boxH}
-              fill={c.chartSurface}
-              stroke={c.chartInk}
-              strokeWidth={chart.stroke}
-            />
-            {dots.map((d, i) => (
-              <Circle
-                key={i}
-                cx={d.x}
-                cy={d.y}
-                r={r}
-                fill={d.other ? c.chartInk : c.chartHighlight}
-                stroke={c.chartInk}
-                strokeWidth={chart.strokeLight}
-              />
-            ))}
-            {state.state === 'gas'
-              ? dots
-                  .slice(0, 4)
-                  .map((d, i) => (
-                    <Line
-                      key={`m${i}`}
-                      x1={d.x + r}
-                      y1={d.y - r}
-                      x2={d.x + r + 10}
-                      y2={d.y - r - 10}
-                      stroke={c.chartMuted}
-                      strokeWidth={chart.strokeLight}
-                    />
-                  ))
-              : null}
-            <ChartText x={w / 2} y={h - 6} fontSize={chart.label} textAnchor="middle">
-              {state.squeezed
-                ? 'the same particles in less room'
-                : state.mixed
-                  ? 'two kinds of particles, mixed'
-                  : state.state === 'solid'
-                    ? 'packed tight, only wiggling'
-                    : state.state === 'liquid'
-                      ? 'close, sliding past each other'
-                      : 'far apart, flying about'}
-            </ChartText>
-          </Svg>
-        );
-      }}
-    </Canvas>
-  );
 }
 
 /** A thing built from its parts, top to bottom, the highlighted one filled and its job beside it. */
