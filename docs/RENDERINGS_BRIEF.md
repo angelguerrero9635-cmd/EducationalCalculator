@@ -417,3 +417,13 @@ observe and sort-header figures. The tracker is the record: each entry lists its
 its `uses` text and, in `notes`, the exact fields and icon names each card takes. Round-3 card
 icons are named per drawing group in `src/data/modules/layouts/icons/` and drawn in
 `src/components/module/layouts/icons/`.
+
+### Round 4 (2026-09-28): every picture not yet redrawn
+
+Every `Q..` entry in `src/data/modules/pictureRequests.ts` (Q01–Q52) is now `drawn`: the 20
+high-urgency pictures (real coins, a globe, a lamp and apple, a painted water cycle, a body
+with its organs, Pangaea, fronts and plates …), the 24 medium and the 8 low. The tracker is
+the record: each entry says what changed, "no page change" or the exact fields a page must
+now pass (`uses`), and the gallery demos. Before-and-after contact sheets, one per urgency
+band: `docs/renderings/round4-high.png`, `round4-medium.png`, `round4-low.png` (each entry's
+first page at 390 px, light).
