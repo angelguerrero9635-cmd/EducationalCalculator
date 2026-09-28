@@ -408,6 +408,12 @@ export function repIssues(
       // Past `max` the array is drawn cut off and the caption says so (DotArray.tsx).
       count(rep.rows, 'array rows');
       count(rep.columns, 'array columns');
+      // A split: the top braces label `first` and columns − first, so first fits the columns.
+      if (rep.split) {
+        const [f, k] = [val(rep.split.first), val(rep.columns)];
+        if (f !== undefined && k !== undefined && (f < 0 || f > k))
+          out.push(`array split at ${f} of ${k} columns`);
+      }
       break;
     case 'ruler': {
       for (const id of rep.lengths) {

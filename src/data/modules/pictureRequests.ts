@@ -1914,10 +1914,18 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.3.multiplication-properties',
       'm.3.multiplication-properties~order',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4d-array',
+      'g.r4d-array-5x5',
+      'g.r4d-array-10x10',
+      'g.r4d-array-1x10',
+      'g.r4d-array-squares',
+      'g.r4d-array-turned-10',
+      'g.r4d-array-split-edge',
+    ],
     notes:
-      'Urgency: high. Weak now: 3×4 array fills a quarter of the width, left of centre, ~90 px empty below (cell size comes from spec.max, not the rows shown); rows and columns unlabelled; thin grey frame looks like a selection box; square-cell mode a pale grid; resize handle floats off the corner. Redo: Size cells from the current rows and columns (cap ~44 px), centre, crop the canvas to the drawn height. Counters: a flat tray (TopLight card, BoxShadow) holding Ball counters in the two-colour-counter token with even gutters. Braces "3 rows" (left) and "4 in each row" (top) at chart.value. Faint flat tint on every other row. Square cells: crisp flat grid (strokeLight inner, stroke outline, chartFill tiles). Handle on the outer corner with a 44 px hit area and a faint ghost row/column. Keep the counter/square switch and max.',
+      'Urgency: high. Weak now: 3×4 array fills a quarter of the width, left of centre, ~90 px empty below (cell size comes from spec.max, not the rows shown); rows and columns unlabelled; thin grey frame looks like a selection box; square-cell mode a pale grid; resize handle floats off the corner. Redo: Size cells from the current rows and columns (cap ~44 px), centre, crop the canvas to the drawn height. Counters: a flat tray (TopLight card, BoxShadow) holding Ball counters in the two-colour-counter token with even gutters. Braces "3 rows" (left) and "4 in each row" (top) at chart.value. Faint flat tint on every other row. Square cells: crisp flat grid (strokeLight inner, stroke outline, chartFill tiles). Handle on the outer corner with a 44 px hit area and a faint ghost row/column. Keep the counter/square switch and max. Drawn (round 4, group D): cells sized from the rows and columns shown (at most 44 px; kept while dragging), the array centred and the canvas cropped. Counters are lit balls (highlight, the split part in chartSecond) in a plastic tray (BoxShadow, TopLight) with a faint band on every other row; squares a crisp flat grid (light inner lines, heavier outline; a split tints its two parts). Braces: "3 rows" at the left and "4 in each row" on top; with `sides` or a split the braces give the numbers (a split has one top brace per part), "?" in the highlight until known. Dashed ghost row and column where the next ones go; the handle on the tray corner. `turned` stacks the turned copy under the array when side by side would make the counters too small. The part products under a split are 13 px. No page change.',
   },
   {
     id: 'Q08',
