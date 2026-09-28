@@ -2277,10 +2277,17 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.2.plant-growth-investigation~water',
       's.2.plant-growth-investigation~week',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4f-ruler',
+      'g.r4f-ruler-edge',
+      'g.r4f-broken',
+      'g.r4f-broken-edge',
+      'g.r4f-quarter',
+      'g.r4f-ruler-long',
+    ],
     notes:
-      'Urgency: medium. Weak now: Wooden ruler has material but is thin (~20 px) with ~8 px numbers and a detached cm label; ribbons float above with a gap and nothing shows where their ends meet the marks; "Shorter ribbon" runs into its handle; "Longer ribbon" is 9 px white on purple; the broken-ruler page shows a full ruler from 0. Redo: Ruler ~36 px tall with wood grain (Wood), long cm ticks and half-cm ticks, numbers at chart.value, "cm" at its left end. Ribbons flush on the ruler\'s top edge with Sheen; dashed guides from each ribbon end to its mark; the difference bracketed "4 cm longer" in chartSecond. Ribbon labels outside, left-aligned above each. Broken ruler: a jagged left end starting at the first shown mark, length counted as highlighted spaces 1…7 under it. 44 px handles clear of labels.',
+      'Urgency: medium. Weak now: Wooden ruler has material but is thin (~20 px) with ~8 px numbers and a detached cm label; ribbons float above with a gap and nothing shows where their ends meet the marks; "Shorter ribbon" runs into its handle; "Longer ribbon" is 9 px white on purple; the broken-ruler page shows a full ruler from 0. Redo: Ruler ~36 px tall with wood grain (Wood), long cm ticks and half-cm ticks, numbers at chart.value, "cm" at its left end. Ribbons flush on the ruler\'s top edge with Sheen; dashed guides from each ribbon end to its mark; the difference bracketed "4 cm longer" in chartSecond. Ribbon labels outside, left-aligned above each. Broken ruler: a jagged left end starting at the first shown mark, length counted as highlighted spaces 1…7 under it. 44 px handles clear of labels. Drawn (round 4, group F): a 36 px wooden ruler (reps/wood.tsx WoodStick: wood, grain, TopLight, box shadow) with whole-unit ticks, half-cm or half-inch ticks when there is room (half and quarter marks on the quarter-inch page), numbers at 13 px printed in ink every 1, 2, 5 or 10 (at least 24 px apart) and the unit ("cm", "cubes") printed at its left end. Ribbons are satin in blue and red with Sheen; the last lies flush on the ruler\'s top edge, the others above it; each has its name and length ("Longer ribbon: 12 cm") left-aligned above it at 12 px bold. Dashed guides drop from every ribbon end to its mark. With two ribbons and a difference, a chartSecond bracket runs on the shorter ribbon\'s row from its end to the longer end, with the difference ("4 cm") in a chartSecond pill, clear of the handle (past the long end when the gap is too small). Broken ruler: the ruler breaks off (jagged end) one mark before the start, and the spaces the ribbon covers are shaded under it and counted 1 … 7. 44 px handles on the ribbon ends, clear of the labels. No page change.',
   },
   {
     id: 'Q37',
@@ -2357,10 +2364,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flat waterfall chart: green increases, red decreases, connectors',
     kind: 'waterfall',
     pages: ['he.geography.human-geography#0'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4f-waterfall', 'g.r4f-waterfall-edge'],
     notes:
-      'Urgency: medium. Weak now: Review page (he.geography.human-geography#0) shows "Skill not found". Source shades an abstract chart with LitRect and TopLight, against the art direction; bars capped at 52 px; two-line small labels. Redo: Flat fills: increases success green, decreases danger red, total ink or primary. 1 px dashed connectors from each bar end to the next start. Each change\'s value ("+120", "−45" with a true minus) 12–13 px at the bar end. Zero baseline 1.5 px ink. Category names 12 px, wrapped or angled, inside the canvas. Visible DragHandle on editable bar ends. The page is a college topic: open it at /course/he.geography.human-geography/topic/0.',
+      'Urgency: medium. Weak now: Review page (he.geography.human-geography#0) shows "Skill not found". Source shades an abstract chart with LitRect and TopLight, against the art direction; bars capped at 52 px; two-line small labels. Redo: Flat fills: increases success green, decreases danger red, total ink or primary. 1 px dashed connectors from each bar end to the next start. Each change\'s value ("+120", "−45" with a true minus) 12–13 px at the bar end. Zero baseline 1.5 px ink. Category names 12 px, wrapped or angled, inside the canvas. Visible DragHandle on editable bar ends. The page is a college topic: open it at /course/he.geography.human-geography/topic/0. Drawn (round 4, group F): flat: increases blockGreen, decreases blockRed, the total chartHighlight, each with a 1 px edge in its own color; a key under the chart says Increase / Decrease / Total. 1 px dashed connectors from each bar\'s end to the next. Each change\'s value ("+6,000", "−4,000", true minus) at 13 px bold in a row over its bar, so it never meets a handle; the total\'s value there too. Zero baseline 1.5 px ink. Symbol (bold) and name at 12 px under each bar, wrapped to two lines; the old symbol key under the chart is gone (the names are on the chart). The bars fill the height (no scale to read). DragHandles on editable bar ends as before. No page change.',
   },
   {
     id: 'Q45',

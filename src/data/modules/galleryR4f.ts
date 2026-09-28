@@ -6,11 +6,15 @@
  */
 import type { Values } from '@/engine/types';
 
+import { COLLEGE_MODULES } from './college';
 import type { ExploreLayout, LayoutDef } from './layouts';
 import { MATH_LAYOUTS } from './layouts/math';
+import { MATH_1_MODULES } from './math/1';
 import { MATH_2_MODULES } from './math/2';
 import { MATH_3_MODULES } from './math/3';
 import { SCIENCE_1_MODULES } from './science/1';
+import { SCIENCE_K_MODULES } from './science/k';
+import { SCIENCE_2_MODULES } from './science/2';
 import { SCIENCE_3_MODULES } from './science/3';
 import { SCIENCE_4_MODULES } from './science/4';
 import { SCIENCE_5_MODULES } from './science/5';
@@ -113,6 +117,86 @@ export const R4F_GALLERY_MODULES: ModuleDef[] = [
     m: 5,
     c: 500,
   }),
+  // Q36: ribbons on a wooden ruler (the page's 12 and 8 cm, and 30 and 1 cm), a broken ruler
+  // (3 to 10, and 8 to 15), quarter inches, and a 60 cm ruler.
+  copy(MATH_2_MODULES, 'm.2.standard-length', 'g.r4f-ruler', 'Ribbons on a ruler'),
+  copy(MATH_2_MODULES, 'm.2.standard-length', 'g.r4f-ruler-edge', 'Ribbons: 30 and 1 cm', {
+    L: 30,
+    S: 1,
+    d: 29,
+  }),
+  copy(MATH_2_MODULES, 'm.2.standard-length~broken-ruler', 'g.r4f-broken', 'Broken ruler'),
+  copy(
+    MATH_2_MODULES,
+    'm.2.standard-length~broken-ruler',
+    'g.r4f-broken-edge',
+    'Broken ruler: 8 to 15',
+    {
+      s: 8,
+      L: 7,
+      e: 15,
+    },
+  ),
+  copy(MATH_3_MODULES, 'm.3.measure-line-plots~quarter-inch', 'g.r4f-quarter', 'Quarter inches'),
+  copy(
+    SCIENCE_2_MODULES,
+    's.2.plant-growth-investigation~week',
+    'g.r4f-ruler-long',
+    'A 60 cm ruler',
+  ),
+  // Q44: the population waterfall (the topic's example, and a big gain from both sides).
+  copy(COLLEGE_MODULES, 'he.geography.human-geography#0', 'g.r4f-waterfall', 'Waterfall'),
+  copy(
+    COLLEGE_MODULES,
+    'he.geography.human-geography#0',
+    'g.r4f-waterfall-edge',
+    'Waterfall: big gain',
+    {
+      Pop: 500000,
+      B: 9000,
+      D: 1000,
+      I: 7000,
+      E: 1000,
+      N: 8000,
+      M: 6000,
+      P: 14000,
+      CBR: 18,
+      CDR: 2,
+      RNI: 1.6,
+      Td: 43.75,
+    },
+  ),
+  // Q49: tally tables with icons: the fruit page's example and its top row (20), the weather
+  // page, and the litter page.
+  copy(MATH_1_MODULES, 'm.1.data-3-categories~tally', 'g.r4f-tally', 'Tally chart', undefined, {
+    icons: ['apple', 'banana', 'grapes'],
+  }),
+  copy(
+    MATH_1_MODULES,
+    'm.1.data-3-categories~tally',
+    'g.r4f-tally-edge',
+    'Tally chart: 20',
+    { a: 20, b: 1, g: 12, n: 33 },
+    { icons: ['apple', 'banana', 'grapes'] },
+  ),
+  copy(
+    SCIENCE_K_MODULES,
+    's.K.weather-patterns',
+    'g.r4f-tally-weather',
+    'Tally: sunny days',
+    undefined,
+    {
+      icons: ['sun', 'rain cloud'],
+    },
+  ),
+  copy(
+    SCIENCE_K_MODULES,
+    's.K.living-things-change-environment~litter',
+    'g.r4f-tally-litter',
+    'Tally: litter',
+    undefined,
+    { icons: ['soda can', 'wrapper falling on grass'] },
+  ),
 ];
 
 export const R4F_GALLERY_LAYOUTS: LayoutDef[] = [
