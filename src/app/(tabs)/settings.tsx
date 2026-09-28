@@ -118,7 +118,13 @@ export default function SettingsScreen() {
         </Group>
         <Note>
           The app makes no network requests. Your selections, appearance and recently viewed items
-          are stored only on this device.
+          are stored only on this device. A picture of a problem is read on this device by its own
+          text recognizer and is not saved or sent anywhere.
+        </Note>
+        <Note>
+          Find my lesson matches a problem to a lesson using word statistics derived from practice
+          problems by Illustrative Mathematics and OpenSciEd (CC BY 4.0). No problem text is
+          included in the app.
         </Note>
         <Note>
           [Disclaimer placeholder] This app is an independent study aid. It is not affiliated with,

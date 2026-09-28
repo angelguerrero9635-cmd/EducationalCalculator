@@ -6,3 +6,4 @@ node_modules
 dist
 coverage
 docs/SLIDERS.md
+src/data/matchCorpus.json

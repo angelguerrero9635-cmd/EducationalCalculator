@@ -57,6 +57,21 @@ function Hero() {
           Search skills, courses and topics
         </Text>
       </Pressable>
+      <Pressable
+        testID="home-match"
+        accessibilityRole="button"
+        onPress={() => router.push('/match')}
+        style={({ pressed }) => [
+          styles.searchPill,
+          styles.matchPill,
+          { backgroundColor: c.card, opacity: pressed ? 0.9 : 1 },
+        ]}
+      >
+        <Icon name="camera" size={20} color={c.accent} />
+        <Text style={[styles.searchText, { color: c.text }]}>
+          Have a problem? Type it or snap it to find the lesson
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -169,6 +184,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.lg,
     borderRadius: radius.pill,
   },
+  matchPill: { marginTop: space.sm },
   searchText: { fontSize: font.body - 1 },
   headerRow: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
   edit: { paddingHorizontal: space.lg, paddingBottom: space.md },

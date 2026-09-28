@@ -1,0 +1,9 @@
+{
+  "name": "vision-ocr",
+  "version": "0.1.0",
+  "description": "On-device text recognition for photos of problems, with Apple's Vision framework",
+  "main": "index.ts",
+  "license": "UNLICENSED",
+  "author": "Educational Calculator",
+  "private": true
+}
