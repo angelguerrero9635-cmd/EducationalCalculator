@@ -83,6 +83,10 @@ describe('unit conversions (exact definitions)', () => {
       'centimeters',
       '¢',
       '$',
+      '°C/min',
+      'ppm',
+      'ppm/yr',
+      'L/min',
     ];
     for (const m of MODULES) {
       for (const v of m.variables) {

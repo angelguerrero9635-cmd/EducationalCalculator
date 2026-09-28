@@ -1114,7 +1114,7 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
         max: 10,
         step: 0.01,
       },
-      { id: 'y', symbol: 'y', name: 'Years', unit: 'yr', min: 1, max: 300, step: 1 },
+      { id: 'y', symbol: 'y', name: 'Years', unit: 'years', min: 1, max: 300, step: 1 },
       {
         id: 'c',
         symbol: 'c',
