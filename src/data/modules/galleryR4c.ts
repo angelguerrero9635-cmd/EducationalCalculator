@@ -50,4 +50,27 @@ export const R4C_GALLERY_LAYOUTS: LayoutDef[] = [
       lines: ['All seven systems at once, each with its chip.'],
     },
   ]),
+  // Q16: s.6.plate-tectonics~pangaea
+  demo('s.6.plate-tectonics~pangaea', 'g.r4c-continents', 'Continents over time', [
+    {
+      label: 'Shape clue, 250 million years ago',
+      continents: { age: 250, clue: 'shapes' },
+      lines: ['The coasts lit where they touch.'],
+    },
+    {
+      label: 'Fossil clue today',
+      continents: { age: 0, clue: 'fossils' },
+      lines: ['The fossil band stretched across the ocean.'],
+    },
+    {
+      label: 'Rock clue, 150 million years ago',
+      continents: { age: 150, clue: 'rocks' },
+      lines: ['The mountain belt as the Atlantic opens.'],
+    },
+    {
+      label: 'Climate clue today',
+      continents: { age: 0, clue: 'climate' },
+      lines: ['The scratches point every which way today.'],
+    },
+  ]),
 ];

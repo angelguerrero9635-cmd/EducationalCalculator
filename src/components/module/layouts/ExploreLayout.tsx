@@ -15,13 +15,8 @@ import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { BodyFigure } from './bodyFigure';
-import {
-  CellFigure6,
-  ContinentsFigure,
-  FrontFigure,
-  PlatesFigure,
-  RockCycleFigure,
-} from './figures6';
+import { ContinentsFigure } from './continentsFigure';
+import { CellFigure6, FrontFigure, PlatesFigure, RockCycleFigure } from './figures6';
 import { WaterCycleFigure } from './waterCycleFigure';
 
 /**
