@@ -154,6 +154,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `ruler`            | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |
 | `equalGroups`      | `unit: 10`, `bundles`                    | ten-rods, `each` counted in tens; bundles: rows of ten circles, each numbered |
 | `bars`             | `scale` as a variable                    | the grid spacing read from a value                                            |
+| `bars`             | `icon` on a bar                          | a small card icon under the bar's name                                        |
+| `pieChart`         | `colors`, `group`                        | palette colors that mean something; a group pulled out and bracketed          |
+| `tally`            | `icons`                                  | a card icon beside each row's name                                            |
 | `pictureGraph`     | (with a key)                             | half a picture for a half count                                               |
 | `fractionLine`     | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |
 | `table`            | `rows` as a function of the values       | rows that follow a parameter                                                  |
