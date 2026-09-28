@@ -158,8 +158,14 @@ describe.each(LAYOUTS.map((l) => [l.id, l] as [string, LayoutDef]))('layout %s',
           const field = SCENE_FIELD[l.figure.kind];
           if (field) expect(s[field]).toBeDefined();
           if (s.table) {
-            for (const n of [...(s.table.rows ?? []), ...(s.table.columns ?? [])]) {
-              expect(n >= 0 && n <= 10).toBe(true);
+            // Rows, columns and a turn-around pair's two factors are the table's 0–10.
+            const all = [
+              ...(s.table.rows ?? []),
+              ...(s.table.columns ?? []),
+              ...(s.table.pair ?? []),
+            ];
+            for (const n of all) {
+              expect(Number.isInteger(n) && n >= 0 && n <= 10).toBe(true);
             }
           }
         }

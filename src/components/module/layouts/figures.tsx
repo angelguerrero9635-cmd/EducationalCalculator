@@ -883,42 +883,68 @@ export function Static({ charge, c }: { charge: NonNullable<Scene['charge']>; c:
 }
 
 /**
- * An addition or times table from 0 to 10. A scene lights whole rows or columns, the even
- * or odd answers, or the mirror line (the diagonal where the two factors are the same).
+ * An addition or times table from 0 to 10, inset and flat. A scene lights whole rows or
+ * columns, the even or odd answers, or the mirror line (the diagonal where the two factors are
+ * the same). Lit cells take a light highlight tint with bold numbers; one or two lit rows get
+ * "+4" hops over each step along the row; a turn-around `pair` outlines its two mirrored cells.
  */
 export function TimesTable({ table, c }: { table: NonNullable<Scene['table']>; c: Palette }) {
   const n = 11;
+  const inset = 8;
   const lit = (r: number, col: number, v: number) =>
     (table.rows?.includes(r) ?? false) ||
     (table.columns?.includes(col) ?? false) ||
     (table.cells === 'even' && v % 2 === 0) ||
     (table.cells === 'odd' && v % 2 === 1) ||
     (table.mirror === true && r === col);
+  // Rows that count on: one or two lit rows (not a scatter of cells), each with a strip above
+  // it for its hops.
+  const hopRows =
+    table.rows && table.rows.length <= 2 && !table.cells && !table.columns ? table.rows : [];
+  const strip = 24;
+  const layout = (w: number) => {
+    const cell = Math.floor((w - 2 * inset) / (n + 1));
+    const size = cell * (n + 1);
+    const x0 = (w - size) / 2;
+    // Top of each row (-1 is the header), with a hop strip above the rows that count on.
+    const tops: number[] = [];
+    let y = inset;
+    for (let r = -1; r < n; r++) {
+      if (hopRows.includes(r)) y += strip;
+      tops.push(y);
+      y += cell;
+    }
+    return { cell, size, x0, tops, h: y + inset };
+  };
+  const pair = table.pair;
   return (
-    <Canvas aspect={1}>
-      {({ w }) => {
-        const cell = Math.floor((w - 4) / (n + 1));
-        const size = cell * (n + 1);
-        const x0 = (w - size) / 2;
-        const font = cell >= 30 ? chart.label : chart.tiny;
+    <Canvas aspect={(w) => layout(w).h / w}>
+      {({ w, h }) => {
+        const { cell, size, x0, tops } = layout(w);
+        const top = (r: number) => tops[r + 1]!;
+        const X = (col: number) => x0 + (col + 1) * cell;
+        const font = cell >= 30 ? chart.value : chart.label;
         const cells: ReactNode[] = [];
+        const labels: ReactNode[] = [];
         for (let r = -1; r < n; r++) {
           for (let col = -1; col < n; col++) {
-            const x = x0 + (col + 1) * cell;
-            const y = (r + 1) * cell;
+            const x = X(col);
+            const y = top(r);
             const head = r < 0 || col < 0;
             if (r < 0 && col < 0) {
               cells.push(
-                <ChartText
-                  key="op"
-                  x={x + cell / 2}
-                  y={y + cell / 2 + 5}
-                  fontSize={chart.emphasis}
-                  fontWeight="700"
-                  textAnchor="middle"
-                >
-                  {table.op}
-                </ChartText>,
+                <G key="op">
+                  <Rect x={x} y={y} width={cell} height={cell} fill={c.chartGrid} />
+                  <ChartText
+                    x={x + cell / 2}
+                    y={y + cell / 2 + 5}
+                    fontSize={chart.emphasis}
+                    fontWeight="700"
+                    textAnchor="middle"
+                  >
+                    {table.op}
+                  </ChartText>
+                </G>,
               );
               continue;
             }
@@ -931,38 +957,127 @@ export function TimesTable({ table, c }: { table: NonNullable<Scene['table']>; c
                   y={y}
                   width={cell}
                   height={cell}
-                  fill={head ? c.chartFill : on ? c.chartHighlight : c.chartSurface}
-                  stroke={c.chartGrid}
+                  fill={head ? c.chartGrid : c.chartSurface}
+                  stroke={head ? c.chartMuted : c.chartGrid}
+                  strokeOpacity={head ? 0.35 : 1}
                   strokeWidth={1}
                 />
-                <ChartText
-                  x={x + cell / 2}
-                  y={y + cell / 2 + 4}
-                  fontSize={font}
-                  fontWeight={head ? '700' : '400'}
-                  fill={on ? c.onChartHighlight : c.chartInk}
-                  textAnchor="middle"
-                >
-                  {String(v)}
-                </ChartText>
+                {on ? (
+                  <Rect
+                    x={x}
+                    y={y}
+                    width={cell}
+                    height={cell}
+                    fill={c.chartHighlight}
+                    opacity={0.18}
+                  />
+                ) : null}
               </G>,
+            );
+            // Numbers go on top of the mirror line, so the diagonal doesn't strike them out.
+            labels.push(
+              <ChartText
+                key={`n${r}.${col}`}
+                x={x + cell / 2}
+                y={y + cell / 2 + font * 0.36}
+                fontSize={font}
+                fontWeight={head || on ? '700' : '400'}
+                fill={c.chartInk}
+                textAnchor="middle"
+              >
+                {String(v)}
+              </ChartText>,
             );
           }
         }
+        // Lit rows and columns outlined as a whole.
+        const outlines = [
+          ...(table.rows ?? []).map((r) => ({ x: X(0), y: top(r), w: n * cell, h: cell })),
+          ...(table.columns ?? []).map((col) => ({
+            x: X(col),
+            y: top(0),
+            w: cell,
+            h: top(n - 1) + cell - top(0),
+          })),
+        ];
+        // Hops along a counting row: each step adds the row's number ("+4").
+        const hops = hopRows.flatMap((r) =>
+          Array.from({ length: n - 1 }, (_, i) => {
+            const xa = X(i) + cell / 2 + 2;
+            const xb = X(i + 1) + cell / 2 - 2;
+            const base = top(r) - 1;
+            const step = table.op === '×' ? r : 1;
+            return (
+              <G key={`h${r}.${i}`}>
+                <Path
+                  d={`M ${xa} ${base} Q ${(xa + xb) / 2} ${base - 15} ${xb} ${base}`}
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.strokeLight}
+                  fill="none"
+                />
+                <Path
+                  d={`M ${xb - 4} ${base - 5} L ${xb} ${base} L ${xb - 5.5} ${base - 1}`}
+                  stroke={c.chartHighlight}
+                  strokeWidth={chart.strokeLight}
+                  strokeLinecap="round"
+                  fill="none"
+                />
+                <ChartText
+                  x={(xa + xb) / 2}
+                  y={base - 11}
+                  fontSize={chart.label}
+                  fontWeight="700"
+                  fill={c.chartHighlight}
+                  textAnchor="middle"
+                >
+                  {`+${step}`}
+                </ChartText>
+              </G>
+            );
+          }),
+        );
         return (
-          <Svg width={w} height={size + 2}>
+          <Svg width={w} height={h}>
             {cells}
+            {outlines.map((o, i) => (
+              <Rect
+                key={`o${i}`}
+                x={o.x}
+                y={o.y}
+                width={o.w}
+                height={o.h}
+                fill="none"
+                stroke={c.chartHighlight}
+                strokeWidth={chart.stroke}
+              />
+            ))}
+            {hops}
             {table.mirror ? (
               <Line
-                x1={x0 + cell}
-                y1={cell}
+                x1={X(0)}
+                y1={top(0)}
                 x2={x0 + size}
-                y2={size}
-                stroke={c.chartInk}
+                y2={top(n - 1) + cell}
+                stroke={c.chartMuted}
                 strokeWidth={chart.strokeLight}
                 strokeDasharray={chart.dash}
               />
             ) : null}
+            {labels}
+            {pair
+              ? [pair, [pair[1], pair[0]] as const].map(([r, col], i) => (
+                  <Rect
+                    key={`p${i}`}
+                    x={X(col) + 1}
+                    y={top(r) + 1}
+                    width={cell - 2}
+                    height={cell - 2}
+                    fill="none"
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.strokeHeavy}
+                  />
+                ))
+              : null}
           </Svg>
         );
       }}
