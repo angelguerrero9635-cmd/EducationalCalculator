@@ -2097,10 +2097,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A cliff cross-section with textured, numbered layers and larger fossils',
     kind: 'rockLayers',
     pages: ['s.3.adaptation-fossils~layers'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-rock', 'g.r4h-rock-deep'],
     notes:
-      'Urgency: medium. Weak now: Fossils ~18 px, hard to see; "fish"/"shell" labels outside the right edge in tiny type; faint textures; flat green grass bar; no layer numbers to count. Redo: Cliff cross-section: sandstone, shale, limestone, clay each with a clear texture (cross-bedding, laminae, blocky joints) under TopLight; irregular grass and soil top with tufts. Fossils ~30 px in bone and shell colours with shading. Number each layer at the left in chart.label (1 at top). Leader-lined fossil labels at the right; bracket "4 layers apart" between the fossils.',
+      'Urgency: medium. Weak now: Fossils ~18 px, hard to see; "fish"/"shell" labels outside the right edge in tiny type; faint textures; flat green grass bar; no layer numbers to count. Redo: Cliff cross-section: sandstone, shale, limestone, clay each with a clear texture (cross-bedding, laminae, blocky joints) under TopLight; irregular grass and soil top with tufts. Fossils ~30 px in bone and shell colours with shading. Number each layer at the left in chart.label (1 at top). Leader-lined fossil labels at the right; bracket "4 layers apart" between the fossils.' +
+      ' Drawn (round 4, group H): a cliff cut open, layers 22–36 px thick sized from the deeper fossil (not a fixed box), cycling sandstone (grains, cross-beds), shale (laminae), limestone (blocky joints), clay (soft bands), siltstone and mudstone under TopLight, each jutting or wearing back at the cliff face; soil with grass tufts on top; layer numbers 1 (top) to n at the left, 12 px bold. Fish skeleton up to 50 px and ribbed scallop up to 32 px in bone and shell colours, names 12 px bold at the right on leaders; a highlight bracket between the fossils with one tick per layer crossed and "4 layers apart" (the page value) at 13 px. No page change.',
   },
   {
     id: 'Q25',
