@@ -6,12 +6,13 @@
 import type { Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
+import { MATH_1_MODULES } from './math/1';
 import { MATH_2_MODULES } from './math/2';
 import { MATH_3_MODULES } from './math/3';
 import { MATH_6_MODULES } from './math/6';
 import type { ModuleDef } from './types';
 
-const PAGES = [...MATH_2_MODULES, ...MATH_3_MODULES, ...MATH_6_MODULES];
+const PAGES = [...MATH_1_MODULES, ...MATH_2_MODULES, ...MATH_3_MODULES, ...MATH_6_MODULES];
 
 /** The page `pageId` as a gallery demo `id`, with its own picture unless `extra` changes it. */
 function demo(
@@ -69,5 +70,28 @@ export const R4D_GALLERY_MODULES: ModuleDef[] = [
       example: { a: 5, b: 6, c: 5, d: 4, e: 20, f: 30 },
     },
   ),
+  // Q28: hops, one arc per ten (or hundred) plus the rest, adding solid and taking away dashed.
+  demo('m.1.add-within-100~subtract-tens', 'g.r4d-hops-tens', 'Hops: 70 take away 3 tens'),
+  demo('m.1.add-within-100~subtract-tens', 'g.r4d-hops-tens-edge', 'Hops: 90 take away 8 tens', {
+    example: { a: 90, b: 80, c: 10 },
+  }),
+  demo(
+    'm.2.add-sub-100-fluency~two-step',
+    'g.r4d-hops-two-step',
+    'Hops: 25 + 18, then take away 9',
+  ),
+  demo(
+    'm.2.add-sub-100-fluency~two-step',
+    'g.r4d-hops-two-step-edge',
+    'Hops: 5 + 95, then take away 100',
+    {
+      example: { s: 5, a: 95, m: 100, b: 100, e: 0 },
+    },
+  ),
+  demo('m.2.add-sub-100-fluency~add-add', 'g.r4d-hops-add-add', 'Hops: add twice'),
+  demo('m.3.two-step-problems~add-subtract', 'g.r4d-hops-hundreds', 'Hops: 184 + 80 − 100'),
+  demo('m.3.two-step-problems~add-subtract', 'g.r4d-hops-hundreds-edge', 'Hops: 450 + 380 − 760', {
+    example: { a: 450, b: 380, t: 830, c: 760, l: 70 },
+  }),
 ];
 export const R4D_GALLERY_LAYOUTS: LayoutDef[] = [];
