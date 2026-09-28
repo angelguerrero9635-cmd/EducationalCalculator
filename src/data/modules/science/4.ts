@@ -234,7 +234,10 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
       pictureLabels: ['w'],
       representation: {
         kind: 'bars',
-        bars: [{ var: 'b' }, { var: 'a' }],
+        bars: [
+          { var: 'b', editable: true },
+          { var: 'a', editable: true },
+        ],
         min: 0,
         max: 150,
         scale: 25,

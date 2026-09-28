@@ -8,17 +8,17 @@ import type { Values } from '@/engine/types';
 import { COLLEGE_MODULES } from './college';
 import type { LayoutDef } from './layouts';
 import { MATH_1_MODULES } from './math/1';
-import { PILOT_MODULES } from './pilots';
 import { SCIENCE_3_MODULES } from './science/3';
 import { SCIENCE_4_MODULES } from './science/4';
+import { SCIENCE_8_MODULES } from './science/8';
 import type { ModuleDef } from './types';
 
 const PAGES = [
   ...MATH_1_MODULES,
   ...COLLEGE_MODULES,
-  ...PILOT_MODULES,
   ...SCIENCE_3_MODULES,
   ...SCIENCE_4_MODULES,
+  ...SCIENCE_8_MODULES,
 ];
 
 /** The page `pageId` as a gallery demo `id` (with another `example`, if given). */

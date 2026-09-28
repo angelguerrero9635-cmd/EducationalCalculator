@@ -5,6 +5,18 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Round 4 pictures reviewed (Q01–Q52)
+
+- 45 of 52 kinds passed as drawn. Fixed: the Pangaea "Australia" label clipped at the board
+  edge (`continentsFigure.tsx`); double-number-line drags landed on 3.003 (now a tenth of a
+  mark, `DoubleNumberLine.tsx`); the weathering page's typed bars drew in the calculated
+  (dashed) style for want of `editable: true`.
+- Open: `Bars.tsx` should draw a start value solid even without `editable`, and
+  `harness/pictures.ts` flag a bars spec whose start values aren't editable; the amplitude
+  handle on `Wave.tsx` also moves the wavelength (pin it on the amplitude page); `Hops.tsx`
+  prints a stop label twice at 0 → 100; `BaseHeight.tsx` and `FractionFit.tsx` overlap labels
+  on slivers (hide or merge pills under a minimum height; thin group labels).
+
 ## Before Grades 7–8
 
 - Grades 7 and 8 read in the `middle` band (`grade.ts`): the formula in letters with its
