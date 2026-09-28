@@ -305,7 +305,6 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
     startWith: ['w'],
     unitSystems: ['metric'],
     sliders: false,
-    pictureLabels: ['f'],
     representation: {
       kind: 'pieChart',
       parts: ['s', 'i', 'l'],
