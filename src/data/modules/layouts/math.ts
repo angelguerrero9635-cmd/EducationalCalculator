@@ -3829,4 +3829,37 @@ export const MATH_LAYOUTS: LayoutDef[] = [
       return `Most students (${most}) are in ${where.join(' and ')} minutes. ${total} students in all.`;
     },
   },
+
+  // Shape patterns (4.OA.5): which shape comes next in a repeating pattern.
+  {
+    kind: 'sort',
+    id: 'm.4.factors-multiples~shape-patterns',
+    title: 'Shape patterns',
+    use: 'Use this for “Circle, square, triangle, circle, square, … What is the 10th shape?”',
+    assumptions: [
+      'A repeating pattern has a core that repeats: circle, square, triangle, then again.',
+      'Find the core. Count how many shapes are in it.',
+      'To find a far shape, count by the core: with 3 shapes in the core, the 10th shape starts the 4th core.',
+    ],
+    question: 'Which shape comes next?',
+    bins: [
+      {
+        id: 'circle',
+        label: 'Circle',
+        why: 'The core starts again, or the core continues with a circle.',
+      },
+      { id: 'square', label: 'Square', why: 'The next shape in the core is a square.' },
+      { id: 'triangle', label: 'Triangle', why: 'The next shape in the core is a triangle.' },
+    ],
+    cards: [
+      { label: 'Circle, square, circle, square, circle, …', bin: 'square' },
+      { label: 'Circle, square, triangle, circle, square, triangle, …', bin: 'circle' },
+      { label: 'Square, square, triangle, square, square, …', bin: 'triangle' },
+      { label: 'Triangle, circle, triangle, circle, triangle, …', bin: 'circle' },
+      { label: 'Circle, circle, square, circle, circle, square, circle, circle, …', bin: 'square' },
+      { label: 'Square, triangle, triangle, square, triangle, triangle, …', bin: 'square' },
+      { label: 'Circle, square, triangle: what is the 10th shape?', bin: 'circle' },
+      { label: 'Square, triangle: what is the 15th shape?', bin: 'square' },
+    ],
+  },
 ];

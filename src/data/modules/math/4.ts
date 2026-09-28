@@ -3079,4 +3079,317 @@ export const MATH_4_MODULES: ModuleDef[] = [
     startWith: ['k', 'n'],
     representation: { kind: 'angles', parts: ['a', 'r'], whole: 360, sliders: ['k', 'n'] },
   },
+
+  // ── Estimate sums and differences by rounding (4.NBT.3, 4.NBT.4): the textbooks' lesson ──
+  ...(['sum', 'difference'] as const).map((kind) => {
+    const isSum = kind === 'sum';
+    const op = isSum ? '+' : '−';
+    const round = (n: number, p: number) => Math.round(n / p) * p;
+    return {
+      id: `m.4.place-value-million~estimate-${kind}`,
+      sliders: false,
+      title: isSum ? 'Estimate sums' : 'Estimate differences',
+      use: isSum
+        ? 'Use this for “About how many in all? 36,325 + 23,310” by rounding first.'
+        : 'Use this for “About how many more? 61,209 − 27,845” by rounding first.',
+      assumptions: [
+        'Round each number to the same place: hundreds, thousands or ten thousands.',
+        isSum
+          ? 'Add the rounded numbers. The estimate is close to the real sum.'
+          : 'Subtract the rounded numbers. The estimate is close to the real difference.',
+        'Use the estimate to check an exact answer: they should be close.',
+      ],
+      variables: [
+        whole('a', 'a', isSum ? 'First number' : 'Start', 0, 999999),
+        whole('b', 'b', isSum ? 'Second number' : 'Take away', 0, 999999),
+        { ...whole('p', 'p', 'Round to', 100, 10000), allowed: [100, 1000, 10000] },
+        { ...whole('ra', 'r', 'First number rounded', 0, 1000000), derived: true },
+        { ...whole('rb', 's', 'Second number rounded', 0, 1000000), derived: true },
+        {
+          ...whole('e', 'e', isSum ? 'Estimated sum' : 'Estimated difference', 0, 2000000),
+          derived: true,
+        },
+      ],
+      relations: [
+        ...(isSum
+          ? []
+          : [
+              {
+                id: 'b ≤ a',
+                constraint: true,
+                display: 'Take away {b} is not more than the start {a}',
+                vars: ['a', 'b'],
+                residual: (v: Values) => (v.b! <= v.a! ? 0 : 1),
+                solve: {},
+              },
+            ]),
+        {
+          id: 'ra = a rounded',
+          display: '{a} rounded to the {p}s: {ra}',
+          words: 'The first number rounded to the place = {ra}',
+          vars: ['ra', 'a', 'p'],
+          residual: (v: Values) => v.ra! - round(v.a!, v.p!),
+          solve: { ra: (v: Values) => round(v.a!, v.p!), a: () => undefined, p: () => undefined },
+        },
+        {
+          id: 'rb = b rounded',
+          display: '{b} rounded to the {p}s: {rb}',
+          words: 'The second number rounded to the place = {rb}',
+          vars: ['rb', 'b', 'p'],
+          residual: (v: Values) => v.rb! - round(v.b!, v.p!),
+          solve: { rb: (v: Values) => round(v.b!, v.p!), b: () => undefined, p: () => undefined },
+        },
+        {
+          id: `e = ra ${op} rb`,
+          display: `{ra} ${op} {rb} = {e}`,
+          vars: ['e', 'ra', 'rb'],
+          residual: (v: Values) => v.e! - (isSum ? v.ra! + v.rb! : v.ra! - v.rb!),
+          solve: {
+            e: (v: Values) => (isSum ? v.ra! + v.rb! : v.ra! - v.rb!),
+            ra: (v: Values) => (isSum ? v.e! - v.rb! : v.e! + v.rb!),
+            rb: (v: Values) => (isSum ? v.e! - v.ra! : v.ra! - v.e!),
+          },
+        },
+      ],
+      steps: {
+        ...(isSum ? {} : { 'b ≤ a': {} }),
+        'ra = a rounded': {
+          ra: {
+            expr: '{a} rounded to the {p}s',
+            how: 'Look at the digit to the right of the place. 5 or more rounds up.',
+            work: (v: Values) => [
+              `${fmt(v.a!)} is between ${fmt(Math.floor(v.a! / v.p!) * v.p!)} and ${fmt(Math.floor(v.a! / v.p!) * v.p! + v.p!)} → ${fmt(v.ra!)}`,
+            ],
+          },
+        },
+        'rb = b rounded': {
+          rb: {
+            expr: '{b} rounded to the {p}s',
+            how: 'Round the second number to the same place.',
+            work: (v: Values) => [
+              `${fmt(v.b!)} is between ${fmt(Math.floor(v.b! / v.p!) * v.p!)} and ${fmt(Math.floor(v.b! / v.p!) * v.p! + v.p!)} → ${fmt(v.rb!)}`,
+            ],
+          },
+        },
+        [`e = ra ${op} rb`]: {
+          e: {
+            expr: `{ra} ${op} {rb}`,
+            how: isSum
+              ? 'Add the rounded numbers. Rounded numbers are easy to add in your head.'
+              : 'Subtract the rounded numbers. Rounded numbers are easy to subtract in your head.',
+            note: (v: Values) => `(the exact ${kind} is ${fmt(isSum ? v.a! + v.b! : v.a! - v.b!)})`,
+          },
+          ra: {
+            expr: `{e} ${isSum ? '−' : '+'} {rb}`,
+            how: isSum
+              ? 'Take the second rounded number from the estimate.'
+              : 'Add the rounded number taken away back to the estimate.',
+          },
+          rb: {
+            expr: isSum ? '{e} − {ra}' : '{ra} − {e}',
+            how: isSum
+              ? 'Take the first rounded number from the estimate.'
+              : 'Take the estimate from the rounded start.',
+          },
+        },
+      } as Record<string, Record<string, StepText>>,
+      example: isSum
+        ? { a: 36325, b: 23310, p: 1000, ra: 36000, rb: 23000, e: 59000 }
+        : { a: 61209, b: 27845, p: 1000, ra: 61000, rb: 28000, e: 33000 },
+      startWith: ['a', 'b', 'p'],
+      representation: isSum
+        ? { kind: 'tape', parts: ['ra', 'rb'], total: 'e' }
+        : { kind: 'tape', parts: ['e', 'rb'], total: 'ra' },
+    } satisfies ModuleDef;
+  }),
+  // ── Subtract across zeros (4.NBT.4): 5,000 − 2,346 ──
+  {
+    id: 'm.4.place-value-million~subtract-zeros',
+    sliders: false,
+    equation: '{a} − {b} = {c}',
+    title: 'Subtract across zeros',
+    use: 'Use this for “Subtract: 5,000 − 2,346” when the start has zeros to regroup across.',
+    assumptions: [
+      'A zero has nothing to regroup from. Go left to the first place that is not zero.',
+      'Regroup 1 from that place: each zero in between becomes 9, and the ones place gets 10.',
+      'Think of 5,000 as 4 thousands, 9 hundreds, 9 tens and 10 ones. The start is a multiple of 100.',
+    ],
+    variables: [
+      { ...whole('a', 'a', 'Start', 100, 1000000), step: 100, multipleOf: 100 },
+      whole('b', 'b', 'Take away', 0, 1000000),
+      whole('c', 'c', 'Difference', 0, 1000000),
+    ],
+    relations: [
+      {
+        id: 'a − b = c',
+        display: '{a} − {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.a! - v.b! - v.c!,
+        solve: {
+          c: (v: Values) => v.a! - v.b!,
+          a: (v: Values) => v.c! + v.b!,
+          b: (v: Values) => v.a! - v.c!,
+        },
+      },
+    ],
+    steps: {
+      'a − b = c': {
+        c: {
+          expr: '{a} − {b}',
+          how: 'Regroup across the zeros first: the zeros become 9s and the ones place gets 10. Then subtract each place.',
+          written: (v: Values) => columnSubtract(v.a!, v.b!),
+        },
+        a: { expr: '{c} + {b}', how: 'Add back what was taken away, in columns.' },
+        b: { expr: '{a} − {c}', how: 'Take the difference away from the start, in columns.' },
+      },
+    },
+    example: { a: 5000, b: 2346, c: 2654 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'tape', parts: ['c', 'b'], total: 'a' },
+  },
+  // ── Tenths and hundredths together (4.NF.5): 3/10 + 4/100 = 34/100 = 0.34 ──
+  {
+    id: 'm.4.decimals-intro~tenths-hundredths',
+    sliders: false,
+    equation: '{t}/10 + {h}/100 = {s}/100',
+    title: 'Add tenths and hundredths',
+    use: 'Use this for “Find the value of 3/10 + 4/100” and write the sum as a decimal.',
+    assumptions: [
+      'A tenth is 10 hundredths, so 3/10 = 30/100. Write the tenths as hundredths first.',
+      'Then add the hundredths. The sum is in hundredths.',
+      'Hundredths written as a decimal: 34/100 = 0.34. The sum stays less than one whole.',
+    ],
+    variables: [
+      whole('t', 't', 'Tenths', 1, 9),
+      whole('h', 'h', 'Hundredths', 1, 99),
+      {
+        ...whole('k', 'k', 'The tenths as hundredths', 10, 90),
+        step: 10,
+        multipleOf: 10,
+        derived: true,
+      },
+      whole('s', 's', 'Hundredths in all', 11, 99),
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'The sum as a decimal',
+        min: 0.11,
+        max: 1.89,
+        step: 0.01,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 's < 100',
+        constraint: true,
+        display: 'The sum {s}/100 is less than one whole',
+        vars: ['s'],
+        residual: (v: Values) => (v.s! < 100 ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'k = t × 10',
+        display: '{t}/10 = {k}/100',
+        words: 'Tenths × 10 = the same amount in hundredths',
+        vars: ['k', 't'],
+        residual: (v: Values) => v.k! - 10 * v.t!,
+        solve: { k: (v: Values) => 10 * v.t!, t: (v: Values) => div(v.k!, 10) },
+      },
+      {
+        id: 's = k + h',
+        display: '{k}/100 + {h}/100 = {s}/100',
+        vars: ['s', 'k', 'h'],
+        residual: (v: Values) => v.s! - v.k! - v.h!,
+        solve: {
+          s: (v: Values) => v.k! + v.h!,
+          k: (v: Values) => v.s! - v.h!,
+          h: (v: Values) => v.s! - v.k!,
+        },
+      },
+      {
+        id: 'd = s ÷ 100',
+        display: '{s}/100 = {d}',
+        words: 'Hundredths in all ÷ 100 = the decimal',
+        vars: ['d', 's'],
+        residual: (v: Values) => v.d! * 100 - v.s!,
+        solve: { d: (v: Values) => v.s! / 100, s: (v: Values) => Math.round(v.d! * 100) },
+      },
+    ],
+    steps: {
+      's < 100': {},
+      'k = t × 10': {
+        k: {
+          expr: '{t} × 10',
+          how: 'Each tenth is 10 hundredths: one column of the hundred grid.',
+        },
+        t: { expr: '{k} ÷ 10', how: 'Every 10 hundredths make one tenth.' },
+      },
+      's = k + h': {
+        s: { expr: '{k} + {h}', how: 'Now both parts are hundredths. Add them.' },
+        k: {
+          expr: '{s} − {h}',
+          how: 'Take the hundredths from the total to get the tenths part, in hundredths.',
+        },
+        h: { expr: '{s} − {k}', how: 'Take the tenths part, in hundredths, from the total.' },
+      },
+      'd = s ÷ 100': {
+        d: { expr: '{s} ÷ 100', how: 'Hundredths go two places after the point: 34/100 is 0.34.' },
+        s: { expr: '{d} × 100', how: 'Read the decimal as hundredths: 0.34 is 34 hundredths.' },
+      },
+    },
+    example: { t: 3, h: 4, k: 30, s: 34, d: 0.34 },
+    startWith: ['t', 'h'],
+    representation: { kind: 'grid100', percent: 's' },
+  },
+  // ── Money as decimals (4.MD.2): $3.45 + $1.80 ──
+  {
+    id: 'm.4.decimals-intro~money',
+    sliders: false,
+    equation: '${a} + ${b} = ${c}',
+    title: 'Solve problems involving money',
+    use: 'Use this for “A book costs $3.45 and a pen $1.80. How much in all?” or how much is left.',
+    assumptions: [
+      'Money is a decimal: dollars before the point, cents after. $3.45 is 3 dollars and 45 cents.',
+      'Line up the points and add or subtract like whole numbers. Amounts to $999.99.',
+      'To find what is left, take the price from the total: total − price = left.',
+    ],
+    variables: [
+      { id: 'a', symbol: 'a', name: 'First amount', unit: '$', min: 0, max: 999.99, step: 0.01 },
+      { id: 'b', symbol: 'b', name: 'Second amount', unit: '$', min: 0, max: 999.99, step: 0.01 },
+      { id: 'c', symbol: 'c', name: 'Total', unit: '$', min: 0, max: 1999.98, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'c = a + b',
+        display: '{a} + {b} = {c}',
+        vars: ['c', 'a', 'b'],
+        residual: (v: Values) => v.c! - v.a! - v.b!,
+        solve: {
+          c: (v: Values) => v.a! + v.b!,
+          a: (v: Values) => v.c! - v.b!,
+          b: (v: Values) => v.c! - v.a!,
+        },
+      },
+    ],
+    steps: {
+      'c = a + b': {
+        c: {
+          expr: '{a} + {b}',
+          how: 'Line up the points. Add the cents, then the dollars, regrouping 100 cents as a dollar.',
+        },
+        a: {
+          expr: '{c} − {b}',
+          how: 'Take the second amount from the total: what is left after paying it.',
+        },
+        b: {
+          expr: '{c} − {a}',
+          how: 'Take the first amount from the total: what is left after paying it.',
+        },
+      },
+    },
+    example: { a: 3.45, b: 1.8, c: 5.25 },
+    startWith: ['a', 'b'],
+    representation: { kind: 'tape', parts: ['a', 'b'], total: 'c' },
+  },
 ];

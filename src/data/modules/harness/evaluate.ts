@@ -107,6 +107,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(?:whole|full) groups of (${NUM}) in (${NUM})`), (d, n) => Math.floor(n / d)],
   [new RegExp(`the tens in (${NUM})`), (n) => 10 * Math.floor((n % 100) / 10)],
   [new RegExp(`(${NUM}) with the places under (${NUM}) made 0`), (n, p) => Math.floor(n / p) * p],
+  // Estimating (Grade 4): "36,325 rounded to the 1,000s".
+  [new RegExp(`(${NUM}) rounded to the (${NUM})s`), (n, p) => Math.round(n / p) * p],
   [new RegExp(`(${NUM}) rounded down to the (${NUM})s`), (n, p) => Math.floor(n / p) * p],
   // The place by name (Grade 5): "4.268 rounded down to the hundredths".
   [new RegExp(`(${NUM}) rounded down to the ones`), (n) => Math.floor(n + 1e-9)],
