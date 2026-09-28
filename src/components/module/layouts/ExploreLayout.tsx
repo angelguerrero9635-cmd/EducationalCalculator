@@ -21,8 +21,8 @@ import {
   FrontFigure,
   PlatesFigure,
   RockCycleFigure,
-  WaterCycleFigure,
 } from './figures6';
+import { WaterCycleFigure } from './waterCycleFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the

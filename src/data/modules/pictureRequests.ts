@@ -1896,10 +1896,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A painted water-cycle landscape with only the active process arrow',
     kind: 'waterCycle',
     pages: ['s.6.water-cycle'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4c-water-cycle'],
     notes:
-      'Urgency: high. Weak now: Thin grey wireframe: outline-triangle mountain, lavender block ocean, tiny grey labels; every inactive path a faint dashed arrow (noisy); lollipop person; no tree for transpiration; "Driven by the sun" pill overlaps the sky corner. Redo: Painted landscape: sky gradient, sun with glow, ocean with waves, tan beach, green hillside with a leafy tree, grey rock mountain with white snowcap, soil band showing groundwater in blue, white cumulus cloud (TopLight). Only the active process arrow bold and coloured with a short label; others hidden or 25 % solid. chart.label for ocean and groundwater; move the sun pill below the header strip.',
+      'Urgency: high. Weak now: Thin grey wireframe: outline-triangle mountain, lavender block ocean, tiny grey labels; every inactive path a faint dashed arrow (noisy); lollipop person; no tree for transpiration; "Driven by the sun" pill overlaps the sky corner. Redo: Painted landscape: sky gradient, sun with glow, ocean with waves, tan beach, green hillside with a leafy tree, grey rock mountain with white snowcap, soil band showing groundwater in blue, white cumulus cloud (TopLight). Only the active process arrow bold and coloured with a short label; others hidden or 25 % solid. chart.label for ocean and groundwater; move the sun pill below the header strip. Drawn (round 4, group C; waterCycleFigure.tsx): a painted landscape on a 360-wide board (sky gradient, sun with a glow, ocean with waves, tan beach, grassland with a lit tree and a river, grey rock mountain lit from the left with a snowcap, soil over a blue groundwater band with rock grains, a white cumulus that turns grey and rains for precipitation and shows droplets for condensation). Only the scene\'s step is bold in the highlight with a 13 px chip beside it; the other six stay as faint thin arrows so the loop is visible. Ocean and groundwater labelled at 13 px; the driver chip sits inside the sky at the top right, clear of the sun and cloud. No page change.',
   },
   {
     id: 'Q07',
