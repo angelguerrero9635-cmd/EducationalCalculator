@@ -16,13 +16,13 @@ import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigure
 import { MagnetsFigure, PlanetsFigure } from './figures8';
 import {
   BodyFigure,
-  CellFigure6,
   ContinentsFigure,
   FrontFigure,
   PlatesFigure,
   RockCycleFigure,
   WaterCycleFigure,
 } from './figures6';
+import { CellFigure } from './figuresR4h';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -138,7 +138,7 @@ function FigureView({
     case 'timesTable':
       return <TimesTable table={scene.table ?? { op: '×' }} c={c} />;
     case 'cell':
-      return <CellFigure6 cell={scene.cell ?? { type: 'animal' }} c={c} />;
+      return <CellFigure cell={scene.cell ?? { type: 'animal' }} c={c} />;
     case 'bodySystems':
       return <BodyFigure body={scene.body ?? { systems: [] }} c={c} />;
     case 'waterCycle':

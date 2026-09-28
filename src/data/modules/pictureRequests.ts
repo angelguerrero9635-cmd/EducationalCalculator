@@ -2066,10 +2066,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A textbook cell (animal, plant or bacterium) with the chosen part glowing',
     kind: 'cell',
     pages: ['s.6.cell-organelles'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-cell'],
     notes:
-      'Urgency: medium. Weak now: Flat beige ellipse, grey nucleus, two tiny mitochondria pills; tiny leader labels crowd the right edge; vacuole, chloroplasts, wall, bacterium not distinct; selected part weakly highlighted. Redo: Textbook cell: jelly cytoplasm (Glass), nucleus with nucleolus and double membrane, bean mitochondria with cristae (~30 px). Plant-cell version (rectangular green-tinted wall, chloroplast lenses, large vacuole) or a bacterium when those parts are chosen. Glow the selected part with an accent outline, dim the others. Labels in chart.label, leaders alternating left/right.',
+      'Urgency: medium. Weak now: Flat beige ellipse, grey nucleus, two tiny mitochondria pills; tiny leader labels crowd the right edge; vacuole, chloroplasts, wall, bacterium not distinct; selected part weakly highlighted. Redo: Textbook cell: jelly cytoplasm (Glass), nucleus with nucleolus and double membrane, bean mitochondria with cristae (~30 px). Plant-cell version (rectangular green-tinted wall, chloroplast lenses, large vacuole) or a bacterium when those parts are chosen. Glow the selected part with an accent outline, dim the others. Labels in chart.label, leaders alternating left/right.' +
+      ' Drawn (round 4, group H; figuresR4h.tsx CellFigure): an animal cell as a wobbly pink blob of jelly cytoplasm with ribosome grains, a nucleus with double membrane, pores and nucleolus, four bean mitochondria with cristae; a plant cell with a thick green wall (fibres, TopLight), membrane, a large watery vacuole, the nucleus pushed aside, eight chloroplast lenses with grana stacks; a rod bacterium with wall, membrane and a tangled loop of loose DNA. The chosen part glows in the highlight with a soft halo, the others dim to 42 %. Labels 12 px (bold highlight when chosen), short names on the left, long ones on the right, leader dots on the part. No page change.',
   },
   {
     id: 'Q22',
