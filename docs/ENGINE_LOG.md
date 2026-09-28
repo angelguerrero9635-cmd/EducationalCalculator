@@ -5,6 +5,21 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Before Grades 7–8
+
+- Grades 7 and 8 read in the `middle` band (`grade.ts`): the formula in letters with its
+  meaning, the numbers put in with the unknown kept, then one undo step per line. `standard`
+  (rearranged letter lines) starts in Grade 9.
+- A tape draws no handle on a derived part (`Tape.tsx`): dragging a rounded value or a sum
+  could only clear or rewrite what the student typed. Two part boundaries closer than a handle
+  sit in the upper and lower halves of the bar, so both can be grabbed.
+- A net with its length unknown labels the length and every face "?" instead of the example's
+  numbers (`Net.tsx`).
+- `autoWritten` draws no column grid for round numbers with at most two figures each
+  (36,000 + 23,000; 61,000 − 28,000): they are done in the head, as the step says.
+- `standards.test.ts` fails a convertible value named by a plural unit word ("Minutes cut",
+  "Liters saved"): the name must survive the units menu.
+
 ## Textbook-gap pages review
 
 - A sort's wrong-bin hint repeated the whole card; over 60 characters it now says "Look

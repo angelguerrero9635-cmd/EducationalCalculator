@@ -114,39 +114,42 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const left = 12;
           const scale = (w - left - 16) / fit.value;
           const barH = 34;
-          const drag = (id: string, i: number, x: number, y: number) => (
-            <DragHandle
-              key={`d${id}`}
-              testID={`drag-${id}`}
-              x={x}
-              y={y}
-              label={name(id)}
-              onStart={() => {
-                start.current = shown[i]!;
-                fit.freeze();
-              }}
-              onEnd={fit.release}
-              onMove={(dx) =>
-                calc.set(
-                  {
-                    // Moving the line between two parts: the next part gives way and the total
-                    // stays (price up, money left down). The last part grows the total.
-                    ...rep.pin(
-                      ids
-                        .filter((v) => v !== id && v !== ids[i + 1])
-                        .concat(
-                          ids[i + 1] && !compare && typeof spec.total === 'string'
-                            ? [spec.total]
-                            : [],
-                        ),
-                    ),
-                    [id]: rep.snapTo(id, (start.current + dx / scale) * rep.factor(id)),
-                  },
-                  rep.slide(id),
-                )
-              }
-            />
-          );
+          // A derived part (a rounded value, a sum) has no handle: dragging it could only
+          // clear or rewrite the numbers the student typed.
+          const drag = (id: string, i: number, x: number, y: number) =>
+            rep.variable(id).derived ? null : (
+              <DragHandle
+                key={`d${id}`}
+                testID={`drag-${id}`}
+                x={x}
+                y={y}
+                label={name(id)}
+                onStart={() => {
+                  start.current = shown[i]!;
+                  fit.freeze();
+                }}
+                onEnd={fit.release}
+                onMove={(dx) =>
+                  calc.set(
+                    {
+                      // Moving the line between two parts: the next part gives way and the total
+                      // stays (price up, money left down). The last part grows the total.
+                      ...rep.pin(
+                        ids
+                          .filter((v) => v !== id && v !== ids[i + 1])
+                          .concat(
+                            ids[i + 1] && !compare && typeof spec.total === 'string'
+                              ? [spec.total]
+                              : [],
+                          ),
+                      ),
+                      [id]: rep.snapTo(id, (start.current + dx / scale) * rep.factor(id)),
+                    },
+                    rep.slide(id),
+                  )
+                }
+              />
+            );
 
           if (compare) {
             const [a, b] = spec.compare;
@@ -386,9 +389,20 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Line x1={left} y1={y} x2={left} y2={y + barH} stroke={c.chartInk} />
               </Svg>
               {/* With a fixed whole, the last part's end is the whole's end: no handle there. */}
+              {/* Two boundaries closer than a handle would hide each other: the second sits
+                  in the lower half of the bar, the first in the upper. */}
               {spec.parts
                 .slice(0, fixed ? -1 : undefined)
-                .map((id, i) => drag(id, i, x1(i), y + barH / 2))}
+                .map((id, i) =>
+                  drag(
+                    id,
+                    i,
+                    x1(i),
+                    i > 0 && x1(i) - x1(i - 1) < chart.handle
+                      ? y + (i % 2 ? barH * 0.75 : barH * 0.25)
+                      : y + barH / 2,
+                  ),
+                )}
             </>
           );
         }}

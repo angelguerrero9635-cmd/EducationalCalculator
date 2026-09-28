@@ -723,10 +723,10 @@ describe('written work and simplifying, by grade', () => {
     expect(n!.lines).toEqual(['234 = 200 + 30 + 4']);
   });
 
-  it('Grade 8 and college: one stage per line under the formula, no grids', () => {
+  it('Grade 8 (middle band): the numbers in with the unknown kept, then one stage per line, no grids', () => {
     const [c] = steps('m.8.pythagorean', { a: 3, b: 4 });
     expect(c!.written).toBeUndefined();
-    expect(c!.lines).toEqual(['c = √(a² + b²)', 'c = √(3² + 4²)', 'c = √(9 + 16)', 'c = √25']);
+    expect(c!.lines).toEqual(['3² + 4² = c²', 'c = √(3² + 4²)', 'c = √(9 + 16)', 'c = √25']);
   });
 
   it('a step with its own work lines is left alone; a module can refuse a grid', () => {

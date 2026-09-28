@@ -251,10 +251,12 @@ export function ContinentsFigure({
       {ORDER.map((k) => {
         const [lx, ly] = at(era[k], PIECES[k].label);
         const out = OUTSIDE[continents.age]?.[k];
-        const [x, y] = out ?? [lx, ly];
+        const [rawX, y] = out ?? [lx, ly];
         // The Americas' names on two lines, so they sit inside the land.
         const lines = k === 'na' || k === 'sa' ? PIECES[k].name.split(' ') : [PIECES[k].name];
         const half = (lines[0]!.length * chart.value * 0.62) / 2;
+        // A name pulled outside its land (Australia, India) stays inside the board.
+        const x = Math.min(BOARD_W - half - 4, Math.max(half + 4, rawX));
         return (
           <G key={`n${k}`}>
             {out ? (

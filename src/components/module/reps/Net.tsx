@@ -47,6 +47,8 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const notToScale = [tL, tW, tH, ...(spec.slant ? [tS] : [])].some((x) => dr(x) !== x);
   const known = rep.known(spec.length);
   const n = (x: number) => formatNumber(Number(x.toFixed(3)));
+  // With the length unknown the net is faded and its numbers read "?", not the example's.
+  const lab = (x: number) => (known ? n(x) : '?');
   const pyramid = spec.solid === 'squarePyramid';
   // A triangular prism: `width` and `height` are the triangle's base and height, `slant` its
   // third side (right) or each equal side (isosceles), and `length` the prism's length.
@@ -253,9 +255,11 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       ? label(
                           f,
                           // "5 × 3 = 15" where it fits: the face's two edges times each other.
-                          f.w * s > 22 + 7 * `${n(f.tw)} × ${n(f.th)} = ${n(f.area)}`.length
-                            ? `${n(f.tw)} × ${n(f.th)} = ${n(f.area)}`
-                            : n(f.area),
+                          !known
+                            ? '?'
+                            : f.w * s > 22 + 7 * `${n(f.tw)} × ${n(f.th)} = ${n(f.area)}`.length
+                              ? `${n(f.tw)} × ${n(f.th)} = ${n(f.area)}`
+                              : n(f.area),
                         )
                       : null}
                   </G>
@@ -345,7 +349,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       textAnchor="middle"
                       transform={`rotate(-90 ${X(0) - 6} ${Y(H + L / 2)})`}
                     >
-                      {`length ${n(tL)}${unit}`}
+                      {`length ${lab(tL)}${unit}`}
                     </ChartText>
                   </G>
                 ) : null}
@@ -397,7 +401,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fontWeight="700"
                       fill={c.chartInk}
                     >
-                      {`side ${n(tL)}${unit}`}
+                      {`side ${lab(tL)}${unit}`}
                     </ChartText>
                   </G>
                 ) : (
@@ -412,7 +416,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fill={c.chartInk}
                       textAnchor="middle"
                     >
-                      {`length ${n(tL)}${unit}`}
+                      {`length ${lab(tL)}${unit}`}
                     </ChartText>
                     <ChartText
                       x={X(H) - 4}

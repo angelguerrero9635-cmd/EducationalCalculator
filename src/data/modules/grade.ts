@@ -10,7 +10,9 @@
  *   its meaning, the numbers put in with the unknown kept as its letter, then one undo step
  *   per line (never a rearranged letter line). Every other Grade 6 page reads like Grades 3–5
  *   (`elementary`), with Grade 6 content (negatives, written work).
- * - standard (Grade 7 and up, college): formulas in letters.
+ * - Grades 7 and 8 are `middle` too: the formula in letters with its meaning, then one undo
+ *   step per line, since these grades still learn to rearrange.
+ * - standard (Grade 9 and up, college): formulas in letters, rearranged as letter lines.
  */
 export type GradeBand = 'early' | 'elementary' | 'middle' | 'standard';
 
@@ -29,7 +31,8 @@ export function gradeBand(moduleId: string): GradeBand {
   if (g === undefined) return 'standard';
   if (g === 'K' || Number(g) <= 2) return 'early';
   if (Number(g) === 6) return LETTER_PAGES.has(moduleId) ? 'middle' : 'elementary';
-  return Number(g) <= 5 ? 'elementary' : 'standard';
+  if (Number(g) <= 5) return 'elementary';
+  return Number(g) <= 8 ? 'middle' : 'standard';
 }
 
 /**

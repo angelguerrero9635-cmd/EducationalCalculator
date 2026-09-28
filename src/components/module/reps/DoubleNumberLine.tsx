@@ -229,10 +229,15 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
                     calc.set(
                       {
                         ...rep.pin([spec.per]),
+                        // The drag lands on a tenth of a mark (2.5, 3, 3.1: never 3.003);
+                        // the box takes anything typed.
                         [spec.top]: rep.snapTo(
                           spec.top,
-                          Math.max(0, start.current + (dx / unit) * tickStep) *
-                            rep.factor(spec.top),
+                          Math.max(
+                            0,
+                            Math.round((start.current + (dx / unit) * tickStep) / (tickStep / 10)) *
+                              (tickStep / 10),
+                          ) * rep.factor(spec.top),
                         ),
                       },
                       rep.slide(spec.top),

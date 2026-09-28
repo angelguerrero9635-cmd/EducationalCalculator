@@ -554,6 +554,8 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     const columns = xs.filter((x) => figures(x) >= 2).length >= 2;
     // Tens that add to 100 or less (50 + 20 + 30) are added in the head.
     if (xs.every((x) => x % 10 === 0) && sum <= 100) return undefined;
+    // Round numbers with at most two figures each (36,000 + 23,000) are added in the head.
+    if (xs.every((x) => x % 100 === 0 && figures(x) <= 2)) return undefined;
     // Adding one place unit (999,000 + 1,000) moves one digit: done in the head.
     if (xs.length === 2 && xs.some((x) => x >= 10 && figures(x) === 1 && /^10+$/.test(String(x))))
       return undefined;
@@ -564,6 +566,8 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     // Nothing to set out for a number taken from itself.
     // A difference under 10 (1,000 − 998) is found by counting up, not in columns.
     if (b < 10 || c < b || c - b < 10) return undefined;
+    // Round numbers with at most two figures each (61,000 − 28,000) are done in the head.
+    if ([c, b].every((x) => x % 100 === 0 && figures(x) <= 2)) return undefined;
     const borrows = String(b)
       .split('')
       .reverse()

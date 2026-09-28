@@ -5,6 +5,7 @@
  * Everything a student sees is checked: assumptions, names, number sentences, the
  * step-by-step from the example, titles and "use" lines.
  */
+import { getUnit } from '@/engine/units';
 import { renderTemplate } from '@/engine/format';
 import { solve } from '@/engine/solve';
 
@@ -306,6 +307,17 @@ describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
         /^(?:At|One|Two|Three)\b.*\b(?:in|inch(?:es)?|cm|m|L|mL|liters?|g|kg|lb|oz|feet|foot)$|^(?:At|One|Two|Three) .*\b(?:length|longer|shorter)$/;
       expect(
         m.variables.filter((v) => v.integer && !v.unit && MEASURE.test(v.name)).map((v) => v.name),
+      ).toEqual([]);
+    });
+
+    it('names a convertible value by what it measures, not by its unit', () => {
+      // "Minutes: 0.33 h" after a unit change: the name must survive the units menu.
+      const UNIT_WORD =
+        /^(?:seconds|minutes|hours|days|liters|milliliters|grams|kilograms|meters|centimeters|millimeters|kilometers|inches|feet|yards|miles|pounds|ounces|gallons|quarts|cups|newtons|joules|watts|volts|amperes|amps)\b/i;
+      expect(
+        m.variables
+          .filter((v) => v.unit && getUnit(v.unit) && UNIT_WORD.test(v.name))
+          .map((v) => v.name),
       ).toEqual([]);
     });
 
