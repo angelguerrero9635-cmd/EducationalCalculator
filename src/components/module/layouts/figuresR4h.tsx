@@ -5,13 +5,23 @@
  * chloroplast lenses with their stacks, a watery vacuole and a stiff green wall.
  */
 import type { ReactNode } from 'react';
-import Svg, { Circle, Defs, G, Line, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import Svg, {
+  Circle,
+  Defs,
+  Ellipse,
+  G,
+  Line,
+  Path,
+  RadialGradient,
+  Rect,
+  Stop,
+} from 'react-native-svg';
 
 import type { Scene } from '@/data/modules/layouts';
 import { chart, type Palette } from '@/theme';
 
 import { Canvas, ChartText } from '../reps/common';
-import { Ball, TopLight, url, usePaintIds } from '../reps/paint';
+import { Ball, Deepen, Glass, Sheen, TopLight, url, usePaintIds } from '../reps/paint';
 
 type CellScene = NonNullable<Scene['cell']>;
 type Part = NonNullable<CellScene['part']>;
@@ -570,4 +580,472 @@ export function CellFigure({ cell, c }: { cell: CellScene; c: Palette }) {
 function cellHeight(w: number) {
   const cw = Math.min(w - LEFT - RIGHT - 2 * GAP, 300);
   return cw * 0.84 + 28;
+}
+
+// ── Particles in a jar or a syringe ──
+
+/** Fixed jitter so the same scene always draws the same picture. */
+const JITTER = [
+  0.3, -0.4, 0.1, 0.45, -0.2, 0.35, -0.45, 0.05, 0.25, -0.3, 0.4, -0.1, 0.15, -0.35, 0.2, -0.25,
+];
+
+/** Where the ten gas particles sit, as fractions of the room inside (scattered, no row or line). */
+const GAS_SPOTS: readonly (readonly [number, number])[] = [
+  [0.08, 0.15],
+  [0.55, 0.05],
+  [0.9, 0.3],
+  [0.3, 0.4],
+  [0.7, 0.55],
+  [0.12, 0.7],
+  [0.45, 0.8],
+  [0.95, 0.85],
+  [0.25, 0.98],
+  [0.62, 0.28],
+];
+
+/** The way each gas particle is flying (degrees, y down), fixed so the scene never changes. */
+const GAS_HEADINGS = [-35, 160, 110, -150, 20, -80, 200, -120, 45, -10];
+
+/**
+ * Particles in a closed glass jar: a lattice block that only wiggles (solid, 40 particles), a
+ * crowd under a meniscus sliding about (liquid, 32), ten far apart flying in straight lines
+ * (gas). Squeezed air is the ten gas particles in a syringe pushed to half its room. Sugar in
+ * water is the liquid with every third particle sugar, named in a key.
+ */
+export function Particles({ state, c }: { state: NonNullable<Scene['particles']>; c: Palette }) {
+  const ids = usePaintIds('glass', 'water', 'main', 'other', 'lid', 'rod');
+  const squeezed = !!state.squeezed;
+  const main = squeezed ? c.silverDark : c.waterDeep;
+  return (
+    <Canvas aspect={0.66}>
+      {({ w, h }) => {
+        // Smaller in the squeezed syringe, so ten particles fit its half-room without touching.
+        const r = squeezed ? 7 : 8.5;
+        const dots: { x: number; y: number; other: boolean; k: number }[] = [];
+        const marks: ReactNode[] = [];
+        const captionY = h - 8;
+        let vessel: ReactNode;
+        let front: ReactNode = null;
+        let liquid: ReactNode = null;
+
+        /** An arrow from a particle heading `deg`, `len` long: a gas particle's straight flight. */
+        const flight = (x: number, y: number, deg: number, len: number, k: number) => {
+          const t = (deg * Math.PI) / 180;
+          const [dx, dy] = [Math.cos(t), Math.sin(t)];
+          const x1 = x + dx * (r + 2);
+          const y1 = y + dy * (r + 2);
+          const x2 = x1 + dx * len;
+          const y2 = y1 + dy * len;
+          const head = `M ${x2 - dx * 6 - dy * 3.5} ${y2 - dy * 6 + dx * 3.5} L ${x2} ${y2} L ${x2 - dx * 6 + dy * 3.5} ${y2 - dy * 6 - dx * 3.5}`;
+          return (
+            <G key={`f${k}`}>
+              <Line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={c.chartInk}
+                strokeOpacity={0.6}
+                strokeWidth={1.5}
+                strokeDasharray="4 2.5"
+              />
+              <Path
+                d={head}
+                fill="none"
+                stroke={c.chartInk}
+                strokeOpacity={0.7}
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </G>
+          );
+        };
+
+        if (squeezed) {
+          // A syringe on its side, nozzle capped, the plunger pushed in to half the barrel.
+          const bx0 = w / 2 - 138;
+          const bx1 = w / 2 + 88;
+          const cy = (h - 26) / 2 + 8;
+          const bh = 84;
+          const by = cy - bh / 2;
+          const px = bx0 + (bx1 - bx0) * 0.5;
+          const room = { x: bx0 + 3, y: by + 4, w: px - bx0 - 5, h: bh - 8 };
+          GAS_SPOTS.forEach(([fx, fy], k) =>
+            dots.push({
+              x: room.x + r + 1 + (room.w - 2 * r - 2) * fx,
+              y: room.y + r + 1 + (room.h - 2 * r - 2) * fy,
+              other: false,
+              k,
+            }),
+          );
+          const rodEnd = bx1 + 36;
+          vessel = (
+            <G>
+              <Ellipse cx={w / 2} cy={by + bh + 22} rx={150} ry={5} fill={c.shadow} />
+              {/* Nozzle and its rubber cap: no air gets out. */}
+              <Rect
+                x={bx0 - 18}
+                y={cy - 6}
+                width={18}
+                height={12}
+                fill={url(ids.glass)}
+                stroke={c.glassEdge}
+                strokeWidth={1.5}
+              />
+              <Rect
+                x={bx0 - 30}
+                y={cy - 9}
+                width={14}
+                height={18}
+                rx={4}
+                fill={c.rubber}
+                stroke={c.glassEdge}
+              />
+              {/* Barrel. */}
+              <Rect
+                x={bx0}
+                y={by}
+                width={bx1 - bx0}
+                height={bh}
+                rx={6}
+                fill={url(ids.glass)}
+                stroke={c.glassEdge}
+                strokeWidth={2}
+              />
+              {Array.from({ length: 11 }, (_, i) => (
+                <Line
+                  key={`t${i}`}
+                  x1={bx0 + 12 + i * ((bx1 - bx0 - 24) / 10)}
+                  y1={by}
+                  x2={bx0 + 12 + i * ((bx1 - bx0 - 24) / 10)}
+                  y2={by + (i % 5 === 0 ? 12 : 7)}
+                  stroke={c.glassEdge}
+                  strokeWidth={1.2}
+                />
+              ))}
+              {/* Finger grips at the barrel's end. */}
+              <Rect
+                x={bx1 - 2}
+                y={by - 12}
+                width={7}
+                height={bh + 24}
+                rx={3}
+                fill={url(ids.glass)}
+                stroke={c.glassEdge}
+                strokeWidth={1.5}
+              />
+            </G>
+          );
+          front = (
+            <G>
+              {/* The plunger: a rubber stopper on a metal rod, pushed in. */}
+              <Rect
+                x={px + 8}
+                y={cy - 6}
+                width={rodEnd - px - 8}
+                height={12}
+                fill={c.metal}
+                stroke={c.metalDark}
+                strokeWidth={1}
+              />
+              <Rect x={px + 8} y={cy - 6} width={rodEnd - px - 8} height={12} fill={url(ids.rod)} />
+              <Rect
+                x={px}
+                y={by + 2}
+                width={10}
+                height={bh - 4}
+                rx={2}
+                fill={c.rubber}
+                stroke={c.glassEdge}
+              />
+              <Rect
+                x={rodEnd}
+                y={cy - 26}
+                width={8}
+                height={52}
+                rx={3}
+                fill={c.metal}
+                stroke={c.metalDark}
+                strokeWidth={1}
+              />
+              <Rect x={rodEnd} y={cy - 26} width={8} height={52} rx={3} fill={url(ids.rod)} />
+              {/* The push. */}
+              <Path
+                d={`M ${rodEnd + 42} ${cy} H ${rodEnd + 14}`}
+                stroke={c.chartHighlight}
+                strokeWidth={chart.stroke}
+              />
+              <Path
+                d={`M ${rodEnd + 21} ${cy - 5} L ${rodEnd + 13} ${cy} L ${rodEnd + 21} ${cy + 5}`}
+                fill="none"
+                stroke={c.chartHighlight}
+                strokeWidth={chart.stroke}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <ChartText
+                x={rodEnd + 28}
+                y={cy - 10}
+                fontSize={chart.value}
+                fontWeight="700"
+                fill={c.chartHighlight}
+                textAnchor="middle"
+              >
+                push
+              </ChartText>
+              {/* Glass in front: a bright streak along the barrel. */}
+              <Rect
+                x={bx0 + 4}
+                y={by + 7}
+                width={bx1 - bx0 - 8}
+                height={4}
+                rx={2}
+                fill={c.glassShine}
+                fillOpacity={0.4}
+              />
+            </G>
+          );
+        } else {
+          // A closed glass jar with a screw lid, standing on the table.
+          const jw = Math.min(w * 0.62, 240);
+          const x0 = w / 2 - jw / 2;
+          const lidH = 14;
+          const y0 = 8 + lidH;
+          const bottom = h - 34;
+          const jh = bottom - y0;
+          const inner = { x: x0 + 5, y: y0 + 4, w: jw - 10, bottom: bottom - 5 };
+          if (state.state === 'solid') {
+            const cols = 8;
+            const rows = 5;
+            const gap = 2 * r + 1;
+            for (let i = 0; i < rows; i++)
+              for (let j = 0; j < cols; j++)
+                dots.push({
+                  x: w / 2 + (j - (cols - 1) / 2) * gap,
+                  y: inner.bottom - r - 1 - i * gap,
+                  other: state.mixed ? (i + j) % 3 === 0 : false,
+                  k: i * cols + j,
+                });
+            // Tiny wiggle arcs at the block's edges: the particles shake in place.
+            for (const d of dots) {
+              const col = d.k % cols;
+              const side = col === 0 ? -1 : col === cols - 1 ? 1 : 0;
+              const topRow = d.k >= (rows - 1) * cols;
+              if (side === 0 && !(topRow && col % 2 === 1)) continue;
+              const ax = d.x + side * (r + 3);
+              const ay = side ? d.y : d.y - r - 3;
+              marks.push(
+                <Path
+                  key={`w${d.k}`}
+                  d={
+                    side
+                      ? `M ${ax} ${ay - 4} Q ${ax + side * 3} ${ay} ${ax} ${ay + 4}`
+                      : `M ${ax - 4} ${ay} Q ${ax} ${ay - 3} ${ax + 4} ${ay}`
+                  }
+                  fill="none"
+                  stroke={c.chartInk}
+                  strokeOpacity={0.6}
+                  strokeWidth={1.3}
+                  strokeLinecap="round"
+                />,
+              );
+            }
+          } else if (state.state === 'liquid') {
+            const cols = 8;
+            const rows = 4;
+            const gap = 2 * r + 5;
+            for (let i = 0; i < rows; i++)
+              for (let j = 0; j < cols; j++) {
+                const k = i * cols + j;
+                dots.push({
+                  x: w / 2 + (j - (cols - 1) / 2) * gap + JITTER[k % 16]! * 5,
+                  y: inner.bottom - r - 3 - i * gap + JITTER[(k + 5) % 16]! * 4,
+                  other: state.mixed ? (i + j) % 3 === 0 : false,
+                  k,
+                });
+              }
+            // Water to just over the top row, with a meniscus curving up at the glass.
+            const level = inner.bottom - rows * gap - 2;
+            const lx0 = inner.x;
+            const lx1 = inner.x + inner.w;
+            const surface = `M ${lx0} ${level - 5} Q ${lx0 + 4} ${level} ${lx0 + 16} ${level} H ${lx1 - 16} Q ${lx1 - 4} ${level} ${lx1} ${level - 5}`;
+            liquid = (
+              <G>
+                <Path
+                  d={`${surface} V ${inner.bottom - 12} Q ${lx1} ${inner.bottom} ${lx1 - 12} ${inner.bottom} H ${lx0 + 12} Q ${lx0} ${inner.bottom} ${lx0} ${inner.bottom - 12} Z`}
+                  fill={url(ids.water)}
+                  fillOpacity={0.45}
+                />
+                <Path d={surface} fill="none" stroke={c.waterDeep} strokeWidth={1.5} />
+              </G>
+            );
+            // Short tails: the particles slide past each other.
+            for (const d of dots) {
+              if (d.k % 3 !== 1) continue;
+              const dir = d.k % 2 ? 1 : -1;
+              marks.push(
+                <Path
+                  key={`s${d.k}`}
+                  d={`M ${d.x - dir * (r + 2)} ${d.y - 2} q ${-dir * 4} 2 ${-dir * 9} 0 M ${d.x - dir * (r + 2)} ${d.y + 3} q ${-dir * 3} 2 ${-dir * 6} 0`}
+                  fill="none"
+                  stroke={c.chartInk}
+                  strokeOpacity={0.55}
+                  strokeWidth={1.3}
+                  strokeLinecap="round"
+                />,
+              );
+            }
+          } else {
+            const room = {
+              x: inner.x + 4,
+              y: inner.y + 6,
+              w: inner.w - 8,
+              h: inner.bottom - inner.y - 10,
+            };
+            GAS_SPOTS.forEach(([fx, fy], k) =>
+              dots.push({
+                x: room.x + r + 14 + (room.w - 2 * r - 28) * fx,
+                y: room.y + r + 2 + (room.h - 2 * r - 4) * fy,
+                other: state.mixed ? k % 3 === 0 : false,
+                k,
+              }),
+            );
+          }
+          vessel = (
+            <G>
+              <Ellipse cx={w / 2 + 3} cy={bottom + 2} rx={jw * 0.56} ry={5} fill={c.shadow} />
+              <Path
+                d={`M ${x0} ${y0} H ${x0 + jw} V ${bottom - 18} Q ${x0 + jw} ${bottom} ${x0 + jw - 18} ${bottom} H ${x0 + 18} Q ${x0} ${bottom} ${x0} ${bottom - 18} Z`}
+                fill={url(ids.glass)}
+                stroke={c.glassEdge}
+                strokeWidth={2}
+              />
+              {/* The screw thread under the lid. */}
+              <Line
+                x1={x0}
+                y1={y0 + 6}
+                x2={x0 + jw}
+                y2={y0 + 6}
+                stroke={c.glassEdge}
+                strokeWidth={1}
+              />
+            </G>
+          );
+          front = (
+            <G>
+              {/* Glass in front: a bright streak down the left of the jar. */}
+              <Rect
+                x={x0 + 9}
+                y={y0 + 14}
+                width={5}
+                height={jh - 40}
+                rx={2.5}
+                fill={c.glassShine}
+                fillOpacity={0.4}
+              />
+              {/* The metal lid, ridged at the edge. */}
+              <Rect
+                x={x0 - 4}
+                y={y0 - lidH}
+                width={jw + 8}
+                height={lidH}
+                rx={3}
+                fill={c.metal}
+                stroke={c.metalDark}
+                strokeWidth={1}
+              />
+              <Rect
+                x={x0 - 4}
+                y={y0 - lidH}
+                width={jw + 8}
+                height={lidH}
+                rx={3}
+                fill={url(ids.lid)}
+              />
+              {Array.from({ length: Math.floor(jw / 8) }, (_, i) => (
+                <Line
+                  key={`r${i}`}
+                  x1={x0 + 2 + i * 8}
+                  y1={y0 - lidH + 3}
+                  x2={x0 + 2 + i * 8}
+                  y2={y0 - 3}
+                  stroke={c.metalDark}
+                  strokeOpacity={0.45}
+                />
+              ))}
+            </G>
+          );
+        }
+        // Gas: every particle flies in a straight line until it hits another or the wall.
+        // (Squeezed air has no room to draw the flights: the crowding is the point.)
+        if (state.state === 'gas' && !squeezed)
+          for (const d of dots) marks.push(flight(d.x, d.y, GAS_HEADINGS[d.k]!, 18, d.k));
+
+        const caption = squeezed
+          ? 'the same particles in less room'
+          : state.mixed
+            ? 'two kinds of particles, mixed'
+            : state.state === 'solid'
+              ? 'packed tight, only wiggling'
+              : state.state === 'liquid'
+                ? 'close, sliding past each other'
+                : 'far apart, flying about';
+        return (
+          <Svg width={w} height={h}>
+            <Defs>
+              <Glass id={ids.glass} />
+              <Deepen id={ids.water} from={c.waterTop} to={c.water} />
+              <Ball id={ids.main} color={main} />
+              <Ball id={ids.other} color={c.chartSecond} />
+              <Sheen id={ids.lid} />
+              <Sheen id={ids.rod} vertical />
+            </Defs>
+            {vessel}
+            {liquid}
+            {marks}
+            {dots.map((d, i) => (
+              <Circle
+                key={i}
+                cx={d.x}
+                cy={d.y}
+                r={r}
+                fill={url(d.other ? ids.other : ids.main)}
+                stroke={c.chartInk}
+                strokeOpacity={0.7}
+                strokeWidth={1}
+              />
+            ))}
+            {front}
+            {state.mixed ? (
+              <G>
+                {/* The key: which particles are sugar. */}
+                {[
+                  ['water', ids.main],
+                  ['sugar', ids.other],
+                ].map(([name, id], i) => (
+                  <G key={name}>
+                    <Circle
+                      cx={12}
+                      cy={40 + i * 22}
+                      r={6.5}
+                      fill={url(id!)}
+                      stroke={c.chartInk}
+                      strokeOpacity={0.7}
+                    />
+                    <ChartText x={23} y={44 + i * 22} fontSize={chart.label}>
+                      {name}
+                    </ChartText>
+                  </G>
+                ))}
+              </G>
+            ) : null}
+            <ChartText x={w / 2} y={captionY} fontSize={chart.value} textAnchor="middle">
+              {caption}
+            </ChartText>
+          </Svg>
+        );
+      }}
+    </Canvas>
+  );
 }

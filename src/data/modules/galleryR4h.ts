@@ -65,4 +65,33 @@ export const R4H_GALLERY_LAYOUTS: LayoutDef[] = [
       },
     ],
   },
+  // Q33: s.5.particles-matter, the mixed and squeezed scenes first, and a mixed solid.
+  {
+    kind: 'explore',
+    id: 'g.r4h-particles',
+    assumptions: ['Tap a scene to see how the particles are arranged.'],
+    figure: { kind: 'particles' },
+    scenes: [
+      {
+        label: 'Sugar in water',
+        particles: { state: 'liquid', mixed: true },
+        lines: ['The sugar particles spread among the water particles.'],
+      },
+      {
+        label: 'Squeezed air',
+        particles: { state: 'gas', squeezed: true },
+        lines: ['The same particles in less room.'],
+      },
+      {
+        label: 'Gas',
+        particles: { state: 'gas' },
+        lines: ['The particles are far apart and fly about.'],
+      },
+      {
+        label: 'Sugar in ice',
+        particles: { state: 'solid', mixed: true },
+        lines: ['Sugar particles frozen in among the water particles.'],
+      },
+    ],
+  },
 ];

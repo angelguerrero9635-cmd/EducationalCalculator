@@ -2224,10 +2224,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Particles in a glass jar or syringe, with motion marks by state',
     kind: 'particles',
     pages: ['s.5.particles-matter'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4h-particles'],
     notes:
-      'Urgency: medium. Weak now: Solid is a 40-dot block at the bottom of a tall empty box (~60 % blank); flat purple dots in black rings look like app buttons; plain black rectangle, not a container; tiny caption; nothing shows motion. Redo: Container as a glass jar or beaker (Glass, rim, FloorShadow); syringe with a Metal plunger for squeezed air. Particles as Ball spheres in a material token (second token for sugar). Solid: a lattice block with tiny wiggle arcs. Liquid: lower half to a meniscus in a water tint, short motion tails. Gas: spread across the jar with longer motion arrows. Caption at chart.value. Particle counts and GAS_SPOTS fixed.',
+      'Urgency: medium. Weak now: Solid is a 40-dot block at the bottom of a tall empty box (~60 % blank); flat purple dots in black rings look like app buttons; plain black rectangle, not a container; tiny caption; nothing shows motion. Redo: Container as a glass jar or beaker (Glass, rim, FloorShadow); syringe with a Metal plunger for squeezed air. Particles as Ball spheres in a material token (second token for sugar). Solid: a lattice block with tiny wiggle arcs. Liquid: lower half to a meniscus in a water tint, short motion tails. Gas: spread across the jar with longer motion arrows. Caption at chart.value. Particle counts and GAS_SPOTS fixed.' +
+      ' Drawn (round 4, group H; figuresR4h.tsx Particles): a closed glass jar (Glass, ridged Metal-sheen lid, front streak, FloorShadow) holding Ball spheres in waterDeep (sugar in chartSecond, with a water/sugar key). Solid: the 8 × 5 lattice with wiggle arcs at its edges; liquid: 8 × 4 under a water tint with a meniscus and short slide tails; gas: the ten GAS_SPOTS with 18 px dashed flight arrows at fixed headings. Squeezed air: a capped syringe with graduations, finger grips, a rubber stopper on a Metal rod pushed to half the barrel and a push arrow; its ten particles smaller (7 px) so they fit without touching. Counts (40, 32, 10) and GAS_SPOTS unchanged; caption at chart.value. No page change.',
   },
   {
     id: 'Q34',
