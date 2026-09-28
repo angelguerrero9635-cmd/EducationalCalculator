@@ -2057,7 +2057,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'seriesCircuit',
     pages: ['he.engineering.circuits-1#0'],
     status: 'drawn',
-    gallery: ['g.series-circuit', 'g.series-circuit-big'],
+    gallery: ['g.series-loop', 'g.series-loop-big'],
     notes:
       'Urgency: high. Weak now: Review page (he.engineering.circuits-1#0) shows "Skill not found", so no screenshot. Source draws a line-segment schematic unlike the redrawn Circuit.tsx; drag cue only a hint line. Redo: Bring it to Circuit.tsx\'s standard, reusing its Chip and wire styling. Standard symbols with resistors at 2.5 px, battery with long and short plates and 14 px +/− marks, each resistor\'s value in a 13 px chip, a current arrow labelled "I = …", a visible DragHandle on each resistor chip. Optional small real-battery inset. The page is a college topic: open it at /course/he.engineering.circuits-1/topic/0. Drawn (round 4, group G): the loop in Circuit.tsx\'s copper wire (Chip now exported from Circuit.tsx with a size option); source as long (+) and short thick (−) plates with 14 px +/− marks; resistors as 2.5 px zigzags, each resistance on a 13 px chip above and its voltage drop on one below; chevrons on the wires and a filled accent current arrow labelled "I = …" beside the bottom wire, clockwise out of +; a DragHandle on the source and on each resistor body (not on the chips, so no label is covered). The caption states the loop with every number (V = V₁ + V₂ = … and I = V ÷ (R₁ + R₂) = …) and the drag hint. No real-battery inset: the schematic is what the college page teaches. No page change.',
   },
@@ -2076,10 +2076,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Push arrows sized by force, kids pushing, a net-force arrow',
     kind: 'pushes',
     pages: ['s.3.balanced-forces'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.pushes', 'g.pushes-lopsided'],
     notes:
-      'Urgency: medium. Weak now: Crate good, but arrows thin, same colour and same length for 20 N and 15 N, so the imbalance doesn\'t show; small grey captions on the floor line; empty width. Redo: Arrow length scaled to force (20 N visibly longer), ~6 px thick with filled heads, each side its own theme colour. Small hands or kids pushing at each tail. "net 5 N →" arrow above the crate in the accent when unbalanced, "=" marks when balanced. FloorShadow, wood floor line, captions in chart.label under each arrow.',
+      'Urgency: medium. Weak now: Crate good, but arrows thin, same colour and same length for 20 N and 15 N, so the imbalance doesn\'t show; small grey captions on the floor line; empty width. Redo: Arrow length scaled to force (20 N visibly longer), ~6 px thick with filled heads, each side its own theme colour. Small hands or kids pushing at each tail. "net 5 N →" arrow above the crate in the accent when unbalanced, "=" marks when balanced. FloorShadow, wood floor line, captions in chart.label under each arrow. Drawn (round 4, group G): the crate on a planked wooden floor, a child leaning into each push with palms at the arrow\'s tail (blue shirt and arrow for the push to the right, orange for the push to the left). Arrows are 6 px with filled heads, on one scale set by the biggest value shown (so 20 N is exactly 4/3 of 15 N; spec.max no longer sets the scale), values in 13 px bold over each arrow and the names in 12 px under the floor. Above the crate: the extra push as an ink arrow on the same scale toward the way the crate moves, labelled with its name and value; when the pushes are equal, an "=" under "Balanced". The net arrow is ink, not the accent, so it isn\'t read as a third push beside the blue one. A push of 0 draws no child or arrow (checked by typing 50 and 0, and 30 and 30: demos can\'t hold a 0 with a unit). No page change.',
   },
   {
     id: 'Q23',
