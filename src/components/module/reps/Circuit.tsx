@@ -15,14 +15,18 @@ type Spec = Extract<Representation, { kind: 'circuit' }>;
 /** Pixels of vertical drag per step of the voltage. */
 const PX_PER_STEP = 8;
 
-/** A small label on a card-colored chip, so a wire behind it doesn't run through the text. */
-function Chip({
+/**
+ * A small label on a card-colored chip, so a wire behind it doesn't run through the text.
+ * `size` is the font size (the series circuit uses chart.value).
+ */
+export function Chip({
   x,
   y,
   text,
   w,
   faded,
   highlight,
+  size = chart.tiny,
 }: {
   x: number;
   y: number;
@@ -30,17 +34,25 @@ function Chip({
   w: number;
   faded?: boolean;
   highlight?: boolean;
+  size?: number;
 }) {
   const c = usePalette();
-  const at = fitLabel(x, text, chart.tiny, w);
-  const tw = text.length * chart.tiny * 0.58 + 6;
+  const at = fitLabel(x, text, size, w);
+  const tw = text.length * size * 0.58 + 6;
   return (
     <G opacity={faded ? 0.45 : 1}>
-      <Rect x={at.x - tw / 2} y={y - 10} width={tw} height={14} rx={3} fill={c.background} />
+      <Rect
+        x={at.x - tw / 2}
+        y={y - size}
+        width={tw}
+        height={size + 4}
+        rx={3}
+        fill={c.background}
+      />
       <ChartText
         {...at}
         y={y}
-        fontSize={chart.tiny}
+        fontSize={size}
         fontWeight="600"
         fill={highlight ? c.chartHighlight : c.chartInk}
       >

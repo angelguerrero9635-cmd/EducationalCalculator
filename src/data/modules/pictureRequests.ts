@@ -2056,10 +2056,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Series circuit in the Circuit.tsx style with resistor chips and a current arrow',
     kind: 'seriesCircuit',
     pages: ['he.engineering.circuits-1#0'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.series-circuit', 'g.series-circuit-big'],
     notes:
-      'Urgency: high. Weak now: Review page (he.engineering.circuits-1#0) shows "Skill not found", so no screenshot. Source draws a line-segment schematic unlike the redrawn Circuit.tsx; drag cue only a hint line. Redo: Bring it to Circuit.tsx\'s standard, reusing its Chip and wire styling. Standard symbols with resistors at 2.5 px, battery with long and short plates and 14 px +/− marks, each resistor\'s value in a 13 px chip, a current arrow labelled "I = …", a visible DragHandle on each resistor chip. Optional small real-battery inset. The page is a college topic: open it at /course/he.engineering.circuits-1/topic/0.',
+      'Urgency: high. Weak now: Review page (he.engineering.circuits-1#0) shows "Skill not found", so no screenshot. Source draws a line-segment schematic unlike the redrawn Circuit.tsx; drag cue only a hint line. Redo: Bring it to Circuit.tsx\'s standard, reusing its Chip and wire styling. Standard symbols with resistors at 2.5 px, battery with long and short plates and 14 px +/− marks, each resistor\'s value in a 13 px chip, a current arrow labelled "I = …", a visible DragHandle on each resistor chip. Optional small real-battery inset. The page is a college topic: open it at /course/he.engineering.circuits-1/topic/0. Drawn (round 4, group G): the loop in Circuit.tsx\'s copper wire (Chip now exported from Circuit.tsx with a size option); source as long (+) and short thick (−) plates with 14 px +/− marks; resistors as 2.5 px zigzags, each resistance on a 13 px chip above and its voltage drop on one below; chevrons on the wires and a filled accent current arrow labelled "I = …" beside the bottom wire, clockwise out of +; a DragHandle on the source and on each resistor body (not on the chips, so no label is covered). The caption states the loop with every number (V = V₁ + V₂ = … and I = V ÷ (R₁ + R₂) = …) and the drag hint. No real-battery inset: the schematic is what the college page teaches. No page change.',
   },
   {
     id: 'Q21',
