@@ -5,6 +5,28 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Diagram redo review: three page-reviewers, 52 picture kinds
+
+- Setup: every picture kind or explore figure the pictures chat has never redrawn (its branch's
+  changed files against ours). Kinds no page uses and kinds it only extended were left out. For
+  each kind, `.review/redo/brief-*.md` lists its source file, one or two screenshots at 390 px
+  and every page that uses it: 61 screenshots, three reviewers of about 17 kinds each, about
+  45k tokens each. The reports are in `.review/redo/report-*.md`.
+- Found: all 52 need a redraw. 20 are urgent: flat clip-art where the standard asks for real
+  materials (coins, balloon, body systems, fronts, plates, continents, vibration, cube trains,
+  flashlight), or pictures that misstate the lesson. Examples: one hop of 30 on a "subtract
+  tens" page; "above" drawn touching the box; colours that mean the wrong thing on the water pie.
+  Explore figures are the weakest group: none of the `figures6.tsx` figures uses the paint
+  helpers.
+- Shared fixes: size a canvas from the values shown, not `spec.max`; keep explore scenes off
+  the screen edge; one stroke and type scale for flat diagrams, with labels at `chart.value`,
+  never below 12 px.
+- Changes made: tracker entries Q01–Q52 (most urgent first) for the pictures chat, in
+  `docs/RENDERINGS_ROUND_4.md`.
+- Missed: seriesCircuit and waterfall were reviewed from source. The one-off screenshot script
+  used for this review opened every id at `/skill/…`, and college topics live at
+  `/course/<course>/topic/<n>`. `pnpm shots` already routes them; use it next time.
+
 ## K–6 diagram review: three lesson-reviewers (K–2, 3–4, 5–6)
 
 - Setup: `.review/diagrams/pages-*.md`, one entry per page with:
