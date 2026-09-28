@@ -1,26 +1,43 @@
 import { useRef } from 'react';
-import { StyleSheet } from 'react-native';
-import Svg, { Defs, Line } from 'react-native-svg';
+import Svg, { G, Line, Rect } from 'react-native-svg';
 
-import { Text } from '@/components/Text';
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
-import { chart, font, space, usePalette } from '@/theme';
+import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { LitRect, TopLight, usePaintIds } from './paint';
-import { Canvas, ChartText, DragHandle, niceCeil, useFrozen, useRep, Caption } from './common';
+import { Canvas, ChartText, DragHandle, useFrozen, useRep, Caption } from './common';
 
 type Spec = Extract<Representation, { kind: 'waterfall' }>;
 type Step = Spec['items'][number] & { from: number; to: number };
 
+/** Label sizes and heights: the value row over the bars, a name line, and the key. */
+const LABEL = chart.label;
+const LINE = 15;
+const VALUES_H = 26;
+const KEY_H = 22;
+
+/** Splits a name into lines about `width` px wide (at most two; the rest joins the second). */
+function wrap(text: string, width: number) {
+  const per = Math.max(5, Math.floor(width / (LABEL * 0.58)));
+  const lines: string[] = [];
+  for (const word of text.split(' ')) {
+    const last = lines[lines.length - 1];
+    if (last !== undefined && `${last} ${word}`.length <= per)
+      lines[lines.length - 1] = `${last} ${word}`;
+    else lines.push(word);
+  }
+  return lines.length > 2 ? [lines[0]!, lines.slice(1).join(' ')] : lines;
+}
+
 /**
- * Waterfall: each item moves a running total up (+) or down (−) from where the last one
- * ended; the final bar is the total. Drag the moving end of an editable item.
+ * Waterfall, flat: each item moves a running total up (green, +) or down (red, −) from where the
+ * last one ended, joined by dashed connectors; the final bar is the total. Each change's value
+ * is in a row over its bar, clear of the handles; the names (and symbols) are under the bars and
+ * a key says what the colors mean. Drag the moving end of an editable item.
  */
 export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
-  const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
   const editable = spec.items.filter((i) => i.editable).map((i) => i.var);
@@ -34,32 +51,43 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const levels = [0, total, ...steps.flatMap((s) => [s.from, s.to])];
   const lo = Math.min(...levels);
   const hi = Math.max(...levels);
-  const range = useFrozen({ min: lo < 0 ? -niceCeil(-lo) : 0, max: hi > 0 ? niceCeil(hi) : 1 });
+  // There is no scale to read, so the bars fill the height (a little room over the tallest).
+  const range = useFrozen({ min: lo < 0 ? lo * 1.06 : 0, max: hi > 0 ? hi * 1.06 : 1 });
+  const ids = [...spec.items.map((i) => i.var), spec.total];
+  const names = (w: number) => {
+    const slot = (w - 12) / ids.length;
+    return ids.map((id) => {
+      const v = rep.variable(id);
+      const lines = wrap(v.name, slot - 4);
+      return rep.words ? lines : [v.symbol, ...lines];
+    });
+  };
+  const namesH = (w: number) => Math.max(...names(w).map((l) => l.length)) * LINE + 10;
+  const plotH = (w: number) => Math.min(240, w * 0.5);
 
   return (
     <>
-      <Canvas aspect={0.65}>
+      <Canvas aspect={(w) => (VALUES_H + 14 + plotH(w) + namesH(w) + KEY_H) / w}>
         {({ w, h }) => {
-          const top = 24;
-          // K–5 pages name each bar under it (two short lines); later ones use the symbol.
-          const bottom = rep.words ? 40 : 28;
+          const top = VALUES_H + 14;
+          const bottom = namesH(w) + KEY_H;
           const { min, max } = range.value;
           const scale = (h - top - bottom) / (max - min);
-          const sy = (v: number) => top + (max - v) * scale;
-          const slot = (w - 16) / (steps.length + 1);
-          const barW = Math.min(52, slot * 0.62);
-          const cx = (i: number) => 8 + slot * (i + 0.5);
+          // Kept inside the plot while a drag runs past the frozen range.
+          const sy = (v: number) => top + (max - Math.min(max, Math.max(min, v))) * scale;
+          const slot = (w - 12) / ids.length;
+          const barW = Math.min(64, slot * 0.64);
+          const cx = (i: number) => 6 + slot * (i + 0.5);
+          const labels = names(w);
           const bar = (
             key: string,
             i: number,
             from: number,
             to: number,
             fill: string,
-            dashed: boolean,
             faded: boolean,
           ) => (
-            <LitRect
-              lightId={paint.light}
+            <Rect
               key={key}
               rx={2}
               x={cx(i) - barW / 2}
@@ -67,33 +95,80 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
               width={barW}
               height={Math.max(1, Math.abs(sy(to) - sy(from)))}
               fill={fill}
-              stroke={c.chartInk}
-              strokeDasharray={dashed ? chart.dash : undefined}
+              fillOpacity={0.85}
+              stroke={fill}
+              strokeWidth={1}
               opacity={faded ? 0.35 : 1}
             />
           );
-          // Under each bar: its symbol, or on K–5 pages its name on at most two lines.
-          const barName = (id: string, x: number, y: number, key: string) =>
-            (rep.words ? twoLines(rep.variable(id).name) : [rep.variable(id).symbol]).map(
-              (line, k) => (
-                <ChartText
-                  key={`${key}-${k}`}
-                  x={x}
-                  y={y + k * 13}
-                  fontSize={chart.small}
-                  fill={c.chartMuted}
-                  textAnchor="middle"
-                >
-                  {line}
-                </ChartText>
-              ),
-            );
+          // No sign on 0 ("0", not "−0"); a true minus sign.
+          const change = (s: Step) =>
+            rep.known(s.var)
+              ? `${rep.shown(s.var) === 0 ? '' : s.sign > 0 ? '+' : '−'}${formatNumber(rep.shown(s.var))}`
+              : '?';
+          const keyY = h - KEY_H + 12;
+          const key = [
+            { fill: c.blockGreen, text: 'Increase' },
+            { fill: c.blockRed, text: 'Decrease' },
+            { fill: c.chartHighlight, text: 'Total' },
+          ];
+          const keyW = key.map((k) => 18 + k.text.length * LABEL * 0.6);
+          const keyX0 = (w - keyW.reduce((a, b) => a + b + 12, -12)) / 2;
           return (
             <>
               <Svg width={w} height={h}>
-                <Defs>
-                  <TopLight id={paint.light} />
-                </Defs>
+                {/* Each change's value, in a row over its bar. */}
+                {steps.map((s, i) => (
+                  <ChartText
+                    key={`v${i}`}
+                    x={cx(i)}
+                    y={VALUES_H - 6}
+                    fontSize={chart.value}
+                    fontWeight="700"
+                    textAnchor="middle"
+                  >
+                    {change(s)}
+                  </ChartText>
+                ))}
+                <ChartText
+                  x={cx(steps.length)}
+                  y={VALUES_H - 6}
+                  fontSize={chart.value}
+                  fontWeight="700"
+                  textAnchor="middle"
+                >
+                  {rep.known(spec.total) ? formatNumber(total) : '?'}
+                </ChartText>
+                <Line
+                  x1={6}
+                  y1={VALUES_H + 2}
+                  x2={w - 6}
+                  y2={VALUES_H + 2}
+                  stroke={c.chartGrid}
+                  strokeWidth={1}
+                />
+                {steps.map((s, i) => [
+                  // Connector from this bar's end to the next bar (the last one to the total).
+                  <Line
+                    key={`k${i}`}
+                    x1={cx(i) + barW / 2}
+                    y1={sy(s.to)}
+                    x2={cx(i + 1) - barW / 2}
+                    y2={sy(s.to)}
+                    stroke={c.chartMuted}
+                    strokeWidth={1}
+                    strokeDasharray={chart.dashFine}
+                  />,
+                  bar(
+                    `b${i}`,
+                    i,
+                    s.from,
+                    s.to,
+                    s.sign > 0 ? c.blockGreen : c.blockRed,
+                    !rep.known(s.var),
+                  ),
+                ])}
+                {bar('total', steps.length, 0, total, c.chartHighlight, !rep.known(spec.total))}
                 <Line
                   x1={4}
                   y1={sy(0)}
@@ -102,58 +177,33 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight}
                 />
-                {steps.map((s, i) => [
-                  bar(
-                    `b${i}`,
-                    i,
-                    s.from,
-                    s.to,
-                    s.sign > 0 ? c.chartFill : c.chartSurface,
-                    s.sign < 0,
-                    !rep.known(s.var),
-                  ),
-                  // Connector to the next bar (the last one leads into the total).
-                  <Line
-                    key={`k${i}`}
-                    x1={cx(i) + barW / 2}
-                    y1={sy(s.to)}
-                    x2={cx(i + 1) - barW / 2}
-                    y2={sy(s.to)}
-                    stroke={c.chartMuted}
-                    strokeDasharray={chart.dashFine}
-                  />,
-                  <ChartText
-                    key={`v${i}`}
-                    x={cx(i)}
-                    y={Math.min(sy(s.from), sy(s.to)) - (s.editable ? 20 : 6)}
-                    fontWeight="600"
-                    textAnchor="middle"
-                  >
-                    {rep.known(s.var)
-                      ? // No sign on 0 ("0", not "−0").
-                        `${rep.shown(s.var) === 0 ? '' : s.sign > 0 ? '+' : '−'}${formatNumber(rep.shown(s.var))}`
-                      : '?'}
-                  </ChartText>,
-                  ...barName(s.var, cx(i), h - bottom + 18, `s${i}`),
-                ])}
-                {bar(
-                  'total',
-                  steps.length,
-                  0,
-                  total,
-                  c.chartHighlight,
-                  false,
-                  !rep.known(spec.total),
+                {/* Names under the bars: the symbol first on later grades. */}
+                {labels.map((lines, i) =>
+                  lines.map((line, k) => (
+                    <ChartText
+                      key={`n${i}-${k}`}
+                      x={cx(i)}
+                      y={h - bottom + 16 + k * LINE}
+                      fontSize={LABEL}
+                      fontWeight={k === 0 ? '700' : '400'}
+                      textAnchor="middle"
+                    >
+                      {line}
+                    </ChartText>
+                  )),
                 )}
-                <ChartText
-                  x={cx(steps.length)}
-                  y={Math.min(sy(0), sy(total)) - 6}
-                  fontWeight="700"
-                  textAnchor="middle"
-                >
-                  {rep.known(spec.total) ? formatNumber(total) : '?'}
-                </ChartText>
-                {barName(spec.total, cx(steps.length), h - bottom + 18, 'total')}
+                {/* What the colors mean. */}
+                {key.map((k, i) => {
+                  const x = keyX0 + keyW.slice(0, i).reduce((a, b) => a + b + 12, 0);
+                  return (
+                    <G key={k.text}>
+                      <Rect x={x} y={keyY - 10} width={12} height={12} rx={2} fill={k.fill} />
+                      <ChartText x={x + 17} y={keyY} fontSize={LABEL} fill={c.chartMuted}>
+                        {k.text}
+                      </ChartText>
+                    </G>
+                  );
+                })}
               </Svg>
               {steps.map((s, i) =>
                 s.editable ? (
@@ -187,14 +237,6 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      {/* Symbol key (K–5 bars carry their names), then the subtotals the lesson is about. */}
-      {rep.words ? null : (
-        <Text style={[styles.caption, { color: c.textMuted }]}>
-          {[...spec.items.map((i) => i.var), spec.total]
-            .map((id) => `${rep.variable(id).symbol} ${rep.variable(id).name}`)
-            .join(' · ')}
-        </Text>
-      )}
       {spec.caption ? (
         <Caption>
           {spec.caption.map((id) => `${rep.variable(id).name}: ${rep.label(id)}`).join('\n')}
@@ -203,23 +245,3 @@ export function Waterfall({ spec, calc }: { spec: Spec; calc: Calculator }) {
     </>
   );
 }
-
-/** A name on one line if short, else split at the space nearest its middle. */
-function twoLines(name: string): string[] {
-  if (name.length <= 9 || !name.includes(' ')) return [name];
-  const spaces = [...name.matchAll(/ /g)].map((m) => m.index);
-  const cut = spaces.reduce((a, b) =>
-    Math.abs(b - name.length / 2) < Math.abs(a - name.length / 2) ? b : a,
-  );
-  return [name.slice(0, cut), name.slice(cut + 1)];
-}
-
-const styles = StyleSheet.create({
-  caption: {
-    fontSize: font.body,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginTop: space.sm,
-    paddingHorizontal: space.lg,
-  },
-});

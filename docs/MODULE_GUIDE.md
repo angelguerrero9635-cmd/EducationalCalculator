@@ -149,15 +149,21 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `hundredChart`     | `piece`, `multiplesOf`, `max: 1000`      | the number and its 4 neighbors; or multiples shaded; 1000: its hundred only   |
 | `hops`             | a hop `sign` naming a variable (1 or −1) | a + / − switch that flips that hop                                            |
 | `rectangle`        | `grid`                                   | unit squares on a perimeter page                                              |
+| `rectangle`        | `roof`                                   | a slate roof in perspective with rain falling on it (roof-rain page)          |
+| `prism`            | `counting`                               | Faces / Edges / Corners buttons that number each one on the solid             |
 | `polygon`          | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |
 | `rectilinear`      | `cut` instead of `right`                 | a rectangle with a corner cut out, both areas labeled                         |
 | `ruler`            | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |
 | `equalGroups`      | `unit: 10`, `bundles`                    | ten-rods, `each` counted in tens; bundles: rows of ten circles, each numbered |
 | `bars`             | `scale` as a variable                    | the grid spacing read from a value                                            |
+| `bars`             | `icon` on a bar                          | a small card icon under the bar's name                                        |
+| `pieChart`         | `colors`, `group`                        | palette colors that mean something; a group pulled out and bracketed          |
+| `tally`            | `icons`                                  | a card icon beside each row's name                                            |
 | `pictureGraph`     | (with a key)                             | half a picture for a half count                                               |
 | `fractionLine`     | `second`, `decimal`                      | a second line with a dashed join when equal; tenths labeled 0.1 … 1           |
 | `table`            | `rows` as a function of the values       | rows that follow a parameter                                                  |
 | `array`            | `sides`                                  | the rows and columns labeled, “?” until solved                                |
+| `timeline`         | `back`                                   | jumps counted back from the end (default: a page opening on the end time)     |
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
 | `placeValueChart`  | `periods`                                | whole numbers to hundred billions, columns grouped ones … billions            |
@@ -336,7 +342,7 @@ Grade 6 science adds `cell` (a plant, animal or bacterial cell with one part lit
 `bodySystems`, `waterCycle` (one process lit, with its driver), `front` (cold, warm or
 stationary; or a high or low), `plates` (five boundaries, with rock ages or the mantle's
 flow), `continents` (250, 150 and 0 million years ago, with a fossil, rock or shape clue)
-and `rockCycle`, in `layouts/figures6.tsx`. `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
+and `rockCycle` (each in its own file there; the cell in `layouts/figuresR4h.tsx`). `foodWeb` (`layouts/foodWeb.tsx`): sun, grass,
 rabbit, grasshopper, mouse, frog, snake and hawk, each arrow "is eaten by"; a scene's `web`
 lights one `chain`, crosses out a `removed` animal and marks members that grow (`more`) or
 shrink (`fewer`). Grade 7 life science adds, in `layouts/figuresLife.tsx`: `leafCell` (a leaf in

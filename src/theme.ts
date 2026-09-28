@@ -52,6 +52,8 @@ const light = {
   onChartHighlight: '#FFFFFF',
   /** A second color for counters and parts beside the highlight (the yellow of two-color counters). */
   chartSecond: '#F4B740',
+  /** Hops that take away on a number line (Hops.tsx), beside the highlight for adding. */
+  hopBack: '#C2410C',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
@@ -121,6 +123,13 @@ const light = {
   blockBlue: '#3E7BD6',
   blockGreen: '#3DA35D',
   onBlock: '#FFFFFF',
+  /** Round-4 group A: a kraft cardboard box (faces, dark side, packing tape) and a red rubber ball. */
+  boxKraft: '#CFA36C',
+  boxKraftDark: '#A0743F',
+  boxTape: '#EAD7AE',
+  ballRed: '#E0453A',
+  /** A green felt counting mat. */
+  feltMat: '#CFE6CF',
   /** Lamp light through a microscope slide: bright in both themes, as it is in life. */
   slideLight: '#FFFBEA',
   /** Plastic tools (protractors, counters' tray). */
@@ -216,6 +225,9 @@ const light = {
   stormCloud: '#6B7486',
   mist: '#C3CAD4',
   sandbag: '#D8BF8F',
+  /** The water pie chart (round 4, group F): ice, and liquid fresh water beside the salt sea. */
+  ice: '#DDF1F7',
+  freshWater: '#38B2A4',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -255,6 +267,7 @@ const dark: Palette = {
   chartHighlight: '#8B83FF',
   onChartHighlight: '#0D0F14',
   chartSecond: '#B8862E',
+  hopBack: '#F08A4B',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
 
@@ -303,6 +316,11 @@ const dark: Palette = {
   blockBlue: '#3C74C8',
   blockGreen: '#3A9656',
   onBlock: '#FFFFFF',
+  boxKraft: '#A67E4E',
+  boxKraftDark: '#76532C',
+  boxTape: '#C5AE7F',
+  ballRed: '#C93C33',
+  feltMat: '#2C4435',
   slideLight: '#E6E0C4',
   plastic: '#22324A',
   life: '#4F8A4B',
@@ -372,6 +390,8 @@ const dark: Palette = {
   stormCloud: '#434A58',
   mist: '#5E6676',
   sandbag: '#9B8558',
+  ice: '#B7D6E0',
+  freshWater: '#2E9488',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

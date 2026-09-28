@@ -485,6 +485,8 @@ export interface Scene {
     columns?: number[];
     cells?: 'even' | 'odd';
     mirror?: boolean;
+    /** A turn-around pair: the cells row × column and column × row outlined (4 × 7, 7 × 4). */
+    pair?: [number, number];
   };
   /** The cell and the part lit (a `cell` figure). */
   cell?: {

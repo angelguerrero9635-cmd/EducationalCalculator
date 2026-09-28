@@ -25,6 +25,9 @@ export interface Axis {
   label?: string;
 }
 
+/** A thing measured with cubes in compare rows (drawn as the real object). */
+export type MeasuredThing = 'pencil' | 'ribbon' | 'crayon';
+
 /**
  * The table, chart or diagram that best shows a module's lesson. Every variable a
  * representation references must be one of the module's variables; interacting with it
@@ -117,8 +120,8 @@ export type Representation =
       icon: 'dot' | 'cube' | 'cup';
       /** Words for the comparison, e.g. ['more', 'fewer'] or ['longer', 'shorter']. */
       words: [string, string];
-      /** The thing measured, drawn above each row of cubes from the same left edge. */
-      object?: 'pencil' | 'ribbon' | 'crayon';
+      /** The thing measured, drawn above each row of cubes from the same left edge (or one per row). */
+      object?: MeasuredThing | [MeasuredThing, MeasuredThing];
     }
   /**
    * Tape diagram. Part-whole: one bar cut into `parts`, with a bracket for the `total`.
@@ -357,7 +360,13 @@ export type Representation =
   /** The same number of dots in a line, rows, a circle or scattered (a toggle picks). */
   | { kind: 'dotSet'; count: string }
   /** A tally chart: one row of tally marks per category. */
-  | { kind: 'tally'; rows: string[]; total?: string }
+  | {
+      kind: 'tally';
+      rows: string[];
+      total?: string;
+      /** A card icon per row, beside its name (apple, banana, grapes; sun, rain cloud). */
+      icons?: CardIcon[];
+    }
   /** A row of one kind of coin, picked with buttons (`value` in cents), `count` of them. */
   | { kind: 'coinRow'; value: string; count: string; total: string }
   /** A solid shape picked from sphere, cone, cylinder and cube, by its flat and curved faces. */
@@ -385,7 +394,15 @@ export type Representation =
       bundles?: true;
     }
   /** A prism on a base with `sides` sides (a cube when the base is a square). the sliders change it. */
-  | { kind: 'prism'; sides: string; faces: string; edges: string; corners: string }
+  | {
+      kind: 'prism';
+      sides: string;
+      faces: string;
+      edges: string;
+      corners: string;
+      /** Faces / Edges / Corners buttons that number each one on the solid. */
+      counting?: boolean;
+    }
   /** Objects arranged in pairs; an odd one sticks out. */
   | { kind: 'pairs'; value: string; max: number }
   /** Array with `rows` × `columns` of dots (or unit squares that tile a rectangle). Drag the corner. */
@@ -441,7 +458,8 @@ export type Representation =
   /** Bar chart. Bars marked `editable` can be dragged; the range grows to fit the values. */
   | {
       kind: 'bars';
-      bars: { var: string; editable?: boolean }[];
+      /** `icon`: a small card icon under the bar's name (science pages: a sun, a rain cloud). */
+      bars: { var: string; editable?: boolean; icon?: CardIcon }[];
       /** Smallest range shown (grows to fit larger values). */
       min: number;
       max: number;
@@ -493,6 +511,8 @@ export type Representation =
       around?: string;
       /** Draw the unit squares even with only a perimeter (to count the area too). */
       grid?: boolean;
+      /** Draw it as a real roof in perspective: slate shingles, a gutter and rain falling. */
+      roof?: boolean;
       extent: number;
     }
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
@@ -717,6 +737,8 @@ export type Representation =
       minutes: string;
       endHour: string;
       endMinute: string;
+      /** Jumps count back from the end time (default: when the page opens on the end time). */
+      back?: boolean;
     }
   /**
    * A scale reading a total mass: the `items` on the pan (or `count` equal items of mass
@@ -993,7 +1015,15 @@ export type Representation =
       count?: string;
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
-  | { kind: 'pieChart'; parts: string[]; total?: string }
+  | {
+      kind: 'pieChart';
+      parts: string[];
+      total?: string;
+      /** Palette color names, one per part, when a part's color means something (ice, sea). */
+      colors?: string[];
+      /** Parts that make a named value (fresh = frozen + liquid): pulled out and bracketed. */
+      group?: { id: string; parts: string[] };
+    }
   /**
    * Fraction × fraction as an area model: a unit square cut into `first.den` columns and
    * `second.den` rows, `first.num` columns and `second.num` rows shaded; the overlap is the
