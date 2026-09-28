@@ -1984,10 +1984,18 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.divide-fractions~how-many-fit',
       'm.6.divide-fractions~how-much-in-one',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4d-fit',
+      'g.r4d-fit-part',
+      'g.r4d-fit-less',
+      'g.r4d-fit-many',
+      'g.r4d-fit-tiny',
+      'g.r4d-fit-share',
+      'g.r4d-fit-share-past',
+    ],
     notes:
-      'Urgency: high. Weak now: Bar and axis in the top half with a blank strip at right; axis stops near 2/3 while the "1" tick floats alone; ~8 px grey brace label; dividend and group size unlabelled; faint, cut-short ghost for the rest of the group; unlabelled ticks. Redo: Flat. One continuous number line 0 → 1 (or the dividend\'s ceiling) with two labelled tick rows (dividend\'s unit above, group size below). Dividend as a filled bar labelled "2/3"; each group a bracket "1 group = 3/4"; the part group as a filled portion of a dashed full-group outline labelled "8/9 of a group" at chart.value. How-many-fit mode: number the groups ①②③ inside the bar. Fill the width, stack the parts vertically, drop the empty strip.',
+      'Urgency: high. Weak now: Bar and axis in the top half with a blank strip at right; axis stops near 2/3 while the "1" tick floats alone; ~8 px grey brace label; dividend and group size unlabelled; faint, cut-short ghost for the rest of the group; unlabelled ticks. Redo: Flat. One continuous number line 0 → 1 (or the dividend\'s ceiling) with two labelled tick rows (dividend\'s unit above, group size below). Dividend as a filled bar labelled "2/3"; each group a bracket "1 group = 3/4"; the part group as a filled portion of a dashed full-group outline labelled "8/9 of a group" at chart.value. How-many-fit mode: number the groups ①②③ inside the bar. Fill the width, stack the parts vertically, drop the empty strip. Drawn (round 4, group D): the dividend is a bar sitting on one continuous number line that runs to the last whole the bar or the dashed group reaches. Under the line two labelled rows (both under it, so no label sits on the bar): the dividend\'s unit (0, 1/3, 2/3, 1; wholes only when crowded) with the dividend bold, then in the highlight where each group ends (3/4, 1 1/2, 2 1/4; thinned from the right). Groups inside the bar numbered in circles; the first bracketed "1 group = 3/4" above; the part group filled inside a dashed whole group, "8/9 of a group" inside it or bracketed above (labels that would touch stack higher). All labels 13–14 px; canvas height from what is drawn. `share` mode: taller bar, 13 px part labels, square brackets, cropped. No page change.',
   },
   {
     id: 'Q13',
@@ -2167,10 +2175,18 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.2.add-sub-100-fluency~add-add',
       'm.3.two-step-problems~add-subtract',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4d-hops-tens',
+      'g.r4d-hops-tens-edge',
+      'g.r4d-hops-two-step',
+      'g.r4d-hops-two-step-edge',
+      'g.r4d-hops-add-add',
+      'g.r4d-hops-hundreds',
+      'g.r4d-hops-hundreds-edge',
+    ],
     notes:
-      'Urgency: medium. Weak now: "Subtract tens" draws one hop of 30, not three hops of 10, so the strategy doesn\'t show; dashed black hops with no arrowheads; in the two-step problem +18 and −9 arcs overlap and "take away 9" sits below the axis; tiny tick labels. Redo: One arc per ten (plus the ones remainder) with filled arrowheads. Adding hops in the accent (solid), taking-away hops in a second token (dashed). Labels (+10, −9) on top of each arc in chart.label. Overlapping hops stack higher. Start and end as filled dots with bold numbers. chart.label for major ticks.',
+      'Urgency: medium. Weak now: "Subtract tens" draws one hop of 30, not three hops of 10, so the strategy doesn\'t show; dashed black hops with no arrowheads; in the two-step problem +18 and −9 arcs overlap and "take away 9" sits below the axis; tiny tick labels. Redo: One arc per ten (plus the ones remainder) with filled arrowheads. Adding hops in the accent (solid), taking-away hops in a second token (dashed). Labels (+10, −9) on top of each arc in chart.label. Overlapping hops stack higher. Start and end as filled dots with bold numbers. chart.label for major ticks. Drawn (round 4, group D): each hop is one arc per `tick` (a ten; a hundred on the Grade 3 page) plus the rest, tens first, each with a filled arrowhead (`hopArcs.ts`, checked by the harness: the arcs chain from the start to the end, none longer than a tick). Adding hops solid in the highlight, taking-away hops dashed in a new token `hopBack` (orange-red, light and dark); a label on each arc ("−10", "+8") in 12 px bold in the hop\'s colour, or one label for the whole hop in a row above the arcs when the arcs are too narrow or a higher arc lands on them. A hop over a stretch an earlier hop covers arcs a level higher, clear of the lower labels. The line is zoomed to the stops (the ten below to the ten above, half a ten more where a stop sits on the end) instead of 0–100 or 0–1,000, ones (or tens) as minor ticks. Start and end are filled dots with bold 14 px numbers, the middle stop an open dot; tick numbers that would touch them are left out. No page change.',
   },
   {
     id: 'Q29',

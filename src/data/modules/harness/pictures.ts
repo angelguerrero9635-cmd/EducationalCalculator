@@ -6,6 +6,7 @@
 import type { VariableDef } from '@/engine/types';
 
 import { diceCount } from '@/components/module/reps/dice';
+import { hopArcs } from '@/components/module/reps/hopArcs';
 import { toFraction } from '@/components/module/reps/exact';
 import { outline } from '@/components/module/reps/scaleOutline';
 import {
@@ -331,6 +332,21 @@ export function repIssues(
       });
       const e = val(rep.end);
       if (e !== undefined && e !== at) out.push(`hops land on ${at}, not the end ${e}`);
+      // Each hop is drawn one arc per ten (per tick) plus the rest: the arcs chain from the
+      // start to the end, none longer than a tick, at most a hundred of them.
+      const signs = rep.hops.map((h) =>
+        typeof h.sign === 'number' ? h.sign : (val(h.sign) ?? 1) < 0 ? -1 : 1,
+      );
+      const stops = hops.reduce<number[]>((s, x, i) => [...s, s[i]! + signs[i]! * x!], [start]);
+      const arcs = hopArcs(stops, signs, rep.tick ?? 10);
+      if (arcs.length > 100) out.push(`hops drawn as ${arcs.length} arcs`);
+      arcs.forEach((a, k) => {
+        const from = k === 0 ? start : arcs[k - 1]!.to;
+        if (Math.abs(a.from - from) > 1e-9 || Math.abs(a.to - a.from) > (rep.tick ?? 10) + 1e-9)
+          out.push(`hop arc ${k + 1} (${a.from} to ${a.to}) doesn't chain one tick at a time`);
+      });
+      const last = arcs.length ? arcs[arcs.length - 1]!.to : start;
+      if (Math.abs(last - at) > 1e-9) out.push(`hop arcs end at ${last}, not ${at}`);
       break;
     }
     case 'numberBond': {
