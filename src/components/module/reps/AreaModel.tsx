@@ -1,13 +1,14 @@
 import { View } from 'react-native';
-import Svg, { Rect } from 'react-native-svg';
+import Svg, { G, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { placeParts } from '@/data/modules/helpers';
 import { formatNumber } from '@/engine/format';
-import { chart, usePalette } from '@/theme';
+import { chart, usePalette, useTone } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
+import { DimLine, textW } from './dimKit';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'areaModel' }>;
@@ -26,6 +27,8 @@ interface Model {
   remainder?: string;
   steppers: string[];
   faded: boolean;
+  /** The top parts are place values (their columns are tinted and named by place). */
+  places?: boolean;
 }
 
 /** A number without floating-point dust: 0.1 × 0.3 is 0.03. */
@@ -54,6 +57,7 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
           : `${fmt(a)} × ${fmt(b)}: ${products.map(fmt).join(' + ')} = ${rep.value(spec.total)}.`,
       steppers: [...spec.factors],
       faded: !known,
+      places: true,
     };
   }
   if ('divide' in spec) {
@@ -92,9 +96,10 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
           ? // One group of boxes: no "= parts" step to add up.
             `${fmt(s)} × ${fmt(q)}${left} = ${fmt(n)}. ${fmt(n)} ÷ ${fmt(s)} = ${fmt(q)}${rest}.`
           : `${amounts.map(fmt).join(' + ')}${left} = ${fmt(n)}. ` +
-            `${fmt(n)} ÷ ${fmt(s)} = ${parts.map(fmt).join(' + ')} = ${fmt(q)}${rest}.`,
+            `${fmt(n)} ÷ ${fmt(s)} = ${fmt(q)}${rest}: ${parts.map(fmt).join(' + ')}.`,
       steppers: [d.dividend, d.divisor],
       faded: false,
+      places: true,
     };
   }
   return {
@@ -114,16 +119,59 @@ function modelOf(spec: Spec, rep: ReturnType<typeof useRep>): Model {
   };
 }
 
+/** The place of a part's leading digit: 40 → 1 (tens), 0.3 → −1 (tenths). */
+const placeOf = (x: number) => {
+  if (!(x > 0)) return undefined;
+  const p = Math.floor(Math.log10(x) + 1e-9);
+  // Only a single digit in its place (40, 0.3): the rest lumped together (99) has no one place.
+  const digit = x / 10 ** p;
+  return Math.abs(digit - Math.round(digit)) < 1e-6 ? p : undefined;
+};
+const PLACE_NAMES: Record<number, string> = {
+  4: 'ten thousands',
+  3: 'thousands',
+  2: 'hundreds',
+  1: 'tens',
+  0: 'ones',
+  [-1]: 'tenths',
+  [-2]: 'hundredths',
+  [-3]: 'thousandths',
+};
+/** Which card tone tints each place (the same place is the same colour on every page). */
+const PLACE_TONE: Record<number, number> = {
+  4: 5,
+  3: 4,
+  2: 2,
+  1: 0,
+  0: 1,
+  [-1]: 3,
+  [-2]: 5,
+  [-3]: 6,
+};
+
 /**
- * The area model: one factor broken into place-value parts along the top, the other down the
- * side, and each part product written in its box. Boxes are drawn wide enough to read, not
- * to scale (a textbook area model), with the bigger part bigger. For a division the divisor
- * is down the side, the partial quotients along the top and the remainder in a box beside.
+ * The area model, flat: one factor broken into place-value parts along the top, the other down
+ * the side, and each part product in its box, the multiplication on one line (chart.label)
+ * over the product (chart.emphasis). Each column is tinted by its place, named over its
+ * dimension line ("tens", "ones"); the parts' values sit on dimension lines with end ticks.
+ * Boxes are drawn wide enough to read, not to scale (a textbook area model), with the bigger
+ * part bigger. For a division the divisor is down the side, the partial quotients along the
+ * top and the remainder in a dashed box beside, tagged "left over".
  */
 export function AreaModel({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const m = modelOf(spec, rep);
+  // One hook call per tone, always the same seven.
+  const tones = [
+    useTone(0),
+    useTone(1),
+    useTone(2),
+    useTone(3),
+    useTone(4),
+    useTone(5),
+    useTone(6),
+  ];
   // Widths: each part gets at least 36% so its label fits at a readable size; the rest by size.
   const share = (xs: number[]) => {
     const sum = xs.reduce((a, b) => a + b, 0) || 1;
@@ -133,17 +181,23 @@ export function AreaModel({ spec, calc }: { spec: Spec; calc: Calculator }) {
   };
   const cols = share(m.topSize);
   const rows = share(m.sideSize);
+  // Place names over the columns when the parts are places (not for letters' parts).
+  const places = m.places ? m.topSize.map(placeOf) : m.top.map(() => undefined);
+  const named = places.some((p) => p !== undefined && PLACE_NAMES[p] !== undefined);
+  const top = named ? 50 : 34;
+  const bottom = 10;
+  const rowH = (w: number) => Math.min(96, Math.max(64, w * 0.2));
 
   return (
     <View>
-      {/* Boxes are read, not measured: 0.22 of the width per row keeps two rows on a phone screen. */}
-      <Canvas aspect={(w) => Math.min(0.75, (0.22 * m.side.length + 0.14) * (390 / w))}>
+      <Canvas aspect={(w) => (top + rowH(w) * m.side.length + bottom) / w}>
         {({ w, h }) => {
-          const left = 44;
-          const top = 26;
-          const extra = m.remainder !== undefined ? 64 : 0;
-          const width = w - left - 12 - extra;
-          const height = h - top - 8;
+          const sideW = Math.max(...m.side.map((s) => textW(s))) + 26;
+          const extra = m.remainder !== undefined ? 70 : 0;
+          // About 85 % of the width, centred with the side labels.
+          const width = Math.min(w - sideW - extra - 16, (w - 16) * 0.86 - extra);
+          const left = (w - (sideW + width + extra)) / 2 + sideW;
+          const height = h - top - bottom;
           let x = left;
           const xs = cols.map((f) => {
             const at = x;
@@ -156,71 +210,107 @@ export function AreaModel({ spec, calc }: { spec: Spec; calc: Calculator }) {
             y += f * height;
             return [at, f * height] as const;
           });
+          const fillOf = (i: number) => {
+            const p = places[i];
+            const k = p !== undefined && PLACE_TONE[p] !== undefined ? PLACE_TONE[p] : i * 2;
+            return tones[k % tones.length]!.fg;
+          };
           return (
             <Svg width={w} height={h} opacity={m.faded ? 0.4 : 1}>
-              {xs.map(([cx, cw], i) => (
-                <ChartText
-                  key={`t${i}`}
-                  x={cx + cw / 2}
-                  y={top - 8}
-                  fontSize={chart.value}
-                  fontWeight="700"
-                  textAnchor="middle"
-                >
-                  {m.top[i]!}
-                </ChartText>
-              ))}
-              {ys.map(([cy, ch], j) => (
-                <ChartText
-                  key={`s${j}`}
-                  x={left - 8}
-                  y={cy + ch / 2 + 5}
-                  fontSize={chart.value}
-                  fontWeight="700"
-                  textAnchor="end"
-                >
-                  {m.side[j]!}
-                </ChartText>
-              ))}
+              {/* Boxes: each column tinted by its place. */}
               {ys.flatMap(([cy, ch], j) =>
                 xs.map(([cx, cw], i) => (
-                  <Rect
-                    key={`r${i}${j}`}
-                    x={cx}
-                    y={cy}
-                    width={cw}
-                    height={ch}
-                    fill={(i + j) % 2 === 0 ? c.chartFill : c.chartSurface}
-                    stroke={c.chartInk}
-                    strokeWidth={chart.stroke}
-                  />
+                  <G key={`r${i}-${j}`}>
+                    <Rect x={cx} y={cy} width={cw} height={ch} fill={c.card} />
+                    <Rect
+                      x={cx}
+                      y={cy}
+                      width={cw}
+                      height={ch}
+                      fill={fillOf(i)}
+                      fillOpacity={0.17}
+                      stroke={c.chartInk}
+                      strokeWidth={chart.strokeLight}
+                    />
+                  </G>
                 )),
               )}
+              {/* The top parts on dimension lines, their places over them. */}
+              {xs.map(([cx, cw], i) => {
+                const p = places[i];
+                return (
+                  <G key={`t${i}`}>
+                    <DimLine
+                      x1={cx + 3}
+                      y1={top - 10}
+                      x2={cx + cw - 3}
+                      y2={top - 10}
+                      side="above"
+                      label={m.top[i]!}
+                    />
+                    {named &&
+                    p !== undefined &&
+                    PLACE_NAMES[p] &&
+                    textW(PLACE_NAMES[p], chart.label) + 4 <= cw ? (
+                      <ChartText
+                        x={cx + cw / 2}
+                        y={top - 34}
+                        fontSize={chart.label}
+                        fill={fillOf(i)}
+                        fontWeight="700"
+                        textAnchor="middle"
+                      >
+                        {PLACE_NAMES[p]}
+                      </ChartText>
+                    ) : null}
+                  </G>
+                );
+              })}
+              {ys.map(([cy, ch], j) => (
+                <DimLine
+                  key={`s${j}`}
+                  x1={left - 10}
+                  y1={cy + 3}
+                  x2={left - 10}
+                  y2={cy + ch - 3}
+                  side="left"
+                  label={m.side[j]!}
+                />
+              ))}
               {ys.flatMap(([cy, ch], j) =>
                 xs.map(([cx, cw], i) => {
                   const [times, product] = m.box(i, j);
-                  return [
-                    <ChartText
-                      key={`m${i}${j}`}
-                      x={cx + cw / 2}
-                      y={cy + ch / 2 - 6}
-                      fontSize={chart.small}
-                      fill={c.chartMuted}
-                      textAnchor="middle"
-                    >
-                      {times}
-                    </ChartText>,
-                    <ChartText
-                      key={`p${i}${j}`}
-                      x={cx + cw / 2}
-                      y={cy + ch / 2 + 12}
-                      fontSize={cw > 90 ? chart.emphasis : chart.value}
-                      fontWeight="700"
-                      textAnchor="middle"
-                    >
-                      {product}
-                    </ChartText>,
-                  ];
+                  // The multiplication only where it fits at a readable size.
+                  const both = textW(times, chart.label) + 10 <= cw && ch >= 44;
+                  // The product as big as fits: never under chart.label.
+                  const big =
+                    [chart.emphasis + 2, chart.emphasis, chart.value].find(
+                      (f) => textW(product, f) + 8 <= cw && (f <= chart.emphasis || cw > 90),
+                    ) ?? chart.label;
+                  return (
+                    <G key={`m${i}-${j}`}>
+                      {both ? (
+                        <ChartText
+                          x={cx + cw / 2}
+                          y={cy + ch / 2 - 5}
+                          fontSize={chart.label}
+                          fill={c.chartMuted}
+                          textAnchor="middle"
+                        >
+                          {times}
+                        </ChartText>
+                      ) : null}
+                      <ChartText
+                        x={cx + cw / 2}
+                        y={cy + ch / 2 + (both ? 14 : 5)}
+                        fontSize={big}
+                        fontWeight="700"
+                        textAnchor="middle"
+                      >
+                        {product}
+                      </ChartText>
+                    </G>
+                  );
                 }),
               )}
               {m.remainder !== undefined ? (
@@ -237,8 +327,9 @@ export function AreaModel({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                   <ChartText
                     x={x + 10 + (extra - 10) / 2}
-                    y={top - 8}
-                    fontSize={chart.small}
+                    y={top - 14}
+                    fontSize={chart.label}
+                    fontWeight="700"
                     fill={c.chartMuted}
                     textAnchor="middle"
                   >
@@ -247,7 +338,7 @@ export function AreaModel({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   <ChartText
                     x={x + 10 + (extra - 10) / 2}
                     y={top + height / 2 + 5}
-                    fontSize={chart.emphasis}
+                    fontSize={chart.emphasis + 2}
                     fontWeight="700"
                     textAnchor="middle"
                   >

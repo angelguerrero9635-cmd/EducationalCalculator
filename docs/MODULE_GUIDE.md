@@ -149,6 +149,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `hundredChart`     | `piece`, `multiplesOf`, `max: 1000`      | the number and its 4 neighbors; or multiples shaded; 1000: its hundred only   |
 | `hops`             | a hop `sign` naming a variable (1 or −1) | a + / − switch that flips that hop                                            |
 | `rectangle`        | `grid`                                   | unit squares on a perimeter page                                              |
+| `rectangle`        | `roof`                                   | a slate roof in perspective with rain falling on it (roof-rain page)          |
+| `prism`            | `counting`                               | Faces / Edges / Corners buttons that number each one on the solid             |
 | `polygon`          | `sideValues`, `around`                   | a shape with a length (or “?”) on each side, the perimeter under it           |
 | `rectilinear`      | `cut` instead of `right`                 | a rectangle with a corner cut out, both areas labeled                         |
 | `ruler`            | `marks: 2 \| 4`                          | half- or quarter-inch marks, lengths counted in marks                         |

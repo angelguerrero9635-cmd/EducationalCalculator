@@ -2239,10 +2239,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.area-polygons~trapezoid',
       'm.6.area-polygons~composite',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-parallelogram', 'g.r4e-triangle-tall', 'g.r4e-trapezoid', 'g.r4e-house-wide'],
     notes:
-      'Urgency: medium. Weak now: Small parallelogram lower left, ~80 px blank above; tiny "h"/"b" labels; thick purple base reads as a selection; faint unlabelled completing rectangle, so "leaning keeps the area" isn\'t shown; tiny right-angle mark. Redo: Centre, ~85 % width, flat. Base as a dimension line with end ticks, "b = 8 cm" at chart.value; height as a dashed perpendicular with arrowheads, "h = 5 cm"; 10 px right-angle box. Parallelogram: cut-off triangle shaded chartSecond and repeated dashed on the other side (cut and move). Triangle: doubled into a faint ghost parallelogram. Trapezoid: bases labelled b₁ and b₂. Top-vertex handle with a visible sideways track.',
+      'Urgency: medium. Weak now: Small parallelogram lower left, ~80 px blank above; tiny "h"/"b" labels; thick purple base reads as a selection; faint unlabelled completing rectangle, so "leaning keeps the area" isn\'t shown; tiny right-angle mark. Redo: Centre, ~85 % width, flat. Base as a dimension line with end ticks, "b = 8 cm" at chart.value; height as a dashed perpendicular with arrowheads, "h = 5 cm"; 10 px right-angle box. Parallelogram: cut-off triangle shaded chartSecond and repeated dashed on the other side (cut and move). Triangle: doubled into a faint ghost parallelogram. Trapezoid: bases labelled b₁ and b₂. Top-vertex handle with a visible sideways track. Drawn (round 4, group E): flat, centred, sized from the values (the frame holds still while dragging). Base as a dimension line with end ticks and extension lines, "b = 8 cm" at chart.value bold; height a dashed perpendicular with arrowheads at both ends, a 10 px square corner, and its label on a pill placed clear of every edge, diagonal and chip. Parallelogram (rearrange): the cut-off triangle shaded chartSecond and repeated dashed on the other side (either lean), caption "Move the yellow triangle to the other side: a rectangle 8 by 5". Triangle (double): the turned copy as a faint dashed ghost parallelogram, caption says the triangle is half. Trapezoid: b₁ below and b₂ above as dimension lines; the diagonal splits it into two tinted triangles with their areas on pills; the frame now fits the longer top (it used to run off the left edge). Top-vertex handle (top-right corner for parallelogram and trapezoid, so it no longer covers the height) slides along a dashed track with arrowheads, parallel to the base, kept inside the canvas. House: walls and roof tinted apart, wall height and roof height as one stacked dimension line on the right, the roof height a dashed perpendicular; its caption no longer talks of leaning (the house has no handle). No page change.',
   },
   {
     id: 'Q32',
@@ -2284,10 +2284,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Factor trees with shaped nodes and the shared primes paired',
     kind: 'factorTree',
     pages: ['m.6.gcf-lcm~factor-tree'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-factor-trees', 'g.r4e-factor-trees-three', 'g.r4e-factor-trees-deep'],
     notes:
-      'Urgency: medium. Weak now: Hairline grey branches look unfinished; composites are bare text, only primes circled; two trees crowded; small type; shared primes not paired across trees. Redo: Flat tree diagram: composites as rounded rectangles (chartSurface, stroke border), primes as filled circles (chartFill, ink); chart.stroke branches ending at node edges; 28 px nodes, labels at chart.value. Two columns with a thin divider. Shared primes as matched pairs with coloured rings (chartHighlight, then chartSecond). Each tree\'s primes listed at its foot ("2 · 2 · 2 · 3"). Scale depth to fit 3–4 levels without clipping.',
+      'Urgency: medium. Weak now: Hairline grey branches look unfinished; composites are bare text, only primes circled; two trees crowded; small type; shared primes not paired across trees. Redo: Flat tree diagram: composites as rounded rectangles (chartSurface, stroke border), primes as filled circles (chartFill, ink); chart.stroke branches ending at node edges; 28 px nodes, labels at chart.value. Two columns with a thin divider. Shared primes as matched pairs with coloured rings (chartHighlight, then chartSecond). Each tree\'s primes listed at its foot ("2 · 2 · 2 · 3"). Scale depth to fit 3–4 levels without clipping. Drawn (round 4, group E): flat trees in two columns with a thin divider. Composites are rounded boxes (chartSurface, chartMuted border), primes filled circles (chartFill); numbers at chart.emphasis bold; chart.stroke branches run edge to edge. Each split puts the prime one step left and the rest one step right (a staircase), so every level fits: 64 and 96, the deepest in the page range (seven and six levels), fit without clipping. Shared primes are ringed in matched pairs, one colour per shared prime (chartHighlight, then chartSecond, then ink for a third, as 60 and 90 need); the top-most copies are ringed. Each tree lists its primes in order at its foot, ringed the same way, with × between them when they fit. Caption says "Shared primes (ringed)" so the rings have a key. No page change.',
   },
   {
     id: 'Q35',
@@ -2303,10 +2303,17 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.4.area-perimeter-formulas~square',
       's.6.water-cycle~roof-rain',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4e-rect-same-area',
+      'g.r4e-rect-area-max',
+      'g.r4e-rect-perimeter-strip',
+      'g.r4e-rect-square-big',
+      'g.r4e-roof',
+      'g.r4e-roof-small',
+    ],
     notes:
-      'Urgency: medium. Weak now: Small, left of centre, empty canvas below and right; unit-square grid so faint it hardly shows (defeats "area counts the squares"); area label on the grid lines; side labels small grey with no dimension lines; the roof-rain page uses the same bare rectangle. Redo: Flat for math: ~80 % width, centred; visible chartGrid strokeLight unit squares with flat chartFill (optionally a light two-tint checkerboard); area in a white pill in the middle; dimension lines with end ticks for length (below) and width (left) at chart.value. Perimeter pages: outline in chartHighlight with all four sides labelled. Roof option for s.6.water-cycle~roof-rain: a shingled roof in perspective (material tokens, TopLight) with rain lines. Corner handle with a 44 px hit area.',
+      'Urgency: medium. Weak now: Small, left of centre, empty canvas below and right; unit-square grid so faint it hardly shows (defeats "area counts the squares"); area label on the grid lines; side labels small grey with no dimension lines; the roof-rain page uses the same bare rectangle. Redo: Flat for math: ~80 % width, centred; visible chartGrid strokeLight unit squares with flat chartFill (optionally a light two-tint checkerboard); area in a white pill in the middle; dimension lines with end ticks for length (below) and width (left) at chart.value. Perimeter pages: outline in chartHighlight with all four sides labelled. Roof option for s.6.water-cycle~roof-rain: a shingled roof in perspective (material tokens, TopLight) with rain lines. Corner handle with a 44 px hit area. Drawn (round 4, group E): flat, centred, sized from the values (at least 0.4 of extent, with a little room to drag longer; the frame holds still while dragging). Unit squares in a two-tint checkerboard (chartHighlight at 10 % and 19 %) with grid lines at 40 % highlight, so they can be counted in both themes; the area on a pill in the middle (beside the shape when too small to hold it). Area pages: dimension lines with end ticks and extension lines for the length (below) and the width (left), labels at chart.value bold. Perimeter pages: the heavy chartHighlight outline with all four sides labelled, unit marks on the edge for perimeter alone, the perimeter line centred under it. Corner handle unchanged (44 px). New option `roof: true`: a slate roof (rock2 with TopLight, shingle courses) in perspective over a house (walls, door, window, gutter), rain streaks falling on it, the length as a dimension line along the front and the width along the roof edge, the area on a pill; drag the back corner (right: length, up the roof: width). Page change for s.6.water-cycle~roof-rain only: its representation becomes { kind: "rectangle", length: "l", width: "w", inside: "A", extent: 20, roof: true }. The math pages need no change. `uses` is left as the default ("rectangle"), because the placed-check looks for it on every page and only the roof page passes "roof":true.',
   },
   {
     id: 'Q36',
@@ -2339,10 +2346,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Two-coloured Venn circles with even members and the GCF badge',
     kind: 'venn',
     pages: ['m.6.gcf-lcm'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-venn', 'g.r4e-venn-many', 'g.r4e-venn-one'],
     notes:
-      'Urgency: medium. Weak now: Two identical lavender circles distinguished only by small "12"/"18" labels cramped at the tops; 9–10 px members spread unevenly; tiny GCF ring; two odd oversized vertical sliders below. Redo: Flat. Two distinct tints (chartHighlight, chartSecond) with a blended overlap; titles outside at chart.value ("Factors of 12", "Factors of 18"). Members on an even grid in each region at ~13 px. Greatest common factor as a filled chartHighlight badge with a "greatest" tag. Replace the vertical sliders with standard horizontal Sliders.tsx rows, or drop them per sliderPolicy.',
+      'Urgency: medium. Weak now: Two identical lavender circles distinguished only by small "12"/"18" labels cramped at the tops; 9–10 px members spread unevenly; tiny GCF ring; two odd oversized vertical sliders below. Redo: Flat. Two distinct tints (chartHighlight, chartSecond) with a blended overlap; titles outside at chart.value ("Factors of 12", "Factors of 18"). Members on an even grid in each region at ~13 px. Greatest common factor as a filled chartHighlight badge with a "greatest" tag. Replace the vertical sliders with standard horizontal Sliders.tsx rows, or drop them per sliderPolicy. Drawn (round 4, group E): flat, two distinct tints (chartHighlight at 14 %, chartSecond at 30 %, blending in the overlap) with matching outlines; titles outside at chart.value bold ("Factors of 12", "Factors of 18"; "Prime factors of …" for list primes). Members at chart.value on an even grid in each region, the ones nearest its middle, clear of both edges (72 and 96, eight shared, fit). The greatest common factor is a filled chartHighlight badge with a leader to a "greatest common factor" tag under the circles. Sliders: the kind has none of its own (venn is not in sliderPolicy); the two vertical sliders come from the page setting sliders: true, and are the app-wide Sliders component. The lesson chat may drop that line (sliders are not needed: the inputs change both numbers). No page change needed for the picture.',
   },
   {
     id: 'Q38',
@@ -2389,10 +2396,11 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'A flat-shaded prism with ink corner dots',
     kind: 'prism',
     pages: ['m.2.thirds-polygons~solids'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-prism-count', 'g.r4e-prism-triangle', 'g.r4e-prism-hexagon'],
+    uses: '"counting":true',
     notes:
-      'Urgency: medium. Weak now: Lavender wireframe with dots at the corners; one flat tint on all faces; corner dots look like drag handles; no face/edge/corner labels to help counting; lots of empty space. Redo: Exact solid with faces shaded flatly by orientation (top light, front mid, side darker from theme tints). Hidden edges dashed 1.5 px, visible edges 2.5 px. Corner markers as 4 px ink dots. Optional counting mode: tap a face, edge or corner to highlight it with a 14 px count chip. Fill ~80 % of the canvas; same rule for other prisms.',
+      'Urgency: medium. Weak now: Lavender wireframe with dots at the corners; one flat tint on all faces; corner dots look like drag handles; no face/edge/corner labels to help counting; lots of empty space. Redo: Exact solid with faces shaded flatly by orientation (top light, front mid, side darker from theme tints). Hidden edges dashed 1.5 px, visible edges 2.5 px. Corner markers as 4 px ink dots. Optional counting mode: tap a face, edge or corner to highlight it with a 14 px count chip. Fill ~80 % of the canvas; same rule for other prisms. Drawn (round 4, group E): the exact solid, flat-shaded (each visible side a tint of the highlight by how far it turns from the light at the front left, the top lightest), fills about 80 % of the width with the canvas sized to it. Visible edges 2.5 px ink, hidden edges 1.5 px dashed muted; corners 3.5 px ink dots (muted at the back), so they no longer look like handles. New option counting: true adds Faces, Edges and Corners buttons (44 px): each numbers every face, edge or corner on the solid with a count chip (solid in front, dashed at the back, and the caption says so); tap again to clear. Page change for m.2.thirds-polygons~solids: its representation becomes { kind: "prism", sides: "s", faces: "F", edges: "E", corners: "V", counting: true }. Without it the page works as before, showing the new drawing.',
   },
   {
     id: 'Q43',
@@ -2437,10 +2445,16 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.gcf-lcm~distributive',
       'm.6.expressions-variables~distributive',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4e-area-two-digit',
+      'g.r4e-area-big',
+      'g.r4e-area-decimals',
+      'g.r4e-area-divide',
+      'g.r4e-area-distributive',
+    ],
     notes:
-      'Urgency: low. Weak now: Very pale partial boxes with 2 px black strokes; tiny grey "5 × 10"; small dimension labels; ragged left-aligned caption; no colour link between a part and its place. Redo: Flat: colour each column by place (thousands, hundreds, tens, ones tokens at 15–20 % tint), 1.5 px chart stroke. Dimension labels on brace ticks in chart.label bold. Expression in chart.label above the product in chart.emphasis. Caption one centred line or aligned equations. Leader label above very narrow boxes.',
+      'Urgency: low. Weak now: Very pale partial boxes with 2 px black strokes; tiny grey "5 × 10"; small dimension labels; ragged left-aligned caption; no colour link between a part and its place. Redo: Flat: colour each column by place (thousands, hundreds, tens, ones tokens at 15–20 % tint), 1.5 px chart stroke. Dimension labels on brace ticks in chart.label bold. Expression in chart.label above the product in chart.emphasis. Caption one centred line or aligned equations. Leader label above very narrow boxes. Drawn (round 4, group E): flat. Each column tinted by its place at 17 % (the same place is the same card tone on every page: tens, ones, hundreds, thousands, tenths, hundredths …) and named over it in that colour ("tens", "ones"; hidden where the column is too narrow, and not for a lumped last part like 99 or for letters’ parts); 1.5 px chart ink boxes. Parts on dimension lines with end ticks (top and side), bold. In each box the multiplication at chart.label over the product at chart.emphasis (bigger in wide boxes, smaller only where it would not fit). Remainder box dashed with a "left over" tag. Centred at about 86 % width. Division captions now read "1,987 ÷ 23 = 86, remainder 9: 80 + 6." so the chain no longer breaks mid-line. No page change.',
   },
   {
     id: 'Q46',
@@ -2528,9 +2542,9 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Two-tint rectilinear parts, a countable grid, dimension lines',
     kind: 'rectilinear',
     pages: ['m.3.area~rectilinear', 'm.3.area~cut-out'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4e-rectilinear', 'g.r4e-rectilinear-wide', 'g.r4e-cut-out', 'g.r4e-cut-out-thin'],
     notes:
-      'Urgency: low. Weak now: Flat and exact, but very faint grid (squares hard to count); parts differ only by a light grey tint; small area numbers; side labels far from their edges, "2 cm" near the right edge; no split line. Redo: Two distinct flat tints (e.g. primary 15 %, amber 20 %); 2 px dashed split line; grid at chartGrid 1 px; part areas in 18 px centred chips ("15 cm²"); side labels on dimension lines with end ticks, 6 px from the edge and 8 px inside the canvas. Cut-out variant: removed piece hatched with a dashed outline. Sliders unchanged.',
+      'Urgency: low. Weak now: Flat and exact, but very faint grid (squares hard to count); parts differ only by a light grey tint; small area numbers; side labels far from their edges, "2 cm" near the right edge; no split line. Redo: Two distinct flat tints (e.g. primary 15 %, amber 20 %); 2 px dashed split line; grid at chartGrid 1 px; part areas in 18 px centred chips ("15 cm²"); side labels on dimension lines with end ticks, 6 px from the edge and 8 px inside the canvas. Cut-out variant: removed piece hatched with a dashed outline. Sliders unchanged. Drawn (round 4, group E): flat, centred, sized from the values. Two distinct tints (chartHighlight 15 %, chartSecond 30 %), a 2 px dashed split line where the parts meet, unit-square grid lines at 35 % chartMuted (countable in both themes). Part areas in centred chips with the unit ("15 cm²"), or above the part on a short leader when it is too thin (10 by 1). Every side on a dimension line with end ticks, 10 px from its edge and inside the canvas. Cut-out: the removed piece hatched in a dashed outline with its area on a muted chip, the cut width above and height right as muted dimension lines; the shape left in unit squares with its area on a chip (in its bigger part; the caption carries it when the L is too thin). Sliders unchanged. No page change.',
   },
 ];
