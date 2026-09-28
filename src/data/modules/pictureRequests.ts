@@ -1846,10 +1846,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Real coins: copper penny, silver nickel, dime and quarter at true sizes, running totals',
     kind: 'coinRow',
     pages: ['m.2.money~one-coin'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4a-coins', 'g.r4a-coins-ten-quarters', 'g.r4a-coins-pennies'],
     notes:
-      'Urgency: high. Weak now: Coins are ~28 px grey discs with a tiny unreadable "10¢"; dimes, nickels and quarters look alike, penny isn\'t copper; row small and alone with empty width. Redo: Each coin as metal (Metal, light and dark tokens): penny copper, nickel/dime/quarter silver, true size ratios (dime smallest, quarter largest, ~56 px quarter); milled rim, raised inner ring, simple embossed profile, value in chart.value bold on the face; FloorShadow. Wrap rows of 5, grouped in fives. Keep the caption "3 dimes: 30¢"; add running totals (10¢, 20¢, 30¢) under each coin so the skip-count shows.',
+      'Urgency: high. Weak now: Coins are ~28 px grey discs with a tiny unreadable "10¢"; dimes, nickels and quarters look alike, penny isn\'t copper; row small and alone with empty width. Redo: Each coin as metal (Metal, light and dark tokens): penny copper, nickel/dime/quarter silver, true size ratios (dime smallest, quarter largest, ~56 px quarter); milled rim, raised inner ring, simple embossed profile, value in chart.value bold on the face; FloorShadow. Wrap rows of 5, grouped in fives. Keep the caption "3 dimes: 30¢"; add running totals (10¢, 20¢, 30¢) under each coin so the skip-count shows. Drawn (round 4, group A): Flat metal coins at true size ratios (quarter 58 px, dime 43 px, penny copper, the rest silver): lit rim, sunk field, ridged edge on dimes and quarters, a faint profile in relief, the value bold on the face, a drop shadow on the table (flat discs, so no floor ellipse). Rows of five; the running total (10¢, 20¢, 30¢) under each coin, the last one bold. Caption kept. Harness: a coinRow check (a real coin value; the count times the value is the last running total). No page change.',
   },
   {
     id: 'Q02',
@@ -1866,10 +1866,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: 'Cardboard box and rubber ball with a viewer; "above" with a clear gap',
     kind: 'position',
     pages: ['m.K.position-words'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4a-position', 'g.r4a-position-behind'],
     notes:
-      'Urgency: high. Weak now: "Above" draws the ball touching the box (reads as "on"); box is a pale wireframe cube, ball a flat disc; thin floor line with a large empty area below. Redo: Cardboard box (kraft, flaps, tape, TopLight) and a red rubber ball (Ball shading, FloorShadow). "Above": clear gap with a dashed drop shadow on the lid. Behind: partly hidden by the box. In front: overlaps it, lower and larger. Add a small child or teddy as the viewer so in front/behind have a point of view. Shrink the empty lower third.',
+      'Urgency: high. Weak now: "Above" draws the ball touching the box (reads as "on"); box is a pale wireframe cube, ball a flat disc; thin floor line with a large empty area below. Redo: Cardboard box (kraft, flaps, tape, TopLight) and a red rubber ball (Ball shading, FloorShadow). "Above": clear gap with a dashed drop shadow on the lid. Behind: partly hidden by the box. In front: overlaps it, lower and larger. Add a small child or teddy as the viewer so in front/behind have a point of view. Shrink the empty lower third. Drawn (round 4, group A): A kraft cardboard box (taped flaps, printed arrows, lit front, shaded side) on a small wooden table, and a red rubber ball (Ball shading, seam, shadow where it rests). Above: a clear gap over the lid with a dashed shadow on it. Below: on the floor under the table. Beside: on the table next to the box. In front of: lower on the table, larger, over the box front. Behind: at the back, smaller, mostly hidden by the box. A child seen from behind at the front left is the viewer. Table and floor fill the width; the empty lower third is gone. Drawn in layouts/PositionScene.tsx. No page change.',
   },
   {
     id: 'Q04',
