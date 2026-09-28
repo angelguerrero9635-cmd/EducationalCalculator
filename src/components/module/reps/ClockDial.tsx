@@ -19,8 +19,9 @@ export function clockGeometry(w: number, h: number, minuteLabels = false) {
   const r = Math.min(w, h) / 2 - RIM - 6 - (minuteLabels ? MINUTE_RING : 0);
   const at = (angle: number, len: number) =>
     [cx + len * Math.sin(angle), cy - len * Math.cos(angle)] as const;
-  // The minute hand reaches the tick ring, so its handle sits outside the numerals.
-  return { cx, cy, r, at, minuteTip: r - 9 };
+  // The minute hand reaches the tick ring; its drag handle (20 px) sits on the rim's inner
+  // edge, clear of the numerals inside and the minute labels outside.
+  return { cx, cy, r, at, minuteTip: r - 9, minuteHandle: r + 2 };
 }
 
 /**

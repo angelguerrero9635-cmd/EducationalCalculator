@@ -45,8 +45,8 @@ export function Clock({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <View style={styles.face}>
         <Canvas aspect={1}>
           {({ w, h: ht }) => {
-            const { cx, cy, at, minuteTip } = clockGeometry(w, ht, true);
-            const [mx, my] = at(minuteAngle, minuteTip);
+            const { cx, cy, at, minuteHandle } = clockGeometry(w, ht, true);
+            const [mx, my] = at(minuteAngle, minuteHandle);
             return (
               <>
                 <ClockDial w={w} h={ht} hour={h} minute={m} minuteLabels />
