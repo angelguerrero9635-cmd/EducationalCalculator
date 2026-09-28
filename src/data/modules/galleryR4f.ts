@@ -10,6 +10,9 @@ import type { ExploreLayout, LayoutDef } from './layouts';
 import { MATH_LAYOUTS } from './layouts/math';
 import { MATH_2_MODULES } from './math/2';
 import { MATH_3_MODULES } from './math/3';
+import { SCIENCE_1_MODULES } from './science/1';
+import { SCIENCE_3_MODULES } from './science/3';
+import { SCIENCE_4_MODULES } from './science/4';
 import { SCIENCE_5_MODULES } from './science/5';
 import type { ModuleDef } from './types';
 
@@ -70,6 +73,46 @@ export const R4F_GALLERY_MODULES: ModuleDef[] = [
     { w: 100, s: 97, f: 3, i: 2, l: 1 },
     WATER,
   ),
+  // Q27: bar charts. The Grade 2 page's example and its range's edge (20 and 0), a science
+  // page with icons under the bars, four bars with icons at the top of their range, and bars
+  // that can't be dragged.
+  copy(MATH_2_MODULES, 'm.2.graphs-line-plots', 'g.r4f-bars', 'Bar graph'),
+  copy(MATH_2_MODULES, 'm.2.graphs-line-plots', 'g.r4f-bars-edge', 'Bar graph: 20 and 0', {
+    a: 20,
+    b: 0,
+    c: 1,
+    e: 19,
+    n: 40,
+  }),
+  copy(SCIENCE_1_MODULES, 's.1.sky-patterns', 'g.r4f-bars-icons', 'Bars with icons', undefined, {
+    bars: [
+      { var: 's', editable: true, icon: 'sun' },
+      { var: 'w', editable: true, icon: 'snow cloud' },
+    ],
+  }),
+  copy(
+    SCIENCE_3_MODULES,
+    's.3.weather-climate',
+    'g.r4f-bars-rain',
+    'Bars: four weeks of rain',
+    { a: 40, b: 2, c: 32, d: 1, m: 75 },
+    {
+      bars: ['a', 'b', 'c', 'd'].map((v) => ({ var: v, editable: true, icon: 'rain cloud' })),
+    },
+  ),
+  copy(SCIENCE_4_MODULES, 's.4.weathering', 'g.r4f-bars-fixed', 'Bars you read'),
+  // Q29: one object on a yardstick and foot rulers (the page's 3 feet, and 1 foot), and on a
+  // meter tape and meter sticks (the page's 3 meters, and the most, 5).
+  copy(MATH_2_MODULES, 'm.2.standard-length~two-units', 'g.r4f-feet', 'Inches and feet'),
+  copy(MATH_2_MODULES, 'm.2.standard-length~two-units', 'g.r4f-feet-edge', 'One foot', {
+    f: 1,
+    n: 12,
+  }),
+  copy(MATH_2_MODULES, 'm.2.standard-length~meters', 'g.r4f-meters', 'Meters'),
+  copy(MATH_2_MODULES, 'm.2.standard-length~meters', 'g.r4f-meters-edge', 'Five meters', {
+    m: 5,
+    c: 500,
+  }),
 ];
 
 export const R4F_GALLERY_LAYOUTS: LayoutDef[] = [

@@ -441,7 +441,8 @@ export type Representation =
   /** Bar chart. Bars marked `editable` can be dragged; the range grows to fit the values. */
   | {
       kind: 'bars';
-      bars: { var: string; editable?: boolean }[];
+      /** `icon`: a small card icon under the bar's name (science pages: a sun, a rain cloud). */
+      bars: { var: string; editable?: boolean; icon?: CardIcon }[];
       /** Smallest range shown (grows to fit larger values). */
       min: number;
       max: number;

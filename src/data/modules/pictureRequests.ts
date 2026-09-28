@@ -2143,10 +2143,16 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.3.weather-climate',
       's.4.weathering',
     ],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: [
+      'g.r4f-bars',
+      'g.r4f-bars-edge',
+      'g.r4f-bars-icons',
+      'g.r4f-bars-rain',
+      'g.r4f-bars-fixed',
+    ],
     notes:
-      'Urgency: medium. Weak now: Flat bars with heavy black outlines; value labels crowd the handles on the bar tops; small grey category labels and tiny axis numbers; right third wasted on one-row charts. Redo: Flat but crisp: 1 px darker-tone outline, gridlines at 0.5 opacity, a lighter 4 px grab lip on each bar top. Handle as a pill on the bar top with the value inside. chart.label for categories and axis numbers; widen bars to fill the width. Science pages: a small category icon under each label.',
+      "Urgency: medium. Weak now: Flat bars with heavy black outlines; value labels crowd the handles on the bar tops; small grey category labels and tiny axis numbers; right third wasted on one-row charts. Redo: Flat but crisp: 1 px darker-tone outline, gridlines at 0.5 opacity, a lighter 4 px grab lip on each bar top. Handle as a pill on the bar top with the value inside. chart.label for categories and axis numbers; widen bars to fill the width. Science pages: a small category icon under each label. Drawn (round 4, group F): flat bars with a 1 px edge in the bar's own darker tone (fill at 0.78), a lighter 4 px lip on each bar you can drag, grid lines at full opacity on numbered steps and 0.5 between; bars up to 68 % of their slot (100 px max) so two-bar charts fill the width. The handle is now a pill on the bar top with the value inside at 14 px (a grip, not a number, on readScale pages, where the height is the question); the 44 px touch area is unchanged. Category names at 12 px in ink, wrapped under their bar; scale numbers at 12 px; names start below a pill resting at 0. Bars you can't drag (s.4.weathering) are solid chartFill with a fine dashed edge and the value above. New optional per-bar field icon (a card icon under the name). No page change needed; optional icons for the science pages: s.1.sky-patterns sun / snow cloud; s.1.sound-vibration~drum drum / drum; s.2.habitats pond / sand dune; s.2.erosion-landforms~wall waves at cliff / rock wall at shore; s.2.pollination-dispersal~sock-walk sock / sock; s.3.magnets~chain paper clip / paper clip; s.3.adaptation-fossils~survive bird beak / bird beak; s.3.weather-climate rain cloud ×4; s.4.weathering gray rock / granite crumbling; e.g. bars: [{ var: 's', editable: true, icon: 'sun' }, …].",
   },
   {
     id: 'Q28',
