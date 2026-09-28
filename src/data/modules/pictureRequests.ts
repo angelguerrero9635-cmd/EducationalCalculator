@@ -2006,10 +2006,10 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     what: "A body silhouette with each system's organs in colour and label chips",
     kind: 'bodySystems',
     pages: ['s.6.body-systems'],
-    status: 'requested',
-    gallery: [],
+    status: 'drawn',
+    gallery: ['g.r4c-body-systems'],
     notes:
-      'Urgency: high. Weak now: Weakest in the batch: stick-figure body, faint grey organ scribbles (only the heart filled), callout label tiny and nearly clipped at the edge, dashed vessels look like construction lines, lots of empty space. Redo: Soft gender-neutral silhouette (one path) in a muted skin-token fill, ~70 % width. Each system\'s organs in their own material colours at readable size: lungs pink (TopLight), heart red, stomach and intestines, brain, spine and bones bone-white, kidneys. Active system full colour, others ghosted to ~15 %. Vessels as solid red and blue tapering paths. 14 px label chips beside highlighted organs, in two columns inside the canvas. Activity scenes ("Running", "Eating lunch", "Touching a hot pan") light several systems, each with its chip.',
+      'Urgency: high. Weak now: Weakest in the batch: stick-figure body, faint grey organ scribbles (only the heart filled), callout label tiny and nearly clipped at the edge, dashed vessels look like construction lines, lots of empty space. Redo: Soft gender-neutral silhouette (one path) in a muted skin-token fill, ~70 % width. Each system\'s organs in their own material colours at readable size: lungs pink (TopLight), heart red, stomach and intestines, brain, spine and bones bone-white, kidneys. Active system full colour, others ghosted to ~15 %. Vessels as solid red and blue tapering paths. 14 px label chips beside highlighted organs, in two columns inside the canvas. Activity scenes ("Running", "Eating lunch", "Touching a hot pan") light several systems, each with its chip. Drawn (round 4, group C; bodyFigure.tsx): a soft gender-neutral silhouette (one outline, skin token at 40 %, lit from above) filling the board height, with each system in its own colors: pink brain with yellow spinal cord and nerves, bone-white skull, spine, ribs, pelvis and long bones, red muscle spindles with fibres, pink lungs on a windpipe, a red heart with its arch and red arteries and blue veins out to the limbs, esophagus, stomach, pink small intestine inside the tan large one, and brown kidneys with a bladder. Lit systems are drawn in full on top; the rest ghosted at 16 %. Each lit system gets a 13 px chip with its color dot in a column beside the body (two columns, rows kept apart) and a leader to its organ; activity scenes light several at once. No page change.',
   },
   {
     id: 'Q16',

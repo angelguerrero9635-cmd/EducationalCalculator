@@ -27,4 +27,27 @@ export const R4C_GALLERY_LAYOUTS: LayoutDef[] = [
       lines: ['With no driver given, the figure shows no driver chip.'],
     },
   ]),
+  // Q15: s.6.body-systems
+  demo('s.6.body-systems', 'g.r4c-body-systems', 'Body systems silhouette', [
+    {
+      label: 'No system lit',
+      body: { systems: [] },
+      lines: ['Every system ghosted.'],
+    },
+    {
+      label: 'Every system lit',
+      body: {
+        systems: [
+          'circulatory',
+          'respiratory',
+          'digestive',
+          'nervous',
+          'muscular',
+          'skeletal',
+          'excretory',
+        ],
+      },
+      lines: ['All seven systems at once, each with its chip.'],
+    },
+  ]),
 ];

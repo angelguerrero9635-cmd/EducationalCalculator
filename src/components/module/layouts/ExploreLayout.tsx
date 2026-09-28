@@ -14,8 +14,8 @@ import { PartsDrawing } from './partsDrawings';
 import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife';
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
+import { BodyFigure } from './bodyFigure';
 import {
-  BodyFigure,
   CellFigure6,
   ContinentsFigure,
   FrontFigure,
