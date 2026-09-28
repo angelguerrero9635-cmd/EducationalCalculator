@@ -6,13 +6,27 @@
 import type { Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
+import { MATH_LAYOUTS } from './layouts/math';
 import { MATH_1_MODULES } from './math/1';
 import { MATH_2_MODULES } from './math/2';
 import { MATH_3_MODULES } from './math/3';
+import { MATH_4_MODULES } from './math/4';
+import { MATH_5_MODULES } from './math/5';
 import { MATH_6_MODULES } from './math/6';
+import { PILOT_MODULES } from './pilots';
+import { SCIENCE_6_MODULES } from './science/6';
 import type { ModuleDef } from './types';
 
-const PAGES = [...MATH_1_MODULES, ...MATH_2_MODULES, ...MATH_3_MODULES, ...MATH_6_MODULES];
+const PAGES = [
+  ...MATH_1_MODULES,
+  ...MATH_2_MODULES,
+  ...MATH_3_MODULES,
+  ...MATH_4_MODULES,
+  ...MATH_5_MODULES,
+  ...MATH_6_MODULES,
+  ...SCIENCE_6_MODULES,
+  ...PILOT_MODULES,
+];
 
 /** The page `pageId` as a gallery demo `id`, with its own picture unless `extra` changes it. */
 function demo(
@@ -93,5 +107,81 @@ export const R4D_GALLERY_MODULES: ModuleDef[] = [
   demo('m.3.two-step-problems~add-subtract', 'g.r4d-hops-hundreds-edge', 'Hops: 450 + 380 − 760', {
     example: { a: 450, b: 380, t: 830, c: 760, l: 70 },
   }),
+  // Q32: two heavy lines, paired ticks joined, the current pair in pills.
+  demo('m.6.unit-rates', 'g.r4d-dnl', 'Double number line: 6 items for $7.50'),
+  demo('m.6.unit-rates', 'g.r4d-dnl-many', 'Double number line: 11 items for $13.75', {
+    example: { n: 11, t: 13.75, c: 1.25 },
+  }),
+  demo('m.6.unit-rates', 'g.r4d-dnl-whole', 'Double number line: whole dollars', {
+    example: { n: 4, t: 12, c: 3 },
+  }),
+  demo('m.5.powers-of-ten~metric', 'g.r4d-dnl-metric', 'Double number line: 2.5 × 100'),
+  demo('m.5.powers-of-ten~metric', 'g.r4d-dnl-metric-edge', 'Double number line: 15 × 1,000', {
+    example: { k: 1000, a: 15, c: 15000 },
+  }),
+  demo('s.6.rock-cycle~layer-time', 'g.r4d-dnl-layer', 'Double number line: 30 cm of ooze'),
+  // Q43: the elapsed-time line, 5-minute ticks, jumps with chips, counting back from the end.
+  demo('m.3.elapsed-time~elapsed', 'g.r4d-time', 'Elapsed time: 3:45 and 35 minutes'),
+  demo('m.3.elapsed-time~elapsed', 'g.r4d-time-long', 'Elapsed time: 600 minutes', {
+    example: { sh: 11, sm: 55, d: 600, eh: 9, em: 55 },
+  }),
+  demo('m.3.elapsed-time~elapsed', 'g.r4d-time-short', 'Elapsed time: 12 minutes past the hour', {
+    example: { sh: 2, sm: 50, d: 12, eh: 3, em: 2 },
+  }),
+  demo('m.3.elapsed-time~start-time', 'g.r4d-time-back', 'Start time: back 35 minutes from 4:20'),
+  demo(
+    'm.3.elapsed-time~start-time',
+    'g.r4d-time-back-short',
+    'Start time: back 7 minutes from 12:05',
+    {
+      example: { sh: 11, sm: 58, d: 7, eh: 12, em: 5 },
+    },
+  ),
+  // Q46: centred headers, a light selected row and the pattern between rows.
+  demo('m.4.unit-conversion', 'g.r4d-table', 'Table: feet and inches'),
+  demo('m.6.expressions-variables~exponents', 'g.r4d-table-powers', 'Table: powers of a base'),
+  demo('s.6.body-systems~heart-output', 'g.r4d-table-heart', 'Table: seven heart rates'),
+  demo('m.9.exponential-functions', 'g.r4d-table-growth', 'Table: eleven rows of growth'),
+  demo('s.6.cells~magnification', 'g.r4d-table-no-pattern', 'Table: no single pattern'),
 ];
-export const R4D_GALLERY_LAYOUTS: LayoutDef[] = [];
+
+/** The explore page `id` as a gallery demo, its scenes changed by `scene`. */
+function layoutDemo(
+  pageId: string,
+  id: string,
+  title: string,
+  scene: (s: Scene) => Scene,
+  first?: string,
+): LayoutDef {
+  const page = MATH_LAYOUTS.find((l) => l.id === pageId);
+  if (!page || page.kind !== 'explore') throw new Error(`galleryR4d: no explore page ${pageId}`);
+  // The scene labelled `first` opens the demo (so a screenshot shows it).
+  const scenes = page.scenes.map(scene);
+  const at = Math.max(
+    0,
+    scenes.findIndex((s) => s.label === first),
+  );
+  return { ...page, id, title, scenes: [...scenes.slice(at), ...scenes.slice(0, at)] };
+}
+type Scene = Extract<LayoutDef, { kind: 'explore' }>['scenes'][number];
+const withPair = (s: Scene): Scene =>
+  s.table?.mirror ? { ...s, table: { ...s.table, pair: [4, 7] } } : s;
+
+export const R4D_GALLERY_LAYOUTS: LayoutDef[] = [
+  // Q47: the times table with room to read, hops on a counting row, a turn-around pair.
+  layoutDemo('m.3.arithmetic-patterns', 'g.r4d-times-table', 'Times table patterns', withPair),
+  layoutDemo(
+    'm.3.arithmetic-patterns',
+    'g.r4d-times-table-turn',
+    'Times table: turn-around facts',
+    withPair,
+    'Turn-around facts',
+  ),
+  layoutDemo(
+    'm.3.arithmetic-patterns',
+    'g.r4d-times-table-doubles',
+    'Times table: doubles',
+    withPair,
+    'Doubles',
+  ),
+];
