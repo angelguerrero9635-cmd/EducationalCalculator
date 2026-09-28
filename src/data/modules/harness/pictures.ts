@@ -6,6 +6,8 @@
 import type { VariableDef } from '@/engine/types';
 
 import { diceCount } from '@/components/module/reps/dice';
+import { hopArcs } from '@/components/module/reps/hopArcs';
+import { timeJumps } from '@/components/module/reps/timeJumps';
 import { toFraction } from '@/components/module/reps/exact';
 import { outline } from '@/components/module/reps/scaleOutline';
 import {
@@ -345,6 +347,21 @@ export function repIssues(
       });
       const e = val(rep.end);
       if (e !== undefined && e !== at) out.push(`hops land on ${at}, not the end ${e}`);
+      // Each hop is drawn one arc per ten (per tick) plus the rest: the arcs chain from the
+      // start to the end, none longer than a tick, at most a hundred of them.
+      const signs = rep.hops.map((h) =>
+        typeof h.sign === 'number' ? h.sign : (val(h.sign) ?? 1) < 0 ? -1 : 1,
+      );
+      const stops = hops.reduce<number[]>((s, x, i) => [...s, s[i]! + signs[i]! * x!], [start]);
+      const arcs = hopArcs(stops, signs, rep.tick ?? 10);
+      if (arcs.length > 100) out.push(`hops drawn as ${arcs.length} arcs`);
+      arcs.forEach((a, k) => {
+        const from = k === 0 ? start : arcs[k - 1]!.to;
+        if (Math.abs(a.from - from) > 1e-9 || Math.abs(a.to - a.from) > (rep.tick ?? 10) + 1e-9)
+          out.push(`hop arc ${k + 1} (${a.from} to ${a.to}) doesn't chain one tick at a time`);
+      });
+      const last = arcs.length ? arcs[arcs.length - 1]!.to : start;
+      if (Math.abs(last - at) > 1e-9) out.push(`hop arcs end at ${last}, not ${at}`);
       break;
     }
     case 'numberBond': {
@@ -422,6 +439,12 @@ export function repIssues(
       // Past `max` the array is drawn cut off and the caption says so (DotArray.tsx).
       count(rep.rows, 'array rows');
       count(rep.columns, 'array columns');
+      // A split: the top braces label `first` and columns − first, so first fits the columns.
+      if (rep.split) {
+        const [f, k] = [val(rep.split.first), val(rep.columns)];
+        if (f !== undefined && k !== undefined && (f < 0 || f > k))
+          out.push(`array split at ${f} of ${k} columns`);
+      }
       break;
     case 'ruler': {
       for (const id of rep.lengths) {
@@ -633,6 +656,19 @@ export function repIssues(
         const at = (h: number, m: number) => (h % 12) * 60 + m;
         if ((at(sh!, sm!) + d!) % 720 !== at(eh!, em!)) {
           out.push(`${sh}:${sm} + ${d} minutes is not ${eh}:${em}`);
+        }
+        // The jumps (Timeline.tsx) chain from one end to the other and add up to the minutes;
+        // forward they land on the hour after the first, backward on the hour before.
+        for (const back of [false, true]) {
+          const jumps = timeJumps(sm!, d!, em!, back);
+          let pos = back ? d! : 0;
+          for (const j of jumps) {
+            if (j.from !== pos || j.minutes <= 0) out.push(`time jumps don't chain (${back})`);
+            pos = j.to;
+          }
+          if (d! > 0 && pos !== (back ? 0 : d)) out.push(`time jumps end at ${pos}, not the end`);
+          if (jumps.length > 1 && (back ? em! - jumps[0]!.minutes : sm! + jumps[0]!.minutes) % 60)
+            out.push(`the first time jump doesn't land on an hour (${back})`);
         }
       }
       break;

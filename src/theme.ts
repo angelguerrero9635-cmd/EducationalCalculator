@@ -52,6 +52,8 @@ const light = {
   onChartHighlight: '#FFFFFF',
   /** A second color for counters and parts beside the highlight (the yellow of two-color counters). */
   chartSecond: '#F4B740',
+  /** Hops that take away on a number line (Hops.tsx), beside the highlight for adding. */
+  hopBack: '#C2410C',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
@@ -262,6 +264,7 @@ const dark: Palette = {
   chartHighlight: '#8B83FF',
   onChartHighlight: '#0D0F14',
   chartSecond: '#B8862E',
+  hopBack: '#F08A4B',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
 
