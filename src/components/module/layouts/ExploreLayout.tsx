@@ -16,7 +16,8 @@ import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigure
 import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
-import { CellFigure6, FrontFigure, PlatesFigure, RockCycleFigure } from './figures6';
+import { FrontFigure } from './frontFigure';
+import { CellFigure6, PlatesFigure, RockCycleFigure } from './figures6';
 import { WaterCycleFigure } from './waterCycleFigure';
 
 /**

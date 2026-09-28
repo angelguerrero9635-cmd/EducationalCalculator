@@ -73,4 +73,17 @@ export const R4C_GALLERY_LAYOUTS: LayoutDef[] = [
       lines: ['The scratches point every which way today.'],
     },
   ]),
+  // Q17: s.6.weather-fronts
+  demo('s.6.weather-fronts', 'g.r4c-fronts', 'Weather fronts cross-section', [
+    {
+      label: 'No type given',
+      front: {},
+      lines: ['With no type, the figure draws a cold front.'],
+    },
+    {
+      label: 'Low over a front',
+      front: { type: 'warm', air: 'low' },
+      lines: ['A high or low takes the place of the front.'],
+    },
+  ]),
 ];
