@@ -2271,6 +2271,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Volume counts the unit cubes that fill the box.',
       'The base area is length × width: the cubes in one layer. The box has a layer for every unit of height.',
       'Volume = length × width × height, in cubic units. Sides to 100 (40 × 60 × 80 cm).',
+      'Give the volume and two sides to find the missing side.',
       'Past 10 a side, the box is drawn to scale with one unit cube beside it.',
     ],
     variables: [

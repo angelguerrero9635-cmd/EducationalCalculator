@@ -126,6 +126,7 @@ export const MATH_1_MODULES: ModuleDef[] = [
       'All numbers are 0 to 20.',
       'Make a ten: 8 + 5 = 8 + 2 + 3 = 10 + 3.',
       'Subtraction undoes addition: if 8 + 5 = 13, then 13 − 5 = 8.',
+      'Give the total and one part to find the missing part.',
     ],
     variables: [
       whole('a', 'a', 'First number', 0, 20),

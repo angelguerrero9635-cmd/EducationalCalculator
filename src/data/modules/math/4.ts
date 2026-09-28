@@ -2854,6 +2854,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
       'A full turn is 360 degrees. One degree is 1/360 of a turn.',
       'A right angle is 90°: a quarter turn. A straight angle is 180°: a half turn.',
       'Two angles that share a vertex and a ray add up: the whole angle is their sum, up to a straight angle.',
+      'Give the whole angle and one part to find the other part: the parts subtract.',
       'Drag the middle ray, or use the sliders, to change the angles.',
     ],
     variables: [

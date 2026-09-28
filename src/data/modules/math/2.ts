@@ -316,7 +316,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
     // Typed where it is written (K–6 diagram review).
     equation: '{a} + {b} = {c}',
     title: 'Solve addition and subtraction word problems',
-    use: 'Use this for “Mai puts 18 more on the shelf. Now there are 47.”',
+    use: 'Use this for “Mai puts 18 more on the shelf. Now there are 47. How many were there before?” and “How many did she put?”',
     assumptions: [
       'Draw one bar for the whole and cut it into the two parts.',
       'To find the whole, add the parts. To find a part, take the other part away.',

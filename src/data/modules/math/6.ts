@@ -828,6 +828,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       'Percent means out of 100: the whole is 100%.',
       'More than 100% means more than the whole.',
       'The part and the whole use the same unit.',
+      'Give any two of part, whole and percent to find the third: the whole from a part and its percent too.',
     ],
     variables: [
       { id: 'p', symbol: 'p', name: 'Percent', unit: '%', min: 0, max: 300, step: 0.1 },
