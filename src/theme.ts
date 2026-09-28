@@ -121,11 +121,7 @@ const light = {
   blockBlue: '#3E7BD6',
   blockGreen: '#3DA35D',
   onBlock: '#FFFFFF',
-  /** Round-4 group A: the other pattern blocks (yellow hexagon, orange square, tan thin rhombus). */
-  blockYellow: '#F2C230',
-  blockOrange: '#F07F2E',
-  blockTan: '#E3C79A',
-  /** A kraft cardboard box (faces, its dark side and the packing tape) and a red rubber ball. */
+  /** Round-4 group A: a kraft cardboard box (faces, dark side, packing tape) and a red rubber ball. */
   boxKraft: '#CFA36C',
   boxKraftDark: '#A0743F',
   boxTape: '#EAD7AE',
@@ -314,9 +310,6 @@ const dark: Palette = {
   blockBlue: '#3C74C8',
   blockGreen: '#3A9656',
   onBlock: '#FFFFFF',
-  blockYellow: '#D6A91F',
-  blockOrange: '#D56D24',
-  blockTan: '#B89B6F',
   boxKraft: '#A67E4E',
   boxKraftDark: '#76532C',
   boxTape: '#C5AE7F',

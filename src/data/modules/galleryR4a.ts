@@ -84,6 +84,28 @@ export const R4A_GALLERY_MODULES: ModuleDef[] = [
   demo('m.1.addition-properties', 'g.r4a-trains-zero', 'Cube trains: 0 + 1 + 9', {
     example: { a: 0, b: 1, c: 9, s: 10 },
   }),
+  // Q25: large counters on a felt mat, numbered as they are tapped.
+  demo('m.K.count-objects', 'g.r4a-dots', 'Counters on a mat: 7'),
+  demo('m.K.count-objects', 'g.r4a-dots-19', 'Counters on a mat: 19', {
+    example: { n: 19, m: 20 },
+  }),
+  // Q26: matte pattern blocks filling a dashed hexagon slot, a tray with counts.
+  demo('m.K.compose-shapes', 'g.r4a-blocks', 'Pattern blocks: one of each'),
+  demo('m.K.compose-shapes', 'g.r4a-blocks-triangles', 'Pattern blocks: 6 triangles', {
+    example: { z: 0, r: 0, t: 6 },
+  }),
+  demo('m.K.compose-shapes', 'g.r4a-blocks-trapezoids', 'Pattern blocks: 2 trapezoids', {
+    example: { z: 2, r: 0, t: 0 },
+  }),
+  // Q41: pairs in two-cell trays, the one left over in a half-empty tray.
+  demo('m.2.even-odd', 'g.r4a-pairs', 'Pairs: 7'),
+  demo('m.2.even-odd', 'g.r4a-pairs-20', 'Pairs: 20', { example: { n: 20, p: 10, r: 0 } }),
+  demo('m.2.even-odd', 'g.r4a-pairs-19', 'Pairs: 19', { example: { n: 19, p: 9, r: 1 } }),
+  // Q48: a firmer number bond with ten-frame counters in each circle.
+  demo('m.K.add-sub-10~number-bond', 'g.r4a-bond', 'Number bond: 7 is 4 and 3'),
+  demo('m.K.add-sub-10~number-bond', 'g.r4a-bond-10', 'Number bond: 10 is 10 and 0', {
+    example: { w: 10, a: 10, b: 0 },
+  }),
   demo('s.K.living-needs', 'g.r4a-seeds', 'Compare rows: seeds that sprouted'),
   demo('s.K.living-needs', 'g.r4a-seeds-all', 'Compare rows: 10 and 0 seeds', {
     example: { w: 10, d: 0, m: 10 },

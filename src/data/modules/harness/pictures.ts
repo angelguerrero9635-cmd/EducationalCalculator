@@ -310,6 +310,10 @@ export function repIssues(
     case 'pairs':
       count(rep.value, 'objects', rep.max);
       break;
+    case 'dotSet':
+      // Scattered counters have 20 fixed spots (DotSet.tsx); past them they would overlap.
+      count(rep.count, 'counters', 20);
+      break;
     case 'coinRow': {
       // True-size coins five to a row, each with its running total under it (CoinRow.tsx).
       count(rep.count, 'coins', byId.get(rep.count)?.max ?? 10);
