@@ -1448,4 +1448,129 @@ export const HSB_GALLERY_MODULES: ModuleDef[] = [
     n: 30,
   }),
 ];
-export const HSB_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HSB_GALLERY_LAYOUTS: LayoutDef[] = [
+  // ── H30 studyDesign ──
+  {
+    id: 'g.m11-study-design',
+    title: 'Surveys, observational studies and experiments',
+    kind: 'explore',
+    use: 'Use this for telling a survey, an observational study and an experiment apart.',
+    assumptions: [
+      'A sample is taken from the population; a random sample stands for it fairly.',
+      'Only an experiment assigns treatments at random, so only it can show cause and effect.',
+    ],
+    figure: { kind: 'studyDesign' },
+    scenes: [
+      {
+        label: 'Survey',
+        lines: [
+          'A survey asks a sample questions and records the answers.',
+          'A random sample lets the answers stand for the whole population.',
+        ],
+        study: { design: 'survey', lit: 'sample' },
+      },
+      {
+        label: 'Observational study',
+        lines: [
+          'An observational study records what people already do; nothing is assigned.',
+          'A difference between the groups may come from something else, so it shows a link, not a cause.',
+        ],
+        study: {
+          design: 'observational',
+          groups: ['Walk to school', 'Ride to school'],
+          lit: 'groups',
+        },
+      },
+      {
+        label: 'Experiment',
+        lines: [
+          'An experiment assigns each person to a treatment by chance.',
+          'The control group gets a placebo; random assignment balances everything else, so a difference shows a cause.',
+        ],
+        study: { design: 'experiment', groups: ['New drug', 'Placebo'], lit: 'groups' },
+      },
+      {
+        label: 'Stratified sample',
+        lines: [
+          'The population is split into bands that differ (grades 9, 10 and 11).',
+          'A random few from each band make sure every band is in the sample.',
+        ],
+        study: { design: 'survey', method: 'stratified', lit: 'population' },
+      },
+      {
+        label: 'Cluster sample',
+        lines: [
+          'The population comes in blocks, such as classrooms.',
+          'Whole blocks are picked at random, and everyone in them is asked.',
+        ],
+        study: { design: 'survey', method: 'cluster', lit: 'population' },
+      },
+      {
+        label: 'Systematic sample',
+        lines: [
+          'The list is counted off: every 4th person from a random start.',
+          'It spreads the sample along the list.',
+        ],
+        study: { design: 'survey', method: 'systematic', lit: 'population' },
+      },
+      {
+        label: 'Convenience sample',
+        lines: [
+          'The people easiest to reach are asked, such as the first ones in the door.',
+          'It is not random, so it can be biased.',
+        ],
+        study: { design: 'survey', method: 'convenience', sample: 24, lit: 'population' },
+      },
+    ],
+  },
+  {
+    id: 'g.m11-study-design-sampling',
+    title: 'Sampling methods: by chance or not',
+    kind: 'sort',
+    use: 'Use this for naming a sampling method and whether it uses chance.',
+    assumptions: [
+      'Each picture is a population of 36 people; the filled dots are the sample.',
+      'A method that picks by chance gives every person a known chance of being chosen.',
+    ],
+    question: 'Does the method pick by chance?',
+    bins: [
+      {
+        id: 'chance',
+        label: 'By chance',
+        why: 'Simple random, stratified, cluster and systematic samples all use chance.',
+      },
+      {
+        id: 'not',
+        label: 'Not by chance',
+        why: 'A convenience sample takes whoever is easy to reach, so it can be biased.',
+      },
+    ],
+    cards: [
+      {
+        label: 'Simple random: 9 names drawn from a hat',
+        bin: 'chance',
+        figure: { kind: 'icon', icon: 'simple random sample' },
+      },
+      {
+        label: 'Stratified: 3 at random from each grade',
+        bin: 'chance',
+        figure: { kind: 'icon', icon: 'stratified sample' },
+      },
+      {
+        label: 'Cluster: one homeroom picked at random, all of it',
+        bin: 'chance',
+        figure: { kind: 'icon', icon: 'cluster sample' },
+      },
+      {
+        label: 'Systematic: every 4th name from a random start',
+        bin: 'chance',
+        figure: { kind: 'icon', icon: 'systematic sample' },
+      },
+      {
+        label: 'Convenience: the first 9 at the door',
+        bin: 'not',
+        figure: { kind: 'icon', icon: 'convenience sample' },
+      },
+    ],
+  },
+];

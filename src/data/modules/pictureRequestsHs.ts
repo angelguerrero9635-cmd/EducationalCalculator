@@ -314,13 +314,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   ]),
 
   // ── C. Statistics and study design figures ──
-  ask(
-    'H30',
-    'studyDesign',
-    'Explore figure: population to sample to randomly assigned groups; survey, observational study, experiment',
-    ['m.11.study-design'],
-    'Card figures for the sampling methods: simple random, stratified, cluster, systematic, convenience.',
-  ),
+  {
+    ...ask(
+      'H30',
+      'studyDesign',
+      'Explore figure: population to sample to randomly assigned groups; survey, observational study, experiment',
+      ['m.11.study-design'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m11-study-design', 'g.m11-study-design-sampling'],
+    notes:
+      'Card figures for the sampling methods: simple random, stratified, cluster, systematic, convenience. Drawn (group HB). Explore figure { kind: "studyDesign" }; each scene sets study: { design: "survey" | "observational" | "experiment", method?: "simple random" | "stratified" | "cluster" | "systematic" | "convenience" (default simple random), sample?: 6–24 (default 12), groups?: [two names] (default Treatment and Control, or Group A and B), lit?: "population" | "sample" | "groups" }. The population is 48 people; the picks come from a fixed seed (studyMath.ts) and the harness checks each method (every band in a stratified sample, whole blocks in a cluster sample, equal gaps in a systematic one, the two groups splitting the sample). The five sampling methods are card icons for sort cards: { kind: "icon", icon: "stratified sample" } (also "simple random sample", "cluster sample", "systematic sample", "convenience sample"), 36 dots with the 9 picked. Example scene: { label: "Experiment", lines: [...], study: { design: "experiment", groups: ["New drug", "Placebo"], lit: "groups" } }.',
+  },
 
   // ── D. Biology ──
   ask(

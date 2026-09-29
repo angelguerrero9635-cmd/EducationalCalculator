@@ -120,6 +120,25 @@ export interface TermsChartSpec {
   sum?: string;
 }
 
+/** How a sample is taken (the `studyDesign` figure and the sampling card icons). */
+export type SamplingMethod =
+  'simple random' | 'stratified' | 'cluster' | 'systematic' | 'convenience';
+
+/**
+ * A `studyDesign` scene (Grades 11–12): a population of 48 people, the sample a `method` takes
+ * from it (default simple random, `sample` people, 6 to 24), then the design: a `survey` asks the
+ * sample, an `observational` study sorts it by what people already do (`groups`), an
+ * `experiment` assigns it at random to a treatment and a control group (`groups`). `lit` rings
+ * one stage.
+ */
+export interface StudyScene {
+  design: 'survey' | 'observational' | 'experiment';
+  method?: SamplingMethod;
+  sample?: number;
+  groups?: [string, string];
+  lit?: 'population' | 'sample' | 'groups';
+}
+
 export type HsbSpec = NormalCurveSpec | HistogramSpec | PascalTriangleSpec | TermsChartSpec;
 
 /** Every variable id one of these pictures refers to. */

@@ -1,4 +1,5 @@
 import type { PlanetName } from '../typesPhysics8';
+import type { StudyScene } from '../typesHsb';
 import type { Round3Icon } from './icons';
 
 /**
@@ -318,7 +319,9 @@ export type Figure =
   /** The periodic table with an element, a group or a period lit (Grade 8). */
   | { kind: 'periodicTable' }
   /** The planets and Earth’s moon side by side, to scale by size, beside the sun’s edge (Grade 8). */
-  | { kind: 'planets' };
+  | { kind: 'planets' }
+  /** Population → sample → a survey, an observational study or an experiment (HS group B). */
+  | { kind: 'studyDesign' };
 
 /** One person in a `pedigree` figure. */
 export interface PedigreePerson {
@@ -440,6 +443,8 @@ export interface Scene {
   field?: { single?: boolean; lines?: boolean; compasses?: boolean };
   /** The planets ringed, each with its width in Earths (a `planets` figure). */
   planets?: { lit?: PlanetName[] };
+  /** The design, how the sample is taken and the stage lit (a `studyDesign` figure). */
+  study?: StudyScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**
