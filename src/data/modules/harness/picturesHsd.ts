@@ -6,6 +6,7 @@ import { principalOf, solutionsOf, toDegrees, trig } from '@/components/module/r
 
 import { rectangleCounts, type Poly } from '@/components/module/reps/tiles';
 import { CURVE_FIELDS, PATH_FIELDS, pathAt, polarR } from '@/components/module/reps/polar';
+import { conicResidual, focalDistance } from '@/components/module/reps/conics';
 
 import type { HsdSpec, TileCounts } from '../typesHsd';
 
@@ -268,6 +269,39 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
           check(p.y, at.y, 'y(t)');
         }
       }
+      break;
+    }
+    case 'conicGraph': {
+      const [h, k] = [num(rep.h ?? 0), num(rep.k ?? 0)];
+      const size =
+        rep.conic === 'circle'
+          ? [num(rep.r)]
+          : rep.conic === 'parabola'
+            ? [num(rep.p)]
+            : [num(rep.a), num(rep.b)];
+      if (h === undefined || k === undefined || size.some((x) => x === undefined)) break;
+      if (size.some((x) => x === 0)) {
+        out.push(`${rep.conic} with a zero size: nothing to draw`);
+        break;
+      }
+      const q = {
+        conic: rep.conic,
+        h,
+        k,
+        ...(rep.conic === 'circle' ? { r: Math.abs(size[0]!) } : {}),
+        ...(rep.conic === 'parabola' ? { p: size[0]!, axis: rep.axis ?? 'vertical' } : {}),
+        ...(rep.conic === 'ellipse' ? { a: Math.abs(size[0]!), b: Math.abs(size[1]!) } : {}),
+        ...(rep.conic === 'hyperbola'
+          ? { a: Math.abs(size[0]!), b: Math.abs(size[1]!), axis: rep.axis ?? 'horizontal' }
+          : {}),
+      } as Parameters<typeof focalDistance>[0];
+      // The focal distance named, and a point named, agree with the curve drawn.
+      const c = num(rep.c);
+      if (c !== undefined && !near(c, focalDistance(q), 1e-3))
+        out.push(`c is ${c}, the ${rep.conic} drawn has c = ${focalDistance(q)}`);
+      const [x, y] = [num(rep.point?.x), num(rep.point?.y)];
+      if (x !== undefined && y !== undefined && Math.abs(conicResidual(q, x, y)) > 1e-3)
+        out.push(`the point (${x}, ${y}) is off the ${rep.conic}`);
       break;
     }
   }

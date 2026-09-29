@@ -28,6 +28,7 @@ import { RockCycleFigure } from './rockCycleFigure';
 import { PlatesFigure } from './platesFigure';
 import { WaterCycleFigure } from './waterCycleFigure';
 import { CellFigure, Particles } from './figuresR4h';
+import { ConeFigure } from './coneFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -172,6 +173,8 @@ function FigureView({
       return <PeriodicTableFigure elements={scene.elements ?? {}} />;
     case 'planets':
       return <PlanetsFigure planets={scene.planets ?? {}} />;
+    case 'doubleCone':
+      return <ConeFigure cut={scene.cone ?? 'circle'} />;
   }
 }
 

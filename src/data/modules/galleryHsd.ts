@@ -1760,11 +1760,368 @@ const POLAR: ModuleDef[] = [
   },
 ];
 
+// ─── H11 conicGraph ──────────────────────────────────────────────────────────
+
+/** A circle through a point: r = √((x − h)² + (y − k)²). */
+const circleEquationDemo = (id: string, title: string, example: Values): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the equation of a circle from its center and a point on it.',
+  assumptions: ['(x − h)² + (y − k)² = r²: every point is r from the center (h, k).'],
+  variables: [
+    real('h', 'h', 'Center, x', -10, 10),
+    real('k', 'k', 'Center, y', -10, 10),
+    real('x', 'x', 'Point, x', -20, 20),
+    real('y', 'y', 'Point, y', -20, 20),
+    real('r', 'r', 'Radius', 0, 30),
+  ],
+  ...rules({
+    relation: {
+      id: 'r = √((x − h)² + (y − k)²)',
+      display: '{r} = √(({x} − {h})² + ({y} − {k})²)',
+      vars: ['r', 'x', 'h', 'y', 'k'],
+      residual: (v) => v.r! - Math.hypot(v.x! - v.h!, v.y! - v.k!),
+      solve: {
+        r: (v) => Math.hypot(v.x! - v.h!, v.y! - v.k!),
+        y: (v) => {
+          const d = v.r! ** 2 - (v.x! - v.h!) ** 2;
+          return d < 0 ? [NaN] : [v.k! + Math.sqrt(d), v.k! - Math.sqrt(d)];
+        },
+        x: (v) => {
+          const d = v.r! ** 2 - (v.y! - v.k!) ** 2;
+          return d < 0 ? [NaN] : [v.h! + Math.sqrt(d), v.h! - Math.sqrt(d)];
+        },
+        h: () => undefined,
+        k: () => undefined,
+      },
+    },
+    steps: {
+      r: {
+        expr: '√(({x} − {h})² + ({y} − {k})²)',
+        how: 'The radius is the distance from the center to the point.',
+      },
+      y: { expr: '{k} ± √({r}² − ({x} − {h})²)', how: 'Solve the circle’s equation for y.' },
+      x: { expr: '{h} ± √({r}² − ({y} − {k})²)', how: 'Solve the circle’s equation for x.' },
+    },
+  }),
+  example,
+  startWith: ['h', 'k', 'x', 'y'],
+  representation: {
+    kind: 'conicGraph',
+    conic: 'circle',
+    h: 'h',
+    k: 'k',
+    r: 'r',
+    point: { x: 'x', y: 'y' },
+  },
+});
+
+/** A parabola from its vertex and p, with a point on it: y = k + (x − h)²/(4p). */
+const parabolaDemo = (
+  id: string,
+  title: string,
+  axis: 'vertical' | 'horizontal',
+  example: Values,
+): ModuleDef => {
+  const v = axis === 'vertical';
+  return {
+    id,
+    title,
+    use: v
+      ? 'Use this for a parabola (x − h)² = 4p(y − k): its focus and directrix.'
+      : 'Use this for a parabola (y − k)² = 4p(x − h) that opens left or right.',
+    assumptions: [
+      'The focus is p from the vertex, the directrix p on the other side.',
+      v ? 'p > 0 opens up; p < 0 opens down.' : 'p > 0 opens right; p < 0 opens left.',
+    ],
+    variables: [
+      real('h', 'h', 'Vertex, x', -10, 10),
+      real('k', 'k', 'Vertex, y', -10, 10),
+      real('p', 'p', 'Vertex to focus', -10, 10),
+      real('f', 'F', v ? 'Focus, y' : 'Focus, x', -20, 20),
+      real('d', 'd', 'Directrix', -20, 20),
+      real('u', v ? 'x' : 'y', v ? 'Point, x' : 'Point, y', -20, 20),
+      real('w', v ? 'y' : 'x', v ? 'Point, y' : 'Point, x', -200, 200),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'F = vertex + p',
+          display: v ? '{f} = {k} + {p}' : '{f} = {h} + {p}',
+          vars: ['f', v ? 'k' : 'h', 'p'],
+          residual: (x) => x.f! - (v ? x.k! : x.h!) - x.p!,
+          solve: {
+            f: (x) => (v ? x.k! : x.h!) + x.p!,
+            p: (x) => x.f! - (v ? x.k! : x.h!),
+            [v ? 'k' : 'h']: (x) => x.f! - x.p!,
+          },
+        },
+        steps: {
+          f: {
+            expr: v ? '{k} + {p}' : '{h} + {p}',
+            how: 'The focus is p from the vertex along the axis.',
+          },
+          p: { expr: v ? '{f} − {k}' : '{f} − {h}', how: 'p is the vertex-to-focus distance.' },
+          [v ? 'k' : 'h']: { expr: '{f} − {p}', how: 'Step back p from the focus.' },
+        },
+      },
+      {
+        relation: {
+          id: 'd = vertex − p',
+          display: v ? '{d} = {k} − {p}' : '{d} = {h} − {p}',
+          vars: ['d', v ? 'k' : 'h', 'p'],
+          residual: (x) => x.d! - (v ? x.k! : x.h!) + x.p!,
+          solve: {
+            d: (x) => (v ? x.k! : x.h!) - x.p!,
+            p: (x) => (v ? x.k! : x.h!) - x.d!,
+            [v ? 'k' : 'h']: (x) => x.d! + x.p!,
+          },
+        },
+        steps: {
+          d: {
+            expr: v ? '{k} − {p}' : '{h} − {p}',
+            how: 'The directrix is p from the vertex, away from the focus.',
+          },
+          p: { expr: v ? '{k} − {d}' : '{h} − {d}', how: 'p is the directrix-to-vertex distance.' },
+          [v ? 'k' : 'h']: { expr: '{d} + {p}', how: 'Step p from the directrix to the vertex.' },
+        },
+      },
+      {
+        relation: {
+          id: 'point on the parabola',
+          display: v ? '{w} = {k} + ({u} − {h})²/(4 × {p})' : '{w} = {h} + ({u} − {k})²/(4 × {p})',
+          vars: ['w', 'u', 'h', 'k', 'p'],
+          residual: (x) => x.w! - (v ? x.k! : x.h!) - (x.u! - (v ? x.h! : x.k!)) ** 2 / (4 * x.p!),
+          solve: {
+            w: (x) =>
+              x.p === 0
+                ? undefined
+                : (v ? x.k! : x.h!) + (x.u! - (v ? x.h! : x.k!)) ** 2 / (4 * x.p!),
+            u: () => undefined,
+            h: () => undefined,
+            k: () => undefined,
+            p: () => undefined,
+          },
+        },
+        steps: {
+          w: {
+            expr: v ? '{k} + ({u} − {h})²/(4 × {p})' : '{h} + ({u} − {k})²/(4 × {p})',
+            how: 'Solve the parabola’s equation for the other coordinate.',
+          },
+        },
+      },
+    ),
+    example,
+    startWith: ['h', 'k', 'p', 'u'],
+    representation: {
+      kind: 'conicGraph',
+      conic: 'parabola',
+      axis,
+      h: 'h',
+      k: 'k',
+      p: 'p',
+      c: 'p',
+      point: v ? { x: 'u', y: 'w' } : { x: 'w', y: 'u' },
+    },
+    pictureLabels: ['f', 'd'],
+  };
+};
+
+/** An ellipse or hyperbola centered at the origin: c from a and b. */
+const focalDemo = (
+  id: string,
+  title: string,
+  conic: 'ellipse' | 'hyperbola',
+  axis: 'horizontal' | 'vertical',
+  example: Values,
+): ModuleDef => {
+  const e = conic === 'ellipse';
+  // An ellipse whose b is longer has its foci up and down: c² = b² − a².
+  const tall = e && axis === 'vertical';
+  // (The long axis must stay the long one: the other way round has no c here, NaN.)
+  const f = (x: Values) =>
+    e ? Math.sqrt(tall ? x.b! ** 2 - x.a! ** 2 : x.a! ** 2 - x.b! ** 2) : Math.hypot(x.a!, x.b!);
+  const display = e
+    ? tall
+      ? '{c} = √({b}² − {a}²)'
+      : '{c} = √({a}² − {b}²)'
+    : '{c} = √({a}² + {b}²)';
+  return {
+    id,
+    title,
+    use: e
+      ? 'Use this for an ellipse x²/a² + y²/b² = 1: its axes and foci.'
+      : 'Use this for a hyperbola: its vertices, asymptotes and foci.',
+    assumptions: e
+      ? [
+          'Centered at the origin.',
+          tall ? 'b > a: the long axis is up and down.' : 'a > b: the long axis is across.',
+        ]
+      : [
+          'Centered at the origin.',
+          axis === 'vertical'
+            ? 'It opens up and down: y²/a² − x²/b² = 1.'
+            : 'It opens left and right: x²/a² − y²/b² = 1.',
+        ],
+    variables: [
+      real('a', 'a', e ? 'Half-width a' : 'Center to vertex a', 0.5, 10),
+      real('b', 'b', e ? 'Half-height b' : 'Half the box b', 0.5, 10),
+      real('c', 'c', 'Center to focus c', 0, 15),
+    ],
+    ...rules({
+      relation: {
+        id: display.replace(/[{}]/g, ''),
+        display,
+        vars: ['c', 'a', 'b'],
+        residual: (x) => x.c! - f(x),
+        solve: {
+          c: f,
+          ...(e
+            ? tall
+              ? {
+                  b: (x: Values) => Math.hypot(x.c!, x.a!),
+                  a: (x: Values) => (x.b! < x.c! ? undefined : Math.sqrt(x.b! ** 2 - x.c! ** 2)),
+                }
+              : {
+                  a: (x: Values) => Math.hypot(x.c!, x.b!),
+                  b: (x: Values) => (x.a! < x.c! ? undefined : Math.sqrt(x.a! ** 2 - x.c! ** 2)),
+                }
+            : {
+                a: (x: Values) => (x.c! < x.b! ? undefined : Math.sqrt(x.c! ** 2 - x.b! ** 2)),
+                b: (x: Values) => (x.c! < x.a! ? undefined : Math.sqrt(x.c! ** 2 - x.a! ** 2)),
+              }),
+        },
+      },
+      steps: e
+        ? tall
+          ? {
+              c: {
+                expr: '√({b}² − {a}²)',
+                how: 'For an ellipse, c² is the difference of the squares.',
+              },
+              b: { expr: '√({c}² + {a}²)', how: 'The long half-axis squared is c² + a².' },
+              a: { expr: '√({b}² − {c}²)', how: 'The short half-axis squared is b² − c².' },
+            }
+          : {
+              c: {
+                expr: '√({a}² − {b}²)',
+                how: 'For an ellipse, c² is the difference of the squares.',
+              },
+              a: { expr: '√({c}² + {b}²)', how: 'The long half-axis squared is c² + b².' },
+              b: { expr: '√({a}² − {c}²)', how: 'The short half-axis squared is a² − c².' },
+            }
+        : {
+            c: { expr: '√({a}² + {b}²)', how: 'For a hyperbola, c² is the sum of the squares.' },
+            a: { expr: '√({c}² − {b}²)', how: 'Take b² from c².' },
+            b: { expr: '√({c}² − {a}²)', how: 'Take a² from c².' },
+          },
+    }),
+    example,
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'conicGraph',
+      conic,
+      a: 'a',
+      b: 'b',
+      c: 'c',
+      ...(conic === 'hyperbola' ? { axis } : {}),
+    } as ModuleDef['representation'],
+  };
+};
+
+const CONICS: ModuleDef[] = [
+  circleEquationDemo('g.m10-circle-equations-center', 'A circle from its center and a point', {
+    h: 2,
+    k: -1,
+    x: 5,
+    y: 3,
+    r: 5,
+  }),
+  circleEquationDemo('g.m10-circle-equations-origin', 'A large circle at the origin', {
+    h: 0,
+    k: 0,
+    x: -6,
+    y: 8,
+    r: 10,
+  }),
+  parabolaDemo('g.m12-conics-parabola', 'A parabola’s focus and directrix', 'vertical', {
+    h: 1,
+    k: -2,
+    p: 1.5,
+    f: -0.5,
+    d: -3.5,
+    u: 4,
+    w: -2 + 9 / 6,
+  }),
+  parabolaDemo('g.m12-conics-parabola-left', 'A parabola opening left', 'horizontal', {
+    h: 2,
+    k: 1,
+    p: -1,
+    f: 1,
+    d: 3,
+    u: 3,
+    w: 2 - 4 / 4,
+  }),
+  focalDemo('g.m12-conics-ellipse', 'An ellipse and its foci', 'ellipse', 'horizontal', {
+    a: 5,
+    b: 3,
+    c: 4,
+  }),
+  focalDemo('g.m12-conics-ellipse-tall', 'A tall ellipse', 'ellipse', 'vertical', {
+    a: 2,
+    b: 4,
+    c: Math.sqrt(12),
+  }),
+  focalDemo('g.m12-conics-hyperbola', 'A hyperbola and its asymptotes', 'hyperbola', 'horizontal', {
+    a: 3,
+    b: 4,
+    c: 5,
+  }),
+  focalDemo(
+    'g.m12-conics-hyperbola-vertical',
+    'A hyperbola opening up and down',
+    'hyperbola',
+    'vertical',
+    {
+      a: 2,
+      b: 3,
+      c: Math.sqrt(13),
+    },
+  ),
+];
+
+const CONE_LAYOUT: LayoutDef = {
+  id: 'g.m12-conics-cone',
+  title: 'Cutting a double cone',
+  kind: 'explore',
+  assumptions: ['Two cones meet tip to tip.', 'A flat plane cuts through them.'],
+  figure: { kind: 'doubleCone' },
+  scenes: [
+    { label: 'Circle', cone: 'circle', lines: ['A level plane cuts a circle.'] },
+    {
+      label: 'Ellipse',
+      cone: 'ellipse',
+      lines: ['Tilt the plane, less steep than the cone’s side: an ellipse.'],
+    },
+    {
+      label: 'Parabola',
+      cone: 'parabola',
+      lines: ['Tilt it as steep as the side: the curve never closes. A parabola.'],
+    },
+    {
+      label: 'Hyperbola',
+      cone: 'hyperbola',
+      lines: ['Steeper still, the plane cuts both cones: the two branches of a hyperbola.'],
+    },
+  ],
+};
+
 export const HSD_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_CIRCLE,
   ...ALGEBRA_TILES,
   ...VECTORS,
   ...COMPLEX,
   ...POLAR,
+  ...CONICS,
 ];
-export const HSD_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HSD_GALLERY_LAYOUTS: LayoutDef[] = [CONE_LAYOUT];

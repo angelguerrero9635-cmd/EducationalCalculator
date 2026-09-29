@@ -58,6 +58,8 @@ shrink (`fewer`). Grade 8, in `layouts/figures8.tsx`: a `magnets` scene can set
 `field` (the field lines from N to S, `compasses` round the magnets, or one magnet `single`;
 magnets are painted N red, S blue), and `planets` draws the planets and the moon to scale by
 size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
+Grades 10–12 (`layouts/coneFigure.tsx`): `doubleCone` cuts two cones tip to tip with a plane;
+a scene's `cone` (`circle`, `ellipse`, `parabola`, `hyperbola`) tilts the plane and draws the curve.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

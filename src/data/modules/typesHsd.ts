@@ -195,8 +195,40 @@ export interface PolarGridSpec {
   fixed?: boolean;
 }
 
+/**
+ * A conic from its equation, centered (or with its vertex) at (h, k):
+ * - `circle`: (x − h)² + (y − k)² = r², the radius drawn;
+ * - `parabola`: (x − h)² = 4p(y − k) (or (y − k)² = 4p(x − h) with `axis: 'horizontal'`), its
+ *   focus p from the vertex and its directrix p on the other side;
+ * - `ellipse`: (x − h)²/a² + (y − k)²/b² = 1, its axes and its foci c from the center
+ *   (c² = |a² − b²|, along the longer axis);
+ * - `hyperbola`: (x − h)²/a² − (y − k)²/b² = 1 (or opening up and down with `axis: 'vertical'`),
+ *   its asymptotes, the a-by-b box and its foci (c² = a² + b²).
+ * `c` names the focal distance (checked); `point` a point on the curve (checked). Drag the
+ * center (or vertex), and the radius, the axes' ends or the focus.
+ */
+export type ConicGraphSpec = {
+  kind: 'conicGraph';
+  h?: NumOrVar;
+  k?: NumOrVar;
+  c?: string;
+  point?: { x: string; y: string };
+  keep?: string[];
+  fixed?: boolean;
+} & (
+  | { conic: 'circle'; r: NumOrVar }
+  | { conic: 'parabola'; p: NumOrVar; axis?: 'vertical' | 'horizontal' }
+  | { conic: 'ellipse'; a: NumOrVar; b: NumOrVar }
+  | { conic: 'hyperbola'; a: NumOrVar; b: NumOrVar; axis?: 'horizontal' | 'vertical' }
+);
+
 export type HsdSpec =
-  UnitCircleSpec | AlgebraTilesSpec | VectorDiagramSpec | ComplexPlaneSpec | PolarGridSpec;
+  | UnitCircleSpec
+  | AlgebraTilesSpec
+  | VectorDiagramSpec
+  | ComplexPlaneSpec
+  | PolarGridSpec
+  | ConicGraphSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hsdSpecVars(r: HsdSpec): string[] {
@@ -258,5 +290,14 @@ export function hsdSpecVars(r: HsdSpec): string[] {
           : [];
       return ids(...fields(r.point), ...fields(r.curve), ...fields(r.parametric));
     }
+    case 'conicGraph':
+      return ids(
+        r.h,
+        r.k,
+        r.c,
+        r.point?.x,
+        r.point?.y,
+        ...(r.conic === 'circle' ? [r.r] : r.conic === 'parabola' ? [r.p] : [r.a, r.b]),
+      );
   }
 }

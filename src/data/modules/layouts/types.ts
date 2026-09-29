@@ -318,7 +318,12 @@ export type Figure =
   /** The periodic table with an element, a group or a period lit (Grade 8). */
   | { kind: 'periodicTable' }
   /** The planets and Earth’s moon side by side, to scale by size, beside the sun’s edge (Grade 8). */
-  | { kind: 'planets' };
+  | { kind: 'planets' }
+  /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
+  | { kind: 'doubleCone' };
+
+/** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
+export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
 
 /** One person in a `pedigree` figure. */
 export interface PedigreePerson {
@@ -440,6 +445,8 @@ export interface Scene {
   field?: { single?: boolean; lines?: boolean; compasses?: boolean };
   /** The planets ringed, each with its width in Earths (a `planets` figure). */
   planets?: { lit?: PlanetName[] };
+  /** The conic the plane cuts (a `doubleCone` figure). */
+  cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

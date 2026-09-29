@@ -76,6 +76,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign | Grade 12 vectors, physics forces    |
 | `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg    | Grade 11 complex numbers, polar     |
 | `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths    | Grade 12 polar, parametric          |
+| `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes     | Grades 10–12 conics                 |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

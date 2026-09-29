@@ -216,13 +216,28 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Parametric mode: a path traced as t grows, with direction arrows and the point at t. Drawn: kind polarGrid (typesHsd.ts). Polar mode: rings at nice radii and rays every 30°, labelled in degrees or (show: 'radians') π/6, …; point { r, theta, x, y } (θ in degrees; a negative r lands on the opposite ray; x and y checked as r cos θ and r sin θ); curve { shape: 'circle' (r = a, or r = a cos θ with fn), 'rose' (a, n; n or 2n petals), 'cardioid' (a, b: r = a + b cos θ, a limaçon when b ≠ a), 'spiral' (r = aθ, θ in radians, turns) } with the point on it (r checked). Parametric mode: parametric { family: 'line' (x0, y0, a, b), 'ellipse' (h, k, a, b; t in degrees), 'projectile' (v, angle, y0; g = 9.8), t, range: [t₀, t₁], x, y } traces the path solid up to t and dashed after, with arrows the way t runs (x and y checked). Drag the point: θ (and r with no curve), or along the path to set t. Examples: { kind: 'polarGrid', curve: { shape: 'rose', a: 'a', n: 'n' }, point: { r: 'r', theta: 't' } }; { kind: 'polarGrid', parametric: { family: 'line', x0: 'p', y0: 'q', a: 'a', b: 'b', t: 't', range: [-2, 4], x: 'x', y: 'y' } }.",
   },
-  ask(
-    'H11',
-    'conicGraph',
-    'Circle, parabola, ellipse and hyperbola from their equations, with center, foci, directrix, asymptotes',
-    ['m.10.circle-equations', 'm.12.conics'],
-    'Drag the center and the radius or axes; cross sections of a double cone as the explore figure for the same page.',
-  ),
+  {
+    ...ask(
+      'H11',
+      'conicGraph',
+      'Circle, parabola, ellipse and hyperbola from their equations, with center, foci, directrix, asymptotes',
+      ['m.10.circle-equations', 'm.12.conics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-circle-equations-center',
+      'g.m10-circle-equations-origin',
+      'g.m12-conics-parabola',
+      'g.m12-conics-parabola-left',
+      'g.m12-conics-ellipse',
+      'g.m12-conics-ellipse-tall',
+      'g.m12-conics-hyperbola',
+      'g.m12-conics-hyperbola-vertical',
+      'g.m12-conics-cone',
+    ],
+    notes:
+      "Drag the center and the radius or axes; cross sections of a double cone as the explore figure for the same page. Drawn: kind conicGraph (typesHsd.ts), plus the explore figure doubleCone (layouts/types.ts; a scene's cone: 'circle', 'ellipse', 'parabola' or 'hyperbola' tilts the plane and draws the curve in 3D). Fields: conic 'circle' { r }, 'parabola' { p, axis: 'vertical' (default) or 'horizontal' } with focus and dashed directrix, 'ellipse' { a, b } with its axes and foci, 'hyperbola' { a, b, axis: 'horizontal' (default) or 'vertical' } with the a-by-b box, dashed asymptotes and foci; h and k (center or vertex, default 0); c (the focal distance, checked: p, √|a² − b²|, √(a² + b²)); point { x, y } (checked on the curve); keep; fixed. The equation in standard form sits on the grid; c is exact when c² is whole (2√3 ≈ 3.46). Drag the center or vertex, and the radius, the axes’ ends or the focus. Examples: { kind: 'conicGraph', conic: 'circle', h: 'h', k: 'k', r: 'r', point: { x: 'x', y: 'y' } }; { kind: 'conicGraph', conic: 'hyperbola', a: 'a', b: 'b', c: 'c', axis: 'vertical' }; layout { kind: 'explore', figure: { kind: 'doubleCone' }, scenes: [{ label: 'Ellipse', cone: 'ellipse', lines: [...] }] }.",
+  },
   ask(
     'H12',
     'circleTheorems',
