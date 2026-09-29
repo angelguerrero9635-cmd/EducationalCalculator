@@ -1303,9 +1303,12 @@ export function repIssues(
       if (rep.solid === 'triangularPrism') {
         if (W === undefined || H === undefined || sl === undefined || L === undefined) break;
         // The labelled sides close a triangle (the drawing follows the base and height, so a
-        // Grade 7 page need not type sides that fit the Pythagorean theorem exactly).
+        // Grade 7 page need not type sides that fit the Pythagorean theorem exactly). Within
+        // 2 %, as the Grade 6 page rounds its third side: a sliver of a triangle is not open.
         const closes =
-          rep.triangle === 'isosceles' ? sl > H && sl > W / 2 : sl > Math.max(W, H) && sl < W + H;
+          rep.triangle === 'isosceles'
+            ? sl > H * 0.98 && sl > W / 2
+            : sl > Math.max(W, H) * 0.98 && sl < (W + H) * 1.02;
         if (!closes) out.push(`sides ${W}, ${H} and ${sl} don't close the triangle`);
         const sides = rep.triangle === 'isosceles' ? W + 2 * sl : W + H + sl;
         const all = W * H + L * sides;
