@@ -18,7 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hsdSpecVars } from '../typesHsd';
-import { hsjSpecVars } from '../typesHsj';
+import { hsjSpecVars, solutionVars } from '../typesHsj';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -171,7 +171,7 @@ function representationVars(r: Representation): string[] {
         r.total,
       ];
     case 'beaker':
-      return [...r.parts, r.total];
+      return 'solution' in r ? solutionVars(r.solution) : [...r.parts, r.total];
     case 'quadrilateral':
       return [r.first, r.second, r.rightAngles];
     case 'rectilinear':

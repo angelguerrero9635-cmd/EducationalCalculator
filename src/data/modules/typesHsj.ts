@@ -41,6 +41,65 @@ export interface GasPistonSpec extends GasState {
   fixed?: boolean;
 }
 
+// ─── H52 beaker: solutions ───────────────────────────────────────────────────
+
+/** Salts with a solubility curve (g per 100 g of water, 0–100 °C; `solubility.ts`). */
+export type SaltName = 'KNO3' | 'NaNO3' | 'NaCl' | 'KCl' | 'NH4Cl' | 'KClO3';
+
+/**
+ * A solution in a beaker (`beaker` with `solution`, H52):
+ *
+ * - 'molarity': a beaker filled to `volume` (L or mL) with `moles` of solute, drawn as dots
+ *   spread through the liquid (one dot per 0.01, 0.02, 0.05 … mol, the key in the caption) and
+ *   tinted by the concentration; `molarity` (mol/L) is checked against n ÷ V.
+ * - 'dilution': the stock (`stock`: molarity and volume) beside the diluted solution (`diluted`),
+ *   an arrow between them with the water added (`water`, checked as V₂ − V₁); the same dots in
+ *   both, so M₁V₁ = M₂V₂ is the moles of solute, unchanged.
+ * - 'solubility': the salt's solubility curve (grams per 100 g of water against °C), `others`
+ *   drawn faint for comparison, and the point (`temperature`, `amount`): under the curve it is
+ *   unsaturated, on it saturated, over it the extra settles out. `solubility` names the
+ *   curve's value at the temperature (checked).
+ *
+ * `solute` names the solute in the caption and the key ("NaCl").
+ */
+export type BeakerSolution =
+  | {
+      mode: 'molarity';
+      moles: NumOrVar;
+      volume: NumOrVar;
+      molarity?: NumOrVar;
+      solute?: string;
+    }
+  | {
+      mode: 'dilution';
+      stock: { molarity: NumOrVar; volume: NumOrVar };
+      diluted: { molarity: NumOrVar; volume: NumOrVar };
+      water?: NumOrVar;
+      solute?: string;
+    }
+  | {
+      mode: 'solubility';
+      salt: SaltName;
+      temperature: NumOrVar;
+      amount?: NumOrVar;
+      solubility?: NumOrVar;
+      others?: SaltName[];
+    };
+
+/** Every variable id a beaker solution refers to (for the module tests). */
+export function solutionVars(s: BeakerSolution): string[] {
+  const ids = (...xs: (NumOrVar | undefined)[]) =>
+    xs.filter((x): x is string => typeof x === 'string');
+  switch (s.mode) {
+    case 'molarity':
+      return ids(s.moles, s.volume, s.molarity);
+    case 'dilution':
+      return ids(s.stock.molarity, s.stock.volume, s.diluted.molarity, s.diluted.volume, s.water);
+    case 'solubility':
+      return ids(s.temperature, s.amount, s.solubility);
+  }
+}
+
 export type HsjSpec = GasPistonSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */

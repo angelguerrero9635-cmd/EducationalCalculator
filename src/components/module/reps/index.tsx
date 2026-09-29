@@ -135,6 +135,7 @@ import { TermsChart } from './TermsChart';
 import { UnitCircle } from './UnitCircle';
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
+import { BeakerSolution } from './BeakerSolution';
 import { ConicGraph } from './ConicGraph';
 import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
@@ -233,6 +234,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'scale':
       return <Scale spec={spec} calc={calc} />;
     case 'beaker':
+      if ('solution' in spec) return <BeakerSolution spec={spec.solution} calc={calc} />;
       return <Beaker spec={spec} calc={calc} />;
     case 'quadrilateral':
       return <Quadrilateral spec={spec} calc={calc} />;

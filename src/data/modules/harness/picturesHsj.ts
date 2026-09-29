@@ -9,7 +9,11 @@ import {
   particleCount,
 } from '@/components/module/reps/gasModel';
 
-import type { GasState, HsjSpec } from '../typesHsj';
+import { solubilityAt } from '@/components/module/reps/solubility';
+import type { VariableDef } from '@/engine/types';
+import { convert, getUnit } from '@/engine/units';
+
+import type { BeakerSolution, GasState, HsjSpec } from '../typesHsj';
 import type { NumOrVar } from '../typesGraphs';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
@@ -67,6 +71,55 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       const [l, r] = [side(was), side(now)];
       if (l !== undefined && r !== undefined && !near(l, r))
         out.push(`${rep.law}: the two states give ${l} and ${r}`);
+      break;
+    }
+  }
+  return out;
+}
+
+/** A beaker solution (H52): the concentration, the dilution and the curve agree with the values. */
+export function solutionIssues(
+  s: BeakerSolution,
+  val: (id: string) => number | undefined,
+  byId: Map<string, VariableDef>,
+): string[] {
+  const out: string[] = [];
+  const num = (x: NumOrVar | undefined) =>
+    x === undefined ? undefined : typeof x === 'number' ? x : val(x);
+  /** A volume in liters, from its shown value. */
+  const liters = (x: NumOrVar) => {
+    const v = num(x);
+    if (v === undefined) return undefined;
+    const def = typeof x === 'string' ? byId.get(x) : undefined;
+    const unit = def?.displayUnit ?? def?.unit;
+    return getUnit(unit)?.dimension === 'volume' ? convert(v, unit!, 'L') : v;
+  };
+  switch (s.mode) {
+    case 'molarity': {
+      const [n, v, m] = [num(s.moles), liters(s.volume), num(s.molarity)];
+      if (n !== undefined && v !== undefined && m !== undefined && !near(m, n / v))
+        out.push(`molarity ${m} is not ${n} mol ÷ ${v} L`);
+      if (n !== undefined && particleCount(n) > MAX_PARTICLES) out.push(`too many dots for ${n}`);
+      break;
+    }
+    case 'dilution': {
+      const [m1, v1] = [num(s.stock.molarity), liters(s.stock.volume)];
+      const [m2, v2] = [num(s.diluted.molarity), liters(s.diluted.volume)];
+      if (m1 !== undefined && v1 !== undefined && m2 !== undefined && v2 !== undefined) {
+        if (!near(m1 * v1, m2 * v2)) out.push(`M₁V₁ = ${m1 * v1} but M₂V₂ = ${m2 * v2}`);
+        if (v2 < v1 - 1e-9) out.push(`diluted volume ${v2} L is less than the stock's ${v1} L`);
+      }
+      const w = liters(s.water ?? NaN);
+      if (s.water !== undefined && w !== undefined && v1 !== undefined && v2 !== undefined)
+        if (!near(w, v2 - v1, 1e-3)) out.push(`water added ${w} L is not ${v2} − ${v1}`);
+      break;
+    }
+    case 'solubility': {
+      const t = num(s.temperature);
+      if (t !== undefined && (t < 0 || t > 100)) out.push(`temperature ${t} °C is off the curve`);
+      const sol = num(s.solubility);
+      if (t !== undefined && sol !== undefined && !near(sol, solubilityAt(s.salt, t)))
+        out.push(`solubility ${sol} g is not the curve's ${solubilityAt(s.salt, t)} g`);
       break;
     }
   }

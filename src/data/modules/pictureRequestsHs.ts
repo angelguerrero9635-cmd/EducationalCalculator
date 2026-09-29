@@ -831,12 +831,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn: kind gasPiston (typesHsj.ts). A glass cylinder and a metal piston whose height is the volume on the scale up the glass, a gauge on a pipe for the pressure, a thermometer in kelvins, and the gas as particles with speed trails ∝ √T (the caption compares the speeds). Fields: law ('boyle' | 'charles' | 'gayLussac' | 'combined' | 'ideal'); the gas now as pressure, volume, temperature (numbers or variables); before { pressure?, volume?, temperature? } for a two-state law, drawn beside it (a held value is left out of both and named “T₁ held”; 'gayLussac' pins the piston); moles (ideal: one particle per 0.1, 0.2, 0.5 … mol, key in the caption; two-state pages draw the same 20); R (default 0.0821, checked); keep; fixed. Drag the piston of the gas now: its volume changes and the law's other value moves. Examples: { kind: 'gasPiston', law: 'boyle', before: { pressure: 'P1', volume: 'V1' }, pressure: 'P2', volume: 'V2', keep: ['P1', 'V1'] }; { kind: 'gasPiston', law: 'ideal', pressure: 'P', volume: 'V', temperature: 'T', moles: 'n', keep: ['n', 'T'] }.",
   },
-  ask(
-    'H52',
-    'beaker',
-    'Solute particles per volume, dilution as two beakers (M₁V₁ = M₂V₂); a solubility curve',
-    ['s.10.molarity'],
-  ),
+  {
+    ...ask(
+      'H52',
+      'beaker',
+      'Solute particles per volume, dilution as two beakers (M₁V₁ = M₂V₂); a solubility curve',
+      ['s.10.molarity'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-molarity-moles-volume',
+      'g.s10-molarity-from-grams',
+      'g.s10-molarity-concentrated',
+      'g.s10-molarity-dilution',
+      'g.s10-molarity-solubility',
+      'g.s10-molarity-solubility-excess',
+    ],
+    notes:
+      "Drawn: beaker takes solution (typesHsj.ts BeakerSolution); pages without it draw exactly as before. mode 'molarity' { moles, volume (L or mL), molarity? (checked as n ÷ V), solute? }: a glass beaker filled to the volume on its printed scale, the solute as dots spread through the liquid (one dot per 0.01, 0.02, 0.05 … mol, the key in the caption). mode 'dilution' { stock: { molarity, volume }, diluted: { molarity, volume }, water? (checked as V₂ − V₁), solute? }: the stock beside the diluted solution, the beakers sized to their capacities, the same dots in both and the tint paler as it is weaker. mode 'solubility' { salt ('KNO3' | 'NaNO3' | 'NaCl' | 'KCl' | 'NH4Cl' | 'KClO3'), temperature (°C), amount? (g per 100 g of water), solubility? (checked against the curve), others? }: the curve from the standard tables (read in straight lines between every 10 °C), others faint, the point and its verdict (unsaturated, saturated, or how much settles out). Step text can say “solubility of KNO₃ at {T} °C” (harness phrase in phrasesHsj.ts). Examples: { kind: 'beaker', solution: { mode: 'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'NaCl' } }; { kind: 'beaker', solution: { mode: 'dilution', stock: { molarity: 'M1', volume: 'V1' }, diluted: { molarity: 'M2', volume: 'V2' }, water: 'w', solute: 'CuSO₄' } }; { kind: 'beaker', solution: { mode: 'solubility', salt: 'KNO3', temperature: 'T', amount: 'm', solubility: 's', others: ['NaCl', 'KCl'] } }.",
+  },
   ask(
     'H53',
     'energyProfile',

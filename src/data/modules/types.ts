@@ -16,7 +16,7 @@ import type { Physics8Spec } from './typesPhysics8';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
-import type { HsjSpec } from './typesHsj';
+import type { BeakerSolution, HsjSpec } from './typesHsj';
 import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
@@ -814,6 +814,8 @@ export type Representation =
       /** Amounts that aren't whole read as mixed numbers (2 3/8 L), read exactly. */
       mixed?: boolean;
     }
+  /** Grades 9–12 (H52): a solution's solute as dots, a dilution, a solubility curve. */
+  | { kind: 'beaker'; solution: BeakerSolution }
   /**
    * A quadrilateral with 2 pairs of equal sides (`first`, `second`), square corners when
    * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.

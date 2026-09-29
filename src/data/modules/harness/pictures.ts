@@ -27,7 +27,7 @@ import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import { hsdIssues } from './picturesHsd';
-import { hsjIssues } from './picturesHsj';
+import { hsjIssues, solutionIssues } from './picturesHsj';
 import {
   boxPlotIssues,
   dotPlotSdIssues,
@@ -722,6 +722,10 @@ export function repIssues(
       break;
     }
     case 'beaker': {
+      if ('solution' in rep) {
+        out.push(...solutionIssues(rep.solution, (id) => val(id), byId));
+        break;
+      }
       const t = val(rep.total);
       if (t !== undefined && t > rep.max) out.push(`total ${t} L past the jug's ${rep.max} L`);
       if (rep.mixed) for (const id of [...rep.parts, rep.total]) exact(val(id), `amount ${id}`);

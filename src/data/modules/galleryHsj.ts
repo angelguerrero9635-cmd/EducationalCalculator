@@ -3,10 +3,12 @@
  * Each demo stands in for a planned page: real variables, relations, steps and a use line, so
  * `scripts/promote-demo.mjs` can copy it into a grade file. Spread into gallery.ts.
  */
+import { solubilityAt } from '@/components/module/reps/solubility';
 import type { Relation, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
+import type { SaltName } from './typesHsj';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
 interface Rule {
@@ -345,5 +347,387 @@ const GAS: ModuleDef[] = [
   },
 ];
 
-export const HSJ_GALLERY_MODULES: ModuleDef[] = [...GAS];
+// ─── H52 beaker: solutions ───────────────────────────────────────────────────
+
+const molarityVar = (id: string, symbol: string, name: string): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'mol/L',
+  min: 0.0001,
+  max: 20,
+  step: 0.0001,
+});
+const solutionVolume = (id: string, symbol: string, name: string, unit = 'L'): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit,
+  units: unit === 'L' ? ['L', 'mL'] : ['mL', 'L'],
+  min: unit === 'L' ? 0.001 : 1,
+  max: unit === 'L' ? 20 : 20000,
+  step: unit === 'L' ? 0.001 : 1,
+});
+const soluteMoles: VariableDef = {
+  id: 'n',
+  symbol: 'n',
+  name: 'Moles of solute',
+  unit: 'mol',
+  min: 0.0001,
+  max: 100,
+  step: 0.0001,
+};
+
+/** Molarity, M = n ÷ V. */
+const molarityRule: Rule = {
+  relation: {
+    id: 'M = n/V',
+    display: '{M} = {n}/{V}',
+    vars: ['M', 'n', 'V'],
+    residual: (v) => v.M! * v.V! - v.n!,
+    solve: {
+      M: (v) => div(v.n!, v.V!),
+      n: (v) => v.M! * v.V!,
+      V: (v) => div(v.n!, v.M!),
+    },
+  },
+  steps: {
+    M: { expr: '{n}/{V}', how: 'Molarity is moles of solute per liter of solution.' },
+    n: { expr: '{M} × {V}', how: 'Multiply the moles in each liter by the liters.' },
+    V: { expr: '{n}/{M}', how: 'Divide the moles by the moles in each liter.' },
+  },
+};
+
+/** Molarity with the volume in milliliters, M = n ÷ (V ÷ 1000). */
+const molarityMl: Rule = {
+  relation: {
+    id: 'M = n/(V ÷ 1000)',
+    display: '{M} = {n}/({V} ÷ 1000)',
+    vars: ['M', 'n', 'V'],
+    residual: (v) => (v.M! * v.V!) / 1000 - v.n!,
+    solve: {
+      M: (v) => div(1000 * v.n!, v.V!),
+      n: (v) => (v.M! * v.V!) / 1000,
+      V: (v) => div(1000 * v.n!, v.M!),
+    },
+  },
+  steps: {
+    M: {
+      expr: '{n}/({V} ÷ 1000)',
+      how: 'Change the milliliters to liters, then divide the moles by the liters.',
+    },
+    n: { expr: '{M} × {V}/1000', how: 'Multiply the molarity by the liters.' },
+    V: { expr: '1000 × {n}/{M}', how: 'Divide the moles by the molarity, then change to mL.' },
+  },
+};
+
+/** Moles from grams, n = m ÷ molar mass. */
+const fromGrams: Rule = {
+  relation: {
+    id: 'n = m/Mₘ',
+    display: '{n} = {m}/{mm}',
+    vars: ['n', 'm', 'mm'],
+    residual: (v) => v.n! * v.mm! - v.m!,
+    solve: {
+      n: (v) => div(v.m!, v.mm!),
+      m: (v) => v.n! * v.mm!,
+      mm: (v) => div(v.m!, v.n!),
+    },
+  },
+  steps: {
+    n: { expr: '{m}/{mm}', how: 'Divide the grams by the grams in one mole.' },
+    m: { expr: '{n} × {mm}', how: 'Multiply the moles by the grams in one mole.' },
+    mm: { expr: '{m}/{n}', how: 'Divide the grams by the moles.' },
+  },
+};
+
+/** Dilution, M₁V₁ = M₂V₂. */
+const dilution: Rule = {
+  relation: {
+    id: 'M₁V₁ = M₂V₂',
+    display: '{M1} × {V1} = {M2} × {V2}',
+    vars: ['M1', 'V1', 'M2', 'V2'],
+    residual: (v) => v.M1! * v.V1! - v.M2! * v.V2!,
+    solve: {
+      M2: (v) => div(v.M1! * v.V1!, v.V2!),
+      V2: (v) => div(v.M1! * v.V1!, v.M2!),
+      M1: (v) => div(v.M2! * v.V2!, v.V1!),
+      V1: (v) => div(v.M2! * v.V2!, v.M1!),
+    },
+  },
+  steps: {
+    M2: {
+      expr: '({M1} × {V1})/{V2}',
+      how: 'Adding water keeps the moles of solute, M₁V₁. Spread them over the new volume.',
+    },
+    V2: {
+      expr: '({M1} × {V1})/{M2}',
+      how: 'The moles of solute, M₁V₁, stay the same. Divide them by the new molarity.',
+    },
+    M1: { expr: '({M2} × {V2})/{V1}', how: 'Divide the moles, M₂V₂, by the stock’s volume.' },
+    V1: {
+      expr: '({M2} × {V2})/{M1}',
+      how: 'Divide the moles needed, M₂V₂, by the stock’s molarity.',
+    },
+  },
+};
+
+/** The water added in a dilution, w = V₂ − V₁. */
+const waterAdded: Rule = {
+  relation: {
+    id: 'w = V₂ − V₁',
+    display: '{w} = {V2} − {V1}',
+    vars: ['w', 'V2', 'V1'],
+    residual: (v) => v.w! - (v.V2! - v.V1!),
+    solve: { w: (v) => v.V2! - v.V1!, V2: (v) => v.w! + v.V1!, V1: (v) => v.V2! - v.w! },
+  },
+  steps: {
+    w: { expr: '{V2} − {V1}', how: 'The water makes up the difference between the volumes.' },
+    V2: { expr: '{w} + {V1}', how: 'Add the water to the stock’s volume.' },
+    V1: { expr: '{V2} − {w}', how: 'Take the water away from the final volume.' },
+  },
+};
+
+const temperatureC: VariableDef = {
+  id: 'T',
+  symbol: 'T',
+  name: 'Water temperature',
+  unit: '°C',
+  min: 0,
+  max: 100,
+  step: 1,
+};
+const grams = (id: string, symbol: string, name: string, derived = false): VariableDef => ({
+  id,
+  symbol,
+  name,
+  unit: 'g',
+  units: ['g'],
+  min: 0,
+  max: 400,
+  step: 0.1,
+  ...(derived ? { derived: true } : {}),
+});
+
+/** The solubility read off a salt's curve (forward only: one reading, one temperature). */
+const solubilityRule = (salt: SaltName, name: string): Rule => ({
+  relation: {
+    id: `S = solubility of ${name} at T`,
+    display: `{s} = solubility of ${name} at {T} °C`,
+    vars: ['s', 'T'],
+    residual: (v) => v.s! - solubilityAt(salt, v.T!),
+    solve: { s: (v) => solubilityAt(salt, v.T!), T: () => undefined },
+  },
+  steps: {
+    s: {
+      expr: `solubility of ${name} at {T} °C`,
+      how: 'Go up from the temperature to the curve, then across to the grams.',
+    },
+  },
+});
+
+/** Unsaturated: the grams that can still dissolve, x = S − m. */
+const roomLeft: Rule = {
+  relation: {
+    id: 'x = S − m',
+    display: '{x} = {s} − {m}',
+    vars: ['x', 's', 'm'],
+    residual: (v) => v.x! - (v.s! - v.m!),
+    solve: { x: (v) => v.s! - v.m!, m: (v) => v.s! - v.x!, s: (v) => v.x! + v.m! },
+  },
+  steps: {
+    x: { expr: '{s} − {m}', how: 'Take what is dissolved from what can dissolve.' },
+    m: { expr: '{s} − {x}', how: 'Take the room left from what can dissolve.' },
+    s: { expr: '{x} + {m}', how: 'Add what is dissolved and the room left.' },
+  },
+};
+
+/** Past saturation: the grams that settle out, e = m − S. */
+const settles: Rule = {
+  relation: {
+    id: 'e = m − S',
+    display: '{e} = {m} − {s}',
+    vars: ['e', 'm', 's'],
+    residual: (v) => v.e! - (v.m! - v.s!),
+    solve: { e: (v) => v.m! - v.s!, m: (v) => v.e! + v.s!, s: (v) => v.m! - v.e! },
+  },
+  steps: {
+    e: { expr: '{m} − {s}', how: 'Past what can dissolve, the rest settles to the bottom.' },
+    m: { expr: '{e} + {s}', how: 'Add what settled to what dissolved.' },
+    s: { expr: '{m} − {e}', how: 'Take what settled from the grams put in.' },
+  },
+};
+
+const SOLUTION_ASSUMPTIONS = [
+  'Molarity (M) is moles of solute per liter of solution: 1 M = 1 mol/L.',
+  'The volume is the whole solution’s, solute and water together.',
+];
+
+const SOLUTIONS: ModuleDef[] = [
+  {
+    id: 'g.s10-molarity-moles-volume',
+    title: 'Molarity from moles and volume',
+    use: 'Use this for “0.25 mol of NaCl is dissolved to make 0.5 L of solution. What is its molarity?”',
+    unitSystems: ['metric'],
+    assumptions: SOLUTION_ASSUMPTIONS,
+    variables: [
+      molarityVar('M', 'M', 'Molarity'),
+      soluteMoles,
+      solutionVolume('V', 'V', 'Volume of solution'),
+    ],
+    ...rules(molarityRule),
+    example: { M: 0.5, n: 0.25, V: 0.5 },
+    startWith: ['n', 'V'],
+    representation: {
+      kind: 'beaker',
+      solution: { mode: 'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'NaCl' },
+    },
+  },
+  {
+    id: 'g.s10-molarity-from-grams',
+    title: 'Molarity from grams of solute',
+    use: 'Use this for “29.22 g of NaCl (58.44 g/mol) makes 250 mL of solution. What is the molarity?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      ...SOLUTION_ASSUMPTIONS,
+      'Molar mass is the grams in one mole: NaCl is 58.44 g/mol.',
+    ],
+    variables: [
+      molarityVar('M', 'M', 'Molarity'),
+      soluteMoles,
+      { ...solutionVolume('V', 'V', 'Volume of solution', 'mL'), units: ['mL'] },
+      { ...grams('m', 'm', 'Mass of solute'), min: 0.001, max: 5000, step: 0.01 },
+      {
+        id: 'mm',
+        symbol: 'Mₘ',
+        name: 'Molar mass of the solute',
+        unit: 'g/mol',
+        min: 1,
+        max: 1000,
+        step: 0.01,
+      },
+    ],
+    ...rules(molarityMl, fromGrams),
+    example: { M: 2, n: 0.5, V: 250, m: 29.22, mm: 58.44 },
+    startWith: ['m', 'mm', 'V'],
+    pictureLabels: ['m', 'mm'],
+    representation: {
+      kind: 'beaker',
+      solution: { mode: 'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'NaCl' },
+    },
+  },
+  {
+    id: 'g.s10-molarity-concentrated',
+    title: 'A concentrated acid',
+    use: 'Use this for a strong stock solution: “How many moles of HCl are in 0.1 L of 12 M acid?”',
+    unitSystems: ['metric'],
+    assumptions: SOLUTION_ASSUMPTIONS,
+    variables: [
+      molarityVar('M', 'M', 'Molarity'),
+      soluteMoles,
+      solutionVolume('V', 'V', 'Volume of solution'),
+    ],
+    ...rules(molarityRule),
+    example: { M: 12, n: 1.2, V: 0.1 },
+    startWith: ['M', 'V'],
+    representation: {
+      kind: 'beaker',
+      solution: { mode: 'molarity', moles: 'n', volume: 'V', molarity: 'M', solute: 'HCl' },
+    },
+  },
+  {
+    id: 'g.s10-molarity-dilution',
+    title: 'Diluting a stock solution',
+    use: 'Use this for “50 mL of 2 M CuSO₄ is diluted to 500 mL. What is the new molarity?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      ...SOLUTION_ASSUMPTIONS,
+      'Water adds volume but no solute: the moles, M × V, stay the same.',
+    ],
+    variables: [
+      molarityVar('M1', 'M₁', 'Stock molarity'),
+      solutionVolume('V1', 'V₁', 'Stock volume', 'mL'),
+      molarityVar('M2', 'M₂', 'Diluted molarity'),
+      solutionVolume('V2', 'V₂', 'Diluted volume', 'mL'),
+      { ...solutionVolume('w', 'w', 'Water added', 'mL'), min: 0, derived: true },
+    ],
+    ...rules(dilution, waterAdded),
+    example: { M1: 2, V1: 50, M2: 0.2, V2: 500, w: 450 },
+    startWith: ['M1', 'V1', 'V2'],
+    representation: {
+      kind: 'beaker',
+      solution: {
+        mode: 'dilution',
+        stock: { molarity: 'M1', volume: 'V1' },
+        diluted: { molarity: 'M2', volume: 'V2' },
+        water: 'w',
+        solute: 'CuSO₄',
+      },
+    },
+  },
+  {
+    id: 'g.s10-molarity-solubility',
+    title: 'Reading a solubility curve',
+    use: 'Use this for “40 g of KNO₃ is stirred into 100 g of water at 40 °C. Is it saturated?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The curve gives the most salt that dissolves in 100 g of water at each temperature.',
+      'Below the curve the solution is unsaturated; on it, saturated.',
+    ],
+    variables: [
+      temperatureC,
+      grams('s', 'S', 'Most that dissolves in 100 g of water', true),
+      grams('m', 'm', 'Salt stirred into 100 g of water'),
+      grams('x', 'x', 'More that can dissolve'),
+    ],
+    ...rules(solubilityRule('KNO3', 'KNO₃'), roomLeft),
+    example: { T: 40, s: 63.9, m: 40, x: 23.9 },
+    startWith: ['T', 'm'],
+    pictureLabels: ['x'],
+    representation: {
+      kind: 'beaker',
+      solution: {
+        mode: 'solubility',
+        salt: 'KNO3',
+        temperature: 'T',
+        amount: 'm',
+        solubility: 's',
+        others: ['NaNO3', 'NH4Cl', 'KCl', 'NaCl', 'KClO3'],
+      },
+    },
+  },
+  {
+    id: 'g.s10-molarity-solubility-excess',
+    title: 'More salt than dissolves',
+    use: 'Use this for “50 g of NaCl is stirred into 100 g of water at 20 °C. How much settles out?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The curve gives the most salt that dissolves in 100 g of water at each temperature.',
+      'Past the curve, the extra salt stays solid at the bottom.',
+    ],
+    variables: [
+      temperatureC,
+      grams('s', 'S', 'Most that dissolves in 100 g of water', true),
+      grams('m', 'm', 'Salt stirred into 100 g of water'),
+      grams('e', 'e', 'Salt that settles out'),
+    ],
+    ...rules(solubilityRule('NaCl', 'NaCl'), settles),
+    example: { T: 20, s: 36, m: 50, e: 14 },
+    startWith: ['T', 'm'],
+    pictureLabels: ['e'],
+    representation: {
+      kind: 'beaker',
+      solution: {
+        mode: 'solubility',
+        salt: 'NaCl',
+        temperature: 'T',
+        amount: 'm',
+        solubility: 's',
+        others: ['KNO3', 'KCl'],
+      },
+    },
+  },
+];
+
+export const HSJ_GALLERY_MODULES: ModuleDef[] = [...GAS, ...SOLUTIONS];
 export const HSJ_GALLERY_LAYOUTS: LayoutDef[] = [];
