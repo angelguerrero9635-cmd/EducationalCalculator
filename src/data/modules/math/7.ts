@@ -3,6 +3,7 @@
  * and its problem types (`<skill id>~<slug>`) after it. Shared relation helpers live in
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
+import { diceCount } from '@/components/module/reps/dice';
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values } from '@/engine/types';
 
@@ -397,6 +398,97 @@ const length = (id: string, symbol: string, name: string, max: number, derived =
   step: 0.1,
   ...(derived ? { derived: true } : {}),
 });
+
+/** x = f(v), worked out only (its inputs are not solved back from it). */
+function derive(
+  id: string,
+  x: string,
+  inputs: string[],
+  display: string,
+  f: (v: Values) => number,
+): Relation {
+  return {
+    id,
+    display,
+    vars: [x, ...inputs],
+    residual: (v: Values) => v[x]! - f(v),
+    solve: {
+      [x]: (v: Values) => exact(f(v)),
+      ...Object.fromEntries(inputs.map((i) => [i, () => undefined])),
+    },
+  };
+}
+
+/** A value no bigger than another. */
+const atMost = (small: string, big: string): Relation => ({
+  id: `${small} ≤ ${big}`,
+  constraint: true,
+  display: `{${small}} is at most {${big}}`,
+  vars: [small, big],
+  residual: (v: Values) => (v[small]! <= v[big]! ? 0 : 1),
+  solve: {},
+});
+
+/** An angle in whole degrees. */
+const degrees = (id: string, name: string, max = 180) => ({
+  ...whole(id, id, name, 0, max),
+  unit: '°',
+});
+
+/** a + b = whole (90 or 180): each angle is the whole less the other. */
+function anglePair(total: 90 | 180, what: string) {
+  const id = `a + b = ${total}`;
+  return {
+    relation: {
+      id,
+      display: `{a} + {b} = ${total}`,
+      vars: ['a', 'b'],
+      residual: (v: Values) => v.a! + v.b! - total,
+      solve: { a: (v: Values) => total - v.b!, b: (v: Values) => total - v.a! },
+    } satisfies Relation,
+    steps: {
+      [id]: {
+        a: { expr: `${total} − {b}`, how: `${what} Take the other angle away from ${total}°.` },
+        b: { expr: `${total} − {a}`, how: `${what} Take the other angle away from ${total}°.` },
+      },
+    } satisfies Record<string, Record<string, StepText>>,
+  };
+}
+const straightPair = anglePair(180, 'The two angles make a straight line.');
+const rightPair = anglePair(90, 'The two angles make a right angle.');
+
+/** A length in centimeters, and a worked-out area or volume. */
+const cmLength = (id: string, name: string) => ({
+  id,
+  symbol: id,
+  name,
+  unit: 'cm',
+  min: 0.1,
+  max: 100,
+  step: 0.1,
+});
+const worked = (id: string, name: string, unit: 'cm²' | 'cm³') => ({
+  id,
+  symbol: id,
+  name,
+  unit,
+  min: 0,
+  max: 10000000,
+  derived: true,
+});
+
+/** Two samples of up to 8 values each, counted by n. */
+const SAMPLE_A = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8'];
+const SAMPLE_B = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8'];
+const firstN = (ids: string[], v: Values) => ids.slice(0, v.n);
+const meanOf = (ids: string[]) => (v: Values) =>
+  firstN(ids, v).reduce((t, id) => t + v[id]!, 0) / v.n!;
+const madOfSample = (ids: string[], mean: string) => (v: Values) =>
+  firstN(ids, v).reduce((t, id) => t + Math.abs(v[id]! - v[mean]!), 0) / v.n!;
+
+/** The pairs of two dice with a sum of s, as a list ("1 + 6, 2 + 5, …"). */
+const dicePairs = (s: number) =>
+  [1, 2, 3, 4, 5, 6].filter((a) => s - a >= 1 && s - a <= 6).map((a) => `${a} + ${s - a}`);
 
 export const MATH_7_MODULES: ModuleDef[] = [
   // ── Proportional relationships (7.RP.1–3) ──
@@ -1487,6 +1579,782 @@ export const MATH_7_MODULES: ModuleDef[] = [
       autoRange: true,
       unitRate: 'k',
       table: [0, 1, 2, 3],
+    },
+  },
+
+  // ── Angle relationships (7.G.5) ──
+  {
+    id: 'm.7.angle-relationships',
+    assumptions: [
+      'The two angles share a vertex and a ray; their outer rays make a straight line.',
+      'Angles that add to 180° are supplementary.',
+      'Adjacent angles share a vertex and a ray and do not overlap.',
+    ],
+    variables: [degrees('a', 'First angle'), degrees('b', 'Second angle')],
+    relations: [straightPair.relation],
+    steps: straightPair.steps,
+    example: { a: 115, b: 65 },
+    startWith: ['a'],
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 180 },
+  },
+  {
+    id: 'm.7.angle-relationships~complementary',
+    title: 'Complementary angles',
+    use: 'Use this for “Two angles make a right angle. One is 35°. What is the other?”',
+    assumptions: [
+      'The two angles share a ray and together make a right angle.',
+      'Angles that add to 90° are complementary.',
+    ],
+    variables: [degrees('a', 'First angle', 90), degrees('b', 'Second angle', 90)],
+    relations: [rightPair.relation],
+    steps: rightPair.steps,
+    example: { a: 35, b: 55 },
+    startWith: ['a'],
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 90 },
+  },
+  {
+    id: 'm.7.angle-relationships~vertical',
+    title: 'Vertical angles',
+    use: 'Use this for “Two lines cross. One angle is 50°. Find the other three.”',
+    assumptions: [
+      'Two straight lines cross at one point and make four angles.',
+      'Angles next to each other on a line add to 180°.',
+      'Angles across from each other are vertical angles: they are equal.',
+    ],
+    variables: [
+      degrees('a', 'Angle a'),
+      degrees('b', 'Angle beside it'),
+      degrees('c', 'Angle across from a'),
+    ],
+    relations: [
+      straightPair.relation,
+      {
+        id: 'c = a',
+        display: '{c} = {a}',
+        vars: ['c', 'a'],
+        residual: (v: Values) => v.c! - v.a!,
+        solve: { c: (v: Values) => v.a!, a: (v: Values) => v.c! },
+      },
+    ],
+    steps: {
+      ...straightPair.steps,
+      'c = a': {
+        c: { expr: '{a}', how: 'Vertical angles are across from each other, so they are equal.' },
+        a: { expr: '{c}', how: 'Vertical angles are across from each other, so they are equal.' },
+      },
+    },
+    example: { a: 50, b: 130, c: 50 },
+    startWith: ['a'],
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 180, cross: { first: 'c' } },
+  },
+  {
+    id: 'm.7.angle-relationships~equation',
+    title: 'Unknown angles with an equation',
+    use: 'Use this for “Two supplementary angles: one is twice the other. Find both.”',
+    assumptions: [
+      'Call the smaller angle a. The bigger one is k times as big: k × a.',
+      'Together they make a straight line: a + k × a = 180, so (1 + k) × a = 180.',
+      'Divide 180 by 1 + k for the smaller angle.',
+    ],
+    variables: [
+      { id: 'k', symbol: 'k', name: 'Times as big', min: 1, max: 10, step: 0.5 },
+      { id: 'a', symbol: 'a', name: 'Smaller angle', unit: '°', min: 0, max: 90, derived: true },
+      { id: 'b', symbol: 'b', name: 'Bigger angle', unit: '°', min: 0, max: 180, derived: true },
+    ],
+    relations: [
+      {
+        id: 'a = 180 ÷ (1 + k)',
+        display: '{a} = 180 ÷ (1 + {k})',
+        vars: ['a', 'k'],
+        residual: (v: Values) => v.a! * (1 + v.k!) - 180,
+        solve: { a: (v: Values) => exact(180 / (1 + v.k!)), k: (v: Values) => q(180 - v.a!, v.a!) },
+      },
+      {
+        id: 'b = k × a',
+        display: '{b} = {k} × {a}',
+        vars: ['b', 'k', 'a'],
+        residual: (v: Values) => v.b! - v.k! * v.a!,
+        solve: {
+          b: (v: Values) => exact(v.k! * v.a!),
+          k: (v: Values) => q(v.b!, v.a!),
+          a: (v: Values) => q(v.b!, v.k!),
+        },
+      },
+    ],
+    steps: {
+      'a = 180 ÷ (1 + k)': {
+        a: {
+          expr: '180 ÷ (1 + {k})',
+          how: 'a and k × a make 180, so 1 + k of the smaller angle make 180.',
+        },
+        k: { expr: '(180 − {a}) ÷ {a}', how: 'The bigger angle is 180 − a; divide it by a.' },
+      },
+      'b = k × a': {
+        b: { expr: '{k} × {a}', how: 'The bigger angle is k times the smaller.' },
+        k: { expr: '{b} ÷ {a}', how: 'Divide the bigger angle by the smaller.' },
+        a: { expr: '{b} ÷ {k}', how: 'Divide the bigger angle by k.' },
+      },
+    },
+    example: { k: 2, a: 60, b: 120 },
+    startWith: ['k'],
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 180 },
+  },
+
+  // ── Volume and surface area of prisms (7.G.3, 7.G.6) ──
+  {
+    id: 'm.7.prisms',
+    assumptions: [
+      'A prism has the same cross-section all the way up, so volume = base area × height.',
+      'The cut is parallel to the base.',
+      'Surface area adds every face: two bases plus the sides, which unroll to a rectangle, height × perimeter.',
+      'Volume is in cubic units, surface area in square units.',
+    ],
+    standalone: {
+      vars: ['a'],
+      why: 'Where the plane cuts does not change the cut: a prism is the same all the way up.',
+    },
+    variables: [
+      cmLength('l', 'Length'),
+      cmLength('w', 'Width'),
+      cmLength('h', 'Height'),
+      { ...cmLength('a', 'Cut height'), min: 0 },
+      worked('B', 'Base area', 'cm²'),
+      worked('V', 'Volume', 'cm³'),
+      worked('S', 'Surface area', 'cm²'),
+    ],
+    relations: [
+      atMost('a', 'h'),
+      derive('B = l × w', 'B', ['l', 'w'], '{B} = {l} × {w}', (v) => v.l! * v.w!),
+      derive('V = B × h', 'V', ['B', 'h'], '{V} = {B} × {h}', (v) => v.B! * v.h!),
+      derive(
+        'S = 2B + h(2l + 2w)',
+        'S',
+        ['B', 'h', 'l', 'w'],
+        '{S} = 2 × {B} + {h} × (2 × {l} + 2 × {w})',
+        (v) => 2 * v.B! + v.h! * (2 * v.l! + 2 * v.w!),
+      ),
+    ],
+    steps: {
+      'a ≤ h': {},
+      'B = l × w': {
+        B: { expr: '{l} × {w}', how: 'The cut is the base: a rectangle, length times width.' },
+      },
+      'V = B × h': {
+        V: { expr: '{B} × {h}', how: 'Stack the base area up the height: base area times height.' },
+      },
+      'S = 2B + h(2l + 2w)': {
+        S: {
+          expr: '2 × {B} + {h} × (2 × {l} + 2 × {w})',
+          how: 'Two bases, and the four sides unrolled: the height times the distance around the base.',
+        },
+      },
+    },
+    example: { l: 6, w: 4, h: 5, a: 2, B: 24, V: 120, S: 148 },
+    startWith: ['l', 'w', 'h', 'a'],
+    representation: {
+      kind: 'crossSection',
+      solid: 'box',
+      length: 'l',
+      width: 'w',
+      height: 'h',
+      at: 'a',
+      area: 'B',
+      volume: 'V',
+    },
+  },
+  {
+    id: 'm.7.prisms~triangular',
+    title: 'Triangular prism',
+    use: 'Use this for “A prism stands on a right triangle with legs 6 and 8 and slanted side 10, and is 12 long. Find its volume and surface area.”',
+    assumptions: [
+      'The two ends are the same right triangle; each rectangle is one side of the triangle by the length.',
+      'Volume = the triangle’s area × the length.',
+      'Surface area = two triangles + the length × the distance around the triangle.',
+    ],
+    variables: [
+      cmLength('b', 'First leg'),
+      cmLength('h', 'Second leg'),
+      cmLength('s', 'Slanted side'),
+      cmLength('L', 'Length'),
+      worked('B', 'Area of one end', 'cm²'),
+      worked('V', 'Volume', 'cm³'),
+      worked('S', 'Surface area', 'cm²'),
+    ],
+    relations: [
+      {
+        id: 'the sides make a right triangle',
+        constraint: true,
+        display: '{b}, {h} and {s} make a right triangle',
+        vars: ['b', 'h', 's'],
+        residual: (v: Values) => (Math.abs(Math.hypot(v.b!, v.h!) - v.s!) <= 0.01 * v.s! ? 0 : 1),
+        solve: {},
+      },
+      derive('B = bh ÷ 2', 'B', ['b', 'h'], '{B} = {b} × {h} ÷ 2', (v) => (v.b! * v.h!) / 2),
+      derive('V = B × L', 'V', ['B', 'L'], '{V} = {B} × {L}', (v) => v.B! * v.L!),
+      derive(
+        'S = 2B + L(b + h + s)',
+        'S',
+        ['B', 'L', 'b', 'h', 's'],
+        '{S} = 2 × {B} + {L} × ({b} + {h} + {s})',
+        (v) => 2 * v.B! + v.L! * (v.b! + v.h! + v.s!),
+      ),
+    ],
+    steps: {
+      'the sides make a right triangle': {},
+      'B = bh ÷ 2': {
+        B: { expr: '{b} × {h} ÷ 2', how: 'The end is a right triangle: half of leg times leg.' },
+      },
+      'V = B × L': {
+        V: { expr: '{B} × {L}', how: 'Stack the end’s area along the length.' },
+      },
+      'S = 2B + L(b + h + s)': {
+        S: {
+          expr: '2 × {B} + {L} × ({b} + {h} + {s})',
+          how: 'Two triangles, and three rectangles: the length times the distance around the triangle.',
+          written: false,
+        },
+      },
+    },
+    example: { b: 6, h: 8, s: 10, L: 12, B: 24, V: 288, S: 336 },
+    startWith: ['b', 'h', 's', 'L'],
+    representation: {
+      kind: 'net',
+      solid: 'triangularPrism',
+      width: 'b',
+      height: 'h',
+      slant: 's',
+      length: 'L',
+      total: 'S',
+    },
+  },
+  {
+    id: 'm.7.prisms~trapezoid-base',
+    title: 'Prism on a trapezoid',
+    use: 'Use this for “A stage is a trapezoidal prism: bases 20 ft and 10 ft, 12 ft apart, 2 ft high. What is its volume?”',
+    assumptions: [
+      'The base is a trapezoid: its area is the average of the two parallel sides × the distance between them.',
+      'Volume = base area × the prism’s height.',
+      'All lengths in the same unit; volume in cubic units.',
+    ],
+    variables: [
+      cmLength('a', 'Long base'),
+      cmLength('b', 'Short base'),
+      cmLength('t', 'Trapezoid height'),
+      cmLength('h', 'Prism height'),
+      worked('B', 'Base area', 'cm²'),
+      worked('V', 'Volume', 'cm³'),
+    ],
+    relations: [
+      atMost('b', 'a'),
+      derive(
+        'B = (a + b) ÷ 2 × t',
+        'B',
+        ['a', 'b', 't'],
+        '{B} = ({a} + {b}) ÷ 2 × {t}',
+        (v) => ((v.a! + v.b!) / 2) * v.t!,
+      ),
+      derive('V = B × h', 'V', ['B', 'h'], '{V} = {B} × {h}', (v) => v.B! * v.h!),
+    ],
+    steps: {
+      'b ≤ a': {},
+      'B = (a + b) ÷ 2 × t': {
+        B: {
+          expr: '({a} + {b}) ÷ 2 × {t}',
+          how: 'The average of the parallel sides times the distance between them.',
+        },
+      },
+      'V = B × h': {
+        V: { expr: '{B} × {h}', how: 'Stack the base area up the prism’s height.' },
+      },
+    },
+    example: { a: 20, b: 10, t: 12, h: 2, B: 180, V: 360 },
+    startWith: ['a', 'b', 't', 'h'],
+    pictureLabels: ['h', 'V'],
+    representation: {
+      kind: 'baseHeight',
+      shape: 'trapezoid',
+      base: 'a',
+      top: 'b',
+      height: 't',
+      area: 'B',
+    },
+  },
+
+  // ── Random sampling (7.SP.1–4) ──
+  {
+    id: 'm.7.sampling',
+    assumptions: [
+      'Every student is as likely as any other to be picked: a random sample.',
+      'The sample’s share is about the population’s share, not exactly.',
+      'A bigger sample usually lands closer.',
+      'Take a new sample: the estimate moves a little each time.',
+    ],
+    variables: [
+      whole('N', 'N', 'Students in the school', 1, 400),
+      whole('n', 'n', 'Students in the sample', 1, 400),
+      whole('k', 'k', 'Sample who walk to school', 0, 400),
+      whole('T', 'T', 'Whole school who walk', 0, 400),
+      { id: 'E', symbol: 'E', name: 'Estimate for the school', min: 0, max: 400, derived: true },
+    ],
+    relations: [
+      atMost('n', 'N'),
+      atMost('k', 'n'),
+      atMost('T', 'N'),
+      atMost('k', 'T'),
+      {
+        // The sample's others (who don't walk) come from the school's others.
+        id: 'n − k ≤ N − T',
+        constraint: true,
+        display: '{n} − {k} is at most {N} − {T}',
+        vars: ['n', 'k', 'N', 'T'],
+        residual: (v: Values) => (v.n! - v.k! <= v.N! - v.T! ? 0 : 1),
+        solve: {},
+      },
+      derive(
+        'E = k ÷ n × N',
+        'E',
+        ['k', 'n', 'N'],
+        '{E} = {k} ÷ {n} × {N}',
+        (v) => (v.k! / v.n!) * v.N!,
+      ),
+    ],
+    steps: {
+      'n ≤ N': {},
+      'k ≤ n': {},
+      'T ≤ N': {},
+      'k ≤ T': {},
+      'n − k ≤ N − T': {},
+      'E = k ÷ n × N': {
+        E: {
+          expr: '{k} ÷ {n} × {N}',
+          how: 'The share who walk in the sample, times everyone in the school.',
+        },
+      },
+    },
+    example: { N: 200, n: 20, k: 6, T: 64, E: 60 },
+    startWith: ['N', 'n', 'k', 'T'],
+    standalone: {
+      vars: ['T'],
+      why: 'The whole school is what the sample estimates; the picture colors it so a new sample can be drawn.',
+    },
+    representation: {
+      kind: 'sample',
+      population: 'N',
+      size: 'n',
+      found: 'k',
+      trait: 'T',
+      estimate: 'E',
+      labels: ['walk', 'do not'],
+    },
+  },
+  {
+    id: 'm.7.sampling~compare',
+    title: 'Compare two samples',
+    use: 'Use this for “Which class read longer last night, and by how much?”',
+    assumptions: [
+      'Each class is a random sample of its grade. Times are in minutes.',
+      'The mean is the balance point of a dot plot; the MAD is the mean distance from it.',
+      'A gap between the means of two or more MADs says the groups really differ.',
+    ],
+    variables: [
+      whole('n', 'n', 'Students in each class', 3, 8),
+      ...SAMPLE_A.map((id, i) => ({
+        ...whole(id, id, `Class A, student ${i + 1}`, 0, 60),
+        countedBy: { count: 'n', index: i + 1 },
+      })),
+      ...SAMPLE_B.map((id, i) => ({
+        ...whole(id, id, `Class B, student ${i + 1}`, 0, 60),
+        countedBy: { count: 'n', index: i + 1 },
+      })),
+      { id: 'P', symbol: 'P', name: 'Mean of class A', min: 0, max: 60, derived: true },
+      { id: 'Q', symbol: 'Q', name: 'Mean of class B', min: 0, max: 60, derived: true },
+      { id: 'd', symbol: 'd', name: 'Difference of the means', min: 0, max: 60, derived: true },
+      { id: 'M', symbol: 'M', name: 'MAD of class A', min: 0, max: 60, derived: true },
+    ],
+    relations: [
+      {
+        ...derive(
+          'P = mean of A',
+          'P',
+          ['n', ...SAMPLE_A],
+          'mean of class A’s {n} times = {P}',
+          meanOf(SAMPLE_A),
+        ),
+        check: (v: Values) =>
+          `(${firstN(SAMPLE_A, v)
+            .map((id) => fmt(v[id]!))
+            .join(' + ')}) ÷ ${v.n} = ${fmt(v.P!)}`,
+      },
+      {
+        ...derive(
+          'Q = mean of B',
+          'Q',
+          ['n', ...SAMPLE_B],
+          'mean of class B’s {n} times = {Q}',
+          meanOf(SAMPLE_B),
+        ),
+        check: (v: Values) =>
+          `(${firstN(SAMPLE_B, v)
+            .map((id) => fmt(v[id]!))
+            .join(' + ')}) ÷ ${v.n} = ${fmt(v.Q!)}`,
+      },
+      {
+        ...derive('d = |Q − P|', 'd', ['P', 'Q'], 'the gap from {P} to {Q} = {d}', (v) =>
+          Math.abs(v.Q! - v.P!),
+        ),
+        check: (v: Values) =>
+          `${fmt(Math.max(v.P!, v.Q!))} − ${fmt(Math.min(v.P!, v.Q!))} = ${fmt(v.d!)}`,
+      },
+      {
+        ...derive(
+          'M = MAD of A',
+          'M',
+          ['n', 'P', ...SAMPLE_A],
+          'mean distance of class A’s {n} times from {P} = {M}',
+          madOfSample(SAMPLE_A, 'P'),
+        ),
+        check: (v: Values) =>
+          `(${firstN(SAMPLE_A, v)
+            .map((id) => `|${fmt(v[id]!)} − ${fmt(v.P!)}|`)
+            .join(' + ')}) ÷ ${v.n} = ${fmt(v.M!)}`,
+      },
+    ],
+    steps: {
+      'P = mean of A': {
+        P: {
+          expr: (v: Values) =>
+            `(${firstN(SAMPLE_A, v)
+              .map((id) => `{${id}}`)
+              .join(' + ')}) ÷ {n}`,
+          how: 'Add class A’s times and share them out evenly.',
+        },
+      },
+      'Q = mean of B': {
+        Q: {
+          expr: (v: Values) =>
+            `(${firstN(SAMPLE_B, v)
+              .map((id) => `{${id}}`)
+              .join(' + ')}) ÷ {n}`,
+          how: 'Add class B’s times and share them out evenly.',
+        },
+      },
+      'd = |Q − P|': {
+        d: {
+          expr: (v: Values) => (v.Q! >= v.P! ? '{Q} − {P}' : '{P} − {Q}'),
+          how: 'Take the smaller mean from the bigger one.',
+        },
+      },
+      'M = MAD of A': {
+        M: {
+          expr: (v: Values) =>
+            `(${firstN(SAMPLE_A, v)
+              .map((id) => `|{${id}} − {P}|`)
+              .join(' + ')}) ÷ {n}`,
+          how: 'How far each time is from the mean, on average.',
+          written: false,
+        },
+      },
+    },
+    example: {
+      n: 8,
+      a1: 10,
+      a2: 15,
+      a3: 15,
+      a4: 20,
+      a5: 20,
+      a6: 20,
+      a7: 25,
+      a8: 35,
+      b1: 20,
+      b2: 25,
+      b3: 30,
+      b4: 30,
+      b5: 30,
+      b6: 35,
+      b7: 40,
+      b8: 46,
+      P: 20,
+      Q: 32,
+      d: 12,
+      M: 5,
+    },
+    startWith: ['n', ...SAMPLE_A, ...SAMPLE_B],
+    representation: {
+      kind: 'dotPlot',
+      data: SAMPLE_A,
+      count: 'n',
+      min: 0,
+      max: 50,
+      mean: 'P',
+      second: { data: SAMPLE_B, mean: 'Q' },
+      labels: ['Class A', 'Class B'],
+      difference: 'd',
+    },
+  },
+
+  // ── Probability (7.SP.5–8) ──
+  {
+    id: 'm.7.probability',
+    assumptions: [
+      'The spinner is cut into equal sectors.',
+      'The arrow is as likely to stop in any sector as any other.',
+      'A probability is a number from 0 (impossible) to 1 (certain): favorable sectors ÷ all sectors.',
+      'Spin many times: the share of red comes close to the probability.',
+    ],
+    variables: [
+      whole('r', 'r', 'Red sectors', 0, 12),
+      whole('b', 'b', 'Blue sectors', 0, 12),
+      whole('y', 'y', 'Yellow sectors', 0, 12),
+      whole('n', 'n', 'Sectors in all', 1, 24),
+      { id: 'P', symbol: 'P', name: 'Chance of red', min: 0, max: 1, fraction: 24, derived: true },
+      {
+        id: 'R',
+        symbol: 'R',
+        name: 'Chance of red or blue',
+        min: 0,
+        max: 1,
+        fraction: 24,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'n = r + b + y',
+        display: '{n} = {r} + {b} + {y}',
+        vars: ['n', 'r', 'b', 'y'],
+        residual: (v: Values) => v.n! - v.r! - v.b! - v.y!,
+        solve: {
+          n: (v: Values) => v.r! + v.b! + v.y!,
+          r: (v: Values) => v.n! - v.b! - v.y!,
+          b: (v: Values) => v.n! - v.r! - v.y!,
+          y: (v: Values) => v.n! - v.r! - v.b!,
+        },
+      },
+      derive('P = r ÷ n', 'P', ['r', 'n'], '{P} = {r} ÷ {n}', (v) => v.r! / v.n!),
+      derive(
+        'R = (r + b) ÷ n',
+        'R',
+        ['r', 'b', 'n'],
+        '{R} = ({r} + {b}) ÷ {n}',
+        (v) => (v.r! + v.b!) / v.n!,
+      ),
+    ],
+    steps: {
+      'n = r + b + y': {
+        n: { expr: '{r} + {b} + {y}', how: 'Add the sectors of every color.' },
+        r: { expr: '{n} − {b} − {y}', how: 'Take the blue and yellow sectors from all of them.' },
+        b: { expr: '{n} − {r} − {y}', how: 'Take the red and yellow sectors from all of them.' },
+        y: { expr: '{n} − {r} − {b}', how: 'Take the red and blue sectors from all of them.' },
+      },
+      'P = r ÷ n': {
+        P: { expr: '{r} ÷ {n}', how: 'The red sectors out of all the equal sectors.' },
+      },
+      'R = (r + b) ÷ n': {
+        R: {
+          expr: '({r} + {b}) ÷ {n}',
+          how: 'Red or blue: count both colors’ sectors, then divide by all of them.',
+        },
+      },
+    },
+    example: { r: 3, b: 4, y: 1, n: 8, P: 3 / 8, R: 7 / 8 },
+    startWith: ['r', 'b', 'y'],
+    representation: {
+      kind: 'spinner',
+      parts: ['r', 'b', 'y'],
+      colors: ['red', 'blue', 'yellow'],
+      chance: 'P',
+      total: 'n',
+    },
+  },
+  {
+    id: 'm.7.probability~marbles',
+    title: 'A bag of marbles',
+    use: 'Use this for “A bag has 5 red, 3 blue and 2 green marbles. What is the chance of blue?”',
+    assumptions: [
+      'The marbles are the same size and feel the same.',
+      'Each marble is as likely to be drawn as any other.',
+      'The chance of blue is the blue marbles out of all the marbles.',
+    ],
+    variables: [
+      whole('r', 'r', 'Red marbles', 0, 15),
+      whole('b', 'b', 'Blue marbles', 0, 15),
+      whole('g', 'g', 'Green marbles', 0, 10),
+      whole('n', 'n', 'Marbles in all', 1, 40),
+      { id: 'P', symbol: 'P', name: 'Chance of blue', min: 0, max: 1, fraction: 40, derived: true },
+    ],
+    relations: [
+      {
+        id: 'n = r + b + g',
+        display: '{n} = {r} + {b} + {g}',
+        vars: ['n', 'r', 'b', 'g'],
+        residual: (v: Values) => v.n! - v.r! - v.b! - v.g!,
+        solve: {
+          n: (v: Values) => v.r! + v.b! + v.g!,
+          r: (v: Values) => v.n! - v.b! - v.g!,
+          b: (v: Values) => v.n! - v.r! - v.g!,
+          g: (v: Values) => v.n! - v.r! - v.b!,
+        },
+      },
+      derive('P = b ÷ n', 'P', ['b', 'n'], '{P} = {b} ÷ {n}', (v) => v.b! / v.n!),
+    ],
+    steps: {
+      'n = r + b + g': {
+        n: { expr: '{r} + {b} + {g}', how: 'Add the marbles of every color.' },
+        r: { expr: '{n} − {b} − {g}', how: 'Take the blue and green marbles from all of them.' },
+        b: { expr: '{n} − {r} − {g}', how: 'Take the red and green marbles from all of them.' },
+        g: { expr: '{n} − {r} − {b}', how: 'Take the red and blue marbles from all of them.' },
+      },
+      'P = b ÷ n': { P: { expr: '{b} ÷ {n}', how: 'The blue marbles out of all the marbles.' } },
+    },
+    example: { r: 5, b: 3, g: 2, n: 10, P: 0.3 },
+    startWith: ['r', 'b', 'g'],
+    representation: {
+      kind: 'marbles',
+      parts: ['r', 'b', 'g'],
+      colors: ['red', 'blue', 'green'],
+      pick: 1,
+      chance: 'P',
+      total: 'n',
+    },
+  },
+  {
+    id: 'm.7.probability~expected',
+    title: 'Expected results in the long run',
+    use: 'Use this for “4 of 9 sectors say singing. In 225 classes, about how many are singing?”',
+    assumptions: [
+      'The probability says the share of trials in the long run.',
+      'Expected count = probability × trials; the real count is near it, not exactly it.',
+      'Past results do not change the next spin: each spin starts fresh.',
+    ],
+    variables: [
+      whole('f', 'f', 'Favorable sectors', 0, 24),
+      whole('n', 'n', 'Sectors in all', 1, 24),
+      { ...whole('o', 'o', 'Other sectors', 0, 24), derived: true },
+      { id: 'P', symbol: 'P', name: 'Probability', min: 0, max: 1, fraction: 24, derived: true },
+      whole('t', 't', 'Trials', 1, 10000),
+      { id: 'E', symbol: 'E', name: 'Expected count', min: 0, max: 10000, derived: true },
+    ],
+    relations: [
+      atMost('f', 'n'),
+      derive('o = n − f', 'o', ['n', 'f'], '{o} = {n} − {f}', (v) => v.n! - v.f!),
+      derive('P = f ÷ n', 'P', ['f', 'n'], '{P} = {f} ÷ {n}', (v) => v.f! / v.n!),
+      derive('E = P × t', 'E', ['P', 't'], '{E} = {P} × {t}', (v) => v.P! * v.t!),
+    ],
+    steps: {
+      'f ≤ n': {},
+      'o = n − f': { o: { expr: '{n} − {f}', how: 'The sectors that are not favorable.' } },
+      'P = f ÷ n': { P: { expr: '{f} ÷ {n}', how: 'The favorable sectors out of all of them.' } },
+      'E = P × t': {
+        E: { expr: '{P} × {t}', how: 'The share of the trials: probability times trials.' },
+      },
+    },
+    example: { f: 4, n: 9, o: 5, P: 4 / 9, t: 225, E: 100 },
+    startWith: ['f', 'n', 't'],
+    representation: {
+      kind: 'spinner',
+      parts: ['f', 'o'],
+      colors: ['red', 'blue'],
+      chance: 'P',
+      total: 'n',
+    },
+  },
+  {
+    id: 'm.7.probability~two-dice',
+    title: 'Two dice',
+    use: 'Use this for “Two dice are rolled. What is the chance the sum is 7?”',
+    assumptions: [
+      'Each die is fair: every face is as likely as any other.',
+      'The 36 pairs of faces are equally likely.',
+      'Count the cells of the grid with the sum, then divide by 36.',
+    ],
+    variables: [
+      whole('s', 's', 'Sum', 2, 12),
+      { ...whole('k', 'k', 'Pairs with that sum', 0, 36), derived: true },
+      {
+        id: 'P',
+        symbol: 'P',
+        name: 'Chance of that sum',
+        min: 0,
+        max: 1,
+        fraction: 36,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        ...derive('k = pairs with sum s', 'k', ['s'], 'pairs with a sum of {s}: {k}', (v) =>
+          diceCount('sum', '=', v.s!),
+        ),
+        check: (v: Values) => `${dicePairs(v.s!).length} = ${v.k}`,
+      },
+      derive('P = k ÷ 36', 'P', ['k'], '{P} = {k} ÷ 36', (v) => v.k! / 36),
+    ],
+    steps: {
+      'k = pairs with sum s': {
+        k: {
+          expr: (v: Values) => `${dicePairs(v.s!).length}`,
+          how: 'Count the cells of the grid that show the sum.',
+          work: (v: Values) => [dicePairs(v.s!).join(', ')],
+          written: false,
+        },
+      },
+      'P = k ÷ 36': {
+        P: { expr: '{k} ÷ 36', how: 'The pairs with the sum out of all 36 equally likely pairs.' },
+      },
+    },
+    example: { s: 7, k: 6, P: 1 / 6 },
+    startWith: ['s'],
+    representation: { kind: 'diceGrid', target: 's', count: 'k', chance: 'P' },
+  },
+  {
+    id: 'm.7.probability~tree',
+    title: 'Tree diagram',
+    use: 'Use this for “A coin is flipped and a spinner with 3 sectors spun. How many outcomes are there, and what is the chance of heads and 2?”',
+    assumptions: [
+      'The coin lands heads or tails, equally likely; the spinner stops on each equal sector equally often.',
+      'Each branch of the first stage splits into every outcome of the second: multiply.',
+      'For three stages, multiply again.',
+    ],
+    variables: [
+      whole('a', 'a', 'Coin outcomes', 1, 6),
+      whole('b', 'b', 'Spinner outcomes', 2, 6),
+      { ...whole('n', 'n', 'Outcomes in all', 1, 36), derived: true },
+      {
+        id: 'P',
+        symbol: 'P',
+        name: 'Chance of heads and 2',
+        min: 0,
+        max: 1,
+        fraction: 36,
+        derived: true,
+      },
+    ],
+    relations: [
+      derive('n = a × b', 'n', ['a', 'b'], '{n} = {a} × {b}', (v) => v.a! * v.b!),
+      derive('P = 1 ÷ n', 'P', ['n'], '{P} = 1 ÷ {n}', (v) => 1 / v.n!),
+    ],
+    steps: {
+      'n = a × b': {
+        n: { expr: '{a} × {b}', how: 'Each coin outcome branches into every spinner outcome.' },
+      },
+      'P = 1 ÷ n': {
+        P: { expr: '1 ÷ {n}', how: 'Heads and 2 is one of the equally likely outcomes.' },
+      },
+    },
+    example: { a: 2, b: 3, n: 6, P: 1 / 6 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'treeDiagram',
+      first: 'a',
+      second: 'b',
+      total: 'n',
+      names: [
+        ['H', 'T'],
+        ['1', '2', '3', '4', '5', '6'],
+      ],
+      stages: ['Coin', 'Spinner'],
+      path: [0, 1],
+      chance: 'P',
     },
   },
 ];

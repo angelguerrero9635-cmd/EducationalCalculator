@@ -1355,7 +1355,8 @@ export type Representation =
       deviations?: boolean;
       /**
        * How many values there are (3 to 10): only the first `count` of `data` are drawn, the
-       * middle one (odd) or two (even) ringed and the median marked between them.
+       * middle one (odd) or two (even) ringed and the median marked between them. With
+       * `second`, both samples are their first `count` values.
        */
       count?: string;
       /**

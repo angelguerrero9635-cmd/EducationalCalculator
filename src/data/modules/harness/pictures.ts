@@ -1494,7 +1494,7 @@ export function repIssues(
       }
       if (rep.second) {
         // The second sample's center, and the gap between the two centers.
-        const xs = rep.second.data.map(val);
+        const xs = rep.second.data.slice(0, n ?? rep.second.data.length).map(val);
         const known = xs.every((x) => x !== undefined) ? (xs as number[]) : undefined;
         const m2 = rep.second.mean ? val(rep.second.mean) : undefined;
         const md2 = rep.second.median ? val(rep.second.median) : undefined;

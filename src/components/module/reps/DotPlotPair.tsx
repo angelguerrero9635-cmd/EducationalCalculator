@@ -23,9 +23,15 @@ const fmt = (x: number) => formatNumber(Number(x.toFixed(2)));
 export function DotPlotPair({ spec, calc }: { spec: Spec & { second: Second }; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
+  // With `count`, each sample is its first n values (the rest are hidden, as on DotPlot).
+  const n =
+    spec.count && rep.known(spec.count)
+      ? Math.max(0, Math.min(spec.data.length, Math.round(rep.shown(spec.count))))
+      : undefined;
+  const first = (ids: string[]) => (n === undefined ? ids : ids.slice(0, n));
   const sets = [
-    { data: spec.data, mean: spec.mean, median: spec.median },
-    { data: spec.second.data, mean: spec.second.mean, median: spec.second.median },
+    { data: first(spec.data), mean: spec.mean, median: spec.median },
+    { data: first(spec.second.data), mean: spec.second.mean, median: spec.second.median },
   ];
   const [nameA, nameB] = spec.labels ?? ['Sample A', 'Sample B'];
   const values = sets.map((s) => s.data.filter(rep.known).map((id) => rep.shown(id)));
@@ -211,7 +217,7 @@ export function DotPlotPair({ spec, calc }: { spec: Spec & { second: Second }; c
       </Caption>
       <Steppers
         calc={calc}
-        items={[...spec.data, ...spec.second.data].map((id, _, ids) => ({
+        items={[...sets[0]!.data, ...sets[1]!.data].map((id, _, ids) => ({
           var: id,
           steps: [1],
           pin: ids.filter((x) => x !== id),
