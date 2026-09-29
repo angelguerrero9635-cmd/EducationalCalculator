@@ -258,10 +258,12 @@ function crossing(m1: string, b1: string, m2: string, b2: string, x = 'x', y = '
       [xId]: {
         [x]: {
           expr: `({${b2}} − {${b1}}) ÷ ({${m1}} − {${m2}})`,
-          how: 'Set the two right sides equal, gather x on one side, then divide.',
+          how: `Set the two right sides equal, gather ${x} on one side, then divide.`,
         },
       },
-      [yId]: { [y]: { expr: `{${m1}} × {${x}} + {${b1}}`, how: 'Put x into the first equation.' } },
+      [yId]: {
+        [y]: { expr: `{${m1}} × {${x}} + {${b1}}`, how: `Put ${x} into the first equation.` },
+      },
     } satisfies Record<string, Record<string, StepText>>,
   };
 }
@@ -293,10 +295,18 @@ const bothSidesSteps = (
     x: {
       expr: `({${d}} − {${b}}) ÷ ({${a}} − {${c}})`,
       how: 'Take the same x and the same number from both sides, then divide by the x left.',
-      work: (v: Values) => [
-        `Take ${fmt(v[c]!)}x from both sides: ${fmt(v[a]! - v[c]!)}x + ${fmt(v[b]!)} = ${fmt(v[d]!)}`,
-        `Take ${fmt(v[b]!)} from both sides: ${fmt(v[a]! - v[c]!)}x = ${fmt(v[d]! - v[b]!)}`,
-      ],
+      work: (v: Values) => {
+        // "3x", "x", "−x"; a negative is added back ("Add x", "Add 3"), never "Take −1x".
+        const xs = (k: number) => (k === 1 ? 'x' : k === -1 ? '−x' : `${fmt(k)}x`);
+        const move = (k: number, text: (n: number) => string) =>
+          k < 0 ? `Add ${text(-k)} to both sides` : `Take ${text(k)} from both sides`;
+        const left = v[a]! - v[c]!;
+        const plus = v[b]! < 0 ? ` − ${fmt(-v[b]!)}` : v[b]! > 0 ? ` + ${fmt(v[b]!)}` : '';
+        return [
+          ...(v[c] ? [`${move(v[c]!, xs)}: ${xs(left)}${plus} = ${fmt(v[d]!)}`] : []),
+          ...(v[b] ? [`${move(v[b]!, fmt)}: ${xs(left)} = ${fmt(v[d]! - v[b]!)}`] : []),
+        ];
+      },
       written: false,
     },
   },
@@ -900,7 +910,13 @@ export const MATH_8_MODULES: ModuleDef[] = [
         (v) => (v.S! > 0 ? split(Number(v.S!.toPrecision(4))).n : undefined),
       ),
       {
-        ...derive('u = S ÷ 10^q', 'u', ['S', 'q'], '{u} = {S} ÷ 10^{q}', (v) => Number(v.S!.toPrecision(4)) / 10 ** v.q!),
+        ...derive(
+          'u = S ÷ 10^q',
+          'u',
+          ['S', 'q'],
+          '{u} = {S} ÷ 10^{q}',
+          (v) => Number(v.S!.toPrecision(4)) / 10 ** v.q!,
+        ),
       },
     ],
     steps: {
@@ -1081,7 +1097,15 @@ export const MATH_8_MODULES: ModuleDef[] = [
       { id: 'x1', symbol: 'x₁', name: 'Cubic yards, first', min: 0.1, max: 100, step: 0.1 },
       { id: 'y1', symbol: 'y₁', name: 'Cost, first', unit: '$', min: 0.01, max: 10000, step: 0.01 },
       { id: 'x2', symbol: 'x₂', name: 'Cubic yards, second', min: 0.1, max: 100, step: 0.1 },
-      { id: 'y2', symbol: 'y₂', name: 'Cost, second', unit: '$', min: 0.01, max: 10000, step: 0.01 },
+      {
+        id: 'y2',
+        symbol: 'y₂',
+        name: 'Cost, second',
+        unit: '$',
+        min: 0.01,
+        max: 10000,
+        step: 0.01,
+      },
       { id: 'm1', symbol: 'm₁', name: 'First rate', min: 0, max: 100000, derived: true },
       {
         id: 'm2',
@@ -1970,12 +1994,12 @@ export const MATH_8_MODULES: ModuleDef[] = [
       why: 'The slide up is worked out on its own, apart from the slide across.',
     },
     variables: [
-      signed('ax', 'x', 'A across'),
-      signed('ay', 'y', 'A up'),
+      signed('ax', 'x', 'x of A'),
+      signed('ay', 'y', 'y of A'),
       signed('h', 'h', 'Right'),
       signed('k', 'k', 'Up'),
-      { ...signed('px', 'x′', 'A′ across', 1, 20) },
-      { ...signed('py', 'y′', 'A′ up', 1, 20) },
+      { ...signed('px', 'x′', 'x of A′', 1, 20) },
+      { ...signed('py', 'y′', 'y of A′', 1, 20) },
     ],
     relations: [
       {
@@ -2042,11 +2066,11 @@ export const MATH_8_MODULES: ModuleDef[] = [
       why: 'A flip across an up-and-down line keeps each height as it was.',
     },
     variables: [
-      signed('ax', 'x', 'A across'),
-      signed('ay', 'y', 'A up'),
+      signed('ax', 'x', 'x of A'),
+      signed('ay', 'y', 'y of A'),
       signed('a', 'a', 'Mirror line x ='),
-      { ...signed('px', 'x′', 'A′ across', 1, 30) },
-      signed('py', 'y′', 'A′ up'),
+      { ...signed('px', 'x′', 'x of A′', 1, 30) },
+      signed('py', 'y′', 'y of A′'),
     ],
     relations: [
       {
@@ -2103,8 +2127,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
       'A half turn changes both signs: (x, y) → (−x, −y).',
     ],
     variables: [
-      signed('ax', 'x', 'A across'),
-      signed('ay', 'y', 'A up'),
+      signed('ax', 'x', 'x of A'),
+      signed('ay', 'y', 'y of A'),
       {
         id: 'r',
         symbol: 'r',
@@ -2114,8 +2138,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
         max: 270,
         allowed: [-270, -180, -90, 90, 180, 270],
       },
-      { ...signed('px', 'x′', 'A′ across'), derived: true },
-      { ...signed('py', 'y′', 'A′ up'), derived: true },
+      { ...signed('px', 'x′', 'x of A′'), derived: true },
+      { ...signed('py', 'y′', 'y of A′'), derived: true },
     ],
     relations: [
       {
@@ -2177,11 +2201,11 @@ export const MATH_8_MODULES: ModuleDef[] = [
       'The image is similar: the same angles, every length k times as long.',
     ],
     variables: [
-      signed('ax', 'x', 'A across'),
-      signed('ay', 'y', 'A up'),
+      signed('ax', 'x', 'x of A'),
+      signed('ay', 'y', 'y of A'),
       { id: 'k', symbol: 'k', name: 'Scale factor', min: 0.25, max: 4, step: 0.25 },
-      { ...signed('px', 'x′', 'A′ across', 0.01, 40), derived: true },
-      { ...signed('py', 'y′', 'A′ up', 0.01, 40), derived: true },
+      { ...signed('px', 'x′', 'x of A′', 0.01, 40), derived: true },
+      { ...signed('py', 'y′', 'y of A′', 0.01, 40), derived: true },
     ],
     relations: [
       derive('x′ = kx', 'px', ['k', 'ax'], '{px} = {k} × {ax}', (v) => v.k! * v.ax!),
@@ -2215,8 +2239,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
       'Multiply by k to go from the first to the second; divide by k to go back.',
     ],
     variables: [
-      { id: 'a1', symbol: 'a₁', name: 'A side of the first', min: 0.5, max: 100, step: 0.5 },
-      { id: 'a2', symbol: 'a₂', name: 'Its match on the second', min: 0.5, max: 100, step: 0.5 },
+      { id: 'a1', symbol: 'a₁', name: 'First triangle, side a', min: 0.5, max: 100, step: 0.5 },
+      { id: 'a2', symbol: 'a₂', name: 'Second triangle, side a', min: 0.5, max: 100, step: 0.5 },
       {
         id: 'k',
         symbol: 'k',
@@ -2226,17 +2250,17 @@ export const MATH_8_MODULES: ModuleDef[] = [
         fraction: 20,
         derived: true,
       },
-      { id: 'b1', symbol: 'b₁', name: 'Another side of the first', min: 0.5, max: 100, step: 0.5 },
+      { id: 'b1', symbol: 'b₁', name: 'First triangle, side b', min: 0.5, max: 100, step: 0.5 },
       {
         id: 'b2',
         symbol: 'b₂',
-        name: 'Its match on the second',
+        name: 'Second triangle, side b',
         min: 0,
         max: 20000,
         derived: true,
       },
-      { id: 'c1', symbol: 'c₁', name: 'Third side of the first', min: 0, max: 20000, step: 0.5 },
-      { id: 'c2', symbol: 'c₂', name: 'Its match on the second', min: 0, max: 20000, step: 0.5 },
+      { id: 'c1', symbol: 'c₁', name: 'First triangle, side c', min: 0, max: 20000, step: 0.5 },
+      { id: 'c2', symbol: 'c₂', name: 'Second triangle, side c', min: 0, max: 20000, step: 0.5 },
     ],
     relations: [
       derive('k = a₂ ÷ a₁', 'k', ['a2', 'a1'], '{k} = {a2} ÷ {a1}', (v) => div(v.a2!, v.a1!)),

@@ -441,7 +441,7 @@ export const SCIENCE_7_LAYOUTS: LayoutDef[] = [
       {
         label: 'Leaf: light',
         lines: [
-          'Light is the energy. Without it a leaf makes no sugar, so plants must respire their stored sugar at night.',
+          'Light is the energy. Without it a leaf makes no sugar, so at night a plant lives on the sugar it stored.',
         ],
         leafCell: { process: 'photosynthesis', lit: 'light' },
       },
@@ -487,7 +487,7 @@ export const SCIENCE_7_LAYOUTS: LayoutDef[] = [
       {
         label: 'Both: oxygen',
         lines: [
-          'A sealed jar with a plant keeps its oxygen. A mouse alone in it would use the oxygen up.',
+          'A sealed jar with a plant in the light keeps its oxygen. A mouse alone in it would use the oxygen up.',
         ],
         leafCell: { process: 'both', lit: 'oxygen' },
       },

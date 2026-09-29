@@ -179,7 +179,7 @@ export const SCIENCE_8_LAYOUTS: LayoutDef[] = [
     title: 'Digital or analog signal?',
     use: 'Use this for “Why are digitized signals a more reliable way to store and send information?”',
     assumptions: [
-      'Both are waves; digital ones are read as only two levels.',
+      'Both are signals; a digital one is read as only two levels.',
       'Digital signals can be copied and sent many times without changing.',
     ],
     question: 'How is the information carried?',
@@ -286,7 +286,7 @@ export const SCIENCE_8_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'A magnetic field fills the space round a magnet. It pushes or pulls on iron and other magnets without touching them.',
       'Field lines leave the north pole and go round to the south pole. Where they crowd together the field is strongest.',
-      'A compass needle’s red end points along the field.',
+      'A compass needle’s north end points along the field.',
     ],
     figure: { kind: 'magnets' },
     scenes: [
@@ -425,7 +425,7 @@ export const SCIENCE_8_LAYOUTS: LayoutDef[] = [
       },
       {
         label: 'Group 1',
-        lines: ['Hydrogen and the alkali metals: soft, react fast with water.'],
+        lines: ['The alkali metals under hydrogen: soft metals that react fast with water.'],
         elements: { group: 1 },
       },
       {
@@ -591,7 +591,7 @@ export const SCIENCE_8_LAYOUTS: LayoutDef[] = [
     assumptions: [
       'The moon makes no light; we see the half the sun lights.',
       'As the moon goes round Earth in about a month, we see more or less of its lit half.',
-      'Waxing means growing, lit on the right; waning means shrinking, lit on the left.',
+      'Seen from the Northern Hemisphere, a waxing moon grows, lit on the right; a waning one shrinks, lit on the left.',
     ],
     figure: { kind: 'sky' },
     scenes: [

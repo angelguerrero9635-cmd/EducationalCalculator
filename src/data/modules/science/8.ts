@@ -742,7 +742,7 @@ export const SCIENCE_8_MODULES: ModuleDef[] = [
     [
       'The bob is let go from rest at height H.',
       'At the bottom all its energy is kinetic: it is fastest there. At each end it stops for an instant: all potential.',
-      'It rises back to the same height each swing, a little less each time as air takes some energy.',
+      'Without air it would rise to the same height each swing; air takes a little energy, so each swing is a little lower.',
     ],
     { m: [0.5, 10], top: [0.1, 2] },
     { m: 2, H: 0.5, h: 0.2 },

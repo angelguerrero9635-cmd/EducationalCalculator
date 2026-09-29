@@ -48,7 +48,8 @@ export const isElementary = (moduleId: string) => gradeBand(moduleId) === 'eleme
  * A named value the way the grade reads it: "Bigger amount: 11" (K–5) or "r = 3" (Grade 6
  * on). Used for the lists in the step-by-step and the labels under a picture.
  */
-const lowerName = (t: string) => `${t[0]!.toLowerCase()}${t.slice(1)}`;
+// An acronym keeps its capitals ("MAD of class A").
+const lowerName = (t: string) => (/^[A-Z]{2}/.test(t) ? t : `${t[0]!.toLowerCase()}${t.slice(1)}`);
 
 export function quantityLabel(band: GradeBand, name: string, symbol: string, value: string) {
   if (band === 'middle') return `${symbol} = ${value} (${lowerName(name)})`;
@@ -71,7 +72,7 @@ export function wordRule(
   words?: string,
 ): string {
   const byId = new Map(vars.map((v) => [v.id, v.name]));
-  const lower = (t: string) => `${t[0]!.toLowerCase()}${t.slice(1)}`;
+  const lower = lowerName;
   // Names read as words in a sentence: capital only at the start of the rule.
   const word = (t: string, at: number) => {
     const name = t.startsWith('{') ? byId.get(t.slice(1, -1)) : undefined;
@@ -79,6 +80,8 @@ export function wordRule(
   };
   return dedupe(
     (words ?? display)
+      // Letters written side by side multiply: "{k}{x}" reads "constant × input".
+      .replace(/\}(?=[{(])/g, '} × ')
       .replace(/(\{\w+\}|\d+)\/(\{\w+\}|\d+)/g, (m, top: string, bottom: string, at: number) =>
         top.startsWith('{') || bottom.startsWith('{')
           ? `${word(top, at)} over ${word(bottom, 1)}`

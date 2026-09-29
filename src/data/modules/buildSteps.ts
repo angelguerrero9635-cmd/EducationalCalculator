@@ -82,7 +82,8 @@ export interface Walkthrough {
 /** A line with brackets or words after "x =": the work lines say it better for K–2. */
 const wordy = (line: string) => /[(]|[a-z]{3,}/i.test(line.replace(/^\S+ = /, ''));
 
-const lowerFirst = (x: string) => `${x[0]!.toLowerCase()}${x.slice(1)}`;
+// An acronym keeps its capitals: "MAD of class A" stays, it never reads "mAD".
+const lowerFirst = (x: string) => (/^[A-Z]{2}/.test(x) ? x : `${x[0]!.toLowerCase()}${x.slice(1)}`);
 
 /**
  * Builds the step-by-step explanation of how `result` was reached from the entered values.
@@ -257,8 +258,8 @@ export function buildSteps(
       // Lowercase only the first letter, so names like “Pencil A” keep their capital.
       // “Find how many more (circles, squares)” would get two sets of brackets: use a colon.
       title: v.name.endsWith(')')
-        ? `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)}: ${v.symbol}`
-        : `Find ${v.name[0]!.toLowerCase()}${v.name.slice(1)} (${v.symbol})`,
+        ? `Find ${lowerFirst(v.name)}: ${v.symbol}`
+        : `Find ${lowerFirst(v.name)} (${v.symbol})`,
       formula: renderTemplate(relation.display, vars),
       sentence: agree(
         relation.sentence
@@ -286,7 +287,7 @@ export function buildSteps(
     // unless the formula already has the unknown alone on one side.
     const isolated =
       relation.display.startsWith(`{${t.id}} =`) || relation.display.endsWith(`= {${t.id}}`);
-    const letterSentence = base.sentence.replace('?', v.symbol);
+    const letterSentence = base.sentence.replaceAll('?', v.symbol);
     const answer = plain(base.result, t.id, true);
     if (!text || !t.exact) {
       return {

@@ -223,7 +223,10 @@ function signedSum(
         : {
             r: {
               expr: '{a} + {b}',
-              how: 'Start at the first number; a positive number jumps right, a negative one left.',
+              how:
+                representation.kind === 'zeroPairs'
+                  ? 'Pair each + counter with a − counter; each pair is 0. The counters left over are the sum.'
+                  : 'Start at the first number; a positive number jumps right, a negative one left.',
             },
             a: { expr: '{r} − {b}', how: 'Take the second number from the sum.' },
             b: { expr: '{r} − {a}', how: 'Take the first number from the sum.' },
@@ -850,9 +853,9 @@ export const MATH_7_MODULES: ModuleDef[] = [
     },
     false,
     [
-      'A yellow counter is +1 and a red counter is −1.',
+      'A + counter is +1 and a − counter is −1.',
       'A + and a − together make a zero pair: 0. The counters left over are the sum.',
-      'The sign of the sum is the color left over.',
+      'The sign of the sum is the sign of the counters left over.',
     ],
     { a: 3, b: -5, r: -2 },
     { kind: 'zeroPairs', first: 'a', second: 'b', result: 'r' },
@@ -1135,6 +1138,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
       {
         id: 'h = test',
         display: 'test {t} in {p}x + {q}, sign {s}, {r}: {h}',
+        words: '{t} put in for x: {h}',
         check: (v: Values) => `${holdsAt(v) ? 1 : 0} = ${v.h}`,
         vars: ['h', 't', 's', 'p', 'q', 'r'],
         residual: (v: Values) => ([1, 2, 3, 4].includes(v.s!) ? v.h! - (holdsAt(v) ? 1 : 0) : NaN),
@@ -1166,9 +1170,9 @@ export const MATH_7_MODULES: ModuleDef[] = [
             const pt = v.p! * v.t!;
             const lhs = pt + v.q!;
             return [
-              `${v.p} × ${v.t! < 0 ? `(${v.t})` : v.t} = ${pt}`,
-              `${pt < 0 ? `(${pt})` : pt} ${v.q! < 0 ? '−' : '+'} ${Math.abs(v.q!)} = ${lhs}`,
-              `${lhs} ${'<≤>≥'[v.s! - 1]} ${v.r} is ${holdsAt(v) ? 'true' : 'false'}`,
+              `${fmt(v.p!)} × ${v.t! < 0 ? `(${fmt(v.t!)})` : fmt(v.t!)} = ${fmt(pt)}`,
+              `${pt < 0 ? `(${fmt(pt)})` : fmt(pt)} ${v.q! < 0 ? '−' : '+'} ${fmt(Math.abs(v.q!))} = ${fmt(lhs)}`,
+              `${fmt(lhs)} ${'<≤>≥'[v.s! - 1]} ${fmt(v.r!)} is ${holdsAt(v) ? 'true' : 'false'}`,
             ];
           },
           written: false,
