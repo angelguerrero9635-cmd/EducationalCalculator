@@ -1302,10 +1302,11 @@ export function repIssues(
       const h = H ?? L;
       if (rep.solid === 'triangularPrism') {
         if (W === undefined || H === undefined || sl === undefined || L === undefined) break;
-        // The third side closes the triangle (within 2%, for a side rounded to a whole number).
-        const side = rep.triangle === 'isosceles' ? Math.hypot(W / 2, H) : Math.hypot(W, H);
-        if (Math.abs(side - sl) > 0.02 * side)
-          out.push(`triangle ${W} by ${H} has a side of ${side}, shows ${sl}`);
+        // The labelled sides close a triangle (the drawing follows the base and height, so a
+        // Grade 7 page need not type sides that fit the Pythagorean theorem exactly).
+        const closes =
+          rep.triangle === 'isosceles' ? sl > H && sl > W / 2 : sl > Math.max(W, H) && sl < W + H;
+        if (!closes) out.push(`sides ${W}, ${H} and ${sl} don't close the triangle`);
         const sides = rep.triangle === 'isosceles' ? W + 2 * sl : W + H + sl;
         const all = W * H + L * sides;
         if (T !== undefined && Math.abs(all - T) > 1e-6 * Math.max(1, T))

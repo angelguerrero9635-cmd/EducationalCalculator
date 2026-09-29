@@ -447,6 +447,16 @@ function derive(
   };
 }
 
+/** A value longer than another (strictly). */
+const longer = (big: string, small: string, display: string): Relation => ({
+  id: `${big} > ${small}`,
+  constraint: true,
+  display,
+  vars: [big, small],
+  residual: (v: Values) => (v[big]! > v[small]! ? 0 : 1),
+  solve: {},
+});
+
 /** A value no bigger than another. */
 const atMost = (small: string, big: string): Relation => ({
   id: `${small} ≤ ${big}`,
@@ -1982,12 +1992,15 @@ export const MATH_7_MODULES: ModuleDef[] = [
       worked('S', 'Surface area', 'cm²'),
     ],
     relations: [
+      longer('s', 'b', 'The slanted side {s} is longer than {b}'),
+      longer('s', 'h', 'The slanted side {s} is longer than {h}'),
       {
-        id: 'the sides make a right triangle',
+        // (not the Pythagorean theorem, which is Grade 8: any sides that close the triangle)
+        id: 's < b + h',
         constraint: true,
-        display: '{b}, {h} and {s} make a right triangle',
+        display: 'The slanted side {s} is shorter than {b} + {h}',
         vars: ['b', 'h', 's'],
-        residual: (v: Values) => (Math.abs(Math.hypot(v.b!, v.h!) - v.s!) <= 0.01 * v.s! ? 0 : 1),
+        residual: (v: Values) => (v.s! < v.b! + v.h! ? 0 : 1),
         solve: {},
       },
       derive('B = bh ÷ 2', 'B', ['b', 'h'], '{B} = {b} × {h} ÷ 2', (v) => (v.b! * v.h!) / 2),
@@ -2001,7 +2014,9 @@ export const MATH_7_MODULES: ModuleDef[] = [
       ),
     ],
     steps: {
-      'the sides make a right triangle': {},
+      's > b': {},
+      's > h': {},
+      's < b + h': {},
       'B = bh ÷ 2': {
         B: { expr: '{b} × {h} ÷ 2', how: 'The end is a right triangle: half of leg times leg.' },
       },
@@ -2021,6 +2036,74 @@ export const MATH_7_MODULES: ModuleDef[] = [
     representation: {
       kind: 'net',
       solid: 'triangularPrism',
+      width: 'b',
+      height: 'h',
+      slant: 's',
+      length: 'L',
+      total: 'S',
+    },
+  },
+  {
+    id: 'm.7.prisms~tent',
+    title: 'Tent-shaped prism',
+    use: 'Use this for “A tent is a prism: its end is a triangle with base 6 ft, height 4 ft and two 5 ft sides, and it is 8 ft long.”',
+    assumptions: [
+      'The two ends are the same triangle with two equal slanted sides; each rectangle is one side of the triangle by the length.',
+      'Volume = the triangle’s area × the length; the triangle’s area is base × height ÷ 2.',
+      'Surface area = two triangles + the length × the distance around the triangle.',
+    ],
+    variables: [
+      cmLength('b', 'Base of the triangle'),
+      cmLength('h', 'Height of the triangle'),
+      cmLength('s', 'Each slanted side'),
+      cmLength('L', 'Length'),
+      worked('B', 'Area of one end', 'cm²'),
+      worked('V', 'Volume', 'cm³'),
+      worked('S', 'Surface area', 'cm²'),
+    ],
+    relations: [
+      longer('s', 'h', 'Each slanted side {s} is longer than the height {h}'),
+      {
+        id: 's > b ÷ 2',
+        constraint: true,
+        display: 'Each slanted side {s} is longer than half the base {b}',
+        vars: ['s', 'b'],
+        residual: (v: Values) => (v.s! > v.b! / 2 ? 0 : 1),
+        solve: {},
+      },
+      derive('B = bh ÷ 2', 'B', ['b', 'h'], '{B} = {b} × {h} ÷ 2', (v) => (v.b! * v.h!) / 2),
+      derive('V = B × L', 'V', ['B', 'L'], '{V} = {B} × {L}', (v) => v.B! * v.L!),
+      derive(
+        'S = 2B + L(b + 2s)',
+        'S',
+        ['B', 'L', 'b', 's'],
+        '{S} = 2 × {B} + {L} × ({b} + 2 × {s})',
+        (v) => 2 * v.B! + v.L! * (v.b! + 2 * v.s!),
+      ),
+    ],
+    steps: {
+      's > h': {},
+      's > b ÷ 2': {},
+      'B = bh ÷ 2': {
+        B: { expr: '{b} × {h} ÷ 2', how: 'The end is a triangle: half of base times height.' },
+      },
+      'V = B × L': {
+        V: { expr: '{B} × {L}', how: 'Stack the end’s area along the length.' },
+      },
+      'S = 2B + L(b + 2s)': {
+        S: {
+          expr: '2 × {B} + {L} × ({b} + 2 × {s})',
+          how: 'Two triangles, and three rectangles: the floor and the two slanted sides.',
+          written: false,
+        },
+      },
+    },
+    example: { b: 6, h: 4, s: 5, L: 8, B: 12, V: 96, S: 152 },
+    startWith: ['b', 'h', 's', 'L'],
+    representation: {
+      kind: 'net',
+      solid: 'triangularPrism',
+      triangle: 'isosceles',
       width: 'b',
       height: 'h',
       slant: 's',
@@ -2703,20 +2786,20 @@ export const MATH_7_MODULES: ModuleDef[] = [
   {
     id: 'm.7.probability~tree',
     title: 'Tree diagram',
-    use: 'Use this for “A coin is flipped and a spinner with 3 sectors spun. How many outcomes are there, and what is the chance of heads and 2?”',
+    use: 'Use this for “A coin is flipped and a spinner with 3 sectors spun. How many outcomes are there, and what is the chance of heads (A) and 2?”',
     assumptions: [
-      'The coin lands heads or tails, equally likely; the spinner stops on each equal sector equally often.',
+      'Each stage has equally likely outcomes: a coin has 2 (heads A, tails B), a spinner with 3 sectors has 3.',
       'Each branch of the first stage splits into every outcome of the second: multiply.',
-      'For three stages, multiply again.',
+      'One path, like A then 2, is one of those equally likely outcomes. For three stages, multiply again.',
     ],
     variables: [
-      whole('a', 'a', 'Coin outcomes', 1, 6),
-      whole('b', 'b', 'Spinner outcomes', 2, 6),
+      whole('a', 'a', 'First-stage outcomes', 2, 6),
+      whole('b', 'b', 'Second-stage outcomes', 2, 6),
       { ...whole('n', 'n', 'Outcomes in all', 1, 36), derived: true },
       {
         id: 'P',
         symbol: 'P',
-        name: 'Chance of heads and 2',
+        name: 'Chance of one outcome',
         min: 0,
         max: 1,
         fraction: 36,
@@ -2729,10 +2812,16 @@ export const MATH_7_MODULES: ModuleDef[] = [
     ],
     steps: {
       'n = a × b': {
-        n: { expr: '{a} × {b}', how: 'Each coin outcome branches into every spinner outcome.' },
+        n: {
+          expr: '{a} × {b}',
+          how: 'Each first-stage outcome branches into every second-stage outcome.',
+        },
       },
       'P = 1 ÷ n': {
-        P: { expr: '1 ÷ {n}', how: 'Heads and 2 is one of the equally likely outcomes.' },
+        P: {
+          expr: '1 ÷ {n}',
+          how: 'One path, such as A then 2, is one of the equally likely outcomes.',
+        },
       },
     },
     example: { a: 2, b: 3, n: 6, P: 1 / 6 },
@@ -2743,10 +2832,10 @@ export const MATH_7_MODULES: ModuleDef[] = [
       second: 'b',
       total: 'n',
       names: [
-        ['H', 'T'],
+        ['A', 'B', 'C', 'D', 'E', 'F'],
         ['1', '2', '3', '4', '5', '6'],
       ],
-      stages: ['Coin', 'Spinner'],
+      stages: ['First stage', 'Second stage'],
       path: [0, 1],
       chance: 'P',
     },
