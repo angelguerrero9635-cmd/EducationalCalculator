@@ -327,10 +327,15 @@ export function Arrow({
   );
 }
 
-/** A number the way it is written in an equation: 2/3 as a fraction, others as decimals. */
+/**
+ * A number the way it is written in an equation: 2/3 as a fraction, others as decimals. A
+ * rate like 24.5 stays a decimal (49/2 reads as nothing a student typed).
+ */
 export function coef(x: number): string {
   const f = toFraction(x, 12);
-  if (f && f[1] !== 1) return `${f[0] < 0 ? '−' : ''}${Math.abs(f[0])}/${f[1]}`;
+  const cents = Math.abs(x * 100 - Math.round(x * 100)) < 1e-9;
+  if (f && f[1] !== 1 && !(Math.abs(f[0]) > 12 && cents))
+    return `${f[0] < 0 ? '−' : ''}${Math.abs(f[0])}/${f[1]}`;
   return formatNumber(x);
 }
 

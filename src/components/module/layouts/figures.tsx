@@ -66,7 +66,8 @@ function Star({ x, y, r, c }: { x: number; y: number; r: number; c: Palette }) {
     const rad = i % 2 === 0 ? r : r * 0.45;
     return `${x + rad * Math.cos(a)},${y + rad * Math.sin(a)}`;
   });
-  return <Path d={`M ${pts.join(' L ')} Z`} fill={c.chartHighlight} />;
+  // Pale like the moon: the highlight color would read as “this one”.
+  return <Path d={`M ${pts.join(' L ')} Z`} fill={c.moonLit} />;
 }
 
 const PHASES: MoonPhase[] = [

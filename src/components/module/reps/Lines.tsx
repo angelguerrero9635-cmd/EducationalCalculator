@@ -28,6 +28,9 @@ const riseRun = (m: number) => {
   return f ? { run: f[1], rise: f[0] } : { run: 1, rise: m };
 };
 
+/** A chip's width, as `Chip` draws it. */
+const chipWidth = (text: string, size: number = chart.small) => text.length * size * 0.58 + 6;
+
 /** "m × x + b" as a number sentence: "2 × 4 + 3 = 11", "−1 × 2 − 5 = −7". */
 const worked = (m: number, x: number, b: number) =>
   `${coef(m)} × ${x < 0 ? `(${coef(x)})` : coef(x)} ${b < 0 ? '−' : '+'} ${coef(Math.abs(b))} = ${coef(m * x + b)}`;
@@ -155,6 +158,29 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
           const y0 = x0 === undefined ? 0 : m.value * x0 + b.value;
           const up = rise >= 0;
           const bIn = b.value >= f.y[0] && b.value <= f.y[1] && f.x[0] <= 0;
+          // The point's label: left of it, else just right of the y-axis, else right of the
+          // point, whichever first keeps off the axis numbers and the other handles.
+          const ptLeft = (() => {
+            if (!pt) return 0;
+            const px = f.sx(pt.x.value);
+            const tw = chipWidth(pointText(pt.x.value, pt.y.value));
+            const top = f.sy(pt.y.value) + (m.value >= 0 ? -10 : 20) - chart.small;
+            const others: [number, number][] = [
+              [f.sx(0), f.sy(b.value)],
+              ...(x0 !== undefined ? [[f.sx(x0 + run), f.sy(y0 + rise)] as [number, number]] : []),
+            ];
+            const clear = (l: number) =>
+              (l > f.sx(0) + 2 || l + tw < f.sx(0) - 22) &&
+              others.every(
+                ([ox, oy]) =>
+                  Math.hypot(
+                    ox - Math.max(l, Math.min(l + tw, ox)),
+                    oy - Math.max(top, Math.min(top + chart.small + 4, oy)),
+                  ) > 12,
+              );
+            const tries = [px - 12 - tw, ...(pt.x.value > 0 ? [f.sx(0) + 4] : []), px + 12];
+            return tries.find(clear) ?? tries[0]!;
+          })();
           return (
             <>
               <Svg width={w} height={h}>
@@ -232,13 +258,11 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                       r={5}
                       fill={c.chartHighlight}
                     />
-                    {/* Up and left of a rising line, down and left of a falling one: the side
-                        the slope triangle never takes. */}
                     <Chip
-                      x={f.sx(pt.x.value) - 12}
+                      x={ptLeft + 3}
                       y={f.sy(pt.y.value) + (m.value >= 0 ? -10 : 20)}
                       text={pointText(pt.x.value, pt.y.value)}
-                      anchor="end"
+                      anchor="start"
                       w={w}
                       h={h}
                     />
@@ -448,6 +472,41 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
               gap = g;
             }
           });
+          // A line's name that would sit on the crossing or its label moves to the line's
+          // left end (inside the grid, above a rising line, below a falling one).
+          const crossBox =
+            cross && !far
+              ? (() => {
+                  const cx = f.sx(cross.x);
+                  const cy = f.sy(cross.y);
+                  const lx = cx + Math.cos(gap) * 34;
+                  const tw = chipWidth(pointText(cross.x, cross.y), chart.label);
+                  return {
+                    l: Math.min(cx - 10, lx - tw / 2),
+                    r: Math.max(cx + 10, lx + tw / 2),
+                    t: Math.min(cy - 10, cy + Math.sin(gap) * 22 - 10),
+                    b: Math.max(cy + 10, cy + Math.sin(gap) * 22 + 10),
+                  };
+                })()
+              : undefined;
+          tags.forEach((t, i) => {
+            const s = segs[i];
+            if (!t || !s || !crossBox) return;
+            const tw = chipWidth(names[i]!);
+            const hit =
+              t.x - tw < crossBox.r &&
+              t.x > crossBox.l &&
+              t.y - 12 < crossBox.b &&
+              t.y > crossBox.t;
+            if (!hit) return;
+            // A quarter of the way in from the left end, left of the line and on the side
+            // away from it (over a rising line, under a falling one): off the y-axis numbers.
+            const px = f.sx(s.a[0] + (s.b[0] - s.a[0]) / 4);
+            const py = f.sy(s.a[1] + (s.b[1] - s.a[1]) / 4);
+            const rising = lines[i]!.m.value >= 0;
+            tags[i] = { x: px - 8, y: py + (rising ? -8 : 16) };
+            busy.push([px - 8 - 30, py + (rising ? -13 : 11)]);
+          });
           const span = f.x[1] - f.x[0];
           const step = span <= 20 ? 1 : span / 20;
           const hxs = lines.map((l, i) => {
@@ -535,14 +594,17 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                       strokeWidth={chart.stroke}
                     />
                     <Circle cx={f.sx(cross.x)} cy={f.sy(cross.y)} r={3.5} fill={c.chartInk} />
-                    <Chip
-                      x={f.sx(cross.x) + Math.cos(gap) * 34}
-                      y={f.sy(cross.y) + Math.sin(gap) * 22 + 5}
-                      text={pointText(cross.x, cross.y)}
-                      w={w}
-                      h={h}
-                      size={chart.label}
-                    />
+                    {/* Two rates through the corner (0, 0): the axes already say 0. */}
+                    {cross.x === 0 && cross.y === 0 && f.x[0] === 0 && f.y[0] === 0 ? null : (
+                      <Chip
+                        x={f.sx(cross.x) + Math.cos(gap) * 34}
+                        y={f.sy(cross.y) + Math.sin(gap) * 22 + 5}
+                        text={pointText(cross.x, cross.y)}
+                        w={w}
+                        h={h}
+                        size={chart.label}
+                      />
+                    )}
                   </G>
                 ) : null}
               </Svg>

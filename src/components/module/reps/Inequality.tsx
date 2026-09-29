@@ -271,9 +271,13 @@ export function InequalityLine({ spec, calc }: { spec: Spec; calc: Calculator })
                     calc.set(
                       {
                         ...rep.pin(
-                          [spec.value, ineq.test, signVar].filter(
-                            (v): v is string => !!v && v !== id,
-                          ),
+                          [
+                            spec.value,
+                            ineq.test,
+                            signVar,
+                            // Moving the boundary of px + q ≤ r keeps p and q: r follows.
+                            ...(two && id === spec.value ? [two.times, two.plus] : []),
+                          ].filter((v): v is string => !!v && v !== id),
                         ),
                         [id]: rep.snapTo(id, (start.current + dx / perUnit) * rep.factor(id)),
                       },

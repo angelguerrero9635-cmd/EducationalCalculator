@@ -49,12 +49,23 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
     current,
   ].every((x) => Math.abs(x - Math.round(x)) < 1e-9);
   const money = (x: number) => (wholeDollars ? `$${formatNumber(x)}` : `$${x.toFixed(2)}`);
+  // Fractions where the inputs are fractions (2/3 cup, not 0.6667); the tick values are
+  // rounded to 4 places, so snap to the nearest fraction first.
+  const asTyped = (x: number, id: string) => {
+    const most = rep.variable(id).fraction;
+    const d = most
+      ? [...Array(most - 1).keys()]
+          .map((i) => i + 2)
+          .find((k) => Math.abs(x * k - Math.round(x * k)) < 1e-3)
+      : undefined;
+    return d ? formatNumber(Math.round(x * d) / d, { fraction: most }) : formatNumber(x);
+  };
   const bottomText = (x: number) =>
     !per && !rep.known(spec.bottom)
       ? '?'
       : spec.prefix === '$'
         ? money(x)
-        : formatNumber(Number(x.toFixed(4)));
+        : asTyped(Number(x.toFixed(4)), spec.bottom);
   const title = (id: string) => {
     const unit = rep.unit(id);
     return `${rep.variable(id).name}${unit && unit !== '$' ? ` (${unit})` : ''}`;
@@ -251,7 +262,7 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
       </Canvas>
       <Caption>
         {known
-          ? `${rep.named(spec.top)} on the top line sits over ${rep.value(spec.bottom)} on the bottom line: each 1 above is ${formatNumber(per)} below.`
+          ? `${rep.named(spec.top)} on the top line sits over ${rep.value(spec.bottom)} on the bottom line: each 1 above is ${asTyped(per, spec.per)} below.`
           : 'Type the bigger units and how many smaller units make one.'}
       </Caption>
       <Steppers
