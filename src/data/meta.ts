@@ -130,6 +130,7 @@ const PICTURE_NAMES: Record<string, string> = {
   termsChart: 'chart of a sequence’s terms and sums',
   unitCircle: 'unit circle with the angle and its point',
   algebraTiles: 'algebra tiles',
+  gel: 'gel electrophoresis or PCR copies',
   matrixGrid: 'matrices in brackets',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',

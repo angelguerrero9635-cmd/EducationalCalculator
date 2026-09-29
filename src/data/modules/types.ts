@@ -16,6 +16,7 @@ import type { Physics8Spec } from './typesPhysics8';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
+import type { HshSpec } from './typesHsh';
 import type { CardIcon } from './layouts/types';
 
 /**
@@ -1038,6 +1039,8 @@ export type Representation =
   | HsbSpec
   /** Grades 9–12 group D: unit circle, algebra tiles, vectors, … (specs in `typesHsd.ts`). */
   | HsdSpec
+  /** Grades 9–12 group H: biology, gel electrophoresis and PCR, … (specs in `typesHsh.ts`). */
+  | HshSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

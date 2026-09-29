@@ -570,12 +570,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['s.9.dna-protein-synthesis', 's.9.biotechnology'],
     'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein.',
   ),
-  ask(
-    'H37',
-    'gel',
-    'Gel electrophoresis: bands placed by fragment size, a ladder lane; PCR copies doubling each cycle',
-    ['s.9.biotechnology'],
-  ),
+  {
+    ...ask(
+      'H37',
+      'gel',
+      'Gel electrophoresis: bands placed by fragment size, a ladder lane; PCR copies doubling each cycle',
+      ['s.9.biotechnology'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-biotechnology-gel',
+      'g.s9-biotechnology-gel-map',
+      'g.s9-biotechnology-gel-small',
+      'g.s9-biotechnology-pcr',
+      'g.s9-biotechnology-pcr-cycles',
+    ],
+    notes:
+      'Drawn (group HH). Gel: { kind: "gel", lanes: [{ label, bands: [size ids or numbers in bp] }] (1–6 lanes, 1–6 bands), ladder?: sizes in bp from largest (default 10,000 … 100 bp) or false, ladderLabel?, keep?: ids pinned during a drag, fixed?: no handles }. The slab is painted (clear agarose on a tray, wells at the black − end, red + end); every band sits at a distance on a log scale of its size (checked in the harness: each × 10 the same step, smaller always farther); a typed band drags up or down. Example: { kind: "gel", lanes: [{ label: "Uncut", bands: ["L"] }, { label: "Cut", bands: ["a", "b"] }], keep: ["L"] } with L = a + b. PCR: { kind: "gel", pcr: { cycles: "n", start?: "n0", copies?: "N" } }: the three steps (95, 55, 72 °C), then each cycle’s double strands drawn while they fit (32), original strands dark and new ones in the highlight, and N = N₀ × 2ⁿ (checked).',
+  },
   ask(
     'H38',
     'alleleFrequencies',

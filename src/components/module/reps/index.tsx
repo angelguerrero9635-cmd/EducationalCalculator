@@ -135,6 +135,7 @@ import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
+import { Gel } from './Gel';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -181,6 +182,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
       return <AlgebraTiles spec={spec} calc={calc} />;
+    case 'gel':
+      return <Gel spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
