@@ -1959,6 +1959,92 @@ export const MATH_7_MODULES: ModuleDef[] = [
       area: 'B',
     },
   },
+  {
+    id: 'm.7.prisms~composite-base',
+    title: 'A base made of rectangles',
+    use: 'Use this for “The base is an L shape, 8 by 5 with a 3 by 3 corner cut out. The prism is 5 cm tall. Find its volume and surface area.”',
+    assumptions: [
+      'The base is a rectangle with a rectangle cut from one corner: an L.',
+      'Base area = the whole rectangle − the cut-out. Volume = base area × height.',
+      'Cutting a corner keeps the perimeter: the two new sides are as long as the two lost.',
+      'Surface area = 2 bases + perimeter × height, since the sides unroll to one rectangle.',
+    ],
+    variables: [
+      { ...cmLength('l', 'Length of the whole rectangle'), max: 20 },
+      { ...cmLength('w', 'Width of the whole rectangle'), max: 20 },
+      { ...cmLength('c', 'Length of the cut-out'), max: 20 },
+      { ...cmLength('d', 'Width of the cut-out'), max: 20 },
+      cmLength('h', 'Prism height'),
+      worked('B', 'Base area', 'cm²'),
+      worked('V', 'Volume', 'cm³'),
+      worked('S', 'Surface area', 'cm²'),
+    ],
+    relations: [
+      {
+        id: 'c < l',
+        constraint: true,
+        display: 'The cut-out’s length {c} is less than the whole length {l}',
+        vars: ['c', 'l'],
+        residual: (v: Values) => (v.c! < v.l! ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'd < w',
+        constraint: true,
+        display: 'The cut-out’s width {d} is less than the whole width {w}',
+        vars: ['d', 'w'],
+        residual: (v: Values) => (v.d! < v.w! ? 0 : 1),
+        solve: {},
+      },
+      derive(
+        'B = l × w − c × d',
+        'B',
+        ['l', 'w', 'c', 'd'],
+        '{B} = {l} × {w} − {c} × {d}',
+        (v) => v.l! * v.w! - v.c! * v.d!,
+      ),
+      derive('V = B × h', 'V', ['B', 'h'], '{V} = {B} × {h}', (v) => v.B! * v.h!),
+      derive(
+        'S = 2B + (2l + 2w) × h',
+        'S',
+        ['B', 'l', 'w', 'h'],
+        '{S} = 2 × {B} + (2 × {l} + 2 × {w}) × {h}',
+        (v) => 2 * v.B! + (2 * v.l! + 2 * v.w!) * v.h!,
+      ),
+    ],
+    steps: {
+      'c < l': {},
+      'd < w': {},
+      'B = l × w − c × d': {
+        B: {
+          expr: '{l} × {w} − {c} × {d}',
+          how: 'The whole rectangle, take away the corner cut out.',
+        },
+      },
+      'V = B × h': {
+        V: { expr: '{B} × {h}', how: 'Stack the base area up the prism’s height.' },
+      },
+      'S = 2B + (2l + 2w) × h': {
+        S: {
+          expr: '2 × {B} + (2 × {l} + 2 × {w}) × {h}',
+          how: 'Two L-shaped bases, and the sides: the perimeter times the height.',
+          work: (v: Values) => [
+            `Perimeter of the L = 2 × ${fmt(v.l!)} + 2 × ${fmt(v.w!)} = ${fmt(2 * v.l! + 2 * v.w!)} cm`,
+          ],
+        },
+      },
+    },
+    example: { l: 8, w: 5, c: 3, d: 3, h: 5, B: 31, V: 155, S: 192 },
+    startWith: ['l', 'w', 'c', 'd', 'h'],
+    pictureLabels: ['h', 'V', 'S'],
+    representation: {
+      kind: 'rectilinear',
+      left: { width: 'l', height: 'w' },
+      cut: { width: 'c', height: 'd' },
+      total: 'B',
+      extent: 8,
+    },
+  },
 
   // ── Random sampling (7.SP.1–4) ──
   {
