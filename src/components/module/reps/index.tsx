@@ -134,6 +134,7 @@ import { PascalTriangle } from './PascalTriangle';
 import { TermsChart } from './TermsChart';
 import { UnitCircle } from './UnitCircle';
 import { MatrixGrid } from './MatrixGrid';
+import { HsjView } from './hsjView';
 import { ConicGraph } from './ConicGraph';
 import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
@@ -175,6 +176,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <UnitCircle spec={spec} calc={calc} />;
     case 'matrixGrid':
       return <MatrixGrid spec={spec} calc={calc} />;
+    case 'gasPiston':
+      return <HsjView spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':

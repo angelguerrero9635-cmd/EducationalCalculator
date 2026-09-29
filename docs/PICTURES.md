@@ -86,6 +86,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths    | Grade 12 polar, parametric          |
 | `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes     | Grades 10–12 conics                 |
 | `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
+| `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale    | Grade 10 gas laws (H51)             |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

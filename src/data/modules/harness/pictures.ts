@@ -27,6 +27,7 @@ import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import { hsdIssues } from './picturesHsd';
+import { hsjIssues } from './picturesHsj';
 import {
   boxPlotIssues,
   dotPlotSdIssues,
@@ -2086,6 +2087,9 @@ export function repIssues(
     case 'conicGraph':
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)));
+      break;
+    case 'gasPiston':
+      out.push(...hsjIssues(rep, (id) => val(id)));
       break;
     case 'table':
       if ('twoWay' in rep) {

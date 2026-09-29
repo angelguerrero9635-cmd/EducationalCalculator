@@ -812,12 +812,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     'Grams ↔ moles ↔ particles ↔ liters of gas, each arrow with its factor, the current value lit',
     ['s.10.mole', 's.10.stoichiometry'],
   ),
-  ask(
-    'H51',
-    'gasPiston',
-    'Cylinder with a piston, particles moving by temperature, a pressure gauge and a volume scale',
-    ['s.10.gas-laws'],
-  ),
+  {
+    ...ask(
+      'H51',
+      'gasPiston',
+      'Cylinder with a piston, particles moving by temperature, a pressure gauge and a volume scale',
+      ['s.10.gas-laws'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-gas-laws-boyle',
+      'g.s10-gas-laws-charles',
+      'g.s10-gas-laws-gay-lussac',
+      'g.s10-gas-laws-combined',
+      'g.s10-gas-laws-ideal',
+      'g.s10-gas-laws-ideal-hot',
+    ],
+    notes:
+      "Drawn: kind gasPiston (typesHsj.ts). A glass cylinder and a metal piston whose height is the volume on the scale up the glass, a gauge on a pipe for the pressure, a thermometer in kelvins, and the gas as particles with speed trails ∝ √T (the caption compares the speeds). Fields: law ('boyle' | 'charles' | 'gayLussac' | 'combined' | 'ideal'); the gas now as pressure, volume, temperature (numbers or variables); before { pressure?, volume?, temperature? } for a two-state law, drawn beside it (a held value is left out of both and named “T₁ held”; 'gayLussac' pins the piston); moles (ideal: one particle per 0.1, 0.2, 0.5 … mol, key in the caption; two-state pages draw the same 20); R (default 0.0821, checked); keep; fixed. Drag the piston of the gas now: its volume changes and the law's other value moves. Examples: { kind: 'gasPiston', law: 'boyle', before: { pressure: 'P1', volume: 'V1' }, pressure: 'P2', volume: 'V2', keep: ['P1', 'V1'] }; { kind: 'gasPiston', law: 'ideal', pressure: 'P', volume: 'V', temperature: 'T', moles: 'n', keep: ['n', 'T'] }.",
+  },
   ask(
     'H52',
     'beaker',
