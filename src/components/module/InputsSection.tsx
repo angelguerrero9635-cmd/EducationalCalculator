@@ -20,7 +20,7 @@ import {
   type EquationPart,
   type Slot,
 } from './equationTemplate';
-import { Fenced } from './EquationMarks';
+import { Fenced, Radical } from './EquationMarks';
 import type { Calculator } from './useCalculator';
 
 /**
@@ -387,6 +387,11 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
         )}
         <View style={styles.eqExponent}>{slotView(p.exponent, `e${i}`, true)}</View>
       </View>
+    ) : p.kind === 'root' ? (
+      // √{n}, ∛{n}, √({a}x + {b}): the bar over the box or the group.
+      <Radical key={i} index={p.index}>
+        {'parts' in p.body ? row(p.body.parts, `r${i}`, small) : slotView(p.body, `r${i}`, small)}
+      </Radical>
     ) : (
       <View key={i} style={styles.eqMixed}>
         {p.whole ? box(p.whole, `w${i}`, small, false) : null}
@@ -470,7 +475,9 @@ function columnsOf(parts: EquationPart[]): number {
           ? (p.whole ? 1 : 0) + Math.max(slot(p.top), slot(p.bottom))
           : p.kind === 'power'
             ? slot(p.base)
-            : 1),
+            : p.kind === 'root'
+              ? slot(p.body)
+              : 1),
     0,
   );
 }
@@ -482,7 +489,7 @@ function clusters(group: { p: EquationPart; i: number }[]) {
     const prev = group[k - 1]?.p;
     const touches =
       prev &&
-      (((item.p.kind === 'text' || item.p.kind === 'power') && item.p.tightBefore) ||
+      ((item.p.kind !== 'box' && item.p.kind !== 'fraction' && item.p.tightBefore) ||
         (prev.kind === 'text' && prev.tightAfter));
     if (touches) out[out.length - 1]!.push(item);
     else out.push([item]);

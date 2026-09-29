@@ -629,12 +629,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Also lets m.8.exponent-rules~power-of-power take its equation: `({b}^{m})^{n} = {b}^{k} = {P}`. Template syntax: a bracketed group followed by ^ is the base, its brackets drawn, written against the box before it: `{A} = {P}(1 + {r})^{t}`, `({a} + {b}i)^2 = {p} + {q}i`, `({s})^2 + ({c})^2 = 1`, `y = {a}({b})^x`, `{N} = {N0}(1/2)^{{t}/{T}}` (brackets as tall as a fraction inside). Brackets with no ^ after them stay text.',
   },
-  ask('H83', 'equationInput', 'Radicals with a bar over the box or group, and cube roots', [
-    'm.9.radicals',
-    'm.11.radical-functions',
-    'm.10.special-right-triangles',
-    'm.12.confidence-intervals',
-  ]),
+  {
+    ...ask('H83', 'equationInput', 'Radicals with a bar over the box or group, and cube roots', [
+      'm.9.radicals',
+      'm.11.radical-functions',
+      'm.10.special-right-triangles',
+      'm.12.confidence-intervals',
+    ]),
+    status: 'drawn',
+    gallery: [
+      'g.m9-radicals-simplify',
+      'g.m11-radical-functions-equation',
+      'g.m12-confidence-intervals-margin',
+      'g.m10-special-right-triangles-45',
+      'g.m9-radicals-cube-root',
+    ],
+    notes:
+      'Template syntax: √ (∛ for a cube root, ∜ a fourth) before a box, a number, a group in braces or a bracketed group puts the bar over it, the brackets not drawn: `√{n} = {k}√{r}`, `√({a}x + {b}) = {c}`, `{c} = {s}√2`, `∛{n} = {k}`; a radical can be a fraction’s top or bottom: `{E} = {z} × {s}/√{n}`. Written against a box it touches it ({k}√{r}). The step harness reads “largest square factor of 72”.',
+  },
   ask(
     'H84',
     'equationInput',

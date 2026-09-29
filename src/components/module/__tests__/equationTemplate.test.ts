@@ -195,6 +195,39 @@ describe('H82: an exponent on a bracket', () => {
   });
 });
 
+describe('H83: radicals', () => {
+  const root = (body: object, index?: string, tight = false): EquationPart =>
+    ({
+      kind: 'root',
+      ...(index ? { index } : {}),
+      body,
+      ...(tight ? { tightBefore: true } : {}),
+    }) as EquationPart;
+
+  it('puts the bar over a box, a number or a group, brackets dropped', () => {
+    expect(equationParts('√{n} = {k}√{r}')).toEqual([
+      root({ id: 'n' }),
+      text('='),
+      box('k'),
+      root({ id: 'r' }, undefined, true),
+    ]);
+    expect(equationParts('{c} = {s}√2')[3]).toEqual(root({ text: '2' }, undefined, true));
+    expect(equationParts('√({a}x + {b}) = {c}')[0]).toEqual(
+      root({ parts: [box('a'), text('x', { before: true }), text('+'), box('b')] }),
+    );
+    expect(equationParts('∛{n} = {k}')[0]).toEqual(root({ id: 'n' }, '3'));
+  });
+
+  it('reads a radical as a fraction’s bottom', () => {
+    expect(equationParts('{E} = {z} × {s}/√{n}')[4]).toEqual({
+      kind: 'fraction',
+      top: { id: 's' },
+      bottom: { parts: [root({ id: 'n' })] },
+    });
+    expect(equationIds('{x} ± {z} × {s}/√{n}')).toEqual(['x', 'z', 's', 'n']);
+  });
+});
+
 describe('every page’s equation', () => {
   it('lists each box in its template', () => {
     for (const m of TESTED_MODULES) {

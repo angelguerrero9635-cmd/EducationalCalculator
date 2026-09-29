@@ -642,5 +642,242 @@ const H82: ModuleDef[] = [
   ),
 ];
 
-export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82];
+/** The largest perfect square dividing a whole number n (36 for 72). */
+const largestSquare = (n: number) => {
+  let best = 1;
+  for (let k = 1; k * k <= n; k++) if (n % (k * k) === 0) best = k * k;
+  return best;
+};
+
+// H83: radicals, the bar over the box or the group; cube roots.
+const H83: ModuleDef[] = [
+  {
+    id: 'g.m9-radicals-simplify',
+    title: 'Simplify a square root',
+    use: 'Use this for “Simplify √72.”',
+    assumptions: [
+      '√(a × b) = √a × √b for numbers that are not negative.',
+      'Take out the largest perfect square that divides the number: √72 = √36 × √2 = 6√2.',
+      'What is left under the root has no square factor but 1.',
+    ],
+    variables: [
+      { ...value('n', 'Number under the root', 1, 1000), integer: true },
+      { ...value('k', 'Number in front', 1, 40), integer: true, derived: true },
+      { ...value('r', 'Number left under the root', 1, 1000), integer: true, derived: true },
+      { ...value('q', 'Largest square factor', 1, 1000), integer: true, derived: true },
+    ],
+    relations: [
+      {
+        id: 'q = largest square factor of n',
+        display: '{q} = largest square factor of {n}',
+        vars: ['q', 'n'],
+        residual: (v: Values) => v.q! - largestSquare(v.n!),
+        solve: { q: (v: Values) => largestSquare(v.n!), n: () => undefined },
+      },
+      {
+        id: 'k = √q',
+        display: '{k} = √{q}',
+        vars: ['k', 'q'],
+        residual: (v: Values) => v.k! ** 2 - v.q!,
+        solve: { k: (v: Values) => Math.sqrt(v.q!), q: (v: Values) => v.k! ** 2 },
+      },
+      {
+        id: 'n = q × r',
+        display: '{n} = {q} × {r}',
+        vars: ['n', 'q', 'r'],
+        residual: (v: Values) => v.n! - v.q! * v.r!,
+        solve: {
+          n: (v: Values) => v.q! * v.r!,
+          r: (v: Values) => div(v.n!, v.q!),
+          q: (v: Values) => div(v.n!, v.r!),
+        },
+      },
+    ],
+    steps: {
+      'q = largest square factor of n': {
+        q: {
+          expr: 'largest square factor of {n}',
+          how: 'Find the largest perfect square that divides the number.',
+        },
+      },
+      'k = √q': {
+        k: { expr: '√{q}', how: 'Its square root comes out in front of the root.' },
+        q: { expr: '{k}^2', how: 'The number in front came out of its square.' },
+      },
+      'n = q × r': {
+        r: { expr: '{n} ÷ {q}', how: 'What is left under the root: divide by that square.' },
+        n: { expr: '{q} × {r}', how: 'Put the square back under the root: multiply.' },
+        q: { expr: '{n} ÷ {r}', how: 'Divide by what is left under the root.' },
+      },
+    },
+    example: { n: 72, k: 6, r: 2, q: 36 },
+    startWith: ['n'],
+    equation: '√{n} = {k}√{r}',
+    representation: { kind: 'factorTree', value: 'n' },
+  },
+  {
+    id: 'g.m11-radical-functions-equation',
+    title: 'Solve a radical equation',
+    use: 'Use this for “Solve √(2x + 3) = 5.”',
+    assumptions: [
+      'Square both sides to undo the square root: 2x + 3 = 25.',
+      'A square root is never negative, so the right side must be 0 or more.',
+      'Check the answer in the first equation: squaring can add a false one.',
+    ],
+    variables: [
+      value('a', 'a', -100, 100),
+      value('b', 'b', -1000, 1000),
+      value('c', 'c', 0, 1000),
+      { ...value('x', 'x', -1e6, 1e6), derived: true },
+    ],
+    relations: [
+      {
+        id: 'a × x + b = c²',
+        display: '{a} × {x} + {b} = {c}^2',
+        vars: ['a', 'x', 'b', 'c'],
+        residual: (v: Values) => v.a! * v.x! + v.b! - v.c! ** 2,
+        solve: {
+          x: (v: Values) => (v.a ? exact((v.c! ** 2 - v.b!) / v.a) : undefined),
+          b: (v: Values) => exact(v.c! ** 2 - v.a! * v.x!),
+          a: (v: Values) => (v.x ? exact((v.c! ** 2 - v.b!) / v.x) : undefined),
+          c: (v: Values) => {
+            const s = v.a! * v.x! + v.b!;
+            return s < 0 ? undefined : exact(Math.sqrt(s));
+          },
+        },
+      },
+    ],
+    steps: {
+      'a × x + b = c²': {
+        x: {
+          expr: '({c}^2 − {b}) ÷ {a}',
+          how: 'Square both sides, take b from both sides, then divide by a.',
+        },
+        b: { expr: '{c}^2 − {a} × {x}', how: 'Square both sides, then take ax away.' },
+        a: { expr: '({c}^2 − {b}) ÷ {x}', how: 'Square both sides, take b away, divide by x.' },
+        c: { expr: '√({a} × {x} + {b})', how: 'Put x in and take the square root.' },
+      },
+    },
+    example: { a: 2, b: 3, c: 5, x: 11 },
+    startWith: ['a', 'b', 'c'],
+    equation: '√({a}x + {b}) = {c}',
+    representation: {
+      kind: 'plot',
+      x: { var: 'x', min: -2, max: 20, label: 'x' },
+      y: { var: 'c', min: 0, max: 8, label: 'y' },
+      params: ['a', 'b'],
+      autoRange: true,
+    },
+  },
+  {
+    id: 'g.m12-confidence-intervals-margin',
+    title: 'Margin of error',
+    use: 'Use this for “A sample of 100 has standard deviation 15. Find the 95% margin of error (z = 1.96).”',
+    assumptions: [
+      'The margin of error is z standard errors; a standard error is σ/√n.',
+      'Four times the sample size halves the margin.',
+    ],
+    variables: [
+      value('E', 'Margin of error', 0.000001, 1e6),
+      value('z', 'z for the confidence level', 0.1, 4),
+      value('s', 'Standard deviation σ', 0.0001, 1e6),
+      { ...value('n', 'Sample size', 1, 1e6), integer: true },
+    ],
+    relations: [
+      {
+        id: 'E = z × σ ÷ √n',
+        display: '{E} = {z} × {s} ÷ √{n}',
+        vars: ['E', 'z', 's', 'n'],
+        residual: (v: Values) => v.E! - (v.z! * v.s!) / Math.sqrt(v.n!),
+        solve: {
+          E: (v: Values) => exact((v.z! * v.s!) / Math.sqrt(v.n!)),
+          z: (v: Values) => exact((v.E! * Math.sqrt(v.n!)) / v.s!),
+          s: (v: Values) => exact((v.E! * Math.sqrt(v.n!)) / v.z!),
+          n: (v: Values) => exact(((v.z! * v.s!) / v.E!) ** 2),
+        },
+      },
+    ],
+    steps: {
+      'E = z × σ ÷ √n': {
+        E: { expr: '{z} × {s} ÷ √{n}', how: 'Divide σ by √n for the standard error; times z.' },
+        z: { expr: '{E} × √{n} ÷ {s}', how: 'Divide the margin by the standard error.' },
+        s: { expr: '{E} × √{n} ÷ {z}', how: 'Multiply the margin by √n, then divide by z.' },
+        n: { expr: '({z} × {s} ÷ {E})^2', how: 'Solve for √n, then square it.' },
+      },
+    },
+    example: { E: 2.94, z: 1.96, s: 15, n: 100 },
+    startWith: ['z', 's', 'n'],
+    equation: '{E} = {z} × {s}/√{n}',
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'E',
+      params: ['z', 's'],
+      rows: [25, 100, 400, 1600],
+    },
+  },
+  {
+    id: 'g.m10-special-right-triangles-45',
+    title: '45°-45°-90° triangle',
+    use: 'Use this for “A 45°-45°-90° triangle has legs of 7. How long is the hypotenuse?”',
+    assumptions: [
+      'The two legs are equal, so c² = s² + s² = 2s².',
+      'So the hypotenuse is √2 times a leg: c = s√2.',
+    ],
+    variables: [value('s', 'Leg', 0.01, 1000), value('c', 'Hypotenuse', 0.01, 1500)],
+    relations: [
+      {
+        id: 'c = s × √2',
+        display: '{c} = {s} × √2',
+        vars: ['c', 's'],
+        residual: (v: Values) => v.c! - v.s! * Math.SQRT2,
+        solve: {
+          c: (v: Values) => exact(v.s! * Math.SQRT2),
+          s: (v: Values) => exact(v.c! / Math.SQRT2),
+        },
+      },
+    ],
+    steps: {
+      'c = s × √2': {
+        c: { expr: '{s} × √2', how: 'The hypotenuse is √2 times a leg.' },
+        s: { expr: '{c} ÷ √2', how: 'Divide the hypotenuse by √2.' },
+      },
+    },
+    example: { s: 7, c: 9.89949493661 },
+    startWith: ['s'],
+    equation: '{c} = {s}√2',
+    representation: { kind: 'rightTriangle', a: 's', b: 's', c: 'c', extent: 12 },
+  },
+  {
+    id: 'g.m9-radicals-cube-root',
+    title: 'Cube root',
+    use: 'Use this for “Find ∛343.”',
+    assumptions: [
+      'The cube root of n is the number that, used as a factor three times, makes n.',
+      'Cubing undoes it: 7 × 7 × 7 = 343.',
+    ],
+    variables: [value('n', 'Number', 0, 8000), value('k', 'Cube root', 0, 20)],
+    relations: [
+      {
+        id: 'k = ∛n',
+        display: '{k} = ∛{n}',
+        vars: ['k', 'n'],
+        residual: (v: Values) => v.k! ** 3 - v.n!,
+        solve: { k: (v: Values) => exact(Math.cbrt(v.n!)), n: (v: Values) => exact(v.k! ** 3) },
+      },
+    ],
+    steps: {
+      'k = ∛n': {
+        k: { expr: '∛{n}', how: 'Find the number that, used three times as a factor, makes n.' },
+        n: { expr: '{k}^3', how: 'Use the root as a factor three times.' },
+      },
+    },
+    example: { n: 343, k: 7 },
+    startWith: ['n'],
+    equation: '∛{n} = {k}',
+    representation: { kind: 'rootSquare', area: 'n', side: 'k', solid: 'cube' },
+  },
+];
+
+export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83];
 export const HSM_GALLERY_LAYOUTS: LayoutDef[] = [];

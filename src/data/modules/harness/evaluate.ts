@@ -65,6 +65,16 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`jumps to (${NUM})`), (n) => n / 10],
   // Grade 4 (the primes with repeats come before the factor count, which would match first)
   [new RegExp(`prime factors of (${NUM})`), (n) => primeFactorCount(n)],
+  // Grade 9 simplifying radicals: the largest perfect square that divides 72 is 36.
+  [
+    new RegExp(`largest square factor of (${NUM})`),
+    (n) =>
+      Math.max(
+        ...Array.from({ length: Math.floor(Math.sqrt(n)) }, (_, k) => (k + 1) ** 2).filter(
+          (q) => n % q === 0,
+        ),
+      ),
+  ],
   [
     new RegExp(`factors of (${NUM})`),
     (n) => Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0).length,

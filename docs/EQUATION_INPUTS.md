@@ -39,6 +39,7 @@ Keep rows for:
 | `{b}^{n}`, `10^{n}`, `{a}^2`           | A power (the base or exponent can be a fixed number).    |
 | `{p}x + {q}`, `{a}°`, `{p}%`, `f({x})` | Text written against a box touches it: no space between. |
 | `{{x} − {m}}/{s}`, `{r}^{{n} − 1}`     | A group in braces: an expression slot (boxes, text).     |
+| `√{n}`, `∛{n}`, `√({a}x + {b})`        | A radical, its bar over the box or the group.            |
 | A line break (`\n`)                    | A second equation under the first (a system).            |
 
 Line breaks and brackets:
@@ -115,14 +116,14 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.9.function-notation                   | `f({x}) = {y}`                                                    | today                                                    |
 | m.9.linear-modeling                     | `y = {m}x + {b}`; `y − {y1} = {m}(x − {x1})`; `{a}x + {b}y = {c}` | today                                                    |
 | m.9.inequality-systems                  | two lines, `{a}x + {b}y = {c}` and `{d}x + {e}y = {f}`            | today; inequalities need the sign box                    |
-| m.9.radicals                            | `√{n} = {k}√{r}`; `{b}^{p/q}`                                     | **must**: radical bar; fraction exponent                 |
+| m.9.radicals                            | `√{n} = {k}√{r}`; `{b}^{{p}/{q}}`                                 | today (H83: radical bar; H81: fraction exponent)         |
 | m.9.exponential-functions               | `y = {a}({b})^x`; `{A} = {P}(1 + {r})^{t}`                        | today (H82: an exponent on a bracket)                    |
 | m.9.sequences                           | `aₙ = {a1} + ({n} − 1){d}`; `aₙ = {a1} × {r}^{{n} − 1} = {an}`    | today; the geometric term uses H81’s expression exponent |
 | m.9.polynomial-operations               | `({a}x + {b})({c}x + {d}) = {p}x² + {q}x + {r}`                   | today                                                    |
 | m.9.factoring                           | `x² + {b}x + {c} = (x + {p})(x + {q})`                            | today                                                    |
 | m.9.quadratic-functions                 | `y = {a}(x − {h})² + {k}`; `y = {a}x² + {b}x + {c}`               | today                                                    |
 | m.9.quadratic-formula                   | `{a}x² + {b}x + {c} = 0`; the two roots as rows                   | today                                                    |
-| m.10.special-right-triangles            | `{a}^2 + {b}^2 = {c}^2` (fixed unit); `{s}√2`                     | radical bar                                              |
+| m.10.special-right-triangles            | `{a}^2 + {b}^2 = {c}^2` (fixed unit); `{c} = {s}√2`               | today (H83: radical bar)                                 |
 | m.10.right-triangle-trig                | `sin({A}°) = {o}/{h}` (cos, tan the same)                         | today                                                    |
 | m.10.law-sines-cosines                  | `{a}/{sin({A}°)} = {b}/{sin({B}°)}`                               | today (H81: a group as a fraction slot)                  |
 | m.10.circle-equations                   | `(x − {h})² + (y − {k})² = {r}^2`                                 | today                                                    |
@@ -132,7 +133,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.11.complex-numbers                    | `({a} + {b}i)({c} + {d}i) = {p} + {q}i`                           | today                                                    |
 | m.11.polynomial-functions               | `P({r}) = {R}` (remainder theorem)                                | today                                                    |
 | m.11.binomial-theorem                   | `({a}x + {b})^{n}`; term: `C({n}, {k})`                           | today (H82: an exponent on a bracket)                    |
-| m.11.radical-functions                  | `√({a}x + {b}) = {c}`                                             | **must**: radical bar over a group                       |
+| m.11.radical-functions                  | `√({a}x + {b}) = {c}`                                             | today (H83: radical bar over a group)                    |
 | m.11.logarithms                         | `log_{b}({x}) = {y}` beside `{b}^{y} = {x}`                       | **must**: subscript box                                  |
 | m.11.exp-log-equations                  | `{a} × {b}^x = {c}`; `{A} = {P}e^{{r}{t}}`                        | today (H81: letter or group exponent)                    |
 | m.11.unit-circle                        | `{d}° = {p}/{q}π`                                                 | today                                                    |
@@ -143,7 +144,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.12.polar                              | `{r}(cos {t}° + i sin {t}°) = {a} + {b}i`                         | today                                                    |
 | m.12.matrices                           | 2 × 2 and 3 × 3 grids; a three-variable system on three lines     | **must**: matrix grid                                    |
 | m.12.conics                             | `{(x − {h})²}/{a}^2 + {(y − {k})²}/{b}^2 = 1`                     | today (H81: a group as a fraction slot)                  |
-| m.12.confidence-intervals               | `{x} ± {z} × {s}/√{n}`                                            | radical bar, expression slot                             |
+| m.12.confidence-intervals               | `{x} ± {z} × {s}/√{n}`                                            | today (H83: a radical in a fraction slot)                |
 | s.10.reaction-types, s.10.stoichiometry | `{a} H₂ + {b} O₂ → {c} H₂O`                                       | today (a coefficient of 1 shows "1")                     |
 | s.10.mole                               | `{m} g ÷ {M} g/mol = {n} mol`                                     | today (fixed units)                                      |
 | s.10.molarity                           | `{c} M = {n} mol ÷ {V} L`                                         | today (fixed units)                                      |

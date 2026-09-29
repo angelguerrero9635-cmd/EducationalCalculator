@@ -20,6 +20,8 @@ export type EquationPart =
   | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
   /** `tightBefore`: a bracket written against the piece before it, {a}(1 + {r})^{t}. */
   | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
+  /** A radical, its bar over `body`; `index` 3 for a cube root. */
+  | { kind: 'root'; index?: string; body: Slot; tightBefore?: boolean }
   | { kind: 'text'; text: string; tightBefore?: boolean; tightAfter?: boolean };
 
 const BOX = /^\w+$/;
@@ -47,11 +49,26 @@ function closeParen(s: string, i: number): number | undefined {
 
 type Read = { slot: Slot; end: number };
 
+const ROOTS: Record<string, string | undefined> = { '√': undefined, '∛': '3', '∜': '4' };
+
 /**
  * A slot starting at `i`: a box `{a}`, a group `{…}` (anything else in braces: an expression),
- * or bare, a number (`12`) or, where `letters`, a word or signed number (`x`, `−1`).
+ * a radical (`√{n}`, `∛{n}`, `√({a}x + {b})`, `√2`), or bare, a number (`12`) or, where
+ * `letters`, a word or signed number (`x`, `−1`).
  */
 function readSlot(s: string, i: number, letters: boolean): Read | undefined {
+  if (s[i]! in ROOTS) {
+    // The bar covers a box, a group in braces or brackets (the brackets not drawn), or a number.
+    const close = s[i + 1] === '(' ? closeParen(s, i + 1) : undefined;
+    const body: Read | undefined =
+      close !== undefined
+        ? { slot: { parts: equationParts(s.slice(i + 2, close - 1)) }, end: close }
+        : readSlot(s, i + 1, true);
+    if (!body) return undefined;
+    const index = ROOTS[s[i]!];
+    const root: EquationPart = { kind: 'root', ...(index ? { index } : {}), body: body.slot };
+    return { slot: { parts: [root] }, end: body.end };
+  }
   if (s[i] === '{') {
     const end = closeBrace(s, i);
     const inner = s.slice(i + 1, end - 1);
@@ -69,7 +86,7 @@ function readSlot(s: string, i: number, letters: boolean): Read | undefined {
  */
 function readPiece(s: string, i: number): { parts: EquationPart[]; end: number } | undefined {
   let first: Read | undefined;
-  if (s[i] === '{') first = readSlot(s, i, false);
+  if (s[i] === '{' || s[i]! in ROOTS) first = readSlot(s, i, false);
   else if (s[i] === '(') {
     // A bracketed group raised to a power, the brackets drawn: (1 + {r})^{t}, ({b}^{m})^{n}.
     const end = closeParen(s, i);
@@ -150,8 +167,10 @@ export function equationParts(template: string): EquationPart[] {
       parts.push({ ...part, whole: prev.id });
     } else {
       pushText(between, parts.length > 0, true);
+      // A bracket or a radical written against the piece before it: {P}(1 + {r})^{t}, {k}√{r}.
       const bracket =
-        part?.kind === 'power' && 'parts' in part.base && s0(part.base.parts)?.startsWith('(');
+        part?.kind === 'root' ||
+        (part?.kind === 'power' && 'parts' in part.base && s0(part.base.parts)?.startsWith('('));
       parts.push(
         ...(bracket && parts.length > 0 && !/\s$/.test(between)
           ? [{ ...part, tightBefore: true }]
@@ -179,6 +198,8 @@ function partIds(p: EquationPart): string[] {
       return [...(p.whole ? [p.whole] : []), ...slotIds(p.top), ...slotIds(p.bottom)];
     case 'power':
       return [...slotIds(p.base), ...slotIds(p.exponent)];
+    case 'root':
+      return slotIds(p.body);
     case 'text':
       return [];
   }
