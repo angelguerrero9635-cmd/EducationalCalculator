@@ -1,973 +1,935 @@
 {
- "id": "openstax-physics-hs",
- "curriculum": "Physics (high school)",
- "publisher": "OpenStax (Rice University)",
- "edition": "1st edition (published 2020-03-26; web version revised 2026-07-08)",
- "subject": "science",
- "grades": [
-  "11"
- ],
- "course": "Physics",
- "content": "full",
- "terms": {
-  "unit": "Chapter",
-  "lesson": "Section"
- },
- "license": {
-  "name": "CC BY 4.0",
-  "url": "https://creativecommons.org/licenses/by/4.0/",
-  "attribution": "Physics by Paul Peter Urone and Roger Hinrichs, OpenStax (Rice University). Licensed under a Creative Commons Attribution 4.0 International License. Access for free at https://openstax.org/books/physics/pages/1-introduction"
- },
- "sourceUrl": "https://openstax.org/books/physics/pages/1-introduction",
- "retrieved": "2026-09-28",
- "bookVersion": {
-  "archiveVersion": "20260604.144757",
-  "contentVersion": "dfdfd7a",
-  "revised": "2026-07-08T19:09:39+00:00"
- },
- "notes": "CC BY 4.0: full table of contents and replicated practice (each section's Check Your Understanding and Practice Problems, and the chapter Test Prep Multiple Choice), capped at about 15 per chapter; the answers are not published on the web pages. Chapters are the \"units\"; sections are the \"lessons\".",
- "books": [
-  {
-   "grade": "11",
-   "url": "https://openstax.org/books/physics/pages/1-introduction",
-   "units": [
+  "id": "openstax-physics-hs",
+  "curriculum": "Physics (high school)",
+  "publisher": "OpenStax (Rice University)",
+  "edition": "1st edition (published 2020-03-26; web version revised 2026-07-08)",
+  "subject": "science",
+  "grades": ["11"],
+  "course": "Physics",
+  "content": "full",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Physics by Paul Peter Urone and Roger Hinrichs, OpenStax (Rice University). Licensed under a Creative Commons Attribution 4.0 International License. Access for free at https://openstax.org/books/physics/pages/1-introduction"
+  },
+  "sourceUrl": "https://openstax.org/books/physics/pages/1-introduction",
+  "retrieved": "2026-09-28",
+  "bookVersion": {
+    "archiveVersion": "20260604.144757",
+    "contentVersion": "dfdfd7a",
+    "revised": "2026-07-08T19:09:39+00:00"
+  },
+  "notes": "CC BY 4.0: full table of contents and replicated practice (each section's Check Your Understanding and Practice Problems, and the chapter Test Prep Multiple Choice), capped at about 15 per chapter; the answers are not published on the web pages. Chapters are the \"units\"; sections are the \"lessons\".",
+  "books": [
     {
-     "n": "1",
-     "title": "What is Physics?",
-     "url": "https://openstax.org/books/physics/pages/1-1-physics-definitions-and-applications",
-     "skills": [],
-     "notes": "What physics is; units and measurement; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "1.1",
-       "title": "Physics: Definitions and Applications",
-       "url": "https://openstax.org/books/physics/pages/1-1-physics-definitions-and-applications"
-      },
-      {
-       "n": "1.2",
-       "title": "The Scientific Methods",
-       "url": "https://openstax.org/books/physics/pages/1-2-the-scientific-methods"
-      },
-      {
-       "n": "1.3",
-       "title": "The Language of Physics: Physical Quantities and Units",
-       "url": "https://openstax.org/books/physics/pages/1-3-the-language-of-physics-physical-quantities-and-units"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Motion in One Dimension",
-     "url": "https://openstax.org/books/physics/pages/2-1-relative-motion-distance-and-displacement",
-     "skills": [
-      "s.11.kinematics-2d"
-     ],
-     "notes": "Motion in one dimension: displacement, velocity, position-time and velocity-time graphs; also s.8.motion.",
-     "lessons": [
-      {
-       "n": "2.1",
-       "title": "Relative Motion, Distance, and Displacement",
-       "url": "https://openstax.org/books/physics/pages/2-1-relative-motion-distance-and-displacement"
-      },
-      {
-       "n": "2.2",
-       "title": "Speed and Velocity",
-       "url": "https://openstax.org/books/physics/pages/2-2-speed-and-velocity"
-      },
-      {
-       "n": "2.3",
-       "title": "Position vs. Time Graphs",
-       "url": "https://openstax.org/books/physics/pages/2-3-position-vs-time-graphs"
-      },
-      {
-       "n": "2.4",
-       "title": "Velocity vs. Time Graphs",
-       "url": "https://openstax.org/books/physics/pages/2-4-velocity-vs-time-graphs"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Acceleration",
-     "url": "https://openstax.org/books/physics/pages/3-1-acceleration",
-     "skills": [
-      "s.11.kinematics-2d"
-     ],
-     "notes": "Acceleration and the kinematic equations in one dimension.",
-     "lessons": [
-      {
-       "n": "3.1",
-       "title": "Acceleration",
-       "url": "https://openstax.org/books/physics/pages/3-1-acceleration"
-      },
-      {
-       "n": "3.2",
-       "title": "Representing Acceleration with Equations and Graphs",
-       "url": "https://openstax.org/books/physics/pages/3-2-representing-acceleration-with-equations-and-graphs"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Forces and Newton’s Laws of Motion",
-     "url": "https://openstax.org/books/physics/pages/4-1-force",
-     "skills": [
-      "s.11.dynamics-vectors"
-     ],
-     "notes": "Newton's laws with forces; also s.8.newtons-laws.",
-     "lessons": [
-      {
-       "n": "4.1",
-       "title": "Force",
-       "url": "https://openstax.org/books/physics/pages/4-1-force"
-      },
-      {
-       "n": "4.2",
-       "title": "Newton's First Law of Motion: Inertia",
-       "url": "https://openstax.org/books/physics/pages/4-2-newtons-first-law-of-motion-inertia"
-      },
-      {
-       "n": "4.3",
-       "title": "Newton's Second Law of Motion",
-       "url": "https://openstax.org/books/physics/pages/4-3-newtons-second-law-of-motion"
-      },
-      {
-       "n": "4.4",
-       "title": "Newton's Third Law of Motion",
-       "url": "https://openstax.org/books/physics/pages/4-4-newtons-third-law-of-motion"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "5",
-     "title": "Motion in Two Dimensions",
-     "url": "https://openstax.org/books/physics/pages/5-1-vector-addition-and-subtraction-graphical-methods",
-     "skills": [
-      "s.11.kinematics-2d",
-      "s.11.dynamics-vectors"
-     ],
-     "notes": "Vectors and projectile motion (5.1-5.3); inclined planes (5.4); simple harmonic motion (5.5) has no skill.",
-     "lessons": [
-      {
-       "n": "5.1",
-       "title": "Vector Addition and Subtraction: Graphical Methods",
-       "url": "https://openstax.org/books/physics/pages/5-1-vector-addition-and-subtraction-graphical-methods"
-      },
-      {
-       "n": "5.2",
-       "title": "Vector Addition and Subtraction: Analytical Methods",
-       "url": "https://openstax.org/books/physics/pages/5-2-vector-addition-and-subtraction-analytical-methods"
-      },
-      {
-       "n": "5.3",
-       "title": "Projectile Motion",
-       "url": "https://openstax.org/books/physics/pages/5-3-projectile-motion"
-      },
-      {
-       "n": "5.4",
-       "title": "Inclined Planes",
-       "url": "https://openstax.org/books/physics/pages/5-4-inclined-planes"
-      },
-      {
-       "n": "5.5",
-       "title": "Simple Harmonic Motion",
-       "url": "https://openstax.org/books/physics/pages/5-5-simple-harmonic-motion"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "6",
-     "title": "Circular and Rotational Motion",
-     "url": "https://openstax.org/books/physics/pages/6-1-angle-of-rotation-and-angular-velocity",
-     "skills": [
-      "s.11.circular-gravitation"
-     ],
-     "notes": "Uniform circular motion and centripetal force; rotational motion.",
-     "lessons": [
-      {
-       "n": "6.1",
-       "title": "Angle of Rotation and Angular Velocity",
-       "url": "https://openstax.org/books/physics/pages/6-1-angle-of-rotation-and-angular-velocity"
-      },
-      {
-       "n": "6.2",
-       "title": "Uniform Circular Motion",
-       "url": "https://openstax.org/books/physics/pages/6-2-uniform-circular-motion"
-      },
-      {
-       "n": "6.3",
-       "title": "Rotational Motion",
-       "url": "https://openstax.org/books/physics/pages/6-3-rotational-motion"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Newton's Law of Gravitation",
-     "url": "https://openstax.org/books/physics/pages/7-1-keplers-laws-of-planetary-motion",
-     "skills": [
-      "s.11.circular-gravitation"
-     ],
-     "notes": "Kepler's laws and universal gravitation.",
-     "lessons": [
-      {
-       "n": "7.1",
-       "title": "Kepler's Laws of Planetary Motion",
-       "url": "https://openstax.org/books/physics/pages/7-1-keplers-laws-of-planetary-motion"
-      },
-      {
-       "n": "7.2",
-       "title": "Newton's Law of Universal Gravitation and Einstein's Theory of General Relativity",
-       "url": "https://openstax.org/books/physics/pages/7-2-newtons-law-of-universal-gravitation-and-einsteins-theory-of-general-relativity"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Momentum",
-     "url": "https://openstax.org/books/physics/pages/8-1-linear-momentum-force-and-impulse",
-     "skills": [
-      "s.11.momentum"
-     ],
-     "lessons": [
-      {
-       "n": "8.1",
-       "title": "Linear Momentum, Force, and Impulse",
-       "url": "https://openstax.org/books/physics/pages/8-1-linear-momentum-force-and-impulse"
-      },
-      {
-       "n": "8.2",
-       "title": "Conservation of Momentum",
-       "url": "https://openstax.org/books/physics/pages/8-2-conservation-of-momentum"
-      },
-      {
-       "n": "8.3",
-       "title": "Elastic and Inelastic Collisions",
-       "url": "https://openstax.org/books/physics/pages/8-3-elastic-and-inelastic-collisions"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "9",
-     "title": "Work, Energy, and Simple Machines",
-     "url": "https://openstax.org/books/physics/pages/9-1-work-power-and-the-work-energy-theorem",
-     "skills": [
-      "s.11.work-energy-power"
-     ],
-     "notes": "Work, power, mechanical energy; simple machines.",
-     "lessons": [
-      {
-       "n": "9.1",
-       "title": "Work, Power, and the Work–Energy Theorem",
-       "url": "https://openstax.org/books/physics/pages/9-1-work-power-and-the-work-energy-theorem"
-      },
-      {
-       "n": "9.2",
-       "title": "Mechanical Energy and Conservation of Energy",
-       "url": "https://openstax.org/books/physics/pages/9-2-mechanical-energy-and-conservation-of-energy"
-      },
-      {
-       "n": "9.3",
-       "title": "Simple Machines",
-       "url": "https://openstax.org/books/physics/pages/9-3-simple-machines"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "10",
-     "title": "Special Relativity",
-     "url": "https://openstax.org/books/physics/pages/10-1-postulates-of-special-relativity",
-     "skills": [],
-     "notes": "Special relativity; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "10.1",
-       "title": "Postulates of Special Relativity",
-       "url": "https://openstax.org/books/physics/pages/10-1-postulates-of-special-relativity"
-      },
-      {
-       "n": "10.2",
-       "title": "Consequences of Special Relativity",
-       "url": "https://openstax.org/books/physics/pages/10-2-consequences-of-special-relativity"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "11",
-     "title": "Thermal Energy, Heat, and Work",
-     "url": "https://openstax.org/books/physics/pages/11-1-temperature-and-thermal-energy",
-     "skills": [],
-     "notes": "Temperature, heat and phase change: nearest are s.10.thermochemistry and s.7.phase-changes.",
-     "lessons": [
-      {
-       "n": "11.1",
-       "title": "Temperature and Thermal Energy",
-       "url": "https://openstax.org/books/physics/pages/11-1-temperature-and-thermal-energy"
-      },
-      {
-       "n": "11.2",
-       "title": "Heat, Specific Heat, and Heat Transfer",
-       "url": "https://openstax.org/books/physics/pages/11-2-heat-specific-heat-and-heat-transfer"
-      },
-      {
-       "n": "11.3",
-       "title": "Phase Change and Latent Heat",
-       "url": "https://openstax.org/books/physics/pages/11-3-phase-change-and-latent-heat"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "12",
-     "title": "Thermodynamics",
-     "url": "https://openstax.org/books/physics/pages/12-1-zeroth-law-of-thermodynamics-thermal-equilibrium",
-     "skills": [],
-     "notes": "Thermodynamics: nearest is s.10.thermochemistry.",
-     "lessons": [
-      {
-       "n": "12.1",
-       "title": "Zeroth Law of Thermodynamics: Thermal Equilibrium",
-       "url": "https://openstax.org/books/physics/pages/12-1-zeroth-law-of-thermodynamics-thermal-equilibrium"
-      },
-      {
-       "n": "12.2",
-       "title": "First law of Thermodynamics: Thermal Energy and Work",
-       "url": "https://openstax.org/books/physics/pages/12-2-first-law-of-thermodynamics-thermal-energy-and-work"
-      },
-      {
-       "n": "12.3",
-       "title": "Second Law of Thermodynamics: Entropy",
-       "url": "https://openstax.org/books/physics/pages/12-3-second-law-of-thermodynamics-entropy"
-      },
-      {
-       "n": "12.4",
-       "title": "Applications of Thermodynamics: Heat Engines, Heat Pumps, and Refrigerators",
-       "url": "https://openstax.org/books/physics/pages/12-4-applications-of-thermodynamics-heat-engines-heat-pumps-and-refrigerators"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "13",
-     "title": "Waves and Their Properties",
-     "url": "https://openstax.org/books/physics/pages/13-1-types-of-waves",
-     "skills": [
-      "s.11.sound-waves"
-     ],
-     "notes": "Wave properties and superposition (the general wave part of the sound skill); also s.8.em-spectrum.",
-     "lessons": [
-      {
-       "n": "13.1",
-       "title": "Types of Waves",
-       "url": "https://openstax.org/books/physics/pages/13-1-types-of-waves"
-      },
-      {
-       "n": "13.2",
-       "title": "Wave Properties: Speed, Amplitude, Frequency, and Period",
-       "url": "https://openstax.org/books/physics/pages/13-2-wave-properties-speed-amplitude-frequency-and-period"
-      },
-      {
-       "n": "13.3",
-       "title": "Wave Interaction: Superposition and Interference",
-       "url": "https://openstax.org/books/physics/pages/13-3-wave-interaction-superposition-and-interference"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "14",
-     "title": "Sound",
-     "url": "https://openstax.org/books/physics/pages/14-1-speed-of-sound-frequency-and-wavelength",
-     "skills": [
-      "s.11.sound-waves"
-     ],
-     "notes": "Sound, standing waves in strings and pipes, the Doppler effect.",
-     "lessons": [
-      {
-       "n": "14.1",
-       "title": "Speed of Sound, Frequency, and Wavelength",
-       "url": "https://openstax.org/books/physics/pages/14-1-speed-of-sound-frequency-and-wavelength"
-      },
-      {
-       "n": "14.2",
-       "title": "Sound Intensity and Sound Level",
-       "url": "https://openstax.org/books/physics/pages/14-2-sound-intensity-and-sound-level"
-      },
-      {
-       "n": "14.3",
-       "title": "Doppler Effect and Sonic Booms",
-       "url": "https://openstax.org/books/physics/pages/14-3-doppler-effect-and-sonic-booms"
-      },
-      {
-       "n": "14.4",
-       "title": "Sound Interference and Resonance",
-       "url": "https://openstax.org/books/physics/pages/14-4-sound-interference-and-resonance"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "15",
-     "title": "Light",
-     "url": "https://openstax.org/books/physics/pages/15-1-the-electromagnetic-spectrum",
-     "skills": [
-      "s.11.optics"
-     ],
-     "notes": "The electromagnetic spectrum and the behavior of light (15.1-15.2); also s.8.em-spectrum.",
-     "lessons": [
-      {
-       "n": "15.1",
-       "title": "The Electromagnetic Spectrum",
-       "url": "https://openstax.org/books/physics/pages/15-1-the-electromagnetic-spectrum"
-      },
-      {
-       "n": "15.2",
-       "title": "The Behavior of Electromagnetic Radiation",
-       "url": "https://openstax.org/books/physics/pages/15-2-the-behavior-of-electromagnetic-radiation"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "16",
-     "title": "Mirrors and Lenses",
-     "url": "https://openstax.org/books/physics/pages/16-1-reflection",
-     "skills": [
-      "s.11.optics"
-     ],
-     "notes": "Reflection and mirrors, refraction and lenses.",
-     "lessons": [
-      {
-       "n": "16.1",
-       "title": "Reflection",
-       "url": "https://openstax.org/books/physics/pages/16-1-reflection"
-      },
-      {
-       "n": "16.2",
-       "title": "Refraction",
-       "url": "https://openstax.org/books/physics/pages/16-2-refraction"
-      },
-      {
-       "n": "16.3",
-       "title": "Lenses",
-       "url": "https://openstax.org/books/physics/pages/16-3-lenses"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "17",
-     "title": "Diffraction and Interference",
-     "url": "https://openstax.org/books/physics/pages/17-1-understanding-diffraction-and-interference",
-     "skills": [
-      "s.11.optics"
-     ],
-     "notes": "Diffraction and interference (beyond the taxonomy skill; loose).",
-     "lessons": [
-      {
-       "n": "17.1",
-       "title": "Understanding Diffraction and Interference",
-       "url": "https://openstax.org/books/physics/pages/17-1-understanding-diffraction-and-interference"
-      },
-      {
-       "n": "17.2",
-       "title": "Applications of Diffraction, Interference, and Coherence",
-       "url": "https://openstax.org/books/physics/pages/17-2-applications-of-diffraction-interference-and-coherence"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "18",
-     "title": "Static Electricity",
-     "url": "https://openstax.org/books/physics/pages/18-1-electrical-charges-conservation-of-charge-and-transfer-of-charge",
-     "skills": [
-      "s.11.electromagnetism"
-     ],
-     "notes": "Electric charge, Coulomb's law, electric fields and potential.",
-     "lessons": [
-      {
-       "n": "18.1",
-       "title": "Electrical Charges, Conservation of Charge, and Transfer of Charge",
-       "url": "https://openstax.org/books/physics/pages/18-1-electrical-charges-conservation-of-charge-and-transfer-of-charge"
-      },
-      {
-       "n": "18.2",
-       "title": "Coulomb's law",
-       "url": "https://openstax.org/books/physics/pages/18-2-coulombs-law"
-      },
-      {
-       "n": "18.3",
-       "title": "Electric Field",
-       "url": "https://openstax.org/books/physics/pages/18-3-electric-field"
-      },
-      {
-       "n": "18.4",
-       "title": "Electric Potential",
-       "url": "https://openstax.org/books/physics/pages/18-4-electric-potential"
-      },
-      {
-       "n": "18.5",
-       "title": "Capacitors and Dielectrics",
-       "url": "https://openstax.org/books/physics/pages/18-5-capacitors-and-dielectrics"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "19",
-     "title": "Electrical Circuits",
-     "url": "https://openstax.org/books/physics/pages/19-1-ohms-law",
-     "skills": [
-      "s.11.circuits"
-     ],
-     "notes": "Ohm's law, series and parallel circuits, electric power.",
-     "lessons": [
-      {
-       "n": "19.1",
-       "title": "Ohm's law",
-       "url": "https://openstax.org/books/physics/pages/19-1-ohms-law"
-      },
-      {
-       "n": "19.2",
-       "title": "Series Circuits",
-       "url": "https://openstax.org/books/physics/pages/19-2-series-circuits"
-      },
-      {
-       "n": "19.3",
-       "title": "Parallel Circuits",
-       "url": "https://openstax.org/books/physics/pages/19-3-parallel-circuits"
-      },
-      {
-       "n": "19.4",
-       "title": "Electric Power",
-       "url": "https://openstax.org/books/physics/pages/19-4-electric-power"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "20",
-     "title": "Magnetism",
-     "url": "https://openstax.org/books/physics/pages/20-1-magnetic-fields-field-lines-and-force",
-     "skills": [
-      "s.11.electromagnetism"
-     ],
-     "notes": "Magnetic fields and forces, electromagnetic induction.",
-     "lessons": [
-      {
-       "n": "20.1",
-       "title": "Magnetic Fields, Field Lines, and Force",
-       "url": "https://openstax.org/books/physics/pages/20-1-magnetic-fields-field-lines-and-force"
-      },
-      {
-       "n": "20.2",
-       "title": "Motors, Generators, and Transformers",
-       "url": "https://openstax.org/books/physics/pages/20-2-motors-generators-and-transformers"
-      },
-      {
-       "n": "20.3",
-       "title": "Electromagnetic Induction",
-       "url": "https://openstax.org/books/physics/pages/20-3-electromagnetic-induction"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "21",
-     "title": "The Quantum Nature of Light",
-     "url": "https://openstax.org/books/physics/pages/21-1-planck-and-quantum-nature-of-light",
-     "skills": [],
-     "notes": "Quantum nature of light; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "21.1",
-       "title": "Planck and Quantum Nature of Light",
-       "url": "https://openstax.org/books/physics/pages/21-1-planck-and-quantum-nature-of-light"
-      },
-      {
-       "n": "21.2",
-       "title": "Einstein and the Photoelectric Effect",
-       "url": "https://openstax.org/books/physics/pages/21-2-einstein-and-the-photoelectric-effect"
-      },
-      {
-       "n": "21.3",
-       "title": "The Dual Nature of Light",
-       "url": "https://openstax.org/books/physics/pages/21-3-the-dual-nature-of-light"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Problems",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "22",
-     "title": "The Atom",
-     "url": "https://openstax.org/books/physics/pages/22-1-the-structure-of-the-atom",
-     "skills": [
-      "s.10.atomic-structure",
-      "s.12.radiometric-dating"
-     ],
-     "notes": "Atomic structure (22.1); radioactivity, half-life and radiometric dating (22.2-22.3); fission and fusion.",
-     "lessons": [
-      {
-       "n": "22.1",
-       "title": "The Structure of the Atom",
-       "url": "https://openstax.org/books/physics/pages/22-1-the-structure-of-the-atom"
-      },
-      {
-       "n": "22.2",
-       "title": "Nuclear Forces and Radioactivity",
-       "url": "https://openstax.org/books/physics/pages/22-2-nuclear-forces-and-radioactivity"
-      },
-      {
-       "n": "22.3",
-       "title": "Half Life and Radiometric Dating",
-       "url": "https://openstax.org/books/physics/pages/22-3-half-life-and-radiometric-dating"
-      },
-      {
-       "n": "22.4",
-       "title": "Nuclear Fission and Fusion",
-       "url": "https://openstax.org/books/physics/pages/22-4-nuclear-fission-and-fusion"
-      },
-      {
-       "n": "22.5",
-       "title": "Medical Applications of Radioactivity: Diagnostic Imaging and Radiation",
-       "url": "https://openstax.org/books/physics/pages/22-5-medical-applications-of-radioactivity-diagnostic-imaging-and-radiation"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Key Equations",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
-    },
-    {
-     "n": "23",
-     "title": "Particle Physics",
-     "url": "https://openstax.org/books/physics/pages/23-1-the-four-fundamental-forces",
-     "skills": [],
-     "notes": "Particle physics; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "23.1",
-       "title": "The Four Fundamental Forces",
-       "url": "https://openstax.org/books/physics/pages/23-1-the-four-fundamental-forces"
-      },
-      {
-       "n": "23.2",
-       "title": "Quarks",
-       "url": "https://openstax.org/books/physics/pages/23-2-quarks"
-      },
-      {
-       "n": "23.3",
-       "title": "The Unification of Forces",
-       "url": "https://openstax.org/books/physics/pages/23-3-the-unification-of-forces"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Section Summary",
-      "Chapter Review",
-      "Concept Items",
-      "Critical Thinking Items",
-      "Performance Task",
-      "Test Prep",
-      "Multiple Choice",
-      "Short Answer",
-      "Extended Response"
-     ]
+      "grade": "11",
+      "url": "https://openstax.org/books/physics/pages/1-introduction",
+      "units": [
+        {
+          "n": "1",
+          "title": "What is Physics?",
+          "url": "https://openstax.org/books/physics/pages/1-1-physics-definitions-and-applications",
+          "skills": [],
+          "notes": "What physics is; units and measurement; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Physics: Definitions and Applications",
+              "url": "https://openstax.org/books/physics/pages/1-1-physics-definitions-and-applications"
+            },
+            {
+              "n": "1.2",
+              "title": "The Scientific Methods",
+              "url": "https://openstax.org/books/physics/pages/1-2-the-scientific-methods"
+            },
+            {
+              "n": "1.3",
+              "title": "The Language of Physics: Physical Quantities and Units",
+              "url": "https://openstax.org/books/physics/pages/1-3-the-language-of-physics-physical-quantities-and-units"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Motion in One Dimension",
+          "url": "https://openstax.org/books/physics/pages/2-1-relative-motion-distance-and-displacement",
+          "skills": ["s.11.kinematics-2d"],
+          "notes": "Motion in one dimension: displacement, velocity, position-time and velocity-time graphs; also s.8.motion.",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Relative Motion, Distance, and Displacement",
+              "url": "https://openstax.org/books/physics/pages/2-1-relative-motion-distance-and-displacement"
+            },
+            {
+              "n": "2.2",
+              "title": "Speed and Velocity",
+              "url": "https://openstax.org/books/physics/pages/2-2-speed-and-velocity"
+            },
+            {
+              "n": "2.3",
+              "title": "Position vs. Time Graphs",
+              "url": "https://openstax.org/books/physics/pages/2-3-position-vs-time-graphs"
+            },
+            {
+              "n": "2.4",
+              "title": "Velocity vs. Time Graphs",
+              "url": "https://openstax.org/books/physics/pages/2-4-velocity-vs-time-graphs"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Acceleration",
+          "url": "https://openstax.org/books/physics/pages/3-1-acceleration",
+          "skills": ["s.11.kinematics-2d"],
+          "notes": "Acceleration and the kinematic equations in one dimension.",
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Acceleration",
+              "url": "https://openstax.org/books/physics/pages/3-1-acceleration"
+            },
+            {
+              "n": "3.2",
+              "title": "Representing Acceleration with Equations and Graphs",
+              "url": "https://openstax.org/books/physics/pages/3-2-representing-acceleration-with-equations-and-graphs"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Forces and Newton’s Laws of Motion",
+          "url": "https://openstax.org/books/physics/pages/4-1-force",
+          "skills": ["s.11.dynamics-vectors"],
+          "notes": "Newton's laws with forces; also s.8.newtons-laws.",
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Force",
+              "url": "https://openstax.org/books/physics/pages/4-1-force"
+            },
+            {
+              "n": "4.2",
+              "title": "Newton's First Law of Motion: Inertia",
+              "url": "https://openstax.org/books/physics/pages/4-2-newtons-first-law-of-motion-inertia"
+            },
+            {
+              "n": "4.3",
+              "title": "Newton's Second Law of Motion",
+              "url": "https://openstax.org/books/physics/pages/4-3-newtons-second-law-of-motion"
+            },
+            {
+              "n": "4.4",
+              "title": "Newton's Third Law of Motion",
+              "url": "https://openstax.org/books/physics/pages/4-4-newtons-third-law-of-motion"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Motion in Two Dimensions",
+          "url": "https://openstax.org/books/physics/pages/5-1-vector-addition-and-subtraction-graphical-methods",
+          "skills": ["s.11.kinematics-2d", "s.11.dynamics-vectors"],
+          "notes": "Vectors and projectile motion (5.1-5.3); inclined planes (5.4); simple harmonic motion (5.5) has no skill.",
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Vector Addition and Subtraction: Graphical Methods",
+              "url": "https://openstax.org/books/physics/pages/5-1-vector-addition-and-subtraction-graphical-methods"
+            },
+            {
+              "n": "5.2",
+              "title": "Vector Addition and Subtraction: Analytical Methods",
+              "url": "https://openstax.org/books/physics/pages/5-2-vector-addition-and-subtraction-analytical-methods"
+            },
+            {
+              "n": "5.3",
+              "title": "Projectile Motion",
+              "url": "https://openstax.org/books/physics/pages/5-3-projectile-motion"
+            },
+            {
+              "n": "5.4",
+              "title": "Inclined Planes",
+              "url": "https://openstax.org/books/physics/pages/5-4-inclined-planes"
+            },
+            {
+              "n": "5.5",
+              "title": "Simple Harmonic Motion",
+              "url": "https://openstax.org/books/physics/pages/5-5-simple-harmonic-motion"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Circular and Rotational Motion",
+          "url": "https://openstax.org/books/physics/pages/6-1-angle-of-rotation-and-angular-velocity",
+          "skills": ["s.11.circular-gravitation"],
+          "notes": "Uniform circular motion and centripetal force; rotational motion.",
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Angle of Rotation and Angular Velocity",
+              "url": "https://openstax.org/books/physics/pages/6-1-angle-of-rotation-and-angular-velocity"
+            },
+            {
+              "n": "6.2",
+              "title": "Uniform Circular Motion",
+              "url": "https://openstax.org/books/physics/pages/6-2-uniform-circular-motion"
+            },
+            {
+              "n": "6.3",
+              "title": "Rotational Motion",
+              "url": "https://openstax.org/books/physics/pages/6-3-rotational-motion"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Newton's Law of Gravitation",
+          "url": "https://openstax.org/books/physics/pages/7-1-keplers-laws-of-planetary-motion",
+          "skills": ["s.11.circular-gravitation"],
+          "notes": "Kepler's laws and universal gravitation.",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Kepler's Laws of Planetary Motion",
+              "url": "https://openstax.org/books/physics/pages/7-1-keplers-laws-of-planetary-motion"
+            },
+            {
+              "n": "7.2",
+              "title": "Newton's Law of Universal Gravitation and Einstein's Theory of General Relativity",
+              "url": "https://openstax.org/books/physics/pages/7-2-newtons-law-of-universal-gravitation-and-einsteins-theory-of-general-relativity"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Momentum",
+          "url": "https://openstax.org/books/physics/pages/8-1-linear-momentum-force-and-impulse",
+          "skills": ["s.11.momentum"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Linear Momentum, Force, and Impulse",
+              "url": "https://openstax.org/books/physics/pages/8-1-linear-momentum-force-and-impulse"
+            },
+            {
+              "n": "8.2",
+              "title": "Conservation of Momentum",
+              "url": "https://openstax.org/books/physics/pages/8-2-conservation-of-momentum"
+            },
+            {
+              "n": "8.3",
+              "title": "Elastic and Inelastic Collisions",
+              "url": "https://openstax.org/books/physics/pages/8-3-elastic-and-inelastic-collisions"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Work, Energy, and Simple Machines",
+          "url": "https://openstax.org/books/physics/pages/9-1-work-power-and-the-work-energy-theorem",
+          "skills": ["s.11.work-energy-power"],
+          "notes": "Work, power, mechanical energy; simple machines.",
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Work, Power, and the Work–Energy Theorem",
+              "url": "https://openstax.org/books/physics/pages/9-1-work-power-and-the-work-energy-theorem"
+            },
+            {
+              "n": "9.2",
+              "title": "Mechanical Energy and Conservation of Energy",
+              "url": "https://openstax.org/books/physics/pages/9-2-mechanical-energy-and-conservation-of-energy"
+            },
+            {
+              "n": "9.3",
+              "title": "Simple Machines",
+              "url": "https://openstax.org/books/physics/pages/9-3-simple-machines"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Special Relativity",
+          "url": "https://openstax.org/books/physics/pages/10-1-postulates-of-special-relativity",
+          "skills": [],
+          "notes": "Special relativity; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Postulates of Special Relativity",
+              "url": "https://openstax.org/books/physics/pages/10-1-postulates-of-special-relativity"
+            },
+            {
+              "n": "10.2",
+              "title": "Consequences of Special Relativity",
+              "url": "https://openstax.org/books/physics/pages/10-2-consequences-of-special-relativity"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Thermal Energy, Heat, and Work",
+          "url": "https://openstax.org/books/physics/pages/11-1-temperature-and-thermal-energy",
+          "skills": [],
+          "notes": "Temperature, heat and phase change: nearest are s.10.thermochemistry and s.7.phase-changes.",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Temperature and Thermal Energy",
+              "url": "https://openstax.org/books/physics/pages/11-1-temperature-and-thermal-energy"
+            },
+            {
+              "n": "11.2",
+              "title": "Heat, Specific Heat, and Heat Transfer",
+              "url": "https://openstax.org/books/physics/pages/11-2-heat-specific-heat-and-heat-transfer"
+            },
+            {
+              "n": "11.3",
+              "title": "Phase Change and Latent Heat",
+              "url": "https://openstax.org/books/physics/pages/11-3-phase-change-and-latent-heat"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Thermodynamics",
+          "url": "https://openstax.org/books/physics/pages/12-1-zeroth-law-of-thermodynamics-thermal-equilibrium",
+          "skills": [],
+          "notes": "Thermodynamics: nearest is s.10.thermochemistry.",
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Zeroth Law of Thermodynamics: Thermal Equilibrium",
+              "url": "https://openstax.org/books/physics/pages/12-1-zeroth-law-of-thermodynamics-thermal-equilibrium"
+            },
+            {
+              "n": "12.2",
+              "title": "First law of Thermodynamics: Thermal Energy and Work",
+              "url": "https://openstax.org/books/physics/pages/12-2-first-law-of-thermodynamics-thermal-energy-and-work"
+            },
+            {
+              "n": "12.3",
+              "title": "Second Law of Thermodynamics: Entropy",
+              "url": "https://openstax.org/books/physics/pages/12-3-second-law-of-thermodynamics-entropy"
+            },
+            {
+              "n": "12.4",
+              "title": "Applications of Thermodynamics: Heat Engines, Heat Pumps, and Refrigerators",
+              "url": "https://openstax.org/books/physics/pages/12-4-applications-of-thermodynamics-heat-engines-heat-pumps-and-refrigerators"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Waves and Their Properties",
+          "url": "https://openstax.org/books/physics/pages/13-1-types-of-waves",
+          "skills": ["s.11.sound-waves"],
+          "notes": "Wave properties and superposition (the general wave part of the sound skill); also s.8.em-spectrum.",
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Types of Waves",
+              "url": "https://openstax.org/books/physics/pages/13-1-types-of-waves"
+            },
+            {
+              "n": "13.2",
+              "title": "Wave Properties: Speed, Amplitude, Frequency, and Period",
+              "url": "https://openstax.org/books/physics/pages/13-2-wave-properties-speed-amplitude-frequency-and-period"
+            },
+            {
+              "n": "13.3",
+              "title": "Wave Interaction: Superposition and Interference",
+              "url": "https://openstax.org/books/physics/pages/13-3-wave-interaction-superposition-and-interference"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Sound",
+          "url": "https://openstax.org/books/physics/pages/14-1-speed-of-sound-frequency-and-wavelength",
+          "skills": ["s.11.sound-waves"],
+          "notes": "Sound, standing waves in strings and pipes, the Doppler effect.",
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Speed of Sound, Frequency, and Wavelength",
+              "url": "https://openstax.org/books/physics/pages/14-1-speed-of-sound-frequency-and-wavelength"
+            },
+            {
+              "n": "14.2",
+              "title": "Sound Intensity and Sound Level",
+              "url": "https://openstax.org/books/physics/pages/14-2-sound-intensity-and-sound-level"
+            },
+            {
+              "n": "14.3",
+              "title": "Doppler Effect and Sonic Booms",
+              "url": "https://openstax.org/books/physics/pages/14-3-doppler-effect-and-sonic-booms"
+            },
+            {
+              "n": "14.4",
+              "title": "Sound Interference and Resonance",
+              "url": "https://openstax.org/books/physics/pages/14-4-sound-interference-and-resonance"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Light",
+          "url": "https://openstax.org/books/physics/pages/15-1-the-electromagnetic-spectrum",
+          "skills": ["s.11.optics"],
+          "notes": "The electromagnetic spectrum and the behavior of light (15.1-15.2); also s.8.em-spectrum.",
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "The Electromagnetic Spectrum",
+              "url": "https://openstax.org/books/physics/pages/15-1-the-electromagnetic-spectrum"
+            },
+            {
+              "n": "15.2",
+              "title": "The Behavior of Electromagnetic Radiation",
+              "url": "https://openstax.org/books/physics/pages/15-2-the-behavior-of-electromagnetic-radiation"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Mirrors and Lenses",
+          "url": "https://openstax.org/books/physics/pages/16-1-reflection",
+          "skills": ["s.11.optics"],
+          "notes": "Reflection and mirrors, refraction and lenses.",
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Reflection",
+              "url": "https://openstax.org/books/physics/pages/16-1-reflection"
+            },
+            {
+              "n": "16.2",
+              "title": "Refraction",
+              "url": "https://openstax.org/books/physics/pages/16-2-refraction"
+            },
+            {
+              "n": "16.3",
+              "title": "Lenses",
+              "url": "https://openstax.org/books/physics/pages/16-3-lenses"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Diffraction and Interference",
+          "url": "https://openstax.org/books/physics/pages/17-1-understanding-diffraction-and-interference",
+          "skills": ["s.11.optics"],
+          "notes": "Diffraction and interference (beyond the taxonomy skill; loose).",
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Understanding Diffraction and Interference",
+              "url": "https://openstax.org/books/physics/pages/17-1-understanding-diffraction-and-interference"
+            },
+            {
+              "n": "17.2",
+              "title": "Applications of Diffraction, Interference, and Coherence",
+              "url": "https://openstax.org/books/physics/pages/17-2-applications-of-diffraction-interference-and-coherence"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "18",
+          "title": "Static Electricity",
+          "url": "https://openstax.org/books/physics/pages/18-1-electrical-charges-conservation-of-charge-and-transfer-of-charge",
+          "skills": ["s.11.electromagnetism"],
+          "notes": "Electric charge, Coulomb's law, electric fields and potential.",
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Electrical Charges, Conservation of Charge, and Transfer of Charge",
+              "url": "https://openstax.org/books/physics/pages/18-1-electrical-charges-conservation-of-charge-and-transfer-of-charge"
+            },
+            {
+              "n": "18.2",
+              "title": "Coulomb's law",
+              "url": "https://openstax.org/books/physics/pages/18-2-coulombs-law"
+            },
+            {
+              "n": "18.3",
+              "title": "Electric Field",
+              "url": "https://openstax.org/books/physics/pages/18-3-electric-field"
+            },
+            {
+              "n": "18.4",
+              "title": "Electric Potential",
+              "url": "https://openstax.org/books/physics/pages/18-4-electric-potential"
+            },
+            {
+              "n": "18.5",
+              "title": "Capacitors and Dielectrics",
+              "url": "https://openstax.org/books/physics/pages/18-5-capacitors-and-dielectrics"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "19",
+          "title": "Electrical Circuits",
+          "url": "https://openstax.org/books/physics/pages/19-1-ohms-law",
+          "skills": ["s.11.circuits"],
+          "notes": "Ohm's law, series and parallel circuits, electric power.",
+          "lessons": [
+            {
+              "n": "19.1",
+              "title": "Ohm's law",
+              "url": "https://openstax.org/books/physics/pages/19-1-ohms-law"
+            },
+            {
+              "n": "19.2",
+              "title": "Series Circuits",
+              "url": "https://openstax.org/books/physics/pages/19-2-series-circuits"
+            },
+            {
+              "n": "19.3",
+              "title": "Parallel Circuits",
+              "url": "https://openstax.org/books/physics/pages/19-3-parallel-circuits"
+            },
+            {
+              "n": "19.4",
+              "title": "Electric Power",
+              "url": "https://openstax.org/books/physics/pages/19-4-electric-power"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "20",
+          "title": "Magnetism",
+          "url": "https://openstax.org/books/physics/pages/20-1-magnetic-fields-field-lines-and-force",
+          "skills": ["s.11.electromagnetism"],
+          "notes": "Magnetic fields and forces, electromagnetic induction.",
+          "lessons": [
+            {
+              "n": "20.1",
+              "title": "Magnetic Fields, Field Lines, and Force",
+              "url": "https://openstax.org/books/physics/pages/20-1-magnetic-fields-field-lines-and-force"
+            },
+            {
+              "n": "20.2",
+              "title": "Motors, Generators, and Transformers",
+              "url": "https://openstax.org/books/physics/pages/20-2-motors-generators-and-transformers"
+            },
+            {
+              "n": "20.3",
+              "title": "Electromagnetic Induction",
+              "url": "https://openstax.org/books/physics/pages/20-3-electromagnetic-induction"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "21",
+          "title": "The Quantum Nature of Light",
+          "url": "https://openstax.org/books/physics/pages/21-1-planck-and-quantum-nature-of-light",
+          "skills": [],
+          "notes": "Quantum nature of light; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "21.1",
+              "title": "Planck and Quantum Nature of Light",
+              "url": "https://openstax.org/books/physics/pages/21-1-planck-and-quantum-nature-of-light"
+            },
+            {
+              "n": "21.2",
+              "title": "Einstein and the Photoelectric Effect",
+              "url": "https://openstax.org/books/physics/pages/21-2-einstein-and-the-photoelectric-effect"
+            },
+            {
+              "n": "21.3",
+              "title": "The Dual Nature of Light",
+              "url": "https://openstax.org/books/physics/pages/21-3-the-dual-nature-of-light"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Problems",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "22",
+          "title": "The Atom",
+          "url": "https://openstax.org/books/physics/pages/22-1-the-structure-of-the-atom",
+          "skills": ["s.10.atomic-structure", "s.12.radiometric-dating"],
+          "notes": "Atomic structure (22.1); radioactivity, half-life and radiometric dating (22.2-22.3); fission and fusion.",
+          "lessons": [
+            {
+              "n": "22.1",
+              "title": "The Structure of the Atom",
+              "url": "https://openstax.org/books/physics/pages/22-1-the-structure-of-the-atom"
+            },
+            {
+              "n": "22.2",
+              "title": "Nuclear Forces and Radioactivity",
+              "url": "https://openstax.org/books/physics/pages/22-2-nuclear-forces-and-radioactivity"
+            },
+            {
+              "n": "22.3",
+              "title": "Half Life and Radiometric Dating",
+              "url": "https://openstax.org/books/physics/pages/22-3-half-life-and-radiometric-dating"
+            },
+            {
+              "n": "22.4",
+              "title": "Nuclear Fission and Fusion",
+              "url": "https://openstax.org/books/physics/pages/22-4-nuclear-fission-and-fusion"
+            },
+            {
+              "n": "22.5",
+              "title": "Medical Applications of Radioactivity: Diagnostic Imaging and Radiation",
+              "url": "https://openstax.org/books/physics/pages/22-5-medical-applications-of-radioactivity-diagnostic-imaging-and-radiation"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Key Equations",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        },
+        {
+          "n": "23",
+          "title": "Particle Physics",
+          "url": "https://openstax.org/books/physics/pages/23-1-the-four-fundamental-forces",
+          "skills": [],
+          "notes": "Particle physics; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "23.1",
+              "title": "The Four Fundamental Forces",
+              "url": "https://openstax.org/books/physics/pages/23-1-the-four-fundamental-forces"
+            },
+            {
+              "n": "23.2",
+              "title": "Quarks",
+              "url": "https://openstax.org/books/physics/pages/23-2-quarks"
+            },
+            {
+              "n": "23.3",
+              "title": "The Unification of Forces",
+              "url": "https://openstax.org/books/physics/pages/23-3-the-unification-of-forces"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Section Summary",
+            "Chapter Review",
+            "Concept Items",
+            "Critical Thinking Items",
+            "Performance Task",
+            "Test Prep",
+            "Multiple Choice",
+            "Short Answer",
+            "Extended Response"
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

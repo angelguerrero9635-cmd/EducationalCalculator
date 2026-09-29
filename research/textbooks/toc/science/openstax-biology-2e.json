@@ -1,1907 +1,1864 @@
 {
- "id": "openstax-biology-2e",
- "curriculum": "Biology 2e",
- "publisher": "OpenStax (Rice University)",
- "edition": "2nd edition (published 2018-03-28; web version revised 2026-07-22)",
- "subject": "science",
- "grades": [
-  "9"
- ],
- "course": "Biology",
- "content": "full",
- "terms": {
-  "unit": "Chapter",
-  "lesson": "Section"
- },
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Biology 2e by Mary Ann Clark, Matthew Douglas and Jung Choi, OpenStax (Rice University). Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. Access for free at https://openstax.org/books/biology-2e/pages/1-introduction"
- },
- "sourceUrl": "https://openstax.org/books/biology-2e/pages/1-introduction",
- "retrieved": "2026-09-28",
- "bookVersion": {
-  "archiveVersion": "20260604.144757",
-  "contentVersion": "63f8b6f",
-  "revised": "2026-07-22T15:15:41+00:00"
- },
- "notes": "Reference only (CC BY-NC-SA): the full table of contents; practice is a representative sample of the end-of-chapter Review Questions and Visual Connection Questions (no public answer key). Chapters are the \"units\"; the book's eight Units are recorded as \"part\"; sections are the \"lessons\". Skills: the grade-9 (Biology) skills where a chapter teaches one; otherwise [] with the nearest skill in \"notes\".",
- "books": [
-  {
-   "grade": "9",
-   "url": "https://openstax.org/books/biology-2e/pages/1-introduction",
-   "units": [
+  "id": "openstax-biology-2e",
+  "curriculum": "Biology 2e",
+  "publisher": "OpenStax (Rice University)",
+  "edition": "2nd edition (published 2018-03-28; web version revised 2026-07-22)",
+  "subject": "science",
+  "grades": ["9"],
+  "course": "Biology",
+  "content": "full",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Biology 2e by Mary Ann Clark, Matthew Douglas and Jung Choi, OpenStax (Rice University). Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. Access for free at https://openstax.org/books/biology-2e/pages/1-introduction"
+  },
+  "sourceUrl": "https://openstax.org/books/biology-2e/pages/1-introduction",
+  "retrieved": "2026-09-28",
+  "bookVersion": {
+    "archiveVersion": "20260604.144757",
+    "contentVersion": "63f8b6f",
+    "revised": "2026-07-22T15:15:41+00:00"
+  },
+  "notes": "Reference only (CC BY-NC-SA): the full table of contents; practice is a representative sample of the end-of-chapter Review Questions and Visual Connection Questions (no public answer key). Chapters are the \"units\"; the book's eight Units are recorded as \"part\"; sections are the \"lessons\". Skills: the grade-9 (Biology) skills where a chapter teaches one; otherwise [] with the nearest skill in \"notes\".",
+  "books": [
     {
-     "n": "1",
-     "title": "The Study of Life",
-     "url": "https://openstax.org/books/biology-2e/pages/1-1-the-science-of-biology",
-     "part": "The Chemistry of Life",
-     "skills": [],
-     "notes": "Nature of science; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "1.1",
-       "title": "The Science of Biology",
-       "url": "https://openstax.org/books/biology-2e/pages/1-1-the-science-of-biology"
-      },
-      {
-       "n": "1.2",
-       "title": "Themes and Concepts of Biology",
-       "url": "https://openstax.org/books/biology-2e/pages/1-2-themes-and-concepts-of-biology"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "2",
-     "title": "The Chemical Foundation of Life",
-     "url": "https://openstax.org/books/biology-2e/pages/2-1-atoms-isotopes-ions-and-molecules-the-building-blocks",
-     "part": "The Chemistry of Life",
-     "skills": [
-      "s.9.biomolecules"
-     ],
-     "notes": "Atoms, water and carbon as the chemistry behind biomolecules (loose); also s.10.atomic-structure, s.10.bonding.",
-     "lessons": [
-      {
-       "n": "2.1",
-       "title": "Atoms, Isotopes, Ions, and Molecules: The Building Blocks",
-       "url": "https://openstax.org/books/biology-2e/pages/2-1-atoms-isotopes-ions-and-molecules-the-building-blocks"
-      },
-      {
-       "n": "2.2",
-       "title": "Water",
-       "url": "https://openstax.org/books/biology-2e/pages/2-2-water"
-      },
-      {
-       "n": "2.3",
-       "title": "Carbon",
-       "url": "https://openstax.org/books/biology-2e/pages/2-3-carbon"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Biological Macromolecules",
-     "url": "https://openstax.org/books/biology-2e/pages/3-1-synthesis-of-biological-macromolecules",
-     "part": "The Chemistry of Life",
-     "skills": [
-      "s.9.biomolecules"
-     ],
-     "lessons": [
-      {
-       "n": "3.1",
-       "title": "Synthesis of Biological Macromolecules",
-       "url": "https://openstax.org/books/biology-2e/pages/3-1-synthesis-of-biological-macromolecules"
-      },
-      {
-       "n": "3.2",
-       "title": "Carbohydrates",
-       "url": "https://openstax.org/books/biology-2e/pages/3-2-carbohydrates"
-      },
-      {
-       "n": "3.3",
-       "title": "Lipids",
-       "url": "https://openstax.org/books/biology-2e/pages/3-3-lipids"
-      },
-      {
-       "n": "3.4",
-       "title": "Proteins",
-       "url": "https://openstax.org/books/biology-2e/pages/3-4-proteins"
-      },
-      {
-       "n": "3.5",
-       "title": "Nucleic Acids",
-       "url": "https://openstax.org/books/biology-2e/pages/3-5-nucleic-acids"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Cell Structure",
-     "url": "https://openstax.org/books/biology-2e/pages/4-1-studying-cells",
-     "part": "The Cell",
-     "skills": [],
-     "notes": "Cell structure: nearest are s.6.cells and s.6.cell-organelles (middle school).",
-     "lessons": [
-      {
-       "n": "4.1",
-       "title": "Studying Cells",
-       "url": "https://openstax.org/books/biology-2e/pages/4-1-studying-cells"
-      },
-      {
-       "n": "4.2",
-       "title": "Prokaryotic Cells",
-       "url": "https://openstax.org/books/biology-2e/pages/4-2-prokaryotic-cells"
-      },
-      {
-       "n": "4.3",
-       "title": "Eukaryotic Cells",
-       "url": "https://openstax.org/books/biology-2e/pages/4-3-eukaryotic-cells"
-      },
-      {
-       "n": "4.4",
-       "title": "The Endomembrane System and Proteins",
-       "url": "https://openstax.org/books/biology-2e/pages/4-4-the-endomembrane-system-and-proteins"
-      },
-      {
-       "n": "4.5",
-       "title": "The Cytoskeleton",
-       "url": "https://openstax.org/books/biology-2e/pages/4-5-the-cytoskeleton"
-      },
-      {
-       "n": "4.6",
-       "title": "Connections between Cells and Cellular Activities",
-       "url": "https://openstax.org/books/biology-2e/pages/4-6-connections-between-cells-and-cellular-activities"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "5",
-     "title": "Structure and Function of Plasma Membranes",
-     "url": "https://openstax.org/books/biology-2e/pages/5-1-components-and-structure",
-     "part": "The Cell",
-     "skills": [
-      "s.9.membrane-transport"
-     ],
-     "lessons": [
-      {
-       "n": "5.1",
-       "title": "Components and Structure",
-       "url": "https://openstax.org/books/biology-2e/pages/5-1-components-and-structure"
-      },
-      {
-       "n": "5.2",
-       "title": "Passive Transport",
-       "url": "https://openstax.org/books/biology-2e/pages/5-2-passive-transport"
-      },
-      {
-       "n": "5.3",
-       "title": "Active Transport",
-       "url": "https://openstax.org/books/biology-2e/pages/5-3-active-transport"
-      },
-      {
-       "n": "5.4",
-       "title": "Bulk Transport",
-       "url": "https://openstax.org/books/biology-2e/pages/5-4-bulk-transport"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "6",
-     "title": "Metabolism",
-     "url": "https://openstax.org/books/biology-2e/pages/6-1-energy-and-metabolism",
-     "part": "The Cell",
-     "skills": [],
-     "notes": "Metabolism, free energy and enzymes: nearest are s.10.thermochemistry and s.10.rates-equilibrium (catalysts).",
-     "lessons": [
-      {
-       "n": "6.1",
-       "title": "Energy and Metabolism",
-       "url": "https://openstax.org/books/biology-2e/pages/6-1-energy-and-metabolism"
-      },
-      {
-       "n": "6.2",
-       "title": "Potential, Kinetic, Free, and Activation Energy",
-       "url": "https://openstax.org/books/biology-2e/pages/6-2-potential-kinetic-free-and-activation-energy"
-      },
-      {
-       "n": "6.3",
-       "title": "The Laws of Thermodynamics",
-       "url": "https://openstax.org/books/biology-2e/pages/6-3-the-laws-of-thermodynamics"
-      },
-      {
-       "n": "6.4",
-       "title": "ATP: Adenosine Triphosphate",
-       "url": "https://openstax.org/books/biology-2e/pages/6-4-atp-adenosine-triphosphate"
-      },
-      {
-       "n": "6.5",
-       "title": "Enzymes",
-       "url": "https://openstax.org/books/biology-2e/pages/6-5-enzymes"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Cellular Respiration",
-     "url": "https://openstax.org/books/biology-2e/pages/7-1-energy-in-living-systems",
-     "part": "The Cell",
-     "skills": [],
-     "notes": "Cellular respiration: nearest is s.7.photosynthesis-respiration (middle school).",
-     "lessons": [
-      {
-       "n": "7.1",
-       "title": "Energy in Living Systems",
-       "url": "https://openstax.org/books/biology-2e/pages/7-1-energy-in-living-systems"
-      },
-      {
-       "n": "7.2",
-       "title": "Glycolysis",
-       "url": "https://openstax.org/books/biology-2e/pages/7-2-glycolysis"
-      },
-      {
-       "n": "7.3",
-       "title": "Oxidation of Pyruvate and the Citric Acid Cycle",
-       "url": "https://openstax.org/books/biology-2e/pages/7-3-oxidation-of-pyruvate-and-the-citric-acid-cycle"
-      },
-      {
-       "n": "7.4",
-       "title": "Oxidative Phosphorylation",
-       "url": "https://openstax.org/books/biology-2e/pages/7-4-oxidative-phosphorylation"
-      },
-      {
-       "n": "7.5",
-       "title": "Metabolism without Oxygen",
-       "url": "https://openstax.org/books/biology-2e/pages/7-5-metabolism-without-oxygen"
-      },
-      {
-       "n": "7.6",
-       "title": "Connections of Carbohydrate, Protein, and Lipid Metabolic Pathways",
-       "url": "https://openstax.org/books/biology-2e/pages/7-6-connections-of-carbohydrate-protein-and-lipid-metabolic-pathways"
-      },
-      {
-       "n": "7.7",
-       "title": "Regulation of Cellular Respiration",
-       "url": "https://openstax.org/books/biology-2e/pages/7-7-regulation-of-cellular-respiration"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Photosynthesis",
-     "url": "https://openstax.org/books/biology-2e/pages/8-1-overview-of-photosynthesis",
-     "part": "The Cell",
-     "skills": [],
-     "notes": "Photosynthesis: nearest is s.7.photosynthesis-respiration (middle school).",
-     "lessons": [
-      {
-       "n": "8.1",
-       "title": "Overview of Photosynthesis",
-       "url": "https://openstax.org/books/biology-2e/pages/8-1-overview-of-photosynthesis"
-      },
-      {
-       "n": "8.2",
-       "title": "The Light-Dependent Reactions of Photosynthesis",
-       "url": "https://openstax.org/books/biology-2e/pages/8-2-the-light-dependent-reactions-of-photosynthesis"
-      },
-      {
-       "n": "8.3",
-       "title": "Using Light Energy to Make Organic Molecules",
-       "url": "https://openstax.org/books/biology-2e/pages/8-3-using-light-energy-to-make-organic-molecules"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "9",
-     "title": "Cell Communication",
-     "url": "https://openstax.org/books/biology-2e/pages/9-1-signaling-molecules-and-cellular-receptors",
-     "part": "The Cell",
-     "skills": [
-      "s.9.homeostasis"
-     ],
-     "notes": "Cell signaling as the mechanism behind feedback (loose).",
-     "lessons": [
-      {
-       "n": "9.1",
-       "title": "Signaling Molecules and Cellular Receptors",
-       "url": "https://openstax.org/books/biology-2e/pages/9-1-signaling-molecules-and-cellular-receptors"
-      },
-      {
-       "n": "9.2",
-       "title": "Propagation of the Signal",
-       "url": "https://openstax.org/books/biology-2e/pages/9-2-propagation-of-the-signal"
-      },
-      {
-       "n": "9.3",
-       "title": "Response to the Signal",
-       "url": "https://openstax.org/books/biology-2e/pages/9-3-response-to-the-signal"
-      },
-      {
-       "n": "9.4",
-       "title": "Signaling in Single-Celled Organisms",
-       "url": "https://openstax.org/books/biology-2e/pages/9-4-signaling-in-single-celled-organisms"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "10",
-     "title": "Cell Reproduction",
-     "url": "https://openstax.org/books/biology-2e/pages/10-1-cell-division",
-     "part": "The Cell",
-     "skills": [
-      "s.9.mitosis-meiosis"
-     ],
-     "lessons": [
-      {
-       "n": "10.1",
-       "title": "Cell Division",
-       "url": "https://openstax.org/books/biology-2e/pages/10-1-cell-division"
-      },
-      {
-       "n": "10.2",
-       "title": "The Cell Cycle",
-       "url": "https://openstax.org/books/biology-2e/pages/10-2-the-cell-cycle"
-      },
-      {
-       "n": "10.3",
-       "title": "Control of the Cell Cycle",
-       "url": "https://openstax.org/books/biology-2e/pages/10-3-control-of-the-cell-cycle"
-      },
-      {
-       "n": "10.4",
-       "title": "Cancer and the Cell Cycle",
-       "url": "https://openstax.org/books/biology-2e/pages/10-4-cancer-and-the-cell-cycle"
-      },
-      {
-       "n": "10.5",
-       "title": "Prokaryotic Cell Division",
-       "url": "https://openstax.org/books/biology-2e/pages/10-5-prokaryotic-cell-division"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "11",
-     "title": "Meiosis and Sexual Reproduction",
-     "url": "https://openstax.org/books/biology-2e/pages/11-1-the-process-of-meiosis",
-     "part": "Genetics",
-     "skills": [
-      "s.9.mitosis-meiosis"
-     ],
-     "lessons": [
-      {
-       "n": "11.1",
-       "title": "The Process of Meiosis",
-       "url": "https://openstax.org/books/biology-2e/pages/11-1-the-process-of-meiosis"
-      },
-      {
-       "n": "11.2",
-       "title": "Sexual Reproduction",
-       "url": "https://openstax.org/books/biology-2e/pages/11-2-sexual-reproduction"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "12",
-     "title": "Mendel's Experiments and Heredity",
-     "url": "https://openstax.org/books/biology-2e/pages/12-1-mendels-experiments-and-the-laws-of-probability",
-     "part": "Genetics",
-     "skills": [
-      "s.9.inheritance-patterns"
-     ],
-     "lessons": [
-      {
-       "n": "12.1",
-       "title": "Mendel’s Experiments and the Laws of Probability",
-       "url": "https://openstax.org/books/biology-2e/pages/12-1-mendels-experiments-and-the-laws-of-probability"
-      },
-      {
-       "n": "12.2",
-       "title": "Characteristics and Traits",
-       "url": "https://openstax.org/books/biology-2e/pages/12-2-characteristics-and-traits"
-      },
-      {
-       "n": "12.3",
-       "title": "Laws of Inheritance",
-       "url": "https://openstax.org/books/biology-2e/pages/12-3-laws-of-inheritance"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "13",
-     "title": "Modern Understandings of Inheritance",
-     "url": "https://openstax.org/books/biology-2e/pages/13-1-chromosomal-theory-and-genetic-linkage",
-     "part": "Genetics",
-     "skills": [
-      "s.9.inheritance-patterns"
-     ],
-     "lessons": [
-      {
-       "n": "13.1",
-       "title": "Chromosomal Theory and Genetic Linkage",
-       "url": "https://openstax.org/books/biology-2e/pages/13-1-chromosomal-theory-and-genetic-linkage"
-      },
-      {
-       "n": "13.2",
-       "title": "Chromosomal Basis of Inherited Disorders",
-       "url": "https://openstax.org/books/biology-2e/pages/13-2-chromosomal-basis-of-inherited-disorders"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "14",
-     "title": "DNA Structure and Function",
-     "url": "https://openstax.org/books/biology-2e/pages/14-1-historical-basis-of-modern-understanding",
-     "part": "Genetics",
-     "skills": [
-      "s.9.dna-protein-synthesis"
-     ],
-     "lessons": [
-      {
-       "n": "14.1",
-       "title": "Historical Basis of Modern Understanding",
-       "url": "https://openstax.org/books/biology-2e/pages/14-1-historical-basis-of-modern-understanding"
-      },
-      {
-       "n": "14.2",
-       "title": "DNA Structure and Sequencing",
-       "url": "https://openstax.org/books/biology-2e/pages/14-2-dna-structure-and-sequencing"
-      },
-      {
-       "n": "14.3",
-       "title": "Basics of DNA Replication",
-       "url": "https://openstax.org/books/biology-2e/pages/14-3-basics-of-dna-replication"
-      },
-      {
-       "n": "14.4",
-       "title": "DNA Replication in Prokaryotes",
-       "url": "https://openstax.org/books/biology-2e/pages/14-4-dna-replication-in-prokaryotes"
-      },
-      {
-       "n": "14.5",
-       "title": "DNA Replication in Eukaryotes",
-       "url": "https://openstax.org/books/biology-2e/pages/14-5-dna-replication-in-eukaryotes"
-      },
-      {
-       "n": "14.6",
-       "title": "DNA Repair",
-       "url": "https://openstax.org/books/biology-2e/pages/14-6-dna-repair"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "15",
-     "title": "Genes and Proteins",
-     "url": "https://openstax.org/books/biology-2e/pages/15-1-the-genetic-code",
-     "part": "Genetics",
-     "skills": [
-      "s.9.dna-protein-synthesis"
-     ],
-     "lessons": [
-      {
-       "n": "15.1",
-       "title": "The Genetic Code",
-       "url": "https://openstax.org/books/biology-2e/pages/15-1-the-genetic-code"
-      },
-      {
-       "n": "15.2",
-       "title": "Prokaryotic Transcription",
-       "url": "https://openstax.org/books/biology-2e/pages/15-2-prokaryotic-transcription"
-      },
-      {
-       "n": "15.3",
-       "title": "Eukaryotic Transcription",
-       "url": "https://openstax.org/books/biology-2e/pages/15-3-eukaryotic-transcription"
-      },
-      {
-       "n": "15.4",
-       "title": "RNA Processing in Eukaryotes",
-       "url": "https://openstax.org/books/biology-2e/pages/15-4-rna-processing-in-eukaryotes"
-      },
-      {
-       "n": "15.5",
-       "title": "Ribosomes and Protein Synthesis",
-       "url": "https://openstax.org/books/biology-2e/pages/15-5-ribosomes-and-protein-synthesis"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "16",
-     "title": "Gene Expression",
-     "url": "https://openstax.org/books/biology-2e/pages/16-1-regulation-of-gene-expression",
-     "part": "Genetics",
-     "skills": [
-      "s.9.dna-protein-synthesis"
-     ],
-     "notes": "Gene regulation; the taxonomy stops at transcription and translation (loose).",
-     "lessons": [
-      {
-       "n": "16.1",
-       "title": "Regulation of Gene Expression",
-       "url": "https://openstax.org/books/biology-2e/pages/16-1-regulation-of-gene-expression"
-      },
-      {
-       "n": "16.2",
-       "title": "Prokaryotic Gene Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/16-2-prokaryotic-gene-regulation"
-      },
-      {
-       "n": "16.3",
-       "title": "Eukaryotic Epigenetic Gene Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/16-3-eukaryotic-epigenetic-gene-regulation"
-      },
-      {
-       "n": "16.4",
-       "title": "Eukaryotic Transcription Gene Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/16-4-eukaryotic-transcription-gene-regulation"
-      },
-      {
-       "n": "16.5",
-       "title": "Eukaryotic Post-transcriptional Gene Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/16-5-eukaryotic-post-transcriptional-gene-regulation"
-      },
-      {
-       "n": "16.6",
-       "title": "Eukaryotic Translational and Post-translational Gene Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/16-6-eukaryotic-translational-and-post-translational-gene-regulation"
-      },
-      {
-       "n": "16.7",
-       "title": "Cancer and Gene Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/16-7-cancer-and-gene-regulation"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "17",
-     "title": "Biotechnology and Genomics",
-     "url": "https://openstax.org/books/biology-2e/pages/17-1-biotechnology",
-     "part": "Genetics",
-     "skills": [],
-     "notes": "Biotechnology and genomics; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "17.1",
-       "title": "Biotechnology",
-       "url": "https://openstax.org/books/biology-2e/pages/17-1-biotechnology"
-      },
-      {
-       "n": "17.2",
-       "title": "Mapping Genomes",
-       "url": "https://openstax.org/books/biology-2e/pages/17-2-mapping-genomes"
-      },
-      {
-       "n": "17.3",
-       "title": "Whole-Genome Sequencing",
-       "url": "https://openstax.org/books/biology-2e/pages/17-3-whole-genome-sequencing"
-      },
-      {
-       "n": "17.4",
-       "title": "Applying Genomics",
-       "url": "https://openstax.org/books/biology-2e/pages/17-4-applying-genomics"
-      },
-      {
-       "n": "17.5",
-       "title": "Genomics and Proteomics",
-       "url": "https://openstax.org/books/biology-2e/pages/17-5-genomics-and-proteomics"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "18",
-     "title": "Evolution and the Origin of Species",
-     "url": "https://openstax.org/books/biology-2e/pages/18-1-understanding-evolution",
-     "part": "Evolutionary Processes",
-     "skills": [
-      "s.9.evolution-evidence"
-     ],
-     "lessons": [
-      {
-       "n": "18.1",
-       "title": "Understanding Evolution",
-       "url": "https://openstax.org/books/biology-2e/pages/18-1-understanding-evolution"
-      },
-      {
-       "n": "18.2",
-       "title": "Formation of New Species",
-       "url": "https://openstax.org/books/biology-2e/pages/18-2-formation-of-new-species"
-      },
-      {
-       "n": "18.3",
-       "title": "Reconnection and Speciation Rates",
-       "url": "https://openstax.org/books/biology-2e/pages/18-3-reconnection-and-speciation-rates"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "19",
-     "title": "The Evolution of Populations",
-     "url": "https://openstax.org/books/biology-2e/pages/19-1-population-evolution",
-     "part": "Evolutionary Processes",
-     "skills": [
-      "s.9.evolution-evidence"
-     ],
-     "notes": "Population genetics (Hardy-Weinberg); also s.7.natural-selection.",
-     "lessons": [
-      {
-       "n": "19.1",
-       "title": "Population Evolution",
-       "url": "https://openstax.org/books/biology-2e/pages/19-1-population-evolution"
-      },
-      {
-       "n": "19.2",
-       "title": "Population Genetics",
-       "url": "https://openstax.org/books/biology-2e/pages/19-2-population-genetics"
-      },
-      {
-       "n": "19.3",
-       "title": "Adaptive Evolution",
-       "url": "https://openstax.org/books/biology-2e/pages/19-3-adaptive-evolution"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "20",
-     "title": "Phylogenies and the History of Life",
-     "url": "https://openstax.org/books/biology-2e/pages/20-1-organizing-life-on-earth",
-     "part": "Evolutionary Processes",
-     "skills": [
-      "s.9.evolution-evidence"
-     ],
-     "notes": "Phylogenies as evidence of common descent.",
-     "lessons": [
-      {
-       "n": "20.1",
-       "title": "Organizing Life on Earth",
-       "url": "https://openstax.org/books/biology-2e/pages/20-1-organizing-life-on-earth"
-      },
-      {
-       "n": "20.2",
-       "title": "Determining Evolutionary Relationships",
-       "url": "https://openstax.org/books/biology-2e/pages/20-2-determining-evolutionary-relationships"
-      },
-      {
-       "n": "20.3",
-       "title": "Perspectives on the Phylogenetic Tree",
-       "url": "https://openstax.org/books/biology-2e/pages/20-3-perspectives-on-the-phylogenetic-tree"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "21",
-     "title": "Viruses",
-     "url": "https://openstax.org/books/biology-2e/pages/21-1-viral-evolution-morphology-and-classification",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Viruses; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "21.1",
-       "title": "Viral Evolution, Morphology, and Classification",
-       "url": "https://openstax.org/books/biology-2e/pages/21-1-viral-evolution-morphology-and-classification"
-      },
-      {
-       "n": "21.2",
-       "title": "Virus Infections and Hosts",
-       "url": "https://openstax.org/books/biology-2e/pages/21-2-virus-infections-and-hosts"
-      },
-      {
-       "n": "21.3",
-       "title": "Prevention and Treatment of Viral Infections",
-       "url": "https://openstax.org/books/biology-2e/pages/21-3-prevention-and-treatment-of-viral-infections"
-      },
-      {
-       "n": "21.4",
-       "title": "Other Acellular Entities: Prions and Viroids",
-       "url": "https://openstax.org/books/biology-2e/pages/21-4-other-acellular-entities-prions-and-viroids"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "22",
-     "title": "Prokaryotes: Bacteria and Archaea",
-     "url": "https://openstax.org/books/biology-2e/pages/22-1-prokaryotic-diversity",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Prokaryotes; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "22.1",
-       "title": "Prokaryotic Diversity",
-       "url": "https://openstax.org/books/biology-2e/pages/22-1-prokaryotic-diversity"
-      },
-      {
-       "n": "22.2",
-       "title": "Structure of Prokaryotes: Bacteria and Archaea",
-       "url": "https://openstax.org/books/biology-2e/pages/22-2-structure-of-prokaryotes-bacteria-and-archaea"
-      },
-      {
-       "n": "22.3",
-       "title": "Prokaryotic Metabolism",
-       "url": "https://openstax.org/books/biology-2e/pages/22-3-prokaryotic-metabolism"
-      },
-      {
-       "n": "22.4",
-       "title": "Bacterial Diseases in Humans",
-       "url": "https://openstax.org/books/biology-2e/pages/22-4-bacterial-diseases-in-humans"
-      },
-      {
-       "n": "22.5",
-       "title": "Beneficial Prokaryotes",
-       "url": "https://openstax.org/books/biology-2e/pages/22-5-beneficial-prokaryotes"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "23",
-     "title": "Protists",
-     "url": "https://openstax.org/books/biology-2e/pages/23-1-eukaryotic-origins",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Protists; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "23.1",
-       "title": "Eukaryotic Origins",
-       "url": "https://openstax.org/books/biology-2e/pages/23-1-eukaryotic-origins"
-      },
-      {
-       "n": "23.2",
-       "title": "Characteristics of Protists",
-       "url": "https://openstax.org/books/biology-2e/pages/23-2-characteristics-of-protists"
-      },
-      {
-       "n": "23.3",
-       "title": "Groups of Protists",
-       "url": "https://openstax.org/books/biology-2e/pages/23-3-groups-of-protists"
-      },
-      {
-       "n": "23.4",
-       "title": "Ecology of Protists",
-       "url": "https://openstax.org/books/biology-2e/pages/23-4-ecology-of-protists"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "24",
-     "title": "Fungi",
-     "url": "https://openstax.org/books/biology-2e/pages/24-1-characteristics-of-fungi",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Fungi; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "24.1",
-       "title": "Characteristics of Fungi",
-       "url": "https://openstax.org/books/biology-2e/pages/24-1-characteristics-of-fungi"
-      },
-      {
-       "n": "24.2",
-       "title": "Classifications of Fungi",
-       "url": "https://openstax.org/books/biology-2e/pages/24-2-classifications-of-fungi"
-      },
-      {
-       "n": "24.3",
-       "title": "Ecology of Fungi",
-       "url": "https://openstax.org/books/biology-2e/pages/24-3-ecology-of-fungi"
-      },
-      {
-       "n": "24.4",
-       "title": "Fungal Parasites and Pathogens",
-       "url": "https://openstax.org/books/biology-2e/pages/24-4-fungal-parasites-and-pathogens"
-      },
-      {
-       "n": "24.5",
-       "title": "Importance of Fungi in Human Life",
-       "url": "https://openstax.org/books/biology-2e/pages/24-5-importance-of-fungi-in-human-life"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "25",
-     "title": "Seedless Plants",
-     "url": "https://openstax.org/books/biology-2e/pages/25-1-early-plant-life",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Seedless plants; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "25.1",
-       "title": "Early Plant Life",
-       "url": "https://openstax.org/books/biology-2e/pages/25-1-early-plant-life"
-      },
-      {
-       "n": "25.2",
-       "title": "Green Algae: Precursors of Land Plants",
-       "url": "https://openstax.org/books/biology-2e/pages/25-2-green-algae-precursors-of-land-plants"
-      },
-      {
-       "n": "25.3",
-       "title": "Bryophytes",
-       "url": "https://openstax.org/books/biology-2e/pages/25-3-bryophytes"
-      },
-      {
-       "n": "25.4",
-       "title": "Seedless Vascular Plants",
-       "url": "https://openstax.org/books/biology-2e/pages/25-4-seedless-vascular-plants"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "26",
-     "title": "Seed Plants",
-     "url": "https://openstax.org/books/biology-2e/pages/26-1-evolution-of-seed-plants",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Seed plants; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "26.1",
-       "title": "Evolution of Seed Plants",
-       "url": "https://openstax.org/books/biology-2e/pages/26-1-evolution-of-seed-plants"
-      },
-      {
-       "n": "26.2",
-       "title": "Gymnosperms",
-       "url": "https://openstax.org/books/biology-2e/pages/26-2-gymnosperms"
-      },
-      {
-       "n": "26.3",
-       "title": "Angiosperms",
-       "url": "https://openstax.org/books/biology-2e/pages/26-3-angiosperms"
-      },
-      {
-       "n": "26.4",
-       "title": "The Role of Seed Plants",
-       "url": "https://openstax.org/books/biology-2e/pages/26-4-the-role-of-seed-plants"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "27",
-     "title": "Introduction to Animal Diversity",
-     "url": "https://openstax.org/books/biology-2e/pages/27-1-features-of-the-animal-kingdom",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Animal diversity; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "27.1",
-       "title": "Features of the Animal Kingdom",
-       "url": "https://openstax.org/books/biology-2e/pages/27-1-features-of-the-animal-kingdom"
-      },
-      {
-       "n": "27.2",
-       "title": "Features Used to Classify Animals",
-       "url": "https://openstax.org/books/biology-2e/pages/27-2-features-used-to-classify-animals"
-      },
-      {
-       "n": "27.3",
-       "title": "Animal Phylogeny",
-       "url": "https://openstax.org/books/biology-2e/pages/27-3-animal-phylogeny"
-      },
-      {
-       "n": "27.4",
-       "title": "The Evolutionary History of the Animal Kingdom",
-       "url": "https://openstax.org/books/biology-2e/pages/27-4-the-evolutionary-history-of-the-animal-kingdom"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "28",
-     "title": "Invertebrates",
-     "url": "https://openstax.org/books/biology-2e/pages/28-1-phylum-porifera",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Invertebrates; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "28.1",
-       "title": "Phylum Porifera",
-       "url": "https://openstax.org/books/biology-2e/pages/28-1-phylum-porifera"
-      },
-      {
-       "n": "28.2",
-       "title": "Phylum Cnidaria",
-       "url": "https://openstax.org/books/biology-2e/pages/28-2-phylum-cnidaria"
-      },
-      {
-       "n": "28.3",
-       "title": "Superphylum Lophotrochozoa: Flatworms, Rotifers, and Nemerteans",
-       "url": "https://openstax.org/books/biology-2e/pages/28-3-superphylum-lophotrochozoa-flatworms-rotifers-and-nemerteans"
-      },
-      {
-       "n": "28.4",
-       "title": "Superphylum Lophotrochozoa: Mollusks and Annelids",
-       "url": "https://openstax.org/books/biology-2e/pages/28-4-superphylum-lophotrochozoa-mollusks-and-annelids"
-      },
-      {
-       "n": "28.5",
-       "title": "Superphylum Ecdysozoa: Nematodes and Tardigrades",
-       "url": "https://openstax.org/books/biology-2e/pages/28-5-superphylum-ecdysozoa-nematodes-and-tardigrades"
-      },
-      {
-       "n": "28.6",
-       "title": "Superphylum Ecdysozoa: Arthropods",
-       "url": "https://openstax.org/books/biology-2e/pages/28-6-superphylum-ecdysozoa-arthropods"
-      },
-      {
-       "n": "28.7",
-       "title": "Superphylum Deuterostomia",
-       "url": "https://openstax.org/books/biology-2e/pages/28-7-superphylum-deuterostomia"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "29",
-     "title": "Vertebrates",
-     "url": "https://openstax.org/books/biology-2e/pages/29-1-chordates",
-     "part": "Biological Diversity",
-     "skills": [],
-     "notes": "Vertebrates; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "29.1",
-       "title": "Chordates",
-       "url": "https://openstax.org/books/biology-2e/pages/29-1-chordates"
-      },
-      {
-       "n": "29.2",
-       "title": "Fishes",
-       "url": "https://openstax.org/books/biology-2e/pages/29-2-fishes"
-      },
-      {
-       "n": "29.3",
-       "title": "Amphibians",
-       "url": "https://openstax.org/books/biology-2e/pages/29-3-amphibians"
-      },
-      {
-       "n": "29.4",
-       "title": "Reptiles",
-       "url": "https://openstax.org/books/biology-2e/pages/29-4-reptiles"
-      },
-      {
-       "n": "29.5",
-       "title": "Birds",
-       "url": "https://openstax.org/books/biology-2e/pages/29-5-birds"
-      },
-      {
-       "n": "29.6",
-       "title": "Mammals",
-       "url": "https://openstax.org/books/biology-2e/pages/29-6-mammals"
-      },
-      {
-       "n": "29.7",
-       "title": "The Evolution of Primates",
-       "url": "https://openstax.org/books/biology-2e/pages/29-7-the-evolution-of-primates"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "30",
-     "title": "Plant Form and Physiology",
-     "url": "https://openstax.org/books/biology-2e/pages/30-1-the-plant-body",
-     "part": "Plant Structure and Function",
-     "skills": [],
-     "notes": "Plant form and physiology; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "30.1",
-       "title": "The Plant Body",
-       "url": "https://openstax.org/books/biology-2e/pages/30-1-the-plant-body"
-      },
-      {
-       "n": "30.2",
-       "title": "Stems",
-       "url": "https://openstax.org/books/biology-2e/pages/30-2-stems"
-      },
-      {
-       "n": "30.3",
-       "title": "Roots",
-       "url": "https://openstax.org/books/biology-2e/pages/30-3-roots"
-      },
-      {
-       "n": "30.4",
-       "title": "Leaves",
-       "url": "https://openstax.org/books/biology-2e/pages/30-4-leaves"
-      },
-      {
-       "n": "30.5",
-       "title": "Transport of Water and Solutes in Plants",
-       "url": "https://openstax.org/books/biology-2e/pages/30-5-transport-of-water-and-solutes-in-plants"
-      },
-      {
-       "n": "30.6",
-       "title": "Plant Sensory Systems and Responses",
-       "url": "https://openstax.org/books/biology-2e/pages/30-6-plant-sensory-systems-and-responses"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "31",
-     "title": "Soil and Plant Nutrition",
-     "url": "https://openstax.org/books/biology-2e/pages/31-1-nutritional-requirements-of-plants",
-     "part": "Plant Structure and Function",
-     "skills": [],
-     "notes": "Soil and plant nutrition; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "31.1",
-       "title": "Nutritional Requirements of Plants",
-       "url": "https://openstax.org/books/biology-2e/pages/31-1-nutritional-requirements-of-plants"
-      },
-      {
-       "n": "31.2",
-       "title": "The Soil",
-       "url": "https://openstax.org/books/biology-2e/pages/31-2-the-soil"
-      },
-      {
-       "n": "31.3",
-       "title": "Nutritional Adaptations of Plants",
-       "url": "https://openstax.org/books/biology-2e/pages/31-3-nutritional-adaptations-of-plants"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "32",
-     "title": "Plant Reproduction",
-     "url": "https://openstax.org/books/biology-2e/pages/32-1-reproductive-development-and-structure",
-     "part": "Plant Structure and Function",
-     "skills": [],
-     "notes": "Plant reproduction; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "32.1",
-       "title": "Reproductive Development and Structure",
-       "url": "https://openstax.org/books/biology-2e/pages/32-1-reproductive-development-and-structure"
-      },
-      {
-       "n": "32.2",
-       "title": "Pollination and Fertilization",
-       "url": "https://openstax.org/books/biology-2e/pages/32-2-pollination-and-fertilization"
-      },
-      {
-       "n": "32.3",
-       "title": "Asexual Reproduction",
-       "url": "https://openstax.org/books/biology-2e/pages/32-3-asexual-reproduction"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "33",
-     "title": "The Animal Body: Basic Form and Function",
-     "url": "https://openstax.org/books/biology-2e/pages/33-1-animal-form-and-function",
-     "part": "Animal Structure and Function",
-     "skills": [
-      "s.9.homeostasis"
-     ],
-     "notes": "Section 33.3 Homeostasis; 33.1-33.2 have no skill.",
-     "lessons": [
-      {
-       "n": "33.1",
-       "title": "Animal Form and Function",
-       "url": "https://openstax.org/books/biology-2e/pages/33-1-animal-form-and-function"
-      },
-      {
-       "n": "33.2",
-       "title": "Animal Primary Tissues",
-       "url": "https://openstax.org/books/biology-2e/pages/33-2-animal-primary-tissues"
-      },
-      {
-       "n": "33.3",
-       "title": "Homeostasis",
-       "url": "https://openstax.org/books/biology-2e/pages/33-3-homeostasis"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "34",
-     "title": "Animal Nutrition and the Digestive System",
-     "url": "https://openstax.org/books/biology-2e/pages/34-1-digestive-systems",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Digestive system; nearest is s.6.body-systems.",
-     "lessons": [
-      {
-       "n": "34.1",
-       "title": "Digestive Systems",
-       "url": "https://openstax.org/books/biology-2e/pages/34-1-digestive-systems"
-      },
-      {
-       "n": "34.2",
-       "title": "Nutrition and Energy Production",
-       "url": "https://openstax.org/books/biology-2e/pages/34-2-nutrition-and-energy-production"
-      },
-      {
-       "n": "34.3",
-       "title": "Digestive System Processes",
-       "url": "https://openstax.org/books/biology-2e/pages/34-3-digestive-system-processes"
-      },
-      {
-       "n": "34.4",
-       "title": "Digestive System Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/34-4-digestive-system-regulation"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "35",
-     "title": "The Nervous System",
-     "url": "https://openstax.org/books/biology-2e/pages/35-1-neurons-and-glial-cells",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Nervous system; nearest is s.6.body-systems.",
-     "lessons": [
-      {
-       "n": "35.1",
-       "title": "Neurons and Glial Cells",
-       "url": "https://openstax.org/books/biology-2e/pages/35-1-neurons-and-glial-cells"
-      },
-      {
-       "n": "35.2",
-       "title": "How Neurons Communicate",
-       "url": "https://openstax.org/books/biology-2e/pages/35-2-how-neurons-communicate"
-      },
-      {
-       "n": "35.3",
-       "title": "The Central Nervous System",
-       "url": "https://openstax.org/books/biology-2e/pages/35-3-the-central-nervous-system"
-      },
-      {
-       "n": "35.4",
-       "title": "The Peripheral Nervous System",
-       "url": "https://openstax.org/books/biology-2e/pages/35-4-the-peripheral-nervous-system"
-      },
-      {
-       "n": "35.5",
-       "title": "Nervous System Disorders",
-       "url": "https://openstax.org/books/biology-2e/pages/35-5-nervous-system-disorders"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "36",
-     "title": "Sensory Systems",
-     "url": "https://openstax.org/books/biology-2e/pages/36-1-sensory-processes",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Sensory systems; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "36.1",
-       "title": "Sensory Processes",
-       "url": "https://openstax.org/books/biology-2e/pages/36-1-sensory-processes"
-      },
-      {
-       "n": "36.2",
-       "title": "Somatosensation",
-       "url": "https://openstax.org/books/biology-2e/pages/36-2-somatosensation"
-      },
-      {
-       "n": "36.3",
-       "title": "Taste and Smell",
-       "url": "https://openstax.org/books/biology-2e/pages/36-3-taste-and-smell"
-      },
-      {
-       "n": "36.4",
-       "title": "Hearing and Vestibular Sensation",
-       "url": "https://openstax.org/books/biology-2e/pages/36-4-hearing-and-vestibular-sensation"
-      },
-      {
-       "n": "36.5",
-       "title": "Vision",
-       "url": "https://openstax.org/books/biology-2e/pages/36-5-vision"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "37",
-     "title": "The Endocrine System",
-     "url": "https://openstax.org/books/biology-2e/pages/37-1-types-of-hormones",
-     "part": "Animal Structure and Function",
-     "skills": [
-      "s.9.homeostasis"
-     ],
-     "notes": "Endocrine regulation as feedback loops.",
-     "lessons": [
-      {
-       "n": "37.1",
-       "title": "Types of Hormones",
-       "url": "https://openstax.org/books/biology-2e/pages/37-1-types-of-hormones"
-      },
-      {
-       "n": "37.2",
-       "title": "How Hormones Work",
-       "url": "https://openstax.org/books/biology-2e/pages/37-2-how-hormones-work"
-      },
-      {
-       "n": "37.3",
-       "title": "Regulation of Body Processes",
-       "url": "https://openstax.org/books/biology-2e/pages/37-3-regulation-of-body-processes"
-      },
-      {
-       "n": "37.4",
-       "title": "Regulation of Hormone Production",
-       "url": "https://openstax.org/books/biology-2e/pages/37-4-regulation-of-hormone-production"
-      },
-      {
-       "n": "37.5",
-       "title": "Endocrine Glands",
-       "url": "https://openstax.org/books/biology-2e/pages/37-5-endocrine-glands"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "38",
-     "title": "The Musculoskeletal System",
-     "url": "https://openstax.org/books/biology-2e/pages/38-1-types-of-skeletal-systems",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Musculoskeletal system; nearest is s.6.body-systems.",
-     "lessons": [
-      {
-       "n": "38.1",
-       "title": "Types of Skeletal Systems",
-       "url": "https://openstax.org/books/biology-2e/pages/38-1-types-of-skeletal-systems"
-      },
-      {
-       "n": "38.2",
-       "title": "Bone",
-       "url": "https://openstax.org/books/biology-2e/pages/38-2-bone"
-      },
-      {
-       "n": "38.3",
-       "title": "Joints and Skeletal Movement",
-       "url": "https://openstax.org/books/biology-2e/pages/38-3-joints-and-skeletal-movement"
-      },
-      {
-       "n": "38.4",
-       "title": "Muscle Contraction and Locomotion",
-       "url": "https://openstax.org/books/biology-2e/pages/38-4-muscle-contraction-and-locomotion"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "39",
-     "title": "The Respiratory System",
-     "url": "https://openstax.org/books/biology-2e/pages/39-1-systems-of-gas-exchange",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Respiratory system; nearest is s.6.body-systems.",
-     "lessons": [
-      {
-       "n": "39.1",
-       "title": "Systems of Gas Exchange",
-       "url": "https://openstax.org/books/biology-2e/pages/39-1-systems-of-gas-exchange"
-      },
-      {
-       "n": "39.2",
-       "title": "Gas Exchange across Respiratory Surfaces",
-       "url": "https://openstax.org/books/biology-2e/pages/39-2-gas-exchange-across-respiratory-surfaces"
-      },
-      {
-       "n": "39.3",
-       "title": "Breathing",
-       "url": "https://openstax.org/books/biology-2e/pages/39-3-breathing"
-      },
-      {
-       "n": "39.4",
-       "title": "Transport of Gases in Human Bodily Fluids",
-       "url": "https://openstax.org/books/biology-2e/pages/39-4-transport-of-gases-in-human-bodily-fluids"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "40",
-     "title": "The Circulatory System",
-     "url": "https://openstax.org/books/biology-2e/pages/40-1-overview-of-the-circulatory-system",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Circulatory system; nearest is s.6.body-systems.",
-     "lessons": [
-      {
-       "n": "40.1",
-       "title": "Overview of the Circulatory System",
-       "url": "https://openstax.org/books/biology-2e/pages/40-1-overview-of-the-circulatory-system"
-      },
-      {
-       "n": "40.2",
-       "title": "Components of the Blood",
-       "url": "https://openstax.org/books/biology-2e/pages/40-2-components-of-the-blood"
-      },
-      {
-       "n": "40.3",
-       "title": "Mammalian Heart and Blood Vessels",
-       "url": "https://openstax.org/books/biology-2e/pages/40-3-mammalian-heart-and-blood-vessels"
-      },
-      {
-       "n": "40.4",
-       "title": "Blood Flow and Blood Pressure Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/40-4-blood-flow-and-blood-pressure-regulation"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "41",
-     "title": "Osmotic Regulation and Excretion",
-     "url": "https://openstax.org/books/biology-2e/pages/41-1-osmoregulation-and-osmotic-balance",
-     "part": "Animal Structure and Function",
-     "skills": [
-      "s.9.homeostasis",
-      "s.9.membrane-transport"
-     ],
-     "notes": "Osmoregulation and excretion.",
-     "lessons": [
-      {
-       "n": "41.1",
-       "title": "Osmoregulation and Osmotic Balance",
-       "url": "https://openstax.org/books/biology-2e/pages/41-1-osmoregulation-and-osmotic-balance"
-      },
-      {
-       "n": "41.2",
-       "title": "The Kidneys and Osmoregulatory Organs",
-       "url": "https://openstax.org/books/biology-2e/pages/41-2-the-kidneys-and-osmoregulatory-organs"
-      },
-      {
-       "n": "41.3",
-       "title": "Excretion Systems",
-       "url": "https://openstax.org/books/biology-2e/pages/41-3-excretion-systems"
-      },
-      {
-       "n": "41.4",
-       "title": "Nitrogenous Wastes",
-       "url": "https://openstax.org/books/biology-2e/pages/41-4-nitrogenous-wastes"
-      },
-      {
-       "n": "41.5",
-       "title": "Hormonal Control of Osmoregulatory Functions",
-       "url": "https://openstax.org/books/biology-2e/pages/41-5-hormonal-control-of-osmoregulatory-functions"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "42",
-     "title": "The Immune System",
-     "url": "https://openstax.org/books/biology-2e/pages/42-1-innate-immune-response",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Immune system; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "42.1",
-       "title": "Innate Immune Response",
-       "url": "https://openstax.org/books/biology-2e/pages/42-1-innate-immune-response"
-      },
-      {
-       "n": "42.2",
-       "title": "Adaptive Immune Response",
-       "url": "https://openstax.org/books/biology-2e/pages/42-2-adaptive-immune-response"
-      },
-      {
-       "n": "42.3",
-       "title": "Antibodies",
-       "url": "https://openstax.org/books/biology-2e/pages/42-3-antibodies"
-      },
-      {
-       "n": "42.4",
-       "title": "Disruptions in the Immune System",
-       "url": "https://openstax.org/books/biology-2e/pages/42-4-disruptions-in-the-immune-system"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "43",
-     "title": "Animal Reproduction and Development",
-     "url": "https://openstax.org/books/biology-2e/pages/43-1-reproduction-methods",
-     "part": "Animal Structure and Function",
-     "skills": [],
-     "notes": "Animal reproduction and development; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "43.1",
-       "title": "Reproduction Methods",
-       "url": "https://openstax.org/books/biology-2e/pages/43-1-reproduction-methods"
-      },
-      {
-       "n": "43.2",
-       "title": "Fertilization",
-       "url": "https://openstax.org/books/biology-2e/pages/43-2-fertilization"
-      },
-      {
-       "n": "43.3",
-       "title": "Human Reproductive Anatomy and Gametogenesis",
-       "url": "https://openstax.org/books/biology-2e/pages/43-3-human-reproductive-anatomy-and-gametogenesis"
-      },
-      {
-       "n": "43.4",
-       "title": "Hormonal Control of Human Reproduction",
-       "url": "https://openstax.org/books/biology-2e/pages/43-4-hormonal-control-of-human-reproduction"
-      },
-      {
-       "n": "43.5",
-       "title": "Human Pregnancy and Birth",
-       "url": "https://openstax.org/books/biology-2e/pages/43-5-human-pregnancy-and-birth"
-      },
-      {
-       "n": "43.6",
-       "title": "Fertilization and Early Embryonic Development",
-       "url": "https://openstax.org/books/biology-2e/pages/43-6-fertilization-and-early-embryonic-development"
-      },
-      {
-       "n": "43.7",
-       "title": "Organogenesis and Vertebrate Axis Formation",
-       "url": "https://openstax.org/books/biology-2e/pages/43-7-organogenesis-and-vertebrate-axis-formation"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "44",
-     "title": "Ecology and the Biosphere",
-     "url": "https://openstax.org/books/biology-2e/pages/44-1-the-scope-of-ecology",
-     "part": "Ecology",
-     "skills": [
-      "s.12.climate-systems"
-     ],
-     "notes": "Section 44.5 climate and global climate change (grade 12 skill); biomes have no skill.",
-     "lessons": [
-      {
-       "n": "44.1",
-       "title": "The Scope of Ecology",
-       "url": "https://openstax.org/books/biology-2e/pages/44-1-the-scope-of-ecology"
-      },
-      {
-       "n": "44.2",
-       "title": "Biogeography",
-       "url": "https://openstax.org/books/biology-2e/pages/44-2-biogeography"
-      },
-      {
-       "n": "44.3",
-       "title": "Terrestrial Biomes",
-       "url": "https://openstax.org/books/biology-2e/pages/44-3-terrestrial-biomes"
-      },
-      {
-       "n": "44.4",
-       "title": "Aquatic Biomes",
-       "url": "https://openstax.org/books/biology-2e/pages/44-4-aquatic-biomes"
-      },
-      {
-       "n": "44.5",
-       "title": "Climate and the Effects of Global Climate Change",
-       "url": "https://openstax.org/books/biology-2e/pages/44-5-climate-and-the-effects-of-global-climate-change"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "45",
-     "title": "Population and Community Ecology",
-     "url": "https://openstax.org/books/biology-2e/pages/45-1-population-demography",
-     "part": "Ecology",
-     "skills": [
-      "s.9.population-ecology"
-     ],
-     "lessons": [
-      {
-       "n": "45.1",
-       "title": "Population Demography",
-       "url": "https://openstax.org/books/biology-2e/pages/45-1-population-demography"
-      },
-      {
-       "n": "45.2",
-       "title": "Life Histories and Natural Selection",
-       "url": "https://openstax.org/books/biology-2e/pages/45-2-life-histories-and-natural-selection"
-      },
-      {
-       "n": "45.3",
-       "title": "Environmental Limits to Population Growth",
-       "url": "https://openstax.org/books/biology-2e/pages/45-3-environmental-limits-to-population-growth"
-      },
-      {
-       "n": "45.4",
-       "title": "Population Dynamics and Regulation",
-       "url": "https://openstax.org/books/biology-2e/pages/45-4-population-dynamics-and-regulation"
-      },
-      {
-       "n": "45.5",
-       "title": "Human Population Growth",
-       "url": "https://openstax.org/books/biology-2e/pages/45-5-human-population-growth"
-      },
-      {
-       "n": "45.6",
-       "title": "Community Ecology",
-       "url": "https://openstax.org/books/biology-2e/pages/45-6-community-ecology"
-      },
-      {
-       "n": "45.7",
-       "title": "Behavioral Biology: Proximate and Ultimate Causes of Behavior",
-       "url": "https://openstax.org/books/biology-2e/pages/45-7-behavioral-biology-proximate-and-ultimate-causes-of-behavior"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "46",
-     "title": "Ecosystems",
-     "url": "https://openstax.org/books/biology-2e/pages/46-1-ecology-of-ecosystems",
-     "part": "Ecology",
-     "skills": [],
-     "notes": "Ecosystems, energy flow and biogeochemical cycles: nearest is s.7.ecosystem-energy (middle school).",
-     "lessons": [
-      {
-       "n": "46.1",
-       "title": "Ecology of Ecosystems",
-       "url": "https://openstax.org/books/biology-2e/pages/46-1-ecology-of-ecosystems"
-      },
-      {
-       "n": "46.2",
-       "title": "Energy Flow through Ecosystems",
-       "url": "https://openstax.org/books/biology-2e/pages/46-2-energy-flow-through-ecosystems"
-      },
-      {
-       "n": "46.3",
-       "title": "Biogeochemical Cycles",
-       "url": "https://openstax.org/books/biology-2e/pages/46-3-biogeochemical-cycles"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
-    },
-    {
-     "n": "47",
-     "title": "Conservation Biology and Biodiversity",
-     "url": "https://openstax.org/books/biology-2e/pages/47-1-the-biodiversity-crisis",
-     "part": "Ecology",
-     "skills": [
-      "s.12.resource-management"
-     ],
-     "notes": "Biodiversity threats and conservation as human impacts (grade 12 skill).",
-     "lessons": [
-      {
-       "n": "47.1",
-       "title": "The Biodiversity Crisis",
-       "url": "https://openstax.org/books/biology-2e/pages/47-1-the-biodiversity-crisis"
-      },
-      {
-       "n": "47.2",
-       "title": "The Importance of Biodiversity to Human Life",
-       "url": "https://openstax.org/books/biology-2e/pages/47-2-the-importance-of-biodiversity-to-human-life"
-      },
-      {
-       "n": "47.3",
-       "title": "Threats to Biodiversity",
-       "url": "https://openstax.org/books/biology-2e/pages/47-3-threats-to-biodiversity"
-      },
-      {
-       "n": "47.4",
-       "title": "Preserving Biodiversity",
-       "url": "https://openstax.org/books/biology-2e/pages/47-4-preserving-biodiversity"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Chapter Summary",
-      "Visual Connection Questions",
-      "Review Questions",
-      "Critical Thinking Questions"
-     ]
+      "grade": "9",
+      "url": "https://openstax.org/books/biology-2e/pages/1-introduction",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Study of Life",
+          "url": "https://openstax.org/books/biology-2e/pages/1-1-the-science-of-biology",
+          "part": "The Chemistry of Life",
+          "skills": [],
+          "notes": "Nature of science; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "The Science of Biology",
+              "url": "https://openstax.org/books/biology-2e/pages/1-1-the-science-of-biology"
+            },
+            {
+              "n": "1.2",
+              "title": "Themes and Concepts of Biology",
+              "url": "https://openstax.org/books/biology-2e/pages/1-2-themes-and-concepts-of-biology"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "The Chemical Foundation of Life",
+          "url": "https://openstax.org/books/biology-2e/pages/2-1-atoms-isotopes-ions-and-molecules-the-building-blocks",
+          "part": "The Chemistry of Life",
+          "skills": ["s.9.biomolecules"],
+          "notes": "Atoms, water and carbon as the chemistry behind biomolecules (loose); also s.10.atomic-structure, s.10.bonding.",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Atoms, Isotopes, Ions, and Molecules: The Building Blocks",
+              "url": "https://openstax.org/books/biology-2e/pages/2-1-atoms-isotopes-ions-and-molecules-the-building-blocks"
+            },
+            {
+              "n": "2.2",
+              "title": "Water",
+              "url": "https://openstax.org/books/biology-2e/pages/2-2-water"
+            },
+            {
+              "n": "2.3",
+              "title": "Carbon",
+              "url": "https://openstax.org/books/biology-2e/pages/2-3-carbon"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Biological Macromolecules",
+          "url": "https://openstax.org/books/biology-2e/pages/3-1-synthesis-of-biological-macromolecules",
+          "part": "The Chemistry of Life",
+          "skills": ["s.9.biomolecules"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Synthesis of Biological Macromolecules",
+              "url": "https://openstax.org/books/biology-2e/pages/3-1-synthesis-of-biological-macromolecules"
+            },
+            {
+              "n": "3.2",
+              "title": "Carbohydrates",
+              "url": "https://openstax.org/books/biology-2e/pages/3-2-carbohydrates"
+            },
+            {
+              "n": "3.3",
+              "title": "Lipids",
+              "url": "https://openstax.org/books/biology-2e/pages/3-3-lipids"
+            },
+            {
+              "n": "3.4",
+              "title": "Proteins",
+              "url": "https://openstax.org/books/biology-2e/pages/3-4-proteins"
+            },
+            {
+              "n": "3.5",
+              "title": "Nucleic Acids",
+              "url": "https://openstax.org/books/biology-2e/pages/3-5-nucleic-acids"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Cell Structure",
+          "url": "https://openstax.org/books/biology-2e/pages/4-1-studying-cells",
+          "part": "The Cell",
+          "skills": [],
+          "notes": "Cell structure: nearest are s.6.cells and s.6.cell-organelles (middle school).",
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Studying Cells",
+              "url": "https://openstax.org/books/biology-2e/pages/4-1-studying-cells"
+            },
+            {
+              "n": "4.2",
+              "title": "Prokaryotic Cells",
+              "url": "https://openstax.org/books/biology-2e/pages/4-2-prokaryotic-cells"
+            },
+            {
+              "n": "4.3",
+              "title": "Eukaryotic Cells",
+              "url": "https://openstax.org/books/biology-2e/pages/4-3-eukaryotic-cells"
+            },
+            {
+              "n": "4.4",
+              "title": "The Endomembrane System and Proteins",
+              "url": "https://openstax.org/books/biology-2e/pages/4-4-the-endomembrane-system-and-proteins"
+            },
+            {
+              "n": "4.5",
+              "title": "The Cytoskeleton",
+              "url": "https://openstax.org/books/biology-2e/pages/4-5-the-cytoskeleton"
+            },
+            {
+              "n": "4.6",
+              "title": "Connections between Cells and Cellular Activities",
+              "url": "https://openstax.org/books/biology-2e/pages/4-6-connections-between-cells-and-cellular-activities"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Structure and Function of Plasma Membranes",
+          "url": "https://openstax.org/books/biology-2e/pages/5-1-components-and-structure",
+          "part": "The Cell",
+          "skills": ["s.9.membrane-transport"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Components and Structure",
+              "url": "https://openstax.org/books/biology-2e/pages/5-1-components-and-structure"
+            },
+            {
+              "n": "5.2",
+              "title": "Passive Transport",
+              "url": "https://openstax.org/books/biology-2e/pages/5-2-passive-transport"
+            },
+            {
+              "n": "5.3",
+              "title": "Active Transport",
+              "url": "https://openstax.org/books/biology-2e/pages/5-3-active-transport"
+            },
+            {
+              "n": "5.4",
+              "title": "Bulk Transport",
+              "url": "https://openstax.org/books/biology-2e/pages/5-4-bulk-transport"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Metabolism",
+          "url": "https://openstax.org/books/biology-2e/pages/6-1-energy-and-metabolism",
+          "part": "The Cell",
+          "skills": [],
+          "notes": "Metabolism, free energy and enzymes: nearest are s.10.thermochemistry and s.10.rates-equilibrium (catalysts).",
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Energy and Metabolism",
+              "url": "https://openstax.org/books/biology-2e/pages/6-1-energy-and-metabolism"
+            },
+            {
+              "n": "6.2",
+              "title": "Potential, Kinetic, Free, and Activation Energy",
+              "url": "https://openstax.org/books/biology-2e/pages/6-2-potential-kinetic-free-and-activation-energy"
+            },
+            {
+              "n": "6.3",
+              "title": "The Laws of Thermodynamics",
+              "url": "https://openstax.org/books/biology-2e/pages/6-3-the-laws-of-thermodynamics"
+            },
+            {
+              "n": "6.4",
+              "title": "ATP: Adenosine Triphosphate",
+              "url": "https://openstax.org/books/biology-2e/pages/6-4-atp-adenosine-triphosphate"
+            },
+            {
+              "n": "6.5",
+              "title": "Enzymes",
+              "url": "https://openstax.org/books/biology-2e/pages/6-5-enzymes"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Cellular Respiration",
+          "url": "https://openstax.org/books/biology-2e/pages/7-1-energy-in-living-systems",
+          "part": "The Cell",
+          "skills": [],
+          "notes": "Cellular respiration: nearest is s.7.photosynthesis-respiration (middle school).",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Energy in Living Systems",
+              "url": "https://openstax.org/books/biology-2e/pages/7-1-energy-in-living-systems"
+            },
+            {
+              "n": "7.2",
+              "title": "Glycolysis",
+              "url": "https://openstax.org/books/biology-2e/pages/7-2-glycolysis"
+            },
+            {
+              "n": "7.3",
+              "title": "Oxidation of Pyruvate and the Citric Acid Cycle",
+              "url": "https://openstax.org/books/biology-2e/pages/7-3-oxidation-of-pyruvate-and-the-citric-acid-cycle"
+            },
+            {
+              "n": "7.4",
+              "title": "Oxidative Phosphorylation",
+              "url": "https://openstax.org/books/biology-2e/pages/7-4-oxidative-phosphorylation"
+            },
+            {
+              "n": "7.5",
+              "title": "Metabolism without Oxygen",
+              "url": "https://openstax.org/books/biology-2e/pages/7-5-metabolism-without-oxygen"
+            },
+            {
+              "n": "7.6",
+              "title": "Connections of Carbohydrate, Protein, and Lipid Metabolic Pathways",
+              "url": "https://openstax.org/books/biology-2e/pages/7-6-connections-of-carbohydrate-protein-and-lipid-metabolic-pathways"
+            },
+            {
+              "n": "7.7",
+              "title": "Regulation of Cellular Respiration",
+              "url": "https://openstax.org/books/biology-2e/pages/7-7-regulation-of-cellular-respiration"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Photosynthesis",
+          "url": "https://openstax.org/books/biology-2e/pages/8-1-overview-of-photosynthesis",
+          "part": "The Cell",
+          "skills": [],
+          "notes": "Photosynthesis: nearest is s.7.photosynthesis-respiration (middle school).",
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Overview of Photosynthesis",
+              "url": "https://openstax.org/books/biology-2e/pages/8-1-overview-of-photosynthesis"
+            },
+            {
+              "n": "8.2",
+              "title": "The Light-Dependent Reactions of Photosynthesis",
+              "url": "https://openstax.org/books/biology-2e/pages/8-2-the-light-dependent-reactions-of-photosynthesis"
+            },
+            {
+              "n": "8.3",
+              "title": "Using Light Energy to Make Organic Molecules",
+              "url": "https://openstax.org/books/biology-2e/pages/8-3-using-light-energy-to-make-organic-molecules"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Cell Communication",
+          "url": "https://openstax.org/books/biology-2e/pages/9-1-signaling-molecules-and-cellular-receptors",
+          "part": "The Cell",
+          "skills": ["s.9.homeostasis"],
+          "notes": "Cell signaling as the mechanism behind feedback (loose).",
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Signaling Molecules and Cellular Receptors",
+              "url": "https://openstax.org/books/biology-2e/pages/9-1-signaling-molecules-and-cellular-receptors"
+            },
+            {
+              "n": "9.2",
+              "title": "Propagation of the Signal",
+              "url": "https://openstax.org/books/biology-2e/pages/9-2-propagation-of-the-signal"
+            },
+            {
+              "n": "9.3",
+              "title": "Response to the Signal",
+              "url": "https://openstax.org/books/biology-2e/pages/9-3-response-to-the-signal"
+            },
+            {
+              "n": "9.4",
+              "title": "Signaling in Single-Celled Organisms",
+              "url": "https://openstax.org/books/biology-2e/pages/9-4-signaling-in-single-celled-organisms"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Cell Reproduction",
+          "url": "https://openstax.org/books/biology-2e/pages/10-1-cell-division",
+          "part": "The Cell",
+          "skills": ["s.9.mitosis-meiosis"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Cell Division",
+              "url": "https://openstax.org/books/biology-2e/pages/10-1-cell-division"
+            },
+            {
+              "n": "10.2",
+              "title": "The Cell Cycle",
+              "url": "https://openstax.org/books/biology-2e/pages/10-2-the-cell-cycle"
+            },
+            {
+              "n": "10.3",
+              "title": "Control of the Cell Cycle",
+              "url": "https://openstax.org/books/biology-2e/pages/10-3-control-of-the-cell-cycle"
+            },
+            {
+              "n": "10.4",
+              "title": "Cancer and the Cell Cycle",
+              "url": "https://openstax.org/books/biology-2e/pages/10-4-cancer-and-the-cell-cycle"
+            },
+            {
+              "n": "10.5",
+              "title": "Prokaryotic Cell Division",
+              "url": "https://openstax.org/books/biology-2e/pages/10-5-prokaryotic-cell-division"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Meiosis and Sexual Reproduction",
+          "url": "https://openstax.org/books/biology-2e/pages/11-1-the-process-of-meiosis",
+          "part": "Genetics",
+          "skills": ["s.9.mitosis-meiosis"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "The Process of Meiosis",
+              "url": "https://openstax.org/books/biology-2e/pages/11-1-the-process-of-meiosis"
+            },
+            {
+              "n": "11.2",
+              "title": "Sexual Reproduction",
+              "url": "https://openstax.org/books/biology-2e/pages/11-2-sexual-reproduction"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Mendel's Experiments and Heredity",
+          "url": "https://openstax.org/books/biology-2e/pages/12-1-mendels-experiments-and-the-laws-of-probability",
+          "part": "Genetics",
+          "skills": ["s.9.inheritance-patterns"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Mendel’s Experiments and the Laws of Probability",
+              "url": "https://openstax.org/books/biology-2e/pages/12-1-mendels-experiments-and-the-laws-of-probability"
+            },
+            {
+              "n": "12.2",
+              "title": "Characteristics and Traits",
+              "url": "https://openstax.org/books/biology-2e/pages/12-2-characteristics-and-traits"
+            },
+            {
+              "n": "12.3",
+              "title": "Laws of Inheritance",
+              "url": "https://openstax.org/books/biology-2e/pages/12-3-laws-of-inheritance"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Modern Understandings of Inheritance",
+          "url": "https://openstax.org/books/biology-2e/pages/13-1-chromosomal-theory-and-genetic-linkage",
+          "part": "Genetics",
+          "skills": ["s.9.inheritance-patterns"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Chromosomal Theory and Genetic Linkage",
+              "url": "https://openstax.org/books/biology-2e/pages/13-1-chromosomal-theory-and-genetic-linkage"
+            },
+            {
+              "n": "13.2",
+              "title": "Chromosomal Basis of Inherited Disorders",
+              "url": "https://openstax.org/books/biology-2e/pages/13-2-chromosomal-basis-of-inherited-disorders"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "14",
+          "title": "DNA Structure and Function",
+          "url": "https://openstax.org/books/biology-2e/pages/14-1-historical-basis-of-modern-understanding",
+          "part": "Genetics",
+          "skills": ["s.9.dna-protein-synthesis"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Historical Basis of Modern Understanding",
+              "url": "https://openstax.org/books/biology-2e/pages/14-1-historical-basis-of-modern-understanding"
+            },
+            {
+              "n": "14.2",
+              "title": "DNA Structure and Sequencing",
+              "url": "https://openstax.org/books/biology-2e/pages/14-2-dna-structure-and-sequencing"
+            },
+            {
+              "n": "14.3",
+              "title": "Basics of DNA Replication",
+              "url": "https://openstax.org/books/biology-2e/pages/14-3-basics-of-dna-replication"
+            },
+            {
+              "n": "14.4",
+              "title": "DNA Replication in Prokaryotes",
+              "url": "https://openstax.org/books/biology-2e/pages/14-4-dna-replication-in-prokaryotes"
+            },
+            {
+              "n": "14.5",
+              "title": "DNA Replication in Eukaryotes",
+              "url": "https://openstax.org/books/biology-2e/pages/14-5-dna-replication-in-eukaryotes"
+            },
+            {
+              "n": "14.6",
+              "title": "DNA Repair",
+              "url": "https://openstax.org/books/biology-2e/pages/14-6-dna-repair"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Genes and Proteins",
+          "url": "https://openstax.org/books/biology-2e/pages/15-1-the-genetic-code",
+          "part": "Genetics",
+          "skills": ["s.9.dna-protein-synthesis"],
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "The Genetic Code",
+              "url": "https://openstax.org/books/biology-2e/pages/15-1-the-genetic-code"
+            },
+            {
+              "n": "15.2",
+              "title": "Prokaryotic Transcription",
+              "url": "https://openstax.org/books/biology-2e/pages/15-2-prokaryotic-transcription"
+            },
+            {
+              "n": "15.3",
+              "title": "Eukaryotic Transcription",
+              "url": "https://openstax.org/books/biology-2e/pages/15-3-eukaryotic-transcription"
+            },
+            {
+              "n": "15.4",
+              "title": "RNA Processing in Eukaryotes",
+              "url": "https://openstax.org/books/biology-2e/pages/15-4-rna-processing-in-eukaryotes"
+            },
+            {
+              "n": "15.5",
+              "title": "Ribosomes and Protein Synthesis",
+              "url": "https://openstax.org/books/biology-2e/pages/15-5-ribosomes-and-protein-synthesis"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Gene Expression",
+          "url": "https://openstax.org/books/biology-2e/pages/16-1-regulation-of-gene-expression",
+          "part": "Genetics",
+          "skills": ["s.9.dna-protein-synthesis"],
+          "notes": "Gene regulation; the taxonomy stops at transcription and translation (loose).",
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Regulation of Gene Expression",
+              "url": "https://openstax.org/books/biology-2e/pages/16-1-regulation-of-gene-expression"
+            },
+            {
+              "n": "16.2",
+              "title": "Prokaryotic Gene Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/16-2-prokaryotic-gene-regulation"
+            },
+            {
+              "n": "16.3",
+              "title": "Eukaryotic Epigenetic Gene Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/16-3-eukaryotic-epigenetic-gene-regulation"
+            },
+            {
+              "n": "16.4",
+              "title": "Eukaryotic Transcription Gene Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/16-4-eukaryotic-transcription-gene-regulation"
+            },
+            {
+              "n": "16.5",
+              "title": "Eukaryotic Post-transcriptional Gene Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/16-5-eukaryotic-post-transcriptional-gene-regulation"
+            },
+            {
+              "n": "16.6",
+              "title": "Eukaryotic Translational and Post-translational Gene Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/16-6-eukaryotic-translational-and-post-translational-gene-regulation"
+            },
+            {
+              "n": "16.7",
+              "title": "Cancer and Gene Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/16-7-cancer-and-gene-regulation"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Biotechnology and Genomics",
+          "url": "https://openstax.org/books/biology-2e/pages/17-1-biotechnology",
+          "part": "Genetics",
+          "skills": [],
+          "notes": "Biotechnology and genomics; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Biotechnology",
+              "url": "https://openstax.org/books/biology-2e/pages/17-1-biotechnology"
+            },
+            {
+              "n": "17.2",
+              "title": "Mapping Genomes",
+              "url": "https://openstax.org/books/biology-2e/pages/17-2-mapping-genomes"
+            },
+            {
+              "n": "17.3",
+              "title": "Whole-Genome Sequencing",
+              "url": "https://openstax.org/books/biology-2e/pages/17-3-whole-genome-sequencing"
+            },
+            {
+              "n": "17.4",
+              "title": "Applying Genomics",
+              "url": "https://openstax.org/books/biology-2e/pages/17-4-applying-genomics"
+            },
+            {
+              "n": "17.5",
+              "title": "Genomics and Proteomics",
+              "url": "https://openstax.org/books/biology-2e/pages/17-5-genomics-and-proteomics"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "18",
+          "title": "Evolution and the Origin of Species",
+          "url": "https://openstax.org/books/biology-2e/pages/18-1-understanding-evolution",
+          "part": "Evolutionary Processes",
+          "skills": ["s.9.evolution-evidence"],
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Understanding Evolution",
+              "url": "https://openstax.org/books/biology-2e/pages/18-1-understanding-evolution"
+            },
+            {
+              "n": "18.2",
+              "title": "Formation of New Species",
+              "url": "https://openstax.org/books/biology-2e/pages/18-2-formation-of-new-species"
+            },
+            {
+              "n": "18.3",
+              "title": "Reconnection and Speciation Rates",
+              "url": "https://openstax.org/books/biology-2e/pages/18-3-reconnection-and-speciation-rates"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "19",
+          "title": "The Evolution of Populations",
+          "url": "https://openstax.org/books/biology-2e/pages/19-1-population-evolution",
+          "part": "Evolutionary Processes",
+          "skills": ["s.9.evolution-evidence"],
+          "notes": "Population genetics (Hardy-Weinberg); also s.7.natural-selection.",
+          "lessons": [
+            {
+              "n": "19.1",
+              "title": "Population Evolution",
+              "url": "https://openstax.org/books/biology-2e/pages/19-1-population-evolution"
+            },
+            {
+              "n": "19.2",
+              "title": "Population Genetics",
+              "url": "https://openstax.org/books/biology-2e/pages/19-2-population-genetics"
+            },
+            {
+              "n": "19.3",
+              "title": "Adaptive Evolution",
+              "url": "https://openstax.org/books/biology-2e/pages/19-3-adaptive-evolution"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "20",
+          "title": "Phylogenies and the History of Life",
+          "url": "https://openstax.org/books/biology-2e/pages/20-1-organizing-life-on-earth",
+          "part": "Evolutionary Processes",
+          "skills": ["s.9.evolution-evidence"],
+          "notes": "Phylogenies as evidence of common descent.",
+          "lessons": [
+            {
+              "n": "20.1",
+              "title": "Organizing Life on Earth",
+              "url": "https://openstax.org/books/biology-2e/pages/20-1-organizing-life-on-earth"
+            },
+            {
+              "n": "20.2",
+              "title": "Determining Evolutionary Relationships",
+              "url": "https://openstax.org/books/biology-2e/pages/20-2-determining-evolutionary-relationships"
+            },
+            {
+              "n": "20.3",
+              "title": "Perspectives on the Phylogenetic Tree",
+              "url": "https://openstax.org/books/biology-2e/pages/20-3-perspectives-on-the-phylogenetic-tree"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "21",
+          "title": "Viruses",
+          "url": "https://openstax.org/books/biology-2e/pages/21-1-viral-evolution-morphology-and-classification",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Viruses; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "21.1",
+              "title": "Viral Evolution, Morphology, and Classification",
+              "url": "https://openstax.org/books/biology-2e/pages/21-1-viral-evolution-morphology-and-classification"
+            },
+            {
+              "n": "21.2",
+              "title": "Virus Infections and Hosts",
+              "url": "https://openstax.org/books/biology-2e/pages/21-2-virus-infections-and-hosts"
+            },
+            {
+              "n": "21.3",
+              "title": "Prevention and Treatment of Viral Infections",
+              "url": "https://openstax.org/books/biology-2e/pages/21-3-prevention-and-treatment-of-viral-infections"
+            },
+            {
+              "n": "21.4",
+              "title": "Other Acellular Entities: Prions and Viroids",
+              "url": "https://openstax.org/books/biology-2e/pages/21-4-other-acellular-entities-prions-and-viroids"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "22",
+          "title": "Prokaryotes: Bacteria and Archaea",
+          "url": "https://openstax.org/books/biology-2e/pages/22-1-prokaryotic-diversity",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Prokaryotes; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "22.1",
+              "title": "Prokaryotic Diversity",
+              "url": "https://openstax.org/books/biology-2e/pages/22-1-prokaryotic-diversity"
+            },
+            {
+              "n": "22.2",
+              "title": "Structure of Prokaryotes: Bacteria and Archaea",
+              "url": "https://openstax.org/books/biology-2e/pages/22-2-structure-of-prokaryotes-bacteria-and-archaea"
+            },
+            {
+              "n": "22.3",
+              "title": "Prokaryotic Metabolism",
+              "url": "https://openstax.org/books/biology-2e/pages/22-3-prokaryotic-metabolism"
+            },
+            {
+              "n": "22.4",
+              "title": "Bacterial Diseases in Humans",
+              "url": "https://openstax.org/books/biology-2e/pages/22-4-bacterial-diseases-in-humans"
+            },
+            {
+              "n": "22.5",
+              "title": "Beneficial Prokaryotes",
+              "url": "https://openstax.org/books/biology-2e/pages/22-5-beneficial-prokaryotes"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "23",
+          "title": "Protists",
+          "url": "https://openstax.org/books/biology-2e/pages/23-1-eukaryotic-origins",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Protists; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "23.1",
+              "title": "Eukaryotic Origins",
+              "url": "https://openstax.org/books/biology-2e/pages/23-1-eukaryotic-origins"
+            },
+            {
+              "n": "23.2",
+              "title": "Characteristics of Protists",
+              "url": "https://openstax.org/books/biology-2e/pages/23-2-characteristics-of-protists"
+            },
+            {
+              "n": "23.3",
+              "title": "Groups of Protists",
+              "url": "https://openstax.org/books/biology-2e/pages/23-3-groups-of-protists"
+            },
+            {
+              "n": "23.4",
+              "title": "Ecology of Protists",
+              "url": "https://openstax.org/books/biology-2e/pages/23-4-ecology-of-protists"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "24",
+          "title": "Fungi",
+          "url": "https://openstax.org/books/biology-2e/pages/24-1-characteristics-of-fungi",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Fungi; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "24.1",
+              "title": "Characteristics of Fungi",
+              "url": "https://openstax.org/books/biology-2e/pages/24-1-characteristics-of-fungi"
+            },
+            {
+              "n": "24.2",
+              "title": "Classifications of Fungi",
+              "url": "https://openstax.org/books/biology-2e/pages/24-2-classifications-of-fungi"
+            },
+            {
+              "n": "24.3",
+              "title": "Ecology of Fungi",
+              "url": "https://openstax.org/books/biology-2e/pages/24-3-ecology-of-fungi"
+            },
+            {
+              "n": "24.4",
+              "title": "Fungal Parasites and Pathogens",
+              "url": "https://openstax.org/books/biology-2e/pages/24-4-fungal-parasites-and-pathogens"
+            },
+            {
+              "n": "24.5",
+              "title": "Importance of Fungi in Human Life",
+              "url": "https://openstax.org/books/biology-2e/pages/24-5-importance-of-fungi-in-human-life"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "25",
+          "title": "Seedless Plants",
+          "url": "https://openstax.org/books/biology-2e/pages/25-1-early-plant-life",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Seedless plants; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "25.1",
+              "title": "Early Plant Life",
+              "url": "https://openstax.org/books/biology-2e/pages/25-1-early-plant-life"
+            },
+            {
+              "n": "25.2",
+              "title": "Green Algae: Precursors of Land Plants",
+              "url": "https://openstax.org/books/biology-2e/pages/25-2-green-algae-precursors-of-land-plants"
+            },
+            {
+              "n": "25.3",
+              "title": "Bryophytes",
+              "url": "https://openstax.org/books/biology-2e/pages/25-3-bryophytes"
+            },
+            {
+              "n": "25.4",
+              "title": "Seedless Vascular Plants",
+              "url": "https://openstax.org/books/biology-2e/pages/25-4-seedless-vascular-plants"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "26",
+          "title": "Seed Plants",
+          "url": "https://openstax.org/books/biology-2e/pages/26-1-evolution-of-seed-plants",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Seed plants; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "26.1",
+              "title": "Evolution of Seed Plants",
+              "url": "https://openstax.org/books/biology-2e/pages/26-1-evolution-of-seed-plants"
+            },
+            {
+              "n": "26.2",
+              "title": "Gymnosperms",
+              "url": "https://openstax.org/books/biology-2e/pages/26-2-gymnosperms"
+            },
+            {
+              "n": "26.3",
+              "title": "Angiosperms",
+              "url": "https://openstax.org/books/biology-2e/pages/26-3-angiosperms"
+            },
+            {
+              "n": "26.4",
+              "title": "The Role of Seed Plants",
+              "url": "https://openstax.org/books/biology-2e/pages/26-4-the-role-of-seed-plants"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "27",
+          "title": "Introduction to Animal Diversity",
+          "url": "https://openstax.org/books/biology-2e/pages/27-1-features-of-the-animal-kingdom",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Animal diversity; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "27.1",
+              "title": "Features of the Animal Kingdom",
+              "url": "https://openstax.org/books/biology-2e/pages/27-1-features-of-the-animal-kingdom"
+            },
+            {
+              "n": "27.2",
+              "title": "Features Used to Classify Animals",
+              "url": "https://openstax.org/books/biology-2e/pages/27-2-features-used-to-classify-animals"
+            },
+            {
+              "n": "27.3",
+              "title": "Animal Phylogeny",
+              "url": "https://openstax.org/books/biology-2e/pages/27-3-animal-phylogeny"
+            },
+            {
+              "n": "27.4",
+              "title": "The Evolutionary History of the Animal Kingdom",
+              "url": "https://openstax.org/books/biology-2e/pages/27-4-the-evolutionary-history-of-the-animal-kingdom"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "28",
+          "title": "Invertebrates",
+          "url": "https://openstax.org/books/biology-2e/pages/28-1-phylum-porifera",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Invertebrates; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "28.1",
+              "title": "Phylum Porifera",
+              "url": "https://openstax.org/books/biology-2e/pages/28-1-phylum-porifera"
+            },
+            {
+              "n": "28.2",
+              "title": "Phylum Cnidaria",
+              "url": "https://openstax.org/books/biology-2e/pages/28-2-phylum-cnidaria"
+            },
+            {
+              "n": "28.3",
+              "title": "Superphylum Lophotrochozoa: Flatworms, Rotifers, and Nemerteans",
+              "url": "https://openstax.org/books/biology-2e/pages/28-3-superphylum-lophotrochozoa-flatworms-rotifers-and-nemerteans"
+            },
+            {
+              "n": "28.4",
+              "title": "Superphylum Lophotrochozoa: Mollusks and Annelids",
+              "url": "https://openstax.org/books/biology-2e/pages/28-4-superphylum-lophotrochozoa-mollusks-and-annelids"
+            },
+            {
+              "n": "28.5",
+              "title": "Superphylum Ecdysozoa: Nematodes and Tardigrades",
+              "url": "https://openstax.org/books/biology-2e/pages/28-5-superphylum-ecdysozoa-nematodes-and-tardigrades"
+            },
+            {
+              "n": "28.6",
+              "title": "Superphylum Ecdysozoa: Arthropods",
+              "url": "https://openstax.org/books/biology-2e/pages/28-6-superphylum-ecdysozoa-arthropods"
+            },
+            {
+              "n": "28.7",
+              "title": "Superphylum Deuterostomia",
+              "url": "https://openstax.org/books/biology-2e/pages/28-7-superphylum-deuterostomia"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "29",
+          "title": "Vertebrates",
+          "url": "https://openstax.org/books/biology-2e/pages/29-1-chordates",
+          "part": "Biological Diversity",
+          "skills": [],
+          "notes": "Vertebrates; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "29.1",
+              "title": "Chordates",
+              "url": "https://openstax.org/books/biology-2e/pages/29-1-chordates"
+            },
+            {
+              "n": "29.2",
+              "title": "Fishes",
+              "url": "https://openstax.org/books/biology-2e/pages/29-2-fishes"
+            },
+            {
+              "n": "29.3",
+              "title": "Amphibians",
+              "url": "https://openstax.org/books/biology-2e/pages/29-3-amphibians"
+            },
+            {
+              "n": "29.4",
+              "title": "Reptiles",
+              "url": "https://openstax.org/books/biology-2e/pages/29-4-reptiles"
+            },
+            {
+              "n": "29.5",
+              "title": "Birds",
+              "url": "https://openstax.org/books/biology-2e/pages/29-5-birds"
+            },
+            {
+              "n": "29.6",
+              "title": "Mammals",
+              "url": "https://openstax.org/books/biology-2e/pages/29-6-mammals"
+            },
+            {
+              "n": "29.7",
+              "title": "The Evolution of Primates",
+              "url": "https://openstax.org/books/biology-2e/pages/29-7-the-evolution-of-primates"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "30",
+          "title": "Plant Form and Physiology",
+          "url": "https://openstax.org/books/biology-2e/pages/30-1-the-plant-body",
+          "part": "Plant Structure and Function",
+          "skills": [],
+          "notes": "Plant form and physiology; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "30.1",
+              "title": "The Plant Body",
+              "url": "https://openstax.org/books/biology-2e/pages/30-1-the-plant-body"
+            },
+            {
+              "n": "30.2",
+              "title": "Stems",
+              "url": "https://openstax.org/books/biology-2e/pages/30-2-stems"
+            },
+            {
+              "n": "30.3",
+              "title": "Roots",
+              "url": "https://openstax.org/books/biology-2e/pages/30-3-roots"
+            },
+            {
+              "n": "30.4",
+              "title": "Leaves",
+              "url": "https://openstax.org/books/biology-2e/pages/30-4-leaves"
+            },
+            {
+              "n": "30.5",
+              "title": "Transport of Water and Solutes in Plants",
+              "url": "https://openstax.org/books/biology-2e/pages/30-5-transport-of-water-and-solutes-in-plants"
+            },
+            {
+              "n": "30.6",
+              "title": "Plant Sensory Systems and Responses",
+              "url": "https://openstax.org/books/biology-2e/pages/30-6-plant-sensory-systems-and-responses"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "31",
+          "title": "Soil and Plant Nutrition",
+          "url": "https://openstax.org/books/biology-2e/pages/31-1-nutritional-requirements-of-plants",
+          "part": "Plant Structure and Function",
+          "skills": [],
+          "notes": "Soil and plant nutrition; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "31.1",
+              "title": "Nutritional Requirements of Plants",
+              "url": "https://openstax.org/books/biology-2e/pages/31-1-nutritional-requirements-of-plants"
+            },
+            {
+              "n": "31.2",
+              "title": "The Soil",
+              "url": "https://openstax.org/books/biology-2e/pages/31-2-the-soil"
+            },
+            {
+              "n": "31.3",
+              "title": "Nutritional Adaptations of Plants",
+              "url": "https://openstax.org/books/biology-2e/pages/31-3-nutritional-adaptations-of-plants"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "32",
+          "title": "Plant Reproduction",
+          "url": "https://openstax.org/books/biology-2e/pages/32-1-reproductive-development-and-structure",
+          "part": "Plant Structure and Function",
+          "skills": [],
+          "notes": "Plant reproduction; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "32.1",
+              "title": "Reproductive Development and Structure",
+              "url": "https://openstax.org/books/biology-2e/pages/32-1-reproductive-development-and-structure"
+            },
+            {
+              "n": "32.2",
+              "title": "Pollination and Fertilization",
+              "url": "https://openstax.org/books/biology-2e/pages/32-2-pollination-and-fertilization"
+            },
+            {
+              "n": "32.3",
+              "title": "Asexual Reproduction",
+              "url": "https://openstax.org/books/biology-2e/pages/32-3-asexual-reproduction"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "33",
+          "title": "The Animal Body: Basic Form and Function",
+          "url": "https://openstax.org/books/biology-2e/pages/33-1-animal-form-and-function",
+          "part": "Animal Structure and Function",
+          "skills": ["s.9.homeostasis"],
+          "notes": "Section 33.3 Homeostasis; 33.1-33.2 have no skill.",
+          "lessons": [
+            {
+              "n": "33.1",
+              "title": "Animal Form and Function",
+              "url": "https://openstax.org/books/biology-2e/pages/33-1-animal-form-and-function"
+            },
+            {
+              "n": "33.2",
+              "title": "Animal Primary Tissues",
+              "url": "https://openstax.org/books/biology-2e/pages/33-2-animal-primary-tissues"
+            },
+            {
+              "n": "33.3",
+              "title": "Homeostasis",
+              "url": "https://openstax.org/books/biology-2e/pages/33-3-homeostasis"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "34",
+          "title": "Animal Nutrition and the Digestive System",
+          "url": "https://openstax.org/books/biology-2e/pages/34-1-digestive-systems",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Digestive system; nearest is s.6.body-systems.",
+          "lessons": [
+            {
+              "n": "34.1",
+              "title": "Digestive Systems",
+              "url": "https://openstax.org/books/biology-2e/pages/34-1-digestive-systems"
+            },
+            {
+              "n": "34.2",
+              "title": "Nutrition and Energy Production",
+              "url": "https://openstax.org/books/biology-2e/pages/34-2-nutrition-and-energy-production"
+            },
+            {
+              "n": "34.3",
+              "title": "Digestive System Processes",
+              "url": "https://openstax.org/books/biology-2e/pages/34-3-digestive-system-processes"
+            },
+            {
+              "n": "34.4",
+              "title": "Digestive System Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/34-4-digestive-system-regulation"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "35",
+          "title": "The Nervous System",
+          "url": "https://openstax.org/books/biology-2e/pages/35-1-neurons-and-glial-cells",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Nervous system; nearest is s.6.body-systems.",
+          "lessons": [
+            {
+              "n": "35.1",
+              "title": "Neurons and Glial Cells",
+              "url": "https://openstax.org/books/biology-2e/pages/35-1-neurons-and-glial-cells"
+            },
+            {
+              "n": "35.2",
+              "title": "How Neurons Communicate",
+              "url": "https://openstax.org/books/biology-2e/pages/35-2-how-neurons-communicate"
+            },
+            {
+              "n": "35.3",
+              "title": "The Central Nervous System",
+              "url": "https://openstax.org/books/biology-2e/pages/35-3-the-central-nervous-system"
+            },
+            {
+              "n": "35.4",
+              "title": "The Peripheral Nervous System",
+              "url": "https://openstax.org/books/biology-2e/pages/35-4-the-peripheral-nervous-system"
+            },
+            {
+              "n": "35.5",
+              "title": "Nervous System Disorders",
+              "url": "https://openstax.org/books/biology-2e/pages/35-5-nervous-system-disorders"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "36",
+          "title": "Sensory Systems",
+          "url": "https://openstax.org/books/biology-2e/pages/36-1-sensory-processes",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Sensory systems; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "36.1",
+              "title": "Sensory Processes",
+              "url": "https://openstax.org/books/biology-2e/pages/36-1-sensory-processes"
+            },
+            {
+              "n": "36.2",
+              "title": "Somatosensation",
+              "url": "https://openstax.org/books/biology-2e/pages/36-2-somatosensation"
+            },
+            {
+              "n": "36.3",
+              "title": "Taste and Smell",
+              "url": "https://openstax.org/books/biology-2e/pages/36-3-taste-and-smell"
+            },
+            {
+              "n": "36.4",
+              "title": "Hearing and Vestibular Sensation",
+              "url": "https://openstax.org/books/biology-2e/pages/36-4-hearing-and-vestibular-sensation"
+            },
+            {
+              "n": "36.5",
+              "title": "Vision",
+              "url": "https://openstax.org/books/biology-2e/pages/36-5-vision"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "37",
+          "title": "The Endocrine System",
+          "url": "https://openstax.org/books/biology-2e/pages/37-1-types-of-hormones",
+          "part": "Animal Structure and Function",
+          "skills": ["s.9.homeostasis"],
+          "notes": "Endocrine regulation as feedback loops.",
+          "lessons": [
+            {
+              "n": "37.1",
+              "title": "Types of Hormones",
+              "url": "https://openstax.org/books/biology-2e/pages/37-1-types-of-hormones"
+            },
+            {
+              "n": "37.2",
+              "title": "How Hormones Work",
+              "url": "https://openstax.org/books/biology-2e/pages/37-2-how-hormones-work"
+            },
+            {
+              "n": "37.3",
+              "title": "Regulation of Body Processes",
+              "url": "https://openstax.org/books/biology-2e/pages/37-3-regulation-of-body-processes"
+            },
+            {
+              "n": "37.4",
+              "title": "Regulation of Hormone Production",
+              "url": "https://openstax.org/books/biology-2e/pages/37-4-regulation-of-hormone-production"
+            },
+            {
+              "n": "37.5",
+              "title": "Endocrine Glands",
+              "url": "https://openstax.org/books/biology-2e/pages/37-5-endocrine-glands"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "38",
+          "title": "The Musculoskeletal System",
+          "url": "https://openstax.org/books/biology-2e/pages/38-1-types-of-skeletal-systems",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Musculoskeletal system; nearest is s.6.body-systems.",
+          "lessons": [
+            {
+              "n": "38.1",
+              "title": "Types of Skeletal Systems",
+              "url": "https://openstax.org/books/biology-2e/pages/38-1-types-of-skeletal-systems"
+            },
+            {
+              "n": "38.2",
+              "title": "Bone",
+              "url": "https://openstax.org/books/biology-2e/pages/38-2-bone"
+            },
+            {
+              "n": "38.3",
+              "title": "Joints and Skeletal Movement",
+              "url": "https://openstax.org/books/biology-2e/pages/38-3-joints-and-skeletal-movement"
+            },
+            {
+              "n": "38.4",
+              "title": "Muscle Contraction and Locomotion",
+              "url": "https://openstax.org/books/biology-2e/pages/38-4-muscle-contraction-and-locomotion"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "39",
+          "title": "The Respiratory System",
+          "url": "https://openstax.org/books/biology-2e/pages/39-1-systems-of-gas-exchange",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Respiratory system; nearest is s.6.body-systems.",
+          "lessons": [
+            {
+              "n": "39.1",
+              "title": "Systems of Gas Exchange",
+              "url": "https://openstax.org/books/biology-2e/pages/39-1-systems-of-gas-exchange"
+            },
+            {
+              "n": "39.2",
+              "title": "Gas Exchange across Respiratory Surfaces",
+              "url": "https://openstax.org/books/biology-2e/pages/39-2-gas-exchange-across-respiratory-surfaces"
+            },
+            {
+              "n": "39.3",
+              "title": "Breathing",
+              "url": "https://openstax.org/books/biology-2e/pages/39-3-breathing"
+            },
+            {
+              "n": "39.4",
+              "title": "Transport of Gases in Human Bodily Fluids",
+              "url": "https://openstax.org/books/biology-2e/pages/39-4-transport-of-gases-in-human-bodily-fluids"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "40",
+          "title": "The Circulatory System",
+          "url": "https://openstax.org/books/biology-2e/pages/40-1-overview-of-the-circulatory-system",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Circulatory system; nearest is s.6.body-systems.",
+          "lessons": [
+            {
+              "n": "40.1",
+              "title": "Overview of the Circulatory System",
+              "url": "https://openstax.org/books/biology-2e/pages/40-1-overview-of-the-circulatory-system"
+            },
+            {
+              "n": "40.2",
+              "title": "Components of the Blood",
+              "url": "https://openstax.org/books/biology-2e/pages/40-2-components-of-the-blood"
+            },
+            {
+              "n": "40.3",
+              "title": "Mammalian Heart and Blood Vessels",
+              "url": "https://openstax.org/books/biology-2e/pages/40-3-mammalian-heart-and-blood-vessels"
+            },
+            {
+              "n": "40.4",
+              "title": "Blood Flow and Blood Pressure Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/40-4-blood-flow-and-blood-pressure-regulation"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "41",
+          "title": "Osmotic Regulation and Excretion",
+          "url": "https://openstax.org/books/biology-2e/pages/41-1-osmoregulation-and-osmotic-balance",
+          "part": "Animal Structure and Function",
+          "skills": ["s.9.homeostasis", "s.9.membrane-transport"],
+          "notes": "Osmoregulation and excretion.",
+          "lessons": [
+            {
+              "n": "41.1",
+              "title": "Osmoregulation and Osmotic Balance",
+              "url": "https://openstax.org/books/biology-2e/pages/41-1-osmoregulation-and-osmotic-balance"
+            },
+            {
+              "n": "41.2",
+              "title": "The Kidneys and Osmoregulatory Organs",
+              "url": "https://openstax.org/books/biology-2e/pages/41-2-the-kidneys-and-osmoregulatory-organs"
+            },
+            {
+              "n": "41.3",
+              "title": "Excretion Systems",
+              "url": "https://openstax.org/books/biology-2e/pages/41-3-excretion-systems"
+            },
+            {
+              "n": "41.4",
+              "title": "Nitrogenous Wastes",
+              "url": "https://openstax.org/books/biology-2e/pages/41-4-nitrogenous-wastes"
+            },
+            {
+              "n": "41.5",
+              "title": "Hormonal Control of Osmoregulatory Functions",
+              "url": "https://openstax.org/books/biology-2e/pages/41-5-hormonal-control-of-osmoregulatory-functions"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "42",
+          "title": "The Immune System",
+          "url": "https://openstax.org/books/biology-2e/pages/42-1-innate-immune-response",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Immune system; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "42.1",
+              "title": "Innate Immune Response",
+              "url": "https://openstax.org/books/biology-2e/pages/42-1-innate-immune-response"
+            },
+            {
+              "n": "42.2",
+              "title": "Adaptive Immune Response",
+              "url": "https://openstax.org/books/biology-2e/pages/42-2-adaptive-immune-response"
+            },
+            {
+              "n": "42.3",
+              "title": "Antibodies",
+              "url": "https://openstax.org/books/biology-2e/pages/42-3-antibodies"
+            },
+            {
+              "n": "42.4",
+              "title": "Disruptions in the Immune System",
+              "url": "https://openstax.org/books/biology-2e/pages/42-4-disruptions-in-the-immune-system"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "43",
+          "title": "Animal Reproduction and Development",
+          "url": "https://openstax.org/books/biology-2e/pages/43-1-reproduction-methods",
+          "part": "Animal Structure and Function",
+          "skills": [],
+          "notes": "Animal reproduction and development; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "43.1",
+              "title": "Reproduction Methods",
+              "url": "https://openstax.org/books/biology-2e/pages/43-1-reproduction-methods"
+            },
+            {
+              "n": "43.2",
+              "title": "Fertilization",
+              "url": "https://openstax.org/books/biology-2e/pages/43-2-fertilization"
+            },
+            {
+              "n": "43.3",
+              "title": "Human Reproductive Anatomy and Gametogenesis",
+              "url": "https://openstax.org/books/biology-2e/pages/43-3-human-reproductive-anatomy-and-gametogenesis"
+            },
+            {
+              "n": "43.4",
+              "title": "Hormonal Control of Human Reproduction",
+              "url": "https://openstax.org/books/biology-2e/pages/43-4-hormonal-control-of-human-reproduction"
+            },
+            {
+              "n": "43.5",
+              "title": "Human Pregnancy and Birth",
+              "url": "https://openstax.org/books/biology-2e/pages/43-5-human-pregnancy-and-birth"
+            },
+            {
+              "n": "43.6",
+              "title": "Fertilization and Early Embryonic Development",
+              "url": "https://openstax.org/books/biology-2e/pages/43-6-fertilization-and-early-embryonic-development"
+            },
+            {
+              "n": "43.7",
+              "title": "Organogenesis and Vertebrate Axis Formation",
+              "url": "https://openstax.org/books/biology-2e/pages/43-7-organogenesis-and-vertebrate-axis-formation"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "44",
+          "title": "Ecology and the Biosphere",
+          "url": "https://openstax.org/books/biology-2e/pages/44-1-the-scope-of-ecology",
+          "part": "Ecology",
+          "skills": ["s.12.climate-systems"],
+          "notes": "Section 44.5 climate and global climate change (grade 12 skill); biomes have no skill.",
+          "lessons": [
+            {
+              "n": "44.1",
+              "title": "The Scope of Ecology",
+              "url": "https://openstax.org/books/biology-2e/pages/44-1-the-scope-of-ecology"
+            },
+            {
+              "n": "44.2",
+              "title": "Biogeography",
+              "url": "https://openstax.org/books/biology-2e/pages/44-2-biogeography"
+            },
+            {
+              "n": "44.3",
+              "title": "Terrestrial Biomes",
+              "url": "https://openstax.org/books/biology-2e/pages/44-3-terrestrial-biomes"
+            },
+            {
+              "n": "44.4",
+              "title": "Aquatic Biomes",
+              "url": "https://openstax.org/books/biology-2e/pages/44-4-aquatic-biomes"
+            },
+            {
+              "n": "44.5",
+              "title": "Climate and the Effects of Global Climate Change",
+              "url": "https://openstax.org/books/biology-2e/pages/44-5-climate-and-the-effects-of-global-climate-change"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "45",
+          "title": "Population and Community Ecology",
+          "url": "https://openstax.org/books/biology-2e/pages/45-1-population-demography",
+          "part": "Ecology",
+          "skills": ["s.9.population-ecology"],
+          "lessons": [
+            {
+              "n": "45.1",
+              "title": "Population Demography",
+              "url": "https://openstax.org/books/biology-2e/pages/45-1-population-demography"
+            },
+            {
+              "n": "45.2",
+              "title": "Life Histories and Natural Selection",
+              "url": "https://openstax.org/books/biology-2e/pages/45-2-life-histories-and-natural-selection"
+            },
+            {
+              "n": "45.3",
+              "title": "Environmental Limits to Population Growth",
+              "url": "https://openstax.org/books/biology-2e/pages/45-3-environmental-limits-to-population-growth"
+            },
+            {
+              "n": "45.4",
+              "title": "Population Dynamics and Regulation",
+              "url": "https://openstax.org/books/biology-2e/pages/45-4-population-dynamics-and-regulation"
+            },
+            {
+              "n": "45.5",
+              "title": "Human Population Growth",
+              "url": "https://openstax.org/books/biology-2e/pages/45-5-human-population-growth"
+            },
+            {
+              "n": "45.6",
+              "title": "Community Ecology",
+              "url": "https://openstax.org/books/biology-2e/pages/45-6-community-ecology"
+            },
+            {
+              "n": "45.7",
+              "title": "Behavioral Biology: Proximate and Ultimate Causes of Behavior",
+              "url": "https://openstax.org/books/biology-2e/pages/45-7-behavioral-biology-proximate-and-ultimate-causes-of-behavior"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "46",
+          "title": "Ecosystems",
+          "url": "https://openstax.org/books/biology-2e/pages/46-1-ecology-of-ecosystems",
+          "part": "Ecology",
+          "skills": [],
+          "notes": "Ecosystems, energy flow and biogeochemical cycles: nearest is s.7.ecosystem-energy (middle school).",
+          "lessons": [
+            {
+              "n": "46.1",
+              "title": "Ecology of Ecosystems",
+              "url": "https://openstax.org/books/biology-2e/pages/46-1-ecology-of-ecosystems"
+            },
+            {
+              "n": "46.2",
+              "title": "Energy Flow through Ecosystems",
+              "url": "https://openstax.org/books/biology-2e/pages/46-2-energy-flow-through-ecosystems"
+            },
+            {
+              "n": "46.3",
+              "title": "Biogeochemical Cycles",
+              "url": "https://openstax.org/books/biology-2e/pages/46-3-biogeochemical-cycles"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        },
+        {
+          "n": "47",
+          "title": "Conservation Biology and Biodiversity",
+          "url": "https://openstax.org/books/biology-2e/pages/47-1-the-biodiversity-crisis",
+          "part": "Ecology",
+          "skills": ["s.12.resource-management"],
+          "notes": "Biodiversity threats and conservation as human impacts (grade 12 skill).",
+          "lessons": [
+            {
+              "n": "47.1",
+              "title": "The Biodiversity Crisis",
+              "url": "https://openstax.org/books/biology-2e/pages/47-1-the-biodiversity-crisis"
+            },
+            {
+              "n": "47.2",
+              "title": "The Importance of Biodiversity to Human Life",
+              "url": "https://openstax.org/books/biology-2e/pages/47-2-the-importance-of-biodiversity-to-human-life"
+            },
+            {
+              "n": "47.3",
+              "title": "Threats to Biodiversity",
+              "url": "https://openstax.org/books/biology-2e/pages/47-3-threats-to-biodiversity"
+            },
+            {
+              "n": "47.4",
+              "title": "Preserving Biodiversity",
+              "url": "https://openstax.org/books/biology-2e/pages/47-4-preserving-biodiversity"
+            }
+          ],
+          "endOfChapter": [
+            "Key Terms",
+            "Chapter Summary",
+            "Visual Connection Questions",
+            "Review Questions",
+            "Critical Thinking Questions"
+          ]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }

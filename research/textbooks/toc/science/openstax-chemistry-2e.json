@@ -1,953 +1,811 @@
 {
- "id": "openstax-chemistry-2e",
- "curriculum": "Chemistry 2e",
- "publisher": "OpenStax (Rice University)",
- "edition": "2nd edition (published 2019-02-14; web version revised 2026-07-08)",
- "subject": "science",
- "grades": [
-  "10"
- ],
- "course": "Chemistry",
- "content": "full",
- "terms": {
-  "unit": "Chapter",
-  "lesson": "Section"
- },
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "attribution": "Chemistry 2e by Paul Flowers, Klaus Theopold, Richard Langley and William R. Robinson, PhD, OpenStax (Rice University). Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. Access for free at https://openstax.org/books/chemistry-2e/pages/1-introduction"
- },
- "sourceUrl": "https://openstax.org/books/chemistry-2e/pages/1-introduction",
- "retrieved": "2026-09-28",
- "bookVersion": {
-  "archiveVersion": "20260604.144757",
-  "contentVersion": "3be4b60",
-  "revised": "2026-07-08T18:00:54+00:00"
- },
- "notes": "Reference only (CC BY-NC-SA): the full table of contents; practice is a representative sample of the end-of-chapter Exercises, with the answers the book's public Answer Key gives for odd-numbered exercises. Chapters are the \"units\"; sections are the \"lessons\".",
- "books": [
-  {
-   "grade": "10",
-   "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction",
-   "units": [
+  "id": "openstax-chemistry-2e",
+  "curriculum": "Chemistry 2e",
+  "publisher": "OpenStax (Rice University)",
+  "edition": "2nd edition (published 2019-02-14; web version revised 2026-07-08)",
+  "subject": "science",
+  "grades": ["10"],
+  "course": "Chemistry",
+  "content": "full",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Chemistry 2e by Paul Flowers, Klaus Theopold, Richard Langley and William R. Robinson, PhD, OpenStax (Rice University). Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. Access for free at https://openstax.org/books/chemistry-2e/pages/1-introduction"
+  },
+  "sourceUrl": "https://openstax.org/books/chemistry-2e/pages/1-introduction",
+  "retrieved": "2026-09-28",
+  "bookVersion": {
+    "archiveVersion": "20260604.144757",
+    "contentVersion": "3be4b60",
+    "revised": "2026-07-08T18:00:54+00:00"
+  },
+  "notes": "Reference only (CC BY-NC-SA): the full table of contents; practice is a representative sample of the end-of-chapter Exercises, with the answers the book's public Answer Key gives for odd-numbered exercises. Chapters are the \"units\"; sections are the \"lessons\".",
+  "books": [
     {
-     "n": "1",
-     "title": "Essential Ideas",
-     "url": "https://openstax.org/books/chemistry-2e/pages/1-1-chemistry-in-context",
-     "skills": [],
-     "notes": "Measurement, units and significant figures; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "1.1",
-       "title": "Chemistry in Context",
-       "url": "https://openstax.org/books/chemistry-2e/pages/1-1-chemistry-in-context"
-      },
-      {
-       "n": "1.2",
-       "title": "Phases and Classification of Matter",
-       "url": "https://openstax.org/books/chemistry-2e/pages/1-2-phases-and-classification-of-matter"
-      },
-      {
-       "n": "1.3",
-       "title": "Physical and Chemical Properties",
-       "url": "https://openstax.org/books/chemistry-2e/pages/1-3-physical-and-chemical-properties"
-      },
-      {
-       "n": "1.4",
-       "title": "Measurements",
-       "url": "https://openstax.org/books/chemistry-2e/pages/1-4-measurements"
-      },
-      {
-       "n": "1.5",
-       "title": "Measurement Uncertainty, Accuracy, and Precision",
-       "url": "https://openstax.org/books/chemistry-2e/pages/1-5-measurement-uncertainty-accuracy-and-precision"
-      },
-      {
-       "n": "1.6",
-       "title": "Mathematical Treatment of Measurement Results",
-       "url": "https://openstax.org/books/chemistry-2e/pages/1-6-mathematical-treatment-of-measurement-results"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Atoms, Molecules, and Ions",
-     "url": "https://openstax.org/books/chemistry-2e/pages/2-1-early-ideas-in-atomic-theory",
-     "skills": [
-      "s.10.atomic-structure",
-      "s.10.periodic-trends",
-      "s.10.bonding"
-     ],
-     "notes": "Atomic theory and structure (2.1-2.3), periodic table (2.5), ionic and molecular compounds and naming (2.6-2.7).",
-     "lessons": [
-      {
-       "n": "2.1",
-       "title": "Early Ideas in Atomic Theory",
-       "url": "https://openstax.org/books/chemistry-2e/pages/2-1-early-ideas-in-atomic-theory"
-      },
-      {
-       "n": "2.2",
-       "title": "Evolution of Atomic Theory",
-       "url": "https://openstax.org/books/chemistry-2e/pages/2-2-evolution-of-atomic-theory"
-      },
-      {
-       "n": "2.3",
-       "title": "Atomic Structure and Symbolism",
-       "url": "https://openstax.org/books/chemistry-2e/pages/2-3-atomic-structure-and-symbolism"
-      },
-      {
-       "n": "2.4",
-       "title": "Chemical Formulas",
-       "url": "https://openstax.org/books/chemistry-2e/pages/2-4-chemical-formulas"
-      },
-      {
-       "n": "2.5",
-       "title": "The Periodic Table",
-       "url": "https://openstax.org/books/chemistry-2e/pages/2-5-the-periodic-table"
-      },
-      {
-       "n": "2.6",
-       "title": "Ionic and Molecular Compounds",
-       "url": "https://openstax.org/books/chemistry-2e/pages/2-6-ionic-and-molecular-compounds"
-      },
-      {
-       "n": "2.7",
-       "title": "Chemical Nomenclature",
-       "url": "https://openstax.org/books/chemistry-2e/pages/2-7-chemical-nomenclature"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Composition of Substances and Solutions",
-     "url": "https://openstax.org/books/chemistry-2e/pages/3-1-formula-mass-and-the-mole-concept",
-     "skills": [
-      "s.10.mole",
-      "s.10.molarity"
-     ],
-     "notes": "Formula mass and the mole (3.1-3.2); molarity and other concentration units (3.3-3.4).",
-     "lessons": [
-      {
-       "n": "3.1",
-       "title": "Formula Mass and the Mole Concept",
-       "url": "https://openstax.org/books/chemistry-2e/pages/3-1-formula-mass-and-the-mole-concept"
-      },
-      {
-       "n": "3.2",
-       "title": "Determining Empirical and Molecular Formulas",
-       "url": "https://openstax.org/books/chemistry-2e/pages/3-2-determining-empirical-and-molecular-formulas"
-      },
-      {
-       "n": "3.3",
-       "title": "Molarity",
-       "url": "https://openstax.org/books/chemistry-2e/pages/3-3-molarity"
-      },
-      {
-       "n": "3.4",
-       "title": "Other Units for Solution Concentrations",
-       "url": "https://openstax.org/books/chemistry-2e/pages/3-4-other-units-for-solution-concentrations"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Stoichiometry of Chemical Reactions",
-     "url": "https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations",
-     "skills": [
-      "s.10.stoichiometry"
-     ],
-     "notes": "Balancing equations, reaction stoichiometry, limiting reactants and yields.",
-     "lessons": [
-      {
-       "n": "4.1",
-       "title": "Writing and Balancing Chemical Equations",
-       "url": "https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations"
-      },
-      {
-       "n": "4.2",
-       "title": "Classifying Chemical Reactions",
-       "url": "https://openstax.org/books/chemistry-2e/pages/4-2-classifying-chemical-reactions"
-      },
-      {
-       "n": "4.3",
-       "title": "Reaction Stoichiometry",
-       "url": "https://openstax.org/books/chemistry-2e/pages/4-3-reaction-stoichiometry"
-      },
-      {
-       "n": "4.4",
-       "title": "Reaction Yields",
-       "url": "https://openstax.org/books/chemistry-2e/pages/4-4-reaction-yields"
-      },
-      {
-       "n": "4.5",
-       "title": "Quantitative Chemical Analysis",
-       "url": "https://openstax.org/books/chemistry-2e/pages/4-5-quantitative-chemical-analysis"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "5",
-     "title": "Thermochemistry",
-     "url": "https://openstax.org/books/chemistry-2e/pages/5-1-energy-basics",
-     "skills": [
-      "s.10.thermochemistry"
-     ],
-     "lessons": [
-      {
-       "n": "5.1",
-       "title": "Energy Basics",
-       "url": "https://openstax.org/books/chemistry-2e/pages/5-1-energy-basics"
-      },
-      {
-       "n": "5.2",
-       "title": "Calorimetry",
-       "url": "https://openstax.org/books/chemistry-2e/pages/5-2-calorimetry"
-      },
-      {
-       "n": "5.3",
-       "title": "Enthalpy",
-       "url": "https://openstax.org/books/chemistry-2e/pages/5-3-enthalpy"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "6",
-     "title": "Electronic Structure and Periodic Properties of Elements",
-     "url": "https://openstax.org/books/chemistry-2e/pages/6-1-electromagnetic-energy",
-     "skills": [
-      "s.10.atomic-structure",
-      "s.10.periodic-trends"
-     ],
-     "notes": "Electron configurations (6.3-6.4) and periodic variations (6.5).",
-     "lessons": [
-      {
-       "n": "6.1",
-       "title": "Electromagnetic Energy",
-       "url": "https://openstax.org/books/chemistry-2e/pages/6-1-electromagnetic-energy"
-      },
-      {
-       "n": "6.2",
-       "title": "The Bohr Model",
-       "url": "https://openstax.org/books/chemistry-2e/pages/6-2-the-bohr-model"
-      },
-      {
-       "n": "6.3",
-       "title": "Development of Quantum Theory",
-       "url": "https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory"
-      },
-      {
-       "n": "6.4",
-       "title": "Electronic Structure of Atoms (Electron Configurations)",
-       "url": "https://openstax.org/books/chemistry-2e/pages/6-4-electronic-structure-of-atoms-electron-configurations"
-      },
-      {
-       "n": "6.5",
-       "title": "Periodic Variations in Element Properties",
-       "url": "https://openstax.org/books/chemistry-2e/pages/6-5-periodic-variations-in-element-properties"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "7",
-     "title": "Chemical Bonding and Molecular Geometry",
-     "url": "https://openstax.org/books/chemistry-2e/pages/7-1-ionic-bonding",
-     "skills": [
-      "s.10.bonding"
-     ],
-     "lessons": [
-      {
-       "n": "7.1",
-       "title": "Ionic Bonding",
-       "url": "https://openstax.org/books/chemistry-2e/pages/7-1-ionic-bonding"
-      },
-      {
-       "n": "7.2",
-       "title": "Covalent Bonding",
-       "url": "https://openstax.org/books/chemistry-2e/pages/7-2-covalent-bonding"
-      },
-      {
-       "n": "7.3",
-       "title": "Lewis Symbols and Structures",
-       "url": "https://openstax.org/books/chemistry-2e/pages/7-3-lewis-symbols-and-structures"
-      },
-      {
-       "n": "7.4",
-       "title": "Formal Charges and Resonance",
-       "url": "https://openstax.org/books/chemistry-2e/pages/7-4-formal-charges-and-resonance"
-      },
-      {
-       "n": "7.5",
-       "title": "Strengths of Ionic and Covalent Bonds",
-       "url": "https://openstax.org/books/chemistry-2e/pages/7-5-strengths-of-ionic-and-covalent-bonds"
-      },
-      {
-       "n": "7.6",
-       "title": "Molecular Structure and Polarity",
-       "url": "https://openstax.org/books/chemistry-2e/pages/7-6-molecular-structure-and-polarity"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Advanced Theories of Covalent Bonding",
-     "url": "https://openstax.org/books/chemistry-2e/pages/8-1-valence-bond-theory",
-     "skills": [
-      "s.10.bonding"
-     ],
-     "notes": "Valence bond theory, hybridization and molecular orbitals (beyond the taxonomy skill).",
-     "lessons": [
-      {
-       "n": "8.1",
-       "title": "Valence Bond Theory",
-       "url": "https://openstax.org/books/chemistry-2e/pages/8-1-valence-bond-theory"
-      },
-      {
-       "n": "8.2",
-       "title": "Hybrid Atomic Orbitals",
-       "url": "https://openstax.org/books/chemistry-2e/pages/8-2-hybrid-atomic-orbitals"
-      },
-      {
-       "n": "8.3",
-       "title": "Multiple Bonds",
-       "url": "https://openstax.org/books/chemistry-2e/pages/8-3-multiple-bonds"
-      },
-      {
-       "n": "8.4",
-       "title": "Molecular Orbital Theory",
-       "url": "https://openstax.org/books/chemistry-2e/pages/8-4-molecular-orbital-theory"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "9",
-     "title": "Gases",
-     "url": "https://openstax.org/books/chemistry-2e/pages/9-1-gas-pressure",
-     "skills": [
-      "s.10.gas-laws"
-     ],
-     "lessons": [
-      {
-       "n": "9.1",
-       "title": "Gas Pressure",
-       "url": "https://openstax.org/books/chemistry-2e/pages/9-1-gas-pressure"
-      },
-      {
-       "n": "9.2",
-       "title": "Relating Pressure, Volume, Amount, and Temperature: The Ideal Gas Law",
-       "url": "https://openstax.org/books/chemistry-2e/pages/9-2-relating-pressure-volume-amount-and-temperature-the-ideal-gas-law"
-      },
-      {
-       "n": "9.3",
-       "title": "Stoichiometry of Gaseous Substances, Mixtures, and Reactions",
-       "url": "https://openstax.org/books/chemistry-2e/pages/9-3-stoichiometry-of-gaseous-substances-mixtures-and-reactions"
-      },
-      {
-       "n": "9.4",
-       "title": "Effusion and Diffusion of Gases",
-       "url": "https://openstax.org/books/chemistry-2e/pages/9-4-effusion-and-diffusion-of-gases"
-      },
-      {
-       "n": "9.5",
-       "title": "The Kinetic-Molecular Theory",
-       "url": "https://openstax.org/books/chemistry-2e/pages/9-5-the-kinetic-molecular-theory"
-      },
-      {
-       "n": "9.6",
-       "title": "Non-Ideal Gas Behavior",
-       "url": "https://openstax.org/books/chemistry-2e/pages/9-6-non-ideal-gas-behavior"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "10",
-     "title": "Liquids and Solids",
-     "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces",
-     "skills": [
-      "s.10.bonding"
-     ],
-     "notes": "Intermolecular forces (10.1) follow from bonding; phase changes and solids: nearest s.7.phase-changes (loose).",
-     "lessons": [
-      {
-       "n": "10.1",
-       "title": "Intermolecular Forces",
-       "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces"
-      },
-      {
-       "n": "10.2",
-       "title": "Properties of Liquids",
-       "url": "https://openstax.org/books/chemistry-2e/pages/10-2-properties-of-liquids"
-      },
-      {
-       "n": "10.3",
-       "title": "Phase Transitions",
-       "url": "https://openstax.org/books/chemistry-2e/pages/10-3-phase-transitions"
-      },
-      {
-       "n": "10.4",
-       "title": "Phase Diagrams",
-       "url": "https://openstax.org/books/chemistry-2e/pages/10-4-phase-diagrams"
-      },
-      {
-       "n": "10.5",
-       "title": "The Solid State of Matter",
-       "url": "https://openstax.org/books/chemistry-2e/pages/10-5-the-solid-state-of-matter"
-      },
-      {
-       "n": "10.6",
-       "title": "Lattice Structures in Crystalline Solids",
-       "url": "https://openstax.org/books/chemistry-2e/pages/10-6-lattice-structures-in-crystalline-solids"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "11",
-     "title": "Solutions and Colloids",
-     "url": "https://openstax.org/books/chemistry-2e/pages/11-1-the-dissolution-process",
-     "skills": [
-      "s.10.molarity"
-     ],
-     "notes": "Solution process, solubility and colligative properties (loose fit to the molarity skill).",
-     "lessons": [
-      {
-       "n": "11.1",
-       "title": "The Dissolution Process",
-       "url": "https://openstax.org/books/chemistry-2e/pages/11-1-the-dissolution-process"
-      },
-      {
-       "n": "11.2",
-       "title": "Electrolytes",
-       "url": "https://openstax.org/books/chemistry-2e/pages/11-2-electrolytes"
-      },
-      {
-       "n": "11.3",
-       "title": "Solubility",
-       "url": "https://openstax.org/books/chemistry-2e/pages/11-3-solubility"
-      },
-      {
-       "n": "11.4",
-       "title": "Colligative Properties",
-       "url": "https://openstax.org/books/chemistry-2e/pages/11-4-colligative-properties"
-      },
-      {
-       "n": "11.5",
-       "title": "Colloids",
-       "url": "https://openstax.org/books/chemistry-2e/pages/11-5-colloids"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "12",
-     "title": "Kinetics",
-     "url": "https://openstax.org/books/chemistry-2e/pages/12-1-chemical-reaction-rates",
-     "skills": [
-      "s.10.rates-equilibrium"
-     ],
-     "notes": "Reaction rates, rate laws and catalysis.",
-     "lessons": [
-      {
-       "n": "12.1",
-       "title": "Chemical Reaction Rates",
-       "url": "https://openstax.org/books/chemistry-2e/pages/12-1-chemical-reaction-rates"
-      },
-      {
-       "n": "12.2",
-       "title": "Factors Affecting Reaction Rates",
-       "url": "https://openstax.org/books/chemistry-2e/pages/12-2-factors-affecting-reaction-rates"
-      },
-      {
-       "n": "12.3",
-       "title": "Rate Laws",
-       "url": "https://openstax.org/books/chemistry-2e/pages/12-3-rate-laws"
-      },
-      {
-       "n": "12.4",
-       "title": "Integrated Rate Laws",
-       "url": "https://openstax.org/books/chemistry-2e/pages/12-4-integrated-rate-laws"
-      },
-      {
-       "n": "12.5",
-       "title": "Collision Theory",
-       "url": "https://openstax.org/books/chemistry-2e/pages/12-5-collision-theory"
-      },
-      {
-       "n": "12.6",
-       "title": "Reaction Mechanisms",
-       "url": "https://openstax.org/books/chemistry-2e/pages/12-6-reaction-mechanisms"
-      },
-      {
-       "n": "12.7",
-       "title": "Catalysis",
-       "url": "https://openstax.org/books/chemistry-2e/pages/12-7-catalysis"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "13",
-     "title": "Fundamental Equilibrium Concepts",
-     "url": "https://openstax.org/books/chemistry-2e/pages/13-1-chemical-equilibria",
-     "skills": [
-      "s.10.rates-equilibrium"
-     ],
-     "notes": "Equilibrium constants and Le Chatelier's principle.",
-     "lessons": [
-      {
-       "n": "13.1",
-       "title": "Chemical Equilibria",
-       "url": "https://openstax.org/books/chemistry-2e/pages/13-1-chemical-equilibria"
-      },
-      {
-       "n": "13.2",
-       "title": "Equilibrium Constants",
-       "url": "https://openstax.org/books/chemistry-2e/pages/13-2-equilibrium-constants"
-      },
-      {
-       "n": "13.3",
-       "title": "Shifting Equilibria: Le Châtelier’s Principle",
-       "url": "https://openstax.org/books/chemistry-2e/pages/13-3-shifting-equilibria-le-chateliers-principle"
-      },
-      {
-       "n": "13.4",
-       "title": "Equilibrium Calculations",
-       "url": "https://openstax.org/books/chemistry-2e/pages/13-4-equilibrium-calculations"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "14",
-     "title": "Acid-Base Equilibria",
-     "url": "https://openstax.org/books/chemistry-2e/pages/14-1-bronsted-lowry-acids-and-bases",
-     "skills": [
-      "s.10.acids-bases"
-     ],
-     "lessons": [
-      {
-       "n": "14.1",
-       "title": "Brønsted-Lowry Acids and Bases",
-       "url": "https://openstax.org/books/chemistry-2e/pages/14-1-bronsted-lowry-acids-and-bases"
-      },
-      {
-       "n": "14.2",
-       "title": "pH and pOH",
-       "url": "https://openstax.org/books/chemistry-2e/pages/14-2-ph-and-poh"
-      },
-      {
-       "n": "14.3",
-       "title": "Relative Strengths of Acids and Bases",
-       "url": "https://openstax.org/books/chemistry-2e/pages/14-3-relative-strengths-of-acids-and-bases"
-      },
-      {
-       "n": "14.4",
-       "title": "Hydrolysis of Salts",
-       "url": "https://openstax.org/books/chemistry-2e/pages/14-4-hydrolysis-of-salts"
-      },
-      {
-       "n": "14.5",
-       "title": "Polyprotic Acids",
-       "url": "https://openstax.org/books/chemistry-2e/pages/14-5-polyprotic-acids"
-      },
-      {
-       "n": "14.6",
-       "title": "Buffers",
-       "url": "https://openstax.org/books/chemistry-2e/pages/14-6-buffers"
-      },
-      {
-       "n": "14.7",
-       "title": "Acid-Base Titrations",
-       "url": "https://openstax.org/books/chemistry-2e/pages/14-7-acid-base-titrations"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "15",
-     "title": "Equilibria of Other Reaction Classes",
-     "url": "https://openstax.org/books/chemistry-2e/pages/15-1-precipitation-and-dissolution",
-     "skills": [
-      "s.10.rates-equilibrium",
-      "s.10.acids-bases"
-     ],
-     "notes": "Solubility equilibria and Lewis acids and bases.",
-     "lessons": [
-      {
-       "n": "15.1",
-       "title": "Precipitation and Dissolution",
-       "url": "https://openstax.org/books/chemistry-2e/pages/15-1-precipitation-and-dissolution"
-      },
-      {
-       "n": "15.2",
-       "title": "Lewis Acids and Bases",
-       "url": "https://openstax.org/books/chemistry-2e/pages/15-2-lewis-acids-and-bases"
-      },
-      {
-       "n": "15.3",
-       "title": "Coupled Equilibria",
-       "url": "https://openstax.org/books/chemistry-2e/pages/15-3-coupled-equilibria"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "16",
-     "title": "Thermodynamics",
-     "url": "https://openstax.org/books/chemistry-2e/pages/16-1-spontaneity",
-     "skills": [
-      "s.10.thermochemistry"
-     ],
-     "notes": "Entropy and Gibbs free energy (beyond the taxonomy skill).",
-     "lessons": [
-      {
-       "n": "16.1",
-       "title": "Spontaneity",
-       "url": "https://openstax.org/books/chemistry-2e/pages/16-1-spontaneity"
-      },
-      {
-       "n": "16.2",
-       "title": "Entropy",
-       "url": "https://openstax.org/books/chemistry-2e/pages/16-2-entropy"
-      },
-      {
-       "n": "16.3",
-       "title": "The Second and Third Laws of Thermodynamics",
-       "url": "https://openstax.org/books/chemistry-2e/pages/16-3-the-second-and-third-laws-of-thermodynamics"
-      },
-      {
-       "n": "16.4",
-       "title": "Free Energy",
-       "url": "https://openstax.org/books/chemistry-2e/pages/16-4-free-energy"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "17",
-     "title": "Electrochemistry",
-     "url": "https://openstax.org/books/chemistry-2e/pages/17-1-review-of-redox-chemistry",
-     "skills": [],
-     "notes": "Electrochemistry; no taxonomy skill (redox is the nearest, s.10.stoichiometry for balancing).",
-     "lessons": [
-      {
-       "n": "17.1",
-       "title": "Review of Redox Chemistry",
-       "url": "https://openstax.org/books/chemistry-2e/pages/17-1-review-of-redox-chemistry"
-      },
-      {
-       "n": "17.2",
-       "title": "Galvanic Cells",
-       "url": "https://openstax.org/books/chemistry-2e/pages/17-2-galvanic-cells"
-      },
-      {
-       "n": "17.3",
-       "title": "Electrode and Cell Potentials",
-       "url": "https://openstax.org/books/chemistry-2e/pages/17-3-electrode-and-cell-potentials"
-      },
-      {
-       "n": "17.4",
-       "title": "Potential, Free Energy, and Equilibrium",
-       "url": "https://openstax.org/books/chemistry-2e/pages/17-4-potential-free-energy-and-equilibrium"
-      },
-      {
-       "n": "17.5",
-       "title": "Batteries and Fuel Cells",
-       "url": "https://openstax.org/books/chemistry-2e/pages/17-5-batteries-and-fuel-cells"
-      },
-      {
-       "n": "17.6",
-       "title": "Corrosion",
-       "url": "https://openstax.org/books/chemistry-2e/pages/17-6-corrosion"
-      },
-      {
-       "n": "17.7",
-       "title": "Electrolysis",
-       "url": "https://openstax.org/books/chemistry-2e/pages/17-7-electrolysis"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "18",
-     "title": "Representative Metals, Metalloids, and Nonmetals",
-     "url": "https://openstax.org/books/chemistry-2e/pages/18-1-periodicity",
-     "skills": [],
-     "notes": "Descriptive chemistry of the main-group elements; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "18.1",
-       "title": "Periodicity",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-1-periodicity"
-      },
-      {
-       "n": "18.2",
-       "title": "Occurrence and Preparation of the Representative Metals",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-2-occurrence-and-preparation-of-the-representative-metals"
-      },
-      {
-       "n": "18.3",
-       "title": "Structure and General Properties of the Metalloids",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-3-structure-and-general-properties-of-the-metalloids"
-      },
-      {
-       "n": "18.4",
-       "title": "Structure and General Properties of the Nonmetals",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-4-structure-and-general-properties-of-the-nonmetals"
-      },
-      {
-       "n": "18.5",
-       "title": "Occurrence, Preparation, and Compounds of Hydrogen",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-5-occurrence-preparation-and-compounds-of-hydrogen"
-      },
-      {
-       "n": "18.6",
-       "title": "Occurrence, Preparation, and Properties of Carbonates",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-6-occurrence-preparation-and-properties-of-carbonates"
-      },
-      {
-       "n": "18.7",
-       "title": "Occurrence, Preparation, and Properties of Nitrogen",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-7-occurrence-preparation-and-properties-of-nitrogen"
-      },
-      {
-       "n": "18.8",
-       "title": "Occurrence, Preparation, and Properties of Phosphorus",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-8-occurrence-preparation-and-properties-of-phosphorus"
-      },
-      {
-       "n": "18.9",
-       "title": "Occurrence, Preparation, and Compounds of Oxygen",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-9-occurrence-preparation-and-compounds-of-oxygen"
-      },
-      {
-       "n": "18.10",
-       "title": "Occurrence, Preparation, and Properties of Sulfur",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-10-occurrence-preparation-and-properties-of-sulfur"
-      },
-      {
-       "n": "18.11",
-       "title": "Occurrence, Preparation, and Properties of Halogens",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-11-occurrence-preparation-and-properties-of-halogens"
-      },
-      {
-       "n": "18.12",
-       "title": "Occurrence, Preparation, and Properties of the Noble Gases",
-       "url": "https://openstax.org/books/chemistry-2e/pages/18-12-occurrence-preparation-and-properties-of-the-noble-gases"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "19",
-     "title": "Transition Metals and Coordination Chemistry",
-     "url": "https://openstax.org/books/chemistry-2e/pages/19-1-occurrence-preparation-and-properties-of-transition-metals-and-their-compounds",
-     "skills": [],
-     "notes": "Transition metals and coordination chemistry; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "19.1",
-       "title": "Occurrence, Preparation, and Properties of Transition Metals and Their Compounds",
-       "url": "https://openstax.org/books/chemistry-2e/pages/19-1-occurrence-preparation-and-properties-of-transition-metals-and-their-compounds"
-      },
-      {
-       "n": "19.2",
-       "title": "Coordination Chemistry of Transition Metals",
-       "url": "https://openstax.org/books/chemistry-2e/pages/19-2-coordination-chemistry-of-transition-metals"
-      },
-      {
-       "n": "19.3",
-       "title": "Spectroscopic and Magnetic Properties of Coordination Compounds",
-       "url": "https://openstax.org/books/chemistry-2e/pages/19-3-spectroscopic-and-magnetic-properties-of-coordination-compounds"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "20",
-     "title": "Organic Chemistry",
-     "url": "https://openstax.org/books/chemistry-2e/pages/20-1-hydrocarbons",
-     "skills": [],
-     "notes": "Organic chemistry; no taxonomy skill.",
-     "lessons": [
-      {
-       "n": "20.1",
-       "title": "Hydrocarbons",
-       "url": "https://openstax.org/books/chemistry-2e/pages/20-1-hydrocarbons"
-      },
-      {
-       "n": "20.2",
-       "title": "Alcohols and Ethers",
-       "url": "https://openstax.org/books/chemistry-2e/pages/20-2-alcohols-and-ethers"
-      },
-      {
-       "n": "20.3",
-       "title": "Aldehydes, Ketones, Carboxylic Acids, and Esters",
-       "url": "https://openstax.org/books/chemistry-2e/pages/20-3-aldehydes-ketones-carboxylic-acids-and-esters"
-      },
-      {
-       "n": "20.4",
-       "title": "Amines and Amides",
-       "url": "https://openstax.org/books/chemistry-2e/pages/20-4-amines-and-amides"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Summary",
-      "Exercises"
-     ]
-    },
-    {
-     "n": "21",
-     "title": "Nuclear Chemistry",
-     "url": "https://openstax.org/books/chemistry-2e/pages/21-1-nuclear-structure-and-stability",
-     "skills": [
-      "s.12.radiometric-dating",
-      "s.10.atomic-structure"
-     ],
-     "notes": "Radioactive decay and half-life (21.3 dates rocks and artifacts); nuclear structure.",
-     "lessons": [
-      {
-       "n": "21.1",
-       "title": "Nuclear Structure and Stability",
-       "url": "https://openstax.org/books/chemistry-2e/pages/21-1-nuclear-structure-and-stability"
-      },
-      {
-       "n": "21.2",
-       "title": "Nuclear Equations",
-       "url": "https://openstax.org/books/chemistry-2e/pages/21-2-nuclear-equations"
-      },
-      {
-       "n": "21.3",
-       "title": "Radioactive Decay",
-       "url": "https://openstax.org/books/chemistry-2e/pages/21-3-radioactive-decay"
-      },
-      {
-       "n": "21.4",
-       "title": "Transmutation and Nuclear Energy",
-       "url": "https://openstax.org/books/chemistry-2e/pages/21-4-transmutation-and-nuclear-energy"
-      },
-      {
-       "n": "21.5",
-       "title": "Uses of Radioisotopes",
-       "url": "https://openstax.org/books/chemistry-2e/pages/21-5-uses-of-radioisotopes"
-      },
-      {
-       "n": "21.6",
-       "title": "Biological Effects of Radiation",
-       "url": "https://openstax.org/books/chemistry-2e/pages/21-6-biological-effects-of-radiation"
-      }
-     ],
-     "endOfChapter": [
-      "Key Terms",
-      "Key Equations",
-      "Summary",
-      "Exercises"
-     ]
+      "grade": "10",
+      "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction",
+      "units": [
+        {
+          "n": "1",
+          "title": "Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-1-chemistry-in-context",
+          "skills": [],
+          "notes": "Measurement, units and significant figures; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Chemistry in Context",
+              "url": "https://openstax.org/books/chemistry-2e/pages/1-1-chemistry-in-context"
+            },
+            {
+              "n": "1.2",
+              "title": "Phases and Classification of Matter",
+              "url": "https://openstax.org/books/chemistry-2e/pages/1-2-phases-and-classification-of-matter"
+            },
+            {
+              "n": "1.3",
+              "title": "Physical and Chemical Properties",
+              "url": "https://openstax.org/books/chemistry-2e/pages/1-3-physical-and-chemical-properties"
+            },
+            {
+              "n": "1.4",
+              "title": "Measurements",
+              "url": "https://openstax.org/books/chemistry-2e/pages/1-4-measurements"
+            },
+            {
+              "n": "1.5",
+              "title": "Measurement Uncertainty, Accuracy, and Precision",
+              "url": "https://openstax.org/books/chemistry-2e/pages/1-5-measurement-uncertainty-accuracy-and-precision"
+            },
+            {
+              "n": "1.6",
+              "title": "Mathematical Treatment of Measurement Results",
+              "url": "https://openstax.org/books/chemistry-2e/pages/1-6-mathematical-treatment-of-measurement-results"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "2",
+          "title": "Atoms, Molecules, and Ions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/2-1-early-ideas-in-atomic-theory",
+          "skills": ["s.10.atomic-structure", "s.10.periodic-trends", "s.10.bonding"],
+          "notes": "Atomic theory and structure (2.1-2.3), periodic table (2.5), ionic and molecular compounds and naming (2.6-2.7).",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Early Ideas in Atomic Theory",
+              "url": "https://openstax.org/books/chemistry-2e/pages/2-1-early-ideas-in-atomic-theory"
+            },
+            {
+              "n": "2.2",
+              "title": "Evolution of Atomic Theory",
+              "url": "https://openstax.org/books/chemistry-2e/pages/2-2-evolution-of-atomic-theory"
+            },
+            {
+              "n": "2.3",
+              "title": "Atomic Structure and Symbolism",
+              "url": "https://openstax.org/books/chemistry-2e/pages/2-3-atomic-structure-and-symbolism"
+            },
+            {
+              "n": "2.4",
+              "title": "Chemical Formulas",
+              "url": "https://openstax.org/books/chemistry-2e/pages/2-4-chemical-formulas"
+            },
+            {
+              "n": "2.5",
+              "title": "The Periodic Table",
+              "url": "https://openstax.org/books/chemistry-2e/pages/2-5-the-periodic-table"
+            },
+            {
+              "n": "2.6",
+              "title": "Ionic and Molecular Compounds",
+              "url": "https://openstax.org/books/chemistry-2e/pages/2-6-ionic-and-molecular-compounds"
+            },
+            {
+              "n": "2.7",
+              "title": "Chemical Nomenclature",
+              "url": "https://openstax.org/books/chemistry-2e/pages/2-7-chemical-nomenclature"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "3",
+          "title": "Composition of Substances and Solutions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/3-1-formula-mass-and-the-mole-concept",
+          "skills": ["s.10.mole", "s.10.molarity"],
+          "notes": "Formula mass and the mole (3.1-3.2); molarity and other concentration units (3.3-3.4).",
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Formula Mass and the Mole Concept",
+              "url": "https://openstax.org/books/chemistry-2e/pages/3-1-formula-mass-and-the-mole-concept"
+            },
+            {
+              "n": "3.2",
+              "title": "Determining Empirical and Molecular Formulas",
+              "url": "https://openstax.org/books/chemistry-2e/pages/3-2-determining-empirical-and-molecular-formulas"
+            },
+            {
+              "n": "3.3",
+              "title": "Molarity",
+              "url": "https://openstax.org/books/chemistry-2e/pages/3-3-molarity"
+            },
+            {
+              "n": "3.4",
+              "title": "Other Units for Solution Concentrations",
+              "url": "https://openstax.org/books/chemistry-2e/pages/3-4-other-units-for-solution-concentrations"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "4",
+          "title": "Stoichiometry of Chemical Reactions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations",
+          "skills": ["s.10.stoichiometry"],
+          "notes": "Balancing equations, reaction stoichiometry, limiting reactants and yields.",
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Writing and Balancing Chemical Equations",
+              "url": "https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations"
+            },
+            {
+              "n": "4.2",
+              "title": "Classifying Chemical Reactions",
+              "url": "https://openstax.org/books/chemistry-2e/pages/4-2-classifying-chemical-reactions"
+            },
+            {
+              "n": "4.3",
+              "title": "Reaction Stoichiometry",
+              "url": "https://openstax.org/books/chemistry-2e/pages/4-3-reaction-stoichiometry"
+            },
+            {
+              "n": "4.4",
+              "title": "Reaction Yields",
+              "url": "https://openstax.org/books/chemistry-2e/pages/4-4-reaction-yields"
+            },
+            {
+              "n": "4.5",
+              "title": "Quantitative Chemical Analysis",
+              "url": "https://openstax.org/books/chemistry-2e/pages/4-5-quantitative-chemical-analysis"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "5",
+          "title": "Thermochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/5-1-energy-basics",
+          "skills": ["s.10.thermochemistry"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Energy Basics",
+              "url": "https://openstax.org/books/chemistry-2e/pages/5-1-energy-basics"
+            },
+            {
+              "n": "5.2",
+              "title": "Calorimetry",
+              "url": "https://openstax.org/books/chemistry-2e/pages/5-2-calorimetry"
+            },
+            {
+              "n": "5.3",
+              "title": "Enthalpy",
+              "url": "https://openstax.org/books/chemistry-2e/pages/5-3-enthalpy"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "6",
+          "title": "Electronic Structure and Periodic Properties of Elements",
+          "url": "https://openstax.org/books/chemistry-2e/pages/6-1-electromagnetic-energy",
+          "skills": ["s.10.atomic-structure", "s.10.periodic-trends"],
+          "notes": "Electron configurations (6.3-6.4) and periodic variations (6.5).",
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Electromagnetic Energy",
+              "url": "https://openstax.org/books/chemistry-2e/pages/6-1-electromagnetic-energy"
+            },
+            {
+              "n": "6.2",
+              "title": "The Bohr Model",
+              "url": "https://openstax.org/books/chemistry-2e/pages/6-2-the-bohr-model"
+            },
+            {
+              "n": "6.3",
+              "title": "Development of Quantum Theory",
+              "url": "https://openstax.org/books/chemistry-2e/pages/6-3-development-of-quantum-theory"
+            },
+            {
+              "n": "6.4",
+              "title": "Electronic Structure of Atoms (Electron Configurations)",
+              "url": "https://openstax.org/books/chemistry-2e/pages/6-4-electronic-structure-of-atoms-electron-configurations"
+            },
+            {
+              "n": "6.5",
+              "title": "Periodic Variations in Element Properties",
+              "url": "https://openstax.org/books/chemistry-2e/pages/6-5-periodic-variations-in-element-properties"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "7",
+          "title": "Chemical Bonding and Molecular Geometry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/7-1-ionic-bonding",
+          "skills": ["s.10.bonding"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Ionic Bonding",
+              "url": "https://openstax.org/books/chemistry-2e/pages/7-1-ionic-bonding"
+            },
+            {
+              "n": "7.2",
+              "title": "Covalent Bonding",
+              "url": "https://openstax.org/books/chemistry-2e/pages/7-2-covalent-bonding"
+            },
+            {
+              "n": "7.3",
+              "title": "Lewis Symbols and Structures",
+              "url": "https://openstax.org/books/chemistry-2e/pages/7-3-lewis-symbols-and-structures"
+            },
+            {
+              "n": "7.4",
+              "title": "Formal Charges and Resonance",
+              "url": "https://openstax.org/books/chemistry-2e/pages/7-4-formal-charges-and-resonance"
+            },
+            {
+              "n": "7.5",
+              "title": "Strengths of Ionic and Covalent Bonds",
+              "url": "https://openstax.org/books/chemistry-2e/pages/7-5-strengths-of-ionic-and-covalent-bonds"
+            },
+            {
+              "n": "7.6",
+              "title": "Molecular Structure and Polarity",
+              "url": "https://openstax.org/books/chemistry-2e/pages/7-6-molecular-structure-and-polarity"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "8",
+          "title": "Advanced Theories of Covalent Bonding",
+          "url": "https://openstax.org/books/chemistry-2e/pages/8-1-valence-bond-theory",
+          "skills": ["s.10.bonding"],
+          "notes": "Valence bond theory, hybridization and molecular orbitals (beyond the taxonomy skill).",
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Valence Bond Theory",
+              "url": "https://openstax.org/books/chemistry-2e/pages/8-1-valence-bond-theory"
+            },
+            {
+              "n": "8.2",
+              "title": "Hybrid Atomic Orbitals",
+              "url": "https://openstax.org/books/chemistry-2e/pages/8-2-hybrid-atomic-orbitals"
+            },
+            {
+              "n": "8.3",
+              "title": "Multiple Bonds",
+              "url": "https://openstax.org/books/chemistry-2e/pages/8-3-multiple-bonds"
+            },
+            {
+              "n": "8.4",
+              "title": "Molecular Orbital Theory",
+              "url": "https://openstax.org/books/chemistry-2e/pages/8-4-molecular-orbital-theory"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "9",
+          "title": "Gases",
+          "url": "https://openstax.org/books/chemistry-2e/pages/9-1-gas-pressure",
+          "skills": ["s.10.gas-laws"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Gas Pressure",
+              "url": "https://openstax.org/books/chemistry-2e/pages/9-1-gas-pressure"
+            },
+            {
+              "n": "9.2",
+              "title": "Relating Pressure, Volume, Amount, and Temperature: The Ideal Gas Law",
+              "url": "https://openstax.org/books/chemistry-2e/pages/9-2-relating-pressure-volume-amount-and-temperature-the-ideal-gas-law"
+            },
+            {
+              "n": "9.3",
+              "title": "Stoichiometry of Gaseous Substances, Mixtures, and Reactions",
+              "url": "https://openstax.org/books/chemistry-2e/pages/9-3-stoichiometry-of-gaseous-substances-mixtures-and-reactions"
+            },
+            {
+              "n": "9.4",
+              "title": "Effusion and Diffusion of Gases",
+              "url": "https://openstax.org/books/chemistry-2e/pages/9-4-effusion-and-diffusion-of-gases"
+            },
+            {
+              "n": "9.5",
+              "title": "The Kinetic-Molecular Theory",
+              "url": "https://openstax.org/books/chemistry-2e/pages/9-5-the-kinetic-molecular-theory"
+            },
+            {
+              "n": "9.6",
+              "title": "Non-Ideal Gas Behavior",
+              "url": "https://openstax.org/books/chemistry-2e/pages/9-6-non-ideal-gas-behavior"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "10",
+          "title": "Liquids and Solids",
+          "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces",
+          "skills": ["s.10.bonding"],
+          "notes": "Intermolecular forces (10.1) follow from bonding; phase changes and solids: nearest s.7.phase-changes (loose).",
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Intermolecular Forces",
+              "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces"
+            },
+            {
+              "n": "10.2",
+              "title": "Properties of Liquids",
+              "url": "https://openstax.org/books/chemistry-2e/pages/10-2-properties-of-liquids"
+            },
+            {
+              "n": "10.3",
+              "title": "Phase Transitions",
+              "url": "https://openstax.org/books/chemistry-2e/pages/10-3-phase-transitions"
+            },
+            {
+              "n": "10.4",
+              "title": "Phase Diagrams",
+              "url": "https://openstax.org/books/chemistry-2e/pages/10-4-phase-diagrams"
+            },
+            {
+              "n": "10.5",
+              "title": "The Solid State of Matter",
+              "url": "https://openstax.org/books/chemistry-2e/pages/10-5-the-solid-state-of-matter"
+            },
+            {
+              "n": "10.6",
+              "title": "Lattice Structures in Crystalline Solids",
+              "url": "https://openstax.org/books/chemistry-2e/pages/10-6-lattice-structures-in-crystalline-solids"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "11",
+          "title": "Solutions and Colloids",
+          "url": "https://openstax.org/books/chemistry-2e/pages/11-1-the-dissolution-process",
+          "skills": ["s.10.molarity"],
+          "notes": "Solution process, solubility and colligative properties (loose fit to the molarity skill).",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "The Dissolution Process",
+              "url": "https://openstax.org/books/chemistry-2e/pages/11-1-the-dissolution-process"
+            },
+            {
+              "n": "11.2",
+              "title": "Electrolytes",
+              "url": "https://openstax.org/books/chemistry-2e/pages/11-2-electrolytes"
+            },
+            {
+              "n": "11.3",
+              "title": "Solubility",
+              "url": "https://openstax.org/books/chemistry-2e/pages/11-3-solubility"
+            },
+            {
+              "n": "11.4",
+              "title": "Colligative Properties",
+              "url": "https://openstax.org/books/chemistry-2e/pages/11-4-colligative-properties"
+            },
+            {
+              "n": "11.5",
+              "title": "Colloids",
+              "url": "https://openstax.org/books/chemistry-2e/pages/11-5-colloids"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "12",
+          "title": "Kinetics",
+          "url": "https://openstax.org/books/chemistry-2e/pages/12-1-chemical-reaction-rates",
+          "skills": ["s.10.rates-equilibrium"],
+          "notes": "Reaction rates, rate laws and catalysis.",
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Chemical Reaction Rates",
+              "url": "https://openstax.org/books/chemistry-2e/pages/12-1-chemical-reaction-rates"
+            },
+            {
+              "n": "12.2",
+              "title": "Factors Affecting Reaction Rates",
+              "url": "https://openstax.org/books/chemistry-2e/pages/12-2-factors-affecting-reaction-rates"
+            },
+            {
+              "n": "12.3",
+              "title": "Rate Laws",
+              "url": "https://openstax.org/books/chemistry-2e/pages/12-3-rate-laws"
+            },
+            {
+              "n": "12.4",
+              "title": "Integrated Rate Laws",
+              "url": "https://openstax.org/books/chemistry-2e/pages/12-4-integrated-rate-laws"
+            },
+            {
+              "n": "12.5",
+              "title": "Collision Theory",
+              "url": "https://openstax.org/books/chemistry-2e/pages/12-5-collision-theory"
+            },
+            {
+              "n": "12.6",
+              "title": "Reaction Mechanisms",
+              "url": "https://openstax.org/books/chemistry-2e/pages/12-6-reaction-mechanisms"
+            },
+            {
+              "n": "12.7",
+              "title": "Catalysis",
+              "url": "https://openstax.org/books/chemistry-2e/pages/12-7-catalysis"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "13",
+          "title": "Fundamental Equilibrium Concepts",
+          "url": "https://openstax.org/books/chemistry-2e/pages/13-1-chemical-equilibria",
+          "skills": ["s.10.rates-equilibrium"],
+          "notes": "Equilibrium constants and Le Chatelier's principle.",
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Chemical Equilibria",
+              "url": "https://openstax.org/books/chemistry-2e/pages/13-1-chemical-equilibria"
+            },
+            {
+              "n": "13.2",
+              "title": "Equilibrium Constants",
+              "url": "https://openstax.org/books/chemistry-2e/pages/13-2-equilibrium-constants"
+            },
+            {
+              "n": "13.3",
+              "title": "Shifting Equilibria: Le Châtelier’s Principle",
+              "url": "https://openstax.org/books/chemistry-2e/pages/13-3-shifting-equilibria-le-chateliers-principle"
+            },
+            {
+              "n": "13.4",
+              "title": "Equilibrium Calculations",
+              "url": "https://openstax.org/books/chemistry-2e/pages/13-4-equilibrium-calculations"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "14",
+          "title": "Acid-Base Equilibria",
+          "url": "https://openstax.org/books/chemistry-2e/pages/14-1-bronsted-lowry-acids-and-bases",
+          "skills": ["s.10.acids-bases"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Brønsted-Lowry Acids and Bases",
+              "url": "https://openstax.org/books/chemistry-2e/pages/14-1-bronsted-lowry-acids-and-bases"
+            },
+            {
+              "n": "14.2",
+              "title": "pH and pOH",
+              "url": "https://openstax.org/books/chemistry-2e/pages/14-2-ph-and-poh"
+            },
+            {
+              "n": "14.3",
+              "title": "Relative Strengths of Acids and Bases",
+              "url": "https://openstax.org/books/chemistry-2e/pages/14-3-relative-strengths-of-acids-and-bases"
+            },
+            {
+              "n": "14.4",
+              "title": "Hydrolysis of Salts",
+              "url": "https://openstax.org/books/chemistry-2e/pages/14-4-hydrolysis-of-salts"
+            },
+            {
+              "n": "14.5",
+              "title": "Polyprotic Acids",
+              "url": "https://openstax.org/books/chemistry-2e/pages/14-5-polyprotic-acids"
+            },
+            {
+              "n": "14.6",
+              "title": "Buffers",
+              "url": "https://openstax.org/books/chemistry-2e/pages/14-6-buffers"
+            },
+            {
+              "n": "14.7",
+              "title": "Acid-Base Titrations",
+              "url": "https://openstax.org/books/chemistry-2e/pages/14-7-acid-base-titrations"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "15",
+          "title": "Equilibria of Other Reaction Classes",
+          "url": "https://openstax.org/books/chemistry-2e/pages/15-1-precipitation-and-dissolution",
+          "skills": ["s.10.rates-equilibrium", "s.10.acids-bases"],
+          "notes": "Solubility equilibria and Lewis acids and bases.",
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "Precipitation and Dissolution",
+              "url": "https://openstax.org/books/chemistry-2e/pages/15-1-precipitation-and-dissolution"
+            },
+            {
+              "n": "15.2",
+              "title": "Lewis Acids and Bases",
+              "url": "https://openstax.org/books/chemistry-2e/pages/15-2-lewis-acids-and-bases"
+            },
+            {
+              "n": "15.3",
+              "title": "Coupled Equilibria",
+              "url": "https://openstax.org/books/chemistry-2e/pages/15-3-coupled-equilibria"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "16",
+          "title": "Thermodynamics",
+          "url": "https://openstax.org/books/chemistry-2e/pages/16-1-spontaneity",
+          "skills": ["s.10.thermochemistry"],
+          "notes": "Entropy and Gibbs free energy (beyond the taxonomy skill).",
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Spontaneity",
+              "url": "https://openstax.org/books/chemistry-2e/pages/16-1-spontaneity"
+            },
+            {
+              "n": "16.2",
+              "title": "Entropy",
+              "url": "https://openstax.org/books/chemistry-2e/pages/16-2-entropy"
+            },
+            {
+              "n": "16.3",
+              "title": "The Second and Third Laws of Thermodynamics",
+              "url": "https://openstax.org/books/chemistry-2e/pages/16-3-the-second-and-third-laws-of-thermodynamics"
+            },
+            {
+              "n": "16.4",
+              "title": "Free Energy",
+              "url": "https://openstax.org/books/chemistry-2e/pages/16-4-free-energy"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "17",
+          "title": "Electrochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/17-1-review-of-redox-chemistry",
+          "skills": [],
+          "notes": "Electrochemistry; no taxonomy skill (redox is the nearest, s.10.stoichiometry for balancing).",
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Review of Redox Chemistry",
+              "url": "https://openstax.org/books/chemistry-2e/pages/17-1-review-of-redox-chemistry"
+            },
+            {
+              "n": "17.2",
+              "title": "Galvanic Cells",
+              "url": "https://openstax.org/books/chemistry-2e/pages/17-2-galvanic-cells"
+            },
+            {
+              "n": "17.3",
+              "title": "Electrode and Cell Potentials",
+              "url": "https://openstax.org/books/chemistry-2e/pages/17-3-electrode-and-cell-potentials"
+            },
+            {
+              "n": "17.4",
+              "title": "Potential, Free Energy, and Equilibrium",
+              "url": "https://openstax.org/books/chemistry-2e/pages/17-4-potential-free-energy-and-equilibrium"
+            },
+            {
+              "n": "17.5",
+              "title": "Batteries and Fuel Cells",
+              "url": "https://openstax.org/books/chemistry-2e/pages/17-5-batteries-and-fuel-cells"
+            },
+            {
+              "n": "17.6",
+              "title": "Corrosion",
+              "url": "https://openstax.org/books/chemistry-2e/pages/17-6-corrosion"
+            },
+            {
+              "n": "17.7",
+              "title": "Electrolysis",
+              "url": "https://openstax.org/books/chemistry-2e/pages/17-7-electrolysis"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        },
+        {
+          "n": "18",
+          "title": "Representative Metals, Metalloids, and Nonmetals",
+          "url": "https://openstax.org/books/chemistry-2e/pages/18-1-periodicity",
+          "skills": [],
+          "notes": "Descriptive chemistry of the main-group elements; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Periodicity",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-1-periodicity"
+            },
+            {
+              "n": "18.2",
+              "title": "Occurrence and Preparation of the Representative Metals",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-2-occurrence-and-preparation-of-the-representative-metals"
+            },
+            {
+              "n": "18.3",
+              "title": "Structure and General Properties of the Metalloids",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-3-structure-and-general-properties-of-the-metalloids"
+            },
+            {
+              "n": "18.4",
+              "title": "Structure and General Properties of the Nonmetals",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-4-structure-and-general-properties-of-the-nonmetals"
+            },
+            {
+              "n": "18.5",
+              "title": "Occurrence, Preparation, and Compounds of Hydrogen",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-5-occurrence-preparation-and-compounds-of-hydrogen"
+            },
+            {
+              "n": "18.6",
+              "title": "Occurrence, Preparation, and Properties of Carbonates",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-6-occurrence-preparation-and-properties-of-carbonates"
+            },
+            {
+              "n": "18.7",
+              "title": "Occurrence, Preparation, and Properties of Nitrogen",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-7-occurrence-preparation-and-properties-of-nitrogen"
+            },
+            {
+              "n": "18.8",
+              "title": "Occurrence, Preparation, and Properties of Phosphorus",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-8-occurrence-preparation-and-properties-of-phosphorus"
+            },
+            {
+              "n": "18.9",
+              "title": "Occurrence, Preparation, and Compounds of Oxygen",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-9-occurrence-preparation-and-compounds-of-oxygen"
+            },
+            {
+              "n": "18.10",
+              "title": "Occurrence, Preparation, and Properties of Sulfur",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-10-occurrence-preparation-and-properties-of-sulfur"
+            },
+            {
+              "n": "18.11",
+              "title": "Occurrence, Preparation, and Properties of Halogens",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-11-occurrence-preparation-and-properties-of-halogens"
+            },
+            {
+              "n": "18.12",
+              "title": "Occurrence, Preparation, and Properties of the Noble Gases",
+              "url": "https://openstax.org/books/chemistry-2e/pages/18-12-occurrence-preparation-and-properties-of-the-noble-gases"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Summary", "Exercises"]
+        },
+        {
+          "n": "19",
+          "title": "Transition Metals and Coordination Chemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/19-1-occurrence-preparation-and-properties-of-transition-metals-and-their-compounds",
+          "skills": [],
+          "notes": "Transition metals and coordination chemistry; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "19.1",
+              "title": "Occurrence, Preparation, and Properties of Transition Metals and Their Compounds",
+              "url": "https://openstax.org/books/chemistry-2e/pages/19-1-occurrence-preparation-and-properties-of-transition-metals-and-their-compounds"
+            },
+            {
+              "n": "19.2",
+              "title": "Coordination Chemistry of Transition Metals",
+              "url": "https://openstax.org/books/chemistry-2e/pages/19-2-coordination-chemistry-of-transition-metals"
+            },
+            {
+              "n": "19.3",
+              "title": "Spectroscopic and Magnetic Properties of Coordination Compounds",
+              "url": "https://openstax.org/books/chemistry-2e/pages/19-3-spectroscopic-and-magnetic-properties-of-coordination-compounds"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Summary", "Exercises"]
+        },
+        {
+          "n": "20",
+          "title": "Organic Chemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/20-1-hydrocarbons",
+          "skills": [],
+          "notes": "Organic chemistry; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "20.1",
+              "title": "Hydrocarbons",
+              "url": "https://openstax.org/books/chemistry-2e/pages/20-1-hydrocarbons"
+            },
+            {
+              "n": "20.2",
+              "title": "Alcohols and Ethers",
+              "url": "https://openstax.org/books/chemistry-2e/pages/20-2-alcohols-and-ethers"
+            },
+            {
+              "n": "20.3",
+              "title": "Aldehydes, Ketones, Carboxylic Acids, and Esters",
+              "url": "https://openstax.org/books/chemistry-2e/pages/20-3-aldehydes-ketones-carboxylic-acids-and-esters"
+            },
+            {
+              "n": "20.4",
+              "title": "Amines and Amides",
+              "url": "https://openstax.org/books/chemistry-2e/pages/20-4-amines-and-amides"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Summary", "Exercises"]
+        },
+        {
+          "n": "21",
+          "title": "Nuclear Chemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/21-1-nuclear-structure-and-stability",
+          "skills": ["s.12.radiometric-dating", "s.10.atomic-structure"],
+          "notes": "Radioactive decay and half-life (21.3 dates rocks and artifacts); nuclear structure.",
+          "lessons": [
+            {
+              "n": "21.1",
+              "title": "Nuclear Structure and Stability",
+              "url": "https://openstax.org/books/chemistry-2e/pages/21-1-nuclear-structure-and-stability"
+            },
+            {
+              "n": "21.2",
+              "title": "Nuclear Equations",
+              "url": "https://openstax.org/books/chemistry-2e/pages/21-2-nuclear-equations"
+            },
+            {
+              "n": "21.3",
+              "title": "Radioactive Decay",
+              "url": "https://openstax.org/books/chemistry-2e/pages/21-3-radioactive-decay"
+            },
+            {
+              "n": "21.4",
+              "title": "Transmutation and Nuclear Energy",
+              "url": "https://openstax.org/books/chemistry-2e/pages/21-4-transmutation-and-nuclear-energy"
+            },
+            {
+              "n": "21.5",
+              "title": "Uses of Radioisotopes",
+              "url": "https://openstax.org/books/chemistry-2e/pages/21-5-uses-of-radioisotopes"
+            },
+            {
+              "n": "21.6",
+              "title": "Biological Effects of Radiation",
+              "url": "https://openstax.org/books/chemistry-2e/pages/21-6-biological-effects-of-radiation"
+            }
+          ],
+          "endOfChapter": ["Key Terms", "Key Equations", "Summary", "Exercises"]
+        }
+      ]
     }
-   ]
-  }
- ]
+  ]
 }
