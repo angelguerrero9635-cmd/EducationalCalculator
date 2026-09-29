@@ -65,6 +65,7 @@ import { RectangleDiagram } from './Rectangle';
 import { Rectilinear } from './Rectilinear';
 import { AreaModel } from './AreaModel';
 import { Angles } from './Angles';
+import { CubeRoot } from './CubeRoot';
 import { ParallelAngles } from './ParallelAngles';
 import { TriangleAngles } from './TriangleAngles';
 import { RightTriangle } from './RightTriangle';
@@ -214,6 +215,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'scatter':
       return <Scatter spec={spec} calc={calc} />;
     case 'rootSquare':
+      if (spec.solid === 'cube') return <CubeRoot spec={spec} calc={calc} />;
       return <RootSquare spec={spec} calc={calc} />;
     case 'factorRows':
       return <FactorRows spec={spec} calc={calc} />;

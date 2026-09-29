@@ -1,5 +1,6 @@
 import { MATH_LAYOUTS } from './math';
 import { MATH_7_LAYOUTS } from './math7';
+import { MATH_8_LAYOUTS } from './math8';
 import { SCIENCE_LAYOUTS } from './science';
 import { SCIENCE_7_LAYOUTS } from './science7';
 import { SCIENCE_8_LAYOUTS } from './science8';
@@ -31,6 +32,7 @@ export type {
 export const LAYOUTS: readonly LayoutDef[] = [
   ...MATH_LAYOUTS,
   ...MATH_7_LAYOUTS,
+  ...MATH_8_LAYOUTS,
   ...SCIENCE_LAYOUTS,
   ...SCIENCE_7_LAYOUTS,
   ...SCIENCE_8_LAYOUTS,

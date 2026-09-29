@@ -373,7 +373,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     // Unrounded binary fractions ("13.999999999999998") in anything a student reads. Small
     // values shown to 4 significant figures ("0.0002006 km") have fewer than 10 decimals.
     // (a repeating decimal written out, 0.692307692307…, is not one).
-    const raw = /\d\.\d{10,}(?![\d…])/.exec(t);
+    // (and leading zeros of a small number written in full, 0.0000003973, are not digits).
+    const raw = /\d\.0*[1-9]\d{9,}(?![\d…])/.exec(t);
     if (raw) c.f.add('error', `${c.label}step text shows an unrounded number: "${t}"`, where);
     // Number words agree with their count: "1 ten", "2 tens" (not "1 tens" or "2 ten and").
     const bad = PLURAL.exec(t);
@@ -626,7 +627,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
 
 function checkRep(c: Ctx, res: SolveResult, where: string) {
   const shown = (id: string) =>
-    id in res.values ? Math.round(c.units.toDisplay(id, res.values[id]!) * 1e9) / 1e9 : undefined;
+    id in res.values ? Number(c.units.toDisplay(id, res.values[id]!).toPrecision(12)) : undefined;
   // Issues starting with "~" are cosmetic (e.g. 0 has no cell on a hundred chart).
   for (const issue of repIssues(c.module.representation, shown, c.byId)) {
     const minor = issue.startsWith('~');

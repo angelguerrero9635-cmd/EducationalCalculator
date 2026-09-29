@@ -92,6 +92,8 @@ export function checkValue(variable: VariableDef, x: number): string | undefined
 const normalizeValue = (variable: VariableDef, x: number) => {
   const f = variable.unitFactor ?? 1;
   if (variable.integer) return Math.round(x / f) * f;
+  // Scientific notation keeps tiny values (2 × 10⁻¹⁵); elsewhere they are rounding dust.
+  if (variable.scientific) return x;
   return Math.abs(x) < 1e-12 ? 0 : x;
 };
 

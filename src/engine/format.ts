@@ -5,9 +5,14 @@ export function formatNumber(
   x: number,
   variable?: Pick<
     VariableDef,
-    'integer' | 'digits' | 'fraction' | 'pi' | 'scientific' | 'repeating'
+    'integer' | 'digits' | 'fraction' | 'pi' | 'scientific' | 'repeating' | 'full'
   >,
 ): string {
+  if (variable?.full && x !== 0 && Number.isFinite(x)) {
+    const e = Math.floor(Math.log10(Math.abs(x)) + 1e-12);
+    const a = Number((Math.abs(x) / 10 ** e).toPrecision(12));
+    return `${x < 0 ? '−' : ''}${fullDecimal(a, e)}`;
+  }
   if (variable?.repeating && !Number.isInteger(x)) {
     const r = repeatingDecimal(x);
     if (r) return r;
@@ -39,6 +44,20 @@ export function formatNumber(
 }
 
 const minus = (s: string) => s.replace(/^-/, '−');
+
+/**
+ * a × 10ⁿ written out in full from a's digits (up to 4 decimals), so no floating-point error
+ * creeps in: (4.7, 5) → "470,000"; (3, −4) → "0.0003".
+ */
+export function fullDecimal(a: number, n: number): string {
+  const group = (digits: string) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const [whole, frac = ''] = String(Number(a.toFixed(4))).split('.');
+  const digits = `${whole}${frac}`.replace(/^0+(?=\d)/, '');
+  const point = whole!.replace(/^0+/, '').length + n;
+  if (point <= 0) return `0.${'0'.repeat(-point)}${digits}`;
+  if (point >= digits.length) return group(digits + '0'.repeat(point - digits.length));
+  return `${group(digits.slice(0, point))}.${digits.slice(point)}`;
+}
 
 /**
  * The decimal of a fraction with a denominator up to 999, split where it starts repeating:

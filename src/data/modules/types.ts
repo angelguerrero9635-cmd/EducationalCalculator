@@ -842,7 +842,19 @@ export type Representation =
    * same scale placing the root between two whole numbers, beside fixed `marks` (√2 at
    * 1.41421…, π at 3.14159…). Drag the corner to change the area.
    */
-  | { kind: 'rootSquare'; area: string; side: string; marks?: { at: number; label: string }[] }
+  | {
+      kind: 'rootSquare';
+      area: string;
+      side: string;
+      marks?: { at: number; label: string }[];
+      /** Values holding the whole numbers just under and over the root (6 and 7 for √39). */
+      between?: [string, string];
+      /**
+       * 'cube': a cube of volume `area` with edge `side` (∛ of the volume) instead of a square,
+       * the edge dropped onto the number line.
+       */
+      solid?: 'cube';
+    }
   /**
    * Exponent rules as rows of factors (Grade 8): each power a row of its `base` repeated.
    * `rule` 'product': b^first × b^second, the two rows joined into one of `result` factors;

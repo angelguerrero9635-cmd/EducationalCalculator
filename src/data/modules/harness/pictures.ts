@@ -1614,7 +1614,6 @@ export function repIssues(
     }
     case 'powerScale': {
       const [x, a, e] = [rep.number, rep.mantissa, rep.exponent].map(val);
-      // (The sampled values are rounded to 9 decimals, so a tiny number can read as 0.)
       if (x !== undefined && x < 0) out.push(`number ${x} has no place on a powers-of-ten ruler`);
       if (a !== undefined && (a < 1 || a >= 10)) out.push(`mantissa ${a} is not from 1 up to 10`);
       if (e !== undefined && e !== Math.round(e)) out.push(`exponent ${e} is not whole`);
@@ -1629,6 +1628,21 @@ export function repIssues(
     }
     case 'rootSquare': {
       const [a, sd] = [val(rep.area), val(rep.side)];
+      const root = (x: number) => (rep.solid === 'cube' ? Math.cbrt(x) : Math.sqrt(x));
+      if (rep.between && a !== undefined && a >= 0) {
+        const [lo, hi] = rep.between.map(val);
+        if (lo !== undefined && lo !== Math.floor(root(a) + 1e-9))
+          out.push(`root of ${a} is not at or above ${lo}`);
+        if (hi !== undefined && hi !== Math.ceil(root(a) - 1e-9))
+          out.push(`root of ${a} is not at or below ${hi}`);
+      }
+      if (rep.solid === 'cube') {
+        // The line runs to the edge; past 20 the whole numbers crowd.
+        if (a !== undefined && (a < 0 || a > 8000)) out.push(`cube of volume ${a}`);
+        if (a !== undefined && a >= 0 && sd !== undefined && Math.abs(sd - root(a)) > 0.006)
+          out.push(`edge ${sd} cubed is ${sd ** 3}, the volume shows ${a}`);
+        break;
+      }
       if (a !== undefined && a < 0) out.push(`square of area ${a}`);
       // The grid grows to the side; past 12 the unit squares are too small to read.
       if (a !== undefined && a > 144) out.push(`square of area ${a} is past a 12 × 12 grid`);

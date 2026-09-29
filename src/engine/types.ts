@@ -36,6 +36,11 @@ export interface VariableDef {
    */
   repeating?: boolean;
   /**
+   * Written out in full however big or small (3,800,000,000,000; 0.00083), never switched to
+   * scientific notation: the number a scientific-notation lesson starts from.
+   */
+  full?: boolean;
+  /**
    * The only units this value may be shown in (rain in mm, cm or in, never km): the unit menu
    * and the unit systems keep to these.
    */

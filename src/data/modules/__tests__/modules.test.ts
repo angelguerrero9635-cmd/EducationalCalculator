@@ -399,7 +399,7 @@ function representationVars(r: Representation): string[] {
     case 'curvedSolid':
       return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
     case 'rootSquare':
-      return [r.area, r.side];
+      return [r.area, r.side, ...(r.between ?? [])];
     case 'factorRows':
       return [r.base, r.first, r.second, r.result];
     case 'powerScale':

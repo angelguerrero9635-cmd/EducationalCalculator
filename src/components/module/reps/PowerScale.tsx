@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, G, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
-import { formatNumber } from '@/engine/format';
+import { formatNumber, fullDecimal } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -12,21 +12,7 @@ import { sup } from './FactorRows';
 
 type Spec = Extract<Representation, { kind: 'powerScale' }>;
 
-/** Thousands separators on a run of digits: 1234567 → 1,234,567. */
-const group = (digits: string) => digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-/**
- * a × 10ⁿ written out in full from a's digits, so no floating-point error creeps in:
- * (4.7, 5) → "470,000"; (3, −4) → "0.0003".
- */
-export function fullDecimal(a: number, n: number): string {
-  const [whole, frac = ''] = formatNumber(a).replace(/,/g, '').split('.');
-  const digits = `${whole}${frac}`.replace(/^0+(?=\d)/, '');
-  const point = whole!.replace(/^0+/, '').length + n;
-  if (point <= 0) return `0.${'0'.repeat(-point)}${digits}`;
-  if (point >= digits.length) return group(digits + '0'.repeat(point - digits.length));
-  return `${group(digits.slice(0, point))}.${digits.slice(point)}`;
-}
+export { fullDecimal };
 
 /** Decades drawn on the powers-of-ten ruler: two below the number's, three above. */
 const BELOW = 2;
