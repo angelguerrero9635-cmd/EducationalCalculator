@@ -120,6 +120,8 @@ import { MotionGraph } from './MotionGraph';
 import { ForceCart } from './ForceCart';
 import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
+import { UnitCircle } from './UnitCircle';
+import { AlgebraTiles } from './AlgebraTiles';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -148,6 +150,10 @@ export const representationTitle = (r: Representation) =>
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'unitCircle':
+      return <UnitCircle spec={spec} calc={calc} />;
+    case 'algebraTiles':
+      return <AlgebraTiles spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

@@ -1,0 +1,151 @@
+/**
+ * Picture checks for the Grades 9–12 group D pictures (`typesHsd.ts`): what each one draws must
+ * agree with the values. Called from `repIssues` in `pictures.ts`. Test-only.
+ */
+import { principalOf, solutionsOf, toDegrees, trig } from '@/components/module/reps/hsdKit';
+
+import { rectangleCounts, type Poly } from '@/components/module/reps/tiles';
+
+import type { HsdSpec, TileCounts } from '../typesHsd';
+
+/** Equal to display rounding (values are read as shown, 4 decimals). */
+const near = (a: number, b: number, tol = 1e-4) =>
+  Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
+
+export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined): string[] {
+  const out: string[] = [];
+  const num = (x: string | number | undefined) =>
+    x === undefined ? undefined : typeof x === 'number' ? x : val(x);
+  switch (rep.kind) {
+    case 'unitCircle': {
+      const raw = num(rep.angle);
+      if (raw === undefined) break;
+      const deg = toDegrees(raw, rep.measure);
+      const RAD = Math.PI / 180;
+      // The point drawn is (cos θ, sin θ): on the circle, and each named value matches it.
+      const [x, y] = [Math.cos(deg * RAD), Math.sin(deg * RAD)];
+      if (!near(x * x + y * y, 1, 1e-9)) out.push(`point (${x}, ${y}) is off the unit circle`);
+      for (const fn of ['cos', 'sin', 'tan'] as const) {
+        const v = num(rep[fn]);
+        if (v === undefined) continue;
+        const want = trig(fn, deg);
+        if (fn === 'tan' && Math.abs(Math.cos(deg * RAD)) < 1e-9) {
+          out.push(`tan θ is drawn at θ = ${deg}°, where it is undefined`);
+          continue;
+        }
+        if (!near(v, want)) out.push(`${fn} θ = ${v}, but the point gives ${want}`);
+      }
+      const arc = num(rep.arc);
+      if (arc !== undefined && !near(arc, deg * RAD))
+        out.push(`arc length ${arc} is not θ in radians (${deg * RAD})`);
+      const sol = rep.solutions;
+      const c = num(sol?.value);
+      if (sol && c !== undefined) {
+        // Every marked angle satisfies the equation; the named solutions are marked.
+        const marked = sol.principal
+          ? [principalOf(sol.fn, c)].filter((a): a is number => a !== undefined)
+          : solutionsOf(sol.fn, c);
+        for (const a of marked) {
+          if (!near(trig(sol.fn, a), c, 1e-6))
+            out.push(`marked angle ${a}° gives ${sol.fn} = ${trig(sol.fn, a)}, not ${c}`);
+          if (!sol.principal && (a < 0 || a >= 360)) out.push(`marked angle ${a}° is off one turn`);
+        }
+        for (const id of sol.angles ?? []) {
+          const a = val(id);
+          if (a === undefined) continue;
+          const d = toDegrees(a, rep.measure);
+          const hit = marked.some((m) => near(((((d - m) % 360) + 540) % 360) - 180, 0, 1e-4));
+          if (!hit) out.push(`solution ${id} = ${a} is not one of the marked angles`);
+        }
+      }
+      break;
+    }
+    case 'algebraTiles': {
+      // Counts are whole, −10 to 10, and the tiles add up to the polynomial named.
+      const tileCount = (x: string | number | undefined, what: string) => {
+        const v = num(x);
+        if (v === undefined) return undefined;
+        if (Math.abs(v - Math.round(v)) > 1e-9 || Math.abs(v) > 10)
+          out.push(`${what} ${v} is not a whole number of tiles from −10 to 10`);
+        return v;
+      };
+      const poly = (t: TileCounts | undefined, what: string): Poly | undefined => {
+        if (!t) return undefined;
+        const [a, b, c] = [
+          tileCount(t.x2 ?? 0, `${what} x² tiles`),
+          tileCount(t.x ?? 0, `${what} x tiles`),
+          tileCount(t.unit ?? 0, `${what} unit tiles`),
+        ];
+        return a === undefined || b === undefined || c === undefined
+          ? undefined
+          : { x2: a, x: b, unit: c };
+      };
+      const same = (p: Poly, q: Poly, what: string) => {
+        if (!near(p.x2, q.x2) || !near(p.x, q.x) || !near(p.unit, q.unit))
+          out.push(`${what}: the tiles make ${JSON.stringify(q)}, not ${JSON.stringify(p)}`);
+      };
+      switch (rep.mode) {
+        case 'collect': {
+          const a = poly(rep.tiles, 'first');
+          const b = poly(rep.plus, 'second');
+          const s = rep.sum
+            ? [num(rep.sum.x2 ?? 0), num(rep.sum.x ?? 0), num(rep.sum.unit ?? 0)]
+            : [];
+          if (a && s.length && s.every((x) => x !== undefined)) {
+            const tiles = {
+              x2: a.x2 + (b?.x2 ?? 0),
+              x: a.x + (b?.x ?? 0),
+              unit: a.unit + (b?.unit ?? 0),
+            };
+            same({ x2: s[0]!, x: s[1]!, unit: s[2]! }, tiles, 'sum');
+          }
+          break;
+        }
+        case 'rectangle': {
+          const f = rep.factors;
+          const [p, q, r, s] = [
+            tileCount(f.p, 'p'),
+            tileCount(f.q, 'q'),
+            tileCount(f.r, 'r'),
+            tileCount(f.s, 's'),
+          ];
+          if ([p, q, r, s].some((x) => x === undefined)) break;
+          // The edges hold −10 to 10 tiles each; the rectangle holds their products (up to 100).
+          const tiles = rectangleCounts(p!, q!, r!, s!);
+          const t = rep.product;
+          const prod = t && [t.x2 ?? 0, t.x ?? 0, t.unit ?? 0].map(num);
+          if (prod && prod.every((x) => x !== undefined))
+            same({ x2: prod[0]!, x: prod[1]!, unit: prod[2]! }, tiles, 'product');
+          break;
+        }
+        case 'square': {
+          const b = num(rep.b);
+          const k = rep.k ? val(rep.k) : undefined;
+          const m = rep.missing ? val(rep.missing) : undefined;
+          if (b === undefined) break;
+          if (k !== undefined && !near(k, b / 2)) out.push(`half of b is ${b / 2}, not ${k}`);
+          if (m !== undefined && !near(m, (b / 2) ** 2))
+            out.push(`the missing corner holds ${(b / 2) ** 2} tiles, not ${m}`);
+          tileCount(b / 2, 'x tiles on each side');
+          tileCount(num(rep.c ?? 0), 'unit tiles');
+          break;
+        }
+        case 'equation': {
+          const [a, b, c, d] = [
+            tileCount(rep.left.x, 'left x'),
+            tileCount(rep.left.unit, 'left unit'),
+            tileCount(rep.right.x, 'right x'),
+            tileCount(rep.right.unit, 'right unit'),
+          ];
+          const x = rep.solution ? val(rep.solution) : undefined;
+          if ([a, b, c, d, x].some((v) => v === undefined)) break;
+          if (!near(a! * x! + b!, c! * x! + d!))
+            out.push(`x = ${x}: the sides are ${a! * x! + b!} and ${c! * x! + d!}`);
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return out;
+}

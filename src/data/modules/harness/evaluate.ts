@@ -304,6 +304,21 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // Last, after "3 feet of 12 inches": a length in inches is its number.
   [new RegExp(`(${NUM}) inch(?:es)? and (${NUM}) inch`), (a, b) => a + b],
   [new RegExp(`(${NUM}) inch(?:es)?`), (a) => a],
+  // Grades 9–12 trig (group D pictures): sin, cos and tan of an angle in degrees, "cos(150)"
+  // (step lines drop the °), and the inverse functions' answers in degrees, "arcsin(0.5)"
+  // (a value rounded just past 1 counts as 1).
+  [new RegExp(`(?<!arc)sin ?\\(?(${NUM})°?\\)?`), (d) => Math.sin((d * Math.PI) / 180)],
+  [new RegExp(`(?<!arc)cos ?\\(?(${NUM})°?\\)?`), (d) => Math.cos((d * Math.PI) / 180)],
+  [new RegExp(`(?<!arc)tan ?\\(?(${NUM})°?\\)?`), (d) => Math.tan((d * Math.PI) / 180)],
+  [
+    new RegExp(`arcsin ?(${NUM})`),
+    (x) => (Math.asin(Math.max(-1, Math.min(1, x))) * 180) / Math.PI,
+  ],
+  [
+    new RegExp(`arccos ?(${NUM})`),
+    (x) => (Math.acos(Math.max(-1, Math.min(1, x))) * 180) / Math.PI,
+  ],
+  [new RegExp(`arctan ?(${NUM})`), (x) => (Math.atan(x) * 180) / Math.PI],
 ];
 
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
