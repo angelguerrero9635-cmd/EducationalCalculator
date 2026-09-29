@@ -243,23 +243,36 @@ function Ladder({
 
   return (
     <View>
-      <Canvas aspect={(w) => 360 / w}>
+      <Canvas aspect={(w) => 370 / w}>
         {({ w, h }) => {
           const top = 40;
-          const bottom = h - 86;
-          const yOf = (en: number) => top + (-en / RYDBERG_EV) * (bottom - top);
+          const bottom = h - 110;
+          // A drop between higher levels zooms in: the scale starts a little below the lower
+          // level, and the levels under it are listed below a break.
+          const floor = known && lo > 1 ? levelEnergy(lo) * 1.2 : -RYDBERG_EV;
+          const yOf = (en: number) => top + (en / floor) * (bottom - top);
+          const all = Array.from({ length: levels }, (_, i) => i + 1);
+          const below = all.filter((n) => levelEnergy(n) < floor - 1e-9);
           const x0 = 58;
           const x1 = Math.min(w - 110, 250);
           const ax = x0 + (x1 - x0) * 0.45;
           // Labels skip a level too close to the one below it.
           let lastY = Infinity;
           const zeroY = top - 4;
-          const labelled = Array.from({ length: levels }, (_, i) => i + 1).map((n) => {
-            const y = yOf(levelEnergy(n));
-            const show = (lastY - y >= 13 && y - zeroY >= 14) || n === up || n === lo;
-            if (show) lastY = y;
-            return { n, y, show: show && (n <= 4 || n === up || n === lo) };
-          });
+          const labelled = all
+            .filter((n) => !below.includes(n))
+            .map((n) => {
+              const y = yOf(levelEnergy(n));
+              const show = (lastY - y >= 13 && y - zeroY >= 14) || n === up || n === lo;
+              if (show) lastY = y;
+              return { n, y, show: show && (n <= 4 || n === up || n === lo) };
+            });
+          const zig = (y: number) =>
+            `M ${x0} ${y} ` +
+            Array.from(
+              { length: 12 },
+              (_, k) => `L ${x0 + ((k + 1) * (x1 - x0)) / 12} ${y + (k % 2 ? -4 : 4)}`,
+            ).join(' ');
           const sy0 = h - 44;
           const sx = (lam: number) => 16 + ((lam - 380) / (750 - 380)) * (w - 32);
           const wave = (xa: number, ya: number, len: number) =>
@@ -319,6 +332,20 @@ function Ladder({
                   ) : null}
                 </G>
               ))}
+              {below.length ? (
+                <G>
+                  <Path d={zig(bottom + 14)} fill="none" stroke={c.chartMuted} strokeWidth={1.2} />
+                  <ChartText x={x0} y={bottom + 32} fontSize={chart.label} fill={c.chartMuted}>
+                    {`Below: ${below
+                      .slice()
+                      .reverse()
+                      .map(
+                        (n) => `n = ${n} (${formatNumber(Number(levelEnergy(n).toFixed(2)))} eV)`,
+                      )
+                      .join(', ')}`}
+                  </ChartText>
+                </G>
+              ) : null}
               {known ? (
                 <G>
                   <Line
@@ -401,9 +428,14 @@ function Ladder({
         {known && E && nm
           ? [
               `The electron drops from n = ${up} to n = ${lo}${series ? ` (the ${series} series)` : ''}.`,
+              lo > 1
+                ? `Drawn to scale from n = ${lo} up; the lower levels are listed below the break.`
+                : undefined,
               `Photon energy = 13.6 × (1/${lo}² − 1/${up}²) = ${formatNumber(Number(E.toPrecision(4)))} eV.`,
               `Wavelength = 1240 ÷ ${formatNumber(Number(E.toPrecision(4)))} = ${formatNumber(Math.round(nm))} nm: ${bandOf(nm)}.`,
-            ].join(' · ')
+            ]
+              .filter(Boolean)
+              .join(' · ')
           : 'Type an upper level above the lower one.'}
       </Caption>
     </View>

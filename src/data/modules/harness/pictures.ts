@@ -27,7 +27,7 @@ import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import { hsdIssues } from './picturesHsd';
-import { hsiIssues } from './picturesHsi';
+import { chemHsiIssues, hsiIssues } from './picturesHsi';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1833,6 +1833,7 @@ export function repIssues(
           return typeof x === 'number' || y === undefined ? y : y * (byId.get(x)?.unitFactor ?? 1);
         }),
       );
+      out.push(...chemHsiIssues(rep, (x) => val(x)));
       break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);

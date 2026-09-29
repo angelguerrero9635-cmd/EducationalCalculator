@@ -250,6 +250,9 @@ const light = {
   atomProton: '#E0563F',
   atomNeutron: '#9AA3AF',
   atomElectron: '#3B82F6',
+  /** A periodic trend's shading (darker for more) and the symbols on its darkest cells. */
+  trendShade: '#0F766E',
+  onTrendShade: '#FFFFFF',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -429,6 +432,8 @@ const dark: Palette = {
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',
   atomElectron: '#5B9BF8',
+  trendShade: '#2DD4BF',
+  onTrendShade: '#0D0F14',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

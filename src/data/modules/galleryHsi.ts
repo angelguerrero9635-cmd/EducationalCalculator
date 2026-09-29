@@ -10,9 +10,11 @@ import {
   unpaired,
   valenceOf,
 } from '@/components/module/reps/electrons';
+import { trendValue } from '@/components/module/reps/chemTrends';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
+import type { TrendProperty } from './typesHsi';
 import type { ModuleDef, StepText } from './types';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
@@ -789,5 +791,167 @@ ORBITALS.push(
   ),
 );
 
-export const HSI_GALLERY_MODULES: ModuleDef[] = [...MEASUREMENT, ...ATOMS, ...ORBITALS];
+// ─── H46 periodicTable trend ─────────────────────────────────────────────────
+
+const TREND_WORDS: Record<
+  TrendProperty,
+  { phrase: string; name: string; unit?: string; step: number }
+> = {
+  radius: { phrase: 'atomic radius', name: 'Atomic radius', unit: 'pm', step: 1 },
+  ionization: {
+    phrase: 'ionization energy',
+    name: 'First ionization energy',
+    unit: 'kJ/mol',
+    step: 1,
+  },
+  electronegativity: { phrase: 'electronegativity', name: 'Electronegativity', step: 0.01 },
+};
+
+/** out: an element's value of a property, looked up from its atomic number (never worked back). */
+const trendRule = (property: TrendProperty, out: string, z: string): Rule => {
+  const words = TREND_WORDS[property];
+  return {
+    relation: {
+      id: `${out} = ${words.phrase} of ${z}`,
+      display: `{${out}} = ${words.phrase} of Z = {${z}}`,
+      vars: [out, z],
+      residual: (v) => v[out]! - (trendValue(property, v[z]!) ?? NaN),
+      solve: { [out]: (v) => trendValue(property, v[z]!), [z]: () => undefined },
+    },
+    steps: {
+      [out]: {
+        expr: `${words.phrase} of Z = {${z}}`,
+        how: `Read the element’s ${words.phrase} from the table.`,
+      },
+    },
+  };
+};
+
+/** Atomic numbers 1–86 that have a value of the property. */
+const withValue = (property: TrendProperty) =>
+  Array.from({ length: 86 }, (_, i) => i + 1).filter((z) => trendValue(property, z) !== undefined);
+
+const trendDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  property: TrendProperty,
+  z: number,
+  z2: number,
+): ModuleDef => {
+  const words = TREND_WORDS[property];
+  const atomic = (vid: string, name: string): VariableDef => ({
+    ...whole(vid, vid === 'p' ? 'Z₁' : 'Z₂', name, 1, 86),
+    allowed: withValue(property),
+  });
+  const value = (vid: string, symbol: string, name: string): VariableDef => ({
+    id: vid,
+    symbol,
+    name,
+    ...(words.unit ? { unit: words.unit } : {}),
+    min: 0,
+    max: 3000,
+    step: words.step,
+  });
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      atomic('p', 'Atomic number of the element'),
+      value('r', 'x₁', `${words.name} of the element`),
+      atomic('c', 'Atomic number to compare'),
+      value('s', 'x₂', `${words.name} to compare`),
+      { ...value('d', 'Δx', 'Difference (first − second)'), min: -3000 },
+    ],
+    ...rules(trendRule(property, 'r', 'p'), trendRule(property, 's', 'c'), {
+      relation: {
+        id: 'Δx = x₁ − x₂',
+        display: '{d} = {r} − {s}',
+        vars: ['d', 'r', 's'],
+        residual: (v) => v.d! - v.r! + v.s!,
+        solve: { d: (v) => v.r! - v.s!, r: (v) => v.d! + v.s!, s: (v) => v.r! - v.d! },
+      },
+      steps: {
+        d: { expr: '{r} − {s}', how: 'Subtract to see which is larger, and by how much.' },
+        r: { expr: '{d} + {s}', how: 'Add the difference to the second value.' },
+        s: { expr: '{r} − {d}', how: 'Take the difference away from the first value.' },
+      },
+    }),
+    example: {
+      p: z,
+      r: trendValue(property, z)!,
+      c: z2,
+      s: trendValue(property, z2)!,
+      d: trendValue(property, z)! - trendValue(property, z2)!,
+    },
+    pictureLabels: ['d'],
+    startWith: ['p', 'c'],
+    representation: {
+      kind: 'periodicTable',
+      element: 'p',
+      trend: { property, value: 'r', compare: 'c', compareValue: 's' },
+    },
+  };
+};
+
+const TRENDS_DEMOS: ModuleDef[] = [
+  trendDemo(
+    'g.s10-periodic-trends-radius',
+    'Atomic radius across a period',
+    'Use this to compare the sizes of two atoms from where they sit on the table.',
+    [
+      'Radii are covalent radii, in picometers (1 pm = 10⁻¹² m).',
+      'Across a period the nucleus gains protons and pulls the same shell in tighter.',
+    ],
+    'radius',
+    11,
+    17,
+  ),
+  trendDemo(
+    'g.s10-periodic-trends-ionization',
+    'Ionization energy down a group',
+    'Use this to compare how much energy it takes to remove an electron from two atoms.',
+    [
+      'First ionization energy removes one electron from a gas atom, in kJ/mol.',
+      'Down a group the outer electron is in a higher shell, farther from the nucleus.',
+    ],
+    'ionization',
+    12,
+    20,
+  ),
+  trendDemo(
+    'g.s10-periodic-trends-electronegativity',
+    'Electronegativity',
+    'Use this to see which atom in a bond pulls the shared electrons harder.',
+    [
+      'Electronegativity is on the Pauling scale, with no unit; fluorine is highest, 3.98.',
+      'The noble gases helium, neon and argon have no value.',
+    ],
+    'electronegativity',
+    8,
+    1,
+  ),
+  trendDemo(
+    'g.s10-periodic-trends-extremes',
+    'The largest and smallest atoms',
+    'Use this for the extremes of a trend: the bottom left and the top right of the table.',
+    [
+      'Radii are covalent radii, in picometers.',
+      'Cesium is the largest atom shown; hydrogen the smallest.',
+    ],
+    'radius',
+    55,
+    1,
+  ),
+];
+
+export const HSI_GALLERY_MODULES: ModuleDef[] = [
+  ...MEASUREMENT,
+  ...ATOMS,
+  ...ORBITALS,
+  ...TRENDS_DEMOS,
+];
 export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [];

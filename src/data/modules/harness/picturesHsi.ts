@@ -19,6 +19,9 @@ import {
   unpaired,
 } from '@/components/module/reps/electrons';
 
+import { trendValue } from '@/components/module/reps/chemTrends';
+
+import type { ChemSpec } from '../typesChem';
 import type { HsiSpec } from '../typesHsi';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
@@ -138,6 +141,34 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       if (lam !== undefined && !near(lam, photonWavelength(en ?? E), 1e-3))
         out.push(`wavelength ${photonWavelength(en ?? E)} nm, the value shows ${lam}`);
       break;
+    }
+  }
+  return out;
+}
+
+/** The group I options on the Grade 7–8 chemistry kinds: a periodic trend (H46). */
+export function chemHsiIssues(
+  rep: ChemSpec,
+  val: (x: string | number) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const num = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  if (rep.kind === 'periodicTable' && rep.trend) {
+    const pairs: [string | number | undefined, string | undefined][] = [
+      [rep.element, rep.trend.value],
+      [rep.trend.compare, rep.trend.compareValue],
+    ];
+    for (const [el, value] of pairs) {
+      const z = num(el);
+      const v = num(value);
+      if (value !== undefined && el === undefined)
+        out.push(`a trend value ${value} with no element`);
+      if (z === undefined || v === undefined) continue;
+      const want = trendValue(rep.trend.property, z);
+      if (want === undefined)
+        out.push(`element ${z} has no ${rep.trend.property} value to show ${v}`);
+      else if (!near(want, v, 1e-6))
+        out.push(`element ${z}'s ${rep.trend.property} is ${want}, the value shows ${v}`);
     }
   }
   return out;

@@ -115,6 +115,23 @@ export type OrbitalDiagramSpec =
       levels?: number;
     };
 
+/** A periodic trend (H46). */
+export type TrendProperty = 'radius' | 'ionization' | 'electronegativity';
+
+/**
+ * `trend` on `periodicTable` (H46): every element shaded by its atomic radius (covalent, pm),
+ * first ionization energy (kJ/mol) or electronegativity (Pauling), darker for more, with a key,
+ * and arrows saying how the property changes across a period and down a group. The table's
+ * `element` is lit with its value on the card (`value`, checked); `compare` rings a second
+ * element (`compareValue`, checked).
+ */
+export interface PeriodicTrend {
+  property: TrendProperty;
+  value?: string;
+  compare?: NumOrVar;
+  compareValue?: string;
+}
+
 export type HsiSpec = UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec;
 
 /** Every variable id a group I spec refers to (for the module tests). */

@@ -136,6 +136,7 @@ import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { HsiRep } from './hsi';
+import { PeriodicTrend } from './PeriodicTrend';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -278,7 +279,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'heatingCurve':
       return <HeatingCurve spec={spec} calc={calc} />;
     case 'periodicTable':
-      return <PeriodicTable spec={spec} calc={calc} />;
+      return spec.trend ? (
+        <PeriodicTrend spec={spec} calc={calc} />
+      ) : (
+        <PeriodicTable spec={spec} calc={calc} />
+      );
     case 'rockLayers':
       return <RockLayers spec={spec} calc={calc} />;
     case 'pushes':

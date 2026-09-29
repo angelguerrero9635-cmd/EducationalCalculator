@@ -671,12 +671,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): kind orbitalDiagram (typesHsi.ts, reps/OrbitalDiagram.tsx; configurations from reps/electrons.ts). mode 'boxes' { element? (atomic number, names the atom), electrons? (default = element; fewer for a positive ion, which loses its highest shell first: Fe³⁺ is [Ar] 3d⁵), unpaired? (checked) }: every subshell up to the highest filled one as boxes at its energy (4s below 3d, columns by shell), up arrows in each box before any pair (Hund), pairs up and down (Pauli), single arrows lit; the configuration above (1s² 2s² 2p⁴), noble-gas shorthand in the caption, and the neutral exceptions through xenon (Cr, Cu, Nb, Mo, Ru, Rh, Pd, Ag) drawn as they are and named. Through 54 electrons. mode 'ladder' { upper, lower, energy? (eV, checked), wavelength? (nm, 1240 ÷ E, checked), levels? (default 6, up to 8) }: hydrogen's levels to scale (Eₙ = −13.6/n² eV), the drop as an arrow, the photon as a wave in its color, and the line on a 380–750 nm spectrum (an arrow to ultraviolet or infrared off it); the series named. Step phrases \"unpaired electrons of Z = {p}\" and \"… with {e} electrons\" are taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'orbitalDiagram', mode: 'boxes', element: 'p', unpaired: 'u' }; an ion: { kind: 'orbitalDiagram', mode: 'boxes', element: 'p', electrons: 'e', unpaired: 'u' }; { kind: 'orbitalDiagram', mode: 'ladder', upper: 'u', lower: 'l', energy: 'E', wavelength: 'w' } with E = 13.6 × (1/l² − 1/u²) and λ = 1240/E.",
   },
-  ask(
-    'H46',
-    'periodicTable',
-    'A trend as shading across the table (radius, ionization energy, electronegativity) with arrows',
-    ['s.10.periodic-trends'],
-  ),
+  {
+    ...ask(
+      'H46',
+      'periodicTable',
+      'A trend as shading across the table (radius, ionization energy, electronegativity) with arrows',
+      ['s.10.periodic-trends'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-periodic-trends-radius',
+      'g.s10-periodic-trends-ionization',
+      'g.s10-periodic-trends-electronegativity',
+      'g.s10-periodic-trends-extremes',
+    ],
+    notes:
+      "Drawn (group HI): an optional `trend` on the existing periodicTable (typesChem.ts; drawn by reps/PeriodicTrend.tsx, data in reps/chemTrends.ts). Pages without `trend` draw exactly as before. trend { property: 'radius' | 'ionization' | 'electronegativity', value? (the element's value, checked), compare? (a second atomic number, ringed in yellow), compareValue? (checked) }: every element shaded by its value (the stronger the shade, the larger; dashed where there is no value), a key from the smallest to the largest, an arrow across the top (\"decreases across a period\" for radius, \"increases\" for the other two) and one down the side (\"increases/decreases down a group\"); the page's `element` is outlined with its name and value on a card in the gap, and every cell can be tapped to choose it. Data: covalent radii (pm, Pyykkö), first ionization energies (kJ/mol), Pauling electronegativities (none for He, Ne, Ar). Step phrases \"atomic radius of Z = {p}\", \"ionization energy of Z = {p}\" and \"electronegativity of Z = {p}\" are taught to the harness; give the atomic-number variables `allowed` values that have data (the demos do). Example: { kind: 'periodicTable', element: 'p', trend: { property: 'radius', value: 'r', compare: 'c', compareValue: 's' } } with r = atomic radius of Z = p.",
+  },
   ask(
     'H47',
     'lewisStructure',
