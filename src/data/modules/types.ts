@@ -16,7 +16,7 @@ import type { Physics8Spec } from './typesPhysics8';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
-import type { HsgSpec } from './typesHsg';
+import type { HsgSpec, PunnettInheritance } from './typesHsg';
 import type { CardIcon } from './layouts/types';
 
 /**
@@ -1454,6 +1454,8 @@ export type Representation =
       dominant: string;
       recessive?: string;
       letter: string;
+      /** Grade 9: dihybrid, incomplete or codominant, X-linked (`typesHsg.ts`). */
+      inheritance?: PunnettInheritance;
     }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | {

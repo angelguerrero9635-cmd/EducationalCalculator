@@ -476,7 +476,356 @@ const MEIOSIS_SIX: LayoutDef = {
   ],
 };
 
-export const HSG_GALLERY_MODULES: ModuleDef[] = [...MEMBRANE_DEMOS];
+// ─── H35 punnettSquare (Grade 9 patterns) and an X-linked pedigree ───────────
+
+/** A parent's count of dominant alleles for one gene (0, 1 or 2; a father's X: 0 or 1). */
+const alleles = (id: string, name: string, max = 2): VariableDef => ({
+  ...count(id, id, name, 0, max),
+  allowed: Array.from({ length: max + 1 }, (_, k) => k),
+});
+
+/** out = 4 − (2 − a)(2 − b): the boxes of 4 showing the dominant trait (forward only). */
+const showing = (out: string, a: string, b: string, trait: string): Rule => ({
+  relation: {
+    id: `${out} = 4 − (2 − ${a})(2 − ${b})`,
+    display: `{${out}} = 4 − (2 − {${a}}) × (2 − {${b}})`,
+    vars: [out, a, b],
+    residual: (v) => v[out]! - (4 - (2 - v[a]!) * (2 - v[b]!)),
+    solve: {
+      [out]: (v) => 4 - (2 - v[a]!) * (2 - v[b]!),
+      [a]: () => undefined,
+      [b]: () => undefined,
+    },
+  },
+  steps: {
+    [out]: {
+      expr: `4 − (2 − {${a}}) × (2 − {${b}})`,
+      how: `Only boxes with a recessive allele from each parent lack the ${trait} trait; the rest of the 4 show it.`,
+    },
+  },
+});
+
+const DIHYBRID_VARS: VariableDef[] = [
+  alleles('a', 'R alleles in the first parent'),
+  alleles('b', 'R alleles in the second parent'),
+  alleles('c', 'Y alleles in the first parent'),
+  alleles('d', 'Y alleles in the second parent'),
+  { ...count('x', 'x', 'Boxes of 4 with round seeds', 0, 4), derived: true },
+  { ...count('y', 'y', 'Boxes of 4 with yellow seeds', 0, 4), derived: true },
+  { ...count('n', 'n', 'Boxes of 16 round and yellow', 0, 16), derived: true },
+];
+
+const dihybridDemo = (id: string, title: string, use: string, v: number[]): ModuleDef => {
+  const [a, b, c, d] = v as [number, number, number, number];
+  const x = 4 - (2 - a) * (2 - b);
+  const y = 4 - (2 - c) * (2 - d);
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'Pea seeds: R (round) is dominant to r (wrinkled); Y (yellow) is dominant to y (green).',
+      'The two genes are on different chromosomes, so they sort independently.',
+      'Each parent makes four kinds of gamete, one allele of each gene; the 16 boxes are equally likely.',
+    ],
+    variables: DIHYBRID_VARS,
+    ...rules(showing('x', 'a', 'b', 'round'), showing('y', 'c', 'd', 'yellow'), {
+      relation: {
+        id: 'n = xy',
+        display: '{n} = {x} × {y}',
+        vars: ['n', 'x', 'y'],
+        residual: (w) => w.n! - w.x! * w.y!,
+        solve: { n: (w) => w.x! * w.y!, x: () => undefined, y: () => undefined },
+      },
+      steps: {
+        n: {
+          expr: '{x} × {y}',
+          how: 'The genes sort independently, so multiply: round in x of 4 and yellow in y of 4 is x × y of 16.',
+        },
+      },
+    }),
+    example: { a, b, c, d, x, y, n: x * y },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'punnettSquare',
+      first: 'a',
+      second: 'b',
+      dominant: 'n',
+      letter: 'R',
+      inheritance: {
+        pattern: 'dihybrid',
+        firstB: 'c',
+        secondB: 'd',
+        letterB: 'Y',
+        names: ['round, yellow', 'round, green', 'wrinkled, yellow', 'wrinkled, green'],
+      },
+    },
+  };
+};
+
+/** RR = ab, WW = (2 − a)(2 − b), RW = the rest: a blend or both colors. */
+const blendDemo = (
+  id: string,
+  title: string,
+  use: string,
+  pattern: 'incomplete' | 'codominant',
+  assumptions: string[],
+  names: [string, string, string],
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions,
+  variables: [
+    alleles('a', 'Cᴿ alleles in the first parent'),
+    alleles('b', 'Cᴿ alleles in the second parent'),
+    { ...count('r', 'r', `Boxes of 4 ${names[0]}`, 0, 4), derived: true },
+    { ...count('w', 'w', `Boxes of 4 ${names[2]}`, 0, 4), derived: true },
+    { ...count('m', 'm', `Boxes of 4 ${names[1]}`, 0, 4), derived: true },
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 'r = ab',
+        display: '{r} = {a} × {b}',
+        vars: ['r', 'a', 'b'],
+        residual: (v) => v.r! - v.a! * v.b!,
+        solve: { r: (v) => v.a! * v.b!, a: () => undefined, b: () => undefined },
+      },
+      steps: {
+        r: {
+          expr: '{a} × {b}',
+          how: `A box is ${names[0]} with a Cᴿ from each parent: the first parent’s Cᴿ times the second’s.`,
+        },
+      },
+    },
+    {
+      relation: {
+        id: 'w = (2 − a)(2 − b)',
+        display: '{w} = (2 − {a}) × (2 − {b})',
+        vars: ['w', 'a', 'b'],
+        residual: (v) => v.w! - (2 - v.a!) * (2 - v.b!),
+        solve: { w: (v) => (2 - v.a!) * (2 - v.b!), a: () => undefined, b: () => undefined },
+      },
+      steps: {
+        w: {
+          expr: '(2 − {a}) × (2 − {b})',
+          how: `A box is ${names[2]} with a Cᵂ from each parent.`,
+        },
+      },
+    },
+    {
+      relation: {
+        id: 'm = 4 − r − w',
+        display: '{m} = 4 − {r} − {w}',
+        vars: ['m', 'r', 'w'],
+        residual: (v) => v.m! - (4 - v.r! - v.w!),
+        solve: {
+          m: (v) => 4 - v.r! - v.w!,
+          r: (v) => 4 - v.m! - v.w!,
+          w: (v) => 4 - v.m! - v.r!,
+        },
+      },
+      steps: {
+        m: { expr: '4 − {r} − {w}', how: `The other boxes have one of each allele: ${names[1]}.` },
+        r: { expr: '4 − {m} − {w}', how: 'The rest of the 4 boxes.' },
+        w: { expr: '4 − {m} − {r}', how: 'The rest of the 4 boxes.' },
+      },
+    },
+  ),
+  example: { a: 1, b: 1, r: 1, w: 1, m: 2 },
+  startWith: ['a', 'b'],
+  representation: {
+    kind: 'punnettSquare',
+    first: 'a',
+    second: 'b',
+    dominant: 'r',
+    recessive: 'w',
+    letter: 'C',
+    inheritance: { pattern, middle: 'm', alleles: ['R', 'W'], names },
+  },
+});
+
+const PUNNETT_DEMOS: ModuleDef[] = [
+  dihybridDemo(
+    'g.s9-inheritance-patterns-dihybrid',
+    'A dihybrid cross',
+    'Use this for two genes at once: the 9:3:3:1 of two double heterozygotes, or any other pair.',
+    [1, 1, 1, 1],
+  ),
+  dihybridDemo(
+    'g.s9-inheritance-patterns-dihybrid-pure',
+    'Two pure-breeding parents',
+    'Use this for RRYY × rryy: every offspring RrYy, round and yellow.',
+    [2, 0, 2, 0],
+  ),
+  blendDemo(
+    'g.s9-inheritance-patterns-incomplete',
+    'Incomplete dominance',
+    'Use this for a heterozygote in between its parents, such as pink snapdragons.',
+    'incomplete',
+    [
+      'Snapdragon color: neither allele is dominant. CᴿCᴿ is red, CᵂCᵂ white, and CᴿCᵂ pink, a blend.',
+      'A parent is written by its count of Cᴿ alleles: 2, 1 or 0.',
+    ],
+    ['red', 'pink', 'white'],
+  ),
+  blendDemo(
+    'g.s9-inheritance-patterns-codominant',
+    'Codominance',
+    'Use this for a heterozygote that shows both alleles, such as roan cattle.',
+    'codominant',
+    [
+      'Cattle coat: CᴿCᴿ is red, CᵂCᵂ white, and CᴿCᵂ roan, with red and white hairs side by side.',
+      'Both alleles show in full: codominance, not a blend.',
+    ],
+    ['red', 'roan', 'white'],
+  ),
+  {
+    id: 'g.s9-inheritance-patterns-x-linked',
+    title: 'A sex-linked trait',
+    use: 'Use this for a recessive allele on the X chromosome, such as red–green color blindness.',
+    assumptions: [
+      'Xᴮ is normal color vision and Xᵇ color blindness, on the X chromosome; the Y carries no copy.',
+      'A mother has two X: 2, 1 or 0 Xᴮ. A father has one X: 1 or 0 Xᴮ.',
+      'Sons get their X from their mother, so one Xᵇ makes a son color-blind.',
+    ],
+    variables: [
+      alleles('m', 'Xᴮ alleles in the mother'),
+      alleles('f', 'Xᴮ alleles in the father', 1),
+      { ...count('r', 'r', 'Boxes of 4 color-blind', 0, 4), derived: true },
+      { ...count('t', 't', 'Boxes of 4 with normal vision', 0, 4), derived: true },
+      { ...count('k', 'k', 'Carrier daughters (of 4 boxes)', 0, 4), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'r = (2 − m)(2 − f)',
+          display: '{r} = (2 − {m}) × (2 − {f})',
+          vars: ['r', 'm', 'f'],
+          residual: (v) => v.r! - (2 - v.m!) * (2 - v.f!),
+          solve: { r: (v) => (2 - v.m!) * (2 - v.f!), m: () => undefined, f: () => undefined },
+        },
+        steps: {
+          r: {
+            expr: '(2 − {m}) × (2 − {f})',
+            how: 'Each Xᵇ from the mother makes one color-blind son, and one more color-blind daughter when the father’s X is Xᵇ too.',
+          },
+        },
+      },
+      {
+        relation: {
+          id: 't = 4 − r',
+          display: '{t} = 4 − {r}',
+          vars: ['t', 'r'],
+          residual: (v) => v.t! + v.r! - 4,
+          solve: { t: (v) => 4 - v.r!, r: (v) => 4 - v.t! },
+        },
+        steps: {
+          t: { expr: '4 − {r}', how: 'The other boxes have normal vision.' },
+          r: { expr: '4 − {t}', how: 'The boxes without normal vision are the rest of the 4.' },
+        },
+      },
+      {
+        relation: {
+          id: 'k = f(2 − m) + (1 − f)m',
+          display: '{k} = {f} × (2 − {m}) + (1 − {f}) × {m}',
+          vars: ['k', 'f', 'm'],
+          residual: (v) => v.k! - (v.f! * (2 - v.m!) + (1 - v.f!) * v.m!),
+          solve: {
+            k: (v) => v.f! * (2 - v.m!) + (1 - v.f!) * v.m!,
+            f: () => undefined,
+            m: () => undefined,
+          },
+        },
+        steps: {
+          k: {
+            expr: '{f} × (2 − {m}) + (1 − {f}) × {m}',
+            how: 'A daughter is a carrier with one Xᴮ and one Xᵇ: the father’s X paired with the mother’s other allele.',
+          },
+        },
+      },
+    ),
+    example: { m: 1, f: 1, r: 1, t: 3, k: 1 },
+    startWith: ['m', 'f'],
+    representation: {
+      kind: 'punnettSquare',
+      first: 'm',
+      second: 'f',
+      dominant: 't',
+      recessive: 'r',
+      letter: 'B',
+      inheritance: { pattern: 'xLinked', carriers: 'k' },
+    },
+  },
+];
+
+/** A family with red–green color blindness, an X-linked recessive trait. */
+const X_PEDIGREE: LayoutDef = {
+  id: 'g.s9-inheritance-patterns-x-pedigree',
+  title: 'A sex-linked pedigree',
+  kind: 'explore',
+  assumptions: [
+    'Squares are males, circles females; filled shows the trait, half-filled carries it.',
+    'Color blindness here is X-linked recessive: Xᵇ on the X chromosome.',
+  ],
+  figure: {
+    kind: 'pedigree',
+    people: [
+      { id: 'g1', sex: 'male', generation: 1, trait: true, genotype: 'XᵇY' },
+      { id: 'g2', sex: 'female', generation: 1, genotype: 'XᴮXᴮ' },
+      { id: 's1', sex: 'male', generation: 2, genotype: 'XᴮY', parents: ['g1', 'g2'] },
+      {
+        id: 'd1',
+        sex: 'female',
+        generation: 2,
+        carrier: true,
+        genotype: 'XᴮXᵇ',
+        parents: ['g1', 'g2'],
+      },
+      { id: 'h1', sex: 'male', generation: 2, genotype: 'XᴮY', partner: 'd1' },
+      {
+        id: 'c1',
+        sex: 'male',
+        generation: 3,
+        trait: true,
+        genotype: 'XᵇY',
+        parents: ['d1', 'h1'],
+      },
+      {
+        id: 'c2',
+        sex: 'female',
+        generation: 3,
+        carrier: true,
+        genotype: 'XᴮXᵇ',
+        parents: ['d1', 'h1'],
+      },
+      { id: 'c3', sex: 'male', generation: 3, genotype: 'XᴮY', parents: ['d1', 'h1'] },
+    ],
+  },
+  scenes: [
+    { label: 'The family', lines: ['Three generations; two males show the trait.'], family: {} },
+    {
+      label: 'Skipping',
+      lines: [
+        'The grandfather’s daughter shows nothing, but her son does: the trait skipped a generation through her.',
+      ],
+      family: { lit: ['g1', 'd1', 'c1'] },
+    },
+    {
+      label: 'Carriers',
+      lines: ['Only females are carriers: a male has one X, so he shows whatever it carries.'],
+      family: { carriers: true },
+    },
+    {
+      label: 'Genotypes',
+      lines: ['Each son’s X came from his mother; each daughter got her father’s only X.'],
+      family: { carriers: true, genotypes: true },
+    },
+  ],
+};
+
+export const HSG_GALLERY_MODULES: ModuleDef[] = [...MEMBRANE_DEMOS, ...PUNNETT_DEMOS];
 export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [
   MACRO_LAYOUT,
   TONICITY_SORT,
@@ -484,4 +833,5 @@ export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [
   MITOSIS_SEQUENCE,
   MEIOSIS_SEQUENCE,
   MEIOSIS_SIX,
+  X_PEDIGREE,
 ];

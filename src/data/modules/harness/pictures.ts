@@ -27,7 +27,7 @@ import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import { hsdIssues } from './picturesHsd';
-import { hsgIssues } from './picturesHsg';
+import { hsgIssues, punnettHsIssues } from './picturesHsg';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1124,6 +1124,10 @@ export function repIssues(
       break;
     }
     case 'punnettSquare': {
+      if (rep.inheritance) {
+        out.push(...punnettHsIssues(rep, (id) => val(id)));
+        break;
+      }
       const [p, q, d] = [rep.first, rep.second, rep.dominant].map(val);
       for (const [id, x] of [
         [rep.first, p],

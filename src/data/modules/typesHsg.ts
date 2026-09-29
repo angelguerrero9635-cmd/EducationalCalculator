@@ -104,6 +104,55 @@ export interface CellDivisionCard {
   diploid?: number;
 }
 
+// ─── H35 punnettSquare: high-school inheritance patterns ─────────────────────
+
+/**
+ * The `inheritance` option on a `punnettSquare` (Grade 9). Without it the square is the Grade 7
+ * one. The parents' values stay counts of dominant alleles (`first`, `second`).
+ *
+ * - `dihybrid`: two genes, a 4 × 4 square of the parents' four gametes each; `firstB` and
+ *   `secondB` count the second gene's dominant alleles (letter `letterB`). `dominant` holds the
+ *   boxes showing both dominant traits (of 16), `recessive` (optional) the boxes showing neither.
+ *   `names` names the four phenotypes (both dominant, first only, second only, neither).
+ * - `incomplete`: the heterozygote is a blend (red × white gives pink); `codominant`: it shows
+ *   both (red and white hairs: roan). `dominant` holds the boxes homozygous for the first allele,
+ *   `recessive` (optional) the boxes homozygous for the second, `middle` (optional) the
+ *   heterozygotes. `alleles` writes them as the letter with superscripts (C with ["R", "W"] is
+ *   Cᴿ and Cᵂ); `names` names the three phenotypes (default red, pink or roan, white).
+ * - `xLinked`: the gene is on the X chromosome. `first` is the mother (0–2 dominant alleles),
+ *   `second` the father (0 or 1): the father's Xᴬ or Xᵃ and Y across the top, the mother's two X
+ *   down the side. Daughters and sons are labelled; carrier daughters are half-shaded.
+ *   `dominant` holds the boxes without the recessive trait, `recessive` (optional) the boxes with
+ *   it, `carriers` (optional) the carrier daughters.
+ */
+export type PunnettInheritance =
+  | {
+      pattern: 'dihybrid';
+      firstB: string;
+      secondB: string;
+      letterB: string;
+      names?: [string, string, string, string];
+    }
+  | {
+      pattern: 'incomplete' | 'codominant';
+      middle?: string;
+      alleles?: [string, string];
+      names?: [string, string, string];
+    }
+  | { pattern: 'xLinked'; carriers?: string };
+
+/** The variables an `inheritance` option reads (for modules.test.ts). */
+export const inheritanceVars = (h: PunnettInheritance): string[] =>
+  h.pattern === 'dihybrid'
+    ? [h.firstB, h.secondB]
+    : h.pattern === 'xLinked'
+      ? h.carriers
+        ? [h.carriers]
+        : []
+      : h.middle
+        ? [h.middle]
+        : [];
+
 // ─── H32 membrane (calculator picture) ───────────────────────────────────────
 
 /** A fixed number or a variable id (as in `typesGraphs.ts`). */

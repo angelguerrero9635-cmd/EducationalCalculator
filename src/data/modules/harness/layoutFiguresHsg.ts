@@ -5,7 +5,7 @@
  */
 import { cellsOf, diploidOf, isMeiosis } from '@/components/module/layouts/divisionMath';
 
-import type { LayoutDef } from '../layouts';
+import type { LayoutDef, PedigreePerson } from '../layouts';
 import { ENERGY_FLOWS, watersOf, type DivisionStage } from '../typesHsg';
 
 const DIVISION_ORDER: DivisionStage[] = [
@@ -92,6 +92,8 @@ export function hsgFigureIssues(l: LayoutDef): string[] {
     if (at.some((x, i) => i > 0 && x <= at[i - 1]!))
       out.push('cell-division stages are out of order');
   }
+  if (l.kind === 'explore' && l.figure.kind === 'pedigree')
+    out.push(...pedigreeIssues(l.figure.people));
   if (l.kind === 'explore' && l.figure.kind === 'organelleEnergy') {
     for (const s of l.scenes) {
       const e = s.energy;
@@ -101,6 +103,72 @@ export function hsgFigureIssues(l: LayoutDef): string[] {
       if (e.lit && !flows.includes(e.lit))
         out.push(`scene "${s.label}": ${e.lit} is not part of ${e.process ?? 'the cycle'}`);
     }
+  }
+  return out;
+}
+
+/** Superscript letters a pedigree genotype can use (Xᴬ, Xᵃ), and the letters they stand for. */
+const SUPER: Record<string, string> = Object.fromEntries([
+  ...[...'ᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁⱽᵂ'].map((s, i) => [s, 'ABDEGHIJKLMNOPRTUVW'[i]!]),
+  ...[...'ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖʳˢᵗᵘᵛʷˣʸᶻ'].map((s, i) => [s, 'abcdefghijklmnoprstuvwxyz'[i]!]),
+]);
+
+/**
+ * A genotype's alleles: "Aa" → ["A", "a"]; X-linked "XᴬXᵃ" → ["A", "a"], "XᵃY" → ["a", "Y"].
+ * Undefined when it can't be read.
+ */
+function allelesOf(g: string): string[] | undefined {
+  if (/^[A-Za-z]{2}$/.test(g)) return [...g];
+  const out: string[] = [];
+  const chars = [...g];
+  for (let i = 0; i < chars.length; i++) {
+    if (chars[i] === 'Y') out.push('Y');
+    else if (chars[i] === 'X' && SUPER[chars[i + 1] ?? '']) out.push(SUPER[chars[++i]!]!);
+    else return undefined;
+  }
+  return out.length === 2 ? out : undefined;
+}
+
+/**
+ * A pedigree's people agree with their genotypes (a recessive trait: shown by two recessive
+ * alleles, or a son's one recessive X; carriers heterozygous; no male carrier of an X-linked
+ * allele), and each child's alleles can come one from each parent (a son's X from his mother,
+ * his Y from his father).
+ */
+function pedigreeIssues(people: PedigreePerson[]): string[] {
+  const out: string[] = [];
+  const byId = new Map(people.map((p) => [p.id, p]));
+  const recessive = (a: string) => a !== 'Y' && a === a.toLowerCase();
+  for (const p of people) {
+    if (!p.genotype) continue;
+    const al = allelesOf(p.genotype);
+    if (!al) {
+      out.push(`pedigree ${p.id}: can't read genotype ${p.genotype}`);
+      continue;
+    }
+    const xl = p.genotype.includes('X');
+    const xs = al.filter((a) => a !== 'Y');
+    const rec = xs.every(recessive);
+    const het = xs.some(recessive) && !rec;
+    if (!!p.trait !== rec) out.push(`pedigree ${p.id}: ${p.genotype} but trait ${!!p.trait}`);
+    if (!!p.carrier !== het) out.push(`pedigree ${p.id}: ${p.genotype} but carrier ${!!p.carrier}`);
+    if (xl && (p.sex === 'male') !== al.includes('Y'))
+      out.push(`pedigree ${p.id}: a ${p.sex} with ${p.genotype}`);
+    if (!p.parents) continue;
+    const [a, b] = p.parents.map((id) => byId.get(id));
+    const pa = a?.genotype ? allelesOf(a.genotype) : undefined;
+    const pb = b?.genotype ? allelesOf(b.genotype) : undefined;
+    if (!a || !b || !pa || !pb) continue;
+    const [mother, father] = a.sex === 'female' ? [pa, pb] : [pb, pa];
+    const either = (x: string, y: string) =>
+      (father.includes(x) && mother.includes(y)) || (father.includes(y) && mother.includes(x));
+    const ok =
+      xl && p.sex === 'male'
+        ? mother.includes(xs[0]!) && father.includes('Y')
+        : xl
+          ? either(al[0]!, al[1]!) && !al.includes('Y')
+          : either(al[0]!, al[1]!);
+    if (!ok) out.push(`pedigree ${p.id}: ${p.genotype} can't come from its parents`);
   }
   return out;
 }
