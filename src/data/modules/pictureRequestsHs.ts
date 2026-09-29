@@ -685,45 +685,104 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   },
 
   // ── D. Biology ──
-  ask(
-    'H31',
-    'macromolecules',
-    'Explore figure: monomers joining into polymers (sugars to starch, amino acids to a protein, nucleotides, fats)',
-    ['s.9.biomolecules'],
-  ),
-  ask(
-    'H32',
-    'membrane',
-    'Membrane with particles on each side, counts from the values, arrows high to low; cells in hypotonic, isotonic and hypertonic water',
-    ['s.9.membrane-transport'],
-  ),
-  ask(
-    'H33',
-    'organelleEnergy',
-    'Explore figure: chloroplast and mitochondrion, glucose, oxygen, carbon dioxide, water and ATP cycling between them',
-    ['s.9.cellular-energy'],
-  ),
-  ask(
-    'H34',
-    'cellDivision',
-    'Sequence stage figures: the cell cycle, mitosis phases and meiosis I and II with chromosomes by parent color, crossing over',
-    ['s.9.mitosis-meiosis'],
-    'Chromosome count driven by 2n; gametes with n.',
-  ),
-  ask(
-    'H35',
-    'punnettSquare',
-    'Dihybrid 4 × 4 square, incomplete dominance and codominance colors, sex-linked alleles on X',
-    ['s.9.inheritance-patterns'],
-    'Pedigree: sex-linked carriers (half-shaded).',
-  ),
-  ask(
-    'H36',
-    'dnaStrand',
-    'DNA ladder from a base sequence, its complement, the mRNA, codons and the amino acids',
-    ['s.9.dna-protein-synthesis', 's.9.biotechnology'],
-    'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein.',
-  ),
+  {
+    ...ask(
+      'H31',
+      'macromolecules',
+      'Explore figure: monomers joining into polymers (sugars to starch, amino acids to a protein, nucleotides, fats)',
+      ['s.9.biomolecules'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s9-biomolecules-polymers'],
+    notes:
+      'Drawn (group HG, layouts/macroFigure.tsx). Explore figure { kind: "macromolecules" }; each scene sets macro: { kind: "carbohydrate" | "protein" | "nucleicAcid" | "lipid", count?: 2–4 monomers (default 3; a lipid is always glycerol + 3 fatty acids), split?: true for hydrolysis (the polymer on top, water added) }. Monomers sit on separate cards with the groups that join lit (OH and H, carboxyl and amine, the 3′ OH and the next phosphate); the polymer shows its new bonds lit and named (glycosidic, peptide, sugar–phosphate, 3 ester bonds); the water molecules are drawn and counted (n − 1, or 3 for a fat). Names follow the count: 2 glucose make maltose, 2 amino acids a dipeptide. The protein chain is shown folding. The harness checks the count and that a line counting water says the figure’s number. Example scene: { label: "Proteins", lines: ["Amino acids join end to end by peptide bonds."], macro: { kind: "protein", count: 4 } }.',
+  },
+  {
+    ...ask(
+      'H32',
+      'membrane',
+      'Membrane with particles on each side, counts from the values, arrows high to low; cells in hypotonic, isotonic and hypertonic water',
+      ['s.9.membrane-transport'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-membrane-transport-diffusion',
+      'g.s9-membrane-transport-facilitated',
+      'g.s9-membrane-transport-osmosis',
+      'g.s9-membrane-transport-pump',
+      'g.s9-membrane-transport-equilibrium',
+      'g.s9-membrane-transport-steep',
+      'g.s9-membrane-transport-tonicity',
+    ],
+    notes:
+      'Drawn (group HG, reps/Membrane.tsx). Calculator picture { kind: "membrane", outside, inside (counts 0–40, numbers or variable ids), transport: "diffusion" | "facilitated" | "osmosis" | "active", particle?: "O₂" (the name in the counts), moved?: 0–12 crossing now (lit on the arrow), atp?: the ATP spent at a pump ("2 ATP → 2 ADP + 2 P"), gradient?: a variable holding outside − inside (checked) }. A phospholipid bilayer, the outside above and the cytoplasm below, the particles on each side counted exactly; the arrow runs high to low (diffusion; through a channel protein when facilitated), water through an aquaporin toward more solute (osmosis; the caption names the outside hypotonic or hypertonic), or a pump low to high (active). Equal counts draw a two-way arrow (no net movement). Counts are typed: no handles or sliders. The harness checks the counts, the gradient, the arrow’s direction and that no more are moved than the side has. Example: representation: { kind: "membrane", outside: "o", inside: "i", transport: "diffusion", particle: "O₂", gradient: "d" } with d = o − i. Card icons for sorts: { kind: "icon", icon: "red blood cell in hypotonic water" } (also isotonic, hypertonic, and "plant cell in hypotonic water" and the other two).',
+  },
+  {
+    ...ask(
+      'H33',
+      'organelleEnergy',
+      'Explore figure: chloroplast and mitochondrion, glucose, oxygen, carbon dioxide, water and ATP cycling between them',
+      ['s.9.cellular-energy'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s9-cellular-energy-organelles'],
+    notes:
+      'Drawn (group HG, layouts/organelleFigure.tsx). Explore figure { kind: "organelleEnergy" }; each scene sets energy: { process?: "cycle" (default) | "photosynthesis" | "respiration" | "lightReactions" | "calvinCycle" | "glycolysis" | "krebsCycle" | "electronTransport", lit?: "light" | "CO₂" | "H₂O" | "glucose" | "O₂" | "ATP" }. A chloroplast (double membrane, grana, stroma) and a mitochondrion (cristae, matrix) in the cytoplasm; glucose and O₂ flow to the mitochondrion over the top, CO₂ and H₂O back underneath, light in from the sun and ATP out to the cell’s work. A process lights its part (thylakoids, stroma, matrix, inner membrane, cytoplasm), its arrows and its equation under the drawing (6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂; glycolysis 2 ATP, Krebs 2 ATP, electron transport most ATP; no single total is printed, since textbooks give 30 to 38). The harness checks that a ringed substance flows in the lit process. Example scene: { label: "Calvin cycle", lines: ["In the stroma, ATP and NADPH power the building of glucose from CO₂."], energy: { process: "calvinCycle", lit: "CO₂" } }.',
+  },
+  {
+    ...ask(
+      'H34',
+      'cellDivision',
+      'Sequence stage figures: the cell cycle, mitosis phases and meiosis I and II with chromosomes by parent color, crossing over',
+      ['s.9.mitosis-meiosis'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-mitosis-meiosis-mitosis',
+      'g.s9-mitosis-meiosis-meiosis',
+      'g.s9-mitosis-meiosis-six',
+    ],
+    notes:
+      'Chromosome count driven by 2n; gametes with n. Drawn (group HG, layouts/divisionCard.tsx, chromosomes from divisionMath.ts). A card figure for sequence stages and sort cards: { kind: "cellDivision", stage: "interphase" | "prophase" | "metaphase" | "anaphase" | "telophase" | "cytokinesis" | "prophase I" | "metaphase I" | "anaphase I" | "telophase I" | "prophase II" | "metaphase II" | "anaphase II" | "telophase II", diploid?: 2 | 4 | 6 (2n, default 4) }. Maternal chromosomes red, paternal blue, pair sizes long to short; duplicated chromosomes are two sister chromatids at a centromere; the spindle runs from centrosomes at the poles; prophase I pairs the homologs with a crossed-over tip, metaphase I lines the pairs up, anaphase I separates homologs (sisters stay joined), anaphase II separates sisters, telophase II ends in four cells of n, all different. The harness checks 2n, the chromosomes and chromatids in every cell for the stage (2n after mitosis, n of one per pair after meiosis I), the four gametes differing, and that a sequence lists the stages in order. Example stage: { label: "Metaphase I", figure: { kind: "cellDivision", stage: "metaphase I", diploid: 4 } }.',
+  },
+  {
+    ...ask(
+      'H35',
+      'punnettSquare',
+      'Dihybrid 4 × 4 square, incomplete dominance and codominance colors, sex-linked alleles on X',
+      ['s.9.inheritance-patterns'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-inheritance-patterns-dihybrid',
+      'g.s9-inheritance-patterns-dihybrid-pure',
+      'g.s9-inheritance-patterns-incomplete',
+      'g.s9-inheritance-patterns-codominant',
+      'g.s9-inheritance-patterns-x-linked',
+      'g.s9-inheritance-patterns-x-pedigree',
+    ],
+    notes:
+      'Pedigree: sex-linked carriers (half-shaded). Drawn (group HG, reps/PunnettHs.tsx, boxes from punnettMath.ts). An optional field on punnettSquare; without it the Grade 7 square is unchanged. first/second stay the parents’ counts of dominant alleles. inheritance: { pattern: "dihybrid", firstB, secondB (the second gene’s counts), letterB: "Y", names?: [both dominant, first only, second only, neither] } draws the parents’ four gametes each way and 16 boxes colored by phenotype with a counted key (9:3:3:1); dominant = boxes of 16 with both dominant traits, recessive? = neither. { pattern: "incomplete" | "codominant", alleles?: ["R", "W"] (drawn Cᴿ, Cᵂ with letter "C"), names?: ["red", "pink", "white"], middle?: the heterozygote boxes } colors red, pink (a blend) or red patches on white (roan); dominant = first-allele homozygotes, recessive? = second-allele homozygotes. { pattern: "xLinked", carriers?: id } takes first = mother (0–2 Xᴬ), second = father (0–1): Xᴬ/Xᵃ and Y across the top, each box a daughter or son, the affected filled, carrier daughters half-shaded; dominant = boxes without the trait, recessive? = with it. The harness recounts each from the parents (product rule, sons from the mother). Example: { kind: "punnettSquare", first: "m", second: "f", dominant: "t", recessive: "r", letter: "B", inheritance: { pattern: "xLinked", carriers: "k" } }. Pedigrees needed no change: X-linked genotypes are written "XᴮXᵇ", "XᵇY" with carriers half-filled (family.carriers); the harness now checks every pedigree’s genotypes against its symbols and parents (no male carriers of X-linked alleles, a son’s X from his mother).',
+  },
+  {
+    ...ask(
+      'H36',
+      'dnaStrand',
+      'DNA ladder from a base sequence, its complement, the mRNA, codons and the amino acids',
+      ['s.9.dna-protein-synthesis', 's.9.biotechnology'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-dna-protein-synthesis-chargaff',
+      'g.s9-dna-protein-synthesis-codons',
+      'g.s9-biotechnology-substitution',
+      'g.s9-biotechnology-nonsense',
+      'g.s9-biotechnology-insertion',
+      'g.s9-biotechnology-deletion',
+    ],
+    notes:
+      'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein. Drawn (group HG, reps/DnaStrand.tsx, the standard codon table and rules in dnaMath.ts). Calculator picture { kind: "dnaStrand", sequence: the template strand, up to 12 of A T G C, drawn 3′ to 5′ ("TACCGGTTCATT"), length?: bases drawn (number or variable), show?: ["mrna", "protein"] (default both), mutation?: { type: "substitution" | "insertion" | "deletion", at: base number (number or variable), base?: the new base (a substitution defaults to the transition A↔G, C↔T; an insertion to A) }, codons?: a variable holding the complete codons (checked); or percentA: a variable and pairs?: 10 for Chargaff’s rule (a ladder of whole pairs, A = T, G = C; a percent that isn’t whole bases draws faded) }. The ladder shows both backbones, 2 hydrogen bonds per A–T rung and 3 per G–C; the mRNA (U for T) with codons bracketed; amino acid chips from the codon table, Stop in outline. With a mutation the changed base is ringed (a caret where a base was deleted), the protein is shown before and after with changed amino acids lit, and the caption names silent, missense, nonsense or frameshift. The harness checks the codon table (64 codons, 6 for Leu, Ser, Arg, 3 stops, AUG = Met), the transcription, the codon count, the mutation position and length, and Chargaff’s counts. Step text may say “the codon holding base {p}” (⌈p ÷ 3⌉, phrasesHsg.ts). Example: representation: { kind: "dnaStrand", sequence: "TACCGGTTCATT", mutation: { type: "substitution", at: "p" } }.',
+  },
   ask(
     'H37',
     'gel',

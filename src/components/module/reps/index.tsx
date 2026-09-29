@@ -139,6 +139,9 @@ import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
+import { Membrane } from './Membrane';
+import { DnaStrand } from './DnaStrand';
+import { PunnettHs } from './PunnettHs';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -175,6 +178,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <UnitCircle spec={spec} calc={calc} />;
     case 'matrixGrid':
       return <MatrixGrid spec={spec} calc={calc} />;
+    case 'membrane':
+      return <Membrane spec={spec} calc={calc} />;
+    case 'dnaStrand':
+      return <DnaStrand spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':
@@ -401,7 +408,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'wave':
       return <Wave spec={spec} calc={calc} />;
     case 'punnettSquare':
-      return <PunnettSquare spec={spec} calc={calc} />;
+      return spec.inheritance ? (
+        <PunnettHs spec={spec} inheritance={spec.inheritance} calc={calc} />
+      ) : (
+        <PunnettSquare spec={spec} calc={calc} />
+      );
     case 'integerLine':
       return <IntegerLine spec={spec} calc={calc} />;
     case 'percentBar':

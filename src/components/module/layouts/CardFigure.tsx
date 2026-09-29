@@ -26,6 +26,7 @@ import {
   StarsCard,
   r3hFigureWidth,
 } from './cardFiguresR3h';
+import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
 
 /** Height of every card figure; most are square. */
 const S = 48;
@@ -58,6 +59,8 @@ export function figureWidth(f: Spec): number {
       return f.marks ? MARKED : S;
     case 'molecule':
       return 72;
+    case 'cellDivision':
+      return DIVISION_W;
     default:
       return S;
   }
@@ -77,7 +80,12 @@ export function CardFigureView({
   shade: string;
 }) {
   const w = figureWidth(figure);
-  const h = figure.kind === 'polygon' && figure.marks ? MARKED : S;
+  const h =
+    figure.kind === 'polygon' && figure.marks
+      ? MARKED
+      : figure.kind === 'cellDivision'
+        ? DIVISION_H
+        : S;
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -184,6 +192,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
     }
     case 'icon':
       return <Icon icon={f.icon} ink={ink} shade={shade} />;
+    case 'cellDivision':
+      return <DivisionCard f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;

@@ -61,6 +61,24 @@ size beside the sun's edge, ringing a scene's `lit` ones with their widths in Ea
 Grades 10–12 (`layouts/coneFigure.tsx`): `doubleCone` cuts two cones tip to tip with a plane;
 a scene's `cone` (`circle`, `ellipse`, `parabola`, `hyperbola`) tilts the plane and draws the curve.
 
+Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
+cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
+bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
+(glycerol and three fatty acids), 2 to 4 units; `split` runs it as hydrolysis. Card icons (drawn in
+`layouts/icons/hg.tsx`): `red blood cell in hypotonic water` (swollen round), `… isotonic water`
+(a dimpled disc), `… hypertonic water` (shriveled, crenated), and `plant cell in hypotonic water`
+(turgid), `… isotonic water` (flaccid), `… hypertonic water` (plasmolyzed), each in water with
+its solute dots and the water's net flow as arrows. `organelleEnergy`
+(`layouts/organelleFigure.tsx`): a chloroplast (grana of thylakoids, stroma) and a mitochondrion
+(cristae, matrix) in the cytoplasm, glucose and O₂ flowing over the top, CO₂ and H₂O back under,
+light in and ATP out; `energy: { process?, lit? }` lights the whole `cycle`, `photosynthesis`,
+`respiration` or a stage (`lightReactions`, `calvinCycle`, `glycolysis`, `krebsCycle`,
+`electronTransport`) with its part and its equation, and rings one substance. Card figure
+`cellDivision` (`layouts/divisionCard.tsx`, 96 × 76, for sequence stages and sort cards):
+`{ kind: 'cellDivision', stage, diploid? }` draws interphase, prophase … cytokinesis, or
+prophase I … telophase II, the chromosomes counted from 2n (2, 4 or 6), maternal red and paternal
+blue, crossed-over tips from prophase I, four different cells of n after telophase II.
+
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by
 what people already do, or an `experiment` assigned at random to a treatment and a control group;

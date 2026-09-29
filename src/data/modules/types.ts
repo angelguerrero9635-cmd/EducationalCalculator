@@ -17,6 +17,7 @@ import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
 import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
+import type { HsgSpec, PunnettInheritance } from './typesHsg';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 
@@ -1086,6 +1087,8 @@ export type Representation =
   | HsbSpec
   /** Grades 9–12 group D: unit circle, algebra tiles, vectors, … (specs in `typesHsd.ts`). */
   | HsdSpec
+  /** Grades 9–12 biology, group HG: membrane, DNA strand (specs in typesHsg.ts). */
+  | HsgSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
@@ -1543,6 +1546,8 @@ export type Representation =
       dominant: string;
       recessive?: string;
       letter: string;
+      /** Grade 9: dihybrid, incomplete or codominant, X-linked (`typesHsg.ts`). */
+      inheritance?: PunnettInheritance;
     }
   /** Table sweeping `sweep` over `rows`, computing `output` with `params` held. Tap a row. */
   | {

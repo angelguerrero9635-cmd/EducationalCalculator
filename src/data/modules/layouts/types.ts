@@ -1,5 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
+import type { CellDivisionCard, EnergyScene, MacroScene } from '../typesHsg';
 import type { Round3Icon } from './icons';
 
 /**
@@ -142,6 +143,8 @@ export type CardFigure =
   | { kind: 'dotPlot'; values: number[] }
   /** A ball-and-stick molecule, or one atom ("H2O", "CO2", "Fe"), in the classroom colors. */
   | { kind: 'molecule'; formula: string }
+  /** One stage of mitosis or meiosis, its chromosomes counted from 2n (HS group G). */
+  | CellDivisionCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
@@ -323,7 +326,11 @@ export type Figure =
   /** Population → sample → a survey, an observational study or an experiment (HS group B). */
   | { kind: 'studyDesign' }
   /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
-  | { kind: 'doubleCone' };
+  | { kind: 'doubleCone' }
+  /** Monomers joining into polymers: sugars, amino acids, nucleotides, a fat (HS group G). */
+  | { kind: 'macromolecules' }
+  /** A chloroplast and a mitochondrion trading glucose, O₂, CO₂ and H₂O; light in, ATP out (HS group G). */
+  | { kind: 'organelleEnergy' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -450,6 +457,10 @@ export interface Scene {
   planets?: { lit?: PlanetName[] };
   /** The design, how the sample is taken and the stage lit (a `studyDesign` figure). */
   study?: StudyScene;
+  /** The molecule built or split (a `macromolecules` figure; `typesHsg.ts`). */
+  macro?: MacroScene;
+  /** The process lit (an `organelleEnergy` figure; `typesHsg.ts`). */
+  energy?: EnergyScene;
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */

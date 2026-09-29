@@ -18,6 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hsdSpecVars } from '../typesHsd';
+import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -272,7 +273,13 @@ function representationVars(r: Representation): string[] {
         ...(r.frequency ? [r.frequency] : []),
       ];
     case 'punnettSquare':
-      return [r.first, r.second, r.dominant, ...(r.recessive ? [r.recessive] : [])];
+      return [
+        r.first,
+        r.second,
+        r.dominant,
+        ...(r.recessive ? [r.recessive] : []),
+        ...(r.inheritance ? inheritanceVars(r.inheritance) : []),
+      ];
     case 'integerLine':
       return [
         r.value,
@@ -497,6 +504,9 @@ function representationVars(r: Representation): string[] {
     case 'conicGraph':
     case 'matrixGrid':
       return hsdSpecVars(r);
+    case 'membrane':
+    case 'dnaStrand':
+      return hsgSpecVars(r);
   }
 }
 

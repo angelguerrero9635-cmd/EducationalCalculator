@@ -30,6 +30,8 @@ import { PlatesFigure } from './platesFigure';
 import { WaterCycleFigure } from './waterCycleFigure';
 import { CellFigure, Particles } from './figuresR4h';
 import { ConeFigure } from './coneFigure';
+import { MacroFigure } from './macroFigure';
+import { OrganelleFigure } from './organelleFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -178,6 +180,10 @@ function FigureView({
       return <StudyDesignFigure study={scene.study ?? { design: 'survey' }} />;
     case 'doubleCone':
       return <ConeFigure cut={scene.cone ?? 'circle'} />;
+    case 'macromolecules':
+      return <MacroFigure macro={scene.macro ?? { kind: 'carbohydrate' }} />;
+    case 'organelleEnergy':
+      return <OrganelleFigure energy={scene.energy ?? {}} />;
   }
 }
 
