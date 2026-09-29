@@ -1,0 +1,1663 @@
+{
+  "id": "hmh-into-hs",
+  "curriculum": "HMH Into Algebra 1, Into Geometry, Into Algebra 2",
+  "publisher": "Houghton Mifflin Harcourt",
+  "edition": "Into Math high school (2020 and later printings)",
+  "subject": "math",
+  "grades": ["9", "10", "11"],
+  "content": "titles",
+  "terms": {
+    "unit": "Unit",
+    "section": "Module",
+    "lesson": "Lesson"
+  },
+  "license": null,
+  "sourceUrl": "https://www.hmhco.com/programs/into-math",
+  "retrieved": "2026-09-29",
+  "notes": "Titles only (all rights reserved). Unit, module and lesson titles of the Into Algebra 1, Into Geometry and Into Algebra 2 courses as listed on IXL's public skill-plan pages (one per course, cited as each unit's url; robots.txt allows /math/skill-plans/, no login). Only the textbook's own numbers and titles are kept, not IXL's skill names. IXL lists the lessons it aligns skills to, so a lesson with no IXL skill may be missing. Math typeset in a title is written plainly (x², nth). Algebra 1 → grade 9, Geometry → 10, Algebra 2 → 11. Modules are numbered through the course; Algebra 1 and 2 lessons restart at 1 in each module, Geometry lessons are numbered module.lesson as IXL lists them. Skills are mapped per module; a unit's skills are the union.",
+  "books": [
+    {
+      "grade": "9",
+      "course": "Algebra 1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Real Numbers and Connections to Algebra",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": [
+            "m.9.radicals",
+            "m.8.roots-irrationals",
+            "m.8.multi-step-equations",
+            "m.9.inequality-systems"
+          ],
+          "sections": [
+            {
+              "n": "1",
+              "title": "Real Numbers and Real-World Quantities",
+              "skills": ["m.9.radicals", "m.8.roots-irrationals"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Real Numbers"
+                },
+                {
+                  "n": "2",
+                  "title": "Radicals and Rational Exponents"
+                },
+                {
+                  "n": "3",
+                  "title": "Precision and Accuracy in Calculations"
+                }
+              ]
+            },
+            {
+              "n": "2",
+              "title": "Linear Equations and Inequalities in One Variable",
+              "skills": ["m.8.multi-step-equations", "m.9.inequality-systems"],
+              "notes": "Solving linear equations in one variable has no Grade 9 skill; mapped to m.8.multi-step-equations.",
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Write, Interpret, and Simplify Expressions"
+                },
+                {
+                  "n": "2",
+                  "title": "Write and Solve Equations"
+                },
+                {
+                  "n": "3",
+                  "title": "Rewrite Formulas and Solve Literal Equations"
+                },
+                {
+                  "n": "4",
+                  "title": "Write and Solve Inequalities"
+                },
+                {
+                  "n": "5",
+                  "title": "Write and Solve Compound Inequalities"
+                }
+              ]
+            }
+          ],
+          "notes": "Solving linear equations in one variable has no Grade 9 skill; mapped to m.8.multi-step-equations."
+        },
+        {
+          "n": "2",
+          "title": "Linear Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": [
+            "m.8.slope",
+            "m.9.linear-modeling",
+            "m.8.functions-intro",
+            "m.11.inverse-functions"
+          ],
+          "sections": [
+            {
+              "n": "3",
+              "title": "Linear Equations in Two Variables",
+              "skills": ["m.8.slope", "m.9.linear-modeling"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Linear Equations in Standard Form"
+                },
+                {
+                  "n": "2",
+                  "title": "Slopes of Lines and Rates of Change"
+                }
+              ]
+            },
+            {
+              "n": "4",
+              "title": "Linear Functions and Models",
+              "skills": ["m.8.functions-intro", "m.9.linear-modeling"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Relations and Functions"
+                },
+                {
+                  "n": "2",
+                  "title": "Linear Functions"
+                },
+                {
+                  "n": "3",
+                  "title": "Characteristics of Linear Functions"
+                },
+                {
+                  "n": "4",
+                  "title": "Linear Models and Point-Slope Form"
+                }
+              ]
+            },
+            {
+              "n": "5",
+              "title": "Relationships Among Linear Functions",
+              "skills": ["m.9.linear-modeling", "m.11.inverse-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Transform Graphs of Functions"
+                },
+                {
+                  "n": "2",
+                  "title": "Transform Linear Functions"
+                },
+                {
+                  "n": "3",
+                  "title": "Compare Linear Functions"
+                },
+                {
+                  "n": "4",
+                  "title": "Inverses of Linear Functions"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Build Linear Functions and Models",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.9.regression", "m.9.sequences", "m.9.absolute-value"],
+          "sections": [
+            {
+              "n": "6",
+              "title": "Fit Linear Functions to Data",
+              "skills": ["m.9.regression"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Scatter Plots, Correlation, and Fitted Lines",
+                  "skills": ["m.9.regression"]
+                },
+                {
+                  "n": "2",
+                  "title": "Residuals and Best-Fit Lines",
+                  "skills": ["m.9.regression"]
+                }
+              ]
+            },
+            {
+              "n": "7",
+              "title": "Discrete Linear Functions",
+              "skills": ["m.9.sequences"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Arithmetic Sequences Defined Recursively",
+                  "skills": ["m.9.sequences"]
+                },
+                {
+                  "n": "2",
+                  "title": "Arithmetic Sequences Defined Explicitly",
+                  "skills": ["m.9.sequences"]
+                }
+              ]
+            },
+            {
+              "n": "8",
+              "title": "Piecewise-Defined Functions",
+              "skills": ["m.9.absolute-value"],
+              "notes": "Piecewise functions have no taxonomy skill; nearest m.9.absolute-value.",
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Graph Piecewise-Defined Functions",
+                  "skills": ["m.9.absolute-value"]
+                },
+                {
+                  "n": "2",
+                  "title": "Graph Absolute Value Functions",
+                  "skills": ["m.9.absolute-value"]
+                },
+                {
+                  "n": "3",
+                  "title": "Solve Absolute Value Equations and Inequalities",
+                  "skills": ["m.9.absolute-value"]
+                }
+              ]
+            }
+          ],
+          "notes": "Piecewise functions have no taxonomy skill; nearest m.9.absolute-value."
+        },
+        {
+          "n": "4",
+          "title": "Linear Systems",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+          "sections": [
+            {
+              "n": "9",
+              "title": "Systems of Linear Equations",
+              "skills": ["m.8.systems-linear"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Solve Linear Systems by Graphing",
+                  "skills": ["m.8.systems-linear"]
+                },
+                {
+                  "n": "2",
+                  "title": "Solve Linear Systems by Substitution",
+                  "skills": ["m.8.systems-linear"]
+                },
+                {
+                  "n": "3",
+                  "title": "Solve Linear Systems by Adding or Subtracting",
+                  "skills": ["m.8.systems-linear"]
+                },
+                {
+                  "n": "4",
+                  "title": "Solve Linear Systems by Multiplying First",
+                  "skills": ["m.8.systems-linear"]
+                }
+              ]
+            },
+            {
+              "n": "10",
+              "title": "Linear Inequalities",
+              "skills": ["m.9.inequality-systems"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Linear Inequalities in Two Variables",
+                  "skills": ["m.9.inequality-systems"]
+                },
+                {
+                  "n": "2",
+                  "title": "Graph Systems of Linear Inequalities",
+                  "skills": ["m.9.inequality-systems"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Exponential Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.9.exponential-functions"],
+          "sections": [
+            {
+              "n": "11",
+              "title": "Exponential Functions and Models",
+              "skills": ["m.9.exponential-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Exponential Growth Functions",
+                  "skills": ["m.9.exponential-functions"]
+                },
+                {
+                  "n": "2",
+                  "title": "Exponential Decay Functions",
+                  "skills": ["m.9.exponential-functions"]
+                },
+                {
+                  "n": "3",
+                  "title": "Rewrite Exponential Models",
+                  "skills": ["m.9.exponential-functions"]
+                }
+              ]
+            },
+            {
+              "n": "12",
+              "title": "Relationships Among Exponential Functions",
+              "skills": ["m.9.exponential-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Transform Exponential Functions",
+                  "skills": ["m.9.exponential-functions"]
+                },
+                {
+                  "n": "2",
+                  "title": "Compare Exponential Functions",
+                  "skills": ["m.9.exponential-functions"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Build Exponential Functions and Models",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.9.exponential-functions", "m.9.regression", "m.9.sequences"],
+          "sections": [
+            {
+              "n": "13",
+              "title": "Fit Exponential Functions to Data",
+              "skills": ["m.9.exponential-functions", "m.9.regression"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Scatter Plots and Fitted Exponential Curves"
+                },
+                {
+                  "n": "2",
+                  "title": "Choose Between Linear and Exponential Models"
+                }
+              ]
+            },
+            {
+              "n": "14",
+              "title": "Discrete Exponential Functions",
+              "skills": ["m.9.sequences"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Geometric Sequences Defined Recursively",
+                  "skills": ["m.9.sequences"]
+                },
+                {
+                  "n": "2",
+                  "title": "Geometric Sequences Defined Explicitly",
+                  "skills": ["m.9.sequences"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Polynomial Operations and Models",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.9.polynomial-operations"],
+          "sections": [
+            {
+              "n": "15",
+              "title": "Polynomial Multiplication",
+              "skills": ["m.9.polynomial-operations"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Multiply Monomials",
+                  "skills": ["m.9.polynomial-operations"]
+                },
+                {
+                  "n": "2",
+                  "title": "Multiply Monomials, Binomials, and Trinomials",
+                  "skills": ["m.9.polynomial-operations"]
+                },
+                {
+                  "n": "3",
+                  "title": "Special Products of Binomials",
+                  "skills": ["m.9.polynomial-operations"]
+                }
+              ]
+            },
+            {
+              "n": "16",
+              "title": "Polynomial Addition and Subtraction",
+              "skills": ["m.9.polynomial-operations"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Add and Subtract Polynomials",
+                  "skills": ["m.9.polynomial-operations"]
+                },
+                {
+                  "n": "2",
+                  "title": "Model with Polynomials",
+                  "skills": ["m.9.polynomial-operations"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Quadratic Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.9.factoring", "m.9.quadratic-functions", "m.9.quadratic-formula"],
+          "sections": [
+            {
+              "n": "17",
+              "title": "Use Graphing and Factoring to Solve Quadratic Equations",
+              "skills": ["m.9.factoring", "m.9.quadratic-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Solve Quadratic Equations by Graphing Quadratic Functions"
+                },
+                {
+                  "n": "2",
+                  "title": "Solve Quadratic Equations by Factoring x²+bx+c"
+                },
+                {
+                  "n": "3",
+                  "title": "Solve Quadratic Equations by Factoring ax²+bx+c"
+                },
+                {
+                  "n": "4",
+                  "title": "Use Special Factoring Patterns to Solve Quadratic Equations"
+                }
+              ]
+            },
+            {
+              "n": "18",
+              "title": "Use Square Roots to Solve Quadratic Equations",
+              "skills": ["m.9.quadratic-formula"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Solve Simple Quadratic Equations",
+                  "skills": ["m.9.quadratic-formula"]
+                },
+                {
+                  "n": "2",
+                  "title": "Solve Quadratic Equations by Completing the Square",
+                  "skills": ["m.9.quadratic-formula"]
+                },
+                {
+                  "n": "3",
+                  "title": "Use the Quadratic Formula to Solve Equations",
+                  "skills": ["m.9.quadratic-formula"]
+                },
+                {
+                  "n": "4",
+                  "title": "Choose a Method for Solving Quadratic Equations",
+                  "skills": ["m.9.quadratic-formula"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Functions and Models",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.9.quadratic-functions", "m.9.linear-modeling", "m.9.exponential-functions"],
+          "sections": [
+            {
+              "n": "19",
+              "title": "Build Quadratic Functions and Models",
+              "skills": ["m.9.quadratic-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Quadratic Functions in Vertex Form",
+                  "skills": ["m.9.quadratic-functions"]
+                },
+                {
+                  "n": "2",
+                  "title": "Quadratic Functions in Standard Form",
+                  "skills": ["m.9.quadratic-functions"]
+                },
+                {
+                  "n": "3",
+                  "title": "Quadratic Functions in Intercept Form",
+                  "skills": ["m.9.quadratic-functions"]
+                },
+                {
+                  "n": "4",
+                  "title": "Compare Quadratic Functions",
+                  "skills": ["m.9.quadratic-functions"]
+                },
+                {
+                  "n": "5",
+                  "title": "Scatter Plots and Fitted Quadratic Curves",
+                  "skills": ["m.9.quadratic-functions"]
+                }
+              ]
+            },
+            {
+              "n": "20",
+              "title": "Function Analysis",
+              "skills": [
+                "m.9.linear-modeling",
+                "m.9.exponential-functions",
+                "m.9.quadratic-functions"
+              ],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Choose Among Linear, Exponential, and Quadratic Models"
+                },
+                {
+                  "n": "2",
+                  "title": "Perform Operations with Functions"
+                },
+                {
+                  "n": "3",
+                  "title": "Solve Nonlinear Systems"
+                },
+                {
+                  "n": "4",
+                  "title": "Cubic Functions"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Data Analysis",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
+          "skills": ["m.10.conditional-probability", "m.6.center-spread"],
+          "sections": [
+            {
+              "n": "21",
+              "title": "Categorical Data",
+              "skills": ["m.10.conditional-probability"],
+              "notes": "Loose fit: two-way tables have no taxonomy skill; nearest m.10.conditional-probability.",
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Two-Way Frequency and Relative Frequency Tables",
+                  "skills": ["m.10.conditional-probability"]
+                },
+                {
+                  "n": "2",
+                  "title": "Recognize Possible Associations Between Categorical Variables",
+                  "skills": ["m.10.conditional-probability"]
+                }
+              ]
+            },
+            {
+              "n": "22",
+              "title": "Numerical Data",
+              "skills": ["m.6.center-spread"],
+              "notes": "Descriptive statistics (center, spread, box plots, shape) have no high-school skill; mapped to m.6.center-spread.",
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Data Distributions and Appropriate Statistics",
+                  "skills": ["m.6.center-spread"]
+                },
+                {
+                  "n": "2",
+                  "title": "Compare Data Distributions",
+                  "skills": ["m.6.center-spread"]
+                }
+              ]
+            }
+          ],
+          "notes": "Loose fit: two-way tables have no taxonomy skill; nearest m.10.conditional-probability. Descriptive statistics (center, spread, box plots, shape) have no high-school skill; mapped to m.6.center-spread."
+        }
+      ]
+    },
+    {
+      "grade": "10",
+      "course": "Geometry",
+      "units": [
+        {
+          "n": "1",
+          "title": "Essentials of Geometry",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.10.coordinate-geometry", "m.7.angle-relationships", "m.10.proofs"],
+          "sections": [
+            {
+              "n": "1",
+              "title": "Geometry in the Plane",
+              "skills": ["m.10.coordinate-geometry", "m.7.angle-relationships"],
+              "lessons": [
+                {
+                  "n": "1.1",
+                  "title": "Points, Lines, and Planes"
+                },
+                {
+                  "n": "1.2",
+                  "title": "Define and Measure Angles"
+                },
+                {
+                  "n": "1.3",
+                  "title": "Polygons and Other Figures in the Plane"
+                },
+                {
+                  "n": "1.4",
+                  "title": "Apply the Distance Formula"
+                }
+              ]
+            },
+            {
+              "n": "2",
+              "title": "Tools for Reasoning and Proof",
+              "skills": ["m.10.proofs"],
+              "lessons": [
+                {
+                  "n": "2.1",
+                  "title": "Write Conditional Statements",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "2.2",
+                  "title": "Use Inductive and Deductive Reasoning",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "2.3",
+                  "title": "Write Proofs about Segments",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "2.4",
+                  "title": "Write Proofs about Angles",
+                  "skills": ["m.10.proofs"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Parallel and Perpendicular Lines",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.10.proofs", "m.7.angle-relationships", "m.10.coordinate-geometry"],
+          "sections": [
+            {
+              "n": "3",
+              "title": "Lines and Transversals",
+              "skills": ["m.10.proofs", "m.7.angle-relationships"],
+              "lessons": [
+                {
+                  "n": "3.1",
+                  "title": "Parallel Lines Crossed by a Transversal"
+                },
+                {
+                  "n": "3.2",
+                  "title": "Prove Lines are Parallel"
+                },
+                {
+                  "n": "3.3",
+                  "title": "Prove Lines are Perpendicular"
+                }
+              ]
+            },
+            {
+              "n": "4",
+              "title": "Lines on the Coordinate Plane",
+              "skills": ["m.10.coordinate-geometry"],
+              "lessons": [
+                {
+                  "n": "4.1",
+                  "title": "Slope and Equations of Parallel Lines",
+                  "skills": ["m.10.coordinate-geometry"]
+                },
+                {
+                  "n": "4.2",
+                  "title": "Slope and Equations of Perpendicular Lines",
+                  "skills": ["m.10.coordinate-geometry"]
+                },
+                {
+                  "n": "4.3",
+                  "title": "Write a Coordinate Proof",
+                  "skills": ["m.10.coordinate-geometry"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Transformations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.8.transformations", "m.10.similarity"],
+          "sections": [
+            {
+              "n": "5",
+              "title": "Transformations that Preserve Size and Shape",
+              "skills": ["m.8.transformations"],
+              "lessons": [
+                {
+                  "n": "5.1",
+                  "title": "Define and Apply Translations",
+                  "skills": ["m.8.transformations"]
+                },
+                {
+                  "n": "5.2",
+                  "title": "Define and Apply Rotations",
+                  "skills": ["m.8.transformations"]
+                },
+                {
+                  "n": "5.3",
+                  "title": "Define and Apply Reflections",
+                  "skills": ["m.8.transformations"]
+                },
+                {
+                  "n": "5.4",
+                  "title": "Define and Apply Symmetry",
+                  "skills": ["m.8.transformations"]
+                }
+              ]
+            },
+            {
+              "n": "6",
+              "title": "Transformations that Change Size and Shape",
+              "skills": ["m.8.transformations", "m.10.similarity"],
+              "lessons": [
+                {
+                  "n": "6.1",
+                  "title": "Define and Apply Dilations, Stretches, and Compressions"
+                },
+                {
+                  "n": "6.2",
+                  "title": "Apply Sequences of Transformations"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Triangle Congruence",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.10.congruence"],
+          "sections": [
+            {
+              "n": "7",
+              "title": "Congruent Triangles and Polygons",
+              "skills": ["m.10.congruence"],
+              "lessons": [
+                {
+                  "n": "7.1",
+                  "title": "Understand Congruent Figures",
+                  "skills": ["m.10.congruence"]
+                },
+                {
+                  "n": "7.2",
+                  "title": "Corresponding Parts of Congruent Figures",
+                  "skills": ["m.10.congruence"]
+                },
+                {
+                  "n": "7.3",
+                  "title": "Use Rigid Motions to Prove Figures are Congruent",
+                  "skills": ["m.10.congruence"]
+                }
+              ]
+            },
+            {
+              "n": "8",
+              "title": "Triangle Congruence Criteria",
+              "skills": ["m.10.congruence"],
+              "lessons": [
+                {
+                  "n": "8.1",
+                  "title": "Develop ASA Triangle Congruence",
+                  "skills": ["m.10.congruence"]
+                },
+                {
+                  "n": "8.2",
+                  "title": "Develop SAS Triangle Congruence",
+                  "skills": ["m.10.congruence"]
+                },
+                {
+                  "n": "8.3",
+                  "title": "Develop SSS Triangle Congruence",
+                  "skills": ["m.10.congruence"]
+                },
+                {
+                  "n": "8.4",
+                  "title": "Develop AAS and HL Triangle Congruence",
+                  "skills": ["m.10.congruence"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Relationships Within Triangles",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.10.proofs"],
+          "sections": [
+            {
+              "n": "9",
+              "title": "Properties of Triangles",
+              "skills": ["m.10.proofs"],
+              "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs.",
+              "lessons": [
+                {
+                  "n": "9.1",
+                  "title": "Angle Relationships in Triangles",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "9.2",
+                  "title": "Perpendicular Bisectors in Triangles",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "9.3",
+                  "title": "Angle Bisectors in Triangles",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "9.4",
+                  "title": "Medians and Altitudes in Triangles",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "9.5",
+                  "title": "The Triangle Midsegment Theorem",
+                  "skills": ["m.10.proofs"]
+                }
+              ]
+            },
+            {
+              "n": "10",
+              "title": "Triangle Inequalities",
+              "skills": ["m.10.proofs"],
+              "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs.",
+              "lessons": [
+                {
+                  "n": "10.1",
+                  "title": "Inequalities Within a Triangle",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "10.2",
+                  "title": "Inequalities Between Two Triangles",
+                  "skills": ["m.10.proofs"]
+                }
+              ]
+            }
+          ],
+          "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs."
+        },
+        {
+          "n": "6",
+          "title": "Quadrilaterals, Polygons, and Triangle Similarity",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.10.proofs", "m.10.similarity"],
+          "sections": [
+            {
+              "n": "11",
+              "title": "Quadrilaterals and Polygons",
+              "skills": ["m.10.proofs"],
+              "notes": "Loose fit: properties of quadrilaterals and polygons have no high-school taxonomy skill; nearest m.10.proofs.",
+              "lessons": [
+                {
+                  "n": "11.1",
+                  "title": "Properties of Parallelograms",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "11.2",
+                  "title": "Conditions for Parallelograms",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "11.3",
+                  "title": "Properties of Rectangles, Rhombuses, and Squares",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "11.4",
+                  "title": "Conditions for Rectangles, Rhombuses, and Squares",
+                  "skills": ["m.10.proofs"]
+                },
+                {
+                  "n": "11.5",
+                  "title": "Properties and Conditions for Trapezoids and Kites",
+                  "skills": ["m.10.proofs"]
+                }
+              ]
+            },
+            {
+              "n": "12",
+              "title": "Similarity",
+              "skills": ["m.10.similarity"],
+              "lessons": [
+                {
+                  "n": "12.1",
+                  "title": "Use Transformations to Prove Figures Are Similar",
+                  "skills": ["m.10.similarity"]
+                },
+                {
+                  "n": "12.2",
+                  "title": "Develop AA Triangle Similarity",
+                  "skills": ["m.10.similarity"]
+                },
+                {
+                  "n": "12.3",
+                  "title": "Develop and Prove Triangle Proportionality",
+                  "skills": ["m.10.similarity"]
+                },
+                {
+                  "n": "12.4",
+                  "title": "Apply Similarity in Right Triangles",
+                  "skills": ["m.10.similarity"]
+                }
+              ]
+            }
+          ],
+          "notes": "Loose fit: properties of quadrilaterals and polygons have no high-school taxonomy skill; nearest m.10.proofs."
+        },
+        {
+          "n": "7",
+          "title": "Right Triangle Trigonometry",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": [
+            "m.10.right-triangle-trig",
+            "m.10.special-right-triangles",
+            "m.12.law-sines-cosines"
+          ],
+          "sections": [
+            {
+              "n": "13",
+              "title": "Trigonometry with Right Triangles",
+              "skills": ["m.10.right-triangle-trig", "m.10.special-right-triangles"],
+              "lessons": [
+                {
+                  "n": "13.1",
+                  "title": "Tangent Ratio"
+                },
+                {
+                  "n": "13.2",
+                  "title": "Sine and Cosine Ratios"
+                },
+                {
+                  "n": "13.3",
+                  "title": "Special Right Triangles"
+                },
+                {
+                  "n": "13.4",
+                  "title": "Solve Problems Using Trigonometry"
+                }
+              ]
+            },
+            {
+              "n": "14",
+              "title": "Trigonometry with All Triangles",
+              "skills": ["m.12.law-sines-cosines"],
+              "lessons": [
+                {
+                  "n": "14.1",
+                  "title": "Law of Sines",
+                  "skills": ["m.12.law-sines-cosines"]
+                },
+                {
+                  "n": "14.2",
+                  "title": "Law of Cosines",
+                  "skills": ["m.12.law-sines-cosines"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Properties of Circles",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": [
+            "m.10.circle-theorems",
+            "m.10.coordinate-geometry",
+            "m.7.circles",
+            "m.10.arc-sector"
+          ],
+          "sections": [
+            {
+              "n": "15",
+              "title": "Angles and Segments in Circles",
+              "skills": ["m.10.circle-theorems", "m.10.coordinate-geometry"],
+              "lessons": [
+                {
+                  "n": "15.1",
+                  "title": "Central Angles and Inscribed Angles"
+                },
+                {
+                  "n": "15.2",
+                  "title": "Angles in Inscribed Quadrilaterals"
+                },
+                {
+                  "n": "15.3",
+                  "title": "Tangents and Circumscribed Angles"
+                },
+                {
+                  "n": "15.4",
+                  "title": "Circles on the Coordinate Plane"
+                }
+              ]
+            },
+            {
+              "n": "16",
+              "title": "Relationships in Circles",
+              "skills": ["m.10.circle-theorems"],
+              "lessons": [
+                {
+                  "n": "16.1",
+                  "title": "Segment Relationships in Circles",
+                  "skills": ["m.10.circle-theorems"]
+                },
+                {
+                  "n": "16.2",
+                  "title": "Angle Relationships in Circles",
+                  "skills": ["m.10.circle-theorems"]
+                }
+              ]
+            },
+            {
+              "n": "17",
+              "title": "Circumference and Area of a Circle",
+              "skills": ["m.7.circles", "m.10.arc-sector"],
+              "lessons": [
+                {
+                  "n": "17.1",
+                  "title": "Measure Circumference and Area of a Circle"
+                },
+                {
+                  "n": "17.2",
+                  "title": "Measure Arc Length and Use Radians"
+                },
+                {
+                  "n": "17.3",
+                  "title": "Measure Sector Area"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Surface Area and Volume",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.10.volume-derivations", "m.8.volume-curved"],
+          "sections": [
+            {
+              "n": "18",
+              "title": "Surface Area",
+              "skills": ["m.10.volume-derivations", "m.8.volume-curved"],
+              "notes": "Surface area of prisms, pyramids, cones and spheres has no high-school skill; nearest m.10.volume-derivations and m.8.volume-curved.",
+              "lessons": [
+                {
+                  "n": "18.1",
+                  "title": "Three-Dimensional Figures"
+                },
+                {
+                  "n": "18.2",
+                  "title": "Surface Areas of Prisms and Cylinders"
+                },
+                {
+                  "n": "18.3",
+                  "title": "Surface Areas of Pyramids and Cones"
+                },
+                {
+                  "n": "18.4",
+                  "title": "Surface Areas of Spheres"
+                }
+              ]
+            },
+            {
+              "n": "19",
+              "title": "Volume",
+              "skills": ["m.10.volume-derivations", "m.8.volume-curved"],
+              "lessons": [
+                {
+                  "n": "19.1",
+                  "title": "Volumes of Prisms and Cylinders"
+                },
+                {
+                  "n": "19.2",
+                  "title": "Volumes of Pyramids and Cones"
+                },
+                {
+                  "n": "19.3",
+                  "title": "Volumes of Spheres"
+                }
+              ]
+            }
+          ],
+          "notes": "Surface area of prisms, pyramids, cones and spheres has no high-school skill; nearest m.10.volume-derivations and m.8.volume-curved."
+        },
+        {
+          "n": "10",
+          "title": "Probability",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
+          "skills": ["m.10.conditional-probability", "m.7.probability"],
+          "sections": [
+            {
+              "n": "20",
+              "title": "Probability of Multiple Events",
+              "skills": ["m.10.conditional-probability", "m.7.probability"],
+              "lessons": [
+                {
+                  "n": "20.1",
+                  "title": "Probability and Set Theory"
+                },
+                {
+                  "n": "20.2",
+                  "title": "Disjoint and Overlapping Events"
+                }
+              ]
+            },
+            {
+              "n": "21",
+              "title": "Conditional Probability and Independence of Events",
+              "skills": ["m.10.conditional-probability"],
+              "lessons": [
+                {
+                  "n": "21.1",
+                  "title": "Conditional Probability",
+                  "skills": ["m.10.conditional-probability"]
+                },
+                {
+                  "n": "21.2",
+                  "title": "Independent Events",
+                  "skills": ["m.10.conditional-probability"]
+                },
+                {
+                  "n": "21.3",
+                  "title": "Dependent Events",
+                  "skills": ["m.10.conditional-probability"]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "11",
+      "course": "Algebra 2",
+      "units": [
+        {
+          "n": "1",
+          "title": "Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": [
+            "m.9.quadratic-functions",
+            "m.9.absolute-value",
+            "m.8.functions-intro",
+            "m.11.complex-numbers",
+            "m.9.quadratic-formula"
+          ],
+          "sections": [
+            {
+              "n": "1",
+              "title": "Analyze Functions",
+              "skills": ["m.9.quadratic-functions", "m.9.absolute-value", "m.8.functions-intro"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Domain, Range, and End Behavior"
+                },
+                {
+                  "n": "2",
+                  "title": "Characteristics of Function and Graphs"
+                },
+                {
+                  "n": "3",
+                  "title": "Transformations of Function Graphs"
+                },
+                {
+                  "n": "4",
+                  "title": "Transformations of Absolute Value and Quadratic Functions"
+                },
+                {
+                  "n": "5",
+                  "title": "Compare Functions Across Representations"
+                }
+              ]
+            },
+            {
+              "n": "2",
+              "title": "Solve Quadratic Equations and Systems",
+              "skills": ["m.11.complex-numbers", "m.9.quadratic-formula"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Use Square Roots to Solve Quadratic Equations"
+                },
+                {
+                  "n": "2",
+                  "title": "Operations with Complex Numbers"
+                },
+                {
+                  "n": "3",
+                  "title": "Derive and Apply the Quadratic Formula"
+                },
+                {
+                  "n": "4",
+                  "title": "Solve Linear-Quadratic Systems"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Polynomial Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": ["m.11.polynomial-functions", "m.11.inverse-functions", "m.11.complex-numbers"],
+          "sections": [
+            {
+              "n": "3",
+              "title": "Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Graph Polynomial Functions",
+                  "skills": ["m.11.polynomial-functions"]
+                },
+                {
+                  "n": "2",
+                  "title": "Analyze Graphs of Polynomial Functions",
+                  "skills": ["m.11.polynomial-functions"]
+                }
+              ]
+            },
+            {
+              "n": "4",
+              "title": "Function Operations and Polynomials",
+              "skills": ["m.11.polynomial-functions", "m.11.inverse-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Function Operations"
+                },
+                {
+                  "n": "2",
+                  "title": "Add and Subtract Polynomials"
+                },
+                {
+                  "n": "3",
+                  "title": "Multiply Polynomials"
+                },
+                {
+                  "n": "4",
+                  "title": "Factor Polynomials"
+                },
+                {
+                  "n": "5",
+                  "title": "Divide Polynomials"
+                }
+              ]
+            },
+            {
+              "n": "5",
+              "title": "Polynomial Equations",
+              "skills": ["m.11.polynomial-functions", "m.11.complex-numbers"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Solve Polynomial Equations"
+                },
+                {
+                  "n": "2",
+                  "title": "The Fundamental Theorem of Algebra"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Rational Exponents and Radical Functions",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": ["m.9.radicals", "m.11.inverse-functions"],
+          "sections": [
+            {
+              "n": "6",
+              "title": "Rational Exponents and Radical Operations",
+              "skills": ["m.9.radicals"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Rational Exponents and nth Roots",
+                  "skills": ["m.9.radicals"]
+                },
+                {
+                  "n": "2",
+                  "title": "Properties of Rational Exponents and Radicals",
+                  "skills": ["m.9.radicals"]
+                }
+              ]
+            },
+            {
+              "n": "7",
+              "title": "Radical Functions and Equations",
+              "skills": ["m.11.inverse-functions", "m.9.radicals"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Inverse Functions and Function Composition"
+                },
+                {
+                  "n": "2",
+                  "title": "Inverses of Quadratic and Cubic Functions"
+                },
+                {
+                  "n": "3",
+                  "title": "Graph Square Root Functions"
+                },
+                {
+                  "n": "4",
+                  "title": "Graph Cube Root Functions"
+                },
+                {
+                  "n": "5",
+                  "title": "Solve Radical Equations"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Exponential and Logarithmic Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": ["m.9.exponential-functions", "m.11.exp-log-equations", "m.11.logarithms"],
+          "sections": [
+            {
+              "n": "8",
+              "title": "Exponential Functions",
+              "skills": ["m.9.exponential-functions", "m.11.exp-log-equations"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Exponential Growth and Decay Functions"
+                },
+                {
+                  "n": "2",
+                  "title": "The Natural Base e"
+                },
+                {
+                  "n": "3",
+                  "title": "Compound Interest"
+                }
+              ]
+            },
+            {
+              "n": "9",
+              "title": "Logarithmic Functions",
+              "skills": ["m.11.logarithms"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Logarithms and Logarithmic Functions",
+                  "skills": ["m.11.logarithms"]
+                },
+                {
+                  "n": "2",
+                  "title": "Graph Logarithmic Functions",
+                  "skills": ["m.11.logarithms"]
+                },
+                {
+                  "n": "3",
+                  "title": "Create Exponential and Logarithmic Functions",
+                  "skills": ["m.11.logarithms"]
+                }
+              ]
+            },
+            {
+              "n": "10",
+              "title": "Exponential and Logarithmic Equations",
+              "skills": ["m.11.logarithms", "m.11.exp-log-equations"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Properties of Logarithms"
+                },
+                {
+                  "n": "2",
+                  "title": "Solve Exponential Equations"
+                },
+                {
+                  "n": "3",
+                  "title": "Solve Logarithmic Equations"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Rational Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": ["m.11.rational-functions"],
+          "sections": [
+            {
+              "n": "11",
+              "title": "Rational Functions",
+              "skills": ["m.11.rational-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Inverse Variation",
+                  "skills": ["m.11.rational-functions"]
+                },
+                {
+                  "n": "2",
+                  "title": "Graph Simple Rational Functions",
+                  "skills": ["m.11.rational-functions"]
+                },
+                {
+                  "n": "3",
+                  "title": "Graph More Complicated Rational Functions",
+                  "skills": ["m.11.rational-functions"]
+                }
+              ]
+            },
+            {
+              "n": "12",
+              "title": "Rational Expressions and Equations",
+              "skills": ["m.11.rational-functions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Multiply and Divide Rational Expressions",
+                  "skills": ["m.11.rational-functions"]
+                },
+                {
+                  "n": "2",
+                  "title": "Add and Subtract Rational Expressions",
+                  "skills": ["m.11.rational-functions"]
+                },
+                {
+                  "n": "3",
+                  "title": "Solve Rational Equations",
+                  "skills": ["m.11.rational-functions"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Sequences and Series",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": ["m.11.series", "m.9.sequences"],
+          "sections": [
+            {
+              "n": "13",
+              "title": "Explicit Formulas for Sequences and Series",
+              "skills": ["m.11.series", "m.9.sequences"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Define Sequences and Series"
+                },
+                {
+                  "n": "2",
+                  "title": "Arithmetic Sequences and Series"
+                },
+                {
+                  "n": "3",
+                  "title": "Geometric Sequences and Series"
+                }
+              ]
+            },
+            {
+              "n": "14",
+              "title": "Recursive Formulas for Sequences",
+              "skills": ["m.9.sequences"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Recursive Formulas for Arithmetic Sequences",
+                  "skills": ["m.9.sequences"]
+                },
+                {
+                  "n": "2",
+                  "title": "Recursive Formulas for Geometric Sequences",
+                  "skills": ["m.9.sequences"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Trigonometric Functions and Identities",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": ["m.11.unit-circle", "m.11.pythagorean-identities", "m.11.trig-graphs"],
+          "sections": [
+            {
+              "n": "15",
+              "title": "Unit-Circle Definition of Trigonometric Functions",
+              "skills": ["m.11.unit-circle", "m.11.pythagorean-identities"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Angles of Rotation and Radian Measure"
+                },
+                {
+                  "n": "2",
+                  "title": "Define and Evaluate the Basic Trigonometric Functions"
+                },
+                {
+                  "n": "3",
+                  "title": "Use a Pythagorean Identity"
+                }
+              ]
+            },
+            {
+              "n": "16",
+              "title": "Graph Trigonometric Functions",
+              "skills": ["m.11.trig-graphs"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Graph Sine and Cosine Functions",
+                  "skills": ["m.11.trig-graphs"]
+                },
+                {
+                  "n": "2",
+                  "title": "Graph Tangent Functions",
+                  "skills": ["m.11.trig-graphs"]
+                },
+                {
+                  "n": "3",
+                  "title": "Translations of Trigonometric Graphs",
+                  "skills": ["m.11.trig-graphs"]
+                },
+                {
+                  "n": "4",
+                  "title": "Model Periodic Phenomena with Trigonometric Functions",
+                  "skills": ["m.11.trig-graphs"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Probability",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": ["m.10.conditional-probability", "m.7.probability"],
+          "sections": [
+            {
+              "n": "17",
+              "title": "Probability of Compound Events",
+              "skills": ["m.10.conditional-probability", "m.7.probability"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Theoretical and Experimental Probability"
+                },
+                {
+                  "n": "2",
+                  "title": "Two-Way Tables and Probability"
+                },
+                {
+                  "n": "3",
+                  "title": "Mutually Exclusive and Inclusive Events"
+                }
+              ]
+            },
+            {
+              "n": "18",
+              "title": "Probability and Decision Making",
+              "skills": ["m.10.conditional-probability"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Conditional Probability",
+                  "skills": ["m.10.conditional-probability"]
+                },
+                {
+                  "n": "2",
+                  "title": "Dependent and Independent Events",
+                  "skills": ["m.10.conditional-probability"]
+                },
+                {
+                  "n": "3",
+                  "title": "Analyze Decisions",
+                  "skills": ["m.10.conditional-probability"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Statistics",
+          "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
+          "skills": [
+            "m.11.normal-distribution",
+            "m.12.probability-distributions",
+            "m.12.hypothesis-testing"
+          ],
+          "sections": [
+            {
+              "n": "19",
+              "title": "Data Distributions",
+              "skills": ["m.11.normal-distribution", "m.12.probability-distributions"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Probability Distributions"
+                },
+                {
+                  "n": "2",
+                  "title": "Normal Distributions"
+                },
+                {
+                  "n": "3",
+                  "title": "Data-Gathering Techniques"
+                },
+                {
+                  "n": "4",
+                  "title": "Sampling Distributions"
+                }
+              ]
+            },
+            {
+              "n": "20",
+              "title": "Make Inferences from Data",
+              "skills": ["m.11.normal-distribution", "m.12.hypothesis-testing"],
+              "lessons": [
+                {
+                  "n": "1",
+                  "title": "Confidence Intervals and Margins of Error"
+                },
+                {
+                  "n": "2",
+                  "title": "Surveys, Experiments, and Observational Studies"
+                },
+                {
+                  "n": "3",
+                  "title": "Make Inferences from Experimental Data"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
