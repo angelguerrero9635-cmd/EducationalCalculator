@@ -26,6 +26,7 @@ import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
+import { transformationHsfIssues } from './picturesHsf';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1768,6 +1769,7 @@ export function repIssues(
       };
       if (move.factor !== undefined && move.factor <= 0)
         out.push(`dilation by scale factor ${move.factor}`);
+      out.push(...transformationHsfIssues(rep, val));
       const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
       const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
       const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];

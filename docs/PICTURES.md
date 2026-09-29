@@ -166,6 +166,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `grid100`          | `product: [a, b]`                        | a tenths as columns × b tenths as rows, the overlap the product               |
 | `placeValueChart`  | `plus`, `total`                          | two numbers stacked by place, points lined up, the sum under a rule           |
 | `scale`            | `before`; `hanging`                      | two scales, before and after, gas bubbles labelled; a spring scale in N       |
+| `transformation`   | `then`, `image2`; `symmetry`             | a second move from A′ (dashed) to A″; lines of symmetry and the turn order    |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

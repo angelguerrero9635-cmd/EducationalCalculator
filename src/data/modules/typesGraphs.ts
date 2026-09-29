@@ -4,6 +4,8 @@
  * number or a variable id.
  */
 
+import { secondMoveVars, type SecondMove } from './typesHsf';
+
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
 
@@ -110,6 +112,12 @@ export type TransformationSpec = {
   image?: { x: string; y: string };
   extent?: number;
   quadrants?: 1 | 4;
+  /** Grades 9–12: a second move after the first; A′ drawn dashed between, A″ the final image. */
+  then?: SecondMove;
+  /** A″'s coordinates as values, when the module works them out (checked against both moves). */
+  image2?: { x: string; y: string };
+  /** Grades 9–12: the figure's lines of symmetry and its order of rotational symmetry. */
+  symmetry?: boolean;
 } & (
   | { move: 'translate'; right: NumOrVar; up: NumOrVar }
   | { move: 'reflect'; mirror: Mirror }
@@ -143,7 +151,10 @@ export function graphSpecVars(
             : r.move === 'rotate'
               ? [r.angle, ...(r.center ?? [])]
               : [r.factor, ...(r.center ?? [])];
-      return ids(...r.figure.flat(), r.image?.x, r.image?.y, ...move);
+      const then = secondMoveVars(r.then);
+      return ids(...r.figure.flat(), r.image?.x, r.image?.y, ...move, ...then).concat(
+        ids(r.image2?.x, r.image2?.y),
+      );
     }
   }
 }

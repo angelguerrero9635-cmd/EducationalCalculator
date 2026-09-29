@@ -379,12 +379,26 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     'Venn diagram with probabilities: A and B, A or B, mutually exclusive, the complement shaded',
     ['m.10.probability-rules', 'm.10.conditional-probability'],
   ),
-  ask(
-    'H23',
-    'transformation',
-    'Compositions of two moves with the middle image, any reflection line, rotation about any point, symmetry',
-    ['m.10.rigid-motions', 'm.10.congruence'],
-  ),
+  {
+    ...ask(
+      'H23',
+      'transformation',
+      'Compositions of two moves with the middle image, any reflection line, rotation about any point, symmetry',
+      ['m.10.rigid-motions', 'm.10.congruence'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-rigid-motions-compose',
+      'g.m10-rigid-motions-glide',
+      'g.m10-rigid-motions-rotate-point',
+      'g.m10-rigid-motions-reflect-diagonal',
+      'g.m10-rigid-motions-symmetry-rectangle',
+      'g.m10-rigid-motions-symmetry-square',
+      'g.m10-rigid-motions-symmetry-isosceles',
+    ],
+    notes:
+      'Drawn (group HF). New optional fields on transformation (typesGraphs.ts, types in typesHsf.ts): then (a second move, the same shapes as the first: { move: "translate", right, up } | { move: "reflect", mirror } | { move: "rotate", angle, center? } | { move: "dilate", factor, center? }), drawn from A′, which turns dashed and grey as the middle image, to A″ in the highlight, each move with its own guides; image2 { x, y } (A″ as values, checked against both moves); symmetry: true (the lines of symmetry dashed and clipped to the grid, and with turns the center, a turn arrow and "order n"; the caption counts both; a turn or flip that lands on the figure labels the image corners further out). Reflection in y = x, y = −x, x = k, y = k and rotation about any center (center: [a, b]) already existed. The first move keeps its handle; the second move has none (its values are typed). Example: { kind: "transformation", figure: [["ax", "ay"], [5, 4], [5, 6]], move: "reflect", mirror: "y-axis", image: { x: "px", y: "py" }, then: { move: "rotate", angle: 90 }, image2: { x: "qx", y: "qy" }, extent: 7 }. Symmetry: { kind: "transformation", figure: [[1, 1], ["r", 1], ["r", "r"], [1, "r"]], move: "rotate", angle: "t", center: ["c", "c"], symmetry: true, quadrants: 1, extent: 6 }. Keep figures off the axes in quadrant 1, where corner labels meet the axis numbers.',
+  },
   ask(
     'H24',
     'scaleCopy',
