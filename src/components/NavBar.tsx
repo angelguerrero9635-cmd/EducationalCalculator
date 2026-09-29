@@ -24,7 +24,9 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
     screenTitle(route.name, params) ??
     (typeof options.title === 'string' ? options.title : route.name);
   const parent = parentOf(route.name, params);
-  const backLabel = modal ? 'Close' : hasHistory ? (back?.title ?? parent.label) : parent.label;
+  // A route group's name ("(tabs)") is not a page name: the page before is a tab.
+  const backTitle = back?.title && !back.title.startsWith('(') ? back.title : 'Back';
+  const backLabel = modal ? 'Close' : hasHistory ? backTitle : parent.label;
 
   const goBack = () => {
     if (hasHistory) navigation.goBack();

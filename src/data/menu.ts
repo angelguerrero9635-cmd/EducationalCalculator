@@ -1,128 +1,111 @@
 /**
- * The side menu's tree: every lesson, reached through dropdowns. K–12 is grade → subject →
- * strand → skill, with a skill's problem types under it; higher education is division →
- * field (when the division has more than one) → course → topic. Built from the taxonomy and
- * the modules, so a new page shows up without touching the menu.
+ * The side menu: a dropdown for each grade (and each higher-education division), opening to
+ * indented rows. In a grade: the subject, its strands, each skill and, under a skill, its
+ * problem types. In a division: its fields, their courses and each course's topics. Built from
+ * the taxonomy and the modules, so a new page shows up without touching the menu.
  */
 import {
   DIVISIONS,
   SUBJECTS,
+  courseRoute,
   divisionLabel,
-  fieldRoute,
-  groupByStrand,
   gradeRoute,
+  groupByStrand,
   problemTypes,
   skillRoute,
   skipsFieldLevel,
   subjectLabel,
   topicRoute,
-  courseRoute,
   type RouteTarget,
 } from './selectors';
 import { GRADES, HE_FIELDS, coursesFor, gradeLabel, skillsFor, type Course } from './taxonomy';
 
-export interface MenuNode {
-  /** Unique in the tree; also what "open" state is kept by. */
+/** One row inside a dropdown. A row with no route is a heading (a subject, strand or field). */
+export interface MenuRow {
   key: string;
   label: string;
-  /** A page to open. A node with children opens its dropdown instead, and lists this page first. */
+  /** How far in it sits: 0 for a subject or field, one more for each level under it. */
+  depth: number;
   route?: RouteTarget;
-  children?: MenuNode[];
 }
 
-/** A course under `parent` (a course cross-listed in several fields appears under each). */
-const courseNode = (course: Course, parent: string): MenuNode => {
-  const key = `${parent}:${course.id}`;
-  return {
-    key,
-    label: course.title,
-    children: [
-      { key: `${key}#overview`, label: 'Course overview', route: courseRoute(course.id) },
-      ...course.topics.map((topic, i) => ({
-        key: `${key}#${i}`,
-        label: topic,
-        route: topicRoute(course.id, i),
-      })),
-    ],
-  };
-};
+/** A top-level dropdown: a grade or a division. */
+export interface MenuGroup {
+  key: string;
+  label: string;
+  /** Shown as a small title above the group (the first division gets "Higher Education"). */
+  section?: string;
+  rows: MenuRow[];
+}
 
 /** A route as the path it opens ("/skill/m.3.area"), to find the page that is open. */
 export const routePath = (route: RouteTarget) =>
   route.pathname.replace(/\[(\w+)\]/g, (_, key: string) => route.params[key] ?? '');
 
-let tree: MenuNode[] | undefined;
+const courseRows = (course: Course, parent: string, depth: number): MenuRow[] => [
+  { key: `${parent}:${course.id}`, label: course.title, depth, route: courseRoute(course.id) },
+  ...course.topics.map((topic, i) => ({
+    key: `${parent}:${course.id}#${i}`,
+    label: topic,
+    depth: depth + 1,
+    route: topicRoute(course.id, i),
+  })),
+];
+
+let groups: MenuGroup[] | undefined;
 
 /** The whole menu (built once). */
-export function menuTree(): MenuNode[] {
-  tree ??= [
-    ...GRADES.map((grade): MenuNode => ({
+export function menuGroups(): MenuGroup[] {
+  groups ??= [
+    ...GRADES.map((grade): MenuGroup => ({
       key: `grade:${grade}`,
       label: gradeLabel(grade),
-      children: SUBJECTS.filter((subject) => skillsFor(grade, subject).length > 0).map(
-        (subject) => ({
-          key: `grade:${grade}:${subject}`,
-          label: subjectLabel(subject),
-          route: gradeRoute(grade, subject),
-          children: groupByStrand(skillsFor(grade, subject)).map(({ title, data }) => ({
-            key: `grade:${grade}:${subject}:${title}`,
-            label: title,
-            children: data.map((skill): MenuNode => {
-              const types = problemTypes(skill.id);
-              return types.length === 0
-                ? { key: skill.id, label: skill.title, route: skillRoute(skill.id) }
-                : {
-                    key: skill.id,
-                    label: skill.title,
-                    children: [
-                      {
-                        key: `${skill.id}#main`,
-                        label: 'Main lesson',
-                        route: skillRoute(skill.id),
-                      },
-                      ...types.map((t) => ({ key: t.id, label: t.title, route: skillRoute(t.id) })),
-                    ],
-                  };
-            }),
-          })),
-        }),
+      rows: SUBJECTS.filter((subject) => skillsFor(grade, subject).length > 0).flatMap(
+        (subject): MenuRow[] => [
+          {
+            key: `grade:${grade}:${subject}`,
+            label: subjectLabel(subject),
+            depth: 0,
+            route: gradeRoute(grade, subject),
+          },
+          ...groupByStrand(skillsFor(grade, subject)).flatMap(({ title, data }) => [
+            { key: `grade:${grade}:${subject}:${title}`, label: title, depth: 1 },
+            ...data.flatMap((skill) => [
+              { key: skill.id, label: skill.title, depth: 2, route: skillRoute(skill.id) },
+              ...problemTypes(skill.id).map((t) => ({
+                key: t.id,
+                label: t.title,
+                depth: 3,
+                route: skillRoute(t.id),
+              })),
+            ]),
+          ]),
+        ],
       ),
     })),
-    {
-      key: 'he',
-      label: 'Higher Education',
-      children: DIVISIONS.map((division): MenuNode => ({
-        key: `he:${division}`,
-        label: divisionLabel(division),
-        children: skipsFieldLevel(division)
-          ? coursesFor(division, HE_FIELDS[division][0]!.id).map((c) =>
-              courseNode(c, `he:${division}`),
-            )
-          : HE_FIELDS[division].map((field) => ({
-              key: `he:${division}:${field.id}`,
-              label: field.title,
-              route: fieldRoute(division, field.id),
-              children: coursesFor(division, field.id).map((c) =>
-                courseNode(c, `he:${division}:${field.id}`),
-              ),
-            })),
-      })),
-    },
+    ...DIVISIONS.map((division, i): MenuGroup => ({
+      key: `he:${division}`,
+      label: divisionLabel(division),
+      ...(i === 0 ? { section: 'Higher Education' } : {}),
+      rows: skipsFieldLevel(division)
+        ? coursesFor(division, HE_FIELDS[division][0]!.id).flatMap((c) =>
+            courseRows(c, `he:${division}`, 0),
+          )
+        : HE_FIELDS[division].flatMap((field) => [
+            { key: `he:${division}:${field.id}`, label: field.title, depth: 0 },
+            ...coursesFor(division, field.id).flatMap((c) =>
+              courseRows(c, `he:${division}:${field.id}`, 1),
+            ),
+          ]),
+    })),
   ];
-  return tree;
+  return groups;
 }
 
-/**
- * The keys of the dropdowns that lead to a page (so the menu opens where the student is): the
- * node whose route matches and every node above it.
- */
-export function menuPath(match: (route: RouteTarget) => boolean, nodes = menuTree()): string[] {
-  for (const node of nodes) {
-    if (node.children) {
-      const below = menuPath(match, node.children);
-      if (below.length > 0) return [node.key, ...below];
-    }
-    if (node.route && !node.children && match(node.route)) return [node.key];
-  }
-  return [];
+/** The dropdown that holds the open page (so the menu opens where the student is). */
+export function menuGroupOf(
+  match: (route: RouteTarget) => boolean,
+  all = menuGroups(),
+): string | undefined {
+  return all.find((g) => g.rows.some((r) => r.route && match(r.route)))?.key;
 }

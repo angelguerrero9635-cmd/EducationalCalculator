@@ -1,9 +1,9 @@
 import { usePathname } from 'expo-router';
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { menuPath, menuTree, routePath, type MenuNode } from '@/data/menu';
+import { menuGroupOf, menuGroups, routePath, type MenuGroup, type MenuRow } from '@/data/menu';
 import type { RouteTarget } from '@/data/selectors';
 import { push } from '@/navigation';
 import { font, space, usePalette } from '@/theme';
@@ -12,8 +12,9 @@ import { Icon } from './Icon';
 import { Text } from './Text';
 
 /**
- * The header's menu button. It opens a side menu that lists every lesson in dropdowns (grade,
- * subject, strand, skill; or division, field, course), opened to the page the student is on.
+ * The header's menu button, at the right of every header. It opens a side menu from the same
+ * side: a dropdown for each grade and each college division, holding indented rows of its
+ * lessons. The dropdown with the open page starts open.
  */
 export function MenuButton() {
   const c = usePalette();
@@ -40,9 +41,23 @@ function SideMenu({ onClose }: { onClose: () => void }) {
   const insets = useSafeAreaInsets();
   const pathname = decodeURIComponent(usePathname());
   const here = (route: RouteTarget) => routePath(route) === pathname;
-  // Open to the page the student is on.
-  const [expanded, setExpanded] = useState(() => new Set(menuPath(here)));
-  const nodes = useMemo(() => menuTree(), []);
+  const groups = useMemo(() => menuGroups(), []);
+  // Open to the grade (or division) of the page the student is on.
+  const [expanded, setExpanded] = useState(() => {
+    const key = menuGroupOf(here);
+    return new Set(key ? [key] : []);
+  });
+
+  // Scroll to the open page: its dropdown's place, the rows' place in it, and the row's.
+  const scroller = useRef<ScrollView>(null);
+  const place = useRef({ group: 0, rows: 0, row: -1 });
+  const [laidOut, setLaidOut] = useState(false);
+  const openGroup = useMemo(() => menuGroupOf(here), [pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const { group, rows, row } = place.current;
+    if (laidOut && row >= 0)
+      scroller.current?.scrollTo({ y: Math.max(0, group + rows + row - 120), animated: false });
+  }, [laidOut]);
 
   const toggle = (key: string) =>
     setExpanded((prev) => {
@@ -56,60 +71,92 @@ function SideMenu({ onClose }: { onClose: () => void }) {
     push(route);
   };
 
-  const row = (node: MenuNode, depth: number): ReactNode => {
-    const isOpen = expanded.has(node.key);
-    const current = !node.children && !!node.route && here(node.route);
-    const pad = { paddingLeft: space.md + depth * space.md };
-    if (!node.children) {
+  const row = (r: MenuRow) => {
+    const indent = { paddingLeft: space.lg + r.depth * space.lg };
+    if (!r.route) {
+      // A heading: a strand or a field.
       return (
-        <Pressable
-          key={node.key}
-          testID={`menu-${node.key}`}
-          accessibilityRole="link"
-          accessibilityState={{ selected: current }}
-          onPress={() => go(node.route!)}
-          style={({ pressed }) => [
-            styles.row,
-            pad,
-            current && { backgroundColor: c.surface },
-            { opacity: pressed ? 0.6 : 1 },
-          ]}
-        >
-          <Text style={[styles.leaf, { color: current ? c.accent : c.text }]} numberOfLines={2}>
-            {node.label}
+        <View key={r.key} style={[styles.heading, indent]}>
+          <Text style={[styles.headingText, { color: c.textMuted }]} numberOfLines={2}>
+            {r.label}
           </Text>
-        </Pressable>
+        </View>
       );
     }
+    const current = here(r.route);
     return (
-      <View key={node.key}>
+      <Pressable
+        key={r.key}
+        onLayout={
+          current
+            ? (e) => {
+                place.current.row = e.nativeEvent.layout.y;
+                setLaidOut(true);
+              }
+            : undefined
+        }
+        testID={`menu-${r.key}`}
+        accessibilityRole="link"
+        accessibilityState={{ selected: current }}
+        onPress={() => go(r.route!)}
+        style={({ pressed }) => [
+          styles.row,
+          indent,
+          current && { backgroundColor: c.surface },
+          { opacity: pressed ? 0.6 : 1 },
+        ]}
+      >
+        <Text
+          style={[
+            r.depth === 0 ? styles.subject : styles.lesson,
+            { color: current ? c.accent : c.text },
+          ]}
+          numberOfLines={2}
+        >
+          {r.label}
+        </Text>
+      </Pressable>
+    );
+  };
+
+  const group = (g: MenuGroup) => {
+    const isOpen = expanded.has(g.key);
+    return (
+      <View
+        key={g.key}
+        onLayout={
+          g.key === openGroup ? (e) => (place.current.group = e.nativeEvent.layout.y) : undefined
+        }
+      >
+        {g.section ? (
+          <Text style={[styles.section, { color: c.textMuted, borderTopColor: c.border }]}>
+            {g.section}
+          </Text>
+        ) : null}
         <Pressable
-          testID={`menu-${node.key}`}
+          testID={`menu-${g.key}`}
           accessibilityRole="button"
           accessibilityState={{ expanded: isOpen }}
-          onPress={() => toggle(node.key)}
-          style={({ pressed }) => [styles.row, pad, { opacity: pressed ? 0.6 : 1 }]}
+          onPress={() => toggle(g.key)}
+          style={({ pressed }) => [
+            styles.dropdown,
+            { borderBottomColor: c.border, opacity: pressed ? 0.6 : 1 },
+          ]}
         >
-          <View style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}>
-            <Icon name="chevron" size={16} color={c.textMuted} />
+          <Text style={[styles.dropdownText, { color: c.text }]}>{g.label}</Text>
+          <View style={{ transform: [{ rotate: isOpen ? '-90deg' : '90deg' }] }}>
+            <Icon name="chevron" size={18} color={c.textMuted} />
           </View>
-          <Text
-            style={[depth === 0 ? styles.top : styles.branch, { color: c.text }]}
-            numberOfLines={2}
-          >
-            {node.label}
-          </Text>
         </Pressable>
         {isOpen ? (
-          <>
-            {node.route
-              ? row(
-                  { key: `${node.key}#all`, label: `${node.label} overview`, route: node.route },
-                  depth + 1,
-                )
-              : null}
-            {node.children.map((child) => row(child, depth + 1))}
-          </>
+          <View
+            style={styles.rows}
+            onLayout={
+              g.key === openGroup ? (e) => (place.current.rows = e.nativeEvent.layout.y) : undefined
+            }
+          >
+            {g.rows.map(row)}
+          </View>
         ) : null}
       </View>
     );
@@ -118,12 +165,18 @@ function SideMenu({ onClose }: { onClose: () => void }) {
   return (
     <Modal transparent animationType="fade" onRequestClose={onClose} visible>
       <View style={styles.backdropRow}>
+        {/* Tapping outside the panel closes it. */}
+        <Pressable
+          accessibilityLabel="Close the menu"
+          style={[styles.backdrop, { backgroundColor: c.text }]}
+          onPress={onClose}
+        />
         <View
           testID="side-menu"
           accessibilityViewIsModal
           style={[
             styles.panel,
-            { backgroundColor: c.background, paddingTop: insets.top, borderRightColor: c.border },
+            { backgroundColor: c.background, paddingTop: insets.top, borderLeftColor: c.border },
           ]}
         >
           <View style={[styles.head, { borderBottomColor: c.border }]}>
@@ -141,16 +194,13 @@ function SideMenu({ onClose }: { onClose: () => void }) {
               <Icon name="close" color={c.accent} />
             </Pressable>
           </View>
-          <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + space.lg }}>
-            {nodes.map((node) => row(node, 0))}
+          <ScrollView
+            ref={scroller}
+            contentContainerStyle={{ paddingBottom: insets.bottom + space.lg }}
+          >
+            {groups.map(group)}
           </ScrollView>
         </View>
-        {/* Tapping outside the panel closes it. */}
-        <Pressable
-          accessibilityLabel="Close the menu"
-          style={[styles.backdrop, { backgroundColor: c.text }]}
-          onPress={onClose}
-        />
       </View>
     </Modal>
   );
@@ -160,7 +210,7 @@ const styles = StyleSheet.create({
   menuButton: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   backdropRow: { flex: 1, flexDirection: 'row' },
   backdrop: { flex: 1, opacity: 0.25 },
-  panel: { width: '85%', maxWidth: 380, borderRightWidth: StyleSheet.hairlineWidth },
+  panel: { width: '85%', maxWidth: 380, borderLeftWidth: StyleSheet.hairlineWidth },
   head: {
     height: 52,
     flexDirection: 'row',
@@ -171,15 +221,28 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   title: { fontSize: font.body + 3, fontWeight: '700' },
-  row: {
-    minHeight: 44,
+  section: {
+    fontSize: font.caption,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    paddingHorizontal: space.lg,
+    paddingTop: space.lg,
+    paddingBottom: space.xs,
+  },
+  dropdown: {
+    minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: space.xs,
-    paddingRight: space.md,
-    paddingVertical: space.xs,
+    justifyContent: 'space-between',
+    paddingHorizontal: space.lg,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  top: { flex: 1, fontSize: font.body + 1, fontWeight: '700' },
-  branch: { flex: 1, fontSize: font.body, fontWeight: '600' },
-  leaf: { flex: 1, fontSize: font.body, marginLeft: 20 },
+  dropdownText: { flex: 1, fontSize: font.body + 1, fontWeight: '700' },
+  rows: { paddingVertical: space.xs },
+  heading: { paddingTop: space.sm, paddingBottom: 2, paddingRight: space.md },
+  headingText: { fontSize: font.caption, fontWeight: '700' },
+  row: { minHeight: 40, justifyContent: 'center', paddingRight: space.md, paddingVertical: 6 },
+  subject: { fontSize: font.body, fontWeight: '700' },
+  lesson: { fontSize: font.body },
 });

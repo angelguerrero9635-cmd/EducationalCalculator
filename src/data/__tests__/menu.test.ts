@@ -1,22 +1,19 @@
 import { MODULES } from '@/data/modules';
 
-import { menuPath, menuTree, routePath, type MenuNode } from '../menu';
+import { menuGroupOf, menuGroups, routePath } from '../menu';
 import { skillRoute, topicRoute } from '../selectors';
 
-const leaves = (nodes: MenuNode[]): MenuNode[] =>
-  nodes.flatMap((n) => (n.children ? leaves(n.children) : [n]));
-
 describe('side menu', () => {
-  const tree = menuTree();
-  const all = leaves(tree);
-  const paths = new Set(all.map((n) => routePath(n.route!)));
+  const groups = menuGroups();
+  const rows = groups.flatMap((g) => g.rows);
+  const paths = new Set(rows.flatMap((r) => (r.route ? [routePath(r.route)] : [])));
 
-  it('lists every grade, then higher education', () => {
-    expect(tree.map((n) => n.label)).toEqual([
+  it('has a dropdown for each grade, then each college division', () => {
+    expect(groups.slice(0, 13).map((g) => g.label)).toEqual([
       'Kindergarten',
       ...['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => `Grade ${g}`),
-      'Higher Education',
     ]);
+    expect(groups[13]!.section).toBe('Higher Education');
   });
 
   it('reaches every lesson page, main pages and problem types alike', () => {
@@ -28,26 +25,24 @@ describe('side menu', () => {
     }
   });
 
-  it('has unique keys and a page at every leaf', () => {
-    const keys: string[] = [];
-    const walk = (nodes: MenuNode[]) =>
-      nodes.forEach((n) => {
-        keys.push(n.key);
-        if (n.children) walk(n.children);
-        else expect(n.route).toBeDefined();
-      });
-    walk(tree);
+  it('indents a grade: subject, strand, skill, then its problem types', () => {
+    const grade3 = groups.find((g) => g.key === 'grade:3')!.rows;
+    const at = (key: string) => grade3.find((r) => r.key === key)!;
+    expect(at('grade:3:math').depth).toBe(0);
+    // A strand is a heading: indented, with no page of its own.
+    expect(at('grade:3:math:Measurement & Data').depth).toBe(1);
+    expect(at('grade:3:math:Measurement & Data').route).toBeUndefined();
+    expect(at('m.3.area').depth).toBe(2);
+    expect(at('m.3.area~split').depth).toBe(3);
+  });
+
+  it('has unique keys', () => {
+    const keys = [...groups.map((g) => g.key), ...rows.map((r) => r.key)];
     expect(keys.filter((k, i) => keys.indexOf(k) !== i)).toEqual([]);
   });
 
-  it('opens to the page the student is on', () => {
+  it('opens the dropdown of the page the student is on', () => {
     const here = '/skill/m.3.area~split';
-    expect(menuPath((r) => routePath(r) === here)).toEqual([
-      'grade:3',
-      'grade:3:math',
-      'grade:3:math:Measurement & Data',
-      'm.3.area',
-      'm.3.area~split',
-    ]);
+    expect(menuGroupOf((r) => routePath(r) === here)).toBe('grade:3');
   });
 });
