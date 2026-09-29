@@ -31,6 +31,11 @@ export interface VariableDef {
   /** Show the value in scientific notation (4.7 × 10⁵); boxes take "4.7 × 10^5" and "4.7e5". */
   scientific?: boolean;
   /**
+   * A fraction whose decimal repeats shows its repeating digits and "…" (1/3 → 0.333…,
+   * 1/6 → 0.1666…) when the block is at most 6 digits; boxes take the same.
+   */
+  repeating?: boolean;
+  /**
    * The only units this value may be shown in (rain in mm, cm or in, never km): the unit menu
    * and the unit systems keep to these.
    */

@@ -3,8 +3,15 @@ import type { Values, VariableDef } from './types';
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
 export function formatNumber(
   x: number,
-  variable?: Pick<VariableDef, 'integer' | 'digits' | 'fraction' | 'pi' | 'scientific'>,
+  variable?: Pick<
+    VariableDef,
+    'integer' | 'digits' | 'fraction' | 'pi' | 'scientific' | 'repeating'
+  >,
 ): string {
+  if (variable?.repeating && !Number.isInteger(x)) {
+    const r = repeatingDecimal(x);
+    if (r) return r;
+  }
   if (variable?.pi && x !== 0) {
     const p = asPiMultiple(x);
     if (p) return p;
@@ -32,6 +39,54 @@ export function formatNumber(
 }
 
 const minus = (s: string) => s.replace(/^-/, '−');
+
+/**
+ * The decimal of a fraction with a denominator up to 999, split where it starts repeating:
+ * 1/6 → { whole: '0', fixed: '1', repeat: '6' }; 3/8 → { …, fixed: '375', repeat: '' }.
+ * Undefined when x is not such a fraction or the block is longer than `longest` digits.
+ */
+export function decimalDigits(
+  x: number,
+  longest = 6,
+): { negative: boolean; whole: string; fixed: string; repeat: string } | undefined {
+  const abs = Math.abs(x);
+  let den = 0;
+  for (let d = 1; d <= 999; d++) {
+    if (Math.abs(abs * d - Math.round(abs * d)) < 1e-9 * Math.max(1, abs * d)) {
+      den = d;
+      break;
+    }
+  }
+  if (den === 0) return undefined;
+  const num = Math.round(abs * den);
+  const whole = Math.floor(num / den);
+  let rem = num % den;
+  const seen = new Map<number, number>();
+  let digits = '';
+  while (rem !== 0 && !seen.has(rem)) {
+    seen.set(rem, digits.length);
+    rem *= 10;
+    digits += String(Math.floor(rem / den));
+    rem %= den;
+    if (digits.length > 999) return undefined;
+  }
+  const start = rem === 0 ? digits.length : seen.get(rem)!;
+  const repeat = digits.slice(start);
+  if (repeat.length > longest) return undefined;
+  return { negative: x < 0, whole: String(whole), fixed: digits.slice(0, start), repeat };
+}
+
+/**
+ * A repeating decimal as a class writes it: the repeating block written out to at least three
+ * digits (twice when longer), then "…": 1/3 → "0.333…", 1/6 → "0.1666…", 1/11 → "0.0909…".
+ * Undefined for a decimal that ends or a block longer than 6 digits.
+ */
+export function repeatingDecimal(x: number): string | undefined {
+  const d = decimalDigits(x);
+  if (!d || d.repeat === '') return undefined;
+  const times = Math.max(2, Math.ceil(3 / d.repeat.length));
+  return `${d.negative ? '−' : ''}${withSeparators(d.whole)}.${d.fixed}${d.repeat.repeat(times)}…`;
+}
 
 const SUPERSCRIPT = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 /** An integer exponent raised: 5 → "⁵", −4 → "⁻⁴". */
@@ -133,6 +188,13 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
           );
     return Number(sci[1]) * 10 ** exp;
   }
+  // A repeating decimal: "0.333…", "0.1666...", "2.0909…" (the last block written twice or more).
+  const rep = /^([-+]?)(\d*)\.(\d+)(?:…|\.\.\.)$/.exec(cleaned);
+  if (rep) {
+    const x = repeatingValue(rep[2] || '0', rep[3]!);
+    if (x === undefined) return 'invalid';
+    return rep[1] === '-' ? -x : x;
+  }
   const frac = /^([-+]?)(?:(\d+)\s+)?(\d+)\/(\d+)$/.exec(cleaned);
   if (frac) {
     const [, sign, whole, num, den] = frac;
@@ -142,6 +204,25 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
   }
   if (!/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(cleaned)) return 'invalid';
   return Number(cleaned);
+}
+
+/**
+ * The value of "whole.digits…" where the digits end in a block written at least twice
+ * (0.1666… = 1/6): the shortest start, then the shortest block. Undefined when nothing repeats.
+ */
+function repeatingValue(whole: string, digits: string): number | undefined {
+  for (let start = 0; start < digits.length; start++) {
+    const tail = digits.slice(start);
+    for (let len = 1; len * 2 <= tail.length; len++) {
+      const block = tail.slice(0, len);
+      if (tail.length % len !== 0 || block.repeat(tail.length / len) !== tail) continue;
+      const fixed = digits.slice(0, start);
+      const f = Number(fixed || '0');
+      const r = Number(block) / (10 ** len - 1);
+      return Number(whole) + (f + r) / 10 ** start;
+    }
+  }
+  return undefined;
 }
 
 /**

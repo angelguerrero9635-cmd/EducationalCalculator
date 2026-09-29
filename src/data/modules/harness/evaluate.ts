@@ -25,7 +25,7 @@ export const primeFactorCount = (n: number) => {
  * A number in step text, with scientific notation as one number: 7.099 × 10¹² as written, or
  * 7.099 * 10**(12) once `evaluate` has turned the symbols into arithmetic.
  */
-export const NUM = String.raw`\(?-?\d+(?:\.\d+)?(?:e[-+]?\d+)?(?: × 10⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+| \* 10\*\* ?\(?-?\d+\)?)?\)?`;
+export const NUM = String.raw`\(?-?\d+(?:\.\d+…?)?(?:e[-+]?\d+)?(?: × 10⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+| \* 10\*\* ?\(?-?\d+\)?)?\)?`;
 export const toNum = (s: string) => {
   const sci = /^\(?(-?[\d.]+) \* 10\*\* ?\(?(-?\d+)\)?\)?$/.exec(s);
   if (sci) return Number(sci[1]) * 10 ** Number(sci[2]);
@@ -300,6 +300,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
 export function evaluate(text: string, clampRoots = false): number | undefined {
   let s = text
+    // A repeating decimal (0.1666…) is its exact value, 1/6.
+    .replace(/\d+\.\d+…/g, (m) => `(${parseNumber(m)})`)
     // A mixed number (2 3/8) is its whole plus its fraction.
     .replace(/(?<![\d./])(\d+) (\d+)\/(\d+)(?![\d.])/g, '($1 + $2/$3)')
     .replace(/−/g, '-')

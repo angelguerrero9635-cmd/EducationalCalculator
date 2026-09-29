@@ -4,11 +4,12 @@
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
 import { diceCount } from '@/components/module/reps/dice';
-import { formatNumber } from '@/engine/format';
+import { decimalDigits, formatNumber } from '@/engine/format';
 import type { Relation, Values } from '@/engine/types';
 
 import { whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
+import { decimalLongDivision } from '../written';
 
 const fmt = (x: number) => formatNumber(x);
 /**
@@ -926,6 +927,65 @@ export const MATH_7_MODULES: ModuleDef[] = [
     example: { a: -3, b: 4, r: -12, d: -0.75 },
     startWith: ['a', 'b'],
     representation: { kind: 'signTable', first: 'a', second: 'b', result: 'r' },
+  },
+  {
+    id: 'm.7.rational-operations~fraction-to-decimal',
+    title: 'Fractions as decimals',
+    use: 'Use this for “Write 3/8 as a decimal” or “Which decimal is closest to 29/40?”',
+    assumptions: [
+      'A fraction is a division: numerator ÷ denominator.',
+      'The decimal ends when a remainder is 0.',
+      'It repeats when a remainder comes back: 1/3 = 0.333…, written with a bar over the 3.',
+    ],
+    variables: [
+      whole('n', 'n', 'Numerator', 0, 99),
+      whole('d', 'd', 'Denominator', 1, 99),
+      {
+        id: 'q',
+        symbol: 'q',
+        name: 'Decimal',
+        min: 0,
+        max: 99,
+        repeating: true,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        // The number line shows up to 24 wholes.
+        id: 'n ≤ 24d',
+        constraint: true,
+        display: '{n} ÷ {d} is at most 24, so the number line can show it',
+        vars: ['n', 'd'],
+        residual: (v: Values) => (v.n! <= 24 * v.d! ? 0 : 1),
+        solve: {},
+      },
+      {
+        ...derive('q = n ÷ d', 'q', ['n', 'd'], '{q} = {n} ÷ {d}', (v) => v.n! / v.d!),
+        check: (v: Values) => `${fmt(v.q! * v.d!)} = ${v.n}`,
+      },
+    ],
+    steps: {
+      'n ≤ 24d': {},
+      'q = n ÷ d': {
+        q: {
+          expr: '{n} ÷ {d}',
+          how: (v: Values) =>
+            (decimalDigits(v.n! / v.d!, 999)?.repeat ?? '') === ''
+              ? 'Divide the numerator by the denominator, adding zeros after the point until the remainder is 0.'
+              : 'Divide the numerator by the denominator. A remainder comes back, so the digits after it repeat.',
+          written: (v: Values) => decimalLongDivision(v.n!, v.d!, 8, true),
+        },
+      },
+    },
+    example: { n: 3, d: 8, q: 0.375 },
+    startWith: ['n', 'd'],
+    representation: {
+      kind: 'fractionLine',
+      numerator: 'n',
+      denominator: 'd',
+      wholes: 1,
+    },
   },
 
   // ── Two-step equations and inequalities (7.EE.4) ──

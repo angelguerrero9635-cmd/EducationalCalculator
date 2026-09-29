@@ -445,3 +445,23 @@ describe('fractions', () => {
     expect(parseNumber('1/0')).toBe('invalid');
   });
 });
+
+describe('repeating decimals', () => {
+  it('writes the repeating block out and ends with …', () => {
+    expect(formatNumber(1 / 3, { repeating: true })).toBe('0.333…');
+    expect(formatNumber(1 / 6, { repeating: true })).toBe('0.1666…');
+    expect(formatNumber(1 / 11, { repeating: true })).toBe('0.0909…');
+    expect(formatNumber(1 / 7, { repeating: true })).toBe('0.142857142857…');
+    expect(formatNumber(-2 / 3, { repeating: true })).toBe('−0.666…');
+    // A decimal that ends, or a block too long to write, is shown as usual.
+    expect(formatNumber(3 / 8, { repeating: true })).toBe('0.375');
+    expect(formatNumber(1 / 17, { repeating: true })).toBe('0.05882');
+  });
+  it('reads a repeating decimal typed in a box as its exact value', () => {
+    expect(parseNumber('0.333…')).toBeCloseTo(1 / 3, 12);
+    expect(parseNumber('0.1666...')).toBeCloseTo(1 / 6, 12);
+    expect(parseNumber('2.0909…')).toBeCloseTo(2 + 1 / 11, 12);
+    expect(parseNumber('−0.142857142857…')).toBeCloseTo(-1 / 7, 12);
+    expect(parseNumber('0.12…')).toBe('invalid');
+  });
+});

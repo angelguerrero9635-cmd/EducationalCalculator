@@ -5,7 +5,7 @@
  * (Grade 4 on). `autoWritten` picks the layout for a plain arithmetic line by grade; a module
  * can set `written` on a step to choose (or with `false`, refuse) one.
  */
-import { formatNumber } from '@/engine/format';
+import { decimalDigits, formatNumber, repeatingDecimal } from '@/engine/format';
 
 /** Numbers in the line above the grid read as elsewhere: "1,000 − 178" (the grid's digits stay plain). */
 const fn = (x: number) => formatNumber(x);
@@ -386,21 +386,35 @@ export function partialQuotients(n: number, d: number): Written | undefined {
  * written after the point until the division ends. Undefined when it would not end within
  * `maxPlaces` decimal places, or the divisor is not a whole number from 2 to 99.
  */
-export function decimalLongDivision(n: number, d: number, maxPlaces = 3): Written | undefined {
+export function decimalLongDivision(
+  n: number,
+  d: number,
+  maxPlaces = 3,
+  repeat = false,
+): Written | undefined {
   if (!Number.isInteger(d) || d < 2 || d > 99 || n <= 0) return undefined;
   const [intText, fracText = ''] = String(n).split('.');
   if (fracText.length > maxPlaces) return undefined;
   const digits = `${intText}${fracText}`.split('').map(Number);
   let fraction = fracText.length;
+  // A whole number over d that repeats (Grade 7): divide until a remainder comes back, one
+  // pass of the repeating block, and say which digits repeat.
+  const cycle = repeat && fracText === '' ? decimalDigits(n / d, 8) : undefined;
+  if (cycle && cycle.repeat !== '') {
+    const places = cycle.fixed.length + cycle.repeat.length;
+    if (places > maxPlaces) return undefined;
+    for (let k = 0; k < places; k++) digits.push(0);
+    fraction = places;
+  }
   // Zeros after the point until the division ends (or the places run out).
   let rem = 0;
   for (const x of digits) rem = (rem * 10 + x) % d;
-  while (rem !== 0 && fraction < maxPlaces) {
+  while (rem !== 0 && fraction < maxPlaces && !(cycle && cycle.repeat !== '')) {
     digits.push(0);
     fraction++;
     rem = (rem * 10) % d;
   }
-  if (rem !== 0) return undefined;
+  if (rem !== 0 && !(cycle && cycle.repeat !== '')) return undefined;
   const ints = intText!.length;
   const point = fraction > 0;
   // Columns: divisor, bracket, then the dividend's digits with the point in its own column.
@@ -452,6 +466,14 @@ export function decimalLongDivision(n: number, d: number, maxPlaces = 3): Writte
     }
     rows.push(bottom);
   });
+  if (cycle && cycle.repeat !== '') {
+    // The remainder is back where the block began: the digits from there repeat forever.
+    rows[rows.length - 1]!.push(
+      ...Array<WrittenCell>(Math.max(0, width - rows[rows.length - 1]!.length)).fill(blank),
+      cell(`Remainder ${fn(rem)} again, so ${cycle.repeat} repeats`, { muted: true, wide: true }),
+    );
+    return { kind: 'grid', rows, width, says: `${fn(n)} ÷ ${fn(d)} = ${repeatingDecimal(n / d)}` };
+  }
   const q = Number((n / d).toFixed(fraction));
   return { kind: 'grid', rows, width, says: `${fn(n)} ÷ ${fn(d)} = ${fn(q)}` };
 }

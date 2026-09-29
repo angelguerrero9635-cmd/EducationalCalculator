@@ -195,6 +195,9 @@ function resultNumber(result: string, exp = false): number {
     const x = Number(mixed[2] ?? 0) + Number(mixed[3]) / Number(mixed[4]);
     return mixed[1] ? -x : x;
   }
+  // A repeating decimal (0.1666…) is its exact value.
+  const rep = /^[-−]?\d[\d,]*\.\d+…/.exec(rhs);
+  if (rep) return Number(parseNumber(rep[0]));
   // Scientific notation (4.7 × 10⁵, −3 × 10⁻⁴) and multiples of π (36π) are one number.
   const sci = /^([-−]?[\d.]+) × 10(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)/.exec(rhs);
   if (sci) {
@@ -369,7 +372,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     if (BAD_TEXT.test(t)) c.f.add('error', `${c.label}step text shows a bad value: "${t}"`, where);
     // Unrounded binary fractions ("13.999999999999998") in anything a student reads. Small
     // values shown to 4 significant figures ("0.0002006 km") have fewer than 10 decimals.
-    const raw = /\d\.\d{10,}/.exec(t);
+    // (a repeating decimal written out, 0.692307692307…, is not one).
+    const raw = /\d\.\d{10,}(?![\d…])/.exec(t);
     if (raw) c.f.add('error', `${c.label}step text shows an unrounded number: "${t}"`, where);
     // Number words agree with their count: "1 ten", "2 tens" (not "1 tens" or "2 ten and").
     const bad = PLURAL.exec(t);
@@ -430,13 +434,14 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     const says = s.written.says;
     const answer = resultNumber(s.result);
     const long = /^(\d+) ÷ (\d+) = (\d+) remainder (\d+)$/.exec(says);
-    const plain = /^(.*) = (\d+(?:\.\d+)?)$/.exec(says);
+    const plain = /^(.*) = (\d+(?:\.\d+…?)?)$/.exec(says);
+    const said = plain ? Number(parseNumber(plain[2]!)) : NaN;
     const x = plain ? evaluate(plain[1]!) : undefined;
     const ok = long
       ? Number(long[3]) * Number(long[2]) + Number(long[4]) === Number(long[1]) &&
         Number(long[4]) < Number(long[2])
-      : x !== undefined && shownClose(x, Number(plain![2]));
-    const ends = Number(long ? long[3] : plain?.[2]);
+      : x !== undefined && shownClose(x, said);
+    const ends = long ? Number(long[3]) : said;
     // "about $17.27": the answer is the work's end rounded to the cent (or under a cent).
     const rounded = / = about \$/.test(s.result)
       ? Math.abs(ends - answer) <= 0.0051
