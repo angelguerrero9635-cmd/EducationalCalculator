@@ -1,0 +1,4370 @@
+{
+ "id": "im-hs",
+ "curriculum": "IM Algebra 1, Geometry, Algebra 2",
+ "publisher": "Illustrative Mathematics",
+ "edition": "2019 (IM Algebra 1, Geometry, Algebra 2, curriculum.illustrativemathematics.org)",
+ "subject": "math",
+ "grades": [
+  "9",
+  "10",
+  "11"
+ ],
+ "content": "full",
+ "license": {
+  "name": "CC BY 4.0",
+  "url": "https://creativecommons.org/licenses/by/4.0/",
+  "attribution": "© 2019 Illustrative Mathematics®. Licensed under the Creative Commons Attribution 4.0 license. The Illustrative Mathematics name and logo are not subject to the Creative Commons license and may not be used without the prior and express written consent of Illustrative Mathematics. Source: https://curriculum.illustrativemathematics.org/HS/index.html"
+ },
+ "sourceUrl": "https://curriculum.illustrativemathematics.org/HS/index.html",
+ "retrieved": "2026-09-29",
+ "notes": "Courses are Algebra 1, Geometry and Algebra 2 (site paths /HS/teachers/1, /2, /3), filed as grades 9, 10, 11. The site groups lessons in each unit under unnumbered section titles, so section \"n\" is null; order is the page order. Lesson \"url\" is the teacher preparation page; \"practiceUrl\" is the public practice page, null where the site has none. Course 4 (Algebra 1 Supports, extra-support lessons that shadow Algebra 1) is not a textbook course and is not included. Skills are the best-matching taxonomy ids; see unit notes.",
+ "books": [
+  {
+   "grade": "9",
+   "course": "Algebra 1",
+   "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/index.html",
+   "units": [
+    {
+     "n": "1",
+     "title": "One-variable Statistics",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/index.html",
+     "skills": [
+      "m.6.center-spread",
+      "m.11.normal-distribution"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Getting to Know You",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Getting to Know You",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/1/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Data Representations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/2/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "A Gallery of Data",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/3/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/3/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Distribution Shapes",
+       "lessons": [
+        {
+         "n": "4",
+         "title": "The Shape of Distributions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/4/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Calculating Measures of Center and Variability",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/5/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/5/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "How to Use Spreadsheets",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Mystery Computations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/6/preparation.html",
+         "skills": [],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Spreadsheet Computations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/7/preparation.html",
+         "skills": [],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Spreadsheet Shortcuts",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/8/preparation.html",
+         "skills": [],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/8/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Manipulating Data",
+       "lessons": [
+        {
+         "n": "9",
+         "title": "Technological Graphing",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/9/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "The Effect of Extremes",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/10/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Comparing and Contrasting Data Distributions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/11/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Standard Deviation",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/12/preparation.html",
+         "skills": [
+          "m.11.normal-distribution",
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "More Standard Deviation",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/13/preparation.html",
+         "skills": [
+          "m.11.normal-distribution",
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Outliers",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/14/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Comparing Data Sets",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/15/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/15/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Analyzing Data",
+       "lessons": [
+        {
+         "n": "16",
+         "title": "Analyzing Data",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/16/preparation.html",
+         "skills": [
+          "m.6.center-spread"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/16/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "No Grade 9 skill covers one-variable statistics (S-ID.A/B). Lessons 1-11 and 14-16 (dot plots, histograms, box plots, center, IQR, MAD, outliers) map to m.6.center-spread; Lessons 12-13 (standard deviation) to m.11.normal-distribution; Lessons 6-8 (using spreadsheets) match no skill: []."
+    },
+    {
+     "n": "2",
+     "title": "Linear Equations, Inequalities, and Systems",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/index.html",
+     "skills": [
+      "m.9.linear-modeling",
+      "m.8.multi-step-equations",
+      "m.8.systems-linear",
+      "m.9.inequality-systems"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Writing and Modeling with Equations",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Planning a Pizza Party",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/1/preparation.html",
+         "skills": [
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Writing Equations to Model Relationships (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/2/preparation.html",
+         "skills": [
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Writing Equations to Model Relationships (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/3/preparation.html",
+         "skills": [
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Equations and Their Solutions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/4/preparation.html",
+         "skills": [
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Equations and Their Graphs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/5/preparation.html",
+         "skills": [
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/5/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Manipulating Equations and Understanding Their Structure",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Equivalent Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/6/preparation.html",
+         "skills": [
+          "m.8.multi-step-equations",
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Explaining Steps for Rewriting Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/7/preparation.html",
+         "skills": [
+          "m.8.multi-step-equations",
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Which Variable to Solve for? (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/8/preparation.html",
+         "skills": [
+          "m.8.multi-step-equations",
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Which Variable to Solve for? (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/9/preparation.html",
+         "skills": [
+          "m.8.multi-step-equations",
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Connecting Equations to Graphs (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/10/preparation.html",
+         "skills": [
+          "m.9.linear-modeling",
+          "m.8.linear-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Connecting Equations to Graphs (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/11/preparation.html",
+         "skills": [
+          "m.9.linear-modeling",
+          "m.8.linear-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/11/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Systems of Linear Equations in Two Variables",
+       "lessons": [
+        {
+         "n": "12",
+         "title": "Writing and Graphing Systems of Linear Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/12/preparation.html",
+         "skills": [
+          "m.8.systems-linear"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Solving Systems by Substitution",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/13/preparation.html",
+         "skills": [
+          "m.8.systems-linear"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Solving Systems by Elimination (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/14/preparation.html",
+         "skills": [
+          "m.8.systems-linear"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Solving Systems by Elimination (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/15/preparation.html",
+         "skills": [
+          "m.8.systems-linear"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Solving Systems by Elimination (Part 3)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/16/preparation.html",
+         "skills": [
+          "m.8.systems-linear"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Systems of Linear Equations and Their Solutions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/17/preparation.html",
+         "skills": [
+          "m.8.systems-linear"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/17/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Linear Inequalities in One Variable",
+       "lessons": [
+        {
+         "n": "18",
+         "title": "Representing Situations with Inequalities",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/18/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/18/practice.html"
+        },
+        {
+         "n": "19",
+         "title": "Solutions to Inequalities in One Variable",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/19/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/19/practice.html"
+        },
+        {
+         "n": "20",
+         "title": "Writing and Solving Inequalities in One Variable",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/20/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/20/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Linear Inequalities in Two Variables",
+       "lessons": [
+        {
+         "n": "21",
+         "title": "Graphing Linear Inequalities in Two Variables (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/21/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/21/practice.html"
+        },
+        {
+         "n": "22",
+         "title": "Graphing Linear Inequalities in Two Variables (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/22/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/22/practice.html"
+        },
+        {
+         "n": "23",
+         "title": "Solving Problems with Inequalities in Two Variables",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/23/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/23/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Systems of Linear Inequalities in Two Variables",
+       "lessons": [
+        {
+         "n": "24",
+         "title": "Solutions to Systems of Linear Inequalities in Two Variables",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/24/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/24/practice.html"
+        },
+        {
+         "n": "25",
+         "title": "Solving Problems with Systems of Linear Inequalities in Two Variables",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/25/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/25/practice.html"
+        },
+        {
+         "n": "26",
+         "title": "Modeling with Systems of Inequalities in Two Variables",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/26/preparation.html",
+         "skills": [
+          "m.9.inequality-systems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/2/26/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 6-9 (equivalent equations, solving for a variable) map to m.8.multi-step-equations; Lessons 12-17 (systems of linear equations) to m.8.systems-linear: no Grade 9 skill covers them."
+    },
+    {
+     "n": "3",
+     "title": "Two-variable Statistics",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/index.html",
+     "skills": [
+      "m.10.conditional-probability",
+      "m.9.regression",
+      "m.9.linear-modeling"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Two-way Tables",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Two-way Tables",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/1/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Relative Frequency Tables",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/2/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Associations in Categorical Data",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/3/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/3/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Scatter Plots",
+       "lessons": [
+        {
+         "n": "4",
+         "title": "Linear Models",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/4/preparation.html",
+         "skills": [
+          "m.9.regression"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Fitting Lines",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/5/preparation.html",
+         "skills": [
+          "m.9.regression"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Residuals",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/6/preparation.html",
+         "skills": [
+          "m.9.regression"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/6/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Correlation Coefficients",
+       "lessons": [
+        {
+         "n": "7",
+         "title": "The Correlation Coefficient",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/7/preparation.html",
+         "skills": [
+          "m.9.regression"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Using the Correlation Coefficient",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/8/preparation.html",
+         "skills": [
+          "m.9.regression"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Causal Relationships",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/9/preparation.html",
+         "skills": [
+          "m.9.regression"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/9/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Estimating Lengths",
+       "lessons": [
+        {
+         "n": "10",
+         "title": "Fossils and Flags",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/10/preparation.html",
+         "skills": [
+          "m.9.regression",
+          "m.9.linear-modeling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/3/10/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 1-3 (two-way tables, relative frequency, association in categorical data) have no Grade 9 skill; mapped to m.10.conditional-probability (two-way tables) as the closest."
+    },
+    {
+     "n": "4",
+     "title": "Functions",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/index.html",
+     "skills": [
+      "m.8.functions-intro",
+      "m.9.absolute-value",
+      "m.11.inverse-functions"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Functions and Their Representations",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Describing and Graphing Situations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/1/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Function Notation",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/2/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Interpreting & Using Function Notation",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/3/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Using Function Notation to Describe Rules (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/4/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Using Function Notation to Describe Rules (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/5/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/5/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Analyzing and Creating Graphs of Functions",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Features of Graphs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/6/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Using Graphs to Find Average Rate of Change",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/7/preparation.html",
+         "skills": [
+          "m.8.functions-intro",
+          "m.8.slope"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Interpreting and Creating Graphs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/8/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Comparing Graphs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/9/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/9/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "A Closer Look at Inputs and Outputs",
+       "lessons": [
+        {
+         "n": "10",
+         "title": "Domain and Range (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/10/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Domain and Range (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/11/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Piecewise Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/12/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Absolute Value Functions (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/13/preparation.html",
+         "skills": [
+          "m.9.absolute-value"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Absolute Value Functions (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/14/preparation.html",
+         "skills": [
+          "m.9.absolute-value"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/14/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Inverse Functions",
+       "lessons": [
+        {
+         "n": "15",
+         "title": "Inverse Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/15/preparation.html",
+         "skills": [
+          "m.11.inverse-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Finding and Interpreting Inverse Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/16/preparation.html",
+         "skills": [
+          "m.11.inverse-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Writing Inverse Functions to Solve Problems",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/17/preparation.html",
+         "skills": [
+          "m.11.inverse-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/17/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting it All Together",
+       "lessons": [
+        {
+         "n": "18",
+         "title": "Using Functions to Model Battery Power",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/18/preparation.html",
+         "skills": [
+          "m.8.functions-intro"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/18/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 1-12 and 18 (function notation, features of graphs, average rate of change, domain and range, piecewise functions) have no Grade 9 skill; mapped to m.8.functions-intro. Lessons 15-17 (inverse functions) to m.11.inverse-functions."
+    },
+    {
+     "n": "5",
+     "title": "Introduction to Exponential Functions",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/index.html",
+     "skills": [
+      "m.9.exponential-functions"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Looking at Growth",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Growing and Growing",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/1/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Patterns of Growth",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/2/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/2/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "A New Kind of Relationship",
+       "lessons": [
+        {
+         "n": "3",
+         "title": "Representing Exponential Growth",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/3/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Understanding Decay",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/4/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Representing Exponential Decay",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/5/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Analyzing Graphs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/6/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Using Negative Exponents",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/7/preparation.html",
+         "skills": [
+          "m.9.exponential-functions",
+          "m.8.exponent-rules"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Exponential Functions",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Exponential Situations as Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/8/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Interpreting Exponential Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/9/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Looking at Rates of Change",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/10/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Modeling Exponential Behavior",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/11/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Reasoning about Exponential Graphs (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/12/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Reasoning about Exponential Graphs (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/13/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/13/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Percent Growth and Decay",
+       "lessons": [
+        {
+         "n": "14",
+         "title": "Recalling Percent Change",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/14/preparation.html",
+         "skills": [
+          "m.9.exponential-functions",
+          "m.7.percent-applications"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Functions Involving Percent Change",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/15/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Compounding Interest",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/16/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Different Compounding Intervals",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/17/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "Expressed in Different Ways",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/18/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/18/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Comparing Linear and Exponential Functions",
+       "lessons": [
+        {
+         "n": "19",
+         "title": "Which One Changes Faster?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/19/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/19/practice.html"
+        },
+        {
+         "n": "20",
+         "title": "Changes over Equal Intervals",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/20/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/20/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting It All Together",
+       "lessons": [
+        {
+         "n": "21",
+         "title": "Predicting Populations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/21/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/5/21/practice.html"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Introduction to Quadratic Functions",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/index.html",
+     "skills": [
+      "m.9.quadratic-functions",
+      "m.9.polynomial-operations",
+      "m.9.factoring"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "A Different Kind of Change",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "A Different Kind of Change",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/1/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "How Does it Change?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/2/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/2/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Quadratic Functions",
+       "lessons": [
+        {
+         "n": "3",
+         "title": "Building Quadratic Functions from Geometric Patterns",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/3/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Comparing Quadratic and Exponential Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/4/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Building Quadratic Functions to Describe Situations (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/5/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Building Quadratic Functions to Describe Situations (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/6/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Building Quadratic Functions to Describe Situations (Part 3)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/7/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Working with Quadratic Expressions",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Equivalent Quadratic Expressions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/8/preparation.html",
+         "skills": [
+          "m.9.polynomial-operations",
+          "m.9.factoring"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Standard Form and Factored Form",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/9/preparation.html",
+         "skills": [
+          "m.9.polynomial-operations",
+          "m.9.factoring"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Graphs of Functions in Standard and Factored Forms",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/10/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/10/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Features of Graphs of Quadratic Functions",
+       "lessons": [
+        {
+         "n": "11",
+         "title": "Graphing from the Factored Form",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/11/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Graphing the Standard Form (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/12/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Graphing the Standard Form (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/13/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Graphs That Represent Situations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/14/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Vertex Form",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/15/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Graphing from the Vertex Form",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/16/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Changing the Vertex",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/17/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/6/17/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 8-9 (equivalent quadratic expressions, standard and factored form) map to m.9.polynomial-operations with m.9.factoring."
+    },
+    {
+     "n": "7",
+     "title": "Quadratic Equations",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/index.html",
+     "skills": [
+      "m.9.quadratic-functions",
+      "m.9.factoring",
+      "m.9.quadratic-formula",
+      "m.9.radicals"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Finding Unknown Inputs",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Finding Unknown Inputs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/1/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "When and Why Do We Write Quadratic Equations?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/2/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/2/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Solving Quadratic Equations",
+       "lessons": [
+        {
+         "n": "3",
+         "title": "Solving Quadratic Equations by Reasoning",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/3/preparation.html",
+         "skills": [
+          "m.9.factoring",
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Solving Quadratic Equations with the Zero Product Property",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/4/preparation.html",
+         "skills": [
+          "m.9.factoring",
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "How Many Solutions?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/5/preparation.html",
+         "skills": [
+          "m.9.factoring",
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Rewriting Quadratic Expressions in Factored Form (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/6/preparation.html",
+         "skills": [
+          "m.9.factoring"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Rewriting Quadratic Expressions in Factored Form (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/7/preparation.html",
+         "skills": [
+          "m.9.factoring"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Rewriting Quadratic Expressions in Factored Form (Part 3)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/8/preparation.html",
+         "skills": [
+          "m.9.factoring"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Solving Quadratic Equations by Using Factored Form",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/9/preparation.html",
+         "skills": [
+          "m.9.factoring"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Rewriting Quadratic Expressions in Factored Form (Part 4)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/10/preparation.html",
+         "skills": [
+          "m.9.factoring"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/10/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Completing the Square",
+       "lessons": [
+        {
+         "n": "11",
+         "title": "What are Perfect Squares?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/11/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Completing the Square (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/12/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Completing the Square (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/13/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Completing the Square (Part 3)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/14/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Quadratic Equations with Irrational Solutions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/15/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/15/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "The Quadratic Formula",
+       "lessons": [
+        {
+         "n": "16",
+         "title": "The Quadratic Formula",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/16/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Applying the Quadratic Formula (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/17/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "Applying the Quadratic Formula (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/18/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/18/practice.html"
+        },
+        {
+         "n": "19",
+         "title": "Deriving the Quadratic Formula",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/19/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/19/practice.html"
+        },
+        {
+         "n": "20",
+         "title": "Rational and Irrational Solutions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/20/preparation.html",
+         "skills": [
+          "m.9.radicals",
+          "m.8.roots-irrationals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/20/practice.html"
+        },
+        {
+         "n": "21",
+         "title": "Sums and Products of Rational and Irrational Numbers",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/21/preparation.html",
+         "skills": [
+          "m.9.radicals",
+          "m.8.roots-irrationals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/21/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Vertex Form Revisited",
+       "lessons": [
+        {
+         "n": "22",
+         "title": "Rewriting Quadratic Expressions in Vertex Form",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/22/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula",
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/22/practice.html"
+        },
+        {
+         "n": "23",
+         "title": "Using Quadratic Expressions in Vertex Form to Solve Problems",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/23/preparation.html",
+         "skills": [
+          "m.9.quadratic-formula",
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/23/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting It All Together",
+       "lessons": [
+        {
+         "n": "24",
+         "title": "Using Quadratic Equations to Model Situations and Solve Problems",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/24/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/1/7/24/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 3-10 (zero product property, factoring) map to m.9.factoring; Lessons 11-19 and 22-23 (completing the square, quadratic formula, vertex form) to m.9.quadratic-formula; Lessons 20-21 (rational and irrational solutions) to m.9.radicals."
+    }
+   ]
+  },
+  {
+   "grade": "10",
+   "course": "Geometry",
+   "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/index.html",
+   "units": [
+    {
+     "n": "1",
+     "title": "Constructions and Rigid Transformations",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/index.html",
+     "skills": [
+      "m.10.constructions",
+      "m.8.transformations",
+      "m.10.congruence",
+      "m.10.proofs"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Constructions",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Build It",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/1/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Constructing Patterns",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/2/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Construction Techniques 1: Perpendicular Bisectors",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/3/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Construction Techniques 2: Equilateral Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/4/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Construction Techniques 3: Perpendicular Lines and Angle Bisectors",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/5/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Construction Techniques 4: Parallel and Perpendicular Lines",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/6/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Construction Techniques 5: Squares",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/7/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Using Technology for Constructions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/8/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Speedy Delivery",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/9/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/9/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Rigid Transformations",
+       "lessons": [
+        {
+         "n": "10",
+         "title": "Rigid Transformations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/10/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Defining Reflections",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/11/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Defining Translations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/12/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Incorporating Rotations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/13/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Defining Rotations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/14/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Symmetry",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/15/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "More Symmetry",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/16/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Working with Rigid Transformations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/17/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "Practicing Point by Point Transformations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/18/preparation.html",
+         "skills": [
+          "m.8.transformations",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/18/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Evidence and Proof",
+       "lessons": [
+        {
+         "n": "19",
+         "title": "Evidence, Angles, and Proof",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/19/preparation.html",
+         "skills": [
+          "m.10.proofs",
+          "m.7.angle-relationships"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/19/practice.html"
+        },
+        {
+         "n": "20",
+         "title": "Transformations, Transversals, and Proof",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/20/preparation.html",
+         "skills": [
+          "m.10.proofs",
+          "m.7.angle-relationships"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/20/practice.html"
+        },
+        {
+         "n": "21",
+         "title": "One Hundred and Eighty",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/21/preparation.html",
+         "skills": [
+          "m.10.proofs",
+          "m.7.angle-relationships"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/21/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Designs",
+       "lessons": [
+        {
+         "n": "22",
+         "title": "Now What Can You Build?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/22/preparation.html",
+         "skills": [
+          "m.10.constructions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/22/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 10-18 (rigid transformations defined precisely, symmetry) have no Grade 10 skill; mapped to m.8.transformations with m.10.congruence."
+    },
+    {
+     "n": "2",
+     "title": "Congruence",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/index.html",
+     "skills": [
+      "m.10.congruence",
+      "m.10.proofs"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Congruent Triangles",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Congruent Parts, Part 1",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/1/preparation.html",
+         "skills": [
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Congruent Parts, Part 2",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/2/preparation.html",
+         "skills": [
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Congruent Triangles, Part 1",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/3/preparation.html",
+         "skills": [
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Congruent Triangles, Part 2",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/4/preparation.html",
+         "skills": [
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Points, Segments, and Zigzags",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/5/preparation.html",
+         "skills": [
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Side-Angle-Side Triangle Congruence",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/6/preparation.html",
+         "skills": [
+          "m.10.congruence",
+          "m.10.proofs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Angle-Side-Angle Triangle Congruence",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/7/preparation.html",
+         "skills": [
+          "m.10.congruence",
+          "m.10.proofs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "The Perpendicular Bisector Theorem",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/8/preparation.html",
+         "skills": [
+          "m.10.congruence",
+          "m.10.proofs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Side-Side-Side Triangle Congruence",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/9/preparation.html",
+         "skills": [
+          "m.10.congruence",
+          "m.10.proofs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Practicing Proofs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/10/preparation.html",
+         "skills": [
+          "m.10.congruence",
+          "m.10.proofs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Side-Side-Angle (Sometimes) Congruence",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/11/preparation.html",
+         "skills": [
+          "m.10.congruence",
+          "m.10.proofs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/11/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Proofs about Quadrilaterals",
+       "lessons": [
+        {
+         "n": "12",
+         "title": "Proofs about Quadrilaterals",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/12/preparation.html",
+         "skills": [
+          "m.10.proofs",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Proofs about Parallelograms",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/13/preparation.html",
+         "skills": [
+          "m.10.proofs",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Bisect It",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/14/preparation.html",
+         "skills": [
+          "m.10.proofs",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/14/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting It All Together",
+       "lessons": [
+        {
+         "n": "15",
+         "title": "Congruence for Quadrilaterals",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/15/preparation.html",
+         "skills": [
+          "m.10.proofs",
+          "m.10.congruence"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/2/15/practice.html"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Similarity",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/index.html",
+     "skills": [
+      "m.10.similarity"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Properties of Dilations",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Scale Drawings",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/1/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Scale of the Solar System",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/2/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Measuring Dilations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/3/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Dilating Lines and Angles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/4/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Splitting Triangle Sides with Dilation, Part 1",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/5/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/5/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Similarity Transformations and Proportional Reasoning",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Connecting Similarity and Transformations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/6/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Reasoning about Similarity with Transformations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/7/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Are They All Similar?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/8/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Conditions for Triangle Similarity",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/9/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Other Conditions for Triangle Similarity",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/10/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Splitting Triangle Sides with Dilation, Part 2",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/11/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Practice With Proportional Relationships",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/12/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/12/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Similarity in Right Triangles",
+       "lessons": [
+        {
+         "n": "13",
+         "title": "Using the Pythagorean Theorem and Similarity",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/13/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.pythagorean"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Proving the Pythagorean Theorem",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/14/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.pythagorean"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Finding All the Unknown Values in Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/15/preparation.html",
+         "skills": [
+          "m.10.similarity",
+          "m.8.pythagorean"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/15/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting It All Together",
+       "lessons": [
+        {
+         "n": "16",
+         "title": "Bank Shot",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/16/preparation.html",
+         "skills": [
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/3/16/practice.html"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Right Triangle Trigonometry",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/index.html",
+     "skills": [
+      "m.10.right-triangle-trig",
+      "m.10.special-right-triangles"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Angles and Steepness",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Angles and Steepness",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/1/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Half a Square",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/2/preparation.html",
+         "skills": [
+          "m.10.special-right-triangles"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Half an Equilateral Triangle",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/3/preparation.html",
+         "skills": [
+          "m.10.special-right-triangles"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Ratios in Right Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/4/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Working with Ratios in Right Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/5/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/5/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Defining Trigonometric Ratios",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Working with Trigonometric Ratios",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/6/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Applying Ratios in Right Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/7/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Sine and Cosine in the Same Right Triangle",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/8/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Using Trigonometric Ratios to Find Angles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/9/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Solving Problems with Trigonometry",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/10/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Approximating Pi",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/11/preparation.html",
+         "skills": [
+          "m.10.right-triangle-trig",
+          "m.7.circles"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/4/11/practice.html"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Solid Geometry",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/index.html",
+     "skills": [
+      "m.10.volume-derivations",
+      "m.10.similarity"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Cross Sections, Scaling, and Area",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Solids of Rotation",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/1/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Slicing Solids",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/2/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Creating Cross Sections by Dilating",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/3/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Scaling and Area",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/4/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Scaling and Unscaling",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/5/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/5/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Scaling Solids",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Scaling Solids",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/6/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "The Root of the Problem",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/7/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Speaking of Scaling",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/8/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.10.similarity"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/8/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Prism and Cylinder Volumes",
+       "lessons": [
+        {
+         "n": "9",
+         "title": "Cylinder Volumes",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/9/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Cross Sections and Volume",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/10/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Prisms Practice",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/11/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/11/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Understanding Pyramid Volumes",
+       "lessons": [
+        {
+         "n": "12",
+         "title": "Prisms and Pyramids",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/12/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Building a Volume Formula for a Pyramid",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/13/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Working with Pyramids",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/14/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Putting All the Solids Together",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/15/preparation.html",
+         "skills": [
+          "m.10.volume-derivations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/15/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting it All Together",
+       "lessons": [
+        {
+         "n": "16",
+         "title": "Surface Area and Volume",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/16/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.8.volume-curved"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Volume and Density",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/17/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.8.volume-curved"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "Volume and Graphing",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/18/preparation.html",
+         "skills": [
+          "m.10.volume-derivations",
+          "m.8.volume-curved"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/5/18/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 1-3 (solids of rotation, cross sections) and 4-8 (scaling area and volume) have no own skill; mapped to m.10.volume-derivations (with m.10.similarity for scaling)."
+    },
+    {
+     "n": "6",
+     "title": "Coordinate Geometry",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/index.html",
+     "skills": [
+      "m.10.coordinate-geometry",
+      "m.12.conics"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Transformations in the Plane",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Rigid Transformations in the Plane",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/1/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Transformations as Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/2/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Types of Transformations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/3/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry",
+          "m.8.transformations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/3/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Distances, Circles, and Parabolas",
+       "lessons": [
+        {
+         "n": "4",
+         "title": "Distances and Circles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/4/preparation.html",
+         "skills": [
+          "m.12.conics",
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Squares and Circles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/5/preparation.html",
+         "skills": [
+          "m.12.conics",
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Completing the Square",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/6/preparation.html",
+         "skills": [
+          "m.12.conics",
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Distances and Parabolas",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/7/preparation.html",
+         "skills": [
+          "m.12.conics",
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Equations and Graphs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/8/preparation.html",
+         "skills": [
+          "m.12.conics",
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/8/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Proving Geometric Theorems Algebraically",
+       "lessons": [
+        {
+         "n": "9",
+         "title": "Equations of Lines",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/9/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Parallel Lines in the Plane",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/10/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Perpendicular Lines in the Plane",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/11/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "It’s All on the Line",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/12/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Intersection Points",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/13/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Coordinate Proof",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/14/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Weighted Averages",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/15/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Weighted Averages in a Triangle",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/16/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/16/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting it All Together",
+       "lessons": [
+        {
+         "n": "17",
+         "title": "Lines in Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/17/preparation.html",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/6/17/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 4-8 (equations of circles and parabolas from distance, G-GPE.A) map to m.12.conics with m.10.coordinate-geometry; Lessons 1-3 (transformations as functions) to m.10.coordinate-geometry with m.8.transformations."
+    },
+    {
+     "n": "7",
+     "title": "Circles",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/index.html",
+     "skills": [
+      "m.10.circle-theorems",
+      "m.10.arc-sector"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Lines, Angles, and Circles",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Lines, Angles, and Curves",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/1/preparation.html",
+         "skills": [
+          "m.10.circle-theorems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Inscribed Angles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/2/preparation.html",
+         "skills": [
+          "m.10.circle-theorems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Tangent Lines",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/3/preparation.html",
+         "skills": [
+          "m.10.circle-theorems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/3/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Polygons and Circles",
+       "lessons": [
+        {
+         "n": "4",
+         "title": "Quadrilaterals in Circles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/4/preparation.html",
+         "skills": [
+          "m.10.circle-theorems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Triangles in Circles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/5/preparation.html",
+         "skills": [
+          "m.10.circle-theorems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "A Special Point",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/6/preparation.html",
+         "skills": [
+          "m.10.circle-theorems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Circles in Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/7/preparation.html",
+         "skills": [
+          "m.10.circle-theorems"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Measuring Circles",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Arcs and Sectors",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/8/preparation.html",
+         "skills": [
+          "m.10.arc-sector"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Part to Whole",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/9/preparation.html",
+         "skills": [
+          "m.10.arc-sector"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Angles, Arcs, and Radii",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/10/preparation.html",
+         "skills": [
+          "m.10.arc-sector"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "A New Way to Measure Angles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/11/preparation.html",
+         "skills": [
+          "m.10.arc-sector",
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Radian Sense",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/12/preparation.html",
+         "skills": [
+          "m.10.arc-sector",
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Using Radians",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/13/preparation.html",
+         "skills": [
+          "m.10.arc-sector",
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/13/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting It All Together",
+       "lessons": [
+        {
+         "n": "14",
+         "title": "Putting It All Together",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/14/preparation.html",
+         "skills": [
+          "m.10.circle-theorems",
+          "m.10.arc-sector"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/7/14/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 11-13 (radian measure) also list m.11.unit-circle."
+    },
+    {
+     "n": "8",
+     "title": "Conditional Probability",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/index.html",
+     "skills": [
+      "m.10.conditional-probability"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Up to Chance",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Up to Chance",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/1/preparation.html",
+         "skills": [
+          "m.10.conditional-probability",
+          "m.7.probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Playing with Probability",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/2/preparation.html",
+         "skills": [
+          "m.10.conditional-probability",
+          "m.7.probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Sample Spaces",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/3/preparation.html",
+         "skills": [
+          "m.10.conditional-probability",
+          "m.7.probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Tables of Relative Frequencies",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/4/preparation.html",
+         "skills": [
+          "m.10.conditional-probability",
+          "m.7.probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/4/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Combining Events",
+       "lessons": [
+        {
+         "n": "5",
+         "title": "Combining Events",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/5/preparation.html",
+         "skills": [
+          "m.10.conditional-probability",
+          "m.7.probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "The Addition Rule",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/6/preparation.html",
+         "skills": [
+          "m.10.conditional-probability",
+          "m.7.probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/6/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Related Events",
+       "lessons": [
+        {
+         "n": "7",
+         "title": "Related Events",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/7/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Conditional Probability",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/8/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Using Tables for Conditional Probability",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/9/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Using Probability to Determine Whether Events Are Independent",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/10/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/10/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Conditional Probability",
+       "lessons": [
+        {
+         "n": "11",
+         "title": "Probabilities in Games",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/11/preparation.html",
+         "skills": [
+          "m.10.conditional-probability"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/2/8/11/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 1-6 (sample spaces, the addition rule) have no own skill; mapped to m.10.conditional-probability with m.7.probability."
+    }
+   ]
+  },
+  {
+   "grade": "11",
+   "course": "Algebra 2",
+   "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/index.html",
+   "units": [
+    {
+     "n": "1",
+     "title": "Sequences and Functions",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/index.html",
+     "skills": [
+      "m.9.sequences",
+      "m.11.series"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "A Towering Sequence",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "A Towering Sequence",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/1/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/1/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Sequences",
+       "lessons": [
+        {
+         "n": "2",
+         "title": "Introducing Geometric Sequences",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/2/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Different Types of Sequences",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/3/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Using Technology to Work with Sequences",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/4/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Sequences are Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/5/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Representing Sequences",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/6/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Representing More Sequences",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/7/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "What’s the Equation?",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "The nth Term",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/8/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "What’s the Equation?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/9/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Situations and Sequence Types",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/10/preparation.html",
+         "skills": [
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Adding Up",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/11/preparation.html",
+         "skills": [
+          "m.11.series",
+          "m.9.sequences"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/1/11/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lesson 11 (Adding Up, sums of sequences) maps to m.11.series."
+    },
+    {
+     "n": "2",
+     "title": "Polynomials and Rational Functions",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/index.html",
+     "skills": [
+      "m.11.polynomial-functions",
+      "m.11.rational-functions",
+      "m.11.series"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "What Is a Polynomial?",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Let’s Make a Box",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/1/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Funding the Future",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/2/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Introducing Polynomials",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/3/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Combining Polynomials",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/4/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions",
+          "m.9.polynomial-operations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/4/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Working with Polynomials",
+       "lessons": [
+        {
+         "n": "5",
+         "title": "Connecting Factors and Zeros",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/5/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Different Forms",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/6/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Using Factors and Zeros",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/7/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "End Behavior (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/8/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "End Behavior (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/9/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Multiplicity",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/10/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Finding Intersections",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/11/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Polynomial Division (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/12/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Polynomial Division (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/13/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "What Do You Know About Polynomials?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/14/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "The Remainder Theorem",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/15/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/15/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Rational Functions",
+       "lessons": [
+        {
+         "n": "16",
+         "title": "Minimizing Surface Area",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/16/preparation.html",
+         "skills": [
+          "m.11.rational-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Graphs of Rational Functions (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/17/preparation.html",
+         "skills": [
+          "m.11.rational-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "Graphs of Rational Functions (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/18/preparation.html",
+         "skills": [
+          "m.11.rational-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/18/practice.html"
+        },
+        {
+         "n": "19",
+         "title": "End Behavior of Rational Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/19/preparation.html",
+         "skills": [
+          "m.11.rational-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/19/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Rational Equations",
+       "lessons": [
+        {
+         "n": "20",
+         "title": "Rational Equations (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/20/preparation.html",
+         "skills": [
+          "m.11.rational-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/20/practice.html"
+        },
+        {
+         "n": "21",
+         "title": "Rational Equations (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/21/preparation.html",
+         "skills": [
+          "m.11.rational-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/21/practice.html"
+        },
+        {
+         "n": "22",
+         "title": "Solving Rational Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/22/preparation.html",
+         "skills": [
+          "m.11.rational-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/22/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Polynomial Identities",
+       "lessons": [
+        {
+         "n": "23",
+         "title": "Polynomial Identities (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/23/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions",
+          "m.9.polynomial-operations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/23/practice.html"
+        },
+        {
+         "n": "24",
+         "title": "Polynomial Identities (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/24/preparation.html",
+         "skills": [
+          "m.11.polynomial-functions",
+          "m.9.polynomial-operations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/24/practice.html"
+        },
+        {
+         "n": "25",
+         "title": "Summing Up",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/25/preparation.html",
+         "skills": [
+          "m.11.series"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/25/practice.html"
+        },
+        {
+         "n": "26",
+         "title": "Using the Sum",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/26/preparation.html",
+         "skills": [
+          "m.11.series"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/2/26/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 25-26 (sum of a finite geometric series) map to m.11.series; Lessons 23-24 (polynomial identities) to m.11.polynomial-functions with m.9.polynomial-operations."
+    },
+    {
+     "n": "3",
+     "title": "Complex Numbers and Rational Exponents",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/index.html",
+     "skills": [
+      "m.9.radicals",
+      "m.11.complex-numbers"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Exponent Properties",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Properties of Exponents",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/1/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Square Roots and Cube Roots",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/2/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Exponents That Are Unit Fractions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/3/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Positive Rational Exponents",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/4/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Negative Rational Exponents",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/5/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/5/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Solving Equations with Square and Cube Roots",
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Squares and Square Roots",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/6/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Inequivalent Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/7/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/7/practice.html"
+        },
+        {
+         "n": "8",
+         "title": "Cubes and Cube Roots",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/8/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Solving Radical Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/9/preparation.html",
+         "skills": [
+          "m.9.radicals"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/9/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "A New Kind of Number",
+       "lessons": [
+        {
+         "n": "10",
+         "title": "A New Kind of Number",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/10/preparation.html",
+         "skills": [
+          "m.11.complex-numbers"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Introducing the Number i",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/11/preparation.html",
+         "skills": [
+          "m.11.complex-numbers"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Arithmetic with Complex Numbers",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/12/preparation.html",
+         "skills": [
+          "m.11.complex-numbers"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Multiplying Complex Numbers",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/13/preparation.html",
+         "skills": [
+          "m.11.complex-numbers"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "More Arithmetic with Complex Numbers",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/14/preparation.html",
+         "skills": [
+          "m.11.complex-numbers"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Working Backwards",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/15/preparation.html",
+         "skills": [
+          "m.11.complex-numbers"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/15/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Solving Quadratics with Complex Numbers",
+       "lessons": [
+        {
+         "n": "16",
+         "title": "Solving Quadratics",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/16/preparation.html",
+         "skills": [
+          "m.11.complex-numbers",
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Completing the Square and Complex Solutions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/17/preparation.html",
+         "skills": [
+          "m.11.complex-numbers",
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "The Quadratic Formula and Complex Solutions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/18/preparation.html",
+         "skills": [
+          "m.11.complex-numbers",
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/18/practice.html"
+        },
+        {
+         "n": "19",
+         "title": "Real and Non-Real Solutions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/19/preparation.html",
+         "skills": [
+          "m.11.complex-numbers",
+          "m.9.quadratic-formula"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/3/19/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 1-9 (rational exponents, square and cube roots, radical equations) map to m.9.radicals: no Grade 11 skill covers them."
+    },
+    {
+     "n": "4",
+     "title": "Exponential Functions and Equations",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/index.html",
+     "skills": [
+      "m.9.exponential-functions",
+      "m.11.logarithms",
+      "m.11.exp-log-equations"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Growing and Shrinking",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Growing and Shrinking",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/1/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Representations of Growth and Decay",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/2/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/2/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Understanding Non-Integer Inputs",
+       "lessons": [
+        {
+         "n": "3",
+         "title": "Understanding Rational Inputs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/3/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Representing Functions at Rational Inputs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/4/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Changes Over Rational Intervals",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/5/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Writing Equations for Exponential Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/6/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Interpreting and Using Exponential Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/7/preparation.html",
+         "skills": [
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Missing Exponents",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Unknown Exponents",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/8/preparation.html",
+         "skills": [
+          "m.11.logarithms"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "What is a Logarithm?",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/9/preparation.html",
+         "skills": [
+          "m.11.logarithms"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Interpreting and Writing Logarithmic Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/10/preparation.html",
+         "skills": [
+          "m.11.logarithms"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Evaluating Logarithmic Expressions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/11/preparation.html",
+         "skills": [
+          "m.11.logarithms"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/11/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "The Constant e",
+       "lessons": [
+        {
+         "n": "12",
+         "title": "The Number e",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/12/preparation.html",
+         "skills": [
+          "m.11.exp-log-equations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/12/practice.html"
+        },
+        {
+         "n": "13",
+         "title": "Exponential Functions with Base e",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/13/preparation.html",
+         "skills": [
+          "m.11.exp-log-equations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Solving Exponential Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/14/preparation.html",
+         "skills": [
+          "m.11.exp-log-equations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/14/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Logarithmic Functions and Graphs",
+       "lessons": [
+        {
+         "n": "15",
+         "title": "Using Graphs and Logarithms to Solve Problems (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/15/preparation.html",
+         "skills": [
+          "m.11.exp-log-equations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Using Graphs and Logarithms to Solve Problems (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/16/preparation.html",
+         "skills": [
+          "m.11.exp-log-equations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Logarithmic Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/17/preparation.html",
+         "skills": [
+          "m.11.logarithms",
+          "m.11.exp-log-equations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "Applications of Logarithmic Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/18/preparation.html",
+         "skills": [
+          "m.11.logarithms",
+          "m.11.exp-log-equations"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/4/18/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 1-7 (exponential functions at rational inputs, writing exponential equations) map to m.9.exponential-functions: no Grade 11 skill covers them."
+    },
+    {
+     "n": "5",
+     "title": "Transformations of Functions",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/index.html",
+     "skills": [
+      "m.9.quadratic-functions",
+      "m.11.inverse-functions",
+      "m.9.regression"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Translations, Reflections, and Symmetry",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Matching up to Data",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/1/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Moving Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/2/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "More Movement",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/3/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "Reflecting Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/4/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Some Functions Have Symmetry",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/5/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Symmetry in Equations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/6/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Expressing Transformations of Functions Algebraically",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/7/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Scaling Outputs and Inputs",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Scaling the Outputs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/8/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Scaling the Inputs",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/9/preparation.html",
+         "skills": [
+          "m.9.quadratic-functions",
+          "m.9.absolute-value",
+          "m.9.exponential-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/9/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting It All Together",
+       "lessons": [
+        {
+         "n": "10",
+         "title": "Combining Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/10/preparation.html",
+         "skills": [
+          "m.11.inverse-functions"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Making a Model for Data",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/11/preparation.html",
+         "skills": [
+          "m.9.regression"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/11/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "No skill covers transformations of functions (translations, reflections, scaling, even and odd functions, F-BF.B.3). Lessons 1-9 are mapped loosely to m.9.quadratic-functions with m.9.absolute-value and m.9.exponential-functions (the function families the lessons transform); Lesson 10 (combining functions) to m.11.inverse-functions; Lesson 11 (a model for data) to m.9.regression."
+    },
+    {
+     "n": "6",
+     "title": "Trigonometric Functions",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/index.html",
+     "skills": [
+      "m.11.unit-circle",
+      "m.11.pythagorean-identities",
+      "m.11.trig-graphs"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "The Unit Circle",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Moving in Circles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/1/preparation.html",
+         "skills": [
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Revisiting Right Triangles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/2/preparation.html",
+         "skills": [
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "The Unit Circle (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/3/preparation.html",
+         "skills": [
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/3/practice.html"
+        },
+        {
+         "n": "4",
+         "title": "The Unit Circle (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/4/preparation.html",
+         "skills": [
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "The Pythagorean Identity (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/5/preparation.html",
+         "skills": [
+          "m.11.pythagorean-identities",
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "The Pythagorean Identity (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/6/preparation.html",
+         "skills": [
+          "m.11.pythagorean-identities",
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Finding Unknown Coordinates on a Circle",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/7/preparation.html",
+         "skills": [
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Periodic Functions",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Rising and Falling",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/8/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Introduction to Trigonometric Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/9/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Beyond 2π",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/10/preparation.html",
+         "skills": [
+          "m.11.trig-graphs",
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Extending the Domain of Trigonometric Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/11/preparation.html",
+         "skills": [
+          "m.11.trig-graphs",
+          "m.11.unit-circle"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Tangent",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/12/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/12/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Trigonometry Transformations",
+       "lessons": [
+        {
+         "n": "13",
+         "title": "Amplitude and Midline",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/13/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Transforming Trigonometric Functions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/14/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Features of Trigonometric Graphs (Part 1)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/15/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Features of Trigonometric Graphs (Part 2)",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/16/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/16/practice.html"
+        },
+        {
+         "n": "17",
+         "title": "Comparing Transformations",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/17/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/17/practice.html"
+        },
+        {
+         "n": "18",
+         "title": "Modeling Circular Motion",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/18/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/18/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Putting It All Together",
+       "lessons": [
+        {
+         "n": "19",
+         "title": "Beyond Circles",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/19/preparation.html",
+         "skills": [
+          "m.11.trig-graphs"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/6/19/practice.html"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Statistical Inferences",
+     "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/index.html",
+     "skills": [
+      "m.7.sampling",
+      "m.11.normal-distribution",
+      "m.12.hypothesis-testing"
+     ],
+     "sections": [
+      {
+       "n": null,
+       "title": "Study Types",
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Being Skeptical",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/1/preparation.html",
+         "skills": [
+          "m.7.sampling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/1/practice.html"
+        },
+        {
+         "n": "2",
+         "title": "Study Types",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/2/preparation.html",
+         "skills": [
+          "m.7.sampling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/2/practice.html"
+        },
+        {
+         "n": "3",
+         "title": "Randomness in Groups",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/3/preparation.html",
+         "skills": [
+          "m.7.sampling"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/3/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Distributions",
+       "lessons": [
+        {
+         "n": "4",
+         "title": "Describing Distributions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/4/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/4/practice.html"
+        },
+        {
+         "n": "5",
+         "title": "Normal Distributions",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/5/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/5/practice.html"
+        },
+        {
+         "n": "6",
+         "title": "Areas in Histograms",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/6/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/6/practice.html"
+        },
+        {
+         "n": "7",
+         "title": "Areas under a Normal Curve",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/7/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/7/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Not All Samples Are the Same",
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Not Always Ideal",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/8/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/8/practice.html"
+        },
+        {
+         "n": "9",
+         "title": "Variability in Samples",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/9/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/9/practice.html"
+        },
+        {
+         "n": "10",
+         "title": "Estimating Proportions from Samples",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/10/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/10/practice.html"
+        },
+        {
+         "n": "11",
+         "title": "Reducing Margin of Error",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/11/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/11/practice.html"
+        },
+        {
+         "n": "12",
+         "title": "Estimating a Population Mean",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/12/preparation.html",
+         "skills": [
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/12/practice.html"
+        }
+       ]
+      },
+      {
+       "n": null,
+       "title": "Analyzing Experimental Data",
+       "lessons": [
+        {
+         "n": "13",
+         "title": "Experimenting",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/13/preparation.html",
+         "skills": [
+          "m.12.hypothesis-testing",
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/13/practice.html"
+        },
+        {
+         "n": "14",
+         "title": "Using Normal Distributions for Experiment Analysis",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/14/preparation.html",
+         "skills": [
+          "m.12.hypothesis-testing",
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/14/practice.html"
+        },
+        {
+         "n": "15",
+         "title": "Questioning Experimenting",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/15/preparation.html",
+         "skills": [
+          "m.12.hypothesis-testing",
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/15/practice.html"
+        },
+        {
+         "n": "16",
+         "title": "Heart Rates",
+         "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/16/preparation.html",
+         "skills": [
+          "m.12.hypothesis-testing",
+          "m.11.normal-distribution"
+         ],
+         "practiceUrl": "https://curriculum.illustrativemathematics.org/HS/teachers/3/7/16/practice.html"
+        }
+       ]
+      }
+     ],
+     "notes": "Lessons 1-3 (study types: surveys, observational studies, experiments; randomness) map to m.7.sampling; Lessons 13-16 (randomized experiments, significance by simulation) to m.12.hypothesis-testing with m.11.normal-distribution."
+    }
+   ]
+  }
+ ]
+}
