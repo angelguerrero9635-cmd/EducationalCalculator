@@ -16,6 +16,7 @@ import type { Physics8Spec } from './typesPhysics8';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
+import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 
@@ -558,6 +559,14 @@ export type Representation =
       copyHeight?: string;
       area?: [string, string];
       shape?: 'rectangle' | 'triangle' | 'L' | 'trapezoid';
+      /**
+       * Grades 9–12 dilation: the copy drawn on the original's grid as its dilation from this
+       * center ([x, y] in squares from the original's bottom left corner, numbers or values), a
+       * ray from the center through each corner and its image; drag the image's corner.
+       */
+      center?: [string | number, string | number];
+      /** Grades 9–12 side-splitter (see `SideSplitter`): `width`, `height` are AB and AC. */
+      splitter?: SideSplitter;
     }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
   | {
@@ -573,9 +582,14 @@ export type Representation =
        * π diameters, with three diameters marked under it) and 'wedges' (the circle cut into
        * `wedges` pieces laid top and bottom in a near-parallelogram π × r long and r tall).
        */
-      views?: ('radius' | 'unroll' | 'wedges')[];
+      views?: ('radius' | 'unroll' | 'wedges' | 'sector' | 'radian')[];
       /** How many wedges (even, 4–24; a number or a value). Default 8. */
       wedges?: number | string;
+      /**
+       * Grades 9–12: a sector by its central angle (`CircleSector`), shown by the view 'sector'
+       * (the default view when this is set); 'radian' wraps radius-long arcs around the circle.
+       */
+      sector?: CircleSector;
     }
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
   | {
@@ -603,6 +617,16 @@ export type Representation =
       volume?: string;
       compare?: boolean;
       extent: number;
+      /**
+       * Grades 9–12: the surface-area net under the solid (a cylinder's rectangle and two
+       * circles, a cone's sector and base, a sphere's four great circles); `slant` is a cone's
+       * slant height and `surface` the total surface area (values, checked).
+       */
+      net?: boolean;
+      slant?: string;
+      surface?: string;
+      /** Grades 9–12 (a cylinder): Cavalieri's two stacks of coins, one straight, one leaning. */
+      cavalieri?: boolean;
     }
   /**
    * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
@@ -902,6 +926,11 @@ export type Representation =
       fixed?: boolean;
       /** A second number to compare, marked on the upper ruler (at its edge when off it). */
       second?: string;
+      /**
+       * Grades 9–12 log mode: the log scale (0 to 1) under the 1–10 ruler reads the mantissa's
+       * log, and `log` (a value, log₁₀ of the number) is worked in the caption: 5 + 0.672.
+       */
+      log?: string;
     }
   /**
    * An equation with the unknown on both sides as a pan balance (Grade 8): `left` and `right`
@@ -1026,6 +1055,11 @@ export type Representation =
       /** Largest |coordinate| drawn (grows to fit). */
       extent: number;
       quadrants: 1 | 4;
+      /** Grades 9–12: midpoint, partition, a polygon and its side slopes (`PlaneGeometry`). */
+      midpoint?: PlaneGeometry['midpoint'];
+      partition?: PlaneGeometry['partition'];
+      polygon?: PlaneGeometry['polygon'];
+      slopes?: boolean;
     }
   /** Grade 8 functions, systems and transformations (specs in `typesGraphs.ts`). */
   | LinearFunctionSpec
@@ -1166,6 +1200,12 @@ export type Representation =
       second?: string;
       gcf?: string;
       lcm?: string;
+      /**
+       * Grades 9–12: simplifying the root of `value`. Under the tree, each pair of equal primes
+       * (each three for a cube root, `index` 3) is ringed and brings one out; the rest stay
+       * under the root: √72 = 6√2. `outside` and `inside` are the 6 and the 2 as values.
+       */
+      root?: { index?: 2 | 3; outside?: string; inside?: string };
     }
   /**
    * Every rectangle with `value` unit squares, one under another (1 × 12, 2 × 6, 3 × 4); the
@@ -1344,7 +1384,8 @@ export type Representation =
    */
   | {
       kind: 'crossSection';
-      solid: 'box' | 'triangularPrism' | 'pyramid';
+      /** Grades 9–12: a cylinder or cone (`length` its radius; cut 'base' or 'side'). */
+      solid: 'box' | 'triangularPrism' | 'pyramid' | 'cylinder' | 'cone';
       length: string;
       width?: string;
       height: string;

@@ -9,6 +9,7 @@ import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
+import { circleSectorVars, planeGeometryVars, scaleCopyHsfVars } from '../typesHsf';
 import { functionGraphVars } from '../typesFunctionGraph';
 import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
@@ -207,6 +208,7 @@ function representationVars(r: Representation): string[] {
         ...(r.trail
           ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
           : []),
+        ...planeGeometryVars(r),
       ];
     case 'boxPlot':
       return [
@@ -250,7 +252,12 @@ function representationVars(r: Representation): string[] {
     case 'shareWholes':
       return [r.wholes, r.people, ...(r.each ? [r.each] : [])];
     case 'factorTree':
-      return [r.value, ...[r.count, r.second, r.gcf, r.lcm].filter((x): x is string => !!x)];
+      return [
+        r.value,
+        ...[r.count, r.second, r.gcf, r.lcm, r.root?.outside, r.root?.inside].filter(
+          (x): x is string => !!x,
+        ),
+      ];
     case 'protractor':
       return [
         r.angle,
@@ -378,13 +385,22 @@ function representationVars(r: Representation): string[] {
         ...(r.product ?? []),
       ];
     case 'circle':
-      return [r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
-        (v): v is string => typeof v === 'string',
-      );
+      return [
+        ...[r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
+          (v): v is string => typeof v === 'string',
+        ),
+        ...circleSectorVars(r.sector),
+      ];
     case 'scaleCopy':
-      return [r.factor, r.width, r.height, r.copyWidth, r.copyHeight, ...(r.area ?? [])].filter(
-        (v): v is string => typeof v === 'string',
-      );
+      return [
+        r.factor,
+        r.width,
+        r.height,
+        r.copyWidth,
+        r.copyHeight,
+        ...(r.area ?? []),
+        ...scaleCopyHsfVars(r),
+      ].filter((v): v is string => typeof v === 'string');
     case 'rightTriangle':
       return [r.a, r.b, r.c];
     case 'plot':
@@ -416,13 +432,21 @@ function representationVars(r: Representation): string[] {
         ...(r.at ? [r.at.x, r.at.y] : []),
       ];
     case 'curvedSolid':
-      return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
+      return [
+        r.radius,
+        ...[r.height, r.volume, r.slant, r.surface].filter((x): x is string => !!x),
+      ];
     case 'rootSquare':
       return [r.area, r.side, ...(r.between ?? [])];
     case 'factorRows':
       return [r.base, r.first, r.second, r.result];
     case 'powerScale':
-      return [r.number, r.mantissa, r.exponent, ...(r.second ? [r.second] : [])];
+      return [
+        r.number,
+        r.mantissa,
+        r.exponent,
+        ...[r.second, r.log].filter((x): x is string => !!x),
+      ];
     case 'equationBalance':
       return [r.x, ...[...r.left, ...r.right].filter((v): v is string => typeof v === 'string')];
     case 'pushes':

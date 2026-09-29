@@ -549,43 +549,126 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "DRAWN. Spec (typesHse.ts VennChances): venn takes chances instead of first/second/list (a union member; the GCF Venn is unchanged): { a, b, both (ids or numbers: P(A), P(B), P(A and B)), names? [A, B], shade? 'and' | 'or' | 'notA' | 'aOnly' | 'neither', exclusive?, result? }. The sample space is a rectangle (1), each region labelled with its own probability (A only, both, B only, neither), the shaded region in the soft accent; mutually exclusive events (exclusive, or P(A and B) = 0) draw apart. Probabilities print as decimals or simple fractions (1/6). The caption works the addition rule, the complement, A only, neither, and with 'and' also P(B | A) = P(A ∩ B) ÷ P(A). The harness checks P(A and B) ≤ P(A), P(B), P(A or B) ≤ 1, exclusive means 0, and result equals the shaded region; demo pages carry the same constraints as relations. Example (m.10.probability-rules): representation: { kind: 'venn', chances: { a: 'a', b: 'b', both: 'ab', names: ['Band', 'Sport'], shade: 'or', result: 's' } }; exclusive: { kind: 'venn', chances: { a: 'a', b: 'b', both: 0, names: [...], shade: 'or', exclusive: true, result: 's' } }.",
   },
-  ask(
-    'H23',
-    'transformation',
-    'Compositions of two moves with the middle image, any reflection line, rotation about any point, symmetry',
-    ['m.10.rigid-motions', 'm.10.congruence'],
-  ),
-  ask(
-    'H24',
-    'scaleCopy',
-    'Dilation from any center with rays, scale factors under 1, the side-splitter (parallel line in a triangle)',
-    ['m.10.similarity'],
-  ),
-  ask(
-    'H25',
-    'coordinatePlane',
-    'Segment with midpoint and a point that partitions it in a ratio; distance as a right triangle; side slopes',
-    ['m.10.coordinate-geometry'],
-  ),
-  ask(
-    'H26',
-    'circle',
-    'Sector shaded by a central angle in degrees or radians, arc length, radius-length arcs around the circle',
-    ['m.10.arc-sector', 'm.11.unit-circle'],
-  ),
-  ask(
-    'H27',
-    'curvedSolid',
-    'Pyramids, cones and spheres with surface area nets (the cone as a sector), and Cavalieri stacks',
-    ['m.10.volume-derivations'],
-    'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it.',
-  ),
-  ask('H28', 'factorTree', 'Pairs of equal factors circled, coming out of the root: √72 = 6√2', [
-    'm.9.radicals',
-  ]),
-  ask('H29', 'powerScale', 'A log mode: the exponent read off the ruler, log₁₀ 470,000 ≈ 5.67', [
-    'm.11.logarithms',
-  ]),
+  {
+    ...ask(
+      'H23',
+      'transformation',
+      'Compositions of two moves with the middle image, any reflection line, rotation about any point, symmetry',
+      ['m.10.rigid-motions', 'm.10.congruence'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-rigid-motions-compose',
+      'g.m10-rigid-motions-glide',
+      'g.m10-rigid-motions-rotate-point',
+      'g.m10-rigid-motions-reflect-diagonal',
+      'g.m10-rigid-motions-symmetry-rectangle',
+      'g.m10-rigid-motions-symmetry-square',
+      'g.m10-rigid-motions-symmetry-isosceles',
+    ],
+    notes:
+      'Drawn (group HF). New optional fields on transformation (typesGraphs.ts, types in typesHsf.ts): then (a second move, the same shapes as the first: { move: "translate", right, up } | { move: "reflect", mirror } | { move: "rotate", angle, center? } | { move: "dilate", factor, center? }), drawn from A′, which turns dashed and grey as the middle image, to A″ in the highlight, each move with its own guides; image2 { x, y } (A″ as values, checked against both moves); symmetry: true (the lines of symmetry dashed and clipped to the grid, and with turns the center, a turn arrow and "order n"; the caption counts both; a turn or flip that lands on the figure labels the image corners further out). Reflection in y = x, y = −x, x = k, y = k and rotation about any center (center: [a, b]) already existed. The first move keeps its handle; the second move has none (its values are typed). Example: { kind: "transformation", figure: [["ax", "ay"], [5, 4], [5, 6]], move: "reflect", mirror: "y-axis", image: { x: "px", y: "py" }, then: { move: "rotate", angle: 90 }, image2: { x: "qx", y: "qy" }, extent: 7 }. Symmetry: { kind: "transformation", figure: [[1, 1], ["r", 1], ["r", "r"], [1, "r"]], move: "rotate", angle: "t", center: ["c", "c"], symmetry: true, quadrants: 1, extent: 6 }. Keep figures off the axes in quadrant 1, where corner labels meet the axis numbers.',
+  },
+  {
+    ...ask(
+      'H24',
+      'scaleCopy',
+      'Dilation from any center with rays, scale factors under 1, the side-splitter (parallel line in a triangle)',
+      ['m.10.similarity'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-similarity-dilation-shrink',
+      'g.m10-similarity-dilation-enlarge',
+      'g.m10-similarity-dilation-inside',
+      'g.m10-similarity-dilation-quarter',
+      'g.m10-similarity-side-splitter',
+      'g.m10-similarity-side-splitter-base',
+    ],
+    notes:
+      'Drawn (group HF). New optional fields on scaleCopy (types.ts; SideSplitter in typesHsf.ts; drawn by ScaleCopyHsf.tsx): center: [x, y] (numbers or values, in squares from the original\'s bottom left corner, inside, outside or on it) draws the dilation on one grid: the center O, a dashed ray from O through each corner out to the farther of the corner and its image, the corners lettered A, B, … and A′, B′, …, the factor on the ray with the most room; factors under 1 (down to 0.25) shrink toward O; drag the image\'s farthest corner along its ray. copyWidth, copyHeight and area work as before. The module needs a grid constraint (the figure, image and center within 30 squares; see dilationFits in galleryHsf.ts). Example: { kind: "scaleCopy", factor: "k", width: "w", height: "h", copyWidth: "W", copyHeight: "H", shape: "triangle", center: [10, 8] }. splitter: { parts?: [AD, DB, AE, EC], base?: [DE, BC] } (value ids) draws the side-splitter instead: triangle ABC with DE ∥ BC (parallel arrows on both), the small triangle ADE shaded; with it width and height are the sides AB and AC and factor is k = AD ÷ AB (0 < k < 1); pieces not passed are worked out from k. With base the triangle is to scale from its three sides (the module needs a constraint that they close); without it the angle at A is 50°, which the problem doesn\'t fix. Drag D along AB. The caption works AD ÷ DB = AE ÷ EC, k = AD ÷ AB and DE = k × BC. Example: { kind: "scaleCopy", factor: "k", width: "ab", height: "ac", splitter: { parts: ["ad", "db", "ae", "ec"] } } with AB = AD + DB, AC = AE + EC, k = AD ÷ AB and AE = k × AC.',
+  },
+  {
+    ...ask(
+      'H25',
+      'coordinatePlane',
+      'Segment with midpoint and a point that partitions it in a ratio; distance as a right triangle; side slopes',
+      ['m.10.coordinate-geometry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-coordinate-geometry-midpoint',
+      'g.m10-coordinate-geometry-partition',
+      'g.m10-coordinate-geometry-distance',
+      'g.m10-coordinate-geometry-parallelogram',
+      'g.m10-coordinate-geometry-rectangle',
+      'g.m10-coordinate-geometry-right-triangle',
+    ],
+    notes:
+      'Drawn (group HF). New optional fields on coordinatePlane (types.ts; PlaneGeometry in typesHsf.ts; drawn by CoordinatePlaneHsf.tsx, math in planeGeo.ts). With second (and usually segment: true): midpoint { x, y } (M\'s coordinates as values, checked) draws M as a diamond with one tick on each equal half and the caption works M = ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2); partition { ratio: [m, n], x?, y? } (numbers or values) cuts AB into m + n equal ticked pieces, draws A to P heavy and P, and works P = (x₁ + m/(m + n) × (x₂ − x₁), …). The two points are then labelled A(…) and B(…). Distance as a right triangle already existed (segment, legs, distance) and combines with midpoint. polygon: [[x, y], …] (3 to 6 corners, numbers or values; x, y is usually its first corner, the one dragged) draws the figure with its corners named A(…), B(…), …; slopes: true labels each side m = 1/2 (undefined for a vertical side) on a chip, arrows on parallel sides (one pair one arrow, the next two) and a square at each right angle; the caption lists the slopes, the parallel pairs and the right angles (with the product −1). Example: { kind: "coordinatePlane", x: "x1", y: "y1", second: { x: "x2", y: "y2" }, segment: true, partition: { ratio: ["m", "n"], x: "px", y: "py" }, extent: 8, quadrants: 4 }; slopes: { kind: "coordinatePlane", x: "ax", y: "ay", polygon: [["ax", "ay"], ["bx", "by"], ["cx", "cy"], ["dx", "dy"]], slopes: true, extent: 6, quadrants: 4 }. A slope relation should fail (residual 1) when the run is 0, as sideSlope in galleryHsf.ts does.',
+  },
+  {
+    ...ask(
+      'H26',
+      'circle',
+      'Sector shaded by a central angle in degrees or radians, arc length, radius-length arcs around the circle',
+      ['m.10.arc-sector', 'm.11.unit-circle'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-arc-sector-degrees',
+      'g.m10-arc-sector-radians',
+      'g.m10-arc-sector-major',
+      'g.m11-unit-circle-radian',
+    ],
+    notes:
+      'Drawn (group HF). New optional field on circle (types.ts; CircleSector in typesHsf.ts; drawn by CircleSector.tsx): sector { angle, unit?: "degrees" (default) | "radians", arc?, area? } (angle a number or value id; arc and area values, checked against s = rθ and A = r²θ ÷ 2). It adds two views: "sector" (the default view when sector is set) shades the sector counterclockwise from the radius pointing right, draws the arc heavy with s on a chip (exact with π when it is a multiple: s = 2π cm), marks the angle (60° or 3π/4), and has handles on the radius\'s end and the arc\'s end; the caption works the angle\'s share of the turn, the radian measure, s and A exactly with π, then ≈. "radian" wraps six radius-long arcs around the circle, numbered, alternating colors, with the 0.28 left over and 1 rad marked at the center; with a sector, its angle is shaded and counted in radius-lengths. Pass views: ["radian", "sector"] for both with buttons. Keep extent small (1) so the circle fills the picture. Example: { kind: "circle", radius: "r", extent: 1, sector: { angle: "t", unit: "degrees", arc: "s", area: "A" } } with s = θ ÷ 360 × 2πr and A = θ ÷ 360 × πr²; a radian angle variable\'s max is 6.28 (below 2π).',
+  },
+  {
+    ...ask(
+      'H27',
+      'curvedSolid',
+      'Pyramids, cones and spheres with surface area nets (the cone as a sector), and Cavalieri stacks',
+      ['m.10.volume-derivations'],
+      'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-volume-derivations-cylinder-net',
+      'g.m10-volume-derivations-cone-net',
+      'g.m10-volume-derivations-sphere-surface',
+      'g.m10-volume-derivations-cavalieri',
+      'g.m10-volume-derivations-cone-section',
+      'g.m10-volume-derivations-cylinder-section',
+      'g.m10-volume-derivations-cone-upright',
+    ],
+    notes:
+      'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it. Drawn (group HF). curvedSolid gets net: true (Net and Solid buttons, the net first; drawn by CurvedSolidHsf.tsx): a cylinder\'s rectangle 2πr by h between its two circles, a cone\'s sector of radius ℓ with its angle 360 × r ÷ ℓ and its base circle, a sphere\'s four great circles (it has no flat net); slant (ℓ, a cone\'s, checked against √(r² + h²)) and surface (checked against the faces) are value ids; the caption works S exactly with π. cavalieri: true (a cylinder) draws two stacks of 12 copper coins of radius r and height h, one leaning, and states Cavalieri\'s principle with V = πr²h. crossSection gets solid: "cylinder" | "cone" (length is the radius; drawn by CrossSectionRound.tsx, math in roundSection.ts): cut "base" (level at at up the height: a circle, the same as the base or shrinking to the tip) or "side" (upright, at from the axis: a cylinder\'s rectangle 2√(r² − d²) by h, a cone\'s triangle through the axis or a curved hyperbolic region off it); the cut is shaded on the clear solid and drawn flat beside it to the same scale with its area; drag the plane. A cube is the existing solid: "box" with equal sides. Pyramids were not added to curvedSolid: the square pyramid\'s net is the existing net kind (solid: "squarePyramid") and its cuts are crossSection\'s pyramid. Examples: { kind: "curvedSolid", shape: "cone", radius: "r", height: "h", slant: "l", surface: "S", net: true, extent: 5 }; { kind: "curvedSolid", shape: "cylinder", radius: "r", height: "h", volume: "V", cavalieri: true, extent: 6 } (with sliders: true); { kind: "crossSection", solid: "cone", length: "r", height: "h", cut: "base", at: "z", area: "A" } with a constraint that the plane is on the solid (at ≤ h, or at ≤ r for a side cut; see onTheSolid in galleryHsf.ts).',
+  },
+  {
+    ...ask(
+      'H28',
+      'factorTree',
+      'Pairs of equal factors circled, coming out of the root: √72 = 6√2',
+      ['m.9.radicals'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m9-radicals-simplify', 'g.m9-radicals-cube-root', 'g.m9-radicals-perfect-square'],
+    notes:
+      'Drawn (group HF). New optional field on factorTree (types.ts; drawn by FactorTreeHsf.tsx, math in rootSplit.ts): root { index?: 2 | 3, outside?, inside? } (value ids). Under the tree\'s foot row of primes each pair of equal primes (each three for index 3) is ringed and arrowed down to the one it brings out; the leftover primes are arrowed into the radical; the line reads 2 × 3 × √2 = 6√2 (∛ for a cube root; a perfect power ends whole, = 24). The caption writes √72 = √(2 × 2 × 2 × 3 × 3), the pairs coming out, and the result, or says the root is already simplest. The harness checks outside^index × inside = value and that inside has no group left. Step text "largest perfect square factor of N" (and cube) is taught to the harness (harness/phrasesHsf.ts). Make a and b derived (worked out, not typed) with a constraint that b has no square factor but 1 (see rootDemo in galleryHsf.ts). Example: { kind: "factorTree", value: "n", root: { index: 2, outside: "a", inside: "b" } } with a = √(largest perfect square factor of n) and n = a² × b.',
+  },
+  {
+    ...ask(
+      'H29',
+      'powerScale',
+      'A log mode: the exponent read off the ruler, log₁₀ 470,000 ≈ 5.67',
+      ['m.11.logarithms'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m11-logarithms-ruler', 'g.m11-logarithms-small'],
+    notes:
+      'Drawn (group HF). New optional field on powerScale (types.ts; drawn by PowerScaleHsf.tsx): log (a value id, log₁₀ of the number, checked to 5e-4). Under the 1–10 ruler a log₁₀ scale from 0 to 1 (a slide rule\'s L scale) reads the mantissa\'s log: the point drops to 0.67 for 4.7. The caption works log₁₀ 470,000 = 5 + log₁₀ 4.7 ≈ 5 + 0.672 = 5.6721, negative exponents with a true minus (−3 + 0.477). Make the log derived and pass fixed: true (the log is worked out, not dragged). Step text "log₁₀({N})" is taught to the harness (harness/phrasesHsf.ts). Example: { kind: "powerScale", number: "N", mantissa: "a", exponent: "n", log: "L", fixed: true } with N = a × 10ⁿ, n = exponent of the power of ten at or below N and L = log₁₀(N).',
+  },
 
   // ── C. Statistics and study design figures ──
   {

@@ -35,6 +35,15 @@ import {
   twoWayIssues,
   vennChanceIssues,
 } from './picturesHse';
+import {
+  circleSectorIssues,
+  curvedSolidHsfIssues,
+  factorRootIssues,
+  roundSectionIssues,
+  planeGeometryIssues,
+  scaleCopyHsfIssues,
+  transformationHsfIssues,
+} from './picturesHsf';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -227,9 +236,15 @@ export function repIssues(
         out.push(`circumference ${C} is not 2π × ${r}`);
       if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
         out.push(`area ${A} is not π × ${r}²`);
+      out.push(...circleSectorIssues(rep, val));
       break;
     }
     case 'scaleCopy': {
+      // Grades 9–12: a dilation from a center, or the side-splitter (picturesHsf.ts).
+      if (rep.center || rep.splitter) {
+        out.push(...scaleCopyHsfIssues(rep, val));
+        break;
+      }
       // Whole squares for the original; both figures side by side fit about 30 squares.
       count(rep.width, 'original width', 12);
       count(rep.height, 'original height', 12);
@@ -820,6 +835,7 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
+      out.push(...planeGeometryIssues(rep, val));
       // Plotting draws its path from 0 across then up, in the first quadrant only.
       if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
       if (rep.plot && rep.second) out.push('plotting places one point, not two');
@@ -997,6 +1013,7 @@ export function repIssues(
     }
     case 'factorTree':
       count(rep.value, 'number');
+      out.push(...factorRootIssues(rep, val));
       break;
     case 'tape': {
       if ('equation' in rep) {
@@ -1363,6 +1380,11 @@ export function repIssues(
       break;
     }
     case 'crossSection': {
+      // Grades 9–12: a cylinder or a cone (picturesHsf.ts).
+      if (rep.solid === 'cylinder' || rep.solid === 'cone') {
+        out.push(...roundSectionIssues(rep, val));
+        break;
+      }
       const [l, w0, h, at, A, V] = [
         rep.length,
         rep.width,
@@ -1673,6 +1695,10 @@ export function repIssues(
         Math.abs(a * 10 ** e - x) > Math.max(1e-9, 5e-4 * x)
       )
         out.push(`${a} × 10^${e} drawn, the number shows ${x}`);
+      // Log mode: the log is the exponent plus the mantissa's log.
+      const lg = rep.log ? val(rep.log) : undefined;
+      if (lg !== undefined && x !== undefined && x > 0 && Math.abs(lg - Math.log10(x)) > 5e-4)
+        out.push(`log ${lg} shown, log₁₀ ${x} is ${Math.log10(x)}`);
       break;
     }
     case 'rootSquare': {
@@ -1752,6 +1778,7 @@ export function repIssues(
       if ((rep.shape === 'sphere') === !!rep.height)
         out.push(`a ${rep.shape} ${rep.height ? 'has no' : 'needs a'} height`);
       if (rep.compare && rep.shape === 'cylinder') out.push('a cylinder is compared with itself');
+      out.push(...curvedSolidHsfIssues(rep, val));
       const [r, h] = [rep.radius, rep.height].map((id) => (id ? val(id) : undefined));
       if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
       if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
@@ -1803,6 +1830,7 @@ export function repIssues(
       };
       if (move.factor !== undefined && move.factor <= 0)
         out.push(`dilation by scale factor ${move.factor}`);
+      out.push(...transformationHsfIssues(rep, val));
       const a = rep.figure[0] && [val(rep.figure[0][0]), val(rep.figure[0][1])];
       const [ix, iy] = rep.image ? [val(rep.image.x), val(rep.image.y)] : [];
       const all = [...Object.values(move), a?.[0], a?.[1], ix, iy];

@@ -22,6 +22,7 @@ import {
   type P3,
 } from './section';
 import { Steppers } from './Steppers';
+import { CrossSectionRound } from './CrossSectionRound';
 
 type Spec = Extract<Representation, { kind: 'crossSection' }>;
 
@@ -38,6 +39,15 @@ const VIEW: P3 = [DEPTH.x, -1, DEPTH.y];
  * it on the base's diagonal. Drag the plane's corner to move it.
  */
 export function CrossSection({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  // Grades 9–12: a cylinder or a cone (CrossSectionRound.tsx).
+  if (spec.solid === 'cylinder' || spec.solid === 'cone')
+    return <CrossSectionRound spec={spec} calc={calc} />;
+  return <CrossSectionFlat spec={spec as FlatSpec} calc={calc} />;
+}
+
+type FlatSpec = Spec & { solid: 'box' | 'triangularPrism' | 'pyramid' };
+
+function CrossSectionFlat({ spec, calc }: { spec: FlatSpec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const ids = usePaintIds('light');

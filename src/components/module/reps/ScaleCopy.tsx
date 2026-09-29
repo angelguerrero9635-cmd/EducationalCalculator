@@ -9,6 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { outline } from './scaleOutline';
+import { ScaleDilation, SideSplitter } from './ScaleCopyHsf';
 
 type Spec = Extract<Representation, { kind: 'scaleCopy' }>;
 
@@ -22,6 +23,13 @@ const BOTTOM = 40;
  * Drag the copy's bottom right corner to change the factor.
  */
 export function ScaleCopy({ spec, calc }: { spec: Spec; calc: Calculator }) {
+  // Grades 9–12: a dilation from a center, or the side-splitter (ScaleCopyHsf.tsx).
+  if (spec.splitter) return <SideSplitter spec={spec} calc={calc} />;
+  if (spec.center) return <ScaleDilation spec={spec} calc={calc} />;
+  return <ScaleCopyGrid spec={spec} calc={calc} />;
+}
+
+function ScaleCopyGrid({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
   const start = useRef(0);
