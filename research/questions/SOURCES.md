@@ -143,11 +143,71 @@ public-domain statement was found in the time available.
 
 ## 4. State released items
 
-None used. The Massachusetts DESE release page
-(<https://www.doe.mass.edu/mcas/release.html>) was checked and states no written reuse grant
-(its robots.txt also disallows `/mcas/question.asp` and sets a 15 s crawl delay). Other
-states were not pursued: by the brief, a state is used only when its page grants reuse in
-writing, and none was confirmed.
+A state is used only where it grants reuse in writing. For K–8 none was confirmed (the MCAS
+release **web page** states no grant). For Grades 9–12 the MCAS release **documents** were
+read and do carry one, so Massachusetts is used for high school; the others were rejected.
+
+### 4a. Massachusetts MCAS, Spring 2026 high school — used
+
+- **Where:** <https://www.doe.mass.edu/mcas/2026/release/> (index linked from
+  <https://www.doe.mass.edu/mcas/release.html>): `g10-math.pdf`, `hs-biology.pdf`,
+  `hs-physics.pdf`. robots.txt was followed: `/mcas/question.asp` and `/mcas/search` were
+  not visited and every request to www.doe.mass.edu waited the 15 s `Crawl-delay`. The 2025
+  and 2024 grade 10 math and the 2025 physics PDFs were also downloaded but not transcribed;
+  `2025/release/hs-biology.pdf` does not exist (404).
+- **Reuse grant** (inside cover of each release document, e.g.
+  <https://www.doe.mass.edu/mcas/2026/release/g10-math.pdf>, page 2):
+
+  > "© 2026 Massachusetts Department of Elementary and Secondary Education. Permission is
+  > hereby granted to copy for non-commercial educational purposes any or all parts of this
+  > document with the exception of English Language Arts passages that are not designated as
+  > in the public domain. Permission to copy all other passages must be obtained from the
+  > copyright holder. Please credit the "Massachusetts Department of Elementary and Secondary
+  > Education.""
+
+  The math, biology and physics documents have no passages and no photo credit lines. This
+  folder is non-commercial, educational reference material, and each record's
+  `license.attribution` carries the credit and the grant. The mass.gov page "Permissions to
+  Reproduce Content or Images" linked from DESE's policies page returned 403 and was not
+  used.
+
+- **What was taken:** 63 items (31 grade 10 math, 14 biology, 18 introductory physics), chosen
+  for m.9–m.12 and s.9/s.11 skills, favouring skills NAEP grade 12 leaves thin (circuits,
+  electromagnetism, momentum, optics, membrane transport, meiosis). Each item was read on the
+  rendered page and replicated as text; the answer is the release's own key table
+  (selected-response and short-answer only). Constructed-response items (math 13, 27, 34) have
+  `answer: null`: DESE posts their scoring guides later. Items that are only K–8 skills
+  (median, rounding, unit rates, systems of linear equations) or whose meaning sits in
+  answer-choice graphs (math 11, 31, 37) were left out.
+- **Pictures:** the PDFs have no alt text, so every `picture.description` is our own short
+  description of the figure; where the answer choices are drawings (biology 2, physics 2, 14, 27) the choice wording is ours too, and the record says so. `standardCode` is the
+  Massachusetts framework code from the key table (`A-REI.B.3`, `HS.LS.3.1`, `HS.PHY.2.9`).
+- **Filing:** as §1a, by the skill's grade; id `MCAS-2026-<G10M|HSBIO|HSPHY>-#<item>`.
+
+### 4b. Rejected (no usable written grant)
+
+- **New York Regents** (<https://www.nysedregents.org/>; no robots.txt, 404): the exam,
+  rating-guide and scoring-key PDFs (checked: June 2026 Algebra I exam and rating guide) and
+  the exam index pages carry no copyright or reuse statement. The site's only terms link is
+  <http://www.nysed.gov/terms-of-use>, which could not be read: TLS to www.nysed.gov fails
+  through this environment's proxy and WebFetch got 503 twice, so no grant could be quoted.
+  Rejected; worth rechecking from another network.
+- **Texas STAAR** (tea.texas.gov): the site footer reads "© Copyright 2026 Texas Education
+  Agency. All Rights Reserved."; no grant found (as the K–8 group found).
+- **North Carolina** (<https://www.nc.gov/disclaimer-terms-use>, linked from dpi.nc.gov): "the
+  State of North Carolina grants permission to copy and distribute non-image files,
+  documents, and information for non-commercial use, provided they are copied and
+  distributed without alteration and appropriately cite to the source. … Use of any photos
+  or images appearing on any State of North Carolina website is strictly prohibited."
+  Replicating single questions as text is an alteration, and the released items live in an
+  online tutorial app on data.ncsu.edu. Rejected.
+- **Louisiana LEAP 2025** (louisianabelieves.com practice-test library; doe.louisiana.gov has
+  no robots.txt): the Algebra I practice-test answer key PDF and the library page state no
+  reuse terms. Rejected.
+- **Tennessee TCAP** (tn.gov; robots.txt allows all): the Web Policies pages (privacy,
+  linking, DMCA, …) contain no reuse grant for content. Rejected.
+- **Virginia** (www.doe.virginia.gov) and **Florida** (www.fldoe.org) answered 403 to
+  robots.txt, so nothing further was fetched.
 
 ## Off limits, not visited
 
