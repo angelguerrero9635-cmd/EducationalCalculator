@@ -882,6 +882,8 @@ export type Representation =
       exponent: string;
       /** No handles: the front and the power are worked out (a product), not typed. */
       fixed?: boolean;
+      /** A second number to compare, marked on the upper ruler (at its edge when off it). */
+      second?: string;
     }
   /**
    * An equation with the unknown on both sides as a pan balance (Grade 8): `left` and `right`
@@ -1343,19 +1345,21 @@ export type Representation =
       chance?: string;
     }
   /**
-   * A tree diagram for two stages with `first` and `second` equally likely outcomes (1 to 6
-   * each): a branch per outcome marked 1/n, the leaves listing every pair (the first 24).
-   * `names` name each stage's outcomes (A, B, … and 1, 2, … by default), `stages` the
-   * stages; `path` (0-based) is highlighted and `chance` is its probability, 1 ÷ `total`.
+   * A tree diagram for two stages (or three, with `third`) with `first`, `second` and `third`
+   * equally likely outcomes (1 to 6 each): a branch per outcome marked 1/n, the leaves listing
+   * every pair or triple (the first 24). `names` name each stage's outcomes (A, B, …; 1, 2, …;
+   * X, Y, … by default), `stages` the stages; `path` (0-based, one index a stage) is
+   * highlighted and `chance` is its probability, 1 ÷ `total`.
    */
   | {
       kind: 'treeDiagram';
       first: string;
       second: string;
+      third?: string;
       total?: string;
-      names?: [string[], string[]];
-      stages?: [string, string];
-      path?: [number, number];
+      names?: string[][];
+      stages?: string[];
+      path?: number[];
       chance?: string;
     }
   /**

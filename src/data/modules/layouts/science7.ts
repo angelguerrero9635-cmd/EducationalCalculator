@@ -647,7 +647,7 @@ export const SCIENCE_7_LAYOUTS: LayoutDef[] = [
       {
         label: 'Decomposition',
         lines: [
-          'Decomposers (fungi, bacteria) break dead matter down and release carbon dioxide and nutrients.',
+          'Decomposers (fungi, bacteria) break dead matter down: it decays, releasing carbon dioxide and nutrients.',
         ],
         carbon: { process: 'decomposition' },
       },

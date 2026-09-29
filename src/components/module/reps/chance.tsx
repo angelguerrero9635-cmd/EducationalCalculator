@@ -15,7 +15,9 @@ export function chanceText(k: number, n: number, value: string, x: number): stri
   const g = gcd(k, n) || 1;
   const lowest = g > 1 && k > 0 && n > 0 ? ` = ${k / g}/${n / g}` : '';
   const exact = Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-6;
-  return `${k}/${n}${lowest} ${exact ? '=' : '≈'} ${value}`;
+  // A value already shown as that fraction (1/8 = 1/8) is not repeated.
+  const same = [`${k}/${n}`, `${k / g}/${n / g}`].includes(value);
+  return `${k}/${n}${lowest}${same ? '' : ` ${exact ? '=' : '≈'} ${value}`}`;
 }
 const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
 

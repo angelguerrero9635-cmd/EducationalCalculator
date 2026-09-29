@@ -102,6 +102,17 @@ describe('toLatex', () => {
     ]);
   });
 
+  it('bars the block of a repeating decimal, and only of one', () => {
+    expect(both('1 ÷ 6 = 0.1666…', 'middle')).toBe('1 ÷ 6 = $\\rep{0.1666…}$');
+    expect(parseMath('\\rep{0.142857142857…}')).toEqual([
+      { t: 'rep', lead: '0.', block: '142857', src: '0.142857142857…' },
+    ]);
+    expect(parseMath('\\rep{2.0909…}')).toEqual([
+      { t: 'rep', lead: '2.', block: '09', src: '2.0909…' },
+    ]);
+    expect(toLatex('π ≈ 3.14159…', 'middle')).toBeUndefined();
+  });
+
   it('parses the commands it draws, and refuses others', () => {
     expect(splitLine('$\\frac{1}{2}$ of 8').map((p) => p.t)).toEqual(['math', 'text']);
     expect(parseMath('3 \\times 4 \\le 12')).toEqual([{ t: 'text', s: '3 × 4 ≤ 12' }]);

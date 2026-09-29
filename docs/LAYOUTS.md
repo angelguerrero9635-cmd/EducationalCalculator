@@ -80,5 +80,5 @@ side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`
 animals, adaptations and classroom, kitchen and drink things drawn in their materials in
 `layouts/cardIcons.tsx`, shown on `/gallery` as `g.icons-*`), `fractionBars`, `ray` (segment,
 ray, line or point), `net` (six squares), `inequality` (an open or closed circle and an
-arrow), `cell` (a small cell) and `rock` (a texture); a `polygon` can mark its `base`, a
+arrow), `scatter` (dots that rise, fall, scatter or curve), `cell` (a small cell) and `rock` (a texture); a `polygon` can mark its `base`, a
 `dashed` height and the base `extend`ed. Every figure and card figure has a page at `/gallery`.

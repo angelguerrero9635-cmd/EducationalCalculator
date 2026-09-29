@@ -47,11 +47,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `sample`           | a population of dots, a random sample ringed; draw a new sample       | Grade 7 sampling, inferences        |
 | `spinner`          | a spinner in equal colored sectors, the event outlined; Spin          | Grade 7 probability                 |
 | `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap    | Grade 7 compound probability        |
-| `treeDiagram`      | two stages branching left to right, each branch 1/n; a path lit       | Grade 7 compound probability        |
+| `treeDiagram`      | 2 or 3 stages branching left to right, each branch 1/n; a path lit    | Grade 7 compound probability        |
 | `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random       | Grade 7 probability                 |
 | `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line      | Grade 8 square roots, irrationals   |
 | `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked     | Grade 8 exponent rules              |
-| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10 (4.7 × 10⁵)        | Grade 8 scientific notation         |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10; `second` compares | Grade 8 scientific notation         |
 | `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x  | Grade 8 equations, both sides       |
 | `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag    | Grade 8 linear functions            |
 | `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)     | Grade 8 systems                     |

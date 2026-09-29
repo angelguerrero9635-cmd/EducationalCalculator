@@ -2968,4 +2968,70 @@ export const MATH_7_MODULES: ModuleDef[] = [
       chance: 'P',
     },
   },
+  {
+    id: 'm.7.probability~three-stages',
+    title: 'Tree diagram with three stages',
+    use: 'Use this for “A coin is flipped three times. What is the chance of heads all three times?”',
+    assumptions: [
+      'Each stage has equally likely outcomes, numbered 1, 2, …: a coin has 2, heads (1) and tails (2); a spinner with 3 sectors has 3.',
+      'Every path through the three stages is one outcome: multiply the three counts.',
+      'The chance of one path is 1 out of all of them: the three branch chances multiplied.',
+    ],
+    variables: [
+      whole('a', 'a', 'First-stage outcomes', 2, 4),
+      whole('b', 'b', 'Second-stage outcomes', 2, 4),
+      whole('c', 'c', 'Third-stage outcomes', 2, 4),
+      { ...whole('n', 'n', 'Outcomes in all', 1, 64), derived: true },
+      {
+        id: 'P',
+        symbol: 'P',
+        name: 'Chance of one outcome',
+        min: 0,
+        max: 1,
+        fraction: 64,
+        derived: true,
+      },
+    ],
+    relations: [
+      derive(
+        'n = a × b × c',
+        'n',
+        ['a', 'b', 'c'],
+        '{n} = {a} × {b} × {c}',
+        (v) => v.a! * v.b! * v.c!,
+      ),
+      derive('P = 1 ÷ n', 'P', ['n'], '{P} = 1 ÷ {n}', (v) => 1 / v.n!),
+    ],
+    steps: {
+      'n = a × b × c': {
+        n: {
+          expr: '{a} × {b} × {c}',
+          how: 'Each branch splits into every outcome of the next stage, twice over.',
+        },
+      },
+      'P = 1 ÷ n': {
+        P: {
+          expr: '1 ÷ {n}',
+          how: 'One path, such as heads three times, is one of the equally likely outcomes.',
+        },
+      },
+    },
+    example: { a: 2, b: 2, c: 2, n: 8, P: 1 / 8 },
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'treeDiagram',
+      first: 'a',
+      second: 'b',
+      third: 'c',
+      total: 'n',
+      names: [
+        ['1', '2', '3', '4'],
+        ['1', '2', '3', '4'],
+        ['1', '2', '3', '4'],
+      ],
+      stages: ['First', 'Second', 'Third'],
+      path: [0, 0, 0],
+      chance: 'P',
+    },
+  },
 ];

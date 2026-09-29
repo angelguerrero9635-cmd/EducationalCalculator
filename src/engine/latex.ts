@@ -7,8 +7,11 @@
  * Commands: `\frac{a}{b}` (a/b), `\tfrac{a}{b}` (a/b inside a sentence, drawn smaller),
  * `\half` (½), `\divfrac{a}{b}` (a ÷ b drawn stacked), `{b}^{e}` (a power the text writes b²),
  * `\pow{b}{e}` (a power the text writes b^e), `\sqrt{x}`, `\mathit{x}` (a letter that stands for
- * a number) and symbol commands (\times, \div, \le, …).
+ * a number), `\rep{0.1666…}` (a repeating decimal, a bar over its block) and symbol commands
+ * (\times, \div, \le, …).
  */
+
+import { repeatingParts } from './format';
 
 /**
  * Which lines get typeset (from grade.ts): `early` K–2, never; `elementary` Grades 3–6 word
@@ -245,6 +248,10 @@ export function toLatex(
     );
   }
   if (divide) segs = divisions(segs, band, symbols);
+  // A repeating decimal written 0.1666… gets its bar: 0.16̅.
+  segs = pass(segs, /(?<![\d.,])−?\d[\d,]*\.\d+…/gu, (m) =>
+    repeatingParts(m[0]) ? `\\rep{${m[0]}}` : undefined,
+  );
   const prose = isProse(line);
   segs = pass(segs, atomPattern(band), (m) => atom(m, band, prose, symbols));
   if (letterBand(band)) segs = italics(segs, symbols, !prose);
@@ -278,7 +285,9 @@ export type MathNode =
       div?: boolean;
     }
   | { t: 'sup'; base: MathNode[]; exp: MathNode[]; caret?: boolean }
-  | { t: 'sqrt'; body: MathNode[] };
+  | { t: 'sqrt'; body: MathNode[] }
+  /** \rep{0.1666…}: a repeating decimal, drawn with a bar over its block (0.16̅). */
+  | { t: 'rep'; lead: string; block: string; src: string };
 
 /** Symbol commands, drawn as their characters. */
 const SYMBOLS: Record<string, string> = {
@@ -346,6 +355,11 @@ export function parseMath(src: string): MathNode[] {
         } else if (name === 'pow') {
           const base = braced();
           nodes.push({ t: 'sup', base, exp: braced(), caret: true });
+        } else if (name === 'rep') {
+          const src = plainMath(braced());
+          const parts = repeatingParts(src);
+          if (!parts) throw new Error(`not a repeating decimal: ${src}`);
+          nodes.push({ t: 'rep', ...parts, src });
         } else if (name === 'sqrt') {
           nodes.push({ t: 'sqrt', body: braced() });
         } else if (name === 'mathit') {
@@ -407,7 +421,8 @@ export function plainMath(nodes: MathNode[]): string {
       out += n.caret
         ? `${plainMath(n.base)}^${plainMath(n.exp)}`
         : `${plainMath(n.base)}${toSuper(plainMath(n.exp))}`;
-    } else out += `√${plainMath(n.body)}`;
+    } else if (n.t === 'rep') out += n.src;
+    else out += `√${plainMath(n.body)}`;
   });
   return out;
 }

@@ -572,7 +572,8 @@ const CARBON: {
     process: 'decomposition',
     a: [196, 186],
     b: [194, 46],
-    label: 'decomposers',
+    // Short, so it fits between its arrow and the burning arrow.
+    label: 'decay',
     at: [200, 124],
     anchor: 'start',
   },

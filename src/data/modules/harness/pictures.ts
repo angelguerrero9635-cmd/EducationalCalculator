@@ -1379,16 +1379,21 @@ export function repIssues(
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
       count(rep.first, 'first-stage outcomes', 6);
       count(rep.second, 'second-stage outcomes', 6);
-      const [a, b, n, P] = [rep.first, rep.second, rep.total, rep.chance].map((id) =>
-        id ? val(id) : undefined,
+      if (rep.third) count(rep.third, 'third-stage outcomes', 6);
+      const stages = [rep.first, rep.second, ...(rep.third ? [rep.third] : [])].map((id) =>
+        val(id),
       );
-      for (const x of [a, b]) if (x !== undefined && x < 1) out.push(`a stage with ${x} outcomes`);
-      if (a !== undefined && b !== undefined && n !== undefined && a * b !== n)
-        out.push(`${a} × ${b} branches drawn, total shows ${n}`);
-      if (a !== undefined && b !== undefined && P !== undefined && Math.abs(1 / (a * b) - P) > 1e-6)
-        out.push(`one of ${a * b} paths drawn, chance shows ${P}`);
-      if (rep.path && a !== undefined && b !== undefined && (rep.path[0] >= a || rep.path[1] >= b))
-        out.push(`path ${rep.path.join(', ')} is not a branch of ${a} × ${b}`);
+      const [n, P] = [rep.total, rep.chance].map((id) => (id ? val(id) : undefined));
+      for (const x of stages) if (x !== undefined && x < 1) out.push(`a stage with ${x} outcomes`);
+      if (stages.every((x) => x !== undefined)) {
+        const all = stages.reduce((p, x) => p! * x!, 1)!;
+        const shown = stages.join(' × ');
+        if (n !== undefined && all !== n) out.push(`${shown} branches drawn, total shows ${n}`);
+        if (P !== undefined && Math.abs(1 / all - P) > 1e-6)
+          out.push(`one of ${all} paths drawn, chance shows ${P}`);
+        if (rep.path && rep.path.some((i, s) => i >= stages[s]!))
+          out.push(`path ${rep.path.join(', ')} is not a branch of ${shown}`);
+      }
       break;
     }
     case 'diceGrid': {
@@ -1619,6 +1624,8 @@ export function repIssues(
     case 'powerScale': {
       const [x, a, e] = [rep.number, rep.mantissa, rep.exponent].map(val);
       if (x !== undefined && x < 0) out.push(`number ${x} has no place on a powers-of-ten ruler`);
+      const q = rep.second ? val(rep.second) : undefined;
+      if (q !== undefined && q <= 0) out.push(`second number ${q} has no place on the ruler`);
       if (a !== undefined && (a < 1 || a >= 10)) out.push(`mantissa ${a} is not from 1 up to 10`);
       if (e !== undefined && e !== Math.round(e)) out.push(`exponent ${e} is not whole`);
       if (

@@ -470,14 +470,38 @@ export const MATH_8_LAYOUTS: LayoutDef[] = [
       { id: 'curve', label: 'Nonlinear', why: 'A curve, not a line.' },
     ],
     cards: [
-      { label: 'Practice hours and points scored', bin: 'pos' },
-      { label: 'Hits and home runs', bin: 'pos' },
-      { label: 'Assists and points', bin: 'pos' },
-      { label: 'Age of a car and its price', bin: 'neg' },
-      { label: 'Weight of a box of raisins and its price per pound', bin: 'neg' },
-      { label: 'Fish meals a week and test scores', bin: 'none' },
-      { label: 'Shoe size and test score', bin: 'none' },
-      { label: 'Height of a thrown ball over time', bin: 'curve' },
+      {
+        label: 'Practice hours and points scored',
+        bin: 'pos',
+        figure: { kind: 'scatter', trend: 'up' },
+      },
+      { label: 'Hits and home runs', bin: 'pos', figure: { kind: 'scatter', trend: 'up' } },
+      { label: 'Assists and points', bin: 'pos', figure: { kind: 'scatter', trend: 'up' } },
+      {
+        label: 'Age of a car and its price',
+        bin: 'neg',
+        figure: { kind: 'scatter', trend: 'down' },
+      },
+      {
+        label: 'Weight of a box of raisins and its price per pound',
+        bin: 'neg',
+        figure: { kind: 'scatter', trend: 'down' },
+      },
+      {
+        label: 'Fish meals a week and test scores',
+        bin: 'none',
+        figure: { kind: 'scatter', trend: 'none' },
+      },
+      {
+        label: 'Shoe size and test score',
+        bin: 'none',
+        figure: { kind: 'scatter', trend: 'none' },
+      },
+      {
+        label: 'Height of a thrown ball over time',
+        bin: 'curve',
+        figure: { kind: 'scatter', trend: 'curve' },
+      },
     ],
   },
   {

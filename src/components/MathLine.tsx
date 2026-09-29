@@ -85,6 +85,14 @@ function MathNodes({
               size={size * (n.small ? 0.7 : 0.85)}
             />
           </View>
+        ) : n.t === 'rep' ? (
+          // A repeating decimal: the block under a bar (0.16̅).
+          <View key={i} style={styles.row}>
+            <Text style={at(size)}>{n.lead}</Text>
+            <View style={[styles.repeat, { borderTopColor: StyleSheet.flatten(style)?.color }]}>
+              <Text style={at(size)}>{n.block}</Text>
+            </View>
+          </View>
         ) : n.t === 'sup' ? (
           <View key={i} style={styles.row}>
             <MathNodes nodes={n.base} style={style} size={size} />
@@ -112,4 +120,5 @@ const styles = StyleSheet.create({
   bar: { height: 1.5, alignSelf: 'stretch', marginVertical: 1, minWidth: 10 },
   italic: { fontStyle: 'italic' },
   radicand: { borderTopWidth: 1.5, paddingHorizontal: 1, marginTop: 2 },
+  repeat: { borderTopWidth: 1.5, marginTop: 2 },
 });

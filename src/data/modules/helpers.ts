@@ -579,6 +579,8 @@ export const atLeast = (big: string, small: string) => ({
   constraint: true as const,
   display: `{${big}} is at least {${small}}`,
   vars: [big, small],
-  residual: (v: Values) => (v[big]! >= v[small]! ? 0 : 1),
+  // Equal up to rounding counts: a top height worked out as 59.0999999… from the energy is
+  // still at least the 59.1 typed.
+  residual: (v: Values) => (v[big]! >= v[small]! - 1e-9 * Math.max(1, Math.abs(v[small]!)) ? 0 : 1),
   solve: {},
 });

@@ -107,6 +107,25 @@ export function repeatingDecimal(x: number): string | undefined {
   return `${d.negative ? '−' : ''}${withSeparators(d.whole)}.${d.fixed}${d.repeat.repeat(times)}…`;
 }
 
+/**
+ * A repeating decimal as `repeatingDecimal` writes it, split for a bar over the block:
+ * "0.1666…" → { lead: '0.1', block: '6' }; undefined for any other number ("3.14159…").
+ */
+export function repeatingParts(text: string): { lead: string; block: string } | undefined {
+  const m = /^(−?[\d,]+\.)(\d+)…$/.exec(text);
+  if (!m) return undefined;
+  const d = m[2]!;
+  for (let start = 0; start < d.length; start++) {
+    for (let p = 1; p <= 6; p++) {
+      const block = d.slice(start, start + p);
+      const times = Math.max(2, Math.ceil(3 / p));
+      if (d.length - start === p * times && d.slice(start) === block.repeat(times))
+        return { lead: `${m[1]}${d.slice(0, start)}`, block };
+    }
+  }
+  return undefined;
+}
+
 const SUPERSCRIPT = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 /** An integer exponent raised: 5 → "⁵", −4 → "⁻⁴". */
 const raised = (n: number) =>

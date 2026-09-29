@@ -809,8 +809,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { a: 1, n: 6, c: 2, k: 3, P: 1e6, Q: 2000, t: 500 },
     startWith: ['a', 'n', 'c', 'k'],
-    pictureLabels: ['Q', 't'],
-    representation: { kind: 'powerScale', number: 'P', mantissa: 'a', exponent: 'n' },
+    pictureLabels: ['t'],
+    representation: { kind: 'powerScale', number: 'P', mantissa: 'a', exponent: 'n', second: 'Q' },
   },
   {
     id: 'm.8.scientific-notation~multiply',

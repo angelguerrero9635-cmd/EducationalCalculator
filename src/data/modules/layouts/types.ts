@@ -116,6 +116,8 @@ export type CardFigure =
   | { kind: 'net'; cells: [number, number][] }
   /** A number line with a dot at `at` (filled when included) and an arrow left or right. */
   | { kind: 'inequality'; at: number; dir: 'left' | 'right'; closed: boolean }
+  /** A small scatter plot whose dots rise, fall, scatter with no trend, or follow a curve. */
+  | { kind: 'scatter'; trend: 'up' | 'down' | 'none' | 'curve' }
   /** A small cell drawing: a wall or not, a nucleus or loose DNA, chloroplasts. */
   | {
       kind: 'cell';

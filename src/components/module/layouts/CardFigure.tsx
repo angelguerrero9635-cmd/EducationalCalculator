@@ -46,6 +46,8 @@ export function figureWidth(f: Spec): number {
       return 80;
     case 'inequality':
       return 96;
+    case 'scatter':
+      return 64;
     case 'net': {
       const cols = Math.max(...f.cells.map(([x]) => x)) + 1;
       return Math.max(S, cols * 12 + 8);
@@ -259,6 +261,37 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
             stroke={shade}
             strokeWidth={2}
           />
+        </G>
+      );
+    }
+    case 'scatter': {
+      // Ten dots on two axes: x evenly spread, y by the trend plus a fixed scatter.
+      const [x0, x1, y0, y1] = [8, w - 4, S - 6, 4];
+      const JITTER = [0.08, -0.1, 0.05, 0.12, -0.06, -0.12, 0.1, -0.04, 0.07, -0.09];
+      const NONE = [0.3, 0.8, 0.15, 0.6, 0.45, 0.9, 0.25, 0.7, 0.5, 0.1];
+      const dots = JITTER.map((j, i) => {
+        const t = (i + 0.5) / JITTER.length;
+        const v =
+          f.trend === 'up'
+            ? 0.1 + 0.75 * t + j
+            : f.trend === 'down'
+              ? 0.85 - 0.75 * t + j
+              : f.trend === 'curve'
+                ? 0.1 + 3.2 * t * (1 - t) + j * 0.3
+                : NONE[i]!;
+        return [x0 + 4 + t * (x1 - x0 - 6), y0 + (y1 - y0) * Math.max(0.03, Math.min(0.97, v))];
+      });
+      return (
+        <G>
+          <Polyline
+            points={`${x0},${y1} ${x0},${y0} ${x1},${y0}`}
+            fill="none"
+            stroke={ink}
+            strokeWidth={1.25}
+          />
+          {dots.map(([x, y], i) => (
+            <Circle key={i} cx={x} cy={y} r={2.6} fill={shade} />
+          ))}
         </G>
       );
     }

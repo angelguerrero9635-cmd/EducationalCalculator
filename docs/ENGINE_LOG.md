@@ -31,8 +31,14 @@ per review; each line names the finding and what the engine now does about it.
 - **Harness.** Nets check that a triangle closes, not that it is right-angled; the balance
   counts to 100; power rows past 24; the sample holds 1,000; picture values compare to 12
   figures; a refusal with its own reason is not a failure.
-- **Not done:** `s.8.kinetic-potential` consistent-sample misses one solver hint edge case
-  (logged, not seen on the page).
+- **Follow-up, all logged items closed.** "At least" constraints allow rounding (a top height
+  worked out as 59.0999… is at least the 59.1 typed), which was the `s.8.kinetic-potential`
+  conflict. Repeating decimals are drawn with a bar over the block (`\rep` in `latex.ts`,
+  `repeatingParts` in `format.ts`). `treeDiagram` takes a `third` stage
+  (`m.7.probability~three-stages`); `powerScale` takes a `second` number, marked on the ruler
+  or at its end (the compare page); the association sort's cards show a `scatter` card
+  figure; the carbon cycle's decomposer arrow reads "decay". A chance already shown as its
+  fraction is not repeated ("1/8 = 1/8").
 
 ## Grade 7–8 math engine, second half: repeating decimals, angles, roots, lines
 
@@ -41,8 +47,8 @@ per review; each line names the finding and what the engine now does about it.
   the answer reader and the harness read it back as the exact fraction. `decimalLongDivision`
   takes `repeat`: it stops when a remainder comes back and notes "Remainder 4 again, so 6
   repeats". Pages: `m.7.rational-operations~fraction-to-decimal`,
-  `m.8.roots-irrationals~repeating-decimal`. The typeset bar (0.1̅6̅) needs the app's own math
-  renderer to draw `\overline`; not done, so the steps write "0.1666…".
+  `m.8.roots-irrationals~repeating-decimal`. The steps write "0.1666…" and the math renderer
+  draws the bar over the block (see the review entry).
 - **Angles (E7).** The angles picture takes `triangle: { third }` (three angles and the
   exterior angle, `TriangleAngles.tsx`) and `parallel: true` (two parallel lines cut by a
   transversal, the eight angles numbered, `ParallelAngles.tsx`); the harness checks the angle
@@ -64,11 +70,10 @@ per review; each line names the finding and what the engine now does about it.
   "2(3x + 2) = 2x + 28" is drawn as two lines crossing at the answer, and "2/5 b + 1 = −11" as a
   line meeting a level. Lines through (0, 0) with no solution name the steeper one instead of
   "They cross at (0, 0)".
-- **Not built (listed for the review):** E11 (the intercept marked on `coordinatePlane`; the
-  two-points page uses `linearFunction`), E13 (a scatter card figure; the association sort is
-  words), `powerScale` `second` marker (the compare page lists the second number under the
-  ruler), `treeDiagram` `third` stage, and the explore figure `graph` (read-a-graph stays
-  optional).
+- **Not built at the time (listed for the review):** E11 (not needed: the two-points page
+  uses `linearFunction`, which marks the intercept) and the explore figure `graph`
+  (read-a-graph stays optional). E13, the `powerScale` `second` marker and the `treeDiagram`
+  `third` stage were built in the review's follow-up.
 
 ## Grade 7–8 math engine: π, scientific notation, rules that say why
 

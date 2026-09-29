@@ -44,7 +44,20 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
       }
     : fromNumber();
   const drawn = known || numberKnown;
-  const lo = useFrozen(e - BELOW);
+  // A second number to compare: the ruler starts low enough to show both when they are
+  // within three decades of each other.
+  const second =
+    spec.second && rep.known(spec.second) && rep.shown(spec.second) > 0
+      ? Math.log10(rep.shown(spec.second))
+      : undefined;
+  const eSecond = second === undefined ? undefined : Math.floor(second + 1e-12);
+  const lo = useFrozen(
+    eSecond !== undefined && eSecond < e && e - eSecond <= DECADES - 2
+      ? eSecond - 1
+      : eSecond !== undefined && eSecond > e && eSecond - e > DECADES - BELOW - 1
+        ? Math.max(e - BELOW, Math.min(e, eSecond - DECADES + 2))
+        : e - BELOW,
+  );
   const first = lo.value;
   const logA = Math.log10(a);
   const full = known ? fullDecimal(rep.shown(spec.mantissa), e) : rep.value(spec.number, false);
@@ -172,6 +185,52 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                   </G>
                 ) : null}
+                {spec.second && second !== undefined
+                  ? (() => {
+                      // The second number: a hollow marker, or an arrow at the ruler's end.
+                      const label = rep.label(spec.second);
+                      const left = second < first;
+                      const right = second > first + DECADES;
+                      const x = left ? tx(first) : right ? tx(first + DECADES) : tx(second);
+                      return (
+                        <G>
+                          {left || right ? (
+                            <Line
+                              x1={x + (left ? 12 : -12)}
+                              y1={topY + 36}
+                              x2={x}
+                              y2={topY + 36}
+                              stroke={c.chartInk}
+                              strokeWidth={chart.stroke}
+                            />
+                          ) : (
+                            <Circle
+                              cx={x}
+                              cy={topY}
+                              r={6}
+                              fill={c.card}
+                              stroke={c.chartInk}
+                              strokeWidth={2}
+                            />
+                          )}
+                          <ChartText
+                            {...fitLabel(
+                              left || right ? x + (left ? 16 : -16) : x,
+                              left ? `← ${label}` : right ? `${label} →` : label,
+                              chart.small,
+                              w,
+                              left ? 'start' : right ? 'end' : 'middle',
+                            )}
+                            y={topY + 40}
+                            fontSize={chart.small}
+                            fontWeight="600"
+                          >
+                            {left ? `← ${label}` : right ? `${label} →` : label}
+                          </ChartText>
+                        </G>
+                      );
+                    })()
+                  : null}
                 {/* Lower ruler: 1 to 10 on the same log spacing, tenths where there is room. */}
                 <Line
                   x1={zx(0)}

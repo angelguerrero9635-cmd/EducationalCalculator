@@ -57,7 +57,7 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   complementary, vertical, by an equation, in a triangle, across parallel lines), prisms (the
   cross-section, a triangular net, a trapezoid base, an L-shaped base), sampling (a random
   sample, two samples on dot plots) and probability (spinner, marbles, expected counts, two
-  dice, trees). Grade 8: roots (between two whole numbers, cube roots, repeating decimals as
+  dice, trees of two and three stages). Grade 8: roots (between two whole numbers, cube roots, repeating decimals as
   fractions), exponent rules with zero and negative exponents, scientific notation (in full,
   compared, multiplied, added), slope (from two points, a unit rate, two rates), equations with
   x on both sides (balance, negatives, brackets and fractions as two lines), systems (two

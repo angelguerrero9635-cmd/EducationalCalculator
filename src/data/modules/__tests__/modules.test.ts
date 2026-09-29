@@ -305,7 +305,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
-      return [r.first, r.second, ...[r.total, r.chance].filter((x): x is string => !!x)];
+      return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
     case 'spinner':
@@ -403,7 +403,7 @@ function representationVars(r: Representation): string[] {
     case 'factorRows':
       return [r.base, r.first, r.second, r.result];
     case 'powerScale':
-      return [r.number, r.mantissa, r.exponent];
+      return [r.number, r.mantissa, r.exponent, ...(r.second ? [r.second] : [])];
     case 'equationBalance':
       return [r.x, ...[...r.left, ...r.right].filter((v): v is string => typeof v === 'string')];
     case 'pushes':
