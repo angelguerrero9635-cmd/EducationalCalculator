@@ -1,0 +1,85 @@
+/**
+ * Picture specs for the Grades 9–12 statistics and counting pictures of group HB (kept apart
+ * from `types.ts` so that file's union only lists them). A `NumOrVar` field is a fixed number or
+ * a variable id; every value is in the variable's shown units.
+ */
+import type { NumOrVar } from './typesGraphs';
+
+/**
+ * A normal curve over mean μ and standard deviation σ, with an x axis (ticks at μ + kσ, the
+ * values written) and a z axis under it (−3 to 3). Without `mean` and `sd` it is the standard
+ * normal curve on the z axis alone.
+ *
+ * - `shade`: the area between two x values, or a tail (leave out `from` or `to`), or both tails
+ *   outside them (`outside`), written as a probability to 4 decimals.
+ * - `mark`: a value x on the axis, a line up to the curve, with its z-score.
+ * - `bands`: the 68–95–99.7 rule, each band shaded and bracketed.
+ * - `sample`: the sampling distribution of the mean for samples of n (σ/√n) drawn over the
+ *   population's curve (dashed); `shade`, `mark` and `interval` then use the sampling curve.
+ * - `interval`: a confidence interval, center ± margin, as a bar under the curve with the middle
+ *   area shaded.
+ * - `intervals`: 20–100 simulated intervals at a confidence level from a fixed seed, stacked
+ *   under the curve around the true mean; the ones that miss it are red, and the caption counts
+ *   (seed 152 by default: 94 of 100 at 95%).
+ * - `test`: the null curve on the z axis, the rejection region (α) shaded red, the p-value
+ *   hatched beyond the statistic z, and the decision in the caption.
+ * - `chiSquare`: the chi-square curve for df 1–10 in place of the normal curve, the right tail
+ *   past the statistic shaded (the p-value) and the critical value for α marked.
+ *
+ * Handles drag the shaded ends, the mark, the test statistic and the chi-square statistic
+ * (when they are variables), holding `keep` (default: the mean, the SD, n and the level).
+ */
+export interface NormalCurveSpec {
+  kind: 'normalCurve';
+  mean?: NumOrVar;
+  sd?: NumOrVar;
+  /** The x axis's name with its unit, "Height (cm)". */
+  axis?: string;
+  shade?: { from?: NumOrVar; to?: NumOrVar; outside?: boolean; area?: string };
+  mark?: { x: string; z?: string };
+  bands?: boolean;
+  sample?: { n: NumOrVar; se?: string };
+  interval?: { center: NumOrVar; margin: NumOrVar; level?: NumOrVar };
+  intervals?: { count: number; n: NumOrVar; level: NumOrVar; seed?: number };
+  test?: { stat: NumOrVar; alpha: NumOrVar; tail: 'left' | 'right' | 'two'; p?: string };
+  chiSquare?: { df: NumOrVar; stat?: NumOrVar; alpha?: NumOrVar; p?: string };
+  /** Typed values held while a handle is dragged. */
+  keep?: string[];
+  /** No handles (a drag can't be solved back). */
+  fixed?: boolean;
+}
+
+export type HsbSpec = NormalCurveSpec;
+
+/** Every variable id one of these pictures refers to. */
+export function hsbSpecVars(r: HsbSpec): string[] {
+  const v = (...xs: (NumOrVar | undefined)[]) =>
+    xs.filter((x): x is string => typeof x === 'string');
+  switch (r.kind) {
+    case 'normalCurve':
+      return v(
+        r.mean,
+        r.sd,
+        r.shade?.from,
+        r.shade?.to,
+        r.shade?.area,
+        r.mark?.x,
+        r.mark?.z,
+        r.sample?.n,
+        r.sample?.se,
+        r.interval?.center,
+        r.interval?.margin,
+        r.interval?.level,
+        r.intervals?.n,
+        r.intervals?.level,
+        r.test?.stat,
+        r.test?.alpha,
+        r.test?.p,
+        r.chiSquare?.df,
+        r.chiSquare?.stat,
+        r.chiSquare?.alpha,
+        r.chiSquare?.p,
+        ...(r.keep ?? []),
+      );
+  }
+}

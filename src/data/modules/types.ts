@@ -12,6 +12,7 @@ import type { EnergyPyramidSpec, GenerationsSpec } from './typesLife';
 import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
+import type { HsbSpec } from './typesHsb';
 import type { CardIcon } from './layouts/types';
 
 /**
@@ -1026,6 +1027,8 @@ export type Representation =
   | EnergyTrackSpec
   /** Grade 8 spectrum, circuits, electromagnet and orbit (specs in `typesPhysics8.ts`). */
   | Physics8Spec
+  /** Grades 9–12 statistics and counting, group HB (specs in `typesHsb.ts`). */
+  | HsbSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

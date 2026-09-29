@@ -12,6 +12,7 @@ import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
+import { hsbSpecVars } from '../typesHsb';
 import { isStandIn, pages } from '../harness/scope';
 
 /** Every variable id a representation refers to. */
@@ -435,6 +436,8 @@ function representationVars(r: Representation): string[] {
     case 'electromagnet':
     case 'orbit':
       return physics8SpecVars(r);
+    case 'normalCurve':
+      return hsbSpecVars(r);
   }
 }
 

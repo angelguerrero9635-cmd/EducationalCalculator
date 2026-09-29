@@ -120,6 +120,7 @@ import { MotionGraph } from './MotionGraph';
 import { ForceCart } from './ForceCart';
 import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
+import { NormalCurve } from './NormalCurve';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -142,6 +143,7 @@ export const representationTitle = (r: Representation) =>
           'lineSystem',
           'heatingCurve',
           'motionGraph',
+          'normalCurve',
         ].includes(r.kind)
       ? 'Chart'
       : 'Diagram';
@@ -154,6 +156,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LineSystem spec={spec} calc={calc} />;
     case 'motionGraph':
       return <MotionGraph spec={spec} calc={calc} />;
+    case 'normalCurve':
+      return <NormalCurve spec={spec} calc={calc} />;
     case 'skaters':
       return <Skaters spec={spec} calc={calc} />;
     case 'energyTrack':

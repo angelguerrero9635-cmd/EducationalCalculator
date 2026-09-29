@@ -228,6 +228,8 @@ const light = {
   /** The water pie chart (round 4, group F): ice, and liquid fresh water beside the salt sea. */
   ice: '#DDF1F7',
   freshWater: '#38B2A4',
+  /** Statistics pictures (HS group B): a rejection region, an interval that misses the mean. */
+  normalReject: '#D93B3B',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -392,6 +394,7 @@ const dark: Palette = {
   sandbag: '#9B8558',
   ice: '#B7D6E0',
   freshWater: '#2E9488',
+  normalReject: '#F0716B',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

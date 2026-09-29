@@ -120,6 +120,7 @@ const PICTURE_NAMES: Record<string, string> = {
   circuit: 'circuit with bulbs, a switch and a meter',
   electromagnet: 'electromagnet with its field lines',
   orbit: 'orbit diagram with the pull of gravity',
+  normalCurve: 'normal curve with shaded areas',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();
