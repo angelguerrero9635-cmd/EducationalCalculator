@@ -30,7 +30,7 @@
           "n": "2",
           "title": "Matter and Minerals",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": [],
+          "skills": ["s.12.minerals-rocks"],
           "part": "Part 1: Earth Materials",
           "notes": "Minerals; no taxonomy skill (nearest s.6.rock-cycle)."
         },
@@ -38,7 +38,7 @@
           "n": "3",
           "title": "Rocks: Materials of the Solid Earth",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.6.rock-cycle"],
+          "skills": ["s.12.minerals-rocks", "s.6.rock-cycle"],
           "part": "Part 1: Earth Materials",
           "notes": "No grade-12 skill; the rock cycle is grade 6."
         },
@@ -60,7 +60,7 @@
           "n": "6",
           "title": "Volcanoes and Other Igneous Activity",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.12.earth-interior"],
+          "skills": ["s.12.volcanoes-mountains", "s.12.earth-interior"],
           "part": "Part 2: Forces Within",
           "notes": "Loose: magma and volcanism follow from the interior."
         },
@@ -68,14 +68,14 @@
           "n": "7",
           "title": "Crustal Deformation and Mountain Building",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.6.plate-tectonics"],
+          "skills": ["s.12.volcanoes-mountains", "s.6.plate-tectonics"],
           "part": "Part 2: Forces Within"
         },
         {
           "n": "8",
           "title": "Weathering, Soil, and Mass Movement",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.4.weathering"],
+          "skills": ["s.12.surface-processes", "s.12.atmosphere-weather", "s.4.weathering"],
           "part": "Part 3: Sculpting the Earth's Surface",
           "notes": "No grade-12 skill; nearest is grade 4."
         },
@@ -83,7 +83,7 @@
           "n": "9",
           "title": "Running Water and Groundwater",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.6.water-cycle"],
+          "skills": ["s.12.surface-processes", "s.6.water-cycle"],
           "part": "Part 3: Sculpting the Earth's Surface",
           "notes": "No grade-12 skill; nearest is grade 6."
         },
@@ -91,7 +91,7 @@
           "n": "10",
           "title": "Glaciers, Deserts, and Wind",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": [],
+          "skills": ["s.12.surface-processes", "s.12.atmosphere-weather"],
           "part": "Part 3: Sculpting the Earth's Surface",
           "notes": "Glaciers, deserts and wind erosion; nearest is s.4.weathering."
         },
@@ -137,14 +137,14 @@
           "n": "16",
           "title": "The Atmosphere: Composition, Structure, and Temperature",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.12.ocean-atmosphere", "s.12.climate-systems"],
+          "skills": ["s.12.atmosphere-weather", "s.12.ocean-atmosphere", "s.12.climate-systems"],
           "part": "Part 6: Earth's Dynamic Atmosphere"
         },
         {
           "n": "17",
           "title": "Moisture, Clouds, and Precipitation",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.6.water-cycle"],
+          "skills": ["s.12.atmosphere-weather", "s.6.water-cycle"],
           "part": "Part 6: Earth's Dynamic Atmosphere",
           "notes": "No grade-12 skill; nearest is grade 6."
         },
@@ -152,14 +152,14 @@
           "n": "18",
           "title": "Air Pressure and Wind",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.12.ocean-atmosphere"],
+          "skills": ["s.12.atmosphere-weather", "s.12.ocean-atmosphere"],
           "part": "Part 6: Earth's Dynamic Atmosphere"
         },
         {
           "n": "19",
           "title": "Weather Patterns and Severe Storms",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.6.weather-fronts"],
+          "skills": ["s.12.atmosphere-weather", "s.6.weather-fronts"],
           "part": "Part 6: Earth's Dynamic Atmosphere",
           "notes": "No grade-12 skill; nearest is grade 6."
         },
@@ -182,7 +182,7 @@
           "n": "22",
           "title": "Touring Our Solar System",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.8.gravity-orbits"],
+          "skills": ["s.12.solar-system", "s.8.gravity-orbits"],
           "part": "Part 7: Earth's Place in the Universe",
           "notes": "No grade-12 skill; nearest is grade 8."
         },
@@ -190,7 +190,7 @@
           "n": "23",
           "title": "Light, Telescopes, and the Sun",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.12.stellar-evolution"],
+          "skills": ["s.12.starlight-spectra", "s.12.stellar-evolution"],
           "part": "Part 7: Earth's Place in the Universe",
           "notes": "Loose: the Sun as a star and fusion."
         },
@@ -198,7 +198,7 @@
           "n": "24",
           "title": "Beyond Our Solar System",
           "url": "https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216",
-          "skills": ["s.12.stellar-evolution", "s.12.cosmology"],
+          "skills": ["s.12.solar-system", "s.12.stellar-evolution", "s.12.cosmology"],
           "part": "Part 7: Earth's Place in the Universe"
         }
       ]

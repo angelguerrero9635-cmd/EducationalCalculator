@@ -24,7 +24,7 @@
           "n": "1",
           "title": "One-variable Statistics",
           "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/1/index.html",
-          "skills": ["m.6.center-spread", "m.11.normal-distribution"],
+          "skills": ["m.9.data-displays", "m.6.center-spread", "m.11.normal-distribution"],
           "sections": [
             {
               "n": null,
@@ -510,7 +510,12 @@
           "n": "4",
           "title": "Functions",
           "url": "https://curriculum.illustrativemathematics.org/HS/teachers/1/4/index.html",
-          "skills": ["m.8.functions-intro", "m.9.absolute-value", "m.11.inverse-functions"],
+          "skills": [
+            "m.9.function-notation",
+            "m.8.functions-intro",
+            "m.9.absolute-value",
+            "m.11.inverse-functions"
+          ],
           "sections": [
             {
               "n": null,
@@ -1243,7 +1248,13 @@
           "n": "1",
           "title": "Constructions and Rigid Transformations",
           "url": "https://curriculum.illustrativemathematics.org/HS/teachers/2/1/index.html",
-          "skills": ["m.10.constructions", "m.8.transformations", "m.10.congruence", "m.10.proofs"],
+          "skills": [
+            "m.10.rigid-motions",
+            "m.10.constructions",
+            "m.8.transformations",
+            "m.10.congruence",
+            "m.10.proofs"
+          ],
           "sections": [
             {
               "n": null,
@@ -3023,7 +3034,12 @@
           "n": "5",
           "title": "Transformations of Functions",
           "url": "https://curriculum.illustrativemathematics.org/HS/teachers/3/5/index.html",
-          "skills": ["m.9.quadratic-functions", "m.11.inverse-functions", "m.9.regression"],
+          "skills": [
+            "m.11.function-transformations",
+            "m.9.quadratic-functions",
+            "m.11.inverse-functions",
+            "m.9.regression"
+          ],
           "sections": [
             {
               "n": null,

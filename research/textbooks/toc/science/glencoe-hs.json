@@ -24,14 +24,14 @@
           "n": "1",
           "title": "Introduction to Chemistry",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter_1/",
-          "skills": [],
+          "skills": ["s.10.measurement"],
           "notes": "No taxonomy skill."
         },
         {
           "n": "2",
           "title": "Analyzing Data",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter2/",
-          "skills": [],
+          "skills": ["s.10.measurement"],
           "notes": "Measurement and data; no taxonomy skill."
         },
         {
@@ -50,7 +50,7 @@
           "n": "5",
           "title": "Electrons in Atoms",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter5/",
-          "skills": ["s.10.atomic-structure"]
+          "skills": ["s.10.electrons-in-atoms", "s.10.atomic-structure"]
         },
         {
           "n": "6",
@@ -74,7 +74,7 @@
           "n": "9",
           "title": "Chemical Reactions",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter9/",
-          "skills": ["s.10.stoichiometry"]
+          "skills": ["s.10.reaction-types", "s.10.stoichiometry"]
         },
         {
           "n": "10",
@@ -92,7 +92,7 @@
           "n": "12",
           "title": "States of Matter",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter12/",
-          "skills": ["s.10.bonding"]
+          "skills": ["s.10.molecular-shape", "s.10.bonding"]
         },
         {
           "n": "13",
@@ -134,28 +134,28 @@
           "n": "19",
           "title": "Redox Reactions",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter19/",
-          "skills": [],
+          "skills": ["s.10.redox"],
           "notes": "No taxonomy skill."
         },
         {
           "n": "20",
           "title": "Electrochemistry",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter20/",
-          "skills": [],
+          "skills": ["s.10.redox"],
           "notes": "No taxonomy skill."
         },
         {
           "n": "21",
           "title": "Hydrocarbons",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter21/",
-          "skills": [],
+          "skills": ["s.10.organic"],
           "notes": "Organic chemistry; no taxonomy skill."
         },
         {
           "n": "22",
           "title": "Substituted Hydrocarbons and Their Reactions",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter22/",
-          "skills": [],
+          "skills": ["s.10.organic"],
           "notes": "Organic chemistry; no taxonomy skill."
         },
         {
@@ -168,7 +168,7 @@
           "n": "24",
           "title": "Nuclear Chemistry",
           "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter24/",
-          "skills": ["s.10.atomic-structure", "s.12.radiometric-dating"]
+          "skills": ["s.10.nuclear-chemistry", "s.10.atomic-structure", "s.12.radiometric-dating"]
         }
       ]
     },
@@ -189,19 +189,19 @@
           "n": "2",
           "title": "Representing Motion",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter2/",
-          "skills": ["s.11.kinematics-2d"]
+          "skills": ["s.11.kinematics-1d", "s.11.kinematics-2d"]
         },
         {
           "n": "3",
           "title": "Accelerated Motion",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter3/",
-          "skills": ["s.11.kinematics-2d"]
+          "skills": ["s.11.kinematics-1d", "s.11.kinematics-2d"]
         },
         {
           "n": "4",
           "title": "Forces in One Dimension",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter4/",
-          "skills": ["s.11.dynamics-vectors"]
+          "skills": ["s.11.kinematics-1d", "s.11.dynamics-vectors"]
         },
         {
           "n": "5",
@@ -249,7 +249,7 @@
           "n": "12",
           "title": "Thermal Energy",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter12/",
-          "skills": [],
+          "skills": ["s.11.thermodynamics"],
           "notes": "Nearest is s.10.thermochemistry."
         },
         {
@@ -299,13 +299,13 @@
           "n": "20",
           "title": "Static Electricity",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter20/",
-          "skills": ["s.11.electromagnetism"]
+          "skills": ["s.11.electrostatics", "s.11.electromagnetism"]
         },
         {
           "n": "21",
           "title": "Electric Fields",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter21/",
-          "skills": ["s.11.electromagnetism"]
+          "skills": ["s.11.electrostatics", "s.11.electromagnetism"]
         },
         {
           "n": "22",
@@ -341,14 +341,14 @@
           "n": "27",
           "title": "Quantum Theory",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter27/",
-          "skills": [],
+          "skills": ["s.11.modern-physics"],
           "notes": "No taxonomy skill."
         },
         {
           "n": "28",
           "title": "The Atom",
           "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter28/",
-          "skills": ["s.10.atomic-structure"]
+          "skills": ["s.11.modern-physics", "s.10.atomic-structure"]
         },
         {
           "n": "29",

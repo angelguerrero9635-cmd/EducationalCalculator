@@ -29,7 +29,7 @@
           "n": "2",
           "title": "Energy in Cells",
           "url": "https://im.tea.texas.gov/sites/default/files/2024-12/Savvas_High%20School%20-%20Biology.pdf",
-          "skills": ["s.7.photosynthesis-respiration"],
+          "skills": ["s.9.cellular-energy", "s.7.photosynthesis-respiration"],
           "notes": "No grade-9 skill for cell energy; nearest is grade 7."
         },
         {
@@ -54,7 +54,7 @@
           "n": "7",
           "title": "The Human Genome",
           "url": "https://im.tea.texas.gov/sites/default/files/2024-12/Savvas_High%20School%20-%20Biology.pdf",
-          "skills": ["s.9.inheritance-patterns"]
+          "skills": ["s.9.biotechnology", "s.9.inheritance-patterns"]
         },
         {
           "n": "10",
@@ -79,21 +79,21 @@
           "n": "13",
           "title": "The Challenge of Disease",
           "url": "https://im.tea.texas.gov/sites/default/files/2024-12/Savvas_High%20School%20-%20Biology.pdf",
-          "skills": [],
+          "skills": ["s.9.immune-disease"],
           "notes": "Disease and immunity; no taxonomy skill."
         },
         {
           "n": "14",
           "title": "The Biosphere",
           "url": "https://im.tea.texas.gov/sites/default/files/2024-12/Savvas_High%20School%20-%20Biology.pdf",
-          "skills": ["s.7.ecosystem-energy"],
+          "skills": ["s.9.ecosystem-dynamics", "s.7.ecosystem-energy"],
           "notes": "No grade-9 skill for ecosystems; nearest is grade 7."
         },
         {
           "n": "15",
           "title": "Ecosystem Stability and Change",
           "url": "https://im.tea.texas.gov/sites/default/files/2024-12/Savvas_High%20School%20-%20Biology.pdf",
-          "skills": ["s.9.population-ecology"],
+          "skills": ["s.9.ecosystem-dynamics", "s.9.population-ecology"],
           "notes": "Named in parentheses in the report (\"Investigation 15 (Ecosystem Stability and Change)\")."
         },
         {

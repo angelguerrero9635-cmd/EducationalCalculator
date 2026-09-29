@@ -24,7 +24,7 @@
           "n": "1",
           "title": "Atomic Structure",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.atomic-structure"],
+          "skills": ["s.10.electrons-in-atoms", "s.10.atomic-structure"],
           "storyline": "Atoms, Elements, and Molecules",
           "lessons": [
             {
@@ -74,7 +74,7 @@
           "n": "3",
           "title": "Chemical Bonding",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.bonding"],
+          "skills": ["s.10.molecular-shape", "s.10.bonding"],
           "storyline": "Atoms, Elements, and Molecules",
           "lessons": [
             {
@@ -103,7 +103,7 @@
           "n": "4",
           "title": "Physical Properties of Materials",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.bonding", "s.10.molarity"],
+          "skills": ["s.10.molecular-shape", "s.10.bonding", "s.10.molarity"],
           "storyline": "Atoms, Elements, and Molecules",
           "lessons": [
             {
@@ -161,7 +161,7 @@
           "n": "6",
           "title": "Chemical Reactions",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.stoichiometry"],
+          "skills": ["s.10.reaction-types", "s.10.stoichiometry"],
           "storyline": "Understanding Chemical Reactions",
           "lessons": [
             {
@@ -311,7 +311,7 @@
           "n": "12",
           "title": "Reaction Rates and Equilibrium",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.rates-equilibrium"],
+          "skills": ["s.10.reaction-types", "s.10.rates-equilibrium"],
           "storyline": "The Dynamics of Chemical Reactions and Ocean Acidification",
           "lessons": [
             {
@@ -386,7 +386,7 @@
           "n": "15",
           "title": "Oxidation-Reduction Reactions",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": [],
+          "skills": ["s.10.redox"],
           "storyline": "Industrial Applications",
           "notes": "Redox and electrochemistry; no taxonomy skill.",
           "lessons": [
@@ -408,7 +408,7 @@
           "n": "16",
           "title": "Organic Chemistry",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": [],
+          "skills": ["s.10.organic"],
           "storyline": "Industrial Applications",
           "notes": "Organic chemistry; no taxonomy skill.",
           "lessons": [
@@ -430,7 +430,7 @@
           "n": "17",
           "title": "Nuclear Processes",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
-          "skills": ["s.10.atomic-structure", "s.12.radiometric-dating"],
+          "skills": ["s.10.nuclear-chemistry", "s.10.atomic-structure", "s.12.radiometric-dating"],
           "storyline": "Industrial Applications",
           "lessons": [
             {
@@ -479,7 +479,7 @@
           "n": "1",
           "title": "Describing Position and Motion (or Modeling Motion)",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
-          "skills": ["s.11.kinematics-2d"],
+          "skills": ["s.11.kinematics-1d", "s.11.kinematics-2d"],
           "storyline": "Forces in Motion",
           "lessons": [
             {
@@ -546,7 +546,7 @@
           "n": "4",
           "title": "Electric Forces",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
-          "skills": ["s.11.electromagnetism", "s.11.circuits"],
+          "skills": ["s.11.electrostatics", "s.11.electromagnetism", "s.11.circuits"],
           "storyline": "Forces at a Distance",
           "lessons": [
             {
@@ -656,7 +656,7 @@
           "n": "9",
           "title": "Thermal Energy",
           "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
-          "skills": ["s.12.earth-interior"],
+          "skills": ["s.11.thermodynamics", "s.12.earth-interior"],
           "storyline": "Energy Conversion",
           "notes": "Heat flow within Earth (Experience 3); temperature and heat have no grade-11 skill (nearest s.10.thermochemistry).",
           "lessons": [

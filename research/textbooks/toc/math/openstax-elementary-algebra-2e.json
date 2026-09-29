@@ -101,6 +101,8 @@
           "title": "Solving Linear Equations and Inequalities",
           "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-introduction",
           "skills": [
+            "m.9.solving-equations",
+            "m.9.linear-inequalities",
             "m.6.one-step-equations",
             "m.8.multi-step-equations",
             "m.9.linear-modeling",
@@ -148,7 +150,11 @@
               "n": "2.7",
               "title": "Solve Linear Inequalities",
               "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-7-solve-linear-inequalities",
-              "skills": ["m.9.inequality-systems", "m.7.two-step-equations"]
+              "skills": [
+                "m.9.linear-inequalities",
+                "m.9.inequality-systems",
+                "m.7.two-step-equations"
+              ]
             }
           ],
           "notes": "one-variable linear equations: Grade 6-8 skills (no Grade 9 skill for them)"
@@ -158,6 +164,7 @@
           "title": "Math Models",
           "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-introduction",
           "skills": [
+            "m.9.linear-inequalities",
             "m.9.linear-modeling",
             "m.7.percent-applications",
             "m.8.pythagorean",
@@ -199,7 +206,7 @@
               "n": "3.6",
               "title": "Solve Applications with Linear Inequalities",
               "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-6-solve-applications-with-linear-inequalities",
-              "skills": ["m.9.inequality-systems"]
+              "skills": ["m.9.linear-inequalities", "m.9.inequality-systems"]
             }
           ]
         },
@@ -208,6 +215,7 @@
           "title": "Graphs",
           "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-introduction",
           "skills": [
+            "m.9.linear-inequalities",
             "m.6.coordinate-plane-4q",
             "m.8.linear-functions",
             "m.8.slope",
@@ -255,7 +263,7 @@
               "n": "4.7",
               "title": "Graphs of Linear Inequalities",
               "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-7-graphs-of-linear-inequalities",
-              "skills": ["m.9.inequality-systems"]
+              "skills": ["m.9.linear-inequalities", "m.9.inequality-systems"]
             }
           ],
           "notes": "graphing lines, slope, equations of lines: Grade 8 skills plus m.9.linear-modeling"

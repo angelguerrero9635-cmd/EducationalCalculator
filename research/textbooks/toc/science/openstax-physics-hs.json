@@ -71,7 +71,7 @@
           "n": "2",
           "title": "Motion in One Dimension",
           "url": "https://openstax.org/books/physics/pages/2-1-relative-motion-distance-and-displacement",
-          "skills": ["s.11.kinematics-2d"],
+          "skills": ["s.11.kinematics-1d", "s.11.kinematics-2d"],
           "notes": "Motion in one dimension: displacement, velocity, position-time and velocity-time graphs; also s.8.motion.",
           "lessons": [
             {
@@ -114,7 +114,7 @@
           "n": "3",
           "title": "Acceleration",
           "url": "https://openstax.org/books/physics/pages/3-1-acceleration",
-          "skills": ["s.11.kinematics-2d"],
+          "skills": ["s.11.kinematics-1d", "s.11.kinematics-2d"],
           "notes": "Acceleration and the kinematic equations in one dimension.",
           "lessons": [
             {
@@ -276,7 +276,7 @@
           "n": "7",
           "title": "Newton's Law of Gravitation",
           "url": "https://openstax.org/books/physics/pages/7-1-keplers-laws-of-planetary-motion",
-          "skills": ["s.11.circular-gravitation"],
+          "skills": ["s.11.modern-physics", "s.11.circular-gravitation"],
           "notes": "Kepler's laws and universal gravitation.",
           "lessons": [
             {
@@ -384,7 +384,7 @@
           "n": "10",
           "title": "Special Relativity",
           "url": "https://openstax.org/books/physics/pages/10-1-postulates-of-special-relativity",
-          "skills": [],
+          "skills": ["s.11.modern-physics"],
           "notes": "Special relativity; no taxonomy skill.",
           "lessons": [
             {
@@ -417,7 +417,7 @@
           "n": "11",
           "title": "Thermal Energy, Heat, and Work",
           "url": "https://openstax.org/books/physics/pages/11-1-temperature-and-thermal-energy",
-          "skills": [],
+          "skills": ["s.11.thermodynamics"],
           "notes": "Temperature, heat and phase change: nearest are s.10.thermochemistry and s.7.phase-changes.",
           "lessons": [
             {
@@ -455,7 +455,7 @@
           "n": "12",
           "title": "Thermodynamics",
           "url": "https://openstax.org/books/physics/pages/12-1-zeroth-law-of-thermodynamics-thermal-equilibrium",
-          "skills": [],
+          "skills": ["s.11.thermodynamics"],
           "notes": "Thermodynamics: nearest is s.10.thermochemistry.",
           "lessons": [
             {
@@ -683,7 +683,7 @@
           "n": "18",
           "title": "Static Electricity",
           "url": "https://openstax.org/books/physics/pages/18-1-electrical-charges-conservation-of-charge-and-transfer-of-charge",
-          "skills": ["s.11.electromagnetism"],
+          "skills": ["s.11.electrostatics", "s.11.electromagnetism"],
           "notes": "Electric charge, Coulomb's law, electric fields and potential.",
           "lessons": [
             {
@@ -812,7 +812,7 @@
           "n": "21",
           "title": "The Quantum Nature of Light",
           "url": "https://openstax.org/books/physics/pages/21-1-planck-and-quantum-nature-of-light",
-          "skills": [],
+          "skills": ["s.11.modern-physics"],
           "notes": "Quantum nature of light; no taxonomy skill.",
           "lessons": [
             {
@@ -850,7 +850,7 @@
           "n": "22",
           "title": "The Atom",
           "url": "https://openstax.org/books/physics/pages/22-1-the-structure-of-the-atom",
-          "skills": ["s.10.atomic-structure", "s.12.radiometric-dating"],
+          "skills": ["s.11.modern-physics", "s.10.atomic-structure", "s.12.radiometric-dating"],
           "notes": "Atomic structure (22.1); radioactivity, half-life and radiometric dating (22.2-22.3); fission and fusion.",
           "lessons": [
             {
@@ -897,7 +897,7 @@
           "n": "23",
           "title": "Particle Physics",
           "url": "https://openstax.org/books/physics/pages/23-1-the-four-fundamental-forces",
-          "skills": [],
+          "skills": ["s.11.modern-physics"],
           "notes": "Particle physics; no taxonomy skill.",
           "lessons": [
             {

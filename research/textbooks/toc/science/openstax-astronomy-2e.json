@@ -127,7 +127,7 @@
           "n": "3",
           "title": "Orbits and Gravity",
           "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
-          "skills": ["s.11.circular-gravitation"],
+          "skills": ["s.12.solar-system", "s.11.circular-gravitation"],
           "notes": "Kepler's laws, Newton's gravitation and orbits (grade 11 skill); also s.8.gravity-orbits.",
           "lessons": [
             {
@@ -230,7 +230,7 @@
           "n": "5",
           "title": "Radiation and Spectra",
           "url": "https://openstax.org/books/astronomy-2e/pages/5-1-the-behavior-of-light",
-          "skills": [],
+          "skills": ["s.12.starlight-spectra"],
           "notes": "Radiation, spectra and the Doppler effect: nearest are s.8.em-spectrum, s.10.atomic-structure and s.11.sound-waves (Doppler).",
           "lessons": [
             {
@@ -279,7 +279,7 @@
           "n": "6",
           "title": "Astronomical Instruments",
           "url": "https://openstax.org/books/astronomy-2e/pages/6-1-telescopes",
-          "skills": [],
+          "skills": ["s.12.starlight-spectra", "s.12.atmosphere-weather"],
           "notes": "Telescopes and instruments; no taxonomy skill.",
           "lessons": [
             {
@@ -328,7 +328,7 @@
           "n": "7",
           "title": "Other Worlds: An Introduction to the Solar System",
           "url": "https://openstax.org/books/astronomy-2e/pages/7-1-overview-of-our-planetary-system",
-          "skills": [],
+          "skills": ["s.12.solar-system"],
           "notes": "Overview of the solar system; no taxonomy skill.",
           "lessons": [
             {
@@ -367,7 +367,7 @@
           "n": "8",
           "title": "Earth as a Planet",
           "url": "https://openstax.org/books/astronomy-2e/pages/8-1-the-global-perspective",
-          "skills": ["s.12.earth-interior", "s.12.climate-systems"],
+          "skills": ["s.12.atmosphere-weather", "s.12.earth-interior", "s.12.climate-systems"],
           "notes": "Earth's interior and crust (8.1-8.2, plate tectonics), atmosphere and climate change (8.3-8.4); also s.6.plate-tectonics.",
           "lessons": [
             {
@@ -411,7 +411,7 @@
           "n": "9",
           "title": "Cratered Worlds",
           "url": "https://openstax.org/books/astronomy-2e/pages/9-1-general-properties-of-the-moon",
-          "skills": ["s.12.radiometric-dating"],
+          "skills": ["s.12.solar-system", "s.12.radiometric-dating"],
           "notes": "Section 9.3 impact craters: crater counting and radiometric ages of lunar samples (loose); Moon and Mercury otherwise have no skill.",
           "lessons": [
             {
@@ -455,7 +455,7 @@
           "n": "10",
           "title": "Earthlike Planets: Venus and Mars",
           "url": "https://openstax.org/books/astronomy-2e/pages/10-1-the-nearest-planets-an-overview",
-          "skills": ["s.12.climate-systems"],
+          "skills": ["s.12.solar-system", "s.12.atmosphere-weather", "s.12.climate-systems"],
           "notes": "Venus' runaway greenhouse and Mars' climate history as climate systems (loose).",
           "lessons": [
             {
@@ -504,7 +504,7 @@
           "n": "11",
           "title": "The Giant Planets",
           "url": "https://openstax.org/books/astronomy-2e/pages/11-1-exploring-the-outer-planets",
-          "skills": [],
+          "skills": ["s.12.solar-system", "s.12.atmosphere-weather"],
           "notes": "The giant planets; no taxonomy skill.",
           "lessons": [
             {
@@ -538,7 +538,7 @@
           "n": "12",
           "title": "Rings, Moons, and Pluto",
           "url": "https://openstax.org/books/astronomy-2e/pages/12-1-ring-and-moon-systems-introduced",
-          "skills": [],
+          "skills": ["s.12.solar-system"],
           "notes": "Rings, moons and Pluto; no taxonomy skill.",
           "lessons": [
             {
@@ -582,7 +582,7 @@
           "n": "13",
           "title": "Comets and Asteroids: Debris of the Solar System",
           "url": "https://openstax.org/books/astronomy-2e/pages/13-1-asteroids",
-          "skills": [],
+          "skills": ["s.12.solar-system"],
           "notes": "Comets and asteroids; no taxonomy skill.",
           "lessons": [
             {
@@ -621,7 +621,7 @@
           "n": "14",
           "title": "Cosmic Samples and the Origin of the Solar System",
           "url": "https://openstax.org/books/astronomy-2e/pages/14-1-meteors",
-          "skills": ["s.12.radiometric-dating"],
+          "skills": ["s.12.solar-system", "s.12.radiometric-dating"],
           "notes": "Meteorite ages and the age of the solar system (14.2-14.3); origin of the solar system.",
           "lessons": [
             {
@@ -665,7 +665,7 @@
           "n": "15",
           "title": "The Sun: A Garden-Variety Star",
           "url": "https://openstax.org/books/astronomy-2e/pages/15-1-the-structure-and-composition-of-the-sun",
-          "skills": [],
+          "skills": ["s.12.atmosphere-weather"],
           "notes": "The Sun's structure and activity; nearest is s.5.sun-star-brightness.",
           "lessons": [
             {
@@ -743,7 +743,7 @@
           "n": "17",
           "title": "Analyzing Starlight",
           "url": "https://openstax.org/books/astronomy-2e/pages/17-1-the-brightness-of-stars",
-          "skills": [],
+          "skills": ["s.12.starlight-spectra"],
           "notes": "Analyzing starlight (spectra, colors, spectral classes); nearest is s.12.stellar-evolution (H-R diagram inputs).",
           "lessons": [
             {
@@ -782,7 +782,7 @@
           "n": "18",
           "title": "The Stars: A Celestial Census",
           "url": "https://openstax.org/books/astronomy-2e/pages/18-1-a-stellar-census",
-          "skills": ["s.12.stellar-evolution"],
+          "skills": ["s.12.starlight-spectra", "s.12.stellar-evolution"],
           "notes": "Stellar census and the H-R diagram (18.4).",
           "lessons": [
             {
@@ -909,7 +909,7 @@
           "n": "21",
           "title": "The Birth of Stars and the Discovery of Planets outside the Solar System",
           "url": "https://openstax.org/books/astronomy-2e/pages/21-1-star-formation",
-          "skills": ["s.12.stellar-evolution"],
+          "skills": ["s.12.solar-system", "s.12.stellar-evolution"],
           "notes": "Star formation (21.1-21.3); exoplanets (21.4-21.6) have no skill.",
           "lessons": [
             {

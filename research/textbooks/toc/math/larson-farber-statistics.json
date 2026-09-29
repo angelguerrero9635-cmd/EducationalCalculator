@@ -23,7 +23,7 @@
           "n": "1",
           "title": "Introduction to Statistics",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.7.sampling"],
+          "skills": ["m.11.study-design", "m.7.sampling"],
           "notes": "Loose fit: data classification and experimental design; nearest m.7.sampling.",
           "lessons": [
             {
@@ -39,7 +39,7 @@
             {
               "n": "1.3",
               "title": "Data Collection and Experimental Design",
-              "skills": ["m.7.sampling"]
+              "skills": ["m.11.study-design", "m.7.sampling"]
             }
           ]
         },
@@ -47,7 +47,7 @@
           "n": "2",
           "title": "Descriptive Statistics",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.6.center-spread", "m.11.normal-distribution"],
+          "skills": ["m.9.data-displays", "m.6.center-spread", "m.11.normal-distribution"],
           "notes": "Descriptive statistics have no high-school skill; z-scores (2.5) are in m.11.normal-distribution.",
           "lessons": [
             {
@@ -76,7 +76,11 @@
           "n": "3",
           "title": "Probability",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.10.conditional-probability", "m.12.binomial-theorem"],
+          "skills": [
+            "m.10.probability-rules",
+            "m.10.conditional-probability",
+            "m.11.binomial-theorem"
+          ],
           "lessons": [
             {
               "n": "3.1",
@@ -100,22 +104,22 @@
           "n": "4",
           "title": "Discrete Probability Distributions",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.12.probability-distributions"],
+          "skills": ["m.11.probability-distributions"],
           "lessons": [
             {
               "n": "4.1",
               "title": "Probability Distributions",
-              "skills": ["m.12.probability-distributions"]
+              "skills": ["m.11.probability-distributions"]
             },
             {
               "n": "4.2",
               "title": "Binomial Distributions",
-              "skills": ["m.12.probability-distributions"]
+              "skills": ["m.11.probability-distributions"]
             },
             {
               "n": "4.3",
               "title": "More Discrete Probability Distributions",
-              "skills": ["m.12.probability-distributions"]
+              "skills": ["m.11.probability-distributions"]
             }
           ]
         },
@@ -123,7 +127,7 @@
           "n": "5",
           "title": "Normal Probability Distributions",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.11.normal-distribution"],
+          "skills": ["m.12.sampling-distributions", "m.11.normal-distribution"],
           "lessons": [
             {
               "n": "5.1",
@@ -143,7 +147,7 @@
             {
               "n": "5.4",
               "title": "Sampling Distributions and the Central Limit Theorem",
-              "skills": ["m.11.normal-distribution"]
+              "skills": ["m.12.sampling-distributions", "m.11.normal-distribution"]
             },
             {
               "n": "5.5",
@@ -156,28 +160,32 @@
           "n": "6",
           "title": "Confidence Intervals",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.11.normal-distribution"],
+          "skills": ["m.12.confidence-intervals", "m.9.data-displays", "m.11.normal-distribution"],
           "notes": "Loose fit: confidence intervals; the skill covers margin of error.",
           "lessons": [
             {
               "n": "6.1",
               "title": "Confidence Intervals for the Mean (σ Known)",
-              "skills": ["m.11.normal-distribution"]
+              "skills": ["m.12.confidence-intervals", "m.11.normal-distribution"]
             },
             {
               "n": "6.2",
               "title": "Confidence Intervals for the Mean (σ Unknown)",
-              "skills": ["m.11.normal-distribution"]
+              "skills": ["m.12.confidence-intervals", "m.11.normal-distribution"]
             },
             {
               "n": "6.3",
               "title": "Confidence Intervals for Population Proportions",
-              "skills": ["m.11.normal-distribution"]
+              "skills": ["m.12.confidence-intervals", "m.11.normal-distribution"]
             },
             {
               "n": "6.4",
               "title": "Confidence Intervals for Variance and Standard Deviation",
-              "skills": ["m.11.normal-distribution"]
+              "skills": [
+                "m.9.data-displays",
+                "m.12.confidence-intervals",
+                "m.11.normal-distribution"
+              ]
             }
           ]
         },
@@ -227,7 +235,7 @@
           "n": "10",
           "title": "Chi-Square Tests and the F-Distribution",
           "url": "https://www.ixl.com/math/skill-plans/elementary-statistics",
-          "skills": ["m.12.hypothesis-testing"],
+          "skills": ["m.12.chi-square", "m.12.hypothesis-testing"],
           "notes": "Chi-square tests and the F-distribution go beyond the taxonomy's introduction to hypothesis testing. IXL gives only a section range for this chapter, not section titles; sections omitted."
         },
         {

@@ -167,16 +167,16 @@ Filed: the question's `skillId`. Also: questions filed elsewhere that list this 
 | `m.11.pythagorean-identities`          | Pythagorean trigonometric identities                                    |     1 |    0 |
 | `m.11.series`                          | Arithmetic and geometric series (sigma notation)                        |     1 |    0 |
 | `m.11.normal-distribution`             | Normal distribution, z-scores and margin of error                       |     1 |    0 |
-| `m.12.law-sines-cosines`               | Law of sines and law of cosines                                         |     0 |    0 |
+| `m.10.law-sines-cosines`               | Law of sines and law of cosines                                         |     0 |    0 |
 | `m.12.trig-formulas-equations`         | Sum, difference and double-angle formulas; trig equations               |     0 |    0 |
 | `m.12.vectors`                         | Vectors: components, magnitude and dot product                          |     0 |    0 |
 | `m.12.matrices`                        | Matrix operations and solving systems with matrices                     |     0 |    0 |
 | `m.12.polar`                           | Polar coordinates and polar form of complex numbers                     |     0 |    0 |
 | `m.12.parametric`                      | Parametric equations                                                    |     0 |    0 |
 | `m.12.conics`                          | Conic sections                                                          |     1 |    1 |
-| `m.12.binomial-theorem`                | Binomial theorem and combinatorics                                      |     3 |    0 |
+| `m.11.binomial-theorem`                | Binomial theorem and combinatorics                                      |     3 |    0 |
 | `m.12.limits-intro`                    | Introduction to limits and continuity                                   |     0 |    0 |
-| `m.12.probability-distributions`       | Discrete probability distributions and expected value                   |     3 |    0 |
+| `m.11.probability-distributions`       | Discrete probability distributions and expected value                   |     3 |    0 |
 | `m.12.hypothesis-testing`              | Introduction to hypothesis testing                                      |     1 |    0 |
 | `s.K.pushes-pulls`                     | Pushes and pulls change motion                                          |     0 |    0 |
 | `s.K.sunlight-warms`                   | Sunlight warms Earth's surface                                          |     5 |    0 |
@@ -288,7 +288,7 @@ Filed: the question's `skillId`. Also: questions filed elsewhere that list this 
 - `m.11.polynomial-functions` — Polynomial functions, division and the remainder theorem
 - `m.11.logarithms` — Logarithms and log properties
 - `m.11.unit-circle` — The unit circle and radian measure
-- `m.12.law-sines-cosines` — Law of sines and law of cosines
+- `m.10.law-sines-cosines` — Law of sines and law of cosines
 - `m.12.trig-formulas-equations` — Sum, difference and double-angle formulas; trig equations
 - `m.12.vectors` — Vectors: components, magnitude and dot product
 - `m.12.matrices` — Matrix operations and solving systems with matrices

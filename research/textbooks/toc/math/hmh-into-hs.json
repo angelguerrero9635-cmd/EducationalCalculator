@@ -536,7 +536,7 @@
           "n": "10",
           "title": "Data Analysis",
           "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-1",
-          "skills": ["m.10.conditional-probability", "m.6.center-spread"],
+          "skills": ["m.9.data-displays", "m.10.conditional-probability", "m.6.center-spread"],
           "sections": [
             {
               "n": "21",
@@ -645,7 +645,12 @@
           "n": "2",
           "title": "Parallel and Perpendicular Lines",
           "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
-          "skills": ["m.10.proofs", "m.7.angle-relationships", "m.10.coordinate-geometry"],
+          "skills": [
+            "m.10.parallel-lines",
+            "m.10.proofs",
+            "m.7.angle-relationships",
+            "m.10.coordinate-geometry"
+          ],
           "sections": [
             {
               "n": "3",
@@ -694,7 +699,7 @@
           "n": "3",
           "title": "Transformations",
           "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
-          "skills": ["m.8.transformations", "m.10.similarity"],
+          "skills": ["m.10.rigid-motions", "m.8.transformations", "m.10.similarity"],
           "sections": [
             {
               "n": "5",
@@ -801,7 +806,7 @@
           "n": "5",
           "title": "Relationships Within Triangles",
           "url": "https://www.ixl.com/math/skill-plans/into-math-geometry",
-          "skills": ["m.10.proofs"],
+          "skills": ["m.10.triangle-relationships", "m.10.proofs"],
           "sections": [
             {
               "n": "9",
@@ -933,7 +938,7 @@
           "skills": [
             "m.10.right-triangle-trig",
             "m.10.special-right-triangles",
-            "m.12.law-sines-cosines"
+            "m.10.law-sines-cosines"
           ],
           "sections": [
             {
@@ -962,17 +967,17 @@
             {
               "n": "14",
               "title": "Trigonometry with All Triangles",
-              "skills": ["m.12.law-sines-cosines"],
+              "skills": ["m.10.law-sines-cosines"],
               "lessons": [
                 {
                   "n": "14.1",
                   "title": "Law of Sines",
-                  "skills": ["m.12.law-sines-cosines"]
+                  "skills": ["m.10.law-sines-cosines"]
                 },
                 {
                   "n": "14.2",
                   "title": "Law of Cosines",
-                  "skills": ["m.12.law-sines-cosines"]
+                  "skills": ["m.10.law-sines-cosines"]
                 }
               ]
             }
@@ -1288,7 +1293,7 @@
           "n": "3",
           "title": "Rational Exponents and Radical Functions",
           "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
-          "skills": ["m.9.radicals", "m.11.inverse-functions"],
+          "skills": ["m.11.radical-functions", "m.9.radicals", "m.11.inverse-functions"],
           "sections": [
             {
               "n": "6",
@@ -1609,14 +1614,14 @@
           "url": "https://www.ixl.com/math/skill-plans/into-math-algebra-2",
           "skills": [
             "m.11.normal-distribution",
-            "m.12.probability-distributions",
+            "m.11.probability-distributions",
             "m.12.hypothesis-testing"
           ],
           "sections": [
             {
               "n": "19",
               "title": "Data Distributions",
-              "skills": ["m.11.normal-distribution", "m.12.probability-distributions"],
+              "skills": ["m.11.normal-distribution", "m.11.probability-distributions"],
               "lessons": [
                 {
                   "n": "1",

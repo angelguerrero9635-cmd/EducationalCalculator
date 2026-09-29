@@ -80,6 +80,8 @@
           "title": "Equations and Inequalities",
           "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-introduction-to-equations-and-inequalities",
           "skills": [
+            "m.9.linear-inequalities",
+            "m.9.solving-equations",
             "m.8.linear-functions",
             "m.8.pythagorean",
             "m.8.multi-step-equations",
@@ -104,7 +106,11 @@
               "n": "2.2",
               "title": "Linear Equations in One Variable",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-2-linear-equations-in-one-variable",
-              "skills": ["m.8.multi-step-equations", "m.8.linear-functions"],
+              "skills": [
+                "m.9.solving-equations",
+                "m.8.multi-step-equations",
+                "m.8.linear-functions"
+              ],
               "notes": "linear equations in one variable: Grade 8 skill"
             },
             {
@@ -145,6 +151,7 @@
           "title": "Functions",
           "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-introduction-to-functions",
           "skills": [
+            "m.9.function-notation",
             "m.8.functions-intro",
             "m.9.absolute-value",
             "m.8.slope",
@@ -156,14 +163,14 @@
               "n": "3.1",
               "title": "Functions and Function Notation",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-1-functions-and-function-notation",
-              "skills": ["m.8.functions-intro"],
+              "skills": ["m.9.function-notation", "m.8.functions-intro"],
               "notes": "function notation: no Grade 9 skill; Grade 8 functions-intro"
             },
             {
               "n": "3.2",
               "title": "Domain and Range",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-2-domain-and-range",
-              "skills": ["m.8.functions-intro", "m.9.absolute-value"]
+              "skills": ["m.9.function-notation", "m.8.functions-intro", "m.9.absolute-value"]
             },
             {
               "n": "3.3",
@@ -235,6 +242,8 @@
           "title": "Polynomial and Rational Functions",
           "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-introduction-to-polynomial-and-rational-functions",
           "skills": [
+            "m.11.polynomial-equations",
+            "m.11.radical-functions",
             "m.9.quadratic-functions",
             "m.11.polynomial-functions",
             "m.11.complex-numbers",
@@ -272,7 +281,11 @@
               "n": "5.5",
               "title": "Zeros of Polynomial Functions",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-5-zeros-of-polynomial-functions",
-              "skills": ["m.11.polynomial-functions", "m.11.complex-numbers"]
+              "skills": [
+                "m.11.polynomial-equations",
+                "m.11.polynomial-functions",
+                "m.11.complex-numbers"
+              ]
             },
             {
               "n": "5.6",
@@ -284,7 +297,7 @@
               "n": "5.7",
               "title": "Inverses and Radical Functions",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-7-inverses-and-radical-functions",
-              "skills": ["m.11.inverse-functions", "m.9.radicals"]
+              "skills": ["m.11.radical-functions", "m.11.inverse-functions", "m.9.radicals"]
             },
             {
               "n": "5.8",
@@ -397,7 +410,12 @@
           "n": "8",
           "title": "Periodic Functions",
           "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-introduction-to-periodic-functions",
-          "skills": ["m.11.trig-graphs", "m.11.inverse-functions", "m.11.unit-circle"],
+          "skills": [
+            "m.12.inverse-trig",
+            "m.11.trig-graphs",
+            "m.11.inverse-functions",
+            "m.11.unit-circle"
+          ],
           "lessons": [
             {
               "n": "8.1",
@@ -415,7 +433,7 @@
               "n": "8.3",
               "title": "Inverse Trigonometric Functions",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-3-inverse-trigonometric-functions",
-              "skills": ["m.11.inverse-functions", "m.11.unit-circle"]
+              "skills": ["m.12.inverse-trig", "m.11.inverse-functions", "m.11.unit-circle"]
             }
           ]
         }
@@ -467,7 +485,7 @@
           "title": "Further Applications of Trigonometry",
           "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-introduction-to-further-applications-of-trigonometry",
           "skills": [
-            "m.12.law-sines-cosines",
+            "m.10.law-sines-cosines",
             "m.12.polar",
             "m.11.complex-numbers",
             "m.12.parametric",
@@ -478,13 +496,13 @@
               "n": "10.1",
               "title": "Non-right Triangles: Law of Sines",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-1-non-right-triangles-law-of-sines",
-              "skills": ["m.12.law-sines-cosines"]
+              "skills": ["m.10.law-sines-cosines"]
             },
             {
               "n": "10.2",
               "title": "Non-right Triangles: Law of Cosines",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-2-non-right-triangles-law-of-cosines",
-              "skills": ["m.12.law-sines-cosines"]
+              "skills": ["m.10.law-sines-cosines"]
             },
             {
               "n": "10.3",
@@ -631,9 +649,10 @@
           "title": "Sequences, Probability, and Counting Theory",
           "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-introduction-to-sequences-probability-and-counting-theory",
           "skills": [
+            "m.10.probability-rules",
             "m.9.sequences",
             "m.11.series",
-            "m.12.binomial-theorem",
+            "m.11.binomial-theorem",
             "m.10.conditional-probability",
             "m.7.probability"
           ],
@@ -666,13 +685,13 @@
               "n": "13.5",
               "title": "Counting Principles",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-5-counting-principles",
-              "skills": ["m.12.binomial-theorem"]
+              "skills": ["m.10.probability-rules", "m.11.binomial-theorem"]
             },
             {
               "n": "13.6",
               "title": "Binomial Theorem",
               "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-6-binomial-theorem",
-              "skills": ["m.12.binomial-theorem"]
+              "skills": ["m.11.binomial-theorem"]
             },
             {
               "n": "13.7",

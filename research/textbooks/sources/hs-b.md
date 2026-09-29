@@ -172,10 +172,10 @@ and Bringing It Together pages were not sampled.
 
 **Skill mapping (the loosest of the three books):** the taxonomy has few statistics skills in
 Grades 9–12 (`m.9.regression`, `m.10.conditional-probability`, `m.11.normal-distribution`,
-`m.12.probability-distributions`, `m.12.hypothesis-testing`). Chapter 1 (sampling and data) maps to
+`m.11.probability-distributions`, `m.12.hypothesis-testing`). Chapter 1 (sampling and data) maps to
 `m.7.sampling`; Chapter 2 (descriptive statistics, graphs, quartiles, box plots, standard
 deviation) to `m.6.center-spread` and `m.11.normal-distribution`; Chapter 3 to conditional
-probability; 4–5 (discrete and continuous distributions) to `m.12.probability-distributions`; 6–8
+probability; 4–5 (discrete and continuous distributions) to `m.11.probability-distributions`; 6–8
 (normal, central limit theorem, confidence intervals) to `m.11.normal-distribution`; 9–11 and 13
 (one- and two-sample tests, chi-square, ANOVA) to `m.12.hypothesis-testing`; 12 (regression) to
 `m.9.regression`.
@@ -210,7 +210,7 @@ of contents, a marked sample.
   polynomials) to `m.11.polynomial-functions` although filed under Grade 9; Intermediate 4.4–4.6
   (three-variable systems, matrices, determinants) map to `m.12.matrices`, 6 and 8–9 (factoring,
   radicals, quadratics) to the Grade 9 skills, 11 (conics) to `m.12.conics`, 12.4 to
-  `m.12.binomial-theorem`.
+  `m.11.binomial-theorem`.
 
 | Book                    | Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots |   MB |
 | ----------------------- | ----: | -------: | -------: | -------: | -----: | ----------------: | ----------: | ----------------------: | ----------: | ---: |
@@ -241,6 +241,6 @@ license panel quoted as above (CC BY-NC-SA 4.0 unless noted).
   limit theorem**, **chi-square/ANOVA**, **function notation, domain and range**, **transformations
   of functions**, **systems in three variables**, **partial fractions**, **rotation of axes**, or
   **derivatives** (Precalculus 12.4). They map to the nearest skill with a note.
-- `m.12.binomial-theorem` covers combinatorics too; counting principles (13.5/11.5) map there.
+- `m.11.binomial-theorem` covers combinatorics too; counting principles (13.5/11.5) map there.
 - Real numbers, integer exponents and one-variable linear equations open both algebra books but
   exist only as Grade 8 skills.

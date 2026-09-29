@@ -23,7 +23,14 @@
           "n": "1",
           "title": "Functions and Their Graphs",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
-          "skills": ["m.8.functions-intro", "m.9.linear-modeling", "m.11.inverse-functions"],
+          "skills": [
+            "m.9.function-notation",
+            "m.11.function-transformations",
+            "m.10.probability-rules",
+            "m.8.functions-intro",
+            "m.9.linear-modeling",
+            "m.11.inverse-functions"
+          ],
           "lessons": [
             {
               "n": "1.1",
@@ -72,6 +79,7 @@
           "title": "Polynomial and Rational Functions",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
           "skills": [
+            "m.11.polynomial-equations",
             "m.9.quadratic-functions",
             "m.11.polynomial-functions",
             "m.11.complex-numbers",
@@ -141,6 +149,7 @@
           "title": "Trigonometry",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
           "skills": [
+            "m.12.inverse-trig",
             "m.11.unit-circle",
             "m.10.right-triangle-trig",
             "m.11.trig-graphs",
@@ -213,7 +222,7 @@
           "n": "6",
           "title": "Additional Topics in Trigonometry",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
-          "skills": ["m.12.law-sines-cosines", "m.12.vectors", "m.12.polar"],
+          "skills": ["m.10.law-sines-cosines", "m.12.vectors", "m.12.polar"],
           "lessons": [
             {
               "n": "6.1",
@@ -311,7 +320,12 @@
           "n": "9",
           "title": "Sequences, Series, and Probability",
           "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
-          "skills": ["m.9.sequences", "m.11.series", "m.12.binomial-theorem"],
+          "skills": [
+            "m.10.probability-rules",
+            "m.9.sequences",
+            "m.11.series",
+            "m.11.binomial-theorem"
+          ],
           "notes": "Mathematical induction has no taxonomy skill.",
           "lessons": [
             {

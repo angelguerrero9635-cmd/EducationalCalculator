@@ -67,6 +67,8 @@
           "title": "Solving Linear Equations",
           "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-introduction",
           "skills": [
+            "m.9.solving-equations",
+            "m.9.linear-inequalities",
             "m.8.multi-step-equations",
             "m.9.linear-modeling",
             "m.9.inequality-systems",
@@ -101,13 +103,13 @@
               "n": "2.5",
               "title": "Solve Linear Inequalities",
               "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-5-solve-linear-inequalities",
-              "skills": ["m.9.inequality-systems"]
+              "skills": ["m.9.linear-inequalities", "m.9.inequality-systems"]
             },
             {
               "n": "2.6",
               "title": "Solve Compound Inequalities",
               "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-6-solve-compound-inequalities",
-              "skills": ["m.9.inequality-systems"]
+              "skills": ["m.9.linear-inequalities", "m.9.inequality-systems"]
             },
             {
               "n": "2.7",
@@ -123,6 +125,8 @@
           "title": "Graphs and Functions",
           "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-introduction",
           "skills": [
+            "m.9.linear-inequalities",
+            "m.9.function-notation",
             "m.8.linear-functions",
             "m.8.slope",
             "m.9.linear-modeling",
@@ -153,13 +157,13 @@
               "n": "3.4",
               "title": "Graph Linear Inequalities in Two Variables",
               "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-4-graph-linear-inequalities-in-two-variables",
-              "skills": ["m.9.inequality-systems"]
+              "skills": ["m.9.linear-inequalities", "m.9.inequality-systems"]
             },
             {
               "n": "3.5",
               "title": "Relations and Functions",
               "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-5-relations-and-functions",
-              "skills": ["m.8.functions-intro"]
+              "skills": ["m.9.function-notation", "m.8.functions-intro"]
             },
             {
               "n": "3.6",
@@ -269,7 +273,7 @@
           "n": "6",
           "title": "Factoring",
           "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-introduction-to-factoring",
-          "skills": ["m.9.factoring", "m.11.polynomial-functions"],
+          "skills": ["m.11.polynomial-equations", "m.9.factoring", "m.11.polynomial-functions"],
           "lessons": [
             {
               "n": "6.1",
@@ -299,7 +303,7 @@
               "n": "6.5",
               "title": "Polynomial Equations",
               "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-5-polynomial-equations",
-              "skills": ["m.9.factoring", "m.11.polynomial-functions"]
+              "skills": ["m.11.polynomial-equations", "m.9.factoring", "m.11.polynomial-functions"]
             }
           ],
           "notes": "factoring: Grade 9 skill"
@@ -352,7 +356,12 @@
           "n": "8",
           "title": "Roots and Radicals",
           "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-introduction",
-          "skills": ["m.9.radicals", "m.11.inverse-functions", "m.11.complex-numbers"],
+          "skills": [
+            "m.11.radical-functions",
+            "m.9.radicals",
+            "m.11.inverse-functions",
+            "m.11.complex-numbers"
+          ],
           "lessons": [
             {
               "n": "8.1",
@@ -388,7 +397,7 @@
               "n": "8.6",
               "title": "Solve Radical Equations",
               "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-6-solve-radical-equations",
-              "skills": ["m.9.radicals"]
+              "skills": ["m.11.radical-functions", "m.9.radicals"]
             },
             {
               "n": "8.7",
@@ -548,7 +557,7 @@
           "n": "12",
           "title": "Sequences, Series and Binomial Theorem",
           "url": "https://openstax.org/books/intermediate-algebra-2e/pages/12-introduction",
-          "skills": ["m.9.sequences", "m.11.series", "m.12.binomial-theorem"],
+          "skills": ["m.9.sequences", "m.11.series", "m.11.binomial-theorem"],
           "lessons": [
             {
               "n": "12.1",
@@ -572,7 +581,7 @@
               "n": "12.4",
               "title": "Binomial Theorem",
               "url": "https://openstax.org/books/intermediate-algebra-2e/pages/12-4-binomial-theorem",
-              "skills": ["m.12.binomial-theorem"],
+              "skills": ["m.11.binomial-theorem"],
               "notes": "binomial theorem: Grade 12 skill"
             }
           ]

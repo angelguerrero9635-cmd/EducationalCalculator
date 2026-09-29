@@ -23,7 +23,7 @@
           "n": "1",
           "title": "Solving Linear Equations",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
-          "skills": ["m.8.multi-step-equations", "m.9.absolute-value"],
+          "skills": ["m.9.solving-equations", "m.8.multi-step-equations", "m.9.absolute-value"],
           "notes": "Solving linear equations in one variable has no Grade 9 skill; mapped to m.8.multi-step-equations.",
           "lessons": [
             {
@@ -60,7 +60,7 @@
           "n": "2",
           "title": "Solving Linear Inequalities",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
-          "skills": ["m.9.inequality-systems", "m.9.absolute-value"],
+          "skills": ["m.9.linear-inequalities", "m.9.inequality-systems", "m.9.absolute-value"],
           "lessons": [
             {
               "n": "2.1",
@@ -92,7 +92,12 @@
           "n": "3",
           "title": "Graphing Linear Functions",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
-          "skills": ["m.8.functions-intro", "m.9.linear-modeling", "m.9.absolute-value"],
+          "skills": [
+            "m.9.function-notation",
+            "m.8.functions-intro",
+            "m.9.linear-modeling",
+            "m.9.absolute-value"
+          ],
           "lessons": [
             {
               "n": "3.1",
@@ -132,7 +137,12 @@
           "n": "4",
           "title": "Writing Linear Functions",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
-          "skills": ["m.9.linear-modeling", "m.9.regression", "m.9.sequences"],
+          "skills": [
+            "m.9.piecewise-functions",
+            "m.9.linear-modeling",
+            "m.9.regression",
+            "m.9.sequences"
+          ],
           "lessons": [
             {
               "n": "4.1",
@@ -168,7 +178,12 @@
           "n": "5",
           "title": "Solving Systems of Linear Equations",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
-          "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+          "skills": [
+            "m.9.solving-equations",
+            "m.9.linear-inequalities",
+            "m.8.systems-linear",
+            "m.9.inequality-systems"
+          ],
           "lessons": [
             {
               "n": "5.1",
@@ -374,7 +389,12 @@
           "n": "11",
           "title": "Data Analysis and Displays",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
-          "skills": ["m.6.center-spread", "m.10.conditional-probability"],
+          "skills": [
+            "m.9.data-displays",
+            "m.9.two-way-tables",
+            "m.6.center-spread",
+            "m.10.conditional-probability"
+          ],
           "notes": "Descriptive statistics (center, spread, box plots, shape) have no high-school skill; mapped to m.6.center-spread. Loose fit: two-way tables have no taxonomy skill; nearest m.10.conditional-probability.",
           "lessons": [
             {
@@ -479,7 +499,12 @@
           "n": "3",
           "title": "Parallel and Perpendicular Lines",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
-          "skills": ["m.10.proofs", "m.7.angle-relationships", "m.10.coordinate-geometry"],
+          "skills": [
+            "m.10.parallel-lines",
+            "m.10.proofs",
+            "m.7.angle-relationships",
+            "m.10.coordinate-geometry"
+          ],
           "lessons": [
             {
               "n": "3.1",
@@ -507,7 +532,12 @@
           "n": "4",
           "title": "Transformations",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
-          "skills": ["m.8.transformations", "m.10.congruence", "m.10.similarity"],
+          "skills": [
+            "m.10.rigid-motions",
+            "m.8.transformations",
+            "m.10.congruence",
+            "m.10.similarity"
+          ],
           "lessons": [
             {
               "n": "4.1",
@@ -539,7 +569,7 @@
           "n": "5",
           "title": "Congruent Triangles",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
-          "skills": ["m.10.congruence", "m.10.coordinate-geometry"],
+          "skills": ["m.10.quadrilaterals", "m.10.congruence", "m.10.coordinate-geometry"],
           "lessons": [
             {
               "n": "5.1",
@@ -579,7 +609,7 @@
           "n": "6",
           "title": "Relationships Within Triangles",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
-          "skills": ["m.10.proofs", "m.10.constructions"],
+          "skills": ["m.10.triangle-relationships", "m.10.proofs", "m.10.constructions"],
           "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs.",
           "lessons": [
             {
@@ -612,33 +642,33 @@
           "n": "7",
           "title": "Quadrilaterals and Other Polygons",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
-          "skills": ["m.10.proofs"],
+          "skills": ["m.10.quadrilaterals", "m.10.proofs"],
           "notes": "Loose fit: properties of quadrilaterals and polygons have no high-school taxonomy skill; nearest m.10.proofs.",
           "lessons": [
             {
               "n": "7.1",
               "title": "Angles of Polygons",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7.2",
               "title": "Properties of Parallelograms",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7.3",
               "title": "Proving That a Quadrilateral is a Parallelogram",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7.4",
               "title": "Properties of Special Parallelograms",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7.5",
               "title": "Properties of Trapezoids and Kites",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             }
           ]
         },
@@ -679,7 +709,7 @@
             "m.10.special-right-triangles",
             "m.10.similarity",
             "m.10.right-triangle-trig",
-            "m.12.law-sines-cosines"
+            "m.10.law-sines-cosines"
           ],
           "lessons": [
             {
@@ -716,7 +746,12 @@
           "n": "10",
           "title": "Circles",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
-          "skills": ["m.10.circle-theorems", "m.10.coordinate-geometry", "m.12.conics"],
+          "skills": [
+            "m.10.quadrilaterals",
+            "m.10.circle-theorems",
+            "m.10.coordinate-geometry",
+            "m.12.conics"
+          ],
           "lessons": [
             {
               "n": "10.1",
@@ -818,9 +853,11 @@
           "title": "Probability",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
           "skills": [
+            "m.10.probability-rules",
+            "m.9.two-way-tables",
             "m.10.conditional-probability",
-            "m.12.binomial-theorem",
-            "m.12.probability-distributions"
+            "m.11.binomial-theorem",
+            "m.11.probability-distributions"
           ],
           "lessons": [
             {
@@ -863,7 +900,12 @@
           "n": "1",
           "title": "Linear Functions",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
-          "skills": ["m.9.linear-modeling", "m.9.absolute-value", "m.8.systems-linear"],
+          "skills": [
+            "m.11.function-transformations",
+            "m.9.linear-modeling",
+            "m.9.absolute-value",
+            "m.8.systems-linear"
+          ],
           "lessons": [
             {
               "n": "1.1",
@@ -887,7 +929,7 @@
           "n": "2",
           "title": "Quadratic Functions",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
-          "skills": ["m.9.quadratic-functions", "m.12.conics"],
+          "skills": ["m.11.function-transformations", "m.9.quadratic-functions", "m.12.conics"],
           "lessons": [
             {
               "n": "2.1",
@@ -943,7 +985,7 @@
           "n": "4",
           "title": "Polynomial Functions",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
-          "skills": ["m.11.polynomial-functions"],
+          "skills": ["m.11.polynomial-equations", "m.11.polynomial-functions"],
           "lessons": [
             {
               "n": "4.1",
@@ -968,12 +1010,12 @@
             {
               "n": "4.5",
               "title": "Solving Polynomial Equations",
-              "skills": ["m.11.polynomial-functions"]
+              "skills": ["m.11.polynomial-equations", "m.11.polynomial-functions"]
             },
             {
               "n": "4.6",
               "title": "The Fundamental Theorem of Algebra",
-              "skills": ["m.11.polynomial-functions"]
+              "skills": ["m.11.polynomial-equations", "m.11.polynomial-functions"]
             },
             {
               "n": "4.7",
@@ -996,7 +1038,12 @@
           "n": "5",
           "title": "Rational Exponents and Radical Functions",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
-          "skills": ["m.9.radicals", "m.11.inverse-functions"],
+          "skills": [
+            "m.11.radical-functions",
+            "m.9.linear-inequalities",
+            "m.9.radicals",
+            "m.11.inverse-functions"
+          ],
           "lessons": [
             {
               "n": "5.1",
@@ -1032,7 +1079,12 @@
           "n": "6",
           "title": "Exponential and Logarithmic Functions",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
-          "skills": ["m.9.exponential-functions", "m.11.logarithms", "m.11.exp-log-equations"],
+          "skills": [
+            "m.11.function-transformations",
+            "m.9.exponential-functions",
+            "m.11.logarithms",
+            "m.11.exp-log-equations"
+          ],
           "lessons": [
             {
               "n": "6.1",
@@ -1102,9 +1154,11 @@
           "title": "Probability",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
           "skills": [
+            "m.10.probability-rules",
+            "m.9.two-way-tables",
             "m.10.conditional-probability",
-            "m.12.binomial-theorem",
-            "m.12.probability-distributions"
+            "m.11.binomial-theorem",
+            "m.11.probability-distributions"
           ],
           "lessons": [
             {
@@ -1141,7 +1195,12 @@
           "n": "9",
           "title": "Data Analysis and Statistics",
           "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
-          "skills": ["m.11.normal-distribution", "m.12.hypothesis-testing"],
+          "skills": [
+            "m.9.data-displays",
+            "m.11.study-design",
+            "m.11.normal-distribution",
+            "m.12.hypothesis-testing"
+          ],
           "lessons": [
             {
               "n": "9.1",

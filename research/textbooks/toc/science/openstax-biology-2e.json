@@ -217,7 +217,7 @@
           "title": "Metabolism",
           "url": "https://openstax.org/books/biology-2e/pages/6-1-energy-and-metabolism",
           "part": "The Cell",
-          "skills": [],
+          "skills": ["s.9.cellular-energy"],
           "notes": "Metabolism, free energy and enzymes: nearest are s.10.thermochemistry and s.10.rates-equilibrium (catalysts).",
           "lessons": [
             {
@@ -259,7 +259,7 @@
           "title": "Cellular Respiration",
           "url": "https://openstax.org/books/biology-2e/pages/7-1-energy-in-living-systems",
           "part": "The Cell",
-          "skills": [],
+          "skills": ["s.9.cellular-energy"],
           "notes": "Cellular respiration: nearest is s.7.photosynthesis-respiration (middle school).",
           "lessons": [
             {
@@ -311,7 +311,7 @@
           "title": "Photosynthesis",
           "url": "https://openstax.org/books/biology-2e/pages/8-1-overview-of-photosynthesis",
           "part": "The Cell",
-          "skills": [],
+          "skills": ["s.9.cellular-energy"],
           "notes": "Photosynthesis: nearest is s.7.photosynthesis-respiration (middle school).",
           "lessons": [
             {
@@ -504,7 +504,7 @@
           "title": "DNA Structure and Function",
           "url": "https://openstax.org/books/biology-2e/pages/14-1-historical-basis-of-modern-understanding",
           "part": "Genetics",
-          "skills": ["s.9.dna-protein-synthesis"],
+          "skills": ["s.9.classification", "s.9.dna-protein-synthesis"],
           "lessons": [
             {
               "n": "14.1",
@@ -591,7 +591,7 @@
           "title": "Gene Expression",
           "url": "https://openstax.org/books/biology-2e/pages/16-1-regulation-of-gene-expression",
           "part": "Genetics",
-          "skills": ["s.9.dna-protein-synthesis"],
+          "skills": ["s.9.biotechnology", "s.9.dna-protein-synthesis"],
           "notes": "Gene regulation; the taxonomy stops at transcription and translation (loose).",
           "lessons": [
             {
@@ -643,7 +643,7 @@
           "title": "Biotechnology and Genomics",
           "url": "https://openstax.org/books/biology-2e/pages/17-1-biotechnology",
           "part": "Genetics",
-          "skills": [],
+          "skills": ["s.9.biotechnology"],
           "notes": "Biotechnology and genomics; no taxonomy skill.",
           "lessons": [
             {
@@ -748,7 +748,7 @@
           "title": "Phylogenies and the History of Life",
           "url": "https://openstax.org/books/biology-2e/pages/20-1-organizing-life-on-earth",
           "part": "Evolutionary Processes",
-          "skills": ["s.9.evolution-evidence"],
+          "skills": ["s.9.classification", "s.9.evolution-evidence"],
           "notes": "Phylogenies as evidence of common descent.",
           "lessons": [
             {
@@ -780,7 +780,7 @@
           "title": "Viruses",
           "url": "https://openstax.org/books/biology-2e/pages/21-1-viral-evolution-morphology-and-classification",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Viruses; no taxonomy skill.",
           "lessons": [
             {
@@ -817,7 +817,7 @@
           "title": "Prokaryotes: Bacteria and Archaea",
           "url": "https://openstax.org/books/biology-2e/pages/22-1-prokaryotic-diversity",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification", "s.9.cellular-energy", "s.9.immune-disease"],
           "notes": "Prokaryotes; no taxonomy skill.",
           "lessons": [
             {
@@ -859,7 +859,7 @@
           "title": "Protists",
           "url": "https://openstax.org/books/biology-2e/pages/23-1-eukaryotic-origins",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Protists; no taxonomy skill.",
           "lessons": [
             {
@@ -896,7 +896,7 @@
           "title": "Fungi",
           "url": "https://openstax.org/books/biology-2e/pages/24-1-characteristics-of-fungi",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification", "s.9.immune-disease"],
           "notes": "Fungi; no taxonomy skill.",
           "lessons": [
             {
@@ -938,7 +938,7 @@
           "title": "Seedless Plants",
           "url": "https://openstax.org/books/biology-2e/pages/25-1-early-plant-life",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Seedless plants; no taxonomy skill.",
           "lessons": [
             {
@@ -975,7 +975,7 @@
           "title": "Seed Plants",
           "url": "https://openstax.org/books/biology-2e/pages/26-1-evolution-of-seed-plants",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Seed plants; no taxonomy skill.",
           "lessons": [
             {
@@ -1012,7 +1012,7 @@
           "title": "Introduction to Animal Diversity",
           "url": "https://openstax.org/books/biology-2e/pages/27-1-features-of-the-animal-kingdom",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Animal diversity; no taxonomy skill.",
           "lessons": [
             {
@@ -1049,7 +1049,7 @@
           "title": "Invertebrates",
           "url": "https://openstax.org/books/biology-2e/pages/28-1-phylum-porifera",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Invertebrates; no taxonomy skill.",
           "lessons": [
             {
@@ -1101,7 +1101,7 @@
           "title": "Vertebrates",
           "url": "https://openstax.org/books/biology-2e/pages/29-1-chordates",
           "part": "Biological Diversity",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Vertebrates; no taxonomy skill.",
           "lessons": [
             {
@@ -1153,7 +1153,7 @@
           "title": "Plant Form and Physiology",
           "url": "https://openstax.org/books/biology-2e/pages/30-1-the-plant-body",
           "part": "Plant Structure and Function",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Plant form and physiology; no taxonomy skill.",
           "lessons": [
             {
@@ -1200,7 +1200,7 @@
           "title": "Soil and Plant Nutrition",
           "url": "https://openstax.org/books/biology-2e/pages/31-1-nutritional-requirements-of-plants",
           "part": "Plant Structure and Function",
-          "skills": [],
+          "skills": ["s.9.classification"],
           "notes": "Soil and plant nutrition; no taxonomy skill.",
           "lessons": [
             {
@@ -1612,7 +1612,7 @@
           "title": "The Immune System",
           "url": "https://openstax.org/books/biology-2e/pages/42-1-innate-immune-response",
           "part": "Animal Structure and Function",
-          "skills": [],
+          "skills": ["s.9.immune-disease"],
           "notes": "Immune system; no taxonomy skill.",
           "lessons": [
             {
@@ -1701,7 +1701,7 @@
           "title": "Ecology and the Biosphere",
           "url": "https://openstax.org/books/biology-2e/pages/44-1-the-scope-of-ecology",
           "part": "Ecology",
-          "skills": ["s.12.climate-systems"],
+          "skills": ["s.9.ecosystem-dynamics", "s.12.climate-systems"],
           "notes": "Section 44.5 climate and global climate change (grade 12 skill); biomes have no skill.",
           "lessons": [
             {
@@ -1743,7 +1743,7 @@
           "title": "Population and Community Ecology",
           "url": "https://openstax.org/books/biology-2e/pages/45-1-population-demography",
           "part": "Ecology",
-          "skills": ["s.9.population-ecology"],
+          "skills": ["s.9.ecosystem-dynamics", "s.9.population-ecology"],
           "lessons": [
             {
               "n": "45.1",
@@ -1794,7 +1794,7 @@
           "title": "Ecosystems",
           "url": "https://openstax.org/books/biology-2e/pages/46-1-ecology-of-ecosystems",
           "part": "Ecology",
-          "skills": [],
+          "skills": ["s.9.ecosystem-dynamics"],
           "notes": "Ecosystems, energy flow and biogeochemical cycles: nearest is s.7.ecosystem-energy (middle school).",
           "lessons": [
             {
@@ -1826,7 +1826,7 @@
           "title": "Conservation Biology and Biodiversity",
           "url": "https://openstax.org/books/biology-2e/pages/47-1-the-biodiversity-crisis",
           "part": "Ecology",
-          "skills": ["s.12.resource-management"],
+          "skills": ["s.9.classification", "s.9.ecosystem-dynamics", "s.12.resource-management"],
           "notes": "Biodiversity threats and conservation as human impacts (grade 12 skill).",
           "lessons": [
             {

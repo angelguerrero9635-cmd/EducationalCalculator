@@ -44,6 +44,55 @@ and each strand's skills sit together within a grade.
 
 ## Resolved
 
+### Grades 9–12 aligned with the high-school textbooks
+
+The grades 9–12 research (`research/textbooks/grades/9.md`–`12.md`, the source notes in
+`sources/hs-a.md`–`hs-d.md`) compared every Algebra 1, Geometry, Algebra 2, Precalculus,
+Statistics, Biology, Chemistry, Physics and Earth Science program with the taxonomy. Each grade is
+now one course in the order its textbooks teach it, titled in their words.
+
+- **Math 9, Algebra 1** (11 → 17 skills): added `solving-equations` (with literal equations),
+  `linear-inequalities` (with compound), `function-notation` (domain, range, key features),
+  `piecewise-functions`, `data-displays` (one-variable statistics: histograms, box plots,
+  standard deviation, outliers) and `two-way-tables`. `inequality-systems` is now the systems
+  unit (elimination, systems of inequalities); `absolute-value` is equations and inequalities;
+  `radicals` covers exponent properties and rational exponents, as the exponents unit does.
+- **Math 10, Geometry** (11 → 18): added `parallel-lines`, `rigid-motions`,
+  `triangle-relationships`, `quadrilaterals`, `circle-equations` (from `conics`) and
+  `probability-rules` (sample spaces, the addition rule, permutations, combinations).
+  `law-sines-cosines` moved from Grade 12, since every Geometry book teaches it
+  (`m.12.law-sines-cosines` → `m.10.law-sines-cosines`). `volume-derivations` now names surface
+  area and cross sections.
+- **Math 11, Algebra 2** (11 → 17): added `function-transformations` (a unit of its own in IM
+  and Big Ideas), `polynomial-equations`, `radical-functions` and `study-design`. Moved from
+  Grade 12, as the Algebra 2 books teach them: `binomial-theorem` and
+  `probability-distributions` (`m.12.*` → `m.11.*`).
+- **Math 12** is two courses, as the books are: **Precalculus** (strand renamed from
+  "Precalculus & Statistics"; added `inverse-trig`; `matrices` now names three-variable
+  systems and determinants; `conics` is parabolas, ellipses and hyperbolas; `limits-intro`
+  includes derivatives) and **Statistics** (new strand: `sampling-distributions`,
+  `confidence-intervals`, `hypothesis-testing`, `chi-square`).
+- **Science 9, Biology** (8 → 13): added `cellular-energy`, `biotechnology`, `classification`,
+  `ecosystem-dynamics` and `immune-disease`; order follows the books (chemistry of life,
+  cells, energy, cell cycle, genetics, DNA, evolution, ecology, body systems).
+- **Science 10, Chemistry** (10 → 17): added `measurement`, `electrons-in-atoms` (split from
+  `atomic-structure`, as every book has two chapters), `molecular-shape`, `reaction-types`,
+  `redox`, `organic` and `nuclear-chemistry`.
+- **Science 11, Physics** (9 → 13): added `kinematics-1d` (split from `kinematics-2d`),
+  `thermodynamics`, `electrostatics` (split from `electromagnetism`) and `modern-physics`;
+  momentum now comes before energy, as in OpenStax and Glencoe.
+- **Science 12, Earth & Space** (7 → 13), in Tarbuck and Lutgens' order: added
+  `minerals-rocks`, `volcanoes-mountains`, `surface-processes`, `atmosphere-weather`,
+  `solar-system` and `starlight-spectra`.
+- Kept ids stable wherever the meaning held, so nothing built points at a missing skill. The
+  three moved ids were replaced everywhere (courses' prereqs, tests, research files). The
+  research's units, lessons and practice were remapped onto the new skills by
+  `research/textbooks/tools/remap_hs.py` (title rules), and the grade pages rebuilt; a unit's
+  older `notes` ("no Grade 9 skill …") predate this pass.
+- Still not in the taxonomy (textbook chapters with no skill): plant and animal physiology
+  beyond body systems, special relativity as its own unit, partial fractions, linear
+  programming, mathematical induction, 3-D analytic geometry, ANOVA and nonparametric tests.
+
 ### Textbook coverage pass
 
 - **Six skills added for units the textbooks teach and the taxonomy lacked.** Math:

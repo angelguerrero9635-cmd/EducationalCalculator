@@ -57,6 +57,7 @@
           "title": "Equations in One-Variable",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
           "skills": [
+            "m.9.solving-equations",
             "m.8.multi-step-equations",
             "m.9.absolute-value",
             "m.7.proportional-relationships"
@@ -97,7 +98,7 @@
           "n": "3",
           "title": "Relations and Functions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
-          "skills": ["m.8.functions-intro"],
+          "skills": ["m.9.function-notation", "m.8.functions-intro"],
           "lessons": [
             {
               "n": "3-1",
@@ -107,7 +108,7 @@
             {
               "n": "3-2",
               "title": "Functions",
-              "skills": ["m.8.functions-intro"]
+              "skills": ["m.9.function-notation", "m.8.functions-intro"]
             },
             {
               "n": "3-3",
@@ -135,7 +136,13 @@
           "n": "4",
           "title": "Linear and Nonlinear Functions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
-          "skills": ["m.9.linear-modeling", "m.8.slope", "m.9.sequences", "m.9.absolute-value"],
+          "skills": [
+            "m.9.piecewise-functions",
+            "m.9.linear-modeling",
+            "m.8.slope",
+            "m.9.sequences",
+            "m.9.absolute-value"
+          ],
           "lessons": [
             {
               "n": "4-1",
@@ -203,7 +210,7 @@
           "n": "6",
           "title": "Linear Inequalities",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
-          "skills": ["m.9.inequality-systems", "m.9.absolute-value"],
+          "skills": ["m.9.linear-inequalities", "m.9.inequality-systems", "m.9.absolute-value"],
           "lessons": [
             {
               "n": "6-1",
@@ -407,13 +414,13 @@
           "n": "12",
           "title": "Statistics",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
-          "skills": ["m.6.center-spread"],
+          "skills": ["m.9.data-displays", "m.6.center-spread"],
           "notes": "Descriptive statistics (center, spread, box plots, shape) have no high-school skill; mapped to m.6.center-spread.",
           "lessons": [
             {
               "n": "12-1",
               "title": "Measures of Center",
-              "skills": ["m.6.center-spread"]
+              "skills": ["m.9.data-displays", "m.6.center-spread"]
             },
             {
               "n": "12-2",
@@ -428,7 +435,7 @@
             {
               "n": "12-4",
               "title": "Measures of Spread",
-              "skills": ["m.6.center-spread"]
+              "skills": ["m.9.data-displays", "m.6.center-spread"]
             },
             {
               "n": "12-5",
@@ -457,7 +464,11 @@
           "n": "1",
           "title": "Tools of Geometry",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
-          "skills": ["m.10.coordinate-geometry", "m.10.constructions"],
+          "skills": [
+            "m.10.triangle-relationships",
+            "m.10.coordinate-geometry",
+            "m.10.constructions"
+          ],
           "lessons": [
             {
               "n": "1-1",
@@ -493,7 +504,7 @@
           "n": "2",
           "title": "Angles and Geometric Figures",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
-          "skills": ["m.7.angle-relationships", "m.8.transformations"],
+          "skills": ["m.10.rigid-motions", "m.7.angle-relationships", "m.8.transformations"],
           "notes": "Loose fit: angles, polygons, solids and measurement precision; no single Grade 10 skill.",
           "lessons": [
             {
@@ -534,7 +545,12 @@
           "n": "3",
           "title": "Logical Arguments and Line Relationships",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
-          "skills": ["m.10.proofs", "m.7.angle-relationships", "m.10.coordinate-geometry"],
+          "skills": [
+            "m.10.parallel-lines",
+            "m.10.proofs",
+            "m.7.angle-relationships",
+            "m.10.coordinate-geometry"
+          ],
           "lessons": [
             {
               "n": "3-1",
@@ -582,7 +598,7 @@
           "n": "4",
           "title": "Transformations and Symmetry",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
-          "skills": ["m.8.transformations", "m.10.congruence"],
+          "skills": ["m.10.rigid-motions", "m.8.transformations", "m.10.congruence"],
           "lessons": [
             {
               "n": "4-1",
@@ -650,23 +666,23 @@
           "n": "6",
           "title": "Relationships in Triangles",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
-          "skills": ["m.10.proofs"],
+          "skills": ["m.10.triangle-relationships", "m.10.proofs"],
           "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs.",
           "lessons": [
             {
               "n": "6-1",
               "title": "Perpendicular Bisectors",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.triangle-relationships", "m.10.proofs"]
             },
             {
               "n": "6-2",
               "title": "Angle Bisectors",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.triangle-relationships", "m.10.proofs"]
             },
             {
               "n": "6-3",
               "title": "Medians and Altitudes of Triangles",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.triangle-relationships", "m.10.proofs"]
             },
             {
               "n": "6-4",
@@ -681,12 +697,12 @@
             {
               "n": "6-6",
               "title": "The Triangle Inequality",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.triangle-relationships", "m.10.proofs"]
             },
             {
               "n": "6-7",
               "title": "Inequalities in Two Triangles",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.triangle-relationships", "m.10.proofs"]
             }
           ]
         },
@@ -694,23 +710,23 @@
           "n": "7",
           "title": "Quadrilaterals",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
-          "skills": ["m.10.proofs"],
+          "skills": ["m.10.quadrilaterals", "m.10.proofs"],
           "notes": "Loose fit: properties of quadrilaterals and polygons have no high-school taxonomy skill; nearest m.10.proofs.",
           "lessons": [
             {
               "n": "7-1",
               "title": "Angles of Polygons",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7-2",
               "title": "Parallelograms",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7-3",
               "title": "Tests for Parallelograms",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7-4",
@@ -720,12 +736,12 @@
             {
               "n": "7-5",
               "title": "Rhombi and Squares",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             },
             {
               "n": "7-6",
               "title": "Trapezoids and Kites",
-              "skills": ["m.10.proofs"]
+              "skills": ["m.10.quadrilaterals", "m.10.proofs"]
             }
           ]
         },
@@ -776,7 +792,7 @@
             "m.8.pythagorean",
             "m.10.special-right-triangles",
             "m.10.right-triangle-trig",
-            "m.12.law-sines-cosines"
+            "m.10.law-sines-cosines"
           ],
           "lessons": [
             {
@@ -818,6 +834,7 @@
           "title": "Circles",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
           "skills": [
+            "m.10.circle-equations",
             "m.10.circle-theorems",
             "m.10.arc-sector",
             "m.10.coordinate-geometry",
@@ -911,7 +928,12 @@
           "n": "12",
           "title": "Probability",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
-          "skills": ["m.10.conditional-probability", "m.12.binomial-theorem"],
+          "skills": [
+            "m.10.probability-rules",
+            "m.9.two-way-tables",
+            "m.10.conditional-probability",
+            "m.11.binomial-theorem"
+          ],
           "lessons": [
             {
               "n": "12-1",
@@ -957,7 +979,13 @@
           "n": "1",
           "title": "Relations and Functions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.8.functions-intro", "m.9.linear-modeling"],
+          "skills": [
+            "m.9.function-notation",
+            "m.9.linear-inequalities",
+            "m.11.function-transformations",
+            "m.8.functions-intro",
+            "m.9.linear-modeling"
+          ],
           "notes": "Loose fit: key features of functions (continuity, extrema, end behavior) have no single taxonomy skill.",
           "lessons": [
             {
@@ -994,7 +1022,13 @@
           "n": "2",
           "title": "Linear Equations, Inequalities, and Systems",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.9.inequality-systems", "m.9.absolute-value", "m.8.systems-linear"],
+          "skills": [
+            "m.9.solving-equations",
+            "m.9.linear-inequalities",
+            "m.9.inequality-systems",
+            "m.9.absolute-value",
+            "m.8.systems-linear"
+          ],
           "lessons": [
             {
               "n": "2-1",
@@ -1078,7 +1112,7 @@
           "n": "4",
           "title": "Polynomials and Polynomial Functions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.11.polynomial-functions", "m.12.binomial-theorem"],
+          "skills": ["m.11.polynomial-functions", "m.11.binomial-theorem"],
           "lessons": [
             {
               "n": "4-1",
@@ -1106,17 +1140,17 @@
           "n": "5",
           "title": "Polynomial Equations",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.11.polynomial-functions"],
+          "skills": ["m.11.polynomial-equations", "m.11.polynomial-functions"],
           "lessons": [
             {
               "n": "5-1",
               "title": "Solving Polynomial Equations by Graphing",
-              "skills": ["m.11.polynomial-functions"]
+              "skills": ["m.11.polynomial-equations", "m.11.polynomial-functions"]
             },
             {
               "n": "5-2",
               "title": "Solving Polynomial Equations Algebraically",
-              "skills": ["m.11.polynomial-functions"]
+              "skills": ["m.11.polynomial-equations", "m.11.polynomial-functions"]
             },
             {
               "n": "5-3",
@@ -1139,7 +1173,12 @@
           "n": "6",
           "title": "Inverses and Radical Functions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.11.inverse-functions", "m.9.radicals"],
+          "skills": [
+            "m.11.radical-functions",
+            "m.9.function-notation",
+            "m.11.inverse-functions",
+            "m.9.radicals"
+          ],
           "lessons": [
             {
               "n": "6-1",
@@ -1171,7 +1210,12 @@
           "n": "7",
           "title": "Exponential Functions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.9.exponential-functions", "m.11.exp-log-equations", "m.11.series"],
+          "skills": [
+            "m.9.linear-inequalities",
+            "m.9.exponential-functions",
+            "m.11.exp-log-equations",
+            "m.11.series"
+          ],
           "lessons": [
             {
               "n": "7-1",
@@ -1265,7 +1309,7 @@
           "n": "10",
           "title": "Inferential Statistics",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.7.sampling", "m.11.normal-distribution"],
+          "skills": ["m.11.study-design", "m.7.sampling", "m.11.normal-distribution"],
           "lessons": [
             {
               "n": "10-1",
@@ -1293,7 +1337,12 @@
           "n": "11",
           "title": "Trigonometric Functions",
           "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
-          "skills": ["m.11.unit-circle", "m.11.trig-graphs", "m.12.trig-formulas-equations"],
+          "skills": [
+            "m.12.inverse-trig",
+            "m.11.unit-circle",
+            "m.11.trig-graphs",
+            "m.12.trig-formulas-equations"
+          ],
           "lessons": [
             {
               "n": "11-1",

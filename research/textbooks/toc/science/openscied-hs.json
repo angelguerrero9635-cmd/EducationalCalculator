@@ -37,7 +37,7 @@
           "title": "Ecosystem Interactions & Dynamics",
           "drivingQuestion": "How do ecosystems work, and how can understanding them help us protect them?",
           "url": "https://openscied.org/instructional-materials/b-1-ecosystem-interactions-dynamics/",
-          "skills": ["s.9.population-ecology"],
+          "skills": ["s.9.ecosystem-dynamics", "s.9.population-ecology"],
           "performanceExpectations": [
             "HS-LS2-1",
             "HS-LS2-2",
@@ -55,7 +55,11 @@
           "title": "Ecosystems: Matter & Energy",
           "drivingQuestion": "What causes fires in ecosystems to burn, and how should we manage them?",
           "url": "https://openscied.org/instructional-materials/b-2-ecosystems-matter-energy/",
-          "skills": ["s.7.photosynthesis-respiration", "s.7.ecosystem-energy"],
+          "skills": [
+            "s.9.ecosystem-dynamics",
+            "s.7.photosynthesis-respiration",
+            "s.7.ecosystem-energy"
+          ],
           "notes": "Photosynthesis, respiration and carbon cycling in ecosystems (fire); no grade-9 skill, nearest are grade 7.",
           "performanceExpectations": [
             "HS-LS1-5",
@@ -200,7 +204,7 @@
           "title": "Energy from Chemical & Nuclear Processes",
           "drivingQuestion": "How can chemistry help us evaluate fuels and transportation options to benefit the Earth and our communities?",
           "url": "https://openscied.org/instructional-materials/c-5-energy-from-chemical-nuclear-reactions/",
-          "skills": ["s.10.thermochemistry", "s.10.atomic-structure"],
+          "skills": ["s.10.nuclear-chemistry", "s.10.thermochemistry", "s.10.atomic-structure"],
           "performanceExpectations": [
             "HS-PS1-4",
             "HS-PS1-8†",

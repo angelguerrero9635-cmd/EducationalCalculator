@@ -33,7 +33,7 @@
           "n": "1",
           "title": "Essential Ideas",
           "url": "https://openstax.org/books/chemistry-2e/pages/1-1-chemistry-in-context",
-          "skills": [],
+          "skills": ["s.10.measurement"],
           "notes": "Measurement, units and significant figures; no taxonomy skill.",
           "lessons": [
             {
@@ -148,7 +148,7 @@
           "n": "4",
           "title": "Stoichiometry of Chemical Reactions",
           "url": "https://openstax.org/books/chemistry-2e/pages/4-1-writing-and-balancing-chemical-equations",
-          "skills": ["s.10.stoichiometry"],
+          "skills": ["s.10.reaction-types", "s.10.stoichiometry"],
           "notes": "Balancing equations, reaction stoichiometry, limiting reactants and yields.",
           "lessons": [
             {
@@ -207,7 +207,7 @@
           "n": "6",
           "title": "Electronic Structure and Periodic Properties of Elements",
           "url": "https://openstax.org/books/chemistry-2e/pages/6-1-electromagnetic-energy",
-          "skills": ["s.10.atomic-structure", "s.10.periodic-trends"],
+          "skills": ["s.10.electrons-in-atoms", "s.10.atomic-structure", "s.10.periodic-trends"],
           "notes": "Electron configurations (6.3-6.4) and periodic variations (6.5).",
           "lessons": [
             {
@@ -242,7 +242,7 @@
           "n": "7",
           "title": "Chemical Bonding and Molecular Geometry",
           "url": "https://openstax.org/books/chemistry-2e/pages/7-1-ionic-bonding",
-          "skills": ["s.10.bonding"],
+          "skills": ["s.10.molecular-shape", "s.10.bonding"],
           "lessons": [
             {
               "n": "7.1",
@@ -311,7 +311,7 @@
           "n": "9",
           "title": "Gases",
           "url": "https://openstax.org/books/chemistry-2e/pages/9-1-gas-pressure",
-          "skills": ["s.10.gas-laws"],
+          "skills": ["s.10.nuclear-chemistry", "s.10.gas-laws"],
           "lessons": [
             {
               "n": "9.1",
@@ -350,7 +350,7 @@
           "n": "10",
           "title": "Liquids and Solids",
           "url": "https://openstax.org/books/chemistry-2e/pages/10-1-intermolecular-forces",
-          "skills": ["s.10.bonding"],
+          "skills": ["s.10.molecular-shape", "s.10.bonding"],
           "notes": "Intermolecular forces (10.1) follow from bonding; phase changes and solids: nearest s.7.phase-changes (loose).",
           "lessons": [
             {
@@ -599,7 +599,7 @@
           "n": "17",
           "title": "Electrochemistry",
           "url": "https://openstax.org/books/chemistry-2e/pages/17-1-review-of-redox-chemistry",
-          "skills": [],
+          "skills": ["s.10.redox"],
           "notes": "Electrochemistry; no taxonomy skill (redox is the nearest, s.10.stoichiometry for balancing).",
           "lessons": [
             {
@@ -739,7 +739,7 @@
           "n": "20",
           "title": "Organic Chemistry",
           "url": "https://openstax.org/books/chemistry-2e/pages/20-1-hydrocarbons",
-          "skills": [],
+          "skills": ["s.10.organic"],
           "notes": "Organic chemistry; no taxonomy skill.",
           "lessons": [
             {
@@ -769,7 +769,7 @@
           "n": "21",
           "title": "Nuclear Chemistry",
           "url": "https://openstax.org/books/chemistry-2e/pages/21-1-nuclear-structure-and-stability",
-          "skills": ["s.12.radiometric-dating", "s.10.atomic-structure"],
+          "skills": ["s.10.nuclear-chemistry", "s.12.radiometric-dating", "s.10.atomic-structure"],
           "notes": "Radioactive decay and half-life (21.3 dates rocks and artifacts); nuclear structure.",
           "lessons": [
             {

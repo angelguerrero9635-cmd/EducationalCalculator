@@ -18,7 +18,7 @@
   },
   "sourceUrl": "https://archive.org/details/engageny-mathematics",
   "retrieved": "2026-09-28",
-  "notes": "One course per grade as the taxonomy files them: Algebra I = 9, Geometry = 10, Algebra II = 11, Precalculus and Advanced Topics = 12. Built from each module's Module Overview table of contents (module, topic and lesson titles; topic standards kept in 'standards'). A lesson spanning days is numbered like '22–23'. Eight lesson titles whose math was typeset as equations (lost in the text extraction) were restored by hand, e.g. 'f(x) = ax² + bx + c'. Unit URLs point at the per-module zip on archive.org, lesson URLs at the teacher PDF (NYSED's own EngageNY archive page could not be reached). Skill ids are our best match per topic; a topic maps to another grade's skill when the fit is clearly there (e.g. Geometry's laws of sines and cosines → m.12.law-sines-cosines); lessons carry skills only when their topic maps to exactly one skill; 'notes' says where the fit is loose or there is no skill.",
+  "notes": "One course per grade as the taxonomy files them: Algebra I = 9, Geometry = 10, Algebra II = 11, Precalculus and Advanced Topics = 12. Built from each module's Module Overview table of contents (module, topic and lesson titles; topic standards kept in 'standards'). A lesson spanning days is numbered like '22–23'. Eight lesson titles whose math was typeset as equations (lost in the text extraction) were restored by hand, e.g. 'f(x) = ax² + bx + c'. Unit URLs point at the per-module zip on archive.org, lesson URLs at the teacher PDF (NYSED's own EngageNY archive page could not be reached). Skill ids are our best match per topic; a topic maps to another grade's skill when the fit is clearly there (e.g. Geometry's laws of sines and cosines → m.10.law-sines-cosines); lessons carry skills only when their topic maps to exactly one skill; 'notes' says where the fit is loose or there is no skill.",
   "books": [
     {
       "grade": "9",
@@ -233,7 +233,12 @@
           "course": "Algebra I",
           "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/",
           "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-overview-and-assessments%2Falgebra-i-m2-module-overview.docx",
-          "skills": ["m.6.center-spread", "m.10.conditional-probability", "m.9.regression"],
+          "skills": [
+            "m.9.data-displays",
+            "m.6.center-spread",
+            "m.10.conditional-probability",
+            "m.9.regression"
+          ],
           "sections": [
             {
               "n": "A",
@@ -1097,7 +1102,7 @@
             "m.9.radicals",
             "m.10.right-triangle-trig",
             "m.10.special-right-triangles",
-            "m.12.law-sines-cosines"
+            "m.10.law-sines-cosines"
           ],
           "sections": [
             {
@@ -1275,7 +1280,7 @@
               "skills": [
                 "m.10.right-triangle-trig",
                 "m.10.special-right-triangles",
-                "m.12.law-sines-cosines"
+                "m.10.law-sines-cosines"
               ],
               "lessons": [
                 {
@@ -1330,7 +1335,7 @@
                 }
               ],
               "standards": ["G-SRT.C.6", "G-SRT.C.7", "G-SRT.C.8"],
-              "notes": "Sine, cosine, tangent (m.10.right-triangle-trig); Lesson 27 special angles (m.10.special-right-triangles); Lessons 31-34 area formula, laws of sines and cosines (m.12.law-sines-cosines)."
+              "notes": "Sine, cosine, tangent (m.10.right-triangle-trig); Lesson 27 special angles (m.10.special-right-triangles); Lessons 31-34 area formula, laws of sines and cosines (m.10.law-sines-cosines)."
             }
           ]
         },
@@ -2953,7 +2958,7 @@
           "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/",
           "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-overview-and-assessments%2Fprecalculus-m3-module-overview.docx",
           "skills": [
-            "m.12.binomial-theorem",
+            "m.11.binomial-theorem",
             "m.11.complex-numbers",
             "m.12.conics",
             "m.10.volume-derivations",
@@ -2965,7 +2970,7 @@
               "n": "A",
               "title": "Polynomial Functions and the Fundamental Theorem of Algebra",
               "skills": [
-                "m.12.binomial-theorem",
+                "m.11.binomial-theorem",
                 "m.11.complex-numbers",
                 "m.12.conics",
                 "m.10.volume-derivations"
@@ -3008,7 +3013,7 @@
                 }
               ],
               "standards": ["N-CN.C.8", "N-CN.C.9", "A-APR.C.5", "G-GMD.A.2", "G-GPE.A.3"],
-              "notes": "Complex roots of polynomials and roots of unity (m.11.complex-numbers), the binomial theorem (Lessons 4-5: m.12.binomial-theorem), ellipses and hyperbolas as curves in the complex plane and from geometry (Lessons 6-8: m.12.conics), and Cavalieri's principle (Lesson 9: m.10.volume-derivations)."
+              "notes": "Complex roots of polynomials and roots of unity (m.11.complex-numbers), the binomial theorem (Lessons 4-5: m.11.binomial-theorem), ellipses and hyperbolas as curves in the complex plane and from geometry (Lessons 6-8: m.12.conics), and Cavalieri's principle (Lesson 9: m.10.volume-derivations)."
             },
             {
               "n": "B",
@@ -3100,7 +3105,7 @@
           "course": "Precalculus and Advanced Topics",
           "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/",
           "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-overview-and-assessments%2Fprecalculus-m4-module-overview.docx",
-          "skills": ["m.11.unit-circle", "m.12.trig-formulas-equations", "m.12.law-sines-cosines"],
+          "skills": ["m.11.unit-circle", "m.12.trig-formulas-equations", "m.10.law-sines-cosines"],
           "sections": [
             {
               "n": "A",
@@ -3139,31 +3144,31 @@
             {
               "n": "B",
               "title": "Trigonometry and Triangles",
-              "skills": ["m.12.law-sines-cosines"],
+              "skills": ["m.10.law-sines-cosines"],
               "lessons": [
                 {
                   "n": "7",
                   "title": "An Area Formula for Triangles",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-7-teacher.pdf",
-                  "skills": ["m.12.law-sines-cosines"]
+                  "skills": ["m.10.law-sines-cosines"]
                 },
                 {
                   "n": "8",
                   "title": "Law of Sines",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-8-teacher.pdf",
-                  "skills": ["m.12.law-sines-cosines"]
+                  "skills": ["m.10.law-sines-cosines"]
                 },
                 {
                   "n": "9",
                   "title": "Law of Cosines",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-9-teacher.pdf",
-                  "skills": ["m.12.law-sines-cosines"]
+                  "skills": ["m.10.law-sines-cosines"]
                 },
                 {
                   "n": "10",
                   "title": "Putting the Law of Cosines and the Law of Sines to Use",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-10-teacher.pdf",
-                  "skills": ["m.12.law-sines-cosines"]
+                  "skills": ["m.10.law-sines-cosines"]
                 }
               ],
               "standards": ["G-SRT.D.9", "G-SRT.D.10", "G-SRT.D.11"]
@@ -3204,15 +3209,15 @@
           "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/",
           "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-overview-and-assessments%2Fprecalculus-m5-module-overview.docx",
           "skills": [
-            "m.12.binomial-theorem",
+            "m.11.binomial-theorem",
             "m.10.conditional-probability",
-            "m.12.probability-distributions"
+            "m.11.probability-distributions"
           ],
           "sections": [
             {
               "n": "A",
               "title": "Probability",
-              "skills": ["m.12.binomial-theorem", "m.10.conditional-probability"],
+              "skills": ["m.11.binomial-theorem", "m.10.conditional-probability"],
               "lessons": [
                 {
                   "n": "1",
@@ -3236,48 +3241,48 @@
                 }
               ],
               "standards": ["S-CP.B.8", "S-CP.B.9"],
-              "notes": "General multiplication rule (m.10.conditional-probability), permutations and combinations (m.12.binomial-theorem covers combinatorics)."
+              "notes": "General multiplication rule (m.10.conditional-probability), permutations and combinations (m.11.binomial-theorem covers combinatorics)."
             },
             {
               "n": "B",
               "title": "Random Variables and Discrete Probability Distributions",
-              "skills": ["m.12.probability-distributions"],
+              "skills": ["m.11.probability-distributions"],
               "lessons": [
                 {
                   "n": "5",
                   "title": "Discrete Random Variables",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-5-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "6",
                   "title": "Probability Distribution of a Discrete Random Variable",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-6-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "7",
                   "title": "Expected Value of a Discrete Random Variable",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-7-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "8",
                   "title": "Interpreting Expected Value",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-8-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "9–10",
                   "title": "Determining Discrete Probability Distributions",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-9-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "11–12",
                   "title": "Estimating Probability Distributions Empirically",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-11-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 }
               ],
               "standards": ["S-MD.A.1", "S-MD.A.2", "S-MD.A.3", "S-MD.A.4"]
@@ -3285,41 +3290,41 @@
             {
               "n": "C",
               "title": "Using Probability to Make Decisions",
-              "skills": ["m.12.probability-distributions"],
+              "skills": ["m.11.probability-distributions"],
               "lessons": [
                 {
                   "n": "13–14",
                   "title": "Games of Chance and Expected Value",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-13-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "15",
                   "title": "Using Expected Values to Compare Strategies",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-15-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "16",
                   "title": "Making Fair Decisions",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-16-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "17",
                   "title": "Fair Games",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-17-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 },
                 {
                   "n": "18–19",
                   "title": "Analyzing Decisions and Strategies Using Probability",
                   "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-18-teacher.pdf",
-                  "skills": ["m.12.probability-distributions"]
+                  "skills": ["m.11.probability-distributions"]
                 }
               ],
               "standards": ["S-MD.B.5", "S-MD.B.6", "S-MD.B.7"],
-              "notes": "Using expected value to compare strategies and make fair decisions (S-MD.5-7): an application of m.12.probability-distributions."
+              "notes": "Using expected value to compare strategies and make fair decisions (S-MD.5-7): an application of m.11.probability-distributions."
             }
           ]
         }
