@@ -7,6 +7,7 @@ import type { Relation, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
+import type { DivisionStage } from './typesHsg';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
 interface Rule {
@@ -409,5 +410,78 @@ const ENERGY_LAYOUT: LayoutDef = {
   ],
 };
 
+// ─── H34 cellDivision ────────────────────────────────────────────────────────
+
+const MITOSIS_SEQUENCE: LayoutDef = {
+  id: 'g.s9-mitosis-meiosis-mitosis',
+  title: 'The cell cycle and mitosis',
+  kind: 'sequence',
+  assumptions: [
+    'This cell has 2n = 4 chromosomes: two pairs, one of each pair from each parent (red and blue).',
+    'Mitosis makes two cells with the same 4 chromosomes as the parent cell.',
+  ],
+  question: 'Put the stages in order, from interphase.',
+  stages: [
+    { label: 'Interphase', figure: { kind: 'cellDivision', stage: 'interphase', diploid: 4 } },
+    { label: 'Prophase', figure: { kind: 'cellDivision', stage: 'prophase', diploid: 4 } },
+    { label: 'Metaphase', figure: { kind: 'cellDivision', stage: 'metaphase', diploid: 4 } },
+    { label: 'Anaphase', figure: { kind: 'cellDivision', stage: 'anaphase', diploid: 4 } },
+    { label: 'Telophase', figure: { kind: 'cellDivision', stage: 'telophase', diploid: 4 } },
+    { label: 'Cytokinesis', figure: { kind: 'cellDivision', stage: 'cytokinesis', diploid: 4 } },
+  ],
+};
+
+const meiosisStage = (label: string, stage: DivisionStage, diploid: number) => ({
+  label,
+  figure: { kind: 'cellDivision' as const, stage, diploid },
+});
+
+const MEIOSIS_SEQUENCE: LayoutDef = {
+  id: 'g.s9-mitosis-meiosis-meiosis',
+  title: 'Meiosis I and II',
+  kind: 'sequence',
+  assumptions: [
+    'The cell starts with 2n = 4 chromosomes, already copied: each is two sister chromatids.',
+    'In prophase I the homologous chromosomes pair up and cross over, swapping pieces.',
+    'Meiosis I separates the pairs; meiosis II separates the sister chromatids. Four cells of n = 2 result.',
+  ],
+  question: 'Put the stages of meiosis in order.',
+  stages: [
+    meiosisStage('Prophase I', 'prophase I', 4),
+    meiosisStage('Metaphase I', 'metaphase I', 4),
+    meiosisStage('Anaphase I', 'anaphase I', 4),
+    meiosisStage('Telophase I', 'telophase I', 4),
+    meiosisStage('Prophase II', 'prophase II', 4),
+    meiosisStage('Metaphase II', 'metaphase II', 4),
+    meiosisStage('Anaphase II', 'anaphase II', 4),
+    meiosisStage('Telophase II', 'telophase II', 4),
+  ],
+};
+
+const MEIOSIS_SIX: LayoutDef = {
+  id: 'g.s9-mitosis-meiosis-six',
+  title: 'Meiosis with 2n = 6',
+  kind: 'sequence',
+  assumptions: [
+    'Three pairs of chromosomes: 2n = 6, so each gamete gets n = 3, one of each pair.',
+    'Which homolog of each pair goes to which side is random: independent assortment.',
+  ],
+  question: 'Put the key stages in order.',
+  stages: [
+    meiosisStage('Pairs cross over', 'prophase I', 6),
+    meiosisStage('Pairs line up', 'metaphase I', 6),
+    meiosisStage('Pairs separate', 'anaphase I', 6),
+    meiosisStage('Sisters separate', 'anaphase II', 6),
+    meiosisStage('Four gametes', 'telophase II', 6),
+  ],
+};
+
 export const HSG_GALLERY_MODULES: ModuleDef[] = [...MEMBRANE_DEMOS];
-export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [MACRO_LAYOUT, TONICITY_SORT, ENERGY_LAYOUT];
+export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [
+  MACRO_LAYOUT,
+  TONICITY_SORT,
+  ENERGY_LAYOUT,
+  MITOSIS_SEQUENCE,
+  MEIOSIS_SEQUENCE,
+  MEIOSIS_SIX,
+];

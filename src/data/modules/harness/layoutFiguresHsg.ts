@@ -3,8 +3,27 @@
  * joins 2 to 4 monomers and gives off one water per bond. Called from `layoutFigureIssues`.
  * Test-only.
  */
+import { cellsOf, diploidOf, isMeiosis } from '@/components/module/layouts/divisionMath';
+
 import type { LayoutDef } from '../layouts';
-import { ENERGY_FLOWS, watersOf } from '../typesHsg';
+import { ENERGY_FLOWS, watersOf, type DivisionStage } from '../typesHsg';
+
+const DIVISION_ORDER: DivisionStage[] = [
+  'interphase',
+  'prophase',
+  'metaphase',
+  'anaphase',
+  'telophase',
+  'cytokinesis',
+  'prophase I',
+  'metaphase I',
+  'anaphase I',
+  'telophase I',
+  'prophase II',
+  'metaphase II',
+  'anaphase II',
+  'telophase II',
+];
 
 export function hsgFigureIssues(l: LayoutDef): string[] {
   const out: string[] = [];
@@ -27,6 +46,51 @@ export function hsgFigureIssues(l: LayoutDef): string[] {
           `scene "${s.label}": the text says ${said[1]} water, the figure draws ${watersOf(m)}`,
         );
     }
+  }
+  // Cell-division cards: 2n drawable, each cell's chromosomes right for its stage, stages in order.
+  const cards =
+    l.kind === 'sequence'
+      ? l.stages.map((s) => ({ label: s.label, f: s.figure }))
+      : l.kind === 'sort'
+        ? l.cards.map((s) => ({ label: s.label, f: s.figure }))
+        : [];
+  const division = cards.flatMap(({ label, f }) =>
+    f?.kind === 'cellDivision' ? [{ label, f }] : [],
+  );
+  for (const { label, f } of division) {
+    if (f.diploid !== undefined && ![2, 4, 6].includes(f.diploid))
+      out.push(`card "${label}": 2n = ${f.diploid} (the card draws 2, 4 or 6)`);
+    const n = diploidOf(f.diploid) / 2;
+    const cells = cellsOf(f.stage, f.diploid);
+    const late = ['anaphase II', 'telophase II'].includes(f.stage);
+    const halved = isMeiosis(f.stage) && !['prophase I', 'metaphase I'].includes(f.stage);
+    const want = isMeiosis(f.stage) ? (late ? 4 : halved ? 2 : 1) : cells.length;
+    if (cells.length !== want) out.push(`card "${label}": ${cells.length} cells, expected ${want}`);
+    for (const cell of cells) {
+      // Mitosis keeps 2n in every cell; meiosis I halves it to n, one of each pair.
+      const size = halved ? n : 2 * n;
+      if (cell.length !== size)
+        out.push(`card "${label}": a cell with ${cell.length} chromosomes, expected ${size}`);
+      if (halved && new Set(cell.map((ch) => ch.pair)).size !== n)
+        out.push(`card "${label}": a cell after meiosis I lacks one of each pair`);
+      const dup = cell.every((ch) => ch.chromatids.length === 2);
+      const single = cell.every((ch) => ch.chromatids.length === 1);
+      const duplicated =
+        !['interphase', 'anaphase', 'telophase', 'cytokinesis'].includes(f.stage) && !late;
+      if (duplicated ? !dup : !single)
+        out.push(`card "${label}": chromatids per chromosome are wrong for ${f.stage}`);
+    }
+    if (f.stage === 'telophase II') {
+      const key = (cell: (typeof cells)[number]) =>
+        cell.map((ch) => ch.chromatids.map((t) => t.parent + t.tip).join()).join('|');
+      if (new Set(cells.map(key)).size !== 4)
+        out.push(`card "${label}": the four cells after meiosis are not all different`);
+    }
+  }
+  if (l.kind === 'sequence' && division.length) {
+    const at = division.map(({ f }) => DIVISION_ORDER.indexOf(f.stage));
+    if (at.some((x, i) => i > 0 && x <= at[i - 1]!))
+      out.push('cell-division stages are out of order');
   }
   if (l.kind === 'explore' && l.figure.kind === 'organelleEnergy') {
     for (const s of l.scenes) {

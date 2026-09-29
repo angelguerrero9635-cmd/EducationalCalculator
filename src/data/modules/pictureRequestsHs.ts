@@ -575,13 +575,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HG, layouts/organelleFigure.tsx). Explore figure { kind: "organelleEnergy" }; each scene sets energy: { process?: "cycle" (default) | "photosynthesis" | "respiration" | "lightReactions" | "calvinCycle" | "glycolysis" | "krebsCycle" | "electronTransport", lit?: "light" | "CO₂" | "H₂O" | "glucose" | "O₂" | "ATP" }. A chloroplast (double membrane, grana, stroma) and a mitochondrion (cristae, matrix) in the cytoplasm; glucose and O₂ flow to the mitochondrion over the top, CO₂ and H₂O back underneath, light in from the sun and ATP out to the cell’s work. A process lights its part (thylakoids, stroma, matrix, inner membrane, cytoplasm), its arrows and its equation under the drawing (6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂; glycolysis 2 ATP, Krebs 2 ATP, electron transport most ATP; no single total is printed, since textbooks give 30 to 38). The harness checks that a ringed substance flows in the lit process. Example scene: { label: "Calvin cycle", lines: ["In the stroma, ATP and NADPH power the building of glucose from CO₂."], energy: { process: "calvinCycle", lit: "CO₂" } }.',
   },
-  ask(
-    'H34',
-    'cellDivision',
-    'Sequence stage figures: the cell cycle, mitosis phases and meiosis I and II with chromosomes by parent color, crossing over',
-    ['s.9.mitosis-meiosis'],
-    'Chromosome count driven by 2n; gametes with n.',
-  ),
+  {
+    ...ask(
+      'H34',
+      'cellDivision',
+      'Sequence stage figures: the cell cycle, mitosis phases and meiosis I and II with chromosomes by parent color, crossing over',
+      ['s.9.mitosis-meiosis'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-mitosis-meiosis-mitosis',
+      'g.s9-mitosis-meiosis-meiosis',
+      'g.s9-mitosis-meiosis-six',
+    ],
+    notes:
+      'Chromosome count driven by 2n; gametes with n. Drawn (group HG, layouts/divisionCard.tsx, chromosomes from divisionMath.ts). A card figure for sequence stages and sort cards: { kind: "cellDivision", stage: "interphase" | "prophase" | "metaphase" | "anaphase" | "telophase" | "cytokinesis" | "prophase I" | "metaphase I" | "anaphase I" | "telophase I" | "prophase II" | "metaphase II" | "anaphase II" | "telophase II", diploid?: 2 | 4 | 6 (2n, default 4) }. Maternal chromosomes red, paternal blue, pair sizes long to short; duplicated chromosomes are two sister chromatids at a centromere; the spindle runs from centrosomes at the poles; prophase I pairs the homologs with a crossed-over tip, metaphase I lines the pairs up, anaphase I separates homologs (sisters stay joined), anaphase II separates sisters, telophase II ends in four cells of n, all different. The harness checks 2n, the chromosomes and chromatids in every cell for the stage (2n after mitosis, n of one per pair after meiosis I), the four gametes differing, and that a sequence lists the stages in order. Example stage: { label: "Metaphase I", figure: { kind: "cellDivision", stage: "metaphase I", diploid: 4 } }.',
+  },
   ask(
     'H35',
     'punnettSquare',

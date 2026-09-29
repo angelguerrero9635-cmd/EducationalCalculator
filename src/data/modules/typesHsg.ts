@@ -73,6 +73,37 @@ export const ENERGY_FLOWS: Record<EnergyProcess, EnergySubstance[]> = {
   electronTransport: ['O₂', 'H₂O', 'ATP'],
 };
 
+// ─── H34 cellDivision (card figure for sequence stages) ──────────────────────
+
+/** The stages a `cellDivision` card draws: the cell cycle and mitosis, then meiosis I and II. */
+export type DivisionStage =
+  | 'interphase'
+  | 'prophase'
+  | 'metaphase'
+  | 'anaphase'
+  | 'telophase'
+  | 'cytokinesis'
+  | 'prophase I'
+  | 'metaphase I'
+  | 'anaphase I'
+  | 'telophase I'
+  | 'prophase II'
+  | 'metaphase II'
+  | 'anaphase II'
+  | 'telophase II';
+
+/**
+ * A card figure for one stage of cell division (a sequence stage or a sort card): the cell,
+ * its chromosomes counted from `diploid` (2n: 2, 4 or 6; default 4), each homologous pair one
+ * maternal (red) and one paternal (blue) chromosome, the spindle from the poles. Meiosis I pairs
+ * the homologs and crosses them over (a swapped tip); telophase II ends in four cells of n.
+ */
+export interface CellDivisionCard {
+  kind: 'cellDivision';
+  stage: DivisionStage;
+  diploid?: number;
+}
+
 // ─── H32 membrane (calculator picture) ───────────────────────────────────────
 
 /** A fixed number or a variable id (as in `typesGraphs.ts`). */

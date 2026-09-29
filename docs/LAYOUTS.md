@@ -73,7 +73,11 @@ its solute dots and the water's net flow as arrows. `organelleEnergy`
 (cristae, matrix) in the cytoplasm, glucose and O₂ flowing over the top, CO₂ and H₂O back under,
 light in and ATP out; `energy: { process?, lit? }` lights the whole `cycle`, `photosynthesis`,
 `respiration` or a stage (`lightReactions`, `calvinCycle`, `glycolysis`, `krebsCycle`,
-`electronTransport`) with its part and its equation, and rings one substance.
+`electronTransport`) with its part and its equation, and rings one substance. Card figure
+`cellDivision` (`layouts/divisionCard.tsx`, 96 × 76, for sequence stages and sort cards):
+`{ kind: 'cellDivision', stage, diploid? }` draws interphase, prophase … cytokinesis, or
+prophase I … telophase II, the chromosomes counted from 2n (2, 4 or 6), maternal red and paternal
+blue, crossed-over tips from prophase I, four different cells of n after telophase II.
 
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by

@@ -1,6 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
-import type { EnergyScene, MacroScene } from '../typesHsg';
+import type { CellDivisionCard, EnergyScene, MacroScene } from '../typesHsg';
 import type { Round3Icon } from './icons';
 
 /**
@@ -143,6 +143,8 @@ export type CardFigure =
   | { kind: 'dotPlot'; values: number[] }
   /** A ball-and-stick molecule, or one atom ("H2O", "CO2", "Fe"), in the classroom colors. */
   | { kind: 'molecule'; formula: string }
+  /** One stage of mitosis or meiosis, its chromosomes counted from 2n (HS group G). */
+  | CellDivisionCard
   /** A rock's outline filled with its texture. */
   | {
       kind: 'rock';
