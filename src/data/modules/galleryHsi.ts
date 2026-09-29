@@ -3,7 +3,8 @@
  * Each demo stands in for a planned page: real variables, relations, steps and a use line, so
  * `scripts/promote-demo.mjs` can copy it into a grade file. Spread into gallery.ts.
  */
-import type { Relation, VariableDef } from '@/engine/types';
+import { configuration, valenceOf } from '@/components/module/reps/electrons';
+import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
@@ -381,5 +382,184 @@ MEASUREMENT.push(
   ),
 );
 
-export const HSI_GALLERY_MODULES: ModuleDef[] = [...MEASUREMENT];
+// ─── H44 atomModel ───────────────────────────────────────────────────────────
+
+const whole = (
+  id: string,
+  symbol: string,
+  name: string,
+  min: number,
+  max: number,
+): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min,
+  max,
+  step: 1,
+  integer: true,
+});
+
+/** A = Z + N: the nucleus holds the protons and the neutrons. */
+const massRule: Rule = {
+  relation: {
+    id: 'A = Z + N',
+    display: '{A} = {p} + {n}',
+    vars: ['A', 'p', 'n'],
+    residual: (v) => v.A! - v.p! - v.n!,
+    solve: { A: (v) => v.p! + v.n!, p: (v) => v.A! - v.n!, n: (v) => v.A! - v.p! },
+  },
+  steps: {
+    A: { expr: '{p} + {n}', how: 'The mass number counts every particle in the nucleus.' },
+    p: { expr: '{A} − {n}', how: 'Take the neutrons away from the mass number.' },
+    n: { expr: '{A} − {p}', how: 'Take the protons away from the mass number.' },
+  },
+};
+
+/** q = Z − e: each proton is +1 and each electron −1. */
+const chargeRule: Rule = {
+  relation: {
+    id: 'q = Z − e',
+    display: '{q} = {p} − {e}',
+    vars: ['q', 'p', 'e'],
+    residual: (v) => v.q! - v.p! + v.e!,
+    solve: { q: (v) => v.p! - v.e!, p: (v) => v.q! + v.e!, e: (v) => v.p! - v.q! },
+  },
+  steps: {
+    q: { expr: '{p} − {e}', how: 'Each proton adds +1 and each electron −1.' },
+    p: { expr: '{q} + {e}', how: 'Add the electrons back to the charge.' },
+    e: {
+      expr: '{p} − {q}',
+      how: 'A positive ion has lost electrons; a negative ion has gained them.',
+    },
+  },
+};
+
+const PARTICLES: VariableDef[] = [
+  whole('p', 'Z', 'Protons (atomic number)', 1, 54),
+  whole('n', 'N', 'Neutrons', 0, 90),
+  whole('A', 'A', 'Mass number', 1, 144),
+  whole('e', 'e', 'Electrons', 0, 54),
+  whole('q', 'q', 'Charge', -3, 3),
+];
+
+const atomDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  example: Values,
+  startWith = ['p', 'n', 'e'],
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions,
+  variables: PARTICLES,
+  ...rules(massRule, chargeRule),
+  example,
+  startWith,
+  sliders: true,
+  representation: {
+    kind: 'atomModel',
+    protons: 'p',
+    neutrons: 'n',
+    electrons: 'e',
+    mass: 'A',
+    charge: 'q',
+  },
+});
+
+const ATOMS: ModuleDef[] = [
+  atomDemo(
+    'g.s10-atomic-structure-carbon',
+    'The particles in an atom',
+    'Use this to find the protons, neutrons and electrons of an atom from its symbol and mass number.',
+    [
+      'The atomic number is the number of protons; it names the element.',
+      'A neutral atom has as many electrons as protons.',
+    ],
+    { p: 6, n: 6, A: 12, e: 6, q: 0 },
+  ),
+  atomDemo(
+    'g.s10-atomic-structure-isotope',
+    'Isotopes',
+    'Use this for isotopes: atoms of one element with different numbers of neutrons.',
+    [
+      'Isotopes have the same number of protons, so they are the same element.',
+      'Only the neutrons change, and with them the mass number.',
+    ],
+    { p: 6, n: 8, A: 14, e: 6, q: 0 },
+  ),
+  atomDemo(
+    'g.s10-atomic-structure-cation',
+    'A positive ion',
+    'Use this for a positive ion: an atom that has lost electrons.',
+    [
+      'Metals such as sodium lose their outer electrons.',
+      'The protons do not change, so it is still the same element.',
+    ],
+    { p: 11, n: 12, A: 23, e: 10, q: 1 },
+  ),
+  atomDemo(
+    'g.s10-atomic-structure-anion',
+    'A negative ion',
+    'Use this for a negative ion: an atom that has gained electrons.',
+    [
+      'Nonmetals such as chlorine gain electrons to fill their outer shell.',
+      'The extra electron gives a charge of −1.',
+    ],
+    { p: 17, n: 18, A: 35, e: 18, q: -1 },
+  ),
+  atomDemo(
+    'g.s10-nuclear-chemistry-iodine',
+    'A heavy isotope: iodine-131',
+    'Use this for the particles of a large radioactive isotope such as iodine-131.',
+    [
+      'Iodine-131 is used in medicine; it has more neutrons than stable iodine-127.',
+      'Its five shells hold 2, 8, 18, 18 and 7 electrons.',
+    ],
+    { p: 53, n: 78, A: 131, e: 53, q: 0 },
+  ),
+];
+
+/** v: the electrons in a neutral atom's outer shell. */
+const valenceRule: Rule = {
+  relation: {
+    id: 'valence electrons',
+    display: '{v} = valence electrons of Z = {p}',
+    vars: ['v', 'p'],
+    residual: (v) => v.v! - valenceOf(configuration(v.p!)),
+    solve: { v: (v) => valenceOf(configuration(v.p!)), p: () => undefined },
+  },
+  steps: {
+    v: {
+      expr: 'valence electrons of Z = {p}',
+      how: 'Fill the shells in order; the electrons in the outermost shell are the valence electrons.',
+    },
+  },
+};
+
+ATOMS.push({
+  id: 'g.s10-electrons-in-atoms-valence',
+  title: 'Valence electrons',
+  use: 'Use this to find how many electrons are in an atom’s outer shell.',
+  assumptions: [
+    'The atom is neutral: as many electrons as protons.',
+    'The outer shell’s electrons take part in bonding.',
+  ],
+  variables: [
+    whole('p', 'Z', 'Protons (atomic number)', 1, 54),
+    whole('n', 'N', 'Neutrons', 0, 90),
+    whole('A', 'A', 'Mass number', 1, 144),
+    whole('v', 'v', 'Valence electrons', 1, 8),
+  ],
+  ...rules(massRule, valenceRule),
+  example: { p: 16, n: 16, A: 32, v: 6 },
+  startWith: ['p', 'n'],
+  sliders: true,
+  representation: { kind: 'atomModel', protons: 'p', neutrons: 'n', mass: 'A', valence: 'v' },
+});
+
+export const HSI_GALLERY_MODULES: ModuleDef[] = [...MEASUREMENT, ...ATOMS];
 export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [];

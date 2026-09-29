@@ -631,12 +631,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): kind unitChain (typesHsi.ts, reps/UnitChain.tsx), three modes. mode 'chain' { start, unit, per? (a rate's bottom unit), factors: { top, topUnit, bottom, bottomUnit }[] (1–4, numbers or variables), result }: the given quantity times each factor as a stacked fraction, = the result lit; a unit on a top and an equal one on a bottom are struck through, and the unit left is the answer's (checked: result = start × tops ÷ bottoms). mode 'ruler' { start? (default 0), end, length? (end − start, checked), division (smallest mark: 1, 0.1 …), unit, span? (ruler length) }: a wooden ruler, a metal rod from start to end, and a close-up of the rod's end between two marks with the tenths imagined; the caption gives the certain digits, the estimated digit and the length's significant figures (readings must have one digit past the marks). mode 'target' { trials (2–6), accepted, unit?, mean?, error? (percent error, checked), ring? (percent per ring, default 1) }: each trial a dot, right of the bullseye when high, left when low, spread up and down by its distance from the mean; accurate when the mean is inside the first ring, precise when the spread is within one ring. Give the page `unitSystems: ['metric']` (the units are drawn as written). Examples: { kind: 'unitChain', mode: 'chain', start: 'd', unit: 'km', factors: [{ top: 1000, topUnit: 'm', bottom: 1, bottomUnit: 'km' }, { top: 100, topUnit: 'cm', bottom: 1, bottomUnit: 'm' }], result: 'c' }; { kind: 'unitChain', mode: 'ruler', start: 's', end: 'e', length: 'L', division: 0.1, unit: 'cm', span: 10 }; { kind: 'unitChain', mode: 'target', trials: ['a', 'b', 'c'], accepted: 't', unit: 'm/s²', mean: 'm', error: 'e' }.",
   },
-  ask(
-    'H44',
-    'atomModel',
-    'Bohr model from protons, neutrons and electrons: isotopes and ions change the picture',
-    ['s.10.atomic-structure', 's.10.electrons-in-atoms', 's.10.nuclear-chemistry'],
-  ),
+  {
+    ...ask(
+      'H44',
+      'atomModel',
+      'Bohr model from protons, neutrons and electrons: isotopes and ions change the picture',
+      ['s.10.atomic-structure', 's.10.electrons-in-atoms', 's.10.nuclear-chemistry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-atomic-structure-carbon',
+      'g.s10-atomic-structure-isotope',
+      'g.s10-atomic-structure-cation',
+      'g.s10-atomic-structure-anion',
+      'g.s10-electrons-in-atoms-valence',
+      'g.s10-nuclear-chemistry-iodine',
+    ],
+    notes:
+      "Drawn (group HI): kind atomModel (typesHsi.ts, reps/AtomModel.tsx; electron shells from reps/electrons.ts). Fields: protons (Z, 1–54), neutrons? (0–90), electrons? (default = protons, 0–54), mass? (A = Z + N, checked), charge? (Z − e, checked), valence? (the outer shell's electrons, checked; the outer shell and its electrons lit). Every proton (red) and neutron (grey) is drawn in the nucleus, mixed evenly; the electrons sit on shells filled from the ground-state configuration (iron 2, 8, 14, 2; iodine 2, 8, 18, 18, 7), a positive ion losing from the outer shell first. The nuclide symbol (³⁵₁₇Cl with its charge) is at the top left and a key counts each particle. An isotope changes only the neutrons; an ion only the electrons. No handles: give the page `sliders: true`. The step phrase \"valence electrons of Z = {p}\" is taught to the harness (phrasesHsi.ts). Examples: { kind: 'atomModel', protons: 'p', neutrons: 'n', electrons: 'e', mass: 'A', charge: 'q' } with A = Z + N and q = Z − e; valence: { kind: 'atomModel', protons: 'p', neutrons: 'n', mass: 'A', valence: 'v' }.",
+  },
   ask(
     'H45',
     'orbitalDiagram',

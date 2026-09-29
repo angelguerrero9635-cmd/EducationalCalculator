@@ -67,7 +67,24 @@ export type UnitChainSpec =
       ring?: number;
     };
 
-export type HsiSpec = UnitChainSpec;
+/**
+ * A Bohr model (H44): `protons` and `neutrons` packed in the nucleus, every one drawn, and the
+ * `electrons` (default: as many as protons) on shells filled from the ground-state
+ * configuration (iron: 2, 8, 14, 2); the nuclide symbol ³⁵₁₇Cl⁻ beside it. Through xenon
+ * (54 protons and electrons). `mass` (p + n), `charge` (p − e) and `valence` (the outer shell's
+ * electrons, lit) are checked.
+ */
+export interface AtomModelSpec {
+  kind: 'atomModel';
+  protons: NumOrVar;
+  neutrons?: NumOrVar;
+  electrons?: NumOrVar;
+  mass?: string;
+  charge?: string;
+  valence?: string;
+}
+
+export type HsiSpec = UnitChainSpec | AtomModelSpec;
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
@@ -79,5 +96,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         return ids(r.start, r.result, ...r.factors.flatMap((f) => [f.top, f.bottom]));
       if (r.mode === 'ruler') return ids(r.start, r.end, r.length);
       return ids(...r.trials, r.accepted, r.mean, r.error);
+    case 'atomModel':
+      return ids(r.protons, r.neutrons, r.electrons, r.mass, r.charge, r.valence);
   }
 }

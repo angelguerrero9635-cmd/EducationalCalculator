@@ -169,6 +169,7 @@ export const representationTitle = (r: Representation) =>
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
     case 'unitChain':
+    case 'atomModel':
       return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
       return <UnitCircle spec={spec} calc={calc} />;

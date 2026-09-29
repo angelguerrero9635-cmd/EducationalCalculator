@@ -10,6 +10,8 @@ import {
   placesOf,
 } from '@/components/module/reps/unitChainMath';
 
+import { MAX_ELECTRONS, configuration, shells } from '@/components/module/reps/electrons';
+
 import type { HsiSpec } from '../typesHsi';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
@@ -70,6 +72,32 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       const want = percentError(mean, acc);
       if (want !== undefined && !near(e, want, 1e-3))
         out.push(`percent error is ${want}, the value shows ${e}`);
+      break;
+    }
+    case 'atomModel': {
+      const whole = (x: number | undefined, what: string, lo: number, hi: number) => {
+        if (x === undefined) return;
+        if (x !== Math.round(x) || x < lo || x > hi)
+          out.push(`${what} ${x} (whole, ${lo} to ${hi} drawn)`);
+      };
+      const p = num(rep.protons);
+      const n = num(rep.neutrons);
+      const e = rep.electrons === undefined ? p : num(rep.electrons);
+      whole(p, 'protons', 1, MAX_ELECTRONS);
+      whole(n, 'neutrons', 0, 90);
+      whole(e, 'electrons', 0, MAX_ELECTRONS);
+      const A = num(rep.mass);
+      if (A !== undefined && p !== undefined && n !== undefined && A !== p + n)
+        out.push(`mass number ${A}, but ${p} + ${n} particles are drawn in the nucleus`);
+      const q = num(rep.charge);
+      if (q !== undefined && p !== undefined && e !== undefined && q !== p - e)
+        out.push(`charge ${q}, but ${p} protons and ${e} electrons are drawn`);
+      const v = num(rep.valence);
+      if (v !== undefined && p !== undefined && e !== undefined && e >= 1) {
+        const sh = shells(configuration(p, e));
+        if (sh[sh.length - 1] !== v)
+          out.push(`outer shell holds ${sh[sh.length - 1]}, the value shows ${v}`);
+      }
       break;
     }
   }

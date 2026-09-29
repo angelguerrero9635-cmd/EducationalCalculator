@@ -5,11 +5,14 @@
 import type { HsiSpec } from '@/data/modules/typesHsi';
 
 import type { Calculator } from '../useCalculator';
+import { AtomModel } from './AtomModel';
 import { UnitChain } from './UnitChain';
 
 export function HsiRep({ spec, calc }: { spec: HsiSpec; calc: Calculator }) {
   switch (spec.kind) {
     case 'unitChain':
       return <UnitChain spec={spec} calc={calc} />;
+    case 'atomModel':
+      return <AtomModel spec={spec} calc={calc} />;
   }
 }

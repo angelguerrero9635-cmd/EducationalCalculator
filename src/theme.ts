@@ -246,6 +246,10 @@ const light = {
   normalReject: '#D93B3B',
   /** Chemistry (HS group I): a unit struck through when it cancels in a chain. */
   unitCancel: '#D9480F',
+  /** Bohr models: protons, neutrons and electrons. */
+  atomProton: '#E0563F',
+  atomNeutron: '#9AA3AF',
+  atomElectron: '#3B82F6',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -422,6 +426,9 @@ const dark: Palette = {
   ladderWallDark: '#5E3023',
   normalReject: '#F0716B',
   unitCancel: '#F08A4B',
+  atomProton: '#D9573F',
+  atomNeutron: '#7D8693',
+  atomElectron: '#5B9BF8',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

@@ -461,6 +461,7 @@ function representationVars(r: Representation): string[] {
     case 'matrixGrid':
       return hsdSpecVars(r);
     case 'unitChain':
+    case 'atomModel':
       return hsiSpecVars(r);
   }
 }

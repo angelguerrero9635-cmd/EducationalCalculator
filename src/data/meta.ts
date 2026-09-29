@@ -136,6 +136,7 @@ const PICTURE_NAMES: Record<string, string> = {
   complexPlane: 'complex number in the plane',
   vectorDiagram: 'vectors as arrows on a grid',
   unitChain: 'conversion factors, a ruler reading or a target',
+  atomModel: 'Bohr model of an atom',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();
