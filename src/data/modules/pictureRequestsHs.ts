@@ -664,12 +664,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Template syntax: `{s:sign}` cycles <, ≤, >, ≥ (value 1–4, as the inequality pages store it); `{s:relation}` adds = as 5; `{o:op}` cycles + and − (1, 2). A tap sets the value (calc.set); a worked-out sign is dashed and can’t be tapped; a line may break before it. m.7.two-step-equations~inequality: `{p}x + {q} {s:sign} {r}`; both sides: `{a}x + {b} {s:sign} {c}x + {d}`; `{a} {o:op} {b} = {r}`; a worked-out comparison `{a} {c:relation} {b}`; scientific-notation add and subtract: `({a} × 10^{n}) {o:op} ({c} × 10^{n}) = {p} × 10^{n}`. The Grade 7 page’s work lines print “undefined” for the sign while it is not chosen (its demo waits for the sign).',
   },
-  ask(
-    'H85',
-    'equationInput',
-    'Subscript boxes (log base, aₙ) and stacked mass and atomic numbers on the left',
-    ['m.11.logarithms', 's.10.nuclear-chemistry'],
-  ),
+  {
+    ...ask(
+      'H85',
+      'equationInput',
+      'Subscript boxes (log base, aₙ) and stacked mass and atomic numbers on the left',
+      ['m.11.logarithms', 's.10.nuclear-chemistry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-logarithms-log-form',
+      'g.m9-sequences-arithmetic',
+      'g.s10-nuclear-chemistry-alpha',
+      'g.s10-nuclear-chemistry-beta',
+    ],
+    notes:
+      'Template syntax: letters (or a box) then _ and a slot is a subscript, small and lowered: `log_{b}({x}) = {y}`, `a_{n} = {a1} + (n − 1){d} = {an}` (a_n with a bare letter stays text). A ^ with nothing before it starts scripts stacked on the left of the symbol after them, mass number over atomic number: `^{A}_{Z}X → ^{A2}_{Z2}Y + ^{4}_{2}He`, beta `^{0}_{−1}e`. A brace holding only digits ({4}) is a fixed number, not a box.',
+  },
   ask('H86', 'equationInput', 'A matrix grid of boxes, augmented bar and determinant bars', [
     'm.12.matrices',
   ]),

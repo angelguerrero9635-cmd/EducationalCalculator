@@ -22,11 +22,16 @@ export type EquationPart =
   | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
   /** A sign the student taps through (`CHOICES`), its value the sign's place: {s:sign}. */
   | { kind: 'choice'; id: string; choices: Choices }
+  /** A subscript: log_{b}, a_{n}. */
+  | { kind: 'sub'; base: Slot; sub: Slot }
+  /** Scripts stacked on the left of the symbol after them: ^{A}_{Z}X. */
+  | { kind: 'scripts'; top: Slot; bottom: Slot }
   /** A radical, its bar over `body`; `index` 3 for a cube root. */
   | { kind: 'root'; index?: string; body: Slot; tightBefore?: boolean }
   | { kind: 'text'; text: string; tightBefore?: boolean; tightAfter?: boolean };
 
-const BOX = /^\w+$/;
+/** A box id starts with a letter: {4} is the number 4. */
+const BOX = /^[A-Za-z]\w*$/;
 /** `{s:sign}`, `{s:relation}`, `{o:op}`: a box the student taps to change its sign. */
 const CHOICE = /^(\w+):(sign|relation|op)$/;
 
@@ -91,6 +96,7 @@ function readSlot(s: string, i: number, letters: boolean): Read | undefined {
         slot: { parts: [{ kind: 'choice', id: choice[1]!, choices: choice[2] as Choices }] },
         end,
       };
+    if (/^\d+$/.test(inner)) return { slot: { text: inner }, end };
     return { slot: BOX.test(inner) ? { id: inner } : { parts: equationParts(inner) }, end };
   }
   const m = (letters ? /^[−-]?[\w.]+/ : /^\d+/).exec(s.slice(i));
@@ -104,6 +110,24 @@ function readSlot(s: string, i: number, letters: boolean): Read | undefined {
  * with neither is drawn in line, as if the braces weren't there.
  */
 function readPiece(s: string, i: number): { parts: EquationPart[]; end: number } | undefined {
+  // Scripts on the left of a symbol, mass number over atomic number: ^{A}_{Z}X (a ^ with
+  // nothing before it).
+  if (s[i] === '^' && (i === 0 || /\s/.test(s[i - 1]!))) {
+    const top = readSlot(s, i + 1, true);
+    const bottom = top && s[top.end] === '_' ? readSlot(s, top.end + 1, true) : undefined;
+    if (!top || !bottom) return undefined;
+    return { parts: [{ kind: 'scripts', top: top.slot, bottom: bottom.slot }], end: bottom.end };
+  }
+  // A subscript: log_{b}, a_{n} (a box), a_n (a letter). Letters or a box before the _.
+  const base = /^[A-Za-z]+(?=_)/.exec(s.slice(i))?.[0];
+  if (
+    (base && (i === 0 || !/[\w.]/.test(s[i - 1]!))) ||
+    (s[i] === '{' && s[closeBrace(s, i)] === '_')
+  ) {
+    const b = base ? { slot: { text: base }, end: i + base.length } : readSlot(s, i, false)!;
+    const sub = readSlot(s, b.end + 1, true);
+    if (sub) return { parts: [{ kind: 'sub', base: b.slot, sub: sub.slot }], end: sub.end };
+  }
   let first: Read | undefined;
   if (s[i] === '{' || s[i]! in ROOTS) first = readSlot(s, i, false);
   else if (s[i] === '(') {
@@ -220,6 +244,10 @@ function partIds(p: EquationPart): string[] {
       return [...slotIds(p.base), ...slotIds(p.exponent)];
     case 'root':
       return slotIds(p.body);
+    case 'sub':
+      return [...slotIds(p.base), ...slotIds(p.sub)];
+    case 'scripts':
+      return [...slotIds(p.top), ...slotIds(p.bottom)];
     case 'text':
       return [];
   }

@@ -41,6 +41,7 @@ Keep rows for:
 | `{{x} − {m}}/{s}`, `{r}^{{n} − 1}`     | A group in braces: an expression slot (boxes, text).     |
 | `√{n}`, `∛{n}`, `√({a}x + {b})`        | A radical, its bar over the box or the group.            |
 | `{s:sign}`, `{s:relation}`, `{o:op}`   | A sign box to tap: < ≤ > ≥ (= too), or + −; value 1, 2…  |
+| `log_{b}`, `a_{n}`, `^{A}_{Z}X`        | A subscript; scripts stacked on the left of a symbol.    |
 | A line break (`\n`)                    | A second equation under the first (a system).            |
 
 Line breaks and brackets:
@@ -135,7 +136,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.11.polynomial-functions               | `P({r}) = {R}` (remainder theorem)                                | today                                                    |
 | m.11.binomial-theorem                   | `({a}x + {b})^{n}`; term: `C({n}, {k})`                           | today (H82: an exponent on a bracket)                    |
 | m.11.radical-functions                  | `√({a}x + {b}) = {c}`                                             | today (H83: radical bar over a group)                    |
-| m.11.logarithms                         | `log_{b}({x}) = {y}` beside `{b}^{y} = {x}`                       | **must**: subscript box                                  |
+| m.11.logarithms                         | `log_{b}({x}) = {y}` beside `{b}^{y} = {x}`                       | today (H85: subscript box)                               |
 | m.11.exp-log-equations                  | `{a} × {b}^x = {c}`; `{A} = {P}e^{{r}{t}}`                        | today (H81: letter or group exponent)                    |
 | m.11.unit-circle                        | `{d}° = {p}/{q}π`                                                 | today                                                    |
 | m.11.pythagorean-identities             | `({s})^2 + ({c})^2 = 1`                                           | today (H82: an exponent on a bracket)                    |
@@ -150,7 +151,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | s.10.mole                               | `{m} g ÷ {M} g/mol = {n} mol`                                     | today (fixed units)                                      |
 | s.10.molarity                           | `{c} M = {n} mol ÷ {V} L`                                         | today (fixed units)                                      |
 | s.10.acids-bases                        | `pH = −log({h})`; `[H⁺] = 10^{−{p}}`                              | today (H81: expression exponent)                         |
-| s.10.nuclear-chemistry                  | isotope boxes in a nuclear equation; `(1/2)^{t/T}`                | **must**: stacked scripts on the left                    |
+| s.10.nuclear-chemistry                  | `^{A}_{Z}X → ^{A2}_{Z2}Y + ^{4}_{2}He`; `(1/2)^{{t}/{T}}`         | today (H85: stacked scripts on the left)                 |
 | s.10.measurement                        | `{a} km × {1000 m}/{1 km} = {b} m`                                | today (H81: text in a fraction slot)                     |
 | s.11.circuits                           | `{V} V = {I} A × {R} Ω` (SI only)                                 | a unit after a box that follows the unit menu (better)   |
 

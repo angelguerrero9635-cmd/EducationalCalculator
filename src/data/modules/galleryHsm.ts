@@ -1094,5 +1094,211 @@ const H84: ModuleDef[] = [
   },
 ];
 
-export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83, ...H84];
+/** A decay's daughter nucleus: the mass and atomic numbers left after the particle leaves. */
+function decay(
+  id: string,
+  title: string,
+  use: string,
+  particle: { name: string; mass: number; charge: number; symbol: string },
+  example: Values,
+): ModuleDef {
+  const { mass, charge } = particle;
+  const minus = (a: string, n: number) => (n < 0 ? `{${a}} + ${-n}` : `{${a}} − ${n}`);
+  const plus = (a: string, n: number) => (n < 0 ? `{${a}} − ${-n}` : `{${a}} + ${n}`);
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'The mass numbers (top) on the two sides add to the same total.',
+      'The atomic numbers (bottom) on the two sides add to the same total.',
+      `The ${particle.name} carries away ${mass} in mass number and ${charge} in atomic number.`,
+      'The atomic number names the element: 90 is thorium.',
+      'The neutrons are the mass number less the atomic number.',
+    ],
+    variables: [
+      { ...value('A', 'Mass number before', 1, 300), integer: true },
+      { ...value('Z', 'Atomic number before', 1, 118), integer: true },
+      { ...value('A2', 'Mass number after', 1, 300), integer: true },
+      { ...value('Z2', 'Atomic number after', 1, 118), integer: true },
+      { ...value('N', 'Neutrons before', 0, 200), integer: true, derived: true },
+    ],
+    relations: [
+      {
+        id: 'N = A − Z',
+        display: '{N} = {A} − {Z}',
+        vars: ['N', 'A', 'Z'],
+        residual: (v: Values) => v.N! - (v.A! - v.Z!),
+        solve: {
+          N: (v: Values) => v.A! - v.Z!,
+          A: (v: Values) => v.N! + v.Z!,
+          Z: (v: Values) => v.A! - v.N!,
+        },
+      },
+      {
+        id: 'A = A₂ + particle',
+        display: `{A} = {A2} + ${mass}`,
+        vars: ['A', 'A2'],
+        residual: (v: Values) => v.A! - (v.A2! + mass),
+        solve: { A2: (v: Values) => v.A! - mass, A: (v: Values) => v.A2! + mass },
+      },
+      {
+        id: 'Z = Z₂ + particle',
+        display: charge < 0 ? `{Z} = {Z2} − ${-charge}` : `{Z} = {Z2} + ${charge}`,
+        vars: ['Z', 'Z2'],
+        residual: (v: Values) => v.Z! - (v.Z2! + charge),
+        solve: { Z2: (v: Values) => v.Z! - charge, Z: (v: Values) => v.Z2! + charge },
+      },
+    ],
+    steps: {
+      'N = A − Z': {
+        N: { expr: '{A} − {Z}', how: 'The nucleons that are not protons are neutrons.' },
+        A: { expr: '{N} + {Z}', how: 'Protons and neutrons make the mass number.' },
+        Z: { expr: '{A} − {N}', how: 'The nucleons that are not neutrons are protons.' },
+      },
+      'A = A₂ + particle': {
+        A2: {
+          expr: minus('A', mass),
+          how: `The ${particle.name} takes ${mass} of the mass number.`,
+        },
+        A: { expr: plus('A2', mass), how: `Add back the ${particle.name}’s mass number.` },
+      },
+      'Z = Z₂ + particle': {
+        Z2: {
+          expr: minus('Z', charge),
+          how:
+            charge < 0
+              ? `The ${particle.name} has atomic number −1, so the nucleus gains a proton.`
+              : `The ${particle.name} takes ${charge} of the atomic number.`,
+        },
+        Z: { expr: plus('Z2', charge), how: `Add back the ${particle.name}’s atomic number.` },
+      },
+    },
+    example,
+    startWith: ['A', 'Z'],
+    equation: `^{A}_{Z}X → ^{A2}_{Z2}Y + ${particle.symbol}`,
+    representation: { kind: 'periodicTable', element: 'Z2' },
+  };
+}
+
+// H85: subscripts (log_{b}, a_{n}) and scripts stacked on the left (^{A}_{Z}X).
+const H85: ModuleDef[] = [
+  {
+    id: 'g.m11-logarithms-log-form',
+    title: 'Logarithm: log_b(x) = y',
+    use: 'Use this for “Evaluate log₂ 32” or “Write 3⁴ = 81 as a logarithm.”',
+    assumptions: [
+      'log_b(x) = y means b^y = x: the log is the exponent.',
+      'The base b is positive and not 1; x is positive.',
+      'Any log is ln x ÷ ln b.',
+    ],
+    variables: [
+      value('b', 'Base', 0.01, 1000),
+      value('x', 'Number', 1e-9, 1e12),
+      value('y', 'Logarithm', -30, 30),
+    ],
+    relations: [
+      {
+        id: 'b ≠ 1',
+        constraint: true,
+        display: '{b} is not 1',
+        vars: ['b'],
+        residual: (v: Values) => (v.b !== 1 ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'x = b^y',
+        display: '{x} = {b}^{y}',
+        vars: ['x', 'b', 'y'],
+        residual: (v: Values) => Math.log(v.x!) - v.y! * Math.log(v.b!),
+        solve: {
+          y: (v: Values) => (v.b === 1 ? undefined : exact(Math.log(v.x!) / Math.log(v.b!))),
+          x: (v: Values) => exact(v.b! ** v.y!),
+          b: (v: Values) => (v.y ? exact(v.x! ** (1 / v.y)) : undefined),
+        },
+      },
+    ],
+    steps: {
+      'b ≠ 1': {},
+      'x = b^y': {
+        y: { expr: 'ln({x}) ÷ ln({b})', how: 'The log is the exponent on b that makes x.' },
+        x: { expr: '{b}^({y})', how: 'Raise the base to the log.' },
+        b: { expr: '{x}^(1 ÷ {y})', how: 'Take the yth root of x.' },
+      },
+    },
+    example: { b: 2, x: 32, y: 5 },
+    startWith: ['b', 'x'],
+    equation: 'log_{b}({x}) = {y}',
+    representation: {
+      kind: 'plot',
+      x: { var: 'x', min: 0, max: 40, label: 'x' },
+      y: { var: 'y', min: -2, max: 6, label: 'y' },
+      params: ['b'],
+      autoRange: true,
+    },
+  },
+  {
+    id: 'g.m9-sequences-arithmetic',
+    title: 'Arithmetic sequence: the nth term',
+    use: 'Use this for “The sequence 7, 11, 15, … What is a₂₀?”',
+    assumptions: [
+      'Each term is the one before it plus the common difference d.',
+      'The nth term is the first plus n − 1 differences.',
+    ],
+    variables: [
+      { ...value('n', 'Term number', 1, 1000), integer: true },
+      value('a1', 'First term', -1e6, 1e6),
+      value('d', 'Common difference', -1e4, 1e4),
+      value('an', 'nth term', -1e8, 1e8),
+    ],
+    relations: [
+      {
+        id: 'aₙ = a₁ + (n − 1) × d',
+        display: '{an} = {a1} + ({n} − 1) × {d}',
+        vars: ['an', 'a1', 'n', 'd'],
+        residual: (v: Values) => v.an! - (v.a1! + (v.n! - 1) * v.d!),
+        solve: {
+          an: (v: Values) => exact(v.a1! + (v.n! - 1) * v.d!),
+          a1: (v: Values) => exact(v.an! - (v.n! - 1) * v.d!),
+          d: (v: Values) => (v.n === 1 ? undefined : exact((v.an! - v.a1!) / (v.n! - 1))),
+          n: (v: Values) => (v.d ? exact(1 + (v.an! - v.a1!) / v.d) : undefined),
+        },
+      },
+    ],
+    steps: {
+      'aₙ = a₁ + (n − 1) × d': {
+        an: { expr: '{a1} + ({n} − 1) × {d}', how: 'Add n − 1 differences to the first term.' },
+        a1: { expr: '{an} − ({n} − 1) × {d}', how: 'Take the n − 1 differences back off.' },
+        d: { expr: '({an} − {a1}) ÷ ({n} − 1)', how: 'Share the change over the n − 1 steps.' },
+        n: { expr: '1 + ({an} − {a1}) ÷ {d}', how: 'Count the steps of d, then add 1.' },
+      },
+    },
+    example: { n: 20, a1: 7, d: 4, an: 83 },
+    startWith: ['n', 'a1', 'd'],
+    equation: 'a_{n} = {a1} + (n − 1){d} = {an}',
+    representation: {
+      kind: 'table',
+      sweep: 'n',
+      output: 'an',
+      params: ['a1', 'd'],
+      rows: [1, 2, 3, 4, 5, 6],
+    },
+  },
+  decay(
+    'g.s10-nuclear-chemistry-alpha',
+    'Alpha decay: the nucleus left',
+    'Use this for “Uranium-238 gives off an alpha particle. What nucleus is left?”',
+    { name: 'alpha particle', mass: 4, charge: 2, symbol: '^{4}_{2}He' },
+    { A: 238, Z: 92, A2: 234, Z2: 90, N: 146 },
+  ),
+  decay(
+    'g.s10-nuclear-chemistry-beta',
+    'Beta decay: the nucleus left',
+    'Use this for “Carbon-14 gives off a beta particle. What nucleus is left?”',
+    { name: 'beta particle', mass: 0, charge: -1, symbol: '^{0}_{−1}e' },
+    { A: 14, Z: 6, A2: 14, Z2: 7, N: 8 },
+  ),
+];
+
+export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83, ...H84, ...H85];
 export const HSM_GALLERY_LAYOUTS: LayoutDef[] = [];

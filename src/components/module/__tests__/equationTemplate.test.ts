@@ -262,11 +262,53 @@ describe('H84: sign and operator boxes', () => {
   });
 });
 
+describe('H85: subscripts and left scripts', () => {
+  it('reads a subscript box or letter after letters', () => {
+    expect(equationParts('log_{b}({x}) = {y}')).toEqual([
+      { kind: 'sub', base: { text: 'log' }, sub: { id: 'b' } },
+      text('(', { before: true, after: true }),
+      box('x'),
+      text(')', { before: true }),
+      text('='),
+      box('y'),
+    ]);
+    expect(equationParts('a_{n} = {a1} + (n − 1){d}')[0]).toEqual({
+      kind: 'sub',
+      base: { text: 'a' },
+      sub: { id: 'n' },
+    });
+    expect(equationParts('a_n = {an}')[0]).toEqual({
+      kind: 'sub',
+      base: { text: 'a' },
+      sub: { text: 'n' },
+    });
+  });
+
+  it('stacks scripts on the left of the symbol after them', () => {
+    expect(equationParts('^{A}_{Z}X → ^{A2}_{Z2}Y + ^{4}_{2}He')).toEqual([
+      { kind: 'scripts', top: { id: 'A' }, bottom: { id: 'Z' } },
+      text('X', { before: true }),
+      text('→'),
+      { kind: 'scripts', top: { id: 'A2' }, bottom: { id: 'Z2' } },
+      text('Y', { before: true }),
+      text('+'),
+      { kind: 'scripts', top: { text: '4' }, bottom: { text: '2' } },
+      text('He', { before: true }),
+    ]);
+    expect(equationParts('^{0}_{−1}e')[0]).toEqual({
+      kind: 'scripts',
+      top: { text: '0' },
+      bottom: { parts: [text('−1')] },
+    });
+    expect(equationIds('^{A}_{Z}X → ^{A2}_{Z2}Y + ^{4}_{2}He')).toEqual(['A', 'Z', 'A2', 'Z2']);
+  });
+});
+
 describe('every page’s equation', () => {
   it('lists each box in its template', () => {
     for (const m of TESTED_MODULES) {
       if (!m.equation) continue;
-      const written = [...m.equation.matchAll(/\{(\w+)(?::\w+)?\}/g)].map((x) => x[1]);
+      const written = [...m.equation.matchAll(/\{([A-Za-z]\w*)(?::\w+)?\}/g)].map((x) => x[1]);
       expect([m.id, [...new Set(equationIds(m.equation))].sort()]).toEqual([
         m.id,
         [...new Set(written)].sort(),

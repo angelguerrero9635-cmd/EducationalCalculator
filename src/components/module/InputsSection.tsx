@@ -466,6 +466,18 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
         choices={p.choices}
         compact={compact || small}
       />
+    ) : p.kind === 'sub' ? (
+      // log_{b}, a_{n}: the subscript small, its top two thirds of the way down the base.
+      <View key={i} style={styles.eqSub}>
+        {slotView(p.base, `s${i}`, small)}
+        <View style={styles.eqSubscript}>{slotView(p.sub, `u${i}`, true)}</View>
+      </View>
+    ) : p.kind === 'scripts' ? (
+      // ^{A}_{Z}X: mass number over atomic number, right-aligned against the symbol after them.
+      <View key={i} style={styles.eqScripts}>
+        {slotView(p.top, `a${i}`, true)}
+        {slotView(p.bottom, `z${i}`, true)}
+      </View>
     ) : p.kind === 'root' ? (
       // √{n}, ∛{n}, √({a}x + {b}): the bar over the box or the group.
       <Radical key={i} index={p.index}>
@@ -743,6 +755,10 @@ const styles = StyleSheet.create({
   eqBoxSmall: { minHeight: 32, fontSize: font.caption + 2 },
   eqHit: { padding: 6, margin: -6 },
   eqChoiceSmall: { minWidth: 32, minHeight: 32 },
+  // The base stays centred on the line: 8 above it balances the 8 the subscript hangs below.
+  eqSub: { flexDirection: 'row', alignItems: 'flex-start', paddingTop: 8 },
+  eqSubscript: { marginTop: 20, marginLeft: 1 },
+  eqScripts: { alignItems: 'flex-end', gap: 2 },
   eqChoice: {
     minWidth: 44,
     minHeight: 44,
