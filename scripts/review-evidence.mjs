@@ -36,9 +36,10 @@ if (!prefix) {
 const out = flag('--out', '.review');
 const wide = Number(flag('--wide', '3'));
 const dark = Number(flag('--dark', '3'));
+// The review samples deeply; `pnpm test` keeps small defaults so a full run stays short.
 const edgeEnv = args.includes('--edges')
-  ? { REVIEW_EDGES: 'all', SAMPLES: '25', SEQUENCES: '5', EDGE_BIAS: '0.8' }
-  : {};
+  ? { REVIEW_EDGES: 'all', SAMPLES: '25', SEQUENCES: '5', UNIT_CASES: '10', EDGE_BIAS: '0.8' }
+  : { SAMPLES: '100', SEQUENCES: '15', UNIT_CASES: '10' };
 mkdirSync(join(out, 'shots'), { recursive: true });
 
 const run = (label, cmd, cmdArgs, env = {}) => {

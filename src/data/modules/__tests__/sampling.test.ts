@@ -8,8 +8,10 @@
  *   MODULE_IDS=m.K.,m.1.,m.2. pnpm -s test src/data/modules/__tests__/sampling.test.ts
  *
  * Env: MODULE_IDS (comma-separated ids or id prefixes; default all modules), SEED (default 1),
- * SAMPLES (random givens per module, default 100), SEQUENCES (edit sequences per module,
- * default 15; raise both for a deep run), EDGE_BIAS (share of sampled values taken from the
+ * SAMPLES (random givens per module, default 12), SEQUENCES (edit sequences per module,
+ * default 2), UNIT_CASES (random givens per unit choice, default 3; a finding shows up in the
+ * first few samples, so the defaults keep a full run short; a review run raises them:
+ * SAMPLES=100 SEQUENCES=15 UNIT_CASES=10), EDGE_BIAS (share of sampled values taken from the
  * edges: min, max, one step inside each, 0, 1 and 2; default 0.3; a review run lowers SAMPLES and
  * raises this to spend its samples on the boundaries), SAMPLING_REPORT=1 (print a summary).
  */
@@ -67,11 +69,11 @@ const FILTER = (env.MODULE_IDS ?? '')
   .map((s) => s.trim())
   .filter(Boolean);
 const SEED = Number(env.SEED ?? 1);
-const N_RANDOM = Number(env.SAMPLES ?? 100);
-const N_SEQUENCES = Number(env.SEQUENCES ?? 15);
+const N_RANDOM = Number(env.SAMPLES ?? 12);
+const N_SEQUENCES = Number(env.SEQUENCES ?? 2);
 const EDGE_BIAS = Number(env.EDGE_BIAS ?? 0.3);
 const SEQUENCE_LENGTH = 10;
-const N_PER_UNIT_CHOICE = 10;
+const N_PER_UNIT_CHOICE = Number(env.UNIT_CASES ?? 3);
 const REPORT = env.SAMPLING_REPORT === '1';
 
 const selected = TESTED_MODULES.filter(

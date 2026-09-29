@@ -5,6 +5,18 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Test suite trimmed
+
+A full `pnpm test` took 19 minutes, 99% of it the sampling harness (100 random givens and 15
+edit sequences per module, 647 modules). Every failure it found while Grade 7 science was built
+showed up within the first few samples (×19, ×20, ×60 repeats), so the defaults are now 12
+givens, 2 edit sequences and 3 cases per unit choice (`UNIT_CASES`); the modules test tries at
+most 20 input combinations per page. `scripts/review-evidence.mjs` runs the harness deep
+(`SAMPLES=100 SEQUENCES=15 UNIT_CASES=10`), so the review still sees the full sampling. The round-3 card-figure test
+folded into `layoutFigures.test.ts` (one figure-fit test per layout page). Everything else
+stays: each of the other suites runs in under ten seconds and each has caught a real defect
+(`standards`, `layouts`, `units` and `pictureRequests` all did this week).
+
 ## Round 4 pictures reviewed (Q01–Q52)
 
 - 45 of 52 kinds passed as drawn. Fixed: the Pangaea "Australia" label clipped at the board

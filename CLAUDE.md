@@ -32,17 +32,17 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 
 ## Commands
 
-| Command                                                                     | Use                                                                       |
-| --------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `pnpm new-module m.5.skill[~slug] ["Title"]`                                | Scaffold a module in the right grade file                                 |
-| `MODULE_IDS=m.5. pnpm test src/data/modules`                                | Module, standards and sampling tests for a prefix                         |
-| `pnpm check`                                                                | Typecheck, lint, format check, all tests                                  |
-| `pnpm build:web && pnpm review -- --prefix m.5.`                            | Review evidence into `.review/` (dump, harness, screenshots, index)       |
-| `node scripts/review-questions.mjs --prefix m.5.`                           | The released questions for a section's skills into `.review/questions.md` |
-| `NODE_PATH=$(npm root -g) pnpm shots -- <ids> --widths 390 --out .review/x` | Screenshots with layout checks                                            |
-| `NODE_PATH=$(npm root -g) pnpm sliders -- [ids]`                            | Tap and drag every slider; report in `.review/sliders.md`                 |
-| `pnpm docs:sliders`                                                         | Regenerate `docs/SLIDERS.md`                                              |
-| `pnpm verify:ssr`                                                           | After a build: pages are pre-rendered with content                        |
+| Command                                                                     | Use                                                                                                         |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `pnpm new-module m.5.skill[~slug] ["Title"]`                                | Scaffold a module in the right grade file                                                                   |
+| `MODULE_IDS=m.5. pnpm test src/data/modules`                                | Module, standards and sampling tests for a prefix (`SAMPLES=100 SEQUENCES=15 UNIT_CASES=10` for a deep run) |
+| `pnpm check`                                                                | Typecheck, lint, format check, all tests                                                                    |
+| `pnpm build:web && pnpm review -- --prefix m.5.`                            | Review evidence into `.review/` (dump, harness, screenshots, index)                                         |
+| `node scripts/review-questions.mjs --prefix m.5.`                           | The released questions for a section's skills into `.review/questions.md`                                   |
+| `NODE_PATH=$(npm root -g) pnpm shots -- <ids> --widths 390 --out .review/x` | Screenshots with layout checks                                                                              |
+| `NODE_PATH=$(npm root -g) pnpm sliders -- [ids]`                            | Tap and drag every slider; report in `.review/sliders.md`                                                   |
+| `pnpm docs:sliders`                                                         | Regenerate `docs/SLIDERS.md`                                                                                |
+| `pnpm verify:ssr`                                                           | After a build: pages are pre-rendered with content                                                          |
 
 The Playwright used by the scripts is the container's global one (`NODE_PATH=$(npm root -g)`),
 not a dependency. Chromium is at `/opt/pw-browsers/chromium`.

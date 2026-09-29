@@ -676,6 +676,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     pages: ['s.7.atoms-molecules', 's.7.atoms-molecules~element-or-compound'],
     status: 'placed',
     gallery: ['g.molecule-models', 'g.molecule-cards'],
+    uses: '"molecule',
     notes: 'Placed when Grades 7–8 were built.',
   },
   {

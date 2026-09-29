@@ -87,6 +87,7 @@ describe('unit conversions (exact definitions)', () => {
       'ppm',
       'ppm/yr',
       'L/min',
+      'kcal',
     ];
     for (const m of MODULES) {
       for (const v of m.variables) {
