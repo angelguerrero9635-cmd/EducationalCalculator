@@ -1037,6 +1037,139 @@ function binomialDemo(
   };
 }
 
+// ── H13 pascalTriangle ──
+
+const fact = (n: number) => {
+  let out = 1;
+  for (let i = 2; i <= n; i++) out *= i;
+  return out;
+};
+
+/** C = C(n, k), the entry of Pascal's triangle. */
+function chooseRel(C: string, n: string, k: string): Rel {
+  return {
+    relation: {
+      id: `${C} = C(${n}, ${k})`,
+      display: `{${C}} = C({${n}}, {${k}})`,
+      vars: [C, n, k],
+      residual: (v: Values) => v[C]! - choose(v[n]!, v[k]!),
+      solve: { [C]: (v: Values) => choose(v[n]!, v[k]!) },
+    },
+    steps: {
+      [C]: {
+        expr: `C({${n}}, {${k}})`,
+        how: 'Entry k of row n of Pascal’s triangle: the ways to choose k of n.',
+      },
+    },
+  };
+}
+
+function pascalDemo(id: string, title: string, n: number, k: number): ModuleDef {
+  return {
+    id,
+    title,
+    use: 'Use this for the coefficients of (a + b)ⁿ, read from row n of Pascal’s triangle.',
+    assumptions: [
+      'Each entry of Pascal’s triangle is the sum of the two above it; the ends are 1.',
+      'Entry k of row n is C(n, k), the coefficient of aⁿ⁻ᵏbᵏ in (a + b)ⁿ.',
+    ],
+    variables: [
+      V('n', 'n', 'Row (the power)', { integer: true, min: 0, max: 12 }),
+      V('k', 'k', 'Entry (the power of b)', { integer: true, min: 0, max: 12 }),
+      V('C', 'C', 'Coefficient C(n, k)', { integer: true, min: 1, max: 1000, derived: true }),
+    ],
+    ...rels({ relation: atLeast('n', 'k') as Relation, steps: {} }, chooseRel('C', 'n', 'k')),
+    example: { n, k, C: choose(n, k) },
+    startWith: ['n', 'k'],
+    sliders: true,
+    representation: { kind: 'pascalTriangle', n: 'n', k: 'k', expand: { a: 'a', b: 'b' } },
+  };
+}
+
+const permutations: ModuleDef = {
+  id: 'g.m10-probability-rules-permutations',
+  title: 'Permutations: counting slots',
+  use: 'Use this for the ways to fill r places in order from n, n! ÷ (n − r)!.',
+  assumptions: [
+    'The first place can go to any of the n; each later place has one fewer choice.',
+    'Order matters: gold to Ana and silver to Ben differs from the other way round.',
+  ],
+  variables: [
+    V('n', 'n', 'Choices', { integer: true, min: 1, max: 20 }),
+    V('r', 'r', 'Places filled in order', { integer: true, min: 0, max: 20 }),
+    V('P', 'P', 'Ways', { integer: true, min: 1, max: 1e19 }),
+  ],
+  ...rels(
+    { relation: atLeast('n', 'r') as Relation, steps: {} },
+    {
+      relation: {
+        id: 'P = n! ÷ (n − r)!',
+        display: '{P} = {n}! ÷ ({n} − {r})!',
+        vars: ['P', 'n', 'r'],
+        residual: (v: Values) => v.P! / (fact(v.n!) / fact(v.n! - v.r!)) - 1,
+        solve: { P: (v: Values) => fact(v.n!) / fact(v.n! - v.r!) },
+      },
+      steps: {
+        P: {
+          expr: '{n}! ÷ ({n} − {r})!',
+          how: 'n × (n − 1) × … for r places: n! with the unused (n − r)! divided out.',
+        },
+      },
+    },
+  ),
+  example: { n: 10, r: 3, P: 720 },
+  startWith: ['n', 'r'],
+  sliders: true,
+  representation: {
+    kind: 'pascalTriangle',
+    n: 'n',
+    triangle: false,
+    slots: { r: 'r', result: 'P' },
+  },
+};
+
+const combinations: ModuleDef = {
+  id: 'g.m10-probability-rules-combinations',
+  title: 'Combinations: slots, then divide by the orders',
+  use: 'Use this for the groups of r from n when order doesn’t matter, n! ÷ ((n − r)! × r!).',
+  assumptions: [
+    'Fill r places in order, then divide by the r! orders each group can be listed in.',
+    'The count is entry r of row n of Pascal’s triangle.',
+  ],
+  variables: [
+    V('n', 'n', 'Choices', { integer: true, min: 1, max: 12 }),
+    V('r', 'r', 'Chosen', { integer: true, min: 0, max: 12 }),
+    V('C', 'C', 'Groups', { integer: true, min: 1, max: 1000 }),
+  ],
+  ...rels(
+    { relation: atLeast('n', 'r') as Relation, steps: {} },
+    {
+      relation: {
+        id: 'C = n! ÷ ((n − r)! × r!)',
+        display: '{C} = {n}! ÷ (({n} − {r})! × {r}!)',
+        vars: ['C', 'n', 'r'],
+        residual: (v: Values) => v.C! - choose(v.n!, v.r!),
+        solve: { C: (v: Values) => choose(v.n!, v.r!) },
+      },
+      steps: {
+        C: {
+          expr: '{n}! ÷ (({n} − {r})! × {r}!)',
+          how: 'The ordered count, n! ÷ (n − r)!, divided by the r! orders of each group.',
+        },
+      },
+    },
+  ),
+  example: { n: 8, r: 3, C: 56 },
+  startWith: ['n', 'r'],
+  sliders: true,
+  representation: {
+    kind: 'pascalTriangle',
+    n: 'n',
+    k: 'r',
+    slots: { r: 'r', choose: true, result: 'C' },
+  },
+};
+
 export const HSB_GALLERY_MODULES: ModuleDef[] = [
   normalLeft,
   normalBetween,
@@ -1064,5 +1197,9 @@ export const HSB_GALLERY_MODULES: ModuleDef[] = [
     p: 0.5,
     k: 20,
   }),
+  pascalDemo('g.m11-binomial-theorem-pascal', 'Pascal’s triangle: row 5', 5, 2),
+  pascalDemo('g.m11-binomial-theorem-row-12', 'Pascal’s triangle: row 12', 12, 6),
+  permutations,
+  combinations,
 ];
 export const HSB_GALLERY_LAYOUTS: LayoutDef[] = [];

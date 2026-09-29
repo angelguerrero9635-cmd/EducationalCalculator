@@ -81,7 +81,25 @@ export interface HistogramSpec {
   fixed?: boolean;
 }
 
-export type HsbSpec = NormalCurveSpec | HistogramSpec;
+/**
+ * Pascal's triangle, rows 0 to 12, with row n tinted and entry k (C(n, k)) lit, the two entries
+ * above it that add to it marked. `slots` draws the counting slots for r places, n × (n − 1) × …,
+ * and for a combination (`choose: true`) the division by r!. `expand` writes (a + b)ⁿ with row
+ * n's coefficients in the caption. `triangle: false` leaves the triangle out (slots alone, for
+ * n past 12). No handles: n, k and r move with their sliders.
+ */
+export interface PascalTriangleSpec {
+  kind: 'pascalTriangle';
+  n: NumOrVar;
+  k?: NumOrVar;
+  /** Rows drawn: 0 to this (default the larger of n and 6; at most 12). */
+  rows?: number;
+  triangle?: boolean;
+  slots?: { r: NumOrVar; choose?: boolean; result?: string };
+  expand?: { a: string; b: string };
+}
+
+export type HsbSpec = NormalCurveSpec | HistogramSpec | PascalTriangleSpec;
 
 /** Every variable id one of these pictures refers to. */
 export function hsbSpecVars(r: HsbSpec): string[] {
@@ -131,5 +149,7 @@ export function hsbSpecVars(r: HsbSpec): string[] {
         r.binomial?.sd,
         ...(r.keep ?? []),
       );
+    case 'pascalTriangle':
+      return v(r.n, r.k, r.slots?.r, r.slots?.result);
   }
 }

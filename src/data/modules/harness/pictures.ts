@@ -1989,6 +1989,7 @@ export function repIssues(
       break;
     case 'normalCurve':
     case 'histogram':
+    case 'pascalTriangle':
       out.push(...hsbIssues(rep, (id) => val(id)));
       break;
     case 'table':

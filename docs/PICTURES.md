@@ -73,6 +73,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it | Grade 8 gravity and orbits          |
 | `normalCurve`      | normal or chi-square curve, x and z axes, areas to 4 decimals, tests  | Grades 11–12 statistics (H02)       |
 | `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)   | Grades 9–12 statistics (H03)        |
+| `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!        | Grades 10–11 counting (H13)         |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

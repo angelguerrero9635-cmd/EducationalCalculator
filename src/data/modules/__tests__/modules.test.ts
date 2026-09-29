@@ -438,6 +438,7 @@ function representationVars(r: Representation): string[] {
       return physics8SpecVars(r);
     case 'normalCurve':
     case 'histogram':
+    case 'pascalTriangle':
       return hsbSpecVars(r);
   }
 }

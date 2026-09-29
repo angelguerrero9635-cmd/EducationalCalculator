@@ -122,6 +122,7 @@ const PICTURE_NAMES: Record<string, string> = {
   orbit: 'orbit diagram with the pull of gravity',
   normalCurve: 'normal curve with shaded areas',
   histogram: 'histogram or probability bars',
+  pascalTriangle: 'Pascal’s triangle and counting slots',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

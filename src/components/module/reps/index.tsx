@@ -122,6 +122,7 @@ import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
 import { NormalCurve } from './NormalCurve';
 import { Histogram } from './Histogram';
+import { PascalTriangle } from './PascalTriangle';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -162,6 +163,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
       return <Histogram spec={spec} calc={calc} />;
+    case 'pascalTriangle':
+      return <PascalTriangle spec={spec} calc={calc} />;
     case 'skaters':
       return <Skaters spec={spec} calc={calc} />;
     case 'energyTrack':

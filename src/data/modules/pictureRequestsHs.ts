@@ -187,13 +187,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['m.10.circle-theorems'],
     'Inscribed angle half the central angle; angle in a semicircle; tangent perpendicular to the radius; intersecting chords, secant–secant and secant–tangent products.',
   ),
-  ask(
-    'H13',
-    'pascalTriangle',
-    "Pascal's triangle with row n and entry k lit, and the counting slots n × (n − 1) × …",
-    ['m.10.probability-rules', 'm.11.binomial-theorem'],
-    'Slots for permutations and combinations (choose, then divide by the orders); the binomial expansion coefficients from row n.',
-  ),
+  {
+    ...ask(
+      'H13',
+      'pascalTriangle',
+      "Pascal's triangle with row n and entry k lit, and the counting slots n × (n − 1) × …",
+      ['m.10.probability-rules', 'm.11.binomial-theorem'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-binomial-theorem-pascal',
+      'g.m11-binomial-theorem-row-12',
+      'g.m10-probability-rules-permutations',
+      'g.m10-probability-rules-combinations',
+    ],
+    notes:
+      'Slots for permutations and combinations (choose, then divide by the orders); the binomial expansion coefficients from row n. Drawn (group HB). Fields: n (row, 0–12), k? (entry lit, its two parents marked with Pascal\'s rule in the caption), rows? (rows drawn, default the larger of n and 6), triangle? (false: the slots alone, for n past 12), slots { r, choose?, result? } (n × (n − 1) × … boxes for r places, then ÷ r! for a combination), expand { a, b } ((a + b)ⁿ with row n\'s coefficients in the caption, n ≤ 8). No handles: n, k and r have sliders. The harness checks every entry is C(row, col) and the slots\' product (÷ r!) against the result. Examples: { kind: "pascalTriangle", n: "n", k: "k", expand: { a: "a", b: "b" } }; { kind: "pascalTriangle", n: "n", k: "r", slots: { r: "r", choose: true, result: "C" } }; permutations: { kind: "pascalTriangle", n: "n", triangle: false, slots: { r: "r", result: "P" } }.',
+  },
   ask(
     'H14',
     'matrixGrid',

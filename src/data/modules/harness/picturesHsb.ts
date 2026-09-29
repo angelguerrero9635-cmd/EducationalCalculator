@@ -5,7 +5,8 @@
  */
 import { histModel } from '@/components/module/reps/histModel';
 import { normalModel, type Span } from '@/components/module/reps/normalModel';
-import { binomialPmf, simpson } from '@/components/module/reps/statMath';
+import { pascalRows, slotsOf } from '@/components/module/reps/pascal';
+import { binomialPmf, choose, simpson } from '@/components/module/reps/statMath';
 
 import type { NumOrVar } from '../typesGraphs';
 import type { HsbSpec } from '../typesHsb';
@@ -167,6 +168,35 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
         const mean = data.reduce((t, x) => t + x, 0) / data.length;
         if (e !== undefined && !near(e, mean, 1e-6))
           out.push(`mean ${e} is not the data's ${mean}`);
+      }
+      break;
+    }
+    case 'pascalTriangle': {
+      const n = get(rep.n);
+      const k = get(rep.k);
+      const r = get(rep.slots?.r);
+      for (const [x, what] of [
+        [n, 'row n'],
+        [k, 'entry k'],
+        [r, 'places r'],
+      ] as const)
+        if (x !== undefined && (x < 0 || !Number.isInteger(x)))
+          out.push(`${what} ${x} is not whole`);
+      if (n !== undefined && rep.triangle !== false && n > 12) out.push(`row ${n} is past row 12`);
+      // Every entry drawn is the sum of the two above, and is C(row, col).
+      const rows = pascalRows(Math.min(12, Math.max(rep.rows ?? 6, n ?? 0)));
+      rows.forEach((row, i) =>
+        row.forEach((v, j) => {
+          if (v !== choose(i, j)) out.push(`entry ${j} of row ${i} is ${v}, not C(${i}, ${j})`);
+        }),
+      );
+      if (n !== undefined && r !== undefined && rep.slots) {
+        const s = slotsOf(n, r, !!rep.slots.choose);
+        const want = rep.slots.choose ? choose(n, r) : choose(n, r) * slotsOf(r, r, false).product;
+        if (r <= n && s.value !== want) out.push(`slots give ${s.value}, not ${want}`);
+        const typed = get(rep.slots.result);
+        if (typed !== undefined && r <= n && typed !== s.value)
+          out.push(`slots give ${s.value}, but the value is ${typed}`);
       }
       break;
     }
