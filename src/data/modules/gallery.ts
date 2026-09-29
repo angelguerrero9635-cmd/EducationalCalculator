@@ -38,6 +38,7 @@ import { HSI_GALLERY_LAYOUTS, HSI_GALLERY_MODULES } from './galleryHsi';
 import { HSJ_GALLERY_LAYOUTS, HSJ_GALLERY_MODULES } from './galleryHsj';
 import { HSK_GALLERY_LAYOUTS, HSK_GALLERY_MODULES } from './galleryHsk';
 import { HSL_GALLERY_LAYOUTS, HSL_GALLERY_MODULES } from './galleryHsl';
+import { HSM_GALLERY_LAYOUTS, HSM_GALLERY_MODULES } from './galleryHsm';
 import { R3I_GALLERY_LAYOUTS, R3I_GALLERY_MODULES } from './galleryR3i';
 import { R3J_GALLERY_LAYOUTS, R3J_GALLERY_MODULES } from './galleryR3j';
 import { R2C_GALLERY_MODULES } from './galleryR2c';
@@ -1087,6 +1088,7 @@ const EVERY_GALLERY_MODULE: ModuleDef[] = [
   ...HSJ_GALLERY_MODULES,
   ...HSK_GALLERY_MODULES,
   ...HSL_GALLERY_MODULES,
+  ...HSM_GALLERY_MODULES,
 ];
 
 /**
@@ -1116,6 +1118,7 @@ const EVERY_GALLERY_LAYOUT: LayoutDef[] = [
   ...HSJ_GALLERY_LAYOUTS,
   ...HSK_GALLERY_LAYOUTS,
   ...HSL_GALLERY_LAYOUTS,
+  ...HSM_GALLERY_LAYOUTS,
   ...S4A_GALLERY_LAYOUTS,
   {
     id: 'g.push',
