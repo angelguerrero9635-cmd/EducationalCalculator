@@ -704,10 +704,21 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Template syntax: `{a:unit}` draws the box with the unit the calculator shows for that value written after it (calc.units.display, else the variable’s unit), so it changes with the Units menu: `{V:unit} = {I:unit} × {R:unit}` (12 V = 3 A × 4 Ω); m.3.area~missing-side: `{l:unit} × {w:unit} = {A:unit}` (6 cm × 4 cm = 24 cm², 6 in × 4 in = 24 in² after Units → US). A box has no per-value unit menu of its own: a page whose values each pick a unit (mm or m) keeps its rows.',
   },
-  ask(
-    'H88',
-    'equationInput',
-    'Hide zero parts of mixed numbers, blank chemical coefficient 1, stacked worked-out fractions',
-    ['s.10.reaction-types', 'm.5.divide-unit-fractions~fraction-as-division'],
-  ),
+  {
+    ...ask(
+      'H88',
+      'equationInput',
+      'Hide zero parts of mixed numbers, blank chemical coefficient 1, stacked worked-out fractions',
+      ['s.10.reaction-types', 'm.5.divide-unit-fractions~fraction-as-division'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m5-divide-unit-fractions-fraction-as-division',
+      'g.m5-divide-unit-fractions-fraction-as-division-whole',
+      'g.s10-reaction-types-coefficient-one',
+      'g.m6-divide-fractions-stacked-answer',
+    ],
+    notes:
+      'No new syntax for two of the three: a worked-out whole of 0 hides its box (3/4, not 0 3/4) and a worked-out top of 0 hides the fraction when its bottom is fixed, worked out or typed elsewhere in the equation (2, not 2 0/4): m.5.divide-unit-fractions~fraction-as-division takes `{w} ÷ {n} = {W} {R}/{n}`; and a worked-out fraction in a box (8 7/24) is drawn stacked, like the fixed fractions beside it (on every page: m.4.add-fractions-like~mixed-add now shows 4, not 4 0/6, and m.5.add-fractions-unlike~mixed-numbers a stacked 8 7/24). A coefficient of 1 left blank when worked out is opt-in: `{a:coef} CH₄ + {b:coef} O₂ → {c:coef} CO₂ + {d:coef} H₂O`.',
+  },
 ];

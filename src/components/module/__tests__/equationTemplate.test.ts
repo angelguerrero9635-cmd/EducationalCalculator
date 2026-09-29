@@ -363,6 +363,24 @@ describe('H87: a unit after a box', () => {
   });
 });
 
+describe('H88: a chemical coefficient', () => {
+  it('marks {a:coef}, a mixed number stays a mixed number', () => {
+    expect(equationParts('{a:coef} CH₄ + {b:coef} O₂')).toEqual([
+      { kind: 'box', id: 'a', coef: true },
+      text('CH₄'),
+      text('+'),
+      { kind: 'box', id: 'b', coef: true },
+      text('O₂'),
+    ]);
+    expect(equationParts('{w} ÷ {n} = {W} {R}/{n}')[4]).toEqual({
+      kind: 'fraction',
+      top: { id: 'R' },
+      bottom: { id: 'n' },
+      whole: 'W',
+    });
+  });
+});
+
 describe('every page’s equation', () => {
   it('lists each box in its template', () => {
     for (const m of TESTED_MODULES) {

@@ -17,7 +17,7 @@ export type Slot = { id: string } | { text: string } | { parts: EquationPart[] }
  */
 export type EquationPart =
   /** `unit`: the value's unit written after the box, following the unit menu ({a:unit}). */
-  | { kind: 'box'; id: string; unit?: boolean }
+  | { kind: 'box'; id: string; unit?: boolean; coef?: boolean }
   | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
   /** `tightBefore`: a bracket written against the piece before it, {a}(1 + {r})^{t}. */
   | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
@@ -41,8 +41,11 @@ const BOX = /^[A-Za-z]\w*$/;
 /** `{s:sign}`, `{s:relation}`, `{o:op}`: a box the student taps to change its sign. */
 const CHOICE = /^(\w+):(sign|relation|op)$/;
 
-/** `{a:unit}`: a box with its unit after it, the one the unit menu shows. */
-const MARKED = /^(\w+):(unit)$/;
+/**
+ * `{a:unit}`: a box with its unit after it, the one the unit menu shows; `{a:coef}`: a chemical
+ * coefficient, blank when a worked-out 1.
+ */
+const MARKED = /^(\w+):(unit|coef)$/;
 
 /** What a choice box cycles through; the value is the sign's place, counted from 1. */
 export type Choices = 'sign' | 'relation' | 'op';

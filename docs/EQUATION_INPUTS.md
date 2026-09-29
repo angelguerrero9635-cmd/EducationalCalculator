@@ -46,6 +46,7 @@ Keep rows for:
 | `[[{a}, {b}; {c}, {d}]]`               | A matrix: rows split by ;, cells by a comma.             |
 | `\|\|{a}, {b}; {c}, {d}\|\|`           | A determinant; `\|` inside a row: the augmented bar.     |
 | `{a:unit}`                             | A box with its unit after it, as the unit menu shows it. |
+| `{a:coef}`                             | A coefficient: a worked-out 1 is left blank.             |
 | A line break (`\n`)                    | A second equation under the first (a system).            |
 
 Line breaks and brackets:
@@ -106,7 +107,11 @@ the addition template made students type 7.2 into the sum.
   `({b}^{m})^{n} = {b}^{k} = {P}`, demo `g.m8-exponent-rules-power-of-power`.
 - `m.6.expressions-variables`: a negative constant would read "3x + −5", and the answer has no
   box.
-- Fraction as division: a mixed number with a zero part shows "0 3/4".
+- Fraction as division: a mixed number with a zero part shows "0 3/4". Possible now (H88): a
+  worked-out zero part is hidden, `{w} ÷ {n} = {W} {R}/{n}` draws 3 ÷ 4 = 3/4 and 8 ÷ 4 = 2
+  (demos `g.m5-divide-unit-fractions-fraction-as-division`, `…-whole`).
+
+Worked-out fractions in a box (8 7/24, 3 1/3) are drawn stacked since H88, like the fixed ones.
 
 ## Grades 9–12: the templates the pages should use
 
@@ -151,7 +156,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.12.matrices                           | `[[{a}, {b}; {c}, {d}]]`; a determinant; an augmented 3 × 4       | today (H86: matrix grid)                                 |
 | m.12.conics                             | `{(x − {h})²}/{a}^2 + {(y − {k})²}/{b}^2 = 1`                     | today (H81: a group as a fraction slot)                  |
 | m.12.confidence-intervals               | `{x} ± {z} × {s}/√{n}`                                            | today (H83: a radical in a fraction slot)                |
-| s.10.reaction-types, s.10.stoichiometry | `{a} H₂ + {b} O₂ → {c} H₂O`                                       | today (a coefficient of 1 shows "1")                     |
+| s.10.reaction-types, s.10.stoichiometry | `{a:coef} H₂ + {b:coef} O₂ → {c:coef} H₂O`                        | today (H88: a worked-out 1 is left blank)                |
 | s.10.mole                               | `{m} g ÷ {M} g/mol = {n} mol`                                     | today (fixed units)                                      |
 | s.10.molarity                           | `{c} M = {n} mol ÷ {V} L`                                         | today (fixed units)                                      |
 | s.10.acids-bases                        | `pH = −log({h})`; `[H⁺] = 10^{−{p}}`                              | today (H81: expression exponent)                         |

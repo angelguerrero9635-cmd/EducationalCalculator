@@ -10,6 +10,7 @@ import { div } from './helpers';
 import type { LayoutDef } from './layouts';
 import { MATH_3_MODULES } from './math/3';
 import { MATH_5_MODULES } from './math/5';
+import { MATH_6_MODULES } from './math/6';
 import { MATH_7_MODULES } from './math/7';
 import { MATH_8_MODULES } from './math/8';
 import { SCIENCE_7_MODULES } from './science/7';
@@ -25,6 +26,7 @@ function fromPage(pageId: string, id: string, title: string, extra: Partial<Modu
   const page = [
     ...MATH_3_MODULES,
     ...MATH_5_MODULES,
+    ...MATH_6_MODULES,
     ...MATH_7_MODULES,
     ...MATH_8_MODULES,
     ...SCIENCE_7_MODULES,
@@ -1647,6 +1649,35 @@ const H87: ModuleDef[] = [
   ),
 ];
 
+// H88: small fixes — zero parts of a worked-out mixed number hidden, a blank coefficient 1,
+// worked-out fractions stacked.
+const H88: ModuleDef[] = [
+  fromPage(
+    'm.5.divide-unit-fractions~fraction-as-division',
+    'g.m5-divide-unit-fractions-fraction-as-division',
+    'Fraction as division: 3 ÷ 4 = 3/4',
+    { equation: '{w} ÷ {n} = {W} {R}/{n}' },
+  ),
+  fromPage(
+    'm.5.divide-unit-fractions~fraction-as-division',
+    'g.m5-divide-unit-fractions-fraction-as-division-whole',
+    'Fraction as division: 8 ÷ 4 = 2',
+    { equation: '{w} ÷ {n} = {W} {R}/{n}', example: { w: 8, n: 4, W: 2, R: 0 } },
+  ),
+  fromPage(
+    's.7.chemical-reactions~methane',
+    'g.s10-reaction-types-coefficient-one',
+    'Balancing methane: a coefficient of 1 left blank',
+    { equation: '{a:coef} CH₄ + {b:coef} O₂ → {c:coef} CO₂ + {d:coef} H₂O' },
+  ),
+  fromPage(
+    'm.6.divide-fractions~how-many-fit',
+    'g.m6-divide-fractions-stacked-answer',
+    'A worked-out fraction, stacked: 5/2 ÷ 3/4',
+    { example: { a: 5, b: 2, c: 3, d: 4, m: 4, g: 10 / 3 } },
+  ),
+];
+
 export const HSM_GALLERY_MODULES: ModuleDef[] = [
   ...H81,
   ...H82,
@@ -1655,5 +1686,6 @@ export const HSM_GALLERY_MODULES: ModuleDef[] = [
   ...H85,
   ...H86,
   ...H87,
+  ...H88,
 ];
 export const HSM_GALLERY_LAYOUTS: LayoutDef[] = [];
