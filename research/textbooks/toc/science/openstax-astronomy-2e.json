@@ -1,0 +1,1403 @@
+{
+ "id": "openstax-astronomy-2e",
+ "curriculum": "Astronomy 2e",
+ "publisher": "OpenStax (Rice University)",
+ "edition": "2nd edition (published 2022-03-09; web version revised 2026-07-21)",
+ "subject": "science",
+ "grades": [
+  "12"
+ ],
+ "course": "Earth & Space Science (astronomy)",
+ "content": "full",
+ "terms": {
+  "unit": "Chapter",
+  "lesson": "Section"
+ },
+ "license": {
+  "name": "CC BY-NC-SA 4.0",
+  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "attribution": "Astronomy 2e by Andrew Fraknoi, David Morrison and Sidney Wolff, OpenStax (Rice University). Licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. Access for free at https://openstax.org/books/astronomy-2e/pages/1-introduction"
+ },
+ "sourceUrl": "https://openstax.org/books/astronomy-2e/pages/1-introduction",
+ "retrieved": "2026-09-28",
+ "bookVersion": {
+  "archiveVersion": "20260604.144757",
+  "contentVersion": "dff6acf",
+  "revised": "2026-07-21T19:11:32+00:00"
+ },
+ "notes": "Reference only (CC BY-NC-SA): the full table of contents; practice is a representative sample of the end-of-chapter Review Questions (no public answer key). Filed under grade 12 (Earth & Space Science); chapters map to the s.12.* skills where they fit, [] elsewhere. Chapters are the \"units\"; sections are the \"lessons\".",
+ "books": [
+  {
+   "grade": "12",
+   "url": "https://openstax.org/books/astronomy-2e/pages/1-introduction",
+   "units": [
+    {
+     "n": "1",
+     "title": "Science and the Universe: A Brief Tour",
+     "url": "https://openstax.org/books/astronomy-2e/pages/1-1-the-nature-of-astronomy",
+     "skills": [],
+     "notes": "A tour of the universe; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "1.1",
+       "title": "The Nature of Astronomy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-1-the-nature-of-astronomy"
+      },
+      {
+       "n": "1.2",
+       "title": "The Nature of Science",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-2-the-nature-of-science"
+      },
+      {
+       "n": "1.3",
+       "title": "The Laws of Nature",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-3-the-laws-of-nature"
+      },
+      {
+       "n": "1.4",
+       "title": "Numbers in Astronomy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-4-numbers-in-astronomy"
+      },
+      {
+       "n": "1.5",
+       "title": "Consequences of Light Travel Time",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-5-consequences-of-light-travel-time"
+      },
+      {
+       "n": "1.6",
+       "title": "A Tour of the Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-6-a-tour-of-the-universe"
+      },
+      {
+       "n": "1.7",
+       "title": "The Universe on the Large Scale",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-7-the-universe-on-the-large-scale"
+      },
+      {
+       "n": "1.8",
+       "title": "The Universe of the Very Small",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-8-the-universe-of-the-very-small"
+      },
+      {
+       "n": "1.9",
+       "title": "A Conclusion and a Beginning",
+       "url": "https://openstax.org/books/astronomy-2e/pages/1-9-a-conclusion-and-a-beginning"
+      }
+     ],
+     "endOfChapter": [
+      "For Further Exploration"
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Observing the Sky: The Birth of Astronomy",
+     "url": "https://openstax.org/books/astronomy-2e/pages/2-1-the-sky-above",
+     "skills": [],
+     "notes": "Observing the sky and the birth of astronomy; nearest is s.5.shadows-day-night / s.1.sky-patterns.",
+     "lessons": [
+      {
+       "n": "2.1",
+       "title": "The Sky Above",
+       "url": "https://openstax.org/books/astronomy-2e/pages/2-1-the-sky-above"
+      },
+      {
+       "n": "2.2",
+       "title": "Ancient Astronomy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/2-2-ancient-astronomy"
+      },
+      {
+       "n": "2.3",
+       "title": "Astrology and Astronomy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/2-3-astrology-and-astronomy"
+      },
+      {
+       "n": "2.4",
+       "title": "The Birth of Modern Astronomy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/2-4-the-birth-of-modern-astronomy"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Orbits and Gravity",
+     "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion",
+     "skills": [
+      "s.11.circular-gravitation"
+     ],
+     "notes": "Kepler's laws, Newton's gravitation and orbits (grade 11 skill); also s.8.gravity-orbits.",
+     "lessons": [
+      {
+       "n": "3.1",
+       "title": "The Laws of Planetary Motion",
+       "url": "https://openstax.org/books/astronomy-2e/pages/3-1-the-laws-of-planetary-motion"
+      },
+      {
+       "n": "3.2",
+       "title": "Newton’s Great Synthesis",
+       "url": "https://openstax.org/books/astronomy-2e/pages/3-2-newtons-great-synthesis"
+      },
+      {
+       "n": "3.3",
+       "title": "Newton’s Universal Law of Gravitation",
+       "url": "https://openstax.org/books/astronomy-2e/pages/3-3-newtons-universal-law-of-gravitation"
+      },
+      {
+       "n": "3.4",
+       "title": "Orbits in the Solar System",
+       "url": "https://openstax.org/books/astronomy-2e/pages/3-4-orbits-in-the-solar-system"
+      },
+      {
+       "n": "3.5",
+       "title": "Motions of Satellites and Spacecraft",
+       "url": "https://openstax.org/books/astronomy-2e/pages/3-5-motions-of-satellites-and-spacecraft"
+      },
+      {
+       "n": "3.6",
+       "title": "Gravity with More Than Two Bodies",
+       "url": "https://openstax.org/books/astronomy-2e/pages/3-6-gravity-with-more-than-two-bodies"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Earth, Moon, and Sky",
+     "url": "https://openstax.org/books/astronomy-2e/pages/4-1-earth-and-sky",
+     "skills": [
+      "s.12.ocean-atmosphere"
+     ],
+     "notes": "Section 4.6 ocean tides and the Moon (loose); seasons, phases and eclipses have no skill (nearest s.5.shadows-day-night).",
+     "lessons": [
+      {
+       "n": "4.1",
+       "title": "Earth and Sky",
+       "url": "https://openstax.org/books/astronomy-2e/pages/4-1-earth-and-sky"
+      },
+      {
+       "n": "4.2",
+       "title": "The Seasons",
+       "url": "https://openstax.org/books/astronomy-2e/pages/4-2-the-seasons"
+      },
+      {
+       "n": "4.3",
+       "title": "Keeping Time",
+       "url": "https://openstax.org/books/astronomy-2e/pages/4-3-keeping-time"
+      },
+      {
+       "n": "4.4",
+       "title": "The Calendar",
+       "url": "https://openstax.org/books/astronomy-2e/pages/4-4-the-calendar"
+      },
+      {
+       "n": "4.5",
+       "title": "Phases and Motions of the Moon",
+       "url": "https://openstax.org/books/astronomy-2e/pages/4-5-phases-and-motions-of-the-moon"
+      },
+      {
+       "n": "4.6",
+       "title": "Ocean Tides and the Moon",
+       "url": "https://openstax.org/books/astronomy-2e/pages/4-6-ocean-tides-and-the-moon"
+      },
+      {
+       "n": "4.7",
+       "title": "Eclipses of the Sun and Moon",
+       "url": "https://openstax.org/books/astronomy-2e/pages/4-7-eclipses-of-the-sun-and-moon"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Radiation and Spectra",
+     "url": "https://openstax.org/books/astronomy-2e/pages/5-1-the-behavior-of-light",
+     "skills": [],
+     "notes": "Radiation, spectra and the Doppler effect: nearest are s.8.em-spectrum, s.10.atomic-structure and s.11.sound-waves (Doppler).",
+     "lessons": [
+      {
+       "n": "5.1",
+       "title": "The Behavior of Light",
+       "url": "https://openstax.org/books/astronomy-2e/pages/5-1-the-behavior-of-light"
+      },
+      {
+       "n": "5.2",
+       "title": "The Electromagnetic Spectrum",
+       "url": "https://openstax.org/books/astronomy-2e/pages/5-2-the-electromagnetic-spectrum"
+      },
+      {
+       "n": "5.3",
+       "title": "Spectroscopy in Astronomy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/5-3-spectroscopy-in-astronomy"
+      },
+      {
+       "n": "5.4",
+       "title": "The Structure of the Atom",
+       "url": "https://openstax.org/books/astronomy-2e/pages/5-4-the-structure-of-the-atom"
+      },
+      {
+       "n": "5.5",
+       "title": "Formation of Spectral Lines",
+       "url": "https://openstax.org/books/astronomy-2e/pages/5-5-formation-of-spectral-lines"
+      },
+      {
+       "n": "5.6",
+       "title": "The Doppler Effect",
+       "url": "https://openstax.org/books/astronomy-2e/pages/5-6-the-doppler-effect"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Astronomical Instruments",
+     "url": "https://openstax.org/books/astronomy-2e/pages/6-1-telescopes",
+     "skills": [],
+     "notes": "Telescopes and instruments; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "6.1",
+       "title": "Telescopes",
+       "url": "https://openstax.org/books/astronomy-2e/pages/6-1-telescopes"
+      },
+      {
+       "n": "6.2",
+       "title": "Telescopes Today",
+       "url": "https://openstax.org/books/astronomy-2e/pages/6-2-telescopes-today"
+      },
+      {
+       "n": "6.3",
+       "title": "Visible-Light Detectors and Instruments",
+       "url": "https://openstax.org/books/astronomy-2e/pages/6-3-visible-light-detectors-and-instruments"
+      },
+      {
+       "n": "6.4",
+       "title": "Radio Telescopes",
+       "url": "https://openstax.org/books/astronomy-2e/pages/6-4-radio-telescopes"
+      },
+      {
+       "n": "6.5",
+       "title": "Observations outside Earth’s Atmosphere",
+       "url": "https://openstax.org/books/astronomy-2e/pages/6-5-observations-outside-earths-atmosphere"
+      },
+      {
+       "n": "6.6",
+       "title": "The Future of Large Telescopes",
+       "url": "https://openstax.org/books/astronomy-2e/pages/6-6-the-future-of-large-telescopes"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Other Worlds: An Introduction to the Solar System",
+     "url": "https://openstax.org/books/astronomy-2e/pages/7-1-overview-of-our-planetary-system",
+     "skills": [],
+     "notes": "Overview of the solar system; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "7.1",
+       "title": "Overview of Our Planetary System",
+       "url": "https://openstax.org/books/astronomy-2e/pages/7-1-overview-of-our-planetary-system"
+      },
+      {
+       "n": "7.2",
+       "title": "Composition and Structure of Planets",
+       "url": "https://openstax.org/books/astronomy-2e/pages/7-2-composition-and-structure-of-planets"
+      },
+      {
+       "n": "7.3",
+       "title": "Dating Planetary Surfaces",
+       "url": "https://openstax.org/books/astronomy-2e/pages/7-3-dating-planetary-surfaces"
+      },
+      {
+       "n": "7.4",
+       "title": "Origin of the Solar System",
+       "url": "https://openstax.org/books/astronomy-2e/pages/7-4-origin-of-the-solar-system"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Earth as a Planet",
+     "url": "https://openstax.org/books/astronomy-2e/pages/8-1-the-global-perspective",
+     "skills": [
+      "s.12.earth-interior",
+      "s.12.climate-systems"
+     ],
+     "notes": "Earth's interior and crust (8.1-8.2, plate tectonics), atmosphere and climate change (8.3-8.4); also s.6.plate-tectonics.",
+     "lessons": [
+      {
+       "n": "8.1",
+       "title": "The Global Perspective",
+       "url": "https://openstax.org/books/astronomy-2e/pages/8-1-the-global-perspective"
+      },
+      {
+       "n": "8.2",
+       "title": "Earth’s Crust",
+       "url": "https://openstax.org/books/astronomy-2e/pages/8-2-earths-crust"
+      },
+      {
+       "n": "8.3",
+       "title": "Earth’s Atmosphere",
+       "url": "https://openstax.org/books/astronomy-2e/pages/8-3-earths-atmosphere"
+      },
+      {
+       "n": "8.4",
+       "title": "Life, Chemical Evolution, and Climate Change",
+       "url": "https://openstax.org/books/astronomy-2e/pages/8-4-life-chemical-evolution-and-climate-change"
+      },
+      {
+       "n": "8.5",
+       "title": "Cosmic Influences on the Evolution of Earth",
+       "url": "https://openstax.org/books/astronomy-2e/pages/8-5-cosmic-influences-on-the-evolution-of-earth"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Cratered Worlds",
+     "url": "https://openstax.org/books/astronomy-2e/pages/9-1-general-properties-of-the-moon",
+     "skills": [
+      "s.12.radiometric-dating"
+     ],
+     "notes": "Section 9.3 impact craters: crater counting and radiometric ages of lunar samples (loose); Moon and Mercury otherwise have no skill.",
+     "lessons": [
+      {
+       "n": "9.1",
+       "title": "General Properties of the Moon",
+       "url": "https://openstax.org/books/astronomy-2e/pages/9-1-general-properties-of-the-moon"
+      },
+      {
+       "n": "9.2",
+       "title": "The Lunar Surface",
+       "url": "https://openstax.org/books/astronomy-2e/pages/9-2-the-lunar-surface"
+      },
+      {
+       "n": "9.3",
+       "title": "Impact Craters",
+       "url": "https://openstax.org/books/astronomy-2e/pages/9-3-impact-craters"
+      },
+      {
+       "n": "9.4",
+       "title": "The Origin of the Moon",
+       "url": "https://openstax.org/books/astronomy-2e/pages/9-4-the-origin-of-the-moon"
+      },
+      {
+       "n": "9.5",
+       "title": "Mercury",
+       "url": "https://openstax.org/books/astronomy-2e/pages/9-5-mercury"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Earthlike Planets: Venus and Mars",
+     "url": "https://openstax.org/books/astronomy-2e/pages/10-1-the-nearest-planets-an-overview",
+     "skills": [
+      "s.12.climate-systems"
+     ],
+     "notes": "Venus' runaway greenhouse and Mars' climate history as climate systems (loose).",
+     "lessons": [
+      {
+       "n": "10.1",
+       "title": "The Nearest Planets: An Overview",
+       "url": "https://openstax.org/books/astronomy-2e/pages/10-1-the-nearest-planets-an-overview"
+      },
+      {
+       "n": "10.2",
+       "title": "The Geology of Venus",
+       "url": "https://openstax.org/books/astronomy-2e/pages/10-2-the-geology-of-venus"
+      },
+      {
+       "n": "10.3",
+       "title": "The Massive Atmosphere of Venus",
+       "url": "https://openstax.org/books/astronomy-2e/pages/10-3-the-massive-atmosphere-of-venus"
+      },
+      {
+       "n": "10.4",
+       "title": "The Geology of Mars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/10-4-the-geology-of-mars"
+      },
+      {
+       "n": "10.5",
+       "title": "Water and Life on Mars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/10-5-water-and-life-on-mars"
+      },
+      {
+       "n": "10.6",
+       "title": "Divergent Planetary Evolution",
+       "url": "https://openstax.org/books/astronomy-2e/pages/10-6-divergent-planetary-evolution"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "The Giant Planets",
+     "url": "https://openstax.org/books/astronomy-2e/pages/11-1-exploring-the-outer-planets",
+     "skills": [],
+     "notes": "The giant planets; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "11.1",
+       "title": "Exploring the Outer Planets",
+       "url": "https://openstax.org/books/astronomy-2e/pages/11-1-exploring-the-outer-planets"
+      },
+      {
+       "n": "11.2",
+       "title": "The Giant Planets",
+       "url": "https://openstax.org/books/astronomy-2e/pages/11-2-the-giant-planets"
+      },
+      {
+       "n": "11.3",
+       "title": "Atmospheres of the Giant Planets",
+       "url": "https://openstax.org/books/astronomy-2e/pages/11-3-atmospheres-of-the-giant-planets"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Rings, Moons, and Pluto",
+     "url": "https://openstax.org/books/astronomy-2e/pages/12-1-ring-and-moon-systems-introduced",
+     "skills": [],
+     "notes": "Rings, moons and Pluto; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "12.1",
+       "title": "Ring and Moon Systems Introduced",
+       "url": "https://openstax.org/books/astronomy-2e/pages/12-1-ring-and-moon-systems-introduced"
+      },
+      {
+       "n": "12.2",
+       "title": "The Galilean Moons of Jupiter",
+       "url": "https://openstax.org/books/astronomy-2e/pages/12-2-the-galilean-moons-of-jupiter"
+      },
+      {
+       "n": "12.3",
+       "title": "Titan and Triton",
+       "url": "https://openstax.org/books/astronomy-2e/pages/12-3-titan-and-triton"
+      },
+      {
+       "n": "12.4",
+       "title": "Pluto and Charon",
+       "url": "https://openstax.org/books/astronomy-2e/pages/12-4-pluto-and-charon"
+      },
+      {
+       "n": "12.5",
+       "title": "Planetary Rings (and Enceladus)",
+       "url": "https://openstax.org/books/astronomy-2e/pages/12-5-planetary-rings-and-enceladus"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Comets and Asteroids: Debris of the Solar System",
+     "url": "https://openstax.org/books/astronomy-2e/pages/13-1-asteroids",
+     "skills": [],
+     "notes": "Comets and asteroids; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "13.1",
+       "title": "Asteroids",
+       "url": "https://openstax.org/books/astronomy-2e/pages/13-1-asteroids"
+      },
+      {
+       "n": "13.2",
+       "title": "Asteroids and Planetary Defense",
+       "url": "https://openstax.org/books/astronomy-2e/pages/13-2-asteroids-and-planetary-defense"
+      },
+      {
+       "n": "13.3",
+       "title": "The “Long-Haired” Comets",
+       "url": "https://openstax.org/books/astronomy-2e/pages/13-3-the-long-haired-comets"
+      },
+      {
+       "n": "13.4",
+       "title": "The Origin and Fate of Comets and Related Objects",
+       "url": "https://openstax.org/books/astronomy-2e/pages/13-4-the-origin-and-fate-of-comets-and-related-objects"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Cosmic Samples and the Origin of the Solar System",
+     "url": "https://openstax.org/books/astronomy-2e/pages/14-1-meteors",
+     "skills": [
+      "s.12.radiometric-dating"
+     ],
+     "notes": "Meteorite ages and the age of the solar system (14.2-14.3); origin of the solar system.",
+     "lessons": [
+      {
+       "n": "14.1",
+       "title": "Meteors",
+       "url": "https://openstax.org/books/astronomy-2e/pages/14-1-meteors"
+      },
+      {
+       "n": "14.2",
+       "title": "Meteorites: Stones from Heaven",
+       "url": "https://openstax.org/books/astronomy-2e/pages/14-2-meteorites-stones-from-heaven"
+      },
+      {
+       "n": "14.3",
+       "title": "Formation of the Solar System",
+       "url": "https://openstax.org/books/astronomy-2e/pages/14-3-formation-of-the-solar-system"
+      },
+      {
+       "n": "14.4",
+       "title": "Comparison with Other Planetary Systems",
+       "url": "https://openstax.org/books/astronomy-2e/pages/14-4-comparison-with-other-planetary-systems"
+      },
+      {
+       "n": "14.5",
+       "title": "Planetary Evolution",
+       "url": "https://openstax.org/books/astronomy-2e/pages/14-5-planetary-evolution"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "The Sun: A Garden-Variety Star",
+     "url": "https://openstax.org/books/astronomy-2e/pages/15-1-the-structure-and-composition-of-the-sun",
+     "skills": [],
+     "notes": "The Sun's structure and activity; nearest is s.5.sun-star-brightness.",
+     "lessons": [
+      {
+       "n": "15.1",
+       "title": "The Structure and Composition of the Sun",
+       "url": "https://openstax.org/books/astronomy-2e/pages/15-1-the-structure-and-composition-of-the-sun"
+      },
+      {
+       "n": "15.2",
+       "title": "The Solar Cycle",
+       "url": "https://openstax.org/books/astronomy-2e/pages/15-2-the-solar-cycle"
+      },
+      {
+       "n": "15.3",
+       "title": "Solar Activity above the Photosphere",
+       "url": "https://openstax.org/books/astronomy-2e/pages/15-3-solar-activity-above-the-photosphere"
+      },
+      {
+       "n": "15.4",
+       "title": "Space Weather",
+       "url": "https://openstax.org/books/astronomy-2e/pages/15-4-space-weather"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "The Sun: A Nuclear Powerhouse",
+     "url": "https://openstax.org/books/astronomy-2e/pages/16-1-sources-of-sunshine-thermal-and-gravitational-energy",
+     "skills": [
+      "s.12.stellar-evolution"
+     ],
+     "notes": "Nuclear fusion in the Sun (nucleosynthesis).",
+     "lessons": [
+      {
+       "n": "16.1",
+       "title": "Sources of Sunshine: Thermal and Gravitational Energy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/16-1-sources-of-sunshine-thermal-and-gravitational-energy"
+      },
+      {
+       "n": "16.2",
+       "title": "Mass, Energy, and the Theory of Relativity",
+       "url": "https://openstax.org/books/astronomy-2e/pages/16-2-mass-energy-and-the-theory-of-relativity"
+      },
+      {
+       "n": "16.3",
+       "title": "The Solar Interior: Theory",
+       "url": "https://openstax.org/books/astronomy-2e/pages/16-3-the-solar-interior-theory"
+      },
+      {
+       "n": "16.4",
+       "title": "The Solar Interior: Observations",
+       "url": "https://openstax.org/books/astronomy-2e/pages/16-4-the-solar-interior-observations"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "17",
+     "title": "Analyzing Starlight",
+     "url": "https://openstax.org/books/astronomy-2e/pages/17-1-the-brightness-of-stars",
+     "skills": [],
+     "notes": "Analyzing starlight (spectra, colors, spectral classes); nearest is s.12.stellar-evolution (H-R diagram inputs).",
+     "lessons": [
+      {
+       "n": "17.1",
+       "title": "The Brightness of Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/17-1-the-brightness-of-stars"
+      },
+      {
+       "n": "17.2",
+       "title": "Colors of Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/17-2-colors-of-stars"
+      },
+      {
+       "n": "17.3",
+       "title": "The Spectra of Stars (and Brown Dwarfs)",
+       "url": "https://openstax.org/books/astronomy-2e/pages/17-3-the-spectra-of-stars-and-brown-dwarfs"
+      },
+      {
+       "n": "17.4",
+       "title": "Using Spectra to Measure Stellar Radius, Composition, and Motion",
+       "url": "https://openstax.org/books/astronomy-2e/pages/17-4-using-spectra-to-measure-stellar-radius-composition-and-motion"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "18",
+     "title": "The Stars: A Celestial Census",
+     "url": "https://openstax.org/books/astronomy-2e/pages/18-1-a-stellar-census",
+     "skills": [
+      "s.12.stellar-evolution"
+     ],
+     "notes": "Stellar census and the H-R diagram (18.4).",
+     "lessons": [
+      {
+       "n": "18.1",
+       "title": "A Stellar Census",
+       "url": "https://openstax.org/books/astronomy-2e/pages/18-1-a-stellar-census"
+      },
+      {
+       "n": "18.2",
+       "title": "Measuring Stellar Masses",
+       "url": "https://openstax.org/books/astronomy-2e/pages/18-2-measuring-stellar-masses"
+      },
+      {
+       "n": "18.3",
+       "title": "Diameters of Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/18-3-diameters-of-stars"
+      },
+      {
+       "n": "18.4",
+       "title": "The H–R Diagram",
+       "url": "https://openstax.org/books/astronomy-2e/pages/18-4-the-h-r-diagram"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "19",
+     "title": "Celestial Distances",
+     "url": "https://openstax.org/books/astronomy-2e/pages/19-1-fundamental-units-of-distance",
+     "skills": [],
+     "notes": "Celestial distances (parallax, standard candles); no taxonomy skill (feeds s.12.cosmology).",
+     "lessons": [
+      {
+       "n": "19.1",
+       "title": "Fundamental Units of Distance",
+       "url": "https://openstax.org/books/astronomy-2e/pages/19-1-fundamental-units-of-distance"
+      },
+      {
+       "n": "19.2",
+       "title": "Surveying the Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/19-2-surveying-the-stars"
+      },
+      {
+       "n": "19.3",
+       "title": "Variable Stars: One Key to Cosmic Distances",
+       "url": "https://openstax.org/books/astronomy-2e/pages/19-3-variable-stars-one-key-to-cosmic-distances"
+      },
+      {
+       "n": "19.4",
+       "title": "The H–R Diagram and Cosmic Distances",
+       "url": "https://openstax.org/books/astronomy-2e/pages/19-4-the-h-r-diagram-and-cosmic-distances"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "20",
+     "title": "Between the Stars: Gas and Dust in Space",
+     "url": "https://openstax.org/books/astronomy-2e/pages/20-1-the-interstellar-medium",
+     "skills": [],
+     "notes": "Interstellar gas and dust; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "20.1",
+       "title": "The Interstellar Medium",
+       "url": "https://openstax.org/books/astronomy-2e/pages/20-1-the-interstellar-medium"
+      },
+      {
+       "n": "20.2",
+       "title": "Interstellar Gas",
+       "url": "https://openstax.org/books/astronomy-2e/pages/20-2-interstellar-gas"
+      },
+      {
+       "n": "20.3",
+       "title": "Cosmic Dust",
+       "url": "https://openstax.org/books/astronomy-2e/pages/20-3-cosmic-dust"
+      },
+      {
+       "n": "20.4",
+       "title": "Cosmic Rays",
+       "url": "https://openstax.org/books/astronomy-2e/pages/20-4-cosmic-rays"
+      },
+      {
+       "n": "20.5",
+       "title": "The Life Cycle of Cosmic Material",
+       "url": "https://openstax.org/books/astronomy-2e/pages/20-5-the-life-cycle-of-cosmic-material"
+      },
+      {
+       "n": "20.6",
+       "title": "Interstellar Matter around the Sun",
+       "url": "https://openstax.org/books/astronomy-2e/pages/20-6-interstellar-matter-around-the-sun"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "21",
+     "title": "The Birth of Stars and the Discovery of Planets outside the Solar System",
+     "url": "https://openstax.org/books/astronomy-2e/pages/21-1-star-formation",
+     "skills": [
+      "s.12.stellar-evolution"
+     ],
+     "notes": "Star formation (21.1-21.3); exoplanets (21.4-21.6) have no skill.",
+     "lessons": [
+      {
+       "n": "21.1",
+       "title": "Star Formation",
+       "url": "https://openstax.org/books/astronomy-2e/pages/21-1-star-formation"
+      },
+      {
+       "n": "21.2",
+       "title": "The H–R Diagram and the Study of Stellar Evolution",
+       "url": "https://openstax.org/books/astronomy-2e/pages/21-2-the-h-r-diagram-and-the-study-of-stellar-evolution"
+      },
+      {
+       "n": "21.3",
+       "title": "Evidence That Planets Form around Other Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/21-3-evidence-that-planets-form-around-other-stars"
+      },
+      {
+       "n": "21.4",
+       "title": "Planets beyond the Solar System: Search and Discovery",
+       "url": "https://openstax.org/books/astronomy-2e/pages/21-4-planets-beyond-the-solar-system-search-and-discovery"
+      },
+      {
+       "n": "21.5",
+       "title": "Exoplanets Everywhere: What We Are Learning",
+       "url": "https://openstax.org/books/astronomy-2e/pages/21-5-exoplanets-everywhere-what-we-are-learning"
+      },
+      {
+       "n": "21.6",
+       "title": "New Perspectives on Planet Formation",
+       "url": "https://openstax.org/books/astronomy-2e/pages/21-6-new-perspectives-on-planet-formation"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "22",
+     "title": "Stars from Adolescence to Old Age",
+     "url": "https://openstax.org/books/astronomy-2e/pages/22-1-evolution-from-the-main-sequence-to-red-giants",
+     "skills": [
+      "s.12.stellar-evolution"
+     ],
+     "lessons": [
+      {
+       "n": "22.1",
+       "title": "Evolution from the Main Sequence to Red Giants",
+       "url": "https://openstax.org/books/astronomy-2e/pages/22-1-evolution-from-the-main-sequence-to-red-giants"
+      },
+      {
+       "n": "22.2",
+       "title": "Star Clusters",
+       "url": "https://openstax.org/books/astronomy-2e/pages/22-2-star-clusters"
+      },
+      {
+       "n": "22.3",
+       "title": "Checking Out the Theory",
+       "url": "https://openstax.org/books/astronomy-2e/pages/22-3-checking-out-the-theory"
+      },
+      {
+       "n": "22.4",
+       "title": "Further Evolution of Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/22-4-further-evolution-of-stars"
+      },
+      {
+       "n": "22.5",
+       "title": "The Evolution of More Massive Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/22-5-the-evolution-of-more-massive-stars"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "23",
+     "title": "The Death of Stars",
+     "url": "https://openstax.org/books/astronomy-2e/pages/23-1-the-death-of-low-mass-stars",
+     "skills": [
+      "s.12.stellar-evolution"
+     ],
+     "notes": "Death of stars, supernovae and nucleosynthesis of heavy elements.",
+     "lessons": [
+      {
+       "n": "23.1",
+       "title": "The Death of Low-Mass Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/23-1-the-death-of-low-mass-stars"
+      },
+      {
+       "n": "23.2",
+       "title": "Evolution of Massive Stars: An Explosive Finish",
+       "url": "https://openstax.org/books/astronomy-2e/pages/23-2-evolution-of-massive-stars-an-explosive-finish"
+      },
+      {
+       "n": "23.3",
+       "title": "Supernova Observations",
+       "url": "https://openstax.org/books/astronomy-2e/pages/23-3-supernova-observations"
+      },
+      {
+       "n": "23.4",
+       "title": "Pulsars and the Discovery of Neutron Stars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/23-4-pulsars-and-the-discovery-of-neutron-stars"
+      },
+      {
+       "n": "23.5",
+       "title": "The Evolution of Binary Star Systems",
+       "url": "https://openstax.org/books/astronomy-2e/pages/23-5-the-evolution-of-binary-star-systems"
+      },
+      {
+       "n": "23.6",
+       "title": "The Mystery of the Gamma-Ray Bursts",
+       "url": "https://openstax.org/books/astronomy-2e/pages/23-6-the-mystery-of-the-gamma-ray-bursts"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "24",
+     "title": "Black Holes and Curved Spacetime",
+     "url": "https://openstax.org/books/astronomy-2e/pages/24-1-introducing-general-relativity",
+     "skills": [],
+     "notes": "Black holes and general relativity; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "24.1",
+       "title": "Introducing General Relativity",
+       "url": "https://openstax.org/books/astronomy-2e/pages/24-1-introducing-general-relativity"
+      },
+      {
+       "n": "24.2",
+       "title": "Spacetime and Gravity",
+       "url": "https://openstax.org/books/astronomy-2e/pages/24-2-spacetime-and-gravity"
+      },
+      {
+       "n": "24.3",
+       "title": "Tests of General Relativity",
+       "url": "https://openstax.org/books/astronomy-2e/pages/24-3-tests-of-general-relativity"
+      },
+      {
+       "n": "24.4",
+       "title": "Time in General Relativity",
+       "url": "https://openstax.org/books/astronomy-2e/pages/24-4-time-in-general-relativity"
+      },
+      {
+       "n": "24.5",
+       "title": "Black Holes",
+       "url": "https://openstax.org/books/astronomy-2e/pages/24-5-black-holes"
+      },
+      {
+       "n": "24.6",
+       "title": "Evidence for Black Holes",
+       "url": "https://openstax.org/books/astronomy-2e/pages/24-6-evidence-for-black-holes"
+      },
+      {
+       "n": "24.7",
+       "title": "Gravitational Wave Astronomy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/24-7-gravitational-wave-astronomy"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "25",
+     "title": "The Milky Way Galaxy",
+     "url": "https://openstax.org/books/astronomy-2e/pages/25-1-the-architecture-of-the-galaxy",
+     "skills": [],
+     "notes": "The Milky Way; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "25.1",
+       "title": "The Architecture of the Galaxy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/25-1-the-architecture-of-the-galaxy"
+      },
+      {
+       "n": "25.2",
+       "title": "Spiral Structure",
+       "url": "https://openstax.org/books/astronomy-2e/pages/25-2-spiral-structure"
+      },
+      {
+       "n": "25.3",
+       "title": "The Mass of the Galaxy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/25-3-the-mass-of-the-galaxy"
+      },
+      {
+       "n": "25.4",
+       "title": "The Center of the Galaxy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/25-4-the-center-of-the-galaxy"
+      },
+      {
+       "n": "25.5",
+       "title": "Stellar Populations in the Galaxy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/25-5-stellar-populations-in-the-galaxy"
+      },
+      {
+       "n": "25.6",
+       "title": "The Formation of the Galaxy",
+       "url": "https://openstax.org/books/astronomy-2e/pages/25-6-the-formation-of-the-galaxy"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "26",
+     "title": "Galaxies",
+     "url": "https://openstax.org/books/astronomy-2e/pages/26-1-the-discovery-of-galaxies",
+     "skills": [
+      "s.12.cosmology"
+     ],
+     "notes": "Hubble's law and the expanding universe (26.5).",
+     "lessons": [
+      {
+       "n": "26.1",
+       "title": "The Discovery of Galaxies",
+       "url": "https://openstax.org/books/astronomy-2e/pages/26-1-the-discovery-of-galaxies"
+      },
+      {
+       "n": "26.2",
+       "title": "Types of Galaxies",
+       "url": "https://openstax.org/books/astronomy-2e/pages/26-2-types-of-galaxies"
+      },
+      {
+       "n": "26.3",
+       "title": "Properties of Galaxies",
+       "url": "https://openstax.org/books/astronomy-2e/pages/26-3-properties-of-galaxies"
+      },
+      {
+       "n": "26.4",
+       "title": "The Extragalactic Distance Scale",
+       "url": "https://openstax.org/books/astronomy-2e/pages/26-4-the-extragalactic-distance-scale"
+      },
+      {
+       "n": "26.5",
+       "title": "The Expanding Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/26-5-the-expanding-universe"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "27",
+     "title": "Active Galaxies, Quasars, and Supermassive Black Holes",
+     "url": "https://openstax.org/books/astronomy-2e/pages/27-1-quasars",
+     "skills": [],
+     "notes": "Active galaxies and quasars; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "27.1",
+       "title": "Quasars",
+       "url": "https://openstax.org/books/astronomy-2e/pages/27-1-quasars"
+      },
+      {
+       "n": "27.2",
+       "title": "Supermassive Black Holes: What Quasars Really Are",
+       "url": "https://openstax.org/books/astronomy-2e/pages/27-2-supermassive-black-holes-what-quasars-really-are"
+      },
+      {
+       "n": "27.3",
+       "title": "Quasars as Probes of Evolution in the Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/27-3-quasars-as-probes-of-evolution-in-the-universe"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "28",
+     "title": "The Evolution and Distribution of Galaxies",
+     "url": "https://openstax.org/books/astronomy-2e/pages/28-1-observations-of-distant-galaxies",
+     "skills": [
+      "s.12.cosmology"
+     ],
+     "notes": "Galaxy evolution and large-scale structure (loose).",
+     "lessons": [
+      {
+       "n": "28.1",
+       "title": "Observations of Distant Galaxies",
+       "url": "https://openstax.org/books/astronomy-2e/pages/28-1-observations-of-distant-galaxies"
+      },
+      {
+       "n": "28.2",
+       "title": "Galaxy Mergers and Active Galactic Nuclei",
+       "url": "https://openstax.org/books/astronomy-2e/pages/28-2-galaxy-mergers-and-active-galactic-nuclei"
+      },
+      {
+       "n": "28.3",
+       "title": "The Distribution of Galaxies in Space",
+       "url": "https://openstax.org/books/astronomy-2e/pages/28-3-the-distribution-of-galaxies-in-space"
+      },
+      {
+       "n": "28.4",
+       "title": "The Challenge of Dark Matter",
+       "url": "https://openstax.org/books/astronomy-2e/pages/28-4-the-challenge-of-dark-matter"
+      },
+      {
+       "n": "28.5",
+       "title": "The Formation and Evolution of Galaxies and Structure in the Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/28-5-the-formation-and-evolution-of-galaxies-and-structure-in-the-universe"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "29",
+     "title": "The Big Bang",
+     "url": "https://openstax.org/books/astronomy-2e/pages/29-1-the-age-of-the-universe",
+     "skills": [
+      "s.12.cosmology"
+     ],
+     "notes": "The Big Bang, cosmic microwave background, dark matter and dark energy.",
+     "lessons": [
+      {
+       "n": "29.1",
+       "title": "The Age of the Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/29-1-the-age-of-the-universe"
+      },
+      {
+       "n": "29.2",
+       "title": "A Model of the Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/29-2-a-model-of-the-universe"
+      },
+      {
+       "n": "29.3",
+       "title": "The Beginning of the Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/29-3-the-beginning-of-the-universe"
+      },
+      {
+       "n": "29.4",
+       "title": "The Cosmic Microwave Background",
+       "url": "https://openstax.org/books/astronomy-2e/pages/29-4-the-cosmic-microwave-background"
+      },
+      {
+       "n": "29.5",
+       "title": "What Is the Universe Really Made Of?",
+       "url": "https://openstax.org/books/astronomy-2e/pages/29-5-what-is-the-universe-really-made-of"
+      },
+      {
+       "n": "29.6",
+       "title": "The Inflationary Universe",
+       "url": "https://openstax.org/books/astronomy-2e/pages/29-6-the-inflationary-universe"
+      },
+      {
+       "n": "29.7",
+       "title": "The Anthropic Principle",
+       "url": "https://openstax.org/books/astronomy-2e/pages/29-7-the-anthropic-principle"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    },
+    {
+     "n": "30",
+     "title": "Life in the Universe",
+     "url": "https://openstax.org/books/astronomy-2e/pages/30-1-the-cosmic-context-for-life",
+     "skills": [],
+     "notes": "Life in the universe; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "30.1",
+       "title": "The Cosmic Context for Life",
+       "url": "https://openstax.org/books/astronomy-2e/pages/30-1-the-cosmic-context-for-life"
+      },
+      {
+       "n": "30.2",
+       "title": "Astrobiology",
+       "url": "https://openstax.org/books/astronomy-2e/pages/30-2-astrobiology"
+      },
+      {
+       "n": "30.3",
+       "title": "Searching for Life beyond Earth",
+       "url": "https://openstax.org/books/astronomy-2e/pages/30-3-searching-for-life-beyond-earth"
+      },
+      {
+       "n": "30.4",
+       "title": "The Search for Extraterrestrial Intelligence",
+       "url": "https://openstax.org/books/astronomy-2e/pages/30-4-the-search-for-extraterrestrial-intelligence"
+      }
+     ],
+     "endOfChapter": [
+      "Key Terms",
+      "Summary",
+      "For Further Exploration",
+      "Collaborative Group Activities",
+      "Exercises",
+      "Review Questions",
+      "Thought Questions",
+      "Figuring for Yourself"
+     ]
+    }
+   ]
+  }
+ ]
+}

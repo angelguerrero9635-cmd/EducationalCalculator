@@ -1,0 +1,540 @@
+{
+ "id": "hmh-science-dimensions-hs",
+ "curriculum": "HMH Science Dimensions Biology, Chemistry, Physics",
+ "publisher": "Houghton Mifflin Harcourt",
+ "edition": "Scope-and-sequence flyers dated 09/24",
+ "subject": "science",
+ "grades": [
+  "9",
+  "10",
+  "11"
+ ],
+ "content": "titles",
+ "license": null,
+ "terms": {
+  "unit": "Unit",
+  "lesson": "Lesson"
+ },
+ "sourceUrl": "https://www.hmhco.com/programs/sample-science-dimensions-9-12",
+ "retrieved": "2026-09-29",
+ "notes": "All rights reserved (the flyers: \"© Houghton Mifflin Harcourt. All rights reserved.\"). Unit and lesson titles only, read from the scope-and-sequence flyers linked from the public 9-12 sample page; the Biology flyer also lists the NGSS PEs per unit (kept as performanceExpectations). The Chemistry flyer shows Units 1-5 only; the Physics flyer lists explorations, not stored.",
+ "books": [
+  {
+   "grade": "9",
+   "course": "Biology",
+   "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+   "units": [
+    {
+     "n": "1",
+     "title": "Living Systems",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.homeostasis"
+     ],
+     "performanceExpectations": [
+      "HS-LS1-2",
+      "HS-LS1-3",
+      "HS-ETS1-2",
+      "HS-ETS1-3"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Life in the Earth System"
+      },
+      {
+       "n": "2",
+       "title": "Organisms: Cells to Body Systems"
+      },
+      {
+       "n": "3",
+       "title": "Mechanisms of Homeostasis"
+      },
+      {
+       "n": "4",
+       "title": "Bioengineering"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Chemistry in Living Systems",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.biomolecules"
+     ],
+     "performanceExpectations": [
+      "HS-LS1-6"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Chemical Bonds and Reactions"
+      },
+      {
+       "n": "2",
+       "title": "Carbon-Based Molecules"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Matter and Energy in Living Systems",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.7.photosynthesis-respiration",
+      "s.7.ecosystem-energy"
+     ],
+     "performanceExpectations": [
+      "HS-LS1-5",
+      "HS-LS1-7",
+      "HS-LS2-3",
+      "HS-LS2-4",
+      "HS-LS2-5",
+      "HS-ETS1-1",
+      "HS-ETS1-3"
+     ],
+     "notes": "No grade-9 skill for photosynthesis, respiration or ecosystem energy; the nearest skills are grade 7.",
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Photosynthesis"
+      },
+      {
+       "n": "2",
+       "title": "Cellular Respiration"
+      },
+      {
+       "n": "3",
+       "title": "Modeling Matter and Energy in Ecosystems"
+      },
+      {
+       "n": "4",
+       "title": "Cycling of Matter and Energy in Ecosystems"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Ecosystems: Stability and Change",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.population-ecology"
+     ],
+     "performanceExpectations": [
+      "HS-LS2-1",
+      "HS-LS2-2",
+      "HS-LS2-6"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Population Dynamics"
+      },
+      {
+       "n": "2",
+       "title": "Ecosystem Dynamics"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Cells: Stability and Change",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.mitosis-meiosis"
+     ],
+     "performanceExpectations": [
+      "HS-LS1-4"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "The Cell Cycle"
+      },
+      {
+       "n": "2",
+       "title": "Mitosis and Differentiation"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Structure and Function of DNA",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.dna-protein-synthesis"
+     ],
+     "performanceExpectations": [
+      "HS-LS1-1"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "DNA Structure and Replication"
+      },
+      {
+       "n": "2",
+       "title": "Protein Synthesis"
+      },
+      {
+       "n": "3",
+       "title": "Gene Expression and Regulation"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Genetics and Heredity",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.inheritance-patterns",
+      "s.9.mitosis-meiosis"
+     ],
+     "performanceExpectations": [
+      "HS-LS3-1",
+      "HS-LS3-2",
+      "HS-LS3-3",
+      "HS-ETS1-3"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Meiosis"
+      },
+      {
+       "n": "2",
+       "title": "Mendel and Heredity"
+      },
+      {
+       "n": "3",
+       "title": "Traits and Probability"
+      },
+      {
+       "n": "4",
+       "title": "Mutations and Genetic Diversity"
+      },
+      {
+       "n": "5",
+       "title": "Genetic Engineering"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Evidence for Evolution",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.evolution-evidence"
+     ],
+     "performanceExpectations": [
+      "HS-LS4-1",
+      "HS-LS4-2"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Lines of Evidence for Evolution"
+      },
+      {
+       "n": "2",
+       "title": "Theory of Natural Selection"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Patterns of Evolution",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.9.evolution-evidence"
+     ],
+     "performanceExpectations": [
+      "HS-LS2-8",
+      "HS-LS3-3",
+      "HS-LS4-3",
+      "HS-LS4-4",
+      "HS-LS4-5"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Evolution of Populations"
+      },
+      {
+       "n": "2",
+       "title": "Changes in Species"
+      },
+      {
+       "n": "3",
+       "title": "Adaptive Value of Behavior"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Human Impacts on the Environment",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf",
+     "skills": [
+      "s.12.resource-management",
+      "s.9.population-ecology"
+     ],
+     "performanceExpectations": [
+      "HS-LS2-2",
+      "HS-LS2-7",
+      "HS-LS4-6",
+      "HS-ETS1-1",
+      "HS-ETS1-4"
+     ],
+     "lessons": [
+      {
+       "n": "1",
+       "title": "Human Population Growth and the Environment"
+      },
+      {
+       "n": "2",
+       "title": "Human Impacts on Biodiversity"
+      },
+      {
+       "n": "3",
+       "title": "Engineering Solutions to Environmental Impacts"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "10",
+   "course": "Chemistry",
+   "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-and-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Chemistry.pdf",
+   "units": [
+    {
+     "n": "1",
+     "title": "Introduction to Chemistry and Engineering",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-and-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Chemistry.pdf",
+     "skills": [],
+     "notes": "Matter and engineering design; no taxonomy skill.",
+     "lessons": [
+      {
+       "n": "1.1",
+       "title": "Exploring Matter"
+      },
+      {
+       "n": "1.2",
+       "title": "Chemistry and the Engineering Design Process"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Atoms and Elements",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-and-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Chemistry.pdf",
+     "skills": [
+      "s.10.atomic-structure",
+      "s.10.periodic-trends"
+     ],
+     "lessons": [
+      {
+       "n": "2.1",
+       "title": "Modeling Atomic Structure"
+      },
+      {
+       "n": "2.2",
+       "title": "Investigating Patterns in the Periodic Table"
+      },
+      {
+       "n": "2.3",
+       "title": "Analyzing Nuclear Reactions"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Compounds and Mixtures",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-and-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Chemistry.pdf",
+     "skills": [
+      "s.10.bonding",
+      "s.10.molarity"
+     ],
+     "lessons": [
+      {
+       "n": "3.1",
+       "title": "Investigating Chemical Compounds"
+      },
+      {
+       "n": "3.2",
+       "title": "Analyzing the Properties of Compounds and Solutions"
+      },
+      {
+       "n": "3.3",
+       "title": "Engineering Materials"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Chemical Reactions",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-and-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Chemistry.pdf",
+     "skills": [
+      "s.10.stoichiometry",
+      "s.10.thermochemistry"
+     ],
+     "lessons": [
+      {
+       "n": "4.1",
+       "title": "Observing and Modeling Chemical Reactions"
+      },
+      {
+       "n": "4.2",
+       "title": "Analyzing Chemical Reactions"
+      },
+      {
+       "n": "4.3",
+       "title": "Investigating Energy in Chemical Reactions"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Reaction Rates and Equilibrium",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-and-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Chemistry.pdf",
+     "skills": [
+      "s.10.rates-equilibrium"
+     ],
+     "lessons": [
+      {
+       "n": "5.1",
+       "title": "Investigating Reaction Rates"
+      },
+      {
+       "n": "5.2",
+       "title": "Exploring Chemical Equilibrium"
+      },
+      {
+       "n": "5.3",
+       "title": "Analyzing Chemical Systems"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "11",
+   "course": "Physics",
+   "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Physics.pdf",
+   "units": [
+    {
+     "n": "1",
+     "title": "Physics and Engineering",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Physics.pdf",
+     "skills": [
+      "s.11.kinematics-2d",
+      "s.11.dynamics-vectors"
+     ],
+     "lessons": [
+      {
+       "n": "1.1",
+       "title": "Engineering Design"
+      },
+      {
+       "n": "1.2",
+       "title": "Modeling Motion"
+      },
+      {
+       "n": "1.3",
+       "title": "Effects of Forces"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Energy and Motion",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Physics.pdf",
+     "skills": [
+      "s.11.momentum",
+      "s.11.work-energy-power"
+     ],
+     "lessons": [
+      {
+       "n": "2.1",
+       "title": "Momentum and Collisions"
+      },
+      {
+       "n": "2.2",
+       "title": "Analyzing Energy in Systems"
+      },
+      {
+       "n": "2.3",
+       "title": "Transferring Thermal Energy"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Field Forces and Energy",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Physics.pdf",
+     "skills": [
+      "s.11.circular-gravitation",
+      "s.11.electromagnetism"
+     ],
+     "lessons": [
+      {
+       "n": "3.1",
+       "title": "Mass and Gravitational Fields"
+      },
+      {
+       "n": "3.2",
+       "title": "Modeling Electric and Magnetic Fields"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Electromagnetism and Generators",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Physics.pdf",
+     "skills": [
+      "s.11.circuits",
+      "s.11.electromagnetism"
+     ],
+     "lessons": [
+      {
+       "n": "4.1",
+       "title": "Flow of Electrical Energy"
+      },
+      {
+       "n": "4.2",
+       "title": "Electromagnets and Inducing Current"
+      },
+      {
+       "n": "4.3",
+       "title": "Solutions for Electrical Energy Generation"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Wave Energy and Communication",
+     "url": "https://s3.amazonaws.com/prod-hmhco-vmg-craftcms-public/Scope-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Physics.pdf",
+     "skills": [
+      "s.11.sound-waves",
+      "s.8.em-spectrum"
+     ],
+     "lessons": [
+      {
+       "n": "5.1",
+       "title": "Modeling and Using Waves"
+      },
+      {
+       "n": "5.2",
+       "title": "Effects of Electromagnetic Radiation"
+      },
+      {
+       "n": "5.3",
+       "title": "Optimizing Information Technologies"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
