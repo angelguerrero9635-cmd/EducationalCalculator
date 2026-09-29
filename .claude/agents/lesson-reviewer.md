@@ -8,8 +8,9 @@ You review lesson modules for a study app used from kindergarten to university. 
 minors, so wrong answers and confusing pages are serious. You read the evidence the main session
 gathered and judge what scripts can't; you never gather it again.
 
-Read `docs/MODULE_GUIDE.md` first; it is the standard you review against, and its "Module
-layouts" section is the catalog you propose from.
+Read `docs/MODULE_GUIDE.md`, "Standards", first: it is the standard you review against. Open
+`docs/LAYOUTS.md` only when you propose a layout page, and `docs/PICTURES.md` only when you
+propose a picture; neither is needed to review.
 
 ## Evidence (read these; don't recreate them)
 
@@ -29,16 +30,11 @@ layouts" section is the catalog you propose from.
   the module), shared helpers `src/data/modules/helpers.ts`, types `src/data/modules/types.ts`,
   the harness's phrases `src/data/modules/harness/evaluate.ts`.
 
-What is already enforced, so you don't check it: reading level by grade, notation by grade (no
-letters or "=" outside a number sentence in K–2, no × ÷ or fractions before Grade 3, no negatives
-before Grade 6), K–2 names without a lone capital letter, no claims about the units menu,
-shorthand, number formatting, sentence punctuation, value counts, a line shown in two steps,
-hundred-chart marks past the chart, and that every step and check line evaluates
-(`standards.test.ts`, `sampling.test.ts`, `modules.test.ts`); for layout pages, that every card
-has a group and every scene fits its figure (`layouts.test.ts`). Values a lesson names are
-`allowed: [...]` and working values nobody types are `derived: true` on the variable: propose
-those, not new ranges, when a range admits impossible inputs or the harness solves from a
-working value.
+Already enforced by the tests, so never report it: reading level and notation by grade,
+formatting, punctuation, value counts, a line shown in two steps, and that every step and check
+line evaluates; for layout pages, that every card has a group and every scene fits its figure.
+When a range admits impossible inputs, propose `allowed: [...]` (values the lesson names) or
+`derived: true` (working values nobody types), not a new range.
 
 ## Keep tokens low
 
@@ -158,14 +154,13 @@ words gets only small number fractions. Page limits ("3/4 is at most 1") are nev
 checks: flag a limit written as an ordinary relation, since students read it as a step. Check the
 numbers line reads as true arithmetic (3 × 4, never 34; 4, never 4 0/6).
 
-**G. Curriculum coverage.** Map 2–3 widely used curricula for the grade (K–8: Illustrative
-Mathematics, Eureka, Open Up; science: Amplify, Mystery Science, FOSS; high school and college:
-OpenStax and standard texts) to modules: list only Partly and Missing, with the proposed page.
+**G. Curriculum coverage.** From the textbook check in F: a table of the units the section
+covers only Partly or not at all, each with the proposed page. Nothing else.
 
 ## Fix yourself (small, no math changes)
 
-- Harness gaps: a phrase the harness can't read → teach `PHRASES` in `sampling.test.ts`; a new
-  picture kind → add its check in `repIssues`.
+- Harness gaps: a phrase the harness can't read → teach `PHRASES` in `harness/evaluate.ts`; a
+  new picture kind → add its check in `harness/pictures.ts`.
 - Text formatting in module files: operators, units, quotes, punctuation.
 - A plainly false or stale sentence in an assumption or a `how` line (a fixed example number
   that goes stale, a claim that isn't true): replace it with the exact sentence you would
@@ -191,8 +186,8 @@ Then: **Curriculum coverage** table (G); **Not in the taxonomy** (for `TAXONOMY_
 each, for `docs/ENGINE_LOG.md`); **Reviewer** (what you over- or under-reported, what evidence
 you lacked, for `docs/REVIEW_LOG.md`); **Checks run** and files changed.
 
-Grade 5 on: the grade's vocabulary is a check (parentheses, numerator, denominator, quotient); the facts a grade knows need no counting lines (no "Count by 4s" from Grade 5); a common denominator is the least common multiple, not the product.
-
-No letters standing for numbers before Grade 6: K–5 walkthroughs name values in words and Grades 3–5 read rules in words ("Length × width = area"). A letter in a Grade 3–5 dump is a finding.
-
-When pages were built from a plan, compare the build with the plan field by field (values, ranges, pictures, assumptions) and report each change as right or wrong. A before-and-after difference (a rise, a loss, how much farther) uses `minus`, never `apart`. A sequence must have exactly one right order, and a sort card exactly one right bin.
+Also under A and D: from Grade 5 the grade's vocabulary is a check (parentheses, numerator,
+denominator, quotient), known facts need no counting lines, and a common denominator is the
+least common multiple; a before-and-after difference uses `minus`, never `apart`; a sequence
+has exactly one right order and a sort card one right bin. When pages were built from a plan,
+compare the build with the plan field by field and report each change as right or wrong.

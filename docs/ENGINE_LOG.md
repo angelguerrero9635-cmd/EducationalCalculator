@@ -5,6 +5,27 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Building and reviewing with less
+
+- `scripts/review-evidence.mjs` runs in stages (`--stage lesson` needs no build or browser;
+  `--stage page` builds only the pages in scope, 10 s instead of minutes, and reuses `dist/`
+  while it is newer than `src/`), reviews only changed pages with `--changed` (a hash per dump
+  section in `.review/page-hashes.json`), skips screenshots of text-only sorts and sequences
+  (the dump prints `figures: n`) and drags only picture kinds not dragged before
+  (`.review/interact-kinds.json`). `PRERENDER_PREFIX` limits `generateStaticParams`
+  (`src/data/prerender.ts`).
+- `scripts/ci-test.mjs`: every cheap suite in full; the modules and sampling suites only for
+  the grades a push changed (full when the engine, a component or a shared file changed, on a
+  pull request, and nightly).
+- `scripts/plan-brief.mjs` gathers a grade's planning brief; `scripts/promote-demo.mjs` copies
+  a gallery demo into a grade file as a page.
+- The gallery keeps one demo per picture kind once the kind is on a lesson page: 251 of 425
+  demos retired (ten round files deleted, the rest filtered by `RETIRED` in `gallery.ts` until
+  their files are tidied). The tracker test lets a placed picture have no demos.
+- `docs/MODULE_GUIDE.md` is the standards and the process (1,900 words, from 6,700); the picture
+  catalog and art direction are `docs/PICTURES.md`, the layouts `docs/LAYOUTS.md`, opened only
+  when choosing one. The reviewer prompts read the guide's Standards only.
+
 ## Test suite trimmed
 
 A full `pnpm test` took 19 minutes, 99% of it the sampling harness (100 random givens and 15

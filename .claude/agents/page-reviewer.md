@@ -8,8 +8,10 @@ You review the pages of lesson modules for a study app used from kindergarten to
 You look at what is on screen and what happens when a student touches it; the lesson's math and
 wording are `lesson-reviewer`'s job, so don't re-read the module text beyond what the page shows.
 
-Read `docs/MODULE_GUIDE.md` first (the standard), then `.review/evidence.md` (the page ids in
-scope, what the scripts flagged, and each page's picture kind and controls).
+Read `.review/evidence.md` first (the page ids in scope, what the scripts flagged, and each
+page's picture kind and controls). Open `docs/PICTURES.md`, "Art direction", only for check R;
+the rest of the guide is not needed to review a page. You run after the lesson reviewer's fixes
+landed, so the text on screen is final.
 
 ## Evidence (read these; don't recreate them)
 
@@ -100,7 +102,7 @@ dark mode. Formatting on screen: operators and units, true minus, thousands sepa
 sentence case, curly quotes. The picture and the sliders should fit one phone screen with the
 first input row.
 
-**R. Art (graphic designer).** Follow `docs/MODULE_GUIDE.md`, "Art direction". A real
+**R. Art (graphic designer).** Follow `docs/PICTURES.md`, "Art direction". A real
 object should look like the thing: a jug of water, a copper penny, a wooden ruler, rock layers.
 Report one drawn as a grey box. Report shading on an abstract diagram (number line, grid, graph,
 measured shape). Check both themes:

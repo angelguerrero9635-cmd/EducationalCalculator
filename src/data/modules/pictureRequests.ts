@@ -40,14 +40,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.4.unit-conversion~about-a-meter',
     ],
     status: 'placed',
-    gallery: [
-      'g.icons-weather',
-      'g.icons-young',
-      'g.icons-diet',
-      'g.icons-meter',
-      'g.icons-liter',
-      'g.icons-heat',
-    ],
+    gallery: [],
     uses: '"kind":"icon"',
   },
   {
@@ -83,7 +76,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'shadowStick',
     pages: ['s.5.shadows-day-night~noon-shadow'],
     status: 'placed',
-    gallery: ['g.noon-shadow'],
+    gallery: [],
   },
   {
     id: 'R05',
@@ -142,7 +135,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'dotPlot',
     pages: ['m.6.center-spread'],
     status: 'placed',
-    gallery: ['g.dot-plot-median'],
+    gallery: [],
     uses: '"count"',
   },
   {
@@ -151,7 +144,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'integerLine',
     pages: ['m.6.one-step-equations~inequality-solutions'],
     status: 'placed',
-    gallery: ['g.inequality-line'],
+    gallery: [],
     uses: '"inequality"',
   },
   {
@@ -160,7 +153,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'unitCubes',
     pages: ['m.5.volume-rectangular'],
     status: 'placed',
-    gallery: ['g.scaled-box'],
+    gallery: [],
     uses: '"scale":true',
   },
   {
@@ -178,7 +171,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'coordinatePlane',
     pages: ['m.5.coordinate-plane-q1'],
     status: 'placed',
-    gallery: ['g.plot-point'],
+    gallery: [],
     uses: '"plot":true',
   },
   {
@@ -204,7 +197,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'tape',
     pages: ['m.5.multiply-fractions~of-a-whole'],
     status: 'placed',
-    gallery: ['g.jumps-in-a-quotient', 'g.share-as-mixed', 'g.liters-as-mixed'],
+    gallery: ['g.jumps-in-a-quotient', 'g.liters-as-mixed'],
     uses: '"mixed":true',
   },
   {
@@ -233,7 +226,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'numberLine',
     pages: ['m.2.place-value-1000~number-line'],
     status: 'placed',
-    gallery: ['g.number-line-ticks', 'g.number-line-ticks-100'],
+    gallery: [],
     uses: '"count":"k"',
     notes:
       'Pass { kind: "numberLine", start: "a", from: "a", every: "s", count: "k", end: "n", min: 0, max: 1000 } (no jump). One jump per tick, each named "+10" while it fits; the caption counts: "Start at 500. 4 jumps of 10: 510, 520, 530, 540." The line runs 10 ticks (span) from the start; dragging the point snaps to a tick. The page keeps its own variables and relation.',
@@ -244,14 +237,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'factorPairs',
     pages: ['m.4.factors-multiples', 'm.4.factors-multiples~multiples'],
     status: 'placed',
-    gallery: [
-      'g.factor-pairs-126',
-      'g.factor-pairs-200',
-      'g.multiples-652',
-      'g.multiples-1000',
-      'g.chart-piece-652',
-      'g.chart-piece-990',
-    ],
+    gallery: ['g.chart-piece-652'],
     uses: '"max":',
     notes:
       'Factors of 105 and 126 (m.4.factors-multiples): no new field; past 100 the rectangles draw as thin bars to scale, each row labeled. Raise n, a and b to 200 and f to 18 (180 has 18 factors). Is 652 a multiple of 5? (~multiples, hundredChart): pass max: 1000; the chart draws the hundred holding the number (601–700) with the multiples shaded, and with piece three rows around it. Raise n to 1000 and q to 500. The two pages share no mark, so `uses` only finds "max": mark this placed once both ranges are raised.',
@@ -262,7 +248,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'linePlot',
     pages: ['m.4.add-fractions-like~line-plot-quarters'],
     status: 'placed',
-    gallery: ['g.line-plot-quarter-start', 'g.line-plot-quarter-start-halves'],
+    gallery: [],
     uses: '"startParts":4',
     notes:
       'Straws from 3 3/4 to 5 1/2 inches: marks step by 1/4 or 1/2 from a start that is itself a fraction. ' +
@@ -276,7 +262,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'grid100',
     pages: ['m.4.decimals-intro'],
     status: 'placed',
-    gallery: ['g.hundredths-ones', 'g.hundredths-many-ones', 'g.hundredths-ones-99'],
+    gallery: ['g.hundredths-ones'],
     uses: '"stack":true',
     notes:
       '45.06 is 45 whole grids and 6 hundredths: draw a few whole grids and a count, so ones can go to 99. Pass `stack: true` with `wholes`: up to 3 ones draw as before, past 3 one stack of grids marked "× 45" and "45 whole grids". The page raises Ones to 0–99 and As a decimal to 99.99.',
@@ -287,7 +273,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'equalGroups',
     pages: ['m.3.multiplication-properties~grouping'],
     status: 'placed',
-    gallery: ['g.equal-groups-50', 'g.equal-groups-90'],
+    gallery: ['g.equal-groups-50'],
     uses: '"bundles":true',
     notes:
       '4 × 50 × 9 as 50 groups of 36. Pass bundles: true: past 12 groups, rows of ten small circles with the number in each group written inside (12 or fewer draw as before). The page raises c to 90, q to 900 and n to 9000.',
@@ -298,7 +284,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'fractionLine',
     pages: ['m.4.decimals-intro~number-line'],
     status: 'placed',
-    gallery: ['g.decimal-line-from-whole', 'g.decimal-line-from-whole-hundredths'],
+    gallery: [],
     uses: '"startWhole"',
     notes:
       'A line from 1 to 3 in tenths with 2.6 marked. Add startWhole to the representation (a number, e.g. 1 with ' +
@@ -312,7 +298,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'fractionArea',
     pages: ['m.5.multiply-fractions'],
     status: 'placed',
-    gallery: ['g.fraction-area-wholes', 'g.fraction-area-mixed', 'g.fraction-area-edge'],
+    gallery: [],
     uses: '"wholes":6',
     notes:
       'Pass `wholes: 6` on the fractionArea (the most unit squares a side: 12/2 = 6). The block is ceil(first) squares across by ceil(second) down, so 5/7 × 10/3 is 1 across by 4 down (not 2 by 4). The page swaps atMostOne for "at most 6" constraints (see g.fraction-area-wholes; they keep a, b and c, d linked) and drops "each fraction at most 1" from the assumptions. Numerators stay whole: 1 1/3 is typed as 4/3; 5/7 needs 7 in the allowed denominators. The caption gives the pieces over pieces-in-a-whole and its mixed number (50/21 = 2 8/21).',
@@ -323,7 +309,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'placeValueChart',
     pages: ['m.5.powers-of-ten'],
     status: 'placed',
-    gallery: ['g.place-value-periods', 'g.place-value-billions', 'g.place-value-edge'],
+    gallery: [],
     uses: '"periods":true',
     notes:
       'Pass `periods: true` on the placeValueChart (decimals 0). Numbers to the millions draw as today; past them, the columns are grouped in periods (ones, thousands, millions, billions) to 999,999,999,999. The page raises the exponent to 9, the power of 10 to 1,000,000,000 (drop its `allowed` list: the sampling test lists every number between its ends and runs out of memory at 10⁹; 10^k = e keeps it a power of 10, as in g.place-value-billions), the product to 999,000,000,000, and updates "the chart ends at millions". The product input box cuts off 999,000,000,000 at 390 px (not the picture).',
@@ -337,7 +323,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.multi-digit-decimals~divide-by-decimal',
     ],
     status: 'placed',
-    gallery: ['g.jumps-grouped-page', 'g.jumps-grouped-tens', 'g.jumps-grouped-hundreds'],
+    gallery: [],
     uses: '"group":true',
     notes:
       'Pass `group: true` on the skipCount. To 30 jumps it draws as today; past 30 an arc per ten jumps, past 300 per hundred, then the single jumps left, each run named ("10 × 10 jumps: +20") and a caption with the sum (100 × 0.2 + 5 × 0.2 = 21). The pages raise the quotient to 999 and the dividend to fit (999 × the largest divisor), and update "whole-number answers to 30".',
@@ -348,12 +334,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'grid100',
     pages: ['m.6.percent~fraction-decimal-percent'],
     status: 'placed',
-    gallery: [
-      'g.percent-grid-page',
-      'g.percent-grid-past-100',
-      'g.percent-grid-tenths',
-      'g.percent-grid-edge',
-    ],
+    gallery: [],
     uses: '"past100":true',
     notes:
       '125% is one full grid and 25 squares; 37.5% shades part of a square. Then the page takes 5/4 = 125%. Pass `past100: true, exact: true`: a full grid per 100 (a stack with its count past 3 grids, to 10,000%), and tenths of a square filled exactly; tapping square n sets the full grids + n. The page drops "a ≤ b" and raises Numerator (1000), Decimal (10) and Percent (1000).',
@@ -666,7 +647,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'molecules',
     pages: ['s.7.atoms-molecules~count-atoms'],
     status: 'placed',
-    gallery: ['g.water-molecules', 'g.carbon-dioxide-molecules', 'g.oxygen-molecules'],
+    gallery: ['g.water-molecules'],
     notes: 'Placed when Grades 7–8 were built.',
   },
   {
@@ -675,7 +656,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'molecules',
     pages: ['s.7.atoms-molecules', 's.7.atoms-molecules~element-or-compound'],
     status: 'placed',
-    gallery: ['g.molecule-models', 'g.molecule-cards'],
+    gallery: ['g.molecule-models'],
     uses: '"molecule',
     notes: 'Placed when Grades 7–8 were built.',
   },
@@ -707,7 +688,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.7.chemical-reactions~methane',
     ],
     status: 'placed',
-    gallery: ['g.balance-water', 'g.burning-methane'],
+    gallery: ['g.balance-water'],
     notes: 'Placed when Grades 7–8 were built.',
   },
   {
@@ -861,7 +842,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['m.K.add-sub-10~all-partners'],
     status: 'placed',
-    gallery: ['g.r3g-all-partners'],
+    gallery: [],
     uses: '"icon":"cars 2 red 3 blue"',
     notes:
       "0 + 5 → 5 cars in a row, 0 red and 5 blue; 1 + 4 → 5 cars, 1 red and 4 blue; 2 + 3 → 5 cars, 2 red and 3 blue; 3 + 2 → 5 cars, 3 red and 2 blue; 4 + 1 → 5 cars, 4 red and 1 blue; 5 + 0 → 5 cars, 5 red and 0 blue. DRAWN (group G): Stage figures: 0 + 5 → icon 'cars 0 red 5 blue'; 1 + 4 → icon 'cars 1 red 4 blue'; 2 + 3 → icon 'cars 2 red 3 blue'; 3 + 2 → icon 'cars 3 red 2 blue'; 4 + 1 → icon 'cars 4 red 1 blue'; 5 + 0 → icon 'cars 5 red 0 blue'. Exactly five cars in a row, the red ones first, so the counts match each card.",
@@ -872,7 +853,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['m.2.standard-length~which-unit'],
     status: 'placed',
-    gallery: ['g.r3g-which-unit'],
+    gallery: [],
     uses: '"icon":"school hallway"',
     notes:
       "Hallway → a long school hallway with doors; Classroom → a classroom with desks, seen from above. DRAWN (group G): Hallway → icon 'school hallway'; Classroom → icon 'classroom from above'.",
@@ -883,7 +864,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['m.2.time-5-min~am-pm'],
     status: 'placed',
-    gallery: ['g.r3g-am-pm'],
+    gallery: [],
     uses: '"icon":"sunrise with arrow up"',
     notes:
       "Eat breakfast → a cereal bowl, with the morning sun in the window; Eat dinner → a dinner plate, with the evening sky in the window; See the sunrise → the sun half above the horizon, morning sky, arrow up (now the same 'sun' icon as sunset); Watch the sunset → the sun half below the horizon, orange sky, arrow down. DRAWN (group G): Eat breakfast → icon 'breakfast by morning window'; Eat dinner → icon 'dinner by evening window' (dusk sky with the moon); See the sunrise → icon 'sunrise with arrow up' (replaces 'sun'); Watch the sunset → icon 'sunset with arrow down' (replaces 'sun'). Walk to school and Go to bed keep 'backpack' and 'bed'.",
@@ -894,7 +875,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['m.2.even-odd~sort'],
     status: 'placed',
-    gallery: ['g.r3g-even-odd'],
+    gallery: [],
     uses: '"count":0',
     notes:
       "0 → the empty two-row dot frame (no dots). DRAWN (group G): Not an icon: the existing card figure { kind: 'dots', count: 0 } now draws the two empty rows (dotted) the pairs go in. 0 → figure { kind: 'dots', count: 0 }.",
@@ -905,7 +886,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.K.sunlight-warms~shade'],
     status: 'placed',
-    gallery: ['g.r3a-shade'],
+    gallery: [],
     uses: '"icon":"open umbrella"',
     notes:
       "Umbrella → an open umbrella with shade under it; Tree → a leafy tree; Tent → a tent; Sun hat → a wide-brim sun hat; Roof → a house roof; Clear plastic → a clear plastic sheet or cup; Window glass → a window; Glass door → a glass door. Drawn: each card gets figure: { kind: 'icon', icon }: Umbrella → 'open umbrella'; Tree → 'leafy tree' (drawn by group E); Tent → 'tent'; Sun hat → 'sun hat'; Roof → 'house roof'; Clear plastic → 'clear plastic cup'; Window glass → 'window'; Glass door → 'glass door'",
@@ -916,7 +897,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.K.living-needs~who-needs'],
     status: 'placed',
-    gallery: ['g.r3g-who-needs'],
+    gallery: [],
     uses: '"icon":"pot of soil with roots"',
     notes:
       "Sunlight → existing icon 'sun'; Soil for roots → a pot of soil with roots; Water → a water drop; A den or nest → a bird's nest. DRAWN (group G): Sunlight → icon 'sun'; Soil for roots → icon 'pot of soil with roots'; Water → icon 'water drop'; A den or nest → icon 'bird nest'.",
@@ -927,7 +908,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.K.living-needs~homes'],
     status: 'placed',
-    gallery: ['g.icons-homes'],
+    gallery: [],
     uses: '"icon":"duck"',
     notes:
       "Duck → duck; Owl → owl; Squirrel → squirrel; Lizard → lizard; Roadrunner → roadrunner. Drawn: Card label → icon: Duck → 'duck'; Owl → 'owl'; Squirrel → 'squirrel'; Lizard → 'lizard'; Roadrunner → 'roadrunner' (Fish, Frog, Deer and Camel keep their icons).",
@@ -938,7 +919,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.K.weather-patterns~storm'],
     status: 'placed',
-    gallery: ['g.r3f-storm'],
+    gallery: [],
     uses: '"icon":"hearing a storm forecast"',
     notes:
       "Hear the forecast → a radio or TV showing a storm cloud; Get ready: bring toys in, close windows → a child carrying toys in beside a closed window; Stay inside while it storms → a house with rain and lightning outside; Go out when it has passed → a child outside, with sun and puddles. Drawn: the same house and child on every stage (the sky, the window and the child change); each stage gets figure: { kind: 'icon', icon }: Hear the forecast → 'hearing a storm forecast' (a radio whose speech bubble shows a storm cloud, window open, sun out); Get ready: bring toys in, close windows → 'getting ready for a storm' (the child carries the ball to the door, window shut, dark clouds coming); Stay inside while it storms → 'staying inside in a storm' (rain and lightning, the child looking out of the shut window); Go out when it has passed → 'going out after a storm' (sun and puddles, the child and ball outside)",
@@ -949,7 +930,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.K.weather-patterns~falls'],
     status: 'placed',
-    gallery: ['g.r3f-falls'],
+    gallery: [],
     uses: '"icon":"rain cloud"',
     notes:
       "Rain → a cloud with raindrops; Snow → a cloud with snowflakes; Hail → a cloud with round hailstones; Wind → a tree bending, with wind lines; Fog → houses half hidden in low gray mist. Drawn: each card gets figure: { kind: 'icon', icon }: Rain → 'rain cloud'; Snow → 'snow cloud'; Hail → 'hail cloud'; Wind → 'tree in wind'; Fog → 'fog over houses'. The shared 'storm cloud' (a dark cloud with lightning and rain) is in the same demo",
@@ -960,7 +941,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.K.living-things-change-environment'],
     status: 'placed',
-    gallery: ['g.r3g-who-changed'],
+    gallery: [],
     uses: '"icon":"beaver at dam"',
     notes:
       "Beaver builds a dam → a beaver at a stick dam; Squirrel digs a hole → a squirrel digging; Bird builds a nest → a bird with a twig at a nest; Tree roots crack the sidewalk → roots lifting a cracked sidewalk; Weeds grow through a crack → weeds in a pavement crack; People build a road → a road roller on a new road; People plant a garden → hands planting a seedling. DRAWN (group G): Beaver builds a dam → icon 'beaver at dam'; Squirrel digs a hole → icon 'squirrel digging'; Bird builds a nest → icon 'bird building nest'; Tree roots crack the sidewalk → icon 'roots cracking sidewalk'; Weeds grow through a crack → icon 'weeds in pavement crack'; People build a road → icon 'road roller on new road'; People plant a garden → icon 'hands planting garden'.",
@@ -971,7 +952,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.K.living-things-change-environment~helps'],
     status: 'placed',
-    gallery: ['g.r3g-helps'],
+    gallery: [],
     uses: '"icon":"cloth shopping bag"',
     notes:
       "Pick up litter → a hand putting a can in a bin; Reuse a bag → a cloth shopping bag; Turn off the water → a hand closing a faucet; Plant a tree → a seedling being planted; Drop a wrapper → a wrapper falling on grass; Leave the water running → a faucet running; Pick all the flowers → a hand holding a big bunch, bare stems in the ground. DRAWN (group G): Pick up litter → icon 'hand putting can in bin'; Reuse a bag → icon 'cloth shopping bag'; Turn off the water → icon 'hand closing faucet'; Plant a tree → icon 'planting a tree sapling' (a sapling and a shovel, unlike the garden's hands and seedlings); Drop a wrapper → icon 'wrapper falling on grass'; Leave the water running → icon 'running faucet'; Pick all the flowers → icon 'hand with picked flowers'.",
@@ -982,7 +963,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.1.sound-vibration~cup-phone'],
     status: 'placed',
-    gallery: ['g.r3g-cup-phone'],
+    gallery: [],
     uses: '"icon":"cup phone string shakes"',
     notes:
       "Your voice shakes the cup → a child talking into a cup, with sound lines; The string shakes → a taut string with wiggle marks; The other cup shakes → the far cup with shake marks; Your friend hears you → a friend with a cup at their ear. DRAWN (group G): Stage figures: Your voice shakes the cup → icon 'cup phone voice shakes cup'; The string shakes → icon 'cup phone string shakes'; The other cup shakes → icon 'cup phone far cup shakes'; Your friend hears you → icon 'cup phone friend hears'. One scene; the shaking part is marked in orange.",
@@ -993,7 +974,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.1.offspring~care'],
     status: 'placed',
-    gallery: ['g.icons-parent-care'],
+    gallery: [],
     uses: '"icon":"hen on nest"',
     notes:
       "Bird brings worms → a bird feeding chicks in a nest; Cow feeds her calf → a calf drinking from a cow; Kangaroo pouch → a joey in a kangaroo's pouch; Lion carries her cub → a lioness carrying a cub in her mouth; Hen sits on her eggs → a hen on a nest; Penguin keeps its chick on its feet → a penguin with a chick on its feet. Drawn: Card label → icon: Bird brings worms → 'bird feeding chicks'; Cow feeds her calf → 'calf drinking milk'; Kangaroo pouch → 'joey in pouch'; Lion carries her cub → 'lioness carrying cub'; Hen sits on her eggs → 'hen on nest'; Penguin keeps its chick on its feet → 'penguin chick on feet'.",
@@ -1004,7 +985,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.1.offspring~match'],
     status: 'placed',
-    gallery: ['g.r3d-offspring'],
+    gallery: [],
     uses: '"icon":"oak seedling"',
     notes:
       "Tadpole → tadpole; Frog eggs → a clump of frog eggs; Caterpillar → caterpillar; Chrysalis → chrysalis hanging from a twig; Acorn → acorn; Oak seedling → oak seedling with lobed leaves. DRAWN (icons, group D): Tadpole → icon 'tadpole'; Frog eggs → icon 'frog eggs'; Caterpillar → icon 'caterpillar'; Chrysalis → icon 'chrysalis'; Acorn → icon 'acorn'; Oak seedling → icon 'oak seedling'. The caterpillar and chrysalis are drawn on the butterfly life cycle's twig and leaf; the frog eggs and tadpole in pond water.",
@@ -1015,7 +996,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'moon',
     pages: ['s.1.sky-patterns~moon'],
     status: 'placed',
-    gallery: ['g.r3h-moon'],
+    gallery: [],
     uses: '"kind":"moon"',
     notes:
       "every stage (New moon, Thin crescent, Half moon, Almost full, Full moon) → the moon in that phase; needs NEW CardFigure {kind:'moon', phase: MoonPhase}. DRAWN: card figure {kind:'moon', phase}. New moon → 'new'; Thin crescent → 'waxing crescent'; Half moon → 'first quarter'; Almost full → 'waxing gibbous'; Full moon → 'full' (the sky figure's moon, lit on the right).",
@@ -1026,7 +1007,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.1.sky-patterns~moon-waning'],
     status: 'placed',
-    gallery: ['g.r3h-moon-waning'],
+    gallery: [],
     uses: '"phase":"waning',
     notes:
       "every stage (Full moon, Almost full, Half moon, Thin crescent, New moon) → the moon in that phase (waning: lit on the left). DRAWN: card figure {kind:'moon', phase}. Full moon → 'full'; Almost full → 'waning gibbous'; Half moon → 'third quarter'; Thin crescent → 'waning crescent'; New moon → 'new' (lit on the left).",
@@ -1037,7 +1018,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.1.light-shadows~materials'],
     status: 'placed',
-    gallery: ['g.r3a-light-materials'],
+    gallery: [],
     uses: '"icon":"wax paper"',
     notes:
       "Window glass → a window pane; Clear plastic → a clear plastic cup; Wax paper → a cloudy sheet of wax paper; Tissue paper → a thin tissue-paper sheet; Wood → a wooden block; A book → a closed book; A mirror → a hand mirror; A shiny spoon → a metal spoon with a shine mark. Drawn: each card gets figure: { kind: 'icon', icon }: Window glass → 'window'; Clear plastic → 'clear plastic cup'; Wax paper → 'wax paper'; Tissue paper → 'tissue paper'; Wood → 'wooden block'; A book → 'closed book'; A mirror → 'hand mirror'; A shiny spoon → 'metal spoon' (it has the shine mark)",
@@ -1048,7 +1029,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.material-properties~sort'],
     status: 'placed',
-    gallery: ['g.r3a-bend'],
+    gallery: [],
     uses: '"icon":"piece of string"',
     notes:
       "Rubber band → rubber band; String → a piece of string; Cloth → a folded cloth; Craft stick → craft stick; Plastic ruler → plastic ruler; Cardboard → a cardboard piece; Rock → rock; Metal spoon → metal spoon; Glass → a drinking glass. Drawn: each card gets figure: { kind: 'icon', icon }: Rubber band → 'rubber band'; String → 'piece of string'; Cloth → 'folded cloth' (a towel over a rail); Craft stick → 'craft stick'; Plastic ruler → 'plastic ruler'; Cardboard → 'cardboard piece'; Rock → 'gray rock'; Metal spoon → 'metal spoon'; Glass → 'drinking glass'",
@@ -1059,7 +1040,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.heating-cooling'],
     status: 'placed',
-    gallery: ['g.r3b-heating-cooling'],
+    gallery: [],
     uses: '"icon":"melting ice cube"',
     notes:
       "Melting ice → an ice cube with a puddle; Freezing water → an ice-cube tray; Melting a crayon → a drooping, melted crayon; Melting chocolate → a chocolate bar going soft; Boiling water into steam → a pot with steam; Cooking an egg → a fried egg in a pan; Burning paper → paper with a flame and ash; Baking bread → a loaf of bread; Toasting bread → a slice of toast. Drawn (group B), figure: {kind:'icon', icon}: Melting ice → 'melting ice cube'; Freezing water → 'ice cube tray'; Melting a crayon → 'melted crayon'; Melting chocolate → 'melting chocolate bar'; Boiling water into steam → 'pot of boiling water'; Cooking an egg → 'fried egg in a pan'; Burning paper → 'burning paper'; Baking bread → 'loaf of bread'; Toasting bread → 'slice of toast'",
@@ -1070,7 +1051,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.pollination-dispersal'],
     status: 'placed',
-    gallery: ['g.r3d-seeds-travel'],
+    gallery: [],
     uses: '"icon":"milkweed pod"',
     notes:
       "Dandelion fluff → a dandelion seed head; Maple seed with wings → a winged maple seed; Milkweed fluff → an open milkweed pod with fluffy seeds; Burr on a dog’s fur → a burr stuck in dog fur; Berry eaten by a bird → a bird eating a berry; Acorn buried by a squirrel → a squirrel burying an acorn; Coconut → a coconut floating on water; Water lily seed → a water lily with seed pod on a pond. DRAWN (icons, group D): Dandelion fluff → icon 'dandelion seed head'; Maple seed with wings → icon 'winged maple seed'; Milkweed fluff → icon 'milkweed pod'; Burr on a dog’s fur → icon 'burr in dog fur'; Berry eaten by a bird → icon 'bird eating berry'; Acorn buried by a squirrel → icon 'squirrel burying acorn'; Coconut → icon 'floating coconut'; Water lily seed → icon 'water lily seed pod'.",
@@ -1081,7 +1062,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.pollination-dispersal~pollen'],
     status: 'placed',
-    gallery: ['g.r3d-pollen'],
+    gallery: [],
     uses: '"icon":"bee with pollen"',
     notes:
       "A bee lands on a flower to drink nectar → a bee on a flower; Pollen sticks to its hairy body → a close-up bee with yellow pollen dots; The bee flies to another flower of the same kind → a bee flying between two matching flowers; Pollen rubs off on that flower → pollen dots on the second flower's center; The flower can now make seeds → a flower head turning into seeds. DRAWN (icons, group D): Stage figures, in order: A bee lands on a flower to drink nectar → icon 'bee on flower'; Pollen sticks to its hairy body → icon 'bee with pollen'; The bee flies to another flower of the same kind → icon 'bee between flowers'; Pollen rubs off on that flower → icon 'pollen on flower'; The flower can now make seeds → icon 'flower making seeds'. One pink flower (the shared icon 'flower') throughout.",
@@ -1092,7 +1073,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.erosion-landforms~map'],
     status: 'placed',
-    gallery: ['g.r3e-land-water'],
+    gallery: [],
     uses: '"icon":"mountain"',
     notes:
       "Mountain → mountain (map symbol); Hill → hill; Valley → a valley between two slopes; Island → island in water; Lake → lake surrounded by land; River → winding river; Ocean → a wide blue sea with waves; Pond → small pond. Drawn: Card label → icon: Mountain → 'mountain'; Hill → 'hill'; Valley → 'valley'; Island → 'island'; Lake → 'lake'; River → 'river'; Ocean → 'ocean'; Pond → 'pond'. The shared landform drawings are used here, not separate map symbols: each is a small side or slanted view with water always blue and land green or rock, which is what the page's rule (\"Blue on a map is water\") needs; a flat map symbol (a triangle for a mountain) would not be recognizable on its own at card size.",
@@ -1103,7 +1084,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.erosion-landforms'],
     status: 'placed',
-    gallery: ['g.r3e-land-changes'],
+    gallery: [],
     uses: '"icon":"earthquake crack"',
     notes:
       "Earthquake → cracked ground with shake lines; Volcano erupting → erupting volcano; Landslide → rocks sliding down a hillside; Flood → water over a riverbank and road; River wearing a canyon → a river in a deep canyon; Wind shaping a sand dune → a dune with wind lines; Ice cracking a rock → a rock split by ice in a crack; Waves wearing a cliff → waves at the base of a cliff. Drawn: Card label → icon: Earthquake → 'earthquake crack'; Volcano erupting → 'erupting volcano'; Landslide → 'landslide'; Flood → 'flooded road'; River wearing a canyon → 'river canyon'; Wind shaping a sand dune → 'wind shaping dune'; Ice cracking a rock → 'ice cracking rock'; Waves wearing a cliff → 'waves at cliff'.",
@@ -1114,7 +1095,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.habitats~which-habitat'],
     status: 'placed',
-    gallery: ['g.icons-which-habitat'],
+    gallery: [],
     uses: '"icon":"walrus"',
     notes:
       "Whale → whale; Octopus → octopus; Monkey → monkey; Parrot → parrot; Vines → vines hanging from a tree; Polar bear → polar bear; Walrus → walrus. Drawn: Card label → icon: Whale → 'whale'; Octopus → 'octopus'; Monkey → 'monkey'; Parrot → 'parrot'; Vines → 'hanging vines'; Polar bear → 'polar bear'; Walrus → 'walrus'. 'polar bear' also fits the Polar bear card on s.3.adaptation-fossils~survive-where.",
@@ -1125,7 +1106,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.erosion-landforms~slow-it'],
     status: 'placed',
-    gallery: ['g.r3f-slow-it'],
+    gallery: [],
     uses: '"icon":"snow fence"',
     notes:
       "Row of trees → a row of trees; Snow fence → a slatted snow fence; Sandbags along a river → sandbags stacked on a riverbank; Wall of rocks → a rock wall at a shore; Dam → a dam across a river. Drawn: each card gets figure: { kind: 'icon', icon }: Row of trees → 'row of trees' (a windbreak of four trees along a plowed field); Snow fence → 'snow fence'; Sandbags along a river → 'sandbags on riverbank'; Wall of rocks → 'rock wall at shore'; Dam → 'dam' (shared with D46)",
@@ -1136,7 +1117,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.2.water-on-earth'],
     status: 'placed',
-    gallery: ['g.r3e-water-on-earth'],
+    gallery: [],
     uses: '"icon":"glacier"',
     notes:
       "Glacier → a glacier between mountains; Iceberg → iceberg in the sea; Snow on a mountain → a snow-capped mountain; Frozen pond → a frozen pond with a skater; Ocean → ocean waves; River → river; Lake → lake; Puddle → a puddle. Drawn: Card label → icon: Glacier → 'glacier'; Iceberg → 'iceberg'; Snow on a mountain → 'snowy mountain'; Frozen pond → 'frozen pond'; Ocean → 'ocean'; River → 'river'; Lake → 'lake'; Puddle → 'puddle'.",
@@ -1147,7 +1128,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['m.3.mass-liquid-volume~which-unit'],
     status: 'placed',
-    gallery: ['g.r3b-which-unit'],
+    gallery: [],
     uses: '"icon":"sack of potatoes"',
     notes:
       "Grape → a single grape; Apple → an apple; Letter → an envelope letter; Bicycle → a bicycle; Watermelon → existing icon 'watermelon'; Bag of potatoes → a sack of potatoes; Child → existing icon 'person'. Drawn (group B), figure: {kind:'icon', icon}: Grape → 'grape'; Apple → 'apple' (group I's drawing); Letter → 'letter in an envelope'; Bicycle → 'bicycle'; Watermelon → 'watermelon'; Bag of potatoes → 'sack of potatoes'; Child → 'person'",
@@ -1158,7 +1139,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.balanced-forces~balanced'],
     status: 'placed',
-    gallery: ['g.r3g-balanced'],
+    gallery: [],
     uses: '"icon":"tug of war with equal arrows"',
     notes:
       "Book resting on a table → a book on a table, with equal arrows up and down; Tug of war with no one moving → two teams pulling a rope, with equal arrows; A swing hanging still → a swing hanging straight down; Box on a carpet, pushed gently, stays still → a hand pushing a box on a rug; Kicked ball starts to roll → a foot kicking a ball, with a motion arrow; Bike braking to a stop → a bike with the brake on; Apple falling → an apple falling from a branch; Rock sliding on ice slows down → a rock on ice, with a slowing arrow. DRAWN (group G): Book resting on a table → icon 'book on table with equal arrows'; Tug of war with no one moving → icon 'tug of war with equal arrows'; A swing hanging still → icon 'swing hanging still'; Box on a carpet, pushed gently, stays still → icon 'hand pushing box on rug'; Kicked ball starts to roll → icon 'foot kicking ball' (motion arrow); Bike braking to a stop → icon 'bike braking' (pads on the rims, skid mark); Apple falling → icon 'apple falling from branch'; Rock sliding on ice slows down → icon 'rock sliding on ice' (earlier places closer and closer, a tapering arrow). Arrows only where the notes asked: equal ones on the book and the tug of war.",
@@ -1169,7 +1150,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.life-cycles'],
     status: 'placed',
-    gallery: ['g.r3d-butterfly-cycle'],
+    gallery: [],
     uses: '"icon":"butterfly egg on leaf"',
     notes:
       "Egg → a butterfly egg on a leaf; Caterpillar → a caterpillar; Chrysalis → a chrysalis hanging from a twig; Butterfly → a butterfly. DRAWN (icons, group D): Stage figures: Egg → icon 'butterfly egg on leaf'; Caterpillar → icon 'caterpillar'; Chrysalis → icon 'chrysalis'; Butterfly → icon 'butterfly'. A monarch, every stage on the same twig and milkweed leaf (the egg is drawn larger than life so it shows).",
@@ -1180,7 +1161,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.life-cycles~frog'],
     status: 'placed',
-    gallery: ['g.r3d-frog-cycle'],
+    gallery: [],
     uses: '"icon":"froglet"',
     notes:
       "Egg → frog eggs (a jelly clump); Tadpole → a tadpole; Froglet → a froglet with legs and a short tail; Frog → existing icon 'frog'. DRAWN (icons, group D): Stage figures: Egg → icon 'frog eggs'; Tadpole → icon 'tadpole'; Froglet → icon 'froglet'; Frog → icon 'frog'. The froglet is the frog icon's body smaller, with a short tail, facing the same way.",
@@ -1191,7 +1172,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.life-cycles~bean'],
     status: 'placed',
-    gallery: ['g.r3d-bean-cycle'],
+    gallery: [],
     uses: '"icon":"bean sprout"',
     notes:
       "Seed → a bean seed; Sprout → a seed with a root and a shoot; Young plant → a small plant with a few leaves; Plant with flowers → a bean plant with flowers; Pods with new seeds → an open bean pod with seeds. DRAWN (icons, group D): Stage figures: Seed → icon 'bean seed'; Sprout → icon 'bean sprout'; Young plant → icon 'young bean plant'; Plant with flowers → icon 'bean plant with flowers'; Pods with new seeds → icon 'bean plant with pods'. Every stage in the same cut-away soil; the last shows the plant with one pod open on its seeds.",
@@ -1202,7 +1183,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.life-cycles~changes'],
     status: 'placed',
-    gallery: ['g.r3d-grow-up'],
+    gallery: [],
     uses: '"icon":"ladybug"',
     notes:
       "Butterfly → a butterfly; Ladybug → a ladybug; Mosquito → a mosquito; Chicken → a chicken; Human → existing icon 'person'. DRAWN (icons, group D): Butterfly → icon 'butterfly'; Frog → icon 'frog'; Ladybug → icon 'ladybug'; Mosquito → icon 'mosquito'; Dog → icon 'dog'; Turtle → icon 'turtle'; Chicken → icon 'chicken'; Human → icon 'person'.",
@@ -1213,7 +1194,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.inherited-traits'],
     status: 'placed',
-    gallery: ['g.r3d-traits'],
+    gallery: [],
     uses: '"icon":"knee with scar"',
     notes:
       "Eye color → an eye; Flower color → two flowers of different colors; A scar → a knee with a scar; A plant bent by wind → a tree leaning in the wind; A pale plant grown in the dark → a pale, thin seedling in a dark box; A dog sits on command → existing icon 'dog', sitting; Riding a bike → a child on a bike. DRAWN (icons, group D): Eye color → icon 'eye'; Flower color → icon 'two flower colors' (a purple and a white flower of one kind); Number of legs → no picture (none was asked); A scar → icon 'knee with scar'; A plant bent by wind → icon 'tree bent by wind'; A pale plant grown in the dark → icon 'pale seedling in dark box'; A dog sits on command → icon 'dog sitting' (the dog icon's dog, sitting); Riding a bike → icon 'child riding bike'.",
@@ -1224,7 +1205,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.adaptation-fossils'],
     status: 'placed',
-    gallery: ['g.icons-fossils'],
+    gallery: [],
     uses: '"icon":"clam fossil"',
     notes:
       "Clam shell → a clam shell fossil; Coral → a coral fossil; Shark tooth → a shark tooth fossil; Fern leaf → a fern leaf print in rock; Dragonfly → a dragonfly fossil; Woolly mammoth hair → a woolly mammoth; Musk ox → a musk ox. Drawn: Card label → icon: Clam shell → 'clam fossil'; Coral → 'coral fossil'; Shark tooth → 'shark tooth fossil'; Fern leaf → 'fern fossil'; Dragonfly → 'dragonfly fossil'; Woolly mammoth hair → 'woolly mammoth'; Musk ox → 'musk ox' (Fish keeps 'fish').",
@@ -1235,7 +1216,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.animal-groups~group-jobs'],
     status: 'placed',
-    gallery: ['g.icons-group-jobs'],
+    gallery: [],
     uses: '"icon":"penguin huddle"',
     notes:
       "Wolf pack hunting → wolves running together; Ants carrying food → ants carrying a leaf; Zebra herd → a group of zebras; School of fish → a school of fish (existing icon 'fish', repeated); Meerkat lookout → a meerkat standing up on watch; Penguin huddle → penguins packed together; Bees in a winter ball → a ball of bees. Drawn: Card label → icon: Wolf pack hunting → 'wolf pack'; Ants carrying food → 'ants carrying leaf'; Zebra herd → 'zebra herd'; School of fish → 'school of fish' (a new drawing: a card shows one icon, so the 'fish' shape is drawn small, eleven times, in silver in water); Meerkat lookout → 'meerkat lookout'; Penguin huddle → 'penguin huddle'; Bees in a winter ball → 'bee ball'.",
@@ -1246,7 +1227,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.weather-climate~hazards'],
     status: 'placed',
-    gallery: ['g.r3f-weather-hazards'],
+    gallery: [],
     uses: '"icon":"sandbag wall"',
     notes:
       "Sandbag wall → a stacked sandbag wall; House on stilts → a house on stilts; Levee → a raised bank beside a river; Storm shutters → a window with closed shutters; Tied-down roof → a roof with metal straps; Storm shelter → an underground shelter door; Lightning rod → a rod on a roof with a wire to the ground. Drawn: each card gets figure: { kind: 'icon', icon }: Sandbag wall → 'sandbag wall'; House on stilts → 'house on stilts'; Levee → 'levee'; Storm shutters → 'storm shutters'; Tied-down roof → 'roof straps'; Storm shelter → 'storm shelter door'; Lightning rod → 'lightning rod'; Going indoors (not requested) → 'staying inside in a storm' (D08's stage: a child looking out from the house in a thunderstorm)",
@@ -1257,7 +1238,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.energy-conversion'],
     status: 'placed',
-    gallery: ['g.r3b-energy-conversion'],
+    gallery: [],
     uses: '"icon":"desk lamp"',
     notes:
       "Flashlight → a flashlight; Lamp → a desk lamp; Toaster → a toaster; Hair dryer → a hair dryer; Electric kettle → existing icon 'kettle'; Buzzer → a buzzer; Speaker → a speaker; Doorbell → a doorbell button and chime; Fan → an electric fan; Electric car → an electric car with a plug. Drawn (group B), figure: {kind:'icon', icon}: Flashlight → 'flashlight'; Lamp → 'desk lamp'; Toaster → 'toaster'; Hair dryer → 'hair dryer'; Electric kettle → 'kettle'; Buzzer → 'buzzer'; Speaker → 'speaker'; Doorbell → 'doorbell'; Fan → 'electric fan'; Electric car → 'electric car'",
@@ -1268,7 +1249,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.energy-conversion~trace'],
     status: 'placed',
-    gallery: ['g.r3b-energy-trace'],
+    gallery: [],
     uses: '"icon":"circuit lit bulb"',
     notes:
       "The battery stores energy → a battery; Electric current carries it along the wire → a battery joined to a wire; The thin wire in the bulb gets very hot → a bulb with a glowing red filament; The bulb gives out light and heat → a lit bulb, with light and heat lines. Drawn (group B) as one circuit scene changing stage by stage, figure: {kind:'icon', icon} on each stage: The battery stores energy → 'circuit battery' (the rest of the circuit faint); Electric current carries it along the wire → 'circuit wire current' (arrows on the wire); The thin wire in the bulb gets very hot → 'circuit hot filament'; The bulb gives out light and heat → 'circuit lit bulb'",
@@ -1279,7 +1260,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.energy-conversion~conductors'],
     status: 'placed',
-    gallery: ['g.r3a-conductors'],
+    gallery: [],
     uses: '"icon":"copper wire coil"',
     notes:
       "Copper wire → a coil of copper wire; Aluminum foil → a sheet of foil; Coin → a coin; Steel nail → a nail; Plastic spoon → a plastic spoon; Rubber band → a rubber band; Wood stick → a wooden stick; Glass marble → a marble. Drawn: each card gets figure: { kind: 'icon', icon }: Copper wire → 'copper wire coil'; Paper clip → 'paper clip' (already on the page); Aluminum foil → 'aluminum foil'; Coin → 'copper coin'; Steel nail → 'steel nail'; Plastic spoon → 'plastic spoon'; Rubber band → 'rubber band'; Wood stick → 'craft stick' (a plain wooden stick); Glass marble → 'glass marble'",
@@ -1290,7 +1271,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.3.magnets~magnetic'],
     status: 'placed',
-    gallery: ['g.r3a-magnetic'],
+    gallery: [],
     uses: '"icon":"soup can"',
     notes:
       "Iron nail → a nail; Soup can (steel) → a soup can; Fridge door → a fridge; Aluminum can → a soda can; Penny → a penny; Wooden block → a wooden block; Rubber band → a rubber band. Drawn: each card gets figure: { kind: 'icon', icon }: Paper clip → 'paper clip' (already on the page); Iron nail → 'steel nail' (a plain grey nail); Soup can (steel) → 'soup can'; Fridge door → 'fridge'; Aluminum can → 'soda can'; Penny → 'copper coin'; Wooden block → 'wooden block'; Rubber band → 'rubber band'. No magnet is drawn on any card, so the pictures do not give the answer",
@@ -1301,7 +1282,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.vision-light~signals'],
     status: 'placed',
-    gallery: ['g.r3b-signals'],
+    gallery: [],
     uses: '"icon":"lighthouse"',
     notes:
       "Flashlight code → a flashlight flashing; Lighthouse → a lighthouse; Traffic light → a traffic light; Flag colors on a ship → a ship with signal flags; Drum beats → a drum; Ship’s horn → a ship's horn; Buzzer code → a buzzer; School bell → a school bell. Drawn (group B), figure: {kind:'icon', icon}: Flashlight code → 'flashing flashlight'; Lighthouse → 'lighthouse'; Traffic light → 'traffic light'; Flag colors on a ship → 'ship with signal flags'; Drum beats → 'drum'; Ship’s horn → 'ship horn'; Buzzer code → 'buzzer'; School bell → 'school bell'",
@@ -1312,7 +1293,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.internal-structures~senses'],
     status: 'placed',
-    gallery: ['g.r3g-senses'],
+    gallery: [],
     uses: '"icon":"brain lit"',
     notes:
       "Light from the ball enters the eye → a ball, with a light line to an eye; The eye sends a message along a nerve → an eye with a nerve lit to the brain; The brain reads the message → a brain, lit; The brain sends a message to the arm → a nerve from the brain to the arm, lit; The arm moves to catch the ball → a hand catching a ball. DRAWN (group G): Stage figures: Light from the ball enters the eye → icon 'ball light entering eye'; The eye sends a message along a nerve → icon 'eye nerve to brain lit'; The brain reads the message → icon 'brain lit'; The brain sends a message to the arm → icon 'brain nerve to arm lit'; The arm moves to catch the ball → icon 'hand catching ball'. One scene; the unlit path stays faint grey.",
@@ -1323,7 +1304,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.internal-structures~jobs'],
     status: 'placed',
-    gallery: ['g.r3d-part-jobs'],
+    gallery: [],
     uses: '"icon":"owl face"',
     notes:
       "Rose thorns → a rose stem with thorns; Turtle shell → existing icon 'turtle'; Tree roots → a tree with its roots showing; Bird’s beak → existing icon 'bird', beak marked; Fish gills → existing icon 'fish', gills marked; Owl’s eyes → an owl's face; Bird’s wings → a bird flying, wings spread; Flower → a flower; Seeds → seeds (for example a sunflower head). DRAWN (icons, group D): Rose thorns → icon 'rose stem with thorns'; Turtle shell → icon 'turtle'; Tree roots → icon 'tree with roots'; Bird’s beak → icon 'bird beak' (the bird icon with its beak ringed); Fish gills → icon 'fish gills' (the fish icon with its gill cover ringed); Owl’s eyes → icon 'owl face'; Bird’s wings → icon 'bird flying'; Flower → icon 'flower'; Seeds → icon 'sunflower head'.",
@@ -1334,7 +1315,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.weathering~layers-order'],
     status: 'placed',
-    gallery: ['g.r3e-layers-order'],
+    gallery: [],
     uses: '"icon":"layers pushed up"',
     notes:
       "Sand settles: the bottom layer forms → a cut-away view: one sand layer under water; Mud settles on top of the sand → a cut-away view: sand, then mud; Shells settle on the mud: a layer with fossils forms → a cut-away view: sand, mud and a shell layer; The land is pushed up → the same layers raised above the water line; A river cuts down through the layers → the raised layers with a river canyon cut through them. Drawn: one cut-away, same frame and sea level in every stage. Stage label → icon: Sand settles: the bottom layer forms → 'sand layer under water'; Mud settles on top of the sand → 'mud on sand'; Shells settle on the mud: a layer with fossils forms → 'shell layer on mud'; The land is pushed up → 'layers pushed up' (the layers right of a break are lifted as a flat block above the sea, which stays over the unraised layers on the left; arrows up); A river cuts down through the layers → 'river cutting layers' (a canyon through the shells and mud into the sand; its floor stays above the sea). Set each stage's figure: { kind: 'icon', icon: … }.",
@@ -1345,7 +1326,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.weathering~map-patterns'],
     status: 'placed',
-    gallery: ['g.r3h-map-patterns'],
+    gallery: [],
     uses: '"kind":"map"',
     notes:
       "every card (Volcanoes around the Pacific Ocean, Earthquakes in Japan, The Andes mountains, Volcanoes in Alaska, The Great Plains, Central Australia, The Sahara) → a small world map with the place marked by a dot (reuse the 'continents' outline). DRAWN: card figure {kind:'map', area:'pacific', region?, pin?: [lon, lat]} (world centered on the Pacific). Volcanoes around the Pacific Ocean → region 'pacific ocean'; Earthquakes in Japan → pin [138, 36]; The Andes mountains → region 'andes'; Volcanoes in Alaska → pin [-154, 58]; The Great Plains → region 'great plains'; Central Australia → region 'central australia'; The Sahara → region 'sahara'. Own lon/lat outline, not the 'continents' figure's (its shapes are not placed by longitude and latitude).",
@@ -1356,7 +1337,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.natural-resources'],
     status: 'placed',
-    gallery: ['g.r3f-energy'],
+    gallery: [],
     uses: '"icon":"wind turbine"',
     notes:
       "Sunlight → existing icon 'sun'; Wind → a wind turbine; Moving water → a dam with water flowing through it; Wood → a stack of logs; Heat from inside Earth → a geyser; Coal → lumps of coal; Oil → an oil pump; Natural gas → a gas stove flame. Drawn: each card gets figure: { kind: 'icon', icon }: Sunlight → 'sun' (existing); Wind → 'wind turbine'; Moving water → 'dam' (water pouring out through its gates into the river; also D25's Dam); Wood → 'stack of logs'; Heat from inside Earth → 'geyser'; Coal → 'lumps of coal'; Oil → 'oil pump'; Natural gas → 'gas stove flame'; Uranium (not requested) → 'nuclear power plant' (a cooling tower with steam and a reactor dome, where uranium's energy is used)",
@@ -1367,7 +1348,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.4.natural-resources~hazards'],
     status: 'placed',
-    gallery: ['g.r3f-natural-hazards'],
+    gallery: [],
     uses: '"icon":"braced walls"',
     notes:
       "Levee along a river → a raised bank beside a river; Sandbags → a stacked sandbag wall; House raised on posts → a house on posts; Braced walls → a wall frame with cross braces; Shelves bolted to the wall → a bookshelf with wall brackets; Brush cleared near houses → a house with a cleared ring around it; Fire break → a bare strip cut through a forest; Storm shutters → a window with closed shutters; Roof strapped to the walls → a roof with metal straps. Drawn: each card gets figure: { kind: 'icon', icon }: Levee along a river → 'levee'; Sandbags → 'sandbag wall'; House raised on posts → 'house on stilts'; Braced walls → 'braced walls'; Shelves bolted to the wall → 'bolted shelves'; Brush cleared near houses → 'cleared brush around house'; Fire break → 'fire break'; Storm shutters → 'storm shutters'; Roof strapped to the walls → 'roof straps' (levee, sandbag wall, house on stilts, storm shutters and roof straps are the same drawings as D36)",
@@ -1378,7 +1359,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.particles-matter~properties'],
     status: 'placed',
-    gallery: ['g.r3a-dissolve'],
+    gallery: [],
     uses: '"icon":"pepper shaker"',
     notes:
       "Sand → a small pile of sand grains; Gravel → a handful of small stones; Pepper → ground black pepper in a shaker; Cooking oil → a bottle of yellow cooking oil. Drawn: each card gets figure: { kind: 'icon', icon }: Sand → 'sand pile'; Gravel → 'gravel'; Pepper → 'pepper shaker'; Cooking oil → 'cooking oil bottle'. Salt, Sugar and Baking soda were not requested and stay without a picture",
@@ -1389,7 +1370,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.particles-matter~magnet'],
     status: 'placed',
-    gallery: ['g.r3a-magnet-pull'],
+    gallery: [],
     uses: '"icon":"copper coin"',
     notes:
       "Iron nail → an iron nail; Steel paper clip → existing icon 'paper clip'; Aluminum can → a soda can; Copper coin → a copper-colored coin; Plastic spoon → a plastic spoon; Wood block → a wooden block. Drawn: each card gets figure: { kind: 'icon', icon }: Iron nail → 'steel nail' (a plain grey nail); Steel paper clip → 'paper clip'; Aluminum can → 'soda can'; Copper coin → 'copper coin'; Plastic spoon → 'plastic spoon'; Wood block → 'wooden block'",
@@ -1400,7 +1381,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.mixtures'],
     status: 'placed',
-    gallery: ['g.r3a-mixtures'],
+    gallery: [],
     uses: '"icon":"burning log"',
     notes:
       "Iron left in wet air (rust) → an iron nail with rust patches; Wood burning → a log on fire, with ash and smoke; Sand in water → a jar of water with sand settled at the bottom; Oil and water → a jar with a layer of oil floating on water. Drawn: each of these cards gets figure: { kind: 'icon', icon }: Iron left in wet air (rust) → 'rusty nail'; Wood burning → 'burning log'; Sand in water → 'jar of sand and water'; Oil and water → 'jar of oil and water'. The other cards were not requested",
@@ -1411,7 +1392,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.mixtures~separate'],
     status: 'placed',
-    gallery: ['g.r3a-separate'],
+    gallery: [],
     uses: '"icon":"magnet over sand mix"',
     notes:
       "Pass a magnet over the dry mix → a bar magnet with iron filings stuck to it above a dish of the mix; Stir the rest into water → a beaker of water with a stirring rod; Pour it through a filter → a funnel with filter paper over a beaker, sand left in the paper; Let the salt water evaporate → a shallow dish in the sun with salt crystals left. Drawn: each stage gets figure: { kind: 'icon', icon }, one bench and the same glass dish or beaker in every step: Pass a magnet over the dry mix: the iron filings stick → 'magnet over sand mix'; Stir the rest into water: the salt dissolves → 'stirring salt water'; Pour it through a filter: the sand stays behind → 'filtering sand'; Let the salt water evaporate: the salt is left → 'evaporating salt water'",
@@ -1422,7 +1403,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.food-webs'],
     status: 'placed',
-    gallery: ['g.r3d-food-web-roles'],
+    gallery: [],
     uses: '"icon":"earthworm in soil"',
     notes:
       "Grass → a tuft of grass; Oak tree → an oak tree with lobed leaves; Algae → green algae on pond water; Mushroom → a mushroom on a log; Bacteria → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Earthworm → an earthworm in soil. DRAWN (icons, group D): Grass → icon 'tuft of grass'; Oak tree → icon 'oak tree'; Algae → icon 'algae on pond'; Rabbit → icon 'rabbit'; Deer → icon 'deer'; Hawk → icon 'hawk'; Frog → icon 'frog'; Mushroom → icon 'mushroom on log'; Bacteria → card figure {kind:'cell', type:'bacterium', shape:'rod'}; Earthworm → icon 'earthworm in soil'. ('oak tree' and 'mushroom on log' also fit the Oak tree and Mushroom cards on s.6.cells.)",
@@ -1433,7 +1414,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.food-webs~chain-order'],
     status: 'placed',
-    gallery: ['g.r3d-food-chain'],
+    gallery: [],
     uses: '"icon":"tuft of grass"',
     notes:
       "Sun → existing icon 'sun'; Grass → a tuft of grass; Grasshopper → existing icon 'grasshopper'; Frog → existing icon 'frog'; Snake → existing icon 'snake'; Hawk → existing icon 'hawk'. DRAWN (icons, group D): Stage figures: Sun → icon 'sun'; Grass → icon 'tuft of grass'; Grasshopper → icon 'grasshopper'; Frog → icon 'frog'; Snake → icon 'snake'; Hawk → icon 'hawk'.",
@@ -1444,7 +1425,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.earth-spheres'],
     status: 'placed',
-    gallery: ['g.r3e-earth-spheres'],
+    gallery: [],
     uses: '"icon":"soil clump"',
     notes:
       "Mountain → a rocky mountain peak; Soil → a cut-away clump of brown soil; Sand → a sand dune; Ocean → ocean waves to the horizon; River → a river winding through land; Glacier → a glacier's ice tongue between mountains; Wind → existing icon 'wind sock'; Tree → a leafy tree. Drawn: Card label → icon: Mountain → 'mountain'; Soil → 'soil clump'; Sand → 'sand dune'; Ocean → 'ocean'; River → 'river'; Glacier → 'glacier'; Wind → 'wind sock' (existing); Tree → 'leafy tree'. Nitrogen and oxygen in the air stays without a picture (air is invisible); Fish and Bird keep their icons.",
@@ -1455,7 +1436,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.5.earth-spheres~rain-to-river'],
     status: 'placed',
-    gallery: ['g.r3e-rain-to-river'],
+    gallery: [],
     uses: '"icon":"rain on mountain"',
     notes:
       "Water evaporates from the ocean → the sun over the ocean with vapor arrows rising; Clouds form and rain falls on a mountain → a cloud raining on a mountain; Rain soaks into the soil → cut-away soil with roots taking in water; The rest runs in a river → a river running into the sea. Drawn: one scene (the sea on the left, cut-away soil with a tree and its roots, a mountain on the right), one step added per stage. Stage label → icon: Water evaporates from the ocean … → 'ocean water evaporating'; Clouds form and rain falls on a mountain … → 'rain on mountain'; Rain soaks into the soil and roots take it in … → 'rain soaking into soil'; The rest runs in a river back to the sea … → 'river to the sea'. Set each stage's figure: { kind: 'icon', icon: … }.",
@@ -1466,7 +1447,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'stars',
     pages: ['s.5.shadows-day-night~season-stars'],
     status: 'placed',
-    gallery: ['g.r3h-season-stars'],
+    gallery: [],
     uses: '"kind":"stars"',
     notes:
       "Orion, Taurus, Scorpius, Cygnus, Big Dipper, Cassiopeia → each constellation's star pattern (points and lines); NEW card figure 'stars'. DRAWN: card figure {kind:'stars', constellation} with constellation = the card label: 'Orion', 'Taurus', 'Scorpius', 'Cygnus', 'Big Dipper', 'Cassiopeia' (catalog star positions, north up and east on the left as seen looking up, dots sized by brightness).",
@@ -1477,7 +1458,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.6.cells'],
     status: 'placed',
-    gallery: ['g.r3h-cells'],
+    gallery: [],
     uses: '"icon":"paramecium"',
     notes:
       "Bacterium in yogurt → existing cell figure {kind:'cell', type:'bacterium', shape:'rod'}; Amoeba from a pond → an amoeba with pseudopods under a microscope; Paramecium → a slipper-shaped paramecium with cilia; Yeast that raises bread → oval yeast cells, one budding; Elodea water plant → an Elodea sprig; Grain of quartz sand → an angular sand grain under a microscope; Air bubble on a slide → a round air bubble with a dark rim under a microscope; Salt crystal → a cube-shaped salt crystal; Human → existing icon 'person'. DRAWN (icons, group H): Bacterium in yogurt → {kind:'cell', type:'bacterium', shape:'rod'}; Amoeba from a pond → icon 'amoeba'; Paramecium → icon 'paramecium'; Yeast that raises bread → icon 'budding yeast'; Elodea water plant → icon 'elodea sprig'; Grain of quartz sand → icon 'quartz sand grain'; Air bubble on a slide → icon 'air bubble on a slide'; Salt crystal → icon 'salt crystal'; Human → icon 'person'. The microscope ones are drawn in a lit microscope field.",
@@ -1488,7 +1469,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.6.cell-organelles~plant-animal'],
     status: 'placed',
-    gallery: ['g.r3h-plant-animal', 'g.r3h-animal-parts'],
+    gallery: [],
     uses: '"highlight"',
     notes:
       "Cell wall, Chloroplasts, One large central vacuole (plant); Nucleus, Cell membrane, Cytoplasm, Mitochondria (animal) → the existing 'cell' card figure with that part outlined; NEW option highlight. DRAWN: option highlight on the cell card figure (plant: 'wall' | 'chloroplasts' | 'vacuole' | 'nucleus' | 'membrane' | 'cytoplasm' | 'mitochondria'; animal: the last four). Use type 'plant' on every card so the picture does not give the answer: Cell wall → {kind:'cell', type:'plant', highlight:'wall'}; Chloroplasts → 'chloroplasts'; One large central vacuole → 'vacuole'; Nucleus → 'nucleus'; Cell membrane → 'membrane'; Cytoplasm → 'cytoplasm'; Mitochondria → 'mitochondria'.",
@@ -1499,7 +1480,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.6.body-systems~levels'],
     status: 'placed',
-    gallery: ['g.r3h-body-levels'],
+    gallery: [],
     uses: '"icon":"circulatory system"',
     notes:
       "Cell: one heart muscle cell → existing 'cell' figure {type:'animal', shape:'long'}; Tissue: a sheet of heart muscle cells → a sheet of long muscle cells side by side; Organ: the heart → existing card figure {kind:'heart'}; Organ system: the heart, blood vessels and blood → a torso outline with the heart and red and blue vessels; Organism: a whole person → existing icon 'person'. DRAWN (icons, group H): Cell: one heart muscle cell → {kind:'cell', type:'animal', shape:'long'}; Tissue: a sheet of heart muscle cells → icon 'heart muscle tissue'; Organ: the heart → {kind:'heart'}; Organ system: the heart, blood vessels and blood → icon 'circulatory system'; Organism: a whole person → icon 'person'.",
@@ -1510,7 +1491,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'map',
     pages: ['s.6.weather-fronts~air-masses'],
     status: 'placed',
-    gallery: ['g.r3h-air-masses'],
+    gallery: [],
     uses: '"area":"northAmerica"',
     notes:
       "each air-mass card (northern Canada, Arctic lands, North Pacific, North Atlantic, Gulf of Mexico, Caribbean, northern Mexico, desert Southwest) → a North America outline with the source region shaded; NEW card figure 'map' with a region. DRAWN: card figure {kind:'map', area:'northAmerica', region}. northern Canada → 'northern canada'; Arctic lands → 'arctic lands'; North Pacific → 'north pacific'; North Atlantic → 'north atlantic'; Gulf of Mexico → 'gulf of mexico'; Caribbean Sea → 'caribbean sea'; northern Mexico → 'northern mexico'; desert Southwest → 'desert southwest'.",
@@ -1521,7 +1502,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.6.weather-fronts~forecast'],
     status: 'placed',
-    gallery: ['g.r3f-forecast'],
+    gallery: [],
     uses: '"icon":"barometer falling"',
     notes:
       "The barometer is falling fast → a barometer dial, needle moving down; The barometer is rising → a barometer dial, needle moving up; A low-pressure center is moving in → a red L with an arrow; A high-pressure center is overhead → a blue H; A cold front is a few hours away → a blue cold-front line with triangles pointing at a town dot; Warm, humid air is rising up a mountainside → air arrows rising up a mountain slope; Dry air is sinking over the area → air arrows sinking over flat land. Drawn (weather-map conventions: red L, blue H, gray isobars, a blue cold-front line with its triangles on the side it moves toward; a barometer's low readings on the left, high on the right): each card gets figure: { kind: 'icon', icon }: The barometer is falling fast → 'barometer falling' (the needle has swung left of the brass set needle, a curved arrow and a down arrow); The barometer is rising → 'barometer rising' (swung right, an up arrow); A low-pressure center is moving in → 'low pressure center' (a red L in its isobars, an arrow toward a town dot); A high-pressure center is overhead → 'high pressure center'; A cold front is a few hours away → 'cold front near town' (the triangles point at the town dot); Warm, humid air is rising up a mountainside → 'air rising up mountain'; Dry air is sinking over the area → 'air sinking over land' (arrows sinking and spreading out over flat land); A cold front passed last night and the wind is from the northwest (not requested) → 'cold front past town' (the front east of the town, moving away, and a wind arrow from the northwest, with a north arrow)",
@@ -1532,7 +1513,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'map',
     pages: ['s.6.plate-tectonics~boundaries'],
     status: 'placed',
-    gallery: ['g.r3h-boundaries'],
+    gallery: [],
     uses: '"pin"',
     notes:
       "each place (Mid-Atlantic Ridge, Iceland, East African Rift, Himalayas, Andes Mountains, Mariana Trench, Mount St. Helens, San Andreas Fault, North Anatolian Fault) → a small world map with a pin at the place, no plate boundaries drawn; NEW card figure 'map' with a point. DRAWN: card figure {kind:'map', area, pin:[lon, lat]}, no boundaries drawn. area 'world': Mid-Atlantic Ridge [-42, 30]; Iceland [-19, 65]; East African Rift [36.5, 0]; Himalayas [84, 28.5]; Andes Mountains [-69, -20]; Mariana Trench [142.2, 11.3]; North Anatolian Fault in Turkey [35, 40.8]. area 'northAmerica' (the two are close on a world map): Mount St. Helens [-122.2, 46.2]; San Andreas Fault [-120.5, 35.5].",
@@ -1543,7 +1524,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'icon',
     pages: ['s.6.rock-cycle~sandstone'],
     status: 'placed',
-    gallery: ['g.r3e-sandstone'],
+    gallery: [],
     uses: '"icon":"granite crumbling"',
     notes:
       "Granite on a mountain weathers into sand grains → a granite peak crumbling into grains; Rain and rivers carry the sand downhill → a river carrying sand down a slope; The sand settles in layers → sand layers on a lake floor under water; New layers pile on top and squeeze the sand → a stack of layers with down arrows; Minerals glue the grains into sandstone → existing rock figure {kind:'rock', texture:'grains'}. Drawn: Stage label → figure: Granite on a mountain weathers into sand grains → icon 'granite crumbling'; Rain and rivers carry the sand downhill → icon 'river carrying sand' (the same mountain); The sand settles in layers on a lake or sea floor → icon 'sand settling in lake'; New layers pile on top and squeeze the sand → icon 'layers squeezing sand' (the same lake cut-away); Minerals glue the grains into sandstone → { kind: 'rock', texture: 'grains' } (existing).",
@@ -1554,7 +1535,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'dotPlot',
     pages: ['m.6.center-spread~mean-or-median'],
     status: 'placed',
-    gallery: ['g.r3h-mean-median'],
+    gallery: [],
     uses: '"kind":"dotPlot"',
     notes:
       "each data-set card (2, 3, 3, 4, 40; 1, 50, 52, 53, 55; 20, 25, 30, 25, 180; 10–14; heights; highs) → a small dot plot of the values; NEW card figure 'dotPlot'. DRAWN: card figure {kind:'dotPlot', values} with the card's values: [2, 3, 3, 4, 40]; [1, 50, 52, 53, 55]; [20, 25, 30, 25, 180]; [10, 11, 12, 13, 14]; [150, 152, 151, 153, 149]; [21, 22, 20, 23, 22]. The pay card gives no numbers: leave it without a figure.",
@@ -1565,7 +1546,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'tenFrame',
     pages: ['m.K.add-sub-10~take-away'],
     status: 'placed',
-    gallery: ['g.ten-frame-take-away', 'g.ten-frame-take-away-all'],
+    gallery: ['g.ten-frame-take-away'],
     uses: '"takeAway":true',
     notes:
       "Picture: tenFrame + NEW option takeAway: true. Why: K take-away is drawn by crossing out; open counters read as adding. Drawn (round 3, group I): representation { kind: 'tenFrame', first: 'l', second: 't', total: 's', takeAway: true }. The t counters are filled and crossed out after the l left; the sentence under it reads s − t = l.",
@@ -1576,7 +1557,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'tenFrame',
     pages: ['m.1.add-sub-20~take-from-ten'],
     status: 'placed',
-    gallery: ['g.ten-frame-take-from-ten', 'g.ten-frame-take-from-ten-edge'],
+    gallery: [],
     uses: '"crossOut":"b"',
     notes:
       "Picture: tenFrame first:10, second:'o', total:'c', frames:2 + NEW option crossOut:'b'. Why: The page teaches \"take from the ten\"; the current frame never shows the ten being broken. Drawn (round 3, group I): representation { kind: 'tenFrame', first: 10, second: 'o', total: 'c', frames: 2, crossOut: 'b' }. The ten and the o ones are solid counters, the last b of the ten crossed out; the sentence reads 10 − b = r, r + o = a (from the counters). Tapping a counter in the ten crosses out from it to the end (sets b); a ✕ slider sets b. pictureLabels can drop r (the picture says it).",
@@ -1587,7 +1568,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'baseTen',
     pages: ['m.2.add-sub-1000~subtract'],
     status: 'placed',
-    gallery: ['g.base-ten-take-away', 'g.base-ten-take-away-1000'],
+    gallery: ['g.base-ten-take-away'],
     uses: '"takeAway":"b"',
     notes:
       "Picture: baseTen + NEW option takeAway:'b'. Why: IM draws the crossed-out blocks; the current picture shows only a. Drawn (round 3, group I): representation { kind: 'baseTen', groups: ['a'], takeAway: 'b', controls: [{ var: 'a', steps: [1, 10, 100] }, { var: 'b', steps: [1, 10, 100] }] }. The row shows a after any trade (a hundred as 10 more rods, a ten as 10 more cubes, boxed), the blocks of b faded and crossed out; under it: the trades, what is crossed out and a − b = c. pictureLabels can drop b and c.",
@@ -1598,7 +1579,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'pictureGraph',
     pages: ['m.1.data-3-categories'],
     status: 'placed',
-    gallery: ['g.picture-graph-fruit', 'g.fruit-icons'],
+    gallery: ['g.picture-graph-fruit'],
     uses: '"icon":"apple"',
     notes:
       "Picture: pictureGraph with icons matching the categories (NEW icon values 'apple', 'banana', 'grapes'). Why: The values say Apple/Banana/Grapes but the columns draw shapes. Drawn (round 3, group I): pictureGraph columns take any card icon. Apple → { var: 'c', icon: 'apple' }, Banana → { var: 's', icon: 'banana' }, Grapes → { var: 't', icon: 'grapes' } (new card icons 'apple', 'banana', 'grapes', also usable on cards).",
@@ -1609,7 +1590,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'pictureGraph',
     pages: ['s.2.habitats~pond-count'],
     status: 'placed',
-    gallery: ['g.picture-graph-pond'],
+    gallery: [],
     uses: '"icon":"frog"',
     notes:
       "Picture: pictureGraph with icon accepting CardIcon names: 'frog', 'fish', 'grasshopper'. Why: A shape key is arbitrary for Grade 2. Drawn (round 3, group I): the existing card icons in the columns. Frogs → { var: 'f', icon: 'frog' }, Fish → { var: 'h', icon: 'fish' }, Insects → { var: 'i', icon: 'grasshopper' }.",
@@ -1631,7 +1612,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'animal',
     pages: ['s.1.structures-function~animal'],
     status: 'placed',
-    gallery: ['g.r3j-animal'],
+    gallery: [],
     uses: '"drawing":"animal"',
     notes:
       "Picture: NEW explore figure animal (a bear for eyes, ears, fur and claws, plus a turtle for the shell). Why: Word buttons only; a shell needs a second animal. Drawn: on the page's `parts` figure add `drawing: 'animal'`: a bear (Eyes, Ears, Fur, Claws) and a turtle (Shell); part names must be those five (any capitals).",
@@ -1642,7 +1623,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'figure',
     pages: ['s.1.offspring'],
     status: 'placed',
-    gallery: ['g.r3j-offspring-cat'],
+    gallery: [],
     uses: '"kind":"offspring"',
     notes:
       "Picture: NEW sort header figure: the parent cat and the kitten. Why: Cards like \"Gray fur, not orange\" can't be sorted without seeing the two animals. Drawn: add to the sort `header: { kind: 'offspring', animals: [{ animal: 'cat', label: 'Mother', fur: 'orange' }, { animal: 'cat', label: 'Kitten', young: true, fur: 'gray', nosePatch: true }] }` (layouts/animalFigures.tsx; drawn above the cards).",
@@ -1653,7 +1634,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'figure',
     pages: ['s.1.offspring~deer'],
     status: 'placed',
-    gallery: ['g.r3j-offspring-deer'],
+    gallery: [],
     uses: '"kind":"offspring"',
     notes:
       "Picture: NEW sort header figure: a doe, a buck with antlers and a spotted fawn. Why: \"White spots on its back\" and \"Has no antlers yet\" need the picture. Drawn: add to the sort `header: { kind: 'offspring', animals: [{ animal: 'deer', label: 'Doe' }, { animal: 'deer', label: 'Buck', antlers: true }, { animal: 'deer', label: 'Fawn', young: true, spots: true }] }`.",
@@ -1675,7 +1656,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'plantHeight',
     pages: ['s.2.plant-growth-investigation~weeks'],
     status: 'placed',
-    gallery: ['g.r3j-plant-height'],
+    gallery: [],
     uses: '"kind":"plantHeight"',
     notes:
       "Picture: NEW observe figure plantHeight (like shadowStick). Why: Ties the bars to the plant being measured. Drawn: add `figure: { kind: 'plantHeight' }`; the ruler runs 0 to the page's max (30 cm) from the soil.",
@@ -1686,7 +1667,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'rounding',
     pages: ['m.3.rounding~estimate'],
     status: 'placed',
-    gallery: ['g.rounding-two-sum', 'g.rounding-two-sum-edge'],
+    gallery: ['g.rounding-two-sum'],
     uses: '"estimate":"e"',
     notes:
       "Picture: rounding + NEW option second: {value:'b', rounded:'y'} (two lines stacked; the first driven by a and x). Why: The tape shows only the exact numbers, so the rounding that makes the estimate never appears (IM uses number lines). Drawn (round 3, group I): representation { kind: 'rounding', value: 'a', rounded: 'x', to: 10, second: { value: 'b', rounded: 'y', estimate: 'e' } } (lower and upper are now optional: the picture works out the ends). Caption: a rounds to x. b rounds to y. Estimate: x + y = e. Both points drag. pictureLabels can drop x, y and e.",
@@ -1697,7 +1678,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'rounding',
     pages: ['m.3.rounding~estimate-difference'],
     status: 'placed',
-    gallery: ['g.rounding-two-difference'],
+    gallery: [],
     uses: '"minus":true',
     notes:
       "Picture: rounding + the same second option (a → x, b → y). Why: Same reason as ~estimate. Drawn (round 3, group I): representation { kind: 'rounding', value: 'a', rounded: 'x', to: 10, second: { value: 'b', rounded: 'y', estimate: 'e', minus: true } }. Caption ends Estimate: x − y = e.",
@@ -1708,7 +1689,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'polygon',
     pages: ['m.3.perimeter~equal-sides'],
     status: 'placed',
-    gallery: ['g.polygon-equal-sides', 'g.polygon-equal-sides-8'],
+    gallery: ['g.polygon-equal-sides'],
     uses: '"side":"s"',
     notes:
       "Picture: polygon sides 'n' + NEW option side: 's', with around 'P'. Why: A stop-sign item gives one side and asks for the perimeter. Drawn (round 3, group I): representation { kind: 'polygon', sides: 'n', side: 's', around: 'P' }. Every side is labeled with s (with its unit), and under the name: Perimeter: n × s = P all the way around. A slider for s joins the one for n. pictureLabels can drop s and P.",
@@ -1719,7 +1700,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'pictureGraph',
     pages: ['m.3.scaled-graphs~picture-graph'],
     status: 'placed',
-    gallery: ['g.picture-graph-half', 'g.picture-graph-half-10'],
+    gallery: [],
     uses: '"half":true',
     notes:
       "Picture: pictureGraph + NEW option half: true, and one icon for every column. Why: NAEP uses half pictures and a single icon with a key. Drawn (round 3, group I): pass half: true with key: 'k' and one icon for all three columns (icon: 'circle' on p1, p2, p3). The key shows the icon once, = k, then half an icon = k ÷ 2 (half of k); a half picture's count reads 3 1/2; tapping a column's top picture takes half away. A graph of 9–10 rows now keeps 44 pt pictures so it fits a phone with its inputs.",
@@ -1741,7 +1722,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'body',
     pages: ['s.4.internal-structures'],
     status: 'placed',
-    gallery: ['g.r3j-body'],
+    gallery: [],
     uses: '"drawing":"body"',
     notes:
       "Picture: explore 'bodySystems' in a Grade 4 mode, or 'parts' + NEW body outline. Why: The 'parts' figure is only text buttons; NAEP labels parts on a drawing of a body. Drawn: a new body outline rather than a bodySystems mode (the page is a `parts` figure with jobs): add `drawing: 'body'` to its `parts` figure. Part names must be Brain, Heart, Lungs, Stomach, Bones, Skin (any capitals).",
@@ -1752,7 +1733,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'ramp',
     pages: ['s.4.energy-speed~ramp'],
     status: 'placed',
-    gallery: ['g.r3j-ramp'],
+    gallery: [],
     uses: '"kind":"ramp"',
     notes:
       "Picture: observe figure NEW ramp (like shadowStick). Why: The link between release height and distance is the lesson; the page has no figure. Drawn: add `figure: { kind: 'ramp', heights: [5, 10, 15, 20, 25] }` (a release height in cm per column; the harness checks each matches its column label).",
@@ -1763,7 +1744,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'tape',
     pages: ['m.6.ratios~three-parts'],
     status: 'placed',
-    gallery: ['g.ratio-tape-three-parts', 'g.ratio-tape-three-edge'],
+    gallery: [],
     uses: '"ratio":["a","b","c"]',
     notes:
       "Picture: tape (ratio) + NEW option: a third bar (ratio: ['a','b','c'], amounts: ['x','y','z']). Why: The current spec draws only two parts, so the third part is missing (IM part-part-whole tapes). Drawn (round 3, group I): the ratio tape takes three parts. representation { kind: 'tape', ratio: ['a', 'b', 'c'], unit: 'u', amounts: ['x', 'y', 'z'], total: 't' }: three bars of boxes worth u, each bar's amount beside it, and the total bracketed to the right of all three (in all). The caption reads a : b : c makes n equal parts, each worth u. Total: t. Page bug, not the picture: the page's own sampling test fails for 8 of SEED=1–20 (e.g. SEED=6 MODULE_IDS=m.6.ratios~three-parts: \"t cleared although it fits the newer inputs\", givens t=600000, c=11, z=200000), on the lesson branch too; the default seed passes.",
@@ -1774,7 +1755,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'grid100',
     pages: ['m.5.decimal-operations~times-decimal'],
     status: 'placed',
-    gallery: ['g.grid-product', 'g.grid-product-9', 'g.grid-product-area'],
+    gallery: [],
     uses: '"product":["a","b"]',
     notes:
       "Picture: grid100 + NEW option product: ['a','b'] (keep areaModel when a factor is 1 or more). Why: IM: \"Shade the diagram to represent 0.7 × 0.4\" on a 10 × 10 grid. Drawn (round 3, group I): representation { kind: 'grid100', percent: 'p', product: ['a', 'b'] }. With both factors in tenths below 1: a's tenths as columns, b's as rows, the overlap solid; caption 4 tenths × 3 tenths = 12 hundredths. 0.4 × 0.3 = 0.12. A factor of 1 or more (or past tenths) draws the area model of a and b instead, so the page keeps one representation. Tapping a square sets both factors.",
@@ -1785,7 +1766,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'placeValueChart',
     pages: ['m.6.multi-digit-decimals~add-subtract'],
     status: 'placed',
-    gallery: ['g.place-value-sum', 'g.place-value-sum-edge'],
+    gallery: [],
     uses: '"plus":"b"',
     notes:
       "Picture: placeValueChart + NEW option total: 's' (drop compare). Why: compare marks where a and b differ, which isn't adding, and the sum isn't drawn. Drawn (round 3, group I). Field names: the second addend is plus (total alone could not name it): representation { kind: 'placeValueChart', value: 'a', plus: 'b', total: 's', decimals: 3 } (no compare). a and b are stacked by place with the points lined up, a rule, then s; places before a number's first digit are blank. Caption: a + b = s, then The points line up: tenths under tenths, hundredths under hundredths. Eight columns now fit a phone in one row.",
@@ -1796,7 +1777,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'scale',
     pages: ['s.5.conservation-mass~fizz'],
     status: 'placed',
-    gallery: ['g.scale-before-after', 'g.scale-before-after-edge'],
+    gallery: ['g.scale-before-after'],
     uses: '"before":"B"',
     notes:
       "Picture: scale + NEW option before: 'B' (two dials). Why: The question is two readings on a scale; a waterfall chart is too abstract. Drawn (round 3, group I): representation { kind: 'scale', items: ['d', 'v', 'c'], total: 'A', before: 'B', max: 500 }. Two scales: Before (a cup of vinegar, baking soda beside it) and After the fizz (bubbles rising out, labelled B − A of gas), each dial with its reading under it. Caption: B − A = g. That is the gas that escaped. pictureLabels can drop B.",
@@ -1807,7 +1788,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'scale',
     pages: ['s.5.gravity-down~spring-scale'],
     status: 'placed',
-    gallery: ['g.spring-scale', 'g.spring-scale-20'],
+    gallery: [],
     uses: '"hanging":true',
     notes:
       "Picture: scale (count 'n', each 'e', total 'p') + NEW option hanging: true (a spring scale with a hook, in N). Why: The use line asks how hard gravity pulls, read on a spring scale. Drawn (round 3, group I): representation { kind: 'scale', count: 'n', each: 'e', total: 'p', max: 10, hanging: true }. A spring scale hanging from a bar, marked 0–max in N, the spring stretched to the pointer at p and the reading beside it; n washers hang from the hook on a wire loop. A pull past max extends the scale to the next 10. Caption: n washers × e = p.",
@@ -1818,7 +1799,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'observe',
     pages: ['s.5.shadows-day-night'],
     status: 'placed',
-    gallery: ['g.r3j-shadow-day'],
+    gallery: [],
     uses: '"sides"',
     notes:
       "Picture: observe figure {kind:'shadowStick', stick: 100} + side option if needed (morning and afternoon shadows point opposite ways). Why: The shadow's length through the day is what the page records. Drawn: add `figure: { kind: 'shadowStick', stick: 100, sides: ['west', 'west', 'north', 'east', 'east'] }` (one per column). West and east shadows are drawn facing north (West left, East right); the noon shadow points north, drawn facing west (South left, North right); the title is the column's time, not “noon”.",
@@ -1829,7 +1810,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'flashlight',
     pages: ['s.5.sun-star-brightness'],
     status: 'placed',
-    gallery: ['g.r3j-flashlight'],
+    gallery: [],
     uses: '"kind":"flashlight"',
     notes:
       "Picture: NEW observe figure flashlight (reuse the flashlights drawing). Why: The recorded quantity is a lit circle's width. Drawn: add `figure: { kind: 'flashlight', distances: [10, 20, 30, 40, 50] }` (cm, one per column): the side view with the beam, and the lit circle face on, both to one scale.",
@@ -1840,7 +1821,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'cup',
     pages: ['s.5.particles-matter~evaporation'],
     status: 'placed',
-    gallery: ['g.r3j-cup'],
+    gallery: [],
     uses: '"kind":"cup"',
     notes:
       "Picture: NEW observe figure cup. Why: Seeing the level drop is the evidence. Drawn: add `figure: { kind: 'cup' }`; the cup is the page's max tall (100 mm) with a mm scale, the first column's level dashed.",
@@ -1852,7 +1833,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'coinRow',
     pages: ['m.2.money~one-coin'],
     status: 'placed',
-    gallery: ['g.r4a-coins', 'g.r4a-coins-ten-quarters', 'g.r4a-coins-pennies'],
+    gallery: ['g.r4a-coins'],
     notes:
       'Urgency: high. Weak now: Coins are ~28 px grey discs with a tiny unreadable "10¢"; dimes, nickels and quarters look alike, penny isn\'t copper; row small and alone with empty width. Redo: Each coin as metal (Metal, light and dark tokens): penny copper, nickel/dime/quarter silver, true size ratios (dime smallest, quarter largest, ~56 px quarter); milled rim, raised inner ring, simple embossed profile, value in chart.value bold on the face; FloorShadow. Wrap rows of 5, grouped in fives. Keep the caption "3 dimes: 30¢"; add running totals (10¢, 20¢, 30¢) under each coin so the skip-count shows. Drawn (round 4, group A): Flat metal coins at true size ratios (quarter 58 px, dime 43 px, penny copper, the rest silver): lit rim, sunk field, ridged edge on dimes and quarters, a faint profile in relief, the value bold on the face, a drop shadow on the table (flat discs, so no floor ellipse). Rows of five; the running total (10¢, 20¢, 30¢) under each coin, the last one bold. Caption kept. Harness: a coinRow check (a real coin value; the count times the value is the last running total). No page change.',
   },
@@ -1872,7 +1853,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'position',
     pages: ['m.K.position-words'],
     status: 'placed',
-    gallery: ['g.r4a-position', 'g.r4a-position-behind'],
+    gallery: ['g.r4a-position'],
     notes:
       'Urgency: high. Weak now: "Above" draws the ball touching the box (reads as "on"); box is a pale wireframe cube, ball a flat disc; thin floor line with a large empty area below. Redo: Cardboard box (kraft, flaps, tape, TopLight) and a red rubber ball (Ball shading, FloorShadow). "Above": clear gap with a dashed drop shadow on the lid. Behind: partly hidden by the box. In front: overlaps it, lower and larger. Add a small child or teddy as the viewer so in front/behind have a point of view. Shrink the empty lower third. Drawn (round 4, group A): A kraft cardboard box (taped flaps, printed arrows, lit front, shaded side) on a small wooden table, and a red rubber ball (Ball shading, seam, shadow where it rests). Above: a clear gap over the lid with a dashed shadow on it. Below: on the floor under the table. Beside: on the table next to the box. In front of: lower on the table, larger, over the box front. Behind: at the back, smaller, mostly hidden by the box. A child seen from behind at the front left is the viewer. Table and floor fill the width; the empty lower third is gone. Drawn in layouts/PositionScene.tsx. No page change.',
   },
@@ -1892,7 +1873,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'lightPath',
     pages: ['s.1.light-shadows', 's.4.vision-light'],
     status: 'placed',
-    gallery: ['g.r4b-light-path', 'g.shadows'],
+    gallery: ['g.r4b-light-path'],
     notes:
       'Urgency: high. Weak now: Lamp is a dot with tick rays, apple a grey circle, eye an almond outline; thin arrows; small floating labels. Redo: Desk lamp (Metal shade, bulb with warm radial glow), red apple (Ball shading, stem, leaf, cast shadow on a tabletop), eye with iris and lashes. Rays as thicker warm-yellow beams with arrowheads. Real dark tint for "Dark room", a block or hand for "Block the light", a silvered mirror. Shadow length changes with low vs high lamp. Labels under each object in chart.label. Drawn (round 4, group B): a green metal desk lamp (Sheen shade, bulb with a warm radial glow when on) on a wooden tabletop, a red apple (Ball shading, stem, leaf, a shadow on the table away from the lamp) and an eye with a blue iris, lashes and brow that looks toward the light. Light as bold warm beams (a glow under an orange arrow). Dark room: the whole room shaded dark; hand: an open hand in front of the eye where the beam stops; mirror: a silvered mirror in a wooden frame above, placed where the angles in and out are equal, the eye looking up at it. Shadow scenes keep the exact geometry: a lamp on a stand (low or high), a wooden, clear-glass or frosted block, a plaster wall, the shadow on the floor and up the wall, the light\'s edge as a dashed warm beam. Labels under the table in chart.label, captions in chart.value. No page change.',
   },
@@ -1920,15 +1901,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.3.multiplication-properties~order',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4d-array',
-      'g.r4d-array-5x5',
-      'g.r4d-array-10x10',
-      'g.r4d-array-1x10',
-      'g.r4d-array-squares',
-      'g.r4d-array-turned-10',
-      'g.r4d-array-split-edge',
-    ],
+    gallery: ['g.r4d-array'],
     notes:
       'Urgency: high. Weak now: 3×4 array fills a quarter of the width, left of centre, ~90 px empty below (cell size comes from spec.max, not the rows shown); rows and columns unlabelled; thin grey frame looks like a selection box; square-cell mode a pale grid; resize handle floats off the corner. Redo: Size cells from the current rows and columns (cap ~44 px), centre, crop the canvas to the drawn height. Counters: a flat tray (TopLight card, BoxShadow) holding Ball counters in the two-colour-counter token with even gutters. Braces "3 rows" (left) and "4 in each row" (top) at chart.value. Faint flat tint on every other row. Square cells: crisp flat grid (strokeLight inner, stroke outline, chartFill tiles). Handle on the outer corner with a 44 px hit area and a faint ghost row/column. Keep the counter/square switch and max. Drawn (round 4, group D): cells sized from the rows and columns shown (at most 44 px; kept while dragging), the array centred and the canvas cropped. Counters are lit balls (highlight, the split part in chartSecond) in a plastic tray (BoxShadow, TopLight) with a faint band on every other row; squares a crisp flat grid (light inner lines, heavier outline; a split tints its two parts). Braces: "3 rows" at the left and "4 in each row" on top; with `sides` or a split the braces give the numbers (a split has one top brace per part), "?" in the highlight until known. Dashed ghost row and column where the next ones go; the handle on the tray corner. `turned` stacks the turned copy under the array when side by side would make the counters too small. The part products under a split are 13 px. No page change.',
   },
@@ -1946,21 +1919,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.K.living-needs',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4a-compare',
-      'g.r4a-compare-ten-none',
-      'g.r4a-compare-numerals',
-      'g.r4a-pencils',
-      'g.r4a-pencils-long',
-      'g.r4a-jars',
-      'g.r4a-jars-same',
-      'g.r4a-compare-cubes',
-      'g.r4a-compare-cubes-20',
-      'g.r4a-pencil-crayon',
-      'g.r4a-pencil-crayon-20',
-      'g.r4a-seeds',
-      'g.r4a-seeds-all',
-    ],
+    gallery: ['g.r4a-compare'],
     notes:
       'Urgency: high. Weak now: 18–20 px counters with empty dotted placeholders that look like missing content; no match lines, so "no partner" rests on a legend sentence; row names wrap in an 84 px column; heavy wrapping verdict; rows too close together. Redo: Each row a counting strip (TopLight card, FloorShadow) with Ball two-colour counters ≥ 28 px. Thin vertical match lines (chartMuted) between paired counters; extras unpaired under a light bracket "3 more". Drop placeholders or make them faint slots. Row names above each strip, full width. Verdict as two short equal-weight lines. 16 px between rows. Capacity and measurement pages draw the real object (cups, cubes) through the same component. Drawn (round 4, group A): One SVG: each row a counting strip (paper card, TopLight, shadow) with its name above the top strip and below the bottom one, so nothing sits between the strips but the match lines. Counters are Ball two-colour counters (top row blue, bottom row yellow, 28 px at 10 slots); thin chartMuted match lines join each pair; the extras sit under (or over) a light bracket, "3 more". Empty slots are faint dashed outlines, only as many as the values need (at least 10, then in fives, one spare to tap into, never past the variable\'s max). Cups are clear glass cups of water; cubes are snap cubes (shared with cubeTrains) under a real pencil (eraser, metal band, sharpened wood and lead), crayon (wax in a paper wrapper) or ribbon, exactly as long as its cubes, with a dashed guide where the shorter one ends. Verdict: two short lines of equal weight. The legend now says what the lines and bracket mean. One tap target per strip (the full strip, 44 px tall): the spot tapped sets the count, as before. No page change needed. Optional new field: object can be a pair, one per row; m.1.measure-nonstandard (pencil and crayon) should pass object: [\'pencil\', \'crayon\'] so its crayon row is drawn as a crayon (demo g.r4a-pencil-crayon). uses left unset because the other six pages do not pass it.',
   },
@@ -2004,15 +1963,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.divide-fractions~how-much-in-one',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4d-fit',
-      'g.r4d-fit-part',
-      'g.r4d-fit-less',
-      'g.r4d-fit-many',
-      'g.r4d-fit-tiny',
-      'g.r4d-fit-share',
-      'g.r4d-fit-share-past',
-    ],
+    gallery: ['g.r4d-fit'],
     notes:
       'Urgency: high. Weak now: Bar and axis in the top half with a blank strip at right; axis stops near 2/3 while the "1" tick floats alone; ~8 px grey brace label; dividend and group size unlabelled; faint, cut-short ghost for the rest of the group; unlabelled ticks. Redo: Flat. One continuous number line 0 → 1 (or the dividend\'s ceiling) with two labelled tick rows (dividend\'s unit above, group size below). Dividend as a filled bar labelled "2/3"; each group a bracket "1 group = 3/4"; the part group as a filled portion of a dashed full-group outline labelled "8/9 of a group" at chart.value. How-many-fit mode: number the groups ①②③ inside the bar. Fill the width, stack the parts vertically, drop the empty strip. Drawn (round 4, group D): the dividend is a bar sitting on one continuous number line that runs to the last whole the bar or the dashed group reaches. Under the line two labelled rows (both under it, so no label sits on the bar): the dividend\'s unit (0, 1/3, 2/3, 1; wholes only when crowded) with the dividend bold, then in the highlight where each group ends (3/4, 1 1/2, 2 1/4; thinned from the right). Groups inside the bar numbered in circles; the first bracketed "1 group = 3/4" above; the part group filled inside a dashed whole group, "8/9 of a group" inside it or bracketed above (labels that would touch stack higher). All labels 13–14 px; canvas height from what is drawn. `share` mode: taller bar, 13 px part labels, square brackets, cropped. No page change.',
   },
@@ -2022,7 +1973,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'pieChart',
     pages: ['s.5.earth-spheres~water-share'],
     status: 'placed',
-    gallery: ['g.r4f-water-pie', 'g.r4f-water-pie-edge', 'g.pie-chart'],
+    gallery: ['g.pie-chart'],
     uses: '"group":{"id":"f"',
     notes:
       "Urgency: high. Weak now: Colours carry the wrong meaning (salt water lavender, frozen fresh water tan like sand); the 2 % and 1 % slices are unlabelled hairlines; tiny label at a slice edge; no percentages; key below as separate text. Redo: Flat. Salt water ocean blue, frozen ice white-cyan with an ink edge, liquid fresh water blue-green, each named in the legend. Every slice labelled on a leader to an outside label (\"Frozen fresh water · 20 L · 2%\"). An exploded callout (small bar or zoomed wedge) breaking the 3 % fresh water into frozen and liquid. Pie ~75 % width, labels at chart.value. Drawn (round 4, group F): flat pie, 54 % of the width with a label column beside it (a 75 % pie leaves no room at 390 px for outside labels that say name, amount and percent). The biggest part (salt water) is named inside on a card plate: name, liters, percent. Every other wedge has a leader from its rim to a swatch, its name and \"20 liters · 2%\" at 12–13 px. New optional fields: `colors` (palette names, one per part) and `group` ({ id, parts }): the group (fresh water) turns to face the labels, is pulled out of the pie, and its parts are bracketed under \"Fresh water · 30 liters · 3%\" (harness: group parts add to the group value). New tokens ice (white-cyan, ink edge) and freshWater (blue-green); salt water uses waterDeep. Without `colors` the parts take distinct block colors, each named by its label. Page change: s.5.earth-spheres~water-share passes representation: { kind: 'pieChart', parts: ['s', 'i', 'l'], total: 'w', colors: ['waterDeep', 'ice', 'freshWater'], group: { id: 'f', parts: ['i', 'l'] } } (its pictureLabels ['f'] can then go: the picture shows fresh water).",
@@ -2033,7 +1984,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'cubeTrains',
     pages: ['m.1.addition-properties'],
     status: 'placed',
-    gallery: ['g.r4a-trains', 'g.r4a-trains-20', 'g.r4a-trains-zero'],
+    gallery: ['g.r4a-trains'],
     notes:
       'Urgency: high. Weak now: Flat rectangles split into cells, not interlocking cubes; the grouped pair is marked by a heavy black outline that looks like a text box; small grey row labels; no bracket for what is added first; different left edges. Redo: Real snap cubes: raised face (paint.tsx edge light and shade), a nub on top, 1 px gaps, token colour per addend. Every train on the same left edge. "Added first" as a translucent primary band behind the grouped cubes plus a bracket under them labelled with the part\'s sum. Row labels 14 px ink above each train. Faint dashed guide at the right end showing all trains end at the same total. Drawn (round 4, group A): Snap cubes (raised face with edge light and shade, a nub on top, 1 px gaps), one colour per addend, every train on the same left edge and sized from the longest train (up to 28 px cubes). The part added first sits on a translucent primary band with a bracket under it labelled with its number sentence (3 + 8 = 11). Row labels 14 px ink above each train; a dashed guide at the right end where every train ends. No page change.',
   },
@@ -2093,7 +2044,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'seriesCircuit',
     pages: ['he.engineering.circuits-1#0'],
     status: 'placed',
-    gallery: ['g.series-loop', 'g.series-loop-big'],
+    gallery: ['g.series-loop'],
     notes:
       'Urgency: high. Weak now: Review page (he.engineering.circuits-1#0) shows "Skill not found", so no screenshot. Source draws a line-segment schematic unlike the redrawn Circuit.tsx; drag cue only a hint line. Redo: Bring it to Circuit.tsx\'s standard, reusing its Chip and wire styling. Standard symbols with resistors at 2.5 px, battery with long and short plates and 14 px +/− marks, each resistor\'s value in a 13 px chip, a current arrow labelled "I = …", a visible DragHandle on each resistor chip. Optional small real-battery inset. The page is a college topic: open it at /course/he.engineering.circuits-1/topic/0. Drawn (round 4, group G): the loop in Circuit.tsx\'s copper wire (Chip now exported from Circuit.tsx with a size option); source as long (+) and short thick (−) plates with 14 px +/− marks; resistors as 2.5 px zigzags, each resistance on a 13 px chip above and its voltage drop on one below; chevrons on the wires and a filled accent current arrow labelled "I = …" beside the bottom wire, clockwise out of +; a DragHandle on the source and on each resistor body (not on the chips, so no label is covered). The caption states the loop with every number (V = V₁ + V₂ = … and I = V ÷ (R₁ + R₂) = …) and the drag hint. No real-battery inset: the schematic is what the college page teaches. No page change.',
   },
@@ -2114,7 +2065,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'pushes',
     pages: ['s.3.balanced-forces'],
     status: 'placed',
-    gallery: ['g.pushes', 'g.pushes-lopsided'],
+    gallery: ['g.pushes'],
     notes:
       'Urgency: medium. Weak now: Crate good, but arrows thin, same colour and same length for 20 N and 15 N, so the imbalance doesn\'t show; small grey captions on the floor line; empty width. Redo: Arrow length scaled to force (20 N visibly longer), ~6 px thick with filled heads, each side its own theme colour. Small hands or kids pushing at each tail. "net 5 N →" arrow above the crate in the accent when unbalanced, "=" marks when balanced. FloorShadow, wood floor line, captions in chart.label under each arrow. Drawn (round 4, group G): the crate on a planked wooden floor, a child leaning into each push with palms at the arrow\'s tail (blue shirt and arrow for the push to the right, orange for the push to the left). Arrows are 6 px with filled heads, on one scale set by the biggest value shown (so 20 N is exactly 4/3 of 15 N; spec.max no longer sets the scale), values in 13 px bold over each arrow and the names in 12 px under the floor. Above the crate: the extra push as an ink arrow on the same scale toward the way the crate moves, labelled with its name and value; when the pushes are equal, an "=" under "Balanced". The net arrow is ink, not the accent, so it isn\'t read as a third push beside the blue one. A push of 0 draws no child or arrow (checked by typing 50 and 0, and 30 and 30: demos can\'t hold a 0 with a unit). No page change.',
   },
@@ -2124,7 +2075,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'force',
     pages: ['s.8.newtons-laws'],
     status: 'placed',
-    gallery: ['g.force-crate', 'g.force-crate-heavy'],
+    gallery: [],
     notes:
       "Urgency: medium. Weak now: Mass tag covers the crate's brace; force arrow a thin black line with the handle floating at its tip; acceleration a faint dashed grey; 60 % of the frame empty above. Redo: Crate ~110 px, mass on a Tag below the top plank. Thick accent force arrow scaled to F with the handle on the arrowhead. Acceleration a solid secondary-colour arrow above the crate scaled to a, labelled in chart.label. FloorShadow, lightly textured floor, speed lines when a > 0. Cut the empty top margin. Drawn (round 4, group G): a 110 px crate on a hatched floor, the mass on a paper Tag below the top plank (13 px bold). The net force is a 6 px accent arrow with a filled head from the crate's face, its length F on its own scale; the handle sits on the shaft just behind the head so the head stays visible, and \"F = …\" rides over the arrow (past the handle when the arrow is short). The acceleration is a solid 4 px arrow in chartSecond above the crate, its length a, labelled in chart.label; speed lines trail the crate while a > 0. Each arrow's scale is a nice number just past its value (fixed while dragging; forceExtent and accelerationExtent now only set a floor near 0), so both arrows fill the width and stay proportional to F and a; the cart variant (ForceCart.tsx) is untouched. No page change.",
   },
@@ -2134,7 +2085,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'rockLayers',
     pages: ['s.3.adaptation-fossils~layers'],
     status: 'placed',
-    gallery: ['g.r4h-rock', 'g.r4h-rock-deep'],
+    gallery: ['g.r4h-rock'],
     notes:
       'Urgency: medium. Weak now: Fossils ~18 px, hard to see; "fish"/"shell" labels outside the right edge in tiny type; faint textures; flat green grass bar; no layer numbers to count. Redo: Cliff cross-section: sandstone, shale, limestone, clay each with a clear texture (cross-bedding, laminae, blocky joints) under TopLight; irregular grass and soil top with tufts. Fossils ~30 px in bone and shell colours with shading. Number each layer at the left in chart.label (1 at top). Leader-lined fossil labels at the right; bracket "4 layers apart" between the fossils.' +
       ' Drawn (round 4, group H): a cliff cut open, layers 22–36 px thick sized from the deeper fossil (not a fixed box), cycling sandstone (grains, cross-beds), shale (laminae), limestone (blocky joints), clay (soft bands), siltstone and mudstone under TopLight, each jutting or wearing back at the cliff face; soil with grass tufts on top; layer numbers 1 (top) to n at the left, 12 px bold. Fish skeleton up to 50 px and ribbed scallop up to 32 px in bone and shell colours, names 12 px bold at the right on leaders; a highlight bracket between the fossils with one tick per layer crossed and "4 layers apart" (the page value) at 13 px. No page change.',
@@ -2145,7 +2096,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'dotSet',
     pages: ['m.K.count-objects'],
     status: 'placed',
-    gallery: ['g.r4a-dots', 'g.r4a-dots-19'],
+    gallery: ['g.r4a-dots'],
     notes:
       'Urgency: medium. Weak now: Dots ~14 px, too small for a K counting page; scattered with lots of empty space; no count mark on touch; not clear they can be moved. Redo: Counters ~36 px (CounterDot two-tone, or ladybug/apple objects) with FloorShadow on a soft felt mat. A tapped dot gets a number badge (1, 2, 3 …) so "touch each once" shows. Subtle drag cue on the first dot. Keep Line/Rows/Circle arrangements exact and centred. Drawn (round 4, group A): Counters up to 38 px (Ball, a raised rim, a shadow each) on a green felt mat with stitched edges, sized from the count and the arrangement. Tap a counter to count it: it shows the number said (1, 2, 3 …); tapping the last one again takes it back, and once all are counted a tap starts over; a hint line says "Tap each dot once to count it." / "You counted 7.". Line, Rows and Circle stay exact and centred; Scattered uses 20 fixed spots each farthest from those before, so 19 counters never touch. No drag cue: the counters are not dragged (the arrangement buttons move them), so a drag cue would promise something the page does not do. Harness: a dotSet check (at most 20 counters). No page change.',
   },
@@ -2155,7 +2106,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'patternBlocks',
     pages: ['m.K.compose-shapes'],
     status: 'placed',
-    gallery: ['g.r4a-blocks', 'g.r4a-blocks-triangles', 'g.r4a-blocks-trapezoids'],
+    gallery: ['g.r4a-blocks'],
     notes:
       'Urgency: medium. Weak now: Glossy gradients on what should be flat plastic; colours off from standard pattern blocks; thick black seams; no tray or outline for the hexagon to fill. Redo: Standard colours (triangle green, rhombus blue, trapezoid red, hexagon yellow, square orange, thin rhombus tan); matte plastic with subtle TopLight and a 1 px lighter bevel, FloorShadow. Target hexagon as a dashed outline slot; pieces snap in with a thin dark seam. Small count badge per piece type. Drawn (round 4, group A): Matte classroom blocks (red trapezoid, blue rhombus, green triangle; the page uses only these three) with a faint light from above, a 1 px lighter bevel and thin dark seams, filling a dashed hexagon slot; empty slices stay dashed, extra blocks faded as before. A tray under the hexagon shows each block upright with a count badge. No page change.',
   },
@@ -2181,13 +2132,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.4.weathering',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4f-bars',
-      'g.r4f-bars-edge',
-      'g.r4f-bars-icons',
-      'g.r4f-bars-rain',
-      'g.r4f-bars-fixed',
-    ],
+    gallery: ['g.r4f-bars'],
     notes:
       "Urgency: medium. Weak now: Flat bars with heavy black outlines; value labels crowd the handles on the bar tops; small grey category labels and tiny axis numbers; right third wasted on one-row charts. Redo: Flat but crisp: 1 px darker-tone outline, gridlines at 0.5 opacity, a lighter 4 px grab lip on each bar top. Handle as a pill on the bar top with the value inside. chart.label for categories and axis numbers; widen bars to fill the width. Science pages: a small category icon under each label. Drawn (round 4, group F): flat bars with a 1 px edge in the bar's own darker tone (fill at 0.78), a lighter 4 px lip on each bar you can drag, grid lines at full opacity on numbered steps and 0.5 between; bars up to 68 % of their slot (100 px max) so two-bar charts fill the width. The handle is now a pill on the bar top with the value inside at 14 px (a grip, not a number, on readScale pages, where the height is the question); the 44 px touch area is unchanged. Category names at 12 px in ink, wrapped under their bar; scale numbers at 12 px; names start below a pill resting at 0. Bars you can't drag (s.4.weathering) are solid chartFill with a fine dashed edge and the value above. New optional per-bar field icon (a card icon under the name). No page change needed; optional icons for the science pages: s.1.sky-patterns sun / snow cloud; s.1.sound-vibration~drum drum / drum; s.2.habitats pond / sand dune; s.2.erosion-landforms~wall waves at cliff / rock wall at shore; s.2.pollination-dispersal~sock-walk sock / sock; s.3.magnets~chain paper clip / paper clip; s.3.adaptation-fossils~survive bird beak / bird beak; s.3.weather-climate rain cloud ×4; s.4.weathering gray rock / granite crumbling; e.g. bars: [{ var: 's', editable: true, icon: 'sun' }, …].",
   },
@@ -2204,15 +2149,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.3.two-step-problems~add-subtract',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4d-hops-tens',
-      'g.r4d-hops-tens-edge',
-      'g.r4d-hops-two-step',
-      'g.r4d-hops-two-step-edge',
-      'g.r4d-hops-add-add',
-      'g.r4d-hops-hundreds',
-      'g.r4d-hops-hundreds-edge',
-    ],
+    gallery: ['g.r4d-hops-tens'],
     notes:
       'Urgency: medium. Weak now: "Subtract tens" draws one hop of 30, not three hops of 10, so the strategy doesn\'t show; dashed black hops with no arrowheads; in the two-step problem +18 and −9 arcs overlap and "take away 9" sits below the axis; tiny tick labels. Redo: One arc per ten (plus the ones remainder) with filled arrowheads. Adding hops in the accent (solid), taking-away hops in a second token (dashed). Labels (+10, −9) on top of each arc in chart.label. Overlapping hops stack higher. Start and end as filled dots with bold numbers. chart.label for major ticks. Drawn (round 4, group D): each hop is one arc per `tick` (a ten; a hundred on the Grade 3 page) plus the rest, tens first, each with a filled arrowhead (`hopArcs.ts`, checked by the harness: the arcs chain from the start to the end, none longer than a tick). Adding hops solid in the highlight, taking-away hops dashed in a new token `hopBack` (orange-red, light and dark); a label on each arc ("−10", "+8") in 12 px bold in the hop\'s colour, or one label for the whole hop in a row above the arcs when the arcs are too narrow or a higher arc lands on them. A hop over a stretch an earlier hop covers arcs a level higher, clear of the lower labels. The line is zoomed to the stops (the ten below to the ten above, half a ten more where a stop sits on the end) instead of 0–100 or 0–1,000, ones (or tens) as minor ticks. Start and end are filled dots with bold 14 px numbers, the middle stop an open dot; tick numbers that would touch them are left out. No page change.',
   },
@@ -2222,7 +2159,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'unitTiles',
     pages: ['m.2.standard-length~two-units', 'm.2.standard-length~meters'],
     status: 'placed',
-    gallery: ['g.r4f-feet', 'g.r4f-feet-edge', 'g.r4f-meters', 'g.r4f-meters-edge'],
+    gallery: ['g.r4f-feet'],
     notes:
       'Urgency: medium. Weak now: "Object" is a flat bar with a handle; inch tiles ~3 px slivers; feet thin outlined pills; tiny row labels; nothing looks like a ruler or yardstick. Redo: Object as a real thing (wooden board or ribbon, texture, TopLight). A wooden ruler and yardstick beneath it with printed inch ticks, numbers every 1 or 6 in and foot joints. Alternate cream and tan per foot; group inch ticks per foot with "12 in" under each. Row labels above each strip in chart.label. Drawn (round 4, group F): the object is a satin ribbon (Sheen, notched end, BoxShadow) with the drag handle on its end; dashed guides drop from both its ends through both measures. Under it, one long wooden stick (reps/wood.tsx WoodStick: wood, grain, TopLight) marked in the small unit, each big unit in alternate wood and cream tones, ticks every inch (every 10 cm on the meter page), numbers every 3 or 6 in (every 100 cm) printed in ink on the wood, and "12 inches" / "100 centimeters" under each big unit. Then the big units as separate foot rulers or meter sticks laid end to end, each with faint inch or centimeter ticks and a paper tag "1 foot" / "1 meter". Row names with their values above each strip at 12 px bold. The drawing fits the object (at least one big unit wide), so 1 foot fills the width. No page change.',
   },
@@ -2232,7 +2169,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'wave',
     pages: ['s.4.wave-patterns', 's.4.wave-patterns~amplitude'],
     status: 'placed',
-    gallery: ['g.wave-rope', 'g.wave-rope-12', 'g.wave-amplitude', 'g.wave-amplitude-tall'],
+    gallery: [],
     notes:
       "Urgency: medium. Weak now: \"amplitude\" overlaps the curve at the first crest; handle overlaps the wavelength bracket end; gradient fill under an abstract wave, very thick halo; 50 cm bracket ends don't clearly sit on two crests. Redo: Flat and exact: a single 3 px accent line, no fill. Wavelength bracket above the crests, end ticks dropping exactly to two crest peaks. Amplitude as a vertical double arrow from the midline to a crest, labelled to its right. Handle on a crest clear of the bracket. Optional: a rope with a hand at the left on the plain-rope scene. Drawn (round 4, group G): flat and exact, a single 3 px accent line on a dashed middle line, no fill or halo. When the page has an amplitude, across and up share one scale (6 cm on a 40 cm wave is drawn 6/40 as tall as the wave is long; crests are capped at 70 px by narrowing the wave, not by stretching it), so the picture is true to the numbers; the rope page keeps a fixed height. The wavelength bracket sits above the first two crests with dashed ends dropping to their peaks (one whole wave from its start when only one wave is drawn), its value in 13 px bold over it. The amplitude is a two-headed arrow from the middle line to the crests' level, beside the wave's right end with a dashed guide from the last crest, labelled to its right (at a crest the label ran into the falling curve). The handle moved to the first trough, clear of the bracket: down for a bigger amplitude, sideways for the wavelength. No rope-and-hand scene. No page change.",
   },
@@ -2247,7 +2184,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.area-polygons~composite',
     ],
     status: 'placed',
-    gallery: ['g.r4e-parallelogram', 'g.r4e-triangle-tall', 'g.r4e-trapezoid', 'g.r4e-house-wide'],
+    gallery: ['g.r4e-parallelogram'],
     notes:
       'Urgency: medium. Weak now: Small parallelogram lower left, ~80 px blank above; tiny "h"/"b" labels; thick purple base reads as a selection; faint unlabelled completing rectangle, so "leaning keeps the area" isn\'t shown; tiny right-angle mark. Redo: Centre, ~85 % width, flat. Base as a dimension line with end ticks, "b = 8 cm" at chart.value; height as a dashed perpendicular with arrowheads, "h = 5 cm"; 10 px right-angle box. Parallelogram: cut-off triangle shaded chartSecond and repeated dashed on the other side (cut and move). Triangle: doubled into a faint ghost parallelogram. Trapezoid: bases labelled b₁ and b₂. Top-vertex handle with a visible sideways track. Drawn (round 4, group E): flat, centred, sized from the values (the frame holds still while dragging). Base as a dimension line with end ticks and extension lines, "b = 8 cm" at chart.value bold; height a dashed perpendicular with arrowheads at both ends, a 10 px square corner, and its label on a pill placed clear of every edge, diagonal and chip. Parallelogram (rearrange): the cut-off triangle shaded chartSecond and repeated dashed on the other side (either lean), caption "Move the yellow triangle to the other side: a rectangle 8 by 5". Triangle (double): the turned copy as a faint dashed ghost parallelogram, caption says the triangle is half. Trapezoid: b₁ below and b₂ above as dimension lines; the diagonal splits it into two tinted triangles with their areas on pills; the frame now fits the longer top (it used to run off the left edge). Top-vertex handle (top-right corner for parallelogram and trapezoid, so it no longer covers the height) slides along a dashed track with arrowheads, parallel to the base, kept inside the canvas. House: walls and roof tinted apart, wall height and roof height as one stacked dimension line on the right, the roof height a dashed perpendicular; its caption no longer talks of leaning (the house has no handle). No page change.',
   },
@@ -2265,14 +2202,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.6.rock-cycle~layer-time',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4d-dnl',
-      'g.r4d-dnl-many',
-      'g.r4d-dnl-whole',
-      'g.r4d-dnl-metric',
-      'g.r4d-dnl-metric-edge',
-      'g.r4d-dnl-layer',
-    ],
+    gallery: ['g.r4d-dnl'],
     notes:
       'Urgency: medium. Weak now: Thin lines, small tick numbers; grey ~9 px axis titles in odd places; paired ticks not joined; at $0.00 … $7.50 the lower labels crowd. Redo: Flat. Both lines strokeHeavy; axis titles left-aligned at chart.value at the start of each line. Faint vertical guides (chartGrid, dashFine) joining paired ticks; the current pair in chartHighlight with both numbers bold in a pill. Thin to every 2nd tick when labels would collide; drop ".00" when all values are whole. Handle a 44 px knob on a shared vertical rule. Drawn (round 4, group D): both lines strokeHeavy with 2 px ticks; the axis titles (13 px, the unit in brackets) left-aligned at the start of each line, over the top one and under the bottom one. Faint dashed chartGrid guides join each pair of ticks. The current pair is a highlighted rule from line to line with both numbers bold in highlight pills (kept inside the canvas), and the knob on the rule between the lines. Tick numbers at 13 px, thinned to every 2nd, 5th or 10th when the widest would touch, and left out under a pill; dollars drop ".00" when every number shown is whole. Canvas cropped to the rows. No page change.',
   },
@@ -2293,7 +2223,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'factorTree',
     pages: ['m.6.gcf-lcm~factor-tree'],
     status: 'placed',
-    gallery: ['g.r4e-factor-trees', 'g.r4e-factor-trees-three', 'g.r4e-factor-trees-deep'],
+    gallery: ['g.r4e-factor-trees'],
     notes:
       'Urgency: medium. Weak now: Hairline grey branches look unfinished; composites are bare text, only primes circled; two trees crowded; small type; shared primes not paired across trees. Redo: Flat tree diagram: composites as rounded rectangles (chartSurface, stroke border), primes as filled circles (chartFill, ink); chart.stroke branches ending at node edges; 28 px nodes, labels at chart.value. Two columns with a thin divider. Shared primes as matched pairs with coloured rings (chartHighlight, then chartSecond). Each tree\'s primes listed at its foot ("2 · 2 · 2 · 3"). Scale depth to fit 3–4 levels without clipping. Drawn (round 4, group E): flat trees in two columns with a thin divider. Composites are rounded boxes (chartSurface, chartMuted border), primes filled circles (chartFill); numbers at chart.emphasis bold; chart.stroke branches run edge to edge. Each split puts the prime one step left and the rest one step right (a staircase), so every level fits: 64 and 96, the deepest in the page range (seven and six levels), fit without clipping. Shared primes are ringed in matched pairs, one colour per shared prime (chartHighlight, then chartSecond, then ink for a third, as 60 and 90 need); the top-most copies are ringed. Each tree lists its primes in order at its foot, ringed the same way, with × between them when they fit. Caption says "Shared primes (ringed)" so the rings have a key. No page change.',
   },
@@ -2312,14 +2242,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.6.water-cycle~roof-rain',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4e-rect-same-area',
-      'g.r4e-rect-area-max',
-      'g.r4e-rect-perimeter-strip',
-      'g.r4e-rect-square-big',
-      'g.r4e-roof',
-      'g.r4e-roof-small',
-    ],
+    gallery: ['g.r4e-rect-same-area'],
     notes:
       'Urgency: medium. Weak now: Small, left of centre, empty canvas below and right; unit-square grid so faint it hardly shows (defeats "area counts the squares"); area label on the grid lines; side labels small grey with no dimension lines; the roof-rain page uses the same bare rectangle. Redo: Flat for math: ~80 % width, centred; visible chartGrid strokeLight unit squares with flat chartFill (optionally a light two-tint checkerboard); area in a white pill in the middle; dimension lines with end ticks for length (below) and width (left) at chart.value. Perimeter pages: outline in chartHighlight with all four sides labelled. Roof option for s.6.water-cycle~roof-rain: a shingled roof in perspective (material tokens, TopLight) with rain lines. Corner handle with a 44 px hit area. Drawn (round 4, group E): flat, centred, sized from the values (at least 0.4 of extent, with a little room to drag longer; the frame holds still while dragging). Unit squares in a two-tint checkerboard (chartHighlight at 10 % and 19 %) with grid lines at 40 % highlight, so they can be counted in both themes; the area on a pill in the middle (beside the shape when too small to hold it). Area pages: dimension lines with end ticks and extension lines for the length (below) and the width (left), labels at chart.value bold. Perimeter pages: the heavy chartHighlight outline with all four sides labelled, unit marks on the edge for perimeter alone, the perimeter line centred under it. Corner handle unchanged (44 px). New option `roof: true`: a slate roof (rock2 with TopLight, shingle courses) in perspective over a house (walls, door, window, gutter), rain streaks falling on it, the length as a dimension line along the front and the width along the roof edge, the area on a pill; drag the back corner (right: length, up the roof: width). Page change for s.6.water-cycle~roof-rain only: its representation becomes { kind: "rectangle", length: "l", width: "w", inside: "A", extent: 20, roof: true }. The math pages need no change. `uses` is left as the default ("rectangle"), because the placed-check looks for it on every page and only the roof page passes "roof":true.',
   },
@@ -2338,14 +2261,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.2.plant-growth-investigation~week',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4f-ruler',
-      'g.r4f-ruler-edge',
-      'g.r4f-broken',
-      'g.r4f-broken-edge',
-      'g.r4f-quarter',
-      'g.r4f-ruler-long',
-    ],
+    gallery: ['g.r4f-ruler'],
     notes:
       'Urgency: medium. Weak now: Wooden ruler has material but is thin (~20 px) with ~8 px numbers and a detached cm label; ribbons float above with a gap and nothing shows where their ends meet the marks; "Shorter ribbon" runs into its handle; "Longer ribbon" is 9 px white on purple; the broken-ruler page shows a full ruler from 0. Redo: Ruler ~36 px tall with wood grain (Wood), long cm ticks and half-cm ticks, numbers at chart.value, "cm" at its left end. Ribbons flush on the ruler\'s top edge with Sheen; dashed guides from each ribbon end to its mark; the difference bracketed "4 cm longer" in chartSecond. Ribbon labels outside, left-aligned above each. Broken ruler: a jagged left end starting at the first shown mark, length counted as highlighted spaces 1…7 under it. 44 px handles clear of labels. Drawn (round 4, group F): a 36 px wooden ruler (reps/wood.tsx WoodStick: wood, grain, TopLight, box shadow) with whole-unit ticks, half-cm or half-inch ticks when there is room (half and quarter marks on the quarter-inch page), numbers at 13 px printed in ink every 1, 2, 5 or 10 (at least 24 px apart) and the unit ("cm", "cubes") printed at its left end. Ribbons are satin in blue and red with Sheen; the last lies flush on the ruler\'s top edge, the others above it; each has its name and length ("Longer ribbon: 12 cm") left-aligned above it at 12 px bold. Dashed guides drop from every ribbon end to its mark. With two ribbons and a difference, a chartSecond bracket runs on the shorter ribbon\'s row from its end to the longer end, with the difference ("4 cm") in a chartSecond pill, clear of the handle (past the long end when the gap is too small). Broken ruler: the ruler breaks off (jagged end) one mark before the start, and the spaces the ribbon covers are shaded under it and counted 1 … 7. 44 px handles on the ribbon ends, clear of the labels. No page change.',
   },
@@ -2355,7 +2271,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'venn',
     pages: ['m.6.gcf-lcm'],
     status: 'placed',
-    gallery: ['g.r4e-venn', 'g.r4e-venn-many', 'g.r4e-venn-one'],
+    gallery: ['g.r4e-venn'],
     notes:
       'Urgency: medium. Weak now: Two identical lavender circles distinguished only by small "12"/"18" labels cramped at the tops; 9–10 px members spread unevenly; tiny GCF ring; two odd oversized vertical sliders below. Redo: Flat. Two distinct tints (chartHighlight, chartSecond) with a blended overlap; titles outside at chart.value ("Factors of 12", "Factors of 18"). Members on an even grid in each region at ~13 px. Greatest common factor as a filled chartHighlight badge with a "greatest" tag. Replace the vertical sliders with standard horizontal Sliders.tsx rows, or drop them per sliderPolicy. Drawn (round 4, group E): flat, two distinct tints (chartHighlight at 14 %, chartSecond at 30 %, blending in the overlap) with matching outlines; titles outside at chart.value bold ("Factors of 12", "Factors of 18"; "Prime factors of …" for list primes). Members at chart.value on an even grid in each region, the ones nearest its middle, clear of both edges (72 and 96, eight shared, fit). The greatest common factor is a filled chartHighlight badge with a leader to a "greatest common factor" tag under the circles. Sliders: the kind has none of its own (venn is not in sliderPolicy); the two vertical sliders come from the page setting sliders: true, and are the app-wide Sliders component. The lesson chat may drop that line (sliders are not needed: the inputs change both numbers). No page change needed for the picture.',
   },
@@ -2365,7 +2281,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'balance',
     pages: ['m.1.equal-sign'],
     status: 'placed',
-    gallery: ['g.pan-balance', 'g.pan-balance-full', 'g.pan-balance-tipped'],
+    gallery: ['g.pan-balance'],
     notes:
       'Urgency: medium. Weak now: Grey clip-art: flat trapezoid post, thin beam, shallow slab pans; counters squeezed on the pan rims; sides not labelled on the picture; always level with no pivot or pointer, so "Level" can\'t be seen. Redo: Real classroom pan balance: brushed-metal post and beam (Metal) on a base with FloorShadow; triangular fulcrum with a pivot pin; pointer needle and small scale arc so a level beam points at the centre mark. Pans as deep bowls with a Sheen rim on two chains; counters inside in rows of 5 with padding. A Tag chip under each pan ("8 + 2", "5 + 5"). If sides may differ, tilt by the difference (up to ~8°) with counters exact. Drawn (round 4, group G): a classroom pan balance in brushed metal (Sheen, Metal, TopLight): a base with a FloorShadow, a post, a fulcrum with a pivot pin, and a beam that turns about the pin. A pointer hangs from the beam onto a small metal scale with ticks at 4° and 8° each way and an accent middle mark, so a level beam points at the middle. Each pan is a deep bowl with a bright rim hanging on two chains; its counters sit inside in rows of 5 (rows of 10 smaller ones above 20, up to 40), one color per value, with padding to the rim. A tag under each pan gives its side ("8 + 2", "5 + 5"; with a take-away, "10 − 2"). When the sides differ (a value still "?", or a take-away), the beam tips toward the heavier side by 1.6° per counter of difference, up to 8°; the counters stay exact. The caption is unchanged. No page change.',
   },
@@ -2385,7 +2301,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'fieldOfView',
     pages: ['s.6.cells~cell-size'],
     status: 'placed',
-    gallery: ['g.r4h-field', 'g.r4h-field-many', 'g.r4h-field-two'],
+    gallery: ['g.r4h-field'],
     notes:
       'Urgency: medium. Weak now: Cream disc with a heavy grey vignette that looks like a smudge; small green ovals in one thin row; "one cell" label crowded against the cell and vignette; thin width bar with 11 px text. Redo: Eyepiece view: black Metal ring with a crisp inner edge, warm bright field with falloff only in the last 8 %. Plant/onion cells as rounded rectangles with walls, nucleus and faint cytoplasm tint (token greens, TopLight), ~30 % of the field tall. Measured cell outlined in primary with a bracket "1 cell = 300 µm" at 13 px. Field-width bar as a 2 px dimension line with end ticks and a 13 px label inside the canvas. Counts and positions exact.' +
       ' Drawn (round 4, group H): a black Metal eyepiece tube with a crisp inner edge and a shadow; the lamp-lit field dims only in its last 5 %. Onion-skin cells as rounded boxes with green walls, faint cytoplasm and a nucleus; the counted row across the middle at true width (field ÷ cells, up to 100 drawn) and up to 30 % of the field tall, with fainter offset rows of tissue around it (clipped to the circle, only while a cell is 8 px or wider). The first cell outlined in the highlight with a bracket and "1 cell = 300 µm" at 13 px bold on a card plate inside the circle; the field width on a 2 px dimension line with end ticks and dashed extension lines, "1,800 µm across" at 13 px. No page change.',
@@ -2396,7 +2312,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'pairs',
     pages: ['m.2.even-odd'],
     status: 'placed',
-    gallery: ['g.r4a-pairs', 'g.r4a-pairs-20', 'g.r4a-pairs-19'],
+    gallery: ['g.r4a-pairs'],
     notes:
       'Urgency: medium. Weak now: Seven ~20 px counters in faint grey pair frames in a tiny cluster; leftover a different colour with no frame and no explanation; no labels for pairs or the leftover. Redo: Counters ~32 px across the width. Each pair in a two-cell raised tray (paint.tsx edge helpers). Leftover in the same colour in a half-empty tray with a dashed empty cell, so "no partner" is visible, not colour-coded. 14 px pair counts (1, 2, 3) under each tray and a "left over" tag. Wrap to two rows beyond 10 pairs. Drawn (round 4, group A): Each pair in a two-cell raised plastic tray (recessed cells, edge light, shadow) with counters up to 34 px, sized to the width; all counters the same colour. The odd one sits in a tray whose other cell is empty and dashed, tagged "left over"; pair numbers 1, 2, 3 in 14 px under the trays. Up to 6 trays a row, then a second row (20 makes 10 trays in two rows). No page change.',
   },
@@ -2406,7 +2322,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'prism',
     pages: ['m.2.thirds-polygons~solids'],
     status: 'placed',
-    gallery: ['g.r4e-prism-count', 'g.r4e-prism-triangle', 'g.r4e-prism-hexagon'],
+    gallery: ['g.r4e-prism-count'],
     uses: '"counting":true',
     notes:
       'Urgency: medium. Weak now: Lavender wireframe with dots at the corners; one flat tint on all faces; corner dots look like drag handles; no face/edge/corner labels to help counting; lots of empty space. Redo: Exact solid with faces shaded flatly by orientation (top light, front mid, side darker from theme tints). Hidden edges dashed 1.5 px, visible edges 2.5 px. Corner markers as 4 px ink dots. Optional counting mode: tap a face, edge or corner to highlight it with a 14 px count chip. Fill ~80 % of the canvas; same rule for other prisms. Drawn (round 4, group E): the exact solid, flat-shaded (each visible side a tint of the highlight by how far it turns from the light at the front left, the top lightest), fills about 80 % of the width with the canvas sized to it. Visible edges 2.5 px ink, hidden edges 1.5 px dashed muted; corners 3.5 px ink dots (muted at the back), so they no longer look like handles. New option counting: true adds Faces, Edges and Corners buttons (44 px): each numbers every face, edge or corner on the solid with a count chip (solid in front, dashed at the back, and the caption says so); tap again to clear. Page change for m.2.thirds-polygons~solids: its representation becomes { kind: "prism", sides: "s", faces: "F", edges: "E", corners: "V", counting: true }. Without it the page works as before, showing the new drawing.',
@@ -2417,13 +2333,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'timeline',
     pages: ['m.3.elapsed-time~elapsed', 'm.3.elapsed-time~start-time'],
     status: 'placed',
-    gallery: [
-      'g.r4d-time',
-      'g.r4d-time-long',
-      'g.r4d-time-short',
-      'g.r4d-time-back',
-      'g.r4d-time-back-short',
-    ],
+    gallery: ['g.r4d-time'],
     notes:
       'Urgency: medium. Weak now: Thin 1.5 px line and small dots; 11 px hop labels; small end times; the landmark time sits on a different baseline; no minute ticks, so hop lengths aren\'t visibly to scale; empty space above and below. Redo: Flat open number line: 2 px axis, muted ticks every 5 minutes, taller ink hour ticks. All times on one baseline at 14 px (start and end bold, landmarks regular). Hops as 2.5 px primary arcs with arrowheads, durations in 14 px chips; total bracket under the line. Arc heights by length; canvas height shrinks to fit. Start-time variant: arcs go backward with left arrowheads. Drawn (round 4, group D): an open line with muted ticks every 5 minutes (15 or 30 when long) and taller ink hour ticks, a little line before the start and after the end. The jumps are the ones the steps write (`timeJumps.ts`: to the next hour, whole hours in one jump, then the rest; the harness checks they chain and add up), drawn as 2.5 px highlight arcs with arrowheads, heights by length, each length in a 14 px chip (a chip wider than its arc, or touching another, goes up a row on a dashed leader). All times on one baseline at 14 px: start and end bold with filled dots, the hours between regular with open dots. A bracket under the line: "In all: 35 minutes" ("= 1 h 15 min" past an hour). Counting back: arcs run right to left with the arrowheads on the left. New optional field `back` (boolean); without it the jumps count back when the page opens on the end time (`startWith` has the end hour and not the start hour), so m.3.elapsed-time~start-time already draws backward. No page change.',
   },
@@ -2433,7 +2343,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'waterfall',
     pages: ['he.geography.human-geography#0'],
     status: 'placed',
-    gallery: ['g.r4f-waterfall', 'g.r4f-waterfall-edge'],
+    gallery: ['g.r4f-waterfall'],
     notes:
       'Urgency: medium. Weak now: Review page (he.geography.human-geography#0) shows "Skill not found". Source shades an abstract chart with LitRect and TopLight, against the art direction; bars capped at 52 px; two-line small labels. Redo: Flat fills: increases success green, decreases danger red, total ink or primary. 1 px dashed connectors from each bar end to the next start. Each change\'s value ("+120", "−45" with a true minus) 12–13 px at the bar end. Zero baseline 1.5 px ink. Category names 12 px, wrapped or angled, inside the canvas. Visible DragHandle on editable bar ends. The page is a college topic: open it at /course/he.geography.human-geography/topic/0. Drawn (round 4, group F): flat: increases blockGreen, decreases blockRed, the total chartHighlight, each with a 1 px edge in its own color; a key under the chart says Increase / Decrease / Total. 1 px dashed connectors from each bar\'s end to the next. Each change\'s value ("+6,000", "−4,000", true minus) at 13 px bold in a row over its bar, so it never meets a handle; the total\'s value there too. Zero baseline 1.5 px ink. Symbol (bold) and name at 12 px under each bar, wrapped to two lines; the old symbol key under the chart is gone (the names are on the chart). The bars fill the height (no scale to read). DragHandles on editable bar ends as before. No page change.',
   },
@@ -2455,13 +2365,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.6.expressions-variables~distributive',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4e-area-two-digit',
-      'g.r4e-area-big',
-      'g.r4e-area-decimals',
-      'g.r4e-area-divide',
-      'g.r4e-area-distributive',
-    ],
+    gallery: ['g.r4e-area-two-digit'],
     notes:
       'Urgency: low. Weak now: Very pale partial boxes with 2 px black strokes; tiny grey "5 × 10"; small dimension labels; ragged left-aligned caption; no colour link between a part and its place. Redo: Flat: colour each column by place (thousands, hundreds, tens, ones tokens at 15–20 % tint), 1.5 px chart stroke. Dimension labels on brace ticks in chart.label bold. Expression in chart.label above the product in chart.emphasis. Caption one centred line or aligned equations. Leader label above very narrow boxes. Drawn (round 4, group E): flat. Each column tinted by its place at 17 % (the same place is the same card tone on every page: tens, ones, hundreds, thousands, tenths, hundredths …) and named over it in that colour ("tens", "ones"; hidden where the column is too narrow, and not for a lumped last part like 99 or for letters’ parts); 1.5 px chart ink boxes. Parts on dimension lines with end ticks (top and side), bold. In each box the multiplication at chart.label over the product at chart.emphasis (bigger in wide boxes, smaller only where it would not fit). Remainder box dashed with a "left over" tag. Centred at about 86 % width. Division captions now read "1,987 ÷ 23 = 86, remainder 9: 80 + 6." so the chain no longer breaks mid-line. No page change.',
   },
@@ -2480,13 +2384,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       'm.9.exponential-functions',
     ],
     status: 'placed',
-    gallery: [
-      'g.r4d-table',
-      'g.r4d-table-powers',
-      'g.r4d-table-heart',
-      'g.r4d-table-growth',
-      'g.r4d-table-no-pattern',
-    ],
+    gallery: ['g.r4d-table'],
     notes:
       'Urgency: low. Weak now: Clean but generic: header wraps to two right-aligned lines; the selected row is a saturated band that drowns the numbers; title and header same weight. Redo: Centred single-line headers with units on a smaller second line. Selected row: 15 % accent tint, left accent bar, bold numbers. 4 % zebra stripes, tabular figures, a right-hand "×12"/"+3" arrow column between rows to show the pattern, 44 px row height. Drawn (round 4, group D): headers centred, the name bold (up to two lines) with the unit on a smaller muted line in brackets, over a heavier rule; a "1 foot = 12 inches" title bolder and larger on a light band. 44 px rows with 4 % stripes and centred tabular numbers. The selected row: a 15 % highlight tint, a 4 px accent bar at its left and bold numbers (no saturated band). When the inputs step evenly and the outputs add the same amount ("+12") or multiply by the same number ("×2", "×1.1"), a column of curved arrows at the right says it between each pair of rows (`tablePattern`, worked out from the numbers shown); with no single pattern (4, 10, 40, 100) there is no arrow column. No page change.',
   },
@@ -2497,7 +2395,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     pages: ['m.3.arithmetic-patterns'],
     status: 'placed',
     uses: '"pair":[4,7]',
-    gallery: ['g.r4d-times-table', 'g.r4d-times-table-turn', 'g.r4d-times-table-doubles'],
+    gallery: [],
     notes:
       'Urgency: low. Weak now: Works, but the 11×11 grid is crammed edge to edge at 390 px with 9–10 px numbers; weak headers; the highlighted row is solid purple and hides the counting-by steps; no "+4" step shown; no margin. Redo: Flat. Inset by space.sm; 11–12 px tabular numbers filling cells; header row and column with a stronger chartGrid tint and bold. Highlighted row as a light chartFill tint with bold numbers and small "+4" hop arcs above adjacent cells in chartHighlight. Turn-around facts: outline the two mirrored cells and draw the diagonal. Keep the cell-set spec. Drawn (round 4, group D): the table inset 8 px, numbers 12–13 px (bold on lit cells and headers), the header row and column on a chartGrid tint. Lit cells take a light highlight tint (18 %) with bold ink numbers, and lit rows and columns are outlined in the highlight (a chartFill tint read too close to the plain cells). One or two lit rows (the 4s, 9s and 5s rows, the doubles) get a strip above with a "+4" hop over each step. Turn-around facts: the dashed diagonal, the diagonal cells lit, and a new optional field `pair` outlining the two mirrored cells heavy. Page change: the "Turn-around facts" scene of m.3.arithmetic-patterns passes `table: { op: \'×\', mirror: true, pair: [4, 7] }` (its line names 4 × 7 and 7 × 4).',
   },
@@ -2507,7 +2405,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'numberBond',
     pages: ['m.K.add-sub-10~number-bond'],
     status: 'placed',
-    gallery: ['g.r4a-bond', 'g.r4a-bond-10'],
+    gallery: ['g.r4a-bond'],
     notes:
       "Urgency: low. Weak now: Clean and readable, but flat grey circles and hairline connectors look like clip art; 8 px counters crammed at the bottom of each circle; unclear if anything is interactive. Redo: Flat but firmer: chart.stroke connectors meeting circle edges; whole circle chartFill, parts chartHighlight and chartSecond so counter colours carry over. ~14 px Ball counters in a 2×5 ten-frame cluster under the number in each circle. If parts can be tapped, a visible +/− or \"Tap a part\" with a pressed state. Keep whole/part fields. Drawn (round 4, group A): Flat but firmer: 3 px connectors meeting the circles' edges; the whole circle chartFill, the parts tinted and ringed in chartHighlight and chartSecond (their counters' colours). Under each number a 2 × 5 ten-frame with faint cells holds that part's Ball counters; the whole's frame shows both parts' counters together. Parts are not tappable (the inputs set them), so no tap cue was added. No page change.",
   },
@@ -2521,7 +2419,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
       's.K.living-things-change-environment~litter',
     ],
     status: 'placed',
-    gallery: ['g.r4f-tally', 'g.r4f-tally-edge', 'g.r4f-tally-weather', 'g.r4f-tally-litter'],
+    gallery: ['g.r4f-tally'],
     uses: '"icons":[',
     notes:
       "Urgency: low. Weak now: Clean table, but hairline tally marks; the fifth slash is short and doesn't cross all four; small names with a big gap before the marks; no link to the counted objects; heavy black border looks like an old form. Redo: Flat table: softer border (chartGrid, radius md), strokeLight row lines, names at font.body with a small icon per category (reuse the card icons: apple, banana, grapes, sun, cloud). Marks in chart.stroke with a slight hand-drawn tilt; the fifth clearly crosses all four; groups 12 px apart. Count right-aligned in a pill. Keep the Total and Most lines. Drawn (round 4, group F): a soft flat table (chartGrid 1.5 px border, radius md, card fill, 1.5 px chartGrid row lines), names at 16 px semibold with an optional card icon beside each, tally marks at chart.stroke with round caps and a slight hand-drawn tilt, the fifth a slash that crosses all four from low left to high right, bundles 12 px apart (20 marks fit at 390 px), and the count right-aligned in a chartSurface pill. Total and Most lines kept. New optional field icons (one card icon per row). Page change (optional but asked for): m.1.data-3-categories~tally icons: ['apple', 'banana', 'grapes']; s.K.weather-patterns icons: ['sun', 'rain cloud']; s.K.living-things-change-environment~litter icons: ['soda can', 'wrapper falling on grass'] (no plain sheet-of-paper icon exists yet).",
@@ -2532,7 +2430,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'clock',
     pages: ['m.2.time-5-min', 'm.3.elapsed-time'],
     status: 'placed',
-    gallery: ['g.r4f-clock', 'g.r4f-clock-edge'],
+    gallery: ['g.r4f-clock'],
     notes:
       'Urgency: low. Weak now: Near standard, but numerals ~13 px are small for Grade 2; hour and minute hands close in length and weight (4:25 hard to read); no minute numbers for counting by fives; flat face with no glass. Redo: Hour hand shorter and wider (6 px, ink), minute hand longer and thinner (3.5 px, primary); drag handle stays on the minute tip. Numerals 16 px semibold. Muted minute labels (5 … 55) outside the bezel at 10 px, or only on the five-minute page via a spec flag. Low-strength Glass sheen over the face; Metal centre cap. Keep the a.m./p.m. toggle. Drawn (round 4, group F): shared dial (reps/ClockDial.tsx). Hour hand short and wide (half the radius, 11 px, chartInk); minute hand long and thin (to the tick ring, 6 px, chartHighlight) with the drag handle on its tip, now outside the numerals so it never covers one. Numerals up to 16 px bold. Muted minute labels 5 … 55 outside the rim at 12 px (not 10: the quality floor), on every Clock picture, since both pages count by fives. Faint glass sheen, metal centre cap; a.m./p.m. toggle kept. No page change.',
   },
@@ -2542,7 +2440,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'gradCylinder',
     pages: ['s.6.density~displacement'],
     status: 'placed',
-    gallery: ['g.r4h-cylinder', 'g.r4h-cylinder-big', 'g.r4h-cylinder-small'],
+    gallery: ['g.r4h-cylinder'],
     notes:
       'Urgency: low. Weak now: One of the better pictures, but scale numerals grey 9–10 px; object a grey half-disc that doesn\'t read as a stone or weight; thin base, no pour spout; small change label; "before"/"after" near clipping. Redo: Scale numerals 12 px ink, longer major ticks. Object as a real item (textured stone or Metal weight) fully submerged with a contact shadow. Hexagonal base with depth, pour lip at the rim. Curved meniscus with the reading at its bottom; "before" level as a ghosted water line. Change bracket 2 px with a 14 px label. Right-hand labels 8 px inside the canvas or moved left. Meniscus handle unchanged.' +
       ' Drawn (round 4, group H): scale numerals 12 px ink, major ticks 24 px and minor 12 px; the object a speckled stone (Ball in rock5) with a contact shadow, sized from the rise and capped so it always lies fully under the water; a hexagonal glass foot with its front sides in depth; a flared rim with a pour lip; the water top a curved meniscus whose bottom is the reading (after line 2 px highlight, 12 px bold label); the level before a 2 px dashed water-blue line (a ghosted water band would sit under the water, so the dashed line stands for it) with a 12 px label that steps down when the levels are close; the change bracket 2 px, clear of the numerals, with a 14 px label. Handles and drag unchanged. No page change.',
@@ -2553,7 +2451,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     kind: 'rectilinear',
     pages: ['m.3.area~rectilinear', 'm.3.area~cut-out'],
     status: 'placed',
-    gallery: ['g.r4e-rectilinear', 'g.r4e-rectilinear-wide', 'g.r4e-cut-out', 'g.r4e-cut-out-thin'],
+    gallery: ['g.r4e-rectilinear'],
     notes:
       'Urgency: low. Weak now: Flat and exact, but very faint grid (squares hard to count); parts differ only by a light grey tint; small area numbers; side labels far from their edges, "2 cm" near the right edge; no split line. Redo: Two distinct flat tints (e.g. primary 15 %, amber 20 %); 2 px dashed split line; grid at chartGrid 1 px; part areas in 18 px centred chips ("15 cm²"); side labels on dimension lines with end ticks, 6 px from the edge and 8 px inside the canvas. Cut-out variant: removed piece hatched with a dashed outline. Sliders unchanged. Drawn (round 4, group E): flat, centred, sized from the values. Two distinct tints (chartHighlight 15 %, chartSecond 30 %), a 2 px dashed split line where the parts meet, unit-square grid lines at 35 % chartMuted (countable in both themes). Part areas in centred chips with the unit ("15 cm²"), or above the part on a short leader when it is too thin (10 by 1). Every side on a dimension line with end ticks, 10 px from its edge and inside the canvas. Cut-out: the removed piece hatched in a dashed outline with its area on a muted chip, the cut width above and height right as muted dimension lines; the shape left in unit squares with its area on a chip (in its bigger part; the caption carries it when the L is too thin). Sliders unchanged. No page change.',
   },

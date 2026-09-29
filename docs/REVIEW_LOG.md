@@ -1,5 +1,13 @@
 # Review log
 
+## The review runs in two stages
+
+The lesson reviewer needs no build or browser, so its evidence (`--stage lesson`) is gathered
+as soon as the tests pass and its fixes land before the page reviewer looks at the pages
+(`--stage page`). `--changed` limits both to pages whose dump section changed. The reviewer
+prompts read the guide's Standards only and open the picture or layout catalog on demand. The
+planners start from `scripts/plan-brief.mjs` output, not from the guide and the gallery files.
+
 After the fixes from a section review are done, the reviewers themselves are improved: checks
 that are now automated come out of their instructions, findings they missed or over-reported
 become new lines in their checklists, and the evidence they lacked is added to the evidence

@@ -18,7 +18,6 @@ import { S4A_GALLERY_LAYOUTS, S4A_GALLERY_MODULES } from './galleryS4a';
 import { S4C_GALLERY_MODULES } from './galleryS4c';
 import { S4D_GALLERY_LAYOUTS, S4D_GALLERY_MODULES } from './galleryS4d';
 import { R2A_GALLERY_MODULES } from './galleryR2a';
-import { R3A_GALLERY_LAYOUTS, R3A_GALLERY_MODULES } from './galleryR3a';
 import { R4A_GALLERY_LAYOUTS, R4A_GALLERY_MODULES } from './galleryR4a';
 import { R4B_GALLERY_LAYOUTS, R4B_GALLERY_MODULES } from './galleryR4b';
 import { R4C_GALLERY_LAYOUTS, R4C_GALLERY_MODULES } from './galleryR4c';
@@ -27,18 +26,9 @@ import { R4E_GALLERY_LAYOUTS, R4E_GALLERY_MODULES } from './galleryR4e';
 import { R4F_GALLERY_LAYOUTS, R4F_GALLERY_MODULES } from './galleryR4f';
 import { R4G_GALLERY_LAYOUTS, R4G_GALLERY_MODULES } from './galleryR4g';
 import { R4H_GALLERY_LAYOUTS, R4H_GALLERY_MODULES } from './galleryR4h';
-import { R3B_GALLERY_LAYOUTS, R3B_GALLERY_MODULES } from './galleryR3b';
-import { R3C_GALLERY_LAYOUTS, R3C_GALLERY_MODULES } from './galleryR3c';
-import { R3D_GALLERY_LAYOUTS, R3D_GALLERY_MODULES } from './galleryR3d';
-import { R3E_GALLERY_LAYOUTS, R3E_GALLERY_MODULES } from './galleryR3e';
-import { R3F_GALLERY_LAYOUTS, R3F_GALLERY_MODULES } from './galleryR3f';
-import { R3G_GALLERY_LAYOUTS, R3G_GALLERY_MODULES } from './galleryR3g';
-import { R3H_GALLERY_LAYOUTS, R3H_GALLERY_MODULES } from './galleryR3h';
 import { R3I_GALLERY_LAYOUTS, R3I_GALLERY_MODULES } from './galleryR3i';
 import { R3J_GALLERY_LAYOUTS, R3J_GALLERY_MODULES } from './galleryR3j';
-import { R2B_GALLERY_MODULES } from './galleryR2b';
 import { R2C_GALLERY_MODULES } from './galleryR2c';
-import { R2D_GALLERY_MODULES } from './galleryR2d';
 import { FAHRENHEIT, atLeast, div, moreThan, times, whole } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
@@ -49,7 +39,7 @@ import { iconSort } from './galleryIconSort';
 const whole0 = (x: number | undefined) =>
   x !== undefined && Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : undefined;
 
-export const GALLERY_MODULES: ModuleDef[] = [
+const EVERY_GALLERY_MODULE: ModuleDef[] = [
   {
     id: 'g.coordinate-plane',
     title: 'Coordinate plane',
@@ -1062,17 +1052,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
   ...S4C_GALLERY_MODULES,
   ...S4D_GALLERY_MODULES,
   ...R2A_GALLERY_MODULES,
-  ...R2B_GALLERY_MODULES,
   ...R2C_GALLERY_MODULES,
-  ...R2D_GALLERY_MODULES,
-  ...R3A_GALLERY_MODULES,
-  ...R3B_GALLERY_MODULES,
-  ...R3C_GALLERY_MODULES,
-  ...R3D_GALLERY_MODULES,
-  ...R3E_GALLERY_MODULES,
-  ...R3F_GALLERY_MODULES,
-  ...R3G_GALLERY_MODULES,
-  ...R3H_GALLERY_MODULES,
   ...R3I_GALLERY_MODULES,
   ...R3J_GALLERY_MODULES,
   ...R4A_GALLERY_MODULES,
@@ -1089,15 +1069,7 @@ export const GALLERY_MODULES: ModuleDef[] = [
  * Demonstrations of the explore figures and card figures, one page each, for the same
  * reason: every drawing can be seen and screenshotted before a lesson uses it.
  */
-export const GALLERY_LAYOUTS: LayoutDef[] = [
-  ...R3A_GALLERY_LAYOUTS,
-  ...R3B_GALLERY_LAYOUTS,
-  ...R3C_GALLERY_LAYOUTS,
-  ...R3D_GALLERY_LAYOUTS,
-  ...R3E_GALLERY_LAYOUTS,
-  ...R3F_GALLERY_LAYOUTS,
-  ...R3G_GALLERY_LAYOUTS,
-  ...R3H_GALLERY_LAYOUTS,
+const EVERY_GALLERY_LAYOUT: LayoutDef[] = [
   ...R3I_GALLERY_LAYOUTS,
   ...R3J_GALLERY_LAYOUTS,
   ...R4A_GALLERY_LAYOUTS,
@@ -1536,3 +1508,187 @@ export const GALLERY_LAYOUTS: LayoutDef[] = [
   ...S4B_GALLERY_LAYOUTS,
   ...S4D_GALLERY_LAYOUTS,
 ];
+
+/**
+ * Demos retired once their picture was placed on a lesson page: the lesson page is the demo
+ * now, and one demo per picture kind stays for the kinds a lesson does not yet use. Retired
+ * demos are not tested, reviewed or pre-rendered (their code stays until the file is tidied).
+ */
+const RETIRED = new Set<string>([
+  'g.base-ten-take-away-1000',
+  'g.burning-methane',
+  'g.carbon-dioxide-molecules',
+  'g.chart-piece-990',
+  'g.dot-plot-median',
+  'g.equal-groups-90',
+  'g.factor-pairs-126',
+  'g.factor-pairs-200',
+  'g.force-crate',
+  'g.force-crate-heavy',
+  'g.fruit-icons',
+  'g.grid-product',
+  'g.grid-product-9',
+  'g.grid-product-area',
+  'g.hundredths-many-ones',
+  'g.hundredths-ones-99',
+  'g.icons-diet',
+  'g.icons-heat',
+  'g.icons-liter',
+  'g.icons-meter',
+  'g.icons-weather',
+  'g.icons-young',
+  'g.inequality-line',
+  'g.molecule-cards',
+  'g.multiples-1000',
+  'g.multiples-652',
+  'g.noon-shadow',
+  'g.number-line-ticks',
+  'g.number-line-ticks-100',
+  'g.oxygen-molecules',
+  'g.pan-balance-full',
+  'g.pan-balance-tipped',
+  'g.percent-grid-edge',
+  'g.percent-grid-page',
+  'g.percent-grid-past-100',
+  'g.percent-grid-tenths',
+  'g.picture-graph-half',
+  'g.picture-graph-half-10',
+  'g.picture-graph-pond',
+  'g.place-value-sum',
+  'g.place-value-sum-edge',
+  'g.plot-point',
+  'g.polygon-equal-sides-8',
+  'g.pushes-lopsided',
+  'g.r3j-animal',
+  'g.r3j-body',
+  'g.r3j-cup',
+  'g.r3j-flashlight',
+  'g.r3j-offspring-cat',
+  'g.r3j-offspring-deer',
+  'g.r3j-plant-height',
+  'g.r3j-ramp',
+  'g.r3j-shadow-day',
+  'g.r4a-blocks-trapezoids',
+  'g.r4a-blocks-triangles',
+  'g.r4a-bond-10',
+  'g.r4a-coins-pennies',
+  'g.r4a-coins-ten-quarters',
+  'g.r4a-compare-cubes',
+  'g.r4a-compare-cubes-20',
+  'g.r4a-compare-numerals',
+  'g.r4a-compare-ten-none',
+  'g.r4a-dots-19',
+  'g.r4a-jars',
+  'g.r4a-jars-same',
+  'g.r4a-pairs-19',
+  'g.r4a-pairs-20',
+  'g.r4a-pencil-crayon',
+  'g.r4a-pencil-crayon-20',
+  'g.r4a-pencils',
+  'g.r4a-pencils-long',
+  'g.r4a-position-behind',
+  'g.r4a-seeds',
+  'g.r4a-seeds-all',
+  'g.r4a-trains-20',
+  'g.r4a-trains-zero',
+  'g.r4d-array-10x10',
+  'g.r4d-array-1x10',
+  'g.r4d-array-5x5',
+  'g.r4d-array-split-edge',
+  'g.r4d-array-squares',
+  'g.r4d-array-turned-10',
+  'g.r4d-dnl-layer',
+  'g.r4d-dnl-many',
+  'g.r4d-dnl-metric',
+  'g.r4d-dnl-metric-edge',
+  'g.r4d-dnl-whole',
+  'g.r4d-fit-less',
+  'g.r4d-fit-many',
+  'g.r4d-fit-part',
+  'g.r4d-fit-share',
+  'g.r4d-fit-share-past',
+  'g.r4d-fit-tiny',
+  'g.r4d-hops-add-add',
+  'g.r4d-hops-hundreds',
+  'g.r4d-hops-hundreds-edge',
+  'g.r4d-hops-tens-edge',
+  'g.r4d-hops-two-step',
+  'g.r4d-hops-two-step-edge',
+  'g.r4d-table-growth',
+  'g.r4d-table-heart',
+  'g.r4d-table-no-pattern',
+  'g.r4d-table-powers',
+  'g.r4d-time-back',
+  'g.r4d-time-back-short',
+  'g.r4d-time-long',
+  'g.r4d-time-short',
+  'g.r4d-times-table',
+  'g.r4d-times-table-doubles',
+  'g.r4d-times-table-turn',
+  'g.r4e-area-big',
+  'g.r4e-area-decimals',
+  'g.r4e-area-distributive',
+  'g.r4e-area-divide',
+  'g.r4e-cut-out',
+  'g.r4e-cut-out-thin',
+  'g.r4e-factor-trees-deep',
+  'g.r4e-factor-trees-three',
+  'g.r4e-house-wide',
+  'g.r4e-prism-hexagon',
+  'g.r4e-prism-triangle',
+  'g.r4e-rect-area-max',
+  'g.r4e-rect-perimeter-strip',
+  'g.r4e-rect-square-big',
+  'g.r4e-rectilinear-wide',
+  'g.r4e-roof',
+  'g.r4e-roof-small',
+  'g.r4e-trapezoid',
+  'g.r4e-triangle-tall',
+  'g.r4e-venn-many',
+  'g.r4e-venn-one',
+  'g.r4f-bars-edge',
+  'g.r4f-bars-fixed',
+  'g.r4f-bars-icons',
+  'g.r4f-bars-rain',
+  'g.r4f-broken',
+  'g.r4f-broken-edge',
+  'g.r4f-clock-edge',
+  'g.r4f-feet-edge',
+  'g.r4f-meters',
+  'g.r4f-meters-edge',
+  'g.r4f-quarter',
+  'g.r4f-ruler-edge',
+  'g.r4f-ruler-long',
+  'g.r4f-tally-edge',
+  'g.r4f-tally-litter',
+  'g.r4f-tally-weather',
+  'g.r4f-water-pie',
+  'g.r4f-water-pie-edge',
+  'g.r4f-waterfall-edge',
+  'g.r4h-cylinder-big',
+  'g.r4h-cylinder-small',
+  'g.r4h-field-many',
+  'g.r4h-field-two',
+  'g.r4h-rock-deep',
+  'g.ratio-tape-three-edge',
+  'g.ratio-tape-three-parts',
+  'g.rounding-two-difference',
+  'g.rounding-two-sum-edge',
+  'g.scale-before-after-edge',
+  'g.scaled-box',
+  'g.series-loop-big',
+  'g.shadows',
+  'g.share-as-mixed',
+  'g.spring-scale',
+  'g.spring-scale-20',
+  'g.ten-frame-take-away-all',
+  'g.ten-frame-take-from-ten',
+  'g.ten-frame-take-from-ten-edge',
+  'g.wave-amplitude',
+  'g.wave-amplitude-tall',
+  'g.wave-rope',
+  'g.wave-rope-12',
+]);
+
+export const GALLERY_MODULES: ModuleDef[] = EVERY_GALLERY_MODULE.filter((m) => !RETIRED.has(m.id));
+export const GALLERY_LAYOUTS: LayoutDef[] = EVERY_GALLERY_LAYOUT.filter((l) => !RETIRED.has(l.id));

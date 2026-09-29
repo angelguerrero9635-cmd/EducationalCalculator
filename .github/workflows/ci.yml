@@ -3,6 +3,9 @@ name: CI
 on:
   push:
   pull_request:
+  schedule:
+    # Nightly: every test in full (a push runs the heavy module suites only for the grades it changed).
+    - cron: '17 6 * * *'
 
 permissions:
   contents: read
@@ -12,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # ci-test.mjs diffs against the commit before the push.
+          fetch-depth: 0
 
       # Uses the pnpm version pinned in package.json "packageManager".
       - uses: pnpm/action-setup@v4
@@ -32,8 +38,15 @@ jobs:
       - name: Format
         run: pnpm format:check
 
-      - name: Test (includes validateTaxonomy)
-        run: pnpm test --ci
+      # Every cheap suite in full; the modules and sampling suites for the grades this push changed
+      # (scripts/ci-test.mjs), or for every page on the nightly run and on a pull request.
+      - name: Test
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            node scripts/ci-test.mjs --since "${{ github.event.before }}"
+          else
+            node scripts/ci-test.mjs --full
+          fi
 
       - name: Web build
         run: pnpm build:web

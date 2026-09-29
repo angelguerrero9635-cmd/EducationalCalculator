@@ -22,9 +22,9 @@ describe.each(PICTURE_REQUESTS.map((r) => [r.id, r] as const))('picture request 
     }
   });
 
-  it('has its gallery demos once drawn', () => {
+  it('has its gallery demos once drawn (a placed picture may have retired them)', () => {
     if (r.status === 'requested') return;
-    expect(r.gallery.length).toBeGreaterThan(0);
+    if (r.status === 'drawn') expect(r.gallery.length).toBeGreaterThan(0);
     for (const g of r.gallery) expect([g, GALLERY.has(g)]).toEqual([g, true]);
   });
 
