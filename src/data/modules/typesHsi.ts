@@ -84,7 +84,38 @@ export interface AtomModelSpec {
   valence?: string;
 }
 
-export type HsiSpec = UnitChainSpec | AtomModelSpec;
+/**
+ * Electrons in atoms (H45), by `mode`:
+ *
+ * - `boxes`: orbital boxes at their energies (4s below 3d), filled in Aufbau order with up and
+ *   down arrows (Hund's rule, then pairs), the configuration written above and in noble-gas
+ *   shorthand below. `element` is the atomic number (named; neutral exceptions such as
+ *   chromium and copper drawn as they are); `electrons` defaults to it (fewer for a positive
+ *   ion, more for a negative one). Through 54 electrons. `unpaired` is checked.
+ * - `ladder`: hydrogen's levels n = 1 to `levels` (default 6) to scale, Eₙ = −13.6/n² eV; the
+ *   electron's drop from `upper` to `lower` and the photon given off, placed on the visible
+ *   spectrum (or pointed off it: ultraviolet, infrared). `energy` (eV) and `wavelength`
+ *   (nm, 1240 ÷ E) are checked.
+ */
+export type OrbitalDiagramSpec =
+  | {
+      kind: 'orbitalDiagram';
+      mode: 'boxes';
+      element?: NumOrVar;
+      electrons?: NumOrVar;
+      unpaired?: string;
+    }
+  | {
+      kind: 'orbitalDiagram';
+      mode: 'ladder';
+      upper: NumOrVar;
+      lower: NumOrVar;
+      energy?: string;
+      wavelength?: string;
+      levels?: number;
+    };
+
+export type HsiSpec = UnitChainSpec | AtomModelSpec | OrbitalDiagramSpec;
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
@@ -98,5 +129,9 @@ export function hsiSpecVars(r: HsiSpec): string[] {
       return ids(...r.trials, r.accepted, r.mean, r.error);
     case 'atomModel':
       return ids(r.protons, r.neutrons, r.electrons, r.mass, r.charge, r.valence);
+    case 'orbitalDiagram':
+      return r.mode === 'boxes'
+        ? ids(r.element, r.electrons, r.unpaired)
+        : ids(r.upper, r.lower, r.energy, r.wavelength);
   }
 }

@@ -170,6 +170,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
   switch (spec.kind) {
     case 'unitChain':
     case 'atomModel':
+    case 'orbitalDiagram':
       return <HsiRep spec={spec} calc={calc} />;
     case 'unitCircle':
       return <UnitCircle spec={spec} calc={calc} />;

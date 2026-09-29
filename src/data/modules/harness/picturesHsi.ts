@@ -10,7 +10,14 @@ import {
   placesOf,
 } from '@/components/module/reps/unitChainMath';
 
-import { MAX_ELECTRONS, configuration, shells } from '@/components/module/reps/electrons';
+import {
+  MAX_ELECTRONS,
+  configuration,
+  photonEnergy,
+  photonWavelength,
+  shells,
+  unpaired,
+} from '@/components/module/reps/electrons';
 
 import type { HsiSpec } from '../typesHsi';
 
@@ -98,6 +105,38 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
         if (sh[sh.length - 1] !== v)
           out.push(`outer shell holds ${sh[sh.length - 1]}, the value shows ${v}`);
       }
+      break;
+    }
+    case 'orbitalDiagram': {
+      if (rep.mode === 'boxes') {
+        if (rep.element === undefined && rep.electrons === undefined)
+          out.push('boxes need an element or a number of electrons');
+        const z = num(rep.element);
+        const e = rep.electrons === undefined ? z : num(rep.electrons);
+        if (z !== undefined && (z !== Math.round(z) || z < 1 || z > MAX_ELECTRONS))
+          out.push(`atomic number ${z} (1 to ${MAX_ELECTRONS} drawn)`);
+        if (e !== undefined && (e !== Math.round(e) || e < 0 || e > MAX_ELECTRONS))
+          out.push(`${e} electrons (0 to ${MAX_ELECTRONS} drawn)`);
+        const u = num(rep.unpaired);
+        if (u !== undefined && e !== undefined) {
+          const want = unpaired(configuration(z ?? e, e));
+          if (want !== u) out.push(`${want} unpaired electrons drawn, the value shows ${u}`);
+        }
+        break;
+      }
+      const [hi, lo] = [num(rep.upper), num(rep.lower)];
+      const levels = rep.levels ?? 6;
+      if (levels < 2 || levels > 8) out.push(`${levels} levels (2 to 8 drawn)`);
+      if (hi === undefined || lo === undefined) break;
+      if (hi !== Math.round(hi) || lo !== Math.round(lo) || lo < 1 || hi > levels || hi <= lo)
+        out.push(`a drop from n = ${hi} to n = ${lo} is not drawn (1 ≤ lower < upper ≤ ${levels})`);
+      const E = photonEnergy(hi, lo);
+      const en = num(rep.energy);
+      if (en !== undefined && !near(en, E, 1e-3))
+        out.push(`photon energy ${E} eV, the value shows ${en}`);
+      const lam = num(rep.wavelength);
+      if (lam !== undefined && !near(lam, photonWavelength(en ?? E), 1e-3))
+        out.push(`wavelength ${photonWavelength(en ?? E)} nm, the value shows ${lam}`);
       break;
     }
   }

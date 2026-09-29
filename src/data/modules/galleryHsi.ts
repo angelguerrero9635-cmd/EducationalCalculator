@@ -3,7 +3,13 @@
  * Each demo stands in for a planned page: real variables, relations, steps and a use line, so
  * `scripts/promote-demo.mjs` can copy it into a grade file. Spread into gallery.ts.
  */
-import { configuration, valenceOf } from '@/components/module/reps/electrons';
+import {
+  configuration,
+  photonEnergy,
+  photonWavelength,
+  unpaired,
+  valenceOf,
+} from '@/components/module/reps/electrons';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -561,5 +567,227 @@ ATOMS.push({
   representation: { kind: 'atomModel', protons: 'p', neutrons: 'n', mass: 'A', valence: 'v' },
 });
 
-export const HSI_GALLERY_MODULES: ModuleDef[] = [...MEASUREMENT, ...ATOMS];
+// ─── H45 orbitalDiagram ──────────────────────────────────────────────────────
+
+/** u: unpaired electrons of atom Z (with e electrons for an ion). */
+const unpairedRule = (ion: boolean): Rule => ({
+  relation: {
+    id: 'unpaired electrons',
+    display: ion
+      ? '{u} = unpaired electrons of Z = {p} with {e} electrons'
+      : '{u} = unpaired electrons of Z = {p}',
+    vars: ion ? ['u', 'p', 'e'] : ['u', 'p'],
+    residual: (v) => v.u! - unpaired(configuration(v.p!, ion ? v.e! : v.p!)),
+    solve: ion
+      ? { u: (v) => unpaired(configuration(v.p!, v.e!)), p: () => undefined, e: () => undefined }
+      : { u: (v) => unpaired(configuration(v.p!)), p: () => undefined },
+  },
+  steps: {
+    u: {
+      expr: ion
+        ? 'unpaired electrons of Z = {p} with {e} electrons'
+        : 'unpaired electrons of Z = {p}',
+      how: 'Fill the boxes in order, one arrow in each box of a subshell before pairing, then count the single arrows.',
+    },
+  },
+});
+
+const boxDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  z: number,
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions,
+  variables: [
+    whole('p', 'Z', 'Atomic number (electrons)', 1, 54),
+    whole('u', 'u', 'Unpaired electrons', 0, 6),
+  ],
+  ...rules(unpairedRule(false)),
+  example: { p: z, u: unpaired(configuration(z)) },
+  startWith: ['p'],
+  sliders: true,
+  representation: { kind: 'orbitalDiagram', mode: 'boxes', element: 'p', unpaired: 'u' },
+});
+
+const ORBITALS: ModuleDef[] = [
+  boxDemo(
+    'g.s10-electrons-in-atoms-oxygen',
+    'Orbital boxes: oxygen',
+    'Use this to write an atom’s electron configuration and draw its orbital boxes.',
+    [
+      'The atom is neutral: as many electrons as its atomic number.',
+      'Boxes fill from the lowest energy: 1s, 2s, 2p, 3s, 3p, 4s, 3d, …',
+    ],
+    8,
+  ),
+  boxDemo(
+    'g.s10-electrons-in-atoms-iron',
+    'Orbital boxes: 4s before 3d',
+    'Use this for an atom past argon, where 4s fills before 3d.',
+    ['The atom is neutral.', 'The 4s subshell is lower in energy than 3d, so it fills first.'],
+    26,
+  ),
+  boxDemo(
+    'g.s10-electrons-in-atoms-chromium',
+    'An exception: chromium',
+    'Use this for chromium and copper, whose configurations break the Aufbau order.',
+    ['The atom is neutral.', 'A half-full or full d subshell is especially stable.'],
+    24,
+  ),
+  boxDemo(
+    'g.s10-electrons-in-atoms-xenon',
+    'Orbital boxes through 5p: xenon',
+    'Use this for the largest atoms drawn: every box through 5p full.',
+    ['The atom is neutral.', 'A noble gas has every box of its outer shell full.'],
+    54,
+  ),
+  {
+    id: 'g.s10-electrons-in-atoms-ion',
+    title: 'Orbital boxes of an ion',
+    use: 'Use this for an ion’s configuration: electrons taken from the highest shell first.',
+    assumptions: [
+      'A positive ion loses electrons from its highest shell first: 4s before 3d.',
+      'A negative ion gains electrons in the next empty places.',
+    ],
+    variables: [
+      whole('p', 'Z', 'Atomic number (protons)', 1, 54),
+      whole('e', 'e', 'Electrons', 0, 54),
+      whole('q', 'q', 'Charge', -3, 3),
+      whole('u', 'u', 'Unpaired electrons', 0, 6),
+    ],
+    ...rules(chargeRule, unpairedRule(true)),
+    example: { p: 26, e: 23, q: 3, u: 5 },
+    startWith: ['p', 'q'],
+    sliders: true,
+    representation: {
+      kind: 'orbitalDiagram',
+      mode: 'boxes',
+      element: 'p',
+      electrons: 'e',
+      unpaired: 'u',
+    },
+  },
+];
+
+/** A drop from level u to level l in hydrogen: the photon's energy and wavelength. */
+const LADDER_RULES: Rule[] = [
+  {
+    relation: {
+      id: 'E = 13.6(1/l² − 1/u²)',
+      display: '{E} = 13.6 × (1/{l}^2 − 1/{u}^2)',
+      vars: ['E', 'l', 'u'],
+      residual: (v) => v.E! - photonEnergy(v.u!, v.l!),
+      solve: {
+        E: (v) => photonEnergy(v.u!, v.l!),
+        u: (v) => {
+          const k = 1 / v.l! ** 2 - v.E! / 13.6;
+          return k > 0 ? 1 / Math.sqrt(k) : undefined;
+        },
+        l: (v) => 1 / Math.sqrt(v.E! / 13.6 + 1 / v.u! ** 2),
+      },
+    },
+    steps: {
+      E: {
+        expr: '13.6 × (1/{l}^2 − 1/{u}^2)',
+        how: 'The photon carries the energy between the two levels, Eₙ = −13.6/n² eV.',
+      },
+      u: {
+        expr: '1/√(1/{l}^2 − {E}/13.6)',
+        how: 'Solve the level formula for the upper level.',
+      },
+      l: {
+        expr: '1/√({E}/13.6 + 1/{u}^2)',
+        how: 'Solve the level formula for the lower level.',
+      },
+    },
+  },
+  {
+    relation: {
+      id: 'λ = 1240/E',
+      display: '{w} = 1240/{E}',
+      vars: ['w', 'E'],
+      residual: (v) => v.w! * v.E! - 1240,
+      solve: { w: (v) => photonWavelength(v.E!), E: (v) => 1240 / v.w! },
+    },
+    steps: {
+      w: {
+        expr: '1240/{E}',
+        how: 'hc = 1240 eV·nm, so the wavelength in nm is 1240 divided by the energy in eV.',
+      },
+      E: { expr: '1240/{w}', how: 'Divide 1240 eV·nm by the wavelength.' },
+    },
+  },
+];
+
+const ladderDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  u: number,
+  l: number,
+): ModuleDef => {
+  const E = photonEnergy(u, l);
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      whole('u', 'n₂', 'Upper level', 2, 6),
+      whole('l', 'n₁', 'Lower level', 1, 5),
+      quantity('E', 'E', 'Photon energy', 'eV', 0.01, 13.6, 0.0001),
+      quantity('w', 'λ', 'Wavelength', 'nm', 50, 10000, 0.1),
+    ],
+    ...rules(...LADDER_RULES),
+    example: { u, l, E, w: photonWavelength(E) },
+    startWith: ['u', 'l'],
+    sliders: true,
+    representation: {
+      kind: 'orbitalDiagram',
+      mode: 'ladder',
+      upper: 'u',
+      lower: 'l',
+      energy: 'E',
+      wavelength: 'w',
+    },
+  };
+};
+
+ORBITALS.push(
+  ladderDemo(
+    'g.s10-electrons-in-atoms-balmer',
+    'A line in hydrogen’s spectrum',
+    'Use this for the color of light a hydrogen atom gives off when its electron drops a level.',
+    [
+      'Hydrogen’s levels have energies Eₙ = −13.6/n² eV.',
+      'Drops to n = 2 give the visible lines (the Balmer series).',
+    ],
+    3,
+    2,
+  ),
+  ladderDemo(
+    'g.s11-modern-physics-lyman',
+    'An ultraviolet line',
+    'Use this for a photon’s energy and wavelength from a drop to the lowest level.',
+    ['Hydrogen’s levels have energies Eₙ = −13.6/n² eV.', 'Drops to n = 1 give ultraviolet light.'],
+    2,
+    1,
+  ),
+  ladderDemo(
+    'g.s11-modern-physics-paschen',
+    'An infrared line',
+    'Use this for a small drop between high levels, which gives infrared light.',
+    ['Hydrogen’s levels have energies Eₙ = −13.6/n² eV.', 'Drops to n = 3 give infrared light.'],
+    5,
+    3,
+  ),
+);
+
+export const HSI_GALLERY_MODULES: ModuleDef[] = [...MEASUREMENT, ...ATOMS, ...ORBITALS];
 export const HSI_GALLERY_LAYOUTS: LayoutDef[] = [];

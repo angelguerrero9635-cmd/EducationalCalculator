@@ -650,12 +650,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn (group HI): kind atomModel (typesHsi.ts, reps/AtomModel.tsx; electron shells from reps/electrons.ts). Fields: protons (Z, 1–54), neutrons? (0–90), electrons? (default = protons, 0–54), mass? (A = Z + N, checked), charge? (Z − e, checked), valence? (the outer shell's electrons, checked; the outer shell and its electrons lit). Every proton (red) and neutron (grey) is drawn in the nucleus, mixed evenly; the electrons sit on shells filled from the ground-state configuration (iron 2, 8, 14, 2; iodine 2, 8, 18, 18, 7), a positive ion losing from the outer shell first. The nuclide symbol (³⁵₁₇Cl with its charge) is at the top left and a key counts each particle. An isotope changes only the neutrons; an ion only the electrons. No handles: give the page `sliders: true`. The step phrase \"valence electrons of Z = {p}\" is taught to the harness (phrasesHsi.ts). Examples: { kind: 'atomModel', protons: 'p', neutrons: 'n', electrons: 'e', mass: 'A', charge: 'q' } with A = Z + N and q = Z − e; valence: { kind: 'atomModel', protons: 'p', neutrons: 'n', mass: 'A', valence: 'v' }.",
   },
-  ask(
-    'H45',
-    'orbitalDiagram',
-    'Orbital boxes filled in Aufbau order with up and down arrows, the energy ladder, and emission lines from jumps',
-    ['s.10.electrons-in-atoms', 's.11.modern-physics'],
-  ),
+  {
+    ...ask(
+      'H45',
+      'orbitalDiagram',
+      'Orbital boxes filled in Aufbau order with up and down arrows, the energy ladder, and emission lines from jumps',
+      ['s.10.electrons-in-atoms', 's.11.modern-physics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s10-electrons-in-atoms-oxygen',
+      'g.s10-electrons-in-atoms-iron',
+      'g.s10-electrons-in-atoms-chromium',
+      'g.s10-electrons-in-atoms-xenon',
+      'g.s10-electrons-in-atoms-ion',
+      'g.s10-electrons-in-atoms-balmer',
+      'g.s11-modern-physics-lyman',
+      'g.s11-modern-physics-paschen',
+    ],
+    notes:
+      "Drawn (group HI): kind orbitalDiagram (typesHsi.ts, reps/OrbitalDiagram.tsx; configurations from reps/electrons.ts). mode 'boxes' { element? (atomic number, names the atom), electrons? (default = element; fewer for a positive ion, which loses its highest shell first: Fe³⁺ is [Ar] 3d⁵), unpaired? (checked) }: every subshell up to the highest filled one as boxes at its energy (4s below 3d, columns by shell), up arrows in each box before any pair (Hund), pairs up and down (Pauli), single arrows lit; the configuration above (1s² 2s² 2p⁴), noble-gas shorthand in the caption, and the neutral exceptions through xenon (Cr, Cu, Nb, Mo, Ru, Rh, Pd, Ag) drawn as they are and named. Through 54 electrons. mode 'ladder' { upper, lower, energy? (eV, checked), wavelength? (nm, 1240 ÷ E, checked), levels? (default 6, up to 8) }: hydrogen's levels to scale (Eₙ = −13.6/n² eV), the drop as an arrow, the photon as a wave in its color, and the line on a 380–750 nm spectrum (an arrow to ultraviolet or infrared off it); the series named. Step phrases \"unpaired electrons of Z = {p}\" and \"… with {e} electrons\" are taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'orbitalDiagram', mode: 'boxes', element: 'p', unpaired: 'u' }; an ion: { kind: 'orbitalDiagram', mode: 'boxes', element: 'p', electrons: 'e', unpaired: 'u' }; { kind: 'orbitalDiagram', mode: 'ladder', upper: 'u', lower: 'l', energy: 'E', wavelength: 'w' } with E = 13.6 × (1/l² − 1/u²) and λ = 1240/E.",
+  },
   ask(
     'H46',
     'periodicTable',
