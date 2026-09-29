@@ -387,7 +387,11 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   else if (same) result = 'Both equations are the same line: every point on it is a solution.';
   else if (parallel)
     result = `Both slopes are ${coef(p.m.value)} and the intercepts differ: the lines are parallel and never cross. No solution.`;
-  else if (cross)
+  else if (!spec.solution && lines.every((l) => l.b.value === 0)) {
+    // Two rates through (0, 0): the steeper line is the bigger rate.
+    const [hi, lo] = p.m.value >= q.m.value ? [0, 1] : [1, 0];
+    result = `${names[hi]} is steeper: it has the bigger rate, ${coef(lines[hi]!.m.value)} for each 1 across against ${coef(lines[lo]!.m.value)}.`;
+  } else if (cross)
     result = `They cross at ${pointText(cross.x, cross.y)}${far ? ', off this grid' : ''}. ${lines.map((l) => worked(l.m.value, cross.x, l.b.value)).join(' · ')}`;
   else result = '';
 

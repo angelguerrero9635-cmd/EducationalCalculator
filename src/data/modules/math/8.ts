@@ -165,6 +165,143 @@ const split = (x: number) => {
   return { a: exact(x / 10 ** n), n };
 };
 
+/** `id = a − b`, solvable for each of the three. */
+const minus = (
+  id: string,
+  a: string,
+  b: string,
+  display: string,
+  how: [string, string, string],
+): { relation: Relation; steps: Record<string, StepText> } => ({
+  relation: {
+    id: `${id} = ${a} − ${b}`,
+    display,
+    vars: [id, a, b],
+    residual: (v: Values) => v[id]! - (v[a]! - v[b]!),
+    solve: {
+      [id]: (v: Values) => v[a]! - v[b]!,
+      [a]: (v: Values) => v[id]! + v[b]!,
+      [b]: (v: Values) => v[a]! - v[id]!,
+    },
+  },
+  steps: {
+    [id]: { expr: `{${a}} − {${b}}`, how: how[0] },
+    [a]: { expr: `{${b}} + {${id}}`, how: how[1] },
+    [b]: { expr: `{${a}} − {${id}}`, how: how[2] },
+  },
+});
+
+const RISE = minus('R', 'y2', 'y1', '{R} = {y2} − {y1}', [
+  'The rise is how far up the second point is from the first.',
+  'Start at the first y and go up the rise.',
+  'Start at the second y and go back down the rise.',
+]);
+const RUN = minus('r', 'x2', 'x1', '{r} = {x2} − {x1}', [
+  'The run is how far across the second point is from the first.',
+  'Start at the first x and go across the run.',
+  'Start at the second x and go back across the run.',
+]);
+
+/** A signed value on a grid: −lim to lim in steps of `step`. */
+const signed = (id: string, symbol: string, name: string, step = 1, lim = 10) => ({
+  id,
+  symbol,
+  name,
+  min: -lim,
+  max: lim,
+  step,
+  ...(step === 1 ? { integer: true } : {}),
+});
+
+/** Why a x + b = c x + d has no single x, when the x-blocks match (8.EE.7a). */
+const sameX = (b: number, d: number) =>
+  b === d
+    ? 'Both sides are the same expression: every x works, so there are infinitely many solutions.'
+    : 'The same x on both sides but different numbers: no x works, so there is no solution.';
+
+/** Why two lines have no single crossing, when their slopes match (8.EE.8b). */
+const sameSlope = (b1: number, b2: number) =>
+  b1 === b2
+    ? 'The same line twice: every point on it is a solution.'
+    : 'The slopes are equal and the intercepts differ: the lines are parallel, so there is no solution.';
+
+/** x where two lines y = m₁x + b₁ and y = m₂x + b₂ cross, and y there. */
+function crossing(m1: string, b1: string, m2: string, b2: string, x = 'x', y = 'y') {
+  const xId = `${x} = (${b2} − ${b1}) ÷ (${m1} − ${m2})`;
+  const yId = `${y} = ${m1} × ${x} + ${b1}`;
+  return {
+    relations: [
+      {
+        id: xId,
+        display: `{${x}} = ({${b2}} − {${b1}}) ÷ ({${m1}} − {${m2}})`,
+        vars: [x, b2, b1, m1, m2],
+        residual: (v: Values) => v[x]! * (v[m1]! - v[m2]!) - (v[b2]! - v[b1]!),
+        solve: {
+          [x]: (v: Values) => div(v[b2]! - v[b1]!, v[m1]! - v[m2]!),
+          [b2]: () => undefined,
+          [b1]: () => undefined,
+          [m1]: () => undefined,
+          [m2]: () => undefined,
+        },
+        message: (v: Values) =>
+          v[m1] !== undefined && v[m1] === v[m2] ? sameSlope(v[b1]!, v[b2]!) : undefined,
+      },
+      derive(
+        yId,
+        y,
+        [m1, x, b1],
+        `{${y}} = {${m1}} × {${x}} + {${b1}}`,
+        (v) => v[m1]! * v[x]! + v[b1]!,
+      ),
+    ] satisfies Relation[],
+    steps: {
+      [xId]: {
+        [x]: {
+          expr: `({${b2}} − {${b1}}) ÷ ({${m1}} − {${m2}})`,
+          how: 'Set the two right sides equal, gather x on one side, then divide.',
+        },
+      },
+      [yId]: { [y]: { expr: `{${m1}} × {${x}} + {${b1}}`, how: 'Put x into the first equation.' } },
+    } satisfies Record<string, Record<string, StepText>>,
+  };
+}
+
+/** a × x + b = c × x + d, with the message for equal x-blocks. */
+function bothSides(a: string, b: string, c: string, d: string): Relation {
+  return {
+    id: `${a} × x + ${b} = ${c} × x + ${d}`,
+    display: `{${a}} × {x} + {${b}} = {${c}} × {x} + {${d}}`,
+    vars: ['x', a, b, c, d],
+    residual: (v: Values) => v[a]! * v.x! + v[b]! - (v[c]! * v.x! + v[d]!),
+    solve: {
+      x: (v: Values) => div(v[d]! - v[b]!, v[a]! - v[c]!),
+      [a]: () => undefined,
+      [b]: () => undefined,
+      [c]: () => undefined,
+      [d]: () => undefined,
+    },
+    message: (v: Values) => (v[a] !== undefined && v[a] === v[c] ? sameX(v[b]!, v[d]!) : undefined),
+  };
+}
+const bothSidesSteps = (
+  a: string,
+  b: string,
+  c: string,
+  d: string,
+): Record<string, Record<string, StepText>> => ({
+  [`${a} × x + ${b} = ${c} × x + ${d}`]: {
+    x: {
+      expr: `({${d}} − {${b}}) ÷ ({${a}} − {${c}})`,
+      how: 'Take the same x and the same number from both sides, then divide by the x left.',
+      work: (v: Values) => [
+        `Take ${fmt(v[c]!)}x from both sides: ${fmt(v[a]! - v[c]!)}x + ${fmt(v[b]!)} = ${fmt(v[d]!)}`,
+        `Take ${fmt(v[b]!)} from both sides: ${fmt(v[a]! - v[c]!)}x = ${fmt(v[d]! - v[b]!)}`,
+      ],
+      written: false,
+    },
+  },
+});
+
 export const MATH_8_MODULES: ModuleDef[] = [
   // ── Square roots, cube roots and irrational numbers (8.NS.1–2, 8.EE.2) ──
   {
@@ -432,7 +569,9 @@ export const MATH_8_MODULES: ModuleDef[] = [
       {
         ...derive('P = b^n', 'P', ['b', 'n'], '{P} = {b}^{n}', (v) => v.b! ** v.n!),
         check: (v: Values) =>
-          v.n! < 0 ? `1 ÷ ${v.b}${sup(-v.n!)} = ${fmtP(v.P!)}` : `${v.b}${sup(v.n!)} = ${fmtP(v.P!)}`,
+          v.n! < 0
+            ? `1 ÷ ${v.b}${sup(-v.n!)} = ${fmtP(v.P!)}`
+            : `${v.b}${sup(v.n!)} = ${fmtP(v.P!)}`,
       },
     ],
     steps: {
@@ -762,6 +901,687 @@ export const MATH_8_MODULES: ModuleDef[] = [
     pictureLabels: ['g', 'o'],
     representation: { kind: 'powerScale', number: 'S', mantissa: 'u', exponent: 'q' },
   },
+  // ── Slope (8.EE.5–6) ──
+  {
+    id: 'm.8.slope',
+    assumptions: [
+      'The slope is the rise divided by the run between any two points on the line.',
+      'Any two points give the same slope: the slope triangles are similar.',
+      'A line going down to the right has a negative rise, so a negative slope.',
+      'A run of 0 is a vertical line: it has no slope.',
+    ],
+    variables: [
+      whole('x1', 'x₁', 'First x', -10, 10),
+      whole('y1', 'y₁', 'First y', -10, 10),
+      whole('x2', 'x₂', 'Second x', -10, 10),
+      whole('y2', 'y₂', 'Second y', -10, 10),
+      { ...whole('R', 'rise', 'Rise', -20, 20), derived: true },
+      { ...whole('r', 'run', 'Run', -20, 20), derived: true },
+      { id: 'm', symbol: 'm', name: 'Slope', min: -20, max: 20, fraction: 20, derived: true },
+    ],
+    relations: [
+      RISE.relation,
+      RUN.relation,
+      {
+        id: 'run ≠ 0',
+        constraint: true,
+        display: 'The run {r} is not 0',
+        vars: ['r'],
+        residual: (v: Values) => (v.r === 0 ? 1 : 0),
+        solve: {},
+      },
+      derive('m = rise ÷ run', 'm', ['R', 'r'], '{m} = {R} ÷ {r}', (v) => div(v.R!, v.r!)),
+    ],
+    steps: {
+      'R = y2 − y1': RISE.steps,
+      'r = x2 − x1': RUN.steps,
+      'run ≠ 0': {},
+      'm = rise ÷ run': { m: { expr: '{R} ÷ {r}', how: 'Divide the rise by the run.' } },
+    },
+    example: { x1: -2, y1: -1, x2: 4, y2: 2, R: 3, r: 6, m: 0.5 },
+    startWith: ['x1', 'y1', 'x2', 'y2'],
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x1',
+      y: 'y1',
+      second: { x: 'x2', y: 'y2' },
+      slope: 'm',
+      rise: 'R',
+      run: 'r',
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+  {
+    id: 'm.8.slope~unit-rate-graph',
+    title: 'Slope as a unit rate',
+    use: 'Use this for “Priya runs 2 miles in 0.4 hours at a constant speed. What is her speed, and how far in 1.5 hours?”',
+    assumptions: [
+      'A constant speed makes a straight line through (0, 0): a proportional relationship.',
+      'Its slope is the unit rate: the distance for 1 hour.',
+      'Any other time: multiply it by the unit rate.',
+    ],
+    variables: [
+      { id: 'x', symbol: 'x', name: 'Time', unit: 'h', units: ['h'], min: 0.1, max: 10, step: 0.1 },
+      {
+        id: 'y',
+        symbol: 'y',
+        name: 'Distance',
+        unit: 'mi',
+        units: ['mi'],
+        min: 0,
+        max: 100,
+        step: 0.1,
+      },
+      {
+        id: 'm',
+        symbol: 'm',
+        name: 'Unit rate',
+        unit: 'mph',
+        units: ['mph'],
+        min: 0,
+        max: 100,
+        derived: true,
+      },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Other time',
+        unit: 'h',
+        units: ['h'],
+        min: 0,
+        max: 10,
+        step: 0.1,
+      },
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Distance then',
+        unit: 'mi',
+        units: ['mi'],
+        min: 0,
+        max: 1000,
+        derived: true,
+      },
+    ],
+    relations: [
+      derive('m = y ÷ x', 'm', ['y', 'x'], '{m} = {y} ÷ {x}', (v) => div(v.y!, v.x!)),
+      derive('d = m × t', 'd', ['m', 't'], '{d} = {m} × {t}', (v) => v.m! * v.t!),
+    ],
+    steps: {
+      'm = y ÷ x': {
+        m: { expr: '{y} ÷ {x}', how: 'The slope: the distance for each 1 hour.' },
+      },
+      'd = m × t': {
+        d: { expr: '{m} × {t}', how: 'Go along the line to the other time: rate × time.' },
+      },
+    },
+    example: { x: 0.4, y: 2, m: 5, t: 1.5, d: 7.5 },
+    startWith: ['x', 'y', 't'],
+    unitSystems: ['us'],
+    representation: {
+      kind: 'plot',
+      x: { var: 'x', min: 0, max: 1 },
+      y: { var: 'y', min: 0, max: 6 },
+      params: ['m'],
+      autoRange: true,
+      unitRate: 'm',
+      table: [0, 0.2, 0.4, 0.6, 0.8, 1],
+    },
+  },
+  {
+    id: 'm.8.slope~compare-rates',
+    title: 'Compare two rates',
+    use: 'Use this for “One company charges $196 for 8 cubic yards, the other $35 for 4. Which is cheaper per cubic yard?”',
+    assumptions: [
+      'Each company charges the same amount for every cubic yard: its line goes through (0, 0).',
+      'Each rate is a slope: cost ÷ cubic yards, from any point on the line.',
+      'The steeper line costs more for each cubic yard.',
+    ],
+    variables: [
+      { id: 'x1', symbol: 'x₁', name: 'Cubic yards, first', min: 0.1, max: 100, step: 0.1 },
+      { id: 'y1', symbol: 'y₁', name: 'Cost, first', unit: '$', min: 0, max: 10000, step: 0.01 },
+      { id: 'x2', symbol: 'x₂', name: 'Cubic yards, second', min: 0.1, max: 100, step: 0.1 },
+      { id: 'y2', symbol: 'y₂', name: 'Cost, second', unit: '$', min: 0, max: 10000, step: 0.01 },
+      { id: 'm1', symbol: 'm₁', name: 'First rate', unit: '$', min: 0, max: 100000, derived: true },
+      {
+        id: 'm2',
+        symbol: 'm₂',
+        name: 'Second rate',
+        unit: '$',
+        min: 0,
+        max: 100000,
+        derived: true,
+      },
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Difference of the rates',
+        unit: '$',
+        min: -100000,
+        max: 100000,
+        derived: true,
+      },
+    ],
+    relations: [
+      derive('m₁ = y₁ ÷ x₁', 'm1', ['y1', 'x1'], '{m1} = {y1} ÷ {x1}', (v) => div(v.y1!, v.x1!)),
+      derive('m₂ = y₂ ÷ x₂', 'm2', ['y2', 'x2'], '{m2} = {y2} ÷ {x2}', (v) => div(v.y2!, v.x2!)),
+      derive('d = m₁ − m₂', 'd', ['m1', 'm2'], '{d} = {m1} − {m2}', (v) => v.m1! - v.m2!),
+    ],
+    steps: {
+      'm₁ = y₁ ÷ x₁': {
+        m1: { expr: '{y1} ÷ {x1}', how: 'The first company’s cost for 1 cubic yard.' },
+      },
+      'm₂ = y₂ ÷ x₂': {
+        m2: { expr: '{y2} ÷ {x2}', how: 'The second company’s cost for 1 cubic yard.' },
+      },
+      'd = m₁ − m₂': {
+        d: {
+          expr: '{m1} − {m2}',
+          how: (v: Values) =>
+            v.d! > 0
+              ? 'The first costs more for each cubic yard: the second is cheaper.'
+              : v.d! < 0
+                ? 'The second costs more for each cubic yard: the first is cheaper.'
+                : 'They cost the same for each cubic yard.',
+        },
+      },
+    },
+    example: { x1: 8, y1: 196, x2: 4, y2: 35, m1: 24.5, m2: 8.75, d: 15.75 },
+    startWith: ['x1', 'y1', 'x2', 'y2'],
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'm1', intercept: 0, label: 'First' },
+        { slope: 'm2', intercept: 0, label: 'Second' },
+      ],
+      quadrants: 1,
+      extent: { x: 10, y: 250 },
+      axes: { x: 'Cubic yards', y: 'Cost ($)' },
+    },
+  },
+
+  // ── Equations with the unknown on both sides (8.EE.7) ──
+  {
+    id: 'm.8.multi-step-equations',
+    assumptions: [
+      'Each x-block weighs the same unknown amount x; each counter weighs 1.',
+      'Taking the same weight from both pans keeps the balance level.',
+      'Gather the x-blocks on one side and the counters on the other, then divide.',
+      'Check by putting x back into both sides.',
+    ],
+    variables: [
+      whole('a', 'a', 'x-blocks on the left', -10, 10),
+      whole('b', 'b', 'Counters on the left', -15, 15),
+      whole('c', 'c', 'x-blocks on the right', -10, 10),
+      whole('d', 'd', 'Counters on the right', -15, 15),
+      {
+        id: 'x',
+        symbol: 'x',
+        name: 'Weight of one x-block',
+        min: -50,
+        max: 50,
+        fraction: 20,
+        derived: true,
+      },
+    ],
+    relations: [bothSides('a', 'b', 'c', 'd')],
+    steps: bothSidesSteps('a', 'b', 'c', 'd'),
+    example: { a: 3, b: 4, c: 1, d: 10, x: 3 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'equationBalance',
+      x: 'x',
+      left: ['a', 'b'],
+      right: ['c', 'd'],
+      cancel: true,
+    },
+  },
+  {
+    id: 'm.8.multi-step-equations~negatives',
+    title: 'Negatives on a balance',
+    use: 'Use this for “5y + 13 = −43 − 3y” or “2x − 3 = −x + 6”.',
+    assumptions: [
+      'A balloon pulls its pan up: a balloon marked −x takes away one x, one marked −1 takes away 1.',
+      'Adding the same to both sides keeps the balance level: add 3 to cancel a −3.',
+      'The balance is level when both sides come to the same amount.',
+    ],
+    variables: [
+      whole('a', 'a', 'x on the left', -10, 10),
+      whole('b', 'b', 'Number on the left', -15, 15),
+      whole('c', 'c', 'x on the right', -10, 10),
+      whole('d', 'd', 'Number on the right', -15, 15),
+      { id: 'x', symbol: 'x', name: 'x', min: -50, max: 50, fraction: 20, derived: true },
+    ],
+    relations: [bothSides('a', 'b', 'c', 'd')],
+    steps: bothSidesSteps('a', 'b', 'c', 'd'),
+    example: { a: 2, b: -3, c: -1, d: 6, x: 3 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'equationBalance',
+      x: 'x',
+      left: ['a', 'b'],
+      right: ['c', 'd'],
+      cancel: true,
+    },
+  },
+  {
+    id: 'm.8.multi-step-equations~distribute',
+    title: 'Brackets first',
+    use: 'Use this for “2(3x + 2) = 2x + 28”.',
+    assumptions: [
+      'Multiply everything inside the brackets by the number outside: p(ax + b) = pax + pb.',
+      'Then solve Ax + B = cx + d as on the balance.',
+      'On a graph, each side is a line; the solution is the x where they cross.',
+    ],
+    variables: [
+      { ...whole('p', 'p', 'Number outside', -12, 12) },
+      whole('a', 'a', 'x in the brackets', -12, 12),
+      whole('b', 'b', 'Number in the brackets', -50, 50),
+      whole('c', 'c', 'x on the right', -50, 50),
+      whole('d', 'd', 'Number on the right', -500, 500),
+      { ...whole('A', 'A', 'x after multiplying out', -144, 144), derived: true },
+      { ...whole('B', 'B', 'Number after multiplying out', -600, 600), derived: true },
+      { id: 'x', symbol: 'x', name: 'x', min: -1000, max: 1000, fraction: 20, derived: true },
+      {
+        id: 'y',
+        symbol: 'y',
+        name: 'Value of each side',
+        min: -100000,
+        max: 100000,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'p ≠ 0',
+        constraint: true,
+        display: 'The number outside {p} is not 0',
+        vars: ['p'],
+        residual: (v: Values) => (v.p === 0 ? 1 : 0),
+        solve: {},
+      },
+      derive('A = p × a', 'A', ['p', 'a'], '{A} = {p} × {a}', (v) => v.p! * v.a!),
+      derive('B = p × b', 'B', ['p', 'b'], '{B} = {p} × {b}', (v) => v.p! * v.b!),
+      bothSides('A', 'B', 'c', 'd'),
+      derive(
+        'y = c × x + d',
+        'y',
+        ['c', 'x', 'd'],
+        '{y} = {c} × {x} + {d}',
+        (v) => v.c! * v.x! + v.d!,
+      ),
+    ],
+    steps: {
+      'p ≠ 0': {},
+      'A = p × a': {
+        A: { expr: '{p} × {a}', how: 'Multiply the x in the brackets by the number outside.' },
+      },
+      'B = p × b': {
+        B: {
+          expr: '{p} × {b}',
+          how: 'Multiply the number in the brackets too: every term inside.',
+        },
+      },
+      ...bothSidesSteps('A', 'B', 'c', 'd'),
+      'y = c × x + d': { y: { expr: '{c} × {x} + {d}', how: 'Check: both sides come to this.' } },
+    },
+    example: { p: 2, a: 3, b: 2, c: 2, d: 28, A: 6, B: 4, x: 6, y: 40 },
+    startWith: ['p', 'a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'lineSystem',
+      lines: [
+        { slope: 'A', intercept: 'B', label: 'Left side' },
+        { slope: 'c', intercept: 'd', label: 'Right side' },
+      ],
+      solution: { x: 'x', y: 'y' },
+      extent: { x: 10, y: 50 },
+    },
+  },
+  {
+    id: 'm.8.multi-step-equations~fraction-coefficient',
+    title: 'Clear the fraction',
+    use: 'Use this for “2/5 b + 1 = −11”.',
+    assumptions: [
+      'Multiply every term on both sides by the denominator: the whole side, not just the fraction.',
+      'Then p × x + R = S has whole numbers.',
+      'Take R from both sides, then divide by p.',
+    ],
+    variables: [
+      whole('p', 'p', 'Numerator', -12, 12),
+      whole('q', 'q', 'Denominator', 1, 12),
+      whole('r', 'r', 'Number added', -50, 50),
+      whole('s', 's', 'Right side', -200, 200),
+      { ...whole('R', 'R', 'Added, times q', -600, 600), derived: true },
+      { ...whole('S', 'S', 'Right side, times q', -2400, 2400), derived: true },
+      { id: 'x', symbol: 'x', name: 'x', min: -10000, max: 10000, fraction: 20, derived: true },
+      { id: 'k', symbol: 'k', name: 'Slope p/q', min: -12, max: 12, fraction: 12, derived: true },
+    ],
+    relations: [
+      {
+        id: 'p ≠ 0',
+        constraint: true,
+        display: 'The numerator {p} is not 0',
+        vars: ['p'],
+        residual: (v: Values) => (v.p === 0 ? 1 : 0),
+        solve: {},
+      },
+      derive('R = q × r', 'R', ['q', 'r'], '{R} = {q} × {r}', (v) => v.q! * v.r!),
+      derive('S = q × s', 'S', ['q', 's'], '{S} = {q} × {s}', (v) => v.q! * v.s!),
+      derive('x = (S − R) ÷ p', 'x', ['S', 'R', 'p'], '{x} = ({S} − {R}) ÷ {p}', (v) =>
+        div(v.S! - v.R!, v.p!),
+      ),
+      derive('k = p ÷ q', 'k', ['p', 'q'], '{k} = {p} ÷ {q}', (v) => v.p! / v.q!),
+    ],
+    steps: {
+      'p ≠ 0': {},
+      'R = q × r': {
+        R: { expr: '{q} × {r}', how: 'Multiply the added number by the denominator too.' },
+      },
+      'S = q × s': {
+        S: { expr: '{q} × {s}', how: 'And the right side: every term on both sides.' },
+      },
+      'x = (S − R) ÷ p': {
+        x: { expr: '({S} − {R}) ÷ {p}', how: 'Now p × x + R = S: take R away, then divide by p.' },
+      },
+      'k = p ÷ q': {
+        k: { expr: '{p} ÷ {q}', how: 'The fraction in front of x: the slope of the left side.' },
+      },
+    },
+    example: { p: 2, q: 5, r: 1, s: -11, R: 5, S: -55, x: -30, k: 0.4 },
+    startWith: ['p', 'q', 'r', 's'],
+    representation: {
+      kind: 'linearFunction',
+      slope: 'k',
+      intercept: 'r',
+      point: { x: 'x', y: 's' },
+      extent: 10,
+    },
+  },
+
+  // ── Systems of two linear equations (8.EE.8) ──
+  (() => {
+    const cross = crossing('m1', 'b1', 'm2', 'b2');
+    return {
+      id: 'm.8.systems-linear',
+      assumptions: [
+        'The solution is the point on both lines: where they cross.',
+        'Set the two expressions for y equal, then solve for x.',
+        'Lines with the same slope and different intercepts are parallel: no solution.',
+        'Check the point in both equations.',
+      ],
+      variables: [
+        signed('m1', 'm₁', 'First slope', 0.5),
+        signed('b1', 'b₁', 'First intercept'),
+        signed('m2', 'm₂', 'Second slope', 0.5),
+        signed('b2', 'b₂', 'Second intercept'),
+        {
+          id: 'x',
+          symbol: 'x',
+          name: 'Solution x',
+          min: -1000,
+          max: 1000,
+          fraction: 20,
+          derived: true,
+        },
+        {
+          id: 'y',
+          symbol: 'y',
+          name: 'Solution y',
+          min: -10000,
+          max: 10000,
+          fraction: 20,
+          derived: true,
+        },
+      ],
+      relations: cross.relations,
+      steps: cross.steps,
+      example: { m1: 2, b1: -1, m2: -1, b2: 5, x: 2, y: 3 },
+      startWith: ['m1', 'b1', 'm2', 'b2'],
+      representation: {
+        kind: 'lineSystem',
+        lines: [
+          { slope: 'm1', intercept: 'b1' },
+          { slope: 'm2', intercept: 'b2' },
+        ],
+        solution: { x: 'x', y: 'y' },
+        extent: 10,
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    const cross = crossing('a', 'f', 'b', 'g', 'n', 'c');
+    return {
+      id: 'm.8.systems-linear~context',
+      title: 'When do two plans cost the same?',
+      use: 'Use this for “Gym A: $150 to join and $20 a month. Gym B: $60 and $35. When do they cost the same?”',
+      assumptions: [
+        'Each plan charges a starting amount plus the same amount every month.',
+        'Where the lines cross, both cost the same.',
+        'A negative rate is an amount going down: a tank losing 50 gallons an hour.',
+      ],
+      variables: [
+        { ...whole('a', 'a', 'Plan A per month', -100, 100) },
+        { ...whole('f', 'f', 'Plan A to start', 0, 1000) },
+        { ...whole('b', 'b', 'Plan B per month', -100, 100) },
+        { ...whole('g', 'g', 'Plan B to start', 0, 1000) },
+        { id: 'n', symbol: 'n', name: 'Months', min: 0, max: 1000, derived: true },
+        { id: 'c', symbol: 'C', name: 'Same amount', min: -100000, max: 100000, derived: true },
+      ],
+      relations: cross.relations,
+      steps: cross.steps,
+      example: { a: 20, f: 150, b: 35, g: 60, n: 6, c: 270 },
+      startWith: ['a', 'f', 'b', 'g'],
+      representation: {
+        kind: 'lineSystem',
+        lines: [
+          { slope: 'a', intercept: 'f', label: 'Plan A' },
+          { slope: 'b', intercept: 'g', label: 'Plan B' },
+        ],
+        solution: { x: 'n', y: 'c' },
+        extent: { x: 12, y: 500 },
+        quadrants: 1,
+        axes: { x: 'Months', y: 'Amount' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  {
+    id: 'm.8.systems-linear~count-and-cost',
+    title: 'How many of each',
+    use: 'Use this for “5 videos cost $8.00. New releases are $2.50 and classics $1.00. How many of each?”',
+    assumptions: [
+      'Two equations: the count adds to n, and the cost adds to T.',
+      'If all were the cheaper kind, the cost would be q × n. Each of the dearer kind adds p − q.',
+      'A count must come out whole; if not, no mix of the two makes that total.',
+    ],
+    variables: [
+      whole('n', 'n', 'Items in all', 1, 100),
+      { id: 'T', symbol: 'T', name: 'Total cost', unit: '$', min: 0, max: 10000, step: 0.01 },
+      {
+        id: 'p',
+        symbol: 'p',
+        name: 'Price of the first kind',
+        unit: '$',
+        min: 0.01,
+        max: 1000,
+        step: 0.01,
+      },
+      {
+        id: 'q',
+        symbol: 'q',
+        name: 'Price of the second kind',
+        unit: '$',
+        min: 0.01,
+        max: 1000,
+        step: 0.01,
+      },
+      { ...whole('x', 'x', 'How many of the first kind', 0, 100), derived: true },
+      { ...whole('y', 'y', 'How many of the second kind', 0, 100), derived: true },
+    ],
+    relations: [
+      {
+        id: 'x = (T − q × n) ÷ (p − q)',
+        display: '{x} = ({T} − {q} × {n}) ÷ ({p} − {q})',
+        vars: ['x', 'T', 'q', 'n', 'p'],
+        residual: (v: Values) => v.x! * (v.p! - v.q!) - (v.T! - v.q! * v.n!),
+        solve: {
+          x: (v: Values) => {
+            const x = div(v.T! - v.q! * v.n!, v.p! - v.q!);
+            return x === undefined ? undefined : exact(x);
+          },
+          T: (v: Values) => exact(v.q! * v.n! + v.x! * (v.p! - v.q!)),
+          q: () => undefined,
+          n: () => undefined,
+          p: () => undefined,
+        },
+        message: (v: Values) => {
+          if ([v.T, v.q, v.n, v.p].some((x) => x === undefined)) return undefined;
+          if (v.p === v.q)
+            return 'Both kinds cost the same, so the total can’t tell how many of each.';
+          const x = (v.T! - v.q! * v.n!) / (v.p! - v.q!);
+          return Math.abs(x - Math.round(x)) > 1e-9 || x < -1e-9 || x > v.n! + 1e-9
+            ? 'The counts don’t come out whole numbers from 0 to n: no mix of the two makes that total.'
+            : undefined;
+        },
+      },
+      derive('y = n − x', 'y', ['n', 'x'], '{y} = {n} − {x}', (v) => v.n! - v.x!),
+    ],
+    steps: {
+      'x = (T − q × n) ÷ (p − q)': {
+        x: {
+          expr: '({T} − {q} × {n}) ÷ ({p} − {q})',
+          how: 'If all were the second kind, the cost is q × n. The extra, shared at p − q each, is the first kind.',
+        },
+        T: {
+          expr: '{q} × {n} + {x} × ({p} − {q})',
+          how: 'The cost if all were the second kind, plus the extra for each of the first kind.',
+        },
+      },
+      'y = n − x': { y: { expr: '{n} − {x}', how: 'The rest are the second kind.' } },
+    },
+    example: { n: 5, T: 8, p: 2.5, q: 1, x: 2, y: 3 },
+    startWith: ['n', 'T', 'p', 'q'],
+    representation: {
+      kind: 'table',
+      sweep: 'x',
+      output: 'T',
+      params: ['n', 'p', 'q'],
+      rows: (v: Values) => Array.from({ length: Math.min(v.n ?? 5, 12) + 1 }, (_, i) => i),
+    },
+  },
+  (() => {
+    const cross = crossing('M', 'K', 'N', 'L');
+    return {
+      id: 'm.8.systems-linear~standard-form',
+      title: 'Lines written ax + by = c',
+      use: 'Use this for “Which point is on both x + y = 4 and y = x?” (write y = x as −x + y = 0).',
+      assumptions: [
+        'Rewrite ax + by = c as y = −(a ÷ b)x + c ÷ b: the slope and the intercept.',
+        'Then find where the two lines cross, as for y = mx + b.',
+        'Or add or subtract the equations so one letter cancels (elimination).',
+      ],
+      variables: [
+        signed('a', 'a', 'x in the first'),
+        signed('b', 'b', 'y in the first'),
+        signed('c', 'c', 'Right side of the first', 1, 50),
+        signed('d', 'd', 'x in the second'),
+        signed('e', 'e', 'y in the second'),
+        signed('f', 'f', 'Right side of the second', 1, 50),
+        {
+          id: 'M',
+          symbol: 'm₁',
+          name: 'First slope',
+          min: -100,
+          max: 100,
+          fraction: 12,
+          derived: true,
+        },
+        {
+          id: 'K',
+          symbol: 'b₁',
+          name: 'First intercept',
+          min: -100,
+          max: 100,
+          fraction: 12,
+          derived: true,
+        },
+        {
+          id: 'N',
+          symbol: 'm₂',
+          name: 'Second slope',
+          min: -100,
+          max: 100,
+          fraction: 12,
+          derived: true,
+        },
+        {
+          id: 'L',
+          symbol: 'b₂',
+          name: 'Second intercept',
+          min: -100,
+          max: 100,
+          fraction: 12,
+          derived: true,
+        },
+        {
+          id: 'x',
+          symbol: 'x',
+          name: 'Solution x',
+          min: -10000,
+          max: 10000,
+          fraction: 100,
+          derived: true,
+        },
+        {
+          id: 'y',
+          symbol: 'y',
+          name: 'Solution y',
+          min: -10000,
+          max: 10000,
+          fraction: 100,
+          derived: true,
+        },
+      ],
+      relations: [
+        {
+          id: 'b, e ≠ 0',
+          constraint: true,
+          display: 'Both lines have y in them: {b} and {e} are not 0',
+          vars: ['b', 'e'],
+          residual: (v: Values) => (v.b !== 0 && v.e !== 0 ? 0 : 1),
+          solve: {},
+        },
+        derive('m₁ = −a ÷ b', 'M', ['a', 'b'], '{M} = −{a} ÷ {b}', (v) => div(-v.a!, v.b!)),
+        derive('b₁ = c ÷ b', 'K', ['c', 'b'], '{K} = {c} ÷ {b}', (v) => div(v.c!, v.b!)),
+        derive('m₂ = −d ÷ e', 'N', ['d', 'e'], '{N} = −{d} ÷ {e}', (v) => div(-v.d!, v.e!)),
+        derive('b₂ = f ÷ e', 'L', ['f', 'e'], '{L} = {f} ÷ {e}', (v) => div(v.f!, v.e!)),
+        ...cross.relations,
+      ],
+      steps: {
+        'b, e ≠ 0': {},
+        'm₁ = −a ÷ b': {
+          M: { expr: '−{a} ÷ {b}', how: 'Take ax to the other side and divide by b: the slope.' },
+        },
+        'b₁ = c ÷ b': {
+          K: { expr: '{c} ÷ {b}', how: 'Divide the right side by b: the intercept.' },
+        },
+        'm₂ = −d ÷ e': { N: { expr: '−{d} ÷ {e}', how: 'The same for the second line.' } },
+        'b₂ = f ÷ e': { L: { expr: '{f} ÷ {e}', how: 'The second line’s intercept.' } },
+        ...cross.steps,
+      },
+      example: { a: 1, b: 1, c: 4, d: -1, e: 1, f: 0, M: -1, K: 4, N: 1, L: 0, x: 2, y: 2 },
+      startWith: ['a', 'b', 'c', 'd', 'e', 'f'],
+      representation: {
+        kind: 'lineSystem',
+        lines: [
+          { slope: 'M', intercept: 'K' },
+          { slope: 'N', intercept: 'L' },
+        ],
+        solution: { x: 'x', y: 'y' },
+        extent: 10,
+      },
+    } satisfies ModuleDef;
+  })(),
   {
     id: 'm.8.pythagorean',
     assumptions: [

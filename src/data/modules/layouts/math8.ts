@@ -107,4 +107,112 @@ export const MATH_8_LAYOUTS: LayoutDef[] = [
       { label: 'one millionth', bin: '-6' },
     ],
   },
+
+  // ── Slope (8.EE.6, 8.F.4) ──
+  {
+    kind: 'sort',
+    id: 'm.8.slope~sign',
+    title: 'The signs of the slope and intercept',
+    use: 'Use this for “Which line rises to the right and crosses the y-axis below 0?”',
+    assumptions: [
+      'In y = mx + b, m is the slope and b the y-intercept.',
+      'A positive slope rises to the right; a negative one falls; a zero slope is flat.',
+      'The intercept is where the line crosses the y-axis: above 0 or below it.',
+    ],
+    question: 'What are the slope and intercept of the line?',
+    bins: [
+      { id: '++', label: 'Slope +, intercept +', why: 'Rises to the right, crosses above 0.' },
+      { id: '+-', label: 'Slope +, intercept −', why: 'Rises to the right, crosses below 0.' },
+      { id: '-+', label: 'Slope −, intercept +', why: 'Falls to the right, crosses above 0.' },
+      { id: '--', label: 'Slope −, intercept −', why: 'Falls to the right, crosses below 0.' },
+      { id: '0', label: 'Zero slope', why: 'A flat line: y is the same for every x.' },
+    ],
+    cards: [
+      { label: 'y = 2x + 3', bin: '++' },
+      { label: 'y = 2x − 3', bin: '+-' },
+      { label: 'A line up to the right through (0, −2)', bin: '+-' },
+      { label: 'y = −2x + 1', bin: '-+' },
+      { label: 'A line down to the right through (0, 4)', bin: '-+' },
+      { label: 'y = 800 − 50x', bin: '-+' },
+      { label: 'y = −x − 4', bin: '--' },
+      { label: 'y = 5', bin: '0' },
+    ],
+  },
+
+  // ── Equations with the unknown on both sides (8.EE.7) ──
+  {
+    kind: 'sort',
+    id: 'm.8.multi-step-equations~how-many-solutions',
+    title: 'One, none or infinitely many?',
+    use: 'Use this for “Does 4x − 4 = 4x + 5 have one solution, none, or infinitely many?”',
+    assumptions: [
+      'Multiply out and gather each side into ax + b first.',
+      'Different numbers of x on each side: exactly one solution.',
+      'The same x but different numbers: no solution. The same x and the same number: every x works.',
+    ],
+    question: 'How many solutions does the equation have?',
+    bins: [
+      { id: 'one', label: 'One', why: 'Different numbers of x on each side.' },
+      { id: 'none', label: 'None', why: 'The same x on both sides, different numbers.' },
+      { id: 'all', label: 'Infinitely many', why: 'Both sides are the same expression.' },
+    ],
+    cards: [
+      { label: '2(x + 3) = 5x + 6', bin: 'one' },
+      { label: '2x + 2 = x + 1', bin: 'one' },
+      { label: '−x − 3(x − 5) = 2(x − 5) + x', bin: 'one' },
+      { label: 'x − 13 = x + 1', bin: 'none' },
+      { label: '4x − 4 = 4x + 5', bin: 'none' },
+      { label: 'x + 1/2 = x − 1/2', bin: 'none' },
+      { label: '3x − x − 3 = 2x − 3', bin: 'all' },
+      { label: '4x − 4 = 4x − 4', bin: 'all' },
+      { label: '5(x + 2) = 5x + 10', bin: 'all' },
+    ],
+  },
+  {
+    kind: 'sequence',
+    id: 'm.8.multi-step-equations~solve-order',
+    title: 'Steps to solve 3x + 4 = x + 10',
+    use: 'Use this for “What do you do first to solve 3x + 4 = x + 10?”',
+    assumptions: [
+      'Gather the x on one side first, then the numbers on the other.',
+      'Whatever you do to one side, do to the other.',
+      'Check by putting x back into both sides: they must come out equal.',
+    ],
+    question: 'Put the steps in order, first step first.',
+    stages: [
+      { label: '3x + 4 = x + 10' },
+      { label: 'Take x from both sides: 2x + 4 = 10' },
+      { label: 'Take 4 from both sides: 2x = 6' },
+      { label: 'Divide both sides by 2: x = 3' },
+      { label: 'Check: 3 × 3 + 4 = 13 and 3 + 10 = 13' },
+    ],
+  },
+
+  // ── Systems of equations (8.EE.8) ──
+  {
+    kind: 'sort',
+    id: 'm.8.systems-linear~how-many',
+    title: 'How many solutions does the system have?',
+    use: 'Use this for “Do y = 3x − 2 and y = 3x + 5 have a solution?”',
+    assumptions: [
+      'Write each line as y = mx + b and compare the slopes first.',
+      'Different slopes: the lines cross once. Same slope, different intercepts: parallel.',
+      'Same slope and same intercept: the same line, so every point on it is a solution.',
+    ],
+    question: 'How many solutions does the system have?',
+    bins: [
+      { id: 'one', label: 'One', why: 'Different slopes: the lines cross once.' },
+      { id: 'none', label: 'None', why: 'Same slope, different intercepts: parallel.' },
+      { id: 'all', label: 'Infinitely many', why: 'The same line written twice.' },
+    ],
+    cards: [
+      { label: 'y = 2x + 1 and y = −x + 4', bin: 'one' },
+      { label: 'x + y = 4 and y = x', bin: 'one' },
+      { label: 'y = 4 and x = 2', bin: 'one' },
+      { label: 'y = 3x − 2 and y = 3x + 5', bin: 'none' },
+      { label: 'y = 1/2 x and y = 0.5x − 3', bin: 'none' },
+      { label: 'y = x + 1 and 2y = 2x + 2', bin: 'all' },
+      { label: '3x + y = 6 and y = 6 − 3x', bin: 'all' },
+    ],
+  },
 ];
