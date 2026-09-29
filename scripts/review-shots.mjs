@@ -112,6 +112,19 @@ try {
             if (text) issues.push(`sticks out past the screen: "${text}"`);
           }
         }
+        // Any block wider than the screen (a stacked quotient in the steps): the page scrolls
+        // inside its own scroll view, which the document's width above doesn't show. The
+        // innermost one is named.
+        const wide = [...document.querySelectorAll('div')].filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.width > 0 && r.right > vw + 1;
+        });
+        for (const el of wide
+          .filter((el) => !wide.some((o) => o !== el && el.contains(o)))
+          .slice(0, 5)) {
+          const text = (el.textContent ?? '').trim().slice(0, 40);
+          if (text) issues.push(`wider than the screen: "${text}"`);
+        }
         // Overlapping chart labels inside each SVG.
         for (const svg of document.querySelectorAll('svg')) {
           const texts = [...svg.querySelectorAll('text')]

@@ -5,6 +5,35 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 7–8 review: exact steps, drags that keep typed numbers, pages that fit
+
+- **Exact simplifying.** `simplify.ts` reads a fraction as one number, keeps results exact
+  (fractions when the line had them, denominators to 100), keeps π as a factor ("9π") and stops
+  before a line that would have to round (`≈`), so no chain rounds halfway. Negatives are
+  bracketed only after an operator; lines that differ only by brackets are dropped.
+- **Numbers.** Scientific notation keeps 5 significant figures; a π answer adds its decimal in
+  brackets after "≈"; units say the singular for 1 with a capitalised name ("1 Earth
+  mass").
+- **Drags keep what was typed.** `lineSystem` lines and `linearFunction` take `keep` (the
+  typed values held while a handle moves) and `fixed` (no handles when every value comes from
+  typed points); `powerScale` takes `fixed`. Rate pages solve both ways (`rate()` in
+  `math/8.ts`), so a drag moves the answer instead of clearing a typed box to "?".
+- **Fraction boxes** on the web get the text keyboard (a "/" key), as do π, scientific and
+  repeating boxes.
+- **Long quotients wrap.** A division whose top is over 28 characters stays inline text
+  (`latex.ts`), so a sum of eight distances ÷ 8 no longer makes the page scroll sideways.
+- **Pictures.** The balance draws tens and ones past 15; the orbit's pull reads to 3 figures in
+  Earth's pull, moves to the corner near the sun and titles the planet "Planet" unless it is
+  Earth; a rate race says its rates in the axes' units ("$24.50 per cubic yard"); intercept
+  chips leave the x-axis numbers; worked chains in a caption share one left edge; a battery
+  reads "6 V", not "V = 6 V"; the moon sits under Earth; a solid packs as a near-square block
+  (16 salt units 4 × 4).
+- **Harness.** Nets check that a triangle closes, not that it is right-angled; the balance
+  counts to 100; power rows past 24; the sample holds 1,000; picture values compare to 12
+  figures; a refusal with its own reason is not a failure.
+- **Not done:** `s.8.kinetic-potential` consistent-sample misses one solver hint edge case
+  (logged, not seen on the page).
+
 ## Grade 7–8 math engine, second half: repeating decimals, angles, roots, lines
 
 - **Repeating decimals (E3).** `repeating: true` prints 1/6 as "0.1666…" (the block written to

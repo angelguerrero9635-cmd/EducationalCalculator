@@ -124,7 +124,8 @@ and the few places the notation is better. Keep the number sentence the grade wr
 
 **F. Exam coverage.** Start from the skill's block in `questions.md`, then add the common
 question types it lacks (4–8 in all). For each, work the question on the module and mark it
-Solves / Partly / No, naming the question id.
+Solves / Partly / No, naming the question id. "Solves" means the item's numbers fit the
+page's ranges and steps; an item just past a range is Partly, with the range it needs.
 
 - A student who has used the page should be able to answer the real items, so check the words,
   the number sizes, the unknown's position and the picture (a NAEP tape diagram or thermometer

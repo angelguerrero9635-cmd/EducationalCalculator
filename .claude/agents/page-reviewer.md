@@ -89,7 +89,8 @@ confusing.
 **Scenes and drags.** The evidence folder has `scenes/<id>-<n>.png` (every scene of every
 exploration) and `drags.md` (every handle dragged, the values before and after). Read them
 before opening a browser: check each scene shows what its lines say, and each drag keeps the
-relations true (a point stays on its line, a total still adds up).
+relations true (a point stays on its line, a total still adds up). A value that becomes `?`
+after a drag is an error: the drag cleared a number the student typed.
 
 **Q. What each number means (student).** Read every label on the page, the picture's too, as
 a sentence: "Beakers with 1/8 L: 2" says two beakers; "At 1/8 L: 2" reads as two liters. Report

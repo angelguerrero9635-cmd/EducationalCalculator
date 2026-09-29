@@ -13,6 +13,24 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## Grades 7–8: one lesson-reviewer and one page-reviewer, math and science
+
+- Setup: `pnpm review` for `m.7.`, `m.8.`, `s.7.`, `s.8.`; the lesson reviewer about 397k
+  tokens, the page reviewer about 156k.
+- Found (lesson): ranges that stopped normal answers (balance ±100, exponents with any base,
+  1,000 in a sample, map scales in miles and km); missing work lines (means, MAD, two-step
+  equations, inequalities with the sign flipped); a triangular prism checked with the
+  Pythagorean rule; a tree diagram that only did coins.
+- Found (page): drags that cleared typed numbers to "?" on nine Grade 8 pages; a stacked
+  quotient 531 px wide; no "/" key in fraction boxes on an iPhone; the orbit's "55.5556" with no
+  unit and "Earth" at any mass; rates without units; labels on arrows and axis numbers; the
+  moon in the planet row; salt drawn 5 + 5 + 5 + 1.
+- All fixed; see the engine log's Grades 7–8 review entry.
+- Reviewer and evidence improvements: the page reviewer treats a `→ ?` in `drags.md` as an
+  error (a typed value cleared); `review-shots.mjs` flags any block wider than the screen, not
+  only the document (the steps scroll inside their own view); the lesson reviewer checks each
+  "Solves" row against the page's ranges, since several released items sat just past a range.
+
 ## Textbook-gap pages: one lesson-reviewer and one page-reviewer, 27 pages
 
 - Setup: `pnpm review` into `.review/new/` for the 27 pages; the two reviewers in parallel,
