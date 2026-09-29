@@ -14,6 +14,7 @@ import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
 import type { CardIcon } from './layouts/types';
+import type { TwoWaySpec } from './typesHse';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1502,6 +1503,8 @@ export type Representation =
       /** A name for each swept row ("Moon", "Mars"), in a first column. */
       rowNames?: string[];
     }
+  /** Grades 9–12 (H20): a two-way frequency table (spec in `typesHse.ts`). */
+  | { kind: 'table'; twoWay: TwoWaySpec }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */
   | {
       kind: 'force';

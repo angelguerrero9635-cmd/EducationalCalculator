@@ -14,6 +14,7 @@ import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { isStandIn, pages } from '../harness/scope';
+import { twoWayVars } from '../harness/picturesHse';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -390,7 +391,7 @@ function representationVars(r: Representation): string[] {
         ),
       ];
     case 'table':
-      return [r.sweep, r.output, ...r.params];
+      return 'twoWay' in r ? twoWayVars(r.twoWay) : [r.sweep, r.output, ...r.params];
     case 'thermometers':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'rockLayers':

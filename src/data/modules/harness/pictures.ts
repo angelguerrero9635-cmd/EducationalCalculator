@@ -24,7 +24,7 @@ import { chemIssues } from './chemPictures';
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
-import { boxPlotIssues, dotPlotSdIssues, scatterIssues } from './picturesHse';
+import { boxPlotIssues, dotPlotSdIssues, scatterIssues, twoWayIssues } from './picturesHse';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2022,6 +2022,10 @@ export function repIssues(
       out.push(...physics8Issues(rep, (id) => val(id)));
       break;
     case 'table':
+      if ('twoWay' in rep) {
+        out.push(...twoWayIssues(rep.twoWay, val));
+        break;
+      }
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)
         out.push(`${rep.rowNames.length} row names for ${rep.rows.length} rows`);
       break;

@@ -90,6 +90,7 @@ import { DoubleNumberLine } from './DoubleNumberLine';
 import { CoordinatePlane } from './CoordinatePlane';
 import { BoxPlot } from './BoxPlot';
 import { BoxPlotPair } from './BoxPlotPair';
+import { TwoWayTable } from './TwoWayTable';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -281,7 +282,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'plot':
       return <Plot spec={spec} calc={calc} />;
     case 'table':
-      return <ValueTable spec={spec} calc={calc} />;
+      return 'twoWay' in spec ? (
+        <TwoWayTable spec={spec.twoWay} calc={calc} />
+      ) : (
+        <ValueTable spec={spec} calc={calc} />
+      );
     case 'force':
       return spec.object === 'cart' ? (
         <ForceCart spec={spec} calc={calc} />

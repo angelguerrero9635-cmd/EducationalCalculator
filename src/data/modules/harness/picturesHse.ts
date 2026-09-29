@@ -4,7 +4,9 @@
  * when it is "?").
  */
 import {
+  chiSquare,
   correlation,
+  expectedCounts,
   fences,
   leastSquares,
   quartile,
@@ -12,6 +14,7 @@ import {
 } from '@/components/module/reps/stats';
 
 import type { Representation } from '../types';
+import type { TwoWaySpec } from '../typesHse';
 
 type Val = (x: string | number) => number | undefined;
 type Of<K extends Representation['kind']> = Extract<Representation, { kind: K }>;
@@ -116,6 +119,77 @@ export function dotPlotSdIssues(rep: Of<'dotPlot'>, val: Val): string[] {
     // Shown to two places (or more).
     if (want !== undefined && Math.abs(s - want) > 0.0051 + 1e-6 * want)
       out.push(`standard deviation shows ${s}, the data give ${want.toFixed(4)}`);
+  }
+  return out;
+}
+
+const ids = (...xs: (string | number | undefined)[]) =>
+  xs.filter((x): x is string => typeof x === 'string');
+
+/** The variable ids a two-way table names (for the module tests). */
+export const twoWayVars = (t: TwoWaySpec) =>
+  ids(
+    ...t.cells.flat(),
+    ...(Array.isArray(t.expected) ? t.expected.flat() : []),
+    t.frequency,
+    t.chiSquare,
+  );
+
+/**
+ * H20: a two-way table's shape, its lit relative frequency (row, column or grand total as the
+ * whole) and chi-square from its expected counts.
+ */
+export function twoWayIssues(t: TwoWaySpec, val: Val): string[] {
+  const out: string[] = [];
+  const [R, C] = [t.rows.length, t.cols.length];
+  if (t.cells.length !== R || t.cells.some((r) => r.length !== C))
+    out.push(`a ${R} × ${C} table needs ${R} rows of ${C} cells`);
+  if (
+    Array.isArray(t.expected) &&
+    (t.expected.length !== R || t.expected.some((r) => r.length !== C))
+  )
+    out.push('expected counts are not the table’s shape');
+  if (t.lit) {
+    const { row, col } = t.lit;
+    if (row === undefined && col === undefined) out.push('a lit part names no row or column');
+    if (row !== undefined && !(row >= 0 && row < R)) out.push(`there is no row ${row}`);
+    if (col !== undefined && !(col >= 0 && col < C)) out.push(`there is no column ${col}`);
+    if ((t.of === 'row' && row === undefined) || (t.of === 'col' && col === undefined))
+      out.push(`a frequency of its ${t.of} needs a lit ${t.of}`);
+  }
+  const cells = t.cells.map((r) => r.map(val));
+  if (cells.flat().some((x) => x !== undefined && x < 0)) out.push('a negative count');
+  if (!cells.flat().every((x) => x !== undefined)) return out;
+  const n = cells as number[][];
+  const rowT = n.map((r) => r.reduce((a, b) => a + b, 0));
+  const colT = n[0]!.map((_, j) => n.reduce((a, r) => a + r[j]!, 0));
+  const all = rowT.reduce((a, b) => a + b, 0);
+  if (t.lit && t.frequency) {
+    const { row, col } = t.lit;
+    const part =
+      row !== undefined && col !== undefined
+        ? n[row]?.[col]
+        : row !== undefined
+          ? rowT[row]
+          : colT[col!];
+    const whole = t.of === 'row' ? rowT[row!] : t.of === 'col' ? colT[col!] : all;
+    const f = val(t.frequency);
+    // Shown to two places, or as a percent is not used here: a fraction of 1.
+    if (part !== undefined && whole && f !== undefined && Math.abs(f - part / whole) > 0.0051)
+      out.push(`relative frequency shows ${f}, the table gives ${part}/${whole}`);
+  }
+  if (t.chiSquare && t.expected) {
+    const e = t.expected === 'independence' ? expectedCounts(n) : t.expected.map((r) => r.map(val));
+    // Given expected counts (goodness of fit) share out the same total as the observed.
+    const eSum = e.flat().reduce<number>((acc, v) => acc + (v ?? NaN), 0);
+    if (Array.isArray(t.expected) && Number.isFinite(eSum) && !close(eSum, all))
+      out.push(`expected counts add to ${eSum}, the observed to ${all}`);
+    const x = val(t.chiSquare);
+    if (e.flat().every((v) => v !== undefined && v > 0) && x !== undefined) {
+      const want = chiSquare(n, e as number[][]);
+      if (Math.abs(x - want) > 0.0051 + 1e-6 * want)
+        out.push(`chi-square shows ${x}, the counts give ${want.toFixed(4)}`);
+    }
   }
   return out;
 }

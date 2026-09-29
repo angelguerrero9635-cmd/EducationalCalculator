@@ -1198,10 +1198,330 @@ const H19_MODULES: ModuleDef[] = [
   ),
 ];
 
+// ── H20: two-way tables, relative frequency, chi-square ──
+
+/** A count typed into a table (whole, 0 to 500). */
+const count = (id: string, name: string) => ({
+  id,
+  symbol: id,
+  name,
+  min: 0,
+  max: 500,
+  step: 1,
+  integer: true,
+});
+/** "{a} + {b} + …" */
+const plus = (ids: string[]) => ids.map((x) => `{${x}}`).join(' + ');
+const add = (v: Values, ids: string[]) => ids.reduce((s, x) => s + v[x]!, 0);
+
+/** total = the counts added. */
+const totalRule = (t: string, ids: string[], how: string) =>
+  rule(
+    `${t} = ${ids.join(' + ')}`,
+    `{${t}} = ${plus(ids)}`,
+    [t, ...ids],
+    (v) => v[t]! - add(v, ids),
+    {
+      [t]: [(v) => add(v, ids), plus(ids), how],
+    },
+  );
+
+/** f = part ÷ whole, a relative frequency. */
+const shareRule = (f: string, part: string, whole: string, how: string) =>
+  rule(
+    `${f} = ${part} ÷ ${whole}`,
+    `{${f}} = {${part}} ÷ {${whole}}`,
+    [f, part, whole],
+    (v) => v[f]! * v[whole]! - v[part]!,
+    {
+      [f]: [(v) => div(v[part]!, v[whole]!), `{${part}} ÷ {${whole}}`, how],
+    },
+  );
+
+const H20_MODULES: ModuleDef[] = [
+  page({
+    id: 'g.m9-two-way-tables-joint',
+    title: 'Two-way table: joint relative frequency',
+    use: 'Use this for a joint relative frequency: one cell out of the grand total.',
+    assumptions: [
+      'Each count is the students in one row and one column at once.',
+      'The totals add each row, each column, and everything.',
+      'A joint relative frequency is one cell ÷ the grand total.',
+    ],
+    variables: [
+      count('a', 'Sport, Grade 9'),
+      count('b', 'Sport, Grade 10'),
+      count('c', 'No sport, Grade 9'),
+      count('d', 'No sport, Grade 10'),
+      { ...out('N', 'N', 'Grand total'), min: 0 },
+      { ...out('f', 'f', 'Joint relative frequency'), min: 0 },
+    ],
+    rules: [
+      totalRule('N', ['a', 'b', 'c', 'd'], 'Add all four counts.'),
+      shareRule('f', 'a', 'N', 'The lit cell out of everyone.'),
+    ],
+    example: { a: 36, b: 28, c: 24, d: 32, N: 120, f: 0.3 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'table',
+      twoWay: {
+        rows: ['Sport', 'No sport'],
+        cols: ['Grade 9', 'Grade 10'],
+        cells: [
+          ['a', 'b'],
+          ['c', 'd'],
+        ],
+        lit: { row: 0, col: 0 },
+        frequency: 'f',
+        bar: 'rows',
+      },
+    },
+  }),
+  page({
+    id: 'g.m9-two-way-tables-marginal',
+    title: 'Two-way table: marginal relative frequency',
+    use: 'Use this for a marginal relative frequency: a row total out of the grand total.',
+    assumptions: [
+      'A marginal relative frequency uses a total at the edge (the margin) of the table.',
+      'It is a row (or column) total ÷ the grand total.',
+      'The segmented bars compare each column split by the rows.',
+    ],
+    variables: [
+      count('a', 'Left-handed, plays an instrument'),
+      count('b', 'Left-handed, does not'),
+      count('c', 'Right-handed, plays an instrument'),
+      count('d', 'Right-handed, does not'),
+      { ...out('L', 'L', 'Left-handed total'), min: 0 },
+      { ...out('N', 'N', 'Grand total'), min: 0 },
+      { ...out('f', 'f', 'Marginal relative frequency'), min: 0 },
+    ],
+    rules: [
+      totalRule('L', ['a', 'b'], 'Add the left-handed row.'),
+      totalRule('N', ['a', 'b', 'c', 'd'], 'Add all four counts.'),
+      shareRule('f', 'L', 'N', 'The row total out of everyone.'),
+    ],
+    example: { a: 6, b: 9, c: 39, d: 66, L: 15, N: 120, f: 0.125 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'table',
+      twoWay: {
+        rows: ['Left', 'Right'],
+        cols: ['Instrument', 'None'],
+        cells: [
+          ['a', 'b'],
+          ['c', 'd'],
+        ],
+        lit: { row: 0 },
+        frequency: 'f',
+        bar: 'cols',
+      },
+    },
+  }),
+  page({
+    id: 'g.m10-conditional-probability-table',
+    title: 'Conditional probability from a two-way table',
+    use: 'Use this for P(A | B) from a table: the cell out of the B column only.',
+    assumptions: [
+      'P(Late | Bus) looks only at the bus column: those late out of all who took the bus.',
+      'The whole is the column total, not the grand total.',
+      'The bars show each column as 100%: compare the late part across them.',
+    ],
+    variables: [
+      count('a', 'Late, bus'),
+      count('b', 'Late, walk'),
+      count('g', 'Late, car'),
+      count('d', 'On time, bus'),
+      count('e', 'On time, walk'),
+      count('h', 'On time, car'),
+      { ...out('B', 'B', 'Bus total'), min: 0 },
+      { ...out('p', 'P', 'P(Late | Bus)'), min: 0 },
+      { ...out('T', 'T', 'Late total'), min: 0 },
+      { ...out('N', 'N', 'Grand total'), min: 0 },
+      { ...out('q', 'Q', 'P(Late), everyone'), min: 0 },
+    ],
+    rules: [
+      totalRule('B', ['a', 'd'], 'Add the bus column.'),
+      shareRule('p', 'a', 'B', 'Late among the bus riders only.'),
+      totalRule('T', ['a', 'b', 'g'], 'Add the late row.'),
+      totalRule('N', ['a', 'b', 'g', 'd', 'e', 'h'], 'Add all six counts.'),
+      shareRule('q', 'T', 'N', 'Late out of everyone, to compare with the bus riders.'),
+    ],
+    example: { a: 12, b: 5, g: 3, d: 36, e: 45, h: 19, B: 48, p: 0.25, T: 20, N: 120, q: 1 / 6 },
+    startWith: ['a', 'b', 'g', 'd', 'e', 'h'],
+    representation: {
+      kind: 'table',
+      twoWay: {
+        rows: ['Late', 'On time'],
+        cols: ['Bus', 'Walk', 'Car'],
+        cells: [
+          ['a', 'b', 'g'],
+          ['d', 'e', 'h'],
+        ],
+        lit: { row: 0, col: 0 },
+        of: 'col',
+        frequency: 'p',
+        bar: 'cols',
+      },
+    },
+  }),
+  page({
+    id: 'g.m12-chi-square-independence',
+    title: 'Chi-square test of independence',
+    use: 'Use this for χ² from a two-way table: expected counts, then Σ (O − E)² ÷ E.',
+    assumptions: [
+      'If the two are independent, each cell expects row total × column total ÷ grand total.',
+      'χ² adds (observed − expected)² ÷ expected over every cell: big means far from independent.',
+      'A 2 × 2 table has (2 − 1) × (2 − 1) = 1 degree of freedom.',
+    ],
+    variables: [
+      count('a', 'Sport, likes early classes'),
+      count('b', 'Sport, does not'),
+      count('c', 'No sport, likes early classes'),
+      count('d', 'No sport, does not'),
+      { ...out('N', 'N', 'Grand total'), min: 0 },
+      { ...out('E1', 'E₁', 'Expected, first cell'), min: 0 },
+      { ...out('E2', 'E₂', 'Expected, second cell'), min: 0 },
+      { ...out('E3', 'E₃', 'Expected, third cell'), min: 0 },
+      { ...out('E4', 'E₄', 'Expected, fourth cell'), min: 0 },
+      { ...out('X', 'χ²', 'Chi-square'), min: 0 },
+    ],
+    rules: [
+      totalRule('N', ['a', 'b', 'c', 'd'], 'Add all four counts.'),
+      ...(
+        [
+          ['E1', ['a', 'b'], ['a', 'c']],
+          ['E2', ['a', 'b'], ['b', 'd']],
+          ['E3', ['c', 'd'], ['a', 'c']],
+          ['E4', ['c', 'd'], ['b', 'd']],
+        ] as const
+      ).map(([E, r, k]) =>
+        rule(
+          `${E} = row × column ÷ N`,
+          `{${E}} = ({${r[0]}} + {${r[1]}}) × ({${k[0]}} + {${k[1]}}) ÷ {N}`,
+          [...new Set([E, r[0], r[1], k[0], k[1], 'N'])],
+          (v) => v[E]! * v.N! - (v[r[0]]! + v[r[1]]!) * (v[k[0]]! + v[k[1]]!),
+          {
+            [E]: [
+              (v) => div((v[r[0]]! + v[r[1]]!) * (v[k[0]]! + v[k[1]]!), v.N!),
+              `({${r[0]}} + {${r[1]}}) × ({${k[0]}} + {${k[1]}}) ÷ {N}`,
+              'Row total × column total ÷ grand total.',
+            ],
+          },
+        ),
+      ),
+      rule(
+        'χ² = Σ (O − E)² ÷ E',
+        '{X} = ({a} − {E1})² ÷ {E1} + ({b} − {E2})² ÷ {E2} + ({c} − {E3})² ÷ {E3} + ({d} − {E4})² ÷ {E4}',
+        ['X', 'a', 'b', 'c', 'd', 'E1', 'E2', 'E3', 'E4'],
+        (v) =>
+          v.X! -
+          ((v.a! - v.E1!) ** 2 / v.E1! +
+            (v.b! - v.E2!) ** 2 / v.E2! +
+            (v.c! - v.E3!) ** 2 / v.E3! +
+            (v.d! - v.E4!) ** 2 / v.E4!),
+        {
+          X: [
+            (v) =>
+              [v.E1!, v.E2!, v.E3!, v.E4!].every((e) => e > 0)
+                ? (v.a! - v.E1!) ** 2 / v.E1! +
+                  (v.b! - v.E2!) ** 2 / v.E2! +
+                  (v.c! - v.E3!) ** 2 / v.E3! +
+                  (v.d! - v.E4!) ** 2 / v.E4!
+                : undefined,
+            '({a} − {E1})² ÷ {E1} + ({b} − {E2})² ÷ {E2} + ({c} − {E3})² ÷ {E3} + ({d} − {E4})² ÷ {E4}',
+            'For each cell: the gap from expected, squared, over expected; then add them.',
+          ],
+        },
+      ),
+    ],
+    example: {
+      a: 30,
+      b: 20,
+      c: 20,
+      d: 30,
+      N: 100,
+      E1: 25,
+      E2: 25,
+      E3: 25,
+      E4: 25,
+      X: 4,
+    },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'table',
+      twoWay: {
+        rows: ['Sport', 'No sport'],
+        cols: ['Early', 'Not early'],
+        cells: [
+          ['a', 'b'],
+          ['c', 'd'],
+        ],
+        expected: 'independence',
+        chiSquare: 'X',
+      },
+    },
+  }),
+  // The edge: one row, goodness of fit against equal shares.
+  page({
+    id: 'g.m12-chi-square-goodness',
+    title: 'Chi-square goodness of fit',
+    use: 'Use this for a goodness-of-fit test: do the counts fit equal shares?',
+    assumptions: [
+      'If every day is equally likely, each expects the total ÷ 4.',
+      'χ² adds (observed − expected)² ÷ expected over the four days.',
+      'Four categories give 4 − 1 = 3 degrees of freedom.',
+    ],
+    variables: [
+      count('o1', 'Monday'),
+      count('o2', 'Tuesday'),
+      count('o3', 'Wednesday'),
+      count('o4', 'Thursday'),
+      { ...out('N', 'N', 'Total'), min: 0 },
+      { ...out('E', 'E', 'Expected each day'), min: 0 },
+      { ...out('X', 'χ²', 'Chi-square'), min: 0 },
+    ],
+    rules: [
+      totalRule('N', ['o1', 'o2', 'o3', 'o4'], 'Add the four days.'),
+      rule('E = N ÷ 4', '{E} = {N} ÷ 4', ['E', 'N'], (v) => v.E! - v.N! / 4, {
+        E: [(v) => v.N! / 4, '{N} ÷ 4', 'Equal shares: the total split four ways.'],
+      }),
+      rule(
+        'χ² = Σ (O − E)² ÷ E',
+        '{X} = (({o1} − {E})² + ({o2} − {E})² + ({o3} − {E})² + ({o4} − {E})²) ÷ {E}',
+        ['X', 'o1', 'o2', 'o3', 'o4', 'E'],
+        (v) => v.X! - ['o1', 'o2', 'o3', 'o4'].reduce((s, o) => s + (v[o]! - v.E!) ** 2, 0) / v.E!,
+        {
+          X: [
+            (v) =>
+              v.E! > 0
+                ? ['o1', 'o2', 'o3', 'o4'].reduce((s, o) => s + (v[o]! - v.E!) ** 2, 0) / v.E!
+                : undefined,
+            '(({o1} − {E})² + ({o2} − {E})² + ({o3} − {E})² + ({o4} − {E})²) ÷ {E}',
+            'Each day’s gap from expected, squared, added, then over the expected count.',
+          ],
+        },
+      ),
+    ],
+    example: { o1: 22, o2: 18, o3: 25, o4: 15, N: 80, E: 20, X: 2.9 },
+    startWith: ['o1', 'o2', 'o3', 'o4'],
+    representation: {
+      kind: 'table',
+      twoWay: {
+        rows: ['Visits'],
+        cols: ['Mon', 'Tue', 'Wed', 'Thu'],
+        cells: [['o1', 'o2', 'o3', 'o4']],
+        expected: [['E', 'E', 'E', 'E']],
+        chiSquare: 'X',
+      },
+    },
+  }),
+];
+
 export const HSE_GALLERY_MODULES: ModuleDef[] = [
   ...H16_MODULES,
   ...H17_MODULES,
   ...H18_MODULES,
   ...H19_MODULES,
+  ...H20_MODULES,
 ];
 export const HSE_GALLERY_LAYOUTS: LayoutDef[] = [];

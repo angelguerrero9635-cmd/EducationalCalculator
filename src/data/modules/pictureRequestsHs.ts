@@ -281,13 +281,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "The mean and standard deviation band belong on dotPlot. DRAWN. Spec (types.ts), optional; Grade 6–7 boxPlot and dotPlot pages unchanged. boxPlot: fences { lower?, upper? } (the 1.5 × IQR fences dashed with their values; lower/upper name the module's fence values, checked; with data the quartiles are checked as the medians of the halves, the median left out, values past a fence are open outlier dots and the whiskers stop at the last values inside; without data a least or greatest value past a fence is marked); second { min, q1, median, q3, max } with labels [a, b] (a second box plot under the first on the same scale, the medians and IQRs compared in the caption; every mark drags). New harness phrases 'first quartile of …' and 'third quartile of …'. dotPlot: sd { id, kind?: 'population' | 'sample' } with mean (the mean as a line and a shaded band from mean − SD to mean + SD, the values inside counted; the SD is checked against the data, σ over n or s over n − 1). Examples (m.9.data-displays): { kind: 'boxPlot', min: 'a', q1: 'b', median: 'c', q3: 'd', max: 'e', range: [0, 50], data: [...11 ids], fences: { lower: 'L', upper: 'U' } }; { kind: 'boxPlot', min: 'a1', …, range: [40, 100], second: { min: 'a2', q1: 'b2', median: 'c2', q3: 'd2', max: 'e2' }, labels: ['Class A', 'Class B'] }; { kind: 'dotPlot', data: [...8 ids], min: 0, max: 12, mean: 'm', sd: { id: 'sd', kind: 'population' } }.",
   },
-  ask(
-    'H20',
-    'table',
-    'Two-way table with totals and a lit cell, row or column, its relative frequency, and a segmented bar',
-    ['m.9.two-way-tables', 'm.10.conditional-probability', 'm.12.chi-square'],
-    'Chi-square: observed and expected counts side by side.',
-  ),
+  {
+    ...ask(
+      'H20',
+      'table',
+      'Two-way table with totals and a lit cell, row or column, its relative frequency, and a segmented bar',
+      ['m.9.two-way-tables', 'm.10.conditional-probability', 'm.12.chi-square'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-two-way-tables-joint',
+      'g.m9-two-way-tables-marginal',
+      'g.m10-conditional-probability-table',
+      'g.m12-chi-square-independence',
+      'g.m12-chi-square-goodness',
+    ],
+    notes:
+      "Chi-square: observed and expected counts side by side. DRAWN. Spec (typesHse.ts TwoWaySpec): table takes twoWay instead of sweep/output (a union member, so the sweep tables are unchanged): { rows: [names], cols: [names], cells: [[id or number, …], …], totals? (default true; a one-row table has no totals row), lit? { row?, col? } (a cell, a whole row or a whole column), of? 'total' | 'row' | 'col' (joint or marginal out of the grand total, or conditional out of the lit row or column; the whole is outlined and the caption writes P(A | B) = part/whole), frequency? (the value, checked to 0.005), bar? 'rows' | 'cols' (a segmented 100% bar per row or column with a key), expected? 'independence' | [[ids]] (each cell's expected count in brackets under the observed one; given counts must add to the observed total), chiSquare? (the statistic's value, checked; the caption works the first term and the degrees of freedom) }. Example (m.10.conditional-probability): representation: { kind: 'table', twoWay: { rows: ['Late', 'On time'], cols: ['Bus', 'Walk', 'Car'], cells: [['a', 'b', 'g'], ['d', 'e', 'h']], lit: { row: 0, col: 0 }, of: 'col', frequency: 'p', bar: 'cols' } }; (m.12.chi-square): { kind: 'table', twoWay: { rows: [...], cols: [...], cells: [['a', 'b'], ['c', 'd']], expected: 'independence', chiSquare: 'X' } }.",
+  },
   ask(
     'H21',
     'treeDiagram',
