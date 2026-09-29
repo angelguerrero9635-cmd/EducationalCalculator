@@ -113,7 +113,6 @@ describe('simplify chain', () => {
       '100 ÷ (1 + 0.05)^2',
       '100 ÷ 1.05^2',
       '100 ÷ 1.1025',
-      '90.7029',
     ]);
   });
 
@@ -123,8 +122,19 @@ describe('simplify chain', () => {
     expect(simplifyChain('√(3² − 4²)')).toEqual([]);
     expect(simplifyChain('12 ÷ (3 − 3) + 1')).toEqual([]);
     expect(operationCount('π × 3²')).toBe(2);
-    expect(simplifyChain('π × 3²')).toEqual(['π × 9', '28.2743']);
-    expect(simplifyChain('5 − 8 + 2')).toEqual(['(−3) + 2', '−1']);
+    expect(simplifyChain('π × 3²')).toEqual(['9 × π', '9π']);
+    // Fractions stay exact; dividing by 3/4 is not 0.5 ÷ 3 ÷ 4.
+    expect(simplifyChain('1/2 ÷ 3/4 + 1')).toEqual(['2/3 + 1', '1 2/3']);
+    expect(simplifyChain('1/3 × π × 3² × 10')).toEqual([
+      '1/3 × 9 × 10 × π',
+      '3 × 10 × π',
+      '30 × π',
+      '30π',
+    ]);
+    // A stage that would need rounding ends the working; a line that only adds brackets isn't one.
+    expect(simplifyChain('10 ÷ 3 + 1')).toEqual([]);
+    expect(simplifyChain('(60 − 150) ÷ ((−100) − 35)')).toEqual(['−90 ÷ (−135)']);
+    expect(simplifyChain('5 − 8 + 2')).toEqual(['−3 + 2', '−1']);
     // What is in brackets, under a root or up in an exponent comes first.
     expect(simplifyChain('2 × 1 × 1.5^(2 − 1)')).toEqual([
       '2 × 1 × 1.5^1',
