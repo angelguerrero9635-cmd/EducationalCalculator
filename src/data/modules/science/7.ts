@@ -450,6 +450,7 @@ export const SCIENCE_7_MODULES: ModuleDef[] = [
     steps: Object.fromEntries(water.map((r) => [r.relation.id, r.steps])),
     example: { c: 4, a: 4, b: 2, h1: 8, o1: 4, h2: 8, o2: 4 },
     startWith: ['c'],
+    equation: '{a} H₂ + {b} O₂ → {c} H₂O',
     representation: {
       kind: 'reaction',
       reactants: [
@@ -484,6 +485,7 @@ export const SCIENCE_7_MODULES: ModuleDef[] = [
     steps: Object.fromEntries(rust.map((r) => [r.relation.id, r.steps])),
     example: { c: 2, a: 4, b: 3, f1: 4, o1: 6, f2: 4, o2: 6 },
     startWith: ['c'],
+    equation: '{a} Fe + {b} O₂ → {c} Fe₂O₃',
     representation: {
       kind: 'reaction',
       reactants: [
@@ -514,6 +516,7 @@ export const SCIENCE_7_MODULES: ModuleDef[] = [
     steps: Object.fromEntries(methane.map((r) => [r.relation.id, r.steps])),
     example: { a: 1, b: 2, c: 1, d: 2 },
     startWith: ['a'],
+    equation: '{a} CH₄ + {b} O₂ → {c} CO₂ + {d} H₂O',
     representation: {
       kind: 'reaction',
       reactants: [

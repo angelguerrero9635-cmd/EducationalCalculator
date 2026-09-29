@@ -96,7 +96,10 @@ function exponentRule(rule: 'product' | 'quotient' | 'power') {
     },
   };
   const { display, op, solve, steps } = rules[rule];
+  // The rule as its equation, b³ × b⁴ = b⁷ = 128 (a power of a power has no template form yet).
+  const sign = { product: '×', quotient: '÷', power: undefined }[rule];
   return {
+    ...(sign ? { equation: `{b}^{m} ${sign} {b}^{n} = {b}^{k} = {P}` } : {}),
     variables: [
       // Any positive base, whole, decimal or fraction: 0.87⁵ ÷ 0.87³, (5/2)⁸ ÷ (5/2)⁶.
       { id: 'b', symbol: 'b', name: 'Base', min: 0.01, max: 20, step: 0.01, fraction: 12 },
@@ -687,6 +690,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { b: 5, n: -1, P: 0.2 },
     startWith: ['b', 'n'],
+    equation: '{b}^{n} = {P}',
     representation: {
       kind: 'table',
       sweep: 'n',
@@ -754,6 +758,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { N: 470000, a: 4.7, n: 5 },
     startWith: ['N'],
+    equation: '{N} = {a} × 10^{n}',
     representation: { kind: 'powerScale', number: 'N', mantissa: 'a', exponent: 'n' },
   },
   {
@@ -880,6 +885,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { a: 3.1, n: 4, c: 2, k: 6, p: 6.2, e: 10, P: 6.2e10 },
     startWith: ['a', 'n', 'c', 'k'],
+    equation: '({a} × 10^{n}) × ({c} × 10^{k}) = {p} × 10^{e}',
     representation: { kind: 'powerScale', number: 'P', mantissa: 'p', exponent: 'e', fixed: true },
   },
   {
@@ -1247,6 +1253,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     steps: bothSidesSteps('a', 'b', 'c', 'd'),
     example: { a: 3, b: 4, c: 1, d: 10, x: 3 },
     startWith: ['a', 'b', 'c', 'd'],
+    equation: '{a}x + {b} = {c}x + {d}',
     representation: {
       kind: 'equationBalance',
       x: 'x',
@@ -1275,6 +1282,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     steps: bothSidesSteps('a', 'b', 'c', 'd'),
     example: { a: 2, b: -3, c: -1, d: 6, x: 3 },
     startWith: ['a', 'b', 'c', 'd'],
+    equation: '{a}x + {b} = {c}x + {d}',
     representation: {
       kind: 'equationBalance',
       x: 'x',
@@ -1346,6 +1354,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { p: 2, a: 3, b: 2, c: 2, d: 28, A: 6, B: 4, x: 6, y: 40 },
     startWith: ['p', 'a', 'b', 'c', 'd'],
+    equation: '{p}({a}x + {b}) = {c}x + {d}',
     representation: {
       kind: 'lineSystem',
       lines: [
@@ -1408,6 +1417,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { p: 2, q: 5, r: 1, s: -11, R: 5, S: -55, x: -30, k: 0.4 },
     startWith: ['p', 'q', 'r', 's'],
+    equation: '{p}/{q}x + {r} = {s}',
     representation: {
       kind: 'linearFunction',
       slope: 'k',
@@ -1423,6 +1433,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
     const cross = crossing('m1', 'b1', 'm2', 'b2');
     return {
       id: 'm.8.systems-linear',
+      // The system as it is written, one equation a line.
+      equation: 'y = {m1}x + {b1}\ny = {m2}x + {b2}',
       assumptions: [
         'The solution is the point on both lines: where they cross.',
         'Set the two expressions for y equal, then solve for x.',
@@ -1593,6 +1605,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     return {
       id: 'm.8.systems-linear~standard-form',
       title: 'Lines written ax + by = c',
+      equation: '{a}x + {b}y = {c}\n{d}x + {e}y = {f}',
       use: 'Use this for “Which point is on both x + y = 4 and y = x?” (write y = x as −x + y = 0).',
       assumptions: [
         'Rewrite ax + by = c as y = −(a ÷ b)x + c ÷ b: the slope and the intercept.',
@@ -1837,6 +1850,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { m: 2, b: 1, x: 3, y: 7 },
     startWith: ['x', 'm', 'b'],
+    equation: 'y = {m}x + {b}',
     representation: {
       kind: 'linearFunction',
       slope: 'm',
@@ -1934,6 +1948,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { x1: 1, y1: 3, x2: 2, y2: 5, m: 2, b: 1 },
     startWith: ['x1', 'y1', 'x2', 'y2'],
+    equation: 'y = {m}x + {b}',
     representation: {
       kind: 'linearFunction',
       slope: 'm',
@@ -2069,6 +2084,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { a: 1.5, b: 3, c: 12, x: 2, y: 3, m: -0.5, k: 4 },
     startWith: ['a', 'b', 'c', 'x'],
+    equation: '{a}x + {b}y = {c}',
     representation: {
       kind: 'linearFunction',
       slope: 'm',

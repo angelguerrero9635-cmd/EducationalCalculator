@@ -607,6 +607,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     steps: { 'n = k × s': jumps.steps },
     example: { k: 5, s: 4, n: 20 },
     startWith: ['k', 's'],
+    equation: '{n} ÷ {s} = {k}',
     representation: { kind: 'skipCount', step: 's', count: 'k', total: 'n' },
   },
   // Sharing: the total and the groups give how many in each (3.OA.2).
@@ -1684,6 +1685,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       example: { a: 8, m: 40, t: 4, p: 32, n: 320 },
       startWith: ['a', 'm'],
       // a groups of t ten-rods (4 groups of 6 tens).
+      equation: '{a} × {m} = {n}',
       representation: { kind: 'equalGroups', groups: 'a', each: 't', total: 'n', unit: 10 },
     } satisfies ModuleDef;
   })(),
@@ -1859,7 +1861,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       sliders: false,
       equation: '{a}/{b} = {w}',
       title: 'Represent whole numbers as fractions',
-      use: 'Use this for “How many fourths make a whole?” or 2 = 8/4.',
+      use: 'Use this for “How many fourths make a whole?” or 8/4 = 2.',
       assumptions: [
         'A fraction is a whole number when the parts counted fill whole numbers exactly.',
         'Every whole has the same number of parts: 4/4 = 1, 8/4 = 2, 12/4 = 3.',
@@ -2144,6 +2146,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     },
     example: { sh: 3, sm: 45, d: 35, eh: 4, em: 20 },
     startWith: ['sh', 'sm', 'd'],
+    equation: '{sh}:{sm} + {d} minutes = {eh}:{em}',
     representation: {
       kind: 'timeline',
       startHour: 'sh',
@@ -2266,6 +2269,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     },
     example: { sh: 3, sm: 45, d: 35, eh: 4, em: 20 },
     startWith: ['eh', 'em', 'd'],
+    equation: '{sh}:{sm} + {d} minutes = {eh}:{em}',
     representation: {
       kind: 'timeline',
       startHour: 'sh',

@@ -180,6 +180,7 @@ export const MATH_K_MODULES: ModuleDef[] = [
     },
     example: { w: 7, a: 4, b: 3 },
     startWith: ['w', 'a'],
+    equation: '{w} = {a} + {b}',
     representation: { kind: 'numberBond', whole: 'w', parts: ['a', 'b'] },
   },
   // Kindergarten take-away stories: start, take away, left (K.OA.2).

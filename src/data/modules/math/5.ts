@@ -560,6 +560,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 34, k: 3, e: 1000, p: 34000 },
     startWith: ['n', 'k'],
+    equation: '{n} × 10^{k} = {p}',
     representation: { kind: 'placeValueChart', value: 'p', decimals: 0, from: 'n', periods: true },
   },
   {
@@ -647,6 +648,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 3.45, k: 2, e: 100, p: 345 },
     startWith: ['n', 'k'],
+    equation: '{n} × 10^{k} = {p}',
     representation: { kind: 'placeValueChart', value: 'p', decimals: 3, from: 'n' },
   },
   // ── Thousandths: a digit's value (5.NBT.3) ──
@@ -1103,6 +1105,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { n: 1987, d: 23, q: 86, r: 9, m: 1978 },
     startWith: ['n', 'd'],
     pictureLabels: ['q'],
+    equation: '{n} ÷ {d} = {q} remainder {r}',
     representation: {
       kind: 'areaModel',
       divide: { dividend: 'n', divisor: 'd', quotient: 'q', remainder: 'r' },
@@ -1215,6 +1218,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { a: 2.5, b: 4, p: 10 },
     startWith: ['a', 'b'],
     // The decimal as equal jumps: 4 jumps of 2.5 land on 10.
+    equation: '{a} × {b} = {p}',
     representation: { kind: 'skipCount', step: 'a', count: 'b', total: 'p' },
   },
   {
@@ -1471,6 +1475,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { n: 1.2, d: 0.3, q: 4 },
     startWith: ['n', 'd'],
     // Past 30 jumps, an arc for every ten (or hundred) jumps, then the single jumps left.
+    equation: '{n} ÷ {d} = {q}',
     representation: { kind: 'skipCount', step: 'd', count: 'q', total: 'n', group: true },
   },
 
@@ -2086,6 +2091,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { w: 8, a: 3, b: 4, o: 2, p: 6, k: 2 },
     startWith: ['a', 'b', 'w'],
     // The whole number as a bar in equal parts: the parts taken, and the rest.
+    equation: '{a}/{b} × {w} = {p}',
     representation: {
       kind: 'tape',
       parts: ['p', 'k'],

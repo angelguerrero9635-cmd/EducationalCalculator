@@ -584,4 +584,56 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['s.12.cosmology', 's.12.solar-system'],
     'Solar system page: nebula to planets as sequence stages.',
   ),
+  // ── H. Equation inputs (docs/RENDERINGS_HS_EQUATIONS.md, docs/EQUATION_INPUTS.md) ──
+  ask(
+    'H81',
+    'equationInput',
+    'Expression slots: a fraction part or an exponent mixing boxes, text and signs',
+    [
+      'm.10.law-sines-cosines',
+      'm.11.normal-distribution',
+      'm.12.conics',
+      's.10.measurement',
+      'm.9.sequences',
+      'm.11.exp-log-equations',
+    ],
+  ),
+  ask(
+    'H82',
+    'equationInput',
+    'An exponent on a bracket: (1 + {r})^{t}, ({b}^{m})^{n}',
+    ['m.9.exponential-functions', 'm.11.binomial-theorem', 'm.11.pythagorean-identities'],
+    'Also lets m.8.exponent-rules~power-of-power take its equation.',
+  ),
+  ask('H83', 'equationInput', 'Radicals with a bar over the box or group, and cube roots', [
+    'm.9.radicals',
+    'm.11.radical-functions',
+    'm.10.special-right-triangles',
+    'm.12.confidence-intervals',
+  ]),
+  ask(
+    'H84',
+    'equationInput',
+    'A sign or operator choice box (<, ≤, >, ≥; + or −) tied to a coded value',
+    ['m.9.linear-inequalities', 'm.9.inequality-systems', 'm.7.two-step-equations~inequality'],
+  ),
+  ask(
+    'H85',
+    'equationInput',
+    'Subscript boxes (log base, aₙ) and stacked mass and atomic numbers on the left',
+    ['m.11.logarithms', 's.10.nuclear-chemistry'],
+  ),
+  ask('H86', 'equationInput', 'A matrix grid of boxes, augmented bar and determinant bars', [
+    'm.12.matrices',
+  ]),
+  ask('H87', 'equationInput', 'A unit label after a box that follows the unit menu', [
+    's.11.circuits',
+    'm.3.area~missing-side',
+  ]),
+  ask(
+    'H88',
+    'equationInput',
+    'Hide zero parts of mixed numbers, blank chemical coefficient 1, stacked worked-out fractions',
+    ['s.10.reaction-types', 'm.5.divide-unit-fractions~fraction-as-division'],
+  ),
 ];
