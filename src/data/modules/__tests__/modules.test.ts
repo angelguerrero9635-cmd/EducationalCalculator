@@ -213,6 +213,8 @@ function representationVars(r: Representation): string[] {
         ...[r.brackets?.range, r.brackets?.iqr].filter((x): x is string => !!x),
         ...(r.data ?? []),
         ...(r.count ? [r.count] : []),
+        ...[r.fences?.lower, r.fences?.upper].filter((x): x is string => !!x),
+        ...(r.second ? Object.values(r.second) : []),
       ];
     case 'pieChart':
       return [...r.parts, ...(r.total ? [r.total] : []), ...(r.group ? [r.group.id] : [])];
@@ -329,6 +331,7 @@ function representationVars(r: Representation): string[] {
         ...(r.second
           ? [...r.second.data, ...[r.second.mean, r.second.median].filter((x): x is string => !!x)]
           : []),
+        ...(r.sd ? [r.sd.id] : []),
       ];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];

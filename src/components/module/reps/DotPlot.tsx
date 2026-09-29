@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import Svg, { Circle, G, Line, Path } from 'react-native-svg';
+import Svg, { Circle, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import { formatNumber } from '@/engine/format';
@@ -12,6 +12,13 @@ import { medianSentence, middleOf } from './median';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'dotPlot' }>;
+
+/** "σ = 2.1: 6 of 9 values are within one standard deviation of the mean, 3.9 to 8.1." */
+function sdSentence(m: number, s: number, data: number[], sym: string) {
+  const two = (v: number) => formatNumber(Number(v.toFixed(2)));
+  const inside = data.filter((v) => v >= m - s - 1e-9 && v <= m + s + 1e-9).length;
+  return `Standard deviation ${sym} = ${two(s)}: ${inside} of ${data.length} values are within one standard deviation of the mean, from ${two(m - s)} to ${two(m + s)}.`;
+}
 
 /**
  * A dot plot: one dot per data value, stacked where values repeat, on a number line. The mean
@@ -33,10 +40,16 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const known = used.filter(rep.known);
   const data = known.map((id) => rep.shown(id));
   const complete = known.length === used.length;
+  // Grades 9–12: the band from mean − SD to mean + SD (in view too).
+  const sd =
+    spec.sd && rep.known(spec.sd.id) && spec.mean && rep.known(spec.mean)
+      ? { m: rep.shown(spec.mean), s: rep.shown(spec.sd.id) }
+      : undefined;
+  const band = sd ? [sd.m - sd.s, sd.m + sd.s] : [];
   const extent = useFrozen(
     (() => {
-      const lo = Math.min(spec.min, ...data);
-      const hi = Math.max(spec.max, ...data);
+      const lo = Math.min(spec.min, ...data, ...band);
+      const hi = Math.max(spec.max, ...data, ...band);
       const s = tickStep(hi - lo, 12);
       return [Math.floor(lo / s) * s, Math.ceil(hi / s) * s] as [number, number];
     })(),
@@ -105,6 +118,47 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </ChartText>
                 </G>
               ))}
+              {sd ? (
+                <G>
+                  <Rect
+                    x={x(sd.m - sd.s)}
+                    y={28}
+                    width={Math.max(0, x(sd.m + sd.s) - x(sd.m - sd.s))}
+                    height={lineY - 28}
+                    fill={c.chartHighlight}
+                    opacity={0.12}
+                  />
+                  {[sd.m - sd.s, sd.m + sd.s].map((v, i) => (
+                    <G key={`sd${i}`}>
+                      <Line
+                        x1={x(v)}
+                        y1={28}
+                        x2={x(v)}
+                        y2={lineY}
+                        stroke={c.chartHighlight}
+                        strokeWidth={1}
+                        strokeDasharray={chart.dashFine}
+                      />
+                      <ChartText
+                        {...fitLabel(x(v), formatNumber(Number(v.toFixed(2))), chart.label, w)}
+                        y={24}
+                        fontSize={chart.label}
+                        fill={c.chartHighlight}
+                      >
+                        {formatNumber(Number(v.toFixed(2)))}
+                      </ChartText>
+                    </G>
+                  ))}
+                  <Line
+                    x1={x(sd.m)}
+                    y1={28}
+                    x2={x(sd.m)}
+                    y2={lineY}
+                    stroke={c.chartHighlight}
+                    strokeWidth={chart.stroke}
+                  />
+                </G>
+              ) : null}
               {spec.deviations && mean !== undefined
                 ? dots.map((d) => (
                     <Line
@@ -211,7 +265,11 @@ export function DotPlot({ spec, calc }: { spec: Spec; calc: Calculator }) {
           : spec.count && !faded && !complete
             ? `Type the first ${n} values.`
             : data.length
-              ? `${data.length} values: ${sorted.map((v) => formatNumber(v)).join(', ')}.`
+              ? `${data.length} values: ${sorted.map((v) => formatNumber(v)).join(', ')}.${
+                  sd && complete
+                    ? ` ${sdSentence(sd.m, sd.s, data, rep.variable(spec.sd!.id).symbol)}`
+                    : ''
+                }`
               : 'Type the data values.'}
       </Caption>
       <Steppers

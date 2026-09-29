@@ -44,6 +44,15 @@ export const COIN: Record<string, number> = {
   nickel: 5,
   nickels: 5,
 };
+/** The median of the lower (or upper) half of a list, the median itself left out. */
+const quartile = (xs: number[], upper: boolean) => {
+  const s = xs.filter((x) => !Number.isNaN(x)).sort((a, b) => a - b);
+  const half = Math.floor(s.length / 2);
+  const part = upper ? s.slice(s.length - half) : s.slice(0, half);
+  const n = part.length;
+  return n % 2 ? part[(n - 1) / 2]! : (part[n / 2 - 1]! + part[n / 2]!) / 2;
+};
+
 export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // High school logs to a base: log_2(8) is 3.
   [new RegExp(`log_(${NUM})\\s*\\(?(${NUM})\\)?`), (b, x) => Math.log(x) / Math.log(b)],
@@ -223,6 +232,9 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
     new RegExp(`greatest of ((?:${NUM}, )+${NUM})`),
     (...xs) => Math.max(...xs.filter((x) => !Number.isNaN(x))),
   ],
+  // Grades 9–12 box plots: a quartile is the median of the half below (or above) the median.
+  [new RegExp(`first quartile of ((?:${NUM}, )+${NUM})`), (...xs) => quartile(xs, false)],
+  [new RegExp(`third quartile of ((?:${NUM}, )+${NUM})`), (...xs) => quartile(xs, true)],
   [
     new RegExp(`range of ((?:${NUM}, )+${NUM})`),
     (...xs) =>

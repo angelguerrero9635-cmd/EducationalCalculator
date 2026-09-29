@@ -24,7 +24,7 @@ import { chemIssues } from './chemPictures';
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
-import { scatterIssues } from './picturesHse';
+import { boxPlotIssues, dotPlotSdIssues, scatterIssues } from './picturesHse';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -878,6 +878,7 @@ export function repIssues(
         if (a !== undefined && b !== undefined && b < a - 1e-9)
           out.push(`box plot out of order: ${a} then ${b}`);
       }
+      out.push(...boxPlotIssues(rep, val));
       break;
     }
     case 'pieChart': {
@@ -1515,6 +1516,7 @@ export function repIssues(
       break;
     }
     case 'dotPlot': {
+      out.push(...dotPlotSdIssues(rep, val));
       const sorted = firstValues(rep.data, rep.count);
       const md = rep.median ? val(rep.median) : undefined;
       if (sorted && md !== undefined && Math.abs(medianOf(sorted) - md) > 1e-9)

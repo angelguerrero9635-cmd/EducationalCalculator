@@ -89,6 +89,7 @@ import { Pushes } from './Pushes';
 import { DoubleNumberLine } from './DoubleNumberLine';
 import { CoordinatePlane } from './CoordinatePlane';
 import { BoxPlot } from './BoxPlot';
+import { BoxPlotPair } from './BoxPlotPair';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -330,7 +331,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'coordinatePlane':
       return <CoordinatePlane spec={spec} calc={calc} />;
     case 'boxPlot':
-      return <BoxPlot spec={spec} calc={calc} />;
+      return spec.fences || spec.second ? (
+        <BoxPlotPair spec={spec} calc={calc} />
+      ) : (
+        <BoxPlot spec={spec} calc={calc} />
+      );
     case 'pieChart':
       return <PieChart spec={spec} calc={calc} />;
     case 'fractionArea':

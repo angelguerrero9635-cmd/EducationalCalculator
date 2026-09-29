@@ -49,6 +49,16 @@ export function standardDeviation(xs: readonly number[], kind: 'population' | 's
   return Math.sqrt(sum(xs.map((x) => (x - m) ** 2)) / (kind === 'sample' ? n - 1 : n));
 }
 
+/** The first or third quartile: the median of the lower or upper half, the median left out. */
+export function quartile(xs: readonly number[], which: 1 | 3) {
+  const s = [...xs].sort((a, b) => a - b);
+  const half = Math.floor(s.length / 2);
+  const part = which === 3 ? s.slice(s.length - half) : s.slice(0, half);
+  const n = part.length;
+  if (!n) return undefined;
+  return n % 2 ? part[(n - 1) / 2]! : (part[n / 2 - 1]! + part[n / 2]!) / 2;
+}
+
 /** The 1.5 × IQR fences: Q₁ − 1.5 × IQR and Q₃ + 1.5 × IQR. */
 export const fences = (q1: number, q3: number) => ({
   lower: q1 - 1.5 * (q3 - q1),

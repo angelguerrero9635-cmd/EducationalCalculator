@@ -264,13 +264,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "DRAWN. Spec (types.ts, scatter), optional; Grade 8 scatter pages unchanged: residuals 'segments' | 'plot' (each residual, actual − predicted, as a segment to the line; 'plot' adds a residual plot under the chart, residuals over x about 0, and the caption counts positive and negative residuals and gives the sum of their squares); r: true (worked out from the points, ≈ to two places, with its strength in words) or a value id (checked against the points to 0.005); leastSquares 'beside' (the least-squares line dashed beside the dragged line, with its sum of squares, the least any line gives) or 'fit' (slope and intercept are the least-squares line, checked to the cent, no handles; slope and intercept may now be numbers, the calculator's rounded values); residualOf { point, residual? } (one point's residual labelled and worked, its value checked). Example (m.9.regression): representation: { kind: 'scatter', x: { label: 'Hours studied', min: 0, max: 9 }, y: { label: 'Quiz score', min: 40, max: 100 }, points: [...], slope: 'm', intercept: 'b', at: { x: 'x', y: 'y' }, residuals: 'plot', residualOf: { point: 3, residual: 'e' } }; given line: { ..., slope: -0.65, intercept: 47.87, r: true, residuals: 'segments', leastSquares: 'fit' }.",
   },
-  ask(
-    'H19',
-    'boxPlot',
-    'Outliers past 1.5 × IQR fences, and two box plots on one scale; a dot plot with mean ± 1 SD',
-    ['m.9.data-displays'],
-    'The mean and standard deviation band belong on dotPlot.',
-  ),
+  {
+    ...ask(
+      'H19',
+      'boxPlot',
+      'Outliers past 1.5 × IQR fences, and two box plots on one scale; a dot plot with mean ± 1 SD',
+      ['m.9.data-displays'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-data-displays-outliers',
+      'g.m9-data-displays-compare',
+      'g.m9-data-displays-sd',
+      'g.m9-data-displays-sd-sample',
+    ],
+    notes:
+      "The mean and standard deviation band belong on dotPlot. DRAWN. Spec (types.ts), optional; Grade 6–7 boxPlot and dotPlot pages unchanged. boxPlot: fences { lower?, upper? } (the 1.5 × IQR fences dashed with their values; lower/upper name the module's fence values, checked; with data the quartiles are checked as the medians of the halves, the median left out, values past a fence are open outlier dots and the whiskers stop at the last values inside; without data a least or greatest value past a fence is marked); second { min, q1, median, q3, max } with labels [a, b] (a second box plot under the first on the same scale, the medians and IQRs compared in the caption; every mark drags). New harness phrases 'first quartile of …' and 'third quartile of …'. dotPlot: sd { id, kind?: 'population' | 'sample' } with mean (the mean as a line and a shaded band from mean − SD to mean + SD, the values inside counted; the SD is checked against the data, σ over n or s over n − 1). Examples (m.9.data-displays): { kind: 'boxPlot', min: 'a', q1: 'b', median: 'c', q3: 'd', max: 'e', range: [0, 50], data: [...11 ids], fences: { lower: 'L', upper: 'U' } }; { kind: 'boxPlot', min: 'a1', …, range: [40, 100], second: { min: 'a2', q1: 'b2', median: 'c2', q3: 'd2', max: 'e2' }, labels: ['Class A', 'Class B'] }; { kind: 'dotPlot', data: [...8 ids], min: 0, max: 12, mean: 'm', sd: { id: 'sd', kind: 'population' } }.",
+  },
   ask(
     'H20',
     'table',

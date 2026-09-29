@@ -5,6 +5,7 @@
  *
  * H16 `lineSystem` / `linearFunction` shading and elimination's sum line.
  */
+import { quartile } from '@/components/module/reps/stats';
 import type { Values } from '@/engine/types';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
@@ -852,5 +853,355 @@ const H18_MODULES: ModuleDef[] = [
   }),
 ];
 
-export const HSE_GALLERY_MODULES: ModuleDef[] = [...H16_MODULES, ...H17_MODULES, ...H18_MODULES];
+// ── H19: outliers past the fences, two box plots, the standard deviation band ──
+
+/** A list of value ids as step text: "{d1}, {d2}, …". */
+const listOf = (ids: string[]) => ids.map((id) => `{${id}}`).join(', ');
+const valuesOf = (v: Values, ids: string[]) => ids.map((id) => v[id]!);
+const medianList = (xs: number[]) => {
+  const s = [...xs].sort((a, b) => a - b);
+  const n = s.length;
+  return n % 2 ? s[(n - 1) / 2]! : (s[n / 2 - 1]! + s[n / 2]!) / 2;
+};
+
+const NAMES5 = ['least', 'first quartile', 'median', 'third quartile', 'greatest'];
+
+/** Minutes of homework on eleven nights (made up): one long night. */
+const NIGHTS = ['n1', 'n2', 'n3', 'n4', 'n5', 'n6', 'n7', 'n8', 'n9', 'n10', 'n11'];
+
+/** A rule that reads one summary number from a list (solved for that number only). */
+const summary = (
+  id: string,
+  target: string,
+  word: string,
+  ids: string[],
+  fn: (xs: number[]) => number | undefined,
+  how: string,
+) =>
+  rule(
+    id,
+    `{${target}} = ${word} of ${listOf(ids)}`,
+    [target, ...ids],
+    (v) => v[target]! - (fn(valuesOf(v, ids)) ?? NaN),
+    { [target]: [(v) => fn(valuesOf(v, ids)), `${word} of ${listOf(ids)}`, how] },
+  );
+
+/** Two box plots' rule: the interquartile range, Q₃ − Q₁. */
+const iqrRule = (I: string, q3: string, q1: string) =>
+  rule(
+    `${I} = ${q3} − ${q1}`,
+    `{${I}} = {${q3}} − {${q1}}`,
+    [I, q3, q1],
+    (v) => v[I]! - (v[q3]! - v[q1]!),
+    {
+      [I]: [
+        (v) => v[q3]! - v[q1]!,
+        `{${q3}} − {${q1}}`,
+        'The width of the box: the middle half of the data.',
+      ],
+    },
+  );
+
+/** Five numbers in order, as constraints. */
+const inOrder = (ids: string[]) =>
+  ids.slice(1).map((big, i) => ({
+    relation: {
+      id: `${big} ≥ ${ids[i]}`,
+      constraint: true as const,
+      display: `{${big}} is at least {${ids[i]}}`,
+      vars: [big, ids[i]!],
+      residual: (v: Values) => (v[big]! >= v[ids[i]!]! ? 0 : 1),
+      solve: {},
+    },
+    steps: {},
+  }));
+
+/** Eight values, their mean and their standard deviation (σ over n or s over n − 1). */
+function spreadPage(
+  id: string,
+  title: string,
+  kind: 'population' | 'sample',
+  example: number[],
+  range: [number, number],
+): ModuleDef {
+  const ids = example.map((_, i) => `x${i + 1}`);
+  const n = ids.length;
+  const d = kind === 'sample' ? n - 1 : n;
+  const sym = kind === 'sample' ? 's' : 'σ';
+  const m = example.reduce((a, b) => a + b, 0) / n;
+  const S = example.reduce((a, x) => a + (x - m) ** 2, 0);
+  return page({
+    id,
+    title,
+    use:
+      kind === 'sample'
+        ? 'Use this for the sample standard deviation s, dividing by n − 1, and one value far out.'
+        : 'Use this for the mean and the standard deviation σ of a data set, on a dot plot.',
+    assumptions: [
+      'The mean is the balance point: add the values, divide by how many there are.',
+      kind === 'sample'
+        ? 's = √(sum of squared deviations ÷ (n − 1)) for a sample.'
+        : 'σ = √(sum of squared deviations ÷ n): the typical distance from the mean.',
+      'The band runs one standard deviation either side of the mean.',
+    ],
+    variables: [
+      ...ids.map((x, i) => num(x, `x${'₁₂₃₄₅₆₇₈'[i]}`, `Value ${i + 1}`, 0, 100, 1)),
+      out('m', 'x̄', 'Mean'),
+      { ...out('S', 'S', 'Sum of squared deviations'), min: 0 },
+      { ...out('sd', sym, 'Standard deviation'), min: 0 },
+    ],
+    rules: [
+      rule(
+        'x̄ = sum ÷ n',
+        `{m} = (${ids.map((x) => `{${x}}`).join(' + ')}) ÷ ${n}`,
+        ['m', ...ids],
+        (v) => v.m! - valuesOf(v, ids).reduce((a, b) => a + b, 0) / n,
+        {
+          m: [
+            (v) => valuesOf(v, ids).reduce((a, b) => a + b, 0) / n,
+            `(${ids.map((x) => `{${x}}`).join(' + ')}) ÷ ${n}`,
+            `Add the ${n} values, then divide by ${n}.`,
+          ],
+        },
+      ),
+      rule(
+        'S = Σ(x − x̄)²',
+        `{S} = ${ids.map((x) => `({${x}} − {m})²`).join(' + ')}`,
+        ['S', 'm', ...ids],
+        (v) => v.S! - valuesOf(v, ids).reduce((a, x) => a + (x - v.m!) ** 2, 0),
+        {
+          S: [
+            (v) => valuesOf(v, ids).reduce((a, x) => a + (x - v.m!) ** 2, 0),
+            ids.map((x) => `({${x}} − {m})²`).join(' + '),
+            'Each value’s distance from the mean, squared, all added.',
+          ],
+        },
+      ),
+      rule(
+        `${sym} = √(S ÷ ${d})`,
+        `{sd} = √({S} ÷ ${d})`,
+        ['sd', 'S'],
+        (v) => v.sd! - Math.sqrt(v.S! / d),
+        {
+          sd: [
+            (v) => Math.sqrt(v.S! / d),
+            `√({S} ÷ ${d})`,
+            kind === 'sample'
+              ? `Divide by n − 1 = ${d} for a sample, then take the square root.`
+              : `Divide by n = ${d}, then take the square root.`,
+          ],
+          S: [(v) => v.sd! ** 2 * d, `{sd}² × ${d}`, `Square it, then multiply by ${d}.`],
+        },
+      ),
+    ],
+    example: {
+      ...Object.fromEntries(ids.map((x, i) => [x, example[i]!])),
+      m,
+      S,
+      sd: Math.sqrt(S / d),
+    },
+    startWith: ids,
+    representation: {
+      kind: 'dotPlot',
+      data: ids,
+      min: range[0],
+      max: range[1],
+      mean: 'm',
+      sd: { id: 'sd', kind },
+    },
+  });
+}
+
+const H19_MODULES: ModuleDef[] = [
+  page({
+    id: 'g.m9-data-displays-outliers',
+    title: 'Outliers and the 1.5 × IQR fences',
+    use: 'Use this for deciding which values are outliers, past Q₁ − 1.5 × IQR or Q₃ + 1.5 × IQR.',
+    assumptions: [
+      'Q₁ and Q₃ are the medians of the lower and upper halves (the median left out).',
+      'The fences sit 1.5 × IQR below Q₁ and above Q₃; a value past one is an outlier.',
+      'The whiskers stop at the last values inside the fences; outliers are open dots.',
+    ],
+    variables: [
+      ...NIGHTS.map((x, i) =>
+        num(
+          x,
+          `x${[...String(i + 1)].map((d) => '₀₁₂₃₄₅₆₇₈₉'[Number(d)]).join('')}`,
+          `Night ${i + 1} (minutes)`,
+          0,
+          120,
+          1,
+        ),
+      ),
+      out('a', 'min', 'Least'),
+      out('b', 'Q₁', 'First quartile'),
+      out('c', 'M', 'Median'),
+      out('d', 'Q₃', 'Third quartile'),
+      out('e', 'max', 'Greatest'),
+      out('I', 'IQR', 'Interquartile range'),
+      out('L', 'L', 'Lower fence'),
+      out('U', 'U', 'Upper fence'),
+    ],
+    rules: [
+      summary('min', 'a', 'least', NIGHTS, (xs) => Math.min(...xs), 'The smallest value.'),
+      summary(
+        'Q₁',
+        'b',
+        'first quartile',
+        NIGHTS,
+        (xs) => quartile(xs, 1),
+        'The median of the values below the median.',
+      ),
+      summary('M', 'c', 'median', NIGHTS, medianList, 'The middle value once they are in order.'),
+      summary(
+        'Q₃',
+        'd',
+        'third quartile',
+        NIGHTS,
+        (xs) => quartile(xs, 3),
+        'The median of the values above the median.',
+      ),
+      summary('max', 'e', 'greatest', NIGHTS, (xs) => Math.max(...xs), 'The largest value.'),
+      iqrRule('I', 'd', 'b'),
+      rule(
+        'L = Q₁ − 1.5 × IQR',
+        '{L} = {b} − 1.5 × {I}',
+        ['L', 'b', 'I'],
+        (v) => v.L! - (v.b! - 1.5 * v.I!),
+        {
+          L: [
+            (v) => v.b! - 1.5 * v.I!,
+            '{b} − 1.5 × {I}',
+            'Go 1.5 box-widths below the first quartile.',
+          ],
+        },
+      ),
+      rule(
+        'U = Q₃ + 1.5 × IQR',
+        '{U} = {d} + 1.5 × {I}',
+        ['U', 'd', 'I'],
+        (v) => v.U! - (v.d! + 1.5 * v.I!),
+        {
+          U: [
+            (v) => v.d! + 1.5 * v.I!,
+            '{d} + 1.5 × {I}',
+            'Go 1.5 box-widths above the third quartile.',
+          ],
+        },
+      ),
+    ],
+    example: {
+      n1: 21,
+      n2: 15,
+      n3: 27,
+      n4: 12,
+      n5: 45,
+      n6: 19,
+      n7: 24,
+      n8: 16,
+      n9: 22,
+      n10: 25,
+      n11: 18,
+      a: 12,
+      b: 16,
+      c: 21,
+      d: 25,
+      e: 45,
+      I: 9,
+      L: 2.5,
+      U: 38.5,
+    },
+    startWith: NIGHTS,
+    representation: {
+      kind: 'boxPlot',
+      min: 'a',
+      q1: 'b',
+      median: 'c',
+      q3: 'd',
+      max: 'e',
+      range: [0, 50],
+      data: NIGHTS,
+      fences: { lower: 'L', upper: 'U' },
+    },
+  }),
+  page({
+    id: 'g.m9-data-displays-compare',
+    title: 'Two box plots on one scale',
+    use: 'Use this for comparing two data sets by their medians and interquartile ranges.',
+    assumptions: [
+      'Both box plots share one number line, so their boxes line up.',
+      'The median compares the centers; the IQR (the box’s width) compares the spreads.',
+      'Drag any mark of either plot.',
+    ],
+    variables: [
+      ...['a1', 'b1', 'c1', 'd1', 'e1'].map((x, i) =>
+        num(x, `${['min', 'Q₁', 'M', 'Q₃', 'max'][i]}ₐ`, `Class A ${NAMES5[i]}`, 0, 100, 1),
+      ),
+      ...['a2', 'b2', 'c2', 'd2', 'e2'].map((x, i) =>
+        num(x, `${['min', 'Q₁', 'M', 'Q₃', 'max'][i]}ᵦ`, `Class B ${NAMES5[i]}`, 0, 100, 1),
+      ),
+      out('I1', 'IQRₐ', 'Class A interquartile range'),
+      out('I2', 'IQRᵦ', 'Class B interquartile range'),
+      out('D', 'D', 'Difference of medians (B − A)'),
+    ],
+    rules: [
+      ...inOrder(['a1', 'b1', 'c1', 'd1', 'e1']),
+      ...inOrder(['a2', 'b2', 'c2', 'd2', 'e2']),
+      iqrRule('I1', 'd1', 'b1'),
+      iqrRule('I2', 'd2', 'b2'),
+      rule('D = M_B − M_A', '{D} = {c2} − {c1}', ['D', 'c2', 'c1'], (v) => v.D! - (v.c2! - v.c1!), {
+        D: [(v) => v.c2! - v.c1!, '{c2} − {c1}', 'How far B’s median is above A’s.'],
+      }),
+    ],
+    example: {
+      a1: 52,
+      b1: 64,
+      c1: 71,
+      d1: 78,
+      e1: 90,
+      a2: 58,
+      b2: 72,
+      c2: 80,
+      d2: 84,
+      e2: 97,
+      I1: 14,
+      I2: 12,
+      D: 9,
+    },
+    startWith: ['a1', 'b1', 'c1', 'd1', 'e1', 'a2', 'b2', 'c2', 'd2', 'e2'],
+    representation: {
+      kind: 'boxPlot',
+      min: 'a1',
+      q1: 'b1',
+      median: 'c1',
+      q3: 'd1',
+      max: 'e1',
+      range: [40, 100],
+      second: { min: 'a2', q1: 'b2', median: 'c2', q3: 'd2', max: 'e2' },
+      labels: ['Class A', 'Class B'],
+    },
+  }),
+  spreadPage(
+    'g.m9-data-displays-sd',
+    'Mean and standard deviation',
+    'population',
+    [3, 4, 5, 6, 6, 7, 8, 9],
+    [0, 12],
+  ),
+  // The edge: one value far out pulls the sample standard deviation wide.
+  spreadPage(
+    'g.m9-data-displays-sd-sample',
+    'Sample standard deviation',
+    'sample',
+    [12, 14, 15, 15, 16, 17, 18, 29],
+    [10, 30],
+  ),
+];
+
+export const HSE_GALLERY_MODULES: ModuleDef[] = [
+  ...H16_MODULES,
+  ...H17_MODULES,
+  ...H18_MODULES,
+  ...H19_MODULES,
+];
 export const HSE_GALLERY_LAYOUTS: LayoutDef[] = [];

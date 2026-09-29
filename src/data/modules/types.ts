@@ -1060,6 +1060,17 @@ export type Representation =
        */
       data?: string[];
       count?: string;
+      /**
+       * Grades 9–12 (H19): the 1.5 × IQR fences, dashed, at Q₁ − 1.5 × IQR and Q₃ + 1.5 × IQR
+       * (`lower` and `upper` name the module's values for them, checked). With `data`, values
+       * past a fence are outliers, drawn as open dots, and the whiskers stop at the last values
+       * inside; without it, a least or greatest value past a fence is marked an outlier.
+       */
+      fences?: { lower?: string; upper?: string };
+      /** Grades 9–12 (H19): a second box plot under the first on the same scale. */
+      second?: { min: string; q1: string; median: string; q3: string; max: string };
+      /** The two box plots' names ("Class A", "Class B"). */
+      labels?: [string, string];
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
   | {
@@ -1432,6 +1443,12 @@ export type Representation =
       second?: { data: string[]; mean?: string; median?: string };
       labels?: [string, string];
       difference?: string;
+      /**
+       * Grades 9–12 (H19): the standard deviation's value (σ, over n, by default; s, over
+       * n − 1, with `kind: 'sample'`), checked against the data: the mean drawn as a line and a
+       * band from mean − SD to mean + SD, the values inside it counted. Needs `mean`.
+       */
+      sd?: { id: string; kind?: 'population' | 'sample' };
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }
