@@ -7,22 +7,23 @@ request per second per host (4.5 s during the first half of the run; openscied.o
 Crawl-delay), and cached in the group's scratch folder so nothing was fetched twice. Checker:
 `python3 research/textbooks/tools/check_hs_d.py`.
 
-| File                                                         | What                                                                                              |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| `toc/science/openstax-biology-2e.json`                       | OpenStax Biology 2e (grade 9; CC BY-NC-SA, reference): 47 chapters, 208 sections                  |
-| `toc/science/openstax-chemistry-2e.json`                     | OpenStax Chemistry 2e (grade 10; CC BY-NC-SA, reference): 21 chapters, 114 sections               |
-| `toc/science/openstax-physics-hs.json`                       | OpenStax Physics, the high-school book (grade 11; CC BY): 23 chapters, 75 sections                |
-| `toc/science/openstax-astronomy-2e.json`                     | OpenStax Astronomy 2e (grade 12; CC BY-NC-SA, reference): 30 chapters, 155 sections               |
-| `practice/science/9.openstax-biology-2e.jsonl`               | 145 items, a marked sample (5 per mapped chapter), 29 figure screenshots                          |
-| `practice/science/10.openstax-chemistry-2e.jsonl`            | 80 items, a marked sample (5 per mapped chapter), all with the book's published answer            |
-| `practice/science/11.openstax-physics-hs.jsonl`              | 274 items (up to 15 per chapter), 8 screenshots                                                   |
-| `practice/science/12.openstax-astronomy-2e.jsonl`            | 85 items, a marked sample (5 per mapped chapter)                                                  |
-| `screenshots/openstax-{biology-2e,chemistry-2e,physics-hs}/` | 39 WebP screenshots, 0.89 MB                                                                      |
-| `toc/science/hmh-science-dimensions-hs.json`                 | HMH Science Dimensions Biology, Chemistry, Physics (titles only): 20 units, 58 lessons            |
-| `toc/science/savvas-experience-hs.json`                      | Savvas Experience Chemistry and Physics (titles only): 34 investigations, 122 experiences         |
-| `toc/science/glencoe-hs.json`                                | Glencoe Chemistry: Matter and Change, Physics: Principles and Problems (titles only): 54 chapters |
-| `toc/science/tarbuck-lutgens-earth-science.json`             | Tarbuck & Lutgens, Earth Science 15th ed. (titles only): 24 chapters                              |
-| `toc/science/miller-levine-experience-biology.json`          | Miller & Levine Experience Biology, Texas (titles only): 13 of 16 investigations                  |
+| File                                                         | What                                                                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `toc/science/openstax-biology-2e.json`                       | OpenStax Biology 2e (grade 9; CC BY-NC-SA, reference): 47 chapters, 208 sections                        |
+| `toc/science/openstax-chemistry-2e.json`                     | OpenStax Chemistry 2e (grade 10; CC BY-NC-SA, reference): 21 chapters, 114 sections                     |
+| `toc/science/openstax-physics-hs.json`                       | OpenStax Physics, the high-school book (grade 11; CC BY): 23 chapters, 75 sections                      |
+| `toc/science/openstax-astronomy-2e.json`                     | OpenStax Astronomy 2e (grade 12; CC BY-NC-SA, reference): 30 chapters, 155 sections                     |
+| `practice/science/9.openstax-biology-2e.jsonl`               | 145 items, a marked sample (5 per mapped chapter), 29 figure screenshots                                |
+| `practice/science/10.openstax-chemistry-2e.jsonl`            | 80 items, a marked sample (5 per mapped chapter), all with the book's published answer                  |
+| `practice/science/11.openstax-physics-hs.jsonl`              | 274 items (up to 15 per chapter), 8 screenshots                                                         |
+| `practice/science/12.openstax-astronomy-2e.jsonl`            | 85 items, a marked sample (5 per mapped chapter)                                                        |
+| `screenshots/openstax-{biology-2e,chemistry-2e,physics-hs}/` | 39 WebP screenshots, 0.89 MB                                                                            |
+| `toc/science/openscied-hs.json`                              | OpenSciEd High School (grades 9–11; CC BY-NC + CC+, reference): 16 units with driving questions and PEs |
+| `toc/science/hmh-science-dimensions-hs.json`                 | HMH Science Dimensions Biology, Chemistry, Physics (titles only): 20 units, 58 lessons                  |
+| `toc/science/savvas-experience-hs.json`                      | Savvas Experience Chemistry and Physics (titles only): 34 investigations, 122 experiences               |
+| `toc/science/glencoe-hs.json`                                | Glencoe Chemistry: Matter and Change, Physics: Principles and Problems (titles only): 54 chapters       |
+| `toc/science/tarbuck-lutgens-earth-science.json`             | Tarbuck & Lutgens, Earth Science 15th ed. (titles only): 24 chapters                                    |
+| `toc/science/miller-levine-experience-biology.json`          | Miller & Levine Experience Biology, Texas (titles only): 13 of 16 investigations                        |
 
 ## 1. OpenStax (Rice University): used
 
@@ -117,6 +118,45 @@ Crawl-delay), and cached in the group's scratch folder so nothing was fetched tw
   - Chemistry: 1, 17–20.
   - Physics: 1, 10–12, 21, 23.
   - Astronomy: 1, 2, 5–7, 11–13, 15, 17, 19, 20, 24, 25, 27, 30.
+
+## 2. OpenSciEd High School: table of contents only
+
+- **File.** `toc/science/openscied-hs.json`: the three courses (Biology, Chemistry and Physics, each "+ Earth &
+  Space"), filed at grades 9, 10 and 11. It has 16 units with driving questions, unit URLs and NGSS
+  performance expectations, and mapped skills. The four units with a Quick Start Guide also have their
+  unit length.
+- **License.** The brief listed OpenSciEd High School as CC BY 4.0. The program's own High School Scope &
+  Sequence (July 2024) carries the CC BY, NonCommercial and CC+ badges in its footer. OpenSciEd's terms of
+  use (quoted in `sources/d.md`) say its materials are licensed "under a Creative Commons Attribution 4.0
+  International License (CC BY 4.0) or Creative Commons NonCommercial Plus 4.0 International License". So
+  the file records CC BY-NC 4.0 with CC+ and treats the program as reference only. No unit file with a
+  license line was read, and no practice was replicated.
+- **openscied.org** (robots.txt: `Crawl-delay: 600`, cached from the K–8 round and not refetched). Three
+  pages were fetched, 600+ s apart, at 06:30, 06:40 and 06:50 UTC on 2026-09-29. The previous request to the
+  host was about 17 hours earlier.
+  - <https://openscied.org/curriculum/high-school/> (linked from the middle-school page).
+  - <https://openscied.org/curriculum/high-school/high-school-instructional-materials/>: unit numbers, titles,
+    driving questions, "Released" status and unit URLs. The COVID-19 high-school unit on the same page is
+    left out.
+  - <https://openscied.org/curriculum/high-school/standards-alignment/>: it links the Scope & Sequence PDF.
+
+  The 16 unit pages were **not** fetched: at the crawl delay they would take about 2.7 hours, and the brief
+  asks for only the few unit-list pages needed. So there are no lessons. Lesson titles live in the unit
+  Teacher Editions, and no fetched public page links those.
+
+- **Performance expectations.** The per-unit PE bundles are drawn only as an image: Figure 2, "Scope and
+  Sequence Map", page 4, updated 8/8/2024, in
+  <https://ose-documents.s3.us-east-1.amazonaws.com/FINAL+OpenSciEd+High+School+Scope+%26+Sequence.pdf>
+  (linked from the standards-alignment page; S3 host, no robots.txt). The figure was rendered at 400 dpi
+  and transcribed, keeping its markers: * = built across units, † = built across courses.
+- **Unit length.** Web search returned links to four Quick Start Guides on OpenSciEd's public
+  `ose-quick-start` bucket: B.1 (11 lessons, 26 days), B.2 (12, 28), C.1 (13, 30) and P.6 (7, 15). They give
+  no lesson titles. No other guide URLs were guessed.
+- **Skill mapping.** The units map well to the grade's skills, except these:
+  - B.2 (photosynthesis, respiration and carbon in ecosystems) maps only to grade-7 skills.
+  - P.5 (electromagnetic radiation) maps to s.8.em-spectrum, with s.11.optics as a loose fit.
+  - The Earth-and-space parts use s.12 skills (C.1 climate, P.2 earth-interior and radiometric-dating, P.6
+    stellar-evolution and cosmology).
 
 ## 3. Commercial programs (all rights reserved): titles only
 

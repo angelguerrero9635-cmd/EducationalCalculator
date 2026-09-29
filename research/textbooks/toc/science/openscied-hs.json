@@ -1,0 +1,365 @@
+{
+ "id": "openscied-hs",
+ "curriculum": "OpenSciEd High School (Biology, Chemistry, Physics, each + Earth & Space)",
+ "publisher": "OpenSciEd",
+ "edition": "Units as listed on openscied.org, retrieved 2026-09-29 (all 16 \"Released\")",
+ "subject": "science",
+ "grades": [
+  "9",
+  "10",
+  "11"
+ ],
+ "content": "full",
+ "terms": {
+  "unit": "Unit"
+ },
+ "license": {
+  "name": "CC BY-NC 4.0 with CC+ (NonCommercial Plus), reference only",
+  "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "attribution": "© OpenSciEd. The High School Scope & Sequence (July 2024) carries the CC BY, NonCommercial and CC+ badges; OpenSciEd terms of use: materials are licensed CC BY 4.0 or Creative Commons NonCommercial Plus 4.0. The OpenSciEd name and logo are not subject to the Creative Commons license. Source: https://openscied.org/curriculum/high-school/high-school-instructional-materials/"
+ },
+ "sourceUrl": "https://openscied.org/curriculum/high-school/high-school-instructional-materials/",
+ "retrieved": "2026-09-29",
+ "sources": [
+  "https://openscied.org/curriculum/high-school/high-school-instructional-materials/",
+  "https://openscied.org/curriculum/high-school/standards-alignment/",
+  "https://ose-documents.s3.us-east-1.amazonaws.com/FINAL+OpenSciEd+High+School+Scope+%26+Sequence.pdf",
+  "https://ose-quick-start.s3.amazonaws.com/Unit+B.1+Quick+Start+Guide.pdf",
+  "https://ose-quick-start.s3.amazonaws.com/B.2+Quick+Start+Guide.pdf",
+  "https://ose-quick-start.s3.amazonaws.com/Unit+C.1+Quick+Start+Guide.pdf",
+  "https://ose-quick-start.s3.us-east-1.amazonaws.com/P.6+Quick+Start+Guide.pdf"
+ ],
+ "notes": "Unit numbers, titles and driving questions from the public High School Instructional Materials page; performance expectations transcribed from Figure 2 of the High School Scope & Sequence (July 2024, figure updated 8/8/2024) linked from the Standards Alignment page (* = built across units, † = built across courses). openscied.org asks a 600-second crawl delay, so the 16 unit pages were not fetched and lessons are not listed (lesson titles are in the unit Teacher Editions, which no fetched public page links). Unit length (lessons, days) comes from the four Quick Start Guides whose links web search returned (B.1, B.2, C.1, P.6). Each course carries the NGSS Earth and Space Science PEs; grade by course: Biology 9, Chemistry 10, Physics 11. The COVID-19 & Health Equity high-school unit on the same page is left out.",
+ "books": [
+  {
+   "grade": "9",
+   "course": "Biology (+ Earth & Space)",
+   "url": "https://openscied.org/curriculum/high-school/high-school-instructional-materials/",
+   "units": [
+    {
+     "n": "B.1",
+     "title": "Ecosystem Interactions & Dynamics",
+     "drivingQuestion": "How do ecosystems work, and how can understanding them help us protect them?",
+     "url": "https://openscied.org/instructional-materials/b-1-ecosystem-interactions-dynamics/",
+     "skills": [
+      "s.9.population-ecology"
+     ],
+     "performanceExpectations": [
+      "HS-LS2-1",
+      "HS-LS2-2",
+      "HS-LS2-6*",
+      "HS-LS2-7*",
+      "HS-LS2-8",
+      "HS-ESS3-3",
+      "HS-ETS1-3†"
+     ],
+     "unitLength": "11 Lessons, 26 Days",
+     "quickStartGuide": "https://ose-quick-start.s3.amazonaws.com/Unit+B.1+Quick+Start+Guide.pdf"
+    },
+    {
+     "n": "B.2",
+     "title": "Ecosystems: Matter & Energy",
+     "drivingQuestion": "What causes fires in ecosystems to burn, and how should we manage them?",
+     "url": "https://openscied.org/instructional-materials/b-2-ecosystems-matter-energy/",
+     "skills": [
+      "s.7.photosynthesis-respiration",
+      "s.7.ecosystem-energy"
+     ],
+     "notes": "Photosynthesis, respiration and carbon cycling in ecosystems (fire); no grade-9 skill, nearest are grade 7.",
+     "performanceExpectations": [
+      "HS-LS1-5",
+      "HS-LS1-6",
+      "HS-LS1-7",
+      "HS-LS2-3",
+      "HS-LS2-4",
+      "HS-LS2-5",
+      "HS-ESS2-6†",
+      "HS-ETS1-2†"
+     ],
+     "unitLength": "12 Lessons, 28 Days",
+     "quickStartGuide": "https://ose-quick-start.s3.amazonaws.com/B.2+Quick+Start+Guide.pdf"
+    },
+    {
+     "n": "B.3",
+     "title": "Inheritance & Variation of Traits",
+     "drivingQuestion": "Who gets cancer and why? What can we do about it?",
+     "url": "https://openscied.org/instructional-materials/b-3-inheritance-variation-of-traits/",
+     "skills": [
+      "s.9.inheritance-patterns",
+      "s.9.dna-protein-synthesis",
+      "s.9.mitosis-meiosis"
+     ],
+     "performanceExpectations": [
+      "HS-LS1-1",
+      "HS-LS1-2",
+      "HS-LS1-4",
+      "HS-LS3-1",
+      "HS-LS3-2",
+      "HS-LS3-3",
+      "HS-ETS1-3†"
+     ]
+    },
+    {
+     "n": "B.4",
+     "title": "Natural Selection & Evolution of Populations",
+     "drivingQuestion": "How does urbanization affect nonhuman populations, and how can we minimize harmful effects?",
+     "url": "https://openscied.org/instructional-materials/b-4-natural-selection-evolution/",
+     "skills": [
+      "s.9.evolution-evidence",
+      "s.7.natural-selection"
+     ],
+     "performanceExpectations": [
+      "HS-LS4-2*",
+      "HS-LS4-3",
+      "HS-LS4-4*",
+      "HS-LS4-5*",
+      "HS-LS4-6",
+      "HS-ETS1-3†"
+     ]
+    },
+    {
+     "n": "B.5",
+     "title": "Common Ancestry & Speciation",
+     "drivingQuestion": "What will happen to Arctic bear populations as their environment changes?",
+     "url": "https://openscied.org/instructional-materials/b-5-common-ancestry-speciation/",
+     "skills": [
+      "s.9.evolution-evidence"
+     ],
+     "performanceExpectations": [
+      "HS-LS1-3",
+      "HS-LS2-6*",
+      "HS-LS2-7*",
+      "HS-LS4-1",
+      "HS-LS4-2*",
+      "HS-LS4-4*",
+      "HS-LS4-5*",
+      "HS-ESS2-7†"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "10",
+   "course": "Chemistry (+ Earth & Space)",
+   "url": "https://openscied.org/curriculum/high-school/high-school-instructional-materials/",
+   "units": [
+    {
+     "n": "C.1",
+     "title": "Thermodynamics in Earth’s Systems",
+     "drivingQuestion": "How can we slow the flow of energy on Earth to protect vulnerable coastal communities?",
+     "url": "https://openscied.org/instructional-materials/c-1-thermodynamics-in-earths-systems/",
+     "skills": [
+      "s.10.thermochemistry",
+      "s.12.climate-systems",
+      "s.12.ocean-atmosphere"
+     ],
+     "performanceExpectations": [
+      "HS-PS3-1*†",
+      "HS-PS3-4",
+      "HS-ESS2-2",
+      "HS-ESS2-4†",
+      "HS-ESS2-7†",
+      "HS-ESS3-1*",
+      "HS-ESS3-5",
+      "HS-ESS3-6"
+     ],
+     "unitLength": "13 Lessons, 30 Days",
+     "quickStartGuide": "https://ose-quick-start.s3.amazonaws.com/Unit+C.1+Quick+Start+Guide.pdf"
+    },
+    {
+     "n": "C.2",
+     "title": "Structure & Properties of Matter",
+     "drivingQuestion": "What causes lightning and why are some places safer than others when it strikes?",
+     "url": "https://openscied.org/instructional-materials/c-2-structure-properties-of-matter/",
+     "skills": [
+      "s.10.atomic-structure",
+      "s.10.periodic-trends",
+      "s.10.bonding"
+     ],
+     "performanceExpectations": [
+      "HS-PS1-1*",
+      "HS-PS1-3*",
+      "HS-PS2-4†",
+      "HS-PS2-6*",
+      "HS-PS3-2*†",
+      "HS-PS3-5*"
+     ]
+    },
+    {
+     "n": "C.3",
+     "title": "Molecular Processes in Earth Systems",
+     "drivingQuestion": "How can we find, make, and recycle the substances we need to live on and beyond Earth?",
+     "url": "https://openscied.org/instructional-materials/c-3-molecular-processes-in-earth-systems/",
+     "skills": [
+      "s.10.stoichiometry",
+      "s.10.mole",
+      "s.12.resource-management"
+     ],
+     "performanceExpectations": [
+      "HS-PS1-1*",
+      "HS-PS1-2",
+      "HS-PS1-3*",
+      "HS-PS2-6*",
+      "HS-ESS1-2†",
+      "HS-ESS2-1†",
+      "HS-ESS2-5"
+     ]
+    },
+    {
+     "n": "C.4",
+     "title": "Chemical Reactions in our World",
+     "drivingQuestion": "Why are oysters dying, and how can we use chemistry to protect them?",
+     "url": "https://openscied.org/instructional-materials/c-4-chemical-reactions-in-our-world/",
+     "skills": [
+      "s.10.rates-equilibrium",
+      "s.10.acids-bases"
+     ],
+     "performanceExpectations": [
+      "HS-PS1-5",
+      "HS-PS1-6",
+      "HS-PS1-7",
+      "HS-ESS2-6†",
+      "HS-ESS3-4*",
+      "HS-ETS1-1*",
+      "HS-ETS1-2†"
+     ]
+    },
+    {
+     "n": "C.5",
+     "title": "Energy from Chemical & Nuclear Processes",
+     "drivingQuestion": "How can chemistry help us evaluate fuels and transportation options to benefit the Earth and our communities?",
+     "url": "https://openscied.org/instructional-materials/c-5-energy-from-chemical-nuclear-reactions/",
+     "skills": [
+      "s.10.thermochemistry",
+      "s.10.atomic-structure"
+     ],
+     "performanceExpectations": [
+      "HS-PS1-4",
+      "HS-PS1-8†",
+      "HS-PS3-1*†",
+      "HS-PS3-2*†",
+      "HS-PS3-5*†",
+      "HS-ESS3-1*",
+      "HS-ESS3-2†",
+      "HS-ESS3-4*",
+      "HS-ETS1-1*"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "11",
+   "course": "Physics (+ Earth & Space)",
+   "url": "https://openscied.org/curriculum/high-school/high-school-instructional-materials/",
+   "units": [
+    {
+     "n": "P.1",
+     "title": "Energy Flow from Earth’s Systems",
+     "drivingQuestion": "How can we design more reliable systems to meet our communities’ energy needs?",
+     "url": "https://openscied.org/instructional-materials/p-1-energy-flow-from-earths-systems/",
+     "skills": [
+      "s.11.work-energy-power",
+      "s.11.electromagnetism",
+      "s.12.resource-management"
+     ],
+     "performanceExpectations": [
+      "HS-PS2-5*",
+      "HS-PS3-1†",
+      "HS-PS3-2†",
+      "HS-PS3-3",
+      "HS-ESS3-2†",
+      "HS-ETS1-3†",
+      "HS-ETS1-4"
+     ]
+    },
+    {
+     "n": "P.2",
+     "title": "Energy, Forces, & Earth’s Crust",
+     "drivingQuestion": "How do forces in Earth’s interior determine what will happen to the surface we see?",
+     "url": "https://openscied.org/instructional-materials/p-2-energy-forces-earths-crust/",
+     "skills": [
+      "s.12.earth-interior",
+      "s.12.radiometric-dating"
+     ],
+     "performanceExpectations": [
+      "HS-PS1-8†",
+      "HS-ESS1-5",
+      "HS-ESS2-1†",
+      "HS-ESS2-3"
+     ]
+    },
+    {
+     "n": "P.3",
+     "title": "Collisions & Momentum",
+     "drivingQuestion": "What can we do to make driving safer for everyone?",
+     "url": "https://openscied.org/instructional-materials/p-3-collisions-momentum/",
+     "skills": [
+      "s.11.momentum",
+      "s.11.dynamics-vectors"
+     ],
+     "performanceExpectations": [
+      "HS-PS2-1",
+      "HS-PS2-2",
+      "HS-PS2-3",
+      "HS-ETS1-3†"
+     ]
+    },
+    {
+     "n": "P.4",
+     "title": "Meteors, Orbits, & Gravity",
+     "drivingQuestion": "How have collisions with objects from space changed Earth in the past, and how could they affect our future?",
+     "url": "https://openscied.org/instructional-materials/p-4-meteors-orbits-gravity/",
+     "skills": [
+      "s.11.circular-gravitation",
+      "s.11.kinematics-2d"
+     ],
+     "performanceExpectations": [
+      "HS-PS2-4†",
+      "HS-PS3-1†",
+      "HS-PS3-2†",
+      "HS-ESS1-4",
+      "HS-ESS1-6"
+     ]
+    },
+    {
+     "n": "P.5",
+     "title": "Electromagnetic Radiation",
+     "drivingQuestion": "How do we use radiation in our lives, and is it safe for humans?",
+     "url": "https://openscied.org/instructional-materials/p-5-electromagnetic-radiation/",
+     "skills": [
+      "s.8.em-spectrum",
+      "s.11.optics"
+     ],
+     "notes": "Electromagnetic radiation and its effects; no grade-11 skill for the spectrum (nearest s.8.em-spectrum), s.11.optics loose.",
+     "performanceExpectations": [
+      "HS-PS2-5*",
+      "HS-PS4-1",
+      "HS-PS4-2",
+      "HS-PS4-3",
+      "HS-PS4-4",
+      "HS-PS4-5",
+      "HS-ESS2-4†"
+     ]
+    },
+    {
+     "n": "P.6",
+     "title": "Stars & the Big Bang",
+     "drivingQuestion": "Why do stars shine and will they shine forever?",
+     "url": "https://openscied.org/instructional-materials/p-6-stars-the-big-bang/",
+     "skills": [
+      "s.12.stellar-evolution",
+      "s.12.cosmology"
+     ],
+     "performanceExpectations": [
+      "HS-PS1-8†",
+      "HS-ESS1-1",
+      "HS-ESS1-2†",
+      "HS-ESS1-3"
+     ],
+     "unitLength": "7 Lessons, 15 Days",
+     "quickStartGuide": "https://ose-quick-start.s3.us-east-1.amazonaws.com/P.6+Quick+Start+Guide.pdf"
+    }
+   ]
+  }
+ ]
+}
