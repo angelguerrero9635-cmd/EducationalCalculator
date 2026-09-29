@@ -7,17 +7,22 @@ request per second per host (4.5 s during the first half of the run; openscied.o
 Crawl-delay), and cached in the group's scratch folder so nothing was fetched twice. Checker:
 `python3 research/textbooks/tools/check_hs_d.py`.
 
-| File                                                         | What                                                                                   |
-| ------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| `toc/science/openstax-biology-2e.json`                       | OpenStax Biology 2e (grade 9; CC BY-NC-SA, reference): 47 chapters, 208 sections       |
-| `toc/science/openstax-chemistry-2e.json`                     | OpenStax Chemistry 2e (grade 10; CC BY-NC-SA, reference): 21 chapters, 114 sections    |
-| `toc/science/openstax-physics-hs.json`                       | OpenStax Physics, the high-school book (grade 11; CC BY): 23 chapters, 75 sections     |
-| `toc/science/openstax-astronomy-2e.json`                     | OpenStax Astronomy 2e (grade 12; CC BY-NC-SA, reference): 30 chapters, 155 sections    |
-| `practice/science/9.openstax-biology-2e.jsonl`               | 145 items, a marked sample (5 per mapped chapter), 29 figure screenshots               |
-| `practice/science/10.openstax-chemistry-2e.jsonl`            | 80 items, a marked sample (5 per mapped chapter), all with the book's published answer |
-| `practice/science/11.openstax-physics-hs.jsonl`              | 274 items (up to 15 per chapter), 8 screenshots                                        |
-| `practice/science/12.openstax-astronomy-2e.jsonl`            | 85 items, a marked sample (5 per mapped chapter)                                       |
-| `screenshots/openstax-{biology-2e,chemistry-2e,physics-hs}/` | 39 WebP screenshots, 0.89 MB                                                           |
+| File                                                         | What                                                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `toc/science/openstax-biology-2e.json`                       | OpenStax Biology 2e (grade 9; CC BY-NC-SA, reference): 47 chapters, 208 sections                  |
+| `toc/science/openstax-chemistry-2e.json`                     | OpenStax Chemistry 2e (grade 10; CC BY-NC-SA, reference): 21 chapters, 114 sections               |
+| `toc/science/openstax-physics-hs.json`                       | OpenStax Physics, the high-school book (grade 11; CC BY): 23 chapters, 75 sections                |
+| `toc/science/openstax-astronomy-2e.json`                     | OpenStax Astronomy 2e (grade 12; CC BY-NC-SA, reference): 30 chapters, 155 sections               |
+| `practice/science/9.openstax-biology-2e.jsonl`               | 145 items, a marked sample (5 per mapped chapter), 29 figure screenshots                          |
+| `practice/science/10.openstax-chemistry-2e.jsonl`            | 80 items, a marked sample (5 per mapped chapter), all with the book's published answer            |
+| `practice/science/11.openstax-physics-hs.jsonl`              | 274 items (up to 15 per chapter), 8 screenshots                                                   |
+| `practice/science/12.openstax-astronomy-2e.jsonl`            | 85 items, a marked sample (5 per mapped chapter)                                                  |
+| `screenshots/openstax-{biology-2e,chemistry-2e,physics-hs}/` | 39 WebP screenshots, 0.89 MB                                                                      |
+| `toc/science/hmh-science-dimensions-hs.json`                 | HMH Science Dimensions Biology, Chemistry, Physics (titles only): 20 units, 58 lessons            |
+| `toc/science/savvas-experience-hs.json`                      | Savvas Experience Chemistry and Physics (titles only): 34 investigations, 122 experiences         |
+| `toc/science/glencoe-hs.json`                                | Glencoe Chemistry: Matter and Change, Physics: Principles and Problems (titles only): 54 chapters |
+| `toc/science/tarbuck-lutgens-earth-science.json`             | Tarbuck & Lutgens, Earth Science 15th ed. (titles only): 24 chapters                              |
+| `toc/science/miller-levine-experience-biology.json`          | Miller & Levine Experience Biology, Texas (titles only): 13 of 16 investigations                  |
 
 ## 1. OpenStax (Rice University): used
 
@@ -112,3 +117,65 @@ Crawl-delay), and cached in the group's scratch folder so nothing was fetched tw
   - Chemistry: 1, 17–20.
   - Physics: 1, 10–12, 21, 23.
   - Astronomy: 1, 2, 5–7, 11–13, 15, 17, 19, 20, 24, 25, 27, 30.
+
+## 3. Commercial programs (all rights reserved): titles only
+
+Only chapter, unit or lesson titles were read from public pages, and each file cites its URL. Nothing else
+was copied, and there is no practice from these programs. PDFs were read once in the scratch folder for
+their titles. Every host's robots.txt allowed the pages used, and requests were one per second.
+
+- **HMH Science Dimensions Biology, Chemistry, Physics** (`hmh-science-dimensions-hs`, grades 9–11). The
+  public sample page <https://www.hmhco.com/programs/sample-science-dimensions-9-12> links a
+  scope-and-sequence / table-of-contents flyer per course on HMH's public S3 bucket (the bucket's
+  robots.txt answers 403, so there is none):
+  - `Table-of-Contents-Scope-and-Sequence-with-NGSS-Standards-Alignment-HMH-Science-Dimensions-Biology.pdf`
+    has 10 units and 30 lessons, with the NGSS PEs per unit.
+  - `Scope-and-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Chemistry.pdf` has Units 1–5 and 14
+    lessons.
+  - `Scope-Sequence-Table-of-Contents-Flyer-HMH-Science-Dimensions-Physics.pdf` has 5 units and 14 lessons.
+
+  The flyers say "© Houghton Mifflin Harcourt. All rights reserved. 09/24". The HMH shop page for the
+  Biology student edition lists no contents. An HMH Earth & Space Science guide is linked there too; it was
+  not used.
+
+- **Savvas Experience Chemistry and Experience Physics** (`savvas-experience-hs`, grades 10–11). The
+  "Table of Contents" section of the public program pages
+  <https://www.savvas.com/solutions/science/core-programs/experience-chemistry> (5 storylines, 18
+  investigations, 71 experiences; Storyline 3, the chemistry of climate change, is marked optional) and
+  <https://www.savvas.com/solutions/science/core-programs/experience-physics> (5 storylines, 16
+  investigations, 51 experiences). The footer reads "Copyright © 2026 Savvas Learning Company LLC". The
+  TEA IMRA reports on the Texas editions (im.tea.texas.gov, 14 Chemistry investigations) were read for
+  titles but not recorded: the national lists are complete.
+- **Glencoe (McGraw Hill) Chemistry: Matter and Change; Physics: Principles and Problems** (`glencoe-hs`,
+  grades 10–11). McGraw Hill's 2017 program pages
+  (<https://www.mheducation.com/prek-12/program/glencoe-chemistry-matter-change-2017/MKTSP-ICA21MO.html>,
+  <https://www.mheducation.com/prek-12/program/glencoe-physics-principles-problems-2017/MKTSP-GBO15MO.html>)
+  list no chapters. The chapter titles come from the page title of each chapter page on the public Glencoe
+  student companion sites, <https://glencoe.mheducation.com/sites/007874637x/> (24 chapters) and
+  <https://glencoe.mheducation.com/sites/0078458137/> (30 chapters). These are earlier editions,
+  identified by the ISBN in the site URL; the sites show no year.
+- **Earth Science, Tarbuck, Lutgens and Tasa, 15th edition** (`tarbuck-lutgens-earth-science`, grade 12).
+  The "Table of contents" on Pearson's public catalog page
+  <https://www.pearson.com/en-us/subject-catalog/p/earth-science/P200000006858/9780135213216> gives 24
+  chapters in 7 parts. Savvas sells it to high schools
+  (<https://www.savvas.com/new-mexico/solutions/science/ap-science/earth-science/earth-science>, which lists
+  no chapters). A district syllabus PDF on penncrest.org was found by search, but that site's robots.txt
+  disallows it, so it was not fetched.
+- **Miller & Levine Biology** (`miller-levine-experience-biology`, grade 9). No public page read for this
+  project lists the 2019 edition's chapter titles:
+  - Savvas's program, shop, homeschool, Indiana, Tennessee, Texas and California pages have none.
+  - The two 2019 program-overview PDFs on mysavvastraining.com have none.
+  - Search snippets (Quizlet, retailers) were not used as sources.
+
+  So the file records the current Savvas successor, **Miller & Levine Experience Biology**, whose
+  Investigation titles are named in the Texas Education Agency's IMRA quality review of the Texas edition
+  (<https://im.tea.texas.gov/sites/default/files/2024-12/Savvas_High%20School%20-%20Biology.pdf>, August
+  2023). The file has 13 of its 16 Investigations: 6, 8 and 9 are not named "Investigation N: Title" in the
+  report, and 15 is named in parentheses.
+
+- **Skill mapping (commercial).** The mapping is our own, by title.
+  - Units with no fitting skill have `[]` and a note: redox, organic chemistry, engineering design,
+    information technology, plant systems, disease.
+  - The Earth Science book shows the taxonomy's thin grade 12, which has six skills. Weathering, water,
+    weather, rocks and the solar system map to K–8 skills (s.4.weathering, s.6.water-cycle,
+    s.6.weather-fronts, s.6.rock-cycle, s.8.gravity-orbits); minerals and glaciers/deserts get `[]`.

@@ -14,8 +14,8 @@ from collections import defaultdict
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 TB = os.path.join(ROOT, 'research', 'textbooks')
 TOCS = ['openstax-biology-2e', 'openstax-chemistry-2e', 'openstax-physics-hs', 'openstax-astronomy-2e',
-        'openscied-hs', 'miller-levine-biology', 'hmh-science-dimensions', 'savvas-experience-science',
-        'glencoe-physics-chemistry', 'savvas-earth-science']
+        'openscied-hs', 'hmh-science-dimensions-hs', 'savvas-experience-hs', 'glencoe-hs',
+        'tarbuck-lutgens-earth-science', 'miller-levine-experience-biology']
 PRACTICE_IDS = {'openstax-biology-2e', 'openstax-chemistry-2e', 'openstax-physics-hs', 'openstax-astronomy-2e'}
 GRADES = {'9', '10', '11', '12', '9-12'}
 NC = {'openstax-biology-2e', 'openstax-chemistry-2e', 'openstax-astronomy-2e'}  # CC BY-NC-SA: sample only
