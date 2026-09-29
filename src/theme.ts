@@ -54,6 +54,8 @@ const light = {
   chartSecond: '#F4B740',
   /** Hops that take away on a number line (Hops.tsx), beside the highlight for adding. */
   hopBack: '#C2410C',
+  /** The function graph (H01): a second curve g(x) or the inverse, beside f in the highlight. */
+  fnSecond: '#C2570C',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
@@ -268,6 +270,7 @@ const dark: Palette = {
   onChartHighlight: '#0D0F14',
   chartSecond: '#B8862E',
   hopBack: '#F08A4B',
+  fnSecond: '#F5A04A',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
 

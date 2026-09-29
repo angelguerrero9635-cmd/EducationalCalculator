@@ -8,6 +8,7 @@ import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
+import { functionGraphVars } from '../typesFunctionGraph';
 import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
@@ -418,6 +419,8 @@ function representationVars(r: Representation): string[] {
     case 'mapping':
     case 'transformation':
       return graphSpecVars(r);
+    case 'functionGraph':
+      return functionGraphVars(r);
     case 'energyPyramid':
     case 'generations':
       return lifeSpecVars(r);

@@ -23,6 +23,7 @@ import { chemIssues } from './chemPictures';
 
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
+import { functionGraphIssues } from './picturesFunctionGraph';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1735,6 +1736,9 @@ export function repIssues(
       if (r !== undefined && r !== 0 && r !== 4) out.push(`${r} right angles`);
       break;
     }
+    case 'functionGraph':
+      out.push(...functionGraphIssues(rep, val));
+      break;
     case 'linearFunction': {
       const [m, b] = [val(rep.slope), val(rep.intercept)];
       const [x, y] = rep.point ? [val(rep.point.x), val(rep.point.y)] : [];
