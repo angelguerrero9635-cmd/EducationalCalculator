@@ -666,7 +666,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
       'A calculator shows 9.8413 02 for 9.8413 × 10².',
     ],
     variables: [
-      { id: 'N', symbol: 'N', name: 'Number', min: 1e-12, max: 1e13, full: true },
+      { id: 'N', symbol: 'N', name: 'Number', min: 1e-12, max: 9.999e12, full: true },
       MANTISSA('a', 'Number from 1 up to 10'),
       whole('n', 'n', 'Power of ten', -12, 12),
     ],
@@ -1106,11 +1106,18 @@ export const MATH_8_MODULES: ModuleDef[] = [
         max: 10000,
         step: 0.01,
       },
-      { id: 'm1', symbol: 'm₁', name: 'First rate', min: 0, max: 100000, derived: true },
+      {
+        id: 'm1',
+        symbol: 'm₁',
+        name: 'Dollars per cubic yard, first',
+        min: 0,
+        max: 100000,
+        derived: true,
+      },
       {
         id: 'm2',
         symbol: 'm₂',
-        name: 'Second rate',
+        name: 'Dollars per cubic yard, second',
         min: 0,
         max: 100000,
         derived: true,
@@ -1118,7 +1125,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
       {
         id: 'd',
         symbol: 'd',
-        name: 'Difference of the rates',
+        name: 'Difference per cubic yard ($)',
         min: -100000,
         max: 100000,
         derived: true,
@@ -1373,9 +1380,9 @@ export const MATH_8_MODULES: ModuleDef[] = [
       ],
       variables: [
         signed('m1', 'm₁', 'First slope', 0.5),
-        signed('b1', 'b₁', 'First intercept'),
+        signed('b1', 'b₁', 'First intercept', 1, 50),
         signed('m2', 'm₂', 'Second slope', 0.5),
-        signed('b2', 'b₂', 'Second intercept'),
+        signed('b2', 'b₂', 'Second intercept', 1, 50),
         {
           id: 'x',
           symbol: 'x',
@@ -2617,7 +2624,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
         units: ['cm'],
         min: 0.5,
         max: 20,
-        step: 0.5,
+        step: 1,
       },
       {
         id: 'h',
@@ -2700,7 +2707,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
         units: ['cm'],
         min: 0.5,
         max: 20,
-        step: 0.5,
+        step: 1,
       },
       {
         id: 'd',

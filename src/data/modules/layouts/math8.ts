@@ -353,7 +353,7 @@ export const MATH_8_LAYOUTS: LayoutDef[] = [
       { label: 'The letter F facing left', bin: 'reflect' },
       { label: 'The shaded side up becomes the white side up', bin: 'reflect' },
       { label: 'Turned a quarter turn about a point', bin: 'rotate' },
-      { label: 'The letter F upside down', bin: 'rotate' },
+      { label: 'The letter F turned upside down and facing left', bin: 'rotate' },
       { label: 'Turned 180°', bin: 'rotate' },
       { label: 'Twice as big, same shape', bin: 'dilate' },
       { label: 'Half the size', bin: 'dilate' },

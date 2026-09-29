@@ -165,6 +165,9 @@ function percentOn(
 }
 
 /** a + b = r or a − b = r with signed numbers. */
+/** A signed number as those pages show it: twelfths as fractions, other values as decimals. */
+const sf = (x: number) => formatNumber(x, { fraction: 12 });
+
 function signedSum(
   id: string,
   head: { title?: string; use?: string },
@@ -178,7 +181,8 @@ function signedSum(
   const num = (vid: string, name: string, r: number) =>
     step === undefined
       ? whole(vid, vid, name, -r, r)
-      : { id: vid, symbol: vid, name, min: -r, max: r, step, multipleOf: step };
+      : // Any decimal or fraction: 2/3 − 5/6 prints as fractions (twelfths), 3.5 as a decimal.
+        { id: vid, symbol: vid, name, min: -r, max: r, step, fraction: 12 };
   const op = subtract ? '−' : '+';
   const rel = `r = a ${op} b`;
   return {
@@ -199,7 +203,7 @@ function signedSum(
         ...(subtract
           ? {
               check: (v: Values) =>
-                `${fmt(v.r!)} + ${v.b! < 0 ? `(${fmt(v.b!)})` : fmt(v.b!)} = ${fmt(v.a!)}`,
+                `${sf(v.r!)} + ${v.b! < 0 ? `(${sf(v.b!)})` : sf(v.b!)} = ${sf(v.a!)}`,
             }
           : {}),
         residual: (v: Values) => v.r! - (subtract ? v.a! - v.b! : v.a! + v.b!),
@@ -271,11 +275,21 @@ const signs = [
     'Divide both sides by b.',
     'Divide both sides by a.',
   ]),
-  quotient('d', 'a', 'b', [
-    'Divide the sizes; the sign rule is the same as for multiplying.',
-    'Multiply the quotient by b.',
-    'Divide a by the quotient.',
-  ]),
+  (() => {
+    const d = quotient('d', 'a', 'b', [
+      'Divide the sizes; the sign rule is the same as for multiplying.',
+      'Multiply the quotient by b.',
+      'Divide a by the quotient.',
+    ]);
+    return {
+      ...d,
+      relation: {
+        ...d.relation,
+        message: (v: Values) =>
+          v.b === 0 ? 'Dividing by 0 has no answer: no number times 0 makes a.' : undefined,
+      },
+    };
+  })(),
 ];
 
 const interest: { relation: Relation; steps: Record<string, StepText> }[] = [
@@ -674,7 +688,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     ],
     variables: [
       { id: 'b', symbol: 'b', name: 'Original amount', min: 0.01, max: 100000, step: 0.01 },
-      { id: 'a', symbol: 'a', name: 'New amount', min: 0, max: 400000, step: 0.01 },
+      { id: 'a', symbol: 'a', name: 'New amount', min: 0, max: 1100000, step: 0.01 },
       {
         id: 'c',
         symbol: 'c',
@@ -684,7 +698,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
         step: 0.01,
         derived: true,
       },
-      { id: 'p', symbol: 'p', name: 'Percent change', unit: '%', min: -100, max: 300, step: 0.1 },
+      { id: 'p', symbol: 'p', name: 'Percent change', unit: '%', min: -100, max: 1000, step: 0.1 },
     ],
     relations: [
       {
@@ -745,9 +759,9 @@ export const MATH_7_MODULES: ModuleDef[] = [
     ],
     variables: [
       { id: 't', symbol: 't', name: 'Actual value', min: 0.01, max: 100000, step: 0.01 },
-      { id: 'm', symbol: 'm', name: 'Measured value', min: 0, max: 400000, step: 0.01 },
+      { id: 'm', symbol: 'm', name: 'Measured value', min: 0, max: 400000, step: 0.5 },
       { id: 'e', symbol: 'e', name: 'Error', min: 0, max: 300000, step: 0.01, derived: true },
-      { id: 'p', symbol: 'p', name: 'Percent error', unit: '%', min: 0, max: 100, step: 0.01 },
+      { id: 'p', symbol: 'p', name: 'Percent error', unit: '%', min: 0, max: 300, step: 0.01 },
     ],
     relations: [
       {
@@ -843,7 +857,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     { a: -3.5, b: 5, r: 1.5 },
     { kind: 'integerLine', value: 'a', min: -5, max: 5, jump: { by: 'b', result: 'r' } },
     2000,
-    0.25,
+    0.01,
   ),
   signedSum(
     'm.7.rational-operations~zero-pairs',
@@ -876,7 +890,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     { a: 2, b: -3.5, r: 5.5 },
     { kind: 'integerLine', value: 'a', min: -5, max: 5, jump: { by: 'b', result: 'r', op: '−' } },
     2000,
-    0.25,
+    0.01,
   ),
   {
     id: 'm.7.rational-operations~multiply-divide',
@@ -1657,7 +1671,10 @@ export const MATH_7_MODULES: ModuleDef[] = [
       'Angles that add to 180° are supplementary.',
       'Adjacent angles share a vertex and a ray and do not overlap.',
     ],
-    variables: [degrees('a', 'First angle'), degrees('b', 'Second angle')],
+    variables: [
+      { ...degrees('a', 'First angle', 179), min: 1 },
+      { ...degrees('b', 'Second angle', 179), min: 1 },
+    ],
     relations: [straightPair.relation],
     steps: straightPair.steps,
     example: { a: 115, b: 65 },
@@ -1672,7 +1689,10 @@ export const MATH_7_MODULES: ModuleDef[] = [
       'The two angles share a ray and together make a right angle.',
       'Angles that add to 90° are complementary.',
     ],
-    variables: [degrees('a', 'First angle', 90), degrees('b', 'Second angle', 90)],
+    variables: [
+      { ...degrees('a', 'First angle', 89), min: 1 },
+      { ...degrees('b', 'Second angle', 89), min: 1 },
+    ],
     relations: [rightPair.relation],
     steps: rightPair.steps,
     example: { a: 35, b: 55 },
@@ -1689,9 +1709,9 @@ export const MATH_7_MODULES: ModuleDef[] = [
       'Angles across from each other are vertical angles: they are equal.',
     ],
     variables: [
-      degrees('a', 'Angle a'),
-      degrees('b', 'Angle beside it'),
-      degrees('c', 'Angle across from a'),
+      { ...degrees('a', 'Angle a', 179), min: 1 },
+      { ...degrees('b', 'Angle beside it', 179), min: 1 },
+      { ...degrees('c', 'Angle across from a', 179), min: 1 },
     ],
     relations: [
       straightPair.relation,
@@ -2538,7 +2558,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
   },
   {
     id: 'm.7.probability~at-least',
-    title: 'Two dice: at least or at most',
+    title: 'Two dice: a sum of at least',
     use: 'Use this for “Two dice are rolled. What is the chance the sum is at least 10?”',
     assumptions: [
       'The 36 pairs of faces are equally likely.',
@@ -2576,6 +2596,11 @@ export const MATH_7_MODULES: ModuleDef[] = [
         k: {
           expr: (v: Values) => sumsFrom(v.s!).join(' + '),
           how: 'Count the pairs for each sum from the smallest up to 12, then add.',
+          work: (v: Values) => [
+            sumsFrom(v.s!)
+              .map((k, i) => `sum ${v.s! + i}: ${k}`)
+              .join(', '),
+          ],
           written: false,
         },
       },

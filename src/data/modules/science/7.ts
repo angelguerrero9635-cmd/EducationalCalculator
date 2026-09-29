@@ -273,8 +273,8 @@ const punnett = {
   variables: [
     { ...whole('a', 'a', 'Dominant alleles in the first parent', 0, 2), allowed: [0, 1, 2] },
     { ...whole('b', 'b', 'Dominant alleles in the second parent', 0, 2), allowed: [0, 1, 2] },
-    { ...whole('r', 'r', 'Boxes without the trait', 0, 4), derived: true },
-    { ...whole('t', 't', 'Boxes with the trait', 0, 4), derived: true },
+    { ...whole('r', 'r', 'Boxes with tt (short)', 0, 4), derived: true },
+    { ...whole('t', 't', 'Boxes with a T (tall)', 0, 4), derived: true },
   ],
 };
 
@@ -356,7 +356,16 @@ export const SCIENCE_7_MODULES: ModuleDef[] = [
       'Drag the point along the curve.',
     ],
     variables: [
-      { id: 't', symbol: 't', name: 'Time heating, in minutes', min: 0, max: 148, step: 0.5 },
+      {
+        id: 't',
+        symbol: 't',
+        name: 'Time heating',
+        unit: 'min',
+        units: ['min'],
+        min: 0,
+        max: 148,
+        step: 0.5,
+      },
       {
         id: 'T',
         symbol: 'T',
@@ -640,7 +649,7 @@ export const SCIENCE_7_MODULES: ModuleDef[] = [
       'Energy flows one way, up and out as heat. Matter cycles round and round (see the carbon cycle).',
     ],
     variables: [
-      energy('E1', 'E₁', 'Energy in the producers', false),
+      { ...energy('E1', 'E₁', 'Energy in the producers', false), step: 100 },
       {
         id: 'p',
         symbol: 'p',
@@ -686,7 +695,7 @@ export const SCIENCE_7_MODULES: ModuleDef[] = [
       {
         id: 'P',
         symbol: 'P',
-        name: 'Chance of the trait',
+        name: 'Chance of tall',
         unit: '%',
         min: 0,
         max: 100,

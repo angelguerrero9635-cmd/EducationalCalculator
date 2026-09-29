@@ -5,7 +5,10 @@
 import type { LayoutDef, MoonPhase } from './types';
 
 const PHASES: [MoonPhase, string][] = [
-  ['new', 'The moon is between Earth and the sun. Its lit half faces away, so we see nothing.'],
+  [
+    'new',
+    'The moon is between Earth and the sun. Its lit half faces away, and it crosses the sky in the daytime, so we see nothing.',
+  ],
   ['waxing crescent', 'A sliver of the lit half shows on the right. Waxing means growing.'],
   ['first quarter', 'A quarter of the way round: half of what we see is lit, on the right.'],
   ['waxing gibbous', 'More than half lit and still growing.'],
@@ -453,7 +456,7 @@ export const SCIENCE_8_LAYOUTS: LayoutDef[] = [
       {
         label: 'Like argon',
         lines: ['To find an element with properties like argon’s, look up and down its column.'],
-        elements: { element: 'Ar', ring: ['He', 'Ne', 'Kr'], families: true },
+        elements: { element: 'Ar', ring: ['He', 'Ne', 'Kr', 'Xe', 'Rn'], families: true },
       },
       {
         label: 'Carbon',

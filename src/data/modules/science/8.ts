@@ -1069,7 +1069,7 @@ export const SCIENCE_8_MODULES: ModuleDef[] = [
       'A current in a coil of wire makes a magnetic field. An iron nail inside makes it much stronger, and it switches off with the current.',
       'More turns or more current makes a stronger electromagnet: strength follows turns × current, measured in amp-turns.',
       'Clips picked up is how a class measures strength. The 5 amp-turns per clip here is this coil and nail’s result; yours will differ.',
-      'Turns come in tens because a class winds and counts them that way.',
+      'Turns come in tens because a class winds and counts them that way; the current is set in half amps.',
     ],
     variables: [
       {
@@ -1077,8 +1077,26 @@ export const SCIENCE_8_MODULES: ModuleDef[] = [
         unit: 'turns',
         allowed: [10, 20, 30, 40, 50, 60],
       },
-      { id: 'I', symbol: 'I', name: 'Current', unit: 'A', min: 0, max: 2, step: 0.1 },
-      { id: 'S', symbol: 'S', name: 'Strength', unit: 'amp-turns', min: 0, max: 120, step: 0.1 },
+      {
+        id: 'I',
+        symbol: 'I',
+        name: 'Current',
+        unit: 'A',
+        min: 0,
+        max: 2,
+        step: 0.5,
+        multipleOf: 0.5,
+      },
+      {
+        id: 'S',
+        symbol: 'S',
+        name: 'Strength',
+        unit: 'amp-turns',
+        min: 0,
+        max: 120,
+        step: 5,
+        multipleOf: 5,
+      },
       { ...whole('k', 'k', 'Paper clips picked up', 0, 24), unit: 'clips', derived: true },
     ],
     relations: [

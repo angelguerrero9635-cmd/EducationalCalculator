@@ -171,7 +171,7 @@ export function Sample({ spec, calc }: { spec: Spec; calc: Calculator }) {
             : `In the sample: ${rep.named(spec.found)}`,
           estimateLine,
           spec.trait && T !== undefined
-            ? `In the whole population ${rep.label(spec.trait)} ${yes}.`
+            ? `The real count, which a survey can’t see: ${rep.label(spec.trait)} ${yes}.`
             : undefined,
         ]
           .filter(Boolean)
