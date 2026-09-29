@@ -437,3 +437,16 @@ figure), `circleTheorems`, `pascalTriangle`, `matrixGrid` and `termsChart`. H30 
 `studyDesign` explore figure) is drawn too. Each entry's notes give the fields a page passes,
 with an example; the demos are in `galleryHsa.ts`–`galleryHsd.ts`. The harness reads trig in
 degrees on a page whose angle variables have the unit °, in radians otherwise.
+
+### Grades 9–12, group B (2026-09-29): extensions of existing math pictures
+
+H16–H29 are `drawn`, each as optional fields, so existing pages are unchanged: shaded
+half-planes and elimination's sum line (`lineSystem`), compound and absolute-value
+inequalities (`integerLine`), residuals, r and least squares (`scatter`), outlier fences, paired
+box plots and a standard-deviation band (`boxPlot`, `dotPlot`), two-way tables with relative
+frequencies and chi-square (`table`), chance trees (`treeDiagram`) and Venns (`venn`), composed
+moves and symmetry (`transformation`), dilation from a center and the side splitter
+(`scaleCopy`), midpoint, partition and side slopes (`coordinatePlane`), sectors and radians
+(`circle`), nets, Cavalieri and round cross sections (`curvedSolid`, `crossSection`), roots
+from a factor tree (`factorTree`) and a log ruler (`powerScale`). Each entry's notes give the
+fields and an example; the demos are in `galleryHse.ts` and `galleryHsf.ts`.
