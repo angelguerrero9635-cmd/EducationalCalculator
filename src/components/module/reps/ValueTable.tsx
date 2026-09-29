@@ -111,6 +111,7 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
         </Text>
       ) : null}
       <View style={[styles.row, styles.headRow, { borderBottomColor: c.chartInk }]}>
+        {spec.rowNames ? <View style={styles.nameCell} /> : null}
         {head(sweep)}
         {head(output)}
         {pattern ? <View style={{ width: arrowW }} /> : null}
@@ -151,6 +152,11 @@ export function ValueTable({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     />
                     {selected ? (
                       <View style={[styles.bar, { backgroundColor: c.chartHighlight }]} />
+                    ) : null}
+                    {spec.rowNames ? (
+                      <Text style={[styles.name, selected && styles.bold, { color: c.chartInk }]}>
+                        {spec.rowNames[i] ?? ''}
+                      </Text>
                     ) : null}
                     <Text style={text}>{formatNumber(x, sweep)}</Text>
                     <Text style={text}>{y === undefined ? '?' : formatNumber(y, output)}</Text>
@@ -221,6 +227,8 @@ const styles = StyleSheet.create({
   rows: {},
   arrows: { position: 'absolute', right: 0, top: 0 },
   headCell: { flex: 1, alignItems: 'center', paddingHorizontal: space.sm },
+  nameCell: { flex: 0.9 },
+  name: { flex: 0.9, paddingLeft: space.md, fontSize: font.body - 1, fontWeight: '600' },
   head: { fontSize: font.body - 1, fontWeight: '600', textAlign: 'center' },
   unit: { fontSize: font.caption + 1, textAlign: 'center' },
   cell: {

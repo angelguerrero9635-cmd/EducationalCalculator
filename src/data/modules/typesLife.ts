@@ -31,7 +31,10 @@ export type BeetleColor = 'green' | 'brown' | 'black' | 'yellow' | 'red';
  */
 export interface GenerationsSpec {
   kind: 'generations';
+  /** Per generation, the count of each variety; with `total`, of the first variety only. */
   counts: string[][];
+  /** The population size: each generation's last variety is drawn as `total` less the rest. */
+  total?: string;
   colors?: BeetleColor[];
   /** Names of the varieties ("green beetles"); `<color> beetles` by default. */
   names?: string[];
@@ -46,6 +49,6 @@ export function lifeSpecVars(r: EnergyPyramidSpec | GenerationsSpec): string[] {
     case 'energyPyramid':
       return [...r.levels, ...(typeof r.percent === 'string' ? [r.percent] : [])];
     case 'generations':
-      return r.counts.flat();
+      return [...r.counts.flat(), ...(r.total ? [r.total] : [])];
   }
 }

@@ -1437,9 +1437,17 @@ export function repIssues(
       // 2 to 8 bars (GENERATIONS_MAX in Generations.tsx) of 2 or 3 varieties each.
       const g = rep.counts.length;
       if (g < 2 || g > 8) out.push(`${g} generations (2 to 8 are drawn)`);
-      const k = rep.counts[0]?.length ?? 0;
-      if (k < 2 || k > 3 || rep.counts.some((row) => row.length !== k))
+      const k = (rep.counts[0]?.length ?? 0) + (rep.total ? 1 : 0);
+      if (k < 2 || k > 3 || rep.counts.some((row) => row.length + (rep.total ? 1 : 0) !== k))
         out.push('each generation needs the same 2 or 3 varieties');
+      if (rep.total) {
+        const total = val(rep.total);
+        rep.counts.forEach((row, g) => {
+          const sum = row.reduce((s, id) => s + (val(id) ?? 0), 0);
+          if (total !== undefined && sum > total + 1e-9)
+            out.push(`generation ${g + 1} counts ${sum} of ${total}`);
+        });
+      }
       if (rep.colors && rep.colors.length < k) out.push('a variety has no color');
       if (rep.names && rep.names.length < k) out.push('a variety has no name');
       if ((rep.follow ?? 0) >= k) out.push(`followed variety ${rep.follow} is not a variety`);
@@ -1941,6 +1949,10 @@ export function repIssues(
     case 'electromagnet':
     case 'orbit':
       out.push(...physics8Issues(rep, (id) => val(id)));
+      break;
+    case 'table':
+      if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)
+        out.push(`${rep.rowNames.length} row names for ${rep.rows.length} rows`);
       break;
     default:
       break;

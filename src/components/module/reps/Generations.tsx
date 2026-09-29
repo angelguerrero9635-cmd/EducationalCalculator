@@ -47,7 +47,9 @@ export function Generations({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const start = useRef(0);
   const rows = spec.counts.slice(0, GENERATIONS_MAX);
-  const kinds = rows[0]?.length ?? 0;
+  const total = spec.total;
+  // With `total`, the last variety of each generation is what is left of the population.
+  const kinds = (rows[0]?.length ?? 0) + (total ? 1 : 0);
   const colors: BeetleColor[] = spec.colors ?? ['green', 'brown', 'black'];
   const names = Array.from(
     { length: kinds },
@@ -59,14 +61,24 @@ export function Generations({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const ids = usePaintIds('b0', 'b1', 'b2');
   const ball = [ids.b0, ids.b1, ids.b2];
   const count = (id: string) => (rep.known(id) ? Math.max(0, rep.shown(id)) : 0);
-  const totals = rows.map((row) => row.reduce((s, id) => s + count(id), 0));
+  const listed = rows.map((row) => row.reduce((s, id) => s + count(id), 0));
+  const totals = rows.map((row, g) => (total ? count(total) : listed[g]!));
+  /** Variety `k` of generation `g`: its variable, or the remainder of the population. */
+  const cell = (g: number, k: number): { id?: string; n: number; known: boolean } => {
+    const row = rows[g]!;
+    const id = row[k];
+    if (id !== undefined) return { id, n: count(id), known: rep.known(id) };
+    const known = !!total && rep.known(total) && row.every(rep.known);
+    return { n: known ? Math.max(0, totals[g]! - listed[g]!) : 0, known };
+  };
+  const rowKnown = (g: number) =>
+    Array.from({ length: kinds }, (_, k) => cell(g, k)).every((x) => x.known);
   const top = useFrozen(niceCeil(Math.max(1, ...totals)));
   const first = rows[0]?.[follow];
   const draggable = first !== undefined && !rep.variable(first).derived;
   const share = (g: number) => {
-    const row = rows[g]!;
-    if (!row.every(rep.known) || totals[g]! <= 0) return undefined;
-    return (count(row[follow]!) / totals[g]!) * 100;
+    if (!rowKnown(g) || totals[g]! <= 0) return undefined;
+    return (cell(g, follow).n / totals[g]!) * 100;
   };
   const label = spec.label ?? 'Generation';
 
@@ -137,27 +149,26 @@ export function Generations({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                   </G>
                 ))}
-                {rows.map((row, g) => {
+                {rows.map((_, g) => {
                   let base = 0;
-                  const known = row.every(rep.known);
+                  const known = rowKnown(g);
                   const p = share(g);
                   return (
                     <G key={g}>
                       {order.map((k) => {
-                        const id = row[k]!;
-                        const n = count(id);
+                        const { id, n, known: has } = cell(g, k);
                         const y0 = sy(base);
                         base += n;
                         const y1 = sy(base);
                         const col = colors[k] ?? 'green';
-                        if (n <= 0 && rep.known(id)) return null;
+                        if (n <= 0 && has) return null;
                         return (
-                          <G key={id} opacity={rep.known(id) ? 1 : 0.35}>
+                          <G key={id ?? `rest${k}`} opacity={has ? 1 : 0.35}>
                             <Rect
                               x={cx(g) - barW / 2}
                               y={y1}
                               width={barW}
-                              height={Math.max(rep.known(id) ? 1 : 0, y0 - y1)}
+                              height={Math.max(has ? 1 : 0, y0 - y1)}
                               fill={beetleColor(c, col)}
                               stroke={c.chartInk}
                               strokeWidth={1}
@@ -248,8 +259,13 @@ export function Generations({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {[
-          `${cap(names[follow] ?? '')}: ${rows.map((row) => rep.value(row[follow]!)).join(', ')}`,
-          `In all: ${rows.map((row, g) => (row.every(rep.known) ? formatNumber(totals[g]!) : '?')).join(', ')}`,
+          `${cap(names[follow] ?? '')}: ${rows
+            .map((_, g) => {
+              const x = cell(g, follow);
+              return x.id ? rep.value(x.id) : x.known ? formatNumber(x.n) : '?';
+            })
+            .join(', ')}`,
+          `In all: ${rows.map((_, g) => (rowKnown(g) ? formatNumber(totals[g]!) : '?')).join(', ')}`,
           `Share of all: ${rows
             .map((_, g) => {
               const p = share(g);

@@ -1416,6 +1416,8 @@ export type Representation =
       rows: number[] | ((v: Values) => number[]);
       /** A sentence naming what a parameter's value means ("1 foot = 12 inches"), over the table. */
       named?: { param: string; names: Record<number, string> };
+      /** A name for each swept row ("Moon", "Mars"), in a first column. */
+      rowNames?: string[];
     }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */
   | {

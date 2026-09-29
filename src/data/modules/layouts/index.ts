@@ -1,5 +1,6 @@
 import { MATH_LAYOUTS } from './math';
 import { SCIENCE_LAYOUTS } from './science';
+import { SCIENCE_7_LAYOUTS } from './science7';
 import type { LayoutDef } from './types';
 
 export type {
@@ -25,7 +26,11 @@ export type {
 } from './types';
 
 /** Every page laid out as a sort, sequence, exploration or observation. */
-export const LAYOUTS: readonly LayoutDef[] = [...MATH_LAYOUTS, ...SCIENCE_LAYOUTS];
+export const LAYOUTS: readonly LayoutDef[] = [
+  ...MATH_LAYOUTS,
+  ...SCIENCE_LAYOUTS,
+  ...SCIENCE_7_LAYOUTS,
+];
 
 const BY_ID = new Map(LAYOUTS.map((l) => [l.id, l]));
 
