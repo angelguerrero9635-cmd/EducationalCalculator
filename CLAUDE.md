@@ -25,7 +25,7 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 | `docs/MODULE_GUIDE.md`                       | Content standards, picture catalog, layouts, the review process                                                             |
 | `docs/MODULE_PLAN.md`                        | Sections and what is built                                                                                                  |
 | `docs/ENGINE_LOG.md`, `REVIEW_LOG.md`        | What each review taught the engine and the reviewers                                                                        |
-| `research/questions/`                        | Released K–8 test and practice questions by skill (NAEP, Illustrative Mathematics); reference only, never shipped or copied |
+| `research/`                                  | K–12 test questions and textbook tables of contents with practice, by skill; reference only, never used directly            |
 | `.claude/agents/`                            | `lesson-reviewer` and `page-reviewer`                                                                                       |
 
 ## Commands
@@ -65,4 +65,6 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
   requests unless asked.
 - Don't add dependencies without asking.
 - Never edit `taxonomy.ts` casually; it is kept byte-for-byte and Prettier ignores it.
-- Licensed material is never used; lesson text is original.
+- Licensed material is never used; lesson text is original. Any licensed or restricted material
+  (everything in `research/`, and online images) is for reference only and never used directly:
+  no copied problems, text, numbers, figures or screenshots in lessons, pictures or tests.

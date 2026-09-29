@@ -1,7 +1,9 @@
 # research/
 
 Reference material for the people who write and review lessons. **Nothing in this folder is
-part of the app.** It is never bundled, imported or shipped: no file under `src/` or `app/`
+part of the app.** **All of it is licensed or restricted material, for reference only and never
+used directly:** no question, problem, text, numbers, figure or screenshot from here is copied
+into a lesson, a picture, a test or anything else in the app, whatever its license says. It is never bundled, imported or shipped: no file under `src/` or `app/`
 imports from `research/`, and nothing here is read at build time or run time.
 
 | Path                    | What                                                                                      |
@@ -10,7 +12,7 @@ imports from `research/`, and nothing here is read at build time or run time.
 | `questions/SOURCES.md`  | Every source used, its reuse or license statement (quoted, with URL) and what was skipped |
 | `questions/COVERAGE.md` | Counts by source, grade and skill; skills with no questions; picture kinds not yet drawn  |
 | `questions/validate.py` | Checks every record and prints the coverage tables                                        |
-| `textbooks/`            | K–8 textbook tables of contents by grade, and practice problems tied to their chapter     |
+| `textbooks/`            | K–12 textbook tables of contents by grade, and practice problems tied to their chapter    |
 
 Use the questions to check that a lesson's wording, numbers and pictures match what students
 actually see on tests and in class. Do not copy them into lessons: lesson text stays original

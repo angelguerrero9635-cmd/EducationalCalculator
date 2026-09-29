@@ -51,6 +51,8 @@ public), `type`, `picture` (`involved`, `description`: the page's own alt text),
 ## Using it
 
 Check that a lesson covers what the textbooks teach at that grade, in a sensible order, with
-the numbers, words and pictures students meet in class. Do not copy problems into lessons:
-lesson text stays original (`CLAUDE.md`). The test questions filed by skill are in
+the numbers, words and pictures students meet in class. **Everything here is licensed or
+restricted material, for reference only and never used directly:** no problem, text, numbers,
+figure or screenshot goes into a lesson, a picture or a test, whatever its license (CC BY
+included). Lesson text and pictures stay original (`CLAUDE.md`). The test questions filed by skill are in
 `../questions/`; the grade pages count both.
