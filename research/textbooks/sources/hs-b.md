@@ -5,8 +5,10 @@ Reference only: nothing here is imported, bundled or shipped.
 | File | What |
 | --- | --- |
 | `toc/math/openstax-algebra-trig-2e.json` | Algebra and Trigonometry 2e: every chapter and section, with URLs and skill ids (Grades 9, 11, 12) |
-| `practice/math/<grade>.openstax-algebra-trig-2e.jsonl` | A representative practice sample, Grades 9, 11 and 12 |
-| `screenshots/openstax-algebra-trig-2e/<record id>.webp` | The problem with its figure, for figure problems |
+| `toc/math/openstax-precalculus-2e.json` | Precalculus 2e (Grade 12) |
+| `toc/math/openstax-statistics-2e.json` | Introductory Statistics 2e (Grade 12) |
+| `practice/math/<grade>.<id>.jsonl` | A representative practice sample per book and grade |
+| `screenshots/<id>/<record id>.webp` | The problem with its figure, for figure problems |
 | `tools/check_hs_b.py` | Checks the files above and prints the counts below |
 
 ## Source: OpenStax (openstax.org), Rice University
@@ -115,7 +117,7 @@ under Grade 12.
 
 | Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots | MB |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 9 | 4 | 23 | 323 | 185 | 138 | 254 | 17 | 8 | 0.10 |
-| 11 | 4 | 23 | 300 | 162 | 138 | 231 | 20 | 16 | 0.20 |
-| 12 | 5 | 33 | 371 | 173 | 198 | 272 | 4 | 3 | 0.04 |
-| all | 13 | 79 | 994 | 520 | 474 | 757 | 41 | 27 | 0.34 |
+| 9 | 4 | 23 | 324 | 186 | 138 | 255 | 17 | 8 | 0.10 |
+| 11 | 4 | 23 | 319 | 181 | 138 | 250 | 25 | 21 | 0.26 |
+| 12 | 5 | 33 | 383 | 185 | 198 | 284 | 5 | 4 | 0.06 |
+| all | 13 | 79 | 1026 | 552 | 474 | 789 | 47 | 33 | 0.41 |
