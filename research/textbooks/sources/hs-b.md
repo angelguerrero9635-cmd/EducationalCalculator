@@ -121,3 +121,23 @@ under Grade 12.
 | 11 | 4 | 23 | 319 | 181 | 138 | 250 | 25 | 21 | 0.26 |
 | 12 | 5 | 33 | 383 | 185 | 198 | 284 | 5 | 4 | 0.06 |
 | all | 13 | 79 | 1026 | 552 | 474 | 789 | 47 | 33 | 0.41 |
+
+## Precalculus 2e (`openstax-precalculus-2e`)
+
+<https://openstax.org/books/precalculus-2e/pages/preface>. 12 chapters, 73 sections, all filed
+under Grade 12. It is Algebra and Trigonometry 2e from Chapter 3 on, renumbered (Functions,
+Linear, Polynomial and Rational, Exponential and Logarithmic, Trigonometric, Periodic, Identities,
+Further Trigonometry, Systems, Analytic Geometry, Sequences/Probability), plus 3.1 Complex
+Numbers, 7.6 Modeling with Trigonometric Functions and **Chapter 12 Introduction to Calculus**
+(limits numerically, graphically and by properties; continuity; derivatives → `m.12.limits-intro`).
+Many problems repeat those of Algebra and Trigonometry 2e word for word; both are kept because
+each record points at its own book's page. Sampling, answers (Answer Key chapter pages,
+odd-numbered exercises), text conversion and screenshots are as above; skill mapping is the
+Algebra and Trigonometry mapping of the same sections. Loose fits: 1.1 function notation, 2.2
+graphs of linear functions, 9.1 two-variable systems (Grade 8 skills), 9.4 partial fractions,
+11.7 probability. The early chapters (functions, linear, quadratic) are Algebra 1 and 2 content
+filed under Grade 12 because the book is a Precalculus course.
+
+| Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots | MB |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 12 | 12 | 73 | 920 | 482 | 438 | 701 | 56 | 40 | 0.53 |
