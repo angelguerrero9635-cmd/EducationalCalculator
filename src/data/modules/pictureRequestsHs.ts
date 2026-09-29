@@ -90,26 +90,56 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Families: linear, absolute value, piecewise (pieces with open or closed ends), quadratic, exponential, logistic, logarithmic, square and cube root, polynomial, rational (asymptotes, holes), sine, cosine, tangent, inverse trig. Marks: zeros, y-intercept, vertex and axis, extrema, asymptotes, domain and range on the axes, a traced point with a handle, a second curve (the parent dashed, or f and its inverse with y = x), a shaded region, a limit approached from both sides, a secant turning into a tangent. DRAWN. Spec (typesFunctionGraph.ts): the family and its fields, each a number or a variable id: { family: 'linear', m, b }; { family: 'absolute', a?, h?, k? }; { family: 'quadratic', form: 'standard', a, b, c } | { form: 'vertex', a?, h, k } | { form: 'factored', a?, p, q }; { family: 'exponential', a?, b, h?, k? } or with r for base e; { family: 'logistic', K, start, r }; { family: 'log', a?, b? (ln when left out), h?, k? }; { family: 'root', index: 2 | 3, a?, h?, k? }; { family: 'polynomial', coefficients: [...] } or { a?, zeros: [{ x, times? }] }; { family: 'rational', a?, zeros: [...], poles: [...], k? } (a zero equal to a pole is a hole); { family: 'piecewise', pieces: [{ f, from?, to?, ends?: '[)' }] }; { family: 'sin' | 'cos' | 'tan', a?, b?, h?, k? }; { family: 'arcsin' | 'arccos' | 'arctan', a?, k? }. Options: at { x, y? } (traced point, dragged along the curve), marks ['zeros', 'intercept', 'vertex', 'extrema', 'asymptotes', 'domain', 'range', 'midline', 'amplitude', 'period'], shows { vertex: { x, y }, zeros: [...], intercept, va, ha, period, amplitude } (module values the harness checks against the graph), parent, inverse, other (a second family) with crossing { x, y? }, shade 'above' | 'below' | { from, to }, limit { x }, secant { x, h, slope? }, name, input, axes { x, y } (names with units), window { x?, y? }, xMin, keep, fixed. Asymptotes, holes and piece ends are always drawn; labels are exact (fractions, surds, multiples of pi) and decimals appear only after ≈ in the caption. Example (m.9.quadratic-functions): representation: { kind: 'functionGraph', family: 'quadratic', form: 'vertex', a: 'a', h: 'h', k: 'k', at: { x: 'x', y: 'y' }, marks: ['vertex', 'zeros', 'intercept'] }. Relation displays: write × between a number and a bracket, and ÷ after a bracketed numerator (the harness reads (…)/n as a fraction).",
   },
-  ask(
-    'H02',
-    'normalCurve',
-    'Normal curve with shaded areas, z and x axes, the 68–95–99.7 bands, tails, intervals',
-    [
-      'm.11.normal-distribution',
-      'm.12.sampling-distributions',
-      'm.12.confidence-intervals',
-      'm.12.hypothesis-testing',
-      'm.12.chi-square',
+  {
+    ...ask(
+      'H02',
+      'normalCurve',
+      'Normal curve with shaded areas, z and x axes, the 68–95–99.7 bands, tails, intervals',
+      [
+        'm.11.normal-distribution',
+        'm.12.sampling-distributions',
+        'm.12.confidence-intervals',
+        'm.12.hypothesis-testing',
+        'm.12.chi-square',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-normal-distribution-left',
+      'g.m11-normal-distribution-between',
+      'g.m11-normal-distribution-bands',
+      'g.m11-normal-distribution-tail',
+      'g.m12-sampling-distributions-mean',
+      'g.m12-confidence-intervals-mean',
+      'g.m12-confidence-intervals-capture',
+      'g.m12-confidence-intervals-capture-20',
+      'g.m12-hypothesis-testing-two',
+      'g.m12-hypothesis-testing-left',
+      'g.m12-chi-square-gof',
+      'g.m12-chi-square-independence',
     ],
-    'Also a chi-square curve by degrees of freedom, a sampling distribution narrower than the population, and a stack of confidence intervals around the true value showing how many capture it.',
-  ),
-  ask(
-    'H03',
-    'histogram',
-    'Histogram with bins from the data, and probability bars with the expected value',
-    ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
-    'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p.',
-  ),
+    notes:
+      'Also a chi-square curve by degrees of freedom, a sampling distribution narrower than the population, and a stack of confidence intervals around the true value showing how many capture it. Drawn (group HB). Fields (numbers or variable ids, shown units): mean, sd, axis ("Height (cm)"); shade { from?, to?, outside?, area? } (a missing end is a tail; the area written to 4 decimals and checked against the CDF to 1e-4); mark { x, z? }; bands: true; sample { n, se? } (σ/√n over the dashed population curve); interval { center, margin, level? }; intervals { count 20–100, n, level, seed? } (seed 152: 94 of 100 at 95%); test { stat (a z), alpha, tail: left, right or two, p? }; chiSquare { df 1–10, stat?, alpha?, p? }; keep; fixed. Handles drag the shaded ends, the mark and the statistics. Example: { kind: "normalCurve", mean: "m", sd: "s", axis: "Height (cm)", shade: { to: "x", area: "P" }, mark: { x: "x", z: "z" } } with z = (x − μ) ÷ σ and P = Φ(z). Step text Φ(z), invNorm(p), χ²cdf(X, ∞, df) and C(n, k) is taught to the harness (harness/phrasesHsb.ts); relation builders to copy are in galleryHsb.ts.',
+  },
+  {
+    ...ask(
+      'H03',
+      'histogram',
+      'Histogram with bins from the data, and probability bars with the expected value',
+      ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-data-displays-histogram',
+      'g.m9-data-displays-frequency',
+      'g.m9-data-displays-bimodal',
+      'g.m11-probability-distributions-expected',
+      'g.m11-probability-distributions-binomial',
+      'g.m12-sampling-distributions-binomial-40',
+    ],
+    notes:
+      'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p. Drawn (group HB). Fields: data (numbers or ids) or counts (ids per bin); start, width, end (bins left end in, right end out); relative; mean and median (true to work them out, or a variable id; from counts the mean is estimated from the midpoints); shape (true names it: symmetric, skewed left or right, uniform, bimodal; or a word); axis; lit (a 1-based bin, or a value k); probability { values, probs, mean? } (E(X) marked, a list not adding to 1 draws faded with the reason); binomial { n 1–40, p, mean?, sd? }; keep; fixed. Count and probability bars drag by their tops (derived ones don\'t). The harness recounts the data into the bins and checks the heights sum to the count, or to 1. Example: { kind: "histogram", counts: ["f1", "f2", "f3", "f4", "f5", "f6"], start: 0, width: 5, lit: 3, mean: true, shape: true, axis: "Wait (min)" }; binomial: { kind: "histogram", binomial: { n: "n", p: "p", mean: "E", sd: "S" }, lit: "k", axis: "Successes (k)" }.',
+  },
   {
     ...ask(
       'H04',
@@ -261,25 +291,47 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.m10-circle-theorems-secant-tangent',
     ],
   },
-  ask(
-    'H13',
-    'pascalTriangle',
-    "Pascal's triangle with row n and entry k lit, and the counting slots n × (n − 1) × …",
-    ['m.10.probability-rules', 'm.11.binomial-theorem'],
-    'Slots for permutations and combinations (choose, then divide by the orders); the binomial expansion coefficients from row n.',
-  ),
+  {
+    ...ask(
+      'H13',
+      'pascalTriangle',
+      "Pascal's triangle with row n and entry k lit, and the counting slots n × (n − 1) × …",
+      ['m.10.probability-rules', 'm.11.binomial-theorem'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-binomial-theorem-pascal',
+      'g.m11-binomial-theorem-row-12',
+      'g.m10-probability-rules-permutations',
+      'g.m10-probability-rules-combinations',
+    ],
+    notes:
+      'Slots for permutations and combinations (choose, then divide by the orders); the binomial expansion coefficients from row n. Drawn (group HB). Fields: n (row, 0–12), k? (entry lit, its two parents marked with Pascal\'s rule in the caption), rows? (rows drawn, default the larger of n and 6), triangle? (false: the slots alone, for n past 12), slots { r, choose?, result? } (n × (n − 1) × … boxes for r places, then ÷ r! for a combination), expand { a, b } ((a + b)ⁿ with row n\'s coefficients in the caption, n ≤ 8). No handles: n, k and r have sliders. The harness checks every entry is C(row, col) and the slots\' product (÷ r!) against the result. Examples: { kind: "pascalTriangle", n: "n", k: "k", expand: { a: "a", b: "b" } }; { kind: "pascalTriangle", n: "n", k: "r", slots: { r: "r", choose: true, result: "C" } }; permutations: { kind: "pascalTriangle", n: "n", triangle: false, slots: { r: "r", result: "P" } }.',
+  },
   ask(
     'H14',
     'matrixGrid',
     'Matrices in brackets: a row times a column lit for multiplication, row operations, a 3 × 3 system',
     ['m.12.matrices'],
   ),
-  ask(
-    'H15',
-    'termsChart',
-    'Terms of a sequence as bars or points, with the running sum approaching its limit',
-    ['m.9.sequences', 'm.11.series'],
-  ),
+  {
+    ...ask(
+      'H15',
+      'termsChart',
+      'Terms of a sequence as bars or points, with the running sum approaching its limit',
+      ['m.9.sequences', 'm.11.series'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-sequences-arithmetic',
+      'g.m9-sequences-geometric',
+      'g.m11-series-arithmetic-sum',
+      'g.m11-series-geometric-infinite',
+      'g.m11-series-alternating',
+    ],
+    notes:
+      'Drawn (group HB). Fields: type ("arithmetic" | "geometric"), first (a₁), step (d or r), count (n, 1–30), as? ("bars", the default, or "points"), sums? (the partial sums Sₙ as a stepped line), limit? (true, or the id of S: an infinite geometric series\' sum a₁ ÷ (1 − r) dashed, when |r| < 1; otherwise faded with the reason), term? (the id of aₙ), sum? (the id of Sₙ). No handles: the values have sliders. The harness checks every term and partial sum against the rule, the typed aₙ, Sₙ and S, and the gap |S − Sₙ| = |a₁rⁿ ÷ (1 − r)|. Examples: { kind: "termsChart", type: "arithmetic", first: "a", step: "d", count: "n", as: "points", term: "an" }; { kind: "termsChart", type: "geometric", first: "a", step: "r", count: "n", sums: true, limit: "S", sum: "Sn" }.',
+  },
 
   // ── B. Changes to existing math pictures ──
   ask(
@@ -366,13 +418,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   ]),
 
   // ── C. Statistics and study design figures ──
-  ask(
-    'H30',
-    'studyDesign',
-    'Explore figure: population to sample to randomly assigned groups; survey, observational study, experiment',
-    ['m.11.study-design'],
-    'Card figures for the sampling methods: simple random, stratified, cluster, systematic, convenience.',
-  ),
+  {
+    ...ask(
+      'H30',
+      'studyDesign',
+      'Explore figure: population to sample to randomly assigned groups; survey, observational study, experiment',
+      ['m.11.study-design'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m11-study-design', 'g.m11-study-design-sampling'],
+    notes:
+      'Card figures for the sampling methods: simple random, stratified, cluster, systematic, convenience. Drawn (group HB). Explore figure { kind: "studyDesign" }; each scene sets study: { design: "survey" | "observational" | "experiment", method?: "simple random" | "stratified" | "cluster" | "systematic" | "convenience" (default simple random), sample?: 6–24 (default 12), groups?: [two names] (default Treatment and Control, or Group A and B), lit?: "population" | "sample" | "groups" }. The population is 48 people; the picks come from a fixed seed (studyMath.ts) and the harness checks each method (every band in a stratified sample, whole blocks in a cluster sample, equal gaps in a systematic one, the two groups splitting the sample). The five sampling methods are card icons for sort cards: { kind: "icon", icon: "stratified sample" } (also "simple random sample", "cluster sample", "systematic sample", "convenience sample"), 36 dots with the 9 picked. Example scene: { label: "Experiment", lines: [...], study: { design: "experiment", groups: ["New drug", "Placebo"], lit: "groups" } }.',
+  },
 
   // ── D. Biology ──
   ask(

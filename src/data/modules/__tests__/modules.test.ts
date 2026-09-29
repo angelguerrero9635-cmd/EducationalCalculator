@@ -14,6 +14,7 @@ import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
+import { hsbSpecVars } from '../typesHsb';
 import { isStandIn, pages } from '../harness/scope';
 
 /** Every variable id a representation refers to. */
@@ -443,6 +444,11 @@ function representationVars(r: Representation): string[] {
     case 'markedFigure':
     case 'circleTheorems':
       return hscSpecVars(r);
+    case 'normalCurve':
+    case 'histogram':
+    case 'pascalTriangle':
+    case 'termsChart':
+      return hsbSpecVars(r);
   }
 }
 

@@ -21,6 +21,7 @@ import { PositionScene } from './PositionScene';
 import { CarbonCycleFigure, LeafCellFigure, PedigreeFigure } from './figuresLife';
 import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigures';
 import { MagnetsFigure, PlanetsFigure } from './figures8';
+import { StudyDesignFigure } from './studyDesignFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -172,6 +173,8 @@ function FigureView({
       return <PeriodicTableFigure elements={scene.elements ?? {}} />;
     case 'planets':
       return <PlanetsFigure planets={scene.planets ?? {}} />;
+    case 'studyDesign':
+      return <StudyDesignFigure study={scene.study ?? { design: 'survey' }} />;
   }
 }
 

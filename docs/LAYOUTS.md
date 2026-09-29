@@ -59,6 +59,13 @@ shrink (`fewer`). Grade 8, in `layouts/figures8.tsx`: a `magnets` scene can set
 magnets are painted N red, S blue), and `planets` draws the planets and the moon to scale by
 size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
 
+Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
+people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by
+what people already do, or an `experiment` assigned at random to a treatment and a control group;
+`study: { design, method?, sample?, groups?, lit? }`). The sampling methods are also card icons
+(`simple random sample`, `stratified sample`, `cluster sample`, `systematic sample`, `convenience
+sample`), each 36 dots with its 9 picked, drawn in `layouts/icons/hb.tsx`.
+
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
 scale, with the sun on the line over the stick's top (higher for a shorter shadow); `sides`

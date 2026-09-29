@@ -233,6 +233,8 @@ const light = {
   /** The brick wall a ladder leans on (triangleSolver's ladder scene) and its mortar lines. */
   ladderWall: '#B5654A',
   ladderWallDark: '#8A4632',
+  /** Statistics pictures (HS group B): a rejection region, an interval that misses the mean. */
+  normalReject: '#D93B3B',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -400,6 +402,7 @@ const dark: Palette = {
   freshWater: '#2E9488',
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
+  normalReject: '#F0716B',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

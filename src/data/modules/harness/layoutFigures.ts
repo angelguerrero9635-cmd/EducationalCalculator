@@ -6,6 +6,7 @@
 import { DRAWN_PARTS, drawnPart, scaleTicks } from '@/components/module/layouts/figureMath';
 
 import type { LayoutDef } from '../layouts';
+import { studyFigureIssues } from './layoutFiguresHsb';
 
 /** The number in a column label ("20 cm" → 20). */
 const numberIn = (label: string) => {
@@ -78,6 +79,7 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
       if (count > 60) out.push(`scene "${s.label}": ${count} animals, the figure draws 60`);
     }
   }
+  out.push(...studyFigureIssues(l));
   if (l.kind === 'sort' && l.header?.kind === 'offspring') {
     const animals = l.header.animals;
     if (animals.length < 2 || animals.length > 4) {

@@ -6,6 +6,7 @@
 import { parseNumber, plainDigits } from '@/engine/format';
 
 import type { Walkthrough } from '../buildSteps';
+import { HSB_PHRASES } from './phrasesHsb';
 
 /** How many prime factors (with repeats) a whole number has: 24 → 4, 7 → 1. */
 export const primeFactorCount = (n: number) => {
@@ -47,6 +48,8 @@ export const COIN: Record<string, number> = {
 export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // High school logs to a base: log_2(8) is 3.
   [new RegExp(`log_(${NUM})\\s*\\(?(${NUM})\\)?`), (b, x) => Math.log(x) / Math.log(b)],
+  // Grades 9–12 statistics and counting (group HB).
+  ...HSB_PHRASES,
   // Grade 3 clock times ("3:45"), as minutes past 12:00 on a 12-hour clock. Phrases that start
   // with a bracket are tried first, so these come before "35 minutes".
   [

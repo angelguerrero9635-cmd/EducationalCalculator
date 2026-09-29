@@ -75,6 +75,10 @@ search or the sitemap, but the module tests and the harness run over it):
 | `triangleSolver`   | a triangle to scale from 3 parts; congruent, similar, SSA pairs; trig | Geometry triangles and trig         |
 | `markedFigure`     | points and marks: transversal angles, triangle centers, quads, proofs | Geometry lines, proofs, quads       |
 | `circleTheorems`   | inscribed, central angles; tangent ⟂ radius; chord, secant products   | Geometry circle theorems            |
+| `normalCurve`      | normal or chi-square curve, x and z axes, areas to 4 decimals, tests  | Grades 11–12 statistics (H02)       |
+| `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)   | Grades 9–12 statistics (H03)        |
+| `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!        | Grades 10–11 counting (H13)         |
+| `termsChart`       | a sequence's terms as bars or points, partial sums stepped, S dashed  | Grades 9 and 11 sequences (H15)     |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
