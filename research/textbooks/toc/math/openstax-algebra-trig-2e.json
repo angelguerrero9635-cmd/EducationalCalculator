@@ -1,892 +1,689 @@
 {
- "id": "openstax-algebra-trig-2e",
- "curriculum": "OpenStax Algebra and Trigonometry 2e",
- "publisher": "OpenStax, Rice University",
- "edition": "2nd edition (web version on openstax.org)",
- "subject": "math",
- "grades": [
-  "9",
-  "11",
-  "12"
- ],
- "content": "full",
- "license": {
-  "name": "CC BY-NC-SA 4.0",
-  "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-  "statement": "This book uses the Creative Commons Attribution-NonCommercial-ShareAlike License, which means that you can reuse and modify the material only for noncommercial purposes, must attribute OpenStax, and must distribute any derivative works under the same license.",
-  "attribution": "© OpenStax, Rice University. Algebra and Trigonometry 2e, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-introduction-to-prerequisites"
- },
- "sourceUrl": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/preface",
- "retrieved": "2026-09-29",
- "notes": "Reference only. The book is CC BY-NC-SA 4.0 (noncommercial, share-alike), so the practice files hold a representative sample, not every problem: per section, the Try It problems and the first 6 numbered exercises, with the answer when the book's public answer key gives it (odd-numbered exercises; Try It answers are all public). Units are the book's chapters and lessons its numbered sections. Chapters are filed by content: 1-4 Grade 9 (Algebra 1: prerequisites, equations, functions, linear functions), 5-8 Grade 11 (Algebra 2: polynomial, rational, exponential, logarithmic and trigonometric functions), 9-13 Grade 12 (Precalculus: identities, further trigonometry, systems and matrices, conics, sequences and probability). Skills are best matches; unit and lesson notes say where the fit is loose.",
- "books": [
-  {
-   "grade": "9",
-   "units": [
-    {
-     "n": "1",
-     "title": "Prerequisites",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-introduction-to-prerequisites",
-     "skills": [
-      "m.8.roots-irrationals",
-      "m.6.expressions-variables",
-      "m.8.exponent-rules",
-      "m.8.scientific-notation",
-      "m.9.radicals",
-      "m.9.polynomial-operations",
-      "m.9.factoring",
-      "m.11.rational-functions"
-     ],
-     "lessons": [
-      {
-       "n": "1.1",
-       "title": "Real Numbers: Algebra Essentials",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-1-real-numbers-algebra-essentials",
-       "skills": [
-        "m.8.roots-irrationals",
-        "m.6.expressions-variables"
-       ],
-       "notes": "real numbers: no Grade 9 skill, filed under Grade 8 roots and Grade 6 expressions"
-      },
-      {
-       "n": "1.2",
-       "title": "Exponents and Scientific Notation",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-2-exponents-and-scientific-notation",
-       "skills": [
-        "m.8.exponent-rules",
-        "m.8.scientific-notation"
-       ],
-       "notes": "integer exponents and scientific notation are Grade 8 skills"
-      },
-      {
-       "n": "1.3",
-       "title": "Radicals and Rational Exponents",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-3-radicals-and-rational-exponents",
-       "skills": [
-        "m.9.radicals"
-       ]
-      },
-      {
-       "n": "1.4",
-       "title": "Polynomials",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-4-polynomials",
-       "skills": [
-        "m.9.polynomial-operations"
-       ]
-      },
-      {
-       "n": "1.5",
-       "title": "Factoring Polynomials",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-5-factoring-polynomials",
-       "skills": [
-        "m.9.factoring"
-       ]
-      },
-      {
-       "n": "1.6",
-       "title": "Rational Expressions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-6-rational-expressions",
-       "skills": [
-        "m.11.rational-functions"
-       ],
-       "notes": "rational expressions are a Grade 11 skill in the taxonomy"
-      }
-     ]
-    },
-    {
-     "n": "2",
-     "title": "Equations and Inequalities",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-introduction-to-equations-and-inequalities",
-     "skills": [
-      "m.8.linear-functions",
-      "m.8.pythagorean",
-      "m.8.multi-step-equations",
-      "m.9.linear-modeling",
-      "m.11.complex-numbers",
-      "m.9.factoring",
-      "m.9.quadratic-formula",
-      "m.9.radicals",
-      "m.11.rational-functions",
-      "m.9.absolute-value",
-      "m.9.inequality-systems"
-     ],
-     "lessons": [
-      {
-       "n": "2.1",
-       "title": "The Rectangular Coordinate Systems and Graphs",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-1-the-rectangular-coordinate-systems-and-graphs",
-       "skills": [
-        "m.8.linear-functions",
-        "m.8.pythagorean"
-       ],
-       "notes": "coordinate plane, distance and midpoint: Grade 8 skills"
-      },
-      {
-       "n": "2.2",
-       "title": "Linear Equations in One Variable",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-2-linear-equations-in-one-variable",
-       "skills": [
-        "m.8.multi-step-equations",
-        "m.8.linear-functions"
-       ],
-       "notes": "linear equations in one variable: Grade 8 skill"
-      },
-      {
-       "n": "2.3",
-       "title": "Models and Applications",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-3-models-and-applications",
-       "skills": [
-        "m.9.linear-modeling"
-       ]
-      },
-      {
-       "n": "2.4",
-       "title": "Complex Numbers",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-4-complex-numbers",
-       "skills": [
-        "m.11.complex-numbers"
-       ],
-       "notes": "complex numbers: Grade 11 skill (Algebra 2)"
-      },
-      {
-       "n": "2.5",
-       "title": "Quadratic Equations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-5-quadratic-equations",
-       "skills": [
-        "m.9.factoring",
-        "m.9.quadratic-formula"
-       ]
-      },
-      {
-       "n": "2.6",
-       "title": "Other Types of Equations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-6-other-types-of-equations",
-       "skills": [
-        "m.9.radicals",
-        "m.11.rational-functions",
-        "m.9.absolute-value"
-       ]
-      },
-      {
-       "n": "2.7",
-       "title": "Linear Inequalities and Absolute Value Inequalities",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-7-linear-inequalities-and-absolute-value-inequalities",
-       "skills": [
-        "m.9.inequality-systems",
-        "m.9.absolute-value"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "3",
-     "title": "Functions",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-introduction-to-functions",
-     "skills": [
-      "m.8.functions-intro",
-      "m.9.absolute-value",
-      "m.8.slope",
-      "m.9.quadratic-functions",
-      "m.11.inverse-functions"
-     ],
-     "lessons": [
-      {
-       "n": "3.1",
-       "title": "Functions and Function Notation",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-1-functions-and-function-notation",
-       "skills": [
-        "m.8.functions-intro"
-       ],
-       "notes": "function notation: no Grade 9 skill; Grade 8 functions-intro"
-      },
-      {
-       "n": "3.2",
-       "title": "Domain and Range",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-2-domain-and-range",
-       "skills": [
-        "m.8.functions-intro",
-        "m.9.absolute-value"
-       ]
-      },
-      {
-       "n": "3.3",
-       "title": "Rates of Change and Behavior of Graphs",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-3-rates-of-change-and-behavior-of-graphs",
-       "skills": [
-        "m.8.slope",
-        "m.9.quadratic-functions"
-       ]
-      },
-      {
-       "n": "3.4",
-       "title": "Composition of Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-4-composition-of-functions",
-       "skills": [
-        "m.11.inverse-functions"
-       ],
-       "notes": "composition of functions: Grade 11 skill"
-      },
-      {
-       "n": "3.5",
-       "title": "Transformation of Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-5-transformation-of-functions",
-       "skills": [
-        "m.9.quadratic-functions",
-        "m.9.absolute-value"
-       ]
-      },
-      {
-       "n": "3.6",
-       "title": "Absolute Value Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-6-absolute-value-functions",
-       "skills": [
-        "m.9.absolute-value"
-       ]
-      },
-      {
-       "n": "3.7",
-       "title": "Inverse Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-7-inverse-functions",
-       "skills": [
-        "m.11.inverse-functions"
-       ],
-       "notes": "inverse functions: Grade 11 skill"
-      }
-     ]
-    },
-    {
-     "n": "4",
-     "title": "Linear Functions",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-introduction-to-linear-functions",
-     "skills": [
-      "m.8.linear-functions",
-      "m.9.linear-modeling",
-      "m.9.regression"
-     ],
-     "lessons": [
-      {
-       "n": "4.1",
-       "title": "Linear Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-1-linear-functions",
-       "skills": [
-        "m.8.linear-functions",
-        "m.9.linear-modeling"
-       ]
-      },
-      {
-       "n": "4.2",
-       "title": "Modeling with Linear Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-2-modeling-with-linear-functions",
-       "skills": [
-        "m.9.linear-modeling"
-       ]
-      },
-      {
-       "n": "4.3",
-       "title": "Fitting Linear Models to Data",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-3-fitting-linear-models-to-data",
-       "skills": [
-        "m.9.regression"
-       ]
-      }
-     ]
-    }
-   ]
+  "id": "openstax-algebra-trig-2e",
+  "curriculum": "OpenStax Algebra and Trigonometry 2e",
+  "publisher": "OpenStax, Rice University",
+  "edition": "2nd edition (web version on openstax.org)",
+  "subject": "math",
+  "grades": ["9", "11", "12"],
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "statement": "This book uses the Creative Commons Attribution-NonCommercial-ShareAlike License, which means that you can reuse and modify the material only for noncommercial purposes, must attribute OpenStax, and must distribute any derivative works under the same license.",
+    "attribution": "© OpenStax, Rice University. Algebra and Trigonometry 2e, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-introduction-to-prerequisites"
   },
-  {
-   "grade": "11",
-   "units": [
+  "sourceUrl": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/preface",
+  "retrieved": "2026-09-29",
+  "notes": "Reference only. The book is CC BY-NC-SA 4.0 (noncommercial, share-alike), so the practice files hold a representative sample, not every problem: per section, the Try It problems and the first 6 numbered exercises, with the answer when the book's public answer key gives it (odd-numbered exercises; Try It answers are all public). Units are the book's chapters and lessons its numbered sections. Chapters are filed by content: 1-4 Grade 9 (Algebra 1: prerequisites, equations, functions, linear functions), 5-8 Grade 11 (Algebra 2: polynomial, rational, exponential, logarithmic and trigonometric functions), 9-13 Grade 12 (Precalculus: identities, further trigonometry, systems and matrices, conics, sequences and probability). Skills are best matches; unit and lesson notes say where the fit is loose.",
+  "books": [
     {
-     "n": "5",
-     "title": "Polynomial and Rational Functions",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-introduction-to-polynomial-and-rational-functions",
-     "skills": [
-      "m.9.quadratic-functions",
-      "m.11.polynomial-functions",
-      "m.11.complex-numbers",
-      "m.11.rational-functions",
-      "m.11.inverse-functions",
-      "m.9.radicals",
-      "m.7.proportional-relationships"
-     ],
-     "lessons": [
-      {
-       "n": "5.1",
-       "title": "Quadratic Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-1-quadratic-functions",
-       "skills": [
-        "m.9.quadratic-functions"
-       ]
-      },
-      {
-       "n": "5.2",
-       "title": "Power Functions and Polynomial Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-2-power-functions-and-polynomial-functions",
-       "skills": [
-        "m.11.polynomial-functions"
-       ]
-      },
-      {
-       "n": "5.3",
-       "title": "Graphs of Polynomial Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-3-graphs-of-polynomial-functions",
-       "skills": [
-        "m.11.polynomial-functions"
-       ]
-      },
-      {
-       "n": "5.4",
-       "title": "Dividing Polynomials",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-4-dividing-polynomials",
-       "skills": [
-        "m.11.polynomial-functions"
-       ]
-      },
-      {
-       "n": "5.5",
-       "title": "Zeros of Polynomial Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-5-zeros-of-polynomial-functions",
-       "skills": [
-        "m.11.polynomial-functions",
-        "m.11.complex-numbers"
-       ]
-      },
-      {
-       "n": "5.6",
-       "title": "Rational Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-6-rational-functions",
-       "skills": [
-        "m.11.rational-functions"
-       ]
-      },
-      {
-       "n": "5.7",
-       "title": "Inverses and Radical Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-7-inverses-and-radical-functions",
-       "skills": [
-        "m.11.inverse-functions",
-        "m.9.radicals"
-       ]
-      },
-      {
-       "n": "5.8",
-       "title": "Modeling Using Variation",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-8-modeling-using-variation",
-       "skills": [
-        "m.11.rational-functions",
-        "m.7.proportional-relationships"
-       ]
-      }
-     ]
+      "grade": "9",
+      "units": [
+        {
+          "n": "1",
+          "title": "Prerequisites",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-introduction-to-prerequisites",
+          "skills": [
+            "m.8.roots-irrationals",
+            "m.6.expressions-variables",
+            "m.8.exponent-rules",
+            "m.8.scientific-notation",
+            "m.9.radicals",
+            "m.9.polynomial-operations",
+            "m.9.factoring",
+            "m.11.rational-functions"
+          ],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Real Numbers: Algebra Essentials",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-1-real-numbers-algebra-essentials",
+              "skills": ["m.8.roots-irrationals", "m.6.expressions-variables"],
+              "notes": "real numbers: no Grade 9 skill, filed under Grade 8 roots and Grade 6 expressions"
+            },
+            {
+              "n": "1.2",
+              "title": "Exponents and Scientific Notation",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-2-exponents-and-scientific-notation",
+              "skills": ["m.8.exponent-rules", "m.8.scientific-notation"],
+              "notes": "integer exponents and scientific notation are Grade 8 skills"
+            },
+            {
+              "n": "1.3",
+              "title": "Radicals and Rational Exponents",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-3-radicals-and-rational-exponents",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "1.4",
+              "title": "Polynomials",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-4-polynomials",
+              "skills": ["m.9.polynomial-operations"]
+            },
+            {
+              "n": "1.5",
+              "title": "Factoring Polynomials",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-5-factoring-polynomials",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "1.6",
+              "title": "Rational Expressions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/1-6-rational-expressions",
+              "skills": ["m.11.rational-functions"],
+              "notes": "rational expressions are a Grade 11 skill in the taxonomy"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Equations and Inequalities",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-introduction-to-equations-and-inequalities",
+          "skills": [
+            "m.8.linear-functions",
+            "m.8.pythagorean",
+            "m.8.multi-step-equations",
+            "m.9.linear-modeling",
+            "m.11.complex-numbers",
+            "m.9.factoring",
+            "m.9.quadratic-formula",
+            "m.9.radicals",
+            "m.11.rational-functions",
+            "m.9.absolute-value",
+            "m.9.inequality-systems"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "The Rectangular Coordinate Systems and Graphs",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-1-the-rectangular-coordinate-systems-and-graphs",
+              "skills": ["m.8.linear-functions", "m.8.pythagorean"],
+              "notes": "coordinate plane, distance and midpoint: Grade 8 skills"
+            },
+            {
+              "n": "2.2",
+              "title": "Linear Equations in One Variable",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-2-linear-equations-in-one-variable",
+              "skills": ["m.8.multi-step-equations", "m.8.linear-functions"],
+              "notes": "linear equations in one variable: Grade 8 skill"
+            },
+            {
+              "n": "2.3",
+              "title": "Models and Applications",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-3-models-and-applications",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "2.4",
+              "title": "Complex Numbers",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-4-complex-numbers",
+              "skills": ["m.11.complex-numbers"],
+              "notes": "complex numbers: Grade 11 skill (Algebra 2)"
+            },
+            {
+              "n": "2.5",
+              "title": "Quadratic Equations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-5-quadratic-equations",
+              "skills": ["m.9.factoring", "m.9.quadratic-formula"]
+            },
+            {
+              "n": "2.6",
+              "title": "Other Types of Equations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-6-other-types-of-equations",
+              "skills": ["m.9.radicals", "m.11.rational-functions", "m.9.absolute-value"]
+            },
+            {
+              "n": "2.7",
+              "title": "Linear Inequalities and Absolute Value Inequalities",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/2-7-linear-inequalities-and-absolute-value-inequalities",
+              "skills": ["m.9.inequality-systems", "m.9.absolute-value"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Functions",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-introduction-to-functions",
+          "skills": [
+            "m.8.functions-intro",
+            "m.9.absolute-value",
+            "m.8.slope",
+            "m.9.quadratic-functions",
+            "m.11.inverse-functions"
+          ],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Functions and Function Notation",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-1-functions-and-function-notation",
+              "skills": ["m.8.functions-intro"],
+              "notes": "function notation: no Grade 9 skill; Grade 8 functions-intro"
+            },
+            {
+              "n": "3.2",
+              "title": "Domain and Range",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-2-domain-and-range",
+              "skills": ["m.8.functions-intro", "m.9.absolute-value"]
+            },
+            {
+              "n": "3.3",
+              "title": "Rates of Change and Behavior of Graphs",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-3-rates-of-change-and-behavior-of-graphs",
+              "skills": ["m.8.slope", "m.9.quadratic-functions"]
+            },
+            {
+              "n": "3.4",
+              "title": "Composition of Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-4-composition-of-functions",
+              "skills": ["m.11.inverse-functions"],
+              "notes": "composition of functions: Grade 11 skill"
+            },
+            {
+              "n": "3.5",
+              "title": "Transformation of Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-5-transformation-of-functions",
+              "skills": ["m.9.quadratic-functions", "m.9.absolute-value"]
+            },
+            {
+              "n": "3.6",
+              "title": "Absolute Value Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-6-absolute-value-functions",
+              "skills": ["m.9.absolute-value"]
+            },
+            {
+              "n": "3.7",
+              "title": "Inverse Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/3-7-inverse-functions",
+              "skills": ["m.11.inverse-functions"],
+              "notes": "inverse functions: Grade 11 skill"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Linear Functions",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-introduction-to-linear-functions",
+          "skills": ["m.8.linear-functions", "m.9.linear-modeling", "m.9.regression"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Linear Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-1-linear-functions",
+              "skills": ["m.8.linear-functions", "m.9.linear-modeling"]
+            },
+            {
+              "n": "4.2",
+              "title": "Modeling with Linear Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-2-modeling-with-linear-functions",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "4.3",
+              "title": "Fitting Linear Models to Data",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/4-3-fitting-linear-models-to-data",
+              "skills": ["m.9.regression"]
+            }
+          ]
+        }
+      ]
     },
     {
-     "n": "6",
-     "title": "Exponential and Logarithmic Functions",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-introduction-to-exponential-and-logarithmic-functions",
-     "skills": [
-      "m.9.exponential-functions",
-      "m.11.logarithms",
-      "m.11.exp-log-equations",
-      "m.9.regression"
-     ],
-     "lessons": [
-      {
-       "n": "6.1",
-       "title": "Exponential Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-1-exponential-functions",
-       "skills": [
-        "m.9.exponential-functions"
-       ]
-      },
-      {
-       "n": "6.2",
-       "title": "Graphs of Exponential Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-2-graphs-of-exponential-functions",
-       "skills": [
-        "m.9.exponential-functions"
-       ]
-      },
-      {
-       "n": "6.3",
-       "title": "Logarithmic Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-3-logarithmic-functions",
-       "skills": [
-        "m.11.logarithms"
-       ]
-      },
-      {
-       "n": "6.4",
-       "title": "Graphs of Logarithmic Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-4-graphs-of-logarithmic-functions",
-       "skills": [
-        "m.11.logarithms"
-       ]
-      },
-      {
-       "n": "6.5",
-       "title": "Logarithmic Properties",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-5-logarithmic-properties",
-       "skills": [
-        "m.11.logarithms"
-       ]
-      },
-      {
-       "n": "6.6",
-       "title": "Exponential and Logarithmic Equations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-6-exponential-and-logarithmic-equations",
-       "skills": [
-        "m.11.exp-log-equations"
-       ]
-      },
-      {
-       "n": "6.7",
-       "title": "Exponential and Logarithmic Models",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-7-exponential-and-logarithmic-models",
-       "skills": [
-        "m.11.exp-log-equations",
-        "m.9.exponential-functions"
-       ]
-      },
-      {
-       "n": "6.8",
-       "title": "Fitting Exponential Models to Data",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-8-fitting-exponential-models-to-data",
-       "skills": [
-        "m.9.regression",
-        "m.9.exponential-functions"
-       ]
-      }
-     ]
+      "grade": "11",
+      "units": [
+        {
+          "n": "5",
+          "title": "Polynomial and Rational Functions",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-introduction-to-polynomial-and-rational-functions",
+          "skills": [
+            "m.9.quadratic-functions",
+            "m.11.polynomial-functions",
+            "m.11.complex-numbers",
+            "m.11.rational-functions",
+            "m.11.inverse-functions",
+            "m.9.radicals",
+            "m.7.proportional-relationships"
+          ],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Quadratic Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-1-quadratic-functions",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "5.2",
+              "title": "Power Functions and Polynomial Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-2-power-functions-and-polynomial-functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "5.3",
+              "title": "Graphs of Polynomial Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-3-graphs-of-polynomial-functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "5.4",
+              "title": "Dividing Polynomials",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-4-dividing-polynomials",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "5.5",
+              "title": "Zeros of Polynomial Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-5-zeros-of-polynomial-functions",
+              "skills": ["m.11.polynomial-functions", "m.11.complex-numbers"]
+            },
+            {
+              "n": "5.6",
+              "title": "Rational Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-6-rational-functions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "5.7",
+              "title": "Inverses and Radical Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-7-inverses-and-radical-functions",
+              "skills": ["m.11.inverse-functions", "m.9.radicals"]
+            },
+            {
+              "n": "5.8",
+              "title": "Modeling Using Variation",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/5-8-modeling-using-variation",
+              "skills": ["m.11.rational-functions", "m.7.proportional-relationships"]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Exponential and Logarithmic Functions",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-introduction-to-exponential-and-logarithmic-functions",
+          "skills": [
+            "m.9.exponential-functions",
+            "m.11.logarithms",
+            "m.11.exp-log-equations",
+            "m.9.regression"
+          ],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Exponential Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-1-exponential-functions",
+              "skills": ["m.9.exponential-functions"]
+            },
+            {
+              "n": "6.2",
+              "title": "Graphs of Exponential Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-2-graphs-of-exponential-functions",
+              "skills": ["m.9.exponential-functions"]
+            },
+            {
+              "n": "6.3",
+              "title": "Logarithmic Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-3-logarithmic-functions",
+              "skills": ["m.11.logarithms"]
+            },
+            {
+              "n": "6.4",
+              "title": "Graphs of Logarithmic Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-4-graphs-of-logarithmic-functions",
+              "skills": ["m.11.logarithms"]
+            },
+            {
+              "n": "6.5",
+              "title": "Logarithmic Properties",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-5-logarithmic-properties",
+              "skills": ["m.11.logarithms"]
+            },
+            {
+              "n": "6.6",
+              "title": "Exponential and Logarithmic Equations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-6-exponential-and-logarithmic-equations",
+              "skills": ["m.11.exp-log-equations"]
+            },
+            {
+              "n": "6.7",
+              "title": "Exponential and Logarithmic Models",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-7-exponential-and-logarithmic-models",
+              "skills": ["m.11.exp-log-equations", "m.9.exponential-functions"]
+            },
+            {
+              "n": "6.8",
+              "title": "Fitting Exponential Models to Data",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/6-8-fitting-exponential-models-to-data",
+              "skills": ["m.9.regression", "m.9.exponential-functions"]
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "The Unit Circle: Sine and Cosine Functions",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-introduction-to-the-unit-circle-sine-and-cosine-functions",
+          "skills": [
+            "m.11.unit-circle",
+            "m.10.arc-sector",
+            "m.10.right-triangle-trig",
+            "m.10.special-right-triangles",
+            "m.11.pythagorean-identities"
+          ],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Angles",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-1-angles",
+              "skills": ["m.11.unit-circle", "m.10.arc-sector"]
+            },
+            {
+              "n": "7.2",
+              "title": "Right Triangle Trigonometry",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-2-right-triangle-trigonometry",
+              "skills": ["m.10.right-triangle-trig", "m.10.special-right-triangles"]
+            },
+            {
+              "n": "7.3",
+              "title": "Unit Circle",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-3-unit-circle",
+              "skills": ["m.11.unit-circle"]
+            },
+            {
+              "n": "7.4",
+              "title": "The Other Trigonometric Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-4-the-other-trigonometric-functions",
+              "skills": ["m.11.unit-circle", "m.11.pythagorean-identities"]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Periodic Functions",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-introduction-to-periodic-functions",
+          "skills": ["m.11.trig-graphs", "m.11.inverse-functions", "m.11.unit-circle"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Graphs of the Sine and Cosine Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-1-graphs-of-the-sine-and-cosine-functions",
+              "skills": ["m.11.trig-graphs"]
+            },
+            {
+              "n": "8.2",
+              "title": "Graphs of the Other Trigonometric Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-2-graphs-of-the-other-trigonometric-functions",
+              "skills": ["m.11.trig-graphs"]
+            },
+            {
+              "n": "8.3",
+              "title": "Inverse Trigonometric Functions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-3-inverse-trigonometric-functions",
+              "skills": ["m.11.inverse-functions", "m.11.unit-circle"]
+            }
+          ]
+        }
+      ]
     },
     {
-     "n": "7",
-     "title": "The Unit Circle: Sine and Cosine Functions",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-introduction-to-the-unit-circle-sine-and-cosine-functions",
-     "skills": [
-      "m.11.unit-circle",
-      "m.10.arc-sector",
-      "m.10.right-triangle-trig",
-      "m.10.special-right-triangles",
-      "m.11.pythagorean-identities"
-     ],
-     "lessons": [
-      {
-       "n": "7.1",
-       "title": "Angles",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-1-angles",
-       "skills": [
-        "m.11.unit-circle",
-        "m.10.arc-sector"
-       ]
-      },
-      {
-       "n": "7.2",
-       "title": "Right Triangle Trigonometry",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-2-right-triangle-trigonometry",
-       "skills": [
-        "m.10.right-triangle-trig",
-        "m.10.special-right-triangles"
-       ]
-      },
-      {
-       "n": "7.3",
-       "title": "Unit Circle",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-3-unit-circle",
-       "skills": [
-        "m.11.unit-circle"
-       ]
-      },
-      {
-       "n": "7.4",
-       "title": "The Other Trigonometric Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/7-4-the-other-trigonometric-functions",
-       "skills": [
-        "m.11.unit-circle",
-        "m.11.pythagorean-identities"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "8",
-     "title": "Periodic Functions",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-introduction-to-periodic-functions",
-     "skills": [
-      "m.11.trig-graphs",
-      "m.11.inverse-functions",
-      "m.11.unit-circle"
-     ],
-     "lessons": [
-      {
-       "n": "8.1",
-       "title": "Graphs of the Sine and Cosine Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-1-graphs-of-the-sine-and-cosine-functions",
-       "skills": [
-        "m.11.trig-graphs"
-       ]
-      },
-      {
-       "n": "8.2",
-       "title": "Graphs of the Other Trigonometric Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-2-graphs-of-the-other-trigonometric-functions",
-       "skills": [
-        "m.11.trig-graphs"
-       ]
-      },
-      {
-       "n": "8.3",
-       "title": "Inverse Trigonometric Functions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/8-3-inverse-trigonometric-functions",
-       "skills": [
-        "m.11.inverse-functions",
-        "m.11.unit-circle"
-       ]
-      }
-     ]
+      "grade": "12",
+      "units": [
+        {
+          "n": "9",
+          "title": "Trigonometric Identities and Equations",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-introduction-to-trigonometric-identities-and-equations",
+          "skills": ["m.11.pythagorean-identities", "m.12.trig-formulas-equations"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Verifying Trigonometric Identities and Using Trigonometric Identities to Simplify Trigonometric Expressions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-1-verifying-trigonometric-identities-and-using-trigonometric-identities-to-simplify-trigonometric-expressions",
+              "skills": ["m.11.pythagorean-identities"]
+            },
+            {
+              "n": "9.2",
+              "title": "Sum and Difference Identities",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-2-sum-and-difference-identities",
+              "skills": ["m.12.trig-formulas-equations"]
+            },
+            {
+              "n": "9.3",
+              "title": "Double-Angle, Half-Angle, and Reduction Formulas",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-3-double-angle-half-angle-and-reduction-formulas",
+              "skills": ["m.12.trig-formulas-equations"]
+            },
+            {
+              "n": "9.4",
+              "title": "Sum-to-Product and Product-to-Sum Formulas",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-4-sum-to-product-and-product-to-sum-formulas",
+              "skills": ["m.12.trig-formulas-equations"]
+            },
+            {
+              "n": "9.5",
+              "title": "Solving Trigonometric Equations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-5-solving-trigonometric-equations",
+              "skills": ["m.12.trig-formulas-equations"]
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Further Applications of Trigonometry",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-introduction-to-further-applications-of-trigonometry",
+          "skills": [
+            "m.12.law-sines-cosines",
+            "m.12.polar",
+            "m.11.complex-numbers",
+            "m.12.parametric",
+            "m.12.vectors"
+          ],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Non-right Triangles: Law of Sines",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-1-non-right-triangles-law-of-sines",
+              "skills": ["m.12.law-sines-cosines"]
+            },
+            {
+              "n": "10.2",
+              "title": "Non-right Triangles: Law of Cosines",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-2-non-right-triangles-law-of-cosines",
+              "skills": ["m.12.law-sines-cosines"]
+            },
+            {
+              "n": "10.3",
+              "title": "Polar Coordinates",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-3-polar-coordinates",
+              "skills": ["m.12.polar"]
+            },
+            {
+              "n": "10.4",
+              "title": "Polar Coordinates: Graphs",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-4-polar-coordinates-graphs",
+              "skills": ["m.12.polar"]
+            },
+            {
+              "n": "10.5",
+              "title": "Polar Form of Complex Numbers",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-5-polar-form-of-complex-numbers",
+              "skills": ["m.12.polar", "m.11.complex-numbers"]
+            },
+            {
+              "n": "10.6",
+              "title": "Parametric Equations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-6-parametric-equations",
+              "skills": ["m.12.parametric"]
+            },
+            {
+              "n": "10.7",
+              "title": "Parametric Equations: Graphs",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-7-parametric-equations-graphs",
+              "skills": ["m.12.parametric"]
+            },
+            {
+              "n": "10.8",
+              "title": "Vectors",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-8-vectors",
+              "skills": ["m.12.vectors"]
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Systems of Equations and Inequalities",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-introduction-to-systems-of-equations-and-inequalities",
+          "skills": [
+            "m.8.systems-linear",
+            "m.9.inequality-systems",
+            "m.12.matrices",
+            "m.12.conics",
+            "m.11.rational-functions"
+          ],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Systems of Linear Equations: Two Variables",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-1-systems-of-linear-equations-two-variables",
+              "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+              "notes": "two-variable systems: Grade 8 skill plus Grade 9 systems of inequalities"
+            },
+            {
+              "n": "11.2",
+              "title": "Systems of Linear Equations: Three Variables",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-2-systems-of-linear-equations-three-variables",
+              "skills": ["m.12.matrices", "m.8.systems-linear"]
+            },
+            {
+              "n": "11.3",
+              "title": "Systems of Nonlinear Equations and Inequalities: Two Variables",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-3-systems-of-nonlinear-equations-and-inequalities-two-variables",
+              "skills": ["m.9.inequality-systems", "m.12.conics"]
+            },
+            {
+              "n": "11.4",
+              "title": "Partial Fractions",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-4-partial-fractions",
+              "skills": ["m.11.rational-functions"],
+              "notes": "partial fractions: nearest is Grade 11 rational functions"
+            },
+            {
+              "n": "11.5",
+              "title": "Matrices and Matrix Operations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-5-matrices-and-matrix-operations",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "11.6",
+              "title": "Solving Systems with Gaussian Elimination",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-6-solving-systems-with-gaussian-elimination",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "11.7",
+              "title": "Solving Systems with Inverses",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-7-solving-systems-with-inverses",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "11.8",
+              "title": "Solving Systems with Cramer's Rule",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-8-solving-systems-with-cramers-rule",
+              "skills": ["m.12.matrices"]
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Analytic Geometry",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-introduction-to-analytic-geometry",
+          "skills": ["m.12.conics", "m.12.polar"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "The Ellipse",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-1-the-ellipse",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "12.2",
+              "title": "The Hyperbola",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-2-the-hyperbola",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "12.3",
+              "title": "The Parabola",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-3-the-parabola",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "12.4",
+              "title": "Rotation of Axes",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-4-rotation-of-axes",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "12.5",
+              "title": "Conic Sections in Polar Coordinates",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-5-conic-sections-in-polar-coordinates",
+              "skills": ["m.12.conics", "m.12.polar"]
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Sequences, Probability, and Counting Theory",
+          "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-introduction-to-sequences-probability-and-counting-theory",
+          "skills": [
+            "m.9.sequences",
+            "m.11.series",
+            "m.12.binomial-theorem",
+            "m.10.conditional-probability",
+            "m.7.probability"
+          ],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Sequences and Their Notations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-1-sequences-and-their-notations",
+              "skills": ["m.9.sequences"]
+            },
+            {
+              "n": "13.2",
+              "title": "Arithmetic Sequences",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-2-arithmetic-sequences",
+              "skills": ["m.9.sequences"]
+            },
+            {
+              "n": "13.3",
+              "title": "Geometric Sequences",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-3-geometric-sequences",
+              "skills": ["m.9.sequences"]
+            },
+            {
+              "n": "13.4",
+              "title": "Series and Their Notations",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-4-series-and-their-notations",
+              "skills": ["m.11.series"]
+            },
+            {
+              "n": "13.5",
+              "title": "Counting Principles",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-5-counting-principles",
+              "skills": ["m.12.binomial-theorem"]
+            },
+            {
+              "n": "13.6",
+              "title": "Binomial Theorem",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-6-binomial-theorem",
+              "skills": ["m.12.binomial-theorem"]
+            },
+            {
+              "n": "13.7",
+              "title": "Probability",
+              "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-7-probability",
+              "skills": ["m.10.conditional-probability", "m.7.probability"],
+              "notes": "probability: Grade 10 conditional probability and Grade 7 probability"
+            }
+          ]
+        }
+      ]
     }
-   ]
-  },
-  {
-   "grade": "12",
-   "units": [
-    {
-     "n": "9",
-     "title": "Trigonometric Identities and Equations",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-introduction-to-trigonometric-identities-and-equations",
-     "skills": [
-      "m.11.pythagorean-identities",
-      "m.12.trig-formulas-equations"
-     ],
-     "lessons": [
-      {
-       "n": "9.1",
-       "title": "Verifying Trigonometric Identities and Using Trigonometric Identities to Simplify Trigonometric Expressions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-1-verifying-trigonometric-identities-and-using-trigonometric-identities-to-simplify-trigonometric-expressions",
-       "skills": [
-        "m.11.pythagorean-identities"
-       ]
-      },
-      {
-       "n": "9.2",
-       "title": "Sum and Difference Identities",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-2-sum-and-difference-identities",
-       "skills": [
-        "m.12.trig-formulas-equations"
-       ]
-      },
-      {
-       "n": "9.3",
-       "title": "Double-Angle, Half-Angle, and Reduction Formulas",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-3-double-angle-half-angle-and-reduction-formulas",
-       "skills": [
-        "m.12.trig-formulas-equations"
-       ]
-      },
-      {
-       "n": "9.4",
-       "title": "Sum-to-Product and Product-to-Sum Formulas",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-4-sum-to-product-and-product-to-sum-formulas",
-       "skills": [
-        "m.12.trig-formulas-equations"
-       ]
-      },
-      {
-       "n": "9.5",
-       "title": "Solving Trigonometric Equations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/9-5-solving-trigonometric-equations",
-       "skills": [
-        "m.12.trig-formulas-equations"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "10",
-     "title": "Further Applications of Trigonometry",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-introduction-to-further-applications-of-trigonometry",
-     "skills": [
-      "m.12.law-sines-cosines",
-      "m.12.polar",
-      "m.11.complex-numbers",
-      "m.12.parametric",
-      "m.12.vectors"
-     ],
-     "lessons": [
-      {
-       "n": "10.1",
-       "title": "Non-right Triangles: Law of Sines",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-1-non-right-triangles-law-of-sines",
-       "skills": [
-        "m.12.law-sines-cosines"
-       ]
-      },
-      {
-       "n": "10.2",
-       "title": "Non-right Triangles: Law of Cosines",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-2-non-right-triangles-law-of-cosines",
-       "skills": [
-        "m.12.law-sines-cosines"
-       ]
-      },
-      {
-       "n": "10.3",
-       "title": "Polar Coordinates",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-3-polar-coordinates",
-       "skills": [
-        "m.12.polar"
-       ]
-      },
-      {
-       "n": "10.4",
-       "title": "Polar Coordinates: Graphs",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-4-polar-coordinates-graphs",
-       "skills": [
-        "m.12.polar"
-       ]
-      },
-      {
-       "n": "10.5",
-       "title": "Polar Form of Complex Numbers",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-5-polar-form-of-complex-numbers",
-       "skills": [
-        "m.12.polar",
-        "m.11.complex-numbers"
-       ]
-      },
-      {
-       "n": "10.6",
-       "title": "Parametric Equations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-6-parametric-equations",
-       "skills": [
-        "m.12.parametric"
-       ]
-      },
-      {
-       "n": "10.7",
-       "title": "Parametric Equations: Graphs",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-7-parametric-equations-graphs",
-       "skills": [
-        "m.12.parametric"
-       ]
-      },
-      {
-       "n": "10.8",
-       "title": "Vectors",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/10-8-vectors",
-       "skills": [
-        "m.12.vectors"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "11",
-     "title": "Systems of Equations and Inequalities",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-introduction-to-systems-of-equations-and-inequalities",
-     "skills": [
-      "m.8.systems-linear",
-      "m.9.inequality-systems",
-      "m.12.matrices",
-      "m.12.conics",
-      "m.11.rational-functions"
-     ],
-     "lessons": [
-      {
-       "n": "11.1",
-       "title": "Systems of Linear Equations: Two Variables",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-1-systems-of-linear-equations-two-variables",
-       "skills": [
-        "m.8.systems-linear",
-        "m.9.inequality-systems"
-       ],
-       "notes": "two-variable systems: Grade 8 skill plus Grade 9 systems of inequalities"
-      },
-      {
-       "n": "11.2",
-       "title": "Systems of Linear Equations: Three Variables",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-2-systems-of-linear-equations-three-variables",
-       "skills": [
-        "m.12.matrices",
-        "m.8.systems-linear"
-       ]
-      },
-      {
-       "n": "11.3",
-       "title": "Systems of Nonlinear Equations and Inequalities: Two Variables",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-3-systems-of-nonlinear-equations-and-inequalities-two-variables",
-       "skills": [
-        "m.9.inequality-systems",
-        "m.12.conics"
-       ]
-      },
-      {
-       "n": "11.4",
-       "title": "Partial Fractions",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-4-partial-fractions",
-       "skills": [
-        "m.11.rational-functions"
-       ],
-       "notes": "partial fractions: nearest is Grade 11 rational functions"
-      },
-      {
-       "n": "11.5",
-       "title": "Matrices and Matrix Operations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-5-matrices-and-matrix-operations",
-       "skills": [
-        "m.12.matrices"
-       ]
-      },
-      {
-       "n": "11.6",
-       "title": "Solving Systems with Gaussian Elimination",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-6-solving-systems-with-gaussian-elimination",
-       "skills": [
-        "m.12.matrices"
-       ]
-      },
-      {
-       "n": "11.7",
-       "title": "Solving Systems with Inverses",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-7-solving-systems-with-inverses",
-       "skills": [
-        "m.12.matrices"
-       ]
-      },
-      {
-       "n": "11.8",
-       "title": "Solving Systems with Cramer's Rule",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/11-8-solving-systems-with-cramers-rule",
-       "skills": [
-        "m.12.matrices"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "12",
-     "title": "Analytic Geometry",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-introduction-to-analytic-geometry",
-     "skills": [
-      "m.12.conics",
-      "m.12.polar"
-     ],
-     "lessons": [
-      {
-       "n": "12.1",
-       "title": "The Ellipse",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-1-the-ellipse",
-       "skills": [
-        "m.12.conics"
-       ]
-      },
-      {
-       "n": "12.2",
-       "title": "The Hyperbola",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-2-the-hyperbola",
-       "skills": [
-        "m.12.conics"
-       ]
-      },
-      {
-       "n": "12.3",
-       "title": "The Parabola",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-3-the-parabola",
-       "skills": [
-        "m.12.conics"
-       ]
-      },
-      {
-       "n": "12.4",
-       "title": "Rotation of Axes",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-4-rotation-of-axes",
-       "skills": [
-        "m.12.conics"
-       ]
-      },
-      {
-       "n": "12.5",
-       "title": "Conic Sections in Polar Coordinates",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/12-5-conic-sections-in-polar-coordinates",
-       "skills": [
-        "m.12.conics",
-        "m.12.polar"
-       ]
-      }
-     ]
-    },
-    {
-     "n": "13",
-     "title": "Sequences, Probability, and Counting Theory",
-     "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-introduction-to-sequences-probability-and-counting-theory",
-     "skills": [
-      "m.9.sequences",
-      "m.11.series",
-      "m.12.binomial-theorem",
-      "m.10.conditional-probability",
-      "m.7.probability"
-     ],
-     "lessons": [
-      {
-       "n": "13.1",
-       "title": "Sequences and Their Notations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-1-sequences-and-their-notations",
-       "skills": [
-        "m.9.sequences"
-       ]
-      },
-      {
-       "n": "13.2",
-       "title": "Arithmetic Sequences",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-2-arithmetic-sequences",
-       "skills": [
-        "m.9.sequences"
-       ]
-      },
-      {
-       "n": "13.3",
-       "title": "Geometric Sequences",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-3-geometric-sequences",
-       "skills": [
-        "m.9.sequences"
-       ]
-      },
-      {
-       "n": "13.4",
-       "title": "Series and Their Notations",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-4-series-and-their-notations",
-       "skills": [
-        "m.11.series"
-       ]
-      },
-      {
-       "n": "13.5",
-       "title": "Counting Principles",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-5-counting-principles",
-       "skills": [
-        "m.12.binomial-theorem"
-       ]
-      },
-      {
-       "n": "13.6",
-       "title": "Binomial Theorem",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-6-binomial-theorem",
-       "skills": [
-        "m.12.binomial-theorem"
-       ]
-      },
-      {
-       "n": "13.7",
-       "title": "Probability",
-       "url": "https://openstax.org/books/algebra-and-trigonometry-2e/pages/13-7-probability",
-       "skills": [
-        "m.10.conditional-probability",
-        "m.7.probability"
-       ],
-       "notes": "probability: Grade 10 conditional probability and Grade 7 probability"
-      }
-     ]
-    }
-   ]
-  }
- ]
+  ]
 }
