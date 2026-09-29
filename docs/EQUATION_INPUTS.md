@@ -95,7 +95,8 @@ the addition template made students type 7.2 into the sum.
 
 **Not yet possible:**
 
-- The power-of-a-power page: it needs an exponent on a bracket.
+- The power-of-a-power page: it needs an exponent on a bracket. Possible now (H82):
+  `({b}^{m})^{n} = {b}^{k} = {P}`, demo `g.m8-exponent-rules-power-of-power`.
 - `m.6.expressions-variables`: a negative constant would read "3x + −5", and the answer has no
   box.
 - Fraction as division: a mixed number with a zero part shows "0 3/4".
@@ -115,7 +116,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.9.linear-modeling                     | `y = {m}x + {b}`; `y − {y1} = {m}(x − {x1})`; `{a}x + {b}y = {c}` | today                                                    |
 | m.9.inequality-systems                  | two lines, `{a}x + {b}y = {c}` and `{d}x + {e}y = {f}`            | today; inequalities need the sign box                    |
 | m.9.radicals                            | `√{n} = {k}√{r}`; `{b}^{p/q}`                                     | **must**: radical bar; fraction exponent                 |
-| m.9.exponential-functions               | `y = {a}({b})^x`; `A = {P}(1 + {r})^{t}`                          | **must**: exponent on a bracket, a letter exponent       |
+| m.9.exponential-functions               | `y = {a}({b})^x`; `{A} = {P}(1 + {r})^{t}`                        | today (H82: an exponent on a bracket)                    |
 | m.9.sequences                           | `aₙ = {a1} + ({n} − 1){d}`; `aₙ = {a1} × {r}^{{n} − 1} = {an}`    | today; the geometric term uses H81’s expression exponent |
 | m.9.polynomial-operations               | `({a}x + {b})({c}x + {d}) = {p}x² + {q}x + {r}`                   | today                                                    |
 | m.9.factoring                           | `x² + {b}x + {c} = (x + {p})(x + {q})`                            | today                                                    |
@@ -130,12 +131,12 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.11.function-transformations           | `y = {a}f(x − {h}) + {k}`                                         | today                                                    |
 | m.11.complex-numbers                    | `({a} + {b}i)({c} + {d}i) = {p} + {q}i`                           | today                                                    |
 | m.11.polynomial-functions               | `P({r}) = {R}` (remainder theorem)                                | today                                                    |
-| m.11.binomial-theorem                   | `({a}x + {b})^{n}`; term: `C({n}, {k})`                           | exponent on a bracket                                    |
+| m.11.binomial-theorem                   | `({a}x + {b})^{n}`; term: `C({n}, {k})`                           | today (H82: an exponent on a bracket)                    |
 | m.11.radical-functions                  | `√({a}x + {b}) = {c}`                                             | **must**: radical bar over a group                       |
 | m.11.logarithms                         | `log_{b}({x}) = {y}` beside `{b}^{y} = {x}`                       | **must**: subscript box                                  |
 | m.11.exp-log-equations                  | `{a} × {b}^x = {c}`; `{A} = {P}e^{{r}{t}}`                        | today (H81: letter or group exponent)                    |
 | m.11.unit-circle                        | `{d}° = {p}/{q}π`                                                 | today                                                    |
-| m.11.pythagorean-identities             | `({s})^2 + ({c})^2 = 1`                                           | exponent on a bracket                                    |
+| m.11.pythagorean-identities             | `({s})^2 + ({c})^2 = 1`                                           | today (H82: an exponent on a bracket)                    |
 | m.11.normal-distribution                | `{z} = {{x} − {m}}/{s}` stacked                                   | today (H81: a group as a fraction slot)                  |
 | m.12.inverse-trig                       | `sin⁻¹({x}) = {A}°`                                               | today                                                    |
 | m.12.vectors                            | `⟨{a}, {b}⟩ · ⟨{c}, {d}⟩ = {p}`                                   | today                                                    |

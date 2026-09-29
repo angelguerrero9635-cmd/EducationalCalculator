@@ -7,9 +7,22 @@ import type { Values } from '@/engine/types';
 
 import { div } from './helpers';
 import type { LayoutDef } from './layouts';
+import { MATH_5_MODULES } from './math/5';
+import { MATH_7_MODULES } from './math/7';
+import { MATH_8_MODULES } from './math/8';
+import { SCIENCE_7_MODULES } from './science/7';
 import type { ModuleDef } from './types';
 
 const exact = (x: number) => Number(x.toPrecision(12));
+
+/** A K–8 page as a gallery demo `id`, taking the equation it couldn't draw before. */
+function fromPage(pageId: string, id: string, title: string, extra: Partial<ModuleDef>) {
+  const page = [...MATH_5_MODULES, ...MATH_7_MODULES, ...MATH_8_MODULES, ...SCIENCE_7_MODULES].find(
+    (m) => m.id === pageId,
+  );
+  if (!page) throw new Error(`galleryHsm: no page ${pageId}`);
+  return { ...page, id, title, ...extra };
+}
 const RAD = Math.PI / 180;
 const sin = (deg: number) => Math.sin(deg * RAD);
 
@@ -406,5 +419,228 @@ const H81: ModuleDef[] = [
   },
 ];
 
-export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81];
+// H82: an exponent on a bracketed group, the brackets drawn.
+const H82: ModuleDef[] = [
+  {
+    id: 'g.m9-exponential-functions-compound',
+    title: 'Compound interest: A = P(1 + r)^t',
+    use: 'Use this for “$2,000 earns 4% a year, compounded yearly. How much after 8 years?”',
+    assumptions: [
+      'Each year the amount is multiplied by 1 + r, the rate r as a decimal.',
+      'After t years it has been multiplied by 1 + r, t times.',
+      'Take logs of both sides to bring t down from the exponent.',
+    ],
+    variables: [
+      value('A', 'Amount', 0.01, 1e9),
+      value('P', 'Starting amount', 0.01, 1e9),
+      value('r', 'Rate (decimal)', 0.0001, 1),
+      value('t', 'Years', 0, 100),
+    ],
+    relations: [
+      {
+        id: 'A = P × (1 + r)^t',
+        display: '{A} = {P} × (1 + {r})^{t}',
+        vars: ['A', 'P', 'r', 't'],
+        residual: (v: Values) => v.A! - v.P! * (1 + v.r!) ** v.t!,
+        solve: {
+          A: (v: Values) => exact(v.P! * (1 + v.r!) ** v.t!),
+          P: (v: Values) => exact(v.A! / (1 + v.r!) ** v.t!),
+          t: (v: Values) => exact(Math.log(v.A! / v.P!) / Math.log(1 + v.r!)),
+          r: (v: Values) => (v.t ? exact((v.A! / v.P!) ** (1 / v.t) - 1) : undefined),
+        },
+      },
+    ],
+    steps: {
+      'A = P × (1 + r)^t': {
+        A: { expr: '{P} × (1 + {r})^{t}', how: 'Multiply by 1 + r once for each year.' },
+        P: { expr: '{A} ÷ (1 + {r})^{t}', how: 'Divide the amount by the growth factor.' },
+        t: {
+          expr: 'ln({A} ÷ {P}) ÷ ln(1 + {r})',
+          how: 'Divide by P, take ln of both sides, then divide by ln(1 + r).',
+        },
+        r: {
+          expr: '({A} ÷ {P})^(1 ÷ {t}) − 1',
+          how: 'Divide by P, take the tth root, then take away 1.',
+        },
+      },
+    },
+    example: { A: 2737.13810081, P: 2000, r: 0.04, t: 8 },
+    startWith: ['P', 'r', 't'],
+    equation: '{A} = {P}(1 + {r})^{t}',
+    representation: {
+      kind: 'plot',
+      x: { var: 't', min: 0, max: 20, label: 't (years)' },
+      y: { var: 'A', min: 0, max: 5000, label: 'A' },
+      params: ['P', 'r'],
+      autoRange: true,
+    },
+  },
+  {
+    id: 'g.m11-complex-numbers-square',
+    title: 'Squaring a complex number',
+    use: 'Use this for “Write (3 + 2i)² in the form a + bi.”',
+    assumptions: ['i² = −1.', '(a + bi)² = a² + 2abi + b²i² = (a² − b²) + 2abi.'],
+    variables: [
+      value('a', 'Real part', -100, 100),
+      value('b', 'Imaginary part', -100, 100),
+      value('p', 'Real part of the square', -10000, 10000),
+      value('q', 'Imaginary part of the square', -20000, 20000),
+    ],
+    relations: [
+      {
+        id: 'p = a² − b²',
+        display: '{p} = {a}^2 − {b}^2',
+        vars: ['p', 'a', 'b'],
+        residual: (v: Values) => v.p! - (v.a! ** 2 - v.b! ** 2),
+        solve: {
+          p: (v: Values) => exact(v.a! ** 2 - v.b! ** 2),
+          a: (v: Values) => {
+            const s = v.p! + v.b! ** 2;
+            return s < 0 ? undefined : [exact(Math.sqrt(s)), exact(-Math.sqrt(s))];
+          },
+          b: (v: Values) => {
+            const s = v.a! ** 2 - v.p!;
+            return s < 0 ? undefined : [exact(Math.sqrt(s)), exact(-Math.sqrt(s))];
+          },
+        },
+      },
+      {
+        id: 'q = 2ab',
+        display: '{q} = 2 × {a} × {b}',
+        vars: ['q', 'a', 'b'],
+        residual: (v: Values) => v.q! - 2 * v.a! * v.b!,
+        solve: {
+          q: (v: Values) => exact(2 * v.a! * v.b!),
+          a: (v: Values) => div(v.q!, 2 * v.b!),
+          b: (v: Values) => div(v.q!, 2 * v.a!),
+        },
+      },
+    ],
+    steps: {
+      'p = a² − b²': {
+        p: { expr: '{a}^2 − {b}^2', how: 'The real part: a² plus b²i², and i² = −1.' },
+        a: { expr: '±√({p} + {b}^2)', how: 'Add b² to the real part, then take the square root.' },
+        b: { expr: '±√({a}^2 − {p})', how: 'Take the real part from a², then the square root.' },
+      },
+      'q = 2ab': {
+        q: { expr: '2 × {a} × {b}', how: 'The imaginary part: the two middle terms, 2ab.' },
+        a: { expr: '{q} ÷ (2 × {b})', how: 'Divide the imaginary part by 2b.' },
+        b: { expr: '{q} ÷ (2 × {a})', how: 'Divide the imaginary part by 2a.' },
+      },
+    },
+    example: { a: 3, b: 2, p: 5, q: 12 },
+    startWith: ['a', 'b'],
+    equation: '({a} + {b}i)^2 = {p} + {q}i',
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'a',
+      y: 'b',
+      second: { x: 'p', y: 'q' },
+      segment: true,
+      extent: 12,
+      quadrants: 4,
+    },
+  },
+  {
+    id: 'g.m11-pythagorean-identities',
+    title: 'sin² θ + cos² θ = 1',
+    use: 'Use this for “sin θ = 3/5 and θ is acute. Find cos θ.”',
+    assumptions: [
+      'On the unit circle the point at angle θ is (cos θ, sin θ), 1 from the center.',
+      'So (sin θ)² + (cos θ)² = 1 for every angle.',
+      'The quadrant picks the sign of the square root.',
+    ],
+    variables: [value('s', 'sin θ', -1, 1), value('c', 'cos θ', -1, 1)],
+    relations: [
+      {
+        id: 's² + c² = 1',
+        display: '{s}^2 + {c}^2 = 1',
+        vars: ['s', 'c'],
+        residual: (v: Values) => v.s! ** 2 + v.c! ** 2 - 1,
+        solve: {
+          c: (v: Values) =>
+            v.s! ** 2 > 1
+              ? undefined
+              : [exact(Math.sqrt(1 - v.s! ** 2)), exact(-Math.sqrt(1 - v.s! ** 2))],
+          s: (v: Values) =>
+            v.c! ** 2 > 1
+              ? undefined
+              : [exact(Math.sqrt(1 - v.c! ** 2)), exact(-Math.sqrt(1 - v.c! ** 2))],
+        },
+      },
+    ],
+    steps: {
+      's² + c² = 1': {
+        c: { expr: '±√(1 − {s}^2)', how: 'Take sin² θ from 1, then the square root.' },
+        s: { expr: '±√(1 − {c}^2)', how: 'Take cos² θ from 1, then the square root.' },
+      },
+    },
+    example: { s: 0.6, c: 0.8 },
+    startWith: ['s'],
+    equation: '({s})^2 + ({c})^2 = 1',
+    representation: { kind: 'coordinatePlane', x: 'c', y: 's', extent: 1, quadrants: 4 },
+  },
+  {
+    id: 'g.s10-nuclear-chemistry-half-life',
+    title: 'Half-life: what is left',
+    use: 'Use this for “Iodine-131 has a half-life of 8 days. How much of 80 g is left after 24 days?”',
+    assumptions: [
+      'In each half-life, half of the atoms still there decay.',
+      'After t days, t ÷ T half-lives have passed.',
+    ],
+    variables: [
+      value('N', 'Left (g)', 0, 1e6),
+      value('N0', 'Start (g)', 0.000001, 1e6),
+      value('t', 'Time (days)', 0, 1000),
+      value('T', 'Half-life (days)', 1, 100000),
+    ],
+    relations: [
+      {
+        id: 'N = N₀ × (1/2)^(t ÷ T)',
+        display: '{N} = {N0} × 0.5^({t} ÷ {T})',
+        vars: ['N', 'N0', 't', 'T'],
+        residual: (v: Values) => v.N! - v.N0! * 0.5 ** (v.t! / v.T!),
+        solve: {
+          N: (v: Values) => exact(v.N0! * 0.5 ** (v.t! / v.T!)),
+          N0: (v: Values) => exact(v.N! / 0.5 ** (v.t! / v.T!)),
+          t: (v: Values) => exact((v.T! * Math.log(v.N! / v.N0!)) / Math.log(0.5)),
+          T: (v: Values) =>
+            v.N === v.N0 ? undefined : exact((v.t! * Math.log(0.5)) / Math.log(v.N! / v.N0!)),
+        },
+      },
+    ],
+    steps: {
+      'N = N₀ × (1/2)^(t ÷ T)': {
+        N: { expr: '{N0} × 0.5^({t} ÷ {T})', how: 'Halve the start once for each half-life.' },
+        N0: { expr: '{N} ÷ 0.5^({t} ÷ {T})', how: 'Double what is left once for each half-life.' },
+        t: {
+          expr: '{T} × ln({N} ÷ {N0}) ÷ ln(0.5)',
+          how: 'Count the half-lives with logs, then multiply by the half-life.',
+        },
+        T: {
+          expr: '{t} × ln(0.5) ÷ ln({N} ÷ {N0})',
+          how: 'Count the half-lives with logs, then divide the time by that count.',
+        },
+      },
+    },
+    example: { N: 10, N0: 80, t: 24, T: 8 },
+    startWith: ['N0', 't', 'T'],
+    equation: '{N} = {N0}(1/2)^{{t}/{T}}',
+    representation: {
+      kind: 'plot',
+      x: { var: 't', min: 0, max: 40, label: 't (days)' },
+      y: { var: 'N', min: 0, max: 100, label: 'Left (g)' },
+      params: ['N0', 'T'],
+      autoRange: true,
+    },
+  },
+  fromPage(
+    'm.8.exponent-rules~power-of-power',
+    'g.m8-exponent-rules-power-of-power',
+    'A power of a power, as its equation',
+    { equation: '({b}^{m})^{n} = {b}^{k} = {P}' },
+  ),
+];
+
+export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82];
 export const HSM_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -612,13 +612,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Template syntax: a group in braces (anything but a lone {id}) is an expression slot, as a fraction’s top or bottom or an exponent: `{z} = {{x} − {m}}/{s}`, `{a}/{sin({A}°)} = {b}/{sin({B}°)}`, `{a} km × {1000 m}/{1 km} = {b} m`, `{m} g × {1 mol}/{{M} g} = {n} mol`, `aₙ = {a1} × {r}^{{n} − 1} = {an}`, `{A} = {P}e^{{r}{t}}`, `{({x} − {h})²}/{a}^2 + {({y} − {k})²}/{b}^2 = 1`. A bare word after ^ stays text (`{b}^x`, `e^rt`); a letter or number before ^ is a base (`e^`, `10^`). The exponent binds before the bar. The step harness now reads sin/cos/tan of degrees and e^.',
   },
-  ask(
-    'H82',
-    'equationInput',
-    'An exponent on a bracket: (1 + {r})^{t}, ({b}^{m})^{n}',
-    ['m.9.exponential-functions', 'm.11.binomial-theorem', 'm.11.pythagorean-identities'],
-    'Also lets m.8.exponent-rules~power-of-power take its equation.',
-  ),
+  {
+    ...ask('H82', 'equationInput', 'An exponent on a bracket: (1 + {r})^{t}, ({b}^{m})^{n}', [
+      'm.9.exponential-functions',
+      'm.11.binomial-theorem',
+      'm.11.pythagorean-identities',
+    ]),
+    status: 'drawn',
+    gallery: [
+      'g.m9-exponential-functions-compound',
+      'g.m11-complex-numbers-square',
+      'g.m11-pythagorean-identities',
+      'g.s10-nuclear-chemistry-half-life',
+      'g.m8-exponent-rules-power-of-power',
+    ],
+    notes:
+      'Also lets m.8.exponent-rules~power-of-power take its equation: `({b}^{m})^{n} = {b}^{k} = {P}`. Template syntax: a bracketed group followed by ^ is the base, its brackets drawn, written against the box before it: `{A} = {P}(1 + {r})^{t}`, `({a} + {b}i)^2 = {p} + {q}i`, `({s})^2 + ({c})^2 = 1`, `y = {a}({b})^x`, `{N} = {N0}(1/2)^{{t}/{T}}` (brackets as tall as a fraction inside). Brackets with no ^ after them stay text.',
+  },
   ask('H83', 'equationInput', 'Radicals with a bar over the box or group, and cube roots', [
     'm.9.radicals',
     'm.11.radical-functions',

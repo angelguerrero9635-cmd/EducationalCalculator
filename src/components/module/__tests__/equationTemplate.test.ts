@@ -144,6 +144,57 @@ describe('H81: expression slots', () => {
   });
 });
 
+describe('H82: an exponent on a bracket', () => {
+  it('raises a bracketed group, brackets drawn, written against the box before it', () => {
+    expect(equationParts('{A} = {P}(1 + {r})^{t}')).toEqual([
+      box('A'),
+      text('='),
+      box('P'),
+      {
+        kind: 'power',
+        base: {
+          parts: [text('(1', { after: false }), text('+'), box('r'), text(')', { before: true })],
+        },
+        exponent: { id: 't' },
+        tightBefore: true,
+      },
+    ]);
+    expect(equationParts('({a} + {b}i)^2 = {p} + {q}i')[0]).toEqual({
+      kind: 'power',
+      base: {
+        parts: [
+          text('(', { after: true }),
+          box('a'),
+          text('+'),
+          box('b'),
+          text('i)', { before: true }),
+        ],
+      },
+      exponent: { text: '2' },
+    });
+  });
+
+  it('nests a power in the bracket', () => {
+    expect(equationParts('({b}^{m})^{n} = {b}^{k}')[0]).toEqual({
+      kind: 'power',
+      base: {
+        parts: [
+          text('(', { after: true }),
+          { kind: 'power', base: { id: 'b' }, exponent: { id: 'm' } },
+          text(')', { before: true }),
+        ],
+      },
+      exponent: { id: 'n' },
+    });
+    expect(equationIds('({b}^{m})^{n} = {b}^{k} = {P}')).toEqual(['b', 'm', 'n', 'b', 'k', 'P']);
+  });
+
+  it('leaves brackets without a power as text', () => {
+    expect(equationParts('{p}(x + {q}) = {r}')[1]).toEqual(text('(x', { before: true }));
+    expect(equationParts('({a} × 10^{n}) × ({c} × 10^{k})')[0]).toEqual(text('(', { after: true }));
+  });
+});
+
 describe('every page’s equation', () => {
   it('lists each box in its template', () => {
     for (const m of TESTED_MODULES) {

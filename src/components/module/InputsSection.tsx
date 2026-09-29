@@ -20,6 +20,7 @@ import {
   type EquationPart,
   type Slot,
 } from './equationTemplate';
+import { Fenced } from './EquationMarks';
 import type { Calculator } from './useCalculator';
 
 /**
@@ -376,7 +377,14 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       box(p.id, `b${i}`, small, small ? false : undefined)
     ) : p.kind === 'power' ? (
       <View key={i} style={[styles.eqPower, nested && styles.eqPowerNested]}>
-        {slotView(p.base, `p${i}`, small)}
+        {tallBracket(p.base) ? (
+          // (1/2)^t: brackets as tall as the fraction inside them.
+          <Fenced open="(" close=")">
+            {row(tallBracket(p.base)!, `p${i}`, small)}
+          </Fenced>
+        ) : (
+          slotView(p.base, `p${i}`, small)
+        )}
         <View style={styles.eqExponent}>{slotView(p.exponent, `e${i}`, true)}</View>
       </View>
     ) : (
@@ -429,6 +437,25 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
 }
 
 /**
+ * The inside of a bracketed group holding a fraction, (1/2), without its brackets: the group is
+ * then drawn between brackets as tall as the fraction. Undefined for any other slot.
+ */
+function tallBracket(s: Slot): EquationPart[] | undefined {
+  if (!('parts' in s) || !s.parts.some((p) => p.kind === 'fraction')) return undefined;
+  const first = s.parts[0];
+  const last = s.parts[s.parts.length - 1];
+  if (first?.kind !== 'text' || last?.kind !== 'text' || s.parts.length < 3) return undefined;
+  if (!first.text.startsWith('(') || !last.text.endsWith(')')) return undefined;
+  const trim = (p: EquationPart & { kind: 'text' }, text: string): EquationPart[] =>
+    text ? [{ ...p, text }] : [];
+  return [
+    ...trim(first, first.text.slice(1)),
+    ...s.parts.slice(1, -1),
+    ...trim(last, last.text.slice(0, -1)),
+  ];
+}
+
+/**
  * Columns side by side: a box, a fraction or a power is one, a mixed number two; an expression
  * slot counts its own (a z-score's top, x − μ, is two).
  */
@@ -455,7 +482,8 @@ function clusters(group: { p: EquationPart; i: number }[]) {
     const prev = group[k - 1]?.p;
     const touches =
       prev &&
-      ((item.p.kind === 'text' && item.p.tightBefore) || (prev.kind === 'text' && prev.tightAfter));
+      (((item.p.kind === 'text' || item.p.kind === 'power') && item.p.tightBefore) ||
+        (prev.kind === 'text' && prev.tightAfter));
     if (touches) out[out.length - 1]!.push(item);
     else out.push([item]);
   });

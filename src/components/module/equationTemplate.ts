@@ -18,7 +18,8 @@ export type Slot = { id: string } | { text: string } | { parts: EquationPart[] }
 export type EquationPart =
   | { kind: 'box'; id: string }
   | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
-  | { kind: 'power'; base: Slot; exponent: Slot }
+  /** `tightBefore`: a bracket written against the piece before it, {a}(1 + {r})^{t}. */
+  | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
   | { kind: 'text'; text: string; tightBefore?: boolean; tightAfter?: boolean };
 
 const BOX = /^\w+$/;
@@ -31,6 +32,17 @@ function closeBrace(s: string, i: number): number {
     else if (s[k] === '}' && --depth === 0) return k + 1;
   }
   throw new Error(`Equation template: no } for the { at ${i} in "${s}"`);
+}
+
+/** The index just past the `)` closing the `(` at `i` (brackets nest; braces are skipped). */
+function closeParen(s: string, i: number): number | undefined {
+  let depth = 0;
+  for (let k = i; k < s.length; k++) {
+    if (s[k] === '{') k = closeBrace(s, k) - 1;
+    else if (s[k] === '(') depth++;
+    else if (s[k] === ')' && --depth === 0) return k + 1;
+  }
+  return undefined;
 }
 
 type Read = { slot: Slot; end: number };
@@ -58,7 +70,12 @@ function readSlot(s: string, i: number, letters: boolean): Read | undefined {
 function readPiece(s: string, i: number): { parts: EquationPart[]; end: number } | undefined {
   let first: Read | undefined;
   if (s[i] === '{') first = readSlot(s, i, false);
-  else if (/\w/.test(s[i]!) && (i === 0 || !/[\w.]/.test(s[i - 1]!))) {
+  else if (s[i] === '(') {
+    // A bracketed group raised to a power, the brackets drawn: (1 + {r})^{t}, ({b}^{m})^{n}.
+    const end = closeParen(s, i);
+    if (end !== undefined && s[end] === '^')
+      first = { slot: { parts: equationParts(s.slice(i, end)) }, end };
+  } else if (/\w/.test(s[i]!) && (i === 0 || !/[\w.]/.test(s[i - 1]!))) {
     const run = /^[A-Za-z]+|^\d+/.exec(s.slice(i))?.[0];
     const after = run && s[i + run.length];
     if (run && (after === '^' || (/^\d/.test(run) && after === '/')))
@@ -84,6 +101,9 @@ function readPiece(s: string, i: number): { parts: EquationPart[]; end: number }
   if ('parts' in first.slot) return { parts: first.slot.parts, end: first.end };
   return undefined;
 }
+
+/** The text a row starts with, if it starts with text. */
+const s0 = (parts: EquationPart[]) => (parts[0]?.kind === 'text' ? parts[0].text : undefined);
 
 /**
  * `{a}/{b}` and `1/{b}` are stacked fractions, `{w} {a}/{b}` a mixed number, `{b}^{n}`,
@@ -130,7 +150,13 @@ export function equationParts(template: string): EquationPart[] {
       parts.push({ ...part, whole: prev.id });
     } else {
       pushText(between, parts.length > 0, true);
-      parts.push(...piece.parts);
+      const bracket =
+        part?.kind === 'power' && 'parts' in part.base && s0(part.base.parts)?.startsWith('(');
+      parts.push(
+        ...(bracket && parts.length > 0 && !/\s$/.test(between)
+          ? [{ ...part, tightBefore: true }]
+          : piece.parts),
+      );
     }
     last = i = piece.end;
   }
