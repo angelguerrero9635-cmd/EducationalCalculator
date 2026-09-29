@@ -1,0 +1,1173 @@
+{
+  "id": "envision-aga",
+  "curriculum": "enVision Algebra 1, Geometry, Algebra 2 (enVision Mathematics A|G|A)",
+  "publisher": "Savvas Learning Company",
+  "edition": "©2024",
+  "subject": "math",
+  "grades": ["9", "10", "11"],
+  "content": "titles",
+  "terms": {
+    "unit": "Topic",
+    "lesson": "Lesson"
+  },
+  "license": null,
+  "sourceUrl": "https://www.savvas.com/solutions/mathematics/envision-mathematics-grades-k-12",
+  "retrieved": "2026-09-29",
+  "notes": "Titles only (all rights reserved). Topic and lesson titles of the enVision Mathematics (2024) high-school courses as listed on IXL's public skill-plan pages (one per course, cited as each unit's url; robots.txt allows /math/skill-plans/, no login). Only the textbook's own numbers and titles are kept, not IXL's skill names. IXL lists the lessons it aligns skills to, so a lesson with no IXL skill may be missing. Math typeset in a title is written plainly (x², nth). Algebra 1 → grade 9, Geometry → 10, Algebra 2 → 11. Lesson numbers are enVision's own (topic-lesson).",
+  "books": [
+    {
+      "grade": "9",
+      "course": "Algebra 1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Solving Equations and Inequalities",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.8.multi-step-equations", "m.9.inequality-systems", "m.9.absolute-value"],
+          "notes": "Solving linear equations in one variable has no Grade 9 skill; mapped to m.8.multi-step-equations.",
+          "lessons": [
+            {
+              "n": "1-1",
+              "title": "Operations on Real Numbers"
+            },
+            {
+              "n": "1-2",
+              "title": "Solving Linear Equations"
+            },
+            {
+              "n": "1-3",
+              "title": "Solving Equations With a Variable on Both Sides"
+            },
+            {
+              "n": "1-4",
+              "title": "Literal Equations and Formulas"
+            },
+            {
+              "n": "1-5",
+              "title": "Solving Inequalities in One Variable"
+            },
+            {
+              "n": "1-6",
+              "title": "Compound Inequalities"
+            },
+            {
+              "n": "1-7",
+              "title": "Absolute Value Equations and Inequalities"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Linear Equations",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.9.linear-modeling", "m.8.slope"],
+          "lessons": [
+            {
+              "n": "2-1",
+              "title": "Slope-Intercept Form"
+            },
+            {
+              "n": "2-2",
+              "title": "Point-Slope Form"
+            },
+            {
+              "n": "2-3",
+              "title": "Standard Form"
+            },
+            {
+              "n": "2-4",
+              "title": "Parallel and Perpendicular Lines"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Linear Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": [
+            "m.8.functions-intro",
+            "m.9.linear-modeling",
+            "m.9.sequences",
+            "m.9.regression"
+          ],
+          "lessons": [
+            {
+              "n": "3-1",
+              "title": "Domain and Range of Functions"
+            },
+            {
+              "n": "3-2",
+              "title": "Linear Functions"
+            },
+            {
+              "n": "3-3",
+              "title": "Transforming Linear Functions"
+            },
+            {
+              "n": "3-4",
+              "title": "Arithmetic Sequences"
+            },
+            {
+              "n": "3-5",
+              "title": "Scatter Plots and Lines of Fit"
+            },
+            {
+              "n": "3-6",
+              "title": "Analyzing Lines of Fit"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Systems of Linear Equations and Inequalities",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+          "lessons": [
+            {
+              "n": "4-1",
+              "title": "Solving Systems of Equations by Graphing"
+            },
+            {
+              "n": "4-2",
+              "title": "Solving Systems of Equations by Substitution"
+            },
+            {
+              "n": "4-3",
+              "title": "Solving Systems of Equations by Elimination"
+            },
+            {
+              "n": "4-4",
+              "title": "Linear Inequalities in Two Variables"
+            },
+            {
+              "n": "4-5",
+              "title": "Systems of Linear Inequalities"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Piecewise Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.9.absolute-value"],
+          "notes": "Piecewise and step functions have no taxonomy skill; nearest m.9.absolute-value.",
+          "lessons": [
+            {
+              "n": "5-1",
+              "title": "The Absolute Value Function",
+              "skills": ["m.9.absolute-value"]
+            },
+            {
+              "n": "5-2",
+              "title": "Piecewise-Defined Functions",
+              "skills": ["m.9.absolute-value"]
+            },
+            {
+              "n": "5-3",
+              "title": "Step Functions",
+              "skills": ["m.9.absolute-value"]
+            },
+            {
+              "n": "5-4",
+              "title": "Transformations of Piecewise-Defined Functions",
+              "skills": ["m.9.absolute-value"]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Exponents and Exponential Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.9.radicals", "m.9.exponential-functions", "m.9.sequences"],
+          "lessons": [
+            {
+              "n": "6-1",
+              "title": "Rational Exponents and Properties of Exponents"
+            },
+            {
+              "n": "6-2",
+              "title": "Radical Expressions"
+            },
+            {
+              "n": "6-3",
+              "title": "Exponential Functions"
+            },
+            {
+              "n": "6-4",
+              "title": "Exponential Growth and Decay"
+            },
+            {
+              "n": "6-5",
+              "title": "Geometric Sequences"
+            },
+            {
+              "n": "6-6",
+              "title": "Translations of Exponential Functions"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Polynomials and Factoring",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.9.polynomial-operations", "m.9.factoring"],
+          "lessons": [
+            {
+              "n": "7-1",
+              "title": "Adding and Subtracting Polynomials"
+            },
+            {
+              "n": "7-2",
+              "title": "Multiplying Polynomials"
+            },
+            {
+              "n": "7-3",
+              "title": "Multiplying Special Cases"
+            },
+            {
+              "n": "7-4",
+              "title": "Factoring Polynomials"
+            },
+            {
+              "n": "7-5",
+              "title": "Factoring x² + bx + c"
+            },
+            {
+              "n": "7-6",
+              "title": "Factoring ax² + bx + c"
+            },
+            {
+              "n": "7-7",
+              "title": "Factoring Special Cases"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Quadratic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.9.quadratic-functions"],
+          "lessons": [
+            {
+              "n": "8-1",
+              "title": "Key Features of a Quadratic Function",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8-2",
+              "title": "Quadratic Functions in Vertex Form",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8-3",
+              "title": "Quadratic Functions in Standard Form",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8-4",
+              "title": "Modeling with Quadratic Functions",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8-5",
+              "title": "Linear, Exponential, and Quadratic Models",
+              "skills": ["m.9.quadratic-functions"]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Solving Quadratic Equations",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.9.quadratic-formula", "m.9.factoring", "m.9.quadratic-functions"],
+          "lessons": [
+            {
+              "n": "9-1",
+              "title": "Solving Quadratic Equations Using Graphs and Tables"
+            },
+            {
+              "n": "9-2",
+              "title": "Solving Quadratic Equations by Factoring"
+            },
+            {
+              "n": "9-3",
+              "title": "Solving Quadratic Equations Using Square Roots"
+            },
+            {
+              "n": "9-4",
+              "title": "Completing the Square"
+            },
+            {
+              "n": "9-5",
+              "title": "The Quadratic Formula and the Discriminant"
+            },
+            {
+              "n": "9-6",
+              "title": "Solving Systems of Linear and Quadratic Equations"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Working With Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.9.radicals", "m.11.inverse-functions", "m.8.functions-intro"],
+          "lessons": [
+            {
+              "n": "10-1",
+              "title": "The Square Root Function"
+            },
+            {
+              "n": "10-2",
+              "title": "The Cube Root Function"
+            },
+            {
+              "n": "10-3",
+              "title": "Analyzing Functions Graphically"
+            },
+            {
+              "n": "10-4",
+              "title": "Translations of Functions"
+            },
+            {
+              "n": "10-5",
+              "title": "Compressions and Stretches of Functions"
+            },
+            {
+              "n": "10-6",
+              "title": "Operations With Functions"
+            },
+            {
+              "n": "10-7",
+              "title": "Inverse Functions"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Statistics",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-1",
+          "skills": ["m.6.center-spread", "m.10.conditional-probability"],
+          "notes": "Descriptive statistics (center, spread, box plots, shape) have no high-school skill; mapped to m.6.center-spread. Loose fit: two-way tables have no taxonomy skill; nearest m.10.conditional-probability.",
+          "lessons": [
+            {
+              "n": "11-1",
+              "title": "Analyzing Data Displays"
+            },
+            {
+              "n": "11-2",
+              "title": "Comparing Data Sets"
+            },
+            {
+              "n": "11-3",
+              "title": "Interpreting the Shapes of Data Displays"
+            },
+            {
+              "n": "11-4",
+              "title": "Standard Deviation"
+            },
+            {
+              "n": "11-5",
+              "title": "Two-Way Frequency Tables"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "10",
+      "course": "Geometry",
+      "units": [
+        {
+          "n": "1",
+          "title": "Foundations of Geometry",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.constructions", "m.10.coordinate-geometry", "m.10.proofs"],
+          "lessons": [
+            {
+              "n": "1-1",
+              "title": "Measuring Segments and Angles"
+            },
+            {
+              "n": "1-2",
+              "title": "Basic Constructions"
+            },
+            {
+              "n": "1-3",
+              "title": "Midpoint and Distance"
+            },
+            {
+              "n": "1-4",
+              "title": "Inductive Reasoning"
+            },
+            {
+              "n": "1-5",
+              "title": "Conditional Statements"
+            },
+            {
+              "n": "1-6",
+              "title": "Deductive Reasoning"
+            },
+            {
+              "n": "1-7",
+              "title": "Writing Proofs"
+            },
+            {
+              "n": "1-8",
+              "title": "Indirect Proof"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Parallel and Perpendicular Lines",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.proofs", "m.7.angle-relationships", "m.10.coordinate-geometry"],
+          "lessons": [
+            {
+              "n": "2-1",
+              "title": "Parallel Lines"
+            },
+            {
+              "n": "2-2",
+              "title": "Proving Lines Parallel"
+            },
+            {
+              "n": "2-3",
+              "title": "Parallel Lines and Triangle Angle Sums"
+            },
+            {
+              "n": "2-4",
+              "title": "Slopes of Parallel and Perpendicular Lines"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Transformations",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.8.transformations", "m.10.congruence"],
+          "lessons": [
+            {
+              "n": "3-1",
+              "title": "Reflections"
+            },
+            {
+              "n": "3-2",
+              "title": "Translations"
+            },
+            {
+              "n": "3-3",
+              "title": "Rotations"
+            },
+            {
+              "n": "3-4",
+              "title": "Classification of Rigid Motion"
+            },
+            {
+              "n": "3-5",
+              "title": "Symmetry"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Triangle Congruence",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.congruence"],
+          "lessons": [
+            {
+              "n": "4-1",
+              "title": "Congruence",
+              "skills": ["m.10.congruence"]
+            },
+            {
+              "n": "4-2",
+              "title": "Isosceles and Equilateral Triangles",
+              "skills": ["m.10.congruence"]
+            },
+            {
+              "n": "4-3",
+              "title": "Proving and Applying the SAS and SSS Congruence Criteria",
+              "skills": ["m.10.congruence"]
+            },
+            {
+              "n": "4-4",
+              "title": "Proving and Applying the ASA and AAS Congruence Criteria",
+              "skills": ["m.10.congruence"]
+            },
+            {
+              "n": "4-5",
+              "title": "Congruence in Right Triangles",
+              "skills": ["m.10.congruence"]
+            },
+            {
+              "n": "4-6",
+              "title": "Congruence in Overlapping Triangles",
+              "skills": ["m.10.congruence"]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Relationships in Triangles",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.proofs"],
+          "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs.",
+          "lessons": [
+            {
+              "n": "5-1",
+              "title": "Perpendicular and Angle Bisectors",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "5-2",
+              "title": "Bisectors in Triangles",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "5-3",
+              "title": "Medians and Altitudes",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "5-4",
+              "title": "Inequalities in One Triangle",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "5-5",
+              "title": "Inequalities in Two Triangles",
+              "skills": ["m.10.proofs"]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Quadrilaterals and Other Polygons",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.proofs"],
+          "notes": "Loose fit: properties of quadrilaterals and polygons have no high-school taxonomy skill; nearest m.10.proofs.",
+          "lessons": [
+            {
+              "n": "6-1",
+              "title": "The Polygon Angle-Sum Theorems",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-2",
+              "title": "Kites and Trapezoids",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-3",
+              "title": "Properties of Parallelograms",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-4",
+              "title": "Proving a Quadrilateral is a Parallelogram",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-5",
+              "title": "Properties of Special Parallelograms",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-6",
+              "title": "Conditions of Special Parallelograms",
+              "skills": ["m.10.proofs"]
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Similarity",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.similarity"],
+          "lessons": [
+            {
+              "n": "7-1",
+              "title": "Dilations",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "7-2",
+              "title": "Similarity Transformations",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "7-3",
+              "title": "Proving Triangles Similar",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "7-4",
+              "title": "Similarity in Right Triangles",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "7-5",
+              "title": "Proportions in Triangles",
+              "skills": ["m.10.similarity"]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Right Triangles and Trigonometry",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.8.pythagorean", "m.10.right-triangle-trig", "m.12.law-sines-cosines"],
+          "lessons": [
+            {
+              "n": "8-1",
+              "title": "Right Triangles and the Pythagorean Theorem"
+            },
+            {
+              "n": "8-2",
+              "title": "Trigonometric Ratios"
+            },
+            {
+              "n": "8-3",
+              "title": "The Law of Sines"
+            },
+            {
+              "n": "8-4",
+              "title": "The Law of Cosines"
+            },
+            {
+              "n": "8-5",
+              "title": "Problem Solving with Trigonometry"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Coordinate Geometry",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.coordinate-geometry", "m.12.conics"],
+          "lessons": [
+            {
+              "n": "9-1",
+              "title": "Polygons in the Coordinate Plane"
+            },
+            {
+              "n": "9-2",
+              "title": "Proofs Using Coordinate Geometry"
+            },
+            {
+              "n": "9-3",
+              "title": "Circles in the Coordinate Plane"
+            },
+            {
+              "n": "9-4",
+              "title": "Parabolas in the Coordinate Plane"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Circles",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.circle-theorems", "m.10.arc-sector"],
+          "lessons": [
+            {
+              "n": "10-1",
+              "title": "Arcs and Sectors"
+            },
+            {
+              "n": "10-2",
+              "title": "Tangent Lines to a Circle"
+            },
+            {
+              "n": "10-3",
+              "title": "Chords"
+            },
+            {
+              "n": "10-4",
+              "title": "Inscribed Angles"
+            },
+            {
+              "n": "10-5",
+              "title": "Secant Lines and Segments"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Two- and Three-Dimensional Models",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": ["m.10.volume-derivations", "m.8.volume-curved"],
+          "lessons": [
+            {
+              "n": "11-1",
+              "title": "Space Figures and Cross Sections"
+            },
+            {
+              "n": "11-2",
+              "title": "Volumes of Prisms and Cylinders"
+            },
+            {
+              "n": "11-3",
+              "title": "Pyramids and Cones"
+            },
+            {
+              "n": "11-4",
+              "title": "Spheres"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Probability",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-geometry",
+          "skills": [
+            "m.10.conditional-probability",
+            "m.12.binomial-theorem",
+            "m.12.probability-distributions"
+          ],
+          "lessons": [
+            {
+              "n": "12-1",
+              "title": "Probability Events"
+            },
+            {
+              "n": "12-2",
+              "title": "Conditional Probability"
+            },
+            {
+              "n": "12-3",
+              "title": "Permutations and Combinations"
+            },
+            {
+              "n": "12-4",
+              "title": "Probability Distributions"
+            },
+            {
+              "n": "12-5",
+              "title": "Expected Value"
+            },
+            {
+              "n": "12-6",
+              "title": "Probability and Decision Making"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "11",
+      "course": "Algebra 2",
+      "units": [
+        {
+          "n": "1",
+          "title": "Linear Functions and Systems",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": [
+            "m.9.linear-modeling",
+            "m.9.absolute-value",
+            "m.11.series",
+            "m.8.systems-linear"
+          ],
+          "lessons": [
+            {
+              "n": "1-1",
+              "title": "Key Features of Functions"
+            },
+            {
+              "n": "1-2",
+              "title": "Transformations of Functions"
+            },
+            {
+              "n": "1-3",
+              "title": "Piecewise-Defined Functions"
+            },
+            {
+              "n": "1-4",
+              "title": "Arithmetic Sequences and Series"
+            },
+            {
+              "n": "1-5",
+              "title": "Solving Equations and Inequalities by Graphing"
+            },
+            {
+              "n": "1-6",
+              "title": "Linear Systems"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Quadratic Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.9.quadratic-functions", "m.11.complex-numbers", "m.9.quadratic-formula"],
+          "lessons": [
+            {
+              "n": "2-1",
+              "title": "Vertex Form of a Quadratic Function"
+            },
+            {
+              "n": "2-2",
+              "title": "Standard Form of a Quadratic Function"
+            },
+            {
+              "n": "2-3",
+              "title": "Factored Form of a Quadratic Function"
+            },
+            {
+              "n": "2-4",
+              "title": "Complex Numbers and Operations"
+            },
+            {
+              "n": "2-5",
+              "title": "Completing the Square"
+            },
+            {
+              "n": "2-6",
+              "title": "The Quadratic Formula"
+            },
+            {
+              "n": "2-7",
+              "title": "Linear-Quadratic Systems"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Polynomial Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.11.polynomial-functions"],
+          "lessons": [
+            {
+              "n": "3-1",
+              "title": "Graphing Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "3-2",
+              "title": "Adding, Subtracting, and Multiplying Polynomials",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "3-3",
+              "title": "Polynomial Identities",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "3-4",
+              "title": "Dividing Polynomials",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "3-5",
+              "title": "Zeros of Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "3-6",
+              "title": "Theorems about Roots of Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "3-7",
+              "title": "Transformations of Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Rational Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.11.rational-functions"],
+          "lessons": [
+            {
+              "n": "4-1",
+              "title": "Inverse Variation and the Reciprocal Function",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "4-2",
+              "title": "Graphing Rational Functions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "4-3",
+              "title": "Multiplying and Dividing Rational Expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "4-4",
+              "title": "Adding and Subtracting Rational Expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "4-5",
+              "title": "Solving Rational Equations",
+              "skills": ["m.11.rational-functions"]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Rational Exponents and Radical Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.9.radicals", "m.11.inverse-functions"],
+          "lessons": [
+            {
+              "n": "5-1",
+              "title": "nth Roots, Radicals, and Rational Exponents"
+            },
+            {
+              "n": "5-2",
+              "title": "Properties of Exponents and Radicals"
+            },
+            {
+              "n": "5-3",
+              "title": "Graphing Radical Functions"
+            },
+            {
+              "n": "5-4",
+              "title": "Solving Radical Equations"
+            },
+            {
+              "n": "5-5",
+              "title": "Function Operations"
+            },
+            {
+              "n": "5-6",
+              "title": "Inverse Relations and Functions"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Exponential and Logarithmic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": [
+            "m.9.exponential-functions",
+            "m.11.logarithms",
+            "m.11.exp-log-equations",
+            "m.11.series"
+          ],
+          "lessons": [
+            {
+              "n": "6-1",
+              "title": "Key Features of Exponential Functions"
+            },
+            {
+              "n": "6-2",
+              "title": "Exponential Models"
+            },
+            {
+              "n": "6-3",
+              "title": "Logarithms"
+            },
+            {
+              "n": "6-4",
+              "title": "Logarithmic Functions"
+            },
+            {
+              "n": "6-5",
+              "title": "Properties of Logarithms"
+            },
+            {
+              "n": "6-6",
+              "title": "Exponential and Logarithmic Equations"
+            },
+            {
+              "n": "6-7",
+              "title": "Geometric Sequences and Series"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Trigonometric Functions",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.11.unit-circle", "m.11.trig-graphs"],
+          "lessons": [
+            {
+              "n": "7-1",
+              "title": "Angles and the Unit Circle"
+            },
+            {
+              "n": "7-2",
+              "title": "Evaluating Trigonometric Functions"
+            },
+            {
+              "n": "7-3",
+              "title": "Graphing Sine and Cosine Functions"
+            },
+            {
+              "n": "7-4",
+              "title": "Translating Trigonometric Functions"
+            },
+            {
+              "n": "7-5",
+              "title": "Graphing Other Trigonometric Functions"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Trigonometric Equations and Identities",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": [
+            "m.12.trig-formulas-equations",
+            "m.12.law-sines-cosines",
+            "m.11.pythagorean-identities",
+            "m.12.polar"
+          ],
+          "lessons": [
+            {
+              "n": "8-1",
+              "title": "Solving Trigonometric Equations Using Inverses"
+            },
+            {
+              "n": "8-2",
+              "title": "Law of Sines and Law of Cosines"
+            },
+            {
+              "n": "8-3",
+              "title": "Trigonometric Identities"
+            },
+            {
+              "n": "8-4",
+              "title": "The Complex Plane"
+            },
+            {
+              "n": "8-5",
+              "title": "Polar Form of Complex Numbers"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Conic Sections",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.12.conics"],
+          "lessons": [
+            {
+              "n": "9-1",
+              "title": "Parabolas",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "9-2",
+              "title": "Circles",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "9-3",
+              "title": "Ellipses",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "9-4",
+              "title": "Hyperbolas",
+              "skills": ["m.12.conics"]
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Matrices",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.12.matrices", "m.12.vectors"],
+          "lessons": [
+            {
+              "n": "10-1",
+              "title": "Operations with Matrices"
+            },
+            {
+              "n": "10-2",
+              "title": "Matrix Multiplication"
+            },
+            {
+              "n": "10-3",
+              "title": "Vectors"
+            },
+            {
+              "n": "10-4",
+              "title": "Inverses and Determinants"
+            },
+            {
+              "n": "10-5",
+              "title": "Inverse Matrices and Systems of Equations"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Data Analysis and Statistics",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": ["m.7.sampling", "m.11.normal-distribution", "m.12.hypothesis-testing"],
+          "lessons": [
+            {
+              "n": "11-1",
+              "title": "Statistical Questions and Variables"
+            },
+            {
+              "n": "11-2",
+              "title": "Statistical Studies and Sampling Methods"
+            },
+            {
+              "n": "11-3",
+              "title": "Data Distributions"
+            },
+            {
+              "n": "11-4",
+              "title": "Normal Distributions"
+            },
+            {
+              "n": "11-5",
+              "title": "Margin of Error"
+            },
+            {
+              "n": "11-6",
+              "title": "Introduction to Hypothesis Testing"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Probability",
+          "url": "https://www.ixl.com/math/skill-plans/envision-mathematics-2024-algebra-2",
+          "skills": [
+            "m.10.conditional-probability",
+            "m.12.binomial-theorem",
+            "m.12.probability-distributions"
+          ],
+          "lessons": [
+            {
+              "n": "12-1",
+              "title": "Probability Events"
+            },
+            {
+              "n": "12-2",
+              "title": "Conditional Probability"
+            },
+            {
+              "n": "12-3",
+              "title": "Permutations and Combinations"
+            },
+            {
+              "n": "12-4",
+              "title": "Probability Distributions"
+            },
+            {
+              "n": "12-5",
+              "title": "Expected Value"
+            },
+            {
+              "n": "12-6",
+              "title": "Probability and Decision Making"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

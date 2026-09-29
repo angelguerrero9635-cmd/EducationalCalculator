@@ -1,0 +1,476 @@
+{
+  "id": "larson-precalculus-limits",
+  "curriculum": "Precalculus with Limits (Larson)",
+  "publisher": "Cengage Learning",
+  "edition": "not stated on the source page (the 13-chapter edition with 'Concepts in Statistics')",
+  "subject": "math",
+  "grades": ["12"],
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "license": null,
+  "sourceUrl": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+  "retrieved": "2026-09-29",
+  "notes": "Titles only (all rights reserved). Chapter and section titles of Cengage's Precalc with Limits (IXL plan 'Precalculus plan for Precalc with Limits') as listed on IXL's public skill-plan pages (one per course, cited as each unit's url; robots.txt allows /math/skill-plans/, no login). Only the textbook's own numbers and titles are kept, not IXL's skill names. IXL lists the lessons it aligns skills to, so a lesson with no IXL skill may be missing. Math typeset in a title is written plainly (x², nth). A Precalculus book goes in grade 12. IXL names the book and publisher but not the author or edition; the author (Ron Larson) is the book's author as sold by Cengage, not stated on IXL. IXL also has a plan for Larson's 'Precalculus with Limits: A Graphing Approach' (11 chapters); the 13-chapter book was chosen because it adds statistics and three-dimensional geometry.",
+  "books": [
+    {
+      "grade": "12",
+      "course": "Precalculus",
+      "units": [
+        {
+          "n": "1",
+          "title": "Functions and Their Graphs",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.8.functions-intro", "m.9.linear-modeling", "m.11.inverse-functions"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Rectangular Coordinates"
+            },
+            {
+              "n": "1.2",
+              "title": "Graphs of Equations"
+            },
+            {
+              "n": "1.3",
+              "title": "Linear Equations in Two Variables"
+            },
+            {
+              "n": "1.4",
+              "title": "Functions"
+            },
+            {
+              "n": "1.5",
+              "title": "Analyzing Graphs of Functions"
+            },
+            {
+              "n": "1.6",
+              "title": "A Library of Parent Functions"
+            },
+            {
+              "n": "1.7",
+              "title": "Transformations of Functions"
+            },
+            {
+              "n": "1.8",
+              "title": "Combinations of Functions: Composite Functions"
+            },
+            {
+              "n": "1.9",
+              "title": "Inverse Functions"
+            },
+            {
+              "n": "1.10",
+              "title": "Mathematical Modeling and Variation"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Polynomial and Rational Functions",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": [
+            "m.9.quadratic-functions",
+            "m.11.polynomial-functions",
+            "m.11.complex-numbers",
+            "m.11.rational-functions"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Quadratic Functions and Models"
+            },
+            {
+              "n": "2.2",
+              "title": "Polynomial Functions of Higher Degree"
+            },
+            {
+              "n": "2.3",
+              "title": "Polynomial and Synthetic Division"
+            },
+            {
+              "n": "2.4",
+              "title": "Complex Numbers"
+            },
+            {
+              "n": "2.5",
+              "title": "Zeros of Polynomial Functions"
+            },
+            {
+              "n": "2.6",
+              "title": "Rational Functions"
+            },
+            {
+              "n": "2.7",
+              "title": "Nonlinear Inequalities"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Exponential and Logarithmic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.9.exponential-functions", "m.11.logarithms", "m.11.exp-log-equations"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Exponential Functions and Their Graphs"
+            },
+            {
+              "n": "3.2",
+              "title": "Logarithmic Functions and Their Graphs"
+            },
+            {
+              "n": "3.3",
+              "title": "Properties of Logarithms"
+            },
+            {
+              "n": "3.4",
+              "title": "Exponential and Logarithmic Equations"
+            },
+            {
+              "n": "3.5",
+              "title": "Exponential and Logarithmic Models"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Trigonometry",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": [
+            "m.11.unit-circle",
+            "m.10.right-triangle-trig",
+            "m.11.trig-graphs",
+            "m.12.trig-formulas-equations"
+          ],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Radian and Degree Measure"
+            },
+            {
+              "n": "4.2",
+              "title": "Trigonometric Functions: The Unit Circle"
+            },
+            {
+              "n": "4.3",
+              "title": "Right Triangle Trigonometry"
+            },
+            {
+              "n": "4.4",
+              "title": "Trigonometric Functions of Any Angle"
+            },
+            {
+              "n": "4.5",
+              "title": "Graphs of Sine and Cosine Functions"
+            },
+            {
+              "n": "4.6",
+              "title": "Graphs of Other Trigonometric Functions"
+            },
+            {
+              "n": "4.7",
+              "title": "Inverse Trigonometric Functions"
+            },
+            {
+              "n": "4.8",
+              "title": "Applications and Models"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Analytic Trigonometry",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.11.pythagorean-identities", "m.12.trig-formulas-equations"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Using Fundamental Identities"
+            },
+            {
+              "n": "5.2",
+              "title": "Verifying Trigonometric Identities"
+            },
+            {
+              "n": "5.3",
+              "title": "Solving Trigonometric Equations"
+            },
+            {
+              "n": "5.4",
+              "title": "Sum and Difference Formulas"
+            },
+            {
+              "n": "5.5",
+              "title": "Multiple-Angle and Product-to-Sum Formulas"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Additional Topics in Trigonometry",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.12.law-sines-cosines", "m.12.vectors", "m.12.polar"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Law of Sines"
+            },
+            {
+              "n": "6.2",
+              "title": "Law of Cosines"
+            },
+            {
+              "n": "6.3",
+              "title": "Vectors in the Plane"
+            },
+            {
+              "n": "6.4",
+              "title": "Vectors and Dot Products"
+            },
+            {
+              "n": "6.5",
+              "title": "The Complex Plane"
+            },
+            {
+              "n": "6.6",
+              "title": "Trigonometric Form of a Complex Number"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Systems of Equations and Inequalities",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+          "notes": "Partial fractions and linear programming have no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Linear and Nonlinear Systems of Equations"
+            },
+            {
+              "n": "7.2",
+              "title": "Two-Variable Linear Systems"
+            },
+            {
+              "n": "7.3",
+              "title": "Multivariable Linear Systems"
+            },
+            {
+              "n": "7.4",
+              "title": "Partial Fractions"
+            },
+            {
+              "n": "7.5",
+              "title": "Systems of Inequalities"
+            },
+            {
+              "n": "7.6",
+              "title": "Linear Programming"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Matrices and Determinants",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.12.matrices"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Matrices and Systems of Equations",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "8.2",
+              "title": "Operations with Matrices",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "8.3",
+              "title": "The Inverse of a Square Matrix",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "8.4",
+              "title": "The Determinant of a Square Matrix",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "8.5",
+              "title": "Applications of Matrices and Determinants",
+              "skills": ["m.12.matrices"]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Sequences, Series, and Probability",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.9.sequences", "m.11.series", "m.12.binomial-theorem"],
+          "notes": "Mathematical induction has no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Sequences and Series"
+            },
+            {
+              "n": "9.2",
+              "title": "Arithmetic Sequences and Partial Sums"
+            },
+            {
+              "n": "9.3",
+              "title": "Geometric Sequences and Series"
+            },
+            {
+              "n": "9.4",
+              "title": "Mathematical Induction"
+            },
+            {
+              "n": "9.5",
+              "title": "The Binomial Theorem"
+            },
+            {
+              "n": "9.6",
+              "title": "Counting Principles"
+            },
+            {
+              "n": "9.7",
+              "title": "Probability"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Topics in Analytic Geometry",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.12.conics", "m.12.parametric", "m.12.polar"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Lines"
+            },
+            {
+              "n": "10.2",
+              "title": "Introduction to Conics: Parabolas"
+            },
+            {
+              "n": "10.3",
+              "title": "Ellipses"
+            },
+            {
+              "n": "10.4",
+              "title": "Hyperbolas"
+            },
+            {
+              "n": "10.5",
+              "title": "Rotation of Conics"
+            },
+            {
+              "n": "10.6",
+              "title": "Parametric Equations"
+            },
+            {
+              "n": "10.7",
+              "title": "Polar Coordinates"
+            },
+            {
+              "n": "10.8",
+              "title": "Graphs of Polar Equations"
+            },
+            {
+              "n": "10.9",
+              "title": "Polar Equations of Conics"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Analytic Geometry in Three Dimensions",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.12.vectors"],
+          "notes": "Loose fit: three-dimensional coordinates, cross products, lines and planes in space; only vectors are in the taxonomy.",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "The Three-Dimensional Coordinate System",
+              "skills": ["m.12.vectors"]
+            },
+            {
+              "n": "11.2",
+              "title": "Vectors in Space",
+              "skills": ["m.12.vectors"]
+            },
+            {
+              "n": "11.3",
+              "title": "The Cross Product of Two Vectors",
+              "skills": ["m.12.vectors"]
+            },
+            {
+              "n": "11.4",
+              "title": "Lines and Planes in Space",
+              "skills": ["m.12.vectors"]
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Limits and an Introduction to Calculus",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.12.limits-intro"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Introduction to Limits",
+              "skills": ["m.12.limits-intro"]
+            },
+            {
+              "n": "12.2",
+              "title": "Techniques for Evaluating Limits",
+              "skills": ["m.12.limits-intro"]
+            },
+            {
+              "n": "12.3",
+              "title": "The Tangent Line Problem",
+              "skills": ["m.12.limits-intro"]
+            },
+            {
+              "n": "12.4",
+              "title": "Limits at Infinity and Limits of Sequences",
+              "skills": ["m.12.limits-intro"]
+            },
+            {
+              "n": "12.5",
+              "title": "The Area Problem",
+              "skills": ["m.12.limits-intro"]
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Concepts in Statistics",
+          "url": "https://www.ixl.com/math/skill-plans/precalc-with-limits-precalculus",
+          "skills": ["m.6.center-spread", "m.9.regression", "m.11.normal-distribution"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Representing Data"
+            },
+            {
+              "n": "13.2",
+              "title": "Analyzing Data"
+            },
+            {
+              "n": "13.3",
+              "title": "Modeling Data"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
