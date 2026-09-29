@@ -135,6 +135,7 @@ import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
+import { Membrane } from './Membrane';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -171,6 +172,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <UnitCircle spec={spec} calc={calc} />;
     case 'matrixGrid':
       return <MatrixGrid spec={spec} calc={calc} />;
+    case 'membrane':
+      return <Membrane spec={spec} calc={calc} />;
     case 'conicGraph':
       return <ConicGraph spec={spec} calc={calc} />;
     case 'polarGrid':

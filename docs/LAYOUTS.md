@@ -64,7 +64,11 @@ a scene's `cone` (`circle`, `ellipse`, `parabola`, `hyperbola`) tilts the plane 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
-(glycerol and three fatty acids), 2 to 4 units; `split` runs it as hydrolysis.
+(glycerol and three fatty acids), 2 to 4 units; `split` runs it as hydrolysis. Card icons (drawn in
+`layouts/icons/hg.tsx`): `red blood cell in hypotonic water` (swollen round), `… isotonic water`
+(a dimpled disc), `… hypertonic water` (shriveled, crenated), and `plant cell in hypotonic water`
+(turgid), `… isotonic water` (flaccid), `… hypertonic water` (plasmolyzed), each in water with
+its solute dots and the water's net flow as arrows.
 
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by

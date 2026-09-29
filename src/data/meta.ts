@@ -131,6 +131,7 @@ const PICTURE_NAMES: Record<string, string> = {
   unitCircle: 'unit circle with the angle and its point',
   algebraTiles: 'algebra tiles',
   matrixGrid: 'matrices in brackets',
+  membrane: 'cell membrane with particles on each side',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',

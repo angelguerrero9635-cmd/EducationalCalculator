@@ -16,6 +16,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hsdSpecVars } from '../typesHsd';
+import { hsgSpecVars } from '../typesHsg';
 import { isStandIn, pages } from '../harness/scope';
 
 /** Every variable id a representation refers to. */
@@ -458,6 +459,8 @@ function representationVars(r: Representation): string[] {
     case 'conicGraph':
     case 'matrixGrid':
       return hsdSpecVars(r);
+    case 'membrane':
+      return hsgSpecVars(r);
   }
 }
 

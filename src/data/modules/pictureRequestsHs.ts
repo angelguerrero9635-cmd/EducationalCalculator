@@ -543,12 +543,26 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HG, layouts/macroFigure.tsx). Explore figure { kind: "macromolecules" }; each scene sets macro: { kind: "carbohydrate" | "protein" | "nucleicAcid" | "lipid", count?: 2–4 monomers (default 3; a lipid is always glycerol + 3 fatty acids), split?: true for hydrolysis (the polymer on top, water added) }. Monomers sit on separate cards with the groups that join lit (OH and H, carboxyl and amine, the 3′ OH and the next phosphate); the polymer shows its new bonds lit and named (glycosidic, peptide, sugar–phosphate, 3 ester bonds); the water molecules are drawn and counted (n − 1, or 3 for a fat). Names follow the count: 2 glucose make maltose, 2 amino acids a dipeptide. The protein chain is shown folding. The harness checks the count and that a line counting water says the figure’s number. Example scene: { label: "Proteins", lines: ["Amino acids join end to end by peptide bonds."], macro: { kind: "protein", count: 4 } }.',
   },
-  ask(
-    'H32',
-    'membrane',
-    'Membrane with particles on each side, counts from the values, arrows high to low; cells in hypotonic, isotonic and hypertonic water',
-    ['s.9.membrane-transport'],
-  ),
+  {
+    ...ask(
+      'H32',
+      'membrane',
+      'Membrane with particles on each side, counts from the values, arrows high to low; cells in hypotonic, isotonic and hypertonic water',
+      ['s.9.membrane-transport'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-membrane-transport-diffusion',
+      'g.s9-membrane-transport-facilitated',
+      'g.s9-membrane-transport-osmosis',
+      'g.s9-membrane-transport-pump',
+      'g.s9-membrane-transport-equilibrium',
+      'g.s9-membrane-transport-steep',
+      'g.s9-membrane-transport-tonicity',
+    ],
+    notes:
+      'Drawn (group HG, reps/Membrane.tsx). Calculator picture { kind: "membrane", outside, inside (counts 0–40, numbers or variable ids), transport: "diffusion" | "facilitated" | "osmosis" | "active", particle?: "O₂" (the name in the counts), moved?: 0–12 crossing now (lit on the arrow), atp?: the ATP spent at a pump ("2 ATP → 2 ADP + 2 P"), gradient?: a variable holding outside − inside (checked) }. A phospholipid bilayer, the outside above and the cytoplasm below, the particles on each side counted exactly; the arrow runs high to low (diffusion; through a channel protein when facilitated), water through an aquaporin toward more solute (osmosis; the caption names the outside hypotonic or hypertonic), or a pump low to high (active). Equal counts draw a two-way arrow (no net movement). Counts are typed: no handles or sliders. The harness checks the counts, the gradient, the arrow’s direction and that no more are moved than the side has. Example: representation: { kind: "membrane", outside: "o", inside: "i", transport: "diffusion", particle: "O₂", gradient: "d" } with d = o − i. Card icons for sorts: { kind: "icon", icon: "red blood cell in hypotonic water" } (also isotonic, hypertonic, and "plant cell in hypotonic water" and the other two).',
+  },
   ask(
     'H33',
     'organelleEnergy',

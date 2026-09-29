@@ -3,8 +3,48 @@
  * Each demo stands in for a planned page: real variables, relations, steps and a use line, so
  * `scripts/promote-demo.mjs` can copy it into a grade file. Spread into gallery.ts.
  */
+import type { Relation, VariableDef } from '@/engine/types';
+
 import type { LayoutDef } from './layouts';
-import type { ModuleDef } from './types';
+import type { ModuleDef, StepText } from './types';
+
+/** A relation and its step text, built together so a demo lists both from one place. */
+interface Rule {
+  relation: Relation;
+  steps: Record<string, StepText>;
+}
+
+/** Gathers rules into a module's `relations` and `steps`. */
+const rules = (...rs: Rule[]) => ({
+  relations: rs.map((r) => r.relation),
+  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+});
+
+/** A whole-number count. */
+const count = (id: string, symbol: string, name: string, min = 0, max = 40): VariableDef => ({
+  id,
+  symbol,
+  name,
+  min,
+  max,
+  step: 1,
+  integer: true,
+});
+
+/** out = k × a, both ways (k a whole number). */
+const times = (out: string, k: number, a: string, how: string, back: string): Rule => ({
+  relation: {
+    id: `${out} = ${k}${a}`,
+    display: `{${out}} = ${k} × {${a}}`,
+    vars: [out, a],
+    residual: (v) => v[out]! - k * v[a]!,
+    solve: { [out]: (v) => k * v[a]!, [a]: (v) => v[out]! / k },
+  },
+  steps: {
+    [out]: { expr: `${k} × {${a}}`, how },
+    [a]: { expr: `{${out}}/${k}`, how: back },
+  },
+});
 
 // ─── H31 macromolecules ──────────────────────────────────────────────────────
 
@@ -65,5 +105,240 @@ const MACRO_LAYOUT: LayoutDef = {
   ],
 };
 
-export const HSG_GALLERY_MODULES: ModuleDef[] = [];
-export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [MACRO_LAYOUT];
+// ─── H32 membrane ────────────────────────────────────────────────────────────
+
+/** d = o − i: the concentration gradient across the membrane, outside minus inside. */
+const gradient: Rule = {
+  relation: {
+    id: 'd = o − i',
+    display: '{d} = {o} − {i}',
+    vars: ['d', 'o', 'i'],
+    residual: (v) => v.d! - (v.o! - v.i!),
+    solve: { d: (v) => v.o! - v.i!, o: (v) => v.d! + v.i!, i: (v) => v.o! - v.d! },
+  },
+  steps: {
+    d: {
+      expr: '{o} − {i}',
+      how: 'The gradient is the difference across the membrane: outside minus inside.',
+    },
+    o: { expr: '{d} + {i}', how: 'Add the gradient to the count inside.' },
+    i: { expr: '{o} − {d}', how: 'Take the gradient from the count outside.' },
+  },
+};
+
+/** Outside, inside and the gradient, for one kind of particle. */
+const sides = (what: string): VariableDef[] => [
+  count('o', 'o', `${what} outside`),
+  count('i', 'i', `${what} inside`),
+  { ...count('d', 'd', 'Gradient (outside − inside)', -40, 40) },
+];
+
+/** A membrane demo: the gradient page for one transport. */
+const membraneDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  transport: 'diffusion' | 'facilitated' | 'osmosis',
+  particle: string,
+  what: string,
+  o: number,
+  i: number,
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions,
+  variables: sides(what),
+  ...rules(gradient),
+  example: { o, i, d: o - i },
+  startWith: ['o', 'i'],
+  representation: {
+    kind: 'membrane',
+    outside: 'o',
+    inside: 'i',
+    transport,
+    particle,
+    gradient: 'd',
+  },
+});
+
+const MEMBRANE_DEMOS: ModuleDef[] = [
+  membraneDemo(
+    'g.s9-membrane-transport-diffusion',
+    'Diffusion across a membrane',
+    'Use this for which way a small molecule diffuses, and the gradient that drives it.',
+    [
+      'Particles move at random; more cross from the crowded side, so the net flow is from high to low concentration.',
+      'Small nonpolar molecules such as O₂ and CO₂ slip between the phospholipids.',
+      'Diffusion is passive: it uses no energy from the cell.',
+    ],
+    'diffusion',
+    'O₂',
+    'O₂ molecules',
+    24,
+    8,
+  ),
+  membraneDemo(
+    'g.s9-membrane-transport-facilitated',
+    'Facilitated diffusion',
+    'Use this for molecules such as glucose that cross only through a channel or carrier protein.',
+    [
+      'Glucose and ions can’t cross the oily middle of the bilayer.',
+      'A channel protein lets them through, still from high to low concentration, with no energy used.',
+    ],
+    'facilitated',
+    'glucose',
+    'Glucose molecules',
+    18,
+    6,
+  ),
+  membraneDemo(
+    'g.s9-membrane-transport-osmosis',
+    'Osmosis',
+    'Use this for which way water moves when the solute can’t cross the membrane.',
+    [
+      'Water crosses through aquaporins; the solute particles can’t cross.',
+      'Water moves toward the side with more solute (less free water).',
+      'The side with less solute is hypotonic, the side with more is hypertonic; equal is isotonic.',
+    ],
+    'osmosis',
+    'solute',
+    'Solute particles',
+    10,
+    30,
+  ),
+  membraneDemo(
+    'g.s9-membrane-transport-equilibrium',
+    'Dynamic equilibrium',
+    'Use this for a membrane with the same concentration on both sides.',
+    [
+      'Particles still cross both ways, at the same rate.',
+      'With no gradient there is no net movement.',
+    ],
+    'diffusion',
+    'O₂',
+    'O₂ molecules',
+    15,
+    15,
+  ),
+  membraneDemo(
+    'g.s9-membrane-transport-steep',
+    'The steepest gradient',
+    'Use this for CO₂ leaving a cell into blood that carries it away.',
+    [
+      'The cell makes CO₂ in respiration; the blood outside carries it away.',
+      'All 40 are inside and none outside: the steepest gradient this picture draws.',
+    ],
+    'diffusion',
+    'CO₂',
+    'CO₂ molecules',
+    0,
+    40,
+  ),
+  {
+    id: 'g.s9-membrane-transport-pump',
+    title: 'The sodium–potassium pump',
+    use: 'Use this for active transport: how many ions a pump moves for the ATP it uses.',
+    assumptions: [
+      'The pump moves Na⁺ out of the cell, where there is already more: against the gradient.',
+      'Each ATP it splits moves 3 Na⁺ out and 2 K⁺ in.',
+      'Here 12 Na⁺ are inside and 36 outside.',
+    ],
+    variables: [
+      count('a', 'a', 'ATP used', 1, 4),
+      { ...count('p', 'p', 'Na⁺ pumped out', 3, 12), multipleOf: 3 },
+      { ...count('k', 'k', 'K⁺ pumped in', 2, 8), multipleOf: 2 },
+    ],
+    ...rules(
+      times(
+        'p',
+        3,
+        'a',
+        'Each ATP moves 3 Na⁺ out of the cell.',
+        'Each ATP moves 3 Na⁺, so divide by 3.',
+      ),
+      times(
+        'k',
+        2,
+        'a',
+        'Each ATP also brings 2 K⁺ into the cell.',
+        'Each ATP moves 2 K⁺, so divide by 2.',
+      ),
+    ),
+    example: { a: 2, p: 6, k: 4 },
+    startWith: ['a'],
+    representation: {
+      kind: 'membrane',
+      outside: 36,
+      inside: 12,
+      transport: 'active',
+      particle: 'Na⁺',
+      moved: 'p',
+      atp: 'a',
+    },
+  },
+];
+
+const TONICITY_SORT: LayoutDef = {
+  id: 'g.s9-membrane-transport-tonicity',
+  title: 'Cells in three kinds of water',
+  kind: 'sort',
+  assumptions: [
+    'Water moves toward the side with more solute.',
+    'A red blood cell has no wall: it swells and can burst, or shrivels. A plant cell’s wall holds it: it goes firm or its membrane pulls away.',
+  ],
+  question: 'Which way does water move?',
+  bins: [
+    {
+      id: 'in',
+      label: 'Into the cell (hypotonic water)',
+      why: 'The water has less solute than the cell, so water moves in.',
+    },
+    {
+      id: 'none',
+      label: 'No net movement (isotonic water)',
+      why: 'The same solute on both sides: water crosses both ways equally.',
+    },
+    {
+      id: 'out',
+      label: 'Out of the cell (hypertonic water)',
+      why: 'The water has more solute than the cell, so water moves out.',
+    },
+  ],
+  cards: [
+    {
+      label: 'Red blood cell swollen round',
+      bin: 'in',
+      figure: { kind: 'icon', icon: 'red blood cell in hypotonic water' },
+    },
+    {
+      label: 'Red blood cell, a dimpled disc',
+      bin: 'none',
+      figure: { kind: 'icon', icon: 'red blood cell in isotonic water' },
+    },
+    {
+      label: 'Red blood cell shriveled',
+      bin: 'out',
+      figure: { kind: 'icon', icon: 'red blood cell in hypertonic water' },
+    },
+    {
+      label: 'Plant cell firm (turgid)',
+      bin: 'in',
+      figure: { kind: 'icon', icon: 'plant cell in hypotonic water' },
+    },
+    {
+      label: 'Plant cell limp (flaccid)',
+      bin: 'none',
+      figure: { kind: 'icon', icon: 'plant cell in isotonic water' },
+    },
+    {
+      label: 'Plant cell, membrane pulled from the wall',
+      bin: 'out',
+      figure: { kind: 'icon', icon: 'plant cell in hypertonic water' },
+    },
+  ],
+};
+
+export const HSG_GALLERY_MODULES: ModuleDef[] = [...MEMBRANE_DEMOS];
+export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [MACRO_LAYOUT, TONICITY_SORT];

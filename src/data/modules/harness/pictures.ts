@@ -27,6 +27,7 @@ import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import { hsdIssues } from './picturesHsd';
+import { hsgIssues } from './picturesHsg';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2012,6 +2013,9 @@ export function repIssues(
     case 'conicGraph':
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)));
+      break;
+    case 'membrane':
+      out.push(...hsgIssues(rep, (id) => val(id)));
       break;
     case 'table':
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)
