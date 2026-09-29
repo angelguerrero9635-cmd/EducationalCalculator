@@ -1989,6 +1989,7 @@ export function repIssues(
       break;
     case 'triangleSolver':
     case 'markedFigure':
+    case 'circleTheorems':
       out.push(...hscIssues(rep, (id) => val(id)));
       break;
     case 'table':

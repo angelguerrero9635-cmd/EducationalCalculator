@@ -175,7 +175,7 @@ export interface CircleTheoremsSpec {
   fixed?: boolean;
 }
 
-export type HscSpec = TriangleSolverSpec | MarkedFigureSpec;
+export type HscSpec = TriangleSolverSpec | MarkedFigureSpec | CircleTheoremsSpec;
 
 const ids = (xs: unknown[]): string[] => xs.filter((x): x is string => typeof x === 'string');
 
@@ -204,6 +204,18 @@ export function hscSpecVars(r: HscSpec): string[] {
         r.quadrilateral?.top,
         ...Object.values(r.quadrilateral?.labels ?? {}),
         r.proof?.step,
+      ]);
+    case 'circleTheorems':
+      return ids([
+        r.central,
+        r.inscribed,
+        r.angle,
+        r.other,
+        r.radius,
+        r.tangent,
+        r.distance,
+        ...(r.segments ?? []),
+        r.product,
       ]);
   }
 }

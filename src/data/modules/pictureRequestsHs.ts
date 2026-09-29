@@ -201,13 +201,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['m.10.circle-equations', 'm.12.conics'],
     'Drag the center and the radius or axes; cross sections of a double cone as the explore figure for the same page.',
   ),
-  ask(
-    'H12',
-    'circleTheorems',
-    'Circle with central and inscribed angles, chords, tangents and secants, points draggable on the circle',
-    ['m.10.circle-theorems'],
-    'Inscribed angle half the central angle; angle in a semicircle; tangent perpendicular to the radius; intersecting chords, secant–secant and secant–tangent products.',
-  ),
+  {
+    ...ask(
+      'H12',
+      'circleTheorems',
+      'Circle with central and inscribed angles, chords, tangents and secants, points draggable on the circle',
+      ['m.10.circle-theorems'],
+      'Inscribed angle half the central angle; angle in a semicircle; tangent perpendicular to the radius; intersecting chords, secant–secant and secant–tangent products. ' +
+        'Drawn (spec in typesHsc.ts): `{ kind: "circleTheorems", theorem, … }` with theorem `inscribed` (`central`, `inscribed`: the arc heavy, P dragged along the far arc with the angle unchanged, B dragged to change the arc; arcs past 180° work), `semicircle` (`angle` at A, `other` at B; P dragged), `tangent` (`radius`, `tangent`, `distance`; P dragged along the tangent), `chords` (`segments: [AE, EB, CE, ED]`), `secants` (`segments: [PA, PB, PC, PD]`, outside parts and whole secants), `secantTangent` (`segments: [PT, PA, PB]`); `fixed` drops the handles. ' +
+        'Lengths are drawn to scale (the circle chosen to fit); values that break the theorem, or a “?” length, draw faded with the reason. The harness checks the points are on the circle, each drawn length is its value and the angle relations hold on the drawing.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-circle-theorems-inscribed',
+      'g.m10-circle-theorems-inscribed-major',
+      'g.m10-circle-theorems-semicircle',
+      'g.m10-circle-theorems-tangent',
+      'g.m10-circle-theorems-chords',
+      'g.m10-circle-theorems-secants',
+      'g.m10-circle-theorems-secant-tangent',
+    ],
+  },
   ask(
     'H13',
     'pascalTriangle',

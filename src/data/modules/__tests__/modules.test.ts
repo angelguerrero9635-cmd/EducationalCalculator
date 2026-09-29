@@ -438,6 +438,7 @@ function representationVars(r: Representation): string[] {
       return physics8SpecVars(r);
     case 'triangleSolver':
     case 'markedFigure':
+    case 'circleTheorems':
       return hscSpecVars(r);
   }
 }

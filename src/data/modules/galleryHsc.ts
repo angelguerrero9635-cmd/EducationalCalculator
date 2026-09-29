@@ -1497,6 +1497,223 @@ const FIGURE_DEMOS: ModuleDef[] = [
   }),
 ];
 
-export const HSC_GALLERY_MODULES: ModuleDef[] = [...TRIANGLE_DEMOS, ...FIGURE_DEMOS];
+// ─── H12 circleTheorems ───────────────────────────────────────────────────────
+
+/** x × y = z × w, solved for any one of the four. */
+const products = (x: string, y: string, z: string, w: string, how: string) =>
+  rule(
+    `${x}${y} = ${z}${w}`,
+    `{${x}} × {${y}} = {${z}} × {${w}}`,
+    {
+      [x]: [(v) => (v[z]! * v[w]!) / v[y]!, `{${z}} × {${w}} ÷ {${y}}`, how],
+      [y]: [(v) => (v[z]! * v[w]!) / v[x]!, `{${z}} × {${w}} ÷ {${x}}`, how],
+      [z]: [(v) => (v[x]! * v[y]!) / v[w]!, `{${x}} × {${y}} ÷ {${w}}`, how],
+      [w]: [(v) => (v[x]! * v[y]!) / v[z]!, `{${x}} × {${y}} ÷ {${z}}`, how],
+    },
+    (v) => v[x]! * v[y]! - v[z]! * v[w]!,
+  );
+const halfArc = rule(
+  'i = c/2',
+  '{i} = {c} ÷ 2',
+  {
+    i: [(v) => v.c! / 2, '{c} ÷ 2', 'An inscribed angle is half the central angle on its arc.'],
+    c: [(v) => 2 * v.i!, '2 × {i}', 'The arc (central angle) is twice the inscribed angle.'],
+  },
+  (v) => v.i! - v.c! / 2,
+);
+const inscribedDemo = (id: string, title: string, use: string, c: number, start: string) =>
+  figureDemo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A central angle has its vertex at the center O; it measures its arc AB.',
+      'An inscribed angle has its vertex P on the circle and stands on the same arc: it is half the central angle.',
+      'Every inscribed angle on the arc is the same, wherever P sits on the other arc.',
+    ],
+    variables: [
+      angle('c', 'Central angle (arc AB)', 'c', 359),
+      angle('i', 'Inscribed angle APB', 'i', 179.5),
+    ],
+    rules: [halfArc],
+    example: { c, i: c / 2 },
+    startWith: [start],
+    representation: { kind: 'circleTheorems', theorem: 'inscribed', central: 'c', inscribed: 'i' },
+  });
+
+const CIRCLE_DEMOS: ModuleDef[] = [
+  inscribedDemo(
+    'g.m10-circle-theorems-inscribed',
+    'Inscribed and central angles',
+    'Use this for “The central angle AOB is 100°. Find the inscribed angle APB.”',
+    100,
+    'c',
+  ),
+  inscribedDemo(
+    'g.m10-circle-theorems-inscribed-major',
+    'An inscribed angle on a major arc',
+    'Use this for “An inscribed angle is 125°. How big is its arc?”',
+    250,
+    'i',
+  ),
+  figureDemo({
+    id: 'g.m10-circle-theorems-semicircle',
+    title: 'The angle in a semicircle',
+    use: 'Use this for “AB is a diameter and ∠PAB = 35°. Find ∠PBA.”',
+    assumptions: [
+      'AB is a diameter, so the arc it cuts off is 180°.',
+      'The inscribed angle at P is half of 180°: a right angle.',
+      'The other two angles of triangle APB add to 90°.',
+    ],
+    variables: [angle('a', 'Angle at A', 'a', 89), angle('b', 'Angle at B', 'b', 89)],
+    rules: [
+      rule(
+        'a + b = 90°',
+        '{a} + {b} = 90',
+        {
+          a: [(v) => 90 - v.b!, '90 − {b}', 'The angle at P is 90°, so the other two share 90°.'],
+          b: [(v) => 90 - v.a!, '90 − {a}', 'The angle at P is 90°, so the other two share 90°.'],
+        },
+        (v) => v.a! + v.b! - 90,
+      ),
+    ],
+    example: { a: 35, b: 55 },
+    startWith: ['a'],
+    representation: { kind: 'circleTheorems', theorem: 'semicircle', angle: 'a', other: 'b' },
+  }),
+  figureDemo({
+    id: 'g.m10-circle-theorems-tangent',
+    title: 'A tangent and its radius',
+    use: 'Use this for “The radius is 5 and the tangent from P is 12. How far is P from the center?”',
+    assumptions: [
+      'A tangent touches the circle at one point T, at right angles to the radius OT.',
+      'So O, T and P make a right triangle: r² + t² = d².',
+    ],
+    variables: [side('r', 'Radius r'), side('t', 'Tangent PT'), side('d', 'Distance OP', 150)],
+    rules: [
+      rule(
+        'r² + t² = d²',
+        '{r}² + {t}² = {d}²',
+        {
+          d: [
+            (v) => Math.hypot(v.r!, v.t!),
+            '√({r}² + {t}²)',
+            'OP is the hypotenuse of the right triangle OTP.',
+          ],
+          t: [
+            (v) => root(v.d! ** 2 - v.r! ** 2),
+            '√({d}² − {r}²)',
+            'Take r² from d², then the square root.',
+          ],
+          r: [
+            (v) => root(v.d! ** 2 - v.t! ** 2),
+            '√({d}² − {t}²)',
+            'Take t² from d², then the square root.',
+          ],
+        },
+        (v) => v.r! ** 2 + v.t! ** 2 - v.d! ** 2,
+      ),
+    ],
+    example: { r: 5, t: 12, d: 13 },
+    startWith: ['r', 't'],
+    representation: {
+      kind: 'circleTheorems',
+      theorem: 'tangent',
+      radius: 'r',
+      tangent: 't',
+      distance: 'd',
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-circle-theorems-chords',
+    title: 'Two chords crossing',
+    use: 'Use this for “Chords AB and CD cross at E; AE = 4, EB = 6, CE = 3. Find ED.”',
+    assumptions: [
+      'Two chords cross at E inside the circle.',
+      'The products of the parts of each chord are equal: AE × EB = CE × ED.',
+    ],
+    variables: [side('a', 'AE'), side('b', 'EB'), side('c', 'CE'), side('d', 'ED', 10000)],
+    rules: [
+      products('a', 'b', 'c', 'd', 'Crossing chords: the products of their parts are equal.'),
+    ],
+    example: { a: 4, b: 6, c: 3, d: 8 },
+    startWith: ['a', 'b', 'c'],
+    representation: { kind: 'circleTheorems', theorem: 'chords', segments: ['a', 'b', 'c', 'd'] },
+  }),
+  figureDemo({
+    id: 'g.m10-circle-theorems-secants',
+    title: 'Two secants from a point',
+    use: 'Use this for “From P, PA = 4 and PB = 9 on one secant, PC = 3 on the other. Find PD.”',
+    assumptions: [
+      'Two secants from P outside the circle: PA and PC are the outside parts, PB and PD the whole secants.',
+      'Outside part × whole secant is the same for both: PA × PB = PC × PD.',
+    ],
+    variables: [
+      side('a', 'PA (outside)'),
+      side('b', 'PB (whole)'),
+      side('c', 'PC (outside)'),
+      side('d', 'PD (whole)', 10000),
+    ],
+    rules: [
+      products(
+        'a',
+        'b',
+        'c',
+        'd',
+        'Two secants from one point: outside part × whole secant is equal.',
+      ),
+    ],
+    example: { a: 4, b: 9, c: 3, d: 12 },
+    startWith: ['a', 'b', 'c'],
+    representation: { kind: 'circleTheorems', theorem: 'secants', segments: ['a', 'b', 'c', 'd'] },
+  }),
+  figureDemo({
+    id: 'g.m10-circle-theorems-secant-tangent',
+    title: 'A tangent and a secant from a point',
+    use: 'Use this for “From P, the tangent PT = 6 and PA = 4 on a secant. Find PB.”',
+    assumptions: [
+      'From P, a tangent touches the circle at T and a secant crosses it at A and B.',
+      'The tangent squared is outside part × whole secant: PT² = PA × PB.',
+    ],
+    variables: [
+      side('t', 'PT (tangent)'),
+      side('a', 'PA (outside)'),
+      side('b', 'PB (whole)', 10000),
+    ],
+    rules: [
+      rule(
+        't² = ab',
+        '{t}² = {a} × {b}',
+        {
+          t: [
+            (v) => root(v.a! * v.b!),
+            '√({a} × {b})',
+            'The tangent is the square root of outside part × whole secant.',
+          ],
+          b: [
+            (v) => v.t! ** 2 / v.a!,
+            '{t}² ÷ {a}',
+            'The whole secant is the tangent squared over the outside part.',
+          ],
+          a: [
+            (v) => v.t! ** 2 / v.b!,
+            '{t}² ÷ {b}',
+            'The outside part is the tangent squared over the whole secant.',
+          ],
+        },
+        (v) => v.t! ** 2 - v.a! * v.b!,
+      ),
+    ],
+    example: { t: 6, a: 4, b: 9 },
+    startWith: ['t', 'a'],
+    representation: { kind: 'circleTheorems', theorem: 'secantTangent', segments: ['t', 'a', 'b'] },
+  }),
+];
+
+export const HSC_GALLERY_MODULES: ModuleDef[] = [
+  ...TRIANGLE_DEMOS,
+  ...FIGURE_DEMOS,
+  ...CIRCLE_DEMOS,
+];
 
 export const HSC_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -122,6 +122,7 @@ import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
 import { TriangleSolver } from './TriangleSolver';
 import { MarkedFigure } from './MarkedFigure';
+import { CircleTheorems } from './CircleTheorems';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -397,5 +398,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <TriangleSolver spec={spec} calc={calc} />;
     case 'markedFigure':
       return <MarkedFigure spec={spec} calc={calc} />;
+    case 'circleTheorems':
+      return <CircleTheorems spec={spec} calc={calc} />;
   }
 }

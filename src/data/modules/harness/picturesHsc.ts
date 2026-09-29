@@ -2,6 +2,7 @@
  * Picture checks for the Grades 9–12 geometry pictures of group HC (`typesHsc.ts`): what each
  * draws must agree with the values. Called from `repIssues` in `pictures.ts`. Test-only.
  */
+import { buildCircle, circleIssues } from '@/components/module/reps/circleGeo';
 import { buildFigure, markIssues, measure } from '@/components/module/reps/markedFigureGeo';
 import { solveTriangle, triangleError, type Tri } from '@/components/module/reps/triangleSolve';
 
@@ -78,6 +79,29 @@ export function hscIssues(rep: HscSpec, val: (id: string) => number | undefined)
         if (k !== undefined && !(Number.isInteger(k) && k >= 1 && k <= rep.proof.steps.length))
           out.push(`proof step ${k} of ${rep.proof.steps.length}`);
       }
+      break;
+    }
+    case 'circleTheorems': {
+      // The points lie on the circle, the drawn lengths are the values, the angle relations
+      // hold on the drawing, and the values keep the theorem (products equal, halves, 90°).
+      const get = (id: string | undefined) => (id ? val(id) : undefined);
+      out.push(...circleIssues(buildCircle(rep, get), rep, get));
+      const [s0, s1, s2, s3] = (rep.segments ?? []).map(get);
+      const near = (x: number, y: number) => Math.abs(x - y) <= 1e-6 * Math.max(1, Math.abs(x));
+      const product = get(rep.product);
+      if (rep.theorem === 'chords' || rep.theorem === 'secants') {
+        if ([s0, s1, s2, s3].every((x) => x !== undefined) && !near(s0! * s1!, s2! * s3!))
+          out.push(`products ${s0! * s1!} and ${s2! * s3!} differ`);
+        if (
+          product !== undefined &&
+          s0 !== undefined &&
+          s1 !== undefined &&
+          !near(product, s0 * s1)
+        )
+          out.push(`product ${product} is not ${s0} × ${s1}`);
+      }
+      if (rep.theorem === 'secantTangent' && [s0, s1, s2].every((x) => x !== undefined))
+        if (!near(s0! * s0!, s1! * s2!)) out.push(`PT² ${s0! * s0!} is not ${s1! * s2!}`);
       break;
     }
   }
