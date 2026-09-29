@@ -13,7 +13,7 @@ import { PictureButton, seeded, shuffled } from './chance';
 type Spec = Extract<Representation, { kind: 'sample' }>;
 
 /** The most dots drawn: one per member of the population. */
-export const SAMPLE_MAX = 400;
+export const SAMPLE_MAX = 1000;
 
 /**
  * A population as a field of dots, one per member, and a random sample of them ringed. With

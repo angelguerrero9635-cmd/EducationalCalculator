@@ -2159,6 +2159,71 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
   },
   {
+    id: 'm.8.transformations~reflect-horizontal',
+    title: 'Reflection over a horizontal line',
+    use: 'Use this for “(3, 7) is reflected over the x-axis. Where is its image?”',
+    assumptions: [
+      'The mirror is the horizontal line y = a (the x-axis is a = 0).',
+      'Each corner and its image are the same distance above and below the line.',
+      'Over the x-axis, y changes sign and x stays the same.',
+    ],
+    standalone: {
+      vars: ['ax', 'px'],
+      why: 'A flip across a level line keeps each point’s across as it was.',
+    },
+    variables: [
+      signed('ax', 'x', 'x of A'),
+      signed('ay', 'y', 'y of A'),
+      signed('a', 'a', 'Mirror line y ='),
+      signed('px', 'x′', 'x of A′'),
+      { ...signed('py', 'y′', 'y of A′', 1, 30) },
+    ],
+    relations: [
+      {
+        id: 'x′ = x',
+        display: '{px} = {ax}',
+        vars: ['px', 'ax'],
+        residual: (v: Values) => v.px! - v.ax!,
+        solve: { px: (v: Values) => v.ax!, ax: (v: Values) => v.px! },
+      },
+      {
+        id: 'y′ = 2a − y',
+        display: '{py} = 2 × {a} − {ay}',
+        vars: ['py', 'a', 'ay'],
+        residual: (v: Values) => v.py! - (2 * v.a! - v.ay!),
+        solve: {
+          py: (v: Values) => 2 * v.a! - v.ay!,
+          ay: (v: Values) => 2 * v.a! - v.py!,
+          a: (v: Values) => (v.py! + v.ay!) / 2,
+        },
+      },
+    ],
+    steps: {
+      'x′ = x': {
+        px: { expr: '{ax}', how: 'A flip across a level line keeps the across.' },
+        ax: { expr: '{px}', how: 'A flip across a level line keeps the across.' },
+      },
+      'y′ = 2a − y': {
+        py: { expr: '2 × {a} − {ay}', how: 'As far below the line as A is above it.' },
+        ay: { expr: '2 × {a} − {py}', how: 'As far above the line as A′ is below it.' },
+        a: { expr: '({py} + {ay}) ÷ 2', how: 'The line is halfway between A and A′.' },
+      },
+    },
+    example: { ax: 3, ay: 7, a: 0, px: 3, py: -7 },
+    startWith: ['ax', 'ay', 'a'],
+    representation: {
+      kind: 'transformation',
+      figure: [
+        ['ax', 'ay'],
+        [6, 2],
+        [2, 2],
+      ],
+      image: { x: 'px', y: 'py' },
+      move: 'reflect',
+      mirror: { y: 'a' },
+    },
+  },
+  {
     id: 'm.8.transformations~rotate',
     title: 'Rotation about the origin',
     use: 'Use this for “Rotate (3, 1) by 90° counterclockwise about (0, 0).”',

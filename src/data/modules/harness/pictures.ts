@@ -1467,7 +1467,7 @@ export function repIssues(
     }
     case 'sample': {
       // One dot per member (SAMPLE_MAX in Sample.tsx); the sample fits in the population.
-      count(rep.population, 'population', 400);
+      count(rep.population, 'population', 1000);
       count(rep.size, 'sample');
       count(rep.found, 'found in the sample');
       if (rep.trait) count(rep.trait, 'population with the trait');

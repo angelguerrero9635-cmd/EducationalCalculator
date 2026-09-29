@@ -453,7 +453,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     id: 'G12',
     what: 'net option (g.triangular-prism-net)',
     kind: 'net',
-    pages: ['m.7.prisms~triangular'],
+    pages: ['m.7.prisms~triangular', 'm.7.prisms~tent'],
     status: 'placed',
     gallery: ['g.triangular-prism-net'],
     notes: 'Placed when Grades 7–8 were built.',
@@ -631,6 +631,7 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     pages: [
       'm.8.transformations',
       'm.8.transformations~reflect',
+      'm.8.transformations~reflect-horizontal',
       'm.8.transformations~rotate',
       'm.8.transformations~dilate',
     ],
