@@ -28,6 +28,8 @@ import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import {
   circleSectorIssues,
+  curvedSolidHsfIssues,
+  roundSectionIssues,
   planeGeometryIssues,
   scaleCopyHsfIssues,
   transformationHsfIssues,
@@ -1347,6 +1349,11 @@ export function repIssues(
       break;
     }
     case 'crossSection': {
+      // Grades 9–12: a cylinder or a cone (picturesHsf.ts).
+      if (rep.solid === 'cylinder' || rep.solid === 'cone') {
+        out.push(...roundSectionIssues(rep, val));
+        break;
+      }
       const [l, w0, h, at, A, V] = [
         rep.length,
         rep.width,
@@ -1730,6 +1737,7 @@ export function repIssues(
       if ((rep.shape === 'sphere') === !!rep.height)
         out.push(`a ${rep.shape} ${rep.height ? 'has no' : 'needs a'} height`);
       if (rep.compare && rep.shape === 'cylinder') out.push('a cylinder is compared with itself');
+      out.push(...curvedSolidHsfIssues(rep, val));
       const [r, h] = [rep.radius, rep.height].map((id) => (id ? val(id) : undefined));
       if (r !== undefined && r < 0) out.push(`radius ${r} is negative`);
       if (h !== undefined && h < 0) out.push(`height ${h} is negative`);

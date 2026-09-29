@@ -411,7 +411,10 @@ function representationVars(r: Representation): string[] {
     case 'scatter':
       return [r.slope, r.intercept, ...(r.at ? [r.at.x, r.at.y] : [])];
     case 'curvedSolid':
-      return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
+      return [
+        r.radius,
+        ...[r.height, r.volume, r.slant, r.surface].filter((x): x is string => !!x),
+      ];
     case 'rootSquare':
       return [r.area, r.side, ...(r.between ?? [])];
     case 'factorRows':

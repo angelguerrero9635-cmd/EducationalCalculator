@@ -454,13 +454,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HF). New optional field on circle (types.ts; CircleSector in typesHsf.ts; drawn by CircleSector.tsx): sector { angle, unit?: "degrees" (default) | "radians", arc?, area? } (angle a number or value id; arc and area values, checked against s = rθ and A = r²θ ÷ 2). It adds two views: "sector" (the default view when sector is set) shades the sector counterclockwise from the radius pointing right, draws the arc heavy with s on a chip (exact with π when it is a multiple: s = 2π cm), marks the angle (60° or 3π/4), and has handles on the radius\'s end and the arc\'s end; the caption works the angle\'s share of the turn, the radian measure, s and A exactly with π, then ≈. "radian" wraps six radius-long arcs around the circle, numbered, alternating colors, with the 0.28 left over and 1 rad marked at the center; with a sector, its angle is shaded and counted in radius-lengths. Pass views: ["radian", "sector"] for both with buttons. Keep extent small (1) so the circle fills the picture. Example: { kind: "circle", radius: "r", extent: 1, sector: { angle: "t", unit: "degrees", arc: "s", area: "A" } } with s = θ ÷ 360 × 2πr and A = θ ÷ 360 × πr²; a radian angle variable\'s max is 6.28 (below 2π).',
   },
-  ask(
-    'H27',
-    'curvedSolid',
-    'Pyramids, cones and spheres with surface area nets (the cone as a sector), and Cavalieri stacks',
-    ['m.10.volume-derivations'],
-    'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it.',
-  ),
+  {
+    ...ask(
+      'H27',
+      'curvedSolid',
+      'Pyramids, cones and spheres with surface area nets (the cone as a sector), and Cavalieri stacks',
+      ['m.10.volume-derivations'],
+      'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-volume-derivations-cylinder-net',
+      'g.m10-volume-derivations-cone-net',
+      'g.m10-volume-derivations-sphere-surface',
+      'g.m10-volume-derivations-cavalieri',
+      'g.m10-volume-derivations-cone-section',
+      'g.m10-volume-derivations-cylinder-section',
+      'g.m10-volume-derivations-cone-upright',
+    ],
+    notes:
+      'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it. Drawn (group HF). curvedSolid gets net: true (Net and Solid buttons, the net first; drawn by CurvedSolidHsf.tsx): a cylinder\'s rectangle 2πr by h between its two circles, a cone\'s sector of radius ℓ with its angle 360 × r ÷ ℓ and its base circle, a sphere\'s four great circles (it has no flat net); slant (ℓ, a cone\'s, checked against √(r² + h²)) and surface (checked against the faces) are value ids; the caption works S exactly with π. cavalieri: true (a cylinder) draws two stacks of 12 copper coins of radius r and height h, one leaning, and states Cavalieri\'s principle with V = πr²h. crossSection gets solid: "cylinder" | "cone" (length is the radius; drawn by CrossSectionRound.tsx, math in roundSection.ts): cut "base" (level at at up the height: a circle, the same as the base or shrinking to the tip) or "side" (upright, at from the axis: a cylinder\'s rectangle 2√(r² − d²) by h, a cone\'s triangle through the axis or a curved hyperbolic region off it); the cut is shaded on the clear solid and drawn flat beside it to the same scale with its area; drag the plane. A cube is the existing solid: "box" with equal sides. Pyramids were not added to curvedSolid: the square pyramid\'s net is the existing net kind (solid: "squarePyramid") and its cuts are crossSection\'s pyramid. Examples: { kind: "curvedSolid", shape: "cone", radius: "r", height: "h", slant: "l", surface: "S", net: true, extent: 5 }; { kind: "curvedSolid", shape: "cylinder", radius: "r", height: "h", volume: "V", cavalieri: true, extent: 6 } (with sliders: true); { kind: "crossSection", solid: "cone", length: "r", height: "h", cut: "base", at: "z", area: "A" } with a constraint that the plane is on the solid (at ≤ h, or at ≤ r for a side cut; see onTheSolid in galleryHsf.ts).',
+  },
   ask('H28', 'factorTree', 'Pairs of equal factors circled, coming out of the root: √72 = 6√2', [
     'm.9.radicals',
   ]),

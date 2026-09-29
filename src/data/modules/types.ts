@@ -615,6 +615,16 @@ export type Representation =
       volume?: string;
       compare?: boolean;
       extent: number;
+      /**
+       * Grades 9–12: the surface-area net under the solid (a cylinder's rectangle and two
+       * circles, a cone's sector and base, a sphere's four great circles); `slant` is a cone's
+       * slant height and `surface` the total surface area (values, checked).
+       */
+      net?: boolean;
+      slant?: string;
+      surface?: string;
+      /** Grades 9–12 (a cylinder): Cavalieri's two stacks of coins, one straight, one leaning. */
+      cavalieri?: boolean;
     }
   /**
    * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
@@ -1317,7 +1327,8 @@ export type Representation =
    */
   | {
       kind: 'crossSection';
-      solid: 'box' | 'triangularPrism' | 'pyramid';
+      /** Grades 9–12: a cylinder or cone (`length` its radius; cut 'base' or 'side'). */
+      solid: 'box' | 'triangularPrism' | 'pyramid' | 'cylinder' | 'cone';
       length: string;
       width?: string;
       height: string;

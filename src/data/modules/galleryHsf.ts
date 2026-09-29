@@ -1132,6 +1132,414 @@ const radianMeaning = sectorDemo(
   ['radian', 'sector'],
 );
 
+// ── H27 curvedSolid nets and Cavalieri; crossSection of a cylinder and a cone ──
+
+const cm = (id: string, symbol: string, name: string, max = 50, min = 0.1) =>
+  V(id, symbol, name, { unit: 'cm', min, max, step: 0.1 });
+const cm2 = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { unit: 'cm²', min: 0, max: 100000, step: 0.01 });
+const cm3 = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { unit: 'cm³', min: 0, max: 1000000, step: 0.01 });
+
+/** out = k × π × f(v), with the inverse for each input where one is given. */
+const formula = (
+  id: string,
+  display: string,
+  out: string,
+  f: (v: Values) => number,
+  expr: string,
+  how: string,
+  inverses: Record<string, [Solve, string, string]>,
+  others: string[] = [],
+): Rel =>
+  R(id, display, (v) => v[out]! - f(v), {
+    [out]: [f, expr, how],
+    ...inverses,
+    ...Object.fromEntries(others.map((o) => [o, null])),
+  });
+
+const cylinderSurface = formula(
+  'S = 2πr² + 2πrh',
+  '{S} = 2 × π × {r}² + 2 × π × {r} × {h}',
+  'S',
+  (v) => 2 * Math.PI * v.r! ** 2 + 2 * Math.PI * v.r! * v.h!,
+  '2 × π × {r}² + 2 × π × {r} × {h}',
+  'Two circles and a rectangle 2πr long and h tall.',
+  {
+    h: [
+      (v) => (v.S! - 2 * Math.PI * v.r! ** 2) / (2 * Math.PI * v.r!),
+      '({S} − 2 × π × {r}²) ÷ (2 × π × {r})',
+      'Take away the two circles; the rectangle is 2πr long.',
+    ],
+  },
+  ['r'],
+);
+const cylinderVolume = formula(
+  'V = πr²h',
+  '{V} = π × {r}² × {h}',
+  'V',
+  (v) => Math.PI * v.r! ** 2 * v.h!,
+  'π × {r}² × {h}',
+  'The base’s area times the height.',
+  {
+    h: [(v) => v.V! / (Math.PI * v.r! ** 2), '{V} ÷ (π × {r}²)', 'Divide by the base’s area.'],
+    r: [
+      (v) => (v.h! > 0 && v.V! >= 0 ? Math.sqrt(v.V! / (Math.PI * v.h!)) : undefined),
+      '√({V} ÷ (π × {h}))',
+      'Divide by π × h, then take the square root.',
+    ],
+  },
+);
+
+const cylinderNet: ModuleDef = {
+  id: 'g.m10-volume-derivations-cylinder-net',
+  title: 'Surface area of a cylinder from its net',
+  use: 'Use this for “Find the surface area of a can 3 cm in radius and 5 cm tall.”',
+  assumptions: [
+    'Unrolled, the cylinder is two circles and a rectangle.',
+    'The rectangle wraps the circle, so it is as long as the circumference 2πr and as tall as h.',
+  ],
+  variables: [
+    cm('r', 'r', 'Radius'),
+    cm('h', 'h', 'Height'),
+    cm2('S', 'S', 'Surface area'),
+    cm3('V', 'V', 'Volume'),
+  ],
+  ...rels(cylinderSurface, cylinderVolume),
+  example: { r: 3, h: 5, S: 48 * Math.PI, V: 45 * Math.PI },
+  startWith: ['r', 'h'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'curvedSolid',
+    shape: 'cylinder',
+    radius: 'r',
+    height: 'h',
+    volume: 'V',
+    surface: 'S',
+    net: true,
+    extent: 6,
+  },
+};
+
+const coneSlant = formula(
+  'ℓ = √(r² + h²)',
+  '{l} = √({r}² + {h}²)',
+  'l',
+  (v) => Math.hypot(v.r!, v.h!),
+  '√({r}² + {h}²)',
+  'The slant height is the long side of the right triangle with legs r and h.',
+  {
+    h: [
+      (v) => (v.l! > v.r! ? Math.sqrt(v.l! ** 2 - v.r! ** 2) : undefined),
+      '√({l}² − {r}²)',
+      'The height is the other leg.',
+    ],
+    r: [
+      (v) => (v.l! > v.h! ? Math.sqrt(v.l! ** 2 - v.h! ** 2) : undefined),
+      '√({l}² − {h}²)',
+      'The radius is the other leg.',
+    ],
+  },
+);
+const coneSurface = formula(
+  'S = πr² + πrℓ',
+  '{S} = π × {r}² + π × {r} × {l}',
+  'S',
+  (v) => Math.PI * v.r! ** 2 + Math.PI * v.r! * v.l!,
+  'π × {r}² + π × {r} × {l}',
+  'The base circle and the sector, whose area is πrℓ.',
+  {
+    l: [
+      (v) => (v.S! - Math.PI * v.r! ** 2) / (Math.PI * v.r!),
+      '({S} − π × {r}²) ÷ (π × {r})',
+      'Take away the base; the sector is πrℓ.',
+    ],
+  },
+  ['r'],
+);
+
+const coneNet: ModuleDef = {
+  id: 'g.m10-volume-derivations-cone-net',
+  title: 'Surface area of a cone from its net',
+  use: 'Use this for “A cone has radius 3 cm and height 4 cm. Find its slant height and surface area.”',
+  assumptions: [
+    'Unrolled, the cone is its base circle and a sector of a circle of radius ℓ, the slant height.',
+    'The sector’s arc wraps the base, so it is 2πr long, and its area is πrℓ.',
+  ],
+  variables: [
+    cm('r', 'r', 'Radius'),
+    cm('h', 'h', 'Height'),
+    cm('l', 'ℓ', 'Slant height', 80),
+    cm2('S', 'S', 'Surface area'),
+  ],
+  ...rels(coneSlant, coneSurface),
+  example: { r: 3, h: 4, l: 5, S: 24 * Math.PI },
+  startWith: ['r', 'h'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'curvedSolid',
+    shape: 'cone',
+    radius: 'r',
+    height: 'h',
+    slant: 'l',
+    surface: 'S',
+    net: true,
+    extent: 5,
+  },
+};
+
+const sphereSurface: ModuleDef = {
+  id: 'g.m10-volume-derivations-sphere-surface',
+  title: 'Surface area of a sphere',
+  use: 'Use this for “Find the surface area of a ball of radius 3 cm.”',
+  assumptions: [
+    'A sphere has no flat net.',
+    'Its surface area is four times the area of a great circle: S = 4πr².',
+  ],
+  variables: [cm('r', 'r', 'Radius'), cm2('S', 'S', 'Surface area')],
+  ...rels(
+    formula(
+      'S = 4πr²',
+      '{S} = 4 × π × {r}²',
+      'S',
+      (v) => 4 * Math.PI * v.r! ** 2,
+      '4 × π × {r}²',
+      'Four great circles, each πr².',
+      {
+        r: [
+          (v) => (v.S! >= 0 ? Math.sqrt(v.S! / (4 * Math.PI)) : undefined),
+          '√({S} ÷ (4 × π))',
+          'Divide by 4π, then take the square root.',
+        ],
+      },
+    ),
+  ),
+  example: { r: 3, S: 36 * Math.PI },
+  startWith: ['r'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'curvedSolid',
+    shape: 'sphere',
+    radius: 'r',
+    surface: 'S',
+    net: true,
+    extent: 4,
+  },
+};
+
+const cavalieri: ModuleDef = {
+  id: 'g.m10-volume-derivations-cavalieri',
+  title: 'Cavalieri’s principle: a leaning stack',
+  use: 'Use this for “A stack of coins is pushed so it leans. Does its volume change?”',
+  assumptions: [
+    'The two stacks have the same coins: the same radius r and the same height h.',
+    'At every height both have a cross-section of the same area, πr².',
+    'Solids with equal cross-sections at every height have equal volumes, so both are πr²h.',
+  ],
+  variables: [cm('r', 'r', 'Radius'), cm('h', 'h', 'Height'), cm3('V', 'V', 'Volume')],
+  ...rels(cylinderVolume),
+  example: { r: 2, h: 6, V: 24 * Math.PI },
+  startWith: ['r', 'h'],
+  unitSystems: ['metric'],
+  sliders: true,
+  representation: {
+    kind: 'curvedSolid',
+    shape: 'cylinder',
+    radius: 'r',
+    height: 'h',
+    volume: 'V',
+    cavalieri: true,
+    extent: 6,
+  },
+};
+
+/** The plane cuts the solid: `at` is no more than `most` (the height, or the radius). */
+const onTheSolid = (at: string, most: string): Rel => ({
+  relation: {
+    id: 'the plane cuts the solid',
+    constraint: true,
+    display: `{${at}} is at most {${most}}`,
+    vars: [at, most],
+    residual: (v: Values) => (v[at]! <= v[most]! ? 0 : 1),
+    solve: {},
+  },
+  steps: {},
+});
+
+const coneLevelCut: ModuleDef = {
+  id: 'g.m10-volume-derivations-cone-section',
+  title: 'A level cut of a cone',
+  use: 'Use this for “A cone 6 cm tall with radius 4 cm is cut level halfway up. What is the cut’s area?”',
+  assumptions: [
+    'A cut parallel to the base is a circle.',
+    'Its radius shrinks evenly to 0 at the tip: ρ = r × (1 − z ÷ h) at height z.',
+  ],
+  variables: [
+    cm('r', 'r', 'Radius'),
+    cm('h', 'h', 'Height'),
+    cm('z', 'z', 'Height of the cut', 50, 0),
+    cm('p', 'ρ', 'Radius of the cut', 50, 0),
+    cm2('A', 'A', 'Area of the cut'),
+  ],
+  ...rels(
+    onTheSolid('z', 'h'),
+    R('ρ = r(1 − z/h)', '{p} = {r} × (1 − {z} ÷ {h})', (v) => v.p! - v.r! * (1 - v.z! / v.h!), {
+      p: [
+        (v) => (v.z! > v.h! ? undefined : v.r! * (1 - v.z! / v.h!)),
+        '{r} × (1 − {z} ÷ {h})',
+        'The radius left at that height.',
+      ],
+      z: [
+        (v) => v.h! * (1 - v.p! / v.r!),
+        '{h} × (1 − {p} ÷ {r})',
+        'How far up the radius has shrunk to ρ.',
+      ],
+      r: null,
+      h: null,
+    }),
+    R('A = πρ²', '{A} = π × {p}²', (v) => v.A! - Math.PI * v.p! ** 2, {
+      A: [(v) => Math.PI * v.p! ** 2, 'π × {p}²', 'The area of the circle.'],
+      p: [
+        (v) => (v.A! >= 0 ? Math.sqrt(v.A! / Math.PI) : undefined),
+        '√({A} ÷ π)',
+        'Undo the square.',
+      ],
+    }),
+  ),
+  example: { r: 4, h: 6, z: 3, p: 2, A: 4 * Math.PI },
+  startWith: ['r', 'h', 'z'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'crossSection',
+    solid: 'cone',
+    length: 'r',
+    height: 'h',
+    cut: 'base',
+    at: 'z',
+    area: 'A',
+  },
+};
+
+const cylinderUprightCut: ModuleDef = {
+  id: 'g.m10-volume-derivations-cylinder-section',
+  title: 'An upright cut of a cylinder',
+  use: 'Use this for “A cylinder of radius 5 cm and height 6 cm is cut upright 3 cm from its axis. Find the cut’s area.”',
+  assumptions: [
+    'An upright cut parallel to the axis is a rectangle as tall as the cylinder.',
+    'Its width is the chord of the base circle: 2 × √(r² − d²) at distance d from the center.',
+  ],
+  variables: [
+    cm('r', 'r', 'Radius'),
+    cm('h', 'h', 'Height'),
+    cm('d', 'd', 'Distance from the axis', 50, 0),
+    cm('w', 'w', 'Width of the cut', 100, 0),
+    cm2('A', 'A', 'Area of the cut'),
+  ],
+  ...rels(
+    onTheSolid('d', 'r'),
+    R(
+      'w = 2√(r² − d²)',
+      '{w} = 2 × √({r}² − {d}²)',
+      (v) => v.w! - 2 * Math.sqrt(Math.max(0, v.r! ** 2 - v.d! ** 2)) + (v.d! > v.r! ? 1 : 0),
+      {
+        w: [
+          (v) => (v.d! > v.r! ? undefined : 2 * Math.sqrt(v.r! ** 2 - v.d! ** 2)),
+          '2 × √({r}² − {d}²)',
+          'The chord at distance d from the center (the Pythagorean theorem).',
+        ],
+        d: [
+          (v) => (2 * v.r! >= v.w! ? Math.sqrt(v.r! ** 2 - (v.w! / 2) ** 2) : undefined),
+          '√({r}² − ({w} ÷ 2)²)',
+          'Half the chord and the radius make a right triangle.',
+        ],
+        r: [
+          (v) => Math.hypot(v.w! / 2, v.d!),
+          '√(({w} ÷ 2)² + {d}²)',
+          'The radius is the long side of that right triangle.',
+        ],
+      },
+    ),
+    R('A = wh', '{A} = {w} × {h}', (v) => v.A! - v.w! * v.h!, {
+      A: [(v) => v.w! * v.h!, '{w} × {h}', 'A rectangle: width times height.'],
+      w: [
+        (v) => (v.h! === 0 ? undefined : v.A! / v.h!),
+        '{A} ÷ {h}',
+        'Divide the area by the height.',
+      ],
+      h: [
+        (v) => (v.w! === 0 ? undefined : v.A! / v.w!),
+        '{A} ÷ {w}',
+        'Divide the area by the width.',
+      ],
+    }),
+  ),
+  example: { r: 5, h: 6, d: 3, w: 8, A: 48 },
+  startWith: ['r', 'h', 'd'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'crossSection',
+    solid: 'cylinder',
+    length: 'r',
+    height: 'h',
+    cut: 'side',
+    at: 'd',
+    area: 'A',
+  },
+};
+
+const coneUprightCut: ModuleDef = {
+  id: 'g.m10-volume-derivations-cone-upright',
+  title: 'An upright cut of a cone',
+  use: 'Use this for “What shape is the cut when a cone is sliced straight down, 1 cm from its tip?”',
+  assumptions: [
+    'Straight down through the tip, the cut is a triangle as wide as the base and as tall as the cone.',
+    'Moved off the axis, the cut is a curved region, narrower and lower.',
+  ],
+  variables: [
+    cm('r', 'r', 'Radius'),
+    cm('h', 'h', 'Height'),
+    cm('d', 'd', 'Distance from the axis', 50, 0),
+    cm('w', 'w', 'Width at the base', 100, 0),
+  ],
+  ...rels(
+    onTheSolid('d', 'r'),
+    R(
+      'w = 2√(r² − d²)',
+      '{w} = 2 × √({r}² − {d}²)',
+      (v) => v.w! - 2 * Math.sqrt(Math.max(0, v.r! ** 2 - v.d! ** 2)) + (v.d! > v.r! ? 1 : 0),
+      {
+        w: [
+          (v) => (v.d! > v.r! ? undefined : 2 * Math.sqrt(v.r! ** 2 - v.d! ** 2)),
+          '2 × √({r}² − {d}²)',
+          'The chord of the base at distance d from the center.',
+        ],
+        d: [
+          (v) => (2 * v.r! >= v.w! ? Math.sqrt(v.r! ** 2 - (v.w! / 2) ** 2) : undefined),
+          '√({r}² − ({w} ÷ 2)²)',
+          'Half the chord and the radius make a right triangle.',
+        ],
+        r: [
+          (v) => Math.hypot(v.w! / 2, v.d!),
+          '√(({w} ÷ 2)² + {d}²)',
+          'The radius is the long side of that right triangle.',
+        ],
+      },
+    ),
+  ),
+  standalone: { vars: ['h'], why: 'The height sets how tall the cut is, apart from its width.' },
+  example: { r: 4, h: 6, d: 1, w: 2 * Math.sqrt(15) },
+  startWith: ['r', 'h', 'd'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'crossSection',
+    solid: 'cone',
+    length: 'r',
+    height: 'h',
+    cut: 'side',
+    at: 'd',
+  },
+};
+
 export const HSF_GALLERY_MODULES: ModuleDef[] = [
   composeReflectRotate,
   composeGlide,
@@ -1156,5 +1564,12 @@ export const HSF_GALLERY_MODULES: ModuleDef[] = [
   sectorRadians,
   sectorMajor,
   radianMeaning,
+  cylinderNet,
+  coneNet,
+  sphereSurface,
+  cavalieri,
+  coneLevelCut,
+  cylinderUprightCut,
+  coneUprightCut,
 ];
 export const HSF_GALLERY_LAYOUTS: LayoutDef[] = [];

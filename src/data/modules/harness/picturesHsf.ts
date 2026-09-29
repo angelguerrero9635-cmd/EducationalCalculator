@@ -4,6 +4,7 @@
  * `repIssues` (`pictures.ts`). Test-only.
  */
 import { partitionOf } from '@/components/module/reps/planeGeo';
+import { roundCut, roundReach } from '@/components/module/reps/roundSection';
 import { splitterShape } from '@/components/module/reps/scaleSplitter';
 import { imageOf, type MoveValues, type Pt } from '@/components/module/reps/transform';
 
@@ -173,5 +174,66 @@ export function circleSectorIssues(rep: Of<'circle'>, val: Val): string[] {
   if (arc !== undefined && far(arc, r * rad)) out.push(`arc ${arc} is not r × θ = ${r * rad}`);
   if (area !== undefined && far(area, (r * r * rad) / 2))
     out.push(`sector area ${area} is not r² × θ ÷ 2 = ${(r * r * rad) / 2}`);
+  return out;
+}
+
+/**
+ * H27: a cone's slant height is √(r² + h²); the surface area is the net's faces together; the
+ * Cavalieri stacks are cylinders.
+ */
+export function curvedSolidHsfIssues(rep: Of<'curvedSolid'>, val: Val): string[] {
+  const out: string[] = [];
+  if (rep.cavalieri && rep.shape !== 'cylinder')
+    out.push('Cavalieri stacks are of coins: a cylinder');
+  if (rep.slant && rep.shape !== 'cone') out.push('only a cone has a slant height');
+  const r = val(rep.radius);
+  const h = rep.height ? val(rep.height) : undefined;
+  if (r === undefined) return out;
+  const l = rep.slant ? val(rep.slant) : undefined;
+  if (rep.shape === 'cone' && l !== undefined && h !== undefined && far(l, Math.hypot(r, h)))
+    out.push(`slant ${l} is not √(r² + h²) = ${Math.hypot(r, h)}`);
+  const S = rep.surface ? val(rep.surface) : undefined;
+  if (S === undefined) return out;
+  const want =
+    rep.shape === 'sphere'
+      ? 4 * Math.PI * r * r
+      : h === undefined
+        ? undefined
+        : rep.shape === 'cylinder'
+          ? 2 * Math.PI * r * r + 2 * Math.PI * r * h
+          : Math.PI * r * r + Math.PI * r * (l ?? Math.hypot(r, h));
+  if (want !== undefined && far(S, want)) out.push(`surface ${S}, the net's faces make ${want}`);
+  return out;
+}
+
+/** H27: a cylinder's or cone's cut is on the solid and has the area the picture draws. */
+export function roundSectionIssues(rep: Of<'crossSection'>, val: Val): string[] {
+  const out: string[] = [];
+  const cut = rep.cut ?? 'base';
+  if (cut === 'diagonal') {
+    out.push(`a ${rep.solid} is cut level ('base') or upright ('side')`);
+    return out;
+  }
+  const [r, h] = [val(rep.length), val(rep.height)];
+  if (r === undefined || h === undefined) return out;
+  if (r <= 0 || h <= 0) return [`${rep.solid} of radius ${r} and height ${h}`];
+  const reach = roundReach(cut, r, h);
+  const at = rep.at ? val(rep.at) : reach / 2;
+  if (at === undefined) return out;
+  if (at < 0 || at > reach) out.push(`plane at ${at} is off the solid (0 to ${reach})`);
+  const sec = roundCut(
+    rep.solid as 'cylinder' | 'cone',
+    cut,
+    r,
+    h,
+    Math.min(reach, Math.max(0, at)),
+  );
+  const A = rep.area ? val(rep.area) : undefined;
+  // (typed values are rounded to their step: a thousandth of the area, or 1e-4 on a tiny cut)
+  if (A !== undefined && Math.abs(A - sec.area) > Math.max(1e-4, 1e-3 * sec.area))
+    out.push(`cut area ${A}, the ${sec.name} drawn has ${sec.area}`);
+  const V = rep.volume ? val(rep.volume) : undefined;
+  const vol = Math.PI * r * r * h * (rep.solid === 'cone' ? 1 / 3 : 1);
+  if (V !== undefined && far(V, vol)) out.push(`volume ${V} is not ${vol}`);
   return out;
 }
