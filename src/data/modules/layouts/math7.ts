@@ -158,6 +158,33 @@ export const MATH_7_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  {
+    kind: 'sort',
+    id: 'm.7.two-step-equations~equivalent-expressions',
+    title: 'Equivalent expressions',
+    use: 'Use this for “Which expressions are equal to 2x + 6?”',
+    assumptions: [
+      'Multiply out brackets: 3(x + 2) = 3x + 6, every term inside times 3.',
+      'Combine like terms: 3x − x = 2x; numbers join numbers.',
+      'Equivalent expressions give the same value for every x: try x = 1 to check.',
+    ],
+    question: 'Which expression is it equal to?',
+    bins: [
+      { id: '2x+6', label: '2x + 6', why: 'Two x and 6.' },
+      { id: '3x+6', label: '3x + 6', why: 'Three x and 6.' },
+      { id: '2x+2', label: '2x + 2', why: 'Two x and 2.' },
+    ],
+    cards: [
+      { label: '3x + 6 − x', bin: '2x+6' },
+      { label: 'x + x + 6', bin: '2x+6' },
+      { label: '2(x + 3)', bin: '2x+6' },
+      { label: '3(x + 2)', bin: '3x+6' },
+      { label: '3x + 3 × 2', bin: '3x+6' },
+      { label: '3x + 2 − x', bin: '2x+2' },
+      { label: '4x − 2x + 2', bin: '2x+2' },
+    ],
+  },
+
   // ── Scale drawings (7.G.1) ──
   {
     kind: 'sort',
@@ -280,6 +307,37 @@ export const MATH_7_LAYOUTS: LayoutDef[] = [
       { label: 'Across a crossing, both 50°', bin: 'vert' },
       { label: '40° and 40° side by side', bin: 'none' },
       { label: '30° and 50°', bin: 'none' },
+    ],
+  },
+
+  {
+    kind: 'sort',
+    id: 'm.7.angle-relationships~can-it-be-a-triangle',
+    title: 'Can the sides make a triangle?',
+    use: 'Use this for “Can sticks of 2, 3 and 6 inches make a triangle?”',
+    assumptions: [
+      'The two shorter sides must reach past the longest one when they meet at its ends.',
+      'So they must add to more than the longest side.',
+      'If they only add to the same length, the triangle lies flat: no triangle.',
+    ],
+    question: 'Can the three lengths make a triangle?',
+    bins: [
+      {
+        id: 'yes',
+        label: 'A triangle',
+        why: 'The two shorter sides add to more than the longest.',
+      },
+      { id: 'no', label: 'No triangle', why: 'The two shorter sides are too short to meet.' },
+    ],
+    cards: [
+      { label: '3, 4, 5', bin: 'yes' },
+      { label: '5, 5, 5', bin: 'yes' },
+      { label: '4, 6, 9', bin: 'yes' },
+      { label: '7, 10, 16', bin: 'yes' },
+      { label: '2, 3, 6', bin: 'no' },
+      { label: '1, 2, 3', bin: 'no' },
+      { label: '2, 2, 5', bin: 'no' },
+      { label: '3, 8, 4', bin: 'no' },
     ],
   },
 

@@ -45,6 +45,33 @@ export const MATH_8_LAYOUTS: LayoutDef[] = [
     ],
   },
 
+  {
+    kind: 'sort',
+    id: 'm.8.roots-irrationals~rational-decimals',
+    title: 'Does the decimal end or repeat?',
+    use: 'Use this for “Which fractions have decimals that end: 3/8, 1/3, 7/20?”',
+    assumptions: [
+      'Write the fraction in lowest terms, then look at the denominator’s prime factors.',
+      'Only 2s and 5s: the decimal ends, since 10 = 2 × 5.',
+      'Any other prime factor: the decimal repeats forever.',
+    ],
+    question: 'Does the fraction’s decimal end or repeat?',
+    bins: [
+      { id: 'ends', label: 'Ends', why: 'The denominator’s only prime factors are 2 and 5.' },
+      { id: 'repeats', label: 'Repeats', why: 'The denominator has another prime factor.' },
+    ],
+    cards: [
+      { label: '3/8', bin: 'ends' },
+      { label: '7/20', bin: 'ends' },
+      { label: '9/16', bin: 'ends' },
+      { label: '13/25', bin: 'ends' },
+      { label: '1/3', bin: 'repeats' },
+      { label: '5/6', bin: 'repeats' },
+      { label: '2/7', bin: 'repeats' },
+      { label: '4/9', bin: 'repeats' },
+    ],
+  },
+
   // ── Exponent rules (8.EE.1) ──
   {
     kind: 'sort',

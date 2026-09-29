@@ -10,11 +10,11 @@ independent AI review), and the next section starts only after the owner approve
 | 0   | Pilots (mixed levels)                                                                               | 14      | Done, reviewed twice       |
 | 1   | Math K–2                                                                                            | 64      | Done, reviewed twice       |
 | 2   | Math 3–5 (one grade at a time)                                                                      | 35      | Grades 3–5 built, reviewed |
-| 3   | Math 6–8                                                                                            | 30      | Grade 6 built, reviewed    |
+| 3   | Math 6–8                                                                                            | 30      | 6 reviewed; 7–8 built      |
 | 4   | Math 9–10                                                                                           | 21      |                            |
 | 5   | Math 11–12                                                                                          | 22      |                            |
 | 6   | Science K–5                                                                                         | 39      | K–5 built, reviewed        |
-| 7   | Science 6–8                                                                                         | 26      | Grade 6 built, reviewed    |
+| 7   | Science 6–8                                                                                         | 26      | 6 reviewed; 7–8 built      |
 | 8   | Science 9–12                                                                                        | 34      |                            |
 | 9   | College Math                                                                                        | 25      |                            |
 | 10  | Chemistry                                                                                           | 42      |                            |
@@ -48,6 +48,25 @@ Counts exclude the 14 pilot modules. After Section 1, 620 remain. A section may 
   formulas. Sixteen sorts, a sequence and an observe page (histogram). Left out for now: unit
   conversions with unit pairs and a fraction value type (dividing fractions uses numerators
   and denominators).
+- **Section 3, Grades 7–8 (math), from the reviewer's direction plan.** Letters everywhere.
+  Grade 7: proportional relationships (the constant, proportions, rates with fractions),
+  percent (tax, tip, markup, discount, change, error, simple interest), signed numbers (zero
+  pairs, subtracting, the sign table, fractions as decimals with repeating decimals), two-step
+  equations and inequalities (hanger and tape), scale drawings (scaled copies, area), circles
+  (π answers, wheels, a circle in a square, the π graph), angles (supplementary,
+  complementary, vertical, by an equation, in a triangle, across parallel lines), prisms (the
+  cross-section, a triangular net, a trapezoid base, an L-shaped base), sampling (a random
+  sample, two samples on dot plots) and probability (spinner, marbles, expected counts, two
+  dice, trees). Grade 8: roots (between two whole numbers, cube roots, repeating decimals as
+  fractions), exponent rules with zero and negative exponents, scientific notation (in full,
+  compared, multiplied, added), slope (from two points, a unit rate, two rates), equations with
+  x on both sides (balance, negatives, brackets and fractions as two lines), systems (two
+  lines, two plans, how many of each, ax + by = c), functions (machine, mapping), linear
+  functions (from two points, in a story, standard form), transformations (translate, reflect,
+  rotate, dilate, similar triangles), the Pythagorean theorem (distance, a box's diagonal),
+  cylinders, cones and spheres, and scatter plots (line of fit, two-way tables). Thirty-three
+  sorts, three sequences and two observe pages. Left out: the read-a-graph explore page (needs
+  a new figure).
 - **Section 7, Grade 6 (science), from the reviewer's direction plan.** Words throughout (no
   letters). Calculators: density (the pilot rebuilt, with the nearest material), water
   displacement in a graduated cylinder, total magnification, cell size from the field of view,

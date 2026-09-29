@@ -142,6 +142,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `coordinatePlane`  | `legs` (with `segment`)                  | the right triangle under the segment, legs labelled; d² = a² + b² worked      |
 | `curvedSolid`      | `compare` (cone or sphere)               | the same cylinder beside it holding its water: 1/3 (cone) or 2/3 (sphere)     |
 | `angles`           | `whole: 90 \| 180`, `cross`              | a right angle or a straight line split in two; `cross`: vertical angles       |
+| `angles`           | `triangle: { third }`; `parallel`        | a triangle and its exterior angle (`whole`); two parallel lines, 8 angles     |
+| `rootSquare`       | `between`; `solid: 'cube'`               | the whole numbers either side, checked; a cube with its edge on the line      |
+| `diceGrid`         | `compare`                                | the event said in words: "a sum of at least 10"                               |
 | `net`              | `solid: 'triangularPrism'`, `triangle`   | three rectangles and two triangles (right or isosceles); folds to the prism   |
 | `dotPlot`          | `second`, `labels`, `difference`         | a second sample's dot plot under the first, same scale; the gap between means |
 | `coordinatePlane`  | `rise`, `run`                            | the rise/run triangle shaded, each leg heavy with an arrow and its value      |

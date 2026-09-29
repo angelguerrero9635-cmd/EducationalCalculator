@@ -5,6 +5,42 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grade 7–8 math engine, second half: repeating decimals, angles, roots, lines
+
+- **Repeating decimals (E3).** `repeating: true` prints 1/6 as "0.1666…" (the block written to
+  at least three digits, twice when longer; blocks over 6 digits print as usual), and boxes,
+  the answer reader and the harness read it back as the exact fraction. `decimalLongDivision`
+  takes `repeat`: it stops when a remainder comes back and notes "Remainder 4 again, so 6
+  repeats". Pages: `m.7.rational-operations~fraction-to-decimal`,
+  `m.8.roots-irrationals~repeating-decimal`. The typeset bar (0.1̅6̅) needs the app's own math
+  renderer to draw `\overline`; not done, so the steps write "0.1666…".
+- **Angles (E7).** The angles picture takes `triangle: { third }` (three angles and the
+  exterior angle, `TriangleAngles.tsx`) and `parallel: true` (two parallel lines cut by a
+  transversal, the eight angles numbered, `ParallelAngles.tsx`); the harness checks the angle
+  sum and the straight whole.
+- **Dice (E9).** The dice grid says its comparison in words: "pairs with a sum of at least 10".
+- **Roots (E10).** `rootSquare` takes `between` (the whole numbers on either side, checked) and
+  `solid: 'cube'` (`CubeRoot.tsx`: a cube whose edge drops onto the number line). The harness
+  reads "whole number at or below the square root of 39".
+- **L-shaped base (E14)** uses `rectilinear` with `cut` and lists the height, volume and
+  surface area under it, as the plan allowed; no new solid.
+- **Numbers in full.** `full: true` writes 3,800,000,000,000 and 0.0000003973 out (the
+  scientific-notation main page); the unrounded-number check ignores leading zeros.
+- **Tiny values survive.** The solver rounded anything under 10⁻¹² to 0, so 2 × 10⁻¹⁵ became 0;
+  a `scientific` value now keeps it. The harness compares picture values to 12 significant
+  figures instead of 9 decimals.
+- **π in a division.** The harness read "90 ÷ 9π" as (90 ÷ 9) × π; "9π" is now one bracketed
+  number.
+- **Two lines for big numbers.** The balance holds 10 x-blocks and 15 counters, so
+  "2(3x + 2) = 2x + 28" is drawn as two lines crossing at the answer, and "2/5 b + 1 = −11" as a
+  line meeting a level. Lines through (0, 0) with no solution name the steeper one instead of
+  "They cross at (0, 0)".
+- **Not built (listed for the review):** E11 (the intercept marked on `coordinatePlane`; the
+  two-points page uses `linearFunction`), E13 (a scatter card figure; the association sort is
+  words), `powerScale` `second` marker (the compare page lists the second number under the
+  ruler), `treeDiagram` `third` stage, and the explore figure `graph` (read-a-graph stays
+  optional).
+
 ## Grade 7–8 math engine: π, scientific notation, rules that say why
 
 - **π values (E1).** `pi: true` on a variable prints a whole or two-decimal multiple of π as

@@ -195,3 +195,18 @@ and each strand's skills sit together within a grade.
 - **Letters in a Grade 6 title:** "Density (ρ = m / V)" showed a Greek letter on a page that
   names values in words (Grade 6 science runs beside the math that introduces letters). Now
   "Density: mass in each unit of volume".
+
+### Grades 7–8 math build (reviewer direction plan)
+
+- **7.EE.1–2 (equivalent expressions)** has no Grade 7 skill; a sort
+  `m.7.two-step-equations~equivalent-expressions` covers it for now. A skill
+  `m.7.equivalent-expressions` would be the honest home.
+- **7.G.2 (which side lengths make a triangle)** has no skill; a sort
+  `m.7.angle-relationships~can-it-be-a-triangle` covers it.
+- **8.G.5 (angle sum, exterior angles, parallel lines)** is filed under the Grade 7 skill
+  `m.7.angle-relationships`; the pages `~triangle` and `~parallel-lines` sit there. A Grade 8
+  skill `m.8.angle-facts` would be the honest home.
+- **Misfiled released questions** (reference data, not the taxonomy): NAEP-1992-8M14-#3 (a
+  median from a scatter plot) belongs to `m.6.center-spread`; NAEP-2007-8M9-#4 (15 + 3x = 42)
+  to `m.7.two-step-equations`; IM-G8-U4-L1-P1 (fractions of a remainder) to
+  `m.8.multi-step-equations`.
