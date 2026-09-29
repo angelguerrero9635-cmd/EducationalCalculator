@@ -13,10 +13,11 @@ import {
 import { skillIcons } from '@/data/icons';
 import { gradeLabel } from '@/data/taxonomy';
 import { space, usePalette } from '@/theme';
+import { prerenderIds } from '@/data/prerender';
 
 /** Pre-render the lessons page of every skill with problem types (web static rendering). */
 export function generateStaticParams(): { id: string }[] {
-  return skillsWithTypes().map((id) => ({ id }));
+  return prerenderIds(skillsWithTypes()).map((id) => ({ id }));
 }
 
 /** A skill's lessons: the main lesson and one row for each problem type, in the skill's box. */

@@ -157,6 +157,11 @@ describeOrSkip('review dump', () => {
       lines.push(`=== ${l.id}${l.title ? ` — ${l.title}` : ''} [layout: ${l.kind}]`);
       if (l.use) lines.push(`use: ${l.use}`);
       for (const a of l.assumptions) lines.push(`assume: ${a}`);
+      if (l.kind === 'sort' || l.kind === 'sequence') {
+        // Text-only sorts and sequences need no screenshot (review-evidence.mjs reads this).
+        const figures = (l.kind === 'sort' ? l.cards : l.stages).filter((c) => c.figure).length;
+        lines.push(`figures: ${figures}${l.kind === 'sort' && l.header ? ' + header' : ''}`);
+      }
       if (l.kind === 'sort') {
         lines.push(`question: ${l.question}`);
         for (const b of l.bins) {

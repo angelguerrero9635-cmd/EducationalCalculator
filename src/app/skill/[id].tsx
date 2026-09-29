@@ -27,10 +27,11 @@ import { lessonIcons } from '@/data/icons';
 import { gradeLabel, SKILLS } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
 import { space, usePalette } from '@/theme';
+import { prerenderIds } from '@/data/prerender';
 
 /** Pre-render every skill page (web static rendering). */
 export function generateStaticParams(): { id: string }[] {
-  return [...SKILLS.map((s) => s.id), ...PROBLEM_TYPE_IDS].map((id) => ({ id }));
+  return prerenderIds([...SKILLS.map((s) => s.id), ...PROBLEM_TYPE_IDS]).map((id) => ({ id }));
 }
 
 export default function SkillScreen() {

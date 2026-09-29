@@ -5,10 +5,13 @@ import { DetailHeader, EmptyState, ModuleSections } from '@/components';
 import { LayoutView } from '@/components/module/layouts/LayoutView';
 import { GALLERY_LAYOUTS, GALLERY_MODULES } from '@/data/modules/gallery';
 import { usePalette } from '@/theme';
+import { prerenderIds } from '@/data/prerender';
 
 /** Pre-render every gallery page (web static rendering; not listed in the sitemap). */
 export function generateStaticParams(): { id: string }[] {
-  return [...GALLERY_MODULES, ...GALLERY_LAYOUTS].map((m) => ({ id: m.id }));
+  return prerenderIds([...GALLERY_MODULES, ...GALLERY_LAYOUTS].map((m) => m.id)).map((id) => ({
+    id,
+  }));
 }
 
 /** One picture kind from the gallery, on the same page layout as a lesson. */
