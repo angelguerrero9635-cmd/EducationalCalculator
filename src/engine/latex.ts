@@ -155,13 +155,17 @@ function italics(segs: Seg[], symbols: string[], products: boolean): Seg[] {
 /** Divisions drawn stacked (a ÷ b), inside `segs`. */
 function divisions(segs: Seg[], band: MathBand, symbols: string[]): Seg[] {
   const div = new RegExp(String.raw`(?<a>${OPERAND}) ÷ (?<b>${OPERAND})`, 'gu');
-  return pass(
-    segs,
-    div,
-    (m) =>
-      `\\divfrac{${innerTex(m.groups!.a!, band, symbols)}}{${innerTex(m.groups!.b!, band, symbols)}}`,
+  return pass(segs, div, (m) =>
+    // A long top (a sum of eight distances) stays plain text that wraps: stacked, it is
+    // wider than a phone.
+    m.groups!.a!.length > MAX_STACKED
+      ? undefined
+      : `\\divfrac{${innerTex(m.groups!.a!, band, symbols)}}{${innerTex(m.groups!.b!, band, symbols)}}`,
   );
 }
+
+/** The longest top a division is drawn stacked with, in characters. */
+const MAX_STACKED = 28;
 
 /** A fragment (inside a fraction, a root or a power) wholly as math. */
 function innerTex(s: string, band: MathBand, symbols: string[], divide = false): string {

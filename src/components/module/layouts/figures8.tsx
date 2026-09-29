@@ -327,9 +327,9 @@ export function MagnetsFigure({
   );
 }
 
-/** Row by row, left to right, as they go out from the sun (the moon beside Earth). */
+/** Row by row, left to right, as they go out from the sun (the moon under Earth). */
 const ROWS: PlanetName[][] = [
-  ['mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter'],
+  ['mercury', 'venus', 'earth', 'mars', 'jupiter'],
   ['saturn', 'uranus', 'neptune'],
 ];
 
@@ -370,9 +370,11 @@ export function PlanetsFigure({ planets }: { planets: NonNullable<Scene['planets
           i: number;
         }[] = [];
         ROWS[0]!.forEach((name, i) => {
-          const x = name === 'jupiter' ? x0 + small * 5 + 4 + jupR : x0 + small * i;
+          const x = name === 'jupiter' ? x0 + small * 4 + 4 + jupR : x0 + small * i;
           place.push({ name, x, y: yA, r: px(name), row: 0, i });
         });
+        // The moon goes round Earth, so it sits under Earth, not in the row of planets.
+        place.push({ name: 'moon', x: x0 + small * 2, y: yA + 58, r: px('moon'), row: 0, i: 0 });
         const ringR = (SATURN_RING_KM / RADIUS_KM.earth) * R;
         const sx = sunW + margin + ringR;
         const ux = sx + ringR + gap + px('uranus');

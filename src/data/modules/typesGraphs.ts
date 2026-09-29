@@ -27,11 +27,11 @@ export interface LinearFunctionSpec {
   /** 4 (default) or the first quadrant only (a context: hours, dollars). */
   quadrants?: 1 | 4;
   /** Axis names for a context, e.g. { x: 'Hours', y: 'Cost ($)' }. */
+  axes?: { x?: string; y?: string };
   /** Typed values held while the line is dragged (see `LineOf.keep`). */
   keep?: string[];
   /** No handles: every value on the line is worked out from points the student typed. */
   fixed?: boolean;
-  axes?: { x?: string; y?: string };
 }
 
 /**

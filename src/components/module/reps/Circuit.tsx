@@ -186,6 +186,7 @@ export function Circuit({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   sheen={ids.sheen}
                   faded={!rep.known(spec.voltage)}
                 />
+                {/* "6 V", not "V = 6 V": the letter and the unit are the same. */}
                 <ChartText
                   x={bx + 18}
                   y={midY + 4}
@@ -193,7 +194,9 @@ export function Circuit({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fontWeight="700"
                   opacity={rep.known(spec.voltage) ? 1 : 0.45}
                 >
-                  {rep.label(spec.voltage)}
+                  {rep.variable(spec.voltage).symbol === rep.unit(spec.voltage)
+                    ? rep.value(spec.voltage)
+                    : rep.label(spec.voltage)}
                 </ChartText>
 
                 <KnifeSwitch x0={sw.x0} x1={sw.x1} y={topY} closed={on} faded={!switchKnown} />

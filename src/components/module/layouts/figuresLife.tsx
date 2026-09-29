@@ -316,7 +316,7 @@ export function LeafCellFigure({
   );
   if (scene.process === 'photosynthesis') {
     return (
-      <Board height={290}>
+      <Board height={302}>
         <G>
           {defs}
           <SunDisk x={44} y={44} r={18} ball={ids.sun} c={c} />
@@ -363,7 +363,8 @@ export function LeafCellFigure({
             anchor="end"
             {...flow('oxygen')}
           />
-          <WordEquation {...PHOTO} y={282} over="light" c={c} />
+          {/* Low enough that "light" over its arrow clears the sugar arrow's tip. */}
+          <WordEquation {...PHOTO} y={294} over="light" c={c} />
         </G>
       </Board>
     );
@@ -581,8 +582,9 @@ const CARBON: {
     a: [254, 124],
     b: [250, 44],
     label: 'burning',
-    at: [258, 90],
-    anchor: 'start',
+    // Left of its arrow: to the right the ocean's arrows pass.
+    at: [246, 84],
+    anchor: 'end',
   },
   {
     process: 'dissolving',

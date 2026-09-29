@@ -328,22 +328,43 @@ export function Caption({ children }: { children: string }) {
     .split(/\s+·\s+|(?<=[.!?])\s+(?=[A-Z0-9“(])/)
     .map((x) => x.trim())
     .filter(Boolean);
+  const chainOf = (sentence: string) => {
+    const bare = sentence.replace(/[.]$/, '');
+    const parts = bare.split(' = ');
+    return parts.length > 2 && isNumberSentence(bare) ? parts : undefined;
+  };
+  // Worked chains side by side in the list share one left edge, so three blocks of work
+  // start at the same indent instead of each centred on its own.
+  const runs: string[][][] = [];
+  const items: (string | number)[] = [];
+  sentences.forEach((sentence) => {
+    const chain = chainOf(sentence);
+    if (!chain) items.push(sentence);
+    else if (typeof items[items.length - 1] === 'number') runs[runs.length - 1]!.push(chain);
+    else {
+      items.push(runs.length);
+      runs.push([chain]);
+    }
+  });
   return (
     <View style={captionStyles.block}>
-      {sentences.map((sentence, i) => {
-        const bare = sentence.replace(/[.]$/, '');
-        const parts = bare.split(' = ');
-        if (parts.length > 2 && isNumberSentence(bare)) {
+      {items.map((item, i) => {
+        if (typeof item === 'number') {
           return (
-            <View key={i} style={captionStyles.chain}>
-              {parts.map((part, k) => (
-                <Text key={k} style={[captionStyles.sentence, { color: c.text }]}>
-                  {k === 0 ? part : `= ${part}`}
-                </Text>
+            <View key={i} style={captionStyles.chains}>
+              {runs[item]!.map((parts, j) => (
+                <View key={j} style={captionStyles.chain}>
+                  {parts.map((part, k) => (
+                    <Text key={k} style={[captionStyles.sentence, { color: c.text }]}>
+                      {k === 0 ? part : `= ${part}`}
+                    </Text>
+                  ))}
+                </View>
               ))}
             </View>
           );
         }
+        const bare = item.replace(/[.]$/, '');
         return (
           <Text
             key={i}
@@ -352,7 +373,7 @@ export function Caption({ children }: { children: string }) {
               { color: c.text },
             ]}
           >
-            {sentence}
+            {item}
           </Text>
         );
       })}
@@ -362,6 +383,7 @@ export function Caption({ children }: { children: string }) {
 
 const captionStyles = StyleSheet.create({
   block: { alignItems: 'center', gap: 2, marginTop: space.sm, paddingHorizontal: space.lg },
+  chains: { alignItems: 'flex-start', gap: 4 },
   chain: { alignItems: 'flex-start', gap: 1 },
   sentence: {
     fontSize: font.body + 1,

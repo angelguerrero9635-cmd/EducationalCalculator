@@ -88,7 +88,10 @@ function pack(
   const scale = Math.min(26, (tight * 0.86) / u);
   if (state === 'solid' || state === 'liquid') {
     const s = state === 'solid' ? Math.min(tight, u * scale * 1.08) : tight;
-    const cols = Math.max(1, Math.floor(box.w / s));
+    const most = Math.max(1, Math.floor(box.w / s));
+    // A solid is a block as near square as fits (16 salt units 4 × 4, not 5 + 5 + 5 + 1).
+    let cols = state === 'solid' ? Math.min(most, Math.ceil(Math.sqrt(n))) : most;
+    while (cols < most && Math.ceil(n / cols) * s > box.h) cols++;
     const x0 = box.x + (box.w - cols * s) / 2;
     return {
       scale,

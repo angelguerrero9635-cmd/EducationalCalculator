@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, G, Line, Path } from 'react-native-svg';
 
 import type { LinearFunctionSpec, LineSystemSpec } from '@/data/modules/typesGraphs';
+import { dollarsOf, formatNumber, unitFor } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -26,6 +27,16 @@ import {
 const riseRun = (m: number) => {
   const f = toFraction(m, 10);
   return f ? { run: f[1], rise: f[0] } : { run: 1, rise: m };
+};
+
+/**
+ * The intercept chip's y: below the point when `below`, else above, but never on the x-axis
+ * numbers (a row about 16 px under the axis); there it takes the other side.
+ */
+const chipY = (y: number, axisY: number, below: boolean, q1: boolean) => {
+  const at = (under: boolean) => y + (under ? 20 : -9);
+  const onNumbers = (cy: number) => !q1 && cy > axisY - 4 && cy < axisY + 24;
+  return onNumbers(at(below)) && !onNumbers(at(!below)) ? at(!below) : at(below);
 };
 
 /** A chip's width, as `Chip` draws it. */
@@ -235,7 +246,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                         quadrant, where the left edge is the axis). */}
                     <Chip
                       x={f.sx(0) + (q1 ? 14 : -12)}
-                      y={f.sy(b.value) + (m.value >= 0 === q1 ? 20 : -9)}
+                      y={chipY(f.sy(b.value), f.sy(0), m.value >= 0 === q1, q1)}
                       text={`(0, ${b.known ? coef(b.value) : '?'})`}
                       anchor={q1 ? 'start' : 'end'}
                       w={w}
@@ -414,7 +425,13 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   else if (!spec.solution && lines.every((l) => l.b.value === 0)) {
     // Two rates through (0, 0): the steeper line is the bigger rate.
     const [hi, lo] = p.m.value >= q.m.value ? [0, 1] : [1, 0];
-    result = `${names[hi]} is steeper: it has the bigger rate, ${coef(lines[hi]!.m.value)} for each 1 across against ${coef(lines[lo]!.m.value)}.`;
+    // With named axes the rate is said in them: "$24.50 per cubic yard against $8.75".
+    const per = spec.axes?.x ? unitFor(1, spec.axes.x.toLowerCase()) : undefined;
+    const rate = (m: number) =>
+      spec.axes?.y?.includes('($)') ? dollarsOf(m, formatNumber(m)) : coef(m);
+    result = per
+      ? `${names[hi]} is steeper: it has the bigger rate, ${rate(lines[hi]!.m.value)} per ${per} against ${rate(lines[lo]!.m.value)}.`
+      : `${names[hi]} is steeper: it has the bigger rate, ${coef(lines[hi]!.m.value)} for each 1 across against ${coef(lines[lo]!.m.value)}.`;
   } else if (cross)
     result = `They cross at ${pointText(cross.x, cross.y)}${far ? ', off this grid' : ''}. ${lines.map((l) => worked(l.m.value, cross.x, l.b.value)).join(' · ')}`;
   else result = '';

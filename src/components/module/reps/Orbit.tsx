@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, Defs, G, Line, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
+import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -78,7 +79,13 @@ export function Orbit({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const moonA = (60 * Math.PI) / 180;
           const mx = px + moonR * Math.cos(moonA);
           const my = py + moonR * Math.sin(moonA);
-          const pullText = rep.label(spec.pull);
+          // The pull to 3 figures, in Earth's pull (55.6, not 55.5556).
+          const pullText = rep.known(spec.pull)
+            ? `${rep.variable(spec.pull).symbol} = ${formatNumber(Number(F.toPrecision(3)))} × Earth’s pull`
+            : rep.label(spec.pull);
+          // Close to the sun the arrow is short: its label goes in the bottom corner, off the
+          // orbit and the planet.
+          const pullCorner = orbitR < 70;
           const dText = rep.label(spec.distance);
           // The distance label beside the line to the sun (below it), the pull's above its arrow.
           const [nx, ny] = [-uy, ux];
@@ -197,8 +204,10 @@ export function Orbit({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     head(ax + ux * 8, ay + uy * 8, ux, uy, c.chartHighlight)
                   ) : null}
                   <ChartText
-                    {...fitLabel(pullX, pullText, chart.label, w, 'end')}
-                    y={pullY}
+                    {...(pullCorner
+                      ? { x: 6, textAnchor: 'start' as const }
+                      : fitLabel(pullX, pullText, chart.label, w, 'end'))}
+                    y={pullCorner ? h - 8 : pullY}
                     fontSize={chart.label}
                     fontWeight="700"
                     fill={c.chartHighlight}
@@ -236,7 +245,12 @@ export function Orbit({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 ) : null}
                 {/* Which planet, and its mass, in the corner. */}
                 <ChartText x={6} y={14} fontSize={chart.label} fontWeight="700">
-                  {PLANET_LABEL[planet]}
+                  {/* Earth only at Earth's distance and mass; any other is "Planet". */}
+                  {spec.planet ||
+                  (Math.abs(d - 1) < 1e-9 &&
+                    (!spec.mass || Math.abs(rep.val(spec.mass) - 1) < 1e-9))
+                    ? PLANET_LABEL[planet]
+                    : 'Planet'}
                 </ChartText>
                 {spec.mass ? (
                   <ChartText
