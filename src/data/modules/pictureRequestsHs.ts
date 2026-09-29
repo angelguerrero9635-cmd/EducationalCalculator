@@ -610,13 +610,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Pedigree: sex-linked carriers (half-shaded). Drawn (group HG, reps/PunnettHs.tsx, boxes from punnettMath.ts). An optional field on punnettSquare; without it the Grade 7 square is unchanged. first/second stay the parents’ counts of dominant alleles. inheritance: { pattern: "dihybrid", firstB, secondB (the second gene’s counts), letterB: "Y", names?: [both dominant, first only, second only, neither] } draws the parents’ four gametes each way and 16 boxes colored by phenotype with a counted key (9:3:3:1); dominant = boxes of 16 with both dominant traits, recessive? = neither. { pattern: "incomplete" | "codominant", alleles?: ["R", "W"] (drawn Cᴿ, Cᵂ with letter "C"), names?: ["red", "pink", "white"], middle?: the heterozygote boxes } colors red, pink (a blend) or red patches on white (roan); dominant = first-allele homozygotes, recessive? = second-allele homozygotes. { pattern: "xLinked", carriers?: id } takes first = mother (0–2 Xᴬ), second = father (0–1): Xᴬ/Xᵃ and Y across the top, each box a daughter or son, the affected filled, carrier daughters half-shaded; dominant = boxes without the trait, recessive? = with it. The harness recounts each from the parents (product rule, sons from the mother). Example: { kind: "punnettSquare", first: "m", second: "f", dominant: "t", recessive: "r", letter: "B", inheritance: { pattern: "xLinked", carriers: "k" } }. Pedigrees needed no change: X-linked genotypes are written "XᴮXᵇ", "XᵇY" with carriers half-filled (family.carriers); the harness now checks every pedigree’s genotypes against its symbols and parents (no male carriers of X-linked alleles, a son’s X from his mother).',
   },
-  ask(
-    'H36',
-    'dnaStrand',
-    'DNA ladder from a base sequence, its complement, the mRNA, codons and the amino acids',
-    ['s.9.dna-protein-synthesis', 's.9.biotechnology'],
-    'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein.',
-  ),
+  {
+    ...ask(
+      'H36',
+      'dnaStrand',
+      'DNA ladder from a base sequence, its complement, the mRNA, codons and the amino acids',
+      ['s.9.dna-protein-synthesis', 's.9.biotechnology'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-dna-protein-synthesis-chargaff',
+      'g.s9-dna-protein-synthesis-codons',
+      'g.s9-biotechnology-substitution',
+      'g.s9-biotechnology-nonsense',
+      'g.s9-biotechnology-insertion',
+      'g.s9-biotechnology-deletion',
+    ],
+    notes:
+      'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein. Drawn (group HG, reps/DnaStrand.tsx, the standard codon table and rules in dnaMath.ts). Calculator picture { kind: "dnaStrand", sequence: the template strand, up to 12 of A T G C, drawn 3′ to 5′ ("TACCGGTTCATT"), length?: bases drawn (number or variable), show?: ["mrna", "protein"] (default both), mutation?: { type: "substitution" | "insertion" | "deletion", at: base number (number or variable), base?: the new base (a substitution defaults to the transition A↔G, C↔T; an insertion to A) }, codons?: a variable holding the complete codons (checked); or percentA: a variable and pairs?: 10 for Chargaff’s rule (a ladder of whole pairs, A = T, G = C; a percent that isn’t whole bases draws faded) }. The ladder shows both backbones, 2 hydrogen bonds per A–T rung and 3 per G–C; the mRNA (U for T) with codons bracketed; amino acid chips from the codon table, Stop in outline. With a mutation the changed base is ringed (a caret where a base was deleted), the protein is shown before and after with changed amino acids lit, and the caption names silent, missense, nonsense or frameshift. The harness checks the codon table (64 codons, 6 for Leu, Ser, Arg, 3 stops, AUG = Met), the transcription, the codon count, the mutation position and length, and Chargaff’s counts. Step text may say “the codon holding base {p}” (⌈p ÷ 3⌉, phrasesHsg.ts). Example: representation: { kind: "dnaStrand", sequence: "TACCGGTTCATT", mutation: { type: "substitution", at: "p" } }.',
+  },
   ask(
     'H37',
     'gel',

@@ -186,8 +186,44 @@ export interface MembraneSpec {
   gradient?: string;
 }
 
+// ─── H36 dnaStrand (calculator picture) ──────────────────────────────────────
+
+/**
+ * A DNA ladder from a base sequence (up to 12 pairs, 13 with an insertion): the template strand
+ * on top (written 3′ to 5′, the way it is read), its complement under it with two hydrogen bonds
+ * for A–T and three for G–C, the mRNA transcribed from the template (U for T), its codons
+ * bracketed and each codon's amino acid from the standard codon table (Stop ends the chain).
+ *
+ * - `sequence`: the template strand, A, T, G and C ("TACCGGTTCATT").
+ * - `length`: bases drawn from the start (a number or a variable; default all).
+ * - `show`: the rows past the ladder (default all: the mRNA and the protein).
+ * - `mutation`: a substitution (to `base`; default the transition A↔G, C↔T), an insertion (of
+ *   `base`, default A) or a deletion at base `at`
+ *   (1 = the first, a number or a variable). The mutated strand is drawn with the change lit, and
+ *   the protein before and after, the changed amino acids lit; the caption names the effect
+ *   (silent, missense, nonsense or frameshift).
+ * - `percentA`: Chargaff's rule instead of a sequence: `pairs` (default 10) base pairs with A
+ *   (and so T) this percent of the bases, G and C the rest; a percent that isn't a whole number
+ *   of bases draws faded.
+ * - `codons`: a variable holding the complete codons drawn (checked).
+ */
+export interface DnaStrandSpec {
+  kind: 'dnaStrand';
+  sequence?: string;
+  length?: NumOrVar;
+  show?: ('mrna' | 'protein')[];
+  mutation?: {
+    type: 'substitution' | 'insertion' | 'deletion';
+    at: NumOrVar;
+    base?: 'A' | 'T' | 'G' | 'C';
+  };
+  percentA?: NumOrVar;
+  pairs?: number;
+  codons?: string;
+}
+
 /** Group HG's calculator pictures. */
-export type HsgSpec = MembraneSpec;
+export type HsgSpec = MembraneSpec | DnaStrandSpec;
 
 /** Every variable id a group-HG picture reads (for modules.test.ts). */
 export function hsgSpecVars(r: HsgSpec): string[] {
@@ -196,5 +232,7 @@ export function hsgSpecVars(r: HsgSpec): string[] {
   switch (r.kind) {
     case 'membrane':
       return ids([r.outside, r.inside, r.moved, r.atp, r.gradient]);
+    case 'dnaStrand':
+      return ids([r.length, r.mutation?.at, r.percentA, r.codons]);
   }
 }

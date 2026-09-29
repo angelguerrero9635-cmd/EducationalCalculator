@@ -5,6 +5,13 @@
 import { MEMBRANE_MAX, MOVED_MAX, flowOf } from '@/components/module/reps/membraneMath';
 
 import {
+  CODON_TABLE,
+  chargaffPairs,
+  effectOf,
+  mutate,
+  transcribe,
+} from '@/components/module/reps/dnaMath';
+import {
   dihybridBoxes,
   dihybridCounts,
   monoBoxes,
@@ -138,6 +145,84 @@ export function hsgIssues(rep: HsgSpec, val: (id: string) => number | undefined)
       }
       break;
     }
+    case 'dnaStrand':
+      out.push(...dnaIssues(rep, num));
+      break;
+  }
+  return out;
+}
+
+/** Amino acids with 6, 4, 3 and 1 codons in the standard code (and the 3 stops). */
+const CODONS_PER: Record<string, number> = {
+  Leu: 6,
+  Ser: 6,
+  Arg: 6,
+  Ala: 4,
+  Gly: 4,
+  Pro: 4,
+  Thr: 4,
+  Val: 4,
+  Ile: 3,
+  Stop: 3,
+  Met: 1,
+  Trp: 1,
+};
+const PAIRS: Record<string, string> = { A: 'T', T: 'A', G: 'C', C: 'G' };
+
+function dnaIssues(
+  rep: Extract<HsgSpec, { kind: 'dnaStrand' }>,
+  num: (x: string | number | undefined) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  // The table itself: 64 codons, AUG is Met, the stops, and the known codon counts.
+  const entries = Object.entries(CODON_TABLE);
+  if (entries.length !== 64) out.push(`dna: the codon table has ${entries.length} codons`);
+  for (const [aa, n] of Object.entries(CODONS_PER)) {
+    const k = entries.filter(([, a]) => a === aa).length;
+    if (k !== n) out.push(`dna: ${aa} has ${k} codons in the table, not ${n}`);
+  }
+  if (['UAA', 'UAG', 'UGA'].some((s) => CODON_TABLE[s] !== 'Stop') || CODON_TABLE.AUG !== 'Met')
+    out.push('dna: the start or stop codons are wrong');
+  if (rep.percentA !== undefined) {
+    const p = num(rep.percentA);
+    if (p === undefined) return out;
+    const pairs = rep.pairs ?? 10;
+    const ladder = chargaffPairs(p, pairs);
+    if (ladder) {
+      const bases = ladder.flat();
+      const n = (b: string) => bases.filter((x) => x === b).length;
+      if (n('A') !== n('T') || n('G') !== n('C')) out.push('dna: the ladder breaks A = T, G = C');
+      if (Math.abs((100 * n('A')) / bases.length - p) > 1e-9)
+        out.push(`dna: the ladder has ${n('A')} A of ${bases.length}, not ${p}%`);
+      if (ladder.some(([a, b]) => PAIRS[a] !== b)) out.push('dna: a rung pairs the wrong bases');
+    }
+    return out;
+  }
+  const seq = rep.sequence ?? '';
+  if (!/^[ATGC]{1,12}$/.test(seq)) out.push(`dna: sequence "${seq}" is not 1–12 bases`);
+  const len = num(rep.length) ?? seq.length;
+  if (len < 0 || len > seq.length || !whole(len))
+    out.push(`dna: length ${len} of a ${seq.length}-base sequence`);
+  const template = seq.slice(0, len);
+  // Transcription by the pairing rule, read here base by base.
+  const mrna = [...template].map((b) => (b === 'A' ? 'U' : PAIRS[b])).join('');
+  if (mrna !== transcribe(template))
+    out.push(`dna: mRNA ${transcribe(template)}, expected ${mrna}`);
+  const codons = rep.codons ? num(rep.codons) : undefined;
+  if (codons !== undefined && codons !== Math.floor(len / 3))
+    out.push(`dna: ${codons} codons, the strand has ${Math.floor(len / 3)}`);
+  const m = rep.mutation;
+  const at = m ? num(m.at) : undefined;
+  if (m && at !== undefined) {
+    const max = m.type === 'insertion' ? len + 1 : len;
+    if (at < 1 || at > max || !whole(at)) out.push(`dna: mutation at base ${at} of ${len}`);
+    if (m.type === 'substitution' && m.base === template[at - 1])
+      out.push(`dna: substituting ${m.base} for itself at base ${at}`);
+    const after = mutate(template, { type: m.type, at, base: m.base });
+    const want = len + (m.type === 'insertion' ? 1 : m.type === 'deletion' ? -1 : 0);
+    if (after.length !== want) out.push(`dna: the mutated strand has ${after.length} bases`);
+    if (m.type !== 'substitution' && effectOf(template, { type: m.type, at }) !== 'frameshift')
+      out.push('dna: an insertion or deletion not read as a frameshift');
   }
   return out;
 }

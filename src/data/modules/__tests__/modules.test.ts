@@ -466,6 +466,7 @@ function representationVars(r: Representation): string[] {
     case 'matrixGrid':
       return hsdSpecVars(r);
     case 'membrane':
+    case 'dnaStrand':
       return hsgSpecVars(r);
   }
 }

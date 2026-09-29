@@ -825,7 +825,183 @@ const X_PEDIGREE: LayoutDef = {
   ],
 };
 
-export const HSG_GALLERY_MODULES: ModuleDef[] = [...MEMBRANE_DEMOS, ...PUNNETT_DEMOS];
+// ─── H36 dnaStrand ───────────────────────────────────────────────────────────
+
+/** A short gene's template strand: mRNA AUG GCC AAG UAA, Met–Ala–Lys–Stop. */
+const GENE = 'TACCGGTTCATT';
+
+/** y = x, both ways. */
+const equal = (y: string, x: string, how: string): Rule => ({
+  relation: {
+    id: `${y} = ${x}`,
+    display: `{${y}} = {${x}}`,
+    vars: [y, x],
+    residual: (v) => v[y]! - v[x]!,
+    solve: { [y]: (v) => v[x]!, [x]: (v) => v[y]! },
+  },
+  steps: { [y]: { expr: `{${x}}`, how }, [x]: { expr: `{${y}}`, how } },
+});
+
+/** c = ⌈p ÷ 3⌉: the codon a base falls in (forward only). */
+const codonOf: Rule = {
+  relation: {
+    id: 'c = ⌈p ÷ 3⌉',
+    display: '{c} = ⌈{p}/3⌉',
+    vars: ['c', 'p'],
+    residual: (v) => v.c! - Math.ceil(v.p! / 3),
+    solve: { c: (v) => Math.ceil(v.p! / 3), p: () => undefined },
+  },
+  steps: {
+    c: {
+      expr: 'the codon holding base {p}',
+      how: 'Bases 1 to 3 are codon 1, bases 4 to 6 codon 2, and so on: divide by 3 and round up.',
+    },
+  },
+};
+
+const mutationDemo = (
+  id: string,
+  title: string,
+  use: string,
+  type: 'substitution' | 'insertion' | 'deletion',
+  p: number,
+  extra: string,
+  base?: 'A' | 'T' | 'G' | 'C',
+  allowed?: number[],
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions: [
+    `The template strand is ${GENE}; its mRNA AUG GCC AAG UAA codes Met–Ala–Lys, then stop.`,
+    'Bases are numbered from 1 along the template strand.',
+    extra,
+  ],
+  variables: [
+    {
+      ...count('p', 'p', 'Base changed', 1, type === 'insertion' ? 13 : 12),
+      ...(allowed ? { allowed } : {}),
+    },
+    { ...count('c', 'c', 'Codon changed', 1, 5), derived: true },
+  ],
+  ...rules(codonOf),
+  example: { p, c: Math.ceil(p / 3) },
+  startWith: ['p'],
+  representation: {
+    kind: 'dnaStrand',
+    sequence: GENE,
+    mutation: { type, at: 'p', ...(base ? { base } : {}) },
+  },
+});
+
+const DNA_DEMOS: ModuleDef[] = [
+  {
+    id: 'g.s9-dna-protein-synthesis-chargaff',
+    title: 'Base pairing: Chargaff’s rule',
+    use: 'Use this for the percent of each base in DNA from the percent of one.',
+    assumptions: [
+      'In DNA, A always pairs with T and G with C, so there is as much A as T and as much G as C.',
+      'The four percents add to 100%.',
+      'The ladder shows 10 base pairs, 20 bases, so it draws percents in steps of 5%.',
+    ],
+    variables: [
+      { id: 'A', symbol: 'A', name: 'Adenine', unit: '%', min: 0, max: 50, step: 5, multipleOf: 5 },
+      { id: 'T', symbol: 'T', name: 'Thymine', unit: '%', min: 0, max: 50, step: 5 },
+      { id: 'G', symbol: 'G', name: 'Guanine', unit: '%', min: 0, max: 50, step: 5 },
+      { id: 'C', symbol: 'C', name: 'Cytosine', unit: '%', min: 0, max: 50, step: 5 },
+    ],
+    ...rules(
+      equal('T', 'A', 'Every A pairs with a T, so there are as many.'),
+      {
+        relation: {
+          id: 'G = 50 − A',
+          display: '{G} = 50 − {A}',
+          vars: ['G', 'A'],
+          residual: (v) => v.G! - (50 - v.A!),
+          solve: { G: (v) => 50 - v.A!, A: (v) => 50 - v.G! },
+        },
+        steps: {
+          G: {
+            expr: '50 − {A}',
+            how: 'A and T take 2 × A of the 100%; G and C share the rest equally: (100 − 2A)/2 = 50 − A.',
+          },
+          A: { expr: '50 − {G}', how: 'A and G together are half the bases.' },
+        },
+      },
+      equal('C', 'G', 'Every G pairs with a C, so there are as many.'),
+    ),
+    example: { A: 30, T: 30, G: 20, C: 20 },
+    startWith: ['A'],
+    representation: { kind: 'dnaStrand', percentA: 'A', pairs: 10 },
+  },
+  {
+    id: 'g.s9-dna-protein-synthesis-codons',
+    title: 'Transcription and translation',
+    use: 'Use this for the mRNA and the amino acids a DNA template codes for.',
+    assumptions: [
+      'Transcription: the mRNA pairs with the template strand, with U in place of T.',
+      'Translation: each three mRNA bases, a codon, code for one amino acid. AUG starts; UAA, UAG and UGA stop.',
+      `The template here is ${GENE}.`,
+    ],
+    variables: [
+      { ...count('n', 'n', 'Bases read', 3, 12), multipleOf: 3 },
+      { ...count('k', 'k', 'Codons', 1, 4), derived: true },
+    ],
+    ...rules({
+      relation: {
+        id: 'k = n ÷ 3',
+        display: '{k} = {n}/3',
+        vars: ['k', 'n'],
+        residual: (v) => 3 * v.k! - v.n!,
+        solve: { k: (v) => v.n! / 3, n: (v) => 3 * v.k! },
+      },
+      steps: {
+        k: { expr: '{n}/3', how: 'Each codon is three bases.' },
+        n: { expr: '3 × {k}', how: 'Three bases for each codon.' },
+      },
+    }),
+    example: { n: 12, k: 4 },
+    startWith: ['n'],
+    representation: { kind: 'dnaStrand', sequence: GENE, length: 'n', codons: 'k' },
+  },
+  mutationDemo(
+    'g.s9-biotechnology-substitution',
+    'A point mutation',
+    'Use this for a one-base substitution and whether it changes the protein.',
+    'substitution',
+    4,
+    'Each base changed here swaps A with G or C with T. Try base 6 (silent) and base 4 (missense).',
+  ),
+  mutationDemo(
+    'g.s9-biotechnology-nonsense',
+    'A nonsense mutation',
+    'Use this for a substitution that turns a codon into a stop.',
+    'substitution',
+    7,
+    'The base changed becomes an A. At base 7 the codon AAG becomes the stop UAG.',
+    'A',
+    [1, 3, 4, 5, 6, 7, 8, 9, 11, 12],
+  ),
+  mutationDemo(
+    'g.s9-biotechnology-insertion',
+    'An insertion',
+    'Use this for an extra base and the frameshift it causes.',
+    'insertion',
+    5,
+    'An A is inserted before the base numbered; at 13 it goes on the end.',
+    'A',
+  ),
+  mutationDemo(
+    'g.s9-biotechnology-deletion',
+    'A deletion',
+    'Use this for a missing base and the frameshift it causes.',
+    'deletion',
+    5,
+    'Every codon after a deleted base is read in a new frame.',
+  ),
+];
+
+export const HSG_GALLERY_MODULES: ModuleDef[] = [...MEMBRANE_DEMOS, ...PUNNETT_DEMOS, ...DNA_DEMOS];
 export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [
   MACRO_LAYOUT,
   TONICITY_SORT,

@@ -2019,6 +2019,7 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)));
       break;
     case 'membrane':
+    case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
       break;
     case 'table':
