@@ -1,6 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
-import type { CladeScene, CladeTrait, CladeTree } from '../typesHsh';
+import type { CladeScene, CladeTrait, CladeTree, LoopScene, NitrogenProcess } from '../typesHsh';
 import type { Round3Icon } from './icons';
 
 /**
@@ -326,7 +326,11 @@ export type Figure =
   /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
   | { kind: 'doubleCone' }
   /** A cladogram with its shared derived traits marked where they appear (HS group H). */
-  | { kind: 'cladogram'; tree: CladeTree; traits: CladeTrait[] };
+  | { kind: 'cladogram'; tree: CladeTree; traits: CladeTrait[] }
+  /** The nitrogen cycle: air, a bean plant with root nodules, lightning, the soil's forms (H40). */
+  | { kind: 'nitrogenCycle' }
+  /** A feedback loop: stimulus, sensor, control center, effector, response, and back (H41). */
+  | { kind: 'feedbackLoop' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -455,6 +459,10 @@ export interface Scene {
   study?: StudyScene;
   /** The trait lit and the taxa ringed (a `cladogram` figure). */
   clade?: CladeScene;
+  /** The process lit (a `nitrogenCycle` figure); with none, the whole cycle. */
+  nitrogen?: { process?: NitrogenProcess };
+  /** The loop's steps, its sign and the step lit (a `feedbackLoop` figure). */
+  loop?: LoopScene;
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */

@@ -75,6 +75,12 @@ Archaea`, `domain Eukarya`, `kingdom Protista`, `kingdom Fungi`, `kingdom Planta
 Animalia`). Explore figure `cladogram` (`layouts/cladogramFigure.tsx`): `{ tree, traits }`, a
 tree of taxon names as nested lists and each trait's taxa (one clade) marked as a numbered bar
 on the branch into it; a scene's `clade: { lit?, ring? }` lights a trait's clade or rings taxa.
+Primary succession stage icons (`bare rock`, `lichens on rock`, `mosses and thin soil`, `grasses
+and flowers`, `shrubs`, `young trees`, `mature forest`). Explore figures `nitrogenCycle`
+(`layouts/nitrogenCycleFigure.tsx`; `nitrogen: { process? }` lights fixation, lightning,
+nitrification, assimilation, eating, ammonification or denitrification) and `feedbackLoop`
+(`layouts/feedbackLoopFigure.tsx`; `loop: { steps, sign, lit?, back? }`, the scene's own words
+in 3 to 6 boxes and the arrow back marked − or +).
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

@@ -352,6 +352,159 @@ const alleleCounts: ModuleDef = {
   representation: { kind: 'alleleFrequencies', p: 'p', q: 'q', fixed: true },
 };
 
+// ── H40 energyPyramid: biomass and numbers ──
+
+/** b = a × k (÷ d): one level from the one below. */
+function scaled(
+  b: string,
+  a: string,
+  k: string,
+  div100: boolean,
+  how: [string, string, string],
+): Rel {
+  const f = div100 ? 100 : 1;
+  const tail = div100 ? ' ÷ 100' : '';
+  return {
+    relation: {
+      id: `${b} = ${a} × ${k}${tail}`,
+      display: `{${b}} = {${a}} × {${k}}${tail}`,
+      vars: [b, a, k],
+      residual: (v: Values) => v[b]! * f - v[a]! * v[k]!,
+      solve: {
+        [b]: (v: Values) => (v[a]! * v[k]!) / f,
+        [a]: (v: Values) => div(v[b]! * f, v[k]!),
+        [k]: (v: Values) => div(v[b]! * f, v[a]!),
+      },
+    },
+    steps: {
+      [b]: { expr: `{${a}} × {${k}}${tail}`, how: how[0] },
+      [a]: { expr: `{${b}}${div100 ? ' × 100' : ''} ÷ {${k}}`, how: how[1] },
+      [k]: { expr: `{${b}}${div100 ? ' × 100' : ''} ÷ {${a}}`, how: how[2] },
+    },
+  };
+}
+
+const PASS_HOW: [string, string, string] = [
+  'Only that percent of the level below becomes this level.',
+  'Undo taking the percent: multiply by 100 and divide by it.',
+  'This level as a percent of the level below.',
+];
+
+const mass = (id: string, symbol: string, name: string, derived = false) =>
+  V(id, symbol, name, { unit: 'g/m²', min: 0.01, max: 100000, step: 1, derived });
+
+const biomassPyramid: ModuleDef = {
+  id: 'g.s9-ecosystem-dynamics-biomass',
+  title: 'Pyramid of biomass',
+  use: 'Use this for the dry mass of living things at each feeding level of a meadow.',
+  assumptions: [
+    'Biomass is the dry mass of living things in one square meter at one time.',
+    'Only about 10% of a level’s biomass is built into the level that eats it; the rest is burned for energy or never eaten.',
+    'So on land each level holds much less biomass than the one below.',
+  ],
+  variables: [
+    mass('B1', 'B₁', 'Biomass of the grass'),
+    V('p', 'p', 'Percent passed up', { unit: '%', min: 1, max: 30, step: 1 }),
+    mass('B2', 'B₂', 'Biomass of the grasshoppers'),
+    mass('B3', 'B₃', 'Biomass of the mice'),
+  ],
+  ...rels(scaled('B2', 'B1', 'p', true, PASS_HOW), scaled('B3', 'B2', 'p', true, PASS_HOW)),
+  example: { B1: 800, p: 10, B2: 80, B3: 8 },
+  startWith: ['B1', 'p'],
+  representation: {
+    kind: 'energyPyramid',
+    measure: 'biomass',
+    levels: ['B1', 'B2', 'B3'],
+    percent: 'p',
+    names: ['grass', 'grasshoppers', 'mice'],
+  },
+};
+
+const numbersPyramid: ModuleDef = {
+  id: 'g.s9-ecosystem-dynamics-numbers',
+  title: 'Pyramid of numbers',
+  use: 'Use this for how many organisms are at each feeding level, even when the pyramid is upside down.',
+  assumptions: [
+    'A pyramid of numbers counts the organisms at each level, whatever their size.',
+    'One big oak tree can feed thousands of caterpillars, so the bottom tier can be the narrowest.',
+    'Each songbird eats many caterpillars over the season, so there are far fewer birds.',
+  ],
+  variables: [
+    V('N1', 'N₁', 'Oak trees', { min: 1, max: 100, step: 1, integer: true }),
+    V('a', 'a', 'Caterpillars on each tree', { min: 1, max: 20000, step: 1, integer: true }),
+    V('N2', 'N₂', 'Caterpillars', { min: 1, max: 2000000, step: 1, integer: true }),
+    V('b', 'b', 'Caterpillars one bird eats', { min: 1, max: 5000, step: 1, integer: true }),
+    V('N3', 'N₃', 'Songbirds', { min: 0, max: 2000000, step: 1 }),
+  ],
+  ...rels(
+    scaled('N2', 'N1', 'a', false, [
+      'Every tree carries a caterpillars.',
+      'Split the caterpillars among the trees.',
+      'Share the caterpillars out per tree.',
+    ]),
+    {
+      relation: {
+        id: 'N3 = N2 ÷ b',
+        display: '{N3} = {N2} ÷ {b}',
+        vars: ['N3', 'N2', 'b'],
+        residual: (v: Values) => v.N3! * v.b! - v.N2!,
+        solve: {
+          N3: (v: Values) => div(v.N2!, v.b!),
+          N2: (v: Values) => v.N3! * v.b!,
+          b: (v: Values) => div(v.N2!, v.N3!),
+        },
+      },
+      steps: {
+        N3: {
+          expr: '{N2} ÷ {b}',
+          how: 'Each bird needs b caterpillars: how many birds they feed.',
+        },
+        N2: { expr: '{N3} × {b}', how: 'Every bird eats b caterpillars.' },
+        b: { expr: '{N2} ÷ {N3}', how: 'Share the caterpillars among the birds.' },
+      },
+    },
+  ),
+  example: { N1: 1, a: 4000, N2: 4000, b: 200, N3: 20 },
+  startWith: ['N1', 'a', 'b'],
+  representation: {
+    kind: 'energyPyramid',
+    measure: 'numbers',
+    levels: ['N1', 'N2', 'N3'],
+    names: ['oak tree', 'caterpillars', 'songbirds'],
+  },
+};
+
+const invertedBiomass: ModuleDef = {
+  id: 'g.s9-ecosystem-dynamics-ocean',
+  title: 'An upside-down pyramid of biomass',
+  use: 'Use this for an ocean food chain where the consumers outweigh the producers at one time.',
+  assumptions: [
+    'Phytoplankton divide so fast that they are eaten almost as soon as they grow.',
+    'At any one moment the zooplankton can outweigh them, though far more phytoplankton grow over a year.',
+    'So an ocean’s pyramid of biomass can stand upside down, while its pyramid of energy cannot.',
+  ],
+  variables: [
+    mass('P', 'P', 'Biomass of the phytoplankton'),
+    V('k', 'k', 'Zooplankton per gram of phytoplankton', { min: 0.01, max: 20, step: 0.1 }),
+    mass('Z', 'Z', 'Biomass of the zooplankton'),
+  ],
+  ...rels(
+    scaled('Z', 'P', 'k', false, [
+      'k grams of zooplankton for every gram of phytoplankton.',
+      'Divide the zooplankton by k.',
+      'Compare the two biomasses.',
+    ]),
+  ),
+  example: { P: 5, k: 4, Z: 20 },
+  startWith: ['P', 'k'],
+  representation: {
+    kind: 'energyPyramid',
+    measure: 'biomass',
+    levels: ['P', 'Z'],
+    names: ['phytoplankton', 'zooplankton'],
+  },
+};
+
 export const HSH_GALLERY_MODULES: ModuleDef[] = [
   gelCut,
   gelDouble,
@@ -361,6 +514,9 @@ export const HSH_GALLERY_MODULES: ModuleDef[] = [
   hardyWeinberg,
   hardyWeinbergRare,
   alleleCounts,
+  biomassPyramid,
+  numbersPyramid,
+  invertedBiomass,
 ];
 export const HSH_GALLERY_LAYOUTS: LayoutDef[] = [
   // ── H38: homologous limbs ──
@@ -565,6 +721,263 @@ export const HSH_GALLERY_LAYOUTS: LayoutDef[] = [
         label: 'A fish (animal)',
         bin: 'eukarya',
         figure: { kind: 'icon', icon: 'kingdom Animalia' },
+      },
+    ],
+  },
+  // ── H40: succession and the nitrogen cycle ──
+  {
+    id: 'g.s9-ecosystem-dynamics-succession',
+    title: 'Primary succession',
+    kind: 'sequence',
+    use: 'Use this for the order of communities that build up on new bare rock.',
+    assumptions: [
+      'Primary succession starts where there is no soil: new lava rock or rock left by a glacier.',
+      'Pioneer species such as lichens break down rock; their remains start a thin soil.',
+      'Each community changes the soil and shade so the next one can grow, until a stable mature forest.',
+    ],
+    question: 'Put the stages of primary succession in order.',
+    stages: [
+      { label: 'Bare rock', figure: { kind: 'icon', icon: 'bare rock' } },
+      { label: 'Lichens', figure: { kind: 'icon', icon: 'lichens on rock' } },
+      { label: 'Mosses', figure: { kind: 'icon', icon: 'mosses and thin soil' } },
+      { label: 'Grasses and flowers', figure: { kind: 'icon', icon: 'grasses and flowers' } },
+      { label: 'Shrubs', figure: { kind: 'icon', icon: 'shrubs' } },
+      { label: 'Young trees', figure: { kind: 'icon', icon: 'young trees' } },
+      { label: 'Mature forest', figure: { kind: 'icon', icon: 'mature forest' } },
+    ],
+  },
+  {
+    id: 'g.s9-ecosystem-dynamics-nitrogen',
+    title: 'The nitrogen cycle',
+    kind: 'explore',
+    use: 'Use this for how nitrogen moves between the air, the soil and living things.',
+    assumptions: [
+      'Air is mostly nitrogen gas, but plants and animals cannot use it in that form.',
+      'Bacteria and lightning turn it into forms plants take in; decomposers and other bacteria return it.',
+    ],
+    figure: { kind: 'nitrogenCycle' },
+    scenes: [
+      {
+        label: 'The whole cycle',
+        lines: [
+          'Nitrogen goes from the air into the soil, through living things and back to the air.',
+        ],
+        nitrogen: {},
+      },
+      {
+        label: 'Fixation',
+        lines: [
+          'Bacteria in the root nodules of beans and clover turn nitrogen gas into ammonium.',
+          'This is nitrogen fixation, the main way nitrogen enters living things.',
+        ],
+        nitrogen: { process: 'fixation' },
+      },
+      {
+        label: 'Lightning',
+        lines: [
+          'A lightning bolt’s energy joins nitrogen and oxygen; rain carries the nitrate into the soil.',
+        ],
+        nitrogen: { process: 'lightning' },
+      },
+      {
+        label: 'Nitrification',
+        lines: ['Soil bacteria turn ammonium into nitrite, then into nitrate.'],
+        nitrogen: { process: 'nitrification' },
+      },
+      {
+        label: 'Assimilation',
+        lines: ['Plant roots take in nitrate and build it into proteins and DNA.'],
+        nitrogen: { process: 'assimilation' },
+      },
+      {
+        label: 'Eating',
+        lines: ['Animals get their nitrogen by eating plants or other animals.'],
+        nitrogen: { process: 'eating' },
+      },
+      {
+        label: 'Ammonification',
+        lines: ['Decomposers break down wastes and dead matter, releasing ammonium into the soil.'],
+        nitrogen: { process: 'ammonification' },
+      },
+      {
+        label: 'Denitrification',
+        lines: [
+          'Bacteria in wet, airless soil turn nitrate back into nitrogen gas, closing the cycle.',
+        ],
+        nitrogen: { process: 'denitrification' },
+      },
+    ],
+  },
+  // ── H41 feedbackLoop ──
+  {
+    id: 'g.s9-homeostasis-feedback',
+    title: 'Feedback loops in the body',
+    kind: 'explore',
+    use: 'Use this for tracing a feedback loop from stimulus to response.',
+    assumptions: [
+      'Homeostasis keeps conditions inside the body near a set point, such as about 37 °C.',
+      'In negative feedback the response works against the change, so the loop settles back.',
+      'In positive feedback the response adds to the change, so it grows until something ends it.',
+    ],
+    figure: { kind: 'feedbackLoop' },
+    scenes: [
+      {
+        label: 'Too hot',
+        lines: [
+          'The rise in temperature is the stimulus; sweating is the response.',
+          'The response undoes the stimulus, so this is negative feedback.',
+        ],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 2,
+          steps: [
+            { role: 'Stimulus', text: 'Body temperature rises above its set point.' },
+            {
+              role: 'Sensor',
+              text: 'Temperature receptors in the skin and brain detect the rise.',
+            },
+            { role: 'Control center', text: 'The hypothalamus compares it with the set point.' },
+            { role: 'Effector', text: 'Sweat glands release sweat; skin blood vessels widen.' },
+            { role: 'Response', text: 'Heat is lost, and body temperature falls back.' },
+          ],
+        },
+      },
+      {
+        label: 'Too cold',
+        lines: ['The same control center answers a drop: the effectors now make and keep heat.'],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 3,
+          steps: [
+            { role: 'Stimulus', text: 'Body temperature falls below its set point.' },
+            { role: 'Sensor', text: 'Receptors in the skin and brain detect the drop.' },
+            { role: 'Control center', text: 'The hypothalamus signals the body to save heat.' },
+            { role: 'Effector', text: 'Muscles shiver; skin blood vessels narrow.' },
+            { role: 'Response', text: 'More heat is made and less is lost, so temperature rises.' },
+          ],
+        },
+      },
+      {
+        label: 'Blood sugar high',
+        lines: [
+          'After a meal, the pancreas senses the high glucose and releases insulin.',
+          'Insulin lets cells take in glucose, so the level falls back.',
+        ],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 2,
+          steps: [
+            { role: 'Stimulus', text: 'Blood glucose rises after a meal.' },
+            { role: 'Sensor', text: 'Beta cells in the pancreas detect the high glucose.' },
+            { role: 'Control center', text: 'The pancreas releases insulin into the blood.' },
+            {
+              role: 'Effector',
+              text: 'Body cells take in glucose; the liver stores it as glycogen.',
+            },
+            { role: 'Response', text: 'Blood glucose falls back toward normal.' },
+          ],
+        },
+      },
+      {
+        label: 'Blood sugar low',
+        lines: ['Between meals, glucagon tells the liver to release stored glucose.'],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          lit: 3,
+          steps: [
+            { role: 'Stimulus', text: 'Blood glucose falls between meals.' },
+            { role: 'Sensor', text: 'Alpha cells in the pancreas detect the low glucose.' },
+            { role: 'Control center', text: 'The pancreas releases glucagon into the blood.' },
+            { role: 'Effector', text: 'The liver breaks down glycogen and releases glucose.' },
+            { role: 'Response', text: 'Blood glucose rises back toward normal.' },
+          ],
+        },
+      },
+      {
+        label: 'Positive feedback',
+        lines: [
+          'During birth, each contraction brings a stronger one.',
+          'The loop grows until the baby is born, which ends it.',
+        ],
+        loop: {
+          sign: 'positive',
+          back: 'positive feedback',
+          steps: [
+            { role: 'Stimulus', text: 'The baby’s head presses on the cervix.' },
+            { role: 'Sensor', text: 'Stretch receptors send signals to the brain.' },
+            { role: 'Control center', text: 'The pituitary gland releases oxytocin.' },
+            { role: 'Effector', text: 'The muscles of the uterus contract harder.' },
+            { role: 'Response', text: 'The head presses harder still.' },
+          ],
+        },
+      },
+    ],
+  },
+  {
+    id: 'g.s12-climate-systems-feedback',
+    title: 'Climate feedbacks',
+    kind: 'explore',
+    use: 'Use this for climate feedbacks that strengthen or weaken a warming.',
+    assumptions: [
+      'A climate feedback is a change caused by warming that in turn changes the warming.',
+      'A positive feedback makes the warming larger; a negative feedback makes it smaller.',
+    ],
+    figure: { kind: 'feedbackLoop' },
+    scenes: [
+      {
+        label: 'Ice and albedo',
+        lines: [
+          'Ice reflects most sunlight; open ocean absorbs most of it.',
+          'Melting ice lets in more sunlight, which melts more ice: a positive feedback.',
+        ],
+        loop: {
+          sign: 'positive',
+          back: 'positive feedback',
+          steps: [
+            { text: 'Earth’s surface warms.' },
+            { text: 'Sea ice and snow melt.' },
+            { text: 'Darker ocean and land show through: the albedo drops.' },
+            { text: 'More sunlight is absorbed.' },
+          ],
+        },
+      },
+      {
+        label: 'Water vapor',
+        lines: [
+          'Warmer air can hold more water vapor, and water vapor is a greenhouse gas.',
+          'So warming adds vapor, and the vapor adds warming.',
+        ],
+        loop: {
+          sign: 'positive',
+          back: 'positive feedback',
+          lit: 1,
+          steps: [
+            { text: 'The air warms.' },
+            { text: 'More water evaporates, and warm air holds more vapor.' },
+            { text: 'Water vapor traps more of the heat Earth gives off.' },
+          ],
+        },
+      },
+      {
+        label: 'Radiating heat',
+        lines: [
+          'A warmer Earth gives off more infrared radiation to space.',
+          'That works against the warming: a negative feedback that steadies the climate.',
+        ],
+        loop: {
+          sign: 'negative',
+          back: 'negative feedback',
+          steps: [
+            { text: 'Earth’s surface warms.' },
+            { text: 'A warmer surface gives off more infrared radiation.' },
+            { text: 'More heat escapes to space.' },
+            { text: 'The warming slows.' },
+          ],
+        },
       },
     ],
   },

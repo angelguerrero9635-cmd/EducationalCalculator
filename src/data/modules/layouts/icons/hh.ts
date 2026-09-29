@@ -14,4 +14,12 @@ export const HH_ICONS = [
   'kingdom Fungi',
   'kingdom Plantae',
   'kingdom Animalia',
+  // Primary succession, bare rock to forest (H40).
+  'bare rock',
+  'lichens on rock',
+  'mosses and thin soil',
+  'grasses and flowers',
+  'shrubs',
+  'young trees',
+  'mature forest',
 ] as const;

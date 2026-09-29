@@ -2,7 +2,8 @@
  * Layout figure checks for group HH's explore figures (biology H39–H42). A cladogram's taxa are
  * unique and few enough to draw, every trait's taxa are one clade (an ancestor and all its
  * descendants, so the mark has one branch to sit on), and a scene lights a listed trait and rings
- * listed taxa. Called from `layoutFigureIssues`. Test-only.
+ * listed taxa; a feedback loop has 3 to 6 steps, short enough for its boxes. Called from
+ * `layoutFigureIssues`. Test-only.
  */
 import { cladeNodes, CLADE_MAX, traitNode } from '@/components/module/layouts/cladeMath';
 
@@ -34,6 +35,18 @@ export function hshFigureIssues(l: LayoutDef): string[] {
         out.push(`scene "${s.label}": no trait ${lit}`);
       for (const r of s.clade?.ring ?? [])
         if (!taxa.includes(r)) out.push(`scene "${s.label}": ${r} is not in the tree`);
+    }
+  }
+  if (f.kind === 'feedbackLoop') {
+    for (const s of l.scenes) {
+      const loop = s.loop;
+      if (!loop) continue;
+      if (loop.steps.length < 3 || loop.steps.length > 6)
+        out.push(`scene "${s.label}": ${loop.steps.length} loop steps (3 to 6 are drawn)`);
+      if (loop.lit !== undefined && (loop.lit < 0 || loop.lit >= loop.steps.length))
+        out.push(`scene "${s.label}": step ${loop.lit} lit, not a step`);
+      if (loop.steps.some((st) => st.text.length > 90))
+        out.push(`scene "${s.label}": a step over 90 characters (keep each box to 3 lines)`);
     }
   }
   return out;

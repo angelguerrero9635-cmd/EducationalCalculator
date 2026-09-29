@@ -1445,6 +1445,8 @@ export function repIssues(
       xs.forEach((x, i) => {
         if (x !== undefined && x < 0) out.push(`level ${i + 1} energy ${x} is negative`);
       });
+      // A pyramid of biomass or numbers passes no share up unless it sets one (H40).
+      if (rep.measure && rep.measure !== 'energy' && rep.percent === undefined) break;
       const p = val(rep.percent ?? 10);
       if (p !== undefined && (p <= 0 || p > 100)) out.push(`${p}% passed up is not a share`);
       if (p === undefined) break;

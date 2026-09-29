@@ -98,3 +98,31 @@ export interface CladeScene {
   lit?: string;
   ring?: string[];
 }
+
+/** The processes of a `nitrogenCycle` figure. */
+export type NitrogenProcess =
+  | 'fixation'
+  | 'lightning'
+  | 'nitrification'
+  | 'assimilation'
+  | 'eating'
+  | 'ammonification'
+  | 'denitrification';
+
+/** One box of a `feedbackLoop`: its role ("Sensor"), if it has one, and what happens there. */
+export interface LoopStep {
+  role?: string;
+  text: string;
+}
+
+/**
+ * A `feedbackLoop` scene: the steps in order (3 to 6), whether the response works against the
+ * change (negative feedback) or adds to it (positive), the step lit (0 first), and a label for
+ * the arrow back from the response to the start.
+ */
+export interface LoopScene {
+  steps: LoopStep[];
+  sign: 'negative' | 'positive';
+  lit?: number;
+  back?: string;
+}

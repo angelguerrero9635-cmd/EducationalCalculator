@@ -621,19 +621,36 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HH) as an explore figure, since a cladogram has no honest quantity. Figure { kind: "cladogram", tree, traits }: tree is nested lists of taxon names (any shape, 3 to 10 taxa, e.g. ["Lancelet", ["Lamprey", ["Shark", ["Frog", ["Lizard", "Mouse"]]]]]); traits: [{ name, taxa }] where the taxa must be one clade (checked in the harness), each drawn as a numbered bar on the branch into that clade and keyed under the tree. Each scene sets clade: { lit?: a trait name (its bar and every branch of the clade that inherits it lit), ring?: taxa ringed (to ask whether a group is a clade) }. Example scene: { label: "Jaws", lines: [...], clade: { lit: "Jaws" } }. Card icons for sort cards: { kind: "icon", icon: "domain Bacteria" } (also "domain Archaea", "domain Eukarya", "kingdom Protista", "kingdom Fungi", "kingdom Plantae", "kingdom Animalia").',
   },
-  ask(
-    'H40',
-    'energyPyramid',
-    'Pyramids of energy, biomass and numbers; succession stages; the nitrogen cycle as an explore figure',
-    ['s.9.ecosystem-dynamics'],
-  ),
-  ask(
-    'H41',
-    'feedbackLoop',
-    'Explore figure: stimulus, sensor, control center, effector, response; body temperature and blood sugar',
-    ['s.9.homeostasis', 's.12.climate-systems'],
-    'The climate page uses the same loop for the ice-albedo and water-vapor feedbacks.',
-  ),
+  {
+    ...ask(
+      'H40',
+      'energyPyramid',
+      'Pyramids of energy, biomass and numbers; succession stages; the nitrogen cycle as an explore figure',
+      ['s.9.ecosystem-dynamics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-ecosystem-dynamics-biomass',
+      'g.s9-ecosystem-dynamics-numbers',
+      'g.s9-ecosystem-dynamics-ocean',
+      'g.s9-ecosystem-dynamics-succession',
+      'g.s9-ecosystem-dynamics-nitrogen',
+    ],
+    notes:
+      'Drawn (group HH). energyPyramid takes an optional measure: "energy" (default, unchanged) | "biomass" | "numbers". Biomass and numbers draw no share passed up unless percent is set (the harness then skips the 10% check), so a pyramid of numbers or an ocean biomass pyramid can stand upside down, to scale. Example: { kind: "energyPyramid", measure: "numbers", levels: ["N1", "N2", "N3"], names: ["oak tree", "caterpillars", "songbirds"] }; { kind: "energyPyramid", measure: "biomass", levels: ["B1", "B2", "B3"], percent: "p", names: [...] }. Succession: sequence stages with card icons { kind: "icon", icon: "bare rock" } ("lichens on rock", "mosses and thin soil", "grasses and flowers", "shrubs", "young trees", "mature forest"). Nitrogen cycle: explore figure { kind: "nitrogenCycle" }, each scene nitrogen: { process?: "fixation" | "lightning" | "nitrification" | "assimilation" | "eating" | "ammonification" | "denitrification" } (none: the whole cycle, unnamed arrows); example scene { label: "Fixation", lines: [...], nitrogen: { process: "fixation" } }.',
+  },
+  {
+    ...ask(
+      'H41',
+      'feedbackLoop',
+      'Explore figure: stimulus, sensor, control center, effector, response; body temperature and blood sugar',
+      ['s.9.homeostasis', 's.12.climate-systems'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s9-homeostasis-feedback', 'g.s12-climate-systems-feedback'],
+    notes:
+      'The climate page uses the same loop for the ice-albedo and water-vapor feedbacks. Drawn (group HH). Explore figure { kind: "feedbackLoop" }; every word is the scene’s: loop: { steps: [{ role?: "Stimulus", text }] (3 to 6 boxes, each text at most 90 characters), sign: "negative" | "positive" (the arrow back from the response marked − or +), lit?: step index, back?: label on the arrow back ("negative feedback") }. Climate loops leave out the roles. Example scene: { label: "Too hot", lines: [...], loop: { sign: "negative", back: "negative feedback", lit: 2, steps: [{ role: "Stimulus", text: "Body temperature rises above its set point." }, …] } }.',
+  },
   ask(
     'H42',
     'immuneResponse',

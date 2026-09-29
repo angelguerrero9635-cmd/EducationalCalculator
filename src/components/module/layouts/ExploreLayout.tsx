@@ -23,6 +23,8 @@ import { MoleculesFigure, PeriodicTableFigure, PhasesFigure } from './chemFigure
 import { MagnetsFigure, PlanetsFigure } from './figures8';
 import { StudyDesignFigure } from './studyDesignFigure';
 import { CladogramFigure } from './cladogramFigure';
+import { NitrogenCycleFigure } from './nitrogenCycleFigure';
+import { FeedbackLoopFigure } from './feedbackLoopFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -181,6 +183,10 @@ function FigureView({
       return <ConeFigure cut={scene.cone ?? 'circle'} />;
     case 'cladogram':
       return <CladogramFigure figure={figure} clade={scene.clade ?? {}} />;
+    case 'nitrogenCycle':
+      return <NitrogenCycleFigure process={scene.nitrogen?.process} />;
+    case 'feedbackLoop':
+      return <FeedbackLoopFigure loop={scene.loop ?? { steps: [], sign: 'negative' }} />;
   }
 }
 

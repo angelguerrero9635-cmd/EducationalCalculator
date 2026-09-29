@@ -9,12 +9,16 @@
  * The domains and kingdoms (H39): rod-shaped bacteria with no nucleus, lobed archaea over a hot
  * spring, a eukaryotic cell with its nucleus, a paramecium (protists), mushrooms on their
  * threads (fungi), a leafy plant, and a fish (animals).
+ *
+ * Primary succession (H40), each on the same ground: bare rock; lichens crusting it; mosses on a
+ * thin soil; grasses and flowers; shrubs; young trees; a mature forest.
  */
 import type { ReactNode } from 'react';
 import { Circle, Defs, Ellipse, G, Path, Rect } from 'react-native-svg';
 
 import { usePalette } from '@/theme';
 
+import { GrassTuft } from '../../reps/nature';
 import { Ball, url, usePaintIds } from '../../reps/paint';
 import type { IconProps } from './types';
 
@@ -22,7 +26,7 @@ type Pt = [number, number];
 
 export function HHIcon({ icon, ink }: IconProps): ReactNode {
   const c = usePalette();
-  const ids = usePaintIds('cell', 'cap', 'fish', 'leaf');
+  const ids = usePaintIds('cell', 'cap', 'fish', 'leaf', 'rock', 'bush', 'crown');
   /** A bone: a thick round-ended stroke in its color with a thin ink edge. */
   const bone = (a: Pt, b: Pt, color: string, w: number, dash?: string) => (
     <G key={`${a}-${b}`}>
@@ -64,6 +68,110 @@ export function HHIcon({ icon, ink }: IconProps): ReactNode {
       strokeWidth={0.9}
       strokeLinejoin="round"
     />
+  );
+  /** The ground every succession stage stands on: bedrock, then soil as it builds up. */
+  const ground = (soil: number) => (
+    <G>
+      <Rect x={1} y={44} width={46} height={3.5} rx={1} fill={c.rock5} />
+      {soil > 0 ? (
+        <Rect
+          x={1}
+          y={44 - soil}
+          width={46}
+          height={soil}
+          rx={1}
+          fill={c.soil}
+          stroke={ink}
+          strokeWidth={0.5}
+        />
+      ) : null}
+    </G>
+  );
+  const rock = (big = true) => (
+    <G>
+      <Path
+        d={
+          big
+            ? 'M 5 45 C 4 34 11 23 21 21 C 30 17 40 23 43 31 C 45 37 44 45 44 45 Z'
+            : 'M 8 45 C 8 38 14 32 22 31 C 30 29 38 33 40 38 C 41 41 41 45 41 45 Z'
+        }
+        fill={url(ids.rock)}
+        stroke={ink}
+        strokeWidth={1.1}
+      />
+      <Path
+        d={big ? 'M 20 24 L 23 33 L 19 40 M 33 26 L 31 34' : 'M 22 33 L 24 40'}
+        stroke={ink}
+        strokeWidth={0.6}
+        fill="none"
+        opacity={0.6}
+      />
+    </G>
+  );
+  const tree = (x: number, h: number, r: number, color: string) => (
+    <G key={`t${x}`}>
+      <Rect
+        x={x - 1.4}
+        y={44 - h}
+        width={2.8}
+        height={h}
+        fill={c.bark}
+        stroke={ink}
+        strokeWidth={0.5}
+      />
+      <Ellipse cx={x} cy={44 - h} rx={r} ry={r * 1.2} fill={color} stroke={ink} strokeWidth={0.9} />
+      <Ellipse cx={x} cy={44 - h} rx={r} ry={r * 1.2} fill={url(ids.crown)} opacity={0.5} />
+    </G>
+  );
+  const bush = (x: number, r: number) => (
+    <G key={`b${x}`}>
+      <Circle
+        cx={x - r * 0.5}
+        cy={44 - r * 0.8}
+        r={r * 0.8}
+        fill={url(ids.bush)}
+        stroke={ink}
+        strokeWidth={0.8}
+      />
+      <Circle
+        cx={x + r * 0.5}
+        cy={44 - r * 0.8}
+        r={r * 0.8}
+        fill={url(ids.bush)}
+        stroke={ink}
+        strokeWidth={0.8}
+      />
+      <Circle
+        cx={x}
+        cy={44 - r * 1.3}
+        r={r * 0.9}
+        fill={url(ids.bush)}
+        stroke={ink}
+        strokeWidth={0.8}
+      />
+    </G>
+  );
+  const flower = (x: number, y: number) => (
+    <G key={`f${x}`}>
+      <Path d={`M ${x} ${y} L ${x} 42`} stroke={c.lifeDeep} strokeWidth={1} />
+      {[0, 72, 144, 216, 288].map((a) => (
+        <Circle
+          key={a}
+          cx={x + 2.2 * Math.cos((a * Math.PI) / 180)}
+          cy={y + 2.2 * Math.sin((a * Math.PI) / 180)}
+          r={1.7}
+          fill={c.petal}
+        />
+      ))}
+      <Circle cx={x} cy={y} r={1.2} fill={c.pollen} />
+    </G>
+  );
+  const paints = (
+    <Defs>
+      <Ball id={ids.rock} color={c.rock2} />
+      <Ball id={ids.bush} color={c.life} />
+      <Ball id={ids.crown} color={c.life} />
+    </Defs>
   );
   switch (icon) {
     case 'human arm bones':
@@ -439,6 +547,105 @@ export function HHIcon({ icon, ink }: IconProps): ReactNode {
           <Path d="M 22 26 q 4 4 8 0" stroke={ink} strokeWidth={0.8} fill="none" />
           <Circle cx={10} cy={22} r={2} fill={c.animalEye} />
           <Circle cx={9.4} cy={21.4} r={0.6} fill={c.snow} />
+        </G>
+      );
+    case 'bare rock':
+      return (
+        <G>
+          {paints}
+          {ground(0)}
+          {rock()}
+        </G>
+      );
+    case 'lichens on rock':
+      return (
+        <G>
+          {paints}
+          {ground(0)}
+          {rock()}
+          {[
+            [15, 32, 4, c.lichen],
+            [30, 24, 3.5, c.lichen],
+            [37, 34, 3, c.sunRay],
+            [22, 38, 2.6, c.sunRay],
+            [11, 40, 2.4, c.lichen],
+          ].map(([x, y, r, color]) => (
+            <Ellipse
+              key={`${x}`}
+              cx={x as number}
+              cy={y as number}
+              rx={r as number}
+              ry={(r as number) * 0.7}
+              fill={color as string}
+              stroke={ink}
+              strokeWidth={0.5}
+            />
+          ))}
+        </G>
+      );
+    case 'mosses and thin soil':
+      return (
+        <G>
+          {paints}
+          {rock(false)}
+          {ground(3)}
+          {[5, 10, 15, 20, 26, 32, 38, 43].map((x, i) => (
+            <Circle
+              key={x}
+              cx={x}
+              cy={40 - (i % 2) * 1.5}
+              r={3.2}
+              fill={c.moss}
+              stroke={ink}
+              strokeWidth={0.5}
+            />
+          ))}
+          <Path
+            d="M 18 33 q 3 -3 6 0 M 26 32 q 3 -3 6 0"
+            stroke={c.moss}
+            strokeWidth={2.4}
+            fill="none"
+          />
+        </G>
+      );
+    case 'grasses and flowers':
+      return (
+        <G>
+          {ground(6)}
+          <GrassTuft x={12} y={38} w={16} h={16} c={c} blades={6} />
+          <GrassTuft x={34} y={38} w={18} h={18} c={c} blades={7} />
+          {flower(22, 26)}
+          {flower(42, 29)}
+        </G>
+      );
+    case 'shrubs':
+      return (
+        <G>
+          {paints}
+          {ground(8)}
+          <GrassTuft x={24} y={36} w={40} h={6} c={c} blades={10} />
+          {bush(12, 9)}
+          {bush(34, 11)}
+        </G>
+      );
+    case 'young trees':
+      return (
+        <G>
+          {paints}
+          {ground(9)}
+          {bush(38, 7)}
+          {tree(12, 26, 6, c.life)}
+          {tree(26, 30, 7, c.life)}
+        </G>
+      );
+    case 'mature forest':
+      return (
+        <G>
+          {paints}
+          {ground(10)}
+          {tree(9, 26, 9, c.lifeDeep)}
+          {tree(38, 28, 9, c.lifeDeep)}
+          {tree(24, 32, 11, c.life)}
         </G>
       );
     default:
