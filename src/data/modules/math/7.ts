@@ -10,8 +10,11 @@ import { whole } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
 
 const fmt = (x: number) => formatNumber(x);
-/** Rounds off floating-point dust (0.1 + 0.2), so answers print as class writes them. */
-const exact = (x: number) => Number(x.toFixed(9));
+/**
+ * Rounds off floating-point dust (0.1 + 0.2 = 0.30000000000000004) to 12 significant figures,
+ * fine enough that thirds stay thirds (3 × 8/3 is still 8 to the whole-number checks).
+ */
+const exact = (x: number) => Number(x.toPrecision(12));
 const q = (a: number, b: number) => (b === 0 ? undefined : exact(a / b));
 
 /** `c = a × b` with its steps. */
@@ -317,6 +320,83 @@ const interest: { relation: Relation; steps: Record<string, StepText> }[] = [
     } satisfies Record<string, StepText>,
   },
 ];
+
+/** A count that comes out whole, allowing for a typed value rounded to what the box shows. */
+const whole0 = (x: number | undefined) =>
+  x !== undefined && Math.abs(x - Math.round(x)) < 1e-4 * Math.max(1, Math.abs(x))
+    ? Math.round(x)
+    : undefined;
+
+/** p × x + q = r, solvable for any of the four (p only when it comes out whole). */
+const twoStep: Relation = {
+  id: 'px + q = r',
+  display: '{p} × {x} + {q} = {r}',
+  vars: ['p', 'x', 'q', 'r'],
+  residual: (v: Values) => v.p! * v.x! + v.q! - v.r!,
+  solve: {
+    x: (v: Values) => q(v.r! - v.q!, v.p!),
+    r: (v: Values) => exact(v.p! * v.x! + v.q!),
+    q: (v: Values) => exact(v.r! - v.p! * v.x!),
+    p: (v: Values) => whole0(q(v.r! - v.q!, v.x!)),
+  },
+};
+const twoStepSteps: Record<string, Record<string, StepText>> = {
+  'px + q = r': {
+    x: {
+      expr: '({r} − {q}) ÷ {p}',
+      how: 'Take {q} from both sides, then divide both sides by {p}.',
+    },
+    r: { expr: '{p} × {x} + {q}', how: 'Multiply, then add.' },
+    q: { expr: '{r} − {p} × {x}', how: 'Take the x part away from the right side.' },
+    p: { expr: '({r} − {q}) ÷ {x}', how: 'Take {q} from both sides, then divide by {x}.' },
+  },
+};
+
+/** Whether the test number makes p × t + q (sign) r true; the signs are 1 <, 2 ≤, 3 >, 4 ≥. */
+const holdsAt = (v: Values) => {
+  const lhs = v.p! * v.t! + v.q!;
+  return [lhs < v.r!, lhs <= v.r!, lhs > v.r!, lhs >= v.r!][v.s! - 1] ?? false;
+};
+
+/** copy = k × original: the copy's length from the scale factor. */
+const scaledCopy = (copy: string, original: string) => ({
+  relation: {
+    id: `${copy} = k × ${original}`,
+    display: `{${copy}} = {k} × {${original}}`,
+    vars: [copy, 'k', original],
+    residual: (v: Values) => v[copy]! - v.k! * v[original]!,
+    solve: {
+      [copy]: (v: Values) => exact(v.k! * v[original]!),
+      k: (v: Values) => q(v[copy]!, v[original]!),
+      [original]: () => undefined,
+    },
+  } satisfies Relation,
+  steps: {
+    [copy]: { expr: `{k} × {${original}}`, how: 'Multiply the length by the scale factor.' },
+    k: { expr: `{${copy}} ÷ {${original}}`, how: 'Divide the copy’s length by the original’s.' },
+  } satisfies Record<string, StepText>,
+});
+
+/** The picture's grid holds the original and its copy side by side (26 × 24 squares). */
+const fitsGrid: Relation = {
+  id: 'fits the grid',
+  constraint: true,
+  display: 'The original {w} by {h} and its copy at scale {k} fit side by side on the grid',
+  vars: ['w', 'h', 'k'],
+  residual: (v: Values) => (v.w! * (1 + v.k!) <= 26 && Math.max(v.h!, v.h! * v.k!) <= 24 ? 0 : 1),
+  solve: {},
+};
+
+const length = (id: string, symbol: string, name: string, max: number, derived = false) => ({
+  id,
+  symbol,
+  name,
+  unit: 'cm',
+  min: 0,
+  max,
+  step: 0.1,
+  ...(derived ? { derived: true } : {}),
+});
 
 export const MATH_7_MODULES: ModuleDef[] = [
   // ── Proportional relationships (7.RP.1–3) ──
@@ -753,47 +833,425 @@ export const MATH_7_MODULES: ModuleDef[] = [
     representation: { kind: 'signTable', first: 'a', second: 'b', result: 'r' },
   },
 
+  // ── Two-step equations and inequalities (7.EE.4) ──
+  {
+    id: 'm.7.two-step-equations',
+    assumptions: [
+      'Every block weighs the same unknown amount x; every small weight weighs 1.',
+      'The hanger is level when both sides weigh the same: that is what = means.',
+      'Take the same from both sides, then share what is left among the blocks.',
+      'Check by putting x back in.',
+    ],
+    variables: [
+      whole('p', 'p', 'Blocks', 1, 8),
+      whole('q', 'q', 'Weights with the blocks', 0, 20),
+      whole('r', 'r', 'Weights on the right', 0, 40),
+      { id: 'x', symbol: 'x', name: 'Block weight', min: 0, max: 40, step: 0.5, fraction: 12 },
+    ],
+    relations: [twoStep],
+    steps: twoStepSteps,
+    example: { p: 3, q: 2, r: 11, x: 3 },
+    startWith: ['p', 'q', 'r'],
+    representation: {
+      kind: 'hanger',
+      unknown: 'x',
+      left: { x: 'p', units: 'q' },
+      right: { units: 'r' },
+      steps: true,
+    },
+  },
+  {
+    id: 'm.7.two-step-equations~negatives',
+    title: 'px + q = r with negative numbers',
+    use: 'Use this for “3x − 5 = 20” and “15 + 3x = 42”.',
+    assumptions: [
+      'The bar is p equal boxes of x and a piece q, together as long as r.',
+      'A negative q is a piece taken off the end of the boxes.',
+      'Undo the adding first, then the multiplying.',
+    ],
+    variables: [
+      whole('p', 'p', 'Boxes', 1, 12),
+      whole('q', 'q', 'Added', -50, 50),
+      whole('r', 'r', 'Total', 0, 200),
+      { id: 'x', symbol: 'x', name: 'One box', min: 0.5, max: 100, step: 0.5, fraction: 12 },
+    ],
+    relations: [twoStep],
+    steps: twoStepSteps,
+    example: { p: 3, q: -5, r: 16, x: 7 },
+    startWith: ['p', 'q', 'r'],
+    representation: {
+      kind: 'tape',
+      equation: { times: 'p', unknown: 'x', plus: 'q', total: 'r' },
+    },
+  },
+  {
+    id: 'm.7.two-step-equations~grouped',
+    title: 'p(x + q) = r',
+    use: 'Use this for “3 boxes, 15 markers given from each, 90 left: how many were in a box?”',
+    assumptions: [
+      'The bar is p equal groups, each x and q, together as long as r.',
+      'A negative q makes each group x less q: one box says x − 15.',
+      'Divide by p first for one group, or multiply out first: both work.',
+    ],
+    variables: [
+      whole('p', 'p', 'Groups', 1, 12),
+      whole('q', 'q', 'Added to each', -50, 50),
+      whole('r', 'r', 'Total', 1, 300),
+      { id: 'x', symbol: 'x', name: 'Unknown', min: 0.5, max: 100, step: 0.5, fraction: 12 },
+    ],
+    relations: [
+      {
+        id: 'p(x + q) = r',
+        display: '{p} × ({x} + {q}) = {r}',
+        vars: ['p', 'x', 'q', 'r'],
+        residual: (v: Values) => v.p! * (v.x! + v.q!) - v.r!,
+        solve: {
+          x: (v: Values) => {
+            const each = q(v.r!, v.p!);
+            return each === undefined ? undefined : exact(each - v.q!);
+          },
+          r: (v: Values) => exact(v.p! * (v.x! + v.q!)),
+          q: (v: Values) => {
+            const each = q(v.r!, v.p!);
+            return each === undefined ? undefined : exact(each - v.x!);
+          },
+          p: (v: Values) => whole0(q(v.r!, v.x! + v.q!)),
+        },
+      },
+    ],
+    steps: {
+      'p(x + q) = r': {
+        x: {
+          expr: '{r} ÷ {p} − {q}',
+          how: 'Divide both sides by {p}, then take {q} from both sides.',
+        },
+        r: { expr: '{p} × ({x} + {q})', how: 'Add inside the brackets, then multiply.' },
+        q: { expr: '{r} ÷ {p} − {x}', how: 'Divide by {p} for one group, then take away {x}.' },
+        p: { expr: '{r} ÷ ({x} + {q})', how: 'Divide the total by one group.' },
+      },
+    },
+    example: { p: 3, q: -15, r: 90, x: 45 },
+    startWith: ['p', 'q', 'r'],
+    representation: {
+      kind: 'tape',
+      equation: { times: 'p', unknown: 'x', plus: 'q', total: 'r', grouped: true },
+    },
+  },
+  {
+    id: 'm.7.two-step-equations~inequality',
+    title: 'Two-step inequalities',
+    use: 'Use this for “Solve −2x + 1 ≤ 7 and graph it” and “What is the least whole number x with 2x > 11?”',
+    assumptions: [
+      'Adding or taking the same number from both sides keeps an inequality true.',
+      'Dividing both sides by a negative number flips the sign (< becomes >).',
+      'A test number is a solution when it makes the written inequality true.',
+      'The least whole number above a bound is the next whole number up.',
+    ],
+    variables: [
+      whole('p', 'p', 'Times x', -10, 10),
+      whole('q', 'q', 'Added', -500, 500),
+      whole('r', 'r', 'Right side', -1000, 1000),
+      whole('s', 's', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4),
+      { id: 'b', symbol: 'b', name: 'Bound', min: -1500, max: 1500, derived: true },
+      whole('t', 't', 'Test number', -200, 200),
+      { ...whole('h', 'h', 'True (1) or false (0)', 0, 1), derived: true },
+    ],
+    relations: [
+      {
+        id: 'p ≠ 0',
+        constraint: true,
+        display: '{p} is not 0',
+        vars: ['p'],
+        residual: (v: Values) => (v.p! !== 0 ? 0 : 1),
+        solve: {},
+      },
+      {
+        id: 'b = (r − q) ÷ p',
+        display: '{b} = ({r} − {q}) ÷ {p}',
+        vars: ['b', 'r', 'q', 'p'],
+        residual: (v: Values) => v.b! * v.p! - (v.r! - v.q!),
+        solve: {
+          b: (v: Values) => q(v.r! - v.q!, v.p!),
+          r: (v: Values) => exact(v.b! * v.p! + v.q!),
+          q: (v: Values) => exact(v.r! - v.b! * v.p!),
+          p: () => undefined,
+        },
+      },
+      {
+        id: 'h = test',
+        display: 'test {t} in {p}x + {q}, sign {s}, {r}: {h}',
+        check: (v: Values) => `${holdsAt(v) ? 1 : 0} = ${v.h}`,
+        vars: ['h', 't', 's', 'p', 'q', 'r'],
+        residual: (v: Values) => ([1, 2, 3, 4].includes(v.s!) ? v.h! - (holdsAt(v) ? 1 : 0) : NaN),
+        solve: {
+          h: (v: Values) => (holdsAt(v) ? 1 : 0),
+          t: () => undefined,
+          s: () => undefined,
+          p: () => undefined,
+          q: () => undefined,
+          r: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'p ≠ 0': {},
+      'b = (r − q) ÷ p': {
+        b: {
+          expr: '({r} − {q}) ÷ {p}',
+          how: 'Take {q} from both sides, then divide both sides by {p}.',
+        },
+        r: { expr: '{b} × {p} + {q}', how: 'Undo the steps: multiply, then add.' },
+        q: { expr: '{r} − {b} × {p}', how: 'Take the x part from the right side.' },
+      },
+      'h = test': {
+        h: {
+          expr: (v: Values) => `${holdsAt(v) ? 1 : 0}`,
+          how: 'Put the test number in for x. True is 1, false is 0.',
+          work: (v: Values) => {
+            const pt = v.p! * v.t!;
+            const lhs = pt + v.q!;
+            return [
+              `${v.p} × ${v.t! < 0 ? `(${v.t})` : v.t} = ${pt}`,
+              `${pt < 0 ? `(${pt})` : pt} ${v.q! < 0 ? '−' : '+'} ${Math.abs(v.q!)} = ${lhs}`,
+              `${lhs} ${'<≤>≥'[v.s! - 1]} ${v.r} is ${holdsAt(v) ? 'true' : 'false'}`,
+            ];
+          },
+          written: false,
+        },
+      },
+    },
+    example: { p: -2, q: 1, r: 7, s: 2, b: -3, t: 1, h: 1 },
+    startWith: ['p', 'q', 'r', 's', 't'],
+    representation: {
+      kind: 'integerLine',
+      value: 'b',
+      min: -8,
+      max: 8,
+      inequality: { sign: 's', test: 't', twoStep: { times: 'p', plus: 'q', total: 'r' } },
+    },
+  },
+
+  // ── Scale drawings (7.G.1) ──
+  {
+    id: 'm.7.scale-drawings',
+    assumptions: [
+      'A scale says what 1 unit on the drawing stands for: 1 in represents 4 ft.',
+      'Every length on the drawing is multiplied by the same scale.',
+      'The scale factor has no units: both lengths in inches, then actual ÷ drawing.',
+      'Angles do not change.',
+    ],
+    variables: [
+      {
+        id: 's',
+        symbol: 's',
+        name: 'Feet for 1 inch on the drawing',
+        min: 0.1,
+        max: 10000,
+        step: 0.1,
+      },
+      {
+        id: 'd',
+        symbol: 'd',
+        name: 'Length on the drawing',
+        unit: 'in',
+        units: ['in'],
+        min: 0.1,
+        max: 100,
+        step: 0.05,
+      },
+      {
+        id: 'a',
+        symbol: 'a',
+        name: 'Actual length',
+        unit: 'ft',
+        units: ['ft'],
+        min: 0.1,
+        max: 1000000,
+        step: 0.1,
+      },
+      { id: 'k', symbol: 'k', name: 'Scale factor', min: 1.2, max: 120000, derived: true },
+    ],
+    relations: [
+      {
+        id: 'a = s × d',
+        display: '{a} = {s} × {d}',
+        vars: ['a', 's', 'd'],
+        residual: (v: Values) => v.a! - v.s! * v.d!,
+        solve: {
+          a: (v: Values) => exact(v.s! * v.d!),
+          s: (v: Values) => q(v.a!, v.d!),
+          d: (v: Values) => q(v.a!, v.s!),
+        },
+      },
+      {
+        id: 'k = 12 × s',
+        display: '{k} = 12 × {s}',
+        vars: ['k', 's'],
+        residual: (v: Values) => v.k! - 12 * v.s!,
+        solve: { k: (v: Values) => exact(12 * v.s!), s: (v: Values) => q(v.k!, 12) },
+      },
+    ],
+    steps: {
+      'a = s × d': {
+        a: { expr: '{s} × {d}', how: 'Each inch on the drawing stands for s feet.' },
+        s: { expr: '{a} ÷ {d}', how: 'The feet that one inch of the drawing stands for.' },
+        d: { expr: '{a} ÷ {s}', how: 'Divide the actual length by the feet for each inch.' },
+      },
+      'k = 12 × s': {
+        k: {
+          expr: '12 × {s}',
+          how: 'Put both lengths in inches: s feet is 12 × s inches for every inch drawn.',
+        },
+        s: { expr: '{k} ÷ 12', how: 'Divide the scale factor by 12 inches in a foot.' },
+      },
+    },
+    example: { s: 4, d: 2.75, a: 11, k: 48 },
+    startWith: ['s', 'd'],
+    representation: { kind: 'doubleNumberLine', top: 'd', bottom: 'a', per: 's', ticks: 4 },
+  },
+  {
+    id: 'm.7.scale-drawings~scaled-copy',
+    title: 'Scaled copies on a grid',
+    use: 'Use this for “A 5 by 3 photo is enlarged to 10 long. How wide is it?”',
+    assumptions: [
+      'A scaled copy multiplies every length by the same scale factor.',
+      'Its angles stay the same, so the copy has the same shape.',
+      'A factor under 1 makes a smaller copy.',
+    ],
+    variables: [
+      { id: 'k', symbol: 'k', name: 'Scale factor', min: 0.25, max: 4, step: 0.25 },
+      whole('w', 'w', 'Width', 1, 12),
+      whole('h', 'h', 'Height', 1, 12),
+      { id: 'W', symbol: 'W', name: 'Copy width', min: 0, max: 48, derived: true },
+      { id: 'H', symbol: 'H', name: 'Copy height', min: 0, max: 48, derived: true },
+    ],
+    relations: [fitsGrid, scaledCopy('W', 'w').relation, scaledCopy('H', 'h').relation],
+    steps: {
+      'fits the grid': {},
+      [scaledCopy('W', 'w').relation.id]: scaledCopy('W', 'w').steps,
+      [scaledCopy('H', 'h').relation.id]: scaledCopy('H', 'h').steps,
+    },
+    example: { k: 2, w: 5, h: 3, W: 10, H: 6 },
+    startWith: ['k', 'w', 'h'],
+    representation: {
+      kind: 'scaleCopy',
+      factor: 'k',
+      width: 'w',
+      height: 'h',
+      copyWidth: 'W',
+      copyHeight: 'H',
+      shape: 'L',
+    },
+  },
+  {
+    id: 'm.7.scale-drawings~area',
+    title: 'Scale factor and area',
+    use: 'Use this for “A triangle has area 6. Its copy has scale factor 2. What is the copy’s area?”',
+    assumptions: [
+      'Every length of the copy is k times the original’s.',
+      'The copy is k times as wide and k times as tall: k × k times the area.',
+      'A scale factor of 3 makes 9 times the area, not 3 times.',
+    ],
+    variables: [
+      { id: 'k', symbol: 'k', name: 'Scale factor', min: 0.25, max: 4, step: 0.25 },
+      whole('w', 'w', 'Base', 1, 12),
+      whole('h', 'h', 'Height', 1, 12),
+      { id: 'A', symbol: 'A', name: 'Area', min: 0, max: 72, derived: true },
+      { id: 'B', symbol: 'B', name: 'Copy area', min: 0, max: 1152, derived: true },
+    ],
+    relations: [
+      fitsGrid,
+      {
+        id: 'A = w × h ÷ 2',
+        display: '{A} = {w} × {h} ÷ 2',
+        vars: ['A', 'w', 'h'],
+        residual: (v: Values) => v.A! - (v.w! * v.h!) / 2,
+        solve: {
+          A: (v: Values) => (v.w! * v.h!) / 2,
+          w: () => undefined,
+          h: () => undefined,
+        },
+      },
+      {
+        id: 'B = A × k²',
+        display: '{B} = {A} × {k} × {k}',
+        vars: ['B', 'A', 'k'],
+        residual: (v: Values) => v.B! - v.A! * v.k! * v.k!,
+        solve: {
+          B: (v: Values) => exact(v.A! * v.k! * v.k!),
+          A: () => undefined,
+          k: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'fits the grid': {},
+      'A = w × h ÷ 2': {
+        A: { expr: '{w} × {h} ÷ 2', how: 'A triangle is half of its base times its height.' },
+      },
+      'B = A × k²': {
+        B: {
+          expr: '{A} × {k} × {k}',
+          how: 'The copy is k times as wide and k times as tall: k × k times the area.',
+        },
+      },
+    },
+    example: { k: 2, w: 4, h: 3, A: 6, B: 24 },
+    startWith: ['k', 'w', 'h'],
+    representation: {
+      kind: 'scaleCopy',
+      factor: 'k',
+      width: 'w',
+      height: 'h',
+      area: ['A', 'B'],
+      shape: 'triangle',
+    },
+  },
+
+  // ── Circumference and area of circles (7.G.4) ──
   {
     id: 'm.7.circles',
     assumptions: [
-      'Every point on the circle is the same distance (the radius) from the center.',
-      'π ≈ 3.14159 is the ratio of any circle’s circumference to its diameter.',
-      'All lengths use the same unit; area is in square units.',
+      'Every point on the circle is the same distance, the radius, from the center.',
+      'π is the circumference divided by the diameter of any circle: about 3.14.',
+      'Cut into wedges and laid top and bottom, a circle is close to a parallelogram half the circumference long and a radius tall.',
+      'Area is in square units.',
     ],
+    standalone: {
+      vars: ['n'],
+      why: 'How many wedges the circle is cut into changes only the picture, not the area.',
+    },
     variables: [
-      { id: 'r', symbol: 'r', name: 'Radius', unit: 'cm', min: 0, max: 1000, step: 0.5 },
-      { id: 'd', symbol: 'd', name: 'Diameter', unit: 'cm', min: 0, max: 2000 },
-      { id: 'C', symbol: 'C', name: 'Circumference', unit: 'cm', min: 0, max: 6300 },
-      { id: 'A', symbol: 'A', name: 'Area', unit: 'cm²', min: 0, max: 3200000 },
+      { ...length('r', 'r', 'Radius', 1000), step: 0.5 },
+      length('d', 'd', 'Diameter', 2000),
+      { ...length('C', 'C', 'Circumference', 6300), pi: true },
+      { ...length('A', 'A', 'Area', 3200000), unit: 'cm²', pi: true },
+      { ...whole('n', 'n', 'Wedges', 4, 24), allowed: [4, 6, 8, 10, 12, 16, 20, 24] },
     ],
     relations: [
       {
         id: 'd = 2r',
         display: '{d} = 2 × {r}',
         vars: ['d', 'r'],
-        residual: (v) => v.d! - 2 * v.r!,
-        solve: { d: (v) => 2 * v.r!, r: (v) => v.d! / 2 },
+        residual: (v: Values) => v.d! - 2 * v.r!,
+        solve: { d: (v: Values) => 2 * v.r!, r: (v: Values) => v.d! / 2 },
       },
       {
         id: 'C = πd',
         display: '{C} = π × {d}',
         vars: ['C', 'd'],
-        residual: (v) => v.C! - Math.PI * v.d!,
-        solve: { C: (v) => Math.PI * v.d!, d: (v) => v.C! / Math.PI },
-      },
-      {
-        id: 'C = 2πr',
-        display: '{C} = 2 × π × {r}',
-        vars: ['C', 'r'],
-        residual: (v) => v.C! - 2 * Math.PI * v.r!,
-        solve: { C: (v) => 2 * Math.PI * v.r!, r: (v) => v.C! / (2 * Math.PI) },
+        residual: (v: Values) => v.C! - Math.PI * v.d!,
+        solve: { C: (v: Values) => Math.PI * v.d!, d: (v: Values) => v.C! / Math.PI },
       },
       {
         id: 'A = πr²',
         display: '{A} = π × {r}²',
         vars: ['A', 'r'],
-        residual: (v) => v.A! - Math.PI * v.r! ** 2,
-        solve: { A: (v) => Math.PI * v.r! ** 2, r: (v) => Math.sqrt(v.A! / Math.PI) },
+        residual: (v: Values) => v.A! - Math.PI * v.r! ** 2,
+        solve: {
+          A: (v: Values) => Math.PI * v.r! ** 2,
+          r: (v: Values) => Math.sqrt(v.A! / Math.PI),
+        },
       },
     ],
     steps: {
@@ -805,13 +1263,6 @@ export const MATH_7_MODULES: ModuleDef[] = [
         C: { expr: 'π × {d}', how: 'Circumference is π times the diameter.' },
         d: { expr: '{C} ÷ π', how: 'Divide both sides by π.' },
       },
-      'C = 2πr': {
-        C: {
-          expr: '2 × π × {r}',
-          how: 'The diameter is 2r, and circumference is π times the diameter.',
-        },
-        r: { expr: '{C} ÷ (2 × π)', how: 'Divide both sides by 2π.' },
-      },
       'A = πr²': {
         A: { expr: 'π × {r}²', how: 'Square the radius, then multiply by π.' },
         r: {
@@ -820,8 +1271,8 @@ export const MATH_7_MODULES: ModuleDef[] = [
         },
       },
     },
-    example: { r: 3, d: 6, C: 6 * Math.PI, A: 9 * Math.PI },
-    startWith: ['r'],
+    example: { r: 3, d: 6, C: 6 * Math.PI, A: 9 * Math.PI, n: 8 },
+    startWith: ['r', 'n'],
     representation: {
       kind: 'circle',
       radius: 'r',
@@ -829,6 +1280,213 @@ export const MATH_7_MODULES: ModuleDef[] = [
       diameter: 'd',
       circumference: 'C',
       area: 'A',
+      views: ['radius', 'unroll', 'wedges'],
+      wedges: 'n',
+    },
+  },
+  {
+    id: 'm.7.circles~wheel',
+    title: 'Circumference and wheels',
+    use: 'Use this for “A 27-inch wheel turns 15 times. How far does the bike go?”',
+    assumptions: [
+      'One turn of a wheel rolls it one circumference along the ground.',
+      'The distance is the circumference times the number of turns.',
+      'Use the diameter of the whole wheel, tire included.',
+    ],
+    variables: [
+      { id: 'd', symbol: 'd', name: 'Diameter', unit: 'in', min: 1, max: 100, step: 0.5 },
+      { id: 'r', symbol: 'r', name: 'Radius', unit: 'in', min: 0.5, max: 50, derived: true },
+      { id: 'C', symbol: 'C', name: 'Circumference', unit: 'in', min: 0, max: 320, derived: true },
+      { id: 'n', symbol: 'n', name: 'Turns', min: 0, max: 10000, step: 0.5 },
+      { id: 'L', symbol: 'L', name: 'Distance rolled', unit: 'in', min: 0, max: 3200000 },
+    ],
+    relations: [
+      {
+        id: 'r = d ÷ 2',
+        display: '{r} = {d} ÷ 2',
+        vars: ['r', 'd'],
+        residual: (v: Values) => 2 * v.r! - v.d!,
+        solve: { r: (v: Values) => v.d! / 2, d: (v: Values) => 2 * v.r! },
+      },
+      {
+        id: 'C = πd',
+        display: '{C} = π × {d}',
+        vars: ['C', 'd'],
+        residual: (v: Values) => v.C! - Math.PI * v.d!,
+        solve: { C: (v: Values) => Math.PI * v.d!, d: (v: Values) => v.C! / Math.PI },
+      },
+      {
+        id: 'L = C × n',
+        display: '{L} = {C} × {n}',
+        vars: ['L', 'C', 'n'],
+        residual: (v: Values) => v.L! - v.C! * v.n!,
+        solve: {
+          L: (v: Values) => v.C! * v.n!,
+          C: (v: Values) => q(v.L!, v.n!),
+          n: (v: Values) => q(v.L!, v.C!),
+        },
+      },
+    ],
+    steps: {
+      'r = d ÷ 2': {
+        r: { expr: '{d} ÷ 2', how: 'The radius is half the diameter.' },
+        d: { expr: '2 × {r}', how: 'The diameter is two radii.' },
+      },
+      'C = πd': {
+        C: { expr: 'π × {d}', how: 'One turn rolls one circumference: π times the diameter.' },
+        d: { expr: '{C} ÷ π', how: 'Divide the circumference by π.' },
+      },
+      'L = C × n': {
+        L: { expr: '{C} × {n}', how: 'Each turn rolls one circumference: multiply by the turns.' },
+        C: { expr: '{L} ÷ {n}', how: 'Divide the distance by the turns.' },
+        n: { expr: '{L} ÷ {C}', how: 'Divide the distance by one circumference.' },
+      },
+    },
+    example: { d: 27, r: 13.5, C: 27 * Math.PI, n: 15, L: 405 * Math.PI },
+    startWith: ['d', 'n'],
+    representation: {
+      kind: 'circle',
+      radius: 'r',
+      extent: 50,
+      diameter: 'd',
+      circumference: 'C',
+      views: ['unroll'],
+    },
+  },
+  {
+    id: 'm.7.circles~in-a-square',
+    title: 'A circle in a square',
+    use: 'Use this for “A circle of radius 3 is inside a square. What area is left in the corners?”',
+    assumptions: [
+      'The circle touches all four sides, so the square’s side is the diameter: 2r.',
+      'The area left in the corners is the square’s area minus the circle’s.',
+      'The corners are always about 21% of the square, whatever its size.',
+    ],
+    variables: [
+      { ...length('r', 'r', 'Radius', 100), step: 0.5, min: 0.5 },
+      length('s', 's', 'Side of the square', 200, true),
+      { ...length('Q', 'Q', 'Area of the square', 40000, true), unit: 'cm²' },
+      { ...length('A', 'A', 'Area of the circle', 31500, true), unit: 'cm²' },
+      { ...length('L', 'L', 'Area left in the corners', 8600, true), unit: 'cm²' },
+    ],
+    relations: [
+      {
+        id: 's = 2r',
+        display: '{s} = 2 × {r}',
+        vars: ['s', 'r'],
+        residual: (v: Values) => v.s! - 2 * v.r!,
+        solve: { s: (v: Values) => 2 * v.r!, r: (v: Values) => v.s! / 2 },
+      },
+      {
+        id: 'Q = s²',
+        display: '{Q} = {s}²',
+        vars: ['Q', 's'],
+        residual: (v: Values) => v.Q! - v.s! ** 2,
+        solve: { Q: (v: Values) => v.s! ** 2, s: (v: Values) => Math.sqrt(v.Q!) },
+      },
+      {
+        id: 'A = πr²',
+        display: '{A} = π × {r}²',
+        vars: ['A', 'r'],
+        residual: (v: Values) => v.A! - Math.PI * v.r! ** 2,
+        solve: {
+          A: (v: Values) => Math.PI * v.r! ** 2,
+          r: (v: Values) => Math.sqrt(v.A! / Math.PI),
+        },
+      },
+      {
+        id: 'L = Q − A',
+        display: '{L} = {Q} − {A}',
+        vars: ['L', 'Q', 'A'],
+        residual: (v: Values) => v.L! - v.Q! + v.A!,
+        solve: {
+          L: (v: Values) => v.Q! - v.A!,
+          Q: (v: Values) => v.L! + v.A!,
+          A: (v: Values) => v.Q! - v.L!,
+        },
+      },
+    ],
+    steps: {
+      's = 2r': {
+        s: { expr: '2 × {r}', how: 'The circle touches both sides: the side is a diameter.' },
+        r: { expr: '{s} ÷ 2', how: 'Half the side.' },
+      },
+      'Q = s²': {
+        Q: { expr: '{s}²', how: 'A square’s area is its side times itself.' },
+        s: { expr: '√{Q}', how: 'The side is the square root of the area.' },
+      },
+      'A = πr²': {
+        A: { expr: 'π × {r}²', how: 'Square the radius, then multiply by π.' },
+        r: { expr: '√({A} ÷ π)', how: 'Divide by π, then take the square root.' },
+      },
+      'L = Q − A': {
+        L: { expr: '{Q} − {A}', how: 'Take the circle’s area from the square’s.' },
+        Q: { expr: '{L} + {A}', how: 'The corners and the circle make the square.' },
+        A: { expr: '{Q} − {L}', how: 'The square less its corners.' },
+      },
+    },
+    example: { r: 3, s: 6, Q: 36, A: 9 * Math.PI, L: 36 - 9 * Math.PI },
+    startWith: ['r'],
+    pictureLabels: ['s', 'Q', 'L'],
+    representation: { kind: 'circle', radius: 'r', extent: 5, area: 'A' },
+  },
+  {
+    id: 'm.7.circles~pi-graph',
+    title: 'Circumference is proportional to diameter',
+    use: 'Use this for “The graph of C against d passes through (1, π). Name three more points.”',
+    assumptions: [
+      'Every circle’s circumference is π times its diameter, so C and d are proportional.',
+      'π is the constant of proportionality: the graph is a line through (0, 0) and (1, π).',
+      'π is about 3.14, so a circle is a little more than 3 diameters around.',
+    ],
+    variables: [
+      { id: 'd', symbol: 'd', name: 'Diameter', min: 0.5, max: 20, step: 0.5 },
+      { id: 'C', symbol: 'C', name: 'Circumference', min: 0, max: 63, pi: true },
+      {
+        id: 'k',
+        symbol: 'k',
+        name: 'Constant of proportionality',
+        min: 3,
+        max: 3.2,
+        pi: true,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'C = πd',
+        display: '{C} = π × {d}',
+        vars: ['C', 'd'],
+        residual: (v: Values) => v.C! - Math.PI * v.d!,
+        solve: { C: (v: Values) => Math.PI * v.d!, d: (v: Values) => v.C! / Math.PI },
+      },
+      {
+        id: 'k = C ÷ d',
+        display: '{k} = {C} ÷ {d}',
+        vars: ['k', 'C', 'd'],
+        residual: (v: Values) => v.k! * v.d! - v.C!,
+        solve: { k: (v: Values) => q(v.C!, v.d!), C: () => undefined, d: () => undefined },
+      },
+    ],
+    steps: {
+      'C = πd': {
+        C: { expr: 'π × {d}', how: 'Circumference is π times the diameter.' },
+        d: { expr: '{C} ÷ π', how: 'Divide the circumference by π.' },
+      },
+      'k = C ÷ d': {
+        k: { expr: '{C} ÷ {d}', how: 'Circumference ÷ diameter is the same for every circle.' },
+      },
+    },
+    example: { d: 2, C: 2 * Math.PI, k: Math.PI },
+    startWith: ['d'],
+    representation: {
+      kind: 'plot',
+      x: { var: 'd', min: 0, max: 6 },
+      y: { var: 'C', min: 0, max: 20 },
+      params: ['k'],
+      autoRange: true,
+      unitRate: 'k',
+      table: [0, 1, 2, 3],
     },
   },
 ];
