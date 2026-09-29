@@ -281,7 +281,10 @@ function candidatesFor(
         .map((p) => p.x);
 }
 
-type Propagation = { ok: true; values: Values; trace: TraceStep[] } | { ok: false; reason: string };
+type Propagation =
+  | { ok: true; values: Values; trace: TraceStep[] }
+  /** `said`: the reason is a rule's own sentence (its `message`), not a generic conflict. */
+  | { ok: false; reason: string; said?: boolean };
 
 /**
  * Repeatedly solves any relation with exactly one unknown until nothing changes. When a
@@ -308,6 +311,8 @@ function propagate(
       );
       if (unknowns.length === 0) {
         if (!holds(relation, values)) {
+          const said = relation.message?.(values);
+          if (said) return { ok: false, reason: said, said: true };
           return { ok: false, reason: `Doesn’t fit ${relation.id}` };
         }
       } else if (relation.constraint) {
@@ -318,6 +323,10 @@ function propagate(
         const variable = byId.get(id)!;
         const xs = candidatesFor(relation, variable, values, previous);
         if (xs.length === 0) {
+          // A rule that says why it has no single answer here (parallel lines, the same x on
+          // both sides) says so under the box.
+          const said = relation.message?.(values);
+          if (said) return { ok: false, reason: said, said: true };
           // No valid value exists (e.g. out of range, or a negative length). Only a conflict
           // if every other variable in the relation is pinned; otherwise just leave it unknown.
           const direct = relation.solve?.[id]?.(values);
@@ -594,6 +603,12 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       known = trial.values;
       trace = trial.trace;
       kept.unshift({ id: g.id, value: normalizeValue(variable, g.value) });
+    } else if (trial.said && !isNewest) {
+      // A rule says why these numbers have no single answer (parallel lines): the newest
+      // input is refused with that sentence, and the older numbers stay as they were.
+      const newest = given[given.length - 1]!;
+      const before = solve(system, given.slice(0, -1), previous);
+      return { ...before, rejected: { id: newest.id, reason: trial.reason } };
     } else if (isNewest) {
       rejected = { id: g.id, reason: trial.reason };
     } else {

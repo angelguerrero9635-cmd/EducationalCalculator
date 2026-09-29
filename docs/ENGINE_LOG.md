@@ -5,6 +5,22 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grade 7–8 math engine: π, scientific notation, rules that say why
+
+- **π values (E1).** `pi: true` on a variable prints a whole or two-decimal multiple of π as
+  "36π" or "2.25π"; boxes take "36π", "36 pi", "36*pi". The harness reads "6π" as 6 × π.
+- **Scientific notation (E2).** `scientific: true` prints "4.7 × 10⁵". Every value that used to
+  fall back to the calculator's "3.000e16" now prints "3 × 10¹⁶", bracketed where a negative
+  would be ("÷ (3.1 × 10⁻⁷)"). Boxes take "4.7 × 10^5", "4.7 x 10^-3", "3 × 10⁻⁴" and "4.7e5".
+  Negative exponents are raised (⁻) in `superscript`, typeset by `toLatex` and read by the
+  harness; the harness's number pattern (`NUM`), answer reader and conversion-line reader take
+  scientific notation as one number. `math/6.ts`'s `shownNum` parses with `parseNumber`.
+- **A rule that says why (E4).** A relation's `message(values)` returns a sentence when it has no
+  single answer (equal slopes; the same x on both sides). The newest input is then refused with
+  that sentence under its box, and the student's earlier numbers stay.
+- **Negatives (E5)** were already bracketed after an operator or before a power
+  (`renderTemplate`), as the Grade 7 pages need.
+
 ## MODULE_IDS scopes every per-page suite
 
 Only the sampling harness honored `MODULE_IDS`; the modules, standards, latex, layouts and

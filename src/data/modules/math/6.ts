@@ -6,7 +6,7 @@
  * Pages name their values in words, as Grades 3–5 do, except where the standard is about
  * letters (6.EE, the area formulas, the cube formulas): those set `notation: 'letters'`.
  */
-import { formatNumber, superscript } from '@/engine/format';
+import { formatNumber, parseNumber, superscript } from '@/engine/format';
 import type { Values } from '@/engine/types';
 
 import { div, primeFactors, whole } from '../helpers';
@@ -15,7 +15,10 @@ import { decimalColumns, decimalLongDivision, decimalMultiply, longDivision } fr
 
 const fmt = (x: number) => formatNumber(x);
 /** A number as the steps show it (rounded like `fmt`), to do arithmetic on what is written. */
-const shownNum = (x: number) => Number(fmt(x).replace(/,/g, '').replace('−', '-'));
+const shownNum = (x: number) => {
+  const n = parseNumber(fmt(x));
+  return typeof n === 'number' ? n : x;
+};
 /** Exact to 9 places: 7.5 ÷ 6 is 1.25, not 1.2499999999. */
 const exact = (x: number) => Number(x.toFixed(9));
 const thousandths = (x: number) => Number(x.toFixed(3));

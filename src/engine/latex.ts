@@ -19,8 +19,10 @@
 export type MathBand = 'early' | 'elementary' | 'middle' | 'standard';
 
 const SUPER = '⁰¹²³⁴⁵⁶⁷⁸⁹';
-const fromSuper = (s: string) => [...s].map((ch) => String(SUPER.indexOf(ch))).join('');
-const toSuper = (s: string) => [...s].map((ch) => SUPER[Number(ch)] ?? ch).join('');
+const fromSuper = (s: string) =>
+  [...s].map((ch) => (ch === '⁻' ? '-' : String(SUPER.indexOf(ch)))).join('');
+const toSuper = (s: string) =>
+  [...s].map((ch) => (ch === '-' ? '⁻' : (SUPER[Number(ch)] ?? ch))).join('');
 
 /** A whole number, with thousands separators allowed (1,200). */
 const INT = String.raw`\d{1,3}(?:,\d{3})+|\d+`;
@@ -28,7 +30,7 @@ const INT = String.raw`\d{1,3}(?:,\d{3})+|\d+`;
 const PART = String.raw`${INT}|\?`;
 /** Not followed by more of a number (a sentence's final period is fine). */
 const END = String.raw`(?![\d/?]|[.,]\d)`;
-const SUP = '[⁰¹²³⁴⁵⁶⁷⁸⁹]+';
+const SUP = '⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+';
 const SUB = '[₀₁₂₃₄₅₆₇₈₉ₜ]*';
 /** A letter right after "number space" is a unit (36 m², 4 V), never a variable. */
 const NOT_UNIT = String.raw`(?<!\d[  ])`;

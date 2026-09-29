@@ -266,6 +266,50 @@ describe('solve', () => {
   });
 });
 
+describe('a rule that explains why it has no answer', () => {
+  // a × x + b = c × x + d: no x when a = c and b ≠ d; every x when a = c and b = d.
+  const sides: System = {
+    variables: ['a', 'b', 'c', 'd', 'x'].map((id) => ({
+      id,
+      symbol: id,
+      name: id,
+      min: -50,
+      max: 50,
+    })),
+    relations: [
+      {
+        id: 'ax + b = cx + d',
+        display: '{a}{x} + {b} = {c}{x} + {d}',
+        vars: ['x', 'a', 'b', 'c', 'd'],
+        residual: (v) => v.a! * v.x! + v.b! - (v.c! * v.x! + v.d!),
+        solve: { x: (v) => (v.a === v.c ? undefined : (v.d! - v.b!) / (v.a! - v.c!)) },
+        message: (v) =>
+          v.a !== v.c
+            ? undefined
+            : v.b === v.d
+              ? 'Both sides are the same: every x works.'
+              : 'The same x on both sides but different numbers: no x works.',
+      },
+    ],
+  };
+  it('shows the sentence instead of a generic conflict', () => {
+    const r = solve(sides, [
+      { id: 'a', value: 2 },
+      { id: 'b', value: 1 },
+      { id: 'c', value: 2 },
+      { id: 'd', value: 5 },
+    ]);
+    expect(r.rejected?.reason).toBe('The same x on both sides but different numbers: no x works.');
+    const ok = solve(sides, [
+      { id: 'a', value: 3 },
+      { id: 'b', value: 1 },
+      { id: 'c', value: 1 },
+      { id: 'd', value: 5 },
+    ]);
+    expect(ok.values.x).toBe(2);
+  });
+});
+
 describe('calculator state', () => {
   it('sets, replaces and clears values', () => {
     let s = initialState(area, [
@@ -316,8 +360,8 @@ describe('format', () => {
     expect(formatNumber(Math.PI)).toBe('3.1416');
     expect(formatNumber(2.5, { integer: true })).toBe('3');
     expect(formatNumber(1.5e9)).toBe('1,500,000,000');
-    expect(formatNumber(1.5e15)).toBe('1.500e15');
-    expect(formatNumber(2.5e7 + 0.5)).toBe('2.500e7');
+    expect(formatNumber(1.5e15)).toBe('1.5 × 10¹⁵');
+    expect(formatNumber(2.5e7 + 0.5)).toBe('2.5 × 10⁷');
   });
 
   it('parses user input', () => {
@@ -333,6 +377,30 @@ describe('format', () => {
     const vars = area.variables;
     expect(renderTemplate('{A} = {l} × {w}', vars)).toBe('A = l × w');
     expect(renderTemplate('{A} = {l} × {w}', vars, { l: 4, w: -3 })).toBe('? = 4 × (−3)');
+  });
+});
+
+describe('π and scientific notation', () => {
+  it('shows multiples of π and scientific notation the way class writes them', () => {
+    expect(formatNumber(36 * Math.PI, { pi: true })).toBe('36π');
+    expect(formatNumber(Math.PI, { pi: true })).toBe('π');
+    expect(formatNumber(2.25 * Math.PI, { pi: true })).toBe('2.25π');
+    expect(formatNumber(10, { pi: true })).toBe('10');
+    expect(formatNumber(470000, { scientific: true })).toBe('4.7 × 10⁵');
+    expect(formatNumber(0.0003, { scientific: true })).toBe('3 × 10⁻⁴');
+    expect(formatNumber(99999.99, { scientific: true })).toBe('1 × 10⁵');
+    // Never the calculator's e-notation, with or without the option.
+    expect(formatNumber(3e16)).toBe('3 × 10¹⁶');
+    expect(formatNumber(1.5e-8)).toBe('1.5 × 10⁻⁸');
+  });
+  it('reads π and scientific notation typed in a box', () => {
+    expect(parseNumber('36π')).toBeCloseTo(36 * Math.PI);
+    expect(parseNumber('36 pi')).toBeCloseTo(36 * Math.PI);
+    expect(parseNumber('π')).toBeCloseTo(Math.PI);
+    expect(parseNumber('4.7 × 10^5')).toBeCloseTo(470000);
+    expect(parseNumber('4.7 x 10^-3')).toBeCloseTo(0.0047);
+    expect(parseNumber('3 × 10⁻⁴')).toBeCloseTo(0.0003);
+    expect(parseNumber('4.7e5')).toBe(470000);
   });
 });
 

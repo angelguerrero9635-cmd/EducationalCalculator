@@ -23,6 +23,7 @@ import {
   type SolveResult,
   type System,
 } from '@/engine/solve';
+import { parseNumber } from '@/engine/format';
 import { changeUnits, initialState, setValues, type CalcState } from '@/engine/state';
 import type { Values, VariableDef } from '@/engine/types';
 import {
@@ -193,6 +194,18 @@ function resultNumber(result: string, exp = false): number {
   if (mixed) {
     const x = Number(mixed[2] ?? 0) + Number(mixed[3]) / Number(mixed[4]);
     return mixed[1] ? -x : x;
+  }
+  // Scientific notation (4.7 × 10⁵, −3 × 10⁻⁴) and multiples of π (36π) are one number.
+  const sci = /^([-−]?[\d.]+) × 10(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)/.exec(rhs);
+  if (sci) {
+    const n = Number([...sci[2]!].map((c) => (c === '⁻' ? '-' : '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c))).join(''));
+    return Number(sci[1]!.replace('−', '-')) * 10 ** n;
+  }
+  const pi = /^([-−]?[\d.]*)π/.exec(rhs);
+  if (pi) {
+    const k =
+      pi[1] === '' ? 1 : pi[1] === '−' || pi[1] === '-' ? -1 : Number(pi[1]!.replace('−', '-'));
+    return k * Math.PI;
   }
   const re = exp ? /^\$?(-?[\d.]+(?:e[-+]?\d+)?)/ : /^\$?(-?[\d.]+)/;
   return Number(re.exec(rhs)?.[1]);
@@ -583,16 +596,24 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   }
   // Conversion lines: "s = A u1 = B u2   (1 X = f Y)".
   for (const line of [...w.convertIn, ...w.convertOut]) {
-    const m = /= (\S+) (.+?) = (\S+) (.+?) {3}\(1 (.+?) = (\S+) (.+)\)$/.exec(line);
+    // A number is one token, or scientific notation (3 × 10⁷).
+    const N = String.raw`(?:\(?[-−]?[\d.,]+ × 10⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+\)?|\S+)`;
+    const m = new RegExp(
+      String.raw`= (${N}) (.+?) = (${N}) (.+?) {3}\(1 (.+?) = (${N}) (.+)\)$`,
+    ).exec(line);
     if (!m) {
       c.f.add('harness', `${c.label}can't parse conversion line`, line);
       continue;
     }
     const [, a, u1, b, u2, x, factor, y] = m;
-    if (!shownClose(convert(Number(a), u1!, u2!), Number(b))) {
+    const num = (t: string) => {
+      const n = parseNumber(t.replace(/^\((.*)\)$/, '$1'));
+      return typeof n === 'number' ? n : NaN;
+    };
+    if (!shownClose(convert(num(a!), u1!, u2!), num(b!))) {
       c.f.add('error', `${c.label}conversion is wrong: "${line}"`, where);
     }
-    if (!close(convert(1, x!, y!), Number(factor), 1e-5)) {
+    if (!close(convert(1, x!, y!), num(factor!), 1e-5)) {
       c.f.add('error', `${c.label}conversion factor is wrong: "${line}"`, where);
     }
   }

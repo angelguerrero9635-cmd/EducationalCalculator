@@ -24,6 +24,13 @@ export interface VariableDef {
    */
   fraction?: number;
   /**
+   * Show a value that is a whole or short-decimal multiple of π as that multiple (36π, 2.25π),
+   * the way circle and volume answers are written; boxes take "36π", "36 pi" or "36*pi".
+   */
+  pi?: boolean;
+  /** Show the value in scientific notation (4.7 × 10⁵); boxes take "4.7 × 10^5" and "4.7e5". */
+  scientific?: boolean;
+  /**
    * The only units this value may be shown in (rain in mm, cm or in, never km): the unit menu
    * and the unit systems keep to these.
    */
@@ -93,4 +100,11 @@ export interface Relation {
    * ("3 − (−5)" is Grade 7): "How far from −5 up to 3? ?".
    */
   sentence?: (v: Values) => string;
+  /**
+   * Why the rule has no single answer for these values, in words ("The slopes are equal and
+   * the intercepts differ: the lines are parallel, so there is no solution."), or undefined
+   * when it has one. When the rule can't give its unknown a value, or doesn't hold, and this
+   * returns a sentence, the sentence is the reason shown under the box.
+   */
+  message?: (v: Values) => string | undefined;
 }

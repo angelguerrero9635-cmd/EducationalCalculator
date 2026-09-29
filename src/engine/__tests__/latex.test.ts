@@ -23,6 +23,10 @@ describe('toLatex', () => {
     expect(both(plain, 'elementary')).toBe(tex);
   });
 
+  it('raises negative exponents and reads them back', () => {
+    expect(both('3 × 10⁻⁴', 'middle')).toContain('^{-4}');
+    expect(both('4.7 × 10⁵', 'middle')).toContain('^{5}');
+  });
   it('keeps units, clock times, points, remainders and K–2 as text', () => {
     for (const band of ['elementary', 'middle', 'standard'] as const) {
       for (const line of ['Area = 36 m²', '12 cm²', '60 km/h', '13 m/s', '3:45', '(−4, 3)']) {

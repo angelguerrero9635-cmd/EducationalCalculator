@@ -3,8 +3,13 @@ import type { Values, VariableDef } from './types';
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
 export function formatNumber(
   x: number,
-  variable?: Pick<VariableDef, 'integer' | 'digits' | 'fraction'>,
+  variable?: Pick<VariableDef, 'integer' | 'digits' | 'fraction' | 'pi' | 'scientific'>,
 ): string {
+  if (variable?.pi && x !== 0) {
+    const p = asPiMultiple(x);
+    if (p) return p;
+  }
+  if (variable?.scientific && x !== 0) return scientific(x);
   if (variable?.fraction && !Number.isInteger(x)) {
     const f = asFraction(x, variable.fraction);
     if (f) return f;
@@ -19,12 +24,45 @@ export function formatNumber(
   const abs = Math.abs(x);
   // Whole numbers are written out in full (20,000,000; 999,890,001) up to a quadrillion.
   if (Number.isInteger(x) && abs < 1e15) return minus(withSeparators(String(x)));
-  if (abs >= 1e7 || abs < 1e-4) return minus(x.toExponential(3).replace('e+', 'e'));
+  // Very big or very small: scientific notation as it is written in class (3 × 10¹⁶), never
+  // the calculator's 3e16.
+  if (abs >= 1e7 || abs < 1e-4) return scientific(x);
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals.
   return minus(withSeparators(String(Number(abs < 1 ? x.toPrecision(4) : x.toFixed(4)))));
 }
 
 const minus = (s: string) => s.replace(/^-/, '−');
+
+const SUPERSCRIPT = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+/** An integer exponent raised: 5 → "⁵", −4 → "⁻⁴". */
+const raised = (n: number) =>
+  `${n < 0 ? '⁻' : ''}${[...String(Math.abs(n))].map((c) => SUPERSCRIPT[Number(c)]).join('')}`;
+
+/** x in scientific notation with up to 4 significant figures: "4.7 × 10⁵", "−3 × 10⁻⁴". */
+export function scientific(x: number): string {
+  if (x === 0) return '0';
+  let n = Math.floor(Math.log10(Math.abs(x)));
+  let m = Number((x / 10 ** n).toPrecision(4));
+  // Rounding can carry the mantissa to 10 (9.9999 → 10): move it to the exponent.
+  if (Math.abs(m) >= 10) {
+    m /= 10;
+    n += 1;
+  }
+  return minus(`${m} × 10${raised(n)}`);
+}
+
+/**
+ * x as a multiple of π when it is one to within a hair, with at most two decimals in the
+ * multiple: "36π", "π", "2.25π", "−4π"; undefined otherwise.
+ */
+export function asPiMultiple(x: number): string | undefined {
+  const k = x / Math.PI;
+  const r = Math.round(k * 100) / 100;
+  if (Math.abs(k - r) > 1e-9 * Math.max(1, Math.abs(k))) return undefined;
+  if (r === 0) return undefined;
+  const text = Math.abs(r) === 1 ? 'π' : `${withSeparators(String(Math.abs(r)))}π`;
+  return r < 0 ? `−${text}` : text;
+}
 
 /**
  * x as a mixed number or fraction in lowest terms with a denominator up to `most`
@@ -75,6 +113,26 @@ export const plainDigits = (s: string) => s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1
 export function parseNumber(text: string): number | undefined | 'invalid' {
   const cleaned = text.trim().replace(/,/g, '').replace(/−/g, '-');
   if (cleaned === '') return undefined;
+  // A multiple of π: "36π", "36 pi", "36*pi", "π", "-2.5π".
+  const pi = /^([-+]?)(\d+\.?\d*|\.\d+)?\s*\*?\s*(?:π|pi)$/i.exec(cleaned);
+  if (pi) {
+    const k = pi[2] === undefined ? 1 : Number(pi[2]);
+    return (pi[1] === '-' ? -k : k) * Math.PI;
+  }
+  // Scientific notation: "4.7 × 10^5", "4.7 x 10^-3", "4.7*10⁵", "4.7 × 10⁻³".
+  const sci = new RegExp(
+    '^([-+]?(?:\\d+\\.?\\d*|\\.\\d+))\\s*[×x*]\\s*10(?:\\^\\(?([-+]?\\d+)\\)?|([⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+))$',
+    'i',
+  ).exec(cleaned);
+  if (sci) {
+    const exp =
+      sci[2] !== undefined
+        ? Number(sci[2])
+        : Number(
+            [...sci[3]!].map((c) => (c === '⁻' ? '-' : String(SUPERSCRIPT.indexOf(c)))).join(''),
+          );
+    return Number(sci[1]) * 10 ** exp;
+  }
   const frac = /^([-+]?)(?:(\d+)\s+)?(\d+)\/(\d+)$/.exec(cleaned);
   if (frac) {
     const [, sign, whole, num, den] = frac;
@@ -124,7 +182,8 @@ export function renderTemplate(
     const before = template.slice(0, at).trimEnd();
     const after = template.slice(at + id.length + 2);
     const needs = /[+−×÷·\-*/]$/.test(before) || /^[\^²³⁰¹⁴-⁹]/.test(after);
-    return x < 0 && needs ? `(${s})` : s;
+    // Scientific notation reads as one number only in brackets there too: ÷ (3 × 10⁻⁴).
+    return (x < 0 || s.includes(' × 10')) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
   // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0; a
@@ -134,8 +193,8 @@ export function renderTemplate(
 
 /** Whole-number exponents after a caret written as superscript digits: "10^3" → "10³". */
 export function superscript(text: string): string {
-  return text.replace(/\^(\d+)(?![\d.])/g, (_, d: string) =>
-    [...d].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)]).join(''),
+  return text.replace(/\^(-?)(\d+)(?![\d.])/g, (_, sign: string, d: string) =>
+    raised(Number(`${sign}${d}`)),
   );
 }
 

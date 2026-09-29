@@ -3,7 +3,7 @@
  * through PHRASES (words the walkthrough uses for arithmetic, e.g. "3 tens", "whole groups of
  * 6 in 743"). A new phrase in a module's step text is taught here. Test-only.
  */
-import { plainDigits } from '@/engine/format';
+import { parseNumber, plainDigits } from '@/engine/format';
 
 import type { Walkthrough } from '../buildSteps';
 
@@ -20,8 +20,18 @@ export const primeFactorCount = (n: number) => {
   return m > 1 ? count + 1 : count;
 };
 
-export const NUM = String.raw`\(?-?\d+(?:\.\d+)?(?:e[-+]?\d+)?\)?`;
-export const toNum = (s: string) => Number(s.replace(/[()]/g, ''));
+/** A number in step text, with scientific notation as one number (7.099 × 10¹²). */
+/**
+ * A number in step text, with scientific notation as one number: 7.099 × 10¹² as written, or
+ * 7.099 * 10**(12) once `evaluate` has turned the symbols into arithmetic.
+ */
+export const NUM = String.raw`\(?-?\d+(?:\.\d+)?(?:e[-+]?\d+)?(?: × 10⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+| \* 10\*\* ?\(?-?\d+\)?)?\)?`;
+export const toNum = (s: string) => {
+  const sci = /^\(?(-?[\d.]+) \* 10\*\* ?\(?(-?\d+)\)?\)?$/.exec(s);
+  if (sci) return Number(sci[1]) * 10 ** Number(sci[2]);
+  const n = parseNumber(s.replace(/[()]/g, ''));
+  return typeof n === 'number' ? n : NaN;
+};
 export const COIN: Record<string, number> = {
   'five-dollar bill': 500,
   'five-dollar bills': 500,
@@ -297,10 +307,15 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/÷/g, '/')
     .replace(/·/g, '*')
     // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
+    // 36π is 36 × π.
+    .replace(/(\d)π/g, '$1*π')
     .replace(/π/g, `(${Math.PI})`)
     .replace(/½/g, '(0.5)')
     // Any exponent written as superscript digits (10³, 10⁴).
-    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (m) => `**${[...m].map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c)).join('')}`)
+    .replace(
+      /⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,
+      (m) => `**(${[...m].map((c) => (c === '⁻' ? '-' : '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c))).join('')})`,
+    )
     .replace(/\^/g, '**')
     .replace(/∛\(/g, 'cbrt(')
     .replace(/∛(\d+(?:\.\d+)?)/g, 'cbrt($1)')
