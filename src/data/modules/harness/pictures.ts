@@ -26,7 +26,7 @@ import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
-import { transformationHsfIssues } from './picturesHsf';
+import { scaleCopyHsfIssues, transformationHsfIssues } from './picturesHsf';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -222,6 +222,11 @@ export function repIssues(
       break;
     }
     case 'scaleCopy': {
+      // Grades 9–12: a dilation from a center, or the side-splitter (picturesHsf.ts).
+      if (rep.center || rep.splitter) {
+        out.push(...scaleCopyHsfIssues(rep, val));
+        break;
+      }
       // Whole squares for the original; both figures side by side fit about 30 squares.
       count(rep.width, 'original width', 12);
       count(rep.height, 'original height', 12);

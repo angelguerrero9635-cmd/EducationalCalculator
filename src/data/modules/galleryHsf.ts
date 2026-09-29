@@ -403,6 +403,248 @@ const symmetryIsosceles: ModuleDef = {
   },
 };
 
+// ── H24 scaleCopy: dilation from any center, factors under 1, the side-splitter ──
+
+/** c = k × a: a length of the copy. */
+const times = (c: string, k: string, a: string, what: string): Rel =>
+  R(`${c} = ${k} × ${a}`, `{${c}} = {${k}} × {${a}}`, (v) => v[c]! - v[k]! * v[a]!, {
+    [c]: [(v) => v[k]! * v[a]!, `{${k}} × {${a}}`, `Multiply the ${what} by the scale factor.`],
+    [k]: [
+      (v) => (v[a]! === 0 ? undefined : v[c]! / v[a]!),
+      `{${c}} ÷ {${a}}`,
+      `The image’s ${what} over the original’s.`,
+    ],
+    [a]: [
+      (v) => (v[k]! === 0 ? undefined : v[c]! / v[k]!),
+      `{${c}} ÷ {${k}}`,
+      `Undo the scale factor on the ${what}.`,
+    ],
+  });
+
+/** The dilation's grid (original, image and center, a square to spare) is up to 30 squares. */
+const dilationFits = (center: [number, number]): Relation => ({
+  id: 'fits the grid',
+  constraint: true,
+  display: 'The {w} by {h} figure, its image at scale {k} and the center fit on the grid',
+  vars: ['w', 'h', 'k'],
+  residual: (v: Values) => {
+    const [a, b] = center;
+    const span = (lo: number, hi: number, c: number) => {
+      const xs = [lo, hi, c, c + v.k! * (lo - c), c + v.k! * (hi - c)];
+      return Math.ceil(Math.max(...xs)) - Math.floor(Math.min(...xs)) + 2;
+    };
+    return span(0, v.w!, a) <= 30 && span(0, v.h!, b) <= 30 ? 0 : 1;
+  },
+  solve: {},
+});
+
+function dilation(
+  id: string,
+  title: string,
+  use: string,
+  center: [number, number],
+  example: Values,
+  shape: 'rectangle' | 'triangle' | 'L' | 'trapezoid',
+  assumptions: string[],
+): ModuleDef {
+  const cw = times('W', 'k', 'w', 'width');
+  const ch = times('H', 'k', 'h', 'height');
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      V('k', 'k', 'Scale factor', { min: 0.25, max: 3, step: 0.25 }),
+      V('w', 'w', 'Width', { min: 1, max: 12, step: 1, integer: true }),
+      V('h', 'h', 'Height', { min: 1, max: 12, step: 1, integer: true }),
+      V('W', 'W', 'Image width', { min: 0, max: 36, step: 0.25 }),
+      V('H', 'H', 'Image height', { min: 0, max: 36, step: 0.25 }),
+    ],
+    relations: [dilationFits(center), cw.relation, ch.relation],
+    steps: { 'fits the grid': {}, [cw.relation.id]: cw.steps, [ch.relation.id]: ch.steps },
+    example,
+    startWith: ['k', 'w', 'h'],
+    representation: {
+      kind: 'scaleCopy',
+      factor: 'k',
+      width: 'w',
+      height: 'h',
+      copyWidth: 'W',
+      copyHeight: 'H',
+      shape,
+      center,
+    },
+  };
+}
+
+const dilationShrink = dilation(
+  'g.m10-similarity-dilation-shrink',
+  'Dilation by a factor under 1',
+  'Use this for “Dilate the triangle by a scale factor of 1/2 with center O. How long are the new sides?”',
+  [10, 8],
+  { k: 0.5, w: 8, h: 6, W: 4, H: 3 },
+  'triangle',
+  [
+    'The center O is 10 squares right of and 8 squares up from the bottom left corner.',
+    'Each image point is on the ray from O through the original point, k times as far from O.',
+    'A scale factor under 1 shrinks the figure toward O; every length is multiplied by k.',
+  ],
+);
+
+const dilationEnlarge = dilation(
+  'g.m10-similarity-dilation-enlarge',
+  'Dilation from a center outside the figure',
+  'Use this for “Dilate the figure by a scale factor of 2 from the point O.”',
+  [-2, -1],
+  { k: 2, w: 4, h: 4, W: 8, H: 8 },
+  'L',
+  [
+    'The center O is 2 squares left of and 1 square below the bottom left corner.',
+    'Each image point is on the ray from O through the original point, k times as far from O.',
+    'The image is similar to the figure: its angles are the same and its sides are k times as long.',
+  ],
+);
+
+const dilationInside = dilation(
+  'g.m10-similarity-dilation-inside',
+  'Dilation from a center inside the figure',
+  'Use this for “Dilate the rectangle by 1.5 from its center.”',
+  [3, 2],
+  { k: 1.5, w: 6, h: 4, W: 9, H: 6 },
+  'rectangle',
+  [
+    'The center O is the middle of the 6 by 4 rectangle.',
+    'Each corner moves out along its ray from O to 1.5 times as far.',
+    'The image and the figure share their center, and each side stays parallel to its image.',
+  ],
+);
+
+const dilationSmall = dilation(
+  'g.m10-similarity-dilation-quarter',
+  'Dilation by a scale factor of 1/4',
+  'Use this for “A 12 by 8 rectangle is dilated by 1/4 from its corner. How big is the image?”',
+  [0, 0],
+  { k: 0.25, w: 12, h: 8, W: 3, H: 2 },
+  'rectangle',
+  [
+    'The center O is the rectangle’s bottom left corner, so that corner stays where it is.',
+    'Each other point moves toward O to a quarter of its distance.',
+    'The image’s area is k × k = 1/16 of the original’s.',
+  ],
+);
+
+const splitter = R('AE = k × AC', '{ae} = {k} × {ac}', (v) => v.ae! - v.k! * v.ac!, {
+  ae: [
+    (v) => v.k! * v.ac!,
+    '{k} × {ac}',
+    'E is the same fraction of the way along AC as D is along AB.',
+  ],
+  ac: [
+    (v) => (v.k! === 0 ? undefined : v.ae! / v.k!),
+    '{ae} ÷ {k}',
+    'AE is the fraction k of the whole side AC.',
+  ],
+  k: [
+    (v) => (v.ac! === 0 ? undefined : v.ae! / v.ac!),
+    '{ae} ÷ {ac}',
+    'The fraction of AC that AE is.',
+  ],
+});
+const fraction = R('k = AD ÷ AB', '{k} = {ad} ÷ {ab}', (v) => v.k! * v.ab! - v.ad!, {
+  k: [
+    (v) => (v.ab! === 0 ? undefined : v.ad! / v.ab!),
+    '{ad} ÷ {ab}',
+    'The small triangle ADE is triangle ABC scaled by AD over AB.',
+  ],
+  ad: [(v) => v.k! * v.ab!, '{k} × {ab}', 'D is the fraction k of the way from A to B.'],
+  ab: [(v) => (v.k! === 0 ? undefined : v.ad! / v.k!), '{ad} ÷ {k}', 'AD is the fraction k of AB.'],
+});
+const len = (id: string, symbol: string, name: string, max = 50) =>
+  V(id, symbol, name, { unit: 'cm', min: 0.1, max, step: 0.1 });
+
+const sideSplitter: ModuleDef = {
+  id: 'g.m10-similarity-side-splitter',
+  title: 'The side-splitter: a line parallel to one side',
+  use: 'Use this for “DE is parallel to BC. AD = 4, DB = 2 and AE = 6. Find EC.”',
+  assumptions: [
+    'D is on AB and E is on AC, and DE is parallel to BC.',
+    'A line parallel to one side of a triangle cuts the other two sides in the same ratio: AD ÷ DB = AE ÷ EC.',
+    'Triangle ADE is similar to triangle ABC: a dilation from A by the scale factor k = AD ÷ AB.',
+  ],
+  variables: [
+    len('ad', 'AD', 'AD'),
+    len('db', 'DB', 'DB'),
+    len('ae', 'AE', 'AE'),
+    len('ec', 'EC', 'EC'),
+    len('ab', 'AB', 'Side AB', 100),
+    len('ac', 'AC', 'Side AC', 100),
+    V('k', 'k', 'Scale factor AD ÷ AB', { min: 0.01, max: 0.99, step: 0.01 }),
+  ],
+  ...rels(
+    sum('ab', 'ad', 'db', 'Side AB is AD and DB put together.'),
+    sum('ac', 'ae', 'ec', 'Side AC is AE and EC put together.'),
+    fraction,
+    splitter,
+  ),
+  example: { ad: 4, db: 2, ae: 6, ec: 3, ab: 6, ac: 9, k: 2 / 3 },
+  startWith: ['ad', 'db', 'ae'],
+  representation: {
+    kind: 'scaleCopy',
+    factor: 'k',
+    width: 'ab',
+    height: 'ac',
+    splitter: { parts: ['ad', 'db', 'ae', 'ec'] },
+  },
+};
+
+const sideSplitterBase: ModuleDef = {
+  id: 'g.m10-similarity-side-splitter-base',
+  title: 'The side-splitter: the parallel side',
+  use: 'Use this for “DE is parallel to BC, AD = 2, AB = 8 and BC = 12. How long is DE?”',
+  assumptions: [
+    'DE is parallel to BC, with D on AB and E on AC.',
+    'Triangle ADE is similar to triangle ABC with scale factor k = AD ÷ AB.',
+    'So DE = k × BC, and AE = k × AC.',
+  ],
+  standalone: { vars: ['ac', 'ae'], why: 'AE follows from AC and the scale factor alone.' },
+  variables: [
+    len('ab', 'AB', 'Side AB', 100),
+    len('ac', 'AC', 'Side AC', 100),
+    len('bc', 'BC', 'Side BC', 100),
+    len('ad', 'AD', 'AD'),
+    V('k', 'k', 'Scale factor AD ÷ AB', { min: 0.01, max: 0.99, step: 0.01 }),
+    len('ae', 'AE', 'AE'),
+    len('de', 'DE', 'DE'),
+  ],
+  ...rels(
+    {
+      relation: {
+        id: 'the three sides close',
+        constraint: true,
+        display: '{ab}, {ac} and {bc} close into a triangle',
+        vars: ['ab', 'ac', 'bc'],
+        residual: (v: Values) =>
+          2 * Math.max(v.ab!, v.ac!, v.bc!) < v.ab! + v.ac! + v.bc! ? 0 : 1,
+        solve: {},
+      },
+      steps: {},
+    },
+    fraction,
+    splitter,
+    times('de', 'k', 'bc', 'side BC'),
+  ),
+  example: { ab: 8, ac: 10, bc: 12, ad: 2, k: 0.25, ae: 2.5, de: 3 },
+  startWith: ['ab', 'ac', 'bc', 'ad'],
+  representation: {
+    kind: 'scaleCopy',
+    factor: 'k',
+    width: 'ab',
+    height: 'ac',
+    splitter: { base: ['de', 'bc'] },
+  },
+};
+
 export const HSF_GALLERY_MODULES: ModuleDef[] = [
   composeReflectRotate,
   composeGlide,
@@ -411,5 +653,11 @@ export const HSF_GALLERY_MODULES: ModuleDef[] = [
   symmetryRectangle,
   symmetrySquare,
   symmetryIsosceles,
+  dilationShrink,
+  dilationEnlarge,
+  dilationInside,
+  dilationSmall,
+  sideSplitter,
+  sideSplitterBase,
 ];
 export const HSF_GALLERY_LAYOUTS: LayoutDef[] = [];

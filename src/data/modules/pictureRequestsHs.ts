@@ -399,12 +399,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HF). New optional fields on transformation (typesGraphs.ts, types in typesHsf.ts): then (a second move, the same shapes as the first: { move: "translate", right, up } | { move: "reflect", mirror } | { move: "rotate", angle, center? } | { move: "dilate", factor, center? }), drawn from A′, which turns dashed and grey as the middle image, to A″ in the highlight, each move with its own guides; image2 { x, y } (A″ as values, checked against both moves); symmetry: true (the lines of symmetry dashed and clipped to the grid, and with turns the center, a turn arrow and "order n"; the caption counts both; a turn or flip that lands on the figure labels the image corners further out). Reflection in y = x, y = −x, x = k, y = k and rotation about any center (center: [a, b]) already existed. The first move keeps its handle; the second move has none (its values are typed). Example: { kind: "transformation", figure: [["ax", "ay"], [5, 4], [5, 6]], move: "reflect", mirror: "y-axis", image: { x: "px", y: "py" }, then: { move: "rotate", angle: 90 }, image2: { x: "qx", y: "qy" }, extent: 7 }. Symmetry: { kind: "transformation", figure: [[1, 1], ["r", 1], ["r", "r"], [1, "r"]], move: "rotate", angle: "t", center: ["c", "c"], symmetry: true, quadrants: 1, extent: 6 }. Keep figures off the axes in quadrant 1, where corner labels meet the axis numbers.',
   },
-  ask(
-    'H24',
-    'scaleCopy',
-    'Dilation from any center with rays, scale factors under 1, the side-splitter (parallel line in a triangle)',
-    ['m.10.similarity'],
-  ),
+  {
+    ...ask(
+      'H24',
+      'scaleCopy',
+      'Dilation from any center with rays, scale factors under 1, the side-splitter (parallel line in a triangle)',
+      ['m.10.similarity'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-similarity-dilation-shrink',
+      'g.m10-similarity-dilation-enlarge',
+      'g.m10-similarity-dilation-inside',
+      'g.m10-similarity-dilation-quarter',
+      'g.m10-similarity-side-splitter',
+      'g.m10-similarity-side-splitter-base',
+    ],
+    notes:
+      'Drawn (group HF). New optional fields on scaleCopy (types.ts; SideSplitter in typesHsf.ts; drawn by ScaleCopyHsf.tsx): center: [x, y] (numbers or values, in squares from the original\'s bottom left corner, inside, outside or on it) draws the dilation on one grid: the center O, a dashed ray from O through each corner out to the farther of the corner and its image, the corners lettered A, B, … and A′, B′, …, the factor on the ray with the most room; factors under 1 (down to 0.25) shrink toward O; drag the image\'s farthest corner along its ray. copyWidth, copyHeight and area work as before. The module needs a grid constraint (the figure, image and center within 30 squares; see dilationFits in galleryHsf.ts). Example: { kind: "scaleCopy", factor: "k", width: "w", height: "h", copyWidth: "W", copyHeight: "H", shape: "triangle", center: [10, 8] }. splitter: { parts?: [AD, DB, AE, EC], base?: [DE, BC] } (value ids) draws the side-splitter instead: triangle ABC with DE ∥ BC (parallel arrows on both), the small triangle ADE shaded; with it width and height are the sides AB and AC and factor is k = AD ÷ AB (0 < k < 1); pieces not passed are worked out from k. With base the triangle is to scale from its three sides (the module needs a constraint that they close); without it the angle at A is 50°, which the problem doesn\'t fix. Drag D along AB. The caption works AD ÷ DB = AE ÷ EC, k = AD ÷ AB and DE = k × BC. Example: { kind: "scaleCopy", factor: "k", width: "ab", height: "ac", splitter: { parts: ["ad", "db", "ae", "ec"] } } with AB = AD + DB, AC = AE + EC, k = AD ÷ AB and AE = k × AC.',
+  },
   ask(
     'H25',
     'coordinatePlane',

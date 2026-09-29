@@ -167,6 +167,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `placeValueChart`  | `plus`, `total`                          | two numbers stacked by place, points lined up, the sum under a rule           |
 | `scale`            | `before`; `hanging`                      | two scales, before and after, gas bubbles labelled; a spring scale in N       |
 | `transformation`   | `then`, `image2`; `symmetry`             | a second move from A′ (dashed) to A″; lines of symmetry and the turn order    |
+| `scaleCopy`        | `center`; `splitter`                     | a dilation from any center with rays; DE ∥ BC cutting a triangle's sides      |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

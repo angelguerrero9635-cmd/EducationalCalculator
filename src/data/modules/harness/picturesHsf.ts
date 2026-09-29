@@ -3,6 +3,7 @@
  * `typesHsf.ts`): what each draws must agree with the values. Called from the kind's case in
  * `repIssues` (`pictures.ts`). Test-only.
  */
+import { splitterShape } from '@/components/module/reps/scaleSplitter';
 import { imageOf, type MoveValues, type Pt } from '@/components/module/reps/transform';
 
 import type { SecondMove } from '../typesHsf';
@@ -60,5 +61,52 @@ export function transformationHsfIssues(rep: Of<'transformation'>, val: Val): st
   const [ex, ey] = imageOf(imageOf(a as Pt, rep.move, first), rep.then.move, second);
   if (far(ix, ex) || far(iy, ey))
     out.push(`A″ (${ix}, ${iy}) is not where the two moves take A (${ex}, ${ey})`);
+  return out;
+}
+
+/**
+ * H24: a dilation's copy lengths are k times the original's (whole squares, on a grid of up to
+ * 30 squares); the side-splitter's pieces add to the sides in the ratio k : (1 − k), DE is k × BC,
+ * and the three sides close.
+ */
+export function scaleCopyHsfIssues(rep: Of<'scaleCopy'>, val: Val): string[] {
+  const out: string[] = [];
+  const [W, H, k] = [rep.width, rep.height, rep.factor].map(val);
+  if (k !== undefined && k <= 0) out.push(`scale factor ${k} is not positive`);
+  if (rep.splitter) {
+    if (k !== undefined && k >= 1) out.push(`side-splitter factor ${k} is not below 1`);
+    if (W === undefined || H === undefined || k === undefined) return out;
+    const [ad, db, ae, ec] = (rep.splitter.parts ?? []).map(val);
+    const want = [k * W, (1 - k) * W, k * H, (1 - k) * H];
+    ['AD', 'DB', 'AE', 'EC'].forEach((name, i) => {
+      const x = [ad, db, ae, ec][i];
+      if (x !== undefined && far(x, want[i]!))
+        out.push(`${name} = ${x}, the picture has ${want[i]}`);
+    });
+    const [de, bc] = (rep.splitter.base ?? []).map(val);
+    if (de !== undefined && bc !== undefined && far(de, k * bc))
+      out.push(`DE = ${de} is not ${k} × BC (${bc})`);
+    if (!splitterShape(W, H, bc).tri) out.push(`sides ${W}, ${H}, ${bc} make no triangle`);
+    return out;
+  }
+  // A dilation: whole squares for the original, and the grid stays readable.
+  for (const [x, name] of [
+    [W, 'width'],
+    [H, 'height'],
+  ] as const)
+    if (x !== undefined && (x < 1 || x > 12 || x !== Math.round(x)))
+      out.push(`original ${name} ${x} (whole squares, 1–12)`);
+  const [cx, cy] = rep.center!.map(val);
+  if (W === undefined || H === undefined || k === undefined || cx === undefined || cy === undefined)
+    return out;
+  const xs = [0, W, cx, cx + k * -cx, cx + k * (W - cx)];
+  const ys = [0, H, cy, cy + k * -cy, cy + k * (H - cy)];
+  const span = (v: number[]) => Math.ceil(Math.max(...v)) - Math.floor(Math.min(...v)) + 2;
+  if (span(xs) > 30 || span(ys) > 30)
+    out.push(`dilation grid ${span(xs)} × ${span(ys)} squares (up to 30)`);
+  const cw = rep.copyWidth ? val(rep.copyWidth) : undefined;
+  const ch = rep.copyHeight ? val(rep.copyHeight) : undefined;
+  if (cw !== undefined && far(cw, W * k)) out.push(`copy width ${cw} is not ${k} × ${W}`);
+  if (ch !== undefined && far(ch, H * k)) out.push(`copy height ${ch} is not ${k} × ${H}`);
   return out;
 }

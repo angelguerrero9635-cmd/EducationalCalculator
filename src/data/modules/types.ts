@@ -15,6 +15,7 @@ import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMecha
 import type { Physics8Spec } from './typesPhysics8';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
+import type { SideSplitter } from './typesHsf';
 import type { CardIcon } from './layouts/types';
 
 /**
@@ -556,6 +557,14 @@ export type Representation =
       copyHeight?: string;
       area?: [string, string];
       shape?: 'rectangle' | 'triangle' | 'L' | 'trapezoid';
+      /**
+       * Grades 9–12 dilation: the copy drawn on the original's grid as its dilation from this
+       * center ([x, y] in squares from the original's bottom left corner, numbers or values), a
+       * ray from the center through each corner and its image; drag the image's corner.
+       */
+      center?: [string | number, string | number];
+      /** Grades 9–12 side-splitter (see `SideSplitter`): `width`, `height` are AB and AC. */
+      splitter?: SideSplitter;
     }
   /** Circle with a radius handle; optional labels for diameter, circumference and area. */
   | {

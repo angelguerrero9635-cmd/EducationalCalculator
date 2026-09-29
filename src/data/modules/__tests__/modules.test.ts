@@ -8,6 +8,7 @@ import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
+import { scaleCopyHsfVars } from '../typesHsf';
 import { functionGraphVars } from '../typesFunctionGraph';
 import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
@@ -371,9 +372,15 @@ function representationVars(r: Representation): string[] {
         (v): v is string => typeof v === 'string',
       );
     case 'scaleCopy':
-      return [r.factor, r.width, r.height, r.copyWidth, r.copyHeight, ...(r.area ?? [])].filter(
-        (v): v is string => typeof v === 'string',
-      );
+      return [
+        r.factor,
+        r.width,
+        r.height,
+        r.copyWidth,
+        r.copyHeight,
+        ...(r.area ?? []),
+        ...scaleCopyHsfVars(r),
+      ].filter((v): v is string => typeof v === 'string');
     case 'rightTriangle':
       return [r.a, r.b, r.c];
     case 'plot':
