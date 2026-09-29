@@ -8,6 +8,7 @@ import { LAYOUTS, type CardFigure, type LayoutDef } from '../layouts';
 import { GALLERY_LAYOUTS } from '../gallery';
 import { layoutFigureIssues } from '../harness/layoutFigures';
 import { cardFigureProblems } from '../layouts/cardFigureData';
+import { isStandIn, pages } from '../harness/scope';
 
 const ALL: LayoutDef[] = [...LAYOUTS, ...GALLERY_LAYOUTS];
 
@@ -19,7 +20,8 @@ const cardFigures = (l: LayoutDef): [string, CardFigure][] =>
       ? l.stages.flatMap((s) => (s.figure ? [[s.label, s.figure] as [string, CardFigure]] : []))
       : [];
 
-it.each(ALL.map((l) => [l.id, l] as const))('layout %s: its figures fit its data', (_, l) => {
+it.each(pages(ALL))('layout %s: its figures fit its data', (id, l) => {
+  if (isStandIn(id)) return;
   expect(layoutFigureIssues(l)).toEqual([]);
   expect(
     cardFigures(l).flatMap(([card, f]) => cardFigureProblems(f).map((p) => `${card}: ${p}`)),

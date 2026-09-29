@@ -12,6 +12,7 @@ import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
 import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
+import { isStandIn, pages } from '../harness/scope';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -446,7 +447,8 @@ function subsets<T>(items: readonly T[], k: number): T[][] {
 
 const close = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * (1 + Math.abs(b));
 
-describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))('module %s', (_, m) => {
+describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
+  if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
   const ids = m.variables.map((v) => v.id);
   // The values the example holds: all but those past a data set's count.
   const inExample = m.variables.filter((v) => !outOfCount(v, m.example)).map((v) => v.id);
@@ -594,49 +596,47 @@ it('module ids are unique', () => {
   expect(new Set(MODULES.map((m) => m.id)).size).toBe(MODULES.length);
 });
 
-describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
-  'steps for %s',
-  (_, m) => {
-    it('explain every rearrangement, using only that relation’s variables', () => {
-      expect(Object.keys(m.steps).sort()).toEqual(m.relations.map((r) => r.id).sort());
-      for (const r of m.relations) {
-        const texts = m.steps[r.id]!;
-        const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
-        expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
-        for (const text of Object.values(texts)) {
-          const how = typeof text.how === 'function' ? text.how(m.example) : text.how;
-          const expr = typeof text.expr === 'function' ? text.expr(m.example) : text.expr;
-          expect(how.length).toBeGreaterThan(10);
-          const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);
-          expect(used.filter((id) => !r.vars.includes(id))).toEqual([]);
-        }
+describe.each(pages(TESTED_MODULES))('steps for %s', (id, m) => {
+  if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
+  it('explain every rearrangement, using only that relation’s variables', () => {
+    expect(Object.keys(m.steps).sort()).toEqual(m.relations.map((r) => r.id).sort());
+    for (const r of m.relations) {
+      const texts = m.steps[r.id]!;
+      const solvable = Object.entries(r.solve ?? {}).filter(([, fn]) => fn!.length > 0);
+      expect(Object.keys(texts).sort()).toEqual(solvable.map(([id]) => id).sort());
+      for (const text of Object.values(texts)) {
+        const how = typeof text.how === 'function' ? text.how(m.example) : text.how;
+        const expr = typeof text.expr === 'function' ? text.expr(m.example) : text.expr;
+        expect(how.length).toBeGreaterThan(10);
+        const used = [...expr.matchAll(/\{(\w+)\}/g)].map((x) => x[1]!);
+        expect(used.filter((id) => !r.vars.includes(id))).toEqual([]);
       }
-    });
+    }
+  });
 
-    it('walk from the opening values to every other value, and the check balances', () => {
-      const result = solve(
-        m,
-        m.startWith.map((id) => ({ id, value: m.example[id]! })),
-      );
-      const w = buildSteps(m, result);
-      expect(w.given.map((q) => q.id)).toEqual(m.startWith);
-      expect([...w.steps.map((s) => s.id), ...m.startWith].sort()).toEqual(
-        m.variables
-          .filter((v) => !outOfCount(v, m.example))
-          .map((v) => v.id)
-          .sort(),
-      );
-      for (const s of w.steps) {
-        expect(s.rearranged).toBeDefined();
-        expect(s.substituted ?? '').not.toContain('?');
-      }
-      expect(w.missing).toEqual([]);
-      // Page limits are never shown as checks.
-      expect(w.check.length).toBe(m.relations.filter((r) => !r.constraint).length);
-      expect(w.check.every((c) => c.ok)).toBe(true);
-    });
-  },
-);
+  it('walk from the opening values to every other value, and the check balances', () => {
+    const result = solve(
+      m,
+      m.startWith.map((id) => ({ id, value: m.example[id]! })),
+    );
+    const w = buildSteps(m, result);
+    expect(w.given.map((q) => q.id)).toEqual(m.startWith);
+    expect([...w.steps.map((s) => s.id), ...m.startWith].sort()).toEqual(
+      m.variables
+        .filter((v) => !outOfCount(v, m.example))
+        .map((v) => v.id)
+        .sort(),
+    );
+    for (const s of w.steps) {
+      expect(s.rearranged).toBeDefined();
+      expect(s.substituted ?? '').not.toContain('?');
+    }
+    expect(w.missing).toEqual([]);
+    // Page limits are never shown as checks.
+    expect(w.check.length).toBe(m.relations.filter((r) => !r.constraint).length);
+    expect(w.check.every((c) => c.ok)).toBe(true);
+  });
+});
 
 it('writes the number sentence with ? for the number found (K–2 steps)', () => {
   const m = MODULES.find((x) => x.id === 'm.K.add-sub-10')!;

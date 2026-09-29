@@ -7,6 +7,7 @@ import { getSkill } from '@/data/selectors';
 
 import { LAYOUTS, gradeOf, moduleOwner } from '..';
 import type { Figure, LayoutDef, Scene } from '../layouts';
+import { isStandIn, pages } from '../harness/scope';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
@@ -114,7 +115,8 @@ it('layout ids are unique and never shared with a calculator module', async () =
   expect(ids.filter((id) => MODULES.some((m) => m.id === id))).toEqual([]);
 });
 
-describe.each(LAYOUTS.map((l) => [l.id, l] as [string, LayoutDef]))('layout %s', (_, l) => {
+describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
+  if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
   it('belongs to a skill, with a title and use line when it is a problem type', () => {
     expect(getSkill(moduleOwner(l.id))).toBeDefined();
     if (l.id.includes('~')) {

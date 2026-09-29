@@ -12,6 +12,7 @@ import { solve } from '@/engine/solve';
 import { TESTED_MODULES, gradeBand, gradeOf, wordRule } from '..';
 import { agree, buildSteps } from '../buildSteps';
 import type { ModuleDef } from '../types';
+import { isStandIn, pages } from '../harness/scope';
 
 /** Longest sentence per grade: the reviewer's guide (8, 12, 15, 20 words) plus half again. */
 function wordLimit(grade: string | undefined): number | undefined {
@@ -141,194 +142,190 @@ function studentText(m: ModuleDef) {
   return { prose, labels, box, walk, all: [...prose, ...labels, ...box, ...walk] };
 }
 
-describe.each(TESTED_MODULES.map((m) => [m.id, m] as [string, ModuleDef]))(
-  'standards for %s',
-  (_, m) => {
-    const grade = gradeOf(m.id);
-    const band = gradeBand(m.id);
-    const text = studentText(m);
-    const example = m.example;
-    const failures = (
-      items: { where: string; text: string }[],
-      test: (t: string) => string | false | undefined,
-    ) =>
-      items.flatMap(({ where, text: t }) => {
-        const why = test(t);
-        return why ? [`${where}: ${why} — "${t}"`] : [];
-      });
-
-    it('shows no broken numbers or number words', () => {
-      expect(
-        failures(text.all, (t) =>
-          BAD_VALUE.test(t) ? 'broken value' : PLURAL.test(t) ? 'number and word disagree' : false,
-        ),
-      ).toEqual([]);
+describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
+  if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
+  const grade = gradeOf(m.id);
+  const band = gradeBand(m.id);
+  const text = studentText(m);
+  const example = m.example;
+  const failures = (
+    items: { where: string; text: string }[],
+    test: (t: string) => string | false | undefined,
+  ) =>
+    items.flatMap(({ where, text: t }) => {
+      const why = test(t);
+      return why ? [`${where}: ${why} — "${t}"`] : [];
     });
 
-    it('is formatted the way the copy editor expects', () => {
-      expect(failures(text.all, (t) => FORMAT.find(([re]) => re.test(t))?.[1] ?? false)).toEqual(
-        [],
-      );
-    });
+  it('shows no broken numbers or number words', () => {
+    expect(
+      failures(text.all, (t) =>
+        BAD_VALUE.test(t) ? 'broken value' : PLURAL.test(t) ? 'number and word disagree' : false,
+      ),
+    ).toEqual([]);
+  });
 
-    it('ends sentences and labels the right way', () => {
-      expect(
-        failures(text.prose, (t) => (/[.!?”…]$/.test(t) ? false : 'sentence needs a period')),
-      ).toEqual([]);
-      expect(
-        failures(text.labels, (t) => (/\.$/.test(t) ? 'no period on a label' : false)),
-      ).toEqual([]);
-      expect(
-        failures(
-          text.labels.filter((l) => l.where !== 'title'),
-          (t) => (words(t) > 7 ? 'name too long' : false),
-        ),
-      ).toEqual([]);
-    });
+  it('is formatted the way the copy editor expects', () => {
+    expect(failures(text.all, (t) => FORMAT.find(([re]) => re.test(t))?.[1] ?? false)).toEqual([]);
+  });
 
-    it('reads at the grade level (sentence length)', () => {
-      const limit = wordLimit(grade);
-      if (limit === undefined) return;
-      expect(
-        failures(text.prose, (t) => {
-          const long = sentences(t).find((s) => words(s) > limit);
-          return long ? `${words(long)} words, limit ${limit}` : false;
-        }),
-      ).toEqual([]);
-    });
+  it('ends sentences and labels the right way', () => {
+    expect(
+      failures(text.prose, (t) => (/[.!?”…]$/.test(t) ? false : 'sentence needs a period')),
+    ).toEqual([]);
+    expect(failures(text.labels, (t) => (/\.$/.test(t) ? 'no period on a label' : false))).toEqual(
+      [],
+    );
+    expect(
+      failures(
+        text.labels.filter((l) => l.where !== 'title'),
+        (t) => (words(t) > 7 ? 'name too long' : false),
+      ),
+    ).toEqual([]);
+  });
 
-    it('uses no shorthand or jargon the grade has not met', () => {
-      if (band === 'standard' && grade === undefined) return;
-      expect(
-        failures(text.all, (t) =>
-          SHORTHAND.test(t)
-            ? 'shorthand'
-            : grade !== undefined && grade !== 'K' && Number(grade) > 3
-              ? false
-              : JARGON_K3.test(t)
-                ? 'jargon'
-                : false,
-        ),
-      ).toEqual([]);
-    });
+  it('reads at the grade level (sentence length)', () => {
+    const limit = wordLimit(grade);
+    if (limit === undefined) return;
+    expect(
+      failures(text.prose, (t) => {
+        const long = sentences(t).find((s) => words(s) > limit);
+        return long ? `${words(long)} words, limit ${limit}` : false;
+      }),
+    ).toEqual([]);
+  });
 
-    it('uses only notation the grade has met', () => {
-      // Grade 6 letter pages teach letters (grade.ts, the middle band).
-      if (band === 'standard' || band === 'middle') return;
-      // A Grade 6 words page may show the one letter it teaches (x in "3x + 5").
-      const allowLetters = (t: string) =>
-        m.letters?.length
-          ? t.replace(new RegExp(`(?<![A-Za-z])(${m.letters.join('|')})(?![A-Za-z])`, 'g'), '1')
-          : t;
-      const early = band === 'early';
-      const sixth = grade === '6';
-      expect(
-        failures(text.all, (t) =>
-          !sixth && /(^|[\s(])−\d|\(-\d/.test(t)
-            ? 'negative number before Grade 6'
-            : sixth && /[ρλΔμσ]/.test(t)
-              ? 'a Greek letter on a Grade 6 page that names values in words'
-              : early && /[×÷]/.test(t)
-                ? '× or ÷ before Grade 3'
-                : early && /\d\/\d/.test(t)
-                  ? 'a fraction before Grade 3'
-                  : LETTERS.test(allowLetters(t))
-                    ? sixth
-                      ? 'a letter standing for a number on a Grade 6 words page'
-                      : 'a letter standing for a number before Grade 6'
-                    : early && equalsJoinsWords(t)
-                      ? '"=" outside a number sentence (K–2)'
-                      : false,
-        ),
-      ).toEqual([]);
-    });
+  it('uses no shorthand or jargon the grade has not met', () => {
+    if (band === 'standard' && grade === undefined) return;
+    expect(
+      failures(text.all, (t) =>
+        SHORTHAND.test(t)
+          ? 'shorthand'
+          : grade !== undefined && grade !== 'K' && Number(grade) > 3
+            ? false
+            : JARGON_K3.test(t)
+              ? 'jargon'
+              : false,
+      ),
+    ).toEqual([]);
+  });
 
-    it('reads each Grade 3–5 rule as a sentence (no "apart" rule, no doubled word)', () => {
-      if (band !== 'elementary') return;
-      expect(
-        failures(
-          text.box.filter((b) => b.where.startsWith('rule')),
-          (t) =>
-            /\bare .+ apart$/.test(t)
-              ? 'an "are … apart" rule: give the relation `words`'
-              : /\b(\w+) \1\b/i.test(t)
-                ? 'a doubled word'
-                : false,
-        ),
-      ).toEqual([]);
-    });
+  it('uses only notation the grade has met', () => {
+    // Grade 6 letter pages teach letters (grade.ts, the middle band).
+    if (band === 'standard' || band === 'middle') return;
+    // A Grade 6 words page may show the one letter it teaches (x in "3x + 5").
+    const allowLetters = (t: string) =>
+      m.letters?.length
+        ? t.replace(new RegExp(`(?<![A-Za-z])(${m.letters.join('|')})(?![A-Za-z])`, 'g'), '1')
+        : t;
+    const early = band === 'early';
+    const sixth = grade === '6';
+    expect(
+      failures(text.all, (t) =>
+        !sixth && /(^|[\s(])−\d|\(-\d/.test(t)
+          ? 'negative number before Grade 6'
+          : sixth && /[ρλΔμσ]/.test(t)
+            ? 'a Greek letter on a Grade 6 page that names values in words'
+            : early && /[×÷]/.test(t)
+              ? '× or ÷ before Grade 3'
+              : early && /\d\/\d/.test(t)
+                ? 'a fraction before Grade 3'
+                : LETTERS.test(allowLetters(t))
+                  ? sixth
+                    ? 'a letter standing for a number on a Grade 6 words page'
+                    : 'a letter standing for a number before Grade 6'
+                  : early && equalsJoinsWords(t)
+                    ? '"=" outside a number sentence (K–2)'
+                    : false,
+      ),
+    ).toEqual([]);
+  });
 
-    it('counts only where the grade still counts (no counting lines for facts from Grade 4)', () => {
-      const g = grade === undefined ? undefined : grade === 'K' ? 0 : Number(grade);
-      if (g === undefined || g < 3) return;
-      expect(
-        failures(text.walk, (t) => {
-          const list = /Count by (\d+)s[^:]*: ([^→]*)/.exec(t);
-          if (!list) return false;
-          // Counting by 5s round a clock and by 10s for tens is how Grade 3 still works.
-          if (g === 3 && ['5', '10'].includes(list[1]!)) return false;
-          if (g >= 4) return 'a counting line for a basic fact from Grade 4';
-          return list[2]!.split(',').length > 4 ? 'a count of more than 4 jumps in Grade 3' : false;
-        }),
-      ).toEqual([]);
-    });
+  it('reads each Grade 3–5 rule as a sentence (no "apart" rule, no doubled word)', () => {
+    if (band !== 'elementary') return;
+    expect(
+      failures(
+        text.box.filter((b) => b.where.startsWith('rule')),
+        (t) =>
+          /\bare .+ apart$/.test(t)
+            ? 'an "are … apart" rule: give the relation `words`'
+            : /\b(\w+) \1\b/i.test(t)
+              ? 'a doubled word'
+              : false,
+      ),
+    ).toEqual([]);
+  });
 
-    it('names things in words, not letters, in K–2', () => {
-      if (band !== 'early') return;
-      expect(
-        failures(
-          text.labels.filter((l) => l.where !== 'title'),
-          (t) => (LONE_CAPITAL.test(t) ? 'a letter names a thing (say first, second)' : false),
-        ),
-      ).toEqual([]);
-    });
+  it('counts only where the grade still counts (no counting lines for facts from Grade 4)', () => {
+    const g = grade === undefined ? undefined : grade === 'K' ? 0 : Number(grade);
+    if (g === undefined || g < 3) return;
+    expect(
+      failures(text.walk, (t) => {
+        const list = /Count by (\d+)s[^:]*: ([^→]*)/.exec(t);
+        if (!list) return false;
+        // Counting by 5s round a clock and by 10s for tens is how Grade 3 still works.
+        if (g === 3 && ['5', '10'].includes(list[1]!)) return false;
+        if (g >= 4) return 'a counting line for a basic fact from Grade 4';
+        return list[2]!.split(',').length > 4 ? 'a count of more than 4 jumps in Grade 3' : false;
+      }),
+    ).toEqual([]);
+  });
 
-    it('makes no claim about the units menu (whole-number lengths keep their number)', () => {
-      expect(
-        failures(text.prose, (t) => (/units menu/i.test(t) ? 'talks about the units menu' : false)),
-      ).toEqual([]);
-    });
+  it('names things in words, not letters, in K–2', () => {
+    if (band !== 'early') return;
+    expect(
+      failures(
+        text.labels.filter((l) => l.where !== 'title'),
+        (t) => (LONE_CAPITAL.test(t) ? 'a letter names a thing (say first, second)' : false),
+      ),
+    ).toEqual([]);
+  });
 
-    it('works every step out from a rule, never by trying numbers', () => {
-      const w = buildSteps(
+  it('makes no claim about the units menu (whole-number lengths keep their number)', () => {
+    expect(
+      failures(text.prose, (t) => (/units menu/i.test(t) ? 'talks about the units menu' : false)),
+    ).toEqual([]);
+  });
+
+  it('works every step out from a rule, never by trying numbers', () => {
+    const w = buildSteps(
+      m,
+      solve(
         m,
-        solve(
-          m,
-          m.startWith.map((id) => ({ id, value: example[id]! })),
-        ),
+        m.startWith.map((id) => ({ id, value: example[id]! })),
+      ),
+    );
+    expect(w.steps.filter((s) => /Try numbers/.test(s.how)).map((s) => s.id)).toEqual([]);
+  });
+
+  it('names a count after what it counts, not after a measurement', () => {
+    // "At 1/8 L: 2" reads as 2 liters; a count of beakers is "Beakers with 1/8 L". A count
+    // named only by a length or an amount ("One inch longer", "In eighths") is the same slip.
+    const MEASURE =
+      /^(?:At|One|Two|Three)\b.*\b(?:in|inch(?:es)?|cm|m|L|mL|liters?|g|kg|lb|oz|feet|foot)$|^(?:At|One|Two|Three) .*\b(?:length|longer|shorter)$/;
+    expect(
+      m.variables.filter((v) => v.integer && !v.unit && MEASURE.test(v.name)).map((v) => v.name),
+    ).toEqual([]);
+  });
+
+  it('names a convertible value by what it measures, not by its unit', () => {
+    // "Minutes: 0.33 h" after a unit change: the name must survive the units menu.
+    const UNIT_WORD =
+      /^(?:seconds|minutes|hours|days|liters|milliliters|grams|kilograms|meters|centimeters|millimeters|kilometers|inches|feet|yards|miles|pounds|ounces|gallons|quarts|cups|newtons|joules|watts|volts|amperes|amps)\b/i;
+    expect(
+      m.variables
+        .filter((v) => v.unit && getUnit(v.unit) && UNIT_WORD.test(v.name))
+        .map((v) => v.name),
+    ).toEqual([]);
+  });
+
+  it('has about as many values as the grade can hold', () => {
+    const limit = valueLimit(grade);
+    // Derived values are read-only boxes the lesson fills in, not values the student holds;
+    // a data set (3 to 10 values and their count) is one list, held as one value.
+    if (limit !== undefined)
+      expect(m.variables.filter((v) => !v.derived && !v.countedBy).length).toBeLessThanOrEqual(
+        limit,
       );
-      expect(w.steps.filter((s) => /Try numbers/.test(s.how)).map((s) => s.id)).toEqual([]);
-    });
-
-    it('names a count after what it counts, not after a measurement', () => {
-      // "At 1/8 L: 2" reads as 2 liters; a count of beakers is "Beakers with 1/8 L". A count
-      // named only by a length or an amount ("One inch longer", "In eighths") is the same slip.
-      const MEASURE =
-        /^(?:At|One|Two|Three)\b.*\b(?:in|inch(?:es)?|cm|m|L|mL|liters?|g|kg|lb|oz|feet|foot)$|^(?:At|One|Two|Three) .*\b(?:length|longer|shorter)$/;
-      expect(
-        m.variables.filter((v) => v.integer && !v.unit && MEASURE.test(v.name)).map((v) => v.name),
-      ).toEqual([]);
-    });
-
-    it('names a convertible value by what it measures, not by its unit', () => {
-      // "Minutes: 0.33 h" after a unit change: the name must survive the units menu.
-      const UNIT_WORD =
-        /^(?:seconds|minutes|hours|days|liters|milliliters|grams|kilograms|meters|centimeters|millimeters|kilometers|inches|feet|yards|miles|pounds|ounces|gallons|quarts|cups|newtons|joules|watts|volts|amperes|amps)\b/i;
-      expect(
-        m.variables
-          .filter((v) => v.unit && getUnit(v.unit) && UNIT_WORD.test(v.name))
-          .map((v) => v.name),
-      ).toEqual([]);
-    });
-
-    it('has about as many values as the grade can hold', () => {
-      const limit = valueLimit(grade);
-      // Derived values are read-only boxes the lesson fills in, not values the student holds;
-      // a data set (3 to 10 values and their count) is one list, held as one value.
-      if (limit !== undefined)
-        expect(m.variables.filter((v) => !v.derived && !v.countedBy).length).toBeLessThanOrEqual(
-          limit,
-        );
-    });
-  },
-);
+  });
+});

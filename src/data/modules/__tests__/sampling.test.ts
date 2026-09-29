@@ -59,15 +59,12 @@ import {
 } from '../harness/search';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef } from '../types';
+import { scoped } from '../harness/scope';
 
 // ─── Configuration ───────────────────────────────────────────────────────────
 
 const env: Record<string, string | undefined> =
   (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {};
-const FILTER = (env.MODULE_IDS ?? '')
-  .split(',')
-  .map((s) => s.trim())
-  .filter(Boolean);
 const SEED = Number(env.SEED ?? 1);
 const N_RANDOM = Number(env.SAMPLES ?? 12);
 const N_SEQUENCES = Number(env.SEQUENCES ?? 2);
@@ -76,9 +73,7 @@ const SEQUENCE_LENGTH = 10;
 const N_PER_UNIT_CHOICE = Number(env.UNIT_CASES ?? 3);
 const REPORT = env.SAMPLING_REPORT === '1';
 
-const selected = TESTED_MODULES.filter(
-  (m) => FILTER.length === 0 || FILTER.some((f) => m.id === f || m.id.startsWith(f)),
-);
+const selected = scoped(TESTED_MODULES);
 
 // ─── Findings ────────────────────────────────────────────────────────────────
 

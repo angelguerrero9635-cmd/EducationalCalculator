@@ -88,6 +88,19 @@ describe('unit conversions (exact definitions)', () => {
       'ppm/yr',
       'L/min',
       'kcal',
+      'J',
+      'V',
+      'A',
+      'Ω',
+      'Hz',
+      'nm',
+      'AU',
+      'Earth masses',
+      'Earth years',
+      'N/kg',
+      'amp-turns',
+      'turns',
+      'clips',
     ];
     for (const m of MODULES) {
       for (const v of m.variables) {

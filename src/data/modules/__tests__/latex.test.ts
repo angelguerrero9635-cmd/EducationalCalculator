@@ -5,12 +5,14 @@ import { renderTemplate } from '@/engine/format';
 
 import { TESTED_MODULES, gradeBand, wordRule } from '..';
 import { agree, buildSteps } from '../buildSteps';
+import { isStandIn, pages } from '../harness/scope';
 
 /**
  * Every line the step-by-step typesets comes back to the same plain text (nothing lost or
  * reworded on the way) and parses with the commands the app draws.
  */
-describe.each(TESTED_MODULES.map((m) => [m.id, m] as const))('typeset steps for %s', (_, m) => {
+describe.each(pages(TESTED_MODULES))('typeset steps for %s', (id, m) => {
+  if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
   it('round-trip and parse', () => {
     const result = solve(
       m,

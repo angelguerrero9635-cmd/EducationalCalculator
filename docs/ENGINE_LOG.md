@@ -5,6 +5,14 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## MODULE_IDS scopes every per-page suite
+
+Only the sampling harness honored `MODULE_IDS`; the modules, standards, latex, layouts and
+layout-figure suites ran every page, so a one-grade run took 160 s and per-grade CI saved
+little. `harness/scope.ts` now scopes all of them (`pages()` gives the `each` table, with a
+skipped stand-in when nothing is in scope, since Jest refuses an empty table). A Grade 8 science
+run takes 11 s; the full suite about 3 minutes.
+
 ## Building and reviewing with less
 
 - `scripts/review-evidence.mjs` runs in stages (`--stage lesson` needs no build or browser;

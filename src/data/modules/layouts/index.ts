@@ -1,6 +1,7 @@
 import { MATH_LAYOUTS } from './math';
 import { SCIENCE_LAYOUTS } from './science';
 import { SCIENCE_7_LAYOUTS } from './science7';
+import { SCIENCE_8_LAYOUTS } from './science8';
 import type { LayoutDef } from './types';
 
 export type {
@@ -30,6 +31,7 @@ export const LAYOUTS: readonly LayoutDef[] = [
   ...MATH_LAYOUTS,
   ...SCIENCE_LAYOUTS,
   ...SCIENCE_7_LAYOUTS,
+  ...SCIENCE_8_LAYOUTS,
 ];
 
 const BY_ID = new Map(LAYOUTS.map((l) => [l.id, l]));
