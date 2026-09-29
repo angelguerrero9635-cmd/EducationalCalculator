@@ -321,7 +321,12 @@ export type Figure =
   /** The planets and Earth’s moon side by side, to scale by size, beside the sun’s edge (Grade 8). */
   | { kind: 'planets' }
   /** Population → sample → a survey, an observational study or an experiment (HS group B). */
-  | { kind: 'studyDesign' };
+  | { kind: 'studyDesign' }
+  /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
+  | { kind: 'doubleCone' };
+
+/** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
+export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
 
 /** One person in a `pedigree` figure. */
 export interface PedigreePerson {
@@ -445,6 +450,8 @@ export interface Scene {
   planets?: { lit?: PlanetName[] };
   /** The design, how the sample is taken and the stage lit (a `studyDesign` figure). */
   study?: StudyScene;
+  /** The conic the plane cuts (a `doubleCone` figure). */
+  cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

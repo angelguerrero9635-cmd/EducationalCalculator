@@ -427,3 +427,13 @@ the record: each entry says what changed, "no page change" or the exact fields a
 now pass (`uses`), and the gallery demos. Before-and-after contact sheets, one per urgency
 band: `docs/renderings/round4-high.png`, `round4-medium.png`, `round4-low.png` (each entry's
 first page at 390 px, light).
+
+### Grades 9–12, group A (2026-09-29): new math picture kinds
+
+H01–H15 in `src/data/modules/pictureRequestsHs.ts` are `drawn`: `functionGraph`,
+`normalCurve`, `histogram`, `triangleSolver`, `markedFigure`, `unitCircle`, `algebraTiles`,
+`vectorDiagram`, `complexPlane`, `polarGrid`, `conicGraph` (with the `doubleCone` explore
+figure), `circleTheorems`, `pascalTriangle`, `matrixGrid` and `termsChart`. H30 (the
+`studyDesign` explore figure) is drawn too. Each entry's notes give the fields a page passes,
+with an example; the demos are in `galleryHsa.ts`–`galleryHsd.ts`. The harness reads trig in
+degrees on a page whose angle variables have the unit °, in radians otherwise.

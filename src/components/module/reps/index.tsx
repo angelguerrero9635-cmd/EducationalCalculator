@@ -128,6 +128,13 @@ import { NormalCurve } from './NormalCurve';
 import { Histogram } from './Histogram';
 import { PascalTriangle } from './PascalTriangle';
 import { TermsChart } from './TermsChart';
+import { UnitCircle } from './UnitCircle';
+import { MatrixGrid } from './MatrixGrid';
+import { ConicGraph } from './ConicGraph';
+import { PolarGrid } from './PolarGrid';
+import { ComplexPlane } from './ComplexPlane';
+import { VectorDiagram } from './VectorDiagram';
+import { AlgebraTiles } from './AlgebraTiles';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -160,6 +167,20 @@ export const representationTitle = (r: Representation) =>
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   switch (spec.kind) {
+    case 'unitCircle':
+      return <UnitCircle spec={spec} calc={calc} />;
+    case 'matrixGrid':
+      return <MatrixGrid spec={spec} calc={calc} />;
+    case 'conicGraph':
+      return <ConicGraph spec={spec} calc={calc} />;
+    case 'polarGrid':
+      return <PolarGrid spec={spec} calc={calc} />;
+    case 'complexPlane':
+      return <ComplexPlane spec={spec} calc={calc} />;
+    case 'vectorDiagram':
+      return <VectorDiagram spec={spec} calc={calc} />;
+    case 'algebraTiles':
+      return <AlgebraTiles spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

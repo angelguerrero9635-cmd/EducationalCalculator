@@ -128,6 +128,13 @@ const PICTURE_NAMES: Record<string, string> = {
   histogram: 'histogram or probability bars',
   pascalTriangle: 'Pascal’s triangle and counting slots',
   termsChart: 'chart of a sequence’s terms and sums',
+  unitCircle: 'unit circle with the angle and its point',
+  algebraTiles: 'algebra tiles',
+  matrixGrid: 'matrices in brackets',
+  conicGraph: 'circle, parabola, ellipse or hyperbola',
+  polarGrid: 'polar grid with a point and a curve',
+  complexPlane: 'complex number in the plane',
+  vectorDiagram: 'vectors as arrows on a grid',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

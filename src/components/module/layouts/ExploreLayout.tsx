@@ -29,6 +29,7 @@ import { RockCycleFigure } from './rockCycleFigure';
 import { PlatesFigure } from './platesFigure';
 import { WaterCycleFigure } from './waterCycleFigure';
 import { CellFigure, Particles } from './figuresR4h';
+import { ConeFigure } from './coneFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -175,6 +176,8 @@ function FigureView({
       return <PlanetsFigure planets={scene.planets ?? {}} />;
     case 'studyDesign':
       return <StudyDesignFigure study={scene.study ?? { design: 'survey' }} />;
+    case 'doubleCone':
+      return <ConeFigure cut={scene.cone ?? 'circle'} />;
   }
 }
 

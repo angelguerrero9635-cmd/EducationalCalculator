@@ -217,59 +217,147 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.m10-proofs-isosceles',
     ],
   },
-  ask(
-    'H06',
-    'unitCircle',
-    'Unit circle with an angle, its point (cos θ, sin θ), reference triangle and special angles',
-    [
-      'm.10.arc-sector',
-      'm.11.unit-circle',
-      'm.11.trig-graphs',
-      'm.11.pythagorean-identities',
-      'm.12.inverse-trig',
-      'm.12.trig-formulas-equations',
+  {
+    ...ask(
+      'H06',
+      'unitCircle',
+      'Unit circle with an angle, its point (cos θ, sin θ), reference triangle and special angles',
+      [
+        'm.10.arc-sector',
+        'm.11.unit-circle',
+        'm.11.trig-graphs',
+        'm.11.pythagorean-identities',
+        'm.12.inverse-trig',
+        'm.12.trig-formulas-equations',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-unit-circle-degrees',
+      'g.m11-unit-circle-radians',
+      'g.m11-unit-circle-negative',
+      'g.m11-unit-circle-past-a-turn',
+      'g.m11-trig-graphs-sine',
+      'g.m11-trig-graphs-cosine',
+      'g.m11-pythagorean-identities',
+      'g.m10-arc-sector-radians',
+      'g.m12-trig-formulas-equations-sine',
+      'g.m12-trig-formulas-equations-tangent',
+      'g.m12-inverse-trig-arccos',
     ],
-    'Degrees and radians; drag the angle; the sine and cosine as segments; optional linked sine graph unrolled beside it; every solution of a trig equation on one turn marked.',
-  ),
-  ask(
-    'H07',
-    'algebraTiles',
-    'Algebra tiles: x², x and unit tiles, positive and negative, arranged as a rectangle',
-    [
-      'm.9.solving-equations',
-      'm.9.polynomial-operations',
-      'm.9.factoring',
-      'm.9.quadratic-formula',
+    notes:
+      "Degrees and radians; drag the angle; the sine and cosine as segments; optional linked sine graph unrolled beside it; every solution of a trig equation on one turn marked. Drawn: kind unitCircle (typesHsd.ts). Fields: angle (θ variable); measure 'degrees' (default), 'radians' or 'pi' (a variable holding k for kπ, with fraction: 12); show 'degrees' or 'radians' (labels); cos, sin, tan (variables checked against the point); graph 'sin' or 'cos' (the graph unrolled beside the circle); solutions { fn, value, angles, principal } (every solution on one turn, or the inverse function’s answer with its range shaded); arc (arc length = θ in radians); keep; fixed. The point drags θ round the circle, past one turn too. Exact special values (√3/2) in the chip and caption, decimals after ≈. Step text writes cos(θ) with θ in degrees (\"x = cos(150)\"): the harness reads sin, cos, tan, arcsin, arccos and arctan in degrees. Examples: { kind: 'unitCircle', angle: 't', cos: 'x', sin: 'y' }; { kind: 'unitCircle', angle: 'k', measure: 'pi', cos: 'x', sin: 'y', graph: 'cos' }; { kind: 'unitCircle', angle: 'a', fixed: true, solutions: { fn: 'sin', value: 'c', angles: ['a', 'b'] } }.",
+  },
+  {
+    ...ask(
+      'H07',
+      'algebraTiles',
+      'Algebra tiles: x², x and unit tiles, positive and negative, arranged as a rectangle',
+      [
+        'm.9.solving-equations',
+        'm.9.polynomial-operations',
+        'm.9.factoring',
+        'm.9.quadratic-formula',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-polynomial-operations-add',
+      'g.m9-polynomial-operations-multiply',
+      'g.m9-polynomial-operations-zero-pairs',
+      'g.m9-polynomial-operations-edge',
+      'g.m9-factoring-trinomial',
+      'g.m9-factoring-negative',
+      'g.m9-quadratic-formula-complete-square',
+      'g.m9-quadratic-formula-square-negative',
+      'g.m9-solving-equations-tiles',
+      'g.m9-solving-equations-negative-tiles',
     ],
-    'Multiply two binomials as a rectangle, factor a trinomial by arranging its tiles, complete the square (the missing corner), zero pairs cancel.',
-  ),
-  ask(
-    'H08',
-    'vectorDiagram',
-    'Vectors as arrows on a grid: components, sums, scalar multiples, the angle between',
-    ['m.12.vectors', 's.11.kinematics-2d', 's.11.dynamics-vectors'],
-    'Tip to tail and parallelogram sums, magnitude and direction, dot product sign from the angle; drag a tip.',
-  ),
-  ask(
-    'H09',
-    'complexPlane',
-    'Complex plane: a + bi as a point and arrow, conjugate, sum, modulus and argument',
-    ['m.11.complex-numbers', 'm.12.polar'],
-  ),
-  ask(
-    'H10',
-    'polarGrid',
-    'Polar grid with a point (r, θ) and polar curves (circle, rose, cardioid, spiral)',
-    ['m.12.polar', 'm.12.parametric'],
-    'Parametric mode: a path traced as t grows, with direction arrows and the point at t.',
-  ),
-  ask(
-    'H11',
-    'conicGraph',
-    'Circle, parabola, ellipse and hyperbola from their equations, with center, foci, directrix, asymptotes',
-    ['m.10.circle-equations', 'm.12.conics'],
-    'Drag the center and the radius or axes; cross sections of a double cone as the explore figure for the same page.',
-  ),
+    notes:
+      "Multiply two binomials as a rectangle, factor a trinomial by arranging its tiles, complete the square (the missing corner), zero pairs cancel. Drawn: kind algebraTiles (typesHsd.ts), no handles (counts are typed). mode 'collect' { tiles, plus, sum } (TileCounts { x2, x, unit }; zero pairs struck); 'rectangle' { factors: { p, q, r, s } for (px + q)(rx + s), product, given: 'factors' or 'product' } (multiply, or factor a trinomial by arranging its tiles; cancelling x tiles struck); 'square' { b, c, k, missing } (complete the square: the (b/2)² corner dashed, c’s tiles beside); 'equation' { left: { x, unit }, right: { x, unit }, solution } (tiles on two mats). Each edge holds −10 to 10 tiles; the harness checks the tiles add up to the named polynomial. Examples: { kind: 'algebraTiles', mode: 'rectangle', factors: { p: 'p', q: 'q', r: 'r', s: 's' }, product: { x2: 'A', x: 'B', unit: 'C' } }; { kind: 'algebraTiles', mode: 'square', b: 'b', c: 'c', k: 'k', missing: 'm' }.",
+  },
+  {
+    ...ask(
+      'H08',
+      'vectorDiagram',
+      'Vectors as arrows on a grid: components, sums, scalar multiples, the angle between',
+      ['m.12.vectors', 's.11.kinematics-2d', 's.11.dynamics-vectors'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m12-vectors-tip-to-tail',
+      'g.m12-vectors-parallelogram',
+      'g.m12-vectors-scalar',
+      'g.m12-vectors-angle',
+      'g.m12-vectors-magnitude-direction',
+      'g.s11-kinematics-2d-boat',
+      'g.s11-dynamics-vectors-forces',
+    ],
+    notes:
+      "Tip to tail and parallelogram sums, magnitude and direction, dot product sign from the angle; drag a tip. Drawn: kind vectorDiagram (typesHsd.ts). Fields: vectors (one or two VectorOf { name, x, y } by components or { name, magnitude, direction } with the direction in degrees from the positive x-axis; each a number or variable); sum 'tipToTail' or 'parallelogram' with result { name, x, y, magnitude, direction } (checked); scalar { k, x, y } (k times the first vector, checked); angle { value, dot } (the angle between and the dot product, checked; the caption gives the sign: acute, right or obtuse); components (dashed legs with their lengths); unit ('m/s', 'N') and axes names for physics; keep; fixed. Drag a tip: components follow, or the magnitude and direction (only the magnitude when the direction is a fixed number). Examples: { kind: 'vectorDiagram', vectors: [{ name: 'u', x: 'ux', y: 'uy' }, { name: 'v', x: 'vx', y: 'vy' }], sum: 'tipToTail', result: { name: 'u + v', x: 'sx', y: 'sy', magnitude: 'r' } }; { kind: 'vectorDiagram', vectors: [{ name: 'F₁', magnitude: 'f1', direction: 0 }, { name: 'F₂', magnitude: 'f2', direction: 'a' }], sum: 'parallelogram', result: { name: 'F', x: 'fx', y: 'fy', magnitude: 'f' }, unit: 'N', axes: { x: 'east', y: 'north' } }.",
+  },
+  {
+    ...ask(
+      'H09',
+      'complexPlane',
+      'Complex plane: a + bi as a point and arrow, conjugate, sum, modulus and argument',
+      ['m.11.complex-numbers', 'm.12.polar'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-complex-numbers-plot',
+      'g.m11-complex-numbers-negative',
+      'g.m11-complex-numbers-sum',
+      'g.m11-complex-numbers-product',
+      'g.m12-polar-complex-form',
+    ],
+    notes:
+      "Drawn: kind complexPlane (typesHsd.ts). Fields: z { re, im } or { modulus, argument } (degrees); conjugate (z̄ reflected across the real axis); w { re, im } with op 'sum' (the parallelogram), 'difference' (z plus −w) or 'product' (moduli multiply, arguments add, arcs marked); result { re, im } (checked); modulus and argument (variables, checked; |z| on the arrow, θ as an arc); polar (writes z = r(cos θ + i sin θ)); keep; fixed. Axes Re and Im, the imaginary axis numbered i, 2i, …; drag z. Examples: { kind: 'complexPlane', z: { re: 'a', im: 'b' }, conjugate: true, modulus: 'm' }; { kind: 'complexPlane', z: { re: 'a', im: 'b' }, w: { re: 'c', im: 'd' }, op: 'product', result: { re: 'e', im: 'f' } }; { kind: 'complexPlane', z: { modulus: 'r', argument: 't' }, polar: true }.",
+  },
+  {
+    ...ask(
+      'H10',
+      'polarGrid',
+      'Polar grid with a point (r, θ) and polar curves (circle, rose, cardioid, spiral)',
+      ['m.12.polar', 'm.12.parametric'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m12-polar-point',
+      'g.m12-polar-rose',
+      'g.m12-polar-cardioid',
+      'g.m12-polar-limacon',
+      'g.m12-polar-circle',
+      'g.m12-polar-spiral',
+      'g.m12-parametric-projectile',
+      'g.m12-parametric-line',
+      'g.m12-parametric-ellipse',
+    ],
+    notes:
+      "Parametric mode: a path traced as t grows, with direction arrows and the point at t. Drawn: kind polarGrid (typesHsd.ts). Polar mode: rings at nice radii and rays every 30°, labelled in degrees or (show: 'radians') π/6, …; point { r, theta, x, y } (θ in degrees; a negative r lands on the opposite ray; x and y checked as r cos θ and r sin θ); curve { shape: 'circle' (r = a, or r = a cos θ with fn), 'rose' (a, n; n or 2n petals), 'cardioid' (a, b: r = a + b cos θ, a limaçon when b ≠ a), 'spiral' (r = aθ, θ in radians, turns) } with the point on it (r checked). Parametric mode: parametric { family: 'line' (x0, y0, a, b), 'ellipse' (h, k, a, b; t in degrees), 'projectile' (v, angle, y0; g = 9.8), t, range: [t₀, t₁], x, y } traces the path solid up to t and dashed after, with arrows the way t runs (x and y checked). Drag the point: θ (and r with no curve), or along the path to set t. Examples: { kind: 'polarGrid', curve: { shape: 'rose', a: 'a', n: 'n' }, point: { r: 'r', theta: 't' } }; { kind: 'polarGrid', parametric: { family: 'line', x0: 'p', y0: 'q', a: 'a', b: 'b', t: 't', range: [-2, 4], x: 'x', y: 'y' } }.",
+  },
+  {
+    ...ask(
+      'H11',
+      'conicGraph',
+      'Circle, parabola, ellipse and hyperbola from their equations, with center, foci, directrix, asymptotes',
+      ['m.10.circle-equations', 'm.12.conics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-circle-equations-center',
+      'g.m10-circle-equations-origin',
+      'g.m12-conics-parabola',
+      'g.m12-conics-parabola-left',
+      'g.m12-conics-ellipse',
+      'g.m12-conics-ellipse-tall',
+      'g.m12-conics-hyperbola',
+      'g.m12-conics-hyperbola-vertical',
+      'g.m12-conics-cone',
+    ],
+    notes:
+      "Drag the center and the radius or axes; cross sections of a double cone as the explore figure for the same page. Drawn: kind conicGraph (typesHsd.ts), plus the explore figure doubleCone (layouts/types.ts; a scene's cone: 'circle', 'ellipse', 'parabola' or 'hyperbola' tilts the plane and draws the curve in 3D). Fields: conic 'circle' { r }, 'parabola' { p, axis: 'vertical' (default) or 'horizontal' } with focus and dashed directrix, 'ellipse' { a, b } with its axes and foci, 'hyperbola' { a, b, axis: 'horizontal' (default) or 'vertical' } with the a-by-b box, dashed asymptotes and foci; h and k (center or vertex, default 0); c (the focal distance, checked: p, √|a² − b²|, √(a² + b²)); point { x, y } (checked on the curve); keep; fixed. The equation in standard form sits on the grid; c is exact when c² is whole (2√3 ≈ 3.46). Drag the center or vertex, and the radius, the axes’ ends or the focus. Examples: { kind: 'conicGraph', conic: 'circle', h: 'h', k: 'k', r: 'r', point: { x: 'x', y: 'y' } }; { kind: 'conicGraph', conic: 'hyperbola', a: 'a', b: 'b', c: 'c', axis: 'vertical' }; layout { kind: 'explore', figure: { kind: 'doubleCone' }, scenes: [{ label: 'Ellipse', cone: 'ellipse', lines: [...] }] }.",
+  },
   {
     ...ask(
       'H12',
@@ -308,12 +396,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Slots for permutations and combinations (choose, then divide by the orders); the binomial expansion coefficients from row n. Drawn (group HB). Fields: n (row, 0–12), k? (entry lit, its two parents marked with Pascal\'s rule in the caption), rows? (rows drawn, default the larger of n and 6), triangle? (false: the slots alone, for n past 12), slots { r, choose?, result? } (n × (n − 1) × … boxes for r places, then ÷ r! for a combination), expand { a, b } ((a + b)ⁿ with row n\'s coefficients in the caption, n ≤ 8). No handles: n, k and r have sliders. The harness checks every entry is C(row, col) and the slots\' product (÷ r!) against the result. Examples: { kind: "pascalTriangle", n: "n", k: "k", expand: { a: "a", b: "b" } }; { kind: "pascalTriangle", n: "n", k: "r", slots: { r: "r", choose: true, result: "C" } }; permutations: { kind: "pascalTriangle", n: "n", triangle: false, slots: { r: "r", result: "P" } }.',
   },
-  ask(
-    'H14',
-    'matrixGrid',
-    'Matrices in brackets: a row times a column lit for multiplication, row operations, a 3 × 3 system',
-    ['m.12.matrices'],
-  ),
+  {
+    ...ask(
+      'H14',
+      'matrixGrid',
+      'Matrices in brackets: a row times a column lit for multiplication, row operations, a 3 × 3 system',
+      ['m.12.matrices'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m12-matrices-multiply',
+      'g.m12-matrices-multiply-2x3',
+      'g.m12-matrices-4x4-vector',
+      'g.m12-matrices-row-reduce',
+    ],
+    notes:
+      "Drawn: kind matrixGrid (typesHsd.ts), matrices up to 4 × 4 in square brackets, entries exact (fractions like −1/7). mode 'multiply' { a, b (rows of numbers or variables), product (C’s variables, checked), entry ([row, column] lit first) }: the row of A and the column of B lit, the entry of AB lit and its sum of products written under; tap any entry of AB to light its row and column. mode 'rowReduce' { system (the augmented rows, right-hand sides last), steps (RowOp: { swap: [i, j] }, { scale: i, by: k }, { add: i, from: j, times: k }, rows from 1), solution (variables, checked against every matrix) }: each matrix under the last, the operation (R₂ − 2R₁ → R₂) beside the arrow and the rows it changed lit. Examples: { kind: 'matrixGrid', mode: 'multiply', a: [['a11', 'a12'], ['a21', 'a22']], b: [['b11', 'b12'], ['b21', 'b22']], product: [['c11', 'c12'], ['c21', 'c22']] }; { kind: 'matrixGrid', mode: 'rowReduce', system: [[1, 1, 1, 'd1'], [2, -1, 1, 'd2'], [1, 2, -1, 'd3']], steps: [{ add: 2, from: 1, times: -2 }, { swap: [2, 3] }, { scale: 3, by: -1 / 7 }], solution: ['x', 'y', 'z'] }.",
+  },
   {
     ...ask(
       'H15',

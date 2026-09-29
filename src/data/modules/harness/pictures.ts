@@ -26,6 +26,7 @@ import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
+import { hsdIssues } from './picturesHsd';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2002,6 +2003,15 @@ export function repIssues(
     case 'pascalTriangle':
     case 'termsChart':
       out.push(...hsbIssues(rep, (id) => val(id)));
+      break;
+    case 'unitCircle':
+    case 'algebraTiles':
+    case 'vectorDiagram':
+    case 'complexPlane':
+    case 'polarGrid':
+    case 'conicGraph':
+    case 'matrixGrid':
+      out.push(...hsdIssues(rep, (id) => val(id)));
       break;
     case 'table':
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)

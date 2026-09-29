@@ -15,6 +15,7 @@ import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
+import { hsdSpecVars } from '../typesHsd';
 import { isStandIn, pages } from '../harness/scope';
 
 /** Every variable id a representation refers to. */
@@ -449,6 +450,14 @@ function representationVars(r: Representation): string[] {
     case 'pascalTriangle':
     case 'termsChart':
       return hsbSpecVars(r);
+    case 'unitCircle':
+    case 'algebraTiles':
+    case 'vectorDiagram':
+    case 'complexPlane':
+    case 'polarGrid':
+    case 'conicGraph':
+    case 'matrixGrid':
+      return hsdSpecVars(r);
   }
 }
 

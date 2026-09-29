@@ -58,6 +58,8 @@ shrink (`fewer`). Grade 8, in `layouts/figures8.tsx`: a `magnets` scene can set
 `field` (the field lines from N to S, `compasses` round the magnets, or one magnet `single`;
 magnets are painted N red, S blue), and `planets` draws the planets and the moon to scale by
 size beside the sun's edge, ringing a scene's `lit` ones with their widths in Earths.
+Grades 10–12 (`layouts/coneFigure.tsx`): `doubleCone` cuts two cones tip to tip with a plane;
+a scene's `cone` (`circle`, `ellipse`, `parabola`, `hyperbola`) tilts the plane and draws the curve.
 
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by

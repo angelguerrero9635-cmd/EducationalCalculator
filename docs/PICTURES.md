@@ -79,6 +79,13 @@ search or the sitemap, but the module tests and the harness run over it):
 | `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)   | Grades 9–12 statistics (H03)        |
 | `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!        | Grades 10–11 counting (H13)         |
 | `termsChart`       | a sequence's terms as bars or points, partial sums stepped, S dashed  | Grades 9 and 11 sequences (H15)     |
+| `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph | Grades 10–12 trigonometry           |
+| `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square  | Grade 9 polynomials, factoring      |
+| `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign | Grade 12 vectors, physics forces    |
+| `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg    | Grade 11 complex numbers, polar     |
+| `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths    | Grade 12 polar, parametric          |
+| `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes     | Grades 10–12 conics                 |
+| `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
