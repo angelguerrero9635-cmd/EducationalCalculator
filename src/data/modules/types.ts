@@ -919,6 +919,16 @@ export type Representation =
        * (values equal to the parts), or with the part's own value.
        */
       cross?: { first?: string; second?: string };
+      /**
+       * A triangle instead: `parts` are the two bottom angles, `third` the top one (the three
+       * add to 180°), and `whole` the exterior angle at the top (equal to the two parts).
+       */
+      triangle?: { third: string };
+      /**
+       * `whole: 180` only: two parallel lines cut by a transversal, the eight angles numbered;
+       * 1, 3, 5 and 7 are the first part, 2, 4, 6 and 8 the second (its supplement).
+       */
+      parallel?: boolean;
     }
   /**
    * Two number lines that line up: the top counted in one unit (bigger units), the bottom in

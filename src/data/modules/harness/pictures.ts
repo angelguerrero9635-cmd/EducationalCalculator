@@ -772,6 +772,16 @@ export function repIssues(
       if (a !== undefined && b !== undefined && w !== undefined && Math.abs(a + b - w) > 1e-9) {
         out.push(`angles ${a} + ${b} drawn, whole shows ${w}`);
       }
+      // A triangle: the three angles make 180°, each inside it (the whole is the exterior angle).
+      if (rep.triangle) {
+        const c = val(rep.triangle.third);
+        if (a !== undefined && b !== undefined && c !== undefined) {
+          if (Math.abs(a + b + c - 180) > 1e-9) out.push(`triangle angles ${a}, ${b}, ${c} drawn`);
+          if (Math.min(a, b, c) <= 0) out.push(`a triangle angle of ${Math.min(a, b, c)}°`);
+        }
+      }
+      if (rep.parallel && rep.whole !== 180)
+        out.push(`parallel lines need a straight whole, not ${rep.whole}`);
       // Crossing lines: a straight line, and each vertical angle equals the part across from it.
       if (rep.cross) {
         if (rep.whole !== 180) out.push(`crossing lines need a straight whole, not ${rep.whole}`);

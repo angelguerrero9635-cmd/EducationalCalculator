@@ -487,6 +487,9 @@ const madOfSample = (ids: string[], mean: string) => (v: Values) =>
   firstN(ids, v).reduce((t, id) => t + Math.abs(v[id]! - v[mean]!), 0) / v.n!;
 
 /** The pairs of two dice with a sum of s, as a list ("1 + 6, 2 + 5, …"). */
+/** The pairs for each sum from s up to 12: 3, 2, 1 for s = 10. */
+const sumsFrom = (s: number) =>
+  Array.from({ length: 13 - s }, (_, i) => diceCount('sum', '=', s + i));
 const dicePairs = (s: number) =>
   [1, 2, 3, 4, 5, 6].filter((a) => s - a >= 1 && s - a <= 6).map((a) => `${a} + ${s - a}`);
 
@@ -1699,6 +1702,83 @@ export const MATH_7_MODULES: ModuleDef[] = [
     startWith: ['k'],
     representation: { kind: 'angles', parts: ['a', 'b'], whole: 180 },
   },
+  {
+    id: 'm.7.angle-relationships~triangle',
+    title: 'Angles in a triangle',
+    use: 'Use this for “A triangle has angles of 66° and 33°. What is the third?” or “An exterior angle is 135°.”',
+    assumptions: [
+      'The three angles of any triangle add to 180°.',
+      'An exterior angle and the angle beside it make a straight line.',
+      'So an exterior angle equals the sum of the two far angles.',
+    ],
+    variables: [
+      { ...degrees('a', 'First angle', 178), min: 1 },
+      { ...degrees('b', 'Second angle', 178), min: 1 },
+      { ...degrees('c', 'Third angle', 178), min: 1 },
+      { ...degrees('e', 'Exterior angle at c', 179), min: 2 },
+    ],
+    relations: [
+      {
+        id: 'a + b + c = 180',
+        display: '{a} + {b} + {c} = 180',
+        vars: ['a', 'b', 'c'],
+        residual: (v: Values) => v.a! + v.b! + v.c! - 180,
+        solve: {
+          a: (v: Values) => 180 - v.b! - v.c!,
+          b: (v: Values) => 180 - v.a! - v.c!,
+          c: (v: Values) => 180 - v.a! - v.b!,
+        },
+      },
+      {
+        id: 'e + c = 180',
+        display: '{e} + {c} = 180',
+        vars: ['e', 'c'],
+        residual: (v: Values) => v.e! + v.c! - 180,
+        solve: { e: (v: Values) => 180 - v.c!, c: (v: Values) => 180 - v.e! },
+      },
+    ],
+    steps: {
+      'a + b + c = 180': {
+        a: { expr: '180 − {b} − {c}', how: 'The three angles make 180°: take the other two away.' },
+        b: { expr: '180 − {a} − {c}', how: 'The three angles make 180°: take the other two away.' },
+        c: { expr: '180 − {a} − {b}', how: 'The three angles make 180°: take the other two away.' },
+      },
+      'e + c = 180': {
+        e: {
+          expr: '180 − {c}',
+          how: 'The exterior angle and c make a straight line. It equals a + b.',
+        },
+        c: { expr: '180 − {e}', how: 'The exterior angle and c make a straight line.' },
+      },
+    },
+    example: { a: 66, b: 33, c: 81, e: 99 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'angles',
+      parts: ['a', 'b'],
+      whole: 'e',
+      triangle: { third: 'c' },
+    },
+  },
+  {
+    id: 'm.7.angle-relationships~parallel-lines',
+    title: 'Parallel lines and a transversal',
+    use: 'Use this for “Lines ℓ and m are parallel. Angle 1 is 50°. Which angles are 50° and which are 130°?”',
+    assumptions: [
+      'When parallel lines are cut by a third line, the eight angles have only two sizes.',
+      'Corresponding, alternate interior and vertical angles are equal.',
+      'Any two angles side by side on a line add to 180°.',
+    ],
+    variables: [
+      { ...degrees('a', 'Angle 1', 179), min: 1 },
+      { ...degrees('b', 'Angle 2', 179), min: 1 },
+    ],
+    relations: [straightPair.relation],
+    steps: straightPair.steps,
+    example: { a: 50, b: 130 },
+    startWith: ['a'],
+    representation: { kind: 'angles', parts: ['a', 'b'], whole: 180, parallel: true },
+  },
 
   // ── Volume and surface area of prisms (7.G.3, 7.G.6) ──
   {
@@ -2305,6 +2385,57 @@ export const MATH_7_MODULES: ModuleDef[] = [
     example: { s: 7, k: 6, P: 1 / 6 },
     startWith: ['s'],
     representation: { kind: 'diceGrid', target: 's', count: 'k', chance: 'P' },
+  },
+  {
+    id: 'm.7.probability~at-least',
+    title: 'Two dice: at least or at most',
+    use: 'Use this for “Two dice are rolled. What is the chance the sum is at least 10?”',
+    assumptions: [
+      'The 36 pairs of faces are equally likely.',
+      '“At least 10” means 10, 11 or 12. Count the pairs for each sum and add.',
+      'The chance of “less than 10” is 1 minus the chance of “at least 10”.',
+    ],
+    variables: [
+      whole('s', 's', 'Smallest sum', 2, 12),
+      { ...whole('k', 'k', 'Pairs with that sum or more', 0, 36), derived: true },
+      {
+        id: 'P',
+        symbol: 'P',
+        name: 'Chance of that sum or more',
+        min: 0,
+        max: 1,
+        fraction: 36,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        ...derive(
+          'k = pairs with sum at least s',
+          'k',
+          ['s'],
+          'pairs with a sum of at least {s}: {k}',
+          (v) => diceCount('sum', '≥', v.s!),
+        ),
+        check: (v: Values) => `${sumsFrom(v.s!).join(' + ')} = ${v.k}`,
+      },
+      derive('P = k ÷ 36', 'P', ['k'], '{P} = {k} ÷ 36', (v) => v.k! / 36),
+    ],
+    steps: {
+      'k = pairs with sum at least s': {
+        k: {
+          expr: (v: Values) => sumsFrom(v.s!).join(' + '),
+          how: 'Count the pairs for each sum from the smallest up to 12, then add.',
+          written: false,
+        },
+      },
+      'P = k ÷ 36': {
+        P: { expr: '{k} ÷ 36', how: 'Those pairs out of all 36 equally likely pairs.' },
+      },
+    },
+    example: { s: 10, k: 6, P: 1 / 6 },
+    startWith: ['s'],
+    representation: { kind: 'diceGrid', target: 's', compare: '≥', count: 'k', chance: 'P' },
   },
   {
     id: 'm.7.probability~tree',

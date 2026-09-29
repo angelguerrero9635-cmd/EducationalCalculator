@@ -185,7 +185,7 @@ function representationVars(r: Representation): string[] {
         ...r.parts,
         ...(typeof r.whole === 'string' ? [r.whole] : []),
         ...(r.sliders ?? []),
-        ...[r.cross?.first, r.cross?.second].filter((x): x is string => !!x),
+        ...[r.cross?.first, r.cross?.second, r.triangle?.third].filter((x): x is string => !!x),
       ];
     case 'doubleNumberLine':
       return [r.top, r.bottom, r.per];

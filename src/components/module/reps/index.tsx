@@ -65,6 +65,8 @@ import { RectangleDiagram } from './Rectangle';
 import { Rectilinear } from './Rectilinear';
 import { AreaModel } from './AreaModel';
 import { Angles } from './Angles';
+import { ParallelAngles } from './ParallelAngles';
+import { TriangleAngles } from './TriangleAngles';
 import { RightTriangle } from './RightTriangle';
 import { PictureGraph } from './PictureGraph';
 import { SeriesCircuit } from './SeriesCircuit';
@@ -188,6 +190,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'areaModel':
       return <AreaModel spec={spec} calc={calc} />;
     case 'angles':
+      if (spec.triangle) return <TriangleAngles spec={spec} calc={calc} />;
+      if (spec.parallel) return <ParallelAngles spec={spec} calc={calc} />;
       return <Angles spec={spec} calc={calc} />;
     case 'thermometers':
       return <Thermometers spec={spec} calc={calc} />;

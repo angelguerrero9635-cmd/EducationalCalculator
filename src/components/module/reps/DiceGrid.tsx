@@ -13,6 +13,14 @@ import { TopLight, url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'diceGrid' }>;
 
+const COMPARE_WORDS = {
+  '=': 'of',
+  '<': 'less than',
+  '≤': 'of at most',
+  '>': 'greater than',
+  '≥': 'of at least',
+} as const;
+
 /** Pip places on a die face (in thirds of the face), for 1 to 6. */
 const PIPS: Record<number, [number, number][]> = {
   1: [[1, 1]],
@@ -64,7 +72,10 @@ export function DiceGrid({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const count = known ? diceCount(event, compare, t) : undefined;
   const word = event === 'sum' ? 'sum' : event === 'difference' ? 'difference' : 'product';
   const sym = (id: string) => (rep.words ? rep.variable(id).name : rep.variable(id).symbol);
-  const eventText = `${word}${compare === '=' ? ' of' : ` ${compare}`} ${known ? formatNumber(t) : '?'}`;
+  const target = known ? formatNumber(t) : '?';
+  const eventText = `${word}${compare === '=' ? ' of' : ` ${compare}`} ${target}`;
+  /** The event in words for the caption: "a sum of at least 10". */
+  const eventWords = `${word} ${COMPARE_WORDS[compare]} ${target}`;
 
   const die = (x: number, y: number, s: number, pips: number, red: boolean, key: string) => {
     const pad = s * 0.24;
@@ -205,8 +216,8 @@ export function DiceGrid({ spec, calc }: { spec: Spec; calc: Calculator }) {
         {[
           'Red die down the side, white die across the top: 36 equally likely pairs.',
           count !== undefined
-            ? `${spec.count ? `${sym(spec.count)} = ` : ''}${count} pairs have a ${eventText}.`
-            : `Type the target: pairs with a ${eventText}.`,
+            ? `${spec.count ? `${sym(spec.count)} = ` : ''}${count} pairs have a ${eventWords}.`
+            : `Type the target: pairs with a ${eventWords}.`,
           spec.chance && count !== undefined
             ? `${rep.words ? rep.variable(spec.chance).name : `${sym(spec.chance)}(${eventText})`} = ${chanceText(count, 36, rep.value(spec.chance), rep.shown(spec.chance))}`
             : undefined,
