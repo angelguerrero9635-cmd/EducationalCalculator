@@ -313,7 +313,7 @@ const turned = (x: number, y: number, r: number): [number, number] =>
         [-x, -y],
         [y, -x],
       ][quarter(r)] as [number, number]);
-const neg = (x: number) => (x < 0 ? `−(${fmt(x)})` : `−${fmt(x)}`);
+const neg = (x: number) => (x === 0 ? '0' : x < 0 ? `−(${fmt(x)})` : `−${fmt(x)}`);
 const turnedText = (x: number, y: number, r: number): [string, string] =>
   (
     [
@@ -896,10 +896,11 @@ export const MATH_8_MODULES: ModuleDef[] = [
         'q',
         ['S'],
         '{q} = exponent of the power of ten at or below {S}',
-        (v) => (v.S! > 0 ? split(v.S!).n : undefined),
+        // From S as shown (4 significant figures), so 999,990 shown as 1 × 10⁶ reads 10⁶.
+        (v) => (v.S! > 0 ? split(Number(v.S!.toPrecision(4))).n : undefined),
       ),
       {
-        ...derive('u = S ÷ 10^q', 'u', ['S', 'q'], '{u} = {S} ÷ 10^{q}', (v) => v.S! / 10 ** v.q!),
+        ...derive('u = S ÷ 10^q', 'u', ['S', 'q'], '{u} = {S} ÷ 10^{q}', (v) => Number(v.S!.toPrecision(4)) / 10 ** v.q!),
       },
     ],
     steps: {
@@ -1078,15 +1079,14 @@ export const MATH_8_MODULES: ModuleDef[] = [
     ],
     variables: [
       { id: 'x1', symbol: 'x₁', name: 'Cubic yards, first', min: 0.1, max: 100, step: 0.1 },
-      { id: 'y1', symbol: 'y₁', name: 'Cost, first', unit: '$', min: 0, max: 10000, step: 0.01 },
+      { id: 'y1', symbol: 'y₁', name: 'Cost, first', unit: '$', min: 0.01, max: 10000, step: 0.01 },
       { id: 'x2', symbol: 'x₂', name: 'Cubic yards, second', min: 0.1, max: 100, step: 0.1 },
-      { id: 'y2', symbol: 'y₂', name: 'Cost, second', unit: '$', min: 0, max: 10000, step: 0.01 },
-      { id: 'm1', symbol: 'm₁', name: 'First rate', unit: '$', min: 0, max: 100000, derived: true },
+      { id: 'y2', symbol: 'y₂', name: 'Cost, second', unit: '$', min: 0.01, max: 10000, step: 0.01 },
+      { id: 'm1', symbol: 'm₁', name: 'First rate', min: 0, max: 100000, derived: true },
       {
         id: 'm2',
         symbol: 'm₂',
         name: 'Second rate',
-        unit: '$',
         min: 0,
         max: 100000,
         derived: true,
@@ -1095,7 +1095,6 @@ export const MATH_8_MODULES: ModuleDef[] = [
         id: 'd',
         symbol: 'd',
         name: 'Difference of the rates',
-        unit: '$',
         min: -100000,
         max: 100000,
         derived: true,

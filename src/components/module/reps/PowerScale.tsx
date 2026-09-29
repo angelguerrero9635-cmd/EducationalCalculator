@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, G, Line, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
-import { formatNumber, fullDecimal } from '@/engine/format';
+import { fullDecimal } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';

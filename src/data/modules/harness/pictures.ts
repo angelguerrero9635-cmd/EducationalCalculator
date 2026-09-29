@@ -1621,7 +1621,8 @@ export function repIssues(
         x !== undefined &&
         a !== undefined &&
         e !== undefined &&
-        Math.abs(a * 10 ** e - x) > Math.max(1e-9, 1e-9 * x)
+        // (the mantissa is read to 4 significant figures, as the ruler shows it)
+        Math.abs(a * 10 ** e - x) > Math.max(1e-9, 5e-4 * x)
       )
         out.push(`${a} × 10^${e} drawn, the number shows ${x}`);
       break;

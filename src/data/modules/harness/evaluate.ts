@@ -344,10 +344,17 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     let replaced = false;
     // Unwrap brackets around a single number, "(300)" → "300", so outer brackets can reduce.
     // (not the argument of a function, and not a base about to be raised: (-3)**2)
-    s = s
-      .replace(/(?<!sqrt|cbrt|log|abs)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g, ' $1 ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    // (repeated until nothing changes: "(-(3.5))" unwraps to "(-3.5)", then to "-3.5")
+    for (let prev = ''; prev !== s;) {
+      prev = s;
+      s = s
+        .replace(/(?<!sqrt|cbrt|log|abs)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g, ' $1 ')
+        .replace(/\s+/g, ' ')
+        // "(- 3.5 )" after unwrapping a negative mixed number is "(-3.5)".
+        .replace(/\(\s*-\s+(?=\d)/g, '(-')
+        .replace(/(\d)\s+\)/g, '$1)')
+        .trim();
+    }
     // Work out bracketed arithmetic first, so phrases see one number: "tens in (45 - 5)".
     // (an operator after a digit, so a lone negative like "(-5)" is left alone)
     const inner = /\(([^()]*\d\s*[-+*/]\s*[^()]*)\)/.exec(s);

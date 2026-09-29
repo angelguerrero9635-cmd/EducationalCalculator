@@ -399,7 +399,8 @@ export function decimalLongDivision(
   let fraction = fracText.length;
   // A whole number over d that repeats (Grade 7): divide until a remainder comes back, one
   // pass of the repeating block, and say which digits repeat.
-  const cycle = repeat && fracText === '' ? decimalDigits(n / d, 8) : undefined;
+  // (Blocks of up to 6 digits, as `repeatingDecimal` writes them.)
+  const cycle = repeat && fracText === '' ? decimalDigits(n / d, 6) : undefined;
   if (cycle && cycle.repeat !== '') {
     const places = cycle.fixed.length + cycle.repeat.length;
     if (places > maxPlaces) return undefined;

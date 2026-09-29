@@ -334,8 +334,13 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
     if (!reason || BAD_TEXT.test(reason)) {
       c.f.add('error', `${c.label}unclear rejection message "${reason}"`, where);
     }
+    // A rule that says why (equal slopes, the same x on both sides) refuses the newest input on
+    // purpose, even though that number is possible with other inputs.
+    // (the engine's own refusals are "Doesn’t fit …", "Makes … impossible" and "Must be …")
+    const said =
+      !!reason && !/^(Doesn’t fit|Makes .* impossible|Must be|These numbers)/.test(reason);
     const alone = complete(c.sys, { [g.id]: g.value });
-    if (alone.feasible === true) {
+    if (alone.feasible === true && !said) {
       c.f.add('error', `${c.label}rejects ${g.id} although it is possible`, where);
     }
   }
