@@ -1,0 +1,461 @@
+{
+ "id": "glencoe-hs",
+ "curriculum": "Glencoe Chemistry: Matter and Change; Glencoe Physics: Principles and Problems",
+ "publisher": "McGraw Hill (Glencoe)",
+ "edition": "The editions of the public companion sites: ISBN 0-07-874637-X (Chemistry) and 0-07-845813-7 (Physics); the sites show no year",
+ "subject": "science",
+ "grades": [
+  "10",
+  "11"
+ ],
+ "content": "titles",
+ "license": null,
+ "terms": {
+  "unit": "Chapter"
+ },
+ "sourceUrl": "https://glencoe.mheducation.com/sites/007874637x/",
+ "retrieved": "2026-09-29",
+ "notes": "Chapter titles only, from the page title of each chapter page on the public Glencoe student companion sites (the current 2017 program pages on mheducation.com list no chapters). Older editions than the current program; the 2017 editions keep the same subject order but may retitle or merge chapters.",
+ "books": [
+  {
+   "grade": "10",
+   "course": "Chemistry",
+   "title": "Chemistry: Matter and Change",
+   "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/",
+   "units": [
+    {
+     "n": "1",
+     "title": "Introduction to Chemistry",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter_1/",
+     "skills": [],
+     "notes": "No taxonomy skill."
+    },
+    {
+     "n": "2",
+     "title": "Analyzing Data",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter2/",
+     "skills": [],
+     "notes": "Measurement and data; no taxonomy skill."
+    },
+    {
+     "n": "3",
+     "title": "Matter - Properties and Changes",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter3/",
+     "skills": [
+      "s.7.phase-changes"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "The Structure of the Atom",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter4/",
+     "skills": [
+      "s.10.atomic-structure"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Electrons in Atoms",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter5/",
+     "skills": [
+      "s.10.atomic-structure"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "The Periodic Table and Periodic Law",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter6/",
+     "skills": [
+      "s.10.periodic-trends"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Ionic Compounds and Metals",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter7/",
+     "skills": [
+      "s.10.bonding"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Covalent Bonding",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter8/",
+     "skills": [
+      "s.10.bonding"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Chemical Reactions",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter9/",
+     "skills": [
+      "s.10.stoichiometry"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "The Mole",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter10/",
+     "skills": [
+      "s.10.mole"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Stoichiometry",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter11/",
+     "skills": [
+      "s.10.stoichiometry"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "States of Matter",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter12/",
+     "skills": [
+      "s.10.bonding"
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Gases",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter13/",
+     "skills": [
+      "s.10.gas-laws"
+     ]
+    },
+    {
+     "n": "14",
+     "title": "Mixtures and Solutions",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter14/",
+     "skills": [
+      "s.10.molarity"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Energy and Chemical Change",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter15/",
+     "skills": [
+      "s.10.thermochemistry"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Reaction Rates",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter16/",
+     "skills": [
+      "s.10.rates-equilibrium"
+     ]
+    },
+    {
+     "n": "17",
+     "title": "Chemical Equilibrium",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter17/",
+     "skills": [
+      "s.10.rates-equilibrium"
+     ]
+    },
+    {
+     "n": "18",
+     "title": "Acids and Bases",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter18/",
+     "skills": [
+      "s.10.acids-bases"
+     ]
+    },
+    {
+     "n": "19",
+     "title": "Redox Reactions",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter19/",
+     "skills": [],
+     "notes": "No taxonomy skill."
+    },
+    {
+     "n": "20",
+     "title": "Electrochemistry",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter20/",
+     "skills": [],
+     "notes": "No taxonomy skill."
+    },
+    {
+     "n": "21",
+     "title": "Hydrocarbons",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter21/",
+     "skills": [],
+     "notes": "Organic chemistry; no taxonomy skill."
+    },
+    {
+     "n": "22",
+     "title": "Substituted Hydrocarbons and Their Reactions",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter22/",
+     "skills": [],
+     "notes": "Organic chemistry; no taxonomy skill."
+    },
+    {
+     "n": "23",
+     "title": "The Chemistry of Life",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter23/",
+     "skills": [
+      "s.9.biomolecules"
+     ]
+    },
+    {
+     "n": "24",
+     "title": "Nuclear Chemistry",
+     "url": "https://glencoe.mheducation.com/sites/007874637x/student_view0/chapter24/",
+     "skills": [
+      "s.10.atomic-structure",
+      "s.12.radiometric-dating"
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "11",
+   "course": "Physics",
+   "title": "Physics: Principles and Problems",
+   "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/",
+   "units": [
+    {
+     "n": "1",
+     "title": "A Physics Toolkit",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter1/",
+     "skills": [],
+     "notes": "Measurement and graphing; no taxonomy skill."
+    },
+    {
+     "n": "2",
+     "title": "Representing Motion",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter2/",
+     "skills": [
+      "s.11.kinematics-2d"
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Accelerated Motion",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter3/",
+     "skills": [
+      "s.11.kinematics-2d"
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Forces in One Dimension",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter4/",
+     "skills": [
+      "s.11.dynamics-vectors"
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Forces in Two Dimensions",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter5/",
+     "skills": [
+      "s.11.dynamics-vectors"
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Motion in Two Dimensions",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter6/",
+     "skills": [
+      "s.11.kinematics-2d",
+      "s.11.circular-gravitation"
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Gravitation",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter7/",
+     "skills": [
+      "s.11.circular-gravitation"
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Rotational Motion",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter8/",
+     "skills": [
+      "s.11.circular-gravitation"
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Momentum and Its Conservation",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter9/",
+     "skills": [
+      "s.11.momentum"
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Energy, Work, and Simple Machines",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter10/",
+     "skills": [
+      "s.11.work-energy-power"
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Energy and Its Conservation",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter11/",
+     "skills": [
+      "s.11.work-energy-power"
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Thermal Energy",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter12/",
+     "skills": [],
+     "notes": "Nearest is s.10.thermochemistry."
+    },
+    {
+     "n": "13",
+     "title": "States of Matter",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter13/",
+     "skills": [],
+     "notes": "Nearest is s.7.phase-changes."
+    },
+    {
+     "n": "14",
+     "title": "Vibrations and Waves",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter14/",
+     "skills": [
+      "s.11.sound-waves"
+     ]
+    },
+    {
+     "n": "15",
+     "title": "Sound",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter15/",
+     "skills": [
+      "s.11.sound-waves"
+     ]
+    },
+    {
+     "n": "16",
+     "title": "Fundamentals of Light",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter16/",
+     "skills": [
+      "s.11.optics"
+     ]
+    },
+    {
+     "n": "17",
+     "title": "Reflection and Mirrors",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter17/",
+     "skills": [
+      "s.11.optics"
+     ]
+    },
+    {
+     "n": "18",
+     "title": "Refraction and Lenses",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter18/",
+     "skills": [
+      "s.11.optics"
+     ]
+    },
+    {
+     "n": "19",
+     "title": "Interference and Diffraction",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter19/",
+     "skills": [
+      "s.11.optics"
+     ]
+    },
+    {
+     "n": "20",
+     "title": "Static Electricity",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter20/",
+     "skills": [
+      "s.11.electromagnetism"
+     ]
+    },
+    {
+     "n": "21",
+     "title": "Electric Fields",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter21/",
+     "skills": [
+      "s.11.electromagnetism"
+     ]
+    },
+    {
+     "n": "22",
+     "title": "Current Electricity",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter22/",
+     "skills": [
+      "s.11.circuits"
+     ]
+    },
+    {
+     "n": "23",
+     "title": "Series and Parallel Circuits",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter23/",
+     "skills": [
+      "s.11.circuits"
+     ]
+    },
+    {
+     "n": "24",
+     "title": "Magnetic Fields",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter24/",
+     "skills": [
+      "s.11.electromagnetism"
+     ]
+    },
+    {
+     "n": "25",
+     "title": "Electromagnetic Induction",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter25/",
+     "skills": [
+      "s.11.electromagnetism"
+     ]
+    },
+    {
+     "n": "26",
+     "title": "Electromagnetism",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter26/",
+     "skills": [
+      "s.11.electromagnetism"
+     ]
+    },
+    {
+     "n": "27",
+     "title": "Quantum Theory",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter27/",
+     "skills": [],
+     "notes": "No taxonomy skill."
+    },
+    {
+     "n": "28",
+     "title": "The Atom",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter28/",
+     "skills": [
+      "s.10.atomic-structure"
+     ]
+    },
+    {
+     "n": "29",
+     "title": "Solid-State Electronics",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter29/",
+     "skills": [],
+     "notes": "No taxonomy skill."
+    },
+    {
+     "n": "30",
+     "title": "Nuclear Physics",
+     "url": "https://glencoe.mheducation.com/sites/0078458137/student_view0/chapter30/",
+     "skills": [
+      "s.10.atomic-structure",
+      "s.12.radiometric-dating"
+     ]
+    }
+   ]
+  }
+ ]
+}
