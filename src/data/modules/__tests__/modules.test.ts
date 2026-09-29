@@ -461,6 +461,7 @@ function representationVars(r: Representation): string[] {
     case 'matrixGrid':
       return hsdSpecVars(r);
     case 'gel':
+    case 'alleleFrequencies':
       return hshSpecVars(r);
   }
 }

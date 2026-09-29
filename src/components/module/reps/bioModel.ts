@@ -1,6 +1,7 @@
 /**
- * The numbers behind the `gel` picture (Gel.tsx), shared with its harness check
- * (harness/picturesHsh.ts): where a band sits for its size, and PCR's copies cycle by cycle.
+ * The numbers behind the group-H biology pictures (Gel.tsx, AlleleFrequencies.tsx, …), shared
+ * with their harness checks (harness/picturesHsh.ts): where a gel band sits for its size, PCR's
+ * copies cycle by cycle, the beads for an allele frequency.
  */
 
 /** The default ladder, in base pairs: 100 bp to 10,000 bp. */
@@ -63,3 +64,10 @@ export const superscript = (n: number) =>
   String(n)
     .replace(/-/g, '⁻')
     .replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]!);
+
+/** Alleles in the Hardy–Weinberg tray: a population of 50 people, two alleles each. */
+export const ALLELE_BEADS = 100;
+
+/** The dominant allele's beads for p: p × 100, rounded (exact when p has two decimals). */
+export const beadsFor = (p: number) =>
+  Math.max(0, Math.min(ALLELE_BEADS, Math.round(p * ALLELE_BEADS)));

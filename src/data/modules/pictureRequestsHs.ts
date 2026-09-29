@@ -588,13 +588,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HH). Gel: { kind: "gel", lanes: [{ label, bands: [size ids or numbers in bp] }] (1–6 lanes, 1–6 bands), ladder?: sizes in bp from largest (default 10,000 … 100 bp) or false, ladderLabel?, keep?: ids pinned during a drag, fixed?: no handles }. The slab is painted (clear agarose on a tray, wells at the black − end, red + end); every band sits at a distance on a log scale of its size (checked in the harness: each × 10 the same step, smaller always farther); a typed band drags up or down. Example: { kind: "gel", lanes: [{ label: "Uncut", bands: ["L"] }, { label: "Cut", bands: ["a", "b"] }], keep: ["L"] } with L = a + b. PCR: { kind: "gel", pcr: { cycles: "n", start?: "n0", copies?: "N" } }: the three steps (95, 55, 72 °C), then each cycle’s double strands drawn while they fit (32), original strands dark and new ones in the highlight, and N = N₀ × 2ⁿ (checked).',
   },
-  ask(
-    'H38',
-    'alleleFrequencies',
-    'Hardy–Weinberg: p and q as beads in a population, genotype bars p², 2pq, q²',
-    ['s.9.evolution-evidence'],
-    'Card figures: homologous limbs (arm, wing, flipper, leg) with matching bones colored.',
-  ),
+  {
+    ...ask(
+      'H38',
+      'alleleFrequencies',
+      'Hardy–Weinberg: p and q as beads in a population, genotype bars p², 2pq, q²',
+      ['s.9.evolution-evidence'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-evolution-evidence-hardy-weinberg',
+      'g.s9-evolution-evidence-rare-allele',
+      'g.s9-evolution-evidence-allele-counts',
+      'g.s9-evolution-evidence-limbs',
+    ],
+    notes:
+      'Card figures: homologous limbs (arm, wing, flipper, leg) with matching bones colored. Drawn (group HH). { kind: "alleleFrequencies", p: id or number, q?: id (checked p + q = 1), genotypes?: [p² id, 2pq id, q² id] (each may be null; checked against the bars), alleles?: ["A", "a"], keep?: ids pinned while p is dragged, fixed?: no handle }. A tray of 100 glass beads (50 people × 2 alleles), round(100p) of them the dominant allele (the caption says "About" when 100p is not whole); a p scale with a handle; the bars p², 2pq, q² on 0–1 (Aa half each color). Example: { kind: "alleleFrequencies", p: "p", q: "q", genotypes: ["P2", "H", "q2"] }. Card icons for sort cards: { kind: "icon", icon: "human arm bones" } (also "bat wing bones", "whale flipper bones", "cat leg bones", and "insect wing" for an analogous structure): upper arm, forearm bones, wrist and hand bones each in its own color (limbUpper, limbForearm, limbWrist, limbHand), inside the skin, membrane, flipper or fur.',
+  },
   ask(
     'H39',
     'cladogram',

@@ -131,6 +131,7 @@ const PICTURE_NAMES: Record<string, string> = {
   unitCircle: 'unit circle with the angle and its point',
   algebraTiles: 'algebra tiles',
   gel: 'gel electrophoresis or PCR copies',
+  alleleFrequencies: 'allele beads and genotype bars',
   matrixGrid: 'matrices in brackets',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',

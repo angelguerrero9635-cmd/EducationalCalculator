@@ -88,6 +88,9 @@ search or the sitemap, but the module tests and the harness run over it):
 | `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
 
+`alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
+scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
+
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
 | Kind               | Option                                   | Draws                                                                         |

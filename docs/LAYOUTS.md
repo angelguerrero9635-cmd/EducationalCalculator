@@ -68,6 +68,10 @@ what people already do, or an `experiment` assigned at random to a treatment and
 (`simple random sample`, `stratified sample`, `cluster sample`, `systematic sample`, `convenience
 sample`), each 36 dots with its 9 picked, drawn in `layouts/icons/hb.tsx`.
 
+Grade 9 biology card icons (group HH, `layouts/icons/hh.tsx`): homologous limbs with each bone
+group in its own color (`human arm bones`, `bat wing bones`, `whale flipper bones`, `cat leg
+bones`) and an `insect wing` with none.
+
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
 scale, with the sun on the line over the stick's top (higher for a shorter shadow); `sides`

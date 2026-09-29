@@ -17,7 +17,7 @@ import {
   pcrRows,
   sizeAt,
   superscript,
-} from './gelModel';
+} from './bioModel';
 import { Glass, TopLight, url, usePaintIds } from './paint';
 
 /** Text width estimate (as `fitLabel` does). */

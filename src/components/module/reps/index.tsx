@@ -136,6 +136,7 @@ import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { Gel } from './Gel';
+import { AlleleFrequencies } from './AlleleFrequencies';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -184,6 +185,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <AlgebraTiles spec={spec} calc={calc} />;
     case 'gel':
       return <Gel spec={spec} calc={calc} />;
+    case 'alleleFrequencies':
+      return <AlleleFrequencies spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

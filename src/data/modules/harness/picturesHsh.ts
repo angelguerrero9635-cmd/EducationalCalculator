@@ -4,14 +4,16 @@
  * Test-only.
  */
 import {
+  ALLELE_BEADS,
   bandAt,
+  beadsFor,
   GEL_BANDS,
   GEL_LADDER,
   GEL_LANES,
   gelWindow,
   pcrRows,
   PCR_DRAWN,
-} from '@/components/module/reps/gelModel';
+} from '@/components/module/reps/bioModel';
 
 import type { HshSpec } from '../typesHsh';
 
@@ -82,6 +84,24 @@ export function hshIssues(rep: HshSpec, val: (id: string) => number | undefined)
         if (next < s && !near(step / Math.log10(s / next), bandAt(10, win) - bandAt(100, win)))
           out.push(`${s} bp to ${next} bp is not placed on the log scale`);
       });
+      break;
+    }
+    case 'alleleFrequencies': {
+      const p = num(rep.p);
+      if (p === undefined) break;
+      if (p < 0 || p > 1) out.push(`p = ${p} is not a frequency`);
+      const q = num(rep.q);
+      if (q !== undefined && !near(p + q, 1, 1e-4)) out.push(`p + q = ${p + q}, not 1`);
+      const want = [p * p, 2 * p * (1 - p), (1 - p) * (1 - p)];
+      (rep.genotypes ?? []).forEach((g, i) => {
+        const f = g === null ? undefined : num(g);
+        if (f !== undefined && !near(f, want[i]!, 1e-4))
+          out.push(`genotype ${i + 1} shows ${f}, the bar draws ${want[i]}`);
+      });
+      if (!near(want[0]! + want[1]! + want[2]!, 1, 1e-9)) out.push('genotype bars do not add to 1');
+      const n = beadsFor(p);
+      if (Math.abs(n - p * ALLELE_BEADS) > 0.5 + 1e-9)
+        out.push(`${n} beads for p = ${p}, not the nearest to ${p * ALLELE_BEADS}`);
       break;
     }
   }

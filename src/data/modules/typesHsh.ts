@@ -39,7 +39,29 @@ export interface GelSpec {
   pcr?: { cycles: NumOrVar; start?: NumOrVar; copies?: NumOrVar };
 }
 
-export type HshSpec = GelSpec;
+/**
+ * Hardy–Weinberg: the allele frequencies p and q as glass beads in a tray of 100 alleles (the
+ * dominant allele's beads in the highlight, the recessive's in the second color, counted from
+ * p), a p scale under the tray with a handle, and the genotype bars p², 2pq and q² on a 0–1
+ * scale beside it (the heterozygote bar half one color, half the other).
+ */
+export interface AlleleFrequenciesSpec {
+  kind: 'alleleFrequencies';
+  /** The dominant allele's frequency p (0 to 1). */
+  p: NumOrVar;
+  /** The recessive allele's frequency q, when the page names it (checked: p + q = 1). */
+  q?: NumOrVar;
+  /** Variables holding p², 2pq and q², when the page works them out (checked). */
+  genotypes?: [NumOrVar | null, NumOrVar | null, NumOrVar | null];
+  /** The allele letters (default A and a). */
+  alleles?: [string, string];
+  /** Values held still while p is dragged. */
+  keep?: string[];
+  /** No handle. */
+  fixed?: boolean;
+}
+
+export type HshSpec = GelSpec | AlleleFrequenciesSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hshSpecVars(r: HshSpec): string[] {
@@ -54,5 +76,7 @@ export function hshSpecVars(r: HshSpec): string[] {
         r.pcr?.start,
         r.pcr?.copies,
       ]);
+    case 'alleleFrequencies':
+      return ids([r.p, r.q, ...(r.genotypes ?? []).map((g) => g ?? undefined), ...(r.keep ?? [])]);
   }
 }

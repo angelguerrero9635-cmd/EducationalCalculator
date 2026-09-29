@@ -2015,6 +2015,7 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)));
       break;
     case 'gel':
+    case 'alleleFrequencies':
       out.push(...hshIssues(rep, (id) => val(id)));
       break;
     case 'table':

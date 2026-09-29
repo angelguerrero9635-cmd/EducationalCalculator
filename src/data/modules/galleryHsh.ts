@@ -190,5 +190,213 @@ const pcrMany: ModuleDef = {
   example: { n0: 10, n: 30, N: 10 * 2 ** 30 },
 };
 
-export const HSH_GALLERY_MODULES: ModuleDef[] = [gelCut, gelDouble, gelSmall, pcr, pcrMany];
-export const HSH_GALLERY_LAYOUTS: LayoutDef[] = [];
+// ── H38 alleleFrequencies: Hardy–Weinberg ──
+
+const freq = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { min: 0, max: 1, step: 0.0001 });
+
+/** a = f(b) with its inverse, one line each way. */
+function oneWay(
+  id: string,
+  display: string,
+  [a, b]: [string, string],
+  there: (x: number) => number | undefined,
+  back: (x: number) => number | undefined,
+  steps: Record<string, StepText>,
+): Rel {
+  return {
+    relation: {
+      id,
+      display,
+      vars: [a, b],
+      residual: (v: Values) => v[a]! - (there(v[b]!) ?? NaN),
+      solve: { [a]: (v: Values) => there(v[b]!), [b]: (v: Values) => back(v[a]!) },
+    },
+    steps,
+  };
+}
+
+const HW_WHY = [
+  'In a large population with random mating, no selection, no migration and no mutation, allele frequencies stay the same.',
+  'p is the dominant allele’s share of all alleles and q the recessive one’s, so p + q = 1.',
+  'Then the genotypes are p² AA, 2pq Aa and q² aa, and p² + 2pq + q² = 1.',
+];
+
+const hwRels = [
+  oneWay(
+    'q² = q^2',
+    '{q2} = {q}^2',
+    ['q2', 'q'],
+    (q) => q * q,
+    (q2) => (q2 >= 0 ? Math.sqrt(q2) : undefined),
+    {
+      q2: { expr: '{q}^2', how: 'Two recessive alleles meet with chance q × q.' },
+      q: {
+        expr: '√{q2}',
+        how: 'Only aa shows the recessive trait, so q is the root of its share.',
+      },
+    },
+  ),
+  oneWay(
+    'p = 1 − q',
+    '{p} = 1 − {q}',
+    ['p', 'q'],
+    (q) => 1 - q,
+    (p) => 1 - p,
+    {
+      p: { expr: '1 − {q}', how: 'The two alleles’ shares add to 1.' },
+      q: { expr: '1 − {p}', how: 'The two alleles’ shares add to 1.' },
+    },
+  ),
+  oneWay(
+    'p² = p^2',
+    '{P2} = {p}^2',
+    ['P2', 'p'],
+    (p) => p * p,
+    (P2) => (P2 >= 0 ? Math.sqrt(P2) : undefined),
+    {
+      P2: { expr: '{p}^2', how: 'Two dominant alleles meet with chance p × p.' },
+      p: { expr: '√{P2}', how: 'p is the root of the AA share.' },
+    },
+  ),
+  {
+    relation: {
+      id: 'H = 2pq',
+      display: '{H} = 2 × {p} × {q}',
+      vars: ['H', 'p', 'q'],
+      residual: (v: Values) => v.H! - 2 * v.p! * v.q!,
+      solve: {
+        H: (v: Values) => 2 * v.p! * v.q!,
+        p: (v: Values) => div(v.H!, 2 * v.q!),
+        q: (v: Values) => div(v.H!, 2 * v.p!),
+      },
+    },
+    steps: {
+      H: {
+        expr: '2 × {p} × {q}',
+        how: 'A from one parent and a from the other, or the other way round: twice p × q.',
+      },
+      p: { expr: '{H} ÷ (2 × {q})', how: 'Undo the 2 and the q.' },
+      q: { expr: '{H} ÷ (2 × {p})', how: 'Undo the 2 and the p.' },
+    },
+  } as Rel,
+];
+
+const hardyWeinberg: ModuleDef = {
+  id: 'g.s9-evolution-evidence-hardy-weinberg',
+  title: 'Hardy–Weinberg: carriers from the recessive trait',
+  use: 'Use this for allele and genotype frequencies from the share showing a recessive trait.',
+  assumptions: HW_WHY,
+  variables: [
+    freq('q2', 'q²', 'Share with the recessive trait (aa)'),
+    freq('q', 'q', 'Frequency of allele a'),
+    freq('p', 'p', 'Frequency of allele A'),
+    freq('P2', 'p²', 'Share that is AA'),
+    freq('H', '2pq', 'Share of carriers (Aa)'),
+  ],
+  ...rels(...hwRels),
+  example: { q2: 0.09, q: 0.3, p: 0.7, P2: 0.49, H: 0.42 },
+  startWith: ['q2'],
+  representation: { kind: 'alleleFrequencies', p: 'p', q: 'q', genotypes: ['P2', 'H', 'q2'] },
+};
+
+const hardyWeinbergRare: ModuleDef = {
+  ...hardyWeinberg,
+  id: 'g.s9-evolution-evidence-rare-allele',
+  title: 'Hardy–Weinberg: a rare recessive allele',
+  use: 'Use this for how many people carry a rare recessive allele without showing it.',
+  example: { q2: 0.0001, q: 0.01, p: 0.99, P2: 0.9801, H: 0.0198 },
+};
+
+const count = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { min: 0, max: 10000, step: 1, integer: true });
+
+const alleleCounts: ModuleDef = {
+  id: 'g.s9-evolution-evidence-allele-counts',
+  title: 'Allele frequencies from genotype counts',
+  use: 'Use this for p and q from counts of AA, Aa and aa individuals.',
+  assumptions: [
+    'Each individual has two alleles: AA has two A, Aa one A and one a, aa two a.',
+    'So N individuals carry 2N alleles, and p is the share of them that are A.',
+  ],
+  variables: [
+    count('nAA', 'n_AA', 'Individuals AA'),
+    count('nAa', 'n_Aa', 'Individuals Aa'),
+    count('naa', 'n_aa', 'Individuals aa'),
+    V('N', 'N', 'Individuals in all', { min: 1, max: 30000, step: 1, integer: true }),
+    // Worked out from the counts only: a frequency can't say how many individuals there are.
+    { ...freq('p', 'p', 'Frequency of allele A'), derived: true },
+    { ...freq('q', 'q', 'Frequency of allele a'), derived: true },
+  ],
+  ...rels(
+    total('N', ['nAA', 'nAa', 'naa'], { nAA: 'n_AA', nAa: 'n_Aa', naa: 'n_aa' }, 'counts'),
+    {
+      relation: {
+        id: 'p = (2n_AA + n_Aa) ÷ 2N',
+        display: '{p} = (2 × {nAA} + {nAa}) ÷ (2 × {N})',
+        vars: ['p', 'nAA', 'nAa', 'N'],
+        residual: (v: Values) => 2 * v.N! * v.p! - (2 * v.nAA! + v.nAa!),
+        solve: { p: (v: Values) => div(2 * v.nAA! + v.nAa!, 2 * v.N!) },
+      },
+      steps: {
+        p: {
+          expr: '(2 × {nAA} + {nAa}) ÷ (2 × {N})',
+          how: 'Count the A alleles (two per AA, one per Aa) out of 2N alleles.',
+        },
+      },
+    },
+    hwRels[1]!,
+  ),
+  example: { nAA: 36, nAa: 48, naa: 16, N: 100, p: 0.6, q: 0.4 },
+  startWith: ['nAA', 'nAa', 'naa'],
+  representation: { kind: 'alleleFrequencies', p: 'p', q: 'q', fixed: true },
+};
+
+export const HSH_GALLERY_MODULES: ModuleDef[] = [
+  gelCut,
+  gelDouble,
+  gelSmall,
+  pcr,
+  pcrMany,
+  hardyWeinberg,
+  hardyWeinbergRare,
+  alleleCounts,
+];
+export const HSH_GALLERY_LAYOUTS: LayoutDef[] = [
+  // ── H38: homologous limbs ──
+  {
+    id: 'g.s9-evolution-evidence-limbs',
+    title: 'Homologous structures: the same bones',
+    kind: 'sort',
+    use: 'Use this for telling homologous structures from analogous ones.',
+    assumptions: [
+      'Homologous structures have the same bones in the same order, inherited from a common ancestor.',
+      'They can do different jobs: grasping, flying, swimming or walking.',
+      'Analogous structures do the same job but are built differently, so they show no shared ancestry.',
+    ],
+    question: 'Is it built from the same bones as a human arm?',
+    bins: [
+      {
+        id: 'homologous',
+        label: 'Same bones (homologous)',
+        why: 'Upper arm, two forearm bones, wrist and fingers, in the same order.',
+      },
+      {
+        id: 'analogous',
+        label: 'Different build (analogous)',
+        why: 'It flies like a bat wing, but it has no bones at all.',
+      },
+    ],
+    cards: [
+      { label: 'Human arm', bin: 'homologous', figure: { kind: 'icon', icon: 'human arm bones' } },
+      { label: 'Bat wing', bin: 'homologous', figure: { kind: 'icon', icon: 'bat wing bones' } },
+      {
+        label: 'Whale flipper',
+        bin: 'homologous',
+        figure: { kind: 'icon', icon: 'whale flipper bones' },
+      },
+      { label: 'Cat foreleg', bin: 'homologous', figure: { kind: 'icon', icon: 'cat leg bones' } },
+      { label: 'Insect wing', bin: 'analogous', figure: { kind: 'icon', icon: 'insect wing' } },
+    ],
+  },
+];
