@@ -605,12 +605,22 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Card figures: homologous limbs (arm, wing, flipper, leg) with matching bones colored. Drawn (group HH). { kind: "alleleFrequencies", p: id or number, q?: id (checked p + q = 1), genotypes?: [p² id, 2pq id, q² id] (each may be null; checked against the bars), alleles?: ["A", "a"], keep?: ids pinned while p is dragged, fixed?: no handle }. A tray of 100 glass beads (50 people × 2 alleles), round(100p) of them the dominant allele (the caption says "About" when 100p is not whole); a p scale with a handle; the bars p², 2pq, q² on 0–1 (Aa half each color). Example: { kind: "alleleFrequencies", p: "p", q: "q", genotypes: ["P2", "H", "q2"] }. Card icons for sort cards: { kind: "icon", icon: "human arm bones" } (also "bat wing bones", "whale flipper bones", "cat leg bones", and "insect wing" for an analogous structure): upper arm, forearm bones, wrist and hand bones each in its own color (limbUpper, limbForearm, limbWrist, limbHand), inside the skin, membrane, flipper or fur.',
   },
-  ask(
-    'H39',
-    'cladogram',
-    'Cladogram with shared traits on the branches; domain and kingdom card icons',
-    ['s.9.classification', 's.9.evolution-evidence'],
-  ),
+  {
+    ...ask(
+      'H39',
+      'cladogram',
+      'Cladogram with shared traits on the branches; domain and kingdom card icons',
+      ['s.9.classification', 's.9.evolution-evidence'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-classification-cladogram',
+      'g.s9-evolution-evidence-cladogram',
+      'g.s9-classification-domains',
+    ],
+    notes:
+      'Drawn (group HH) as an explore figure, since a cladogram has no honest quantity. Figure { kind: "cladogram", tree, traits }: tree is nested lists of taxon names (any shape, 3 to 10 taxa, e.g. ["Lancelet", ["Lamprey", ["Shark", ["Frog", ["Lizard", "Mouse"]]]]]); traits: [{ name, taxa }] where the taxa must be one clade (checked in the harness), each drawn as a numbered bar on the branch into that clade and keyed under the tree. Each scene sets clade: { lit?: a trait name (its bar and every branch of the clade that inherits it lit), ring?: taxa ringed (to ask whether a group is a clade) }. Example scene: { label: "Jaws", lines: [...], clade: { lit: "Jaws" } }. Card icons for sort cards: { kind: "icon", icon: "domain Bacteria" } (also "domain Archaea", "domain Eukarya", "kingdom Protista", "kingdom Fungi", "kingdom Plantae", "kingdom Animalia").',
+  },
   ask(
     'H40',
     'energyPyramid',

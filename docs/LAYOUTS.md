@@ -70,7 +70,11 @@ sample`), each 36 dots with its 9 picked, drawn in `layouts/icons/hb.tsx`.
 
 Grade 9 biology card icons (group HH, `layouts/icons/hh.tsx`): homologous limbs with each bone
 group in its own color (`human arm bones`, `bat wing bones`, `whale flipper bones`, `cat leg
-bones`) and an `insect wing` with none.
+bones`) and an `insect wing` with none; the domains and kingdoms (`domain Bacteria`, `domain
+Archaea`, `domain Eukarya`, `kingdom Protista`, `kingdom Fungi`, `kingdom Plantae`, `kingdom
+Animalia`). Explore figure `cladogram` (`layouts/cladogramFigure.tsx`): `{ tree, traits }`, a
+tree of taxon names as nested lists and each trait's taxa (one clade) marked as a numbered bar
+on the branch into it; a scene's `clade: { lit?, ring? }` lights a trait's clade or rings taxa.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

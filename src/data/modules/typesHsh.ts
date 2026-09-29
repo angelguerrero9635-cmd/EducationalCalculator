@@ -80,3 +80,21 @@ export function hshSpecVars(r: HshSpec): string[] {
       return ids([r.p, r.q, ...(r.genotypes ?? []).map((g) => g ?? undefined), ...(r.keep ?? [])]);
   }
 }
+
+/** A cladogram's tree: a taxon's name, or a clade as its two or more branches. */
+export type CladeTree = string | CladeTree[];
+
+/** A shared derived trait and the taxa that have it (they must make one clade). */
+export interface CladeTrait {
+  name: string;
+  taxa: string[];
+}
+
+/**
+ * What a `cladogram` scene lights: a trait (its mark, the branch where it appears and the whole
+ * clade that inherits it), and taxa ringed (a group to ask about: is it a clade?).
+ */
+export interface CladeScene {
+  lit?: string;
+  ring?: string[];
+}

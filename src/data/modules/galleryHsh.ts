@@ -399,4 +399,173 @@ export const HSH_GALLERY_LAYOUTS: LayoutDef[] = [
       { label: 'Insect wing', bin: 'analogous', figure: { kind: 'icon', icon: 'insect wing' } },
     ],
   },
+  // ── H39 cladogram ──
+  {
+    id: 'g.s9-classification-cladogram',
+    title: 'Reading a cladogram',
+    kind: 'explore',
+    use: 'Use this for reading which groups share which traits, and which taxa are most closely related.',
+    assumptions: [
+      'A cladogram groups organisms by shared derived traits: new features passed on to every descendant.',
+      'Each branch point is a common ancestor; taxa that split later are more closely related.',
+      'A clade is an ancestor and all of its descendants.',
+    ],
+    figure: {
+      kind: 'cladogram',
+      tree: ['Lancelet', ['Lamprey', ['Shark', ['Frog', ['Lizard', 'Mouse']]]]],
+      traits: [
+        { name: 'Backbone', taxa: ['Lamprey', 'Shark', 'Frog', 'Lizard', 'Mouse'] },
+        { name: 'Jaws', taxa: ['Shark', 'Frog', 'Lizard', 'Mouse'] },
+        { name: 'Four limbs', taxa: ['Frog', 'Lizard', 'Mouse'] },
+        { name: 'Amniotic egg', taxa: ['Lizard', 'Mouse'] },
+        { name: 'Hair', taxa: ['Mouse'] },
+      ],
+    },
+    scenes: [
+      {
+        label: 'The whole tree',
+        lines: [
+          'Each numbered mark is where a trait first appeared; every taxon above that branch has it.',
+          'The lancelet splits off first, so it has none of the five traits.',
+        ],
+        clade: {},
+      },
+      {
+        label: 'Jaws',
+        lines: [
+          'Jaws appeared on the branch after the lamprey split off.',
+          'The shark, frog, lizard and mouse all inherited jaws: together they are one clade.',
+        ],
+        clade: { lit: 'Jaws' },
+      },
+      {
+        label: 'Amniotic egg',
+        lines: [
+          'The lizard and the mouse share an egg with its own water supply.',
+          'They share an ancestor more recent than the one they share with the frog.',
+        ],
+        clade: { lit: 'Amniotic egg' },
+      },
+      {
+        label: 'Not a clade',
+        lines: [
+          'The lamprey and the shark share an ancestor, but so do the frog, lizard and mouse.',
+          'A group that leaves out some of its ancestor’s descendants is not a clade.',
+        ],
+        clade: { ring: ['Lamprey', 'Shark'] },
+      },
+    ],
+  },
+  {
+    id: 'g.s9-evolution-evidence-cladogram',
+    title: 'A cladogram with two branches at a node',
+    kind: 'explore',
+    use: 'Use this for a cladogram whose branches split into two groups, each with its own traits.',
+    assumptions: [
+      'A branch point can split into two clades that each go on branching.',
+      'Birds and crocodiles share traits no lizard has, so they are each other’s closest relatives.',
+    ],
+    figure: {
+      kind: 'cladogram',
+      tree: [
+        'Lancelet',
+        [
+          ['Shark', 'Ray'],
+          ['Frog', ['Lizard', ['Crocodile', 'Bird']]],
+        ],
+      ],
+      traits: [
+        { name: 'Jaws', taxa: ['Shark', 'Ray', 'Frog', 'Lizard', 'Crocodile', 'Bird'] },
+        { name: 'Cartilage skeleton', taxa: ['Shark', 'Ray'] },
+        { name: 'Four limbs', taxa: ['Frog', 'Lizard', 'Crocodile', 'Bird'] },
+        { name: 'Amniotic egg', taxa: ['Lizard', 'Crocodile', 'Bird'] },
+        { name: 'Gizzard', taxa: ['Crocodile', 'Bird'] },
+        { name: 'Feathers', taxa: ['Bird'] },
+      ],
+    },
+    scenes: [
+      {
+        label: 'Two clades',
+        lines: [
+          'After jaws appeared, the tree split into two clades.',
+          'Sharks and rays kept a skeleton of cartilage; the other clade grew four limbs.',
+        ],
+        clade: { lit: 'Four limbs' },
+      },
+      {
+        label: 'Birds and crocodiles',
+        lines: [
+          'Crocodiles and birds share a gizzard, a trait lizards lack.',
+          'So a crocodile is more closely related to a bird than to a lizard.',
+        ],
+        clade: { lit: 'Gizzard' },
+      },
+      {
+        label: 'Reptiles',
+        lines: [
+          'The lizard and the crocodile are called reptiles, but their clade also holds the bird.',
+          'Without the bird, the group is not a clade.',
+        ],
+        clade: { ring: ['Lizard', 'Crocodile'] },
+      },
+    ],
+  },
+  {
+    id: 'g.s9-classification-domains',
+    title: 'The three domains',
+    kind: 'sort',
+    use: 'Use this for placing organisms in the domains Bacteria, Archaea and Eukarya.',
+    assumptions: [
+      'Bacteria and archaea are single cells with no nucleus: prokaryotes.',
+      'Archaea differ from bacteria in their cell walls, membranes and genes, and many live in extreme places.',
+      'Eukarya have cells with a nucleus: protists, fungi, plants and animals.',
+    ],
+    question: 'Which domain does it belong to?',
+    bins: [
+      {
+        id: 'bacteria',
+        label: 'Bacteria',
+        why: 'Prokaryotes with cell walls made of peptidoglycan.',
+      },
+      {
+        id: 'archaea',
+        label: 'Archaea',
+        why: 'Prokaryotes whose walls and membranes are built differently; many live in hot springs or salt lakes.',
+      },
+      { id: 'eukarya', label: 'Eukarya', why: 'Every cell has a nucleus, inside a membrane.' },
+    ],
+    cards: [
+      {
+        label: 'Rod-shaped bacteria',
+        bin: 'bacteria',
+        figure: { kind: 'icon', icon: 'domain Bacteria' },
+      },
+      {
+        label: 'Hot-spring archaea',
+        bin: 'archaea',
+        figure: { kind: 'icon', icon: 'domain Archaea' },
+      },
+      {
+        label: 'A cell with a nucleus',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'domain Eukarya' },
+      },
+      {
+        label: 'Paramecium (protist)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Protista' },
+      },
+      {
+        label: 'Mushrooms (fungi)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Fungi' },
+      },
+      { label: 'A leafy plant', bin: 'eukarya', figure: { kind: 'icon', icon: 'kingdom Plantae' } },
+      {
+        label: 'A fish (animal)',
+        bin: 'eukarya',
+        figure: { kind: 'icon', icon: 'kingdom Animalia' },
+      },
+    ],
+  },
 ];

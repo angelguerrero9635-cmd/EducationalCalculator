@@ -6,4 +6,12 @@ export const HH_ICONS = [
   'whale flipper bones',
   'cat leg bones',
   'insect wing',
+  // The three domains and the four kingdoms of eukaryotes (H39).
+  'domain Bacteria',
+  'domain Archaea',
+  'domain Eukarya',
+  'kingdom Protista',
+  'kingdom Fungi',
+  'kingdom Plantae',
+  'kingdom Animalia',
 ] as const;
