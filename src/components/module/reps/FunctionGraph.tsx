@@ -86,6 +86,14 @@ function Runs({ text, size }: { text: string; size: number }) {
 
 const width = widthOf;
 
+/** A case's rule with its comma joined on (one text, so nothing sits between them). */
+const withComma = (toks: Tok[]): Tok[] => {
+  const last = toks[toks.length - 1];
+  return last && 't' in last && !last.sup && !last.sub
+    ? [...toks.slice(0, -1), { t: `${last.t},` }]
+    : [...toks, { t: ',' }];
+};
+
 /** Lays out formula pieces from (x, y) (baseline); returns the drawing and its width. */
 function layout(
   toks: Tok[],
@@ -143,8 +151,8 @@ function layout(
       const rows = t.cases.length;
       const top = y - ((rows - 1) * rowH) / 2 - size * 0.35;
       const laid = t.cases.map((c, j) => ({
-        f: layout(c.f, 0, 0, size, color, `${k}f${j}`),
-        when: layout([{ t: `, ${plain(c.when)}` }], 0, 0, size - 1, color, `${k}w${j}`),
+        f: layout(withComma(c.f), 0, 0, size, color, `${k}f${j}`),
+        when: layout([{ t: plain(c.when) }], 0, 0, size - 1, color, `${k}w${j}`),
       }));
       const fw = Math.max(...laid.map((l) => l.f.w));
       const bx = cx + 2;
@@ -162,14 +170,14 @@ function layout(
           {laid.map((l, j) => (
             <G key={j}>
               <G transform={`translate(${bx + 11}, ${top + j * rowH})`}>{l.f.node}</G>
-              <G transform={`translate(${bx + 13 + fw}, ${top + j * rowH})`}>{l.when.node}</G>
+              <G transform={`translate(${bx + 19 + fw}, ${top + j * rowH})`}>{l.when.node}</G>
             </G>
           ))}
         </G>,
       );
       up = Math.max(up, y - h0);
       down = Math.max(down, h1 - y);
-      cx += 13 + fw + Math.max(...laid.map((l) => l.when.w));
+      cx += 19 + fw + Math.max(...laid.map((l) => l.when.w));
     } else if (t.sup || t.sub) {
       nodes.push(
         <ChartText
@@ -274,7 +282,7 @@ function Chip({
 const withApprox = (x: number, text?: string) => {
   const t = text ?? exactText(x);
   const short = Math.abs(x * 1e4 - Math.round(x * 1e4)) < 1e-7;
-  if (t && short) return t;
+  if (t && (short || t === formatNumber(x))) return t;
   return t ? `${t} ≈ ${formatNumber(x)}` : `≈ ${formatNumber(x)}`;
 };
 
@@ -290,6 +298,23 @@ const intervalText = (list: Interval[], pi = false) =>
             : `${i.loIn ? '[' : '('}${endText(i.lo, pi)}, ${endText(i.hi, pi)}${i.hiIn ? ']' : ')'}`,
         )
         .join(' ∪ ');
+
+/** "= 3", "= 2√2 ≈ 2.8284" or "≈ 10.5935": a value after its name. */
+const eq = (x: number, text?: string) => {
+  const w = withApprox(x, text);
+  return w.startsWith('≈') ? w : `= ${w}`;
+};
+
+/** An exact text short enough to read ((2 ± √6)/2); a longer one gives way to the decimal. */
+const shortOr = (t?: string) => (t && t.length <= 16 ? t : undefined);
+
+/** A point in the caption: exact, or "≈ (1.5306, 13.4796)". */
+const pairText = (x: number, y: number) => {
+  const [a, b] = [exactText(x), exactText(y)];
+  return a && b && a.length <= 12 && b.length <= 12
+    ? `(${a}, ${b})`
+    : `≈ (${formatNumber(x)}, ${formatNumber(y)})`;
+};
 
 /** A point as a label, when both coordinates are exact. */
 const pointText = (x: number, y: number, piX = false, piY = false, xText?: string) => {
@@ -312,6 +337,8 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     known(v) ? numText(get(v, fallback), pi) : '?';
   const xName = spec.input ?? (spec.at ? rep.variable(spec.at.x).symbol : 'x');
   const fName = spec.name ?? 'f';
+  /** The output's letter on a context graph (N, h), else y. */
+  const dep = spec.axes && spec.name ? spec.name : 'y';
   const main = buildCurve(spec, get, say, xName);
   const allKnown = familyVars(spec).every((id) => rep.known(id));
   const other = spec.other ? buildCurve(spec.other, get, say, xName) : undefined;
@@ -336,8 +363,9 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     ...(main.key ? [main.key.x] : []),
     ...main.holes.map((h) => h.x),
     ...main.ends.map((e) => e.x),
-    ...main.vas(-12, 12),
-    ...(main.inflection ? [main.inflection.x] : []),
+    // Both branches beside a vertical asymptote (tan's are close already).
+    ...main.vas(-12, 12).flatMap((v) => (main.piX ? [v] : [v - 2.5, v, v + 2.5])),
+    ...(main.inflection ? [main.inflection.x, 2 * main.inflection.x] : []),
     ...(atX !== undefined ? [atX] : []),
     ...(sec ? [sec.x, sec.x + sec.h] : []),
     ...(limX !== undefined ? [limX] : []),
@@ -371,6 +399,8 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     ...main.holes.map((h) => h.y),
     ...main.ends.map((e) => e.y),
     ...main.has,
+    // Room above and below a horizontal asymptote for the branches beside a vertical one.
+    ...(main.vas(-12, 12).length && !main.piX ? main.has.flatMap((a) => [a - 3, a + 3]) : []),
     ...ext0.map((e) => e.y),
     ...cross0.map((p) => p.y),
     ...(atX !== undefined ? [main.f(atX)] : []),
@@ -406,6 +436,17 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     ...(parent
       ? [{ toks: parent.text, name: `parent y = `, color: c.chartMuted, dash: chart.dash }]
       : []),
+    ...(sec
+      ? [
+          { toks: [{ t: 'through P and Q' }], name: 'secant: ', color: c.fnSecond },
+          {
+            toks: [{ t: 'at P, where the secant heads as h → 0' }],
+            name: 'tangent: ',
+            color: c.chartMuted,
+            dash: chart.dash,
+          },
+        ]
+      : []),
   ];
   const rowH = (t: Tok[]) =>
     t.some((k) => 'frac' in k)
@@ -425,6 +466,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       pw,
       ph,
       fixed: spec.window,
+      xMin: spec.xMin,
       square: !!spec.inverse,
     });
   const frozen = useFrozen<Window | undefined>(undefined);
@@ -594,9 +636,53 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
             const y = main.f(x);
             if (Number.isFinite(y) && inY(y)) curvePts.push([sx(x), sy(y)]);
           }
+          const h0 = 'h' in spec ? get(spec.h, 0) : 0;
+          const ampX =
+            main.period !== undefined ? h0 + main.period / (main.family === 'cos' ? 1 : 4) : 0;
+          const amp =
+            marks.has('amplitude') &&
+            main.amplitude !== undefined &&
+            main.midline !== undefined &&
+            inX(ampX)
+              ? { x: ampX, y0: main.midline, y1: main.f(ampX) }
+              : undefined;
+          const per =
+            marks.has('period') && main.period !== undefined
+              ? { x0: h0, x1: h0 + main.period }
+              : undefined;
+
+          // Their labels go first, in fixed places: under the period bracket, beside the
+          // amplitude bar.
+          const chipBox = (x: number, y: number, text: string, anchor: 'middle' | 'start') => {
+            const bw = width(text, chart.label) + 6;
+            let l = anchor === 'middle' ? x - bw / 2 : x + 6;
+            if (anchor === 'start' && l + bw > L + pw - 1) l = x - 6 - bw;
+            l = Math.min(L + pw - bw - 1, Math.max(L + 1, l));
+            return { l, t: y, r: l + bw, b: y + chart.label + 5 };
+          };
+          const perText = per ? `period ${numText(main.period!, true)}` : '';
+          const perBox =
+            per && allKnown
+              ? chipBox((sx(per.x0) + sx(per.x1)) / 2, top + 15, perText, 'middle')
+              : undefined;
+          const ampText = amp ? `amplitude ${numText(main.amplitude!)}` : '';
+          const ampBox =
+            amp && allKnown
+              ? chipBox(sx(amp.x), (sy(amp.y0) + sy(amp.y1)) / 2 - 9, ampText, 'start')
+              : undefined;
+          // The axis letters, kept clear too.
+          const letters: Box[] = [
+            ...(inY(0) ? [{ l: L + pw - 12, t: sy(0) - 18, r: L + pw, b: sy(0) - 2 }] : []),
+            ...(inX(0) ? [{ l: sx(0) + 4, t: top, r: sx(0) + 16, b: top + 16 }] : []),
+          ];
           const place = makePlacer(
             { l: L + 1, t: top + 1, r: L + pw - 1, b: bottom - 1 },
-            handlePx.map(([x, y]) => ({ l: x - 13, t: y - 13, r: x + 13, b: y + 13 })),
+            [
+              ...handlePx.map(([x, y]) => ({ l: x - 13, t: y - 13, r: x + 13, b: y + 13 })),
+              ...(perBox ? [perBox] : []),
+              ...(ampBox ? [ampBox] : []),
+              ...letters,
+            ],
             curvePts,
           );
           const labels: { box: Box; text: string; color: string }[] = [];
@@ -634,7 +720,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
             });
             if (marks.has('asymptotes') && allKnown)
               labels.push({
-                box: place(sx(v), top + 10, `${xName} = ${numText(v, piX)}`),
+                box: place(sx(v), bottom - 26, `${xName} = ${numText(v, piX)}`),
                 text: `${xName} = ${numText(v, piX)}`,
                 color: c.chartMuted,
               });
@@ -650,7 +736,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
               dash: chart.dash,
             });
             if (marks.has('asymptotes') && allKnown) {
-              const t = `y = ${numText(a, piY)}`;
+              const t = `${dep} = ${numText(a, piY)}`;
               labels.push({ box: place(L + pw - 30, sy(a), t), text: t, color: c.chartMuted });
             }
           }
@@ -682,8 +768,9 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
               });
             dots.push({ ...vertex, color: c.chartHighlight });
             label(vertex.x, vertex.y, pointText(vertex.x, vertex.y, piX, piY));
-            if (vertex.what === 'vertex' && allKnown) {
-              const t = `${xName} = ${numText(vertex.x)}`;
+            // The axis's equation, when the vertex is exact (a decimal vertex is in the caption).
+            if (vertex.what === 'vertex' && allKnown && exactText(vertex.x)) {
+              const t = `${xName} = ${exactText(vertex.x)}`;
               labels.push({
                 box: place(sx(vertex.x), top + 10, t),
                 text: t,
@@ -693,7 +780,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
           }
           for (const z of zeros) {
             dots.push({ x: z.x, y: 0, color: c.chartInk });
-            label(z.x, 0, z.text ? `(${z.text}, 0)` : undefined);
+            label(z.x, 0, z.text && z.text.length <= 12 ? `(${z.text}, 0)` : undefined);
           }
           if (intercept) {
             dots.push({ ...intercept, color: c.chartInk });
@@ -708,6 +795,16 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
           for (const e of main.ends)
             if (inWin(e.x, e.y)) dots.push({ ...e, color: c.chartHighlight, open: !e.closed });
           for (const p of cross) {
+            // Down to the x-axis, where the solution is read.
+            if (inY(0))
+              dashes.push({
+                x1: sx(p.x),
+                y1: sy(p.y),
+                x2: sx(p.x),
+                y2: sy(0),
+                color: c.chartMuted,
+                dash: chart.dashFine,
+              });
             dots.push({ ...p, color: c.chartInk, r: 5.5 });
             label(p.x, p.y, pointText(p.x, p.y, piX, piY));
           }
@@ -724,7 +821,6 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
             );
           }
           // Trig: midline, amplitude and period.
-          const h0 = 'h' in spec ? get(spec.h, 0) : 0;
           if (main.midline !== undefined && marks.has('midline') && inY(main.midline)) {
             dashes.push({
               x1: L,
@@ -741,20 +837,6 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
               color: c.chartMuted,
             });
           }
-          const ampX =
-            main.period !== undefined ? h0 + main.period / (main.family === 'cos' ? 1 : 4) : 0;
-          const amp =
-            marks.has('amplitude') &&
-            main.amplitude !== undefined &&
-            main.midline !== undefined &&
-            inX(ampX)
-              ? { x: ampX, y0: main.midline, y1: main.f(ampX) }
-              : undefined;
-          const per =
-            marks.has('period') && main.period !== undefined
-              ? { x0: h0, x1: h0 + main.period }
-              : undefined;
-
           // Traced point.
           if (atPt) {
             const t =
@@ -1278,28 +1360,8 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
                 </G>
                 {marks.has('domain') && allKnown ? bracket(main.domain, 'x') : null}
                 {marks.has('range') && allKnown && main.range ? bracket(main.range, 'y') : null}
-                {per && allKnown ? (
-                  <Chip
-                    box={place(
-                      (sx(per.x0) + sx(per.x1)) / 2,
-                      top + 4,
-                      `period ${numText(main.period!, true)}`,
-                    )}
-                    text={`period ${numText(main.period!, true)}`}
-                    color={c.fnSecond}
-                  />
-                ) : null}
-                {amp && allKnown ? (
-                  <Chip
-                    box={place(
-                      sx(amp.x),
-                      (sy(amp.y0) + sy(amp.y1)) / 2,
-                      `amplitude ${numText(main.amplitude!)}`,
-                    )}
-                    text={`amplitude ${numText(main.amplitude!)}`}
-                    color={c.fnSecond}
-                  />
-                ) : null}
+                {perBox ? <Chip box={perBox} text={perText} color={c.fnSecond} /> : null}
+                {ampBox ? <Chip box={ampBox} text={ampText} color={c.fnSecond} /> : null}
                 {lim && allKnown
                   ? ([-1, 1] as const).map((s) => {
                       const x = limX! + s * lim.d * 0.6;
@@ -1419,7 +1481,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       const k = main.key;
       const what = k.what === 'vertex' ? 'Vertex' : k.what === 'start' ? 'Starts at' : 'Center';
       lines.push(
-        `${what} (${numText(k.x)}, ${numText(k.y)})${k.what === 'vertex' ? `, axis of symmetry ${xName} = ${numText(k.x)}` : ''}`,
+        `${what} ${pairText(k.x, k.y)}${k.what === 'vertex' ? `, axis of symmetry ${xName} ${eq(k.x)}` : ''}`,
       );
     }
     if (marks.has('zeros')) {
@@ -1430,14 +1492,20 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       ).slice(0, 6);
       lines.push(
         zs.length
-          ? `Zero${zs.length > 1 ? 's' : ''}: ${zs.map((z) => `${xName} = ${withApprox(z.x, z.text ?? exactText(z.x, pi))}`).join(', ')}`
+          ? `Zero${zs.length > 1 ? 's' : ''}: ${zs.map((z) => `${xName} ${eq(z.x, shortOr(z.text ?? exactText(z.x, pi)))}`).join(', ')}${pi && main.period ? `, repeating every ${numText(main.period, true)}` : ''}`
           : 'No zeros: the graph never meets the x-axis',
       );
     }
     if (marks.has('intercept') && Number.isFinite(main.f(0)))
       lines.push(`y-intercept (0, ${withApprox(main.f(0))})`);
     if (marks.has('extrema') && !main.inflection) {
-      const es = extremaIn(main, win[0], win[1]).slice(0, 4);
+      const h1 = 'h' in spec ? get(spec.h, 0) : 0;
+      // A periodic curve: one period's turning points.
+      const es = (
+        pi && main.period
+          ? extremaIn(main, h1 - 1e-6, h1 + main.period - 1e-6)
+          : extremaIn(main, win[0], win[1])
+      ).slice(0, 4);
       for (const e of es)
         lines.push(
           `Local ${e.kind === 'max' ? 'maximum' : 'minimum'} at (${withApprox(e.x, exactText(e.x, pi))}, ${withApprox(e.y)})`,
@@ -1445,7 +1513,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
     }
     if (main.inflection && marks.has('extrema'))
       lines.push(
-        `Fastest growth at ${xName} = ${withApprox(main.inflection.x)}, where it reaches half the limit, ${numText(main.inflection.y)}`,
+        `Fastest growth at ${xName} ${eq(main.inflection.x)}, where it reaches half the limit, ${numText(main.inflection.y)}`,
       );
     if (marks.has('asymptotes')) {
       const v = main.vas(win[0], win[1]);
@@ -1456,7 +1524,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       if (pi && v.length) lines.push(`Vertical asymptotes every ${numText(main.period!, true)}`);
       if (main.has.length)
         lines.push(
-          `Horizontal asymptote${main.has.length > 1 ? 's' : ''} ${main.has.map((a) => `y = ${numText(a, !!main.piY)}`).join(' and ')}`,
+          `Horizontal asymptote${main.has.length > 1 ? 's' : ''} ${main.has.map((a) => `${dep} = ${numText(a, !!main.piY)}`).join(' and ')}`,
         );
       if (main.slant)
         lines.push(
@@ -1488,10 +1556,17 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       const cs = crossings(main, other, win[0], win[1]).slice(0, 4);
       lines.push(
         cs.length
-          ? `${fName}(${xName}) = ${gName}(${xName}) where the curves cross: ${cs.map((p) => `${xName} = ${withApprox(p.x)}`).join(', ')}`
+          ? `${fName}(${xName}) = ${gName}(${xName}) where the curves cross: ${cs.map((p) => `${xName} ${eq(p.x)}`).join(', ')}`
           : `The curves don't cross: ${fName}(${xName}) = ${gName}(${xName}) has no solution`,
       );
     }
+    if (shadeRange) {
+      const [a, b] = shadeRange.map((v) => numText(v));
+      lines.push(`Shaded: ${a} ≤ ${xName} ≤ ${b}`);
+    } else if (shade)
+      lines.push(
+        `Shaded: the points ${shade} the curve, y ${shade === 'above' ? '>' : '<'} ${fName}(${xName})`,
+      );
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);
     if (spec.parent && parent) lines.push(`The parent y = ${plain(parent.text)} is dashed`);
     if (limX !== undefined) {
@@ -1516,7 +1591,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
         const e = 1e-6 * Math.max(1, Math.abs(sec.x));
         const mt = (main.f(sec.x + e) - main.f(sec.x - e)) / (2 * e);
         lines.push(
-          `Secant slope (${fName}(${numText(sec.x + sec.h)}) − ${fName}(${numText(sec.x)})) ÷ ${numText(sec.h)} = ${withApprox((q - p) / sec.h)}`,
+          `Secant slope (${fName}(${numText(sec.x + sec.h)}) − ${fName}(${numText(sec.x)})) ÷ ${numText(sec.h)} ${eq((q - p) / sec.h)}`,
         );
         lines.push(
           `As h → 0 the secant turns into the tangent at P, slope ${withApprox(Math.round(mt * 1e6) / 1e6)}`,

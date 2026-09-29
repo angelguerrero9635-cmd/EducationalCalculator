@@ -104,6 +104,8 @@ export type FunctionGraphSpec = FunctionFamily & {
   limit?: { x: NumOrVar };
   /** Calculus preview: the secant through x and x + h, and the tangent at x it approaches. */
   secant?: { x: NumOrVar; h: NumOrVar; slope?: string };
+  /** The window's left edge only, e.g. 0 on a time axis (the rest chosen from the values). */
+  xMin?: number;
   /** The window, when the page fixes it (otherwise chosen from the values). */
   window?: { x?: [number, number]; y?: [number, number] };
   /** Axis names with units, e.g. { x: 'Time t (years)', y: 'Population P' }. */

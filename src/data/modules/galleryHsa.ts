@@ -516,6 +516,7 @@ export const HSA_GALLERY_MODULES: ModuleDef[] = [
       c: 's',
       name: 'h',
       at: { x: 't', y: 'H' },
+      xMin: 0,
       axes: { x: 'Time t (s)', y: 'Height h (m)' },
       marks: ['vertex', 'zeros'],
     },

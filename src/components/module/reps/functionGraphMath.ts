@@ -633,7 +633,7 @@ export function buildCurve(
             ? ''
             : a === -1
               ? MINUS
-              : `${as.includes('/') ? `(${as})` : as}${natural || /^\(/.test(baseText) ? '' : ' · '}`;
+              : `${as.includes('/') ? `(${as})` : as}${natural ? '\u2009' : /^\(/.test(baseText) ? '' : '·'}`;
       const z = -k / a;
       const handles: HandleDef[] = [
         {
@@ -1004,7 +1004,9 @@ export function buildCurve(
           },
         );
       } else {
-        fam.zeros.forEach((_, i) =>
+        // A cancelled zero is the hole: no handle there, so the open circle shows.
+        fam.zeros.forEach((_, i) => {
+          if (cancelled.includes(zs[i]!)) return;
           handles.push({
             name: `zero ${i + 1}`,
             x: zs[i]!,
@@ -1012,8 +1014,8 @@ export function buildCurve(
             axis: 'x',
             sets: [`zeros.${i}`],
             to: (X) => ({ [`zeros.${i}`]: X }),
-          }),
-        );
+          });
+        });
       }
       const exclusions = [...new Set(ps)].sort((p, q) => p - q);
       const domain: Interval[] = [];
@@ -1094,7 +1096,15 @@ export function buildCurve(
         },
         ends,
         breaks: (lo, hi) => bounds.filter((b) => b >= lo && b <= hi),
-        domain: pieces.map((p) => iv(p.lo, p.hi, p.loIn, p.hiIn)),
+        domain: pieces
+          .map((p) => iv(p.lo, p.hi, p.loIn, p.hiIn))
+          .reduce<Interval[]>((acc, i) => {
+            const last = acc[acc.length - 1];
+            if (last && last.hi === i.lo && (last.hiIn || i.loIn))
+              acc[acc.length - 1] = { ...last, hi: i.hi, hiIn: i.hiIn };
+            else acc.push(i);
+            return acc;
+          }, []),
         text: [{ cases: pieces.map((p) => ({ f: p.c.text, when: [T(p.when)] })) }],
         vas: (lo, hi) => pieces.flatMap((p) => p.c.vas(lo, hi)),
       };
@@ -1400,6 +1410,8 @@ export function chooseWindow(opts: {
   fixed?: { x?: [number, number]; y?: [number, number] };
   square?: boolean;
   minSpan?: number;
+  /** The window's left edge, when the page fixes only that (0 on a time axis). */
+  xMin?: number;
 }): Window {
   const piX = opts.curves.some((c) => c.piX);
   const piY = opts.curves.some((c) => c.piY);
@@ -1432,8 +1444,9 @@ export function chooseWindow(opts: {
     Math.min(0, ...opts.xs.filter(finite)),
     Math.max(0, ...opts.xs.filter(finite)),
   ];
+  if (opts.xMin !== undefined && !opts.fixed?.x) xl = opts.xMin;
   if (!opts.fixed?.x) {
-    const min = opts.minSpan ?? (piX ? 2 * Math.PI : 5);
+    const min = opts.minSpan ?? (piX ? 2 * Math.PI : piY ? 3 : 5);
     if (xh - xl < min) {
       const grow = (min - (xh - xl)) / 2;
       // Grow toward the side away from the origin's edge when the values are all one side.
@@ -1442,6 +1455,7 @@ export function chooseWindow(opts: {
       xh = Math.max(xh, xl + min);
     }
   }
+  if (opts.xMin !== undefined) xl = Math.max(xl, opts.xMin);
   const [x0, x1, xStep] = opts.fixed?.x
     ? [opts.fixed.x[0], opts.fixed.x[1], niceStep(opts.fixed.x[1] - opts.fixed.x[0], maxX, piX)]
     : fit(xl, xh, maxX, piX, true);
