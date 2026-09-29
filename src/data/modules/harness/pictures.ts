@@ -26,7 +26,12 @@ import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
-import { scaleCopyHsfIssues, transformationHsfIssues } from './picturesHsf';
+import {
+  circleSectorIssues,
+  planeGeometryIssues,
+  scaleCopyHsfIssues,
+  transformationHsfIssues,
+} from './picturesHsf';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -219,6 +224,7 @@ export function repIssues(
         out.push(`circumference ${C} is not 2π × ${r}`);
       if (r !== undefined && A !== undefined && off(A, Math.PI * r * r))
         out.push(`area ${A} is not π × ${r}²`);
+      out.push(...circleSectorIssues(rep, val));
       break;
     }
     case 'scaleCopy': {
@@ -817,6 +823,7 @@ export function repIssues(
       break;
     }
     case 'coordinatePlane': {
+      out.push(...planeGeometryIssues(rep, val));
       // Plotting draws its path from 0 across then up, in the first quadrant only.
       if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
       if (rep.plot && rep.second) out.push('plotting places one point, not two');

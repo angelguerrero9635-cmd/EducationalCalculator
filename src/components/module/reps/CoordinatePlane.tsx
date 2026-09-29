@@ -20,6 +20,7 @@ import {
   useRep,
 } from './common';
 import { DistanceLegs, distanceCaption } from './DistanceLegs';
+import { planeGeometry, planeGeometryCaption, PlaneGeometryMarks } from './CoordinatePlaneHsf';
 import { SlopeLegs } from './SlopeLegs';
 import { Steppers } from './Steppers';
 
@@ -45,7 +46,20 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
     known: rep.known(p.x) && rep.known(p.y),
   }));
   // The plane grows (to a round size) to keep every point in view; held while dragging.
-  const biggest = Math.max(spec.extent, ...pts.flatMap((p) => [Math.abs(p.px), Math.abs(p.py)]));
+  // Grades 9–12 marks (CoordinatePlaneHsf.tsx): a polygon's corners count too.
+  const hs = spec.midpoint || spec.partition || spec.polygon;
+  const ends: [[number, number], [number, number]] | undefined =
+    pts[0]?.known && pts[1]?.known
+      ? [
+          [pts[0].px, pts[0].py],
+          [pts[1].px, pts[1].py],
+        ]
+      : undefined;
+  const biggest = Math.max(
+    spec.extent,
+    ...pts.flatMap((p) => [Math.abs(p.px), Math.abs(p.py)]),
+    ...(hs ? planeGeometry(spec, rep).coords.map(Math.abs) : []),
+  );
   const ext = useFrozen(biggest > spec.extent ? niceCeil(biggest) : spec.extent);
   const E = ext.value;
   const lo = spec.quadrants === 4 ? -E : 0;
@@ -361,6 +375,18 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                 ) : (
                   lineThrough()
                 )}
+                {hs ? (
+                  <PlaneGeometryMarks
+                    spec={spec}
+                    rep={rep}
+                    a={ends?.[0]}
+                    b={ends?.[1]}
+                    sx={sx}
+                    sy={sy}
+                    w={w}
+                    h={h}
+                  />
+                ) : null}
                 {legs && both && (dx !== 0 || dy !== 0) ? (
                   <SlopeLegs
                     from={{ x: p.px, y: p.py }}
@@ -488,6 +514,8 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     return null;
                   // Two points in the same place share one label.
                   if (pts.slice(0, k).some((o) => o.px === pt.px && o.py === pt.py)) return null;
+                  // A polygon names its own corners.
+                  if (spec.polygon) return null;
                   // The label goes above the point, on the side the line does not cross: the
                   // upper-left when the line rises (and there is room), else the upper-right.
                   // A lone point in four quadrants (reflections) labels away from both axes,
@@ -518,12 +546,14 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   const out = !both && spec.quadrants === 4;
                   const upLeft = out ? pt.px < 0 : both && dx * dy > 0 && sx(pt.px) - x0 > 60;
                   const below = out && pt.py < 0;
+                  // With a midpoint or partition the two points are A and B.
+                  const name = hs ? 'AB'[k] : '';
                   return (
                     <ChartText
                       key={`t${pt.testID}`}
                       {...fitLabel(
                         sx(pt.px) + (upLeft ? -9 : 9),
-                        `(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`,
+                        `${name}(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`,
                         chart.label,
                         w,
                         upLeft ? 'end' : 'start',
@@ -533,7 +563,7 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       fontSize={chart.label}
                       fontWeight="700"
                     >
-                      {`(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`}
+                      {`${name}(${rep.value(pt.x, false)}, ${rep.value(pt.y, false)})`}
                     </ChartText>
                   );
                 })}
@@ -613,29 +643,42 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
         </View>
       ) : null}
       <Caption>
-        {rect
-          ? `A rectangle ${formatNumber(Math.abs(rect.r - rect.l))} units wide and ${formatNumber(Math.abs(rect.t - rect.b))} units tall.`
-          : spec.reflect && p?.known
-            ? `(${formatNumber(p.px)}, ${formatNumber(p.py)}) reflected across the x-axis is (${formatNumber(p.px)}, ${formatNumber(-p.py)}); across the y-axis (${formatNumber(-p.px)}, ${formatNumber(p.py)}); across both (${formatNumber(-p.px)}, ${formatNumber(-p.py)}).`
-            : spec.segment && both && spec.legs
-              ? distanceCaption(
-                  { x: p.px, y: p.py },
-                  { x: q.px, y: q.py },
-                  spec.distance ? rep.variable(spec.distance).symbol : 'd',
-                )
-              : spec.segment && both
-                ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
-                : spec.plot
-                  ? p?.known
-                    ? `Start at 0. Go ${formatNumber(p.px)} across, then ${formatNumber(p.py)} up: the point (${formatNumber(p.px)}, ${formatNumber(p.py)}).`
-                    : 'Tap the grid to place the point, or type both numbers.'
-                  : p?.known
-                    ? both
-                      ? legs
-                        ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}) · ${slopeSentence()}`
-                        : `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
-                      : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
-                    : 'Type both coordinates to place the point.'}
+        {hs && (spec.polygon || ends)
+          ? [
+              ...(spec.segment && both && spec.legs
+                ? [
+                    distanceCaption(
+                      { x: p.px, y: p.py },
+                      { x: q.px, y: q.py },
+                      spec.distance ? rep.variable(spec.distance).symbol : 'd',
+                    ),
+                  ]
+                : []),
+              ...planeGeometryCaption(spec, rep, ends?.[0], ends?.[1]),
+            ].join(' · ')
+          : rect
+            ? `A rectangle ${formatNumber(Math.abs(rect.r - rect.l))} units wide and ${formatNumber(Math.abs(rect.t - rect.b))} units tall.`
+            : spec.reflect && p?.known
+              ? `(${formatNumber(p.px)}, ${formatNumber(p.py)}) reflected across the x-axis is (${formatNumber(p.px)}, ${formatNumber(-p.py)}); across the y-axis (${formatNumber(-p.px)}, ${formatNumber(p.py)}); across both (${formatNumber(-p.px)}, ${formatNumber(-p.py)}).`
+              : spec.segment && both && spec.legs
+                ? distanceCaption(
+                    { x: p.px, y: p.py },
+                    { x: q.px, y: q.py },
+                    spec.distance ? rep.variable(spec.distance).symbol : 'd',
+                  )
+                : spec.segment && both
+                  ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${formatNumber(Math.abs(dx) + Math.abs(dy))} units${dx !== 0 && dy !== 0 ? ' (not on one line across or up)' : ''}.`
+                  : spec.plot
+                    ? p?.known
+                      ? `Start at 0. Go ${formatNumber(p.px)} across, then ${formatNumber(p.py)} up: the point (${formatNumber(p.px)}, ${formatNumber(p.py)}).`
+                      : 'Tap the grid to place the point, or type both numbers.'
+                    : p?.known
+                      ? both
+                        ? legs
+                          ? `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}) · ${slopeSentence()}`
+                          : `From (${formatNumber(p.px)}, ${formatNumber(p.py)}) to (${formatNumber(q.px)}, ${formatNumber(q.py)}): ${spec.slope ? `rise ${formatNumber(dy)}, run ${formatNumber(dx)}. Slope: ${rep.value(spec.slope)}.` : `${moveX}, ${moveY}.`}`
+                        : `The point is ${formatNumber(p.px)} across and ${formatNumber(p.py)} up.`
+                      : 'Type both coordinates to place the point.'}
       </Caption>
       <Steppers
         calc={calc}

@@ -418,18 +418,42 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HF). New optional fields on scaleCopy (types.ts; SideSplitter in typesHsf.ts; drawn by ScaleCopyHsf.tsx): center: [x, y] (numbers or values, in squares from the original\'s bottom left corner, inside, outside or on it) draws the dilation on one grid: the center O, a dashed ray from O through each corner out to the farther of the corner and its image, the corners lettered A, B, … and A′, B′, …, the factor on the ray with the most room; factors under 1 (down to 0.25) shrink toward O; drag the image\'s farthest corner along its ray. copyWidth, copyHeight and area work as before. The module needs a grid constraint (the figure, image and center within 30 squares; see dilationFits in galleryHsf.ts). Example: { kind: "scaleCopy", factor: "k", width: "w", height: "h", copyWidth: "W", copyHeight: "H", shape: "triangle", center: [10, 8] }. splitter: { parts?: [AD, DB, AE, EC], base?: [DE, BC] } (value ids) draws the side-splitter instead: triangle ABC with DE ∥ BC (parallel arrows on both), the small triangle ADE shaded; with it width and height are the sides AB and AC and factor is k = AD ÷ AB (0 < k < 1); pieces not passed are worked out from k. With base the triangle is to scale from its three sides (the module needs a constraint that they close); without it the angle at A is 50°, which the problem doesn\'t fix. Drag D along AB. The caption works AD ÷ DB = AE ÷ EC, k = AD ÷ AB and DE = k × BC. Example: { kind: "scaleCopy", factor: "k", width: "ab", height: "ac", splitter: { parts: ["ad", "db", "ae", "ec"] } } with AB = AD + DB, AC = AE + EC, k = AD ÷ AB and AE = k × AC.',
   },
-  ask(
-    'H25',
-    'coordinatePlane',
-    'Segment with midpoint and a point that partitions it in a ratio; distance as a right triangle; side slopes',
-    ['m.10.coordinate-geometry'],
-  ),
-  ask(
-    'H26',
-    'circle',
-    'Sector shaded by a central angle in degrees or radians, arc length, radius-length arcs around the circle',
-    ['m.10.arc-sector', 'm.11.unit-circle'],
-  ),
+  {
+    ...ask(
+      'H25',
+      'coordinatePlane',
+      'Segment with midpoint and a point that partitions it in a ratio; distance as a right triangle; side slopes',
+      ['m.10.coordinate-geometry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-coordinate-geometry-midpoint',
+      'g.m10-coordinate-geometry-partition',
+      'g.m10-coordinate-geometry-distance',
+      'g.m10-coordinate-geometry-parallelogram',
+      'g.m10-coordinate-geometry-rectangle',
+      'g.m10-coordinate-geometry-right-triangle',
+    ],
+    notes:
+      'Drawn (group HF). New optional fields on coordinatePlane (types.ts; PlaneGeometry in typesHsf.ts; drawn by CoordinatePlaneHsf.tsx, math in planeGeo.ts). With second (and usually segment: true): midpoint { x, y } (M\'s coordinates as values, checked) draws M as a diamond with one tick on each equal half and the caption works M = ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2); partition { ratio: [m, n], x?, y? } (numbers or values) cuts AB into m + n equal ticked pieces, draws A to P heavy and P, and works P = (x₁ + m/(m + n) × (x₂ − x₁), …). The two points are then labelled A(…) and B(…). Distance as a right triangle already existed (segment, legs, distance) and combines with midpoint. polygon: [[x, y], …] (3 to 6 corners, numbers or values; x, y is usually its first corner, the one dragged) draws the figure with its corners named A(…), B(…), …; slopes: true labels each side m = 1/2 (undefined for a vertical side) on a chip, arrows on parallel sides (one pair one arrow, the next two) and a square at each right angle; the caption lists the slopes, the parallel pairs and the right angles (with the product −1). Example: { kind: "coordinatePlane", x: "x1", y: "y1", second: { x: "x2", y: "y2" }, segment: true, partition: { ratio: ["m", "n"], x: "px", y: "py" }, extent: 8, quadrants: 4 }; slopes: { kind: "coordinatePlane", x: "ax", y: "ay", polygon: [["ax", "ay"], ["bx", "by"], ["cx", "cy"], ["dx", "dy"]], slopes: true, extent: 6, quadrants: 4 }. A slope relation should fail (residual 1) when the run is 0, as sideSlope in galleryHsf.ts does.',
+  },
+  {
+    ...ask(
+      'H26',
+      'circle',
+      'Sector shaded by a central angle in degrees or radians, arc length, radius-length arcs around the circle',
+      ['m.10.arc-sector', 'm.11.unit-circle'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-arc-sector-degrees',
+      'g.m10-arc-sector-radians',
+      'g.m10-arc-sector-major',
+      'g.m11-unit-circle-radian',
+    ],
+    notes:
+      'Drawn (group HF). New optional field on circle (types.ts; CircleSector in typesHsf.ts; drawn by CircleSector.tsx): sector { angle, unit?: "degrees" (default) | "radians", arc?, area? } (angle a number or value id; arc and area values, checked against s = rθ and A = r²θ ÷ 2). It adds two views: "sector" (the default view when sector is set) shades the sector counterclockwise from the radius pointing right, draws the arc heavy with s on a chip (exact with π when it is a multiple: s = 2π cm), marks the angle (60° or 3π/4), and has handles on the radius\'s end and the arc\'s end; the caption works the angle\'s share of the turn, the radian measure, s and A exactly with π, then ≈. "radian" wraps six radius-long arcs around the circle, numbered, alternating colors, with the 0.28 left over and 1 rad marked at the center; with a sector, its angle is shaded and counted in radius-lengths. Pass views: ["radian", "sector"] for both with buttons. Keep extent small (1) so the circle fills the picture. Example: { kind: "circle", radius: "r", extent: 1, sector: { angle: "t", unit: "degrees", arc: "s", area: "A" } } with s = θ ÷ 360 × 2πr and A = θ ÷ 360 × πr²; a radian angle variable\'s max is 6.28 (below 2π).',
+  },
   ask(
     'H27',
     'curvedSolid',

@@ -3,6 +3,7 @@
  * `typesHsf.ts`): what each draws must agree with the values. Called from the kind's case in
  * `repIssues` (`pictures.ts`). Test-only.
  */
+import { partitionOf } from '@/components/module/reps/planeGeo';
 import { splitterShape } from '@/components/module/reps/scaleSplitter';
 import { imageOf, type MoveValues, type Pt } from '@/components/module/reps/transform';
 
@@ -108,5 +109,69 @@ export function scaleCopyHsfIssues(rep: Of<'scaleCopy'>, val: Val): string[] {
   const ch = rep.copyHeight ? val(rep.copyHeight) : undefined;
   if (cw !== undefined && far(cw, W * k)) out.push(`copy width ${cw} is not ${k} × ${W}`);
   if (ch !== undefined && far(ch, H * k)) out.push(`copy height ${ch} is not ${k} × ${H}`);
+  return out;
+}
+
+/**
+ * H25: the midpoint and the partition point the values give are the ones the picture draws, the
+ * ratio's parts are above 0, and a polygon has 3 to 6 corners.
+ */
+export function planeGeometryIssues(rep: Of<'coordinatePlane'>, val: Val): string[] {
+  const out: string[] = [];
+  if ((rep.midpoint || rep.partition) && !rep.second)
+    out.push('a midpoint or partition needs a second point');
+  if (rep.polygon && (rep.polygon.length < 3 || rep.polygon.length > 6))
+    out.push(`polygon with ${rep.polygon.length} corners (3 to 6 are named A–F)`);
+  if (rep.slopes && !rep.polygon) out.push("slopes label a polygon's sides");
+  const ends = rep.second
+    ? [val(rep.x), val(rep.y), val(rep.second.x), val(rep.second.y)]
+    : undefined;
+  if (!ends || ends.some((x) => x === undefined)) return out;
+  const [x1, y1, x2, y2] = ends as number[];
+  const check = (
+    name: string,
+    at: { x?: string; y?: string } | undefined,
+    m: number,
+    n: number,
+  ) => {
+    if (!at) return;
+    const [ex, ey] = partitionOf([x1!, y1!], [x2!, y2!], m, n);
+    const [x, y] = [at.x ? val(at.x) : undefined, at.y ? val(at.y) : undefined];
+    if ((x !== undefined && far(x, ex)) || (y !== undefined && far(y, ey)))
+      out.push(`${name} (${x}, ${y}) drawn, the ratio ${m} : ${n} gives (${ex}, ${ey})`);
+  };
+  check('M', rep.midpoint, 1, 1);
+  if (rep.partition) {
+    const [m, n] = rep.partition.ratio.map(val);
+    if (m !== undefined && n !== undefined) {
+      if (m <= 0 || n <= 0) out.push(`ratio ${m} : ${n} (both above 0)`);
+      else check('P', rep.partition, m, n);
+    }
+  }
+  return out;
+}
+
+/**
+ * H26: the sector's angle is a part of one turn, and its arc length and area are the angle's
+ * share of the circle's (radians: s = r × θ, A = r² × θ ÷ 2).
+ */
+export function circleSectorIssues(rep: Of<'circle'>, val: Val): string[] {
+  const out: string[] = [];
+  const views = rep.views ?? [];
+  if (views.includes('sector') && !rep.sector) out.push('the sector view needs a sector');
+  if (!rep.sector) return out;
+  const s = rep.sector;
+  const t = val(s.angle);
+  const r = val(rep.radius);
+  if (t === undefined) return out;
+  const turn = s.unit === 'radians' ? 2 * Math.PI : 360;
+  if (t <= 0 || t > turn + 1e-9)
+    out.push(`sector angle ${t} is not within one turn (0 to ${turn})`);
+  if (r === undefined) return out;
+  const rad = s.unit === 'radians' ? t : (t * Math.PI) / 180;
+  const [arc, area] = [s.arc, s.area].map((id) => (id ? val(id) : undefined));
+  if (arc !== undefined && far(arc, r * rad)) out.push(`arc ${arc} is not r × θ = ${r * rad}`);
+  if (area !== undefined && far(area, (r * r * rad) / 2))
+    out.push(`sector area ${area} is not r² × θ ÷ 2 = ${(r * r * rad) / 2}`);
   return out;
 }

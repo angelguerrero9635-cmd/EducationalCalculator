@@ -15,7 +15,7 @@ import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMecha
 import type { Physics8Spec } from './typesPhysics8';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
-import type { SideSplitter } from './typesHsf';
+import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { CardIcon } from './layouts/types';
 
 /**
@@ -580,9 +580,14 @@ export type Representation =
        * π diameters, with three diameters marked under it) and 'wedges' (the circle cut into
        * `wedges` pieces laid top and bottom in a near-parallelogram π × r long and r tall).
        */
-      views?: ('radius' | 'unroll' | 'wedges')[];
+      views?: ('radius' | 'unroll' | 'wedges' | 'sector' | 'radian')[];
       /** How many wedges (even, 4–24; a number or a value). Default 8. */
       wedges?: number | string;
+      /**
+       * Grades 9–12: a sector by its central angle (`CircleSector`), shown by the view 'sector'
+       * (the default view when this is set); 'radian' wraps radius-long arcs around the circle.
+       */
+      sector?: CircleSector;
     }
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
   | {
@@ -1020,6 +1025,11 @@ export type Representation =
       /** Largest |coordinate| drawn (grows to fit). */
       extent: number;
       quadrants: 1 | 4;
+      /** Grades 9–12: midpoint, partition, a polygon and its side slopes (`PlaneGeometry`). */
+      midpoint?: PlaneGeometry['midpoint'];
+      partition?: PlaneGeometry['partition'];
+      polygon?: PlaneGeometry['polygon'];
+      slopes?: boolean;
     }
   /** Grade 8 functions, systems and transformations (specs in `typesGraphs.ts`). */
   | LinearFunctionSpec

@@ -8,7 +8,7 @@ import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
 import type { ModuleDef, Representation } from '../types';
 import { graphSpecVars } from '../typesGraphs';
-import { scaleCopyHsfVars } from '../typesHsf';
+import { circleSectorVars, planeGeometryVars, scaleCopyHsfVars } from '../typesHsf';
 import { functionGraphVars } from '../typesFunctionGraph';
 import { lifeSpecVars } from '../typesLife';
 import { chemSpecVars } from '../typesChem';
@@ -205,6 +205,7 @@ function representationVars(r: Representation): string[] {
         ...(r.trail
           ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
           : []),
+        ...planeGeometryVars(r),
       ];
     case 'boxPlot':
       return [
@@ -368,9 +369,12 @@ function representationVars(r: Representation): string[] {
         ...(r.product ?? []),
       ];
     case 'circle':
-      return [r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
-        (v): v is string => typeof v === 'string',
-      );
+      return [
+        ...[r.radius, r.diameter, r.circumference, r.area, r.wedges].filter(
+          (v): v is string => typeof v === 'string',
+        ),
+        ...circleSectorVars(r.sector),
+      ];
     case 'scaleCopy':
       return [
         r.factor,
