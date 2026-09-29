@@ -29,7 +29,6 @@ export function TriangleAngles({ spec, calc }: { spec: Spec; calc: Calculator })
   // triangle (together under 180°) and wide enough to see.
   const a = Math.min(170, Math.max(4, rep.known(first) ? rep.shown(first) : 60));
   const b = Math.min(176 - a, Math.max(4, rep.known(second) ? rep.shown(second) : 60));
-  const top = 180 - a - b;
 
   return (
     <View>
