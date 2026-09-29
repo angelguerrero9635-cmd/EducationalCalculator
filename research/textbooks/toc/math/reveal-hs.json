@@ -1,0 +1,1359 @@
+{
+  "id": "reveal-hs",
+  "curriculum": "Reveal Algebra 1, Reveal Geometry, Reveal Algebra 2",
+  "publisher": "McGraw Hill",
+  "edition": "2020",
+  "subject": "math",
+  "grades": ["9", "10", "11"],
+  "content": "titles",
+  "terms": {
+    "unit": "Module",
+    "lesson": "Lesson"
+  },
+  "license": null,
+  "sourceUrl": "https://www.mheducation.com/prek-12/program/microsites/MKTSP-BGA07M0.html",
+  "retrieved": "2026-09-29",
+  "notes": "Titles only (all rights reserved). Module and lesson titles of the Reveal Math (2020) high-school courses as listed on IXL's public skill-plan pages (one per course, cited as each unit's url; robots.txt allows /math/skill-plans/, no login). Only the textbook's own numbers and titles are kept, not IXL's skill names. IXL lists the lessons it aligns skills to, so a lesson with no IXL skill may be missing. Math typeset in a title is written plainly (x², nth). Algebra 1 → grade 9, Geometry → 10, Algebra 2 → 11.",
+  "books": [
+    {
+      "grade": "9",
+      "course": "Algebra 1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Expressions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.6.expressions-variables", "m.6.integers"],
+          "notes": "Expressions, properties of real numbers and absolute value are review; no Grade 9 skill.",
+          "lessons": [
+            {
+              "n": "1-1",
+              "title": "Numerical Expressions"
+            },
+            {
+              "n": "1-2",
+              "title": "Algebraic Expressions"
+            },
+            {
+              "n": "1-3",
+              "title": "Properties of Real Numbers"
+            },
+            {
+              "n": "1-4",
+              "title": "Distributive Property"
+            },
+            {
+              "n": "1-5",
+              "title": "Expressions Involving Absolute Value"
+            },
+            {
+              "n": "1-6",
+              "title": "Descriptive Modeling and Accuracy"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Equations in One-Variable",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": [
+            "m.8.multi-step-equations",
+            "m.9.absolute-value",
+            "m.7.proportional-relationships"
+          ],
+          "notes": "Solving linear equations in one variable has no Grade 9 skill; mapped to m.8.multi-step-equations.",
+          "lessons": [
+            {
+              "n": "2-1",
+              "title": "Writing and Interpreting Equations"
+            },
+            {
+              "n": "2-2",
+              "title": "Solving One-Step Equations"
+            },
+            {
+              "n": "2-3",
+              "title": "Solving Multi-Step Equations"
+            },
+            {
+              "n": "2-4",
+              "title": "Solving Equations with the Variable on Each Side"
+            },
+            {
+              "n": "2-5",
+              "title": "Solving Equations Involving Absolute Value"
+            },
+            {
+              "n": "2-6",
+              "title": "Solving Proportions"
+            },
+            {
+              "n": "2-7",
+              "title": "Using Formulas"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Relations and Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.8.functions-intro"],
+          "lessons": [
+            {
+              "n": "3-1",
+              "title": "Representing Relations",
+              "skills": ["m.8.functions-intro"]
+            },
+            {
+              "n": "3-2",
+              "title": "Functions",
+              "skills": ["m.8.functions-intro"]
+            },
+            {
+              "n": "3-3",
+              "title": "Linearity and Continuity of Graphs",
+              "skills": ["m.8.functions-intro"]
+            },
+            {
+              "n": "3-4",
+              "title": "Intercepts of Graphs",
+              "skills": ["m.8.functions-intro"]
+            },
+            {
+              "n": "3-5",
+              "title": "Shapes of Graphs",
+              "skills": ["m.8.functions-intro"]
+            },
+            {
+              "n": "3-6",
+              "title": "Sketching Graphs and Comparing Functions",
+              "skills": ["m.8.functions-intro"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Linear and Nonlinear Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.9.linear-modeling", "m.8.slope", "m.9.sequences", "m.9.absolute-value"],
+          "lessons": [
+            {
+              "n": "4-1",
+              "title": "Graphing Linear Functions"
+            },
+            {
+              "n": "4-2",
+              "title": "Rate of Change and Slope"
+            },
+            {
+              "n": "4-3",
+              "title": "Slope-Intercept Form"
+            },
+            {
+              "n": "4-4",
+              "title": "Transformations of Linear Functions"
+            },
+            {
+              "n": "4-5",
+              "title": "Arithmetic Sequences"
+            },
+            {
+              "n": "4-6",
+              "title": "Piecewise and Step Functions"
+            },
+            {
+              "n": "4-7",
+              "title": "Absolute Value Functions"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Creating Linear Equations",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.9.linear-modeling", "m.9.regression", "m.11.inverse-functions"],
+          "lessons": [
+            {
+              "n": "5-1",
+              "title": "Writing Equations in Slope-Intercept Form"
+            },
+            {
+              "n": "5-2",
+              "title": "Writing Equations in Standard and Point-Slope Forms"
+            },
+            {
+              "n": "5-3",
+              "title": "Scatter Plots and Lines of Fit"
+            },
+            {
+              "n": "5-4",
+              "title": "Correlation and Causation"
+            },
+            {
+              "n": "5-5",
+              "title": "Linear Regression"
+            },
+            {
+              "n": "5-6",
+              "title": "Inverses of Linear Functions"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Linear Inequalities",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.9.inequality-systems", "m.9.absolute-value"],
+          "lessons": [
+            {
+              "n": "6-1",
+              "title": "Solving One-Step Inequalities"
+            },
+            {
+              "n": "6-2",
+              "title": "Solving Multi-Step Inequalities"
+            },
+            {
+              "n": "6-3",
+              "title": "Solving Compound Inequalities"
+            },
+            {
+              "n": "6-4",
+              "title": "Solving Absolute Value Inequalities"
+            },
+            {
+              "n": "6-5",
+              "title": "Graphing Inequalities in Two Variables"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Systems of Linear Equations and Inequalities",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+          "lessons": [
+            {
+              "n": "7-1",
+              "title": "Graphing Systems of Equations"
+            },
+            {
+              "n": "7-2",
+              "title": "Substitution"
+            },
+            {
+              "n": "7-3",
+              "title": "Elimination using Addition and Subtraction"
+            },
+            {
+              "n": "7-4",
+              "title": "Elimination Using Multiplication"
+            },
+            {
+              "n": "7-5",
+              "title": "Systems of Inequalities"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Exponents and Roots",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.8.exponent-rules", "m.9.radicals", "m.9.exponential-functions"],
+          "lessons": [
+            {
+              "n": "8-1",
+              "title": "Multiplication Properties of Exponents"
+            },
+            {
+              "n": "8-2",
+              "title": "Division Properties of Exponents"
+            },
+            {
+              "n": "8-3",
+              "title": "Negative Exponents"
+            },
+            {
+              "n": "8-4",
+              "title": "Rational Exponents"
+            },
+            {
+              "n": "8-5",
+              "title": "Simplifying Radical Expressions"
+            },
+            {
+              "n": "8-6",
+              "title": "Operations with Radical Expressions"
+            },
+            {
+              "n": "8-7",
+              "title": "Exponential Equations"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Exponential Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.9.exponential-functions", "m.9.sequences"],
+          "lessons": [
+            {
+              "n": "9-1",
+              "title": "Exponential Functions"
+            },
+            {
+              "n": "9-2",
+              "title": "Transformations of Exponential Functions"
+            },
+            {
+              "n": "9-3",
+              "title": "Writing Exponential Functions"
+            },
+            {
+              "n": "9-4",
+              "title": "Transforming Exponential Expressions"
+            },
+            {
+              "n": "9-5",
+              "title": "Geometric Sequences"
+            },
+            {
+              "n": "9-6",
+              "title": "Recursive Formulas"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Polynomials",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.9.polynomial-operations", "m.9.factoring"],
+          "lessons": [
+            {
+              "n": "10-1",
+              "title": "Adding and Subtracting Polynomials"
+            },
+            {
+              "n": "10-2",
+              "title": "Multiplying Polynomials by Monomials"
+            },
+            {
+              "n": "10-3",
+              "title": "Multiplying Polynomials"
+            },
+            {
+              "n": "10-4",
+              "title": "Special Products"
+            },
+            {
+              "n": "10-5",
+              "title": "Using the Distributive Property"
+            },
+            {
+              "n": "10-6",
+              "title": "Factoring Quadratic Trinomials"
+            },
+            {
+              "n": "10-7",
+              "title": "Factoring Special Products"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Quadratic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.9.quadratic-functions", "m.9.factoring", "m.9.quadratic-formula"],
+          "lessons": [
+            {
+              "n": "11-1",
+              "title": "Graphing Quadratic Functions"
+            },
+            {
+              "n": "11-2",
+              "title": "Transformations of Quadratic Functions"
+            },
+            {
+              "n": "11-3",
+              "title": "Solving Quadratic Equations by Graphing"
+            },
+            {
+              "n": "11-4",
+              "title": "Solving Quadratic Equations by Factoring"
+            },
+            {
+              "n": "11-5",
+              "title": "Solving Quadratic Equations by Completing the Square"
+            },
+            {
+              "n": "11-6",
+              "title": "Solving Quadratic Equations by Using the Quadratic Formula"
+            },
+            {
+              "n": "11-7",
+              "title": "Solving Systems of Linear and Quadratic Equations"
+            },
+            {
+              "n": "11-8",
+              "title": "Modeling and Curve Fitting"
+            },
+            {
+              "n": "11-9",
+              "title": "Combining Functions"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Statistics",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-1",
+          "skills": ["m.6.center-spread"],
+          "notes": "Descriptive statistics (center, spread, box plots, shape) have no high-school skill; mapped to m.6.center-spread.",
+          "lessons": [
+            {
+              "n": "12-1",
+              "title": "Measures of Center",
+              "skills": ["m.6.center-spread"]
+            },
+            {
+              "n": "12-2",
+              "title": "Representing Data",
+              "skills": ["m.6.center-spread"]
+            },
+            {
+              "n": "12-3",
+              "title": "Using Data",
+              "skills": ["m.6.center-spread"]
+            },
+            {
+              "n": "12-4",
+              "title": "Measures of Spread",
+              "skills": ["m.6.center-spread"]
+            },
+            {
+              "n": "12-5",
+              "title": "Distributions of Data",
+              "skills": ["m.6.center-spread"]
+            },
+            {
+              "n": "12-6",
+              "title": "Comparing Sets of Data",
+              "skills": ["m.6.center-spread"]
+            },
+            {
+              "n": "12-7",
+              "title": "Summarizing Categorical Data",
+              "skills": ["m.6.center-spread"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "10",
+      "course": "Geometry",
+      "units": [
+        {
+          "n": "1",
+          "title": "Tools of Geometry",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.10.coordinate-geometry", "m.10.constructions"],
+          "lessons": [
+            {
+              "n": "1-1",
+              "title": "The Geometric System"
+            },
+            {
+              "n": "1-2",
+              "title": "Points, Lines, and Planes"
+            },
+            {
+              "n": "1-3",
+              "title": "Line Segments"
+            },
+            {
+              "n": "1-4",
+              "title": "Distance"
+            },
+            {
+              "n": "1-5",
+              "title": "Locating Points on a Number Line"
+            },
+            {
+              "n": "1-6",
+              "title": "Locating Points on a Coordinate Plane"
+            },
+            {
+              "n": "1-7",
+              "title": "Midpoints and Bisectors"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Angles and Geometric Figures",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.7.angle-relationships", "m.8.transformations"],
+          "notes": "Loose fit: angles, polygons, solids and measurement precision; no single Grade 10 skill.",
+          "lessons": [
+            {
+              "n": "2-1",
+              "title": "Angles and Congruence"
+            },
+            {
+              "n": "2-2",
+              "title": "Angle Relationships"
+            },
+            {
+              "n": "2-3",
+              "title": "Two-Dimensional Figures"
+            },
+            {
+              "n": "2-4",
+              "title": "Transformations in the Plane"
+            },
+            {
+              "n": "2-5",
+              "title": "Three-Dimensional Figures"
+            },
+            {
+              "n": "2-6",
+              "title": "Two-Dimensional Representations of Three-Dimensional Figures"
+            },
+            {
+              "n": "2-7",
+              "title": "Precision and Accuracy"
+            },
+            {
+              "n": "2-8",
+              "title": "Representing Measurements"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Logical Arguments and Line Relationships",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.10.proofs", "m.7.angle-relationships", "m.10.coordinate-geometry"],
+          "lessons": [
+            {
+              "n": "3-1",
+              "title": "Conjectures and Counterexamples"
+            },
+            {
+              "n": "3-2",
+              "title": "Statements, Conditionals, and Biconditionals"
+            },
+            {
+              "n": "3-3",
+              "title": "Deductive Reasoning"
+            },
+            {
+              "n": "3-4",
+              "title": "Writing Proofs"
+            },
+            {
+              "n": "3-5",
+              "title": "Proving Segment Relationships"
+            },
+            {
+              "n": "3-6",
+              "title": "Proving Angle Relationships"
+            },
+            {
+              "n": "3-7",
+              "title": "Parallel Lines and Transversals"
+            },
+            {
+              "n": "3-8",
+              "title": "Slope and Equations of Lines"
+            },
+            {
+              "n": "3-9",
+              "title": "Proving Lines Parallel"
+            },
+            {
+              "n": "3-10",
+              "title": "Perpendiculars and Distance"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Transformations and Symmetry",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.8.transformations", "m.10.congruence"],
+          "lessons": [
+            {
+              "n": "4-1",
+              "title": "Reflections"
+            },
+            {
+              "n": "4-2",
+              "title": "Translations"
+            },
+            {
+              "n": "4-3",
+              "title": "Rotations"
+            },
+            {
+              "n": "4-4",
+              "title": "Compositions of Transformations"
+            },
+            {
+              "n": "4-5",
+              "title": "Tessellations"
+            },
+            {
+              "n": "4-6",
+              "title": "Symmetry"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Triangles and Congruence",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.10.congruence", "m.10.coordinate-geometry"],
+          "lessons": [
+            {
+              "n": "5-1",
+              "title": "Angles of Triangles"
+            },
+            {
+              "n": "5-2",
+              "title": "Congruent Triangles"
+            },
+            {
+              "n": "5-3",
+              "title": "Proving Triangles Congruent: SSS, SAS"
+            },
+            {
+              "n": "5-4",
+              "title": "Proving Triangles Congruent: ASA, AAS"
+            },
+            {
+              "n": "5-5",
+              "title": "Proving Right Triangles Congruent"
+            },
+            {
+              "n": "5-6",
+              "title": "Isosceles and Equilateral Triangles"
+            },
+            {
+              "n": "5-7",
+              "title": "Triangles and Coordinate Proof"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Relationships in Triangles",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.10.proofs"],
+          "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs.",
+          "lessons": [
+            {
+              "n": "6-1",
+              "title": "Perpendicular Bisectors",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-2",
+              "title": "Angle Bisectors",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-3",
+              "title": "Medians and Altitudes of Triangles",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-4",
+              "title": "Inequalities in One Triangle",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-5",
+              "title": "Indirect Proof",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-6",
+              "title": "The Triangle Inequality",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "6-7",
+              "title": "Inequalities in Two Triangles",
+              "skills": ["m.10.proofs"]
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Quadrilaterals",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.10.proofs"],
+          "notes": "Loose fit: properties of quadrilaterals and polygons have no high-school taxonomy skill; nearest m.10.proofs.",
+          "lessons": [
+            {
+              "n": "7-1",
+              "title": "Angles of Polygons",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7-2",
+              "title": "Parallelograms",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7-3",
+              "title": "Tests for Parallelograms",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7-4",
+              "title": "Rectangles",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7-5",
+              "title": "Rhombi and Squares",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7-6",
+              "title": "Trapezoids and Kites",
+              "skills": ["m.10.proofs"]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Similarity",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.10.similarity"],
+          "lessons": [
+            {
+              "n": "8-1",
+              "title": "Dilations",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8-2",
+              "title": "Similar Polygons",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8-3",
+              "title": "Similar Triangles: AA Similarity",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8-4",
+              "title": "Similar Triangles: SSS and SAS Similarity",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8-5",
+              "title": "Triangle Proportionality",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8-6",
+              "title": "Parts of Similar Triangles",
+              "skills": ["m.10.similarity"]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Right Triangles and Trigonometry",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": [
+            "m.10.similarity",
+            "m.8.pythagorean",
+            "m.10.special-right-triangles",
+            "m.10.right-triangle-trig",
+            "m.12.law-sines-cosines"
+          ],
+          "lessons": [
+            {
+              "n": "9-1",
+              "title": "Geometric Mean"
+            },
+            {
+              "n": "9-2",
+              "title": "Pythagorean Theorem and Its Converse"
+            },
+            {
+              "n": "9-3",
+              "title": "Coordinates in Space"
+            },
+            {
+              "n": "9-4",
+              "title": "Special Right Triangles"
+            },
+            {
+              "n": "9-5",
+              "title": "Trigonometry"
+            },
+            {
+              "n": "9-6",
+              "title": "Applying Trigonometry"
+            },
+            {
+              "n": "9-7",
+              "title": "The Law of Sines"
+            },
+            {
+              "n": "9-8",
+              "title": "The Law of Cosines"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Circles",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": [
+            "m.10.circle-theorems",
+            "m.10.arc-sector",
+            "m.10.coordinate-geometry",
+            "m.12.conics"
+          ],
+          "lessons": [
+            {
+              "n": "10-1",
+              "title": "Circles and Circumference"
+            },
+            {
+              "n": "10-2",
+              "title": "Measuring Angles and Arcs"
+            },
+            {
+              "n": "10-3",
+              "title": "Arcs and Chords"
+            },
+            {
+              "n": "10-4",
+              "title": "Inscribed Angles"
+            },
+            {
+              "n": "10-5",
+              "title": "Tangents"
+            },
+            {
+              "n": "10-6",
+              "title": "Tangents, Secants, and Angle Measures"
+            },
+            {
+              "n": "10-7",
+              "title": "Equations of Circles"
+            },
+            {
+              "n": "10-8",
+              "title": "Equations of Parabolas"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Measurement",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": [
+            "m.6.area-polygons",
+            "m.10.arc-sector",
+            "m.10.volume-derivations",
+            "m.8.volume-curved"
+          ],
+          "lessons": [
+            {
+              "n": "11-1",
+              "title": "Areas of Quadrilaterals"
+            },
+            {
+              "n": "11-2",
+              "title": "Areas of Regular Polygons"
+            },
+            {
+              "n": "11-3",
+              "title": "Areas of Circles and Sectors"
+            },
+            {
+              "n": "11-4",
+              "title": "Surface Area"
+            },
+            {
+              "n": "11-5",
+              "title": "Cross Sections and Solids of Revolution"
+            },
+            {
+              "n": "11-6",
+              "title": "Volumes of Prisms and Pyramids"
+            },
+            {
+              "n": "11-7",
+              "title": "Volumes of Cylinders, Cones, and Spheres"
+            },
+            {
+              "n": "11-8",
+              "title": "Applying Similarity to Solid Figures"
+            },
+            {
+              "n": "11-9",
+              "title": "Density"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Probability",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-geometry",
+          "skills": ["m.10.conditional-probability", "m.12.binomial-theorem"],
+          "lessons": [
+            {
+              "n": "12-1",
+              "title": "Sample Spaces"
+            },
+            {
+              "n": "12-2",
+              "title": "Probability and Counting"
+            },
+            {
+              "n": "12-3",
+              "title": "Geometric Probability"
+            },
+            {
+              "n": "12-4",
+              "title": "Probability with Permutations and Combinations"
+            },
+            {
+              "n": "12-5",
+              "title": "Probability and the Multiplication Rule"
+            },
+            {
+              "n": "12-6",
+              "title": "Probability and the Addition Rule"
+            },
+            {
+              "n": "12-7",
+              "title": "Conditional Probability"
+            },
+            {
+              "n": "12-8",
+              "title": "Two-Way Frequency Tables"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "11",
+      "course": "Algebra 2",
+      "units": [
+        {
+          "n": "1",
+          "title": "Relations and Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.8.functions-intro", "m.9.linear-modeling"],
+          "notes": "Loose fit: key features of functions (continuity, extrema, end behavior) have no single taxonomy skill.",
+          "lessons": [
+            {
+              "n": "1-1",
+              "title": "Functions and Continuity"
+            },
+            {
+              "n": "1-2",
+              "title": "Linearity, Intercepts, and Symmetry"
+            },
+            {
+              "n": "1-3",
+              "title": "Extrema and End Behavior"
+            },
+            {
+              "n": "1-4",
+              "title": "Sketching Graphs and Comparing Functions"
+            },
+            {
+              "n": "1-5",
+              "title": "Graphing Linear Functions and Inequalities"
+            },
+            {
+              "n": "1-6",
+              "title": "Special Functions"
+            },
+            {
+              "n": "1-7",
+              "title": "Transformations of Functions"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Linear Equations, Inequalities, and Systems",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.9.inequality-systems", "m.9.absolute-value", "m.8.systems-linear"],
+          "lessons": [
+            {
+              "n": "2-1",
+              "title": "Solving Linear Equations and Inequalities"
+            },
+            {
+              "n": "2-2",
+              "title": "Solving Absolute Value Equations and Inequalities"
+            },
+            {
+              "n": "2-3",
+              "title": "Equations of Linear Functions"
+            },
+            {
+              "n": "2-4",
+              "title": "Solving Systems of Equations Graphically"
+            },
+            {
+              "n": "2-5",
+              "title": "Solving Systems of Equations Algebraically"
+            },
+            {
+              "n": "2-6",
+              "title": "Solving Systems of Inequalities"
+            },
+            {
+              "n": "2-7",
+              "title": "Optimization with Linear Programming"
+            },
+            {
+              "n": "2-8",
+              "title": "Systems of Equations in Three Variables"
+            },
+            {
+              "n": "2-9",
+              "title": "Solving Absolute Value Equations and Inequalities by Graphing"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Quadratic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.9.quadratic-functions", "m.11.complex-numbers", "m.9.quadratic-formula"],
+          "lessons": [
+            {
+              "n": "3-1",
+              "title": "Graphing Quadratic Functions"
+            },
+            {
+              "n": "3-2",
+              "title": "Solving Quadratic Equations by Graphing"
+            },
+            {
+              "n": "3-3",
+              "title": "Complex Numbers"
+            },
+            {
+              "n": "3-4",
+              "title": "Solving Quadratic Equations by Factoring"
+            },
+            {
+              "n": "3-5",
+              "title": "Solving Quadratic Equations by Completing the Square"
+            },
+            {
+              "n": "3-6",
+              "title": "Using the Quadratic Formula and the Discriminant"
+            },
+            {
+              "n": "3-7",
+              "title": "Quadratic Inequalities"
+            },
+            {
+              "n": "3-8",
+              "title": "Solving Linear-Nonlinear Systems"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Polynomials and Polynomial Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.11.polynomial-functions", "m.12.binomial-theorem"],
+          "lessons": [
+            {
+              "n": "4-1",
+              "title": "Polynomial Functions"
+            },
+            {
+              "n": "4-2",
+              "title": "Analyzing Graphs of Polynomial Functions"
+            },
+            {
+              "n": "4-3",
+              "title": "Operations with Polynomials"
+            },
+            {
+              "n": "4-4",
+              "title": "Dividing Polynomials"
+            },
+            {
+              "n": "4-5",
+              "title": "Powers of Binomials"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Polynomial Equations",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.11.polynomial-functions"],
+          "lessons": [
+            {
+              "n": "5-1",
+              "title": "Solving Polynomial Equations by Graphing",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "5-2",
+              "title": "Solving Polynomial Equations Algebraically",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "5-3",
+              "title": "Proving Polynomial Identities",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "5-4",
+              "title": "The Remainder and Factor Theorems",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "5-5",
+              "title": "Roots and Zeros",
+              "skills": ["m.11.polynomial-functions"]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Inverses and Radical Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.11.inverse-functions", "m.9.radicals"],
+          "lessons": [
+            {
+              "n": "6-1",
+              "title": "Operations on Functions"
+            },
+            {
+              "n": "6-2",
+              "title": "Inverse Relations and Functions"
+            },
+            {
+              "n": "6-3",
+              "title": "nth Roots and Rational Exponents"
+            },
+            {
+              "n": "6-4",
+              "title": "Graphing Radical Functions"
+            },
+            {
+              "n": "6-5",
+              "title": "Operations with Radical Expressions"
+            },
+            {
+              "n": "6-6",
+              "title": "Solving Radical Equations"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Exponential Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.9.exponential-functions", "m.11.exp-log-equations", "m.11.series"],
+          "lessons": [
+            {
+              "n": "7-1",
+              "title": "Graphing Exponential Functions"
+            },
+            {
+              "n": "7-2",
+              "title": "Solving Exponential Equations and Inequalities"
+            },
+            {
+              "n": "7-3",
+              "title": "Special Exponential Functions"
+            },
+            {
+              "n": "7-4",
+              "title": "Geometric Sequences and Series"
+            },
+            {
+              "n": "7-5",
+              "title": "Modeling Data"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Logarithmic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.11.logarithms", "m.11.exp-log-equations"],
+          "lessons": [
+            {
+              "n": "8-1",
+              "title": "Logarithms and Logarithmic Functions"
+            },
+            {
+              "n": "8-2",
+              "title": "Properties of Logarithms"
+            },
+            {
+              "n": "8-3",
+              "title": "Common Logarithms"
+            },
+            {
+              "n": "8-4",
+              "title": "Natural Logarithms"
+            },
+            {
+              "n": "8-5",
+              "title": "Using Exponential and Logarithmic Functions"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Rational Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.11.rational-functions"],
+          "lessons": [
+            {
+              "n": "9-1",
+              "title": "Multiplying and Dividing Rational Expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "9-2",
+              "title": "Adding and Subtracting Rational Expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "9-3",
+              "title": "Graphing Reciprocal Functions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "9-4",
+              "title": "Graphing Rational Functions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "9-5",
+              "title": "Variation",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "9-6",
+              "title": "Solving Rational Equations and Inequalities",
+              "skills": ["m.11.rational-functions"]
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Inferential Statistics",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.7.sampling", "m.11.normal-distribution"],
+          "lessons": [
+            {
+              "n": "10-1",
+              "title": "Random Sampling"
+            },
+            {
+              "n": "10-2",
+              "title": "Using Statistical Experiments"
+            },
+            {
+              "n": "10-3",
+              "title": "Analyzing Population Data"
+            },
+            {
+              "n": "10-4",
+              "title": "Normal Distributions"
+            },
+            {
+              "n": "10-5",
+              "title": "Estimating Population Parameters"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Trigonometric Functions",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.11.unit-circle", "m.11.trig-graphs", "m.12.trig-formulas-equations"],
+          "lessons": [
+            {
+              "n": "11-1",
+              "title": "Angles and Angle Measure"
+            },
+            {
+              "n": "11-2",
+              "title": "Trigonometric Functions of General Angles"
+            },
+            {
+              "n": "11-3",
+              "title": "Circular and Periodic Functions"
+            },
+            {
+              "n": "11-4",
+              "title": "Graphing Sine and Cosine Functions"
+            },
+            {
+              "n": "11-5",
+              "title": "Graphing Other Trigonometric Functions"
+            },
+            {
+              "n": "11-6",
+              "title": "Translations of Trigonometric Graphs"
+            },
+            {
+              "n": "11-7",
+              "title": "Inverse Trigonometric Functions"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Trigonometric Identities and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/reveal-math-2020-algebra-2",
+          "skills": ["m.11.pythagorean-identities", "m.12.trig-formulas-equations"],
+          "lessons": [
+            {
+              "n": "12-1",
+              "title": "Trigonometric Identities"
+            },
+            {
+              "n": "12-2",
+              "title": "Verifying Trigonometric Identities"
+            },
+            {
+              "n": "12-3",
+              "title": "Sum and Difference Identities"
+            },
+            {
+              "n": "12-4",
+              "title": "Double-Angle and Half-Angle Identities"
+            },
+            {
+              "n": "12-5",
+              "title": "Solving Trigonometric Equations"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
