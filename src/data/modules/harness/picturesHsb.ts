@@ -3,8 +3,9 @@
  * (`typesHsb.ts`): what each one draws must agree with the values. Called from `repIssues` in
  * `pictures.ts`. Test-only.
  */
+import { histModel } from '@/components/module/reps/histModel';
 import { normalModel, type Span } from '@/components/module/reps/normalModel';
-import { simpson } from '@/components/module/reps/statMath';
+import { binomialPmf, simpson } from '@/components/module/reps/statMath';
 
 import type { NumOrVar } from '../typesGraphs';
 import type { HsbSpec } from '../typesHsb';
@@ -99,6 +100,73 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
           if (iv.hit !== (iv.lo <= mu + 1e-12 && mu <= iv.hi + 1e-12))
             out.push(`an interval (${iv.lo}, ${iv.hi}) is counted wrongly around μ = ${mu}`);
         }
+      }
+      break;
+    }
+    case 'histogram': {
+      const needed = [
+        ...(rep.data ?? []),
+        ...(rep.counts ?? []),
+        rep.width,
+        rep.start,
+        rep.end,
+        ...(rep.probability?.probs ?? []),
+        ...(rep.probability?.values ?? []),
+        rep.binomial?.n,
+        rep.binomial?.p,
+      ];
+      if (needed.some((x) => x !== undefined && get(x) === undefined)) break;
+      const m = histModel(rep, get);
+      const sum = m.bars.reduce((t, b) => t + b.h, 0);
+      if (m.mode === 'probability') {
+        if (m.problem) out.push(`probability bars: ${m.problem}`);
+        else if (!near(sum, 1, 1e-9)) out.push(`probability bars add to ${sum}, not 1`);
+        if (rep.binomial) {
+          const n = get(rep.binomial.n)!;
+          const p = get(rep.binomial.p)!;
+          m.bars.forEach((b, k) => {
+            if (!near(b.h, binomialPmf(n, p, k), 1e-12)) out.push(`binomial bar ${k} is ${b.h}`);
+          });
+          const e = get(rep.binomial.mean);
+          if (e !== undefined && !near(e, n * p, 1e-6))
+            out.push(`E(X) ${e} is not n × p = ${n * p}`);
+        }
+        const e = get(rep.probability?.mean);
+        if (e !== undefined && !m.problem && !near(e, m.mean!, 1e-6))
+          out.push(`E(X) ${e} is not the sum of k × P(X = k), ${m.mean}`);
+        break;
+      }
+      if (m.problem) {
+        out.push(`histogram: ${m.problem}`);
+        break;
+      }
+      if (rep.counts) {
+        const typed = rep.counts.map((x) => get(x)!);
+        typed.forEach((x, i) => {
+          if (x < 0 || !Number.isInteger(x)) out.push(`count ${i + 1} is ${x}, not a whole number`);
+        });
+        if (
+          !near(
+            sum,
+            typed.reduce((t, x) => t + x, 0),
+            1e-9,
+          )
+        )
+          out.push('bar heights are not the counts');
+      } else {
+        // Recount the data into the bins drawn, independently.
+        const data = (rep.data ?? []).map((x) => get(x)!);
+        const inBins = data.filter((x) =>
+          m.bars.some((b) => x >= b.lo - 1e-9 && x < b.hi - 1e-9),
+        ).length;
+        if (sum !== inBins || sum + m.outside !== data.length)
+          out.push(
+            `bar heights add to ${sum}, but ${inBins} of ${data.length} values are in the bins`,
+          );
+        const e = typeof rep.mean === 'string' ? get(rep.mean) : undefined;
+        const mean = data.reduce((t, x) => t + x, 0) / data.length;
+        if (e !== undefined && !near(e, mean, 1e-6))
+          out.push(`mean ${e} is not the data's ${mean}`);
       }
       break;
     }

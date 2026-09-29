@@ -1988,6 +1988,7 @@ export function repIssues(
       out.push(...physics8Issues(rep, (id) => val(id)));
       break;
     case 'normalCurve':
+    case 'histogram':
       out.push(...hsbIssues(rep, (id) => val(id)));
       break;
     case 'table':

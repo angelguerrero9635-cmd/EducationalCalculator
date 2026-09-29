@@ -3,10 +3,17 @@
  * Each demo stands in for a planned page: real variables, relations, steps and a use line, so
  * `scripts/promote-demo.mjs` can copy it into a grade file. Spread into gallery.ts.
  */
-import { chiCdf, chiCritical, invPhi, Phi } from '@/components/module/reps/statMath';
+import {
+  binomialPmf,
+  chiCdf,
+  chiCritical,
+  choose,
+  invPhi,
+  Phi,
+} from '@/components/module/reps/statMath';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
-import { div } from './helpers';
+import { atLeast, div } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
 
@@ -704,6 +711,332 @@ const chiIndependence: ModuleDef = {
   },
 };
 
+// ── H03 histogram ──
+
+/** n = f₁ + f₂ + …, the counts adding to the total. */
+function totalOf(n: string, parts: string[], symbols: string[]): Rel {
+  return {
+    relation: {
+      id: `n = ${symbols.join(' + ')}`,
+      display: `{${n}} = ${parts.map((f) => `{${f}}`).join(' + ')}`,
+      vars: [n, ...parts],
+      residual: (v: Values) => v[n]! - parts.reduce((t, f) => t + v[f]!, 0),
+      solve: {
+        [n]: (v: Values) => parts.reduce((t, f) => t + v[f]!, 0),
+        ...Object.fromEntries(
+          parts.map((f) => [
+            f,
+            (v: Values) => v[n]! - parts.filter((g) => g !== f).reduce((t, g) => t + v[g]!, 0),
+          ]),
+        ),
+      },
+    },
+    steps: {
+      [n]: {
+        expr: parts.map((f) => `{${f}}`).join(' + '),
+        how: 'Every value is in one bin: add the counts.',
+      },
+      ...Object.fromEntries(
+        parts.map((f) => [
+          f,
+          {
+            expr: `{${n}} − (${parts
+              .filter((g) => g !== f)
+              .map((g) => `{${g}}`)
+              .join(' + ')})`,
+            how: 'The total less the other bins’ counts.',
+          },
+        ]),
+      ),
+    },
+  };
+}
+
+const countVar = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { integer: true, min: 0, max: 60 });
+
+/** Quiz scores of 24 students (made up for the demo; roughly symmetric). */
+const SCORES = [
+  52, 58, 61, 63, 65, 66, 68, 69, 70, 71, 72, 72, 73, 74, 75, 76, 78, 79, 81, 83, 85, 88, 91, 95,
+];
+
+const histData: ModuleDef = {
+  id: 'g.m9-data-displays-histogram',
+  title: 'Histogram: choosing the bins',
+  use: 'Use this for drawing a histogram from data: the start, the bin width and the number of bins.',
+  assumptions: [
+    'The 24 quiz scores are 52, 58, 61, 63, 65, 66, 68, 69, 70, 71, 72, 72, 73, 74, 75, 76, 78, 79, 81, 83, 85, 88, 91 and 95.',
+    'Each bin holds the scores from its left end up to, not including, its right end.',
+  ],
+  variables: [
+    V('a', 'a', 'First bin starts at', { min: 0, max: 50, step: 5 }),
+    V('w', 'w', 'Bin width', { min: 5, max: 25, step: 1 }),
+    V('e', 'e', 'Last bin ends at', { min: 60, max: 150, step: 5 }),
+    V('k', 'k', 'Number of bins', { integer: true, min: 1, max: 30 }),
+  ],
+  ...rels({
+    relation: {
+      id: 'k = (e − a) ÷ w',
+      display: '{k} = ({e} − {a}) ÷ {w}',
+      vars: ['k', 'e', 'a', 'w'],
+      residual: (v: Values) => v.k! * v.w! - (v.e! - v.a!),
+      solve: {
+        k: (v: Values) => div(v.e! - v.a!, v.w!),
+        e: (v: Values) => v.a! + v.k! * v.w!,
+        a: (v: Values) => v.e! - v.k! * v.w!,
+        w: (v: Values) => div(v.e! - v.a!, v.k!),
+      },
+    },
+    steps: {
+      k: { expr: '({e} − {a}) ÷ {w}', how: 'How many widths fit from the start to the end.' },
+      e: { expr: '{a} + {k} × {w}', how: 'Start at a and add k widths.' },
+      a: { expr: '{e} − {k} × {w}', how: 'Go back k widths from the end.' },
+      w: { expr: '({e} − {a}) ÷ {k}', how: 'Share the span equally among the bins.' },
+    },
+  }),
+  example: { a: 40, w: 10, e: 100, k: 6 },
+  startWith: ['a', 'w', 'e'],
+  sliders: true,
+  representation: {
+    kind: 'histogram',
+    data: SCORES,
+    start: 'a',
+    width: 'w',
+    end: 'e',
+    mean: true,
+    median: true,
+    shape: true,
+    axis: 'Quiz score',
+  },
+};
+
+const WAITS = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6'];
+const SUBS = '₁₂₃₄₅₆₇';
+const histCounts: ModuleDef = {
+  id: 'g.m9-data-displays-frequency',
+  title: 'Histogram from a frequency table',
+  use: 'Use this for a histogram from counts in bins, and one bin’s relative frequency.',
+  assumptions: [
+    'Wait times at a clinic are counted in bins of 5 minutes, from 0 to 30.',
+    'The relative frequency of a bin is its count divided by the total.',
+  ],
+  variables: [
+    ...WAITS.map((id, i) => countVar(id, `f${SUBS[i]}`, `${5 * i} to ${5 * i + 5} minutes`)),
+    V('n', 'n', 'Total', { integer: true, min: 1, max: 360 }),
+    V('r', 'r', 'Relative frequency, 10 to 15 minutes', { min: 0, max: 1, step: 0.0001 }),
+  ],
+  ...rels(
+    totalOf(
+      'n',
+      WAITS,
+      WAITS.map((_, i) => `f${SUBS[i]}`),
+    ),
+    {
+      relation: {
+        id: 'r = f₃ ÷ n',
+        display: '{r} = {f3} ÷ {n}',
+        vars: ['r', 'f3', 'n'],
+        residual: (v: Values) => v.r! * v.n! - v.f3!,
+        solve: {
+          r: (v: Values) => div(v.f3!, v.n!),
+          f3: (v: Values) => v.r! * v.n!,
+          n: (v: Values) => div(v.f3!, v.r!),
+        },
+      },
+      steps: {
+        r: { expr: '{f3} ÷ {n}', how: 'The bin’s share of all the values.' },
+        f3: { expr: '{r} × {n}', how: 'That share of the total.' },
+        n: { expr: '{f3} ÷ {r}', how: 'The count is r of the total.' },
+      },
+    },
+  ),
+  example: { f1: 4, f2: 9, f3: 7, f4: 4, f5: 2, f6: 1, n: 27, r: 7 / 27 },
+  startWith: WAITS,
+  representation: {
+    kind: 'histogram',
+    counts: WAITS,
+    start: 0,
+    width: 5,
+    lit: 3,
+    mean: true,
+    shape: true,
+    axis: 'Wait (min)',
+  },
+};
+
+const HEIGHTS = ['g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7'];
+const histBimodal: ModuleDef = {
+  id: 'g.m9-data-displays-bimodal',
+  title: 'Histogram: two peaks, relative frequencies',
+  use: 'Use this for a relative frequency histogram, and a shape with two peaks.',
+  assumptions: [
+    'Heights of the players on a children’s team and an adults’ team, in bins of 10 cm from 120 cm.',
+    'A relative frequency histogram has the same shape; its heights add to 1.',
+  ],
+  variables: [
+    ...HEIGHTS.map((id, i) => countVar(id, `f${SUBS[i]}`, `${120 + 10 * i} to ${130 + 10 * i} cm`)),
+    V('n', 'n', 'Total', { integer: true, min: 1, max: 420 }),
+  ],
+  ...rels(
+    totalOf(
+      'n',
+      HEIGHTS,
+      HEIGHTS.map((_, i) => `f${SUBS[i]}`),
+    ),
+  ),
+  example: { g1: 3, g2: 8, g3: 4, g4: 2, g5: 5, g6: 9, g7: 3, n: 34 },
+  startWith: HEIGHTS,
+  representation: {
+    kind: 'histogram',
+    counts: HEIGHTS,
+    start: 120,
+    width: 10,
+    relative: true,
+    shape: true,
+    axis: 'Height (cm)',
+  },
+};
+
+const PROBS = ['p0', 'p1', 'p2', 'p3', 'p4'];
+const probTyped: ModuleDef = {
+  id: 'g.m11-probability-distributions-expected',
+  title: 'Probability distribution and expected value',
+  use: 'Use this for the expected value of a probability distribution.',
+  assumptions: [
+    'X is the number of goals a team scores in a game: 0, 1, 2, 3 or 4.',
+    'The probabilities add to 1; E(X) is the sum of each value times its probability.',
+  ],
+  variables: [
+    ...PROBS.map((id, k) => ({
+      ...prob(id, `p${'₀₁₂₃₄'[k]}`, `P(X = ${k})`),
+      ...(k === 4 ? { derived: true } : {}),
+    })),
+    V('E', 'E', 'Expected value E(X)', { min: 0, max: 4, step: 0.01 }),
+  ],
+  ...rels(
+    {
+      relation: {
+        id: 'p₄ = 1 − (p₀ + p₁ + p₂ + p₃)',
+        display: '{p4} = 1 − ({p0} + {p1} + {p2} + {p3})',
+        vars: PROBS,
+        residual: (v: Values) => v.p4! - (1 - v.p0! - v.p1! - v.p2! - v.p3!),
+        solve: { p4: (v: Values) => 1 - v.p0! - v.p1! - v.p2! - v.p3! },
+      },
+      steps: {
+        p4: { expr: '1 − ({p0} + {p1} + {p2} + {p3})', how: 'All the probabilities add to 1.' },
+      },
+    },
+    {
+      relation: {
+        id: 'E = 0 × p₀ + 1 × p₁ + 2 × p₂ + 3 × p₃ + 4 × p₄',
+        display: '{E} = 0 × {p0} + 1 × {p1} + 2 × {p2} + 3 × {p3} + 4 × {p4}',
+        vars: ['E', ...PROBS],
+        residual: (v: Values) => v.E! - (v.p1! + 2 * v.p2! + 3 * v.p3! + 4 * v.p4!),
+        solve: { E: (v: Values) => v.p1! + 2 * v.p2! + 3 * v.p3! + 4 * v.p4! },
+      },
+      steps: {
+        E: {
+          expr: '0 × {p0} + 1 × {p1} + 2 × {p2} + 3 × {p3} + 4 × {p4}',
+          how: 'Weight each value by its probability and add.',
+        },
+      },
+    },
+  ),
+  example: { p0: 0.1, p1: 0.2, p2: 0.3, p3: 0.25, p4: 0.15, E: 2.15 },
+  startWith: ['p0', 'p1', 'p2', 'p3'],
+  representation: {
+    kind: 'histogram',
+    probability: { values: [0, 1, 2, 3, 4], probs: PROBS, mean: 'E' },
+    axis: 'Goals in a game (k)',
+    keep: ['p0', 'p1', 'p2', 'p3'],
+  },
+};
+
+/** Binomial bars from n and p, with P(X = k), E(X) and the SD. */
+function binomialDemo(
+  id: string,
+  title: string,
+  ex: { n: number; p: number; k: number },
+): ModuleDef {
+  const { n, p, k } = ex;
+  return {
+    id,
+    title,
+    use: 'Use this for P(X = k) in n independent trials, each a success with chance p.',
+    assumptions: [
+      'n independent trials, each a success with the same chance p.',
+      'X counts the successes: P(X = k) = C(n, k) × p^k × (1 − p)^(n − k).',
+    ],
+    variables: [
+      V('n', 'n', 'Trials', { integer: true, min: 1, max: 40 }),
+      V('p', 'p', 'Chance of success', { min: 0, max: 1, step: 0.01 }),
+      V('k', 'k', 'Successes', { integer: true, min: 0, max: 40 }),
+      prob('P', 'P', 'P(X = k)'),
+      V('E', 'E', 'Expected value E(X)', { min: 0, max: 40, step: 0.01 }),
+      V('S', 'σ', 'Standard deviation', { min: 0, max: 10, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      { relation: atLeast('n', 'k') as Relation, steps: {} },
+      {
+        relation: {
+          id: 'P = C(n, k) × p^k × (1 − p)^(n − k)',
+          display: '{P} = C({n}, {k}) × {p}^{k} × (1 − {p})^({n} − {k})',
+          vars: ['P', 'n', 'k', 'p'],
+          residual: (v: Values) => v.P! - binomialPmf(v.n!, v.p!, v.k!),
+          solve: {
+            P: (v: Values) => choose(v.n!, v.k!) * v.p! ** v.k! * (1 - v.p!) ** (v.n! - v.k!),
+          },
+        },
+        steps: {
+          P: {
+            expr: 'C({n}, {k}) × {p}^{k} × (1 − {p})^({n} − {k})',
+            how: 'C(n, k) orders of k successes, each with chance p^k × (1 − p)^(n − k).',
+          },
+        },
+      },
+      {
+        relation: {
+          id: 'E = n × p',
+          display: '{E} = {n} × {p}',
+          vars: ['E', 'n', 'p'],
+          residual: (v: Values) => v.E! - v.n! * v.p!,
+          solve: {
+            E: (v: Values) => v.n! * v.p!,
+            p: (v: Values) => div(v.E!, v.n!),
+            n: (v: Values) => div(v.E!, v.p!),
+          },
+        },
+        steps: {
+          E: { expr: '{n} × {p}', how: 'On average, p of the n trials succeed.' },
+          p: { expr: '{E} ÷ {n}', how: 'The expected successes per trial.' },
+          n: { expr: '{E} ÷ {p}', how: 'How many trials give E successes on average.' },
+        },
+      },
+      {
+        relation: {
+          id: 'σ = √(n × p × (1 − p))',
+          display: '{S} = √({n} × {p} × (1 − {p}))',
+          vars: ['S', 'n', 'p'],
+          residual: (v: Values) => v.S! - Math.sqrt(v.n! * v.p! * (1 - v.p!)),
+          solve: { S: (v: Values) => Math.sqrt(v.n! * v.p! * (1 - v.p!)) },
+        },
+        steps: {
+          S: { expr: '√({n} × {p} × (1 − {p}))', how: 'The spread of a binomial count.' },
+        },
+      },
+    ),
+    example: { n, p, k, P: binomialPmf(n, p, k), E: n * p, S: Math.sqrt(n * p * (1 - p)) },
+    startWith: ['n', 'p', 'k'],
+    sliders: true,
+    representation: {
+      kind: 'histogram',
+      binomial: { n: 'n', p: 'p', mean: 'E', sd: 'S' },
+      lit: 'k',
+      axis: 'Successes (k)',
+    },
+  };
+}
+
 export const HSB_GALLERY_MODULES: ModuleDef[] = [
   normalLeft,
   normalBetween,
@@ -717,5 +1050,19 @@ export const HSB_GALLERY_MODULES: ModuleDef[] = [
   testLeft,
   chiGof,
   chiIndependence,
+  histData,
+  histCounts,
+  histBimodal,
+  probTyped,
+  binomialDemo('g.m11-probability-distributions-binomial', 'Binomial distribution: 10 trials', {
+    n: 10,
+    p: 0.3,
+    k: 3,
+  }),
+  binomialDemo('g.m12-sampling-distributions-binomial-40', 'Binomial distribution: 40 trials', {
+    n: 40,
+    p: 0.5,
+    k: 20,
+  }),
 ];
 export const HSB_GALLERY_LAYOUTS: LayoutDef[] = [];

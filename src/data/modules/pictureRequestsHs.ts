@@ -82,13 +82,25 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Also a chi-square curve by degrees of freedom, a sampling distribution narrower than the population, and a stack of confidence intervals around the true value showing how many capture it. Drawn (group HB). Fields (numbers or variable ids, shown units): mean, sd, axis ("Height (cm)"); shade { from?, to?, outside?, area? } (a missing end is a tail; the area written to 4 decimals and checked against the CDF to 1e-4); mark { x, z? }; bands: true; sample { n, se? } (σ/√n over the dashed population curve); interval { center, margin, level? }; intervals { count 20–100, n, level, seed? } (seed 152: 94 of 100 at 95%); test { stat (a z), alpha, tail: left, right or two, p? }; chiSquare { df 1–10, stat?, alpha?, p? }; keep; fixed. Handles drag the shaded ends, the mark and the statistics. Example: { kind: "normalCurve", mean: "m", sd: "s", axis: "Height (cm)", shade: { to: "x", area: "P" }, mark: { x: "x", z: "z" } } with z = (x − μ) ÷ σ and P = Φ(z). Step text Φ(z), invNorm(p), χ²cdf(X, ∞, df) and C(n, k) is taught to the harness (harness/phrasesHsb.ts); relation builders to copy are in galleryHsb.ts.',
   },
-  ask(
-    'H03',
-    'histogram',
-    'Histogram with bins from the data, and probability bars with the expected value',
-    ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
-    'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p.',
-  ),
+  {
+    ...ask(
+      'H03',
+      'histogram',
+      'Histogram with bins from the data, and probability bars with the expected value',
+      ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-data-displays-histogram',
+      'g.m9-data-displays-frequency',
+      'g.m9-data-displays-bimodal',
+      'g.m11-probability-distributions-expected',
+      'g.m11-probability-distributions-binomial',
+      'g.m12-sampling-distributions-binomial-40',
+    ],
+    notes:
+      'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p. Drawn (group HB). Fields: data (numbers or ids) or counts (ids per bin); start, width, end (bins left end in, right end out); relative; mean and median (true to work them out, or a variable id; from counts the mean is estimated from the midpoints); shape (true names it: symmetric, skewed left or right, uniform, bimodal; or a word); axis; lit (a 1-based bin, or a value k); probability { values, probs, mean? } (E(X) marked, a list not adding to 1 draws faded with the reason); binomial { n 1–40, p, mean?, sd? }; keep; fixed. Count and probability bars drag by their tops (derived ones don\'t). The harness recounts the data into the bins and checks the heights sum to the count, or to 1. Example: { kind: "histogram", counts: ["f1", "f2", "f3", "f4", "f5", "f6"], start: 0, width: 5, lit: 3, mean: true, shape: true, axis: "Wait (min)" }; binomial: { kind: "histogram", binomial: { n: "n", p: "p", mean: "E", sd: "S" }, lit: "k", axis: "Successes (k)" }.',
+  },
   ask(
     'H04',
     'triangleSolver',

@@ -49,7 +49,39 @@ export interface NormalCurveSpec {
   fixed?: boolean;
 }
 
-export type HsbSpec = NormalCurveSpec;
+/**
+ * A histogram. Bins run from `start` in steps of `width` (left end in, right end out) to `end`:
+ * from raw `data` (numbers or variable ids), or from `counts` per bin. `relative` draws the
+ * relative frequencies. `mean` and `median` mark the center (`true` works it out from the data;
+ * from counts the mean is estimated from the bin midpoints), and `shape: true` names the shape
+ * in the caption (symmetric, skewed left or right, uniform, bimodal), or a word given.
+ *
+ * `probability` draws a probability distribution: a bar of P(X = k) over each value, E(X)
+ * marked; `binomial` works those bars out from n and p. `lit` lights one bin (1-based) or one
+ * value k. Count and probability bars drag by their tops when they are variables, holding
+ * `keep`.
+ */
+export interface HistogramSpec {
+  kind: 'histogram';
+  data?: NumOrVar[];
+  counts?: NumOrVar[];
+  width?: NumOrVar;
+  start?: NumOrVar;
+  end?: NumOrVar;
+  relative?: boolean;
+  mean?: true | NumOrVar;
+  median?: true | NumOrVar;
+  shape?: true | string;
+  /** The value axis's name with its unit, "Score". */
+  axis?: string;
+  lit?: NumOrVar;
+  probability?: { values: NumOrVar[]; probs: NumOrVar[]; mean?: string };
+  binomial?: { n: NumOrVar; p: NumOrVar; mean?: string; sd?: string };
+  keep?: string[];
+  fixed?: boolean;
+}
+
+export type HsbSpec = NormalCurveSpec | HistogramSpec;
 
 /** Every variable id one of these pictures refers to. */
 export function hsbSpecVars(r: HsbSpec): string[] {
@@ -79,6 +111,24 @@ export function hsbSpecVars(r: HsbSpec): string[] {
         r.chiSquare?.stat,
         r.chiSquare?.alpha,
         r.chiSquare?.p,
+        ...(r.keep ?? []),
+      );
+    case 'histogram':
+      return v(
+        ...(r.data ?? []),
+        ...(r.counts ?? []),
+        r.width,
+        r.start,
+        r.end,
+        r.mean === true ? undefined : r.mean,
+        r.median === true ? undefined : r.median,
+        r.lit,
+        ...(r.probability ? [...r.probability.values, ...r.probability.probs] : []),
+        r.probability?.mean,
+        r.binomial?.n,
+        r.binomial?.p,
+        r.binomial?.mean,
+        r.binomial?.sd,
         ...(r.keep ?? []),
       );
   }
