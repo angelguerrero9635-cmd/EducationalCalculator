@@ -1,0 +1,4149 @@
+{
+ "id": "eureka-hs",
+ "curriculum": "Eureka Math / EngageNY Mathematics, high school (Algebra I, Geometry, Algebra II, Precalculus and Advanced Topics)",
+ "publisher": "Great Minds (for the New York State Education Department)",
+ "edition": "EngageNY 2015 release (files marked ©2015 Great Minds, e.g. ALG I-M1-TE-1.3.0-07.2015)",
+ "subject": "math",
+ "grades": [
+  "9",
+  "10",
+  "11",
+  "12"
+ ],
+ "content": "full",
+ "terms": {
+  "unit": "Module",
+  "section": "Topic",
+  "lesson": "Lesson"
+ },
+ "license": {
+  "name": "CC BY-NC-SA 3.0",
+  "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+  "attribution": "This work is derived from Eureka Math and licensed by Great Minds. ©2015 Great Minds. eureka-math.org. Published by the New York State Education Department as EngageNY; archived copy at https://archive.org/details/engageny-mathematics. Licensed under CC BY-NC-SA 3.0 Unported."
+ },
+ "sourceUrl": "https://archive.org/details/engageny-mathematics",
+ "retrieved": "2026-09-28",
+ "notes": "One course per grade as the taxonomy files them: Algebra I = 9, Geometry = 10, Algebra II = 11, Precalculus and Advanced Topics = 12. Built from each module's Module Overview table of contents (module, topic and lesson titles; topic standards kept in 'standards'). A lesson spanning days is numbered like '22–23'. Eight lesson titles whose math was typeset as equations (lost in the text extraction) were restored by hand, e.g. 'f(x) = ax² + bx + c'. Unit URLs point at the per-module zip on archive.org, lesson URLs at the teacher PDF (NYSED's own EngageNY archive page could not be reached). Skill ids are our best match per topic; a topic maps to another grade's skill when the fit is clearly there (e.g. Geometry's laws of sines and cosines → m.12.law-sines-cosines); lessons carry skills only when their topic maps to exactly one skill; 'notes' says where the fit is loose or there is no skill.",
+ "books": [
+  {
+   "grade": "9",
+   "course": "Algebra I",
+   "units": [
+    {
+     "n": "1",
+     "title": "Relationships Between Quantities and Reasoning with Equations and Their Graphs",
+     "course": "Algebra I",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-module-overview-and-assessments%2Falgebra-i-m1-module-overview.docx",
+     "skills": [
+      "m.9.linear-modeling",
+      "m.9.polynomial-operations",
+      "m.9.inequality-systems",
+      "m.8.multi-step-equations",
+      "m.8.systems-linear"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Introduction to Functions Studied this Year—Graphing Stories",
+       "skills": [
+        "m.9.linear-modeling"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Graphs of Piecewise Linear Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.9.linear-modeling"
+         ]
+        },
+        {
+         "n": "2",
+         "title": "Graphs of Quadratic Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-a-lesson-2-teacher.pdf",
+         "skills": [
+          "m.9.linear-modeling"
+         ]
+        },
+        {
+         "n": "3",
+         "title": "Graphs of Exponential Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.9.linear-modeling"
+         ]
+        },
+        {
+         "n": "4",
+         "title": "Analyzing Graphs—Water Usage During a Typical Day at School",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-a-lesson-4-teacher.pdf",
+         "skills": [
+          "m.9.linear-modeling"
+         ]
+        },
+        {
+         "n": "5",
+         "title": "Two Graphing Stories",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-a-lesson-5-teacher.pdf",
+         "skills": [
+          "m.9.linear-modeling"
+         ]
+        }
+       ],
+       "standards": [
+        "N-Q.A.1",
+        "N-Q.A.2",
+        "N-Q.A.3",
+        "A-CED.A.2"
+       ],
+       "notes": "Graphing stories: reading and sketching graphs of piecewise linear, quadratic and exponential situations (N-Q, A-CED.2). Loose fit: m.9.linear-modeling is the nearest skill; there is no 'interpreting graphs of functions in context' skill."
+      },
+      {
+       "n": "B",
+       "title": "The Structure of Expressions",
+       "skills": [
+        "m.9.polynomial-operations"
+       ],
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Algebraic Expressions—The Distributive Property",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-b-lesson-6-teacher.pdf",
+         "skills": [
+          "m.9.polynomial-operations"
+         ]
+        },
+        {
+         "n": "7",
+         "title": "Algebraic Expressions—The Commutative and Associative Properties",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.9.polynomial-operations"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "Adding and Subtracting Polynomials",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.9.polynomial-operations"
+         ]
+        },
+        {
+         "n": "9",
+         "title": "Multiplying Polynomials",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-student-materials%2Falgebra-i-m1-topic-b-lesson-9-teacher.pdf",
+         "skills": [
+          "m.9.polynomial-operations"
+         ]
+        }
+       ],
+       "standards": [
+        "A-SSE.A.2",
+        "A-APR.A.1"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Solving Equations and Inequalities",
+       "skills": [
+        "m.9.inequality-systems",
+        "m.8.multi-step-equations",
+        "m.8.systems-linear"
+       ],
+       "lessons": [
+        {
+         "n": "10",
+         "title": "True and False Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-10-teacher.pdf"
+        },
+        {
+         "n": "11",
+         "title": "Solution Sets for Equations and Inequalities",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-11-teacher.pdf"
+        },
+        {
+         "n": "12",
+         "title": "Solving Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-12-teacher.pdf"
+        },
+        {
+         "n": "13",
+         "title": "Some Potential Dangers when Solving Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-13-teacher.pdf"
+        },
+        {
+         "n": "14",
+         "title": "Solving Inequalities",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-14-teacher.pdf"
+        },
+        {
+         "n": "15",
+         "title": "Solution Sets of Two or More Equations (or Inequalities) Joined by “And” or “Or”",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-15-teacher.pdf"
+        },
+        {
+         "n": "16",
+         "title": "Solving and Graphing Inequalities Joined by “And” or “Or”",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-16-teacher.pdf"
+        },
+        {
+         "n": "17",
+         "title": "Equations Involving Factored Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-17-teacher.pdf"
+        },
+        {
+         "n": "18",
+         "title": "Equations Involving a Variable Expression in the Denominator",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-18-teacher.pdf"
+        },
+        {
+         "n": "19",
+         "title": "Rearranging Formulas",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-19-teacher.pdf"
+        },
+        {
+         "n": "20",
+         "title": "Solution Sets to Equations with Two Variables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-20-teacher.pdf"
+        },
+        {
+         "n": "21",
+         "title": "Solution Sets to Inequalities with Two Variables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-21-teacher.pdf"
+        },
+        {
+         "n": "22–23",
+         "title": "Solution Sets to Simultaneous Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-22-teacher.pdf"
+        },
+        {
+         "n": "24",
+         "title": "Applications of Systems of Equations and Inequalities",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-c-lesson-24-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "A-CED.A.3",
+        "A-CED.A.4",
+        "A-REI.A.1",
+        "A-REI.B.3",
+        "A-REI.C.5",
+        "A-REI.C.6",
+        "A-REI.D.10",
+        "A-REI.D.12"
+       ],
+       "notes": "Mostly linear equations, inequalities and systems (A-REI.3, 5, 6, 12): the solving is Grade 8 (m.8.multi-step-equations, m.8.systems-linear); the inequalities and compound inequalities are m.9.inequality-systems."
+      },
+      {
+       "n": "D",
+       "title": "Creating Equations to Solve Problems",
+       "skills": [
+        "m.9.linear-modeling",
+        "m.8.multi-step-equations"
+       ],
+       "lessons": [
+        {
+         "n": "25",
+         "title": "Solving Problems in Two Ways—Rates and Algebra",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-d-lesson-25-teacher.pdf"
+        },
+        {
+         "n": "26–27",
+         "title": "Recursive Challenge Problem—The Double and Add 5 Game",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-d-lesson-26-teacher.pdf"
+        },
+        {
+         "n": "28",
+         "title": "Federal Income Tax",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%201.zip/Module%201%2Falgebra-i-m1-teacher-materials%2Falgebra-i-m1-topic-d-lesson-28-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-Q.A.1",
+        "A-SSE.A.1",
+        "A-CED.A.1",
+        "A-CED.A.2",
+        "A-REI.B.3"
+       ],
+       "notes": "Creating linear equations from word problems (A-CED.1); the recursive 'double and add 5' game is sequence-like. Loose fit."
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Descriptive Statistics",
+     "course": "Algebra I",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-overview-and-assessments%2Falgebra-i-m2-module-overview.docx",
+     "skills": [
+      "m.6.center-spread",
+      "m.10.conditional-probability",
+      "m.9.regression"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Shapes and Centers of Distributions",
+       "skills": [
+        "m.6.center-spread"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Distributions and Their Shapes",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        },
+        {
+         "n": "2",
+         "title": "Describing the Center of a Distribution",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-a-lesson-2-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        },
+        {
+         "n": "3",
+         "title": "Estimating Centers and Interpreting the Mean as a Balance Point",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        }
+       ],
+       "standards": [
+        "S-ID.A.1",
+        "S-ID.A.2",
+        "S-ID.A.3"
+       ],
+       "notes": "Shape, center and spread of distributions (S-ID.1-3, dot plots, histograms, mean, median). No Grade 9 skill; the nearest is Grade 6 m.6.center-spread."
+      },
+      {
+       "n": "B",
+       "title": "Describing Variability and Comparing Distributions",
+       "skills": [
+        "m.6.center-spread"
+       ],
+       "lessons": [
+        {
+         "n": "4",
+         "title": "Summarizing Deviations from the Mean",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-b-lesson-4-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        },
+        {
+         "n": "5",
+         "title": "Measuring Variability for Symmetrical Distributions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-b-lesson-5-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        },
+        {
+         "n": "6",
+         "title": "Interpreting the Standard Deviation",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-b-lesson-6-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        },
+        {
+         "n": "7",
+         "title": "Measuring Variability for Skewed Distributions (Interquartile Range)",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "Comparing Distributions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-student-lessons%2Falgebra-i-m2-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.6.center-spread"
+         ]
+        }
+       ],
+       "standards": [
+        "S-ID.A.1",
+        "S-ID.A.2",
+        "S-ID.A.3"
+       ],
+       "notes": "Standard deviation and interquartile range (S-ID.2-3). No Grade 9 skill for standard deviation; nearest m.6.center-spread (spread) and later m.11.normal-distribution."
+      },
+      {
+       "n": "C",
+       "title": "Categorical Data on Two Variables",
+       "skills": [
+        "m.10.conditional-probability"
+       ],
+       "lessons": [
+        {
+         "n": "9",
+         "title": "Summarizing Bivariate Categorical Data",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-c-lesson-9-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        },
+        {
+         "n": "10",
+         "title": "Summarizing Bivariate Categorical Data with Relative Frequencies",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-c-lesson-10-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        },
+        {
+         "n": "11",
+         "title": "Conditional Relative Frequencies and Association",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-c-lesson-11-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        }
+       ],
+       "standards": [
+        "S-ID.B.5",
+        "S-ID.C.9"
+       ],
+       "notes": "Two-way frequency tables and conditional relative frequencies (S-ID.5). No Grade 9 skill; the nearest is m.10.conditional-probability, which uses the same tables."
+      },
+      {
+       "n": "D",
+       "title": "Numerical Data on Two Variables",
+       "skills": [
+        "m.9.regression"
+       ],
+       "lessons": [
+        {
+         "n": "12–13",
+         "title": "Relationships Between Two Numerical Variables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-d-lesson-12-teacher.pdf",
+         "skills": [
+          "m.9.regression"
+         ]
+        },
+        {
+         "n": "14",
+         "title": "Modeling Relationships with a Line",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-d-lesson-14-teacher.pdf",
+         "skills": [
+          "m.9.regression"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "Interpreting Residuals from a Line",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-d-lesson-15-teacher.pdf",
+         "skills": [
+          "m.9.regression"
+         ]
+        },
+        {
+         "n": "16",
+         "title": "More on Modeling Relationships with a Line",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-d-lesson-16-teacher.pdf",
+         "skills": [
+          "m.9.regression"
+         ]
+        },
+        {
+         "n": "17–18",
+         "title": "Analyzing Residuals",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-d-lesson-17-teacher.pdf",
+         "skills": [
+          "m.9.regression"
+         ]
+        },
+        {
+         "n": "19",
+         "title": "Interpreting Correlation",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-d-lesson-19-teacher.pdf",
+         "skills": [
+          "m.9.regression"
+         ]
+        },
+        {
+         "n": "20",
+         "title": "Analyzing Data Collected on Two Variables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%202.zip/Module%202%2Falgebra-i-m2-teacher-lessons%2Falgebra-i-m2-topic-d-lesson-20-teacher.pdf",
+         "skills": [
+          "m.9.regression"
+         ]
+        }
+       ],
+       "standards": [
+        "S-ID.B.6",
+        "S-ID.C.7",
+        "S-ID.C.8",
+        "S-ID.C.9"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Linear and Exponential Functions",
+     "course": "Algebra I",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-overview-and-assessments%2Falgebra-i-m3-module-overview.docx",
+     "skills": [
+      "m.9.sequences",
+      "m.9.exponential-functions",
+      "m.8.functions-intro",
+      "m.9.linear-modeling",
+      "m.9.absolute-value"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Linear and Exponential Sequences",
+       "skills": [
+        "m.9.sequences",
+        "m.9.exponential-functions"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Integer Sequences—Should You Believe in Patterns?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Recursive Formulas for Sequences",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "Arithmetic and Geometric Sequences",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4",
+         "title": "Why Do Banks Pay YOU to Provide Their Services?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-a-lesson-4-teacher.pdf"
+        },
+        {
+         "n": "5",
+         "title": "The Power of Exponential Growth",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-a-lesson-5-teacher.pdf"
+        },
+        {
+         "n": "6",
+         "title": "Exponential Growth—U.S. Population and World Population",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-a-lesson-6-teacher.pdf"
+        },
+        {
+         "n": "7",
+         "title": "Exponential Decay",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-a-lesson-7-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "F-IF.A.1",
+        "F-IF.A.2",
+        "F-IF.A.3",
+        "F-IF.B.6",
+        "F-BF.A.1a",
+        "F-LE.A.1",
+        "F-LE.A.2",
+        "F-LE.A.3"
+       ]
+      },
+      {
+       "n": "B",
+       "title": "Functions and Their Graphs",
+       "skills": [
+        "m.8.functions-intro",
+        "m.9.linear-modeling"
+       ],
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Why Stay with Whole Numbers?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-b-lesson-8-teacher.pdf"
+        },
+        {
+         "n": "9–10",
+         "title": "Representing, Naming, and Evaluating Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-b-lesson-9-teacher.pdf"
+        },
+        {
+         "n": "11",
+         "title": "The Graph of a Function",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-b-lesson-11-teacher.pdf"
+        },
+        {
+         "n": "12",
+         "title": "The Graph of the Equation y = f(x)",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-b-lesson-12-teacher.pdf"
+        },
+        {
+         "n": "13",
+         "title": "Interpreting the Graph of a Function",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-b-lesson-13-teacher.pdf"
+        },
+        {
+         "n": "14",
+         "title": "Linear and Exponential Models—Comparing Growth Rates",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-b-lesson-14-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "F-IF.A.1",
+        "F-IF.A.2",
+        "F-IF.B.4",
+        "F-IF.B.5",
+        "F-IF.C.7a"
+       ],
+       "notes": "Definition of a function, domain, notation and graphs (F-IF.1-2, 4-5, 7a): function basics are Grade 8 m.8.functions-intro; no Grade 9 skill covers function notation and domain."
+      },
+      {
+       "n": "C",
+       "title": "Transformations of Functions",
+       "skills": [
+        "m.9.absolute-value"
+       ],
+       "lessons": [
+        {
+         "n": "15",
+         "title": "Piecewise Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-c-lesson-15-teacher.pdf",
+         "skills": [
+          "m.9.absolute-value"
+         ]
+        },
+        {
+         "n": "16",
+         "title": "Graphs Can Solve Equations Too",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-c-lesson-16-teacher.pdf",
+         "skills": [
+          "m.9.absolute-value"
+         ]
+        },
+        {
+         "n": "17–20",
+         "title": "Four Interesting Transformations of Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-c-lesson-17-teacher.pdf",
+         "skills": [
+          "m.9.absolute-value"
+         ]
+        }
+       ],
+       "standards": [
+        "A-REI.D.11",
+        "F-IF.C.7a",
+        "F-BF.B.3"
+       ],
+       "notes": "Piecewise functions, graphs solving equations, and the four transformations (translations and stretches, F-BF.3), taught with the absolute value function: m.9.absolute-value. No 'function transformations' skill."
+      },
+      {
+       "n": "D",
+       "title": "Using Functions and Graphs to Solve Problems",
+       "skills": [
+        "m.9.exponential-functions",
+        "m.9.linear-modeling"
+       ],
+       "lessons": [
+        {
+         "n": "21",
+         "title": "Comparing Linear and Exponential Models Again",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-d-lesson-21-teacher.pdf"
+        },
+        {
+         "n": "22",
+         "title": "Modeling an Invasive Species Population",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-d-lesson-22-teacher.pdf"
+        },
+        {
+         "n": "23",
+         "title": "Newton’s Law of Cooling",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-d-lesson-23-teacher.pdf"
+        },
+        {
+         "n": "24",
+         "title": "Piecewise and Step Functions in Context",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%203.zip/Module%203%2Falgebra-i-m3-teacher-materials%2Falgebra-i-m3-topic-d-lesson-24-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "A-CED.A.1",
+        "A-SSE.B.3c",
+        "F-IF.B.4",
+        "F-IF.B.6",
+        "F-IF.C.9",
+        "F-BF.A.1a",
+        "F-LE.A.2",
+        "F-LE.B.5"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Polynomial and Quadratic Expressions, Equations, and Functions",
+     "course": "Algebra I",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-overview-and-assessments%2Falgebra-i-m4-module-overview.docx",
+     "skills": [
+      "m.9.factoring",
+      "m.9.quadratic-functions",
+      "m.9.quadratic-formula"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Quadratic Expressions, Equations, Functions, and Their Connection to Rectangles",
+       "skills": [
+        "m.9.factoring",
+        "m.9.quadratic-functions"
+       ],
+       "lessons": [
+        {
+         "n": "1–2",
+         "title": "Multiplying and Factoring Polynomial Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "3–4",
+         "title": "Advanced Factoring Strategies for Quadratic Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "5",
+         "title": "The Zero Product Property",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-a-lesson-5-teacher.pdf"
+        },
+        {
+         "n": "6",
+         "title": "Solving Basic One-Variable Quadratic Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-a-lesson-6-teacher.pdf"
+        },
+        {
+         "n": "7",
+         "title": "Creating and Solving Quadratic Equations in One Variable",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-a-lesson-7-teacher.pdf"
+        },
+        {
+         "n": "8",
+         "title": "Exploring the Symmetry in Graphs of Quadratic Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-a-lesson-8-teacher.pdf"
+        },
+        {
+         "n": "9",
+         "title": "Graphing Quadratic Functions from Factored Form, f(x) = a(x − m)(x − n)",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-a-lesson-9-teacher.pdf"
+        },
+        {
+         "n": "10",
+         "title": "Interpreting Quadratic Functions from Graphs and Tables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-student-materials%2Falgebra-i-m4-topic-a-lesson-10-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "A-SSE.A.1",
+        "A-SSE.A.2",
+        "A-SSE.B.3a",
+        "A-APR.A.1",
+        "A-CED.A.1",
+        "A-CED.A.2",
+        "A-REI.B.4b",
+        "A-REI.D.11",
+        "F-IF.B.4",
+        "F-IF.B.5",
+        "F-IF.B.6",
+        "F-IF.C.7a"
+       ]
+      },
+      {
+       "n": "B",
+       "title": "Using Different Forms for Quadratic Functions",
+       "skills": [
+        "m.9.quadratic-formula",
+        "m.9.quadratic-functions"
+       ],
+       "lessons": [
+        {
+         "n": "11–12",
+         "title": "Completing the Square",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-b-lesson-11-teacher.pdf"
+        },
+        {
+         "n": "13",
+         "title": "Solving Quadratic Equations by Completing the Square",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-b-lesson-13-teacher.pdf"
+        },
+        {
+         "n": "14",
+         "title": "Deriving the Quadratic Formula",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-b-lesson-14-teacher.pdf"
+        },
+        {
+         "n": "15",
+         "title": "Using the Quadratic Formula",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-b-lesson-15-teacher.pdf"
+        },
+        {
+         "n": "16",
+         "title": "Graphing Quadratic Equations from the Vertex Form, y = a(x − h)² + k",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-b-lesson-16-teacher.pdf"
+        },
+        {
+         "n": "17",
+         "title": "Graphing Quadratic Functions from the Standard Form, f(x) = ax² + bx + c",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-b-lesson-17-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-RN.B.3",
+        "A-SSE.A.1",
+        "A-SSE.A.2",
+        "A-SSE.B.3a",
+        "A-SSE.B.3b",
+        "A-APR.B.3",
+        "A-CED.A.1",
+        "A-CED.A.2",
+        "A-REI.B.4",
+        "F-IF.B.4",
+        "F-IF.B.6",
+        "F-IF.C.7a",
+        "F-IF.C.8a"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Function Transformations and Modeling",
+       "skills": [
+        "m.9.quadratic-functions"
+       ],
+       "lessons": [
+        {
+         "n": "18",
+         "title": "Graphing Cubic, Square Root, and Cube Root Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-c-lesson-18-teacher.pdf",
+         "skills": [
+          "m.9.quadratic-functions"
+         ]
+        },
+        {
+         "n": "19",
+         "title": "Translating Graphs of Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-c-lesson-19-teacher.pdf",
+         "skills": [
+          "m.9.quadratic-functions"
+         ]
+        },
+        {
+         "n": "20",
+         "title": "Stretching and Shrinking Graphs of Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-c-lesson-20-teacher.pdf",
+         "skills": [
+          "m.9.quadratic-functions"
+         ]
+        },
+        {
+         "n": "21",
+         "title": "Transformations of the Quadratic Parent Function, f(x) = x²",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-c-lesson-21-teacher.pdf",
+         "skills": [
+          "m.9.quadratic-functions"
+         ]
+        },
+        {
+         "n": "22",
+         "title": "Comparing Quadratic, Square Root, and Cube Root Functions Represented in Different Ways",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-c-lesson-22-teacher.pdf",
+         "skills": [
+          "m.9.quadratic-functions"
+         ]
+        },
+        {
+         "n": "23–24",
+         "title": "Modeling with Quadratic Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%204.zip/Module%204%2Falgebra-i-m4-teacher-materials%2Falgebra-i-m4-topic-c-lesson-23-teacher.pdf",
+         "skills": [
+          "m.9.quadratic-functions"
+         ]
+        }
+       ],
+       "standards": [
+        "A.CED.A.2",
+        "F-IF.B.6",
+        "F-IF.C.7b",
+        "F-IF.C.8a",
+        "F-IF.C.9",
+        "F-BF.B.3"
+       ],
+       "notes": "Cubic, square-root and cube-root function graphs and transformations (F-IF.7b, F-BF.3); modeling with quadratics. Only the quadratic transformations fit m.9.quadratic-functions; no skill for square-root and cube-root functions."
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "A Synthesis of Modeling with Equations and Functions",
+     "course": "Algebra I",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-overview-and-assessments%2Falgebra-i-m5-module-overview.docx",
+     "skills": [
+      "m.9.linear-modeling",
+      "m.9.exponential-functions",
+      "m.9.quadratic-functions"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Elements of Modeling",
+       "skills": [
+        "m.9.linear-modeling",
+        "m.9.exponential-functions",
+        "m.9.quadratic-functions"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Analyzing a Graph",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-teacher-materials%2Falgebra-i-m5-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Analyzing a Data Set",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-teacher-materials%2Falgebra-i-m5-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "Analyzing a Verbal Description",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-teacher-materials%2Falgebra-i-m5-topic-a-lesson-3-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-Q.A.2",
+        "A-CED.A.2",
+        "F-IF.B.4",
+        "F-IF.B.5",
+        "F-BF.A.1a",
+        "F-LE.A.1b",
+        "F-LE.A.1c",
+        "F-LE.A.2"
+       ],
+       "notes": "Modeling with linear, quadratic and exponential functions from graphs, data and descriptions; each skill covers one function family."
+      },
+      {
+       "n": "B",
+       "title": "Completing the Modeling Cycle",
+       "skills": [
+        "m.9.linear-modeling",
+        "m.9.exponential-functions",
+        "m.9.quadratic-functions"
+       ],
+       "lessons": [
+        {
+         "n": "4",
+         "title": "Modeling a Context from a Graph",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-student-materials%2Falgebra-i-m5-topic-b-lesson-4-student.pdf"
+        },
+        {
+         "n": "5",
+         "title": "Modeling from a Sequence",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-student-materials%2Falgebra-i-m5-topic-b-lesson-5-teacher.pdf"
+        },
+        {
+         "n": "6–7",
+         "title": "Modeling a Context from Data",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-teacher-materials%2Falgebra-i-m5-topic-b-lesson-6-teacher.pdf"
+        },
+        {
+         "n": "8–9",
+         "title": "Modeling a Context from a Verbal Description",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20I%20Module%205.zip/Module%205%2Falgebra-i-m5-teacher-materials%2Falgebra-i-m5-topic-b-lesson-8-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-Q.A.2",
+        "N-Q.A.3",
+        "A-CED.A.1",
+        "A-CED.A.2",
+        "F-IF.B.4",
+        "F-IF.B.5",
+        "F-IF.B.6",
+        "F-BF.A.1a",
+        "F-LE.A.1b",
+        "F-LE.A.1c",
+        "F-LE.A.2"
+       ],
+       "notes": "Modeling with linear, quadratic and exponential functions from graphs, data and descriptions; each skill covers one function family."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "10",
+   "course": "Geometry",
+   "units": [
+    {
+     "n": "1",
+     "title": "Congruence, Proof, and Constructions",
+     "course": "Geometry",
+     "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-module-overview-and-assessments%2Fgeometry-m1-module-overview.docx",
+     "skills": [
+      "m.10.constructions",
+      "m.10.proofs",
+      "m.7.angle-relationships",
+      "m.10.congruence",
+      "m.8.transformations"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Basic Constructions",
+       "skills": [
+        "m.10.constructions"
+       ],
+       "lessons": [
+        {
+         "n": "1–2",
+         "title": "Construct an Equilateral Triangle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.10.constructions"
+         ]
+        },
+        {
+         "n": "3",
+         "title": "Copy and Bisect an Angle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.10.constructions"
+         ]
+        },
+        {
+         "n": "4",
+         "title": "Construct a Perpendicular Bisector",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-a-lesson-4-teacher.pdf",
+         "skills": [
+          "m.10.constructions"
+         ]
+        },
+        {
+         "n": "5",
+         "title": "Points of Concurrencies",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-a-lesson-5-teacher.pdf",
+         "skills": [
+          "m.10.constructions"
+         ]
+        }
+       ],
+       "standards": [
+        "G-CO.A.1",
+        "G-CO.D.12",
+        "G-CO.D.13"
+       ]
+      },
+      {
+       "n": "B",
+       "title": "Unknown Angles",
+       "skills": [
+        "m.10.proofs",
+        "m.7.angle-relationships"
+       ],
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Solve for Unknown Angles—Angles and Lines at a Point",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-b-lesson-6-teacher.pdf"
+        },
+        {
+         "n": "7",
+         "title": "Solve for Unknown Angles—Transversals",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-student-materials%2Fgeometry-m1-topic-b-lesson-7-teacher.pdf"
+        },
+        {
+         "n": "8",
+         "title": "Solve for Unknown Angles—Angles in a Triangle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-b-lesson-8-teacher.pdf"
+        },
+        {
+         "n": "9",
+         "title": "Unknown Angle Proofs—Writing Proofs",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-b-lesson-9-teacher.pdf"
+        },
+        {
+         "n": "10",
+         "title": "Unknown Angle Proofs—Proofs with Constructions",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-b-lesson-10-teacher.pdf"
+        },
+        {
+         "n": "11",
+         "title": "Unknown Angle Proofs—Proofs of Known Facts",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-b-lesson-11-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "G-CO.C.9"
+       ],
+       "notes": "Unknown-angle problems (Grade 7 m.7.angle-relationships) then the first proofs (m.10.proofs)."
+      },
+      {
+       "n": "C",
+       "title": "Transformations/Rigid Motions",
+       "skills": [
+        "m.10.congruence",
+        "m.8.transformations"
+       ],
+       "lessons": [
+        {
+         "n": "12",
+         "title": "Transformations—The Next Level",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-12-teacher.pdf"
+        },
+        {
+         "n": "13",
+         "title": "Rotations",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-13-teacher.pdf"
+        },
+        {
+         "n": "14",
+         "title": "Reflections",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-14-teacher.pdf"
+        },
+        {
+         "n": "15",
+         "title": "Rotations, Reflections, and Symmetry",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-15-teacher.pdf"
+        },
+        {
+         "n": "16",
+         "title": "Translations",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-16-teacher.pdf"
+        },
+        {
+         "n": "17",
+         "title": "Characterize Points on a Perpendicular Bisector",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-17-teacher.pdf"
+        },
+        {
+         "n": "18",
+         "title": "Looking More Carefully at Parallel Lines",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-18-teacher.pdf"
+        },
+        {
+         "n": "19",
+         "title": "Construct and Apply a Sequence of Rigid Motions",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-student-materials%2Fgeometry-m1-topic-c-lesson-19-student.pdf"
+        },
+        {
+         "n": "20",
+         "title": "Applications of Congruence in Terms of Rigid Motions",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-20-teacher.pdf"
+        },
+        {
+         "n": "21",
+         "title": "Correspondence and Transformations",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-c-lesson-21-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "G-CO.A.2",
+        "G-CO.A.3",
+        "G-CO.A.4",
+        "G-CO.A.5",
+        "G-CO.B.6",
+        "G-CO.B.7",
+        "G-CO.D.12"
+       ],
+       "notes": "Rigid motions defined precisely (rotations, reflections, translations: Grade 8 m.8.transformations) and congruence in terms of rigid motions (m.10.congruence)."
+      },
+      {
+       "n": "D",
+       "title": "Congruence",
+       "skills": [
+        "m.10.congruence"
+       ],
+       "lessons": [
+        {
+         "n": "22",
+         "title": "Congruence Criteria for Triangles—SAS",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-d-lesson-22-teacher.pdf",
+         "skills": [
+          "m.10.congruence"
+         ]
+        },
+        {
+         "n": "23",
+         "title": "Base Angles of Isosceles Triangles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-d-lesson-23-teacher.pdf",
+         "skills": [
+          "m.10.congruence"
+         ]
+        },
+        {
+         "n": "24",
+         "title": "Congruence Criteria for Triangles—ASA and SSS",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-d-lesson-24-teacher.pdf",
+         "skills": [
+          "m.10.congruence"
+         ]
+        },
+        {
+         "n": "25",
+         "title": "Congruence Criteria for Triangles—AAS and HL",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-d-lesson-25-teacher.pdf",
+         "skills": [
+          "m.10.congruence"
+         ]
+        },
+        {
+         "n": "26–27",
+         "title": "Triangle Congruency Proofs",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-d-lesson-26-teacher.pdf",
+         "skills": [
+          "m.10.congruence"
+         ]
+        }
+       ],
+       "standards": [
+        "G-CO.B.7",
+        "G-CO.B.8"
+       ]
+      },
+      {
+       "n": "E",
+       "title": "Proving Properties of Geometric Figures",
+       "skills": [
+        "m.10.proofs"
+       ],
+       "lessons": [
+        {
+         "n": "28",
+         "title": "Properties of Parallelograms",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-e-lesson-28-teacher.pdf",
+         "skills": [
+          "m.10.proofs"
+         ]
+        },
+        {
+         "n": "29–30",
+         "title": "Special Lines in Triangles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-e-lesson-29-teacher.pdf",
+         "skills": [
+          "m.10.proofs"
+         ]
+        }
+       ],
+       "standards": [
+        "G-CO.C.9",
+        "G-CO.C.10",
+        "G-CO.C.11"
+       ]
+      },
+      {
+       "n": "F",
+       "title": "Advanced Constructions",
+       "skills": [
+        "m.10.constructions"
+       ],
+       "lessons": [
+        {
+         "n": "31",
+         "title": "Construct a Square and a Nine-Point Circle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-f-lesson-31-teacher.pdf",
+         "skills": [
+          "m.10.constructions"
+         ]
+        },
+        {
+         "n": "32",
+         "title": "Construct a Nine-Point Circle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-f-lesson-32-teacher.pdf",
+         "skills": [
+          "m.10.constructions"
+         ]
+        }
+       ],
+       "standards": [
+        "G-CO.D.13"
+       ]
+      },
+      {
+       "n": "G",
+       "title": "Axiomatic Systems",
+       "skills": [
+        "m.10.proofs"
+       ],
+       "lessons": [
+        {
+         "n": "33–34",
+         "title": "Review of the Assumptions",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%201.zip/Module%201%2Fgeometry-m1-teacher-materials%2Fgeometry-m1-topic-g-lesson-33-teacher.pdf",
+         "skills": [
+          "m.10.proofs"
+         ]
+        }
+       ],
+       "standards": [
+        "G-CO.A.1",
+        "G-CO.A.2",
+        "G-CO.A.3",
+        "G-CO.A.4",
+        "G-CO.A.5",
+        "G-CO.B.6",
+        "G-CO.B.7",
+        "G-CO.B.8",
+        "G-CO.C.9",
+        "G-CO.C.10",
+        "G-CO.C.11",
+        "G-CO.C.12",
+        "G-CO.C.13"
+       ],
+       "notes": "Review of the assumptions (axioms) used in the module; m.10.proofs is the nearest skill."
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Similarity, Proof, and Trigonometry",
+     "course": "Geometry",
+     "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-overview-and-assessments%2Fgeometry-m2-module-overview.docx",
+     "skills": [
+      "m.10.similarity",
+      "m.7.scale-drawings",
+      "m.9.radicals",
+      "m.10.right-triangle-trig",
+      "m.10.special-right-triangles",
+      "m.12.law-sines-cosines"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Scale Drawings",
+       "skills": [
+        "m.10.similarity",
+        "m.7.scale-drawings"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Scale Drawings",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Making Scale Drawings Using the Ratio Method",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "Making Scale Drawings Using the Parallel Method",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4",
+         "title": "Comparing the Ratio Method with the Parallel Method",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-a-lesson-4-teacher.pdf"
+        },
+        {
+         "n": "5",
+         "title": "Scale Factors",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-a-lesson-5-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "G-SRT.A.1",
+        "G-SRT.B.4",
+        "G-MG.A.3"
+       ],
+       "notes": "Scale drawings by the ratio and parallel methods; Grade 7 m.7.scale-drawings extended to m.10.similarity."
+      },
+      {
+       "n": "B",
+       "title": "Dilations",
+       "skills": [
+        "m.10.similarity"
+       ],
+       "lessons": [
+        {
+         "n": "6",
+         "title": "Dilations as Transformations of the Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-student-materials%2Fgeometry-m2-topic-b-lesson-6-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "7",
+         "title": "How Do Dilations Map Segments?",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "How Do Dilations Map Lines, Rays, and Circles?",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "9",
+         "title": "How Do Dilations Map Angles?",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-b-lesson-9-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "10",
+         "title": "Dividing the King’s Foot into 12 Equal Pieces",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-b-lesson-10-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "11",
+         "title": "Dilations from Different Centers",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-b-lesson-11-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        }
+       ],
+       "standards": [
+        "G-SRT.A.1",
+        "G-SRT.B.4"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Similarity and Dilations",
+       "skills": [
+        "m.10.similarity"
+       ],
+       "lessons": [
+        {
+         "n": "12",
+         "title": "What Are Similarity Transformations, and Why Do We Need Them?",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-12-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "Properties of Similarity Transformations",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-13-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "14",
+         "title": "Similarity",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-14-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "The Angle-Angle (AA) Criterion for Two Triangles to Be Similar",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-15-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "16",
+         "title": "Between-Figure and Within-Figure Ratios",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-16-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "17",
+         "title": "The Side-Angle-Side (SAS) and Side-Side-Side (SSS) Criteria for Two Triangles to Be Similar",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-17-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "18",
+         "title": "Similarity and the Angle Bisector Theorem",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-18-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "19",
+         "title": "Families of Parallel Lines and the Circumference of the Earth",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-19-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        },
+        {
+         "n": "20",
+         "title": "How Far Away Is the Moon?",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-c-lesson-20-teacher.pdf",
+         "skills": [
+          "m.10.similarity"
+         ]
+        }
+       ],
+       "standards": [
+        "G-SRT.A.2",
+        "G-SRT.A.3",
+        "G-SRT.B.5",
+        "G-MG.A.1"
+       ]
+      },
+      {
+       "n": "D",
+       "title": "Applying Similarity to Right Triangles",
+       "skills": [
+        "m.10.similarity",
+        "m.9.radicals"
+       ],
+       "lessons": [
+        {
+         "n": "21",
+         "title": "Special Relationships Within Right Triangles—Dividing into Two Similar Sub-Triangles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-d-lesson-21-teacher.pdf"
+        },
+        {
+         "n": "22",
+         "title": "Multiplying and Dividing Expressions with Radicals",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-d-lesson-22-teacher.pdf"
+        },
+        {
+         "n": "23",
+         "title": "Adding and Subtracting Expressions with Radicals",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-d-lesson-23-teacher.pdf"
+        },
+        {
+         "n": "24",
+         "title": "Prove the Pythagorean Theorem Using Similarity",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-d-lesson-24-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "G-SRT.B.4"
+       ],
+       "notes": "Similar sub-triangles of a right triangle and the geometric mean (m.10.similarity); Lessons 22-23 are operations with radicals (m.9.radicals)."
+      },
+      {
+       "n": "E",
+       "title": "Trigonometry",
+       "skills": [
+        "m.10.right-triangle-trig",
+        "m.10.special-right-triangles",
+        "m.12.law-sines-cosines"
+       ],
+       "lessons": [
+        {
+         "n": "25",
+         "title": "Incredibly Useful Ratios",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-25-teacher.pdf"
+        },
+        {
+         "n": "26",
+         "title": "The Definition of Sine, Cosine, and Tangent",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-26-teacher.pdf"
+        },
+        {
+         "n": "27",
+         "title": "Sine and Cosine of Complementary Angles and Special Angles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-27-teacher.pdf"
+        },
+        {
+         "n": "28",
+         "title": "Solving Problems Using Sine and Cosine",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-28-teacher.pdf"
+        },
+        {
+         "n": "29",
+         "title": "Applying Tangents",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-29-teacher.pdf"
+        },
+        {
+         "n": "30",
+         "title": "Trigonometry and the Pythagorean Theorem",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-30-teacher.pdf"
+        },
+        {
+         "n": "31",
+         "title": "Using Trigonometry to Determine Area",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-31-teacher.pdf"
+        },
+        {
+         "n": "32",
+         "title": "Using Trigonometry to Find Side Lengths of an Acute Triangle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-32-teacher.pdf"
+        },
+        {
+         "n": "33",
+         "title": "Applying the Laws of Sines and Cosines",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-33-teacher.pdf"
+        },
+        {
+         "n": "34",
+         "title": "Unknown Angles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%202.zip/Module%202%2Fgeometry-m2-teacher-materials%2Fgeometry-m2-topic-e-lesson-34-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "G-SRT.C.6",
+        "G-SRT.C.7",
+        "G-SRT.C.8"
+       ],
+       "notes": "Sine, cosine, tangent (m.10.right-triangle-trig); Lesson 27 special angles (m.10.special-right-triangles); Lessons 31-34 area formula, laws of sines and cosines (m.12.law-sines-cosines)."
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Extending to Three Dimensions",
+     "course": "Geometry",
+     "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-overview-and-assessments%2Fgeometry-m3-module-overview.docx",
+     "skills": [
+      "m.10.volume-derivations"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Area",
+       "skills": [
+        "m.10.volume-derivations"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "What Is Area?",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "2",
+         "title": "Properties of Area",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-a-lesson-2-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "3",
+         "title": "The Scaling Principle for Area",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "4",
+         "title": "Proving the Area of a Disk",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-a-lesson-4-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        }
+       ],
+       "standards": [
+        "G-GMD.A.1"
+       ],
+       "notes": "Area axioms, the scaling principle and the area of a disk (G-GMD.1): the area half of m.10.volume-derivations."
+      },
+      {
+       "n": "B",
+       "title": "Volume",
+       "skills": [
+        "m.10.volume-derivations"
+       ],
+       "lessons": [
+        {
+         "n": "5",
+         "title": "Three-Dimensional Space",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-5-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "6",
+         "title": "General Prisms and Cylinders and Their Cross-Sections",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-6-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "7",
+         "title": "General Pyramids and Cones and Their Cross-Sections",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "Definition and Properties of Volume",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "9",
+         "title": "Scaling Principle for Volumes",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-student-materials%2Fgeometry-m3-topic-b-lesson-9-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "10",
+         "title": "The Volume of Prisms and Cylinders and Cavalieri’s Principle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-10-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "11",
+         "title": "The Volume Formula of a Pyramid and Cone",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-11-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "12",
+         "title": "The Volume Formula of a Sphere",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-12-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "How Do 3D Printers Work?",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%203.zip/Module%203%2Fgeometry-m3-teacher-materials%2Fgeometry-m3-topic-b-lesson-13-teacher.pdf",
+         "skills": [
+          "m.10.volume-derivations"
+         ]
+        }
+       ],
+       "standards": [
+        "G-GMD.A.1",
+        "G-GMD.A.3",
+        "G-GMD.B.4",
+        "G-MG.A.1",
+        "G-MG.A.2",
+        "G-MG.A.3"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Connecting Algebra and Geometry Through Coordinates",
+     "course": "Geometry",
+     "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-module-overview-and-assessments%2Fgeometry-m4-module-overview.docx",
+     "skills": [
+      "m.10.coordinate-geometry",
+      "m.9.inequality-systems"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Rectangular and Triangular Regions Defined by Inequalities",
+       "skills": [
+        "m.10.coordinate-geometry",
+        "m.9.inequality-systems"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Searching a Region in the Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Finding Systems of Inequalities That Describe Triangular and Rectangular Regions",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "Lines That Pass Through Regions",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4",
+         "title": "Designing a Search Robot to Find a Beacon",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-student-materials%2Fgeometry-m4-topic-a-lesson-4-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "G-GPE.B.7"
+       ],
+       "notes": "Rectangular and triangular regions described by systems of inequalities (G-GPE.7): m.9.inequality-systems for the systems, m.10.coordinate-geometry for the regions."
+      },
+      {
+       "n": "B",
+       "title": "Perpendicular and Parallel Lines in the Cartesian Plane",
+       "skills": [
+        "m.10.coordinate-geometry"
+       ],
+       "lessons": [
+        {
+         "n": "5",
+         "title": "Criterion for Perpendicularity",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-b-lesson-5-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "6",
+         "title": "Segments That Meet at Right Angles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-student-materials%2Fgeometry-m4-topic-b-lesson-6-student.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "7",
+         "title": "Equations for Lines Using Normal Segments",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "Parallel and Perpendicular Lines",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        }
+       ],
+       "standards": [
+        "G-GPE.B.4",
+        "G-GPE.B.5"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Perimeters and Areas of Polygonal Regions in the Cartesian Plane",
+       "skills": [
+        "m.10.coordinate-geometry"
+       ],
+       "lessons": [
+        {
+         "n": "9",
+         "title": "Perimeter and Area of Triangles in the Cartesian Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-c-lesson-9-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "10",
+         "title": "Perimeter and Area of Polygonal Regions in the Cartesian Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-c-lesson-10-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "11",
+         "title": "Perimeters and Areas of Polygonal Regions Defined by Systems of Inequalities",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-c-lesson-11-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        }
+       ],
+       "standards": [
+        "G-GPE.B.7"
+       ]
+      },
+      {
+       "n": "D",
+       "title": "Partitioning and Extending Segments and Parameterization of Lines",
+       "skills": [
+        "m.10.coordinate-geometry"
+       ],
+       "lessons": [
+        {
+         "n": "12",
+         "title": "Dividing Segments Proportionately",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-d-lesson-12-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "Analytic Proofs of Theorems Previously Proved by Synthetic Means",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-d-lesson-13-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "14",
+         "title": "Motion Along a Line—Search Robots Again (Optional)",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-d-lesson-14-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "The Distance from a Point to a Line",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%204.zip/Module%204%2Fgeometry-m4-teacher-materials%2Fgeometry-m4-topic-d-lesson-15-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        }
+       ],
+       "standards": [
+        "G-GPE.B.4",
+        "G-GPE.B.6"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Circles With and Without Coordinates",
+     "course": "Geometry",
+     "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-overview-and-assessments%2Fgeometry-m5-module-overview.docx",
+     "skills": [
+      "m.10.circle-theorems",
+      "m.10.arc-sector",
+      "m.10.coordinate-geometry"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Central and Inscribed Angles",
+       "skills": [
+        "m.10.circle-theorems"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Thales’ Theorem",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "2",
+         "title": "Circles, Chords, Diameters, and Their Relationships",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-a-lesson-2-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "3",
+         "title": "Rectangles Inscribed in Circles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "4",
+         "title": "Experiments with Inscribed Angles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-a-lesson-4-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "5",
+         "title": "Inscribed Angle Theorem and Its Applications",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-a-lesson-5-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "6",
+         "title": "Unknown Angle Problems with Inscribed Angles in Circles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-a-lesson-6-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        }
+       ],
+       "standards": [
+        "G-C.A.2",
+        "G-C.A.3"
+       ]
+      },
+      {
+       "n": "B",
+       "title": "Arcs and Sectors",
+       "skills": [
+        "m.10.arc-sector",
+        "m.10.circle-theorems"
+       ],
+       "lessons": [
+        {
+         "n": "7",
+         "title": "The Angle Measure of an Arc",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-b-lesson-7-teacher.pdf"
+        },
+        {
+         "n": "8",
+         "title": "Arcs and Chords",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-b-lesson-8-teacher.pdf"
+        },
+        {
+         "n": "9",
+         "title": "Arc Length and Areas of Sectors",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-b-lesson-9-teacher.pdf"
+        },
+        {
+         "n": "10",
+         "title": "Unknown Length and Area Problems",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-b-lesson-10-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "G-C.A.1",
+        "G-C.A.2",
+        "G-C.B.5"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Secants and Tangents",
+       "skills": [
+        "m.10.circle-theorems"
+       ],
+       "lessons": [
+        {
+         "n": "11",
+         "title": "Properties of Tangents",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-c-lesson-11-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "12",
+         "title": "Tangent Segments",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-c-lesson-12-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "The Inscribed Angle Alternate—A Tangent Angle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-c-lesson-13-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "14",
+         "title": "Secant Lines; Secant Lines That Meet Inside a Circle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-c-lesson-14-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "Secant Angle Theorem, Exterior Case",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-c-lesson-15-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "16",
+         "title": "Similar Triangles in Circle-Secant (or Circle-Secant-Tangent) Diagrams",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-c-lesson-16-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        }
+       ],
+       "standards": [
+        "G-C.A.2",
+        "G-C.A.3"
+       ]
+      },
+      {
+       "n": "D",
+       "title": "Equations for Circles and Their Tangents",
+       "skills": [
+        "m.10.coordinate-geometry"
+       ],
+       "lessons": [
+        {
+         "n": "17",
+         "title": "Writing the Equation for a Circle",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-d-lesson-17-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "18",
+         "title": "Recognizing Equations of Circles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-d-lesson-18-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        },
+        {
+         "n": "19",
+         "title": "Equations for Tangent Lines to Circles",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-d-lesson-19-teacher.pdf",
+         "skills": [
+          "m.10.coordinate-geometry"
+         ]
+        }
+       ],
+       "standards": [
+        "G-GPE.A.1",
+        "G-GPE.B.4"
+       ],
+       "notes": "Equations of circles and their tangents (G-GPE.1, 4). No skill for the equation of a circle; m.10.coordinate-geometry is the nearest (m.12.conics is the other candidate)."
+      },
+      {
+       "n": "E",
+       "title": "Cyclic Quadrilaterals and Ptolemy’s Theorem",
+       "skills": [
+        "m.10.circle-theorems"
+       ],
+       "lessons": [
+        {
+         "n": "20",
+         "title": "Cyclic Quadrilaterals",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-e-lesson-20-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        },
+        {
+         "n": "21",
+         "title": "Ptolemy’s Theorem",
+         "url": "https://archive.org/download/engageny-mathematics/Geometry%20Module%205.zip/Module%205%2Fgeometry-m5-teacher-materials%2Fgeometry-m5-topic-e-lesson-21-teacher.pdf",
+         "skills": [
+          "m.10.circle-theorems"
+         ]
+        }
+       ],
+       "standards": [
+        "G-C.A.3"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "11",
+   "course": "Algebra II",
+   "units": [
+    {
+     "n": "1",
+     "title": "Polynomial, Rational, and Radical Relationships",
+     "course": "Algebra II",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-overview-and-assessments%2Falgebra-ii-m1-module-overview.docx",
+     "skills": [
+      "m.11.polynomial-functions",
+      "m.9.radicals",
+      "m.11.rational-functions",
+      "m.12.conics",
+      "m.11.complex-numbers"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Polynomials—From Base Ten to Base X",
+       "skills": [
+        "m.11.polynomial-functions",
+        "m.9.radicals"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Successive Differences in Polynomials",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "The Multiplication of Polynomials",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "The Division of Polynomials",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4",
+         "title": "Comparing Methods—Long Division, Again?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-4-teacher.pdf"
+        },
+        {
+         "n": "5",
+         "title": "Putting It All Together",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-5-teacher.pdf"
+        },
+        {
+         "n": "6",
+         "title": "Dividing by x − a and by x + a",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-6-teacher.pdf"
+        },
+        {
+         "n": "7",
+         "title": "Mental Math",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-7-teacher.pdf"
+        },
+        {
+         "n": "8",
+         "title": "The Power of Algebra—Finding Primes",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-8-teacher.pdf"
+        },
+        {
+         "n": "9",
+         "title": "Radicals and Conjugates",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-9-teacher.pdf"
+        },
+        {
+         "n": "10",
+         "title": "The Power of Algebra—Finding Pythagorean Triples",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-student-materials%2Falgebra-ii-m1-topic-a-lesson-10-teacher.pdf"
+        },
+        {
+         "n": "11",
+         "title": "The Special Role of Zero in Factoring",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-a-lesson-11-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "A-SSE.A.2",
+        "A-APR.C.4"
+       ],
+       "notes": "Polynomial multiplication and division, the factor x - a (m.11.polynomial-functions); Lesson 9 radicals and conjugates (m.9.radicals)."
+      },
+      {
+       "n": "B",
+       "title": "Factoring—Its Use and Its Obstacles",
+       "skills": [
+        "m.11.polynomial-functions"
+       ],
+       "lessons": [
+        {
+         "n": "12",
+         "title": "Overcoming Obstacles in Factoring",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-12-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "Mastering Factoring",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-13-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        },
+        {
+         "n": "14",
+         "title": "Graphing Factored Polynomials",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-14-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "Structure in Graphs of Polynomial Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-15-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        },
+        {
+         "n": "16–17",
+         "title": "Modeling with Polynomials—An Introduction",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-16-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        },
+        {
+         "n": "18",
+         "title": "Overcoming a Second Obstacle in Factoring—What If There Is a Remainder?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-18-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        },
+        {
+         "n": "19",
+         "title": "The Remainder Theorem",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-19-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        },
+        {
+         "n": "20–21",
+         "title": "Modeling Riverbeds with Polynomials",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-b-lesson-20-teacher.pdf",
+         "skills": [
+          "m.11.polynomial-functions"
+         ]
+        }
+       ],
+       "standards": [
+        "N-Q.A.2",
+        "A-SSE.A.2",
+        "A-APR.B.2",
+        "A-APR.B.3",
+        "A-APR.D.6",
+        "F-IF.C.7c"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Solving and Applying Equations—Polynomial, Rational, and Radical",
+       "skills": [
+        "m.11.rational-functions",
+        "m.9.radicals",
+        "m.12.conics"
+       ],
+       "lessons": [
+        {
+         "n": "22",
+         "title": "Equivalent Rational Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-22-teacher.pdf"
+        },
+        {
+         "n": "23",
+         "title": "Comparing Rational Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-23-teacher.pdf"
+        },
+        {
+         "n": "24",
+         "title": "Multiplying and Dividing Rational Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-24-teacher.pdf"
+        },
+        {
+         "n": "25",
+         "title": "Adding and Subtracting Rational Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-25-teacher.pdf"
+        },
+        {
+         "n": "26",
+         "title": "Solving Rational Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-26-teacher.pdf"
+        },
+        {
+         "n": "27",
+         "title": "Word Problems Leading to Rational Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-27-teacher.pdf"
+        },
+        {
+         "n": "28",
+         "title": "A Focus on Square Roots",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-28-teacher.pdf"
+        },
+        {
+         "n": "29",
+         "title": "Solving Radical Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-29-teacher.pdf"
+        },
+        {
+         "n": "30",
+         "title": "Linear Systems in Three Variables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-30-teacher.pdf"
+        },
+        {
+         "n": "31",
+         "title": "Systems of Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-31-teacher.pdf"
+        },
+        {
+         "n": "32",
+         "title": "Graphing Systems of Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-32-teacher.pdf"
+        },
+        {
+         "n": "33",
+         "title": "The Definition of a Parabola",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-33-teacher.pdf"
+        },
+        {
+         "n": "34",
+         "title": "Are All Parabolas Congruent?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-34-teacher.pdf"
+        },
+        {
+         "n": "35",
+         "title": "Are All Parabolas Similar?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-c-lesson-35-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "A-APR.D.6",
+        "A-REI.A.1",
+        "A-REI.A.2",
+        "A-REI.B.4b",
+        "A-REI.C.6",
+        "A-REI.C.7",
+        "G-GPE.A.2"
+       ],
+       "notes": "Rational expressions and equations (m.11.rational-functions), radical equations (m.9.radicals), three-variable and nonlinear systems, and the parabola as a locus (Lessons 33-35: m.12.conics). No skill for three-variable systems by elimination (m.12.matrices solves them with matrices)."
+      },
+      {
+       "n": "D",
+       "title": "A Surprise from Geometry—Complex Numbers Overcome All Obstacles",
+       "skills": [
+        "m.11.complex-numbers"
+       ],
+       "lessons": [
+        {
+         "n": "36",
+         "title": "Overcoming a Third Obstacle to Factoring—What If There Are No Real Number Solutions?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-d-lesson-36-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "37",
+         "title": "A Surprising Boost from Geometry",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-d-lesson-37-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "38",
+         "title": "Complex Numbers as Solutions to Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-d-lesson-38-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "39",
+         "title": "Factoring Extended to the Complex Realm",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-d-lesson-39-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "40",
+         "title": "Obstacles Resolved—A Surprising Result",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%201.zip/Module%201%2Falgebra-ii-m1-teacher-materials%2Falgebra-ii-m1-topic-d-lesson-40-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        }
+       ],
+       "standards": [
+        "N-CN.A.1",
+        "N-CN.A.2",
+        "N-CN.C.7",
+        "A-REI.A.2",
+        "A-REI.B.4b",
+        "A-REI.C.7"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Trigonometric Functions",
+     "course": "Algebra II",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-overview-and-assessments%2Falgebra-ii-m2-module-overview.docx",
+     "skills": [
+      "m.11.unit-circle",
+      "m.11.trig-graphs",
+      "m.11.pythagorean-identities"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "The Story of Trigonometry and Its Contexts",
+       "skills": [
+        "m.11.unit-circle",
+        "m.11.trig-graphs"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Ferris Wheels—Tracking the Height of a Passenger Car",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "The Height and Co-Height Functions of a Ferris Wheel",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "The Motion of the Moon, Sun, and Stars—Motivating Mathematics",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4",
+         "title": "From Circle-ometry to Trigonometry",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-4-teacher.pdf"
+        },
+        {
+         "n": "5",
+         "title": "Extending the Domain of Sine and Cosine to All Real Numbers",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-5-teacher.pdf"
+        },
+        {
+         "n": "6",
+         "title": "Why Call It Tangent?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-6-teacher.pdf"
+        },
+        {
+         "n": "7",
+         "title": "Secant and the Co-Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-7-teacher.pdf"
+        },
+        {
+         "n": "8",
+         "title": "Graphing the Sine and Cosine Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-8-teacher.pdf"
+        },
+        {
+         "n": "9",
+         "title": "Awkward! Who Chose the Number 360, Anyway?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-a-lesson-9-teacher.pdf"
+        },
+        {
+         "n": "10",
+         "title": "Basic Trigonometric Identities from Graphs",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-student-lessons%2Falgebra-ii-m2-topic-a-lesson-10-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "F-IF.C.7e",
+        "F-TF.A.1",
+        "F-TF.A.2"
+       ]
+      },
+      {
+       "n": "B",
+       "title": "Understanding Trigonometric Functions and Putting Them to Use",
+       "skills": [
+        "m.11.trig-graphs",
+        "m.11.pythagorean-identities"
+       ],
+       "lessons": [
+        {
+         "n": "11",
+         "title": "Transforming the Graph of the Sine Function",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-b-lesson-11-teacher.pdf"
+        },
+        {
+         "n": "12",
+         "title": "Ferris Wheels—Using Trigonometric Functions to Model Cyclical Behavior",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-b-lesson-12-teacher.pdf"
+        },
+        {
+         "n": "13",
+         "title": "Tides, Sound Waves, and Stock Markets",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-b-lesson-13-teacher.pdf"
+        },
+        {
+         "n": "14",
+         "title": "Graphing the Tangent Function",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-b-lesson-14-teacher.pdf"
+        },
+        {
+         "n": "15",
+         "title": "What Is a Trigonometric Identity?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-b-lesson-15-teacher.pdf"
+        },
+        {
+         "n": "16",
+         "title": "Proving Trigonometric Identities",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-b-lesson-16-teacher.pdf"
+        },
+        {
+         "n": "17",
+         "title": "Trigonometric Identity Proofs",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%202.zip/Module%202%2Falgebra-ii-m2-teacher-lessons%2Falgebra-ii-m2-topic-b-lesson-17-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "F-IF.C.7e",
+        "F-TF.B.5",
+        "F-TF.C.8",
+        "S.ID.B.6a"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Exponential and Logarithmic Functions",
+     "course": "Algebra II",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-overview-and-assessments%2Falgebra-ii-m3-module-overview.docx",
+     "skills": [
+      "m.9.radicals",
+      "m.11.exp-log-equations",
+      "m.11.logarithms",
+      "m.11.inverse-functions",
+      "m.9.exponential-functions",
+      "m.11.series"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Real Numbers",
+       "skills": [
+        "m.9.radicals",
+        "m.11.exp-log-equations"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Integer Exponents",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Base 10 and Scientific Notation",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "Rational Exponents—What are 2^(1/2) and 2^(1/3)?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4",
+         "title": "Properties of Exponents and Radicals",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-a-lesson-4-teacher.pdf"
+        },
+        {
+         "n": "5",
+         "title": "Irrational Exponents—What are 2^√2 and 2^π?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-a-lesson-5-teacher.pdf"
+        },
+        {
+         "n": "6",
+         "title": "Euler’s Number, e",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-student-materials%2Falgebra-ii-m3-topic-a-lesson-6-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-RN.A.1",
+        "N-RN.A.2",
+        "N-Q.A.2",
+        "F-IF.B.6",
+        "F-BF.A.1a",
+        "F-LE.A.2"
+       ],
+       "notes": "Integer and rational exponents, radicals, scientific notation (m.9.radicals); Lessons 5-6 irrational exponents and e (m.11.exp-log-equations)."
+      },
+      {
+       "n": "B",
+       "title": "Logarithms",
+       "skills": [
+        "m.11.logarithms"
+       ],
+       "lessons": [
+        {
+         "n": "7",
+         "title": "Bacteria and Exponential Growth",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "The “WhatPower” Function",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "9",
+         "title": "Logarithms—How Many Digits Do You Need?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-9-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "10",
+         "title": "Building Logarithmic Tables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-10-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "11",
+         "title": "The Most Important Property of Logarithms",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-11-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "12",
+         "title": "Properties of Logarithms",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-12-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "Changing the Base",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-13-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "14",
+         "title": "Solving Logarithmic Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-14-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "Why Were Logarithms Developed?",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-b-lesson-15-teacher.pdf",
+         "skills": [
+          "m.11.logarithms"
+         ]
+        }
+       ],
+       "standards": [
+        "N-Q.A.2",
+        "A-CED.A.1",
+        "F-BF.A.1a",
+        "F-LE.A.4"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Exponential and Logarithmic Functions and their Graphs",
+       "skills": [
+        "m.11.logarithms",
+        "m.11.inverse-functions",
+        "m.11.exp-log-equations"
+       ],
+       "lessons": [
+        {
+         "n": "16",
+         "title": "Rational and Irrational Numbers",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-c-lesson-16-teacher.pdf"
+        },
+        {
+         "n": "17",
+         "title": "Graphing the Logarithm Function",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-c-lesson-17-teacher.pdf"
+        },
+        {
+         "n": "18",
+         "title": "Graphs of Exponential Functions and Logarithmic Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-c-lesson-18-teacher.pdf"
+        },
+        {
+         "n": "19",
+         "title": "The Inverse Relationship Between Logarithmic and Exponential Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-c-lesson-19-teacher.pdf"
+        },
+        {
+         "n": "20",
+         "title": "Transformations of the Graphs of Logarithmic and Exponential Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-c-lesson-20-teacher.pdf"
+        },
+        {
+         "n": "21",
+         "title": "The Graph of the Natural Logarithm Function",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-c-lesson-21-teacher.pdf"
+        },
+        {
+         "n": "22",
+         "title": "Choosing a Model",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-c-lesson-22-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "F-IF.B.4",
+        "F-IF.B.5",
+        "F-IF.C.7e",
+        "F-BF.A.1a",
+        "F-BF.B.3",
+        "F-BF.B.4a",
+        "F-LE.A.2",
+        "F-LE.A.4"
+       ]
+      },
+      {
+       "n": "D",
+       "title": "Using Logarithms in Modeling Situations",
+       "skills": [
+        "m.11.exp-log-equations",
+        "m.9.exponential-functions"
+       ],
+       "lessons": [
+        {
+         "n": "23",
+         "title": "Bean Counting",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-d-lesson-23-teacher.pdf"
+        },
+        {
+         "n": "24",
+         "title": "Solving Exponential Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-d-lesson-24-teacher.pdf"
+        },
+        {
+         "n": "25",
+         "title": "Geometric Sequences and Exponential Growth and Decay",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-d-lesson-25-teacher.pdf"
+        },
+        {
+         "n": "26",
+         "title": "Percent Rate of Change",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-d-lesson-26-teacher.pdf"
+        },
+        {
+         "n": "27",
+         "title": "Modeling with Exponential Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-d-lesson-27-teacher.pdf"
+        },
+        {
+         "n": "28",
+         "title": "Newton’s Law of Cooling, Revisited",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-d-lesson-28-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "A-SSE.B.3c",
+        "A-CED.A.1",
+        "A-REI.D.11",
+        "F-IF.A.3",
+        "F-IF.B.6",
+        "F-IF.C.8b",
+        "F-IF.C.9",
+        "F-BF.A.1a",
+        "F-BF.A.1b",
+        "F-BF.A.2",
+        "F-BF.B.4a",
+        "F-LE.A.4",
+        "F-LE.B.5"
+       ],
+       "notes": "Solving exponential equations with logarithms and modeling growth and decay; Lesson 25 geometric sequences (m.9.sequences)."
+      },
+      {
+       "n": "E",
+       "title": "Geometric Series and Finance",
+       "skills": [
+        "m.11.series"
+       ],
+       "lessons": [
+        {
+         "n": "29",
+         "title": "The Mathematics Behind a Structured Savings Plan",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-e-lesson-29-teacher.pdf",
+         "skills": [
+          "m.11.series"
+         ]
+        },
+        {
+         "n": "30",
+         "title": "Buying a Car",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-e-lesson-30-teacher.pdf",
+         "skills": [
+          "m.11.series"
+         ]
+        },
+        {
+         "n": "31",
+         "title": "Credit Cards",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-e-lesson-31-teacher.pdf",
+         "skills": [
+          "m.11.series"
+         ]
+        },
+        {
+         "n": "32",
+         "title": "Buying a House",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-teacher-materials%2Falgebra-ii-m3-topic-e-lesson-32-teacher.pdf",
+         "skills": [
+          "m.11.series"
+         ]
+        },
+        {
+         "n": "33",
+         "title": "The Million Dollar Problem",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%203.zip/Module%203%2Falgebra-ii-m3-student-materials%2Falgebra-ii-m3-topic-e-lesson-33-student.pdf",
+         "skills": [
+          "m.11.series"
+         ]
+        }
+       ],
+       "standards": [
+        "A-SSE.B.4",
+        "F-IF.C.7e",
+        "F-IF.C.8b",
+        "F-IF.C.9",
+        "F-BF.A.1b",
+        "F.BF.A.2",
+        "F-LE.B.5"
+       ],
+       "notes": "Geometric series and finance (structured savings, loans); m.11.series covers the sum formula; no skill for finance applications."
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Inferences and Conclusions from Data",
+     "course": "Algebra II",
+     "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-module-overview-and-assessments%2Falgebra-ii-m4-module-overview.docx",
+     "skills": [
+      "m.10.conditional-probability",
+      "m.11.normal-distribution",
+      "m.12.hypothesis-testing"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Probability",
+       "skills": [
+        "m.10.conditional-probability"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Chance Experiments, Sample Spaces, and Events",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        },
+        {
+         "n": "2",
+         "title": "Calculating Probabilities of Events Using Two-Way Tables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-a-lesson-2-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        },
+        {
+         "n": "3–4",
+         "title": "Calculating Conditional Probabilities and Evaluating Independence Using Two-Way Tables",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        },
+        {
+         "n": "5",
+         "title": "Events and Venn Diagrams",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-a-lesson-5-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        },
+        {
+         "n": "6–7",
+         "title": "Probability Rules",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-a-lesson-6-teacher.pdf",
+         "skills": [
+          "m.10.conditional-probability"
+         ]
+        }
+       ],
+       "standards": [
+        "S-IC.A.2",
+        "S-CP.A.1",
+        "S-CP.A.2",
+        "S-CP.A.3",
+        "S-CP.A.4",
+        "S-CP.A.5",
+        "S-CP.B.6",
+        "S-CP.B.7"
+       ],
+       "notes": "Probability rules, two-way tables, conditional probability and independence (S-CP.1-7): m.10.conditional-probability (filed under Geometry in the taxonomy)."
+      },
+      {
+       "n": "B",
+       "title": "Modeling Data Distributions",
+       "skills": [
+        "m.11.normal-distribution"
+       ],
+       "lessons": [
+        {
+         "n": "8",
+         "title": "Distributions—Center, Shape, and Spread",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "9",
+         "title": "Using a Curve to Model a Data Distribution",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-student-materials%2Falgebra-ii-m4-topic-b-lesson-9-student.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "10–11",
+         "title": "Normal Distributions",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-b-lesson-10-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        }
+       ],
+       "standards": [
+        "S-ID.A.4"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Drawing Conclusions Using Data from a Sample",
+       "skills": [
+        "m.11.normal-distribution"
+       ],
+       "lessons": [
+        {
+         "n": "12",
+         "title": "Types of Statistical Studies",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-student-materials%2Falgebra-ii-m4-topic-c-lesson-12-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "Using Sample Data to Estimate a Population Characteristic",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-c-lesson-13-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "14–15",
+         "title": "Sampling Variability in the Sample Proportion",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-c-lesson-14-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "16–17",
+         "title": "Margin of Error When Estimating a Population Proportion",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-c-lesson-16-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "18–19",
+         "title": "Sampling Variability in the Sample Mean",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-c-lesson-18-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "20–21",
+         "title": "Margin of Error When Estimating a Population Mean",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-c-lesson-20-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        },
+        {
+         "n": "22",
+         "title": "Evaluating Reports Based on Data from a Sample",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-c-lesson-22-teacher.pdf",
+         "skills": [
+          "m.11.normal-distribution"
+         ]
+        }
+       ],
+       "standards": [
+        "S-IC.A.1",
+        "S-IC.B.3",
+        "S-IC.B.4",
+        "S-IC.B.6"
+       ],
+       "notes": "Sampling variability and margin of error for proportions and means (S-IC.1, 3-4, 6): the margin-of-error half of m.11.normal-distribution."
+      },
+      {
+       "n": "D",
+       "title": "Drawing Conclusions Using Data from an Experiment",
+       "skills": [
+        "m.12.hypothesis-testing"
+       ],
+       "lessons": [
+        {
+         "n": "23",
+         "title": "Experiments and the Role of Random Assignment",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-d-lesson-23-teacher.pdf",
+         "skills": [
+          "m.12.hypothesis-testing"
+         ]
+        },
+        {
+         "n": "24",
+         "title": "Differences Due to Random Assignment Alone",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-d-lesson-24-teacher.pdf",
+         "skills": [
+          "m.12.hypothesis-testing"
+         ]
+        },
+        {
+         "n": "25–27",
+         "title": "Ruling Out Chance",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-d-lesson-25-teacher.pdf",
+         "skills": [
+          "m.12.hypothesis-testing"
+         ]
+        },
+        {
+         "n": "28–29",
+         "title": "Drawing a Conclusion from an Experiment",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-d-lesson-28-teacher.pdf",
+         "skills": [
+          "m.12.hypothesis-testing"
+         ]
+        },
+        {
+         "n": "30",
+         "title": "Evaluating Reports Based on Data from an Experiment",
+         "url": "https://archive.org/download/engageny-mathematics/Algebra%20II%20Module%204.zip/Module%204%2Falgebra-ii-m4-teacher-materials%2Falgebra-ii-m4-topic-d-lesson-30-teacher.pdf",
+         "skills": [
+          "m.12.hypothesis-testing"
+         ]
+        }
+       ],
+       "standards": [
+        "S-IC.B.3",
+        "S-IC.B.5",
+        "S-IC.B.6"
+       ],
+       "notes": "Experiments, random assignment and randomization ('ruling out chance', S-IC.3, 5-6): an informal introduction to hypothesis testing, m.12.hypothesis-testing. Loose fit."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "grade": "12",
+   "course": "Precalculus and Advanced Topics",
+   "units": [
+    {
+     "n": "1",
+     "title": "Complex Numbers and Transformations",
+     "course": "Precalculus and Advanced Topics",
+     "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-overview-and-assessments%2Fprecalculus-m1-module-overview.docx",
+     "skills": [
+      "m.11.complex-numbers",
+      "m.12.polar",
+      "m.12.matrices"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "A Question of Linearity",
+       "skills": [
+        "m.11.complex-numbers"
+       ],
+       "lessons": [
+        {
+         "n": "1–2",
+         "title": "Wishful Thinking—Does Linearity Hold?",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "3",
+         "title": "Which Real Number Functions Define a Linear Transformation?",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "4–5",
+         "title": "An Appearance of Complex Numbers",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-a-lesson-4-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "6",
+         "title": "Complex Numbers as Vectors",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-a-lesson-6-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        },
+        {
+         "n": "7–8",
+         "title": "Complex Number Division",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-a-lesson-7-teacher.pdf",
+         "skills": [
+          "m.11.complex-numbers"
+         ]
+        }
+       ],
+       "standards": [
+        "N-CN.A.3",
+        "N-CN.B.4"
+       ],
+       "notes": "Linear transformations of the reals, complex arithmetic and division (N-CN.3): m.11.complex-numbers."
+      },
+      {
+       "n": "B",
+       "title": "Complex Number Operations as Transformations",
+       "skills": [
+        "m.12.polar",
+        "m.11.complex-numbers"
+       ],
+       "lessons": [
+        {
+         "n": "9–10",
+         "title": "The Geometric Effect of Some Complex Arithmetic",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-b-lesson-9-teacher.pdf"
+        },
+        {
+         "n": "11–12",
+         "title": "Distance and Complex Numbers",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-b-lesson-11-teacher.pdf"
+        },
+        {
+         "n": "13",
+         "title": "Trigonometry and Complex Numbers",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-b-lesson-13-teacher.pdf"
+        },
+        {
+         "n": "14",
+         "title": "Discovering the Geometric Effect of Complex Multiplication",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-b-lesson-14-teacher.pdf"
+        },
+        {
+         "n": "15",
+         "title": "Justifying the Geometric Effect of Complex Multiplication",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-b-lesson-15-teacher.pdf"
+        },
+        {
+         "n": "16",
+         "title": "Representing Reflections with Transformations",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-b-lesson-16-teacher.pdf"
+        },
+        {
+         "n": "17",
+         "title": "The Geometric Effect of Multiplying by a Reciprocal",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-b-lesson-17-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-CN.A.3",
+        "N-CN.B.4",
+        "N-CN.B.5",
+        "N-CN.B.6"
+       ],
+       "notes": "Geometric effect of complex addition and multiplication, modulus and argument (N-CN.4-6): m.12.polar (polar form of complex numbers) and m.11.complex-numbers."
+      },
+      {
+       "n": "C",
+       "title": "The Power of the Right Notation",
+       "skills": [
+        "m.12.polar",
+        "m.12.matrices"
+       ],
+       "lessons": [
+        {
+         "n": "18–19",
+         "title": "Exploiting the Connection to Trigonometry",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-18-teacher.pdf"
+        },
+        {
+         "n": "20",
+         "title": "Exploiting the Connection to Cartesian Coordinates",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-20-teacher.pdf"
+        },
+        {
+         "n": "21",
+         "title": "The Hunt for Better Notation",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-21-teacher.pdf"
+        },
+        {
+         "n": "22–23",
+         "title": "Modeling Video Game Motion with Matrices",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-22-teacher.pdf"
+        },
+        {
+         "n": "24",
+         "title": "Matrix Notation Encompasses New Transformations!",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-24-teacher.pdf"
+        },
+        {
+         "n": "25",
+         "title": "Matrix Multiplication and Addition",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-25-teacher.pdf"
+        },
+        {
+         "n": "26–27",
+         "title": "Getting a Handle on New Transformations",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-26-teacher.pdf"
+        },
+        {
+         "n": "28–30",
+         "title": "When Can We Reverse a Transformation?",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%201.zip/Module%201%2Fprecalculus-m1-teacher-materials%2Fprecalculus-m1-topic-c-lesson-28-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-CN.B.4",
+        "N-CN.B.5",
+        "N-VM.C.8",
+        "N-VM.C.10",
+        "N-VM.C.11",
+        "N-VM.C.12"
+       ],
+       "notes": "Polar form and the connection to trigonometry (m.12.polar), then 2x2 matrices as transformations of the plane, matrix multiplication and inverses (m.12.matrices)."
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Vectors and Matrices",
+     "course": "Precalculus and Advanced Topics",
+     "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-overview-and-assessments%2Fprecalculus-m2-module-overview.docx",
+     "skills": [
+      "m.12.matrices",
+      "m.12.vectors"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Networks and Matrices",
+       "skills": [
+        "m.12.matrices"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Introduction to Networks",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-a-lesson-1-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "2",
+         "title": "Networks and Matrix Arithmetic",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-a-lesson-2-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "3",
+         "title": "Matrix Arithmetic in Its Own Right",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-a-lesson-3-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        }
+       ],
+       "standards": [
+        "N-VM.C.6",
+        "N-VM.C.7",
+        "N-VM.C.8"
+       ]
+      },
+      {
+       "n": "B",
+       "title": "Linear Transformations of Planes and Space",
+       "skills": [
+        "m.12.matrices"
+       ],
+       "lessons": [
+        {
+         "n": "4",
+         "title": "Linear Transformations Review",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-4-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "5",
+         "title": "Coordinates of Points in Space",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-5-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "6",
+         "title": "Linear Transformations as Matrices",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-6-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "7",
+         "title": "Linear Transformations Applied to Cubes",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "8–9",
+         "title": "Composition of Linear Transformations",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "10",
+         "title": "Matrix Multiplication Is Not Commutative",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-10-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "11",
+         "title": "Matrix Addition Is Commutative",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-11-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "12",
+         "title": "Matrix Multiplication Is Distributive and Associative",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-12-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "13",
+         "title": "Using Matrix Operations for Encryption",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-b-lesson-13-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        }
+       ],
+       "standards": [
+        "N-VM.C.7",
+        "N-VM.C.8",
+        "N-VM.C.9",
+        "N-VM.C.10",
+        "N-VM.C.11"
+       ],
+       "notes": "Matrices as linear transformations of the plane and space, composition, properties of matrix arithmetic (N-VM.7-11): m.12.matrices."
+      },
+      {
+       "n": "C",
+       "title": "Systems of Linear Equations",
+       "skills": [
+        "m.12.matrices"
+       ],
+       "lessons": [
+        {
+         "n": "14",
+         "title": "Solving Equations Involving Linear Transformations of the Coordinate Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-c-lesson-14-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "Solving Equations Involving Linear Transformations of the Coordinate Space",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-c-lesson-15-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "16",
+         "title": "Solving General Systems of Linear Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-c-lesson-16-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        }
+       ],
+       "standards": [
+        "N-VM.C.10",
+        "A-REI.C.8",
+        "A-REI.C.9"
+       ],
+       "notes": "Solving systems of linear equations with inverse matrices (A-REI.8-9): m.12.matrices."
+      },
+      {
+       "n": "D",
+       "title": "Vectors in Plane and Space",
+       "skills": [
+        "m.12.vectors"
+       ],
+       "lessons": [
+        {
+         "n": "17",
+         "title": "Vectors in the Coordinate Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-d-lesson-17-teacher.pdf",
+         "skills": [
+          "m.12.vectors"
+         ]
+        },
+        {
+         "n": "18",
+         "title": "Vectors and Translation Maps",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-d-lesson-18-teacher.pdf",
+         "skills": [
+          "m.12.vectors"
+         ]
+        },
+        {
+         "n": "19",
+         "title": "Directed Line Segments and Vectors",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-d-lesson-19-teacher.pdf",
+         "skills": [
+          "m.12.vectors"
+         ]
+        },
+        {
+         "n": "20",
+         "title": "Vectors and Stone Bridges",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-d-lesson-20-teacher.pdf",
+         "skills": [
+          "m.12.vectors"
+         ]
+        },
+        {
+         "n": "21",
+         "title": "Vectors and the Equation of a Line",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-d-lesson-21-teacher.pdf",
+         "skills": [
+          "m.12.vectors"
+         ]
+        },
+        {
+         "n": "22",
+         "title": "Linear Transformations of Lines",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-d-lesson-22-teacher.pdf",
+         "skills": [
+          "m.12.vectors"
+         ]
+        },
+        {
+         "n": "23–24",
+         "title": "Why Are Vectors Useful?",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-d-lesson-23-teacher.pdf",
+         "skills": [
+          "m.12.vectors"
+         ]
+        }
+       ],
+       "standards": [
+        "N-VM.A.1",
+        "N-VM.A.2",
+        "N-VM.A.3",
+        "N-VM.B.4",
+        "N-VM.B.5",
+        "N-VM.C.11"
+       ]
+      },
+      {
+       "n": "E",
+       "title": "First-Person Video Games—Projection Matrices",
+       "skills": [
+        "m.12.matrices"
+       ],
+       "lessons": [
+        {
+         "n": "25",
+         "title": "First-Person Computer Games",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-e-lesson-25-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "26",
+         "title": "Projecting a 3-D Object onto a 2-D Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-e-lesson-26-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        },
+        {
+         "n": "27",
+         "title": "Designing Your Own Game",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%202.zip/Module%202%2Fprecalculus-m2-teacher-materials%2Fprecalculus-m2-topic-e-lesson-27-teacher.pdf",
+         "skills": [
+          "m.12.matrices"
+         ]
+        }
+       ],
+       "standards": [
+        "N-VM.C.8",
+        "N-VM.C.9",
+        "N-VM.C.10",
+        "N-VM.C.11"
+       ],
+       "notes": "Projection matrices for 3-D graphics; an application of m.12.matrices."
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Rational and Exponential Functions",
+     "course": "Precalculus and Advanced Topics",
+     "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-overview-and-assessments%2Fprecalculus-m3-module-overview.docx",
+     "skills": [
+      "m.12.binomial-theorem",
+      "m.11.complex-numbers",
+      "m.12.conics",
+      "m.10.volume-derivations",
+      "m.11.rational-functions",
+      "m.11.inverse-functions"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Polynomial Functions and the Fundamental Theorem of Algebra",
+       "skills": [
+        "m.12.binomial-theorem",
+        "m.11.complex-numbers",
+        "m.12.conics",
+        "m.10.volume-derivations"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Solutions to Polynomial Equations",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Does Every Complex Number Have a Square Root?",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "Roots of Unity",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4–5",
+         "title": "The Binomial Theorem",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-a-lesson-4-teacher.pdf"
+        },
+        {
+         "n": "6",
+         "title": "Curves in the Complex Plane",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-a-lesson-6-teacher.pdf"
+        },
+        {
+         "n": "7–8",
+         "title": "Curves from Geometry",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-a-lesson-7-teacher.pdf"
+        },
+        {
+         "n": "9",
+         "title": "Volume and Cavalieri’s Principle",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-a-lesson-9-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "N-CN.C.8",
+        "N-CN.C.9",
+        "A-APR.C.5",
+        "G-GMD.A.2",
+        "G-GPE.A.3"
+       ],
+       "notes": "Complex roots of polynomials and roots of unity (m.11.complex-numbers), the binomial theorem (Lessons 4-5: m.12.binomial-theorem), ellipses and hyperbolas as curves in the complex plane and from geometry (Lessons 6-8: m.12.conics), and Cavalieri's principle (Lesson 9: m.10.volume-derivations)."
+      },
+      {
+       "n": "B",
+       "title": "Rational Functions and Composition of Functions",
+       "skills": [
+        "m.11.rational-functions",
+        "m.11.inverse-functions"
+       ],
+       "lessons": [
+        {
+         "n": "10",
+         "title": "The Structure of Rational Expressions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-10-teacher.pdf"
+        },
+        {
+         "n": "11",
+         "title": "Rational Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-11-teacher.pdf"
+        },
+        {
+         "n": "12",
+         "title": "End Behavior of Rational Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-12-teacher.pdf"
+        },
+        {
+         "n": "13",
+         "title": "Horizontal and Vertical Asymptotes of Graphs of Rational Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-13-teacher.pdf"
+        },
+        {
+         "n": "14",
+         "title": "Graphing Rational Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-14-teacher.pdf"
+        },
+        {
+         "n": "15",
+         "title": "Transforming Rational Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-15-teacher.pdf"
+        },
+        {
+         "n": "16",
+         "title": "Function Composition",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-16-teacher.pdf"
+        },
+        {
+         "n": "17",
+         "title": "Solving Problems by Function Composition",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-b-lesson-17-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "A-APR.D.7",
+        "F-IF.C.7d",
+        "F-IF.C.9",
+        "F-BF.A.1c"
+       ],
+       "notes": "Rational functions, asymptotes and end behavior (m.11.rational-functions); Lessons 16-17 function composition (m.11.inverse-functions)."
+      },
+      {
+       "n": "C",
+       "title": "Inverse Functions",
+       "skills": [
+        "m.11.inverse-functions"
+       ],
+       "lessons": [
+        {
+         "n": "18",
+         "title": "Inverse Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-c-lesson-18-teacher.pdf",
+         "skills": [
+          "m.11.inverse-functions"
+         ]
+        },
+        {
+         "n": "19",
+         "title": "Restricting the Domain",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-c-lesson-19-teacher.pdf",
+         "skills": [
+          "m.11.inverse-functions"
+         ]
+        },
+        {
+         "n": "20",
+         "title": "Inverses of Logarithmic and Exponential Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-c-lesson-20-teacher.pdf",
+         "skills": [
+          "m.11.inverse-functions"
+         ]
+        },
+        {
+         "n": "21",
+         "title": "Logarithmic and Exponential Problem Solving",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%203.zip/Module%203%2Fprecalculus-m3-teacher-materials%2Fprecalculus-m3-topic-c-lesson-21-teacher.pdf",
+         "skills": [
+          "m.11.inverse-functions"
+         ]
+        }
+       ],
+       "standards": [
+        "F-BF.B.4b",
+        "F-BF.B.4c",
+        "F-BF.B.4d",
+        "F-BF.B.5"
+       ],
+       "notes": "Inverse functions, restricting the domain, inverses of exponential and logarithmic functions: m.11.inverse-functions."
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Trigonometry",
+     "course": "Precalculus and Advanced Topics",
+     "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-overview-and-assessments%2Fprecalculus-m4-module-overview.docx",
+     "skills": [
+      "m.11.unit-circle",
+      "m.12.trig-formulas-equations",
+      "m.12.law-sines-cosines"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Trigonometric Functions",
+       "skills": [
+        "m.11.unit-circle",
+        "m.12.trig-formulas-equations"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "Special Triangles and the Unit Circle",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Properties of Trigonometric Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3–4",
+         "title": "Addition and Subtraction Formulas",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "5",
+         "title": "Tangent Lines and the Tangent Function",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-a-lesson-5-teacher.pdf"
+        },
+        {
+         "n": "6",
+         "title": "Waves, Sinusoids, and Identities",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-a-lesson-6-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "F-TF.A.3",
+        "F-TF.A.4",
+        "F-TF.C.9",
+        "G-C.A.4"
+       ],
+       "notes": "Unit circle values and properties of trigonometric functions (m.11.unit-circle); addition and subtraction formulas, identities (m.12.trig-formulas-equations)."
+      },
+      {
+       "n": "B",
+       "title": "Trigonometry and Triangles",
+       "skills": [
+        "m.12.law-sines-cosines"
+       ],
+       "lessons": [
+        {
+         "n": "7",
+         "title": "An Area Formula for Triangles",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.12.law-sines-cosines"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "Law of Sines",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.12.law-sines-cosines"
+         ]
+        },
+        {
+         "n": "9",
+         "title": "Law of Cosines",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-9-teacher.pdf",
+         "skills": [
+          "m.12.law-sines-cosines"
+         ]
+        },
+        {
+         "n": "10",
+         "title": "Putting the Law of Cosines and the Law of Sines to Use",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-b-lesson-10-teacher.pdf",
+         "skills": [
+          "m.12.law-sines-cosines"
+         ]
+        }
+       ],
+       "standards": [
+        "G-SRT.D.9",
+        "G-SRT.D.10",
+        "G-SRT.D.11"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Inverse Trigonometric Functions",
+       "skills": [
+        "m.12.trig-formulas-equations"
+       ],
+       "lessons": [
+        {
+         "n": "11",
+         "title": "Revisiting the Graphs of the Trigonometric Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-c-lesson-11-teacher.pdf",
+         "skills": [
+          "m.12.trig-formulas-equations"
+         ]
+        },
+        {
+         "n": "12",
+         "title": "Inverse Trigonometric Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-c-lesson-12-teacher.pdf",
+         "skills": [
+          "m.12.trig-formulas-equations"
+         ]
+        },
+        {
+         "n": "13–14",
+         "title": "Modeling with Inverse Trigonometric Functions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%204.zip/Module%204%2Fprecalculus-m4-teacher-materials%2Fprecalculus-m4-topic-c-lesson-13-teacher.pdf",
+         "skills": [
+          "m.12.trig-formulas-equations"
+         ]
+        }
+       ],
+       "standards": [
+        "F-TF.B.6",
+        "F-TF.B.7"
+       ],
+       "notes": "Inverse trigonometric functions and modeling with them (F-TF.6-7). No skill for inverse trigonometric functions; nearest m.12.trig-formulas-equations (solving trigonometric equations)."
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Probability and Statistics",
+     "course": "Precalculus and Advanced Topics",
+     "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/",
+     "overviewUrl": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-overview-and-assessments%2Fprecalculus-m5-module-overview.docx",
+     "skills": [
+      "m.12.binomial-theorem",
+      "m.10.conditional-probability",
+      "m.12.probability-distributions"
+     ],
+     "sections": [
+      {
+       "n": "A",
+       "title": "Probability",
+       "skills": [
+        "m.12.binomial-theorem",
+        "m.10.conditional-probability"
+       ],
+       "lessons": [
+        {
+         "n": "1",
+         "title": "The General Multiplication Rule",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-a-lesson-1-teacher.pdf"
+        },
+        {
+         "n": "2",
+         "title": "Counting Rules—The Fundamental Counting Principle and Permutations",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-a-lesson-2-teacher.pdf"
+        },
+        {
+         "n": "3",
+         "title": "Counting Rules—Combinations",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-a-lesson-3-teacher.pdf"
+        },
+        {
+         "n": "4",
+         "title": "Using Permutations and Combinations to Compute Probabilities",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-a-lesson-4-teacher.pdf"
+        }
+       ],
+       "standards": [
+        "S-CP.B.8",
+        "S-CP.B.9"
+       ],
+       "notes": "General multiplication rule (m.10.conditional-probability), permutations and combinations (m.12.binomial-theorem covers combinatorics)."
+      },
+      {
+       "n": "B",
+       "title": "Random Variables and Discrete Probability Distributions",
+       "skills": [
+        "m.12.probability-distributions"
+       ],
+       "lessons": [
+        {
+         "n": "5",
+         "title": "Discrete Random Variables",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-5-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "6",
+         "title": "Probability Distribution of a Discrete Random Variable",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-6-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "7",
+         "title": "Expected Value of a Discrete Random Variable",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-7-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "8",
+         "title": "Interpreting Expected Value",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-8-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "9–10",
+         "title": "Determining Discrete Probability Distributions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-9-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "11–12",
+         "title": "Estimating Probability Distributions Empirically",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-b-lesson-11-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        }
+       ],
+       "standards": [
+        "S-MD.A.1",
+        "S-MD.A.2",
+        "S-MD.A.3",
+        "S-MD.A.4"
+       ]
+      },
+      {
+       "n": "C",
+       "title": "Using Probability to Make Decisions",
+       "skills": [
+        "m.12.probability-distributions"
+       ],
+       "lessons": [
+        {
+         "n": "13–14",
+         "title": "Games of Chance and Expected Value",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-13-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "15",
+         "title": "Using Expected Values to Compare Strategies",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-15-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "16",
+         "title": "Making Fair Decisions",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-16-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "17",
+         "title": "Fair Games",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-17-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        },
+        {
+         "n": "18–19",
+         "title": "Analyzing Decisions and Strategies Using Probability",
+         "url": "https://archive.org/download/engageny-mathematics/Precalculus%20Module%205.zip/Module%205%2Fprecalculus-m5-teacher-materials%2Fprecalculus-m5-topic-c-lesson-18-teacher.pdf",
+         "skills": [
+          "m.12.probability-distributions"
+         ]
+        }
+       ],
+       "standards": [
+        "S-MD.B.5",
+        "S-MD.B.6",
+        "S-MD.B.7"
+       ],
+       "notes": "Using expected value to compare strategies and make fair decisions (S-MD.5-7): an application of m.12.probability-distributions."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
