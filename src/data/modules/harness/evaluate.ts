@@ -319,7 +319,8 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/·/g, '*')
     // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
     // 36π is 36 × π.
-    .replace(/(\d)π/g, '$1*π')
+    // (bracketed, so 90 ÷ 9π is 90 ÷ (9 × π), as it is written)
+    .replace(/(\d+(?:\.\d+)?)π/g, '($1*π)')
     .replace(/π/g, `(${Math.PI})`)
     .replace(/½/g, '(0.5)')
     // Any exponent written as superscript digits (10³, 10⁴).

@@ -359,4 +359,122 @@ export const MATH_8_LAYOUTS: LayoutDef[] = [
       { label: 'A 2 by 4 rectangle and a 2 by 6 rectangle', bin: 'neither' },
     ],
   },
+
+  // ── The Pythagorean theorem (8.G.6) ──
+  {
+    kind: 'sort',
+    id: 'm.8.pythagorean~is-it-right',
+    title: 'Is it a right triangle?',
+    use: 'Use this for “Which of these triangles is a right triangle: 9, 12, 14 or 16, 30, 34?”',
+    assumptions: [
+      'Square the two shorter sides and add them. Square the longest side.',
+      'If the two results are equal, the triangle has a right angle (the converse).',
+      'A root squared is the number under it: (√50)² = 50.',
+    ],
+    question: 'Is the triangle a right triangle?',
+    bins: [
+      {
+        id: 'yes',
+        label: 'Right triangle',
+        why: 'The two shorter sides squared add to the longest squared.',
+      },
+      { id: 'no', label: 'Not a right triangle', why: 'The squares do not add up.' },
+    ],
+    cards: [
+      { label: '9, 12, 15', bin: 'yes' },
+      { label: '16, 30, 34', bin: 'yes' },
+      { label: '10, √50, √50', bin: 'yes' },
+      { label: '4, √3, √13', bin: 'yes' },
+      { label: '10, 10.5, 14.5', bin: 'yes' },
+      { label: '8, 15, 17', bin: 'yes' },
+      { label: '9, 12, 14', bin: 'no' },
+      { label: '16, 30, 35', bin: 'no' },
+      { label: '5, 5, 8', bin: 'no' },
+      { label: '7, 8, 10', bin: 'no' },
+    ],
+  },
+
+  // ── Volume of curved solids (8.G.9) ──
+  {
+    kind: 'sort',
+    id: 'm.8.volume-curved~which-formula',
+    title: 'Which volume formula?',
+    use: 'Use this for “Which formula finds the volume of a funnel?”',
+    assumptions: [
+      'A cylinder is a circle stacked up: π × r² × h.',
+      'A cone holds a third of the cylinder with its base and height.',
+      'A sphere is 4/3 × π × r³; a box is length × width × height.',
+    ],
+    question: 'Which formula finds the volume?',
+    bins: [
+      { id: 'cylinder', label: 'π × r² × h (cylinder)', why: 'A circle stacked straight up.' },
+      { id: 'cone', label: '1/3 × π × r² × h (cone)', why: 'A circle narrowing to a point.' },
+      { id: 'sphere', label: '4/3 × π × r³ (sphere)', why: 'Round in every direction.' },
+      { id: 'box', label: 'length × width × height (box)', why: 'Rectangles on every side.' },
+    ],
+    cards: [
+      { label: 'A soup can', bin: 'cylinder', figure: { kind: 'solid', shape: 'cylinder' } },
+      { label: 'A pipe', bin: 'cylinder' },
+      { label: 'An ice cream cone', bin: 'cone', figure: { kind: 'solid', shape: 'cone' } },
+      { label: 'A funnel', bin: 'cone' },
+      { label: 'A tennis ball', bin: 'sphere', figure: { kind: 'solid', shape: 'sphere' } },
+      { label: 'A globe', bin: 'sphere' },
+      { label: 'A cereal box', bin: 'box', figure: { kind: 'solid', shape: 'box' } },
+      { label: 'A shoebox', bin: 'box' },
+    ],
+  },
+
+  // ── Scatter plots (8.SP.1) ──
+  {
+    kind: 'sort',
+    id: 'm.8.scatter-plots~association',
+    title: 'What does the scatter plot show?',
+    use: 'Use this for “Fish meals and test scores: what kind of relationship?”',
+    assumptions: [
+      'Positive association: as x goes up, y tends to go up.',
+      'Negative association: as x goes up, y tends to go down.',
+      'No association: no trend. Nonlinear: the dots follow a curve, not a line.',
+    ],
+    question: 'What does the scatter plot show?',
+    bins: [
+      { id: 'pos', label: 'Positive association', why: 'As x goes up, y tends to go up.' },
+      { id: 'neg', label: 'Negative association', why: 'As x goes up, y tends to go down.' },
+      { id: 'none', label: 'No association', why: 'No trend up or down.' },
+      { id: 'curve', label: 'Nonlinear', why: 'A curve, not a line.' },
+    ],
+    cards: [
+      { label: 'Practice hours and points scored', bin: 'pos' },
+      { label: 'Hits and home runs', bin: 'pos' },
+      { label: 'Assists and points', bin: 'pos' },
+      { label: 'Age of a car and its price', bin: 'neg' },
+      { label: 'Weight of a box of raisins and its price per pound', bin: 'neg' },
+      { label: 'Fish meals a week and test scores', bin: 'none' },
+      { label: 'Shoe size and test score', bin: 'none' },
+      { label: 'Height of a thrown ball over time', bin: 'curve' },
+    ],
+  },
+  {
+    kind: 'observe',
+    id: 'm.8.scatter-plots~two-variables',
+    title: 'Two variables, one bar each',
+    use: 'Use this for “Six players’ assists and points: make the plot and describe the trend.”',
+    assumptions: [
+      'Each column is one player’s assists; the bar is that player’s points.',
+      'Read the tops of the bars left to right: do they rise, fall or stay level?',
+      'Change the bars to try another team.',
+    ],
+    columns: ['5', '10', '15', '20', '25', '30'],
+    rowLabel: 'Points',
+    unit: 'points',
+    max: 60,
+    step: 1,
+    initial: [9, 16, 22, 31, 37, 45],
+    pattern: (values) => {
+      const first = values[0] ?? 0;
+      const last = values[values.length - 1] ?? 0;
+      const per = (last - first) / 25;
+      if (Math.abs(per) < 0.1) return 'Points stay about level as assists grow: no association.';
+      return `Points ${per > 0 ? 'rise' : 'fall'} with assists: about ${Math.abs(Math.round(per * 10) / 10)} points per assist, a ${per > 0 ? 'positive' : 'negative'} association.`;
+    },
+  },
 ];
