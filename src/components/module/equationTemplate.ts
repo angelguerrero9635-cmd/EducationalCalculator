@@ -22,6 +22,11 @@ export type EquationPart =
   | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
   /** A sign the student taps through (`CHOICES`), its value the sign's place: {s:sign}. */
   | { kind: 'choice'; id: string; choices: Choices }
+  /**
+   * A grid of cells in brackets (`det`: between bars, a determinant); `bar` cells from the left,
+   * a vertical line (an augmented matrix).
+   */
+  | { kind: 'matrix'; rows: Slot[][]; bar?: number; det?: boolean }
   /** A subscript: log_{b}, a_{n}. */
   | { kind: 'sub'; base: Slot; sub: Slot }
   /** Scripts stacked on the left of the symbol after them: ^{A}_{Z}X. */
@@ -103,13 +108,62 @@ function readSlot(s: string, i: number, letters: boolean): Read | undefined {
   return m ? { slot: { text: m[0] }, end: i + m[0].length } : undefined;
 }
 
+/** `s` split at `sep` where it is not inside braces or brackets. */
+function splitTop(s: string, sep: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let from = 0;
+  for (let k = 0; k < s.length; k++) {
+    if ('{('.includes(s[k]!)) depth++;
+    else if ('})'.includes(s[k]!)) depth--;
+    else if (s[k] === sep && depth === 0) {
+      out.push(s.slice(from, k));
+      from = k + 1;
+    }
+  }
+  out.push(s.slice(from));
+  return out;
+}
+
+/** A cell, a script or any small piece as one slot: a box, a number or a row of parts. */
+function asSlot(src: string): Slot {
+  const parts = equationParts(src.trim());
+  const only = parts.length === 1 ? parts[0]! : undefined;
+  if (only?.kind === 'box') return { id: only.id };
+  if (only?.kind === 'text' && !only.tightBefore && !only.tightAfter) return { text: only.text };
+  return { parts };
+}
+
 /**
- * The piece starting at `i`, when one does: a box or group, then its exponent (`^{n}`, `^2`,
- * `^x`, `^{n − 1}`) and a fraction bar (`/`) with the bottom. A number or letters start a piece
- * only when an exponent or (a number) a bar follows: `10^{n}`, `e^{{r}{t}}`, `1/{b}`. A group
- * with neither is drawn in line, as if the braces weren't there.
+ * A matrix at `i`: `[[{a}, {b}; {c}, {d}]]` in brackets, `||…||` as a determinant; rows split
+ * by `;`, cells by `,`, and a `|` in every row draws the augmented bar there.
+ */
+function readMatrix(s: string, i: number): { part: EquationPart; end: number } | undefined {
+  const open = s.slice(i, i + 2);
+  if (open !== '[[' && open !== '||') return undefined;
+  const close = s.indexOf(open === '[[' ? ']]' : '||', i + 2);
+  if (close < 0) return undefined;
+  const rows = splitTop(s.slice(i + 2, close), ';').map((row) => splitTop(row, '|'));
+  const bars = new Set(rows.map((r) => (r.length > 1 ? splitTop(r[0]!, ',').length : 0)));
+  const bar = bars.size === 1 ? [...bars][0]! : 0;
+  const part: EquationPart = {
+    kind: 'matrix',
+    rows: rows.map((r) => r.flatMap((side) => splitTop(side, ',')).map(asSlot)),
+    ...(bar ? { bar } : {}),
+    ...(open === '||' ? { det: true } : {}),
+  };
+  return { part, end: close + 2 };
+}
+
+/**
+ * The piece starting at `i`, when one does: a matrix, scripts, a subscript, or a box or group,
+ * then its exponent (`^{n}`, `^2`, `^x`, `^{n − 1}`) and a fraction bar (`/`) with the bottom. A
+ * number or letters start a piece only when an exponent or (a number) a bar follows: `10^{n}`,
+ * `e^{{r}{t}}`, `1/{b}`. A group with neither is drawn in line, as if the braces weren't there.
  */
 function readPiece(s: string, i: number): { parts: EquationPart[]; end: number } | undefined {
+  const matrix = readMatrix(s, i);
+  if (matrix) return { parts: [matrix.part], end: matrix.end };
   // Scripts on the left of a symbol, mass number over atomic number: ^{A}_{Z}X (a ^ with
   // nothing before it).
   if (s[i] === '^' && (i === 0 || /\s/.test(s[i - 1]!))) {
@@ -248,6 +302,8 @@ function partIds(p: EquationPart): string[] {
       return [...slotIds(p.base), ...slotIds(p.sub)];
     case 'scripts':
       return [...slotIds(p.top), ...slotIds(p.bottom)];
+    case 'matrix':
+      return p.rows.flat().flatMap(slotIds);
     case 'text':
       return [];
   }

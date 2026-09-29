@@ -42,6 +42,8 @@ Keep rows for:
 | `√{n}`, `∛{n}`, `√({a}x + {b})`        | A radical, its bar over the box or the group.            |
 | `{s:sign}`, `{s:relation}`, `{o:op}`   | A sign box to tap: < ≤ > ≥ (= too), or + −; value 1, 2…  |
 | `log_{b}`, `a_{n}`, `^{A}_{Z}X`        | A subscript; scripts stacked on the left of a symbol.    |
+| `[[{a}, {b}; {c}, {d}]]`               | A matrix: rows split by ;, cells by a comma.             |
+| `\|\|{a}, {b}; {c}, {d}\|\|`           | A determinant; `\|` inside a row: the augmented bar.     |
 | A line break (`\n`)                    | A second equation under the first (a system).            |
 
 Line breaks and brackets:
@@ -144,7 +146,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | m.12.inverse-trig                       | `sin⁻¹({x}) = {A}°`                                               | today                                                    |
 | m.12.vectors                            | `⟨{a}, {b}⟩ · ⟨{c}, {d}⟩ = {p}`                                   | today                                                    |
 | m.12.polar                              | `{r}(cos {t}° + i sin {t}°) = {a} + {b}i`                         | today                                                    |
-| m.12.matrices                           | 2 × 2 and 3 × 3 grids; a three-variable system on three lines     | **must**: matrix grid                                    |
+| m.12.matrices                           | `[[{a}, {b}; {c}, {d}]]`; a determinant; an augmented 3 × 4       | today (H86: matrix grid)                                 |
 | m.12.conics                             | `{(x − {h})²}/{a}^2 + {(y − {k})²}/{b}^2 = 1`                     | today (H81: a group as a fraction slot)                  |
 | m.12.confidence-intervals               | `{x} ± {z} × {s}/√{n}`                                            | today (H83: a radical in a fraction slot)                |
 | s.10.reaction-types, s.10.stoichiometry | `{a} H₂ + {b} O₂ → {c} H₂O`                                       | today (a coefficient of 1 shows "1")                     |

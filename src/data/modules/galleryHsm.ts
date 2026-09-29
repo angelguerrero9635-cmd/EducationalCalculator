@@ -1300,5 +1300,291 @@ const H85: ModuleDef[] = [
   ),
 ];
 
-export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83, ...H84, ...H85];
+/** A whole-number matrix entry from −20 to 20. */
+const entry = (id: string, name: string) => ({ ...value(id, name, -20, 20), integer: true });
+/** a·(ek − fh) − b·(dk − fg) + c·(dh − eg): a 3 × 3 determinant by its first row. */
+const det3 = (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number,
+  g: number,
+  h: number,
+  k: number,
+) => a * (e * k - f * h) - b * (d * k - f * g) + c * (d * h - e * g);
+/** The same, written out for a step: the ids of the nine cells, row by row. */
+const det3Text = (ids: string[]) => {
+  const [a, b, c, d, e, f, g, h, k] = ids.map((x) => `{${x}}`);
+  return `${a} × (${e} × ${k} − ${f} × ${h}) − ${b} × (${d} × ${k} − ${f} × ${g}) + ${c} × (${d} × ${h} − ${e} × ${g})`;
+};
+
+// H86: a matrix grid in brackets, an augmented bar, a determinant between bars.
+const H86: ModuleDef[] = [
+  {
+    id: 'g.m12-matrices-determinant',
+    title: 'Determinant of a 2 × 2 matrix',
+    use: 'Use this for “Find the determinant of [[3, 1], [2, 4]].”',
+    assumptions: [
+      'The determinant of a 2 × 2 matrix is ad − bc.',
+      'It is the area of the parallelogram the two columns make (negative when they turn clockwise).',
+      'A determinant of 0 means the matrix has no inverse.',
+    ],
+    variables: [
+      entry('a', 'Top left'),
+      entry('b', 'Top right'),
+      entry('c', 'Bottom left'),
+      entry('d', 'Bottom right'),
+      { ...value('D', 'Determinant', -1000, 1000), integer: true },
+    ],
+    relations: [
+      {
+        id: 'D = ad − bc',
+        display: '{D} = {a} × {d} − {b} × {c}',
+        vars: ['D', 'a', 'd', 'b', 'c'],
+        residual: (v: Values) => v.D! - (v.a! * v.d! - v.b! * v.c!),
+        solve: {
+          D: (v: Values) => v.a! * v.d! - v.b! * v.c!,
+          a: (v: Values) => div(v.D! + v.b! * v.c!, v.d!),
+          d: (v: Values) => div(v.D! + v.b! * v.c!, v.a!),
+          b: (v: Values) => div(v.a! * v.d! - v.D!, v.c!),
+          c: (v: Values) => div(v.a! * v.d! - v.D!, v.b!),
+        },
+      },
+    ],
+    steps: {
+      'D = ad − bc': {
+        D: {
+          expr: '{a} × {d} − {b} × {c}',
+          how: 'Multiply down the main diagonal, take the other.',
+        },
+        a: { expr: '({D} + {b} × {c}) ÷ {d}', how: 'Add bc back, then divide by d.' },
+        d: { expr: '({D} + {b} × {c}) ÷ {a}', how: 'Add bc back, then divide by a.' },
+        b: { expr: '({a} × {d} − {D}) ÷ {c}', how: 'Take the determinant from ad, divide by c.' },
+        c: { expr: '({a} × {d} − {D}) ÷ {b}', how: 'Take the determinant from ad, divide by b.' },
+      },
+    },
+    example: { a: 3, b: 1, c: 2, d: 4, D: 10 },
+    startWith: ['a', 'b', 'c', 'd'],
+    equation: '||{a}, {b}; {c}, {d}|| = {D}',
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'a',
+      y: 'c',
+      second: { x: 'b', y: 'd' },
+      segment: true,
+      extent: 6,
+      quadrants: 4,
+    },
+  },
+  {
+    id: 'g.m12-matrices-times-vector',
+    title: 'A 2 × 2 matrix times a vector',
+    use: 'Use this for “Multiply [[2, 1], [1, 3]] by the column (4, 5).”',
+    assumptions: [
+      'Each row of the matrix times the column gives one entry: across, then down.',
+      'Row one: a × x + b × y. Row two: c × x + d × y.',
+    ],
+    variables: [
+      entry('a', 'Top left'),
+      entry('b', 'Top right'),
+      entry('c', 'Bottom left'),
+      entry('d', 'Bottom right'),
+      value('x', 'Top of the vector', -100, 100),
+      value('y', 'Bottom of the vector', -100, 100),
+      value('p', 'Top of the answer', -5000, 5000),
+      value('q', 'Bottom of the answer', -5000, 5000),
+    ],
+    relations: [
+      {
+        id: 'p = ax + by',
+        display: '{p} = {a} × {x} + {b} × {y}',
+        vars: ['p', 'a', 'x', 'b', 'y'],
+        residual: (v: Values) => v.p! - (v.a! * v.x! + v.b! * v.y!),
+        solve: {
+          p: (v: Values) => exact(v.a! * v.x! + v.b! * v.y!),
+          x: (v: Values) => div(v.p! - v.b! * v.y!, v.a!),
+          y: (v: Values) => div(v.p! - v.a! * v.x!, v.b!),
+          a: () => undefined,
+          b: () => undefined,
+        },
+      },
+      {
+        id: 'q = cx + dy',
+        display: '{q} = {c} × {x} + {d} × {y}',
+        vars: ['q', 'c', 'x', 'd', 'y'],
+        residual: (v: Values) => v.q! - (v.c! * v.x! + v.d! * v.y!),
+        solve: {
+          q: (v: Values) => exact(v.c! * v.x! + v.d! * v.y!),
+          x: (v: Values) => div(v.q! - v.d! * v.y!, v.c!),
+          y: (v: Values) => div(v.q! - v.c! * v.x!, v.d!),
+          c: () => undefined,
+          d: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'p = ax + by': {
+        p: { expr: '{a} × {x} + {b} × {y}', how: 'Row one across, the column down.' },
+        x: { expr: '({p} − {b} × {y}) ÷ {a}', how: 'Take by away, then divide by a.' },
+        y: { expr: '({p} − {a} × {x}) ÷ {b}', how: 'Take ax away, then divide by b.' },
+      },
+      'q = cx + dy': {
+        q: { expr: '{c} × {x} + {d} × {y}', how: 'Row two across, the column down.' },
+        x: { expr: '({q} − {d} × {y}) ÷ {c}', how: 'Take dy away, then divide by c.' },
+        y: { expr: '({q} − {c} × {x}) ÷ {d}', how: 'Take cx away, then divide by d.' },
+      },
+    },
+    example: { a: 2, b: 1, c: 1, d: 3, x: 4, y: 5, p: 13, q: 19 },
+    startWith: ['a', 'b', 'c', 'd', 'x', 'y'],
+    equation: '[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{p}; {q}]]',
+    representation: {
+      kind: 'coordinatePlane',
+      x: 'x',
+      y: 'y',
+      second: { x: 'p', y: 'q' },
+      segment: true,
+      extent: 20,
+      quadrants: 4,
+    },
+  },
+  (() => {
+    const cells = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'k'];
+    const rhs = ['p', 'q', 'r'];
+    // The coefficient matrix with column j swapped for the right side (Cramer's rule).
+    const swapped = (j: number) =>
+      cells.map((id, n) => (n % 3 === j ? rhs[Math.floor(n / 3)]! : id));
+    const det = (ids: string[]) => (v: Values) =>
+      det3(
+        ...(ids.map((id) => v[id]!) as [
+          number,
+          number,
+          number,
+          number,
+          number,
+          number,
+          number,
+          number,
+          number,
+        ]),
+      );
+    const unknowns = [
+      { id: 'x', D: 'Dx', col: 0, name: 'x' },
+      { id: 'y', D: 'Dy', col: 1, name: 'y' },
+      { id: 'z', D: 'Dz', col: 2, name: 'z' },
+    ];
+    return {
+      id: 'g.m12-matrices-augmented',
+      title: 'Three equations as an augmented matrix',
+      use: 'Use this for “Solve x + y + z = 6, 2x − y + z = 3, x + 2y − z = 2.”',
+      assumptions: [
+        'Each row is one equation: the coefficients of x, y and z, then the right side after the bar.',
+        'Cramer’s rule: each unknown is a determinant over the determinant D of the coefficients.',
+        'For x, the right sides replace the x column; the same for y and z.',
+        'D = 0 means no single solution.',
+      ],
+      variables: [
+        ...cells.map((id) => entry(id, `Coefficient ${id}`)),
+        ...rhs.map((id) => ({ ...value(id, `Right side ${id}`, -1000, 1000), integer: true })),
+        { ...value('D', 'Determinant D', -50000, 50000), integer: true, derived: true },
+        ...unknowns.map((u) => ({
+          ...value(u.D, `Determinant for ${u.name}`, -5e6, 5e6),
+          integer: true,
+          derived: true,
+        })),
+        ...unknowns.map((u) => ({ ...value(u.id, u.name, -1e6, 1e6), derived: true })),
+      ],
+      relations: [
+        {
+          id: 'D = det of the coefficients',
+          display: `{D} = ${det3Text(cells)}`,
+          vars: ['D', ...cells],
+          residual: (v: Values) => v.D! - det(cells)(v),
+          solve: { D: det(cells) },
+        },
+        ...unknowns.map((u) => ({
+          id: `${u.D} = det with the ${u.name} column swapped`,
+          display: `{${u.D}} = ${det3Text(swapped(u.col))}`,
+          vars: [u.D, ...new Set(swapped(u.col))],
+          residual: (v: Values) => v[u.D]! - det(swapped(u.col))(v),
+          solve: { [u.D]: det(swapped(u.col)) },
+        })),
+        ...unknowns.map((u) => ({
+          id: `${u.name} = ${u.D} ÷ D`,
+          display: `{${u.id}} = {${u.D}} ÷ {D}`,
+          vars: [u.id, u.D, 'D'],
+          residual: (v: Values) => v[u.id]! * v.D! - v[u.D]!,
+          solve: {
+            [u.id]: (v: Values) => (v.D ? exact(v[u.D]! / v.D) : undefined),
+            [u.D]: (v: Values) => exact(v[u.id]! * v.D!),
+          },
+          message: (v: Values) =>
+            v.D === 0 ? 'D is 0: the equations have no single solution.' : undefined,
+        })),
+      ],
+      steps: {
+        'D = det of the coefficients': {
+          D: { expr: det3Text(cells), how: 'Expand along the first row of the coefficients.' },
+        },
+        ...Object.fromEntries(
+          unknowns.map((u) => [
+            `${u.D} = det with the ${u.name} column swapped`,
+            {
+              [u.D]: {
+                expr: det3Text(swapped(u.col)),
+                how: `Put the right sides in the ${u.name} column, then expand along the first row.`,
+              },
+            },
+          ]),
+        ),
+        ...Object.fromEntries(
+          unknowns.map((u) => [
+            `${u.name} = ${u.D} ÷ D`,
+            {
+              [u.id]: {
+                expr: `{${u.D}} ÷ {D}`,
+                how: 'Divide by the determinant of the coefficients.',
+              },
+              [u.D]: { expr: `{${u.id}} × {D}`, how: 'Multiply back by D.' },
+            },
+          ]),
+        ),
+      },
+      example: {
+        a: 1,
+        b: 1,
+        c: 1,
+        d: 2,
+        e: -1,
+        f: 1,
+        g: 1,
+        h: 2,
+        k: -1,
+        p: 6,
+        q: 3,
+        r: 2,
+        D: 7,
+        Dx: 7,
+        Dy: 14,
+        Dz: 21,
+        x: 1,
+        y: 2,
+        z: 3,
+      },
+      startWith: [...cells, ...rhs],
+      equation:
+        '[[{a}, {b}, {c} | {p}; {d}, {e}, {f} | {q}; {g}, {h}, {k} | {r}]]\nx = {x}, y = {y}, z = {z}',
+      representation: {
+        kind: 'coordinatePlane',
+        x: 'x',
+        y: 'y',
+        extent: 6,
+        quadrants: 4,
+      },
+    } satisfies ModuleDef;
+  })(),
+];
+
+export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83, ...H84, ...H85, ...H86];
 export const HSM_GALLERY_LAYOUTS: LayoutDef[] = [];

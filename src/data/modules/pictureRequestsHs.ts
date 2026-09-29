@@ -681,9 +681,19 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Template syntax: letters (or a box) then _ and a slot is a subscript, small and lowered: `log_{b}({x}) = {y}`, `a_{n} = {a1} + (n − 1){d} = {an}` (a_n with a bare letter stays text). A ^ with nothing before it starts scripts stacked on the left of the symbol after them, mass number over atomic number: `^{A}_{Z}X → ^{A2}_{Z2}Y + ^{4}_{2}He`, beta `^{0}_{−1}e`. A brace holding only digits ({4}) is a fixed number, not a box.',
   },
-  ask('H86', 'equationInput', 'A matrix grid of boxes, augmented bar and determinant bars', [
-    'm.12.matrices',
-  ]),
+  {
+    ...ask('H86', 'equationInput', 'A matrix grid of boxes, augmented bar and determinant bars', [
+      'm.12.matrices',
+    ]),
+    status: 'drawn',
+    gallery: [
+      'g.m12-matrices-determinant',
+      'g.m12-matrices-times-vector',
+      'g.m12-matrices-augmented',
+    ],
+    notes:
+      'Template syntax: `[[…]]` is a matrix in brackets, `||…||` a determinant between bars; rows are split by `;` and cells by `,`, each cell a box, a number or a small expression; a `|` at the same place in every row draws the augmented bar. Columns are as wide as their widest cell; brackets and bars grow with the rows. 2 × 2 to 3 × 4: `||{a}, {b}; {c}, {d}|| = {D}`, `[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{p}; {q}]]`, `[[{a}, {b}, {c} | {p}; {d}, {e}, {f} | {q}; {g}, {h}, {k} | {r}]]` with `x = {x}, y = {y}, z = {z}` on a second line. More than 6 boxes draws compact cells (32 px, tap target still 44).',
+  },
   ask('H87', 'equationInput', 'A unit label after a box that follows the unit menu', [
     's.11.circuits',
     'm.3.area~missing-side',

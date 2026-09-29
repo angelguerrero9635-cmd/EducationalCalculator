@@ -466,6 +466,23 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
         choices={p.choices}
         compact={compact || small}
       />
+    ) : p.kind === 'matrix' ? (
+      // A grid in brackets (between bars for a determinant), drawn by columns so each column
+      // is as wide as its widest cell; the augmented bar between two columns.
+      <Fenced key={i} open={p.det ? '|' : '['} close={p.det ? '|' : ']'}>
+        {p.rows[0]!.map((_, j) => (
+          <View key={`m${i}-${j}`} style={styles.eqColumnPair}>
+            {p.bar === j ? <View style={[styles.eqAugment, { backgroundColor: c.text }]} /> : null}
+            <View style={[styles.eqColumn, compact && styles.eqColumnCompact]}>
+              {p.rows.map((row, r) => (
+                <View key={r} style={compact ? styles.eqCellCompact : styles.eqCell}>
+                  {row[j] ? slotView(row[j]!, `m${i}-${r}-${j}`, compact) : null}
+                </View>
+              ))}
+            </View>
+          </View>
+        ))}
+      </Fenced>
     ) : p.kind === 'sub' ? (
       // log_{b}, a_{n}: the subscript small, its top two thirds of the way down the base.
       <View key={i} style={styles.eqSub}>
@@ -568,7 +585,9 @@ function columnsOf(parts: EquationPart[]): number {
             ? slot(p.base)
             : p.kind === 'root'
               ? slot(p.body)
-              : 1),
+              : p.kind === 'matrix'
+                ? p.rows[0]!.length
+                : 1),
     0,
   );
 }
@@ -755,6 +774,12 @@ const styles = StyleSheet.create({
   eqBoxSmall: { minHeight: 32, fontSize: font.caption + 2 },
   eqHit: { padding: 6, margin: -6 },
   eqChoiceSmall: { minWidth: 32, minHeight: 32 },
+  eqColumnPair: { flexDirection: 'row', alignItems: 'stretch', gap: 6 },
+  eqColumn: { gap: 6, alignItems: 'center' },
+  eqColumnCompact: { gap: 12 },
+  eqCell: { minHeight: 44, justifyContent: 'center' },
+  eqCellCompact: { minHeight: 32, justifyContent: 'center' },
+  eqAugment: { width: 2, borderRadius: 1 },
   // The base stays centred on the line: 8 above it balances the 8 the subscript hangs below.
   eqSub: { flexDirection: 'row', alignItems: 'flex-start', paddingTop: 8 },
   eqSubscript: { marginTop: 20, marginLeft: 1 },

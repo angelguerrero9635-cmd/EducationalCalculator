@@ -304,6 +304,52 @@ describe('H85: subscripts and left scripts', () => {
   });
 });
 
+describe('H86: matrices', () => {
+  it('reads rows and cells, fixed cells as numbers', () => {
+    expect(equationParts('[[{a}, {b}; {c}, {d}]]')).toEqual([
+      {
+        kind: 'matrix',
+        rows: [
+          [{ id: 'a' }, { id: 'b' }],
+          [{ id: 'c' }, { id: 'd' }],
+        ],
+      },
+    ]);
+    expect(equationParts('[[1, 0; 0, −1]]')[0]).toEqual({
+      kind: 'matrix',
+      rows: [
+        [{ text: '1' }, { text: '0' }],
+        [{ text: '0' }, { text: '−1' }],
+      ],
+    });
+  });
+
+  it('draws the augmented bar and the determinant', () => {
+    const [aug] = equationParts(
+      '[[{a}, {b}, {c} | {p}; {d}, {e}, {f} | {q}; {g}, {h}, {k} | {r}]]',
+    );
+    expect(aug).toMatchObject({ kind: 'matrix', bar: 3 });
+    expect((aug as { rows: unknown[][] }).rows.map((r) => r.length)).toEqual([4, 4, 4]);
+    expect(equationParts('||{a}, {b}; {c}, {d}|| = {D}')).toEqual([
+      {
+        kind: 'matrix',
+        rows: [
+          [{ id: 'a' }, { id: 'b' }],
+          [{ id: 'c' }, { id: 'd' }],
+        ],
+        det: true,
+      },
+      text('='),
+      box('D'),
+    ]);
+    expect(equationIds('||{a}, {b}; {c}, {d}|| = {D}')).toEqual(['a', 'b', 'c', 'd', 'D']);
+  });
+
+  it('keeps single bars as text (absolute value)', () => {
+    expect(equationParts('|{a}x + {b}| = {c}')[0]).toEqual(text('|', { after: true }));
+  });
+});
+
 describe('every page’s equation', () => {
   it('lists each box in its template', () => {
     for (const m of TESTED_MODULES) {
