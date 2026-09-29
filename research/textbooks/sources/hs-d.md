@@ -27,6 +27,10 @@ Crawl-delay), and cached in the group's scratch folder so nothing was fetched tw
 
 ## 1. OpenStax (Rice University): used
 
+- **AI restriction.** Every OpenStax book page's "Citation/Attribution" panel says: "This book
+  may not be used in the training of large language models or otherwise be ingested into large
+  language models or generative AI offerings without OpenStax's prior written permission." The
+  owner decided on 2026-09-29 to keep these files; see `../README.md`.
 - **Licenses.** Each book's Preface ("About OpenStax resources", "Customization"):
   - Biology 2e, <https://openstax.org/books/biology-2e/pages/preface>:
     > "Biology 2e is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (CC BY-NC-SA)
