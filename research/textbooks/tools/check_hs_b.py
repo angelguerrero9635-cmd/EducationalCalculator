@@ -11,7 +11,8 @@ import collections, json, os, re, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 TB = os.path.join(ROOT, "research", "textbooks")
-IDS = ["openstax-algebra-trig-2e", "openstax-precalculus-2e", "openstax-statistics-2e"]
+IDS = ["openstax-algebra-trig-2e", "openstax-precalculus-2e", "openstax-statistics-2e",
+       "openstax-elementary-algebra-2e", "openstax-intermediate-algebra-2e"]
 ERR = []
 
 

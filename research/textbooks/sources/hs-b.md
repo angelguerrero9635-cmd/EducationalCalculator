@@ -2,14 +2,16 @@
 
 Reference only: nothing here is imported, bundled or shipped.
 
-| File | What |
-| --- | --- |
-| `toc/math/openstax-algebra-trig-2e.json` | Algebra and Trigonometry 2e: every chapter and section, with URLs and skill ids (Grades 9, 11, 12) |
-| `toc/math/openstax-precalculus-2e.json` | Precalculus 2e (Grade 12) |
-| `toc/math/openstax-statistics-2e.json` | Introductory Statistics 2e (Grade 12) |
-| `practice/math/<grade>.<id>.jsonl` | A representative practice sample per book and grade |
-| `screenshots/<id>/<record id>.webp` | The problem with its figure, for figure problems |
-| `tools/check_hs_b.py` | Checks the files above and prints the counts below |
+| File                                             | What                                                                                               |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `toc/math/openstax-algebra-trig-2e.json`         | Algebra and Trigonometry 2e: every chapter and section, with URLs and skill ids (Grades 9, 11, 12) |
+| `toc/math/openstax-precalculus-2e.json`          | Precalculus 2e (Grade 12)                                                                          |
+| `toc/math/openstax-statistics-2e.json`           | Introductory Statistics 2e (Grade 12)                                                              |
+| `toc/math/openstax-elementary-algebra-2e.json`   | Elementary Algebra 2e (Grade 9)                                                                    |
+| `toc/math/openstax-intermediate-algebra-2e.json` | Intermediate Algebra 2e (Grade 11)                                                                 |
+| `practice/math/<grade>.<id>.jsonl`               | A representative practice sample per book and grade                                                |
+| `screenshots/<id>/<record id>.webp`              | The problem with its figure, for figure problems                                                   |
+| `tools/check_hs_b.py`                            | Checks the files above and prints the counts below                                                 |
 
 ## Source: OpenStax (openstax.org), Rice University
 
@@ -22,7 +24,7 @@ Reference only: nothing here is imported, bundled or shipped.
   `/extras`, `/errata`, `/resources`, `/apps/archive`, `/apps/archive-preview` and
   `/apps/cms/api/spike`; `/books/` is disallowed only for `GPTBot`. Book pages are therefore
   allowed for our User-Agent (`EducationalCalculatorResearch/0.2 (offline study-app curriculum
-  research; contact …)`). The fetcher refuses every disallowed path. Figure images are served
+research; contact …)`). The fetcher refuses every disallowed path. Figure images are served
   from `/apps/image-cdn/v1/…` (not disallowed) and were fetched only for the screenshots.
 - **Politeness:** the pages were fetched one request every 4.5 s, the few images later at one
   per 1.1 s, and every response is cached so nothing was fetched twice.
@@ -61,11 +63,11 @@ stays original (`CLAUDE.md`), so nothing from these records goes into lessons.
 <https://openstax.org/books/algebra-and-trigonometry-2e/pages/preface>. 13 chapters, 79 sections.
 Filed by content (one book, three grade entries):
 
-| Chapters | Grade | Why |
-| --- | --- | --- |
-| 1–4 Prerequisites; Equations and Inequalities; Functions; Linear Functions | 9 | Algebra 1 content: radicals, polynomials, factoring, linear and quadratic equations, functions, linear models |
-| 5–8 Polynomial and Rational; Exponential and Logarithmic; Unit Circle; Periodic Functions | 11 | Algebra 2 content: polynomial, rational, exponential, logarithmic and trigonometric functions |
-| 9–13 Identities and Equations; Further Trigonometry; Systems; Analytic Geometry; Sequences, Probability and Counting | 12 | Precalculus content: trig identities, law of sines/cosines, polar, parametric, vectors, matrices, conics, binomial theorem |
+| Chapters                                                                                                             | Grade | Why                                                                                                                        |
+| -------------------------------------------------------------------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
+| 1–4 Prerequisites; Equations and Inequalities; Functions; Linear Functions                                           | 9     | Algebra 1 content: radicals, polynomials, factoring, linear and quadratic equations, functions, linear models              |
+| 5–8 Polynomial and Rational; Exponential and Logarithmic; Unit Circle; Periodic Functions                            | 11    | Algebra 2 content: polynomial, rational, exponential, logarithmic and trigonometric functions                              |
+| 9–13 Identities and Equations; Further Trigonometry; Systems; Analytic Geometry; Sequences, Probability and Counting | 12    | Precalculus content: trig identities, law of sines/cosines, polar, parametric, vectors, matrices, conics, binomial theorem |
 
 ### Practice sample
 
@@ -82,8 +84,9 @@ or "Section Exercises", `n`, the exercise `group` such as "Verbal", and the `ins
   `source.answerUrl` says where the answer came from.
 - **Math as plain text:** MathML is converted: fractions `a/b` with parentheses around compound
   parts (`-5/(2x)`, `(3/4)x`), powers `x²`, `x^(-4)`, roots `√(x)`, `∛(x)`, `ⁿ√(x)`, function names
-  spaced (`sin^(-1) x`, `cos^4 θ`), subscripts `log_2(8)`, aligned working as `[row; row]`. Lists
-  with circled letters become `(a)`, `(b)`. HTML tables become `[Table: row ; row]` with cells
+  spaced (`sin^(-1) x`, `cos^4 θ`), subscripts `log_2(8)`, repeating decimals `0.3̄`, aligned
+  working and systems as `[row; row]`. Circled labels (ⓐ, ⓑ) become `(a)`, `(b)`. An empty
+  superscript in the book's markup (it displays nothing) is dropped. HTML tables become `[Table: row ; row]` with cells
   separated by `|`. Each image becomes `[Figure: <the page's alt text>]`.
 - **Figures and tables referenced elsewhere:** when a Try It or exercise links to a figure or
   table elsewhere on the same page ("Using Figure 4, solve f(x) = 1"), that figure's alt text or
@@ -115,12 +118,12 @@ under Grade 12.
 
 ### Counts
 
-| Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots | MB |
-| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 9 | 4 | 23 | 324 | 186 | 138 | 255 | 17 | 8 | 0.10 |
-| 11 | 4 | 23 | 319 | 181 | 138 | 250 | 25 | 21 | 0.26 |
-| 12 | 5 | 33 | 383 | 185 | 198 | 284 | 5 | 4 | 0.06 |
-| all | 13 | 79 | 1026 | 552 | 474 | 789 | 47 | 33 | 0.41 |
+| Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots |   MB |
+| ----: | -------: | -------: | -------: | -----: | ----------------: | ----------: | ----------------------: | ----------: | ---: |
+|     9 |        4 |       23 |      324 |    186 |               138 |         255 |                      17 |           8 | 0.10 |
+|    11 |        4 |       23 |      319 |    181 |               138 |         250 |                      25 |          21 | 0.26 |
+|    12 |        5 |       33 |      383 |    185 |               198 |         284 |                       5 |           4 | 0.06 |
+|   all |       13 |       79 |     1026 |    552 |               474 |         789 |                      47 |          33 | 0.41 |
 
 ## Precalculus 2e (`openstax-precalculus-2e`)
 
@@ -138,9 +141,9 @@ graphs of linear functions, 9.1 two-variable systems (Grade 8 skills), 9.4 parti
 11.7 probability. The early chapters (functions, linear, quadratic) are Algebra 1 and 2 content
 filed under Grade 12 because the book is a Precalculus course.
 
-| Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots | MB |
-| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 12 | 12 | 73 | 920 | 482 | 438 | 701 | 56 | 40 | 0.53 |
+| Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots |   MB |
+| ----: | -------: | -------: | -------: | -----: | ----------------: | ----------: | ----------------------: | ----------: | ---: |
+|    12 |       12 |       73 |      920 |    482 |               438 |         701 |                      56 |          40 | 0.53 |
 
 ## Introductory Statistics 2e (`openstax-statistics-2e`)
 
@@ -177,19 +180,49 @@ probability; 4–5 (discrete and continuous distributions) to `m.12.probability-
 (one- and two-sample tests, chi-square, ANOVA) to `m.12.hypothesis-testing`; 12 (regression) to
 `m.9.regression`.
 
-| Grade | Chapters | Sections | Problems | Try It | Practice exercises | With answer | With a picture or table | Screenshots | MB |
-| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 12 | 13 | 80 | 558 | 242 | 316 | 164 | 145 | 30 | 0.42 |
+| Grade | Chapters | Sections | Problems | Try It | Practice exercises | With answer | With a picture or table | Screenshots |   MB |
+| ----: | -------: | -------: | -------: | -----: | -----------------: | ----------: | ----------------------: | ----------: | ---: |
+|    12 |       13 |       80 |      558 |    242 |                316 |         164 |                     145 |          30 | 0.42 |
 
 (Lab sections such as 1.5 "Data Collection Experiment" have no Practice exercises or Try Its.)
+
+## Elementary Algebra 2e (`openstax-elementary-algebra-2e`) and Intermediate Algebra 2e (`openstax-intermediate-algebra-2e`)
+
+<https://openstax.org/books/elementary-algebra-2e/pages/preface> (10 chapters, 71 sections, filed
+under **Grade 9**, Algebra 1) and <https://openstax.org/books/intermediate-algebra-2e/pages/preface>
+(12 chapters, 70 sections, filed under **Grade 11**, Algebra 2). Both pages carry the same license
+panel quoted above (CC BY-NC-SA 4.0, "Access for free at https://openstax.org/books/elementary-algebra-2e/pages/1-introduction"
+and "…/intermediate-algebra-2e/pages/1-introduction"), so they get the same treatment: full table
+of contents, a marked sample.
+
+- **Layout:** Try Its are numbered through the chapter ("Try It 2.13"); most worked examples have
+  two, so these books have many more Try Its per section than the others (about 20). Section
+  exercises are grouped "Practice Makes Perfect", "Everyday Math", "Writing Exercises" and are
+  numbered through the chapter; within "Practice Makes Perfect" a subheading and an instruction
+  ("In the following exercises, …") precede each run, and both are prefixed to `question`. The
+  sample is every Try It and the first 6 exercises of each section, as for the other books.
+- **Answers:** Try It answers and odd-numbered exercise answers from the "Answer Key" chapter pages
+  (`/pages/chapter-N`), matched by page and exercise id. Nearly every Try It has one.
+- **Skill mapping:** both books open with review chapters (Elementary 1 Foundations: whole numbers,
+  integers, fractions, decimals, real numbers; Intermediate 1–3: arithmetic, linear equations,
+  lines and functions) that map to Grade 6–8 skills; units and sections say so in `notes`.
+  Elementary 8 (rational expressions) maps to `m.11.rational-functions` and 6.6 (dividing
+  polynomials) to `m.11.polynomial-functions` although filed under Grade 9; Intermediate 4.4–4.6
+  (three-variable systems, matrices, determinants) map to `m.12.matrices`, 6 and 8–9 (factoring,
+  radicals, quadratics) to the Grade 9 skills, 11 (conics) to `m.12.conics`, 12.4 to
+  `m.12.binomial-theorem`.
+
+| Book                    | Grade | Chapters | Sections | Problems | Try It | Section exercises | With answer | With a picture or table | Screenshots |   MB |
+| ----------------------- | ----: | -------: | -------: | -------: | -----: | ----------------: | ----------: | ----------------------: | ----------: | ---: |
+| Elementary Algebra 2e   |     9 |       10 |       71 |     2175 |   1749 |               426 |        1962 |                      59 |          55 | 0.50 |
+| Intermediate Algebra 2e |    11 |       12 |       70 |     1806 |   1386 |               420 |        1596 |                      54 |          54 | 0.59 |
 
 ## Other OpenStax books: checked, not used
 
 Found in the OpenStax sitemap index (<https://openstax.org/rex/sitemaps/index.xml>); each page's
 license panel quoted as above (CC BY-NC-SA 4.0 unless noted).
 
-- **Elementary Algebra 2e** (`elementary-algebra-2e`, Grade 9 fit) and **Intermediate Algebra 2e**
-  (`intermediate-algebra-2e`, Grade 11 fit): see below.
+- **Elementary Algebra 2e** and **Intermediate Algebra 2e**: used, see the next two sections.
 - **Algebra 1** (`algebra-1`): an OpenStax high-school Algebra 1 course (977 pages: units of
   mini-lessons, reviews, "Desmos" activities). Same CC BY-NC-SA license. Not used this round: it is
   a different page structure (unit overviews, mini-lessons, no numbered section exercises with an
