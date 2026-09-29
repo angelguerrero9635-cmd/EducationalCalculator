@@ -2018,6 +2018,7 @@ export function repIssues(
       break;
     case 'gel':
     case 'alleleFrequencies':
+    case 'immuneResponse':
       out.push(...hshIssues(rep, (id) => val(id)));
       break;
     case 'table':

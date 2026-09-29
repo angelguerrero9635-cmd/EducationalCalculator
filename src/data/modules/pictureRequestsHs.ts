@@ -651,12 +651,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'The climate page uses the same loop for the ice-albedo and water-vapor feedbacks. Drawn (group HH). Explore figure { kind: "feedbackLoop" }; every word is the scene’s: loop: { steps: [{ role?: "Stimulus", text }] (3 to 6 boxes, each text at most 90 characters), sign: "negative" | "positive" (the arrow back from the response marked − or +), lit?: step index, back?: label on the arrow back ("negative feedback") }. Climate loops leave out the roles. Example scene: { label: "Too hot", lines: [...], loop: { sign: "negative", back: "negative feedback", lit: 2, steps: [{ role: "Stimulus", text: "Body temperature rises above its set point." }, …] } }.',
   },
-  ask(
-    'H42',
-    'immuneResponse',
-    'Pathogen card icons (virus, bacterium, fungus, parasite); the immune response in stages; antibody levels after a first and second exposure',
-    ['s.9.immune-disease'],
-  ),
+  {
+    ...ask(
+      'H42',
+      'immuneResponse',
+      'Pathogen card icons (virus, bacterium, fungus, parasite); the immune response in stages; antibody levels after a first and second exposure',
+      ['s.9.immune-disease'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-immune-disease-antibodies',
+      'g.s9-immune-disease-booster',
+      'g.s9-immune-disease-stages',
+      'g.s9-immune-disease-pathogens',
+    ],
+    notes:
+      'Drawn (group HH) in three parts. Antibody plot (calculator): { kind: "immuneResponse", first: peak id, second: peak id, firstDays?: id or number (default 12), secondDays?: (default 6), secondAt?: day of the 2nd exposure (default 40), axis?: "Antibody level" }; each response rises to its peak on its day and falls (the second more slowly), the curve drawn is the higher of the two, peaks dotted with their levels; the harness checks the curve passes through both peaks and never above the higher. Example: { kind: "immuneResponse", first: "P1", second: "P2", firstDays: "d1", secondDays: "d2", secondAt: 40 }. Stages (explore figure, named immuneStages so it doesn’t clash with the picture kind): { kind: "immuneStages" }, each scene immune: { stage?: "antigen" | "helperT" | "bCells" | "antibodies" | "killerT" | "memory" } (none: the whole response). Pathogen card icons: { kind: "icon", icon: "virus" } (also "bacterium", "fungus", "parasite").',
+  },
 
   // ── E. Chemistry ──
   ask(

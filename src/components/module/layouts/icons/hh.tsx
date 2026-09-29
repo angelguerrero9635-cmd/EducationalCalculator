@@ -648,6 +648,175 @@ export function HHIcon({ icon, ink }: IconProps): ReactNode {
           {tree(24, 32, 11, c.life)}
         </G>
       );
+    case 'virus':
+      return (
+        <G>
+          <Defs>
+            <Ball id={ids.cell} color={c.virusCoat} />
+          </Defs>
+          {Array.from({ length: 12 }, (_, i) => {
+            const a = (i / 12) * Math.PI * 2;
+            const [x1, y1] = [24 + 14 * Math.cos(a), 24 + 14 * Math.sin(a)];
+            const [x2, y2] = [24 + 20 * Math.cos(a), 24 + 20 * Math.sin(a)];
+            return (
+              <G key={i}>
+                <Path d={`M ${x1} ${y1} L ${x2} ${y2}`} stroke={ink} strokeWidth={1.1} />
+                <Circle
+                  cx={x2}
+                  cy={y2}
+                  r={2.4}
+                  fill={c.virusSpike}
+                  stroke={ink}
+                  strokeWidth={0.6}
+                />
+              </G>
+            );
+          })}
+          <Circle cx={24} cy={24} r={14} fill={url(ids.cell)} stroke={ink} strokeWidth={1.2} />
+          <Path
+            d="M 16 22 q 3 -5 6 0 t 6 0 t 5 1 M 17 28 q 3 4 6 0 t 6 0"
+            stroke={c.blockRed}
+            strokeWidth={1.1}
+            fill="none"
+          />
+        </G>
+      );
+    case 'bacterium':
+      return (
+        <G>
+          <Defs>
+            <Ball id={ids.cell} color={c.bacteriumCell} />
+          </Defs>
+          <G transform="rotate(-25 24 24)">
+            {[
+              'M 38 22 q 3 -4 6 -2 t 4 -4',
+              'M 38 26 q 3 3 6 1 t 4 3',
+              'M 10 24 q -3 -3 -6 0 t -4 1',
+            ].map((d) => (
+              <Path key={d} d={d} stroke={ink} strokeWidth={0.9} fill="none" />
+            ))}
+            {[14, 20, 26, 32].map((x) => (
+              <Path
+                key={x}
+                d={`M ${x} 16 l -1 -3 M ${x} 32 l 1 3`}
+                stroke={ink}
+                strokeWidth={0.7}
+              />
+            ))}
+            <Rect
+              x={9}
+              y={15}
+              width={30}
+              height={18}
+              rx={9}
+              fill={url(ids.cell)}
+              stroke={ink}
+              strokeWidth={1.2}
+            />
+            <Path
+              d="M 15 24 c 2 -5 5 5 8 0 s 5 -5 8 0 s 3 3 4 1"
+              stroke={ink}
+              strokeWidth={0.8}
+              fill="none"
+              opacity={0.7}
+            />
+          </G>
+        </G>
+      );
+    case 'fungus':
+      return (
+        <G>
+          <Defs>
+            <Ball id={ids.cell} color={c.fungusCell} />
+          </Defs>
+          <Path
+            d="M 26 28 C 32 30 36 34 42 34 M 36 33 C 38 38 40 40 44 42 M 30 30 C 30 36 28 40 30 45"
+            stroke={c.fungusCell}
+            strokeWidth={3.2}
+            fill="none"
+            strokeLinecap="round"
+          />
+          <Path
+            d="M 26 28 C 32 30 36 34 42 34 M 36 33 C 38 38 40 40 44 42 M 30 30 C 30 36 28 40 30 45"
+            stroke={ink}
+            strokeWidth={0.6}
+            fill="none"
+            opacity={0.7}
+          />
+          {[
+            [17, 20, 9, 7],
+            [8, 11, 5, 4],
+            [27, 12, 5, 4],
+            [9, 31, 4.5, 3.5],
+          ].map(([x, y, rx, ry]) => (
+            <Ellipse
+              key={`${x}-${y}`}
+              cx={x}
+              cy={y}
+              rx={rx}
+              ry={ry}
+              fill={url(ids.cell)}
+              stroke={ink}
+              strokeWidth={1}
+            />
+          ))}
+          <Circle cx={17} cy={20} r={2.2} fill={c.fur} opacity={0.7} />
+        </G>
+      );
+    case 'parasite':
+      return (
+        <G>
+          <Defs>
+            <Ball id={ids.cell} color={c.parasiteCell} />
+          </Defs>
+          {[
+            'M 20 38 q -4 4 -10 4 t -7 4',
+            'M 28 38 q 4 4 10 4 t 7 4',
+            'M 24 40 q 1 4 -1 7',
+            'M 12 26 q -5 1 -8 -2',
+            'M 36 26 q 5 1 8 -2',
+          ].map((d) => (
+            <Path key={d} d={d} stroke={ink} strokeWidth={0.9} fill="none" />
+          ))}
+          <Path
+            d="M 24 4 C 36 4 42 14 40 24 C 38 32 30 40 24 41 C 18 40 10 32 8 24 C 6 14 12 4 24 4 Z"
+            fill={url(ids.cell)}
+            stroke={ink}
+            strokeWidth={1.2}
+          />
+          <Ellipse
+            cx={24}
+            cy={17}
+            rx={11}
+            ry={7}
+            fill={c.parasiteCell}
+            stroke={ink}
+            strokeWidth={0.6}
+            opacity={0.6}
+          />
+          <Ellipse
+            cx={19}
+            cy={17}
+            rx={3.2}
+            ry={4}
+            fill={c.purple}
+            fillOpacity={0.7}
+            stroke={ink}
+            strokeWidth={0.7}
+          />
+          <Ellipse
+            cx={29}
+            cy={17}
+            rx={3.2}
+            ry={4}
+            fill={c.purple}
+            fillOpacity={0.7}
+            stroke={ink}
+            strokeWidth={0.7}
+          />
+          <Path d="M 24 22 L 24 38" stroke={ink} strokeWidth={0.8} />
+        </G>
+      );
     default:
       return null;
   }

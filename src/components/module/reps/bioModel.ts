@@ -71,3 +71,29 @@ export const ALLELE_BEADS = 100;
 /** The dominant allele's beads for p: p × 100, rounded (exact when p has two decimals). */
 export const beadsFor = (p: number) =>
   Math.max(0, Math.min(ALLELE_BEADS, Math.round(p * ALLELE_BEADS)));
+
+/** Defaults for the antibody curve: days to each peak and the day of the second exposure. */
+export const IMMUNE_DEFAULTS = { firstDays: 12, secondDays: 6, secondAt: 40 };
+
+/**
+ * One response's level at `t` days after its exposure: 0 before, rising to `peak` at `days`,
+ * then falling (`slow`: the second response stays up longer). The shape is (s·e^(1 − s))^k with
+ * s = t ÷ days, which is 1 at s = 1 and less everywhere else.
+ */
+export function responseAt(t: number, peak: number, days: number, slow = false): number {
+  if (t <= 0 || days <= 0) return 0;
+  const s = t / days;
+  const k = s <= 1 ? 3 : slow ? 1.2 : 3;
+  return peak * (s * Math.exp(1 - s)) ** k;
+}
+
+/** The antibody level drawn at day `t`: the higher of the two responses. */
+export function antibodyAt(
+  t: number,
+  r: { first: number; second: number; firstDays: number; secondDays: number; secondAt: number },
+): number {
+  return Math.max(
+    responseAt(t, r.first, r.firstDays),
+    responseAt(t - r.secondAt, r.second, r.secondDays, true),
+  );
+}

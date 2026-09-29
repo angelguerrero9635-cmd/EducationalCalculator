@@ -132,6 +132,7 @@ const PICTURE_NAMES: Record<string, string> = {
   algebraTiles: 'algebra tiles',
   gel: 'gel electrophoresis or PCR copies',
   alleleFrequencies: 'allele beads and genotype bars',
+  immuneResponse: 'antibody levels after two exposures',
   matrixGrid: 'matrices in brackets',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',

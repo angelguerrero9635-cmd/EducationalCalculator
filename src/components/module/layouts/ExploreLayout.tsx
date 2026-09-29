@@ -25,6 +25,7 @@ import { StudyDesignFigure } from './studyDesignFigure';
 import { CladogramFigure } from './cladogramFigure';
 import { NitrogenCycleFigure } from './nitrogenCycleFigure';
 import { FeedbackLoopFigure } from './feedbackLoopFigure';
+import { ImmuneStagesFigure } from './immuneStagesFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -187,6 +188,8 @@ function FigureView({
       return <NitrogenCycleFigure process={scene.nitrogen?.process} />;
     case 'feedbackLoop':
       return <FeedbackLoopFigure loop={scene.loop ?? { steps: [], sign: 'negative' }} />;
+    case 'immuneStages':
+      return <ImmuneStagesFigure stage={scene.immune?.stage} />;
   }
 }
 

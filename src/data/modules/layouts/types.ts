@@ -1,6 +1,13 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
-import type { CladeScene, CladeTrait, CladeTree, LoopScene, NitrogenProcess } from '../typesHsh';
+import type {
+  CladeScene,
+  CladeTrait,
+  CladeTree,
+  ImmuneStage,
+  LoopScene,
+  NitrogenProcess,
+} from '../typesHsh';
 import type { Round3Icon } from './icons';
 
 /**
@@ -330,7 +337,9 @@ export type Figure =
   /** The nitrogen cycle: air, a bean plant with root nodules, lightning, the soil's forms (H40). */
   | { kind: 'nitrogenCycle' }
   /** A feedback loop: stimulus, sensor, control center, effector, response, and back (H41). */
-  | { kind: 'feedbackLoop' };
+  | { kind: 'feedbackLoop' }
+  /** The immune response: antigen, helper T, B and plasma cells, antibodies, killer T, memory (H42). */
+  | { kind: 'immuneStages' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -463,6 +472,8 @@ export interface Scene {
   nitrogen?: { process?: NitrogenProcess };
   /** The loop's steps, its sign and the step lit (a `feedbackLoop` figure). */
   loop?: LoopScene;
+  /** The stage lit (an `immuneStages` figure); with none, the whole response. */
+  immune?: { stage?: ImmuneStage };
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */

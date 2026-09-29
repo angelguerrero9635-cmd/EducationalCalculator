@@ -87,6 +87,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes     | Grades 10–12 conics                 |
 | `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
+| `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.

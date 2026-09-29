@@ -61,7 +61,29 @@ export interface AlleleFrequenciesSpec {
   fixed?: boolean;
 }
 
-export type HshSpec = GelSpec | AlleleFrequenciesSpec;
+/**
+ * Antibody levels over time after a first and a second exposure to one antigen: the first
+ * response slow and low, the second (from memory cells) faster and higher. Each response rises
+ * to its peak `days` after its exposure and falls away, the second more slowly; the curve drawn
+ * is the higher of the two at each day. Peaks are marked with their levels and days.
+ */
+export interface ImmuneResponseSpec {
+  kind: 'immuneResponse';
+  /** Peak antibody level after the first exposure. */
+  first: NumOrVar;
+  /** Peak antibody level after the second exposure. */
+  second: NumOrVar;
+  /** Days from the first exposure to its peak (default 12). */
+  firstDays?: NumOrVar;
+  /** Days from the second exposure to its peak (default 6). */
+  secondDays?: NumOrVar;
+  /** Day of the second exposure (default 40). */
+  secondAt?: NumOrVar;
+  /** The level's name on the axis (default "Antibody level"). */
+  axis?: string;
+}
+
+export type HshSpec = GelSpec | AlleleFrequenciesSpec | ImmuneResponseSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hshSpecVars(r: HshSpec): string[] {
@@ -78,6 +100,8 @@ export function hshSpecVars(r: HshSpec): string[] {
       ]);
     case 'alleleFrequencies':
       return ids([r.p, r.q, ...(r.genotypes ?? []).map((g) => g ?? undefined), ...(r.keep ?? [])]);
+    case 'immuneResponse':
+      return ids([r.first, r.second, r.firstDays, r.secondDays, r.secondAt]);
   }
 }
 
@@ -126,3 +150,6 @@ export interface LoopScene {
   lit?: number;
   back?: string;
 }
+
+/** The stages an `immuneStages` figure lights. */
+export type ImmuneStage = 'antigen' | 'helperT' | 'bCells' | 'antibodies' | 'killerT' | 'memory';

@@ -462,6 +462,7 @@ function representationVars(r: Representation): string[] {
       return hsdSpecVars(r);
     case 'gel':
     case 'alleleFrequencies':
+    case 'immuneResponse':
       return hshSpecVars(r);
   }
 }

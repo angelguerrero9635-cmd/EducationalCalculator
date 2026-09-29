@@ -505,6 +505,107 @@ const invertedBiomass: ModuleDef = {
   },
 };
 
+// ── H42 immuneResponse: antibody levels after two exposures ──
+
+/** a = b ÷ c with its two rearrangements. */
+function quotient(a: string, b: string, c: string, how: [string, string, string]): Rel {
+  return {
+    relation: {
+      id: `${a} = ${b} ÷ ${c}`,
+      display: `{${a}} = {${b}} ÷ {${c}}`,
+      vars: [a, b, c],
+      residual: (v: Values) => v[a]! * v[c]! - v[b]!,
+      solve: {
+        [a]: (v: Values) => div(v[b]!, v[c]!),
+        [b]: (v: Values) => v[a]! * v[c]!,
+        [c]: (v: Values) => div(v[b]!, v[a]!),
+      },
+    },
+    steps: {
+      [a]: { expr: `{${b}} ÷ {${c}}`, how: how[0] },
+      [b]: { expr: `{${a}} × {${c}}`, how: how[1] },
+      [c]: { expr: `{${b}} ÷ {${a}}`, how: how[2] },
+    },
+  };
+}
+
+const level = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { unit: 'units', min: 0.1, max: 100000, step: 1 });
+const days = (id: string, symbol: string, name: string) =>
+  V(id, symbol, name, { unit: 'days', min: 1, max: 30, step: 1 });
+
+const antibodies: ModuleDef = {
+  id: 'g.s9-immune-disease-antibodies',
+  title: 'Antibody levels: first and second exposure',
+  use: 'Use this for comparing the primary and secondary immune responses to one antigen.',
+  assumptions: [
+    'The first time an antigen enters, B cells take days to be chosen and multiply, so antibodies rise slowly and stay low.',
+    'Memory cells left from the first response answer a second exposure faster and make far more antibody.',
+    'Levels are in relative units: only their ratio matters here.',
+  ],
+  variables: [
+    level('P1', 'P₁', 'Peak level, first exposure'),
+    days('d1', 'd₁', 'Days to the first peak'),
+    V('r1', 'r₁', 'Average rise per day, first', {
+      unit: 'units/day',
+      min: 0.01,
+      max: 100000,
+      step: 0.1,
+    }),
+    level('P2', 'P₂', 'Peak level, second exposure'),
+    days('d2', 'd₂', 'Days to the second peak'),
+    V('r2', 'r₂', 'Average rise per day, second', {
+      unit: 'units/day',
+      min: 0.01,
+      max: 100000,
+      step: 0.1,
+    }),
+    V('k', 'k', 'Times higher, second peak', { min: 0.01, max: 1000, step: 0.1 }),
+  ],
+  ...rels(
+    quotient('k', 'P2', 'P1', [
+      'How many times the first peak fits into the second.',
+      'The second peak is k times the first.',
+      'The first peak is the second divided by k.',
+    ]),
+    quotient('r1', 'P1', 'd1', [
+      'The rise to the peak, spread over the days it took.',
+      'Rise per day times the days.',
+      'How many days of that rise reach the peak.',
+    ]),
+    quotient('r2', 'P2', 'd2', [
+      'The rise to the peak, spread over the days it took.',
+      'Rise per day times the days.',
+      'How many days of that rise reach the peak.',
+    ]),
+  ),
+  example: { P1: 100, d1: 12, r1: 100 / 12, P2: 1000, d2: 6, r2: 1000 / 6, k: 10 },
+  startWith: ['P1', 'd1', 'P2', 'd2'],
+  sliders: true,
+  representation: {
+    kind: 'immuneResponse',
+    first: 'P1',
+    second: 'P2',
+    firstDays: 'd1',
+    secondDays: 'd2',
+    secondAt: 40,
+  },
+};
+
+const booster: ModuleDef = {
+  ...antibodies,
+  id: 'g.s9-immune-disease-booster',
+  title: 'A vaccine booster',
+  use: 'Use this for why a booster dose raises antibodies so much more than the first dose.',
+  assumptions: [
+    'A vaccine is a first exposure to a harmless form of the antigen: it leaves memory cells.',
+    'A booster is the second exposure: the memory cells make antibodies fast and in large amounts.',
+    'Levels are in relative units: only their ratio matters here.',
+  ],
+  example: { P1: 20, d1: 14, r1: 20 / 14, P2: 2000, d2: 5, r2: 400, k: 100 },
+  representation: { ...antibodies.representation, secondAt: 28 } as ModuleDef['representation'],
+};
+
 export const HSH_GALLERY_MODULES: ModuleDef[] = [
   gelCut,
   gelDouble,
@@ -517,6 +618,8 @@ export const HSH_GALLERY_MODULES: ModuleDef[] = [
   biomassPyramid,
   numbersPyramid,
   invertedBiomass,
+  antibodies,
+  booster,
 ];
 export const HSH_GALLERY_LAYOUTS: LayoutDef[] = [
   // ── H38: homologous limbs ──
@@ -979,6 +1082,98 @@ export const HSH_GALLERY_LAYOUTS: LayoutDef[] = [
           ],
         },
       },
+    ],
+  },
+  // ── H42: pathogens and the immune response ──
+  {
+    id: 'g.s9-immune-disease-stages',
+    title: 'The immune response in stages',
+    kind: 'explore',
+    use: 'Use this for the order of the immune response and what each cell does.',
+    assumptions: [
+      'An antigen is a molecule on a pathogen that the immune system recognizes as foreign.',
+      'The response is specific: only the B and T cells whose receptors fit that antigen are chosen.',
+    ],
+    figure: { kind: 'immuneStages' },
+    scenes: [
+      {
+        label: 'The whole response',
+        lines: [
+          'The response runs from the antigen to antibodies and killer T cells, and leaves memory cells.',
+        ],
+        immune: {},
+      },
+      {
+        label: 'Antigen',
+        lines: [
+          'A macrophage swallows a virus and breaks it down.',
+          'It shows a piece of the virus, the antigen, on its surface.',
+        ],
+        immune: { stage: 'antigen' },
+      },
+      {
+        label: 'Helper T cells',
+        lines: [
+          'A helper T cell whose receptor fits the antigen is switched on and signals B cells and killer T cells.',
+        ],
+        immune: { stage: 'helperT' },
+      },
+      {
+        label: 'B cells',
+        lines: ['A B cell that fits the antigen divides many times into plasma cells.'],
+        immune: { stage: 'bCells' },
+      },
+      {
+        label: 'Antibodies',
+        lines: [
+          'Plasma cells release antibodies that bind the antigen.',
+          'Bound viruses clump together and cannot enter cells, and macrophages eat them.',
+        ],
+        immune: { stage: 'antibodies' },
+      },
+      {
+        label: 'Killer T cells',
+        lines: ['Killer T cells find body cells infected with the virus and destroy them.'],
+        immune: { stage: 'killerT' },
+      },
+      {
+        label: 'Memory cells',
+        lines: [
+          'Some B and T cells stay as memory cells for years.',
+          'They make a second response faster and stronger.',
+        ],
+        immune: { stage: 'memory' },
+      },
+    ],
+  },
+  {
+    id: 'g.s9-immune-disease-pathogens',
+    title: 'Kinds of pathogens',
+    kind: 'sort',
+    use: 'Use this for telling living pathogens from viruses.',
+    assumptions: [
+      'A pathogen is anything that causes disease: a virus, a bacterium, a fungus or a parasite.',
+      'Bacteria, fungi and parasites are cells; a virus is not, and copies itself only inside a host cell.',
+      'Antibiotics kill bacteria but do nothing to viruses.',
+    ],
+    question: 'Is it a living cell?',
+    bins: [
+      {
+        id: 'cell',
+        label: 'A living cell',
+        why: 'It grows and divides on its own, using its own food.',
+      },
+      {
+        id: 'virus',
+        label: 'Not a cell',
+        why: 'Genes in a protein coat; it can only be copied inside a host’s cells.',
+      },
+    ],
+    cards: [
+      { label: 'Virus', bin: 'virus', figure: { kind: 'icon', icon: 'virus' } },
+      { label: 'Bacterium', bin: 'cell', figure: { kind: 'icon', icon: 'bacterium' } },
+      { label: 'Fungus (yeast)', bin: 'cell', figure: { kind: 'icon', icon: 'fungus' } },
+      { label: 'Parasite (protozoan)', bin: 'cell', figure: { kind: 'icon', icon: 'parasite' } },
     ],
   },
 ];

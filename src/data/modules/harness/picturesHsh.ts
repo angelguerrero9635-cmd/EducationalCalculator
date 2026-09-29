@@ -5,6 +5,8 @@
  */
 import {
   ALLELE_BEADS,
+  antibodyAt,
+  IMMUNE_DEFAULTS,
   bandAt,
   beadsFor,
   GEL_BANDS,
@@ -102,6 +104,35 @@ export function hshIssues(rep: HshSpec, val: (id: string) => number | undefined)
       const n = beadsFor(p);
       if (Math.abs(n - p * ALLELE_BEADS) > 0.5 + 1e-9)
         out.push(`${n} beads for p = ${p}, not the nearest to ${p * ALLELE_BEADS}`);
+      break;
+    }
+    case 'immuneResponse': {
+      const r = {
+        first: num(rep.first),
+        second: num(rep.second),
+        firstDays: num(rep.firstDays ?? IMMUNE_DEFAULTS.firstDays),
+        secondDays: num(rep.secondDays ?? IMMUNE_DEFAULTS.secondDays),
+        secondAt: num(rep.secondAt ?? IMMUNE_DEFAULTS.secondAt),
+      };
+      if (Object.values(r).some((x) => x === undefined)) break;
+      const v = r as Record<keyof typeof r, number>;
+      if (v.first <= 0 || v.second <= 0) out.push('an antibody peak is not above 0');
+      if (v.firstDays <= 0 || v.secondDays <= 0) out.push('a peak is not after its exposure');
+      if (v.secondAt <= v.firstDays)
+        out.push(`second exposure on day ${v.secondAt}, before the first peak`);
+      // The curve drawn passes through both marked peaks, and never above the higher one.
+      const peaks: [number, number][] = [
+        [v.firstDays, v.first],
+        [v.secondAt + v.secondDays, v.second],
+      ];
+      for (const [t, p] of peaks) {
+        const at = antibodyAt(t, v);
+        if (!near(at, Math.max(p, at)) || at < p - 1e-6 * p)
+          out.push(`the curve is at ${at} on day ${t}, not the peak ${p}`);
+      }
+      const top = Math.max(v.first, v.second);
+      for (let t = 0; t <= v.secondAt + v.secondDays * 4; t += 0.25)
+        if (antibodyAt(t, v) > top * (1 + 1e-9)) out.push(`the curve passes ${top} on day ${t}`);
       break;
     }
   }

@@ -22,4 +22,9 @@ export const HH_ICONS = [
   'shrubs',
   'young trees',
   'mature forest',
+  // Pathogens (H42).
+  'virus',
+  'bacterium',
+  'fungus',
+  'parasite',
 ] as const;

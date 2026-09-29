@@ -80,7 +80,9 @@ and flowers`, `shrubs`, `young trees`, `mature forest`). Explore figures `nitrog
 (`layouts/nitrogenCycleFigure.tsx`; `nitrogen: { process? }` lights fixation, lightning,
 nitrification, assimilation, eating, ammonification or denitrification) and `feedbackLoop`
 (`layouts/feedbackLoopFigure.tsx`; `loop: { steps, sign, lit?, back? }`, the scene's own words
-in 3 to 6 boxes and the arrow back marked − or +).
+in 3 to 6 boxes and the arrow back marked − or +) and `immuneStages`
+(`layouts/immuneStagesFigure.tsx`; `immune: { stage? }` lights antigen, helperT, bCells, antibodies,
+killerT or memory). Pathogen icons: `virus`, `bacterium`, `fungus`, `parasite`.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
