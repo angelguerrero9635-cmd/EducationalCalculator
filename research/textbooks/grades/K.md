@@ -9,36 +9,36 @@ only (see `../README.md`). Practice counts are problems stored in `practice/` fo
 
 Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten/units.html>
 
-| #   | Unit                                    | Lessons | Skills                                                                                       | Practice |
-| --- | --------------------------------------- | ------: | -------------------------------------------------------------------------------------------- | -------: |
-| 1   | Math in Our World                       |      17 | `m.K.count-objects`, `m.K.compare-10`                                                        |          |
-| 2   | Numbers 1–10                            |      22 | `m.K.count-objects`, `m.K.compare-10`                                                        |       20 |
-| 3   | Flat Shapes All Around Us               |      15 | `m.K.shapes-2d-3d`, `m.K.compose-shapes`                                                     |       18 |
-| 4   | Understanding Addition and Subtraction  |      18 | `m.K.add-sub-10`                                                                             |       23 |
-| 5   | Composing and Decomposing Numbers to 10 |      15 | `m.K.add-sub-10`, `m.K.make-10`                                                              |       21 |
-| 6   | Numbers 0–20                            |      13 | `m.K.count-objects`, `m.K.teens-place-value`                                                 |       14 |
-| 7   | Solid Shapes All Around Us              |      16 | `m.K.compose-shapes`, `m.K.shapes-2d-3d`, `m.K.measurable-attributes`                        |       13 |
-| 8   | Putting It All Together                 |      21 | `m.K.compare-10`, `m.K.count-objects`, `m.K.classify-count`, `m.K.add-sub-10`, `m.K.make-10` |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Math in Our World | 17 | `m.K.count-objects`, `m.K.compare-10` |  |
+| 2 | Numbers 1–10 | 22 | `m.K.count-objects`, `m.K.compare-10` | 20 |
+| 3 | Flat Shapes All Around Us | 15 | `m.K.shapes-2d-3d`, `m.K.compose-shapes` | 18 |
+| 4 | Understanding Addition and Subtraction | 18 | `m.K.add-sub-10` | 23 |
+| 5 | Composing and Decomposing Numbers to 10 | 15 | `m.K.add-sub-10`, `m.K.make-10` | 21 |
+| 6 | Numbers 0–20 | 13 | `m.K.count-objects`, `m.K.teens-place-value` | 14 |
+| 7 | Solid Shapes All Around Us | 16 | `m.K.compose-shapes`, `m.K.shapes-2d-3d`, `m.K.measurable-attributes` | 13 |
+| 8 | Putting It All Together | 21 | `m.K.compare-10`, `m.K.count-objects`, `m.K.classify-count`, `m.K.add-sub-10`, `m.K.make-10` |  |
 
 <details><summary>Lessons</summary>
 
 **1. Math in Our World**
 
-- _A. Explore Our Math Tools_
+- *A. Explore Our Math Tools*
   - 1. Explore Connecting Cubes
   - 2. Explore Pattern Blocks
   - 3. Explore Two-color Counters and 5-frames
   - 4. Explore Geoblocks
   - 5. Explore Math Tools
-- _B. Recognize Quantities_
+- *B. Recognize Quantities*
   - 6. Look for Small Groups
   - 7. Classroom Scavenger Hunt
   - 8. Different Groups, Same Quantity
   - 9. Create Picture Books
-- _C. Are There Enough?_
+- *C. Are There Enough?*
   - 10. Are There Enough?
   - 11. Get Enough
-- _D. Counting Collections_
+- *D. Counting Collections*
   - 12. How Many Are There? (Part 1)
   - 13. How Many Are There? (Part 2)
   - 14. Answer “How Many” Questions
@@ -48,26 +48,26 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
 
 **2. Numbers 1–10**
 
-- _A. Count and Compare Groups of Objects_
+- *A. Count and Compare Groups of Objects*
   - 1. Fingers as a Math Tool
   - 2. Count and Arrange
   - 3. Groups that Look Very Different
   - 4. Groups that Look Alike
   - 5. Make Groups of More, Fewer, or the Same
   - 6. Use More, Fewer, or the Same Number to Describe Groups
-- _B. Count and Compare Groups of Images_
+- *B. Count and Compare Groups of Images*
   - 7. Count Images in Different Arrangements
   - 8. Compare Matching Images
   - 9. More, Fewer, or the Same
   - 10. Find More or Fewer
   - 11. Create Groups of Images
-- _C. Connect Quantities and Numbers_
+- *C. Connect Quantities and Numbers*
   - 12. Connect Quantities and Numbers
   - 13. Numbers in Many Ways
   - 14. Count Out Objects
   - 15. Draw Groups of Things
   - 16. Write Numbers to Represent Quantities
-- _D. Compare Numbers_
+- *D. Compare Numbers*
   - 17. Order Towers and Numbers
   - 18. 1 More or 1 Less with Towers and Numbers
   - 19. Compare Numbers and Images
@@ -77,7 +77,7 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
 
 **3. Flat Shapes All Around Us**
 
-- _A. Exploring Shapes in Our Environment_
+- *A. Exploring Shapes in Our Environment*
   - 1. What We Know About Shapes
   - 2. Match Shapes
   - 3. Describe and Compare Shapes
@@ -87,7 +87,7 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
   - 7. Build with Straws
   - 8. Draw Shapes
   - 9. Shapes Are Everywhere
-- _B. Making Shapes_
+- *B. Making Shapes*
   - 10. Put Together Pattern Blocks
   - 11. Same Shapes
   - 12. More than One Way to Make a Shape
@@ -97,13 +97,13 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
 
 **4. Understanding Addition and Subtraction**
 
-- _A. Count to Add and Subtract_
+- *A. Count to Add and Subtract*
   - 1. Count 2 Groups of Objects
   - 2. Count 2 Groups of Images
   - 3. Count 2 Groups of Scattered Images
   - 4. Add with Objects
   - 5. Subtract with Objects
-- _B. Represent and Solve Story Problems_
+- *B. Represent and Solve Story Problems*
   - 6. Tell and Act Out Stories
   - 7. Use Objects to Represent Stories
   - 8. Represent and Solve Story Problems
@@ -112,7 +112,7 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
   - 11. Drawings to Represent Story Problems
   - 12. Compare Addition and Subtraction Story Problems
   - 13. Create Story Problems (optional)
-- _C. Addition and Subtraction Expressions_
+- *C. Addition and Subtraction Expressions*
   - 14. Expressions and Story Problems
   - 15. Expressions and Drawings
   - 16. Find the Value of Expressions
@@ -121,18 +121,18 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
 
 **5. Composing and Decomposing Numbers to 10**
 
-- _A. Make and Break Apart Numbers to 9_
+- *A. Make and Break Apart Numbers to 9*
   - 1. Make 2 Parts
   - 2. Make and Break Apart Pattern Block Designs
   - 3. Snap the Cubes
   - 4. Find All the Ways (optional)
-- _B. More Types of Story Problems_
+- *B. More Types of Story Problems*
   - 5. Put Together
   - 6. Red and Yellow Apples
   - 7. Solve Both Addends Unknown Story Problems
   - 8. More Than One Way
   - 9. All of the Story Problems
-- _C. Make and Break Apart 10_
+- *C. Make and Break Apart 10*
   - 10. Introduce the 10-frame
   - 11. Equations that Show 10
   - 12. How Many Are Missing?
@@ -142,33 +142,33 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
 
 **6. Numbers 0–20**
 
-- _A. Count Groups of 11-20 Objects_
+- *A. Count Groups of 11-20 Objects*
   - 1. Count Larger Collections of Objects
   - 2. Keep Track of Objects (optional)
   - 3. Count Carefully
   - 4. Does the Number Change?
-- _B. 10 Ones and Some More_
+- *B. 10 Ones and Some More*
   - 5. How Many Fingers? How Many Dots?
   - 6. Fingers and 10-frames
   - 7. Make Numbers with 10 and Some More (Part 1)
   - 8. Make Numbers with 10 and Some More (Part 2)
   - 9. Expressions and Equations
   - 10. Complete Equations
-- _C. Count Groups of 11–20 Images_
+- *C. Count Groups of 11–20 Images*
   - 11. Count Images (Part 1)
   - 12. Count Images (Part 2)
   - 13. Fingerprint Animals (optional)
 
 **7. Solid Shapes All Around Us**
 
-- _A. Compose and Count with Flat Shapes_
+- *A. Compose and Count with Flat Shapes*
   - 1. Build Shapes
   - 2. More or Fewer Pattern Blocks
   - 3. Questions and Stories About Shapes
   - 4. Pattern Block Puzzles and Equations
   - 5. Story Problems about Shapes
   - 6. Compose and Decompose 10 with Pattern Blocks
-- _B. Describe, Compare, and Create Solid Shapes_
+- *B. Describe, Compare, and Create Solid Shapes*
   - 7. Flat and Solid Shapes
   - 8. Compare Weight
   - 9. Compare Capacity
@@ -182,26 +182,26 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
 
 **8. Putting It All Together**
 
-- _A. Counting and Comparing_
+- *A. Counting and Comparing*
   - 1. Sort, Count, and Compare Groups of Objects
   - 2. Count and Compare Collections (optional)
   - 3. Count to Add and Subtract
   - 4. One More and One Less (optional)
   - 5. Order Numbers 1-20 (optional)
-- _B. Math in Our School_
+- *B. Math in Our School*
   - 6. Create Number Books (Part 1)
   - 7. Create Number Books (Part 2)
   - 8. Find Someone Who, Find Something That
   - 9. Where’s the Math?
   - 10. Tell Stories about Our School
   - 11. Share Story Problems
-- _C. Fluency within 5_
+- *C. Fluency within 5*
   - 12. Make Dot Images
   - 13. Dominoes to 5
   - 14. Sort and Color Expressions and Images within 5
   - 15. Addition and Subtraction Expressions within 5
   - 16. Parts to Make 5
-- _D. All About 10_
+- *D. All About 10*
   - 17. Make and Break Apart 10 (optional)
   - 18. All the Ways to Make 10 (optional)
   - 19. Find the Number that Makes 10 (optional)
@@ -214,58 +214,58 @@ Source: <https://curriculum.illustrativemathematics.org/k5/teachers/kindergarten
 
 Source: <https://archive.org/details/engageny-mathematics>
 
-| #   | Unit                                                      | Lessons | Skills                                                        | Practice |
-| --- | --------------------------------------------------------- | ------: | ------------------------------------------------------------- | -------: |
-| 1   | Numbers to 10                                             |      36 | `m.K.classify-count`, `m.K.count-objects`, `m.K.compare-10`   |        8 |
-| 2   | Two-Dimensional and Three-Dimensional Shapes              |      10 | `m.K.shapes-2d-3d`, `m.K.position-words`                      |        3 |
-| 3   | Comparison of Length, Weight, Capacity, and Numbers to 10 |      32 | `m.K.measurable-attributes`, `m.K.compare-10`                 |        8 |
-| 4   | Number Pairs, Addition and Subtraction to 10              |      41 | `m.K.add-sub-10`, `m.K.make-10`                               |        8 |
-| 5   | Numbers 10–20 and Counting to 100                         |      24 | `m.K.teens-place-value`, `m.K.count-objects`, `m.K.count-100` |        5 |
-| 6   | Analyzing, Comparing, and Composing Shapes                |       8 | `m.K.shapes-2d-3d`, `m.K.compose-shapes`                      |        2 |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Numbers to 10 | 36 | `m.K.classify-count`, `m.K.count-objects`, `m.K.compare-10` | 8 |
+| 2 | Two-Dimensional and Three-Dimensional Shapes | 10 | `m.K.shapes-2d-3d`, `m.K.position-words` | 3 |
+| 3 | Comparison of Length, Weight, Capacity, and Numbers to 10 | 32 | `m.K.measurable-attributes`, `m.K.compare-10` | 8 |
+| 4 | Number Pairs, Addition and Subtraction to 10 | 41 | `m.K.add-sub-10`, `m.K.make-10` | 8 |
+| 5 | Numbers 10–20 and Counting to 100 | 24 | `m.K.teens-place-value`, `m.K.count-objects`, `m.K.count-100` | 5 |
+| 6 | Analyzing, Comparing, and Composing Shapes | 8 | `m.K.shapes-2d-3d`, `m.K.compose-shapes` | 2 |
 
 <details><summary>Lessons</summary>
 
 **1. Numbers to 10**
 
-- _A. Attributes of Two Related Objects_
+- *A. Attributes of Two Related Objects*
   - 1. Analyze to find two objects that are exactly the same or not exactly the same.
   - 2. Analyze to find two similar objects—these are the same but….
   - 3. Classify to find two objects that share a visual pattern, color, and use.
-- _B. Classify to Make Categories and Count_
+- *B. Classify to Make Categories and Count*
   - 4. Classify items into two pre-determined categories.
   - 5. Classify items into three categories, determine the count in each, and reason about how the last number named determines the total.
   - 6. Sort categories by count. Identify categories with 2, 3, and 4 within a given scenario.
-- _C. Numbers to 5 in Different Configurations, Math Drawings, and Expressions_
+- *C. Numbers to 5 in Different Configurations, Math Drawings, and Expressions*
   - 7. Sort by count in vertical columns and horizontal rows (linear configurations to 5). Match to numerals on cards.
   - 8. Answer how many questions to 5 in linear configurations (5-group), with 4 in an array configuration. Compare ways to count five fingers.
   - 9. Within linear and array dot configurations of numbers 3, 4, and 5, find hidden partners.
   - 10. Within circular and scattered dot configurations of numbers 3, 4, and 5, find hidden partners.
   - 11. Model decompositions of 3 with materials, drawings, and expressions. Represent the decomposition as 1 + 2 and 2 + 1.
-- _D. The Concept of Zero and Working with Numbers 0–5_
+- *D. The Concept of Zero and Working with Numbers 0–5*
   - 12. Understand the meaning of zero. Write the numeral 0.
   - 13. Order and write numerals 0–3 to answer how many questions.
   - 14. Write numerals 1–3. Represent decompositions with materials, drawings, and equations, 3 = 2 + 1 and 3 = 1 + 2.
   - 15. Order and write numerals 4 and 5 to answer how many questions in categories; sort by count.
   - 16. Write numerals 1–5 in order. Answer and make drawings of decompositions with totals of 4 and 5 without equations.
-- _E. Working with Numbers 6–8 in Different Configurations_
+- *E. Working with Numbers 6–8 in Different Configurations*
   - 17. Count 4–6 objects in vertical and horizontal linear configurations and array configurations. Match 6 objects to the numeral 6.
   - 18. Count 4–6 objects in circular and scattered configurations. Count 6 items out of a larger set. Write numerals 1–6 in order.
   - 19. Count 5–7 linking cubes in linear configurations. Match with numeral 7. Count on fingers from 1 to 7, and connect to 5-group images.
   - 20. Reason about sets of 7 varied objects in circular and scattered configurations. Find a path through the scattered configuration. Write numeral 7. Ask, “How is your seven different than mine?”
   - 21. Compare counts of 8. Match with numeral 8.
   - 22. Arrange and strategize to count 8 beans in circular (around a cup) and scattered configurations. Write numeral 8. Find a path through the scattered set, and compare paths with a partner.
-- _F. Working with Numbers 9–10 in Different Configurations_
+- *F. Working with Numbers 9–10 in Different Configurations*
   - 23. Organize and count 9 varied geometric objects in linear and array (3 threes) configurations. Place objects on 5-group mat. Match with numeral 9.
   - 24. Strategize to count 9 objects in circular (around a paper plate) and scattered configurations printed on paper. Write numeral 9. Represent a path through the scatter count with a pencil. Number each object.
   - 25–26. Count 10 objects in linear and array configurations (2 fives). Match with numeral 10. Place on the 5-group mat. Dialogue about 9 and 10. Write numeral 10.
   - 27. Count 10 objects, and move between all configurations.
   - 28. Act out result unknown story problems without equations.
-- _G. One More with Numbers 0–10_
+- *G. One More with Numbers 0–10*
   - 29. Order and match numeral and dot cards from 1 to 10. State 1 more than a given number.
   - 30. Make math stairs from 1 to 10 in cooperative groups.
   - 31. Arrange, analyze, and draw 1 more up to 10 in configurations other than towers.
   - 32. Arrange, analyze, and draw sequences of quantities of 1 more, beginning with numbers other than 1.
-- _H. One Less with Numbers 0–10_
+- *H. One Less with Numbers 0–10*
   - 33. Order quantities from 10 to 1, and match numerals.
   - 34. Count down from 10 to 1, and state 1 less than a given number.
   - 35. Arrange number towers in order from 10 to 1, and describe the pattern.
@@ -274,58 +274,58 @@ Source: <https://archive.org/details/engageny-mathematics>
 
 **2. Two-Dimensional and Three-Dimensional Shapes**
 
-- _A. Two-Dimensional Flat Shapes_
+- *A. Two-Dimensional Flat Shapes*
   - 1. Find and describe flat triangles, squares, rectangles, hexagons, and circles using informal language without naming.
   - 2. Explain decisions about classifications of triangles into categories using variants and non-examples. Identify shapes as triangles.
   - 3. Explain decisions about classifications of rectangles into categories using variants and non-examples. Identify shapes as rectangles.
   - 4. Explain decisions about classifications of hexagons and circles, and identify them by name. Make observations using variants and non-examples.
   - 5. Describe and communicate positions of all flat shapes using the words above, below, beside, in front of, next to, and behind.
-- _B. Three-Dimensional Solid Shapes_
+- *B. Three-Dimensional Solid Shapes*
   - 6. Find and describe solid shapes using informal language without naming.
   - 7. Explain decisions about classification of solid shapes into categories. Name the solid shapes.
   - 8. Describe and communicate positions of all solid shapes using the words above, below, beside, in front of, next to, and behind.
-- _C. Two-Dimensional and Three-Dimensional Shapes_
+- *C. Two-Dimensional and Three-Dimensional Shapes*
   - 9. Identify and sort shapes as two-dimensional or three-dimensional, and recognize two-dimensional and three-dimensional shapes in different orientations and sizes.
   - 10. Culminating task—collaborative groups create displays of different flat shapes with examples, non-examples, and a corresponding solid shape.
 
 **3. Comparison of Length, Weight, Capacity, and Numbers to 10**
 
-- _A. Comparison of Length and Height_
+- *A. Comparison of Length and Height*
   - 1. Compare lengths using taller than and shorter than with aligned and non-aligned endpoints.
   - 2. Compare length measurements with string.
   - 3. Make a series of longer than and shorter than comparisons.
-- _B. Comparison of Length and Height of Linking Cube Sticks Within 10_
+- *B. Comparison of Length and Height of Linking Cube Sticks Within 10*
   - 4. Compare the length of linking cube sticks to a 5-stick.
   - 5. Determine which linking cube stick is longer than or shorter than the other.
   - 6. Compare the length of linking cube sticks to various objects.
   - 7. Compare objects using the same as.
-- _C. Comparison of Weight_
+- *C. Comparison of Weight*
   - 8. Compare using heavier than and lighter than with classroom objects.
   - 9. Compare objects using heavier than, lighter than, and the same as with balance scales.
   - 10. Compare the weight of an object to a set of unit weights on a balance scale.
   - 11. Observe conservation of weight on the balance scale.
   - 12. Compare the weight of an object with sets of different objects on a balance scale.
-- _D. Comparison of Volume_
+- *D. Comparison of Volume*
   - 13. Compare volume using more than, less than, and the same as by pouring.
   - 14. Explore conservation of volume by pouring.
   - 15. Compare using the same as with units.
-- _E. Are There Enough?_
+- *E. Are There Enough?*
   - 16. Make informal comparison of area.
   - 17. Compare to find if there are enough.
   - 18. Compare using more than and the same as.
   - 19. Compare using fewer than and the same as.
-- _F. Comparison of Sets Within 10_
+- *F. Comparison of Sets Within 10*
   - 20. Relate more and less to length.
   - 21. Compare sets informally using more, less, and fewer.
   - 22. Identify and create a set that has the same number of objects.
   - 23. Reason to identify and make a set that has 1 more.
   - 24. Reason to identify and make a set that has 1 less.
-- _G. Comparison of Numerals_
+- *G. Comparison of Numerals*
   - 25. Match and count to compare a number of objects. State which quantity is more.
   - 26. Match and count to compare two sets of objects. State which quantity is less.
   - 27. Strategize to compare two sets.
   - 28. Visualize quantities to compare two numerals.
-- _H. Clarification of Measurable Attributes_
+- *H. Clarification of Measurable Attributes*
   - 29. Observe cups of colored water of equal volume poured into a variety of container shapes.
   - 30. Use balls of clay of equal weights to make sculptures.
   - 31. Use benchmarks to create and compare rectangles of different lengths to make a city.
@@ -333,50 +333,50 @@ Source: <https://archive.org/details/engageny-mathematics>
 
 **4. Number Pairs, Addition and Subtraction to 10**
 
-- _A. Compositions and Decompositions of 2, 3, 4, and 5_
+- *A. Compositions and Decompositions of 2, 3, 4, and 5*
   - 1. Model composition and decomposition of numbers to 5 using actions, objects, and drawings.
   - 2. Model composition and decomposition of numbers to 5 using fingers and linking cube sticks.
   - 3. Represent composition story situations with drawings using numeric number bonds.
   - 4. Represent decomposition story situations with drawings using numeric number bonds.
   - 5. Represent composition and decomposition of numbers to 5 using pictorial and numeric number bonds.
   - 6. Represent number bonds with composition and decomposition story situations.
-- _B. Decompositions of 6, 7, and 8 into Number Pairs_
+- *B. Decompositions of 6, 7, and 8 into Number Pairs*
   - 7. Model decompositions of 6 using a story situation, objects, and number bonds.
   - 8. Model decompositions of 7 using a story situation, sets, and number bonds.
   - 9. Model decompositions of 8 using a story situation, arrays, and number bonds.
   - 10. Model decompositions of 6–8 using linking cube sticks to see patterns.
   - 11. Represent decompositions for 6–8 using horizontal and vertical number bonds.
   - 12. Use 5-groups to represent the 5 + n pattern to 8.
-- _C. Addition with Totals of 6, 7, and 8_
+- *C. Addition with Totals of 6, 7, and 8*
   - 13. Represent decomposition and composition addition stories to 6 with drawings and equations with no unknown.
   - 14. Represent decomposition and composition addition stories to 7 with drawings and equations with no unknown.
   - 15. Represent decomposition and composition addition stories to 8 with drawings and equations with no unknown.
   - 16. Solve add to with result unknown word problems to 8 with equations. Box the unknown.
   - 17. Solve put together with total unknown word problems to 8 using objects and drawings.
   - 18. Solve both addends unknown word problems to 8 to find addition patterns in number pairs.
-- _D. Subtraction from Numbers to 8_
+- *D. Subtraction from Numbers to 8*
   - 19. Use objects and drawings to find how many are left.
   - 20. Solve take from with result unknown expressions and equations using the minus sign with no unknown.
   - 21. Represent subtraction story problems using objects, drawings, expressions, and equations.
   - 22. Decompose the number 6 using 5-group drawings by breaking off or removing a part, and record each decomposition with a drawing and subtraction equation.
   - 23. Decompose the number 7 using 5-group drawings by hiding a part, and record each decomposition with a drawing and subtraction equation.
   - 24. Decompose the number 8 using 5-group drawings and crossing off a part, and record each decomposition with a drawing and subtraction equation.
-- _E. Decompositions of 9 and 10 into Number Pairs_
+- *E. Decompositions of 9 and 10 into Number Pairs*
   - 25. Model decompositions of 9 using a story situation, objects, and number bonds.
   - 26. Model decompositions of 9 using fingers, linking cubes, and number bonds.
   - 27. Model decompositions of 10 using a story situation, objects, and number bonds.
   - 28. Model decompositions of 10 using fingers, sets, linking cubes, and number bonds.
-- _F. Addition with Totals of 9 and 10_
+- *F. Addition with Totals of 9 and 10*
   - 29. Represent pictorial decomposition and composition addition stories to 9 with 5-group drawings and equations with no unknown.
   - 30. Represent pictorial decomposition and composition addition stories to 10 with 5-group drawings and equations with no unknown.
   - 31. Solve add to with total unknown and put together with total unknown problems with totals of 9 and 10.
   - 32. Solve both addends unknown word problems with totals of 9 and 10 using 5-group drawings.
-- _G. Subtraction from 9 and 10_
+- *G. Subtraction from 9 and 10*
   - 33. Solve take from equations with no unknown using numbers to 10.
   - 34. Represent subtraction story problems by breaking off, crossing out, and hiding a part.
   - 35. Decompose the number 9 using 5-group drawings, and record each decomposition with a subtraction equation.
   - 36. Decompose the number 10 using 5-group drawings, and record each decomposition with a subtraction equation.
-- _H. Patterns with Adding 0 and 1 and Making 10_
+- *H. Patterns with Adding 0 and 1 and Making 10*
   - 37. Add or subtract 0 to get the same number and relate to word problems wherein the same quantity that joins a set, separates.
   - 38. Add 1 to numbers 1–9 to see the pattern of the next number using 5-group drawings and equations.
   - 39. Find the number that makes 10 for numbers 1–9, and record each with a 5-group drawing.
@@ -385,30 +385,30 @@ Source: <https://archive.org/details/engageny-mathematics>
 
 **5. Numbers 10–20 and Counting to 100**
 
-- _A. Count 10 Ones and Some Ones_
+- *A. Count 10 Ones and Some Ones*
   - 1. Count straws into piles of ten; count the piles as 10 ones.
   - 2. Count 10 objects within counts of 10 to 20 objects, and describe as 10 ones and ___ ones.
   - 3. Count and circle 10 objects within images of 10 to 20 objects, and describe as 10 ones and ___ ones.
   - 4. Count straws the Say Ten way to 19; make a pile for each ten.
   - 5. Count straws the Say Ten way to 20; make a pile for each ten.
-- _B. Compose Numbers 11–20 from 10 Ones and Some Ones; Represent and Write Teen Numbers_
+- *B. Compose Numbers 11–20 from 10 Ones and Some Ones; Represent and Write Teen Numbers*
   - 6. Model with objects and represent numbers 10 to 20 with place value or Hide Zero cards.
   - 7. Model and write numbers 10 to 20 as number bonds.
   - 8. Model teen numbers with materials from abstract to concrete.
   - 9. Draw teen numbers from abstract to pictorial.
-- _C. Decompose Numbers 11–20, and Count to Answer “How Many?” Questions in Varied Configurations_
+- *C. Decompose Numbers 11–20, and Count to Answer “How Many?” Questions in Varied Configurations*
   - 10. Build a Rekenrek to 20.
   - 11. Show, count, and write numbers 11 to 20 in tower configurations increasing by 1—a pattern of 1 larger.
   - 12. Represent numbers 20 to 11 in tower configurations decreasing by 1—a pattern of 1 smaller.
   - 13. Show, count, and write to answer how many questions in linear and array configurations.
   - 14. Show, count, and write to answer how many questions with up to 20 objects in circular configurations.
-- _D. Extend the Say Ten and Regular Count Sequence to 100_
+- *D. Extend the Say Ten and Regular Count Sequence to 100*
   - 15. Count up and down by tens to 100 with Say Ten and regular counting.
   - 16. Count within tens by ones.
   - 17. Count across tens when counting by ones through 40.
   - 18. Count across tens by ones to 100 with and without objects.
   - 19. Explore numbers on the Rekenrek. (Optional)
-- _E. Represent and Apply Compositions and Decompositions of Teen Numbers_
+- *E. Represent and Apply Compositions and Decompositions of Teen Numbers*
   - 20. Represent teen number compositions and decompositions as addition sentences.
   - 21. Represent teen number decompositions as 10 ones and some ones, and find a hidden part.
   - 22. Decompose teen numbers as 10 ones and some ones; compare some ones to compare the teen numbers.
@@ -417,12 +417,12 @@ Source: <https://archive.org/details/engageny-mathematics>
 
 **6. Analyzing, Comparing, and Composing Shapes**
 
-- _A. Building and Drawing Flat and Solid Shapes_
+- *A. Building and Drawing Flat and Solid Shapes*
   - 1. Describe the systematic construction of flat shapes using ordinal numbers.
   - 2. Build flat shapes with varying side lengths and record with drawings.
   - 3. Compose solids using flat shapes as a foundation.
   - 4. Describe the relative position of shapes using ordinal numbers.
-- _B. Composing and Decomposing Shapes_
+- *B. Composing and Decomposing Shapes*
   - 5. Compose flat shapes using pattern blocks and drawings.
   - 6. Decompose flat shapes into two or more shapes.
   - 7. Compose simple shapes to form a larger shape described by an outline.
@@ -434,157 +434,157 @@ Source: <https://archive.org/details/engageny-mathematics>
 
 Source: <https://www.bigideaslearning.com/>
 
-| #   | Unit                                            | Lessons | Skills                                            | Practice |
-| --- | ----------------------------------------------- | ------: | ------------------------------------------------- | -------: |
-| 1   | Count and Write Numbers 0 to 5                  |       8 | `m.K.count-objects`                               |          |
-| 2   | Compare Numbers 0 to 5                          |       5 | `m.K.compare-10`                                  |          |
-| 3   | Count and Write Numbers 6 to 10                 |      11 | `m.K.count-objects`                               |          |
-| 4   | Compare Numbers to 10                           |       5 | `m.K.compare-10`                                  |          |
-| 5   | Compose and Decompose Numbers to 10             |       8 | `m.K.add-sub-10`, `m.K.make-10`                   |          |
-| 6   | Add Numbers Within 10                           |       8 | `m.K.add-sub-10`                                  |          |
-| 7   | Subtract Numbers Within 10                      |       7 | `m.K.add-sub-10`                                  |          |
-| 8   | Represent Numbers 11 to 19                      |      11 | `m.K.teens-place-value`                           |          |
-| 9   | Count and Compare Numbers to 20                 |       6 | `m.K.count-objects`                               |          |
-| 10  | Count to 100                                    |       6 | `m.K.count-100`                                   |          |
-| 11  | Identify Two-Dimensional Shapes                 |       7 | `m.K.shapes-2d-3d`                                |          |
-| 12  | Identify Three Dimensional Shapes and Positions |       6 | `m.K.shapes-2d-3d`, `m.K.position-words`          |          |
-| 13  | Measure and Compare Objects                     |       7 | `m.K.measurable-attributes`, `m.K.classify-count` |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Count and Write Numbers 0 to 5 | 8 | `m.K.count-objects` |  |
+| 2 | Compare Numbers 0 to 5 | 5 | `m.K.compare-10` |  |
+| 3 | Count and Write Numbers 6 to 10 | 11 | `m.K.count-objects` |  |
+| 4 | Compare Numbers to 10 | 5 | `m.K.compare-10` |  |
+| 5 | Compose and Decompose Numbers to 10 | 8 | `m.K.add-sub-10`, `m.K.make-10` |  |
+| 6 | Add Numbers Within 10 | 8 | `m.K.add-sub-10` |  |
+| 7 | Subtract Numbers Within 10 | 7 | `m.K.add-sub-10` |  |
+| 8 | Represent Numbers 11 to 19 | 11 | `m.K.teens-place-value` |  |
+| 9 | Count and Compare Numbers to 20 | 6 | `m.K.count-objects` |  |
+| 10 | Count to 100 | 6 | `m.K.count-100` |  |
+| 11 | Identify Two-Dimensional Shapes | 7 | `m.K.shapes-2d-3d` |  |
+| 12 | Identify Three Dimensional Shapes and Positions | 6 | `m.K.shapes-2d-3d`, `m.K.position-words` |  |
+| 13 | Measure and Compare Objects | 7 | `m.K.measurable-attributes`, `m.K.classify-count` |  |
 
 <details><summary>Lessons</summary>
 
 **1. Count and Write Numbers 0 to 5**
 
-- 1.1. Model and Count 1 and 2
-- 1.2. Understand and Write 1 and 2
-- 1.3. Model and Count 3 and 4
-- 1.4. Understand and Write 3 and 4
-- 1.5. Model and Count 5
-- 1.6. Understand and Write 5
-- 1.7. The Concept of Zero
-- 1.8. Count and Order Numbers to 5
+  - 1.1. Model and Count 1 and 2
+  - 1.2. Understand and Write 1 and 2
+  - 1.3. Model and Count 3 and 4
+  - 1.4. Understand and Write 3 and 4
+  - 1.5. Model and Count 5
+  - 1.6. Understand and Write 5
+  - 1.7. The Concept of Zero
+  - 1.8. Count and Order Numbers to 5
 
 **2. Compare Numbers 0 to 5**
 
-- 2.1. Equal Groups
-- 2.2. Greater Than
-- 2.3. Less Than
-- 2.4. Compare Groups to 5 by Counting
-- 2.5. Compare Numbers to 5
+  - 2.1. Equal Groups
+  - 2.2. Greater Than
+  - 2.3. Less Than
+  - 2.4. Compare Groups to 5 by Counting
+  - 2.5. Compare Numbers to 5
 
 **3. Count and Write Numbers 6 to 10**
 
-- 3.1. Model and Count 6
-- 3.2. Understand and Write 6
-- 3.3. Model and Count 7
-- 3.4. Understand and Write 7
-- 3.5. Model and Count 8
-- 3.6. Understand and Write 8
-- 3.7. Model and Count 9
-- 3.8. Understand and Write 9
-- 3.9. Model and Count 10
-- 3.10. Understand and Write 10
-- 3.11. Count and Order Numbers to 10
+  - 3.1. Model and Count 6
+  - 3.2. Understand and Write 6
+  - 3.3. Model and Count 7
+  - 3.4. Understand and Write 7
+  - 3.5. Model and Count 8
+  - 3.6. Understand and Write 8
+  - 3.7. Model and Count 9
+  - 3.8. Understand and Write 9
+  - 3.9. Model and Count 10
+  - 3.10. Understand and Write 10
+  - 3.11. Count and Order Numbers to 10
 
 **4. Compare Numbers to 10**
 
-- 4.1. Compare Groups to 10 by Matching
-- 4.2. Compare Groups to 10 by Counting
-- 4.3. Compare Numbers to 10
-- 4.4. Classify Objects into Categories
-- 4.5. Classify and Compare by Counting
+  - 4.1. Compare Groups to 10 by Matching
+  - 4.2. Compare Groups to 10 by Counting
+  - 4.3. Compare Numbers to 10
+  - 4.4. Classify Objects into Categories
+  - 4.5. Classify and Compare by Counting
 
 **5. Compose and Decompose Numbers to 10**
 
-- 5.1. Partner Numbers to 5
-- 5.2. Use Number Bonds to Represent Numbers to 5
-- 5.3. Compose and Decompose 6
-- 5.4. Compose and Decompose 7
-- 5.5. Compose and Decompose 8
-- 5.6. Compose and Decompose 9
-- 5.7. Compose and Decompose 10
-- 5.8. Compose and Decompose Using a Group of 5
+  - 5.1. Partner Numbers to 5
+  - 5.2. Use Number Bonds to Represent Numbers to 5
+  - 5.3. Compose and Decompose 6
+  - 5.4. Compose and Decompose 7
+  - 5.5. Compose and Decompose 8
+  - 5.6. Compose and Decompose 9
+  - 5.7. Compose and Decompose 10
+  - 5.8. Compose and Decompose Using a Group of 5
 
 **6. Add Numbers Within 10**
 
-- 6.1. Understand Addition
-- 6.2. Addition: Add To
-- 6.3. Addition: Put Together
-- 6.4. Addition: Partner Numbers
-- 6.5. Addition Number Patterns
-- 6.6. Practice Addition
-- 6.7. Use a Group of 5 to Add
-- 6.8. Add to Make 10
+  - 6.1. Understand Addition
+  - 6.2. Addition: Add To
+  - 6.3. Addition: Put Together
+  - 6.4. Addition: Partner Numbers
+  - 6.5. Addition Number Patterns
+  - 6.6. Practice Addition
+  - 6.7. Use a Group of 5 to Add
+  - 6.8. Add to Make 10
 
 **7. Subtract Numbers Within 10**
 
-- 7.1. Understand Subtraction
-- 7.2. Subtraction: Take From
-- 7.3. Subtraction: Take Apart
-- 7.4. Subtraction Number Patterns
-- 7.5. Practice Subtraction
-- 7.6. Use a Group of 5 to Subtract
-- 7.7. Related Facts
+  - 7.1. Understand Subtraction
+  - 7.2. Subtraction: Take From
+  - 7.3. Subtraction: Take Apart
+  - 7.4. Subtraction Number Patterns
+  - 7.5. Practice Subtraction
+  - 7.6. Use a Group of 5 to Subtract
+  - 7.7. Related Facts
 
 **8. Represent Numbers 11 to 19**
 
-- 8.1. Identify Groups of 10
-- 8.2. Count and Write 11 and 12
-- 8.3. Understand 11 and 12
-- 8.4. Count and Write 13 and 14
-- 8.5. Understand 13 and 14
-- 8.6. Count and Write 15
-- 8.7. Understand 15
-- 8.8. Count and Write 16 and 17
-- 8.9. Understand 16 and 17
-- 8.10. Count and Write 18 and 19
-- 8.11. Understand 18 and 19
+  - 8.1. Identify Groups of 10
+  - 8.2. Count and Write 11 and 12
+  - 8.3. Understand 11 and 12
+  - 8.4. Count and Write 13 and 14
+  - 8.5. Understand 13 and 14
+  - 8.6. Count and Write 15
+  - 8.7. Understand 15
+  - 8.8. Count and Write 16 and 17
+  - 8.9. Understand 16 and 17
+  - 8.10. Count and Write 18 and 19
+  - 8.11. Understand 18 and 19
 
 **9. Count and Compare Numbers to 20**
 
-- 9.1. Model and Count 20
-- 9.2. Count and Write 20
-- 9.3. Count to Find How Many
-- 9.4. Count Forward from Any Number to 20
-- 9.5. Order Numbers to 20
-- 9.6. Compare Numbers
+  - 9.1. Model and Count 20
+  - 9.2. Count and Write 20
+  - 9.3. Count to Find How Many
+  - 9.4. Count Forward from Any Number to 20
+  - 9.5. Order Numbers to 20
+  - 9.6. Compare Numbers
 
 **10. Count to 100**
 
-- 10.1. Count to 30 by Ones
-- 10.2. Count to 50 by Ones
-- 10.3. Count to 100 by Ones
-- 10.4. Count to 100 by Tens
-- 10.5. Count by Tens and Ones
-- 10.6. Count by Tens from a Number
+  - 10.1. Count to 30 by Ones
+  - 10.2. Count to 50 by Ones
+  - 10.3. Count to 100 by Ones
+  - 10.4. Count to 100 by Tens
+  - 10.5. Count by Tens and Ones
+  - 10.6. Count by Tens from a Number
 
 **11. Identify Two-Dimensional Shapes**
 
-- 11.1. Describe Two-Dimensional Shapes
-- 11.2. Triangles
-- 11.3. Rectangles
-- 11.4. Squares
-- 11.5. Hexagons and Circles
-- 11.6. Join Two-Dimensional Shapes
-- 11.7. Build Two-Dimensional Shapes
+  - 11.1. Describe Two-Dimensional Shapes
+  - 11.2. Triangles
+  - 11.3. Rectangles
+  - 11.4. Squares
+  - 11.5. Hexagons and Circles
+  - 11.6. Join Two-Dimensional Shapes
+  - 11.7. Build Two-Dimensional Shapes
 
 **12. Identify Three Dimensional Shapes and Positions**
 
-- 12.1. Two- and Three-Dimensional Shapes
-- 12.2. Describe Three Dimensional Shapes
-- 12.3. Cubes and Spheres
-- 12.4. Cones and Cylinders
-- 12.5. Build Three-Dimensional Shapes
-- 12.6. Positions of Solid Shapes
+  - 12.1. Two- and Three-Dimensional Shapes
+  - 12.2. Describe Three Dimensional Shapes
+  - 12.3. Cubes and Spheres
+  - 12.4. Cones and Cylinders
+  - 12.5. Build Three-Dimensional Shapes
+  - 12.6. Positions of Solid Shapes
 
 **13. Measure and Compare Objects**
 
-- 13.1. Compare Heights
-- 13.2. Compare Lengths
-- 13.3. Use Numbers to Compare Lengths
-- 13.4. Compare Weights
-- 13.5. Use Numbers to Compare Weights
-- 13.6. Compare Capacities
-- 13.7. Describe Objects by Attributes
+  - 13.1. Compare Heights
+  - 13.2. Compare Lengths
+  - 13.3. Use Numbers to Compare Lengths
+  - 13.4. Compare Weights
+  - 13.5. Use Numbers to Compare Weights
+  - 13.6. Compare Capacities
+  - 13.7. Describe Objects by Attributes
 
 </details>
 
@@ -592,176 +592,176 @@ Source: <https://www.bigideaslearning.com/>
 
 Source: <https://www.savvas.com/solutions/mathematics/envision-mathematics-grades-k-12>
 
-| #   | Unit                                       | Lessons | Skills                                   | Practice |
-| --- | ------------------------------------------ | ------: | ---------------------------------------- | -------: |
-| 1   | Numbers 0 to 5                             |      10 | `m.K.count-objects`                      |          |
-| 2   | Compare Numbers 0 to 5                     |       5 | `m.K.compare-10`                         |          |
-| 3   | Numbers 6 to 10                            |       8 | `m.K.count-objects`                      |          |
-| 4   | Compare Numbers 0 to 10                    |       5 | `m.K.compare-10`                         |          |
-| 5   | Classify and Count Data                    |       4 | `m.K.classify-count`                     |          |
-| 6   | Understand Addition                        |       8 | `m.K.add-sub-10`                         |          |
-| 7   | Understand Subtraction                     |       7 | `m.K.add-sub-10`                         |          |
-| 8   | More Addition and Subtraction              |      10 | `m.K.add-sub-10`, `m.K.make-10`          |          |
-| 9   | Count Numbers to 20                        |       7 | `m.K.count-objects`, `m.K.count-100`     |          |
-| 10  | Compose and Decompose Numbers 11 to 19     |       7 | `m.K.teens-place-value`                  |          |
-| 11  | Count Numbers to 100                       |       5 | `m.K.count-100`                          |          |
-| 12  | Identify and Describe Shapes               |       7 | `m.K.shapes-2d-3d`, `m.K.position-words` |          |
-| 13  | Analyze, Compare, and Create Shapes        |       7 | `m.K.shapes-2d-3d`, `m.K.compose-shapes` |          |
-| 14  | Describe and Compare Measurable Attributes |       6 | `m.K.measurable-attributes`              |          |
-| 15  | Step Up to Grade 1                         |      10 | —                                        |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Numbers 0 to 5 | 10 | `m.K.count-objects` |  |
+| 2 | Compare Numbers 0 to 5 | 5 | `m.K.compare-10` |  |
+| 3 | Numbers 6 to 10 | 8 | `m.K.count-objects` |  |
+| 4 | Compare Numbers 0 to 10 | 5 | `m.K.compare-10` |  |
+| 5 | Classify and Count Data | 4 | `m.K.classify-count` |  |
+| 6 | Understand Addition | 8 | `m.K.add-sub-10` |  |
+| 7 | Understand Subtraction | 7 | `m.K.add-sub-10` |  |
+| 8 | More Addition and Subtraction | 10 | `m.K.add-sub-10`, `m.K.make-10` |  |
+| 9 | Count Numbers to 20 | 7 | `m.K.count-objects`, `m.K.count-100` |  |
+| 10 | Compose and Decompose Numbers 11 to 19 | 7 | `m.K.teens-place-value` |  |
+| 11 | Count Numbers to 100 | 5 | `m.K.count-100` |  |
+| 12 | Identify and Describe Shapes | 7 | `m.K.shapes-2d-3d`, `m.K.position-words` |  |
+| 13 | Analyze, Compare, and Create Shapes | 7 | `m.K.shapes-2d-3d`, `m.K.compose-shapes` |  |
+| 14 | Describe and Compare Measurable Attributes | 6 | `m.K.measurable-attributes` |  |
+| 15 | Step Up to Grade 1 | 10 | — |  |
 
 <details><summary>Lessons</summary>
 
 **1. Numbers 0 to 5**
 
-- 1-1. Count 1, 2, and 3
-- 1-2. Recognize 1, 2, and 3 in Different Arrangements
-- 1-3. Read, Make, and Write 1, 2, and 3
-- 1-4. Count 4 and 5
-- 1-5. Recognize 4 and 5 in Different Arrangements
-- 1-6. Read, Make, and Write 4 and 5
-- 1-7. Identify the Number 0
-- 1-8. Read and Write 0
-- 1-9. Numbers to 5
-- 1-10. Problem Solving: Construct Arguments
+  - 1-1. Count 1, 2, and 3
+  - 1-2. Recognize 1, 2, and 3 in Different Arrangements
+  - 1-3. Read, Make, and Write 1, 2, and 3
+  - 1-4. Count 4 and 5
+  - 1-5. Recognize 4 and 5 in Different Arrangements
+  - 1-6. Read, Make, and Write 4 and 5
+  - 1-7. Identify the Number 0
+  - 1-8. Read and Write 0
+  - 1-9. Numbers to 5
+  - 1-10. Problem Solving: Construct Arguments
 
 **2. Compare Numbers 0 to 5**
 
-- 2-1. Equal Groups
-- 2-2. Greater Than
-- 2-3. Less Than
-- 2-4. Compare Groups to 5 by Counting
-- 2-5. Problem Solving: Model with Math
+  - 2-1. Equal Groups
+  - 2-2. Greater Than
+  - 2-3. Less Than
+  - 2-4. Compare Groups to 5 by Counting
+  - 2-5. Problem Solving: Model with Math
 
 **3. Numbers 6 to 10**
 
-- 3-1. Count 6 and 7
-- 3-2. Read, Make, and Write 6 and 7
-- 3-3. Count 8 and 9
-- 3-4. Read, Make, and Write 8 and 9
-- 3-5. Count 10
-- 3-6. Read, Make, and Write 10
-- 3-7. Count Numbers to 10
-- 3-8. Problem Solving: Look for and Use Structure
+  - 3-1. Count 6 and 7
+  - 3-2. Read, Make, and Write 6 and 7
+  - 3-3. Count 8 and 9
+  - 3-4. Read, Make, and Write 8 and 9
+  - 3-5. Count 10
+  - 3-6. Read, Make, and Write 10
+  - 3-7. Count Numbers to 10
+  - 3-8. Problem Solving: Look for and Use Structure
 
 **4. Compare Numbers 0 to 10**
 
-- 4-1. Compare Groups to 10 by Matching
-- 4-2. Compare Numbers Using Numerals to 10
-- 4-3. Compare Groups to 10 by Counting
-- 4-4. Compare Numbers to 10
-- 4-5. Problem Solving: Repeated Reasoning
+  - 4-1. Compare Groups to 10 by Matching
+  - 4-2. Compare Numbers Using Numerals to 10
+  - 4-3. Compare Groups to 10 by Counting
+  - 4-4. Compare Numbers to 10
+  - 4-5. Problem Solving: Repeated Reasoning
 
 **5. Classify and Count Data**
 
-- 5-1. Classify Objects into Categories
-- 5-2. Count the Number of Objects in Each Category
-- 5-3. Sort the Categories by Counting
-- 5-4. Problem Solving: Critique Reasoning
+  - 5-1. Classify Objects into Categories
+  - 5-2. Count the Number of Objects in Each Category
+  - 5-3. Sort the Categories by Counting
+  - 5-4. Problem Solving: Critique Reasoning
 
 **6. Understand Addition**
 
-- 6-1. Explore Addition
-- 6-2. Represent Addition as Adding To
-- 6-3. Represent Addition as Putting Together
-- 6-4. Represent and Explain Addition with Equations
-- 6-5. Solve Addition Word Problems: Add To
-- 6-6. Solve Addition Word Problems: Put Together
-- 6-7. Use Patterns to Develop Fluency in Addition
-- 6-8. Problem Solving: Model with Math
+  - 6-1. Explore Addition
+  - 6-2. Represent Addition as Adding To
+  - 6-3. Represent Addition as Putting Together
+  - 6-4. Represent and Explain Addition with Equations
+  - 6-5. Solve Addition Word Problems: Add To
+  - 6-6. Solve Addition Word Problems: Put Together
+  - 6-7. Use Patterns to Develop Fluency in Addition
+  - 6-8. Problem Solving: Model with Math
 
 **7. Understand Subtraction**
 
-- 7-1. Explore Subtraction
-- 7-2. Represent Subtraction as Taking Apart
-- 7-3. Represent Subtraction as Taking From
-- 7-4. Represent and Explain Subtraction with Equations
-- 7-5. Solve Subtraction Word Problems: Taking From and Apart
-- 7-6. Use Patterns to Develop Fluency in Subtraction
-- 7-7. Problem Solving: Use Appropriate Tools
+  - 7-1. Explore Subtraction
+  - 7-2. Represent Subtraction as Taking Apart
+  - 7-3. Represent Subtraction as Taking From
+  - 7-4. Represent and Explain Subtraction with Equations
+  - 7-5. Solve Subtraction Word Problems: Taking From and Apart
+  - 7-6. Use Patterns to Develop Fluency in Subtraction
+  - 7-7. Problem Solving: Use Appropriate Tools
 
 **8. More Addition and Subtraction**
 
-- 8-1. Decompose 5 to Solve Problems
-- 8-2. Related Facts
-- 8-3. Problem Solving: Reasoning
-- 8-4. Fluently Add and Subtract to 5
-- 8-5. Decompose 6 and 7 to Solve Problems
-- 8-6. Decompose 8 and 9 to Solve Problems
-- 8-7. Ways to Make 10
-- 8-8. Decompose 10 to Solve Problems
-- 8-9. Find the Missing Part of 10
-- 8-10. Continue to Find the Missing Part of 10
+  - 8-1. Decompose 5 to Solve Problems
+  - 8-2. Related Facts
+  - 8-3. Problem Solving: Reasoning
+  - 8-4. Fluently Add and Subtract to 5
+  - 8-5. Decompose 6 and 7 to Solve Problems
+  - 8-6. Decompose 8 and 9 to Solve Problems
+  - 8-7. Ways to Make 10
+  - 8-8. Decompose 10 to Solve Problems
+  - 8-9. Find the Missing Part of 10
+  - 8-10. Continue to Find the Missing Part of 10
 
 **9. Count Numbers to 20**
 
-- 9-1. Count, Read, and Write 11 and 12
-- 9-2. Count, Read, and Write 13, 14, and 15
-- 9-3. Count, Read, and Write 16 and 17
-- 9-4. Count, Read, and Write 18, 19, and 20
-- 9-5. Count Forward from Any Number to 20
-- 9-6. Count to Find How Many
-- 9-7. Problem Solving: Reasoning
+  - 9-1. Count, Read, and Write 11 and 12
+  - 9-2. Count, Read, and Write 13, 14, and 15
+  - 9-3. Count, Read, and Write 16 and 17
+  - 9-4. Count, Read, and Write 18, 19, and 20
+  - 9-5. Count Forward from Any Number to 20
+  - 9-6. Count to Find How Many
+  - 9-7. Problem Solving: Reasoning
 
 **10. Compose and Decompose Numbers 11 to 19**
 
-- 10-1. Make 11, 12, and 13
-- 10-2. Make 14, 15, and 16
-- 10-3. Make 17, 18, and 19
-- 10-4. Find Parts of 11, 12, and 13
-- 10-5. Find Parts of 14, 15, and 16
-- 10-6. Find Parts of 17, 18, and 19
-- 10-7. Problem Solving: Look for and Use Structure
+  - 10-1. Make 11, 12, and 13
+  - 10-2. Make 14, 15, and 16
+  - 10-3. Make 17, 18, and 19
+  - 10-4. Find Parts of 11, 12, and 13
+  - 10-5. Find Parts of 14, 15, and 16
+  - 10-6. Find Parts of 17, 18, and 19
+  - 10-7. Problem Solving: Look for and Use Structure
 
 **11. Count Numbers to 100**
 
-- 11-1. Count Using Patterns to 30
-- 11-2. Count by Ones and by Tens to 50
-- 11-3. Count by Tens to 100
-- 11-4. Count by Ones to 100
-- 11-5. Problem Solving: Look for and Use Structure
+  - 11-1. Count Using Patterns to 30
+  - 11-2. Count by Ones and by Tens to 50
+  - 11-3. Count by Tens to 100
+  - 11-4. Count by Ones to 100
+  - 11-5. Problem Solving: Look for and Use Structure
 
 **12. Identify and Describe Shapes**
 
-- 12-1. Two-Dimensional (2-D) and Three-Dimensional (3-D) Shapes
-- 12-2. Circles and Triangles
-- 12-3. Squares and Other Rectangles
-- 12-4. Hexagons
-- 12-5. Solid Figures
-- 12-6. Describe Shapes in the Environment
-- 12-7. Problem Solving: Precision
+  - 12-1. Two-Dimensional (2-D) and Three-Dimensional (3-D) Shapes
+  - 12-2. Circles and Triangles
+  - 12-3. Squares and Other Rectangles
+  - 12-4. Hexagons
+  - 12-5. Solid Figures
+  - 12-6. Describe Shapes in the Environment
+  - 12-7. Problem Solving: Precision
 
 **13. Analyze, Compare, and Create Shapes**
 
-- 13-1. Analyze and Compare Two-Dimensional (2-D) Shapes
-- 13-2. Analyze and Compare Three-Dimensional (3-D) Shapes
-- 13-3. Compare 2-D and 3-D Shapes
-- 13-4. Problem Solving: Make Sense and Persevere
-- 13-5. Make 2-D Shapes from Other 2-D Shapes
-- 13-6. Build 2-D Shapes
-- 13-7. Build 3-D Shapes
+  - 13-1. Analyze and Compare Two-Dimensional (2-D) Shapes
+  - 13-2. Analyze and Compare Three-Dimensional (3-D) Shapes
+  - 13-3. Compare 2-D and 3-D Shapes
+  - 13-4. Problem Solving: Make Sense and Persevere
+  - 13-5. Make 2-D Shapes from Other 2-D Shapes
+  - 13-6. Build 2-D Shapes
+  - 13-7. Build 3-D Shapes
 
 **14. Describe and Compare Measurable Attributes**
 
-- 14-1. Describe and Compare by Length and Height
-- 14-2. Describe and Compare by Capacity
-- 14-3. Describe and Compare by Weight
-- 14-4. Describe Objects by Measurable Attributes
-- 14-5. Describe and Compare Objects by Measurable Attributes
-- 14-6. Problem Solving: Precision
+  - 14-1. Describe and Compare by Length and Height
+  - 14-2. Describe and Compare by Capacity
+  - 14-3. Describe and Compare by Weight
+  - 14-4. Describe Objects by Measurable Attributes
+  - 14-5. Describe and Compare Objects by Measurable Attributes
+  - 14-6. Problem Solving: Precision
 
 **15. Step Up to Grade 1**
 
-- 15-1. Put Together
-- 15-2. Take From
-- 15-3. Facts with 5 on a Ten-Frame
-- 15-4. Add in Any Order
-- 15-5. Think Addition to Subtract
-- 15-6. Add Three Numbers
-- 15-7. Count by 10s to 120
-- 15-8. Count by 1s to 120
-- 15-9. Tens and Ones
-- 15-10. 1 More, 1 Less; 10 More, 10 Less
+  - 15-1. Put Together
+  - 15-2. Take From
+  - 15-3. Facts with 5 on a Ten-Frame
+  - 15-4. Add in Any Order
+  - 15-5. Think Addition to Subtract
+  - 15-6. Add Three Numbers
+  - 15-7. Count by 10s to 120
+  - 15-8. Count by 1s to 120
+  - 15-9. Tens and Ones
+  - 15-10. 1 More, 1 Less; 10 More, 10 Less
 
 </details>
 
@@ -769,50 +769,50 @@ Source: <https://www.savvas.com/solutions/mathematics/envision-mathematics-grade
 
 Source: <https://www.hmhco.com/programs/into-math>
 
-| #   | Unit                               | Lessons | Skills                                                                                  | Practice |
-| --- | ---------------------------------- | ------: | --------------------------------------------------------------------------------------- | -------: |
-| 1   | Count Sequence and Numbers to 5    |         | `m.K.count-objects`, `m.K.compare-10`, `m.K.classify-count`, `m.K.add-sub-10`           |          |
-| 2   | Count Sequence and Numbers to 10   |         | `m.K.count-objects`, `m.K.count-100`, `m.K.compare-10`, `m.K.add-sub-10`, `m.K.make-10` |          |
-| 3   | Geometry                           |         | `m.K.shapes-2d-3d`, `m.K.position-words`, `m.K.compose-shapes`                          |          |
-| 4   | Numbers and Operations in Base Ten |         | `m.K.teens-place-value`                                                                 |          |
-| 5   | Measurement                        |         | `m.K.measurable-attributes`                                                             |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Count Sequence and Numbers to 5 |  | `m.K.count-objects`, `m.K.compare-10`, `m.K.classify-count`, `m.K.add-sub-10` |  |
+| 2 | Count Sequence and Numbers to 10 |  | `m.K.count-objects`, `m.K.count-100`, `m.K.compare-10`, `m.K.add-sub-10`, `m.K.make-10` |  |
+| 3 | Geometry |  | `m.K.shapes-2d-3d`, `m.K.position-words`, `m.K.compose-shapes` |  |
+| 4 | Numbers and Operations in Base Ten |  | `m.K.teens-place-value` |  |
+| 5 | Measurement |  | `m.K.measurable-attributes` |  |
 
 <details><summary>Lessons</summary>
 
 **1. Count Sequence and Numbers to 5**
 
-- _1. Represent Numbers to 5 with Objects_
-- _2. Represent Numbers to 5 with a Written Numeral_
-- _3. Matching and Counting Numbers to 5_
-- _4. Classify, Count, and Sort Objects_
-- _5. Add To and Take From Within 5_
-- _6. Put Together and Take Apart Within 5_
+- *1. Represent Numbers to 5 with Objects*
+- *2. Represent Numbers to 5 with a Written Numeral*
+- *3. Matching and Counting Numbers to 5*
+- *4. Classify, Count, and Sort Objects*
+- *5. Add To and Take From Within 5*
+- *6. Put Together and Take Apart Within 5*
 
 **2. Count Sequence and Numbers to 10**
 
-- _7. Represent Numbers 6 to 10 with Objects_
-- _8. Represent Numbers 6 to 10 with a Written Numeral_
-- _9. Use the Count Sequence to Count to 100_
-- _10. Compare Numbers to 10_
-- _11. Add To and Take From Within 10_
-- _12. Put Together and Take Apart Within 10_
-- _13. Ways to Make Numbers to 10_
+- *7. Represent Numbers 6 to 10 with Objects*
+- *8. Represent Numbers 6 to 10 with a Written Numeral*
+- *9. Use the Count Sequence to Count to 100*
+- *10. Compare Numbers to 10*
+- *11. Add To and Take From Within 10*
+- *12. Put Together and Take Apart Within 10*
+- *13. Ways to Make Numbers to 10*
 
 **3. Geometry**
 
-- _14. Analyze and Compare Three-Dimensional Shapes_
-- _15. Describe Positions of Objects_
-- _16. Analyze and Compare Two-Dimensional Shapes_
+- *14. Analyze and Compare Three-Dimensional Shapes*
+- *15. Describe Positions of Objects*
+- *16. Analyze and Compare Two-Dimensional Shapes*
 
 **4. Numbers and Operations in Base Ten**
 
-- _17. Place Value Foundations: Represent Numbers to 20_
-- _18. Place Value Foundations: Represent Numbers to 20 with a Written Numeral_
+- *17. Place Value Foundations: Represent Numbers to 20*
+- *18. Place Value Foundations: Represent Numbers to 20 with a Written Numeral*
 
 **5. Measurement**
 
-- _19. Length and Height_
-- _20. Weight_
+- *19. Length and Height*
+- *20. Weight*
 
 </details>
 
@@ -820,154 +820,154 @@ Source: <https://www.hmhco.com/programs/into-math>
 
 Source: <https://www.mheducation.com/prek-12/program/microsites/MKTSP-BGA07M0.html>
 
-| #   | Unit                                 | Lessons | Skills                                   | Practice |
-| --- | ------------------------------------ | ------: | ---------------------------------------- | -------: |
-| 1   | Math Is...                           |       6 | —                                        |          |
-| 2   | Numbers to 5                         |       9 | `m.K.count-objects`, `m.K.compare-10`    |          |
-| 3   | Numbers to 10                        |      12 | `m.K.count-objects`, `m.K.compare-10`    |          |
-| 4   | Sort, Classify, and Count Objects    |       4 | `m.K.classify-count`                     |          |
-| 5   | 2-Dimensional Shapes                 |       5 | `m.K.shapes-2d-3d`, `m.K.position-words` |          |
-| 6   | Understand Addition                  |       5 | `m.K.add-sub-10`                         |          |
-| 7   | Understand Subtraction               |       5 | `m.K.add-sub-10`                         |          |
-| 8   | Addition and Subtraction Strategies  |       8 | `m.K.add-sub-10`, `m.K.make-10`          |          |
-| 9   | Numbers 11 to 15                     |       6 | `m.K.teens-place-value`                  |          |
-| 10  | Numbers 16 to 19                     |       6 | `m.K.teens-place-value`                  |          |
-| 11  | 3-Dimensional Shapes                 |       6 | `m.K.shapes-2d-3d`                       |          |
-| 12  | Count to 100                         |       5 | `m.K.count-100`                          |          |
-| 13  | Analyze, Compare, and Compose Shapes |       6 | `m.K.compose-shapes`, `m.K.shapes-2d-3d` |          |
-| 14  | Compare Measurable Attributes        |       5 | `m.K.measurable-attributes`              |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Math Is... | 6 | — |  |
+| 2 | Numbers to 5 | 9 | `m.K.count-objects`, `m.K.compare-10` |  |
+| 3 | Numbers to 10 | 12 | `m.K.count-objects`, `m.K.compare-10` |  |
+| 4 | Sort, Classify, and Count Objects | 4 | `m.K.classify-count` |  |
+| 5 | 2-Dimensional Shapes | 5 | `m.K.shapes-2d-3d`, `m.K.position-words` |  |
+| 6 | Understand Addition | 5 | `m.K.add-sub-10` |  |
+| 7 | Understand Subtraction | 5 | `m.K.add-sub-10` |  |
+| 8 | Addition and Subtraction Strategies | 8 | `m.K.add-sub-10`, `m.K.make-10` |  |
+| 9 | Numbers 11 to 15 | 6 | `m.K.teens-place-value` |  |
+| 10 | Numbers 16 to 19 | 6 | `m.K.teens-place-value` |  |
+| 11 | 3-Dimensional Shapes | 6 | `m.K.shapes-2d-3d` |  |
+| 12 | Count to 100 | 5 | `m.K.count-100` |  |
+| 13 | Analyze, Compare, and Compose Shapes | 6 | `m.K.compose-shapes`, `m.K.shapes-2d-3d` |  |
+| 14 | Compare Measurable Attributes | 5 | `m.K.measurable-attributes` |  |
 
 <details><summary>Lessons</summary>
 
 **1. Math Is...**
 
-- 1-1. Math Is Mine
-- 1-2. Math Is Exploring and Thinking
-- 1-3. Math Is In My World
-- 1-4. Math Is Explaining and Sharing
-- 1-5. Math Is Finding Patterns
-- 1-6. Math Is Ours
+  - 1-1. Math Is Mine
+  - 1-2. Math Is Exploring and Thinking
+  - 1-3. Math Is In My World
+  - 1-4. Math Is Explaining and Sharing
+  - 1-5. Math Is Finding Patterns
+  - 1-6. Math Is Ours
 
 **2. Numbers to 5**
 
-- 2-1. Count 1, 2, and 3
-- 2-2. Represent 1, 2, and 3
-- 2-3. Count 4 and 5
-- 2-4. Represent 4 and 5
-- 2-5. Represent 0
-- 2-6. Numbers to 5
-- 2-7. Equal Groups to 5
-- 2-8. Greater Than and Less Than
-- 2-9. Compare Numbers to 5
+  - 2-1. Count 1, 2, and 3
+  - 2-2. Represent 1, 2, and 3
+  - 2-3. Count 4 and 5
+  - 2-4. Represent 4 and 5
+  - 2-5. Represent 0
+  - 2-6. Numbers to 5
+  - 2-7. Equal Groups to 5
+  - 2-8. Greater Than and Less Than
+  - 2-9. Compare Numbers to 5
 
 **3. Numbers to 10**
 
-- 3-1. Count 6 and 7
-- 3-2. Represent 6 and 7
-- 3-3. Count 8 and 9
-- 3-4. Represent 8 and 9
-- 3-5. Count 10
-- 3-6. Represent 10
-- 3-7. Numbers to 10
-- 3-8. Compare Objects in Groups
-- 3-9. Compare Numbers
-- 3-10. Write Numbers to 3
-- 3-11. Write Numbers to 6
-- 3-12. Write Numbers to 10
+  - 3-1. Count 6 and 7
+  - 3-2. Represent 6 and 7
+  - 3-3. Count 8 and 9
+  - 3-4. Represent 8 and 9
+  - 3-5. Count 10
+  - 3-6. Represent 10
+  - 3-7. Numbers to 10
+  - 3-8. Compare Objects in Groups
+  - 3-9. Compare Numbers
+  - 3-10. Write Numbers to 3
+  - 3-11. Write Numbers to 6
+  - 3-12. Write Numbers to 10
 
 **4. Sort, Classify, and Count Objects**
 
-- 4-1. Alike and Different
-- 4-2. Sort Objects into Groups
-- 4-3. Count Objects in Groups
-- 4-4. Describe Groups of Objects
+  - 4-1. Alike and Different
+  - 4-2. Sort Objects into Groups
+  - 4-3. Count Objects in Groups
+  - 4-4. Describe Groups of Objects
 
 **5. 2-Dimensional Shapes**
 
-- 5-1. Triangles
-- 5-2. Squares and Rectangles
-- 5-3. Hexagons
-- 5-4. Circles
-- 5-5. Position of 2-Dimensional Shapes
+  - 5-1. Triangles
+  - 5-2. Squares and Rectangles
+  - 5-3. Hexagons
+  - 5-4. Circles
+  - 5-5. Position of 2-Dimensional Shapes
 
 **6. Understand Addition**
 
-- 6-1. Represent and Solve Add To Problems
-- 6-2. Represent and Solve More Add To Problems
-- 6-3. Represent and Solve Put Together Problems
-- 6-4. Represent and Solve Addition Problems
-- 6-5. Represent and Solve More Addition Problems
+  - 6-1. Represent and Solve Add To Problems
+  - 6-2. Represent and Solve More Add To Problems
+  - 6-3. Represent and Solve Put Together Problems
+  - 6-4. Represent and Solve Addition Problems
+  - 6-5. Represent and Solve More Addition Problems
 
 **7. Understand Subtraction**
 
-- 7-1. Represent Take Apart Problems
-- 7-2. Represent and Solve Take From Problems
-- 7-3. Represent and Solve More Take From Problems
-- 7-4. Represent and Solve Subtraction Problems
-- 7-5. Represent and Solve Addition and Subtraction Problems
+  - 7-1. Represent Take Apart Problems
+  - 7-2. Represent and Solve Take From Problems
+  - 7-3. Represent and Solve More Take From Problems
+  - 7-4. Represent and Solve Subtraction Problems
+  - 7-5. Represent and Solve Addition and Subtraction Problems
 
 **8. Addition and Subtraction Strategies**
 
-- 8-1. Add within 5
-- 8-2. Subtract within 5
-- 8-3. Ways to Make 6 and 7
-- 8-4. Ways to Decompose 6 and 7
-- 8-5. Ways to Make 8 and 9
-- 8-6. Ways to Decompose 8 and 9
-- 8-7. Ways to Make 10
-- 8-8. Ways to Decompose 10
+  - 8-1. Add within 5
+  - 8-2. Subtract within 5
+  - 8-3. Ways to Make 6 and 7
+  - 8-4. Ways to Decompose 6 and 7
+  - 8-5. Ways to Make 8 and 9
+  - 8-6. Ways to Decompose 8 and 9
+  - 8-7. Ways to Make 10
+  - 8-8. Ways to Decompose 10
 
 **9. Numbers 11 to 15**
 
-- 9-1. Represent 11, 12, and 13
-- 9-2. Make 11, 12, and 13
-- 9-3. Decompose 11, 12, and 13
-- 9-4. Represent 14 and 15
-- 9-5. Make 14 and 15
-- 9-6. Decompose 14 and 15
+  - 9-1. Represent 11, 12, and 13
+  - 9-2. Make 11, 12, and 13
+  - 9-3. Decompose 11, 12, and 13
+  - 9-4. Represent 14 and 15
+  - 9-5. Make 14 and 15
+  - 9-6. Decompose 14 and 15
 
 **10. Numbers 16 to 19**
 
-- 10-1. Represent 16 and 17
-- 10-2. Make 16 and 17
-- 10-3. Decompose 16 and 17
-- 10-4. Represent 18 and 19
-- 10-5. Make 18 and 19
-- 10-6. Decompose 18 and 19
+  - 10-1. Represent 16 and 17
+  - 10-2. Make 16 and 17
+  - 10-3. Decompose 16 and 17
+  - 10-4. Represent 18 and 19
+  - 10-5. Make 18 and 19
+  - 10-6. Decompose 18 and 19
 
 **11. 3-Dimensional Shapes**
 
-- 11-1. 2-Dimensional and 3-Dimensional Shapes
-- 11-2. Cubes
-- 11-3. Spheres
-- 11-4. Cylinders
-- 11-5. Cones
-- 11-6. Describe 3-Dimensional Shapes
+  - 11-1. 2-Dimensional and 3-Dimensional Shapes
+  - 11-2. Cubes
+  - 11-3. Spheres
+  - 11-4. Cylinders
+  - 11-5. Cones
+  - 11-6. Describe 3-Dimensional Shapes
 
 **12. Count to 100**
 
-- 12-1. Count by 1s to 50
-- 12-2. Count by 1s to 100
-- 12-3. Count by 10s to 100
-- 12-4. Count From Any Number to 100
-- 12-5. Count to Find Out How Many
+  - 12-1. Count by 1s to 50
+  - 12-2. Count by 1s to 100
+  - 12-3. Count by 10s to 100
+  - 12-4. Count From Any Number to 100
+  - 12-5. Count to Find Out How Many
 
 **13. Analyze, Compare, and Compose Shapes**
 
-- 13-1. Compare and Contrast 2-Dimensional Shapes
-- 13-2. Build and Draw 2-Dimensional Shapes
-- 13-3. Compose 2-Dimensional Shapes
-- 13-4. Compare and Contrast 3-Dimensional Shapes
-- 13-5. Build 3-Dimensional Shapes
-- 13-6. Describe 3-Dimensional Shapes in the World
+  - 13-1. Compare and Contrast 2-Dimensional Shapes
+  - 13-2. Build and Draw 2-Dimensional Shapes
+  - 13-3. Compose 2-Dimensional Shapes
+  - 13-4. Compare and Contrast 3-Dimensional Shapes
+  - 13-5. Build 3-Dimensional Shapes
+  - 13-6. Describe 3-Dimensional Shapes in the World
 
 **14. Compare Measurable Attributes**
 
-- 14-1. Describe Attributes of Objects
-- 14-2. Compare Lengths
-- 14-3. Compare Heights
-- 14-4. Compare Weights
-- 14-5. Compare Capacities
+  - 14-1. Describe Attributes of Objects
+  - 14-2. Compare Lengths
+  - 14-3. Compare Heights
+  - 14-4. Compare Weights
+  - 14-5. Compare Capacities
 
 </details>
 
@@ -977,49 +977,49 @@ Source: <https://www.mheducation.com/prek-12/program/microsites/MKTSP-BGA07M0.ht
 
 Source: <https://openscied.org/curriculum/middle-school/explore-the-curriculum/>
 
-| #   | Unit                                  | Lessons | Skills                                                     | Practice |
-| --- | ------------------------------------- | ------: | ---------------------------------------------------------- | -------: |
-| K.1 | Energy: Sunlight                      |         | `s.K.sunlight-warms`                                       |          |
-| K.2 | Weather                               |         | `s.K.weather-patterns`                                     |          |
-| K.3 | Forces & Motion                       |         | `s.K.pushes-pulls`                                         |          |
-| K.4 | Plants, Animals, & Their Environments |         | `s.K.living-needs`, `s.K.living-things-change-environment` |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| K.1 | Energy: Sunlight |  | `s.K.sunlight-warms` |  |
+| K.2 | Weather |  | `s.K.weather-patterns` |  |
+| K.3 | Forces & Motion |  | `s.K.pushes-pulls` |  |
+| K.4 | Plants, Animals, & Their Environments |  | `s.K.living-needs`, `s.K.living-things-change-environment` |  |
 
 ### Amplify Science K–8 (Amplify Education (developed with the Lawrence Hall of Science)) — titles only (commercial, our own list)
 
 Source: <https://amplify.com/programs/amplify-science/>
 
-| #   | Unit                        | Lessons | Skills                                                     | Practice |
-| --- | --------------------------- | ------: | ---------------------------------------------------------- | -------: |
-| 1   | Needs of Plants and Animals |         | `s.K.living-needs`, `s.K.living-things-change-environment` |          |
-| 2   | Pushes and Pulls            |         | `s.K.pushes-pulls`                                         |          |
-| 3   | Sunlight and Weather        |         | `s.K.sunlight-warms`, `s.K.weather-patterns`               |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Needs of Plants and Animals |  | `s.K.living-needs`, `s.K.living-things-change-environment` |  |
+| 2 | Pushes and Pulls |  | `s.K.pushes-pulls` |  |
+| 3 | Sunlight and Weather |  | `s.K.sunlight-warms`, `s.K.weather-patterns` |  |
 
 ### FOSS Next Generation K–8 (Delta Education / School Specialty (developed at the Lawrence Hall of Science)) — titles only (commercial, our own list)
 
 Source: <https://www.foss-science.com/foss-next-generation/>
 
-| #   | Unit               | Lessons | Skills                                                     | Practice |
-| --- | ------------------ | ------: | ---------------------------------------------------------- | -------: |
-| 1   | Trees & Weather    |         | `s.K.weather-patterns`, `s.K.living-needs`                 |          |
-| 2   | Materials & Motion |         | `s.K.pushes-pulls`, `s.K.sunlight-warms`                   |          |
-| 3   | Animals Two by Two |         | `s.K.living-needs`, `s.K.living-things-change-environment` |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Trees & Weather |  | `s.K.weather-patterns`, `s.K.living-needs` |  |
+| 2 | Materials & Motion |  | `s.K.pushes-pulls`, `s.K.sunlight-warms` |  |
+| 3 | Animals Two by Two |  | `s.K.living-needs`, `s.K.living-things-change-environment` |  |
 
 ### Inspire Science K–5 and 6–8 Integrated (McGraw Hill) — titles only (commercial, our own list)
 
 Source: <https://www.mheducation.com/prek-12/program/inspire-science-k-5/MKTSP-AIB05M0.html>
 
-| #   | Unit                | Lessons | Skills                                       | Practice |
-| --- | ------------------- | ------: | -------------------------------------------- | -------: |
-| 1   | Living Things       |       4 | `s.K.living-needs`                           |          |
-| 2   | Our Changing World  |       5 | `s.K.living-things-change-environment`       |          |
-| 3   | Weather and the Sun |       6 | `s.K.weather-patterns`, `s.K.sunlight-warms` |          |
-| 4   | Make Things Move    |       3 | `s.K.pushes-pulls`                           |          |
+| # | Unit | Lessons | Skills | Practice |
+| --- | --- | ---: | --- | ---: |
+| 1 | Living Things | 4 | `s.K.living-needs` |  |
+| 2 | Our Changing World | 5 | `s.K.living-things-change-environment` |  |
+| 3 | Weather and the Sun | 6 | `s.K.weather-patterns`, `s.K.sunlight-warms` |  |
+| 4 | Make Things Move | 3 | `s.K.pushes-pulls` |  |
 
 <details><summary>Lessons</summary>
 
 **1. Living Things**
 
-- _1. Plants and Animals_
+- *1. Plants and Animals*
   - 1. Living and Nonliving
   - 2. Plant and Animal Survival
   - 3. Places Plants Live
@@ -1027,28 +1027,28 @@ Source: <https://www.mheducation.com/prek-12/program/inspire-science-k-5/MKTSP-A
 
 **2. Our Changing World**
 
-- _1. Changes to the Environment_
+- *1. Changes to the Environment*
   - 1. Plants Change Their Environment
   - 2. Animals Change Their Environment
   - 3. People Change Their Environment
-- _2. Protect Earth_
+- *2. Protect Earth*
   - 1. Natural Resources
   - 2. Reduce, Reuse, Recycle
 
 **3. Weather and the Sun**
 
-- _1. Weather_
+- *1. Weather*
   - 1. Describe Weather
   - 2. Weather Patterns
   - 3. Forecast Weather
   - 4. Severe Weather
-- _2. The Sun and Earth's Surface_
+- *2. The Sun and Earth's Surface*
   - 1. Sunlight on Earth's Surface
   - 2. Protection from the Sun
 
 **4. Make Things Move**
 
-- _1. Forces and Motion_
+- *1. Forces and Motion*
   - 1. Pushes and Pulls
   - 2. Direction and Speed
   - 3. When Objects Collide
@@ -1057,21 +1057,21 @@ Source: <https://www.mheducation.com/prek-12/program/inspire-science-k-5/MKTSP-A
 
 ## Skills of this grade
 
-| Skill                                  | Title                                       | Units that teach it                                                                                                                                                                                                     | Textbook practice | Test questions |
-| -------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------: | -------------: |
-| `m.K.count-100`                        | Count to 100 by ones and tens               | eureka K.5, big-ideas K.10, envision K.9, envision K.11, hmh-math K.2, mcgraw-math K.12                                                                                                                                 |                 2 |              2 |
-| `m.K.count-objects`                    | Count objects and tell how many             | im-k5 K.1, im-k5 K.2, im-k5 K.6, im-k5 K.8, eureka K.1, eureka K.5, big-ideas K.1, big-ideas K.3, big-ideas K.9, envision K.1, envision K.3, envision K.9, hmh-math K.1, hmh-math K.2, mcgraw-math K.2, mcgraw-math K.3 |                29 |              9 |
-| `m.K.compare-10`                       | Compare numbers to 10                       | im-k5 K.1, im-k5 K.2, im-k5 K.8, eureka K.1, eureka K.3, big-ideas K.2, big-ideas K.4, envision K.2, envision K.4, hmh-math K.1, hmh-math K.2, mcgraw-math K.2, mcgraw-math K.3                                         |                20 |              6 |
-| `m.K.add-sub-10`                       | Add and subtract within 10                  | im-k5 K.4, im-k5 K.5, im-k5 K.8, eureka K.4, big-ideas K.5, big-ideas K.6, big-ideas K.7, envision K.6, envision K.7, envision K.8, hmh-math K.1, hmh-math K.2, mcgraw-math K.6, mcgraw-math K.7, mcgraw-math K.8       |                47 |              8 |
-| `m.K.make-10`                          | Add to make 10                              | im-k5 K.5, im-k5 K.8, eureka K.4, big-ideas K.5, envision K.8, hmh-math K.2, mcgraw-math K.8                                                                                                                            |                11 |              6 |
-| `m.K.teens-place-value`                | Make numbers 11 to 19 from ten and ones     | im-k5 K.6, eureka K.5, big-ideas K.8, envision K.10, hmh-math K.4, mcgraw-math K.9, mcgraw-math K.10                                                                                                                    |                20 |             10 |
-| `m.K.measurable-attributes`            | Compare length, height, weight and capacity | im-k5 K.7, eureka K.3, big-ideas K.13, envision K.14, hmh-math K.5, mcgraw-math K.14                                                                                                                                    |                11 |              3 |
-| `m.K.classify-count`                   | Sort, classify and count objects            | im-k5 K.8, eureka K.1, big-ideas K.13, envision K.5, hmh-math K.1, mcgraw-math K.4                                                                                                                                      |                 2 |                |
-| `m.K.shapes-2d-3d`                     | Identify and describe flat and solid shapes | im-k5 K.3, im-k5 K.7, eureka K.2, eureka K.6, big-ideas K.11, big-ideas K.12, envision K.12, envision K.13, hmh-math K.3, mcgraw-math K.5, mcgraw-math K.11, mcgraw-math K.13                                           |                31 |             11 |
-| `m.K.position-words`                   | Describe positions of objects               | eureka K.2, big-ideas K.12, envision K.12, hmh-math K.3, mcgraw-math K.5                                                                                                                                                |                 1 |                |
-| `m.K.compose-shapes`                   | Join shapes to build new shapes             | im-k5 K.3, im-k5 K.7, eureka K.6, envision K.13, hmh-math K.3, mcgraw-math K.13                                                                                                                                         |                16 |              9 |
-| `s.K.pushes-pulls`                     | Pushes and pulls                            | openscied K.K.3, amplify-science K.2, foss K.2, inspire-science K.4                                                                                                                                                     |                   |                |
-| `s.K.sunlight-warms`                   | Sunlight warms Earth's surface              | openscied K.K.1, amplify-science K.3, foss K.2, inspire-science K.3                                                                                                                                                     |                   |              5 |
-| `s.K.living-needs`                     | Needs of plants and animals                 | openscied K.K.4, amplify-science K.1, foss K.1, foss K.3, inspire-science K.1                                                                                                                                           |                   |                |
-| `s.K.weather-patterns`                 | Weather patterns                            | openscied K.K.2, amplify-science K.3, foss K.1, inspire-science K.3                                                                                                                                                     |                   |              4 |
-| `s.K.living-things-change-environment` | How living things change their environment  | openscied K.K.4, amplify-science K.1, foss K.3, inspire-science K.2                                                                                                                                                     |                   |                |
+| Skill | Title | Units that teach it | Textbook practice | Test questions |
+| --- | --- | --- | ---: | ---: |
+| `m.K.count-100` | Count to 100 by ones and tens | eureka K.5, big-ideas K.10, envision K.9, envision K.11, hmh-math K.2, mcgraw-math K.12 | 2 | 2 |
+| `m.K.count-objects` | Count objects and tell how many | im-k5 K.1, im-k5 K.2, im-k5 K.6, im-k5 K.8, eureka K.1, eureka K.5, big-ideas K.1, big-ideas K.3, big-ideas K.9, envision K.1, envision K.3, envision K.9, hmh-math K.1, hmh-math K.2, mcgraw-math K.2, mcgraw-math K.3 | 29 | 9 |
+| `m.K.compare-10` | Compare numbers to 10 | im-k5 K.1, im-k5 K.2, im-k5 K.8, eureka K.1, eureka K.3, big-ideas K.2, big-ideas K.4, envision K.2, envision K.4, hmh-math K.1, hmh-math K.2, mcgraw-math K.2, mcgraw-math K.3 | 20 | 6 |
+| `m.K.add-sub-10` | Add and subtract within 10 | im-k5 K.4, im-k5 K.5, im-k5 K.8, eureka K.4, big-ideas K.5, big-ideas K.6, big-ideas K.7, envision K.6, envision K.7, envision K.8, hmh-math K.1, hmh-math K.2, mcgraw-math K.6, mcgraw-math K.7, mcgraw-math K.8 | 47 | 8 |
+| `m.K.make-10` | Add to make 10 | im-k5 K.5, im-k5 K.8, eureka K.4, big-ideas K.5, envision K.8, hmh-math K.2, mcgraw-math K.8 | 11 | 6 |
+| `m.K.teens-place-value` | Make numbers 11 to 19 from ten and ones | im-k5 K.6, eureka K.5, big-ideas K.8, envision K.10, hmh-math K.4, mcgraw-math K.9, mcgraw-math K.10 | 20 | 10 |
+| `m.K.measurable-attributes` | Compare length, height, weight and capacity | im-k5 K.7, eureka K.3, big-ideas K.13, envision K.14, hmh-math K.5, mcgraw-math K.14 | 11 | 3 |
+| `m.K.classify-count` | Sort, classify and count objects | im-k5 K.8, eureka K.1, big-ideas K.13, envision K.5, hmh-math K.1, mcgraw-math K.4 | 2 |  |
+| `m.K.shapes-2d-3d` | Identify and describe flat and solid shapes | im-k5 K.3, im-k5 K.7, eureka K.2, eureka K.6, big-ideas K.11, big-ideas K.12, envision K.12, envision K.13, hmh-math K.3, mcgraw-math K.5, mcgraw-math K.11, mcgraw-math K.13 | 31 | 11 |
+| `m.K.position-words` | Describe positions of objects | eureka K.2, big-ideas K.12, envision K.12, hmh-math K.3, mcgraw-math K.5 | 1 |  |
+| `m.K.compose-shapes` | Join shapes to build new shapes | im-k5 K.3, im-k5 K.7, eureka K.6, envision K.13, hmh-math K.3, mcgraw-math K.13 | 16 | 9 |
+| `s.K.pushes-pulls` | Pushes and pulls | openscied K.K.3, amplify-science K.2, foss K.2, inspire-science K.4 |  |  |
+| `s.K.sunlight-warms` | Sunlight warms Earth's surface | openscied K.K.1, amplify-science K.3, foss K.2, inspire-science K.3 |  | 5 |
+| `s.K.living-needs` | Needs of plants and animals | openscied K.K.4, amplify-science K.1, foss K.1, foss K.3, inspire-science K.1 |  |  |
+| `s.K.weather-patterns` | Weather patterns | openscied K.K.2, amplify-science K.3, foss K.1, inspire-science K.3 |  | 4 |
+| `s.K.living-things-change-environment` | How living things change their environment | openscied K.K.4, amplify-science K.1, foss K.3, inspire-science K.2 |  |  |

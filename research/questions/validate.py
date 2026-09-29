@@ -14,14 +14,14 @@ import json, os, re, sys, collections
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 TAXONOMY = os.path.join(ROOT, "src", "data", "taxonomy.ts")
-GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8"]
+GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
 KEYS = ["id", "grade", "subject", "standardCode", "skillId", "question", "choices",
         "answer", "type", "picture", "source", "license", "retrieved"]
 TYPES = {"multiple choice", "constructed", "grid-in", "short answer"}
 
 
 def load_skills():
-    """Parse the MATH and SCIENCE tables of taxonomy.ts -> ordered {id: title} for K-8."""
+    """Parse the MATH and SCIENCE tables of taxonomy.ts -> ordered {id: title} for K-12."""
     src = open(TAXONOMY, encoding="utf-8").read()
     skills = collections.OrderedDict()
     for table, prefix in (("MATH", "m"), ("SCIENCE", "s")):
@@ -133,7 +133,7 @@ def main():
     for subject in ("math", "science"):
         print(subject, {g: by_file.get((subject, g), 0) for g in GRADES})
     covered = [s for s in skills if by_lesson.get(s)]
-    print(f"K-8 skills: {len(skills)}  with >=1 question (filed or also): {len(covered)}  null skillId: {by_skill.get(None, 0)}")
+    print(f"K-12 skills: {len(skills)}  with >=1 question (filed or also): {len(covered)}  null skillId: {by_skill.get(None, 0)}")
     if "--markdown" in sys.argv:
         print("\n## Totals by source\n\n| Source | Questions |\n| --- | ---: |")
         for k, v in by_source.most_common():
@@ -144,7 +144,7 @@ def main():
         for subject in ("math", "science"):
             row = [by_file.get((subject, g), 0) for g in GRADES]
             print(f"| {subject} | " + " | ".join(map(str, row)) + f" | {sum(row)} |")
-        print("\n## Questions per skill (every K–8 skill in taxonomy.ts)\n\nFiled: the question's `skillId`. Also: questions filed elsewhere that list this skill in\n`alsoSkills` (an idea tested later that this lesson teaches).\n\n| Skill id | Title | Filed | Also |\n| --- | --- | ---: | ---: |")
+        print("\n## Questions per skill (every K–12 skill in taxonomy.ts)\n\nFiled: the question's `skillId`. Also: questions filed elsewhere that list this skill in\n`alsoSkills` (an idea tested later that this lesson teaches).\n\n| Skill id | Title | Filed | Also |\n| --- | --- | ---: | ---: |")
         for s, t in skills.items():
             print(f"| `{s}` | {t} | {by_skill.get(s, 0)} | {by_lesson.get(s, 0) - by_skill.get(s, 0)} |")
         print("\n## Skills with no questions\n")

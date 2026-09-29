@@ -48,3 +48,7 @@ src/**/__tests__/zz-*.review.test.ts
 
 # The AI reviewer's screenshots, scripts and running notes
 .review/
+
+# Python bytecode (research tools)
+__pycache__/
+*.pyc

@@ -27,8 +27,8 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 | `docs/PICTURES.md`, `docs/LAYOUTS.md`        | The picture catalog with each kind's options and the art direction; the layout kinds and every explore, observe and card figure (open when choosing one)                                                 |
 | `docs/MODULE_PLAN.md`                        | Sections and what is built                                                                                                                                                                               |
 | `docs/ENGINE_LOG.md`, `REVIEW_LOG.md`        | What each review taught the engine and the reviewers                                                                                                                                                     |
-| `research/questions/`                        | Released K–8 test and practice questions by skill (NAEP, Illustrative Mathematics); reference only, never shipped or copied                                                                              |
-| `research/textbooks/`                        | What K–8 textbooks teach, by grade (`grades/<grade>.md`) and by skill (`CROSSWALK.md`), with practice problems; check a lesson's coverage, order, numbers and wording against them; never copy           |
+| `research/questions/`                        | Released K–12 test and practice questions by skill (NAEP, Illustrative Mathematics and others); reference only, never used directly                                                                      |
+| `research/textbooks/`                        | What K–12 textbooks teach, by grade (`grades/<grade>.md`) and by skill (`CROSSWALK.md`), with practice problems; check a lesson's coverage, order, numbers and wording against them; never copy          |
 | `.claude/agents/`                            | `lesson-reviewer` and `page-reviewer`                                                                                                                                                                    |
 
 ## Commands
@@ -72,4 +72,6 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
   requests unless asked.
 - Don't add dependencies without asking.
 - Never edit `taxonomy.ts` casually; it is kept byte-for-byte and Prettier ignores it.
-- Licensed material is never used; lesson text is original.
+- Licensed material is never used; lesson text is original. Any licensed or restricted material
+  (everything in `research/`, and online images) is for reference only and never used directly:
+  no copied problems, text, numbers, figures or screenshots in lessons, pictures or tests.

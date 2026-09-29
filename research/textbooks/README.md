@@ -1,12 +1,12 @@
 # research/textbooks/
 
-What K–8 math and science textbooks cover, grade by grade, and practice problems tied to the
+What K–12 math and science textbooks cover, grade by grade, and practice problems tied to the
 chapter that teaches them. Reference for the people who write and review lessons. **Nothing
 here is part of the app**: it is never imported, bundled or shipped (see `../README.md`).
 
 Start with **`grades/<grade>.md`**: every textbook's units for that grade side by side, the
 lessons in each, the taxonomy skills each unit maps to, and how many practice problems and
-test questions exist per skill. **`CROSSWALK.md`** turns it around: for every K–8 skill in
+test questions exist per skill. **`CROSSWALK.md`** turns it around: for every K–12 skill in
 `src/data/taxonomy.ts`, which unit of each textbook teaches it.
 
 | Path                                            | What                                                                             |
@@ -30,6 +30,15 @@ Run `python3 research/textbooks/tools/build.py` after changing `toc/` or `practi
   Ideas, Amplify Science, FOSS, …). Our own list of their chapter or unit titles, read from
   public pages and cited; nothing else is copied, and there are no practice problems from them.
 
+## OpenStax books
+
+Every OpenStax book used here (math: `openstax-*` in `toc/math/`; science: Biology, Chemistry,
+Physics, Astronomy) states: "This book may not be used in the training of large language models
+or otherwise be ingested into large language models or generative AI offerings without
+OpenStax's prior written permission." Most are also CC BY-NC-SA 4.0 (the high-school Physics
+book is CC BY 4.0). The owner decided on 2026-09-29 to keep these files; the restriction and the
+licenses are quoted in `sources/hs-b.md` and `sources/hs-d.md`.
+
 ## Practice records
 
 Each line of `practice/*.jsonl` is one problem: `id`, `curriculum`, `grade`, `subject`,
@@ -42,6 +51,8 @@ public), `type`, `picture` (`involved`, `description`: the page's own alt text),
 ## Using it
 
 Check that a lesson covers what the textbooks teach at that grade, in a sensible order, with
-the numbers, words and pictures students meet in class. Do not copy problems into lessons:
-lesson text stays original (`CLAUDE.md`). The test questions filed by skill are in
+the numbers, words and pictures students meet in class. **Everything here is licensed or
+restricted material, for reference only and never used directly:** no problem, text, numbers,
+figure or screenshot goes into a lesson, a picture or a test, whatever its license (CC BY
+included). Lesson text and pictures stay original (`CLAUDE.md`). The test questions filed by skill are in
 `../questions/`; the grade pages count both.

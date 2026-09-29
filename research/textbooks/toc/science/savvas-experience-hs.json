@@ -1,0 +1,833 @@
+{
+  "id": "savvas-experience-hs",
+  "curriculum": "Savvas Experience Chemistry and Experience Physics",
+  "publisher": "Savvas Learning Company",
+  "edition": "National editions as listed on savvas.com (page footer \"Copyright © 2026 Savvas Learning Company LLC\")",
+  "subject": "science",
+  "grades": ["10", "11"],
+  "content": "titles",
+  "license": null,
+  "terms": {
+    "unit": "Investigation",
+    "lesson": "Experience"
+  },
+  "sourceUrl": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+  "retrieved": "2026-09-29",
+  "notes": "Titles only, from the \"Table of Contents\" section of each public program page; storylines are kept as \"storyline\". Storyline 3 of Experience Chemistry is marked on the page as optional (\"should be included as needed to meet your local curriculum requirements\"). The Texas editions differ (TEA IMRA reports list 14 Chemistry investigations); not recorded.",
+  "books": [
+    {
+      "grade": "10",
+      "course": "Chemistry",
+      "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+      "units": [
+        {
+          "n": "1",
+          "title": "Atomic Structure",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.atomic-structure"],
+          "storyline": "Atoms, Elements, and Molecules",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "The Particle Nature of Matter"
+            },
+            {
+              "n": "1.2",
+              "title": "Modeling Atoms"
+            },
+            {
+              "n": "1.3",
+              "title": "Atomic Emission Spectra and the Bohr Model"
+            },
+            {
+              "n": "1.4",
+              "title": "Modern Atomic Theory"
+            },
+            {
+              "n": "1.5",
+              "title": "Electrons in Atoms"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "The Periodic Table",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.periodic-trends"],
+          "storyline": "Atoms, Elements, and Molecules",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "The Periodic Table: An Overview"
+            },
+            {
+              "n": "2.2",
+              "title": "The Periodic Table and Atomic Structure"
+            },
+            {
+              "n": "2.3",
+              "title": "Periodic Trends"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Chemical Bonding",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.bonding"],
+          "storyline": "Atoms, Elements, and Molecules",
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Ionic Bonds"
+            },
+            {
+              "n": "3.2",
+              "title": "Metallic Bonds"
+            },
+            {
+              "n": "3.3",
+              "title": "Covalent Bonds"
+            },
+            {
+              "n": "3.4",
+              "title": "Intermolecular Attractions"
+            },
+            {
+              "n": "3.5",
+              "title": "Names and Formulas of Compounds"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Physical Properties of Materials",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.bonding", "s.10.molarity"],
+          "storyline": "Atoms, Elements, and Molecules",
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "States of Matter"
+            },
+            {
+              "n": "4.2",
+              "title": "Modeling Phase Changes"
+            },
+            {
+              "n": "4.3",
+              "title": "Comparing Ionic and Molecular Compounds"
+            },
+            {
+              "n": "4.4",
+              "title": "Comparing Metals and Nonmetals"
+            },
+            {
+              "n": "4.5",
+              "title": "Water and Aqueous Systems"
+            },
+            {
+              "n": "4.6",
+              "title": "Properties of Solutions"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Chemical Quantities",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.mole", "s.10.molarity"],
+          "storyline": "Understanding Chemical Reactions",
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "The Mole Concept"
+            },
+            {
+              "n": "5.2",
+              "title": "Molar Relationships"
+            },
+            {
+              "n": "5.3",
+              "title": "Percent Composition and Empirical Formula"
+            },
+            {
+              "n": "5.4",
+              "title": "Concentrations of Solutions"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Chemical Reactions",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.stoichiometry"],
+          "storyline": "Understanding Chemical Reactions",
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Modeling Chemical Reactions"
+            },
+            {
+              "n": "6.2",
+              "title": "Predicting Outcomes of Reactions"
+            },
+            {
+              "n": "6.3",
+              "title": "Reactions in Aqueous Solution"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Stoichiometry",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.stoichiometry"],
+          "storyline": "Understanding Chemical Reactions",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Quantifying Reactants and Products"
+            },
+            {
+              "n": "7.2",
+              "title": "Chemical Calculations"
+            },
+            {
+              "n": "7.3",
+              "title": "Limiting Reagent and Percent Yield"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Thermochemistry",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.thermochemistry"],
+          "storyline": "Understanding Chemical Reactions",
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Energy in Chemical Bonds"
+            },
+            {
+              "n": "8.2",
+              "title": "Heats of Formation and Reaction"
+            },
+            {
+              "n": "8.3",
+              "title": "Heat in Changes of State"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "The Behavior of Gases",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.gas-laws"],
+          "storyline": "The Chemistry of Climate Change",
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Properties of Gases"
+            },
+            {
+              "n": "9.2",
+              "title": "The Gas Laws"
+            },
+            {
+              "n": "9.3",
+              "title": "Ideal Gases"
+            },
+            {
+              "n": "9.4",
+              "title": "Gases in Earth's Atmosphere"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Weather and Climate",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.12.climate-systems", "s.12.ocean-atmosphere"],
+          "storyline": "The Chemistry of Climate Change",
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Earth's Surface Systems"
+            },
+            {
+              "n": "10.2",
+              "title": "Water and Energy in the Atmosphere"
+            },
+            {
+              "n": "10.3",
+              "title": "Atmospheric System Feedbacks"
+            },
+            {
+              "n": "10.4",
+              "title": "Long-Term Climate Factors"
+            },
+            {
+              "n": "10.5",
+              "title": "Short-Term Climate Factors"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Global Climate Change",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.12.climate-systems"],
+          "storyline": "The Chemistry of Climate Change",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "The Chemistry of Earth's Atmosphere"
+            },
+            {
+              "n": "11.2",
+              "title": "Evidence of Climate Change"
+            },
+            {
+              "n": "11.3",
+              "title": "Anthropogenic Carbon Emissions"
+            },
+            {
+              "n": "11.4",
+              "title": "Climate Models"
+            },
+            {
+              "n": "11.5",
+              "title": "Consequences of Climate Change"
+            },
+            {
+              "n": "11.6",
+              "title": "Response to Climate Change"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Reaction Rates and Equilibrium",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.rates-equilibrium"],
+          "storyline": "The Dynamics of Chemical Reactions and Ocean Acidification",
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Rates of Reaction"
+            },
+            {
+              "n": "12.2",
+              "title": "The Progress of Chemical Reactions"
+            },
+            {
+              "n": "12.3",
+              "title": "Reversible Reactions and Equilibrium"
+            },
+            {
+              "n": "12.4",
+              "title": "Free Energy and Entropy"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Acids-Base Equilibria",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.acids-bases"],
+          "storyline": "The Dynamics of Chemical Reactions and Ocean Acidification",
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Acids, Bases, and Salts"
+            },
+            {
+              "n": "13.2",
+              "title": "Strong and Weak Acids and Bases"
+            },
+            {
+              "n": "13.3",
+              "title": "Reactions of Acids and Bases"
+            },
+            {
+              "n": "13.4",
+              "title": "Buffered Solutions"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Ocean Acidification",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.acids-bases", "s.12.ocean-atmosphere"],
+          "storyline": "The Dynamics of Chemical Reactions and Ocean Acidification",
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Ocean pH Levels"
+            },
+            {
+              "n": "14.2",
+              "title": "Earth's Ocean as a Carbon Sink"
+            },
+            {
+              "n": "14.3",
+              "title": "Oceans and Climate Change"
+            },
+            {
+              "n": "14.4",
+              "title": "Consequences of Ocean Acidification"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Oxidation-Reduction Reactions",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": [],
+          "storyline": "Industrial Applications",
+          "notes": "Redox and electrochemistry; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "Oxidation vs. Reduction"
+            },
+            {
+              "n": "15.2",
+              "title": "Modeling and Predicting Outcomes of Redox Reactions"
+            },
+            {
+              "n": "15.3",
+              "title": "Electrochemical Cells"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Organic Chemistry",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": [],
+          "storyline": "Industrial Applications",
+          "notes": "Organic chemistry; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Hydrocarbons"
+            },
+            {
+              "n": "16.2",
+              "title": "Functional Groups"
+            },
+            {
+              "n": "16.3",
+              "title": "Polymers"
+            }
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Nuclear Processes",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.10.atomic-structure", "s.12.radiometric-dating"],
+          "storyline": "Industrial Applications",
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Radioactivity and Half-Life"
+            },
+            {
+              "n": "17.2",
+              "title": "Fission and Fusion"
+            },
+            {
+              "n": "17.3",
+              "title": "Nuclear Technologies"
+            }
+          ]
+        },
+        {
+          "n": "18",
+          "title": "Green Chemistry",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-chemistry",
+          "skills": ["s.12.resource-management"],
+          "storyline": "Industrial Applications",
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Industrial Chemicals"
+            },
+            {
+              "n": "18.2",
+              "title": "Principles of Green Chemistry"
+            },
+            {
+              "n": "18.3",
+              "title": "Designing Sustainable Processes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "11",
+      "course": "Physics",
+      "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+      "units": [
+        {
+          "n": "1",
+          "title": "Describing Position and Motion (or Modeling Motion)",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.kinematics-2d"],
+          "storyline": "Forces in Motion",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Displacement and Velocity"
+            },
+            {
+              "n": "2",
+              "title": "Acceleration"
+            },
+            {
+              "n": "3",
+              "title": "Circular and Projectile Motion"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Forces",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.dynamics-vectors"],
+          "storyline": "Forces in Motion",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Force, Mass, and Acceleration"
+            },
+            {
+              "n": "2",
+              "title": "Types of Forces"
+            },
+            {
+              "n": "3",
+              "title": "Forces on Systems"
+            },
+            {
+              "n": "4",
+              "title": "Earth Processes and Forces"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Gravitational Forces",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.circular-gravitation"],
+          "storyline": "Forces at a Distance",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Universal Gravitation"
+            },
+            {
+              "n": "2",
+              "title": "Orbital Motion"
+            },
+            {
+              "n": "3",
+              "title": "Kepler's Laws"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Electric Forces",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.electromagnetism", "s.11.circuits"],
+          "storyline": "Forces at a Distance",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Coulomb's Law"
+            },
+            {
+              "n": "2",
+              "title": "Electric Fields"
+            },
+            {
+              "n": "3",
+              "title": "Electric Current"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Magnetic Forces",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.electromagnetism"],
+          "storyline": "Forces at a Distance",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Magnetism"
+            },
+            {
+              "n": "2",
+              "title": "Magnetic Fields"
+            },
+            {
+              "n": "3",
+              "title": "Inducing Current"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Forces in Materials",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.10.bonding"],
+          "storyline": "Forces at a Distance",
+          "notes": "Atomic structure and forces between particles (loose fit to bonding).",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Atoms and Atomic Structure"
+            },
+            {
+              "n": "2",
+              "title": "Attractive and Repulsive Forces"
+            },
+            {
+              "n": "3",
+              "title": "Material Properties"
+            },
+            {
+              "n": "4",
+              "title": "Structure and Function"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Energy",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.work-energy-power"],
+          "storyline": "Energy Conversion",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Classifying Energy and Work"
+            },
+            {
+              "n": "2",
+              "title": "Kinetic and Potential Energy"
+            },
+            {
+              "n": "3",
+              "title": "Conservation of Energy"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Collisions",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.momentum"],
+          "storyline": "Energy Conversion",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Momentum and Impulse"
+            },
+            {
+              "n": "2",
+              "title": "Conservation of Momentum"
+            },
+            {
+              "n": "3",
+              "title": "Collisions in Earth's Crust"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Thermal Energy",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.12.earth-interior"],
+          "storyline": "Energy Conversion",
+          "notes": "Heat flow within Earth (Experience 3); temperature and heat have no grade-11 skill (nearest s.10.thermochemistry).",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Temperature"
+            },
+            {
+              "n": "2",
+              "title": "Thermal Equilibrium and Heat Flow"
+            },
+            {
+              "n": "3",
+              "title": "Heat Flow Within Earth"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Electromagnetic Energy",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.circuits", "s.12.resource-management"],
+          "storyline": "Energy Conversion",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Electric Potential"
+            },
+            {
+              "n": "2",
+              "title": "Energy in Electric Circuits"
+            },
+            {
+              "n": "3",
+              "title": "Power Generation"
+            },
+            {
+              "n": "4",
+              "title": "Energy Resources and Conservation"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Waves",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.11.sound-waves", "s.11.optics"],
+          "storyline": "Waves and Electromagnetic Radiation",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Properties of Waves"
+            },
+            {
+              "n": "2",
+              "title": "Wave Behavior and Energy"
+            },
+            {
+              "n": "3",
+              "title": "Wave Optics"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Electromagnetic Radiation",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.8.em-spectrum"],
+          "storyline": "Waves and Electromagnetic Radiation",
+          "notes": "No grade-11 skill for the electromagnetic spectrum; nearest is grade 8.",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Electromagnetic Waves and Their Properties"
+            },
+            {
+              "n": "2",
+              "title": "Particle-Wave Duality"
+            },
+            {
+              "n": "3",
+              "title": "EM Radiation and Matter"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Information and Instrumentation",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": [],
+          "storyline": "Waves and Electromagnetic Radiation",
+          "notes": "Digital information and technology; no taxonomy skill.",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Digital Information"
+            },
+            {
+              "n": "2",
+              "title": "Transmitting and Capturing Information"
+            },
+            {
+              "n": "3",
+              "title": "Transmitting and Capturing Energy"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Nuclear Physics",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.10.atomic-structure"],
+          "storyline": "From the Nucleus to the Universe",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Nuclear Forces"
+            },
+            {
+              "n": "2",
+              "title": "Nuclear Particles"
+            },
+            {
+              "n": "3",
+              "title": "Fission and Fusion"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Ages of Rocks",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.12.radiometric-dating"],
+          "storyline": "From the Nucleus to the Universe",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Radioactive Decay"
+            },
+            {
+              "n": "2",
+              "title": "Radiometric Dating"
+            },
+            {
+              "n": "3",
+              "title": "Exploring Patterns in the Ages of Rocks"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "The Universe",
+          "url": "https://www.savvas.com/solutions/science/core-programs/experience-physics",
+          "skills": ["s.12.stellar-evolution", "s.12.cosmology"],
+          "storyline": "From the Nucleus to the Universe",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Stars"
+            },
+            {
+              "n": "2",
+              "title": "The Sun"
+            },
+            {
+              "n": "3",
+              "title": "The Big Bang"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

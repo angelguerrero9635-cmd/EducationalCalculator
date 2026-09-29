@@ -1,0 +1,573 @@
+{
+  "id": "openstax-elementary-algebra-2e",
+  "curriculum": "OpenStax Elementary Algebra 2e",
+  "publisher": "OpenStax, Rice University",
+  "edition": "2nd edition (web version on openstax.org)",
+  "subject": "math",
+  "grades": ["9"],
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "statement": "This book uses the Creative Commons Attribution-NonCommercial-ShareAlike License, which means that you can reuse and modify the material only for noncommercial purposes, must attribute OpenStax, and must distribute any derivative works under the same license.",
+    "attribution": "© OpenStax, Rice University. Elementary Algebra 2e, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/elementary-algebra-2e/pages/1-introduction"
+  },
+  "sourceUrl": "https://openstax.org/books/elementary-algebra-2e/pages/preface",
+  "retrieved": "2026-09-29",
+  "notes": "Reference only. The book is CC BY-NC-SA 4.0 (noncommercial, share-alike), so the practice files hold a representative sample, not every problem: per section, the Try It problems and the first 6 numbered exercises, with the answer when the book's public answer key gives it (odd-numbered exercises; Try It answers are all public). Units are the book's chapters and lessons its numbered sections. Filed under Grade 9 (Algebra 1); Chapter 1 reviews arithmetic of Grades 6-8. Skills are best matches; unit and lesson notes say where the fit is loose.",
+  "books": [
+    {
+      "grade": "9",
+      "units": [
+        {
+          "n": "1",
+          "title": "Foundations",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-introduction",
+          "skills": [
+            "m.6.expressions-variables",
+            "m.7.rational-operations",
+            "m.6.integers",
+            "m.6.multi-digit-decimals",
+            "m.8.roots-irrationals",
+            "m.6.unit-rates"
+          ],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Introduction to Whole Numbers",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-1-introduction-to-whole-numbers",
+              "skills": ["m.6.expressions-variables"]
+            },
+            {
+              "n": "1.2",
+              "title": "Use the Language of Algebra",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-2-use-the-language-of-algebra",
+              "skills": ["m.6.expressions-variables"]
+            },
+            {
+              "n": "1.3",
+              "title": "Add and Subtract Integers",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-3-add-and-subtract-integers",
+              "skills": ["m.7.rational-operations", "m.6.integers"]
+            },
+            {
+              "n": "1.4",
+              "title": "Multiply and Divide Integers",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-4-multiply-and-divide-integers",
+              "skills": ["m.7.rational-operations"]
+            },
+            {
+              "n": "1.5",
+              "title": "Visualize Fractions",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-5-visualize-fractions",
+              "skills": ["m.7.rational-operations"]
+            },
+            {
+              "n": "1.6",
+              "title": "Add and Subtract Fractions",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-6-add-and-subtract-fractions",
+              "skills": ["m.7.rational-operations"]
+            },
+            {
+              "n": "1.7",
+              "title": "Decimals",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-7-decimals",
+              "skills": ["m.7.rational-operations", "m.6.multi-digit-decimals"]
+            },
+            {
+              "n": "1.8",
+              "title": "The Real Numbers",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-8-the-real-numbers",
+              "skills": ["m.8.roots-irrationals"]
+            },
+            {
+              "n": "1.9",
+              "title": "Properties of Real Numbers",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-9-properties-of-real-numbers",
+              "skills": ["m.7.rational-operations"]
+            },
+            {
+              "n": "1.10",
+              "title": "Systems of Measurement",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/1-10-systems-of-measurement",
+              "skills": ["m.6.unit-rates"],
+              "notes": "systems of measurement: nearest is m.6.unit-rates"
+            }
+          ],
+          "notes": "Foundations reviews whole numbers, integers, fractions, decimals and real numbers: Grade 6-8 skills"
+        },
+        {
+          "n": "2",
+          "title": "Solving Linear Equations and Inequalities",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-introduction",
+          "skills": [
+            "m.6.one-step-equations",
+            "m.8.multi-step-equations",
+            "m.9.linear-modeling",
+            "m.9.inequality-systems",
+            "m.7.two-step-equations"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Solve Equations Using the Subtraction and Addition Properties of Equality",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-1-solve-equations-using-the-subtraction-and-addition-properties-of-equality",
+              "skills": ["m.6.one-step-equations"]
+            },
+            {
+              "n": "2.2",
+              "title": "Solve Equations using the Division and Multiplication Properties of Equality",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-2-solve-equations-using-the-division-and-multiplication-properties-of-equality",
+              "skills": ["m.6.one-step-equations"]
+            },
+            {
+              "n": "2.3",
+              "title": "Solve Equations with Variables and Constants on Both Sides",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-3-solve-equations-with-variables-and-constants-on-both-sides",
+              "skills": ["m.8.multi-step-equations"]
+            },
+            {
+              "n": "2.4",
+              "title": "Use a General Strategy to Solve Linear Equations",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-4-use-a-general-strategy-to-solve-linear-equations",
+              "skills": ["m.8.multi-step-equations"]
+            },
+            {
+              "n": "2.5",
+              "title": "Solve Equations with Fractions or Decimals",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-5-solve-equations-with-fractions-or-decimals",
+              "skills": ["m.8.multi-step-equations"]
+            },
+            {
+              "n": "2.6",
+              "title": "Solve a Formula for a Specific Variable",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-6-solve-a-formula-for-a-specific-variable",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "2.7",
+              "title": "Solve Linear Inequalities",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/2-7-solve-linear-inequalities",
+              "skills": ["m.9.inequality-systems", "m.7.two-step-equations"]
+            }
+          ],
+          "notes": "one-variable linear equations: Grade 6-8 skills (no Grade 9 skill for them)"
+        },
+        {
+          "n": "3",
+          "title": "Math Models",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-introduction",
+          "skills": [
+            "m.9.linear-modeling",
+            "m.7.percent-applications",
+            "m.8.pythagorean",
+            "m.9.inequality-systems"
+          ],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Use a Problem-Solving Strategy",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-1-use-a-problem-solving-strategy",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "3.2",
+              "title": "Solve Percent Applications",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-2-solve-percent-applications",
+              "skills": ["m.7.percent-applications"],
+              "notes": "percent applications: Grade 7 skill"
+            },
+            {
+              "n": "3.3",
+              "title": "Solve Mixture Applications",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-3-solve-mixture-applications",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "3.4",
+              "title": "Solve Geometry Applications: Triangles, Rectangles, and the Pythagorean Theorem",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-4-solve-geometry-applications-triangles-rectangles-and-the-pythagorean-theorem",
+              "skills": ["m.8.pythagorean", "m.9.linear-modeling"]
+            },
+            {
+              "n": "3.5",
+              "title": "Solve Uniform Motion Applications",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-5-solve-uniform-motion-applications",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "3.6",
+              "title": "Solve Applications with Linear Inequalities",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/3-6-solve-applications-with-linear-inequalities",
+              "skills": ["m.9.inequality-systems"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Graphs",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-introduction",
+          "skills": [
+            "m.6.coordinate-plane-4q",
+            "m.8.linear-functions",
+            "m.8.slope",
+            "m.9.linear-modeling",
+            "m.9.inequality-systems"
+          ],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Use the Rectangular Coordinate System",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-1-use-the-rectangular-coordinate-system",
+              "skills": ["m.6.coordinate-plane-4q"]
+            },
+            {
+              "n": "4.2",
+              "title": "Graph Linear Equations in Two Variables",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-2-graph-linear-equations-in-two-variables",
+              "skills": ["m.8.linear-functions"]
+            },
+            {
+              "n": "4.3",
+              "title": "Graph with Intercepts",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-3-graph-with-intercepts",
+              "skills": ["m.8.linear-functions"]
+            },
+            {
+              "n": "4.4",
+              "title": "Understand Slope of a Line",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-4-understand-slope-of-a-line",
+              "skills": ["m.8.slope"]
+            },
+            {
+              "n": "4.5",
+              "title": "Use the Slope-Intercept Form of an Equation of a Line",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-5-use-the-slope-intercept-form-of-an-equation-of-a-line",
+              "skills": ["m.8.linear-functions", "m.9.linear-modeling"]
+            },
+            {
+              "n": "4.6",
+              "title": "Find the Equation of a Line",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-6-find-the-equation-of-a-line",
+              "skills": ["m.8.linear-functions", "m.9.linear-modeling"]
+            },
+            {
+              "n": "4.7",
+              "title": "Graphs of Linear Inequalities",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/4-7-graphs-of-linear-inequalities",
+              "skills": ["m.9.inequality-systems"]
+            }
+          ],
+          "notes": "graphing lines, slope, equations of lines: Grade 8 skills plus m.9.linear-modeling"
+        },
+        {
+          "n": "5",
+          "title": "Systems of Linear Equations",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/5-introduction",
+          "skills": ["m.8.systems-linear", "m.9.linear-modeling", "m.9.inequality-systems"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Solve Systems of Equations by Graphing",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/5-1-solve-systems-of-equations-by-graphing",
+              "skills": ["m.8.systems-linear"]
+            },
+            {
+              "n": "5.2",
+              "title": "Solving Systems of Equations by Substitution",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/5-2-solving-systems-of-equations-by-substitution",
+              "skills": ["m.8.systems-linear"]
+            },
+            {
+              "n": "5.3",
+              "title": "Solve Systems of Equations by Elimination",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/5-3-solve-systems-of-equations-by-elimination",
+              "skills": ["m.8.systems-linear"]
+            },
+            {
+              "n": "5.4",
+              "title": "Solve Applications with Systems of Equations",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/5-4-solve-applications-with-systems-of-equations",
+              "skills": ["m.8.systems-linear", "m.9.linear-modeling"]
+            },
+            {
+              "n": "5.5",
+              "title": "Solve Mixture Applications with Systems of Equations",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/5-5-solve-mixture-applications-with-systems-of-equations",
+              "skills": ["m.8.systems-linear", "m.9.linear-modeling"]
+            },
+            {
+              "n": "5.6",
+              "title": "Graphing Systems of Linear Inequalities",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/5-6-graphing-systems-of-linear-inequalities",
+              "skills": ["m.9.inequality-systems"]
+            }
+          ],
+          "notes": "systems of two linear equations: Grade 8 skill (m.8.systems-linear)"
+        },
+        {
+          "n": "6",
+          "title": "Polynomials",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-introduction",
+          "skills": [
+            "m.9.polynomial-operations",
+            "m.8.exponent-rules",
+            "m.11.polynomial-functions",
+            "m.8.scientific-notation"
+          ],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Add and Subtract Polynomials",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-1-add-and-subtract-polynomials",
+              "skills": ["m.9.polynomial-operations"]
+            },
+            {
+              "n": "6.2",
+              "title": "Use Multiplication Properties of Exponents",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-2-use-multiplication-properties-of-exponents",
+              "skills": ["m.8.exponent-rules", "m.9.polynomial-operations"]
+            },
+            {
+              "n": "6.3",
+              "title": "Multiply Polynomials",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-3-multiply-polynomials",
+              "skills": ["m.9.polynomial-operations"]
+            },
+            {
+              "n": "6.4",
+              "title": "Special Products",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-4-special-products",
+              "skills": ["m.9.polynomial-operations"]
+            },
+            {
+              "n": "6.5",
+              "title": "Divide Monomials",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-5-divide-monomials",
+              "skills": ["m.8.exponent-rules"]
+            },
+            {
+              "n": "6.6",
+              "title": "Divide Polynomials",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-6-divide-polynomials",
+              "skills": ["m.11.polynomial-functions", "m.9.polynomial-operations"],
+              "notes": "dividing polynomials: a Grade 11 skill in the taxonomy"
+            },
+            {
+              "n": "6.7",
+              "title": "Integer Exponents and Scientific Notation",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/6-7-integer-exponents-and-scientific-notation",
+              "skills": ["m.8.exponent-rules", "m.8.scientific-notation"]
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Factoring",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/7-introduction",
+          "skills": ["m.9.factoring", "m.9.quadratic-functions"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Greatest Common Factor and Factor by Grouping",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/7-1-greatest-common-factor-and-factor-by-grouping",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "7.2",
+              "title": "Factor Trinomials of the Form x²+bx+c",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/7-2-factor-trinomials-of-the-form-x2-bx-c",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "7.3",
+              "title": "Factor Trinomials of the Form ax²+bx+c",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/7-3-factor-trinomials-of-the-form-ax2-bx-c",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "7.4",
+              "title": "Factor Special Products",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/7-4-factor-special-products",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "7.5",
+              "title": "General Strategy for Factoring Polynomials",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/7-5-general-strategy-for-factoring-polynomials",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "7.6",
+              "title": "Quadratic Equations",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/7-6-quadratic-equations",
+              "skills": ["m.9.factoring", "m.9.quadratic-functions"]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Rational Expressions and Equations",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-introduction",
+          "skills": [
+            "m.11.rational-functions",
+            "m.10.similarity",
+            "m.7.proportional-relationships"
+          ],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Simplify Rational Expressions",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-1-simplify-rational-expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "8.2",
+              "title": "Multiply and Divide Rational Expressions",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-2-multiply-and-divide-rational-expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "8.3",
+              "title": "Add and Subtract Rational Expressions with a Common Denominator",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-3-add-and-subtract-rational-expressions-with-a-common-denominator",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "8.4",
+              "title": "Add and Subtract Rational Expressions with Unlike Denominators",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-4-add-and-subtract-rational-expressions-with-unlike-denominators",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "8.5",
+              "title": "Simplify Complex Rational Expressions",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-5-simplify-complex-rational-expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "8.6",
+              "title": "Solve Rational Equations",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-6-solve-rational-equations",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "8.7",
+              "title": "Solve Proportion and Similar Figure Applications",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-7-solve-proportion-and-similar-figure-applications",
+              "skills": ["m.10.similarity", "m.7.proportional-relationships"],
+              "notes": "proportion and similar figures: Grade 10 similarity, Grade 7 proportional relationships"
+            },
+            {
+              "n": "8.8",
+              "title": "Solve Uniform Motion and Work Applications",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-8-solve-uniform-motion-and-work-applications",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "8.9",
+              "title": "Use Direct and Inverse Variation",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/8-9-use-direct-and-inverse-variation",
+              "skills": ["m.7.proportional-relationships", "m.11.rational-functions"]
+            }
+          ],
+          "notes": "rational expressions and equations: Grade 11 skill in the taxonomy (m.11.rational-functions)"
+        },
+        {
+          "n": "9",
+          "title": "Roots and Radicals",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-introduction",
+          "skills": ["m.8.roots-irrationals", "m.9.radicals"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Simplify and Use Square Roots",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-1-simplify-and-use-square-roots",
+              "skills": ["m.8.roots-irrationals", "m.9.radicals"]
+            },
+            {
+              "n": "9.2",
+              "title": "Simplify Square Roots",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-2-simplify-square-roots",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "9.3",
+              "title": "Add and Subtract Square Roots",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-3-add-and-subtract-square-roots",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "9.4",
+              "title": "Multiply Square Roots",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-4-multiply-square-roots",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "9.5",
+              "title": "Divide Square Roots",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-5-divide-square-roots",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "9.6",
+              "title": "Solve Equations with Square Roots",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-6-solve-equations-with-square-roots",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "9.7",
+              "title": "Higher Roots",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-7-higher-roots",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "9.8",
+              "title": "Rational Exponents",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/9-8-rational-exponents",
+              "skills": ["m.9.radicals"]
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Quadratic Equations",
+          "url": "https://openstax.org/books/elementary-algebra-2e/pages/10-introduction",
+          "skills": ["m.9.quadratic-formula", "m.9.quadratic-functions"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Solve Quadratic Equations Using the Square Root Property",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/10-1-solve-quadratic-equations-using-the-square-root-property",
+              "skills": ["m.9.quadratic-formula"]
+            },
+            {
+              "n": "10.2",
+              "title": "Solve Quadratic Equations by Completing the Square",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/10-2-solve-quadratic-equations-by-completing-the-square",
+              "skills": ["m.9.quadratic-formula"]
+            },
+            {
+              "n": "10.3",
+              "title": "Solve Quadratic Equations Using the Quadratic Formula",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/10-3-solve-quadratic-equations-using-the-quadratic-formula",
+              "skills": ["m.9.quadratic-formula"]
+            },
+            {
+              "n": "10.4",
+              "title": "Solve Applications Modeled by Quadratic Equations",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/10-4-solve-applications-modeled-by-quadratic-equations",
+              "skills": ["m.9.quadratic-formula", "m.9.quadratic-functions"]
+            },
+            {
+              "n": "10.5",
+              "title": "Graphing Quadratic Equations in Two Variables",
+              "url": "https://openstax.org/books/elementary-algebra-2e/pages/10-5-graphing-quadratic-equations-in-two-variables",
+              "skills": ["m.9.quadratic-functions"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
