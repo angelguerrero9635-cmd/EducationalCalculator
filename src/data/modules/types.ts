@@ -875,7 +875,14 @@ export type Representation =
    * of 10ⁿ⁻² … 10ⁿ⁺³, its decade opened up below as a ruler from 1 to 10 where the `mantissa`
    * is read, "× 10ⁿ" with the `exponent`. Drag the mantissa, or the number to another decade.
    */
-  | { kind: 'powerScale'; number: string; mantissa: string; exponent: string }
+  | {
+      kind: 'powerScale';
+      number: string;
+      mantissa: string;
+      exponent: string;
+      /** No handles: the front and the power are worked out (a product), not typed. */
+      fixed?: boolean;
+    }
   /**
    * An equation with the unknown on both sides as a pan balance (Grade 8): `left` and `right`
    * are [coefficient, constant] (variables or numbers) of `x`, so 3x + 4 = x + 10 is

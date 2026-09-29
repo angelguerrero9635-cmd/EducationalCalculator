@@ -203,6 +203,19 @@ const minus = (
   },
 });
 
+/** `id = top ÷ bottom`, solved for the top too (a dragged slope moves the top). */
+const rate = (id: string, x: string, top: string, bottom: string): Relation => ({
+  id,
+  display: `{${x}} = {${top}} ÷ {${bottom}}`,
+  vars: [x, top, bottom],
+  residual: (v: Values) => v[x]! * v[bottom]! - v[top]!,
+  solve: {
+    [x]: (v: Values) => div(v[top]!, v[bottom]!),
+    [top]: (v: Values) => exact(v[x]! * v[bottom]!),
+    [bottom]: () => undefined,
+  },
+});
+
 const RISE = minus('R', 'y2', 'y1', '{R} = {y2} − {y1}', [
   'The rise is how far up the second point is from the first.',
   'Start at the first y and go up the rise.',
@@ -867,7 +880,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     },
     example: { a: 3.1, n: 4, c: 2, k: 6, p: 6.2, e: 10, P: 6.2e10 },
     startWith: ['a', 'n', 'c', 'k'],
-    representation: { kind: 'powerScale', number: 'P', mantissa: 'p', exponent: 'e' },
+    representation: { kind: 'powerScale', number: 'P', mantissa: 'p', exponent: 'e', fixed: true },
   },
   {
     id: 'm.8.scientific-notation~add-subtract',
@@ -988,7 +1001,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     example: { a: 5.3, n: 4, c: 4.7, k: 4, o: 1, g: 4.7, S: 100000, u: 1, q: 5 },
     startWith: ['a', 'n', 'c', 'k', 'o'],
     pictureLabels: ['g', 'o'],
-    representation: { kind: 'powerScale', number: 'S', mantissa: 'u', exponent: 'q' },
+    representation: { kind: 'powerScale', number: 'S', mantissa: 'u', exponent: 'q', fixed: true },
   },
   // ── Slope (8.EE.5–6) ──
   {
@@ -1094,12 +1107,13 @@ export const MATH_8_MODULES: ModuleDef[] = [
       },
     ],
     relations: [
-      derive('m = y ÷ x', 'm', ['y', 'x'], '{m} = {y} ÷ {x}', (v) => div(v.y!, v.x!)),
+      rate('m = y ÷ x', 'm', 'y', 'x'),
       derive('d = m × t', 'd', ['m', 't'], '{d} = {m} × {t}', (v) => v.m! * v.t!),
     ],
     steps: {
       'm = y ÷ x': {
         m: { expr: '{y} ÷ {x}', how: 'The slope: the distance for each 1 hour.' },
+        y: { expr: '{m} × {x}', how: 'The rate times the time.' },
       },
       'd = m × t': {
         d: { expr: '{m} × {t}', how: 'Go along the line to the other time: rate × time.' },
@@ -1166,16 +1180,18 @@ export const MATH_8_MODULES: ModuleDef[] = [
       },
     ],
     relations: [
-      derive('m₁ = y₁ ÷ x₁', 'm1', ['y1', 'x1'], '{m1} = {y1} ÷ {x1}', (v) => div(v.y1!, v.x1!)),
-      derive('m₂ = y₂ ÷ x₂', 'm2', ['y2', 'x2'], '{m2} = {y2} ÷ {x2}', (v) => div(v.y2!, v.x2!)),
+      rate('m₁ = y₁ ÷ x₁', 'm1', 'y1', 'x1'),
+      rate('m₂ = y₂ ÷ x₂', 'm2', 'y2', 'x2'),
       derive('d = m₁ − m₂', 'd', ['m1', 'm2'], '{d} = {m1} − {m2}', (v) => v.m1! - v.m2!),
     ],
     steps: {
       'm₁ = y₁ ÷ x₁': {
         m1: { expr: '{y1} ÷ {x1}', how: 'The first company’s cost for 1 cubic yard.' },
+        y1: { expr: '{m1} × {x1}', how: 'The cost for 1 cubic yard times the cubic yards.' },
       },
       'm₂ = y₂ ÷ x₂': {
         m2: { expr: '{y2} ÷ {x2}', how: 'The second company’s cost for 1 cubic yard.' },
+        y2: { expr: '{m2} × {x2}', how: 'The cost for 1 cubic yard times the cubic yards.' },
       },
       'd = m₁ − m₂': {
         d: {
@@ -1194,8 +1210,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
     representation: {
       kind: 'lineSystem',
       lines: [
-        { slope: 'm1', intercept: 0, label: 'First' },
-        { slope: 'm2', intercept: 0, label: 'Second' },
+        { slope: 'm1', intercept: 0, label: 'First', keep: ['x1', 'x2', 'y2'] },
+        { slope: 'm2', intercept: 0, label: 'Second', keep: ['x1', 'y1', 'x2'] },
       ],
       quadrants: 1,
       extent: { x: 10, y: 250 },
@@ -1333,8 +1349,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
     representation: {
       kind: 'lineSystem',
       lines: [
-        { slope: 'A', intercept: 'B', label: 'Left side' },
-        { slope: 'c', intercept: 'd', label: 'Right side' },
+        { slope: 'A', intercept: 'B', label: 'Left side', keep: ['p', 'c', 'd'] },
+        { slope: 'c', intercept: 'd', label: 'Right side', keep: ['p', 'a', 'b'] },
       ],
       solution: { x: 'x', y: 'y' },
       extent: { x: 10, y: 50 },
@@ -1397,6 +1413,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
       slope: 'k',
       intercept: 'r',
       point: { x: 'x', y: 's' },
+      keep: ['q', 's'],
       extent: 10,
     },
   },
@@ -1676,8 +1693,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
       representation: {
         kind: 'lineSystem',
         lines: [
-          { slope: 'M', intercept: 'K' },
-          { slope: 'N', intercept: 'L' },
+          { slope: 'M', intercept: 'K', keep: ['b', 'd', 'e', 'f'] },
+          { slope: 'N', intercept: 'L', keep: ['a', 'b', 'c', 'e'] },
         ],
         solution: { x: 'x', y: 'y' },
         extent: 10,
@@ -1862,20 +1879,31 @@ export const MATH_8_MODULES: ModuleDef[] = [
         residual: (v: Values) => (v.x1 !== v.x2 ? 0 : 1),
         solve: {},
       },
-      derive(
-        'm = (y₂ − y₁) ÷ (x₂ − x₁)',
-        'm',
-        ['y2', 'y1', 'x2', 'x1'],
-        '{m} = ({y2} − {y1}) ÷ ({x2} − {x1})',
-        (v) => div(v.y2! - v.y1!, v.x2! - v.x1!),
-      ),
-      derive(
-        'b = y₁ − m × x₁',
-        'b',
-        ['y1', 'm', 'x1'],
-        '{b} = {y1} − {m} × {x1}',
-        (v) => v.y1! - v.m! * v.x1!,
-      ),
+      {
+        id: 'm = (y₂ − y₁) ÷ (x₂ − x₁)',
+        display: '{m} = ({y2} − {y1}) ÷ ({x2} − {x1})',
+        vars: ['m', 'y2', 'y1', 'x2', 'x1'],
+        residual: (v: Values) => v.m! * (v.x2! - v.x1!) - (v.y2! - v.y1!),
+        solve: {
+          m: (v: Values) => div(v.y2! - v.y1!, v.x2! - v.x1!),
+          y2: (v: Values) => exact(v.y1! + v.m! * (v.x2! - v.x1!)),
+          y1: (v: Values) => exact(v.y2! - v.m! * (v.x2! - v.x1!)),
+          x2: () => undefined,
+          x1: () => undefined,
+        },
+      },
+      {
+        id: 'b = y₁ − m × x₁',
+        display: '{b} = {y1} − {m} × {x1}',
+        vars: ['b', 'y1', 'm', 'x1'],
+        residual: (v: Values) => v.b! - (v.y1! - v.m! * v.x1!),
+        solve: {
+          b: (v: Values) => exact(v.y1! - v.m! * v.x1!),
+          y1: (v: Values) => exact(v.b! + v.m! * v.x1!),
+          m: () => undefined,
+          x1: () => undefined,
+        },
+      },
     ],
     steps: {
       'x₁ ≠ x₂': {},
@@ -1884,11 +1912,23 @@ export const MATH_8_MODULES: ModuleDef[] = [
           expr: '({y2} − {y1}) ÷ ({x2} − {x1})',
           how: 'The rise over the run between the two points.',
         },
+        y2: {
+          expr: '{y1} + {m} × ({x2} − {x1})',
+          how: 'From the first point, go across the run and up the slope times it.',
+        },
+        y1: {
+          expr: '{y2} − {m} × ({x2} − {x1})',
+          how: 'From the second point, go back across the run.',
+        },
       },
       'b = y₁ − m × x₁': {
         b: {
           expr: '{y1} − {m} × {x1}',
           how: 'From the first point, go back x₁ steps of the slope to x = 0.',
+        },
+        y1: {
+          expr: '{b} + {m} × {x1}',
+          how: 'From the intercept, go along x₁ steps of the slope.',
         },
       },
     },
@@ -1899,6 +1939,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
       slope: 'm',
       intercept: 'b',
       point: { x: 'x2', y: 'y2' },
+      fixed: true,
       extent: 6,
     },
   },
@@ -1996,8 +2037,18 @@ export const MATH_8_MODULES: ModuleDef[] = [
         '{y} = ({c} − {a} × {x}) ÷ {b}',
         (v) => div(v.c! - v.a! * v.x!, v.b!),
       ),
-      derive('m = −a ÷ b', 'm', ['a', 'b'], '{m} = −{a} ÷ {b}', (v) => div(-v.a!, v.b!)),
-      derive('k = c ÷ b', 'k', ['c', 'b'], '{k} = {c} ÷ {b}', (v) => div(v.c!, v.b!)),
+      {
+        id: 'm = −a ÷ b',
+        display: '{m} = −{a} ÷ {b}',
+        vars: ['m', 'a', 'b'],
+        residual: (v: Values) => v.m! * v.b! + v.a!,
+        solve: {
+          m: (v: Values) => div(-v.a!, v.b!),
+          a: (v: Values) => exact(-v.m! * v.b!),
+          b: () => undefined,
+        },
+      },
+      rate('k = c ÷ b', 'k', 'c', 'b'),
     ],
     steps: {
       'b ≠ 0': {},
@@ -2007,8 +2058,14 @@ export const MATH_8_MODULES: ModuleDef[] = [
           how: 'Take a × x from both sides, then divide by b.',
         },
       },
-      'm = −a ÷ b': { m: { expr: '−{a} ÷ {b}', how: 'The slope of the same line: −a ÷ b.' } },
-      'k = c ÷ b': { k: { expr: '{c} ÷ {b}', how: 'Its y-intercept: y when x = 0.' } },
+      'm = −a ÷ b': {
+        m: { expr: '−{a} ÷ {b}', how: 'The slope of the same line: −a ÷ b.' },
+        a: { expr: '−{m} × {b}', how: 'The slope is −a ÷ b, so a is −m × b.' },
+      },
+      'k = c ÷ b': {
+        k: { expr: '{c} ÷ {b}', how: 'Its y-intercept: y when x = 0.' },
+        c: { expr: '{k} × {b}', how: 'The intercept is c ÷ b, so c is k × b.' },
+      },
     },
     example: { a: 1.5, b: 3, c: 12, x: 2, y: 3, m: -0.5, k: 4 },
     startWith: ['a', 'b', 'c', 'x'],
@@ -2017,6 +2074,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
       slope: 'm',
       intercept: 'k',
       point: { x: 'x', y: 'y' },
+      keep: ['b', 'x'],
       extent: 10,
     },
   },

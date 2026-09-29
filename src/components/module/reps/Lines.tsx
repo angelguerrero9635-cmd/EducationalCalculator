@@ -269,7 +269,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                   </G>
                 ) : null}
               </Svg>
-              {typeof spec.intercept === 'string' && b.known && bIn ? (
+              {!spec.fixed && typeof spec.intercept === 'string' && b.known && bIn ? (
                 <DragHandle
                   testID="drag-intercept"
                   x={f.sx(0)}
@@ -283,7 +283,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     const id = spec.intercept as string;
                     calc.set(
                       {
-                        ...rep.pin(vars.filter((v) => v !== id)),
+                        ...(spec.keep ? rep.pin(spec.keep) : rep.pin(vars.filter((v) => v !== id))),
                         ...(spec.point ? rep.pin([spec.point.x]) : {}),
                         [id]: rep.snapTo(id, (start.current.b - dy / f.uy) * rep.factor(id)),
                       },
@@ -293,7 +293,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                   onEnd={grid.ext.release}
                 />
               ) : null}
-              {typeof spec.slope === 'string' && known && x0 !== undefined ? (
+              {!spec.fixed && typeof spec.slope === 'string' && known && x0 !== undefined ? (
                 <DragHandle
                   testID="drag-slope"
                   x={f.sx(x0 + run)}
@@ -309,7 +309,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     const riseNow = s.m * s.run - dy / f.uy;
                     calc.set(
                       {
-                        ...rep.pin(vars.filter((v) => v !== id)),
+                        ...(spec.keep ? rep.pin(spec.keep) : rep.pin(vars.filter((v) => v !== id))),
                         ...(spec.point ? rep.pin([spec.point.x]) : {}),
                         [id]: rep.snapTo(id, (riseNow / s.run) * rep.factor(id)),
                       },
@@ -319,7 +319,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                   onEnd={grid.ext.release}
                 />
               ) : null}
-              {spec.point && pt?.x.known && pt.y.known ? (
+              {!spec.fixed && spec.point && pt?.x.known && pt.y.known ? (
                 <DragHandle
                   testID="drag-point"
                   x={f.sx(pt.x.value)}
@@ -610,7 +610,8 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
               </Svg>
               {lines.map((l, i) => {
                 const handles = [];
-                const others = (id: string) => rep.pin(allVars.filter((v) => v !== id));
+                const others = (id: string) =>
+                  l.keep ? rep.pin(l.keep) : rep.pin(allVars.filter((v) => v !== id));
                 if (
                   typeof l.intercept === 'string' &&
                   l.b.known &&

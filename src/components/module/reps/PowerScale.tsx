@@ -239,7 +239,7 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   </ChartText>
                 </G>
               </Svg>
-              {known ? (
+              {known && !spec.fixed ? (
                 <>
                   <DragHandle
                     testID="drag-mantissa"

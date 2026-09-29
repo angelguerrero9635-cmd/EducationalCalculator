@@ -27,6 +27,10 @@ export interface LinearFunctionSpec {
   /** 4 (default) or the first quadrant only (a context: hours, dollars). */
   quadrants?: 1 | 4;
   /** Axis names for a context, e.g. { x: 'Hours', y: 'Cost ($)' }. */
+  /** Typed values held while the line is dragged (see `LineOf.keep`). */
+  keep?: string[];
+  /** No handles: every value on the line is worked out from points the student typed. */
+  fixed?: boolean;
   axes?: { x?: string; y?: string };
 }
 
@@ -50,6 +54,12 @@ export interface LineOf {
   intercept: NumOrVar;
   /** A short name for the line ("Gym A"); default the equation. */
   label?: string;
+  /**
+   * Typed values held while this line's slope or intercept is dragged, so the one input left
+   * free follows the drag instead of the oldest input being cleared (the cubic yards, while
+   * the cost follows).
+   */
+  keep?: string[];
 }
 
 /** One step of a function rule: add, subtract, multiply or divide by a number. */

@@ -20,9 +20,18 @@ import type { Calculator } from './useCalculator';
  * Android's numeric pad has both. On the web (iPhone Safari) the numeric pad has neither, so a
  * value that takes decimals gets the decimal pad and one that can be negative the full keyboard.
  */
-function keyboardFor(v: { integer?: boolean; min?: number }) {
+function keyboardFor(v: {
+  integer?: boolean;
+  min?: number;
+  fraction?: number;
+  pi?: boolean;
+  scientific?: boolean;
+  repeating?: boolean;
+}) {
   if (Platform.OS === 'ios') return 'numbers-and-punctuation' as const;
   if (Platform.OS !== 'web') return 'numeric' as const;
+  // A fraction (1/2), π (36π), scientific notation (4.7 × 10^5) or … needs more than a keypad.
+  if (v.fraction || v.pi || v.scientific || v.repeating) return 'default' as const;
   if ((v.min ?? 0) < 0) return 'default' as const;
   return v.integer ? ('numeric' as const) : ('decimal-pad' as const);
 }
