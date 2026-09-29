@@ -7,6 +7,7 @@ import { DRAWN_PARTS, drawnPart, scaleTicks } from '@/components/module/layouts/
 
 import type { LayoutDef } from '../layouts';
 import { studyFigureIssues } from './layoutFiguresHsb';
+import { hsgFigureIssues } from './layoutFiguresHsg';
 
 /** The number in a column label ("20 cm" → 20). */
 const numberIn = (label: string) => {
@@ -80,6 +81,7 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
     }
   }
   out.push(...studyFigureIssues(l));
+  out.push(...hsgFigureIssues(l));
   if (l.kind === 'sort' && l.header?.kind === 'offspring') {
     const animals = l.header.animals;
     if (animals.length < 2 || animals.length > 4) {

@@ -531,12 +531,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   },
 
   // ── D. Biology ──
-  ask(
-    'H31',
-    'macromolecules',
-    'Explore figure: monomers joining into polymers (sugars to starch, amino acids to a protein, nucleotides, fats)',
-    ['s.9.biomolecules'],
-  ),
+  {
+    ...ask(
+      'H31',
+      'macromolecules',
+      'Explore figure: monomers joining into polymers (sugars to starch, amino acids to a protein, nucleotides, fats)',
+      ['s.9.biomolecules'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s9-biomolecules-polymers'],
+    notes:
+      'Drawn (group HG, layouts/macroFigure.tsx). Explore figure { kind: "macromolecules" }; each scene sets macro: { kind: "carbohydrate" | "protein" | "nucleicAcid" | "lipid", count?: 2–4 monomers (default 3; a lipid is always glycerol + 3 fatty acids), split?: true for hydrolysis (the polymer on top, water added) }. Monomers sit on separate cards with the groups that join lit (OH and H, carboxyl and amine, the 3′ OH and the next phosphate); the polymer shows its new bonds lit and named (glycosidic, peptide, sugar–phosphate, 3 ester bonds); the water molecules are drawn and counted (n − 1, or 3 for a fat). Names follow the count: 2 glucose make maltose, 2 amino acids a dipeptide. The protein chain is shown folding. The harness checks the count and that a line counting water says the figure’s number. Example scene: { label: "Proteins", lines: ["Amino acids join end to end by peptide bonds."], macro: { kind: "protein", count: 4 } }.',
+  },
   ask(
     'H32',
     'membrane',

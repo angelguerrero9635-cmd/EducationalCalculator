@@ -1,5 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
+import type { MacroScene } from '../typesHsg';
 import type { Round3Icon } from './icons';
 
 /**
@@ -323,7 +324,9 @@ export type Figure =
   /** Population → sample → a survey, an observational study or an experiment (HS group B). */
   | { kind: 'studyDesign' }
   /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
-  | { kind: 'doubleCone' };
+  | { kind: 'doubleCone' }
+  /** Monomers joining into polymers: sugars, amino acids, nucleotides, a fat (HS group G). */
+  | { kind: 'macromolecules' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -450,6 +453,8 @@ export interface Scene {
   planets?: { lit?: PlanetName[] };
   /** The design, how the sample is taken and the stage lit (a `studyDesign` figure). */
   study?: StudyScene;
+  /** The molecule built or split (a `macromolecules` figure; `typesHsg.ts`). */
+  macro?: MacroScene;
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */

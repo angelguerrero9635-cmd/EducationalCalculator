@@ -61,6 +61,11 @@ size beside the sun's edge, ringing a scene's `lit` ones with their widths in Ea
 Grades 10–12 (`layouts/coneFigure.tsx`): `doubleCone` cuts two cones tip to tip with a plane;
 a scene's `cone` (`circle`, `ellipse`, `parabola`, `hyperbola`) tilts the plane and draws the curve.
 
+Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
+cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
+bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
+(glycerol and three fatty acids), 2 to 4 units; `split` runs it as hydrolysis.
+
 Grades 11–12 statistics, in `layouts/studyDesignFigure.tsx`: `studyDesign` (a population of 48
 people, the sample a `method` takes from it, then a `survey`, an `observational` study sorted by
 what people already do, or an `experiment` assigned at random to a treatment and a control group;
