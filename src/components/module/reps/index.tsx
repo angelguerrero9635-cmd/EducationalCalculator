@@ -58,6 +58,7 @@ import { Grid100 } from './Grid100';
 import { NumberLine } from './NumberLine';
 import { Plot } from './Plot';
 import { LinearFunction, LineSystem } from './Lines';
+import { FunctionGraph } from './FunctionGraph';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
 import { Transformation } from './Transformation';
@@ -140,6 +141,7 @@ export const representationTitle = (r: Representation) =>
           'scatter',
           'linearFunction',
           'lineSystem',
+          'functionGraph',
           'heatingCurve',
           'motionGraph',
         ].includes(r.kind)
@@ -152,6 +154,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
       return <LineSystem spec={spec} calc={calc} />;
+    case 'functionGraph':
+      return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
       return <MotionGraph spec={spec} calc={calc} />;
     case 'skaters':

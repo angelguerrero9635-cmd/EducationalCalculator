@@ -9,6 +9,7 @@ import type {
   TransformationSpec,
 } from './typesGraphs';
 import type { EnergyPyramidSpec, GenerationsSpec } from './typesLife';
+import type { FunctionGraphSpec } from './typesFunctionGraph';
 import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
@@ -1015,6 +1016,8 @@ export type Representation =
   | FunctionMachineSpec
   | MappingSpec
   | TransformationSpec
+  /** Grades 9–12: the graph of any function family (spec in `typesFunctionGraph.ts`). */
+  | FunctionGraphSpec
   /** Grade 7 life science: energy pyramid, generations (specs in `typesLife.ts`). */
   | EnergyPyramidSpec
   | GenerationsSpec

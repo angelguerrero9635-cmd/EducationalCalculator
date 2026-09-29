@@ -104,6 +104,7 @@ const PICTURE_NAMES: Record<string, string> = {
   equationBalance: 'balance with x-blocks on both sides',
   linearFunction: 'graph of a line with its slope triangle',
   lineSystem: 'two lines and where they cross',
+  functionGraph: 'graph of a function with its features marked',
   functionMachine: 'input-output machine',
   mapping: 'mapping diagram and graph',
   transformation: 'figure and its image on a grid',
