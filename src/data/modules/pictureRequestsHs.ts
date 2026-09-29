@@ -110,32 +110,83 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
     'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p.',
   ),
-  ask(
-    'H04',
-    'triangleSolver',
-    'Any triangle to scale from three given parts, sides and angles labelled',
-    [
-      'm.10.congruence',
-      'm.10.special-right-triangles',
-      'm.10.right-triangle-trig',
-      'm.10.law-sines-cosines',
-      'm.10.similarity',
+  {
+    ...ask(
+      'H04',
+      'triangleSolver',
+      'Any triangle to scale from three given parts, sides and angles labelled',
+      [
+        'm.10.congruence',
+        'm.10.special-right-triangles',
+        'm.10.right-triangle-trig',
+        'm.10.law-sines-cosines',
+        'm.10.similarity',
+      ],
+      'SSS, SAS, ASA, AAS, HL and the ambiguous SSA case (two triangles); the given parts marked; opposite, adjacent and hypotenuse named from angle θ; 45-45-90 and 30-60-90 with side ratios in radicals; a second, similar triangle at a scale factor. ' +
+        'Drawn (spec in typesHsc.ts): `{ kind: "triangleSolver", parts: { a: "a", b: "b", c: "c", A: "A", B: "B", C: "C" } }` draws the triangle to scale from the three parts typed (the given ones in the highlight, the worked-out ones in ink; no triangle: faded with the reason). SSA with two solutions draws both (the second dashed, B′). A part may be a fixed number (C: 90). ' +
+        'Options: `congruence: {}` (the copy D, E, F below with ticks and arcs; the criterion comes from the given parts, or `criterion`; SSA draws the two triangles SSA allows), `similar: { scale: "k", sides: { a: "d", b: "e", c: "f" } }`, `trig: { angle: "A" }` (right angle at C; opposite, adjacent, hypotenuse named; sin, cos, tan worked), `special: "45-45-90" | "30-60-90"` (sides as radicals, 5√2), `scene: { kind: "ramp" | "ladder" | "sight", eye?: "e" }`, `given`, `keep`, `fixed` (the default drag moves the vertex at the end of a given base side). ' +
+        'Demos: the laws of sines and cosines in galleryHsc.ts (relations `cosines`, `sines`, `angleSum`, `triangleCloses`) are ready to promote. Step text uses sin(40), cos⁻¹(…), taught to harness/evaluate.ts.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-law-sines-cosines-sas',
+      'g.m10-law-sines-cosines-ssa',
+      'g.m10-law-sines-cosines-sss',
+      'g.m10-law-sines-cosines-asa',
+      'g.m10-congruence-sss',
+      'g.m10-congruence-sas',
+      'g.m10-congruence-asa',
+      'g.m10-congruence-aas',
+      'g.m10-congruence-hl',
+      'g.m10-congruence-ssa',
+      'g.m10-similarity-scale',
+      'g.m10-right-triangle-trig-sohcahtoa',
+      'g.m10-right-triangle-trig-ladder',
+      'g.m10-right-triangle-trig-ramp',
+      'g.m10-right-triangle-trig-elevation',
+      'g.m10-special-right-triangles-45',
+      'g.m10-special-right-triangles-30',
     ],
-    'SSS, SAS, ASA, AAS, HL and the ambiguous SSA case (two triangles); the given parts marked; opposite, adjacent and hypotenuse named from angle θ; 45-45-90 and 30-60-90 with side ratios in radicals; a second, similar triangle at a scale factor.',
-  ),
-  ask(
-    'H05',
-    'markedFigure',
-    'Geometry figure with congruence ticks, arcs, right-angle and parallel marks, from a point list',
-    [
-      'm.10.constructions',
-      'm.10.proofs',
-      'm.10.parallel-lines',
-      'm.10.triangle-relationships',
-      'm.10.quadrilaterals',
+  },
+  {
+    ...ask(
+      'H05',
+      'markedFigure',
+      'Geometry figure with congruence ticks, arcs, right-angle and parallel marks, from a point list',
+      [
+        'm.10.constructions',
+        'm.10.proofs',
+        'm.10.parallel-lines',
+        'm.10.triangle-relationships',
+        'm.10.quadrilaterals',
+      ],
+      'Parallel lines cut by a transversal with the eight angles; triangle centers (centroid, incenter, circumcenter, orthocenter) with medians, bisectors and altitudes; midsegments; quadrilateral families with diagonals; a proof figure whose given and proved parts light up by step. ' +
+        'Drawn (spec in typesHsc.ts; every mark is placed from the drawn figure and the harness checks each claim and each labelled length or angle). Presets: `transversal: { angle: "x", second?: "y", highlight: [3, 6], labels: { 1: "a", 3: "x" } }` (angles 1–8, 1 top left at the upper crossing; `second` = angle 5 tilts line 2 when it differs, the parallel arrows only when equal; the caption names the pair, e.g. alternate interior; the transversal drags angle 1); ' +
+        '`triangle: { sides: ["a", "b", "c"], lines: "median" | "bisector" | "perpendicular" | "altitude" | "midsegment", center: true, labels: { AG: "g" } }` (midpoints or feet D on BC, E on CA, F on AB; centers G, I, O, H with the in- or circumcircle; I’s touch point T on BC; midsegment DE ∥ BC); ' +
+        '`quadrilateral: { family, width, height?, angle?, top?, diagonals: true, labels: { AC: "d", DAB: "A" } }` (parallelogram, rectangle, rhombus, square, trapezoid (isosceles marks when its base angles are equal), kite); or `points: { A: [0, 0], B: ["ab", 0] }` with `parts` (segment, ray, line, ticks, arcs, right, parallel, circle, label with `inCaption`). ' +
+        '`proof: { step: "k", steps: [{ given: ["AB"], proved: ["△ABD"], text }] }` lights the step’s given parts yellow and the proved parts blue (refs: segment AB, angle ABC, triangle △ABD). A figure the values can’t make draws faded with the reason.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-parallel-lines-corresponding',
+      'g.m10-parallel-lines-alternate-interior',
+      'g.m10-parallel-lines-same-side',
+      'g.m10-parallel-lines-converse',
+      'g.m10-triangle-relationships-centroid',
+      'g.m10-triangle-relationships-incenter',
+      'g.m10-triangle-relationships-circumcenter',
+      'g.m10-triangle-relationships-orthocenter',
+      'g.m10-triangle-relationships-midsegment',
+      'g.m10-quadrilaterals-parallelogram',
+      'g.m10-quadrilaterals-rectangle',
+      'g.m10-quadrilaterals-rhombus',
+      'g.m10-quadrilaterals-square',
+      'g.m10-quadrilaterals-trapezoid',
+      'g.m10-quadrilaterals-kite',
+      'g.m10-constructions-perpendicular-bisector',
+      'g.m10-proofs-isosceles',
     ],
-    'Parallel lines cut by a transversal with the eight angles; triangle centers (centroid, incenter, circumcenter, orthocenter) with medians, bisectors and altitudes; midsegments; quadrilateral families with diagonals; a proof figure whose given and proved parts light up by step.',
-  ),
+  },
   ask(
     'H06',
     'unitCircle',
@@ -189,13 +240,27 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['m.10.circle-equations', 'm.12.conics'],
     'Drag the center and the radius or axes; cross sections of a double cone as the explore figure for the same page.',
   ),
-  ask(
-    'H12',
-    'circleTheorems',
-    'Circle with central and inscribed angles, chords, tangents and secants, points draggable on the circle',
-    ['m.10.circle-theorems'],
-    'Inscribed angle half the central angle; angle in a semicircle; tangent perpendicular to the radius; intersecting chords, secant–secant and secant–tangent products.',
-  ),
+  {
+    ...ask(
+      'H12',
+      'circleTheorems',
+      'Circle with central and inscribed angles, chords, tangents and secants, points draggable on the circle',
+      ['m.10.circle-theorems'],
+      'Inscribed angle half the central angle; angle in a semicircle; tangent perpendicular to the radius; intersecting chords, secant–secant and secant–tangent products. ' +
+        'Drawn (spec in typesHsc.ts): `{ kind: "circleTheorems", theorem, … }` with theorem `inscribed` (`central`, `inscribed`: the arc heavy, P dragged along the far arc with the angle unchanged, B dragged to change the arc; arcs past 180° work), `semicircle` (`angle` at A, `other` at B; P dragged), `tangent` (`radius`, `tangent`, `distance`; P dragged along the tangent), `chords` (`segments: [AE, EB, CE, ED]`), `secants` (`segments: [PA, PB, PC, PD]`, outside parts and whole secants), `secantTangent` (`segments: [PT, PA, PB]`); `fixed` drops the handles. ' +
+        'Lengths are drawn to scale (the circle chosen to fit); values that break the theorem, or a “?” length, draw faded with the reason. The harness checks the points are on the circle, each drawn length is its value and the angle relations hold on the drawing.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-circle-theorems-inscribed',
+      'g.m10-circle-theorems-inscribed-major',
+      'g.m10-circle-theorems-semicircle',
+      'g.m10-circle-theorems-tangent',
+      'g.m10-circle-theorems-chords',
+      'g.m10-circle-theorems-secants',
+      'g.m10-circle-theorems-secant-tangent',
+    ],
+  },
   ask(
     'H13',
     'pascalTriangle',

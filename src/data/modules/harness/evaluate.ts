@@ -309,7 +309,19 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
 ];
 
 /** Evaluates a rendered expression ("(45 − 5) ÷ 10", "4 tens + 5 ones"); undefined if unknown. */
+/**
+ * The unit a page's angles are in, for trig in step text: 'degrees' for a page whose angles
+ * are measured in degrees (Geometry triangles), 'radians' otherwise (trig graphs, calculus).
+ * The sampling test sets it for each page; an argument written with a degree sign (sin(40°))
+ * is in degrees either way.
+ */
+let angleUnit: 'degrees' | 'radians' = 'radians';
+export function setAngleUnit(unit: 'degrees' | 'radians') {
+  angleUnit = unit;
+}
+
 export function evaluate(text: string, clampRoots = false): number | undefined {
+  const degrees = angleUnit === 'degrees' || text.includes('°');
   let s = text
     // A repeating decimal (0.1666…) is its exact value, 1/6.
     .replace(/\d+\.\d+…/g, (m) => `(${parseNumber(m)})`)
@@ -325,9 +337,11 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/(\d+(?:\.\d+)?)π/g, '($1*π)')
     .replace(/π/g, `(${Math.PI})`)
     .replace(/½/g, '(0.5)')
-    // High school: inverse trig written sin⁻¹ or arcsin, and e on its own (e^(0.05 × 3)).
+    // High school trig: inverse trig written sin⁻¹ or arcsin; an argument with a degree sign
+    // (sin(40°), Geometry) is in degrees, any other in radians (Algebra 2, Precalculus).
     .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
     .replace(/arc(sin|cos|tan)\(/g, 'a$1(')
+    .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*\d)°\)/g, '$1d($2)')
     .replace(/(?<![\w.])e(?!\w)/g, `(${Math.E})`)
     .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
     // Any exponent written as superscript digits (10³, 10⁴).
@@ -356,7 +370,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       prev = s;
       s = s
         .replace(
-          /(?<!sqrt|cbrt|log|abs|sin|cos|tan|ceil)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          /(?<!sqrt|cbrt|log|abs|sin|cos|tan|sind|cosd|tand|ceil)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
           ' $1 ',
         )
         .replace(/\s+/g, ' ')
@@ -419,14 +433,19 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // won't parse "-(a) ** b" as written).
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
   const bare = s
-    .replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan|ceil)\(/g, '(')
+    .replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil)\(/g, '(')
     .replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
-      `const { log, abs, cbrt, sin, cos, tan, asin, acos, atan, ceil } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
-    )(clampRoots) as unknown;
+      'degrees',
+      `const { log, abs, cbrt, ceil } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); ` +
+        `const D = Math.PI / 180; const sin = degrees ? (d) => Math.sin(d * D) : Math.sin, cos = degrees ? (d) => Math.cos(d * D) : Math.cos, tan = degrees ? (d) => Math.tan(d * D) : Math.tan; ` +
+        `const sind = (d) => Math.sin(d * D), cosd = (d) => Math.cos(d * D), tand = (d) => Math.tan(d * D); ` +
+        `const one = (x) => (clampRoots ? Math.max(-1, Math.min(1, x)) : x); const U = degrees ? D : 1; ` +
+        `const asin = (x) => Math.asin(one(x)) / U, acos = (x) => Math.acos(one(x)) / U, atan = (x) => Math.atan(x) / U; return (${s});`,
+    )(clampRoots, degrees) as unknown;
     return typeof x === 'number' ? x : undefined;
   } catch {
     return undefined;

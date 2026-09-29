@@ -43,6 +43,7 @@ import {
   evaluate,
   evaluateAll,
   plainWalkthrough,
+  setAngleUnit,
   shownClose,
   withinRounding,
 } from '../harness/evaluate';
@@ -828,6 +829,8 @@ function unitChoiceList(m: ModuleDef): UnitChoice[] {
 
 function makeCtx(m: ModuleDef, f: Findings, choice: UnitChoice, label: string): Ctx {
   const units = makeUnitContext(m, choice);
+  // Trig in the page's step text is in degrees when its angles are measured in degrees.
+  setAngleUnit(m.variables.some((v) => v.unit === '°') ? 'degrees' : 'radians');
   return {
     module: m,
     sys: units.system,
