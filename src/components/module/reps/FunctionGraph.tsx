@@ -1481,7 +1481,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       lines.push(
         Number.isFinite(y)
           ? `${fName}(${numText(atX, pi)}) ${said.startsWith('≈') ? said : `= ${said}`}`
-          : `${fName}(${numText(atX, pi)}) is undefined: ${numText(atX, pi)} is outside the domain`,
+          : `${fName}(${numText(atX, pi)}) has no value: ${numText(atX, pi)} is outside the domain`,
       );
     }
     if (other) {
@@ -1505,7 +1505,7 @@ export function FunctionGraph({ spec, calc }: { spec: FunctionGraphSpec; calc: C
       );
       lines.push(
         Number.isFinite(l) && Math.abs(l - r) < 1e-9
-          ? `So the limit is ${withApprox(l)}${Number.isFinite(at) ? (Math.abs(at - l) < 1e-9 ? `, equal to ${fName}(${xt}): continuous there` : `, but ${fName}(${xt}) = ${withApprox(at)}`) : `, though ${fName}(${xt}) is undefined`}`
+          ? `So the limit is ${withApprox(l)}${Number.isFinite(at) ? (Math.abs(at - l) < 1e-9 ? `, equal to ${fName}(${xt}): continuous there` : `, but ${fName}(${xt}) = ${withApprox(at)}`) : `, though ${fName}(${xt}) has no value`}`
           : 'The two sides differ, so the limit does not exist there',
       );
     }

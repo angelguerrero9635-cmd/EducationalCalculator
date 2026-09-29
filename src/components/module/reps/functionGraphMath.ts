@@ -157,10 +157,11 @@ export function polyFromZeros(a: number, zeros: { x: number; times: number }[]):
 function numericZeros(f: (x: number) => number, lo: number, hi: number, n = 1600): number[] {
   const out: number[] = [];
   const h = (hi - lo) / n;
-  const scale = Math.max(
-    1,
-    ...Array.from({ length: 21 }, (_, i) => Math.abs(f(lo + ((hi - lo) * i) / 20)) || 0),
-  );
+  // The typical size of f here (the median), so a curve that climbs far doesn't swamp it.
+  const sizes = Array.from({ length: 21 }, (_, i) => Math.abs(f(lo + ((hi - lo) * i) / 20)))
+    .filter(Number.isFinite)
+    .sort((p, q) => p - q);
+  const scale = Math.max(1, sizes[Math.floor(sizes.length / 2)] ?? 1);
   let px = lo;
   let py = f(lo);
   if (Math.abs(py) < 1e-12 * scale) out.push(lo);
@@ -1104,14 +1105,7 @@ export function buildCurve(
       const [a, b, h, k] = [get(fam.a, 1), get(fam.b, 1), get(fam.h, 0), get(fam.k, 0)];
       const g = fam.family === 'sin' ? Math.sin : fam.family === 'cos' ? Math.cos : Math.tan;
       const tan = fam.family === 'tan';
-      const f = (t: number) => {
-        if (tan) {
-          const u = b * (t - h) - Math.PI / 2;
-          const n = Math.round(u / Math.PI);
-          if (Math.abs(u - n * Math.PI) < 1e-12) return NaN;
-        }
-        return a * g(b * (t - h)) + k;
-      };
+      const f = (t: number) => a * g(b * (t - h)) + k;
       const period = (tan ? Math.PI : 2 * Math.PI) / Math.abs(b);
       const hs = say(fam.h, 0, true);
       const inner = shiftText(x, h, hs);
@@ -1119,7 +1113,7 @@ export function buildCurve(
       const arg = b === 1 && bs !== '?' ? inner : inner === x ? `${bs}${x}` : `${bs}(${inner})`;
       const coef = lead(a, say(fam.a, 1));
       const vas = (lo: number, hi: number) => {
-        if (!tan) return [];
+        if (!tan || a === 0) return [];
         const out: number[] = [];
         const n0 = Math.ceil(((lo - h) * b - Math.PI / 2) / Math.PI);
         for (let n = n0; ; n++) {

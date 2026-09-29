@@ -329,6 +329,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
     .replace(/arc(sin|cos|tan)\(/g, 'a$1(')
     .replace(/(?<![\w.])e(?!\w)/g, `(${Math.E})`)
+    .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
     // Any exponent written as superscript digits (10³, 10⁴).
     .replace(
       /⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,
@@ -355,13 +356,15 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       prev = s;
       s = s
         .replace(
-          /(?<!sqrt|cbrt|log|abs|sin|cos|tan)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          /(?<!sqrt|cbrt|log|abs|sin|cos|tan|ceil)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
           ' $1 ',
         )
         .replace(/\s+/g, ' ')
         // "(- 3.5 )" after unwrapping a negative mixed number is "(-3.5)".
         .replace(/\(\s*-\s+(?=\d)/g, '(-')
         .replace(/(\d)\s+\)/g, '$1)')
+        // "((3))" unwraps to "( 3)": close the gap so it unwraps again.
+        .replace(/\(\s+(?=-?\d)/g, '(')
         .trim();
     }
     // Work out bracketed arithmetic first, so phrases see one number: "tens in (45 - 5)".
@@ -415,12 +418,14 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // A minus sign before a power, "−(0.04)^(1 ÷ 2)", is the negative of the power (JavaScript
   // won't parse "-(a) ** b" as written).
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
-  const bare = s.replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan)\(/g, '(').replace(/\*\*/g, '*');
+  const bare = s
+    .replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan|ceil)\(/g, '(')
+    .replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
-      `const { log, abs, cbrt, sin, cos, tan, asin, acos, atan } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
+      `const { log, abs, cbrt, sin, cos, tan, asin, acos, atan, ceil } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
     )(clampRoots) as unknown;
     return typeof x === 'number' ? x : undefined;
   } catch {

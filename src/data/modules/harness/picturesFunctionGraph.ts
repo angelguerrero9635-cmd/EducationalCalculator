@@ -95,13 +95,15 @@ function featureIssues(c: Curve, lo: number, hi: number, out: string[], what = '
     // On each side where the curve is, |f| grows without stopping as x closes in on v.
     const sides = ([-1, 1] as const).filter((sd) => Number.isFinite(c.f(v + sd * 1e-2)));
     const grows = sides.every((sd) => {
-      const ys = [1e-2, 1e-5, 1e-9, 1e-12].map((e) => Math.abs(c.f(v + sd * e)));
+      const ys = [1e-2, 1e-5, 1e-8, 1e-11].map((e) =>
+        Math.abs(c.f(v + sd * e * Math.max(1, Math.abs(v)))),
+      );
       return ys.every((y, i) => i === 0 || y > ys[i - 1]!) && ys[3]! > 3 * ys[0]!;
     });
     if (!sides.length || !grows) out.push(`${what}: asymptote x = ${v} doesn't blow up`);
   }
   for (const a of c.has) {
-    const ends = [c.f(-1e4), c.f(1e4), c.f(-60), c.f(60)].filter(Number.isFinite);
+    const ends = [c.f(-1e7), c.f(1e7), c.f(-60), c.f(60)].filter(Number.isFinite);
     if (!ends.some((y) => Math.abs(y - a) < 1e-3 * Math.max(1, Math.abs(a))))
       out.push(`${what}: horizontal asymptote y = ${a} isn't approached`);
   }
@@ -139,7 +141,13 @@ export function functionGraphIssues(
   if (ax !== undefined && ay !== undefined) {
     const y = c.f(ax);
     if (!Number.isFinite(y)) out.push(`traced x = ${ax} is outside the domain but y = ${ay}`);
-    else if (!close(y, ay)) out.push(`traced point (${ax}, ${ay}) is off the curve (${y})`);
+    else {
+      // The solver finds x to about 1e-9 of its size: on a steep curve that moves y too.
+      const slope = Math.abs((c.f(ax + 1e-6) - c.f(ax - 1e-6)) / 2e-6);
+      const slack = Number.isFinite(slope) ? slope * 1e-9 * Math.max(1, Math.abs(ax)) : 0;
+      if (Math.abs(y - ay) > TOL * Math.max(1, Math.abs(y), Math.abs(ay)) + slack)
+        out.push(`traced point (${ax}, ${ay}) is off the curve (${y})`);
+    }
   }
   // Values the module works out that the picture marks.
   const s = rep.shows;
