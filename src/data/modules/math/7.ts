@@ -188,6 +188,8 @@ function signedSum(
   return {
     id,
     ...head,
+    // The number sentence itself: −3.5 + 5 = ?
+    equation: `{a} ${op} {b} = {r}`,
     assumptions,
     variables: [
       num('a', 'First number', range),
@@ -1017,6 +1019,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     },
     example: { n: 3, d: 8, q: 0.375 },
     startWith: ['n', 'd'],
+    equation: '{n}/{d} = {q}',
     representation: {
       kind: 'fractionLine',
       numerator: 'n',
@@ -1044,6 +1047,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     steps: twoStepSteps,
     example: { p: 3, q: 2, r: 11, x: 3 },
     startWith: ['p', 'q', 'r'],
+    equation: '{p}x + {q} = {r}',
     representation: {
       kind: 'hanger',
       unknown: 'x',
@@ -1071,6 +1075,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     steps: twoStepSteps,
     example: { p: 3, q: -5, r: 16, x: 7 },
     startWith: ['p', 'q', 'r'],
+    equation: '{p}x + {q} = {r}',
     representation: {
       kind: 'tape',
       equation: { times: 'p', unknown: 'x', plus: 'q', total: 'r' },
@@ -1129,6 +1134,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     },
     example: { p: 3, q: -15, r: 90, x: 45 },
     startWith: ['p', 'q', 'r'],
+    equation: '{p}(x + {q}) = {r}',
     representation: {
       kind: 'tape',
       equation: { times: 'p', unknown: 'x', plus: 'q', total: 'r', grouped: true },
@@ -1854,6 +1860,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     steps: straightPair.steps,
     example: { a: 115, b: 65 },
     startWith: ['a'],
+    equation: '{a}° + {b}° = 180°',
     representation: { kind: 'angles', parts: ['a', 'b'], whole: 180 },
   },
   {
@@ -1872,6 +1879,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     steps: rightPair.steps,
     example: { a: 35, b: 55 },
     startWith: ['a'],
+    equation: '{a}° + {b}° = 90°',
     representation: { kind: 'angles', parts: ['a', 'b'], whole: 90 },
   },
   {
@@ -2012,6 +2020,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     },
     example: { a: 66, b: 33, c: 81, e: 99 },
     startWith: ['a', 'b'],
+    equation: '{a}° + {b}° + {c}° = 180°',
     representation: {
       kind: 'angles',
       parts: ['a', 'b'],

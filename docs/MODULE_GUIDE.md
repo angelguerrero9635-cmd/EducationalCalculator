@@ -87,6 +87,12 @@ value teaches something the input boxes can't and the picture has no handle or t
 models, partitions, rectilinear shapes, the pie chart and unit cubes). Everything else has the input boxes and the picture's own touch controls. A module
 can set `sliders: true | false` to override its kind; `docs/SLIDERS.md` lists every page.
 
+**Equation inputs.** When the problem is one number sentence or equation, the boxes go in the
+equation itself (`equation: '{p}x + {q} = {r}'`), written exactly as the lesson writes it. Keep
+rows for measurements whose unit can change, pages about a picture, two directions or several
+steps, and named story roles. The rules, the syntax and every page's choice:
+`docs/EQUATION_INPUTS.md`.
+
 ## Written work in the step-by-step
 
 The walkthrough shows the work a student at that grade writes, the way a teacher sets it out:

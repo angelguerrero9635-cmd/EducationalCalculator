@@ -394,6 +394,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     },
     example: { n: 24, a: 4, b: 6, f: 8 },
     startWith: ['a', 'b'],
+    equation: '{a} × {b} = {n}',
     representation: { kind: 'factorPairs', value: 'n', first: 'a', second: 'b', count: 'f' },
   },
   // ── Multiples: is a number a multiple of a one-digit number? (4.OA.4) ──
@@ -2856,7 +2857,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     id: 'm.4.angles',
     sliders: false,
     // Typed where it is written (K–6 diagram review).
-    equation: '{a} + {b} = {w}',
+    equation: '{a}° + {b}° = {w}°',
     assumptions: [
       'A full turn is 360 degrees. One degree is 1/360 of a turn.',
       'A right angle is 90°: a quarter turn. A straight angle is 180°: a half turn.',

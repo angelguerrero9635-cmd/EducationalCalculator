@@ -980,6 +980,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     example: { a: 3, b: 5, d: 0.6, p: 60 },
     startWith: ['a', 'b'],
     // A full grid for every 100%, then the squares left; 37.5% fills part of a square.
+    equation: '{a}/{b} = {d} = {p}%',
     representation: { kind: 'grid100', percent: 'p', past100: true, exact: true },
   },
 
@@ -1128,6 +1129,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 1431, d: 99, w: 14, m: 1386, r: 45 },
     startWith: ['n', 'd'],
+    equation: '{n} ÷ {d} = {w} remainder {r}',
     representation: {
       kind: 'areaModel',
       divide: { dividend: 'n', divisor: 'd', quotient: 'w', remainder: 'r' },
@@ -1240,7 +1242,6 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     id: 'm.6.multi-digit-decimals~add-subtract',
     sliders: false,
     // Typed where it is written (K–6 diagram review).
-    equation: '{a} + {b} = {s}',
     title: 'Add and subtract decimals',
     use: 'Use this for “$14.50 − $4.35 − $5.25,” or 7.2 − 3.67.',
     assumptions: [
@@ -1388,6 +1389,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     },
     example: { n: 1.26, d: 0.3, q: 4.2 },
     startWith: ['n', 'd'],
+    equation: '{n} ÷ {d} = {q}',
     representation: { kind: 'skipCount', step: 'd', total: 'n', group: true },
   },
 
@@ -1519,7 +1521,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         sliders: false,
         equation: '{a}/{b} ÷ {c}/{d} = {g}',
         title: 'How many groups?',
-        use: 'Use this for “How many 3/4-cup servings are in 2 1/4 cups?”',
+        use: 'Use this for “How many 3/4-cup servings are in 2 1/4 cups?” (type 2 1/4 as 9/4).',
         assumptions: [
           'Write both amounts with the same denominator. Then divide the numerators.',
           'A part of a group left over is a fraction of a group.',

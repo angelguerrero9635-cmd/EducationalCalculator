@@ -1566,8 +1566,11 @@ export interface ModuleDef {
   sliders?: boolean;
   /**
    * The inputs drawn as the equation itself instead of one row per value: a template with
-   * {id} for each box, where `{a}/{b}` is a stacked fraction ('{a}/{b} ÷ {c}/{d} = {e}/{f}').
-   * Values not in the template keep their rows below it.
+   * {id} for each box, where `{a}/{b}` is a stacked fraction ('{a}/{b} ÷ {c}/{d} = {e}/{f}'),
+   * `{w} {a}/{b}` a mixed number, and `{b}^{n}`, `10^{n}` or `{a}^2` a power. Text written
+   * against a box is drawn touching it (`{p}x + {q} = {r}`, `{a}° + {b}° = 180°`); a line
+   * break starts a second equation (a system). Values not in the template keep their rows
+   * below it. Which pages use one: docs/EQUATION_INPUTS.md.
    */
   equation?: string;
   /**
