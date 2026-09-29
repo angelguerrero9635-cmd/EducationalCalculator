@@ -23,6 +23,7 @@ import { chemIssues } from './chemPictures';
 
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
+import { hscIssues } from './picturesHsc';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1985,6 +1986,9 @@ export function repIssues(
     case 'electromagnet':
     case 'orbit':
       out.push(...physics8Issues(rep, (id) => val(id)));
+      break;
+    case 'triangleSolver':
+      out.push(...hscIssues(rep, (id) => val(id)));
       break;
     case 'table':
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)

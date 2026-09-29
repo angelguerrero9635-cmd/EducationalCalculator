@@ -323,6 +323,9 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/(\d+(?:\.\d+)?)π/g, '($1*π)')
     .replace(/π/g, `(${Math.PI})`)
     .replace(/½/g, '(0.5)')
+    // Trig in degrees (Grade 10): sin(40°), cos⁻¹(0.5); the degree sign is the unit.
+    .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
+    .replace(/(?<=(?:sin|cos|tan)\([^()]*\d)°/g, '')
     // Any exponent written as superscript digits (10³, 10⁴).
     .replace(
       /⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g,
@@ -348,7 +351,10 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     for (let prev = ''; prev !== s;) {
       prev = s;
       s = s
-        .replace(/(?<!sqrt|cbrt|log|abs)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g, ' $1 ')
+        .replace(
+          /(?<!sqrt|cbrt|log|abs|sin|cos|tan)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          ' $1 ',
+        )
         .replace(/\s+/g, ' ')
         // "(- 3.5 )" after unwrapping a negative mixed number is "(-3.5)".
         .replace(/\(\s*-\s+(?=\d)/g, '(-')
@@ -406,12 +412,14 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // A minus sign before a power, "−(0.04)^(1 ÷ 2)", is the negative of the power (JavaScript
   // won't parse "-(a) ** b" as written).
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
-  const bare = s.replace(/(?:sqrt|cbrt|log|abs)\(/g, '(').replace(/\*\*/g, '*');
+  const bare = s.replace(/(?:sqrt|cbrt|log|abs|a?sin|a?cos|a?tan)\(/g, '(').replace(/\*\*/g, '*');
   if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
-      `const { log, abs, cbrt } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); return (${s});`,
+      `const { log, abs, cbrt } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); ` +
+        `const D = Math.PI / 180; const sin = (d) => Math.sin(d * D), cos = (d) => Math.cos(d * D), tan = (d) => Math.tan(d * D); ` +
+        `const one = (x) => (clampRoots ? Math.max(-1, Math.min(1, x)) : x); const asin = (x) => Math.asin(one(x)) / D, acos = (x) => Math.acos(one(x)) / D, atan = (x) => Math.atan(x) / D; return (${s});`,
     )(clampRoots) as unknown;
     return typeof x === 'number' ? x : undefined;
   } catch {

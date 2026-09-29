@@ -71,19 +71,44 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
     'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p.',
   ),
-  ask(
-    'H04',
-    'triangleSolver',
-    'Any triangle to scale from three given parts, sides and angles labelled',
-    [
-      'm.10.congruence',
-      'm.10.special-right-triangles',
-      'm.10.right-triangle-trig',
-      'm.10.law-sines-cosines',
-      'm.10.similarity',
+  {
+    ...ask(
+      'H04',
+      'triangleSolver',
+      'Any triangle to scale from three given parts, sides and angles labelled',
+      [
+        'm.10.congruence',
+        'm.10.special-right-triangles',
+        'm.10.right-triangle-trig',
+        'm.10.law-sines-cosines',
+        'm.10.similarity',
+      ],
+      'SSS, SAS, ASA, AAS, HL and the ambiguous SSA case (two triangles); the given parts marked; opposite, adjacent and hypotenuse named from angle θ; 45-45-90 and 30-60-90 with side ratios in radicals; a second, similar triangle at a scale factor. ' +
+        'Drawn (spec in typesHsc.ts): `{ kind: "triangleSolver", parts: { a: "a", b: "b", c: "c", A: "A", B: "B", C: "C" } }` draws the triangle to scale from the three parts typed (the given ones in the highlight, the worked-out ones in ink; no triangle: faded with the reason). SSA with two solutions draws both (the second dashed, B′). A part may be a fixed number (C: 90). ' +
+        'Options: `congruence: {}` (the copy D, E, F below with ticks and arcs; the criterion comes from the given parts, or `criterion`; SSA draws the two triangles SSA allows), `similar: { scale: "k", sides: { a: "d", b: "e", c: "f" } }`, `trig: { angle: "A" }` (right angle at C; opposite, adjacent, hypotenuse named; sin, cos, tan worked), `special: "45-45-90" | "30-60-90"` (sides as radicals, 5√2), `scene: { kind: "ramp" | "ladder" | "sight", eye?: "e" }`, `given`, `keep`, `fixed` (the default drag moves the vertex at the end of a given base side). ' +
+        'Demos: the laws of sines and cosines in galleryHsc.ts (relations `cosines`, `sines`, `angleSum`, `triangleCloses`) are ready to promote. Step text uses sin(40), cos⁻¹(…), taught to harness/evaluate.ts.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-law-sines-cosines-sas',
+      'g.m10-law-sines-cosines-ssa',
+      'g.m10-law-sines-cosines-sss',
+      'g.m10-law-sines-cosines-asa',
+      'g.m10-congruence-sss',
+      'g.m10-congruence-sas',
+      'g.m10-congruence-asa',
+      'g.m10-congruence-aas',
+      'g.m10-congruence-hl',
+      'g.m10-congruence-ssa',
+      'g.m10-similarity-scale',
+      'g.m10-right-triangle-trig-sohcahtoa',
+      'g.m10-right-triangle-trig-ladder',
+      'g.m10-right-triangle-trig-ramp',
+      'g.m10-right-triangle-trig-elevation',
+      'g.m10-special-right-triangles-45',
+      'g.m10-special-right-triangles-30',
     ],
-    'SSS, SAS, ASA, AAS, HL and the ambiguous SSA case (two triangles); the given parts marked; opposite, adjacent and hypotenuse named from angle θ; 45-45-90 and 30-60-90 with side ratios in radicals; a second, similar triangle at a scale factor.',
-  ),
+  },
   ask(
     'H05',
     'markedFigure',
