@@ -112,11 +112,14 @@ const SUPERSCRIPT = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const raised = (n: number) =>
   `${n < 0 ? '⁻' : ''}${[...String(Math.abs(n))].map((c) => SUPERSCRIPT[Number(c)]).join('')}`;
 
-/** x in scientific notation with up to 4 significant figures: "4.7 × 10⁵", "−3 × 10⁻⁴". */
+/**
+ * x in scientific notation with up to 5 significant figures (so 1.9998 × 10¹¹ keeps its own
+ * digits): "4.7 × 10⁵", "−3 × 10⁻⁴".
+ */
 export function scientific(x: number): string {
   if (x === 0) return '0';
   let n = Math.floor(Math.log10(Math.abs(x)));
-  let m = Number((x / 10 ** n).toPrecision(4));
+  let m = Number((x / 10 ** n).toPrecision(5));
   // Rounding can carry the mantissa to 10 (9.9999 → 10): move it to the exponent.
   if (Math.abs(m) >= 10) {
     m /= 10;
@@ -353,12 +356,14 @@ const IRREGULAR: Record<string, string> = {
  * letters or fewer is read as a symbol.
  */
 export function unitFor(x: number, unit: string): string {
-  if (x !== 1 || !/^[a-z][a-z ]*[a-z]$/.test(unit) || /^[a-z]{1,3}$/.test(unit)) return unit;
+  // (a capitalised name in it too: "1 Earth mass")
+  if (x !== 1 || !/^[A-Za-z][A-Za-z ]*[a-z]$/.test(unit) || /^[A-Za-z]{1,3}$/.test(unit))
+    return unit;
   if (IRREGULAR[unit]) return IRREGULAR[unit];
   // The first plural word takes the singular: "cubic units" → "cubic unit", "liters per
   // second" → "liter per second".
   return unit.replace(
-    /^((?:[a-z]+ )*?)([a-z]+?)(e?s)\b/,
+    /^((?:[A-Za-z]+ )*?)([a-z]+?)(e?s)\b/,
     (m, head: string, stem: string, end: string) =>
       end === 'es' && /(ch|sh|x|s)$/.test(stem)
         ? `${head}${stem}`

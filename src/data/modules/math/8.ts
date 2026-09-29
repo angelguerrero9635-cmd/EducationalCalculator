@@ -394,7 +394,18 @@ export const MATH_8_MODULES: ModuleDef[] = [
     ],
     steps: {
       's = √A': {
-        s: { expr: '√{A}', how: 'The side is the number that, times itself, makes the area.' },
+        s: {
+          expr: '√{A}',
+          how: 'The side is the number that, times itself, makes the area.',
+          work: (v: Values) => {
+            const t = Math.floor(Math.sqrt(v.A!) * 10 + 1e-9) / 10;
+            return Number.isInteger(Math.sqrt(v.A!)) || v.A! < 1
+              ? []
+              : [
+                  `To the tenths: ${fmt(t)}² = ${fmt(Number((t * t).toFixed(2)))} and ${fmt(Number((t + 0.1).toFixed(1)))}² = ${fmt(Number(((t + 0.1) ** 2).toFixed(2)))}`,
+                ];
+          },
+        },
         A: { expr: '{s}²', how: 'The area is the side times itself.' },
       },
       'lo = whole number at or below √A': {
@@ -403,6 +414,9 @@ export const MATH_8_MODULES: ModuleDef[] = [
           how: 'Find the biggest perfect square that is not more than A.',
           work: (v: Values) => [
             `${fmt(v.lo!)}² = ${fmt(v.lo! ** 2)}, and ${fmt(v.lo! ** 2)} ≤ ${fmt(v.A!)}`,
+            ...(v.lo! ** 2 === v.A!
+              ? []
+              : [`${fmt(v.lo! + 1)}² = ${fmt((v.lo! + 1) ** 2)}, which is more than ${fmt(v.A!)}`]),
           ],
         },
       },
@@ -490,7 +504,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
     title: 'A repeating decimal as a fraction',
     use: 'Use this for “Write 0.363636… as a fraction.”',
     assumptions: [
-      'Call the decimal x. Its repeating block has k digits.',
+      'Call the decimal x. Its repeating block has k digits and starts right after the point (0.3636…).',
       'Multiply by 10ᵏ to move one block in front of the point. Take x away: the repeats cancel.',
       'That leaves (10ᵏ − 1) × x = the block, so x = block ÷ (10ᵏ − 1).',
       'Every repeating decimal is a fraction, so it is rational.',
@@ -542,6 +556,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
               `x = ${x}`,
               `${fmt(10 ** v.k!)}x = ${big}`,
               `${fmt(10 ** v.k!)}x − x = ${fmt(v.r!)}, so ${fmt(v.d!)}x = ${fmt(v.r!)}`,
+              `x = ${fmt(v.r!)}/${fmt(v.d!)} = ${formatNumber(v.f!, { fraction: 999 })}`,
             ];
           },
           written: false,
@@ -756,6 +771,13 @@ export const MATH_8_MODULES: ModuleDef[] = [
         t: {
           expr: '({a} ÷ {c}) × 10^({n} − {k})',
           how: 'Divide the fronts, and subtract the exponents for the powers of ten.',
+          work: (v: Values) => [
+            v.P! === v.Q!
+              ? 'The two numbers are equal.'
+              : v.n !== v.k
+                ? `${formatNumber(Math.max(v.P!, v.Q!), { scientific: true })} is bigger: its power of ten is bigger.`
+                : `${formatNumber(Math.max(v.P!, v.Q!), { scientific: true })} is bigger: the same power of ten, and its front is bigger.`,
+          ],
           written: false,
         },
       },
@@ -906,8 +928,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
         'q',
         ['S'],
         '{q} = exponent of the power of ten at or below {S}',
-        // From S as shown (4 significant figures), so 999,990 shown as 1 × 10⁶ reads 10⁶.
-        (v) => (v.S! > 0 ? split(Number(v.S!.toPrecision(4))).n : undefined),
+        // From S as shown (5 significant figures), so 9,999,990 shown as 1 × 10⁷ reads 10⁶.
+        (v) => (v.S! > 0 ? split(Number(v.S!.toPrecision(5))).n : undefined),
       ),
       {
         ...derive(
@@ -915,7 +937,7 @@ export const MATH_8_MODULES: ModuleDef[] = [
           'u',
           ['S', 'q'],
           '{u} = {S} ÷ 10^{q}',
-          (v) => Number(v.S!.toPrecision(4)) / 10 ** v.q!,
+          (v) => Number(v.S!.toPrecision(5)) / 10 ** v.q!,
         ),
       },
     ],
@@ -2175,6 +2197,9 @@ export const MATH_8_MODULES: ModuleDef[] = [
         px: {
           expr: (v: Values) => turnedExpr(v.r!)[0],
           how: (v: Values) => turnRule(v.r!),
+          work: (v: Values) => [
+            `(${fmt(v.ax!)}, ${fmt(v.ay!)}) → (${fmt(turned(v.ax!, v.ay!, v.r!)[0] || 0)}, ${fmt(turned(v.ax!, v.ay!, v.r!)[1] || 0)})`,
+          ],
         },
       },
       'y′ after the turn': {
@@ -2471,8 +2496,8 @@ export const MATH_8_MODULES: ModuleDef[] = [
       derive('f² = l² + w²', 'f', ['l', 'w'], '{f}² = {l}² + {w}²', (v) =>
         Math.sqrt(v.l! ** 2 + v.w! ** 2),
       ),
-      derive('D² = f² + h²', 'D', ['f', 'h'], '{D}² = {f}² + {h}²', (v) =>
-        Math.sqrt(v.f! ** 2 + v.h! ** 2),
+      derive('D² = f² + h²', 'D', ['l', 'w', 'h'], '{D}² = {l}² + {w}² + {h}²', (v) =>
+        Math.sqrt(v.l! ** 2 + v.w! ** 2 + v.h! ** 2),
       ),
     ],
     steps: {
@@ -2481,8 +2506,13 @@ export const MATH_8_MODULES: ModuleDef[] = [
       },
       'D² = f² + h²': {
         D: {
-          expr: '√({f}² + {h}²)',
-          how: 'Up through the box: the floor diagonal and the height are the legs.',
+          expr: '√({l}² + {w}² + {h}²)',
+          how: 'Up through the box: the floor diagonal and the height are the legs, and f² is l² + w².',
+          work: (v: Values) => [
+            `f² = ${fmt(v.l! ** 2)} + ${fmt(v.w! ** 2)} = ${fmt(v.l! ** 2 + v.w! ** 2)}`,
+            `D² = f² + h² = ${fmt(v.l! ** 2 + v.w! ** 2)} + ${fmt(v.h! ** 2)} = ${fmt(v.l! ** 2 + v.w! ** 2 + v.h! ** 2)}`,
+          ],
+          written: false,
         },
       },
     },

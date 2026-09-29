@@ -307,8 +307,14 @@ export function buildSteps(
     const substituted = agree(`${v.symbol} = ${renderTemplate(expr, workVars, working)}`);
     // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
     const same = (x: string, y: string) => x === y.split(' (')[0];
-    const result =
+    const noted =
       text.note && direct ? `${base.result} ${text.note(working)}`.trimEnd() : base.result;
+    // A π answer ("V = 90π cm³") also says its decimal, as questions ask for the nearest unit.
+    const piValue = v.pi && /\dπ|= π/.test(noted) ? working[t.id] : undefined;
+    const result =
+      piValue !== undefined
+        ? `${noted} (≈ ${formatNumber(Math.round(piValue * 100) / 100)}${workUnit(t.id) ? ` ${workUnit(t.id)}` : ''})`
+        : noted;
     const workLines = work?.length
       ? byGrade(
           work.map((line) => agree(renderTemplate(line, workVars, working))),

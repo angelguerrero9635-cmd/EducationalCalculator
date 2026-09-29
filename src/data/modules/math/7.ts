@@ -359,11 +359,18 @@ const twoStep: Relation = {
     p: (v: Values) => whole0(q(v.r! - v.q!, v.x!)),
   },
 };
+/** x as the equation pages show it: twelfths as fractions. */
+const xf = (x: number) => formatNumber(x, { fraction: 12 });
 const twoStepSteps: Record<string, Record<string, StepText>> = {
   'px + q = r': {
     x: {
       expr: '({r} − {q}) ÷ {p}',
       how: 'Take {q} from both sides, then divide both sides by {p}.',
+      work: (v: Values) => [
+        `${v.q! < 0 ? `Add ${fmt(-v.q!)} to` : `Take ${fmt(v.q!)} from`} both sides: ${fmt(v.p!)}x = ${fmt(v.r! - v.q!)}`,
+        `Divide both sides by ${fmt(v.p!)}: x = ${xf(v.x!)}`,
+      ],
+      written: false,
     },
     r: { expr: '{p} × {x} + {q}', how: 'Multiply, then add.' },
     q: { expr: '{r} − {p} × {x}', how: 'Take the x part away from the right side.' },
@@ -423,15 +430,18 @@ function derive(
   x: string,
   inputs: string[],
   display: string,
-  f: (v: Values) => number,
+  f: (v: Values) => number | undefined,
 ): Relation {
   return {
     id,
     display,
     vars: [x, ...inputs],
-    residual: (v: Values) => v[x]! - f(v),
+    residual: (v: Values) => v[x]! - (f(v) ?? NaN),
     solve: {
-      [x]: (v: Values) => exact(f(v)),
+      [x]: (v: Values) => {
+        const y = f(v);
+        return y === undefined ? undefined : exact(y);
+      },
       ...Object.fromEntries(inputs.map((i) => [i, () => undefined])),
     },
   };
@@ -1096,6 +1106,11 @@ export const MATH_7_MODULES: ModuleDef[] = [
         x: {
           expr: '{r} ÷ {p} − {q}',
           how: 'Divide both sides by {p}, then take {q} from both sides.',
+          work: (v: Values) => [
+            `Divide both sides by ${fmt(v.p!)}: x + ${v.q! < 0 ? `(${fmt(v.q!)})` : fmt(v.q!)} = ${xf(v.r! / v.p!)}`,
+            `${v.q! < 0 ? `Add ${fmt(-v.q!)} to` : `Take ${fmt(v.q!)} from`} both sides: x = ${xf(v.x!)}`,
+          ],
+          written: false,
         },
         r: { expr: '{p} × ({x} + {q})', how: 'Add inside the brackets, then multiply.' },
         q: { expr: '{r} ÷ {p} − {x}', how: 'Divide by {p} for one group, then take away {x}.' },
@@ -1172,6 +1187,19 @@ export const MATH_7_MODULES: ModuleDef[] = [
         b: {
           expr: '({r} − {q}) ÷ {p}',
           how: 'Take {q} from both sides, then divide both sides by {p}.',
+          work: (v: Values) => {
+            const sign = '<≤>≥'[v.s! - 1]!;
+            const flipped =
+              v.p! < 0 ? ({ '<': '>', '≤': '≥', '>': '<', '≥': '≤' }[sign] ?? sign) : sign;
+            const rest = v.r! - v.q!;
+            return [
+              `${v.q! < 0 ? `Add ${fmt(-v.q!)} to` : `Take ${fmt(v.q!)} from`} both sides: ${fmt(v.p!)}x ${sign} ${fmt(rest)}`,
+              v.p! < 0
+                ? `Divide both sides by ${fmt(v.p!)}, a negative, so ${sign} flips to ${flipped}: x ${flipped} ${fmt(v.b!)}`
+                : `Divide both sides by ${fmt(v.p!)}: x ${sign} ${fmt(v.b!)}`,
+            ];
+          },
+          written: false,
         },
         r: { expr: '{b} × {p} + {q}', how: 'Undo the steps: multiply, then add.' },
         q: { expr: '{r} − {b} × {p}', how: 'Take the x part from the right side.' },
@@ -1441,6 +1469,9 @@ export const MATH_7_MODULES: ModuleDef[] = [
         r: {
           expr: '√({A} ÷ π)',
           how: 'Divide both sides by π, then take the square root (a radius is never negative).',
+          work: (v: Values) => [
+            `r² = ${formatNumber(v.A!, { pi: true })} ÷ π = ${fmt(Number((v.r! ** 2).toPrecision(12)))}`,
+          ],
         },
       },
     },
@@ -1590,7 +1621,13 @@ export const MATH_7_MODULES: ModuleDef[] = [
       },
       'A = πr²': {
         A: { expr: 'π × {r}²', how: 'Square the radius, then multiply by π.' },
-        r: { expr: '√({A} ÷ π)', how: 'Divide by π, then take the square root.' },
+        r: {
+          expr: '√({A} ÷ π)',
+          how: 'Divide by π, then take the square root.',
+          work: (v: Values) => [
+            `r² = ${formatNumber(v.A!, { pi: true })} ÷ π = ${fmt(Number((v.r! ** 2).toPrecision(12)))}`,
+          ],
+        },
       },
       'L = Q − A': {
         L: { expr: '{Q} − {A}', how: 'Take the circle’s area from the square’s.' },
@@ -2050,7 +2087,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
     assumptions: [
       'The base is a rectangle with a rectangle cut from one corner: an L.',
       'Base area = the whole rectangle − the cut-out. Volume = base area × height.',
-      'Cutting a corner keeps the perimeter: the two new sides are as long as the two lost.',
+      'Cutting a corner keeps the perimeter: the two new sides are as long as the two lost. A notch cut from the middle of a side adds twice its depth.',
       'Surface area = 2 bases + perimeter × height, since the sides unroll to one rectangle.',
     ],
     variables: [
@@ -2114,6 +2151,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
           how: 'Two L-shaped bases, and the sides: the perimeter times the height.',
           work: (v: Values) => [
             `Perimeter of the L = 2 × ${fmt(v.l!)} + 2 × ${fmt(v.w!)} = ${fmt(2 * v.l! + 2 * v.w!)} cm`,
+            `${fmt(2 * v.B!)} + ${fmt((2 * v.l! + 2 * v.w!) * v.h!)} = ${fmt(v.S!)}`,
           ],
         },
       },
@@ -2220,6 +2258,14 @@ export const MATH_7_MODULES: ModuleDef[] = [
       { id: 'Q', symbol: 'Q', name: 'Mean of class B', min: 0, max: 60, derived: true },
       { id: 'd', symbol: 'd', name: 'Difference of the means', min: 0, max: 60, derived: true },
       { id: 'M', symbol: 'M', name: 'MAD of class A', min: 0, max: 60, derived: true },
+      {
+        id: 'D',
+        symbol: 'D',
+        name: 'Gap in MADs',
+        min: 0,
+        max: 1000,
+        derived: true,
+      },
     ],
     relations: [
       {
@@ -2268,6 +2314,11 @@ export const MATH_7_MODULES: ModuleDef[] = [
             .map((id) => `|${fmt(v[id]!)} − ${fmt(v.P!)}|`)
             .join(' + ')}) ÷ ${v.n} = ${fmt(v.M!)}`,
       },
+      {
+        ...derive('D = d ÷ M', 'D', ['d', 'M'], '{D} = {d} ÷ {M}', (v) =>
+          v.M! > 0 ? v.d! / v.M! : undefined,
+        ),
+      },
     ],
     steps: {
       'P = mean of A': {
@@ -2277,6 +2328,15 @@ export const MATH_7_MODULES: ModuleDef[] = [
               .map((id) => `{${id}}`)
               .join(' + ')}) ÷ {n}`,
           how: 'Add class A’s times and share them out evenly.',
+          work: (v: Values) => {
+            const xs = firstN(SAMPLE_A, v).map((id) => v[id]!);
+            const total = xs.reduce((t, x) => t + x, 0);
+            return [
+              `${xs.map(fmt).join(' + ')} = ${fmt(total)}`,
+              `${fmt(total)} ÷ ${v.n} = ${fmt(v.P!)}`,
+            ];
+          },
+          written: false,
         },
       },
       'Q = mean of B': {
@@ -2286,6 +2346,15 @@ export const MATH_7_MODULES: ModuleDef[] = [
               .map((id) => `{${id}}`)
               .join(' + ')}) ÷ {n}`,
           how: 'Add class B’s times and share them out evenly.',
+          work: (v: Values) => {
+            const xs = firstN(SAMPLE_B, v).map((id) => v[id]!);
+            const total = xs.reduce((t, x) => t + x, 0);
+            return [
+              `${xs.map(fmt).join(' + ')} = ${fmt(total)}`,
+              `${fmt(total)} ÷ ${v.n} = ${fmt(v.Q!)}`,
+            ];
+          },
+          written: false,
         },
       },
       'd = |Q − P|': {
@@ -2301,7 +2370,25 @@ export const MATH_7_MODULES: ModuleDef[] = [
               .map((id) => `|{${id}} − {P}|`)
               .join(' + ')}) ÷ {n}`,
           how: 'How far each time is from the mean, on average.',
+          work: (v: Values) => {
+            const ds = firstN(SAMPLE_A, v).map((id) => Math.abs(v[id]! - v.P!));
+            const total = ds.reduce((t, x) => t + x, 0);
+            return [
+              `Distances from ${fmt(v.P!)}: ${ds.map(fmt).join(', ')}`,
+              `${ds.map(fmt).join(' + ')} = ${fmt(total)}`,
+              `${fmt(total)} ÷ ${v.n} = ${fmt(v.M!)}`,
+            ];
+          },
           written: false,
+        },
+      },
+      'D = d ÷ M': {
+        D: {
+          expr: '{d} ÷ {M}',
+          how: (v: Values) =>
+            v.D! >= 2
+              ? 'The means are two or more MADs apart: the classes really differ.'
+              : 'The means are less than two MADs apart: the gap could be chance.',
         },
       },
     },
@@ -2327,6 +2414,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
       Q: 32,
       d: 12,
       M: 5,
+      D: 2.4,
     },
     startWith: ['n', ...SAMPLE_A, ...SAMPLE_B],
     representation: {
