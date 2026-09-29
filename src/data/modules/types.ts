@@ -18,6 +18,7 @@ import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
 import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { HsgSpec, PunnettInheritance } from './typesHsg';
+import type { HshSpec } from './typesHsh';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 
@@ -1089,6 +1090,8 @@ export type Representation =
   | HsdSpec
   /** Grades 9–12 biology, group HG: membrane, DNA strand (specs in typesHsg.ts). */
   | HsgSpec
+  /** Grades 9–12 group H: biology, gel electrophoresis and PCR, … (specs in `typesHsh.ts`). */
+  | HshSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

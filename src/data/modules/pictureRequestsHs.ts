@@ -783,44 +783,104 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein. Drawn (group HG, reps/DnaStrand.tsx, the standard codon table and rules in dnaMath.ts). Calculator picture { kind: "dnaStrand", sequence: the template strand, up to 12 of A T G C, drawn 3′ to 5′ ("TACCGGTTCATT"), length?: bases drawn (number or variable), show?: ["mrna", "protein"] (default both), mutation?: { type: "substitution" | "insertion" | "deletion", at: base number (number or variable), base?: the new base (a substitution defaults to the transition A↔G, C↔T; an insertion to A) }, codons?: a variable holding the complete codons (checked); or percentA: a variable and pairs?: 10 for Chargaff’s rule (a ladder of whole pairs, A = T, G = C; a percent that isn’t whole bases draws faded) }. The ladder shows both backbones, 2 hydrogen bonds per A–T rung and 3 per G–C; the mRNA (U for T) with codons bracketed; amino acid chips from the codon table, Stop in outline. With a mutation the changed base is ringed (a caret where a base was deleted), the protein is shown before and after with changed amino acids lit, and the caption names silent, missense, nonsense or frameshift. The harness checks the codon table (64 codons, 6 for Leu, Ser, Arg, 3 stops, AUG = Met), the transcription, the codon count, the mutation position and length, and Chargaff’s counts. Step text may say “the codon holding base {p}” (⌈p ÷ 3⌉, phrasesHsg.ts). Example: representation: { kind: "dnaStrand", sequence: "TACCGGTTCATT", mutation: { type: "substitution", at: "p" } }.',
   },
-  ask(
-    'H37',
-    'gel',
-    'Gel electrophoresis: bands placed by fragment size, a ladder lane; PCR copies doubling each cycle',
-    ['s.9.biotechnology'],
-  ),
-  ask(
-    'H38',
-    'alleleFrequencies',
-    'Hardy–Weinberg: p and q as beads in a population, genotype bars p², 2pq, q²',
-    ['s.9.evolution-evidence'],
-    'Card figures: homologous limbs (arm, wing, flipper, leg) with matching bones colored.',
-  ),
-  ask(
-    'H39',
-    'cladogram',
-    'Cladogram with shared traits on the branches; domain and kingdom card icons',
-    ['s.9.classification', 's.9.evolution-evidence'],
-  ),
-  ask(
-    'H40',
-    'energyPyramid',
-    'Pyramids of energy, biomass and numbers; succession stages; the nitrogen cycle as an explore figure',
-    ['s.9.ecosystem-dynamics'],
-  ),
-  ask(
-    'H41',
-    'feedbackLoop',
-    'Explore figure: stimulus, sensor, control center, effector, response; body temperature and blood sugar',
-    ['s.9.homeostasis', 's.12.climate-systems'],
-    'The climate page uses the same loop for the ice-albedo and water-vapor feedbacks.',
-  ),
-  ask(
-    'H42',
-    'immuneResponse',
-    'Pathogen card icons (virus, bacterium, fungus, parasite); the immune response in stages; antibody levels after a first and second exposure',
-    ['s.9.immune-disease'],
-  ),
+  {
+    ...ask(
+      'H37',
+      'gel',
+      'Gel electrophoresis: bands placed by fragment size, a ladder lane; PCR copies doubling each cycle',
+      ['s.9.biotechnology'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-biotechnology-gel',
+      'g.s9-biotechnology-gel-map',
+      'g.s9-biotechnology-gel-small',
+      'g.s9-biotechnology-pcr',
+      'g.s9-biotechnology-pcr-cycles',
+    ],
+    notes:
+      'Drawn (group HH). Gel: { kind: "gel", lanes: [{ label, bands: [size ids or numbers in bp] }] (1–6 lanes, 1–6 bands), ladder?: sizes in bp from largest (default 10,000 … 100 bp) or false, ladderLabel?, keep?: ids pinned during a drag, fixed?: no handles }. The slab is painted (clear agarose on a tray, wells at the black − end, red + end); every band sits at a distance on a log scale of its size (checked in the harness: each × 10 the same step, smaller always farther); a typed band drags up or down. Example: { kind: "gel", lanes: [{ label: "Uncut", bands: ["L"] }, { label: "Cut", bands: ["a", "b"] }], keep: ["L"] } with L = a + b. PCR: { kind: "gel", pcr: { cycles: "n", start?: "n0", copies?: "N" } }: the three steps (95, 55, 72 °C), then each cycle’s double strands drawn while they fit (32), original strands dark and new ones in the highlight, and N = N₀ × 2ⁿ (checked).',
+  },
+  {
+    ...ask(
+      'H38',
+      'alleleFrequencies',
+      'Hardy–Weinberg: p and q as beads in a population, genotype bars p², 2pq, q²',
+      ['s.9.evolution-evidence'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-evolution-evidence-hardy-weinberg',
+      'g.s9-evolution-evidence-rare-allele',
+      'g.s9-evolution-evidence-allele-counts',
+      'g.s9-evolution-evidence-limbs',
+    ],
+    notes:
+      'Card figures: homologous limbs (arm, wing, flipper, leg) with matching bones colored. Drawn (group HH). { kind: "alleleFrequencies", p: id or number, q?: id (checked p + q = 1), genotypes?: [p² id, 2pq id, q² id] (each may be null; checked against the bars), alleles?: ["A", "a"], keep?: ids pinned while p is dragged, fixed?: no handle }. A tray of 100 glass beads (50 people × 2 alleles), round(100p) of them the dominant allele (the caption says "About" when 100p is not whole); a p scale with a handle; the bars p², 2pq, q² on 0–1 (Aa half each color). Example: { kind: "alleleFrequencies", p: "p", q: "q", genotypes: ["P2", "H", "q2"] }. Card icons for sort cards: { kind: "icon", icon: "human arm bones" } (also "bat wing bones", "whale flipper bones", "cat leg bones", and "insect wing" for an analogous structure): upper arm, forearm bones, wrist and hand bones each in its own color (limbUpper, limbForearm, limbWrist, limbHand), inside the skin, membrane, flipper or fur.',
+  },
+  {
+    ...ask(
+      'H39',
+      'cladogram',
+      'Cladogram with shared traits on the branches; domain and kingdom card icons',
+      ['s.9.classification', 's.9.evolution-evidence'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-classification-cladogram',
+      'g.s9-evolution-evidence-cladogram',
+      'g.s9-classification-domains',
+    ],
+    notes:
+      'Drawn (group HH) as an explore figure, since a cladogram has no honest quantity. Figure { kind: "cladogram", tree, traits }: tree is nested lists of taxon names (any shape, 3 to 10 taxa, e.g. ["Lancelet", ["Lamprey", ["Shark", ["Frog", ["Lizard", "Mouse"]]]]]); traits: [{ name, taxa }] where the taxa must be one clade (checked in the harness), each drawn as a numbered bar on the branch into that clade and keyed under the tree. Each scene sets clade: { lit?: a trait name (its bar and every branch of the clade that inherits it lit), ring?: taxa ringed (to ask whether a group is a clade) }. Example scene: { label: "Jaws", lines: [...], clade: { lit: "Jaws" } }. Card icons for sort cards: { kind: "icon", icon: "domain Bacteria" } (also "domain Archaea", "domain Eukarya", "kingdom Protista", "kingdom Fungi", "kingdom Plantae", "kingdom Animalia").',
+  },
+  {
+    ...ask(
+      'H40',
+      'energyPyramid',
+      'Pyramids of energy, biomass and numbers; succession stages; the nitrogen cycle as an explore figure',
+      ['s.9.ecosystem-dynamics'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-ecosystem-dynamics-biomass',
+      'g.s9-ecosystem-dynamics-numbers',
+      'g.s9-ecosystem-dynamics-ocean',
+      'g.s9-ecosystem-dynamics-succession',
+      'g.s9-ecosystem-dynamics-nitrogen',
+    ],
+    notes:
+      'Drawn (group HH). energyPyramid takes an optional measure: "energy" (default, unchanged) | "biomass" | "numbers". Biomass and numbers draw no share passed up unless percent is set (the harness then skips the 10% check), so a pyramid of numbers or an ocean biomass pyramid can stand upside down, to scale. Example: { kind: "energyPyramid", measure: "numbers", levels: ["N1", "N2", "N3"], names: ["oak tree", "caterpillars", "songbirds"] }; { kind: "energyPyramid", measure: "biomass", levels: ["B1", "B2", "B3"], percent: "p", names: [...] }. Succession: sequence stages with card icons { kind: "icon", icon: "bare rock" } ("lichens on rock", "mosses and thin soil", "grasses and flowers", "shrubs", "young trees", "mature forest"). Nitrogen cycle: explore figure { kind: "nitrogenCycle" }, each scene nitrogen: { process?: "fixation" | "lightning" | "nitrification" | "assimilation" | "eating" | "ammonification" | "denitrification" } (none: the whole cycle, unnamed arrows); example scene { label: "Fixation", lines: [...], nitrogen: { process: "fixation" } }.',
+  },
+  {
+    ...ask(
+      'H41',
+      'feedbackLoop',
+      'Explore figure: stimulus, sensor, control center, effector, response; body temperature and blood sugar',
+      ['s.9.homeostasis', 's.12.climate-systems'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s9-homeostasis-feedback', 'g.s12-climate-systems-feedback'],
+    notes:
+      'The climate page uses the same loop for the ice-albedo and water-vapor feedbacks. Drawn (group HH). Explore figure { kind: "feedbackLoop" }; every word is the scene’s: loop: { steps: [{ role?: "Stimulus", text }] (3 to 6 boxes, each text at most 90 characters), sign: "negative" | "positive" (the arrow back from the response marked − or +), lit?: step index, back?: label on the arrow back ("negative feedback") }. Climate loops leave out the roles. Example scene: { label: "Too hot", lines: [...], loop: { sign: "negative", back: "negative feedback", lit: 2, steps: [{ role: "Stimulus", text: "Body temperature rises above its set point." }, …] } }.',
+  },
+  {
+    ...ask(
+      'H42',
+      'immuneResponse',
+      'Pathogen card icons (virus, bacterium, fungus, parasite); the immune response in stages; antibody levels after a first and second exposure',
+      ['s.9.immune-disease'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.s9-immune-disease-antibodies',
+      'g.s9-immune-disease-booster',
+      'g.s9-immune-disease-stages',
+      'g.s9-immune-disease-pathogens',
+    ],
+    notes:
+      'Drawn (group HH) in three parts. Antibody plot (calculator): { kind: "immuneResponse", first: peak id, second: peak id, firstDays?: id or number (default 12), secondDays?: (default 6), secondAt?: day of the 2nd exposure (default 40), axis?: "Antibody level" }; each response rises to its peak on its day and falls (the second more slowly), the curve drawn is the higher of the two, peaks dotted with their levels; the harness checks the curve passes through both peaks and never above the higher. Example: { kind: "immuneResponse", first: "P1", second: "P2", firstDays: "d1", secondDays: "d2", secondAt: 40 }. Stages (explore figure, named immuneStages so it doesn’t clash with the picture kind): { kind: "immuneStages" }, each scene immune: { stage?: "antigen" | "helperT" | "bCells" | "antibodies" | "killerT" | "memory" } (none: the whole response). Pathogen card icons: { kind: "icon", icon: "virus" } (also "bacterium", "fungus", "parasite").',
+  },
 
   // ── E. Chemistry ──
   ask(

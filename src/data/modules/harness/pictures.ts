@@ -45,6 +45,7 @@ import {
   transformationHsfIssues,
 } from './picturesHsf';
 import { hsgIssues, punnettHsIssues } from './picturesHsg';
+import { hshIssues } from './picturesHsh';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1503,6 +1504,8 @@ export function repIssues(
       xs.forEach((x, i) => {
         if (x !== undefined && x < 0) out.push(`level ${i + 1} energy ${x} is negative`);
       });
+      // A pyramid of biomass or numbers passes no share up unless it sets one (H40).
+      if (rep.measure && rep.measure !== 'energy' && rep.percent === undefined) break;
       const p = val(rep.percent ?? 10);
       if (p !== undefined && (p <= 0 || p > 100)) out.push(`${p}% passed up is not a share`);
       if (p === undefined) break;
@@ -2095,6 +2098,11 @@ export function repIssues(
     case 'membrane':
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
+      break;
+    case 'gel':
+    case 'alleleFrequencies':
+    case 'immuneResponse':
+      out.push(...hshIssues(rep, (id) => val(id)));
       break;
     case 'table':
       if ('twoWay' in rep) {

@@ -86,6 +86,22 @@ what people already do, or an `experiment` assigned at random to a treatment and
 (`simple random sample`, `stratified sample`, `cluster sample`, `systematic sample`, `convenience
 sample`), each 36 dots with its 9 picked, drawn in `layouts/icons/hb.tsx`.
 
+Grade 9 biology card icons (group HH, `layouts/icons/hh.tsx`): homologous limbs with each bone
+group in its own color (`human arm bones`, `bat wing bones`, `whale flipper bones`, `cat leg
+bones`) and an `insect wing` with none; the domains and kingdoms (`domain Bacteria`, `domain
+Archaea`, `domain Eukarya`, `kingdom Protista`, `kingdom Fungi`, `kingdom Plantae`, `kingdom
+Animalia`). Explore figure `cladogram` (`layouts/cladogramFigure.tsx`): `{ tree, traits }`, a
+tree of taxon names as nested lists and each trait's taxa (one clade) marked as a numbered bar
+on the branch into it; a scene's `clade: { lit?, ring? }` lights a trait's clade or rings taxa.
+Primary succession stage icons (`bare rock`, `lichens on rock`, `mosses and thin soil`, `grasses
+and flowers`, `shrubs`, `young trees`, `mature forest`). Explore figures `nitrogenCycle`
+(`layouts/nitrogenCycleFigure.tsx`; `nitrogen: { process? }` lights fixation, lightning,
+nitrification, assimilation, eating, ammonification or denitrification) and `feedbackLoop`
+(`layouts/feedbackLoopFigure.tsx`; `loop: { steps, sign, lit?, back? }`, the scene's own words
+in 3 to 6 boxes and the arrow back marked − or +) and `immuneStages`
+(`layouts/immuneStagesFigure.tsx`; `immune: { stage? }` lights antigen, helperT, bCells, antibodies,
+killerT or memory). Pathogen icons: `virus`, `bacterium`, `fungus`, `parasite`.
+
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
 scale, with the sun on the line over the stick's top (higher for a shorter shadow); `sides`

@@ -142,6 +142,9 @@ import { AlgebraTiles } from './AlgebraTiles';
 import { Membrane } from './Membrane';
 import { DnaStrand } from './DnaStrand';
 import { PunnettHs } from './PunnettHs';
+import { Gel } from './Gel';
+import { AlleleFrequencies } from './AlleleFrequencies';
+import { ImmuneResponse } from './ImmuneResponse';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -192,6 +195,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
       return <AlgebraTiles spec={spec} calc={calc} />;
+    case 'gel':
+      return <Gel spec={spec} calc={calc} />;
+    case 'alleleFrequencies':
+      return <AlleleFrequencies spec={spec} calc={calc} />;
+    case 'immuneResponse':
+      return <ImmuneResponse spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

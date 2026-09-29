@@ -88,6 +88,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
 | `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump | Grade 9 membrane transport (H32)    |
 | `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff        | Grade 9 DNA, mutations (H36)        |
+| `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
+| `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
+
+`alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
+scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 
@@ -193,6 +198,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `factorTree`       | `root: { index, outside, inside }`       | equal pairs (or threes) ringed and brought out of the root: √72 = 6√2         |
 | `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 | `punnettSquare`    | `inheritance` (Grade 9)                  | dihybrid 4 × 4 by phenotype; incomplete, codominant; X-linked with carriers   |
+| `energyPyramid`    | `measure: 'biomass' \| 'numbers'`        | biomass or numbers: no share passed up unless `percent`; can be upside down   |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

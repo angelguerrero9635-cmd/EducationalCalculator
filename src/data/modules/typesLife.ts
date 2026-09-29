@@ -17,6 +17,12 @@ export interface EnergyPyramidSpec {
   levels: string[];
   percent?: NumOrVar;
   names?: string[];
+  /**
+   * What the tiers measure (Grades 9–12, H40): energy (default), biomass or numbers of
+   * organisms. Biomass and numbers draw no share passed up unless `percent` is set, so a pyramid
+   * of numbers can stand upside down (one oak tree, thousands of caterpillars).
+   */
+  measure?: 'energy' | 'biomass' | 'numbers';
 }
 
 /** Beetle colors for `generations` (each drawn in its own shell color). */

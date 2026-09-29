@@ -1,6 +1,14 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
 import type { CellDivisionCard, EnergyScene, MacroScene } from '../typesHsg';
+import type {
+  CladeScene,
+  CladeTrait,
+  CladeTree,
+  ImmuneStage,
+  LoopScene,
+  NitrogenProcess,
+} from '../typesHsh';
 import type { Round3Icon } from './icons';
 
 /**
@@ -330,7 +338,15 @@ export type Figure =
   /** Monomers joining into polymers: sugars, amino acids, nucleotides, a fat (HS group G). */
   | { kind: 'macromolecules' }
   /** A chloroplast and a mitochondrion trading glucose, O₂, CO₂ and H₂O; light in, ATP out (HS group G). */
-  | { kind: 'organelleEnergy' };
+  | { kind: 'organelleEnergy' }
+  /** A cladogram with its shared derived traits marked where they appear (HS group H). */
+  | { kind: 'cladogram'; tree: CladeTree; traits: CladeTrait[] }
+  /** The nitrogen cycle: air, a bean plant with root nodules, lightning, the soil's forms (H40). */
+  | { kind: 'nitrogenCycle' }
+  /** A feedback loop: stimulus, sensor, control center, effector, response, and back (H41). */
+  | { kind: 'feedbackLoop' }
+  /** The immune response: antigen, helper T, B and plasma cells, antibodies, killer T, memory (H42). */
+  | { kind: 'immuneStages' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -461,6 +477,14 @@ export interface Scene {
   macro?: MacroScene;
   /** The process lit (an `organelleEnergy` figure; `typesHsg.ts`). */
   energy?: EnergyScene;
+  /** The trait lit and the taxa ringed (a `cladogram` figure). */
+  clade?: CladeScene;
+  /** The process lit (a `nitrogenCycle` figure); with none, the whole cycle. */
+  nitrogen?: { process?: NitrogenProcess };
+  /** The loop's steps, its sign and the step lit (a `feedbackLoop` figure). */
+  loop?: LoopScene;
+  /** The stage lit (an `immuneStages` figure); with none, the whole response. */
+  immune?: { stage?: ImmuneStage };
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
