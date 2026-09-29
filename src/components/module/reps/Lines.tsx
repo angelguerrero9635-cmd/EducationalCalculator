@@ -10,6 +10,16 @@ import type { Calculator } from '../useCalculator';
 import { toFraction } from './exact';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import {
+  above,
+  holds,
+  overlaps,
+  region,
+  regionPath,
+  strict,
+  withSign,
+  type Bound,
+} from './halfPlane';
+import {
   Chip,
   clipLine,
   coef,
@@ -45,6 +55,26 @@ const chipWidth = (text: string, size: number = chart.small) => text.length * si
 /** "m × x + b" as a number sentence: "2 × 4 + 3 = 11", "−1 × 2 − 5 = −7". */
 const worked = (m: number, x: number, b: number) =>
   `${coef(m)} × ${x < 0 ? `(${coef(x)})` : coef(x)} ${b < 0 ? '−' : '+'} ${coef(Math.abs(b))} = ${coef(m * x + b)}`;
+
+/** A strict inequality's boundary: dashed (its points are left out). */
+const STRICT_DASH = '10 7';
+
+/** What a shaded side means: "Shaded above: every point where y is greater than 2x − 3." */
+const shadeWords = (sign: Bound['sign'], y: string, rhs: string) =>
+  `Shaded ${above(sign) ? 'above' : 'below'}: every point where ${y} is ${
+    { '<': 'less than', '≤': 'at most', '>': 'greater than', '≥': 'at least' }[sign]
+  } ${rhs}. ${strict(sign) ? 'Dashed: the line itself is left out' : 'Solid: the line itself is included'}`;
+
+/** "a·x + b·y = c" as written: "3x = 6", "2x − y = 4", "0 = 5". */
+export function standardText(a: number, b: number, cc: number, x = 'x', y = 'y') {
+  const term = (k: number, v: string, first: boolean) => {
+    if (k === 0) return '';
+    const mag = Math.abs(k) === 1 ? '' : coef(Math.abs(k));
+    return first ? `${k < 0 ? '−' : ''}${mag}${v}` : ` ${k < 0 ? '−' : '+'} ${mag}${v}`;
+  };
+  const left = `${term(a, x, true)}${term(b, y, a === 0)}` || '0';
+  return `${left} = ${coef(cc)}`;
+}
 
 /** The frame for a spec's extent and quadrants, grown to keep `xs` and `ys` in view. */
 function useGrid(
@@ -196,6 +226,13 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
             <>
               <Svg width={w} height={h}>
                 <GridAxes f={f} names={spec.axes} />
+                {spec.shade ? (
+                  <Path
+                    d={regionPath(region([{ m: m.value, b: b.value, sign: spec.shade }], f), f)}
+                    fill={c.chartHighlight}
+                    opacity={known ? 0.16 : 0.06}
+                  />
+                ) : null}
                 {seg ? (
                   <Line
                     x1={f.sx(seg.a[0])}
@@ -204,6 +241,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     y2={f.sy(seg.b[1])}
                     stroke={c.chartHighlight}
                     strokeWidth={chart.strokeHeavy}
+                    strokeDasharray={spec.shade && strict(spec.shade) ? STRICT_DASH : undefined}
                     opacity={known ? 1 : 0.35}
                   />
                 ) : null}
@@ -359,7 +397,10 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
       </Canvas>
       <Caption>
         {[
-          lineEquation(m, b, xSym, ySym),
+          withSign(lineEquation(m, b, xSym, ySym), spec.shade),
+          ...(spec.shade && known
+            ? [shadeWords(spec.shade, ySym, lineEquation(m, b, xSym, ySym).split(' = ')[1]!)]
+            : []),
           m.known
             ? m.value === 0
               ? `Slope ${sym(spec.slope, 'm')} = 0: the line is flat`
@@ -403,15 +444,34 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   const base = extents(spec.extent);
   // The grid grows to show the crossing, up to 5 times its size (then the caption says it).
   const far = cross && (Math.abs(cross.x) > 5 * base.x || Math.abs(cross.y) > 5 * base.y);
-  const grid = useGrid(spec, cross && !far ? [cross.x] : [], [
-    ...lines.map((l) => l.b.value),
-    ...(cross && !far ? [cross.y] : []),
-  ]);
+  // Grades 9–12: a tested point and elimination's sum line (a·x + b·y = c).
+  const test = spec.test ? { x: read(spec.test.x), y: read(spec.test.y) } : undefined;
+  const testIn = test && test.x.known && test.y.known ? test : undefined;
+  const sum = spec.sum
+    ? { a: read(spec.sum.x), b: read(spec.sum.y), c: read(spec.sum.c) }
+    : undefined;
+  const sumKnown = !!sum && sum.a.known && sum.b.known && sum.c.known;
+  const grid = useGrid(
+    spec,
+    [...(cross && !far ? [cross.x] : []), ...(testIn ? [testIn.x.value] : [])],
+    [
+      ...lines.map((l) => l.b.value),
+      ...(cross && !far ? [cross.y] : []),
+      ...(testIn ? [testIn.y.value] : []),
+    ],
+  );
   const start = useRef({ m: 0, b: 0 });
   const colors = [c.chartHighlight, c.chartSecond];
   const x = spec.solution ? rep.variable(spec.solution.x).symbol : 'x';
   const y = spec.solution ? rep.variable(spec.solution.y).symbol : 'y';
-  const eqs = lines.map((l) => lineEquation(l.m, l.b, x, y));
+  const eqs = lines.map((l) => withSign(lineEquation(l.m, l.b, x, y), l.shade));
+  // Inequalities: each shaded line as a boundary.
+  const bounds = lines.flatMap((l) =>
+    l.shade ? [{ m: l.m.value, b: l.b.value, sign: l.shade } as Bound] : [],
+  );
+  const sumName =
+    spec.sum?.label ??
+    (sum && sumKnown ? standardText(sum.a.value, sum.b.value, sum.c.value, x, y) : 'Sum');
   const names = lines.map((l, i) => l.label ?? eqs[i]!);
   const allVars = lines.flatMap((l) =>
     [l.slope, l.intercept].filter((v): v is string => typeof v === 'string'),
@@ -419,7 +479,47 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
 
   let result: string;
   if (!known) result = 'Type both slopes and both intercepts to draw the lines.';
-  else if (same) result = 'Both equations are the same line: every point on it is a solution.';
+  else if (bounds.length > 0) {
+    const both = bounds.length === 2;
+    const meet = !both || overlaps(bounds[0]!, bounds[1]!);
+    const shaded = lines.find((l) => l.shade)!;
+    const tested = testIn
+      ? lines.flatMap((l) =>
+          l.shade
+            ? [
+                `${worked(l.m.value, testIn.x.value, l.b.value)}, and ${coef(testIn.y.value)} ${l.shade} ${coef(l.m.value * testIn.x.value + l.b.value)} is ${holds({ m: l.m.value, b: l.b.value, sign: l.shade }, testIn.x.value, testIn.y.value)}`,
+              ]
+            : [],
+        )
+      : [];
+    const inAll = testIn && bounds.every((q) => holds(q, testIn.x.value, testIn.y.value));
+    result = [
+      both
+        ? meet
+          ? 'Where both sides are shaded, both inequalities are true: those points are the solutions.'
+          : 'The shaded sides never meet: no point makes both true. No solution.'
+        : shadeWords(bounds[0]!.sign, y, lineEquation(shaded.m, shaded.b, x, y).split(' = ')[1]!),
+      ...(both
+        ? [
+            bounds.every((q) => strict(q.sign))
+              ? 'Both lines are dashed: points on them are left out.'
+              : bounds.every((q) => !strict(q.sign))
+                ? 'Both lines are solid: points on them are included.'
+                : 'A dashed line is left out; a solid line is included.',
+          ]
+        : []),
+      ...(cross && !far && both && meet
+        ? [`The boundaries cross at ${pointText(cross.x, cross.y)}`]
+        : []),
+      ...(testIn
+        ? [
+            `Test ${pointText(testIn.x.value, testIn.y.value)}`,
+            ...tested,
+            inAll ? 'It is a solution.' : 'It is not a solution.',
+          ]
+        : []),
+    ].join(' · ');
+  } else if (same) result = 'Both equations are the same line: every point on it is a solution.';
   else if (parallel)
     result = `Both slopes are ${coef(p.m.value)} and the intercepts differ: the lines are parallel and never cross. No solution.`;
   else if (!spec.solution && lines.every((l) => l.b.value === 0)) {
@@ -435,6 +535,20 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
   } else if (cross)
     result = `They cross at ${pointText(cross.x, cross.y)}${far ? ', off this grid' : ''}. ${lines.map((l) => worked(l.m.value, cross.x, l.b.value)).join(' · ')}`;
   else result = '';
+  if (sum && known) {
+    const [a, b, cc] = [sum.a.value, sum.b.value, sum.c.value];
+    const said = `${spec.sum!.label ?? 'Adding the equations'}: ${sumKnown ? standardText(a, b, cc, x, y) : '?'}`;
+    const solved = !sumKnown
+      ? ''
+      : a !== 0 && b === 0
+        ? `, so ${x} = ${coef(cc / a)}: ${y} is gone, and the upright line goes through the crossing`
+        : a === 0 && b !== 0
+          ? `, so ${y} = ${coef(cc / b)}: ${x} is gone, and the flat line goes through the crossing`
+          : a === 0 && b === 0
+            ? ': both letters are gone'
+            : ': its line goes through the crossing too';
+    result = `${result} · ${said}${solved}`;
+  }
 
   return (
     <View>
@@ -442,6 +556,30 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
         {({ w, h }) => {
           const f = grid.frame(w, h, !!spec.axes);
           const segs = lines.map((l) => clipLine(l.m.value, l.b.value, f));
+          // Elimination's sum a·x + b·y = c: slope −a ÷ b, or upright at x = c ÷ a.
+          const upright = !!sum && sum.b.value === 0 && sum.a.value !== 0;
+          const sumSeg = !sum
+            ? undefined
+            : sum.b.value !== 0
+              ? clipLine(-sum.a.value / sum.b.value, sum.c.value / sum.b.value, f)
+              : upright &&
+                  sum.c.value / sum.a.value >= f.x[0] - 1e-9 &&
+                  sum.c.value / sum.a.value <= f.x[1] + 1e-9
+                ? {
+                    a: [sum.c.value / sum.a.value, f.y[0]] as const,
+                    b: [sum.c.value / sum.a.value, f.y[1]] as const,
+                  }
+                : undefined;
+          // Its name at the top (upright) or the left end, where the lines' names never are.
+          const sumTag = !sumSeg
+            ? { x: 0, y: 0, anchor: 'start' as const }
+            : upright
+              ? { x: f.sx(sumSeg.a[0]) + 6, y: f.sy(f.y[1]) + 14, anchor: 'start' as const }
+              : {
+                  x: f.sx(sumSeg.a[0]) + 4,
+                  y: f.sy(sumSeg.a[1]) + (sumSeg.b[1] >= sumSeg.a[1] ? -8 : 16),
+                  anchor: 'start' as const,
+                };
           // Each line's name at the end where it leaves the grid on the right.
           const tags = segs.map((s, i) =>
             s
@@ -451,6 +589,77 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
           if (tags[0] && tags[1] && Math.abs(tags[0].y - tags[1].y) < 18) {
             tags[1].y = tags[0].y + (tags[1].y >= tags[0].y ? 18 : -18);
           }
+          // Grades 9–12 (shaded or with a sum line): a name over the x-axis numbers slides in
+          // along its line until it is clear of them.
+          const axisY = f.sy(Math.min(f.y[1], Math.max(f.y[0], 0)));
+          const onNumbers = (ty: number) => ty > axisY - 3 && ty < axisY + 23;
+          if (bounds.length > 0 || spec.sum)
+            tags.forEach((t, i) => {
+              const sg = segs[i];
+              if (!t || !sg || !onNumbers(t.y)) return;
+              // Other side of the line first, then in along it; clear of the crossing, the
+              // tested point and the other name.
+              const marks: [number, number][] = [
+                ...(cross && !far ? [[f.sx(cross.x), f.sy(cross.y)] as [number, number]] : []),
+                ...(testIn
+                  ? [[f.sx(testIn.x.value) + 30, f.sy(testIn.y.value) - 12] as [number, number]]
+                  : []),
+                ...tags.flatMap((o, j) =>
+                  o && j !== i ? [[o.x - 40, o.y - 5] as [number, number]] : [],
+                ),
+              ];
+              const rising = lines[i]!.m.value >= 0;
+              for (let k = 1; k > 0.35; k -= 0.05)
+                for (const off of rising ? [16, -8] : [-8, 16]) {
+                  const tx = f.sx(sg.a[0] + (sg.b[0] - sg.a[0]) * k) - 4;
+                  const ty = f.sy(sg.a[1] + (sg.b[1] - sg.a[1]) * k) + off;
+                  if (onNumbers(ty) || ty < 14 || ty > h - 4) continue;
+                  if (marks.some(([mx, my]) => Math.hypot(mx - (tx - 40), my - (ty - 5)) < 48))
+                    continue;
+                  tags[i] = { x: tx, y: ty };
+                  return;
+                }
+            });
+          // Two inequalities: "both true" inside their overlap, at the spot farthest from the
+          // lines, the axes, the crossing and the names (none when nowhere has room).
+          const overlap = (() => {
+            if (!known || bounds.length !== 2) return undefined;
+            const axisX = f.sx(Math.min(f.x[1], Math.max(f.x[0], 0)));
+            const lineGap = (q: Bound, px: number, py: number) => {
+              const [x1, y1, x2, y2] = [f.sx(0), f.sy(q.b), f.sx(1), f.sy(q.m + q.b)];
+              return (
+                Math.abs((x2 - x1) * (y1 - py) - (x1 - px) * (y2 - y1)) /
+                Math.hypot(x2 - x1, y2 - y1)
+              );
+            };
+            const spots: [number, number][] = [
+              ...(cross && !far ? [[f.sx(cross.x), f.sy(cross.y)] as [number, number]] : []),
+              ...(testIn ? [[f.sx(testIn.x.value), f.sy(testIn.y.value)] as [number, number]] : []),
+              ...tags.flatMap((t) => (t ? [[t.x - 40, t.y - 5] as [number, number]] : [])),
+              ...lines.map((l) => [f.sx(0), f.sy(l.b.value)] as [number, number]),
+            ];
+            let best: { x: number; y: number; score: number } | undefined;
+            for (let gx = 0.08; gx < 0.95; gx += 0.06)
+              for (let gy = 0.06; gy < 0.96; gy += 0.06) {
+                const X = f.x[0] + (f.x[1] - f.x[0]) * gx;
+                const Y = f.y[0] + (f.y[1] - f.y[0]) * gy;
+                if (!bounds.every((q) => holds(q, X, Y))) continue;
+                const [px, py] = [f.sx(X), f.sy(Y)];
+                // The chip is about 60 × 16: measure from its middle and its two ends.
+                const score = Math.min(
+                  ...[-30, 0, 30].flatMap((dx) => [
+                    ...bounds.map((q) => lineGap(q, px + dx, py) - 8),
+                    Math.abs(px + dx - axisX) - 6,
+                    ...spots.map(([sx, sy]) => Math.hypot(sx - px - dx, sy - py) - 16),
+                  ]),
+                  Math.abs(py - axisY) - (py > axisY ? 26 : 12),
+                  px - 34 - f.sx(f.x[0]),
+                  f.sx(f.x[1]) - px - 34,
+                );
+                if (!best || score > best.score) best = { x: px, y: py, score };
+              }
+            return best && best.score > 4 ? best : undefined;
+          })();
           /** Where a slope handle sits: a grid x away from the axis where the line is in view. */
           /**
            * Where each slope handle sits: a grid x on the line, in view, clear of the crossing,
@@ -552,6 +761,47 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
             <>
               <Svg width={w} height={h}>
                 <GridAxes f={f} names={spec.axes} />
+                {lines.map((l, i) =>
+                  l.shade ? (
+                    <Path
+                      key={`s${i}`}
+                      d={regionPath(region([{ m: l.m.value, b: l.b.value, sign: l.shade }], f), f)}
+                      fill={colors[i]}
+                      opacity={known ? 0.16 : 0.06}
+                    />
+                  ) : null,
+                )}
+                {overlap ? (
+                  <Chip
+                    x={overlap.x}
+                    y={overlap.y + 5}
+                    text="both true"
+                    w={w}
+                    h={h}
+                    color={c.chartInk}
+                  />
+                ) : null}
+                {sumSeg ? (
+                  <G opacity={sumKnown ? 1 : 0.35}>
+                    <Line
+                      x1={f.sx(sumSeg.a[0])}
+                      y1={f.sy(sumSeg.a[1])}
+                      x2={f.sx(sumSeg.b[0])}
+                      y2={f.sy(sumSeg.b[1])}
+                      stroke={c.lineSum}
+                      strokeWidth={chart.stroke + 0.5}
+                    />
+                    <Chip
+                      x={sumTag.x}
+                      y={sumTag.y}
+                      text={sumName}
+                      anchor={sumTag.anchor}
+                      w={w}
+                      h={h}
+                      color={c.lineSum}
+                    />
+                  </G>
+                ) : null}
                 {segs.map((s, i) =>
                   s ? (
                     <Line
@@ -562,7 +812,13 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                       y2={f.sy(s.b[1])}
                       stroke={colors[i]}
                       strokeWidth={chart.strokeHeavy}
-                      strokeDasharray={same && i === 1 ? '10 8' : undefined}
+                      strokeDasharray={
+                        lines[i]!.shade && strict(lines[i]!.shade!)
+                          ? STRICT_DASH
+                          : same && i === 1
+                            ? '10 8'
+                            : undefined
+                      }
                       opacity={lines[i]!.m.known && lines[i]!.b.known ? 1 : 0.35}
                     />
                   ) : null,
@@ -624,9 +880,34 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                     )}
                   </G>
                 ) : null}
+                {testIn ? (
+                  <G>
+                    <Circle
+                      cx={f.sx(testIn.x.value)}
+                      cy={f.sy(testIn.y.value)}
+                      r={5.5}
+                      fill={
+                        bounds.every((q) => holds(q, testIn.x.value, testIn.y.value))
+                          ? c.chartInk
+                          : c.card
+                      }
+                      stroke={c.chartInk}
+                      strokeWidth={chart.stroke}
+                    />
+                    <Chip
+                      x={f.sx(testIn.x.value) + 9}
+                      y={f.sy(testIn.y.value) - 8}
+                      text={pointText(testIn.x.value, testIn.y.value)}
+                      anchor="start"
+                      w={w}
+                      h={h}
+                    />
+                  </G>
+                ) : null}
               </Svg>
               {lines.map((l, i) => {
                 const handles = [];
+                if (spec.fixed) return null;
                 const others = (id: string) =>
                   l.keep ? rep.pin(l.keep) : rep.pin(allVars.filter((v) => v !== id));
                 if (

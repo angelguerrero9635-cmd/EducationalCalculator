@@ -217,13 +217,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   ),
 
   // ── B. Changes to existing math pictures ──
-  ask(
-    'H16',
-    'lineSystem',
-    'Shaded half-planes: dashed or solid boundaries and the overlap of two inequalities',
-    ['m.9.inequality-systems', 'm.9.linear-inequalities'],
-    'Also elimination: the two equations and their sum drawn as three lines through one point.',
-  ),
+  {
+    ...ask(
+      'H16',
+      'lineSystem',
+      'Shaded half-planes: dashed or solid boundaries and the overlap of two inequalities',
+      ['m.9.inequality-systems', 'm.9.linear-inequalities'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-inequality-systems-shade',
+      'g.m9-inequality-systems-parallel',
+      'g.m9-linear-inequalities-half-plane',
+      'g.m9-inequality-systems-elimination',
+    ],
+    notes:
+      "Also elimination: the two equations and their sum drawn as three lines through one point. DRAWN. Spec (typesGraphs.ts), all optional, no change to Grade 8 pages: each line of lineSystem takes shade '<' | '≤' | '>' | '≥' (y (sign) mx + b; its half-plane shaded in the line's color, above for > and ≥; dashed boundary for < and >, solid for ≤ and ≥; with two shaded lines the overlap is labelled 'both true', and parallel lines shading apart say 'No solution'); test { x, y } (a point tested in both, each check worked in the caption); sum { x, y, c, label? } (elimination: the coefficients of the sum a·x + b·y = c after multiplying, drawn as a third line through the crossing, upright when y cancels; the harness checks it is a sum of the two equations); fixed (no handles, for lines worked out from standard-form coefficients). linearFunction takes shade too, for one inequality. Example (m.9.inequality-systems): representation: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'b1', shade: '>' }, { slope: 'm2', intercept: 'b2', shade: '≤' }], solution: { x: 'x', y: 'y' }, test: { x: 'tx', y: 'ty' }, extent: 10 }; elimination: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'i1' }, { slope: 'm2', intercept: 'i2' }], solution: { x: 'x', y: 'y' }, sum: { x: 'p', y: 'q', c: 'r' }, fixed: true }; one inequality (m.9.linear-inequalities): { kind: 'linearFunction', slope: 'm', intercept: 'b', shade: '<', keep: ['B'] }. Signs are fixed per page (a page for Ax + By < C with B < 0 passes the flipped sign). Boundaries are y = mx + b only: an upright boundary x ≥ k is not drawn yet.",
+  },
   ask(
     'H17',
     'integerLine',

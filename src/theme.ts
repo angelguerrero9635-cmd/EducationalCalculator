@@ -56,6 +56,8 @@ const light = {
   hopBack: '#C2410C',
   /** The function graph (H01): a second curve g(x) or the inverse, beside f in the highlight. */
   fnSecond: '#C2570C',
+  /** Elimination's sum of two equations (H16), a third line beside the system's two. */
+  lineSum: '#0F766E',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
@@ -271,6 +273,7 @@ const dark: Palette = {
   chartSecond: '#B8862E',
   hopBack: '#F08A4B',
   fnSecond: '#F5A04A',
+  lineSum: '#2DD4BF',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
 

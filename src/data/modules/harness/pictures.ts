@@ -1832,6 +1832,18 @@ export function repIssues(
       break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
+      // Elimination (H16): the sum a·x + b·y = c is k₁ × (y − m₁x = b₁) + k₂ × (y − m₂x = b₂).
+      const [sa, sb, sc] = rep.sum ? [val(rep.sum.x), val(rep.sum.y), val(rep.sum.c)] : [];
+      if (
+        [m1, b1, m2, b2, sa, sb, sc].every((v) => v !== undefined) &&
+        m1 !== m2 &&
+        !(sa === 0 && sb === 0)
+      ) {
+        const k2 = (sa! + sb! * m1!) / (m1! - m2!);
+        const k1 = sb! - k2;
+        if (Math.abs(k1 * b1! + k2 * b2! - sc!) > 1e-6 * Math.max(1, Math.abs(sc!)))
+          out.push(`sum line ${sa}x + ${sb}y = ${sc} is not a sum of the two equations`);
+      }
       const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
       if ([m1, b1, m2, b2].some((v) => v === undefined) || x === undefined || y === undefined)
         break;
