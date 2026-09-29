@@ -35,6 +35,9 @@ export function niceWindow(values: number[], ticks = 8, pad = 0.12, least = 1) {
   lo -= span * pad;
   hi += span * pad;
   const step = niceStep((hi - lo) / ticks);
+  // At least a tick and a half past the origin each way: room for axis names and labels.
+  lo = Math.min(lo, -1.5 * step);
+  hi = Math.max(hi, 1.5 * step);
   return { lo: Math.floor(lo / step) * step, hi: Math.ceil(hi / step) * step, step };
 }
 

@@ -1267,5 +1267,164 @@ const VECTORS: ModuleDef[] = [
   },
 ];
 
-export const HSD_GALLERY_MODULES: ModuleDef[] = [...UNIT_CIRCLE, ...ALGEBRA_TILES, ...VECTORS];
+// ─── H09 complexPlane ────────────────────────────────────────────────────────
+
+/** |z| = √(a² + b²), and arg z from the parts (degrees, 0° up to 360°). */
+const modulusRule = magnitude('m', 'a', 'b');
+
+/** A part of a sum or product of complex numbers. */
+const complexPart = (
+  out: string,
+  display: string,
+  vars: string[],
+  f: (v: Values) => number,
+  how: string,
+  expr: string,
+): Rule => ({
+  relation: {
+    id: display.replace(/[{}]/g, ''),
+    display,
+    vars: [out, ...vars],
+    residual: (v) => v[out]! - f(v),
+    solve: { [out]: f, ...Object.fromEntries(vars.map((x) => [x, () => undefined])) },
+  },
+  steps: { [out]: { expr, how } },
+});
+
+const COMPLEX: ModuleDef[] = [
+  {
+    id: 'g.m11-complex-numbers-plot',
+    title: 'A complex number in the plane',
+    use: 'Use this to plot a + bi, its conjugate and its modulus.',
+    assumptions: [
+      'The real part runs across; the imaginary part runs up.',
+      'The conjugate of a + bi is a − bi.',
+    ],
+    variables: [
+      real('a', 'a', 'Real part', -10, 10),
+      real('b', 'b', 'Imaginary part', -10, 10),
+      real('m', '|z|', 'Modulus', 0, 15),
+    ],
+    ...rules(modulusRule),
+    example: { a: 3, b: 2, m: Math.hypot(3, 2) },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'a', im: 'b' },
+      conjugate: true,
+      modulus: 'm',
+    },
+  },
+  {
+    id: 'g.m11-complex-numbers-negative',
+    title: 'Modulus and argument',
+    use: 'Use this for the modulus and argument of a complex number in any quadrant.',
+    assumptions: ['The argument is measured from the positive real axis, 0° up to 360°.'],
+    variables: [
+      real('a', 'a', 'Real part', -10, 10),
+      real('b', 'b', 'Imaginary part', -10, 10),
+      real('m', '|z|', 'Modulus', 0, 15),
+    ],
+    ...rules(modulusRule),
+    example: { a: -4, b: -3, m: 5 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'a', im: 'b' },
+      modulus: 'm',
+      polar: true,
+    },
+  },
+  {
+    id: 'g.m11-complex-numbers-sum',
+    title: 'Add complex numbers',
+    use: 'Use this to add two complex numbers: the parallelogram in the plane.',
+    assumptions: ['Add the real parts and the imaginary parts.'],
+    variables: [
+      real('a', 'a', 'Real part of z', -10, 10),
+      real('b', 'b', 'Imaginary part of z', -10, 10),
+      real('c', 'c', 'Real part of w', -10, 10),
+      real('d', 'd', 'Imaginary part of w', -10, 10),
+      real('e', 'e', 'Real part of z + w'),
+      real('f', 'f', 'Imaginary part of z + w'),
+      real('m', '|z + w|', 'Modulus of z + w', 0, 30),
+    ],
+    ...rules(addParts('e', 'a', 'c', 'x'), addParts('f', 'b', 'd', 'y'), magnitude('m', 'e', 'f')),
+    example: { a: 3, b: 1, c: 1, d: 2, e: 4, f: 3, m: 5 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'a', im: 'b' },
+      w: { re: 'c', im: 'd' },
+      op: 'sum',
+      result: { re: 'e', im: 'f' },
+    },
+    pictureLabels: ['m'],
+  },
+  {
+    id: 'g.m11-complex-numbers-product',
+    title: 'Multiply complex numbers',
+    use: 'Use this to multiply two complex numbers and see the turn it makes.',
+    assumptions: ['i² = −1.', 'Moduli multiply and arguments add.'],
+    variables: [
+      real('a', 'a', 'Real part of z', -10, 10),
+      real('b', 'b', 'Imaginary part of z', -10, 10),
+      real('c', 'c', 'Real part of w', -10, 10),
+      real('d', 'd', 'Imaginary part of w', -10, 10),
+      real('e', 'e', 'Real part of zw', -200, 200),
+      real('f', 'f', 'Imaginary part of zw', -200, 200),
+    ],
+    ...rules(
+      complexPart(
+        'e',
+        '{e} = {a} × {c} − {b} × {d}',
+        ['a', 'c', 'b', 'd'],
+        (v) => v.a! * v.c! - v.b! * v.d!,
+        'The real part: ac, and bi × di = bd × i² = −bd.',
+        '{a} × {c} − {b} × {d}',
+      ),
+      complexPart(
+        'f',
+        '{f} = {a} × {d} + {b} × {c}',
+        ['a', 'd', 'b', 'c'],
+        (v) => v.a! * v.d! + v.b! * v.c!,
+        'The imaginary part: a × di and bi × c.',
+        '{a} × {d} + {b} × {c}',
+      ),
+    ),
+    example: { a: 1, b: 2, c: 2, d: 1, e: 0, f: 5 },
+    startWith: ['a', 'b', 'c', 'd'],
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 'a', im: 'b' },
+      w: { re: 'c', im: 'd' },
+      op: 'product',
+      result: { re: 'e', im: 'f' },
+    },
+  },
+  {
+    id: 'g.m12-polar-complex-form',
+    title: 'Polar form of a complex number',
+    use: 'Use this to write r(cos θ + i sin θ) as a + bi.',
+    assumptions: ['r is the modulus and θ the argument, from the positive real axis.'],
+    variables: [
+      real('r', 'r', 'Modulus', 0, 10),
+      { ...angle('t', 'Argument', 0, 360), step: 1 },
+      real('a', 'a', 'Real part', -10, 10),
+      real('b', 'b', 'Imaginary part', -10, 10),
+    ],
+    ...rules(component('a', 'r', 't', 'cos'), component('b', 'r', 't', 'sin')),
+    example: { r: 2, t: 60, a: 1, b: Math.sqrt(3) },
+    startWith: ['r', 't'],
+    representation: { kind: 'complexPlane', z: { modulus: 'r', argument: 't' }, polar: true },
+    pictureLabels: ['a', 'b'],
+  },
+];
+
+export const HSD_GALLERY_MODULES: ModuleDef[] = [
+  ...UNIT_CIRCLE,
+  ...ALGEBRA_TILES,
+  ...VECTORS,
+  ...COMPLEX,
+];
 export const HSD_GALLERY_LAYOUTS: LayoutDef[] = [];

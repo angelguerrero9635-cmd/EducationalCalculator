@@ -176,12 +176,24 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Tip to tail and parallelogram sums, magnitude and direction, dot product sign from the angle; drag a tip. Drawn: kind vectorDiagram (typesHsd.ts). Fields: vectors (one or two VectorOf { name, x, y } by components or { name, magnitude, direction } with the direction in degrees from the positive x-axis; each a number or variable); sum 'tipToTail' or 'parallelogram' with result { name, x, y, magnitude, direction } (checked); scalar { k, x, y } (k times the first vector, checked); angle { value, dot } (the angle between and the dot product, checked; the caption gives the sign: acute, right or obtuse); components (dashed legs with their lengths); unit ('m/s', 'N') and axes names for physics; keep; fixed. Drag a tip: components follow, or the magnitude and direction (only the magnitude when the direction is a fixed number). Examples: { kind: 'vectorDiagram', vectors: [{ name: 'u', x: 'ux', y: 'uy' }, { name: 'v', x: 'vx', y: 'vy' }], sum: 'tipToTail', result: { name: 'u + v', x: 'sx', y: 'sy', magnitude: 'r' } }; { kind: 'vectorDiagram', vectors: [{ name: 'F₁', magnitude: 'f1', direction: 0 }, { name: 'F₂', magnitude: 'f2', direction: 'a' }], sum: 'parallelogram', result: { name: 'F', x: 'fx', y: 'fy', magnitude: 'f' }, unit: 'N', axes: { x: 'east', y: 'north' } }.",
   },
-  ask(
-    'H09',
-    'complexPlane',
-    'Complex plane: a + bi as a point and arrow, conjugate, sum, modulus and argument',
-    ['m.11.complex-numbers', 'm.12.polar'],
-  ),
+  {
+    ...ask(
+      'H09',
+      'complexPlane',
+      'Complex plane: a + bi as a point and arrow, conjugate, sum, modulus and argument',
+      ['m.11.complex-numbers', 'm.12.polar'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-complex-numbers-plot',
+      'g.m11-complex-numbers-negative',
+      'g.m11-complex-numbers-sum',
+      'g.m11-complex-numbers-product',
+      'g.m12-polar-complex-form',
+    ],
+    notes:
+      "Drawn: kind complexPlane (typesHsd.ts). Fields: z { re, im } or { modulus, argument } (degrees); conjugate (z̄ reflected across the real axis); w { re, im } with op 'sum' (the parallelogram), 'difference' (z plus −w) or 'product' (moduli multiply, arguments add, arcs marked); result { re, im } (checked); modulus and argument (variables, checked; |z| on the arrow, θ as an arc); polar (writes z = r(cos θ + i sin θ)); keep; fixed. Axes Re and Im, the imaginary axis numbered i, 2i, …; drag z. Examples: { kind: 'complexPlane', z: { re: 'a', im: 'b' }, conjugate: true, modulus: 'm' }; { kind: 'complexPlane', z: { re: 'a', im: 'b' }, w: { re: 'c', im: 'd' }, op: 'product', result: { re: 'e', im: 'f' } }; { kind: 'complexPlane', z: { modulus: 'r', argument: 't' }, polar: true }.",
+  },
   ask(
     'H10',
     'polarGrid',

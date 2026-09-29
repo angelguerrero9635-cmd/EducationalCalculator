@@ -122,6 +122,7 @@ const PICTURE_NAMES: Record<string, string> = {
   orbit: 'orbit diagram with the pull of gravity',
   unitCircle: 'unit circle with the angle and its point',
   algebraTiles: 'algebra tiles',
+  complexPlane: 'complex number in the plane',
   vectorDiagram: 'vectors as arrows on a grid',
 };
 const pictureName = (kind: string) =>

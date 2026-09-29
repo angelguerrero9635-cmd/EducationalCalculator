@@ -74,6 +74,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph | Grades 10–12 trigonometry           |
 | `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square  | Grade 9 polynomials, factoring      |
 | `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign | Grade 12 vectors, physics forces    |
+| `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg    | Grade 11 complex numbers, polar     |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

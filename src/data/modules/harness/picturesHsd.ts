@@ -194,6 +194,42 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
       }
       break;
     }
+    case 'complexPlane': {
+      const RAD = Math.PI / 180;
+      // z from its parts or its polar form; the answer, modulus and argument match it.
+      let z: { a: number; b: number } | undefined;
+      if ('modulus' in rep.z) {
+        const [r, t] = [num(rep.z.modulus), num(rep.z.argument)];
+        if (r !== undefined && r < 0) out.push(`modulus ${r} is negative`);
+        if (r !== undefined && t !== undefined)
+          z = { a: r * Math.cos(t * RAD), b: r * Math.sin(t * RAD) };
+      } else {
+        const [a, b] = [num(rep.z.re), num(rep.z.im)];
+        if (a !== undefined && b !== undefined) z = { a, b };
+      }
+      if (!z) break;
+      const check = (id: string | undefined, want: number, what: string) => {
+        const got = num(id);
+        if (got !== undefined && !near(got, want, 1e-3))
+          out.push(`${what} is ${got}, the picture gives ${want}`);
+      };
+      check(rep.modulus, Math.hypot(z.a, z.b), '|z|');
+      if (Math.hypot(z.a, z.b) > 1e-9)
+        check(rep.argument, (((Math.atan2(z.b, z.a) / RAD) % 360) + 360) % 360, 'arg z');
+      const [c, d] = [num(rep.w?.re), num(rep.w?.im)];
+      if (rep.w && c !== undefined && d !== undefined) {
+        const op = rep.op ?? 'sum';
+        const res =
+          op === 'sum'
+            ? { a: z.a + c, b: z.b + d }
+            : op === 'difference'
+              ? { a: z.a - c, b: z.b - d }
+              : { a: z.a * c - z.b * d, b: z.a * d + z.b * c };
+        check(rep.result?.re, res.a, `the ${op}'s real part`);
+        check(rep.result?.im, res.b, `the ${op}'s imaginary part`);
+      }
+      break;
+    }
   }
   return out;
 }

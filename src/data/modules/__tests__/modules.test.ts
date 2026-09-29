@@ -439,6 +439,7 @@ function representationVars(r: Representation): string[] {
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
+    case 'complexPlane':
       return hsdSpecVars(r);
   }
 }

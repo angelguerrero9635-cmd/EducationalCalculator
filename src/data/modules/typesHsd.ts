@@ -127,7 +127,32 @@ export interface VectorDiagramSpec {
   fixed?: boolean;
 }
 
-export type HsdSpec = UnitCircleSpec | AlgebraTilesSpec | VectorDiagramSpec;
+/** A complex number: a + bi by its parts, or r(cos θ + i sin θ) by its modulus and argument. */
+export type ComplexOf = { re: NumOrVar; im: NumOrVar } | { modulus: NumOrVar; argument: NumOrVar };
+
+/**
+ * The complex plane: z = a + bi as a point and an arrow from 0, with the real and imaginary
+ * axes. `conjugate` reflects it across the real axis; `w` with `op` adds a second number (the
+ * parallelogram), subtracts it, or multiplies (moduli multiply, arguments add). `modulus` and
+ * `argument` mark |z| and arg z (variables checked); `polar` writes z = r(cos θ + i sin θ).
+ * Drag z's point.
+ */
+export interface ComplexPlaneSpec {
+  kind: 'complexPlane';
+  z: ComplexOf;
+  conjugate?: boolean;
+  w?: { re: NumOrVar; im: NumOrVar };
+  op?: 'sum' | 'difference' | 'product';
+  /** The answer's parts, when the page works them out (checked). */
+  result?: { re?: string; im?: string };
+  modulus?: string;
+  argument?: string;
+  polar?: boolean;
+  keep?: string[];
+  fixed?: boolean;
+}
+
+export type HsdSpec = UnitCircleSpec | AlgebraTilesSpec | VectorDiagramSpec | ComplexPlaneSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hsdSpecVars(r: HsdSpec): string[] {
@@ -169,6 +194,16 @@ export function hsdSpecVars(r: HsdSpec): string[] {
         r.scalar?.y,
         r.angle?.value,
         r.angle?.dot,
+      );
+    case 'complexPlane':
+      return ids(
+        ...('modulus' in r.z ? [r.z.modulus, r.z.argument] : [r.z.re, r.z.im]),
+        r.w?.re,
+        r.w?.im,
+        r.result?.re,
+        r.result?.im,
+        r.modulus,
+        r.argument,
       );
   }
 }
