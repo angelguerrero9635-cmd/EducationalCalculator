@@ -252,12 +252,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     ['m.10.probability-rules', 'm.11.binomial-theorem'],
     'Slots for permutations and combinations (choose, then divide by the orders); the binomial expansion coefficients from row n.',
   ),
-  ask(
-    'H14',
-    'matrixGrid',
-    'Matrices in brackets: a row times a column lit for multiplication, row operations, a 3 × 3 system',
-    ['m.12.matrices'],
-  ),
+  {
+    ...ask(
+      'H14',
+      'matrixGrid',
+      'Matrices in brackets: a row times a column lit for multiplication, row operations, a 3 × 3 system',
+      ['m.12.matrices'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m12-matrices-multiply',
+      'g.m12-matrices-multiply-2x3',
+      'g.m12-matrices-4x4-vector',
+      'g.m12-matrices-row-reduce',
+    ],
+    notes:
+      "Drawn: kind matrixGrid (typesHsd.ts), matrices up to 4 × 4 in square brackets, entries exact (fractions like −1/7). mode 'multiply' { a, b (rows of numbers or variables), product (C’s variables, checked), entry ([row, column] lit first) }: the row of A and the column of B lit, the entry of AB lit and its sum of products written under; tap any entry of AB to light its row and column. mode 'rowReduce' { system (the augmented rows, right-hand sides last), steps (RowOp: { swap: [i, j] }, { scale: i, by: k }, { add: i, from: j, times: k }, rows from 1), solution (variables, checked against every matrix) }: each matrix under the last, the operation (R₂ − 2R₁ → R₂) beside the arrow and the rows it changed lit. Examples: { kind: 'matrixGrid', mode: 'multiply', a: [['a11', 'a12'], ['a21', 'a22']], b: [['b11', 'b12'], ['b21', 'b22']], product: [['c11', 'c12'], ['c21', 'c22']] }; { kind: 'matrixGrid', mode: 'rowReduce', system: [[1, 1, 1, 'd1'], [2, -1, 1, 'd2'], [1, 2, -1, 'd3']], steps: [{ add: 2, from: 1, times: -2 }, { swap: [2, 3] }, { scale: 3, by: -1 / 7 }], solution: ['x', 'y', 'z'] }.",
+  },
   ask(
     'H15',
     'termsChart',

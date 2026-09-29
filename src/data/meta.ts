@@ -122,6 +122,7 @@ const PICTURE_NAMES: Record<string, string> = {
   orbit: 'orbit diagram with the pull of gravity',
   unitCircle: 'unit circle with the angle and its point',
   algebraTiles: 'algebra tiles',
+  matrixGrid: 'matrices in brackets',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',

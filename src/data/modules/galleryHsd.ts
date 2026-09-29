@@ -2116,6 +2116,229 @@ const CONE_LAYOUT: LayoutDef = {
   ],
 };
 
+// ─── H14 matrixGrid ──────────────────────────────────────────────────────────
+
+const SUBS = '₀₁₂₃₄₅₆₇₈₉';
+const subs = (n: number) => String(n).replace(/\d/g, (d) => SUBS[Number(d)]!);
+
+/**
+ * A × B = C with every entry a variable: a (m × n), b (n × p). Ids a11, b21, c12 …; C's entries
+ * are worked out forward (a row of A times a column of B).
+ */
+const productDemo = (
+  id: string,
+  title: string,
+  use: string,
+  A: number[][],
+  B: number[][],
+  fixed: 'none' | 'a' = 'none',
+): ModuleDef => {
+  const [m, n, p] = [A.length, B.length, B[0]!.length];
+  const cell = (x: string, i: number, j: number) => `${x}${i + 1}${j + 1}`;
+  const aVar = (i: number, j: number) => (fixed === 'a' ? A[i]![j]! : cell('a', i, j));
+  const vars: VariableDef[] = [];
+  if (fixed === 'none')
+    A.forEach((r, i) =>
+      r.forEach((_, j) =>
+        vars.push(
+          coef(
+            cell('a', i, j),
+            `a${subs(i + 1)}${subs(j + 1)}`,
+            `A, row ${i + 1}, column ${j + 1}`,
+          ),
+        ),
+      ),
+    );
+  B.forEach((r, i) =>
+    r.forEach((_, j) =>
+      vars.push(
+        coef(cell('b', i, j), `b${subs(i + 1)}${subs(j + 1)}`, `B, row ${i + 1}, column ${j + 1}`),
+      ),
+    ),
+  );
+  const product: string[][] = [];
+  const rs: Rule[] = [];
+  for (let i = 0; i < m; i++) {
+    product.push([]);
+    for (let j = 0; j < p; j++) {
+      const out = cell('c', i, j);
+      product[i]!.push(out);
+      vars.push(
+        coef(
+          out,
+          `c${subs(i + 1)}${subs(j + 1)}`,
+          `AB, row ${i + 1}, column ${j + 1}`,
+          -1000,
+          1000,
+        ),
+      );
+      const terms = Array.from({ length: n }, (_, k) => [aVar(i, k), cell('b', k, j)] as const);
+      const txt = (x: number | string) =>
+        typeof x === 'number' ? (x < 0 ? `(${x})` : String(x)) : `{${x}}`;
+      const expr = terms
+        .map(([x, y]) => `${txt(x)} × {${y}}`)
+        .join(' + ')
+        .replace(/\(-/g, '(−');
+      const f = (v: Values) =>
+        terms.reduce((s, [x, y]) => s + (typeof x === 'number' ? x : v[x]!) * v[y]!, 0);
+      const inputs = terms.flatMap(([x, y]) => (typeof x === 'number' ? [y] : [x, y]));
+      rs.push({
+        relation: {
+          id: `${out} = row ${i + 1} · column ${j + 1}`,
+          display: `{${out}} = ${expr}`,
+          vars: [out, ...inputs],
+          residual: (v) => v[out]! - f(v),
+          solve: { [out]: f, ...Object.fromEntries(inputs.map((x) => [x, () => undefined])) },
+        },
+        steps: {
+          [out]: {
+            expr,
+            how: `Row ${i + 1} of A times column ${j + 1} of B: multiply in pairs and add.`,
+          },
+        },
+      });
+    }
+  }
+  const example: Values = {};
+  A.forEach((r, i) => r.forEach((x, j) => fixed === 'none' && (example[cell('a', i, j)] = x)));
+  B.forEach((r, i) => r.forEach((x, j) => (example[cell('b', i, j)] = x)));
+  for (let i = 0; i < m; i++)
+    for (let j = 0; j < p; j++)
+      example[cell('c', i, j)] = Array.from({ length: n }, (_, k) => A[i]![k]! * B[k]![j]!).reduce(
+        (s, x) => s + x,
+        0,
+      );
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'A’s columns match B’s rows.',
+      'Each entry of AB is a row of A times a column of B.',
+    ],
+    variables: vars,
+    ...rules(...rs),
+    example,
+    startWith: vars.filter((v) => !v.id.startsWith('c')).map((v) => v.id),
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'multiply',
+      a: A.map((r, i) => r.map((_, j) => aVar(i, j))),
+      b: B.map((r, i) => r.map((_, j) => cell('b', i, j))),
+      product,
+    },
+  };
+};
+
+/** Solve the 3 × 3 system x + y + z = d₁, 2x − y + z = d₂, x + 2y − z = d₃ by row reduction. */
+const rowReduceDemo: ModuleDef = {
+  id: 'g.m12-matrices-row-reduce',
+  title: 'Solve a system by row reduction',
+  use: 'Use this to solve three equations in three unknowns with an augmented matrix.',
+  assumptions: [
+    'The equations: x + y + z = d₁, 2x − y + z = d₂, x + 2y − z = d₃.',
+    'Row operations keep the same solutions.',
+  ],
+  variables: [
+    real('d1', 'd₁', 'First right-hand side', -50, 50),
+    real('d2', 'd₂', 'Second right-hand side', -50, 50),
+    real('d3', 'd₃', 'Third right-hand side', -50, 50),
+    real('x', 'x', 'x', -100, 100),
+    real('y', 'y', 'y', -100, 100),
+    real('z', 'z', 'z', -100, 100),
+  ],
+  // The inverse of the coefficient matrix (det 7) gives each unknown.
+  ...rules(
+    ...(
+      [
+        ['x', [-1, 3, 2]],
+        ['y', [3, -2, 1]],
+        ['z', [5, -1, -3]],
+      ] as const
+    ).map(([out, k]): Rule => {
+      const f = (v: Values) => (k[0] * v.d1! + k[1] * v.d2! + k[2] * v.d3!) / 7;
+      const t = (x: number, id: string, first: boolean) =>
+        `${x < 0 ? (first ? '−' : ' − ') : first ? '' : ' + '}${Math.abs(x) === 1 ? '' : `${Math.abs(x)} × `}{${id}}`;
+      const expr = `(${t(k[0], 'd1', true)}${t(k[1], 'd2', false)}${t(k[2], 'd3', false)})/7`;
+      return {
+        relation: {
+          id: `${out} from the row reduction`,
+          display: `{${out}} = ${expr}`,
+          vars: [out, 'd1', 'd2', 'd3'],
+          residual: (v) => v[out]! - f(v),
+          solve: { [out]: f, d1: () => undefined, d2: () => undefined, d3: () => undefined },
+        },
+        steps: {
+          [out]: { expr, how: 'Row reduction ends with each unknown alone: this is its value.' },
+        },
+      };
+    }),
+  ),
+  example: { d1: 6, d2: 3, d3: 2, x: 1, y: 2, z: 3 },
+  startWith: ['d1', 'd2', 'd3'],
+  representation: {
+    kind: 'matrixGrid',
+    mode: 'rowReduce',
+    system: [
+      [1, 1, 1, 'd1'],
+      [2, -1, 1, 'd2'],
+      [1, 2, -1, 'd3'],
+    ],
+    steps: [
+      { add: 2, from: 1, times: -2 },
+      { add: 3, from: 1, times: -1 },
+      { swap: [2, 3] },
+      { add: 3, from: 2, times: 3 },
+      { scale: 3, by: -1 / 7 },
+    ],
+    solution: ['x', 'y', 'z'],
+  },
+};
+
+const MATRICES: ModuleDef[] = [
+  productDemo(
+    'g.m12-matrices-multiply',
+    'Multiply two matrices',
+    'Use this to multiply two 2 × 2 matrices, one entry at a time.',
+    [
+      [1, 2],
+      [3, 4],
+    ],
+    [
+      [5, 6],
+      [7, 8],
+    ],
+  ),
+  productDemo(
+    'g.m12-matrices-multiply-2x3',
+    'A 2 × 3 matrix times a 3 × 2',
+    'Use this for a product of matrices of different shapes.',
+    [
+      [2, -1, 0],
+      [1, 3, -2],
+    ],
+    [
+      [1, 4],
+      [0, -2],
+      [5, 1],
+    ],
+  ),
+  productDemo(
+    'g.m12-matrices-4x4-vector',
+    'A 4 × 4 matrix times a vector',
+    'Use this for a 4 × 4 matrix times a column: each row gives one entry.',
+    [
+      [1, 0, 2, -1],
+      [3, 1, 0, 2],
+      [0, -2, 1, 4],
+      [2, 1, -1, 0],
+    ],
+    [[1], [2], [-1], [3]],
+    'a',
+  ),
+  rowReduceDemo,
+];
+
 export const HSD_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_CIRCLE,
   ...ALGEBRA_TILES,
@@ -2123,5 +2346,6 @@ export const HSD_GALLERY_MODULES: ModuleDef[] = [
   ...COMPLEX,
   ...POLAR,
   ...CONICS,
+  ...MATRICES,
 ];
 export const HSD_GALLERY_LAYOUTS: LayoutDef[] = [CONE_LAYOUT];

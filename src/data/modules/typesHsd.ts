@@ -222,13 +222,49 @@ export type ConicGraphSpec = {
   | { conic: 'hyperbola'; a: NumOrVar; b: NumOrVar; axis?: 'horizontal' | 'vertical' }
 );
 
+/** One row operation on an augmented matrix; rows count from 1. */
+export type RowOp =
+  /** Swap two rows. */
+  | { swap: [number, number] }
+  /** Multiply a row by a number (not 0). */
+  | { scale: number; by: number }
+  /** Add `times` × row `from` to row `to`. */
+  | { add: number; from: number; times: number };
+
+/**
+ * Matrices in square brackets, up to 4 × 4.
+ * - `multiply`: A × B = C, with the row of A and the column of B that make one entry of C lit
+ *   and their products summed beside it; tap an entry of C to light its row and column.
+ *   `product` names C's entries (checked).
+ * - `rowReduce`: an augmented matrix (a system, its right-hand sides after the bar) and each
+ *   row operation in turn, written beside the arrow to the next matrix; `solution` names the
+ *   unknowns (checked against the first matrix).
+ */
+export type MatrixGridSpec = { kind: 'matrixGrid' } & (
+  | {
+      mode: 'multiply';
+      a: NumOrVar[][];
+      b: NumOrVar[][];
+      product?: string[][];
+      /** The entry of C lit first, [row, column] from 1 (default [1, 1]). */
+      entry?: [number, number];
+    }
+  | {
+      mode: 'rowReduce';
+      system: NumOrVar[][];
+      steps: RowOp[];
+      solution?: string[];
+    }
+);
+
 export type HsdSpec =
   | UnitCircleSpec
   | AlgebraTilesSpec
   | VectorDiagramSpec
   | ComplexPlaneSpec
   | PolarGridSpec
-  | ConicGraphSpec;
+  | ConicGraphSpec
+  | MatrixGridSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hsdSpecVars(r: HsdSpec): string[] {
@@ -290,6 +326,10 @@ export function hsdSpecVars(r: HsdSpec): string[] {
           : [];
       return ids(...fields(r.point), ...fields(r.curve), ...fields(r.parametric));
     }
+    case 'matrixGrid':
+      return r.mode === 'multiply'
+        ? ids(...r.a.flat(), ...r.b.flat(), ...(r.product ?? []).flat())
+        : ids(...r.system.flat(), ...(r.solution ?? []));
     case 'conicGraph':
       return ids(
         r.h,

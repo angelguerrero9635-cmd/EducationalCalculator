@@ -442,6 +442,7 @@ function representationVars(r: Representation): string[] {
     case 'complexPlane':
     case 'polarGrid':
     case 'conicGraph':
+    case 'matrixGrid':
       return hsdSpecVars(r);
   }
 }

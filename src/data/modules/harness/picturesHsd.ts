@@ -7,6 +7,7 @@ import { principalOf, solutionsOf, toDegrees, trig } from '@/components/module/r
 import { rectangleCounts, type Poly } from '@/components/module/reps/tiles';
 import { CURVE_FIELDS, PATH_FIELDS, pathAt, polarR } from '@/components/module/reps/polar';
 import { conicResidual, focalDistance } from '@/components/module/reps/conics';
+import { multiply, reduceSteps } from '@/components/module/reps/matrices';
 
 import type { HsdSpec, TileCounts } from '../typesHsd';
 
@@ -302,6 +303,59 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
       const [x, y] = [num(rep.point?.x), num(rep.point?.y)];
       if (x !== undefined && y !== undefined && Math.abs(conicResidual(q, x, y)) > 1e-3)
         out.push(`the point (${x}, ${y}) is off the ${rep.conic}`);
+      break;
+    }
+    case 'matrixGrid': {
+      const read = (m: (string | number)[][]) => {
+        const out2 = m.map((r) => r.map((x) => num(x)));
+        return out2.some((r) => r.some((x) => x === undefined)) ? undefined : (out2 as number[][]);
+      };
+      const shape = (m: unknown[][], what: string) => {
+        if (
+          m.length < 1 ||
+          m.length > 4 ||
+          m.some((r) => r.length !== m[0]!.length || r.length > 4)
+        )
+          out.push(`${what} is not a rectangle of up to 4 × 4 entries`);
+      };
+      if (rep.mode === 'multiply') {
+        shape(rep.a, 'A');
+        shape(rep.b, 'B');
+        if (rep.a[0]!.length !== rep.b.length) out.push('A’s columns don’t match B’s rows');
+        const [A, B] = [read(rep.a), read(rep.b)];
+        const C = A && B ? multiply(A, B) : undefined;
+        rep.product?.forEach((r, i) =>
+          r.forEach((id, j) => {
+            const got = val(id);
+            if (C && got !== undefined && !near(got, C[i]![j]!, 1e-6))
+              out.push(
+                `AB entry (${i + 1}, ${j + 1}) is ${got}, the row times the column gives ${C[i]![j]!}`,
+              );
+          }),
+        );
+      } else {
+        shape(rep.system, 'the augmented matrix');
+        const rows = rep.system.length;
+        for (const op of rep.steps) {
+          const used = 'swap' in op ? op.swap : 'scale' in op ? [op.scale] : [op.add, op.from];
+          if (used.some((r) => r < 1 || r > rows))
+            out.push(`a row operation names a row past ${rows}`);
+          if ('scale' in op && op.by === 0) out.push('a row is multiplied by 0');
+          if ('add' in op && op.add === op.from) out.push('a row is added to itself');
+        }
+        const M = read(rep.system);
+        const xs = rep.solution?.map(val);
+        if (M && xs && xs.every((x) => x !== undefined)) {
+          // The solution satisfies every matrix in the reduction (row operations keep it).
+          reduceSteps(M, rep.steps).forEach((m, k) =>
+            m.forEach((r, i) => {
+              const lhs = r.slice(0, -1).reduce((s, a, j) => s + a * xs[j]!, 0);
+              if (!near(lhs, r[r.length - 1]!, 1e-4))
+                out.push(`step ${k}: row ${i + 1} gives ${lhs}, not ${r[r.length - 1]}`);
+            }),
+          );
+        }
+      }
       break;
     }
   }
