@@ -1167,6 +1167,12 @@ export type Representation =
       second?: string;
       gcf?: string;
       lcm?: string;
+      /**
+       * Grades 9–12: simplifying the root of `value`. Under the tree, each pair of equal primes
+       * (each three for a cube root, `index` 3) is ringed and brings one out; the rest stay
+       * under the root: √72 = 6√2. `outside` and `inside` are the 6 and the 2 as values.
+       */
+      root?: { index?: 2 | 3; outside?: string; inside?: string };
     }
   /**
    * Every rectangle with `value` unit squares, one under another (1 × 12, 2 × 6, 3 × 4); the

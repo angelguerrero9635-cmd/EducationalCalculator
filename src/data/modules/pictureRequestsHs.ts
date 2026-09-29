@@ -475,9 +475,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'crossSection: a plane through a cube, cylinder or cone, the section drawn beside it. Drawn (group HF). curvedSolid gets net: true (Net and Solid buttons, the net first; drawn by CurvedSolidHsf.tsx): a cylinder\'s rectangle 2πr by h between its two circles, a cone\'s sector of radius ℓ with its angle 360 × r ÷ ℓ and its base circle, a sphere\'s four great circles (it has no flat net); slant (ℓ, a cone\'s, checked against √(r² + h²)) and surface (checked against the faces) are value ids; the caption works S exactly with π. cavalieri: true (a cylinder) draws two stacks of 12 copper coins of radius r and height h, one leaning, and states Cavalieri\'s principle with V = πr²h. crossSection gets solid: "cylinder" | "cone" (length is the radius; drawn by CrossSectionRound.tsx, math in roundSection.ts): cut "base" (level at at up the height: a circle, the same as the base or shrinking to the tip) or "side" (upright, at from the axis: a cylinder\'s rectangle 2√(r² − d²) by h, a cone\'s triangle through the axis or a curved hyperbolic region off it); the cut is shaded on the clear solid and drawn flat beside it to the same scale with its area; drag the plane. A cube is the existing solid: "box" with equal sides. Pyramids were not added to curvedSolid: the square pyramid\'s net is the existing net kind (solid: "squarePyramid") and its cuts are crossSection\'s pyramid. Examples: { kind: "curvedSolid", shape: "cone", radius: "r", height: "h", slant: "l", surface: "S", net: true, extent: 5 }; { kind: "curvedSolid", shape: "cylinder", radius: "r", height: "h", volume: "V", cavalieri: true, extent: 6 } (with sliders: true); { kind: "crossSection", solid: "cone", length: "r", height: "h", cut: "base", at: "z", area: "A" } with a constraint that the plane is on the solid (at ≤ h, or at ≤ r for a side cut; see onTheSolid in galleryHsf.ts).',
   },
-  ask('H28', 'factorTree', 'Pairs of equal factors circled, coming out of the root: √72 = 6√2', [
-    'm.9.radicals',
-  ]),
+  {
+    ...ask(
+      'H28',
+      'factorTree',
+      'Pairs of equal factors circled, coming out of the root: √72 = 6√2',
+      ['m.9.radicals'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m9-radicals-simplify', 'g.m9-radicals-cube-root', 'g.m9-radicals-perfect-square'],
+    notes:
+      'Drawn (group HF). New optional field on factorTree (types.ts; drawn by FactorTreeHsf.tsx, math in rootSplit.ts): root { index?: 2 | 3, outside?, inside? } (value ids). Under the tree\'s foot row of primes each pair of equal primes (each three for index 3) is ringed and arrowed down to the one it brings out; the leftover primes are arrowed into the radical; the line reads 2 × 3 × √2 = 6√2 (∛ for a cube root; a perfect power ends whole, = 24). The caption writes √72 = √(2 × 2 × 2 × 3 × 3), the pairs coming out, and the result, or says the root is already simplest. The harness checks outside^index × inside = value and that inside has no group left. Step text "largest perfect square factor of N" (and cube) is taught to the harness (harness/phrasesHsf.ts). Make a and b derived (worked out, not typed) with a constraint that b has no square factor but 1 (see rootDemo in galleryHsf.ts). Example: { kind: "factorTree", value: "n", root: { index: 2, outside: "a", inside: "b" } } with a = √(largest perfect square factor of n) and n = a² × b.',
+  },
   ask('H29', 'powerScale', 'A log mode: the exponent read off the ruler, log₁₀ 470,000 ≈ 5.67', [
     'm.11.logarithms',
   ]),

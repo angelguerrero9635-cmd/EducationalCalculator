@@ -1540,6 +1540,124 @@ const coneUprightCut: ModuleDef = {
   },
 };
 
+// ── H28 factorTree: pairs of equal factors come out of the root ──
+
+/** The largest k with k^index dividing n. */
+function outOf(n: number, index: number): number {
+  let k = Math.floor(Math.pow(n, 1 / index) + 1e-9);
+  while (k > 1 && n % k ** index !== 0) k--;
+  return Math.max(1, k);
+}
+
+function rootDemo(
+  id: string,
+  title: string,
+  use: string,
+  index: 2 | 3,
+  example: Values,
+  assumptions: string[],
+): ModuleDef {
+  const sign = index === 3 ? '∛' : '√';
+  const pow = index === 3 ? '³' : '²';
+  const word = index === 3 ? 'cube' : 'square';
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      V('n', 'n', 'Number under the root', { min: 2, max: 1000, step: 1, integer: true }),
+      V('a', 'a', 'Number outside', { min: 1, max: 40, step: 1, integer: true, derived: true }),
+      V('b', 'b', 'Number left inside', {
+        min: 1,
+        max: 1000,
+        step: 1,
+        integer: true,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      {
+        relation: {
+          id: 'nothing more comes out',
+          constraint: true,
+          display: `{b} has no factor that is a perfect ${index === 3 ? 'cube' : 'square'} but 1`,
+          vars: ['b'],
+          residual: (v: Values) => (outOf(v.b!, index) === 1 ? 0 : 1),
+          solve: {},
+        },
+        steps: {},
+      },
+      R(
+        `a = ${sign}(largest perfect ${word} factor of n)`,
+        `{a} = ${sign}(largest perfect ${word} factor of {n})`,
+        (v) => v.a! - outOf(v.n!, index),
+        {
+          a: [
+            (v) => outOf(v.n!, index),
+            `${sign}(largest perfect ${word} factor of {n})`,
+            `Each ${index === 3 ? 'three' : 'pair'} of equal prime factors brings one out; together they make the ${sign} of the largest perfect ${word} factor.`,
+          ],
+          n: null,
+        },
+      ),
+      R(`n = a${pow}b`, `{n} = {a}${pow} × {b}`, (v) => v.n! - v.a! ** index * v.b!, {
+        n: [(v) => v.a! ** index * v.b!, `{a}${pow} × {b}`, 'Put the factors back under the root.'],
+        b: [
+          (v) => (v.n! % v.a! ** index === 0 ? v.n! / v.a! ** index : undefined),
+          `{n} ÷ {a}${pow}`,
+          'What is left inside the root.',
+        ],
+        a: null,
+      }),
+    ),
+    example,
+    startWith: ['n'],
+    representation: {
+      kind: 'factorTree',
+      value: 'n',
+      root: { index, outside: 'a', inside: 'b' },
+    },
+  };
+}
+
+const rootSimplify = rootDemo(
+  'g.m9-radicals-simplify',
+  'Simplifying a square root',
+  'Use this for “Simplify √72.”',
+  2,
+  { n: 72, a: 6, b: 2 },
+  [
+    '√(x × x) = x: a pair of equal factors under a square root comes out as one of them.',
+    'Factor the number into primes, ring each pair, and bring one of each pair out.',
+    'What is left inside has no pair: the root is in simplest form.',
+  ],
+);
+
+const rootCube = rootDemo(
+  'g.m9-radicals-cube-root',
+  'Simplifying a cube root',
+  'Use this for “Simplify ∛54.”',
+  3,
+  { n: 54, a: 3, b: 2 },
+  [
+    '∛(x × x × x) = x: three equal factors under a cube root come out as one.',
+    'Factor the number into primes and ring each group of three equal primes.',
+  ],
+);
+
+const rootPerfect = rootDemo(
+  'g.m9-radicals-perfect-square',
+  'A root that comes out whole',
+  'Use this for “Is √576 a whole number?”',
+  2,
+  { n: 576, a: 24, b: 1 },
+  [
+    'When every prime factor pairs up, nothing is left inside: the number is a perfect square.',
+    '576 = 2 × 2 × 2 × 2 × 2 × 2 × 3 × 3, four pairs.',
+  ],
+);
+
 export const HSF_GALLERY_MODULES: ModuleDef[] = [
   composeReflectRotate,
   composeGlide,
@@ -1571,5 +1689,8 @@ export const HSF_GALLERY_MODULES: ModuleDef[] = [
   coneLevelCut,
   cylinderUprightCut,
   coneUprightCut,
+  rootSimplify,
+  rootCube,
+  rootPerfect,
 ];
 export const HSF_GALLERY_LAYOUTS: LayoutDef[] = [];

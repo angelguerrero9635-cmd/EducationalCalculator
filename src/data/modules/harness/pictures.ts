@@ -29,6 +29,7 @@ import { hsbIssues } from './picturesHsb';
 import {
   circleSectorIssues,
   curvedSolidHsfIssues,
+  factorRootIssues,
   roundSectionIssues,
   planeGeometryIssues,
   scaleCopyHsfIssues,
@@ -1002,6 +1003,7 @@ export function repIssues(
     }
     case 'factorTree':
       count(rep.value, 'number');
+      out.push(...factorRootIssues(rep, val));
       break;
     case 'tape': {
       if ('equation' in rep) {

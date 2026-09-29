@@ -3,11 +3,13 @@
  * `typesHsf.ts`): what each draws must agree with the values. Called from the kind's case in
  * `repIssues` (`pictures.ts`). Test-only.
  */
+import { rootSplit } from '@/components/module/reps/rootSplit';
 import { partitionOf } from '@/components/module/reps/planeGeo';
 import { roundCut, roundReach } from '@/components/module/reps/roundSection';
 import { splitterShape } from '@/components/module/reps/scaleSplitter';
 import { imageOf, type MoveValues, type Pt } from '@/components/module/reps/transform';
 
+import { primeFactors } from '../helpers';
 import type { SecondMove } from '../typesHsf';
 import type { Representation } from '../types';
 
@@ -235,5 +237,24 @@ export function roundSectionIssues(rep: Of<'crossSection'>, val: Val): string[] 
   const V = rep.volume ? val(rep.volume) : undefined;
   const vol = Math.PI * r * r * h * (rep.solid === 'cone' ? 1 / 3 : 1);
   if (V !== undefined && far(V, vol)) out.push(`volume ${V} is not ${vol}`);
+  return out;
+}
+
+/** H28: outside^index × inside is the number, and what the tree leaves inside has no group left. */
+export function factorRootIssues(rep: Of<'factorTree'>, val: Val): string[] {
+  if (!rep.root) return [];
+  const out: string[] = [];
+  const index = rep.root.index ?? 2;
+  if (rep.second) out.push('a root is simplified on one tree');
+  const n = val(rep.value);
+  if (n === undefined || n < 2 || n !== Math.round(n)) return out;
+  const split = rootSplit(primeFactors(n), index);
+  const [a, b] = [rep.root.outside, rep.root.inside].map((id) => (id ? val(id) : undefined));
+  if (a !== undefined && a !== split.outside)
+    out.push(`outside ${a}, the pairs bring out ${split.outside}`);
+  if (b !== undefined && b !== split.inside)
+    out.push(`inside ${b}, the tree leaves ${split.inside}`);
+  if (split.outside ** index * split.inside !== n)
+    out.push(`${split.outside}^${index} × ${split.inside} is not ${n}`);
   return out;
 }

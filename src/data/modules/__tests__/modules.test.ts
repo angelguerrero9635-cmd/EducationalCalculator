@@ -247,7 +247,12 @@ function representationVars(r: Representation): string[] {
     case 'shareWholes':
       return [r.wholes, r.people, ...(r.each ? [r.each] : [])];
     case 'factorTree':
-      return [r.value, ...[r.count, r.second, r.gcf, r.lcm].filter((x): x is string => !!x)];
+      return [
+        r.value,
+        ...[r.count, r.second, r.gcf, r.lcm, r.root?.outside, r.root?.inside].filter(
+          (x): x is string => !!x,
+        ),
+      ];
     case 'protractor':
       return [
         r.angle,
