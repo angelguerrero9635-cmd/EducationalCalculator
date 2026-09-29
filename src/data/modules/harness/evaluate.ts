@@ -307,9 +307,18 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   // Grades 9–12 trig (group D pictures): sin, cos and tan of an angle in degrees, "cos(150)"
   // (step lines drop the °), and the inverse functions' answers in degrees, "arcsin(0.5)"
   // (a value rounded just past 1 counts as 1).
-  [new RegExp(`(?<!arc)sin ?\\(?(${NUM})°?\\)?`), (d) => Math.sin((d * Math.PI) / 180)],
-  [new RegExp(`(?<!arc)cos ?\\(?(${NUM})°?\\)?`), (d) => Math.cos((d * Math.PI) / 180)],
-  [new RegExp(`(?<!arc)tan ?\\(?(${NUM})°?\\)?`), (d) => Math.tan((d * Math.PI) / 180)],
+  [
+    /(?<!arc)sin(?:\((-?\d+(?:\.\d+)?)°?\)| (-?\d+(?:\.\d+)?)°?)/,
+    (a, b) => Math.sin(((Number.isNaN(a) ? b! : a) * Math.PI) / 180),
+  ],
+  [
+    /(?<!arc)cos(?:\((-?\d+(?:\.\d+)?)°?\)| (-?\d+(?:\.\d+)?)°?)/,
+    (a, b) => Math.cos(((Number.isNaN(a) ? b! : a) * Math.PI) / 180),
+  ],
+  [
+    /(?<!arc)tan(?:\((-?\d+(?:\.\d+)?)°?\)| (-?\d+(?:\.\d+)?)°?)/,
+    (a, b) => Math.tan(((Number.isNaN(a) ? b! : a) * Math.PI) / 180),
+  ],
   [
     new RegExp(`arcsin ?(${NUM})`),
     (x) => (Math.asin(Math.max(-1, Math.min(1, x))) * 180) / Math.PI,

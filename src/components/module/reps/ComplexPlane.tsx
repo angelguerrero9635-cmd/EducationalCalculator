@@ -202,6 +202,8 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
             const axis = [0, 90, 180, 270, 360].find((k) => Math.abs(m - k) < 22);
             if (axis !== undefined && Math.abs(to - from) > 60) m = axis + (m >= axis ? 26 : -26);
             const mid = m * RAD;
+            // A wide arc sweeps past the axis numbers: its value stays in the caption.
+            if (Math.abs(to - from) > 150 && text.startsWith('θ')) text = 'θ';
             return (
               <G>
                 <Path d={d} stroke={color} strokeWidth={chart.strokeLight} fill="none" />

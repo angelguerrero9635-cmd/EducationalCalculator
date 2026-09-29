@@ -194,13 +194,28 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Drawn: kind complexPlane (typesHsd.ts). Fields: z { re, im } or { modulus, argument } (degrees); conjugate (z̄ reflected across the real axis); w { re, im } with op 'sum' (the parallelogram), 'difference' (z plus −w) or 'product' (moduli multiply, arguments add, arcs marked); result { re, im } (checked); modulus and argument (variables, checked; |z| on the arrow, θ as an arc); polar (writes z = r(cos θ + i sin θ)); keep; fixed. Axes Re and Im, the imaginary axis numbered i, 2i, …; drag z. Examples: { kind: 'complexPlane', z: { re: 'a', im: 'b' }, conjugate: true, modulus: 'm' }; { kind: 'complexPlane', z: { re: 'a', im: 'b' }, w: { re: 'c', im: 'd' }, op: 'product', result: { re: 'e', im: 'f' } }; { kind: 'complexPlane', z: { modulus: 'r', argument: 't' }, polar: true }.",
   },
-  ask(
-    'H10',
-    'polarGrid',
-    'Polar grid with a point (r, θ) and polar curves (circle, rose, cardioid, spiral)',
-    ['m.12.polar', 'm.12.parametric'],
-    'Parametric mode: a path traced as t grows, with direction arrows and the point at t.',
-  ),
+  {
+    ...ask(
+      'H10',
+      'polarGrid',
+      'Polar grid with a point (r, θ) and polar curves (circle, rose, cardioid, spiral)',
+      ['m.12.polar', 'm.12.parametric'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m12-polar-point',
+      'g.m12-polar-rose',
+      'g.m12-polar-cardioid',
+      'g.m12-polar-limacon',
+      'g.m12-polar-circle',
+      'g.m12-polar-spiral',
+      'g.m12-parametric-projectile',
+      'g.m12-parametric-line',
+      'g.m12-parametric-ellipse',
+    ],
+    notes:
+      "Parametric mode: a path traced as t grows, with direction arrows and the point at t. Drawn: kind polarGrid (typesHsd.ts). Polar mode: rings at nice radii and rays every 30°, labelled in degrees or (show: 'radians') π/6, …; point { r, theta, x, y } (θ in degrees; a negative r lands on the opposite ray; x and y checked as r cos θ and r sin θ); curve { shape: 'circle' (r = a, or r = a cos θ with fn), 'rose' (a, n; n or 2n petals), 'cardioid' (a, b: r = a + b cos θ, a limaçon when b ≠ a), 'spiral' (r = aθ, θ in radians, turns) } with the point on it (r checked). Parametric mode: parametric { family: 'line' (x0, y0, a, b), 'ellipse' (h, k, a, b; t in degrees), 'projectile' (v, angle, y0; g = 9.8), t, range: [t₀, t₁], x, y } traces the path solid up to t and dashed after, with arrows the way t runs (x and y checked). Drag the point: θ (and r with no curve), or along the path to set t. Examples: { kind: 'polarGrid', curve: { shape: 'rose', a: 'a', n: 'n' }, point: { r: 'r', theta: 't' } }; { kind: 'polarGrid', parametric: { family: 'line', x0: 'p', y0: 'q', a: 'a', b: 'b', t: 't', range: [-2, 4], x: 'x', y: 'y' } }.",
+  },
   ask(
     'H11',
     'conicGraph',

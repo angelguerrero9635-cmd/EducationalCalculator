@@ -5,6 +5,7 @@
 import { principalOf, solutionsOf, toDegrees, trig } from '@/components/module/reps/hsdKit';
 
 import { rectangleCounts, type Poly } from '@/components/module/reps/tiles';
+import { CURVE_FIELDS, PATH_FIELDS, pathAt, polarR } from '@/components/module/reps/polar';
 
 import type { HsdSpec, TileCounts } from '../typesHsd';
 
@@ -227,6 +228,45 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
               : { a: z.a * c - z.b * d, b: z.a * d + z.b * c };
         check(rep.result?.re, res.a, `the ${op}'s real part`);
         check(rep.result?.im, res.b, `the ${op}'s imaginary part`);
+      }
+      break;
+    }
+    case 'polarGrid': {
+      const RAD = Math.PI / 180;
+      const read = (o: object, fields: string[]) => {
+        const v: Record<string, number> = {};
+        for (const k of fields) {
+          const x = (o as Record<string, number | string | undefined>)[k];
+          if (x === undefined) continue;
+          const n = num(x);
+          if (n === undefined) return undefined;
+          v[k] = n;
+        }
+        return v;
+      };
+      const check = (id: string | undefined, want: number, what: string) => {
+        const got = num(id);
+        if (got !== undefined && !near(got, want, 1e-3))
+          out.push(`${what} is ${got}, the picture gives ${want}`);
+      };
+      const [r, t] = [num(rep.point?.r), num(rep.point?.theta)];
+      if (rep.point && r !== undefined && t !== undefined) {
+        // The point sits on the curve, and x, y are r cos θ and r sin θ.
+        const cv = rep.curve ? read(rep.curve, CURVE_FIELDS[rep.curve.shape]) : undefined;
+        if (rep.curve && cv)
+          check(rep.point.r as string, polarR(rep.curve, cv, t), 'r on the curve');
+        check(rep.point.x, r * Math.cos(t * RAD), 'x');
+        check(rep.point.y, r * Math.sin(t * RAD), 'y');
+      }
+      const p = rep.parametric;
+      const pt = num(p?.t);
+      if (p && pt !== undefined) {
+        const pv = read(p, PATH_FIELDS[p.family]);
+        if (pv) {
+          const at = pathAt(p, pv, pt);
+          check(p.x, at.x, 'x(t)');
+          check(p.y, at.y, 'y(t)');
+        }
       }
       break;
     }

@@ -23,7 +23,7 @@ export function niceStep(x: number): number {
  * A window [lo, hi] on one axis holding every value and the origin, widened by a margin and
  * rounded out to whole ticks; `ticks` is about how many ticks it should hold.
  */
-export function niceWindow(values: number[], ticks = 8, pad = 0.12, least = 1) {
+export function niceWindow(values: number[], ticks = 8, pad = 0.12, least = 1, room = 1.5) {
   const xs = values.filter(Number.isFinite);
   let lo = Math.min(0, ...xs);
   let hi = Math.max(0, ...xs);
@@ -36,8 +36,8 @@ export function niceWindow(values: number[], ticks = 8, pad = 0.12, least = 1) {
   hi += span * pad;
   const step = niceStep((hi - lo) / ticks);
   // At least a tick and a half past the origin each way: room for axis names and labels.
-  lo = Math.min(lo, -1.5 * step);
-  hi = Math.max(hi, 1.5 * step);
+  lo = Math.min(lo, -room * step);
+  hi = Math.max(hi, room * step);
   return { lo: Math.floor(lo / step) * step, hi: Math.ceil(hi / step) * step, step };
 }
 

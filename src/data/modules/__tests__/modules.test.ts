@@ -440,6 +440,7 @@ function representationVars(r: Representation): string[] {
     case 'algebraTiles':
     case 'vectorDiagram':
     case 'complexPlane':
+    case 'polarGrid':
       return hsdSpecVars(r);
   }
 }

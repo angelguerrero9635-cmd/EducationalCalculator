@@ -152,7 +152,51 @@ export interface ComplexPlaneSpec {
   fixed?: boolean;
 }
 
-export type HsdSpec = UnitCircleSpec | AlgebraTilesSpec | VectorDiagramSpec | ComplexPlaneSpec;
+/** A polar curve r = f(θ), θ in degrees (the spiral's θ in radians inside r = aθ). */
+export type PolarCurve =
+  /** r = a, or r = a cos θ / a sin θ with `fn`. */
+  | { shape: 'circle'; a: NumOrVar; fn?: 'cos' | 'sin' }
+  /** r = a cos(nθ) or a sin(nθ): n petals when n is odd, 2n when even. */
+  | { shape: 'rose'; a: NumOrVar; n: NumOrVar; fn?: 'cos' | 'sin' }
+  /** r = a + b cos θ (or sin): a cardioid when a = b, a limaçon otherwise. */
+  | { shape: 'cardioid'; a: NumOrVar; b?: NumOrVar; fn?: 'cos' | 'sin' }
+  /** r = aθ, θ in radians, for `turns` turns (default 2). */
+  | { shape: 'spiral'; a: NumOrVar; turns?: number };
+
+/** A path x(t), y(t) by family; t in degrees for the circle and ellipse, seconds otherwise. */
+export type ParametricPath =
+  /** x = x₀ + at, y = y₀ + bt. */
+  | { family: 'line'; x0: NumOrVar; y0: NumOrVar; a: NumOrVar; b: NumOrVar }
+  /** x = h + a cos t, y = k + b sin t (a circle when a = b). */
+  | { family: 'ellipse'; h: NumOrVar; k: NumOrVar; a: NumOrVar; b: NumOrVar }
+  /** x = v cos α · t, y = y₀ + v sin α · t − ½gt² (g = 9.8 m/s²). */
+  | { family: 'projectile'; v: NumOrVar; angle: NumOrVar; y0: NumOrVar };
+
+/**
+ * The polar grid: rings and rays every 30°, a point (r, θ) with its ray and angle (a negative r
+ * points the opposite way), and a polar curve — circle, rose, cardioid or limaçon, spiral —
+ * with the point on it. `parametric` swaps the rings for an x-y grid and traces x(t), y(t) with
+ * arrows showing the direction t runs and the point at t. Drag the point.
+ */
+export interface PolarGridSpec {
+  kind: 'polarGrid';
+  point?: { r: NumOrVar; theta: NumOrVar; x?: string; y?: string };
+  curve?: PolarCurve;
+  parametric?: ParametricPath & {
+    t: NumOrVar;
+    /** The t values the path runs over. */
+    range: [number, number];
+    x?: string;
+    y?: string;
+  };
+  /** θ labels in degrees (default) or radians. */
+  show?: 'degrees' | 'radians';
+  keep?: string[];
+  fixed?: boolean;
+}
+
+export type HsdSpec =
+  UnitCircleSpec | AlgebraTilesSpec | VectorDiagramSpec | ComplexPlaneSpec | PolarGridSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hsdSpecVars(r: HsdSpec): string[] {
@@ -205,5 +249,14 @@ export function hsdSpecVars(r: HsdSpec): string[] {
         r.modulus,
         r.argument,
       );
+    case 'polarGrid': {
+      const fields = (o: object | undefined) =>
+        o
+          ? Object.entries(o)
+              .filter(([k]) => !['shape', 'fn', 'family', 'range', 'turns'].includes(k))
+              .map(([, x]) => x as NumOrVar)
+          : [];
+      return ids(...fields(r.point), ...fields(r.curve), ...fields(r.parametric));
+    }
   }
 }

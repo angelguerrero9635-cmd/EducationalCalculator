@@ -121,6 +121,7 @@ import { ForceCart } from './ForceCart';
 import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
 import { UnitCircle } from './UnitCircle';
+import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
 import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
@@ -154,6 +155,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
   switch (spec.kind) {
     case 'unitCircle':
       return <UnitCircle spec={spec} calc={calc} />;
+    case 'polarGrid':
+      return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
       return <ComplexPlane spec={spec} calc={calc} />;
     case 'vectorDiagram':

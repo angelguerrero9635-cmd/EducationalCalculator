@@ -1421,10 +1421,350 @@ const COMPLEX: ModuleDef[] = [
   },
 ];
 
+// ─── H10 polarGrid ───────────────────────────────────────────────────────────
+
+/** r = f(θ) for a polar curve, worked forward (θ in degrees). */
+const polarRule = (
+  display: string,
+  f: (v: Values) => number,
+  vars: string[],
+  how: string,
+): Rule => ({
+  relation: {
+    id: display.replace(/[{}]/g, ''),
+    display,
+    vars: ['r', ...vars],
+    residual: (v) => v.r! - f(v),
+    solve: { r: f, ...Object.fromEntries(vars.map((x) => [x, () => undefined])) },
+  },
+  steps: { r: { expr: display.slice(display.indexOf('=') + 2), how } },
+});
+
+const polarCurveDemo = (
+  id: string,
+  title: string,
+  use: string,
+  assumptions: string[],
+  extra: VariableDef[],
+  rule: Rule,
+  example: Values,
+  representation: ModuleDef['representation'],
+): ModuleDef => ({
+  id,
+  title,
+  use,
+  assumptions,
+  variables: [
+    ...extra,
+    { ...angle('t', 'Angle θ', 0, 720), step: 1 },
+    real('r', 'r', 'Distance r', -50, 50),
+  ],
+  ...rules(rule),
+  example,
+  startWith: [...extra.map((v) => v.id), 't'],
+  representation,
+});
+
+const PATH_T = { id: 't', symbol: 't', name: 'Time t (s)', min: 0, max: 10, step: 0.01 };
+
+const POLAR: ModuleDef[] = [
+  {
+    id: 'g.m12-polar-point',
+    title: 'A point in polar coordinates',
+    use: 'Use this to plot (r, θ) and change it to x and y.',
+    assumptions: ['θ is measured from the positive x-axis.', 'x = r cos θ and y = r sin θ.'],
+    variables: [
+      real('r', 'r', 'Distance r', -10, 10),
+      { ...angle('t', 'Angle θ', 0, 360), step: 1 },
+      real('x', 'x', 'x-coordinate'),
+      real('y', 'y', 'y-coordinate'),
+    ],
+    ...rules(component('x', 'r', 't', 'cos'), component('y', 'r', 't', 'sin')),
+    example: { r: 3, t: 60, x: 1.5, y: 3 * Math.sin(60 * RAD) },
+    startWith: ['r', 't'],
+    representation: { kind: 'polarGrid', point: { r: 'r', theta: 't', x: 'x', y: 'y' } },
+  },
+  polarCurveDemo(
+    'g.m12-polar-rose',
+    'A rose curve',
+    'Use this for a rose r = a cos(nθ): n petals when n is odd, 2n when even.',
+    ['θ is in degrees.', 'A negative r is plotted on the opposite ray.'],
+    [real('a', 'a', 'Petal length a', -10, 10), coef('n', 'n', 'n', 1, 8)],
+    polarRule(
+      '{r} = {a} × cos({n} × {t})',
+      (v) => v.a! * Math.cos(v.n! * v.t! * RAD),
+      ['a', 'n', 't'],
+      'Put θ into the curve’s equation.',
+    ),
+    { a: 3, n: 3, t: 20, r: 3 * Math.cos(60 * RAD) },
+    { kind: 'polarGrid', curve: { shape: 'rose', a: 'a', n: 'n' }, point: { r: 'r', theta: 't' } },
+  ),
+  polarCurveDemo(
+    'g.m12-polar-cardioid',
+    'A cardioid',
+    'Use this for the cardioid r = a + a cos θ.',
+    ['θ is in degrees.', 'The curve passes through the pole at θ = 180°.'],
+    [real('a', 'a', 'a', 0.5, 10)],
+    polarRule(
+      '{r} = {a} + {a} × cos({t})',
+      (v) => v.a! + v.a! * Math.cos(v.t! * RAD),
+      ['a', 't'],
+      'Put θ into the curve’s equation.',
+    ),
+    { a: 2, t: 60, r: 3 },
+    { kind: 'polarGrid', curve: { shape: 'cardioid', a: 'a' }, point: { r: 'r', theta: 't' } },
+  ),
+  polarCurveDemo(
+    'g.m12-polar-limacon',
+    'A limaçon with an inner loop',
+    'Use this for r = a + b cos θ with b bigger than a: the curve loops inside itself.',
+    ['θ is in degrees.', 'A negative r is plotted on the opposite ray.'],
+    [real('a', 'a', 'a', -10, 10), real('b', 'b', 'b', -10, 10)],
+    polarRule(
+      '{r} = {a} + {b} × cos({t})',
+      (v) => v.a! + v.b! * Math.cos(v.t! * RAD),
+      ['a', 'b', 't'],
+      'Put θ into the curve’s equation.',
+    ),
+    { a: 1, b: 2, t: 150, r: 1 + 2 * Math.cos(150 * RAD) },
+    {
+      kind: 'polarGrid',
+      curve: { shape: 'cardioid', a: 'a', b: 'b' },
+      point: { r: 'r', theta: 't' },
+    },
+  ),
+  polarCurveDemo(
+    'g.m12-polar-circle',
+    'A circle through the pole',
+    'Use this for the circle r = a cos θ, which passes through the pole.',
+    ['θ is in degrees.', 'The whole circle is drawn as θ runs from 0° to 180°.'],
+    [real('a', 'a', 'Diameter a', -10, 10)],
+    polarRule(
+      '{r} = {a} × cos({t})',
+      (v) => v.a! * Math.cos(v.t! * RAD),
+      ['a', 't'],
+      'Put θ into the curve’s equation.',
+    ),
+    { a: 4, t: 30, r: 4 * Math.cos(30 * RAD) },
+    {
+      kind: 'polarGrid',
+      curve: { shape: 'circle', a: 'a', fn: 'cos' },
+      point: { r: 'r', theta: 't' },
+    },
+  ),
+  polarCurveDemo(
+    'g.m12-polar-spiral',
+    'A spiral',
+    'Use this for the spiral r = aθ, with θ in radians.',
+    ['θ in radians inside the equation: θ° × π/180.', 'Two turns are drawn.'],
+    [real('a', 'a', 'a', 0.1, 5)],
+    polarRule(
+      '{r} = {a} × {t} × π/180',
+      (v) => v.a! * v.t! * RAD,
+      ['a', 't'],
+      'Change θ to radians, then multiply by a.',
+    ),
+    { a: 0.5, t: 270, r: 0.5 * 270 * RAD },
+    {
+      kind: 'polarGrid',
+      curve: { shape: 'spiral', a: 'a' },
+      point: { r: 'r', theta: 't' },
+      show: 'radians',
+    },
+  ),
+  {
+    id: 'g.m12-parametric-projectile',
+    title: 'A path traced as t grows',
+    use: 'Use this for a projectile’s path x(t), y(t), with the point at time t.',
+    assumptions: ['No air resistance; g = 9.8 m/s².', 'The launch is at t = 0 from height h.'],
+    variables: [
+      { id: 'v', symbol: 'v', name: 'Launch speed (m/s)', min: 1, max: 40, step: 0.1 },
+      { ...angle('a', 'Launch angle', 0, 90), step: 1 },
+      { id: 'h', symbol: 'h', name: 'Launch height (m)', min: 0, max: 50, step: 0.1 },
+      PATH_T,
+      { id: 'x', symbol: 'x', name: 'Distance across (m)', min: 0, max: 200, step: 0.01 },
+      { id: 'y', symbol: 'y', name: 'Height (m)', min: -500, max: 100, step: 0.01 },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'x = v cos α · t',
+          display: '{x} = {v} × cos({a}) × {t}',
+          vars: ['x', 'v', 'a', 't'],
+          residual: (v) => v.x! - v.v! * Math.cos(v.a! * RAD) * v.t!,
+          solve: {
+            x: (v) => v.v! * Math.cos(v.a! * RAD) * v.t!,
+            t: (v) => div(v.x!, v.v! * Math.cos(v.a! * RAD)),
+            v: (v) => div(v.x!, Math.cos(v.a! * RAD) * v.t!),
+            a: () => undefined,
+          },
+        },
+        steps: {
+          x: { expr: '{v} × cos({a}) × {t}', how: 'Across, the speed stays v cos α.' },
+          t: {
+            expr: '{x}/(cos({a}) × {v})',
+            how: 'Divide the distance across by the speed across.',
+          },
+          v: { expr: '{x}/(cos({a}) × {t})', how: 'Divide the distance across by cos α times t.' },
+        },
+      },
+      {
+        relation: {
+          id: 'y = h + v sin α · t − 4.9t²',
+          display: '{y} = {h} + {v} × sin({a}) × {t} − 4.9 × {t}²',
+          vars: ['y', 'h', 'v', 'a', 't'],
+          residual: (v) => v.y! - v.h! - v.v! * Math.sin(v.a! * RAD) * v.t! + 4.9 * v.t! ** 2,
+          solve: {
+            y: (v) => v.h! + v.v! * Math.sin(v.a! * RAD) * v.t! - 4.9 * v.t! ** 2,
+            h: (v) => v.y! - v.v! * Math.sin(v.a! * RAD) * v.t! + 4.9 * v.t! ** 2,
+            v: () => undefined,
+            a: () => undefined,
+            t: () => undefined,
+          },
+        },
+        steps: {
+          y: {
+            expr: '{h} + {v} × sin({a}) × {t} − 4.9 × {t}²',
+            how: 'Up, the start height, plus v sin α each second, less the fall ½gt².',
+          },
+          h: {
+            expr: '{y} − {v} × sin({a}) × {t} + 4.9 × {t}²',
+            how: 'Undo the climb and the fall from the height at t.',
+          },
+        },
+      },
+    ),
+    example: {
+      v: 20,
+      a: 40,
+      h: 1.5,
+      t: 1.2,
+      x: 20 * Math.cos(40 * RAD) * 1.2,
+      y: 1.5 + 20 * Math.sin(40 * RAD) * 1.2 - 4.9 * 1.44,
+    },
+    startWith: ['t', 'v', 'a', 'h'],
+    representation: {
+      kind: 'polarGrid',
+      parametric: {
+        family: 'projectile',
+        v: 'v',
+        angle: 'a',
+        y0: 'h',
+        t: 't',
+        range: [0, 2.7],
+        x: 'x',
+        y: 'y',
+      },
+    },
+  },
+  {
+    id: 'g.m12-parametric-line',
+    title: 'A line traced by a parameter',
+    use: 'Use this for a line x = x₀ + at, y = y₀ + bt, and which way it runs.',
+    assumptions: ['t runs from −2 to 4.', 'The arrows show the way the point moves as t grows.'],
+    variables: [
+      real('p', 'x₀', 'Start x', -10, 10),
+      real('q', 'y₀', 'Start y', -10, 10),
+      real('a', 'a', 'x change per unit of t', -5, 5),
+      real('b', 'b', 'y change per unit of t', -5, 5),
+      { id: 't', symbol: 't', name: 'Parameter t', min: -2, max: 4, step: 0.1 },
+      real('x', 'x', 'x at t', -50, 50),
+      real('y', 'y', 'y at t', -50, 50),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'x = x₀ + at',
+          display: '{x} = {p} + {a} × {t}',
+          vars: ['x', 'p', 'a', 't'],
+          residual: (v) => v.x! - v.p! - v.a! * v.t!,
+          solve: {
+            x: (v) => v.p! + v.a! * v.t!,
+            p: (v) => v.x! - v.a! * v.t!,
+            t: (v) => div(v.x! - v.p!, v.a!),
+            a: (v) => div(v.x! - v.p!, v.t!),
+          },
+        },
+        steps: {
+          x: { expr: '{p} + {a} × {t}', how: 'Start at x₀ and move a for each unit of t.' },
+          p: { expr: '{x} − {a} × {t}', how: 'Take the move from x.' },
+          t: { expr: '({x} − {p})/{a}', how: 'The move across divided by a gives t.' },
+          a: { expr: '({x} − {p})/{t}', how: 'The move across divided by t gives a.' },
+        },
+      },
+      {
+        relation: {
+          id: 'y = y₀ + bt',
+          display: '{y} = {q} + {b} × {t}',
+          vars: ['y', 'q', 'b', 't'],
+          residual: (v) => v.y! - v.q! - v.b! * v.t!,
+          solve: {
+            y: (v) => v.q! + v.b! * v.t!,
+            q: (v) => v.y! - v.b! * v.t!,
+            b: (v) => div(v.y! - v.q!, v.t!),
+          },
+        },
+        steps: {
+          y: { expr: '{q} + {b} × {t}', how: 'Start at y₀ and move b for each unit of t.' },
+          q: { expr: '{y} − {b} × {t}', how: 'Take the move from y.' },
+          b: { expr: '({y} − {q})/{t}', how: 'The move up divided by t gives b.' },
+        },
+      },
+    ),
+    example: { p: 1, q: 3, a: 2, b: -1, t: 1.5, x: 4, y: 1.5 },
+    startWith: ['t', 'p', 'q', 'a', 'b'],
+    representation: {
+      kind: 'polarGrid',
+      parametric: {
+        family: 'line',
+        x0: 'p',
+        y0: 'q',
+        a: 'a',
+        b: 'b',
+        t: 't',
+        range: [-2, 4],
+        x: 'x',
+        y: 'y',
+      },
+    },
+  },
+  {
+    id: 'g.m12-parametric-ellipse',
+    title: 'An ellipse traced by an angle',
+    use: 'Use this for x = a cos t, y = b sin t: an ellipse traced counterclockwise.',
+    assumptions: ['t is an angle in degrees, from 0° to 360°.', 'a = b makes a circle.'],
+    variables: [
+      real('a', 'a', 'Half-width a', 0.5, 10),
+      real('b', 'b', 'Half-height b', 0.5, 10),
+      { ...angle('t', 'Parameter t', 0, 360), symbol: 't', step: 1 },
+      real('x', 'x', 'x at t'),
+      real('y', 'y', 'y at t'),
+    ],
+    ...rules(component('x', 'a', 't', 'cos'), component('y', 'b', 't', 'sin')),
+    example: { a: 4, b: 2, t: 60, x: 2, y: 2 * Math.sin(60 * RAD) },
+    startWith: ['a', 'b', 't'],
+    representation: {
+      kind: 'polarGrid',
+      parametric: {
+        family: 'ellipse',
+        h: 0,
+        k: 0,
+        a: 'a',
+        b: 'b',
+        t: 't',
+        range: [0, 360],
+        x: 'x',
+        y: 'y',
+      },
+    },
+  },
+];
+
 export const HSD_GALLERY_MODULES: ModuleDef[] = [
   ...UNIT_CIRCLE,
   ...ALGEBRA_TILES,
   ...VECTORS,
   ...COMPLEX,
+  ...POLAR,
 ];
 export const HSD_GALLERY_LAYOUTS: LayoutDef[] = [];

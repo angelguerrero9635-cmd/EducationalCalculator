@@ -1991,6 +1991,7 @@ export function repIssues(
     case 'algebraTiles':
     case 'vectorDiagram':
     case 'complexPlane':
+    case 'polarGrid':
       out.push(...hsdIssues(rep, (id) => val(id)));
       break;
     case 'table':
