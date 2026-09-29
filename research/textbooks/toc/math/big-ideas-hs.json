@@ -1,0 +1,1277 @@
+{
+  "id": "big-ideas-hs",
+  "curriculum": "Big Ideas Math: Algebra 1, Geometry, Algebra 2 (Common Core)",
+  "publisher": "Big Ideas Learning",
+  "edition": "2022",
+  "subject": "math",
+  "grades": ["9", "10", "11"],
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Lesson"
+  },
+  "license": null,
+  "sourceUrl": "https://www.bigideaslearning.com/",
+  "retrieved": "2026-09-29",
+  "notes": "Titles only (all rights reserved). Chapter and lesson titles of the 2022 high-school courses as listed on IXL's public skill-plan pages (one per course, cited as each unit's url; robots.txt allows /math/skill-plans/, no login). Only the textbook's own numbers and titles are kept, not IXL's skill names. IXL lists the lessons it aligns skills to, so a lesson with no IXL skill may be missing. Math typeset in a title is written plainly (x², nth). Algebra 1 → grade 9, Geometry → 10, Algebra 2 → 11. Lesson 5.4 is listed by IXL as 'Solving Specials Systems of Linear Equations'; kept as listed.",
+  "books": [
+    {
+      "grade": "9",
+      "course": "Algebra 1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Solving Linear Equations",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.8.multi-step-equations", "m.9.absolute-value"],
+          "notes": "Solving linear equations in one variable has no Grade 9 skill; mapped to m.8.multi-step-equations.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Solving Simple Equations"
+            },
+            {
+              "n": "1.2",
+              "title": "Solving Multi-Step Equations"
+            },
+            {
+              "n": "1.3",
+              "title": "Modeling Quantities"
+            },
+            {
+              "n": "1.4",
+              "title": "Accuracy with Measurements"
+            },
+            {
+              "n": "1.5",
+              "title": "Solving Equations with Variables on Both Sides"
+            },
+            {
+              "n": "1.6",
+              "title": "Solving Absolute Value Equations"
+            },
+            {
+              "n": "1.7",
+              "title": "Rewriting Equations and Formulas"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Solving Linear Inequalities",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.9.inequality-systems", "m.9.absolute-value"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Writing and Graphing Inequalities"
+            },
+            {
+              "n": "2.2",
+              "title": "Solving Inequalities Using Addition or Subtraction"
+            },
+            {
+              "n": "2.3",
+              "title": "Solving Inequalities Using Multiplication or Division"
+            },
+            {
+              "n": "2.4",
+              "title": "Solving Multi-Step Inequalities"
+            },
+            {
+              "n": "2.5",
+              "title": "Solving Compound Inequalities"
+            },
+            {
+              "n": "2.6",
+              "title": "Solving Absolute Value Inequalities"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Graphing Linear Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.8.functions-intro", "m.9.linear-modeling", "m.9.absolute-value"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Functions"
+            },
+            {
+              "n": "3.2",
+              "title": "Characteristics of Functions"
+            },
+            {
+              "n": "3.3",
+              "title": "Linear Functions"
+            },
+            {
+              "n": "3.4",
+              "title": "Function Notation"
+            },
+            {
+              "n": "3.5",
+              "title": "Graphing Linear Equations in Standard Form"
+            },
+            {
+              "n": "3.6",
+              "title": "Graphing Linear Equations in Slope-Intercept Form"
+            },
+            {
+              "n": "3.7",
+              "title": "Transformations of Graphs of Linear Functions"
+            },
+            {
+              "n": "3.8",
+              "title": "Graphing Absolute Value Functions"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Writing Linear Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.9.linear-modeling", "m.9.regression", "m.9.sequences"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Writing Equations in Slope-Intercept Form"
+            },
+            {
+              "n": "4.2",
+              "title": "Writing Equations in Point-Slope Form"
+            },
+            {
+              "n": "4.3",
+              "title": "Writing Equations of Parallel and Perpendicular Lines"
+            },
+            {
+              "n": "4.4",
+              "title": "Scatter Plots and Lines of Fit"
+            },
+            {
+              "n": "4.5",
+              "title": "Analyzing Lines of Fit"
+            },
+            {
+              "n": "4.6",
+              "title": "Arithmetic Sequences"
+            },
+            {
+              "n": "4.7",
+              "title": "Piecewise Functions"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Solving Systems of Linear Equations",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.8.systems-linear", "m.9.inequality-systems"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Solving Systems of Linear Equations by Graphing"
+            },
+            {
+              "n": "5.2",
+              "title": "Solving Systems of Linear Equations by Substitution"
+            },
+            {
+              "n": "5.3",
+              "title": "Solving Systems of Linear Equations by Elimination"
+            },
+            {
+              "n": "5.4",
+              "title": "Solving Specials Systems of Linear Equations"
+            },
+            {
+              "n": "5.5",
+              "title": "Solving Equations by Graphing"
+            },
+            {
+              "n": "5.6",
+              "title": "Graphing Linear Inequalities in Two Variables"
+            },
+            {
+              "n": "5.7",
+              "title": "Systems of Linear Inequalities"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Exponential Functions and Sequences",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.9.radicals", "m.9.exponential-functions", "m.9.sequences"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Properties of Exponents"
+            },
+            {
+              "n": "6.2",
+              "title": "Radicals and Rational Exponents"
+            },
+            {
+              "n": "6.3",
+              "title": "Exponential Functions"
+            },
+            {
+              "n": "6.4",
+              "title": "Exponential Growth and Decay"
+            },
+            {
+              "n": "6.5",
+              "title": "Solving Exponential Equations"
+            },
+            {
+              "n": "6.6",
+              "title": "Geometric Sequences"
+            },
+            {
+              "n": "6.7",
+              "title": "Recursively Defined Sequences"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Polynomial Equations and Factoring",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.9.polynomial-operations", "m.9.factoring"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Adding and Subtracting Polynomials"
+            },
+            {
+              "n": "7.2",
+              "title": "Multiplying and Dividing Polynomials"
+            },
+            {
+              "n": "7.3",
+              "title": "Special Products of Polynomials"
+            },
+            {
+              "n": "7.4",
+              "title": "Solving Polynomial Equations in Factored Form"
+            },
+            {
+              "n": "7.5",
+              "title": "Factoring x² + bx + c"
+            },
+            {
+              "n": "7.6",
+              "title": "Factoring ax² + bx + c"
+            },
+            {
+              "n": "7.7",
+              "title": "Factoring Special Products"
+            },
+            {
+              "n": "7.8",
+              "title": "Factoring Polynomials Completely"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Graphing Quadratic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.9.quadratic-functions"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Graphing f(x) = ax²",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8.2",
+              "title": "Graphing f(x) = ax² + c",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8.3",
+              "title": "Graphing f(x) = ax² + bx + c",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8.4",
+              "title": "Graphing f(x) = a(x – h)² + k",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8.5",
+              "title": "Using Intercept Form",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "8.6",
+              "title": "Comparing Linear, Exponential, and Quadratic Functions",
+              "skills": ["m.9.quadratic-functions"]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Solving Quadratic Equations",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.9.radicals", "m.9.quadratic-formula", "m.9.quadratic-functions"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Properties of Radicals"
+            },
+            {
+              "n": "9.2",
+              "title": "Solving Quadratic Equations by Graphing"
+            },
+            {
+              "n": "9.3",
+              "title": "Solving Quadratic Equations Using Square Roots"
+            },
+            {
+              "n": "9.4",
+              "title": "Solving Quadratic Equations by Completing the Square"
+            },
+            {
+              "n": "9.5",
+              "title": "Solving Quadratic Equations by Using the Quadratic Formula"
+            },
+            {
+              "n": "9.6",
+              "title": "Solving Nonlinear Systems of Equations"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Radical Functions and Equations",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.9.radicals", "m.11.inverse-functions"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Graphing Square Root Functions"
+            },
+            {
+              "n": "10.2",
+              "title": "Graphing Cube Root Functions"
+            },
+            {
+              "n": "10.3",
+              "title": "Solving Radical Equations"
+            },
+            {
+              "n": "10.4",
+              "title": "Inverse of a Function"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Data Analysis and Displays",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-1",
+          "skills": ["m.6.center-spread", "m.10.conditional-probability"],
+          "notes": "Descriptive statistics (center, spread, box plots, shape) have no high-school skill; mapped to m.6.center-spread. Loose fit: two-way tables have no taxonomy skill; nearest m.10.conditional-probability.",
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Measures of Center and Variation"
+            },
+            {
+              "n": "11.2",
+              "title": "Box-and-Whisker Plots"
+            },
+            {
+              "n": "11.3",
+              "title": "Shapes of Distributions"
+            },
+            {
+              "n": "11.4",
+              "title": "Two-Way Tables"
+            },
+            {
+              "n": "11.5",
+              "title": "Choosing a Data Display"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "10",
+      "course": "Geometry",
+      "units": [
+        {
+          "n": "1",
+          "title": "Basics of Geometry",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.constructions", "m.10.coordinate-geometry", "m.7.angle-relationships"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Points, Lines, and Planes"
+            },
+            {
+              "n": "1.2",
+              "title": "Measuring and Constructing Segments"
+            },
+            {
+              "n": "1.3",
+              "title": "Using Midpoint and Distance Formulas"
+            },
+            {
+              "n": "1.4",
+              "title": "Perimeter and Area in the Coordinate Plane"
+            },
+            {
+              "n": "1.5",
+              "title": "Measuring and Constructing Angles"
+            },
+            {
+              "n": "1.6",
+              "title": "Describing Pairs of Angles"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Reasoning and Proofs",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.proofs"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Conditional Statements",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "2.2",
+              "title": "Inductive and Deductive Reasoning",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "2.3",
+              "title": "Postulates and Diagrams",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "2.4",
+              "title": "Algebraic Reasoning",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "2.5",
+              "title": "Proving Statements about Segments and Angles",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "2.6",
+              "title": "Proving Geometric Relationships",
+              "skills": ["m.10.proofs"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Parallel and Perpendicular Lines",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.proofs", "m.7.angle-relationships", "m.10.coordinate-geometry"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Pairs of Lines and Angles"
+            },
+            {
+              "n": "3.2",
+              "title": "Parallel Lines and Transversals"
+            },
+            {
+              "n": "3.3",
+              "title": "Proofs with Parallel Lines"
+            },
+            {
+              "n": "3.4",
+              "title": "Proofs with Perpendicular Lines"
+            },
+            {
+              "n": "3.5",
+              "title": "Equations of Parallel and Perpendicular Lines"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Transformations",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.8.transformations", "m.10.congruence", "m.10.similarity"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Translations"
+            },
+            {
+              "n": "4.2",
+              "title": "Reflections"
+            },
+            {
+              "n": "4.3",
+              "title": "Rotations"
+            },
+            {
+              "n": "4.4",
+              "title": "Congruence and Transformations"
+            },
+            {
+              "n": "4.5",
+              "title": "Dilations"
+            },
+            {
+              "n": "4.6",
+              "title": "Similarity and Transformations"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Congruent Triangles",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.congruence", "m.10.coordinate-geometry"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Angles of Triangles"
+            },
+            {
+              "n": "5.2",
+              "title": "Congruent Polygons"
+            },
+            {
+              "n": "5.3",
+              "title": "Proving Triangle Congruence by SAS"
+            },
+            {
+              "n": "5.4",
+              "title": "Equilateral and Isosceles Triangles"
+            },
+            {
+              "n": "5.5",
+              "title": "Proving Triangle Congruence by SSS"
+            },
+            {
+              "n": "5.6",
+              "title": "Proving Triangle Congruence by ASA and AAS"
+            },
+            {
+              "n": "5.7",
+              "title": "Using Congruent Triangles"
+            },
+            {
+              "n": "5.8",
+              "title": "Coordinate Proofs"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Relationships Within Triangles",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.proofs", "m.10.constructions"],
+          "notes": "Loose fit: triangle bisectors, medians, midsegments and inequalities have no taxonomy skill; nearest m.10.proofs.",
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Perpendicular and Angle Bisectors"
+            },
+            {
+              "n": "6.2",
+              "title": "Bisectors of Triangles"
+            },
+            {
+              "n": "6.3",
+              "title": "Medians and Altitudes of Triangles"
+            },
+            {
+              "n": "6.4",
+              "title": "The Triangle Midsegment Theorem"
+            },
+            {
+              "n": "6.5",
+              "title": "Indirect Proof and Inequalities in One Triangle"
+            },
+            {
+              "n": "6.6",
+              "title": "Inequalities in Two Triangles"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Quadrilaterals and Other Polygons",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.proofs"],
+          "notes": "Loose fit: properties of quadrilaterals and polygons have no high-school taxonomy skill; nearest m.10.proofs.",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Angles of Polygons",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7.2",
+              "title": "Properties of Parallelograms",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7.3",
+              "title": "Proving That a Quadrilateral is a Parallelogram",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7.4",
+              "title": "Properties of Special Parallelograms",
+              "skills": ["m.10.proofs"]
+            },
+            {
+              "n": "7.5",
+              "title": "Properties of Trapezoids and Kites",
+              "skills": ["m.10.proofs"]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Similarity",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.similarity"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Similar Polygons",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8.2",
+              "title": "Proving Triangle Similarity by AA",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8.3",
+              "title": "Proving Triangle Similarity by SSS and SAS",
+              "skills": ["m.10.similarity"]
+            },
+            {
+              "n": "8.4",
+              "title": "Proportionality Theorems",
+              "skills": ["m.10.similarity"]
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Right Triangles and Trigonometry",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": [
+            "m.8.pythagorean",
+            "m.10.special-right-triangles",
+            "m.10.similarity",
+            "m.10.right-triangle-trig",
+            "m.12.law-sines-cosines"
+          ],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "The Pythagorean Theorem"
+            },
+            {
+              "n": "9.2",
+              "title": "Special Right Triangles"
+            },
+            {
+              "n": "9.3",
+              "title": "Similar Right Triangles"
+            },
+            {
+              "n": "9.4",
+              "title": "The Tangent Ratio"
+            },
+            {
+              "n": "9.5",
+              "title": "The Sine and Cosine Ratios"
+            },
+            {
+              "n": "9.6",
+              "title": "Solving Right Triangles"
+            },
+            {
+              "n": "9.7",
+              "title": "Law of Sines and Law of Cosines"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Circles",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.circle-theorems", "m.10.coordinate-geometry", "m.12.conics"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Lines and Segments that Intersect Circles"
+            },
+            {
+              "n": "10.2",
+              "title": "Finding Arc Measures"
+            },
+            {
+              "n": "10.3",
+              "title": "Using Chords"
+            },
+            {
+              "n": "10.4",
+              "title": "Inscribed Angles and Polygons"
+            },
+            {
+              "n": "10.5",
+              "title": "Angle Relationships in Circles"
+            },
+            {
+              "n": "10.6",
+              "title": "Segment Relationships in Circles"
+            },
+            {
+              "n": "10.7",
+              "title": "Circles in the Coordinate Plane"
+            },
+            {
+              "n": "10.8",
+              "title": "Focus of a Parabola"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Circumference and Area",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.arc-sector", "m.7.circles", "m.6.area-polygons"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Circumference and Arc Length"
+            },
+            {
+              "n": "11.2",
+              "title": "Areas of Circles and Sectors"
+            },
+            {
+              "n": "11.3",
+              "title": "Areas of Polygons"
+            },
+            {
+              "n": "11.4",
+              "title": "Modeling with Area"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Surface Area and Volume",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": ["m.10.volume-derivations", "m.8.volume-curved"],
+          "notes": "Surface area of prisms, pyramids, cones and spheres has no high-school skill; nearest m.10.volume-derivations and m.8.volume-curved.",
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Cross Sections of Solids"
+            },
+            {
+              "n": "12.2",
+              "title": "Volumes of Prisms and Cylinders"
+            },
+            {
+              "n": "12.3",
+              "title": "Volumes of Pyramids"
+            },
+            {
+              "n": "12.4",
+              "title": "Surface Areas and Volumes of Cones"
+            },
+            {
+              "n": "12.5",
+              "title": "Surface Areas and Volumes of Spheres"
+            },
+            {
+              "n": "12.6",
+              "title": "Modeling with Surface Area and Volume"
+            },
+            {
+              "n": "12.7",
+              "title": "Solids of Revolution"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Probability",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-geometry",
+          "skills": [
+            "m.10.conditional-probability",
+            "m.12.binomial-theorem",
+            "m.12.probability-distributions"
+          ],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Sample Spaces and Probability"
+            },
+            {
+              "n": "13.2",
+              "title": "Two-Way Tables and Probability"
+            },
+            {
+              "n": "13.3",
+              "title": "Conditional Probability"
+            },
+            {
+              "n": "13.4",
+              "title": "Independent and Dependent Events"
+            },
+            {
+              "n": "13.5",
+              "title": "Probability of Disjoint and Overlapping Events"
+            },
+            {
+              "n": "13.6",
+              "title": "Permutations and Combinations"
+            },
+            {
+              "n": "13.7",
+              "title": "Binomial Distributions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "grade": "11",
+      "course": "Algebra 2",
+      "units": [
+        {
+          "n": "1",
+          "title": "Linear Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.9.linear-modeling", "m.9.absolute-value", "m.8.systems-linear"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Parent Functions and Transformations"
+            },
+            {
+              "n": "1.2",
+              "title": "Transformations of Linear and Absolute Value Functions"
+            },
+            {
+              "n": "1.3",
+              "title": "Modeling With Linear Functions"
+            },
+            {
+              "n": "1.4",
+              "title": "Solving Linear Systems"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Quadratic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.9.quadratic-functions", "m.12.conics"],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Transformations of Quadratic Functions"
+            },
+            {
+              "n": "2.2",
+              "title": "Characteristics of Quadratic Functions"
+            },
+            {
+              "n": "2.3",
+              "title": "Focus of a Parabola"
+            },
+            {
+              "n": "2.4",
+              "title": "Modeling with Quadratic Functions"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Quadratic Equations and Complex Numbers",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.11.complex-numbers", "m.9.quadratic-formula"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Solving Quadratic Equations"
+            },
+            {
+              "n": "3.2",
+              "title": "Complex Numbers"
+            },
+            {
+              "n": "3.3",
+              "title": "Completing the Square"
+            },
+            {
+              "n": "3.4",
+              "title": "Using the Quadratic Formula"
+            },
+            {
+              "n": "3.5",
+              "title": "Solving Nonlinear Systems of Equations"
+            },
+            {
+              "n": "3.6",
+              "title": "Quadratic Inequalities"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Polynomial Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.11.polynomial-functions"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Graphing Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.2",
+              "title": "Adding, Subtracting, and Multiplying Polynomials",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.3",
+              "title": "Dividing Polynomials",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.4",
+              "title": "Factoring Polynomials",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.5",
+              "title": "Solving Polynomial Equations",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.6",
+              "title": "The Fundamental Theorem of Algebra",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.7",
+              "title": "Transformations of Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.8",
+              "title": "Analyzing Graphs of Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            },
+            {
+              "n": "4.9",
+              "title": "Modeling with Polynomial Functions",
+              "skills": ["m.11.polynomial-functions"]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Rational Exponents and Radical Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.9.radicals", "m.11.inverse-functions"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "nth Roots and Rational Exponents"
+            },
+            {
+              "n": "5.2",
+              "title": "Properties of Rational Exponents and Radicals"
+            },
+            {
+              "n": "5.3",
+              "title": "Graphing Radical Functions"
+            },
+            {
+              "n": "5.4",
+              "title": "Solving Radical Equations and Inequalities"
+            },
+            {
+              "n": "5.5",
+              "title": "Performing Function Operations"
+            },
+            {
+              "n": "5.6",
+              "title": "Composition of Functions"
+            },
+            {
+              "n": "5.7",
+              "title": "Inverse of a Function"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Exponential and Logarithmic Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.9.exponential-functions", "m.11.logarithms", "m.11.exp-log-equations"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Exponential Growth and Decay Functions"
+            },
+            {
+              "n": "6.2",
+              "title": "The Natural Base e"
+            },
+            {
+              "n": "6.3",
+              "title": "Logarithms and Logarithmic Functions"
+            },
+            {
+              "n": "6.4",
+              "title": "Transformations of Exponential and Logarithmic Functions"
+            },
+            {
+              "n": "6.5",
+              "title": "Properties of Logarithms"
+            },
+            {
+              "n": "6.6",
+              "title": "Solving Exponential and Logarithmic Equations"
+            },
+            {
+              "n": "6.7",
+              "title": "Modeling with Exponential and Logarithmic Functions"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Rational Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.11.rational-functions"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Inverse Variation",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.2",
+              "title": "Graphing Rational Functions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.3",
+              "title": "Multiplying and Dividing Rational Expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.4",
+              "title": "Adding and Subtracting Rational Expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.5",
+              "title": "Solving Rational Equations",
+              "skills": ["m.11.rational-functions"]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Probability",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": [
+            "m.10.conditional-probability",
+            "m.12.binomial-theorem",
+            "m.12.probability-distributions"
+          ],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Sample Spaces and Probability"
+            },
+            {
+              "n": "8.2",
+              "title": "Two-Way Tables and Probability"
+            },
+            {
+              "n": "8.3",
+              "title": "Conditional Probability"
+            },
+            {
+              "n": "8.4",
+              "title": "Independent and Dependent Events"
+            },
+            {
+              "n": "8.5",
+              "title": "Probability of Disjoint and Overlapping Events"
+            },
+            {
+              "n": "8.6",
+              "title": "Permutations and Combinations"
+            },
+            {
+              "n": "8.7",
+              "title": "Binomial Distributions"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Data Analysis and Statistics",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.11.normal-distribution", "m.12.hypothesis-testing"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Using Normal Distributions"
+            },
+            {
+              "n": "9.2",
+              "title": "Populations, Samples, and Hypotheses"
+            },
+            {
+              "n": "9.3",
+              "title": "Collecting Data"
+            },
+            {
+              "n": "9.4",
+              "title": "Experimental Design"
+            },
+            {
+              "n": "9.5",
+              "title": "Making Inferences from Sample Surveys"
+            },
+            {
+              "n": "9.6",
+              "title": "Making Inferences from Experiments"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Trigonometric Ratios and Functions",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": [
+            "m.10.right-triangle-trig",
+            "m.11.unit-circle",
+            "m.11.trig-graphs",
+            "m.11.pythagorean-identities",
+            "m.12.trig-formulas-equations"
+          ],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Right Angle Trigonometry"
+            },
+            {
+              "n": "10.2",
+              "title": "Angles and Radian Measure"
+            },
+            {
+              "n": "10.3",
+              "title": "Trigonometric Functions of Any Angle"
+            },
+            {
+              "n": "10.4",
+              "title": "Graphing Sine and Cosine Functions"
+            },
+            {
+              "n": "10.5",
+              "title": "Graphing Other Trigonometric Functions"
+            },
+            {
+              "n": "10.6",
+              "title": "Modeling with Trigonometric Functions"
+            },
+            {
+              "n": "10.7",
+              "title": "Using Trigonometric Identities"
+            },
+            {
+              "n": "10.8",
+              "title": "Using Sum and Difference Formulas"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Sequences and Series",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.9.sequences", "m.11.series"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Defining and Using Sequences and Series"
+            },
+            {
+              "n": "11.2",
+              "title": "Analyzing Arithmetic Sequences and Series"
+            },
+            {
+              "n": "11.3",
+              "title": "Analyzing Geometric Sequences and Series"
+            },
+            {
+              "n": "11.4",
+              "title": "Finding Sums of Infinite Geometric Series"
+            },
+            {
+              "n": "11.5",
+              "title": "Using Recursive Rules with Sequences"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Matrices",
+          "url": "https://www.ixl.com/math/skill-plans/big-ideas-math-2022-algebra-2",
+          "skills": ["m.12.matrices"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Basic Matrix Operations",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "12.2",
+              "title": "Multiplying Matrices",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "12.3",
+              "title": "Determinants and Cramer's Rule",
+              "skills": ["m.12.matrices"]
+            },
+            {
+              "n": "12.4",
+              "title": "Inverse Matrices",
+              "skills": ["m.12.matrices"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
