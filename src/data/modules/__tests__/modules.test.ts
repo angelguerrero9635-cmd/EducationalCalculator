@@ -399,7 +399,12 @@ function representationVars(r: Representation): string[] {
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
-      return [r.slope, r.intercept, ...(r.at ? [r.at.x, r.at.y] : [])];
+      return [
+        ...[r.slope, r.intercept, r.r, r.residualOf?.residual].filter(
+          (x): x is string => typeof x === 'string',
+        ),
+        ...(r.at ? [r.at.x, r.at.y] : []),
+      ];
     case 'curvedSolid':
       return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
     case 'rootSquare':

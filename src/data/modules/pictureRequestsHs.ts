@@ -252,12 +252,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "DRAWN. Spec (types.ts, integerLine), optional; other integerLine pages unchanged: compound { join: 'and' | 'or', closed?: [lower, upper] (default both open), center?, radius?, letter?, test? } with value (the lower bound) and second (the upper bound). 'and' draws the stretch between the bounds (both parts true; bounds past each other say no solution); 'or' draws two rays outward (either part; rays that meet or pass take in every number). With center and radius it is |x − c| < d ('and') or > d ('or'): the center a diamond, the distance d bracketed to each bound, c − d and c + d worked in the caption; the harness checks value = c − d and second = c + d. test is a number marked true or false, each part worked in the caption. Handles: the two bounds, or the center and the upper bound (the radius), and the test number. Example (m.9.linear-inequalities, −3 ≤ 2x + 1 < 7): representation: { kind: 'integerLine', value: 'L', second: 'U', min: -5, max: 5, compound: { join: 'and', closed: [true, false], test: 't' } }; (m.9.absolute-value, |x − 1| ≤ 3): { kind: 'integerLine', value: 'L', second: 'U', min: -5, max: 5, compound: { join: 'and', closed: [true, true], center: 'c', radius: 'd', test: 't' } }. The demos solve ax + b with a > 0; a page dividing by a negative passes the flipped closed pair.",
   },
-  ask(
-    'H18',
-    'scatter',
-    'Residual segments, a residual plot below, the correlation r and the least-squares line',
-    ['m.9.regression'],
-  ),
+  {
+    ...ask(
+      'H18',
+      'scatter',
+      'Residual segments, a residual plot below, the correlation r and the least-squares line',
+      ['m.9.regression'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m9-regression-residuals', 'g.m9-regression-least-squares', 'g.m9-regression-weak'],
+    notes:
+      "DRAWN. Spec (types.ts, scatter), optional; Grade 8 scatter pages unchanged: residuals 'segments' | 'plot' (each residual, actual − predicted, as a segment to the line; 'plot' adds a residual plot under the chart, residuals over x about 0, and the caption counts positive and negative residuals and gives the sum of their squares); r: true (worked out from the points, ≈ to two places, with its strength in words) or a value id (checked against the points to 0.005); leastSquares 'beside' (the least-squares line dashed beside the dragged line, with its sum of squares, the least any line gives) or 'fit' (slope and intercept are the least-squares line, checked to the cent, no handles; slope and intercept may now be numbers, the calculator's rounded values); residualOf { point, residual? } (one point's residual labelled and worked, its value checked). Example (m.9.regression): representation: { kind: 'scatter', x: { label: 'Hours studied', min: 0, max: 9 }, y: { label: 'Quiz score', min: 40, max: 100 }, points: [...], slope: 'm', intercept: 'b', at: { x: 'x', y: 'y' }, residuals: 'plot', residualOf: { point: 3, residual: 'e' } }; given line: { ..., slope: -0.65, intercept: 47.87, r: true, residuals: 'segments', leastSquares: 'fit' }.",
+  },
   ask(
     'H19',
     'boxPlot',

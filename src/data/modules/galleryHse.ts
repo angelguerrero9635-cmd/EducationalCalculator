@@ -666,5 +666,191 @@ const H17_MODULES: ModuleDef[] = [
   }),
 ];
 
-export const HSE_GALLERY_MODULES: ModuleDef[] = [...H16_MODULES, ...H17_MODULES];
+// ── H18: residuals, r and the least-squares line ──
+
+/** ŷ = mx + b: the line's prediction at x. */
+const predict = rule(
+  'ŷ = mx + b',
+  '{y} = {m} × {x} + {b}',
+  ['y', 'm', 'x', 'b'],
+  (v) => v.y! - (v.m! * v.x! + v.b!),
+  {
+    y: [
+      (v) => v.m! * v.x! + v.b!,
+      '{m} × {x} + {b}',
+      'Put x into the line: slope times x, plus b.',
+    ],
+    x: [
+      (v) => div(v.y! - v.b!, v.m!),
+      '({y} − {b}) ÷ {m}',
+      'Subtract b from the prediction, then divide by the slope.',
+    ],
+  },
+);
+
+/** Hours studied and quiz scores (made up for the demo). */
+const STUDY: [number, number][] = [
+  [1, 48],
+  [2, 57],
+  [3, 59],
+  [4, 68],
+  [5, 68],
+  [6, 77],
+  [7, 78],
+  [8, 87],
+];
+/** Afternoon temperature (°C) and hot drinks sold (made up). */
+const DRINKS: [number, number][] = [
+  [10, 42],
+  [15, 38],
+  [20, 36],
+  [25, 29],
+  [30, 31],
+  [35, 24],
+  [40, 20],
+  [45, 21],
+];
+/** Practice runs and mistakes in the last run (made up): a weak pattern. */
+const PRACTICE: [number, number][] = [
+  [2, 9],
+  [3, 4],
+  [4, 8],
+  [5, 3],
+  [6, 7],
+  [7, 6],
+  [8, 2],
+  [9, 5],
+  [10, 4],
+];
+
+const H18_MODULES: ModuleDef[] = [
+  page({
+    id: 'g.m9-regression-residuals',
+    title: 'Residuals and the residual plot',
+    use: 'Use this for finding residuals (actual − predicted) and reading a residual plot.',
+    assumptions: [
+      'A residual is the actual y minus the y the line predicts: above the line is positive.',
+      'The residual plot puts each residual over its x, about a line at 0.',
+      'Drag either end of the line and watch the residuals change.',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -20, 20, 0.5),
+      num('b', 'b', 'Intercept', 0, 100, 0.5),
+      num('x', 'x', 'Hours studied', 0, 9, 0.5),
+      out('y', 'ŷ', 'Predicted score'),
+      out('e', 'e', 'Residual at 4 hours'),
+    ],
+    rules: [
+      predict,
+      rule(
+        'e = 68 − (4m + b)',
+        '{e} = 68 − ({m} × 4 + {b})',
+        ['e', 'm', 'b'],
+        (v) => v.e! - (68 - (v.m! * 4 + v.b!)),
+        {
+          e: [
+            (v) => 68 - (v.m! * 4 + v.b!),
+            '68 − ({m} × 4 + {b})',
+            'The point (4, 68): its actual score minus the line’s prediction at 4.',
+          ],
+        },
+      ),
+    ],
+    example: { m: 5, b: 45, x: 6, y: 75, e: 3 },
+    startWith: ['m', 'b', 'x'],
+    representation: {
+      kind: 'scatter',
+      x: { label: 'Hours studied', min: 0, max: 9 },
+      y: { label: 'Quiz score', min: 40, max: 100 },
+      points: STUDY,
+      slope: 'm',
+      intercept: 'b',
+      at: { x: 'x', y: 'y' },
+      residuals: 'plot',
+      residualOf: { point: 3, residual: 'e' },
+    },
+  }),
+  page({
+    id: 'g.m9-regression-least-squares',
+    title: 'The least-squares line and r',
+    use: 'Use this for predicting with the least-squares line and reading the correlation r.',
+    assumptions: [
+      'The least-squares line makes the sum of the squared residuals as small as it can be.',
+      'r runs from −1 to 1: its sign is the direction, its size how close the points are to a line.',
+      'A calculator gives the line and r; here they are rounded to two places.',
+    ],
+    variables: [
+      num('x', 'x', 'Temperature (°C)', 0, 50, 0.5),
+      out('y', 'ŷ', 'Predicted drinks sold'),
+    ],
+    rules: [
+      rule(
+        'ŷ = −0.65x + 47.87',
+        '{y} = −0.65 × {x} + 47.87',
+        ['y', 'x'],
+        (v) => v.y! - (-0.65 * v.x! + 47.87),
+        {
+          y: [
+            (v) => -0.65 * v.x! + 47.87,
+            '−0.65 × {x} + 47.87',
+            'Put the temperature into the line.',
+          ],
+          x: [
+            (v) => (v.y! - 47.87) / -0.65,
+            '({y} − 47.87) ÷ (−0.65)',
+            'Subtract 47.87, then divide by the slope, −0.65.',
+          ],
+        },
+      ),
+    ],
+    example: { x: 28, y: 29.67 },
+    startWith: ['x'],
+    representation: {
+      kind: 'scatter',
+      x: { label: 'Temperature (°C)', min: 0, max: 50 },
+      y: { label: 'Hot drinks sold', min: 0, max: 50 },
+      points: DRINKS,
+      slope: -0.65,
+      intercept: 47.87,
+      at: { x: 'x', y: 'y' },
+      r: true,
+      residuals: 'segments',
+      leastSquares: 'fit',
+    },
+  }),
+  // The edge: a weak pattern, where a line predicts little.
+  page({
+    id: 'g.m9-regression-weak',
+    title: 'Fitting a line to a weak pattern',
+    use: 'Use this for comparing your own line of fit with the least-squares line.',
+    assumptions: [
+      'Drag the line until the squared residuals add up to as little as you can.',
+      'The dashed line is the least-squares line: no line does better.',
+      'With r near 0 the points hardly follow a line, so its predictions are rough.',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -5, 5, 0.1),
+      num('b', 'b', 'Intercept', -10, 20, 0.1),
+      num('x', 'x', 'Practice runs', 0, 11, 0.5),
+      out('y', 'ŷ', 'Predicted mistakes'),
+    ],
+    rules: [predict],
+    example: { m: -0.6, b: 9, x: 6, y: 5.4 },
+    startWith: ['x', 'm', 'b'],
+    representation: {
+      kind: 'scatter',
+      x: { label: 'Practice runs', min: 0, max: 11 },
+      y: { label: 'Mistakes', min: 0, max: 10 },
+      points: PRACTICE,
+      slope: 'm',
+      intercept: 'b',
+      at: { x: 'x', y: 'y' },
+      r: true,
+      residuals: 'segments',
+      leastSquares: 'beside',
+    },
+  }),
+];
+
+export const HSE_GALLERY_MODULES: ModuleDef[] = [...H16_MODULES, ...H17_MODULES, ...H18_MODULES];
 export const HSE_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -612,11 +612,24 @@ export type Representation =
       x: { label: string; min: number; max: number; step?: number };
       y: { label: string; min: number; max: number; step?: number };
       points: [number, number][];
-      slope: string;
-      intercept: string;
+      /** Values, or (Grades 9–12, with `leastSquares: 'fit'`) the calculator's numbers. */
+      slope: string | number;
+      intercept: string | number;
       clusters?: { label: string; points: number[] }[];
       outlier?: number;
       at?: { x: string; y: string };
+      /**
+       * Grades 9–12 (H18). `residuals`: each point's residual (actual − predicted) as a segment
+       * to the line; 'plot' adds a residual plot under the scatter plot. `r`: the correlation
+       * coefficient's value (checked against the points). `leastSquares`: the least-squares
+       * line dashed beside the dragged one ('beside'), or the module's slope and intercept are
+       * it ('fit': checked to the cent, no handles). `residualOf`: one point (an index) with
+       * its residual labelled, and the residual's value (checked).
+       */
+      residuals?: 'segments' | 'plot';
+      r?: string | true;
+      leastSquares?: 'beside' | 'fit';
+      residualOf?: { point: number; residual?: string };
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at

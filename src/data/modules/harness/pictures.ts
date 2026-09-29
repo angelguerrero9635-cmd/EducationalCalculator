@@ -24,6 +24,7 @@ import { chemIssues } from './chemPictures';
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
+import { scatterIssues } from './picturesHse';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1716,12 +1717,13 @@ export function repIssues(
         const ids4 = [rep.slope, rep.intercept, rep.at.x, rep.at.y];
         const [m, b, x, y] = ids4.map(val);
         if (
-          ids4.every((id) => !byId.get(id)?.unit) &&
+          ids4.every((id) => typeof id === 'number' || !byId.get(id)?.unit) &&
           [m, b, x, y].every((v) => v !== undefined) &&
           Math.abs(m! * x! + b! - y!) > 1e-6 * (1 + Math.abs(y!))
         )
           out.push(`prediction ${y} is off the line (${m! * x! + b!})`);
       }
+      out.push(...scatterIssues(rep, val));
       break;
     }
     case 'curvedSolid': {
