@@ -4,10 +4,15 @@
  * the pages (`drawn` → `placed`). `pictureRequests.test.ts` checks the pages and gallery ids
  * exist and that a placed picture is on every page it names. Brief: docs/RENDERINGS_BRIEF.md.
  */
+import { HS_PICTURE_REQUESTS } from './pictureRequestsHs';
+
 export type PictureStatus = 'requested' | 'drawn' | 'placed';
 
 export interface PictureRequest {
-  /** R.. for K–6 pages, G.. for the planned Grade 7 and 8 skills, D.. for the K–6 diagram review. */
+  /**
+   * R.. for K–6 pages, G.. for the planned Grade 7 and 8 skills, D.. for the K–6 diagram review,
+   * H.. for Grades 9–12 (`pictureRequestsHs.ts`).
+   */
   id: string;
   /** What to draw, in a few words. */
   what: string;
@@ -2497,4 +2502,5 @@ export const PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Urgency: low. Weak now: Flat and exact, but very faint grid (squares hard to count); parts differ only by a light grey tint; small area numbers; side labels far from their edges, "2 cm" near the right edge; no split line. Redo: Two distinct flat tints (e.g. primary 15 %, amber 20 %); 2 px dashed split line; grid at chartGrid 1 px; part areas in 18 px centred chips ("15 cm²"); side labels on dimension lines with end ticks, 6 px from the edge and 8 px inside the canvas. Cut-out variant: removed piece hatched with a dashed outline. Sliders unchanged. Drawn (round 4, group E): flat, centred, sized from the values. Two distinct tints (chartHighlight 15 %, chartSecond 30 %), a 2 px dashed split line where the parts meet, unit-square grid lines at 35 % chartMuted (countable in both themes). Part areas in centred chips with the unit ("15 cm²"), or above the part on a short leader when it is too thin (10 by 1). Every side on a dimension line with end ticks, 10 px from its edge and inside the canvas. Cut-out: the removed piece hatched in a dashed outline with its area on a muted chip, the cut width above and height right as muted dimension lines; the shape left in unit squares with its area on a chip (in its bigger part; the caption carries it when the L is too thin). Sliders unchanged. No page change.',
   },
+  ...HS_PICTURE_REQUESTS,
 ];
