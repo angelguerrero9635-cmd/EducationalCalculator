@@ -24,7 +24,7 @@ const coord = (id: string, symbol: string, name: string, lim = 10) =>
 
 /**
  * A relation with its solve functions and step text, one entry per variable (null: the
- * variable is in the relation but not worked out from it).
+ * variable is in the relation but not worked out from it, and never searched for).
  */
 function R(
   id: string,
@@ -41,7 +41,11 @@ function R(
       display,
       vars: Object.keys(parts),
       residual,
-      solve: Object.fromEntries(solved.map(([k, [f]]) => [k, f])),
+      // (a variable not worked out from it gets a solver that gives up, so the engine never
+      // searches for it by trying numbers)
+      solve: Object.fromEntries(
+        Object.entries(parts).map(([k, p]) => [k, p ? p[0] : () => undefined]),
+      ),
     },
     steps: Object.fromEntries(solved.map(([k, [, expr, how]]) => [k, { expr, how }])),
   };
@@ -1658,6 +1662,98 @@ const rootPerfect = rootDemo(
   ],
 );
 
+// ── H29 powerScale: the log read off the ruler ──
+
+function logDemo(
+  id: string,
+  title: string,
+  use: string,
+  example: Values,
+  assumptions: string[],
+): ModuleDef {
+  return {
+    id,
+    title,
+    use,
+    assumptions,
+    variables: [
+      V('N', 'N', 'Number', { min: 1e-12, max: 9.999e12, full: true }),
+      V('a', 'a', 'Number from 1 up to 10', { min: 1, max: 9.999, step: 0.001 }),
+      V('n', 'n', 'Power of ten', { min: -12, max: 12, step: 1, integer: true }),
+      V('L', 'L', 'log₁₀ of the number', { min: -12, max: 13, step: 0.001, derived: true }),
+    ],
+    ...rels(
+      R('N = a × 10^n', '{N} = {a} × 10^{n}', (v) => v.N! - v.a! * 10 ** v.n!, {
+        N: [
+          (v) => v.a! * 10 ** v.n!,
+          '{a} × 10^{n}',
+          'The number from 1 up to 10 times the power of ten.',
+        ],
+        a: [
+          (v) => v.N! / 10 ** v.n!,
+          '{N} ÷ 10^{n}',
+          'Divide by the power of ten to leave one digit, not 0, before the point.',
+        ],
+        n: null,
+      }),
+      R(
+        'n from N',
+        '{n} = exponent of the power of ten at or below {N}',
+        (v) => v.n! - Math.floor(Math.log10(v.N!) + 1e-9),
+        {
+          n: [
+            (v) => (v.N! > 0 ? Math.floor(Math.log10(v.N!) + 1e-9) : undefined),
+            'exponent of the power of ten at or below {N}',
+            'The whole part of the log: how many places the point moves.',
+          ],
+          N: null,
+        },
+      ),
+      R('L = log₁₀ N', '{L} = log₁₀({N})', (v) => v.L! - Math.log10(v.N!), {
+        L: [
+          (v) => (v.N! > 0 ? Math.log10(v.N!) : undefined),
+          'log₁₀({N})',
+          'The power of ten that makes the number: the exponent plus the log of the number in front.',
+        ],
+        N: [(v) => 10 ** v.L!, '10^{L}', 'Undo the log: 10 to that power.'],
+      }),
+    ),
+    example,
+    startWith: ['N'],
+    representation: {
+      kind: 'powerScale',
+      number: 'N',
+      mantissa: 'a',
+      exponent: 'n',
+      log: 'L',
+      fixed: true,
+    },
+  };
+}
+
+const logRead = logDemo(
+  'g.m11-logarithms-ruler',
+  'Reading a log off the ruler',
+  'Use this for “Estimate log₁₀ 470,000.”',
+  { N: 470000, a: 4.7, n: 5, L: Math.log10(470000) },
+  [
+    'log₁₀ N is the power of ten that makes N.',
+    'Written as a × 10ⁿ, N has log n + log₁₀ a: the exponent is the whole part.',
+    'log₁₀ a is between 0 and 1; the scale under the 1–10 ruler reads it.',
+  ],
+);
+
+const logSmall = logDemo(
+  'g.m11-logarithms-small',
+  'The log of a number under 1',
+  'Use this for “Estimate log₁₀ 0.003.”',
+  { N: 0.003, a: 3, n: -3, L: Math.log10(0.003) },
+  [
+    'A number under 1 has a negative power of ten, so its log is negative.',
+    'log₁₀ 0.003 = −3 + log₁₀ 3 ≈ −3 + 0.477 = −2.523.',
+  ],
+);
+
 export const HSF_GALLERY_MODULES: ModuleDef[] = [
   composeReflectRotate,
   composeGlide,
@@ -1692,5 +1788,7 @@ export const HSF_GALLERY_MODULES: ModuleDef[] = [
   rootSimplify,
   rootCube,
   rootPerfect,
+  logRead,
+  logSmall,
 ];
 export const HSF_GALLERY_LAYOUTS: LayoutDef[] = [];

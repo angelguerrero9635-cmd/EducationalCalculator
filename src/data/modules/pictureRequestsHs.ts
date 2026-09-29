@@ -487,9 +487,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HF). New optional field on factorTree (types.ts; drawn by FactorTreeHsf.tsx, math in rootSplit.ts): root { index?: 2 | 3, outside?, inside? } (value ids). Under the tree\'s foot row of primes each pair of equal primes (each three for index 3) is ringed and arrowed down to the one it brings out; the leftover primes are arrowed into the radical; the line reads 2 × 3 × √2 = 6√2 (∛ for a cube root; a perfect power ends whole, = 24). The caption writes √72 = √(2 × 2 × 2 × 3 × 3), the pairs coming out, and the result, or says the root is already simplest. The harness checks outside^index × inside = value and that inside has no group left. Step text "largest perfect square factor of N" (and cube) is taught to the harness (harness/phrasesHsf.ts). Make a and b derived (worked out, not typed) with a constraint that b has no square factor but 1 (see rootDemo in galleryHsf.ts). Example: { kind: "factorTree", value: "n", root: { index: 2, outside: "a", inside: "b" } } with a = √(largest perfect square factor of n) and n = a² × b.',
   },
-  ask('H29', 'powerScale', 'A log mode: the exponent read off the ruler, log₁₀ 470,000 ≈ 5.67', [
-    'm.11.logarithms',
-  ]),
+  {
+    ...ask(
+      'H29',
+      'powerScale',
+      'A log mode: the exponent read off the ruler, log₁₀ 470,000 ≈ 5.67',
+      ['m.11.logarithms'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m11-logarithms-ruler', 'g.m11-logarithms-small'],
+    notes:
+      'Drawn (group HF). New optional field on powerScale (types.ts; drawn by PowerScaleHsf.tsx): log (a value id, log₁₀ of the number, checked to 5e-4). Under the 1–10 ruler a log₁₀ scale from 0 to 1 (a slide rule\'s L scale) reads the mantissa\'s log: the point drops to 0.67 for 4.7. The caption works log₁₀ 470,000 = 5 + log₁₀ 4.7 ≈ 5 + 0.672 = 5.6721, negative exponents with a true minus (−3 + 0.477). Make the log derived and pass fixed: true (the log is worked out, not dragged). Step text "log₁₀({N})" is taught to the harness (harness/phrasesHsf.ts). Example: { kind: "powerScale", number: "N", mantissa: "a", exponent: "n", log: "L", fixed: true } with N = a × 10ⁿ, n = exponent of the power of ten at or below N and L = log₁₀(N).',
+  },
 
   // ── C. Statistics and study design figures ──
   {

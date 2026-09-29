@@ -911,6 +911,11 @@ export type Representation =
       fixed?: boolean;
       /** A second number to compare, marked on the upper ruler (at its edge when off it). */
       second?: string;
+      /**
+       * Grades 9–12 log mode: the log scale (0 to 1) under the 1–10 ruler reads the mantissa's
+       * log, and `log` (a value, log₁₀ of the number) is worked in the caption: 5 + 0.672.
+       */
+      log?: string;
     }
   /**
    * An equation with the unknown on both sides as a pan balance (Grade 8): `left` and `right`

@@ -173,6 +173,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `curvedSolid`      | `net`, `slant`, `surface`; `cavalieri`   | the surface-area net (a cone's sector); two coin stacks, one leaning          |
 | `crossSection`     | `solid: 'cylinder' \| 'cone'`            | a level cut (a circle) or upright cut, shaded and drawn flat beside           |
 | `factorTree`       | `root: { index, outside, inside }`       | equal pairs (or threes) ringed and brought out of the root: √72 = 6√2         |
+| `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

@@ -9,6 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { sup } from './FactorRows';
+import { LOG_GAP, LOG_ROOM, LogScale } from './PowerScaleHsf';
 
 type Spec = Extract<Representation, { kind: 'powerScale' }>;
 
@@ -66,7 +67,7 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => 200 / w}>
+      <Canvas aspect={(w) => (200 + (spec.log ? LOG_ROOM : 0)) / w}>
         {({ w, h }) => {
           const pad = 22;
           const topY = 52;
@@ -269,9 +270,13 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     {String(t)}
                   </ChartText>
                 ))}
+                {/* Grades 9–12: the log scale under the 1–10 ruler (PowerScaleHsf.tsx). */}
+                {spec.log ? (
+                  <LogScale zx={zx} y={zoomY} logA={logA} pointX={pointX} w={w} known={known} />
+                ) : null}
                 <ChartText
                   x={w / 2}
-                  y={zoomY + 44}
+                  y={zoomY + 44 + (spec.log ? LOG_GAP : 0)}
                   fontSize={chart.label}
                   fill={c.chartMuted}
                   textAnchor="middle"
@@ -361,10 +366,30 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
         }}
       </Canvas>
       <Caption>
-        {known
-          ? `${full} = ${aText} × 10${eText} · 10${sup(e)} ≤ ${full} < 10${sup(e + 1)}${Math.abs(e) <= 6 ? ` · 10${sup(e)} = ${fullDecimal(1, e)} · 10${sup(e + 1)} = ${fullDecimal(1, e + 1)}` : ''}`
-          : 'Type the number, or the number between 1 and 10 and the power of ten.'}
+        {known && spec.log
+          ? logCaption(
+              full,
+              aText,
+              e,
+              logA,
+              rep.known(spec.log) ? rep.value(spec.log, false) : undefined,
+            )
+          : known
+            ? `${full} = ${aText} × 10${eText} · 10${sup(e)} ≤ ${full} < 10${sup(e + 1)}${Math.abs(e) <= 6 ? ` · 10${sup(e)} = ${fullDecimal(1, e)} · 10${sup(e + 1)} = ${fullDecimal(1, e + 1)}` : ''}`
+            : 'Type the number, or the number between 1 and 10 and the power of ten.'}
       </Caption>
     </View>
   );
+}
+
+/** log₁₀ 470,000 = 5 + log₁₀ 4.7 ≈ 5 + 0.672 = 5.672: the exponent, then the mantissa's log. */
+function logCaption(full: string, a: string, e: number, logA: number, typed?: string) {
+  const minus = (x: string) => x.replace(/^-/, '−');
+  const total = minus((e + logA).toFixed(3));
+  const k = minus(String(e));
+  return [
+    `${full} = ${a} × 10${sup(e)}, so its log is ${k} plus the log of ${a}.`,
+    `log₁₀ ${full} = ${k} + log₁₀ ${a} ≈ ${k} + ${logA.toFixed(3)} = ${typed ?? total}`,
+    'The power of ten gives the whole part; the ruler gives the decimal part.',
+  ].join(' · ');
 }

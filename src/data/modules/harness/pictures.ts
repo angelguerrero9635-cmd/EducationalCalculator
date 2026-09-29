@@ -1661,6 +1661,10 @@ export function repIssues(
         Math.abs(a * 10 ** e - x) > Math.max(1e-9, 5e-4 * x)
       )
         out.push(`${a} × 10^${e} drawn, the number shows ${x}`);
+      // Log mode: the log is the exponent plus the mantissa's log.
+      const lg = rep.log ? val(rep.log) : undefined;
+      if (lg !== undefined && x !== undefined && x > 0 && Math.abs(lg - Math.log10(x)) > 5e-4)
+        out.push(`log ${lg} shown, log₁₀ ${x} is ${Math.log10(x)}`);
       break;
     }
     case 'rootSquare': {

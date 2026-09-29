@@ -425,7 +425,12 @@ function representationVars(r: Representation): string[] {
     case 'factorRows':
       return [r.base, r.first, r.second, r.result];
     case 'powerScale':
-      return [r.number, r.mantissa, r.exponent, ...(r.second ? [r.second] : [])];
+      return [
+        r.number,
+        r.mantissa,
+        r.exponent,
+        ...[r.second, r.log].filter((x): x is string => !!x),
+      ];
     case 'equationBalance':
       return [r.x, ...[...r.left, ...r.right].filter((v): v is string => typeof v === 'string')];
     case 'pushes':
