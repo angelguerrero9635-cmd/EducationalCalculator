@@ -1,6 +1,6 @@
 import type { PlanetName } from '../typesPhysics8';
 import type { StudyScene } from '../typesHsb';
-import type { MacroScene } from '../typesHsg';
+import type { EnergyScene, MacroScene } from '../typesHsg';
 import type { Round3Icon } from './icons';
 
 /**
@@ -326,7 +326,9 @@ export type Figure =
   /** Two cones tip to tip cut by a plane: a circle, ellipse, parabola or hyperbola (Grades 10–12). */
   | { kind: 'doubleCone' }
   /** Monomers joining into polymers: sugars, amino acids, nucleotides, a fat (HS group G). */
-  | { kind: 'macromolecules' };
+  | { kind: 'macromolecules' }
+  /** A chloroplast and a mitochondrion trading glucose, O₂, CO₂ and H₂O; light in, ATP out (HS group G). */
+  | { kind: 'organelleEnergy' };
 
 /** How a plane cuts the double cone: level, tilted, as steep as the side, or steeper. */
 export type ConeCut = 'circle' | 'ellipse' | 'parabola' | 'hyperbola';
@@ -455,6 +457,8 @@ export interface Scene {
   study?: StudyScene;
   /** The molecule built or split (a `macromolecules` figure; `typesHsg.ts`). */
   macro?: MacroScene;
+  /** The process lit (an `organelleEnergy` figure; `typesHsg.ts`). */
+  energy?: EnergyScene;
   /** The conic the plane cuts (a `doubleCone` figure). */
   cone?: ConeCut;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */

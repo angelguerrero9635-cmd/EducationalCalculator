@@ -340,5 +340,74 @@ const TONICITY_SORT: LayoutDef = {
   ],
 };
 
+// ─── H33 organelleEnergy ─────────────────────────────────────────────────────
+
+const ENERGY_LAYOUT: LayoutDef = {
+  id: 'g.s9-cellular-energy-organelles',
+  title: 'Chloroplasts and mitochondria',
+  kind: 'explore',
+  assumptions: [
+    'Plant cells have both chloroplasts and mitochondria; animal cells have only mitochondria.',
+    'Photosynthesis stores the sun’s energy in glucose. Cellular respiration releases it as ATP, the cell’s energy currency.',
+  ],
+  figure: { kind: 'organelleEnergy' },
+  scenes: [
+    {
+      label: 'The cycle',
+      lines: [
+        'The products of each process are the reactants of the other: matter cycles, while energy flows in as light and out as work and heat.',
+      ],
+      energy: { process: 'cycle' },
+    },
+    {
+      label: 'Photosynthesis',
+      lines: [
+        'In the chloroplast, light energy turns carbon dioxide and water into glucose, giving off oxygen.',
+      ],
+      energy: { process: 'photosynthesis', lit: 'light' },
+    },
+    {
+      label: 'Light reactions',
+      lines: [
+        'In the thylakoids, light splits water: O₂ is given off and the energy is stored in ATP and NADPH.',
+      ],
+      energy: { process: 'lightReactions', lit: 'O₂' },
+    },
+    {
+      label: 'Calvin cycle',
+      lines: ['In the stroma, ATP and NADPH power the building of glucose from CO₂.'],
+      energy: { process: 'calvinCycle', lit: 'CO₂' },
+    },
+    {
+      label: 'Respiration',
+      lines: [
+        'In the mitochondrion, glucose and oxygen become carbon dioxide and water, and the energy is stored in ATP.',
+      ],
+      energy: { process: 'respiration', lit: 'ATP' },
+    },
+    {
+      label: 'Glycolysis',
+      lines: [
+        'In the cytoplasm, glucose splits into 2 pyruvate, a net gain of 2 ATP. It needs no oxygen.',
+      ],
+      energy: { process: 'glycolysis', lit: 'glucose' },
+    },
+    {
+      label: 'Krebs cycle',
+      lines: [
+        'In the matrix, pyruvate is broken down to CO₂, making 2 ATP and carriers of electrons.',
+      ],
+      energy: { process: 'krebsCycle', lit: 'CO₂' },
+    },
+    {
+      label: 'Electron transport',
+      lines: [
+        'Along the folded inner membrane, electrons pass to oxygen, making water and most of the ATP.',
+      ],
+      energy: { process: 'electronTransport', lit: 'O₂' },
+    },
+  ],
+};
+
 export const HSG_GALLERY_MODULES: ModuleDef[] = [...MEMBRANE_DEMOS];
-export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [MACRO_LAYOUT, TONICITY_SORT];
+export const HSG_GALLERY_LAYOUTS: LayoutDef[] = [MACRO_LAYOUT, TONICITY_SORT, ENERGY_LAYOUT];

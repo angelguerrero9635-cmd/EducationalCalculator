@@ -563,12 +563,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Drawn (group HG, reps/Membrane.tsx). Calculator picture { kind: "membrane", outside, inside (counts 0–40, numbers or variable ids), transport: "diffusion" | "facilitated" | "osmosis" | "active", particle?: "O₂" (the name in the counts), moved?: 0–12 crossing now (lit on the arrow), atp?: the ATP spent at a pump ("2 ATP → 2 ADP + 2 P"), gradient?: a variable holding outside − inside (checked) }. A phospholipid bilayer, the outside above and the cytoplasm below, the particles on each side counted exactly; the arrow runs high to low (diffusion; through a channel protein when facilitated), water through an aquaporin toward more solute (osmosis; the caption names the outside hypotonic or hypertonic), or a pump low to high (active). Equal counts draw a two-way arrow (no net movement). Counts are typed: no handles or sliders. The harness checks the counts, the gradient, the arrow’s direction and that no more are moved than the side has. Example: representation: { kind: "membrane", outside: "o", inside: "i", transport: "diffusion", particle: "O₂", gradient: "d" } with d = o − i. Card icons for sorts: { kind: "icon", icon: "red blood cell in hypotonic water" } (also isotonic, hypertonic, and "plant cell in hypotonic water" and the other two).',
   },
-  ask(
-    'H33',
-    'organelleEnergy',
-    'Explore figure: chloroplast and mitochondrion, glucose, oxygen, carbon dioxide, water and ATP cycling between them',
-    ['s.9.cellular-energy'],
-  ),
+  {
+    ...ask(
+      'H33',
+      'organelleEnergy',
+      'Explore figure: chloroplast and mitochondrion, glucose, oxygen, carbon dioxide, water and ATP cycling between them',
+      ['s.9.cellular-energy'],
+    ),
+    status: 'drawn',
+    gallery: ['g.s9-cellular-energy-organelles'],
+    notes:
+      'Drawn (group HG, layouts/organelleFigure.tsx). Explore figure { kind: "organelleEnergy" }; each scene sets energy: { process?: "cycle" (default) | "photosynthesis" | "respiration" | "lightReactions" | "calvinCycle" | "glycolysis" | "krebsCycle" | "electronTransport", lit?: "light" | "CO₂" | "H₂O" | "glucose" | "O₂" | "ATP" }. A chloroplast (double membrane, grana, stroma) and a mitochondrion (cristae, matrix) in the cytoplasm; glucose and O₂ flow to the mitochondrion over the top, CO₂ and H₂O back underneath, light in from the sun and ATP out to the cell’s work. A process lights its part (thylakoids, stroma, matrix, inner membrane, cytoplasm), its arrows and its equation under the drawing (6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂; glycolysis 2 ATP, Krebs 2 ATP, electron transport most ATP; no single total is printed, since textbooks give 30 to 38). The harness checks that a ringed substance flows in the lit process. Example scene: { label: "Calvin cycle", lines: ["In the stroma, ATP and NADPH power the building of glucose from CO₂."], energy: { process: "calvinCycle", lit: "CO₂" } }.',
+  },
   ask(
     'H34',
     'cellDivision',

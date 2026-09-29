@@ -4,7 +4,7 @@
  * Test-only.
  */
 import type { LayoutDef } from '../layouts';
-import { watersOf } from '../typesHsg';
+import { ENERGY_FLOWS, watersOf } from '../typesHsg';
 
 export function hsgFigureIssues(l: LayoutDef): string[] {
   const out: string[] = [];
@@ -26,6 +26,16 @@ export function hsgFigureIssues(l: LayoutDef): string[] {
         out.push(
           `scene "${s.label}": the text says ${said[1]} water, the figure draws ${watersOf(m)}`,
         );
+    }
+  }
+  if (l.kind === 'explore' && l.figure.kind === 'organelleEnergy') {
+    for (const s of l.scenes) {
+      const e = s.energy;
+      if (!e) continue;
+      // A ringed substance must be one the lit process takes in or gives out.
+      const flows = ENERGY_FLOWS[e.process ?? 'cycle'];
+      if (e.lit && !flows.includes(e.lit))
+        out.push(`scene "${s.label}": ${e.lit} is not part of ${e.process ?? 'the cycle'}`);
     }
   }
   return out;

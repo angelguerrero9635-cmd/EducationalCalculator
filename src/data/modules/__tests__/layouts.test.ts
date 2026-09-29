@@ -43,6 +43,7 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   studyDesign: 'study',
   doubleCone: 'cone',
   macromolecules: 'macro',
+  organelleEnergy: 'energy',
 };
 
 /** Longest sentence per grade (as in standards.test.ts). */

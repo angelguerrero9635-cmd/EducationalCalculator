@@ -33,6 +33,46 @@ export interface MacroScene {
 export const watersOf = (m: MacroScene) =>
   m.kind === 'lipid' ? 3 : Math.min(4, Math.max(2, m.count ?? 3)) - 1;
 
+// ─── H33 organelleEnergy (explore) ───────────────────────────────────────────
+
+/** What flows between the chloroplast, the mitochondrion and the cell. */
+export type EnergySubstance = 'light' | 'CO₂' | 'H₂O' | 'glucose' | 'O₂' | 'ATP';
+
+/** The processes an `organelleEnergy` scene can light: whole, or one stage. */
+export type EnergyProcess =
+  | 'cycle'
+  | 'photosynthesis'
+  | 'respiration'
+  | 'lightReactions'
+  | 'calvinCycle'
+  | 'glycolysis'
+  | 'krebsCycle'
+  | 'electronTransport';
+
+/**
+ * An `organelleEnergy` scene: a chloroplast and a mitochondrion side by side, glucose and O₂
+ * flowing from one to the other, CO₂ and H₂O flowing back, light in and ATP out to the cell's
+ * work. `process` lights one process or stage (its part of the organelle and its flows; default
+ * the whole cycle) and writes its equation; `lit` rings one substance (it must flow in that
+ * process).
+ */
+export interface EnergyScene {
+  process?: EnergyProcess;
+  lit?: EnergySubstance;
+}
+
+/** The substances each process takes in or gives out (the arrows it lights). */
+export const ENERGY_FLOWS: Record<EnergyProcess, EnergySubstance[]> = {
+  cycle: ['light', 'CO₂', 'H₂O', 'glucose', 'O₂', 'ATP'],
+  photosynthesis: ['light', 'CO₂', 'H₂O', 'glucose', 'O₂'],
+  respiration: ['glucose', 'O₂', 'CO₂', 'H₂O', 'ATP'],
+  lightReactions: ['light', 'H₂O', 'O₂'],
+  calvinCycle: ['CO₂', 'glucose'],
+  glycolysis: ['glucose', 'ATP'],
+  krebsCycle: ['CO₂', 'ATP'],
+  electronTransport: ['O₂', 'H₂O', 'ATP'],
+};
+
 // ─── H32 membrane (calculator picture) ───────────────────────────────────────
 
 /** A fixed number or a variable id (as in `typesGraphs.ts`). */
