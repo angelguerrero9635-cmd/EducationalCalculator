@@ -10,7 +10,9 @@ export type IconName =
   | 'clock'
   | 'book'
   | 'school'
-  | 'spark';
+  | 'spark'
+  | 'menu'
+  | 'close';
 
 /**
  * Line icons drawn with react-native-svg (no icon font needed). 24 × 24 grid, rounded strokes;
@@ -65,6 +67,10 @@ export function Icon({
           />
           <Circle cx={12} cy={12} r={2.8} {...stroke} strokeWidth={filled ? 2.4 : 1.8} />
         </>
+      ) : name === 'menu' ? (
+        <Path d="M4 7h16M4 12h16M4 17h16" {...stroke} strokeWidth={2} />
+      ) : name === 'close' ? (
+        <Path d="m6 6 12 12M18 6 6 18" {...stroke} strokeWidth={2} />
       ) : name === 'chevron' ? (
         <Path d="m9 5 7 7-7 7" {...stroke} strokeWidth={2} />
       ) : name === 'check' ? (
