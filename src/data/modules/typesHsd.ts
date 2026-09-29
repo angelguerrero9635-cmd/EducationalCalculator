@@ -90,7 +90,44 @@ export type AlgebraTilesSpec = { kind: 'algebraTiles' } & (
     }
 );
 
-export type HsdSpec = UnitCircleSpec | AlgebraTilesSpec;
+/**
+ * One vector: by its components (x, y) or by its magnitude and direction (degrees from the
+ * positive x-axis, counterclockwise), with a name ("u", "F₁", "boat").
+ */
+export interface VectorOf {
+  name: string;
+  x?: NumOrVar;
+  y?: NumOrVar;
+  magnitude?: NumOrVar;
+  direction?: NumOrVar;
+}
+
+/**
+ * Vectors as arrows on a grid, given by components or by magnitude and direction. `sum` adds
+ * two vectors tip to tail or as a parallelogram, the resultant drawn in its own color; `scalar`
+ * draws k times the first vector; `angle` marks the angle between two vectors, with the dot
+ * product's sign. Physics pages pass `unit` (m/s, N) and `axes` names. Drag a vector's tip.
+ */
+export interface VectorDiagramSpec {
+  kind: 'vectorDiagram';
+  vectors: [VectorOf] | [VectorOf, VectorOf];
+  sum?: 'tipToTail' | 'parallelogram';
+  /** The resultant's values, when the page works them out (checked). */
+  result?: { name?: string; x?: string; y?: string; magnitude?: string; direction?: string };
+  /** k times the first vector; x and y name its components (checked). */
+  scalar?: { k: NumOrVar; x?: string; y?: string };
+  /** The angle between the two vectors (degrees) and their dot product (checked). */
+  angle?: { value?: string; dot?: string };
+  /** Dashed x and y components of each vector. */
+  components?: boolean;
+  /** The unit of every vector's size ("m/s", "N"). */
+  unit?: string;
+  axes?: { x: string; y: string };
+  keep?: string[];
+  fixed?: boolean;
+}
+
+export type HsdSpec = UnitCircleSpec | AlgebraTilesSpec | VectorDiagramSpec;
 
 /** The variable ids a spec above names (for the module tests). */
 export function hsdSpecVars(r: HsdSpec): string[] {
@@ -120,5 +157,18 @@ export function hsdSpecVars(r: HsdSpec): string[] {
           return ids(r.left.x, r.left.unit, r.right.x, r.right.unit, r.solution);
       }
     }
+    case 'vectorDiagram':
+      return ids(
+        ...r.vectors.flatMap((v) => [v.x, v.y, v.magnitude, v.direction]),
+        r.result?.x,
+        r.result?.y,
+        r.result?.magnitude,
+        r.result?.direction,
+        r.scalar?.k,
+        r.scalar?.x,
+        r.scalar?.y,
+        r.angle?.value,
+        r.angle?.dot,
+      );
   }
 }

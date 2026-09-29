@@ -73,6 +73,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it | Grade 8 gravity and orbits          |
 | `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph | Grades 10–12 trigonometry           |
 | `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square  | Grade 9 polynomials, factoring      |
+| `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign | Grade 12 vectors, physics forces    |
 
 Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictures.ts`):
 

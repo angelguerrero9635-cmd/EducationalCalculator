@@ -146,6 +146,54 @@ export function hsdIssues(rep: HsdSpec, val: (id: string) => number | undefined)
       }
       break;
     }
+    case 'vectorDiagram': {
+      const RAD = Math.PI / 180;
+      // Each vector drawn from its components, or from its magnitude and direction.
+      const vec = (v: (typeof rep.vectors)[number]) => {
+        if (v.x !== undefined || v.y !== undefined) {
+          const [x, y] = [num(v.x ?? 0), num(v.y ?? 0)];
+          return x === undefined || y === undefined ? undefined : { x, y };
+        }
+        const [m, d] = [num(v.magnitude ?? 0), num(v.direction ?? 0)];
+        if (m === undefined || d === undefined) return undefined;
+        if (m < 0) out.push(`${v.name} has a negative length ${m}`);
+        return { x: m * Math.cos(d * RAD), y: m * Math.sin(d * RAD) };
+      };
+      const vs = rep.vectors.map(vec);
+      const [a, b] = vs;
+      const check = (id: string | undefined, want: number, what: string) => {
+        const got = num(id);
+        if (got !== undefined && !near(got, want, 1e-3))
+          out.push(`${what} is ${got}, the arrows give ${want}`);
+      };
+      const heading = (x: number, y: number) => (((Math.atan2(y, x) / RAD) % 360) + 360) % 360;
+      if (rep.sum && a && b) {
+        const s = { x: a.x + b.x, y: a.y + b.y };
+        check(rep.result?.x, s.x, 'the resultant’s x');
+        check(rep.result?.y, s.y, 'the resultant’s y');
+        check(rep.result?.magnitude, Math.hypot(s.x, s.y), 'the resultant’s length');
+        if (Math.hypot(s.x, s.y) > 1e-9)
+          check(rep.result?.direction, heading(s.x, s.y), 'the resultant’s direction');
+      }
+      const k = num(rep.scalar?.k);
+      if (rep.scalar && a && k !== undefined) {
+        check(rep.scalar.x, k * a.x, 'kv’s x');
+        check(rep.scalar.y, k * a.y, 'kv’s y');
+      }
+      if (rep.angle && a && b) {
+        const dot = a.x * b.x + a.y * b.y;
+        check(rep.angle.dot, dot, 'the dot product');
+        const ma = Math.hypot(a.x, a.y);
+        const mb = Math.hypot(b.x, b.y);
+        if (ma > 1e-9 && mb > 1e-9)
+          check(
+            rep.angle.value,
+            Math.acos(Math.max(-1, Math.min(1, dot / (ma * mb)))) / RAD,
+            'the angle between',
+          );
+      }
+      break;
+    }
   }
   return out;
 }

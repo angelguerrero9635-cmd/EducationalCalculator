@@ -122,6 +122,7 @@ const PICTURE_NAMES: Record<string, string> = {
   orbit: 'orbit diagram with the pull of gravity',
   unitCircle: 'unit circle with the angle and its point',
   algebraTiles: 'algebra tiles',
+  vectorDiagram: 'vectors as arrows on a grid',
 };
 const pictureName = (kind: string) =>
   PICTURE_NAMES[kind] ?? kind.replace(/([A-Z])/g, ' $1').toLowerCase();

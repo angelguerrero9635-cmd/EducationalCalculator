@@ -156,13 +156,26 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       "Multiply two binomials as a rectangle, factor a trinomial by arranging its tiles, complete the square (the missing corner), zero pairs cancel. Drawn: kind algebraTiles (typesHsd.ts), no handles (counts are typed). mode 'collect' { tiles, plus, sum } (TileCounts { x2, x, unit }; zero pairs struck); 'rectangle' { factors: { p, q, r, s } for (px + q)(rx + s), product, given: 'factors' or 'product' } (multiply, or factor a trinomial by arranging its tiles; cancelling x tiles struck); 'square' { b, c, k, missing } (complete the square: the (b/2)² corner dashed, c’s tiles beside); 'equation' { left: { x, unit }, right: { x, unit }, solution } (tiles on two mats). Each edge holds −10 to 10 tiles; the harness checks the tiles add up to the named polynomial. Examples: { kind: 'algebraTiles', mode: 'rectangle', factors: { p: 'p', q: 'q', r: 'r', s: 's' }, product: { x2: 'A', x: 'B', unit: 'C' } }; { kind: 'algebraTiles', mode: 'square', b: 'b', c: 'c', k: 'k', missing: 'm' }.",
   },
-  ask(
-    'H08',
-    'vectorDiagram',
-    'Vectors as arrows on a grid: components, sums, scalar multiples, the angle between',
-    ['m.12.vectors', 's.11.kinematics-2d', 's.11.dynamics-vectors'],
-    'Tip to tail and parallelogram sums, magnitude and direction, dot product sign from the angle; drag a tip.',
-  ),
+  {
+    ...ask(
+      'H08',
+      'vectorDiagram',
+      'Vectors as arrows on a grid: components, sums, scalar multiples, the angle between',
+      ['m.12.vectors', 's.11.kinematics-2d', 's.11.dynamics-vectors'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m12-vectors-tip-to-tail',
+      'g.m12-vectors-parallelogram',
+      'g.m12-vectors-scalar',
+      'g.m12-vectors-angle',
+      'g.m12-vectors-magnitude-direction',
+      'g.s11-kinematics-2d-boat',
+      'g.s11-dynamics-vectors-forces',
+    ],
+    notes:
+      "Tip to tail and parallelogram sums, magnitude and direction, dot product sign from the angle; drag a tip. Drawn: kind vectorDiagram (typesHsd.ts). Fields: vectors (one or two VectorOf { name, x, y } by components or { name, magnitude, direction } with the direction in degrees from the positive x-axis; each a number or variable); sum 'tipToTail' or 'parallelogram' with result { name, x, y, magnitude, direction } (checked); scalar { k, x, y } (k times the first vector, checked); angle { value, dot } (the angle between and the dot product, checked; the caption gives the sign: acute, right or obtuse); components (dashed legs with their lengths); unit ('m/s', 'N') and axes names for physics; keep; fixed. Drag a tip: components follow, or the magnitude and direction (only the magnitude when the direction is a fixed number). Examples: { kind: 'vectorDiagram', vectors: [{ name: 'u', x: 'ux', y: 'uy' }, { name: 'v', x: 'vx', y: 'vy' }], sum: 'tipToTail', result: { name: 'u + v', x: 'sx', y: 'sy', magnitude: 'r' } }; { kind: 'vectorDiagram', vectors: [{ name: 'F₁', magnitude: 'f1', direction: 0 }, { name: 'F₂', magnitude: 'f2', direction: 'a' }], sum: 'parallelogram', result: { name: 'F', x: 'fx', y: 'fy', magnitude: 'f' }, unit: 'N', axes: { x: 'east', y: 'north' } }.",
+  },
   ask(
     'H09',
     'complexPlane',

@@ -438,6 +438,7 @@ function representationVars(r: Representation): string[] {
       return physics8SpecVars(r);
     case 'unitCircle':
     case 'algebraTiles':
+    case 'vectorDiagram':
       return hsdSpecVars(r);
   }
 }

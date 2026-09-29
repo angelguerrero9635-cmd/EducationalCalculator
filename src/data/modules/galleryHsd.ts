@@ -805,5 +805,467 @@ const ALGEBRA_TILES: ModuleDef[] = [
   }),
 ];
 
-export const HSD_GALLERY_MODULES: ModuleDef[] = [...UNIT_CIRCLE, ...ALGEBRA_TILES];
+// ─── H08 vectorDiagram ───────────────────────────────────────────────────────
+
+/** A component or a size that may be negative, to 2 decimals. */
+const real = (id: string, symbol: string, name: string, min = -20, max = 20, unit?: string) =>
+  ({ id, symbol, name, min, max, step: 0.01, ...(unit ? { unit } : {}) }) as VariableDef;
+
+/** out = a + b for components (both ways). */
+const addParts = (out: string, a: string, b: string, axis: 'x' | 'y'): Rule => ({
+  relation: {
+    id: `${out} = ${a} + ${b}`,
+    display: `{${out}} = {${a}} + {${b}}`,
+    vars: [out, a, b],
+    residual: (v) => v[out]! - v[a]! - v[b]!,
+    solve: {
+      [out]: (v) => v[a]! + v[b]!,
+      [a]: (v) => v[out]! - v[b]!,
+      [b]: (v) => v[out]! - v[a]!,
+    },
+  },
+  steps: {
+    [out]: { expr: `{${a}} + {${b}}`, how: `Add the ${axis}-components.` },
+    [a]: { expr: `{${out}} − {${b}}`, how: `Take the second ${axis}-component from the sum’s.` },
+    [b]: { expr: `{${out}} − {${a}}`, how: `Take the first ${axis}-component from the sum’s.` },
+  },
+});
+
+/** |r| = √(x² + y²). */
+const magnitude = (out: string, x: string, y: string): Rule => ({
+  relation: {
+    id: `${out} = √(${x}² + ${y}²)`,
+    display: `{${out}} = √({${x}}² + {${y}}²)`,
+    vars: [out, x, y],
+    residual: (v) => v[out]! - Math.hypot(v[x]!, v[y]!),
+    solve: {
+      [out]: (v) => Math.hypot(v[x]!, v[y]!),
+      [x]: () => undefined,
+      [y]: () => undefined,
+    },
+  },
+  steps: {
+    [out]: {
+      expr: `√({${x}}² + {${y}}²)`,
+      how: 'The components are the legs of a right triangle; the length is its hypotenuse.',
+    },
+  },
+});
+
+/** A component from a magnitude and a direction: m cos θ or m sin θ. */
+const component = (out: string, m: string, d: string, fn: 'cos' | 'sin'): Rule => {
+  const f = fn === 'cos' ? Math.cos : Math.sin;
+  return {
+    relation: {
+      id: `${out} = ${m} ${fn} ${d}`,
+      display: `{${out}} = {${m}} × ${fn}({${d}})`,
+      vars: [out, m, d],
+      residual: (v) => v[out]! - v[m]! * f(v[d]! * RAD),
+      solve: {
+        [out]: (v) => v[m]! * f(v[d]! * RAD),
+        [m]: (v) => div(v[out]!, f(v[d]! * RAD)),
+        [d]: () => undefined,
+      },
+    },
+    steps: {
+      [out]: {
+        expr: `{${m}} × ${fn}({${d}})`,
+        how:
+          fn === 'cos'
+            ? 'The x-component is the length times the cosine of the direction.'
+            : 'The y-component is the length times the sine of the direction.',
+      },
+      [m]: {
+        expr: `{${out}}/${fn}({${d}})`,
+        how: `Divide the component by the ${fn === 'cos' ? 'cosine' : 'sine'} of the direction.`,
+      },
+    },
+  };
+};
+
+const vectorSum = (
+  id: string,
+  title: string,
+  sum: 'tipToTail' | 'parallelogram',
+  example: Values,
+): ModuleDef => ({
+  id,
+  title,
+  use:
+    sum === 'tipToTail'
+      ? 'Use this to add two vectors by placing the second’s tail at the first’s tip.'
+      : 'Use this to add two vectors as the diagonal of a parallelogram.',
+  assumptions: [
+    'Vectors are given by their components ⟨x, y⟩.',
+    'Add vectors by adding components.',
+  ],
+  variables: [
+    real('ux', 'u₁', 'x-component of u', -10, 10),
+    real('uy', 'u₂', 'y-component of u', -10, 10),
+    real('vx', 'v₁', 'x-component of v', -10, 10),
+    real('vy', 'v₂', 'y-component of v', -10, 10),
+    real('sx', 's₁', 'x-component of u + v'),
+    real('sy', 's₂', 'y-component of u + v'),
+    real('r', '|u + v|', 'Length of u + v', 0, 30),
+  ],
+  ...rules(
+    addParts('sx', 'ux', 'vx', 'x'),
+    addParts('sy', 'uy', 'vy', 'y'),
+    magnitude('r', 'sx', 'sy'),
+  ),
+  example,
+  startWith: ['ux', 'uy', 'vx', 'vy'],
+  representation: {
+    kind: 'vectorDiagram',
+    vectors: [
+      { name: 'u', x: 'ux', y: 'uy' },
+      { name: 'v', x: 'vx', y: 'vy' },
+    ],
+    sum,
+    result: { name: 'u + v', x: 'sx', y: 'sy', magnitude: 'r' },
+  },
+});
+
+const VECTORS: ModuleDef[] = [
+  vectorSum('g.m12-vectors-tip-to-tail', 'Add vectors tip to tail', 'tipToTail', {
+    ux: 3,
+    uy: 1,
+    vx: 1,
+    vy: 3,
+    sx: 4,
+    sy: 4,
+    r: Math.hypot(4, 4),
+  }),
+  vectorSum('g.m12-vectors-parallelogram', 'Add vectors as a parallelogram', 'parallelogram', {
+    ux: 4,
+    uy: -1,
+    vx: -2,
+    vy: 3,
+    sx: 2,
+    sy: 2,
+    r: Math.hypot(2, 2),
+  }),
+  {
+    id: 'g.m12-vectors-scalar',
+    title: 'A scalar multiple',
+    use: 'Use this for k times a vector: k times as long, reversed when k is negative.',
+    assumptions: ['k multiplies each component.', 'A negative k turns the vector around.'],
+    variables: [
+      real('k', 'k', 'Scalar', -5, 5),
+      real('vx', 'v₁', 'x-component of v', -10, 10),
+      real('vy', 'v₂', 'y-component of v', -10, 10),
+      real('wx', 'w₁', 'x-component of kv', -50, 50),
+      real('wy', 'w₂', 'y-component of kv', -50, 50),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'w₁ = k v₁',
+          display: '{wx} = {k} × {vx}',
+          vars: ['wx', 'k', 'vx'],
+          residual: (v) => v.wx! - v.k! * v.vx!,
+          solve: {
+            wx: (v) => v.k! * v.vx!,
+            k: (v) => div(v.wx!, v.vx!),
+            vx: (v) => div(v.wx!, v.k!),
+          },
+        },
+        steps: {
+          wx: { expr: '{k} × {vx}', how: 'Multiply the x-component by k.' },
+          k: { expr: '{wx}/{vx}', how: 'Divide the new x-component by the old.' },
+          vx: { expr: '{wx}/{k}', how: 'Divide the new x-component by k.' },
+        },
+      },
+      {
+        relation: {
+          id: 'w₂ = k v₂',
+          display: '{wy} = {k} × {vy}',
+          vars: ['wy', 'k', 'vy'],
+          residual: (v) => v.wy! - v.k! * v.vy!,
+          solve: {
+            wy: (v) => v.k! * v.vy!,
+            k: (v) => div(v.wy!, v.vy!),
+            vy: (v) => div(v.wy!, v.k!),
+          },
+        },
+        steps: {
+          wy: { expr: '{k} × {vy}', how: 'Multiply the y-component by k.' },
+          k: { expr: '{wy}/{vy}', how: 'Divide the new y-component by the old.' },
+          vy: { expr: '{wy}/{k}', how: 'Divide the new y-component by k.' },
+        },
+      },
+    ),
+    example: { k: -2, vx: 2, vy: 1, wx: -4, wy: -2 },
+    startWith: ['k', 'vx', 'vy'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [{ name: 'v', x: 'vx', y: 'vy' }],
+      scalar: { k: 'k', x: 'wx', y: 'wy' },
+    },
+  },
+  {
+    id: 'g.m12-vectors-angle',
+    title: 'The angle between two vectors',
+    use: 'Use this for the dot product of two vectors and the angle between them.',
+    assumptions: [
+      'u · v = u₁v₁ + u₂v₂.',
+      'cos θ = u · v ÷ (|u||v|): a positive dot product means an acute angle.',
+    ],
+    variables: [
+      real('ux', 'u₁', 'x-component of u', -10, 10),
+      real('uy', 'u₂', 'y-component of u', -10, 10),
+      real('vx', 'v₁', 'x-component of v', -10, 10),
+      real('vy', 'v₂', 'y-component of v', -10, 10),
+      real('d', 'u · v', 'Dot product', -200, 200),
+      real('mu', '|u|', 'Length of u', 0, 15),
+      real('mv', '|v|', 'Length of v', 0, 15),
+      { ...angle('t', 'Angle between', 0, 180), step: 0.1 },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'u · v = u₁v₁ + u₂v₂',
+          display: '{d} = {ux} × {vx} + {uy} × {vy}',
+          vars: ['d', 'ux', 'vx', 'uy', 'vy'],
+          residual: (v) => v.d! - v.ux! * v.vx! - v.uy! * v.vy!,
+          solve: { d: (v) => v.ux! * v.vx! + v.uy! * v.vy! },
+        },
+        steps: {
+          d: { expr: '{ux} × {vx} + {uy} × {vy}', how: 'Multiply matching components and add.' },
+        },
+      },
+      magnitude('mu', 'ux', 'uy'),
+      magnitude('mv', 'vx', 'vy'),
+      {
+        relation: {
+          id: 'θ = arccos(u · v/(|u||v|))',
+          display: '{t} = arccos({d}/({mu} × {mv}))',
+          vars: ['t', 'd', 'mu', 'mv'],
+          residual: (v) => Math.cos(v.t! * RAD) * v.mu! * v.mv! - v.d!,
+          solve: {
+            t: (v) => {
+              const q = div(v.d!, v.mu! * v.mv!);
+              return q === undefined ? undefined : Math.acos(Math.max(-1, Math.min(1, q))) / RAD;
+            },
+            d: (v) => Math.cos(v.t! * RAD) * v.mu! * v.mv!,
+          },
+        },
+        steps: {
+          t: {
+            expr: 'arccos({d}/({mu} × {mv}))',
+            how: 'The cosine of the angle is the dot product over the product of the lengths.',
+          },
+          d: {
+            expr: '{mu} × {mv} × cos({t})',
+            how: 'The dot product is the lengths times the cosine of the angle.',
+          },
+        },
+      },
+    ),
+    example: {
+      ux: 3,
+      uy: 4,
+      vx: 4,
+      vy: -1,
+      d: 8,
+      mu: 5,
+      mv: Math.sqrt(17),
+      t: Math.acos(8 / (5 * Math.sqrt(17))) / RAD,
+    },
+    startWith: ['ux', 'uy', 'vx', 'vy'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'u', x: 'ux', y: 'uy' },
+        { name: 'v', x: 'vx', y: 'vy' },
+      ],
+      angle: { value: 't', dot: 'd' },
+    },
+  },
+  {
+    id: 'g.m12-vectors-magnitude-direction',
+    title: 'Components from length and direction',
+    use: 'Use this to find a vector’s components from its length and direction.',
+    assumptions: [
+      'The direction is measured from the positive x-axis.',
+      'Counterclockwise is positive.',
+    ],
+    variables: [
+      real('m', '|v|', 'Length', 0, 20),
+      { ...angle('t', 'Direction', 0, 360), step: 1 },
+      real('vx', 'v₁', 'x-component'),
+      real('vy', 'v₂', 'y-component'),
+    ],
+    ...rules(component('vx', 'm', 't', 'cos'), component('vy', 'm', 't', 'sin')),
+    example: { m: 10, t: 30, vx: 10 * Math.cos(30 * RAD), vy: 5 },
+    startWith: ['m', 't'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [{ name: 'v', magnitude: 'm', direction: 't' }],
+      components: true,
+    },
+    pictureLabels: ['vx', 'vy'],
+  },
+  {
+    id: 'g.s11-kinematics-2d-boat',
+    title: 'A boat crossing a current',
+    use: 'Use this for a velocity made of two perpendicular velocities, like a boat and a current.',
+    assumptions: [
+      'The boat heads straight across (north); the current flows east.',
+      'The ground velocity is the sum of the two velocities.',
+    ],
+    variables: [
+      {
+        id: 'b',
+        symbol: 'b',
+        name: 'Boat’s speed in still water',
+        unit: 'm/s',
+        min: 0.1,
+        max: 20,
+        step: 0.1,
+      },
+      { id: 'w', symbol: 'w', name: 'Current’s speed', unit: 'm/s', min: 0.1, max: 20, step: 0.1 },
+      {
+        id: 'r',
+        symbol: 'v',
+        name: 'Speed over the ground',
+        unit: 'm/s',
+        min: 0,
+        max: 30,
+        step: 0.01,
+      },
+      { ...angle('a', 'Direction, from east', 0, 90), step: 0.1 },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'v = √(b² + w²)',
+          display: '{r} = √({b}² + {w}²)',
+          vars: ['r', 'b', 'w'],
+          residual: (v) => v.r! - Math.hypot(v.b!, v.w!),
+          solve: {
+            r: (v) => Math.hypot(v.b!, v.w!),
+            b: (v) => (v.r! < v.w! ? undefined : Math.sqrt(v.r! ** 2 - v.w! ** 2)),
+            w: (v) => (v.r! < v.b! ? undefined : Math.sqrt(v.r! ** 2 - v.b! ** 2)),
+          },
+        },
+        steps: {
+          r: {
+            expr: '√({b}² + {w}²)',
+            how: 'The two velocities are at right angles: add them by Pythagoras.',
+          },
+          b: {
+            expr: '√({r}² − {w}²)',
+            how: 'Take the current’s square from the ground speed’s square.',
+          },
+          w: {
+            expr: '√({r}² − {b}²)',
+            how: 'Take the boat’s square from the ground speed’s square.',
+          },
+        },
+      },
+      {
+        relation: {
+          id: 'θ = arctan(b/w)',
+          display: '{a} = arctan({b}/{w})',
+          vars: ['a', 'b', 'w'],
+          residual: (v) => Math.tan(v.a! * RAD) * v.w! - v.b!,
+          solve: {
+            a: (v) => Math.atan2(v.b!, v.w!) / RAD,
+            b: (v) => v.w! * Math.tan(v.a! * RAD),
+            w: (v) => div(v.b!, Math.tan(v.a! * RAD)),
+          },
+        },
+        steps: {
+          a: {
+            expr: 'arctan({b}/{w})',
+            how: 'The tangent of the angle from east is north over east.',
+          },
+          b: { expr: '{w} × tan({a})', how: 'North is east times the tangent of the angle.' },
+          w: { expr: '{b}/tan({a})', how: 'East is north over the tangent of the angle.' },
+        },
+      },
+    ),
+    example: { b: 4, w: 3, r: 5, a: Math.atan2(4, 3) / RAD },
+    startWith: ['b', 'w'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'boat', magnitude: 'b', direction: 90 },
+        { name: 'current', magnitude: 'w', direction: 0 },
+      ],
+      sum: 'tipToTail',
+      result: { name: 'v', magnitude: 'r', direction: 'a' },
+      unit: 'm/s',
+      axes: { x: 'east', y: 'north' },
+    },
+  },
+  {
+    id: 'g.s11-dynamics-vectors-forces',
+    title: 'Two forces on one object',
+    use: 'Use this for the net force of two pulls at an angle, added as a parallelogram.',
+    assumptions: [
+      'F₁ pulls east; F₂ pulls at the angle θ north of east.',
+      'The net force is their vector sum.',
+    ],
+    variables: [
+      { id: 'f1', symbol: 'F₁', name: 'First force', unit: 'N', min: 0, max: 100, step: 1 },
+      { id: 'f2', symbol: 'F₂', name: 'Second force', unit: 'N', min: 0, max: 100, step: 1 },
+      { ...angle('a', 'Angle of F₂', 0, 90), step: 1 },
+      { id: 'fx', symbol: 'X', name: 'Net force east', unit: 'N', min: 0, max: 200, step: 0.01 },
+      { id: 'fy', symbol: 'Y', name: 'Net force north', unit: 'N', min: 0, max: 100, step: 0.01 },
+      { id: 'f', symbol: 'F', name: 'Net force', unit: 'N', min: 0, max: 200, step: 0.01 },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'X = F₁ + F₂ cos θ',
+          display: '{fx} = {f1} + {f2} × cos({a})',
+          vars: ['fx', 'f1', 'f2', 'a'],
+          residual: (v) => v.fx! - v.f1! - v.f2! * Math.cos(v.a! * RAD),
+          solve: {
+            fx: (v) => v.f1! + v.f2! * Math.cos(v.a! * RAD),
+            f1: (v) => v.fx! - v.f2! * Math.cos(v.a! * RAD),
+            a: () => undefined,
+            f2: () => undefined,
+          },
+        },
+        steps: {
+          fx: {
+            expr: '{f1} + {f2} × cos({a})',
+            how: 'Add the east parts: all of F₁, and F₂ times cos θ.',
+          },
+          f1: {
+            expr: '{fx} − {f2} × cos({a})',
+            how: 'Take F₂’s east part from the net east force.',
+          },
+        },
+      },
+      component('fy', 'f2', 'a', 'sin'),
+      magnitude('f', 'fx', 'fy'),
+    ),
+    example: {
+      f1: 30,
+      f2: 40,
+      a: 60,
+      fx: 30 + 40 * Math.cos(60 * RAD),
+      fy: 40 * Math.sin(60 * RAD),
+      f: Math.hypot(30 + 40 * Math.cos(60 * RAD), 40 * Math.sin(60 * RAD)),
+    },
+    startWith: ['f1', 'f2', 'a'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'F₁', magnitude: 'f1', direction: 0 },
+        { name: 'F₂', magnitude: 'f2', direction: 'a' },
+      ],
+      sum: 'parallelogram',
+      result: { name: 'F', x: 'fx', y: 'fy', magnitude: 'f' },
+      unit: 'N',
+      axes: { x: 'east', y: 'north' },
+    },
+  },
+];
+
+export const HSD_GALLERY_MODULES: ModuleDef[] = [...UNIT_CIRCLE, ...ALGEBRA_TILES, ...VECTORS];
 export const HSD_GALLERY_LAYOUTS: LayoutDef[] = [];

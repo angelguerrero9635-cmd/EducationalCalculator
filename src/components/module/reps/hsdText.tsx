@@ -10,8 +10,8 @@ import { chart, usePalette } from '@/theme';
 
 import { ChartText } from './common';
 
-/** A letter standing alone (not part of a word like "cos"); π stays upright. */
-const LETTER = /(?<![A-Za-zα-ω])([A-Za-zα-ορ-ω])(?![A-Za-zα-ω])/g;
+/** A letter standing alone (not part of a word like "cos", nor a unit after a number: 40 N); π stays upright. */
+const LETTER = /(?<![A-Za-zα-ω]|\d |[A-Za-z]\/)([A-Za-zα-ορ-ω])(?![A-Za-zα-ω])/g;
 
 /** Splits text into runs, the lone letters marked for italics. */
 export function mathRuns(text: string): { text: string; italic: boolean }[] {
