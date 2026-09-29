@@ -70,6 +70,16 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`jumps to (${NUM})`), (n) => n / 10],
   // Grade 4 (the primes with repeats come before the factor count, which would match first)
   [new RegExp(`prime factors of (${NUM})`), (n) => primeFactorCount(n)],
+  // Grade 9 simplifying radicals: the largest perfect square that divides 72 is 36.
+  [
+    new RegExp(`largest square factor of (${NUM})`),
+    (n) =>
+      Math.max(
+        ...Array.from({ length: Math.floor(Math.sqrt(n)) }, (_, k) => (k + 1) ** 2).filter(
+          (q) => n % q === 0,
+        ),
+      ),
+  ],
   [
     new RegExp(`factors of (${NUM})`),
     (n) => Array.from({ length: n }, (_, i) => i + 1).filter((k) => n % k === 0).length,
@@ -334,6 +344,11 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/×/g, '*')
     .replace(/÷/g, '/')
     .replace(/·/g, '*')
+    // Grades 9–12: the sine, cosine or tangent of degrees (sin 40°), and e to a power (e^(0.5)).
+    .replace(/\b(sin|cos|tan) \(?(-?\d+(?:\.\d+)?)°\)?/g, (_, f: 'sin' | 'cos' | 'tan', d) =>
+      String(Math[f]((Number(d) * Math.PI) / 180)),
+    )
+    .replace(/(?<![\w.])e\^/g, `(${Math.E})^`)
     // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
     // 36π is 36 × π.
     // (bracketed, so 90 ÷ 9π is 90 ÷ (9 × π), as it is written)

@@ -3,6 +3,7 @@ import { initialState, setValues } from '@/engine/state';
 import { makeUnitContext } from '@/engine/unitContext';
 import { getUnit } from '@/engine/units';
 import { resolveItem } from '@/data/selectors';
+import { equationIds } from '@/components/module/equationTemplate';
 
 import { getModule, moduleOwner, MODULES, TESTED_MODULES } from '..';
 import { buildSteps } from '../buildSteps';
@@ -503,7 +504,8 @@ describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
 
   it('draws its equation from declared values only', () => {
     if (!m.equation) return;
-    const inTemplate = [...m.equation.matchAll(/\{(\w+)\}/g)].map((x) => x[1]);
+    // Every box, sign box and script the template draws (equationTemplate.ts).
+    const inTemplate = equationIds(m.equation);
     expect(inTemplate.filter((id) => !ids.includes(id!))).toEqual([]);
   });
 

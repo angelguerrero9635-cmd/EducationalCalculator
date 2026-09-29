@@ -1582,7 +1582,8 @@ export interface ModuleDef {
    * `{w} {a}/{b}` a mixed number, and `{b}^{n}`, `10^{n}` or `{a}^2` a power. Text written
    * against a box is drawn touching it (`{p}x + {q} = {r}`, `{a}° + {b}° = 180°`); a line
    * break starts a second equation (a system). Values not in the template keep their rows
-   * below it. Which pages use one: docs/EQUATION_INPUTS.md.
+   * below it. Grades 9–12 parts (a group in braces, (…)^n, √, {s:sign}, log_{b}, ^{A}_{Z}X,
+   * [[…]], {a:unit}, {a:coef}) and which pages use one: docs/EQUATION_INPUTS.md.
    */
   equation?: string;
   /**

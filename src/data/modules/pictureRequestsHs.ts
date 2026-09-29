@@ -845,55 +845,140 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     'Solar system page: nebula to planets as sequence stages.',
   ),
   // ── H. Equation inputs (docs/RENDERINGS_HS_EQUATIONS.md, docs/EQUATION_INPUTS.md) ──
-  ask(
-    'H81',
-    'equationInput',
-    'Expression slots: a fraction part or an exponent mixing boxes, text and signs',
-    [
-      'm.10.law-sines-cosines',
-      'm.11.normal-distribution',
-      'm.12.conics',
-      's.10.measurement',
-      'm.9.sequences',
-      'm.11.exp-log-equations',
+  {
+    ...ask(
+      'H81',
+      'equationInput',
+      'Expression slots: a fraction part or an exponent mixing boxes, text and signs',
+      [
+        'm.10.law-sines-cosines',
+        'm.11.normal-distribution',
+        'm.12.conics',
+        's.10.measurement',
+        'm.9.sequences',
+        'm.11.exp-log-equations',
+      ],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-law-sines-cosines-sines',
+      'g.m11-normal-distribution-z',
+      'g.m9-sequences-geometric',
+      'g.m11-exp-log-equations-continuous',
+      'g.s10-measurement-factor',
+      'g.s10-mole-factor',
+      'g.m12-conics-ellipse',
     ],
-  ),
-  ask(
-    'H82',
-    'equationInput',
-    'An exponent on a bracket: (1 + {r})^{t}, ({b}^{m})^{n}',
-    ['m.9.exponential-functions', 'm.11.binomial-theorem', 'm.11.pythagorean-identities'],
-    'Also lets m.8.exponent-rules~power-of-power take its equation.',
-  ),
-  ask('H83', 'equationInput', 'Radicals with a bar over the box or group, and cube roots', [
-    'm.9.radicals',
-    'm.11.radical-functions',
-    'm.10.special-right-triangles',
-    'm.12.confidence-intervals',
-  ]),
-  ask(
-    'H84',
-    'equationInput',
-    'A sign or operator choice box (<, ≤, >, ≥; + or −) tied to a coded value',
-    ['m.9.linear-inequalities', 'm.9.inequality-systems', 'm.7.two-step-equations~inequality'],
-  ),
-  ask(
-    'H85',
-    'equationInput',
-    'Subscript boxes (log base, aₙ) and stacked mass and atomic numbers on the left',
-    ['m.11.logarithms', 's.10.nuclear-chemistry'],
-  ),
-  ask('H86', 'equationInput', 'A matrix grid of boxes, augmented bar and determinant bars', [
-    'm.12.matrices',
-  ]),
-  ask('H87', 'equationInput', 'A unit label after a box that follows the unit menu', [
-    's.11.circuits',
-    'm.3.area~missing-side',
-  ]),
-  ask(
-    'H88',
-    'equationInput',
-    'Hide zero parts of mixed numbers, blank chemical coefficient 1, stacked worked-out fractions',
-    ['s.10.reaction-types', 'm.5.divide-unit-fractions~fraction-as-division'],
-  ),
+    notes:
+      'Template syntax: a group in braces (anything but a lone {id}) is an expression slot, as a fraction’s top or bottom or an exponent: `{z} = {{x} − {m}}/{s}`, `{a}/{sin({A}°)} = {b}/{sin({B}°)}`, `{a} km × {1000 m}/{1 km} = {b} m`, `{m} g × {1 mol}/{{M} g} = {n} mol`, `aₙ = {a1} × {r}^{{n} − 1} = {an}`, `{A} = {P}e^{{r}{t}}`, `{({x} − {h})²}/{a}^2 + {({y} − {k})²}/{b}^2 = 1`. A bare word after ^ stays text (`{b}^x`, `e^rt`); a letter or number before ^ is a base (`e^`, `10^`). The exponent binds before the bar. The step harness now reads sin/cos/tan of degrees and e^.',
+  },
+  {
+    ...ask('H82', 'equationInput', 'An exponent on a bracket: (1 + {r})^{t}, ({b}^{m})^{n}', [
+      'm.9.exponential-functions',
+      'm.11.binomial-theorem',
+      'm.11.pythagorean-identities',
+    ]),
+    status: 'drawn',
+    gallery: [
+      'g.m9-exponential-functions-compound',
+      'g.m11-complex-numbers-square',
+      'g.m11-pythagorean-identities',
+      'g.s10-nuclear-chemistry-half-life',
+      'g.m8-exponent-rules-power-of-power',
+    ],
+    notes:
+      'Also lets m.8.exponent-rules~power-of-power take its equation: `({b}^{m})^{n} = {b}^{k} = {P}`. Template syntax: a bracketed group followed by ^ is the base, its brackets drawn, written against the box before it: `{A} = {P}(1 + {r})^{t}`, `({a} + {b}i)^2 = {p} + {q}i`, `({s})^2 + ({c})^2 = 1`, `y = {a}({b})^x`, `{N} = {N0}(1/2)^{{t}/{T}}` (brackets as tall as a fraction inside). Brackets with no ^ after them stay text.',
+  },
+  {
+    ...ask('H83', 'equationInput', 'Radicals with a bar over the box or group, and cube roots', [
+      'm.9.radicals',
+      'm.11.radical-functions',
+      'm.10.special-right-triangles',
+      'm.12.confidence-intervals',
+    ]),
+    status: 'drawn',
+    gallery: [
+      'g.m9-radicals-simplify',
+      'g.m11-radical-functions-equation',
+      'g.m12-confidence-intervals-margin',
+      'g.m10-special-right-triangles-45',
+      'g.m9-radicals-cube-root',
+    ],
+    notes:
+      'Template syntax: √ (∛ for a cube root, ∜ a fourth) before a box, a number, a group in braces or a bracketed group puts the bar over it, the brackets not drawn: `√{n} = {k}√{r}`, `√({a}x + {b}) = {c}`, `{c} = {s}√2`, `∛{n} = {k}`; a radical can be a fraction’s top or bottom: `{E} = {z} × {s}/√{n}`. Written against a box it touches it ({k}√{r}). The step harness reads “largest square factor of 72”.',
+  },
+  {
+    ...ask(
+      'H84',
+      'equationInput',
+      'A sign or operator choice box (<, ≤, >, ≥; + or −) tied to a coded value',
+      ['m.9.linear-inequalities', 'm.9.inequality-systems', 'm.7.two-step-equations~inequality'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m7-two-step-equations-inequality',
+      'g.m9-linear-inequalities-both-sides',
+      'g.m7-rational-operations-add-subtract',
+      'g.m6-integers-compare',
+    ],
+    notes:
+      'Template syntax: `{s:sign}` cycles <, ≤, >, ≥ (value 1–4, as the inequality pages store it); `{s:relation}` adds = as 5; `{o:op}` cycles + and − (1, 2). A tap sets the value (calc.set); a worked-out sign is dashed and can’t be tapped; a line may break before it. m.7.two-step-equations~inequality: `{p}x + {q} {s:sign} {r}`; both sides: `{a}x + {b} {s:sign} {c}x + {d}`; `{a} {o:op} {b} = {r}`; a worked-out comparison `{a} {c:relation} {b}`; scientific-notation add and subtract: `({a} × 10^{n}) {o:op} ({c} × 10^{n}) = {p} × 10^{n}`. The Grade 7 page’s work lines print “undefined” for the sign while it is not chosen (its demo waits for the sign).',
+  },
+  {
+    ...ask(
+      'H85',
+      'equationInput',
+      'Subscript boxes (log base, aₙ) and stacked mass and atomic numbers on the left',
+      ['m.11.logarithms', 's.10.nuclear-chemistry'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m11-logarithms-log-form',
+      'g.m9-sequences-arithmetic',
+      'g.s10-nuclear-chemistry-alpha',
+      'g.s10-nuclear-chemistry-beta',
+    ],
+    notes:
+      'Template syntax: letters (or a box) then _ and a slot is a subscript, small and lowered: `log_{b}({x}) = {y}`, `a_{n} = {a1} + (n − 1){d} = {an}` (a_n with a bare letter stays text). A ^ with nothing before it starts scripts stacked on the left of the symbol after them, mass number over atomic number: `^{A}_{Z}X → ^{A2}_{Z2}Y + ^{4}_{2}He`, beta `^{0}_{−1}e`. A brace holding only digits ({4}) is a fixed number, not a box.',
+  },
+  {
+    ...ask('H86', 'equationInput', 'A matrix grid of boxes, augmented bar and determinant bars', [
+      'm.12.matrices',
+    ]),
+    status: 'drawn',
+    gallery: [
+      'g.m12-matrices-determinant',
+      'g.m12-matrices-times-vector',
+      'g.m12-matrices-augmented',
+    ],
+    notes:
+      'Template syntax: `[[…]]` is a matrix in brackets, `||…||` a determinant between bars; rows are split by `;` and cells by `,`, each cell a box, a number or a small expression; a `|` at the same place in every row draws the augmented bar. Columns are as wide as their widest cell; brackets and bars grow with the rows. 2 × 2 to 3 × 4: `||{a}, {b}; {c}, {d}|| = {D}`, `[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{p}; {q}]]`, `[[{a}, {b}, {c} | {p}; {d}, {e}, {f} | {q}; {g}, {h}, {k} | {r}]]` with `x = {x}, y = {y}, z = {z}` on a second line. More than 6 boxes draws compact cells (32 px, tap target still 44).',
+  },
+  {
+    ...ask('H87', 'equationInput', 'A unit label after a box that follows the unit menu', [
+      's.11.circuits',
+      'm.3.area~missing-side',
+    ]),
+    status: 'drawn',
+    gallery: ['g.s11-circuits-ohm', 'g.m3-area-missing-side-units'],
+    notes:
+      'Template syntax: `{a:unit}` draws the box with the unit the calculator shows for that value written after it (calc.units.display, else the variable’s unit), so it changes with the Units menu: `{V:unit} = {I:unit} × {R:unit}` (12 V = 3 A × 4 Ω); m.3.area~missing-side: `{l:unit} × {w:unit} = {A:unit}` (6 cm × 4 cm = 24 cm², 6 in × 4 in = 24 in² after Units → US). A box has no per-value unit menu of its own: a page whose values each pick a unit (mm or m) keeps its rows.',
+  },
+  {
+    ...ask(
+      'H88',
+      'equationInput',
+      'Hide zero parts of mixed numbers, blank chemical coefficient 1, stacked worked-out fractions',
+      ['s.10.reaction-types', 'm.5.divide-unit-fractions~fraction-as-division'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m5-divide-unit-fractions-fraction-as-division',
+      'g.m5-divide-unit-fractions-fraction-as-division-whole',
+      'g.s10-reaction-types-coefficient-one',
+      'g.m6-divide-fractions-stacked-answer',
+    ],
+    notes:
+      'No new syntax for two of the three: a worked-out whole of 0 hides its box (3/4, not 0 3/4) and a worked-out top of 0 hides the fraction when its bottom is fixed, worked out or typed elsewhere in the equation (2, not 2 0/4): m.5.divide-unit-fractions~fraction-as-division takes `{w} ÷ {n} = {W} {R}/{n}`; and a worked-out fraction in a box (8 7/24) is drawn stacked, like the fixed fractions beside it (on every page: m.4.add-fractions-like~mixed-add now shows 4, not 4 0/6, and m.5.add-fractions-unlike~mixed-numbers a stacked 8 7/24). A coefficient of 1 left blank when worked out is opt-in: `{a:coef} CH₄ + {b:coef} O₂ → {c:coef} CO₂ + {d:coef} H₂O`.',
+  },
 ];
