@@ -109,19 +109,45 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'g.m10-special-right-triangles-30',
     ],
   },
-  ask(
-    'H05',
-    'markedFigure',
-    'Geometry figure with congruence ticks, arcs, right-angle and parallel marks, from a point list',
-    [
-      'm.10.constructions',
-      'm.10.proofs',
-      'm.10.parallel-lines',
-      'm.10.triangle-relationships',
-      'm.10.quadrilaterals',
+  {
+    ...ask(
+      'H05',
+      'markedFigure',
+      'Geometry figure with congruence ticks, arcs, right-angle and parallel marks, from a point list',
+      [
+        'm.10.constructions',
+        'm.10.proofs',
+        'm.10.parallel-lines',
+        'm.10.triangle-relationships',
+        'm.10.quadrilaterals',
+      ],
+      'Parallel lines cut by a transversal with the eight angles; triangle centers (centroid, incenter, circumcenter, orthocenter) with medians, bisectors and altitudes; midsegments; quadrilateral families with diagonals; a proof figure whose given and proved parts light up by step. ' +
+        'Drawn (spec in typesHsc.ts; every mark is placed from the drawn figure and the harness checks each claim and each labelled length or angle). Presets: `transversal: { angle: "x", second?: "y", highlight: [3, 6], labels: { 1: "a", 3: "x" } }` (angles 1–8, 1 top left at the upper crossing; `second` = angle 5 tilts line 2 when it differs, the parallel arrows only when equal; the caption names the pair, e.g. alternate interior; the transversal drags angle 1); ' +
+        '`triangle: { sides: ["a", "b", "c"], lines: "median" | "bisector" | "perpendicular" | "altitude" | "midsegment", center: true, labels: { AG: "g" } }` (midpoints or feet D on BC, E on CA, F on AB; centers G, I, O, H with the in- or circumcircle; I’s touch point T on BC; midsegment DE ∥ BC); ' +
+        '`quadrilateral: { family, width, height?, angle?, top?, diagonals: true, labels: { AC: "d", DAB: "A" } }` (parallelogram, rectangle, rhombus, square, trapezoid (isosceles marks when its base angles are equal), kite); or `points: { A: [0, 0], B: ["ab", 0] }` with `parts` (segment, ray, line, ticks, arcs, right, parallel, circle, label with `inCaption`). ' +
+        '`proof: { step: "k", steps: [{ given: ["AB"], proved: ["△ABD"], text }] }` lights the step’s given parts yellow and the proved parts blue (refs: segment AB, angle ABC, triangle △ABD). A figure the values can’t make draws faded with the reason.',
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-parallel-lines-corresponding',
+      'g.m10-parallel-lines-alternate-interior',
+      'g.m10-parallel-lines-same-side',
+      'g.m10-parallel-lines-converse',
+      'g.m10-triangle-relationships-centroid',
+      'g.m10-triangle-relationships-incenter',
+      'g.m10-triangle-relationships-circumcenter',
+      'g.m10-triangle-relationships-orthocenter',
+      'g.m10-triangle-relationships-midsegment',
+      'g.m10-quadrilaterals-parallelogram',
+      'g.m10-quadrilaterals-rectangle',
+      'g.m10-quadrilaterals-rhombus',
+      'g.m10-quadrilaterals-square',
+      'g.m10-quadrilaterals-trapezoid',
+      'g.m10-quadrilaterals-kite',
+      'g.m10-constructions-perpendicular-bisector',
+      'g.m10-proofs-isosceles',
     ],
-    'Parallel lines cut by a transversal with the eight angles; triangle centers (centroid, incenter, circumcenter, orthocenter) with medians, bisectors and altitudes; midsegments; quadrilateral families with diagonals; a proof figure whose given and proved parts light up by step.',
-  ),
+  },
   ask(
     'H06',
     'unitCircle',

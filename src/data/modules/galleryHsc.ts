@@ -415,7 +415,8 @@ function special(
   };
 }
 
-export const HSC_GALLERY_MODULES: ModuleDef[] = [
+/** H04 triangleSolver demos. */
+const TRIANGLE_DEMOS: ModuleDef[] = [
   // H04 triangleSolver: solving any triangle.
   anyTriangle(
     'g.m10-law-sines-cosines-sas',
@@ -700,5 +701,802 @@ export const HSC_GALLERY_MODULES: ModuleDef[] = [
     ['b'],
   ),
 ];
+
+// ─── H05 markedFigure ─────────────────────────────────────────────────────────
+
+/**
+ * A rule solved one way (or both): `target` from `from`, with its step text; `back` gives the
+ * other rearrangements when the rule is a simple sum or product.
+ */
+interface Rule {
+  relation: Relation;
+  steps: Record<string, { expr: string; how: string }>;
+}
+function rule(
+  id: string,
+  display: string,
+  solve: Record<string, [(v: Values) => number | undefined, string, string]>,
+  residual: (v: Values) => number,
+): Rule {
+  const vars = [...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!);
+  return {
+    relation: {
+      id,
+      display,
+      vars: [...new Set(vars)],
+      residual,
+      solve: Object.fromEntries(Object.entries(solve).map(([k, [fn]]) => [k, fn])),
+    },
+    steps: Object.fromEntries(
+      Object.entries(solve).map(([k, [, expr, how]]) => [k, { expr, how }]),
+    ),
+  };
+}
+/** A page stand-in from its rules. */
+function figureDemo(d: {
+  id: string;
+  title: string;
+  use: string;
+  assumptions: string[];
+  variables: VariableDef[];
+  rules: Rule[];
+  example: Values;
+  startWith: string[];
+  representation: Representation;
+  standalone?: ModuleDef['standalone'];
+}): ModuleDef {
+  // A triangle from its sides: the sides must close.
+  const closes = d.variables.includes(TRI_SIDES[0]!);
+  return {
+    id: d.id,
+    title: d.title,
+    use: d.use,
+    assumptions: d.assumptions,
+    variables: d.variables,
+    relations: [...(closes ? [triangleCloses] : []), ...d.rules.map((r) => r.relation)],
+    steps: {
+      ...(closes ? { [triangleCloses.id]: {} } : {}),
+      ...Object.fromEntries(d.rules.map((r) => [r.relation.id, r.steps])),
+    },
+    example: d.example,
+    startWith: d.startWith,
+    representation: d.representation,
+    ...(d.standalone ? { standalone: d.standalone } : {}),
+  };
+}
+const der = (v: VariableDef): VariableDef => ({ ...v, derived: true });
+
+/** y = 180 − x (a linear pair) and y = x (equal angles), both ways. */
+const supplement = (x: string, y: string, why: string) =>
+  rule(
+    `${y} = 180° − ${x}`,
+    `{${y}} = 180 − {${x}}`,
+    {
+      [y]: [(v) => 180 - v[x]!, `180 − {${x}}`, why],
+      [x]: [(v) => 180 - v[y]!, `180 − {${y}}`, why],
+    },
+    (v) => v[y]! - (180 - v[x]!),
+  );
+const equal = (x: string, y: string, why: string) =>
+  rule(
+    `${y} = ${x}`,
+    `{${y}} = {${x}}`,
+    { [y]: [(v) => v[x]!, `{${x}}`, why], [x]: [(v) => v[y]!, `{${y}}`, why] },
+    (v) => v[y]! - v[x]!,
+  );
+
+/** The median from A, and G two thirds of the way along it (sides a = BC, b = CA, c = AB). */
+const median = (v: Values) => 0.5 * Math.sqrt(2 * v.b! ** 2 + 2 * v.c! ** 2 - v.a! ** 2);
+/** Heron's area from the three sides. */
+const heron = (v: Values) => {
+  const s = (v.a! + v.b! + v.c!) / 2;
+  const q = s * (s - v.a!) * (s - v.b!) * (s - v.c!);
+  return q > 0 ? Math.sqrt(q) : undefined;
+};
+const TRI_SIDES = [side('a', 'Side a (BC)'), side('b', 'Side b (CA)'), side('c', 'Side c (AB)')];
+const areaRule = rule(
+  'K = √(s(s − a)(s − b)(s − c))',
+  '{K} = √(({a} + {b} + {c}) ÷ 2 × (({b} + {c} − {a}) ÷ 2) × (({a} + {c} − {b}) ÷ 2) × (({a} + {b} − {c}) ÷ 2))',
+  {
+    K: [
+      heron,
+      '√(({a} + {b} + {c}) ÷ 2 × (({b} + {c} − {a}) ÷ 2) × (({a} + {c} − {b}) ÷ 2) × (({a} + {b} − {c}) ÷ 2))',
+      'Heron’s formula: the half-perimeter s times s minus each side, then the square root.',
+    ],
+  },
+  (v) => v.K! - (heron(v) ?? NaN),
+);
+const sidesOf = (a: number, b: number, c: number): Values => ({ a, b, c });
+
+const FIGURE_DEMOS: ModuleDef[] = [
+  // Parallel lines cut by a transversal.
+  figureDemo({
+    id: 'g.m10-parallel-lines-corresponding',
+    title: 'Corresponding angles',
+    use: 'Use this for “Lines ℓ and m are parallel and ∠1 = 65°. Find ∠5.”',
+    assumptions: [
+      'Lines ℓ and m are parallel; the transversal crosses both.',
+      'Corresponding angles sit in the same place at each crossing: 1 and 5, 2 and 6, 3 and 7, 4 and 8.',
+      'When the lines are parallel, corresponding angles are equal.',
+    ],
+    variables: [angle('x', 'Angle 1', 'x'), angle('y', 'Angle 5', 'y')],
+    rules: [equal('x', 'y', 'Parallel lines: corresponding angles are equal.')],
+    example: { x: 65, y: 65 },
+    startWith: ['x'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'x', second: 'y', highlight: [1, 5], labels: { 1: 'x', 5: 'y' } },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-parallel-lines-alternate-interior',
+    title: 'Alternate interior angles',
+    use: 'Use this for “ℓ ∥ m and ∠1 = 110°. Find ∠3 and ∠6.”',
+    assumptions: [
+      'Lines ℓ and m are parallel.',
+      'Angles 1 and 3 make a straight line, so they add to 180°.',
+      'Alternate interior angles (3 and 6, 4 and 5) lie between the lines on opposite sides of the transversal; they are equal.',
+    ],
+    variables: [angle('a', 'Angle 1', 'a'), angle('x', 'Angle 3', 'x'), angle('y', 'Angle 6', 'y')],
+    rules: [
+      supplement('a', 'x', 'A linear pair adds to 180°.'),
+      equal('x', 'y', 'Parallel lines: alternate interior angles are equal.'),
+    ],
+    example: { a: 110, x: 70, y: 70 },
+    startWith: ['a'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'a', highlight: [3, 6], labels: { 1: 'a', 3: 'x', 6: 'y' } },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-parallel-lines-same-side',
+    title: 'Same-side interior angles',
+    use: 'Use this for “ℓ ∥ m and ∠4 = 58°. Find ∠6.”',
+    assumptions: [
+      'Lines ℓ and m are parallel.',
+      'Same-side interior angles (3 and 5, 4 and 6) are between the lines on one side of the transversal; they add to 180°.',
+      'Angle 4 and angle 1 are vertical angles, so they are equal.',
+    ],
+    variables: [angle('a', 'Angle 1', 'a'), angle('x', 'Angle 4', 'x'), angle('y', 'Angle 6', 'y')],
+    rules: [
+      equal('a', 'x', 'Vertical angles are equal.'),
+      supplement('x', 'y', 'Parallel lines: same-side interior angles add to 180°.'),
+    ],
+    example: { a: 58, x: 58, y: 122 },
+    startWith: ['x'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'a', highlight: [4, 6], labels: { 1: 'a', 4: 'x', 6: 'y' } },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-parallel-lines-converse',
+    title: 'Are the lines parallel?',
+    use: 'Use this for “∠1 = 72° and ∠5 = 68°. Are the lines parallel?”',
+    assumptions: [
+      'Converse: if corresponding angles are equal, the lines are parallel.',
+      'If they differ, the lines meet: the second line is tilted by the difference.',
+    ],
+    variables: [
+      angle('a', 'Angle 1', 'a'),
+      angle('b', 'Angle 5', 'b'),
+      { id: 'd', symbol: 'd', name: 'Difference', unit: '°', min: -178, max: 178, step: 1 },
+    ],
+    rules: [
+      rule(
+        'd = b − a',
+        '{d} = {b} − {a}',
+        {
+          d: [
+            (v) => v.b! - v.a!,
+            '{b} − {a}',
+            'The tilt between the lines: 0° only when they are parallel.',
+          ],
+          b: [(v) => v.a! + v.d!, '{a} + {d}', 'Angle 5 is angle 1 turned by the tilt.'],
+          a: [(v) => v.b! - v.d!, '{b} − {d}', 'Angle 1 is angle 5 less the tilt.'],
+        },
+        (v) => v.d! - (v.b! - v.a!),
+      ),
+    ],
+    example: { a: 72, b: 68, d: -4 },
+    startWith: ['a', 'b'],
+    representation: {
+      kind: 'markedFigure',
+      transversal: { angle: 'a', second: 'b', highlight: [1, 5], labels: { 1: 'a', 5: 'b' } },
+    },
+  }),
+  // Triangle centers and the midsegment.
+  figureDemo({
+    id: 'g.m10-triangle-relationships-centroid',
+    title: 'Medians and the centroid',
+    use: 'Use this for “The median AD is 9. How long are AG and GD?”',
+    assumptions: [
+      'A median joins a corner to the middle of the opposite side.',
+      'The three medians meet at the centroid G, two thirds of the way from each corner.',
+      'The median from A: m = ½√(2b² + 2c² − a²).',
+    ],
+    variables: [
+      ...TRI_SIDES,
+      der(side('m', 'Median m (AD)')),
+      der(side('g', 'AG')),
+      der(side('k', 'GD')),
+    ],
+    rules: [
+      rule(
+        'm = ½√(2b² + 2c² − a²)',
+        '{m} = √(2 × {b}² + 2 × {c}² − {a}²) ÷ 2',
+        { m: [median, '√(2 × {b}² + 2 × {c}² − {a}²) ÷ 2', 'The length of the median from A.'] },
+        (v) => v.m! - median(v),
+      ),
+      rule(
+        'AG = 2m/3',
+        '{g} = 2 × {m} ÷ 3',
+        {
+          g: [
+            (v) => (2 * v.m!) / 3,
+            '2 × {m} ÷ 3',
+            'The centroid is two thirds of the way from the corner.',
+          ],
+        },
+        (v) => v.g! - (2 * v.m!) / 3,
+      ),
+      rule(
+        'GD = m/3',
+        '{k} = {m} ÷ 3',
+        { k: [(v) => v.m! / 3, '{m} ÷ 3', 'The last third of the median.'] },
+        (v) => v.k! - v.m! / 3,
+      ),
+    ],
+    example: (() => {
+      const v = sidesOf(8, 7, 6);
+      const m = median(v);
+      return { ...v, m, g: (2 * m) / 3, k: m / 3 };
+    })(),
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: {
+        sides: ['a', 'b', 'c'],
+        lines: 'median',
+        center: true,
+        labels: { AG: 'g', GD: 'k' },
+      },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-triangle-relationships-incenter',
+    title: 'Angle bisectors and the incenter',
+    use: 'Use this for “The sides are 13, 14 and 15. Find the radius of the inscribed circle.”',
+    assumptions: [
+      'The angle bisectors meet at the incenter I, the same distance r from all three sides.',
+      'That distance is the radius of the circle inside the triangle: r = K/s, the area over half the perimeter.',
+    ],
+    variables: [...TRI_SIDES, der(side('K', 'Area K', 10000)), der(side('r', 'Inradius r'))],
+    rules: [
+      areaRule,
+      rule(
+        'r = K/s',
+        '{r} = {K} ÷ (({a} + {b} + {c}) ÷ 2)',
+        {
+          r: [
+            (v) => v.K! / ((v.a! + v.b! + v.c!) / 2),
+            '{K} ÷ (({a} + {b} + {c}) ÷ 2)',
+            'The area over the half-perimeter.',
+          ],
+        },
+        (v) => v.r! - v.K! / ((v.a! + v.b! + v.c!) / 2),
+      ),
+    ],
+    example: (() => {
+      const v = sidesOf(14, 15, 13);
+      const K = heron(v)!;
+      return { ...v, K, r: K / 21 };
+    })(),
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: { sides: ['a', 'b', 'c'], lines: 'bisector', center: true, labels: { IT: 'r' } },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-triangle-relationships-circumcenter',
+    title: 'Perpendicular bisectors and the circumcenter',
+    use: 'Use this for “Find the radius of the circle through the corners of a 6, 8, 9 triangle.”',
+    assumptions: [
+      'The perpendicular bisectors of the sides meet at the circumcenter O, the same distance R from all three corners.',
+      'R = abc ÷ 4K, where K is the area.',
+    ],
+    variables: [...TRI_SIDES, der(side('K', 'Area K', 10000)), der(side('R', 'Circumradius R'))],
+    rules: [
+      areaRule,
+      rule(
+        'R = abc/4K',
+        '{R} = {a} × {b} × {c} ÷ (4 × {K})',
+        {
+          R: [
+            (v) => (v.a! * v.b! * v.c!) / (4 * v.K!),
+            '{a} × {b} × {c} ÷ (4 × {K})',
+            'The product of the sides over four times the area.',
+          ],
+        },
+        (v) => v.R! - (v.a! * v.b! * v.c!) / (4 * v.K!),
+      ),
+    ],
+    example: (() => {
+      const v = sidesOf(9, 8, 6);
+      const K = heron(v)!;
+      return { ...v, K, R: (9 * 8 * 6) / (4 * K) };
+    })(),
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: {
+        sides: ['a', 'b', 'c'],
+        lines: 'perpendicular',
+        center: true,
+        labels: { OA: 'R' },
+      },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-triangle-relationships-orthocenter',
+    title: 'Altitudes and the orthocenter (obtuse)',
+    use: 'Use this for “In a triangle with sides 4, 5 and 8, how long is the altitude to the longest side?”',
+    assumptions: [
+      'An altitude runs from a corner at right angles to the line of the opposite side.',
+      'In an obtuse triangle two feet fall outside, and the altitudes meet outside at the orthocenter H.',
+      'The altitude to side a: h = 2K ÷ a.',
+    ],
+    variables: [...TRI_SIDES, der(side('K', 'Area K', 10000)), der(side('h', 'Altitude h (AD)'))],
+    rules: [
+      areaRule,
+      rule(
+        'h = 2K/a',
+        '{h} = 2 × {K} ÷ {a}',
+        { h: [(v) => (2 * v.K!) / v.a!, '2 × {K} ÷ {a}', 'Twice the area over the base.'] },
+        (v) => v.h! - (2 * v.K!) / v.a!,
+      ),
+    ],
+    example: (() => {
+      const v = sidesOf(8, 5, 4);
+      const K = heron(v)!;
+      return { ...v, K, h: (2 * K) / 8 };
+    })(),
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: { sides: ['a', 'b', 'c'], lines: 'altitude', center: true, labels: { AD: 'h' } },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-triangle-relationships-midsegment',
+    title: 'The midsegment',
+    use: 'Use this for “D and E are the midpoints of AB and AC, and BC = 12. Find DE.”',
+    assumptions: [
+      'A midsegment joins the midpoints of two sides.',
+      'It is parallel to the third side and half as long.',
+    ],
+    variables: [...TRI_SIDES, side('m', 'Midsegment m (DE)')],
+    rules: [
+      rule(
+        'm = a/2',
+        '{m} = {a} ÷ 2',
+        {
+          m: [(v) => v.a! / 2, '{a} ÷ 2', 'Half the third side.'],
+          a: [(v) => 2 * v.m!, '2 × {m}', 'The third side is twice the midsegment.'],
+        },
+        (v) => v.m! - v.a! / 2,
+      ),
+    ],
+    example: { a: 12, b: 9, c: 7, m: 6 },
+    startWith: ['a', 'b', 'c'],
+    representation: {
+      kind: 'markedFigure',
+      triangle: { sides: ['a', 'b', 'c'], lines: 'midsegment', labels: { DE: 'm', BC: 'a' } },
+    },
+  }),
+  // Quadrilateral families.
+  figureDemo({
+    id: 'g.m10-quadrilaterals-parallelogram',
+    title: 'Parallelogram',
+    use: 'Use this for “In parallelogram ABCD, ∠A = 65°. Find ∠B.”',
+    assumptions: [
+      'Opposite sides are parallel and equal; opposite angles are equal.',
+      'Angles next to each other add to 180°.',
+      'The diagonals cut each other in half.',
+    ],
+    variables: [
+      side('w', 'Base AB'),
+      side('h', 'Height h'),
+      angle('A', 'Angle A'),
+      der(angle('B', 'Angle B')),
+    ],
+    rules: [supplement('A', 'B', 'Consecutive angles of a parallelogram add to 180°.')],
+    example: { w: 7, h: 4, A: 65, B: 115 },
+    startWith: ['w', 'h', 'A'],
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: {
+        family: 'parallelogram',
+        width: 'w',
+        height: 'h',
+        angle: 'A',
+        diagonals: true,
+        labels: { AB: 'w', DAB: 'A', ABC: 'B' },
+      },
+    },
+    standalone: {
+      vars: ['w', 'h'],
+      why: 'The base and height fix the size; the angles follow from ∠A alone.',
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-quadrilaterals-rectangle',
+    title: 'Rectangle and its diagonals',
+    use: 'Use this for “A rectangle is 8 by 6. How long is each diagonal?”',
+    assumptions: [
+      'Four right angles; the diagonals are equal and cut each other in half.',
+      'Diagonal: d² = w² + h².',
+    ],
+    variables: [side('w', 'Width w'), side('h', 'Height h'), side('d', 'Diagonal d', 150)],
+    rules: [
+      rule(
+        'd² = w² + h²',
+        '{d}² = {w}² + {h}²',
+        {
+          d: [
+            (v) => Math.hypot(v.w!, v.h!),
+            '√({w}² + {h}²)',
+            'The diagonal is the hypotenuse of a right triangle.',
+          ],
+          w: [
+            (v) => root(v.d! ** 2 - v.h! ** 2),
+            '√({d}² − {h}²)',
+            'Take h² from d², then the square root.',
+          ],
+          h: [
+            (v) => root(v.d! ** 2 - v.w! ** 2),
+            '√({d}² − {w}²)',
+            'Take w² from d², then the square root.',
+          ],
+        },
+        (v) => v.d! ** 2 - v.w! ** 2 - v.h! ** 2,
+      ),
+    ],
+    example: { w: 8, h: 6, d: 10 },
+    startWith: ['w', 'h'],
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: {
+        family: 'rectangle',
+        width: 'w',
+        height: 'h',
+        diagonals: true,
+        labels: { AC: 'd' },
+      },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-quadrilaterals-rhombus',
+    title: 'Rhombus and its diagonals',
+    use: 'Use this for “A rhombus has side 5 and ∠A = 74°. How long are its diagonals?”',
+    assumptions: [
+      'Four equal sides; the diagonals cut each other in half at right angles and bisect the angles.',
+      'Diagonals: p = 2s cos(A ÷ 2) and q = 2s sin(A ÷ 2).',
+    ],
+    variables: [
+      side('s', 'Side s'),
+      angle('A', 'Angle A'),
+      der(side('p', 'Diagonal p (AC)')),
+      der(side('q', 'Diagonal q (BD)')),
+    ],
+    rules: [
+      rule(
+        'p = 2s cos(A/2)',
+        '{p} = 2 × {s} × cos({A} ÷ 2)',
+        {
+          p: [
+            (v) => 2 * v.s! * cos(v.A! / 2),
+            '2 × {s} × cos({A} ÷ 2)',
+            'Half of AC is the side times cos of half of A.',
+          ],
+        },
+        (v) => v.p! - 2 * v.s! * cos(v.A! / 2),
+      ),
+      rule(
+        'q = 2s sin(A/2)',
+        '{q} = 2 × {s} × sin({A} ÷ 2)',
+        {
+          q: [
+            (v) => 2 * v.s! * sin(v.A! / 2),
+            '2 × {s} × sin({A} ÷ 2)',
+            'Half of BD is the side times sin of half of A.',
+          ],
+        },
+        (v) => v.q! - 2 * v.s! * sin(v.A! / 2),
+      ),
+    ],
+    example: { s: 5, A: 74, p: 10 * cos(37), q: 10 * sin(37) },
+    startWith: ['s', 'A'],
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: {
+        family: 'rhombus',
+        width: 's',
+        angle: 'A',
+        diagonals: true,
+        labels: { AC: 'p', BD: 'q' },
+      },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-quadrilaterals-square',
+    title: 'Square and its diagonal',
+    use: 'Use this for “A square has side 4. How long is its diagonal?”',
+    assumptions: ['Four equal sides and four right angles.', 'The diagonal is the side times √2.'],
+    variables: [side('s', 'Side s'), side('d', 'Diagonal d', 150)],
+    rules: [
+      rule(
+        'd = s√2',
+        '{d} = {s} × √2',
+        {
+          d: [(v) => v.s! * Math.SQRT2, '{s} × √2', 'The diagonal of a square is a side times √2.'],
+          s: [(v) => v.d! / Math.SQRT2, '{d} ÷ √2', 'Divide the diagonal by √2.'],
+        },
+        (v) => v.d! - v.s! * Math.SQRT2,
+      ),
+    ],
+    example: { s: 4, d: 4 * Math.SQRT2 },
+    startWith: ['s'],
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: { family: 'square', width: 's', diagonals: true, labels: { AC: 'd' } },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-quadrilaterals-trapezoid',
+    title: 'Trapezoid',
+    use: 'Use this for “A trapezoid has bases 10 and 6 and height 4. Find its area.”',
+    assumptions: ['One pair of parallel sides, the bases AB and DC.', 'Area = (b₁ + b₂) ÷ 2 × h.'],
+    variables: [
+      side('w', 'Base b₁ (AB)'),
+      side('t', 'Base b₂ (DC)'),
+      side('h', 'Height h'),
+      angle('A', 'Angle A'),
+      der(side('K', 'Area K', 10000)),
+    ],
+    rules: [
+      rule(
+        'K = (b₁ + b₂)h/2',
+        '{K} = ({w} + {t}) ÷ 2 × {h}',
+        {
+          K: [
+            (v) => ((v.w! + v.t!) / 2) * v.h!,
+            '({w} + {t}) ÷ 2 × {h}',
+            'The mean of the bases times the height.',
+          ],
+        },
+        (v) => v.K! - ((v.w! + v.t!) / 2) * v.h!,
+      ),
+    ],
+    // Isosceles: the top sits centered, so the legs lean at atan(4 ÷ 2) ≈ 63.43°.
+    example: { w: 10, t: 6, h: 4, A: atanDeg(2), K: 32 },
+    startWith: ['w', 't', 'h', 'A'],
+    standalone: {
+      vars: ['A'],
+      why: 'The angle at A sets the lean; the area needs only the bases and height.',
+    },
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: {
+        family: 'trapezoid',
+        width: 'w',
+        top: 't',
+        height: 'h',
+        angle: 'A',
+        labels: { AB: 'w', DC: 't' },
+      },
+    },
+  }),
+  figureDemo({
+    id: 'g.m10-quadrilaterals-kite',
+    title: 'Kite',
+    use: 'Use this for “A kite’s diagonals are 8 and 9, the short part 3. How long are its short sides?”',
+    assumptions: [
+      'Two pairs of equal sides next to each other: AB = AD and CB = CD.',
+      'The diagonals meet at right angles and the long one cuts the short one in half.',
+    ],
+    variables: [
+      side('w', 'Diagonal BD'),
+      side('u', 'OA'),
+      side('l', 'OC'),
+      der(side('s', 'Side AB')),
+    ],
+    rules: [
+      rule(
+        's² = (w/2)² + u²',
+        '{s}² = ({w} ÷ 2)² + {u}²',
+        {
+          s: [
+            (v) => Math.hypot(v.w! / 2, v.u!),
+            '√(({w} ÷ 2)² + {u}²)',
+            'AB is the hypotenuse of the right triangle AOB.',
+          ],
+        },
+        (v) => v.s! ** 2 - (v.w! / 2) ** 2 - v.u! ** 2,
+      ),
+    ],
+    example: { w: 8, u: 3, l: 6, s: 5 },
+    startWith: ['w', 'u', 'l'],
+    standalone: { vars: ['l'], why: 'The long part of the diagonal sets the other pair of sides.' },
+    representation: {
+      kind: 'markedFigure',
+      quadrilateral: {
+        family: 'kite',
+        width: 'w',
+        height: 'u',
+        top: 'l',
+        diagonals: true,
+        labels: { AB: 's' },
+      },
+    },
+  }),
+  // A construction from named points.
+  figureDemo({
+    id: 'g.m10-constructions-perpendicular-bisector',
+    title: 'Construct a perpendicular bisector',
+    use: 'Use this for “Construct the perpendicular bisector of a 6 cm segment with a compass set to 4 cm.”',
+    assumptions: [
+      'Set the compass wider than half of AB; draw a circle about A and one about B.',
+      'The circles cross at P, the same distance r from A and B; the line through P at right angles to AB bisects it at M.',
+      'P is h above M: h² + (AB ÷ 2)² = r².',
+    ],
+    variables: [
+      side('ab', 'Segment AB'),
+      side('r', 'Compass r'),
+      der(side('m', 'AM')),
+      der(side('h', 'MP')),
+    ],
+    rules: [
+      rule(
+        'm = AB/2',
+        '{m} = {ab} ÷ 2',
+        { m: [(v) => v.ab! / 2, '{ab} ÷ 2', 'M is the middle of AB.'] },
+        (v) => v.m! - v.ab! / 2,
+      ),
+      rule(
+        'h² = r² − m²',
+        '{h}² = {r}² − {m}²',
+        {
+          h: [
+            (v) => root(v.r! ** 2 - v.m! ** 2),
+            '√({r}² − {m}²)',
+            'The right triangle AMP: r is its hypotenuse.',
+          ],
+        },
+        (v) => v.h! ** 2 - v.r! ** 2 + v.m! ** 2,
+      ),
+    ],
+    example: { ab: 6, r: 4, m: 3, h: Math.sqrt(7) },
+    startWith: ['ab', 'r'],
+    representation: {
+      kind: 'markedFigure',
+      points: { A: [0, 0], B: ['ab', 0], M: ['m', 0], P: ['m', 'h'] },
+      parts: [
+        { circle: 'A', through: 'P', dashed: true },
+        { circle: 'B', through: 'P', dashed: true },
+        { segment: 'AB' },
+        { segment: 'AP', dashed: true },
+        { segment: 'BP', dashed: true },
+        { line: 'MP' },
+        { ticks: 'AM', count: 1 },
+        { ticks: 'MB', count: 1 },
+        { ticks: 'AP', count: 2 },
+        { ticks: 'BP', count: 2 },
+        { right: 'PMB' },
+        { label: 'AB', value: 'ab', inCaption: true },
+        { label: 'MP', value: 'h', inCaption: true },
+        { label: 'AP', value: 'r' },
+      ],
+    },
+  }),
+  // A proof, step by step.
+  figureDemo({
+    id: 'g.m10-proofs-isosceles',
+    title: 'Proof: base angles of an isosceles triangle',
+    use: 'Use this for “Given AB = AC, prove ∠B = ∠C.”',
+    assumptions: [
+      'Given: AB = AC. Draw AD, the bisector of ∠A, to meet BC at D.',
+      'Step through the proof: each step lights what it uses and what it proves.',
+      'The base angles: B = (180° − A) ÷ 2.',
+    ],
+    variables: [
+      side('s', 'Legs AB = AC'),
+      angle('A', 'Angle A'),
+      der(angle('B', 'Angle B')),
+      der(side('half', 'BD')),
+      der(side('ht', 'AD')),
+      der(side('b', 'Base BC')),
+      { id: 'k', symbol: 'k', name: 'Proof step', min: 1, max: 5, integer: true },
+    ],
+    rules: [
+      rule(
+        'B = (180° − A)/2',
+        '{B} = (180 − {A}) ÷ 2',
+        {
+          B: [
+            (v) => (180 - v.A!) / 2,
+            '(180 − {A}) ÷ 2',
+            'The two base angles share what is left of 180°.',
+          ],
+        },
+        (v) => v.B! - (180 - v.A!) / 2,
+      ),
+      rule(
+        'BD = s sin(A/2)',
+        '{half} = {s} × sin({A} ÷ 2)',
+        {
+          half: [
+            (v) => v.s! * sin(v.A! / 2),
+            '{s} × sin({A} ÷ 2)',
+            'In the right triangle ABD, BD is across from half of A.',
+          ],
+        },
+        (v) => v.half! - v.s! * sin(v.A! / 2),
+      ),
+      rule(
+        'AD = s cos(A/2)',
+        '{ht} = {s} × cos({A} ÷ 2)',
+        { ht: [(v) => v.s! * cos(v.A! / 2), '{s} × cos({A} ÷ 2)', 'AD is next to half of A.'] },
+        (v) => v.ht! - v.s! * cos(v.A! / 2),
+      ),
+      rule(
+        'BC = 2BD',
+        '{b} = 2 × {half}',
+        { b: [(v) => 2 * v.half!, '2 × {half}', 'D is the middle of BC.'] },
+        (v) => v.b! - 2 * v.half!,
+      ),
+    ],
+    example: { s: 6, A: 40, B: 70, half: 6 * sin(20), ht: 6 * cos(20), b: 12 * sin(20), k: 1 },
+    startWith: ['s', 'A', 'k'],
+    standalone: { vars: ['k'], why: 'The proof step only picks what the figure lights.' },
+    representation: {
+      kind: 'markedFigure',
+      points: { B: [0, 0], C: ['b', 0], D: ['half', 0], A: ['half', 'ht'] },
+      parts: [
+        { segment: 'AB' },
+        { segment: 'AC' },
+        { segment: 'BC' },
+        { segment: 'AD' },
+        { ticks: 'AB', count: 1 },
+        { ticks: 'AC', count: 1 },
+        { arcs: 'BAD', count: 1 },
+        { arcs: 'DAC', count: 1 },
+        { label: 'ABD', value: 'B' },
+      ],
+      proof: {
+        step: 'k',
+        steps: [
+          { given: ['AB', 'AC'], proved: [], text: 'AB = AC (given).' },
+          { given: ['BAD', 'DAC'], proved: [], text: 'AD bisects ∠A, so ∠BAD = ∠DAC (given).' },
+          { given: [], proved: ['AD'], text: 'AD = AD (the same segment).' },
+          {
+            given: ['AB', 'AC', 'BAD', 'DAC', 'AD'],
+            proved: ['△ABD', '△ACD'],
+            text: '△ABD ≅ △ACD (SAS).',
+          },
+          {
+            given: ['△ABD', '△ACD'],
+            proved: ['ABD', 'ACD'],
+            text: '∠B = ∠C: matching parts of congruent triangles are equal.',
+          },
+        ],
+      },
+    },
+  }),
+];
+
+export const HSC_GALLERY_MODULES: ModuleDef[] = [...TRIANGLE_DEMOS, ...FIGURE_DEMOS];
 
 export const HSC_GALLERY_LAYOUTS: LayoutDef[] = [];

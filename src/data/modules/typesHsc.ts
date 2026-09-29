@@ -78,8 +78,8 @@ export type FigurePart =
   | { right: string }
   | { parallel: string; count: number }
   | { circle: string; through: string; dashed?: boolean }
-  /** A value (id) or text beside a segment or inside an angle. */
-  | { label: string; value?: string; text?: string };
+  /** A value (id) or text beside a segment or inside an angle; `inCaption` writes it under the figure. */
+  | { label: string; value?: string; text?: string; inCaption?: boolean };
 
 /**
  * A proof step lit on the figure: the parts it uses (`given`) in one tint, the part it proves
@@ -175,7 +175,7 @@ export interface CircleTheoremsSpec {
   fixed?: boolean;
 }
 
-export type HscSpec = TriangleSolverSpec;
+export type HscSpec = TriangleSolverSpec | MarkedFigureSpec;
 
 const ids = (xs: unknown[]): string[] => xs.filter((x): x is string => typeof x === 'string');
 
@@ -188,6 +188,22 @@ export function hscSpecVars(r: HscSpec): string[] {
         ...(r.similar ? [r.similar.scale, ...Object.values(r.similar.sides ?? {})] : []),
         r.scene?.eye,
         ...(r.keep ?? []),
+      ]);
+    case 'markedFigure':
+      return ids([
+        ...Object.values(r.points ?? {}).flat(),
+        ...(r.parts ?? []).map((p) => ('value' in p ? p.value : undefined)),
+        r.transversal?.angle,
+        r.transversal?.second,
+        ...Object.values(r.transversal?.labels ?? {}),
+        ...(r.triangle?.sides ?? []),
+        ...Object.values(r.triangle?.labels ?? {}),
+        r.quadrilateral?.width,
+        r.quadrilateral?.height,
+        r.quadrilateral?.angle,
+        r.quadrilateral?.top,
+        ...Object.values(r.quadrilateral?.labels ?? {}),
+        r.proof?.step,
       ]);
   }
 }

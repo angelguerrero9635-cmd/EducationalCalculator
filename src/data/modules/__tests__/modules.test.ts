@@ -437,6 +437,7 @@ function representationVars(r: Representation): string[] {
     case 'orbit':
       return physics8SpecVars(r);
     case 'triangleSolver':
+    case 'markedFigure':
       return hscSpecVars(r);
   }
 }

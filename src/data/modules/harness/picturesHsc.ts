@@ -2,6 +2,7 @@
  * Picture checks for the Grades 9–12 geometry pictures of group HC (`typesHsc.ts`): what each
  * draws must agree with the values. Called from `repIssues` in `pictures.ts`. Test-only.
  */
+import { buildFigure, markIssues, measure } from '@/components/module/reps/markedFigureGeo';
 import { solveTriangle, triangleError, type Tri } from '@/components/module/reps/triangleSolve';
 
 import type { HscSpec, TriPart } from '../typesHsc';
@@ -52,6 +53,30 @@ export function hscIssues(rep: HscSpec, val: (id: string) => number | undefined)
             if (Math.abs(x - k * known[p]!) > 1e-4 * Math.max(1, x))
               out.push(`similar side ${x} is not ${k} × ${known[p]}`);
         }
+      }
+      break;
+    }
+    case 'markedFigure': {
+      // Every mark means what it says on the drawn figure, and every labelled value is the
+      // length or angle it sits on.
+      const fig = buildFigure(rep, num);
+      if (fig.reason) {
+        out.push(`~figure can't be drawn: ${fig.reason}`);
+        break;
+      }
+      out.push(...markIssues(fig));
+      for (const l of fig.labels) {
+        const x = l.value ? val(l.value) : undefined;
+        const m = measure(fig, l.at);
+        if (x !== undefined && m !== undefined && Math.abs(x - m) > 1e-4 * Math.max(1, m))
+          out.push(`label ${l.at} = ${x} but the figure's is ${m}`);
+      }
+      const t = rep.transversal;
+      if (t) for (const n of t.highlight ?? []) if (!(n >= 1 && n <= 8)) out.push(`angle ${n}`);
+      if (rep.proof) {
+        const k = val(rep.proof.step);
+        if (k !== undefined && !(Number.isInteger(k) && k >= 1 && k <= rep.proof.steps.length))
+          out.push(`proof step ${k} of ${rep.proof.steps.length}`);
       }
       break;
     }

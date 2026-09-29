@@ -121,6 +121,7 @@ import { ForceCart } from './ForceCart';
 import { Skaters } from './Skaters';
 import { EnergyTrack } from './EnergyTrack';
 import { TriangleSolver } from './TriangleSolver';
+import { MarkedFigure } from './MarkedFigure';
 
 /** Section title for each representation kind. */
 export const representationTitle = (r: Representation) =>
@@ -394,5 +395,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <GradCylinder spec={spec} calc={calc} />;
     case 'triangleSolver':
       return <TriangleSolver spec={spec} calc={calc} />;
+    case 'markedFigure':
+      return <MarkedFigure spec={spec} calc={calc} />;
   }
 }
