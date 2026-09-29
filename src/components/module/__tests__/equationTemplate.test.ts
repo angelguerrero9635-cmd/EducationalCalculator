@@ -228,6 +228,40 @@ describe('H83: radicals', () => {
   });
 });
 
+describe('H84: sign and operator boxes', () => {
+  it('reads {s:sign}, {s:relation} and {o:op} as choice boxes', () => {
+    expect(equationParts('{p}x + {q} {s:sign} {r}')).toEqual([
+      box('p'),
+      text('x', { before: true }),
+      text('+'),
+      box('q'),
+      { kind: 'choice', id: 's', choices: 'sign' },
+      box('r'),
+    ]);
+    expect(equationParts('{a} {o:op} {b} = {r}')[1]).toEqual({
+      kind: 'choice',
+      id: 'o',
+      choices: 'op',
+    });
+    expect(equationParts('{l} {s1:relation} {a}x')[1]).toEqual({
+      kind: 'choice',
+      id: 's1',
+      choices: 'relation',
+    });
+  });
+
+  it('lists the sign’s value with the boxes', () => {
+    expect(equationIds('{l} {s1:sign} {a}x + {b} {s2:sign} {r}')).toEqual([
+      'l',
+      's1',
+      'a',
+      'b',
+      's2',
+      'r',
+    ]);
+  });
+});
+
 describe('every page’s equation', () => {
   it('lists each box in its template', () => {
     for (const m of TESTED_MODULES) {

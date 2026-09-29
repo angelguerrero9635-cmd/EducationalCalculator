@@ -40,6 +40,7 @@ Keep rows for:
 | `{p}x + {q}`, `{a}°`, `{p}%`, `f({x})` | Text written against a box touches it: no space between. |
 | `{{x} − {m}}/{s}`, `{r}^{{n} − 1}`     | A group in braces: an expression slot (boxes, text).     |
 | `√{n}`, `∛{n}`, `√({a}x + {b})`        | A radical, its bar over the box or the group.            |
+| `{s:sign}`, `{s:relation}`, `{o:op}`   | A sign box to tap: < ≤ > ≥ (= too), or + −; value 1, 2…  |
 | A line break (`\n`)                    | A second equation under the first (a system).            |
 
 Line breaks and brackets:
@@ -111,11 +112,11 @@ input can draw the part named in the last column; the pictures chat builds those
 | Skill                                   | Template                                                          | Needs                                                    |
 | --------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------- |
 | m.9.solving-equations                   | `{a}x + {b} = {c}x + {d}`; `{p}({a}x + {b}) = {c}x + {d}`         | today                                                    |
-| m.9.linear-inequalities                 | `{a}x + {b} {s} {c}`; compound `{l} {s1} {a}x + {b} {s2} {r}`     | **must**: sign choice box                                |
+| m.9.linear-inequalities                 | `{a}x + {b} {s:sign} {c}`; `{l} {s:sign} {a}x + {b} {t:sign} {r}` | today (H84: sign box)                                    |
 | m.9.absolute-value                      | `\|{a}x + {b}\| = {c}`                                            | today                                                    |
 | m.9.function-notation                   | `f({x}) = {y}`                                                    | today                                                    |
 | m.9.linear-modeling                     | `y = {m}x + {b}`; `y − {y1} = {m}(x − {x1})`; `{a}x + {b}y = {c}` | today                                                    |
-| m.9.inequality-systems                  | two lines, `{a}x + {b}y = {c}` and `{d}x + {e}y = {f}`            | today; inequalities need the sign box                    |
+| m.9.inequality-systems                  | two lines: `{a}x + {b}y {s:sign} {c}`, `{d}x + {e}y {t:sign} {f}` | today (H84: sign box)                                    |
 | m.9.radicals                            | `√{n} = {k}√{r}`; `{b}^{{p}/{q}}`                                 | today (H83: radical bar; H81: fraction exponent)         |
 | m.9.exponential-functions               | `y = {a}({b})^x`; `{A} = {P}(1 + {r})^{t}`                        | today (H82: an exponent on a bracket)                    |
 | m.9.sequences                           | `aₙ = {a1} + ({n} − 1){d}`; `aₙ = {a1} × {r}^{{n} − 1} = {an}`    | today; the geometric term uses H81’s expression exponent |

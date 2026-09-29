@@ -17,6 +17,8 @@ import {
   equationIds,
   equationLines,
   equationParts,
+  CHOICES,
+  type Choices,
   type EquationPart,
   type Slot,
 } from './equationTemplate';
@@ -309,6 +311,75 @@ function EquationBox({
   );
 }
 
+const CHOICE_WORDS: Record<string, string> = {
+  '<': 'less than',
+  '≤': 'less than or equal to',
+  '>': 'greater than',
+  '≥': 'greater than or equal to',
+  '=': 'equal to',
+  '+': 'plus',
+  '−': 'minus',
+};
+
+/**
+ * A sign in the equation the student taps to change (< ≤ > ≥, or + −): the value is the sign's
+ * place in `CHOICES` (1 is <), as the inequality pages store it. Outlined like a box, dashed
+ * when worked out; in a long equation as small as its boxes, the tap target still 44 px.
+ */
+function ChoiceBox({
+  variable,
+  calc,
+  choices,
+  compact,
+}: {
+  variable: VariableDef;
+  calc: Calculator;
+  choices: Choices;
+  compact?: boolean;
+}) {
+  const c = usePalette();
+  const signs = CHOICES[choices];
+  const value = calc.values[variable.id];
+  const status = calc.status(variable.id);
+  const at = value === undefined ? undefined : Math.round(value) - 1;
+  const sign = at !== undefined && at >= 0 && at < signs.length ? signs[at] : undefined;
+  const error = calc.errors[variable.id];
+  const next = sign === undefined ? 1 : ((at! + 1) % signs.length) + 1;
+  return (
+    <Pressable
+      testID={`input-${variable.id}`}
+      accessibilityRole="button"
+      accessibilityLabel={`${variable.name}: ${sign ? CHOICE_WORDS[sign] : 'not chosen'}`}
+      accessibilityHint={`Tap for ${CHOICE_WORDS[signs[next - 1]!]}`}
+      disabled={variable.derived}
+      onPress={() => calc.set({ [variable.id]: next })}
+      style={compact ? styles.eqHit : undefined}
+    >
+      <View
+        style={[
+          styles.eqChoice,
+          compact && styles.eqChoiceSmall,
+          {
+            borderColor: error ? c.text : c.border,
+            borderStyle: variable.derived ? 'dashed' : 'solid',
+            backgroundColor: status === 'given' || status === 'example' ? c.background : c.surface,
+          },
+        ]}
+      >
+        <Text
+          style={[
+            styles.eqText,
+            compact && styles.eqTextSmall,
+            { color: sign ? c.text : c.textMuted },
+          ]}
+        >
+          {sign ?? '?'}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
 /** The equation with a box for each value, so the numbers go where the problem writes them. */
 function EquationInput({ template, calc }: { template: string; calc: Calculator }) {
   const c = usePalette();
@@ -387,6 +458,14 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
         )}
         <View style={styles.eqExponent}>{slotView(p.exponent, `e${i}`, true)}</View>
       </View>
+    ) : p.kind === 'choice' ? (
+      <ChoiceBox
+        key={i}
+        variable={byId.get(p.id)!}
+        calc={calc}
+        choices={p.choices}
+        compact={compact || small}
+      />
     ) : p.kind === 'root' ? (
       // √{n}, ∛{n}, √({a}x + {b}): the bar over the box or the group.
       <Radical key={i} index={p.index}>
@@ -461,8 +540,8 @@ function tallBracket(s: Slot): EquationPart[] | undefined {
 }
 
 /**
- * Columns side by side: a box, a fraction or a power is one, a mixed number two; an expression
- * slot counts its own (a z-score's top, x − μ, is two).
+ * Columns side by side: a box, a fraction, a power or a sign box is one, a mixed number two;
+ * an expression slot counts its own (a z-score's top, x − μ, is two).
  */
 function columnsOf(parts: EquationPart[]): number {
   const slot = (s: Slot) => ('parts' in s ? Math.max(1, columnsOf(s.parts)) : 1);
@@ -489,7 +568,7 @@ function clusters(group: { p: EquationPart; i: number }[]) {
     const prev = group[k - 1]?.p;
     const touches =
       prev &&
-      ((item.p.kind !== 'box' && item.p.kind !== 'fraction' && item.p.tightBefore) ||
+      (('tightBefore' in item.p && item.p.tightBefore) ||
         (prev.kind === 'text' && prev.tightAfter));
     if (touches) out[out.length - 1]!.push(item);
     else out.push([item]);
@@ -518,6 +597,9 @@ function groups(parts: EquationPart[]) {
         p.text === '×' && next?.kind === 'power' && 'text' in next.base && next.base.text === '10';
       breakable = depth === 0 && SIGNS.has(p.text) && !p.tightBefore && !timesTen;
       depth = Math.max(0, depth + opens - closes);
+    } else if (p.kind === 'choice') {
+      // A sign box is a sign: the line may break before it.
+      breakable = depth === 0;
     }
     if (!prev || breakable) out.push([{ p, i }]);
     else prev.push({ p, i });
@@ -660,6 +742,16 @@ const styles = StyleSheet.create({
   eqTightAfter: { marginRight: -3 },
   eqBoxSmall: { minHeight: 32, fontSize: font.caption + 2 },
   eqHit: { padding: 6, margin: -6 },
+  eqChoiceSmall: { minWidth: 32, minHeight: 32 },
+  eqChoice: {
+    minWidth: 44,
+    minHeight: 44,
+    borderWidth: 1,
+    borderRadius: radius.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space.xs,
+  },
   eqTextSmall: { fontSize: font.body, lineHeight: 24 },
   eqSlot: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   eqSlotSmall: { flexDirection: 'row', alignItems: 'center', gap: 2 },

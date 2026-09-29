@@ -3,6 +3,7 @@
  * pictureRequestsHs.ts and docs/EQUATION_INPUTS.md). Each demo is a page stand-in whose equation
  * input uses the new part. Spread into gallery.ts.
  */
+import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 
 import { div } from './helpers';
@@ -14,6 +15,9 @@ import { SCIENCE_7_MODULES } from './science/7';
 import type { ModuleDef } from './types';
 
 const exact = (x: number) => Number(x.toPrecision(12));
+const fmt = (x: number) => formatNumber(x);
+/** A negative number in brackets, as written after a sign: 3 − (−2). */
+const paren = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
 
 /** A K–8 page as a gallery demo `id`, taking the equation it couldn't draw before. */
 function fromPage(pageId: string, id: string, title: string, extra: Partial<ModuleDef>) {
@@ -879,5 +883,216 @@ const H83: ModuleDef[] = [
   },
 ];
 
-export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83];
+/** The sign a value codes (1 <, 2 ≤, 3 >, 4 ≥, 5 =), flipped by dividing by a negative. */
+const SIGNS = ['<', '≤', '>', '≥', '='] as const;
+const flip = (s: number) => ({ 1: 3, 2: 4, 3: 1, 4: 2 })[s] ?? s;
+
+// H84: a sign or operator box, tapped through its signs, tied to the page's coded value.
+const H84: ModuleDef[] = [
+  (() => {
+    const page = fromPage(
+      'm.7.two-step-equations~inequality',
+      'g.m7-two-step-equations-inequality',
+      'Two-step inequality, the sign in the equation',
+      { equation: '{p}x + {q} {s:sign} {r}' },
+    );
+    // The page's work lines write the sign; with no sign chosen yet they wait for it (the page
+    // itself prints "undefined" there: reported to the lesson chat).
+    const rel = page.steps['b = (r − q) ÷ p']!;
+    const work = rel.b!.work as (v: Values) => string[];
+    return {
+      ...page,
+      steps: {
+        ...page.steps,
+        'b = (r − q) ÷ p': {
+          ...rel,
+          b: { ...rel.b!, work: (v: Values) => (v.s === undefined ? [] : work(v)) },
+        },
+      },
+    };
+  })(),
+  {
+    id: 'g.m9-linear-inequalities-both-sides',
+    title: 'Inequality with x on both sides',
+    use: 'Use this for “Solve 5x − 4 ≥ 2x + 11.”',
+    assumptions: [
+      'Gather the x terms on one side and the numbers on the other, as in an equation.',
+      'Dividing both sides by a negative number flips the sign.',
+    ],
+    variables: [
+      value('a', 'x on the left', -100, 100),
+      value('b', 'Number on the left', -10000, 10000),
+      { ...value('s', 'Sign (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4), integer: true },
+      value('c', 'x on the right', -100, 100),
+      value('d', 'Number on the right', -10000, 10000),
+      { ...value('x', 'Bound', -1e6, 1e6), derived: true },
+      {
+        ...value('f', 'Sign of the answer (1 <, 2 ≤, 3 >, 4 ≥)', 1, 4),
+        integer: true,
+        derived: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'x = (d − b) ÷ (a − c)',
+        display: '{x} = ({d} − {b}) ÷ ({a} − {c})',
+        vars: ['x', 'd', 'b', 'a', 'c'],
+        residual: (v: Values) => v.x! * (v.a! - v.c!) - (v.d! - v.b!),
+        solve: {
+          x: (v: Values) => (v.a === v.c ? undefined : exact((v.d! - v.b!) / (v.a! - v.c!))),
+          d: (v: Values) => exact(v.x! * (v.a! - v.c!) + v.b!),
+          b: (v: Values) => exact(v.d! - v.x! * (v.a! - v.c!)),
+          a: () => undefined,
+          c: () => undefined,
+        },
+      },
+      {
+        id: 'f = s, flipped when a − c < 0',
+        display: 'sign {f} from sign {s}, flipped when {a} − {c} is negative',
+        vars: ['f', 's', 'a', 'c'],
+        check: (v: Values) => `${v.a! - v.c! < 0 ? flip(v.s!) : v.s!} = ${v.f}`,
+        residual: (v: Values) => v.f! - (v.a! - v.c! < 0 ? flip(v.s!) : v.s!),
+        solve: {
+          f: (v: Values) => (v.a! - v.c! < 0 ? flip(v.s!) : v.s!),
+          s: (v: Values) => (v.a! - v.c! < 0 ? flip(v.f!) : v.f!),
+          a: () => undefined,
+          c: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'x = (d − b) ÷ (a − c)': {
+        x: {
+          expr: '({d} − {b}) ÷ ({a} − {c})',
+          how: 'Take cx and b from both sides, then divide by a − c.',
+        },
+        d: { expr: '{x} × ({a} − {c}) + {b}', how: 'Undo the steps: multiply, then add b.' },
+        b: { expr: '{d} − {x} × ({a} − {c})', how: 'Take the x part from the right side.' },
+      },
+      'f = s, flipped when a − c < 0': {
+        f: {
+          expr: (v: Values) => `${v.a! - v.c! < 0 ? flip(v.s!) : v.s!}`,
+          how: (v: Values) =>
+            v.a! - v.c! < 0
+              ? `a − c is negative: dividing by it flips ${SIGNS[v.s! - 1]} to ${SIGNS[flip(v.s!) - 1]}.`
+              : `a − c is positive: the sign stays ${SIGNS[v.s! - 1]}.`,
+        },
+        s: {
+          expr: (v: Values) => `${v.a! - v.c! < 0 ? flip(v.f!) : v.f!}`,
+          how: 'Undo the flip when a − c is negative.',
+        },
+      },
+    },
+    example: { a: 5, b: -4, s: 4, c: 2, d: 11, x: 5, f: 4 },
+    startWith: ['a', 'b', 's', 'c', 'd'],
+    equation: '{a}x + {b} {s:sign} {c}x + {d}',
+    representation: { kind: 'integerLine', value: 'x', min: -8, max: 8, inequality: { sign: 'f' } },
+  },
+  {
+    id: 'g.m7-rational-operations-add-subtract',
+    title: 'Add or subtract signed numbers',
+    use: 'Use this for “−7 − (−3)” or “−7 + 3”: tap the sign to switch.',
+    assumptions: [
+      'Adding a positive number moves right on the number line; a negative one moves left.',
+      'Subtracting a number is adding its opposite.',
+    ],
+    variables: [
+      value('a', 'First number', -1000, 1000),
+      { ...value('o', 'Operation (1 +, 2 −)', 1, 2), integer: true },
+      value('b', 'Second number', -3000, 3000),
+      value('r', 'Result', -4000, 4000),
+    ],
+    relations: [
+      {
+        id: 'r = a + b or a − b',
+        display: '{r} = {a} plus or minus {b}, as the sign {o} says',
+        vars: ['r', 'a', 'b', 'o'],
+        check: (v: Values) => `${fmt(v.a!)} ${v.o === 2 ? '−' : '+'} ${paren(v.b!)} = ${fmt(v.r!)}`,
+        residual: (v: Values) => v.r! - (v.o === 2 ? v.a! - v.b! : v.a! + v.b!),
+        solve: {
+          r: (v: Values) => exact(v.o === 2 ? v.a! - v.b! : v.a! + v.b!),
+          a: (v: Values) => exact(v.o === 2 ? v.r! + v.b! : v.r! - v.b!),
+          b: (v: Values) => exact(v.o === 2 ? v.a! - v.r! : v.r! - v.a!),
+          // The nearer of the two signs (the relation then checks it): + when r = a + b.
+          o: (v: Values) =>
+            Math.abs(v.r! - (v.a! + v.b!)) <= Math.abs(v.r! - (v.a! - v.b!)) ? 1 : 2,
+        },
+      },
+    ],
+    steps: {
+      'r = a + b or a − b': {
+        r: {
+          expr: (v: Values) => (v.o === 2 ? '{a} − ({b})' : '{a} + ({b})'),
+          how: (v: Values) =>
+            v.o === 2
+              ? 'Subtracting is adding the opposite: jump the other way.'
+              : 'Start at the first number and jump by the second.',
+        },
+        a: {
+          expr: (v: Values) => (v.o === 2 ? '{r} + ({b})' : '{r} − ({b})'),
+          how: 'Undo the jump from the result.',
+        },
+        b: {
+          expr: (v: Values) => (v.o === 2 ? '{a} − ({r})' : '{r} − ({a})'),
+          how: 'The jump from the first number to the result.',
+        },
+        o: {
+          expr: (v: Values) => (Math.abs(v.r! - (v.a! + v.b!)) < 1e-9 ? '1' : '2'),
+          how: 'The sign that makes it true: 1 is +, 2 is −.',
+        },
+      },
+    },
+    example: { a: -7, o: 2, b: -3, r: -4 },
+    startWith: ['a', 'o', 'b'],
+    equation: '{a} {o:op} {b} = {r}',
+    representation: { kind: 'integerLine', value: 'a', second: 'r', min: -10, max: 10 },
+  },
+  {
+    id: 'g.m6-integers-compare',
+    title: 'Compare two numbers: the sign worked out',
+    use: 'Use this for “Write <, > or = between −3.5 and −2.”',
+    assumptions: [
+      'On a number line the number to the right is greater.',
+      'Of two negative numbers, the one closer to 0 is greater.',
+    ],
+    variables: [
+      value('a', 'First number', -1000, 1000),
+      { ...value('c', 'Sign (1 <, 3 >, 5 =)', 1, 5), integer: true, derived: true },
+      value('b', 'Second number', -1000, 1000),
+    ],
+    relations: [
+      {
+        id: 'c = sign between a and b',
+        display: 'sign {c} between {a} and {b}',
+        vars: ['c', 'a', 'b'],
+        check: (v: Values) => `${v.a! < v.b! ? 1 : v.a! > v.b! ? 3 : 5} = ${v.c}`,
+        residual: (v: Values) => v.c! - (v.a! < v.b! ? 1 : v.a! > v.b! ? 3 : 5),
+        solve: {
+          c: (v: Values) => (v.a! < v.b! ? 1 : v.a! > v.b! ? 3 : 5),
+          a: () => undefined,
+          b: () => undefined,
+        },
+      },
+    ],
+    steps: {
+      'c = sign between a and b': {
+        c: {
+          expr: (v: Values) => `${v.a! < v.b! ? 1 : v.a! > v.b! ? 3 : 5}`,
+          how: (v: Values) =>
+            v.a! < v.b!
+              ? 'The first is left of the second on the line: <.'
+              : v.a! > v.b!
+                ? 'The first is right of the second on the line: >.'
+                : 'They are the same point: =.',
+        },
+      },
+    },
+    example: { a: -3.5, c: 1, b: -2 },
+    startWith: ['a', 'b'],
+    equation: '{a} {c:relation} {b}',
+    representation: { kind: 'integerLine', value: 'a', second: 'b', min: -5, max: 5 },
+  },
+];
+
+export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83, ...H84];
 export const HSM_GALLERY_LAYOUTS: LayoutDef[] = [];

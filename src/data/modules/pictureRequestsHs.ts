@@ -647,12 +647,23 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Template syntax: √ (∛ for a cube root, ∜ a fourth) before a box, a number, a group in braces or a bracketed group puts the bar over it, the brackets not drawn: `√{n} = {k}√{r}`, `√({a}x + {b}) = {c}`, `{c} = {s}√2`, `∛{n} = {k}`; a radical can be a fraction’s top or bottom: `{E} = {z} × {s}/√{n}`. Written against a box it touches it ({k}√{r}). The step harness reads “largest square factor of 72”.',
   },
-  ask(
-    'H84',
-    'equationInput',
-    'A sign or operator choice box (<, ≤, >, ≥; + or −) tied to a coded value',
-    ['m.9.linear-inequalities', 'm.9.inequality-systems', 'm.7.two-step-equations~inequality'],
-  ),
+  {
+    ...ask(
+      'H84',
+      'equationInput',
+      'A sign or operator choice box (<, ≤, >, ≥; + or −) tied to a coded value',
+      ['m.9.linear-inequalities', 'm.9.inequality-systems', 'm.7.two-step-equations~inequality'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m7-two-step-equations-inequality',
+      'g.m9-linear-inequalities-both-sides',
+      'g.m7-rational-operations-add-subtract',
+      'g.m6-integers-compare',
+    ],
+    notes:
+      'Template syntax: `{s:sign}` cycles <, ≤, >, ≥ (value 1–4, as the inequality pages store it); `{s:relation}` adds = as 5; `{o:op}` cycles + and − (1, 2). A tap sets the value (calc.set); a worked-out sign is dashed and can’t be tapped; a line may break before it. m.7.two-step-equations~inequality: `{p}x + {q} {s:sign} {r}`; both sides: `{a}x + {b} {s:sign} {c}x + {d}`; `{a} {o:op} {b} = {r}`; a worked-out comparison `{a} {c:relation} {b}`; scientific-notation add and subtract: `({a} × 10^{n}) {o:op} ({c} × 10^{n}) = {p} × 10^{n}`. The Grade 7 page’s work lines print “undefined” for the sign while it is not chosen (its demo waits for the sign).',
+  },
   ask(
     'H85',
     'equationInput',

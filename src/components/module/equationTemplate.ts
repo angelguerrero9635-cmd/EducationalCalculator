@@ -20,11 +20,24 @@ export type EquationPart =
   | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
   /** `tightBefore`: a bracket written against the piece before it, {a}(1 + {r})^{t}. */
   | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
+  /** A sign the student taps through (`CHOICES`), its value the sign's place: {s:sign}. */
+  | { kind: 'choice'; id: string; choices: Choices }
   /** A radical, its bar over `body`; `index` 3 for a cube root. */
   | { kind: 'root'; index?: string; body: Slot; tightBefore?: boolean }
   | { kind: 'text'; text: string; tightBefore?: boolean; tightAfter?: boolean };
 
 const BOX = /^\w+$/;
+/** `{s:sign}`, `{s:relation}`, `{o:op}`: a box the student taps to change its sign. */
+const CHOICE = /^(\w+):(sign|relation|op)$/;
+
+/** What a choice box cycles through; the value is the sign's place, counted from 1. */
+export type Choices = 'sign' | 'relation' | 'op';
+export const CHOICES: Record<Choices, readonly string[]> = {
+  // As the inequality pages code it: 1 <, 2 ≤, 3 >, 4 ≥ (and 5 = for `relation`).
+  sign: ['<', '≤', '>', '≥'],
+  relation: ['<', '≤', '>', '≥', '='],
+  op: ['+', '−'],
+};
 
 /** The index just past the `}` closing the `{` at `i` (braces nest). */
 function closeBrace(s: string, i: number): number {
@@ -72,6 +85,12 @@ function readSlot(s: string, i: number, letters: boolean): Read | undefined {
   if (s[i] === '{') {
     const end = closeBrace(s, i);
     const inner = s.slice(i + 1, end - 1);
+    const choice = CHOICE.exec(inner);
+    if (choice)
+      return {
+        slot: { parts: [{ kind: 'choice', id: choice[1]!, choices: choice[2] as Choices }] },
+        end,
+      };
     return { slot: BOX.test(inner) ? { id: inner } : { parts: equationParts(inner) }, end };
   }
   const m = (letters ? /^[−-]?[\w.]+/ : /^\d+/).exec(s.slice(i));
@@ -193,6 +212,7 @@ const slotIds = (s: Slot): string[] =>
 function partIds(p: EquationPart): string[] {
   switch (p.kind) {
     case 'box':
+    case 'choice':
       return [p.id];
     case 'fraction':
       return [...(p.whole ? [p.whole] : []), ...slotIds(p.top), ...slotIds(p.bottom)];
