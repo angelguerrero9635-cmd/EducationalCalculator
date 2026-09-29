@@ -1,0 +1,583 @@
+{
+  "id": "openstax-intermediate-algebra-2e",
+  "curriculum": "OpenStax Intermediate Algebra 2e",
+  "publisher": "OpenStax, Rice University",
+  "edition": "2nd edition (web version on openstax.org)",
+  "subject": "math",
+  "grades": ["11"],
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "statement": "This book uses the Creative Commons Attribution-NonCommercial-ShareAlike License, which means that you can reuse and modify the material only for noncommercial purposes, must attribute OpenStax, and must distribute any derivative works under the same license.",
+    "attribution": "© OpenStax, Rice University. Intermediate Algebra 2e, licensed under CC BY-NC-SA 4.0. Access for free at https://openstax.org/books/intermediate-algebra-2e/pages/1-introduction"
+  },
+  "sourceUrl": "https://openstax.org/books/intermediate-algebra-2e/pages/preface",
+  "retrieved": "2026-09-29",
+  "notes": "Reference only. The book is CC BY-NC-SA 4.0 (noncommercial, share-alike), so the practice files hold a representative sample, not every problem: per section, the Try It problems and the first 6 numbered exercises, with the answer when the book's public answer key gives it (odd-numbered exercises; Try It answers are all public). Units are the book's chapters and lessons its numbered sections. Filed under Grade 11 (Algebra 2); Chapters 1-3 review Grade 8-9 algebra. Skills are best matches; unit and lesson notes say where the fit is loose.",
+  "books": [
+    {
+      "grade": "11",
+      "units": [
+        {
+          "n": "1",
+          "title": "Foundations",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/1-introduction",
+          "skills": [
+            "m.6.expressions-variables",
+            "m.7.rational-operations",
+            "m.8.roots-irrationals"
+          ],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Use the Language of Algebra",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/1-1-use-the-language-of-algebra",
+              "skills": ["m.6.expressions-variables"]
+            },
+            {
+              "n": "1.2",
+              "title": "Integers",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/1-2-integers",
+              "skills": ["m.7.rational-operations"]
+            },
+            {
+              "n": "1.3",
+              "title": "Fractions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/1-3-fractions",
+              "skills": ["m.7.rational-operations"]
+            },
+            {
+              "n": "1.4",
+              "title": "Decimals",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/1-4-decimals",
+              "skills": ["m.7.rational-operations"]
+            },
+            {
+              "n": "1.5",
+              "title": "Properties of Real Numbers",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/1-5-properties-of-real-numbers",
+              "skills": ["m.7.rational-operations", "m.8.roots-irrationals"]
+            }
+          ],
+          "notes": "Foundations reviews arithmetic: Grade 6-8 skills"
+        },
+        {
+          "n": "2",
+          "title": "Solving Linear Equations",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-introduction",
+          "skills": [
+            "m.8.multi-step-equations",
+            "m.9.linear-modeling",
+            "m.9.inequality-systems",
+            "m.9.absolute-value"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Use a General Strategy to Solve Linear Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-1-use-a-general-strategy-to-solve-linear-equations",
+              "skills": ["m.8.multi-step-equations"]
+            },
+            {
+              "n": "2.2",
+              "title": "Use a Problem Solving Strategy",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-2-use-a-problem-solving-strategy",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "2.3",
+              "title": "Solve a Formula for a Specific Variable",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-3-solve-a-formula-for-a-specific-variable",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "2.4",
+              "title": "Solve Mixture and Uniform Motion Applications",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-4-solve-mixture-and-uniform-motion-applications",
+              "skills": ["m.9.linear-modeling"]
+            },
+            {
+              "n": "2.5",
+              "title": "Solve Linear Inequalities",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-5-solve-linear-inequalities",
+              "skills": ["m.9.inequality-systems"]
+            },
+            {
+              "n": "2.6",
+              "title": "Solve Compound Inequalities",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-6-solve-compound-inequalities",
+              "skills": ["m.9.inequality-systems"]
+            },
+            {
+              "n": "2.7",
+              "title": "Solve Absolute Value Inequalities",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/2-7-solve-absolute-value-inequalities",
+              "skills": ["m.9.absolute-value"]
+            }
+          ],
+          "notes": "linear equations and inequalities: Grade 8-9 skills"
+        },
+        {
+          "n": "3",
+          "title": "Graphs and Functions",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-introduction",
+          "skills": [
+            "m.8.linear-functions",
+            "m.8.slope",
+            "m.9.linear-modeling",
+            "m.9.inequality-systems",
+            "m.8.functions-intro",
+            "m.9.absolute-value"
+          ],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Graph Linear Equations in Two Variables",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-1-graph-linear-equations-in-two-variables",
+              "skills": ["m.8.linear-functions"]
+            },
+            {
+              "n": "3.2",
+              "title": "Slope of a Line",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-2-slope-of-a-line",
+              "skills": ["m.8.slope"]
+            },
+            {
+              "n": "3.3",
+              "title": "Find the Equation of a Line",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-3-find-the-equation-of-a-line",
+              "skills": ["m.8.linear-functions", "m.9.linear-modeling"]
+            },
+            {
+              "n": "3.4",
+              "title": "Graph Linear Inequalities in Two Variables",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-4-graph-linear-inequalities-in-two-variables",
+              "skills": ["m.9.inequality-systems"]
+            },
+            {
+              "n": "3.5",
+              "title": "Relations and Functions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-5-relations-and-functions",
+              "skills": ["m.8.functions-intro"]
+            },
+            {
+              "n": "3.6",
+              "title": "Graphs of Functions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/3-6-graphs-of-functions",
+              "skills": ["m.8.functions-intro", "m.9.absolute-value"]
+            }
+          ],
+          "notes": "lines and functions: Grade 8 skills"
+        },
+        {
+          "n": "4",
+          "title": "Systems of Linear Equations",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-introduction",
+          "skills": [
+            "m.8.systems-linear",
+            "m.9.linear-modeling",
+            "m.12.matrices",
+            "m.9.inequality-systems"
+          ],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Solve Systems of Linear Equations with Two Variables",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-1-solve-systems-of-linear-equations-with-two-variables",
+              "skills": ["m.8.systems-linear"]
+            },
+            {
+              "n": "4.2",
+              "title": "Solve Applications with Systems of Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-2-solve-applications-with-systems-of-equations",
+              "skills": ["m.8.systems-linear", "m.9.linear-modeling"]
+            },
+            {
+              "n": "4.3",
+              "title": "Solve Mixture Applications with Systems of Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-3-solve-mixture-applications-with-systems-of-equations",
+              "skills": ["m.8.systems-linear"]
+            },
+            {
+              "n": "4.4",
+              "title": "Solve Systems of Equations with Three Variables",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-4-solve-systems-of-equations-with-three-variables",
+              "skills": ["m.12.matrices", "m.8.systems-linear"],
+              "notes": "three-variable systems: nearest is m.12.matrices"
+            },
+            {
+              "n": "4.5",
+              "title": "Solve Systems of Equations Using Matrices",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-5-solve-systems-of-equations-using-matrices",
+              "skills": ["m.12.matrices"],
+              "notes": "matrices: Grade 12 skill (m.12.matrices)"
+            },
+            {
+              "n": "4.6",
+              "title": "Solve Systems of Equations Using Determinants",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-6-solve-systems-of-equations-using-determinants",
+              "skills": ["m.12.matrices"],
+              "notes": "determinants (Cramer's rule): Grade 12 skill"
+            },
+            {
+              "n": "4.7",
+              "title": "Graphing Systems of Linear Inequalities",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/4-7-graphing-systems-of-linear-inequalities",
+              "skills": ["m.9.inequality-systems"]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Polynomials and Polynomial Functions",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/5-introduction",
+          "skills": [
+            "m.9.polynomial-operations",
+            "m.11.polynomial-functions",
+            "m.8.exponent-rules",
+            "m.8.scientific-notation"
+          ],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Add and Subtract Polynomials",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/5-1-add-and-subtract-polynomials",
+              "skills": ["m.9.polynomial-operations", "m.11.polynomial-functions"]
+            },
+            {
+              "n": "5.2",
+              "title": "Properties of Exponents and Scientific Notation",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/5-2-properties-of-exponents-and-scientific-notation",
+              "skills": ["m.8.exponent-rules", "m.8.scientific-notation"]
+            },
+            {
+              "n": "5.3",
+              "title": "Multiply Polynomials",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/5-3-multiply-polynomials",
+              "skills": ["m.9.polynomial-operations"]
+            },
+            {
+              "n": "5.4",
+              "title": "Dividing Polynomials",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/5-4-dividing-polynomials",
+              "skills": ["m.11.polynomial-functions"]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Factoring",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-introduction-to-factoring",
+          "skills": ["m.9.factoring", "m.11.polynomial-functions"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Greatest Common Factor and Factor by Grouping",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-1-greatest-common-factor-and-factor-by-grouping",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "6.2",
+              "title": "Factor Trinomials",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-2-factor-trinomials",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "6.3",
+              "title": "Factor Special Products",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-3-factor-special-products",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "6.4",
+              "title": "General Strategy for Factoring Polynomials",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-4-general-strategy-for-factoring-polynomials",
+              "skills": ["m.9.factoring"]
+            },
+            {
+              "n": "6.5",
+              "title": "Polynomial Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/6-5-polynomial-equations",
+              "skills": ["m.9.factoring", "m.11.polynomial-functions"]
+            }
+          ],
+          "notes": "factoring: Grade 9 skill"
+        },
+        {
+          "n": "7",
+          "title": "Rational Expressions and Functions",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/7-introduction",
+          "skills": ["m.11.rational-functions"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Multiply and Divide Rational Expressions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/7-1-multiply-and-divide-rational-expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.2",
+              "title": "Add and Subtract Rational Expressions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/7-2-add-and-subtract-rational-expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.3",
+              "title": "Simplify Complex Rational Expressions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/7-3-simplify-complex-rational-expressions",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.4",
+              "title": "Solve Rational Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/7-4-solve-rational-equations",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.5",
+              "title": "Solve Applications with Rational Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/7-5-solve-applications-with-rational-equations",
+              "skills": ["m.11.rational-functions"]
+            },
+            {
+              "n": "7.6",
+              "title": "Solve Rational Inequalities",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/7-6-solve-rational-inequalities",
+              "skills": ["m.11.rational-functions"]
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Roots and Radicals",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-introduction",
+          "skills": ["m.9.radicals", "m.11.inverse-functions", "m.11.complex-numbers"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Simplify Expressions with Roots",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-1-simplify-expressions-with-roots",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "8.2",
+              "title": "Simplify Radical Expressions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-2-simplify-radical-expressions",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "8.3",
+              "title": "Simplify Rational Exponents",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-3-simplify-rational-exponents",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "8.4",
+              "title": "Add, Subtract, and Multiply Radical Expressions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-4-add-subtract-and-multiply-radical-expressions",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "8.5",
+              "title": "Divide Radical Expressions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-5-divide-radical-expressions",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "8.6",
+              "title": "Solve Radical Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-6-solve-radical-equations",
+              "skills": ["m.9.radicals"]
+            },
+            {
+              "n": "8.7",
+              "title": "Use Radicals in Functions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-7-use-radicals-in-functions",
+              "skills": ["m.9.radicals", "m.11.inverse-functions"]
+            },
+            {
+              "n": "8.8",
+              "title": "Use the Complex Number System",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/8-8-use-the-complex-number-system",
+              "skills": ["m.11.complex-numbers"]
+            }
+          ],
+          "notes": "radicals and rational exponents: Grade 9 skill (except 8.8 complex numbers)"
+        },
+        {
+          "n": "9",
+          "title": "Quadratic Equations and Functions",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-introduction",
+          "skills": ["m.9.quadratic-formula", "m.9.quadratic-functions", "m.9.inequality-systems"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Solve Quadratic Equations Using the Square Root Property",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-1-solve-quadratic-equations-using-the-square-root-property",
+              "skills": ["m.9.quadratic-formula"]
+            },
+            {
+              "n": "9.2",
+              "title": "Solve Quadratic Equations by Completing the Square",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-2-solve-quadratic-equations-by-completing-the-square",
+              "skills": ["m.9.quadratic-formula"]
+            },
+            {
+              "n": "9.3",
+              "title": "Solve Quadratic Equations Using the Quadratic Formula",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-3-solve-quadratic-equations-using-the-quadratic-formula",
+              "skills": ["m.9.quadratic-formula"]
+            },
+            {
+              "n": "9.4",
+              "title": "Solve Equations in Quadratic Form",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-4-solve-equations-in-quadratic-form",
+              "skills": ["m.9.quadratic-formula"]
+            },
+            {
+              "n": "9.5",
+              "title": "Solve Applications of Quadratic Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-5-solve-applications-of-quadratic-equations",
+              "skills": ["m.9.quadratic-formula", "m.9.quadratic-functions"]
+            },
+            {
+              "n": "9.6",
+              "title": "Graph Quadratic Functions Using Properties",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-6-graph-quadratic-functions-using-properties",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "9.7",
+              "title": "Graph Quadratic Functions Using Transformations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-7-graph-quadratic-functions-using-transformations",
+              "skills": ["m.9.quadratic-functions"]
+            },
+            {
+              "n": "9.8",
+              "title": "Solve Quadratic Inequalities",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/9-8-solve-quadratic-inequalities",
+              "skills": ["m.9.quadratic-functions", "m.9.inequality-systems"]
+            }
+          ],
+          "notes": "quadratic equations and functions: Grade 9 skills"
+        },
+        {
+          "n": "10",
+          "title": "Exponential and Logarithmic Functions",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/10-introduction",
+          "skills": [
+            "m.11.inverse-functions",
+            "m.9.exponential-functions",
+            "m.11.logarithms",
+            "m.11.exp-log-equations"
+          ],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Finding Composite and Inverse Functions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/10-1-finding-composite-and-inverse-functions",
+              "skills": ["m.11.inverse-functions"]
+            },
+            {
+              "n": "10.2",
+              "title": "Evaluate and Graph Exponential Functions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/10-2-evaluate-and-graph-exponential-functions",
+              "skills": ["m.9.exponential-functions"]
+            },
+            {
+              "n": "10.3",
+              "title": "Evaluate and Graph Logarithmic Functions",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/10-3-evaluate-and-graph-logarithmic-functions",
+              "skills": ["m.11.logarithms"]
+            },
+            {
+              "n": "10.4",
+              "title": "Use the Properties of Logarithms",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/10-4-use-the-properties-of-logarithms",
+              "skills": ["m.11.logarithms"]
+            },
+            {
+              "n": "10.5",
+              "title": "Solve Exponential and Logarithmic Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/10-5-solve-exponential-and-logarithmic-equations",
+              "skills": ["m.11.exp-log-equations"]
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Conics",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/11-introduction",
+          "skills": ["m.10.coordinate-geometry", "m.12.conics", "m.8.systems-linear"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Distance and Midpoint Formulas; Circles",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/11-1-distance-and-midpoint-formulas-circles",
+              "skills": ["m.10.coordinate-geometry", "m.12.conics"]
+            },
+            {
+              "n": "11.2",
+              "title": "Parabolas",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/11-2-parabolas",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "11.3",
+              "title": "Ellipses",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/11-3-ellipses",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "11.4",
+              "title": "Hyperbolas",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/11-4-hyperbolas",
+              "skills": ["m.12.conics"]
+            },
+            {
+              "n": "11.5",
+              "title": "Solve Systems of Nonlinear Equations",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/11-5-solve-systems-of-nonlinear-equations",
+              "skills": ["m.12.conics", "m.8.systems-linear"]
+            }
+          ],
+          "notes": "conics: Grade 12 skill; 11.1 distance, midpoint, circles also Grade 10 coordinate geometry"
+        },
+        {
+          "n": "12",
+          "title": "Sequences, Series and Binomial Theorem",
+          "url": "https://openstax.org/books/intermediate-algebra-2e/pages/12-introduction",
+          "skills": ["m.9.sequences", "m.11.series", "m.12.binomial-theorem"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Sequences",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/12-1-sequences",
+              "skills": ["m.9.sequences"]
+            },
+            {
+              "n": "12.2",
+              "title": "Arithmetic Sequences",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/12-2-arithmetic-sequences",
+              "skills": ["m.9.sequences"]
+            },
+            {
+              "n": "12.3",
+              "title": "Geometric Sequences and Series",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/12-3-geometric-sequences-and-series",
+              "skills": ["m.9.sequences", "m.11.series"]
+            },
+            {
+              "n": "12.4",
+              "title": "Binomial Theorem",
+              "url": "https://openstax.org/books/intermediate-algebra-2e/pages/12-4-binomial-theorem",
+              "skills": ["m.12.binomial-theorem"],
+              "notes": "binomial theorem: Grade 12 skill"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
