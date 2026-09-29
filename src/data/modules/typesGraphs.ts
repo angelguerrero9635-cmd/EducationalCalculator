@@ -32,6 +32,8 @@ export interface LinearFunctionSpec {
   keep?: string[];
   /** No handles: every value on the line is worked out from points the student typed. */
   fixed?: boolean;
+  /** Grades 9–12: the inequality y (sign) mx + b, its half-plane shaded (see `LineOf.shade`). */
+  shade?: InequalitySign;
 }
 
 /**
@@ -47,7 +49,20 @@ export interface LineSystemSpec {
   extent?: number | { x: number; y: number };
   quadrants?: 1 | 4;
   axes?: { x?: string; y?: string };
+  /**
+   * Grades 9–12 elimination: the sum `x`·x + `y`·y = `c` of the two equations (each multiplied
+   * first, as the page does), drawn as a third line through the solution; with `y` 0 it is the
+   * upright line x = c ÷ `x`. `label` names it ("Sum").
+   */
+  sum?: { x: NumOrVar; y: NumOrVar; c: NumOrVar; label?: string };
+  /** No handles: the lines are worked out from other values (standard-form coefficients). */
+  fixed?: boolean;
+  /** Grades 9–12: a point tested in both inequalities (in the overlap or not). */
+  test?: { x: NumOrVar; y: NumOrVar };
 }
+
+/** An inequality's sign, y (sign) mx + b. */
+export type InequalitySign = '<' | '≤' | '>' | '≥';
 
 export interface LineOf {
   slope: NumOrVar;
@@ -60,6 +75,12 @@ export interface LineOf {
    * the cost follows).
    */
   keep?: string[];
+  /**
+   * Grades 9–12: the inequality y (sign) mx + b. Its half-plane is shaded in the line's color
+   * (above for > and ≥, below for < and ≤), the boundary dashed for < and > (left out) and
+   * solid for ≤ and ≥; two shaded lines show their overlap, the system's solutions.
+   */
+  shade?: InequalitySign;
 }
 
 /** One step of a function rule: add, subtract, multiply or divide by a number. */
@@ -127,7 +148,16 @@ export function graphSpecVars(
     case 'linearFunction':
       return ids(r.slope, r.intercept, r.point?.x, r.point?.y);
     case 'lineSystem':
-      return ids(...r.lines.flatMap((l) => [l.slope, l.intercept]), r.solution?.x, r.solution?.y);
+      return ids(
+        ...r.lines.flatMap((l) => [l.slope, l.intercept]),
+        r.solution?.x,
+        r.solution?.y,
+        r.sum?.x,
+        r.sum?.y,
+        r.sum?.c,
+        r.test?.x,
+        r.test?.y,
+      );
     case 'functionMachine':
       return ids(r.input, r.output, ...r.rule.map((s) => s.by));
     case 'mapping':

@@ -89,6 +89,10 @@ import { Pushes } from './Pushes';
 import { DoubleNumberLine } from './DoubleNumberLine';
 import { CoordinatePlane } from './CoordinatePlane';
 import { BoxPlot } from './BoxPlot';
+import { BoxPlotPair } from './BoxPlotPair';
+import { TwoWayTable } from './TwoWayTable';
+import { ChanceTree } from './ChanceTree';
+import { VennChance } from './VennChance';
 import { PieChart } from './PieChart';
 import { FractionArea } from './FractionArea';
 import { UnitCubes } from './UnitCubes';
@@ -319,7 +323,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'plot':
       return <Plot spec={spec} calc={calc} />;
     case 'table':
-      return <ValueTable spec={spec} calc={calc} />;
+      return 'twoWay' in spec ? (
+        <TwoWayTable spec={spec.twoWay} calc={calc} />
+      ) : (
+        <ValueTable spec={spec} calc={calc} />
+      );
     case 'force':
       return spec.object === 'cart' ? (
         <ForceCart spec={spec} calc={calc} />
@@ -369,7 +377,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'coordinatePlane':
       return <CoordinatePlane spec={spec} calc={calc} />;
     case 'boxPlot':
-      return <BoxPlot spec={spec} calc={calc} />;
+      return spec.fences || spec.second ? (
+        <BoxPlotPair spec={spec} calc={calc} />
+      ) : (
+        <BoxPlot spec={spec} calc={calc} />
+      );
     case 'pieChart':
       return <PieChart spec={spec} calc={calc} />;
     case 'fractionArea':
@@ -403,7 +415,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'fractionFit':
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
-      return <Venn spec={spec} calc={calc} />;
+      return 'chances' in spec ? (
+        <VennChance spec={spec.chances} calc={calc} />
+      ) : (
+        <Venn spec={spec} calc={calc} />
+      );
     case 'baseHeight':
       return <BaseHeight spec={spec} calc={calc} />;
     case 'net':
@@ -423,7 +439,11 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'diceGrid':
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
-      return <TreeDiagram spec={spec} calc={calc} />;
+      return 'chances' in spec ? (
+        <ChanceTree spec={spec.chances} calc={calc} />
+      ) : (
+        <TreeDiagram spec={spec} calc={calc} />
+      );
     case 'marbles':
       return <Marbles spec={spec} calc={calc} />;
     case 'energyPyramid':

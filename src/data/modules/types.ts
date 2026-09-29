@@ -17,6 +17,7 @@ import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
 import type { CardIcon } from './layouts/types';
+import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -615,11 +616,24 @@ export type Representation =
       x: { label: string; min: number; max: number; step?: number };
       y: { label: string; min: number; max: number; step?: number };
       points: [number, number][];
-      slope: string;
-      intercept: string;
+      /** Values, or (Grades 9–12, with `leastSquares: 'fit'`) the calculator's numbers. */
+      slope: string | number;
+      intercept: string | number;
       clusters?: { label: string; points: number[] }[];
       outlier?: number;
       at?: { x: string; y: string };
+      /**
+       * Grades 9–12 (H18). `residuals`: each point's residual (actual − predicted) as a segment
+       * to the line; 'plot' adds a residual plot under the scatter plot. `r`: the correlation
+       * coefficient's value (checked against the points). `leastSquares`: the least-squares
+       * line dashed beside the dragged one ('beside'), or the module's slope and intercept are
+       * it ('fit': checked to the cent, no handles). `residualOf`: one point (an index) with
+       * its residual labelled, and the residual's value (checked).
+       */
+      residuals?: 'segments' | 'plot';
+      r?: string | true;
+      leastSquares?: 'beside' | 'fit';
+      residualOf?: { point: number; residual?: string };
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
@@ -1056,6 +1070,17 @@ export type Representation =
        */
       data?: string[];
       count?: string;
+      /**
+       * Grades 9–12 (H19): the 1.5 × IQR fences, dashed, at Q₁ − 1.5 × IQR and Q₃ + 1.5 × IQR
+       * (`lower` and `upper` name the module's values for them, checked). With `data`, values
+       * past a fence are outliers, drawn as open dots, and the whiskers stop at the last values
+       * inside; without it, a least or greatest value past a fence is marked an outlier.
+       */
+      fences?: { lower?: string; upper?: string };
+      /** Grades 9–12 (H19): a second box plot under the first on the same scale. */
+      second?: { min: string; q1: string; median: string; q3: string; max: string };
+      /** The two box plots' names ("Class A", "Class B"). */
+      labels?: [string, string];
     }
   /** Pie chart: `parts` are percents of the whole (or counts, with `total`). */
   | {
@@ -1192,6 +1217,22 @@ export type Representation =
        * subtracting jumps the other way (adding the opposite). Drag the start or the end.
        */
       jump?: { by: string; result: string; op?: '+' | '−' };
+      /**
+       * Grades 9–12 (H17): a compound inequality with `value` and `second` as its bounds (value
+       * the lower). 'and': value < x < second, the stretch between them; 'or': x < value or
+       * x > second, two rays outward. `closed` includes a bound (≤, ≥; default both open).
+       * With `center` and `radius` it is |x − center| < radius ('and') or > radius ('or'): the
+       * center marked and the distance bracketed to each bound (value = center − radius,
+       * second = center + radius). `test` is a number checked in both parts.
+       */
+      compound?: {
+        join: 'and' | 'or';
+        closed?: [boolean, boolean];
+        center?: string;
+        radius?: string;
+        letter?: string;
+        test?: string;
+      };
     }
   /** A percent bar: 0%–100% over 0–whole, the part shaded; ticks every 10% or 25%. */
   | {
@@ -1256,6 +1297,8 @@ export type Representation =
       gcf?: string;
       lcm?: string;
     }
+  /** Grades 9–12 (H22): a Venn diagram of probabilities (spec in `typesHse.ts`). */
+  | { kind: 'venn'; chances: VennChances }
   /**
    * A parallelogram, triangle, trapezoid or house with its base thick and its height dashed
    * (drag the top to lean it). `top` is the trapezoid's top base or the house's roof height.
@@ -1374,6 +1417,8 @@ export type Representation =
       path?: number[];
       chance?: string;
     }
+  /** Grades 9–12 (H21): a probability tree, a chance on every branch (spec in `typesHse.ts`). */
+  | { kind: 'treeDiagram'; chances: TreeChances }
   /**
    * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
    * `colors` and named by `names` (the color names by default). The event is color `pick`
@@ -1412,6 +1457,12 @@ export type Representation =
       second?: { data: string[]; mean?: string; median?: string };
       labels?: [string, string];
       difference?: string;
+      /**
+       * Grades 9–12 (H19): the standard deviation's value (σ, over n, by default; s, over
+       * n − 1, with `kind: 'sample'`), checked against the data: the mean drawn as a line and a
+       * band from mean − SD to mean + SD, the values inside it counted. Needs `mean`.
+       */
+      sd?: { id: string; kind?: 'population' | 'sample' };
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
   | { kind: 'fieldOfView'; field: string; across: string; size?: string }
@@ -1465,6 +1516,8 @@ export type Representation =
       /** A name for each swept row ("Moon", "Mars"), in a first column. */
       rowNames?: string[];
     }
+  /** Grades 9–12 (H20): a two-way frequency table (spec in `typesHse.ts`). */
+  | { kind: 'table'; twoWay: TwoWaySpec }
   /** Block of mass `mass` pushed by force `force`, with its acceleration arrow. Drag the force. */
   | {
       kind: 'force';

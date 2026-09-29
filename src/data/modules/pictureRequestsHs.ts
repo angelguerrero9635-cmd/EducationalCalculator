@@ -433,51 +433,122 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
   },
 
   // ── B. Changes to existing math pictures ──
-  ask(
-    'H16',
-    'lineSystem',
-    'Shaded half-planes: dashed or solid boundaries and the overlap of two inequalities',
-    ['m.9.inequality-systems', 'm.9.linear-inequalities'],
-    'Also elimination: the two equations and their sum drawn as three lines through one point.',
-  ),
-  ask(
-    'H17',
-    'integerLine',
-    'Compound inequalities (and, or) and absolute value as a distance on the number line',
-    ['m.9.linear-inequalities', 'm.9.absolute-value'],
-  ),
-  ask(
-    'H18',
-    'scatter',
-    'Residual segments, a residual plot below, the correlation r and the least-squares line',
-    ['m.9.regression'],
-  ),
-  ask(
-    'H19',
-    'boxPlot',
-    'Outliers past 1.5 × IQR fences, and two box plots on one scale; a dot plot with mean ± 1 SD',
-    ['m.9.data-displays'],
-    'The mean and standard deviation band belong on dotPlot.',
-  ),
-  ask(
-    'H20',
-    'table',
-    'Two-way table with totals and a lit cell, row or column, its relative frequency, and a segmented bar',
-    ['m.9.two-way-tables', 'm.10.conditional-probability', 'm.12.chi-square'],
-    'Chi-square: observed and expected counts side by side.',
-  ),
-  ask(
-    'H21',
-    'treeDiagram',
-    'Branches with their own probabilities (not all 1/n), P(B | A) on the second stage',
-    ['m.10.conditional-probability', 'm.10.probability-rules'],
-  ),
-  ask(
-    'H22',
-    'venn',
-    'Venn diagram with probabilities: A and B, A or B, mutually exclusive, the complement shaded',
-    ['m.10.probability-rules', 'm.10.conditional-probability'],
-  ),
+  {
+    ...ask(
+      'H16',
+      'lineSystem',
+      'Shaded half-planes: dashed or solid boundaries and the overlap of two inequalities',
+      ['m.9.inequality-systems', 'm.9.linear-inequalities'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-inequality-systems-shade',
+      'g.m9-inequality-systems-parallel',
+      'g.m9-linear-inequalities-half-plane',
+      'g.m9-inequality-systems-elimination',
+    ],
+    notes:
+      "Also elimination: the two equations and their sum drawn as three lines through one point. DRAWN. Spec (typesGraphs.ts), all optional, no change to Grade 8 pages: each line of lineSystem takes shade '<' | '≤' | '>' | '≥' (y (sign) mx + b; its half-plane shaded in the line's color, above for > and ≥; dashed boundary for < and >, solid for ≤ and ≥; with two shaded lines the overlap is labelled 'both true', and parallel lines shading apart say 'No solution'); test { x, y } (a point tested in both, each check worked in the caption); sum { x, y, c, label? } (elimination: the coefficients of the sum a·x + b·y = c after multiplying, drawn as a third line through the crossing, upright when y cancels; the harness checks it is a sum of the two equations); fixed (no handles, for lines worked out from standard-form coefficients). linearFunction takes shade too, for one inequality. Example (m.9.inequality-systems): representation: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'b1', shade: '>' }, { slope: 'm2', intercept: 'b2', shade: '≤' }], solution: { x: 'x', y: 'y' }, test: { x: 'tx', y: 'ty' }, extent: 10 }; elimination: { kind: 'lineSystem', lines: [{ slope: 'm1', intercept: 'i1' }, { slope: 'm2', intercept: 'i2' }], solution: { x: 'x', y: 'y' }, sum: { x: 'p', y: 'q', c: 'r' }, fixed: true }; one inequality (m.9.linear-inequalities): { kind: 'linearFunction', slope: 'm', intercept: 'b', shade: '<', keep: ['B'] }. Signs are fixed per page (a page for Ax + By < C with B < 0 passes the flipped sign). Boundaries are y = mx + b only: an upright boundary x ≥ k is not drawn yet.",
+  },
+  {
+    ...ask(
+      'H17',
+      'integerLine',
+      'Compound inequalities (and, or) and absolute value as a distance on the number line',
+      ['m.9.linear-inequalities', 'm.9.absolute-value'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-linear-inequalities-and',
+      'g.m9-linear-inequalities-or',
+      'g.m9-linear-inequalities-or-all',
+      'g.m9-absolute-value-within',
+      'g.m9-absolute-value-beyond',
+    ],
+    notes:
+      "DRAWN. Spec (types.ts, integerLine), optional; other integerLine pages unchanged: compound { join: 'and' | 'or', closed?: [lower, upper] (default both open), center?, radius?, letter?, test? } with value (the lower bound) and second (the upper bound). 'and' draws the stretch between the bounds (both parts true; bounds past each other say no solution); 'or' draws two rays outward (either part; rays that meet or pass take in every number). With center and radius it is |x − c| < d ('and') or > d ('or'): the center a diamond, the distance d bracketed to each bound, c − d and c + d worked in the caption; the harness checks value = c − d and second = c + d. test is a number marked true or false, each part worked in the caption. Handles: the two bounds, or the center and the upper bound (the radius), and the test number. Example (m.9.linear-inequalities, −3 ≤ 2x + 1 < 7): representation: { kind: 'integerLine', value: 'L', second: 'U', min: -5, max: 5, compound: { join: 'and', closed: [true, false], test: 't' } }; (m.9.absolute-value, |x − 1| ≤ 3): { kind: 'integerLine', value: 'L', second: 'U', min: -5, max: 5, compound: { join: 'and', closed: [true, true], center: 'c', radius: 'd', test: 't' } }. The demos solve ax + b with a > 0; a page dividing by a negative passes the flipped closed pair.",
+  },
+  {
+    ...ask(
+      'H18',
+      'scatter',
+      'Residual segments, a residual plot below, the correlation r and the least-squares line',
+      ['m.9.regression'],
+    ),
+    status: 'drawn',
+    gallery: ['g.m9-regression-residuals', 'g.m9-regression-least-squares', 'g.m9-regression-weak'],
+    notes:
+      "DRAWN. Spec (types.ts, scatter), optional; Grade 8 scatter pages unchanged: residuals 'segments' | 'plot' (each residual, actual − predicted, as a segment to the line; 'plot' adds a residual plot under the chart, residuals over x about 0, and the caption counts positive and negative residuals and gives the sum of their squares); r: true (worked out from the points, ≈ to two places, with its strength in words) or a value id (checked against the points to 0.005); leastSquares 'beside' (the least-squares line dashed beside the dragged line, with its sum of squares, the least any line gives) or 'fit' (slope and intercept are the least-squares line, checked to the cent, no handles; slope and intercept may now be numbers, the calculator's rounded values); residualOf { point, residual? } (one point's residual labelled and worked, its value checked). Example (m.9.regression): representation: { kind: 'scatter', x: { label: 'Hours studied', min: 0, max: 9 }, y: { label: 'Quiz score', min: 40, max: 100 }, points: [...], slope: 'm', intercept: 'b', at: { x: 'x', y: 'y' }, residuals: 'plot', residualOf: { point: 3, residual: 'e' } }; given line: { ..., slope: -0.65, intercept: 47.87, r: true, residuals: 'segments', leastSquares: 'fit' }.",
+  },
+  {
+    ...ask(
+      'H19',
+      'boxPlot',
+      'Outliers past 1.5 × IQR fences, and two box plots on one scale; a dot plot with mean ± 1 SD',
+      ['m.9.data-displays'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-data-displays-outliers',
+      'g.m9-data-displays-compare',
+      'g.m9-data-displays-sd',
+      'g.m9-data-displays-sd-sample',
+    ],
+    notes:
+      "The mean and standard deviation band belong on dotPlot. DRAWN. Spec (types.ts), optional; Grade 6–7 boxPlot and dotPlot pages unchanged. boxPlot: fences { lower?, upper? } (the 1.5 × IQR fences dashed with their values; lower/upper name the module's fence values, checked; with data the quartiles are checked as the medians of the halves, the median left out, values past a fence are open outlier dots and the whiskers stop at the last values inside; without data a least or greatest value past a fence is marked); second { min, q1, median, q3, max } with labels [a, b] (a second box plot under the first on the same scale, the medians and IQRs compared in the caption; every mark drags). New harness phrases 'first quartile of …' and 'third quartile of …'. dotPlot: sd { id, kind?: 'population' | 'sample' } with mean (the mean as a line and a shaded band from mean − SD to mean + SD, the values inside counted; the SD is checked against the data, σ over n or s over n − 1). Examples (m.9.data-displays): { kind: 'boxPlot', min: 'a', q1: 'b', median: 'c', q3: 'd', max: 'e', range: [0, 50], data: [...11 ids], fences: { lower: 'L', upper: 'U' } }; { kind: 'boxPlot', min: 'a1', …, range: [40, 100], second: { min: 'a2', q1: 'b2', median: 'c2', q3: 'd2', max: 'e2' }, labels: ['Class A', 'Class B'] }; { kind: 'dotPlot', data: [...8 ids], min: 0, max: 12, mean: 'm', sd: { id: 'sd', kind: 'population' } }.",
+  },
+  {
+    ...ask(
+      'H20',
+      'table',
+      'Two-way table with totals and a lit cell, row or column, its relative frequency, and a segmented bar',
+      ['m.9.two-way-tables', 'm.10.conditional-probability', 'm.12.chi-square'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m9-two-way-tables-joint',
+      'g.m9-two-way-tables-marginal',
+      'g.m10-conditional-probability-table',
+      'g.m12-chi-square-independence',
+      'g.m12-chi-square-goodness',
+    ],
+    notes:
+      "Chi-square: observed and expected counts side by side. DRAWN. Spec (typesHse.ts TwoWaySpec): table takes twoWay instead of sweep/output (a union member, so the sweep tables are unchanged): { rows: [names], cols: [names], cells: [[id or number, …], …], totals? (default true; a one-row table has no totals row), lit? { row?, col? } (a cell, a whole row or a whole column), of? 'total' | 'row' | 'col' (joint or marginal out of the grand total, or conditional out of the lit row or column; the whole is outlined and the caption writes P(A | B) = part/whole), frequency? (the value, checked to 0.005), bar? 'rows' | 'cols' (a segmented 100% bar per row or column with a key), expected? 'independence' | [[ids]] (each cell's expected count in brackets under the observed one; given counts must add to the observed total), chiSquare? (the statistic's value, checked; the caption works the first term and the degrees of freedom) }. Example (m.10.conditional-probability): representation: { kind: 'table', twoWay: { rows: ['Late', 'On time'], cols: ['Bus', 'Walk', 'Car'], cells: [['a', 'b', 'g'], ['d', 'e', 'h']], lit: { row: 0, col: 0 }, of: 'col', frequency: 'p', bar: 'cols' } }; (m.12.chi-square): { kind: 'table', twoWay: { rows: [...], cols: [...], cells: [['a', 'b'], ['c', 'd']], expected: 'independence', chiSquare: 'X' } }.",
+  },
+  {
+    ...ask(
+      'H21',
+      'treeDiagram',
+      'Branches with their own probabilities (not all 1/n), P(B | A) on the second stage',
+      ['m.10.conditional-probability', 'm.10.probability-rules'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-conditional-probability-tree',
+      'g.m10-probability-rules-without-replacement',
+      'g.m10-conditional-probability-independent',
+    ],
+    notes:
+      "DRAWN. Spec (typesHse.ts TreeChances): treeDiagram takes chances instead of first/second counts (a union member; the equally-likely trees are unchanged): { first: [ids or numbers], second: [[…] per first outcome], names: [[first outcomes], [second outcomes]] (2 to 4 a stage), stages?, path? [i, j], chance?, totalOf?, total? }. A stage's list may leave out its last chance, drawn as the complement 1 − the others. Each first branch reads P(A) = p, the lit path's second branch P(B | A) = p in full (the others keep to numbers so the branches stay visible), and each leaf its product (0.3 × 0.4 = 0.12, 3/8 × 2/7 = 3/28). The caption checks every node adds to 1, works P(A and B) = P(A) × P(B | A), P(B) over every path (totalOf), then P(A | B) (fraction ≈ decimal), and says when the stages are independent (the same P(B | A) on every first branch). The harness checks the sums, the path product and the total. Example (m.10.conditional-probability): representation: { kind: 'treeDiagram', chances: { first: ['r'], second: [['a'], ['b']], names: [['Rain', 'Dry'], ['Late', 'On time']], stages: ['Weather', 'Arrival'], path: [0, 0], chance: 'j', totalOf: 0, total: 't' } }.",
+  },
+  {
+    ...ask(
+      'H22',
+      'venn',
+      'Venn diagram with probabilities: A and B, A or B, mutually exclusive, the complement shaded',
+      ['m.10.probability-rules', 'm.10.conditional-probability'],
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.m10-probability-rules-union',
+      'g.m10-probability-rules-exclusive',
+      'g.m10-probability-rules-complement',
+      'g.m10-conditional-probability-venn',
+      'g.m10-probability-rules-neither',
+    ],
+    notes:
+      "DRAWN. Spec (typesHse.ts VennChances): venn takes chances instead of first/second/list (a union member; the GCF Venn is unchanged): { a, b, both (ids or numbers: P(A), P(B), P(A and B)), names? [A, B], shade? 'and' | 'or' | 'notA' | 'aOnly' | 'neither', exclusive?, result? }. The sample space is a rectangle (1), each region labelled with its own probability (A only, both, B only, neither), the shaded region in the soft accent; mutually exclusive events (exclusive, or P(A and B) = 0) draw apart. Probabilities print as decimals or simple fractions (1/6). The caption works the addition rule, the complement, A only, neither, and with 'and' also P(B | A) = P(A ∩ B) ÷ P(A). The harness checks P(A and B) ≤ P(A), P(B), P(A or B) ≤ 1, exclusive means 0, and result equals the shaded region; demo pages carry the same constraints as relations. Example (m.10.probability-rules): representation: { kind: 'venn', chances: { a: 'a', b: 'b', both: 'ab', names: ['Band', 'Sport'], shade: 'or', result: 's' } }; exclusive: { kind: 'venn', chances: { a: 'a', b: 'b', both: 0, names: [...], shade: 'or', exclusive: true, result: 's' } }.",
+  },
   ask(
     'H23',
     'transformation',

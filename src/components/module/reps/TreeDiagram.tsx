@@ -8,7 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, fitLabel, useRep } from './common';
 import { chanceText } from './chance';
 
-type Spec = Extract<Representation, { kind: 'treeDiagram' }>;
+type Spec = Extract<Representation, { kind: 'treeDiagram'; first: string }>;
 
 /** The most outcomes a stage can have, and the most leaves drawn. */
 export const TREE_MAX = 6;

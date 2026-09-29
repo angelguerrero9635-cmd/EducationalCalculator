@@ -18,6 +18,7 @@ import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { hsdSpecVars } from '../typesHsd';
 import { isStandIn, pages } from '../harness/scope';
+import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
@@ -217,6 +218,8 @@ function representationVars(r: Representation): string[] {
         ...[r.brackets?.range, r.brackets?.iqr].filter((x): x is string => !!x),
         ...(r.data ?? []),
         ...(r.count ? [r.count] : []),
+        ...[r.fences?.lower, r.fences?.upper].filter((x): x is string => !!x),
+        ...(r.second ? Object.values(r.second) : []),
       ];
     case 'pieChart':
       return [...r.parts, ...(r.total ? [r.total] : []), ...(r.group ? [r.group.id] : [])];
@@ -275,6 +278,9 @@ function representationVars(r: Representation): string[] {
         ...(r.inequality?.twoStep
           ? [r.inequality.twoStep.times, r.inequality.twoStep.plus, r.inequality.twoStep.total]
           : []),
+        ...[r.compound?.center, r.compound?.radius, r.compound?.test].filter(
+          (x): x is string => !!x,
+        ),
       ];
     case 'percentBar':
       return [
@@ -298,6 +304,7 @@ function representationVars(r: Representation): string[] {
         ...(r.quotient ? [r.quotient] : []),
       ];
     case 'venn':
+      if ('chances' in r) return vennChanceVars(r.chances);
       return [r.first, r.second, ...[r.gcf, r.lcm].filter((x): x is string => !!x)];
     case 'baseHeight':
       return [r.base, r.height, r.area, ...(r.top ? [r.top] : [])];
@@ -310,6 +317,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
+      if ('chances' in r) return treeChanceVars(r.chances);
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
       return [r.target, ...[r.count, r.chance].filter((x): x is string => !!x)];
@@ -330,6 +338,7 @@ function representationVars(r: Representation): string[] {
         ...(r.second
           ? [...r.second.data, ...[r.second.mean, r.second.median].filter((x): x is string => !!x)]
           : []),
+        ...(r.sd ? [r.sd.id] : []),
       ];
     case 'fieldOfView':
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
@@ -388,7 +397,7 @@ function representationVars(r: Representation): string[] {
         ),
       ];
     case 'table':
-      return [r.sweep, r.output, ...r.params];
+      return 'twoWay' in r ? twoWayVars(r.twoWay) : [r.sweep, r.output, ...r.params];
     case 'thermometers':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'rockLayers':
@@ -400,7 +409,12 @@ function representationVars(r: Representation): string[] {
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
-      return [r.slope, r.intercept, ...(r.at ? [r.at.x, r.at.y] : [])];
+      return [
+        ...[r.slope, r.intercept, r.r, r.residualOf?.residual].filter(
+          (x): x is string => typeof x === 'string',
+        ),
+        ...(r.at ? [r.at.x, r.at.y] : []),
+      ];
     case 'curvedSolid':
       return [r.radius, ...(r.height ? [r.height] : []), ...(r.volume ? [r.volume] : [])];
     case 'rootSquare':

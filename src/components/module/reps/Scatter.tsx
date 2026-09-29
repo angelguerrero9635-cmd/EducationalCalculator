@@ -7,10 +7,11 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, fitLabel, useRep } from './common';
+import { Canvas, Caption, ChartText, DragHandle, fitLabel, niceCeil, useRep } from './common';
 import { near } from './DistanceLegs';
 import { usePaintIds } from './paint';
 import { niceStep } from './Plot';
+import { correlation, leastSquares, squaredResiduals, strength, twoPlaces } from './stats';
 
 type Spec = Extract<Representation, { kind: 'scatter' }>;
 type Axis = Spec['x'];
@@ -46,9 +47,13 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const ids = usePaintIds('clip');
   const start = useRef({ ya: 0, yb: 0 });
-  const known = rep.known(spec.slope) && rep.known(spec.intercept);
-  const m = rep.shown(spec.slope);
-  const b = rep.shown(spec.intercept);
+  // Grades 9–12: a least-squares line may be given as numbers (from a calculator).
+  const read = (v: string | number) => (typeof v === 'number' ? v : rep.shown(v));
+  const known = [spec.slope, spec.intercept].every((v) => typeof v === 'number' || rep.known(v));
+  const m = read(spec.slope);
+  const b = read(spec.intercept);
+  const slopeId = typeof spec.slope === 'string' ? spec.slope : undefined;
+  const interceptId = typeof spec.intercept === 'string' ? spec.intercept : undefined;
   const X = spec.x;
   const Y = spec.y;
   // The handles sit a fifth of the way in from each end of the x-axis.
@@ -64,11 +69,140 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const atKnown = !!spec.at && known && rep.known(spec.at.x);
   const ax = spec.at ? rep.shown(spec.at.x) : 0;
   const outlier = spec.outlier === undefined ? undefined : spec.points[spec.outlier];
+  // Grades 9–12: residuals, r and the least-squares line.
+  const plot = spec.residuals === 'plot';
+  const ls = spec.leastSquares ? leastSquares(spec.points) : undefined;
+  const fixedFit = spec.leastSquares === 'fit';
+  const res = spec.points.map(([x, y]) => y - fit(x));
+  const approx = (x: number) => {
+    const t = twoPlaces(x);
+    return `${t.exact ? '=' : '≈'} ${formatNumber(t.value)}`;
+  };
+  const eqApprox = (m0: number, b0: number) => {
+    const [tm, tb] = [twoPlaces(m0), twoPlaces(b0)];
+    const text = lineText(ys, xs, tm.value, tb.value);
+    return tm.exact && tb.exact ? text : text.replace(' = ', ' ≈ ');
+  };
+  const one = spec.residualOf ? spec.points[spec.residualOf.point] : undefined;
+  const oneRes = one ? one[1] - fit(one[0]) : 0;
+  const rOwn = spec.r === true ? correlation(spec.points) : undefined;
+  const rId = typeof spec.r === 'string' ? spec.r : undefined;
+  const rKnown = rOwn !== undefined || (!!rId && rep.known(rId));
+  const extra = !known
+    ? []
+    : [
+        ...(spec.r
+          ? [
+              rKnown
+                ? `r ${rOwn !== undefined ? approx(rOwn) : `= ${rep.value(rId!, false)}`}: a ${strength(rOwn ?? rep.shown(rId!))} correlation`
+                : 'r = ?',
+            ]
+          : []),
+        ...(spec.residuals
+          ? [
+              `Residual = actual − predicted: ${res.filter((d) => d > gap).length} positive (above the line), ${res.filter((d) => d < -gap).length} negative`,
+              `Sum of squared residuals ${approx(squaredResiduals(spec.points, m, b))}`,
+            ]
+          : []),
+        ...(one
+          ? [
+              `Point (${formatNumber(one[0])}, ${formatNumber(one[1])}): predicted ${near(fit(one[0]))}, residual ${formatNumber(one[1])} − ${near(fit(one[0]))} ${approx(oneRes)}`,
+            ]
+          : []),
+        ...(ls && spec.leastSquares === 'beside'
+          ? [
+              `Least-squares line (dashed): ${eqApprox(ls.m, ls.b)}, sum of squared residuals ${approx(squaredResiduals(spec.points, ls.m, ls.b))}, the least any line gives`,
+            ]
+          : []),
+        ...(ls && fixedFit
+          ? ['The least-squares line makes the sum of the squared residuals as small as it can be']
+          : []),
+        ...(plot
+          ? ['Residual plot: no pattern around 0 means a line fits; a curve means it does not']
+          : []),
+      ];
+  /** The residual plot: each residual against x about a line at 0, under the scatter plot. */
+  const residualPlot = (
+    top: number,
+    bottom: number,
+    sx: (x: number) => number,
+    left: number,
+    right: number,
+  ) => {
+    const T2 = top + 20;
+    const B2 = bottom - 22;
+    const big = niceCeil(Math.max(1e-9, ...res.map(Math.abs)) * 1.1);
+    const ry = (d: number) => (T2 + B2) / 2 - (d / big) * ((B2 - T2) / 2);
+    return (
+      <G opacity={known ? 1 : 0.35}>
+        <ChartText x={4} y={top + 10} fontSize={chart.small} fontWeight="600">
+          Residual
+        </ChartText>
+        {ticks(X).map((t) => (
+          <G key={`rx${t}`}>
+            <Line x1={sx(t)} y1={T2} x2={sx(t)} y2={B2} stroke={c.chartGrid} strokeWidth={1} />
+            <ChartText
+              x={sx(t)}
+              y={B2 + 14}
+              fontSize={chart.tiny}
+              fill={c.chartMuted}
+              textAnchor="middle"
+            >
+              {formatNumber(t)}
+            </ChartText>
+          </G>
+        ))}
+        {[big, 0, -big].map((d) => (
+          <G key={`ry${d}`}>
+            <Line
+              x1={left}
+              y1={ry(d)}
+              x2={right}
+              y2={ry(d)}
+              stroke={d === 0 ? c.chartInk : c.chartGrid}
+              strokeWidth={d === 0 ? chart.strokeLight : 1}
+            />
+            <ChartText
+              x={left - 6}
+              y={ry(d) + 3}
+              fontSize={chart.tiny}
+              fill={c.chartMuted}
+              textAnchor="end"
+            >
+              {formatNumber(d)}
+            </ChartText>
+          </G>
+        ))}
+        <Line
+          x1={left}
+          y1={T2}
+          x2={left}
+          y2={B2}
+          stroke={c.chartInk}
+          strokeWidth={chart.strokeLight}
+        />
+        {spec.points.map(([x], i) => (
+          <G key={`rp${i}`}>
+            <Line
+              x1={sx(x)}
+              y1={ry(0)}
+              x2={sx(x)}
+              y2={ry(res[i]!)}
+              stroke={c.chartSecond}
+              strokeWidth={chart.stroke}
+            />
+            <Circle cx={sx(x)} cy={ry(res[i]!)} r={4} fill={c.chartInk} fillOpacity={0.85} />
+          </G>
+        ))}
+      </G>
+    );
+  };
   const caption = [
     known
-      ? `Line of fit: ${lineText(ys, xs, m, b)}`
+      ? `${fixedFit ? 'Least-squares line' : 'Line of fit'}: ${lineText(ys, xs, m, b)}`
       : 'Type the slope and intercept to draw the line of fit.',
-    ...(known
+    // (With residuals, their line says the same.)
+    ...(known && !spec.residuals
       ? [
           `${above} ${above === 1 ? 'point' : 'points'} above the line, ${below} below${on ? `, ${on} on it` : ''}.`,
         ]
@@ -83,23 +217,35 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
           `The outlier (${formatNumber(outlier[0])}, ${formatNumber(outlier[1])}) sits far from the rest.`,
         ]
       : []),
+    ...extra,
   ].join(' · ');
 
   return (
     <View>
-      <Canvas aspect={0.8}>
+      <Canvas aspect={plot ? 1.04 : 0.8}>
         {({ w, h }) => {
+          // The scatter plot's height (a residual plot, when there is one, goes under it).
+          const H1 = plot ? w * 0.68 : h;
           const L = 42;
           const R = 14;
           const T = 26;
           const B = 36;
           const xScale = (w - L - R) / (X.max - X.min);
-          const yScale = (h - T - B) / (Y.max - Y.min);
+          const yScale = (H1 - T - B) / (Y.max - Y.min);
           const sx = (x: number) => L + (x - X.min) * xScale;
-          const sy = (y: number) => h - B - (y - Y.min) * yScale;
-          const clampY = (py: number) => Math.min(h - B, Math.max(T, py));
+          const sy = (y: number) => H1 - B - (y - Y.min) * yScale;
+          const clampY = (py: number) => Math.min(H1 - B, Math.max(T, py));
           const pts = spec.points.map(([x, y]) => [sx(x), sy(y)] as const);
           const op = known ? 1 : 0.35;
+          // The residual's label goes left of its segment when a point sits in the way.
+          const oneLeft =
+            !!one &&
+            pts.some(
+              ([px, py]) =>
+                px > sx(one[0]) + 4 &&
+                px < sx(one[0]) + 84 &&
+                Math.abs(py - (sy(one[1]) + sy(fit(one[0]))) / 2) < 14,
+            );
           // Clusters: a dashed ring around each group (under the dots), its name above it (over
           // the line), or under it when there is no room above.
           const rings = (spec.clusters ?? []).map((cl) => {
@@ -160,7 +306,7 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
               <Svg width={w} height={h}>
                 <Defs>
                   <ClipPath id={ids.clip}>
-                    <Rect x={L} y={T} width={w - L - R} height={h - T - B} />
+                    <Rect x={L} y={T} width={w - L - R} height={H1 - T - B} />
                   </ClipPath>
                 </Defs>
                 {ticks(X).map((t) => (
@@ -169,13 +315,13 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       x1={sx(t)}
                       y1={T}
                       x2={sx(t)}
-                      y2={h - B}
+                      y2={H1 - B}
                       stroke={c.chartGrid}
                       strokeWidth={1}
                     />
                     <ChartText
                       x={sx(t)}
-                      y={h - B + 14}
+                      y={H1 - B + 14}
                       fontSize={chart.tiny}
                       fill={c.chartMuted}
                       textAnchor="middle"
@@ -207,9 +353,9 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 ))}
                 <Line
                   x1={L}
-                  y1={h - B}
+                  y1={H1 - B}
                   x2={w - R}
-                  y2={h - B}
+                  y2={H1 - B}
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight}
                 />
@@ -217,13 +363,13 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   x1={L}
                   y1={T}
                   x2={L}
-                  y2={h - B}
+                  y2={H1 - B}
                   stroke={c.chartInk}
                   strokeWidth={chart.strokeLight}
                 />
                 <ChartText
                   {...fitLabel(w - R, X.label, chart.small, w, 'end')}
-                  y={h - 4}
+                  y={H1 - 4}
                   fontSize={chart.small}
                   fontWeight="600"
                 >
@@ -244,7 +390,7 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     <G>
                       <Line
                         x1={sx(ax)}
-                        y1={h - B}
+                        y1={H1 - B}
                         x2={sx(ax)}
                         y2={sy(fit(ax))}
                         stroke={c.chartSecond}
@@ -261,6 +407,34 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         strokeDasharray={chart.dash}
                       />
                     </G>
+                  ) : null}
+                  {known && (spec.residuals || one)
+                    ? spec.points.map(([x, y], i) =>
+                        spec.residuals || i === spec.residualOf?.point ? (
+                          <Line
+                            key={`res${i}`}
+                            x1={sx(x)}
+                            y1={sy(y)}
+                            x2={sx(x)}
+                            y2={sy(fit(x))}
+                            stroke={c.chartSecond}
+                            strokeWidth={
+                              i === spec.residualOf?.point ? chart.strokeHeavy : chart.stroke
+                            }
+                          />
+                        ) : null,
+                      )
+                    : null}
+                  {ls && spec.leastSquares === 'beside' ? (
+                    <Line
+                      x1={sx(X.min)}
+                      y1={sy(ls.m * X.min + ls.b)}
+                      x2={sx(X.max)}
+                      y2={sy(ls.m * X.max + ls.b)}
+                      stroke={c.lineSum}
+                      strokeWidth={chart.stroke}
+                      strokeDasharray={chart.dash}
+                    />
                   ) : null}
                   <Line
                     x1={sx(X.min)}
@@ -323,8 +497,27 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     </ChartText>
                   </G>
                 ) : null}
+                {one && known ? (
+                  <ChartText
+                    {...fitLabel(
+                      sx(one[0]) + (oneLeft ? -8 : 8),
+                      `residual ${near(oneRes)}`,
+                      chart.label,
+                      w,
+                      oneLeft ? 'end' : 'start',
+                      8,
+                    )}
+                    y={clampY((sy(one[1]) + sy(fit(one[0]))) / 2) + 4}
+                    fontSize={chart.label}
+                    fontWeight="700"
+                    fill={c.chartInk}
+                  >
+                    {`residual ${near(oneRes)}`}
+                  </ChartText>
+                ) : null}
+                {plot ? residualPlot(H1 + 8, h, sx, L, w - R) : null}
               </Svg>
-              {known
+              {known && !fixedFit && slopeId && interceptId
                 ? (
                     [
                       ['drag-line-left', xa, 'ya'],
@@ -348,13 +541,10 @@ export function Scatter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         calc.set(
                           {
                             ...rep.pin(spec.at ? [spec.at.x] : []),
-                            [spec.slope]: rep.snapTo(spec.slope, slope * rep.factor(spec.slope)),
-                            [spec.intercept]: rep.snapTo(
-                              spec.intercept,
-                              icpt * rep.factor(spec.intercept),
-                            ),
+                            [slopeId]: rep.snapTo(slopeId, slope * rep.factor(slopeId)),
+                            [interceptId]: rep.snapTo(interceptId, icpt * rep.factor(interceptId)),
                           },
-                          rep.slide(spec.slope),
+                          rep.slide(slopeId),
                         );
                       }}
                     />

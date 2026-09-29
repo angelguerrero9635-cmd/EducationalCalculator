@@ -27,6 +27,14 @@ import { functionGraphIssues } from './picturesFunctionGraph';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import { hsdIssues } from './picturesHsd';
+import {
+  boxPlotIssues,
+  dotPlotSdIssues,
+  scatterIssues,
+  treeChanceIssues,
+  twoWayIssues,
+  vennChanceIssues,
+} from './picturesHse';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -880,6 +888,7 @@ export function repIssues(
         if (a !== undefined && b !== undefined && b < a - 1e-9)
           out.push(`box plot out of order: ${a} then ${b}`);
       }
+      out.push(...boxPlotIssues(rep, val));
       break;
     }
     case 'pieChart': {
@@ -1184,6 +1193,21 @@ export function repIssues(
         if (rep.vertical) out.push('signed jumps are drawn across, not vertical');
         if (rep.inequality) out.push('a line shows a jump or an inequality, not both');
       }
+      if (rep.compound) {
+        // H17: two bounds, the lower first; |x − c| (sign) d has its bounds at c ∓ d.
+        const { center, radius } = rep.compound;
+        if (!rep.second) out.push('a compound inequality needs its second bound');
+        if (rep.vertical || rep.inequality || rep.jump)
+          out.push('a compound inequality is drawn across, alone');
+        if (!center !== !radius) out.push('a distance needs both its center and its radius');
+        const [c, r] = [center, radius].map((x) => (x ? val(x) : undefined));
+        if (c !== undefined && r !== undefined) {
+          if (a !== undefined && Math.abs(a - (c - r)) > 1e-6 * Math.max(1, Math.abs(a)))
+            out.push(`|x − ${c}| with radius ${r} has its lower bound at ${c - r}, not ${a}`);
+          if (b !== undefined && Math.abs(b - (c + r)) > 1e-6 * Math.max(1, Math.abs(b)))
+            out.push(`|x − ${c}| with radius ${r} has its upper bound at ${c + r}, not ${b}`);
+        }
+      }
       break;
     }
     case 'percentBar': {
@@ -1273,6 +1297,10 @@ export function repIssues(
       break;
     }
     case 'venn':
+      if ('chances' in rep) {
+        out.push(...vennChanceIssues(rep.chances, val));
+        break;
+      }
       count(rep.first, 'Venn number', 1000);
       count(rep.second, 'Venn number', 1000);
       break;
@@ -1380,6 +1408,10 @@ export function repIssues(
       break;
     }
     case 'treeDiagram': {
+      if ('chances' in rep) {
+        out.push(...treeChanceIssues(rep.chances, val));
+        break;
+      }
       // Up to 6 outcomes a stage (TREE_MAX in TreeDiagram.tsx).
       count(rep.first, 'first-stage outcomes', 6);
       count(rep.second, 'second-stage outcomes', 6);
@@ -1502,6 +1534,7 @@ export function repIssues(
       break;
     }
     case 'dotPlot': {
+      out.push(...dotPlotSdIssues(rep, val));
       const sorted = firstValues(rep.data, rep.count);
       const md = rep.median ? val(rep.median) : undefined;
       if (sorted && md !== undefined && Math.abs(medianOf(sorted) - md) > 1e-9)
@@ -1704,12 +1737,13 @@ export function repIssues(
         const ids4 = [rep.slope, rep.intercept, rep.at.x, rep.at.y];
         const [m, b, x, y] = ids4.map(val);
         if (
-          ids4.every((id) => !byId.get(id)?.unit) &&
+          ids4.every((id) => typeof id === 'number' || !byId.get(id)?.unit) &&
           [m, b, x, y].every((v) => v !== undefined) &&
           Math.abs(m! * x! + b! - y!) > 1e-6 * (1 + Math.abs(y!))
         )
           out.push(`prediction ${y} is off the line (${m! * x! + b!})`);
       }
+      out.push(...scatterIssues(rep, val));
       break;
     }
     case 'curvedSolid': {
@@ -1835,6 +1869,18 @@ export function repIssues(
       break;
     case 'lineSystem': {
       const [m1, b1, m2, b2] = rep.lines.flatMap((l) => [val(l.slope), val(l.intercept)]);
+      // Elimination (H16): the sum a·x + b·y = c is k₁ × (y − m₁x = b₁) + k₂ × (y − m₂x = b₂).
+      const [sa, sb, sc] = rep.sum ? [val(rep.sum.x), val(rep.sum.y), val(rep.sum.c)] : [];
+      if (
+        [m1, b1, m2, b2, sa, sb, sc].every((v) => v !== undefined) &&
+        m1 !== m2 &&
+        !(sa === 0 && sb === 0)
+      ) {
+        const k2 = (sa! + sb! * m1!) / (m1! - m2!);
+        const k1 = sb! - k2;
+        if (Math.abs(k1 * b1! + k2 * b2! - sc!) > 1e-6 * Math.max(1, Math.abs(sc!)))
+          out.push(`sum line ${sa}x + ${sb}y = ${sc} is not a sum of the two equations`);
+      }
       const [x, y] = rep.solution ? [val(rep.solution.x), val(rep.solution.y)] : [];
       if ([m1, b1, m2, b2].some((v) => v === undefined) || x === undefined || y === undefined)
         break;
@@ -2014,6 +2060,10 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)));
       break;
     case 'table':
+      if ('twoWay' in rep) {
+        out.push(...twoWayIssues(rep.twoWay, val));
+        break;
+      }
       if (rep.rowNames && Array.isArray(rep.rows) && rep.rowNames.length !== rep.rows.length)
         out.push(`${rep.rowNames.length} row names for ${rep.rows.length} rows`);
       break;
