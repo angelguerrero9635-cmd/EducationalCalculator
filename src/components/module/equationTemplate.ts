@@ -16,7 +16,8 @@ export type Slot = { id: string } | { text: string } | { parts: EquationPart[] }
  * side and is drawn touching it.
  */
 export type EquationPart =
-  | { kind: 'box'; id: string }
+  /** `unit`: the value's unit written after the box, following the unit menu ({a:unit}). */
+  | { kind: 'box'; id: string; unit?: boolean }
   | { kind: 'fraction'; top: Slot; bottom: Slot; whole?: string }
   /** `tightBefore`: a bracket written against the piece before it, {a}(1 + {r})^{t}. */
   | { kind: 'power'; base: Slot; exponent: Slot; tightBefore?: boolean }
@@ -39,6 +40,9 @@ export type EquationPart =
 const BOX = /^[A-Za-z]\w*$/;
 /** `{s:sign}`, `{s:relation}`, `{o:op}`: a box the student taps to change its sign. */
 const CHOICE = /^(\w+):(sign|relation|op)$/;
+
+/** `{a:unit}`: a box with its unit after it, the one the unit menu shows. */
+const MARKED = /^(\w+):(unit)$/;
 
 /** What a choice box cycles through; the value is the sign's place, counted from 1. */
 export type Choices = 'sign' | 'relation' | 'op';
@@ -95,6 +99,9 @@ function readSlot(s: string, i: number, letters: boolean): Read | undefined {
   if (s[i] === '{') {
     const end = closeBrace(s, i);
     const inner = s.slice(i + 1, end - 1);
+    const marked = MARKED.exec(inner);
+    if (marked)
+      return { slot: { parts: [{ kind: 'box', id: marked[1]!, [marked[2]!]: true }] }, end };
     const choice = CHOICE.exec(inner);
     if (choice)
       return {

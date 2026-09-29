@@ -350,6 +350,19 @@ describe('H86: matrices', () => {
   });
 });
 
+describe('H87: a unit after a box', () => {
+  it('marks the box, and still lists it', () => {
+    expect(equationParts('{V:unit} = {I:unit} × {R:unit}')).toEqual([
+      { kind: 'box', id: 'V', unit: true },
+      text('='),
+      { kind: 'box', id: 'I', unit: true },
+      text('×'),
+      { kind: 'box', id: 'R', unit: true },
+    ]);
+    expect(equationIds('{l:unit} × {w:unit} = {A:unit}')).toEqual(['l', 'w', 'A']);
+  });
+});
+
 describe('every page’s equation', () => {
   it('lists each box in its template', () => {
     for (const m of TESTED_MODULES) {

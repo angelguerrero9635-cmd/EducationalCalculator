@@ -21,8 +21,9 @@ template that reads differently is worse than rows.
 
 Keep rows for:
 
-- **Measurements whose unit can change** (cm or in, kg or lb). Boxes have no unit menu and show
-  no unit. Fixed units (°, %, $) are written as text.
+- **Measurements whose unit can change** (cm or in, kg or lb), unless each box writes its unit
+  with `{a:unit}`: the label follows the Units menu (metric or US), but a box has no menu of its
+  own to pick one unit (mm, m). Fixed units (°, %, $) are written as text.
 - **Pages about a picture:** a clock, a graph, a data set, a sort.
 - **Two directions or several steps:** + and − on one page, or two relations that don't make one
   sentence.
@@ -44,6 +45,7 @@ Keep rows for:
 | `log_{b}`, `a_{n}`, `^{A}_{Z}X`        | A subscript; scripts stacked on the left of a symbol.    |
 | `[[{a}, {b}; {c}, {d}]]`               | A matrix: rows split by ;, cells by a comma.             |
 | `\|\|{a}, {b}; {c}, {d}\|\|`           | A determinant; `\|` inside a row: the augmented bar.     |
+| `{a:unit}`                             | A box with its unit after it, as the unit menu shows it. |
 | A line break (`\n`)                    | A second equation under the first (a system).            |
 
 Line breaks and brackets:
@@ -155,7 +157,7 @@ input can draw the part named in the last column; the pictures chat builds those
 | s.10.acids-bases                        | `pH = −log({h})`; `[H⁺] = 10^{−{p}}`                              | today (H81: expression exponent)                         |
 | s.10.nuclear-chemistry                  | `^{A}_{Z}X → ^{A2}_{Z2}Y + ^{4}_{2}He`; `(1/2)^{{t}/{T}}`         | today (H85: stacked scripts on the left)                 |
 | s.10.measurement                        | `{a} km × {1000 m}/{1 km} = {b} m`                                | today (H81: text in a fraction slot)                     |
-| s.11.circuits                           | `{V} V = {I} A × {R} Ω` (SI only)                                 | a unit after a box that follows the unit menu (better)   |
+| s.11.circuits                           | `{V:unit} = {I:unit} × {R:unit}` (SI only)                        | today (H87: a unit that follows the menu)                |
 
 Everything else in Grades 9–12 stays rows:
 

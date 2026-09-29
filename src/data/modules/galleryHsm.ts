@@ -8,6 +8,7 @@ import type { Values } from '@/engine/types';
 
 import { div } from './helpers';
 import type { LayoutDef } from './layouts';
+import { MATH_3_MODULES } from './math/3';
 import { MATH_5_MODULES } from './math/5';
 import { MATH_7_MODULES } from './math/7';
 import { MATH_8_MODULES } from './math/8';
@@ -21,9 +22,13 @@ const paren = (x: number) => (x < 0 ? `(${fmt(x)})` : fmt(x));
 
 /** A K–8 page as a gallery demo `id`, taking the equation it couldn't draw before. */
 function fromPage(pageId: string, id: string, title: string, extra: Partial<ModuleDef>) {
-  const page = [...MATH_5_MODULES, ...MATH_7_MODULES, ...MATH_8_MODULES, ...SCIENCE_7_MODULES].find(
-    (m) => m.id === pageId,
-  );
+  const page = [
+    ...MATH_3_MODULES,
+    ...MATH_5_MODULES,
+    ...MATH_7_MODULES,
+    ...MATH_8_MODULES,
+    ...SCIENCE_7_MODULES,
+  ].find((m) => m.id === pageId);
   if (!page) throw new Error(`galleryHsm: no page ${pageId}`);
   return { ...page, id, title, ...extra };
 }
@@ -1586,5 +1591,69 @@ const H86: ModuleDef[] = [
   })(),
 ];
 
-export const HSM_GALLERY_MODULES: ModuleDef[] = [...H81, ...H82, ...H83, ...H84, ...H85, ...H86];
+// H87: a unit after a box, following the unit menu.
+const H87: ModuleDef[] = [
+  {
+    id: 'g.s11-circuits-ohm',
+    title: 'Ohm’s law: V = IR',
+    use: 'Use this for “A 12 V battery drives current through a 4 Ω resistor. What is the current?”',
+    assumptions: [
+      'The voltage across a resistor is the current times its resistance.',
+      'Volts, amps and ohms go together: 1 V = 1 A × 1 Ω.',
+    ],
+    variables: [
+      { id: 'V', symbol: 'V', name: 'Voltage', unit: 'V', min: 0.01, max: 1000, step: 0.01 },
+      { id: 'I', symbol: 'I', name: 'Current', unit: 'A', min: 0.0001, max: 100, step: 0.0001 },
+      { id: 'R', symbol: 'R', name: 'Resistance', unit: 'Ω', min: 0.01, max: 100000, step: 0.01 },
+    ],
+    relations: [
+      {
+        id: 'V = IR',
+        display: '{V} = {I} × {R}',
+        vars: ['V', 'I', 'R'],
+        residual: (v: Values) => v.V! - v.I! * v.R!,
+        solve: {
+          V: (v: Values) => exact(v.I! * v.R!),
+          I: (v: Values) => div(v.V!, v.R!),
+          R: (v: Values) => div(v.V!, v.I!),
+        },
+      },
+    ],
+    steps: {
+      'V = IR': {
+        V: { expr: '{I} × {R}', how: 'Voltage is current times resistance.' },
+        I: { expr: '{V} ÷ {R}', how: 'Divide the voltage by the resistance.' },
+        R: { expr: '{V} ÷ {I}', how: 'Divide the voltage by the current.' },
+      },
+    },
+    example: { V: 12, I: 3, R: 4 },
+    startWith: ['V', 'R'],
+    unitSystems: ['metric'],
+    equation: '{V:unit} = {I:unit} × {R:unit}',
+    representation: {
+      kind: 'seriesCircuit',
+      source: 'V',
+      current: 'I',
+      resistors: [{ r: 'R', v: 'V' }],
+    },
+  },
+  fromPage(
+    'm.3.area~missing-side',
+    'g.m3-area-missing-side-units',
+    'Missing side, units after the boxes',
+    {
+      equation: '{l:unit} × {w:unit} = {A:unit}',
+    },
+  ),
+];
+
+export const HSM_GALLERY_MODULES: ModuleDef[] = [
+  ...H81,
+  ...H82,
+  ...H83,
+  ...H84,
+  ...H85,
+  ...H86,
+  ...H87,
+];
 export const HSM_GALLERY_LAYOUTS: LayoutDef[] = [];

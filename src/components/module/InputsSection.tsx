@@ -444,6 +444,16 @@ function EquationInput({ template, calc }: { template: string; calc: Calculator 
       >
         {p.text}
       </Text>
+    ) : p.kind === 'box' && p.unit ? (
+      // {a:unit}: the unit the menu shows for this value (cm, in², V, Ω), written after it.
+      <View key={i} style={styles.eqTight}>
+        {box(p.id, `b${i}`, small, small ? false : undefined)}
+        <Text
+          style={[styles.eqText, small ? styles.eqTextSmall : styles.eqUnit, { color: c.text }]}
+        >
+          {calc.units.display[p.id] ?? byId.get(p.id)!.unit ?? ''}
+        </Text>
+      </View>
     ) : p.kind === 'box' ? (
       box(p.id, `b${i}`, small, small ? false : undefined)
     ) : p.kind === 'power' ? (
@@ -774,6 +784,7 @@ const styles = StyleSheet.create({
   eqBoxSmall: { minHeight: 32, fontSize: font.caption + 2 },
   eqHit: { padding: 6, margin: -6 },
   eqChoiceSmall: { minWidth: 32, minHeight: 32 },
+  eqUnit: { fontSize: font.body + 2, marginLeft: 2 },
   eqColumnPair: { flexDirection: 'row', alignItems: 'stretch', gap: 6 },
   eqColumn: { gap: 6, alignItems: 'center' },
   eqColumnCompact: { gap: 12 },

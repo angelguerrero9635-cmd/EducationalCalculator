@@ -694,10 +694,16 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
     notes:
       'Template syntax: `[[…]]` is a matrix in brackets, `||…||` a determinant between bars; rows are split by `;` and cells by `,`, each cell a box, a number or a small expression; a `|` at the same place in every row draws the augmented bar. Columns are as wide as their widest cell; brackets and bars grow with the rows. 2 × 2 to 3 × 4: `||{a}, {b}; {c}, {d}|| = {D}`, `[[{a}, {b}; {c}, {d}]] [[{x}; {y}]] = [[{p}; {q}]]`, `[[{a}, {b}, {c} | {p}; {d}, {e}, {f} | {q}; {g}, {h}, {k} | {r}]]` with `x = {x}, y = {y}, z = {z}` on a second line. More than 6 boxes draws compact cells (32 px, tap target still 44).',
   },
-  ask('H87', 'equationInput', 'A unit label after a box that follows the unit menu', [
-    's.11.circuits',
-    'm.3.area~missing-side',
-  ]),
+  {
+    ...ask('H87', 'equationInput', 'A unit label after a box that follows the unit menu', [
+      's.11.circuits',
+      'm.3.area~missing-side',
+    ]),
+    status: 'drawn',
+    gallery: ['g.s11-circuits-ohm', 'g.m3-area-missing-side-units'],
+    notes:
+      'Template syntax: `{a:unit}` draws the box with the unit the calculator shows for that value written after it (calc.units.display, else the variable’s unit), so it changes with the Units menu: `{V:unit} = {I:unit} × {R:unit}` (12 V = 3 A × 4 Ω); m.3.area~missing-side: `{l:unit} × {w:unit} = {A:unit}` (6 cm × 4 cm = 24 cm², 6 in × 4 in = 24 in² after Units → US). A box has no per-value unit menu of its own: a page whose values each pick a unit (mm or m) keeps its rows.',
+  },
   ask(
     'H88',
     'equationInput',
